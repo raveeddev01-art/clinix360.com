@@ -18,4 +18,8 @@ defmodule StitchConnect.Web.ErrorViewTest do
     assert render_to_string(StitchConnect.Web.ErrorView, "505.html", []) ==
            "Internal server error"
   end
+
+  test "dummy test" do
+    assert true == true
+  end
 end
