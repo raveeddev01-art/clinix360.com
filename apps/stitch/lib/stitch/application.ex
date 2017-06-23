@@ -12,6 +12,7 @@ defmodule Stitch.Application do
     children = [
       # Starts a worker by calling: Stitch.Worker.start_link(arg1, arg2, arg3)
       # worker(Stitch.Worker, [arg1, arg2, arg3]),
+      worker(Stitch.Repo, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
