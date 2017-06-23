@@ -11191,20 +11191,20 @@ var _Button = __webpack_require__(234);
 
 var _Button2 = _interopRequireDefault(_Button);
 
+var _sign_in = __webpack_require__(285);
+
+var _sign_in2 = _interopRequireDefault(_sign_in);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 console.log("Example");
 
 var project = "Myproject";
 setTimeout(function () {
-  console.log("Hello from " + project + "!");
+  console.log("Hello fromx " + project + "!");
 }, 1000);
 
-_reactDom2.default.render(_react2.default.createElement(
-  _Button2.default,
-  { bsStyle: "success" },
-  "Success"
-), document.getElementById("root"));
+_reactDom2.default.render(_react2.default.createElement(_sign_in2.default, { name: "Sergio" }), document.getElementById("root"));
 
 /***/ }),
 /* 134 */
@@ -24878,6 +24878,34 @@ SafeAnchor.defaultProps = defaultProps;
 
 exports['default'] = SafeAnchor;
 module.exports = exports['default'];
+
+/***/ }),
+/* 285 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(38);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SignIn = function SignIn(_ref) {
+  var name = _ref.name;
+  return _react2.default.createElement(
+    "div",
+    null,
+    "Hi " + name
+  );
+};
+
+exports.default = SignIn;
 
 /***/ })
 /******/ ]);
