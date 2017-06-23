@@ -6,7 +6,7 @@ console.log("Example");
 
 const project = "Myproject";
 setTimeout(() => {
-  console.log(`Hello from ${project}!`);
+  console.log(`Hello fromx ${project}!`);
 }, 1000);
 
 ReactDOM.render(
