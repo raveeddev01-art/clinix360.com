@@ -5687,6 +5687,12 @@ body {
         border-radius: 3px;
         padding: 12px 20px;
         outline: none; }
+      .authentication-wrapper .authentication-card form .btn-invites {
+        font-size: 14px;
+        background: #fafafa;
+        box-shadow: 0 1px 0 #ccc;
+        padding: 6px 12px;
+        margin-bottom: 15px; }
     .authentication-wrapper .authentication-card .copyright {
       color: #999;
       margin-bottom: 0; }
