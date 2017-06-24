@@ -24,7 +24,7 @@ export default class Invites extends Component {
             <FormControl type="text" />
           </FormGroup>
 
-          <button className="btn btn-block btn-default btn-invites">Add Invitation</button>
+          <Button block className="btn-invites">Add Invitations</Button>
           
           <HelpBlock>Enter your team members' email addresses so they can join your team. You can also do this later after you set up your team.</HelpBlock>
 

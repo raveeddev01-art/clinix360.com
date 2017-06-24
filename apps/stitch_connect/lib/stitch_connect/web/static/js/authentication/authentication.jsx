@@ -36,8 +36,8 @@ export default class Authentication extends Component {
             <Password />
             <Pin />
             <Invites />
-            {/*<Hipaa />
-            <AppDownload />*/}
+            <Hipaa />
+            {/*<AppDownload />*/}
         </div>
     );
   }
