@@ -31,8 +31,8 @@ export default class Authentication extends Component {
             <TeamName />
             <FirstName />
             <LastName />
-            {/*<PhoneNumber />
-            <Username />
+            <PhoneNumber />
+            {/*<Username />
             <Password />
             <Pin />
             <Invites />
