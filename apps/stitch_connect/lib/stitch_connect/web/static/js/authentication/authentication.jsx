@@ -33,8 +33,8 @@ export default class Authentication extends Component {
             <LastName />
             <PhoneNumber />
             <Username />
-            {/*<Password />
-            <Pin />
+            <Password />
+            {/*<Pin />
             <Invites />
             <Hipaa />
             <AppDownload />*/}
