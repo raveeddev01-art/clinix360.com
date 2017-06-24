@@ -25333,7 +25333,8 @@ var Authentication = function (_Component) {
                 _react2.default.createElement(_reset_password2.default, null),
                 _react2.default.createElement("hr", null),
                 _react2.default.createElement(_email2.default, null),
-                _react2.default.createElement(_confirmation2.default, null)
+                _react2.default.createElement(_confirmation2.default, null),
+                _react2.default.createElement(_team_name2.default, null)
             );
         }
     }]);
@@ -25422,26 +25423,14 @@ var Login = function (_Component) {
           null,
           _react2.default.createElement(
             _FormGroup2.default,
-            {
-              controlId: "formEmail",
-              bsSize: "large"
-            },
-            _react2.default.createElement(_FormControl2.default, {
-              type: "text",
-              placeholder: "Email"
-            }),
+            { controlId: "formEmail", bsSize: "large" },
+            _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "Email" }),
             _react2.default.createElement(_FormControl2.default.Feedback, null)
           ),
           _react2.default.createElement(
             _FormGroup2.default,
-            {
-              controlId: "formPassword",
-              bsSize: "large"
-            },
-            _react2.default.createElement(_FormControl2.default, {
-              type: "password",
-              placeholder: "Password"
-            }),
+            { controlId: "formPassword", bsSize: "large" },
+            _react2.default.createElement(_FormControl2.default, { type: "password", placeholder: "Password" }),
             _react2.default.createElement(_FormControl2.default.Feedback, null)
           ),
           _react2.default.createElement(
@@ -26103,14 +26092,8 @@ var ResetPassword = function (_Component) {
           null,
           _react2.default.createElement(
             _FormGroup2.default,
-            {
-              controlId: "formEmail",
-              bsSize: "large"
-            },
-            _react2.default.createElement(_FormControl2.default, {
-              type: "text",
-              placeholder: "Email"
-            }),
+            { controlId: "formEmail", bsSize: "large" },
+            _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "Email" }),
             _react2.default.createElement(_FormControl2.default.Feedback, null)
           ),
           _react2.default.createElement(
@@ -26381,6 +26364,22 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _FormGroup = __webpack_require__(60);
+
+var _FormGroup2 = _interopRequireDefault(_FormGroup);
+
+var _FormControl = __webpack_require__(61);
+
+var _FormControl2 = _interopRequireDefault(_FormControl);
+
+var _HelpBlock = __webpack_require__(138);
+
+var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
+
+var _Button = __webpack_require__(43);
+
+var _Button2 = _interopRequireDefault(_Button);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26403,8 +26402,50 @@ var TeamName = function (_Component) {
     value: function render() {
       return _react2.default.createElement(
         "div",
-        null,
-        "Team Name Component"
+        { className: "authentication-card text-center" },
+        _react2.default.createElement(
+          "h2",
+          null,
+          "Team Name"
+        ),
+        _react2.default.createElement(
+          "h5",
+          null,
+          "Enter your ",
+          _react2.default.createElement(
+            "strong",
+            null,
+            "team name"
+          ),
+          "."
+        ),
+        _react2.default.createElement(
+          "form",
+          null,
+          _react2.default.createElement(
+            _FormGroup2.default,
+            { controlId: "formTeamName", bsSize: "large" },
+            _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "Ex. Care Clinic" }),
+            _react2.default.createElement(_FormControl2.default.Feedback, null)
+          ),
+          _react2.default.createElement(
+            _HelpBlock2.default,
+            null,
+            "This is the name of your team.",
+            _react2.default.createElement("br", null),
+            "It will show up in menus and headings."
+          ),
+          _react2.default.createElement(
+            _Button2.default,
+            { bsStyle: "primary", block: true },
+            "Next"
+          )
+        ),
+        _react2.default.createElement(
+          "p",
+          { className: "copyright" },
+          "\xA9 2017 Stitch Technologies, Inc"
+        )
       );
     }
   }]);
