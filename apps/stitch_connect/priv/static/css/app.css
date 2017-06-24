@@ -5624,3 +5624,39 @@ button.close {
 @media print {
   .hidden-print {
     display: none !important; } }
+html, body {
+  height: 100%; }
+
+body {
+  background: #f4f5f7; }
+
+#root {
+  height: 100%; }
+
+.authentication-wrapper {
+  height: 100%; }
+  .authentication-wrapper .authentication-card {
+    max-width: 440px;
+    background: #fff;
+    border: 1px solid #cacaca;
+    border-radius: 6px;
+    padding: 40px 70px 50px;
+    margin: 0 auto; }
+    .authentication-wrapper .authentication-card h2 {
+      color: #036;
+      font-weight: bold; }
+    .authentication-wrapper .authentication-card h5 {
+      font-size: 16px;
+      font-weight: normal;
+      margin: 25px 0; }
+    .authentication-wrapper .authentication-card form {
+      margin-bottom: 40px; }
+      .authentication-wrapper .authentication-card form .form-group {
+        margin-bottom: 10px; }
+        .authentication-wrapper .authentication-card form .form-group .form-control {
+          border-radius: 3px; }
+      .authentication-wrapper .authentication-card form .btn {
+        padding: 12px 20px; }
+    .authentication-wrapper .authentication-card .copyright {
+      color: #999;
+      margin-bottom: 0; }

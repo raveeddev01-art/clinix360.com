@@ -1,0 +1,48 @@
+.authentication-wrapper {
+    height: 100%;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+
+    .authentication-card {
+        max-width: 440px;
+        background: #fff;
+        border: 1px solid $border-color;
+        border-radius: 6px;
+        padding: 40px 70px 50px;
+        
+        margin: 0 auto;
+
+        h2 {
+            color: $brand-primary;
+            font-weight: bold;
+        }
+
+        h5 {
+            font-size: 16px;
+            font-weight: normal;
+            margin: 25px 0;
+        }
+
+        form {
+            margin-bottom: 40px;
+
+            .form-group {
+                margin-bottom: 10px;
+
+                .form-control {
+                    border-radius: 3px;
+                }
+            }
+
+            .btn {
+                padding: 12px 20px;
+            }
+        }
+
+        .copyright {
+            color: $text-muted;
+            margin-bottom: 0;
+        }
+    }
+}
