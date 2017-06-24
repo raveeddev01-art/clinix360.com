@@ -5633,6 +5633,13 @@ body {
 #root {
   height: 100%; }
 
+.btn-primary {
+  background: #036;
+  border-color: #036; }
+  .btn-primary:hover {
+    background: #00264d;
+    border-color: #00264d; }
+
 .authentication-wrapper {
   height: 100%; }
   .authentication-wrapper .authentication-card {
@@ -5655,8 +5662,13 @@ body {
         margin-bottom: 10px; }
         .authentication-wrapper .authentication-card form .form-group .form-control {
           border-radius: 3px; }
+      .authentication-wrapper .authentication-card form .help-block {
+        margin-bottom: 20px; }
       .authentication-wrapper .authentication-card form .btn {
-        padding: 12px 20px; }
+        font-size: 16px;
+        border-radius: 3px;
+        padding: 12px 20px;
+        outline: none; }
     .authentication-wrapper .authentication-card .copyright {
       color: #999;
       margin-bottom: 0; }

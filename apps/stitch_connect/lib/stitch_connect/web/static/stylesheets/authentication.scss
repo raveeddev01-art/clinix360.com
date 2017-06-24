@@ -35,13 +35,20 @@
                 }
             }
 
+            .help-block {
+                margin-bottom: 20px;
+            }
+
             .btn {
+                font-size: 16px;
+                border-radius: 3px;
                 padding: 12px 20px;
+                outline: none;
             }
         }
 
         .copyright {
-            color: $text-muted;
+            color: #999;
             margin-bottom: 0;
         }
     }

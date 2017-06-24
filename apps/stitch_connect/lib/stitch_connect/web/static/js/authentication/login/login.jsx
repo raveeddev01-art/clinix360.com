@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
 export default class Login extends Component {
@@ -41,7 +40,6 @@ export default class Login extends Component {
           </form>
 
           <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
-
         </div>
     );
   }

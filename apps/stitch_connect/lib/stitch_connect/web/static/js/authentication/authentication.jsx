@@ -24,10 +24,10 @@ export default class Authentication extends Component {
             <Login />
             <ResetPassword />
             
-            {/*<hr/>
+            <hr/>
 
             <Email />
-            <Confirmation />
+            {/*<Confirmation />
             <TeamName />
             <FirstName />
             <LastName />
