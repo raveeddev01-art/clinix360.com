@@ -27,8 +27,8 @@ export default class Authentication extends Component {
             <hr/>
 
             <Email />
-            {/*<Confirmation />
-            <TeamName />
+            <Confirmation />
+            {/*<TeamName />
             <FirstName />
             <LastName />
             <PhoneNumber />

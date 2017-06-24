@@ -5662,6 +5662,24 @@ body {
         margin-bottom: 10px; }
         .authentication-wrapper .authentication-card form .form-group .form-control {
           border-radius: 3px; }
+      .authentication-wrapper .authentication-card form .confirmation-code {
+        margin-bottom: 30px; }
+        .authentication-wrapper .authentication-card form .confirmation-code .code-group {
+          float: left;
+          width: 45%; }
+          .authentication-wrapper .authentication-card form .confirmation-code .code-group .form-control {
+            width: 33%;
+            height: 60px;
+            font-size: 28px;
+            text-align: center; }
+            .authentication-wrapper .authentication-card form .confirmation-code .code-group .form-control:nth-child(2) {
+              border-left: 0;
+              border-right: 0; }
+        .authentication-wrapper .authentication-card form .confirmation-code .code-separator {
+          float: left;
+          width: 10%;
+          color: gray;
+          padding: 20px 0; }
       .authentication-wrapper .authentication-card form .help-block {
         margin-bottom: 20px; }
       .authentication-wrapper .authentication-card form .btn {

@@ -35,6 +35,34 @@
                 }
             }
 
+            .confirmation-code {
+                margin-bottom: 30px;
+
+                .code-group {
+                    float: left;
+                    width: 45%;
+
+                    .form-control {
+                        width: 33%;
+                        height: 60px;
+                        font-size: 28px;
+                        text-align: center;
+
+                        &:nth-child(2) {
+                            border-left: 0;
+                            border-right: 0;
+                        }
+                    }
+                }
+
+                .code-separator {
+                    float: left;
+                    width: 10%;
+                    color: gray;
+                    padding: 20px 0;
+                }
+            }
+
             .help-block {
                 margin-bottom: 20px;
             }
