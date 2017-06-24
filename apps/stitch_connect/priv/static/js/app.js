@@ -801,7 +801,7 @@ module.exports = ExecutionEnvironment;
 
 var _prodInvariant = __webpack_require__(35);
 
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -1245,6 +1245,145 @@ module.exports = { debugTool: debugTool };
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+exports.__esModule = true;
+
+var _values = __webpack_require__(240);
+
+var _values2 = _interopRequireDefault(_values);
+
+var _objectWithoutProperties2 = __webpack_require__(22);
+
+var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+var _extends3 = __webpack_require__(17);
+
+var _extends4 = _interopRequireDefault(_extends3);
+
+var _classCallCheck2 = __webpack_require__(23);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _possibleConstructorReturn2 = __webpack_require__(24);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(25);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _classnames = __webpack_require__(31);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _react = __webpack_require__(4);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(32);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _elementType = __webpack_require__(61);
+
+var _elementType2 = _interopRequireDefault(_elementType);
+
+var _bootstrapUtils = __webpack_require__(33);
+
+var _StyleConfig = __webpack_require__(62);
+
+var _SafeAnchor = __webpack_require__(287);
+
+var _SafeAnchor2 = _interopRequireDefault(_SafeAnchor);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var propTypes = {
+  active: _propTypes2['default'].bool,
+  disabled: _propTypes2['default'].bool,
+  block: _propTypes2['default'].bool,
+  onClick: _propTypes2['default'].func,
+  componentClass: _elementType2['default'],
+  href: _propTypes2['default'].string,
+  /**
+   * Defines HTML button type attribute
+   * @defaultValue 'button'
+   */
+  type: _propTypes2['default'].oneOf(['button', 'reset', 'submit'])
+};
+
+var defaultProps = {
+  active: false,
+  block: false,
+  disabled: false
+};
+
+var Button = function (_React$Component) {
+  (0, _inherits3['default'])(Button, _React$Component);
+
+  function Button() {
+    (0, _classCallCheck3['default'])(this, Button);
+    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
+  }
+
+  Button.prototype.renderAnchor = function renderAnchor(elementProps, className) {
+    return _react2['default'].createElement(_SafeAnchor2['default'], (0, _extends4['default'])({}, elementProps, {
+      className: (0, _classnames2['default'])(className, elementProps.disabled && 'disabled')
+    }));
+  };
+
+  Button.prototype.renderButton = function renderButton(_ref, className) {
+    var componentClass = _ref.componentClass,
+        elementProps = (0, _objectWithoutProperties3['default'])(_ref, ['componentClass']);
+
+    var Component = componentClass || 'button';
+
+    return _react2['default'].createElement(Component, (0, _extends4['default'])({}, elementProps, {
+      type: elementProps.type || 'button',
+      className: className
+    }));
+  };
+
+  Button.prototype.render = function render() {
+    var _extends2;
+
+    var _props = this.props,
+        active = _props.active,
+        block = _props.block,
+        className = _props.className,
+        props = (0, _objectWithoutProperties3['default'])(_props, ['active', 'block', 'className']);
+
+    var _splitBsProps = (0, _bootstrapUtils.splitBsProps)(props),
+        bsProps = _splitBsProps[0],
+        elementProps = _splitBsProps[1];
+
+    var classes = (0, _extends4['default'])({}, (0, _bootstrapUtils.getClassSet)(bsProps), (_extends2 = {
+      active: active
+    }, _extends2[(0, _bootstrapUtils.prefix)(bsProps, 'block')] = block, _extends2));
+    var fullClassName = (0, _classnames2['default'])(className, classes);
+
+    if (elementProps.href) {
+      return this.renderAnchor(elementProps, fullClassName);
+    }
+
+    return this.renderButton(elementProps, fullClassName);
+  };
+
+  return Button;
+}(_react2['default'].Component);
+
+Button.propTypes = propTypes;
+Button.defaultProps = defaultProps;
+
+exports['default'] = (0, _bootstrapUtils.bsClass)('btn', (0, _bootstrapUtils.bsSizes)([_StyleConfig.Size.LARGE, _StyleConfig.Size.SMALL, _StyleConfig.Size.XSMALL], (0, _bootstrapUtils.bsStyles)([].concat((0, _values2['default'])(_StyleConfig.State), [_StyleConfig.Style.DEFAULT, _StyleConfig.Style.PRIMARY, _StyleConfig.Style.LINK]), _StyleConfig.Style.DEFAULT, Button)));
+module.exports = exports['default'];
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -1275,7 +1414,7 @@ var ReactCurrentOwner = {
 module.exports = ReactCurrentOwner;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1295,7 +1434,7 @@ var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var CallbackQueue = __webpack_require__(105);
-var PooledClass = __webpack_require__(27);
+var PooledClass = __webpack_require__(28);
 var ReactFeatureFlags = __webpack_require__(106);
 var ReactReconciler = __webpack_require__(36);
 var Transaction = __webpack_require__(54);
@@ -1532,7 +1671,7 @@ module.exports = ReactUpdates;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1540,17 +1679,13 @@ module.exports = ReactUpdates;
 
 exports.__esModule = true;
 
-var _values = __webpack_require__(240);
+var _extends2 = __webpack_require__(17);
 
-var _values2 = _interopRequireDefault(_values);
+var _extends3 = _interopRequireDefault(_extends2);
 
 var _objectWithoutProperties2 = __webpack_require__(22);
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
-var _extends3 = __webpack_require__(15);
-
-var _extends4 = _interopRequireDefault(_extends3);
 
 var _classCallCheck2 = __webpack_require__(23);
 
@@ -1564,7 +1699,7 @@ var _inherits2 = __webpack_require__(25);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _classnames = __webpack_require__(30);
+var _classnames = __webpack_require__(31);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -1572,7 +1707,136 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(31);
+var _propTypes = __webpack_require__(32);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _bootstrapUtils = __webpack_require__(33);
+
+var _StyleConfig = __webpack_require__(62);
+
+var _ValidComponentChildren = __webpack_require__(290);
+
+var _ValidComponentChildren2 = _interopRequireDefault(_ValidComponentChildren);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var propTypes = {
+  /**
+   * Sets `id` on `<FormControl>` and `htmlFor` on `<FormGroup.Label>`.
+   */
+  controlId: _propTypes2['default'].string,
+  validationState: _propTypes2['default'].oneOf(['success', 'warning', 'error', null])
+};
+
+var childContextTypes = {
+  $bs_formGroup: _propTypes2['default'].object.isRequired
+};
+
+var FormGroup = function (_React$Component) {
+  (0, _inherits3['default'])(FormGroup, _React$Component);
+
+  function FormGroup() {
+    (0, _classCallCheck3['default'])(this, FormGroup);
+    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
+  }
+
+  FormGroup.prototype.getChildContext = function getChildContext() {
+    var _props = this.props,
+        controlId = _props.controlId,
+        validationState = _props.validationState;
+
+
+    return {
+      $bs_formGroup: {
+        controlId: controlId,
+        validationState: validationState
+      }
+    };
+  };
+
+  FormGroup.prototype.hasFeedback = function hasFeedback(children) {
+    var _this2 = this;
+
+    return _ValidComponentChildren2['default'].some(children, function (child) {
+      return child.props.bsRole === 'feedback' || child.props.children && _this2.hasFeedback(child.props.children);
+    });
+  };
+
+  FormGroup.prototype.render = function render() {
+    var _props2 = this.props,
+        validationState = _props2.validationState,
+        className = _props2.className,
+        children = _props2.children,
+        props = (0, _objectWithoutProperties3['default'])(_props2, ['validationState', 'className', 'children']);
+
+    var _splitBsPropsAndOmit = (0, _bootstrapUtils.splitBsPropsAndOmit)(props, ['controlId']),
+        bsProps = _splitBsPropsAndOmit[0],
+        elementProps = _splitBsPropsAndOmit[1];
+
+    var classes = (0, _extends3['default'])({}, (0, _bootstrapUtils.getClassSet)(bsProps), {
+      'has-feedback': this.hasFeedback(children)
+    });
+    if (validationState) {
+      classes['has-' + validationState] = true;
+    }
+
+    return _react2['default'].createElement(
+      'div',
+      (0, _extends3['default'])({}, elementProps, {
+        className: (0, _classnames2['default'])(className, classes)
+      }),
+      children
+    );
+  };
+
+  return FormGroup;
+}(_react2['default'].Component);
+
+FormGroup.propTypes = propTypes;
+FormGroup.childContextTypes = childContextTypes;
+
+exports['default'] = (0, _bootstrapUtils.bsClass)('form-group', (0, _bootstrapUtils.bsSizes)([_StyleConfig.Size.LARGE, _StyleConfig.Size.SMALL], FormGroup));
+module.exports = exports['default'];
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+exports.__esModule = true;
+
+var _extends2 = __webpack_require__(17);
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _objectWithoutProperties2 = __webpack_require__(22);
+
+var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+var _classCallCheck2 = __webpack_require__(23);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _possibleConstructorReturn2 = __webpack_require__(24);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(25);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _classnames = __webpack_require__(31);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _react = __webpack_require__(4);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(32);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -1580,98 +1844,117 @@ var _elementType = __webpack_require__(61);
 
 var _elementType2 = _interopRequireDefault(_elementType);
 
-var _bootstrapUtils = __webpack_require__(32);
+var _warning = __webpack_require__(291);
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _FormControlFeedback = __webpack_require__(292);
+
+var _FormControlFeedback2 = _interopRequireDefault(_FormControlFeedback);
+
+var _FormControlStatic = __webpack_require__(294);
+
+var _FormControlStatic2 = _interopRequireDefault(_FormControlStatic);
+
+var _bootstrapUtils = __webpack_require__(33);
 
 var _StyleConfig = __webpack_require__(62);
-
-var _SafeAnchor = __webpack_require__(287);
-
-var _SafeAnchor2 = _interopRequireDefault(_SafeAnchor);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var propTypes = {
-  active: _propTypes2['default'].bool,
-  disabled: _propTypes2['default'].bool,
-  block: _propTypes2['default'].bool,
-  onClick: _propTypes2['default'].func,
   componentClass: _elementType2['default'],
-  href: _propTypes2['default'].string,
   /**
-   * Defines HTML button type attribute
-   * @defaultValue 'button'
+   * Only relevant if `componentClass` is `'input'`.
    */
-  type: _propTypes2['default'].oneOf(['button', 'reset', 'submit'])
+  type: _propTypes2['default'].string,
+  /**
+   * Uses `controlId` from `<FormGroup>` if not explicitly specified.
+   */
+  id: _propTypes2['default'].string,
+  /**
+   * Attaches a ref to the `<input>` element. Only functions can be used here.
+   *
+   * ```js
+   * <FormControl inputRef={ref => { this.input = ref; }} />
+   * ```
+   */
+  inputRef: _propTypes2['default'].func
 };
 
 var defaultProps = {
-  active: false,
-  block: false,
-  disabled: false
+  componentClass: 'input'
 };
 
-var Button = function (_React$Component) {
-  (0, _inherits3['default'])(Button, _React$Component);
+var contextTypes = {
+  $bs_formGroup: _propTypes2['default'].object
+};
 
-  function Button() {
-    (0, _classCallCheck3['default'])(this, Button);
+var FormControl = function (_React$Component) {
+  (0, _inherits3['default'])(FormControl, _React$Component);
+
+  function FormControl() {
+    (0, _classCallCheck3['default'])(this, FormControl);
     return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
   }
 
-  Button.prototype.renderAnchor = function renderAnchor(elementProps, className) {
-    return _react2['default'].createElement(_SafeAnchor2['default'], (0, _extends4['default'])({}, elementProps, {
-      className: (0, _classnames2['default'])(className, elementProps.disabled && 'disabled')
-    }));
-  };
-
-  Button.prototype.renderButton = function renderButton(_ref, className) {
-    var componentClass = _ref.componentClass,
-        elementProps = (0, _objectWithoutProperties3['default'])(_ref, ['componentClass']);
-
-    var Component = componentClass || 'button';
-
-    return _react2['default'].createElement(Component, (0, _extends4['default'])({}, elementProps, {
-      type: elementProps.type || 'button',
-      className: className
-    }));
-  };
-
-  Button.prototype.render = function render() {
-    var _extends2;
+  FormControl.prototype.render = function render() {
+    var formGroup = this.context.$bs_formGroup;
+    var controlId = formGroup && formGroup.controlId;
 
     var _props = this.props,
-        active = _props.active,
-        block = _props.block,
+        Component = _props.componentClass,
+        type = _props.type,
+        _props$id = _props.id,
+        id = _props$id === undefined ? controlId : _props$id,
+        inputRef = _props.inputRef,
         className = _props.className,
-        props = (0, _objectWithoutProperties3['default'])(_props, ['active', 'block', 'className']);
+        bsSize = _props.bsSize,
+        props = (0, _objectWithoutProperties3['default'])(_props, ['componentClass', 'type', 'id', 'inputRef', 'className', 'bsSize']);
 
     var _splitBsProps = (0, _bootstrapUtils.splitBsProps)(props),
         bsProps = _splitBsProps[0],
         elementProps = _splitBsProps[1];
 
-    var classes = (0, _extends4['default'])({}, (0, _bootstrapUtils.getClassSet)(bsProps), (_extends2 = {
-      active: active
-    }, _extends2[(0, _bootstrapUtils.prefix)(bsProps, 'block')] = block, _extends2));
-    var fullClassName = (0, _classnames2['default'])(className, classes);
+    process.env.NODE_ENV !== 'production' ? (0, _warning2['default'])(controlId == null || id === controlId, '`controlId` is ignored on `<FormControl>` when `id` is specified.') : void 0;
 
-    if (elementProps.href) {
-      return this.renderAnchor(elementProps, fullClassName);
+    // input[type="file"] should not have .form-control.
+    var classes = void 0;
+    if (type !== 'file') {
+      classes = (0, _bootstrapUtils.getClassSet)(bsProps);
     }
 
-    return this.renderButton(elementProps, fullClassName);
+    // If user provides a size, make sure to append it to classes as input-
+    // e.g. if bsSize is small, it will append input-sm
+    if (bsSize) {
+      var size = _StyleConfig.SIZE_MAP[bsSize] || bsSize;
+      classes[(0, _bootstrapUtils.prefix)({ bsClass: 'input' }, size)] = true;
+    }
+
+    return _react2['default'].createElement(Component, (0, _extends3['default'])({}, elementProps, {
+      type: type,
+      id: id,
+      ref: inputRef,
+      className: (0, _classnames2['default'])(className, classes)
+    }));
   };
 
-  return Button;
+  return FormControl;
 }(_react2['default'].Component);
 
-Button.propTypes = propTypes;
-Button.defaultProps = defaultProps;
+FormControl.propTypes = propTypes;
+FormControl.defaultProps = defaultProps;
+FormControl.contextTypes = contextTypes;
 
-exports['default'] = (0, _bootstrapUtils.bsClass)('btn', (0, _bootstrapUtils.bsSizes)([_StyleConfig.Size.LARGE, _StyleConfig.Size.SMALL, _StyleConfig.Size.XSMALL], (0, _bootstrapUtils.bsStyles)([].concat((0, _values2['default'])(_StyleConfig.State), [_StyleConfig.Style.DEFAULT, _StyleConfig.Style.PRIMARY, _StyleConfig.Style.LINK]), _StyleConfig.Style.DEFAULT, Button)));
+FormControl.Feedback = _FormControlFeedback2['default'];
+FormControl.Static = _FormControlStatic2['default'];
+
+exports['default'] = (0, _bootstrapUtils.bsClass)('form-control', (0, _bootstrapUtils.bsSizes)([_StyleConfig.Size.SMALL, _StyleConfig.Size.LARGE], FormControl));
 module.exports = exports['default'];
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1689,7 +1972,7 @@ module.exports = exports['default'];
 
 var _assign = __webpack_require__(5);
 
-var PooledClass = __webpack_require__(27);
+var PooledClass = __webpack_require__(28);
 
 var emptyFunction = __webpack_require__(9);
 var warning = __webpack_require__(2);
@@ -1943,7 +2226,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1970,289 +2253,6 @@ exports.default = _assign2.default || function (target) {
 
   return target;
 };
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _extends2 = __webpack_require__(15);
-
-var _extends3 = _interopRequireDefault(_extends2);
-
-var _objectWithoutProperties2 = __webpack_require__(22);
-
-var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
-var _classCallCheck2 = __webpack_require__(23);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _possibleConstructorReturn2 = __webpack_require__(24);
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = __webpack_require__(25);
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _classnames = __webpack_require__(30);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _react = __webpack_require__(4);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(31);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _bootstrapUtils = __webpack_require__(32);
-
-var _StyleConfig = __webpack_require__(62);
-
-var _ValidComponentChildren = __webpack_require__(290);
-
-var _ValidComponentChildren2 = _interopRequireDefault(_ValidComponentChildren);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var propTypes = {
-  /**
-   * Sets `id` on `<FormControl>` and `htmlFor` on `<FormGroup.Label>`.
-   */
-  controlId: _propTypes2['default'].string,
-  validationState: _propTypes2['default'].oneOf(['success', 'warning', 'error', null])
-};
-
-var childContextTypes = {
-  $bs_formGroup: _propTypes2['default'].object.isRequired
-};
-
-var FormGroup = function (_React$Component) {
-  (0, _inherits3['default'])(FormGroup, _React$Component);
-
-  function FormGroup() {
-    (0, _classCallCheck3['default'])(this, FormGroup);
-    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
-  }
-
-  FormGroup.prototype.getChildContext = function getChildContext() {
-    var _props = this.props,
-        controlId = _props.controlId,
-        validationState = _props.validationState;
-
-
-    return {
-      $bs_formGroup: {
-        controlId: controlId,
-        validationState: validationState
-      }
-    };
-  };
-
-  FormGroup.prototype.hasFeedback = function hasFeedback(children) {
-    var _this2 = this;
-
-    return _ValidComponentChildren2['default'].some(children, function (child) {
-      return child.props.bsRole === 'feedback' || child.props.children && _this2.hasFeedback(child.props.children);
-    });
-  };
-
-  FormGroup.prototype.render = function render() {
-    var _props2 = this.props,
-        validationState = _props2.validationState,
-        className = _props2.className,
-        children = _props2.children,
-        props = (0, _objectWithoutProperties3['default'])(_props2, ['validationState', 'className', 'children']);
-
-    var _splitBsPropsAndOmit = (0, _bootstrapUtils.splitBsPropsAndOmit)(props, ['controlId']),
-        bsProps = _splitBsPropsAndOmit[0],
-        elementProps = _splitBsPropsAndOmit[1];
-
-    var classes = (0, _extends3['default'])({}, (0, _bootstrapUtils.getClassSet)(bsProps), {
-      'has-feedback': this.hasFeedback(children)
-    });
-    if (validationState) {
-      classes['has-' + validationState] = true;
-    }
-
-    return _react2['default'].createElement(
-      'div',
-      (0, _extends3['default'])({}, elementProps, {
-        className: (0, _classnames2['default'])(className, classes)
-      }),
-      children
-    );
-  };
-
-  return FormGroup;
-}(_react2['default'].Component);
-
-FormGroup.propTypes = propTypes;
-FormGroup.childContextTypes = childContextTypes;
-
-exports['default'] = (0, _bootstrapUtils.bsClass)('form-group', (0, _bootstrapUtils.bsSizes)([_StyleConfig.Size.LARGE, _StyleConfig.Size.SMALL], FormGroup));
-module.exports = exports['default'];
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-exports.__esModule = true;
-
-var _extends2 = __webpack_require__(15);
-
-var _extends3 = _interopRequireDefault(_extends2);
-
-var _objectWithoutProperties2 = __webpack_require__(22);
-
-var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
-var _classCallCheck2 = __webpack_require__(23);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _possibleConstructorReturn2 = __webpack_require__(24);
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = __webpack_require__(25);
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _classnames = __webpack_require__(30);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _react = __webpack_require__(4);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(31);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _elementType = __webpack_require__(61);
-
-var _elementType2 = _interopRequireDefault(_elementType);
-
-var _warning = __webpack_require__(291);
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _FormControlFeedback = __webpack_require__(292);
-
-var _FormControlFeedback2 = _interopRequireDefault(_FormControlFeedback);
-
-var _FormControlStatic = __webpack_require__(294);
-
-var _FormControlStatic2 = _interopRequireDefault(_FormControlStatic);
-
-var _bootstrapUtils = __webpack_require__(32);
-
-var _StyleConfig = __webpack_require__(62);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var propTypes = {
-  componentClass: _elementType2['default'],
-  /**
-   * Only relevant if `componentClass` is `'input'`.
-   */
-  type: _propTypes2['default'].string,
-  /**
-   * Uses `controlId` from `<FormGroup>` if not explicitly specified.
-   */
-  id: _propTypes2['default'].string,
-  /**
-   * Attaches a ref to the `<input>` element. Only functions can be used here.
-   *
-   * ```js
-   * <FormControl inputRef={ref => { this.input = ref; }} />
-   * ```
-   */
-  inputRef: _propTypes2['default'].func
-};
-
-var defaultProps = {
-  componentClass: 'input'
-};
-
-var contextTypes = {
-  $bs_formGroup: _propTypes2['default'].object
-};
-
-var FormControl = function (_React$Component) {
-  (0, _inherits3['default'])(FormControl, _React$Component);
-
-  function FormControl() {
-    (0, _classCallCheck3['default'])(this, FormControl);
-    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
-  }
-
-  FormControl.prototype.render = function render() {
-    var formGroup = this.context.$bs_formGroup;
-    var controlId = formGroup && formGroup.controlId;
-
-    var _props = this.props,
-        Component = _props.componentClass,
-        type = _props.type,
-        _props$id = _props.id,
-        id = _props$id === undefined ? controlId : _props$id,
-        inputRef = _props.inputRef,
-        className = _props.className,
-        bsSize = _props.bsSize,
-        props = (0, _objectWithoutProperties3['default'])(_props, ['componentClass', 'type', 'id', 'inputRef', 'className', 'bsSize']);
-
-    var _splitBsProps = (0, _bootstrapUtils.splitBsProps)(props),
-        bsProps = _splitBsProps[0],
-        elementProps = _splitBsProps[1];
-
-    process.env.NODE_ENV !== 'production' ? (0, _warning2['default'])(controlId == null || id === controlId, '`controlId` is ignored on `<FormControl>` when `id` is specified.') : void 0;
-
-    // input[type="file"] should not have .form-control.
-    var classes = void 0;
-    if (type !== 'file') {
-      classes = (0, _bootstrapUtils.getClassSet)(bsProps);
-    }
-
-    // If user provides a size, make sure to append it to classes as input-
-    // e.g. if bsSize is small, it will append input-sm
-    if (bsSize) {
-      var size = _StyleConfig.SIZE_MAP[bsSize] || bsSize;
-      classes[(0, _bootstrapUtils.prefix)({ bsClass: 'input' }, size)] = true;
-    }
-
-    return _react2['default'].createElement(Component, (0, _extends3['default'])({}, elementProps, {
-      type: type,
-      id: id,
-      ref: inputRef,
-      className: (0, _classnames2['default'])(className, classes)
-    }));
-  };
-
-  return FormControl;
-}(_react2['default'].Component);
-
-FormControl.propTypes = propTypes;
-FormControl.defaultProps = defaultProps;
-FormControl.contextTypes = contextTypes;
-
-FormControl.Feedback = _FormControlFeedback2['default'];
-FormControl.Static = _FormControlStatic2['default'];
-
-exports['default'] = (0, _bootstrapUtils.bsClass)('form-control', (0, _bootstrapUtils.bsSizes)([_StyleConfig.Size.SMALL, _StyleConfig.Size.LARGE], FormControl));
-module.exports = exports['default'];
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 18 */
@@ -2599,6 +2599,77 @@ exports.default = function (subClass, superClass) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+exports.__esModule = true;
+
+var _extends2 = __webpack_require__(17);
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _objectWithoutProperties2 = __webpack_require__(22);
+
+var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+var _classCallCheck2 = __webpack_require__(23);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _possibleConstructorReturn2 = __webpack_require__(24);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(25);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _classnames = __webpack_require__(31);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _react = __webpack_require__(4);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _bootstrapUtils = __webpack_require__(33);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var HelpBlock = function (_React$Component) {
+  (0, _inherits3['default'])(HelpBlock, _React$Component);
+
+  function HelpBlock() {
+    (0, _classCallCheck3['default'])(this, HelpBlock);
+    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
+  }
+
+  HelpBlock.prototype.render = function render() {
+    var _props = this.props,
+        className = _props.className,
+        props = (0, _objectWithoutProperties3['default'])(_props, ['className']);
+
+    var _splitBsProps = (0, _bootstrapUtils.splitBsProps)(props),
+        bsProps = _splitBsProps[0],
+        elementProps = _splitBsProps[1];
+
+    var classes = (0, _bootstrapUtils.getClassSet)(bsProps);
+
+    return _react2['default'].createElement('span', (0, _extends3['default'])({}, elementProps, {
+      className: (0, _classnames2['default'])(className, classes)
+    }));
+  };
+
+  return HelpBlock;
+}(_react2['default'].Component);
+
+exports['default'] = (0, _bootstrapUtils.bsClass)('help-block', HelpBlock);
+module.exports = exports['default'];
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright 2014-present, Facebook, Inc.
  * All rights reserved.
@@ -2613,7 +2684,7 @@ exports.default = function (subClass, superClass) {
 
 var _assign = __webpack_require__(5);
 
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 
 var warning = __webpack_require__(2);
 var canDefineProperty = __webpack_require__(51);
@@ -2942,7 +3013,7 @@ module.exports = ReactElement;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3060,7 +3131,7 @@ module.exports = PooledClass;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global    = __webpack_require__(19)
@@ -3126,7 +3197,7 @@ $export.R = 128; // real proto method for `library`
 module.exports = $export;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 var hasOwnProperty = {}.hasOwnProperty;
@@ -3135,7 +3206,7 @@ module.exports = function(it, key){
 };
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -3190,7 +3261,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -3227,7 +3298,7 @@ if (process.env.NODE_ENV !== 'production') {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3240,7 +3311,7 @@ var _entries = __webpack_require__(283);
 
 var _entries2 = _interopRequireDefault(_entries);
 
-var _extends2 = __webpack_require__(15);
+var _extends2 = __webpack_require__(17);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -3254,7 +3325,7 @@ var _invariant = __webpack_require__(286);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _propTypes = __webpack_require__(31);
+var _propTypes = __webpack_require__(32);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -3449,77 +3520,6 @@ var _curry = exports._curry = curry;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _extends2 = __webpack_require__(15);
-
-var _extends3 = _interopRequireDefault(_extends2);
-
-var _objectWithoutProperties2 = __webpack_require__(22);
-
-var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
-var _classCallCheck2 = __webpack_require__(23);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _possibleConstructorReturn2 = __webpack_require__(24);
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = __webpack_require__(25);
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _classnames = __webpack_require__(30);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _react = __webpack_require__(4);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _bootstrapUtils = __webpack_require__(32);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var HelpBlock = function (_React$Component) {
-  (0, _inherits3['default'])(HelpBlock, _React$Component);
-
-  function HelpBlock() {
-    (0, _classCallCheck3['default'])(this, HelpBlock);
-    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
-  }
-
-  HelpBlock.prototype.render = function render() {
-    var _props = this.props,
-        className = _props.className,
-        props = (0, _objectWithoutProperties3['default'])(_props, ['className']);
-
-    var _splitBsProps = (0, _bootstrapUtils.splitBsProps)(props),
-        bsProps = _splitBsProps[0],
-        elementProps = _splitBsProps[1];
-
-    var classes = (0, _bootstrapUtils.getClassSet)(bsProps);
-
-    return _react2['default'].createElement('span', (0, _extends3['default'])({}, elementProps, {
-      className: (0, _classnames2['default'])(className, classes)
-    }));
-  };
-
-  return HelpBlock;
-}(_react2['default'].Component);
-
-exports['default'] = (0, _bootstrapUtils.bsClass)('help-block', HelpBlock);
-module.exports = exports['default'];
-
-/***/ }),
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3541,7 +3541,7 @@ var _assign = __webpack_require__(5);
 var ReactBaseClasses = __webpack_require__(94);
 var ReactChildren = __webpack_require__(140);
 var ReactDOMFactories = __webpack_require__(144);
-var ReactElement = __webpack_require__(26);
+var ReactElement = __webpack_require__(27);
 var ReactPropTypes = __webpack_require__(148);
 var ReactVersion = __webpack_require__(150);
 
@@ -4504,7 +4504,7 @@ module.exports = EventPluginHub;
 
 
 
-var SyntheticEvent = __webpack_require__(14);
+var SyntheticEvent = __webpack_require__(16);
 
 var getEventTarget = __webpack_require__(67);
 
@@ -7177,10 +7177,10 @@ module.exports = KeyEscapeUtils;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 var ReactInstanceMap = __webpack_require__(46);
 var ReactInstrumentation = __webpack_require__(10);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -7968,7 +7968,7 @@ module.exports = Object.create || function create(O, Properties){
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(39).f
-  , has = __webpack_require__(29)
+  , has = __webpack_require__(30)
   , TAG = __webpack_require__(42)('toStringTag');
 
 module.exports = function(it, tag, stat){
@@ -8340,9 +8340,9 @@ module.exports = getIteratorFn;
 
 
 
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 var ReactComponentTreeHook = __webpack_require__(8);
-var ReactElement = __webpack_require__(26);
+var ReactElement = __webpack_require__(27);
 
 var checkReactTypeSpec = __webpack_require__(145);
 
@@ -9308,7 +9308,7 @@ var _prodInvariant = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PooledClass = __webpack_require__(27);
+var PooledClass = __webpack_require__(28);
 
 var invariant = __webpack_require__(1);
 
@@ -10184,7 +10184,7 @@ var _assign = __webpack_require__(5);
 
 var LinkedValueUtils = __webpack_require__(73);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var warning = __webpack_require__(2);
 
@@ -10678,7 +10678,7 @@ module.exports = ReactHostComponent;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 var REACT_ELEMENT_TYPE = __webpack_require__(200);
 
 var getIteratorFn = __webpack_require__(201);
@@ -11126,7 +11126,7 @@ var DOMLazyTree = __webpack_require__(37);
 var DOMProperty = __webpack_require__(18);
 var React = __webpack_require__(34);
 var ReactBrowserEventEmitter = __webpack_require__(58);
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactDOMContainerInfo = __webpack_require__(230);
 var ReactDOMFeatureFlags = __webpack_require__(231);
@@ -11136,7 +11136,7 @@ var ReactInstrumentation = __webpack_require__(10);
 var ReactMarkupChecksum = __webpack_require__(232);
 var ReactReconciler = __webpack_require__(36);
 var ReactUpdateQueue = __webpack_require__(78);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var emptyObject = __webpack_require__(52);
 var instantiateReactComponent = __webpack_require__(116);
@@ -11752,7 +11752,7 @@ module.exports = function(isEntries){
 /* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var has          = __webpack_require__(29)
+var has          = __webpack_require__(30)
   , toIObject    = __webpack_require__(21)
   , arrayIndexOf = __webpack_require__(244)(false)
   , IE_PROTO     = __webpack_require__(84)('IE_PROTO');
@@ -11834,10 +11834,10 @@ exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.d
 "use strict";
 
 var LIBRARY        = __webpack_require__(88)
-  , $export        = __webpack_require__(28)
+  , $export        = __webpack_require__(29)
   , redefine       = __webpack_require__(136)
   , hide           = __webpack_require__(38)
-  , has            = __webpack_require__(29)
+  , has            = __webpack_require__(30)
   , Iterators      = __webpack_require__(89)
   , $iterCreate    = __webpack_require__(255)
   , setToStringTag = __webpack_require__(91)
@@ -11929,7 +11929,7 @@ var pIE            = __webpack_require__(50)
   , createDesc     = __webpack_require__(59)
   , toIObject      = __webpack_require__(21)
   , toPrimitive    = __webpack_require__(81)
-  , has            = __webpack_require__(29)
+  , has            = __webpack_require__(30)
   , IE8_DOM_DEFINE = __webpack_require__(127)
   , gOPD           = Object.getOwnPropertyDescriptor;
 
@@ -11957,7 +11957,7 @@ var _reactDom = __webpack_require__(154);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -11994,7 +11994,7 @@ _reactDom2.default.render(_react2.default.createElement(_authentication2.default
 
 
 var PooledClass = __webpack_require__(141);
-var ReactElement = __webpack_require__(26);
+var ReactElement = __webpack_require__(27);
 
 var emptyFunction = __webpack_require__(9);
 var traverseAllChildren = __webpack_require__(142);
@@ -12309,7 +12309,7 @@ module.exports = PooledClass;
 
 var _prodInvariant = __webpack_require__(35);
 
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 var REACT_ELEMENT_TYPE = __webpack_require__(96);
 
 var getIteratorFn = __webpack_require__(97);
@@ -12553,7 +12553,7 @@ module.exports = KeyEscapeUtils;
 
 
 
-var ReactElement = __webpack_require__(26);
+var ReactElement = __webpack_require__(27);
 
 /**
  * Create a factory that creates HTML tag elements.
@@ -12874,7 +12874,7 @@ module.exports = ReactPropTypesSecret;
 
 
 
-var _require = __webpack_require__(26),
+var _require = __webpack_require__(27),
     isValidElement = _require.isValidElement;
 
 var factory = __webpack_require__(99);
@@ -12989,7 +12989,7 @@ module.exports = '15.6.1';
 var _require = __webpack_require__(94),
     Component = _require.Component;
 
-var _require2 = __webpack_require__(26),
+var _require2 = __webpack_require__(27),
     isValidElement = _require2.isValidElement;
 
 var ReactNoopUpdateQueue = __webpack_require__(95);
@@ -13895,7 +13895,7 @@ module.exports = factory;
 
 var _prodInvariant = __webpack_require__(35);
 
-var ReactElement = __webpack_require__(26);
+var ReactElement = __webpack_require__(27);
 
 var invariant = __webpack_require__(1);
 
@@ -13954,7 +13954,7 @@ var ReactDOMComponentTree = __webpack_require__(6);
 var ReactDefaultInjection = __webpack_require__(156);
 var ReactMount = __webpack_require__(124);
 var ReactReconciler = __webpack_require__(36);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 var ReactVersion = __webpack_require__(234);
 
 var findDOMNode = __webpack_require__(235);
@@ -14626,7 +14626,7 @@ module.exports = BeforeInputEventPlugin;
 
 var _assign = __webpack_require__(5);
 
-var PooledClass = __webpack_require__(27);
+var PooledClass = __webpack_require__(28);
 
 var getTextContentAccessor = __webpack_require__(104);
 
@@ -14724,7 +14724,7 @@ module.exports = FallbackCompositionState;
 
 
 
-var SyntheticEvent = __webpack_require__(14);
+var SyntheticEvent = __webpack_require__(16);
 
 /**
  * @interface Event
@@ -14765,7 +14765,7 @@ module.exports = SyntheticCompositionEvent;
 
 
 
-var SyntheticEvent = __webpack_require__(14);
+var SyntheticEvent = __webpack_require__(16);
 
 /**
  * @interface Event
@@ -14811,8 +14811,8 @@ var EventPluginHub = __webpack_require__(44);
 var EventPropagators = __webpack_require__(43);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
-var SyntheticEvent = __webpack_require__(14);
+var ReactUpdates = __webpack_require__(13);
+var SyntheticEvent = __webpack_require__(16);
 
 var inputValueTracking = __webpack_require__(107);
 var getEventTarget = __webpack_require__(67);
@@ -18385,7 +18385,7 @@ var _prodInvariant = __webpack_require__(3),
 var DOMPropertyOperations = __webpack_require__(113);
 var LinkedValueUtils = __webpack_require__(73);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -18805,7 +18805,7 @@ var _prodInvariant = __webpack_require__(3),
 
 var LinkedValueUtils = __webpack_require__(73);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -18972,7 +18972,7 @@ var ReactComponentEnvironment = __webpack_require__(74);
 var ReactInstanceMap = __webpack_require__(46);
 var ReactInstrumentation = __webpack_require__(10);
 
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 var ReactReconciler = __webpack_require__(36);
 var ReactChildReconciler = __webpack_require__(195);
 
@@ -19582,7 +19582,7 @@ var _prodInvariant = __webpack_require__(3),
 
 var React = __webpack_require__(34);
 var ReactComponentEnvironment = __webpack_require__(74);
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 var ReactErrorUtils = __webpack_require__(66);
 var ReactInstanceMap = __webpack_require__(46);
 var ReactInstrumentation = __webpack_require__(10);
@@ -20788,7 +20788,7 @@ module.exports = flattenChildren;
 
 var _assign = __webpack_require__(5);
 
-var PooledClass = __webpack_require__(27);
+var PooledClass = __webpack_require__(28);
 var Transaction = __webpack_require__(54);
 var ReactInstrumentation = __webpack_require__(10);
 var ReactServerUpdateQueue = __webpack_require__(204);
@@ -21404,7 +21404,7 @@ module.exports = ReactDOMTextComponent;
 
 var _assign = __webpack_require__(5);
 
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 var Transaction = __webpack_require__(54);
 
 var emptyFunction = __webpack_require__(9);
@@ -21479,9 +21479,9 @@ var _assign = __webpack_require__(5);
 
 var EventListener = __webpack_require__(121);
 var ExecutionEnvironment = __webpack_require__(7);
-var PooledClass = __webpack_require__(27);
+var PooledClass = __webpack_require__(28);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var getEventTarget = __webpack_require__(67);
 var getUnboundedScrollPosition = __webpack_require__(210);
@@ -21686,7 +21686,7 @@ var ReactComponentEnvironment = __webpack_require__(74);
 var ReactEmptyComponent = __webpack_require__(118);
 var ReactBrowserEventEmitter = __webpack_require__(58);
 var ReactHostComponent = __webpack_require__(119);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var ReactInjection = {
   Component: ReactComponentEnvironment.injection,
@@ -21721,7 +21721,7 @@ module.exports = ReactInjection;
 var _assign = __webpack_require__(5);
 
 var CallbackQueue = __webpack_require__(105);
-var PooledClass = __webpack_require__(27);
+var PooledClass = __webpack_require__(28);
 var ReactBrowserEventEmitter = __webpack_require__(58);
 var ReactInputSelection = __webpack_require__(122);
 var ReactInstrumentation = __webpack_require__(10);
@@ -22614,7 +22614,7 @@ var EventPropagators = __webpack_require__(43);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInputSelection = __webpack_require__(122);
-var SyntheticEvent = __webpack_require__(14);
+var SyntheticEvent = __webpack_require__(16);
 
 var getActiveElement = __webpack_require__(123);
 var isTextInputElement = __webpack_require__(108);
@@ -22811,7 +22811,7 @@ var EventPropagators = __webpack_require__(43);
 var ReactDOMComponentTree = __webpack_require__(6);
 var SyntheticAnimationEvent = __webpack_require__(221);
 var SyntheticClipboardEvent = __webpack_require__(222);
-var SyntheticEvent = __webpack_require__(14);
+var SyntheticEvent = __webpack_require__(16);
 var SyntheticFocusEvent = __webpack_require__(223);
 var SyntheticKeyboardEvent = __webpack_require__(224);
 var SyntheticMouseEvent = __webpack_require__(55);
@@ -23035,7 +23035,7 @@ module.exports = SimpleEventPlugin;
 
 
 
-var SyntheticEvent = __webpack_require__(14);
+var SyntheticEvent = __webpack_require__(16);
 
 /**
  * @interface Event
@@ -23079,7 +23079,7 @@ module.exports = SyntheticAnimationEvent;
 
 
 
-var SyntheticEvent = __webpack_require__(14);
+var SyntheticEvent = __webpack_require__(16);
 
 /**
  * @interface Event
@@ -23460,7 +23460,7 @@ module.exports = SyntheticTouchEvent;
 
 
 
-var SyntheticEvent = __webpack_require__(14);
+var SyntheticEvent = __webpack_require__(16);
 
 /**
  * @interface Event
@@ -23748,7 +23748,7 @@ module.exports = '15.6.1';
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactCurrentOwner = __webpack_require__(11);
+var ReactCurrentOwner = __webpack_require__(12);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstanceMap = __webpack_require__(46);
 
@@ -24100,7 +24100,7 @@ module.exports = __webpack_require__(20).Object.values;
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-values-entries
-var $export = __webpack_require__(28)
+var $export = __webpack_require__(29)
   , $values = __webpack_require__(129)(false);
 
 $export($export.S, 'Object', {
@@ -24185,7 +24185,7 @@ module.exports = __webpack_require__(20).Object.assign;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.1 Object.assign(target, source)
-var $export = __webpack_require__(28);
+var $export = __webpack_require__(29);
 
 $export($export.S + $export.F, 'Object', {assign: __webpack_require__(250)});
 
@@ -24335,7 +24335,7 @@ module.exports = __webpack_require__(19).document && document.documentElement;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has         = __webpack_require__(29)
+var has         = __webpack_require__(30)
   , toObject    = __webpack_require__(133)
   , IE_PROTO    = __webpack_require__(84)('IE_PROTO')
   , ObjectProto = Object.prototype;
@@ -24444,9 +24444,9 @@ module.exports = __webpack_require__(20).Symbol;
 
 // ECMAScript 6 symbols shim
 var global         = __webpack_require__(19)
-  , has            = __webpack_require__(29)
+  , has            = __webpack_require__(30)
   , DESCRIPTORS    = __webpack_require__(40)
-  , $export        = __webpack_require__(28)
+  , $export        = __webpack_require__(29)
   , redefine       = __webpack_require__(136)
   , META           = __webpack_require__(266).KEY
   , $fails         = __webpack_require__(49)
@@ -24683,7 +24683,7 @@ setToStringTag(global.JSON, 'JSON', true);
 
 var META     = __webpack_require__(60)('meta')
   , isObject = __webpack_require__(48)
-  , has      = __webpack_require__(29)
+  , has      = __webpack_require__(30)
   , setDesc  = __webpack_require__(39).f
   , id       = 0;
 var isExtensible = Object.isExtensible || function(){
@@ -24841,7 +24841,7 @@ module.exports = __webpack_require__(20).Object.setPrototypeOf;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.19 Object.setPrototypeOf(O, proto)
-var $export = __webpack_require__(28);
+var $export = __webpack_require__(29);
 $export($export.S, 'Object', {setPrototypeOf: __webpack_require__(277).set});
 
 /***/ }),
@@ -24894,7 +24894,7 @@ module.exports = function create(P, D){
 /* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var $export = __webpack_require__(28)
+var $export = __webpack_require__(29)
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 $export($export.S, 'Object', {create: __webpack_require__(90)});
 
@@ -25028,7 +25028,7 @@ module.exports = __webpack_require__(20).Object.entries;
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-values-entries
-var $export  = __webpack_require__(28)
+var $export  = __webpack_require__(29)
   , $entries = __webpack_require__(129)(true);
 
 $export($export.S, 'Object', {
@@ -25105,7 +25105,7 @@ module.exports = invariant;
 
 exports.__esModule = true;
 
-var _extends2 = __webpack_require__(15);
+var _extends2 = __webpack_require__(17);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -25129,7 +25129,7 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(31);
+var _propTypes = __webpack_require__(32);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -25339,7 +25339,8 @@ var Authentication = function (_Component) {
                 _react2.default.createElement(_last_name2.default, null),
                 _react2.default.createElement(_phone_number2.default, null),
                 _react2.default.createElement(_username2.default, null),
-                _react2.default.createElement(_password2.default, null)
+                _react2.default.createElement(_password2.default, null),
+                _react2.default.createElement(_pin2.default, null)
             );
         }
     }]);
@@ -25366,15 +25367,15 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -25742,7 +25743,7 @@ var _objectWithoutProperties2 = __webpack_require__(22);
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
 
-var _extends2 = __webpack_require__(15);
+var _extends2 = __webpack_require__(17);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -25758,7 +25759,7 @@ var _inherits2 = __webpack_require__(25);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _classnames = __webpack_require__(30);
+var _classnames = __webpack_require__(31);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -25766,7 +25767,7 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(31);
+var _propTypes = __webpack_require__(32);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -25774,7 +25775,7 @@ var _Glyphicon = __webpack_require__(293);
 
 var _Glyphicon2 = _interopRequireDefault(_Glyphicon);
 
-var _bootstrapUtils = __webpack_require__(32);
+var _bootstrapUtils = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -25859,7 +25860,7 @@ module.exports = exports['default'];
 
 exports.__esModule = true;
 
-var _extends3 = __webpack_require__(15);
+var _extends3 = __webpack_require__(17);
 
 var _extends4 = _interopRequireDefault(_extends3);
 
@@ -25879,7 +25880,7 @@ var _inherits2 = __webpack_require__(25);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _classnames = __webpack_require__(30);
+var _classnames = __webpack_require__(31);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -25887,11 +25888,11 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(31);
+var _propTypes = __webpack_require__(32);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _bootstrapUtils = __webpack_require__(32);
+var _bootstrapUtils = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -25946,7 +25947,7 @@ module.exports = exports['default'];
 
 exports.__esModule = true;
 
-var _extends2 = __webpack_require__(15);
+var _extends2 = __webpack_require__(17);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -25966,7 +25967,7 @@ var _inherits2 = __webpack_require__(25);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _classnames = __webpack_require__(30);
+var _classnames = __webpack_require__(31);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -25978,7 +25979,7 @@ var _elementType = __webpack_require__(61);
 
 var _elementType2 = _interopRequireDefault(_elementType);
 
-var _bootstrapUtils = __webpack_require__(32);
+var _bootstrapUtils = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -26041,15 +26042,15 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -26138,19 +26139,19 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _HelpBlock = __webpack_require__(33);
+var _HelpBlock = __webpack_require__(26);
 
 var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -26244,19 +26245,19 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _HelpBlock = __webpack_require__(33);
+var _HelpBlock = __webpack_require__(26);
 
 var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -26369,19 +26370,19 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _HelpBlock = __webpack_require__(33);
+var _HelpBlock = __webpack_require__(26);
 
 var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -26477,19 +26478,19 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _HelpBlock = __webpack_require__(33);
+var _HelpBlock = __webpack_require__(26);
 
 var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -26537,7 +26538,7 @@ var FirstName = function (_Component) {
           null,
           _react2.default.createElement(
             _FormGroup2.default,
-            { controlId: "formTeamName", bsSize: "large" },
+            { controlId: "formFirstName", bsSize: "large" },
             _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "First Name" }),
             _react2.default.createElement(_FormControl2.default.Feedback, null)
           ),
@@ -26583,19 +26584,19 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _HelpBlock = __webpack_require__(33);
+var _HelpBlock = __webpack_require__(26);
 
 var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -26643,7 +26644,7 @@ var LastName = function (_Component) {
           null,
           _react2.default.createElement(
             _FormGroup2.default,
-            { controlId: "formTeamName", bsSize: "large" },
+            { controlId: "formLastName", bsSize: "large" },
             _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "Last Name" }),
             _react2.default.createElement(_FormControl2.default.Feedback, null)
           ),
@@ -26689,19 +26690,19 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _HelpBlock = __webpack_require__(33);
+var _HelpBlock = __webpack_require__(26);
 
 var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -26749,7 +26750,7 @@ var PhoneNumber = function (_Component) {
           null,
           _react2.default.createElement(
             _FormGroup2.default,
-            { controlId: "formTeamName", bsSize: "large" },
+            { controlId: "formPhoneNumber", bsSize: "large" },
             _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "Phone Number" }),
             _react2.default.createElement(_FormControl2.default.Feedback, null)
           ),
@@ -26795,19 +26796,19 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _HelpBlock = __webpack_require__(33);
+var _HelpBlock = __webpack_require__(26);
 
 var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -26855,7 +26856,7 @@ var Username = function (_Component) {
           null,
           _react2.default.createElement(
             _FormGroup2.default,
-            { controlId: "formTeamName", bsSize: "large" },
+            { controlId: "formUsername", bsSize: "large" },
             _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "username" }),
             _react2.default.createElement(_FormControl2.default.Feedback, null)
           ),
@@ -26901,19 +26902,19 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormGroup = __webpack_require__(16);
+var _FormGroup = __webpack_require__(14);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
 
-var _FormControl = __webpack_require__(17);
+var _FormControl = __webpack_require__(15);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
-var _HelpBlock = __webpack_require__(33);
+var _HelpBlock = __webpack_require__(26);
 
 var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
-var _Button = __webpack_require__(13);
+var _Button = __webpack_require__(11);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -26961,7 +26962,7 @@ var Password = function (_Component) {
           null,
           _react2.default.createElement(
             _FormGroup2.default,
-            { controlId: "formTeamName", bsSize: "large" },
+            { controlId: "formPassword", bsSize: "large" },
             _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "Password" }),
             _react2.default.createElement(_FormControl2.default.Feedback, null)
           ),
@@ -27036,6 +27037,22 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _FormGroup = __webpack_require__(14);
+
+var _FormGroup2 = _interopRequireDefault(_FormGroup);
+
+var _FormControl = __webpack_require__(15);
+
+var _FormControl2 = _interopRequireDefault(_FormControl);
+
+var _HelpBlock = __webpack_require__(26);
+
+var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
+
+var _Button = __webpack_require__(11);
+
+var _Button2 = _interopRequireDefault(_Button);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27058,8 +27075,48 @@ var Pin = function (_Component) {
     value: function render() {
       return _react2.default.createElement(
         "div",
-        null,
-        "PIN Component"
+        { className: "authentication-card text-center" },
+        _react2.default.createElement(
+          "h2",
+          null,
+          "PIN"
+        ),
+        _react2.default.createElement(
+          "h5",
+          null,
+          "Enter a ",
+          _react2.default.createElement(
+            "strong",
+            null,
+            "4-digit PIN"
+          ),
+          "."
+        ),
+        _react2.default.createElement(
+          "form",
+          null,
+          _react2.default.createElement(
+            _FormGroup2.default,
+            { controlId: "formPin", bsSize: "large" },
+            _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "0000" }),
+            _react2.default.createElement(_FormControl2.default.Feedback, null)
+          ),
+          _react2.default.createElement(
+            _HelpBlock2.default,
+            null,
+            "You can use this pin when your screen is locked after a period of inactivity."
+          ),
+          _react2.default.createElement(
+            _Button2.default,
+            { bsStyle: "primary", block: true },
+            "Next"
+          )
+        ),
+        _react2.default.createElement(
+          "p",
+          { className: "copyright" },
+          "\xA9 2017 Stitch Technologies, Inc"
+        )
       );
     }
   }]);

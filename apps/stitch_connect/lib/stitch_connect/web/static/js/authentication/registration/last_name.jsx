@@ -14,7 +14,7 @@ export default class LastName extends Component {
         <h5>Enter your <strong>last name</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formTeamName" bsSize="large">
+          <FormGroup controlId="formLastName" bsSize="large">
             <FormControl type="text" placeholder="Last Name" />
             <FormControl.Feedback />
           </FormGroup>

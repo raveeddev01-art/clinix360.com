@@ -14,7 +14,7 @@ export default class Username extends Component {
         <h5>Enter a <strong>username</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formTeamName" bsSize="large">
+          <FormGroup controlId="formUsername" bsSize="large">
             <FormControl type="text" placeholder="username" />
             <FormControl.Feedback />
           </FormGroup>

@@ -14,7 +14,7 @@ export default class PhoneNumber extends Component {
         <h5>Enter your <strong>phone number</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formTeamName" bsSize="large">
+          <FormGroup controlId="formPhoneNumber" bsSize="large">
             <FormControl type="text" placeholder="Phone Number" />
             <FormControl.Feedback />
           </FormGroup>

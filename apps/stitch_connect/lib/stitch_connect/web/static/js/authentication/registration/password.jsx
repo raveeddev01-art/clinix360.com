@@ -14,7 +14,7 @@ export default class Password extends Component {
         <h5>Enter a <strong>password</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formTeamName" bsSize="large">
+          <FormGroup controlId="formPassword" bsSize="large">
             <FormControl type="text" placeholder="Password" />
             <FormControl.Feedback />
           </FormGroup>
