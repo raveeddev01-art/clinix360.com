@@ -13,9 +13,8 @@ export default class ResetPassword extends Component {
         <h5>Enter your <strong>email address</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formEmail" bsSize="large">
+          <FormGroup bsSize="large">
             <FormControl type="text" placeholder="Email" />
-            <FormControl.Feedback />
           </FormGroup>
 
           <Button bsStyle="primary" block>Reset Password</Button>

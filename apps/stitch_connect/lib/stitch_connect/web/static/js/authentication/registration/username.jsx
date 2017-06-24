@@ -14,9 +14,8 @@ export default class Username extends Component {
         <h5>Enter a <strong>username</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formUsername" bsSize="large">
+          <FormGroup bsSize="large">
             <FormControl type="text" placeholder="username" />
-            <FormControl.Feedback />
           </FormGroup>
           
           <HelpBlock>Your username is how other users will mention you in conversations. Pick something familiar.</HelpBlock>

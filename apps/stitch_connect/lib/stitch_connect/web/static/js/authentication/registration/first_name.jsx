@@ -14,9 +14,8 @@ export default class FirstName extends Component {
         <h5>Enter your <strong>first name</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formFirstName" bsSize="large">
+          <FormGroup bsSize="large">
             <FormControl type="text" placeholder="First Name" />
-            <FormControl.Feedback />
           </FormGroup>
           
           <HelpBlock>Your name will be shown next to your profile and messages.</HelpBlock>

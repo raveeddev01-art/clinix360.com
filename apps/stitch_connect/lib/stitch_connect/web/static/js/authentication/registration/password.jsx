@@ -14,9 +14,8 @@ export default class Password extends Component {
         <h5>Enter a <strong>password</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formPassword" bsSize="large">
-            <FormControl type="text" placeholder="Password" />
-            <FormControl.Feedback />
+          <FormGroup bsSize="large">
+            <FormControl type="password" placeholder="Password" />
           </FormGroup>
           
           <HelpBlock>
@@ -26,7 +25,7 @@ export default class Password extends Component {
               <li>An uppercase letter</li>
               <li>A lowercase letter</li>
               <li>A number</li>
-              <li>A special character (e.g.!$#)</li>
+              <li>A special character (e.g. !$#)</li>
             </ul>
           </HelpBlock>
 

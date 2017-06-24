@@ -14,9 +14,8 @@ export default class TeamName extends Component {
         <h5>Enter your <strong>team name</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formTeamName" bsSize="large">
+          <FormGroup bsSize="large">
             <FormControl type="text" placeholder="Ex. Care Clinic" />
-            <FormControl.Feedback />
           </FormGroup>
           
           <HelpBlock>

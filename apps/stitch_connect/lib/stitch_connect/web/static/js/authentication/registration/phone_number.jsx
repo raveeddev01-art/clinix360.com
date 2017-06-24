@@ -14,9 +14,8 @@ export default class PhoneNumber extends Component {
         <h5>Enter your <strong>phone number</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formPhoneNumber" bsSize="large">
+          <FormGroup bsSize="large">
             <FormControl type="text" placeholder="Phone Number" />
-            <FormControl.Feedback />
           </FormGroup>
           
           <HelpBlock>Your phone number will be shown in your profile so you can be reached.</HelpBlock>

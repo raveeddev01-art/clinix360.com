@@ -14,9 +14,8 @@ export default class LastName extends Component {
         <h5>Enter your <strong>last name</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formLastName" bsSize="large">
+          <FormGroup bsSize="large">
             <FormControl type="text" placeholder="Last Name" />
-            <FormControl.Feedback />
           </FormGroup>
           
           <HelpBlock>Your name will be shown next to your profile and messages.</HelpBlock>

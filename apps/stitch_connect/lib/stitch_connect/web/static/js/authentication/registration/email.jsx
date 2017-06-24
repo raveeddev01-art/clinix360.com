@@ -14,9 +14,8 @@ export default class Email extends Component {
         <h5>Enter your <strong>work email address</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formEmail" bsSize="large">
+          <FormGroup bsSize="large">
             <FormControl type="text" placeholder="Email" />
-            <FormControl.Feedback />
           </FormGroup>
 
           <HelpBlock>We will send you a confirmation code to verify your email. If your team already has an account, ask your admin for an invitation.</HelpBlock>

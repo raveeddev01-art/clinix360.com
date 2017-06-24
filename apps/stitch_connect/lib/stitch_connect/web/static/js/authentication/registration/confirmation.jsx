@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import FormGroup from "react-bootstrap/lib/FormGroup";
+import InputGroup from "react-bootstrap/lib/InputGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
@@ -15,19 +15,19 @@ export default class Confirmation extends Component {
 
         <form>
           <div className="confirmation-code">
-            <div className="input-group code-group">
+            <InputGroup className="code-group">
               <FormControl type="text" maxLength="1" />
               <FormControl type="text" maxLength="1" />
               <FormControl type="text" maxLength="1" />
-            </div>
+            </InputGroup>
 
             <div className="code-separator">—</div>
 
-            <div className="input-group code-group">
+            <InputGroup className="code-group">
               <FormControl type="text" maxLength="1" />
               <FormControl type="text" maxLength="1" />
               <FormControl type="text" maxLength="1" />
-            </div>
+            </InputGroup>
             <div className="clearfix"></div>
           </div>
 

@@ -14,9 +14,8 @@ export default class Pin extends Component {
         <h5>Enter a <strong>4-digit PIN</strong>.</h5>
 
         <form>
-          <FormGroup controlId="formPin" bsSize="large">
-            <FormControl type="text" placeholder="0000" />
-            <FormControl.Feedback />
+          <FormGroup bsSize="large">
+            <FormControl type="password" placeholder="0000" />
           </FormGroup>
           
           <HelpBlock>You can use this pin when your screen is locked after a period of inactivity.</HelpBlock>

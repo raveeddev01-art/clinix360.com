@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import Checkbox from "react-bootstrap/lib/Checkbox";
-import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 

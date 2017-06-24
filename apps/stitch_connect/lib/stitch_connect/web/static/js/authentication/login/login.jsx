@@ -13,14 +13,12 @@ export default class Login extends Component {
           <h5>Enter your <strong>email address</strong> and <strong>password</strong>.</h5>
 
           <form>
-            <FormGroup controlId="formEmail" bsSize="large">
+            <FormGroup bsSize="large">
               <FormControl type="text" placeholder="Email" />
-              <FormControl.Feedback />
             </FormGroup>
 
-            <FormGroup controlId="formPassword" bsSize="large">
+            <FormGroup bsSize="large">
               <FormControl type="password" placeholder="Password" />
-              <FormControl.Feedback />
             </FormGroup>
 
             <Button bsStyle="primary" block>Sign In</Button>
