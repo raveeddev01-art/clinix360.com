@@ -2,6 +2,6 @@ defmodule StitchConnect.Web.PageController do
   use StitchConnect.Web, :controller
 
   def index(conn, _params) do
-    render conn, "index.html"
+    render conn, "index.html", subdomain: conn.private[:subdomain]
   end
 end

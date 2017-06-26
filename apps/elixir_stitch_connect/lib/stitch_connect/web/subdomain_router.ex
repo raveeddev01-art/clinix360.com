@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Router do
+defmodule StitchConnect.Web.SubdomainRouter do
   use StitchConnect.Web, :router
 
   pipeline :browser do
@@ -14,13 +14,8 @@ defmodule StitchConnect.Web.Router do
   end
 
   scope "/", StitchConnect.Web do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
     get "/", PageController, :index
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", StitchConnect.Web do
-  #   pipe_through :api
-  # end
 end

@@ -34,6 +34,7 @@
       <span class="logo"></span>
     </header> -->
 
+    <%= render @view_module, @view_template, assigns %>
     <div id="root"></div>
 
     <!-- <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

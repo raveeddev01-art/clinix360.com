@@ -38,6 +38,7 @@ defmodule StitchConnect.Web.Endpoint do
     key: "_stitch_connect_key",
     signing_salt: "o9McnPJj"
 
+  plug StitchConnect.Plug.Subdomain, StitchConnect.Web.SubdomainRouter
   plug StitchConnect.Web.Router
 
   @doc """
