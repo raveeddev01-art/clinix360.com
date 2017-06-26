@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.PageController do
+defmodule StitchConnect.Web.AuthenticationController do
   use StitchConnect.Web, :controller
 
   def index(conn, _params) do
