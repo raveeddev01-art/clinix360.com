@@ -1,21 +1,29 @@
 .authentication-wrapper {
-    height: 100%;
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .authentication-card {
+        width: 100%;
         max-width: 440px;
         background: #fff;
         border: 1px solid $border-color;
         border-radius: 6px;
-        padding: 40px 70px 50px;
-        
-        margin: 0 auto;
+        padding: 10px 20px 20px;
+        margin: 15px;
+        @media(min-width: $screen-sm) {
+            padding: 40px 70px 50px;
+        }
 
-        h2 {
+        h1, h2 {
             color: $brand-primary;
             font-weight: bold;
+        }
+
+        h4 {
+            font-size: 20px;
+            margin: 30px 0 50px;
         }
 
         h5 {
@@ -66,30 +74,63 @@
             .help-block {
                 margin-bottom: 25px;
             }
+        }
 
-            .btn {
-                font-size: 16px;
-                border-radius: 3px;
-                padding: 12px 20px;
-                outline: none;
-            }
+        .btn {
+            font-size: 16px;
+            border-radius: 3px;
+            padding: 12px 20px;
+            outline: none;
+        }
 
-            .btn-invites {
-                font-size: 14px;
-                background: #fafafa;
-                box-shadow: 0 1px 0 #ccc;
-                padding: 6px 12px;
-                margin-bottom: 15px;
-            }
+        .btn-create-team {
+            margin-bottom: 40px;
+        }
 
-            .btn-done {
-                margin-bottom: 20px;
-            }
+        .btn-invites {
+            font-size: 14px;
+            padding: 6px 12px;
+            margin-bottom: 15px;
+        }
+
+        .btn-done {
+            margin-bottom: 20px;
         }
 
         .copyright {
             color: #999;
             margin-bottom: 0;
+        }
+    }
+
+    .download-card {
+        max-width: 750px;
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            @media (min-width: $screen-sm) {
+                font-size: 40px;
+            }
+        }
+
+        h5 {
+            font-weight: normal;
+            line-height: 1.42;
+            margin-bottom: 40px;
+            @media (min-width: $screen-sm) {
+                font-size: 20px;
+            }
+        }
+
+        .os-icon {
+            width: 70px;
+            height: 70px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin-bottom: 40px;
         }
     }
 }

@@ -1,2 +1,2 @@
-<h1>Working! <%= @subdomain %></h1>
+<!-- <h1>Working! <%= @subdomain %></h1> -->
 <div data-component="AuthenticationRouter" />
