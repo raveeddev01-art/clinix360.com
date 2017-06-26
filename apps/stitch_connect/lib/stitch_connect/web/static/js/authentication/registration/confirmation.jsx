@@ -1,9 +1,9 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Button from "react-bootstrap/lib/Button";
 
 export default class Confirmation extends Component {
   render() {
@@ -32,6 +32,8 @@ export default class Confirmation extends Component {
           </div>
 
           <HelpBlock>We sent a six-digit confirmation code to <strong>email@here.com</strong> to verify your email address.</HelpBlock>
+          
+          <Link to="/signup/team-name" className="btn btn-block btn-primary">Next</Link>
         </form>
 
         <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>

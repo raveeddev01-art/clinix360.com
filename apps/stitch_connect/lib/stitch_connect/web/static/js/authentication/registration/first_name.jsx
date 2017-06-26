@@ -1,9 +1,9 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Button from "react-bootstrap/lib/Button";
 
 export default class FirstName extends Component {
   render() {
@@ -20,7 +20,7 @@ export default class FirstName extends Component {
           
           <HelpBlock>Your name will be shown next to your profile and messages.</HelpBlock>
 
-          <Button bsStyle="primary" block>Next</Button>
+          <Link to="/signup/last-name" className="btn btn-block btn-primary">Next</Link>
         </form>
 
         <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>

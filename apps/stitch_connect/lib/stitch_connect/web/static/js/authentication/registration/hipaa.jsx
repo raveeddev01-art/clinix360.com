@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Button from "react-bootstrap/lib/Button";
 
 export default class Hipaa extends Component {
   render() {
@@ -17,7 +17,7 @@ export default class Hipaa extends Component {
           
           <HelpBlock>Learn more about BAAs <a href="#">here</a>. By checking the box above, you represent that your team agrees to the terms of the <a href="#">HIPAA BAA</a>.</HelpBlock>
 
-          <Button bsStyle="primary" block className="btn-done">Done!</Button>
+          <Link to="/signup/app-download" className="btn btn-block btn-primary btn-done">Done!</Link>
 
           <HelpBlock>By proceeding to use Stitch, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</HelpBlock>
         </form>

@@ -30,6 +30,20 @@ export default class AuthenticationRouter extends Component {
         <div className="authentication-wrapper">
           <Route exact path={`/`} component={GetStarted} />
           <Route exact path={`/login`} component={Login} />
+          <Route exact path={`/reset-password`} component={ResetPassword} />
+
+          <Route exact path={`/signup/email`} component={Email} />
+          <Route exact path={`/signup/confirmation-code`} component={Confirmation} />
+          <Route exact path={`/signup/team-name`} component={TeamName} />
+          <Route exact path={`/signup/first-name`} component={FirstName} />
+          <Route exact path={`/signup/last-name`} component={LastName} />
+          <Route exact path={`/signup/phone-number`} component={PhoneNumber} />
+          <Route exact path={`/signup/username`} component={Username} />
+          <Route exact path={`/signup/password`} component={Password} />
+          <Route exact path={`/signup/pin`} component={Pin} />
+          <Route exact path={`/signup/invites`} component={Invites} />
+          <Route exact path={`/signup/hipaa`} component={Hipaa} />
+          <Route exact path={`/signup/app-download`} component={AppDownload} />
         </div>
       </Router>
     );

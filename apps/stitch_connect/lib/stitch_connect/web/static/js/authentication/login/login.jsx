@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -22,7 +23,7 @@ export default class Login extends Component {
             </FormGroup>
 
             <Button bsStyle="primary" block>Sign In</Button>
-            <Button block>Reset Password</Button>
+            <Link to="/reset-password" className="btn btn-block btn-default">Reset Password</Link>
           </form>
 
           <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>

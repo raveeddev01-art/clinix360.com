@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-
-import Button from "react-bootstrap/lib/Button";
+import { Link } from "react-router-dom";
 
 export default class GetStarted extends Component {
   render() {
@@ -10,8 +9,8 @@ export default class GetStarted extends Component {
 
           <h4>Communicate, write notes, track tasks, upload files, and collaborate on any device.</h4>
 
-          <Button bsStyle="primary" block>Sign In</Button>
-          <Button block className="btn-create-team">Create Team</Button>
+          <Link to="/login" className="btn btn-block btn-primary">Sign In</Link>
+          <Link to="/signup/email" className="btn btn-block btn-default btn-create-team">Create Team</Link>
 
           <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
         </div>

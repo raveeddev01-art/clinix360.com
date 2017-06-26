@@ -1,9 +1,9 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Button from "react-bootstrap/lib/Button";
 
 export default class Email extends Component {
   render() {
@@ -20,7 +20,7 @@ export default class Email extends Component {
 
           <HelpBlock>We will send you a confirmation code to verify your email. If your team already has an account, ask your admin for an invitation.</HelpBlock>
 
-          <Button bsStyle="primary" block>Next</Button>
+          <Link to="/signup/confirmation-code" className="btn btn-block btn-primary">Next</Link>
         </form>
 
         <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>

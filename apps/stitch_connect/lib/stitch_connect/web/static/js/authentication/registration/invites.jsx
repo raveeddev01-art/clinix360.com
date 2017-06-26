@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -28,8 +29,8 @@ export default class Invites extends Component {
           
           <HelpBlock>Enter your team members' email addresses so they can join your team. You can also do this later after you set up your team.</HelpBlock>
 
-          <Button bsStyle="primary" block>Next</Button>
-          <Button block>Skip this step</Button>
+          <Link to="/signup/hipaa" className="btn btn-block btn-primary">Next</Link>
+          <Link to="/signup/hipaa" className="btn btn-block btn-default">Skip this step</Link>
         </form>
 
         <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
