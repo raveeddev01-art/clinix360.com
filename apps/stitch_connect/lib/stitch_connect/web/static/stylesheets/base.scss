@@ -31,3 +31,10 @@ $screen-lg:				1200px;
 	background: #fafafa;
 	border-color: $border-color;
 }
+
+.tooltip {
+	font-size: 14px;
+}
+.tooltip-inner {
+	padding: 6px 10px;
+}

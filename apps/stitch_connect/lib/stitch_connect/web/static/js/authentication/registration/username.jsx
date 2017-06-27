@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
@@ -9,6 +13,27 @@ export default class Username extends Component {
   render() {
     return (
       <div className="authentication-card text-center">
+
+        <div className="card-header">
+          <Row>
+            <Col xs={6} className="text-left">
+              <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
+                <Link to="/signup/phone-number">
+                  <i className="fa fa-arrow-left"></i>
+                </Link>
+              </OverlayTrigger>
+            </Col>
+
+            <Col xs={6} className="text-right">
+              <OverlayTrigger placement="top" overlay={<Tooltip>Restart</Tooltip>}>
+                <Link to="/signup/team-name">
+                  <i className="fa fa-refresh"></i>
+                </Link>
+              </OverlayTrigger>
+            </Col>
+          </Row>
+        </div>
+        
         <h2>Username</h2>
 
         <h5>Enter a <strong>username</strong>.</h5>

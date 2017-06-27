@@ -10,10 +10,31 @@
         background: #fff;
         border: 1px solid $border-color;
         border-radius: 6px;
-        padding: 10px 20px 20px;
+        position: relative;
+        padding: 15px 20px 20px;
         margin: 15px;
         @media(min-width: $screen-sm) {
             padding: 40px 70px 50px;
+        }
+
+        .card-header {
+            position: absolute;
+            right: 10px;
+            left: 10px;
+            top: 10px;
+
+            a {
+                color: #ccc;
+                font-size: 28px;
+                display: inline-block;
+                border-radius: 6px;
+                padding: 5px 14px;
+
+                &:hover {
+                    color: #666;
+                    background: #eee;
+                }
+            }
         }
 
         h1, h2 {

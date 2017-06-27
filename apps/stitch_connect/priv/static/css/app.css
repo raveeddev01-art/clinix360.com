@@ -5644,6 +5644,12 @@ body {
   background: #fafafa;
   border-color: #cacaca; }
 
+.tooltip {
+  font-size: 14px; }
+
+.tooltip-inner {
+  padding: 6px 10px; }
+
 .authentication-wrapper {
   min-height: 100vh;
   display: flex;
@@ -5655,11 +5661,26 @@ body {
     background: #fff;
     border: 1px solid #cacaca;
     border-radius: 6px;
-    padding: 10px 20px 20px;
+    position: relative;
+    padding: 15px 20px 20px;
     margin: 15px; }
     @media (min-width: 768px) {
       .authentication-wrapper .authentication-card {
         padding: 40px 70px 50px; } }
+    .authentication-wrapper .authentication-card .card-header {
+      position: absolute;
+      right: 10px;
+      left: 10px;
+      top: 10px; }
+      .authentication-wrapper .authentication-card .card-header a {
+        color: #ccc;
+        font-size: 28px;
+        display: inline-block;
+        border-radius: 6px;
+        padding: 5px 14px; }
+        .authentication-wrapper .authentication-card .card-header a:hover {
+          color: #666;
+          background: #eee; }
     .authentication-wrapper .authentication-card h1, .authentication-wrapper .authentication-card h2 {
       color: #036;
       font-weight: bold; }
