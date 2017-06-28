@@ -24,8 +24,7 @@ defmodule StitchConnect.Web.Router do
     get "/signup/email", AuthenticationController, :index
     get "/signup/confirmation-code", AuthenticationController, :index
     get "/signup/team-name", AuthenticationController, :index
-    get "/signup/first-name", AuthenticationController, :index
-    get "/signup/last-name", AuthenticationController, :index
+    get "/signup/full-name", AuthenticationController, :index
     get "/signup/phone-number", AuthenticationController, :index
     get "/signup/username", AuthenticationController, :index
     get "/signup/password", AuthenticationController, :index

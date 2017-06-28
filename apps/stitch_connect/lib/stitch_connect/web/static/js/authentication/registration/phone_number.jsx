@@ -18,7 +18,7 @@ export default class PhoneNumber extends Component {
           <Row>
             <Col xs={6} className="text-left">
               <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
-                <Link to="/signup/last-name">
+                <Link to="/signup/full-name">
                   <i className="fa fa-arrow-left"></i>
                 </Link>
               </OverlayTrigger>

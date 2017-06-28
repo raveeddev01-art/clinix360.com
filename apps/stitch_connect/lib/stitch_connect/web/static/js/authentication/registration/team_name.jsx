@@ -31,7 +31,7 @@ export default class TeamName extends Component {
     //   console.log(response);
     //   console.log("Created");
     // });
-    // to="/signup/confirmation-code"
+    // to="/signup/full-name"
   };
 
   render() {

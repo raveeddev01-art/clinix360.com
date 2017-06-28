@@ -26582,13 +26582,9 @@ var _team_name = __webpack_require__(377);
 
 var _team_name2 = _interopRequireDefault(_team_name);
 
-var _first_name = __webpack_require__(378);
+var _full_name = __webpack_require__(394);
 
-var _first_name2 = _interopRequireDefault(_first_name);
-
-var _last_name = __webpack_require__(379);
-
-var _last_name2 = _interopRequireDefault(_last_name);
+var _full_name2 = _interopRequireDefault(_full_name);
 
 var _phone_number = __webpack_require__(380);
 
@@ -26654,8 +26650,7 @@ var AuthenticationRouter = function (_Component) {
             component: _confirmation2.default
           }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/team-name", component: _team_name2.default }),
-          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/first-name", component: _first_name2.default }),
-          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/last-name", component: _last_name2.default }),
+          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/full-name", component: _full_name2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/phone-number", component: _phone_number2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/username", component: _username2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/password", component: _password2.default }),
@@ -33508,7 +33503,7 @@ var TeamName = function (_Component) {
       //   console.log(response);
       //   console.log("Created");
       // });
-      // to="/signup/confirmation-code"
+      // to="/signup/full-name"
     };
 
     _this.state = {
@@ -33583,362 +33578,8 @@ var TeamName = function (_Component) {
 exports.default = TeamName;
 
 /***/ }),
-/* 378 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRouterDom = __webpack_require__(15);
-
-var _OverlayTrigger = __webpack_require__(18);
-
-var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
-
-var _Tooltip = __webpack_require__(19);
-
-var _Tooltip2 = _interopRequireDefault(_Tooltip);
-
-var _Row = __webpack_require__(20);
-
-var _Row2 = _interopRequireDefault(_Row);
-
-var _Col = __webpack_require__(21);
-
-var _Col2 = _interopRequireDefault(_Col);
-
-var _FormGroup = __webpack_require__(26);
-
-var _FormGroup2 = _interopRequireDefault(_FormGroup);
-
-var _FormControl = __webpack_require__(25);
-
-var _FormControl2 = _interopRequireDefault(_FormControl);
-
-var _HelpBlock = __webpack_require__(27);
-
-var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var FirstName = function (_Component) {
-  _inherits(FirstName, _Component);
-
-  function FirstName(props) {
-    _classCallCheck(this, FirstName);
-
-    var _this = _possibleConstructorReturn(this, (FirstName.__proto__ || Object.getPrototypeOf(FirstName)).call(this));
-
-    _this.handleChange = function (event) {
-      var target = event.target;
-      var value = target.type === "checkbox" ? target.checked : target.value;
-      var name = target.name;
-
-      _this.setState(_defineProperty({}, name, value));
-    };
-
-    _this.handleSubmit = function (event) {
-      event.preventDefault();
-      // post("/api/v1/users/create", {
-      //   body: { first_name: this.state.first_name }
-      // }).then(response => {
-      //   console.log(response);
-      //   console.log("Created");
-      // });
-      // to="/signup/confirmation-code"
-    };
-
-    _this.state = {
-      first_name: ""
-    };
-    return _this;
-  }
-
-  _createClass(FirstName, [{
-    key: "render",
-    value: function render() {
-      return _react2.default.createElement(
-        "div",
-        { className: "authentication-card text-center" },
-        _react2.default.createElement(
-          "div",
-          { className: "card-header" },
-          _react2.default.createElement(
-            _Row2.default,
-            null,
-            _react2.default.createElement(
-              _Col2.default,
-              { xs: 6, className: "text-left" },
-              _react2.default.createElement(
-                _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
-                    _Tooltip2.default,
-                    null,
-                    "Back"
-                  ) },
-                _react2.default.createElement(
-                  _reactRouterDom.Link,
-                  { to: "/signup/team-name" },
-                  _react2.default.createElement("i", { className: "fa fa-arrow-left" })
-                )
-              )
-            ),
-            _react2.default.createElement(
-              _Col2.default,
-              { xs: 6, className: "text-right" },
-              _react2.default.createElement(
-                _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
-                    _Tooltip2.default,
-                    null,
-                    "Restart"
-                  ) },
-                _react2.default.createElement(
-                  _reactRouterDom.Link,
-                  { to: "/signup/team-name" },
-                  _react2.default.createElement("i", { className: "fa fa-refresh" })
-                )
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "h2",
-          null,
-          "First Name"
-        ),
-        _react2.default.createElement(
-          "h5",
-          null,
-          "Enter your ",
-          _react2.default.createElement(
-            "strong",
-            null,
-            "first name"
-          ),
-          "."
-        ),
-        _react2.default.createElement(
-          "form",
-          { onSubmit: this.handleSubmit },
-          _react2.default.createElement(
-            _FormGroup2.default,
-            { bsSize: "large" },
-            _react2.default.createElement(_FormControl2.default, {
-              name: "first_name",
-              required: true,
-              autoFocus: true,
-              type: "text",
-              placeholder: "First Name",
-              value: this.state.first_name,
-              onChange: this.handleChange
-            })
-          ),
-          _react2.default.createElement(
-            _HelpBlock2.default,
-            null,
-            "Your name will be shown next to your profile and messages."
-          ),
-          _react2.default.createElement("input", {
-            value: "Next",
-            type: "submit",
-            className: "btn btn-block btn-primary"
-          })
-        ),
-        _react2.default.createElement(
-          "p",
-          { className: "copyright" },
-          "\xA9 2017 Stitch Technologies, Inc"
-        )
-      );
-    }
-  }]);
-
-  return FirstName;
-}(_react.Component);
-
-exports.default = FirstName;
-
-/***/ }),
-/* 379 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRouterDom = __webpack_require__(15);
-
-var _OverlayTrigger = __webpack_require__(18);
-
-var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
-
-var _Tooltip = __webpack_require__(19);
-
-var _Tooltip2 = _interopRequireDefault(_Tooltip);
-
-var _Row = __webpack_require__(20);
-
-var _Row2 = _interopRequireDefault(_Row);
-
-var _Col = __webpack_require__(21);
-
-var _Col2 = _interopRequireDefault(_Col);
-
-var _FormGroup = __webpack_require__(26);
-
-var _FormGroup2 = _interopRequireDefault(_FormGroup);
-
-var _FormControl = __webpack_require__(25);
-
-var _FormControl2 = _interopRequireDefault(_FormControl);
-
-var _HelpBlock = __webpack_require__(27);
-
-var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var LastName = function (_Component) {
-  _inherits(LastName, _Component);
-
-  function LastName() {
-    _classCallCheck(this, LastName);
-
-    return _possibleConstructorReturn(this, (LastName.__proto__ || Object.getPrototypeOf(LastName)).apply(this, arguments));
-  }
-
-  _createClass(LastName, [{
-    key: "render",
-    value: function render() {
-      return _react2.default.createElement(
-        "div",
-        { className: "authentication-card text-center" },
-        _react2.default.createElement(
-          "div",
-          { className: "card-header" },
-          _react2.default.createElement(
-            _Row2.default,
-            null,
-            _react2.default.createElement(
-              _Col2.default,
-              { xs: 6, className: "text-left" },
-              _react2.default.createElement(
-                _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
-                    _Tooltip2.default,
-                    null,
-                    "Back"
-                  ) },
-                _react2.default.createElement(
-                  _reactRouterDom.Link,
-                  { to: "/signup/first-name" },
-                  _react2.default.createElement("i", { className: "fa fa-arrow-left" })
-                )
-              )
-            ),
-            _react2.default.createElement(
-              _Col2.default,
-              { xs: 6, className: "text-right" },
-              _react2.default.createElement(
-                _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
-                    _Tooltip2.default,
-                    null,
-                    "Restart"
-                  ) },
-                _react2.default.createElement(
-                  _reactRouterDom.Link,
-                  { to: "/signup/team-name" },
-                  _react2.default.createElement("i", { className: "fa fa-refresh" })
-                )
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "h2",
-          null,
-          "Last Name"
-        ),
-        _react2.default.createElement(
-          "h5",
-          null,
-          "Enter your ",
-          _react2.default.createElement(
-            "strong",
-            null,
-            "last name"
-          ),
-          "."
-        ),
-        _react2.default.createElement(
-          "form",
-          null,
-          _react2.default.createElement(
-            _FormGroup2.default,
-            { bsSize: "large" },
-            _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "Last Name" })
-          ),
-          _react2.default.createElement(
-            _HelpBlock2.default,
-            null,
-            "Your name will be shown next to your profile and messages."
-          ),
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: "/signup/phone-number", className: "btn btn-block btn-primary" },
-            "Next"
-          )
-        ),
-        _react2.default.createElement(
-          "p",
-          { className: "copyright" },
-          "\xA9 2017 Stitch Technologies, Inc"
-        )
-      );
-    }
-  }]);
-
-  return LastName;
-}(_react.Component);
-
-exports.default = LastName;
-
-/***/ }),
+/* 378 */,
+/* 379 */,
 /* 380 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -34026,7 +33667,7 @@ var PhoneNumber = function (_Component) {
                   ) },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
-                  { to: "/signup/last-name" },
+                  { to: "/signup/full-name" },
                   _react2.default.createElement("i", { className: "fa fa-arrow-left" })
                 )
               )
@@ -37147,6 +36788,201 @@ module.exports = g;
 /***/ (function(module, exports) {
 
 /* (ignored) */
+
+/***/ }),
+/* 394 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(15);
+
+var _OverlayTrigger = __webpack_require__(18);
+
+var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
+
+var _Tooltip = __webpack_require__(19);
+
+var _Tooltip2 = _interopRequireDefault(_Tooltip);
+
+var _Row = __webpack_require__(20);
+
+var _Row2 = _interopRequireDefault(_Row);
+
+var _Col = __webpack_require__(21);
+
+var _Col2 = _interopRequireDefault(_Col);
+
+var _FormGroup = __webpack_require__(26);
+
+var _FormGroup2 = _interopRequireDefault(_FormGroup);
+
+var _FormControl = __webpack_require__(25);
+
+var _FormControl2 = _interopRequireDefault(_FormControl);
+
+var _HelpBlock = __webpack_require__(27);
+
+var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FirstName = function (_Component) {
+  _inherits(FirstName, _Component);
+
+  function FirstName(props) {
+    _classCallCheck(this, FirstName);
+
+    var _this = _possibleConstructorReturn(this, (FirstName.__proto__ || Object.getPrototypeOf(FirstName)).call(this));
+
+    _this.handleChange = function (event) {
+      var target = event.target;
+      var value = target.type === "checkbox" ? target.checked : target.value;
+      var name = target.name;
+
+      _this.setState(_defineProperty({}, name, value));
+    };
+
+    _this.handleSubmit = function (event) {
+      event.preventDefault();
+      // post("/api/v1/users/create", {
+      //   body: { fullname: this.state.fullname }
+      // }).then(response => {
+      //   console.log(response);
+      //   console.log("Created");
+      // });
+      // to="/signup/confirmation-code"
+    };
+
+    _this.state = {
+      fullname: ""
+    };
+    return _this;
+  }
+
+  _createClass(FirstName, [{
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "authentication-card text-center" },
+        _react2.default.createElement(
+          "div",
+          { className: "card-header" },
+          _react2.default.createElement(
+            _Row2.default,
+            null,
+            _react2.default.createElement(
+              _Col2.default,
+              { xs: 6, className: "text-left" },
+              _react2.default.createElement(
+                _OverlayTrigger2.default,
+                { placement: "top", overlay: _react2.default.createElement(
+                    _Tooltip2.default,
+                    null,
+                    "Back"
+                  ) },
+                _react2.default.createElement(
+                  _reactRouterDom.Link,
+                  { to: "/signup/team-name" },
+                  _react2.default.createElement("i", { className: "fa fa-arrow-left" })
+                )
+              )
+            ),
+            _react2.default.createElement(
+              _Col2.default,
+              { xs: 6, className: "text-right" },
+              _react2.default.createElement(
+                _OverlayTrigger2.default,
+                { placement: "top", overlay: _react2.default.createElement(
+                    _Tooltip2.default,
+                    null,
+                    "Restart"
+                  ) },
+                _react2.default.createElement(
+                  _reactRouterDom.Link,
+                  { to: "/signup/team-name" },
+                  _react2.default.createElement("i", { className: "fa fa-refresh" })
+                )
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          "h2",
+          null,
+          "Name"
+        ),
+        _react2.default.createElement(
+          "h5",
+          null,
+          "Enter your ",
+          _react2.default.createElement(
+            "strong",
+            null,
+            "full name"
+          ),
+          "."
+        ),
+        _react2.default.createElement(
+          "form",
+          { onSubmit: this.handleSubmit },
+          _react2.default.createElement(
+            _FormGroup2.default,
+            { bsSize: "large" },
+            _react2.default.createElement(_FormControl2.default, {
+              name: "fullname",
+              required: true,
+              autoFocus: true,
+              type: "text",
+              placeholder: "Full Name",
+              value: this.state.fullname,
+              onChange: this.handleChange
+            })
+          ),
+          _react2.default.createElement(
+            _HelpBlock2.default,
+            null,
+            "Your name will be shown next to your profile and messages."
+          ),
+          _react2.default.createElement("input", {
+            value: "Next",
+            type: "submit",
+            className: "btn btn-block btn-primary"
+          })
+        ),
+        _react2.default.createElement(
+          "p",
+          { className: "copyright" },
+          "\xA9 2017 Stitch Technologies, Inc"
+        )
+      );
+    }
+  }]);
+
+  return FirstName;
+}(_react.Component);
+
+exports.default = FirstName;
 
 /***/ })
 /******/ ]);
