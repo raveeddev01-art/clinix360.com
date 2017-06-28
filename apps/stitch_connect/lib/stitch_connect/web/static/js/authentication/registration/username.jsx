@@ -66,7 +66,7 @@ export default class Username extends Component {
 
         <h5>Enter a <strong>username</strong>.</h5>
 
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
             <FormControl 
               name="username"
