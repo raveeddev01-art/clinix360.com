@@ -46,6 +46,7 @@ export default class TeamName extends Component {
             <FormControl 
               name="team_name"
               required
+              autoFocus
               type="text"
               placeholder="Ex. Care Clinic"
               value={this.state.team_name}

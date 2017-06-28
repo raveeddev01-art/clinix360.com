@@ -33016,6 +33016,7 @@ var Email = function (_Component) {
             _react2.default.createElement(_FormControl2.default, {
               name: "email",
               required: true,
+              autoFocus: true,
               type: "email",
               placeholder: "Email",
               value: this.state.email,
@@ -33547,6 +33548,7 @@ var TeamName = function (_Component) {
             _react2.default.createElement(_FormControl2.default, {
               name: "team_name",
               required: true,
+              autoFocus: true,
               type: "text",
               placeholder: "Ex. Care Clinic",
               value: this.state.team_name,
@@ -33629,6 +33631,8 @@ var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -33638,10 +33642,34 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var FirstName = function (_Component) {
   _inherits(FirstName, _Component);
 
-  function FirstName() {
+  function FirstName(props) {
     _classCallCheck(this, FirstName);
 
-    return _possibleConstructorReturn(this, (FirstName.__proto__ || Object.getPrototypeOf(FirstName)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (FirstName.__proto__ || Object.getPrototypeOf(FirstName)).call(this));
+
+    _this.handleChange = function (event) {
+      var target = event.target;
+      var value = target.type === "checkbox" ? target.checked : target.value;
+      var name = target.name;
+
+      _this.setState(_defineProperty({}, name, value));
+    };
+
+    _this.handleSubmit = function (event) {
+      event.preventDefault();
+      // post("/api/v1/users/create", {
+      //   body: { first_name: this.state.first_name }
+      // }).then(response => {
+      //   console.log(response);
+      //   console.log("Created");
+      // });
+      // to="/signup/confirmation-code"
+    };
+
+    _this.state = {
+      first_name: ""
+    };
+    return _this;
   }
 
   _createClass(FirstName, [{
@@ -33710,22 +33738,30 @@ var FirstName = function (_Component) {
         ),
         _react2.default.createElement(
           "form",
-          null,
+          { onSubmit: this.handleSubmit },
           _react2.default.createElement(
             _FormGroup2.default,
             { bsSize: "large" },
-            _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "First Name" })
+            _react2.default.createElement(_FormControl2.default, {
+              name: "first_name",
+              required: true,
+              autoFocus: true,
+              type: "text",
+              placeholder: "First Name",
+              value: this.state.first_name,
+              onChange: this.handleChange
+            })
           ),
           _react2.default.createElement(
             _HelpBlock2.default,
             null,
             "Your name will be shown next to your profile and messages."
           ),
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: "/signup/last-name", className: "btn btn-block btn-primary" },
-            "Next"
-          )
+          _react2.default.createElement("input", {
+            value: "Next",
+            type: "submit",
+            className: "btn btn-block btn-primary"
+          })
         ),
         _react2.default.createElement(
           "p",

@@ -66,6 +66,7 @@ export default class Email extends Component {
             <FormControl
               name="email"
               required
+              autoFocus
               type="email"
               placeholder="Email"
               value={this.state.email}
