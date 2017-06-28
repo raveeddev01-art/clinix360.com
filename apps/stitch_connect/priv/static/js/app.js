@@ -26646,7 +26646,11 @@ var AuthenticationRouter = function (_Component) {
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/login", component: _login2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/reset-password", component: _reset_password2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/email", component: _email2.default }),
-          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/confirmation-code", component: _confirmation2.default }),
+          _react2.default.createElement(_reactRouterDom.Route, {
+            exact: true,
+            path: "/signup/confirmation-code",
+            component: _confirmation2.default
+          }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/team-name", component: _team_name2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/first-name", component: _first_name2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/last-name", component: _last_name2.default }),
@@ -29047,7 +29051,10 @@ var GetStarted = function (_Component) {
         ),
         _react2.default.createElement(
           _reactRouterDom.Link,
-          { to: "/signup/email", className: "btn btn-block btn-default btn-create-team" },
+          {
+            to: "/signup/email",
+            className: "btn btn-block btn-default btn-create-team"
+          },
           "Create Team"
         ),
         _react2.default.createElement(

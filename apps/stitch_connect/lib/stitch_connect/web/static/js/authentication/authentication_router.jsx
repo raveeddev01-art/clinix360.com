@@ -33,7 +33,11 @@ export default class AuthenticationRouter extends Component {
           <Route exact path={`/reset-password`} component={ResetPassword} />
 
           <Route exact path={`/signup/email`} component={Email} />
-          <Route exact path={`/signup/confirmation-code`} component={Confirmation} />
+          <Route
+            exact
+            path={`/signup/confirmation-code`}
+            component={Confirmation}
+          />
           <Route exact path={`/signup/team-name`} component={TeamName} />
           <Route exact path={`/signup/first-name`} component={FirstName} />
           <Route exact path={`/signup/last-name`} component={LastName} />
