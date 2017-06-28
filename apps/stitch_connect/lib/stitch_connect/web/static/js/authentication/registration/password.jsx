@@ -35,7 +35,7 @@ export default class Password extends Component {
     //   console.log(response);
     //   console.log("Created");
     // });
-    // to="/signup/password"
+    // to="/signup/pin"
   };
   
   render() {
