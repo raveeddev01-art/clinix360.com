@@ -11,6 +11,7 @@ defmodule StitchConnect.Web.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   scope "/", StitchConnect.Web do
@@ -32,5 +33,11 @@ defmodule StitchConnect.Web.Router do
     get "/signup/invites", AuthenticationController, :index
     get "/signup/hipaa", AuthenticationController, :index
     get "/signup/app-download", AuthenticationController, :index
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :api
+
+    post "/users/create", UserController, :create
   end
 end

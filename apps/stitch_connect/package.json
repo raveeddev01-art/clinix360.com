@@ -4,8 +4,11 @@
     "watch": "webpack --watch-stdin --progress --color"
   },
   "dependencies": {
+    "deepmerge": "^1.4.4",
+    "es6-promise": "^4.1.0",
     "react-bootstrap": "^0.31.0",
-    "react-router-dom": "^4.1.1"
+    "react-router-dom": "^4.1.1",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
