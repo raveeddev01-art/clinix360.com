@@ -1,10 +1,9 @@
 defmodule Stitch.User.Authentication do
-  import Comeonin.Bcrypt
   import Ecto.Changeset
   alias Stitch.{Repo, User}
 
   def hash_password(password) do
-    hashpwsalt(password)
+    Comeonin.Bcrypt.hashpwsalt(password)
   end
 
   def create_account(user_params) do
@@ -28,8 +27,8 @@ defmodule Stitch.User.Authentication do
   def validate_email_and_password(email, password)
   when byte_size(email) > 0 and byte_size(password) > 0 do
     case Repo.get_by(User, email: email) do
-      nil -> dummy_checkpw()
-      user -> checkpw(password, user.encrypted_password)
+      nil -> Comeonin.Bcrypt.dummy_checkpw()
+      user -> Comeonin.Bcrypt.checkpw(password, user.encrypted_password)
     end
   end
 end
