@@ -33853,7 +33853,7 @@ var PhoneNumber = function (_Component) {
       //   console.log(response);
       //   console.log("Created");
       // });
-      // to="/signup/full-name"
+      // to="/signup/username"
     };
 
     _this.state = {
@@ -34016,6 +34016,8 @@ var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -34025,10 +34027,34 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Username = function (_Component) {
   _inherits(Username, _Component);
 
-  function Username() {
+  function Username(props) {
     _classCallCheck(this, Username);
 
-    return _possibleConstructorReturn(this, (Username.__proto__ || Object.getPrototypeOf(Username)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Username.__proto__ || Object.getPrototypeOf(Username)).call(this));
+
+    _this.handleChange = function (event) {
+      var target = event.target;
+      var value = target.type === "checkbox" ? target.checked : target.value;
+      var name = target.name;
+
+      _this.setState(_defineProperty({}, name, value));
+    };
+
+    _this.handleSubmit = function (event) {
+      event.preventDefault();
+      // post("/api/v1/users/create", {
+      //   body: { username: this.state.username }
+      // }).then(response => {
+      //   console.log(response);
+      //   console.log("Created");
+      // });
+      // to="/signup/password"
+    };
+
+    _this.state = {
+      username: ""
+    };
+    return _this;
   }
 
   _createClass(Username, [{
@@ -34101,18 +34127,26 @@ var Username = function (_Component) {
           _react2.default.createElement(
             _FormGroup2.default,
             { bsSize: "large" },
-            _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "username" })
+            _react2.default.createElement(_FormControl2.default, {
+              name: "username",
+              required: true,
+              autoFocus: true,
+              type: "text",
+              placeholder: "username",
+              value: this.state.username,
+              onChange: this.handleChange
+            })
           ),
           _react2.default.createElement(
             _HelpBlock2.default,
             null,
             "Your username is how other users will mention you in conversations. Pick something familiar."
           ),
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: "/signup/password", className: "btn btn-block btn-primary" },
-            "Next"
-          )
+          _react2.default.createElement("input", {
+            value: "Next",
+            type: "submit",
+            className: "btn btn-block btn-primary"
+          })
         ),
         _react2.default.createElement(
           "p",

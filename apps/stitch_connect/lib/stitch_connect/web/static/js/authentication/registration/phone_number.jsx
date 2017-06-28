@@ -35,7 +35,7 @@ export default class PhoneNumber extends Component {
     //   console.log(response);
     //   console.log("Created");
     // });
-    // to="/signup/full-name"
+    // to="/signup/username"
   };
 
   render() {
