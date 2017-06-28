@@ -1,6 +1,5 @@
 defmodule Stitch.UserQueries do
   import Ecto.Query
-  import Comeonin.Bcrypt
   alias Stitch.{Repo, User}
 
   def get_all do
@@ -19,16 +18,4 @@ defmodule Stitch.UserQueries do
   end
 
   def get_by_id(_) do {:error, "Id isn't an integer."} end
-
-  def validate_email_and_password(email, password) 
-  when byte_size(email) > 0 and byte_size(password) > 0 do
-    case Repo.get_by(User, email: email) do
-      nil -> dummy_checkpw()
-      user -> checkpw(password, user.encrypted_password)
-    end
-  end
-
-  def validate_email_and_password(_, _) do
-    false
-  end
 end
