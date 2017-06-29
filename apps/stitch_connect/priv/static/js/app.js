@@ -32755,6 +32755,8 @@ var _Button2 = _interopRequireDefault(_Button);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -32764,10 +32766,34 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ResetPassword = function (_Component) {
   _inherits(ResetPassword, _Component);
 
-  function ResetPassword() {
+  function ResetPassword(props) {
     _classCallCheck(this, ResetPassword);
 
-    return _possibleConstructorReturn(this, (ResetPassword.__proto__ || Object.getPrototypeOf(ResetPassword)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (ResetPassword.__proto__ || Object.getPrototypeOf(ResetPassword)).call(this));
+
+    _this.handleChange = function (event) {
+      var target = event.target;
+      var value = target.type === "checkbox" ? target.checked : target.value;
+      var name = target.name;
+
+      _this.setState(_defineProperty({}, name, value));
+    };
+
+    _this.handleSubmit = function (event) {
+      // event.preventDefault();
+      // post("/api/v1/users/create", {
+      //   body: { email: this.state.email }
+      // }).then(response => {
+      //   console.log(response);
+      //   console.log("Created");
+      // });
+      // to="/signup/confirmation-code"
+    };
+
+    _this.state = {
+      email: ""
+    };
+    return _this;
   }
 
   _createClass(ResetPassword, [{
@@ -32836,17 +32862,25 @@ var ResetPassword = function (_Component) {
         ),
         _react2.default.createElement(
           "form",
-          null,
+          { onSubmit: this.handleSubmit },
           _react2.default.createElement(
             _FormGroup2.default,
             { bsSize: "large" },
-            _react2.default.createElement(_FormControl2.default, { type: "text", placeholder: "Email" })
+            _react2.default.createElement(_FormControl2.default, {
+              name: "email",
+              required: true,
+              autoFocus: true,
+              type: "email",
+              placeholder: "Email",
+              value: this.state.email,
+              onChange: this.handleChange
+            })
           ),
-          _react2.default.createElement(
-            _Button2.default,
-            { bsStyle: "primary", block: true },
-            "Reset Password"
-          )
+          _react2.default.createElement("input", {
+            value: "Reset Password",
+            type: "submit",
+            className: "btn btn-block btn-primary"
+          })
         ),
         _react2.default.createElement(
           "p",
