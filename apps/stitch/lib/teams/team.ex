@@ -5,6 +5,7 @@ defmodule Stitch.Team do
   schema "teams" do
     field :name, :string
     field :slug, :string
+    many_to_many :users, Stitch.User, join_through: "team_users"
 
     timestamps()
   end
@@ -13,7 +14,6 @@ defmodule Stitch.Team do
     struct
     |> cast(params, [:name, :slug])
     |> validate_required([:name])
-
-    # TODO: Add unique constraint for team name.
+    |> unique_constraint(:name)
   end
 end

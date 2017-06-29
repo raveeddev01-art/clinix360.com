@@ -8,6 +8,7 @@ defmodule Stitch.User do
     field :fullname, :string
     field :confirmation_code, :string
     field :onboarded, :boolean
+    many_to_many :teams, Stitch.Team, join_through: "team_users"
 
     field :password, :string, virtual: true
 

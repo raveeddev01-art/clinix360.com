@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import store from "../authentication_store.js";
 
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@observer
 export default class TeamName extends Component {
   constructor(props) {
     super();
@@ -26,13 +29,12 @@ export default class TeamName extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    // post("/api/v1/users/create", {
-    //   body: { team_name: this.state.team_name }
-    // }).then(response => {
-    //   console.log(response);
-    //   console.log("Created");
-    // });
-    // to="/signup/full-name"
+    post("/api/v1/teams/create", {
+      body: { user_id: store.instance.userId, name: this.state.team_name }
+    }).then(response => {
+      console.log(response);
+      this.props.history.push("/signup/full-name");
+    });
   };
 
   render() {

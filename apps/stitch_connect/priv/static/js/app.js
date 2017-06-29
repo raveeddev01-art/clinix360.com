@@ -38200,11 +38200,19 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _class;
+
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(15);
+
+var _mobxReact = __webpack_require__(113);
+
+var _authentication_store = __webpack_require__(114);
+
+var _authentication_store2 = _interopRequireDefault(_authentication_store);
 
 var _FormGroup = __webpack_require__(30);
 
@@ -38228,7 +38236,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var TeamName = function (_Component) {
+var TeamName = (0, _mobxReact.observer)(_class = function (_Component) {
   _inherits(TeamName, _Component);
 
   function TeamName(props) {
@@ -38246,13 +38254,12 @@ var TeamName = function (_Component) {
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      // post("/api/v1/users/create", {
-      //   body: { team_name: this.state.team_name }
-      // }).then(response => {
-      //   console.log(response);
-      //   console.log("Created");
-      // });
-      // to="/signup/full-name"
+      post("/api/v1/teams/create", {
+        body: { user_id: _authentication_store2.default.instance.userId, name: _this.state.team_name }
+      }).then(function (response) {
+        console.log(response);
+        _this.props.history.push("/signup/full-name");
+      });
     };
 
     _this.state = {
@@ -38328,7 +38335,7 @@ var TeamName = function (_Component) {
   }]);
 
   return TeamName;
-}(_react.Component);
+}(_react.Component)) || _class;
 
 exports.default = TeamName;
 

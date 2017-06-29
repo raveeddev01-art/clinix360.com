@@ -1,6 +1,6 @@
 defmodule Stitch.Team.Onboarding do
   import Ecto.Changeset
-  alias Stitch.{Repo, Team}
+  alias Stitch.{Repo, Team, TeamUser}
 
   def create_team(user_id, team_params) do
     changeset = Team.changeset(%Team{}, team_params)
@@ -13,6 +13,8 @@ defmodule Stitch.Team.Onboarding do
 
     case Repo.insert(changeset) do
       {:ok, team} ->
+        team_user_changeset = TeamUser.changeset(%TeamUser{}, %{role: "admin", user_id: user_id, team_id: team.id})
+        Repo.insert(team_user_changeset)
         team
       _ ->
         {:error, "Team already exists with this name."}

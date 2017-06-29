@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         |> json(%{message: message})
       team ->
         conn
-        |> json(team)
+        |> json({%{id: team.id, name: team.name, slug: team.slug}})
     end
   end
 end
