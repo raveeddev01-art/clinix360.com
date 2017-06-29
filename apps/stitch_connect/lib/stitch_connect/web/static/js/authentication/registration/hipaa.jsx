@@ -32,22 +32,22 @@ export default class Hipaa extends Component {
             </Col>
           </Row>
         </div>
-        
+
         <h2>HIPAA</h2>
 
         <h5><strong>Business Associate Agreement</strong></h5>
 
         <form>
-          <Checkbox>I agree to the terms of the HIPAA BAA</Checkbox>
-          
-          <HelpBlock>Learn more about BAAs <a href="#">here</a>. By checking the box above, you represent that your team agrees to the terms of the <a href="#">HIPAA BAA</a>.</HelpBlock>
+          <Checkbox className="m-b-20">I agree to the terms of the HIPAA BAA</Checkbox>
 
-          <Link to="/signup/app-download" className="btn btn-block btn-primary btn-done">Done!</Link>
+          <HelpBlock className="m-b-20">Learn more about BAAs <a href="#">here</a>. By checking the box above, you represent that your team agrees to the terms of the <a href="#">HIPAA BAA</a>.</HelpBlock>
 
-          <HelpBlock>By proceeding to use Stitch, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</HelpBlock>
+          <Link to="/signup/app-download" className="btn btn-block btn-lg btn-primary m-b-20">Done!</Link>
+
+          <HelpBlock className="m-b-20">By proceeding to use Stitch, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</HelpBlock>
         </form>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

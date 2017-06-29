@@ -109,9 +109,10 @@ export default class Confirmation extends Component {
         </h5>
 
         <form>
-          <div className="confirmation-code">
+          <div className="confirmation-code m-b-20">
             <InputGroup className="code-group">
               <FormControl
+                autoFocus
                 value={this.state.digit_one}
                 onChange={this.handleChange}
                 onKeyUp={this.handleKeyUp}
@@ -186,22 +187,22 @@ export default class Confirmation extends Component {
             <div className="clearfix" />
           </div>
 
-          <HelpBlock>
+          <HelpBlock className="m-b-20">
             We sent a six-digit confirmation code to{" "}
             <strong>email@here.com</strong> to verify your email address.
           </HelpBlock>
 
           {this.state.error &&
-            <HelpBlock>
+            <HelpBlock className="m-b-20">
               The confirmation code doesn't match the one we have on record.
             </HelpBlock>}
 
-          <Button onClick={this.submitConfirmationCode} bsStyle="primary" block>
+          <Button onClick={this.submitConfirmationCode} bsSize="lg" bsStyle="primary" block className="m-b-40">
             Reset Password
           </Button>
         </form>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

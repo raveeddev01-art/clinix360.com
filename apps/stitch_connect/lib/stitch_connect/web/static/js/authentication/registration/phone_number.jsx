@@ -61,14 +61,14 @@ export default class PhoneNumber extends Component {
             </Col>
           </Row>
         </div>
-        
+
         <h2>Phone Number</h2>
 
         <h5>Enter your <strong>phone number</strong>.</h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
-            <FormControl 
+            <FormControl
               name="phone_number"
               required
               autoFocus
@@ -78,17 +78,17 @@ export default class PhoneNumber extends Component {
               onChange={this.handleChange}
             />
           </FormGroup>
-          
-          <HelpBlock>Your phone number will be shown in your profile so you can be reached.</HelpBlock>
+
+          <HelpBlock className="m-b-20">Your phone number will be shown in your profile so you can be reached.</HelpBlock>
 
           <input
             value="Next"
             type="submit"
-            className="btn btn-block btn-primary"
+            className="btn btn-block btn-lg btn-primary m-b-40"
           />
         </form>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

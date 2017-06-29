@@ -78,7 +78,7 @@ export default class Email extends Component {
             />
           </FormGroup>
 
-          <HelpBlock>
+          <HelpBlock className="m-b-20">
             We will send you a confirmation code to verify your email. If your
             team already has an account, ask your admin for an invitation.
           </HelpBlock>
@@ -86,11 +86,11 @@ export default class Email extends Component {
           <input
             value="Next"
             type="submit"
-            className="btn btn-block btn-primary"
+            className="btn btn-block btn-lg btn-primary m-b-40"
           />
         </form>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

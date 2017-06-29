@@ -41,59 +41,58 @@ export default class Login extends Component {
 
   render() {
     return (
-        <div className="authentication-card text-center">
+      <div className="authentication-card text-center">
 
-          <div className="card-header">
-            <Row>
-              <Col xs={12} className="text-right">
-                <OverlayTrigger placement="top" overlay={<Tooltip>Close</Tooltip>}>
-                  <Link to="/">
-                    <i className="fa fa-close"></i>
-                  </Link>
-                </OverlayTrigger>
-              </Col>
-            </Row>
-          </div>
-          
-          <h2>Sign In</h2>
-
-          <h5>Enter your <strong>email address</strong> and <strong>password</strong>.</h5>
-
-          <form onSubmit={this.handleSubmit}>
-            <FormGroup bsSize="large">
-                <FormControl
-                name="email"
-                required
-                autoFocus
-                type="email"
-                placeholder="Email"
-                value={this.state.email}
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <FormGroup bsSize="large">
-              <FormControl 
-                name="password"
-                required
-                autoFocus
-                type="password"
-                placeholder="Password"
-                value={this.state.password}
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <input
-              value="Next"
-              type="submit"
-              className="btn btn-block btn-primary"
-            />
-            <Link to="/reset-password" className="btn btn-block btn-default">Reset Password</Link>
-          </form>
-
-          <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <div className="card-header">
+          <Row>
+            <Col xs={12} className="text-right">
+              <OverlayTrigger placement="top" overlay={<Tooltip>Close</Tooltip>}>
+                <Link to="/">
+                  <i className="fa fa-close"></i>
+                </Link>
+              </OverlayTrigger>
+            </Col>
+          </Row>
         </div>
+
+        <h2>Sign In</h2>
+
+        <h5>Enter your <strong>email address</strong> and <strong>password</strong>.</h5>
+
+        <form onSubmit={this.handleSubmit}>
+          <FormGroup bsSize="large">
+            <FormControl
+              name="email"
+              required
+              autoFocus
+              type="email"
+              placeholder="Email"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+
+          <FormGroup bsSize="large">
+            <FormControl
+              name="password"
+              required
+              type="password"
+              placeholder="Password"
+              value={this.state.password}
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+
+          <input
+            value="Next"
+            type="submit"
+            className="btn btn-block btn-lg btn-primary"
+          />
+          <Link to="/reset-password" className="btn btn-block btn-lg btn-default m-b-40">Reset Password</Link>
+        </form>
+
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
+      </div>
     );
   }
 }

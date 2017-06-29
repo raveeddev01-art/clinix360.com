@@ -36,34 +36,35 @@ export default class TeamPicker extends Component {
 
   render() {
     return (
-      <div className="authentication-card text-center">
-        <h2>Team Picker Component</h2>
+      <div className="authentication-card team-card text-center">
+        <h2>Sign In</h2>
 
-        <h4>
-          Communicate
-        </h4>
+        <h5>Enter your team's <strong>Stitch URL</strong>.</h5>
 
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} className="m-b-40">
           <FormGroup bsSize="large">
             <FormControl
               name="team_name"
               required
               autoFocus
               type="text"
-              placeholder="team_name"
+              placeholder="my-team-name"
               value={this.state.team_name}
               onChange={this.handleChange}
+              className="text-right"
             />
+            <span className="domain">.teamstitch.com</span>
           </FormGroup>
 
           <input
             value="Continue"
             type="submit"
-            className="btn btn-block btn-primary"
+            className="btn btn-block btn-lg btn-primary"
           />
         </form>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <h5>
+          Don't know your team's URL? <Link to="/signup/app-download"><strong>Find your team</strong></Link></h5>
       </div>
     );
   }

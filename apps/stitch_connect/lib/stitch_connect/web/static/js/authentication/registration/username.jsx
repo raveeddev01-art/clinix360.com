@@ -37,7 +37,7 @@ export default class Username extends Component {
     // });
     // to="/signup/password"
   };
-  
+
   render() {
     return (
       <div className="authentication-card text-center">
@@ -61,14 +61,14 @@ export default class Username extends Component {
             </Col>
           </Row>
         </div>
-        
+
         <h2>Username</h2>
 
         <h5>Enter a <strong>username</strong>.</h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
-            <FormControl 
+            <FormControl
               name="username"
               required
               autoFocus
@@ -78,17 +78,17 @@ export default class Username extends Component {
               onChange={this.handleChange}
             />
           </FormGroup>
-          
-          <HelpBlock>Your username is how other users will mention you in conversations. Pick something familiar.</HelpBlock>
+
+          <HelpBlock className="m-b-20">Your username is how other users will mention you in conversations. Pick something familiar.</HelpBlock>
 
           <input
             value="Next"
             type="submit"
-            className="btn btn-block btn-primary"
+            className="btn btn-block btn-lg btn-primary m-b-40"
           />
         </form>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

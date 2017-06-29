@@ -37,7 +37,7 @@ export default class Pin extends Component {
     // });
     // to="/signup/invites"
   };
-  
+
   render() {
     return (
       <div className="authentication-card text-center">
@@ -61,14 +61,14 @@ export default class Pin extends Component {
             </Col>
           </Row>
         </div>
-        
+
         <h2>PIN</h2>
 
         <h5>Enter a <strong>4-digit PIN</strong>.</h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
-            <FormControl 
+            <FormControl
               name="pin"
               required
               autoFocus
@@ -78,17 +78,17 @@ export default class Pin extends Component {
               onChange={this.handleChange}
             />
           </FormGroup>
-          
-          <HelpBlock>You can use this pin when your screen is locked after a period of inactivity.</HelpBlock>
+
+          <HelpBlock className="m-b-20">You can use this pin when your screen is locked after a period of inactivity.</HelpBlock>
 
           <input
             value="Next"
             type="submit"
-            className="btn btn-block btn-primary"
+            className="btn btn-block btn-lg btn-primary m-b-40"
           />
         </form>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

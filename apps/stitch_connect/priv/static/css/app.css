@@ -5642,15 +5642,45 @@ body {
     background: #00264d;
     border-color: #00264d; }
 
+.btn {
+  border-radius: 3px;
+  outline: none; }
+
+.btn-lg {
+  font-size: 16px;
+  line-height: 1.42857143;
+  padding: 12px 20px; }
+
 .btn-default {
   background: #fafafa;
   border-color: #cacaca; }
+
+.form-control,
+.form-group-lg .form-control {
+  border-radius: 3px; }
+
+.form-group {
+  margin-bottom: 10px; }
+  .form-group:last-of-type {
+    margin-bottom: 15px; }
 
 .tooltip {
   font-size: 14px; }
 
 .tooltip-inner {
   padding: 6px 10px; }
+
+.m-b-0 {
+  margin-bottom: 0px; }
+
+.m-b-10 {
+  margin-bottom: 10px; }
+
+.m-b-20 {
+  margin-bottom: 20px; }
+
+.m-b-40 {
+  margin-bottom: 40px; }
 
 .authentication-wrapper {
   min-height: 100vh;
@@ -5694,53 +5724,28 @@ body {
       font-size: 16px;
       font-weight: normal;
       margin: 25px 0; }
-    .authentication-wrapper .authentication-card form {
-      margin-bottom: 40px; }
-      .authentication-wrapper .authentication-card form .form-group {
-        margin-bottom: 10px; }
-        .authentication-wrapper .authentication-card form .form-group .form-control {
-          border-radius: 3px; }
-      .authentication-wrapper .authentication-card form .confirmation-code {
-        margin-bottom: 30px; }
-        .authentication-wrapper .authentication-card form .confirmation-code .code-group {
-          float: left;
-          width: 45%; }
-          .authentication-wrapper .authentication-card form .confirmation-code .code-group .form-control {
-            width: 33%;
-            height: 60px;
-            font-size: 28px;
-            text-align: center; }
-            .authentication-wrapper .authentication-card form .confirmation-code .code-group .form-control:nth-child(2) {
-              border-left: 0;
-              border-right: 0; }
-        .authentication-wrapper .authentication-card form .confirmation-code .code-separator {
-          float: left;
-          width: 10%;
-          color: gray;
-          padding: 20px 0; }
-      .authentication-wrapper .authentication-card form .help-block {
-        margin-bottom: 25px; }
-    .authentication-wrapper .authentication-card .btn {
-      font-size: 16px;
-      border-radius: 3px;
-      padding: 12px 20px;
-      outline: none; }
-    .authentication-wrapper .authentication-card .btn-create-team {
-      margin-bottom: 40px; }
-    .authentication-wrapper .authentication-card .btn-invites {
-      font-size: 14px;
-      padding: 6px 12px;
-      margin-bottom: 15px; }
-    .authentication-wrapper .authentication-card .btn-done {
-      margin-bottom: 20px; }
+    .authentication-wrapper .authentication-card .confirmation-code .code-group {
+      float: left;
+      width: 45%; }
+      .authentication-wrapper .authentication-card .confirmation-code .code-group .form-control {
+        width: 33%;
+        height: 60px;
+        font-size: 28px;
+        text-align: center; }
+        .authentication-wrapper .authentication-card .confirmation-code .code-group .form-control:nth-child(2) {
+          border-left: 0;
+          border-right: 0; }
+    .authentication-wrapper .authentication-card .confirmation-code .code-separator {
+      float: left;
+      width: 10%;
+      color: gray;
+      padding: 20px 0; }
     .authentication-wrapper .authentication-card .copyright {
-      color: #999;
-      margin-bottom: 0; }
+      color: #999; }
   .authentication-wrapper .download-card {
     max-width: 750px; }
     .authentication-wrapper .download-card h1 {
-      font-size: 28px;
-      margin-bottom: 20px; }
+      font-size: 28px; }
       @media (min-width: 768px) {
         .authentication-wrapper .download-card h1 {
           font-size: 40px; } }
@@ -5755,5 +5760,22 @@ body {
       width: 70px;
       height: 70px; }
     .authentication-wrapper .download-card .btn {
-      padding: 10px 20px;
-      margin-bottom: 40px; }
+      line-height: 1em; }
+  .authentication-wrapper .team-card {
+    max-width: 500px; }
+    .authentication-wrapper .team-card .form-group {
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      -ms-flex-pack: end;
+      -webkit-box-pack: end;
+      -webkit-justify-content: flex-end;
+      -moz-justify-content: flex-end;
+      justify-content: flex-end;
+      align-items: center; }
+      .authentication-wrapper .team-card .form-group .domain {
+        font-weight: bold;
+        margin-left: 10px;
+        flex-shrink: 0;
+        flex-grow: 0;
+        font-size: 20px; }

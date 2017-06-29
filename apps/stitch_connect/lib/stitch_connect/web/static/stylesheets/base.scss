@@ -29,9 +29,32 @@ $screen-lg:				1200px;
 	}
 }
 
+.btn {
+	border-radius: 3px;
+	outline: none;
+}
+
+.btn-lg {
+	font-size: 16px;
+	line-height: 1.42857143;
+	padding: 12px 20px;
+}
+
 .btn-default {
 	background: #fafafa;
 	border-color: $border-color;
+}
+
+.form-control,
+.form-group-lg .form-control {
+	border-radius: 3px;
+}
+
+.form-group {
+	margin-bottom: 10px;
+	&:last-of-type {
+		margin-bottom: 15px;
+	}
 }
 
 .tooltip {
@@ -40,3 +63,8 @@ $screen-lg:				1200px;
 .tooltip-inner {
 	padding: 6px 10px;
 }
+
+.m-b-0 { margin-bottom: 0px; }
+.m-b-10 { margin-bottom: 10px; }
+.m-b-20 { margin-bottom: 20px; }
+.m-b-40 { margin-bottom: 40px; }

@@ -93,7 +93,7 @@ export default class Password extends Component {
             />
           </FormGroup>
 
-          <HelpBlock>
+          <HelpBlock className="m-b-20">
             Your password must contain:
             <ul className="list-unstyled">
               <li>At least 8 characters</li>
@@ -105,16 +105,16 @@ export default class Password extends Component {
           </HelpBlock>
 
           {this.state.error &&
-            <HelpBlock>The password doesn't meet the requirements</HelpBlock>}
+            <HelpBlock className="m-b-20">The password doesn't meet the requirements</HelpBlock>}
 
           <input
             value="Next"
             type="submit"
-            className="btn btn-block btn-primary"
+            className="btn btn-block btn-lg btn-primary m-b-40"
           />
         </form>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

@@ -61,14 +61,14 @@ export default class FirstName extends Component {
             </Col>
           </Row>
         </div>
-        
+
         <h2>Name</h2>
 
         <h5>Enter your <strong>full name</strong>.</h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
-            <FormControl 
+            <FormControl
               name="fullname"
               required
               autoFocus
@@ -78,17 +78,17 @@ export default class FirstName extends Component {
               onChange={this.handleChange}
             />
           </FormGroup>
-          
-          <HelpBlock>Your name will be shown next to your profile and messages.</HelpBlock>
+
+          <HelpBlock className="m-b-20">Your name will be shown next to your profile and messages.</HelpBlock>
 
           <input
             value="Next"
             type="submit"
-            className="btn btn-block btn-primary"
+            className="btn btn-block btn-lg btn-primary m-b-40"
           />
         </form>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

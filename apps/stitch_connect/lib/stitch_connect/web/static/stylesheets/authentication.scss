@@ -54,74 +54,34 @@
             margin: 25px 0;
         }
 
-        form {
-            margin-bottom: 40px;
-
-            .form-group {
-                margin-bottom: 10px;
+        .confirmation-code {
+            .code-group {
+                float: left;
+                width: 45%;
 
                 .form-control {
-                    border-radius: 3px;
-                }
-            }
+                    width: 33%;
+                    height: 60px;
+                    font-size: 28px;
+                    text-align: center;
 
-            .confirmation-code {
-                margin-bottom: 30px;
-
-                .code-group {
-                    float: left;
-                    width: 45%;
-
-                    .form-control {
-                        width: 33%;
-                        height: 60px;
-                        font-size: 28px;
-                        text-align: center;
-
-                        &:nth-child(2) {
-                            border-left: 0;
-                            border-right: 0;
-                        }
+                    &:nth-child(2) {
+                        border-left: 0;
+                        border-right: 0;
                     }
                 }
-
-                .code-separator {
-                    float: left;
-                    width: 10%;
-                    color: gray;
-                    padding: 20px 0;
-                }
             }
 
-            .help-block {
-                margin-bottom: 25px;
+            .code-separator {
+                float: left;
+                width: 10%;
+                color: gray;
+                padding: 20px 0;
             }
-        }
-
-        .btn {
-            font-size: 16px;
-            border-radius: 3px;
-            padding: 12px 20px;
-            outline: none;
-        }
-
-        .btn-create-team {
-            margin-bottom: 40px;
-        }
-
-        .btn-invites {
-            font-size: 14px;
-            padding: 6px 12px;
-            margin-bottom: 15px;
-        }
-
-        .btn-done {
-            margin-bottom: 20px;
         }
 
         .copyright {
             color: #999;
-            margin-bottom: 0;
         }
     }
 
@@ -130,7 +90,6 @@
 
         h1 {
             font-size: 28px;
-            margin-bottom: 20px;
             @media (min-width: $screen-sm) {
                 font-size: 40px;
             }
@@ -151,8 +110,31 @@
         }
 
         .btn {
-            padding: 10px 20px;
-            margin-bottom: 40px;
+            line-height: 1em;
+        }
+    }
+
+    .team-card {
+        max-width: 500px;
+
+        .form-group {
+            display: flex;
+            flex-wrap: nowrap;
+            flex-direction: row;
+            -ms-flex-pack: end;
+            -webkit-box-pack: end;
+            -webkit-justify-content: flex-end;
+            -moz-justify-content: flex-end;
+            justify-content: flex-end;
+            align-items: center;
+
+            .domain {
+                font-weight: bold;
+                margin-left: 10px;
+                flex-shrink: 0;
+                flex-grow: 0;
+                font-size: 20px;
+            }
         }
     }
 }

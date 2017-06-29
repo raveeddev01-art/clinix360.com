@@ -31,26 +31,26 @@ export default class AppDownload extends Component {
         <Row>
           <Col sm={5} smOffset={1}>
             <a href="#">
-              <img src="https://app.teamstitch.com/img/dl-mac.png" alt="" className="os-icon"/>
+              <img src="https://app.teamstitch.com/img/dl-mac.png" alt="" className="os-icon" />
             </a>
             <h3>Mac</h3>
             <p className="text-muted">Requires 10.8 or Newer</p>
-            <Button bsStyle="primary">Download</Button>
+            <Button bsSize="lg" bsStyle="primary" className="btn-download m-b-40">Download</Button>
           </Col>
 
           <Col sm={5}>
             <a href="#">
-              <img src="https://app.teamstitch.com/img/dl-win.png" alt="" className="os-icon"/>
+              <img src="https://app.teamstitch.com/img/dl-win.png" alt="" className="os-icon" />
             </a>
             <h3>Windows</h3>
             <p className="text-muted">Requires Windows 7 or Newer</p>
-            <Button bsStyle="primary">Download</Button>
+            <Button bsSize="lg" bsStyle="primary" className="btn-download m-b-40">Download</Button>
           </Col>
         </Row>
 
-        <Button className="btn-skip">Skip & Launch</Button>
+        <Button bsSize="lg" className="m-b-40">Skip & Launch</Button>
 
-        <p className="copyright">&copy; 2017 Stitch Technologies, Inc</p>
+        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }
