@@ -31072,6 +31072,10 @@ var _get_started = __webpack_require__(303);
 
 var _get_started2 = _interopRequireDefault(_get_started);
 
+var _team_picker = __webpack_require__(396);
+
+var _team_picker2 = _interopRequireDefault(_team_picker);
+
 var _login = __webpack_require__(304);
 
 var _login2 = _interopRequireDefault(_login);
@@ -31151,6 +31155,7 @@ var AuthenticationRouter = function (_Component) {
           "div",
           { className: "authentication-wrapper" },
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/", component: _get_started2.default }),
+          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signin", component: _team_picker2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/login", component: _login2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/reset-password", component: _reset_password2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/email", component: _email2.default }),
@@ -33554,7 +33559,7 @@ var GetStarted = function (_Component) {
         ),
         _react2.default.createElement(
           _reactRouterDom.Link,
-          { to: "/login", className: "btn btn-block btn-primary" },
+          { to: "/signin", className: "btn btn-block btn-primary" },
           "Sign In"
         ),
         _react2.default.createElement(
@@ -41883,6 +41888,133 @@ return Promise;
 /***/ (function(module, exports) {
 
 /* (ignored) */
+
+/***/ }),
+/* 396 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(15);
+
+var _FormGroup = __webpack_require__(30);
+
+var _FormGroup2 = _interopRequireDefault(_FormGroup);
+
+var _FormControl = __webpack_require__(25);
+
+var _FormControl2 = _interopRequireDefault(_FormControl);
+
+var _HelpBlock = __webpack_require__(31);
+
+var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TeamPicker = function (_Component) {
+  _inherits(TeamPicker, _Component);
+
+  function TeamPicker(props) {
+    _classCallCheck(this, TeamPicker);
+
+    var _this = _possibleConstructorReturn(this, (TeamPicker.__proto__ || Object.getPrototypeOf(TeamPicker)).call(this));
+
+    _this.handleChange = function (event) {
+      var target = event.target;
+      var value = target.type === "checkbox" ? target.checked : target.value;
+      var name = target.name;
+
+      _this.setState(_defineProperty({}, name, value));
+    };
+
+    _this.handleSubmit = function (event) {
+      // event.preventDefault();
+      // post("/api/v1/users/create", {
+      //   body: { team_name: this.state.team_name }
+      // }).then(response => {
+      //   console.log(response);
+      //   console.log("Created");
+      // });
+      // to="/"
+    };
+
+    _this.state = {
+      team_name: ""
+    };
+    return _this;
+  }
+
+  _createClass(TeamPicker, [{
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "authentication-card text-center" },
+        _react2.default.createElement(
+          "h2",
+          null,
+          "Team Picker Component"
+        ),
+        _react2.default.createElement(
+          "h4",
+          null,
+          "Communicate"
+        ),
+        _react2.default.createElement(
+          "form",
+          { onSubmit: this.handleSubmit },
+          _react2.default.createElement(
+            _FormGroup2.default,
+            { bsSize: "large" },
+            _react2.default.createElement(_FormControl2.default, {
+              name: "team_name",
+              required: true,
+              autoFocus: true,
+              type: "text",
+              placeholder: "team_name",
+              value: this.state.team_name,
+              onChange: this.handleChange
+            })
+          ),
+          _react2.default.createElement("input", {
+            value: "Continue",
+            type: "submit",
+            className: "btn btn-block btn-primary"
+          })
+        ),
+        _react2.default.createElement(
+          "p",
+          { className: "copyright" },
+          "\xA9 2017 Stitch Technologies, Inc"
+        )
+      );
+    }
+  }]);
+
+  return TeamPicker;
+}(_react.Component);
+
+exports.default = TeamPicker;
 
 /***/ })
 /******/ ]);

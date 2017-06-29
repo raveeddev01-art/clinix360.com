@@ -18,6 +18,8 @@ defmodule StitchConnect.Web.Router do
     pipe_through :browser
 
     get "/", AuthenticationController, :index
+    get "/signin", AuthenticationController, :index
+
     get "/login", AuthenticationController, :index
     get "/reset-password", AuthenticationController, :index
 

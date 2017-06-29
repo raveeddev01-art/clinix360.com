@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import GetStarted from "./get_started.jsx";
+import TeamPicker from "./team_picker.jsx";
 
 import Login from "./login/login.jsx";
 import ResetPassword from "./login/reset_password.jsx";
@@ -28,6 +29,8 @@ export default class AuthenticationRouter extends Component {
       <Router>
         <div className="authentication-wrapper">
           <Route exact path={`/`} component={GetStarted} />
+          <Route exact path={`/signin`} component={TeamPicker} />
+
           <Route exact path={`/login`} component={Login} />
           <Route exact path={`/reset-password`} component={ResetPassword} />
 

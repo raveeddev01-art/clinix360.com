@@ -12,7 +12,7 @@ export default class GetStarted extends Component {
           on any device.
         </h4>
 
-        <Link to="/login" className="btn btn-block btn-primary">Sign In</Link>
+        <Link to="/signin" className="btn btn-block btn-primary">Sign In</Link>
         <Link
           to="/signup/email"
           className="btn btn-block btn-default btn-create-team"
