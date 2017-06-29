@@ -9,6 +9,7 @@ export default class TeamName extends Component {
   constructor(props) {
     super();
     this.state = {
+      error: false,
       team_name: ""
     };
   }
@@ -39,11 +40,13 @@ export default class TeamName extends Component {
       <div className="authentication-card text-center">
         <h2>Team Name</h2>
 
-        <h5>Enter your <strong>team name</strong>.</h5>
+        <h5>
+          Enter your <strong>team name</strong>.
+        </h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
-            <FormControl 
+            <FormControl
               name="team_name"
               required
               autoFocus
@@ -53,12 +56,17 @@ export default class TeamName extends Component {
               onChange={this.handleChange}
             />
           </FormGroup>
-          
+
           <HelpBlock>
             This is the name of your team.
-            <br/>
+            <br />
             It will show up in menus and headings.
           </HelpBlock>
+
+          {this.state.error &&
+            <HelpBlock>
+              This team name is taken. Please choose another one.
+            </HelpBlock>}
 
           <input
             value="Next"

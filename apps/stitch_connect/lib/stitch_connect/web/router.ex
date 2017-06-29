@@ -38,5 +38,7 @@ defmodule StitchConnect.Web.Router do
     pipe_through :api
 
     post "/users/create", UserController, :create
+    post "/users/update", UserController, :update
+    post "/users/submit_confirmation_code", UserController, :submit_confirmation_code
   end
 end

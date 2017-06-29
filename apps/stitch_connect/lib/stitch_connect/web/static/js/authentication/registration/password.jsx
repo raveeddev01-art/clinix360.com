@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import store from "../authentication_store.js";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -9,10 +11,12 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@observer
 export default class Password extends Component {
   constructor(props) {
     super();
     this.state = {
+      error: false,
       password: ""
     };
   }
@@ -29,46 +33,56 @@ export default class Password extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    // post("/api/v1/users/create", {
-    //   body: { password: this.state.password }
-    // }).then(response => {
-    //   console.log(response);
-    //   console.log("Created");
-    // });
-    // to="/signup/pin"
+    post("/api/v1/users/update", {
+      body: { id: store.instance.userId, password: this.state.password }
+    }).then(response => {
+      if (response.status === 422) {
+        this.setState({ error: true });
+      } else {
+        this.setState({ error: false });
+        this.props.history.push("/signup/username");
+      }
+    });
   };
-  
+
   render() {
     return (
       <div className="authentication-card text-center">
-
         <div className="card-header">
           <Row>
             <Col xs={6} className="text-left">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="back">Back</Tooltip>}
+              >
                 <Link to="/signup/username">
-                  <i className="fa fa-arrow-left"></i>
+                  <i className="fa fa-arrow-left" />
                 </Link>
               </OverlayTrigger>
             </Col>
 
             <Col xs={6} className="text-right">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Restart</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="restart">Restart</Tooltip>}
+              >
                 <Link to="/signup/team-name">
-                  <i className="fa fa-refresh"></i>
+                  <i className="fa fa-refresh" />
                 </Link>
               </OverlayTrigger>
             </Col>
           </Row>
         </div>
-        
+
         <h2>Password</h2>
 
-        <h5>Enter a <strong>password</strong>.</h5>
+        <h5>
+          Enter a <strong>password</strong>.
+        </h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
-            <FormControl 
+            <FormControl
               name="password"
               required
               autoFocus
@@ -78,7 +92,7 @@ export default class Password extends Component {
               onChange={this.handleChange}
             />
           </FormGroup>
-          
+
           <HelpBlock>
             Your password must contain:
             <ul className="list-unstyled">
@@ -89,6 +103,9 @@ export default class Password extends Component {
               <li>A special character (e.g. !$#)</li>
             </ul>
           </HelpBlock>
+
+          {this.state.error &&
+            <HelpBlock>The password doesn't meet the requirements</HelpBlock>}
 
           <input
             value="Next"

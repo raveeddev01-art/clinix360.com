@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import store from "../authentication_store.js";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -9,9 +11,11 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@observer
 export default class Email extends Component {
   constructor(props) {
     super();
+    store.instance = {};
     this.state = {
       email: ""
     };
@@ -32,16 +36,14 @@ export default class Email extends Component {
     post("/api/v1/users/create", {
       body: { email: this.state.email }
     }).then(response => {
-      console.log(response);
-      console.log("Created");
+      store.instance.userId = response.data.id;
+      this.props.history.push("/signup/confirmation-code");
     });
-    // to="/signup/confirmation-code"
   };
 
   render() {
     return (
       <div className="authentication-card text-center">
-
         <div className="card-header">
           <Row>
             <Col xs={12} className="text-right">
@@ -59,7 +61,9 @@ export default class Email extends Component {
 
         <h2>Email</h2>
 
-        <h5>Enter your <strong>work email address</strong>.</h5>
+        <h5>
+          Enter your <strong>work email address</strong>.
+        </h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">

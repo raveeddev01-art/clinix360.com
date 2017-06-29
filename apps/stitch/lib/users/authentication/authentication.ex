@@ -31,4 +31,22 @@ defmodule Stitch.User.Authentication do
       user -> Comeonin.Bcrypt.checkpw(password, user.encrypted_password)
     end
   end
+
+  def update_password(id, password) do
+    user = Repo.get!(User, id)
+    changeset = User.password_update_changeset(user, %{password: password})
+    changeset = case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+        put_change(changeset, :encrypted_password, hash_password(pass))
+      _ ->
+        changeset
+    end
+
+    case Repo.update(changeset) do
+      {:ok, user} ->
+        true
+      {:error, _} ->
+        {:error, "The password wasn't updated"}
+    end
+  end
 end
