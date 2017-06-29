@@ -35,7 +35,7 @@ export default class ResetPassword extends Component {
     //   console.log(response);
     //   console.log("Created");
     // });
-    // to="/signup/confirmation-code"
+    // to="/"
   };
 
   render() {
