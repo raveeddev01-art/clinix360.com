@@ -37699,7 +37699,7 @@ var Email = (0, _mobxReact.observer)(_class = function (_Component) {
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      post("/api/v1/users/create", {
+      post("/api/v1/users", {
         body: { email: _this.state.email }
       }).then(function (response) {
         _authentication_store2.default.instance.userId = response.data.id;
