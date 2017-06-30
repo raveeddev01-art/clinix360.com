@@ -8,9 +8,14 @@ use Mix.Config
 # with brunch.io to recompile .js and .css sources.
 config :stitch_connect, StitchConnect.Web.Endpoint,
   http: [port: 4000],
+  https: [port: 4443,
+          otp_app: :stitch_connect,
+          keyfile: "priv/keys/localhost.key",
+          certfile: "priv/keys/localhost.cert"],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
+  force_ssl: [host: nil, rewrite_on: [:x_forwarded_proto]],
   watchers: [node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--progress", "--color", cd: Path.expand("../", __DIR__)]]
 
 # ## SSL Support

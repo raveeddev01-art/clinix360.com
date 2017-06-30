@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import GetStarted from "./get_started.jsx";
-import TeamPicker from "./team_picker.jsx";
+import TeamPicker from "./team/team_picker.jsx";
 
 import Login from "./login/login.jsx";
 import ResetPassword from "./login/reset_password.jsx";

@@ -9,7 +9,8 @@ export default class TeamPicker extends Component {
   constructor(props) {
     super();
     this.state = {
-      team_name: ""
+      team_name: "",
+      error: false
     };
   }
 
@@ -19,18 +20,23 @@ export default class TeamPicker extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      error: false
     });
   };
 
   handleSubmit = event => {
-    // event.preventDefault();
-    // post("/api/v1/users/create", {
-    //   body: { team_name: this.state.team_name }
-    // }).then(response => {
-    //   console.log(response);
-    //   console.log("Created");
-    // });
+    event.preventDefault();
+    post("/api/v1/teams/exists", {
+      body: { name: this.state.team_name }
+    }).then(response => {
+      this.setState({ error: !response.data.exists });
+      if (response.data.exists) {
+        window.location.assign(
+          `https://${this.state.team_name}.localhost:4443`
+        );
+      }
+    });
     // to="/"
   };
 
@@ -39,7 +45,9 @@ export default class TeamPicker extends Component {
       <div className="authentication-card team-card text-center">
         <h2>Sign In</h2>
 
-        <h5>Enter your team's <strong>Stitch URL</strong>.</h5>
+        <h5>
+          Enter your team's <strong>Stitch URL</strong>.
+        </h5>
 
         <form onSubmit={this.handleSubmit} className="m-b-40">
           <FormGroup bsSize="large">
@@ -56,6 +64,9 @@ export default class TeamPicker extends Component {
             <span className="domain">.teamstitch.com</span>
           </FormGroup>
 
+          {this.state.error &&
+            <HelpBlock className="m-b-20">This team doesn't exist.</HelpBlock>}
+
           <input
             value="Continue"
             type="submit"
@@ -64,7 +75,11 @@ export default class TeamPicker extends Component {
         </form>
 
         <h5>
-          Don't know your team's URL? <Link to="/signup/app-download"><strong>Find your team</strong></Link></h5>
+          Don't know your team's URL?{" "}
+          <Link to="/signup/app-download">
+            <strong>Find your team</strong>
+          </Link>
+        </h5>
       </div>
     );
   }

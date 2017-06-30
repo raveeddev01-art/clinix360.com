@@ -20,4 +20,14 @@ defmodule Stitch.Team.Onboarding do
         {:error, "Team already exists with this name."}
     end
   end
+
+  def name_available?(name) do
+    slug = Slugger.slugify_downcase(name)
+    case Repo.get_by(Team, slug: slug) do
+      nil ->
+        true
+      _ ->
+        false
+    end
+  end
 end

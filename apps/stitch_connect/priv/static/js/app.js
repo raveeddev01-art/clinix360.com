@@ -33635,26 +33635,31 @@ var TeamPicker = function (_Component) {
     var _this = _possibleConstructorReturn(this, (TeamPicker.__proto__ || Object.getPrototypeOf(TeamPicker)).call(this));
 
     _this.handleChange = function (event) {
+      var _this$setState;
+
       var target = event.target;
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState(_defineProperty({}, name, value));
+      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "error", false), _this$setState));
     };
 
     _this.handleSubmit = function (event) {
-      // event.preventDefault();
-      // post("/api/v1/users/create", {
-      //   body: { team_name: this.state.team_name }
-      // }).then(response => {
-      //   console.log(response);
-      //   console.log("Created");
-      // });
+      event.preventDefault();
+      post("/api/v1/teams/exists", {
+        body: { name: _this.state.team_name }
+      }).then(function (response) {
+        _this.setState({ error: !response.data.exists });
+        if (response.data.exists) {
+          window.location.assign("https://" + _this.state.team_name + ".localhost:4443");
+        }
+      });
       // to="/"
     };
 
     _this.state = {
-      team_name: ""
+      team_name: "",
+      error: false
     };
     return _this;
   }
@@ -33703,6 +33708,11 @@ var TeamPicker = function (_Component) {
               ".teamstitch.com"
             )
           ),
+          this.state.error && _react2.default.createElement(
+            _HelpBlock2.default,
+            { className: "m-b-20" },
+            "This team doesn't exist."
+          ),
           _react2.default.createElement("input", {
             value: "Continue",
             type: "submit",
@@ -33712,7 +33722,8 @@ var TeamPicker = function (_Component) {
         _react2.default.createElement(
           "h5",
           null,
-          "Don't know your team's URL? ",
+          "Don't know your team's URL?",
+          " ",
           _react2.default.createElement(
             _reactRouterDom.Link,
             { to: "/signup/app-download" },

@@ -20,20 +20,20 @@ defmodule StitchConnect.Web.Router do
     get "/", AuthenticationController, :index
     get "/signin", AuthenticationController, :index
 
-    get "/login", AuthenticationController, :index
-    get "/reset-password", AuthenticationController, :index
+    # get "/login", AuthenticationController, :index
+    # get "/reset-password", AuthenticationController, :index
 
-    get "/signup/email", AuthenticationController, :index
-    get "/signup/confirmation-code", AuthenticationController, :index
-    get "/signup/team-name", AuthenticationController, :index
-    get "/signup/full-name", AuthenticationController, :index
-    get "/signup/phone-number", AuthenticationController, :index
-    get "/signup/username", AuthenticationController, :index
-    get "/signup/password", AuthenticationController, :index
-    get "/signup/pin", AuthenticationController, :index
-    get "/signup/invites", AuthenticationController, :index
-    get "/signup/hipaa", AuthenticationController, :index
-    get "/signup/app-download", AuthenticationController, :index
+    # get "/signup/email", AuthenticationController, :index
+    # get "/signup/confirmation-code", AuthenticationController, :index
+    # get "/signup/team-name", AuthenticationController, :index
+    # get "/signup/full-name", AuthenticationController, :index
+    # get "/signup/phone-number", AuthenticationController, :index
+    # get "/signup/username", AuthenticationController, :index
+    # get "/signup/password", AuthenticationController, :index
+    # get "/signup/pin", AuthenticationController, :index
+    # get "/signup/invites", AuthenticationController, :index
+    # get "/signup/hipaa", AuthenticationController, :index
+    # get "/signup/app-download", AuthenticationController, :index
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -43,6 +43,7 @@ defmodule StitchConnect.Web.Router do
     post "/users/update", UserController, :update
     post "/users/submit_confirmation_code", UserController, :submit_confirmation_code
 
-    post "/teams/create", TeamController, :create
+    post "/teams/exists", TeamController, :exists
+    post "/teams/availability", TeamController, :availability
   end
 end

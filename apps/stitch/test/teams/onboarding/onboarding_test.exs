@@ -25,4 +25,17 @@ defmodule Stitch.Team.OnboardingTest do
       assert message == "Team already exists with this name."
     end
   end
+
+  describe "Stitch.Team.Onboarding.name_available?/1" do
+    test "returns false if company exists with that name" do
+      insert(:team, %{name: "Starbucks", slug: "starbucks"})
+      result = Stitch.Team.Onboarding.name_available?("Starbucks")
+      assert result == false
+    end
+
+    test "returns true if company does not exist with that name" do
+      result = Stitch.Team.Onboarding.name_available?("Starbucks")
+      assert result == true
+    end
+  end
 end
