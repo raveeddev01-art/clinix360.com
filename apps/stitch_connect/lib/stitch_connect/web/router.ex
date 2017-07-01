@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.Router do
     # get "/login", AuthenticationController, :index
     # get "/reset-password", AuthenticationController, :index
 
-    # get "/signup/email", AuthenticationController, :index
+    get "/signup/email", AuthenticationController, :index
     # get "/signup/confirmation-code", AuthenticationController, :index
     # get "/signup/team-name", AuthenticationController, :index
     # get "/signup/full-name", AuthenticationController, :index
@@ -39,7 +39,8 @@ defmodule StitchConnect.Web.Router do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
 
-    post "/users", UserController, :create
+    # Onboarding routes for new users.
+    post "/users/send-confirmation-code", UserController, :send_confirmation_code
     post "/users/update", UserController, :update
     post "/users/submit_confirmation_code", UserController, :submit_confirmation_code
 

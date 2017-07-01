@@ -1,31 +1,33 @@
 defmodule Stitch.User.Onboarding do
+  @moduledoc """
+  Onboarding module used to onboard new users to the Stitch
+  platform and Teams within the Stitch platofrm.
+  """
+
   import Ecto.Changeset
   alias Stitch.{Repo, User}
 
-  def create_user_with_email(email) do
+  def create_user_with_email(email) when byte_size(email) > 0 do
     changeset = User.onboarding_email_changeset(%User{}, %{email: email})
-    case Repo.insert(changeset) do
-      {:ok, user} ->
-        user
-      _ ->
-        {:error, "User already exists with that email"}
-    end
+    {:ok, user} = Repo.insert(changeset)
+    user
   end
 
-  def put_confirmation_code(changeset) do
-    digits = for _ <- 1..6, do: :rand.uniform(9)
-    confirmation_code = digits
-      |> Enum.join
-
-    put_change(changeset, :confirmation_code, confirmation_code)
+  def create_user_with_email(_) do
+    {:error, "Email cannot be nil or blank"}
   end
 
-  def submit_confirmation_code(user_id, confirmation_code) do
-    case Stitch.UserQueries.get_by_id(user_id) do
-      {:not_found, message} ->
-        false
-      user ->
-        user.confirmation_code == confirmation_code
-    end
+  def send_confirmation_code(%{"email" => email}) do
+
   end
+
+  # # OLD.
+  # def submit_confirmation_code(user_id, confirmation_code) do
+  #   case Stitch.UserQueries.get_by_id(user_id) do
+  #     {:not_found, message} ->
+  #       false
+  #     user ->
+  #       user.confirmation_code == confirmation_code
+  #   end
+  # end
 end

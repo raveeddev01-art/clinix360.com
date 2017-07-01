@@ -7,8 +7,8 @@ defmodule Stitch.User do
     field :encrypted_password, :string
     field :fullname, :string
     field :confirmation_code, :string
-    field :onboarded, :boolean
-    many_to_many :teams, Stitch.Team, join_through: "team_users"
+    field :onboarded, :boolean, default: false
+    belongs_to :team, Stitch.Team
 
     field :password, :string, virtual: true
 
@@ -29,12 +29,15 @@ defmodule Stitch.User do
   end
 
   def onboarding_email_changeset(struct, params) do
+    digits = for _ <- 1..6, do: :rand.uniform(9)
+    confirmation_code = digits
+      |> Enum.join
+
     struct
     |> cast(params, [:email])
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
-    |> unique_constraint(:email)
-    |> Stitch.User.Onboarding.put_confirmation_code
+    |> put_change(:confirmation_code, confirmation_code)
   end
 
   def password_update_changeset(struct, params) do

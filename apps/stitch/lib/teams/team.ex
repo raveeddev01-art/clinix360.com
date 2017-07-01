@@ -5,7 +5,7 @@ defmodule Stitch.Team do
   schema "teams" do
     field :name, :string
     field :slug, :string
-    many_to_many :users, Stitch.User, join_through: "team_users"
+    has_many :users, Stitch.User
 
     timestamps()
   end
