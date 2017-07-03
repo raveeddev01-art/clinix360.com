@@ -11,8 +11,8 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 export default class TeamName extends Component {
   constructor(props) {
     super();
+    store.instance = {};
     this.state = {
-      error: false,
       nameAvailable: false,
       team_name: ""
     };
@@ -23,10 +23,14 @@ export default class TeamName extends Component {
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
-    this.checkAvailability(value);
     this.setState({
-      [name]: value
+      [name]: value,
+      nameAvailable: false
     });
+
+    delay(() => {
+      this.checkAvailability(value);
+    }, 300);
   };
 
   checkAvailability = name => {
@@ -71,7 +75,8 @@ export default class TeamName extends Component {
             It will show up in menus and headings.
           </HelpBlock>
 
-          {this.state.error &&
+          {this.state.team_name.length > 0 &&
+            !this.state.nameAvailable &&
             <HelpBlock className="m-b-20">
               This team name is taken. Please choose another one.
             </HelpBlock>}
