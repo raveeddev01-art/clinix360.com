@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import Alert from "react-bootstrap/lib/Alert";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
@@ -49,6 +53,21 @@ export default class TeamPicker extends Component {
         {this.state.error && <Alert>This team doesn't seem to exist.</Alert>}
 
         <div className="authentication-card text-center">
+          <div className="card-header">
+            <Row>
+              <Col xs={12} className="text-right">
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip>Close</Tooltip>}
+                >
+                  <Link to="/">
+                    <i className="fa fa-times" />
+                  </Link>
+                </OverlayTrigger>
+              </Col>
+            </Row>
+          </div>
+
           <h2>Sign In</h2>
 
           <h5>

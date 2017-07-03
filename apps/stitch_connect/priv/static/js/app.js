@@ -34065,6 +34065,22 @@ var _Alert = __webpack_require__(153);
 
 var _Alert2 = _interopRequireDefault(_Alert);
 
+var _OverlayTrigger = __webpack_require__(22);
+
+var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
+
+var _Tooltip = __webpack_require__(23);
+
+var _Tooltip2 = _interopRequireDefault(_Tooltip);
+
+var _Row = __webpack_require__(24);
+
+var _Row2 = _interopRequireDefault(_Row);
+
+var _Col = __webpack_require__(25);
+
+var _Col2 = _interopRequireDefault(_Col);
+
 var _FormGroup = __webpack_require__(26);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
@@ -34142,6 +34158,34 @@ var TeamPicker = function (_Component) {
         _react2.default.createElement(
           "div",
           { className: "authentication-card text-center" },
+          _react2.default.createElement(
+            "div",
+            { className: "card-header" },
+            _react2.default.createElement(
+              _Row2.default,
+              null,
+              _react2.default.createElement(
+                _Col2.default,
+                { xs: 12, className: "text-right" },
+                _react2.default.createElement(
+                  _OverlayTrigger2.default,
+                  {
+                    placement: "top",
+                    overlay: _react2.default.createElement(
+                      _Tooltip2.default,
+                      null,
+                      "Close"
+                    )
+                  },
+                  _react2.default.createElement(
+                    _reactRouterDom.Link,
+                    { to: "/" },
+                    _react2.default.createElement("i", { className: "fa fa-times" })
+                  )
+                )
+              )
+            )
+          ),
           _react2.default.createElement(
             "h2",
             null,
@@ -38656,17 +38700,6 @@ var Confirmation = (0, _mobxReact.observer)(_class = function (_Component) {
                 "email@here.com"
               ),
               " to verify your email address."
-            ),
-            _react2.default.createElement(
-              _Button2.default,
-              {
-                onClick: this.submitConfirmationCode,
-                bsSize: "lg",
-                bsStyle: "primary",
-                block: true,
-                className: "m-b-40"
-              },
-              "Reset Password"
             )
           ),
           _react2.default.createElement(

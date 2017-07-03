@@ -199,7 +199,7 @@ export default class Confirmation extends Component {
               <strong>email@here.com</strong> to verify your email address.
             </HelpBlock>
 
-            <Button
+            {/*<Button
               onClick={this.submitConfirmationCode}
               bsSize="lg"
               bsStyle="primary"
@@ -207,7 +207,7 @@ export default class Confirmation extends Component {
               className="m-b-40"
             >
               Reset Password
-            </Button>
+            </Button>*/}
           </form>
 
           <p className="copyright m-b-0">
