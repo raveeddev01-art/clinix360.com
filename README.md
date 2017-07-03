@@ -20,7 +20,8 @@ export MANDRILL_API_KEY=keygoeshere
 In your terminal bring it in:
 
 ```
-source app/stitch/.env
+cd ~/Work/stitch-phoenix/apps/stitch
+source .env
 ```
 
 Install Elixir dependencies. Change directory to the root folder of the project.
