@@ -16,10 +16,14 @@ export default class FullName extends Component {
   constructor(props) {
     super();
     this.state = {
-      fullname: "",
-      formValid: false
+      firstName: "",
+      lastName: ""
     };
   }
+
+  formValid = () => {
+    return this.state.firstName.length > 0 && this.state.lastName.length > 0;
+  };
 
   handleChange = event => {
     const target = event.target;
@@ -27,14 +31,13 @@ export default class FullName extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value,
-      formValid: value.length > 0
+      [name]: value
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    store.instance.fullname = this.state.fullname;
+    store.instance.fullname = `${this.state.firstName} ${this.state.lastName}`;
     this.props.history.push("/signup/username");
   };
 
@@ -76,12 +79,24 @@ export default class FullName extends Component {
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
             <FormControl
-              name="fullname"
+              name="firstName"
               required
               autoFocus
               type="text"
-              placeholder="Full Name"
-              value={this.state.fullname}
+              placeholder="First name"
+              value={this.state.firstName}
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+
+          <FormGroup bsSize="large">
+            <FormControl
+              name="lastName"
+              required
+              autoFocus
+              type="text"
+              placeholder="Last name"
+              value={this.state.lastName}
               onChange={this.handleChange}
             />
           </FormGroup>
@@ -91,7 +106,7 @@ export default class FullName extends Component {
           </HelpBlock>
 
           <input
-            disabled={!this.state.formValid}
+            disabled={!this.formValid()}
             value="Next"
             type="submit"
             className="btn btn-block btn-lg btn-primary m-b-40"
