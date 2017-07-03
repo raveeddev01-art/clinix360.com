@@ -82,7 +82,7 @@ export default class AppDownload extends Component {
 
         <a
           href={`https://${store.instance.teamSlug}.localhost:4443`}
-          className="btn btn-lg m-b-40"
+          className="btn btn-lg btn-default m-b-40"
         >
           Skip & Launch
         </a>

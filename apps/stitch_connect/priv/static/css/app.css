@@ -5716,6 +5716,7 @@ body {
       display: block; }
   .authentication-wrapper .authentication-card {
     max-width: 480px;
+    width: 100%;
     background: #fff;
     border: 1px solid #cacaca;
     border-radius: 6px;
