@@ -5,6 +5,7 @@ import { observer } from "mobx-react";
 import store from "../authentication_store.js";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Alert from "react-bootstrap/lib/Alert";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";

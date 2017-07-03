@@ -38387,6 +38387,10 @@ var _OverlayTrigger = __webpack_require__(22);
 
 var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
 
+var _Alert = __webpack_require__(309);
+
+var _Alert2 = _interopRequireDefault(_Alert);
+
 var _Tooltip = __webpack_require__(23);
 
 var _Tooltip2 = _interopRequireDefault(_Tooltip);
@@ -38502,7 +38506,7 @@ var Confirmation = (0, _mobxReact.observer)(_class = function (_Component) {
         "div",
         null,
         this.state.error && _react2.default.createElement(
-          Alert,
+          _Alert2.default,
           null,
           "The confirmation code doesn't match the one we have on record."
         ),
