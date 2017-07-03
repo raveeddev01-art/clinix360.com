@@ -80,7 +80,7 @@ export default class Username extends Component {
               required
               autoFocus
               type="text"
-              placeholder="username"
+              placeholder={store.instance.fullname.toLowerCase()}
               value={this.state.username}
               onChange={this.handleChange}
             />

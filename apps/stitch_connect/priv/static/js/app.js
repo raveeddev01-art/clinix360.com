@@ -39425,7 +39425,7 @@ var Username = (0, _mobxReact.observer)(_class = function (_Component) {
               required: true,
               autoFocus: true,
               type: "text",
-              placeholder: "username",
+              placeholder: _authentication_store2.default.instance.fullname.toLowerCase(),
               value: this.state.username,
               onChange: this.handleChange
             })
