@@ -37,4 +37,8 @@ mix ecto.migrate
 mix phx.server
 ```
 
+Access the site:
+
+https://localhost:4443
+
 
