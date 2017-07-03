@@ -5665,6 +5665,9 @@ body {
   .form-group:last-of-type {
     margin-bottom: 15px; }
 
+.text-success {
+  color: #58a059; }
+
 .tooltip {
   font-size: 14px; }
 
