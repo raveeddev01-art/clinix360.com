@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import store from "../authentication_store.js";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -9,11 +11,13 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@observer
 export default class Username extends Component {
   constructor(props) {
     super();
     this.state = {
-      username: ""
+      username: "",
+      formValid: false
     };
   }
 
@@ -23,19 +27,15 @@ export default class Username extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      formValid: value.length > 0
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    // post("/api/v1/users/create", {
-    //   body: { username: this.state.username }
-    // }).then(response => {
-    //   console.log(response);
-    //   console.log("Created");
-    // });
-    // to="/signup/password"
+    store.instance.username = this.state.username;
+    this.props.history.push("/signup/password");
   };
 
   render() {
@@ -44,7 +44,10 @@ export default class Username extends Component {
         <div className="card-header">
           <Row>
             <Col xs={6} className="text-left">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="back">Back</Tooltip>}
+              >
                 <Link to="/signup/phone-number">
                   <i className="fa fa-arrow-left" />
                 </Link>
@@ -54,7 +57,7 @@ export default class Username extends Component {
             <Col xs={6} className="text-right">
               <OverlayTrigger
                 placement="top"
-                overlay={<Tooltip>Restart</Tooltip>}
+                overlay={<Tooltip id="restart">Restart</Tooltip>}
               >
                 <Link to="/signup/team-name">
                   <i className="fa fa-refresh" />
@@ -89,6 +92,7 @@ export default class Username extends Component {
           </HelpBlock>
 
           <input
+            disabled={!this.state.formValid}
             value="Next"
             type="submit"
             className="btn btn-block btn-lg btn-primary m-b-40"

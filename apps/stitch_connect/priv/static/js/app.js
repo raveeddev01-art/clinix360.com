@@ -8034,7 +8034,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthenticationStore = undefined;
 
-var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _instance, _instance2, _store, _mutatorMap;
+var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _instance, _instance2, _store, _mutatorMap;
 
 var _mobx = __webpack_require__(172);
 
@@ -8093,6 +8093,12 @@ var AuthenticationStore = (_class = function AuthenticationStore() {
   _initDefineProp(this, "teamName", _descriptor2, this);
 
   _initDefineProp(this, "fullname", _descriptor3, this);
+
+  _initDefineProp(this, "username", _descriptor4, this);
+
+  _initDefineProp(this, "password", _descriptor5, this);
+
+  _initDefineProp(this, "pin", _descriptor6, this);
 }, (_descriptor = _applyDecoratedDescriptor(_class.prototype, "userId", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
@@ -8104,6 +8110,21 @@ var AuthenticationStore = (_class = function AuthenticationStore() {
     return "";
   }
 }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "fullname", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return "";
+  }
+}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "username", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return "";
+  }
+}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, "password", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return "";
+  }
+}), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, "pin", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
@@ -38620,8 +38641,6 @@ var FullName = (0, _mobxReact.observer)(_class = function (_Component) {
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      console.log(_authentication_store2.default);
-      console.log(_authentication_store2.default.instance);
       _authentication_store2.default.instance.fullname = _this.state.fullname;
       _this.props.history.push("/signup/username");
     };
@@ -38955,11 +38974,19 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _class;
+
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(15);
+
+var _mobxReact = __webpack_require__(75);
+
+var _authentication_store = __webpack_require__(76);
+
+var _authentication_store2 = _interopRequireDefault(_authentication_store);
 
 var _OverlayTrigger = __webpack_require__(22);
 
@@ -38999,7 +39026,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Username = function (_Component) {
+var Username = (0, _mobxReact.observer)(_class = function (_Component) {
   _inherits(Username, _Component);
 
   function Username(props) {
@@ -39008,26 +39035,24 @@ var Username = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Username.__proto__ || Object.getPrototypeOf(Username)).call(this));
 
     _this.handleChange = function (event) {
+      var _this$setState;
+
       var target = event.target;
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState(_defineProperty({}, name, value));
+      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "formValid", value.length > 0), _this$setState));
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      // post("/api/v1/users/create", {
-      //   body: { username: this.state.username }
-      // }).then(response => {
-      //   console.log(response);
-      //   console.log("Created");
-      // });
-      // to="/signup/password"
+      _authentication_store2.default.instance.username = _this.state.username;
+      _this.props.history.push("/signup/password");
     };
 
     _this.state = {
-      username: ""
+      username: "",
+      formValid: false
     };
     return _this;
   }
@@ -39049,11 +39074,14 @@ var Username = function (_Component) {
               { xs: 6, className: "text-left" },
               _react2.default.createElement(
                 _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
+                {
+                  placement: "top",
+                  overlay: _react2.default.createElement(
                     _Tooltip2.default,
-                    null,
+                    { id: "back" },
                     "Back"
-                  ) },
+                  )
+                },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: "/signup/phone-number" },
@@ -39070,7 +39098,7 @@ var Username = function (_Component) {
                   placement: "top",
                   overlay: _react2.default.createElement(
                     _Tooltip2.default,
-                    null,
+                    { id: "restart" },
                     "Restart"
                   )
                 },
@@ -39121,6 +39149,7 @@ var Username = function (_Component) {
             "Your username is how other users will mention you in conversations. Pick something familiar."
           ),
           _react2.default.createElement("input", {
+            disabled: !this.state.formValid,
             value: "Next",
             type: "submit",
             className: "btn btn-block btn-lg btn-primary m-b-40"
@@ -39136,7 +39165,7 @@ var Username = function (_Component) {
   }]);
 
   return Username;
-}(_react.Component);
+}(_react.Component)) || _class;
 
 exports.default = Username;
 
@@ -39215,29 +39244,34 @@ var Password = (0, _mobxReact.observer)(_class = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Password.__proto__ || Object.getPrototypeOf(Password)).call(this));
 
     _this.handleChange = function (event) {
+      var _this$setState;
+
       var target = event.target;
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState(_defineProperty({}, name, value));
+      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "formValid", _this.password_valid(value)), _this$setState));
+    };
+
+    _this.password_valid = function (value) {
+      var PasswordPolicy = __webpack_require__(399).PasswordPolicy;
+      var charsets = __webpack_require__(399).charsets;
+
+      var containsAtLeastPolicy = new PasswordPolicy({
+        length: { minLength: 8 }
+      });
+
+      return containsAtLeastPolicy.check(value);
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      post("/api/v1/users/update", {
-        body: { id: _authentication_store2.default.instance.userId, password: _this.state.password }
-      }).then(function (response) {
-        if (response.status === 422) {
-          _this.setState({ error: true });
-        } else {
-          _this.setState({ error: false });
-          _this.props.history.push("/signup/username");
-        }
-      });
+      _authentication_store2.default.instance.password = _this.state.password;
+      _this.props.history.push("/signup/pin");
     };
 
     _this.state = {
-      error: false,
+      formValid: false,
       password: ""
     };
     return _this;
@@ -39369,6 +39403,7 @@ var Password = (0, _mobxReact.observer)(_class = function (_Component) {
             "The password doesn't meet the requirements"
           ),
           _react2.default.createElement("input", {
+            disabled: !this.state.formValid,
             value: "Next",
             type: "submit",
             className: "btn btn-block btn-lg btn-primary m-b-40"
@@ -39402,11 +39437,19 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _class;
+
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(15);
+
+var _mobxReact = __webpack_require__(75);
+
+var _authentication_store = __webpack_require__(76);
+
+var _authentication_store2 = _interopRequireDefault(_authentication_store);
 
 var _OverlayTrigger = __webpack_require__(22);
 
@@ -39446,7 +39489,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Pin = function (_Component) {
+var Pin = (0, _mobxReact.observer)(_class = function (_Component) {
   _inherits(Pin, _Component);
 
   function Pin(props) {
@@ -39455,26 +39498,24 @@ var Pin = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Pin.__proto__ || Object.getPrototypeOf(Pin)).call(this));
 
     _this.handleChange = function (event) {
+      var _this$setState;
+
       var target = event.target;
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState(_defineProperty({}, name, value));
+      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "formValid", value.length === 4), _this$setState));
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      // post("/api/v1/users/create", {
-      //   body: { pin: this.state.pin }
-      // }).then(response => {
-      //   console.log(response);
-      //   console.log("Created");
-      // });
-      // to="/signup/invites"
+      _authentication_store2.default.instance.pin = _this.state.pin;
+      _this.props.history.push("/signup/hipaa");
     };
 
     _this.state = {
-      pin: ""
+      pin: "",
+      formValid: false
     };
     return _this;
   }
@@ -39496,11 +39537,14 @@ var Pin = function (_Component) {
               { xs: 6, className: "text-left" },
               _react2.default.createElement(
                 _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
+                {
+                  placement: "top",
+                  overlay: _react2.default.createElement(
                     _Tooltip2.default,
-                    null,
+                    { id: "back" },
                     "Back"
-                  ) },
+                  )
+                },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: "/signup/password" },
@@ -39513,11 +39557,14 @@ var Pin = function (_Component) {
               { xs: 6, className: "text-right" },
               _react2.default.createElement(
                 _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
+                {
+                  placement: "top",
+                  overlay: _react2.default.createElement(
                     _Tooltip2.default,
-                    null,
+                    { id: "restart" },
                     "Restart"
-                  ) },
+                  )
+                },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: "/signup/team-name" },
@@ -39565,6 +39612,7 @@ var Pin = function (_Component) {
             "You can use this pin when your screen is locked after a period of inactivity."
           ),
           _react2.default.createElement("input", {
+            disabled: !this.state.formValid,
             value: "Next",
             type: "submit",
             className: "btn btn-block btn-lg btn-primary m-b-40"
@@ -39580,7 +39628,7 @@ var Pin = function (_Component) {
   }]);
 
   return Pin;
-}(_react.Component);
+}(_react.Component)) || _class;
 
 exports.default = Pin;
 
@@ -39784,11 +39832,19 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _class;
+
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(15);
+
+var _mobxReact = __webpack_require__(75);
+
+var _authentication_store = __webpack_require__(76);
+
+var _authentication_store2 = _interopRequireDefault(_authentication_store);
 
 var _OverlayTrigger = __webpack_require__(22);
 
@@ -39814,7 +39870,13 @@ var _HelpBlock = __webpack_require__(27);
 
 var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
 
+var _Button = __webpack_require__(62);
+
+var _Button2 = _interopRequireDefault(_Button);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -39822,13 +39884,40 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Hipaa = function (_Component) {
+var Hipaa = (0, _mobxReact.observer)(_class = function (_Component) {
   _inherits(Hipaa, _Component);
 
-  function Hipaa() {
+  function Hipaa(props) {
     _classCallCheck(this, Hipaa);
 
-    return _possibleConstructorReturn(this, (Hipaa.__proto__ || Object.getPrototypeOf(Hipaa)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Hipaa.__proto__ || Object.getPrototypeOf(Hipaa)).call(this));
+
+    _this.handleChange = function (event) {
+      var target = event.target;
+      var value = target.type === "checkbox" ? target.checked : target.value;
+      var name = target.name;
+      _this.setState(_defineProperty({}, name, value));
+    };
+
+    _this.handleSubmit = function (event) {
+      event.preventDefault();
+      console.log(_authentication_store2.default.instance);
+      // post("/api/v1/users", {
+      //   body: { email: this.state.email }
+      // }).then(response => {
+      //   store.instance.userId = response.data.id;
+      //   post("/api/v1/users/send-confirmation-code", {
+      //     body: { id: response.data.id }
+      //   }).then(response => {
+      //     this.props.history.push("/signup/confirmation-code");
+      //   });
+      // });
+    };
+
+    _this.state = {
+      hipaaAgreed: false
+    };
+    return _this;
   }
 
   _createClass(Hipaa, [{
@@ -39865,11 +39954,14 @@ var Hipaa = function (_Component) {
               { xs: 6, className: "text-right" },
               _react2.default.createElement(
                 _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
+                {
+                  placement: "top",
+                  overlay: _react2.default.createElement(
                     _Tooltip2.default,
                     null,
                     "Restart"
-                  ) },
+                  )
+                },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: "/signup/team-name" },
@@ -39895,10 +39987,15 @@ var Hipaa = function (_Component) {
         ),
         _react2.default.createElement(
           "form",
-          null,
+          { onSubmit: this.handleSubmit },
           _react2.default.createElement(
             _Checkbox2.default,
-            { className: "m-b-20" },
+            {
+              name: "hipaaAgreed",
+              checked: this.state.hipaaAgreed,
+              onChange: this.handleChange,
+              className: "m-b-20"
+            },
             "I agree to the terms of the HIPAA BAA"
           ),
           _react2.default.createElement(
@@ -39910,7 +40007,8 @@ var Hipaa = function (_Component) {
               { href: "#" },
               "here"
             ),
-            ". By checking the box above, you represent that your team agrees to the terms of the ",
+            ". By checking the box above, you represent that your team agrees to the terms of the",
+            " ",
             _react2.default.createElement(
               "a",
               { href: "#" },
@@ -39918,15 +40016,17 @@ var Hipaa = function (_Component) {
             ),
             "."
           ),
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: "/signup/app-download", className: "btn btn-block btn-lg btn-primary m-b-20" },
-            "Done!"
-          ),
+          _react2.default.createElement("input", {
+            disabled: !this.state.hipaaAgreed,
+            value: "Done!",
+            type: "submit",
+            className: "btn btn-block btn-lg btn-primary m-b-20"
+          }),
           _react2.default.createElement(
             _HelpBlock2.default,
             { className: "m-b-20" },
-            "By proceeding to use Stitch, you agree to our ",
+            "By proceeding to use Stitch, you agree to our",
+            " ",
             _react2.default.createElement(
               "a",
               { href: "#" },
@@ -39951,7 +40051,7 @@ var Hipaa = function (_Component) {
   }]);
 
   return Hipaa;
-}(_react.Component);
+}(_react.Component)) || _class;
 
 exports.default = Hipaa;
 
@@ -40115,11 +40215,19 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _class;
+
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(15);
+
+var _mobxReact = __webpack_require__(75);
+
+var _authentication_store = __webpack_require__(76);
+
+var _authentication_store2 = _interopRequireDefault(_authentication_store);
 
 var _OverlayTrigger = __webpack_require__(22);
 
@@ -40149,7 +40257,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var AppDownload = function (_Component) {
+var AppDownload = (0, _mobxReact.observer)(_class = function (_Component) {
   _inherits(AppDownload, _Component);
 
   function AppDownload() {
@@ -40175,11 +40283,14 @@ var AppDownload = function (_Component) {
               { xs: 12, className: "text-right" },
               _react2.default.createElement(
                 _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
+                {
+                  placement: "top",
+                  overlay: _react2.default.createElement(
                     _Tooltip2.default,
                     null,
                     "Launch"
-                  ) },
+                  )
+                },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: "/" },
@@ -40203,7 +40314,8 @@ var AppDownload = function (_Component) {
             null,
             "Mac"
           ),
-          " and ",
+          " and",
+          " ",
           _react2.default.createElement(
             "strong",
             null,
@@ -40220,7 +40332,11 @@ var AppDownload = function (_Component) {
             _react2.default.createElement(
               "a",
               { href: "#" },
-              _react2.default.createElement("img", { src: "https://app.teamstitch.com/img/dl-mac.png", alt: "", className: "os-icon" })
+              _react2.default.createElement("img", {
+                src: "https://app.teamstitch.com/img/dl-mac.png",
+                alt: "",
+                className: "os-icon"
+              })
             ),
             _react2.default.createElement(
               "h3",
@@ -40234,7 +40350,11 @@ var AppDownload = function (_Component) {
             ),
             _react2.default.createElement(
               _Button2.default,
-              { bsSize: "lg", bsStyle: "primary", className: "btn-download m-b-40" },
+              {
+                bsSize: "lg",
+                bsStyle: "primary",
+                className: "btn-download m-b-40"
+              },
               "Download"
             )
           ),
@@ -40244,7 +40364,11 @@ var AppDownload = function (_Component) {
             _react2.default.createElement(
               "a",
               { href: "#" },
-              _react2.default.createElement("img", { src: "https://app.teamstitch.com/img/dl-win.png", alt: "", className: "os-icon" })
+              _react2.default.createElement("img", {
+                src: "https://app.teamstitch.com/img/dl-win.png",
+                alt: "",
+                className: "os-icon"
+              })
             ),
             _react2.default.createElement(
               "h3",
@@ -40258,7 +40382,11 @@ var AppDownload = function (_Component) {
             ),
             _react2.default.createElement(
               _Button2.default,
-              { bsSize: "lg", bsStyle: "primary", className: "btn-download m-b-40" },
+              {
+                bsSize: "lg",
+                bsStyle: "primary",
+                className: "btn-download m-b-40"
+              },
               "Download"
             )
           )
@@ -40278,7 +40406,7 @@ var AppDownload = function (_Component) {
   }]);
 
   return AppDownload;
-}(_react.Component);
+}(_react.Component)) || _class;
 
 exports.default = AppDownload;
 
@@ -42096,6 +42224,1280 @@ return Promise;
 /***/ (function(module, exports) {
 
 /* (ignored) */
+
+/***/ }),
+/* 397 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var _ = {};
+var root = typeof self == 'object' && self.self === self && self ||
+            typeof global == 'object' && global.global === global && global ||
+            this ||
+            {};
+var nativeIsArray = Array.isArray;
+var nativeKeys = Object.keys;
+var ObjProto = Object.prototype;
+var toString = ObjProto.toString;
+
+var shallowProperty = function(key) {
+  return function(obj) {
+    return obj == null ? void 0 : obj[key];
+  };
+};
+
+var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+var getLength = shallowProperty('length');
+var isArrayLike = function(collection) {
+  var length = getLength(collection);
+  return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+};
+
+// Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError, isMap, isWeakMap, isSet, isWeakSet.
+var typeNames = ['Arguments', 'Function', 'String', 'Number'];
+function loopAsign(name) {
+  _['is' + name] = function(obj) {
+    return toString.call(obj) === '[object ' + name + ']';
+  };
+}
+for (var a = 0; a < typeNames.length; a++) {
+  loopAsign(typeNames[a]);
+}
+
+var nodelist = root.document && root.document.childNodes;
+if (typeof /./ != 'function' && typeof Int8Array != 'object' && typeof nodelist != 'function') {
+  _.isFunction = function(obj) {
+    return typeof obj == 'function' || false;
+  };
+}
+
+_.identity = function(value) {
+  return value;
+};
+
+_.keys = function(obj) {
+  if (!_.isObject(obj)) return [];
+  if (nativeKeys) return nativeKeys(obj);
+  var keys = [];
+  for (var key in obj) keys.push(key);
+  return keys;
+};
+
+_.isObject = function(obj) {
+  var type = typeof obj;
+  return type === 'function' || type === 'object' && !!obj;
+};
+
+_.isArray = nativeIsArray || function(obj) {
+  return toString.call(obj) === '[object Array]';
+};
+
+_.isEmpty = function(obj) {
+  if (obj == null) return true;
+  if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) return obj.length === 0;
+  return _.keys(obj).length === 0;
+};
+
+_.isNaN = function(obj) {
+  return _.isNumber(obj) && isNaN(obj);
+};
+
+module.exports = _;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(173)))
+
+/***/ }),
+/* 398 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _ = __webpack_require__(397);
+
+/* OWASP Special Characters: https://www.owasp.org/index.php/Password_special_characters */
+var specialCharacters = [' ', '!', '"', '#', '\\$', '%', '&', '\'', '\\(', '\\)', '\\*', '\\+', ',', '-', '\\.', '/', ':', ';', '<', '=', '>', '\\?', '@', '\\[', '\\\\', '\\]', '\\^', '_','`','{','\\|', '}','~'].join('|');
+
+var specialCharactersRegexp = new RegExp(specialCharacters);
+
+module.exports = {
+  validate: function (options) {
+    if (!_.isObject(options)) {
+      throw new Error('options should be an object');
+    }
+
+    if (!_.isArray(options.expressions) || _.isEmpty(options.expressions)) {
+      throw new Error('contains expects expressions to be a non-empty array');
+    }
+
+    var ok = options.expressions.every(function (expression) {
+      return _.isFunction(expression.explain) && _.isFunction(expression.test);
+    });
+
+    if (!ok) {
+      throw new Error('contains expressions are invalid: An explain and a test function should be provided');
+    }
+    return true;
+  },
+  explain: function (options) {
+    return {
+      message: 'Should contain:',
+      code: 'shouldContain',
+      items: options.expressions.map(function (expression) {
+        return expression.explain();
+      })
+    };
+  },
+  missing: function (options, password) {
+    var expressions = options.expressions.map(function (expression) {
+      var explained = expression.explain();
+      explained.verified = expression.test(password);
+      return explained;
+    });
+
+    var verified = expressions.every(function (expression) {
+      return expression.verified;
+    });
+
+    return {
+      message: 'Should contain:',
+      code: 'shouldContain',
+      verified: verified,
+      items: expressions
+    };
+  },
+  assert: function (options, password) {
+    if (!password) {
+      return false;
+    }
+
+    return options.expressions.every(function (expression) {
+      var result = expression.test(password);
+      return result;
+    });
+  },
+  charsets: {
+    upperCase: {
+      explain: function () { return {
+        message: 'upper case letters (A-Z)',
+        code: 'upperCase'
+      }; },
+      test: function (password) { return /[A-Z]/.test(password); }
+    },
+    lowerCase: {
+      explain: function () { return {
+        message: 'lower case letters (a-z)',
+        code: 'lowerCase'
+      }; },
+      test: function (password) { return /[a-z]/.test(password); }
+    },
+    specialCharacters: {
+      explain: function () { return {
+        message: 'special characters (e.g. !@#$%^&*)',
+        code: 'specialCharacters'
+      }; },
+      test: function (password) { return specialCharactersRegexp.test(password); }
+    },
+    numbers: {
+      explain: function () { return {
+        message: 'numbers (i.e. 0-9)',
+        code: 'numbers'
+      }; },
+      test: function (password) { return /\d/.test(password); }
+    }
+  }
+};
+
+
+/***/ }),
+/* 399 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var charsets = __webpack_require__(398).charsets;
+
+var upperCase         = charsets.upperCase;
+var lowerCase         = charsets.lowerCase;
+var numbers           = charsets.numbers;
+var specialCharacters = charsets.specialCharacters;
+
+var PasswordPolicy = __webpack_require__(400);
+
+var none =  new PasswordPolicy({
+  length: { minLength: 1 }
+});
+
+var low = new PasswordPolicy({
+  length: { minLength: 6 }
+});
+
+var fair = new PasswordPolicy({
+  length: { minLength: 8 },
+  contains: {
+    expressions: [lowerCase, upperCase, numbers]
+  }
+});
+
+var good = new PasswordPolicy({
+  length: { minLength: 8 },
+  containsAtLeast: {
+    atLeast: 3,
+    expressions: [lowerCase, upperCase, numbers, specialCharacters]
+  }
+});
+
+var excellent = new PasswordPolicy({
+  length: { minLength: 10 },
+  containsAtLeast: {
+    atLeast: 3,
+    expressions: [lowerCase, upperCase, numbers, specialCharacters]
+  },
+  identicalChars: { max: 2 }
+});
+
+var policiesByName = {
+  none:       none,
+  low:        low,
+  fair:       fair,
+  good:       good,
+  excellent:  excellent
+};
+
+/**
+ * Creates a password policy.
+ *
+ * @param {String} policyName Name of policy to use.
+ */
+module.exports = function (policyName) {
+  var policy = policiesByName[policyName] || policiesByName.none;
+
+  return {
+    /**
+     * Checks that a password meets this policy
+     *
+     * @method check
+     * @param {String} password
+     */
+    check: function (password) {
+      return policy.check(password);
+    },
+    /**
+     * @method assert
+     * Asserts that a passord meets this policy else throws an exception.
+     *
+     * @param {String} password
+     */
+    assert: function (password) {
+      return policy.assert(password);
+    },
+
+    missing: function (password) {
+      return policy.missing(password);
+    },
+
+    missingAsMarkdown: function (password) {
+      return policy.missingAsMarkdown(password);
+    },
+
+    explain: function () {
+      return policy.explain();
+    },
+
+    /**
+     * Friendly string representation of the policy
+     * @method toString
+     */
+    toString: function () {
+      return policy.toString();
+    }
+  };
+};
+
+module.exports.PasswordPolicy = PasswordPolicy;
+
+module.exports.charsets = charsets;
+
+// module.exports.rulesToApply = rulesToApply;
+
+
+/***/ }),
+/* 400 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var format = __webpack_require__(401).format;
+
+var PasswordPolicyError = __webpack_require__(404);
+
+function isString(value) {
+  return typeof value === 'string' || value instanceof String;
+}
+
+var defaultRuleset = {
+  length:           __webpack_require__(405),
+  contains:         __webpack_require__(398),
+  containsAtLeast:  __webpack_require__(406),
+  identicalChars:   __webpack_require__(407),
+};
+
+function flatDescriptions (descriptions, index) {
+  if (!descriptions.length) {
+    return '';
+  }
+
+  function flatSingleDescription (description, index) {
+    var spaces = (new Array(index+1)).join(' ');
+    var result = spaces + '* ';
+    if (description.format) {
+      result += format.apply(null, [description.message].concat(description.format));
+    } else {
+      result += description.message;
+    }
+
+    if (description.items) {
+      result += '\n' + spaces + flatDescriptions(description.items, index + 1);
+    }
+    return result;
+  }
+
+  var firstDescription = flatSingleDescription(descriptions[0], index);
+
+  descriptions = descriptions.slice(1).reduce(function (result, description) {
+    result += '\n' + flatSingleDescription(description, index);
+
+    return result;
+  }, firstDescription);
+
+  return descriptions;
+}
+
+/**
+ * Creates a PasswordPolicy which is a set of rules.
+ *
+ * @class PasswordPolicy
+ * @constructor
+ */
+function PasswordPolicy(rules, ruleset) {
+  this.rules = rules;
+  this.ruleset = ruleset || defaultRuleset;
+
+  this._reduce(function (result, ruleOptions, rule) {
+    rule.validate(ruleOptions);
+  });
+}
+
+PasswordPolicy.prototype = {};
+
+PasswordPolicy.prototype._reduce = function (fn, value) {
+  var self = this;
+  return Object.keys(this.rules).reduce(function (result, ruleName) {
+    var ruleOptions = self.rules[ruleName];
+    var rule = self.ruleset[ruleName];
+
+    return fn(result, ruleOptions, rule);
+
+  }, value);
+};
+
+PasswordPolicy.prototype._applyRules = function (password) {
+  return this._reduce(function (result, ruleOptions, rule) {
+    // If previous result was false as this an &&, then nothing to do here!
+    if (!result) {
+      return false;
+    }
+
+    if (!rule) {
+      return false;
+    }
+
+    return rule.assert(ruleOptions, password);
+  }, true);
+};
+
+PasswordPolicy.prototype.missing = function (password) {
+  return this._reduce(function (result, ruleOptions, rule) {
+    var missingRule = rule.missing(ruleOptions, password);
+    result.rules.push(missingRule);
+    result.verified = result.verified && !!missingRule.verified;
+    return result;
+  }, {rules: [], verified: true});
+};
+
+PasswordPolicy.prototype.explain = function () {
+  return this._reduce(function (result, ruleOptions, rule) {
+    result.push(rule.explain(ruleOptions));
+    return result;
+  }, []);
+};
+
+PasswordPolicy.prototype.missingAsMarkdown = function (password) {
+  return flatDescriptions(this.missing(password), 1);
+};
+
+PasswordPolicy.prototype.toString = function () {
+  var descriptions = this.explain();
+  return flatDescriptions(descriptions, 0);
+};
+
+PasswordPolicy.prototype.check = function (password) {
+  if (!isString(password)) {
+    return false;
+  }
+
+  return this._applyRules(password);
+};
+
+PasswordPolicy.prototype.assert = function (password) {
+  if (!this.check(password)) {
+    throw new PasswordPolicyError('Password does not meet password policy');
+  }
+};
+
+module.exports = PasswordPolicy;
+
+
+/***/ }),
+/* 401 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = __webpack_require__(402);
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = __webpack_require__(403);
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(173), __webpack_require__(0)))
+
+/***/ }),
+/* 402 */
+/***/ (function(module, exports) {
+
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+
+/***/ }),
+/* 403 */
+/***/ (function(module, exports) {
+
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+
+/***/ }),
+/* 404 */
+/***/ (function(module, exports) {
+
+/**
+ * Error thrown when asserting a policy against a password.
+ *
+ * @class PasswordPolicyError
+ * @constructor
+ *
+ * @param {String} msg Descriptive message of the error
+ */
+function PasswordPolicyError(msg) {
+  var err = Error.call(this, msg);
+  err.name = 'PasswordPolicyError';
+  return err;
+}
+
+module.exports = PasswordPolicyError;
+
+
+/***/ }),
+/* 405 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _ = __webpack_require__(397);
+
+/* A rule should contain explain and rule methods */
+// TODO explain explain
+// TODO explain missing
+// TODO explain assert
+
+function assert (options, password) {
+  return !!password && options.minLength <= password.length;
+}
+
+function explain(options) {
+  if (options.minLength === 1) {
+    return {
+      message: 'Non-empty password required',
+      code: 'nonEmpty'
+    };
+  }
+
+  return {
+    message: 'At least %d characters in length',
+    format: [options.minLength],
+    code: 'lengthAtLeast'
+  };
+}
+
+module.exports = {
+  validate: function (options) {
+    if (!_.isObject(options)) {
+      throw new Error('options should be an object');
+    }
+
+    if (!_.isNumber(options.minLength) || _.isNaN(options.minLength)) {
+      throw new Error('length expects minLength to be a non-zero number');
+    }
+
+    return true;
+  },
+  explain: explain,
+  missing: function (options, password) {
+    var explained = explain(options);
+    explained.verified = !!assert(options, password);
+    return explained;
+  },
+  assert: assert
+};
+
+
+/***/ }),
+/* 406 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _ = __webpack_require__(397);
+
+var contains = __webpack_require__(398);
+
+function createIntroMessage() {
+  return 'Contain at least %d of the following %d types of characters:';
+}
+
+module.exports = {
+  // TODO validate atLeast to be a number > 0 and expressions to be a list of at least 1
+  validate: function (options) {
+    if (!_.isObject(options)) {
+      throw new Error('options should be an object');
+    }
+
+    if (!_.isNumber(options.atLeast) || _.isNaN(options.atLeast) || options.atLeast < 1) {
+      throw new Error('atLeast should be a valid, non-NaN number, greater than 0');
+    }
+
+    if (!_.isArray(options.expressions) || _.isEmpty(options.expressions)) {
+      throw new Error('expressions should be an non-empty array');
+    }
+
+    if (options.expressions.length < options.atLeast) {
+      throw new Error('expressions length should be greater than atLeast');
+    }
+
+    var ok = options.expressions.every(function (expression) {
+      return _.isFunction(expression.explain) && _.isFunction(expression.test);
+    });
+
+    if (!ok) {
+      throw new Error('containsAtLeast expressions are invalid: An explain and a test function should be provided');
+    }
+
+    return true;
+  },
+  explain: function (options) {
+    return {
+      message: createIntroMessage(),
+      code: 'containsAtLeast',
+      format: [options.atLeast, options.expressions.length],
+      items: options.expressions.map(function (x) { return x.explain(); })
+    };
+  },
+  missing: function (options, password) {
+    var expressions = options.expressions && options.expressions.map(function (expression) {
+      var explained = expression.explain();
+      explained.verified = expression.test(password);
+      return explained;
+    });
+
+    var verifiedCount = expressions.reduce(function (val, ex) { return val + !!ex.verified; }, 0);
+    var verified = verifiedCount >= options.atLeast;
+
+    return {
+      message: createIntroMessage(),
+      code: 'containsAtLeast',
+      format: [options.atLeast, options.expressions.length],
+      items: expressions,
+      verified: verified
+    };
+  },
+  assert: function (options, password) {
+    if (!password) {
+      return false;
+    }
+
+    var workingExpressions = options.expressions.filter(function (expression) {
+      return expression.test(password);
+    });
+
+    return workingExpressions.length >= options.atLeast;
+  },
+  charsets: contains.charsets
+};
+
+
+/***/ }),
+/* 407 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _ = __webpack_require__(397);
+
+function assert(options, password) {
+  if (!password) {
+    return false;
+  }
+
+  var i, current = {c: null, count: 0};
+
+  for (i = 0; i < password.length; i++) {
+    if (current.c !== password[i]) {
+      current.c = password[i];
+      current.count = 1;
+    } else {
+      current.count++;
+    }
+
+    if (current.count > options.max) {
+      return false;
+    }
+  }
+
+  return true;
+}
+function explain (options, verified) {
+    var example = (new Array(options.max+2)).join('a');
+    var d = {
+      message: 'No more than %d identical characters in a row (e.g., "%s" not allowed)',
+      code: 'identicalChars',
+      format: [options.max, example]
+    };
+    if (verified !== undefined) {
+      d.verified = verified;
+    }
+    return d;
+  }
+
+module.exports = {
+  validate: function (options) {
+    if (!_.isObject(options)) {
+      throw new Error('options should be an object');
+    }
+
+    if (!_.isNumber(options.max) || _.isNaN(options.max) || options.max < 1 ) {
+      throw new Error('max should be a number greater than 1');
+    }
+
+    return true;
+  },
+  explain: explain,
+  missing: function (options, password) {
+    return explain(options, assert(options, password));
+  },
+  assert: assert
+};
+
 
 /***/ })
 /******/ ]);

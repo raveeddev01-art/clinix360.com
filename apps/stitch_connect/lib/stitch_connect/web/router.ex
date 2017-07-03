@@ -27,12 +27,13 @@ defmodule StitchConnect.Web.Router do
     get "/signup/confirmation-code", AuthenticationController, :index
     get "/signup/team-name", AuthenticationController, :index
     get "/signup/full-name", AuthenticationController, :index
+    get "/signup/username", AuthenticationController, :index
+    get "/signup/password", AuthenticationController, :index
+    get "/signup/pin", AuthenticationController, :index
+    get "/signup/hipaa", AuthenticationController, :index
+
     # get "/signup/phone-number", AuthenticationController, :index
-    # get "/signup/username", AuthenticationController, :index
-    # get "/signup/password", AuthenticationController, :index
-    # get "/signup/pin", AuthenticationController, :index
     # get "/signup/invites", AuthenticationController, :index
-    # get "/signup/hipaa", AuthenticationController, :index
     # get "/signup/app-download", AuthenticationController, :index
   end
 

@@ -16,7 +16,7 @@ export default class Password extends Component {
   constructor(props) {
     super();
     this.state = {
-      error: false,
+      formValid: false,
       password: ""
     };
   }
@@ -27,22 +27,26 @@ export default class Password extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      formValid: this.password_valid(value)
     });
+  };
+
+  password_valid = value => {
+    var PasswordPolicy = require("password-sheriff").PasswordPolicy;
+    var charsets = require("password-sheriff").charsets;
+
+    var containsAtLeastPolicy = new PasswordPolicy({
+      length: { minLength: 8 }
+    });
+
+    return containsAtLeastPolicy.check(value);
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    post("/api/v1/users/update", {
-      body: { id: store.instance.userId, password: this.state.password }
-    }).then(response => {
-      if (response.status === 422) {
-        this.setState({ error: true });
-      } else {
-        this.setState({ error: false });
-        this.props.history.push("/signup/username");
-      }
-    });
+    store.instance.password = this.state.password;
+    this.props.history.push("/signup/pin");
   };
 
   render() {
@@ -105,9 +109,12 @@ export default class Password extends Component {
           </HelpBlock>
 
           {this.state.error &&
-            <HelpBlock className="m-b-20">The password doesn't meet the requirements</HelpBlock>}
+            <HelpBlock className="m-b-20">
+              The password doesn't meet the requirements
+            </HelpBlock>}
 
           <input
+            disabled={!this.state.formValid}
             value="Next"
             type="submit"
             className="btn btn-block btn-lg btn-primary m-b-40"

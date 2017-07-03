@@ -34,8 +34,6 @@ export default class FullName extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log(store);
-    console.log(store.instance);
     store.instance.fullname = this.state.fullname;
     this.props.history.push("/signup/username");
   };

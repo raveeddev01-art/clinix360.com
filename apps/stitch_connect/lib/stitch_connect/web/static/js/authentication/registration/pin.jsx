@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import store from "../authentication_store.js";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -9,11 +11,13 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@observer
 export default class Pin extends Component {
   constructor(props) {
     super();
     this.state = {
-      pin: ""
+      pin: "",
+      formValid: false
     };
   }
 
@@ -23,39 +27,40 @@ export default class Pin extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      formValid: value.length === 4
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    // post("/api/v1/users/create", {
-    //   body: { pin: this.state.pin }
-    // }).then(response => {
-    //   console.log(response);
-    //   console.log("Created");
-    // });
-    // to="/signup/invites"
+    store.instance.pin = this.state.pin;
+    this.props.history.push("/signup/hipaa");
   };
 
   render() {
     return (
       <div className="authentication-card text-center">
-
         <div className="card-header">
           <Row>
             <Col xs={6} className="text-left">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="back">Back</Tooltip>}
+              >
                 <Link to="/signup/password">
-                  <i className="fa fa-arrow-left"></i>
+                  <i className="fa fa-arrow-left" />
                 </Link>
               </OverlayTrigger>
             </Col>
 
             <Col xs={6} className="text-right">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Restart</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="restart">Restart</Tooltip>}
+              >
                 <Link to="/signup/team-name">
-                  <i className="fa fa-refresh"></i>
+                  <i className="fa fa-refresh" />
                 </Link>
               </OverlayTrigger>
             </Col>
@@ -64,7 +69,9 @@ export default class Pin extends Component {
 
         <h2>PIN</h2>
 
-        <h5>Enter a <strong>4-digit PIN</strong>.</h5>
+        <h5>
+          Enter a <strong>4-digit PIN</strong>.
+        </h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
@@ -79,9 +86,13 @@ export default class Pin extends Component {
             />
           </FormGroup>
 
-          <HelpBlock className="m-b-20">You can use this pin when your screen is locked after a period of inactivity.</HelpBlock>
+          <HelpBlock className="m-b-20">
+            You can use this pin when your screen is locked after a period of
+            inactivity.
+          </HelpBlock>
 
           <input
+            disabled={!this.state.formValid}
             value="Next"
             type="submit"
             className="btn btn-block btn-lg btn-primary m-b-40"

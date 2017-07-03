@@ -4,6 +4,9 @@ class AuthenticationStore {
   @observable userId = "";
   @observable teamName = "";
   @observable fullname = "";
+  @observable username = "";
+  @observable password = "";
+  @observable pin = "";
 
   constructor() {}
 }
