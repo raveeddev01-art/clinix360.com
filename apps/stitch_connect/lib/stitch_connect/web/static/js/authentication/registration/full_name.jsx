@@ -93,7 +93,6 @@ export default class FullName extends Component {
             <FormControl
               name="lastName"
               required
-              autoFocus
               type="text"
               placeholder="Last name"
               value={this.state.lastName}
