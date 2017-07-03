@@ -5624,7 +5624,8 @@ button.close {
 @media print {
   .hidden-print {
     display: none !important; } }
-html, body {
+html,
+body {
   min-height: 100%; }
 
 body {
@@ -5648,7 +5649,7 @@ body {
 
 .btn-lg {
   font-size: 16px;
-  line-height: 1.42857143;
+  line-height: inherit;
   padding: 12px 20px; }
 
 .btn-default {
@@ -5686,16 +5687,40 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center; }
+  justify-content: center;
+  padding: 15px; }
+  .authentication-wrapper .alert {
+    max-width: 480px;
+    color: inherit;
+    font-size: 16px;
+    background: #fff;
+    border-color: #d04437;
+    border-radius: 6px;
+    padding: 15px 20px 15px 60px;
+    position: relative; }
+    .authentication-wrapper .alert:before {
+      width: 40px;
+      color: #fff;
+      background: #d04437;
+      border-radius: 3px 0 0 3px;
+      font-family: FontAwesome;
+      content: "\F071";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      top: 0; }
+    .authentication-wrapper .alert strong {
+      display: block; }
   .authentication-wrapper .authentication-card {
-    width: 100%;
-    max-width: 440px;
+    max-width: 480px;
     background: #fff;
     border: 1px solid #cacaca;
     border-radius: 6px;
     position: relative;
-    padding: 15px 20px 20px;
-    margin: 15px; }
+    padding: 15px 20px 20px; }
     @media (min-width: 768px) {
       .authentication-wrapper .authentication-card {
         padding: 40px 70px 50px; } }
@@ -5713,7 +5738,8 @@ body {
         .authentication-wrapper .authentication-card .card-header a:hover {
           color: #666;
           background: #eee; }
-    .authentication-wrapper .authentication-card h1, .authentication-wrapper .authentication-card h2 {
+    .authentication-wrapper .authentication-card h1,
+    .authentication-wrapper .authentication-card h2 {
       color: #036;
       font-weight: bold; }
     .authentication-wrapper .authentication-card h4 {
@@ -5724,6 +5750,22 @@ body {
       font-size: 16px;
       font-weight: normal;
       margin: 25px 0; }
+    .authentication-wrapper .authentication-card .team-form {
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      -ms-flex-pack: end;
+      -webkit-box-pack: end;
+      -webkit-justify-content: flex-end;
+      -moz-justify-content: flex-end;
+      justify-content: flex-end;
+      align-items: center; }
+      .authentication-wrapper .authentication-card .team-form .domain {
+        font-weight: bold;
+        margin-left: 10px;
+        flex-shrink: 0;
+        flex-grow: 0;
+        font-size: 20px; }
     .authentication-wrapper .authentication-card .confirmation-code .code-group {
       float: left;
       width: 45%; }
@@ -5761,21 +5803,3 @@ body {
       height: 70px; }
     .authentication-wrapper .download-card .btn {
       line-height: 1em; }
-  .authentication-wrapper .team-card {
-    max-width: 500px; }
-    .authentication-wrapper .team-card .form-group {
-      display: flex;
-      flex-wrap: nowrap;
-      flex-direction: row;
-      -ms-flex-pack: end;
-      -webkit-box-pack: end;
-      -webkit-justify-content: flex-end;
-      -moz-justify-content: flex-end;
-      justify-content: flex-end;
-      align-items: center; }
-      .authentication-wrapper .team-card .form-group .domain {
-        font-weight: bold;
-        margin-left: 10px;
-        flex-shrink: 0;
-        flex-grow: 0;
-        font-size: 20px; }

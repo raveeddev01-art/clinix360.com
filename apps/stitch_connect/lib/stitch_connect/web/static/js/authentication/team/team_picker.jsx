@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
+import Alert from "react-bootstrap/lib/Alert";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
@@ -42,44 +43,45 @@ export default class TeamPicker extends Component {
 
   render() {
     return (
-      <div className="authentication-card team-card text-center">
-        <h2>Sign In</h2>
+      <div>
+        {this.state.error && <Alert>This team doesn't seem to exist.</Alert>}
 
-        <h5>
-          Enter your team's <strong>Stitch URL</strong>.
-        </h5>
+        <div className="authentication-card text-center">
+          <h2>Sign In</h2>
 
-        <form onSubmit={this.handleSubmit} className="m-b-40">
-          <FormGroup bsSize="large">
-            <FormControl
-              name="team_name"
-              required
-              autoFocus
-              type="text"
-              placeholder="my-team-name"
-              value={this.state.team_name}
-              onChange={this.handleChange}
-              className="text-right"
+          <h5>
+            Enter your team's <strong>Stitch URL</strong>.
+          </h5>
+
+          <form onSubmit={this.handleSubmit} className="m-b-40">
+            <FormGroup bsSize="large" className="team-form">
+              <FormControl
+                name="team_name"
+                required
+                autoFocus
+                type="text"
+                placeholder="my-team-name"
+                value={this.state.team_name}
+                onChange={this.handleChange}
+                className="text-right"
+              />
+              <span className="domain">.teamstitch.com</span>
+            </FormGroup>
+
+            <input
+              value="Continue"
+              type="submit"
+              className="btn btn-block btn-lg btn-primary"
             />
-            <span className="domain">.teamstitch.com</span>
-          </FormGroup>
+          </form>
 
-          {this.state.error &&
-            <HelpBlock className="m-b-20">This team doesn't exist.</HelpBlock>}
-
-          <input
-            value="Continue"
-            type="submit"
-            className="btn btn-block btn-lg btn-primary"
-          />
-        </form>
-
-        <h5>
-          Don't know your team's URL?{" "}
-          <Link to="/signup/app-download">
-            <strong>Find your team</strong>
-          </Link>
-        </h5>
+          <h5>
+            Don't know your team's URL?{" "}
+            <Link to="/signup/app-download">
+              <strong>Find your team</strong>
+            </Link>
+          </h5>
+        </div>
       </div>
     );
   }

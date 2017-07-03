@@ -1,70 +1,79 @@
-html, body {
-	min-height: 100%;
+html,
+body {
+  min-height: 100%;
 }
 
 body {
-	line-height: 1.5;
-	font-family: 'Lato', sans-serif;
-	background: #f4f5f7;
+  line-height: 1.5;
+  font-family: 'Lato', sans-serif;
+  background: #f4f5f7;
 }
 
 #root {
-	height: 100%;
+  height: 100%;
 }
 
-$brand-primary:				#036;
-$border-color:				#cacaca;
+$brand-primary: #036;
+$border-color: #cacaca;
 
-$screen-sm:				768px;
-$screen-md:				992px;
-$screen-lg:				1200px;
+$screen-sm: 768px;
+$screen-md: 992px;
+$screen-lg: 1200px;
 
 .btn-primary {
-	background: $brand-primary;
-	border-color: $brand-primary;
+  background: $brand-primary;
+  border-color: $brand-primary;
 
-	&:hover {
-		background: darken($brand-primary, 5%);
-		border-color: darken($brand-primary, 5%);
-	}
+  &:hover {
+    background: darken($brand-primary, 5%);
+    border-color: darken($brand-primary, 5%);
+  }
 }
 
 .btn {
-	border-radius: 3px;
-	outline: none;
+  border-radius: 3px;
+  outline: none;
 }
 
 .btn-lg {
-	font-size: 16px;
-	line-height: 1.42857143;
-	padding: 12px 20px;
+  font-size: 16px;
+  line-height: inherit;
+  padding: 12px 20px;
 }
 
 .btn-default {
-	background: #fafafa;
-	border-color: $border-color;
+  background: #fafafa;
+  border-color: $border-color;
 }
 
 .form-control,
 .form-group-lg .form-control {
-	border-radius: 3px;
+  border-radius: 3px;
 }
 
 .form-group {
-	margin-bottom: 10px;
-	&:last-of-type {
-		margin-bottom: 15px;
-	}
+  margin-bottom: 10px;
+  &:last-of-type {
+    margin-bottom: 15px;
+  }
 }
 
 .tooltip {
-	font-size: 14px;
+  font-size: 14px;
 }
 .tooltip-inner {
-	padding: 6px 10px;
+  padding: 6px 10px;
 }
 
-.m-b-0 { margin-bottom: 0px; }
-.m-b-10 { margin-bottom: 10px; }
-.m-b-20 { margin-bottom: 20px; }
-.m-b-40 { margin-bottom: 40px; }
+.m-b-0 {
+  margin-bottom: 0px;
+}
+.m-b-10 {
+  margin-bottom: 10px;
+}
+.m-b-20 {
+  margin-bottom: 20px;
+}
+.m-b-40 {
+  margin-bottom: 40px;
+}

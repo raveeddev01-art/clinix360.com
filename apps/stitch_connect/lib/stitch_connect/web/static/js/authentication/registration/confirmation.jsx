@@ -86,129 +86,133 @@ export default class Confirmation extends Component {
 
   render() {
     return (
-      <div className="authentication-card text-center">
-        <div className="card-header">
-          <Row>
-            <Col xs={12} className="text-right">
-              <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip id="close">Close</Tooltip>}
-              >
-                <Link to="/">
-                  <i className="fa fa-close" />
-                </Link>
-              </OverlayTrigger>
-            </Col>
-          </Row>
-        </div>
+      <div>
+        {this.state.error &&
+          <Alert>
+            The confirmation code doesn't match the one we have on record.
+          </Alert>}
 
-        <h2>Check your email!</h2>
-
-        <h5>
-          Enter your <strong>confirmation code</strong>.
-        </h5>
-
-        <form>
-          <div className="confirmation-code m-b-20">
-            <InputGroup className="code-group">
-              <FormControl
-                autoFocus
-                value={this.state.digit_one}
-                onChange={this.handleChange}
-                onKeyUp={this.handleKeyUp}
-                name="digit_one"
-                ref={input => {
-                  this.digit_one_input = input;
-                }}
-                type="text"
-                maxLength="1"
-              />
-              <FormControl
-                value={this.state.digit_two}
-                onChange={this.handleChange}
-                onKeyUp={this.handleKeyUp}
-                name="digit_two"
-                ref={input => {
-                  this.digit_two_input = input;
-                }}
-                type="text"
-                maxLength="1"
-              />
-              <FormControl
-                value={this.state.digit_three}
-                onChange={this.handleChange}
-                onKeyUp={this.handleKeyUp}
-                name="digit_three"
-                ref={input => {
-                  this.digit_three_input = input;
-                }}
-                type="text"
-                maxLength="1"
-              />
-            </InputGroup>
-
-            <div className="code-separator">—</div>
-
-            <InputGroup className="code-group">
-              <FormControl
-                value={this.state.digit_four}
-                onChange={this.handleChange}
-                onKeyUp={this.handleKeyUp}
-                name="digit_four"
-                ref={input => {
-                  this.digit_four_input = input;
-                }}
-                type="text"
-                maxLength="1"
-              />
-              <FormControl
-                value={this.state.digit_five}
-                onChange={this.handleChange}
-                onKeyUp={this.handleKeyUp}
-                name="digit_five"
-                ref={input => {
-                  this.digit_five_input = input;
-                }}
-                type="text"
-                maxLength="1"
-              />
-              <FormControl
-                value={this.state.digit_six}
-                onChange={this.handleChange}
-                onKeyUp={this.handleKeyUp}
-                name="digit_six"
-                ref={input => {
-                  this.digit_six_input = input;
-                }}
-                type="text"
-                maxLength="1"
-              />
-            </InputGroup>
-            <div className="clearfix" />
+        <div className="authentication-card text-center">
+          <div className="card-header">
+            <Row>
+              <Col xs={12} className="text-right">
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip id="close">Close</Tooltip>}
+                >
+                  <Link to="/">
+                    <i className="fa fa-close" />
+                  </Link>
+                </OverlayTrigger>
+              </Col>
+            </Row>
           </div>
 
-          <HelpBlock className="m-b-20">
-            We sent a six-digit confirmation code to{" "}
-            <strong>email@here.com</strong> to verify your email address.
-          </HelpBlock>
+          <h2>Check your email!</h2>
 
-          {this.state.error &&
+          <h5>
+            Enter your <strong>confirmation code</strong>.
+          </h5>
+
+          <form>
+            <div className="confirmation-code m-b-20">
+              <InputGroup className="code-group">
+                <FormControl
+                  autoFocus
+                  value={this.state.digit_one}
+                  onChange={this.handleChange}
+                  onKeyUp={this.handleKeyUp}
+                  name="digit_one"
+                  ref={input => {
+                    this.digit_one_input = input;
+                  }}
+                  type="text"
+                  maxLength="1"
+                />
+                <FormControl
+                  value={this.state.digit_two}
+                  onChange={this.handleChange}
+                  onKeyUp={this.handleKeyUp}
+                  name="digit_two"
+                  ref={input => {
+                    this.digit_two_input = input;
+                  }}
+                  type="text"
+                  maxLength="1"
+                />
+                <FormControl
+                  value={this.state.digit_three}
+                  onChange={this.handleChange}
+                  onKeyUp={this.handleKeyUp}
+                  name="digit_three"
+                  ref={input => {
+                    this.digit_three_input = input;
+                  }}
+                  type="text"
+                  maxLength="1"
+                />
+              </InputGroup>
+
+              <div className="code-separator">—</div>
+
+              <InputGroup className="code-group">
+                <FormControl
+                  value={this.state.digit_four}
+                  onChange={this.handleChange}
+                  onKeyUp={this.handleKeyUp}
+                  name="digit_four"
+                  ref={input => {
+                    this.digit_four_input = input;
+                  }}
+                  type="text"
+                  maxLength="1"
+                />
+                <FormControl
+                  value={this.state.digit_five}
+                  onChange={this.handleChange}
+                  onKeyUp={this.handleKeyUp}
+                  name="digit_five"
+                  ref={input => {
+                    this.digit_five_input = input;
+                  }}
+                  type="text"
+                  maxLength="1"
+                />
+                <FormControl
+                  value={this.state.digit_six}
+                  onChange={this.handleChange}
+                  onKeyUp={this.handleKeyUp}
+                  name="digit_six"
+                  ref={input => {
+                    this.digit_six_input = input;
+                  }}
+                  type="text"
+                  maxLength="1"
+                />
+              </InputGroup>
+              <div className="clearfix" />
+            </div>
+
             <HelpBlock className="m-b-20">
-              The confirmation code doesn't match the one we have on record.
-            </HelpBlock>}
+              We sent a six-digit confirmation code to{" "}
+              <strong>email@here.com</strong> to verify your email address.
+            </HelpBlock>
 
-          <Button
-            onClick={this.submitConfirmationCode}
-            bsSize="lg"
-            bsStyle="primary"
-            block
-            className="m-b-40"
-          >
-            Reset Password
-          </Button>
-        </form>
+            <Button
+              onClick={this.submitConfirmationCode}
+              bsSize="lg"
+              bsStyle="primary"
+              block
+              className="m-b-40"
+            >
+              Reset Password
+            </Button>
+          </form>
 
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
+          <p className="copyright m-b-0">
+            &copy; 2017 Stitch Technologies, Inc
+          </p>
+        </div>
       </div>
     );
   }

@@ -33943,6 +33943,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(15);
 
+var _Alert = __webpack_require__(408);
+
+var _Alert2 = _interopRequireDefault(_Alert);
+
 var _FormGroup = __webpack_require__(26);
 
 var _FormGroup2 = _interopRequireDefault(_FormGroup);
@@ -34008,68 +34012,72 @@ var TeamPicker = function (_Component) {
     value: function render() {
       return _react2.default.createElement(
         "div",
-        { className: "authentication-card team-card text-center" },
-        _react2.default.createElement(
-          "h2",
+        null,
+        this.state.error && _react2.default.createElement(
+          _Alert2.default,
           null,
-          "Sign In"
+          "This team doesn't seem to exist."
         ),
         _react2.default.createElement(
-          "h5",
-          null,
-          "Enter your team's ",
+          "div",
+          { className: "authentication-card text-center" },
           _react2.default.createElement(
-            "strong",
+            "h2",
             null,
-            "Stitch URL"
+            "Sign In"
           ),
-          "."
-        ),
-        _react2.default.createElement(
-          "form",
-          { onSubmit: this.handleSubmit, className: "m-b-40" },
           _react2.default.createElement(
-            _FormGroup2.default,
-            { bsSize: "large" },
-            _react2.default.createElement(_FormControl2.default, {
-              name: "team_name",
-              required: true,
-              autoFocus: true,
-              type: "text",
-              placeholder: "my-team-name",
-              value: this.state.team_name,
-              onChange: this.handleChange,
-              className: "text-right"
-            }),
-            _react2.default.createElement(
-              "span",
-              { className: "domain" },
-              ".teamstitch.com"
-            )
-          ),
-          this.state.error && _react2.default.createElement(
-            _HelpBlock2.default,
-            { className: "m-b-20" },
-            "This team doesn't exist."
-          ),
-          _react2.default.createElement("input", {
-            value: "Continue",
-            type: "submit",
-            className: "btn btn-block btn-lg btn-primary"
-          })
-        ),
-        _react2.default.createElement(
-          "h5",
-          null,
-          "Don't know your team's URL?",
-          " ",
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: "/signup/app-download" },
+            "h5",
+            null,
+            "Enter your team's ",
             _react2.default.createElement(
               "strong",
               null,
-              "Find your team"
+              "Stitch URL"
+            ),
+            "."
+          ),
+          _react2.default.createElement(
+            "form",
+            { onSubmit: this.handleSubmit, className: "m-b-40" },
+            _react2.default.createElement(
+              _FormGroup2.default,
+              { bsSize: "large", className: "team-form" },
+              _react2.default.createElement(_FormControl2.default, {
+                name: "team_name",
+                required: true,
+                autoFocus: true,
+                type: "text",
+                placeholder: "my-team-name",
+                value: this.state.team_name,
+                onChange: this.handleChange,
+                className: "text-right"
+              }),
+              _react2.default.createElement(
+                "span",
+                { className: "domain" },
+                ".teamstitch.com"
+              )
+            ),
+            _react2.default.createElement("input", {
+              value: "Continue",
+              type: "submit",
+              className: "btn btn-block btn-lg btn-primary"
+            })
+          ),
+          _react2.default.createElement(
+            "h5",
+            null,
+            "Don't know your team's URL?",
+            " ",
+            _react2.default.createElement(
+              _reactRouterDom.Link,
+              { to: "/signup/app-download" },
+              _react2.default.createElement(
+                "strong",
+                null,
+                "Find your team"
+              )
             )
           )
         )
@@ -38297,172 +38305,176 @@ var Confirmation = (0, _mobxReact.observer)(_class = function (_Component) {
 
       return _react2.default.createElement(
         "div",
-        { className: "authentication-card text-center" },
+        null,
+        this.state.error && _react2.default.createElement(
+          Alert,
+          null,
+          "The confirmation code doesn't match the one we have on record."
+        ),
         _react2.default.createElement(
           "div",
-          { className: "card-header" },
+          { className: "authentication-card text-center" },
           _react2.default.createElement(
-            _Row2.default,
-            null,
+            "div",
+            { className: "card-header" },
             _react2.default.createElement(
-              _Col2.default,
-              { xs: 12, className: "text-right" },
+              _Row2.default,
+              null,
               _react2.default.createElement(
-                _OverlayTrigger2.default,
-                {
-                  placement: "top",
-                  overlay: _react2.default.createElement(
-                    _Tooltip2.default,
-                    { id: "close" },
-                    "Close"
-                  )
-                },
+                _Col2.default,
+                { xs: 12, className: "text-right" },
                 _react2.default.createElement(
-                  _reactRouterDom.Link,
-                  { to: "/" },
-                  _react2.default.createElement("i", { className: "fa fa-close" })
+                  _OverlayTrigger2.default,
+                  {
+                    placement: "top",
+                    overlay: _react2.default.createElement(
+                      _Tooltip2.default,
+                      { id: "close" },
+                      "Close"
+                    )
+                  },
+                  _react2.default.createElement(
+                    _reactRouterDom.Link,
+                    { to: "/" },
+                    _react2.default.createElement("i", { className: "fa fa-close" })
+                  )
                 )
               )
             )
-          )
-        ),
-        _react2.default.createElement(
-          "h2",
-          null,
-          "Check your email!"
-        ),
-        _react2.default.createElement(
-          "h5",
-          null,
-          "Enter your ",
+          ),
           _react2.default.createElement(
-            "strong",
+            "h2",
             null,
-            "confirmation code"
-          ),
-          "."
-        ),
-        _react2.default.createElement(
-          "form",
-          null,
-          _react2.default.createElement(
-            "div",
-            { className: "confirmation-code m-b-20" },
-            _react2.default.createElement(
-              _InputGroup2.default,
-              { className: "code-group" },
-              _react2.default.createElement(_FormControl2.default, {
-                autoFocus: true,
-                value: this.state.digit_one,
-                onChange: this.handleChange,
-                onKeyUp: this.handleKeyUp,
-                name: "digit_one",
-                ref: function ref(input) {
-                  _this2.digit_one_input = input;
-                },
-                type: "text",
-                maxLength: "1"
-              }),
-              _react2.default.createElement(_FormControl2.default, {
-                value: this.state.digit_two,
-                onChange: this.handleChange,
-                onKeyUp: this.handleKeyUp,
-                name: "digit_two",
-                ref: function ref(input) {
-                  _this2.digit_two_input = input;
-                },
-                type: "text",
-                maxLength: "1"
-              }),
-              _react2.default.createElement(_FormControl2.default, {
-                value: this.state.digit_three,
-                onChange: this.handleChange,
-                onKeyUp: this.handleKeyUp,
-                name: "digit_three",
-                ref: function ref(input) {
-                  _this2.digit_three_input = input;
-                },
-                type: "text",
-                maxLength: "1"
-              })
-            ),
-            _react2.default.createElement(
-              "div",
-              { className: "code-separator" },
-              "\u2014"
-            ),
-            _react2.default.createElement(
-              _InputGroup2.default,
-              { className: "code-group" },
-              _react2.default.createElement(_FormControl2.default, {
-                value: this.state.digit_four,
-                onChange: this.handleChange,
-                onKeyUp: this.handleKeyUp,
-                name: "digit_four",
-                ref: function ref(input) {
-                  _this2.digit_four_input = input;
-                },
-                type: "text",
-                maxLength: "1"
-              }),
-              _react2.default.createElement(_FormControl2.default, {
-                value: this.state.digit_five,
-                onChange: this.handleChange,
-                onKeyUp: this.handleKeyUp,
-                name: "digit_five",
-                ref: function ref(input) {
-                  _this2.digit_five_input = input;
-                },
-                type: "text",
-                maxLength: "1"
-              }),
-              _react2.default.createElement(_FormControl2.default, {
-                value: this.state.digit_six,
-                onChange: this.handleChange,
-                onKeyUp: this.handleKeyUp,
-                name: "digit_six",
-                ref: function ref(input) {
-                  _this2.digit_six_input = input;
-                },
-                type: "text",
-                maxLength: "1"
-              })
-            ),
-            _react2.default.createElement("div", { className: "clearfix" })
+            "Check your email!"
           ),
           _react2.default.createElement(
-            _HelpBlock2.default,
-            { className: "m-b-20" },
-            "We sent a six-digit confirmation code to",
-            " ",
+            "h5",
+            null,
+            "Enter your ",
             _react2.default.createElement(
               "strong",
               null,
-              "email@here.com"
+              "confirmation code"
             ),
-            " to verify your email address."
-          ),
-          this.state.error && _react2.default.createElement(
-            _HelpBlock2.default,
-            { className: "m-b-20" },
-            "The confirmation code doesn't match the one we have on record."
+            "."
           ),
           _react2.default.createElement(
-            _Button2.default,
-            {
-              onClick: this.submitConfirmationCode,
-              bsSize: "lg",
-              bsStyle: "primary",
-              block: true,
-              className: "m-b-40"
-            },
-            "Reset Password"
+            "form",
+            null,
+            _react2.default.createElement(
+              "div",
+              { className: "confirmation-code m-b-20" },
+              _react2.default.createElement(
+                _InputGroup2.default,
+                { className: "code-group" },
+                _react2.default.createElement(_FormControl2.default, {
+                  autoFocus: true,
+                  value: this.state.digit_one,
+                  onChange: this.handleChange,
+                  onKeyUp: this.handleKeyUp,
+                  name: "digit_one",
+                  ref: function ref(input) {
+                    _this2.digit_one_input = input;
+                  },
+                  type: "text",
+                  maxLength: "1"
+                }),
+                _react2.default.createElement(_FormControl2.default, {
+                  value: this.state.digit_two,
+                  onChange: this.handleChange,
+                  onKeyUp: this.handleKeyUp,
+                  name: "digit_two",
+                  ref: function ref(input) {
+                    _this2.digit_two_input = input;
+                  },
+                  type: "text",
+                  maxLength: "1"
+                }),
+                _react2.default.createElement(_FormControl2.default, {
+                  value: this.state.digit_three,
+                  onChange: this.handleChange,
+                  onKeyUp: this.handleKeyUp,
+                  name: "digit_three",
+                  ref: function ref(input) {
+                    _this2.digit_three_input = input;
+                  },
+                  type: "text",
+                  maxLength: "1"
+                })
+              ),
+              _react2.default.createElement(
+                "div",
+                { className: "code-separator" },
+                "\u2014"
+              ),
+              _react2.default.createElement(
+                _InputGroup2.default,
+                { className: "code-group" },
+                _react2.default.createElement(_FormControl2.default, {
+                  value: this.state.digit_four,
+                  onChange: this.handleChange,
+                  onKeyUp: this.handleKeyUp,
+                  name: "digit_four",
+                  ref: function ref(input) {
+                    _this2.digit_four_input = input;
+                  },
+                  type: "text",
+                  maxLength: "1"
+                }),
+                _react2.default.createElement(_FormControl2.default, {
+                  value: this.state.digit_five,
+                  onChange: this.handleChange,
+                  onKeyUp: this.handleKeyUp,
+                  name: "digit_five",
+                  ref: function ref(input) {
+                    _this2.digit_five_input = input;
+                  },
+                  type: "text",
+                  maxLength: "1"
+                }),
+                _react2.default.createElement(_FormControl2.default, {
+                  value: this.state.digit_six,
+                  onChange: this.handleChange,
+                  onKeyUp: this.handleKeyUp,
+                  name: "digit_six",
+                  ref: function ref(input) {
+                    _this2.digit_six_input = input;
+                  },
+                  type: "text",
+                  maxLength: "1"
+                })
+              ),
+              _react2.default.createElement("div", { className: "clearfix" })
+            ),
+            _react2.default.createElement(
+              _HelpBlock2.default,
+              { className: "m-b-20" },
+              "We sent a six-digit confirmation code to",
+              " ",
+              _react2.default.createElement(
+                "strong",
+                null,
+                "email@here.com"
+              ),
+              " to verify your email address."
+            ),
+            _react2.default.createElement(
+              _Button2.default,
+              {
+                onClick: this.submitConfirmationCode,
+                bsSize: "lg",
+                bsStyle: "primary",
+                block: true,
+                className: "m-b-40"
+              },
+              "Reset Password"
+            )
+          ),
+          _react2.default.createElement(
+            "p",
+            { className: "copyright m-b-0" },
+            "\xA9 2017 Stitch Technologies, Inc"
           )
-        ),
-        _react2.default.createElement(
-          "p",
-          { className: "copyright m-b-0" },
-          "\xA9 2017 Stitch Technologies, Inc"
         )
       );
     }
@@ -43526,6 +43538,197 @@ return Promise;
 /***/ (function(module, exports) {
 
 /* (ignored) */
+
+/***/ }),
+/* 408 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _values = __webpack_require__(375);
+
+var _values2 = _interopRequireDefault(_values);
+
+var _extends3 = __webpack_require__(8);
+
+var _extends4 = _interopRequireDefault(_extends3);
+
+var _objectWithoutProperties2 = __webpack_require__(14);
+
+var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+var _classCallCheck2 = __webpack_require__(9);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _possibleConstructorReturn2 = __webpack_require__(10);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(11);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _classnames = __webpack_require__(12);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(5);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _bootstrapUtils = __webpack_require__(16);
+
+var _StyleConfig = __webpack_require__(53);
+
+var _CloseButton = __webpack_require__(409);
+
+var _CloseButton2 = _interopRequireDefault(_CloseButton);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var propTypes = {
+  onDismiss: _propTypes2['default'].func,
+  closeLabel: _propTypes2['default'].string
+};
+
+var defaultProps = {
+  closeLabel: 'Close alert'
+};
+
+var Alert = function (_React$Component) {
+  (0, _inherits3['default'])(Alert, _React$Component);
+
+  function Alert() {
+    (0, _classCallCheck3['default'])(this, Alert);
+    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
+  }
+
+  Alert.prototype.render = function render() {
+    var _extends2;
+
+    var _props = this.props,
+        onDismiss = _props.onDismiss,
+        closeLabel = _props.closeLabel,
+        className = _props.className,
+        children = _props.children,
+        props = (0, _objectWithoutProperties3['default'])(_props, ['onDismiss', 'closeLabel', 'className', 'children']);
+
+    var _splitBsProps = (0, _bootstrapUtils.splitBsProps)(props),
+        bsProps = _splitBsProps[0],
+        elementProps = _splitBsProps[1];
+
+    var dismissable = !!onDismiss;
+    var classes = (0, _extends4['default'])({}, (0, _bootstrapUtils.getClassSet)(bsProps), (_extends2 = {}, _extends2[(0, _bootstrapUtils.prefix)(bsProps, 'dismissable')] = dismissable, _extends2));
+
+    return _react2['default'].createElement(
+      'div',
+      (0, _extends4['default'])({}, elementProps, {
+        role: 'alert',
+        className: (0, _classnames2['default'])(className, classes)
+      }),
+      dismissable && _react2['default'].createElement(_CloseButton2['default'], {
+        onClick: onDismiss,
+        label: closeLabel
+      }),
+      children
+    );
+  };
+
+  return Alert;
+}(_react2['default'].Component);
+
+Alert.propTypes = propTypes;
+Alert.defaultProps = defaultProps;
+
+exports['default'] = (0, _bootstrapUtils.bsStyles)((0, _values2['default'])(_StyleConfig.State), _StyleConfig.State.INFO, (0, _bootstrapUtils.bsClass)('alert', Alert));
+module.exports = exports['default'];
+
+/***/ }),
+/* 409 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _classCallCheck2 = __webpack_require__(9);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _possibleConstructorReturn2 = __webpack_require__(10);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(11);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _propTypes = __webpack_require__(5);
+
+var PropTypes = _interopRequireWildcard(_propTypes);
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var propTypes = {
+  label: PropTypes.string.isRequired,
+  onClick: PropTypes.func
+};
+
+var CloseButton = function (_React$Component) {
+  (0, _inherits3['default'])(CloseButton, _React$Component);
+
+  function CloseButton() {
+    (0, _classCallCheck3['default'])(this, CloseButton);
+    return (0, _possibleConstructorReturn3['default'])(this, _React$Component.apply(this, arguments));
+  }
+
+  CloseButton.prototype.render = function render() {
+    var _props = this.props,
+        label = _props.label,
+        onClick = _props.onClick;
+
+    return _react2['default'].createElement(
+      'button',
+      {
+        type: 'button',
+        className: 'close',
+        onClick: onClick
+      },
+      _react2['default'].createElement(
+        'span',
+        { 'aria-hidden': 'true' },
+        '\xD7'
+      ),
+      _react2['default'].createElement(
+        'span',
+        { className: 'sr-only' },
+        label
+      )
+    );
+  };
+
+  return CloseButton;
+}(_react2['default'].Component);
+
+CloseButton.propTypes = propTypes;
+
+exports['default'] = CloseButton;
+module.exports = exports['default'];
 
 /***/ })
 /******/ ]);
