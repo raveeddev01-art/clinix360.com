@@ -11,6 +11,10 @@ import Button from "react-bootstrap/lib/Button";
 
 @observer
 export default class AppDownload extends Component {
+  constructor(props) {
+    super();
+  }
+
   render() {
     return (
       <div className="authentication-card download-card text-center">
@@ -76,9 +80,12 @@ export default class AppDownload extends Component {
           </Col>
         </Row>
 
-        <Button bsSize="lg" className="m-b-40">
+        <a
+          href={`https://${store.instance.teamSlug}.localhost:4443`}
+          className="btn btn-lg m-b-40"
+        >
           Skip & Launch
-        </Button>
+        </a>
 
         <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>

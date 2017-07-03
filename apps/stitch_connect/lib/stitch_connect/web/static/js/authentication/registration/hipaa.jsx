@@ -31,17 +31,25 @@ export default class Hipaa extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log(store.instance);
-    // post("/api/v1/users", {
-    //   body: { email: this.state.email }
-    // }).then(response => {
-    //   store.instance.userId = response.data.id;
-    //   post("/api/v1/users/send-confirmation-code", {
-    //     body: { id: response.data.id }
-    //   }).then(response => {
-    //     this.props.history.push("/signup/confirmation-code");
-    //   });
-    // });
+    post(`/api/v1/teams`, {
+      body: {
+        name: store.instance.teamName
+      }
+    }).then(response => {
+      store.instance.teamId = response.data.id;
+      store.instance.teamSlug = response.data.slug;
+      patch(`/api/v1/users/${store.instance.userId}`, {
+        body: {
+          fullname: store.instance.fullname,
+          username: store.instance.username,
+          password: store.instance.password,
+          pin: store.instance.pin,
+          team_id: response.data.id
+        }
+      }).then(response => {
+        this.props.history.push("/signup/app-download");
+      });
+    });
   };
 
   render() {
@@ -50,7 +58,10 @@ export default class Hipaa extends Component {
         <div className="card-header">
           <Row>
             <Col xs={6} className="text-left">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="back">Back</Tooltip>}
+              >
                 <Link to="/signup/invites">
                   <i className="fa fa-arrow-left" />
                 </Link>
@@ -60,7 +71,7 @@ export default class Hipaa extends Component {
             <Col xs={6} className="text-right">
               <OverlayTrigger
                 placement="top"
-                overlay={<Tooltip>Restart</Tooltip>}
+                overlay={<Tooltip id="restart">Restart</Tooltip>}
               >
                 <Link to="/signup/team-name">
                   <i className="fa fa-refresh" />

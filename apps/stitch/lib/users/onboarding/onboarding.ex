@@ -35,4 +35,30 @@ defmodule Stitch.User.Onboarding do
       false
     end
   end
+
+  def update_user(user_id, user_params) do
+    case Repo.get(User, user_id) do
+      nil ->
+        {:error, "User doesn't exist."}
+      user ->
+        if user.onboarded do
+          {:error, "Cannot update a user who has already been onboarded."}
+        else
+          changeset = User.onboarding_complete_changeset(user, user_params)
+          changeset = case changeset do
+            %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+              Ecto.Changeset.put_change(changeset, :encrypted_password, Comeonin.Bcrypt.hashpwsalt(pass))
+            _ ->
+              changeset
+          end
+
+          case Repo.update(changeset) do
+            {:ok, user} ->
+              user
+            {:error, _} ->
+              {:error, "Could not finish onboarding user."}
+          end
+        end
+    end
+  end
 end

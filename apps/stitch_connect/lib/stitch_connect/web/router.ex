@@ -31,10 +31,10 @@ defmodule StitchConnect.Web.Router do
     get "/signup/password", AuthenticationController, :index
     get "/signup/pin", AuthenticationController, :index
     get "/signup/hipaa", AuthenticationController, :index
+    get "/signup/app-download", AuthenticationController, :index
 
     # get "/signup/phone-number", AuthenticationController, :index
     # get "/signup/invites", AuthenticationController, :index
-    # get "/signup/app-download", AuthenticationController, :index
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -44,8 +44,9 @@ defmodule StitchConnect.Web.Router do
     post "/users", UserController, :create
     post "/users/send-confirmation-code", UserController, :send_confirmation_code
     post "/users/submit-confirmation-code", UserController, :submit_confirmation_code
-    # post "/users/update", UserController, :update
+    patch "/users/:id", UserController, :update
 
+    post "/teams", TeamController, :create
     post "/teams/availability", TeamController, :availability
   end
 end

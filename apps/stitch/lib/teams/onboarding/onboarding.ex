@@ -16,4 +16,15 @@ defmodule Stitch.Team.Onboarding do
     end
   end
   def name_available?(_), do: false
+
+  def create_team(name) when byte_size(name) > 0 do
+    slug = Slugger.slugify_downcase(name)
+    changeset = Team.changeset(%Team{}, %{name: name, slug: slug})
+    case Repo.insert(changeset) do
+      {:ok, team} ->
+        team
+      {:error, changeset} ->
+        {:error, "Team wasn't created"}
+    end
+  end
 end

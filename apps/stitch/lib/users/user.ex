@@ -10,6 +10,8 @@ defmodule Stitch.User do
     field :confirmation_code, :string
     field :email_confirmed, :boolean, default: false
     field :onboarded, :boolean, default: false
+    field :username, :string
+    field :pin, :string
     belongs_to :team, Stitch.Team
 
     field :password, :string, virtual: true
@@ -40,6 +42,13 @@ defmodule Stitch.User do
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> put_change(:confirmation_code, confirmation_code)
+  end
+
+  def onboarding_complete_changeset(struct, params) do
+    struct
+    |> cast(params, [:fullname, :username, :password, :pin, :team_id])
+    |> validate_required([:username, :pin, :team_id])
+    |> put_change(:onboarded, true)
   end
 
   def password_update_changeset(struct, params) do

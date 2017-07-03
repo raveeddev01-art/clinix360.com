@@ -1,2 +1,3 @@
-<h1>Example</h1>
-<p><%= @subdomain %></p>
+<h1>WIP Team Subdomain</h1>
+
+<p>You're inside your team: <%= @subdomain %></p>

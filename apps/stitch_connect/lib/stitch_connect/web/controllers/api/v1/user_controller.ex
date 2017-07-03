@@ -38,22 +38,15 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  # def update(conn, %{"id" => id, "password" => password}) do
-  #   user = Stitch.UserQueries.get_by_id(id)
-  #   if user.onboarded == true do
-  #     conn
-  #     |> put_status(:unprocessable_entity)
-  #     |> json(%{message: "Can't update password for an already onboarded user."})
-  #   else
-  #     case Stitch.User.Authentication.update_password(id, password) do
-  #       true ->
-  #         conn
-  #         |> json(%{message: "Password updated."})
-  #       _ ->
-  #         conn
-  #         |> put_status(:unprocessable_entity)
-  #         |> json(%{message: "Could not update the user's password"})
-  #     end
-  #   end
-  # end
+  def update(conn, %{"id" => id, "fullname" => fullname, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
+    case Stitch.User.Onboarding.update_user(id, %{fullname: fullname, username: username, password: password, pin: pin, team_id: team_id}) do
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: message})
+      user ->
+        conn
+        |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
+    end
+  end
 end
