@@ -23,17 +23,32 @@ In your terminal bring it in:
 source app/stitch/.env
 ```
 
+Install Elixir dependencies. Change directory to the root folder of the project.
+
+```
+cd ~/Work/stitch-phoenix
+mix deps.get
+```
+
+Create local database.
+
+```
+cd ~/Work/stitch-phoenix/apps/stitch/
+mix ecto.create
+mix ecto.migrate
+```
+
+Install frontend dependencies. Change directory to the stitch_connect folder.
+
+```
+cd ~/Work/stith-phoenix/apps/stitch_connect/
+yarn
+```
+
 Run the stitch_connect app.
 
 ```
-cd /
-mix deps.get
-
-
-cd /apps/stitch_connect
-yarn
-mix ecto.create
-mix ecto.migrate
+cd ~/Work/stitch-phoenix/apps/stitch_connect
 mix phx.server
 ```
 
