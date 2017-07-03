@@ -198,16 +198,6 @@ export default class Confirmation extends Component {
               We sent a six-digit confirmation code to{" "}
               <strong>email@here.com</strong> to verify your email address.
             </HelpBlock>
-
-            {/*<Button
-              onClick={this.submitConfirmationCode}
-              bsSize="lg"
-              bsStyle="primary"
-              block
-              className="m-b-40"
-            >
-              Reset Password
-            </Button>*/}
           </form>
 
           <p className="copyright m-b-0">

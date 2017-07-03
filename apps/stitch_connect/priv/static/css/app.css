@@ -5735,7 +5735,10 @@ body {
         font-size: 28px;
         display: inline-block;
         border-radius: 6px;
-        padding: 5px 14px; }
+        padding: 4px 14px; }
+        .authentication-wrapper .authentication-card .card-header a i.fa {
+          position: relative;
+          top: -1px; }
         .authentication-wrapper .authentication-card .card-header a:hover {
           color: #666;
           background: #eee; }
