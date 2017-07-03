@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { observer } from "mobx-react";
 import store from "../authentication_store.js";
 
+import Alert from "react-bootstrap/lib/Alert";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Row from "react-bootstrap/lib/Row";
@@ -51,77 +52,79 @@ export default class Password extends Component {
 
   render() {
     return (
-      <div className="authentication-card text-center">
-        <div className="card-header">
-          <Row>
-            <Col xs={6} className="text-left">
-              <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip id="back">Back</Tooltip>}
-              >
-                <Link to="/signup/username">
-                  <i className="fa fa-arrow-left" />
-                </Link>
-              </OverlayTrigger>
-            </Col>
+      <div>
+        {this.state.error &&
+          <Alert>The password doesn't meet the requirements.</Alert>}
 
-            <Col xs={6} className="text-right">
-              <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip id="restart">Restart</Tooltip>}
-              >
-                <Link to="/signup/team-name">
-                  <i className="fa fa-refresh" />
-                </Link>
-              </OverlayTrigger>
-            </Col>
-          </Row>
-        </div>
+        <div className="authentication-card text-center">
+          <div className="card-header">
+            <Row>
+              <Col xs={6} className="text-left">
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip id="back">Back</Tooltip>}
+                >
+                  <Link to="/signup/username">
+                    <i className="fa fa-arrow-left" />
+                  </Link>
+                </OverlayTrigger>
+              </Col>
 
-        <h2>Password</h2>
+              <Col xs={6} className="text-right">
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip id="restart">Restart</Tooltip>}
+                >
+                  <Link to="/signup/team-name">
+                    <i className="fa fa-refresh" />
+                  </Link>
+                </OverlayTrigger>
+              </Col>
+            </Row>
+          </div>
 
-        <h5>
-          Enter a <strong>password</strong>.
-        </h5>
+          <h2>Password</h2>
 
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup bsSize="large">
-            <FormControl
-              name="password"
-              required
-              autoFocus
-              type="password"
-              placeholder="Password"
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
+          <h5>
+            Enter a <strong>password</strong>.
+          </h5>
 
-          <HelpBlock className="m-b-20">
-            Your password must contain:
-            <ul className="list-unstyled">
-              <li>At least 8 characters</li>
-              <li>An uppercase letter</li>
-              <li>A lowercase letter</li>
-              <li>A number</li>
-              <li>A special character (e.g. !$#)</li>
-            </ul>
-          </HelpBlock>
+          <form onSubmit={this.handleSubmit}>
+            <FormGroup bsSize="large">
+              <FormControl
+                name="password"
+                required
+                autoFocus
+                type="password"
+                placeholder="Password"
+                value={this.state.password}
+                onChange={this.handleChange}
+              />
+            </FormGroup>
 
-          {this.state.error &&
             <HelpBlock className="m-b-20">
-              The password doesn't meet the requirements
-            </HelpBlock>}
+              Your password must contain:
+              <ul className="list-unstyled">
+                <li>At least 8 characters</li>
+                <li>An uppercase letter</li>
+                <li>A lowercase letter</li>
+                <li>A number</li>
+                <li>A special character (e.g. !$#)</li>
+              </ul>
+            </HelpBlock>
 
-          <input
-            disabled={!this.state.formValid}
-            value="Next"
-            type="submit"
-            className="btn btn-block btn-lg btn-primary m-b-40"
-          />
-        </form>
+            <input
+              disabled={!this.state.formValid}
+              value="Next"
+              type="submit"
+              className="btn btn-block btn-lg btn-primary m-b-40"
+            />
+          </form>
 
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
+          <p className="copyright m-b-0">
+            &copy; 2017 Stitch Technologies, Inc
+          </p>
+        </div>
       </div>
     );
   }

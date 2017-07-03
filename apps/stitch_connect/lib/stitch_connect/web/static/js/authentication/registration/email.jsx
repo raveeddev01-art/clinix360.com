@@ -17,7 +17,8 @@ export default class Email extends Component {
     super();
     store.instance = {};
     this.state = {
-      email: ""
+      email: "",
+      formValid: false
     };
   }
 
@@ -27,7 +28,8 @@ export default class Email extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      formValid: value.length > 0
     });
   };
 
@@ -87,7 +89,13 @@ export default class Email extends Component {
             team already has an account, ask your admin for an invitation.
           </HelpBlock>
 
+          {/*<input
+            value="Next"
+            type="submit"
+            className="btn btn-block btn-lg btn-primary m-b-40"
+          />*/}
           <input
+            disabled={!this.state.formValid}
             value="Next"
             type="submit"
             className="btn btn-block btn-lg btn-primary m-b-40"
