@@ -33,11 +33,15 @@ export default class Email extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    post("/api/v1/users/send-confirmation-code", {
+    post("/api/v1/users", {
       body: { email: this.state.email }
     }).then(response => {
       store.instance.userId = response.data.id;
-      this.props.history.push("/signup/confirmation-code");
+      post("/api/v1/users/send-confirmation-code", {
+        body: { id: response.data.id }
+      }).then(response => {
+        this.props.history.push("/signup/confirmation-code");
+      });
     });
   };
 

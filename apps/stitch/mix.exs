@@ -30,7 +30,8 @@ defmodule Stitch.Mixfile do
       {:postgrex, "~> 0.13.3"},
       {:comeonin, "~> 3.0"},
       {:ex_machina, "~> 2.0", only: :test},
-      {:slugger, "~> 0.2"}
+      {:slugger, "~> 0.2"},
+      {:bamboo, "~> 0.8"}
     ]
   end
 end

@@ -13,6 +13,7 @@ export default class TeamName extends Component {
     super();
     this.state = {
       error: false,
+      nameAvailable: false,
       team_name: ""
     };
   }
@@ -22,19 +23,24 @@ export default class TeamName extends Component {
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
+    this.checkAvailability(value);
     this.setState({
       [name]: value
     });
   };
 
+  checkAvailability = name => {
+    post("/api/v1/teams/availability", {
+      body: { name: name }
+    }).then(response => {
+      this.setState({ nameAvailable: response.data.available });
+    });
+  };
+
   handleSubmit = event => {
     event.preventDefault();
-    post("/api/v1/teams/create", {
-      body: { user_id: store.instance.userId, name: this.state.team_name }
-    }).then(response => {
-      console.log(response);
-      this.props.history.push("/signup/full-name");
-    });
+    store.instance.teamName = this.state.team_name;
+    this.props.history.push("/signup/full-name");
   };
 
   render() {
@@ -71,6 +77,7 @@ export default class TeamName extends Component {
             </HelpBlock>}
 
           <input
+            disabled={!this.state.nameAvailable}
             value="Next"
             type="submit"
             className="btn btn-block btn-lg btn-primary m-b-40"

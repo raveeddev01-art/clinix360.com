@@ -4,9 +4,11 @@ defmodule Stitch.User do
 
   schema "users" do
     field :email, :string
+    field :roles, {:array, :string}
     field :encrypted_password, :string
     field :fullname, :string
     field :confirmation_code, :string
+    field :email_confirmed, :boolean, default: false
     field :onboarded, :boolean, default: false
     belongs_to :team, Stitch.Team
 

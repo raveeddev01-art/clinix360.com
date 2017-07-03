@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import store from "../authentication_store.js";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -9,11 +11,13 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-export default class FirstName extends Component {
+@observer
+export default class FullName extends Component {
   constructor(props) {
     super();
     this.state = {
-      fullname: ""
+      fullname: "",
+      formValid: false
     };
   }
 
@@ -23,39 +27,42 @@ export default class FirstName extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      formValid: value.length > 0
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    // post("/api/v1/users/create", {
-    //   body: { fullname: this.state.fullname }
-    // }).then(response => {
-    //   console.log(response);
-    //   console.log("Created");
-    // });
-    // to="/signup/confirmation-code"
+    console.log(store);
+    console.log(store.instance);
+    store.instance.fullname = this.state.fullname;
+    this.props.history.push("/signup/username");
   };
 
   render() {
     return (
       <div className="authentication-card text-center">
-
         <div className="card-header">
           <Row>
             <Col xs={6} className="text-left">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="back">Back</Tooltip>}
+              >
                 <Link to="/signup/team-name">
-                  <i className="fa fa-arrow-left"></i>
+                  <i className="fa fa-arrow-left" />
                 </Link>
               </OverlayTrigger>
             </Col>
 
             <Col xs={6} className="text-right">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Restart</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="restart">Restart</Tooltip>}
+              >
                 <Link to="/signup/team-name">
-                  <i className="fa fa-refresh"></i>
+                  <i className="fa fa-refresh" />
                 </Link>
               </OverlayTrigger>
             </Col>
@@ -64,7 +71,9 @@ export default class FirstName extends Component {
 
         <h2>Name</h2>
 
-        <h5>Enter your <strong>full name</strong>.</h5>
+        <h5>
+          Enter your <strong>full name</strong>.
+        </h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
@@ -79,9 +88,12 @@ export default class FirstName extends Component {
             />
           </FormGroup>
 
-          <HelpBlock className="m-b-20">Your name will be shown next to your profile and messages.</HelpBlock>
+          <HelpBlock className="m-b-20">
+            Your name will be shown next to your profile and messages.
+          </HelpBlock>
 
           <input
+            disabled={!this.state.formValid}
             value="Next"
             type="submit"
             className="btn btn-block btn-lg btn-primary m-b-40"

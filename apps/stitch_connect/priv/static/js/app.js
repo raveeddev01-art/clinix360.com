@@ -8034,7 +8034,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthenticationStore = undefined;
 
-var _desc, _value, _class, _descriptor, _instance, _instance2, _store, _mutatorMap;
+var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _instance, _instance2, _store, _mutatorMap;
 
 var _mobx = __webpack_require__(172);
 
@@ -8089,7 +8089,21 @@ var AuthenticationStore = (_class = function AuthenticationStore() {
   _classCallCheck(this, AuthenticationStore);
 
   _initDefineProp(this, "userId", _descriptor, this);
+
+  _initDefineProp(this, "teamName", _descriptor2, this);
+
+  _initDefineProp(this, "fullname", _descriptor3, this);
 }, (_descriptor = _applyDecoratedDescriptor(_class.prototype, "userId", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return "";
+  }
+}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "teamName", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return "";
+  }
+}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "fullname", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
@@ -37699,11 +37713,15 @@ var Email = (0, _mobxReact.observer)(_class = function (_Component) {
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      post("/api/v1/users/send-confirmation-code", {
+      post("/api/v1/users", {
         body: { email: _this.state.email }
       }).then(function (response) {
         _authentication_store2.default.instance.userId = response.data.id;
-        _this.props.history.push("/signup/confirmation-code");
+        post("/api/v1/users/send-confirmation-code", {
+          body: { id: response.data.id }
+        }).then(function (response) {
+          _this.props.history.push("/signup/confirmation-code");
+        });
       });
     };
 
@@ -37920,7 +37938,7 @@ var Confirmation = (0, _mobxReact.observer)(_class = function (_Component) {
 
     _this.submitConfirmationCode = function () {
       var confirmationCode = _this.state.digit_one + _this.state.digit_two + _this.state.digit_three + _this.state.digit_four + _this.state.digit_five + _this.state.digit_six;
-      post("/api/v1/users/submit_confirmation_code", {
+      post("/api/v1/users/submit-confirmation-code", {
         body: {
           user_id: _authentication_store2.default.instance.userId,
           confirmation_code: confirmationCode
@@ -38106,7 +38124,13 @@ var Confirmation = (0, _mobxReact.observer)(_class = function (_Component) {
           ),
           _react2.default.createElement(
             _Button2.default,
-            { onClick: this.submitConfirmationCode, bsSize: "lg", bsStyle: "primary", block: true, className: "m-b-40" },
+            {
+              onClick: this.submitConfirmationCode,
+              bsSize: "lg",
+              bsStyle: "primary",
+              block: true,
+              className: "m-b-40"
+            },
             "Reset Password"
           )
         ),
@@ -38413,21 +38437,27 @@ var TeamName = (0, _mobxReact.observer)(_class = function (_Component) {
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
+      _this.checkAvailability(value);
       _this.setState(_defineProperty({}, name, value));
+    };
+
+    _this.checkAvailability = function (name) {
+      post("/api/v1/teams/availability", {
+        body: { name: name }
+      }).then(function (response) {
+        _this.setState({ nameAvailable: response.data.available });
+      });
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      post("/api/v1/teams/create", {
-        body: { user_id: _authentication_store2.default.instance.userId, name: _this.state.team_name }
-      }).then(function (response) {
-        console.log(response);
-        _this.props.history.push("/signup/full-name");
-      });
+      _authentication_store2.default.instance.teamName = _this.state.team_name;
+      _this.props.history.push("/signup/full-name");
     };
 
     _this.state = {
       error: false,
+      nameAvailable: false,
       team_name: ""
     };
     return _this;
@@ -38484,6 +38514,7 @@ var TeamName = (0, _mobxReact.observer)(_class = function (_Component) {
             "This team name is taken. Please choose another one."
           ),
           _react2.default.createElement("input", {
+            disabled: !this.state.nameAvailable,
             value: "Next",
             type: "submit",
             className: "btn btn-block btn-lg btn-primary m-b-40"
@@ -38517,11 +38548,19 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _class;
+
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(15);
+
+var _mobxReact = __webpack_require__(75);
+
+var _authentication_store = __webpack_require__(76);
+
+var _authentication_store2 = _interopRequireDefault(_authentication_store);
 
 var _OverlayTrigger = __webpack_require__(22);
 
@@ -38561,40 +38600,40 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var FirstName = function (_Component) {
-  _inherits(FirstName, _Component);
+var FullName = (0, _mobxReact.observer)(_class = function (_Component) {
+  _inherits(FullName, _Component);
 
-  function FirstName(props) {
-    _classCallCheck(this, FirstName);
+  function FullName(props) {
+    _classCallCheck(this, FullName);
 
-    var _this = _possibleConstructorReturn(this, (FirstName.__proto__ || Object.getPrototypeOf(FirstName)).call(this));
+    var _this = _possibleConstructorReturn(this, (FullName.__proto__ || Object.getPrototypeOf(FullName)).call(this));
 
     _this.handleChange = function (event) {
+      var _this$setState;
+
       var target = event.target;
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState(_defineProperty({}, name, value));
+      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "formValid", value.length > 0), _this$setState));
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      // post("/api/v1/users/create", {
-      //   body: { fullname: this.state.fullname }
-      // }).then(response => {
-      //   console.log(response);
-      //   console.log("Created");
-      // });
-      // to="/signup/confirmation-code"
+      console.log(_authentication_store2.default);
+      console.log(_authentication_store2.default.instance);
+      _authentication_store2.default.instance.fullname = _this.state.fullname;
+      _this.props.history.push("/signup/username");
     };
 
     _this.state = {
-      fullname: ""
+      fullname: "",
+      formValid: false
     };
     return _this;
   }
 
-  _createClass(FirstName, [{
+  _createClass(FullName, [{
     key: "render",
     value: function render() {
       return _react2.default.createElement(
@@ -38611,11 +38650,14 @@ var FirstName = function (_Component) {
               { xs: 6, className: "text-left" },
               _react2.default.createElement(
                 _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
+                {
+                  placement: "top",
+                  overlay: _react2.default.createElement(
                     _Tooltip2.default,
-                    null,
+                    { id: "back" },
                     "Back"
-                  ) },
+                  )
+                },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: "/signup/team-name" },
@@ -38628,11 +38670,14 @@ var FirstName = function (_Component) {
               { xs: 6, className: "text-right" },
               _react2.default.createElement(
                 _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
+                {
+                  placement: "top",
+                  overlay: _react2.default.createElement(
                     _Tooltip2.default,
-                    null,
+                    { id: "restart" },
                     "Restart"
-                  ) },
+                  )
+                },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: "/signup/team-name" },
@@ -38680,6 +38725,7 @@ var FirstName = function (_Component) {
             "Your name will be shown next to your profile and messages."
           ),
           _react2.default.createElement("input", {
+            disabled: !this.state.formValid,
             value: "Next",
             type: "submit",
             className: "btn btn-block btn-lg btn-primary m-b-40"
@@ -38694,10 +38740,10 @@ var FirstName = function (_Component) {
     }
   }]);
 
-  return FirstName;
-}(_react.Component);
+  return FullName;
+}(_react.Component)) || _class;
 
-exports.default = FirstName;
+exports.default = FullName;
 
 /***/ }),
 /* 384 */
@@ -39020,11 +39066,14 @@ var Username = function (_Component) {
               { xs: 6, className: "text-right" },
               _react2.default.createElement(
                 _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
+                {
+                  placement: "top",
+                  overlay: _react2.default.createElement(
                     _Tooltip2.default,
                     null,
                     "Restart"
-                  ) },
+                  )
+                },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: "/signup/team-name" },

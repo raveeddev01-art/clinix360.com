@@ -41,21 +41,23 @@ export default class Username extends Component {
   render() {
     return (
       <div className="authentication-card text-center">
-
         <div className="card-header">
           <Row>
             <Col xs={6} className="text-left">
               <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
                 <Link to="/signup/phone-number">
-                  <i className="fa fa-arrow-left"></i>
+                  <i className="fa fa-arrow-left" />
                 </Link>
               </OverlayTrigger>
             </Col>
 
             <Col xs={6} className="text-right">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Restart</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip>Restart</Tooltip>}
+              >
                 <Link to="/signup/team-name">
-                  <i className="fa fa-refresh"></i>
+                  <i className="fa fa-refresh" />
                 </Link>
               </OverlayTrigger>
             </Col>
@@ -64,7 +66,9 @@ export default class Username extends Component {
 
         <h2>Username</h2>
 
-        <h5>Enter a <strong>username</strong>.</h5>
+        <h5>
+          Enter a <strong>username</strong>.
+        </h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
@@ -79,7 +83,10 @@ export default class Username extends Component {
             />
           </FormGroup>
 
-          <HelpBlock className="m-b-20">Your username is how other users will mention you in conversations. Pick something familiar.</HelpBlock>
+          <HelpBlock className="m-b-20">
+            Your username is how other users will mention you in conversations.
+            Pick something familiar.
+          </HelpBlock>
 
           <input
             value="Next"

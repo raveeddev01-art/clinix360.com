@@ -18,10 +18,4 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
     conn
     |> json(%{available: Team.Onboarding.name_available?(name)})
   end
-
-  def exists(conn, %{"name" => name}) do
-    exists = !Team.Onboarding.name_available?(name)
-    conn
-    |> json(%{exists: exists})
-  end
 end

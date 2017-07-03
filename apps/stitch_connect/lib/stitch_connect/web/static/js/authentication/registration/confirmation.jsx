@@ -69,7 +69,7 @@ export default class Confirmation extends Component {
       this.state.digit_four +
       this.state.digit_five +
       this.state.digit_six;
-    post("/api/v1/users/submit_confirmation_code", {
+    post("/api/v1/users/submit-confirmation-code", {
       body: {
         user_id: store.instance.userId,
         confirmation_code: confirmationCode
@@ -197,7 +197,13 @@ export default class Confirmation extends Component {
               The confirmation code doesn't match the one we have on record.
             </HelpBlock>}
 
-          <Button onClick={this.submitConfirmationCode} bsSize="lg" bsStyle="primary" block className="m-b-40">
+          <Button
+            onClick={this.submitConfirmationCode}
+            bsSize="lg"
+            bsStyle="primary"
+            block
+            className="m-b-40"
+          >
             Reset Password
           </Button>
         </form>
