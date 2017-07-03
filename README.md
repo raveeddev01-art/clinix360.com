@@ -27,6 +27,7 @@ Run the stitch_connect app.
 
 ```
 cd /apps/stitch_connect
+yarn
 mix ecto.create
 mix ecto.migrate
 mix phx.server
