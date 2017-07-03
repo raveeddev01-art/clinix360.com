@@ -40,7 +40,7 @@ export default class Hipaa extends Component {
       store.instance.teamSlug = response.data.slug;
       patch(`/api/v1/users/${store.instance.userId}`, {
         body: {
-          fullname: store.instance.fullname,
+          fullname: `${store.instance.firstName} ${store.instance.lastName}`,
           username: store.instance.username,
           password: store.instance.password,
           pin: store.instance.pin,
