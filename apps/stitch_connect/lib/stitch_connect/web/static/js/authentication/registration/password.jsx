@@ -18,7 +18,12 @@ export default class Password extends Component {
     super();
     this.state = {
       formValid: false,
-      password: ""
+      password: "",
+      passwordLengthValid: false,
+      passwordLowercaseValid: false,
+      passwordUppercaseValid: false,
+      passwordDigitsValid: false,
+      passwordSymbolsValid: false
     };
   }
 
@@ -34,14 +39,33 @@ export default class Password extends Component {
   };
 
   password_valid = value => {
-    var PasswordPolicy = require("password-sheriff").PasswordPolicy;
-    var charsets = require("password-sheriff").charsets;
+    var passwordValidator = require("password-validator");
+    var schema = new passwordValidator();
 
-    var containsAtLeastPolicy = new PasswordPolicy({
-      length: { minLength: 8 }
-    });
+    schema
+      .is()
+      .min(8)
+      .is()
+      .max(100)
+      .has()
+      .uppercase()
+      .has()
+      .lowercase()
+      .has()
+      .digits()
+      .has()
+      .not()
+      .spaces()
+      .has()
+      .symbols();
 
-    return containsAtLeastPolicy.check(value);
+    let result = schema.validate(value, { list: true });
+    this.setState({ passwordLengthValid: !result.includes("min") });
+    this.setState({ passwordLowercaseValid: !result.includes("lowercase") });
+    this.setState({ passwordUppercaseValid: !result.includes("uppercase") });
+    this.setState({ passwordDigitsValid: !result.includes("digits") });
+    this.setState({ passwordSymbolsValid: !result.includes("symbols") });
+    return result.length === 0;
   };
 
   handleSubmit = event => {
@@ -105,11 +129,41 @@ export default class Password extends Component {
             <HelpBlock className="m-b-20">
               Your password must contain:
               <ul className="list-unstyled">
-                <li>At least 8 characters</li>
-                <li>An uppercase letter</li>
-                <li>A lowercase letter</li>
-                <li>A number</li>
-                <li>A special character (e.g. !$#)</li>
+                <li
+                  className={
+                    this.state.passwordLengthValid ? "" : "password-invalid"
+                  }
+                >
+                  At least 8 characters
+                </li>
+                <li
+                  className={
+                    this.state.passwordUppercaseValid ? "" : "password-invalid"
+                  }
+                >
+                  An uppercase letter
+                </li>
+                <li
+                  className={
+                    this.state.passwordLowercaseValid ? "" : "password-invalid"
+                  }
+                >
+                  A lowercase letter
+                </li>
+                <li
+                  className={
+                    this.state.passwordDigitsValid ? "" : "password-invalid"
+                  }
+                >
+                  A number
+                </li>
+                <li
+                  className={
+                    this.state.passwordSymbolsValid ? "" : "password-invalid"
+                  }
+                >
+                  A special character (e.g. !$#)
+                </li>
               </ul>
             </HelpBlock>
 

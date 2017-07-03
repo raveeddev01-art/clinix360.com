@@ -11,7 +11,6 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 export default class TeamName extends Component {
   constructor(props) {
     super();
-    store.instance = {};
     this.state = {
       nameAvailable: false,
       team_name: ""
