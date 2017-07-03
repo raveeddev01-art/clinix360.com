@@ -33990,20 +33990,23 @@ var TeamPicker = function (_Component) {
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "error", false), _this$setState));
+      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "error", false), _defineProperty(_this$setState, "formValid", value.length > 0), _this$setState));
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      post("/api/v1/teams/exists", {
-        body: { name: _this.state.team_name }
-      }).then(function (response) {
-        _this.setState({ error: !response.data.exists });
-        if (response.data.exists) {
-          window.location.assign("https://" + _this.state.team_name + ".localhost:4443");
-        }
-      });
-      // to="/"
+      window.location = "https://" + _this.state.team_name + ".localhost:4443";
+      // post("/api/v1/teams/exists", {
+      //   body: { name: this.state.team_name }
+      // }).then(response => {
+      //   this.setState({ error: !response.data.exists });
+      //   if (response.data.exists) {
+      //     window.location.assign(
+      //       `https://${this.state.team_name}.localhost:4443`
+      //     );
+      //   }
+      // });
+      // // to="/"
     };
 
     _this.state = {
@@ -34066,6 +34069,7 @@ var TeamPicker = function (_Component) {
               )
             ),
             _react2.default.createElement("input", {
+              disabled: !this.state.formValid,
               value: "Continue",
               type: "submit",
               className: "btn btn-block btn-lg btn-primary"
