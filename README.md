@@ -26,6 +26,10 @@ source app/stitch/.env
 Run the stitch_connect app.
 
 ```
+cd /
+mix deps.get
+
+
 cd /apps/stitch_connect
 yarn
 mix ecto.create
