@@ -15,7 +15,7 @@ export default class TeamPicker extends Component {
     super();
     this.state = {
       team_name: "",
-      error: false
+      teamExists: false
     };
   }
 
@@ -25,26 +25,25 @@ export default class TeamPicker extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value,
-      error: false,
-      formValid: value.length > 0
+      [name]: value
+    });
+
+    delay(() => {
+      this.checkAvailability(value);
+    }, 300);
+  };
+
+  checkAvailability = name => {
+    post("/api/v1/teams/availability", {
+      body: { name: name }
+    }).then(response => {
+      this.setState({ teamExists: !response.data.available });
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
     window.location = `https://${this.state.team_name}.localhost:4443`;
-    // post("/api/v1/teams/exists", {
-    //   body: { name: this.state.team_name }
-    // }).then(response => {
-    //   this.setState({ error: !response.data.exists });
-    //   if (response.data.exists) {
-    //     window.location.assign(
-    //       `https://${this.state.team_name}.localhost:4443`
-    //     );
-    //   }
-    // });
-    // // to="/"
   };
 
   render() {
@@ -90,7 +89,7 @@ export default class TeamPicker extends Component {
             </FormGroup>
 
             <input
-              disabled={!this.state.formValid}
+              disabled={!this.state.teamExists}
               value="Continue"
               type="submit"
               className="btn btn-block btn-lg btn-primary"

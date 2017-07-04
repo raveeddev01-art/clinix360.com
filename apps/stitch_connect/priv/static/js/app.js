@@ -33850,34 +33850,33 @@ var TeamPicker = function (_Component) {
     var _this = _possibleConstructorReturn(this, (TeamPicker.__proto__ || Object.getPrototypeOf(TeamPicker)).call(this));
 
     _this.handleChange = function (event) {
-      var _this$setState;
-
       var target = event.target;
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "error", false), _defineProperty(_this$setState, "formValid", value.length > 0), _this$setState));
+      _this.setState(_defineProperty({}, name, value));
+
+      delay(function () {
+        _this.checkAvailability(value);
+      }, 300);
+    };
+
+    _this.checkAvailability = function (name) {
+      post("/api/v1/teams/availability", {
+        body: { name: name }
+      }).then(function (response) {
+        _this.setState({ teamExists: !response.data.available });
+      });
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
       window.location = "https://" + _this.state.team_name + ".localhost:4443";
-      // post("/api/v1/teams/exists", {
-      //   body: { name: this.state.team_name }
-      // }).then(response => {
-      //   this.setState({ error: !response.data.exists });
-      //   if (response.data.exists) {
-      //     window.location.assign(
-      //       `https://${this.state.team_name}.localhost:4443`
-      //     );
-      //   }
-      // });
-      // // to="/"
     };
 
     _this.state = {
       team_name: "",
-      error: false
+      teamExists: false
     };
     return _this;
   }
@@ -33963,7 +33962,7 @@ var TeamPicker = function (_Component) {
               )
             ),
             _react2.default.createElement("input", {
-              disabled: !this.state.formValid,
+              disabled: !this.state.teamExists,
               value: "Continue",
               type: "submit",
               className: "btn btn-block btn-lg btn-primary"
