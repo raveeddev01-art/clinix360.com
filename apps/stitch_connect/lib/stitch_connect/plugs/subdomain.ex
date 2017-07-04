@@ -6,11 +6,30 @@ defmodule StitchConnect.Plug.Subdomain do
   def call(conn, router) do
     case get_subdomain(conn.host) do
       subdomain when byte_size(subdomain) > 0 ->
-        conn
-        |> put_private(:subdomain, subdomain)
-        |> router.call(router.init({}))
-        |> halt
+        case Stitch.TeamQueries.get_by_slug(subdomain) do
+          nil ->
+            conn
+            |> Phoenix.Controller.redirect(external: root_url(conn))
+            |> halt
+          _ ->
+            conn
+            |> put_private(:subdomain, subdomain)
+            |> router.call(router.init({}))
+            |> halt
+        end
       _ -> conn
+    end
+  end
+
+  defp root_url(conn) do
+    host = conn.host
+      |> String.split(".")
+      |> Enum.at(1)
+
+    if conn.port do
+      "#{conn.scheme}://#{host}:#{conn.port}"
+    else
+      "#{conn.scheme}://#{host}"
     end
   end
 

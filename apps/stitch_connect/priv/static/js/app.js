@@ -4539,7 +4539,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthenticationStore = undefined;
 
-var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _instance, _instance2, _store, _mutatorMap;
+var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _instance, _instance2, _store, _mutatorMap;
 
 var _mobx = __webpack_require__(174);
 
@@ -4595,55 +4595,62 @@ var AuthenticationStore = (_class = function AuthenticationStore() {
 
   _initDefineProp(this, "userId", _descriptor, this);
 
-  _initDefineProp(this, "fullname", _descriptor2, this);
+  _initDefineProp(this, "firstName", _descriptor2, this);
 
-  _initDefineProp(this, "username", _descriptor3, this);
+  _initDefineProp(this, "lastName", _descriptor3, this);
 
-  _initDefineProp(this, "password", _descriptor4, this);
+  _initDefineProp(this, "username", _descriptor4, this);
 
-  _initDefineProp(this, "pin", _descriptor5, this);
+  _initDefineProp(this, "password", _descriptor5, this);
 
-  _initDefineProp(this, "teamName", _descriptor6, this);
+  _initDefineProp(this, "pin", _descriptor6, this);
 
-  _initDefineProp(this, "teamId", _descriptor7, this);
+  _initDefineProp(this, "teamName", _descriptor7, this);
 
-  _initDefineProp(this, "teamSlug", _descriptor8, this);
+  _initDefineProp(this, "teamId", _descriptor8, this);
+
+  _initDefineProp(this, "teamSlug", _descriptor9, this);
 }, (_descriptor = _applyDecoratedDescriptor(_class.prototype, "userId", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
   }
-}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "fullname", [_mobx.observable], {
+}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "firstName", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
   }
-}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "username", [_mobx.observable], {
+}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "lastName", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
   }
-}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "password", [_mobx.observable], {
+}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "username", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
   }
-}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, "pin", [_mobx.observable], {
+}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, "password", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
   }
-}), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, "teamName", [_mobx.observable], {
+}), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, "pin", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
   }
-}), _descriptor7 = _applyDecoratedDescriptor(_class.prototype, "teamId", [_mobx.observable], {
+}), _descriptor7 = _applyDecoratedDescriptor(_class.prototype, "teamName", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
   }
-}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, "teamSlug", [_mobx.observable], {
+}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, "teamId", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return "";
+  }
+}), _descriptor9 = _applyDecoratedDescriptor(_class.prototype, "teamSlug", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
@@ -38916,25 +38923,28 @@ var FullName = (0, _mobxReact.observer)(_class = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (FullName.__proto__ || Object.getPrototypeOf(FullName)).call(this));
 
-    _this.handleChange = function (event) {
-      var _this$setState;
+    _this.formValid = function () {
+      return _this.state.firstName.length > 0 && _this.state.lastName.length > 0;
+    };
 
+    _this.handleChange = function (event) {
       var target = event.target;
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "formValid", value.length > 0), _this$setState));
+      _this.setState(_defineProperty({}, name, value));
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      _authentication_store2.default.instance.fullname = _this.state.fullname;
+      _authentication_store2.default.instance.firstName = _this.state.firstName;
+      _authentication_store2.default.instance.lastName = _this.state.lastName;
       _this.props.history.push("/signup/username");
     };
 
     _this.state = {
-      fullname: "",
-      formValid: false
+      firstName: "",
+      lastName: ""
     };
     return _this;
   }
@@ -39016,12 +39026,24 @@ var FullName = (0, _mobxReact.observer)(_class = function (_Component) {
             _FormGroup2.default,
             { bsSize: "large" },
             _react2.default.createElement(_FormControl2.default, {
-              name: "fullname",
+              name: "firstName",
               required: true,
               autoFocus: true,
               type: "text",
-              placeholder: "Full Name",
-              value: this.state.fullname,
+              placeholder: "First name",
+              value: this.state.firstName,
+              onChange: this.handleChange
+            })
+          ),
+          _react2.default.createElement(
+            _FormGroup2.default,
+            { bsSize: "large" },
+            _react2.default.createElement(_FormControl2.default, {
+              name: "lastName",
+              required: true,
+              type: "text",
+              placeholder: "Last name",
+              value: this.state.lastName,
               onChange: this.handleChange
             })
           ),
@@ -39031,7 +39053,7 @@ var FullName = (0, _mobxReact.observer)(_class = function (_Component) {
             "Your name will be shown next to your profile and messages."
           ),
           _react2.default.createElement("input", {
-            disabled: !this.state.formValid,
+            disabled: !this.formValid(),
             value: "Next",
             type: "submit",
             className: "btn btn-block btn-lg btn-primary m-b-40"
@@ -39425,7 +39447,7 @@ var Username = (0, _mobxReact.observer)(_class = function (_Component) {
               required: true,
               autoFocus: true,
               type: "text",
-              placeholder: _authentication_store2.default.instance.fullname.toLowerCase(),
+              placeholder: _authentication_store2.default.instance.firstName.toLowerCase(),
               value: this.state.username,
               onChange: this.handleChange
             })
@@ -40539,7 +40561,7 @@ var Hipaa = (0, _mobxReact.observer)(_class = function (_Component) {
         _authentication_store2.default.instance.teamSlug = response.data.slug;
         patch("/api/v1/users/" + _authentication_store2.default.instance.userId, {
           body: {
-            fullname: _authentication_store2.default.instance.fullname,
+            fullname: _authentication_store2.default.instance.firstName + " " + _authentication_store2.default.instance.lastName,
             username: _authentication_store2.default.instance.username,
             password: _authentication_store2.default.instance.password,
             pin: _authentication_store2.default.instance.pin,
