@@ -5626,12 +5626,14 @@ button.close {
     display: none !important; } }
 html,
 body {
-  min-height: 100%; }
+  height: 100%; }
 
 body {
   line-height: 1.5;
   font-family: 'Lato', sans-serif;
-  background: #f4f5f7; }
+  background: #f4f5f7;
+  overflow-y: hidden;
+  overflow-x: hidden; }
 
 #root {
   height: 100%; }
@@ -5685,6 +5687,12 @@ body {
 
 .m-b-40 {
   margin-bottom: 40px; }
+
+.smooth-transition {
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease; }
 
 .authentication-wrapper {
   min-height: 100vh;
@@ -5810,3 +5818,157 @@ body {
       height: 70px; }
     .authentication-wrapper .download-card .btn {
       line-height: 1em; }
+
+#wrapper {
+  padding-left: 0; }
+
+#wrapper.menu-toggled {
+  padding-left: 250px; }
+
+#wrapper.addons-toggled {
+  margin-left: -380px; }
+
+#sidemenu {
+  z-index: 1000;
+  position: fixed;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: inset -1px 0 0 #cacaca; }
+
+#addons {
+  z-index: 1000;
+  position: fixed;
+  right: -380px;
+  width: 380px;
+  height: 100%;
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: inset 1px 0 0 #cacaca; }
+
+#wrapper.menu-toggled #sidemenu {
+  left: 0; }
+
+#wrapper.addons-toggled #addons {
+  right: 0; }
+
+#main-wrapper {
+  width: 100%;
+  position: absolute; }
+
+#wrapper.menu-toggled #main-wrapper {
+  position: absolute;
+  margin-right: -250px; }
+
+@media (min-width: 992px) {
+  #wrapper {
+    padding-left: 250px; }
+  #wrapper.addons-toggled {
+    margin-left: 0; }
+    #wrapper.addons-toggled .chat-container {
+      padding-right: 380px; }
+  #sidemenu {
+    left: 0; }
+  #addons {
+    top: 60px; }
+  #main-wrapper {
+    position: relative; }
+  #wrapper.menu-toggled #main-wrapper {
+    position: relative;
+    margin-right: 0; } }
+
+.header {
+  height: 60px;
+  color: #fff;
+  background: #036;
+  display: flex;
+  align-items: center; }
+  .header .chat-header {
+    display: flex;
+    flex: 1;
+    min-width: 1px; }
+    .header .chat-header .title {
+      flex: 1;
+      min-width: 1px;
+      padding-left: 15px; }
+      .header .chat-header .title h4 {
+        font-size: 22px;
+        font-weight: bold;
+        margin: 0; }
+  .header .addons-header {
+    padding-right: 15px; }
+    .header .addons-header a {
+      display: block;
+      color: #fff;
+      font-size: 18px;
+      padding: 0 8px; }
+
+#sidemenu .header {
+  display: block;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: inset -1px 0 0 #001a33;
+  padding: 10px 15px; }
+  #sidemenu .header .team {
+    margin: 0; }
+  #sidemenu .header .username {
+    opacity: 0.65; }
+  #sidemenu .header:hover {
+    background: #00264d; }
+
+#sidemenu .menu-heading {
+  margin: 0 15px 5px; }
+  #sidemenu .menu-heading .heading {
+    color: #999;
+    text-decoration: none; }
+    #sidemenu .menu-heading .heading:hover {
+      color: inherit; }
+  #sidemenu .menu-heading .icon {
+    color: #cacaca;
+    box-shadow: inset 0 0 0 1px #cacaca;
+    border-radius: 50%;
+    padding: 0 5px; }
+
+#sidemenu ul {
+  font-size: 16px;
+  margin: 0 15px 25px 0; }
+  #sidemenu ul a {
+    display: block;
+    color: inherit;
+    border-radius: 0 6px 6px 0;
+    padding: 2px 0 2px 32px;
+    text-decoration: none;
+    position: relative; }
+    #sidemenu ul a:before {
+      opacity: 0.25;
+      font-family: FontAwesome;
+      font-size: 12px;
+      line-height: 28px;
+      position: absolute;
+      left: 15px;
+      top: 0; }
+    #sidemenu ul a:hover {
+      background: #f0f1f3; }
+  #sidemenu ul .active,
+  #sidemenu ul .active:hover {
+    color: #fff;
+    background: #036; }
+
+#sidemenu .groups a:before {
+  content: "\F292"; }
+
+#sidemenu .people a:before {
+  content: "\F10C"; }
+
+#addons {
+  padding-left: 1px; }
+  #addons .addon-heading {
+    background: #f4f5f7;
+    border-bottom: 1px solid #cacaca;
+    padding: 20px 15px; }
+    #addons .addon-heading h4 {
+      font-weight: bold;
+      margin: 0; }

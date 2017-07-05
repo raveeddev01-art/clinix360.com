@@ -1,0 +1,119 @@
+#wrapper {
+  padding-left: 0;
+}
+
+#wrapper.menu-toggled {
+  padding-left: 250px;
+}
+#wrapper.addons-toggled {
+  margin-left: -380px;
+}
+
+#sidemenu {
+  z-index: 1000;
+  position: fixed;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: inset -1px 0 0 $border-color;
+}
+
+#addons {
+  z-index: 1000;
+  position: fixed;
+  right: -380px;
+  width: 380px;
+  height: 100%;
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: inset 1px 0 0 $border-color;
+}
+
+#wrapper.menu-toggled #sidemenu {
+  left: 0;
+}
+
+#wrapper.addons-toggled #addons {
+  right: 0;
+}
+
+#main-wrapper {
+  width: 100%;
+  position: absolute;
+}
+
+#wrapper.menu-toggled #main-wrapper {
+  position: absolute;
+  margin-right: -250px;
+}
+
+@media (min-width: $screen-md) {
+  #wrapper {
+    padding-left: 250px;
+  }
+
+  #wrapper.addons-toggled {
+    margin-left: 0;
+    .chat-container {
+      padding-right: 380px;
+    }
+  }
+
+  #sidemenu {
+    left: 0;
+  }
+
+  #addons {
+    top: 60px;
+  }
+
+  #main-wrapper {
+    position: relative;
+  }
+
+  #wrapper.menu-toggled #main-wrapper {
+    position: relative;
+    margin-right: 0;
+  }
+}
+
+// Client UI
+
+.header {
+  height: 60px;
+  color: #fff;
+  background: $brand-primary;
+  display: flex;
+  align-items: center;
+
+  .chat-header {
+    display: flex;
+    flex: 1;
+    min-width: 1px;
+
+    .title {
+      flex: 1;
+      min-width: 1px;
+      padding-left: 15px;
+
+      h4 {
+        font-size: 22px;
+        font-weight: bold;
+        margin: 0;
+      }
+    }
+  }
+
+  .addons-header {
+    padding-right: 15px;
+
+    a {
+      display: block;
+      color: #fff;
+      font-size: 18px;
+      padding: 0 8px;
+    }
+  }
+}

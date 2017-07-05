@@ -1,0 +1,82 @@
+#sidemenu {
+  .header {
+    display: block;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: inset -1px 0 0 darken($brand-primary, 10%);
+    padding: 10px 15px;
+
+    .team {
+      margin: 0;
+    }
+
+    .username {
+      opacity: 0.65;
+    }
+
+    &:hover {
+      background: darken($brand-primary, 5%);
+    }
+  }
+
+  .menu-heading {
+    margin: 0 15px 5px;
+
+    .heading {
+      color: #999;
+      text-decoration: none;
+      &:hover {
+        color: inherit;
+      }
+    }
+
+    .icon {
+      color: $border-color;
+      box-shadow: inset 0 0 0 1px #cacaca;
+      border-radius: 50%;
+      padding: 0 5px;
+    }
+  }
+
+  ul {
+    font-size: 16px;
+    margin: 0 15px 25px 0;
+
+    a {
+      display: block;
+      color: inherit;
+      border-radius: 0 6px 6px 0;
+      padding: 2px 0 2px 32px;
+      text-decoration: none;
+      position: relative;
+
+      &:before {
+        opacity: 0.25;
+        font-family: FontAwesome;
+        font-size: 12px;
+        line-height: 28px;
+        position: absolute;
+        left: 15px;
+        top: 0;
+      }
+
+      &:hover {
+        background: #f0f1f3;
+      }
+    }
+
+    .active,
+    .active:hover {
+      color: #fff;
+      background: $brand-primary;
+    }
+  }
+
+  .groups a:before {
+    content: "\f292";
+  }
+  .people a:before {
+    content: "\f10c";
+  }
+}
