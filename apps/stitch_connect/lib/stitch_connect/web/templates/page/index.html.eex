@@ -1,74 +1,176 @@
-<div id="wrapper" class="smooth-transition">
+<div id="app">
 
-  <div id="sidemenu" class="smooth-transition">
-    <a class="header m-b-20">
-      <h4 class="team text-capitalize"><%= @subdomain %></h4>
-      <div class="username">danieltapia</div>
-    </a>
-
-    <div class="menu-heading">
-      <a href="#" class="heading text-uppercase">Groups</a>
-      <a href="#" class="icon pull-right"><i class="fa fa-plus"></i></a>
-    </div>
-    <ul class="list-unstyled groups">
-      <li><a href="#" class="active">home</a></li>
-      <li><a href="#">general</a></li>
-      <li><a href="#">labs</a></li>
-    </ul>
-
-    <div class="menu-heading">
-      <a href="#" class="heading text-uppercase">People</a>
-      <a href="#" class="icon pull-right"><i class="fa fa-plus"></i></a>
-    </div>
-    <ul class="list-unstyled people">
-      <li><a href="#">Daniel Tapia</a></li>
-      <li><a href="#">John Appleseed</a></li>
-      <li><a href="#">Mark Fix</a></li>
-      <li><a href="#">Sally Fix</a></li>
-      <li><a href="#">Cindy Masin</a></li>
-      <li><a href="#">Jason Bourne</a></li>
-    </ul>
-  </div>
-
-
-  <div id="addons" class="smooth-transition">
-    <div class="addon-heading">
-      <h4>Team Directory</h4>
-    </div>
-  </div>
-
-
-  <div id="main-wrapper">
+  <div id="menu">
     <div class="header">
-      <div class="chat-header">
-        <div class="visible-xs-inline-block visible-sm-inline-block">
-          <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><i class="fa fa-bars"></i></a>
-        </div>
-
-        <div class="title">
-          <h4>#general</h4>
-        </div>
-      </div>
-
-      <div class="addons-header">
-        <ul class="list-inline m-b-0">
-          <li><a href="#" class="hidden-xs hidden-sm"><i class="fa fa-cog"></i></a></li>
-          <li><a href="#" class="hidden-xs hidden-sm"><i class="fa fa-info-circle"></i></a></li>
-          <li><a href="#"><i class="fa fa-search"></i></a></li>
-          <li><a href="#addons-toggle" id="addons-toggle"><i class="fa fa-ellipsis-h"></i></a></li>
-        </ul>
-      </div>
+      <h4 class="text-capitalize"><%= @subdomain %></h4>
+      <div class="username">danieltapia</div>
     </div>
 
-    <div class="chat-container smooth-transition">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-12">
-            <h1 style="background: salmon;">Stitch Main Chat</h1>
+    <div class="flex-content">
+      <div class="heading">
+        <h5>Groups</h5>
+      </div>
+      <ul class="list-unstyled groups">
+        <li><a href="#" class="active">general</a></li>
+        <li><a href="#">labs</a></li>
+        <li><a href="#">patients</a></li>
+        <li><a href="#">random</a></li>
+      </ul>
+
+      <div class="heading">
+        <h5>People</h5>
+      </div>
+      <ul class="list-unstyled people">
+        <li><a href="#">Daniel Tapia</a></li>
+        <li><a href="#">John Appleseed</a></li>
+        <li><a href="#">Sally Bond</a></li>
+        <li><a href="#">Jason Bourne</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="main-container">
+    <div class="header">
+      <div class="visible-xs-inline-block visible-sm-inline-block">
+        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><i class="fa fa-bars"></i></a>
+      </div>
+
+      <div class="title">
+        <h4>General</h4>
+      </div>
+      <a href="#addons-toggle" class="btn btn-default pull-right" id="addons-toggle"><i class="fa fa-home"></i></a>
+    </div>
+
+    <div id="main">
+      <div id="chat">
+        <div id="conversation" class="flex-content">
+
+          <div class="message">
+            <div class="bubble">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+            </div>
+          </div>
+
+          <div class="message-sent">
+            <div class="bubble">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+            </div>
+          </div>
+
+          <div class="message">
+            <div class="bubble">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+            </div>
+          </div>
+
+          <div class="message-sent">
+            <div class="bubble">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+            </div>
+          </div>
+
+          <div class="message">
+            <div class="bubble">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+            </div>
+          </div>
+
+          <div class="message">
+            <div class="bubble">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+            </div>
+          </div>
+
+          <div class="message">
+            <div class="bubble">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+            </div>
+          </div>
+
+          <div class="message">
+            <div class="bubble">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="compose">
+          <input type="text" class="form-control" placeholder="Write something...">
+
+          <div class="is-typing text-muted small">
+            <strong>Daniel Tapia</strong> and <strong>John Appleseed</strong> are typing
           </div>
         </div>
       </div>
+
+      <div id="addons"></div>
     </div>
   </div>
+</div>
+
+<!-- <div id="app">
+
+
+  <div id="menu" class="smooth-transition">
+    <div id="team-head" class="flex-header">
+      <h4 class="text-capitalize"><%= @subdomain %></h4>
+      <div class="username">daniel</div>
+    </div>
+
+    <div id="menu-content" class="flex-scroll-y">
+      <div class="groups">
+        <div class="heading">
+          <h5 class="text-uppercase">Groups</h5>
+        </div>
+        <ul class="list-unstyled">
+          <li><a href="#">general</a></li>
+          <li><a href="#">labs</a></li>
+          <li><a href="#">notes</a></li>
+        </ul>
+      </div>
+
+      <div class="people">
+        <div class="heading">
+          <h5 class="text-uppercase">People</h5>
+        </div>
+        <ul class="list-unstyled">
+          <li><a href="#">Jack</a></li>
+          <li><a href="#">Daniel</a></li>
+          <li><a href="#">notes</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div id="chat" class="smooth-transition">
+    <header class="flex-header">
+      <div class="visible-xs-inline-block visible-sm-inline-block">
+        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><i class="fa fa-bars"></i></a>
+      </div>
+      <a href="#addons-toggle" class="btn btn-default pull-right" id="addons-toggle"><i class="fa fa-home"></i></a>
+    </header>
+
+    <div id="chat-container" class="flex-scroll-y smooth-transition">
+      <div class="bubble">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+      </div>
+
+      <div class="bubble">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+      </div>
+
+      <div class="bubble">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+      </div>
+
+      <div class="bubble">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="addons" class="smooth-transition"></div>
 
 </div>

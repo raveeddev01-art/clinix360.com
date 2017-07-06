@@ -52,12 +52,12 @@
     <script>
       $("#menu-toggle").click(function(e) {
           e.preventDefault();
-          $("#wrapper").toggleClass("menu-toggled");
+          $("#app").toggleClass("menu-toggled");
       });
 
       $("#addons-toggle").click(function(e) {
           e.preventDefault();
-          $("#wrapper").toggleClass("addons-toggled");
+          $("#app").toggleClass("addons-toggled");
       });
     </script>
 

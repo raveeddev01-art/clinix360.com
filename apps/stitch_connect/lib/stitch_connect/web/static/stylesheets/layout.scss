@@ -1,119 +1,220 @@
-#wrapper {
-  padding-left: 0;
-}
-
-#wrapper.menu-toggled {
-  padding-left: 250px;
-}
-#wrapper.addons-toggled {
-  margin-left: -380px;
-}
-
-#sidemenu {
-  z-index: 1000;
-  position: fixed;
-  left: -250px;
-  width: 250px;
+#app {
   height: 100%;
-  overflow-y: auto;
-  background: #fff;
-  box-shadow: inset -1px 0 0 $border-color;
-}
-
-#addons {
-  z-index: 1000;
-  position: fixed;
-  right: -380px;
-  width: 380px;
-  height: 100%;
-  overflow-y: auto;
-  background: #fff;
-  box-shadow: inset 1px 0 0 $border-color;
-}
-
-#wrapper.menu-toggled #sidemenu {
-  left: 0;
-}
-
-#wrapper.addons-toggled #addons {
-  right: 0;
-}
-
-#main-wrapper {
-  width: 100%;
-  position: absolute;
-}
-
-#wrapper.menu-toggled #main-wrapper {
-  position: absolute;
-  margin-right: -250px;
-}
-
-@media (min-width: $screen-md) {
-  #wrapper {
-    padding-left: 250px;
-  }
-
-  #wrapper.addons-toggled {
-    margin-left: 0;
-    .chat-container {
-      padding-right: 380px;
-    }
-  }
-
-  #sidemenu {
-    left: 0;
-  }
-
-  #addons {
-    top: 60px;
-  }
-
-  #main-wrapper {
-    position: relative;
-  }
-
-  #wrapper.menu-toggled #main-wrapper {
-    position: relative;
-    margin-right: 0;
-  }
-}
-
-// Client UI
-
-.header {
-  height: 60px;
-  color: #fff;
-  background: $brand-primary;
   display: flex;
-  align-items: center;
+  flex-grow: 1;
 
-  .chat-header {
+  #menu,
+  #main-container,
+  #addons {
+    position: relative;
+    overflow-x: hidden;
     display: flex;
-    flex: 1;
-    min-width: 1px;
+    flex-direction: column;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+  }
 
-    .title {
-      flex: 1;
-      min-width: 1px;
-      padding-left: 15px;
+  #menu {
+    background: #fff;
+    box-shadow: inset -1px 0 0 $border-color;
+    flex-basis: 250px;
+    flex-shrink: 0;
+    left: -250px;
+    z-index: 50;
+  }
 
-      h4 {
-        font-size: 22px;
-        font-weight: bold;
-        margin: 0;
+  #main-container {
+    margin-left: -250px;
+    flex-grow: 1;
+
+    #main {
+      position: relative;
+      flex-direction: row;
+      display: flex;
+      flex-grow: 1;
+
+      #chat {
+        display: flex;
+        flex-direction: column;
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+        margin-right: -300px;
+
+        #conversation {
+          flex-grow: 1;
+          padding: 15px;
+        }
+
+        #compose {
+          order: 1;
+          flex-shrink: 0;
+        }
+      }
+
+      #addons {
+        background: cadetblue;
+        flex-basis: 300px;
+        flex-shrink: 0;
+        right: -300px;
       }
     }
   }
 
-  .addons-header {
-    padding-right: 15px;
+  .header {
+    color: #fff;
+    background: $brand-primary;
+    padding: 0 15px;
+    display: flex;
+    flex-basis: 60px;
+    flex-shrink: 0;
+  }
 
-    a {
-      display: block;
-      color: #fff;
-      font-size: 18px;
-      padding: 0 8px;
-    }
+  .flex-content {
+    overflow-y: scroll;
+    flex-grow: 1;
   }
 }
+
+#app.menu-toggled {
+  #menu {
+    left: 0;
+  }
+}
+#app.addons-toggled {
+  #main-container #main #addons {
+    right: 0;
+  }
+}
+
+@media (min-width: $screen-md) {
+  #app #menu {
+    left: 0;
+  }
+  #app #main-container {
+    margin-left: 0;
+  }
+  #app.addons-toggled #main-container #main #chat {
+    margin-right: 0;
+  }
+}
+
+// .flex-header {
+//   color: #fff;
+//   background: $brand-primary;
+//   padding: 0 15px;
+//   position: relative;
+//   z-index: 50;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   flex-basis: 60px;
+//   flex-shrink: 0;
+// }
+
+// .flex-scroll-y {
+//   flex-grow: 1;
+//   overflow-y: scroll;
+// }
+
+// #app {
+//   display: flex;
+//   flex-grow: 1;
+//   height: 100%;
+
+//   #menu {
+//     position: relative;
+//     overflow-x: hidden;
+//     display: flex;
+//     flex-direction: column;
+//     flex-basis: 250px;
+//     flex-shrink: 0;
+//     background: #fff;
+//     box-shadow: inset -1px 0 0 $border-color;
+//     z-index: 200;
+//     left: -250px;
+//   }
+
+//   #chat {
+//     position: relative;
+//     display: flex;
+//     flex-direction: column;
+//     flex-grow: 1;
+//     left: 0;
+//     margin-left: -250px;
+//     margin-right: -300px;
+
+//     header {
+//       flex-basis: 60px;
+//       background: $brand-primary;
+//       justify-content: flex-start;
+//       align-items: center;
+//       flex-direction: row;
+//     }
+
+//     #chat-container {
+//       padding: 20px;
+//     }
+//   }
+
+//   #addons {
+//     position: relative;
+//     display: flex;
+//     flex-direction: column;
+//     flex-basis: 300px;
+//     flex-shrink: 0;
+//     min-width: 1px;
+//     max-width: 300px;
+//     background: #fff;
+//     z-index: 180;
+//     box-shadow: inset 1px 0 0 $border-color;
+//     box-sizing: content-box;
+//     right: -300px;
+//   }
+// }
+
+// #app.menu-toggled {
+//   #menu {
+//     left: 0;
+//   }
+//   #chat {
+//     left: 250px;
+//   }
+// }
+
+// #app.addons-toggled {
+//   #addons {
+//     right: 0;
+//   }
+// }
+
+// @media (min-width: $screen-md) {
+//   #app {
+//     #menu {
+//       left: 0;
+//     }
+//     #chat {
+//       margin-left: 0;
+
+//       .bubble {
+//         max-width: 70%;
+//       }
+//     }
+//     #addons {
+//       top: 60px;
+//     }
+//   }
+
+//   #app.addons-toggled {
+//     #chat {
+//       left: 0;
+
+//       #chat-container {
+//         margin-right: 300px;
+//       }
+//     }
+//   }
+// }
