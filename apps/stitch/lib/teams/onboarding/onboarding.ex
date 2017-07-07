@@ -6,8 +6,8 @@ defmodule Stitch.Team.Onboarding do
 
   alias Stitch.{Repo, Team}
 
-  def name_available?(name) when byte_size(name) > 0 do
-    slug = Slugger.slugify_downcase(name)
+  def slug_available?(slug) when byte_size(slug) > 0 do
+    slug = Slugger.slugify(slug)
     case Repo.get_by(Team, slug: slug) do
       nil ->
         true
@@ -15,10 +15,10 @@ defmodule Stitch.Team.Onboarding do
         false
     end
   end
-  def name_available?(_), do: false
+  def slug_available?(_), do: false
 
-  def create_team(name) when byte_size(name) > 0 do
-    slug = Slugger.slugify_downcase(name)
+  def create_team(name, slug) when byte_size(name) > 0 and byte_size(slug) > 0 do
+    slug = Slugger.slugify(slug)
     changeset = Team.changeset(%Team{}, %{name: name, slug: slug})
     case Repo.insert(changeset) do
       {:ok, team} ->

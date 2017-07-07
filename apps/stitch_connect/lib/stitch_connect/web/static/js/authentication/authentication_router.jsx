@@ -10,6 +10,7 @@ import ResetPassword from "./login/reset_password.jsx";
 import Email from "./registration/email.jsx";
 import Confirmation from "./registration/confirmation.jsx";
 import TeamName from "./registration/team_name.jsx";
+import TeamUrl from "./registration/team_url.jsx";
 import FullName from "./registration/full_name.jsx";
 import PhoneNumber from "./registration/phone_number.jsx";
 import Username from "./registration/username.jsx";
@@ -41,6 +42,7 @@ export default class AuthenticationRouter extends Component {
             component={Confirmation}
           />
           <Route exact path={`/signup/team-name`} component={TeamName} />
+          <Route exact path={`/signup/team-url`} component={TeamUrl} />
           <Route exact path={`/signup/full-name`} component={FullName} />
           <Route exact path={`/signup/phone-number`} component={PhoneNumber} />
           <Route exact path={`/signup/username`} component={Username} />

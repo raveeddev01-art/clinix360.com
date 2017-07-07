@@ -10,7 +10,7 @@ class AuthenticationStore {
 
   @observable teamName = "";
   @observable teamId = "";
-  @observable teamSlug = "";
+  @observable teamUrl = "";
 
   constructor() {}
 }

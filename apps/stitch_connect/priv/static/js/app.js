@@ -4609,7 +4609,7 @@ var AuthenticationStore = (_class = function AuthenticationStore() {
 
   _initDefineProp(this, "teamId", _descriptor8, this);
 
-  _initDefineProp(this, "teamSlug", _descriptor9, this);
+  _initDefineProp(this, "teamUrl", _descriptor9, this);
 }, (_descriptor = _applyDecoratedDescriptor(_class.prototype, "userId", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
@@ -4650,7 +4650,7 @@ var AuthenticationStore = (_class = function AuthenticationStore() {
   initializer: function initializer() {
     return "";
   }
-}), _descriptor9 = _applyDecoratedDescriptor(_class.prototype, "teamSlug", [_mobx.observable], {
+}), _descriptor9 = _applyDecoratedDescriptor(_class.prototype, "teamUrl", [_mobx.observable], {
   enumerable: true,
   initializer: function initializer() {
     return "";
@@ -31291,6 +31291,10 @@ var _team_name = __webpack_require__(385);
 
 var _team_name2 = _interopRequireDefault(_team_name);
 
+var _team_url = __webpack_require__(403);
+
+var _team_url2 = _interopRequireDefault(_team_url);
+
 var _full_name = __webpack_require__(386);
 
 var _full_name2 = _interopRequireDefault(_full_name);
@@ -31360,6 +31364,7 @@ var AuthenticationRouter = function (_Component) {
             component: _confirmation2.default
           }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/team-name", component: _team_name2.default }),
+          _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/team-url", component: _team_url2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/full-name", component: _full_name2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/phone-number", component: _phone_number2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/signup/username", component: _username2.default }),
@@ -38749,30 +38754,18 @@ var TeamName = (0, _mobxReact.observer)(_class = function (_Component) {
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "nameAvailable", false), _this$setState));
-
-      delay(function () {
-        _this.checkAvailability(value);
-      }, 300);
-    };
-
-    _this.checkAvailability = function (name) {
-      post("/api/v1/teams/availability", {
-        body: { name: name }
-      }).then(function (response) {
-        _this.setState({ nameAvailable: response.data.available });
-      });
+      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "formValid", value.length > 0), _this$setState));
     };
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
       _authentication_store2.default.instance.teamName = _this.state.team_name;
-      _this.props.history.push("/signup/full-name");
+      _this.props.history.push("/signup/team-url");
     };
 
     _this.state = {
-      nameAvailable: false,
-      team_name: ""
+      team_name: "",
+      formValid: false
     };
     return _this;
   }
@@ -38822,13 +38815,8 @@ var TeamName = (0, _mobxReact.observer)(_class = function (_Component) {
             _react2.default.createElement("br", null),
             "It will show up in menus and headings."
           ),
-          this.state.team_name.length > 0 && !this.state.nameAvailable && _react2.default.createElement(
-            _HelpBlock2.default,
-            { className: "m-b-20" },
-            "This team name is taken. Please choose another one."
-          ),
           _react2.default.createElement("input", {
-            disabled: !this.state.nameAvailable,
+            disabled: !this.state.formValid,
             value: "Next",
             type: "submit",
             className: "btn btn-block btn-lg btn-primary m-b-40"
@@ -40385,11 +40373,14 @@ var Invites = function (_Component) {
               { xs: 6, className: "text-right" },
               _react2.default.createElement(
                 _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
+                {
+                  placement: "top",
+                  overlay: _react2.default.createElement(
                     _Tooltip2.default,
                     null,
                     "Restart"
-                  ) },
+                  )
+                },
                 _react2.default.createElement(
                   _reactRouterDom.Link,
                   { to: "/signup/team-name" },
@@ -40450,7 +40441,10 @@ var Invites = function (_Component) {
           ),
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: "/signup/hipaa", className: "btn btn-block btn-lg btn-default m-b-40" },
+            {
+              to: "/signup/hipaa",
+              className: "btn btn-block btn-lg btn-default m-b-40"
+            },
             "Skip this step"
           )
         ),
@@ -40553,11 +40547,12 @@ var Hipaa = (0, _mobxReact.observer)(_class = function (_Component) {
       event.preventDefault();
       post("/api/v1/teams", {
         body: {
-          name: _authentication_store2.default.instance.teamName
+          name: _authentication_store2.default.instance.teamName,
+          url: _authentication_store2.default.instance.teamUrl
         }
       }).then(function (response) {
         _authentication_store2.default.instance.teamId = response.data.id;
-        _authentication_store2.default.instance.teamSlug = response.data.slug;
+        _authentication_store2.default.instance.teamUrl = response.data.slug;
         patch("/api/v1/users/" + _authentication_store2.default.instance.userId, {
           body: {
             fullname: _authentication_store2.default.instance.firstName + " " + _authentication_store2.default.instance.lastName,
@@ -40567,7 +40562,7 @@ var Hipaa = (0, _mobxReact.observer)(_class = function (_Component) {
             team_id: response.data.id
           }
         }).then(function (response) {
-          _this.props.history.push("/signup/app-download");
+          _this.props.history.push("/signup/invites");
         });
       });
     };
@@ -42903,6 +42898,170 @@ window.delay = function () {
     timer = setTimeout(callback, ms);
   };
 }();
+
+/***/ }),
+/* 403 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class;
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(15);
+
+var _mobxReact = __webpack_require__(33);
+
+var _authentication_store = __webpack_require__(34);
+
+var _authentication_store2 = _interopRequireDefault(_authentication_store);
+
+var _FormGroup = __webpack_require__(26);
+
+var _FormGroup2 = _interopRequireDefault(_FormGroup);
+
+var _FormControl = __webpack_require__(25);
+
+var _FormControl2 = _interopRequireDefault(_FormControl);
+
+var _HelpBlock = __webpack_require__(27);
+
+var _HelpBlock2 = _interopRequireDefault(_HelpBlock);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TeamUrl = (0, _mobxReact.observer)(_class = function (_Component) {
+  _inherits(TeamUrl, _Component);
+
+  function TeamUrl(props) {
+    _classCallCheck(this, TeamUrl);
+
+    var _this = _possibleConstructorReturn(this, (TeamUrl.__proto__ || Object.getPrototypeOf(TeamUrl)).call(this));
+
+    _this.handleChange = function (event) {
+      var _this$setState;
+
+      var target = event.target;
+      var value = target.type === "checkbox" ? target.checked : target.value;
+      var name = target.name;
+
+      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "urlAvailable", false), _this$setState));
+
+      delay(function () {
+        _this.checkAvailability(value);
+      }, 300);
+    };
+
+    _this.checkAvailability = function (url) {
+      post("/api/v1/teams/url-available", {
+        body: { url: url }
+      }).then(function (response) {
+        _this.setState({ urlAvailable: response.data.available });
+      });
+    };
+
+    _this.handleSubmit = function (event) {
+      event.preventDefault();
+      _authentication_store2.default.instance.teamUrl = _this.state.teamUrl;
+      _this.props.history.push("/signup/full-name");
+    };
+
+    _this.state = {
+      urlAvailable: false,
+      teamUrl: ""
+    };
+    return _this;
+  }
+
+  _createClass(TeamUrl, [{
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "authentication-card text-center" },
+        _react2.default.createElement(
+          "h2",
+          null,
+          "Team URL"
+        ),
+        _react2.default.createElement(
+          "h5",
+          null,
+          "Enter your ",
+          _react2.default.createElement(
+            "strong",
+            null,
+            "team url"
+          ),
+          "."
+        ),
+        _react2.default.createElement(
+          "form",
+          { onSubmit: this.handleSubmit },
+          _react2.default.createElement(
+            _FormGroup2.default,
+            { bsSize: "large" },
+            _react2.default.createElement(_FormControl2.default, {
+              name: "teamUrl",
+              required: true,
+              autoFocus: true,
+              type: "text",
+              placeholder: "Ex. care-clinic",
+              value: this.state.teamUrl,
+              onChange: this.handleChange
+            })
+          ),
+          _react2.default.createElement(
+            _HelpBlock2.default,
+            { className: "m-b-20" },
+            "This is the URL you will use to access Stitch.",
+            _react2.default.createElement("br", null),
+            "You'll login here."
+          ),
+          this.state.teamUrl.length > 0 && !this.state.urlAvailable && _react2.default.createElement(
+            _HelpBlock2.default,
+            { className: "m-b-20" },
+            "This team url is taken. Please choose another one."
+          ),
+          _react2.default.createElement("input", {
+            disabled: !this.state.urlAvailable,
+            value: "Next",
+            type: "submit",
+            className: "btn btn-block btn-lg btn-primary m-b-40"
+          })
+        ),
+        _react2.default.createElement(
+          "p",
+          { className: "copyright m-b-0" },
+          "\xA9 2017 Stitch Technologies, Inc"
+        )
+      );
+    }
+  }]);
+
+  return TeamUrl;
+}(_react.Component)) || _class;
+
+exports.default = TeamUrl;
 
 /***/ })
 /******/ ]);

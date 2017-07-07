@@ -26,15 +26,16 @@ defmodule StitchConnect.Web.Router do
     get "/signup/email", AuthenticationController, :index
     get "/signup/confirmation-code", AuthenticationController, :index
     get "/signup/team-name", AuthenticationController, :index
+    get "/signup/team-url", AuthenticationController, :index
     get "/signup/full-name", AuthenticationController, :index
     get "/signup/username", AuthenticationController, :index
     get "/signup/password", AuthenticationController, :index
     get "/signup/pin", AuthenticationController, :index
     get "/signup/hipaa", AuthenticationController, :index
+    get "/signup/invites", AuthenticationController, :index
     get "/signup/app-download", AuthenticationController, :index
 
     # get "/signup/phone-number", AuthenticationController, :index
-    # get "/signup/invites", AuthenticationController, :index
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -47,6 +48,6 @@ defmodule StitchConnect.Web.Router do
     patch "/users/:id", UserController, :update
 
     post "/teams", TeamController, :create
-    post "/teams/availability", TeamController, :availability
+    post "/teams/url-available", TeamController, :url_available
   end
 end

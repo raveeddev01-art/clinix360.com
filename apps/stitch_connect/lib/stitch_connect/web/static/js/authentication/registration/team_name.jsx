@@ -12,8 +12,8 @@ export default class TeamName extends Component {
   constructor(props) {
     super();
     this.state = {
-      nameAvailable: false,
-      team_name: ""
+      team_name: "",
+      formValid: false
     };
   }
 
@@ -24,26 +24,14 @@ export default class TeamName extends Component {
 
     this.setState({
       [name]: value,
-      nameAvailable: false
-    });
-
-    delay(() => {
-      this.checkAvailability(value);
-    }, 300);
-  };
-
-  checkAvailability = name => {
-    post("/api/v1/teams/availability", {
-      body: { name: name }
-    }).then(response => {
-      this.setState({ nameAvailable: response.data.available });
+      formValid: value.length > 0
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
     store.instance.teamName = this.state.team_name;
-    this.props.history.push("/signup/full-name");
+    this.props.history.push("/signup/team-url");
   };
 
   render() {
@@ -74,14 +62,8 @@ export default class TeamName extends Component {
             It will show up in menus and headings.
           </HelpBlock>
 
-          {this.state.team_name.length > 0 &&
-            !this.state.nameAvailable &&
-            <HelpBlock className="m-b-20">
-              This team name is taken. Please choose another one.
-            </HelpBlock>}
-
           <input
-            disabled={!this.state.nameAvailable}
+            disabled={!this.state.formValid}
             value="Next"
             type="submit"
             className="btn btn-block btn-lg btn-primary m-b-40"

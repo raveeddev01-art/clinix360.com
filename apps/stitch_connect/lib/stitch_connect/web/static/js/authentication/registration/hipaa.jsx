@@ -33,11 +33,12 @@ export default class Hipaa extends Component {
     event.preventDefault();
     post(`/api/v1/teams`, {
       body: {
-        name: store.instance.teamName
+        name: store.instance.teamName,
+        url: store.instance.teamUrl
       }
     }).then(response => {
       store.instance.teamId = response.data.id;
-      store.instance.teamSlug = response.data.slug;
+      store.instance.teamUrl = response.data.slug;
       patch(`/api/v1/users/${store.instance.userId}`, {
         body: {
           fullname: `${store.instance.firstName} ${store.instance.lastName}`,
@@ -47,7 +48,7 @@ export default class Hipaa extends Component {
           team_id: response.data.id
         }
       }).then(response => {
-        this.props.history.push("/signup/app-download");
+        this.props.history.push("/signup/invites");
       });
     });
   };

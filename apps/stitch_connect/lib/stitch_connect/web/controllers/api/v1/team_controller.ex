@@ -2,8 +2,8 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
   use StitchConnect.Web, :controller
   alias Stitch.Team
 
-  def create(conn, %{"name" => name}) do
-    case Team.Onboarding.create_team(name) do
+  def create(conn, %{"name" => name, "url" => slug}) do
+    case Team.Onboarding.create_team(name, slug) do
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -14,8 +14,8 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
     end
   end
 
-  def availability(conn, %{"name" => name}) do
+  def url_available(conn, %{"url" => url}) do
     conn
-    |> json(%{available: Team.Onboarding.name_available?(name)})
+    |> json(%{available: Team.Onboarding.slug_available?(url)})
   end
 end

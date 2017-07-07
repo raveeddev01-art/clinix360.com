@@ -13,7 +13,7 @@ defmodule Stitch.Team do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :slug])
-    |> validate_required([:name])
-    |> unique_constraint(:name)
+    |> validate_required([:name, :slug])
+    |> unique_constraint(:slug)
   end
 end
