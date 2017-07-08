@@ -25,7 +25,8 @@ export default class TeamPicker extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      teamExists: false
     });
 
     delay(() => {
@@ -89,7 +90,7 @@ export default class TeamPicker extends Component {
             </FormGroup>
 
             <input
-              disabled={this.state.teamExists}
+              disabled={!this.state.teamExists}
               value="Continue"
               type="submit"
               className="btn btn-block btn-lg btn-primary"

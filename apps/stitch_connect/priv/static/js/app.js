@@ -33855,11 +33855,13 @@ var TeamPicker = function (_Component) {
     var _this = _possibleConstructorReturn(this, (TeamPicker.__proto__ || Object.getPrototypeOf(TeamPicker)).call(this));
 
     _this.handleChange = function (event) {
+      var _this$setState;
+
       var target = event.target;
       var value = target.type === "checkbox" ? target.checked : target.value;
       var name = target.name;
 
-      _this.setState(_defineProperty({}, name, value));
+      _this.setState((_this$setState = {}, _defineProperty(_this$setState, name, value), _defineProperty(_this$setState, "teamExists", false), _this$setState));
 
       delay(function () {
         _this.checkAvailability(value);
@@ -33967,7 +33969,7 @@ var TeamPicker = function (_Component) {
               )
             ),
             _react2.default.createElement("input", {
-              disabled: this.state.teamExists,
+              disabled: !this.state.teamExists,
               value: "Continue",
               type: "submit",
               className: "btn btn-block btn-lg btn-primary"
