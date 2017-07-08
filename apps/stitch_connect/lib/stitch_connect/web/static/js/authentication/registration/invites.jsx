@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import store from "../authentication_store.js";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -10,7 +12,22 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
+@observer
 export default class Invites extends Component {
+  constructor(props) {
+    super();
+    store.instance = {};
+    this.state = {
+      emails: [],
+      formValid: false
+    };
+  }
+
+  handleSubmit = event => {
+    event.preventDefault();
+    // this.props.history.push("/signup/team-url");
+  };
+
   render() {
     return (
       <div className="authentication-card text-center">
@@ -43,7 +60,7 @@ export default class Invites extends Component {
           Enter <strong>invitations</strong> to email out.
         </h5>
 
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
             <FormControl type="text" />
           </FormGroup>
@@ -63,9 +80,13 @@ export default class Invites extends Component {
             You can also do this later after you set up your team.
           </HelpBlock>
 
-          <Link to="/signup/hipaa" className="btn btn-block btn-lg btn-primary">
-            Next
-          </Link>
+          <input
+            disabled={!this.state.formValid}
+            type="submit"
+            value="Send Invites"
+            className="btn btn-block btn-lg btn-primary"
+          />
+
           <Link
             to="/signup/hipaa"
             className="btn btn-block btn-lg btn-default m-b-40"

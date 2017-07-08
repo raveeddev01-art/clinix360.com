@@ -8,6 +8,7 @@ defmodule Stitch.User do
     field :encrypted_password, :string
     field :fullname, :string
     field :confirmation_code, :string
+    field :invite_token, :string
     field :email_confirmed, :boolean, default: false
     field :onboarded, :boolean, default: false
     field :username, :string

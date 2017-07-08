@@ -40284,11 +40284,19 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _class;
+
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(15);
+
+var _mobxReact = __webpack_require__(33);
+
+var _authentication_store = __webpack_require__(34);
+
+var _authentication_store2 = _interopRequireDefault(_authentication_store);
 
 var _OverlayTrigger = __webpack_require__(18);
 
@@ -40330,13 +40338,25 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Invites = function (_Component) {
+var Invites = (0, _mobxReact.observer)(_class = function (_Component) {
   _inherits(Invites, _Component);
 
-  function Invites() {
+  function Invites(props) {
     _classCallCheck(this, Invites);
 
-    return _possibleConstructorReturn(this, (Invites.__proto__ || Object.getPrototypeOf(Invites)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Invites.__proto__ || Object.getPrototypeOf(Invites)).call(this));
+
+    _this.handleSubmit = function (event) {
+      event.preventDefault();
+      // this.props.history.push("/signup/team-url");
+    };
+
+    _authentication_store2.default.instance = {};
+    _this.state = {
+      emails: [],
+      formValid: false
+    };
+    return _this;
   }
 
   _createClass(Invites, [{
@@ -40408,7 +40428,7 @@ var Invites = function (_Component) {
         ),
         _react2.default.createElement(
           "form",
-          null,
+          { onSubmit: this.handleSubmit },
           _react2.default.createElement(
             _FormGroup2.default,
             { bsSize: "large" },
@@ -40434,11 +40454,12 @@ var Invites = function (_Component) {
             { className: "m-b-20" },
             "Enter your team members' email addresses so they can join your team. You can also do this later after you set up your team."
           ),
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: "/signup/hipaa", className: "btn btn-block btn-lg btn-primary" },
-            "Next"
-          ),
+          _react2.default.createElement("input", {
+            disabled: !this.state.formValid,
+            type: "submit",
+            value: "Send Invites",
+            className: "btn btn-block btn-lg btn-primary"
+          }),
           _react2.default.createElement(
             _reactRouterDom.Link,
             {
@@ -40458,7 +40479,7 @@ var Invites = function (_Component) {
   }]);
 
   return Invites;
-}(_react.Component);
+}(_react.Component)) || _class;
 
 exports.default = Invites;
 
