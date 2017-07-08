@@ -34,8 +34,8 @@ export default class TeamPicker extends Component {
   };
 
   checkAvailability = name => {
-    post("/api/v1/teams/availability", {
-      body: { name: name }
+    post("/api/v1/teams/url-available", {
+      body: { url: name }
     }).then(response => {
       this.setState({ teamExists: !response.data.available });
     });
@@ -89,7 +89,7 @@ export default class TeamPicker extends Component {
             </FormGroup>
 
             <input
-              disabled={!this.state.teamExists}
+              disabled={this.state.teamExists}
               value="Continue"
               type="submit"
               className="btn btn-block btn-lg btn-primary"

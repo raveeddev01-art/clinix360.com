@@ -33867,8 +33867,8 @@ var TeamPicker = function (_Component) {
     };
 
     _this.checkAvailability = function (name) {
-      post("/api/v1/teams/availability", {
-        body: { name: name }
+      post("/api/v1/teams/url-available", {
+        body: { url: name }
       }).then(function (response) {
         _this.setState({ teamExists: !response.data.available });
       });
@@ -33967,7 +33967,7 @@ var TeamPicker = function (_Component) {
               )
             ),
             _react2.default.createElement("input", {
-              disabled: !this.state.teamExists,
+              disabled: this.state.teamExists,
               value: "Continue",
               type: "submit",
               className: "btn btn-block btn-lg btn-primary"
