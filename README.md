@@ -11,49 +11,81 @@ It contains two apps:
 
 Getting started (work in progress)
 
-create .env file in `apps/stitch/` and ask for values:
+Create .env file in `apps/stitch/` and ask the team for the environment
+values you need to set here:
 
 ```
 export MANDRILL_API_KEY=keygoeshere
 ```
 
-In your terminal bring it in:
+Run the source command to brint them into your terminal path.
 
 ```
 cd ~/Work/stitch-phoenix/apps/stitch
 source .env
 ```
 
-Install Elixir dependencies. Change directory to the root folder of the project.
+Change directory to the root folder of the umbrella project, and install your
+Elixir dependencies.
 
 ```
 cd ~/Work/stitch-phoenix
 mix deps.get
 ```
 
-Create local database.
+Change directory to the stitch project folder, and Create your local database.
 
 ```
 cd ~/Work/stitch-phoenix/apps/stitch/
 mix ecto.create
 mix ecto.migrate
+MIX_ENV=test mix ecto.create
+MIX_ENV=test mix ecto.migrate
 ```
 
-Install frontend dependencies. Change directory to the stitch_connect folder.
+Change directory to the stitch_connect project folder, and install frontend
+dependencies using yarn.
 
 ```
 cd ~/Work/stith-phoenix/apps/stitch_connect/
 yarn
 ```
 
-Run the stitch_connect app.
+Change directory to the root folder of the umbrella project and run the test suite.
+If everything is setup properly, you will see all tests pass.
 
 ```
-cd ~/Work/stitch-phoenix/apps/stitch_connect
-mix phx.server
+cd ~/Work/stitch-phoenix/
+mix test
+
+...
+→ mix test
+==> stitch
+.............................
+
+Finished in 0.2 seconds
+29 tests, 0 failures
+
+Randomized with seed 381823
+==> stitch_connect
+....
+
+Finished in 0.06 seconds
+4 tests, 0 failures
+
+Randomized with seed 660577
 ```
 
-Access the site:
+We're using foreman to run the application in a Heroku-like environment locally.
+This guide uses the foreman gem, you can use whatever you like.
+
+```
+gem install foreman
+cd ~/Work/stitch-phoenix
+foreman start -f Procfile.dev
+```
+
+Access the site.
 
 https://localhost:4443
 
