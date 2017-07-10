@@ -19,7 +19,8 @@ defmodule StitchConnect.Web.AuthenticationController do
       false ->
         redirect conn, to: "/login"
       user ->
-        put_session(conn, :current_user_id, user.id)
+        conn
+        |> put_session(:current_user_id, user.id)
         |> redirect to: "/"
     end
   end
