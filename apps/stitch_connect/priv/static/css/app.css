@@ -5637,11 +5637,11 @@ body {
   height: 100%; }
 
 .btn-primary {
-  background: #1b4063;
-  border-color: #1b4063; }
+  background: #036;
+  border-color: #036; }
   .btn-primary:hover {
-    background: #16334f;
-    border-color: #16334f; }
+    background: #00264d;
+    border-color: #00264d; }
 
 .btn {
   border-radius: 3px;
@@ -5762,7 +5762,7 @@ body {
           background: #eee; }
     .authentication-wrapper .authentication-card h1,
     .authentication-wrapper .authentication-card h2 {
-      color: #1b4063;
+      color: #036;
       font-weight: bold; }
     .authentication-wrapper .authentication-card h4 {
       font-size: 20px;
@@ -5874,7 +5874,7 @@ body {
 
 .flex-header {
   color: #fff;
-  background: #1b4063;
+  background: #036;
   padding: 0 15px;
   display: flex;
   align-items: center;
@@ -5896,13 +5896,13 @@ body {
 
 #side .flex-header {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 1px 0 0 #1b4063; }
+  box-shadow: 1px 0 0 #036; }
   #side .flex-header h4 {
     flex-grow: 1; }
   #side .flex-header i.fa {
     color: #8492a6; }
   #side .flex-header:hover {
-    background: #16334f; }
+    background: #00264d; }
 
 #side .flex-content .menu-nav {
   margin-right: 15px; }
@@ -5936,7 +5936,7 @@ body {
       background: #f2f2f2; }
     #side .flex-content .menu-nav .item.active {
       color: #fff;
-      background: #1b4063; }
+      background: #036; }
       #side .flex-content .menu-nav .item.active .item-icon {
         color: #fff; }
 
@@ -6006,7 +6006,7 @@ body {
       flex-direction: row-reverse; }
       #main .flex-content #chat .message-own .content {
         color: #fff;
-        background: #1b4063; }
+        background: #036; }
   #main .flex-footer {
     background: #eaebed;
     padding: 10px 20px; }

@@ -22,8 +22,9 @@
       <div class="menu-nav m-b-20">
         <h5 class="heading" style="margin-top: 20px;">Favorites</h5>
         <a href="#" class="item">
-          <div class="item-icon">#</div>
-          <div class="item-text">Labs</div>
+          <div class="item-icon"><i class="fa fa-hashtag"></i></div>
+          <div class="item-text">Patients</div>
+          <div class="item-badge text-center">3</div>
         </a>
       </div>
 
@@ -85,7 +86,7 @@
   <div id="main">
     <div class="flex-header">
       <div class="header-content">
-        <h4><span class="text-muted">#</span>general</h4>
+        <h4>#General</h4>
       </div>
 
       <div class="header-nav">
@@ -137,16 +138,6 @@
         <div class="flex-header">
           <h4>Directory</h4>
           <i class="fa fa-close"></i>
-        </div>
-
-        <div class="flex-content">
-          <div class="menu-nav m-b-20">
-            <h5 class="heading" style="margin-top: 20px;">Favorites</h5>
-            <a href="#" class="item">
-              <div class="item-icon">#</div>
-              <div class="item-text">Labs</div>
-            </a>
-          </div>
         </div>
       </div>
 
