@@ -85,4 +85,17 @@ defmodule Stitch.User.AuthenticationTest do
       assert user.email == "example@email.com"
     end
   end
+
+  describe "Stitch.User.Authentication.user_for_token/1" do
+    test "returns user given a token" do
+      insert(:user, %{token: "abcdef"})
+      user = Stitch.User.Authentication.user_for_token("abcdef")
+      assert user != nil
+    end
+
+    test "returns nil given a bad token" do
+      user = Stitch.User.Authentication.user_for_token("abcdef")
+      assert user == nil
+    end
+  end
 end

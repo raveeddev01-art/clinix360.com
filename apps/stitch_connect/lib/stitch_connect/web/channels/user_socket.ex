@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", StitchConnect.Web.RoomChannel
+  channel "room:*", StitchConnect.Web.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket,
@@ -20,9 +20,16 @@ defmodule StitchConnect.Web.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(%{"token" => token}, socket) do
+    case Stitch.User.Authentication.user_for_token(token) do
+      user ->
+        {:ok, assign(socket, :current_user, user)}
+      nil ->
+        :error
+    end
   end
+
+  def connect(_params, _socket), do: :error
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
@@ -34,5 +41,5 @@ defmodule StitchConnect.Web.UserSocket do
   #     StitchConnect.Web.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket), do: "users_socket:#{socket.assigns.current_user.id}"
 end

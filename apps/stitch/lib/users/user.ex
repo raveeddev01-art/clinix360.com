@@ -13,6 +13,7 @@ defmodule Stitch.User do
     field :onboarded, :boolean, default: false
     field :username, :string
     field :pin, :string
+    field :token, :string
     belongs_to :team, Stitch.Team
 
     field :password, :string, virtual: true
@@ -38,11 +39,14 @@ defmodule Stitch.User do
     confirmation_code = digits
       |> Enum.join
 
+    token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+
     struct
     |> cast(params, [:email])
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> put_change(:confirmation_code, confirmation_code)
+    |> put_change(:token, token)
   end
 
   def onboarding_complete_changeset(struct, params) do

@@ -13,6 +13,7 @@ defmodule Stitch.User.OnboardingTest do
       assert user.email == "sergio@email.com"
       assert user.onboarded == false
       assert String.length(user.confirmation_code) == 6
+      assert String.length(user.token) == 32
     end
 
     test "returns error given empty string or nil" do

@@ -43,6 +43,10 @@ defmodule Stitch.User.Authentication do
     end
   end
 
+  def user_for_token(token) do
+    Repo.get_by(User, token: token)
+  end
+
   def update_password(id, password) do
     user = Repo.get!(User, id)
     changeset = User.password_update_changeset(user, %{password: password})
@@ -54,7 +58,7 @@ defmodule Stitch.User.Authentication do
     end
 
     case Repo.update(changeset) do
-      {:ok, user} ->
+      {:ok, _} ->
         true
       {:error, _} ->
         {:error, "The password wasn't updated"}

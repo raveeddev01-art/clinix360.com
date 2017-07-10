@@ -14,4 +14,10 @@ defmodule Stitch.Factory do
       slug: "starbucks"
     }
   end
+
+  def room_factory do
+    %Stitch.Room{
+      name: "General"
+    }
+  end
 end
