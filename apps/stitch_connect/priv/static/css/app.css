@@ -5859,7 +5859,9 @@ body {
 #main {
   flex-grow: 1; }
   #main .flex-content {
-    display: flex; }
+    display: flex;
+    flex-direction: row;
+    overflow-y: hidden; }
     #main .flex-content #chat-container {
       display: flex;
       flex-direction: column;

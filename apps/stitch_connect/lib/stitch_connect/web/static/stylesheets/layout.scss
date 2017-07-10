@@ -34,6 +34,8 @@
 
   .flex-content {
     display: flex;
+    flex-direction: row;
+    overflow-y: hidden;
 
     #chat-container {
       display: flex;
