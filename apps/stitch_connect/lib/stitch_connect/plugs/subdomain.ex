@@ -11,9 +11,11 @@ defmodule StitchConnect.Plug.Subdomain do
             conn
             |> Phoenix.Controller.redirect(external: root_url(conn))
             |> halt
-          _ ->
+          team ->
             conn
             |> put_private(:subdomain, subdomain)
+            |> put_private(:team_slug, team.slug)
+            |> put_private(:team_name, team.name)
             |> router.call(router.init({}))
             |> halt
         end

@@ -15589,12 +15589,13 @@ var Login = function (_Component) {
         _react2.default.createElement(
           "h2",
           null,
-          "Team Name"
+          this.props.teamName
         ),
         _react2.default.createElement(
           "h5",
           { className: "text-muted url-heading" },
-          "team-name.teamstitch.com"
+          this.props.teamSlug,
+          ".teamstitch.com"
         ),
         _react2.default.createElement(
           "h5",

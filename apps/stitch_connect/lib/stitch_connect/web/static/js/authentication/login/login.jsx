@@ -41,8 +41,12 @@ export default class Login extends Component {
   render() {
     return (
       <div className="authentication-card text-center">
-        <h2>Team Name</h2>
-        <h5 className="text-muted url-heading">team-name.teamstitch.com</h5>
+        <h2>
+          {this.props.teamName}
+        </h2>
+        <h5 className="text-muted url-heading">
+          {this.props.teamSlug}.teamstitch.com
+        </h5>
 
         <h5>
           Enter your <strong>email address</strong> and{" "}

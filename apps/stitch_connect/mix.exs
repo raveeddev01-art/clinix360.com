@@ -38,6 +38,7 @@ defmodule StitchConnect.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:guardian, "~> 0.14"},
+     {:poison, "~> 3.1"},
      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
      {:stitch, in_umbrella: true}]
   end
