@@ -1,0 +1,108 @@
+#side {
+  .flex-header {
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+    box-shadow: 1px 0 0 $brand-primary;
+
+    h4 {
+      flex-grow: 1;
+    }
+
+    i.fa {
+      color: #8492a6;
+    }
+
+    &:hover {
+      background: darken($brand-primary, 5%);
+    }
+  }
+
+  .flex-content {
+    .menu-nav {
+      margin-right: 15px;
+
+      .heading {
+        color: #999;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        margin: 0 15px 5px;
+      }
+
+      .item {
+        display: flex;
+        color: #333;
+        line-height: 1.45;
+        text-decoration: none;
+        border-radius: 0 4px 4px 0;
+        padding: 5px 0 5px 15px;
+
+        .item-icon {
+          color: #ccc;
+          margin-right: 5px;
+        }
+
+        .item-text {
+          flex-grow: 1;
+        }
+
+        .item-badge {
+          width: 20px;
+          color: #fff;
+          font-size: 12px;
+          line-height: 20px;
+          background: #ea5656;
+          border-radius: 3px;
+        }
+
+        &:hover {
+          background: darken(#fff, 5%);
+        }
+
+        &.active {
+          color: #fff;
+          background: $brand-primary;
+
+          .item-icon {
+            color: #fff;
+          }
+        }
+      }
+    }
+
+    .people .item {
+      font-style: italic;
+      color: #999;
+    }
+  }
+
+  .flex-footer {
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 0 15px;
+
+    .user {
+      flex-grow: 1;
+      line-height: 1.2;
+
+      .name {
+        font-weight: bold;
+      }
+
+      .status {
+        color: #999;
+      }
+    }
+
+    .btn {
+      width: 32px;
+      color: #aaa;
+      font-size: 16px;
+      padding: 4px 7px;
+
+      &:hover {
+        background: darken(#fff, 5%);
+      }
+    }
+  }
+}

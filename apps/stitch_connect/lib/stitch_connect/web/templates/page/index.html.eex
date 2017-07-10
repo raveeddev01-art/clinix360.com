@@ -1,176 +1,156 @@
 <div id="app">
 
-  <div id="menu">
-    <div class="header">
+  <div id="side">
+    <div class="flex-header">
       <h4 class="text-capitalize"><%= @subdomain %></h4>
-      <div class="username">danieltapia</div>
+
+      <i class="fa fa-chevron-down"></i>
+    </div>
+
+    <div class="flex-footer">
+      <div class="user">
+        <div class="name">Daniel Tapia</div>
+        <div class="status">online</div>
+      </div>
+
+      <div class="user-actions">
+        <a href="#" class="btn"><i class="fa fa-bell"></i></a>
+      </div>
     </div>
 
     <div class="flex-content">
-      <div class="heading">
-        <h5>Groups</h5>
-      </div>
-      <ul class="list-unstyled groups">
-        <li><a href="#" class="active">general</a></li>
-        <li><a href="#">labs</a></li>
-        <li><a href="#">patients</a></li>
-        <li><a href="#">random</a></li>
-      </ul>
-
-      <div class="heading">
-        <h5>People</h5>
-      </div>
-      <ul class="list-unstyled people">
-        <li><a href="#">Daniel Tapia</a></li>
-        <li><a href="#">John Appleseed</a></li>
-        <li><a href="#">Sally Bond</a></li>
-        <li><a href="#">Jason Bourne</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div id="main-container">
-    <div class="header">
-      <div class="visible-xs-inline-block visible-sm-inline-block">
-        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><i class="fa fa-bars"></i></a>
+      <div class="menu-nav m-b-20">
+        <h5 class="heading" style="margin-top: 20px;">Favorites</h5>
+        <a href="#" class="item">
+          <div class="item-icon">#</div>
+          <div class="item-text">Labs</div>
+        </a>
       </div>
 
-      <div class="title">
-        <h4>General</h4>
-      </div>
-      <a href="#addons-toggle" class="btn btn-default pull-right" id="addons-toggle"><i class="fa fa-home"></i></a>
-    </div>
+      <div class="menu-nav group m-b-20">
+        <h5 class="heading">Groups</h5>
+        <a href="#" class="item active">
+          <div class="item-icon"><i class="fa fa-hashtag"></i></div>
+          <div class="item-text">General</div>
+        </a>
 
-    <div id="main">
-      <div id="chat">
-        <div id="conversation" class="flex-content">
+        <a href="#" class="item">
+          <div class="item-icon"><i class="fa fa-hashtag"></i></div>
+          <div class="item-text">Patients</div>
+          <div class="item-badge text-center">3</div>
+        </a>
 
-          <div class="message">
-            <div class="bubble">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-            </div>
-          </div>
+        <a href="#" class="item">
+          <div class="item-icon"><i class="fa fa-hashtag"></i></div>
+          <div class="item-text">Labs</div>
+        </a>
 
-          <div class="message-sent">
-            <div class="bubble">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="bubble">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-            </div>
-          </div>
-
-          <div class="message-sent">
-            <div class="bubble">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="bubble">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="bubble">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="bubble">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="bubble">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-            </div>
-          </div>
-        </div>
-
-        <div id="compose">
-          <input type="text" class="form-control" placeholder="Write something...">
-
-          <div class="is-typing text-muted small">
-            <strong>Daniel Tapia</strong> and <strong>John Appleseed</strong> are typing
-          </div>
-        </div>
+        <a href="#" class="item">
+          <div class="item-icon"><i class="fa fa-hashtag"></i></div>
+          <div class="item-text">Prescriptions</div>
+        </a>
       </div>
 
-      <div id="addons"></div>
-    </div>
-  </div>
-</div>
+      <div class="menu-nav people m-b-20">
+        <h5 class="heading">People</h5>
+        <a href="#" class="item" style="font-style: normal; color: #333;">
+          <div class="item-icon" style="color:#13CE66;"><i class="fa fa-circle"></i></div>
+          <div class="item-text">Daniel Tapia</div>
+        </a>
 
-<!-- <div id="app">
+        <a href="#" class="item">
+          <div class="item-icon"><i class="fa fa-circle-o"></i></div>
+          <div class="item-text">Jack Roush</div>
+        </a>
 
+        <a href="#" class="item">
+          <div class="item-icon"><i class="fa fa-circle-o"></i></div>
+          <div class="item-text">Emily Hope</div>
+        </a>
 
-  <div id="menu" class="smooth-transition">
-    <div id="team-head" class="flex-header">
-      <h4 class="text-capitalize"><%= @subdomain %></h4>
-      <div class="username">daniel</div>
-    </div>
+        <a href="#" class="item">
+          <div class="item-icon"><i class="fa fa-circle-o"></i></div>
+          <div class="item-text">Tom Davis</div>
+        </a>
 
-    <div id="menu-content" class="flex-scroll-y">
-      <div class="groups">
-        <div class="heading">
-          <h5 class="text-uppercase">Groups</h5>
-        </div>
-        <ul class="list-unstyled">
-          <li><a href="#">general</a></li>
-          <li><a href="#">labs</a></li>
-          <li><a href="#">notes</a></li>
-        </ul>
-      </div>
-
-      <div class="people">
-        <div class="heading">
-          <h5 class="text-uppercase">People</h5>
-        </div>
-        <ul class="list-unstyled">
-          <li><a href="#">Jack</a></li>
-          <li><a href="#">Daniel</a></li>
-          <li><a href="#">notes</a></li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-
-
-  <div id="chat" class="smooth-transition">
-    <header class="flex-header">
-      <div class="visible-xs-inline-block visible-sm-inline-block">
-        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><i class="fa fa-bars"></i></a>
-      </div>
-      <a href="#addons-toggle" class="btn btn-default pull-right" id="addons-toggle"><i class="fa fa-home"></i></a>
-    </header>
-
-    <div id="chat-container" class="flex-scroll-y smooth-transition">
-      <div class="bubble">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-      </div>
-
-      <div class="bubble">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-      </div>
-
-      <div class="bubble">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
-      </div>
-
-      <div class="bubble">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui. In pellentesque commodo nisl vel pretium. Pellentesque in erat lobortis, venenatis ipsum a, laoreet metus. Quisque sollicitudin purus sit amet lacus lobortis sollicitudin. Sed aliquam et erat nec volutpat.</p>
+        <a href="#" class="item">
+          <div class="item-icon"><i class="fa fa-circle-o"></i></div>
+          <div class="item-text">Mark Green</div>
+        </a>
       </div>
     </div>
   </div>
 
-  <div id="addons" class="smooth-transition"></div>
+
+  <div id="main">
+    <div class="flex-header">
+      <div class="header-content">
+        <h4><span class="text-muted">#</span>general</h4>
+      </div>
+
+      <div class="header-nav">
+        <a href="#" class="btn btn-default"><i class="fa fa-user"></i></a>
+        <a href="#" class="btn btn-default"><i class="fa fa-search"></i></a>
+        <a href="#" class="btn btn-default"><i class="fa fa-ellipsis-v"></i></a>
+      </div>
+    </div>
+
+    <div class="flex-content">
+
+      <div id="chat-container">
+        <div id="chat">
+          <div class="message">
+            <div class="content">
+              <h4>Mark Green</h4>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.</p>
+            </div>
+          </div>
+
+          <div class="message message-own">
+            <div class="content">
+              <h4>Mark Green</h4>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.</p>
+            </div>
+          </div>
+
+          <div class="message">
+            <div class="content">
+              <h4>Mark Green</h4>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.</p>
+            </div>
+          </div>
+
+          <div class="message">
+            <div class="content">
+              <h4>Mark Green</h4>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-footer">
+          <input type="text" class="form-control" placeholder="Write something">
+        </div>
+      </div>
+
+      <div id="addons">
+        <div class="flex-header">
+          <h4>Directory</h4>
+          <i class="fa fa-close"></i>
+        </div>
+
+        <div class="flex-content">
+          <div class="menu-nav m-b-20">
+            <h5 class="heading" style="margin-top: 20px;">Favorites</h5>
+            <a href="#" class="item">
+              <div class="item-icon">#</div>
+              <div class="item-text">Labs</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
 </div>

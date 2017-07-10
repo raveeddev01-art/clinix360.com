@@ -2,219 +2,80 @@
   height: 100%;
   display: flex;
   flex-grow: 1;
+}
 
-  #menu,
-  #main-container,
-  #addons {
-    position: relative;
-    overflow-x: hidden;
+#side,
+#main,
+#addons {
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+#side {
+  background: #fff;
+  box-shadow: 1px 0px #ddd;
+  z-index: 200;
+  position: relative;
+  overflow-x: visible;
+  display: flex;
+  flex-direction: column;
+  flex-basis: 250px;
+  flex-shrink: 0;
+}
+
+#main {
+  flex-grow: 1;
+
+  .flex-content {
     display: flex;
-    flex-direction: column;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-  }
 
-  #menu {
-    background: #fff;
-    box-shadow: inset -1px 0 0 $border-color;
-    flex-basis: 250px;
-    flex-shrink: 0;
-    left: -250px;
-    z-index: 50;
-  }
-
-  #main-container {
-    margin-left: -250px;
-    flex-grow: 1;
-
-    #main {
-      position: relative;
-      flex-direction: row;
+    #chat-container {
       display: flex;
+      flex-direction: column;
       flex-grow: 1;
 
       #chat {
-        display: flex;
-        flex-direction: column;
-        -webkit-transition: all 0.5s ease;
-        -moz-transition: all 0.5s ease;
-        -o-transition: all 0.5s ease;
-        transition: all 0.5s ease;
-        margin-right: -300px;
-
-        #conversation {
-          flex-grow: 1;
-          padding: 15px;
-        }
-
-        #compose {
-          order: 1;
-          flex-shrink: 0;
-        }
-      }
-
-      #addons {
-        background: cadetblue;
-        flex-basis: 300px;
-        flex-shrink: 0;
-        right: -300px;
+        flex-grow: 1;
+        overflow-y: scroll;
       }
     }
   }
+}
 
-  .header {
-    color: #fff;
-    background: $brand-primary;
-    padding: 0 15px;
-    display: flex;
-    flex-basis: 60px;
-    flex-shrink: 0;
-  }
+#addons {
+  flex-basis: 300px;
+  flex-shrink: 0;
+}
 
-  .flex-content {
-    overflow-y: scroll;
-    flex-grow: 1;
+.flex-header {
+  color: #fff;
+  background: $brand-primary;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  flex-basis: 60px;
+  flex-shrink: 0;
+
+  h4 {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
   }
 }
 
-#app.menu-toggled {
-  #menu {
-    left: 0;
-  }
-}
-#app.addons-toggled {
-  #main-container #main #addons {
-    right: 0;
-  }
+.flex-content {
+  overflow-y: scroll;
+  flex-grow: 1;
 }
 
-@media (min-width: $screen-md) {
-  #app #menu {
-    left: 0;
-  }
-  #app #main-container {
-    margin-left: 0;
-  }
-  #app.addons-toggled #main-container #main #chat {
-    margin-right: 0;
-  }
+.flex-footer {
+  display: flex;
+  flex-basis: 60px;
+  flex-shrink: 0;
 }
-
-// .flex-header {
-//   color: #fff;
-//   background: $brand-primary;
-//   padding: 0 15px;
-//   position: relative;
-//   z-index: 50;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   flex-basis: 60px;
-//   flex-shrink: 0;
-// }
-
-// .flex-scroll-y {
-//   flex-grow: 1;
-//   overflow-y: scroll;
-// }
-
-// #app {
-//   display: flex;
-//   flex-grow: 1;
-//   height: 100%;
-
-//   #menu {
-//     position: relative;
-//     overflow-x: hidden;
-//     display: flex;
-//     flex-direction: column;
-//     flex-basis: 250px;
-//     flex-shrink: 0;
-//     background: #fff;
-//     box-shadow: inset -1px 0 0 $border-color;
-//     z-index: 200;
-//     left: -250px;
-//   }
-
-//   #chat {
-//     position: relative;
-//     display: flex;
-//     flex-direction: column;
-//     flex-grow: 1;
-//     left: 0;
-//     margin-left: -250px;
-//     margin-right: -300px;
-
-//     header {
-//       flex-basis: 60px;
-//       background: $brand-primary;
-//       justify-content: flex-start;
-//       align-items: center;
-//       flex-direction: row;
-//     }
-
-//     #chat-container {
-//       padding: 20px;
-//     }
-//   }
-
-//   #addons {
-//     position: relative;
-//     display: flex;
-//     flex-direction: column;
-//     flex-basis: 300px;
-//     flex-shrink: 0;
-//     min-width: 1px;
-//     max-width: 300px;
-//     background: #fff;
-//     z-index: 180;
-//     box-shadow: inset 1px 0 0 $border-color;
-//     box-sizing: content-box;
-//     right: -300px;
-//   }
-// }
-
-// #app.menu-toggled {
-//   #menu {
-//     left: 0;
-//   }
-//   #chat {
-//     left: 250px;
-//   }
-// }
-
-// #app.addons-toggled {
-//   #addons {
-//     right: 0;
-//   }
-// }
-
-// @media (min-width: $screen-md) {
-//   #app {
-//     #menu {
-//       left: 0;
-//     }
-//     #chat {
-//       margin-left: 0;
-
-//       .bubble {
-//         max-width: 70%;
-//       }
-//     }
-//     #addons {
-//       top: 60px;
-//     }
-//   }
-
-//   #app.addons-toggled {
-//     #chat {
-//       left: 0;
-
-//       #chat-container {
-//         margin-right: 300px;
-//       }
-//     }
-//   }
-// }
