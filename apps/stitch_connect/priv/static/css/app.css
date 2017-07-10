@@ -5631,9 +5631,7 @@ body {
 body {
   line-height: 1.5;
   font-family: 'Lato', sans-serif;
-  background: #f4f5f7;
-  overflow-y: hidden;
-  overflow-x: hidden; }
+  background: #f4f5f7; }
 
 #root {
   height: 100%; }
@@ -5765,6 +5763,8 @@ body {
       font-size: 16px;
       font-weight: normal;
       margin: 25px 0; }
+    .authentication-wrapper .authentication-card .url-heading {
+      margin-top: 0; }
     .authentication-wrapper .authentication-card .team-form {
       display: flex;
       flex-wrap: nowrap;

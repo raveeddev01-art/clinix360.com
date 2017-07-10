@@ -1,1 +1,3 @@
-<h1>This is the login page.</h1>
+<div class="authentication-wrapper">
+  <div data-component="Login" />
+</div>

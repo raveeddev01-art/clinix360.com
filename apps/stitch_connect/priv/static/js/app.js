@@ -19078,10 +19078,15 @@ var _authentication_router = __webpack_require__(278);
 
 var _authentication_router2 = _interopRequireDefault(_authentication_router);
 
+var _login = __webpack_require__(377);
+
+var _login2 = _interopRequireDefault(_login);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var componentMap = {
-  AuthenticationRouter: _authentication_router2.default
+  AuthenticationRouter: _authentication_router2.default,
+  Login: _login2.default
 };
 
 window.mountComponents = function () {
@@ -37437,8 +37442,6 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(15);
-
 var _OverlayTrigger = __webpack_require__(18);
 
 var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
@@ -37518,34 +37521,14 @@ var Login = function (_Component) {
         "div",
         { className: "authentication-card text-center" },
         _react2.default.createElement(
-          "div",
-          { className: "card-header" },
-          _react2.default.createElement(
-            _Row2.default,
-            null,
-            _react2.default.createElement(
-              _Col2.default,
-              { xs: 12, className: "text-right" },
-              _react2.default.createElement(
-                _OverlayTrigger2.default,
-                { placement: "top", overlay: _react2.default.createElement(
-                    _Tooltip2.default,
-                    null,
-                    "Close"
-                  ) },
-                _react2.default.createElement(
-                  _reactRouterDom.Link,
-                  { to: "/" },
-                  _react2.default.createElement("i", { className: "fa fa-close" })
-                )
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
           "h2",
           null,
-          "Sign In"
+          "Team Name"
+        ),
+        _react2.default.createElement(
+          "h5",
+          { className: "text-muted url-heading" },
+          "team-name.teamstitch.com"
         ),
         _react2.default.createElement(
           "h5",
@@ -37556,7 +37539,8 @@ var Login = function (_Component) {
             null,
             "email address"
           ),
-          " and ",
+          " and",
+          " ",
           _react2.default.createElement(
             "strong",
             null,
@@ -37593,13 +37577,16 @@ var Login = function (_Component) {
             })
           ),
           _react2.default.createElement("input", {
-            value: "Next",
+            value: "Login",
             type: "submit",
             className: "btn btn-block btn-lg btn-primary"
           }),
           _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: "/reset-password", className: "btn btn-block btn-lg btn-default m-b-40" },
+            "a",
+            {
+              href: "/reset-password",
+              className: "btn btn-block btn-lg btn-default m-b-40"
+            },
             "Reset Password"
           )
         ),

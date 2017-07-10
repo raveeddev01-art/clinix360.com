@@ -2,9 +2,11 @@ import React from "react";
 import { render } from "react-dom";
 
 import AuthenticationRouter from "../authentication/authentication_router.jsx";
+import Login from "../authentication/login/login.jsx";
 
 var componentMap = {
-  AuthenticationRouter
+  AuthenticationRouter,
+  Login
 };
 
 window.mountComponents = () => {

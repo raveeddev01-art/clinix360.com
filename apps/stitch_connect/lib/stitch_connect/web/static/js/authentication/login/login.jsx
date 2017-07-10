@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -42,22 +41,13 @@ export default class Login extends Component {
   render() {
     return (
       <div className="authentication-card text-center">
+        <h2>Team Name</h2>
+        <h5 className="text-muted url-heading">team-name.teamstitch.com</h5>
 
-        <div className="card-header">
-          <Row>
-            <Col xs={12} className="text-right">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Close</Tooltip>}>
-                <Link to="/">
-                  <i className="fa fa-close"></i>
-                </Link>
-              </OverlayTrigger>
-            </Col>
-          </Row>
-        </div>
-
-        <h2>Sign In</h2>
-
-        <h5>Enter your <strong>email address</strong> and <strong>password</strong>.</h5>
+        <h5>
+          Enter your <strong>email address</strong> and{" "}
+          <strong>password</strong>.
+        </h5>
 
         <form onSubmit={this.handleSubmit}>
           <FormGroup bsSize="large">
@@ -84,11 +74,16 @@ export default class Login extends Component {
           </FormGroup>
 
           <input
-            value="Next"
+            value="Login"
             type="submit"
             className="btn btn-block btn-lg btn-primary"
           />
-          <Link to="/reset-password" className="btn btn-block btn-lg btn-default m-b-40">Reset Password</Link>
+          <a
+            href="/reset-password"
+            className="btn btn-block btn-lg btn-default m-b-40"
+          >
+            Reset Password
+          </a>
         </form>
 
         <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
