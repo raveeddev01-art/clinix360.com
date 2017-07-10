@@ -42,7 +42,7 @@
 
       #chat {
         flex-grow: 1;
-        overflow-y: scroll;
+        overflow-y: auto;
       }
     }
   }
@@ -70,7 +70,7 @@
 }
 
 .flex-content {
-  overflow-y: scroll;
+  overflow-y: auto;
   flex-grow: 1;
 }
 

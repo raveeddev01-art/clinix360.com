@@ -91,3 +91,14 @@ $screen-lg: 1200px;
   -o-transition: all 0.5s ease;
   transition: all 0.5s ease;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: rgba(0, 0, 0, .05);
+  border-radius: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .1);
+  border-radius: 15px;
+}

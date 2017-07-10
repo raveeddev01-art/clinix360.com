@@ -5692,6 +5692,15 @@ body {
   -o-transition: all 0.5s ease;
   transition: all 0.5s ease; }
 
+::-webkit-scrollbar {
+  width: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 15px; }
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 15px; }
+
 .authentication-wrapper {
   min-height: 100vh;
   display: flex;
@@ -5857,7 +5866,7 @@ body {
       flex-grow: 1; }
       #main .flex-content #chat-container #chat {
         flex-grow: 1;
-        overflow-y: scroll; }
+        overflow-y: auto; }
 
 #addons {
   flex-basis: 300px;
@@ -5877,7 +5886,7 @@ body {
     margin: 0; }
 
 .flex-content {
-  overflow-y: scroll;
+  overflow-y: auto;
   flex-grow: 1; }
 
 .flex-footer {
