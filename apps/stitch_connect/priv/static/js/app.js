@@ -15617,7 +15617,8 @@ var Login = function (_Component) {
         ),
         _react2.default.createElement(
           "form",
-          { onSubmit: this.handleSubmit },
+          { action: "/login", method: "post" },
+          _react2.default.createElement("input", { type: "hidden", name: "_csrf_token", value: window.csrfToken }),
           _react2.default.createElement(
             _FormGroup2.default,
             { bsSize: "large" },
@@ -41269,9 +41270,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Promise = __webpack_require__(401).Promise;
 
-var csrfToken = "";
+window.csrfToken = "";
 var metaElem = document.querySelector("meta[name=csrf-token]");
-if (metaElem) csrfToken = metaElem.getAttribute("content");
+if (metaElem) window.csrfToken = metaElem.getAttribute("content");
 
 window.CSRFFetch = function (url) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -41282,7 +41283,7 @@ window.CSRFFetch = function (url) {
 
   return fetch(url, (0, _deepmerge2.default)({
     headers: {
-      "X-CSRF-Token": csrfToken,
+      "x-csrf-token": window.csrfToken,
       "X-Requested-With": "XMLHttpRequest"
     },
     credentials: "same-origin"

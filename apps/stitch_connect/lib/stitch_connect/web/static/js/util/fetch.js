@@ -2,9 +2,9 @@ import merge from "deepmerge";
 import "whatwg-fetch";
 var Promise = require("es6-promise").Promise;
 
-var csrfToken = "";
+window.csrfToken = "";
 var metaElem = document.querySelector("meta[name=csrf-token]");
-if (metaElem) csrfToken = metaElem.getAttribute("content");
+if (metaElem) window.csrfToken = metaElem.getAttribute("content");
 
 window.CSRFFetch = function(url, options = {}) {
   if (!(options.body instanceof FormData)) {
@@ -16,7 +16,7 @@ window.CSRFFetch = function(url, options = {}) {
     merge(
       {
         headers: {
-          "X-CSRF-Token": csrfToken,
+          "x-csrf-token": window.csrfToken,
           "X-Requested-With": "XMLHttpRequest"
         },
         credentials: "same-origin"

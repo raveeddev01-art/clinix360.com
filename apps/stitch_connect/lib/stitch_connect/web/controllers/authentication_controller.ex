@@ -12,4 +12,15 @@ defmodule StitchConnect.Web.AuthenticationController do
     })
     render conn, "login.html", login_params: login_params
   end
+
+  def submit_login(conn, %{"email" => email, "password" => password}) do
+    team_slug = conn.private[:team_slug]
+    case Stitch.User.Authentication.validate_email_and_password(email, password, team_slug) do
+      false ->
+        redirect conn, to: "/login"
+      user ->
+        put_session(conn, :current_user_id, user.id)
+        |> redirect to: "/"
+    end
+  end
 end

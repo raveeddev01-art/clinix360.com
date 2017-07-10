@@ -1,6 +1,6 @@
 defmodule Stitch.User.Authentication do
   import Ecto.Changeset
-  alias Stitch.{Repo, User}
+  alias Stitch.{Repo, User, Team}
 
   def hash_password(password) do
     Comeonin.Bcrypt.hashpwsalt(password)
@@ -24,11 +24,22 @@ defmodule Stitch.User.Authentication do
     end
   end
 
-  def validate_email_and_password(email, password)
-  when byte_size(email) > 0 and byte_size(password) > 0 do
-    case Repo.get_by(User, email: email) do
-      nil -> Comeonin.Bcrypt.dummy_checkpw()
-      user -> Comeonin.Bcrypt.checkpw(password, user.encrypted_password)
+  def validate_email_and_password(email, password, team_slug)
+  when byte_size(email) > 0 and byte_size(password) > 0 and byte_size(team_slug) > 0 do
+    case Repo.get_by(Team, slug: team_slug) do
+      nil ->
+        false
+      team ->
+        case Repo.get_by(User, %{email: email, team_id: team.id}) do
+          nil -> Comeonin.Bcrypt.dummy_checkpw()
+          user ->
+            case Comeonin.Bcrypt.checkpw(password, user.encrypted_password) do
+              true ->
+                user
+              _ ->
+                false
+            end
+        end
     end
   end
 

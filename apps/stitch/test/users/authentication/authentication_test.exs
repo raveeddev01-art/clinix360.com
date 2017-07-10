@@ -35,10 +35,14 @@ defmodule Stitch.User.AuthenticationTest do
       password: "password123",
       fullname: "John Doe"
     }
-    Stitch.User.Authentication.create_account(user_struct)
+    team = insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
+    user = Stitch.User.Authentication.create_account(user_struct)
 
-    result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "password123")
-    assert result == true
+    user = Ecto.Changeset.change user, team_id: team.id
+    Stitch.Repo.update user
+
+    user = Stitch.User.Authentication.validate_email_and_password("example@email.com", "password123", "care-clinic")
+    assert user.email == "example@email.com"
   end
 
   test "validates incorrect email and password match" do
@@ -47,30 +51,38 @@ defmodule Stitch.User.AuthenticationTest do
       password: "password123",
       fullname: "John Doe"
     }
-    Stitch.User.Authentication.create_account(user_struct)
+    team = insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
+    user = Stitch.User.Authentication.create_account(user_struct)
 
-    result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "wrong")
+    user = Ecto.Changeset.change user, team_id: team.id
+    Stitch.Repo.update user
+
+    result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "wrong", "care-clinic")
     assert result == false
   end
 
   test "validates password using dummypw check when non-existing email is provided" do
-    result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "wrong")
+    result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "wrong", "some-team")
     assert result == false
   end
 
   describe "Stitch.User.Authentication.update_password/2" do
     test "it updates the password for a user" do
       user = insert(:user, %{email: "example@email.com", encrypted_password: "password"})
+      team = insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
+      user = Ecto.Changeset.change user, team_id: team.id
+      {:ok, user} = Stitch.Repo.update user
+
       result = Stitch.User.Authentication.update_password(user.id, "123456")
       assert result == true
 
       # Incorrect password should return false.
-      password_result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "password123")
+      password_result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "password123", "care-clinic")
       assert password_result == false
 
-      # Correct password should return true.
-      password_result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "123456")
-      assert password_result == true
+      # Correct password should return user.
+      user = Stitch.User.Authentication.validate_email_and_password("example@email.com", "123456", "care-clinic")
+      assert user.email == "example@email.com"
     end
   end
 end

@@ -27,6 +27,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser
 
     get "/login", AuthenticationController, :login
+    post "/login", AuthenticationController, :submit_login
   end
 
   # Authenticated routes.

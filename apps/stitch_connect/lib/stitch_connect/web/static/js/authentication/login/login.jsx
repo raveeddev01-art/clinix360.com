@@ -53,7 +53,9 @@ export default class Login extends Component {
           <strong>password</strong>.
         </h5>
 
-        <form onSubmit={this.handleSubmit}>
+        <form action="/login" method="post">
+          <input type="hidden" name="_csrf_token" value={window.csrfToken} />
+
           <FormGroup bsSize="large">
             <FormControl
               name="email"
