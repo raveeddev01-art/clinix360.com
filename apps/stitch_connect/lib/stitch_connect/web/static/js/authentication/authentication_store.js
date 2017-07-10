@@ -2,6 +2,7 @@ import { observable, computed } from "mobx";
 
 class AuthenticationStore {
   @observable userId = "";
+  @observable email = "";
   @observable firstName = "";
   @observable lastName = "";
   @observable username = "";

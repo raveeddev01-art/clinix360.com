@@ -39,6 +39,7 @@ export default class Email extends Component {
       body: { email: this.state.email }
     }).then(response => {
       store.instance.userId = response.data.id;
+      store.instance.email = this.state.email;
       post("/api/v1/users/send-confirmation-code", {
         body: { id: response.data.id }
       }).then(response => {

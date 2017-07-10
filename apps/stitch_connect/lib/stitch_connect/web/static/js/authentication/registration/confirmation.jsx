@@ -110,6 +110,9 @@ export default class Confirmation extends Component {
           </div>
 
           <h2>Check your email!</h2>
+          <h2>
+            {store.instance.email}
+          </h2>
 
           <h5>
             Enter your <strong>confirmation code</strong>.
