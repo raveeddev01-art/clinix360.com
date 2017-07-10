@@ -38334,11 +38334,6 @@ var Confirmation = (0, _mobxReact.observer)(_class = function (_Component) {
             "Check your email!"
           ),
           _react2.default.createElement(
-            "h2",
-            null,
-            _authentication_store2.default.instance.email
-          ),
-          _react2.default.createElement(
             "h5",
             null,
             "Enter your ",
@@ -38445,7 +38440,7 @@ var Confirmation = (0, _mobxReact.observer)(_class = function (_Component) {
               _react2.default.createElement(
                 "strong",
                 null,
-                "email@here.com"
+                _authentication_store2.default.instance.email
               ),
               " to verify your email address."
             )

@@ -110,9 +110,6 @@ export default class Confirmation extends Component {
           </div>
 
           <h2>Check your email!</h2>
-          <h2>
-            {store.instance.email}
-          </h2>
 
           <h5>
             Enter your <strong>confirmation code</strong>.
@@ -199,7 +196,8 @@ export default class Confirmation extends Component {
 
             <HelpBlock className="m-b-20">
               We sent a six-digit confirmation code to{" "}
-              <strong>email@here.com</strong> to verify your email address.
+              <strong>{store.instance.email}</strong> to verify your email
+              address.
             </HelpBlock>
           </form>
 
