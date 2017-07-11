@@ -16,13 +16,9 @@ use Mix.Config
 config :stitch_connect, StitchConnect.Web.Endpoint,
   on_init: {StitchConnect.Web.Endpoint, :load_from_system_env, []},
   http: [port: {:system, "PORT"}],
-  url: [host: "teamstitchapp.com"],
-  cache_static_manifest: "priv/static/cache_manifest.json",
-  https: [
-    port: 443,
-    otp_app: :stitch_connect
-  ],
+  url: [scheme: "https", host: "teamstitchapp.com", port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
+  cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: System.get_env("SECRET_KEY_BASE")
 
 # Do not print debug messages in production
