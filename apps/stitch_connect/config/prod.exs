@@ -16,7 +16,7 @@ use Mix.Config
 config :stitch_connect, StitchConnect.Web.Endpoint,
   http: [port: {:system, "PORT"}],
   on_init: {StitchConnect.Web.Endpoint, :load_from_system_env, []},
-  url: [scheme: "https", host: "stitch-phoenix.herokuapp.com", port: 443],
+  url: [scheme: "https", host: "teamstitchapp.com", port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   secret_key_base: System.get_env("SECRET_KEY_BASE"),
   cache_static_manifest: "priv/static/cache_manifest.json"
