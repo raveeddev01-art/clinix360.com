@@ -34077,7 +34077,7 @@ var TeamPicker = function (_Component) {
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      window.location = "https://" + _this.state.team_name + ".localhost:4443";
+      window.location = "https://" + _this.state.team_name + ".teamstitchapp.com";
     };
 
     _this.state = {
