@@ -20,9 +20,7 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   https: [
     port: 443,
-    otp_app: :stitch_connect,
-    keyfile: "priv/keys/production.key",
-    certfile: "priv/keys/production.crt"
+    otp_app: :stitch_connect
   ],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   secret_key_base: System.get_env("SECRET_KEY_BASE")
