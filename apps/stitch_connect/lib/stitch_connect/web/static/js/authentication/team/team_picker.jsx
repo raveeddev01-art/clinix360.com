@@ -44,7 +44,7 @@ export default class TeamPicker extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    window.location = `https://${this.state.team_name}.${applicationHost}`;
+    window.location = `https://${this.state.team_name}.teamstitchapp.com`;
   };
 
   render() {
