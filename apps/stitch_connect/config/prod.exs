@@ -22,7 +22,7 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
     port: 443,
     otp_app: :stitch_connect,
     keyfile: "priv/keys/production.key",
-    certfile: "priv/keys/production.cert"
+    certfile: "priv/keys/production.crt"
   ],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   secret_key_base: System.get_env("SECRET_KEY_BASE")
