@@ -34077,7 +34077,7 @@ var TeamPicker = function (_Component) {
 
     _this.handleSubmit = function (event) {
       event.preventDefault();
-      window.location = "https://" + _this.state.team_name + ".teamstitchapp.com";
+      window.location = "https://" + _this.state.team_name + "." + applicationHost;
     };
 
     _this.state = {
@@ -34116,7 +34116,7 @@ var TeamPicker = function (_Component) {
                     placement: "top",
                     overlay: _react2.default.createElement(
                       _Tooltip2.default,
-                      null,
+                      { id: "close" },
                       "Close"
                     )
                   },

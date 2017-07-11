@@ -44,7 +44,7 @@ export default class TeamPicker extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    window.location = `https://${this.state.team_name}.teamstitchapp.com`;
+    window.location = `https://${this.state.team_name}.${applicationHost}`;
   };
 
   render() {
@@ -58,7 +58,7 @@ export default class TeamPicker extends Component {
               <Col xs={12} className="text-right">
                 <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip>Close</Tooltip>}
+                  overlay={<Tooltip id="close">Close</Tooltip>}
                 >
                   <Link to="/">
                     <i className="fa fa-times" />

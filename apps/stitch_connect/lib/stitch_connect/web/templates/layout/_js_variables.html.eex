@@ -1,0 +1,9 @@
+<% if Mix.env == :dev do %>
+  <% applicationHost = "localhost:4443" %>
+<% else %>
+  <% applicationHost = "teamstitchapp.com" %>
+<% end %>
+
+<script>
+  window.applicationHost = "<%= applicationHost %>";
+</script>
