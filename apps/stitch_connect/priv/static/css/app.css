@@ -5864,11 +5864,14 @@ body {
         overflow-y: auto; }
 
 #addons {
-  display: flex;
+  display: none;
   flex-basis: 360px;
   flex-shrink: 0; }
   #addons .flex-content {
     overflow-y: auto; }
+
+#addons.open-addons {
+  display: flex; }
 
 .flex-header {
   color: #fff;

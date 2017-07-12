@@ -92,7 +92,7 @@
       <div class="header-nav">
         <a href="#" class="btn btn-default"><i class="fa fa-user"></i></a>
         <a href="#" class="btn btn-default"><i class="fa fa-search"></i></a>
-        <a href="#" class="btn btn-default"><i class="fa fa-ellipsis-v"></i></a>
+        <a href="#addons-toggle" class="btn btn-default" id="addons-toggle"><i class="fa fa-ellipsis-v"></i></a>
       </div>
     </div>
 

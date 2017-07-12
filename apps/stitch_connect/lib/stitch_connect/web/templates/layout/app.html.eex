@@ -52,14 +52,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <script>
-      $("#menu-toggle").click(function(e) {
-          e.preventDefault();
-          $("#app").toggleClass("menu-toggled");
-      });
-
       $("#addons-toggle").click(function(e) {
           e.preventDefault();
-          $("#app").toggleClass("addons-toggled");
+          $("#addons").toggleClass("open-addons");
       });
     </script>
 

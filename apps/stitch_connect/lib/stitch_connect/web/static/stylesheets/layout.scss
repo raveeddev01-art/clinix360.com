@@ -47,13 +47,17 @@
 }
 
 #addons {
-  display: flex;
+  display: none;
   flex-basis: 360px;
   flex-shrink: 0;
 
   .flex-content {
     overflow-y: auto;
   }
+}
+
+#addons.open-addons {
+  display: flex;
 }
 
 .flex-header {
