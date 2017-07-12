@@ -7,6 +7,7 @@ body {
   line-height: 1.5;
   font-family: 'Lato', sans-serif;
   background: #f4f5f7;
+  // -webkit-font-smoothing: antialiased;
   // overflow-y: hidden;
   // overflow-x: hidden;
 }
@@ -22,6 +23,10 @@ $border-color: #cacaca;
 $screen-sm: 768px;
 $screen-md: 992px;
 $screen-lg: 1200px;
+
+.text-muted {
+  color: #999;
+}
 
 .btn-primary {
   background: $brand-primary;
@@ -83,13 +88,6 @@ $screen-lg: 1200px;
 }
 .m-b-40 {
   margin-bottom: 40px;
-}
-
-.smooth-transition {
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease;
 }
 
 ::-webkit-scrollbar {

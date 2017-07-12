@@ -5636,6 +5636,9 @@ body {
 #root {
   height: 100%; }
 
+.text-muted {
+  color: #999; }
+
 .btn-primary {
   background: #036;
   border-color: #036; }
@@ -5685,12 +5688,6 @@ body {
 
 .m-b-40 {
   margin-bottom: 40px; }
-
-.smooth-transition {
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease; }
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -5839,11 +5836,7 @@ body {
   position: relative;
   overflow-x: hidden;
   display: flex;
-  flex-direction: column;
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease; }
+  flex-direction: column; }
 
 #side {
   background: #fff;
@@ -5871,8 +5864,11 @@ body {
         overflow-y: auto; }
 
 #addons {
-  flex-basis: 300px;
+  display: flex;
+  flex-basis: 360px;
   flex-shrink: 0; }
+  #addons .flex-content {
+    overflow-y: auto; }
 
 .flex-header {
   color: #fff;
@@ -5902,7 +5898,7 @@ body {
   #side .flex-header h4 {
     flex-grow: 1; }
   #side .flex-header i.fa {
-    color: #8492a6; }
+    opacity: .5; }
   #side .flex-header:hover {
     background: #00264d; }
 
@@ -5973,9 +5969,43 @@ body {
     background: transparent; }
     #addons .flex-header h4 {
       flex-grow: 1;
+      color: #036;
       font-size: 20px;
       font-weight: bold;
       margin: 0; }
+  #addons .flex-content {
+    flex-direction: column;
+    padding: 15px 20px; }
+    #addons .flex-content .addon-directory .subheading {
+      display: flex;
+      flex-direction: row;
+      align-items: center; }
+      #addons .flex-content .addon-directory .subheading .flex-item {
+        flex-grow: 1;
+        flex-shrink: 0;
+        font-size: 15px; }
+    #addons .flex-content .addon-directory hr {
+      margin: 15px 0 10px; }
+    #addons .flex-content .addon-directory ul li {
+      line-height: 1.45;
+      text-decoration: none;
+      border-radius: 0 4px 4px 0;
+      padding: 5px 0; }
+      #addons .flex-content .addon-directory ul li i.fa.fa-circle {
+        color: #13ce66; }
+      #addons .flex-content .addon-directory ul li i.fa-circle-o {
+        color: #ccc; }
+      #addons .flex-content .addon-directory ul li strong {
+        margin: 0 4px; }
+    #addons .flex-content .addon-directory .profile-details h4 {
+      font-weight: bold; }
+    #addons .flex-content .addon-directory .profile-details .item {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 5px; }
+      #addons .flex-content .addon-directory .profile-details .item .item-label {
+        flex-grow: 1;
+        flex-shrink: 0; }
 
 #main {
   background: #fff; }
