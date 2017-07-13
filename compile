@@ -1,0 +1,3 @@
+info "Building Phoenix app static assets"
+webpack
+mix phoenix.digest
