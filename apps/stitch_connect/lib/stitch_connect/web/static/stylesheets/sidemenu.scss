@@ -1,4 +1,4 @@
-#side {
+#sidemenu {
   .flex-header {
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     box-shadow: 1px 0 0 $brand-primary;
@@ -17,6 +17,8 @@
   }
 
   .flex-content {
+    padding-top: 20px;
+
     .menu-nav {
       margin-right: 15px;
 

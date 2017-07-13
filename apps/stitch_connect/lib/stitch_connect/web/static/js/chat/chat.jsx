@@ -3,7 +3,7 @@ import React, { Component } from "react";
 export default class Chat extends Component {
   render() {
     return (
-      <div>
+      <div id="chat">
         <div className="message">
           <div className="content">
             <h4>Mark Green</h4>
