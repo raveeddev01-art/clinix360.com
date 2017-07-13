@@ -8,7 +8,8 @@ defmodule StitchConnect.Web.AuthenticationController do
   def login(conn, _params) do
     login_params = Poison.encode!(%{
       "teamName" => conn.private[:team_name],
-      "teamSlug" => conn.private[:team_slug]
+      "teamSlug" => conn.private[:team_slug],
+      "invalidLogin" => get_flash(conn, :invalid_login)
     })
     render conn, "login.html", login_params: login_params
   end
@@ -17,7 +18,9 @@ defmodule StitchConnect.Web.AuthenticationController do
     team_slug = conn.private[:team_slug]
     case Stitch.User.Authentication.validate_email_and_password(email, password, team_slug) do
       false ->
-        redirect conn, to: "/login"
+        conn
+        |> put_flash(:invalid_login, "Invalid email or password.")
+        |> redirect to: "/login"
       user ->
         conn
         |> put_session(:current_user_id, user.id)

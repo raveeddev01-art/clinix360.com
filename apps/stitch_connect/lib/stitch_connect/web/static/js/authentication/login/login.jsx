@@ -79,6 +79,12 @@ export default class Login extends Component {
             />
           </FormGroup>
 
+          {
+            <p>
+              {this.props.invalidLogin}
+            </p>
+          }
+
           <input
             value="Login"
             type="submit"
