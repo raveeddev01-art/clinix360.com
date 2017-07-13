@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import RoomsList from "../sidemenu/rooms_list.jsx";
 import Room from "../sidemenu/room.jsx";
+import Team from "../sidemenu/team.jsx";
 
 export default class Sidemenu extends Component {
   render() {
@@ -11,19 +12,6 @@ export default class Sidemenu extends Component {
           <h4 className="text-capitalize">Team Name</h4>
 
           <i className="fa fa-chevron-down" />
-        </div>
-
-        <div className="flex-footer">
-          <div className="user">
-            <div className="name">Daniel Tapia</div>
-            <div className="status">online</div>
-          </div>
-
-          <div className="user-actions">
-            <a href="#" className="btn">
-              <i className="fa fa-bell" />
-            </a>
-          </div>
         </div>
 
         <div className="flex-content">
@@ -62,7 +50,7 @@ export default class Sidemenu extends Component {
             </a>
           </div>*/}
 
-          <div className="menu-nav people m-b-20">
+          {/*<div className="menu-nav people m-b-20">
             <h5 className="heading">People</h5>
             <a href="#" className="item">
               <div className="item-icon">
@@ -98,9 +86,9 @@ export default class Sidemenu extends Component {
               </div>
               <div className="item-text">Mark Green</div>
             </a>
-          </div>
+          </div>*/}
 
-          {/*<Team heading={"People"} />*/}
+          <Team heading={"People"} />
         </div>
       </div>
     );

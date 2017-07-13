@@ -6,7 +6,7 @@ body {
 body {
   line-height: 1.5;
   font-family: 'Lato', sans-serif;
-  background: #f4f5f7;
+  background: #fafafa;
   // -webkit-font-smoothing: antialiased;
   // overflow-y: hidden;
   // overflow-x: hidden;
@@ -16,9 +16,10 @@ body {
   height: 100%;
 }
 
+$body-bg: #fafafa;
 $brand-primary: #036;
-// $brand-primary: #1b4063;
-$border-color: #cacaca;
+$border-color: #ccc;
+$border-color-secondary: #e4e4e4;
 
 $screen-sm: 768px;
 $screen-md: 992px;
@@ -50,7 +51,7 @@ $screen-lg: 1200px;
 }
 
 .btn-default {
-  background: #fafafa;
+  background: $body-bg;
   border-color: $border-color;
 }
 

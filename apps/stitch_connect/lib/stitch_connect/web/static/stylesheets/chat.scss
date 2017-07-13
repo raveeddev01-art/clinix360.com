@@ -1,6 +1,4 @@
 #main {
-  background: #fff;
-
   .flex-header {
     border-bottom: 1px solid rgba(0, 0, 0, .15);
     padding: 0 20px;
@@ -26,7 +24,6 @@
 
   .flex-content {
     #chat {
-      background: #eaebed;
       padding: 20px;
 
       .message {
@@ -37,11 +34,13 @@
         .content {
           max-width: 70%;
           background: #fff;
-          padding: 15px 20px;
+          border: 1px solid $border-color-secondary;
           border-radius: 4px;
+          padding: 15px 20px;
           flex-grow: 1;
 
           h4 {
+            color: $brand-primary;
             font-size: 15px;
             font-weight: bold;
             margin: 0 0 3px;
@@ -55,13 +54,17 @@
         .content {
           color: #fff;
           background: $brand-primary;
+          border: 0;
+
+          h4 {
+            color: #fff;
+          }
         }
       }
     }
   }
 
   .flex-footer {
-    background: #eaebed;
     padding: 10px 20px;
 
     .form-control {

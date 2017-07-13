@@ -17,18 +17,19 @@
   }
 
   .flex-content {
-    padding-top: 20px;
+    padding: 20px 15px;
 
     .menu-nav {
-      margin-right: 15px;
-
       .heading {
-        color: #999;
-        font-size: 12px;
+        color: $brand-primary;
         font-weight: bold;
-        letter-spacing: .1em;
+        line-height: 1.45;
         text-transform: uppercase;
-        margin: 0 15px 5px;
+        background: #fff;
+        border: 1px solid #e4e4e4;
+        border-radius: 3px;
+        padding: 6px 10px;
+        margin: 0 0 5px;
       }
 
       .item {
@@ -36,8 +37,8 @@
         color: #333;
         line-height: 1.45;
         text-decoration: none;
-        border-radius: 0 4px 4px 0;
-        padding: 5px 0 5px 15px;
+        border-radius: 3px;
+        padding: 5px 10px;
 
         .item-icon {
           color: #ccc;
@@ -80,7 +81,7 @@
 
   .flex-footer {
     align-items: center;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid $border-color-secondary;
     padding: 0 15px;
 
     .user {
@@ -89,10 +90,6 @@
 
       .name {
         font-weight: bold;
-      }
-
-      .status {
-        color: #999;
       }
     }
 

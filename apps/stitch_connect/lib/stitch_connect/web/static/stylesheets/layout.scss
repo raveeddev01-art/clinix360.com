@@ -14,8 +14,7 @@
 }
 
 #sidemenu {
-  background: #fff;
-  box-shadow: 1px 0px #ddd;
+  box-shadow: 1px 0px $border-color;
   z-index: 200;
   position: relative;
   overflow-x: visible;

@@ -7,6 +7,7 @@ import Webapp from "../webapp.jsx";
 import Sidemenu from "../sidemenu/sidemenu.jsx";
 import RoomsList from "../sidemenu/rooms_list.jsx";
 import Room from "../sidemenu/room.jsx";
+import Team from "../sidemenu/team.jsx";
 import Chat from "../chat/chat.jsx";
 
 var componentMap = {
@@ -16,6 +17,7 @@ var componentMap = {
   Sidemenu,
   RoomsList,
   Room,
+  Team,
   Chat
 };
 
