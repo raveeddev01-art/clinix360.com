@@ -49,9 +49,25 @@ defmodule Stitch.User do
     |> put_change(:token, token)
   end
 
+  @doc """
+  Changeset to create a User record for a team invite. Creates
+  account with only email, invite_token and team_id.
+  """
+  def team_invite_changeset(struct, params) do
+    invite_token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+
+    struct
+    |> onboarding_email_changeset(params)
+    |> cast(params, [:team_id])
+    |> validate_required([:team_id])
+    |> unique_constraint(:team_id, name: :users_email_team_id_index)
+    |> put_change(:invite_token, invite_token)
+  end
+
   def onboarding_complete_changeset(struct, params) do
     struct
     |> cast(params, [:fullname, :username, :password, :pin, :team_id])
+    |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:username, :pin, :team_id])
     |> put_change(:onboarded, true)
   end

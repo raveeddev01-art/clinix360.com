@@ -6,6 +6,26 @@ defmodule Stitch.User.Onboarding do
 
   alias Stitch.{Repo, User}
 
+  @doc """
+  Creates a new User record in the database, and associates
+  it to the user's team.
+  """
+  def invite_user_to_team(user_id, email) do
+    user = Repo.get(User, user_id)
+    case user.team_id do
+      nil ->
+        {:error, "Cannot send the invite because the user has no team."}
+      _ ->
+        changeset = User.team_invite_changeset(%User{}, %{email: email, team_id: user.team_id})
+        case Repo.insert changeset do
+          {:ok, user} ->
+            user
+          {:error, _} ->
+            {:error, "User with this email already exists on this team."}
+        end
+    end
+  end
+
   def create_user_with_email(email) when byte_size(email) > 0 do
     changeset = User.onboarding_email_changeset(%User{}, %{email: email})
     {:ok, user} = Repo.insert(changeset)

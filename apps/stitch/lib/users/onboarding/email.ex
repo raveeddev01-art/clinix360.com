@@ -16,4 +16,31 @@ defmodule Stitch.User.Onboarding.Email do
     ])
     |> Stitch.Mailer.deliver_later
   end
+
+  def team_invitation(inviter_name, team_name, user) do
+    new_email()
+    |> template("Sign-up 3: You are Invited (Connect)")
+    |> to(user.email)
+    |> from("welcome@teamstitch.com")
+    |> subject("Stitch Connect - Team Invite")
+    |> put_param("global_merge_vars", [
+      %{
+        "name": "inviterName",
+        "content": inviter_name
+      },
+      %{
+        "name": "inviterOrg",
+        "content": team_name
+      },
+      %{
+        "name": "receiverEmail",
+        "content": user.email
+      },
+      %{
+        "name": "joinTeamUrl",
+        "content": "https://foobar.com/#{user.invite_token}"
+      },
+    ])
+    |> Stitch.Mailer.deliver_later
+  end
 end

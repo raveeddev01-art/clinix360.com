@@ -14,4 +14,13 @@ defmodule Stitch.User.Onboarding.EmailTest do
       assert_delivered_email(email)
     end
   end
+
+  describe "Stitch.User.Onboarding.Email.team_invitation/3" do
+    test "sends an email with the invite token as the link" do
+      team = insert(:team)
+      user = insert(:user, %{invite_token: "abc", email: "a@email.com", team_id: team.id})
+      email = Stitch.User.Onboarding.Email.team_invitation("Sergio Tapia", "Care Clinic", user)
+      assert_delivered_email(email)
+    end
+  end
 end

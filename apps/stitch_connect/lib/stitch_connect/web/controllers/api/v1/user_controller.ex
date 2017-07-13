@@ -49,4 +49,18 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
     end
   end
+
+  def send_invite(conn, %{"email" => email}) do
+    current_user_id = get_session(conn, :current_user_id)
+    case Stitch.User.Onboarding.invite_user_to_team(current_user_id, email) do
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: message})
+      user ->
+        Stitch.User.Onboarding.Email.team_invitation(user)
+        conn
+        |> json(%{message: "Team invitation sent to email: #{email}"})
+    end
+  end
 end

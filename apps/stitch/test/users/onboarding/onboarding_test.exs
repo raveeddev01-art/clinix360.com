@@ -25,6 +25,30 @@ defmodule Stitch.User.OnboardingTest do
     end
   end
 
+  describe "Stitch.User.Onboarding.invite_user_to_team/2" do
+    test "it creates a new user associated with team" do
+      team = insert(:team)
+      user = insert(:user, team_id: team.id)
+      result_user = Stitch.User.Onboarding.invite_user_to_team(user.id, "new@email.com")
+      assert result_user.team_id == team.id
+      assert result_user.email == "new@email.com"
+      assert String.length(result_user.invite_token) == 32
+    end
+
+    test "it returns an error for user with no team" do
+      user = insert(:user, team_id: nil)
+      {:error, message} = Stitch.User.Onboarding.invite_user_to_team(user.id, "new@email.com")
+      assert message == "Cannot send the invite because the user has no team."
+    end
+
+    test "it returns an error if user with that email exists on the team already" do
+      team = insert(:team)
+      user = insert(:user, %{email: "a@email.com", team_id: team.id})
+      {:error, message} = Stitch.User.Onboarding.invite_user_to_team(user.id, "a@email.com")
+      assert message == "User with this email already exists on this team."
+    end
+  end
+
   describe "Stitch.User.Onboarding.send_confirmation_code/1" do
     test "returns an email struct and sends an email" do
       user = insert(:user, %{email: "example@email.com", confirmation_code: "123456"})
