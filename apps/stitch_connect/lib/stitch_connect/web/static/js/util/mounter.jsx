@@ -3,12 +3,12 @@ import { render } from "react-dom";
 
 import AuthenticationRouter from "../authentication/authentication_router.jsx";
 import Login from "../authentication/login/login.jsx";
-import Room from "../room/room.jsx";
+import Chat from "../chat/chat.jsx";
 
 var componentMap = {
   AuthenticationRouter,
   Login,
-  Room
+  Chat
 };
 
 window.mountComponents = () => {

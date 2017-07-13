@@ -99,7 +99,7 @@
     <div class="flex-content">
 
       <div id="chat-container">
-        <div id="chat" data-component="Room"></div>
+        <div id="chat" data-component="Chat"></div>
 
         <div class="flex-footer">
           <input type="text" class="form-control" placeholder="Write something">
