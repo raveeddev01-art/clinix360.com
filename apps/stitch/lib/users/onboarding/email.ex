@@ -15,7 +15,7 @@ defmodule Stitch.User.Onboarding.Email do
       }
     ])
     |> Stitch.Mailer.deliver_later
-  end
+  end #omarivera@lightspeed-electric.com
 
   def team_invitation(inviter_name, team_name, user) do
     new_email()

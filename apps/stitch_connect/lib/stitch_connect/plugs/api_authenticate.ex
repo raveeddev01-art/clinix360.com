@@ -5,13 +5,21 @@ defmodule StitchConnect.Plug.ApiAuthenticate do
   def init(default), do: default
 
   def call(conn, _) do
-    case get_session(conn, :current_user_id) do
-      nil ->
+    conn = fetch_query_params(conn)
+    case Stitch.UserQueries.get_by_token(conn.params["authenticationToken"]) do
+      {:error, message} ->
         conn
-        |> Phoenix.Controller.redirect(to: "/login")
+        |> put_status(:unauthorized)
+        |> Phoenix.Controller.json(%{message: message})
         |> halt
-      _ ->
+      {:not_found, message} ->
         conn
+        |> put_status(:unauthorized)
+        |> Phoenix.Controller.json(%{message: message})
+        |> halt
+      user ->
+        conn
+        |> assign(:current_user, user)
     end
   end
 end

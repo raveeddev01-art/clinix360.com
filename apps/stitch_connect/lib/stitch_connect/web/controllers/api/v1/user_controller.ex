@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:create]
 
   def create(conn, %{"email" => email}) do
     case Stitch.User.Onboarding.create_user_with_email(email) do

@@ -26,4 +26,25 @@ defmodule Stitch.UserQueriesTest do
     record = Stitch.UserQueries.get_by_id(user.id)
     assert record.id == user.id
   end
+
+  describe "Stitch.UserQueries.get_by_token/1" do
+    test "returns malformed token error for incorrect token" do
+      {:error, message} = Stitch.UserQueries.get_by_token("abc")
+      assert message == "Token is malformed."
+    end
+
+    test "returns not found message for unknown token" do
+      token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+      {:not_found, message} = Stitch.UserQueries.get_by_token(token)
+      assert message == "User with token #{token} was not found."
+    end
+
+    test "returns user given an existing token" do
+      token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+      insert(:user, %{token: token})
+      user = Stitch.UserQueries.get_by_token(token)
+      assert user.token == token
+      assert user.id != nil
+    end
+  end
 end
