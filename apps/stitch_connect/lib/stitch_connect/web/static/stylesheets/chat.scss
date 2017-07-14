@@ -5,26 +5,50 @@
 
     .header-content {
       flex-grow: 1;
-
-      span {
-        opacity: .5;
-        margin-right: 2px;
-      }
     }
 
-    .header-nav .btn {
-      width: 32px;
-      color: #fff;
-      font-size: 18px;
-      line-height: 30px;
-      padding: 0;
-      margin-left: 10px;
+    .header-nav {
+      display: flex;
+
+      .form-control {
+        color: #fff;
+        background: transparent;
+        border: 2px solid #fff;
+        box-shadow: none;
+      }
+
+      .btn {
+        color: #fff;
+        font-size: 21px;
+        padding: 0 10px;
+        margin-left: 10px;
+      }
     }
   }
 
   .flex-content {
     #chat {
       padding: 20px;
+
+      .date-separator {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        border-top: 1px solid $border-color;
+        margin: 20px 0 40px;
+
+        .date {
+          color: $brand-primary;
+          font-weight: bold;
+          line-height: 1.45;
+          background: #fff;
+          border: 1px solid $border-color;
+          border-radius: 6px;
+          padding: 6px 12px;
+          position: absolute;
+          top: -16px;
+        }
+      }
 
       .message {
         display: flex;
@@ -33,6 +57,7 @@
 
         .content {
           max-width: 70%;
+          font-size: 15px;
           background: #fff;
           border: 1px solid $border-color-secondary;
           border-radius: 4px;
@@ -42,8 +67,9 @@
           h4 {
             color: $brand-primary;
             font-size: 15px;
+            line-height: 1.5;
             font-weight: bold;
-            margin: 0 0 3px;
+            margin: 0;
           }
         }
       }

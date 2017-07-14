@@ -1,14 +1,10 @@
 #sidemenu {
   .flex-header {
     border-bottom: 1px solid rgba(0, 0, 0, .2);
-    box-shadow: 1px 0 0 $brand-primary;
+    box-shadow: 1px 0 0 darken($brand-primary, 10%);
 
     h4 {
       flex-grow: 1;
-    }
-
-    i.fa {
-      font-size: 21px;
     }
 
     &:hover {
@@ -49,7 +45,6 @@
         padding: 5px 10px;
 
         .item-icon {
-          color: #ccc;
           margin-right: 5px;
         }
 
@@ -62,7 +57,7 @@
           color: #fff;
           font-size: 12px;
           line-height: 20px;
-          background: #ea5656;
+          background: $brand-primary;
           border-radius: 3px;
         }
 
@@ -82,8 +77,6 @@
     }
 
     .people .item {
-      font-style: italic;
-      color: #999;
     }
   }
 

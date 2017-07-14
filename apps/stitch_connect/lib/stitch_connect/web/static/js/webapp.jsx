@@ -12,21 +12,19 @@ export default class Webapp extends Component {
         <div id="main">
           <div className="flex-header">
             <div className="header-content">
-              <h4>#general</h4>
+              <h4>
+                <i className="fa fa-comments" /> General
+              </h4>
             </div>
 
             <div className="header-nav">
-              <a href="#" className="btn">
-                <i className="fa fa-cog" />
-              </a>
-              <a href="#" className="btn">
-                <i className="fa fa-info-circle" />
-              </a>
-              <a href="#" className="btn">
-                <i className="fa fa-search" />
-              </a>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search"
+              />
               <a href="#addons-toggle" className="btn" id="addons-toggle">
-                <i className="fa fa-ellipsis-h" />
+                <i className="fa fa-info-circle" />
               </a>
             </div>
           </div>
