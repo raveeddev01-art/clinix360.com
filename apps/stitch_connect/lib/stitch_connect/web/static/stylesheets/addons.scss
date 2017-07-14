@@ -1,10 +1,15 @@
 #addons {
-  background: #fff;
-  box-shadow: -1px 0 0 #ddd;
+  box-shadow: -1px 0 0 $border-color;
+  padding: 20px 0 0;
 
   .flex-header {
     color: inherit;
-    background: transparent;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 3px;
+    padding: 8px 15px;
+    flex-basis: auto;
+    margin: 0 15px 20px;
 
     h4 {
       flex-grow: 1;
@@ -17,60 +22,27 @@
 
   .flex-content {
     flex-direction: column;
-    padding: 15px 20px;
+    padding: 0 15px;
 
-    .addon-directory {
-      .subheading {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+    .subheading {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 16px;
+      margin-bottom: 15px;
 
-        .flex-item {
-          flex-grow: 1;
-          flex-shrink: 0;
-          font-size: 15px;
-        }
+      .addon-icon {
+        margin-right: 5px;
       }
 
-      hr {
-        margin: 15px 0 10px;
+      .flex-item {
+        flex-grow: 1;
+        flex-shrink: 0;
       }
+    }
 
-      ul li {
-        line-height: 1.45;
-        text-decoration: none;
-        border-radius: 0 4px 4px 0;
-        padding: 5px 0;
-
-        i.fa.fa-circle {
-          color: #13ce66;
-        }
-
-        i.fa-circle-o {
-          color: #ccc;
-        }
-
-        strong {
-          margin: 0 4px;
-        }
-      }
-
-      .profile-details {
-        h4 {
-          font-weight: bold;
-        }
-
-        .item {
-          display: flex;
-          flex-direction: row;
-          margin-bottom: 5px;
-
-          .item-label {
-            flex-grow: 1;
-            flex-shrink: 0;
-          }
-        }
-      }
+    hr {
+      margin: 5px 0 15px;
     }
   }
 }

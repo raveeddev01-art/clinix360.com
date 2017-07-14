@@ -10,6 +10,7 @@ import Room from "../sidemenu/room.jsx";
 import Team from "../sidemenu/team.jsx";
 import Chat from "../chat/chat.jsx";
 import Message from "../chat/message.jsx";
+import Addons from "../addons/addons.jsx";
 
 var componentMap = {
   AuthenticationRouter,
@@ -20,7 +21,8 @@ var componentMap = {
   Room,
   Team,
   Chat,
-  Message
+  Message,
+  Addons
 };
 
 window.mountComponents = () => {
