@@ -4,12 +4,16 @@ import RoomsList from "../sidemenu/rooms_list.jsx";
 import Room from "../sidemenu/room.jsx";
 import Team from "../sidemenu/team.jsx";
 
+import sidemenuStore from "./sidemenu_store.js";
+
 export default class Sidemenu extends Component {
   render() {
     return (
       <div id="sidemenu">
         <div className="flex-header">
-          <h4 className="text-capitalize">Team Name</h4>
+          <h4 className="text-capitalize">
+            {sidemenuStore.instance.teamName}
+          </h4>
 
           <i className="fa fa-sliders" />
         </div>

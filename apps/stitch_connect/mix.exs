@@ -39,6 +39,7 @@ defmodule StitchConnect.Mixfile do
      {:cowboy, "~> 1.0"},
      {:guardian, "~> 0.14"},
      {:poison, "~> 3.1"},
+     {:corsica, "~> 1.0"},
      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
      {:stitch, in_umbrella: true}]
   end

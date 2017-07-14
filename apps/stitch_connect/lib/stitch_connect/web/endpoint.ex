@@ -22,6 +22,9 @@ defmodule StitchConnect.Web.Endpoint do
   plug Plug.RequestId
   plug Plug.Logger
 
+  # Enable Corsica to allow CORS from any domain.
+  plug Corsica, origins: "*"
+
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],

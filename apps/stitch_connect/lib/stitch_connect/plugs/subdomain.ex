@@ -16,6 +16,7 @@ defmodule StitchConnect.Plug.Subdomain do
             |> put_private(:subdomain, subdomain)
             |> put_private(:team_slug, team.slug)
             |> put_private(:team_name, team.name)
+            |> put_private(:team_id, team.id)
             |> router.call(router.init({}))
             |> halt
         end

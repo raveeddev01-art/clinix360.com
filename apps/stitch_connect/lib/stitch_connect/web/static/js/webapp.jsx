@@ -4,7 +4,14 @@ import Sidemenu from "./sidemenu/sidemenu.jsx";
 import Chat from "./chat/chat.jsx";
 import Addons from "./addons/addons.jsx";
 
+import sidemenuStore from "./sidemenu/sidemenu_store.js";
+
 export default class Webapp extends Component {
+  constructor(props) {
+    super();
+    sidemenuStore.instance = props;
+  }
+
   render() {
     return (
       <div id="app">

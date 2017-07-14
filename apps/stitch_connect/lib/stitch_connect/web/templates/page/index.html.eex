@@ -1,1 +1,4 @@
-<div id="root" data-component="Webapp"></div>
+<div id="root"
+     data-component="Webapp"
+     data-react-props="<%= @team_params %>">
+</div>
