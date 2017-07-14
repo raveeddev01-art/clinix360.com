@@ -8,7 +8,7 @@
     }
 
     i.fa {
-      opacity: .5;
+      font-size: 21px;
     }
 
     &:hover {
@@ -21,20 +21,28 @@
 
     .menu-nav {
       .heading {
-        color: $brand-primary;
-        font-weight: bold;
-        line-height: 1.45;
-        text-transform: uppercase;
+        display: flex;
         background: #fff;
         border: 1px solid #e4e4e4;
         border-radius: 3px;
         padding: 6px 10px;
         margin: 0 0 5px;
+
+        h5 {
+          flex-grow: 1;
+          flex-shrink: 0;
+          color: $brand-primary;
+          font-weight: bold;
+          line-height: 1.45;
+          text-transform: uppercase;
+          margin: 0;
+        }
       }
 
       .item {
         display: flex;
         color: #333;
+        font-size: 15px;
         line-height: 1.45;
         text-decoration: none;
         border-radius: 3px;

@@ -11,7 +11,7 @@ export default class Sidemenu extends Component {
         <div className="flex-header">
           <h4 className="text-capitalize">Team Name</h4>
 
-          <i className="fa fa-chevron-down" />
+          <i className="fa fa-sliders" />
         </div>
 
         <div className="flex-content">

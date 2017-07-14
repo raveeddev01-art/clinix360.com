@@ -5,7 +5,7 @@ export default class Room extends Component {
     return (
       <a href="#" className="item">
         <div className="item-icon">
-          <i className="fa fa-hashtag" />
+          <i className="fa fa-comments" />
         </div>
         <div className="item-text">random</div>
         {/*<div className="item-badge text-center">3</div>*/}
