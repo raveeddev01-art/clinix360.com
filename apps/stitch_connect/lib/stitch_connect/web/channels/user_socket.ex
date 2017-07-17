@@ -20,7 +20,7 @@ defmodule StitchConnect.Web.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(%{"token" => token}, socket) do
+  def connect(%{"authenticationToken" => token}, socket) do
     case Stitch.User.Authentication.user_for_token(token) do
       user ->
         {:ok, assign(socket, :current_user, user)}
