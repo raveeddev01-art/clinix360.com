@@ -1,6 +1,11 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:send_invite]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :send_invite]
+
+  def index(conn, params) do
+    users = Stitch.UserQueries.users_for_team(conn.assigns.current_user.team_id)
+    render conn, "index.json", users: users
+  end
 
   def create(conn, %{"email" => email}) do
     case Stitch.User.Onboarding.create_user_with_email(email) do

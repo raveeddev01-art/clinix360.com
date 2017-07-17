@@ -1,6 +1,15 @@
 defmodule Stitch.UserQueries do
   import Ecto.Query
-  alias Stitch.{Repo, User}
+  alias Stitch.{Repo, User, Team}
+
+  def users_for_team(team_id) when is_integer(team_id) do
+    team = Repo.get(Team, team_id)
+    users = Repo.all Ecto.assoc(team, :users)
+    users
+  end
+  def users_for_team(_) do
+    {:error, "team_id must be an integer"}
+  end
 
   def get_all do
     Repo.all(from User)

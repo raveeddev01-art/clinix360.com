@@ -6,6 +6,21 @@ defmodule Stitch.UserQueriesTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "users_for_team/1" do
+    test "returns users for a given team" do
+      team = insert(:team, %{name: "Care Clinic"})
+      insert(:user, %{fullname: "John Doe", team_id: team.id})
+      insert(:user, %{fullname: "Jane Doe", team_id: team.id})
+      users = Stitch.UserQueries.users_for_team(team.id)
+      assert Enum.count(users) == 2
+    end
+
+    test "returns error for non-integer team_id" do
+      {:error, message} = Stitch.UserQueries.users_for_team("asd")
+      assert message == "team_id must be an integer"
+    end
+  end
+
   test "get_by_id when id is less than one" do
     {:error, message} = Stitch.UserQueries.get_by_id(0)
     assert message == "Id cannot be less than 1."

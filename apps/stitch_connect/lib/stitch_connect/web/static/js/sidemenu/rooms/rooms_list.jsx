@@ -25,7 +25,7 @@ export default class RoomsList extends Component {
         </div>
 
         {this.props.rooms.map(room => {
-          return <Room room={room} />;
+          return <Room key={`room-${room.id}`} room={room} />;
         })}
       </div>
     );

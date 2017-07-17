@@ -42,6 +42,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
 
+    get "/users/", UserController, :index
     get "/rooms/", RoomController, :index
   end
 end
