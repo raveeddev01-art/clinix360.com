@@ -4,7 +4,7 @@ defmodule StitchConnect.Plug.Authenticate do
   def init(default), do: default
 
   def call(conn, _) do
-    case get_session(conn, :current_user_id) do
+    case get_session(conn, :current_user) do
       nil ->
         conn
         |> Phoenix.Controller.redirect(to: "/login")

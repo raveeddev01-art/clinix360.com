@@ -4,6 +4,9 @@
   <% applicationHost = "teamstitchapp.com" %>
 <% end %>
 
+<% authenticationToken = Plug.Conn.get_session(@conn, :authentication_token) %>
+
 <script>
   window.applicationHost = "<%= applicationHost %>";
+  window.authenticationToken = "<%= authenticationToken %>";
 </script>

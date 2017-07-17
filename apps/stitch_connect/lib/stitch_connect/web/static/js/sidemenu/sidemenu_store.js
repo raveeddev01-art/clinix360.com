@@ -4,12 +4,21 @@ class SidemenuStore {
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
+  @observable favoriteRooms = [];
+  @observable rooms = [];
 
   constructor(props) {
     this.teamName = props.teamName;
     this.teamId = props.teamId;
     this.subdomain = props.subdomain;
+    this.loadRooms();
   }
+
+  loadRooms = () => {
+    get("/api/v1/rooms").then(response => {
+      this.rooms = response.data;
+    });
+  };
 }
 
 var sidemenuStore;

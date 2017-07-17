@@ -29,6 +29,15 @@ defmodule Stitch.Team.OnboardingTest do
       assert team.slug == "care-clinic-12"
     end
 
+    test "it creates a room called General for the new team" do
+      team = Stitch.Team.Onboarding.create_team("Care Clinic", "care-clinic-12")
+      rooms = Stitch.Repo.all Ecto.assoc(team, :rooms)
+      assert team.name == "Care Clinic"
+      assert team.slug == "care-clinic-12"
+      assert Enum.count(rooms) == 1
+      assert Enum.at(rooms, 0).name == "General"
+    end
+
     test "it returns an error given a name for an existing team" do
       insert(:team, %{name: "A Team", slug: "a-team"})
       {:error, message} = Stitch.Team.Onboarding.create_team("A new team", "a-team")

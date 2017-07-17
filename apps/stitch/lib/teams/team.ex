@@ -6,6 +6,7 @@ defmodule Stitch.Team do
     field :name, :string
     field :slug, :string
     has_many :users, Stitch.User
+    has_many :rooms, Stitch.Room
 
     timestamps()
   end

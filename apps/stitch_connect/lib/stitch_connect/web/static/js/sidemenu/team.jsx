@@ -13,7 +13,11 @@ export default class Team extends Component {
           </h5>
           <OverlayTrigger
             placement="top"
-            overlay={<Tooltip>Open a Direct Message</Tooltip>}
+            overlay={
+              <Tooltip id="open-a-direct-message">
+                Open a Direct Message
+              </Tooltip>
+            }
           >
             <a href="#">
               <i className="fa fa-plus" />

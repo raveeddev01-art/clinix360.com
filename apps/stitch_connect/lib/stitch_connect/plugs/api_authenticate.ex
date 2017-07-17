@@ -1,4 +1,3 @@
-#TODO - This is copy and pasted from the authenticate plug.
 defmodule StitchConnect.Plug.ApiAuthenticate do
   import Plug.Conn
 

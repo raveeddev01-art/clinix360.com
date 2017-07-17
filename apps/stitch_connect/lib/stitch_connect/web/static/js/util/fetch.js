@@ -9,6 +9,11 @@ if (metaElem) window.csrfToken = metaElem.getAttribute("content");
 window.CSRFFetch = function(url, options = {}) {
   if (!(options.body instanceof FormData)) {
     options.body = JSON.stringify(options.body);
+    if (window.authenticationToken) {
+      options.body = merge(options.body, {
+        authenticationToken: window.authenticationToken
+      });
+    }
   }
 
   return fetch(
@@ -27,6 +32,11 @@ window.CSRFFetch = function(url, options = {}) {
 };
 
 window.jCSRFFetch = function(url, options = {}) {
+  if (window.authenticationToken) {
+    let modifiedUrl =
+      url + `?authenticationToken=${window.authenticationToken}`;
+    url = modifiedUrl;
+  }
   return new Promise(function(resolve) {
     window
       .CSRFFetch(

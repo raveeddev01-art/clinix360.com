@@ -20,6 +20,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   # Anonymous routes.
@@ -35,5 +36,12 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser_authenticate
 
     get "/", PageController, :index
+  end
+
+  # API routes.
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :api
+
+    get "/rooms/", RoomController, :index
   end
 end

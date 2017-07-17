@@ -1,11 +1,12 @@
 import React, { Component } from "react";
+import { observer } from "mobx-react";
 
-import RoomsList from "../sidemenu/rooms_list.jsx";
-import Room from "../sidemenu/room.jsx";
+import RoomsList from "./rooms/rooms_list.jsx";
 import Team from "../sidemenu/team.jsx";
 
 import sidemenuStore from "./sidemenu_store.js";
 
+@observer
 export default class Sidemenu extends Component {
   render() {
     return (
@@ -19,8 +20,11 @@ export default class Sidemenu extends Component {
         </div>
 
         <div className="flex-content">
-          <RoomsList heading={"Favorites"} />
-          <RoomsList heading={"Groups"} />
+          <RoomsList
+            heading={"Favorites"}
+            rooms={sidemenuStore.instance.favoriteRooms}
+          />
+          <RoomsList heading={"Groups"} rooms={sidemenuStore.instance.rooms} />
 
           {/*<div className="menu-nav group m-b-20">
             <h5 className="heading">Groups</h5>

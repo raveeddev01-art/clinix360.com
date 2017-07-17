@@ -4,7 +4,7 @@ defmodule Stitch.Team.Onboarding do
   platform.
   """
 
-  alias Stitch.{Repo, Team}
+  alias Stitch.{Repo, Team, Room}
 
   def slug_available?(slug) when byte_size(slug) > 0 do
     slug = Slugger.slugify(slug)
@@ -22,6 +22,7 @@ defmodule Stitch.Team.Onboarding do
     changeset = Team.changeset(%Team{}, %{name: name, slug: slug})
     case Repo.insert(changeset) do
       {:ok, team} ->
+        Repo.insert(%Room{team_id: team.id, name: "General"})
         team
       {:error, changeset} ->
         {:error, "Team wasn't created"}
