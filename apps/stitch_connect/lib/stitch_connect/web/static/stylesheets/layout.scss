@@ -46,7 +46,7 @@
 }
 
 #addons {
-  // display: none;
+  display: none;
   flex-basis: 360px;
   flex-shrink: 0;
 
@@ -88,29 +88,4 @@
   display: flex;
   flex-basis: 60px;
   flex-shrink: 0;
-}
-
-.sidemenu-modal .modal-content {
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-
-  .modal-header {
-    color: #fff;
-    font-weight: bold;
-    background: $brand-primary;
-    padding: 15px 20px;
-  }
-
-  .modal-body {
-    padding: 20px;
-  }
-
-  .modal-footer {
-    border-top: 0;
-
-    .btn-lg {
-      padding: 8px 20px;
-    }
-  }
 }

@@ -115,6 +115,13 @@
       }
     }
 
+    .form-group {
+      margin-bottom: 10px;
+      &:last-of-type {
+        margin-bottom: 15px;
+      }
+    }
+
     .confirmation-code {
       .code-group {
         float: left;
