@@ -252,6 +252,41 @@
             position: relative;
           }
         }
+
+        .team-heading {
+          font-size: 14px;
+          margin: 10px 0;
+        }
+
+        .team-member {
+          font-size: 15px;
+          font-weight: bold;
+          border: 1px solid transparent;
+          border-top-color: $border-color-secondary;
+          padding: 12px 15px;
+          margin-top: -1px;
+
+          i.fa {
+            color: $brand-primary;
+            margin-right: 5px;
+          }
+
+          i.fa.fa-circle-o {
+            color: #999;
+          }
+
+          span {
+            font-weight: normal;
+            margin-left: 5px;
+          }
+
+          &:hover {
+            background: #edf7fd;
+            border-color: #d3ecfa;
+            border-radius: 3px;
+            position: relative;
+          }
+        }
       }
 
       .modal-footer {
