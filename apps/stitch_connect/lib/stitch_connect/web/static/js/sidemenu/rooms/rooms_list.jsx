@@ -4,10 +4,12 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Modal from "react-bootstrap/lib/Modal";
 import Form from "react-bootstrap/lib/Form";
+import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
 import Room from "./room.jsx";
@@ -21,9 +23,15 @@ export default class RoomsList extends Component {
     };
   }
 
-  toggleModal = () => {
+  toggleGroupsModal = () => {
     this.setState({
-      isOpen: !this.state.isOpen
+      showGroupsModal: !this.state.showGroupsModal
+    });
+  };
+
+  toggleCreateGroupModal = () => {
+    this.setState({
+      showCreateGroupModal: !this.state.showCreateGroupModal
     });
   };
 
@@ -32,13 +40,15 @@ export default class RoomsList extends Component {
       <div className="menu-nav m-b-20">
         <div className="heading">
           <h5>
-            {this.props.heading}
+            <a href="#" onClick={this.toggleGroupsModal}>
+              {this.props.heading}
+            </a>
           </h5>
           <OverlayTrigger
             placement="top"
             overlay={<Tooltip id="create-new-group">Create new group</Tooltip>}
           >
-            <a href="#" onClick={this.toggleModal}>
+            <a href="#" onClick={this.toggleCreateGroupModal}>
               <i className="fa fa-plus" />
             </a>
           </OverlayTrigger>
@@ -48,14 +58,109 @@ export default class RoomsList extends Component {
           return <Room key={`room-${room.id}`} room={room} />;
         })}
 
+        <Modal className="sidemenu-modal" show={this.state.showGroupsModal}>
+          <Modal.Header>
+            <Modal.Title>Browse Groups</Modal.Title>
+            <a href="#" onClick={this.toggleGroupsModal}>
+              <i className="fa fa-close" />
+            </a>
+          </Modal.Header>
+
+          <Modal.Body>
+            <input
+              type="text"
+              className="form-control input-lg m-b-20"
+              placeholder="Search groups"
+            />
+            <h5 className="group-heading">Groups you belong to:</h5>
+
+            <div className="group-list">
+              <div className="group-item">
+                <div className="content">
+                  <div className="name">
+                    <i className="fa fa-comments" /> General
+                    <span className="text-muted">#general</span>
+                  </div>
+
+                  <div className="member-count text-muted">
+                    <i className="fa fa-user-o" />
+                    54
+                  </div>
+                </div>
+
+                <div className="description text-muted">
+                  Maecenas fringilla odio porta risus molestie, eget commodo
+                  mauris maximus.
+                </div>
+              </div>
+
+              <div className="group-item">
+                <div className="content">
+                  <div className="name">
+                    <i className="fa fa-comments" /> Labs
+                    <span className="text-muted">#labs</span>
+                  </div>
+
+                  <div className="member-count text-muted">
+                    <i className="fa fa-user-o" />
+                    12
+                  </div>
+                </div>
+
+                <div className="description text-muted">
+                  In ac libero ligula. Nulla sed metus at odio vehicula aliquam
+                  non sed massa. Aliquam metus mauris.
+                </div>
+              </div>
+
+              <div className="group-item">
+                <div className="content">
+                  <div className="name">
+                    <i className="fa fa-comments" /> Radiology
+                    <span className="text-muted">#radiology</span>
+                  </div>
+
+                  <div className="member-count text-muted">
+                    <i className="fa fa-user-o" />
+                    7
+                  </div>
+                </div>
+
+                <div className="description text-muted">
+                  Vivamus vitae est ac lacus auctor venenatis. Donec rhoncus
+                  quam at ultrices pretium.
+                </div>
+              </div>
+
+              <div className="group-item">
+                <div className="content">
+                  <div className="name">
+                    <i className="fa fa-comments" /> Emergency Room
+                    <span className="text-muted">#emergency-room</span>
+                  </div>
+
+                  <div className="member-count text-muted">
+                    <i className="fa fa-user-o" />
+                    3
+                  </div>
+                </div>
+
+                <div className="description text-muted">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Phasellus facilisis bibendum quam, ut maximus.
+                </div>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
+
         <Modal
           className="sidemenu-modal"
-          show={this.state.isOpen}
-          onHide={this.toggleModal}
+          show={this.state.showCreateGroupModal}
         >
           <Modal.Header>
-            <Modal.Title>Create a group</Modal.Title>
-            <a href="#" onClick={this.toggleModal}>
+            <Modal.Title>Create Group</Modal.Title>
+            <a href="#" onClick={this.toggleCreateGroupModal}>
               <i className="fa fa-close" />
             </a>
           </Modal.Header>
@@ -69,7 +174,7 @@ export default class RoomsList extends Component {
             <Form horizontal>
               <FormGroup>
                 <Col componentClass={ControlLabel} sm={3}>
-                  Group Type
+                  Type
                 </Col>
 
                 <Col sm={9}>
@@ -80,7 +185,7 @@ export default class RoomsList extends Component {
                       name="switch_2"
                       value="public"
                       onChange={this.handleChange}
-                      checked
+                      defaultChecked
                     />
                     <label htmlFor="switch_left">
                       <i className="fa fa-comments" /> Public
@@ -96,9 +201,9 @@ export default class RoomsList extends Component {
                       <i className="fa fa-lock" /> Private
                     </label>
                   </div>
-                  <p className="text-muted m-b-0">
+                  <HelpBlock className="text-muted m-b-0">
                     Public groups can be joined by anyone in your team.
-                  </p>
+                  </HelpBlock>
                 </Col>
               </FormGroup>
 
@@ -114,6 +219,11 @@ export default class RoomsList extends Component {
                     placeholder="e.g. Radiology"
                     onChange={this.handleChange}
                   />
+                  <HelpBlock className="text-muted m-b-0">
+                    A standardize name will also be automatically created for
+                    use in <a href="#">referencing</a> this group:{" "}
+                    <span>#radiology</span>
+                  </HelpBlock>
                 </Col>
               </FormGroup>
 
@@ -129,16 +239,24 @@ export default class RoomsList extends Component {
                     placeholder="Type a name or email to add collegues"
                     onChange={this.handleChange}
                   />
+                  <HelpBlock className="text-muted m-b-0">
+                    Click to select team members to invite to your group. Don't
+                    worry, you can always invite more.
+                  </HelpBlock>
                 </Col>
               </FormGroup>
             </Form>
           </Modal.Body>
 
           <Modal.Footer>
-            <Button bsSize="large" onClick={this.toggleModal}>
+            <Button bsSize="large" onClick={this.toggleCreateGroupModal}>
               Cancel
             </Button>
-            <Button bsSize="large" bsStyle="primary" onClick={this.toggleModal}>
+            <Button
+              bsSize="large"
+              bsStyle="primary"
+              onClick={this.toggleCreateGroupModal}
+            >
               Create Group
             </Button>
           </Modal.Footer>
