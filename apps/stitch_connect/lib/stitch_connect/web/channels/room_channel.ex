@@ -1,26 +1,29 @@
 defmodule StitchConnect.Web.RoomChannel do
   use Phoenix.Channel
-  alias StitchConnect.Presence
+  alias StitchConnect.Web.Presence
 
-  def join("room:lobbby", _, socket) do
+  def join("room:lobby", _, socket) do
     send self(), :after_join
     {:ok, socket}
   end
 
-  def join("rooms:" <> room_id, _params, socket) do
-    case Stitch.Room.Authorization.can_join?(room_id, socket.assigns.current_user.id) do
-      false ->
-        {:error, %{reason: "unauthorized"}}
-      room ->
-        {:ok, assign(socket, :room, room)}
-    end
-  end
+  # def join("rooms:" <> room_id, _params, socket) do
+  #   case Stitch.Room.Authorization.can_join?(room_id, socket.assigns.current_user.id) do
+  #     false ->
+  #       {:error, %{reason: "unauthorized"}}
+  #     room ->
+  #       {:ok, assign(socket, :room, room)}
+  #   end
+  # end
 
   def handle_info(:after_join, socket) do
-    Presence.track(socket, socket.assigns.current_user, %{
-      online_at: :os.system_time(:milli_seconds)
-    })
+    user = Stitch.UserQueries.get_by_id(socket.assigns.current_user_id)
     push socket, "presence_state", Presence.list(socket)
+    {:ok, _} = Presence.track(socket, socket.assigns.current_user_id, %{
+      online_at: inspect(System.system_time(:seconds)),
+      id: user.id,
+      fullname: user.fullname
+    })
     {:noreply, socket}
   end
 

@@ -3,11 +3,12 @@ defmodule StitchConnect.Web.UserSocket do
 
   ## Channels
   channel "room:*", StitchConnect.Web.RoomChannel
+  channel "team:lobby:*", StitchConnect.Web.TeamChannel
+  # channel "team:*", StitchConnect.Web.TeamChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket,
     timeout: 45_000
-  # transport :longpoll, Phoenix.Transports.LongPoll
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -22,10 +23,10 @@ defmodule StitchConnect.Web.UserSocket do
   # performing token verification on connect.
   def connect(%{"authenticationToken" => token}, socket) do
     case Stitch.User.Authentication.user_for_token(token) do
-      user ->
-        {:ok, assign(socket, :current_user, user)}
       nil ->
         :error
+      user ->
+        {:ok, assign(socket, :current_user_id, user.id)}
     end
   end
 
@@ -41,5 +42,5 @@ defmodule StitchConnect.Web.UserSocket do
   #     StitchConnect.Web.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(socket), do: "users_socket:#{socket.assigns.current_user.id}"
+  def id(socket), do: "users_socket:#{socket.assigns.current_user_id}"
 end
