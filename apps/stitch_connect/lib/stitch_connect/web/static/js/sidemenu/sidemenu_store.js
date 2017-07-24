@@ -7,6 +7,9 @@ class SidemenuStore {
   @observable teamId = "";
   @observable favoriteRooms = [];
   @observable rooms = [];
+  @observable onlineUsers = [];
+
+  rawOnlineUsers = {};
 
   constructor(props) {
     this.teamName = props.teamName;
@@ -23,20 +26,27 @@ class SidemenuStore {
   };
 
   connectPresence = () => {
-    let presences = {};
-    let lobby = socket.channel("team:lobby:7", {});
+    let lobby = socket.channel(`team:lobby:${this.teamId}`, {});
 
     lobby.on("presence_state", state => {
-      presences = Presence.syncState(presences, state);
-      console.log("Presence State:", presences);
+      this.rawOnlineUsers = Presence.syncState(this.rawOnlineUsers, state);
+      this.updatePresences();
     });
 
     lobby.on("presence_diff", diff => {
-      presences = Presence.syncDiff(presences, diff);
-      console.log("Presence Diff:", presences);
+      this.rawOnlineUsers = Presence.syncDiff(this.rawOnlineUsers, diff);
+      this.updatePresences();
     });
 
     lobby.join();
+  };
+
+  updatePresences = () => {
+    this.onlineUsers = Presence.list(this.rawOnlineUsers, this.listBy);
+  };
+
+  listBy = (id, { metas: [first, ...rest] }) => {
+    return first;
   };
 }
 

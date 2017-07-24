@@ -11,6 +11,8 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
+import sidemenuStore from "./sidemenu_store.js";
+
 export default class Team extends Component {
   constructor(props) {
     super(props);
@@ -52,30 +54,21 @@ export default class Team extends Component {
           </OverlayTrigger>
         </div>
 
-        <a href="#" className="item">
-          <div className="item-icon">
-            <i className="fa fa-circle-o" />
-          </div>
-          <div className="item-text">John Appleseed</div>
-        </a>
-        <a href="#" className="item">
-          <div className="item-icon">
-            <i className="fa fa-circle-o" />
-          </div>
-          <div className="item-text">Jason Plex</div>
-        </a>
-        <a href="#" className="item">
-          <div className="item-icon">
-            <i className="fa fa-circle-o" />
-          </div>
-          <div className="item-text">Emily Braun</div>
-        </a>
-        <a href="#" className="item">
-          <div className="item-icon">
-            <i className="fa fa-circle-o" />
-          </div>
-          <div className="item-text">James Myers</div>
-        </a>
+        {sidemenuStore.instance.onlineUsers.map(user => {
+          return (
+            <a key={`online-user-${user.id}`} href="#" className="item">
+              <div className="item-icon">
+                <i
+                  className="fa fa-circle-o"
+                  style={{ backgroundColor: "green" }}
+                />
+              </div>
+              <div className="item-text">
+                {user.fullname}
+              </div>
+            </a>
+          );
+        })}
 
         <Modal className="sidemenu-modal" show={this.state.showTeamModal}>
           <Modal.Header>
