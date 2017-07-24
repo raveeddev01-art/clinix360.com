@@ -8,6 +8,7 @@ class SidemenuStore {
   @observable favoriteRooms = [];
   @observable rooms = [];
   @observable users = [];
+  @observable offlineUsers = [];
   @observable onlineUsers = [];
 
   rawOnlineUsers = {};
@@ -51,6 +52,7 @@ class SidemenuStore {
 
   updatePresences = () => {
     this.onlineUsers = Presence.list(this.rawOnlineUsers, this.listBy);
+    this.offlineUsers = _.differenceBy(this.users, this.onlineUsers, "id");
   };
 
   listBy = (id, { metas: [first, ...rest] }) => {

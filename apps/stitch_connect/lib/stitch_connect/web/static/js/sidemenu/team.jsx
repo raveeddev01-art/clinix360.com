@@ -69,7 +69,7 @@ export default class Team extends Component {
           );
         })}
 
-        {sidemenuStore.instance.users.map(user => {
+        {sidemenuStore.instance.offlineUsers.map(user => {
           return (
             <a key={`offline-user-${user.id}`} href="#" className="item">
               <div className="item-icon">
@@ -118,7 +118,7 @@ export default class Team extends Component {
                 );
               })}
 
-              {sidemenuStore.instance.users.map(user => {
+              {sidemenuStore.instance.offlineUsers.map(user => {
                 return (
                   <div
                     key={`team-list-offline-${user.id}`}
