@@ -2,5 +2,5 @@
   <div
     data-component="Login"
     data-react-props="<%= @login_params %>"
-  />
+  ></div>
 </div>
