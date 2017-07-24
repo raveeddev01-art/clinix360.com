@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -13,6 +14,7 @@ import Button from "react-bootstrap/lib/Button";
 
 import sidemenuStore from "./sidemenu_store.js";
 
+@observer
 export default class Team extends Component {
   constructor(props) {
     super(props);
