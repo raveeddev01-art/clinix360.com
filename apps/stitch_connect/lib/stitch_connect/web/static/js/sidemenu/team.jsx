@@ -60,10 +60,20 @@ export default class Team extends Component {
           return (
             <a key={`online-user-${user.id}`} href="#" className="item">
               <div className="item-icon">
-                <i
-                  className="fa fa-circle-o"
-                  style={{ backgroundColor: "green" }}
-                />
+                <i className="fa fa-circle" />
+              </div>
+              <div className="item-text">
+                {user.fullname}
+              </div>
+            </a>
+          );
+        })}
+
+        {sidemenuStore.instance.users.map(user => {
+          return (
+            <a key={`offline-user-${user.id}`} href="#" className="item">
+              <div className="item-icon">
+                <i className="fa fa-circle-o" />
               </div>
               <div className="item-text">
                 {user.fullname}
@@ -96,25 +106,29 @@ export default class Team extends Component {
             </h5>
 
             <div className="team-list">
-              <div className="team-member">
-                <i className="fa fa-circle" /> Daniel Tapia{" "}
-                <span className="text-muted">daniel</span>
-              </div>
+              {sidemenuStore.instance.onlineUsers.map(user => {
+                return (
+                  <div
+                    key={`team-list-online-${user.id}`}
+                    className="team-member"
+                  >
+                    <i className="fa fa-circle" /> {`${user.fullname} `}
+                    <span className="text-muted">{user.username}</span>
+                  </div>
+                );
+              })}
 
-              <div className="team-member">
-                <i className="fa fa-circle-o" /> Jason Plex{" "}
-                <span className="text-muted">jason</span>
-              </div>
-
-              <div className="team-member">
-                <i className="fa fa-circle" /> Emily Braun{" "}
-                <span className="text-muted">em</span>
-              </div>
-
-              <div className="team-member">
-                <i className="fa fa-circle-o" /> James Myers{" "}
-                <span className="text-muted">jamesmyers</span>
-              </div>
+              {sidemenuStore.instance.users.map(user => {
+                return (
+                  <div
+                    key={`team-list-offline-${user.id}`}
+                    className="team-member"
+                  >
+                    <i className="fa fa-circle-o" /> {`${user.fullname} `}
+                    <span className="text-muted">{user.username}</span>
+                  </div>
+                );
+              })}
             </div>
           </Modal.Body>
         </Modal>
