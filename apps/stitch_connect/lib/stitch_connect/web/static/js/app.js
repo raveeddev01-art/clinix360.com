@@ -1,3 +1,5 @@
+import "babel-polyfill";
+
 require("./util/fetch.js");
 require("./util/delay.js");
 require("./util/polyfills.js");

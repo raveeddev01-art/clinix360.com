@@ -4,6 +4,7 @@
     "watch": "webpack --watch-stdin --progress --color"
   },
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "deepmerge": "^1.4.4",
     "es6-promise": "^4.1.0",
     "lodash": "^4.17.4",
