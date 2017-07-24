@@ -9,7 +9,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
     %{
       id: user.id,
       fullname: user.fullname,
-      email: user.email
+      email: user.email,
+      username: user.username
     }
   end
 end
