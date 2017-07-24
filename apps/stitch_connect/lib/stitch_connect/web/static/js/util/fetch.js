@@ -16,6 +16,10 @@ window.CSRFFetch = function(url, options = {}) {
     }
   }
 
+  if (options.method === "GET") {
+    options.body = undefined;
+  }
+
   return fetch(
     url,
     merge(
