@@ -44,5 +44,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/users/", UserController, :index
     get "/rooms/", RoomController, :index
+
+    post "/login", AuthenticationController, :submit_login
   end
 end

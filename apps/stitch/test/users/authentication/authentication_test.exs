@@ -6,6 +6,29 @@ defmodule Stitch.User.AuthenticationTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.User.Authentication.validate_email_and_password/3" do
+    test "validates incorrect email and password match" do
+      user_struct = %{
+        email: "example@email.com",
+        password: "password123",
+        fullname: "John Doe"
+      }
+      team = insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
+      user = Stitch.User.Authentication.create_account(user_struct)
+
+      user = Ecto.Changeset.change user, team_id: team.id
+      Stitch.Repo.update user
+
+      result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "wrong", "care-clinic")
+      assert result == false
+    end
+
+    test "validates password using dummypw check when non-existing email is provided" do
+      result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "wrong", "some-team")
+      assert result == false
+    end
+  end
+
   test "hashes a plaintext password using bcrypt" do
     hashed_password = Stitch.User.Authentication.hash_password("example")
     assert String.length(hashed_password) == 60
@@ -43,27 +66,6 @@ defmodule Stitch.User.AuthenticationTest do
 
     user = Stitch.User.Authentication.validate_email_and_password("example@email.com", "password123", "care-clinic")
     assert user.email == "example@email.com"
-  end
-
-  test "validates incorrect email and password match" do
-    user_struct = %{
-      email: "example@email.com",
-      password: "password123",
-      fullname: "John Doe"
-    }
-    team = insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
-    user = Stitch.User.Authentication.create_account(user_struct)
-
-    user = Ecto.Changeset.change user, team_id: team.id
-    Stitch.Repo.update user
-
-    result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "wrong", "care-clinic")
-    assert result == false
-  end
-
-  test "validates password using dummypw check when non-existing email is provided" do
-    result = Stitch.User.Authentication.validate_email_and_password("example@email.com", "wrong", "some-team")
-    assert result == false
   end
 
   describe "Stitch.User.Authentication.update_password/2" do
