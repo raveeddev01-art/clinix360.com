@@ -2,9 +2,36 @@
   .flex-header {
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     box-shadow: 1px 0 0 darken($brand-primary, 10%);
+    padding: 0;
 
-    h4 {
-      flex-grow: 1;
+    .btn-group {
+      width: 100%;
+
+      .btn {
+        height: 60px;
+        color: #fff;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: left;
+        background: transparent;
+        border: 0;
+      }
+    }
+
+    .dropdown-menu {
+      width: 220px;
+      padding: 10px;
+      margin: 10px 15px;
+
+      a {
+        border-radius: 3px;
+        padding: 5px 12px;
+
+        &:hover {
+          color: #fff;
+          background: $brand-primary;
+        }
+      }
     }
 
     &:hover {
