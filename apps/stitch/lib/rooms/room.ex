@@ -4,6 +4,7 @@ defmodule Stitch.Room do
 
   schema "rooms" do
     field :name, :string
+    field :slug, :string
     belongs_to :team, Stitch.Team
 
     timestamps()
@@ -11,7 +12,7 @@ defmodule Stitch.Room do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :team_id])
-    |> validate_required([:name, :team_id])
+    |> cast(params, [:name, :team_id, :slug])
+    |> validate_required([:name, :team_id, :slug])
   end
 end

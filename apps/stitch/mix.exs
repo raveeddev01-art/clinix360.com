@@ -31,7 +31,8 @@ defmodule Stitch.Mixfile do
       {:comeonin, "~> 3.0"},
       {:ex_machina, "~> 2.0", only: :test},
       {:slugger, "~> 0.2"},
-      {:bamboo, "~> 0.8"}
+      {:bamboo, "~> 0.8"},
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false}
     ]
   end
 end

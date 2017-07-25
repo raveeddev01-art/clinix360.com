@@ -45,7 +45,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def update(conn, %{"id" => id, "fullname" => fullname, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
-    case Stitch.User.Onboarding.update_user(id, %{fullname: fullname, username: username, password: password, pin: pin, team_id: team_id}) do
+    case Stitch.Accounts.update_and_complete_user_onboarding(id, %{fullname: fullname, username: username, password: password, pin: pin, team_id: team_id}) do
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)

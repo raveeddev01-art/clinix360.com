@@ -48,7 +48,7 @@ export default class Hipaa extends Component {
           team_id: response.data.id
         }
       }).then(response => {
-        this.props.history.push("/signup/invites");
+        this.props.history.push("/signin");
       });
     });
   };

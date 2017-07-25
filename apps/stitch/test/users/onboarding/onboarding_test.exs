@@ -83,28 +83,4 @@ defmodule Stitch.User.OnboardingTest do
       assert result == false
     end
   end
-
-  describe "Stitch.User.Onboarding.update_user/2" do
-    test "it returns error if user doesn't exist" do
-      {:error, message} = Stitch.User.Onboarding.update_user(1, %{})
-      assert message == "User doesn't exist."
-    end
-
-    test "it returns error if user is already onboarded" do
-      user = insert(:user, %{onboarded: true})
-      {:error, message} = Stitch.User.Onboarding.update_user(user.id, %{})
-      assert message == "Cannot update a user who has already been onboarded."
-    end
-
-    test "it updates the user information" do
-      user = insert(:user, %{email: "example@email.com"})
-      team = insert(:team, %{name: "A Team"})
-      user_params = %{fullname: "John Doe", username: "johndoe", password: "passworD123!", pin: "1234", team_id: team.id}
-      user = Stitch.User.Onboarding.update_user(user.id, user_params)
-      assert user.team_id == team.id
-      assert user.username == "johndoe"
-      assert user.pin == "1234"
-      assert String.length(user.encrypted_password) == 60
-    end
-  end
 end

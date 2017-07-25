@@ -25,6 +25,7 @@ defmodule StitchConnect.Web.AuthenticationController do
         conn
         |> put_session(:current_user, user)
         |> put_session(:authentication_token, user.token)
+        |> configure_session(renew: true)
         |> redirect to: "/"
     end
   end

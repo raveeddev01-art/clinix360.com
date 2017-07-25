@@ -1,22 +1,28 @@
 defmodule Stitch.Team.Onboarding do
   @moduledoc """
-  Onboarding module used to onboard new teams to the Stitch
-  platform.
+  The Team Onboarding context.
   """
 
   alias Stitch.{Repo, Team, Room}
 
+  @doc """
+  Returns whether a team slug is unused and available for use within
+  the Stitch platform.
+  """
   def slug_available?(slug) when byte_size(slug) > 0 do
     slug = Slugger.slugify(slug)
     case Repo.get_by(Team, slug: slug) do
       nil ->
         true
-      team ->
+      _ ->
         false
     end
   end
   def slug_available?(_), do: false
 
+  @doc """
+  Creates a team with the given name and slug.
+  """
   def create_team(name, slug) when byte_size(name) > 0 and byte_size(slug) > 0 do
     slug = Slugger.slugify(slug)
     changeset = Team.changeset(%Team{}, %{name: name, slug: slug})
@@ -24,7 +30,7 @@ defmodule Stitch.Team.Onboarding do
       {:ok, team} ->
         Repo.insert(%Room{team_id: team.id, name: "General"})
         team
-      {:error, changeset} ->
+      {:error, _} ->
         {:error, "Team wasn't created"}
     end
   end
