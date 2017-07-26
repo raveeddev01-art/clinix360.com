@@ -37,4 +37,44 @@ defmodule Stitch.Accounts.Admin do
   def update_profile_image_url(user_id, profile_image_url) do
     # TODO
   end
+
+  @spec update_username(number, String.t) :: {:ok, term} | {:error, term}
+  @doc """
+  Updates the user username field.
+  """
+  def update_username(user_id, username) do
+    # TODO
+  end
+
+  @spec update_email(number, String.t) :: {:ok, term} | {:error, term}
+  @doc """
+  Updates the user email field.
+  """
+  def update_email(user_id, email) do
+    # TODO
+  end
+
+  @spec update_password(number, String.t) :: {:ok, term} | {:error, term}
+  @doc """
+  Updates the user encrypted_password field.
+  """
+  def update_password(user_id, password) do
+    # TODO
+  end
+
+  @spec update_pin(number, String.t) :: {:ok, term} | {:error, term}
+  @doc """
+  Updates the user pin field.
+  """
+  def update_pin(user_id, pin) do
+    # TODO
+  end
+
+  @spec update_unread_message_notification_interval(number, number) :: {:ok, term} | {:error, term}
+  @doc """
+  Updates the user unread_message_notification_interval field.
+  """
+  def update_unread_message_notification_interval(user_id, notification_interval) do
+    # TODO
+  end
 end
