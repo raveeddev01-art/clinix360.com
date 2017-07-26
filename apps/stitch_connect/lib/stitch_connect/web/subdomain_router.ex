@@ -36,6 +36,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser_authenticate
 
     get "/", PageController, :index
+    get "/admin/team", AdminController, :index
   end
 
   # API routes.
