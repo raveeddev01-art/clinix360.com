@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from "react";
+import Button from "react-bootstrap/lib/Button";
 
 class SettingPanel extends Component {
   constructor(props) {
@@ -23,15 +24,20 @@ class SettingPanel extends Component {
       <div className="clearfix edit-form">
         {children}
         <div className="clearfix">
-          <button
-            className="btn-fancy btn-default pull-left"
+          <Button
+            bsStyle="default"
+            className="btn-fancy pull-left"
             onClick={this._toggleEdit(false)}
           >
             Cancel
-          </button>
-          <button className="btn-fancy btn-primary pull-right">
+          </Button>
+          <Button
+            bsStyle="primary"
+            className="btn-fancy pull-right"
+            onClick={this._onSave}
+          >
             Save Changes
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -44,16 +50,17 @@ class SettingPanel extends Component {
     return (
       <div>
         {!isEditing &&
-          <button
-            className="action-edit btn-fancy btn-default pull-right"
+          <Button
+            bsStyle="default"
+            className="action-edit btn-fancy pull-right"
             onClick={this._toggleEdit(true)}
           >
             Edit
-          </button>}
+          </Button>}
         <h3>
           {title}
         </h3>
-        <p class="help-block">
+        <p className="help-block">
           {description}
         </p>
         {isEditing && this._renderForm()}
