@@ -3,12 +3,14 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Grid, Row, Col } from "react-bootstrap";
 
 import Sidebar from "./sidebar.jsx";
-import TeamSettings from "./team/settings.jsx";
 import TeamHipaa from "./team/hipaa.jsx";
+import TeamSettings from "./team/settings/index.jsx";
+import TeamStore from "./stores/team_store";
 
 export default class Admin extends Component {
   constructor(props) {
     super(props);
+    TeamStore.instance = props;
   }
 
   render() {
