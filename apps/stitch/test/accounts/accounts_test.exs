@@ -7,7 +7,7 @@ defmodule Stitch.AccountsTest do
 
   describe "Stitch.Accounts.User.create_user_with_email_only/1" do
     test "it creates user with email address" do
-      {:ok, user} = Stitch.Accounts.create_user_with_email_only("sergiotapia@outlook.com")
+      user = Stitch.Accounts.create_user_with_email_only("sergiotapia@outlook.com")
       assert user.email == "sergiotapia@outlook.com"
     end
 

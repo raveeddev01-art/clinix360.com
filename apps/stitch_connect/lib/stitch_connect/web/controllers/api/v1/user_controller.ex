@@ -8,7 +8,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def create(conn, %{"email" => email}) do
-    case Stitch.User.Onboarding.create_user_with_email(email) do
+    case Stitch.Accounts.create_user_with_email_only(email) do
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)

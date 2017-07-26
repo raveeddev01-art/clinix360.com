@@ -38,9 +38,11 @@ defmodule Stitch.Accounts do
 
     token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
 
-    %User{}
-    |> User.email_changeset(%{email: email, confirmation_code: confirmation_code, token: token})
-    |> Repo.insert
+    {:ok, user} =
+      %User{}
+      |> User.email_changeset(%{email: email, confirmation_code: confirmation_code, token: token})
+      |> Repo.insert
+    user
   end
   def create_user_with_email_only(_), do: {:error, "Email cannot be blank or nil."}
 
