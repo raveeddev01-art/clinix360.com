@@ -4,14 +4,19 @@ defmodule Stitch.Team.Admin do
   """
 
   alias Stitch.Repo
+  alias Stitch.Team
+  alias Ecto.Changeset
 
-  @spec update_name(number, String.t) :: {:ok, term()} | {:error, term()}
+  @spec update_name(number, String.t) :: {:ok, term} | {:error, term}
   @doc """
   Updates the team name field.
   """
-  def update_name(team_id, name) do
-    # TODO
+  def update_name(team_id, name) when byte_size(name) > 0 do
+    team = Repo.get(Team, team_id)
+    changeset = Team.changeset(team, %{name: name})
+    Repo.update changeset
   end
+  def update_name(team_id, _), do: {:error, "Name cannot be blank or nil"}
 
   @spec update_security_lockout_time(number, boolean, number) :: {:ok, term()} | {:error, term()}
   @doc """
