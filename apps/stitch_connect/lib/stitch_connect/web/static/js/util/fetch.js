@@ -8,12 +8,12 @@ if (metaElem) window.csrfToken = metaElem.getAttribute("content");
 
 window.CSRFFetch = function(url, options = {}) {
   if (!(options.body instanceof FormData)) {
-    options.body = JSON.stringify(options.body);
     if (window.authenticationToken) {
       options.body = merge(options.body, {
         authenticationToken: window.authenticationToken
       });
     }
+    options.body = JSON.stringify(options.body);
   }
 
   if (options.method === "GET") {
