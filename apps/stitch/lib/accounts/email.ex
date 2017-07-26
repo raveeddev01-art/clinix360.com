@@ -1,7 +1,14 @@
-defmodule Stitch.User.Onboarding.Email do
+defmodule Stitch.Accounts.Email do
+  @moduledoc """
+  Handles email for all user account actions.
+  """
+
   import Bamboo.Email
   import Bamboo.MandrillHelper
 
+  @doc """
+  Sends confirmation code email to the user.
+  """
   def confirmation_code_email(user) do
     new_email()
     |> template("Sign-Up 1: Authenticate Provider Code (Connect)")
@@ -17,6 +24,10 @@ defmodule Stitch.User.Onboarding.Email do
     |> Stitch.Mailer.deliver_later
   end #omarivera@lightspeed-electric.com
 
+  @doc """
+  Sends a team invite email to the user, with personal information
+  of who invited him to the team.
+  """
   def team_invitation(inviter_name, team_name, user) do
     new_email()
     |> template("Sign-up 3: You are Invited (Connect)")

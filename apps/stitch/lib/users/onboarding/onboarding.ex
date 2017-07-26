@@ -11,7 +11,7 @@ defmodule Stitch.User.Onboarding do
       nil ->
         {:error, "User doesn't exist."}
       user ->
-        Stitch.User.Onboarding.Email.confirmation_code_email(user)
+        Stitch.Accounts.Email.confirmation_code_email(user)
     end
   end
 

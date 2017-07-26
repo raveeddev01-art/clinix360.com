@@ -13,6 +13,7 @@ defmodule Stitch.Accounts do
   def invite_to_team(team_id, email) when is_integer(team_id) and byte_size(email) > 0 do
     # invite_token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
     # TODO
+    # Stitch.Accounts.Email.team_invitation(inviter_name, team_name, user)
   end
   def invite_to_team(_, _), do: {:error, "Team id and email cannot be blank or nil."}
 
@@ -20,7 +21,7 @@ defmodule Stitch.Accounts do
   Finds the user associated with the invite_token and sets onboarded
   to true.
   """
-  def accept_team_invitation(invite_token)
+  def accept_team_invitation(invite_token) do
     # TODO
   end
 

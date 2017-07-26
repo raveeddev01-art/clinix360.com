@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :send_invite]
 
-  def index(conn, params) do
+  def index(conn, _) do
     users = Stitch.UserQueries.users_for_team(conn.assigns.current_user.team_id)
     render conn, "index.json", users: users
   end
@@ -57,16 +57,6 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def send_invite(conn, %{"email" => email}) do
-    current_user = get_session(conn, :current_user)
-    case Stitch.User.Onboarding.invite_user_to_team(current_user.id, email) do
-      {:error, message} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: message})
-      user ->
-        Stitch.User.Onboarding.Email.team_invitation(user)
-        conn
-        |> json(%{message: "Team invitation sent to email: #{email}"})
-    end
+    # TODO
   end
 end
