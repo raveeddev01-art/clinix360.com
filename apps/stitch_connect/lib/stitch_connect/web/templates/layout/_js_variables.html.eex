@@ -1,12 +1,15 @@
-<% if Mix.env == :dev do %>
-  <% applicationHost = "localhost:4443" %>
-<% else %>
-  <% applicationHost = "teamstitchapp.com" %>
-<% end %>
-
-<% authenticationToken = Plug.Conn.get_session(@conn, :authentication_token) %>
+<%
+applicationHost = if (Mix.env == :dev), do: "localhost:4443", else: "teamstitchapp.com"
+authenticationToken = Plug.Conn.get_session(@conn, :authentication_token)
+user = Plug.Conn.get_session(@conn, :current_user)
+currentUser = Poison.encode!(%{
+  "id" => user.id,
+  "fullname" => user.fullname
+})
+%>
 
 <script>
   window.applicationHost = "<%= applicationHost %>";
   window.authenticationToken = "<%= authenticationToken %>";
+  window.currentUser = <%= raw currentUser %>;
 </script>
