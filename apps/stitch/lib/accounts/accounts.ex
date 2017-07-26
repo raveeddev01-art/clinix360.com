@@ -7,6 +7,15 @@ defmodule Stitch.Accounts do
   alias Stitch.Accounts.User
 
   @doc """
+  Send a team invite to a given email address.
+  """
+  def invite_to_team(team_id, email) when is_integer(team_id) and byte_size(email) > 0 do
+    # invite_token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+    # TODO
+  end
+  def invite_to_team(_, _), do: {:error, "Team id and email cannot be blank or nil."}
+
+  @doc """
   Create a user with only the email field set. The user is not
   associated with any team.
 
