@@ -1,5 +1,13 @@
 <%
-applicationHost = if (Mix.env == :dev), do: "localhost:4443", else: "teamstitchapp.com"
+applicationHost =
+  case Application.get_env(:stitch_connect, :env) do
+    :dev ->
+      "localhost:4443"
+    :prod ->
+      "teamstitchapp.com"
+    _ ->
+      "localhost:4443"
+  end
 authenticationToken = Plug.Conn.get_session(@conn, :authentication_token)
 user = Plug.Conn.get_session(@conn, :current_user)
 current_user =
