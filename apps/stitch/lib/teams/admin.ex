@@ -24,7 +24,7 @@ defmodule Stitch.Team.Admin do
   entirely.
   """
   def update_security_lockout_time(team_id, security_lockout, seconds_to_lockout)
-  when is_number(team_id) and is_boolean(security_lockout) and is_number(seconds_to_lockout) and seconds_to_lockout > 0 do
+  when is_number(team_id) and is_boolean(security_lockout) and is_number(seconds_to_lockout) do
     team = Repo.get(Team, team_id)
     changeset = Team.changeset(team, %{security_lockout: security_lockout, seconds_to_lockout: seconds_to_lockout})
     Repo.update changeset
