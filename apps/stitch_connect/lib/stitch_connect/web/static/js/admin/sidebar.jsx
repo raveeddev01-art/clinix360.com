@@ -11,14 +11,16 @@ export default class Sidebar extends Component {
   render() {
     return (
       <div id="sidebar">
-        <ListGroup>
-          <ListGroupItem href="#" active>
-            Settings
-          </ListGroupItem>
-          <ListGroupItem>
-            <Link to="/admin/team/hipaa">HIPAA</Link>
-          </ListGroupItem>
-        </ListGroup>
+        <h5 className="text-uppercase">Team</h5>
+        <Link to="#">Settings</Link>
+        <Link to="/admin/team/hipaa">HIPAA</Link>
+        <Link to="#">Export</Link>
+        <Link to="#">Federation</Link>
+
+        <hr />
+
+        <h5 className="text-uppercase">You</h5>
+        <Link to="/admin/you/notifications">Notifications</Link>
       </div>
     );
   }

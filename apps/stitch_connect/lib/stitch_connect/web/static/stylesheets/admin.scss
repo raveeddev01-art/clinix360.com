@@ -1,3 +1,30 @@
+#sidebar {
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  padding: 10px 0;
+
+  h5 {
+    color: #98a5b3;
+    font-size: 12px;
+    font-weight: bold;
+    padding-left: 25px;
+  }
+
+  a {
+    display: block;
+    color: #52617a;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 8px 25px;
+  }
+
+  hr {
+    border-color: $border-color-secondary;
+    margin: 20px 25px;
+  }
+}
+
 .admin-panel {
   border-color: $border-color;
   box-shadow: none;
@@ -31,6 +58,15 @@
       strong {
         color: #449d44;
       }
+    }
+
+    label,
+    .help-block {
+      font-size: 14px;
+    }
+
+    select {
+      font-size: 14px;
     }
 
     ul {
