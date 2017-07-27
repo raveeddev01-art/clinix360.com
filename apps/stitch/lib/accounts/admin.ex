@@ -23,7 +23,8 @@ defmodule Stitch.Accounts.Admin do
   @doc """
   Updates the user phone_number field.
   """
-  def update_phone_number(user_id, phone_number) do
+  def update_phone_number(user_id, phone_number)
+  when byte_size(phone_number) > 0 do
     user = Repo.get(User, user_id)
     changeset = User.changeset(user, %{phone_number: phone_number})
     Repo.update changeset
@@ -34,7 +35,8 @@ defmodule Stitch.Accounts.Admin do
   @doc """
   Updates the user title field.
   """
-  def update_title(user_id, title) do
+  def update_title(user_id, title)
+  when byte_size(title) > 0 do
     user = Repo.get(User, user_id)
     changeset = User.changeset(user, %{title: title})
     Repo.update changeset
@@ -45,7 +47,8 @@ defmodule Stitch.Accounts.Admin do
   @doc """
   Updates the user profile_image_url field.
   """
-  def update_profile_image_url(user_id, profile_image_url) do
+  def update_profile_image_url(user_id, profile_image_url)
+  when byte_size(profile_image_url) > 0 do
     user = Repo.get(User, user_id)
     changeset = User.changeset(user, %{profile_image_url: profile_image_url})
     Repo.update changeset
@@ -56,33 +59,50 @@ defmodule Stitch.Accounts.Admin do
   @doc """
   Updates the user username field.
   """
-  def update_username(user_id, username) do
-    # TODO
+  def update_username(user_id, username)
+  when byte_size(username) > 0 do
+    user = Repo.get(User, user_id)
+    changeset = User.changeset(user, %{username: username})
+    Repo.update changeset
   end
+  def update_username(_, _), do: {:error, "Username cannot be blank or nil"}
 
   @spec update_email(number, String.t) :: {:ok, term} | {:error, term}
   @doc """
   Updates the user email field.
   """
-  def update_email(user_id, email) do
-    # TODO
+  def update_email(user_id, email)
+  when byte_size(email) > 0 do
+    user = Repo.get(User, user_id)
+    changeset = User.changeset(user, %{email: email})
+    Repo.update changeset
   end
+  def update_email(_, _), do: {:error, "Email cannot be blank or nil"}
+
 
   @spec update_password(number, String.t) :: {:ok, term} | {:error, term}
   @doc """
   Updates the user encrypted_password field.
   """
-  def update_password(user_id, password) do
-    # TODO
+  def update_password(user_id, password)
+  when byte_size(password) > 0 do
+    user = Repo.get(User, user_id)
+    changeset = User.password_update_changeset(user, %{password: password})
+    Repo.update changeset
   end
+  def update_password(_, _), do: {:error, "Password cannot be blank or nil"}
 
   @spec update_pin(number, String.t) :: {:ok, term} | {:error, term}
   @doc """
   Updates the user pin field.
   """
-  def update_pin(user_id, pin) do
-    # TODO
+  def update_pin(user_id, pin)
+  when byte_size(pin) == 4 do
+    user = Repo.get(User, user_id)
+    changeset = User.changeset(user, %{pin: pin})
+    Repo.update changeset
   end
+  def update_pin(_, _), do: {:error, "Pin cannot be blank or nil"}
 
   @spec update_unread_message_notification_interval(number, number) :: {:ok, term} | {:error, term}
   @doc """

@@ -14,8 +14,10 @@ export default class TeamHipaa extends Component {
 
         <Well>
           <i className="fa fa-check-circle" />
-          Your team is <strong>HIPAA compliant</strong>. You can safely share
-          patient information in Stitch.
+          <p className="m-b-0">
+            Your team is <strong>HIPAA compliant</strong>. You can safely share
+            patient information in Stitch.
+          </p>
         </Well>
 
         <p>Your active HIPAA compliance entails:</p>

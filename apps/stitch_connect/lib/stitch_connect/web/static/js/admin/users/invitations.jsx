@@ -44,7 +44,6 @@ export default class UsersInvitations extends Component {
           <FormControl
             className="m-b-10"
             componentClass="textarea"
-            placeholder="textarea"
             value={this.state.email}
             onChange={this._handleChange}
             rows="6"
