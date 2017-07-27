@@ -44,7 +44,13 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :api
 
     get "/users/", UserController, :index
+
     get "/rooms/", RoomController, :index
+
+    delete "/teams/:id/", TeamController, :delete_team
+    put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
+    put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
+    put "/teams/:id", TeamController, :update
 
     post "/login", AuthenticationController, :submit_login
   end

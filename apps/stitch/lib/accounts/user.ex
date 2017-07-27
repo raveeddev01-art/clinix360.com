@@ -77,9 +77,9 @@ defmodule Stitch.Accounts.User do
 
   def onboarding_complete_changeset(struct, params) do
     struct
-    |> cast(params, [:fullname, :username, :password, :pin, :team_id])
+    |> cast(params, [:fullname, :username, :password, :pin, :team_id, :roles])
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
-    |> validate_required([:username, :pin, :team_id])
+    |> validate_required([:username, :pin, :team_id, :roles])
     |> put_change(:onboarded, true)
   end
 

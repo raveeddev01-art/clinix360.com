@@ -1,8 +1,4 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import { Grid, Row, Col } from 'react-bootstrap';
-
-import Settings from "./settings.jsx";
 
 export default class TeamExport extends Component {
   constructor(props) {

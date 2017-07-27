@@ -39,7 +39,7 @@ export default class Hipaa extends Component {
     }).then(response => {
       store.instance.teamId = response.data.id;
       store.instance.teamUrl = response.data.slug;
-      patch(`/api/v1/users/${store.instance.userId}`, {
+      patch(`/api/v1/users/${store.instance.userId}/complete-onboarding`, {
         body: {
           fullname: `${store.instance.firstName} ${store.instance.lastName}`,
           username: store.instance.username,

@@ -67,6 +67,7 @@ defmodule Stitch.Accounts do
         username: "sergiotapia",
         password: "Password123!",
         pin: "0000",
+        roles: ["admin"],
         team_id: 1
       }
       Stitch.Accounts.update_and_complete_user_onboarding(1, attrs)
