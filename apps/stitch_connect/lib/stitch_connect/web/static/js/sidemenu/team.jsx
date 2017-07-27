@@ -63,7 +63,7 @@ export default class Team extends Component {
                 <i className="fa fa-circle" />
               </div>
               <div className="item-text">
-                {user.fullname}
+                {`${user.first_name} ${user.last_name}`}
               </div>
             </a>
           );
@@ -76,7 +76,7 @@ export default class Team extends Component {
                 <i className="fa fa-circle-o" />
               </div>
               <div className="item-text">
-                {user.fullname}
+                {`${user.first_name} ${user.last_name}`}
               </div>
             </a>
           );
