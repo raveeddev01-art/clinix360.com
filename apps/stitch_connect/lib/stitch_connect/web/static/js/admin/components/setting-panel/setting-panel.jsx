@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import Button from "react-bootstrap/lib/Button";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 class SettingPanel extends Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class SettingPanel extends Component {
   }
 
   _toggleEdit = val => () => {
+    this.props.onEdit();
     this.setState({ isEditing: val });
   };
 
@@ -19,7 +21,7 @@ class SettingPanel extends Component {
   };
 
   _renderForm = () => {
-    const { children } = this.props;
+    const { children, saveButtonText } = this.props;
     return (
       <div className="clearfix edit-form">
         {children}
@@ -36,10 +38,20 @@ class SettingPanel extends Component {
             className="btn-fancy pull-right"
             onClick={this._onSave}
           >
-            Save Changes
+            {saveButtonText}
           </Button>
         </div>
       </div>
+    );
+  };
+
+  _renderDescription = () => {
+    const { description } = this.props;
+    const items = Array.isArray(description) ? description : [description];
+    return items.map((item, index) =>
+      <HelpBlock key={`desc_${index}`}>
+        {item}
+      </HelpBlock>
     );
   };
 
@@ -60,9 +72,7 @@ class SettingPanel extends Component {
         <h3>
           {title}
         </h3>
-        <p className="help-block">
-          {description}
-        </p>
+        {this._renderDescription()}
         {isEditing && this._renderForm()}
       </div>
     );
@@ -75,13 +85,20 @@ SettingPanel.propTypes = {
     PropTypes.node
   ]),
   onSave: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired
+  description: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.string),
+    PropTypes.string
+  ]),
+  saveButtonText: PropTypes.string.isRequired
 };
 
 SettingPanel.defaultProps = {
   children: null,
-  onSave: () => {}
+  onSave: () => {},
+  onEdit: () => {},
+  saveButtonText: "Save Changes"
 };
 
 export default SettingPanel;
