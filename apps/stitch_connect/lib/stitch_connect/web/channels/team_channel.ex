@@ -20,7 +20,8 @@ defmodule StitchConnect.Web.TeamChannel do
     {:ok, _} = Presence.track(socket, socket.assigns.current_user_id, %{
       online_at: inspect(System.system_time(:seconds)),
       id: user.id,
-      fullname: user.fullname,
+      first_name: user.first_name,
+      last_name: user.last_name,
       username: user.username
     })
     {:noreply, socket}
