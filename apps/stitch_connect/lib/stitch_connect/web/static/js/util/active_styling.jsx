@@ -1,7 +1,9 @@
-const IsSelected = (context, url, onlyActiveOnIndex = false) => {
-  const { router } = context;
-  const isActive = router.isActive(url, onlyActiveOnIndex);
+import { matchPath } from "react-router-dom";
 
+const IsSelected = (context, path, onlyActiveOnIndex = false) => {
+  const { router } = context;
+  const { route: { location } } = router;
+  const isActive = matchPath(location.pathname, { path }) != null;
   return isActive;
 };
 export default IsSelected;
