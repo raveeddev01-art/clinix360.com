@@ -5,38 +5,52 @@ defmodule Stitch.Accounts.Admin do
   """
 
   alias Stitch.Repo
+  alias Stitch.User
 
   @spec update_firstname_and_lastname(number, String.t, String.t) :: {:ok, term} | {:error, term}
   @doc """
   Updates the user firstname and lastname field.
   """
-  def update_firstname_and_lastname(user_id, firstname, lastname) do
-    # TODO
+  def update_firstname_and_lastname(user_id, firstname, lastname)
+  when byte_size(firstname) > 0 and byte_size(lastname) > 0 do
+    user = Repo.get(User, user_id)
+    changeset = User.changeset(user, %{first_name: firstname, last_name: lastname})
+    Repo.update changeset
   end
+  def update_firstname_and_lastname(_, _, _), do: {:error, "First name and last name cannot be blank or nil"}
 
   @spec update_phone_number(number, String.t) :: {:ok, term} | {:error, term}
   @doc """
   Updates the user phone_number field.
   """
   def update_phone_number(user_id, phone_number) do
-    # TODO
+    user = Repo.get(User, user_id)
+    changeset = User.changeset(user, %{phone_number: phone_number})
+    Repo.update changeset
   end
+  def update_phone_number(_, _), do: {:error, "Phone number cannot be blank or nil"}
 
   @spec update_title(number, String.t) :: {:ok, term} | {:error, term}
   @doc """
   Updates the user title field.
   """
   def update_title(user_id, title) do
-    # TODO
+    user = Repo.get(User, user_id)
+    changeset = User.changeset(user, %{title: title})
+    Repo.update changeset
   end
+  def update_title(_, _), do: {:error, "Title cannot be blank or nil"}
 
   @spec update_profile_image_url(number, String.t) :: {:ok, term} | {:error, term}
   @doc """
   Updates the user profile_image_url field.
   """
   def update_profile_image_url(user_id, profile_image_url) do
-    # TODO
+    user = Repo.get(User, user_id)
+    changeset = User.changeset(user, %{profile_image_url: profile_image_url})
+    Repo.update changeset
   end
+  def update_profile_image_url(_, _), do: {:error, "Profile image url cannot be blank or nil"}
 
   @spec update_username(number, String.t) :: {:ok, term} | {:error, term}
   @doc """

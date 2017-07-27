@@ -6,7 +6,11 @@ defmodule Stitch.User do
     field :email, :string
     field :roles, {:array, :string}
     field :encrypted_password, :string
-    field :fullname, :string
+    field :first_name, :string
+    field :last_name, :string
+    field :phone_number, :string
+    field :profile_image_url, :string
+    field :title, :string
     field :confirmation_code, :string
     field :invite_token, :string
     field :email_confirmed, :boolean, default: false
@@ -23,8 +27,8 @@ defmodule Stitch.User do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:fullname])
-    |> validate_required([:fullname])
+    |> cast(params, [:first_name, :last_name, :phone_number, :title, :profile_image_url])
+    |> validate_required([:first_name, :last_name])
   end
 
   def registration_changeset(struct, params) do
@@ -36,7 +40,7 @@ defmodule Stitch.User do
 
   def onboarding_complete_changeset(struct, params) do
     struct
-    |> cast(params, [:fullname, :username, :password, :pin, :team_id])
+    |> cast(params, [:first_name, :last_name, :username, :password, :pin, :team_id])
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:username, :pin, :team_id])
     |> put_change(:onboarded, true)
