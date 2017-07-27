@@ -4,7 +4,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
 
   plug StitchConnect.Plug.TeamAdminOnly when action in [:update_security_lockout_time, :update_open_invitation, :delete_team]
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => _}) do
     team = Stitch.TeamQueries.get_by_id(conn.private[:team_id])
     conn
     |> json(%{
@@ -35,8 +35,8 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
   end
 
   def update(conn, %{"id" => _, "name" => name}) do
-    case Team.Admin.update_name(name) do
-      {:error, message} ->
+    case Team.Admin.update_name(conn.private[:team_id], name) do
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update name"})
@@ -48,7 +48,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
 
   def update_security_lockout_time(conn, %{"id" => _, "enabled" => enabled, "seconds_to_lockout": seconds_to_lockout}) do
     case Team.Admin.update_security_lockout_time(conn.private[:team_id], enabled, seconds_to_lockout) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update the security lockout time"})
@@ -65,7 +65,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
 
   def update_open_invitation(conn, %{"id" => _, "enabled" => enabled}) do
     case Team.Admin.update_open_invitation(conn.private[:team_id], enabled) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update the open invitation setting."})
@@ -81,11 +81,11 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
 
   def delete_team(conn, %{"id" => _}) do
     case Team.Admin.delete_team(conn.private[:team_id]) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't destroy the team."})
-      {:ok, team} ->
+      {:ok, _} ->
         conn
         |> json(%{message: "Team has been destroyed"})
     end
