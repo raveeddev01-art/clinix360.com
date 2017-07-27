@@ -47,4 +47,14 @@
       }
     }
   }
+
+  .lockout-time-label {
+    font-weight: 600;
+    span {
+      font-weight: 400;
+      color: #9e9ea6;
+      display: block;
+      line-height: 15px;
+    }
+  }
 }

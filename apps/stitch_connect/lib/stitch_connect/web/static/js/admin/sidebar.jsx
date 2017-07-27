@@ -12,8 +12,8 @@ export default class Sidebar extends Component {
     return (
       <div id="sidebar">
         <ListGroup>
-          <ListGroupItem href="#" active>
-            Settings
+          <ListGroupItem>
+            <Link to="/admin/team/settings">Settings</Link>
           </ListGroupItem>
           <ListGroupItem>
             <Link to="/admin/team/hipaa">HIPAA</Link>
