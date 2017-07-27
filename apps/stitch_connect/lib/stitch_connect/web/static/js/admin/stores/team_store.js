@@ -31,7 +31,7 @@ class TeamStore {
   @action
   editSecurityLockout = (enabled, secondsToLockout) => {
     return put(`/api/v1/teams/${this.id}/update-security-lockout-time`, {
-      body: { enabled, seconds_to_lockout: secondsToLockout }
+      body: { enabled, seconds_to_lockout: parseInt(secondsToLockout, 10) }
     }).then(response => {
       this.securityLockoutEnabled = enabled;
       this.secondsToLockout = secondsToLockout;
@@ -43,7 +43,7 @@ class TeamStore {
     return remove(`/api/v1/teams/${this.id}`).then(response => {
       const regExp = /.+\.(.*)/;
       const match = re.exec(window.location.host);
-      window.location.href = match[1];
+      window.location.href = `https://${match[1]}`;
     });
   };
 

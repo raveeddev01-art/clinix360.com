@@ -59,7 +59,7 @@ class SecurityLockoutPanel extends Component {
     this.setState({
       securityLockoutEnabled: TeamStore.instance.securityLockoutEnabled,
       secondsToLockout:
-        TeamStore.instance.securityLockoutEnabled || lockoutTimes[0].seconds
+        TeamStore.instance.secondsToLockout || lockoutTimes[0].seconds
     });
   };
 
@@ -67,7 +67,7 @@ class SecurityLockoutPanel extends Component {
     const { securityLockoutEnabled, secondsToLockout } = this.state;
     TeamStore.instance.editSecurityLockout(
       securityLockoutEnabled,
-      securityLockoutEnabled ? secondsToLockout * 1 : null
+      securityLockoutEnabled ? secondsToLockout : null
     );
   };
 
@@ -105,7 +105,6 @@ class SecurityLockoutPanel extends Component {
                 value={secondsToLockout}
                 onChange={this._onChangeLockout}
                 disabled={!securityLockoutEnabled}
-                defaultValue={lockoutTimes[0].seconds}
               >
                 {lockoutTimes.map(val =>
                   <option key={val.duration} value={val.seconds}>
