@@ -31,14 +31,24 @@ export default class Sidebar extends Component {
             <Link to="/admin/team/export">Export</Link>
           </ListGroupItem>
         </ListGroup>
-        <hr />
 
+        <hr />
         <h3>You</h3>
         <ListGroup>
           <ListGroupItem
             active={isSelected(this.context, "/admin/you/notifications")}
           >
             <Link to="/admin/you/notifications">Notifications</Link>
+          </ListGroupItem>
+        </ListGroup>
+
+        <hr />
+        <h3>Users</h3>
+        <ListGroup>
+          <ListGroupItem
+            active={isSelected(this.context, "/admin/users/invitations")}
+          >
+            <Link to="/admin/users/invitations">Invitations</Link>
           </ListGroupItem>
         </ListGroup>
       </div>
