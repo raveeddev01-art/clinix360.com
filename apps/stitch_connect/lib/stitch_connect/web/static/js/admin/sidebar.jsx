@@ -11,10 +11,12 @@ import isSelected from "../util/active_styling.jsx";
 export default class Sidebar extends Component {
   render() {
     return (
-      <div id="sidebar">
+      <div id="sidebar" className="panel panel-default">
+        
+        <h3>Team</h3>
         <ListGroup>
           <ListGroupItem 
-            active={isSelected(this.context, "/admin/team/settings")}
+            active={isSelected(this.context, "/admin/team/settings") || isSelected(this.context, "/admin/team")}
           >
             <Link to="/admin/team/settings">Settings</Link>
           </ListGroupItem>
@@ -23,7 +25,13 @@ export default class Sidebar extends Component {
           >
             <Link to="/admin/team/hipaa">HIPAA</Link>
           </ListGroupItem>
+          <ListGroupItem
+            active={isSelected(this.context, "/admin/team/export")}
+          >
+            <Link to="/admin/team/export">Export</Link>
+          </ListGroupItem>
         </ListGroup>
+        <hr />
       </div>
     );
   }
