@@ -10,7 +10,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def update(conn, %{"first_name" => first_name, "last_name" => last_name}) do
     case Stitch.Accounts.Admin.update_firstname_and_lastname(conn.assigns.current_user.id, first_name, last_name) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update first_name and last_name"})
@@ -26,7 +26,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def update(conn, %{"phone_number" => phone_number}) do
     case Stitch.Accounts.Admin.update_phone_number(conn.assigns.current_user.id, phone_number) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update phone_number"})
@@ -41,7 +41,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def update(conn, %{"title" => title}) do
     case Stitch.Accounts.Admin.update_title(conn.assigns.current_user.id, title) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update title"})
@@ -56,7 +56,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def update(conn, %{"profile_image_url" => profile_image_url}) do
     case Stitch.Accounts.Admin.update_profile_image_url(conn.assigns.current_user.id, profile_image_url) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update profile image url"})
@@ -71,7 +71,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def update(conn, %{"username" => username}) do
     case Stitch.Accounts.Admin.update_username(conn.assigns.current_user.id, username) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update username"})
@@ -86,7 +86,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def update(conn, %{"email" => email}) do
     case Stitch.Accounts.Admin.update_email(conn.assigns.current_user.id, email) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update email"})
@@ -101,7 +101,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def update(conn, %{"password" => password}) do
     case Stitch.Accounts.Admin.update_password(conn.assigns.current_user.id, password) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update password"})
@@ -116,7 +116,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def update(conn, %{"pin" => pin}) do
     case Stitch.Accounts.Admin.update_pin(conn.assigns.current_user.id, pin) do
-      {:error, message} ->
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update pin"})

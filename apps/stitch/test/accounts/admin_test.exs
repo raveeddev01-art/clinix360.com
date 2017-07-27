@@ -86,4 +86,20 @@ defmodule Stitch.Accounts.AdminTest do
       assert Enum.count(changeset.errors) == 1
     end
   end
+
+  describe "Stitch.Accounts.Admin.update_password/2" do
+    test "it updates the password" do
+      user = insert(:user, %{password: "123"})
+      {:ok, user} = Stitch.Accounts.Admin.update_password(user.id, "Password123!")
+      assert String.length(user.encrypted_password) == 60
+    end
+  end
+
+  describe "Stitch.Accounts.Admin.update_pin/2" do
+    test "it updates the pin" do
+      user = insert(:user, %{pin: "1234"})
+      {:ok, user} = Stitch.Accounts.Admin.update_pin(user.id, "4444")
+      assert user.pin == "4444"
+    end
+  end
 end

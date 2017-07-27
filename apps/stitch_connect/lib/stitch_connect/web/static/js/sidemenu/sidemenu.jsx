@@ -21,7 +21,8 @@ export default class Sidemenu extends Component {
             title={sidemenuStore.instance.teamName}
             id="dropdown-size-medium"
           >
-            <MenuItem>{window.currentUser.fullname}</MenuItem>
+            <MenuItem>{`${window.currentUser.firstName} ${window.currentUser
+              .lastName}`}</MenuItem>
             <MenuItem divider />
             <MenuItem eventKey="1">Profile</MenuItem>
             <MenuItem eventKey="2">Account</MenuItem>

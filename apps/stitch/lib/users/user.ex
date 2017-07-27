@@ -33,6 +33,22 @@ defmodule Stitch.User do
     |> validate_required([:first_name, :last_name])
   end
 
+  def password_update_changeset(struct, params) do
+    changeset =
+      struct
+      |> changeset(params)
+      |> cast(params, [:password])
+      |> validate_required([:password])
+
+    changeset =
+      case changeset do
+        %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+          put_change(changeset, :encrypted_password, Comeonin.Bcrypt.hashpwsalt(pass))
+        _ ->
+          changeset
+      end
+  end
+
   def registration_changeset(struct, params) do
     struct
     |> changeset(params)
@@ -45,12 +61,5 @@ defmodule Stitch.User do
     |> cast(params, [:first_name, :last_name, :username, :password, :pin, :team_id])
     |> validate_required([:username, :pin, :team_id])
     |> put_change(:onboarded, true)
-  end
-
-  def password_update_changeset(struct, params) do
-    struct
-    |> changeset(params)
-    |> cast(params, [:password])
-    |> validate_required([:password])
   end
 end
