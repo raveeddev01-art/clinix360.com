@@ -21,6 +21,18 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
     |> json(%{available: Team.Onboarding.slug_available?(url)})
   end
 
+  def update(conn, %{"id" => _, "name" => name}) do
+    case Team.Admin.update_name(name) do
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Couldn't update name"})
+      {:ok, team} ->
+        conn
+        |> json(%{id: team.id, name: team.name})
+    end
+  end
+
   def update_security_lockout_time(conn, %{"id" => _, "enabled" => enabled, "seconds_to_lockout": seconds_to_lockout}) do
     case Team.Admin.update_security_lockout_time(conn.private[:team_id], enabled, seconds_to_lockout) do
       {:error, message} ->
