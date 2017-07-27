@@ -31,8 +31,10 @@ export default class YouNotifications extends Component {
 
         <Well>
           <i className="fa fa-bell" />
-          Desktop notifications are currently <strong>enabled</strong>. You will
-          receive notifications in this browser.
+          <p className="m-b-0">
+            Desktop notifications are currently <strong>enabled</strong>. You
+            will receive notifications in this browser.
+          </p>
         </Well>
 
         <p>

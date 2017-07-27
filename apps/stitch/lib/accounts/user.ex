@@ -10,7 +10,8 @@ defmodule Stitch.Accounts.User do
     field :email, :string
     field :roles, {:array, :string}
     field :encrypted_password, :string
-    field :fullname, :string
+    field :first_name, :string
+    field :last_name, :string
     field :confirmation_code, :string
     field :invite_token, :string
     field :email_confirmed, :boolean, default: false
@@ -77,7 +78,7 @@ defmodule Stitch.Accounts.User do
 
   def onboarding_complete_changeset(struct, params) do
     struct
-    |> cast(params, [:fullname, :username, :password, :pin, :team_id, :roles])
+    |> cast(params, [:first_name, :last_name, :username, :password, :pin, :team_id, :roles])
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:username, :pin, :team_id, :roles])
     |> put_change(:onboarded, true)
