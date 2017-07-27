@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
   use StitchConnect.Web, :controller
   alias Stitch.Team
 
-  plug StitchConnect.Plug.TeamAdminOnly when action in [:update_security_lockout_time, :update_open_invitation]
+  plug StitchConnect.Plug.TeamAdminOnly when action in [:update_security_lockout_time, :update_open_invitation, :delete_team]
 
   def create(conn, %{"name" => name, "url" => slug}) do
     case Team.Onboarding.create_team(name, slug) do
@@ -53,4 +53,17 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         })
     end
   end
+
+  def delete_team(conn, %{"id" => _}) do
+    case Team.Admin.delete_team(conn.private[:team_id]) do
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Couldn't destroy the team."})
+      {:ok, team} ->
+        conn
+        |> json(%{message: "Team has been destroyed"})
+    end
+  end
+
 end

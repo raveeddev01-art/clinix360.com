@@ -57,7 +57,8 @@ defmodule Stitch.Team.Admin do
   records. This is *DANGEROUS* and not reversible.
   """
   def delete_team(team_id) do
-    # TODO
+    team = Repo.get(Team, team_id)
+    Repo.delete team
   end
 
   @spec export_history(number) :: boolean | {:error, term}
