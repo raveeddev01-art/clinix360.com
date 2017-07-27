@@ -41,4 +41,12 @@ defmodule Stitch.Team.AdminTest do
       assert new_team.seconds_to_lockout == nil
     end
   end
+
+  describe "Stitch.Team.Admin.update_open_invitation/2" do
+    test "updates open_invitations_enabled for team" do
+      team = insert(:team, %{name: "abc"})
+      {:ok, new_team} = Admin.update_open_invitation(team.id, true)
+      assert new_team.open_invitations_enabled == true
+    end
+  end
 end

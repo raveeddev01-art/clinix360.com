@@ -7,6 +7,7 @@ defmodule Stitch.Team do
     field :slug, :string
     field :security_lockout, :boolean, default: false
     field :seconds_to_lockout, :integer
+    field :open_invitations_enabled, :boolean, default: false
     has_many :users, Stitch.User
     has_many :rooms, Stitch.Room
 
@@ -15,8 +16,8 @@ defmodule Stitch.Team do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :slug, :security_lockout, :seconds_to_lockout])
-    |> validate_required([:name, :slug, :security_lockout])
+    |> cast(params, [:name, :slug, :security_lockout, :seconds_to_lockout, :open_invitations_enabled])
+    |> validate_required([:name, :slug, :security_lockout, :open_invitations_enabled])
     |> validate_number(:seconds_to_lockout, greater_than: 0)
     |> unique_constraint(:slug)
   end

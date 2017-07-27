@@ -42,10 +42,13 @@ defmodule Stitch.Team.Admin do
 
   @spec update_open_invitation(number, boolean) :: {:ok, term} | {:error, term}
   @doc """
-  Updates the team open_invitation field.
+  Updates the team open_invitations_enabled field.
   """
-  def update_open_invitation(team_id, open_invitation) do
-    # TODO
+  def update_open_invitation(team_id, open_invitations_enabled)
+  when is_number(team_id) and is_boolean(open_invitations_enabled) do
+    team = Repo.get(Team, team_id)
+    changeset = Team.changeset(team, %{open_invitations_enabled: open_invitations_enabled})
+    Repo.update changeset
   end
 
   @spec delete_team(number) :: boolean
