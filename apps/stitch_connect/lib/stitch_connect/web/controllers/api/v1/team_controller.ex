@@ -4,6 +4,19 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
 
   plug StitchConnect.Plug.TeamAdminOnly when action in [:update_security_lockout_time, :update_open_invitation, :delete_team]
 
+  def show(conn, %{"id" => id}) do
+    team = Stitch.TeamQueries.get_by_id(conn.private[:team_id])
+    conn
+    |> json(%{
+      id: team.id,
+      name: team.name,
+      slug: team.slug,
+      security_lockout: team.security_lockout,
+      seconds_to_lockout: team.seconds_to_lockout,
+      open_invitations_enabled: team.open_invitations_enabled
+    })
+  end
+
   def create(conn, %{"name" => name, "url" => slug}) do
     case Team.Onboarding.create_team(name, slug) do
       {:error, message} ->
