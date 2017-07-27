@@ -42,4 +42,48 @@ defmodule Stitch.Accounts.AdminTest do
       assert user.profile_image_url == "https://foobar.com/image2.jpg"
     end
   end
+
+  describe "Stitch.Accounts.Admin.update_username/2" do
+    test "it updates the username" do
+      user = insert(:user, %{username: "sergiotapia"})
+      {:ok, user} = Stitch.Accounts.Admin.update_username(user.id, "danieltapia")
+      assert user.username == "danieltapia"
+    end
+
+    test "it allows user to update to same value" do
+      user = insert(:user, %{username: "sergiotapia"})
+      {:ok, user} = Stitch.Accounts.Admin.update_username(user.id, "sergiotapia")
+      assert user.username == "sergiotapia"
+    end
+
+    test "it dissallows the same username within the same team" do
+      team = insert(:team)
+      user = insert(:user, %{username: "sergiotapia", team_id: team.id})
+      user2 = insert(:user, %{username: "danieltapia", team_id: team.id})
+      {:error, changeset} = Stitch.Accounts.Admin.update_username(user2.id, "sergiotapia")
+      assert Enum.count(changeset.errors) == 1
+    end
+  end
+
+  describe "Stitch.Accounts.Admin.update_email/2" do
+    test "it updates the email" do
+      user = insert(:user, %{email: "sergiotapia@outlook.com"})
+      {:ok, user} = Stitch.Accounts.Admin.update_email(user.id, "danieltapia@outlook.com")
+      assert user.email == "danieltapia@outlook.com"
+    end
+
+    test "it allows user to update to same value" do
+      user = insert(:user, %{email: "sergiotapia@outlook.com"})
+      {:ok, user} = Stitch.Accounts.Admin.update_email(user.id, "sergiotapia@outlook.com")
+      assert user.email == "sergiotapia@outlook.com"
+    end
+
+    test "it dissallows the same username within the same team" do
+      team = insert(:team)
+      user = insert(:user, %{email: "sergiotapia@outlook.com", team_id: team.id})
+      user2 = insert(:user, %{email: "danieltapia@outlook.com", team_id: team.id})
+      {:error, changeset} = Stitch.Accounts.Admin.update_email(user2.id, "sergiotapia@outlook.com")
+      assert Enum.count(changeset.errors) == 1
+    end
+  end
 end

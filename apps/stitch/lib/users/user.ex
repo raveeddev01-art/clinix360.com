@@ -27,7 +27,9 @@ defmodule Stitch.User do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:first_name, :last_name, :phone_number, :title, :profile_image_url])
+    |> cast(params, [:first_name, :last_name, :email, :pin, :phone_number, :title, :profile_image_url, :username])
+    |> unique_constraint(:username, name: :users_username_team_id_index)
+    |> unique_constraint(:email, name: :users_email_team_id_index)
     |> validate_required([:first_name, :last_name])
   end
 
@@ -41,13 +43,13 @@ defmodule Stitch.User do
   def onboarding_complete_changeset(struct, params) do
     struct
     |> cast(params, [:first_name, :last_name, :username, :password, :pin, :team_id])
-    |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:username, :pin, :team_id])
     |> put_change(:onboarded, true)
   end
 
   def password_update_changeset(struct, params) do
     struct
+    |> changeset(params)
     |> cast(params, [:password])
     |> validate_required([:password])
   end
