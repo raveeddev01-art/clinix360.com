@@ -19,11 +19,11 @@ class TeamNamePanel extends Component {
     };
   }
 
-  componentWillMount() {
+  _onToggleEdit = () => {
     this.setState({
       teamName: TeamStore.instance.name
     });
-  }
+  };
 
   _onChangeTeamName = evt => {
     this.setState({ teamName: evt.target.value });
@@ -40,6 +40,7 @@ class TeamNamePanel extends Component {
         title={title}
         description={description}
         onSave={this._onSave}
+        onEdit={this._onToggleEdit}
       >
         <FormGroup controlId="teamName">
           <ControlLabel>Team Name</ControlLabel>

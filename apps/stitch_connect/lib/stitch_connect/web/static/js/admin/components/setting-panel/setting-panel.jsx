@@ -11,6 +11,7 @@ class SettingPanel extends Component {
   }
 
   _toggleEdit = val => () => {
+    this.props.onEdit();
     this.setState({ isEditing: val });
   };
 
@@ -84,6 +85,7 @@ SettingPanel.propTypes = {
     PropTypes.node
   ]),
   onSave: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.string),
@@ -95,6 +97,7 @@ SettingPanel.propTypes = {
 SettingPanel.defaultProps = {
   children: null,
   onSave: () => {},
+  onEdit: () => {},
   saveButtonText: "Save Changes"
 };
 

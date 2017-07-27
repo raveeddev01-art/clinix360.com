@@ -87,6 +87,6 @@ window.put = function(url, options = {}) {
 window.patch = function(url, options = {}) {
   return window.jCSRFFetch(url, merge(options, { method: "PATCH" }));
 };
-window.delete = function(url, options = {}) {
+window.remove = function(url, options = {}) {
   return window.jCSRFFetch(url, merge(options, { method: "DELETE" }));
 };
