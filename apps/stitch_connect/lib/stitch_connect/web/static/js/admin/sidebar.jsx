@@ -12,17 +12,17 @@ export default class Sidebar extends Component {
   render() {
     return (
       <div id="sidebar" className="panel panel-default">
-        
         <h3>Team</h3>
         <ListGroup>
-          <ListGroupItem 
-            active={isSelected(this.context, "/admin/team/settings") || isSelected(this.context, "/admin/team")}
+          <ListGroupItem
+            active={
+              isSelected(this.context, "/admin/team/settings") ||
+              isSelected(this.context, "/admin/team")
+            }
           >
             <Link to="/admin/team/settings">Settings</Link>
           </ListGroupItem>
-          <ListGroupItem
-            active={isSelected(this.context, "/admin/team/hipaa")}
-          >
+          <ListGroupItem active={isSelected(this.context, "/admin/team/hipaa")}>
             <Link to="/admin/team/hipaa">HIPAA</Link>
           </ListGroupItem>
           <ListGroupItem
@@ -32,6 +32,15 @@ export default class Sidebar extends Component {
           </ListGroupItem>
         </ListGroup>
         <hr />
+
+        <h3>You</h3>
+        <ListGroup>
+          <ListGroupItem
+            active={isSelected(this.context, "/admin/you/notifications")}
+          >
+            <Link to="/admin/you/notifications">Notifications</Link>
+          </ListGroupItem>
+        </ListGroup>
       </div>
     );
   }
