@@ -23,4 +23,22 @@ defmodule Stitch.Team.AdminTest do
       assert reason == "Name cannot be blank or nil"
     end
   end
+
+  describe "Stitch.Team.Admin.update_security_lockout_time/3" do
+    test "updates security_lockout and seconds_to_lockout for team" do
+      team = insert(:team, %{name: "abc"})
+      {:ok, new_team} = Admin.update_security_lockout_time(team.id, true, 200)
+      assert new_team.security_lockout == true
+      assert new_team.seconds_to_lockout == 200
+    end
+  end
+
+  describe "Stitch.Team.Admin.update_security_lockout_time/2" do
+    test "updates security_lockout for team" do
+      team = insert(:team, %{name: "abc"})
+      {:ok, new_team} = Admin.update_security_lockout_time(team.id, false)
+      assert new_team.security_lockout == false
+      assert new_team.seconds_to_lockout == nil
+    end
+  end
 end

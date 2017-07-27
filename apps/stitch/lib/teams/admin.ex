@@ -16,16 +16,29 @@ defmodule Stitch.Team.Admin do
     changeset = Team.changeset(team, %{name: name})
     Repo.update changeset
   end
-  def update_name(team_id, _), do: {:error, "Name cannot be blank or nil"}
+  def update_name(_, _), do: {:error, "Name cannot be blank or nil"}
 
   @spec update_security_lockout_time(number, boolean, number) :: {:ok, term()} | {:error, term()}
   @doc """
   Updates the team seconds_to_lockout field, or disables it
   entirely.
   """
-  def update_security_lockout_time(team_id, security_lockout, seconds_to_lockout) do
-    # TODO
+  def update_security_lockout_time(team_id, security_lockout, seconds_to_lockout)
+  when is_number(team_id) and is_boolean(security_lockout) and is_number(seconds_to_lockout) and seconds_to_lockout > 0 do
+    team = Repo.get(Team, team_id)
+    changeset = Team.changeset(team, %{security_lockout: security_lockout, seconds_to_lockout: seconds_to_lockout})
+    Repo.update changeset
   end
+
+  def update_security_lockout_time(team_id, security_lockout)
+  when is_number(team_id) and is_boolean(security_lockout) do
+    team = Repo.get(Team, team_id)
+    changeset = Team.changeset(team, %{security_lockout: security_lockout})
+    Repo.update changeset
+  end
+
+  def update_security_lockout_time(_, _, _), do: {:error, "Security_lockout must be a boolean, and seconds_to_lockout must be an integer."}
+
 
   @spec update_open_invitation(number, boolean) :: {:ok, term} | {:error, term}
   @doc """
