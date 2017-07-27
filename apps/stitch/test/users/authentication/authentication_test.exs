@@ -11,7 +11,8 @@ defmodule Stitch.User.AuthenticationTest do
       user_struct = %{
         email: "example@email.com",
         password: "password123",
-        fullname: "John Doe"
+        first_name: "John",
+        last_name: "Doe"
       }
       team = insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
       user = Stitch.User.Authentication.create_account(user_struct)
@@ -38,10 +39,12 @@ defmodule Stitch.User.AuthenticationTest do
     user_struct = %{
       email: "example@email.com",
       password: "password123",
-      fullname: "John Doe"
+      first_name: "John",
+      last_name: "Doe"
     }
     user = Stitch.User.Authentication.create_account(user_struct)
-    assert user.fullname == "John Doe"
+    assert user.first_name == "John"
+    assert user.last_name == "Doe"
     assert user.email == "example@email.com"
     assert String.length(user.encrypted_password) == 60
   end
@@ -56,7 +59,8 @@ defmodule Stitch.User.AuthenticationTest do
     user_struct = %{
       email: "example@email.com",
       password: "password123",
-      fullname: "John Doe"
+      first_name: "John",
+      last_name: "Doe"
     }
     team = insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
     user = Stitch.User.Authentication.create_account(user_struct)

@@ -44,6 +44,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :api
 
     get "/users/", UserController, :index
+    put "/users/:id", UserController, :update
 
     get "/rooms/", RoomController, :index
 

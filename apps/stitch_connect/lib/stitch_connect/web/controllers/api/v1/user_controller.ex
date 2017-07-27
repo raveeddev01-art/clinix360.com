@@ -1,10 +1,72 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :send_invite]
+  alias Stitch.Accounts
 
   def index(conn, _) do
     users = Stitch.UserQueries.users_for_team(conn.assigns.current_user.team_id)
     render conn, "index.json", users: users
+  end
+
+  def update(conn, %{"first_name" => first_name, "last_name" => last_name}) do
+    case Stitch.Accounts.Admin.update_firstname_and_lastname(conn.assigns.current_user.id, first_name, last_name) do
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Couldn't update first_name and last_name"})
+      {:ok, user} ->
+        conn
+        |> json(%{
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name
+        })
+    end
+  end
+
+  def update(conn, %{"phone_number" => phone_number}) do
+    case Stitch.Accounts.Admin.update_phone_number(conn.assigns.current_user.id, phone_number) do
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Couldn't update phone_number"})
+      {:ok, user} ->
+        conn
+        |> json(%{
+          id: user.id,
+          phone_number: user.phone_number
+        })
+    end
+  end
+
+  def update(conn, %{"title" => title}) do
+    case Stitch.Accounts.Admin.update_title(conn.assigns.current_user.id, title) do
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Couldn't update title"})
+      {:ok, user} ->
+        conn
+        |> json(%{
+          id: user.id,
+          title: user.title
+        })
+    end
+  end
+
+  def update(conn, %{"profile_image_url" => profile_image_url}) do
+    case Stitch.Accounts.Admin.update_profile_image_url(conn.assigns.current_user.id, profile_image_url) do
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Couldn't update profile image url"})
+      {:ok, user} ->
+        conn
+        |> json(%{
+          id: user.id,
+          profile_image_url: user.profile_image_url
+        })
+    end
   end
 
   def create(conn, %{"email" => email}) do
@@ -44,8 +106,8 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def complete_onboarding(conn, %{"id" => id, "fullname" => fullname, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
-    case Stitch.Accounts.update_and_complete_user_onboarding(id, %{fullname: fullname, username: username, password: password, pin: pin, team_id: team_id, roles: ["admin"]}) do
+  def complete_onboarding(conn, %{"id" => id, "first_name" => first_name, "last_name" => last_name, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
+    case Stitch.Accounts.update_and_complete_user_onboarding(id, %{first_name: first_name, last_name: last_name, username: username, password: password, pin: pin, team_id: team_id, roles: ["admin"]}) do
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)
