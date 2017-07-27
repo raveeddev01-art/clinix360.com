@@ -22,7 +22,8 @@
         display: block;
       }
 
-      a:hover, a:focus {
+      a:hover,
+      a:focus {
         text-decoration: none;
       }
 
@@ -76,6 +77,12 @@
         }
       }
 
+      label,
+      select,
+      .help-block {
+        font-size: 14px;
+      }
+
       ul {
         padding-left: 25px;
         margin-bottom: 25px;
@@ -91,5 +98,4 @@
       }
     }
   }
-
 }

@@ -7,6 +7,7 @@ import TeamHipaa from "./team/hipaa.jsx";
 import TeamExport from "./team/export.jsx";
 import TeamSettings from "./team/settings/index.jsx";
 import TeamStore from "./stores/team_store";
+import YouNotifications from "./you/notifications.jsx";
 
 export default class Admin extends Component {
   constructor(props) {
@@ -32,6 +33,10 @@ export default class Admin extends Component {
                   />
                   <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
                   <Route path={`/admin/team/export`} component={TeamExport} />
+                  <Route
+                    path={`/admin/you/notifications`}
+                    component={YouNotifications}
+                  />
                 </Switch>
               </Col>
             </Row>
