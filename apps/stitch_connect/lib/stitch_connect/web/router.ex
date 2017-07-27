@@ -46,7 +46,7 @@ defmodule StitchConnect.Web.Router do
     post "/users/send-confirmation-code", UserController, :send_confirmation_code
     post "/users/submit-confirmation-code", UserController, :submit_confirmation_code
     post "/users/send-invite", UserController, :send_invite
-    patch "/users/:id", UserController, :update
+    patch "/users/:id/complete-onboarding", UserController, :complete_onboarding
 
     post "/teams", TeamController, :create
     post "/teams/url-available", TeamController, :url_available
