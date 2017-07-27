@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
+import { Link } from "react-router-dom";
 
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import ListGroup from "react-bootstrap/lib/ListGroup";
@@ -11,8 +12,8 @@ export default class Sidebar extends Component {
     return (
       <div id="sidebar">
           <ListGroup>
-            <ListGroupItem href="#" active>Settings</ListGroupItem>
-            <ListGroupItem href="#">Hippa</ListGroupItem>
+            <ListGroupItem href="/admin/team/settings" >Settings</ListGroupItem>
+            <ListGroupItem>Hippa</ListGroupItem>
           </ListGroup>
       </div>
     );
