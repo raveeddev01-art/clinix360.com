@@ -36,6 +36,16 @@ export default class Sidebar extends Component {
         <h3>You</h3>
         <ListGroup>
           <ListGroupItem
+            active={isSelected(this.context, "/admin/you/profile")}
+          >
+            <Link to="/admin/you/profile">Profile</Link>
+          </ListGroupItem>
+          <ListGroupItem
+            active={isSelected(this.context, "/admin/you/account")}
+          >
+            <Link to="/admin/you/account">Account</Link>
+          </ListGroupItem>
+          <ListGroupItem
             active={isSelected(this.context, "/admin/you/notifications")}
           >
             <Link to="/admin/you/notifications">Notifications</Link>
