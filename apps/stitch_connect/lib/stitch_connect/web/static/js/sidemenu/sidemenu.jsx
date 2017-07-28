@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
+import { Link } from "react-router-dom";
 
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -29,7 +30,11 @@ export default class Sidemenu extends Component {
             <MenuItem eventKey="3">Notifications</MenuItem>
             <MenuItem eventKey="4">Invite</MenuItem>
             <MenuItem divider />
-            <MenuItem eventKey="5">Sign Out</MenuItem>
+            <MenuItem eventKey="5" href="/admin/team">
+              Team
+            </MenuItem>
+              <MenuItem divider />
+            <MenuItem eventKey="6">Sign Out</MenuItem>
           </DropdownButton>
         </div>
 

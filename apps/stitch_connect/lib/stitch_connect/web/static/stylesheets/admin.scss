@@ -54,6 +54,7 @@
         font-size: 30px;
         font-weight: bold;
         margin: 0 0 40px;
+        text-align: center;
       }
 
       .well {
@@ -103,6 +104,22 @@
 
       .btn-lg {
         padding: 8px 20px;
+      }
+      
+      .team-exports {
+        .action-create {
+          border-radius: 2px;
+          padding: 12px 20px;
+          font-size: 16px;
+          outline: none;
+          line-height: 1rem;
+          cursor: pointer;
+        }
+
+        h3 {
+          clear: both;
+          margin-top: 90px;
+        }
       }
     }
   }
