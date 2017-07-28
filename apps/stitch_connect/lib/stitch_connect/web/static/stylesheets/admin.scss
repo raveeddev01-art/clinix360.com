@@ -63,6 +63,13 @@
         text-align: center;
       }
 
+      .export-heading {
+        font-weight: bold;
+        line-height: 1.45;
+        padding: 8px 0;
+        margin: 0;
+      }
+
       .well {
         background: transparent;
         border-color: #ddd;
@@ -112,24 +119,35 @@
         }
       }
 
-      .btn-lg {
-        padding: 8px 20px;
+      .table > thead > tr > th {
+        color: $brand-primary;
+        font-size: 16px;
+        border-bottom-color: rgba($brand-primary, .15);
+        padding: 12px 15px;
       }
 
-      .team-exports {
-        .action-create {
-          border-radius: 2px;
-          padding: 12px 20px;
-          font-size: 16px;
-          outline: none;
-          line-height: 1rem;
-          cursor: pointer;
-        }
+      .table > thead > tr.separator {
+        height: 1em;
+      }
 
-        h3 {
-          clear: both;
-          margin-top: 90px;
+      .table > tbody > tr > td {
+        border-top: 0;
+        padding: 15px;
+
+        &:first-of-type {
+          border-radius: 4px 0 0 4px;
         }
+        &:last-of-type {
+          border-radius: 0 4px 4px 0;
+        }
+      }
+
+      .table-striped > tbody > tr:nth-of-type(odd) {
+        background: rgba($brand-primary, .1);
+      }
+
+      .btn-lg {
+        padding: 8px 20px;
       }
 
       .manage-users {
