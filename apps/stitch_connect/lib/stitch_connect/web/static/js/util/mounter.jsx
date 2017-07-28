@@ -10,6 +10,7 @@ import Chat from "../chat/chat.jsx";
 import Message from "../chat/message.jsx";
 import Addons from "../addons/addons.jsx";
 import Admin from "../admin/admin.jsx";
+import Toastr from "../common/components/toastr/toastr.jsx";
 
 var componentMap = {
   AuthenticationRouter,
@@ -20,7 +21,8 @@ var componentMap = {
   Chat,
   Message,
   Addons,
-  Admin
+  Admin,
+  Toastr
 };
 
 window.mountComponents = () => {

@@ -12,7 +12,6 @@ import AccountSettings from "./you/account/index.jsx";
 import UsersInvitations from "./users/invitations.jsx";
 import UsersMembers from "./users/members.jsx";
 
-import Toastr from "../common/components/toastr/toastr.jsx";
 import TeamStore from "./stores/team_store";
 
 export default class Admin extends Component {
@@ -25,7 +24,6 @@ export default class Admin extends Component {
     return (
       <Router>
         <div className="admin-wrapper container">
-          <Toastr />
           <Grid>
             <Row>
               <Col xs={3}>
