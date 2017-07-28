@@ -157,12 +157,16 @@
           margin-bottom: 30px;
         }
 
-        .members {
+        .table {
           .table-head {
             border-bottom: 1px solid #bfccd8;
             font-size: 18px;
             color: $brand-primary;
             margin: 0 15px;
+
+            &:not(:first-child) {
+              text-align: center;
+            }
           }
 
           .separator {
@@ -260,6 +264,13 @@
               height: 64px;
               position: relative;
             }
+          }
+        }
+        .invites {
+          button {
+            color: #003366;
+            border: 1px solid #003366;
+            background-color: #fff;
           }
         }
       }
