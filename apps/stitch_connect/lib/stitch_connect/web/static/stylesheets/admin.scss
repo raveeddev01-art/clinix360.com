@@ -158,18 +158,6 @@
         .members-item {
           border-radius: 4px;
           padding: 10px 15px;
-          
-          .table {
-            .table-head {
-              border-bottom: 1px solid #bfccd8;
-              font-size: 18px;
-              color: $brand-primary;
-              margin: 0 15px;
-
-              &:not(:first-child) {
-                text-align: center;
-              }
-          }
 
           .users-column {
             .title {
@@ -210,6 +198,129 @@
             background: rgba($brand-primary, .1);
           }
         }
+      }
+
+      .btn-lg {
+        padding: 8px 20px;
+      }
+
+      // --- Pending Rework ---
+      .manage-users {
+        .tab-description {
+          font-size: 16px;
+          line-height: 1.42857143;
+          margin-bottom: 30px;
+        }
+
+        .table {
+          .table-head {
+            border-bottom: 1px solid #bfccd8;
+            font-size: 18px;
+            color: $brand-primary;
+            margin: 0 15px;
+
+            &:not(:first-child) {
+              text-align: center;
+            }
+          }
+
+          .separator {
+            height: 1em;
+          }
+
+          .user-info {
+            padding: 15px;
+
+            &:nth-child(odd) {
+              border-radius: 4px;
+              background: rgba(0, 51, 102, 0.1);
+            }
+
+            .user-box {
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-align: center;
+              -ms-flex-align: center;
+              align-items: center;
+              padding: 0;
+              height: 64px;
+              position: relative;
+
+              .title {
+                color: #333;
+                font-size: 16px;
+                line-height: 23px;
+                height: 23px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+
+                .user-status {
+                  width: 22px;
+                  display: inline-block;
+
+                  i {
+                    display: none;
+
+                    &.is-online {
+                      color: #003366;
+                    }
+                    &.is-offline {
+                      color: #67686e;
+                    }
+                  }
+
+                  &.status-offline,
+                  &.status-away {
+                    .is-offline {
+                      display: inline;
+                    }
+                  }
+
+                  &.status-online {
+                    .is-online {
+                      display: inline;
+                    }
+                  }
+                }
+
+                .name {
+                  font-weight: 600;
+                }
+
+                .username {
+                  color: #9e9ea6;
+                  font-weight: 400;
+                  margin-left: 5px;
+                }
+              }
+
+              .email {
+                line-height: 23px;
+                height: 23px;
+
+                span {
+                  font-size: 16px;
+                  color: #9e9ea6;
+                }
+              }
+            }
+
+            .user-membership,
+            .user-members-actions {
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-align: center;
+              -ms-flex-align: center;
+              align-items: center;
+              padding: 0;
+              height: 64px;
+              position: relative;
+            }
+          }
+        }
         .invites {
           button {
             color: #003366;
@@ -218,15 +329,12 @@
           }
         }
       }
-
-      .btn-lg {
-        padding: 8px 20px;
-      }
     }
   }
 
   .lockout-time-label {
     font-weight: 600;
+
     span {
       font-weight: 400;
       color: #9e9ea6;
