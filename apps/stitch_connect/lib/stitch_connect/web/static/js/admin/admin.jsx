@@ -11,6 +11,8 @@ import ProfileSettings from "./you/profile/index.jsx";
 import AccountSettings from "./you/account/index.jsx";
 import UsersInvitations from "./users/invitations.jsx";
 import UsersMembers from "./users/members.jsx";
+import UsersPending from "./users/pending.jsx";
+
 
 import Toastr from "../common/components/toastr/toastr.jsx";
 import TeamStore from "./stores/team_store";
@@ -69,6 +71,10 @@ export default class Admin extends Component {
                   <Route
                     path={`/admin/users/members`}
                     component={UsersMembers}
+                  />
+                  <Route
+                    path={`/admin/users/pending`}
+                    component={UsersPending}
                   />
                 </Switch>
               </Col>
