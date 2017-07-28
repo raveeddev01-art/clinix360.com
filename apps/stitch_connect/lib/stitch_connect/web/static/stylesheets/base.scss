@@ -95,3 +95,50 @@ $screen-lg: 1200px;
   background: rgba(0, 0, 0, .1);
   border-radius: 15px;
 }
+
+.status-offline {
+  color: rgba(150,150,150,0.5);
+}
+
+.status-away {
+  color: #FCB316;
+}
+
+.status-online {
+  color: #FCB316;
+}
+
+.btn-fancy.btn-default, .sweet-alert .btn-fancy.btn-default, .btn-fancy.btn-default:hover, .sweet-alert .btn-fancy.btn-default:hover, .btn-fancy.btn-default:active, .sweet-alert .btn-fancy.btn-default:active {
+    color: #333;
+    border: 1px solid #cacaca;
+    background-color: #fafafa;
+}
+
+.btn-fancy.btn-small, .sweet-alert .btn-fancy.btn-small {
+    padding: 3px 8px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.btn-fancy, .sweet-alert .btn-fancy, .btn-fancy:visited, .sweet-alert .btn-fancy:visited, .btn-fancy:hover, .sweet-alert .btn-fancy:hover, .btn-fancy:active, .sweet-alert .btn-fancy:active {
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    background: none;
+}
+
+.btn-fancy.btn-primary, .sweet-alert .btn-fancy.btn-primary, .btn-fancy.btn-primary:hover, .sweet-alert .btn-fancy.btn-primary:hover, .btn-fancy.btn-primary:active, .sweet-alert .btn-fancy.btn-primary:active {
+    color: #fff;
+    border: 1px solid #003366;
+    background-color: #003366;
+}
+  
+.btn-fancy, .sweet-alert .btn-fancy {
+    border: none;
+    border-radius: 2px;
+    padding: 12px 20px;
+    font-size: 16px;
+    outline: none;
+    line-height: 1rem;
+    cursor: pointer;
+}
