@@ -9,6 +9,7 @@ import TeamSettings from "./team/settings/index.jsx";
 import TeamStore from "./stores/team_store";
 import YouNotifications from "./you/notifications.jsx";
 import UsersInvitations from "./users/invitations.jsx";
+import UsersMembers from "./users/members.jsx";
 
 export default class Admin extends Component {
   constructor(props) {
@@ -51,6 +52,10 @@ export default class Admin extends Component {
                   <Route
                     path={`/admin/users/invitations`}
                     component={UsersInvitations}
+                  />
+                  <Route
+                    path={`/admin/users/members`}
+                    component={UsersMembers}
                   />
                 </Switch>
               </Col>
