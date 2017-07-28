@@ -1,25 +1,31 @@
 .admin-wrapper {
   padding: 60px 0 0;
 
+  .back-btn {
+    background: #fff;
+  }
+
   #sidebar {
+    border-color: $border-color;
+    padding-bottom: 20px;
+
     h3 {
-      font-size: 12px;
-      line-height: 13px;
-      height: 14px;
-      text-transform: uppercase;
       color: #98a5b3;
-      font-weight: 700;
-      padding-left: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      padding-left: 25px;
     }
 
     li {
-      padding: 10px 20px;
-      border: none;
       font-size: 16px;
+      border: 0;
+      padding: 0;
 
       a {
-        color: $brand-primary;
+        color: #52617a;
         display: block;
+        padding: 8px 25px;
       }
 
       a:hover,
@@ -31,14 +37,14 @@
         background-color: $brand-primary;
 
         a {
-          color: white;
+          color: #fff;
         }
       }
     }
 
     hr {
-      border-top-color: #dce0e8;
-      margin: 23px 25px 29px 20px;
+      border-color: $border-color-secondary;
+      margin: 25px;
     }
   }
 
@@ -99,13 +105,17 @@
             color: #449d44;
             margin-right: 4px;
           }
+
+          i.fa-circle {
+            color: $brand-primary;
+          }
         }
       }
 
       .btn-lg {
         padding: 8px 20px;
       }
-      
+
       .team-exports {
         .action-create {
           border-radius: 2px;
