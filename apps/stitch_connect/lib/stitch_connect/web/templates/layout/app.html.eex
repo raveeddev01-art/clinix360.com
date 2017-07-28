@@ -37,6 +37,7 @@
       <span class="logo"></span>
     </header> -->
 
+    <div id="toastr" data-component="Toastr"></div>
     <%= render @view_module, @view_template, assigns %>
 
     <!-- <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
