@@ -37,8 +37,9 @@ export default class TeamExport extends Component {
         <p className="m-b-40">
           Message history will be provided in JSON format. You will also receive
           a special token allowing you to access file uploads at their specified
-          URLs. See our support article <a href="#">here</a> for more on how to
-          use these files and tokens.
+          URLs. See our support article{" "}
+          <a href="https://teamstitch.zendesk.com/hc/en-us">here</a> for more on
+          how to use these files and tokens.
         </p>
 
         <Row className="m-b-20">
@@ -52,7 +53,7 @@ export default class TeamExport extends Component {
           </Col>
         </Row>
 
-        <Table responsive striped>
+        <Table responsive striped className="m-b-40">
           <thead className="m-b-10">
             <tr>
               <th>Date</th>
@@ -94,7 +95,9 @@ export default class TeamExport extends Component {
 
         <p className="text-center">
           Questions? Learn more with our <br />{" "}
-          <a href="#">Frequently Asked Questions</a>
+          <a href="https://teamstitch.zendesk.com/hc/en-us">
+            Frequently Asked Questions
+          </a>
         </p>
       </Panel>
     );
