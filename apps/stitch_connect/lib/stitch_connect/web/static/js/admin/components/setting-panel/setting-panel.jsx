@@ -6,8 +6,15 @@ class SettingPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isEditing: false
+      isEditing: false,
+      disableSave: props.disableSave
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.disableSave !== this.props.disableSave) {
+      this.setState({ disableSave: nextProps.disableSave });
+    }
   }
 
   _toggleEdit = val => () => {
@@ -37,6 +44,7 @@ class SettingPanel extends Component {
             bsStyle="primary"
             className="btn-fancy pull-right"
             onClick={this._onSave}
+            disabled={this.state.disableSave}
           >
             {saveButtonText}
           </Button>
@@ -91,14 +99,16 @@ SettingPanel.propTypes = {
     PropTypes.arrayOf(PropTypes.string),
     PropTypes.string
   ]),
-  saveButtonText: PropTypes.string.isRequired
+  saveButtonText: PropTypes.string.isRequired,
+  disableSave: PropTypes.bool.isRequired
 };
 
 SettingPanel.defaultProps = {
   children: null,
   onSave: () => {},
   onEdit: () => {},
-  saveButtonText: "Save Changes"
+  saveButtonText: "Save Changes",
+  disableSave: false
 };
 
 export default SettingPanel;
