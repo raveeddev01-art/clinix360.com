@@ -33,8 +33,9 @@ class UsernamePanel extends Component {
         <FormGroup>
           <ControlLabel>PIN</ControlLabel>
           <FormControl
-            type="text"
+            type="password"
             placeholder="0000"
+            maxLength={4}
             value={pin}
             onChange={this._onChangePIN}
           />
