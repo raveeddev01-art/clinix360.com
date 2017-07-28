@@ -1,13 +1,5 @@
 import React, { Component } from "react";
-import {
-  Panel,
-  Well,
-  Row,
-  Col,
-  Collapse,
-  ButtonToolbar,
-  Button
-} from "react-bootstrap";
+import { Panel, Row, Col } from "react-bootstrap";
 import MemberItem from "./member-item.jsx";
 
 export default class UsersMembers extends Component {
