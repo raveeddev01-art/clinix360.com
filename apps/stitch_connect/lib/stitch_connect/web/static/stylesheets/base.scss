@@ -13,7 +13,7 @@ body {
 }
 
 #root {
-  height: 100%;
+  min-height: 100%;
 }
 
 $body-bg: #fafafa;
@@ -85,11 +85,11 @@ $screen-lg: 1200px;
   margin-bottom: 40px;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  background: rgba(0, 0, 0, .05);
-  border-radius: 15px;
-}
+// ::-webkit-scrollbar {
+//   width: 8px;
+//   background: rgba(0, 0, 0, .05);
+//   border-radius: 15px;
+// }
 
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, .1);

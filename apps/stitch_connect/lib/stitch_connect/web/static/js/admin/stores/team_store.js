@@ -4,6 +4,7 @@ import { observable, action } from "mobx";
 class TeamStore {
   @observable name = "";
   @observable id = "";
+  @observable subdomain = "";
   @observable securityLockoutEnabled = false;
   @observable secondsToLockout = null;
   @observable openInvitationsEnabled = false;
@@ -11,6 +12,7 @@ class TeamStore {
   constructor(props) {
     this.name = props.teamName;
     this.id = props.teamId;
+    this.subdomain = props.subdomain;
     get(`/api/v1/teams/${this.id}`).then(resp => {
       const { data } = resp;
       this.securityLockoutEnabled = data.security_lockout;
