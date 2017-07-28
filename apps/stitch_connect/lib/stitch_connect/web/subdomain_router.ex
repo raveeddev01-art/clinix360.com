@@ -42,6 +42,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/admin/team/export", AdminController, :index
     get "/admin/you/notifications", AdminController, :index
     get "/admin/users/invitations", AdminController, :index
+    get "/admin/users/members", AdminController, :index
   end
 
   # API routes.
