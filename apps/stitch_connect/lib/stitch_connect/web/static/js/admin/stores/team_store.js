@@ -1,6 +1,5 @@
 import { observable, action } from "mobx";
 
-// @TODO handle error response on utils/fetch
 class TeamStore {
   @observable name = "";
   @observable id = "";
@@ -26,6 +25,7 @@ class TeamStore {
     return put(`/api/v1/teams/${this.id}`, {
       body: { name: newName }
     }).then(response => {
+      notify.show("Team name updated");
       this.name = newName;
     });
   };
@@ -35,6 +35,7 @@ class TeamStore {
     return put(`/api/v1/teams/${this.id}/update-security-lockout-time`, {
       body: { enabled, seconds_to_lockout: parseInt(secondsToLockout, 10) }
     }).then(response => {
+      notify.show("Security lockout settings updated");
       this.securityLockoutEnabled = enabled;
       this.secondsToLockout = secondsToLockout;
     });
@@ -43,6 +44,7 @@ class TeamStore {
   @action
   deleteTeam = () => {
     return remove(`/api/v1/teams/${this.id}`).then(response => {
+      notify.show("Your team has been deleted");
       window.location.href = `https://${applicationHost}`;
     });
   };
@@ -52,6 +54,7 @@ class TeamStore {
     return put(`/api/v1/teams/${this.id}/update-open-invitation`, {
       body: { enabled }
     }).then(response => {
+      notify.show("Invitation settings updated");
       this.openInvitationsEnabled = enabled;
     });
   };

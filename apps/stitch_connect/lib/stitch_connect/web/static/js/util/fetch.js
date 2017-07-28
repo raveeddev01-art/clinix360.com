@@ -1,5 +1,6 @@
 import merge from "deepmerge";
 import "whatwg-fetch";
+
 var Promise = require("es6-promise").Promise;
 
 window.csrfToken = "";
@@ -41,38 +42,40 @@ window.jCSRFFetch = function(url, options = {}) {
       url + `?authenticationToken=${window.authenticationToken}`;
     url = modifiedUrl;
   }
-  return new Promise(function(resolve) {
-    window
-      .CSRFFetch(
-        url,
-        merge(
-          {
-            headers: merge(
-              { Accept: "application/json" },
-              options.body instanceof FormData
-                ? {}
-                : { "Content-Type": "application/json" }
-            )
-          },
-          options
-        )
+  return window
+    .CSRFFetch(
+      url,
+      merge(
+        {
+          headers: merge(
+            { Accept: "application/json" },
+            options.body instanceof FormData
+              ? {}
+              : { "Content-Type": "application/json" }
+          )
+        },
+        options
       )
-      .then(function(response) {
-        response.text().then(function(text) {
-          try {
-            resolve({
-              status: response.status,
-              data: JSON.parse(text)
-            });
-          } catch (err) {
-            resolve({
-              status: response.status,
-              data: {}
-            });
-          }
+    )
+    .then(response => response.json().then(json => ({ json, response })))
+    .then(({ json, response }) => {
+      if (!response.ok) {
+        notify.show(
+          json.message || "There was problem with your request",
+          "error"
+        );
+
+        return Promise.reject({
+          status: response.status,
+          data: json
         });
-      });
-  });
+      }
+
+      return {
+        status: response.status,
+        data: json
+      };
+    });
 };
 
 window.get = function(url, options = {}) {

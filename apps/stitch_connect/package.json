@@ -4,6 +4,7 @@
     "watch": "webpack --watch-stdin --progress --color"
   },
   "dependencies": {
+    "animate.css": "^3.5.2",
     "babel-polyfill": "^6.23.0",
     "deepmerge": "^1.4.4",
     "es6-promise": "^4.1.0",
@@ -17,6 +18,7 @@
     "react-bootstrap": "^0.31.0",
     "react-dropzone": "^3.13.3",
     "react-router-dom": "^4.1.2",
+    "react-toastr": "^2.8.2",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
