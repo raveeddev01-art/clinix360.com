@@ -158,6 +158,18 @@
         .members-item {
           border-radius: 4px;
           padding: 10px 15px;
+          
+          .table {
+            .table-head {
+              border-bottom: 1px solid #bfccd8;
+              font-size: 18px;
+              color: $brand-primary;
+              margin: 0 15px;
+
+              &:not(:first-child) {
+                text-align: center;
+              }
+          }
 
           .users-column {
             .title {
@@ -196,6 +208,13 @@
 
           &:nth-of-type(even) {
             background: rgba($brand-primary, .1);
+          }
+        }
+        .invites {
+          button {
+            color: #003366;
+            border: 1px solid #003366;
+            background-color: #fff;
           }
         }
       }

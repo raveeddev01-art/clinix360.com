@@ -51,7 +51,7 @@ module.exports = [
     module: {
       loaders: [
         {
-          test: /\.scss$/,
+          test: /\.(scss|css)$/,
           exclude: /node_modules/,
           use: ExtractTextPlugin.extract({
             fallback: "style-loader",

@@ -6,12 +6,16 @@ import Sidebar from "./sidebar.jsx";
 import TeamHipaa from "./team/hipaa.jsx";
 import TeamExport from "./team/export.jsx";
 import TeamSettings from "./team/settings/index.jsx";
-import TeamStore from "./stores/team_store";
 import YouNotifications from "./you/notifications.jsx";
 import ProfileSettings from "./you/profile/index.jsx";
 import AccountSettings from "./you/account/index.jsx";
 import UsersInvitations from "./users/invitations.jsx";
 import UsersMembers from "./users/members.jsx";
+import UsersPending from "./users/pending.jsx";
+
+
+import Toastr from "../common/components/toastr/toastr.jsx";
+import TeamStore from "./stores/team_store";
 
 export default class Admin extends Component {
   constructor(props) {
@@ -23,6 +27,7 @@ export default class Admin extends Component {
     return (
       <Router>
         <div className="admin-wrapper container">
+          <Toastr />
           <Grid>
             <Row>
               <Col xs={3}>
@@ -66,6 +71,10 @@ export default class Admin extends Component {
                   <Route
                     path={`/admin/users/members`}
                     component={UsersMembers}
+                  />
+                  <Route
+                    path={`/admin/users/pending`}
+                    component={UsersPending}
                   />
                 </Switch>
               </Col>

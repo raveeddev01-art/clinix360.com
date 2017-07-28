@@ -68,6 +68,13 @@ export default class Sidebar extends Component {
             <Link to="/admin/users/members">Members</Link>
           </ListGroupItem>
         </ListGroup>
+        <ListGroup>
+          <ListGroupItem
+            active={isSelected(this.context, "/admin/users/pending")}
+          >
+            <Link to="/admin/users/pending">Pending</Link>
+          </ListGroupItem>
+        </ListGroup>
       </div>
     );
   }
