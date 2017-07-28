@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Panel, Well, Row, Col, Table, Button } from "react-bootstrap";
 
 export default class TeamExport extends Component {
   constructor(props) {
@@ -7,90 +8,95 @@ export default class TeamExport extends Component {
 
   render() {
     return (
-      <div className="admin-panel panel panel-default">
-        <div className="panel-body">
-          <h1 className="admin-title">Data Export</h1>
-          <div className="admin-content">
-            <div className="team-exports">
-              <p>
-                In the event that you need to delete your Stitch account, or require electronic discovery
-                for legal purposes. Stitch provides full data exports to keep you compliant. Here's what
-                we include in our exports:
-              </p>
-              <ul>
-                <li><i className="fa fa-check-circle-o" /> Public and private group message history</li>
-                <li><i className="fa fa-check-circle-o" /> 1-1 direct message history</li>
-                <li><i className="fa fa-check-circle-o" /> Edited and deleted messages</li>
-                <li><i className="fa fa-check-circle-o" /> Archived group message history</li>
-                <li><i className="fa fa-check-circle-o" /> Links to uploaded files</li>
-              </ul>
-              <button type="button" className="btn-fancy btn-primary pull-right action-create">New export</button>
+      <Panel className="admin-panel">
+        <h1 className="admin-title">Data Export</h1>
+        <p>
+          In the event that you need to delete your Stitch account, or require
+          electronic discovery for legal purposes, Stitch provides full data
+          exports to keep you compliant. Here's what we include in our exports:
+        </p>
+        <ul className="list-unstyled">
+          <li>
+            <i className="fa fa-circle" /> Public and private group message
+            history
+          </li>
+          <li>
+            <i className="fa fa-circle" /> 1-1 direct message history
+          </li>
+          <li>
+            <i className="fa fa-circle" /> Edited and deleted messages
+          </li>
+          <li>
+            <i className="fa fa-circle" /> Archived group message history
+          </li>
+          <li>
+            <i className="fa fa-circle" /> Links to uploaded files
+          </li>
+        </ul>
 
-              <h3>Export History</h3>
-              <p className="tab-description">
-                Exported history will include links to private file urls that have a special token attached
-                for access to those files. You can enable/disable those tokens for added security of your message history.
-              </p>
-              <table className="table members">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Group</th>
-                    <th>Status</th>
-                    <th>Files Token</th>
-                  </tr>
-                  <tr className="separator"></tr>
-                </thead>
+        <p className="m-b-40">
+          Message history will be provided in JSON format. You will also receive
+          a special token allowing you to access file uploads at their specified
+          URLs. See our support article <a href="#">here</a> for more on how to
+          use these files and tokens.
+        </p>
 
-                <tbody>
-                  <tr className="user-info">
-                    <td>
-                      <div className="user-box">
-                        <div className="user-info-box">
-                          <div className="title">
-                            <span className="username">Thursday, July 27, 2017 11:34 PM</span>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="user-box">
-                        <div className="user-info-box">
-                          <div className="title">
-                            <span className="name">home</span>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="user-box">
-                        <div className="user-info-box">
-                          <div className="title">
-                            
-                              <a href="/file-upload/wJcbjpYXhvuvKED62/Phoenix Clinic Stitch export.zip" target="_blank">Download</a>
-                            
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="toggle-block">
-                        <div id="token-control" className="toggle is-active checked">
-                          <div className="toggle-button">
-                            <div className="toggle-off-text">Disabled</div>
-                            <div className="toggle-on-text">Enabled</div>
-                            <span className="toggle-handle"></span>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+        <Row className="m-b-20">
+          <Col md={9}>
+            <h4 className="export-heading">Export History</h4>
+          </Col>
+          <Col md={3}>
+            <Button block bsSize="large" bsStyle="primary">
+              New Export
+            </Button>
+          </Col>
+        </Row>
+
+        <Table responsive striped>
+          <thead className="m-b-10">
+            <tr>
+              <th>Date</th>
+              <th>Uploads Token</th>
+              <th className="text-center">Download</th>
+            </tr>
+            <tr className="separator" />
+          </thead>
+          <tbody>
+            <tr>
+              <td>Thursday, July 27, 2017 11:34 AM</td>
+              <td>abcdefg123456!@#$%</td>
+              <td className="text-center">
+                <a href="#">
+                  <i className="fa fa-download" />
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Thursday, July 27, 2017 11:34 AM</td>
+              <td>abcdefg123456!@#$%</td>
+              <td className="text-center">
+                <a href="#">
+                  <i className="fa fa-download" />
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Thursday, July 27, 2017 11:34 AM</td>
+              <td>abcdefg123456!@#$%</td>
+              <td className="text-center">
+                <a href="#">
+                  <i className="fa fa-download" />
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </Table>
+
+        <p className="text-center">
+          Questions? Learn more with our <br />{" "}
+          <a href="#">Frequently Asked Questions</a>
+        </p>
+      </Panel>
     );
   }
 }
