@@ -43,9 +43,7 @@ class TeamStore {
   @action
   deleteTeam = () => {
     return remove(`/api/v1/teams/${this.id}`).then(response => {
-      const regExp = /.+\.(.*)/;
-      const match = re.exec(window.location.host);
-      window.location.href = `https://${match[1]}`;
+      window.location.href = `https://${applicationHost}`;
     });
   };
 

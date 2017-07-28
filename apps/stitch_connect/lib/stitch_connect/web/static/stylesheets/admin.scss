@@ -174,7 +174,7 @@
 
             &:nth-child(odd) {
               border-radius: 4px;
-              background: rgba(0,51,102,0.1);
+              background: rgba(0, 51, 102, 0.1);
             }
 
             .user-box {
@@ -211,7 +211,7 @@
                       color: #67686e;
                     }
                   }
-                  
+
                   &.status-offline,
                   &.status-away {
                     .is-offline {
@@ -225,7 +225,7 @@
                     }
                   }
                 }
-                  
+
                 .name {
                   font-weight: 600;
                 }
@@ -274,5 +274,10 @@
       display: block;
       line-height: 15px;
     }
+  }
+
+  .profile-image-form {
+    width: 150px;
+    margin: 10px auto;
   }
 }
