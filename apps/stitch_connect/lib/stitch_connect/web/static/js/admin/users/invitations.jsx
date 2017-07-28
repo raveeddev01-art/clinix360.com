@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
 import {
   Panel,
   Row,
@@ -11,8 +10,6 @@ import {
 } from "react-bootstrap";
 
 import teamStore from "../stores/team_store.js";
-
-// import SettingPanel from "../components/setting-panel/setting-panel.jsx";
 
 export default class UsersInvitations extends Component {
   constructor(props) {
@@ -35,7 +32,7 @@ export default class UsersInvitations extends Component {
     post(`/api/v1/teams/${teamStore.instance.id}/send-invite`, {
       body: { email_collection: this.state.email }
     }).then(response => {
-      console.log(response);
+      notify.show("Invitations sent to all users");
     });
   };
 
