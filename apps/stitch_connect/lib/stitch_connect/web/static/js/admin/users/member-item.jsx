@@ -16,7 +16,7 @@ export default class MemberItem extends Component {
 
   render() {
     return (
-      <div className="members-item">
+      <div className="table-item">
         <Row>
           <Col sm={6} className="users-column">
             <div className="title">
@@ -41,16 +41,17 @@ export default class MemberItem extends Component {
             </Button>
           </Col>
 
+          <div className="clearfix" />
           <Collapse in={this.state.open}>
-            <Col sm={12}>
-              <ButtonToolbar>
+            <div>
+              <ButtonToolbar className="actions-toolbar">
                 <Button bsSize="small">Convert to Guest</Button>
                 <Button bsSize="small">Revoke Admin</Button>
                 <Button bsSize="small" className="pull-right">
                   Disable Account
                 </Button>
               </ButtonToolbar>
-            </Col>
+            </div>
           </Collapse>
         </Row>
       </div>
