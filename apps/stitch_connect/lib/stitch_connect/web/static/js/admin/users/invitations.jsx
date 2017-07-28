@@ -10,6 +10,8 @@ import {
   Button
 } from "react-bootstrap";
 
+import teamStore from "../stores/team_store.js";
+
 // import SettingPanel from "../components/setting-panel/setting-panel.jsx";
 
 export default class UsersInvitations extends Component {
@@ -30,7 +32,11 @@ export default class UsersInvitations extends Component {
   };
 
   _onSave = () => {
-    console.log("Yeah boi");
+    post(`/api/v1/teams/${teamStore.instance.id}/send-invite`, {
+      body: { email_collection: this.state.email }
+    }).then(response => {
+      console.log(response);
+    });
   };
 
   render() {

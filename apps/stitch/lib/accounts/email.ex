@@ -28,7 +28,7 @@ defmodule Stitch.Accounts.Email do
   Sends a team invite email to the user, with personal information
   of who invited him to the team.
   """
-  def team_invitation(inviter_name, team_name, user) do
+  def team_invitation(inviter_name, team, user) do
     new_email()
     |> template("Sign-up 3: You are Invited (Connect)")
     |> to(user.email)
@@ -41,7 +41,7 @@ defmodule Stitch.Accounts.Email do
       },
       %{
         "name": "inviterOrg",
-        "content": team_name
+        "content": team.name
       },
       %{
         "name": "receiverEmail",
@@ -49,7 +49,7 @@ defmodule Stitch.Accounts.Email do
       },
       %{
         "name": "joinTeamUrl",
-        "content": "https://foobar.com/#{user.invite_token}"
+        "content": "https://#{team.slug}.teamstitchapp.com/invitation/accept/#{user.invite_token}"
       },
     ])
     |> Stitch.Mailer.deliver_later

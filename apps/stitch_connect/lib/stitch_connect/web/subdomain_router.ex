@@ -58,6 +58,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
     put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
     put "/teams/:id", TeamController, :update
+    post "/teams/:id/send-invite", TeamController, :send_invite
 
     post "/login", AuthenticationController, :submit_login
   end

@@ -27,3 +27,6 @@ erl_crash.dump
 
 # Ignored compiled assets from stitch-connect app.
 /apps/stitch_connect/priv/static/
+
+# Ignore Intellij IDEA files.
+.idea/
