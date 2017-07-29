@@ -1,15 +1,16 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
+
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
-import TeamStore from "../../stores/team_store";
 
 const title = "Team Name";
 const description =
   "Your team's name will be shown in menus and headings. It will usually be or include the name of your organization.";
 
+@inject("teamStore")
 @observer
 class TeamNamePanel extends Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class TeamNamePanel extends Component {
 
   _onToggleEdit = () => {
     this.setState({
-      teamName: TeamStore.instance.name
+      teamName: this.props.teamStore.name
     });
   };
 
@@ -30,7 +31,7 @@ class TeamNamePanel extends Component {
   };
 
   _onSave = () => {
-    TeamStore.instance.editTeamName(this.state.teamName);
+    this.props.teamStore.editTeamName(this.state.teamName);
   };
 
   render() {

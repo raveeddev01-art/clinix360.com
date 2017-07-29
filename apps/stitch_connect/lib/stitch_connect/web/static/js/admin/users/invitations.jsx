@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import {
   Panel,
   Row,
@@ -9,8 +10,8 @@ import {
   Button
 } from "react-bootstrap";
 
-import teamStore from "../stores/team_store.js";
-
+@inject("teamStore")
+@observer
 export default class UsersInvitations extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +30,7 @@ export default class UsersInvitations extends Component {
   };
 
   _onSave = () => {
-    post(`/api/v1/teams/${teamStore.instance.id}/send-invite`, {
+    post(`/api/v1/teams/${this.props.teamStore.id}/send-invite`, {
       body: { email_collection: this.state.email }
     }).then(response => {
       notify.show("Invitations sent to all users");

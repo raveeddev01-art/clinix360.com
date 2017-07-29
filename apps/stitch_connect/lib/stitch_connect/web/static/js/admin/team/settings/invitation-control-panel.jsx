@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
-import TeamStore from "../../stores/team_store";
 
 const title = "Invitation Control";
 const description = [
@@ -11,6 +10,7 @@ const description = [
   "By default, anyone on your team can invite a new member to join. To restrict invitation ability to admins only, uncheck the box below."
 ];
 
+@inject("teamStore")
 @observer
 class InvitationControlPanel extends Component {
   constructor(props) {
@@ -28,12 +28,14 @@ class InvitationControlPanel extends Component {
 
   _onToggleEdit = () => {
     this.setState({
-      openInvitationsEnabled: TeamStore.instance.openInvitationsEnabled
+      openInvitationsEnabled: this.props.teamStore.openInvitationsEnabled
     });
   };
 
   _onSave = () => {
-    TeamStore.instance.updateOpenInvitation(this.state.openInvitationsEnabled);
+    this.props.teamStore.updateOpenInvitation(
+      this.state.openInvitationsEnabled
+    );
   };
 
   render() {

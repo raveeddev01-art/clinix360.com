@@ -1,22 +1,16 @@
 import { observable, action } from "mobx";
 
 class UserStore {
-  @observable name = "";
   @observable id = "";
+  @observable data = {};
 
-  constructor(props) {}
+  @action loadUser = id => {};
+
+  @action
+  setDataField = (field, value) => {
+    this.data[field] = value;
+  };
 }
 
-let userStore;
-const store = {
-  instance() {},
-  get instance() {
-    return userStore;
-  },
-  set instance(props) {
-    userStore = new UserStore(props);
-  }
-};
-
-export default store;
-export { UserStore };
+const userStore = new UserStore();
+export default userStore;

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Provider } from "mobx-react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Grid, Row, Col, Button } from "react-bootstrap";
 
@@ -13,72 +14,78 @@ import UsersInvitations from "./users/invitations.jsx";
 import UsersMembers from "./users/members.jsx";
 import UsersPending from "./users/pending.jsx";
 
+import userStore from "./stores/user_store";
+import teamStore from "./stores/team_store";
 
-import TeamStore from "./stores/team_store";
+const stores = { userStore, teamStore };
 
 export default class Admin extends Component {
-  constructor(props) {
-    super(props);
-    TeamStore.instance = props;
+  componentWillMount() {
+    teamStore.loadTeam(this.props.teamId);
   }
 
   render() {
     return (
       <Router>
-        <div className="admin-wrapper container">
-          <Grid>
-            <Row>
-              <Col xs={3}>
-                <Button
-                  block
-                  bsSize="large"
-                  className="back-btn m-b-20"
-                  href={`https://${TeamStore.instance
-                    .subdomain}.${applicationHost}`}
-                >
-                  Back to chat
-                </Button>
+        <Provider {...stores}>
+          <div className="admin-wrapper container">
+            <Grid>
+              <Row>
+                <Col xs={3}>
+                  <Button
+                    block
+                    bsSize="large"
+                    className="back-btn m-b-20"
+                    href={`https://${this.props.subdomain}.${applicationHost}`}
+                  >
+                    Back to chat
+                  </Button>
 
-                <Sidebar />
-              </Col>
-              <Col xs={9}>
-                <Switch>
-                  <Route exact path={`/admin/team`} component={TeamSettings} />
-                  <Route
-                    path={`/admin/team/settings`}
-                    component={TeamSettings}
-                  />
-                  <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
-                  <Route path={`/admin/team/export`} component={TeamExport} />
-                  <Route
-                    path={`/admin/you/notifications`}
-                    component={YouNotifications}
-                  />
-                  <Route
-                    path={`/admin/you/profile`}
-                    component={ProfileSettings}
-                  />
-                  <Route
-                    path={`/admin/you/account`}
-                    component={AccountSettings}
-                  />
-                  <Route
-                    path={`/admin/users/invitations`}
-                    component={UsersInvitations}
-                  />
-                  <Route
-                    path={`/admin/users/members`}
-                    component={UsersMembers}
-                  />
-                  <Route
-                    path={`/admin/users/pending`}
-                    component={UsersPending}
-                  />
-                </Switch>
-              </Col>
-            </Row>
-          </Grid>
-        </div>
+                  <Sidebar />
+                </Col>
+                <Col xs={9}>
+                  <Switch>
+                    <Route
+                      exact
+                      path={`/admin/team`}
+                      component={TeamSettings}
+                    />
+                    <Route
+                      path={`/admin/team/settings`}
+                      component={TeamSettings}
+                    />
+                    <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
+                    <Route path={`/admin/team/export`} component={TeamExport} />
+                    <Route
+                      path={`/admin/you/notifications`}
+                      component={YouNotifications}
+                    />
+                    <Route
+                      path={`/admin/you/profile`}
+                      component={ProfileSettings}
+                    />
+                    <Route
+                      path={`/admin/you/account`}
+                      component={AccountSettings}
+                    />
+                    <Route
+                      path={`/admin/users/invitations`}
+                      component={UsersInvitations}
+                    />
+                    <Route
+                      path={`/admin/users/members`}
+                      component={UsersMembers}
+                    />
+                    <Route
+                      path={`/admin/users/pending`}
+                      component={UsersPending}
+                    />
+                  </Switch>
+                </Col>
+              </Row>
+            </Grid>
+          </div>
+        </Provider>
       </Router>
     );
   }
