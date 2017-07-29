@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Panel, Row, Col } from "react-bootstrap";
+import PendingInvitationItem from "./pending-invitation-item.jsx";
 
 export default class UsersPending extends Component {
   constructor(props) {
@@ -7,40 +9,47 @@ export default class UsersPending extends Component {
 
   render() {
     return (
-      <div className="admin-panel panel panel-default">
-        <div className="panel-body">
-					<h1 className="admin-title">Pending</h1>
-					<div className="admin-content">
-						<div className="manage-users">
-							<p className="tab-description">
-								View any outstanding invitations to join the team here. Revoking an invite will remove it from this list and deactivate the invite link. To resend an invitation multiple times, you can reload this page.
-							</p>
-							<div className="table invites">
-								<div className="row">
-									<div className="table-head clearfix">
-										<div className="col-sm-8">Email Address</div>
-										<div className="col-sm-4">Actions</div>
-									</div>
-								</div>
-								<div className="separator" />
-								<div className="user-info expanded table-row">
-									<div className="row">
-										<div className="col-sm-8">
-											<span className="user-invitation-email">sadanmasroor87@gmail.com</span>
-										</div>
-										<div className="col-sm-2">
-											<button className="btn-fancy btn-medium action-revoke">Revoke</button>
-										</div>
-										<div className="col-sm-2">
-											<button className="btn-fancy btn-medium action-resend">Resend</button>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+      <Panel className="admin-panel">
+        <h1 className="admin-title">Pending</h1>
+
+        <p className="m-b-20">
+          View any outstanding invitations to join the team here. Revoking an
+          invite will remove it from this list and deactivate the invite link.
+          To resend an invitation multiple times, you can reload this page.
+        </p>
+
+        <div className="admin-table m-b-20">
+          <div className="table-head">
+            <Row>
+              <Col sm={8}>Email Address</Col>
+              <Col sm={4} className="text-center">
+                Actions
+              </Col>
+            </Row>
+          </div>
+
+          <PendingInvitationItem
+            user={{
+              id: 1,
+              email: "daniel@outlook.com"
+            }}
+          />
+
+          <PendingInvitationItem
+            user={{
+              id: 2,
+              email: "hello@outlook.com"
+            }}
+          />
+
+          <PendingInvitationItem
+            user={{
+              id: 3,
+              email: "mailbox@gmail.com"
+            }}
+          />
         </div>
-      </div>
+      </Panel>
     );
   }
 }

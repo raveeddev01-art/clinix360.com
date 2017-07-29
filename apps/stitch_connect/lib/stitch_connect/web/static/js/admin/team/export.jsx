@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Panel, Well, Row, Col, Table, Button } from "react-bootstrap";
+import { Panel, Well, Row, Col, Button } from "react-bootstrap";
 
 export default class TeamExport extends Component {
   constructor(props) {
@@ -53,45 +53,31 @@ export default class TeamExport extends Component {
           </Col>
         </Row>
 
-        <Table responsive striped className="m-b-40">
-          <thead className="m-b-10">
-            <tr>
-              <th>Date</th>
-              <th>Uploads Token</th>
-              <th className="text-center">Download</th>
-            </tr>
-            <tr className="separator" />
-          </thead>
-          <tbody>
-            <tr>
-              <td>Thursday, July 27, 2017 11:34 AM</td>
-              <td>abcdefg123456!@#$%</td>
-              <td className="text-center">
+        <div className="admin-table m-b-40">
+          <div className="table-head">
+            <Row>
+              <Col sm={6}>Date</Col>
+              <Col sm={4}>Uploads Token</Col>
+              <Col sm={2} className="text-center">
+                Downloads
+              </Col>
+            </Row>
+          </div>
+
+          <div className="table-item">
+            <Row>
+              <Col sm={6}>Thursday, July 27, 2017 11:34 AM</Col>
+
+              <Col sm={4}>abcdefg123456!@#$%</Col>
+
+              <Col sm={2} className="text-center">
                 <a href="#">
                   <i className="fa fa-download" />
                 </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Thursday, July 27, 2017 11:34 AM</td>
-              <td>abcdefg123456!@#$%</td>
-              <td className="text-center">
-                <a href="#">
-                  <i className="fa fa-download" />
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Thursday, July 27, 2017 11:34 AM</td>
-              <td>abcdefg123456!@#$%</td>
-              <td className="text-center">
-                <a href="#">
-                  <i className="fa fa-download" />
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+              </Col>
+            </Row>
+          </div>
+        </div>
 
         <p className="text-center">
           Questions? Learn more with our <br />{" "}

@@ -119,60 +119,30 @@
         }
       }
 
-      .table > thead > tr > th,
-      .members-head {
-        color: $brand-primary;
-        font-size: 16px;
-        border-bottom-color: rgba($brand-primary, .15);
-        padding: 12px 15px;
-      }
-
-      .table > thead > tr.separator {
-        height: 1em;
-      }
-
-      .table > tbody > tr > td {
-        border-top: 0;
-        padding: 15px;
-
-        &:first-of-type {
-          border-radius: 4px 0 0 4px;
-        }
-        &:last-of-type {
-          border-radius: 0 4px 4px 0;
-        }
-      }
-
-      .table-striped > tbody > tr:nth-of-type(odd) {
-        background: rgba($brand-primary, .1);
-      }
-
-      .members {
-        .members-head {
+      .admin-table {
+        .table-head {
+          color: $brand-primary;
+          font-size: 16px;
           font-weight: bold;
           border-bottom: 2px solid rgba($brand-primary, .15);
           padding: 10px 15px;
           margin-bottom: 1em;
         }
 
-        .members-item {
+        .table-item {
           border-radius: 4px;
-          padding: 10px 15px;
+          padding: 13px 15px;
 
           .users-column {
-            .title {
-              font-size: 16px;
+            padding: 0 15px;
 
-              .name {
-                font-weight: bold;
-              }
+            .name {
+              font-weight: bold;
             }
 
             i.fa {
               font-size: 14px;
               margin-right: 5px;
-              position: relative;
-              top: -1px;
             }
 
             i.fa-circle {
@@ -183,151 +153,42 @@
           .status-column {
             font-size: 16px;
             font-weight: bold;
-            padding: 11px 15px;
+            padding: 10px 15px;
           }
 
-          .actions-column {
+          .email-column {
             padding: 6px 15px;
           }
 
-          .btn-toolbar {
-            margin-top: 10px;
+          .actions-column {
+            padding: 5px 15px;
+          }
+
+          .actions-toolbar {
+            margin: 10px 15px 0;
+
+            .btn {
+              margin: 0 5px 0 0;
+            }
           }
 
           &:nth-of-type(even) {
             background: rgba($brand-primary, .1);
           }
         }
+
+        .btn + .btn {
+          margin-left: 20px;
+        }
+
+        .btn-default {
+          color: $brand-primary;
+          border-color: $brand-primary;
+        }
       }
 
       .btn-lg {
         padding: 8px 20px;
-      }
-
-      // --- Pending Rework ---
-      .manage-users {
-        .tab-description {
-          font-size: 16px;
-          line-height: 1.42857143;
-          margin-bottom: 30px;
-        }
-
-        .table {
-          .table-head {
-            border-bottom: 1px solid #bfccd8;
-            font-size: 18px;
-            color: $brand-primary;
-            margin: 0 15px;
-
-            &:not(:first-child) {
-              text-align: center;
-            }
-          }
-
-          .separator {
-            height: 1em;
-          }
-
-          .user-info {
-            padding: 15px;
-
-            &:nth-child(odd) {
-              border-radius: 4px;
-              background: rgba(0, 51, 102, 0.1);
-            }
-
-            .user-box {
-              display: -webkit-box;
-              display: -ms-flexbox;
-              display: flex;
-              -webkit-box-align: center;
-              -ms-flex-align: center;
-              align-items: center;
-              padding: 0;
-              height: 64px;
-              position: relative;
-
-              .title {
-                color: #333;
-                font-size: 16px;
-                line-height: 23px;
-                height: 23px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-
-                .user-status {
-                  width: 22px;
-                  display: inline-block;
-
-                  i {
-                    display: none;
-
-                    &.is-online {
-                      color: #003366;
-                    }
-                    &.is-offline {
-                      color: #67686e;
-                    }
-                  }
-
-                  &.status-offline,
-                  &.status-away {
-                    .is-offline {
-                      display: inline;
-                    }
-                  }
-
-                  &.status-online {
-                    .is-online {
-                      display: inline;
-                    }
-                  }
-                }
-
-                .name {
-                  font-weight: 600;
-                }
-
-                .username {
-                  color: #9e9ea6;
-                  font-weight: 400;
-                  margin-left: 5px;
-                }
-              }
-
-              .email {
-                line-height: 23px;
-                height: 23px;
-
-                span {
-                  font-size: 16px;
-                  color: #9e9ea6;
-                }
-              }
-            }
-
-            .user-membership,
-            .user-members-actions {
-              display: -webkit-box;
-              display: -ms-flexbox;
-              display: flex;
-              -webkit-box-align: center;
-              -ms-flex-align: center;
-              align-items: center;
-              padding: 0;
-              height: 64px;
-              position: relative;
-            }
-          }
-        }
-        .invites {
-          button {
-            color: #003366;
-            border: 1px solid #003366;
-            background-color: #fff;
-          }
-        }
       }
     }
   }

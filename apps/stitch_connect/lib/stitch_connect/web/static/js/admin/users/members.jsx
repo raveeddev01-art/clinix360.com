@@ -12,7 +12,7 @@ export default class UsersMembers extends Component {
       <Panel className="admin-panel">
         <h1 className="admin-title">Members</h1>
 
-        <p>
+        <p className="m-b-20">
           Manage your users by controlling admin abilities and account status.
           For more information on how account enabling and disabling works, see
           our support article{" "}
@@ -21,8 +21,8 @@ export default class UsersMembers extends Component {
           </a>.
         </p>
 
-        <div className="members">
-          <div className="members-head">
+        <div className="admin-table m-b-20">
+          <div className="table-head">
             <Row>
               <Col sm={6}>Users</Col>
               <Col sm={4} className="text-center">
