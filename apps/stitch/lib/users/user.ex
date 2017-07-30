@@ -1,7 +1,10 @@
+# DO NOT USE THIS MODULE, WE'RE GOING TO PHASE IT OUT.
 defmodule Stitch.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  # DO NOT USE THIS MODULE, WE'RE GOING TO PHASE IT OUT.
+  # Use Stitch.Accounts.User instead
   schema "users" do
     field :email, :string
     field :roles, {:array, :string}
