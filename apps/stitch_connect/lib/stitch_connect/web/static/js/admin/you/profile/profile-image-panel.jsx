@@ -42,8 +42,13 @@ class ProfileImagePanel extends Component {
         onEdit={this._onToggleEdit}
       >
         <div className="profile-image-form">
-          <Dropzone multiple={false} onDrop={this.onDrop} />
-          <div>
+          <Dropzone
+            className="profile-dropzone"
+            multiple={false}
+            accept="image/*"
+            onDrop={this.onDrop}
+          />
+          <div className="profile-image-button-container">
             <Button bsSize="xsmall">Upload</Button>
             <Button bsSize="xsmall">Remove</Button>
           </div>

@@ -203,9 +203,24 @@
       line-height: 15px;
     }
   }
+}
 
-  .profile-image-form {
-    width: 150px;
-    margin: 10px auto;
+.profile-image-form {
+  width: 200px;
+  margin: 10px auto;
+}
+
+.profile-dropzone {
+  width: 200px;
+  min-height: 200px;
+  border: 1px dashed #333;
+}
+
+.profile-image-button-container {
+  margin-top: 10px;
+  text-align: center;
+
+  button:first-child {
+    margin-right: 10px;
   }
 }
