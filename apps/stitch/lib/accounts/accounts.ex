@@ -117,4 +117,32 @@ defmodule Stitch.Accounts do
         end
     end
   end
+
+  @doc """
+      Updates the user password by taking in old password and the new password.
+      If the old password provided is not valid than the password is not changed and error is returned
+
+  ## Examples
+      {:ok, user} = Stitch.Accounts.update_user_password(2,"CorrectOldPassword","NewValidPassword")
+      {:error, message} = Stitch.Accounts.update_user_password(2,"IncorrectOldPassword","ValidNewPassword")
+  """
+  def update_user_password(user_id,old_password,new_password)
+  when is_integer(user_id) and byte_size(old_password) > 0 and byte_size(new_password) > 0 do
+     case Repo.get(User,user_id) do
+        nil -> {:error, "User doesn't exist"}
+
+        user ->  case Comeonin.Bcrypt.checkpw(old_password, user.encrypted_password) do
+                    true ->  changeset = Ecto.Changeset.change(user, encrypted_password: Comeonin.Bcrypt.hashpwsalt(new_password))
+
+                              case Repo.update(changeset) do
+                                {:ok,user} -> {:ok,user}
+                                {:error, _} -> {:error, "Cannot change the password of user"}
+                              end
+
+                    false -> {:error, "Invalid Password for user"}
+                 end
+     end
+  end
+
+  def update_user_password(_,_,_), do: {:error, "Invalid Parameters provided for password update"}
 end
