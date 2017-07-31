@@ -207,19 +207,17 @@ defmodule StitchConnect.Web.Api.V1.UserController do
      end
   end
 
-  def update_password(conn,%{"id" => id, "password" => password}) do
-     changeset = Repo.get(User,id)
-                 |> User.password_update_changeset(%{password: password})
+  def update_password(conn,%{"id" => id, "new_password" => new_password, "old_password" => old_password}) do
 
-      case Repo.update(changeset) do
-        {:ok,user} -> conn
-                      |> json(%{email: user.email, password: user.encrypted_password})
+    case Stitch.Accounts.update_user_password(id,old_password,new_password) do
+      {:ok,user} -> conn
+              |> json(%{email: user.email, password: user.encrypted_password})
 
-        {:error, _} -> conn
-                       |> put_status(:unprocessable_entity)
-                       |> json(%{message: "Password cannot be updated"})
-      end
+      {:error,message} -> conn
+                          |> put_status(:unprocessable_entity)
+                          |> json(%{message: message})
 
+    end
   end
 
   def update_avatar(conn, %{"id" => id, "profile_image_url" => profile_image_url }) do
