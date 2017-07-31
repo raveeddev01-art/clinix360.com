@@ -14,4 +14,15 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       username: user.username
     }
   end
+
+  def render("show.json", %{user: user}) do
+    %{
+      email: user.email,
+      username: user.username,
+      name: "#{user.first_name} #{user.last_name}",
+      phone: user.phone_number,
+      title: user.title,
+      avatar: user.profile_image_url
+    }
+  end
 end
