@@ -1,4 +1,4 @@
-#app {
+.flex-wrapper {
   height: 100%;
   display: flex;
   flex-grow: 1;
@@ -88,4 +88,9 @@
   display: flex;
   flex-basis: 60px;
   flex-shrink: 0;
+}
+
+.top-navigation {
+  position: relative;
+  z-index: 9999;
 }
