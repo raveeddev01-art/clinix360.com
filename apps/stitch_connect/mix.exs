@@ -41,6 +41,7 @@ defmodule StitchConnect.Mixfile do
      {:poison, "~> 3.1"},
      {:corsica, "~> 1.0"},
      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+     {:timex, "~> 3.1"},
      {:stitch, in_umbrella: true}]
   end
 end
