@@ -22,6 +22,7 @@ const stores = { userStore, teamStore };
 export default class Admin extends Component {
   componentWillMount() {
     teamStore.loadTeam(this.props.teamId);
+    userStore.loadUser(currentUser.id);
   }
 
   render() {
