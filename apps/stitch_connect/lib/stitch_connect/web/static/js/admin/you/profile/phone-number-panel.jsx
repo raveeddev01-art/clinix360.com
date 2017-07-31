@@ -31,7 +31,7 @@ class PhoneNumberPanel extends Component {
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
       >
-        <FormGroup>
+        <FormGroup bsSize="large">
           <ControlLabel>Mobile Phone</ControlLabel>
           <FormControl
             type="text"

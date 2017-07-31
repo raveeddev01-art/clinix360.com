@@ -39,6 +39,7 @@ class NamePanel extends Component {
             <ControlLabel>First Name</ControlLabel>
             <FormControl
               type="text"
+              bsSize="large"
               value={firstName}
               onChange={this._onChangeFirstName}
             />
@@ -47,6 +48,7 @@ class NamePanel extends Component {
             <ControlLabel>Last Name</ControlLabel>
             <FormControl
               type="text"
+              bsSize="large"
               value={lastName}
               onChange={this._onChangeLastName}
             />

@@ -113,6 +113,7 @@ class PasswordPanel extends Component {
             <ControlLabel>Old Password</ControlLabel>
             <FormControl
               type="password"
+              bsSize="large"
               placeholder="Enter Old Password"
               value={oldPassword}
               onChange={this._onChangeOldPassword}
@@ -122,6 +123,7 @@ class PasswordPanel extends Component {
             <ControlLabel>New Password</ControlLabel>
             <FormControl
               type="password"
+              bsSize="large"
               placeholder="Enter New Password"
               value={newPassword}
               onChange={this._onChangeNewPassword}
