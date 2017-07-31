@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :send_invite]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :send_invite, :update]
 
   alias Stitch.{
     Repo,
