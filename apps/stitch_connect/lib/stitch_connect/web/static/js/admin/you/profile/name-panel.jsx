@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -10,6 +11,8 @@ const title = "Name";
 const description =
   "Your information will be shown alongside the messages you send in conversations.";
 
+@inject("userStore")
+@observer
 class NamePanel extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +22,15 @@ class NamePanel extends Component {
     };
   }
 
-  _onToggleEdit = () => {};
-  _onSave = () => {};
+  _onToggleEdit = () => {
+    this.setState({
+      firstName: this.props.userStore.firstName,
+      lastName: this.props.userStore.lastName
+    });
+  };
+  _onSave = () => {
+    this.props.userStore.saveName(this.state.firstName, this.state.lastName);
+  };
 
   _onChangeFirstName = evt => this.setState({ firstName: evt.target.value });
   _onChangeLastName = evt => this.setState({ lastName: evt.target.value });
