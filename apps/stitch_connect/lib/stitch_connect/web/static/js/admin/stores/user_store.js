@@ -96,9 +96,10 @@ class UserStore {
 
   @action
   savePassword = (oldPassword, newPassword) => {
-    return put(`/api/v1/users/${this.id}`, {
+    return put(`/api/v1/users/${this.id}/update_password`, {
       body: {
-        password: newPassword
+        new_password: newPassword,
+        old_password: oldPassword
       }
     }).then(() => {
       notify.show("Your password has been changed");

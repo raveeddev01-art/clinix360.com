@@ -56,9 +56,10 @@ class ProfileImagePanel extends Component {
 
   _onToggleEdit = () => {
     this.setState({
-      profileImgUrl: this.props.userStore.profileImgUrl
+      profileImgUrl: ""
     });
   };
+
   _onSave = () => {
     const { profileImgUrl } = this.state;
     if (profileImgUrl) {
@@ -69,13 +70,14 @@ class ProfileImagePanel extends Component {
   };
 
   render() {
-    const { image } = this.state;
+    const { image, profileImgUrl } = this.state;
     return (
       <SettingPanel
         title={title}
         description={description}
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
+        disableSave={!profileImgUrl}
       >
         <div className="profile-image-form">
           <Dropzone

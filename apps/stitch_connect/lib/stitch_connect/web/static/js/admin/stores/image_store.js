@@ -16,7 +16,6 @@ class ImageStore {
       formData.append("policy", data.policy);
       formData.append("signature", data.signature);
       formData.append("file", file);
-      console.log(resp.data);
 
       return fetch(data.action, {
         body: formData,
