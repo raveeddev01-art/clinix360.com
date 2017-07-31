@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -8,6 +9,8 @@ const title = "Phone Number";
 const description =
   "Your phone number will be used for colleagues to contact you.";
 
+@inject("userStore")
+@observer
 class PhoneNumberPanel extends Component {
   constructor(props) {
     super(props);
@@ -16,8 +19,14 @@ class PhoneNumberPanel extends Component {
     };
   }
 
-  _onToggleEdit = () => {};
-  _onSave = () => {};
+  _onToggleEdit = () => {
+    this.setState({
+      phoneNumber: this.props.userStore.phone
+    });
+  };
+  _onSave = () => {
+    this.props.userStore.savePhone(this.state.phoneNumber);
+  };
 
   _onChangePhoneNumber = evt =>
     this.setState({ phoneNumber: evt.target.value });

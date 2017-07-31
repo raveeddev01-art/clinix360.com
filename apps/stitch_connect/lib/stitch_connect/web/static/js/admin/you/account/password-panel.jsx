@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import PasswordValidator from "password-validator";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
@@ -12,6 +13,8 @@ const title = "Password";
 const description =
   "Set a new password. You'll be prompted to meet HIPAA security requirements.";
 
+@inject("userStore")
+@observer
 class PasswordPanel extends Component {
   constructor(props) {
     super(props);
@@ -28,8 +31,24 @@ class PasswordPanel extends Component {
     };
   }
 
-  _onToggleEdit = () => {};
-  _onSave = () => {};
+  _onToggleEdit = () => {
+    this.setState({
+      oldPassword: "",
+      newPassword: "",
+      formValid: false,
+      passwordLengthValid: false,
+      passwordLowercaseValid: false,
+      passwordUppercaseValid: false,
+      passwordDigitsValid: false,
+      passwordSymbolsValid: false
+    });
+  };
+  _onSave = () => {
+    this.props.userStore.savePassword(
+      this.state.oldPassword,
+      this.state.newPassword
+    );
+  };
 
   _isPasswordValid = val => {
     this.passwordValidator

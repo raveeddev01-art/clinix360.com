@@ -1,26 +1,23 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
-
-import {
-  Modal,
-  HelpBlock,
-  Form,
-  Col,
-  Alert,
-  FormGroup,
-  ControlLabel,
-  FormControl,
-  Button
-} from "react-bootstrap";
+import { inject, observer } from "mobx-react";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import Modal from "react-bootstrap/lib/Modal";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import FormControl from "react-bootstrap/lib/FormControl";
+import Button from "react-bootstrap/lib/Button";
+import Alert from "react-bootstrap/lib/Alert";
+import Form from "react-bootstrap/lib/Form";
+import Col from "react-bootstrap/lib/Col";
 
 import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
-import TeamStore from "../../stores/team_store";
 
 const title = "Delete Team";
 const description =
   "Deleting your team will remove all users and data. You won't be able to recover this information.";
 
-// @TODO replace console.error and window.prompt with notification component
+@inject("teamStore")
+@observer
 class DeleteTeamPanel extends Component {
   constructor(props) {
     super(props);
@@ -40,8 +37,9 @@ class DeleteTeamPanel extends Component {
   };
 
   _onDelete = () => {
-    if (this.state.teamName === TeamStore.instance.name) {
-      TeamStore.instance.deleteTeam();
+    const { teamStore } = this.props;
+    if (this.state.teamName === teamStore.name) {
+      teamStore.deleteTeam();
       this._onHideModal();
     } else {
       this.setState({ error: "Team name does not match" });

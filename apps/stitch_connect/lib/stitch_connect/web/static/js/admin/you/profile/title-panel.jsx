@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -7,6 +8,8 @@ import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
 const panelTitle = "Title";
 const description = "Your title will be displayed in profile.";
 
+@inject("userStore")
+@observer
 class TitlePanel extends Component {
   constructor(props) {
     super(props);
@@ -15,8 +18,14 @@ class TitlePanel extends Component {
     };
   }
 
-  _onToggleEdit = () => {};
-  _onSave = () => {};
+  _onToggleEdit = () => {
+    this.setState({
+      title: this.props.userStore.title
+    });
+  };
+  _onSave = () => {
+    this.props.userStore.saveTitle(this.state.title);
+  };
 
   _onChangeTitle = evt => this.setState({ title: evt.target.value });
 

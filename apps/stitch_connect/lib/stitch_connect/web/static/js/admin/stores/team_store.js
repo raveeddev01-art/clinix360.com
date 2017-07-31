@@ -1,6 +1,7 @@
 import { observable, action } from "mobx";
 
 class TeamStore {
+  @observable loading = false;
   @observable name = "";
   @observable id = "";
   @observable subdomain = "";
@@ -8,17 +9,20 @@ class TeamStore {
   @observable secondsToLockout = null;
   @observable openInvitationsEnabled = false;
 
-  constructor(props) {
-    this.name = props.teamName;
-    this.id = props.teamId;
-    this.subdomain = props.subdomain;
-    get(`/api/v1/teams/${this.id}`).then(resp => {
+  @action
+  loadTeam = id => {
+    this.loading = true;
+    get(`/api/v1/teams/${id}`).then(resp => {
       const { data } = resp;
+      this.id = data.id;
+      this.name = data.name;
       this.securityLockoutEnabled = data.security_lockout;
       this.openInvitationsEnabled = data.open_invitations_enabled;
       this.secondsToLockout = data.seconds_to_lockout;
+
+      this.loading = false;
     });
-  }
+  };
 
   @action
   editTeamName = newName => {
@@ -60,16 +64,5 @@ class TeamStore {
   };
 }
 
-let teamStore;
-const store = {
-  instance() {},
-  get instance() {
-    return teamStore;
-  },
-  set instance(props) {
-    teamStore = new TeamStore(props);
-  }
-};
-
+const store = new TeamStore();
 export default store;
-export { TeamStore };

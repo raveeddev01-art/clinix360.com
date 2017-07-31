@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -9,7 +9,6 @@ import Col from "react-bootstrap/lib/Col";
 import leftPad from "left-pad";
 import moment from "moment";
 import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
-import TeamStore from "../../stores/team_store";
 
 const title = "Security Lockout";
 const description =
@@ -33,6 +32,7 @@ const lockoutTimes = (function() {
 })();
 
 // @TODO update select control to select2 after it is added to common components
+@inject("teamStore")
 @observer
 class SecurityLockoutPanel extends Component {
   constructor(props) {
@@ -57,15 +57,15 @@ class SecurityLockoutPanel extends Component {
 
   _onToggleEdit = () => {
     this.setState({
-      securityLockoutEnabled: TeamStore.instance.securityLockoutEnabled,
+      securityLockoutEnabled: this.props.teamStore.securityLockoutEnabled,
       secondsToLockout:
-        TeamStore.instance.secondsToLockout || lockoutTimes[0].seconds
+        this.props.teamStore.secondsToLockout || lockoutTimes[0].seconds
     });
   };
 
   _onSave = () => {
     const { securityLockoutEnabled, secondsToLockout } = this.state;
-    TeamStore.instance.editSecurityLockout(
+    this.props.teamStore.editSecurityLockout(
       securityLockoutEnabled,
       securityLockoutEnabled ? secondsToLockout : null
     );

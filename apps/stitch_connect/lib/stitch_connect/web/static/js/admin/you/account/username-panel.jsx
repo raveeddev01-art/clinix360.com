@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -8,6 +9,8 @@ const title = "Username";
 const description =
   "Others will use this to mention and notify you in chat room conversation.";
 
+@inject("userStore")
+@observer
 class UsernamePanel extends Component {
   constructor(props) {
     super(props);
@@ -16,8 +19,14 @@ class UsernamePanel extends Component {
     };
   }
 
-  _onToggleEdit = () => {};
-  _onSave = () => {};
+  _onToggleEdit = () => {
+    this.setState({
+      username: this.props.userStore.username
+    });
+  };
+  _onSave = () => {
+    this.props.userStore.saveUsername(this.state.username);
+  };
 
   _onChangeUsername = evt => this.setState({ username: evt.target.value });
 
