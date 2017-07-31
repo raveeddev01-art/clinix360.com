@@ -43,7 +43,7 @@ class TeamNamePanel extends Component {
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
       >
-        <FormGroup controlId="teamName">
+        <FormGroup controlId="teamName" bsSize="large">
           <ControlLabel>Team Name</ControlLabel>
           <FormControl
             type="text"

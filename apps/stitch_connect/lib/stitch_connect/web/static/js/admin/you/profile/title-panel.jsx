@@ -38,7 +38,7 @@ class TitlePanel extends Component {
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
       >
-        <FormGroup>
+        <FormGroup bsSize="large">
           <ControlLabel>Title</ControlLabel>
           <FormControl
             type="text"
