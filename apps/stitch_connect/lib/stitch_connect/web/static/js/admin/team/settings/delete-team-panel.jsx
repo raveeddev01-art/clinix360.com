@@ -1,11 +1,18 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Modal from "react-bootstrap/lib/Modal";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import ControlLabel from "react-bootstrap/lib/ControlLabel";
-import FormControl from "react-bootstrap/lib/FormControl";
-import Button from "react-bootstrap/lib/Button";
+
+import {
+  Modal,
+  HelpBlock,
+  Form,
+  Col,
+  Alert,
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  Button
+} from "react-bootstrap";
+
 import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
 import TeamStore from "../../stores/team_store";
 
@@ -56,25 +63,45 @@ class DeleteTeamPanel extends Component {
           questions, please send us an email at&nbsp;
           <a href="mailto:support@teamstitch.com">support@teamstitch.com</a>
         </HelpBlock>
+
         <Modal show={showModal} onHide={this._onHideModal}>
+          <Modal.Header>
+            <Modal.Title>Delete Team</Modal.Title>
+            <a href="#" onClick={this._onHideModal}>
+              <i className="fa fa-close" />
+            </a>
+          </Modal.Header>
+
           <Modal.Body>
-            Please enter your team name to confirm your delete action.
+            <h5>Please enter your team name to confirm your delete action.</h5>
+
             {error &&
-              <p className="bg-danger">
+              <Alert bsStyle="danger">
                 {error}
-              </p>}
-            <FormGroup>
-              <ControlLabel>Team Name</ControlLabel>
-              <FormControl
-                type="text"
-                value={teamName}
-                onChange={this._onChangeTeamName}
-              />
-            </FormGroup>
+              </Alert>}
+
+            <Form horizontal>
+              <FormGroup bsSize="large" className="m-b-10">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Team Name
+                </Col>
+
+                <Col sm={9}>
+                  <FormControl
+                    type="text"
+                    value={teamName}
+                    onChange={this._onChangeTeamName}
+                  />
+                </Col>
+              </FormGroup>
+            </Form>
           </Modal.Body>
+
           <Modal.Footer>
-            <Button onClick={this._onHideModal}>Close</Button>
-            <Button bsStyle="danger" onClick={this._onDelete}>
+            <Button bsSize="large" onClick={this._onHideModal}>
+              Close
+            </Button>
+            <Button bsSize="large" bsStyle="danger" onClick={this._onDelete}>
               Confirm Delete
             </Button>
           </Modal.Footer>
