@@ -30,7 +30,7 @@ class UsernamePanel extends Component {
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
       >
-        <FormGroup>
+        <FormGroup bsSize="large">
           <ControlLabel>Username</ControlLabel>
           <FormControl
             type="text"
