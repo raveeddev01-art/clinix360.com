@@ -7,7 +7,8 @@ use Mix.Config
 
 # General application configuration
 config :stitch_connect,
-  namespace: StitchConnect
+  namespace: StitchConnect,
+  ecto_repos: [Stitch.Repo]
 
 # Configures the endpoint
 config :stitch_connect, StitchConnect.Web.Endpoint,
