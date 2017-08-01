@@ -31,7 +31,7 @@ defmodule Stitch.Invitation.Email do
       },
       %{
         "name": "joinTeamUrl",
-        "content": "https://#{invitation.team.slug}.teamstitchapp.com/invitations/accept/#{invitation.invite_token}"
+        "content": "https://#{invitation.team.slug}.localhost:4443/invitations/accept/#{invitation.invite_token}"
       },
     ])
     |> Stitch.Mailer.deliver_later
