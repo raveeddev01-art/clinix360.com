@@ -29,4 +29,10 @@ defmodule StitchConnect.Web.AuthenticationController do
         |> redirect to: "/"
     end
   end
+
+  def logout(conn,_) do
+    conn
+    |> clear_session
+    |> redirect to: "/"
+  end
 end

@@ -53,7 +53,7 @@ export default class TopNav extends Component {
               </div>
 
               <MenuItem eventKey="7">Lockout</MenuItem>
-              <MenuItem eventKey="8">Sign Out</MenuItem>
+              <MenuItem eventKey="6" href="/logout">Sign Out</MenuItem>
             </DropdownButton>
           </div>
         </div>
