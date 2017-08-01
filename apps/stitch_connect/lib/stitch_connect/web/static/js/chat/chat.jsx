@@ -7,8 +7,9 @@ import Addons from "../addons/addons.jsx";
 export default class Chat extends Component {
   render() {
     return (
-      <div className="flex-wrapper">
+      <div className="chat-wrapper">
         <Sidemenu />
+
         <div id="main">
           <div className="flex-content">
             <div id="chat-container">

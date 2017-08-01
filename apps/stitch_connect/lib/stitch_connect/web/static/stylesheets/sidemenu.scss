@@ -1,7 +1,8 @@
-#sidemenu {
+.top-navigation #sidemenu {
   .flex-header {
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     box-shadow: 1px 0 0 darken($brand-primary, 10%);
+    z-index: 10;
     padding: 0;
 
     .btn-group {
@@ -23,6 +24,30 @@
       padding: 10px;
       margin: 10px 15px;
 
+      h5 {
+        color: $brand-primary;
+        font-size: 15px;
+        font-weight: bold;
+        margin: 5px 0 20px;
+      }
+
+      .separator {
+        color: $border-color;
+        border-top: 1px solid $border-color-secondary;
+        position: relative;
+        margin: 15px 0;
+
+        span {
+          width: 50px;
+          font-size: 13px;
+          background: #fff;
+          margin-left: -25px;
+          position: absolute;
+          top: -10px;
+          padding: 0 6px;
+        }
+      }
+
       a {
         border-radius: 3px;
         padding: 5px 12px;
@@ -38,7 +63,9 @@
       background: darken($brand-primary, 5%);
     }
   }
+}
 
+#sidemenu {
   .flex-content {
     padding: 20px 15px;
 
