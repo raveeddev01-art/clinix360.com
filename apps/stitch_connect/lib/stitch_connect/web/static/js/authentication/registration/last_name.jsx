@@ -7,7 +7,7 @@ import LastNameCard from "../components/last-name-card/last-name-card.jsx";
 export default class LastName extends Component {
   _onSubmit = value => {
     store.instance.lastName = value;
-    this.props.history.push("/signup/phone-number");
+    this.props.history.push("/signup/username");
   };
 
   render() {

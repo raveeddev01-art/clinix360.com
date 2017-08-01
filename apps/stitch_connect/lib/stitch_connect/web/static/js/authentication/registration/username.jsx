@@ -13,7 +13,7 @@ export default class Username extends Component {
   render() {
     return (
       <UsernameCard
-        backUrl="/signup/phone-number"
+        backUrl="/signup/last-name"
         restartUrl="/signup/team-name"
         onNext={this._onSubmit}
       />
