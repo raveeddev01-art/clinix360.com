@@ -30,7 +30,7 @@ export default class UsersInvitations extends Component {
   };
 
   _onSave = () => {
-    post(`/api/v1/teams/${this.props.teamStore.id}/send-invite`, {
+    post(`/api/v1/invitations`, {
       body: { email_collection: this.state.email }
     }).then(response => {
       notify.show("Invitations sent to all users");

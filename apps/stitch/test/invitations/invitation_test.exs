@@ -6,6 +6,26 @@ defmodule Stitch.InvitationTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.Invitation.invite_to_team/2" do
+    test "creates a user and invites to team" do
+      team = insert(:team, %{open_invitations_enabled: true})
+      user = insert(:user, %{team_id: team.id, roles: ["admin"]})
+      {:ok, invitation} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
+      assert invitation.team_id == team.id
+      assert invitation.user_id != nil
+      assert invitation.accepted == false
+      assert String.length(invitation.invite_token) == 32
+    end
+
+    test "returns error when account with that email already exists on team" do
+      team = insert(:team, %{open_invitations_enabled: true})
+      user = insert(:user, %{team_id: team.id, roles: ["admin"]})
+      existing_user = insert(:user, %{team_id: team.id, email: "example@email.com"})
+      {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
+      assert reason == "User already exists with this email address."
+    end
+  end
+
   describe "Stitch.Invitation.list_team_invitations/1" do
     test "return error if team only allows admin and user isn't admin" do
       team = insert(:team, %{open_invitations_enabled: false})
@@ -70,7 +90,7 @@ defmodule Stitch.InvitationTest do
     test "return error if team only allows admin and user isn't admin" do
       team = insert(:team, %{open_invitations_enabled: false})
       user = insert(:user, %{team_id: team.id, roles: ["member"]})
-      {:error, reason} = Stitch.Invitation.revoke(user.id, 123)
+      {:error, reason} = Stitch.Invitation.revoke_invitation(user.id, 123)
       assert reason == "User unauthorized to revoke invitation."
     end
 
@@ -78,7 +98,7 @@ defmodule Stitch.InvitationTest do
       team = insert(:team, %{open_invitations_enabled: false})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       invitation = insert(:invitation, %{user_id: user.id, team_id: team.id, accepted: true})
-      {:error, reason} = Stitch.Invitation.resend_invitation(user.id, invitation.id)
+      {:error, reason} = Stitch.Invitation.revoke_invitation(user.id, invitation.id)
       assert reason == "This invitation has been accepted already."
     end
 
@@ -86,7 +106,7 @@ defmodule Stitch.InvitationTest do
       team = insert(:team, %{open_invitations_enabled: false})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       invitation = insert(:invitation, %{user_id: user.id, team_id: team.id, accepted: false})
-      {:ok, deleted_invitation} = Stitch.Invitation.revoke(user.id, invitation.id)
+      {:ok, deleted_invitation} = Stitch.Invitation.revoke_invitation(user.id, invitation.id)
       assert deleted_invitation.id == invitation.id
     end
   end
