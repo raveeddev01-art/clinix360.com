@@ -70,12 +70,13 @@ defmodule Stitch.Invitation do
   @doc """
   Returns a list of Invitations associated with the team.
   """
-  def list_team_invitations(user_id) do
+  def list_pending_team_invitations(user_id) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
     query =
       from i in Stitch.Invitation,
       where: i.team_id == ^user.team_id,
+      where: i.accepted == ^false,
       preload: [:user]
 
     if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do

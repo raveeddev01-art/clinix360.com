@@ -26,11 +26,11 @@ defmodule Stitch.InvitationTest do
     end
   end
 
-  describe "Stitch.Invitation.list_team_invitations/1" do
+  describe "Stitch.Invitation.list_pending_team_invitations/1" do
     test "return error if team only allows admin and user isn't admin" do
       team = insert(:team, %{open_invitations_enabled: false})
       user = insert(:user, %{team_id: team.id, roles: ["member"]})
-      {:error, reason} = Stitch.Invitation.list_team_invitations(user.id)
+      {:error, reason} = Stitch.Invitation.list_pending_team_invitations(user.id)
       assert reason == "User unauthorized to see list of invitations."
     end
 
@@ -39,11 +39,13 @@ defmodule Stitch.InvitationTest do
       user = insert(:user, %{team_id: team.id, roles: ["member"]})
       user_b = insert(:user, %{team_id: team.id})
       user_c = insert(:user, %{team_id: team.id})
+      user_d = insert(:user, %{team_id: team.id})
 
       insert(:invitation, %{user_id: user_b.id, team_id: team.id})
       insert(:invitation, %{user_id: user_c.id, team_id: team.id})
+      insert(:invitation, %{user_id: user_d.id, team_id: team.id, accepted: true})
 
-      invitations = Stitch.Invitation.list_team_invitations(user.id)
+      invitations = Stitch.Invitation.list_pending_team_invitations(user.id)
       assert Enum.count(invitations) == 2
     end
 
@@ -52,11 +54,13 @@ defmodule Stitch.InvitationTest do
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       user_b = insert(:user, %{team_id: team.id})
       user_c = insert(:user, %{team_id: team.id})
+      user_d = insert(:user, %{team_id: team.id})
 
       insert(:invitation, %{user_id: user_b.id, team_id: team.id})
       insert(:invitation, %{user_id: user_c.id, team_id: team.id})
+      insert(:invitation, %{user_id: user_d.id, team_id: team.id, accepted: true})
 
-      invitations = Stitch.Invitation.list_team_invitations(user.id)
+      invitations = Stitch.Invitation.list_pending_team_invitations(user.id)
       assert Enum.count(invitations) == 2
     end
   end

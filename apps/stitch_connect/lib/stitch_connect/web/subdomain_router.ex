@@ -71,7 +71,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/invitations/verify/:token", InvitationController, :verify
     post "/invitations/accept/:token", InvitationController, :accept
 
-    #   `POST /api/v1/invitation-verify { invitation_code } => { id, email }`
     #   `POST /api/v1/invitation-signup { email, first_name, last_name, username, pin, password, phone }`
 
     get "/teams/:id", TeamController, :show

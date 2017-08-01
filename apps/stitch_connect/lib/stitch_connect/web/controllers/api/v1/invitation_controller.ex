@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create, :revoke, :resend]
 
   def index(conn, _params) do
-    case Stitch.Invitation.list_team_invitations(conn.assigns.current_user.id) do
+    case Stitch.Invitation.list_pending_team_invitations(conn.assigns.current_user.id) do
       {:error, reason} ->
         conn
         |> put_status(:unauthorized)
