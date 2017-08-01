@@ -4,7 +4,7 @@ defmodule Stitch.Invitation do
   """
   use Ecto.Schema
   import Ecto.{Changeset, Query}
-  alias Stitch.{Repo, User, Team}
+  alias Stitch.{Repo, User, Team, Invitation}
 
   schema "invitations" do
     belongs_to :user, Stitch.Accounts.User
@@ -13,6 +13,22 @@ defmodule Stitch.Invitation do
     field :accepted, :boolean, default: false
 
     timestamps()
+  end
+
+  @doc """
+  Returns a Stitch.Invitation struct given a valid invite_token
+  parameter.
+  """
+  def get_by_invite_token(invite_token) when byte_size(invite_token) > 0 do
+    case Repo.get_by(Invitation, invite_token: invite_token) do
+      nil ->
+        {:error, "Invitation does not exist."}
+      invitation ->
+        {:ok, invitation}
+    end
+  end
+  def get_by_invite_token(_) do
+    {:error, "Invite_token cannot be blank or nil."}
   end
 
   @doc """

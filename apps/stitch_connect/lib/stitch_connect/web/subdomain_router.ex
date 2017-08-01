@@ -36,6 +36,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser_authenticate
 
     get "/", PageController, :index
+
+    get "/invitations/accept/:token", InvitationController, :accept
+
     get "/admin/team", AdminController, :index
     get "/admin/team/settings", AdminController, :index
     get "/admin/team/hipaa", AdminController, :index
@@ -64,6 +67,11 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/invitations", InvitationController, :index
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend
+    post "/invitations/verify/:token", InvitationController, :verify
+    post "/invitations/accept/:token", InvitationController, :accept
+
+    #   `POST /api/v1/invitation-verify { invitation_code } => { id, email }`
+    #   `POST /api/v1/invitation-signup { email, first_name, last_name, username, pin, password, phone }`
 
     get "/teams/:id", TeamController, :show
     delete "/teams/:id/", TeamController, :delete_team
