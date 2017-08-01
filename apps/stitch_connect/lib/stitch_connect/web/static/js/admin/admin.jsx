@@ -17,8 +17,9 @@ import UsersPending from "./users/pending.jsx";
 import userStore from "./stores/user_store";
 import teamStore from "./stores/team_store";
 import imageStore from "./stores/image_store";
+import invitationStore from "./stores/invitation_store";
 
-const stores = { userStore, teamStore, imageStore };
+const stores = { userStore, teamStore, imageStore, invitationStore };
 
 export default class Admin extends Component {
   componentWillMount() {
