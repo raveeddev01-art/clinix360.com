@@ -5,6 +5,10 @@ defmodule StitchConnect.Web.Api.V1.InvitationView do
     Enum.map(invitations, &invitation_json/1)
   end
 
+  def render("show.json", %{invitation: invitation}) do
+    invitation_json(invitation)
+  end
+
   def invitation_json(invitation) do
     %{
       id: invitation.id,

@@ -1,11 +1,31 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import { Panel, Row, Col } from "react-bootstrap";
 import PendingInvitationItem from "./pending-invitation-item.jsx";
 
-export default class UsersPending extends Component {
-  constructor(props) {
-    super(props);
+@inject("invitationStore")
+@observer
+class UsersPending extends Component {
+  componentWillMount() {
+    this.props.invitationStore.loadInvitations();
   }
+
+  _renderInvitations = () => {
+    const { invitationStore } = this.props;
+    return invitationStore.invitations.map(invitation => {
+      const onRevoke = () => invitationStore.revokeInvitation(invitation.id);
+      const onResend = () => invitationStore.resendInvitation(invitation.id);
+      return (
+        <PendingInvitationItem
+          key={`invitation_${invitation.id}`}
+          email={invitation.email}
+          id={invitation.id}
+          onRevoke={onRevoke}
+          onResend={onResend}
+        />
+      );
+    });
+  };
 
   render() {
     return (
@@ -27,29 +47,11 @@ export default class UsersPending extends Component {
               </Col>
             </Row>
           </div>
-
-          <PendingInvitationItem
-            user={{
-              id: 1,
-              email: "daniel@outlook.com"
-            }}
-          />
-
-          <PendingInvitationItem
-            user={{
-              id: 2,
-              email: "hello@outlook.com"
-            }}
-          />
-
-          <PendingInvitationItem
-            user={{
-              id: 3,
-              email: "mailbox@gmail.com"
-            }}
-          />
+          {this._renderInvitations()}
         </div>
       </Panel>
     );
   }
 }
+
+export default UsersPending;

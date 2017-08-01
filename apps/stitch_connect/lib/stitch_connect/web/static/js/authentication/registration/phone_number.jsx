@@ -1,95 +1,24 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import store from "../authentication_store.js";
+import PhoneNumberCard from "../components/phone-number-card/phone-number-card.jsx";
 
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
-
-export default class PhoneNumber extends Component {
-  constructor(props) {
-    super();
-    this.state = {
-      phone_number: ""
-    };
-  }
-
-  handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
-  };
-
-  handleSubmit = event => {
-    event.preventDefault();
-    // post("/api/v1/users/create", {
-    //   body: { phone_number: this.state.phone_number }
-    // }).then(response => {
-    //   console.log(response);
-    //   console.log("Created");
-    // });
-    // to="/signup/username"
+@observer
+class PhoneNumber extends Component {
+  _onSubmit = value => {
+    store.instance.phone = value;
+    this.props.history.push("/signup/username");
   };
 
   render() {
     return (
-      <div className="authentication-card text-center">
-
-        <div className="card-header">
-          <Row>
-            <Col xs={6} className="text-left">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
-                <Link to="/signup/full-name">
-                  <i className="fa fa-arrow-left"></i>
-                </Link>
-              </OverlayTrigger>
-            </Col>
-
-            <Col xs={6} className="text-right">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Restart</Tooltip>}>
-                <Link to="/signup/team-name">
-                  <i className="fa fa-refresh"></i>
-                </Link>
-              </OverlayTrigger>
-            </Col>
-          </Row>
-        </div>
-
-        <h2>Phone Number</h2>
-
-        <h5>Enter your <strong>phone number</strong>.</h5>
-
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup bsSize="large">
-            <FormControl
-              name="phone_number"
-              required
-              autoFocus
-              type="text"
-              placeholder="Phone Number"
-              value={this.state.phone_number}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
-
-          <HelpBlock className="m-b-20">Your phone number will be shown in your profile so you can be reached.</HelpBlock>
-
-          <input
-            value="Next"
-            type="submit"
-            className="btn btn-block btn-lg btn-primary m-b-40"
-          />
-        </form>
-
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
-      </div>
+      <PhoneNumberCard
+        backUrl="/signup/last-name"
+        restartUrl="/signup/team-name"
+        onNext={this._onSubmit}
+      />
     );
   }
 }
+
+export default PhoneNumber;

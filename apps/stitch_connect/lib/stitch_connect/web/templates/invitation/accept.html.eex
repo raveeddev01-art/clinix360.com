@@ -1,0 +1,4 @@
+<div id="root"
+     data-component="InvitationWizard??"
+     data-react-props="<%= @app_params %>">
+</div>
