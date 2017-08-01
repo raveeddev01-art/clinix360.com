@@ -27,6 +27,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/", StitchConnect.Web do
     pipe_through :browser
 
+    get "/invitations/accept/:token", InvitationController, :accept
+
     get "/login", AuthenticationController, :login
     post "/login", AuthenticationController, :submit_login
   end
@@ -36,8 +38,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser_authenticate
 
     get "/", PageController, :index
-
-    get "/invitations/accept/:token", InvitationController, :accept
 
     get "/admin/team", AdminController, :index
     get "/admin/team/settings", AdminController, :index
@@ -65,6 +65,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/rooms/", RoomController, :index
 
     get "/invitations", InvitationController, :index
+    post "/invitations", InvitationController, :create
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend
     post "/invitations/verify/:token", InvitationController, :verify
