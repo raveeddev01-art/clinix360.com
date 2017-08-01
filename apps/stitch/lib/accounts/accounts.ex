@@ -7,42 +7,6 @@ defmodule Stitch.Accounts do
   alias Stitch.Accounts.User
   alias Stitch.Team
 
-  @spec invite_to_team(number, number, String.t) :: {:ok, String.t} | {:error, String.t}
-  @doc """
-  Send a team invite to a given email address. This also creates a user
-  with the given email and team_id as a placeholder for the incoming user.
-
-  ## Examples
-
-      Stitch.Accounts.invite_to_team(team.id, user.id, "john@email.com")
-
-  """
-  def invite_to_team(team_id, inviting_user_id, email)
-  when is_integer(team_id) and byte_size(email) > 0 and is_integer(inviting_user_id) do
-    inviting_user = Repo.get(User, inviting_user_id)
-    team = Repo.get(Team, team_id)
-    user = User.team_invite_changeset(%User{}, %{
-      email: email,
-      team_id: team_id
-    })
-    case Repo.insert(user) do
-      {:ok, user} ->
-        Stitch.Accounts.Email.team_invitation("#{inviting_user.first_name} #{inviting_user.last_name}", team, user)
-        {:ok, user}
-      {:error, changeset} ->
-        {:error, changeset}
-    end
-  end
-  def invite_to_team(_, _, _), do: {:error, "Cannot be nil or blank: team_id, inviting_user_id, email."}
-
-  @doc """
-  Finds the user associated with the invite_token and sets onboarded
-  to true.
-  """
-  def accept_team_invitation(invite_token) do
-    # TODO
-  end
-
   @doc """
   Create a user with only the email field set. The user is not
   associated with any team.

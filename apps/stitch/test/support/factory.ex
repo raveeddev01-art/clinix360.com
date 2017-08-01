@@ -13,13 +13,23 @@ defmodule Stitch.Factory do
   def team_factory do
     %Stitch.Team{
       name: "Starbucks",
-      slug: "starbucks"
+      slug: "starbucks",
+      security_lockout: true,
+      seconds_to_lockout: 99,
+      open_invitations_enabled: false
     }
   end
 
   def room_factory do
     %Stitch.Room{
       name: "General"
+    }
+  end
+
+  def invitation_factory do
+    %Stitch.Invitation{
+      invite_token: "abc",
+      accepted: false
     }
   end
 end

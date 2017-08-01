@@ -15,7 +15,6 @@ defmodule Stitch.User do
     field :profile_image_url, :string
     field :title, :string
     field :confirmation_code, :string
-    field :invite_token, :string
     field :email_confirmed, :boolean, default: false
     field :onboarded, :boolean, default: false
     field :username, :string

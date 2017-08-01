@@ -41,15 +41,4 @@ defmodule Stitch.AccountsTest do
       assert user.roles == ["admin"]
     end
   end
-
-  describe "Stitch.Accounts.invite_to_team/3" do
-    test "it creates an invite for new user via email" do
-      team = insert(:team)
-      user = insert(:user, %{team_id: team.id})
-      {:ok, user} = Stitch.Accounts.invite_to_team(team.id, user.id, "john@email.com")
-      assert user.onboarded == false
-      assert user.email == "john@email.com"
-      assert user.team_id == team.id
-    end
-  end
 end

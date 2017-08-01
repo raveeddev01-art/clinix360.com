@@ -61,6 +61,10 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/rooms/", RoomController, :index
 
+    get "/invitations", InvitationController, :index
+    patch "/invitations/:id/revoke", InvitationController, :revoke
+    patch "/invitations/:id/resend", InvitationController, :resend
+
     get "/teams/:id", TeamController, :show
     delete "/teams/:id/", TeamController, :delete_team
     put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
