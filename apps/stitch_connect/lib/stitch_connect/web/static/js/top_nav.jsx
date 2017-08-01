@@ -30,7 +30,7 @@ export default class TopNav extends Component {
                 Team
               </MenuItem>
                 <MenuItem divider />
-              <MenuItem eventKey="6">Sign Out</MenuItem>
+              <MenuItem eventKey="6" href="/logout" method="delete">Sign Out</MenuItem>
             </DropdownButton>
           </div>
         </div>
