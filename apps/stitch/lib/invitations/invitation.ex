@@ -15,6 +15,41 @@ defmodule Stitch.Invitation do
     timestamps()
   end
 
+  def changeset(struct, params) do
+    invite_token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+
+    struct
+    |> cast(params, [:user_id, :team_id])
+    |> validate_required([:user_id, :team_id])
+    |> put_change(:invite_token, invite_token)
+  end
+
+  @doc """
+  Invites user to the team via email address. If pending account
+  for team with same email exists it returns error.
+  """
+  def invite_to_team(user_id, email) do
+    user = Repo.get(User, user_id)
+    team = Repo.get(Team, user.team_id)
+    if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
+      new_user_changeset = Stitch.Accounts.User.team_invite_changeset(
+        %Stitch.Accounts.User{}, %{
+          email: email,
+          team_id: team.id
+        }
+      )
+      case Repo.insert(new_user_changeset) do
+        {:error, changeset} ->
+          {:error, "User already exists with this email address."}
+        {:ok, new_user} ->
+          invitation_changeset = Stitch.Invitation.changeset(%Stitch.Invitation{}, %{user_id: new_user.id, team_id: team.id})
+          Repo.insert(invitation_changeset)
+      end
+    else
+      {:error, "User unauthorized to create a new invitation."}
+    end
+  end
+
   @doc """
   Returns a Stitch.Invitation struct given a valid invite_token
   parameter.
@@ -79,7 +114,7 @@ defmodule Stitch.Invitation do
   Deletes the invitation and the user associated to the invitation
   provided the invite hasn't been accepted yet.
   """
-  def revoke(user_id, invitation_id) do
+  def revoke_invitation(user_id, invitation_id) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
     if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
