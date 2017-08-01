@@ -1,7 +1,10 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import { Panel, Row, Col } from "react-bootstrap";
 import MemberItem from "./member-item.jsx";
 
+@inject("teamStore")
+@observer
 export default class UsersMembers extends Component {
   constructor(props) {
     super(props);
@@ -33,31 +36,24 @@ export default class UsersMembers extends Component {
               </Col>
             </Row>
           </div>
-
-          <MemberItem
-            user={{
-              id: 1,
-              name: "Daniel Tapia",
-              username: "danieltapia",
-              email: "daniel@outlook.com"
-            }}
-          />
-          <MemberItem
-            user={{
-              id: 2,
-              name: "Jake Stump",
-              username: "jstump",
-              email: "jstump@email.com"
-            }}
-          />
-          <MemberItem
-            user={{
-              id: 3,
-              name: "Emily Flannigan",
-              username: "emily",
-              email: "emilyf@domain.com"
-            }}
-          />
+          {this.props.teamStore.onlineUsers.map(user => {
+            return (
+              <MemberItem
+                user={user}
+                online={true}
+                key={user.id}
+              />
+            );
+          })}
+          {this.props.teamStore.offlineUsers.map(user => {
+            return (
+              <MemberItem
+                user={user}
+                online={false}
+                key={user.id}
+              />
+            );
+          })}
         </div>
       </Panel>
     );
