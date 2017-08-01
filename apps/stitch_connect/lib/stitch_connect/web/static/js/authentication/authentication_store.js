@@ -7,6 +7,7 @@ class AuthenticationStore {
   @observable lastName = "";
   @observable username = "";
   @observable password = "";
+  @observable phone = "";
   @observable pin = "";
 
   @observable teamName = "";

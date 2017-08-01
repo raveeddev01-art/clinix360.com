@@ -43,7 +43,7 @@ export default class TeamUrl extends Component {
   handleSubmit = event => {
     event.preventDefault();
     store.instance.teamUrl = this.state.teamUrl;
-    this.props.history.push("/signup/full-name");
+    this.props.history.push("/signup/first-name");
   };
 
   render() {
