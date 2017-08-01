@@ -9,10 +9,10 @@ defmodule Stitch.UserQueriesTest do
   describe "users_for_team/1" do
     test "returns users for a given team" do
       team = insert(:team, %{name: "Care Clinic"})
-      insert(:user, %{first_name: "John", last_name: "Doe", team_id: team.id})
-      insert(:user, %{first_name: "John", last_name: "Doe", team_id: team.id})
+      insert(:user, %{first_name: "John", last_name: "Doe", team_id: team.id, onboarded: true})
+      insert(:user, %{first_name: "John", last_name: "Doe", team_id: team.id, onboarded: false})
       users = Stitch.UserQueries.users_for_team(team.id)
-      assert Enum.count(users) == 2
+      assert Enum.count(users) == 1
     end
 
     test "returns error for non-integer team_id" do

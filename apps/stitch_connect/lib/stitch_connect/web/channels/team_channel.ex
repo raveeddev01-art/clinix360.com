@@ -22,7 +22,8 @@ defmodule StitchConnect.Web.TeamChannel do
       id: user.id,
       first_name: user.first_name,
       last_name: user.last_name,
-      username: user.username
+      username: user.username,
+      roles: user.roles
     })
     {:noreply, socket}
   end

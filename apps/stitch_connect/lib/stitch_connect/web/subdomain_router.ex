@@ -69,7 +69,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/invitations", InvitationController, :create
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend
-    post "/invitations/verify/:token", InvitationController, :verify
     post "/invitations/accept/:token", InvitationController, :accept
 
     #   `POST /api/v1/invitation-signup { email, first_name, last_name, username, pin, password, phone }`

@@ -3,9 +3,11 @@ defmodule Stitch.UserQueries do
   alias Stitch.{Repo, User, Team}
 
   def users_for_team(team_id) when is_integer(team_id) do
-    team = Repo.get(Team, team_id)
-    users = Repo.all Ecto.assoc(team, :users)
-    users
+    query =
+      from u in Stitch.Accounts.User,
+      where: u.team_id == ^team_id,
+      where: u.onboarded == ^true
+    Repo.all(query)
   end
   def users_for_team(_) do
     {:error, "team_id must be an integer"}

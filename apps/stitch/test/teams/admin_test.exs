@@ -38,7 +38,7 @@ defmodule Stitch.Team.AdminTest do
       team = insert(:team, %{name: "abc"})
       {:ok, new_team} = Admin.update_security_lockout_time(team.id, false)
       assert new_team.security_lockout == false
-      assert new_team.seconds_to_lockout == nil
+      assert new_team.seconds_to_lockout == 99
     end
   end
 

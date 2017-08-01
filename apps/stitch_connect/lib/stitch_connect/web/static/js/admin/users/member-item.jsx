@@ -23,12 +23,9 @@ export default class MemberItem extends Component {
             <div className="title">
               {online
                 ? <i className="fa fa-circle" />
-                : <i className="fa fa-circle-o" />
-              }
+                : <i className="fa fa-circle-o" />}
               <span className="name">{`${user.first_name} ${user.last_name}`}</span>{" "}
-              <span className="username text-muted">
-                {user.username}
-              </span>
+              <span className="username text-muted">{user.username}</span>
             </div>
             <div className="email text-muted">
               {user.email}
@@ -36,7 +33,7 @@ export default class MemberItem extends Component {
           </Col>
 
           <Col sm={4} className="status-column text-center">
-            Admin, Full Member
+            {user.roles.join(",")}
           </Col>
 
           <Col sm={2} className="actions-column text-center">
@@ -49,8 +46,8 @@ export default class MemberItem extends Component {
           <Collapse in={this.state.open}>
             <div>
               <ButtonToolbar className="actions-toolbar">
-                <Button bsSize="small">Convert to Guest</Button>
-                <Button bsSize="small">Revoke Admin</Button>
+                {/* <Button bsSize="small">Convert to Guest</Button>
+                <Button bsSize="small">Revoke Admin</Button> */}
                 <Button bsSize="small" className="pull-right">
                   Disable Account
                 </Button>

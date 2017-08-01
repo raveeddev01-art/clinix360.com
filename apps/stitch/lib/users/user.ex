@@ -13,14 +13,15 @@ defmodule Stitch.User do
     field :last_name, :string
     field :phone_number, :string
     field :profile_image_url, :string
-    field :title, :string
     field :confirmation_code, :string
+    field :title, :string
     field :email_confirmed, :boolean, default: false
     field :onboarded, :boolean, default: false
     field :username, :string
     field :pin, :string
     field :token, :string
     belongs_to :team, Stitch.Team
+    has_one :invitation, Stitch.Invitation, on_delete: :delete_all
 
     field :password, :string, virtual: true
 
