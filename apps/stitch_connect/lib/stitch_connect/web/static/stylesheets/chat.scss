@@ -8,6 +8,7 @@
 
     .header-nav {
       display: flex;
+      align-items: center;
 
       .form-control {
         color: #fff;
@@ -16,12 +17,18 @@
         box-shadow: none;
       }
 
-      .btn {
+      .btn-default {
         color: #fff;
         font-size: 21px;
-        padding: 0 10px;
-        margin-left: 10px;
+        background: transparent;
+        border: 0;
+        padding: 2px 10px;
+        margin-right: 10px;
       }
+    }
+
+    .group-controls-menu {
+      margin-top: 17px;
     }
   }
 
@@ -97,5 +104,40 @@
       border-width: 2px;
       box-shadow: none;
     }
+  }
+}
+
+.notifications-modal .radio-group {
+  overflow: hidden;
+
+  input {
+    margin: 0;
+    left: 17px;
+    top: 19px;
+  }
+
+  label {
+    display: block;
+    padding-left: 0;
+  }
+
+  .radio-span {
+    display: block;
+    color: inherit;
+    font-size: 14px;
+    background: $body-bg;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 15px 15px 15px 40px;
+
+    h5 {
+      font-weight: bold;
+      margin: 0 !important;
+    }
+  }
+
+  input:checked + span {
+    background: #edf7fd;
+    border-color: lighten($brand-primary, 50%);
   }
 }

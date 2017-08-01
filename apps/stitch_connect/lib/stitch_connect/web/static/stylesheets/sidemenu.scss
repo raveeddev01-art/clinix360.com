@@ -22,7 +22,7 @@
     .dropdown-menu {
       width: 220px;
       padding: 10px;
-      margin: 10px 15px;
+      margin: 5px 15px;
 
       h5 {
         color: $brand-primary;
@@ -45,16 +45,6 @@
           position: absolute;
           top: -10px;
           padding: 0 6px;
-        }
-      }
-
-      a {
-        border-radius: 3px;
-        padding: 5px 12px;
-
-        &:hover {
-          color: #fff;
-          background: $brand-primary;
         }
       }
     }
