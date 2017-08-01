@@ -11,23 +11,27 @@ export default class MemberItem extends Component {
 
   _toggleControls = () => {
     this.setState({ open: !this.state.open });
-    console.log("Current state" + this.state.open);
   };
 
   render() {
+    const { user, online } = this.props;
+
     return (
       <div className="table-item">
         <Row>
           <Col sm={6} className="users-column">
             <div className="title">
-              <i className="fa fa-circle" />
-              <span className="name">{this.props.user.name}</span>{" "}
+              {online
+                ? <i className="fa fa-circle" />
+                : <i className="fa fa-circle-o" />
+              }
+              <span className="name">{`${user.first_name} ${user.last_name}`}</span>{" "}
               <span className="username text-muted">
-                {this.props.user.username}
+                {user.username}
               </span>
             </div>
             <div className="email text-muted">
-              {this.props.user.email}
+              {user.email}
             </div>
           </Col>
 
