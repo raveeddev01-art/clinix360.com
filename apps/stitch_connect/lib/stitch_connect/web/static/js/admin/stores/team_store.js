@@ -1,4 +1,5 @@
 import { observable, action } from "mobx";
+import { Presence } from "phoenix";
 
 class TeamStore {
   @observable loading = false;
@@ -8,6 +9,11 @@ class TeamStore {
   @observable securityLockoutEnabled = false;
   @observable secondsToLockout = null;
   @observable openInvitationsEnabled = false;
+  @observable users = [];
+  @observable offlineUsers = [];
+  @observable onlineUsers = [];
+
+  rawOnlineUsers = {};
 
   @action
   loadTeam = id => {
@@ -19,6 +25,8 @@ class TeamStore {
       this.securityLockoutEnabled = data.security_lockout;
       this.openInvitationsEnabled = data.open_invitations_enabled;
       this.secondsToLockout = data.seconds_to_lockout;
+
+      this.loadUsers();
 
       this.loading = false;
     });
@@ -61,6 +69,38 @@ class TeamStore {
       notify.show("Invitation settings updated");
       this.openInvitationsEnabled = enabled;
     });
+  };
+
+  loadUsers = () => {
+    get("/api/v1/users").then(response => {
+      this.users = response.data;
+      this.connectPresence();
+    });
+  };
+
+  connectPresence = () => {
+    let lobby = socket.channel(`team:lobby:${this.id}`, {});
+
+    lobby.on("presence_state", state => {
+      this.rawOnlineUsers = Presence.syncState(this.rawOnlineUsers, state);
+      this.updatePresences();
+    });
+
+    lobby.on("presence_diff", diff => {
+      this.rawOnlineUsers = Presence.syncDiff(this.rawOnlineUsers, diff);
+      this.updatePresences();
+    });
+
+    lobby.join();
+  };
+
+  updatePresences = () => {
+    this.onlineUsers = Presence.list(this.rawOnlineUsers, this.listBy);
+    this.offlineUsers = _.differenceBy(this.users, this.onlineUsers, "id");
+  };
+
+  listBy = (id, { metas: [first, ...rest] }) => {
+    return first;
   };
 }
 
