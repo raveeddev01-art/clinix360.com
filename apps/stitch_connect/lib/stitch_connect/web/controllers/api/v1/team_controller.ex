@@ -2,17 +2,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
   use StitchConnect.Web, :controller
   alias Stitch.Team
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:send_invite]
   plug StitchConnect.Plug.TeamAdminOnly when action in [:update_security_lockout_time, :update_open_invitation, :delete_team]
-
-  def send_invite(conn, %{"id" => _, "email_collection" => email_collection}) do
-    emails = String.split(email_collection, ",")
-    Enum.each(emails, fn(email) ->
-      Stitch.Accounts.invite_to_team(conn.private[:team_id], conn.assigns.current_user.id, email)
-    end)
-    conn
-    |> json(%{message: "Invitations sent to all users."})
-  end
 
   def show(conn, %{"id" => _}) do
     team = Stitch.TeamQueries.get_by_id(conn.private[:team_id])

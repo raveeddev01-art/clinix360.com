@@ -1,6 +1,7 @@
-.flex-wrapper {
+#app {
   height: 100%;
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
 }
 
@@ -15,7 +16,6 @@
 
 #sidemenu {
   box-shadow: 1px 0px $border-color;
-  z-index: 200;
   position: relative;
   overflow-x: visible;
   display: flex;
@@ -91,6 +91,13 @@
 }
 
 .top-navigation {
-  position: relative;
-  z-index: 9999;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+}
+
+.chat-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
 }

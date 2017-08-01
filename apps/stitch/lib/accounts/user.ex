@@ -47,11 +47,9 @@ defmodule Stitch.Accounts.User do
   end
 
   @doc """
-  Applies the attributes: email, team_id, and invite_token
-  to the Stitch.Accounts.User struct.
+  Applies the attributes: email, team_id to the Stitch.Accounts.User struct.
   """
   def team_invite_changeset(struct, params) do
-    invite_token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
     digits = for _ <- 1..6, do: :rand.uniform(9)
     confirmation_code = digits
       |> Enum.join
@@ -61,7 +59,6 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(params, [:team_id])
     |> validate_required([:team_id])
-    |> put_change(:invite_token, invite_token)
     |> put_change(:confirmation_code, confirmation_code)
     |> put_change(:token, token)
     |> email_changeset(params)
