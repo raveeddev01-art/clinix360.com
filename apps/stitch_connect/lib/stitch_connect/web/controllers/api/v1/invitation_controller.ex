@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create, :revoke, :resend]
 
   def index(conn, _params) do
     case Stitch.Invitation.list_team_invitations(conn.assigns.current_user.id) do

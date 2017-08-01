@@ -43,7 +43,8 @@ defmodule Stitch.Invitation do
           {:error, "User already exists with this email address."}
         {:ok, new_user} ->
           invitation_changeset = Stitch.Invitation.changeset(%Stitch.Invitation{}, %{user_id: new_user.id, team_id: team.id})
-          Repo.insert(invitation_changeset)
+          {:ok, invitation} = Repo.insert(invitation_changeset)
+          Stitch.Invitation.resend_invitation(user_id, invitation.id)
       end
     else
       {:error, "User unauthorized to create a new invitation."}
@@ -102,7 +103,7 @@ defmodule Stitch.Invitation do
         true ->
           {:error, "This invitation has been accepted already."}
         false ->
-          Stitch.Accounts.Email.team_invitation("#{user.first_name} #{user.last_name}", invitation)
+          Stitch.Invitation.Email.team_invitation("#{user.first_name} #{user.last_name}", invitation)
           {:ok, invitation}
       end
     else
