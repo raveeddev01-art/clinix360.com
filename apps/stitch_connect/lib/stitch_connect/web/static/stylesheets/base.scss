@@ -163,6 +163,20 @@ $screen-lg: 1200px;
   cursor: pointer;
 }
 
+.dropdown-menu {
+  padding: 10px;
+
+  li > a {
+    border-radius: 3px;
+    padding: 5px 12px;
+
+    &:hover {
+      color: #fff;
+      background: $brand-primary;
+    }
+  }
+}
+
 .modal-dialog {
   width: 100%;
   max-width: 560px;
