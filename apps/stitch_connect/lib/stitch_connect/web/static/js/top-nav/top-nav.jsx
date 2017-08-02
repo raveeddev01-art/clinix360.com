@@ -3,47 +3,26 @@ import React, { Component } from "react";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
-import Modal from "react-bootstrap/lib/Modal";
-import Radio from "react-bootstrap/lib/Radio";
-import Badge from "react-bootstrap/lib/Badge";
+import Form from "react-bootstrap/lib/Form";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import FormControl from "react-bootstrap/lib/FormControl";
+import Col from "react-bootstrap/lib/Col";
 import Button from "react-bootstrap/lib/Button";
 
-import sidemenuStore from "./chat/sidemenu/sidemenu_store.js";
+import NavItemMembers from "./nav-items/nav-item-members.jsx";
+import NavItemNotifications from "./nav-items/nav-item-notifications.jsx";
+import NavItemRename from "./nav-items/nav-item-rename.jsx";
+import NavItemConvert from "./nav-items/nav-item-convert.jsx";
+
+import sidemenuStore from "../chat/sidemenu/sidemenu_store.js";
 
 export default class TopNav extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showModal: false
-    };
   }
 
-  toggleMembersModal = () => {
-    this.setState({
-      showMembersModal: !this.state.showMembersModal
-    });
-  };
-
-  toggleNotificationsModal = () => {
-    this.setState({
-      showNotificationsModal: !this.state.showNotificationsModal
-    });
-  };
-
-  toggleRenameModal = () => {
-    this.setState({
-      showRenameModal: !this.state.showRenameModal
-    });
-  };
-
-  toggleConvertModal = () => {
-    this.setState({
-      showConvertModal: !this.state.showConvertModal
-    });
-  };
-
   render() {
-    const { showModal } = this.state;
     return (
       <div className="top-navigation">
         <div id="sidemenu">
@@ -111,24 +90,15 @@ export default class TopNav extends Component {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="group-controls-menu">
-                  <MenuItem eventKey="1">Favorite</MenuItem>
-                  <MenuItem eventKey="2" onClick={this.toggleMembersModal}>
-                    Members
-                  </MenuItem>
-                  <MenuItem
-                    eventKey="3"
-                    onClick={this.toggleNotificationsModal}
-                  >
-                    Notifications
-                  </MenuItem>
-                  <MenuItem eventKey="4" onClick={this.toggleRenameModal}>
-                    Rename
-                  </MenuItem>
-                  <MenuItem eventKey="5" onClick={this.toggleConvertModal}>
-                    Convert
-                  </MenuItem>
-                  <MenuItem eventKey="6">Leave</MenuItem>
-                  <MenuItem eventKey="7">Delete</MenuItem>
+                  <MenuItem>Favorite</MenuItem>
+
+                  <NavItemMembers />
+                  <NavItemNotifications />
+                  <NavItemRename />
+                  <NavItemConvert />
+
+                  <MenuItem>Leave</MenuItem>
+                  <MenuItem>Delete</MenuItem>
                 </Dropdown.Menu>
               </Dropdown>
 
@@ -149,7 +119,7 @@ export default class TopNav extends Component {
           </div>
         </div>
 
-        <Modal
+        {/* <Modal
           show={this.state.showMembersModal}
           onHide={this.toggleMembersModal}
         >
@@ -159,7 +129,17 @@ export default class TopNav extends Component {
               <i className="fa fa-close" />
             </a>
           </Modal.Header>
+
           <Modal.Body>Body text</Modal.Body>
+
+          <Modal.Footer>
+            <Button bsSize="large" onClick={this.toggleMembersModal}>
+              Cancel
+            </Button>
+            <Button bsSize="large" bsStyle="primary">
+              Done
+            </Button>
+          </Modal.Footer>
         </Modal>
 
         <Modal
@@ -212,8 +192,11 @@ export default class TopNav extends Component {
           </Modal.Body>
 
           <Modal.Footer>
+            <Button bsSize="large" onClick={this.toggleNotificationsModal}>
+              Cancel
+            </Button>
             <Button bsSize="large" bsStyle="primary">
-              Done
+              Save Settings
             </Button>
           </Modal.Footer>
         </Modal>
@@ -228,7 +211,33 @@ export default class TopNav extends Component {
               <i className="fa fa-close" />
             </a>
           </Modal.Header>
-          <Modal.Body>Body text</Modal.Body>
+
+          <Modal.Body>
+            <Form horizontal>
+              <FormGroup bsSize="large">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Name
+                </Col>
+
+                <Col sm={9}>
+                  <FormControl
+                    name="name"
+                    type="text"
+                    onChange={this.handleChange}
+                  />
+                </Col>
+              </FormGroup>
+            </Form>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button bsSize="large" onClick={this.toggleRenameModal}>
+              Cancel
+            </Button>
+            <Button bsSize="large" bsStyle="primary">
+              Rename Group
+            </Button>
+          </Modal.Footer>
         </Modal>
 
         <Modal
@@ -241,8 +250,18 @@ export default class TopNav extends Component {
               <i className="fa fa-close" />
             </a>
           </Modal.Header>
+
           <Modal.Body>Body text</Modal.Body>
-        </Modal>
+
+          <Modal.Footer>
+            <Button bsSize="large" onClick={this.toggleConvertModal}>
+              Cancel
+            </Button>
+            <Button bsSize="large" bsStyle="primary">
+              Convert Group
+            </Button>
+          </Modal.Footer>
+        </Modal> */}
       </div>
     );
   }
