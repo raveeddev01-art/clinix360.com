@@ -15,8 +15,8 @@ class ProfileSettings extends Component {
         <PhoneNumberPanel />
         <hr />
         <TitlePanel />
-        {/* <hr />
-        <ProfileImagePanel /> */}
+        <hr />
+        <ProfileImagePanel />
       </Panel>
     );
   }

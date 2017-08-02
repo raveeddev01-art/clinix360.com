@@ -77,7 +77,7 @@ export default class TopNav extends Component {
                 <span>Stitch</span>
               </div>
 
-              {/* <MenuItem eventKey="7">Lockout</MenuItem> */}
+              <MenuItem eventKey="7">Lockout</MenuItem>
               <MenuItem eventKey="6" href="/logout">
                 Sign Out
               </MenuItem>
