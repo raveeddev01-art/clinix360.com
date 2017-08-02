@@ -51,11 +51,11 @@ export default class Sidebar extends Component {
           <ListGroupItem active={isSelected(this.context, "/admin/team/hipaa")}>
             <Link to="/admin/team/hipaa">HIPAA</Link>
           </ListGroupItem>
-          <ListGroupItem
+          {/* <ListGroupItem
             active={isSelected(this.context, "/admin/team/export")}
           >
             <Link to="/admin/team/export">Export</Link>
-          </ListGroupItem>
+          </ListGroupItem> */}
         </ListGroup>
 
         <hr />
