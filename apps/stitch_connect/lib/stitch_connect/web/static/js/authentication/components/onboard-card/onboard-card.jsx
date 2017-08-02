@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from "react";
 import { Link } from "react-router-dom";
-
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Row from "react-bootstrap/lib/Row";
@@ -8,6 +7,7 @@ import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 import Form from "react-bootstrap/lib/Form";
+import Card from "../card/card.jsx";
 
 class OnboardCard extends Component {
   constructor(props) {
@@ -71,15 +71,14 @@ class OnboardCard extends Component {
   };
 
   render() {
-    const { title, onNext, children, nextButtonText } = this.props;
+    const { title, onNext, children, nextButtonText, description } = this.props;
     const { disableNext } = this.state;
     return (
-      <div className="authentication-card text-center">
-        {this._renderHeader()}
-        <h2>
-          {title}
-        </h2>
-        {this._renderDescription()}
+      <Card
+        header={this._renderHeader()}
+        title={title}
+        description={description}
+      >
         <Form onSubmit={this._onNext}>
           {children}
           <Button
@@ -92,8 +91,7 @@ class OnboardCard extends Component {
             {nextButtonText}
           </Button>
         </Form>
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
-      </div>
+      </Card>
     );
   }
 }

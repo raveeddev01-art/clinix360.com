@@ -10,6 +10,7 @@ import Chat from "../chat/chat.jsx";
 import Message from "../chat/message.jsx";
 import Addons from "../addons/addons.jsx";
 import Admin from "../admin/admin.jsx";
+import Invitation from "../invitation/index.jsx";
 import Toastr from "../common/components/toastr/toastr.jsx";
 
 var componentMap = {
@@ -22,7 +23,8 @@ var componentMap = {
   Message,
   Addons,
   Admin,
-  Toastr
+  Toastr,
+  Invitation
 };
 
 window.mountComponents = () => {
