@@ -56,7 +56,12 @@ defmodule Stitch.Invitation do
   parameter.
   """
   def get_by_invite_token(invite_token) when byte_size(invite_token) > 0 do
-    case Repo.get_by(Invitation, invite_token: invite_token) do
+    query =
+      from i in Invitation,
+      where: i.invite_token == ^invite_token,
+      preload: [:user]
+
+    case Repo.one(query) do
       nil ->
         {:error, "Invitation does not exist."}
       invitation ->

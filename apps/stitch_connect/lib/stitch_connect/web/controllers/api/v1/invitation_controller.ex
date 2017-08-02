@@ -13,6 +13,17 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     end
   end
 
+  def show(conn, %{"token" => invite_token}) do
+    with {:ok, invitation} <- Stitch.Invitation.get_by_invite_token(invite_token)
+    do
+      render conn, "show.json", invitation: invitation
+    else
+      {:error, message} ->
+        conn
+        |> json(%{message: "An invitation with this invite_token doesn't exist."})
+    end
+  end
+
   def create(conn, %{"email_collection" => email_collection}) do
     emails = String.split(email_collection, ",")
     Enum.each(emails, fn(email) ->
