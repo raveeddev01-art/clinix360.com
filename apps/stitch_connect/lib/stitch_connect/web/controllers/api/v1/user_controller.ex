@@ -26,14 +26,15 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def update(conn,params) do
-    case Stitch.Accounts.Admin.update_user(conn.assigns.current_user.id,params) do
-      {:ok,user} -> conn
-                    |> render("update.json", user: user)
-
-      {:error, _} -> conn
-                     |> put_status(:unprocessable_entity)
-                     |> json(%{message: "Couldn't update #{Enum.join(Map.keys(params),",")}"})
+  def update(conn, params) do
+    case Stitch.Accounts.Admin.update_user(conn.assigns.current_user.id, params) do
+      {:ok, user} ->
+        conn
+        |> render("update.json", user: user)
+      {:error, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Couldn't update #{Enum.join(Map.keys(params), ", ")}"})
     end
   end
 

@@ -17,18 +17,17 @@ defmodule Stitch.Accounts.Admin do
   end
 
   @doc """
-    Updates the user information
+  Updates the user information
   """
 
-  def update_user(user_id,params) when is_integer(user_id) and is_map(params) do
-     Repo.get(User,user_id)
+  def update_user(user_id, params)
+  when is_integer(user_id) and is_map(params) do
+     user = Repo.get(User, user_id)
+     user
      |> User.changeset(params)
      |> Repo.update
   end
-
-  def update_user(_,_), do: {:error, "Invalid User ID or Parameters"}
-
-
+  def update_user(_, _), do: {:error, "Invalid User ID or Parameters"}
 
   @spec update_unread_message_notification_interval(number, number) :: {:ok, term} | {:error, term}
   @doc """
