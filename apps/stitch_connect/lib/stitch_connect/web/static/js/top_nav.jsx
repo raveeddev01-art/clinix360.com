@@ -18,9 +18,29 @@ export default class TopNav extends Component {
     };
   }
 
-  _onHideModal = () => this.setState({ showModal: false });
+  toggleMembersModal = () => {
+    this.setState({
+      showMembersModal: !this.state.showMembersModal
+    });
+  };
 
-  _onShowModal = () => this.setState({ showModal: true });
+  toggleNotificationsModal = () => {
+    this.setState({
+      showNotificationsModal: !this.state.showNotificationsModal
+    });
+  };
+
+  toggleRenameModal = () => {
+    this.setState({
+      showRenameModal: !this.state.showRenameModal
+    });
+  };
+
+  toggleConvertModal = () => {
+    this.setState({
+      showConvertModal: !this.state.showConvertModal
+    });
+  };
 
   render() {
     const { showModal } = this.state;
@@ -70,7 +90,9 @@ export default class TopNav extends Component {
               </div>
 
               <MenuItem eventKey="7">Lockout</MenuItem>
-              <MenuItem eventKey="6" href="/logout">Sign Out</MenuItem>
+              <MenuItem eventKey="6" href="/logout">
+                Sign Out
+              </MenuItem>
             </DropdownButton>
           </div>
         </div>
@@ -90,10 +112,23 @@ export default class TopNav extends Component {
 
                 <Dropdown.Menu className="group-controls-menu">
                   <MenuItem eventKey="1">Favorite</MenuItem>
-                  <MenuItem eventKey="2" onClick={this._onShowModal}>
+                  <MenuItem eventKey="2" onClick={this.toggleMembersModal}>
+                    Members
+                  </MenuItem>
+                  <MenuItem
+                    eventKey="3"
+                    onClick={this.toggleNotificationsModal}
+                  >
                     Notifications
                   </MenuItem>
-                  <MenuItem eventKey="3">Rename</MenuItem>
+                  <MenuItem eventKey="4" onClick={this.toggleRenameModal}>
+                    Rename
+                  </MenuItem>
+                  <MenuItem eventKey="5" onClick={this.toggleConvertModal}>
+                    Convert
+                  </MenuItem>
+                  <MenuItem eventKey="6">Leave</MenuItem>
+                  <MenuItem eventKey="7">Delete</MenuItem>
                 </Dropdown.Menu>
               </Dropdown>
 
@@ -115,13 +150,26 @@ export default class TopNav extends Component {
         </div>
 
         <Modal
-          show={showModal}
-          onHide={this._onHideModal}
+          show={this.state.showMembersModal}
+          onHide={this.toggleMembersModal}
+        >
+          <Modal.Header>
+            <Modal.Title>Members</Modal.Title>
+            <a href="#" onClick={this.toggleMembersModal}>
+              <i className="fa fa-close" />
+            </a>
+          </Modal.Header>
+          <Modal.Body>Body text</Modal.Body>
+        </Modal>
+
+        <Modal
+          show={this.state.showNotificationsModal}
+          onHide={this.toggleNotificationsModal}
           className="notifications-modal"
         >
           <Modal.Header>
             <Modal.Title>Notification Preferences: General</Modal.Title>
-            <a href="#" onClick={this._onHideModal}>
+            <a href="#" onClick={this.toggleNotificationsModal}>
               <i className="fa fa-close" />
             </a>
           </Modal.Header>
@@ -168,6 +216,32 @@ export default class TopNav extends Component {
               Done
             </Button>
           </Modal.Footer>
+        </Modal>
+
+        <Modal
+          show={this.state.showRenameModal}
+          onHide={this.toggleRenameModal}
+        >
+          <Modal.Header>
+            <Modal.Title>Rename Group</Modal.Title>
+            <a href="#" onClick={this.toggleRenameModal}>
+              <i className="fa fa-close" />
+            </a>
+          </Modal.Header>
+          <Modal.Body>Body text</Modal.Body>
+        </Modal>
+
+        <Modal
+          show={this.state.showConvertModal}
+          onHide={this.toggleConvertModal}
+        >
+          <Modal.Header>
+            <Modal.Title>Convert Group</Modal.Title>
+            <a href="#" onClick={this.toggleConvertModal}>
+              <i className="fa fa-close" />
+            </a>
+          </Modal.Header>
+          <Modal.Body>Body text</Modal.Body>
         </Modal>
       </div>
     );
