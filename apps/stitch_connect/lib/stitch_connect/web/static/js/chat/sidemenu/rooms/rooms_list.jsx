@@ -216,13 +216,13 @@ export default class RoomsList extends Component {
                   <FormControl
                     name="name"
                     type="text"
-                    placeholder="General"
+                    placeholder="e.g. Radiology"
                     onChange={this.handleChange}
                   />
                   <HelpBlock className="text-muted m-b-0">
                     A standardize name will also be automatically created for
                     use in <a href="#">referencing</a> this group:{" "}
-                    <span>#general</span>
+                    <span>#radiology</span>
                   </HelpBlock>
                 </Col>
               </FormGroup>
