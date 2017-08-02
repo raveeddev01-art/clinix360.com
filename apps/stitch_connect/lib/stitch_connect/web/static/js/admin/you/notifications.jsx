@@ -8,7 +8,9 @@ import {
   Form,
   FormGroup,
   ControlLabel,
-  FormControl
+  FormControl,
+  Button,
+  Modal
 } from "react-bootstrap";
 
 import SettingPanel from "../components/setting-panel/setting-panel.jsx";
@@ -16,13 +18,35 @@ import SettingPanel from "../components/setting-panel/setting-panel.jsx";
 export default class YouNotifications extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showModal: false
+    };
   }
 
   _save = () => {
     console.log("Yeah boi");
   };
 
+  _enableNotification = () => {
+    const component = this;
+    if (Notification.permission !== "denied") {
+      Notification.requestPermission(function (permission) {
+        // If the user accepts, let's create a notification
+        if (permission === "granted") {
+          component.toggleModal();
+        }
+      });
+    }
+  }
+
+  toggleModal = () => {
+    this.setState({
+      showModal: !this.state.showModal
+    })
+  }
+
   render() {
+    const permissionGranted = Notification.permission === "granted";
     return (
       <Panel className="admin-panel">
         <h1 className="text-center">Notifications</h1>
@@ -32,7 +56,7 @@ export default class YouNotifications extends Component {
         <Well>
           <i className="fa fa-bell" />
           <p className="m-b-0">
-            Desktop notifications are currently <strong>enabled</strong>. You
+            Desktop notifications are currently <strong>{permissionGranted ? 'enabled' : 'not enabled'}</strong>. You
             will receive notifications in this browser.
           </p>
         </Well>
@@ -45,6 +69,16 @@ export default class YouNotifications extends Component {
           for each conversation. To disable notifications, open your browser
           settings.
         </p>
+        
+        {!permissionGranted && <div className="clearfix">
+            <Button 
+              bsStyle="primary" className="pull-right"
+              onClick={this._enableNotification}
+            >
+              Enable Desktop Notifications
+            </Button>
+          </div>
+        }
 
         <hr />
 
@@ -76,6 +110,18 @@ export default class YouNotifications extends Component {
             </FormGroup>
           </Form>
         </SettingPanel>
+
+        <Modal show={this.state.showModal} onHide={this.toggleModal}>
+          <Modal.Header>
+            <Modal.Title>Success</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Great! Notifications are now enabled.</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.toggleModal}>OK</Button>
+          </Modal.Footer>
+        </Modal>
       </Panel>
     );
   }
