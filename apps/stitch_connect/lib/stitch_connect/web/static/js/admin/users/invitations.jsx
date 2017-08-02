@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import { Creatable } from 'react-select';
 import { inject, observer } from "mobx-react";
+
 import {
   Panel,
   Row,
@@ -20,21 +22,16 @@ export default class UsersInvitations extends Component {
     };
   }
 
-  _handleChange = event => {
-    this.setState({ email: event.target.value });
-  };
-
-  _clear = event => {
-    event.preventDefault();
-    this.setState({ email: "" });
+  _handleChange = value => {
+    this.setState({ email: value });
   };
 
   _onSave = () => {
     const { email } = this.state;
-
+    
     // Perform email validation
-    const lines = email.split(/\n/);
-    var emails = [];
+    const lines = email.map(item => item.value);
+    let emails = [];
     for (let line of lines) {
       // only push this line if it contains a valid email.
       if (/(\w+)\@(\w+)\.[a-zA-Z]/g.test(line)) {
@@ -44,7 +41,7 @@ export default class UsersInvitations extends Component {
     
     if (emails.length > 0) {
       post(`/api/v1/invitations`, {
-        body: { email_collection: emails.join("\r\n") }
+        body: { email_collection: emails.join(",") }
       }).then(response => {
         notify.show("Invitations sent to all users");
       });
@@ -61,12 +58,14 @@ export default class UsersInvitations extends Component {
         <h4>Add invitation e-mails</h4>
 
         <FormGroup controlId="formControlsTextarea">
-          <FormControl
-            className="m-b-10"
-            componentClass="textarea"
-            value={this.state.email}
+          <Creatable
+            multi={true}
+            joinValues={true}
+            placeholder="Type in an email"
             onChange={this._handleChange}
-            rows="6"
+            value={this.state.email}
+            noResultsText=""
+            promptTextCreator={label => `Add an email - ${label}`}
           />
 
           <Row>
@@ -74,11 +73,6 @@ export default class UsersInvitations extends Component {
               <HelpBlock>
                 You can send multiple e-mail invitations at once.
               </HelpBlock>
-            </Col>
-            <Col md={2} className="text-right">
-              <Button onClick={this._clear} bsSize="small">
-                Clear
-              </Button>
             </Col>
           </Row>
         </FormGroup>
