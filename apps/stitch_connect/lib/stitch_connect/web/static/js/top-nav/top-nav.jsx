@@ -1,26 +1,20 @@
 import React, { Component } from "react";
 
-import MenuItem from "react-bootstrap/lib/MenuItem";
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
-import Modal from "react-bootstrap/lib/Modal";
-import Radio from "react-bootstrap/lib/Radio";
-import Badge from "react-bootstrap/lib/Badge";
-import Button from "react-bootstrap/lib/Button";
+import MenuItem from "react-bootstrap/lib/MenuItem";
 
-import sidemenuStore from "./chat/sidemenu/sidemenu_store.js";
+import NavItemMembers from "./nav-items/nav-item-members.jsx";
+import NavItemNotifications from "./nav-items/nav-item-notifications.jsx";
+import NavItemRename from "./nav-items/nav-item-rename.jsx";
+import NavItemConvert from "./nav-items/nav-item-convert.jsx";
+
+import sidemenuStore from "../chat/sidemenu/sidemenu_store.js";
 
 export default class TopNav extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showModal: false
-    };
   }
-
-  _onHideModal = () => this.setState({ showModal: false });
-
-  _onShowModal = () => this.setState({ showModal: true });
 
   _adminOptions = () => {
     return (
@@ -43,7 +37,6 @@ export default class TopNav extends Component {
   };
 
   render() {
-    const { showModal } = this.state;
     return (
       <div className="top-navigation">
         <div id="sidemenu">
@@ -99,11 +92,15 @@ export default class TopNav extends Component {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="group-controls-menu">
-                  <MenuItem eventKey="1">Favorite</MenuItem>
-                  <MenuItem eventKey="2" onClick={this._onShowModal}>
-                    Notifications
-                  </MenuItem>
-                  <MenuItem eventKey="3">Rename</MenuItem>
+                  <MenuItem>Favorite</MenuItem>
+
+                  <NavItemMembers />
+                  <NavItemNotifications />
+                  <NavItemRename />
+                  <NavItemConvert />
+
+                  <MenuItem>Leave</MenuItem>
+                  <MenuItem>Delete</MenuItem>
                 </Dropdown.Menu>
               </Dropdown>
 
@@ -123,62 +120,6 @@ export default class TopNav extends Component {
             </div>
           </div>
         </div>
-
-        <Modal
-          show={showModal}
-          onHide={this._onHideModal}
-          className="notifications-modal"
-        >
-          <Modal.Header>
-            <Modal.Title>Notification Preferences: General</Modal.Title>
-            <a href="#" onClick={this._onHideModal}>
-              <i className="fa fa-close" />
-            </a>
-          </Modal.Header>
-
-          <Modal.Body>
-            <h5>
-              Set notification preferences for the group. These preferences will
-              apply to desktop and mobile.
-            </h5>
-
-            <div className="radio-group">
-              <Radio name="radioGroup" defaultChecked>
-                <span className="radio-span">
-                  <h5>Everything</h5>
-                  <p className="m-b-0">
-                    You will be notified for every new message.
-                  </p>
-                </span>
-              </Radio>
-
-              <Radio name="radioGroup">
-                <span className="radio-span">
-                  <h5>Mentions</h5>
-                  <p className="m-b-0">
-                    You will be notified only when a team member mentions you.
-                  </p>
-                </span>
-              </Radio>
-
-              <Radio name="radioGroup">
-                <span className="radio-span">
-                  <h5>Nothing</h5>
-                  <p className="m-b-0">
-                    You will not receive notifications, but will continue to see
-                    a badge count for unread messages.
-                  </p>
-                </span>
-              </Radio>
-            </div>
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button bsSize="large" bsStyle="primary">
-              Done
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </div>
     );
   }

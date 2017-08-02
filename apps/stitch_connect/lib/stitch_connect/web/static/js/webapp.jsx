@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 
-import TopNav from "./top_nav.jsx";
+import TopNav from "./top-nav/top-nav.jsx";
 import Chat from "./chat/chat.jsx";
 
 import sidemenuStore from "./chat/sidemenu/sidemenu_store.js";
