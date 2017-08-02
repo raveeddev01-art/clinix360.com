@@ -9,9 +9,35 @@ import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 import isSelected from "../util/active_styling.jsx";
 
 export default class Sidebar extends Component {
-  render() {
+  _adminUsersOptions = () => {
     return (
-      <div id="sidebar" className="panel panel-default">
+      <div>
+        <hr />
+        <h3>Users</h3>
+        <ListGroup>
+          <ListGroupItem
+            active={isSelected(this.context, "/admin/users/invitations")}
+          >
+            <Link to="/admin/users/invitations">Invitations</Link>
+          </ListGroupItem>
+          <ListGroupItem
+            active={isSelected(this.context, "/admin/users/members")}
+          >
+            <Link to="/admin/users/members">Members</Link>
+          </ListGroupItem>
+          <ListGroupItem
+            active={isSelected(this.context, "/admin/users/pending")}
+          >
+            <Link to="/admin/users/pending">Pending</Link>
+          </ListGroupItem>
+        </ListGroup>
+      </div>
+    );
+  };
+
+  _adminTeamsOptions = () => {
+    return (
+      <div>
         <h3>Team</h3>
         <ListGroup>
           <ListGroupItem
@@ -33,6 +59,15 @@ export default class Sidebar extends Component {
         </ListGroup>
 
         <hr />
+      </div>
+    );
+  };
+
+  render() {
+    return (
+      <div id="sidebar" className="panel panel-default">
+        {currentUser.roles.includes("admin") && this._adminTeamsOptions()}
+
         <h3>You</h3>
         <ListGroup>
           <ListGroupItem
@@ -52,29 +87,7 @@ export default class Sidebar extends Component {
           </ListGroupItem>
         </ListGroup>
 
-        <hr />
-        <h3>Users</h3>
-        <ListGroup>
-          <ListGroupItem
-            active={isSelected(this.context, "/admin/users/invitations")}
-          >
-            <Link to="/admin/users/invitations">Invitations</Link>
-          </ListGroupItem>
-        </ListGroup>
-        <ListGroup>
-          <ListGroupItem
-            active={isSelected(this.context, "/admin/users/members")}
-          >
-            <Link to="/admin/users/members">Members</Link>
-          </ListGroupItem>
-        </ListGroup>
-        <ListGroup>
-          <ListGroupItem
-            active={isSelected(this.context, "/admin/users/pending")}
-          >
-            <Link to="/admin/users/pending">Pending</Link>
-          </ListGroupItem>
-        </ListGroup>
+        {currentUser.roles.includes("admin") && this._adminUsersOptions()}
       </div>
     );
   }

@@ -22,6 +22,26 @@ export default class TopNav extends Component {
 
   _onShowModal = () => this.setState({ showModal: true });
 
+  _adminOptions = () => {
+    return (
+      <div>
+        <div className="separator text-center">
+          <span>Admin</span>
+        </div>
+
+        <MenuItem eventKey="4" href="/admin/team">
+          Team
+        </MenuItem>
+        <MenuItem eventKey="5" href="/admin/users/members">
+          Users
+        </MenuItem>
+        <MenuItem eventKey="6" href="/admin/users/invite">
+          Invite
+        </MenuItem>
+      </div>
+    );
+  };
+
   render() {
     const { showModal } = this.state;
     return (
@@ -51,26 +71,16 @@ export default class TopNav extends Component {
                 Notifications
               </MenuItem>
 
-              <div className="separator text-center">
-                <span>Admin</span>
-              </div>
-
-              <MenuItem eventKey="4" href="/admin/team">
-                Team
-              </MenuItem>
-              <MenuItem eventKey="5" href="/admin/users/members">
-                Users
-              </MenuItem>
-              <MenuItem eventKey="6" href="/admin/users/invite">
-                Invite
-              </MenuItem>
+              {currentUser.roles.includes("admin") && this._adminOptions()}
 
               <div className="separator text-center">
                 <span>Stitch</span>
               </div>
 
               <MenuItem eventKey="7">Lockout</MenuItem>
-              <MenuItem eventKey="6" href="/logout">Sign Out</MenuItem>
+              <MenuItem eventKey="6" href="/logout">
+                Sign Out
+              </MenuItem>
             </DropdownButton>
           </div>
         </div>

@@ -18,7 +18,8 @@ current_user =
       Poison.encode!(%{
         "id" => user.id,
         "firstName" => user.first_name,
-        "lastName" => user.last_name
+        "lastName" => user.last_name,
+        "roles" => user.roles
       })
   end
 %>
