@@ -7,6 +7,15 @@ defmodule Stitch.Accounts.Admin do
   alias Stitch.Repo
   alias Stitch.User
 
+  @doc """
+  Sets the disabled boolean flag to true for the provided user.
+  """
+  def deactivate(user_id) do
+    Repo.get(User, user_id)
+    |> Ecto.Changeset.change(disabled: true)
+    |> Repo.update
+  end
+
   @spec update_firstname_and_lastname(number, String.t, String.t) :: {:ok, term} | {:error, term}
   @doc """
   Updates the user firstname and lastname field.

@@ -19,7 +19,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       username: user.username,
       phone: user.phone_number,
       title: user.title,
-      avatar: user.profile_image_url
+      avatar: user.profile_image_url,
+      disabled: user.disabled
     }
   end
 end

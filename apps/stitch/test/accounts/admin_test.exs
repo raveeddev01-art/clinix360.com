@@ -6,6 +6,14 @@ defmodule Stitch.Accounts.AdminTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.Accounts.Admin.deactivate/1" do
+    test "it deactivates the account" do
+      user = insert(:user, %{disabled: false})
+      {:ok, user} = Stitch.Accounts.Admin.deactivate(user.id)
+      assert user.disabled == true
+    end
+  end
+
   describe "Stitch.Accounts.Admin.update_firstname_and_lastname/3" do
     test "it updates the first_name and last_name" do
       user = insert(:user, %{first_name: "John", last_name: "Doe"})

@@ -21,6 +21,7 @@ defmodule Stitch.Accounts.User do
     field :username, :string
     field :pin, :string
     field :token, :string
+    field :disabled, :boolean, default: false
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
 

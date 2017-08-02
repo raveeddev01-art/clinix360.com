@@ -28,7 +28,10 @@ export default class UsersMembers extends Component {
           <div className="table-head">
             <Row>
               <Col sm={6}>Users</Col>
-              <Col sm={4} className="text-center">
+              <Col sm={2} className="text-center">
+                Roles
+              </Col>
+              <Col sm={2} className="text-center">
                 Status
               </Col>
               <Col sm={2} className="text-center">
@@ -37,22 +40,10 @@ export default class UsersMembers extends Component {
             </Row>
           </div>
           {this.props.teamStore.onlineUsers.map(user => {
-            return (
-              <MemberItem
-                user={user}
-                online={true}
-                key={user.id}
-              />
-            );
+            return <MemberItem user={user} online={true} key={user.id} />;
           })}
           {this.props.teamStore.offlineUsers.map(user => {
-            return (
-              <MemberItem
-                user={user}
-                online={false}
-                key={user.id}
-              />
-            );
+            return <MemberItem user={user} online={false} key={user.id} />;
           })}
         </div>
       </Panel>

@@ -13,6 +13,15 @@ export default class MemberItem extends Component {
     this.setState({ open: !this.state.open });
   };
 
+  _deactivateUser = () => {
+    let userId = this.props.user.id;
+    post(`/api/v1//users/${userId}/deactivate`, {
+      body: {}
+    }).then(response => {
+      notify.show("Account deactivated.");
+    });
+  };
+
   render() {
     const { user, online } = this.props;
 
@@ -32,8 +41,12 @@ export default class MemberItem extends Component {
             </div>
           </Col>
 
-          <Col sm={4} className="status-column text-center">
+          <Col sm={2} className="status-column text-center">
             {user.roles.join(",")}
+          </Col>
+
+          <Col sm={2} className="status-column text-center">
+            {user.disabled && "deactivated"}
           </Col>
 
           <Col sm={2} className="actions-column text-center">
@@ -48,7 +61,11 @@ export default class MemberItem extends Component {
               <ButtonToolbar className="actions-toolbar">
                 {/* <Button bsSize="small">Convert to Guest</Button>
                 <Button bsSize="small">Revoke Admin</Button> */}
-                <Button bsSize="small" className="pull-right">
+                <Button
+                  onClick={this._deactivateUser}
+                  bsSize="small"
+                  className="pull-right"
+                >
                   Disable Account
                 </Button>
               </ButtonToolbar>

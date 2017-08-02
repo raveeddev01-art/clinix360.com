@@ -25,7 +25,8 @@ defmodule StitchConnect.Web.RoomChannel do
       first_name: user.first_name,
       last_name: user.last_name,
       username: user.username,
-      roles: user.roles
+      roles: user.roles,
+      disabled: user.disabled
     })
     {:noreply, socket}
   end
