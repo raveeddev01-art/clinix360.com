@@ -30,11 +30,27 @@ export default class UsersInvitations extends Component {
   };
 
   _onSave = () => {
-    post(`/api/v1/invitations`, {
-      body: { email_collection: this.state.email }
-    }).then(response => {
-      notify.show("Invitations sent to all users");
-    });
+    const { email } = this.state;
+
+    // Perform email validation
+    const lines = email.split(/\n/);
+    var emails = [];
+    for (let line of lines) {
+      // only push this line if it contains a valid email.
+      if (/(\w+)\@(\w+)\.[a-zA-Z]/g.test(line)) {
+        emails.push($.trim(line));
+      }
+    }
+    
+    if (emails.length > 0) {
+      post(`/api/v1/invitations`, {
+        body: { email_collection: emails.join("\r\n") }
+      }).then(response => {
+        notify.show("Invitations sent to all users");
+      });
+    } else {
+      notify.show("You haven't provided any valid email address!", "error");
+    }
   };
 
   render() {
