@@ -41,4 +41,13 @@ defmodule Stitch.AccountsTest do
       assert user.roles == ["admin"]
     end
   end
+
+  describe "Stitch.Accounts.update_user_password/3" do
+    test "it only updates the user password if the old password provided is valid" do
+      user = insert(:user,%{email: "sadan@example.com",encrypted_password: Comeonin.Bcrypt.hashpwsalt("sadan123")})
+      {:error, message} = Stitch.Accounts.update_user_password(user.id, "sadan1234", "stitch123")
+
+      assert message == "Invalid Password for user"
+    end
+  end
 end
