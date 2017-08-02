@@ -22,11 +22,18 @@ defmodule StitchConnect.Web.AuthenticationController do
         |> put_flash(:invalid_login, "Invalid email or password.")
         |> redirect to: "/login"
       user ->
-        conn
-        |> put_session(:current_user, user)
-        |> put_session(:authentication_token, user.token)
-        |> configure_session(renew: true)
-        |> redirect to: "/"
+        case user.disabled do
+          false ->
+            conn
+            |> put_session(:current_user, user)
+            |> put_session(:authentication_token, user.token)
+            |> configure_session(renew: true)
+            |> redirect to: "/"
+          true ->
+            conn
+            |> put_flash(:invalid_login, "This account is disabled - contact your team admin.")
+            |> redirect to: "/login"
+        end
     end
   end
 
