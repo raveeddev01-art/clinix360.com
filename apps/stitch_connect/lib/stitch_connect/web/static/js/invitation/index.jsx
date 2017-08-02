@@ -1,0 +1,66 @@
+import React, { Component } from "react";
+import { Provider } from "mobx-react";
+
+import Welcome from "./wizard-steps/welcome.jsx";
+import FirstName from "./wizard-steps/first_name.jsx";
+import LastName from "./wizard-steps/last_name.jsx";
+import Username from "./wizard-steps/username.jsx";
+import Password from "./wizard-steps/password.jsx";
+import Pin from "./wizard-steps/pin.jsx";
+
+import invitationStore from "./stores/invitation_store";
+const stores = { invitationStore };
+const stepList = [Welcome, FirstName, LastName, Username, Password, Pin];
+
+class Invitation extends Component {
+  constructor(props) {
+    super(props);
+    console.log(props);
+    this.state = {
+      step: 0
+    };
+  }
+
+  componentWillMount() {
+    invitationStore.teamName = this.props.teamName;
+    invitationStore.subdomain = this.props.subdomain;
+    invitationStore.verifyInvitation(this.props.inviteToken);
+  }
+
+  _save = () => {
+    invitationStore.completeInvitation();
+  };
+
+  _renderStep = () => {
+    const { step } = this.state;
+    return React.createElement(stepList[step], {
+      onNext: () => {
+        if (stepList.length <= step + 1) {
+          this._save();
+        } else {
+          this.setState({ step: step + 1 });
+        }
+      },
+      onBack: () => {
+        if (step > 0) {
+          this.setState({ step: step - 1 });
+        }
+      },
+      onRestart: () => {
+        this.setState({ step: 0 });
+      }
+    });
+  };
+
+  render() {
+    return (
+      <Provider {...stores}>
+        <div className="authentication-wrapper">
+          {this._renderStep()}
+        </div>
+      </Provider>
+    );
+  }
+}
+
+export default Invitation;
