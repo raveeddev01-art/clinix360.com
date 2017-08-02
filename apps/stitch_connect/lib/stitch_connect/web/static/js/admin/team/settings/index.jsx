@@ -13,11 +13,11 @@ class TeamSettings extends Component {
         <h1 className="admin-title text-center">Settings</h1>
         <TeamNamePanel />
         <hr />
-        <SecurityLockoutPanel />
-        <hr />
+        {/* <SecurityLockoutPanel />
+        <hr /> */}
         <InvitationControlPanel />
-        <hr />
-        <DeleteTeamPanel />
+        {/* <hr />
+        <DeleteTeamPanel /> */}
       </Panel>
     );
   }
