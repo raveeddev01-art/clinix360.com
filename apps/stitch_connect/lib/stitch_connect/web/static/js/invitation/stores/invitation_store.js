@@ -27,7 +27,15 @@ class InvitationStore {
 
   @action
   completeInvitation = () => {
-    return post(`/api/v1/invitations/${this.token}`).then(resp => {
+    return post(`/api/v1/invitations/${this.token}`, {
+      body: {
+        first_name: this.firstName,
+        last_name: this.lastName,
+        password: this.password,
+        pin: this.pin,
+        username: this.username
+      }
+    }).then(resp => {
       console.log(resp.data);
       notify.show("Thanks for completing your profile.");
       window.location.href = `https://${subdomain}.${applicationHost}/login`;
