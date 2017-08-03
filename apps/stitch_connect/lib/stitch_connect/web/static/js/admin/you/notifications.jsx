@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import classNames from 'classnames';
 import {
   Panel,
   Well,
@@ -54,10 +55,13 @@ export default class YouNotifications extends Component {
         <h3 className="m-b-20">Desktop Notifications</h3>
 
         <Well>
-          <i className="fa fa-bell" />
+          <i className={classNames('fa', 'fa-bell', { 'text-muted': !permissionGranted })} />
           <p className="m-b-0">
-            Desktop notifications are currently <strong>{permissionGranted ? 'enabled' : 'not enabled'}</strong>. You
-            will receive notifications in this browser.
+            Desktop notifications are currently
+            <strong className={classNames({ 'text-muted': !permissionGranted })}>
+              {permissionGranted ? ' enabled' : ' not enabled'}
+            </strong>. 
+            You will receive notifications in this browser.
           </p>
         </Well>
 
@@ -72,7 +76,8 @@ export default class YouNotifications extends Component {
         
         {!permissionGranted && <div className="clearfix">
             <Button 
-              bsStyle="primary" className="pull-right"
+              bsStyle="primary" 
+              className="pull-right"
               onClick={this._enableNotification}
             >
               Enable Desktop Notifications
