@@ -72,7 +72,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/groups", GroupController, :index
     post "/groups/search", GroupController, :search
-    post "/groups/:id/invite/:user_id", GroupController, :invite
+    post "/groups/:id/invite/", GroupController, :invite
     # TODO: post "/groups/:id/join", GroupController, :join
     # TODO: post "/groups/:id/leave", GroupController, :leave
 
