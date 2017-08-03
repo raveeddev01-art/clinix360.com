@@ -11,7 +11,8 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
       name: group.name,
       slug: group.slug,
       public: group.public,
-      description: group.description
+      description: group.description,
+      user_count: Enum.count(group.users)
     }
   end
 end

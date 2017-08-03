@@ -78,9 +78,10 @@ export default class RoomsList extends Component {
             <h5 className="group-heading">Groups you belong to:</h5>
 
             <div className="group-list">
-              {sidemenuStore.instance.groups && sidemenuStore.instance.groups.map(
-                group => <GroupItem key={group.id} group={group} />
-              )}
+              {sidemenuStore.instance.groups &&
+                sidemenuStore.instance.groups.map(group =>
+                  <GroupItem key={group.id} group={group} />
+                )}
             </div>
           </Modal.Body>
         </Modal>

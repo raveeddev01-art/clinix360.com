@@ -13,7 +13,7 @@ export default class GroupItem extends Component {
 
           <div className="member-count text-muted">
             <i className="fa fa-user-o" />
-            54
+            {group.user_count}
           </div>
         </div>
 

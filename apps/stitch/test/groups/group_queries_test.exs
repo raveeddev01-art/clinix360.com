@@ -6,15 +6,15 @@ defmodule Stitch.GroupQueriesTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
-  describe "Stitch.GroupQueries.available_teams/1" do
+  describe "Stitch.GroupQueries.available_groups/1" do
     test "returns list of available groups for a team" do
       team = insert(:team)
-      insert(:group, %{team: team, name: "A", slug: "a"})
-      insert(:group, %{team: team, name: "B", slug: "b"})
-      insert(:group, %{team: team, name: "C", slug: "c"})
+      insert(:group, %{team: team, name: "A", slug: "a", public: true})
+      insert(:group, %{team: team, name: "B", slug: "b", public: true})
+      insert(:group, %{team: team, name: "C", slug: "c", public: true})
       insert(:group, %{team: team, name: "D", slug: "d", public: false})
       user = insert(:user, %{team_id: team.id})
-      groups = Stitch.GroupQueries.available_teams(user.id)
+      groups = Stitch.GroupQueries.available_groups(user.id)
       assert Enum.count(groups) == 3
     end
 
@@ -27,7 +27,7 @@ defmodule Stitch.GroupQueriesTest do
       insert(:group_user, %{user: user, group: group_b})
       insert(:group_user, %{user: user, group: group_c})
 
-      groups = Stitch.GroupQueries.available_teams(user.id)
+      groups = Stitch.GroupQueries.available_groups(user.id)
       assert Enum.count(groups) == 2
     end
   end

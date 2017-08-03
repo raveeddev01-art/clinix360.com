@@ -11,23 +11,31 @@ defmodule Stitch.GroupQueries do
   Returns a list of public groups for the user's team, and
   also teams he's been invited to participate in.
   """
-  def available_teams(user_id) do
+  def available_groups(user_id) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
 
-    public_teams =
+    public_groups =
       from g in Group,
       where: g.team_id == ^team.id,
-      where: g.public == ^true
-
-    participating_teams =
-      from gu in GroupUser,
-      join: g in Group,
-      where: gu.group_id == g.id,
-      where: gu.user_id == ^user.id,
+      where: g.public == ^true,
+      preload: [:users],
       select: g
 
-    Repo.all(public_teams)
+    participating_groups =
+      from g in Group,
+      join: gu in GroupUser,
+      where: gu.group_id == g.id,
+      where: gu.user_id == ^user.id,
+      preload: [:users],
+      select: g
+
+    public_groups = Repo.all(public_groups)
+    participating_groups = Repo.all(participating_groups)
+    result_groups = public_groups ++ participating_groups
+
+    result_groups
+    |> Enum.uniq
   end
 
   @doc """

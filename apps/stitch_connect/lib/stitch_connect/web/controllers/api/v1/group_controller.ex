@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :search]
 
   def index(conn, _params) do
-    groups = Stitch.GroupQueries.available_teams(conn.assigns.current_user.id)
+    groups = Stitch.GroupQueries.available_groups(conn.assigns.current_user.id)
     render conn, "index.json", groups: groups
   end
 

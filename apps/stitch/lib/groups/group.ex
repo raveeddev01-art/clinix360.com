@@ -8,6 +8,8 @@ defmodule Stitch.Group do
     field :description, :string
     field :public, :boolean, default: true
     belongs_to :team, Stitch.Team
+    has_many :group_users, Stitch.GroupUser
+    has_many :users, through: [:group_users, :user]
 
     timestamps()
   end
