@@ -3,7 +3,7 @@ defmodule Stitch.Repo.Migrations.AddResetPasswordTokenToUsers do
 
   def change do
     alter table(:users) do
-      add :reset_password_token, :string 
+      add :password_reset_token, :string 
     end
   end
 end
