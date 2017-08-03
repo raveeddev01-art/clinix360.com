@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -13,8 +14,10 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
 import Room from "./room.jsx";
+import GroupItem from "./group_item.jsx";
 import sidemenuStore from "../sidemenu_store.js";
 
+@observer
 export default class RoomsList extends Component {
   constructor(props) {
     super(props);
@@ -75,81 +78,9 @@ export default class RoomsList extends Component {
             <h5 className="group-heading">Groups you belong to:</h5>
 
             <div className="group-list">
-              <div className="group-item">
-                <div className="content">
-                  <div className="name">
-                    <i className="fa fa-comments" /> General
-                    <span className="text-muted">#general</span>
-                  </div>
-
-                  <div className="member-count text-muted">
-                    <i className="fa fa-user-o" />
-                    54
-                  </div>
-                </div>
-
-                <div className="description text-muted">
-                  Maecenas fringilla odio porta risus molestie, eget commodo
-                  mauris maximus.
-                </div>
-              </div>
-
-              <div className="group-item">
-                <div className="content">
-                  <div className="name">
-                    <i className="fa fa-comments" /> Labs
-                    <span className="text-muted">#labs</span>
-                  </div>
-
-                  <div className="member-count text-muted">
-                    <i className="fa fa-user-o" />
-                    12
-                  </div>
-                </div>
-
-                <div className="description text-muted">
-                  In ac libero ligula. Nulla sed metus at odio vehicula aliquam
-                  non sed massa. Aliquam metus mauris.
-                </div>
-              </div>
-
-              <div className="group-item">
-                <div className="content">
-                  <div className="name">
-                    <i className="fa fa-comments" /> Radiology
-                    <span className="text-muted">#radiology</span>
-                  </div>
-
-                  <div className="member-count text-muted">
-                    <i className="fa fa-user-o" />
-                    7
-                  </div>
-                </div>
-
-                <div className="description text-muted">
-                  Vivamus vitae est ac lacus auctor venenatis. Donec rhoncus
-                  quam at ultrices pretium.
-                </div>
-              </div>
-
-              <div className="group-item">
-                <div className="content">
-                  <div className="name">
-                    <i className="fa fa-comments" /> Emergency Room
-                    <span className="text-muted">#emergency-room</span>
-                  </div>
-
-                  <div className="member-count text-muted">
-                    <i className="fa fa-user-o" />
-                    3
-                  </div>
-                </div>
-
-                <div className="description text-muted">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Phasellus facilisis bibendum quam, ut maximus.
-                </div>
-              </div>
+              {sidemenuStore.instance.groups && sidemenuStore.instance.groups.map(
+                group => <GroupItem key={group.id} group={group} />
+              )}
             </div>
           </Modal.Body>
         </Modal>
