@@ -4,26 +4,26 @@ import { render } from "react-dom";
 import AuthenticationRouter from "../authentication/authentication_router.jsx";
 import Login from "../authentication/login/login.jsx";
 import Webapp from "../webapp.jsx";
-import Sidemenu from "../chat/sidemenu/sidemenu.jsx";
-import Team from "../chat/sidemenu/team.jsx";
+import Team from "../sidemenu/team.jsx";
 import Chat from "../chat/chat.jsx";
 import Message from "../chat/message.jsx";
 import Addons from "../addons/addons.jsx";
 import Admin from "../admin/admin.jsx";
 import Invitation from "../invitation/index.jsx";
+import ResetPassword from "../reset-password/index.jsx";
 import Toastr from "../common/components/toastr/toastr.jsx";
 
 var componentMap = {
   AuthenticationRouter,
   Login,
   Webapp,
-  Sidemenu,
   Team,
   Chat,
   Message,
   Addons,
   Admin,
   Toastr,
+  ResetPassword,
   Invitation
 };
 

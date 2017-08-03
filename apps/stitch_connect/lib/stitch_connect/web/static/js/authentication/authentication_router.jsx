@@ -5,7 +5,6 @@ import GetStarted from "./get_started.jsx";
 import TeamPicker from "./team/team_picker.jsx";
 
 import Login from "./login/login.jsx";
-import ResetPassword from "./login/reset_password.jsx";
 
 import Email from "./registration/email.jsx";
 import Confirmation from "./registration/confirmation.jsx";
@@ -34,7 +33,6 @@ export default class AuthenticationRouter extends Component {
           <Route exact path={`/signin`} component={TeamPicker} />
 
           <Route exact path={`/login`} component={Login} />
-          <Route exact path={`/reset-password`} component={ResetPassword} />
 
           <Route exact path={`/signup/email`} component={Email} />
           <Route
