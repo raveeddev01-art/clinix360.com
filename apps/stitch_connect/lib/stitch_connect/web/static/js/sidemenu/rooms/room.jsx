@@ -3,7 +3,7 @@ import React, { Component } from "react";
 export default class Room extends Component {
   render() {
     return (
-      <a href="#" className="item">
+      <a href={`/channels/public/${this.props.room.name}`} className="item">
         <div className="item-icon">
           <i className="fa fa-comments" />
         </div>
