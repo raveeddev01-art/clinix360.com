@@ -3,6 +3,7 @@ defmodule Stitch.Group do
   import Ecto.Changeset
 
   schema "groups" do
+    belongs_to :creator, Stitch.Accounts.User, foreign_key: :creator_user_id
     field :name, :string
     field :slug, :string
     field :description, :string
@@ -19,5 +20,14 @@ defmodule Stitch.Group do
     |> cast(params, [:name, :slug, :description, :public, :team_id])
     |> validate_required([:name, :slug, :public, :team_id])
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
+  end
+
+  @doc """
+  Add user to the group.
+  """
+  def invite(group_id, user_id) do
+    params = %{group_id: group_id, user_id: user_id}
+    changeset = Stitch.GroupUser.changeset(%Stitch.GroupUser{}, params)
+    Repo.insert changeset
   end
 end

@@ -72,8 +72,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/groups", GroupController, :index
     post "/groups/search", GroupController, :search
-
-    #   `POST /api/v1/invitation-signup { email, first_name, last_name, username, pin, password, phone }`
+    post "/groups/:id/invite/:user_id", GroupController, :invite
+    # TODO: post "/groups/:id/join", GroupController, :join
+    # TODO: post "/groups/:id/leave", GroupController, :leave
 
     get "/teams/:id", TeamController, :show
     delete "/teams/:id/", TeamController, :delete_team

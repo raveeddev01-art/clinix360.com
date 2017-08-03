@@ -6,7 +6,8 @@ defmodule Stitch.Factory do
       first_name: "Sergio",
       last_name: "Tapia",
       email: sequence(:email, &"email-#{&1}@example.com"),
-      phone_number: "1231231234"
+      phone_number: "1231231234",
+      roles: ["member"]
     }
   end
 
@@ -26,7 +27,8 @@ defmodule Stitch.Factory do
       slug: "onboarding",
       description: "Group used to onboard new users to team procedures.",
       public: true,
-      team: build(:team)
+      team: build(:team),
+      creator: build(:user)
     }
   end
 
