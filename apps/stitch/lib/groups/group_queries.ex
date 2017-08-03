@@ -43,6 +43,31 @@ defmodule Stitch.GroupQueries do
   a search term.
   """
   def search(user_id, term) do
-    []
+    user = Repo.get(User, user_id)
+    team = Repo.get(Team, user.team_id)
+
+    public_groups =
+      from g in Group,
+      where: g.team_id == ^team.id,
+      where: g.public == ^true,
+      where: ilike(g.name, ^"%#{term}%") or ilike(g.slug, ^"%#{term}%"),
+      preload: [:users],
+      select: g
+
+    participating_groups =
+      from g in Group,
+      join: gu in GroupUser,
+      where: gu.group_id == g.id,
+      where: gu.user_id == ^user.id,
+      where: ilike(g.name, ^"%#{term}%") or ilike(g.slug, ^"%#{term}%"),
+      preload: [:users],
+      select: g
+
+    public_groups = Repo.all(public_groups)
+    participating_groups = Repo.all(participating_groups)
+    result_groups = public_groups ++ participating_groups
+
+    result_groups
+    |> Enum.uniq
   end
 end

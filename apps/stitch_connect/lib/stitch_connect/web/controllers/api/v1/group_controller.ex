@@ -11,5 +11,6 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def search(conn, %{"term" => term}) do
     result_groups = Stitch.GroupQueries.search(conn.assigns.current_user.id, term)
+    render conn, "index.json", groups: result_groups
   end
 end

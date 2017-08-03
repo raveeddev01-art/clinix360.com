@@ -31,4 +31,20 @@ defmodule Stitch.GroupQueriesTest do
       assert Enum.count(groups) == 2
     end
   end
+
+  describe "Stitch.GroupQueries.search/2" do
+    test "returns list of matching groups" do
+      team = insert(:team)
+      user = insert(:user, %{team_id: team.id})
+
+      insert(:group, %{team: team, name: "A bob group example", slug: "a", public: true})
+      insert(:group, %{team: team, name: "Bob in the house", slug: "b", public: true})
+      insert(:group, %{team: team, name: "Example", slug: "d", public: false})
+      group = insert(:group, %{team: team, name: "Carebob Bob", slug: "c", public: false})
+      insert(:group_user, %{user: user, group: group})
+
+      groups = Stitch.GroupQueries.search(user.id, "bob")
+      assert Enum.count(groups) == 3
+    end
+  end
 end
