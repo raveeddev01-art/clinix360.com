@@ -6,8 +6,9 @@ import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
+import FavoritesList from "./favorites/favorites_list.jsx";
 import RoomsList from "./rooms/rooms_list.jsx";
-import Team from "../sidemenu/team.jsx";
+import Team from "./team.jsx";
 
 import sidemenuStore from "./sidemenu_store.js";
 
@@ -73,10 +74,11 @@ export default class Sidemenu extends Component {
           </DropdownButton>
         </div>
         <div className="flex-content">
-          <RoomsList
+          <FavoritesList
             heading={"Favorites"}
             rooms={sidemenuStore.instance.favoriteGroups}
           />
+
           <RoomsList heading={"Groups"} rooms={sidemenuStore.instance.groups} />
 
           <Team heading={"People"} />
