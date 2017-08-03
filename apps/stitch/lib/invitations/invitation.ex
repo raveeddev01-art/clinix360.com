@@ -124,13 +124,13 @@ defmodule Stitch.Invitation do
         from i in Stitch.Invitation,
         where: i.id == ^invitation_id,
         preload: [:user, :team]
+
       invitation = Repo.one(query)
       case invitation.accepted do
         true ->
           {:error, "This invitation has been accepted already."}
         false ->
-          user_to_delete = Repo.get(User, invitation.user_id)
-          Repo.delete user_to_delete
+          Repo.delete invitation
       end
     else
       {:error, "User unauthorized to revoke invitation."}
