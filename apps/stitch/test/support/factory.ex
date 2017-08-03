@@ -20,9 +20,13 @@ defmodule Stitch.Factory do
     }
   end
 
-  def room_factory do
-    %Stitch.Room{
-      name: "General"
+  def group_factory do
+    %Stitch.Group{
+      name: "Onboarding",
+      slug: "onboarding",
+      description: "Group used to onboard new users to team procedures.",
+      public: true,
+      team: build(:team)
     }
   end
 

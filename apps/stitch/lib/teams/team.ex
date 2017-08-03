@@ -9,7 +9,7 @@ defmodule Stitch.Team do
     field :seconds_to_lockout, :integer
     field :open_invitations_enabled, :boolean, default: false
     has_many :users, Stitch.Accounts.User, on_delete: :delete_all
-    has_many :rooms, Stitch.Room, on_delete: :delete_all
+    has_many :groups, Stitch.Group, on_delete: :delete_all
     has_many :invitations, Stitch.Invitation, on_delete: :delete_all
 
     timestamps()

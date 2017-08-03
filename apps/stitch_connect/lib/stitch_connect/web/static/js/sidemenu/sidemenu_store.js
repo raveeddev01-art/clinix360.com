@@ -5,8 +5,8 @@ class SidemenuStore {
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
-  @observable favoriteRooms = [];
-  @observable rooms = [];
+  @observable favoriteGroups = [];
+  @observable groups = [];
   @observable users = [];
   @observable offlineUsers = [];
   @observable onlineUsers = [];
@@ -17,13 +17,13 @@ class SidemenuStore {
     this.teamName = props.teamName;
     this.teamId = props.teamId;
     this.subdomain = props.subdomain;
-    this.loadRooms();
+    this.loadGroups();
     this.loadUsers();
   }
 
-  loadRooms = () => {
-    get("/api/v1/rooms").then(response => {
-      this.rooms = response.data;
+  loadGroups = () => {
+    get("/api/v1/groups").then(response => {
+      this.groups = response.data;
     });
   };
 

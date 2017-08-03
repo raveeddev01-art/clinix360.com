@@ -64,13 +64,13 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/users/:id/avatar", UserController, :update_avatar
     delete "/users/:id/avatar", UserController, :delete_avatar
 
-    get "/rooms/", RoomController, :index
-
     get "/invitations", InvitationController, :index
     post "/invitations", InvitationController, :create
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend
     post "/invitations/accept/:token", InvitationController, :accept
+
+    get "/groups", GroupController, :index
 
     #   `POST /api/v1/invitation-signup { email, first_name, last_name, username, pin, password, phone }`
 

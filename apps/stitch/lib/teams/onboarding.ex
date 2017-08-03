@@ -3,7 +3,7 @@ defmodule Stitch.Team.Onboarding do
   The Team Onboarding context.
   """
 
-  alias Stitch.{Repo, Team, Room}
+  alias Stitch.{Repo, Team, Group}
 
   @doc """
   Returns whether a team slug is unused and available for use within
@@ -28,7 +28,7 @@ defmodule Stitch.Team.Onboarding do
     changeset = Team.changeset(%Team{}, %{name: name, slug: slug})
     case Repo.insert(changeset) do
       {:ok, team} ->
-        Repo.insert(%Room{team_id: team.id, name: "General"})
+        Repo.insert(%Group{team_id: team.id, name: "General", slug: "general"})
         team
       {:error, _} ->
         {:error, "Team wasn't created"}

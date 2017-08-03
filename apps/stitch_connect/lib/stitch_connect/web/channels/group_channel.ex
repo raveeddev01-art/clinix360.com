@@ -1,18 +1,18 @@
-defmodule StitchConnect.Web.RoomChannel do
+defmodule StitchConnect.Web.GroupChannel do
   use Phoenix.Channel
   alias StitchConnect.Web.Presence
 
-  def join("room:lobby", _, socket) do
+  def join("group:lobby", _, socket) do
     send self(), :after_join
     {:ok, socket}
   end
 
-  # def join("rooms:" <> room_id, _params, socket) do
-  #   case Stitch.Room.Authorization.can_join?(room_id, socket.assigns.current_user.id) do
+  # def join("groups:" <> group_id, _params, socket) do
+  #   case Stitch.Group.Authorization.can_join?(group_id, socket.assigns.current_user.id) do
   #     false ->
   #       {:error, %{reason: "unauthorized"}}
-  #     room ->
-  #       {:ok, assign(socket, :room, room)}
+  #     group ->
+  #       {:ok, assign(socket, :group, group)}
   #   end
   # end
 

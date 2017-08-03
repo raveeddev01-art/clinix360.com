@@ -31,11 +31,11 @@ defmodule Stitch.Team.OnboardingTest do
 
     test "it creates a room called General for the new team" do
       team = Stitch.Team.Onboarding.create_team("Care Clinic", "care-clinic-12")
-      rooms = Stitch.Repo.all Ecto.assoc(team, :rooms)
+      groups = Stitch.Repo.all Ecto.assoc(team, :groups)
       assert team.name == "Care Clinic"
       assert team.slug == "care-clinic-12"
-      assert Enum.count(rooms) == 1
-      assert Enum.at(rooms, 0).name == "General"
+      assert Enum.count(groups) == 1
+      assert Enum.at(groups, 0).name == "General"
     end
 
     test "it returns an error given a name for an existing team" do

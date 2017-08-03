@@ -13,7 +13,6 @@ import sidemenuStore from "./sidemenu_store.js";
 
 @observer
 export default class Sidemenu extends Component {
-
   _adminOptions = () => {
     return (
       <div>
@@ -33,7 +32,7 @@ export default class Sidemenu extends Component {
       </div>
     );
   };
-  
+
   render() {
     return (
       <div id="sidemenu">
@@ -76,9 +75,9 @@ export default class Sidemenu extends Component {
         <div className="flex-content">
           <RoomsList
             heading={"Favorites"}
-            rooms={sidemenuStore.instance.favoriteRooms}
+            rooms={sidemenuStore.instance.favoriteGroups}
           />
-          <RoomsList heading={"Groups"} rooms={sidemenuStore.instance.rooms} />
+          <RoomsList heading={"Groups"} rooms={sidemenuStore.instance.groups} />
 
           <Team heading={"People"} />
         </div>
