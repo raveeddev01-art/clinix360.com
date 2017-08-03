@@ -86,5 +86,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/upload-signature", UploadSignatureController, :create
 
     post "/login", AuthenticationController, :submit_login
+    post "/reset_password", AuthenticationController, :reset_password
   end
 end
