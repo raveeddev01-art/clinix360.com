@@ -87,7 +87,7 @@ defmodule Stitch.User.Authentication do
 
     case Repo.get_by(User, email: email, team_id: team.id) do
         nil ->
-          {:error, "User is not part of the team"}
+          {:error, "User is not part of the team or Email does not exist"}
 
         user ->
           user
