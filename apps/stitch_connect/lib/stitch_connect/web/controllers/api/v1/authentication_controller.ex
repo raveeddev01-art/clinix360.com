@@ -24,7 +24,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
 
         {:ok, user} ->
                     conn
-                    |> json(%{resetToken: user.reset_password_token})
+                    |> json(%{resetToken: user.password_reset_token})
      end
   end
 
