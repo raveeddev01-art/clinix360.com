@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :send_invite, :update, :deactivate]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:search, :index, :send_invite, :update, :deactivate]
   plug StitchConnect.Plug.TeamAdminOnly when action in [:deactivate]
 
   alias Stitch.{
@@ -11,6 +11,11 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def index(conn, _) do
     users = Stitch.UserQueries.users_for_team(conn.assigns.current_user.team_id)
     render conn, "index.json", users: users
+  end
+
+  def search(conn, %{"term" => term}) do
+    result_users = Stitch.UserQueries.search(conn.assigns.current_user.id, term)
+    render conn, "index.json", users: result_users
   end
 
   def deactivate(conn, %{"id" => id}) do

@@ -6,6 +6,44 @@ defmodule Stitch.UserQueriesTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.UserQueries.search/2" do
+    test "returns users matching first_name" do
+      team = insert(:team)
+      user = insert(:user, %{first_name: "Sergio", email: "foobar@email.com", team: team})
+      user = insert(:user, %{first_name: "Example", team: team})
+      user = insert(:user, %{first_name: "fooexapple", team: team})
+      results = Stitch.UserQueries.search(user.id, "Exa")
+      assert Enum.count(results) == 2
+    end
+
+    test "returns users matching last_name" do
+      team = insert(:team)
+      user = insert(:user, %{last_name: "Sergio", email: "foobar@email.com", team: team})
+      user = insert(:user, %{last_name: "Example", team: team})
+      user = insert(:user, %{last_name: "fooexapple", team: team})
+      results = Stitch.UserQueries.search(user.id, "Exa")
+      assert Enum.count(results) == 2
+    end
+
+    test "returns users matching username" do
+      team = insert(:team)
+      user = insert(:user, %{username: "sergio", email: "foobar@email.com", team: team})
+      user = insert(:user, %{username: "example", team: team})
+      user = insert(:user, %{username: "fooexapple", team: team})
+      results = Stitch.UserQueries.search(user.id, "Exa")
+      assert Enum.count(results) == 2
+    end
+
+    test "returns users matching email" do
+      team = insert(:team)
+      user = insert(:user, %{first_name: "Sergio", email: "foobar@email.com", team: team})
+      user = insert(:user, %{first_name: "Example", team: team})
+      user = insert(:user, %{first_name: "fooexapple", team: team})
+      results = Stitch.UserQueries.search(user.id, "obar")
+      assert Enum.count(results) == 1
+    end
+  end
+
   describe "users_for_team/1" do
     test "returns users for a given team" do
       team = insert(:team, %{name: "Care Clinic"})

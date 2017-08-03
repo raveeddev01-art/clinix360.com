@@ -2,6 +2,22 @@ defmodule Stitch.UserQueries do
   import Ecto.Query
   alias Stitch.{Repo, User, Team}
 
+  @doc """
+  Returns a list of users for the given search term.
+  """
+  def search(user_id, term) do
+    user = Repo.get(User, user_id)
+    team = Repo.get(Team, user.team_id)
+
+    query =
+      from u in User,
+      where: u.team_id == ^team.id,
+      where: ilike(u.first_name, ^"%#{term}%") or ilike(u.last_name, ^"%#{term}%") or ilike(u.username, ^"%#{term}%") or ilike(u.email, ^"%#{term}%"),
+      select: u
+
+    Repo.all(query)
+  end
+
   def users_for_team(team_id) when is_integer(team_id) do
     query =
       from u in Stitch.Accounts.User,
