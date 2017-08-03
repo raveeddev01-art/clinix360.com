@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 export default class GroupItem extends Component {
   render() {
-    const { group } = this.props;]
+    const { group } = this.props;
     return (
       <div className="group-item">
         <div className="content">
