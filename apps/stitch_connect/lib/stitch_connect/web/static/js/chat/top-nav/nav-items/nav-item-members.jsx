@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Creatable } from "react-select";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
@@ -8,7 +9,8 @@ export default class NavItemMembers extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false
+      showModal: false,
+      members: ""
     };
   }
 
@@ -16,6 +18,10 @@ export default class NavItemMembers extends Component {
     this.setState({
       showModal: !this.state.showModal
     });
+  };
+
+  _handleChange = value => {
+    this.setState({ members: value });
   };
 
   render() {
@@ -30,7 +36,19 @@ export default class NavItemMembers extends Component {
             </a>
           </Modal.Header>
 
-          <Modal.Body>Members</Modal.Body>
+          <Modal.Body>
+            <h5>Select users to invite to this group.</h5>
+            <Creatable
+              multi={true}
+              joinValues={true}
+              className="multi-select-large"
+              placeholder="Type a name or email to add collegues"
+              onChange={this._handleChange}
+              value={this.state.members}
+              noResultsText=""
+              promptTextCreator={label => `Add member - ${label}`}
+            />
+          </Modal.Body>
 
           <Modal.Footer>
             <Button bsSize="large" onClick={this.toggleModal}>
