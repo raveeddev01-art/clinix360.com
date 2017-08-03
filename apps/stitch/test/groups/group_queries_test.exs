@@ -17,5 +17,18 @@ defmodule Stitch.GroupQueriesTest do
       groups = Stitch.GroupQueries.available_teams(user.id)
       assert Enum.count(groups) == 3
     end
+
+    test "returns list of groups the user is participating in" do
+      team = insert(:team)
+      user = insert(:user, %{team_id: team.id})
+      group = insert(:group, %{team: team, name: "A", slug: "a", public: false})
+      group_b = insert(:group, %{team: team, name: "B", slug: "b", public: false})
+      group_c = insert(:group, %{team: team, name: "C", slug: "c", public: false})
+      insert(:group_user, %{user: user, group: group_b})
+      insert(:group_user, %{user: user, group: group_c})
+
+      groups = Stitch.GroupQueries.available_teams(user.id)
+      assert Enum.count(groups) == 2
+    end
   end
 end

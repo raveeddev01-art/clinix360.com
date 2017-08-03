@@ -30,6 +30,13 @@ defmodule Stitch.Factory do
     }
   end
 
+  def group_user_factory do
+    %Stitch.GroupUser{
+      user: build(:user),
+      group: build(:group)
+    }
+  end
+
   def invitation_factory do
     %Stitch.Invitation{
       invite_token: "abc",

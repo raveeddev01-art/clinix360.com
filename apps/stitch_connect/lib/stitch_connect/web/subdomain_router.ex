@@ -71,6 +71,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/invitations/accept/:token", InvitationController, :accept
 
     get "/groups", GroupController, :index
+    post "/groups/search", GroupController, :search
 
     #   `POST /api/v1/invitation-signup { email, first_name, last_name, username, pin, password, phone }`
 
