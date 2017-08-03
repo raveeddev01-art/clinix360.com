@@ -395,3 +395,22 @@ $screen-lg: 1200px;
     }
   }
 }
+
+.multi-select-large {
+  font-size: 16px !important;
+
+  .Select-control {
+    padding: 5px;
+
+    .Select-value {
+      color: $brand-primary;
+      font-size: 16px;
+      margin: 3px;
+    }
+  }
+
+  .Select-placeholder {
+    line-height: 46px;
+    padding: 0 15px;
+  }
+}
