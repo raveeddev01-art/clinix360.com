@@ -1,6 +1,13 @@
 defmodule Stitch.User.Authentication do
-  import Ecto.Changeset
-  alias Stitch.{Repo, User, Team}
+  import Ecto.{
+    Changeset
+  }
+
+  alias Stitch.{
+    Repo,
+    User,
+    Team
+  }
 
   def hash_password(password) do
     Comeonin.Bcrypt.hashpwsalt(password)
@@ -64,4 +71,43 @@ defmodule Stitch.User.Authentication do
         {:error, "The password wasn't updated"}
     end
   end
+
+  def check_for_valid_reset_token(id, token) do
+     user = Repo.get(User, id)
+     if user.reset_password_token == token do
+          true
+     else
+          false
+     end
+  end
+
+  def create_reset_password_token_for_user(email, team_slug)
+  when byte_size(email) > 0 and byte_size(team_slug) > 0 do
+    team = Repo.get_by(Team, slug: team_slug)
+
+    case Repo.get_by(User, email: email, team_id: team.id) do
+        nil ->
+          {:error, "User is not part of the team"}
+
+        user ->
+          user
+          |> Ecto.Changeset.change(password_reset_token: :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32) )
+          |> Repo.update
+    end
+  end
+
+  def reset_password_for_user(token, password)
+  when byte_size(token) > 0 and byte_size(password) > 0 do
+
+     case Repo.get_by(User, password_reset_token: token) do
+        nil ->
+            {:error, "Token is invalid or already used"}
+
+        user ->
+            user
+            |> Ecto.Changeset.change(encryped_password: hash_password(password), password_reset_token: nil)
+            |> Repo.update
+     end
+   end
+
 end
