@@ -20,6 +20,17 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     render conn, "index.json", groups: groups
   end
 
+  def create(conn, params) do
+    case Stitch.Group.create(params, conn.assigns.current_user.id) do
+      {:ok, group} ->
+        render conn, "show.json", group: group
+      {:error, reason} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: reason})
+    end
+  end
+
   def join(conn, %{"id" => group_id}) do
     # TODO
     # This method exists: Stitch.Group.invite(group_id, conn.assigns.current_user.id)

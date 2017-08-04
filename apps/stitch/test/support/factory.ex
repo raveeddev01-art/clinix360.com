@@ -12,9 +12,10 @@ defmodule Stitch.Factory do
   end
 
   def team_factory do
+    random_id = :rand.uniform(100)
     %Stitch.Team{
-      name: "Starbucks",
-      slug: "starbucks",
+      name: "Starbucks-#{random_id}",
+      slug: "starbucks-#{random_id}",
       security_lockout: true,
       seconds_to_lockout: 99,
       open_invitations_enabled: false

@@ -25,6 +25,10 @@ defmodule Stitch.Group do
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
   end
 
+  def create(attrs, user_id) do
+
+  end
+
   @doc """
   Add user to the group.
   """
