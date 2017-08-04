@@ -1,6 +1,7 @@
 defmodule Stitch.Group do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
   alias Stitch.{Repo, Group}
   alias Stitch.Accounts.User
 
