@@ -35,8 +35,12 @@ defmodule Stitch.Accounts.Email do
     |> subject("Reset Password Requests")
     |> put_param("global_merge_vars", [
       %{
-        "resetPasswordUrl": reset_url,
-        "receiverFirstName": user.first_name
+        "name": "resetPasswordUrl",
+         "content": reset_url
+      },
+      %{
+         "name": "receiverFirstName",
+         "content": user.first_name
       }
     ])
     |> Stitch.Mailer.deliver_later
