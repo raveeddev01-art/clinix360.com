@@ -7,8 +7,8 @@ defmodule Stitch.UserQueries do
   Returns a list of users for the given search term.
   """
   def search(user_id, term) do
-    user = Repo.get(User, user_id)
-    team = Repo.get(Team, user.team_id)
+    user = Repo.get!(User, user_id)
+    team = Repo.get!(Team, user.team_id)
 
     query =
       from u in User,

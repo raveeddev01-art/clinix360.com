@@ -7,6 +7,15 @@ defmodule Stitch.UserQueriesTest do
   end
 
   describe "Stitch.UserQueries.search/2" do
+    test "returns only matching users for the team" do
+      team = insert(:team)
+      user = insert(:user, %{team: team, email: "example@email.com"})
+      team_2 = insert(:team)
+      user_2 = insert(:user, %{team: team_2, email: "example@email.com"})
+      results = Stitch.UserQueries.search(user.id, "exa")
+      assert Enum.count(results) == 1
+    end
+
     test "returns users matching first_name" do
       team = insert(:team)
       user = insert(:user, %{first_name: "Sergio", email: "foobar@email.com", team: team})
