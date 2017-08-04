@@ -2,11 +2,17 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.Group
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :search, :invite]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:toggle_favorite, :index, :search, :invite]
 
   def index(conn, _params) do
     groups = Stitch.GroupQueries.available_groups(conn.assigns.current_user.id)
     render conn, "index.json", groups: groups
+  end
+
+  def toggle_favorite(conn, %{"id" => group_id}) do
+    result = Stitch.Group.toggle_favorite(group_id, conn.assigns.current_user.id)
+    conn
+    |> json(%{group_id: group_id, favorited: result})
   end
 
   def search(conn, %{"term" => term}) do

@@ -8,6 +8,7 @@ defmodule Stitch.User do
   schema "users" do
     field :email, :string
     field :roles, {:array, :string}
+    field :favorite_groups, {:array, :integer}, default: []
     field :encrypted_password, :string
     field :first_name, :string
     field :last_name, :string

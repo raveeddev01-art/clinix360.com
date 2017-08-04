@@ -19,7 +19,8 @@ current_user =
         "id" => user.id,
         "firstName" => user.first_name,
         "lastName" => user.last_name,
-        "roles" => user.roles
+        "roles" => user.roles,
+        "favoriteGroups" => user.favorite_groups
       })
   end
 %>
