@@ -108,7 +108,7 @@ defmodule Stitch.User.AuthenticationTest do
   test "it return user if the password reset token is valid" do
     user = insert(:user, %{password_reset_token: "SomeRandomToken"})
     returned_user = Stitch.User.Authentication.check_for_valid_reset_token("SomeRandomToken")
-    assert user == returned_user
+    assert user.email == returned_user.email
   end
 
   test "it returns false if the password reset token is invalid" do
