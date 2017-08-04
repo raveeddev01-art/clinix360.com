@@ -60,7 +60,8 @@ defmodule StitchConnect.Web.AuthenticationController do
        user ->  change_password_params = Poison.encode!(%{
                   "teamName" => conn.private[:team_name],
                   "teamSlug" => conn.private[:team_slug],
-                  "user_id"  => user.id
+                  "user_id"  => user.id,
+                  "token"    => token
                   })
          render(conn, "change_password.html", change_password_params: change_password_params)
     end
