@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.Group
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:toggle_favorite, :index, :search, :invite]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:toggle_public, :toggle_favorite, :index, :search, :invite]
 
   def index(conn, %{"slug" => slug}) do
     case Stitch.GroupQueries.find_by_slug(slug, conn.assigns.current_user.id) do
