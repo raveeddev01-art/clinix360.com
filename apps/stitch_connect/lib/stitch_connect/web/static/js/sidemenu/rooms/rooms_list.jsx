@@ -161,6 +161,23 @@ export default class RoomsList extends Component {
 
               <FormGroup bsSize="large">
                 <Col componentClass={ControlLabel} sm={3}>
+                  Description
+                </Col>
+
+                <Col sm={9}>
+                  <FormControl
+                    name="description"
+                    type="text"
+                    onChange={this.handleChange}
+                  />
+                  <HelpBlock className="text-muted m-b-0">
+                    What will this group be about?
+                  </HelpBlock>
+                </Col>
+              </FormGroup>
+
+              <FormGroup bsSize="large">
+                <Col componentClass={ControlLabel} sm={3}>
                   Members
                 </Col>
 
