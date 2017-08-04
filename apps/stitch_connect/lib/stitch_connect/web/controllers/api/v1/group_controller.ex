@@ -9,6 +9,16 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     render conn, "index.json", groups: groups
   end
 
+  def join(conn, %{"id" => group_id}) do
+    # TODO
+    # This method exists: Stitch.Group.invite(group_id, conn.assigns.current_user.id)
+  end
+
+  def leave(conn, %{"id" => group_id}) do
+    # TODO
+    # TODO: Stitch.Group.remove_user(group_id, conn.assigns.current_user.id)
+  end
+
   def toggle_favorite(conn, %{"id" => group_id}) do
     result = Stitch.Group.toggle_favorite(group_id, conn.assigns.current_user.id)
     conn
