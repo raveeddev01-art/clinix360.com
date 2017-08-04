@@ -31,7 +31,6 @@ const stores = { resetPasswordStore, authenticationStore };
 
 export default class AuthenticationRouter extends Component {
   componentWillMount() {
-    console.log(this.props);
     authenticationStore.instance = {
       teamName: this.props.teamName,
       teamSlug: this.props.teamSlug
