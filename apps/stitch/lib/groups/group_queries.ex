@@ -8,6 +8,24 @@ defmodule Stitch.GroupQueries do
   import Ecto.Query
 
   @doc """
+  Returns group with the exist matching slug for the user's team.
+  """
+  def find_by_slug(slug, user_id) do
+    user = Repo.get(User, user_id)
+    query =
+      from g in Group,
+      where: g.team_id == ^user.team_id,
+      where: g.slug == ^slug,
+      preload: [:users]
+    case Repo.one(query) do
+      nil ->
+        {:error, "Group with that slug not found."}
+      group ->
+        {:ok, group}
+    end
+  end
+
+  @doc """
   Returns a list of public groups for the user's team, and
   also teams he's been invited to participate in.
   """

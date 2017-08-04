@@ -32,6 +32,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/login", AuthenticationController, :login
     post "/login", AuthenticationController, :submit_login
     get "/logout", AuthenticationController, :logout
+    get "/reset-password", AuthenticationController, :reset_password
+    get "/reset-password/:token", AuthenticationController, :change_password
   end
 
   # Authenticated routes.
@@ -72,12 +74,13 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/invitations/accept/:token", InvitationController, :accept
 
     get "/groups", GroupController, :index
+    post "/groups", GroupController, :create
     post "/groups/search", GroupController, :search
     post "/groups/:id/invite/", GroupController, :invite
     post "/groups/:id/toggle-favorite", GroupController, :toggle_favorite
     post "/groups/:id/toggle-public", GroupController, :toggle_public
-    # TODO: post "/groups/:id/join", GroupController, :join
-    # TODO: post "/groups/:id/leave", GroupController, :leave
+    post "/groups/:id/join", GroupController, :join
+    post "/groups/:id/leave", GroupController, :leave
 
     get "/teams/:id", TeamController, :show
     delete "/teams/:id/", TeamController, :delete_team
@@ -89,5 +92,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/upload-signature", UploadSignatureController, :create
 
     post "/login", AuthenticationController, :submit_login
+    post "/reset_password", AuthenticationController, :reset_password
   end
 end

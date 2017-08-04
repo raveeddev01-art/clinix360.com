@@ -1,6 +1,7 @@
 defmodule Stitch.UserQueries do
   import Ecto.Query
-  alias Stitch.{Repo, User, Team}
+  alias Stitch.{Repo, Team}
+  alias Stitch.Accounts.User
 
   @doc """
   Returns a list of users for the given search term.

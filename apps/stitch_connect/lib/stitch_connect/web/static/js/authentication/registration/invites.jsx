@@ -16,7 +16,6 @@ import Button from "react-bootstrap/lib/Button";
 export default class Invites extends Component {
   constructor(props) {
     super();
-    store.instance = {};
     this.state = {
       emails: [],
       formValid: false
