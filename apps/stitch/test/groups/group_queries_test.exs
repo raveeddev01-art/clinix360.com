@@ -6,6 +6,34 @@ defmodule Stitch.GroupQueriesTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.GroupQueries.find_by_slug/2" do
+    test "returns group for that team with slug" do
+      team = insert(:team)
+      user = insert(:user, %{team_id: team.id})
+      group = insert(:group, %{slug: "example", team: team})
+      {:ok, found_group} = Stitch.GroupQueries.find_by_slug("example", user.id)
+      assert group.id == found_group.id
+    end
+
+    test "returns error if group doesn't exist" do
+      team = insert(:team)
+      user = insert(:user, %{team_id: team.id})
+      {:error, reason} = Stitch.GroupQueries.find_by_slug("example", user.id)
+      assert reason == "Group with that slug not found."
+    end
+
+    test "doesn't match groups for other teams" do
+      team = insert(:team, %{name: "Goodbye", slug: "goodbye"})
+      user = insert(:user, %{team_id: team.id})
+
+      team_2 = insert(:team, %{name: "Hello", slug: "hello"})
+      group = insert(:group, %{slug: "example", team: team_2})
+
+      {:error, reason} = Stitch.GroupQueries.find_by_slug("example", user.id)
+      assert reason == "Group with that slug not found."
+    end
+  end
+
   describe "Stitch.GroupQueries.available_groups/1" do
     test "returns list of available groups for a team" do
       team = insert(:team)

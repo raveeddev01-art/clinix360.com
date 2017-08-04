@@ -4,6 +4,17 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   plug StitchConnect.Plug.ApiAuthenticate when action in [:toggle_favorite, :index, :search, :invite]
 
+  def index(conn, %{"slug" => slug}) do
+    case Stitch.GroupQueries.find_by_slug(slug, conn.assigns.current_user.id) do
+      {:ok, group} ->
+        render conn, "show.json", group: group
+      {:error, reason} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: reason})
+    end
+  end
+
   def index(conn, _params) do
     groups = Stitch.GroupQueries.available_groups(conn.assigns.current_user.id)
     render conn, "index.json", groups: groups
