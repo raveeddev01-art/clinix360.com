@@ -19,7 +19,7 @@ defmodule StitchConnect.Web.Router do
 
     get "/", AuthenticationController, :index
     get "/signin", AuthenticationController, :index
-    
+
 
     # get "/login", AuthenticationController, :index
     # get "/reset-password", AuthenticationController, :index

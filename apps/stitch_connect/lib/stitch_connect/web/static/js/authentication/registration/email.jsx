@@ -15,7 +15,6 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 export default class Email extends Component {
   constructor(props) {
     super();
-    store.instance = {};
     this.state = {
       email: "",
       formValid: false
