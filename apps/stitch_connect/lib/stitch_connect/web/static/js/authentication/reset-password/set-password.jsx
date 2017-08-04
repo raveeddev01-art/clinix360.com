@@ -4,7 +4,9 @@ import PasswordValidator from "password-validator";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Card from "../authentication/components/card/card.jsx";
+import Form from "react-bootstrap/lib/Form";
+import Button from "react-bootstrap/lib/Button";
+import Card from "../components/card/card.jsx";
 
 @inject("resetPasswordStore")
 @observer
@@ -59,7 +61,11 @@ class SetPassword extends Component {
 
   _onSubmit = evt => {
     evt.preventDefault();
-    this.props.resetPasswordStore.resetPassword(this.state.password);
+    this.props.resetPasswordStore
+      .resetPassword(this.state.password)
+      .then(() => {
+        this.props.history.push("/login");
+      });
   };
 
   _renderPasswordHelper = () => {
@@ -93,7 +99,7 @@ class SetPassword extends Component {
   };
 
   render() {
-    const { email } = this.state;
+    const { password } = this.state;
     return (
       <Card
         title="Reset Password"

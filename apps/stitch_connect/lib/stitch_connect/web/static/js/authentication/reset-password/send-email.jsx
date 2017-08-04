@@ -1,10 +1,16 @@
 import React, { Component, PropTypes } from "react";
 import { inject, observer } from "mobx-react";
 import Form from "react-bootstrap/lib/Form";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
-import Card from "../authentication/components/card/card.jsx";
+import { Link } from "react-router-dom";
+
+import Card from "../components/card/card.jsx";
 
 @inject("resetPasswordStore")
 @observer
@@ -33,9 +39,9 @@ class SendEmail extends Component {
               placement="top"
               overlay={<Tooltip id="back">Back</Tooltip>}
             >
-              <a href="/login">
+              <Link to="/login">
                 <i className="fa fa-arrow-left" />
-              </a>
+              </Link>
             </OverlayTrigger>
           </Col>
 
@@ -44,9 +50,9 @@ class SendEmail extends Component {
               placement="top"
               overlay={<Tooltip id="restart">Close</Tooltip>}
             >
-              <a href="/">
+              <Link to="/login">
                 <i className="fa fa-close" />
-              </a>
+              </Link>
             </OverlayTrigger>
           </Col>
         </Row>

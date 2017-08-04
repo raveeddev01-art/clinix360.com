@@ -1,4 +1,4 @@
-import { observable, computed } from "mobx";
+import { observable } from "mobx";
 
 class AuthenticationStore {
   @observable userId = "";
@@ -10,10 +10,14 @@ class AuthenticationStore {
   @observable pin = "";
 
   @observable teamName = "";
+  @observable teamSlug = "";
   @observable teamId = "";
   @observable teamUrl = "";
 
-  constructor() {}
+  constructor(props) {
+    this.teamName = props.teamName;
+    this.teamSlug = props.teamSlug;
+  }
 }
 
 var authenticationStore;
