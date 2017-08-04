@@ -63,7 +63,7 @@ defmodule StitchConnect.Web.AuthenticationController do
                   "user_id"  => user.id,
                   "token"    => token
                   })
-         render(conn, "change_password.html", change_password_params: change_password_params)
+        render(conn, "change_password.html", change_password_params: change_password_params)
     end
   end
 end

@@ -104,4 +104,28 @@ defmodule Stitch.User.AuthenticationTest do
       assert user == nil
     end
   end
+
+  test "it return user if the password reset token is valid" do
+    user = insert(:user, %{password_reset_token: "SomeRandomToken"})
+    returned_user = Stitch.User.Authentication.check_for_valid_reset_token("SomeRandomToken")
+    assert user == returned_user
+  end
+
+  test "it returns false if the password reset token is invalid" do
+    insert(:user, %{password_reset_token: "SomeRandomToken"})
+    assert Stitch.User.Authentication.check_for_valid_reset_token("InvalidToken") == false
+  end
+
+  test "it creates a password reset token for user " do
+    team = insert(:team, %{name: "Test Team", slug: "test-team"})
+    user = insert(:user, %{email: "sadan@example.com", team_id: team.id, encrypted_password: Comeonin.Bcrypt.hashpwsalt("sadan123")})
+
+    {:ok, returned_user} = Stitch.User.Authentication.create_reset_password_token_for_user(user.email, team.slug)
+
+    assert returned_user.password_reset_token != nil
+
+  end
+
+
+
 end

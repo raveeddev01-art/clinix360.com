@@ -105,7 +105,7 @@ defmodule Stitch.User.Authentication do
 
         user ->
             user
-            |> Ecto.Changeset.change(encryped_password: hash_password(password), password_reset_token: nil)
+            |> Ecto.Changeset.change(encrypted_password: hash_password(password), password_reset_token: nil)
             |> Repo.update
      end
    end
