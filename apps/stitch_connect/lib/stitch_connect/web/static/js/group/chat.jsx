@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
-import Message from "../chat/message.jsx";
-import Addons from "../addons/addons.jsx";
+import Message from "./message.jsx";
 import TopNav from "./top-nav/top-nav.jsx";
 
 export default class Chat extends Component {
