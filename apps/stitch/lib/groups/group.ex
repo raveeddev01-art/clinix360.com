@@ -57,7 +57,11 @@ defmodule Stitch.Group do
   group.
   """
   def toggle_public(group_id, public) do
-    group = Repo.get(Group, group_id)
+    query =
+      from g in Group,
+      where: g.id == ^group_id,
+      preload: [:users]
+    group = Repo.one(query)
     changeset = Group.changeset(group, %{public: public})
     Repo.update changeset
   end
