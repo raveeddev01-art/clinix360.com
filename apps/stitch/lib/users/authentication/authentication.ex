@@ -72,10 +72,10 @@ defmodule Stitch.User.Authentication do
     end
   end
 
-  def check_for_valid_reset_token(id, token) do
-     user = Repo.get(User, id)
-     if user.reset_password_token == token do
-          true
+  def check_for_valid_reset_token(token) do
+     user = Repo.get_by(User, password_reset_token: token)
+     if user != nil do
+          user
      else
           false
      end

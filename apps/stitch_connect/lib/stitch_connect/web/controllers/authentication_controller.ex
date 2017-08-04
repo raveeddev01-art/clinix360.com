@@ -51,18 +51,18 @@ defmodule StitchConnect.Web.AuthenticationController do
     render(conn, "reset_password.html", reset_password_params: reset_password_params)
   end
 
-  def change_password(conn, %{"token" => token, "user_id" => user_id}) do
-    case Stitch.User.Authentication.check_for_valid_reset_token(user_id, token) do
+  def change_password(conn, %{"token" => token}) do
+    case Stitch.User.Authentication.check_for_valid_reset_token(token) do
       false -> conn
-              |> put_flash(:invalid_login, "Invalid email or password.")
+              |> put_flash(:invalid_login, "Invalid Token.")
               |> redirect to: "/login"
 
-       true ->  change_password_params = Poison.encode!(%{
+       user ->  change_password_params = Poison.encode!(%{
                   "teamName" => conn.private[:team_name],
                   "teamSlug" => conn.private[:team_slug],
-                  "user_id"  => user_id
+                  "user_id"  => user.id
                   })
-         render(conn, "change_password", change_password_params: change_password_params)
+         render(conn, "change_password.html", change_password_params: change_password_params)
     end
   end
 end
