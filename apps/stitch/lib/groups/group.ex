@@ -51,4 +51,14 @@ defmodule Stitch.Group do
     Repo.update changeset
     favorited
   end
+
+  @doc """
+  Toggles public setting for the user for the specified
+  group.
+  """
+  def toggle_public(group_id, public) do
+    group = Repo.get(Group, group_id)
+    changeset = Group.changeset(group, %{public: public})
+    Repo.update changeset
+  end
 end

@@ -21,4 +21,18 @@ defmodule Stitch.GroupTest do
       assert result == false
     end
   end
+
+  describe "Stitch.Group.toggle_public/2" do
+    test "it sets public to true" do
+      group = insert(:group, %{public: false})
+      {:ok, group} = Stitch.Group.toggle_public(group.id, true)
+      assert group.public == true
+    end
+
+    test "it sets public to false" do
+      group = insert(:group, %{public: true})
+      {:ok, group} = Stitch.Group.toggle_public(group.id, false)
+      assert group.public == false
+    end
+  end
 end

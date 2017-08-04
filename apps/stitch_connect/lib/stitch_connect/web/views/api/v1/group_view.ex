@@ -5,6 +5,10 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
     Enum.map(groups, &group_json/1)
   end
 
+  def render("show.json", %{group: group}) do
+    group_json(group)
+  end
+
   def group_json(group) do
     %{
       id: group.id,
