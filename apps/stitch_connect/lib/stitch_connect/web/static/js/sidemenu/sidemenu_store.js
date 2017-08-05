@@ -10,6 +10,7 @@ class SidemenuStore {
   @observable users = [];
   @observable offlineUsers = [];
   @observable onlineUsers = [];
+  @observable currentGroup = null;
 
   rawOnlineUsers = {};
 
@@ -57,6 +58,10 @@ class SidemenuStore {
 
   listBy = (id, { metas: [first, ...rest] }) => {
     return first;
+  };
+
+  selectRoom = room => {
+    this.selectedRoom = room;
   };
 }
 

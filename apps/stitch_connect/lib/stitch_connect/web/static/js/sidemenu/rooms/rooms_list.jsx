@@ -13,17 +13,16 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
+import Select from "react-select";
+
 import Room from "./room.jsx";
-import GroupItem from "./group_item.jsx";
-import sidemenuStore from "../sidemenu_store.js";
+import GroupsModal from "./modals/groups_modal.jsx";
 
 @observer
 export default class RoomsList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showModal: false
-    };
+    this.state = {};
   }
 
   toggleGroupsModal = () => {
@@ -61,30 +60,10 @@ export default class RoomsList extends Component {
           return <Room key={`room-${room.id}`} room={room} />;
         })}
 
-        <Modal className="sidemenu-modal" show={this.state.showGroupsModal}>
-          <Modal.Header>
-            <Modal.Title>Browse Groups</Modal.Title>
-            <a href="#" onClick={this.toggleGroupsModal}>
-              <i className="fa fa-close" />
-            </a>
-          </Modal.Header>
-
-          <Modal.Body>
-            <input
-              type="text"
-              className="form-control input-lg m-b-20"
-              placeholder="Search groups"
-            />
-            <h5 className="group-heading">Groups you belong to:</h5>
-
-            <div className="group-list">
-              {sidemenuStore.instance.groups &&
-                sidemenuStore.instance.groups.map(group =>
-                  <GroupItem key={group.id} group={group} />
-                )}
-            </div>
-          </Modal.Body>
-        </Modal>
+        <GroupsModal
+          showModal={this.state.showGroupsModal}
+          toggleModal={this.toggleGroupsModal}
+        />
 
         <Modal
           className="sidemenu-modal"
