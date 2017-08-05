@@ -32,13 +32,29 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def join(conn, %{"id" => group_id}) do
-    # TODO
-    # This method exists: Stitch.Group.invite(group_id, conn.assigns.current_user.id)
+    case Stitch.Group.invite(group_id, conn.assigns.current_user.id) do
+      {:error, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot add user to the group"})
+
+      {:ok, group_user} ->
+        conn
+        |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
+    end
   end
 
   def leave(conn, %{"id" => group_id}) do
-    # TODO
-    # TODO: Stitch.Group.remove_user(group_id, conn.assigns.current_user.id)
+     case Stitch.Group.remove(group_id, conn.assigns.current_user.id) do
+       {:error, message} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> json(%{message: message})
+
+        {:ok, message} ->
+            conn
+            |> json(%{message: message})
+     end
   end
 
   def toggle_favorite(conn, %{"id" => group_id}) do

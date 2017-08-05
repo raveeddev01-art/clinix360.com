@@ -39,6 +39,23 @@ defmodule Stitch.Group do
   end
 
   @doc """
+  Removes a user from the group
+  """
+
+  def remove(group_id, user_id) do
+    case Repo.get_by(Stitch.GroupUser, group_id: group_id, user_id: user_id) do
+      nil ->
+        {:error, "User is not part of the this group"}
+
+      group_user ->
+        group_user
+        |> Repo.delete
+        {:ok, "User has been removed from the group"}
+
+    end
+  end
+
+  @doc """
   Toggles favorite setting for the user for the specified
   group.
   """

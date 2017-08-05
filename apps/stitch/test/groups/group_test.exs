@@ -35,4 +35,40 @@ defmodule Stitch.GroupTest do
       assert group.public == false
     end
   end
+
+  describe "Stitch.Group.invite/2" do
+    test "it adds a user to group" do
+      group = insert(:group)
+      user = insert(:user)
+      {:ok, group_user} = Stitch.Group.invite(group.id, user.id)
+
+      assert group_user.group_id == group.id
+      assert group_user.user_id == user.id
+    end
+
+    test "it returns an error if the user is already part of group" do
+      group = insert(:group)
+      user = insert(:user)
+      {:ok, _} = Stitch.Group.invite(group.id, user.id)
+
+      {:error, changeset} = Stitch.Group.invite(group.id, user.id)
+      {message, _} = changeset.errors[:user_id]
+      assert message == "User is already part of group"
+    end
+  end
+
+  describe "Stitch.Group.remove/2" do
+    test "it removes a user from group" do
+      group = insert(:group)
+      user = insert(:user)
+      {:ok, _} = Stitch.Group.invite(group.id, user.id)
+      {:ok, message} = Stitch.Group.remove(group.id, user.id)
+      assert message == "User has been removed from the group"
+    end
+
+    test "it returns a message if the user is not part of the group" do
+      {:error, message} = Stitch.Group.remove(1, 1)
+      assert message == "User is not part of the this group"
+    end
+  end
 end
