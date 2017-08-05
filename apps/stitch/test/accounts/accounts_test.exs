@@ -26,7 +26,7 @@ defmodule Stitch.AccountsTest do
   describe "Stitch.Accounts.update_and_complete_user_onboarding/2" do
     test "it onboards the user and sets the admin role for his new team" do
       team = insert(:team)
-      user = insert(:user, %{email: "sergio@email.com"})
+      user = insert(:user, %{email: "sergio@email.com", onboarded: false})
       attrs = %{
         fullname: "Sergio Tapia",
         username: "sergiotapia",

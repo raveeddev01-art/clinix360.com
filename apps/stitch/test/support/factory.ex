@@ -7,7 +7,8 @@ defmodule Stitch.Factory do
       last_name: "Tapia",
       email: sequence(:email, &"email-#{&1}@example.com"),
       phone_number: "1231231234",
-      roles: ["member"]
+      roles: ["member"],
+      onboarded: true
     }
   end
 
