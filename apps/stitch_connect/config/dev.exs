@@ -18,6 +18,14 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
   force_ssl: [host: nil, rewrite_on: [:x_forwarded_proto]],
   watchers: [node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--progress", "--color", cd: Path.expand("../", __DIR__)]]
 
+# Uncomment this if you want just normal HTTP for local development.
+# config :stitch_connect, StitchConnect.Web.Endpoint,
+#   http: [port: 4000],
+#   debug_errors: true,
+#   code_reloader: true,
+#   check_origin: false,
+#   watchers: [node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--progress", "--color", cd: Path.expand("../", __DIR__)]]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
