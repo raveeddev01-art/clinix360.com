@@ -1,5 +1,6 @@
 import { observable, action } from "mobx";
 import { Presence } from "phoenix";
+import _ from "lodash";
 
 class GroupStore {
   @observable loading = false;
@@ -46,7 +47,7 @@ class GroupStore {
   saveUsers = members => {
     return post(`/api/v1/groups/${this.id}/invite`, {
       body: {
-        user_ids: Object.keys(members).join(",")
+        user_ids: _.map(members, "id").join(",")
       }
     }).then(resp => {
       notify.show("Users invited to group");
