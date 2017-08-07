@@ -6,6 +6,20 @@ defmodule Stitch.GroupQueriesTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.GroupQueries.get_users/1" do
+    test "returns collection of users" do
+      group = insert(:group)
+      user_a = insert(:user)
+      user_b = insert(:user)
+      user_c = insert(:user)
+      insert(:group_user, %{group: group, user: user_a})
+      insert(:group_user, %{group: group, user: user_b})
+      insert(:group_user, %{group: group, user: user_c})
+      {:ok, users} = Stitch.GroupQueries.get_users(group.id)
+      assert Enum.count(users) == 3
+    end
+  end
+
   describe "Stitch.GroupQueries.find_by_slug/2" do
     test "returns group for that team with slug" do
       team = insert(:team)

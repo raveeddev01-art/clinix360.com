@@ -1,38 +1,25 @@
 import React, { Component } from "react";
+import { observer } from "mobx-react";
 
 import Modal from "react-bootstrap/lib/Modal";
 
 import Select from "react-select";
 
-import GroupItem from "../group_item.jsx";
+import GroupItem from "./group_item.jsx";
 import sidemenuStore from "../../sidemenu_store.js";
 
+@observer
 export default class GroupsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      allGroups: [],
       filteredGroups: [],
       filter: ""
     };
   }
 
-  componentDidMount() {
-    this.loadGroups();
-  }
-
-  loadGroups = (input = "") => {
-    post(`/api/v1/groups/search`, {
-      body: {
-        term: input
-      }
-    }).then((response) => {
-        this.setState({allGroups: response.data});
-      });
-  }
-
   handleChange = (event) => {
-    const { allGroups } = this.state;
+    const allGroups = sidemenuStore.instance.groups;
     const { value } = event.target;
     const filteredGroups = allGroups.filter(
       group => group.name.toLowerCase().startsWith(value.toLowerCase())
@@ -44,7 +31,8 @@ export default class GroupsModal extends Component {
   }
   
   render() {
-    const { allGroups, filteredGroups, filter } = this.state;
+    const { filteredGroups, filter } = this.state;
+    const allGroups = sidemenuStore.instance.groups;
     const groups = filter !== "" ? filteredGroups : allGroups;
     return (
       <Modal className="sidemenu-modal" show={this.props.showModal}>
