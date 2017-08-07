@@ -1,5 +1,6 @@
 import { observable, action } from "mobx";
 import { Presence } from "phoenix";
+import _ from "lodash";
 
 class GroupStore {
   @observable loading = false;
@@ -9,6 +10,7 @@ class GroupStore {
   @observable description = "";
   @observable public = true;
   @observable joined = false;
+  @observable users = [];
 
   @action
   loadGroupBySlug = slug => {
@@ -28,10 +30,29 @@ class GroupStore {
   @action
   togglePublic = value => {
     return post(`/api/v1/groups/${this.id}/toggle-public`, {
-      body: {public: value}
+      body: { public: value }
     }).then(resp => {
-        this.public = !this.public;
-      });
+      this.public = !this.public;
+    });
+  };
+
+  @action
+  loadUsers = () => {
+    return get(`/api/v1/groups/${this.id}/users`).then(resp => {
+      this.users = resp.data;
+      return resp.data;
+    });
+  };
+
+  @action
+  saveUsers = members => {
+    return post(`/api/v1/groups/${this.id}/invite`, {
+      body: {
+        user_ids: _.map(members, "id").join(",")
+      }
+    }).then(resp => {
+      notify.show("Users invited to group");
+    });
   };
 
   @action

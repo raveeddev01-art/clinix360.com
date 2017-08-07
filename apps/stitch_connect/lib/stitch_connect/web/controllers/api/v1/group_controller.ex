@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.Group
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:toggle_public, :toggle_favorite, :index, :search, :invite]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite]
 
   def index(conn, %{"slug" => slug}) do
     case Stitch.GroupQueries.find_by_slug(slug, conn.assigns.current_user.id) do
@@ -18,6 +18,18 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def index(conn, _params) do
     groups = Stitch.GroupQueries.available_groups(conn.assigns.current_user.id)
     render conn, "index.json", groups: groups
+  end
+
+  def users(conn, %{"id" => group_id}) do
+    case Stitch.GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not authorized to view this group."})
+      true ->
+        {:ok, users} = Stitch.GroupQueries.get_users(group_id)
+        render(conn, StitchConnect.Web.Api.V1.UserView, "index.json", users: users)
+    end
   end
 
   def create(conn, params) do
@@ -45,16 +57,15 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def leave(conn, %{"id" => group_id}) do
-     case Stitch.Group.remove(group_id, conn.assigns.current_user.id) do
-       {:error, message} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: message})
-
-        {:ok, message} ->
-            conn
-            |> json(%{message: message})
-     end
+    case Stitch.Group.remove(group_id, conn.assigns.current_user.id) do
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: message})
+      {:ok, message} ->
+        conn
+        |> json(%{message: message})
+    end
   end
 
   def toggle_favorite(conn, %{"id" => group_id}) do
