@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import { inject, observer } from "mobx-react";
+
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
 import Form from "react-bootstrap/lib/Form";
@@ -10,12 +12,25 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
+@inject("groupStore")
+@observer
 export default class NavItemConvert extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false
+      showModal: false,
+      public: true
     };
+  }
+
+  componentWillMount() {
+    this.setState({public: this.props.groupStore.public});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.groupStore.public !== this.state.public) {
+      this.setState({public: nextProps.groupStore.public});
+    }
   }
 
   toggleModal = () => {
@@ -24,7 +39,20 @@ export default class NavItemConvert extends Component {
     });
   };
 
+  handleChange = (event) => {
+    this.setState({public: event.target.value === 'public'})
+  };
+
+  handleSubmit = () => {
+    if (this.props.groupStore.public !== this.state.public) {
+      this.props.groupStore.togglePublic(this.state.public);
+    }
+    this.toggleModal();
+  };
+
   render() {
+    const publicSwitchValue = this.props.groupStore.public ? "public" : "private";
+
     return (
       <MenuItem onClick={this.toggleModal}>
         Convert
@@ -56,7 +84,7 @@ export default class NavItemConvert extends Component {
                       name="switch_2"
                       value="public"
                       onChange={this.handleChange}
-                      defaultChecked
+                      checked={this.state.public}
                     />
                     <label htmlFor="switch_left">
                       <i className="fa fa-comments" /> Public
@@ -67,6 +95,7 @@ export default class NavItemConvert extends Component {
                       name="switch_2"
                       value="private"
                       onChange={this.handleChange}
+                      checked={!this.state.public}
                     />
                     <label htmlFor="switch_right">
                       <i className="fa fa-lock" /> Private
@@ -81,7 +110,7 @@ export default class NavItemConvert extends Component {
             <Button bsSize="large" onClick={this.toggleModal}>
               Cancel
             </Button>
-            <Button bsSize="large" bsStyle="primary">
+            <Button bsSize="large" bsStyle="primary" onClick={this.handleSubmit}>
               Done
             </Button>
           </Modal.Footer>

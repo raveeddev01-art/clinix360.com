@@ -2,21 +2,59 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.Group
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:toggle_favorite, :index, :search, :invite]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:toggle_public, :toggle_favorite, :index, :search, :invite]
+
+  def index(conn, %{"slug" => slug}) do
+    case Stitch.GroupQueries.find_by_slug(slug, conn.assigns.current_user.id) do
+      {:ok, group} ->
+        render conn, "show.json", group: group
+      {:error, reason} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: reason})
+    end
+  end
 
   def index(conn, _params) do
     groups = Stitch.GroupQueries.available_groups(conn.assigns.current_user.id)
     render conn, "index.json", groups: groups
   end
 
+  def create(conn, params) do
+    case Stitch.Group.create(params, conn.assigns.current_user.id) do
+      {:ok, group} ->
+        render conn, "show.json", group: group
+      {:error, reason} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: reason})
+    end
+  end
+
   def join(conn, %{"id" => group_id}) do
-    # TODO
-    # This method exists: Stitch.Group.invite(group_id, conn.assigns.current_user.id)
+    case Stitch.Group.invite(group_id, conn.assigns.current_user.id) do
+      {:error, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot add user to the group"})
+
+      {:ok, group_user} ->
+        conn
+        |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
+    end
   end
 
   def leave(conn, %{"id" => group_id}) do
-    # TODO
-    # TODO: Stitch.Group.remove_user(group_id, conn.assigns.current_user.id)
+     case Stitch.Group.remove(group_id, conn.assigns.current_user.id) do
+       {:error, message} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> json(%{message: message})
+
+        {:ok, message} ->
+            conn
+            |> json(%{message: message})
+     end
   end
 
   def toggle_favorite(conn, %{"id" => group_id}) do

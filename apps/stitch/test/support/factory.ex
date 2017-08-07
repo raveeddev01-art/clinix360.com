@@ -7,14 +7,16 @@ defmodule Stitch.Factory do
       last_name: "Tapia",
       email: sequence(:email, &"email-#{&1}@example.com"),
       phone_number: "1231231234",
-      roles: ["member"]
+      roles: ["member"],
+      onboarded: true
     }
   end
 
   def team_factory do
+    random_id = :rand.uniform(100)
     %Stitch.Team{
-      name: "Starbucks",
-      slug: "starbucks",
+      name: "Starbucks-#{random_id}",
+      slug: "starbucks-#{random_id}",
       security_lockout: true,
       seconds_to_lockout: 99,
       open_invitations_enabled: false

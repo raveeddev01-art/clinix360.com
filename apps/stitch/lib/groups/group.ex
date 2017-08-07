@@ -1,6 +1,7 @@
 defmodule Stitch.Group do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
   alias Stitch.{Repo, Group}
   alias Stitch.Accounts.User
 
@@ -24,6 +25,10 @@ defmodule Stitch.Group do
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
   end
 
+  def create(attrs, user_id) do
+
+  end
+
   @doc """
   Add user to the group.
   """
@@ -31,6 +36,23 @@ defmodule Stitch.Group do
     params = %{group_id: group_id, user_id: user_id}
     changeset = Stitch.GroupUser.changeset(%Stitch.GroupUser{}, params)
     Repo.insert changeset
+  end
+
+  @doc """
+  Removes a user from the group
+  """
+
+  def remove(group_id, user_id) do
+    case Repo.get_by(Stitch.GroupUser, group_id: group_id, user_id: user_id) do
+      nil ->
+        {:error, "User is not part of the this group"}
+
+      group_user ->
+        group_user
+        |> Repo.delete
+        {:ok, "User has been removed from the group"}
+
+    end
   end
 
   @doc """
@@ -57,7 +79,11 @@ defmodule Stitch.Group do
   group.
   """
   def toggle_public(group_id, public) do
-    group = Repo.get(Group, group_id)
+    query =
+      from g in Group,
+      where: g.id == ^group_id,
+      preload: [:users]
+    group = Repo.one(query)
     changeset = Group.changeset(group, %{public: public})
     Repo.update changeset
   end
