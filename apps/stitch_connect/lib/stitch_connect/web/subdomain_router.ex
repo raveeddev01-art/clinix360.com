@@ -81,6 +81,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/groups/:id/toggle-public", GroupController, :toggle_public
     post "/groups/:id/join", GroupController, :join
     post "/groups/:id/leave", GroupController, :leave
+    get "/groups/:id/users", GroupController, :users
 
     get "/teams/:id", TeamController, :show
     delete "/teams/:id/", TeamController, :delete_team

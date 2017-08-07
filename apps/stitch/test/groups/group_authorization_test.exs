@@ -6,6 +6,47 @@ defmodule Stitch.GroupAuthorizationTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.GroupAuthorization.can_view?/2" do
+    test "returns true public groups" do
+      user = insert(:user)
+      group = insert(:group)
+      result = Stitch.GroupAuthorization.can_view?(group.id, user.id)
+      assert result == true
+    end
+
+    test "return true for groups he belongs to" do
+      user = insert(:user)
+      group = insert(:group)
+      insert(:group_user, %{user: user, group: group})
+      result = Stitch.GroupAuthorization.can_view?(group.id, user.id)
+      assert result == true
+    end
+
+    test "returns false for private groups he doesn't belong to" do
+      user = insert(:user)
+      group = insert(:group, %{public: false})
+      result = Stitch.GroupAuthorization.can_view?(group.id, user.id)
+      assert result == false
+    end
+  end
+
+  describe "Stitch.GroupAuthorization.is_member?2" do
+    test "returns true if user is member" do
+      user = insert(:user)
+      group = insert(:group)
+      insert(:group_user, %{user: user, group: group})
+      result = Stitch.GroupAuthorization.is_member?(group.id, user.id)
+      assert result == true
+    end
+
+    test "returns false if user isn't member" do
+      user = insert(:user)
+      group = insert(:group)
+      result = Stitch.GroupAuthorization.is_member?(group.id, user.id)
+      assert result == false
+    end
+  end
+
   describe "Stitch.GroupAuthorization.can_invite?/2" do
     test "returns true for admin users" do
       group = insert(:group, %{public: false})
