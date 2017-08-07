@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import { Link } from "react-router-dom";
 
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";

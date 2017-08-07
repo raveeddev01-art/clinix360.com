@@ -99,6 +99,20 @@
   .flex-footer {
     padding: 10px 20px;
 
+    .room-preview {
+      text-align: center;
+      font-size: 18px;
+      line-height: 60px;
+      height: 60px;
+      width: 100%;
+
+      .btn {
+        padding: 8px 10px;
+        font-size: 18px;
+        margin: -4px 0 0 6px;
+      }
+    }
+
     .form-control {
       height: 40px;
       border-width: 2px;

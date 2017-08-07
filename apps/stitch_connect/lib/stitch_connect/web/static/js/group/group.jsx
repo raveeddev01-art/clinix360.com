@@ -9,14 +9,22 @@ import TopNav from "./top-nav/top-nav.jsx";
 @inject("groupStore")
 @observer
 export default class Group extends Component {
+
   componentDidMount() {
+    this.loadGroup();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.loadGroup();
+  }
+
+  loadGroup() {
     const { slug } = this.props.match.params;
     if (slug) {
       this.props.groupStore.loadGroupBySlug(slug);
     } else {
       this.props.groupStore.loadGroupBySlug("general");
     }
-    
   }
 
   render() {

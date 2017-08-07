@@ -8,6 +8,7 @@ class GroupStore {
   @observable slug = "";
   @observable description = "";
   @observable public = true;
+  @observable joined = false;
 
   @action
   loadGroupBySlug = slug => {
@@ -25,11 +26,25 @@ class GroupStore {
   };
 
   @action
-  togglePublic = (value) => {
+  togglePublic = value => {
     return post(`/api/v1/groups/${this.id}/toggle-public`, {
       body: {public: value}
     }).then(resp => {
         this.public = !this.public;
+      });
+  };
+
+  @action
+  join = () => {
+    return post(`/api/v1/groups/${this.id}/join`).then(resp => {
+        this.joined = true;
+      });
+  };
+
+  @action
+  leave = () => {
+    return post(`/api/v1/groups/${this.id}/leave`).then(resp => {
+        this.joined = false;
       });
   };
 }
