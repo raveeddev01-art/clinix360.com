@@ -8,6 +8,19 @@ defmodule Stitch.GroupQueries do
   import Ecto.Query
 
   @doc """
+  Returns list of users within a group.
+  """
+  def get_users(group_id) do
+    query =
+      from u in User,
+      join: gu in GroupUser,
+      where: gu.group_id == ^group_id,
+      where: gu.user_id == u.id
+    users = Repo.all(query)
+    {:ok, users}
+  end
+
+  @doc """
   Returns group with the exist matching slug for the user's team.
   """
   def find_by_slug(slug, user_id) do
