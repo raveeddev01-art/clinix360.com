@@ -22,6 +22,7 @@ class GroupStore {
       this.slug = data.slug;
       this.description = data.description;
       this.public = data.public;
+      this.joined = data.joined;
 
       this.loading = false;
     });
