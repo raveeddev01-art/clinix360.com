@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Creatable } from "react-select";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
+import Members from "../../../common/components/members/members.jsx";
 
 export default class NavItemMembers extends Component {
   constructor(props) {
@@ -38,16 +38,7 @@ export default class NavItemMembers extends Component {
 
           <Modal.Body>
             <h5>Select users to invite to this group.</h5>
-            <Creatable
-              multi={true}
-              joinValues={true}
-              className="multi-select-large"
-              placeholder="Type a name or email to add collegues"
-              onChange={this._handleChange}
-              value={this.state.members}
-              noResultsText=""
-              promptTextCreator={label => `Add member - ${label}`}
-            />
+            <Members onChange={this._handleChange} value={this.state.members} />
           </Modal.Body>
 
           <Modal.Footer>

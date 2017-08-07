@@ -141,3 +141,15 @@
     border-color: lighten($brand-primary, 50%);
   }
 }
+
+.select-option {
+  i {
+    margin: 0 10px;
+    color: $brand-primary;
+  }
+
+  small {
+    margin: 0 10px;
+    color: #babbbf;
+  }
+}
