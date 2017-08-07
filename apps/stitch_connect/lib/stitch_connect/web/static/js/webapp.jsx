@@ -11,8 +11,9 @@ import Group from "./group/group.jsx";
 import sidemenuStore from "./sidemenu/sidemenu_store.js";
 import presenceStore from "./common/stores/presence_store";
 import groupStore from "./stores/group_store.jsx";
+import layoutStore from "./stores/layout_store.jsx";
 
-const stores = { groupStore, sidemenuStore, presenceStore };
+const stores = { groupStore, sidemenuStore, presenceStore, layoutStore };
 
 export default class Webapp extends Component {
   constructor(props) {

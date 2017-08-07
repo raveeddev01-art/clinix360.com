@@ -1,12 +1,24 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
+import cx from "classnames";
 
-export default class Addons extends Component {
+@inject("layoutStore")
+@observer
+class Addons extends Component {
+  _toggleAddons = () => {
+    this.props.layoutStore.toggleAddons();
+  };
+
   render() {
+    const className = cx({
+      "open-addons": this.props.layoutStore.showAddons
+    });
+
     return (
-      <div id="addons">
+      <div id="addons" className={className}>
         <div className="flex-header">
           <h4>Info</h4>
-          <a href="#">
+          <a onClick={this._toggleAddons}>
             <i className="fa fa-close" />
           </a>
         </div>
@@ -113,3 +125,5 @@ export default class Addons extends Component {
     );
   }
 }
+
+export default Addons;

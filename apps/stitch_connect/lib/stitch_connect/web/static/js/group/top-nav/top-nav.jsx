@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import { inject, observer } from "mobx-react";
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -11,10 +11,12 @@ import NavItemConvert from "./nav-items/nav-item-convert.jsx";
 
 import sidemenuStore from "../../sidemenu/sidemenu_store.js";
 
-export default class TopNav extends Component {
-  constructor(props) {
-    super(props);
-  }
+@inject("layoutStore")
+@observer
+class TopNav extends Component {
+  _toggleAddons = () => {
+    this.props.layoutStore.toggleAddons();
+  };
 
   render() {
     return (
@@ -45,20 +47,18 @@ export default class TopNav extends Component {
           </Dropdown>
 
           <a
-            href="#addons-toggle"
             className="btn btn-default"
             id="addons-toggle"
+            onClick={this._toggleAddons}
           >
             <i className="fa fa-info-circle" />
           </a>
 
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search"
-          />
+          <input type="text" className="form-control" placeholder="Search" />
         </div>
       </div>
     );
   }
 }
+
+export default TopNav;
