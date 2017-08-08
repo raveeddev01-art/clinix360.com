@@ -6,6 +6,23 @@ defmodule Stitch.GroupQueriesTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.GroupQueries.user_is_member?/2" do
+    test "returns true if user is a member" do
+      group = insert(:group)
+      user = insert(:user)
+      insert(:group_user, %{group: group, user: user})
+      result = Stitch.GroupQueries.user_is_member?(group.id, user.id)
+      assert result == true
+    end
+
+    test "returns false if user is a member" do
+      group = insert(:group)
+      user = insert(:user)
+      result = Stitch.GroupQueries.user_is_member?(group.id, user.id)
+      assert result == false
+    end
+  end
+
   describe "Stitch.GroupQueries.get_users/1" do
     test "returns collection of users" do
       group = insert(:group)

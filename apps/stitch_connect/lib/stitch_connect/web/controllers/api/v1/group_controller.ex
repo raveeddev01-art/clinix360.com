@@ -18,6 +18,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     case Stitch.GroupQueries.find_by_slug(slug, conn.assigns.current_user.id) do
       {:ok, group} ->
         group = if_favorited_group(group, conn.assigns.current_user)
+        group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
         render conn, "show.json", group: group
       {:error, reason} ->
         conn
@@ -30,6 +31,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     groups = Stitch.GroupQueries.available_groups(conn.assigns.current_user.id)
     groups = Enum.map(groups, fn group ->
       group = if_favorited_group(group, conn.assigns.current_user)
+      group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
     end)
     render conn, "index.json", groups: groups
   end
