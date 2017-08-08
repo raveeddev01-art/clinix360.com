@@ -21,6 +21,22 @@ defmodule Stitch.GroupQueries do
   end
 
   @doc """
+  Returns group with the exist matching id.
+  """
+  def get_by_id(id) do
+    query =
+      from g in Group, 
+      where: g.id == ^id,
+      preload: [:users]
+    case Repo.one(query) do
+      nil ->
+        {:error, "Group with that id not found."}
+      group ->
+        {:ok, group}
+    end
+  end
+
+  @doc """
   Returns group with the exist matching slug for the user's team.
   """
   def find_by_slug(slug, user_id) do

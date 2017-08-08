@@ -5,6 +5,7 @@ import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
+import NavItemFavorite from "./nav-items/nav-item-favorite.jsx";
 import NavItemMembers from "./nav-items/nav-item-members.jsx";
 import NavItemNotifications from "./nav-items/nav-item-notifications.jsx";
 import NavItemRename from "./nav-items/nav-item-rename.jsx";
@@ -37,8 +38,7 @@ export default class TopNav extends Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="group-controls-menu">
-              <MenuItem>Favorite</MenuItem>
-
+              <NavItemFavorite />
               <NavItemMembers />
               <NavItemNotifications />
               <NavItemRename />
@@ -57,11 +57,7 @@ export default class TopNav extends Component {
             <i className="fa fa-info-circle" />
           </a>
 
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search"
-          />
+          <input type="text" className="form-control" placeholder="Search" />
         </div>
       </div>
     );
