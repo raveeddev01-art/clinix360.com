@@ -9,7 +9,9 @@ class GroupStore {
   @observable slug = "";
   @observable description = "";
   @observable public = true;
+  @observable joined = false;
   @observable users = [];
+  @observable favorite = false;
 
   @action
   loadGroupBySlug = slug => {
@@ -21,6 +23,8 @@ class GroupStore {
       this.slug = data.slug;
       this.description = data.description;
       this.public = data.public;
+      this.favorite = !!data.favorite;
+      this.joined = data.joined;
 
       this.loading = false;
       this.loadUsers();
@@ -52,6 +56,30 @@ class GroupStore {
       }
     }).then(resp => {
       notify.show("Users invited to group");
+    });
+  };
+
+  toggleFavorite = value => {
+    return post(`/api/v1/groups/${this.id}/toggle-favorite`, {
+      body: { favorite: value }
+    }).then(() => {
+      this.favorite = !this.favorite;
+    });
+  };
+
+  @action
+  join = () => {
+    return post(`/api/v1/groups/${this.id}/join`).then(resp => {
+      this.joined = true;
+      notify.show("User has joined the group");
+    });
+  };
+
+  @action
+  leave = () => {
+    return post(`/api/v1/groups/${this.id}/leave`).then(resp => {
+      this.joined = false;
+      notify.show("User has been removed from the group");
     });
   };
 }

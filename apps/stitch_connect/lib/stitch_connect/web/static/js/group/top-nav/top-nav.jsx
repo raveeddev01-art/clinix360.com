@@ -1,21 +1,25 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
+import NavItemFavorite from "./nav-items/nav-item-favorite.jsx";
 import NavItemMembers from "./nav-items/nav-item-members.jsx";
 import NavItemNotifications from "./nav-items/nav-item-notifications.jsx";
 import NavItemRename from "./nav-items/nav-item-rename.jsx";
 import NavItemConvert from "./nav-items/nav-item-convert.jsx";
 
-import sidemenuStore from "../../sidemenu/sidemenu_store.js";
-
-@inject("layoutStore")
+@inject("layoutStore", "groupStore")
 @observer
 class TopNav extends Component {
   _toggleAddons = () => {
     this.props.layoutStore.toggleAddons();
+  };
+
+  handleLeave = () => {
+    this.props.groupStore.leave();
   };
 
   render() {
@@ -34,14 +38,13 @@ class TopNav extends Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="group-controls-menu">
-              <MenuItem>Favorite</MenuItem>
-
+              <NavItemFavorite />
               <NavItemMembers />
               <NavItemNotifications />
               <NavItemRename />
               <NavItemConvert />
 
-              <MenuItem>Leave</MenuItem>
+              <MenuItem onSelect={this.handleLeave}>Leave</MenuItem>
               <MenuItem>Delete</MenuItem>
             </Dropdown.Menu>
           </Dropdown>

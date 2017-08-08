@@ -2,11 +2,17 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.Group
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite, :show]
+
+  defp if_favorited_group(group, user) do
+    favorite = group.id in user.favorite_groups
+    Map.put_new(group, :favorite, favorite)
+  end
 
   def index(conn, %{"slug" => slug}) do
     case Stitch.GroupQueries.find_by_slug(slug, conn.assigns.current_user.id) do
       {:ok, group} ->
+        group = if_favorited_group(group, conn.assigns.current_user)
         render conn, "show.json", group: group
       {:error, reason} ->
         conn
@@ -18,6 +24,25 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def index(conn, _params) do
     groups = Stitch.GroupQueries.available_groups(conn.assigns.current_user.id)
     render conn, "index.json", groups: groups
+  end
+
+  def show(conn, %{"id" => group_id}) do
+    case Stitch.GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not authorized to view this group."})
+      true ->
+        case Stitch.GroupQueries.get_by_id(group_id)   do
+          {:ok, group} ->
+            group = if_favorited_group(group, conn.assigns.current_user)
+            render conn, "show.json", group: group
+          {:error, reason} ->
+            conn
+            |> put_status(:not_found)
+            |> json(%{message: reason})
+        end
+    end
   end
 
   def users(conn, %{"id" => group_id}) do

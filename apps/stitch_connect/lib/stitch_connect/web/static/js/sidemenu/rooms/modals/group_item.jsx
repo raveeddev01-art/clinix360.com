@@ -1,10 +1,17 @@
 import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
 
-export default class GroupItem extends Component {
+class GroupItem extends Component {
+  handleClick = () => {
+    const { group, history, toggleModal } = this.props;
+    toggleModal();
+    history.push(`/groups/${group.slug}`);
+  };
+
   render() {
     const { group } = this.props;
     return (
-      <div className="group-item">
+      <div className="group-item" onClick={this.handleClick}>
         <div className="content">
           <div className="name">
             <i className="fa fa-comments" /> {group.name}
@@ -24,3 +31,5 @@ export default class GroupItem extends Component {
     );
   }
 }
+
+export default withRouter(GroupItem);
