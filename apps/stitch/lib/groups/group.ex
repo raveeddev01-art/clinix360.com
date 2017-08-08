@@ -36,7 +36,7 @@ defmodule Stitch.Group do
     new_slug =
       name
       |> String.downcase
-      |> Slugify.slugify
+      |> Slugger.slugify
     group = Repo.get(Group, group_id)
 
     changeset = Group.changeset(group, %{name: name, slug: new_slug})
