@@ -74,6 +74,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/invitations/accept/:token", InvitationController, :accept
 
     get "/groups", GroupController, :index
+    get "/groups/:id", GroupController, :show
     post "/groups", GroupController, :create
     post "/groups/search", GroupController, :search
     post "/groups/:id/invite/", GroupController, :invite
