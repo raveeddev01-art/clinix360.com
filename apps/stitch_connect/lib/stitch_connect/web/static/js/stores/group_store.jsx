@@ -23,6 +23,7 @@ class GroupStore {
       this.public = data.public;
 
       this.loading = false;
+      this.loadUsers();
     });
   };
 
