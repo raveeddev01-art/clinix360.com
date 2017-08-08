@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.Group
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite, :show]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:rename, :join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite, :show]
 
   defp if_favorited_group(group, user) do
     favorite = group.id in user.favorite_groups
