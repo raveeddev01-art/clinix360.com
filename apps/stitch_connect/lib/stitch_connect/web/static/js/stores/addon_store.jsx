@@ -1,8 +1,10 @@
 import { observable, action } from "mobx";
 
-class LayoutStore {
+class AddonStore {
   @observable showAddons = false;
   @observable showAddonDetail = false;
+  @observable detailPanelType = null;
+  @observable detailPanelItem = null;
 
   @action
   toggleAddons = value => {
@@ -14,10 +16,14 @@ class LayoutStore {
   };
 
   @action
-  toggleAddonDetail = () => {
+  toggleAddonDetail = (detailType, detailItem) => {
     this.showAddonDetail = !this.showAddonDetail;
+    if (detailType || detailItem) {
+      this.detailPanelType = detailType;
+      this.detailPanelItem = detailItem;
+    }
   };
 }
 
-const store = new LayoutStore();
+const store = new AddonStore();
 export default store;

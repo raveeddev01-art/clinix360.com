@@ -11,11 +11,11 @@ import NavItemNotifications from "./nav-items/nav-item-notifications.jsx";
 import NavItemRename from "./nav-items/nav-item-rename.jsx";
 import NavItemConvert from "./nav-items/nav-item-convert.jsx";
 
-@inject("layoutStore", "groupStore")
+@inject("addonStore", "groupStore")
 @observer
 class TopNav extends Component {
   _toggleAddons = () => {
-    this.props.layoutStore.toggleAddons();
+    this.props.addonStore.toggleAddons();
   };
 
   handleLeave = () => {

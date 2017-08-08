@@ -2,32 +2,30 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
 import AddonCollapse from "./components/addon-collapse/addon-collapse.jsx";
-import PeopleList from "./people_list.jsx";
+import PeopleList from "./people-list.jsx";
+import AddonDetailPanel from "./addon-detail-panel.jsx";
 
-@inject("layoutStore")
+@inject("addonStore")
 @observer
 class Addons extends Component {
   _toggleAddons = () => {
-    this.props.layoutStore.toggleAddons();
+    this.props.addonStore.toggleAddons();
   };
 
   render() {
+    const { addonStore } = this.props;
     const className = cx({
-      "open-addons": this.props.layoutStore.showAddons
+      "open-addons": addonStore.showAddons
     });
     const leftPanelClass = cx("addon-left-panel", {
-      opened: !this.props.layoutStore.showAddonDetail
+      opened: !addonStore.showAddonDetail
     });
-    const rightPanelClass = cx("addon-right-panel", {
-      opened: this.props.layoutStore.showAddonDetail
-    });
-    const { layoutStore } = this.props;
 
     return (
       <div id="addons" className={className}>
         <div className="flex-header">
-          {layoutStore.showAddonDetail &&
-            <a onClick={layoutStore.toggleAddonDetail}>
+          {addonStore.showAddonDetail &&
+            <a className="open-left" onClick={addonStore.toggleAddonDetail}>
               <i className="fa fa-chevron-left" />
             </a>}
           <h4>Info</h4>
@@ -70,7 +68,7 @@ class Addons extends Component {
               <p className="text-muted">Add the first clinical note!</p>
             </AddonCollapse>
           </div>
-          <div className={rightPanelClass}>placeholder</div>
+          <AddonDetailPanel />
         </div>
       </div>
     );
