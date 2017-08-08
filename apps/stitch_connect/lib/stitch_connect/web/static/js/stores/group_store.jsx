@@ -27,6 +27,7 @@ class GroupStore {
       this.joined = data.joined;
 
       this.loading = false;
+      this.loadUsers();
     });
   };
 

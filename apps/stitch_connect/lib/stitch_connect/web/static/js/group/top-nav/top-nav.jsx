@@ -11,12 +11,12 @@ import NavItemNotifications from "./nav-items/nav-item-notifications.jsx";
 import NavItemRename from "./nav-items/nav-item-rename.jsx";
 import NavItemConvert from "./nav-items/nav-item-convert.jsx";
 
-@inject("groupStore")
+@inject("addonStore", "groupStore")
 @observer
-export default class TopNav extends Component {
-  constructor(props) {
-    super(props);
-  }
+class TopNav extends Component {
+  _toggleAddons = () => {
+    this.props.addonStore.toggleAddons();
+  };
 
   handleLeave = () => {
     this.props.groupStore.leave();
@@ -50,9 +50,9 @@ export default class TopNav extends Component {
           </Dropdown>
 
           <a
-            href="#addons-toggle"
             className="btn btn-default"
             id="addons-toggle"
+            onClick={this._toggleAddons}
           >
             <i className="fa fa-info-circle" />
           </a>
@@ -63,3 +63,5 @@ export default class TopNav extends Component {
     );
   }
 }
+
+export default TopNav;

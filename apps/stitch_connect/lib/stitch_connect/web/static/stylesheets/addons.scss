@@ -12,17 +12,32 @@
     margin: 0 15px 20px;
 
     h4 {
+      padding-left: 20px;
       flex-grow: 1;
       color: $brand-primary;
       font-size: 20px;
       font-weight: bold;
       margin: 0;
     }
+
+    a {
+      color: #333;
+    }
+
+    .open-left {
+      position: absolute;
+      left: 30px;
+      top: 32px;
+      color: $brand-primary;
+    }
   }
 
   .flex-content {
+    position: relative;
     flex-direction: column;
     padding: 0 15px;
+    overflow: hidden;
+    overflow-y: auto;
 
     .subheading {
       display: flex;
@@ -30,6 +45,7 @@
       align-items: center;
       font-size: 16px;
       margin-bottom: 15px;
+      opacity: .8;
 
       .addon-icon {
         margin-right: 5px;
@@ -39,10 +55,116 @@
         flex-grow: 1;
         flex-shrink: 0;
       }
+
+      &:hover {
+        cursor: pointer;
+        opacity: 1;
+      }
     }
 
     hr {
-      margin: 5px 0 15px;
+      margin: 5px 0;
+    }
+  }
+
+  .addon-left-panel {
+    transform: translateX(-100%);
+    transition: -webkit-transform 0.45s cubic-bezier(0.5, 0, 0, 1),
+      transform 0.45s cubic-bezier(0.5, 0, 0, 1), opacity 0.125s ease-out 0.1s;
+    opacity: 0;
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    top: 0;
+    bottom: 0;
+
+    &.opened {
+      transform: translateX(0%);
+      opacity: 1;
+    }
+  }
+
+  .addon-right-panel {
+    transform: translateX(100%);
+    transition: -webkit-transform 0.45s cubic-bezier(0.5, 0, 0, 1),
+      transform 0.45s cubic-bezier(0.5, 0, 0, 1), opacity 0.125s ease-out 0.1s;
+    opacity: 0;
+
+    &.opened {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+}
+
+.people-list-item {
+  display: flex;
+  color: #333;
+  font-size: 15px;
+  line-height: 1.45;
+  text-decoration: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+
+  .item-icon {
+    margin-right: 5px;
+    color: $brand-primary;
+  }
+
+  .item-text {
+    flex-grow: 1;
+
+    span {
+      margin-right: 5px;
+      text-transform: capitalize;
+    }
+
+    small {
+      font-size: .9em;
+      color: #999;
+    }
+  }
+}
+
+.user-view {
+  .username-and-title {
+    margin-bottom: 15px;
+    text-align: center;
+
+    .display-name {
+      margin-bottom: 8px;
+    }
+
+    .usertitle {
+      color: #9b9b9b;
+    }
+  }
+
+  .userinfo {
+    border-top: solid 1px #d2d2d2;
+    font-size: 14px;
+    padding: 20px 0;
+
+    .userinfo__item {
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .userinfo__label {
+      flex-basis: 40%;
+      color: #9b9b9b;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .userinfo__value {
+      flex-basis: 60%;
+      color: #9b9b9b;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      text-align: right;
     }
   }
 }
