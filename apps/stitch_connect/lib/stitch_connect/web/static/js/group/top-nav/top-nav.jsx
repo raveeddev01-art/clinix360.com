@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
@@ -10,12 +11,16 @@ import NavItemNotifications from "./nav-items/nav-item-notifications.jsx";
 import NavItemRename from "./nav-items/nav-item-rename.jsx";
 import NavItemConvert from "./nav-items/nav-item-convert.jsx";
 
-import sidemenuStore from "../../sidemenu/sidemenu_store.js";
-
+@inject("groupStore")
+@observer
 export default class TopNav extends Component {
   constructor(props) {
     super(props);
   }
+
+  handleLeave = () => {
+    this.props.groupStore.leave();
+  };
 
   render() {
     return (
@@ -39,7 +44,7 @@ export default class TopNav extends Component {
               <NavItemRename />
               <NavItemConvert />
 
-              <MenuItem>Leave</MenuItem>
+              <MenuItem onSelect={this.handleLeave}>Leave</MenuItem>
               <MenuItem>Delete</MenuItem>
             </Dropdown.Menu>
           </Dropdown>

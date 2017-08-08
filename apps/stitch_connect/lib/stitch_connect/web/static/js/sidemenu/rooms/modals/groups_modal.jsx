@@ -55,7 +55,11 @@ export default class GroupsModal extends Component {
 
           <div className="group-list">
             {groups.map(group =>
-                <GroupItem key={group.id} group={group} />
+                <GroupItem 
+                  key={group.id} 
+                  group={group} 
+                  toggleModal={this.props.toggleModal} 
+                />
               )}
           </div>
         </Modal.Body>
