@@ -5,8 +5,13 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   plug StitchConnect.Plug.ApiAuthenticate when action in [:rename, :join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite, :show]
 
   defp if_favorited_group(group, user) do
-    favorite = group.id in user.favorite_groups
-    Map.put_new(group, :favorite, favorite)
+    case user.favorite_groups do
+      nil ->
+        Map.put_new(group, :favorite, false)
+      _ ->
+        favorite = group.id in user.favorite_groups
+        Map.put_new(group, :favorite, favorite)
+    end
   end
 
   def index(conn, %{"slug" => slug}) do
@@ -23,6 +28,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def index(conn, _params) do
     groups = Stitch.GroupQueries.available_groups(conn.assigns.current_user.id)
+    groups = Enum.map(groups, fn group ->
+      group = if_favorited_group(group, conn.assigns.current_user)
+    end)
     render conn, "index.json", groups: groups
   end
 
