@@ -83,6 +83,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/groups/:id/join", GroupController, :join
     post "/groups/:id/leave", GroupController, :leave
     get "/groups/:id/users", GroupController, :users
+    patch "/groups/:id/rename", GroupController, :rename
 
     get "/teams/:id", TeamController, :show
     delete "/teams/:id/", TeamController, :delete_team

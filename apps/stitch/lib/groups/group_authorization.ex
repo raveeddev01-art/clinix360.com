@@ -32,6 +32,27 @@ defmodule Stitch.GroupAuthorization do
   end
 
   @doc """
+  Return true/false whether user can rename this group.
+  """
+  def can_rename?(group_id, user_id) do
+    user = Repo.get(User, user_id)
+    query =
+      from g in Group,
+      where: g.id == ^group_id,
+      preload: [:creator]
+
+    group = Repo.one(query)
+
+    if Enum.member?(user.roles, "admin")
+      || group.public
+      || group.creator.id == user.id do
+      true
+    else
+      false
+    end
+  end
+
+  @doc """
   Return true/false whether user can invite other users to this group.
   """
   def can_invite?(group_id, user_id) do

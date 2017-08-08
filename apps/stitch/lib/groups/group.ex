@@ -30,6 +30,26 @@ defmodule Stitch.Group do
   end
 
   @doc """
+  Rename the group with the provided name.
+  """
+  def rename(group_id, name) when byte_size(name) > 0 do
+    new_slug =
+      name
+      |> String.downcase
+      |> Slugify.slugify
+    group = Repo.get(Group, group_id)
+
+    changeset = Group.changeset(group, %{name: name, slug: new_slug})
+    case Repo.update(changeset) do
+      {:ok, group} ->
+        {:ok, group}
+      {:error, changeset} ->
+        {:error, "Name has to be unique"}
+    end
+  end
+  def rename(_, _), do: {:error, "Name cannot be blank or nil"}
+
+  @doc """
   Add user to the group.
   """
   def invite(group_id, user_id) do

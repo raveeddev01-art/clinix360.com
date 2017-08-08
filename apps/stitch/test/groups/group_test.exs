@@ -6,6 +6,27 @@ defmodule Stitch.GroupTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.Group.rename/2" do
+    test "it renames the group" do
+      group = insert(:group, %{name: "Example"})
+      {:ok, group} = Stitch.Group.rename(group.id, "Deploy")
+      assert group.name == "Deploy"
+      assert group.slug == "deploy"
+    end
+
+    test "it returns error for blank string" do
+      group = insert(:group, %{name: "Example"})
+      {:error, reason} = Stitch.Group.rename(group.id, "")
+      assert reason == "Name cannot be blank or nil"
+    end
+
+    test "it return error for nil name" do
+      group = insert(:group, %{name: "Example"})
+      {:error, reason} = Stitch.Group.rename(group.id, nil)
+      assert reason == "Name cannot be blank or nil"
+    end
+  end
+
   describe "Stitch.Group.toggle_favorite/2" do
     test "it favorites new groups for user" do
       group = insert(:group)
