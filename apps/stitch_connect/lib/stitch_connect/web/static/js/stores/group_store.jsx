@@ -9,6 +9,7 @@ class GroupStore {
   @observable slug = "";
   @observable description = "";
   @observable public = true;
+  @observable joined = false;
   @observable users = [];
 
   @action
@@ -21,6 +22,7 @@ class GroupStore {
       this.slug = data.slug;
       this.description = data.description;
       this.public = data.public;
+      this.joined = data.joined;
 
       this.loading = false;
     });
@@ -52,6 +54,22 @@ class GroupStore {
     }).then(resp => {
       notify.show("Users invited to group");
     });
+  };
+
+  @action
+  join = () => {
+    return post(`/api/v1/groups/${this.id}/join`).then(resp => {
+        this.joined = true;
+        notify.show("User has joined the group");
+      });
+  };
+
+  @action
+  leave = () => {
+    return post(`/api/v1/groups/${this.id}/leave`).then(resp => {
+        this.joined = false;
+        notify.show("User has been removed from the group");
+      });
   };
 }
 
