@@ -64,6 +64,7 @@ class GroupStore {
       body: { favorite: value }
     }).then(() => {
       this.favorite = !this.favorite;
+      return this.favorite;
     });
   };
 

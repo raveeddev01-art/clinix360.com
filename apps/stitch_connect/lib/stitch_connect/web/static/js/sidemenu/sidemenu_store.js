@@ -1,11 +1,10 @@
-import { observable, computed } from "mobx";
+import { observable, computed, action } from "mobx";
 import { Presence } from "phoenix";
 
 class SidemenuStore {
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
-  @observable favoriteGroups = [];
   @observable groups = [];
   @observable users = [];
   @observable offlineUsers = [];
@@ -22,10 +21,24 @@ class SidemenuStore {
     this.loadUsers();
   }
 
+  @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
       this.groups = response.data;
     });
+  };
+
+  @computed
+  get favoriteGroups() {
+    return this.groups.filter(group => group.favorite);
+  }
+
+  @action
+  updateGroupData = (id, data) => {
+    const index = this.groups.findIndex(group => group.id === id);
+    if (index > -1) {
+      Object.assign(this.groups[index], data);
+    }
   };
 
   loadUsers = () => {
