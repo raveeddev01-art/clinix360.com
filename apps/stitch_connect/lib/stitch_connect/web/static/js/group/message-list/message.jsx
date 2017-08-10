@@ -14,7 +14,9 @@ class Message extends Component {
   };
 
   render() {
-    const { user, text, timestamp } = this.props;
+    const { messagePool } = this.props;
+    const { user, createdAt: timestamp } = messagePool[0];
+    const texts = messagePool.map(msg => msg.text);
     const className = cx("message", {
       "message-own": user.id === currentUser.id
     });
@@ -34,7 +36,11 @@ class Message extends Component {
             </OverlayTrigger>
           </h4>
           <div className="content-body">
-            {text}
+            {texts.map((text, index) =>
+              <p key={`text_${index}`}>
+                {text}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -43,9 +49,7 @@ class Message extends Component {
 }
 
 Message.propTypes = {
-  user: PropTypes.object.isRequired,
-  text: PropTypes.string.isRequired,
-  timestamp: PropTypes.any
+  messagePool: PropTypes.array.isRequired
 };
 
 export default Message;
