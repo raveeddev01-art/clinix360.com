@@ -42,6 +42,7 @@ defmodule Stitch.Group do
     changeset = Group.changeset(group, %{name: name, slug: new_slug})
     case Repo.update(changeset) do
       {:ok, group} ->
+        group = Repo.preload(group, :users)
         {:ok, group}
       {:error, changeset} ->
         {:error, "Name has to be unique"}
