@@ -9,13 +9,8 @@ import DateSeparator from "./date-separator.jsx";
 @observer
 class MessageList extends Component {
   _renderMessageBlock = messages => {
-    return messages.map((msg, index) =>
-      <Message
-        key={`msg_${index}`}
-        text={msg.text}
-        user={msg.user}
-        timestamp={msg.createdAt}
-      />
+    return messages.map((msgPool, index) =>
+      <Message key={`msg_${index}`} messagePool={msgPool} />
     );
   };
 

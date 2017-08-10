@@ -16,9 +16,23 @@ class MessageStore {
     const msgMap = {};
 
     this.messages.forEach(msg => {
-      const date = moment(msg.createdAt).format();
+      const date = moment(msg.createdAt).format(`YYYY-MM-DD`);
       msgMap[date] = msgMap[date] || [];
-      msgMap[date].push(msg);
+
+      if (!msgMap[date].length) {
+        msgMap[date].push([msg]);
+      } else {
+        const lastMsgPool = msgMap[date][msgMap[date].length - 1];
+        const lastMsg = lastMsgPool[lastMsgPool.length - 1];
+        if (
+          lastMsg.user.id === msg.user.id &&
+          moment(lastMsg.createdAt).diff(msg.createdAt, "minutes") >= -30
+        ) {
+          lastMsgPool.push(msg);
+        } else {
+          msgMap[date].push([msg]);
+        }
+      }
     });
 
     return msgMap;
@@ -32,39 +46,61 @@ class MessageStore {
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10"
+        createdAt: "2017-05-10T03:02:10"
       },
       {
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10"
+        createdAt: "2017-05-10T10:10:10"
       },
       {
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10"
+        createdAt: "2017-05-10T10:20:30"
       },
       {
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10"
+        createdAt: "2017-05-10T10:30:30"
       },
       {
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-08"
+        createdAt: "2017-08-08T20:10:30"
       },
       {
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-09"
+        createdAt: "2017-08-09T10:10:10"
+      },
+      {
+        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-08-09T10:20:10"
+      },
+      {
+        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-08-09T10:21:10"
+      },
+      {
+        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-08-09T10:31:10"
       }
     ];
+
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 300);
   };
 }
 
