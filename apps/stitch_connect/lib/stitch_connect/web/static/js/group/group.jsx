@@ -9,7 +9,6 @@ import TopNav from "./top-nav/top-nav.jsx";
 @inject("groupStore")
 @observer
 export default class Group extends Component {
-
   componentDidMount() {
     this.loadGroup();
   }
@@ -28,7 +27,6 @@ export default class Group extends Component {
   }
 
   render() {
-    
     return (
       <div className="chat-wrapper">
         <div id="main">

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
@@ -10,18 +11,21 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
+@inject("groupStore")
+@observer
 export default class NavItemRename extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      groupName: "",
-      showModal: false
+      showModal: false,
+      groupName: ""
     };
   }
 
   toggleModal = () => {
     this.setState({
-      showModal: !this.state.showModal
+      showModal: !this.state.showModal,
+      groupName: this.props.groupStore.name
     });
   };
 
@@ -33,6 +37,11 @@ export default class NavItemRename extends Component {
     this.setState({
       [name]: value
     });
+  };
+
+  handleSubmit = () => {
+    this.props.groupStore.rename(this.state.groupName);
+    this.setState({ showModal: false });
   };
 
   render() {
@@ -59,12 +68,13 @@ export default class NavItemRename extends Component {
                     name="groupName"
                     type="text"
                     autoFocus
-                    placeholder="General"
+                    placeholder="e.g. Radiology"
+                    value={this.state.groupName}
                     onChange={this.handleChange}
                   />
                   <HelpBlock className="text-muted m-b-0">
                     The standardize name for use in <a href="#">referencing</a>{" "}
-                    this group will not change.
+                    this group will also be updated: <span>#placeholder</span>
                   </HelpBlock>
                 </Col>
               </FormGroup>
@@ -75,7 +85,11 @@ export default class NavItemRename extends Component {
             <Button bsSize="large" onClick={this.toggleModal}>
               Cancel
             </Button>
-            <Button bsSize="large" bsStyle="primary">
+            <Button
+              bsSize="large"
+              bsStyle="primary"
+              onClick={this.handleSubmit}
+            >
               Rename
             </Button>
           </Modal.Footer>

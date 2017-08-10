@@ -46,6 +46,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         case Stitch.GroupQueries.get_by_id(group_id)   do
           {:ok, group} ->
             group = if_favorited_group(group, conn.assigns.current_user)
+            group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
             render conn, "show.json", group: group
           {:error, reason} ->
             conn
@@ -64,6 +65,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       true ->
         case Stitch.Group.rename(group_id, name) do
           {:ok, group} ->
+            group = if_favorited_group(group, conn.assigns.current_user)
+            group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
             render conn, "show.json", group: group
           {:error, reason} ->
             conn
@@ -88,6 +91,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def create(conn, params) do
     case Stitch.Group.create(params, conn.assigns.current_user.id) do
       {:ok, group} ->
+        group = if_favorited_group(group, conn.assigns.current_user)
+        group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
         render conn, "show.json", group: group
       {:error, reason} ->
         conn
@@ -102,7 +107,6 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Cannot add user to the group"})
-
       {:ok, group_user} ->
         conn
         |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
@@ -135,12 +139,18 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> json(%{message: "Not authorized to toggle the group's privacy setting."})
       true ->
         {:ok, group} = Stitch.Group.toggle_public(group_id, public)
+        group = if_favorited_group(group, conn.assigns.current_user)
+        group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
         render conn, "show.json", group: group
     end
   end
 
   def search(conn, %{"term" => term}) do
     result_groups = Stitch.GroupQueries.search(conn.assigns.current_user.id, term)
+    result_groups = Enum.map(result_groups, fn group ->
+      group = if_favorited_group(group, conn.assigns.current_user)
+      group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
+    end)
     render conn, "index.json", groups: result_groups
   end
 

@@ -49,6 +49,15 @@ class GroupStore {
   };
 
   @action
+  rename = groupName => {
+    return patch(`/api/v1/groups/${this.id}/rename`, {
+      body: { name: groupName, slug: groupName }
+    }).then(resp => {
+      notify.show("Group name has been changed successfully");
+    });
+  };
+
+  @action
   saveUsers = members => {
     return post(`/api/v1/groups/${this.id}/invite`, {
       body: {

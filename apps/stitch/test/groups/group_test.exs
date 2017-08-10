@@ -12,6 +12,7 @@ defmodule Stitch.GroupTest do
       {:ok, group} = Stitch.Group.rename(group.id, "Deploy")
       assert group.name == "Deploy"
       assert group.slug == "deploy"
+      assert Enum.count(group.users) == 0
     end
 
     test "it returns error for blank string" do
