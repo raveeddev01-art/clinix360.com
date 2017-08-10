@@ -60,6 +60,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
 
+    get "/groups/:group_id/messages", MessageController, :index
+
     get "/users/", UserController, :index
     put "/users/:id", UserController, :update
     get "/users/:id", UserController, :show
