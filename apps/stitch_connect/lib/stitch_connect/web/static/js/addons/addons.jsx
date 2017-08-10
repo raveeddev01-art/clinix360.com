@@ -3,6 +3,8 @@ import { inject, observer } from "mobx-react";
 import cx from "classnames";
 
 import Info from "./components/info/info.jsx";
+import Directory from "./components/directory/directory.jsx";
+
 import PeopleDetail from "./components/people-detail/people-detail.jsx";
 
 @inject("addonStore")
@@ -43,6 +45,8 @@ class Addons extends Component {
           <div className={leftPanelClass}>
             {addonStore.addonPanelType === "info" &&
               <Info />}
+            {addonStore.addonPanelType === "directory" &&
+              <Directory />}
           </div>
 
           <div className={rightPanelClass}>

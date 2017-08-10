@@ -21,8 +21,11 @@ class TopNav extends Component {
     addonStore.toggleAddons();
   };
 
-  _toggleDirectory = () => {
-    console.log('toggleDirectory');
+  _toggleDirectoryAddon = () => {
+    const { addonStore } = this.props;
+
+    addonStore.setAddonPanel('directory');
+    addonStore.toggleAddons();
   };
 
   handleLeave = () => {
@@ -71,7 +74,7 @@ class TopNav extends Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="group-controls-menu">
-              <MenuItem onSelect={this._toggleDirectory}>
+              <MenuItem onSelect={this._toggleDirectoryAddon}>
                 <i className="fa fa-users"></i>&nbsp;&nbsp;Directory
               </MenuItem>
             </Dropdown.Menu>
