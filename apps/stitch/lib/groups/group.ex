@@ -14,6 +14,7 @@ defmodule Stitch.Group do
     belongs_to :team, Stitch.Team
     has_many :group_users, Stitch.GroupUser
     has_many :users, through: [:group_users, :user]
+    has_many :messages, Stitch.Message
 
     timestamps()
   end
@@ -42,6 +43,7 @@ defmodule Stitch.Group do
     changeset = Group.changeset(group, %{name: name, slug: new_slug})
     case Repo.update(changeset) do
       {:ok, group} ->
+        group = Repo.preload(group, :users)
         {:ok, group}
       {:error, changeset} ->
         {:error, "Name has to be unique"}

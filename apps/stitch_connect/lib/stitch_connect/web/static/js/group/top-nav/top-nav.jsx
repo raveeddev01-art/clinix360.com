@@ -27,7 +27,8 @@ class TopNav extends Component {
       <div className="flex-header main-header">
         <div className="header-content">
           <h4>
-            <i className="fa fa-comments" /> General
+            <i className="fa fa-comments" /> {this.props.groupStore.name}{" "}
+            <small>#{this.props.groupStore.slug}</small>
           </h4>
         </div>
 
