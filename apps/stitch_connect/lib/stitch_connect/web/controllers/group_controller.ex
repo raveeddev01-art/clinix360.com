@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.GroupController do
   use StitchConnect.Web, :controller
-  alias Stitch.Group
   alias StitchConnect.Web.PageView
   alias StitchConnect.Web.PageService
 
