@@ -15,7 +15,7 @@ class Addons extends Component {
   render() {
     const { addonStore } = this.props;
     const className = cx({
-      "open-addons": addonStore.showAddons
+      "opened": addonStore.showAddons
     });
 
     return (
