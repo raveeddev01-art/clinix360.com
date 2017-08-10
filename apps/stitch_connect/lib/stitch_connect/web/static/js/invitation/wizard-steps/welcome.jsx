@@ -22,7 +22,9 @@ class Welcome extends Component {
       >
         <p>Your email is:</p>
         <FormGroup bsSize="large">
-          <FormControl readOnly value={invitationStore.email} />
+          <pre>
+            {invitationStore.email}
+          </pre>
         </FormGroup>
         <Button
           bsStyle="primary"
