@@ -31,7 +31,7 @@ defmodule Stitch.GroupTest do
   describe "Stitch.Group.toggle_favorite/2" do
     test "it favorites new groups for user" do
       group = insert(:group)
-      user = insert(:user, %{favorite_groups: nil})
+      user = insert(:user, %{favorite_groups: []})
       result = Stitch.Group.toggle_favorite(group.id, user.id)
       assert result == true
     end
