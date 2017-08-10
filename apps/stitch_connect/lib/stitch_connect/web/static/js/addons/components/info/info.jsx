@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import PeopleList from "../../people-list.jsx";
+import PeopleList from "../people-list/people-list.jsx";
 import AddonCollapse from "../addon-collapse/addon-collapse.jsx";
 
 class Info extends Component {

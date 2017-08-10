@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
 
-import AddonMasterPanel from "./addon-master-panel.jsx";
-import AddonDetailPanel from "./addon-detail-panel.jsx";
+import Info from "./components/info/info.jsx";
+import PeopleDetail from "./components/people-detail/people-detail.jsx";
 
 @inject("addonStore")
 @observer
@@ -14,12 +14,18 @@ class Addons extends Component {
 
   render() {
     const { addonStore } = this.props;
-    const className = cx({
-      "opened": addonStore.showAddons
+    const addonsClass = cx({
+      opened: addonStore.showAddons
+    });
+    const leftPanelClass = cx("addon-left-panel", {
+      opened: !addonStore.showAddonDetail
+    });
+    const rightPanelClass = cx("addon-right-panel", {
+      opened: addonStore.showAddonDetail
     });
 
     return (
-      <div id="addons" className={className}>
+      <div id="addons" className={addonsClass}>
         <div className="flex-header">
           {addonStore.showAddonDetail &&
             <a className="open-left" onClick={addonStore.toggleAddonDetail}>
@@ -32,8 +38,13 @@ class Addons extends Component {
         </div>
 
         <div className="flex-content">
-          <AddonMasterPanel />
-          <AddonDetailPanel />
+          <div className={leftPanelClass}>
+            <Info />
+          </div>
+          <div className={rightPanelClass}>
+            {addonStore.detailPanelType === "people" &&
+              <PeopleDetail user={addonStore.detailPanelItem} />}
+          </div>
         </div>
       </div>
     );
