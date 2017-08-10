@@ -20,30 +20,30 @@ class PeopleList extends Component {
 
     return (
       <div>
-        {groupStore.users.map(user => {
-          const online = onlineUsers.indexOf(`${user.id}`) > -1;
-          if (!online) return null;
-          return (
-            <PeopleListItem
-              online={online}
-              key={`user_${user.id}`}
-              onClick={this._onClickItem(user)}
-              {...user}
-            />
-          );
-        })}
-        {groupStore.users.map(user => {
-          const online = onlineUsers.indexOf(`${user.id}`) > -1;
-          if (online) return null;
-          return (
-            <PeopleListItem
-              online={online}
-              key={`user_${user.id}`}
-              onClick={this._onClickItem(user)}
-              {...user}
-            />
-          );
-        })}
+        {
+          groupStore.users
+            .filter(user => onlineUsers.indexOf(`${user.id}`) > -1)
+            .map(user => (
+              <PeopleListItem
+                online={true}
+                key={`user_${user.id}`}
+                onClick={this._onClickItem(user)}
+                {...user}
+              />
+            ))
+        }
+        {
+          groupStore.users
+            .filter(user => onlineUsers.indexOf(`${user.id}`) === -1)
+            .map(user => (
+              <PeopleListItem
+                online={false}
+                key={`user_${user.id}`}
+                onClick={this._onClickItem(user)}
+                {...user}
+              />
+            ))
+        }
       </div>
     );
   }
