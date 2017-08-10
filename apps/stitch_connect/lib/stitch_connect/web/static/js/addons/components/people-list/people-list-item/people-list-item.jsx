@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from "react";
 
-class PeoplelistItem extends Component {
+class PeopleListItem extends Component {
   render() {
     const { onClick, username, first_name, last_name, online } = this.props;
 
@@ -22,7 +22,7 @@ class PeoplelistItem extends Component {
   }
 }
 
-PeoplelistItem.propTypes = {
+PeopleListItem.propTypes = {
   username: PropTypes.string,
   first_name: PropTypes.string,
   last_name: PropTypes.string,
@@ -30,4 +30,4 @@ PeoplelistItem.propTypes = {
   onClick: PropTypes.func.isRequired
 };
 
-export default PeoplelistItem;
+export default PeopleListItem;
