@@ -13,7 +13,10 @@ class PeopleList extends Component {
   };
 
   _onClickItem = user => () => {
-    this.props.addonStore.toggleAddonDetail("people", user);
+    const { addonStore } = this.props;
+
+    addonStore.setAddonDetailPanel("people", user);
+    addonStore.toggleAddonDetail();
   };
 
   render() {

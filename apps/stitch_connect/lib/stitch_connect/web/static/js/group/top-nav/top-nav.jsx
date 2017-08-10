@@ -14,8 +14,11 @@ import NavItemConvert from "./nav-items/nav-item-convert.jsx";
 @inject("addonStore", "groupStore")
 @observer
 class TopNav extends Component {
-  _toggleAddons = () => {
-    this.props.addonStore.toggleAddons();
+  _toggleInfoAddon = () => {
+    const { addonStore } = this.props;
+
+    addonStore.setAddonPanel('info');
+    addonStore.toggleAddons();
   };
 
   _toggleDirectory = () => {
@@ -57,7 +60,7 @@ class TopNav extends Component {
           <a
             className="btn btn-default"
             id="addons-toggle"
-            onClick={this._toggleAddons}
+            onClick={this._toggleInfoAddon}
           >
             <i className="fa fa-info-circle" />
           </a>

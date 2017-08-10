@@ -24,6 +24,8 @@ class Addons extends Component {
       opened: addonStore.showAddonDetail
     });
 
+    const addonPanelTitle = addonStore.addonPanelType && addonStore.addonPanelType.capitalize();
+
     return (
       <div id="addons" className={addonsClass}>
         <div className="flex-header">
@@ -31,7 +33,7 @@ class Addons extends Component {
             <a className="open-left" onClick={addonStore.toggleAddonDetail}>
               <i className="fa fa-chevron-left" />
             </a>}
-          <h4>Info</h4>
+          <h4>{addonPanelTitle}</h4>
           <a onClick={this._toggleAddons}>
             <i className="fa fa-close" />
           </a>
@@ -39,11 +41,13 @@ class Addons extends Component {
 
         <div className="flex-content">
           <div className={leftPanelClass}>
-            <Info />
+            {addonStore.addonPanelType === "info" &&
+              <Info />}
           </div>
+
           <div className={rightPanelClass}>
             {addonStore.detailPanelType === "people" &&
-              <PeopleDetail user={addonStore.detailPanelItem} />}
+              <PeopleDetail user={addonStore.detailPanelData} />}
           </div>
         </div>
       </div>

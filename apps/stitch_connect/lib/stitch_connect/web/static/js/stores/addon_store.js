@@ -3,8 +3,10 @@ import { observable, action } from "mobx";
 class AddonStore {
   @observable showAddons = false;
   @observable showAddonDetail = false;
+  @observable addonPanelType = null;
+  @observable addonPanelData = null;
   @observable detailPanelType = null;
-  @observable detailPanelItem = null;
+  @observable detailPanelData = null;
 
   @action
   toggleAddons = value => {
@@ -16,13 +18,26 @@ class AddonStore {
   };
 
   @action
-  toggleAddonDetail = (detailType, detailItem) => {
-    this.showAddonDetail = !this.showAddonDetail;
-    if (detailType || detailItem) {
-      this.detailPanelType = detailType;
-      this.detailPanelItem = detailItem;
+  setAddonPanel = (panelType, panelData) => {
+    if (panelType || panelData) {
+      this.addonPanelType = panelType;
+      this.addonPanelData = panelData;
     }
   };
+
+  @action
+  toggleAddonDetail = () => {
+    this.showAddonDetail = !this.showAddonDetail;
+  };
+
+  @action
+  setAddonDetailPanel = (panelType, panelData) => {
+    if (panelType || panelData) {
+      this.detailPanelType = panelType;
+      this.detailPanelData = panelData;
+    }
+  };
+
 }
 
 const store = new AddonStore();
