@@ -5,13 +5,13 @@ defmodule StitchConnect.Web.GroupController do
 
   def index(conn, %{"slug" => slug}) do
     current_user = get_session(conn, :current_user)
-    case Stitch.GroupQueries.find_by_slug(slug, current_user.id) do
-      {:ok, group} ->
-        render conn, PageView,  "index.html", app_params: PageService.app_params(conn)
-      {:error, reason} ->
-        conn
-        |> halt
-        |> Phoenix.Controller.redirect(to: "/")
+
+    with {:ok, group} <- Stitch.GroupQueries.find_by_slug(slug, current_user.id),
+         true <- Stitch.GroupAuthorization.can_view?(group.id, current_user.id)
+    do
+      render(conn, PageView,  "index.html", app_params: PageService.app_params(conn))
+    else
+      _ -> conn |> halt |> Phoenix.Controller.redirect(to: "/")
     end
   end
 end
