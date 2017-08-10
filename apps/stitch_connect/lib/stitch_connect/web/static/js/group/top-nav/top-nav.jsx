@@ -18,6 +18,10 @@ class TopNav extends Component {
     this.props.addonStore.toggleAddons();
   };
 
+  _toggleDirectory = () => {
+    console.log('toggleDirectory');
+  };
+
   handleLeave = () => {
     this.props.groupStore.leave();
   };
@@ -57,6 +61,18 @@ class TopNav extends Component {
           >
             <i className="fa fa-info-circle" />
           </a>
+
+          <Dropdown id="dropdown-more-controls" pullRight>
+            <Dropdown.Toggle noCaret>
+              <i className="fa fa-ellipsis-h" />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="group-controls-menu">
+              <MenuItem onSelect={this._toggleDirectory}>
+                <i className="fa fa-users"></i>&nbsp;&nbsp;Directory
+              </MenuItem>
+            </Dropdown.Menu>
+          </Dropdown>
 
           <input type="text" className="form-control" placeholder="Search" />
 
