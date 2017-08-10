@@ -10,16 +10,24 @@ import Group from "./group/group.jsx";
 
 import sidemenuStore from "./sidemenu/sidemenu_store.js";
 import presenceStore from "./common/stores/presence_store";
-import groupStore from "./stores/group_store.jsx";
-import addonStore from "./stores/addon_store.jsx";
+import groupStore from "./stores/group_store";
+import addonStore from "./stores/addon_store";
+import messageStore from "./stores/message_store";
 
-const stores = { groupStore, sidemenuStore, presenceStore, addonStore };
+const stores = {
+  groupStore,
+  sidemenuStore,
+  presenceStore,
+  addonStore,
+  messageStore
+};
 
 export default class Webapp extends Component {
   constructor(props) {
     super();
     presenceStore.connectPresence(props.teamId);
     sidemenuStore.instance = props;
+    messageStore.loadMessages();
   }
 
   render() {
