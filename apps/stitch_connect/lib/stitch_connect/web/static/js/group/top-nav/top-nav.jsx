@@ -68,18 +68,6 @@ class TopNav extends Component {
             <i className="fa fa-info-circle" />
           </a>
 
-          <Dropdown id="dropdown-more-controls" pullRight>
-            <Dropdown.Toggle noCaret>
-              <i className="fa fa-ellipsis-h" />
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu className="group-controls-menu">
-              <MenuItem onSelect={this._toggleDirectoryAddon}>
-                <i className="fa fa-users"></i>&nbsp;&nbsp;Directory
-              </MenuItem>
-            </Dropdown.Menu>
-          </Dropdown>
-
           <input type="text" className="form-control" placeholder="Search" />
 
           <Dropdown id="dropdown-group-controls" pullRight>
@@ -88,7 +76,7 @@ class TopNav extends Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="more-menu">
-              <MenuItem>
+              <MenuItem onSelect={this._toggleDirectoryAddon}>
                 <i className="fa fa-users" /> Directory
               </MenuItem>
               <MenuItem>
