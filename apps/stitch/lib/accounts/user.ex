@@ -26,6 +26,7 @@ defmodule Stitch.Accounts.User do
     field :password_reset_token, :string
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
+    has_many :group_notification_preferences, Stitch.GroupNotificationPreference
 
     field :password, :string, virtual: true
 

@@ -47,4 +47,12 @@ defmodule Stitch.Factory do
       accepted: false
     }
   end
+
+  def group_notification_preference_factory do
+    %Stitch.GroupNotificationPreference{
+      user: build(:user),
+      group: build(:group),
+      setting: "mentions"
+    }
+  end
 end
