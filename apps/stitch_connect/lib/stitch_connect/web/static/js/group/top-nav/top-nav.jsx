@@ -59,6 +59,45 @@ class TopNav extends Component {
           </a>
 
           <input type="text" className="form-control" placeholder="Search" />
+
+          <Dropdown id="dropdown-group-controls" pullRight>
+            <Dropdown.Toggle noCaret className="more-btn">
+              <i className="fa fa-ellipsis-h" />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="more-menu">
+              <MenuItem>
+                <i className="fa fa-users" /> Directory
+              </MenuItem>
+              <MenuItem>
+                <i className="fa fa-folder-open" /> Files
+              </MenuItem>
+              <MenuItem>
+                <i className="fa fa-at" /> Mentions
+              </MenuItem>
+              <MenuItem>
+                <i className="fa fa-star" /> Starred
+              </MenuItem>
+              <MenuItem>
+                <i className="fa fa-flask" /> Labs
+              </MenuItem>
+              <MenuItem>
+                <i className="fa fa-address-card-o" /> Referrals
+              </MenuItem>
+              <MenuItem>
+                <i className="fa fa-check-square-o" /> Checklists
+              </MenuItem>
+              <MenuItem>
+                <i className="fa fa-medkit" /> Prescriptions
+              </MenuItem>
+              <MenuItem>
+                <i className="fa fa-bookmark-o" /> Clinical Notes
+              </MenuItem>
+              <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
+                <i className="fa fa-question-circle" /> Help
+              </MenuItem>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       </div>
     );

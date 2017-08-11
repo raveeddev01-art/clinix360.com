@@ -25,10 +25,23 @@
         padding: 2px 10px;
         margin-right: 10px;
       }
+
+      .more-btn {
+        margin: 0 0 0 10px;
+      }
     }
 
+    .more-menu,
     .group-controls-menu {
       margin-top: 17px;
+
+      i.fa {
+        margin-right: 2px;
+      }
+    }
+
+    .more-menu a {
+      padding: 5px 10px;
     }
   }
 
