@@ -6,25 +6,25 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
-config :stitch_connect, StitchConnect.Web.Endpoint,
-  http: [port: 4000],
-  https: [port: 4443,
-          otp_app: :stitch_connect,
-          keyfile: "priv/keys/localhost.key",
-          certfile: "priv/keys/localhost.cert"],
-  debug_errors: true,
-  code_reloader: true,
-  check_origin: false,
-  force_ssl: [host: nil, rewrite_on: [:x_forwarded_proto]],
-  watchers: [node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--progress", "--color", cd: Path.expand("../", __DIR__)]]
-
-# Uncomment this if you want just normal HTTP for local development.
 # config :stitch_connect, StitchConnect.Web.Endpoint,
 #   http: [port: 4000],
+#   https: [port: 4443,
+#           otp_app: :stitch_connect,
+#           keyfile: "priv/keys/localhost.key",
+#           certfile: "priv/keys/localhost.cert"],
 #   debug_errors: true,
 #   code_reloader: true,
 #   check_origin: false,
+#   force_ssl: [host: nil, rewrite_on: [:x_forwarded_proto]],
 #   watchers: [node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--progress", "--color", cd: Path.expand("../", __DIR__)]]
+
+# Uncomment this if you want just normal HTTP for local development.
+config :stitch_connect, StitchConnect.Web.Endpoint,
+  http: [port: 4000],
+  debug_errors: true,
+  code_reloader: true,
+  check_origin: false,
+  watchers: [node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--progress", "--color", cd: Path.expand("../", __DIR__)]]
 
 # ## SSL Support
 #

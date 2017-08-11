@@ -2,11 +2,11 @@
 applicationHost =
   case Application.get_env(:stitch_connect, :env) do
     :dev ->
-      "localhost:4443"
+      "localhost:4000"
     :prod ->
-      "teamstitchapp.com"
+      "sb969e158.fastvps-server.com:4443"
     _ ->
-      "localhost:4443"
+      "localhost:4000"
   end
 authenticationToken = Plug.Conn.get_session(@conn, :authentication_token)
 user = Plug.Conn.get_session(@conn, :current_user)

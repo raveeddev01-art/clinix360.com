@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.UserSocket do
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket,
     timeout: 45_000,
-    check_origin: ["//*.teamstitchapp.com", "//*.localhost:4443"]
+    check_origin: ["//*.sb969e158.fastvps-server.com", "//*.localhost:4000"]
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
