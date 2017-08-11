@@ -12,8 +12,6 @@ import Button from "react-bootstrap/lib/Button";
 
 import Select from "react-select";
 
-import sidemenuStore from "../../sidemenu_store";
-
 export default class CreateGroupModal extends Component {
   constructor(props) {
     super(props);

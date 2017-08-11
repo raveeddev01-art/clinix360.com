@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
 
 import Modal from "react-bootstrap/lib/Modal";
 
 import Select from "react-select";
 
 import GroupItem from "./group_item";
-import sidemenuStore from "../../sidemenu_store";
 
+@inject("sidemenuStore")
 @observer
 export default class GroupsModal extends Component {
   constructor(props) {
@@ -19,6 +19,7 @@ export default class GroupsModal extends Component {
   }
 
   handleChange = (event) => {
+    const { sidemenuStore } = this.props;
     const allGroups = sidemenuStore.instance.groups;
     const { value } = event.target;
     const filteredGroups = allGroups.filter(
@@ -31,6 +32,7 @@ export default class GroupsModal extends Component {
   }
   
   render() {
+    const { sidemenuStore } = this.props;
     const { filteredGroups, filter } = this.state;
     const allGroups = sidemenuStore.instance.groups;
     const groups = filter !== "" ? filteredGroups : allGroups;

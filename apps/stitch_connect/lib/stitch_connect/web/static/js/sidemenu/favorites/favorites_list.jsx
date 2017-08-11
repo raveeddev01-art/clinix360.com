@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import Favorite from "./favorite";
-import sidemenuStore from "../sidemenu_store";
 
 export default class FavoritesList extends Component {
   constructor(props) {

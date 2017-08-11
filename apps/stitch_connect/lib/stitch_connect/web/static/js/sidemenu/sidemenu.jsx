@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
 
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
@@ -9,8 +9,7 @@ import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import Team from "./team";
 
-import sidemenuStore from "./sidemenu_store";
-
+@inject("sidemenuStore")
 @observer
 export default class Sidemenu extends Component {
   _adminOptions = () => {
@@ -34,6 +33,8 @@ export default class Sidemenu extends Component {
   };
 
   render() {
+    const { sidemenuStore } = this.props;
+
     return (
       <div id="sidemenu">
         <div className="flex-header">
