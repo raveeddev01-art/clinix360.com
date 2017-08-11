@@ -14,6 +14,10 @@ class Addons extends Component {
     this.props.addonStore.toggleAddons();
   };
 
+  _toggleAddonDetail = () => {
+    this.props.addonStore.toggleAddonDetail();
+  };
+
   render() {
     const { addonStore } = this.props;
     const addonsClass = cx({
@@ -32,7 +36,7 @@ class Addons extends Component {
       <div id="addons" className={addonsClass}>
         <div className="flex-header">
           {addonStore.showAddonDetail &&
-            <a className="open-left" onClick={addonStore.toggleAddonDetail}>
+            <a className="open-left" onClick={this._toggleAddonDetail}>
               <i className="fa fa-chevron-left" />
             </a>}
           <h4>{addonPanelTitle}</h4>

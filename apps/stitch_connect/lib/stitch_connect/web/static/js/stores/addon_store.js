@@ -9,34 +9,34 @@ class AddonStore {
   @observable detailPanelData = null;
 
   @action
-  toggleAddons = value => {
+  toggleAddons(value) {
     if (typeof value !== "undefined") {
       this.showAddons = value;
     } else {
       this.showAddons = !this.showAddons;
     }
-  };
+  }
 
   @action
-  setAddonPanel = (panelType, panelData) => {
+  setAddonPanel(panelType, panelData) {
     if (panelType || panelData) {
       this.addonPanelType = panelType;
       this.addonPanelData = panelData;
     }
-  };
+  }
 
   @action
-  toggleAddonDetail = () => {
+  toggleAddonDetail() {
     this.showAddonDetail = !this.showAddonDetail;
-  };
+  }
 
   @action
-  setAddonDetailPanel = (panelType, panelData) => {
+  setAddonDetailPanel(panelType, panelData){
     if (panelType || panelData) {
       this.detailPanelType = panelType;
       this.detailPanelData = panelData;
     }
-  };
+  }
 
 }
 
