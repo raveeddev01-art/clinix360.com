@@ -8,8 +8,8 @@ import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Sidemenu from "./sidemenu/sidemenu";
 import Group from "./group/group";
 
-import sidemenuStore from "./sidemenu/sidemenu_store";
-import presenceStore from "./common/stores/presence_store";
+import sidemenuStore from "./stores/sidemenu_store";
+import presenceStore from "./stores/presence_store";
 import groupStore from "./stores/group_store";
 import addonStore from "./stores/addon_store";
 import messageStore from "./stores/message_store";
