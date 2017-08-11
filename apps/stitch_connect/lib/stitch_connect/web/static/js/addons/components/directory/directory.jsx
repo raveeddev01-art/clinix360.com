@@ -22,7 +22,8 @@ class Directory extends Component {
             {groupStore.showAllUsers ? "Show only online" : "Show all"}
           </button>
         </div>
-        <PeopleList />
+
+        <PeopleList showAllUsers={groupStore.showAllUsers} />
       </div>
     );
   }

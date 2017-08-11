@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PropTypes } from "react";
 import { inject, observer } from "mobx-react";
 
 import PeopleListItem from "./people-list-item/people-list-item";
@@ -14,34 +14,31 @@ class PeopleList extends Component {
   };
 
   render() {
-    const { groupStore, presenceStore } = this.props;
+    const { groupStore, presenceStore, showAllUsers } = this.props;
     const onlineUsers = Object.keys(presenceStore.onlineUsersMap);
+    const users = showAllUsers ? groupStore.users : groupStore.onlineUsers;
 
     return (
       <div>
-        {groupStore.users
-          .filter(user => onlineUsers.indexOf(`${user.id}`) > -1)
-          .map(user =>
-            <PeopleListItem
-              online={true}
-              key={`user_${user.id}`}
-              onClick={this._onClickItem(user)}
-              {...user}
-            />
-          )}
-        {groupStore.users
-          .filter(user => onlineUsers.indexOf(`${user.id}`) === -1)
-          .map(user =>
-            <PeopleListItem
-              online={false}
-              key={`user_${user.id}`}
-              onClick={this._onClickItem(user)}
-              {...user}
-            />
-          )}
+        {users.map(user =>
+          <PeopleListItem
+            online={onlineUsers.indexOf(`${user.id}`) > -1}
+            key={`user_${user.id}`}
+            onClick={this._onClickItem(user)}
+            {...user}
+          />
+        )}
       </div>
     );
   }
 }
+
+PeopleList.defaultProps = {
+  showAllUsers: true
+};
+
+PeopleList.propTypes = {
+  showAllUsers: PropTypes.bool
+};
 
 export default PeopleList;
