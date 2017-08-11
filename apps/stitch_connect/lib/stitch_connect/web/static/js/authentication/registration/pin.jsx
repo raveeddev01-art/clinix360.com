@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 import store from "../authentication_store.js";
-import PinCard from "../components/pin-card/pin-card.jsx";
+import PinCard from "../components/pin-card/pin-card";
 
 @observer
 export default class Pin extends Component {

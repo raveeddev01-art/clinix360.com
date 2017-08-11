@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import Favorite from "./favorite.jsx";
+import Favorite from "./favorite";
 import sidemenuStore from "../sidemenu_store.js";
 
 export default class FavoritesList extends Component {

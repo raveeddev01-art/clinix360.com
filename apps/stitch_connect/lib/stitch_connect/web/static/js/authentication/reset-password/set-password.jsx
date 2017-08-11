@@ -6,7 +6,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Form from "react-bootstrap/lib/Form";
 import Button from "react-bootstrap/lib/Button";
-import Card from "../components/card/card.jsx";
+import Card from "../components/card/card";
 
 @inject("resetPasswordStore")
 @observer

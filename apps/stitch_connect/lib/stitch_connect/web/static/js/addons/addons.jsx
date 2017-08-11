@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
 
-import Info from "./components/info/info.jsx";
-import Directory from "./components/directory/directory.jsx";
+import Info from "./components/info/info";
+import Directory from "./components/directory/directory";
 
-import PeopleDetail from "./components/people-detail/people-detail.jsx";
+import PeopleDetail from "./components/people-detail/people-detail";
 
 @inject("addonStore")
 @observer

@@ -10,7 +10,7 @@ import Alert from "react-bootstrap/lib/Alert";
 import Form from "react-bootstrap/lib/Form";
 import Col from "react-bootstrap/lib/Col";
 
-import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
+import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Delete Team";
 const description =

@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
-import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
+import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Email";
 const description =

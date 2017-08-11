@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import AddonCollapse from "./addon-collapse/addon-collapse.jsx";
-import PeopleList from "../people-list/people-list.jsx";
+import AddonCollapse from "./addon-collapse/addon-collapse";
+import PeopleList from "../people-list/people-list";
 
 @inject("groupStore")
 @observer

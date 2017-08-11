@@ -7,7 +7,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
+import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Password";
 const description =

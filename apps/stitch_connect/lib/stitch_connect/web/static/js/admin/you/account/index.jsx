@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import Panel from "react-bootstrap/lib/Panel";
-import UsernamePanel from "./username-panel.jsx";
-import EmailPanel from "./email-panel.jsx";
-import PasswordPanel from "./password-panel.jsx";
-import PINPanel from "./pin-panel.jsx";
+import UsernamePanel from "./username-panel";
+import EmailPanel from "./email-panel";
+import PasswordPanel from "./password-panel";
+import PINPanel from "./pin-panel";
 
 class AccountSettings extends Component {
   render() {

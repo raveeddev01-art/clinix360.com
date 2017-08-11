@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
-import Members from "../../../common/components/members/members.jsx";
+import Members from "../../../common/components/members/members";
 
 @inject("groupStore")
 @observer

@@ -5,9 +5,9 @@ import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
-import FavoritesList from "./favorites/favorites_list.jsx";
-import RoomsList from "./rooms/rooms_list.jsx";
-import Team from "./team.jsx";
+import FavoritesList from "./favorites/favorites_list";
+import RoomsList from "./rooms/rooms_list";
+import Team from "./team";
 
 import sidemenuStore from "./sidemenu_store.js";
 

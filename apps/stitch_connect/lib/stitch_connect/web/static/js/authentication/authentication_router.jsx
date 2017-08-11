@@ -2,27 +2,27 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Provider } from "mobx-react";
 
-import GetStarted from "./get_started.jsx";
-import TeamPicker from "./team/team_picker.jsx";
+import GetStarted from "./get_started";
+import TeamPicker from "./team/team_picker";
 
-import Login from "./login/login.jsx";
+import Login from "./login/login";
 
-import Email from "./registration/email.jsx";
-import Confirmation from "./registration/confirmation.jsx";
-import TeamName from "./registration/team_name.jsx";
-import TeamUrl from "./registration/team_url.jsx";
-import FirstName from "./registration/first_name.jsx";
-import LastName from "./registration/last_name.jsx";
-import PhoneNumber from "./registration/phone_number.jsx";
-import Username from "./registration/username.jsx";
-import Password from "./registration/password.jsx";
-import Pin from "./registration/pin.jsx";
-import Invites from "./registration/invites.jsx";
-import Hipaa from "./registration/hipaa.jsx";
-import AppDownload from "./registration/app_download.jsx";
+import Email from "./registration/email";
+import Confirmation from "./registration/confirmation";
+import TeamName from "./registration/team_name";
+import TeamUrl from "./registration/team_url";
+import FirstName from "./registration/first_name";
+import LastName from "./registration/last_name";
+import PhoneNumber from "./registration/phone_number";
+import Username from "./registration/username";
+import Password from "./registration/password";
+import Pin from "./registration/pin";
+import Invites from "./registration/invites";
+import Hipaa from "./registration/hipaa";
+import AppDownload from "./registration/app_download";
 
-import SendEmail from "./reset-password/send-email.jsx";
-import SetPassword from "./reset-password/set-password.jsx";
+import SendEmail from "./reset-password/send-email";
+import SetPassword from "./reset-password/set-password";
 import resetPasswordStore from "./stores/reset_password_store";
 import authenticationStore from "./authentication_store.js";
 

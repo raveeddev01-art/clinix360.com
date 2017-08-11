@@ -4,7 +4,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-import OnboardCard from "../onboard-card/onboard-card.jsx";
+import OnboardCard from "../onboard-card/onboard-card";
 
 class OnboardInputCard extends Component {
   constructor(props) {

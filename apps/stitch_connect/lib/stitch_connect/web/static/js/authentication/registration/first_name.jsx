@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 import store from "../authentication_store.js";
-import FirstNameCard from "../components/first-name-card/first-name-card.jsx";
+import FirstNameCard from "../components/first-name-card/first-name-card";
 
 @observer
 export default class FirstName extends Component {

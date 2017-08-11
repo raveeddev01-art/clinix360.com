@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
 
-import PeopleListItem from "./people-list-item/people-list-item.jsx";
+import PeopleListItem from "./people-list-item/people-list-item";
 
 @inject("addonStore", "groupStore", "presenceStore")
 @observer

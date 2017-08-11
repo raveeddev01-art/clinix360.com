@@ -5,7 +5,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-import OnboardCard from "../components/onboard-card/onboard-card.jsx";
+import OnboardCard from "../components/onboard-card/onboard-card";
 
 @inject("invitationStore")
 @observer

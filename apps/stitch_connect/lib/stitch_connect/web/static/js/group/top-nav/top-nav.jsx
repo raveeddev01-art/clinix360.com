@@ -5,11 +5,11 @@ import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
-import NavItemFavorite from "./nav-items/nav-item-favorite.jsx";
-import NavItemMembers from "./nav-items/nav-item-members.jsx";
-import NavItemNotifications from "./nav-items/nav-item-notifications.jsx";
-import NavItemRename from "./nav-items/nav-item-rename.jsx";
-import NavItemConvert from "./nav-items/nav-item-convert.jsx";
+import NavItemFavorite from "./nav-items/nav-item-favorite";
+import NavItemMembers from "./nav-items/nav-item-members";
+import NavItemNotifications from "./nav-items/nav-item-notifications";
+import NavItemRename from "./nav-items/nav-item-rename";
+import NavItemConvert from "./nav-items/nav-item-convert";
 
 @inject("addonStore", "groupStore")
 @observer

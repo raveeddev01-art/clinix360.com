@@ -14,7 +14,7 @@ import {
   Modal
 } from "react-bootstrap";
 
-import SettingPanel from "../components/setting-panel/setting-panel.jsx";
+import SettingPanel from "../components/setting-panel/setting-panel";
 
 export default class YouNotifications extends Component {
   constructor(props) {

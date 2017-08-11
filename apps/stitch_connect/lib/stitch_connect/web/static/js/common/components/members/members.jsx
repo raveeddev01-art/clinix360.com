@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { observer } from "mobx-react";
 import { Async } from "react-select";
 import presenceStore from "../../stores/presence_store";
-import MemberOption from "./member_option.jsx";
+import MemberOption from "./member_option";
 
 @observer
 class Members extends Component {
