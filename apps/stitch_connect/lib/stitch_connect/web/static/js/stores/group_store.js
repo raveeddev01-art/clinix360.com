@@ -12,7 +12,7 @@ class GroupStore {
   @observable joined = false;
   @observable users = [];
   @observable favorite = false;
-  @observable notificationSetting = "mentions";
+  @observable notificationSetting = null;
 
   @action
   loadGroupBySlug = slug => {
@@ -96,7 +96,9 @@ class GroupStore {
 
   @action
   loadNotificationSetting = () => {
-    return get(`/api/v1/groups/notification-setting`).then(resp => {
+    return get(
+      `/api/v1/groups/${this.id}/notification-preference`
+    ).then(resp => {
       this.notificationSetting = resp.data.setting;
       return this.notificationSetting;
     });
@@ -104,8 +106,8 @@ class GroupStore {
 
   @action
   saveNotificationSetting = setting => {
-    return post(`/api/v1/groups/notification-setting`, {
-      body: { setting: this.notificationSetting }
+    return post(`/api/v1/groups/${this.id}/update-notification-preference`, {
+      body: { setting }
     }).then(resp => {
       notify.show(`Notification setting saved for group ${this.name}`);
     });

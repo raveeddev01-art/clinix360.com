@@ -12,13 +12,17 @@ export default class NavItemNotifications extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false
+      showModal: false,
+      setting: null
     };
   }
 
   _toggleModal = () => {
     if (!this.state.showModal) {
-      this.props.groupStore.loadNotificationSetting();
+      this.setState({ setting: this.props.groupStore.notificationSetting });
+      this.props.groupStore.loadNotificationSetting().then(setting => {
+        this.setState({ setting });
+      });
     }
 
     this.setState({
@@ -27,18 +31,18 @@ export default class NavItemNotifications extends Component {
   };
 
   _onChange = val => () => {
-    this.props.groupStore.notificationSetting = val;
+    this.setState({ setting: val });
   };
 
   _onSave = () => {
-    this.props.groupStore.saveNotificationSetting();
+    this.props.groupStore.saveNotificationSetting(this.state.setting);
     this.setState({
       showModal: false
     });
   };
 
   render() {
-    const setting = this.props.groupStore.notificationSetting;
+    const { setting } = this.state;
     return (
       <MenuItem onClick={this._toggleModal}>
         Notifications
