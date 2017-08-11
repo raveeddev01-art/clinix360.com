@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import store from "../authentication_store.js";
+import store from "../authentication_store";
 import PinCard from "../components/pin-card/pin-card";
 
 @observer

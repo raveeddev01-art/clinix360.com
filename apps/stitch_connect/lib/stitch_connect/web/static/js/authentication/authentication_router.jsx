@@ -24,7 +24,7 @@ import AppDownload from "./registration/app_download";
 import SendEmail from "./reset-password/send-email";
 import SetPassword from "./reset-password/set-password";
 import resetPasswordStore from "./stores/reset_password_store";
-import authenticationStore from "./authentication_store.js";
+import authenticationStore from "./authentication_store";
 
 const stores = { resetPasswordStore, authenticationStore };
 // @TODO refactor authentication_store and provide by using provider

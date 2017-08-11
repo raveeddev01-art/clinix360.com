@@ -9,7 +9,7 @@ import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import Team from "./team";
 
-import sidemenuStore from "./sidemenu_store.js";
+import sidemenuStore from "./sidemenu_store";
 
 @observer
 export default class Sidemenu extends Component {

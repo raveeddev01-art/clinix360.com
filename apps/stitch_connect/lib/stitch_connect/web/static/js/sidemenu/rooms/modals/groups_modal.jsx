@@ -6,7 +6,7 @@ import Modal from "react-bootstrap/lib/Modal";
 import Select from "react-select";
 
 import GroupItem from "./group_item";
-import sidemenuStore from "../../sidemenu_store.js";
+import sidemenuStore from "../../sidemenu_store";
 
 @observer
 export default class GroupsModal extends Component {

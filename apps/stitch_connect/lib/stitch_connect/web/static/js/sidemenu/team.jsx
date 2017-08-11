@@ -12,7 +12,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
-import sidemenuStore from "./sidemenu_store.js";
+import sidemenuStore from "./sidemenu_store";
 
 @observer
 export default class Team extends Component {
