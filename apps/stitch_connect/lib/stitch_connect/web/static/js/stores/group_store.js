@@ -12,6 +12,7 @@ class GroupStore {
   @observable joined = false;
   @observable users = [];
   @observable favorite = false;
+  @observable notificationSetting = "mentions";
 
   @action
   loadGroupBySlug = slug => {
@@ -90,6 +91,23 @@ class GroupStore {
     return post(`/api/v1/groups/${this.id}/leave`).then(resp => {
       this.joined = false;
       notify.show("User has been removed from the group");
+    });
+  };
+
+  @action
+  loadNotificationSetting = () => {
+    return get(`/api/v1/groups/notification-setting`).then(resp => {
+      this.notificationSetting = resp.data.setting;
+      return this.notificationSetting;
+    });
+  };
+
+  @action
+  saveNotificationSetting = setting => {
+    return post(`/api/v1/groups/notification-setting`, {
+      body: { setting: this.notificationSetting }
+    }).then(resp => {
+      notify.show(`Notification setting saved for group ${this.name}`);
     });
   };
 }
