@@ -8,29 +8,19 @@ import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Sidemenu from "./sidemenu/sidemenu";
 import Group from "./group/group";
 
-import sidemenuStore from "./stores/sidemenu_store";
 import RootStore from "./stores/root_store";
 
 export default class Webapp extends Component {
   constructor(props) {
-    super();
+    super(props);
 
-    sidemenuStore.instance = props;
     this.rootStore = new RootStore(props);
   }
 
   render() {
-    const stores = {
-      sidemenuStore,
-      addonStore: this.rootStore.addonStore,
-      groupStore: this.rootStore.groupStore,
-      messageStore: this.rootStore.messageStore,
-      presenceStore: this.rootStore.presenceStore,
-    };
-
     return (
       <Router>
-        <Provider {...stores}>
+        <Provider {...this.rootStore}>
           <div id="app">
             <Sidemenu />
             <Switch>

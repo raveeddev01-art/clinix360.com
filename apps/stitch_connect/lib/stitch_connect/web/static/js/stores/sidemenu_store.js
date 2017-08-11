@@ -17,6 +17,7 @@ class SidemenuStore {
     this.teamName = props.teamName;
     this.teamId = props.teamId;
     this.subdomain = props.subdomain;
+
     this.loadGroups();
     this.loadUsers();
   }
@@ -78,17 +79,14 @@ class SidemenuStore {
   };
 }
 
-var sidemenuStore;
+// const store = {
+//   instance() {},
+//   get instance() {
+//     return sidemenuStore;
+//   },
+//   set instance(props) {
+//     sidemenuStore = new SidemenuStore(props);
+//   }
+// };
 
-const store = {
-  instance() {},
-  get instance() {
-    return sidemenuStore;
-  },
-  set instance(props) {
-    sidemenuStore = new SidemenuStore(props);
-  }
-};
-
-export default store;
-export { SidemenuStore };
+export default SidemenuStore;

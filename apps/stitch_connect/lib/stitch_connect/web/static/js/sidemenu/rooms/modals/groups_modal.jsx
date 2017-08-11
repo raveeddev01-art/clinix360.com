@@ -20,7 +20,7 @@ export default class GroupsModal extends Component {
 
   handleChange = (event) => {
     const { sidemenuStore } = this.props;
-    const allGroups = sidemenuStore.instance.groups;
+    const allGroups = sidemenuStore.groups;
     const { value } = event.target;
     const filteredGroups = allGroups.filter(
       group => group.name.toLowerCase().startsWith(value.toLowerCase())
@@ -34,7 +34,7 @@ export default class GroupsModal extends Component {
   render() {
     const { sidemenuStore } = this.props;
     const { filteredGroups, filter } = this.state;
-    const allGroups = sidemenuStore.instance.groups;
+    const allGroups = sidemenuStore.groups;
     const groups = filter !== "" ? filteredGroups : allGroups;
     return (
       <Modal className="sidemenu-modal" show={this.props.showModal}>

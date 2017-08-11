@@ -57,7 +57,7 @@ export default class Team extends Component {
           </OverlayTrigger>
         </div>
 
-        {sidemenuStore.instance.onlineUsers.map(user => {
+        {sidemenuStore.onlineUsers.map(user => {
           return (
             <a key={`online-user-${user.id}`} href="#" className="item">
               <div className="item-icon">
@@ -70,7 +70,7 @@ export default class Team extends Component {
           );
         })}
 
-        {sidemenuStore.instance.offlineUsers.map(user => {
+        {sidemenuStore.offlineUsers.map(user => {
           return (
             <a key={`offline-user-${user.id}`} href="#" className="item">
               <div className="item-icon">
@@ -107,7 +107,7 @@ export default class Team extends Component {
             </h5>
 
             <div className="team-list">
-              {sidemenuStore.instance.onlineUsers.map(user => {
+              {sidemenuStore.onlineUsers.map(user => {
                 return (
                   <div
                     key={`team-list-online-${user.id}`}
@@ -119,7 +119,7 @@ export default class Team extends Component {
                 );
               })}
 
-              {sidemenuStore.instance.offlineUsers.map(user => {
+              {sidemenuStore.offlineUsers.map(user => {
                 return (
                   <div
                     key={`team-list-offline-${user.id}`}

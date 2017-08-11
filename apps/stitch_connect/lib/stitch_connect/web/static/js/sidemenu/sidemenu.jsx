@@ -41,7 +41,7 @@ export default class Sidemenu extends Component {
           <DropdownButton
             className="text-capitalize"
             block
-            title={sidemenuStore.instance.teamName}
+            title={sidemenuStore.teamName}
             id="dropdown-size-medium"
           >
             <h5 className="text-center">{`${window.currentUser
@@ -76,10 +76,10 @@ export default class Sidemenu extends Component {
         <div className="flex-content">
           <FavoritesList
             heading={"Favorites"}
-            rooms={sidemenuStore.instance.favoriteGroups}
+            rooms={sidemenuStore.favoriteGroups}
           />
 
-          <RoomsList heading={"Groups"} rooms={sidemenuStore.instance.groups} />
+          <RoomsList heading={"Groups"} rooms={sidemenuStore.groups} />
 
           <Team heading={"People"} />
         </div>
