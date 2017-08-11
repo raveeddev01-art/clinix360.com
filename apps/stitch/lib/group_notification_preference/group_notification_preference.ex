@@ -49,7 +49,7 @@ defmodule Stitch.GroupNotificationPreference do
       select: g
     case Repo.one(query) do
       nil ->
-        {:error, "This user has no notification preferences for this group."}
+        create_for_user(group_id, user_id)
       group_notification_preference ->
         {:ok, group_notification_preference}
     end

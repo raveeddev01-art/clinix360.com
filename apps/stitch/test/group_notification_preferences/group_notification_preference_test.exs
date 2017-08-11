@@ -36,10 +36,12 @@ defmodule Stitch.GroupNotificationPreferenceTest do
       assert preference.setting == "everything"
     end
 
-    test "it returns error if user preference does not exist" do
+    test "it creates preference if user doesn't have one" do
       user = insert(:user)
-      {:error, reason} = Stitch.GroupNotificationPreference.get_for_user(123, user.id)
-      assert reason == "This user has no notification preferences for this group."
+      group = insert(:group)
+      {:ok, preference} = Stitch.GroupNotificationPreference.get_for_user(group.id, user.id)
+      assert preference.group_id == group.id
+      assert preference.user_id == user.id
     end
   end
 
