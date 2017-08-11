@@ -40,5 +40,4 @@ class AddonStore {
 
 }
 
-const store = new AddonStore();
-export default store;
+export default AddonStore;

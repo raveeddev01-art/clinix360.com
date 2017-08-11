@@ -94,5 +94,4 @@ class GroupStore {
   };
 }
 
-const store = new GroupStore();
-export default store;
+export default GroupStore;

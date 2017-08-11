@@ -104,5 +104,4 @@ class MessageStore {
   };
 }
 
-const store = new MessageStore();
-export default store;
+export default MessageStore;

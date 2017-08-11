@@ -25,5 +25,4 @@ class PresenceStore {
   };
 }
 
-const store = new PresenceStore();
-export default store;
+export default PresenceStore;
