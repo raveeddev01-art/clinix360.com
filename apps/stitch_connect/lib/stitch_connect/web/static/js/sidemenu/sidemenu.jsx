@@ -25,7 +25,7 @@ export default class Sidemenu extends Component {
         <MenuItem eventKey="5" href="/admin/users/members">
           Users
         </MenuItem>
-        <MenuItem eventKey="6" href="/admin/users/invite">
+        <MenuItem eventKey="6" href="/admin/users/invitations">
           Invite
         </MenuItem>
       </div>
