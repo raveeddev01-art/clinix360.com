@@ -80,14 +80,4 @@ class SidemenuStore {
   };
 }
 
-// const store = {
-//   instance() {},
-//   get instance() {
-//     return sidemenuStore;
-//   },
-//   set instance(props) {
-//     sidemenuStore = new SidemenuStore(props);
-//   }
-// };
-
 export default SidemenuStore;
