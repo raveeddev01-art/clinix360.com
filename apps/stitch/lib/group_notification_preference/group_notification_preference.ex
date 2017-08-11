@@ -37,4 +37,42 @@ defmodule Stitch.GroupNotificationPreference do
         {:error, "Setting value is invalid"}
     end
   end
+
+  @doc """
+  Returns the notification preference for a user given a group id.
+  """
+  def get_for_user(group_id, user_id) do
+    query =
+      from g in GroupNotificationPreference,
+      where: g.group_id == ^group_id,
+      where: g.user_id == ^user_id,
+      select: g
+    case Repo.one(query) do
+      nil ->
+        {:error, "This user has no notification preferences for this group."}
+      group_notification_preference ->
+        {:ok, group_notification_preference}
+    end
+  end
+
+  @doc """
+  Updates the user's group notification preference.
+  """
+  def update_for_user(group_id, user_id, setting) do
+    attrs = %{setting: setting}
+    query =
+      from g in GroupNotificationPreference,
+      where: g.group_id == ^group_id,
+      where: g.user_id == ^user_id,
+      select: g
+    preference = Repo.one(query)
+    changeset = GroupNotificationPreference.changeset(preference, attrs)
+
+    case Repo.update(changeset) do
+      {:ok, preference} ->
+        {:ok, preference}
+      {:error, reason} ->
+        {:error, "Setting value is invalid"}
+    end
+  end
 end

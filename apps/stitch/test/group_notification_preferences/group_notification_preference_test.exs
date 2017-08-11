@@ -6,6 +6,43 @@ defmodule Stitch.GroupNotificationPreferenceTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
+  describe "Stitch.GroupNotificationPreference.update_for_user/3" do
+    test "it returns user preference for group" do
+      group = insert(:group)
+      user = insert(:user)
+      {:ok, preference} = Stitch.GroupNotificationPreference.create_for_user(group.id, user.id, "everything")
+
+      {:ok, preference} = Stitch.GroupNotificationPreference.update_for_user(group.id, user.id, "mentions")
+      assert preference.setting == "mentions"
+    end
+
+    test "it returns error if setting value is invalid" do
+      group = insert(:group)
+      user = insert(:user)
+      {:ok, preference} = Stitch.GroupNotificationPreference.create_for_user(group.id, user.id, "everything")
+
+      {:error, reason} = Stitch.GroupNotificationPreference.update_for_user(group.id, user.id, "foobar")
+      assert reason == "Setting value is invalid"
+    end
+  end
+
+  describe "Stitch.GroupNotificationPreference.get_for_user/2" do
+    test "it returns user preference for group" do
+      group = insert(:group)
+      user = insert(:user)
+      {:ok, preference} = Stitch.GroupNotificationPreference.create_for_user(group.id, user.id, "everything")
+
+      {:ok, preference} = Stitch.GroupNotificationPreference.get_for_user(group.id, user.id)
+      assert preference.setting == "everything"
+    end
+
+    test "it returns error if user preference does not exist" do
+      user = insert(:user)
+      {:error, reason} = Stitch.GroupNotificationPreference.get_for_user(123, user.id)
+      assert reason == "This user has no notification preferences for this group."
+    end
+  end
+
   describe "Stitch.GroupNotificationPreference.create_for_user/3" do
     test "it creates the everything notification preference for user group" do
       group = insert(:group)
