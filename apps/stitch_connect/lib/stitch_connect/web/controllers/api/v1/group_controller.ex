@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
-  alias Stitch.Group
+  alias Stitch.{ Group, GroupUser }
 
   plug StitchConnect.Plug.ApiAuthenticate when action in [:rename, :join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite, :show]
 
@@ -152,6 +152,11 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
     end)
     render conn, "index.json", groups: result_groups
+  end
+
+  def invite(conn, %{"id" => group_id, "user_ids" => ""}) do
+    GroupUser.remove_all_users(group_id)
+    conn |> json(%{message: "Users invited to group."})
   end
 
   def invite(conn, %{"id" => group_id, "user_ids" => user_ids}) do

@@ -23,39 +23,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug :fetch_session
   end
 
-  # Anonymous routes.
-  scope "/", StitchConnect.Web do
-    pipe_through :browser
-
-    get "/invitations/accept/:token", InvitationController, :accept
-
-    get "/login", AuthenticationController, :login
-    post "/login", AuthenticationController, :submit_login
-    get "/logout", AuthenticationController, :logout
-    get "/reset-password", AuthenticationController, :reset_password
-    get "/reset-password/:token", AuthenticationController, :change_password
-  end
-
-  # Authenticated routes.
-  scope "/", StitchConnect.Web do
-    pipe_through :browser_authenticate
-
-    get "/", PageController, :index
-
-    get "/groups/:slug", GroupController, :index
-
-    get "/admin/team", AdminController, :index
-    get "/admin/team/settings", AdminController, :index
-    get "/admin/team/hipaa", AdminController, :index
-    get "/admin/team/export", AdminController, :index
-    get "/admin/you/profile", AdminController, :index
-    get "/admin/you/account", AdminController, :index
-    get "/admin/you/notifications", AdminController, :index
-    get "/admin/users/invitations", AdminController, :index
-    get "/admin/users/members", AdminController, :index
-    get "/admin/users/pending", AdminController, :index
-  end
-
   # API routes.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
@@ -103,5 +70,38 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     post "/login", AuthenticationController, :submit_login
     post "/reset_password", AuthenticationController, :reset_password
+  end
+
+  # Anonymous routes.
+  scope "/", StitchConnect.Web do
+    pipe_through :browser
+
+    get "/invitations/accept/:token", InvitationController, :accept
+
+    get "/login", AuthenticationController, :login
+    post "/login", AuthenticationController, :submit_login
+    get "/logout", AuthenticationController, :logout
+    get "/reset-password", AuthenticationController, :reset_password
+    get "/reset-password/:token", AuthenticationController, :change_password
+  end
+
+  # Authenticated routes.
+  scope "/", StitchConnect.Web do
+    pipe_through :browser_authenticate
+
+    get "/", PageController, :index
+
+    get "/groups/:slug", GroupController, :index
+
+    get "/admin/team", AdminController, :index
+    get "/admin/team/settings", AdminController, :index
+    get "/admin/team/hipaa", AdminController, :index
+    get "/admin/team/export", AdminController, :index
+    get "/admin/you/profile", AdminController, :index
+    get "/admin/you/account", AdminController, :index
+    get "/admin/you/notifications", AdminController, :index
+    get "/admin/users/invitations", AdminController, :index
+    get "/admin/users/members", AdminController, :index
+    get "/admin/users/pending", AdminController, :index
   end
 end
