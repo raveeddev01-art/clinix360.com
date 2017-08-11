@@ -2,9 +2,9 @@ import React, { Component } from "react";
 
 import { inject, observer } from "mobx-react";
 
-import Chat from "./chat.jsx";
-import Addons from "../addons/addons.jsx";
-import TopNav from "./top-nav/top-nav.jsx";
+import Chat from "./chat";
+import Addons from "../addons/addons";
+import TopNav from "./top-nav/top-nav";
 
 @inject("groupStore")
 @observer

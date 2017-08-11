@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from "react";
-import OnboardInputCard from "../onboard-input-card/onboard-input-card.jsx";
+import OnboardInputCard from "../onboard-input-card/onboard-input-card";
 
 class PhoneNumberCard extends Component {
   render() {

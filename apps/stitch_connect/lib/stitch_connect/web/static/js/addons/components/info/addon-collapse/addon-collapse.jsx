@@ -35,7 +35,9 @@ class AddonCollapse extends Component {
           <i className={caretClass} />
         </h5>
         <Collapse in={collapsed}>
-          {children}
+          <div>
+            {children}
+          </div>
         </Collapse>
         {border && <hr />}
       </div>

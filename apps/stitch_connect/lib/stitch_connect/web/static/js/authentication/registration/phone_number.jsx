@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import store from "../authentication_store.js";
-import PhoneNumberCard from "../components/phone-number-card/phone-number-card.jsx";
+import store from "../authentication_store";
+import PhoneNumberCard from "../components/phone-number-card/phone-number-card";
 
 @observer
 class PhoneNumber extends Component {

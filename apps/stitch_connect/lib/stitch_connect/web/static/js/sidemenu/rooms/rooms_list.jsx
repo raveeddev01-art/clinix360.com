@@ -4,9 +4,9 @@ import { observer } from "mobx-react";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-import Room from "./room.jsx";
-import GroupsModal from "./modals/groups_modal.jsx";
-import CreateGroupModal from "./modals/create_group_modal.jsx";
+import Room from "./room";
+import GroupsModal from "./modals/groups_modal";
+import CreateGroupModal from "./modals/create_group_modal";
 
 @observer
 export default class RoomsList extends Component {

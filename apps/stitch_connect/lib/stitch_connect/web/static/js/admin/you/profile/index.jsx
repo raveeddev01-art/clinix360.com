@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import Panel from "react-bootstrap/lib/Panel";
-import NamePanel from "./name-panel.jsx";
-import PhoneNumberPanel from "./phone-number-panel.jsx";
-import TitlePanel from "./title-panel.jsx";
-import ProfileImagePanel from "./profile-image-panel.jsx";
+import NamePanel from "./name-panel";
+import PhoneNumberPanel from "./phone-number-panel";
+import TitlePanel from "./title-panel";
+import ProfileImagePanel from "./profile-image-panel";
 
 class ProfileSettings extends Component {
   render() {

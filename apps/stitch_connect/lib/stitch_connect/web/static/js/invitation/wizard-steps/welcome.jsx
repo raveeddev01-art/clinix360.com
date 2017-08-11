@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 import FormControl from "react-bootstrap/lib/FormControl";
-import Card from "../components/card/card.jsx";
+import Card from "../components/card/card";
 
 @inject("invitationStore")
 @observer

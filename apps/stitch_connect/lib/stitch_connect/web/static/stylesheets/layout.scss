@@ -51,10 +51,10 @@
   .flex-content {
     overflow-y: auto;
   }
-}
 
-#addons.open-addons {
-  display: flex;
+  &.opened {
+    display: flex;
+  }
 }
 
 .flex-header {

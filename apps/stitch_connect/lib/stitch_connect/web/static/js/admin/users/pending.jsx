@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Panel, Row, Col } from "react-bootstrap";
-import PendingInvitationItem from "./pending-invitation-item.jsx";
+import PendingInvitationItem from "./pending-invitation-item";
 
 @inject("invitationStore")
 @observer

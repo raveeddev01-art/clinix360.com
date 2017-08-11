@@ -6,7 +6,7 @@ import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import ListGroup from "react-bootstrap/lib/ListGroup";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 
-import isSelected from "../util/active_styling.jsx";
+import isSelected from "../util/active_styling";
 
 export default class Sidebar extends Component {
   _adminUsersOptions = () => {

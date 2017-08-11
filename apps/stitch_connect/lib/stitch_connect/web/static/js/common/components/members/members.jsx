@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from "react";
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
 import { Async } from "react-select";
-import presenceStore from "../../stores/presence_store";
-import MemberOption from "./member_option.jsx";
 
+import MemberOption from "./member_option";
+
+@inject("presenceStore")
 @observer
 class Members extends Component {
   constructor(props) {
@@ -21,6 +22,8 @@ class Members extends Component {
   }
 
   _getMembers = (term, callback) => {
+    const { presenceStore } = this.props;
+
     return post(`/api/v1/users/search`, { body: { term } }).then(resp => {
       const onlineUsers = Object.keys(presenceStore.onlineUsersMap);
       const options = resp.data.map(user => ({

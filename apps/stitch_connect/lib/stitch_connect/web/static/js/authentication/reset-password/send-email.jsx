@@ -10,7 +10,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import { Link } from "react-router-dom";
 
-import Card from "../components/card/card.jsx";
+import Card from "../components/card/card";
 
 @inject("resetPasswordStore")
 @observer

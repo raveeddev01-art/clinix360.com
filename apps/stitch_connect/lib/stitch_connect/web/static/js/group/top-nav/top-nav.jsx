@@ -5,17 +5,27 @@ import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
-import NavItemFavorite from "./nav-items/nav-item-favorite.jsx";
-import NavItemMembers from "./nav-items/nav-item-members.jsx";
-import NavItemNotifications from "./nav-items/nav-item-notifications.jsx";
-import NavItemRename from "./nav-items/nav-item-rename.jsx";
-import NavItemConvert from "./nav-items/nav-item-convert.jsx";
+import NavItemFavorite from "./nav-items/nav-item-favorite";
+import NavItemMembers from "./nav-items/nav-item-members";
+import NavItemNotifications from "./nav-items/nav-item-notifications";
+import NavItemRename from "./nav-items/nav-item-rename";
+import NavItemConvert from "./nav-items/nav-item-convert";
 
 @inject("addonStore", "groupStore")
 @observer
 class TopNav extends Component {
-  _toggleAddons = () => {
-    this.props.addonStore.toggleAddons();
+  _toggleInfoAddon = () => {
+    const { addonStore } = this.props;
+
+    addonStore.setAddonPanel('info');
+    addonStore.toggleAddons();
+  };
+
+  _toggleDirectoryAddon = () => {
+    const { addonStore } = this.props;
+
+    addonStore.setAddonPanel('directory');
+    addonStore.toggleAddons();
   };
 
   handleLeave = () => {
@@ -53,7 +63,7 @@ class TopNav extends Component {
           <a
             className="btn btn-default"
             id="addons-toggle"
-            onClick={this._toggleAddons}
+            onClick={this._toggleInfoAddon}
           >
             <i className="fa fa-info-circle" />
           </a>
@@ -66,7 +76,7 @@ class TopNav extends Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="more-menu">
-              <MenuItem>
+              <MenuItem onSelect={this._toggleDirectoryAddon}>
                 <i className="fa fa-users" /> Directory
               </MenuItem>
               <MenuItem>
