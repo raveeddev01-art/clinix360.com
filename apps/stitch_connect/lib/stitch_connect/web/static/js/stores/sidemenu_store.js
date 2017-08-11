@@ -13,7 +13,8 @@ class SidemenuStore {
 
   rawOnlineUsers = {};
 
-  constructor(props) {
+  constructor(rootStore, props) {
+    this.rootStore = rootStore;
     this.teamName = props.teamName;
     this.teamId = props.teamId;
     this.subdomain = props.subdomain;

@@ -8,6 +8,10 @@ class AddonStore {
   @observable detailPanelType = null;
   @observable detailPanelData = null;
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   @action
   toggleAddons(value) {
     if (typeof value !== "undefined") {

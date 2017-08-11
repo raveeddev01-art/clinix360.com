@@ -13,6 +13,10 @@ class GroupStore {
   @observable users = [];
   @observable favorite = false;
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   @action
   loadGroupBySlug = slug => {
     this.loading = true;

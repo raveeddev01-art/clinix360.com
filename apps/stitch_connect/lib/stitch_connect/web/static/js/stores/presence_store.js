@@ -5,6 +5,10 @@ class PresenceStore {
   @observable teamId = "";
   @observable onlineUsersMap = {};
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   connectPresence = id => {
     this.teamId = id;
     const lobby = socket.channel(`team:lobby:${this.teamId}`, {});
