@@ -15,14 +15,13 @@ class PeopleList extends Component {
 
   render() {
     const { groupStore, presenceStore, showAllUsers } = this.props;
-    const onlineUsers = Object.keys(presenceStore.onlineUsersMap);
     const users = showAllUsers ? groupStore.users : groupStore.onlineUsers;
 
     return (
       <div>
         {users.map(user =>
           <PeopleListItem
-            online={onlineUsers.indexOf(`${user.id}`) > -1}
+            online={presenceStore.isOnline(`${user.id}`)}
             key={`user_${user.id}`}
             onClick={this._onClickItem(user)}
             {...user}

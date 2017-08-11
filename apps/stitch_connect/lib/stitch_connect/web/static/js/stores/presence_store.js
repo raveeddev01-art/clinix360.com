@@ -27,6 +27,12 @@ class PresenceStore {
   onPresenceDiff = diff => {
     this.onlineUsersMap = Presence.syncDiff(this.onlineUsersMap, diff);
   };
+
+  isOnline(userId) {
+    const onlineUsers = Object.keys(this.onlineUsersMap);
+
+    return onlineUsers.indexOf(userId) > -1;
+  }
 }
 
 export default PresenceStore;

@@ -19,11 +19,9 @@ class GroupStore {
 
   @computed
   get onlineUsers() {
-    const onlineUsers = Object.keys(
-      this.rootStore.presenceStore.onlineUsersMap
+    return this.users.filter(user =>
+      this.rootStore.presenceStore.isOnline(`${user.id}`)
     );
-
-    return this.users.filter(user => onlineUsers.indexOf(`${user.id}`) > -1);
   }
 
   @action
