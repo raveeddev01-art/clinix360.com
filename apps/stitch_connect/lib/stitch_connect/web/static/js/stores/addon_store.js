@@ -8,6 +8,10 @@ class AddonStore {
   @observable detailPanelType = null;
   @observable detailPanelData = null;
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   @action
   toggleAddons(value) {
     if (typeof value !== "undefined") {
@@ -31,14 +35,12 @@ class AddonStore {
   }
 
   @action
-  setAddonDetailPanel(panelType, panelData){
+  setAddonDetailPanel(panelType, panelData) {
     if (panelType || panelData) {
       this.detailPanelType = panelType;
       this.detailPanelData = panelData;
     }
   }
-
 }
 
-const store = new AddonStore();
-export default store;
+export default AddonStore;

@@ -5,6 +5,10 @@ import { animateScroll } from "react-scroll";
 class MessageStore {
   @observable messages = [];
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   scrollToBottom = () => {
     animateScroll.scrollToBottom({
       containerId: "chat"
@@ -104,5 +108,4 @@ class MessageStore {
   };
 }
 
-const store = new MessageStore();
-export default store;
+export default MessageStore;
