@@ -17,15 +17,15 @@ class TopNav extends Component {
   _toggleInfoAddon = () => {
     const { addonStore } = this.props;
 
-    addonStore.setAddonPanel('info');
-    addonStore.toggleAddons();
+    addonStore.setAddonPanel("info");
+    addonStore.toggleAddons(true);
   };
 
   _toggleDirectoryAddon = () => {
     const { addonStore } = this.props;
 
-    addonStore.setAddonPanel('directory');
-    addonStore.toggleAddons();
+    addonStore.setAddonPanel("directory");
+    addonStore.toggleAddons(true);
   };
 
   handleLeave = () => {
