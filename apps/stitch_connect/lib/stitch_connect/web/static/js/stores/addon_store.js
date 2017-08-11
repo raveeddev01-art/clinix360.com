@@ -35,13 +35,12 @@ class AddonStore {
   }
 
   @action
-  setAddonDetailPanel(panelType, panelData){
+  setAddonDetailPanel(panelType, panelData) {
     if (panelType || panelData) {
       this.detailPanelType = panelType;
       this.detailPanelData = panelData;
     }
   }
-
 }
 
 export default AddonStore;
