@@ -1,5 +1,4 @@
-import { observable, action } from "mobx";
-import { Presence } from "phoenix";
+import { observable, computed, action } from "mobx";
 import _ from "lodash";
 
 class GroupStore {
@@ -12,9 +11,19 @@ class GroupStore {
   @observable joined = false;
   @observable users = [];
   @observable favorite = false;
+  @observable showAllUsers = true;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+  }
+
+  @computed
+  get onlineUsers() {
+    const onlineUsers = Object.keys(
+      this.rootStore.presenceStore.onlineUsersMap
+    );
+
+    return this.users.filter(user => onlineUsers.indexOf(`${user.id}`) > -1);
   }
 
   @action
@@ -50,6 +59,11 @@ class GroupStore {
       this.users = resp.data;
       return resp.data;
     });
+  };
+
+  @action
+  toggleAllUsers = () => {
+    this.showAllUsers = !this.showAllUsers;
   };
 
   @action

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import cx from "classnames";
 
 import PeopleListItem from "./people-list-item/people-list-item";
 
@@ -15,35 +14,31 @@ class PeopleList extends Component {
   };
 
   render() {
-    const { addonStore, groupStore, presenceStore } = this.props;
+    const { groupStore, presenceStore } = this.props;
     const onlineUsers = Object.keys(presenceStore.onlineUsersMap);
 
     return (
       <div>
-        {
-          groupStore.users
-            .filter(user => onlineUsers.indexOf(`${user.id}`) > -1)
-            .map(user => (
-              <PeopleListItem
-                online={true}
-                key={`user_${user.id}`}
-                onClick={this._onClickItem(user)}
-                {...user}
-              />
-            ))
-        }
-        {
-          groupStore.users
-            .filter(user => onlineUsers.indexOf(`${user.id}`) === -1)
-            .map(user => (
-              <PeopleListItem
-                online={false}
-                key={`user_${user.id}`}
-                onClick={this._onClickItem(user)}
-                {...user}
-              />
-            ))
-        }
+        {groupStore.users
+          .filter(user => onlineUsers.indexOf(`${user.id}`) > -1)
+          .map(user =>
+            <PeopleListItem
+              online={true}
+              key={`user_${user.id}`}
+              onClick={this._onClickItem(user)}
+              {...user}
+            />
+          )}
+        {groupStore.users
+          .filter(user => onlineUsers.indexOf(`${user.id}`) === -1)
+          .map(user =>
+            <PeopleListItem
+              online={false}
+              key={`user_${user.id}`}
+              onClick={this._onClickItem(user)}
+              {...user}
+            />
+          )}
       </div>
     );
   }
