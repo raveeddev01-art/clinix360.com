@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Message, Group}
+  alias Stitch.{Message, Group, MessageAction}
   alias Stitch.GroupAuthorization
   alias Stitch.MessageQueries
 
@@ -15,6 +15,27 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "You can't see the messages for this group."})
+    end
+  end
+
+  def toggle_star(conn, %{"id" => message_id}) do
+    message = MessageQueries.get_by_id(message_id)
+
+    case GroupAuthorization.can_view?(message.group_id, conn.assigns.current_user.id) do
+      true ->
+        case MessageAction.toggle_star(message, conn.assigns.current_user) do
+          {:ok, result, _changeset} ->
+            message = Map.put(message, :starred, result)
+            render conn, "show.json", message: message
+          {:error, reason} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> json(%{message: reason})
+        end
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You can't star messages belonging to this group."})
     end
   end
 end
