@@ -15,8 +15,8 @@ class MessageList extends Component {
         {Object.keys(messageStore.messagesByDate).map(date =>
           <div key={`msgblock_${date}`}>
             <DateSeparator timestamp={date} />
-            {messageStore.messagesByDate[date].map((msgPool, index) =>
-              <Message key={`msg_${index}`} messagePool={msgPool} />
+            {messageStore.messagesByDate[date].map(msgPool =>
+              <Message key={`msg_${msgPool[0].id}`} messagePool={msgPool} />
             )}
           </div>
         )}
