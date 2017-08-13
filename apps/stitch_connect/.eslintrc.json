@@ -18,6 +18,7 @@
   },
   "rules": {
     "constructor-super": "warn",
+    "class-methods-use-this": "off",
     "no-const-assign": "warn",
     "no-this-before-super": "warn",
     "no-undef": "warn",
