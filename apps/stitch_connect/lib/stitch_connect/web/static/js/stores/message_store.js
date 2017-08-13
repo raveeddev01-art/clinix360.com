@@ -48,6 +48,7 @@ class MessageStore {
     this.messages = [
       {
         id: 1,
+        starred: true,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -55,6 +56,7 @@ class MessageStore {
       },
       {
         id: 2,
+        starred: true,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -62,6 +64,7 @@ class MessageStore {
       },
       {
         id: 3,
+        starred: false,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -69,6 +72,7 @@ class MessageStore {
       },
       {
         id: 4,
+        starred: false,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -76,6 +80,7 @@ class MessageStore {
       },
       {
         id: 5,
+        starred: false,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -83,6 +88,7 @@ class MessageStore {
       },
       {
         id: 6,
+        starred: false,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -90,6 +96,7 @@ class MessageStore {
       },
       {
         id: 7,
+        starred: true,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -97,6 +104,7 @@ class MessageStore {
       },
       {
         id: 8,
+        starred: false,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -104,6 +112,7 @@ class MessageStore {
       },
       {
         id: 9,
+        starred: false,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",

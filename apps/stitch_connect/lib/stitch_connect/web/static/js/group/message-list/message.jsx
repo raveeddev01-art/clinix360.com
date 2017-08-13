@@ -18,34 +18,44 @@ class Message extends Component {
     console.log("toggleStar");
   }
 
-  renderTooltip(timestamp) {
-    return (
+  render() {
+    const { messagePool } = this.props;
+    const { id, starred, user, createdAt: timestamp } = messagePool[0];
+    const className = cx("message", {
+      "message-own": user.id === currentUser.id
+    });
+    const timestampTooltip = (
       <Tooltip id="date-tooltip">
         {moment(timestamp).calendar()}
       </Tooltip>
     );
-  }
-
-  render() {
-    const { messagePool } = this.props;
-    const { id, user, createdAt: timestamp } = messagePool[0];
-    const className = cx("message", {
-      "message-own": user.id === currentUser.id
-    });
+    const starTooltip = (
+      <Tooltip id="star-tooltip">Unstar this message</Tooltip>
+    );
 
     return (
       <div className={className}>
         <div className="content">
           <div className="content-header">
             {`${user.first_name} ${user.last_name} `}
-            <OverlayTrigger
-              placement="top"
-              overlay={this.renderTooltip(timestamp)}
-            >
+
+            <OverlayTrigger placement="top" overlay={timestampTooltip}>
               <span className="time">
                 {moment(timestamp).format("HH:mm A")}
               </span>
             </OverlayTrigger>
+
+            {starred &&
+              <OverlayTrigger placement="top" overlay={starTooltip}>
+                <span
+                  className="icon-star"
+                  role="link"
+                  onClick={this.toggleStar}
+                >
+                  <i className="fa fa-star" />
+                </span>
+              </OverlayTrigger>}
+
             <Dropdown
               id={`message-actions-${id}`}
               componentClass="div"
@@ -54,7 +64,7 @@ class Message extends Component {
               <Dropdown.Toggle useAnchor />
               <Dropdown.Menu>
                 <MenuItem onClick={this.toggleStar}>
-                  <i className="fa fa-star-o" /> Star
+                  <i className="fa fa-star-o" /> {starred ? "Unstar" : "Star"}
                 </MenuItem>
               </Dropdown.Menu>
             </Dropdown>
