@@ -7,7 +7,7 @@
     "node": true
   },
   "extends": ["airbnb", "prettier"],
-  "plugins": ["import", "jsx-a11y", "react"],
+  "plugins": ["import", "jsx-a11y", "prettier", "react"],
   "parserOptions": {
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
@@ -17,12 +17,13 @@
     "sourceType": "module"
   },
   "rules": {
+    "constructor-super": "warn",
     "no-const-assign": "warn",
     "no-this-before-super": "warn",
     "no-undef": "warn",
     "no-unreachable": "warn",
     "no-unused-vars": "warn",
-    "constructor-super": "warn",
+    "prettier/prettier": "error",
     "valid-typeof": "warn"
   }
 }
