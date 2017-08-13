@@ -47,54 +47,63 @@ class MessageStore {
     // @TODO load messages here
     this.messages = [
       {
+        id: 1,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-05-10T03:02:10"
       },
       {
+        id: 2,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-05-10T10:10:10"
       },
       {
+        id: 3,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-05-10T10:20:30"
       },
       {
+        id: 4,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-05-10T10:30:30"
       },
       {
+        id: 5,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-08-08T20:10:30"
       },
       {
+        id: 6,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-08-09T10:10:10"
       },
       {
+        id: 7,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-08-09T10:20:10"
       },
       {
+        id: 8,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-08-09T10:21:10"
       },
       {
+        id: 9,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
