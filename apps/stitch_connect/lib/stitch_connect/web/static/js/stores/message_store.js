@@ -9,11 +9,11 @@ class MessageStore {
     this.rootStore = rootStore;
   }
 
-  scrollToBottom = () => {
+  scrollToBottom() {
     animateScroll.scrollToBottom({
       containerId: "chat"
     });
-  };
+  }
 
   @computed
   get messagesByDate() {
@@ -43,7 +43,7 @@ class MessageStore {
   }
 
   @action
-  loadMessages = groupId => {
+  loadMessages(groupId) {
     // @TODO load messages here
     this.messages = [
       {
@@ -123,7 +123,16 @@ class MessageStore {
     setTimeout(() => {
       this.scrollToBottom();
     }, 300);
-  };
+  }
+
+  @action
+  toggleStar(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message) {
+      message.starred = !message.starred;
+    }
+  }
 }
 
 export default MessageStore;

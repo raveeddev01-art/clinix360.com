@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from "react";
+import { observer, inject } from "mobx-react";
 import cx from "classnames";
 import moment from "moment";
 
@@ -7,6 +8,8 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
+@inject("messageStore")
+@observer
 class Message extends Component {
   constructor(props) {
     super(props);
@@ -15,7 +18,10 @@ class Message extends Component {
   }
 
   toggleStar() {
-    console.log("toggleStar");
+    const { messageStore, messagePool } = this.props;
+    const messageId = messagePool[0].id;
+
+    messageStore.toggleStar(messageId);
   }
 
   render() {
