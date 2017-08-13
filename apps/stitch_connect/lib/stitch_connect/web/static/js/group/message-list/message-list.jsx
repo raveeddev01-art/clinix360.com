@@ -1,28 +1,23 @@
-import React, { Component, PropTypes } from "react";
-import cx from "classnames";
+import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import Message from "./message.jsx";
-import DateSeparator from "./date-separator.jsx";
+import Message from "./message";
+import DateSeparator from "./date-separator";
 
-@inject("sidemenuStore", "messageStore")
+@inject("messageStore")
 @observer
 class MessageList extends Component {
-  _renderMessageBlock = messages => {
-    return messages.map((msgPool, index) =>
-      <Message key={`msg_${index}`} messagePool={msgPool} />
-    );
-  };
-
   render() {
-    const { sidemenuStore, messageStore } = this.props;
+    const { messageStore } = this.props;
 
     return (
       <div id="chat">
         {Object.keys(messageStore.messagesByDate).map(date =>
           <div key={`msgblock_${date}`}>
             <DateSeparator timestamp={date} />
-            {this._renderMessageBlock(messageStore.messagesByDate[date])}
+            {messageStore.messagesByDate[date].map(msgPool =>
+              <Message key={`msg_${msgPool[0].id}`} messagePool={msgPool} />
+            )}
           </div>
         )}
       </div>
