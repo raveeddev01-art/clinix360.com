@@ -30,8 +30,7 @@ class Addons extends Component {
       opened: addonStore.showAddonDetail
     });
 
-    const addonPanelTitle =
-      addonStore.addonPanelType && addonStore.addonPanelType.capitalize();
+    const addonPanelTitle = addonStore.addonPanelType;
 
     return (
       <div id="addons" className={addonsClass}>
@@ -40,7 +39,7 @@ class Addons extends Component {
             <a className="open-left" onClick={this._toggleAddonDetail}>
               <i className="fa fa-chevron-left" />
             </a>}
-          <h4>
+          <h4 className="text-capitalize">
             {addonPanelTitle}
           </h4>
           <a onClick={this._toggleAddons}>
