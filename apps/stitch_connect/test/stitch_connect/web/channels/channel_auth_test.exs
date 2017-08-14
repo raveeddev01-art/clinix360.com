@@ -42,41 +42,4 @@ defmodule StitchConnect.Web.ChannelAuthTest do
       assert {:ok, _, _} = subscribe_and_join(socket1, "groups:#{group1.slug}")
     end
   end
-
-  defp create_users(_) do
-    team = Stitch.Team.Onboarding.create_team("Clinic", "clinic")
-
-    user1 = Stitch.Accounts.create_user_with_email_only("user1@mail.com")
-    user2 = Stitch.Accounts.create_user_with_email_only("user2@mail.com")
-
-    attrs = %{
-      fullname: "Sergio Tapia", username: "user1",
-      password: "Password123!", pin: "0000",
-      roles: ["admin"], team_id: team.id
-    }
-
-    user1 = Stitch.Accounts.update_and_complete_user_onboarding(user1.id, attrs)
-    user2 = Stitch.Accounts.update_and_complete_user_onboarding(user2.id, %{attrs | username: "user2"})
-
-    {:ok, team: team, user1: user1, user2: user2}
-  end
-
-  defp connect_socket(%{user1: user1}) do
-    {:ok, socket} = connect(UserSocket, %{"authenticationToken" => user1.token})
-    {:ok, socket1: socket}
-  end
-
-  def create_private_group(%{user1: user1, team: team}) do
-    attrs = %{team_id: team.id, name: "Private Room", slug: "private_room", public: false}
-
-    group = %Stitch.Group{}
-    |> Stitch.Group.changeset(attrs)
-    |> Repo.insert!
-
-    %Stitch.GroupUser{}
-    |> Stitch.GroupUser.changeset(%{group_id: group.id, user_id: user1.id})
-    |> Repo.insert!
-
-    {:ok, group1: group}
-  end
 end
