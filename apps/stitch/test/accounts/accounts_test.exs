@@ -42,6 +42,25 @@ defmodule Stitch.AccountsTest do
     end
   end
 
+  describe "Stitch.Accounts.create_and_complete_user_onboarding/1" do
+    test "it onboards the user and sets the admin role for his new team" do
+      team = insert(:team)
+      attrs = %{
+        email: "sergio@gmail.com",
+        fullname: "Sergio Tapia",
+        username: "sergiotapia3",
+        password: "Password123!",
+        pin: "0000",
+        roles: ["admin"],
+        team_id: team.id
+      }
+      IO.inspect(attrs)
+      user = Stitch.Accounts.create_and_complete_user_onboarding(attrs)
+      assert user.team_id == team.id
+      assert user.roles == ["admin"]
+    end
+  end
+
   describe "Stitch.Accounts.update_user_password/3" do
     test "it only updates the user password if the old password provided is valid" do
       user = insert(:user, %{email: "sadan@example.com", encrypted_password: Comeonin.Bcrypt.hashpwsalt("sadan123")})
