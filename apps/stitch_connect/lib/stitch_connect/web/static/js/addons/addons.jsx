@@ -10,11 +10,11 @@ import PeopleDetail from "./components/people-detail/people-detail";
 @inject("addonStore")
 @observer
 class Addons extends Component {
-  _toggleAddons = () => {
+  toggleAddons = () => {
     this.props.addonStore.toggleAddons();
   };
 
-  _toggleAddonDetail = () => {
+  toggleAddonDetail = () => {
     this.props.addonStore.toggleAddonDetail();
   };
 
@@ -36,13 +36,13 @@ class Addons extends Component {
       <div id="addons" className={addonsClass}>
         <div className="flex-header">
           {addonStore.showAddonDetail &&
-            <a className="open-left" onClick={this._toggleAddonDetail}>
+            <a className="open-left" onClick={this.toggleAddonDetail}>
               <i className="fa fa-chevron-left" />
             </a>}
           <h4 className="text-capitalize">
             {addonPanelTitle}
           </h4>
-          <a onClick={this._toggleAddons}>
+          <a onClick={this.toggleAddons}>
             <i className="fa fa-close" />
           </a>
         </div>

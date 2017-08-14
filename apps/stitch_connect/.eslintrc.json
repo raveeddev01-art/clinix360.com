@@ -19,6 +19,7 @@
   "rules": {
     "constructor-super": "warn",
     "class-methods-use-this": "off",
+    "jsx-a11y/interactive-supports-focus": "off",
     "no-const-assign": "warn",
     "no-this-before-super": "warn",
     "no-undef": "warn",
