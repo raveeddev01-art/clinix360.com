@@ -20,7 +20,7 @@ class MessageStore {
   get messagesByDate() {
     const msgMap = {};
 
-    this.messages.forEach(msg => {
+    this.messages.reverse().forEach(msg => {
       const date = moment(msg.inserted_at).format(`YYYY-MM-DD`);
       msgMap[date] = msgMap[date] || [];
 
@@ -53,7 +53,7 @@ class MessageStore {
       .join()
       .receive("ok", this.loadMessages)
       .receive("error", err => notify.show(err.message, "danger"));
-    this.channel.on("new_msg", this.appendMessages);
+    this.channel.on("new_msg", this.appendMessage);
   };
 
   sendMessage = msg => {
@@ -69,9 +69,12 @@ class MessageStore {
   };
 
   @action
-  appendMessages = data => {
-    this.messages.push(data);
-    console.log(this.messages);
+  appendMessage = data => {
+    this.messages.unshift(data);
+
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 300);
   };
 
   @action

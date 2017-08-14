@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
 
-import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import ListGroup from "react-bootstrap/lib/ListGroup";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 
@@ -66,7 +64,9 @@ export default class Sidebar extends Component {
   render() {
     return (
       <div id="sidebar" className="panel panel-default">
-        {currentUser.roles.includes("admin") && this._adminTeamsOptions()}
+        {currentUser.roles &&
+          currentUser.roles.includes("admin") &&
+          this._adminTeamsOptions()}
 
         <h3>You</h3>
         <ListGroup>
@@ -87,7 +87,9 @@ export default class Sidebar extends Component {
           </ListGroupItem>
         </ListGroup>
 
-        {currentUser.roles.includes("admin") && this._adminUsersOptions()}
+        {ccurrentUser.roles &&
+          urrentUser.roles.includes("admin") &&
+          this._adminUsersOptions()}
       </div>
     );
   }
