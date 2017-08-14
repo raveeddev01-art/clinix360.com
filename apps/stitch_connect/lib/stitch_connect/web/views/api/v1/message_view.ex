@@ -12,11 +12,12 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   def message_json(message) do
     %{
       id: message.id,
-      user_id: message.user.id,
-      group_id: message.group.id,
+      user_id: message.user_id,
+      group_id: message.group_id,
       deleted: message.deleted,
       text_content: message.text_content,
-      fields: message.fields
+      fields: message.fields,
+      inserted_at: message.inserted_at,
     }
   end
 end

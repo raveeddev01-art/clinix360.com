@@ -1,37 +1,51 @@
 defmodule StitchConnect.Web.GroupChannel do
   use Phoenix.Channel
-  alias StitchConnect.Web.Presence
+  alias StitchConnect.Web.Api.V1.MessageView
+  alias Stitch.{Repo, Group, GroupAuthorization, Message, MessageQueries}
 
-  def join("group:lobby", _, socket) do
-    send self(), :after_join
-    {:ok, socket}
+  def join("groups:" <> group_slug, _params, socket) do
+    case Repo.get_by(Group, slug: group_slug) do
+      nil ->
+        {:error, %{reason: "group not found"}}
+      group ->
+        case GroupAuthorization.can_view?(group.id, socket.assigns.current_user.id) do
+          true ->
+            messages = MessageQueries.group_latest_messages(group.id)
+            json = MessageView.render("index.json", %{messages: messages})
+            {:ok, %{messages: json}, assign(socket, :group, group)}
+          false ->
+            {:error, %{reason: "unauthorized"}}
+        end
+    end
   end
 
-  # def join("groups:" <> group_id, _params, socket) do
-  #   case Stitch.Group.Authorization.can_join?(group_id, socket.assigns.current_user.id) do
-  #     false ->
-  #       {:error, %{reason: "unauthorized"}}
-  #     group ->
-  #       {:ok, assign(socket, :group, group)}
-  #   end
-  # end
+  def handle_in("feed", %{"max_id" => max_id}, socket) do
+    group = socket.assigns.group
+    messages = MessageQueries.group_latest_messages(group.id, max_id: max_id)
+    json = MessageView.render("index.json", %{messages: messages})
 
-  def handle_info(:after_join, socket) do
-    user = Stitch.UserQueries.get_by_id(socket.assigns.current_user_id)
-    push socket, "presence_state", Presence.list(socket)
-    {:ok, _} = Presence.track(socket, socket.assigns.current_user_id, %{
-      online_at: inspect(System.system_time(:seconds)),
-      id: user.id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      username: user.username,
-      roles: user.roles,
-      disabled: user.disabled
-    })
-    {:noreply, socket}
+    {:reply, {:ok, %{messages: json}}, socket}
   end
 
-  def terminate(_reason, socket) do
-    {:ok, socket}
+  def handle_in("new_msg", %{"text_content" => content}, socket) do
+    %{group: group, current_user: user} = socket.assigns
+
+    if GroupAuthorization.is_member?(group.id, user.id) do
+      attrs = %{user_id: user.id, group_id: group.id, text_content: content}
+      changeset = Message.changeset(%Message{}, attrs)
+
+      case Repo.insert(changeset) do
+        {:ok, message} ->
+          json = MessageView.render("show.json", %{message: message})
+
+          broadcast! socket, "new_msg", json
+          {:reply, {:ok, json}, socket}
+
+        {:error, _changeset} ->
+          {:reply, {:error, %{reason: "Failed to create message."}}, socket}
+      end
+    else
+      {:reply, {:error, %{reason: "Only members can write messages."}}, socket}
+    end
   end
 end
