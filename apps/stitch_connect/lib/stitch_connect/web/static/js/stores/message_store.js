@@ -49,6 +49,7 @@ class MessageStore {
       {
         id: 1,
         starred: true,
+        pinned: false,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -57,6 +58,7 @@ class MessageStore {
       {
         id: 2,
         starred: true,
+        pinned: true,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -65,6 +67,7 @@ class MessageStore {
       {
         id: 3,
         starred: false,
+        pinned: false,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -73,6 +76,7 @@ class MessageStore {
       {
         id: 4,
         starred: false,
+        pinned: false,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -81,6 +85,7 @@ class MessageStore {
       {
         id: 5,
         starred: false,
+        pinned: true,
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -89,6 +94,7 @@ class MessageStore {
       {
         id: 6,
         starred: false,
+        pinned: false,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -97,6 +103,7 @@ class MessageStore {
       {
         id: 7,
         starred: true,
+        pinned: false,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -105,6 +112,7 @@ class MessageStore {
       {
         id: 8,
         starred: false,
+        pinned: true,
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -131,6 +139,15 @@ class MessageStore {
 
     if (message) {
       message.starred = !message.starred;
+    }
+  }
+
+  @action
+  togglePin(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message) {
+      message.pinned = !message.pinned;
     }
   }
 }

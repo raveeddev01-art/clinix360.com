@@ -97,11 +97,18 @@
               font-size: 85%;
             }
 
-            .icon-star {
+            .message-icon {
               margin-left: 5px;
-              color: #fecb2f;
               font-size: 85%;
               cursor: pointer;
+
+              &.icon-pin {
+                color: #4fb0fc;
+              }
+
+              &.icon-star {
+                color: #fecb2f;
+              }
             }
 
             .message-actions {

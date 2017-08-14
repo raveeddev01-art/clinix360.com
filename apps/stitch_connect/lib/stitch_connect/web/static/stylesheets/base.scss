@@ -414,3 +414,9 @@ $screen-lg: 1200px;
     padding: 0 15px;
   }
 }
+
+i.fa {
+  &.fa-rotate-45 {
+    transform: rotate(45deg);
+  }
+}
