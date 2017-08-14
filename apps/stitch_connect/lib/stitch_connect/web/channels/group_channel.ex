@@ -1,37 +1,16 @@
 defmodule StitchConnect.Web.GroupChannel do
   use Phoenix.Channel
   alias StitchConnect.Web.Presence
+  alias Stitch.{Repo, Group}
 
-  def join("group:lobby", _, socket) do
-    send self(), :after_join
-    {:ok, socket}
-  end
-
-  # def join("groups:" <> group_id, _params, socket) do
-  #   case Stitch.Group.Authorization.can_join?(group_id, socket.assigns.current_user.id) do
-  #     false ->
-  #       {:error, %{reason: "unauthorized"}}
-  #     group ->
-  #       {:ok, assign(socket, :group, group)}
-  #   end
-  # end
-
-  def handle_info(:after_join, socket) do
-    user = Stitch.UserQueries.get_by_id(socket.assigns.current_user_id)
-    push socket, "presence_state", Presence.list(socket)
-    {:ok, _} = Presence.track(socket, socket.assigns.current_user_id, %{
-      online_at: inspect(System.system_time(:seconds)),
-      id: user.id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      username: user.username,
-      roles: user.roles,
-      disabled: user.disabled
-    })
-    {:noreply, socket}
-  end
-
-  def terminate(_reason, socket) do
-    {:ok, socket}
+  def join("groups:" <> group_slug, _params, socket) do
+    case Repo.get_by(Group, slug: group_slug) do
+      nil -> {:error, %{reason: "group not found"}}
+      group ->
+        case Stitch.GroupAuthorization.can_view?(group.id, socket.assigns.current_user.id) do
+          true -> {:ok, assign(socket, :group, group)}
+          false -> {:error, %{reason: "unauthorized"}}
+        end
+    end
   end
 end

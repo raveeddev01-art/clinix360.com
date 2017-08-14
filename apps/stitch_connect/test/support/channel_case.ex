@@ -20,14 +20,21 @@ defmodule StitchConnect.Web.ChannelCase do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
 
+      alias Stitch.Repo
+
       # The default endpoint for testing
       @endpoint StitchConnect.Web.Endpoint
     end
   end
 
 
-  setup _tags do
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
+    end
+
     :ok
   end
-
 end
