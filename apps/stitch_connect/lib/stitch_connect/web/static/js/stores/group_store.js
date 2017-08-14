@@ -11,6 +11,7 @@ class GroupStore {
   @observable joined = false;
   @observable users = [];
   @observable favorite = false;
+  @observable notificationSetting = null;
   @observable showAllUsers = true;
 
   constructor(rootStore) {
@@ -106,6 +107,26 @@ class GroupStore {
     return post(`/api/v1/groups/${this.id}/leave`).then(resp => {
       this.joined = false;
       notify.show("User has been removed from the group");
+    });
+  };
+
+  @action
+  loadNotificationSetting = () => {
+    return get(
+      `/api/v1/groups/${this.id}/notification-preference`
+    ).then(resp => {
+      this.notificationSetting = resp.data.setting;
+      return this.notificationSetting;
+    });
+  };
+
+  @action
+  saveNotificationSetting = setting => {
+    return post(`/api/v1/groups/${this.id}/update-notification-preference`, {
+      body: { setting }
+    }).then(resp => {
+      this.notificationSetting = setting;
+      notify.show(`Notification setting saved for group ${this.name}`);
     });
   };
 }
