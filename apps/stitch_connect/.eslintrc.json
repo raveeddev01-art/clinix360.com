@@ -24,7 +24,18 @@
     "no-undef": "warn",
     "no-unreachable": "warn",
     "no-unused-vars": "warn",
-    "prettier/prettier": "error",
+    "react/prop-types": [
+      "error",
+      {
+        "ignore": [
+          "addonStore",
+          "groupStore",
+          "messageStore",
+          "presenceStore",
+          "sidemenuStore"
+        ]
+      }
+    ],
     "valid-typeof": "warn"
   },
   "globals": {
