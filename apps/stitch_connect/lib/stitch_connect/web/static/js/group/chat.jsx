@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import TopNav from "./top-nav/top-nav";
 import MessageList from "./message-list/message-list";
 
 @inject("groupStore")

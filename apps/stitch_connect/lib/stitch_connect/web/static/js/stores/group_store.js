@@ -1,5 +1,4 @@
-import { observable, action } from "mobx";
-import { Presence } from "phoenix";
+import { observable, computed, action } from "mobx";
 import _ from "lodash";
 
 class GroupStore {
@@ -13,6 +12,18 @@ class GroupStore {
   @observable users = [];
   @observable favorite = false;
   @observable notificationSetting = null;
+  @observable showAllUsers = true;
+
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
+  @computed
+  get onlineUsers() {
+    return this.users.filter(user =>
+      this.rootStore.presenceStore.isOnline(`${user.id}`)
+    );
+  }
 
   @action
   loadGroupBySlug = slug => {
@@ -47,6 +58,11 @@ class GroupStore {
       this.users = resp.data;
       return resp.data;
     });
+  };
+
+  @action
+  toggleAllUsers = () => {
+    this.showAllUsers = !this.showAllUsers;
   };
 
   @action
@@ -114,5 +130,4 @@ class GroupStore {
   };
 }
 
-const store = new GroupStore();
-export default store;
+export default GroupStore;

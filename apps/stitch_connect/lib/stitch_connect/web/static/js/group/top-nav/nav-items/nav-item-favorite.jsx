@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
-@observer
 @inject("groupStore", "sidemenuStore")
+@observer
 export default class NavItemMembers extends Component {
   _toggleFavorite = () => {
     const { groupStore, sidemenuStore } = this.props;
     groupStore.toggleFavorite().then(favorite => {
-      sidemenuStore.instance.updateGroupData(groupStore.id, { favorite });
+      sidemenuStore.updateGroupData(groupStore.id, { favorite });
       if (favorite) {
         notify.show(`You added ${groupStore.name} group as favorite`);
       } else {

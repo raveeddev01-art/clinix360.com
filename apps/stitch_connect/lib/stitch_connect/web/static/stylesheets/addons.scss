@@ -168,3 +168,11 @@
     }
   }
 }
+
+.directory-addon {
+  .status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

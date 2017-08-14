@@ -5,6 +5,10 @@ class PresenceStore {
   @observable teamId = "";
   @observable onlineUsersMap = {};
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   connectPresence = id => {
     this.teamId = id;
     const lobby = socket.channel(`team:lobby:${this.teamId}`, {});
@@ -23,7 +27,12 @@ class PresenceStore {
   onPresenceDiff = diff => {
     this.onlineUsersMap = Presence.syncDiff(this.onlineUsersMap, diff);
   };
+
+  isOnline(userId) {
+    const onlineUsers = Object.keys(this.onlineUsersMap);
+
+    return onlineUsers.indexOf(userId) > -1;
+  }
 }
 
-const store = new PresenceStore();
-export default store;
+export default PresenceStore;
