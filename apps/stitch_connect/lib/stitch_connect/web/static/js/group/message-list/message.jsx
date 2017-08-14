@@ -7,6 +7,7 @@ import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 @inject("messageStore")
 @observer
@@ -14,7 +15,12 @@ class Message extends Component {
   constructor(props) {
     super(props);
 
+    this.copy = this.copy.bind(this);
     this.toggleStar = this.toggleStar.bind(this);
+  }
+
+  copy() {
+    // Callback to run when message is copied
   }
 
   toggleStar() {
@@ -30,6 +36,7 @@ class Message extends Component {
     const className = cx("message", {
       "message-own": user.id === currentUser.id
     });
+    const text = messagePool.map(msg => msg.text).join("\n");
     const timestampTooltip = (
       <Tooltip id="date-tooltip">
         {moment(timestamp).calendar()}
@@ -69,8 +76,17 @@ class Message extends Component {
             >
               <Dropdown.Toggle useAnchor />
               <Dropdown.Menu>
+                <MenuItem>
+                  <CopyToClipboard text={text} onCopy={this.copy}>
+                    <span>
+                      <i className="fa fa-paste" /> Copy
+                    </span>
+                  </CopyToClipboard>
+                </MenuItem>
                 <MenuItem onClick={this.toggleStar}>
-                  <i className="fa fa-star-o" /> {starred ? "Unstar" : "Star"}
+                  <span>
+                    <i className="fa fa-star-o" /> {starred ? "Unstar" : "Star"}
+                  </span>
                 </MenuItem>
               </Dropdown.Menu>
             </Dropdown>
