@@ -36,13 +36,17 @@ class Addons extends Component {
       <div id="addons" className={addonsClass}>
         <div className="flex-header">
           {addonStore.showAddonDetail &&
-            <a className="open-left" onClick={this.toggleAddonDetail}>
+            <a
+              className="open-left"
+              role="button"
+              onClick={this.toggleAddonDetail}
+            >
               <i className="fa fa-chevron-left" />
             </a>}
           <h4 className="text-capitalize">
             {addonPanelTitle}
           </h4>
-          <a onClick={this.toggleAddons}>
+          <a role="button" onClick={this.toggleAddons}>
             <i className="fa fa-close" />
           </a>
         </div>
