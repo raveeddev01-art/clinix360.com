@@ -6,6 +6,8 @@ defmodule Stitch.Message do
 
   @valid_types ["user_message", "system", "upload"]
 
+  @valid_types ["user_messages", "system"]
+
   schema "messages" do
     belongs_to :user, Stitch.Accounts.User
     belongs_to :group, Stitch.Group
