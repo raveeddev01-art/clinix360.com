@@ -34,13 +34,7 @@ defmodule Stitch.GroupAuthorization do
 
     group = Repo.one(query)
 
-    if Enum.member?(user.roles, "admin")
-      || group.public
-      || group.creator.id == user.id do
-      true
-    else
-      false
-    end
+    Enum.member?(user.roles, "admin") || group.public || group.creator.id == user.id
   end
 
   @doc """
@@ -55,13 +49,7 @@ defmodule Stitch.GroupAuthorization do
 
     group = Repo.one(query)
 
-    if Enum.member?(user.roles, "admin")
-      || group.public
-      || group.creator.id == user.id do
-      true
-    else
-      false
-    end
+    Enum.member?(user.roles, "admin") || group.public || group.creator.id == user.id
   end
 
   @doc """
@@ -76,10 +64,6 @@ defmodule Stitch.GroupAuthorization do
 
     group = Repo.one(query)
 
-    if Enum.member?(user.roles, "admin") || group.creator.id == user.id do
-      true
-    else
-      false
-    end
+    Enum.member?(user.roles, "admin") || group.creator.id == user.id
   end
 end
