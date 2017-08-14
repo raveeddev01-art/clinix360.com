@@ -54,7 +54,6 @@ defmodule Stitch.AccountsTest do
         roles: ["admin"],
         team_id: team.id
       }
-      IO.inspect(attrs)
       user = Stitch.Accounts.create_and_complete_user_onboarding(attrs)
       assert user.team_id == team.id
       assert user.roles == ["admin"]
