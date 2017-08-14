@@ -10,24 +10,27 @@ import Card from "../components/card/card";
 @observer
 class Welcome extends Component {
   render() {
+    const { invitationStore } = this.props;
     return (
       <Card
         title="Welcome!"
         description={
           <span>
-            Time to join the{" "}
-            <strong>{this.props.invitationStore.teamName}</strong> team.
+            Time to join the <strong>{invitationStore.teamName}</strong> team.
           </span>
         }
       >
         <p>Your email is:</p>
         <FormGroup bsSize="large">
-          <FormControl readOnly value={this.props.email} />
+          <pre>
+            {invitationStore.email}
+          </pre>
         </FormGroup>
         <Button
           bsStyle="primary"
           bsSize="lg"
           className="btn-block m-b-40"
+          disabled={!invitationStore.verified}
           onClick={this.props.onNext}
         >
           Continue

@@ -39,6 +39,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/users/search", UserController, :search
 
     get "/invitations", InvitationController, :index
+    get "/invitations/:token", InvitationController, :show
     post "/invitations", InvitationController, :create
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend
