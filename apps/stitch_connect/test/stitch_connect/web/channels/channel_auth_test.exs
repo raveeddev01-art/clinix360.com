@@ -25,8 +25,17 @@ defmodule StitchConnect.Web.ChannelAuthTest do
   describe "joining group channels" do
     setup [:create_users, :connect_socket, :create_private_group]
 
-    test "anyone can join public channels", %{socket1: socket1} do
+    test "anyone can join public groups", %{socket1: socket1} do
       assert {:ok, _, _} = subscribe_and_join(socket1, "groups:general")
+    end
+
+    test "only members can leave message on public groups", %{socket1: socket1} do
+      assert {:ok, _, socket1} = subscribe_and_join(socket1, "groups:general")
+
+      ref = push socket1, "new_msg", %{text_content: "Hello, I'm not member"}
+
+      assert_reply ref, :error, reply
+      assert %{reason: "Only members can write messages."} == reply
     end
 
     test "only existing groups can be joined", %{socket1: socket1} do
