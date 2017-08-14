@@ -9,7 +9,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 
-@inject("messageStore")
+@inject("messageStore", "groupStore")
 @observer
 class Message extends Component {
   copy = () => {
@@ -24,12 +24,13 @@ class Message extends Component {
   };
 
   render() {
-    const { messagePool } = this.props;
-    const { id, starred, user, createdAt: timestamp } = messagePool[0];
+    const { messagePool, groupStore } = this.props;
+    const { id, starred, user_id, inserted_at: timestamp } = messagePool[0];
+    const user = groupStore.userMap[user_id] || {};
     const className = cx("message", {
-      "message-own": user.id === currentUser.id
+      "message-own": user_id === currentUser.id
     });
-    const text = messagePool.map(msg => msg.text).join("\n");
+    const text = messagePool.map(msg => msg.text_content).join("\n");
     const timestampTooltip = (
       <Tooltip id="date-tooltip">
         {moment(timestamp).calendar()}
@@ -87,7 +88,7 @@ class Message extends Component {
           <div className="content-body">
             {messagePool.map(msg =>
               <p key={`text_${msg.id}`}>
-                {msg.text}
+                {msg.text_content}
               </p>
             )}
           </div>

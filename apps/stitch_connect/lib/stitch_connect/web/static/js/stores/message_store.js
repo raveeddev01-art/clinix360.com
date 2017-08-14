@@ -4,6 +4,7 @@ import { animateScroll } from "react-scroll";
 
 class MessageStore {
   @observable messages = [];
+  channel = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -20,7 +21,7 @@ class MessageStore {
     const msgMap = {};
 
     this.messages.forEach(msg => {
-      const date = moment(msg.createdAt).format(`YYYY-MM-DD`);
+      const date = moment(msg.inserted_at).format(`YYYY-MM-DD`);
       msgMap[date] = msgMap[date] || [];
 
       if (!msgMap[date].length) {
@@ -29,8 +30,8 @@ class MessageStore {
         const lastMsgPool = msgMap[date][msgMap[date].length - 1];
         const lastMsg = lastMsgPool[lastMsgPool.length - 1];
         if (
-          lastMsg.user.id === msg.user.id &&
-          moment(lastMsg.createdAt).diff(msg.createdAt, "minutes") >= -30
+          lastMsg.user_id === msg.user_id &&
+          moment(lastMsg.inserted_at).diff(msg.inserted_at, "minutes") >= -30
         ) {
           lastMsgPool.push(msg);
         } else {
@@ -42,88 +43,45 @@ class MessageStore {
     return msgMap;
   }
 
+  joinChannel = channelName => {
+    if (this.channel) {
+      this.channel.leave();
+    }
+
+    this.channel = socket.channel(channelName);
+    this.channel
+      .join()
+      .receive("ok", this.loadMessages)
+      .receive("error", err => notify.show(err.message, "danger"));
+    this.channel.on("new_msg", this.appendMessages);
+  };
+
+  sendMessage = msg => {
+    return new Promise((resolve, reject) => {
+      this.channel
+        .push("new_msg", { text_content: msg })
+        .receive("ok", resolve)
+        .receive("error", err => {
+          notify.show(err.message, "danger");
+          reject(err);
+        });
+    });
+  };
+
   @action
-  loadMessages(groupId) {
-    // @TODO load messages here
-    this.messages = [
-      {
-        id: 1,
-        starred: true,
-        user: { id: 20, first_name: "John", last_name: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10T03:02:10"
-      },
-      {
-        id: 2,
-        starred: true,
-        user: { id: 20, first_name: "John", last_name: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10T10:10:10"
-      },
-      {
-        id: 3,
-        starred: false,
-        user: { id: 20, first_name: "John", last_name: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10T10:20:30"
-      },
-      {
-        id: 4,
-        starred: false,
-        user: { id: 20, first_name: "John", last_name: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10T10:30:30"
-      },
-      {
-        id: 5,
-        starred: false,
-        user: { id: 20, first_name: "John", last_name: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-08T20:10:30"
-      },
-      {
-        id: 6,
-        starred: false,
-        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-09T10:10:10"
-      },
-      {
-        id: 7,
-        starred: true,
-        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-09T10:20:10"
-      },
-      {
-        id: 8,
-        starred: false,
-        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-09T10:21:10"
-      },
-      {
-        id: 9,
-        starred: false,
-        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-09T10:31:10"
-      }
-    ];
+  appendMessages = data => {
+    this.messages.push(data);
+    console.log(this.messages);
+  };
+
+  @action
+  loadMessages = data => {
+    this.messages = data.messages;
 
     setTimeout(() => {
       this.scrollToBottom();
     }, 300);
-  }
+  };
 
   @action
   toggleStar(id) {

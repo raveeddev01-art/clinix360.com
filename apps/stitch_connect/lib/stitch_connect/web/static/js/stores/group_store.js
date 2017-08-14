@@ -24,6 +24,15 @@ class GroupStore {
     );
   }
 
+  @computed
+  get userMap() {
+    const map = {};
+    this.users.forEach(user => {
+      map[user.id] = user;
+    });
+    return map;
+  }
+
   @action
   loadGroupBySlug = slug => {
     this.loading = true;
@@ -39,7 +48,12 @@ class GroupStore {
 
       this.loading = false;
       this.loadUsers();
+      this.joinMessageChannel();
     });
+  };
+
+  joinMessageChannel = () => {
+    this.rootStore.messageStore.joinChannel(`groups:${this.slug}`);
   };
 
   @action
