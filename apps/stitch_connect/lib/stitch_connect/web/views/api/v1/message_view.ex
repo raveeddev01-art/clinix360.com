@@ -16,7 +16,8 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       group_id: message.group.id,
       deleted: message.deleted,
       text_content: message.text_content,
-      fields: message.fields
+      fields: message.fields,
+      inserted_at: message.inserted_at,
     }
   end
 end
