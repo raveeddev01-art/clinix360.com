@@ -12,23 +12,16 @@ import CopyToClipboard from "react-copy-to-clipboard";
 @inject("messageStore")
 @observer
 class Message extends Component {
-  constructor(props) {
-    super(props);
-
-    this.copy = this.copy.bind(this);
-    this.toggleStar = this.toggleStar.bind(this);
-  }
-
-  copy() {
+  copy = () => {
     // Callback to run when message is copied
-  }
+  };
 
-  toggleStar() {
+  toggleStar = () => {
     const { messageStore, messagePool } = this.props;
     const messageId = messagePool[0].id;
 
     messageStore.toggleStar(messageId);
-  }
+  };
 
   render() {
     const { messagePool } = this.props;
