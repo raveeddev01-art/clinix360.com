@@ -125,6 +125,7 @@ class GroupStore {
     return post(`/api/v1/groups/${this.id}/update-notification-preference`, {
       body: { setting }
     }).then(resp => {
+      this.notificationSetting = setting;
       notify.show(`Notification setting saved for group ${this.name}`);
     });
   };
