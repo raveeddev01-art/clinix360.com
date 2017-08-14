@@ -14,12 +14,26 @@ defmodule StitchConnect.Web.Router do
     plug :fetch_session
   end
 
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :api
+
+    # Onboarding routes for new users.
+    post "/users", UserController, :create
+    post "/users/send-confirmation-code", UserController, :send_confirmation_code
+    post "/users/submit-confirmation-code", UserController, :submit_confirmation_code
+    post "/users/send-invite", UserController, :send_invite
+    patch "/users/:id/complete-onboarding", UserController, :complete_onboarding
+
+    post "/teams", TeamController, :create
+    post "/teams/url-available", TeamController, :url_available
+  end
+
   scope "/", StitchConnect.Web do
     pipe_through :browser
 
     get "/", AuthenticationController, :index
     get "/signin", AuthenticationController, :index
-    
+
 
     # get "/login", AuthenticationController, :index
     # get "/reset-password", AuthenticationController, :index
@@ -37,19 +51,5 @@ defmodule StitchConnect.Web.Router do
     get "/signup/app-download", AuthenticationController, :index
 
     # get "/signup/phone-number", AuthenticationController, :index
-  end
-
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through :api
-
-    # Onboarding routes for new users.
-    post "/users", UserController, :create
-    post "/users/send-confirmation-code", UserController, :send_confirmation_code
-    post "/users/submit-confirmation-code", UserController, :submit_confirmation_code
-    post "/users/send-invite", UserController, :send_invite
-    patch "/users/:id/complete-onboarding", UserController, :complete_onboarding
-
-    post "/teams", TeamController, :create
-    post "/teams/url-available", TeamController, :url_available
   end
 end

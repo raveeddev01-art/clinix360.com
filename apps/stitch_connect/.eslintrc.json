@@ -1,0 +1,33 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": ["airbnb", "prettier"],
+  "plugins": ["import", "jsx-a11y", "prettier", "react"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "experimentalDecorators": true,
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "rules": {
+    "constructor-super": "warn",
+    "class-methods-use-this": "off",
+    "no-const-assign": "warn",
+    "no-this-before-super": "warn",
+    "no-undef": "warn",
+    "no-unreachable": "warn",
+    "no-unused-vars": "warn",
+    "prettier/prettier": "error",
+    "valid-typeof": "warn"
+  },
+  "globals": {
+    "currentUser": false
+  }
+}

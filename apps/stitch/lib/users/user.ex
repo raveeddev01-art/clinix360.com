@@ -8,6 +8,7 @@ defmodule Stitch.User do
   schema "users" do
     field :email, :string
     field :roles, {:array, :string}
+    field :favorite_groups, {:array, :integer}, default: []
     field :encrypted_password, :string
     field :first_name, :string
     field :last_name, :string
@@ -21,6 +22,7 @@ defmodule Stitch.User do
     field :pin, :string
     field :token, :string
     field :disabled, :boolean, default: false
+    field :password_reset_token, :string
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
 

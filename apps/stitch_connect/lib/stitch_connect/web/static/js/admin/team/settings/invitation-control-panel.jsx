@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Checkbox from "react-bootstrap/lib/Checkbox";
-import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
+import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Invitation Control";
 const description = [

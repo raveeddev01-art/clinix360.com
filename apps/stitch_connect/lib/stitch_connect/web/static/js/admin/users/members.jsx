@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Panel, Row, Col } from "react-bootstrap";
-import MemberItem from "./member-item.jsx";
+import MemberItem from "./member-item";
 
 @inject("teamStore")
 @observer

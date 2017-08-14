@@ -5,7 +5,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import SettingPanel from "../../components/setting-panel/setting-panel.jsx";
+import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Name";
 const description =

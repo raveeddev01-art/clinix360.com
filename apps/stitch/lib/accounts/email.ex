@@ -23,4 +23,27 @@ defmodule Stitch.Accounts.Email do
     ])
     |> Stitch.Mailer.deliver_later
   end
+
+  @doc """
+  Sends the password reset request
+  """
+  def reset_password_email(user, reset_url) do
+    new_email()
+    |> template("Password Reset (Connect)")
+    |> to(user.email)
+    |> from("support@teamstitch.com")
+    |> subject("Reset Password Requests")
+    |> put_param("global_merge_vars", [
+      %{
+        "name": "resetPasswordUrl",
+         "content": reset_url
+      },
+      %{
+         "name": "receiverFirstName",
+         "content": user.first_name
+      }
+    ])
+    |> Stitch.Mailer.deliver_later
+  end
+
 end

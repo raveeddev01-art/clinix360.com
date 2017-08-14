@@ -3,16 +3,16 @@ import { Provider } from "mobx-react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Grid, Row, Col, Button } from "react-bootstrap";
 
-import Sidebar from "./sidebar.jsx";
-import TeamHipaa from "./team/hipaa.jsx";
-import TeamExport from "./team/export.jsx";
-import TeamSettings from "./team/settings/index.jsx";
-import YouNotifications from "./you/notifications.jsx";
-import ProfileSettings from "./you/profile/index.jsx";
-import AccountSettings from "./you/account/index.jsx";
-import UsersInvitations from "./users/invitations.jsx";
-import UsersMembers from "./users/members.jsx";
-import UsersPending from "./users/pending.jsx";
+import Sidebar from "./sidebar";
+import TeamHipaa from "./team/hipaa";
+import TeamExport from "./team/export";
+import TeamSettings from "./team/settings/index";
+import YouNotifications from "./you/notifications";
+import ProfileSettings from "./you/profile/index";
+import AccountSettings from "./you/account/index";
+import UsersInvitations from "./users/invitations";
+import UsersMembers from "./users/members";
+import UsersPending from "./users/pending";
 
 import userStore from "./stores/user_store";
 import teamStore from "./stores/team_store";

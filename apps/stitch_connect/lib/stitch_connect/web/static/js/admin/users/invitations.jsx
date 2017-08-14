@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Creatable } from 'react-select';
+import { Creatable } from "react-select";
 import { inject, observer } from "mobx-react";
 
 import {
@@ -28,7 +28,7 @@ export default class UsersInvitations extends Component {
 
   _onSave = () => {
     const { email } = this.state;
-    
+
     // Perform email validation
     const lines = email.map(item => item.value);
     let emails = [];
@@ -38,7 +38,7 @@ export default class UsersInvitations extends Component {
         emails.push($.trim(line));
       }
     }
-    
+
     if (emails.length > 0) {
       post(`/api/v1/invitations`, {
         body: { email_collection: emails.join(",") }
@@ -61,6 +61,7 @@ export default class UsersInvitations extends Component {
           <Creatable
             multi={true}
             joinValues={true}
+            className="multi-select-large"
             placeholder="Type in an email"
             onChange={this._handleChange}
             value={this.state.email}

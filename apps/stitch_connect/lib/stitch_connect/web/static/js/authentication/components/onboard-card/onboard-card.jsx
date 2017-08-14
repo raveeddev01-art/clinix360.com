@@ -7,7 +7,7 @@ import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 import Form from "react-bootstrap/lib/Form";
-import Card from "../card/card.jsx";
+import Card from "../card/card";
 
 class OnboardCard extends Component {
   constructor(props) {

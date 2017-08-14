@@ -1,27 +1,19 @@
 import React from "react";
 import { render } from "react-dom";
 
-import AuthenticationRouter from "../authentication/authentication_router.jsx";
-import Login from "../authentication/login/login.jsx";
-import Webapp from "../webapp.jsx";
-import Sidemenu from "../chat/sidemenu/sidemenu.jsx";
-import Team from "../chat/sidemenu/team.jsx";
-import Chat from "../chat/chat.jsx";
-import Message from "../chat/message.jsx";
-import Addons from "../addons/addons.jsx";
-import Admin from "../admin/admin.jsx";
-import Invitation from "../invitation/index.jsx";
-import Toastr from "../common/components/toastr/toastr.jsx";
+import AuthenticationRouter from "../authentication/authentication_router";
+import Login from "../authentication/login/login";
+import Webapp from "../webapp";
+import Team from "../sidemenu/team";
+import Addons from "../addons/addons";
+import Admin from "../admin/admin";
+import Invitation from "../invitation/index";
+import Toastr from "../common/components/toastr/toastr";
 
 var componentMap = {
   AuthenticationRouter,
   Login,
   Webapp,
-  Sidemenu,
-  Team,
-  Chat,
-  Message,
-  Addons,
   Admin,
   Toastr,
   Invitation

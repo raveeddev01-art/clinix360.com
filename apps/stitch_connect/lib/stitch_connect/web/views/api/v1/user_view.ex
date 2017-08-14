@@ -9,6 +9,21 @@ defmodule StitchConnect.Web.Api.V1.UserView do
     user_json(user)
   end
 
+  def render("update.json", %{user: user}) do
+    %{
+       id: user.id,
+       first_name: user.first_name,
+       last_name: user.last_name,
+       phone_number: user.phone_number,
+       title: user.title,
+       profile_image_url: user.profile_image_url,
+       user_name: user.username,
+       email: user.email,
+       pin: user.pin,
+       title: user.title
+      }
+  end
+
   def user_json(user) do
     %{
       id: user.id,
@@ -20,6 +35,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       phone: user.phone_number,
       title: user.title,
       avatar: user.profile_image_url,
+      onboarded: user.onboarded,
       disabled: user.disabled
     }
   end

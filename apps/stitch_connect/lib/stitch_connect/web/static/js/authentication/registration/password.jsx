@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import store from "../authentication_store.js";
+import store from "../authentication_store";
 
-import PasswordCard from "../components/password-card/password-card.jsx";
+import PasswordCard from "../components/password-card/password-card";
 
 @observer
 export default class Password extends Component {

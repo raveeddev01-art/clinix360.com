@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :send_invite, :update, :deactivate]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:search, :index, :send_invite, :update, :deactivate]
   plug StitchConnect.Plug.TeamAdminOnly when action in [:deactivate]
 
   alias Stitch.{
@@ -11,6 +11,11 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def index(conn, _) do
     users = Stitch.UserQueries.users_for_team(conn.assigns.current_user.team_id)
     render conn, "index.json", users: users
+  end
+
+  def search(conn, %{"term" => term}) do
+    result_users = Stitch.UserQueries.search(conn.assigns.current_user.id, term)
+    render conn, "index.json", users: result_users
   end
 
   def deactivate(conn, %{"id" => id}) do
@@ -26,139 +31,15 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def update(conn, %{"first_name" => first_name, "last_name" => last_name}) do
-    case Stitch.Accounts.Admin.update_firstname_and_lastname(conn.assigns.current_user.id, first_name, last_name) do
+  def update(conn, params) do
+    case Stitch.Accounts.Admin.update_user(conn.assigns.current_user.id, params) do
+      {:ok, user} ->
+        conn
+        |> render("update.json", user: user)
       {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update first_name and last_name"})
-      {:ok, user} ->
-        conn
-        |> json(%{
-          id: user.id,
-          first_name: user.first_name,
-          last_name: user.last_name
-        })
-    end
-  end
-
-  def update(conn, %{"phone_number" => phone_number}) do
-    case Stitch.Accounts.Admin.update_phone_number(conn.assigns.current_user.id, phone_number) do
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update phone_number"})
-      {:ok, user} ->
-        conn
-        |> json(%{
-          id: user.id,
-          phone_number: user.phone_number
-        })
-    end
-  end
-
-  def update(conn, %{"title" => title}) do
-    case Stitch.Accounts.Admin.update_title(conn.assigns.current_user.id, title) do
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update title"})
-      {:ok, user} ->
-        conn
-        |> json(%{
-          id: user.id,
-          title: user.title
-        })
-    end
-  end
-
-  def update(conn, %{"profile_image_url" => profile_image_url}) do
-    case Stitch.Accounts.Admin.update_profile_image_url(conn.assigns.current_user.id, profile_image_url) do
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update profile image url"})
-      {:ok, user} ->
-        conn
-        |> json(%{
-          id: user.id,
-          profile_image_url: user.profile_image_url
-        })
-    end
-  end
-
-  def update(conn, %{"username" => username}) do
-    case Stitch.Accounts.Admin.update_username(conn.assigns.current_user.id, username) do
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update username"})
-      {:ok, user} ->
-        conn
-        |> json(%{
-          id: user.id,
-          username: user.username
-        })
-    end
-  end
-
-  def update(conn, %{"email" => email}) do
-    case Stitch.Accounts.Admin.update_email(conn.assigns.current_user.id, email) do
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update email"})
-      {:ok, user} ->
-        conn
-        |> json(%{
-          id: user.id,
-          email: user.email
-        })
-    end
-  end
-
-  def update(conn, %{"password" => password}) do
-    case Stitch.Accounts.Admin.update_password(conn.assigns.current_user.id, password) do
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update password"})
-      {:ok, user} ->
-        conn
-        |> json(%{
-          id: user.id,
-          password: user.password
-        })
-    end
-  end
-
-  def update(conn, %{"pin" => pin}) do
-    case Stitch.Accounts.Admin.update_pin(conn.assigns.current_user.id, pin) do
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update pin"})
-      {:ok, user} ->
-        conn
-        |> json(%{
-          id: user.id,
-          pin: user.pin
-        })
-    end
-  end
-
-  def update(conn, %{"title" => title}) do
-    case Stitch.Accounts.Admin.update_title(conn.assigns.current_user.id, title) do
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update title"})
-      {:ok, user} ->
-        conn
-        |> json(%{
-          id: user.id,
-          title: user.title
-        })
+        |> json(%{message: "Couldn't update #{Enum.join(Map.keys(params), ", ")}"})
     end
   end
 

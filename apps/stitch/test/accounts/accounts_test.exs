@@ -26,7 +26,7 @@ defmodule Stitch.AccountsTest do
   describe "Stitch.Accounts.update_and_complete_user_onboarding/2" do
     test "it onboards the user and sets the admin role for his new team" do
       team = insert(:team)
-      user = insert(:user, %{email: "sergio@email.com"})
+      user = insert(:user, %{email: "sergio@email.com", onboarded: false})
       attrs = %{
         fullname: "Sergio Tapia",
         username: "sergiotapia",
@@ -39,6 +39,32 @@ defmodule Stitch.AccountsTest do
       user = Stitch.Accounts.update_and_complete_user_onboarding(user.id, attrs)
       assert user.team_id == team.id
       assert user.roles == ["admin"]
+    end
+  end
+
+  describe "Stitch.Accounts.create_and_complete_user_onboarding/1" do
+    test "it onboards the user and sets the admin role for his new team" do
+      team = insert(:team)
+      attrs = %{
+        email: "sergio@gmail.com",
+        fullname: "Sergio Tapia",
+        username: "sergiotapia3",
+        password: "Password123!",
+        pin: "0000",
+        roles: ["admin"],
+        team_id: team.id
+      }
+      user = Stitch.Accounts.create_and_complete_user_onboarding(attrs)
+      assert user.team_id == team.id
+      assert user.roles == ["admin"]
+    end
+  end
+
+  describe "Stitch.Accounts.update_user_password/3" do
+    test "it only updates the user password if the old password provided is valid" do
+      user = insert(:user, %{email: "sadan@example.com", encrypted_password: Comeonin.Bcrypt.hashpwsalt("sadan123")})
+      {:error, message} = Stitch.Accounts.update_user_password(user.id, "sadan1234", "stitch123")
+      assert message == "Invalid Password for user"
     end
   end
 end

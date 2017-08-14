@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Provider } from "mobx-react";
 
-import Welcome from "./wizard-steps/welcome.jsx";
-import FirstName from "./wizard-steps/first_name.jsx";
-import LastName from "./wizard-steps/last_name.jsx";
-import Username from "./wizard-steps/username.jsx";
-import Password from "./wizard-steps/password.jsx";
-import Pin from "./wizard-steps/pin.jsx";
+import Welcome from "./wizard-steps/welcome";
+import FirstName from "./wizard-steps/first_name";
+import LastName from "./wizard-steps/last_name";
+import Username from "./wizard-steps/username";
+import Password from "./wizard-steps/password";
+import Pin from "./wizard-steps/pin";
 
 import invitationStore from "./stores/invitation_store";
 const stores = { invitationStore };

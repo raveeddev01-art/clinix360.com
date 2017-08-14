@@ -10,7 +10,7 @@ module.exports = [
       filename: "app.js"
     },
     resolve: {
-      extensions: [".js", "jsx"],
+      extensions: [".js", ".jsx"],
       modules: ["node_modules", __dirname + "/web/static/js"]
     },
     module: {

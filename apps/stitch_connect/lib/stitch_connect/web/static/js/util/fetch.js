@@ -39,7 +39,9 @@ window.CSRFFetch = function(url, options = {}) {
 window.jCSRFFetch = function(url, options = {}) {
   if (window.authenticationToken) {
     let modifiedUrl =
-      url + `?authenticationToken=${window.authenticationToken}`;
+      url +
+      (url.indexOf("?") > -1 ? "&" : "?") +
+      `authenticationToken=${window.authenticationToken}`;
     url = modifiedUrl;
   }
   return window

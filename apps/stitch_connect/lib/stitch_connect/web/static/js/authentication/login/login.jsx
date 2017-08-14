@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { inject, observer } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -8,6 +10,8 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
+@inject("authenticationStore")
+@observer
 export default class Login extends Component {
   constructor(props) {
     super();
@@ -27,25 +31,14 @@ export default class Login extends Component {
     });
   };
 
-  handleSubmit = event => {
-    // event.preventDefault();
-    // post("/api/v1/users/create", {
-    //   body: { email: this.state.email }
-    // }).then(response => {
-    //   console.log(response);
-    //   console.log("Created");
-    // });
-    // to="/"
-  };
-
   render() {
     return (
       <div className="authentication-card text-center">
         <h2>
-          {this.props.teamName}
+          {this.props.authenticationStore.instance.teamName}
         </h2>
         <h5 className="text-muted url-heading">
-          {this.props.teamSlug}.teamstitch.com
+          {this.props.authenticationStore.instance.teamSlug}.teamstitch.com
         </h5>
 
         <h5>
@@ -85,17 +78,20 @@ export default class Login extends Component {
             </p>
           }
 
-          <input
-            value="Login"
+          <Button
             type="submit"
-            className="btn btn-block btn-lg btn-primary"
-          />
-          <a
-            href="/reset-password"
+            bsStyle="primary"
+            bsSize="lg"
+            className="btn-block"
+          >
+            Login
+          </Button>
+          <Link
+            to="/reset-password"
             className="btn btn-block btn-lg btn-default m-b-40"
           >
             Reset Password
-          </a>
+          </Link>
         </form>
 
         <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>

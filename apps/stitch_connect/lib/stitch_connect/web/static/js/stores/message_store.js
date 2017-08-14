@@ -1,0 +1,138 @@
+import { observable, action, computed } from "mobx";
+import moment from "moment";
+import { animateScroll } from "react-scroll";
+
+class MessageStore {
+  @observable messages = [];
+
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
+  scrollToBottom() {
+    animateScroll.scrollToBottom({
+      containerId: "chat"
+    });
+  }
+
+  @computed
+  get messagesByDate() {
+    const msgMap = {};
+
+    this.messages.forEach(msg => {
+      const date = moment(msg.createdAt).format(`YYYY-MM-DD`);
+      msgMap[date] = msgMap[date] || [];
+
+      if (!msgMap[date].length) {
+        msgMap[date].push([msg]);
+      } else {
+        const lastMsgPool = msgMap[date][msgMap[date].length - 1];
+        const lastMsg = lastMsgPool[lastMsgPool.length - 1];
+        if (
+          lastMsg.user.id === msg.user.id &&
+          moment(lastMsg.createdAt).diff(msg.createdAt, "minutes") >= -30
+        ) {
+          lastMsgPool.push(msg);
+        } else {
+          msgMap[date].push([msg]);
+        }
+      }
+    });
+
+    return msgMap;
+  }
+
+  @action
+  loadMessages(groupId) {
+    // @TODO load messages here
+    this.messages = [
+      {
+        id: 1,
+        starred: true,
+        user: { id: 20, first_name: "John", last_name: "Smith" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-05-10T03:02:10"
+      },
+      {
+        id: 2,
+        starred: true,
+        user: { id: 20, first_name: "John", last_name: "Smith" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-05-10T10:10:10"
+      },
+      {
+        id: 3,
+        starred: false,
+        user: { id: 20, first_name: "John", last_name: "Smith" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-05-10T10:20:30"
+      },
+      {
+        id: 4,
+        starred: false,
+        user: { id: 20, first_name: "John", last_name: "Smith" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-05-10T10:30:30"
+      },
+      {
+        id: 5,
+        starred: false,
+        user: { id: 20, first_name: "John", last_name: "Smith" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-08-08T20:10:30"
+      },
+      {
+        id: 6,
+        starred: false,
+        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-08-09T10:10:10"
+      },
+      {
+        id: 7,
+        starred: true,
+        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-08-09T10:20:10"
+      },
+      {
+        id: 8,
+        starred: false,
+        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-08-09T10:21:10"
+      },
+      {
+        id: 9,
+        starred: false,
+        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
+        createdAt: "2017-08-09T10:31:10"
+      }
+    ];
+
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 300);
+  }
+
+  @action
+  toggleStar(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message) {
+      message.starred = !message.starred;
+    }
+  }
+}
+
+export default MessageStore;
