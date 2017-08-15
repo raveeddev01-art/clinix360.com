@@ -69,12 +69,11 @@
         }
       }
 
-      .message {
+      .message-pool-container {
         display: flex;
-        flex-direction: row;
         margin-bottom: 15px;
 
-        .content {
+        .message-pool {
           max-width: 70%;
           font-size: 15px;
           background: #fff;
@@ -83,7 +82,7 @@
           padding: 15px 20px;
           flex-grow: 1;
 
-          .content-header {
+          .message-pool-header {
             position: relative;
             color: $brand-primary;
             font-size: 15px;
@@ -96,43 +95,51 @@
               font-weight: normal;
               font-size: 85%;
             }
-
-            .message-icon {
-              margin-left: 5px;
-              font-size: 85%;
-              cursor: pointer;
-
-              &.icon-pin {
-                color: #4fb0fc;
-              }
-
-              &.icon-star {
-                color: #fecb2f;
-              }
-            }
-
-            .message-actions {
-              position: absolute;
-              right: 0;
-              top: 0;
-            }
           }
 
-          .content-body {
+          .message-pool-content {
+            .message {
+              position: relative;
+              padding: 0 15px 10px 0;
+
+              p {
+                margin: 0;
+              }
+
+              .message-actions {
+                position: absolute;
+                right: 0;
+                top: 0;
+              }
+
+              .message-icon {
+                margin-right: 5px;
+                font-size: 85%;
+                cursor: pointer;
+
+                &.icon-pin {
+                  color: #4fb0fc;
+                }
+
+                &.icon-star {
+                  color: #fecb2f;
+                }
+              }
+            }
           }
         }
-      }
 
-      .message-own {
-        flex-direction: row-reverse;
+        &.mine {
+          justify-content: flex-end;
 
-        .content {
-          color: #fff;
-          background: $brand-primary;
-          border: 0;
-
-          h4 {
+          .message-pool {
             color: #fff;
+            background: $brand-primary;
+            border: 0;
+
+            .message-pool-header {
+              color: #fff;
+            }
           }
         }
       }
