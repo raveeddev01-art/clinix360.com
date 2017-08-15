@@ -2,9 +2,8 @@ defmodule StitchConnect.Web.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "room:*", StitchConnect.Web.RoomChannel
+  channel "groups:*", StitchConnect.Web.GroupChannel
   channel "team:lobby:*", StitchConnect.Web.TeamChannel
-  # channel "team:*", StitchConnect.Web.TeamChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket,
@@ -27,7 +26,7 @@ defmodule StitchConnect.Web.UserSocket do
       nil ->
         :error
       user ->
-        {:ok, assign(socket, :current_user_id, user.id)}
+        {:ok, assign(socket, :current_user, user)}
     end
   end
 
@@ -43,5 +42,5 @@ defmodule StitchConnect.Web.UserSocket do
   #     StitchConnect.Web.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(socket), do: "users_socket:#{socket.assigns.current_user_id}"
+  def id(socket), do: "users_socket:#{socket.assigns.current_user.id}"
 end

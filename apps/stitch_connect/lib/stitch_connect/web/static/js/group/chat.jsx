@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import MessageList from "./message-list/message-list";
+import MessageForm from "./message-form/message-form";
 
 @inject("groupStore")
 @observer
@@ -18,11 +19,7 @@ export default class Chat extends Component {
         <MessageList />
         <div className="flex-footer">
           {group.joined
-            ? <input
-                type="text"
-                className="form-control"
-                placeholder="Write something"
-              />
+            ? <MessageForm />
             : <div className="room-preview">
                 This is a preview of the group{" "}
                 <strong>
