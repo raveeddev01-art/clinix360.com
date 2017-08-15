@@ -27,7 +27,7 @@ class InvitationStore {
 
   @action
   completeInvitation = () => {
-    return post(`/api/v1/invitations/${this.token}`, {
+    return post(`/api/v1/invitations/accept/${this.token}`, {
       body: {
         first_name: this.firstName,
         last_name: this.lastName,
