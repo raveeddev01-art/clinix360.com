@@ -26,7 +26,7 @@ defmodule Stitch.MessageActionTest do
       user = insert(:user)
       group = insert(:group)
       message_bar = insert(:message, user: user, group: group, text_content: "bar")
-      message_baz = insert(:message, user: user, group: group, text_content: "baz")
+      _message_baz = insert(:message, user: user, group: group, text_content: "baz")
       message_qux = insert(:message, user: user, group: group, text_content: "qux")
 
       assert {:ok, true, _message_action} = Stitch.MessageAction.toggle_star(message_bar, user)
@@ -40,6 +40,38 @@ defmodule Stitch.MessageActionTest do
         %{text_content: "baz"},
         %{text_content: "qux", starred: true}
       ] = messages
+    end
+  end
+
+  describe "Stitch.MessageAction.toggle_pin/2" do
+    test "user can pin a message" do
+      user_a = insert(:user)
+      group = insert(:group)
+      message_bar = insert(:message, user: user_a, group: group, text_content: "bar")
+
+      assert {:ok, _message} = Stitch.MessageAction.toggle_pin(message_bar, user_a)
+
+      message_bar = Stitch.MessageQueries.get_by_id(message_bar.id)
+
+      assert message_bar.pinned == true
+      assert message_bar.pinned_by_id == user_a.id
+      assert message_bar.pinned_at != nil
+    end
+
+    test "user can unpin a message" do
+      user_a = insert(:user)
+      user_b = insert(:user)
+      group = insert(:group)
+      message_bar = insert(:message, user: user_a, group: group, text_content: "bar")
+
+      assert {:ok, message_bar} = Stitch.MessageAction.toggle_pin(message_bar, user_a)
+      assert {:ok, message_bar} = Stitch.MessageAction.toggle_pin(message_bar, user_b)
+
+      message_bar = Stitch.MessageQueries.get_by_id(message_bar.id)
+
+      assert message_bar.pinned == false
+      assert message_bar.pinned_by_id == nil
+      assert message_bar.pinned_at == nil
     end
   end
 end

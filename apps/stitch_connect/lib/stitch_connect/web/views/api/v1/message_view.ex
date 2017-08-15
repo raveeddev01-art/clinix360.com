@@ -18,7 +18,15 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       text_content: message.text_content,
       fields: message.fields,
       inserted_at: message.inserted_at,
-      starred: Map.get(message, :starred, :false)
+      starred: Map.get(message, :starred, :false),
+      pinned: message.pinned,
+      pinned_by: pinned_by_info(message),
+      pinned_at: message.pinned_at
     }
+  end
+
+  def pinned_by_info(%{pinned_by_id: nil}), do: nil
+  def pinned_by_info(%{pinned_by: pinned_by}) do
+    %{ id: pinned_by.id, firstName: pinned_by.first_name, lastName: pinned_by.last_name }
   end
 end
