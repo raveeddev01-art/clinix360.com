@@ -87,8 +87,8 @@ export default class Sidebar extends Component {
           </ListGroupItem>
         </ListGroup>
 
-        {ccurrentUser.roles &&
-          urrentUser.roles.includes("admin") &&
+        {currentUser.roles &&
+          currentUser.roles.includes("admin") &&
           this._adminUsersOptions()}
       </div>
     );
