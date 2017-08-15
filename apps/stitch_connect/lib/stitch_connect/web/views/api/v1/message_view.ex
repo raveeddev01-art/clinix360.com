@@ -18,6 +18,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       text_content: message.text_content,
       fields: message.fields,
       inserted_at: message.inserted_at,
+      starred: Map.get(message, :starred, :false)
     }
   end
 end

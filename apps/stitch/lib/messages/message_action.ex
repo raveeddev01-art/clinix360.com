@@ -19,6 +19,37 @@ defmodule Stitch.MessageAction do
     |> unique_constraint(:category, name: :message_actions_user_id_message_id_category_index, message: "user_id and message_id combination isn't unique for this category")
   end
 
+  def apply_user_message_actions(user, messages) do
+    message_ids = messages |> Enum.sort_by(& &1.id)
+    %{id: from_id} = message_ids |> List.first
+    %{id: to_id} = message_ids |> List.last
+    message_actions = get_user_message_actions_map(user, from_id, to_id)
+    Enum.map(messages, fn (message) ->
+      case Map.get(message_actions, message.id) do
+        nil -> message
+        actions ->
+          Enum.reduce(actions, message, fn
+            (%{category: "star"}, acc) -> Map.put(acc, :starred, true)
+            (_, acc) -> acc
+          end)
+      end
+    end)
+  end
+
+  def get_user_message_actions(user, from_message_id, to_message_id) do
+    query =
+      from ma in MessageAction,
+      where: ma.message_id >= ^from_message_id and
+             ma.message_id <= ^to_message_id and
+             ma.user_id == ^user.id
+    Repo.all(query)
+  end
+
+  def get_user_message_actions_map(user, from_message_id, to_message_id) do
+    get_user_message_actions(user, from_message_id, to_message_id)
+    |> Enum.group_by(& &1.message_id)
+  end
+
   def toggle_star(message, user) do
     with star = get_star(message, user),
          {result, {:ok, message_action}} <- toggle_star(message, user, star) do

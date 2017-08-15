@@ -29,6 +29,8 @@ defmodule Stitch.MessageQueries do
   end
 
   def get_by_id(id) do
-    Repo.get(Message, id)
+    message = Repo.get(Message, id)
+    message = Repo.preload(message, [:user, :group])
+    message
   end
 end
