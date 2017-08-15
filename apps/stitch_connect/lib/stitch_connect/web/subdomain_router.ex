@@ -32,6 +32,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :api
 
     post "/users/exists", UserController, :exists?
+    post "/invitations/accept/:token", InvitationController, :accept
   end
 
   # API routes which need token.
@@ -55,7 +56,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/invitations", InvitationController, :create
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend
-    post "/invitations/accept/:token", InvitationController, :accept
 
     get "/groups", GroupController, :index
     get "/groups/:id", GroupController, :show
