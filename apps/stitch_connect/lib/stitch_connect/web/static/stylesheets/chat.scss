@@ -125,8 +125,12 @@
           background: $brand-primary;
           border: 0;
 
-          h4 {
+          .content-header {
             color: #fff;
+
+            .time {
+              color: rgba(255, 255, 255, .5);
+            }
           }
         }
       }
