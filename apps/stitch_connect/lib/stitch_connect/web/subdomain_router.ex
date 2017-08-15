@@ -18,14 +18,25 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug StitchConnect.Plug.Authenticate
   end
 
-  pipeline :api do
+  pipeline :api_auth do
     plug :accepts, ["json"]
     plug :fetch_session
   end
 
-  # API routes.
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
+
+  # API routes which don't need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
+
+    post "/users/exists", UserController, :exists?
+  end
+
+  # API routes which need token.
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :api_auth
 
     get "/groups/:group_id/messages", MessageController, :index
 
@@ -39,6 +50,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/users/search", UserController, :search
 
     get "/invitations", InvitationController, :index
+    get "/invitations/:token", InvitationController, :show
     post "/invitations", InvitationController, :create
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend

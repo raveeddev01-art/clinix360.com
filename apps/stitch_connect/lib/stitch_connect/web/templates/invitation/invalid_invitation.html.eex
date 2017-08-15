@@ -1,3 +1,13 @@
-<h1>This invation is invalid!</h1>
-<p>Go to team login page.</p>
-<a href="#">link here</a>
+<div class="authentication-wrapper">
+  <div class="authentication-card text-center">
+    <h2>Invalid Invite</h2>
+
+    <h5>It seems like the invitation you are trying to accept is invalid or has been revoked.</h5>
+
+    <h5>Try contacting your team administrator.</h5>
+
+    <a href="/" class="btn btn-lg btn-block btn-primary m-b-40">Back</a>
+
+    <p class="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
+  </div>
+</div>

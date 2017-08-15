@@ -17,7 +17,7 @@ class LastName extends Component {
     const { onNext, onBack, onRestart, invitationStore } = this.props;
     return (
       <OnboardCard
-        title="First Name"
+        title="Last Name"
         description={
           <span>
             Enter your <strong>last name</strong>.
