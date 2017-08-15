@@ -39,6 +39,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :api_auth
 
     get "/groups/:group_id/messages", MessageController, :index
+    post "/messages/:id/toggle-star", MessageController, :toggle_star
 
     get "/users/", UserController, :index
     put "/users/:id", UserController, :update

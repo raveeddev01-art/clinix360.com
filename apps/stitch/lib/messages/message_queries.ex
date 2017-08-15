@@ -3,7 +3,7 @@ defmodule Stitch.MessageQueries do
   Module in charge of all message related queries.
   """
 
-  alias Stitch.{Repo, Group, Message}
+  alias Stitch.{Repo, Group, Message, MessageAction}
   import Ecto.Query
 
   @doc """
@@ -26,5 +26,11 @@ defmodule Stitch.MessageQueries do
     end
 
     Repo.all(query)
+  end
+
+  def get_by_id(id) do
+    message = Repo.get(Message, id)
+    message = Repo.preload(message, [:user, :group])
+    message
   end
 end
