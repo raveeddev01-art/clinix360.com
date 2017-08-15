@@ -67,6 +67,7 @@ class Message extends Component {
               id={`message-actions-${id}`}
               componentClass="div"
               className="message-actions"
+              pullRight
             >
               <Dropdown.Toggle useAnchor />
               <Dropdown.Menu>
