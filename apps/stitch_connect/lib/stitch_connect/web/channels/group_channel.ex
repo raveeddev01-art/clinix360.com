@@ -22,10 +22,10 @@ defmodule StitchConnect.Web.GroupChannel do
               {:ok, %{messages: json}, assign(socket, :group, group)}
           end
         _ ->
-          {:error, %{reason: "You can't participate on this chat."}}
+          {:error, %{message: "You can't participate on this chat."}}
       end
     else
-      {:error, %{reason: "User ids should be sorted."}}
+      {:error, %{message: "User ids should be sorted."}}
     end
   end
 
@@ -34,7 +34,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
     case Repo.get_by(Group, slug: group_slug, team_id: team_id) do
       nil ->
-        {:error, %{reason: "group not found"}}
+        {:error, %{message: "group not found"}}
       group ->
         case GroupAuthorization.can_view?(group.id, user.id) do
           true ->
@@ -42,7 +42,7 @@ defmodule StitchConnect.Web.GroupChannel do
             json = MessageView.render("index.json", %{messages: messages})
             {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
-            {:error, %{reason: "unauthorized"}}
+            {:error, %{message: "unauthorized"}}
         end
     end
   end
@@ -85,7 +85,7 @@ defmodule StitchConnect.Web.GroupChannel do
             assign(socket, :group, group) |> do_new_msg(group, user, params)
 
           _ ->
-            {:reply, {:error, %{reason: "Failed to create group."}}, socket}
+            {:reply, {:error, %{message: "Failed to create group."}}, socket}
         end
     end
   end
@@ -103,10 +103,10 @@ defmodule StitchConnect.Web.GroupChannel do
           {:reply, {:ok, json}, socket}
 
         {:error, _changeset} ->
-          {:reply, {:error, %{reason: "Failed to create message."}}, socket}
+          {:reply, {:error, %{message: "Failed to create message."}}, socket}
       end
     else
-      {:reply, {:error, %{reason: "Only members can write messages."}}, socket}
+      {:reply, {:error, %{message: "Only members can write messages."}}, socket}
     end
   end
 end

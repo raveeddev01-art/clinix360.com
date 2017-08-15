@@ -35,18 +35,18 @@ defmodule StitchConnect.Web.ChannelAuthTest do
       ref = push socket1, "new_msg", %{text_content: "Hello, I'm not member"}
 
       assert_reply ref, :error, reply
-      assert %{reason: "Only members can write messages."} == reply
+      assert %{message: "Only members can write messages."} == reply
     end
 
     test "only existing groups can be joined", %{socket1: socket1} do
       {:error, error} = subscribe_and_join(socket1, "groups:blah")
-      assert %{reason: "group not found"} = error
+      assert %{message: "group not found"} = error
     end
 
     test "only members can join private groups", %{socket1: socket1, group1: group1, user2: user2} do
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
       {:error, error2} = subscribe_and_join(socket2, "groups:#{group1.slug}")
-      assert %{reason: "unauthorized"} = error2
+      assert %{message: "unauthorized"} = error2
 
       assert {:ok, _, _} = subscribe_and_join(socket1, "groups:#{group1.slug}")
     end
