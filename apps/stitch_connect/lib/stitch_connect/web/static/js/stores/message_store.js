@@ -1,5 +1,6 @@
 import { observable, action, computed } from "mobx";
 import moment from "moment";
+import _ from "lodash";
 import { animateScroll } from "react-scroll";
 
 class MessageStore {
@@ -17,29 +18,41 @@ class MessageStore {
 
   @computed
   get messagesByDate() {
-    const msgMap = {};
+    return (
+      _.chain(this.messages)
+        .sortBy("createdAt")
+        // Group messages by dates
+        .groupBy(message => moment(message.createdAt).format(`YYYY-MM-DD`))
+        // Pool sequential messages by the same user
+        .transform((messagesByDate, messages, date) => {
+          messagesByDate[date] = _.transform(
+            messages,
+            (messagePools, message) => {
+              if (_.isEmpty(messagePools)) {
+                messagePools.push([message]);
+                return;
+              }
 
-    this.messages.forEach(msg => {
-      const date = moment(msg.createdAt).format(`YYYY-MM-DD`);
-      msgMap[date] = msgMap[date] || [];
+              const lastMessagePool = _.last(messagePools);
+              const lastMessage = _.last(lastMessagePool);
 
-      if (!msgMap[date].length) {
-        msgMap[date].push([msg]);
-      } else {
-        const lastMsgPool = msgMap[date][msgMap[date].length - 1];
-        const lastMsg = lastMsgPool[lastMsgPool.length - 1];
-        if (
-          lastMsg.user.id === msg.user.id &&
-          moment(lastMsg.createdAt).diff(msg.createdAt, "minutes") >= -30
-        ) {
-          lastMsgPool.push(msg);
-        } else {
-          msgMap[date].push([msg]);
-        }
-      }
-    });
-
-    return msgMap;
+              if (
+                lastMessage.user.id === message.user.id &&
+                moment(lastMessage.createdAt).diff(
+                  message.createdAt,
+                  "minutes"
+                ) >= -30
+              ) {
+                lastMessagePool.push(message);
+              } else {
+                messagePools.push([message]);
+              }
+            },
+            []
+          );
+        }, {})
+        .value()
+    );
   }
 
   @action
