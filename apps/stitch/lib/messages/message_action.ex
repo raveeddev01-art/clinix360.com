@@ -2,7 +2,7 @@ defmodule Stitch.MessageAction do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias Stitch.{Repo, MessageAction}
+  alias Stitch.{Repo, MessageAction, Message}
 
   schema "message_actions" do
     belongs_to :user, Stitch.Accounts.User
@@ -48,6 +48,14 @@ defmodule Stitch.MessageAction do
   def get_user_message_actions_map(user, from_message_id, to_message_id) do
     get_user_message_actions(user, from_message_id, to_message_id)
     |> Enum.group_by(& &1.message_id)
+  end
+
+  def toggle_pin(message, user) do
+    if message.pinned do
+      Message.unpin(message)
+    else
+      Message.pin(message, user)
+    end
   end
 
   def toggle_star(message, user) do
