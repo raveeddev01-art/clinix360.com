@@ -4,15 +4,16 @@ import moment from "moment";
 const PinnedMessage = ({ message }) => {
   const { text, pinnedBy, pinnedAt } = message;
   const userName = `${pinnedBy.firstName} ${pinnedBy.lastName}`;
+  const pinnedAtFormatted = moment(pinnedAt).calendar(null, {
+    lastWeek: "MMM Do",
+    sameElse: "MMM Do"
+  });
 
   return (
     <div className="pinned-message">
       <div className="pinned-message-header">
-        {userName}
-
-        <span className="time">
-          {moment(pinnedAt).format("HH:mm A")}
-        </span>
+        {userName}&nbsp;&nbsp;
+        <span className="time">{pinnedAtFormatted}</span>
       </div>
 
       <div className="pinned-message-content">
