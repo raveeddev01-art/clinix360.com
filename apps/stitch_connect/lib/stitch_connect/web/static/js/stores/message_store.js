@@ -72,6 +72,8 @@ class MessageStore {
         id: 2,
         starred: true,
         pinned: true,
+        pinnedBy: { id: 20, first_name: "John", last_name: "Smith" },
+        pinnedAt: "2017-08-01T10:10:10",
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -99,6 +101,8 @@ class MessageStore {
         id: 5,
         starred: false,
         pinned: true,
+        pinnedBy: { id: 20, first_name: "John", last_name: "Smith" },
+        pinnedAt: "2017-08-09T10:10:10",
         user: { id: 20, first_name: "John", last_name: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -126,6 +130,8 @@ class MessageStore {
         id: 8,
         starred: false,
         pinned: true,
+        pinnedBy: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        pinnedAt: "2017-08-10T10:10:10",
         user: { id: 6, first_name: "Adam", last_name: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
@@ -161,6 +167,14 @@ class MessageStore {
 
     if (message) {
       message.pinned = !message.pinned;
+
+      if (message.pinned) {
+        message.pinnedAt = new Date();
+        message.pinnedBy = window.currentUser;
+      } else {
+        message.pinnedAt = null;
+        message.pinnedBy = null;
+      }
     }
   }
 }
