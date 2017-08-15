@@ -3,7 +3,7 @@ import moment from "moment";
 
 const PinnedMessage = ({ message }) => {
   const { text, pinnedBy, pinnedAt } = message;
-  const userName = `${pinnedBy.first_name} ${pinnedBy.last_name}`;
+  const userName = `${pinnedBy.firstName} ${pinnedBy.lastName}`;
 
   return (
     <div className="pinned-message">

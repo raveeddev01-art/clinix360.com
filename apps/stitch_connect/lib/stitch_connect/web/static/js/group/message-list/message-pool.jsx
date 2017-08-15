@@ -27,7 +27,7 @@ class MessagePool extends Component {
       <div className={className}>
         <div className="message-pool">
           <div className="message-pool-header">
-            {`${user.first_name} ${user.last_name} `}
+            {`${user.firstName} ${user.lastName} `}
 
             <OverlayTrigger placement="top" overlay={timestampTooltip}>
               <span className="time">

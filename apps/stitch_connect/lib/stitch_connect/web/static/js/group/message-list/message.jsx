@@ -53,7 +53,7 @@ class Message extends Component {
             Pinned by{" "}
             {message.pinnedBy.id === window.currentUser.id
               ? "You"
-              : `${message.pinnedBy.first_name} ${message.pinnedBy.last_name}`}
+              : `${message.pinnedBy.firstName} ${message.pinnedBy.lastName}`}
           </span>
           <br />
           <span className="text-muted">

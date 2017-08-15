@@ -68,7 +68,7 @@ class MessageStore {
         id: 1,
         starred: true,
         pinned: false,
-        user: { id: 20, first_name: "John", last_name: "Smith" },
+        user: { id: 20, firstName: "John", lastName: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-05-10T03:02:10"
@@ -77,9 +77,9 @@ class MessageStore {
         id: 2,
         starred: true,
         pinned: true,
-        pinnedBy: { id: 20, first_name: "John", last_name: "Smith" },
+        pinnedBy: { id: 20, firstName: "John", lastName: "Smith" },
         pinnedAt: "2017-08-01T10:10:10",
-        user: { id: 20, first_name: "John", last_name: "Smith" },
+        user: { id: 20, firstName: "John", lastName: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-05-10T10:10:10"
@@ -88,7 +88,7 @@ class MessageStore {
         id: 3,
         starred: false,
         pinned: false,
-        user: { id: 20, first_name: "John", last_name: "Smith" },
+        user: { id: 20, firstName: "John", lastName: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-05-10T10:20:30"
@@ -97,7 +97,7 @@ class MessageStore {
         id: 4,
         starred: false,
         pinned: false,
-        user: { id: 20, first_name: "John", last_name: "Smith" },
+        user: { id: 20, firstName: "John", lastName: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-05-10T10:30:30"
@@ -106,9 +106,9 @@ class MessageStore {
         id: 5,
         starred: false,
         pinned: true,
-        pinnedBy: { id: 20, first_name: "John", last_name: "Smith" },
+        pinnedBy: { id: 20, firstName: "John", lastName: "Smith" },
         pinnedAt: "2017-08-09T10:10:10",
-        user: { id: 20, first_name: "John", last_name: "Smith" },
+        user: { id: 20, firstName: "John", lastName: "Smith" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-08-08T20:10:30"
@@ -117,7 +117,7 @@ class MessageStore {
         id: 6,
         starred: false,
         pinned: false,
-        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        user: { id: 6, firstName: "Adam", lastName: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-08-09T10:10:10"
@@ -126,7 +126,7 @@ class MessageStore {
         id: 7,
         starred: true,
         pinned: false,
-        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        user: { id: 6, firstName: "Adam", lastName: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-08-09T10:20:10"
@@ -135,9 +135,9 @@ class MessageStore {
         id: 8,
         starred: false,
         pinned: true,
-        pinnedBy: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        pinnedBy: { id: 6, firstName: "Adam", lastName: "Fordham" },
         pinnedAt: "2017-08-10T10:10:10",
-        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        user: { id: 6, firstName: "Adam", lastName: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-08-09T10:21:10"
@@ -145,7 +145,7 @@ class MessageStore {
       {
         id: 9,
         starred: false,
-        user: { id: 6, first_name: "Adam", last_name: "Fordham" },
+        user: { id: 6, firstName: "Adam", lastName: "Fordham" },
         text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
         createdAt: "2017-08-09T10:31:10"
