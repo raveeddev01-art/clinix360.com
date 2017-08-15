@@ -55,6 +55,11 @@ class MessageStore {
     );
   }
 
+  @computed
+  get pinnedMessages() {
+    return this.messages.filter(message => message.pinned);
+  }
+
   @action
   loadMessages(groupId) {
     // @TODO load messages here
