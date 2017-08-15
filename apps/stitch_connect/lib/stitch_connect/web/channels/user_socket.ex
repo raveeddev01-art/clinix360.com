@@ -26,7 +26,8 @@ defmodule StitchConnect.Web.UserSocket do
       nil ->
         :error
       user ->
-        {:ok, assign(socket, :current_user, user)}
+        socket = socket |> assign(:current_user, user) |> assign(:team_id, user.team_id)
+        {:ok, socket}
     end
   end
 
