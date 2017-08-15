@@ -4,6 +4,8 @@ import { animateScroll } from "react-scroll";
 
 class MessageStore {
   @observable messages = [];
+  @observable canLoad = false;
+  loadedAll = false;
   channel = null;
 
   constructor(rootStore) {
@@ -43,10 +45,13 @@ class MessageStore {
     return msgMap;
   }
 
+  @action
   joinChannel = channelName => {
     if (this.channel) {
       this.channel.leave();
     }
+
+    this.loadedAll = false;
 
     this.channel = socket.channel(channelName);
     this.channel
@@ -62,10 +67,36 @@ class MessageStore {
         .push("new_msg", { text_content: msg })
         .receive("ok", resolve)
         .receive("error", err => {
-          notify.show(err.message, "danger");
+          notify.show(err.message, "error");
           reject(err);
         });
     });
+  };
+
+  @action
+  loadPastMessages = () => {
+    if (!this.canLoad || this.loadedAll) {
+      return;
+    }
+
+    this.canLoad = false;
+
+    this.channel
+      .push("feed", { max_id: this.messages[this.messages.length - 1].id })
+      .receive("ok", this.addPastMessages)
+      .receive("error", err => {
+        notify.show(err.message, "error");
+      });
+  };
+
+  @action
+  addPastMessages = data => {
+    if (!data.messages.length) {
+      this.loadedAll = true;
+      return;
+    }
+
+    this.messages.push(...data.messages);
   };
 
   @action

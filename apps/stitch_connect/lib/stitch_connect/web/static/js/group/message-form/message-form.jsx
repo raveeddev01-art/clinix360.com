@@ -18,7 +18,7 @@ class MessageForm extends Component {
   };
 
   onKeyPress = evt => {
-    if (evt.key === "Enter") {
+    if (evt.key === "Enter" && this.state.message) {
       this.props.messageStore.sendMessage(this.state.message).then(() => {
         this.setState({ message: "" });
       });
