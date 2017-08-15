@@ -36,9 +36,8 @@ class InvitationStore {
         username: this.username
       }
     }).then(resp => {
-      console.log(resp.data);
       notify.show("Thanks for completing your profile.");
-      window.location.href = `https://${subdomain}.${applicationHost}/login`;
+      window.location.href = "/login";
     });
   };
 }
