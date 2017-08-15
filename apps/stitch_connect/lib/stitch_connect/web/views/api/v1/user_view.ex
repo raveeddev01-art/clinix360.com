@@ -9,6 +9,23 @@ defmodule StitchConnect.Web.Api.V1.UserView do
     user_json(user)
   end
 
+  def render("login.json", %{user: user}) do
+    %{
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      roles: user.roles,
+      email: user.email,
+      username: user.username,
+      phone: user.phone_number,
+      title: user.title,
+      avatar: user.profile_image_url,
+      onboarded: user.onboarded,
+      disabled: user.disabled,
+      token: user.token
+    }
+  end
+
   def render("update.json", %{user: user}) do
     %{
        id: user.id,
