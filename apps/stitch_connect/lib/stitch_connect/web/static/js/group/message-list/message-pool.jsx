@@ -13,7 +13,7 @@ import Message from "./message";
 class MessagePool extends Component {
   render() {
     const { messagePool } = this.props;
-    const { user, createdAt: timestamp } = messagePool[0];
+    const { user, inserted_at: timestamp } = messagePool[0];
     const className = cx("message-pool-container", {
       mine: user.id === currentUser.id
     });
@@ -27,7 +27,7 @@ class MessagePool extends Component {
       <div className={className}>
         <div className="message-pool">
           <div className="message-pool-header">
-            {`${user.firstName} ${user.lastName} `}
+            {`${user.first_name} ${user.last_name} `}
 
             <OverlayTrigger placement="top" overlay={timestampTooltip}>
               <span className="time">

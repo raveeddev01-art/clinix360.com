@@ -51,13 +51,14 @@ class Message extends Component {
       ? <Tooltip id="pin-tooltip">
           <span>
             Pinned by{" "}
-            {message.pinnedBy.id === window.currentUser.id
+            {message.pinned_by.id === currentUser.id
               ? "You"
-              : `${message.pinnedBy.firstName} ${message.pinnedBy.lastName}`}
+              : `${message.pinned_by.first_name} ${message.pinned_by
+                  .last_name}`}
           </span>
           <br />
           <span className="text-muted">
-            {moment(message.pinnedAt).calendar()}
+            {moment(message.pinned_at).calendar()}
           </span>
         </Tooltip>
       : null;
@@ -86,7 +87,7 @@ class Message extends Component {
         <Dropdown.Toggle useAnchor />
         <Dropdown.Menu>
           <MenuItem>
-            <CopyToClipboard text={message.text} onCopy={this.copy}>
+            <CopyToClipboard text={message.text_content} onCopy={this.copy}>
               <span>
                 <i className="fa fa-paste" />&nbsp;Copy
               </span>
@@ -113,7 +114,7 @@ class Message extends Component {
     return (
       <div className="message">
         <p>
-          {message.text}
+          {message.text_content}
         </p>
 
         {this.renderStar(message)}
