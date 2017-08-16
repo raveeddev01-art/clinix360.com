@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.GroupChannel do
   use Phoenix.Channel
   alias StitchConnect.Web.Api.V1.MessageView
+  alias StitchConnect.Web.NotificationsChannel
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
 
   def join("groups:__dm:" <> id_pair, _params, socket) do
@@ -100,6 +101,7 @@ defmodule StitchConnect.Web.GroupChannel do
           json = MessageView.render("show.json", %{message: message})
 
           broadcast! socket, "new_msg", json
+          NotificationsChannel.broadcast_group_msg(group, user, message)
           {:reply, {:ok, json}, socket}
 
         {:error, _changeset} ->
