@@ -18,7 +18,7 @@ defmodule Stitch.MessageQueries do
       order_by: [desc: :inserted_at],
       limit: ^limit,
       select: m,
-      preload: [:user, :group]
+      preload: [:user, :group, :pinned_by]
 
     query = case Keyword.fetch(opts, :max_id) do
       {:ok, max_id} -> query |> where([m], m.id < ^max_id)
@@ -32,5 +32,9 @@ defmodule Stitch.MessageQueries do
     message = Repo.get(Message, id)
     message = Repo.preload(message, [:user, :group])
     message
+  end
+
+  def load_info(message) do
+    Repo.preload(message, [:pinned_by, :user])
   end
 end

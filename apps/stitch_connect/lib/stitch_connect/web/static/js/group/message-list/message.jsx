@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
-import cx from "classnames";
 import moment from "moment";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
@@ -16,91 +15,127 @@ class Message extends Component {
     // Callback to run when message is copied
   };
 
-  toggleStar = () => {
-    const { messageStore, messagePool } = this.props;
-    const messageId = messagePool[0].id;
+  togglePin = () => {
+    const { message, messageStore } = this.props;
 
-    messageStore.toggleStar(messageId);
+    messageStore.togglePin(message.id);
   };
 
-  render() {
-    const { messagePool, groupStore } = this.props;
-    const { id, starred, user_id, inserted_at: timestamp } = messagePool[0];
-    const user = groupStore.userMap[user_id] || {};
-    const className = cx("message", {
-      "message-own": user_id === currentUser.id
-    });
-    const text = messagePool.map(msg => msg.text_content).join("\n");
-    const timestampTooltip = (
-      <Tooltip id="date-tooltip">
-        {moment(timestamp).calendar()}
-      </Tooltip>
-    );
+  toggleStar = () => {
+    const { message, messageStore } = this.props;
+
+    messageStore.toggleStar(message.id);
+  };
+
+  renderStar(message) {
+    const { starred } = message;
+
+    if (!starred) {
+      return null;
+    }
     const starTooltip = (
       <Tooltip id="star-tooltip">Unstar this message</Tooltip>
     );
 
     return (
-      <div className={className}>
-        <div className="content">
-          <div className="content-header">
-            {`${user.first_name} ${user.last_name} `}
+      <OverlayTrigger placement="top" overlay={starTooltip}>
+        <span
+          className="message-icon icon-star"
+          role="presentation"
+          onClick={this.toggleStar}
+        >
+          <i className="fa fa-star" />
+        </span>
+      </OverlayTrigger>
+    );
+  }
 
-            <OverlayTrigger placement="top" overlay={timestampTooltip}>
-              <span className="time">
-                {moment(timestamp).format("HH:mm A")}
+  renderPin(message) {
+    const { pinned, pinned_by, pinned_at } = message;
+
+    if (!pinned || !pinned_at || !pinned_by) {
+      return null;
+    }
+
+    const pinTooltip = (
+      <Tooltip id="pin-tooltip">
+        <span>
+          Pinned by{" "}
+          {pinned_by.id === currentUser.id
+            ? "You"
+            : `${pinned_by.first_name} ${pinned_by.last_name}`}
+        </span>
+        <br />
+        <span className="text-muted">
+          {pinned_at && moment(pinned_at).calendar()}
+        </span>
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="top" overlay={pinTooltip}>
+        <span
+          className="message-icon icon-pin"
+          role="presentation"
+          onClick={this.togglePin}
+        >
+          <i className="fa fa-thumb-tack fa-rotate-45" />
+        </span>
+      </OverlayTrigger>
+    );
+  }
+
+  renderActions(message) {
+    return (
+      <Dropdown
+        id={`message-actions-${message.id}`}
+        componentClass="div"
+        className="message-actions"
+        pullRight
+      >
+        <Dropdown.Toggle useAnchor />
+        <Dropdown.Menu>
+          <MenuItem>
+            <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+              <span>
+                <i className="fa fa-paste" />&nbsp;Copy
               </span>
-            </OverlayTrigger>
+            </CopyToClipboard>
+          </MenuItem>
+          <MenuItem onClick={this.toggleStar}>
+            <span>
+              <i className="fa fa-star-o" />&nbsp;{message.starred ? "Unstar" : "Star"}
+            </span>
+          </MenuItem>
+          <MenuItem onClick={this.togglePin}>
+            <span>
+              <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
+            </span>
+          </MenuItem>
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+  }
 
-            {starred &&
-              <OverlayTrigger placement="top" overlay={starTooltip}>
-                <span
-                  className="icon-star"
-                  role="link"
-                  onClick={this.toggleStar}
-                >
-                  <i className="fa fa-star" />
-                </span>
-              </OverlayTrigger>}
+  render() {
+    const { message } = this.props;
 
-            <Dropdown
-              id={`message-actions-${id}`}
-              componentClass="div"
-              className="message-actions"
-              pullRight
-            >
-              <Dropdown.Toggle useAnchor />
-              <Dropdown.Menu>
-                <MenuItem>
-                  <CopyToClipboard text={text} onCopy={this.copy}>
-                    <span>
-                      <i className="fa fa-paste" /> Copy
-                    </span>
-                  </CopyToClipboard>
-                </MenuItem>
-                <MenuItem onClick={this.toggleStar}>
-                  <span>
-                    <i className="fa fa-star-o" /> {starred ? "Unstar" : "Star"}
-                  </span>
-                </MenuItem>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-          <div className="content-body">
-            {messagePool.map(msg =>
-              <p key={`text_${msg.id}`}>
-                {msg.text_content}
-              </p>
-            )}
-          </div>
-        </div>
+    return (
+      <div className="message">
+        <p>
+          {message.text_content}
+        </p>
+
+        {this.renderStar(message)}
+        {this.renderPin(message)}
+        {this.renderActions(message)}
       </div>
     );
   }
 }
 
 Message.propTypes = {
-  messagePool: PropTypes.arrayOf(PropTypes.object).isRequired
+  message: PropTypes.object.isRequired
 };
 
 export default Message;

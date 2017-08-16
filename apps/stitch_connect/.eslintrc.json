@@ -6,7 +6,7 @@
     "es6": true,
     "node": true
   },
-  "extends": ["airbnb", "prettier"],
+  "extends": ["airbnb", "prettier", "prettier/react"],
   "plugins": ["import", "jsx-a11y", "prettier", "react"],
   "parserOptions": {
     "ecmaFeatures": {
@@ -19,12 +19,25 @@
   "rules": {
     "constructor-super": "warn",
     "class-methods-use-this": "off",
+    "jsx-a11y/interactive-supports-focus": "off",
     "no-const-assign": "warn",
+    "no-param-reassign": ["error", { "props": false }],
     "no-this-before-super": "warn",
     "no-undef": "warn",
     "no-unreachable": "warn",
     "no-unused-vars": "warn",
-    "prettier/prettier": "error",
+    "react/prop-types": [
+      "error",
+      {
+        "ignore": [
+          "addonStore",
+          "groupStore",
+          "messageStore",
+          "presenceStore",
+          "sidemenuStore"
+        ]
+      }
+    ],
     "valid-typeof": "warn"
   },
   "globals": {

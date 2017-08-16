@@ -23,6 +23,15 @@ defmodule StitchConnect.Web.ConnCase do
 
       # The default endpoint for testing
       @endpoint StitchConnect.Web.Endpoint
+
+      def subdomain(conn, subdomain) do
+        %{ conn | host: "#{subdomain}.localhost" }
+      end
+
+      def post_as_user(conn, user, url) do
+        conn
+        |> post("#{url}?authenticationToken=#{user.token}")
+      end
     end
   end
 

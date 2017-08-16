@@ -3,22 +3,23 @@ import { inject, observer } from "mobx-react";
 
 import AddonCollapse from "./addon-collapse/addon-collapse";
 import PeopleList from "../people-list/people-list";
+import PinnedMessages from "./pinned-messages/pinned-messages";
 
 @inject("groupStore")
 @observer
 class Info extends Component {
-  _loadUsers = () => {
+  loadUsers = () => {
     this.props.groupStore.loadUsers();
   };
 
   render() {
     return (
       <div>
-        <AddonCollapse icon="group" title="People" onCollapse={this._loadUsers}>
+        <AddonCollapse icon="group" title="People" onCollapse={this.loadUsers}>
           <PeopleList />
         </AddonCollapse>
         <AddonCollapse icon="thumb-tack" title="Pinned">
-          <p className="text-muted">Pin the first message!</p>
+          <PinnedMessages />
         </AddonCollapse>
         <AddonCollapse icon="star" title="Starred">
           <p className="text-muted">Star the first message!</p>
