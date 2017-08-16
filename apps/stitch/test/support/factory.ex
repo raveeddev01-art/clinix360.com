@@ -8,7 +8,8 @@ defmodule Stitch.Factory do
       email: sequence(:email, &"email-#{&1}@example.com"),
       phone_number: "1231231234",
       roles: ["member"],
-      onboarded: true
+      onboarded: true,
+      token: sequence(:token, &"ezkLsxjGxnyU_mgcHepbliFeX1#{&1 |> Integer.to_string |> String.rjust(5, ?0)}-")
     }
   end
 
@@ -59,7 +60,8 @@ defmodule Stitch.Factory do
   def message_factory do
     %Stitch.Message{
       user: build(:user),
-      group: build(:group)
+      group: build(:group),
+      text_content: "lorem ipsum"
     }
   end
 end

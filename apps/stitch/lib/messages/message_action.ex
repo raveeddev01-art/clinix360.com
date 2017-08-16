@@ -20,10 +20,7 @@ defmodule Stitch.MessageAction do
   end
 
   def apply_user_message_actions(user, messages) do
-    message_ids = messages |> Enum.sort_by(& &1.id)
-    %{id: from_id} = message_ids |> List.first
-    %{id: to_id} = message_ids |> List.last
-    message_actions = get_user_message_actions_map(user, from_id, to_id)
+    message_actions = get_user_message_actions_map(user, messages)
     Enum.map(messages, fn (message) ->
       case Map.get(message_actions, message.id) do
         nil -> message
@@ -36,17 +33,17 @@ defmodule Stitch.MessageAction do
     end)
   end
 
-  def get_user_message_actions(user, from_message_id, to_message_id) do
+  def get_user_message_actions(user, messages) do
+    message_ids = messages |> Enum.map(& &1.id)
     query =
       from ma in MessageAction,
-      where: ma.message_id >= ^from_message_id and
-             ma.message_id <= ^to_message_id and
+      where: ma.message_id in ^message_ids and
              ma.user_id == ^user.id
     Repo.all(query)
   end
 
-  def get_user_message_actions_map(user, from_message_id, to_message_id) do
-    get_user_message_actions(user, from_message_id, to_message_id)
+  def get_user_message_actions_map(user, messages) do
+    get_user_message_actions(user, messages)
     |> Enum.group_by(& &1.message_id)
   end
 
