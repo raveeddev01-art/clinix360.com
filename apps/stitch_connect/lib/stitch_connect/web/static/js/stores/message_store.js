@@ -140,7 +140,11 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      message.starred = !message.starred;
+      post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
+        const update = resp.data;
+
+        message.starred = update.starred;
+      });
     }
   }
 
