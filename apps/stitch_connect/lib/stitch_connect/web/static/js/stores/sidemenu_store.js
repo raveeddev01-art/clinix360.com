@@ -35,6 +35,15 @@ class SidemenuStore {
     return this.groups.filter(group => group.favorite);
   }
 
+  @computed
+  get usernameMap() {
+    const map = {};
+    this.users.forEach(user => {
+      map[user.username] = user;
+    });
+    return map;
+  }
+
   @action
   updateGroupData = (id, data) => {
     const index = this.groups.findIndex(group => group.id === id);
