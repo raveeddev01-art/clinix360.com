@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   def message_json(message) do
     %{
       id: message.id,
-      user_id: message.user_id,
+      user: user_info(message),
       group_id: message.group_id,
       deleted: message.deleted,
       text_content: message.text_content,
@@ -23,6 +23,10 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       pinned_by: pinned_by_info(message),
       pinned_at: message.pinned_at
     }
+  end
+
+  def user_info(%{user: user}) do
+    %{ id: user.id, first_name: user.first_name, last_name: user.last_name }
   end
 
   def pinned_by_info(%{pinned_by_id: nil}), do: nil
