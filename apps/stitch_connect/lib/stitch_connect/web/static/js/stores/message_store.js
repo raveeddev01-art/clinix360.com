@@ -1,5 +1,6 @@
 import { observable, action, computed } from "mobx";
 import moment from "moment";
+import _ from "lodash";
 import { animateScroll } from "react-scroll";
 
 class MessageStore {
@@ -20,29 +21,46 @@ class MessageStore {
 
   @computed
   get messagesByDate() {
-    const msgMap = {};
+    return (
+      _.chain(this.messages)
+        .sortBy("inserted_at")
+        // Group messages by dates
+        .groupBy(message => moment(message.inserted_at).format(`YYYY-MM-DD`))
+        // Pool sequential messages by the same user
+        .transform((messagesByDate, messages, date) => {
+          messagesByDate[date] = _.transform(
+            messages,
+            (messagePools, message) => {
+              if (_.isEmpty(messagePools)) {
+                messagePools.push([message]);
+                return;
+              }
 
-    this.messages.reverse().forEach(msg => {
-      const date = moment(msg.inserted_at).format(`YYYY-MM-DD`);
-      msgMap[date] = msgMap[date] || [];
+              const lastMessagePool = _.last(messagePools);
+              const lastMessage = _.last(lastMessagePool);
 
-      if (!msgMap[date].length) {
-        msgMap[date].push([msg]);
-      } else {
-        const lastMsgPool = msgMap[date][msgMap[date].length - 1];
-        const lastMsg = lastMsgPool[lastMsgPool.length - 1];
-        if (
-          lastMsg.user_id === msg.user_id &&
-          moment(lastMsg.inserted_at).diff(msg.inserted_at, "minutes") >= -30
-        ) {
-          lastMsgPool.push(msg);
-        } else {
-          msgMap[date].push([msg]);
-        }
-      }
-    });
+              if (
+                lastMessage.user.id === message.user.id &&
+                moment(lastMessage.inserted_at).diff(
+                  message.inserted_at,
+                  "minutes"
+                ) >= -30
+              ) {
+                lastMessagePool.push(message);
+              } else {
+                messagePools.push([message]);
+              }
+            },
+            []
+          );
+        }, {})
+        .value()
+    );
+  }
 
-    return msgMap;
+  @computed
+  get pinnedMessages() {
+    return this.messages.filter(message => message.pinned);
   }
 
   @action
@@ -67,7 +85,7 @@ class MessageStore {
         .push("new_msg", { text_content: msg })
         .receive("ok", resolve)
         .receive("error", err => {
-          notify.show(err.message, "error");
+          window.notify.show(err.message, "error");
           reject(err);
         });
     });
@@ -122,7 +140,26 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      message.starred = !message.starred;
+      post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
+        const update = resp.data;
+
+        message.starred = update.starred;
+      });
+    }
+  }
+
+  @action
+  togglePin(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message) {
+      post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
+        const update = resp.data;
+
+        message.pinned = update.pinned;
+        message.pinned_at = update.pinned_at;
+        message.pinned_by = update.pinned_by;
+      });
     }
   }
 }
