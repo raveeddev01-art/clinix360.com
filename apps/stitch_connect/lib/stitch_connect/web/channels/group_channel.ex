@@ -97,6 +97,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
       case Repo.insert(changeset) do
         {:ok, message} ->
+          message = MessageQueries.load_info(message)
           json = MessageView.render("show.json", %{message: message})
 
           broadcast! socket, "new_msg", json

@@ -34,7 +34,7 @@ defmodule Stitch.MessageQueries do
     message
   end
 
-  def with_pin_info(message) do
-    Repo.preload(message, [:pinned_by])
+  def load_info(message) do
+    Repo.preload(message, [:pinned_by, :user])
   end
 end
