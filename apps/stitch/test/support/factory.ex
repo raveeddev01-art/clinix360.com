@@ -55,4 +55,11 @@ defmodule Stitch.Factory do
       setting: "mentions"
     }
   end
+
+  def message_factory do
+    %Stitch.Message{
+      user: build(:user),
+      group: build(:group)
+    }
+  end
 end

@@ -5,6 +5,9 @@ import { animateScroll } from "react-scroll";
 
 class MessageStore {
   @observable messages = [];
+  @observable canLoad = false;
+  loadedAll = false;
+  channel = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -61,101 +64,76 @@ class MessageStore {
   }
 
   @action
-  loadMessages(groupId) {
-    // @TODO load messages here
-    this.messages = [
-      {
-        id: 1,
-        starred: true,
-        pinned: false,
-        user: { id: 20, firstName: "John", lastName: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10T03:02:10"
-      },
-      {
-        id: 2,
-        starred: true,
-        pinned: true,
-        pinnedBy: { id: 20, firstName: "John", lastName: "Smith" },
-        pinnedAt: "2017-08-01T10:10:10",
-        user: { id: 20, firstName: "John", lastName: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10T10:10:10"
-      },
-      {
-        id: 3,
-        starred: false,
-        pinned: false,
-        user: { id: 20, firstName: "John", lastName: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10T10:20:30"
-      },
-      {
-        id: 4,
-        starred: false,
-        pinned: false,
-        user: { id: 20, firstName: "John", lastName: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-05-10T10:30:30"
-      },
-      {
-        id: 5,
-        starred: false,
-        pinned: true,
-        pinnedBy: { id: 20, firstName: "John", lastName: "Smith" },
-        pinnedAt: "2017-08-09T10:10:10",
-        user: { id: 20, firstName: "John", lastName: "Smith" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-08T20:10:30"
-      },
-      {
-        id: 6,
-        starred: false,
-        pinned: false,
-        user: { id: 6, firstName: "Adam", lastName: "Fordham" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-09T10:10:10"
-      },
-      {
-        id: 7,
-        starred: true,
-        pinned: false,
-        user: { id: 6, firstName: "Adam", lastName: "Fordham" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-09T10:20:10"
-      },
-      {
-        id: 8,
-        starred: false,
-        pinned: true,
-        pinnedBy: { id: 6, firstName: "Adam", lastName: "Fordham" },
-        pinnedAt: "2017-08-10T10:10:10",
-        user: { id: 6, firstName: "Adam", lastName: "Fordham" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-09T10:21:10"
-      },
-      {
-        id: 9,
-        starred: false,
-        user: { id: 6, firstName: "Adam", lastName: "Fordham" },
-        text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet congue dui.",
-        createdAt: "2017-08-09T10:31:10"
-      }
-    ];
+  joinChannel = channelName => {
+    if (this.channel) {
+      this.channel.leave();
+    }
+
+    this.loadedAll = false;
+
+    this.channel = socket.channel(channelName);
+    this.channel
+      .join()
+      .receive("ok", this.loadMessages)
+      .receive("error", err => notify.show(err.message, "danger"));
+    this.channel.on("new_msg", this.appendMessage);
+  };
+
+  sendMessage = msg => {
+    return new Promise((resolve, reject) => {
+      this.channel
+        .push("new_msg", { text_content: msg })
+        .receive("ok", resolve)
+        .receive("error", err => {
+          window.notify.show(err.message, "error");
+          reject(err);
+        });
+    });
+  };
+
+  @action
+  loadPastMessages = () => {
+    if (!this.canLoad || this.loadedAll) {
+      return;
+    }
+
+    this.canLoad = false;
+
+    this.channel
+      .push("feed", { max_id: this.messages[this.messages.length - 1].id })
+      .receive("ok", this.addPastMessages)
+      .receive("error", err => {
+        notify.show(err.message, "error");
+      });
+  };
+
+  @action
+  addPastMessages = data => {
+    if (!data.messages.length) {
+      this.loadedAll = true;
+      return;
+    }
+
+    this.messages.push(...data.messages);
+  };
+
+  @action
+  appendMessage = data => {
+    this.messages.unshift(data);
 
     setTimeout(() => {
       this.scrollToBottom();
     }, 300);
-  }
+  };
+
+  @action
+  loadMessages = data => {
+    this.messages = data.messages;
+
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 300);
+  };
 
   @action
   toggleStar(id) {

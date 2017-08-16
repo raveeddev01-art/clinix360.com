@@ -1,6 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create, :revoke, :resend, :accept]
+  alias Stitch.Accounts.User
+
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create, :revoke, :resend]
 
   def index(conn, _params) do
     case Stitch.Invitation.list_pending_team_invitations(conn.assigns.current_user.id) do
@@ -56,22 +58,24 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     end
   end
 
-  def accept(conn, %{"email" => email, "first_name" => first_name, "last_name" => last_name, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
-    case Stitch.Accounts.create_and_complete_user_onboarding(%{email: email, first_name: first_name, last_name: last_name, username: username, password: password, pin: pin, team_id: team_id, roles: ["member"]}) do
+  def accept(conn, %{"token" => invite_token, "first_name" => first_name, "last_name" => last_name, "username" => username, "password" => password, "pin" => pin}) do
+    with {:ok, invitation} <- Stitch.Invitation.get_by_invite_token(invite_token),
+         %User{} = user <- Stitch.Accounts.update_and_complete_user_onboarding(invitation.user_id, %{first_name: first_name, last_name: last_name, username: username, password: password, pin: pin, team_id: invitation.team_id, roles: ["member"]})
+    do
+      conn
+      |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
+    else
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: message})
-      user ->
-        conn
-        |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
     end
   end
   
   def accept(conn, _) do
     conn
     |> put_status(:unprocessable_entity)
-    |> json(%{message: "Some parameter missing out of email, first_name, last_name, username, password, pin."})
+    |> json(%{message: "Some parameter missing out of token, first_name, last_name, username, password, pin."})
   end
 
 end

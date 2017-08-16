@@ -31,6 +31,18 @@ defmodule Stitch.UserQueries do
     {:error, "team_id must be an integer"}
   end
 
+  def team_member_with_email(team_id, email) when is_integer(team_id) do
+    query =
+      from u in Stitch.Accounts.User,
+      where: u.team_id == ^team_id,
+      where: u.onboarded == ^true,
+      where: u.email == ^email
+    Repo.one(query)
+  end
+  def team_member_with_email(_, _) do
+    {:error, "team_id must be an integer"}
+  end
+
   def get_all do
     Repo.all(from User)
   end

@@ -8,7 +8,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 
-@inject("messageStore")
+@inject("messageStore", "groupStore")
 @observer
 class Message extends Component {
   copy = () => {

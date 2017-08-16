@@ -146,4 +146,12 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def send_invite(conn, %{"email" => email}) do
     # TODO
   end
+
+  def exists?(conn, %{"email" => email}) do
+    team_id = conn.private[:team_id]
+    case Stitch.UserQueries.team_member_with_email(team_id, email) do
+      %Stitch.Accounts.User{} -> json(conn, %{exists: true})
+      _ -> json(conn, %{exists: false})
+    end
+  end
 end

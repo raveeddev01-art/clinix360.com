@@ -9,8 +9,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
         |> put_status(403)
         |> json(%{message: "Email or password is incorrect."})
       user ->
-        conn
-        |> json(%{authenticationToken: user.token})
+        render conn, StitchConnect.Web.Api.V1.UserView, "login.json", user: user
     end
   end
 
