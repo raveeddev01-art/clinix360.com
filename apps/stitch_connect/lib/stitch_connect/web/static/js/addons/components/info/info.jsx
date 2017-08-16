@@ -24,13 +24,13 @@ class Info extends Component {
         <AddonCollapse icon="star" title="Starred">
           <p className="text-muted">Star the first message!</p>
         </AddonCollapse>
-        <AddonCollapse icon="list" title="Tasks">
+        {/* <AddonCollapse icon="list" title="Tasks">
           <p>placeholder</p>
-        </AddonCollapse>
+        </AddonCollapse> */}
         <AddonCollapse icon="folder-open" title="Files">
           <p className="text-muted">Upload the first file!</p>
         </AddonCollapse>
-        <AddonCollapse icon="flask" title="Labs">
+        {/* <AddonCollapse icon="flask" title="Labs">
           <p className="text-muted">Add the first lab!</p>
         </AddonCollapse>
         <AddonCollapse icon="address-card-o" title="Referrals">
@@ -47,7 +47,7 @@ class Info extends Component {
         </AddonCollapse>
         <AddonCollapse icon="flask" title="Labs">
           <p className="text-muted">Add the first clinical note!</p>
-        </AddonCollapse>
+        </AddonCollapse> */}
       </div>
     );
   }
