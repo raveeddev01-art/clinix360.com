@@ -40,7 +40,7 @@ class MessageForm extends Component {
               (activeUserIndex % users.length + users.length) % users.length
             ];
 
-          this.replaceCurrentWord(`@${selectedUser.username}`);
+          this.replaceCurrentWord(`@${selectedUser.username} `);
           return;
         }
       }
@@ -106,17 +106,16 @@ class MessageForm extends Component {
     const str = this.state.message;
     const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
-    const updatedStr =
+    const updatedMsg =
       str.substring(0, cursorPos - preWord.length) +
       word +
       str.substring(cursorPos + postWord.length);
-    this.setState({ message: updatedStr });
 
-    // after replacing, the cursor pos should be persistent
-    const newPos = cursorPos - preWord.length + word.length;
-    setTimeout(() => {
+    this.setState({ message: updatedMsg, openMentionMenu: false }, () => {
+      // after replacing, the cursor pos should be persistent
+      const newPos = cursorPos - preWord.length + word.length;
       this.ctrl.setSelectionRange(newPos, newPos);
-    }, 100);
+    });
   };
 
   render() {

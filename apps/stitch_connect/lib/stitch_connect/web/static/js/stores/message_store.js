@@ -75,7 +75,7 @@ class MessageStore {
     this.channel
       .join()
       .receive("ok", this.loadMessages)
-      .receive("error", err => notify.show(err.message, "danger"));
+      .receive("error", err => notify.show(err.message, "error"));
     this.channel.on("new_msg", this.appendMessage);
   };
 
