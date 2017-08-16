@@ -2,9 +2,9 @@ import React, { PropTypes } from "react";
 import moment from "moment";
 
 const PinnedMessage = ({ message }) => {
-  const { text, pinnedBy, pinnedAt } = message;
-  const userName = `${pinnedBy.firstName} ${pinnedBy.lastName}`;
-  const pinnedAtFormatted = moment(pinnedAt).calendar(null, {
+  const { text_content, pinned_by, pinned_at } = message;
+  const userName = `${pinned_by.first_name} ${pinned_by.last_name}`;
+  const pinnedAtFormatted = moment(pinned_at).calendar(null, {
     lastWeek: "MMM Do",
     sameElse: "MMM Do"
   });
@@ -17,7 +17,7 @@ const PinnedMessage = ({ message }) => {
       </div>
 
       <div className="pinned-message-content">
-        {text}
+        {text_content}
       </div>
     </div>
   );
