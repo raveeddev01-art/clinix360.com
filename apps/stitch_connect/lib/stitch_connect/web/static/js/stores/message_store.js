@@ -23,9 +23,9 @@ class MessageStore {
   get messagesByDate() {
     return (
       _.chain(this.messages)
-        .sortBy("createdAt")
+        .sortBy("inserted_at")
         // Group messages by dates
-        .groupBy(message => moment(message.createdAt).format(`YYYY-MM-DD`))
+        .groupBy(message => moment(message.inserted_at).format(`YYYY-MM-DD`))
         // Pool sequential messages by the same user
         .transform((messagesByDate, messages, date) => {
           messagesByDate[date] = _.transform(
@@ -41,8 +41,8 @@ class MessageStore {
 
               if (
                 lastMessage.user.id === message.user.id &&
-                moment(lastMessage.createdAt).diff(
-                  message.createdAt,
+                moment(lastMessage.inserted_at).diff(
+                  message.inserted_at,
                   "minutes"
                 ) >= -30
               ) {

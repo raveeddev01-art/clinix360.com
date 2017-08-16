@@ -18,13 +18,14 @@ class MessageList extends Component {
 
   render() {
     const { messageStore } = this.props;
+    const { messagesByDate } = messageStore;
 
     return (
       <div id="chat">
-        {Object.keys(messageStore.messagesByDate).map(date =>
+        {Object.keys(messagesByDate).map(date =>
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
-            {messageStore.messagesByDate[date].map(messagePool =>
+            {messagesByDate[date].map(messagePool =>
               <MessagePool
                 key={`${messagePool[0].id}`}
                 messagePool={messagePool}
