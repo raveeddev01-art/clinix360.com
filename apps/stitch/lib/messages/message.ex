@@ -4,7 +4,7 @@ defmodule Stitch.Message do
   import Ecto.Query
   alias Stitch.{Repo, Message}
 
-  @valid_types ["user_messages", "system"]
+  @valid_types ["user_messages", "system", "upload"]
 
   schema "messages" do
     belongs_to :user, Stitch.Accounts.User
