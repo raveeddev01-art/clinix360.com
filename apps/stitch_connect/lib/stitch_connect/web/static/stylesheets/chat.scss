@@ -217,3 +217,54 @@
   right: 0;
   z-index: -1;
 }
+
+.message-form {
+  width: 100%;
+}
+
+.user-mention-menu {
+  width: 100%;
+
+  .dropdown-menu {
+    width: 100%;
+  }
+
+  .user-list-item {
+    display: flex;
+    color: #333;
+    font-size: 15px;
+    line-height: 1.45;
+    text-decoration: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    cursor: pointer;
+
+    .item-icon {
+      margin-right: 5px;
+      color: $brand-primary;
+    }
+
+    .item-text {
+      flex-grow: 1;
+
+      span {
+        margin-right: 5px;
+        text-transform: capitalize;
+      }
+
+      small {
+        font-size: .9em;
+        color: #999;
+      }
+    }
+
+    &.active {
+      background-color: $brand-primary;
+      color: white;
+
+      span {
+        color: white;
+      }
+    }
+  }
+}
