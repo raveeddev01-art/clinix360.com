@@ -22,7 +22,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       avatar: user.profile_image_url,
       onboarded: user.onboarded,
       disabled: user.disabled,
-      token: user.token
+      token: user.token,
+      pin: user.pin
     }
   end
 
