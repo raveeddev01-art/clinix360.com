@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.UploadSignatureController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:create]
 
   def create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
     conn
