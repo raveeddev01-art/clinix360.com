@@ -78,6 +78,10 @@ class MessageForm extends Component {
     this.setState({ activeUserIndex: index });
   };
 
+  onSelectMention = username => () => {
+    this.replaceCurrentWord(`@${username} `);
+  };
+
   getUsers = () => {
     const { groupStore, sidemenuStore } = this.props;
     const { userFilter } = this.state;
@@ -114,6 +118,7 @@ class MessageForm extends Component {
     this.setState({ message: updatedMsg, openMentionMenu: false }, () => {
       // after replacing, the cursor pos should be persistent
       const newPos = cursorPos - preWord.length + word.length;
+      this.ctrl.focus();
       this.ctrl.setSelectionRange(newPos, newPos);
     });
   };
@@ -145,6 +150,7 @@ class MessageForm extends Component {
                   key={`user_${user.id}`}
                   className={itemClassName}
                   onMouseEnter={this.onUserItemHover(index)}
+                  onClick={this.onSelectMention(user.username)}
                 >
                   <span className="item-icon">
                     {online
