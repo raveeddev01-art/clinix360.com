@@ -78,11 +78,14 @@ class Message extends Component {
   }
 
   renderActions(message) {
+    const mine = message.user.id === currentUser.id;
+
     return (
       <Dropdown
         id={`message-actions-${message.id}`}
         componentClass="div"
         className="message-actions"
+        pullRight={mine}
       >
         <Dropdown.Toggle useAnchor />
         <Dropdown.Menu>
