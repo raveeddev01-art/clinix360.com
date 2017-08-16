@@ -26,6 +26,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case MessageAction.toggle_star(message, conn.assigns.current_user) do
           {:ok, result, _changeset} ->
+            message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
             render conn, "show.json", message: message
           {:error, reason} ->
@@ -47,7 +48,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case MessageAction.toggle_pin(message, conn.assigns.current_user) do
           {:ok, message} ->
-            message = MessageQueries.with_pin_info(message)
+            message = MessageQueries.load_info(message)
             render conn, "show.json", message: message
           {:error, reason} ->
             conn
