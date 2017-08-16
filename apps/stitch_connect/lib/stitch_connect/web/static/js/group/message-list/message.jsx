@@ -28,12 +28,16 @@ class Message extends Component {
   };
 
   renderStar(message) {
-    const starTooltip = message.starred
-      ? <Tooltip id="star-tooltip">Unstar this message</Tooltip>
-      : null;
+    const { starred } = message;
+
+    if (!starred) {
+      return null;
+    }
+    const starTooltip = (
+      <Tooltip id="star-tooltip">Unstar this message</Tooltip>
+    );
 
     return (
-      message.starred &&
       <OverlayTrigger placement="top" overlay={starTooltip}>
         <span
           className="message-icon icon-star"
@@ -47,24 +51,28 @@ class Message extends Component {
   }
 
   renderPin(message) {
-    const pinTooltip = message.pinned
-      ? <Tooltip id="pin-tooltip">
-          <span>
-            Pinned by{" "}
-            {message.pinned_by.id === currentUser.id
-              ? "You"
-              : `${message.pinned_by.first_name} ${message.pinned_by
-                  .last_name}`}
-          </span>
-          <br />
-          <span className="text-muted">
-            {moment(message.pinned_at).calendar()}
-          </span>
-        </Tooltip>
-      : null;
+    const { pinned, pinned_by, pinned_at } = message;
+
+    if (!pinned || !pinned_at || !pinned_by) {
+      return null;
+    }
+
+    const pinTooltip = (
+      <Tooltip id="pin-tooltip">
+        <span>
+          Pinned by{" "}
+          {pinned_by.id === currentUser.id
+            ? "You"
+            : `${pinned_by.first_name} ${pinned_by.last_name}`}
+        </span>
+        <br />
+        <span className="text-muted">
+          {pinned_at && moment(pinned_at).calendar()}
+        </span>
+      </Tooltip>
+    );
 
     return (
-      message.pinned &&
       <OverlayTrigger placement="top" overlay={pinTooltip}>
         <span
           className="message-icon icon-pin"

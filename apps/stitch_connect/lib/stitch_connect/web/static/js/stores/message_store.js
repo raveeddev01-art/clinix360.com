@@ -149,15 +149,13 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      message.pinned = !message.pinned;
+      post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
+        const update = resp.data;
 
-      if (message.pinned) {
-        message.pinnedAt = new Date();
-        message.pinnedBy = window.currentUser;
-      } else {
-        message.pinnedAt = null;
-        message.pinnedBy = null;
-      }
+        message.pinned = update.pinned;
+        message.pinned_at = update.pinned_at;
+        message.pinned_by = update.pinned_by;
+      });
     }
   }
 }
