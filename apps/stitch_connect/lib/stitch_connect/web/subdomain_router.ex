@@ -60,6 +60,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/groups", GroupController, :index
     get "/groups/:id", GroupController, :show
     post "/groups", GroupController, :create
+    post "/groups/multi-dm", GroupController, :create_multi_dm
     post "/groups/search", GroupController, :search
     post "/groups/:id/invite/", GroupController, :invite
     post "/groups/:id/toggle-favorite", GroupController, :toggle_favorite

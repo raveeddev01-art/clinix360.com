@@ -108,6 +108,27 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     end
   end
 
+  def create_multi_dm(conn, %{"user_ids" => user_ids}) do
+    sorted_ids = user_ids |> Enum.sort |> Enum.join(".")
+    params = %{"user_ids" => user_ids, "name" => "__multi_dm_group__",
+      "slug" => "__dm:#{sorted_ids}", "public" => false}
+
+    user = conn.assigns.current_user
+    case Stitch.Group.create(params, user.team_id, user.id) do
+      {:ok, group} ->
+        group = group
+        |> Map.put_new(:favorite, false)
+        |> Map.put_new(:joined, true)
+
+        render conn, "show.json", group: group
+
+      {:error, reason} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: reason})
+    end
+  end
+
   def join(conn, %{"id" => group_id}) do
     case Stitch.Group.invite(group_id, conn.assigns.current_user.id) do
       {:error, _} ->
