@@ -4,7 +4,7 @@ defmodule Stitch.Message do
   import Ecto.Query
   alias Stitch.{Repo, Message}
 
-  @valid_types ["user_messages", "system", "upload"]
+  @valid_types ["user_message", "system", "upload"]
 
   schema "messages" do
     belongs_to :user, Stitch.Accounts.User
@@ -25,6 +25,41 @@ defmodule Stitch.Message do
     |> cast(params, [:user_id, :group_id, :deleted, :text_content, :fields, :pinned, :pinned_by_id, :pinned_at])
     |> validate_required([:user_id, :group_id, :deleted, :text_content])
     |> validate_inclusion(:type, @valid_types)
+  end
+
+  def user_message_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:text_content, :type])
+    |> validate_required([:text_content, :type])
+    |> validate_inclusion(:type, @valid_types)
+  end
+
+  def upload_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:fields, :type])
+    |> validate_required([:fields, :type])
+    |> validate_inclusion(:type, @valid_types)
+  end
+
+  def create(group_id, user_id, %{"type" => "user_message", "text_content" => text_content}) do
+    %Message{group_id: String.to_integer(group_id), user_id: user_id}
+    |> user_message_changeset(%{text_content: text_content, type: "user_message"})
+    |> Repo.insert
+  end
+
+  def create(group_id, user_id, %{"type" => "upload", "fields" => fields}) do
+    %Message{group_id: String.to_integer(group_id), user_id: user_id}
+    |> upload_changeset(%{fields: fields, type: "upload"})
+    |> Repo.insert
+  end
+
+  def create(group_id, user_id, %{"text_content" => text_content}) do
+    create(group_id, user_id, %{"type" => "user_message", "text_content" => text_content})
+  end
+
+  def create(group_id, user_id, attributes) do
+    changeset = %Message{} |> change() |> add_error(:type, "Unsupported message format")
+    {:error, changeset}
   end
 
   def pin(message, user) do

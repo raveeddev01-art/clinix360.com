@@ -1,8 +1,9 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
-  alias Stitch.{MessageAction, Message, Repo}
-  alias Stitch.GroupAuthorization
+  alias Stitch.MessageAction
   alias Stitch.MessageQueries
+  alias Stitch.Message
+  alias Stitch.GroupAuthorization
 
   plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create, :toggle_star, :toggle_pin]
 
@@ -21,22 +22,16 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     case GroupAuthorization.is_member?(group_id, conn.assigns.current_user.id) do
       true ->
-        message_changeset = Message.changeset(%Message{}, %{
-          user_id: conn.assigns.current_user.id,
-          group_id: group_id,
-          text_content: Map.get(message_params, "text_content"),
-          fields: Map.get(message_params, "fields"),
-          type: Map.get(message_params, "type")
-        })
-
-        case Repo.insert(message_changeset) do
+        case Message.create(group_id, conn.assigns.current_user.id, message_params) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
-            render conn, "show.json", message: message
+            conn
+            |> put_status(:created)
+            |> render("show.json", message: message)
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> json(%{message: changeset})
+            |> render("error.json", %{reason: changeset})
         end
 
       false ->
@@ -56,10 +51,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
             message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
             render conn, "show.json", message: message
-          {:error, reason} ->
+          {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> json(%{message: reason})
+            |> render("error.json", %{reason: changeset})
         end
       false ->
         conn
@@ -77,10 +72,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
             render conn, "show.json", message: message
-          {:error, reason} ->
+          {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> json(%{message: reason})
+            |> render("error.json", %{reason: changeset})
         end
       false ->
         conn
