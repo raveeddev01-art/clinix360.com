@@ -6,7 +6,7 @@ import MessageForm from "./message-form/message-form";
 
 @inject("groupStore")
 @observer
-export default class Chat extends Component {
+export default class MessagePanel extends Component {
   handleJoin = () => {
     const { groupStore: group } = this.props;
     group.join();

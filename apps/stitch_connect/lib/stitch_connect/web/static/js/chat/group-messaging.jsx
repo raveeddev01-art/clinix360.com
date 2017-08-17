@@ -2,23 +2,22 @@ import React, { Component } from "react";
 
 import { inject, observer } from "mobx-react";
 
-import Chat from "./chat";
+import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
 
 @inject("groupStore")
 @observer
 export default class Group extends Component {
-  componentDidMount() {
-    this.loadGroup();
+  componentWillMount() {
+    this.loadGroup(this.props.match.params.slug);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.loadGroup();
+    this.loadGroup(nextProps.match.params.slug);
   }
 
-  loadGroup() {
-    const { slug } = this.props.match.params;
+  loadGroup(slug) {
     if (slug) {
       this.props.groupStore.loadGroupBySlug(slug);
     } else {
@@ -32,7 +31,7 @@ export default class Group extends Component {
         <div id="main">
           <TopNav />
           <div className="flex-content">
-            <Chat />
+            <MessagePanel />
             <Addons />
           </div>
         </div>

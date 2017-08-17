@@ -124,7 +124,7 @@ class MessageForm extends Component {
     const { groupStore, sidemenuStore } = this.props;
     const { userFilter } = this.state;
 
-    const users = groupStore.public ? groupStore.users : sidemenuStore.users;
+    const users = groupStore.public ? sidemenuStore.users : groupStore.users;
     return users
       .filter(
         user =>
@@ -186,7 +186,7 @@ class MessageForm extends Component {
       <div className="dropup user-mention-menu open">
         <ul className="dropdown-menu">
           {users.map((user, index) => {
-            const online = presenceStore.isOnline(`${user.id}`);
+            const online = presenceStore.isOnline(user.id);
             const itemClassName = classNames("user-list-item", {
               active: (activeUserIndex + users.length) % users.length === index
             });
