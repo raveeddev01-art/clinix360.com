@@ -118,6 +118,13 @@
                 font-size: 85%;
                 cursor: pointer;
 
+                &.icon-edited {
+                  margin-left: 5px;
+                  margin-right: 0;
+                  color: #eee;
+                  cursor: default;
+                }
+
                 &.icon-pin {
                   color: #4fb0fc;
                 }
@@ -152,8 +159,6 @@
   }
 
   .flex-footer {
-    padding: 10px 20px;
-
     .room-preview {
       text-align: center;
       font-size: 18px;
@@ -168,10 +173,26 @@
       }
     }
 
-    .form-control {
-      height: 40px;
-      border-width: 2px;
-      box-shadow: none;
+    .message-form {
+      position: relative;
+      padding: 10px 20px 30px;
+      width: 100%;
+
+      .message-text {
+        height: 40px;
+        border-width: 2px;
+        box-shadow: none;
+
+        &.editing {
+          background-color: #fff7d8;
+        }
+      }
+
+      .edit-info {
+        position: absolute;
+        bottom: 10px;
+        font-size: 85%;
+      }
     }
   }
 }
@@ -230,10 +251,6 @@
   top: 0;
   right: 0;
   z-index: -1;
-}
-
-.message-form {
-  width: 100%;
 }
 
 .user-mention-menu {
