@@ -6,6 +6,7 @@ import { animateScroll } from "react-scroll";
 class MessageStore {
   @observable messages = [];
   @observable messageInEdit = null;
+  @observable textInEdit = "";
   @observable canLoad = false;
   loadedAll = false;
   channel = null;
@@ -142,26 +143,44 @@ class MessageStore {
 
     if (message) {
       this.messageInEdit = message;
+      this.textInEdit = message.text_content;
     }
+  }
+
+  @action
+  editText(text) {
+    if (!this.messageInEdit) {
+      return;
+    }
+
+    this.textInEdit = text;
+  }
+
+  @action
+  finishEdit() {
+    if (!this.messageInEdit) {
+      return;
+    }
+
+    if (
+      !this.textInEdit ||
+      this.messageInEdit.text_content === this.textInEdit
+    ) {
+      this.cancelEdit();
+      return;
+    }
+
+    // TODO: trigger remote api
+    this.messageInEdit.text_content = this.textInEdit;
+
+    // TODO: Run cancelling in api promise callback
+    this.cancelEdit();
   }
 
   @action
   cancelEdit() {
-    if (!this.messageInEdit) {
-      return;
-    }
-
     this.messageInEdit = null;
-  }
-
-  @action
-  finishEdit(newText) {
-    if (!this.messageInEdit) {
-      return;
-    }
-
-    this.messageInEdit.text_content = newText;
-    this.messageInEdit = null;
+    this.textInEdit = "";
   }
 
   @action

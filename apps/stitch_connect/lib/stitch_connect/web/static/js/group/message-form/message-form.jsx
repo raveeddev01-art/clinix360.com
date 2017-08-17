@@ -10,36 +10,53 @@ class MessageForm extends Component {
 
     this.state = {
       text: "",
-      textInEdit: "",
       openMentionMenu: false,
       userFilter: "",
       activeUserIndex: 0
     };
   }
 
-  onChangeMessage = evt => {
+  onTextChange = evt => {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
     const { value } = evt.target;
 
     if (messageInEdit) {
-      this.setState({ textInEdit: value });
+      messageStore.editText(value);
     } else {
       this.setState({ text: value });
     }
   };
 
   onKeyUp = evt => {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
     const { activeUserIndex, openMentionMenu } = this.state;
 
     if (evt.keyCode === 38) {
       // arrow up
+
+      if (messageInEdit) {
+        return;
+      }
+
       this.setState({ activeUserIndex: this.state.activeUserIndex - 1 });
     } else if (evt.keyCode === 40) {
       // arrow down
+
+      if (messageInEdit) {
+        return;
+      }
+
       this.setState({ activeUserIndex: this.state.activeUserIndex + 1 });
     } else if (evt.keyCode === 13) {
       // enter
+
+      if (messageInEdit) {
+        this.finishEdit();
+        return;
+      }
+
       // check if user mention menu is open first
       if (openMentionMenu) {
         const users = this.getUsers();
@@ -62,9 +79,20 @@ class MessageForm extends Component {
       }
     } else if (evt.keyCode === 27) {
       // escape
+
+      if (messageInEdit) {
+        this.cancelEdit();
+        return;
+      }
+
       this.setState({ openMentionMenu: false });
     } else {
       // other keys
+
+      if (messageInEdit) {
+        return;
+      }
+
       // get the word of current cursor
       const word = this.getCurrentWord();
 
@@ -133,12 +161,24 @@ class MessageForm extends Component {
     });
   };
 
+  finishEdit() {
+    const { messageStore } = this.props;
+
+    messageStore.finishEdit();
+  }
+
+  cancelEdit() {
+    const { messageStore } = this.props;
+
+    messageStore.cancelEdit();
+  }
+
   renderMentionMenu() {
-    const { presenceStore } = this.props;
+    const { messageStore, presenceStore } = this.props;
     const { openMentionMenu, activeUserIndex } = this.state;
     const users = this.getUsers();
 
-    if (!openMentionMenu || !users.length) {
+    if (messageStore.messageInEdit || !openMentionMenu || !users.length) {
       return null;
     }
 
@@ -177,26 +217,41 @@ class MessageForm extends Component {
     );
   }
 
-  render() {
-    const { text } = this.state;
+  renderInput() {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
 
+    if (messageInEdit) {
+      this.textInput.focus();
+    }
+
+    const text = messageInEdit ? messageStore.textInEdit : this.state.text;
+    const className = classNames("form-control", "message-text", {
+      editing: !!messageInEdit
+    });
+
+    return (
+      <input
+        className={className}
+        type="text"
+        placeholder="Write something"
+        value={text}
+        onChange={this.onTextChange}
+        onKeyUp={this.onKeyUp}
+        autoFocus
+        required
+        ref={input => {
+          this.textInput = input;
+        }}
+      />
+    );
+  }
+
+  render() {
     return (
       <div className="message-form">
         {this.renderMentionMenu()}
-
-        <input
-          className="form-control"
-          type="text"
-          placeholder="Write something"
-          value={text}
-          onChange={this.onChangeMessage}
-          onKeyUp={this.onKeyUp}
-          autoFocus
-          required
-          ref={input => {
-            this.textInput = input;
-          }}
-        />
+        {this.renderInput()}
       </div>
     );
   }
