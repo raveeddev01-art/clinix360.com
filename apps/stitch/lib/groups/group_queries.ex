@@ -11,17 +11,7 @@ defmodule Stitch.GroupQueries do
   Return true or false is user has joined the given group.
   """
   def user_is_member?(group_id, user_id) do
-    query =
-      from gu in GroupUser,
-      where: gu.user_id == ^user_id,
-      where: gu.group_id == ^group_id,
-      select: gu
-    case Repo.one(query) do
-      nil ->
-        false
-      group_user ->
-        true
-    end
+    Repo.get_by(GroupUser, user_id: user_id, group_id: group_id) != nil
   end
 
   @doc """

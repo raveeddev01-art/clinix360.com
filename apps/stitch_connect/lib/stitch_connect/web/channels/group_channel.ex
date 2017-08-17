@@ -67,7 +67,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
-    attrs = %{team_id: socket.assigns.team_id, name: "DM Group", slug: slug, public: false}
+    attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
     result = %Group{} |> Group.changeset(attrs) |> Repo.insert
 
     case result do

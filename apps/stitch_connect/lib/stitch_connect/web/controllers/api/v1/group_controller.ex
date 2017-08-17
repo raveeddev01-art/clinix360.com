@@ -45,8 +45,10 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       true ->
         case Stitch.GroupQueries.get_by_id(group_id)   do
           {:ok, group} ->
-            group = if_favorited_group(group, conn.assigns.current_user)
-            group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
+            group = group
+            |> Map.put_new(group, :favorite, false)
+            |> Map.put_new(group, :joined, true)
+
             render conn, "show.json", group: group
           {:error, reason} ->
             conn
@@ -89,7 +91,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def create(conn, params) do
-    case Stitch.Group.create(params, conn.assigns.current_user.id) do
+    user = conn.assigns.current_user
+    case Stitch.Group.create(params, user.team_id, user.id) do
       {:ok, group} ->
         group = if_favorited_group(group, conn.assigns.current_user)
         group = Map.put_new(group, :joined, Stitch.GroupQueries.user_is_member?(group.id, conn.assigns.current_user.id))
