@@ -44,7 +44,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to view this group."})
       true ->
-        case Stitch.GroupQueries.get_by_id(group_id)   do
+        case Stitch.GroupQueries.get_by_id(group_id) do
           {:ok, group} ->
             group = group
             |> if_favorited_group(conn.assigns.current_user)
@@ -103,6 +103,10 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
         EventsChannel.broadcast_group_creation(group)
         render conn, "show.json", group: group
+      {:error, :already_exists} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Group with given name already exists."})
       {:error, reason} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -111,23 +115,36 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def create_multi_dm(conn, %{"user_ids" => user_ids}) do
-    sorted_ids = user_ids |> Enum.sort |> Enum.join(".")
-    params = %{"user_ids" => user_ids, "name" => "__multi_dm_group__",
-      "slug" => "__dm:#{sorted_ids}", "public" => false}
-
     user = conn.assigns.current_user
-    case Stitch.Group.create(params, user.team_id, user.id) do
-      {:ok, group} ->
-        group = group
-        |> Map.put_new(:favorite, false)
-        |> Map.put_new(:joined, true)
 
-        EventsChannel.broadcast_group_creation(group)
-        render conn, "show.json", group: group
-      {:error, reason} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: reason})
+    if user.id in user_ids do
+      sorted_ids = user_ids |> Enum.sort |> Enum.join(".")
+      slug = "__dm:#{sorted_ids}"
+      params = %{"user_ids" => user_ids, "name" => "__multi_dm_group__",
+        "slug" => slug, "public" => false, "creator_user_id" => user.id, "team_id" => team.id}
+
+      case Stitch.Group.create(params, user.team_id, user.id) do
+        {:ok, group} ->
+          group = group
+          |> Map.put_new(:favorite, false)
+          |> Map.put_new(:joined, true)
+
+          EventsChannel.broadcast_group_creation(group)
+          render conn, "show.json", group: group
+
+        {:error, :already_exists} ->
+          {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
+          |> if_favorited_group(user)
+          |> Map.put_new(:joined, true)
+          render conn, "show.json", group: group
+
+        {:error, reason} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> json(%{message: reason})
+      end
+    else
+
     end
   end
 
