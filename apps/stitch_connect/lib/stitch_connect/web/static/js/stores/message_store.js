@@ -5,6 +5,8 @@ import { animateScroll } from "react-scroll";
 
 class MessageStore {
   @observable messages = [];
+  @observable messageInEdit = null;
+  @observable textInEdit = "";
   @observable canLoad = false;
   loadedAll = false;
   channel = null;
@@ -134,6 +136,54 @@ class MessageStore {
       this.scrollToBottom();
     }, 300);
   };
+
+  @action
+  startEdit(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message) {
+      this.messageInEdit = message;
+      this.textInEdit = message.text_content;
+    }
+  }
+
+  @action
+  editText(text) {
+    if (!this.messageInEdit) {
+      return;
+    }
+
+    this.textInEdit = text;
+  }
+
+  @action
+  finishEdit() {
+    if (!this.messageInEdit) {
+      return;
+    }
+
+    if (
+      !this.textInEdit ||
+      this.messageInEdit.text_content === this.textInEdit
+    ) {
+      this.cancelEdit();
+      return;
+    }
+
+    // TODO: trigger remote api
+    this.messageInEdit.text_content = this.textInEdit;
+    this.messageInEdit.updated = true;
+    this.messageInEdit.updated_at = new Date();
+
+    // TODO: Run cancelling in api promise callback
+    this.cancelEdit();
+  }
+
+  @action
+  cancelEdit() {
+    this.messageInEdit = null;
+    this.textInEdit = "";
+  }
 
   @action
   toggleStar(id) {

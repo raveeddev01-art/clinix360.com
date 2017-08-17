@@ -1,36 +1,62 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-
-import cx from "classnames";
+import classNames from "classnames";
 
 @inject("messageStore", "sidemenuStore", "groupStore", "presenceStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      message: "",
+      text: "",
       openMentionMenu: false,
       userFilter: "",
       activeUserIndex: 0
     };
   }
 
-  onChangeMessage = evt => {
-    this.setState({ message: evt.target.value });
+  onTextChange = evt => {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+    const { value } = evt.target;
+
+    if (messageInEdit) {
+      messageStore.editText(value);
+    } else {
+      this.setState({ text: value });
+    }
   };
 
   onKeyUp = evt => {
-    const { activeUserIndex, openMentionMenu, message } = this.state;
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+    const { activeUserIndex, openMentionMenu } = this.state;
 
     if (evt.keyCode === 38) {
       // arrow up
+
+      if (messageInEdit) {
+        return;
+      }
+
       this.setState({ activeUserIndex: this.state.activeUserIndex - 1 });
     } else if (evt.keyCode === 40) {
       // arrow down
+
+      if (messageInEdit) {
+        return;
+      }
+
       this.setState({ activeUserIndex: this.state.activeUserIndex + 1 });
     } else if (evt.keyCode === 13) {
       // enter
+
+      if (messageInEdit) {
+        this.finishEdit();
+        return;
+      }
+
       // check if user mention menu is open first
       if (openMentionMenu) {
         const users = this.getUsers();
@@ -46,15 +72,27 @@ class MessageForm extends Component {
       }
 
       // otherwise sends message
-      if (this.state.message) {
-        this.props.messageStore.sendMessage(this.state.message).then(() => {
-          this.setState({ message: "" });
+      if (this.state.text) {
+        this.props.messageStore.sendMessage(this.state.text).then(() => {
+          this.setState({ text: "" });
         });
       }
     } else if (evt.keyCode === 27) {
+      // escape
+
+      if (messageInEdit) {
+        this.cancelEdit();
+        return;
+      }
+
       this.setState({ openMentionMenu: false });
     } else {
       // other keys
+
+      if (messageInEdit) {
+        return;
+      }
+
       // get the word of current cursor
       const word = this.getCurrentWord();
 
@@ -98,16 +136,16 @@ class MessageForm extends Component {
   };
 
   getCurrentWord = () => {
-    const cursorPos = parseInt(this.ctrl.selectionStart || 0, 10);
-    const str = this.state.message;
+    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const str = this.state.text;
     const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
   };
 
   replaceCurrentWord = word => {
-    const cursorPos = parseInt(this.ctrl.selectionStart || 0, 10);
-    const str = this.state.message;
+    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const str = this.state.text;
     const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
     const updatedMsg =
@@ -115,72 +153,105 @@ class MessageForm extends Component {
       word +
       str.substring(cursorPos + postWord.length);
 
-    this.setState({ message: updatedMsg, openMentionMenu: false }, () => {
+    this.setState({ text: updatedMsg, openMentionMenu: false }, () => {
       // after replacing, the cursor pos should be persistent
       const newPos = cursorPos - preWord.length + word.length;
-      this.ctrl.focus();
-      this.ctrl.setSelectionRange(newPos, newPos);
+      this.textInput.focus();
+      this.textInput.setSelectionRange(newPos, newPos);
     });
   };
 
-  render() {
-    const { presenceStore } = this.props;
-    const { message, openMentionMenu, activeUserIndex } = this.state;
+  finishEdit() {
+    const { messageStore } = this.props;
 
+    messageStore.finishEdit();
+  }
+
+  cancelEdit() {
+    const { messageStore } = this.props;
+
+    messageStore.cancelEdit();
+  }
+
+  renderMentionMenu() {
+    const { messageStore, presenceStore } = this.props;
+    const { openMentionMenu, activeUserIndex } = this.state;
     const users = this.getUsers();
 
-    const dropUpClassName = cx("dropup", "user-mention-menu", {
-      open: openMentionMenu && users.length
+    if (messageStore.messageInEdit || !openMentionMenu || !users.length) {
+      return null;
+    }
+
+    return (
+      <div className="dropup user-mention-menu open">
+        <ul className="dropdown-menu">
+          {users.map((user, index) => {
+            const online = presenceStore.isOnline(`${user.id}`);
+            const itemClassName = classNames("user-list-item", {
+              active: (activeUserIndex + users.length) % users.length === index
+            });
+
+            return (
+              <li
+                key={`user_${user.id}`}
+                className={itemClassName}
+                onMouseEnter={this.onUserItemHover(index)}
+                onClick={this.onSelectMention(user.username)}
+              >
+                <span className="item-icon">
+                  {online
+                    ? <i className="fa fa-circle" />
+                    : <i className="fa fa-circle-o" />}
+                </span>
+                <span className="item-text">
+                  <span>{`${user.first_name} ${user.last_name}`}</span>
+                  <small>
+                    {user.username}
+                  </small>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
+
+  renderInput() {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+
+    if (messageInEdit) {
+      this.textInput.focus();
+    }
+
+    const text = messageInEdit ? messageStore.textInEdit : this.state.text;
+    const className = classNames("form-control", "message-text", {
+      editing: !!messageInEdit
     });
 
     return (
+      <input
+        className={className}
+        type="text"
+        placeholder="Write something"
+        value={text}
+        onChange={this.onTextChange}
+        onKeyUp={this.onKeyUp}
+        autoFocus
+        required
+        ref={input => {
+          this.textInput = input;
+        }}
+      />
+    );
+  }
+
+  render() {
+    return (
       <div className="message-form">
-        <div className={dropUpClassName}>
-          <ul className="dropdown-menu">
-            {users.map((user, index) => {
-              const online = presenceStore.isOnline(`${user.id}`);
-              const itemClassName = cx("user-list-item", {
-                active:
-                  (activeUserIndex % users.length + users.length) %
-                    users.length ===
-                  index
-              });
-              return (
-                <li
-                  key={`user_${user.id}`}
-                  className={itemClassName}
-                  onMouseEnter={this.onUserItemHover(index)}
-                  onClick={this.onSelectMention(user.username)}
-                >
-                  <span className="item-icon">
-                    {online
-                      ? <i className="fa fa-circle" />
-                      : <i className="fa fa-circle-o" />}
-                  </span>
-                  <span className="item-text">
-                    <span>{`${user.first_name} ${user.last_name}`}</span>
-                    <small>
-                      {user.username}
-                    </small>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-        <input
-          className="form-control"
-          type="text"
-          placeholder="Write something"
-          value={message}
-          onChange={this.onChangeMessage}
-          onKeyUp={this.onKeyUp}
-          autoFocus
-          ref={c => {
-            this.ctrl = c;
-          }}
-          required
-        />
+        {this.renderMentionMenu()}
+        {this.renderInput()}
       </div>
     );
   }

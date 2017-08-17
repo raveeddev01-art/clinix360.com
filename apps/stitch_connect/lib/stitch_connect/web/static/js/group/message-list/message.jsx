@@ -12,6 +12,12 @@ import UserMention from "./user-mention";
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
 class Message extends Component {
+  edit = () => {
+    const { message, messageStore } = this.props;
+
+    messageStore.startEdit(message.id);
+  };
+
   copy = () => {
     // Callback to run when message is copied
   };
@@ -27,6 +33,28 @@ class Message extends Component {
 
     messageStore.toggleStar(message.id);
   };
+
+  renderEdited(message) {
+    const { updated, updated_at: updatedAt } = message;
+
+    if (!updated) {
+      return null;
+    }
+
+    const editedTooltip = (
+      <Tooltip id="edited-tooltip">
+        {moment(updatedAt).calendar()}
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="top" overlay={editedTooltip}>
+        <span className="message-icon icon-edited">
+          <i className="fa fa-edit" />
+        </span>
+      </OverlayTrigger>
+    );
+  }
 
   renderStar(message) {
     const { starred } = message;
@@ -52,9 +80,9 @@ class Message extends Component {
   }
 
   renderPin(message) {
-    const { pinned, pinned_by, pinned_at } = message;
+    const { pinned, pinned_by: pinnedBy, pinned_at: pinnedAt } = message;
 
-    if (!pinned || !pinned_at || !pinned_by) {
+    if (!pinned || !pinnedAt || !pinnedBy) {
       return null;
     }
 
@@ -62,13 +90,13 @@ class Message extends Component {
       <Tooltip id="pin-tooltip">
         <span>
           Pinned by{" "}
-          {pinned_by.id === currentUser.id
+          {pinnedBy.id === currentUser.id
             ? "You"
-            : `${pinned_by.first_name} ${pinned_by.last_name}`}
+            : `${pinnedBy.first_name} ${pinnedBy.last_name}`}
         </span>
         <br />
         <span className="text-muted">
-          {pinned_at && moment(pinned_at).calendar()}
+          {pinnedAt && moment(pinnedAt).calendar()}
         </span>
       </Tooltip>
     );
@@ -87,6 +115,8 @@ class Message extends Component {
   }
 
   renderActions(message) {
+    const mine = message.user.id === currentUser.id;
+
     return (
       <Dropdown
         id={`message-actions-${message.id}`}
@@ -96,6 +126,13 @@ class Message extends Component {
       >
         <Dropdown.Toggle useAnchor />
         <Dropdown.Menu>
+          {mine &&
+            <MenuItem onClick={this.edit}>
+              <span>
+                <i className="fa fa-pencil" />&nbsp;Edit
+              </span>
+            </MenuItem>}
+
           <MenuItem>
             <CopyToClipboard text={message.text_content} onCopy={this.copy}>
               <span>
@@ -118,7 +155,7 @@ class Message extends Component {
     );
   }
 
-  renderMessage = () => {
+  renderMessage() {
     const { message, sidemenuStore } = this.props;
     const words = message.text_content.split(" ");
     const usernameMap = sidemenuStore.usernameMap;
@@ -143,7 +180,7 @@ class Message extends Component {
 
       return prev.concat(word);
     }, []);
-  };
+  }
 
   render() {
     const { message } = this.props;
@@ -151,7 +188,8 @@ class Message extends Component {
     return (
       <div className="message">
         <div>
-          {this.renderMessage()}
+          {this.renderMessage(message)}
+          {this.renderEdited(message)}
         </div>
 
         {this.renderStar(message)}
