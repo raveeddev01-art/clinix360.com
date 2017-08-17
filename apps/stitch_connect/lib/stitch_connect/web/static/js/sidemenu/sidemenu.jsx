@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
-import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import FavoritesList from "./favorites/favorites_list";

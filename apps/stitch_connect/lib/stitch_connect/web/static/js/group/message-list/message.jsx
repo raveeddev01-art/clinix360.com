@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
-import cx from "classnames";
 import moment from "moment";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
@@ -8,99 +7,201 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
+import UserMention from "./user-mention";
 
-@inject("messageStore", "groupStore")
+@inject("messageStore", "groupStore", "sidemenuStore")
 @observer
 class Message extends Component {
+  edit = () => {
+    const { message, messageStore } = this.props;
+
+    messageStore.startEdit(message.id);
+  };
+
   copy = () => {
     // Callback to run when message is copied
   };
 
-  toggleStar = () => {
-    const { messageStore, messagePool } = this.props;
-    const messageId = messagePool[0].id;
+  togglePin = () => {
+    const { message, messageStore } = this.props;
 
-    messageStore.toggleStar(messageId);
+    messageStore.togglePin(message.id);
   };
 
-  render() {
-    const { messagePool, groupStore } = this.props;
-    const { id, starred, user_id, inserted_at: timestamp } = messagePool[0];
-    const user = groupStore.userMap[user_id] || {};
-    const className = cx("message", {
-      "message-own": user_id === currentUser.id
-    });
-    const text = messagePool.map(msg => msg.text_content).join("\n");
-    const timestampTooltip = (
-      <Tooltip id="date-tooltip">
-        {moment(timestamp).calendar()}
+  toggleStar = () => {
+    const { message, messageStore } = this.props;
+
+    messageStore.toggleStar(message.id);
+  };
+
+  renderEdited(message) {
+    const { updated, updated_at: updatedAt } = message;
+
+    if (!updated) {
+      return null;
+    }
+
+    const editedTooltip = (
+      <Tooltip id="edited-tooltip">
+        {moment(updatedAt).calendar()}
       </Tooltip>
     );
+
+    return (
+      <OverlayTrigger placement="top" overlay={editedTooltip}>
+        <span className="message-icon icon-edited">
+          <i className="fa fa-edit" />
+        </span>
+      </OverlayTrigger>
+    );
+  }
+
+  renderStar(message) {
+    const { starred } = message;
+
+    if (!starred) {
+      return null;
+    }
     const starTooltip = (
       <Tooltip id="star-tooltip">Unstar this message</Tooltip>
     );
 
     return (
-      <div className={className}>
-        <div className="content">
-          <div className="content-header">
-            {`${user.first_name} ${user.last_name} `}
+      <OverlayTrigger placement="top" overlay={starTooltip}>
+        <span
+          className="message-icon icon-star"
+          role="presentation"
+          onClick={this.toggleStar}
+        >
+          <i className="fa fa-star" />
+        </span>
+      </OverlayTrigger>
+    );
+  }
 
-            <OverlayTrigger placement="top" overlay={timestampTooltip}>
-              <span className="time">
-                {moment(timestamp).format("HH:mm A")}
+  renderPin(message) {
+    const { pinned, pinned_by: pinnedBy, pinned_at: pinnedAt } = message;
+
+    if (!pinned || !pinnedAt || !pinnedBy) {
+      return null;
+    }
+
+    const pinTooltip = (
+      <Tooltip id="pin-tooltip">
+        <span>
+          Pinned by{" "}
+          {pinnedBy.id === currentUser.id
+            ? "You"
+            : `${pinnedBy.first_name} ${pinnedBy.last_name}`}
+        </span>
+        <br />
+        <span className="text-muted">
+          {pinnedAt && moment(pinnedAt).calendar()}
+        </span>
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="top" overlay={pinTooltip}>
+        <span
+          className="message-icon icon-pin"
+          role="presentation"
+          onClick={this.togglePin}
+        >
+          <i className="fa fa-thumb-tack fa-rotate-45" />
+        </span>
+      </OverlayTrigger>
+    );
+  }
+
+  renderActions(message) {
+    const mine = message.user.id === currentUser.id;
+
+    return (
+      <Dropdown
+        id={`message-actions-${message.id}`}
+        componentClass="div"
+        className="message-actions"
+        pullRight
+      >
+        <Dropdown.Toggle useAnchor />
+        <Dropdown.Menu>
+          {mine &&
+            <MenuItem onClick={this.edit}>
+              <span>
+                <i className="fa fa-pencil" />&nbsp;Edit
               </span>
-            </OverlayTrigger>
+            </MenuItem>}
 
-            {starred &&
-              <OverlayTrigger placement="top" overlay={starTooltip}>
-                <span
-                  className="icon-star"
-                  role="link"
-                  onClick={this.toggleStar}
-                >
-                  <i className="fa fa-star" />
-                </span>
-              </OverlayTrigger>}
+          <MenuItem>
+            <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+              <span>
+                <i className="fa fa-paste" />&nbsp;Copy
+              </span>
+            </CopyToClipboard>
+          </MenuItem>
+          <MenuItem onClick={this.toggleStar}>
+            <span>
+              <i className="fa fa-star-o" />&nbsp;{message.starred ? "Unstar" : "Star"}
+            </span>
+          </MenuItem>
+          <MenuItem onClick={this.togglePin}>
+            <span>
+              <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
+            </span>
+          </MenuItem>
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+  }
 
-            <Dropdown
-              id={`message-actions-${id}`}
-              componentClass="div"
-              className="message-actions"
-              pullRight
-            >
-              <Dropdown.Toggle useAnchor />
-              <Dropdown.Menu>
-                <MenuItem>
-                  <CopyToClipboard text={text} onCopy={this.copy}>
-                    <span>
-                      <i className="fa fa-paste" /> Copy
-                    </span>
-                  </CopyToClipboard>
-                </MenuItem>
-                <MenuItem onClick={this.toggleStar}>
-                  <span>
-                    <i className="fa fa-star-o" /> {starred ? "Unstar" : "Star"}
-                  </span>
-                </MenuItem>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-          <div className="content-body">
-            {messagePool.map(msg =>
-              <p key={`text_${msg.id}`}>
-                {msg.text_content}
-              </p>
-            )}
-          </div>
+  renderMessage() {
+    const { message, sidemenuStore } = this.props;
+    const words = message.text_content.split(" ");
+    const usernameMap = sidemenuStore.usernameMap;
+
+    return words.reduce((prev, word, i) => {
+      if (word.indexOf("@") === 0) {
+        const username = word.substr(1);
+        if (usernameMap[username]) {
+          return prev.concat(
+            <UserMention
+              key={`usermention_${i}`}
+              user={usernameMap[username]}
+            />
+          );
+        }
+      }
+
+      if (typeof prev[prev.length - 1] === "string") {
+        prev[prev.length - 1] += ` ${word}`;
+        return prev;
+      }
+
+      return prev.concat(word);
+    }, []);
+  }
+
+  render() {
+    const { message } = this.props;
+
+    return (
+      <div className="message">
+        <div>
+          {this.renderMessage(message)}
+          {this.renderEdited(message)}
         </div>
+
+        {this.renderStar(message)}
+        {this.renderPin(message)}
+        {this.renderActions(message)}
       </div>
     );
   }
 }
 
 Message.propTypes = {
-  messagePool: PropTypes.arrayOf(PropTypes.object).isRequired
+  message: PropTypes.object.isRequired
 };
 
 export default Message;

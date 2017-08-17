@@ -2,9 +2,6 @@ import React, { Component } from "react";
 import { Provider } from "mobx-react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-import MenuItem from "react-bootstrap/lib/MenuItem";
-import DropdownButton from "react-bootstrap/lib/DropdownButton";
-
 import Sidemenu from "./sidemenu/sidemenu";
 import Group from "./group/group";
 

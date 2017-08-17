@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -14,9 +14,10 @@ import Button from "react-bootstrap/lib/Button";
 
 @inject("sidemenuStore")
 @observer
-export default class Team extends Component {
+class Team extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       showModal: false
     };
@@ -41,7 +42,7 @@ export default class Team extends Component {
       <div className="menu-nav people m-b-20">
         <div className="heading">
           <h5>
-            <a href="#" onClick={this.toggleTeamModal}>
+            <a role="link" onClick={this.toggleTeamModal}>
               {this.props.heading}
             </a>
           </h5>
@@ -51,42 +52,38 @@ export default class Team extends Component {
               <Tooltip id="open-a-direct-message">Invite People</Tooltip>
             }
           >
-            <a href="#" onClick={this.toggleInviteModal}>
+            <a role="link" onClick={this.toggleInviteModal}>
               <i className="fa fa-plus" />
             </a>
           </OverlayTrigger>
         </div>
 
-        {sidemenuStore.onlineUsers.map(user => {
-          return (
-            <a key={`online-user-${user.id}`} href="#" className="item">
-              <div className="item-icon">
-                <i className="fa fa-circle" />
-              </div>
-              <div className="item-text">
-                {`${user.first_name} ${user.last_name}`}
-              </div>
-            </a>
-          );
-        })}
+        {sidemenuStore.onlineUsers.map(user =>
+          <a key={`online-user-${user.id}`} className="item">
+            <div className="item-icon">
+              <i className="fa fa-circle" />
+            </div>
+            <div className="item-text">
+              {`${user.first_name} ${user.last_name}`}
+            </div>
+          </a>
+        )}
 
-        {sidemenuStore.offlineUsers.map(user => {
-          return (
-            <a key={`offline-user-${user.id}`} href="#" className="item">
-              <div className="item-icon">
-                <i className="fa fa-circle-o" />
-              </div>
-              <div className="item-text">
-                {`${user.first_name} ${user.last_name}`}
-              </div>
-            </a>
-          );
-        })}
+        {sidemenuStore.offlineUsers.map(user =>
+          <a key={`offline-user-${user.id}`} className="item">
+            <div className="item-icon">
+              <i className="fa fa-circle-o" />
+            </div>
+            <div className="item-text">
+              {`${user.first_name} ${user.last_name}`}
+            </div>
+          </a>
+        )}
 
         <Modal className="sidemenu-modal" show={this.state.showTeamModal}>
           <Modal.Header>
             <Modal.Title>People</Modal.Title>
-            <a href="#" onClick={this.toggleTeamModal}>
+            <a role="link" onClick={this.toggleTeamModal}>
               <i className="fa fa-close" />
             </a>
           </Modal.Header>
@@ -107,29 +104,27 @@ export default class Team extends Component {
             </h5>
 
             <div className="team-list">
-              {sidemenuStore.onlineUsers.map(user => {
-                return (
-                  <div
-                    key={`team-list-online-${user.id}`}
-                    className="team-member"
-                  >
-                    <i className="fa fa-circle" /> {`${user.fullname} `}
-                    <span className="text-muted">{user.username}</span>
-                  </div>
-                );
-              })}
+              {sidemenuStore.onlineUsers.map(user =>
+                <div
+                  key={`team-list-online-${user.id}`}
+                  className="team-member"
+                >
+                  <i className="fa fa-circle" />{" "}
+                  {`${user.first_name} ${user.last_name} `}
+                  <span className="text-muted">{user.username}</span>
+                </div>
+              )}
 
-              {sidemenuStore.offlineUsers.map(user => {
-                return (
-                  <div
-                    key={`team-list-offline-${user.id}`}
-                    className="team-member"
-                  >
-                    <i className="fa fa-circle-o" /> {`${user.fullname} `}
-                    <span className="text-muted">{user.username}</span>
-                  </div>
-                );
-              })}
+              {sidemenuStore.offlineUsers.map(user =>
+                <div
+                  key={`team-list-offline-${user.id}`}
+                  className="team-member"
+                >
+                  <i className="fa fa-circle-o" />{" "}
+                  {`${user.first_name} ${user.last_name} `}
+                  <span className="text-muted">{user.username}</span>
+                </div>
+              )}
             </div>
           </Modal.Body>
         </Modal>
@@ -137,7 +132,7 @@ export default class Team extends Component {
         <Modal className="sidemenu-modal" show={this.state.showInviteModal}>
           <Modal.Header>
             <Modal.Title>Invite People</Modal.Title>
-            <a href="#" onClick={this.toggleInviteModal}>
+            <a role="link" onClick={this.toggleInviteModal}>
               <i className="fa fa-close" />
             </a>
           </Modal.Header>
@@ -196,7 +191,7 @@ export default class Team extends Component {
 
             <Row>
               <Col sm={9} smOffset={2}>
-                <a href="#" className="btn btn-block btn-default add-invite">
+                <a role="link" className="btn btn-block btn-default add-invite">
                   Add Invitation
                 </a>
               </Col>
@@ -219,3 +214,9 @@ export default class Team extends Component {
     );
   }
 }
+
+Team.propTypes = {
+  heading: PropTypes.string.isRequired
+};
+
+export default Team;

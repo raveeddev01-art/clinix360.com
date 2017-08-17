@@ -9,7 +9,7 @@ defmodule Stitch.MessageQueries do
   @doc """
   Return the latest 30 messages for a group.
   """
-  def group_latest_messages(group_id, opts \\ []) do
+  def group_latest_messages(group_id, user, opts \\ []) do
     limit = Keyword.get(opts, :limit, 30)
 
     query =
@@ -18,19 +18,25 @@ defmodule Stitch.MessageQueries do
       order_by: [desc: :inserted_at],
       limit: ^limit,
       select: m,
-      preload: [:user, :group]
+      preload: [:user, :group, :pinned_by]
 
     query = case Keyword.fetch(opts, :max_id) do
       {:ok, max_id} -> query |> where([m], m.id < ^max_id)
       :error -> query
     end
 
-    Repo.all(query)
+    messages = Repo.all(query)
+    messages = MessageAction.apply_user_message_actions(user, messages)
+    messages
   end
 
   def get_by_id(id) do
     message = Repo.get(Message, id)
     message = Repo.preload(message, [:user, :group])
     message
+  end
+
+  def load_info(message) do
+    Repo.preload(message, [:pinned_by, :user])
   end
 end

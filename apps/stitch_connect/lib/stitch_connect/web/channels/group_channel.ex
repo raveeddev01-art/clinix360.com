@@ -22,7 +22,7 @@ defmodule StitchConnect.Web.GroupChannel do
             end
 
           group ->
-            messages = MessageQueries.group_latest_messages(group.id)
+            messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             {:ok, %{messages: json}, assign(socket, :group, group)}
         end
@@ -43,7 +43,7 @@ defmodule StitchConnect.Web.GroupChannel do
       group ->
         case GroupAuthorization.can_view?(group.id, user.id) do
           true ->
-            messages = MessageQueries.group_latest_messages(group.id)
+            messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
@@ -58,7 +58,7 @@ defmodule StitchConnect.Web.GroupChannel do
         {:reply, {:ok, %{messages: []}}, socket}
 
       group ->
-        messages = MessageQueries.group_latest_messages(group.id, max_id: max_id)
+        messages = MessageQueries.group_latest_messages(group.id, socket.assigns.current_user, max_id: max_id)
         json = MessageView.render("index.json", %{messages: messages})
         {:reply, {:ok, %{messages: json}}, socket}
     end
@@ -102,6 +102,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
       case Repo.insert(changeset) do
         {:ok, message} ->
+          message = MessageQueries.load_info(message)
           json = MessageView.render("show.json", %{message: message})
 
           broadcast! socket, "new_msg", json

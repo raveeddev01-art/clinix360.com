@@ -41,6 +41,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/groups/:group_id/messages", MessageController, :index
     post "/messages/:id/toggle-star", MessageController, :toggle_star
+    post "/messages/:id/toggle-pin", MessageController, :toggle_pin
 
     get "/users/", UserController, :index
     put "/users/:id", UserController, :update
