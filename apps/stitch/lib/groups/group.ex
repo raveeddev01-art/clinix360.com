@@ -31,8 +31,8 @@ defmodule Stitch.Group do
     attrs = attrs |> Map.put("team_id", team_id) |> Map.put("creator_user_id", user_id)
 
     attrs = case {attrs["name"], attrs["slug"]} do
-      nil, _ -> attrs # would error during creation
-      name, nil ->
+      {nil, _} -> attrs # would error during creation
+      {name, nil} ->
         slug = name |> String.downcase |> Slugger.slugify
         Map.put(attrs, "slug", slug)
       _ -> attrs
