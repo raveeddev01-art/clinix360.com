@@ -13,6 +13,8 @@ class GroupStore {
   @observable favorite = false;
   @observable notificationSetting = null;
   @observable showAllUsers = true;
+  @observable groupType = "group"; // group, single-dm, multi-dm
+  @observable dmUsers = [];
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -36,25 +38,45 @@ class GroupStore {
 
   @action
   loadGroupBySlug = slug => {
+    if (slug === this.slug) {
+      return;
+    }
+
     this.loading = true;
     get(`/api/v1/groups?slug=${slug}`).then(resp => {
       const { data } = resp;
       this.id = data.id;
       this.name = data.name;
-      this.slug = data.slug;
       this.description = data.description;
       this.public = data.public;
       this.favorite = !!data.favorite;
       this.joined = data.joined;
+      this.groupType = "group";
 
       this.loading = false;
       this.loadUsers();
-      this.joinMessageChannel();
+      this.joinMessageChannel(data.slug);
     });
   };
 
-  joinMessageChannel = () => {
-    this.rootStore.messageStore.joinChannel(`groups:${this.slug}`);
+  @action
+  joinSingleDM = user => {
+    const userIds = [currentUser.id, user.id].sort((a, b) => a > b);
+    this.users = [user];
+    this.joined = true;
+    this.public = false;
+    this.name = user.first_name;
+    this.groupType = "single-dm";
+    this.joinMessageChannel(`__dm:${userIds.join(".")}`);
+  };
+
+  joinMessageChannel = slug => {
+    if (slug === this.slug) {
+      return;
+    }
+
+    this.slug = slug;
+    this.rootStore.messageStore.joinChannel(`groups:${slug}`);
   };
 
   @action

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
-
+import { Link } from "react-router-dom";
+import _ from "lodash";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Modal from "react-bootstrap/lib/Modal";
@@ -12,7 +13,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
-@inject("sidemenuStore")
+@inject("sidemenuStore", "presenceStore")
 @observer
 class Team extends Component {
   constructor(props) {
@@ -36,8 +37,9 @@ class Team extends Component {
   };
 
   render() {
-    const { sidemenuStore } = this.props;
-
+    const { sidemenuStore, presenceStore } = this.props;
+    const onlineUsers = presenceStore.onlineUsers;
+    const offlineUsers = _.differenceBy(sidemenuStore.users, onlineUsers, "id");
     return (
       <div className="menu-nav people m-b-20">
         <div className="heading">
@@ -58,26 +60,34 @@ class Team extends Component {
           </OverlayTrigger>
         </div>
 
-        {sidemenuStore.onlineUsers.map(user =>
-          <a key={`online-user-${user.id}`} className="item">
+        {onlineUsers.map(user =>
+          <Link
+            key={`online-user-${user.id}`}
+            to={`/direct/${user.username}`}
+            className="item"
+          >
             <div className="item-icon">
               <i className="fa fa-circle" />
             </div>
             <div className="item-text">
               {`${user.first_name} ${user.last_name}`}
             </div>
-          </a>
+          </Link>
         )}
 
-        {sidemenuStore.offlineUsers.map(user =>
-          <a key={`offline-user-${user.id}`} className="item">
+        {offlineUsers.map(user =>
+          <Link
+            key={`offline-user-${user.id}`}
+            to={`/direct/${user.username}`}
+            className="item"
+          >
             <div className="item-icon">
               <i className="fa fa-circle-o" />
             </div>
             <div className="item-text">
               {`${user.first_name} ${user.last_name}`}
             </div>
-          </a>
+          </Link>
         )}
 
         <Modal className="sidemenu-modal" show={this.state.showTeamModal}>
@@ -104,7 +114,7 @@ class Team extends Component {
             </h5>
 
             <div className="team-list">
-              {sidemenuStore.onlineUsers.map(user =>
+              {onlineUsers.map(user =>
                 <div
                   key={`team-list-online-${user.id}`}
                   className="team-member"
@@ -115,7 +125,7 @@ class Team extends Component {
                 </div>
               )}
 
-              {sidemenuStore.offlineUsers.map(user =>
+              {offlineUsers.map(user =>
                 <div
                   key={`team-list-offline-${user.id}`}
                   className="team-member"

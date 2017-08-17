@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
@@ -10,6 +9,7 @@ import NavItemMembers from "./nav-items/nav-item-members";
 import NavItemNotifications from "./nav-items/nav-item-notifications";
 import NavItemRename from "./nav-items/nav-item-rename";
 import NavItemConvert from "./nav-items/nav-item-convert";
+import GroupName from "./group-name";
 
 @inject("addonStore", "groupStore")
 @observer
@@ -18,7 +18,7 @@ class TopNav extends Component {
     const { addonStore } = this.props;
 
     addonStore.setAddonPanel("info");
-    addonStore.toggleAddons(true);
+    addonStore.toggleAddons();
   };
 
   _toggleDirectoryAddon = () => {
@@ -36,29 +36,27 @@ class TopNav extends Component {
     return (
       <div className="flex-header main-header">
         <div className="header-content">
-          <h4>
-            <i className="fa fa-comments" /> {this.props.groupStore.name}{" "}
-            <small>#{this.props.groupStore.slug}</small>
-          </h4>
+          <GroupName />
         </div>
 
         <div className="header-nav">
-          <Dropdown id="dropdown-group-controls" pullRight>
-            <Dropdown.Toggle noCaret>
-              <i className="fa fa-cog" />
-            </Dropdown.Toggle>
+          {this.props.groupStore.groupType !== "single-dm" &&
+            <Dropdown id="dropdown-group-controls" pullRight>
+              <Dropdown.Toggle noCaret>
+                <i className="fa fa-cog" />
+              </Dropdown.Toggle>
 
-            <Dropdown.Menu className="group-controls-menu">
-              <NavItemFavorite />
-              <NavItemMembers />
-              <NavItemNotifications />
-              <NavItemRename />
-              <NavItemConvert />
+              <Dropdown.Menu className="group-controls-menu">
+                <NavItemFavorite />
+                <NavItemMembers />
+                <NavItemNotifications />
+                <NavItemRename />
+                <NavItemConvert />
 
-              <MenuItem onSelect={this.handleLeave}>Leave</MenuItem>
-              <MenuItem>Delete</MenuItem>
-            </Dropdown.Menu>
-          </Dropdown>
+                <MenuItem onSelect={this.handleLeave}>Leave</MenuItem>
+                <MenuItem>Delete</MenuItem>
+              </Dropdown.Menu>
+            </Dropdown>}
 
           <a
             className="btn btn-default"

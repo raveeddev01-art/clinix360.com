@@ -7,17 +7,14 @@ class SidemenuStore {
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
-  @observable offlineUsers = [];
-  @observable onlineUsers = [];
   @observable currentGroup = null;
-
-  rawOnlineUsers = {};
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
     this.teamName = props.teamName;
     this.teamId = props.teamId;
     this.subdomain = props.subdomain;
+    this.users = props.dm_users || [];
 
     this.loadGroups();
     this.loadUsers();
@@ -55,33 +52,7 @@ class SidemenuStore {
   loadUsers = () => {
     get("/api/v1/users").then(response => {
       this.users = response.data;
-      this.connectPresence();
     });
-  };
-
-  connectPresence = () => {
-    let lobby = socket.channel(`team:lobby:${this.teamId}`, {});
-
-    lobby.on("presence_state", state => {
-      this.rawOnlineUsers = Presence.syncState(this.rawOnlineUsers, state);
-      this.updatePresences();
-    });
-
-    lobby.on("presence_diff", diff => {
-      this.rawOnlineUsers = Presence.syncDiff(this.rawOnlineUsers, diff);
-      this.updatePresences();
-    });
-
-    lobby.join();
-  };
-
-  updatePresences = () => {
-    this.onlineUsers = Presence.list(this.rawOnlineUsers, this.listBy);
-    this.offlineUsers = _.differenceBy(this.users, this.onlineUsers, "id");
-  };
-
-  listBy = (id, { metas: [first, ...rest] }) => {
-    return first;
   };
 
   selectRoom = room => {

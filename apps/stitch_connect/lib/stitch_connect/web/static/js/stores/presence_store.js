@@ -1,5 +1,5 @@
 import { Presence } from "phoenix";
-import { observable, action } from "mobx";
+import { observable, action, computed } from "mobx";
 
 class PresenceStore {
   @observable teamId = "";
@@ -29,9 +29,14 @@ class PresenceStore {
   };
 
   isOnline(userId) {
-    const onlineUsers = Object.keys(this.onlineUsersMap);
+    return !!this.onlineUsersMap[`${userId}`];
+  }
 
-    return onlineUsers.indexOf(userId) > -1;
+  @computed
+  get onlineUsers() {
+    return Object.keys(this.onlineUsersMap || {}).map(
+      id => this.onlineUsersMap[id].metas[0]
+    );
   }
 }
 

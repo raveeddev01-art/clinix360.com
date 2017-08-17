@@ -13,6 +13,8 @@ class RootStore {
     this.sidemenuStore = new SidemenuStore(this, props);
 
     this.presenceStore.connectPresence(props.teamId);
+
+    this.appParams = Object.assign({}, props);
   }
 }
 

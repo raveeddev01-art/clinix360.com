@@ -72,6 +72,7 @@ class MessageStore {
     }
 
     this.loadedAll = false;
+    this.messages = [];
 
     this.channel = socket.channel(channelName);
     this.channel
