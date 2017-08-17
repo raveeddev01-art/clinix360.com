@@ -13,7 +13,7 @@ defmodule StitchConnect.Web.GroupController do
     do
       render(conn, PageView,  "index.html", app_params: PageService.app_params(conn))
     else
-      _ -> conn |> halt |> redirect(to: "/")
+      _ -> conn |> redirect(to: "/")
     end
   end
 end
