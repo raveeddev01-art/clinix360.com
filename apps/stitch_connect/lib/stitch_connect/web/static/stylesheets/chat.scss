@@ -118,6 +118,13 @@
                 font-size: 85%;
                 cursor: pointer;
 
+                &.icon-edited {
+                  margin-left: 5px;
+                  margin-right: 0;
+                  color: #eee;
+                  cursor: default;
+                }
+
                 &.icon-pin {
                   color: #4fb0fc;
                 }

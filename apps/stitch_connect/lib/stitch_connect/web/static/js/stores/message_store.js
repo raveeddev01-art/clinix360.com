@@ -172,6 +172,8 @@ class MessageStore {
 
     // TODO: trigger remote api
     this.messageInEdit.text_content = this.textInEdit;
+    this.messageInEdit.updated = true;
+    this.messageInEdit.updated_at = new Date();
 
     // TODO: Run cancelling in api promise callback
     this.cancelEdit();

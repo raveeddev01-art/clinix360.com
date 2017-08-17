@@ -34,6 +34,28 @@ class Message extends Component {
     messageStore.toggleStar(message.id);
   };
 
+  renderEdited(message) {
+    const { updated, updated_at: updatedAt } = message;
+
+    if (!updated) {
+      return null;
+    }
+
+    const editedTooltip = (
+      <Tooltip id="edited-tooltip">
+        {moment(updatedAt).calendar()}
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="top" overlay={editedTooltip}>
+        <span className="message-icon icon-edited">
+          <i className="fa fa-edit" />
+        </span>
+      </OverlayTrigger>
+    );
+  }
+
   renderStar(message) {
     const { starred } = message;
 
@@ -133,7 +155,7 @@ class Message extends Component {
     );
   }
 
-  renderMessage = () => {
+  renderMessage() {
     const { message, sidemenuStore } = this.props;
     const words = message.text_content.split(" ");
     const usernameMap = sidemenuStore.usernameMap;
@@ -158,7 +180,7 @@ class Message extends Component {
 
       return prev.concat(word);
     }, []);
-  };
+  }
 
   render() {
     const { message } = this.props;
@@ -166,7 +188,8 @@ class Message extends Component {
     return (
       <div className="message">
         <div>
-          {this.renderMessage()}
+          {this.renderMessage(message)}
+          {this.renderEdited(message)}
         </div>
 
         {this.renderStar(message)}
