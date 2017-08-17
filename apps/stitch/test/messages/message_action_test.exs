@@ -32,7 +32,7 @@ defmodule Stitch.MessageActionTest do
       assert {:ok, true, _message_action} = Stitch.MessageAction.toggle_star(message_bar, user)
       assert {:ok, true, _message_action} = Stitch.MessageAction.toggle_star(message_qux, user)
 
-      messages = Stitch.MessageQueries.group_latest_messages(group.id)
+      messages = Stitch.MessageQueries.group_latest_messages(group.id, user)
       messages = Stitch.MessageAction.apply_user_message_actions(user, messages) |> Enum.sort_by(& &1.id)
 
       assert [
