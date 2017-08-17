@@ -109,7 +109,8 @@ class Team extends Component {
                   key={`team-list-online-${user.id}`}
                   className="team-member"
                 >
-                  <i className="fa fa-circle" /> {`${user.fullname} `}
+                  <i className="fa fa-circle" />{" "}
+                  {`${user.first_name} ${user.last_name} `}
                   <span className="text-muted">{user.username}</span>
                 </div>
               )}
@@ -119,7 +120,8 @@ class Team extends Component {
                   key={`team-list-offline-${user.id}`}
                   className="team-member"
                 >
-                  <i className="fa fa-circle-o" /> {`${user.fullname} `}
+                  <i className="fa fa-circle-o" />{" "}
+                  {`${user.first_name} ${user.last_name} `}
                   <span className="text-muted">{user.username}</span>
                 </div>
               )}
