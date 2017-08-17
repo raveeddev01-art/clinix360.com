@@ -40,6 +40,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :api_auth
 
     get "/groups/:group_id/messages", MessageController, :index
+    post "/groups/:group_id/messages", MessageController, :create
     post "/messages/:id/toggle-star", MessageController, :toggle_star
     post "/messages/:id/toggle-pin", MessageController, :toggle_pin
 
@@ -61,6 +62,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/groups", GroupController, :index
     get "/groups/:id", GroupController, :show
     post "/groups", GroupController, :create
+    post "/groups/multi-dm", GroupController, :create_multi_dm
     post "/groups/search", GroupController, :search
     post "/groups/:id/invite/", GroupController, :invite
     post "/groups/:id/toggle-favorite", GroupController, :toggle_favorite

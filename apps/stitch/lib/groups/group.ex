@@ -2,7 +2,7 @@ defmodule Stitch.Group do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias Stitch.{Repo, Group}
+  alias Stitch.{Repo, Group, GroupUser}
   alias Stitch.Accounts.User
 
   schema "groups" do
@@ -12,7 +12,7 @@ defmodule Stitch.Group do
     field :description, :string
     field :public, :boolean, default: true
     belongs_to :team, Stitch.Team
-    has_many :group_users, Stitch.GroupUser
+    has_many :group_users, GroupUser
     has_many :users, through: [:group_users, :user]
     has_many :messages, Stitch.Message
     has_many :group_notification_preferences, Stitch.GroupNotificationPreference
@@ -27,8 +27,44 @@ defmodule Stitch.Group do
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
   end
 
-  def create(attrs, user_id) do
+  def create(attrs, team_id, user_id) do
+    attrs = attrs |> Map.put("team_id", team_id) |> Map.put("creator_user_id", user_id)
 
+    attrs = case {attrs["name"], attrs["slug"]} do
+      {nil, _} -> attrs # would error during creation
+      {name, nil} ->
+        slug = name |> String.downcase |> Slugger.slugify
+        Map.put(attrs, "slug", slug)
+      _ -> attrs
+    end
+
+    Repo.transaction fn ->
+      case Repo.insert(Group.changeset(%Group{}, attrs)) do
+        {:ok, group} ->
+          user_ids = Map.get(attrs, "user_ids", []) |> List.insert_at(0, user_id) |> Enum.uniq
+          users = User |> where([u], u.team_id == ^team_id and u.id in ^user_ids) |> Repo.all
+
+          group_users_res = users |> Enum.reduce_while([], fn user, group_users ->
+            changeset = GroupUser.changeset(%GroupUser{}, %{group_id: group.id, user_id: user.id})
+            case Repo.insert(changeset) do
+              {:ok, _} -> {:cont, group_users ++ [user]}
+              {:error, _} -> {:halt, :error}
+            end
+          end)
+
+          case group_users_res do
+            :error -> Repo.rollback("Failed to add group members.")
+            users -> %{group | users: users}
+          end
+
+        {:error, changeset} ->
+          if changeset.errors == [slug: {"has already been taken", []}] do
+            Repo.rollback(:already_exists)
+          else
+            Repo.rollback("Failed to create group.")
+          end
+      end
+    end
   end
 
   @doc """
@@ -57,7 +93,7 @@ defmodule Stitch.Group do
   """
   def invite(group_id, user_id) do
     params = %{group_id: group_id, user_id: user_id}
-    changeset = Stitch.GroupUser.changeset(%Stitch.GroupUser{}, params)
+    changeset = GroupUser.changeset(%GroupUser{}, params)
     Repo.insert changeset
   end
 
@@ -66,7 +102,7 @@ defmodule Stitch.Group do
   """
 
   def remove(group_id, user_id) do
-    case Repo.get_by(Stitch.GroupUser, group_id: group_id, user_id: user_id) do
+    case Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) do
       nil ->
         {:error, "User is not part of the this group"}
 

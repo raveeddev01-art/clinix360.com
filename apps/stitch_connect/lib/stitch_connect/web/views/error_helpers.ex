@@ -37,4 +37,10 @@ defmodule StitchConnect.Web.ErrorHelpers do
       Gettext.dgettext(StitchConnect.Web.Gettext, "errors", msg, opts)
     end
   end
+
+  def error_string_from_changeset(changeset) do
+    Enum.map(changeset.errors, fn {k, v} ->
+      "#{Phoenix.Naming.humanize(k)} #{translate_error(v)}"
+    end) |> Enum.join(". ")
+  end
 end

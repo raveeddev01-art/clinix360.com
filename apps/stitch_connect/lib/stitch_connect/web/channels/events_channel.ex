@@ -1,0 +1,50 @@
+defmodule StitchConnect.Web.EventsChannel do
+  use Phoenix.Channel
+
+  import Ecto.Query
+  alias Stitch.{Repo, GroupUser, UserQueries}
+  alias StitchConnect.Web.Api.V1.{MessageView, GroupView}
+
+  @endpoint StitchConnect.Web.Endpoint
+
+  def join("events:" <> user_id, _params, socket) do
+    user_id = String.to_integer(user_id)
+    if user_id == socket.assigns.current_user.id do
+      {:ok, socket}
+    else
+      {:error, %{message: "Unauthorized"}}
+    end
+  end
+
+  def broadcast_group_msg(group, user, message) do
+    ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.user_id)
+    |> Repo.all |> List.delete(user.id)
+    json = MessageView.message_json(message)
+
+    for id <- ids do
+      @endpoint.broadcast("events:#{id}", "new_message", json)
+    end
+  end
+
+  def broadcast_group_creation(group) do
+    ids = Enum.map(group.users, &( &1.id ))
+    json = GroupView.group_json(group)
+
+    for id <- ids do
+      @endpoint.broadcast("events:#{id}", "new_group", json)
+    end
+
+    if group.public do
+      remaining_user_ids = group.team_id
+      |> UserQueries.users_for_team
+      |> Enum.map(& &1.id )
+      |> Enum.reject(& &1 in ids )
+
+      json = group |> Map.put(:joined, false) |> GroupView.group_json
+
+      for id <- remaining_user_ids do
+        @endpoint.broadcast("events:#{id}", "new_group", json)
+      end
+    end
+  end
+end

@@ -23,7 +23,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       onboarded: user.onboarded,
       disabled: user.disabled,
       token: user.token,
-      pin: user.pin
+      pin: user.pin,
+      team_id: user.team_id
     }
   end
 
