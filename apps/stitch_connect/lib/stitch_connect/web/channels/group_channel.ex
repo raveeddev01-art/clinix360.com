@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.GroupChannel do
   use Phoenix.Channel
   alias StitchConnect.Web.Api.V1.MessageView
+  alias StitchConnect.Web.EventsChannel
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
 
   def join("groups:__dm:" <> id_pair, _params, socket) do
@@ -10,19 +11,23 @@ defmodule StitchConnect.Web.GroupChannel do
     if Enum.sort(ids_pair) == ids_pair do
       %{team_id: team_id, current_user: user} = socket.assigns
 
-      case List.delete(ids_pair, user.id) do
-        [other_user_id] ->
-          case Repo.get_by(Group, slug: "__dm:#{id_pair}", team_id: team_id) do
-            nil ->
+      if user.id in ids_pair do
+        case Repo.get_by(Group, slug: "__dm:#{id_pair}", team_id: team_id) do
+          nil ->
+            if length(ids_pair) == 2 do # if single user dm, create group on first message
+              [other_user_id] = List.delete(ids_pair, user.id)
               {:ok, %{messages: []}, assign(socket, :group, {:create_dm, id_pair, other_user_id})}
+            else
+              {:error, %{message: "group not found"}}
+            end
 
-            group ->
-              messages = MessageQueries.group_latest_messages(group.id, socket.assigns.current_user)
-              json = MessageView.render("index.json", %{messages: messages})
-              {:ok, %{messages: json}, assign(socket, :group, group)}
-          end
-        _ ->
-          {:error, %{message: "You can't participate on this chat."}}
+          group ->
+            messages = MessageQueries.group_latest_messages(group.id, user)
+            json = MessageView.render("index.json", %{messages: messages})
+            {:ok, %{messages: json}, assign(socket, :group, group)}
+        end
+      else
+        {:error, %{message: "You can't participate on this chat."}}
       end
     else
       {:error, %{message: "User ids should be sorted."}}
@@ -38,7 +43,7 @@ defmodule StitchConnect.Web.GroupChannel do
       group ->
         case GroupAuthorization.can_view?(group.id, user.id) do
           true ->
-            messages = MessageQueries.group_latest_messages(group.id, socket.assigns.current_user)
+            messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
@@ -66,7 +71,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
-    attrs = %{team_id: socket.assigns.team_id, name: "DM Group", slug: slug, public: false}
+    attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
     result = %Group{} |> Group.changeset(attrs) |> Repo.insert
 
     case result do
@@ -101,6 +106,7 @@ defmodule StitchConnect.Web.GroupChannel do
           json = MessageView.render("show.json", %{message: message})
 
           broadcast! socket, "new_msg", json
+          EventsChannel.broadcast_group_msg(group, user, message)
           {:reply, {:ok, json}, socket}
 
         {:error, _changeset} ->

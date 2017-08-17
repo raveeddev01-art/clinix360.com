@@ -4,20 +4,18 @@ defmodule StitchConnect.Web.TeamChannel do
 
   def join("team:lobby:" <> team_id, _, socket) do
     team_id = String.to_integer(team_id)
-    case Stitch.Team.Authorization.user_is_member?(team_id, socket.assigns.current_user.id) do
-      false ->
-        {:error, %{reason: "Unauthorized"}}
-      team ->
-        socket = assign(socket, :team, team)
-        send self(), :after_join
-        {:ok, socket}
+    if team_id == socket.assigns.team_id do
+      send self(), :after_join
+      {:ok, socket}
+    else
+      {:error, %{message: "Unauthorized"}}
     end
   end
 
   def handle_info(:after_join, socket) do
-    user = Stitch.UserQueries.get_by_id(socket.assigns.current_user.id)
+    user = socket.assigns.current_user
     push socket, "presence_state", Presence.list(socket)
-    {:ok, _} = Presence.track(socket, socket.assigns.current_user.id, %{
+    {:ok, _} = Presence.track(socket, user.id, %{
       online_at: inspect(System.system_time(:seconds)),
       id: user.id,
       first_name: user.first_name,
