@@ -5,6 +5,7 @@ import { animateScroll } from "react-scroll";
 
 class MessageStore {
   @observable messages = [];
+  @observable messageInEdit = null;
   @observable canLoad = false;
   loadedAll = false;
   channel = null;
@@ -134,6 +135,34 @@ class MessageStore {
       this.scrollToBottom();
     }, 300);
   };
+
+  @action
+  startEdit(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message) {
+      this.messageInEdit = message;
+    }
+  }
+
+  @action
+  cancelEdit() {
+    if (!this.messageInEdit) {
+      return;
+    }
+
+    this.messageInEdit = null;
+  }
+
+  @action
+  finishEdit(newText) {
+    if (!this.messageInEdit) {
+      return;
+    }
+
+    this.messageInEdit.text_content = newText;
+    this.messageInEdit = null;
+  }
 
   @action
   toggleStar(id) {

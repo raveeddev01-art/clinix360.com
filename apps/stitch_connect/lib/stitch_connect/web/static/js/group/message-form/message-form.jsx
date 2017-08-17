@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import classNames from "classnames";
 
 import cx from "classnames";
 
@@ -8,6 +9,7 @@ import cx from "classnames";
 class MessageForm extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       message: "",
       openMentionMenu: false,
@@ -17,7 +19,15 @@ class MessageForm extends Component {
   }
 
   onChangeMessage = evt => {
-    this.setState({ message: evt.target.value });
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+    const { value } = evt.target;
+
+    if (messageInEdit) {
+      this.setState({ textInEdit: value });
+    } else {
+      this.setState({ text: value });
+    }
   };
 
   onKeyUp = evt => {

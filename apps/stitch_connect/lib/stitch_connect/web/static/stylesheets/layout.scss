@@ -88,8 +88,8 @@
 
 .flex-footer {
   display: flex;
-  flex-basis: 60px;
   flex-shrink: 0;
+  min-height: 60px;
 }
 
 .top-navigation {
