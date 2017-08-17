@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.{ Group, GroupUser }
+  alias StitchConnect.Web.EventsChannel
 
   plug StitchConnect.Plug.ApiAuthenticate when action in [:rename, :join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite, :show]
 
@@ -100,6 +101,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> Map.put_new(:favorite, false)
         |> Map.put_new(:joined, true)
 
+        EventsChannel.broadcast_group_creation(group)
         render conn, "show.json", group: group
       {:error, reason} ->
         conn
@@ -120,8 +122,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> Map.put_new(:favorite, false)
         |> Map.put_new(:joined, true)
 
+        EventsChannel.broadcast_group_creation(group)
         render conn, "show.json", group: group
-
       {:error, reason} ->
         conn
         |> put_status(:unprocessable_entity)

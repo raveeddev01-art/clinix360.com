@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.EventsChannel do
 
   import Ecto.Query
   alias Stitch.{Repo, GroupUser}
-  alias StitchConnect.Web.Api.V1.MessageView
+  alias StitchConnect.Web.Api.V1.{MessageView, GroupView}
 
   @endpoint StitchConnect.Web.Endpoint
 
@@ -19,10 +19,19 @@ defmodule StitchConnect.Web.EventsChannel do
   def broadcast_group_msg(group, user, message) do
     ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.user_id)
     |> Repo.all |> List.delete(user.id)
-    json = MessageView.render("show.json", %{message: message})
+    json = MessageView.message_json(message)
 
     for id <- ids do
       @endpoint.broadcast("events:#{id}", "new_message", json)
+    end
+  end
+
+  def broadcast_group_creation(group) do
+    ids = Enum.map(group.users, &( &1.id ))
+    json = GroupView.group_json(group)
+
+    for id <- ids do
+      @endpoint.broadcast("events:#{id}", "new_group", json)
     end
   end
 end
