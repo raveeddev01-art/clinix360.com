@@ -121,7 +121,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       sorted_ids = user_ids |> Enum.sort |> Enum.join(".")
       slug = "__dm:#{sorted_ids}"
       params = %{"user_ids" => user_ids, "name" => "__multi_dm_group__",
-        "slug" => slug, "public" => false, "creator_user_id" => user.id, "team_id" => team.id}
+        "slug" => slug, "public" => false, "creator_user_id" => user.id, "team_id" => user.team_id}
 
       case Stitch.Group.create(params, user.team_id, user.id) do
         {:ok, group} ->
