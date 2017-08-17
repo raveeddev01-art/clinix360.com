@@ -17,7 +17,7 @@ defmodule StitchConnect.Web.GroupChannel do
               {:ok, %{messages: []}, assign(socket, :group, {:create_dm, id_pair, other_user_id})}
 
             group ->
-              messages = MessageQueries.group_latest_messages(group.id)
+              messages = MessageQueries.group_latest_messages(group.id, socket.assigns.current_user)
               json = MessageView.render("index.json", %{messages: messages})
               {:ok, %{messages: json}, assign(socket, :group, group)}
           end
@@ -38,7 +38,7 @@ defmodule StitchConnect.Web.GroupChannel do
       group ->
         case GroupAuthorization.can_view?(group.id, user.id) do
           true ->
-            messages = MessageQueries.group_latest_messages(group.id)
+            messages = MessageQueries.group_latest_messages(group.id, socket.assigns.current_user)
             json = MessageView.render("index.json", %{messages: messages})
             {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
@@ -53,7 +53,7 @@ defmodule StitchConnect.Web.GroupChannel do
         {:reply, {:ok, %{messages: []}}, socket}
 
       group ->
-        messages = MessageQueries.group_latest_messages(group.id, max_id: max_id)
+        messages = MessageQueries.group_latest_messages(group.id, socket.assigns.current_user, max_id: max_id)
         json = MessageView.render("index.json", %{messages: messages})
         {:reply, {:ok, %{messages: json}}, socket}
     end
