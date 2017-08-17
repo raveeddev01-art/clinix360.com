@@ -52,13 +52,13 @@ defmodule StitchConnect.Web.ChannelAuthTest do
     end
   end
 
-  describe "joining notifications channel" do
+  describe "joining events channel" do
     setup [:create_users, :connect_socket, :create_private_group]
 
-    test "user can join only own notifications channel", %{socket1: socket1, user1: user1} do
-      assert {:ok, _, socket1} = subscribe_and_join(socket1, "notifications:#{user1.id}")
+    test "user can join only own events channel", %{socket1: socket1, user1: user1} do
+      assert {:ok, _, socket1} = subscribe_and_join(socket1, "events:#{user1.id}")
 
-      {:error, error} = subscribe_and_join(socket1, "notifications:#{user1.id + 1}")
+      {:error, error} = subscribe_and_join(socket1, "events:#{user1.id + 1}")
       assert %{message: "Unauthorized"} == error
     end
   end

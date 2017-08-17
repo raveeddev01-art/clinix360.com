@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.NotificationsChannel do
+defmodule StitchConnect.Web.EventsChannel do
   use Phoenix.Channel
 
   import Ecto.Query
@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.NotificationsChannel do
 
   @endpoint StitchConnect.Web.Endpoint
 
-  def join("notifications:" <> user_id, _params, socket) do
+  def join("events:" <> user_id, _params, socket) do
     user_id = String.to_integer(user_id)
     if user_id == socket.assigns.current_user.id do
       {:ok, socket}
@@ -22,7 +22,7 @@ defmodule StitchConnect.Web.NotificationsChannel do
     json = MessageView.render("show.json", %{message: message})
 
     for id <- ids do
-      @endpoint.broadcast("notifications:#{id}", "new_message", json)
+      @endpoint.broadcast("events:#{id}", "new_message", json)
     end
   end
 end

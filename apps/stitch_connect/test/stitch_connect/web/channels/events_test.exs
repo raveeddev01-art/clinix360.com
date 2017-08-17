@@ -1,13 +1,13 @@
-defmodule StitchConnect.Web.NotificationsTest do
+defmodule StitchConnect.Web.EventsTest do
   use StitchConnect.Web.ChannelCase
 
   setup [:create_users, :connect_socket, :create_group]
 
-  test "group participants receives message notification",
+  test "group participants receives message event",
       %{socket1: socket1, user1: user1, user2: user2, group: group} do
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
-    @endpoint.subscribe("notifications:#{user2.id}")
+    @endpoint.subscribe("events:#{user2.id}")
 
     push socket1, "new_msg", %{text_content: "Hello, World!"}
 

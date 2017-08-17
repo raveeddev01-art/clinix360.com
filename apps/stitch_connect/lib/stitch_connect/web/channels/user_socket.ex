@@ -4,7 +4,7 @@ defmodule StitchConnect.Web.UserSocket do
   ## Channels
   channel "groups:*", StitchConnect.Web.GroupChannel
   channel "team:lobby:*", StitchConnect.Web.TeamChannel
-  channel "notifications:*", StitchConnect.Web.NotificationsChannel
+  channel "events:*", StitchConnect.Web.EventsChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket,
