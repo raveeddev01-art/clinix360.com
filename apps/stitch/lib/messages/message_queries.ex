@@ -7,6 +7,14 @@ defmodule Stitch.MessageQueries do
   import Ecto.Query
 
   @doc """
+  Returns messages for the user that matches the search term
+  provided.
+  """
+  def search(user_id, term, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 30)
+  end
+
+  @doc """
   Return the latest 30 messages for a group.
   """
   def group_latest_messages(group_id, user, opts \\ []) do

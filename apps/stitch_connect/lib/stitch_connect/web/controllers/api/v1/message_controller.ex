@@ -19,6 +19,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def search(conn, %{"term" => term}) do
+    messages = MessageQueries.
+  end
+
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     case GroupAuthorization.is_member?(group_id, conn.assigns.current_user.id) do
       true ->
