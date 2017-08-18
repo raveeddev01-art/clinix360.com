@@ -134,6 +134,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
         {:error, :already_exists} ->
           {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
+          group
           |> if_favorited_group(user)
           |> Map.put_new(:joined, true)
           render conn, "show.json", group: group
