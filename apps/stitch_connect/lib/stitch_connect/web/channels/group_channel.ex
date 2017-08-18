@@ -76,7 +76,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
     case result do
       {:ok, group} ->
-        for id <- [user.id, other_user_id] do
+        for id <- Enum.uniq([user.id, other_user_id]) do
           %GroupUser{}
           |> GroupUser.changeset(%{group_id: group.id, user_id: id})
           |> Repo.insert!
