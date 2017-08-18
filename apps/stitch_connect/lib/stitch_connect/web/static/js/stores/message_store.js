@@ -65,6 +65,11 @@ class MessageStore {
     return this.messages.filter(message => message.pinned);
   }
 
+  @computed
+  get starredMessages() {
+    return this.messages.filter(message => message.starred);
+  }
+
   @action
   joinChannel = channelName => {
     if (this.channel) {
