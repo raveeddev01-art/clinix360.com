@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+import { withRouter } from "react-router-dom";
 
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -10,7 +11,7 @@ import Team from "./team";
 
 @inject("sidemenuStore")
 @observer
-export default class Sidemenu extends Component {
+class Sidemenu extends Component {
   _adminOptions = () => {
     return (
       <div>
@@ -86,3 +87,5 @@ export default class Sidemenu extends Component {
     );
   }
 }
+
+export default withRouter(Sidemenu);

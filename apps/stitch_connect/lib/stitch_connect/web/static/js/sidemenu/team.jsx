@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
-import { Link } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import _ from "lodash";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -61,10 +61,11 @@ class Team extends Component {
         </div>
 
         {onlineUsers.map(user =>
-          <Link
+          <NavLink
             key={`online-user-${user.id}`}
             to={`/direct/${user.username}`}
             className="item"
+            activeClassName="active"
           >
             <div className="item-icon">
               <i className="fa fa-circle" />
@@ -72,14 +73,15 @@ class Team extends Component {
             <div className="item-text">
               {`${user.first_name} ${user.last_name}`}
             </div>
-          </Link>
+          </NavLink>
         )}
 
         {offlineUsers.map(user =>
-          <Link
+          <NavLink
             key={`offline-user-${user.id}`}
             to={`/direct/${user.username}`}
             className="item"
+            activeClassName="active"
           >
             <div className="item-icon">
               <i className="fa fa-circle-o" />
@@ -87,7 +89,7 @@ class Team extends Component {
             <div className="item-text">
               {`${user.first_name} ${user.last_name}`}
             </div>
-          </Link>
+          </NavLink>
         )}
 
         <Modal className="sidemenu-modal" show={this.state.showTeamModal}>
@@ -229,4 +231,4 @@ Team.propTypes = {
   heading: PropTypes.string.isRequired
 };
 
-export default Team;
+export default withRouter(Team);
