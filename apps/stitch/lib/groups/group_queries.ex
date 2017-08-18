@@ -70,7 +70,6 @@ defmodule Stitch.GroupQueries do
 
     Group
     |> where(team_id: ^user.team_id)
-    |> where([g], not g.name in ["__dm_group__", "__multi_dm_group__"])
     |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
     |> where([g, gu], g.public or not is_nil(gu.id))
     |> preload(:users)
