@@ -10,6 +10,7 @@ class PeopleList extends Component {
     const { sidemenuStore, presenceStore } = this.props;
     const onlineUsers = presenceStore.onlineUsers;
     const offlineUsers = _.differenceBy(sidemenuStore.users, onlineUsers, "id");
+    const multiDMGroups = sidemenuStore.multiDMGroups;
     return (
       <div>
         {onlineUsers.map(user =>
@@ -43,6 +44,27 @@ class PeopleList extends Component {
             </div>
           </NavLink>
         )}
+
+        {multiDMGroups.map(group => {
+          const users = _.differenceBy(group.users, [currentUser], "id");
+          const groupName = users.map(user => user.first_name).join(", ");
+          const slug = group.users.map(user => user.username).join(",");
+          return (
+            <NavLink
+              key={`multi-dm-${group.id}`}
+              to={`/direct/${slug}`}
+              className="item"
+              activeClassName="active"
+            >
+              <div className="item-icon">
+                <i className="fa fa-link" />
+              </div>
+              <div className="item-text">
+                {groupName}
+              </div>
+            </NavLink>
+          );
+        })}
       </div>
     );
   }

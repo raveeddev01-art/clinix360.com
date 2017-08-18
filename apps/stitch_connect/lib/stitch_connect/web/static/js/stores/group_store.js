@@ -70,6 +70,27 @@ class GroupStore {
     this.joinMessageChannel(`__dm:${userIds.join(".")}`);
   };
 
+  @action
+  joinMultiDM = users => {
+    let userIds = users.map(user => user.id);
+    if (userIds.indexOf(currentUser.id) === -1) {
+      userIds.push(currentUser.id);
+    }
+
+    userIds = userIds.sort((a, b) => a > b);
+
+    return post(`/api/v1/groups/multi-dm`, {
+      body: { user_ids: userIds }
+    }).then(resp => {
+      this.users = [...users];
+      this.joined = true;
+      this.public = false;
+      this.name = users.map(user => user.first_name).join(", ");
+      this.groupType = "multi-dm";
+      this.joinMessageChannel(`__dm:${userIds.join(".")}`);
+    });
+  };
+
   joinMessageChannel = slug => {
     if (slug === this.slug) {
       return;

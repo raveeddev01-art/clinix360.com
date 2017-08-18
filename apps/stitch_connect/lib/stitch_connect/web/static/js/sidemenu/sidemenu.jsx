@@ -79,7 +79,7 @@ class Sidemenu extends Component {
             rooms={sidemenuStore.favoriteGroups}
           />
 
-          <RoomsList heading={"Groups"} rooms={sidemenuStore.groups} />
+          <RoomsList heading="Groups" rooms={sidemenuStore.normalGroups} />
           <People heading="People" />
         </div>
       </div>
