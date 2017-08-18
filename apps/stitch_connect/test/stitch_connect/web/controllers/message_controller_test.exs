@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.MessageControllerTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.Router.Helpers
   import Stitch.Factory
   alias Stitch.{MessageQueries}
 
@@ -53,6 +52,85 @@ defmodule StitchConnect.Web.MessageControllerTest do
     assert json["pinned"] == false
     assert json["pinned_by"] == nil
     assert json["pinned_at"] == nil
+  end
+
+  describe "PUT /api/v1/messages/:id" do
+    test "user can edit his own text message", %{conn: conn} do
+      user = insert(:user)
+      message = insert(:message, user: user)
+      insert(:group_user, user: user, group: message.group)
+      team = message.group.team
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> put_as_user(user, "/api/v1/messages/#{message.id}", %{
+        message: %{
+          text_content: "new message text"
+        }
+      })
+
+      json = json_response(conn, 200)
+      assert json["text_content"] == "new message text"
+      message = MessageQueries.get_by_id(message.id)
+      assert message.text_content == "new message text"
+    end
+
+    test "user can't edit other users' messages", %{conn: conn} do
+      user = insert(:user)
+      user_eve = insert(:user)
+      message = insert(:message, user: user)
+      insert(:group_user, user: user, group: message.group)
+      insert(:group_user, user: user_eve, group: message.group)
+      team = message.group.team
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> put_as_user(user_eve, "/api/v1/messages/#{message.id}", %{
+        message: %{
+          text_content: "new message text"
+        }
+      })
+
+      json = json_response(conn, 401)
+      assert json["message"] == "You can't edit other users' messages"
+      message = MessageQueries.get_by_id(message.id)
+      assert message.text_content == "lorem ipsum"
+    end
+  end
+
+  describe "DELETE /api/v1/messages/:id" do
+    test "user can delete his own messages", %{conn: conn} do
+      user = insert(:user)
+      message = insert(:message, user: user)
+      insert(:group_user, user: user, group: message.group)
+      team = message.group.team
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> delete_as_user(user, "/api/v1/messages/#{message.id}")
+
+      assert response(conn, 204)
+      message = MessageQueries.get_by_id(message.id)
+      assert message != nil
+      assert message.deleted == true
+    end
+
+    test "user can't delete other users' messages", %{conn: conn} do
+      user = insert(:user)
+      user_eve = insert(:user)
+      message = insert(:message, user: user)
+      insert(:group_user, user: user, group: message.group)
+      insert(:group_user, user: user_eve, group: message.group)
+      team = message.group.team
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> delete_as_user(user_eve, "/api/v1/messages/#{message.id}")
+
+      json = json_response(conn, 401)
+      assert json["message"] == "You can't delete other users' messages"
+      assert MessageQueries.get_by_id(message.id) != nil
+    end
   end
 
   describe "POST /api/v1/groups/:group_id/messages" do

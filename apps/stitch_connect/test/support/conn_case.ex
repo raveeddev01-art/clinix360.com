@@ -29,8 +29,15 @@ defmodule StitchConnect.Web.ConnCase do
       end
 
       def post_as_user(conn, user, url, params \\ %{}) do
-        conn
-        |> post("#{url}?authenticationToken=#{user.token}", params)
+        post(conn, "#{url}?authenticationToken=#{user.token}", params)
+      end
+
+      def put_as_user(conn, user, url, params \\ %{}) do
+        put(conn, "#{url}?authenticationToken=#{user.token}", params)
+      end
+
+      def delete_as_user(conn, user, url, params \\ %{}) do
+        delete(conn, "#{url}?authenticationToken=#{user.token}", params)
       end
     end
   end

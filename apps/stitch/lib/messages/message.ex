@@ -62,6 +62,18 @@ defmodule Stitch.Message do
     {:error, changeset}
   end
 
+  def update(message, attributes) do
+    message
+    |> changeset(%{text_content: attributes["text_content"]})
+    |> Repo.update
+  end
+
+  def delete(message) do
+    message
+    |> changeset(%{deleted: true})
+    |> Repo.update
+  end
+
   def pin(message, user) do
     message
     |> changeset(%{pinned: true, pinned_by_id: user.id, pinned_at: DateTime.utc_now})
