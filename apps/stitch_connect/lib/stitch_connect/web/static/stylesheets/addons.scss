@@ -177,14 +177,14 @@
   }
 }
 
-.pinned-messages {
-  .pinned-message {
+.addon-messages {
+  .addon-message {
     padding: 12px;
     margin-bottom: 12px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 2px;
 
-    .pinned-message-header {
+    .addon-message-header {
       color: #036;
       font-size: 15px;
       line-height: 1.5;
@@ -196,7 +196,7 @@
       }
     }
 
-    .pinned-message-content {
+    .addon-message-content {
     }
   }
 }

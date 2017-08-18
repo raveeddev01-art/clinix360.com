@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import AddonCollapse from "./addon-collapse/addon-collapse";
 import PeopleList from "../people-list/people-list";
 import PinnedMessages from "./pinned-messages/pinned-messages";
+import StarredMessages from "./starred-messages/starred-messages";
 
 @inject("groupStore")
 @observer
@@ -22,7 +23,7 @@ class Info extends Component {
           <PinnedMessages />
         </AddonCollapse>
         <AddonCollapse icon="star" title="Starred">
-          <p className="text-muted">Star the first message!</p>
+          <StarredMessages />
         </AddonCollapse>
         {/* <AddonCollapse icon="list" title="Tasks">
           <p>placeholder</p>

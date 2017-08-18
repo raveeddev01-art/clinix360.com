@@ -31,7 +31,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> render("error.json", %{reason: changeset})
+            |> json(%{message: changeset_errors_to_string(changeset)})
         end
 
       false ->
@@ -54,7 +54,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> render("error.json", %{reason: changeset})
+            |> json(%{message: changeset_errors_to_string(changeset)})
         end
       false ->
         conn
@@ -75,7 +75,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> render("error.json", %{reason: changeset})
+            |> json(%{message: changeset_errors_to_string(changeset)})
         end
       false ->
         conn

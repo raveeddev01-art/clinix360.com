@@ -66,30 +66,15 @@ defmodule Stitch.GroupQueries do
   also teams he's been invited to participate in.
   """
   def available_groups(user_id) do
-    user = Repo.get(User, user_id)
-    team = Repo.get(Team, user.team_id)
+    user = Repo.get!(User, user_id)
 
-    public_groups =
-      from g in Group,
-      where: g.team_id == ^team.id,
-      where: g.public == ^true,
-      preload: [:users],
-      select: g
-
-    participating_groups =
-      from g in Group,
-      join: gu in GroupUser,
-      where: gu.group_id == g.id,
-      where: gu.user_id == ^user.id,
-      preload: [:users],
-      select: g
-
-    public_groups = Repo.all(public_groups)
-    participating_groups = Repo.all(participating_groups)
-    result_groups = public_groups ++ participating_groups
-
-    result_groups
-    |> Enum.uniq
+    Group
+    |> where(team_id: ^user.team_id)
+    |> where([g], not g.name in ["__dm_group__", "__multi_dm_group__"])
+    |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
+    |> where([g, gu], g.public or not is_nil(gu.id))
+    |> preload(:users)
+    |> Repo.all
   end
 
   @doc """
