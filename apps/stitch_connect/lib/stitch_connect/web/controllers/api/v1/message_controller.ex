@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   alias Stitch.Message
   alias Stitch.GroupAuthorization
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create, :toggle_star, :toggle_pin]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create, :update, :delete, :toggle_star, :toggle_pin]
 
   def index(conn, %{"group_id" => group_id}) do
     case GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
@@ -38,6 +38,47 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "You can't see the messages for this group."})
+    end
+  end
+
+  def update(conn, %{"id" => message_id, "message" => message_params}) do
+    message = MessageQueries.get_by_id(message_id)
+
+    case conn.assigns.current_user.id == message.user_id do
+      true ->
+        case Message.update(message, message_params) do
+          {:ok, message} ->
+            message = MessageQueries.load_info(message)
+            render conn, "show.json", message: message
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> json(%{message: changeset_errors_to_string(changeset)})
+        end
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You can't edit other users' messages"})
+    end
+  end
+
+  def delete(conn, %{"id" => message_id}) do
+    message = MessageQueries.get_by_id(message_id)
+
+    case conn.assigns.current_user.id == message.user_id do
+      true ->
+        case Message.delete(message) do
+          {:ok, _message} ->
+            send_resp(conn, :no_content, "")
+        end
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> json(%{message: changeset_errors_to_string(changeset)})
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You can't delete other users' messages"})
     end
   end
 

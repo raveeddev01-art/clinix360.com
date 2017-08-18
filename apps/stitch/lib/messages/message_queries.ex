@@ -14,7 +14,8 @@ defmodule Stitch.MessageQueries do
 
     query =
       from m in Message,
-      where: m.group_id == ^group_id,
+      where: m.group_id == ^group_id
+         and m.deleted == ^false,
       order_by: [desc: :inserted_at],
       limit: ^limit,
       select: m,
