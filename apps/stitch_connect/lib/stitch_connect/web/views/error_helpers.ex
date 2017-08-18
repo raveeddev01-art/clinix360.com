@@ -38,9 +38,12 @@ defmodule StitchConnect.Web.ErrorHelpers do
     end
   end
 
-  def error_string_from_changeset(changeset) do
-    Enum.map(changeset.errors, fn {k, v} ->
-      "#{Phoenix.Naming.humanize(k)} #{translate_error(v)}"
-    end) |> Enum.join(". ")
+  def changeset_errors_to_json(changeset) do
+    errors = Enum.reduce(changeset.errors, %{}, fn ({field, detail}, acc) ->
+      field_errors = Map.get(acc, field, [])
+      field_errors = [translate_error(detail) | field_errors]
+      Map.put(acc, field, field_errors)
+    end)
+    %{errors: errors}
   end
 end

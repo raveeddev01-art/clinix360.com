@@ -34,4 +34,8 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   def pinned_by_info(%{pinned_by: pinned_by}) do
     %{ id: pinned_by.id, first_name: pinned_by.first_name, last_name: pinned_by.last_name }
   end
+
+  def render("error.json", %{reason: reason}) do
+    changeset_errors_to_json(reason)
+  end
 end

@@ -117,7 +117,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
       })
 
       json = json_response(conn, 422)
-      assert json["error"] == "Text content can't be blank"
+      assert json["errors"]["text_content"] == ["can't be blank"]
     end
 
     test "when message type isn't suported", %{conn: conn} do
@@ -135,7 +135,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
       })
 
       json = json_response(conn, 422)
-      json["message"] == "Unsupported message format"
+      assert json["errors"]["type"] == ["unsupported message format"]
     end
   end
 end

@@ -39,7 +39,6 @@ defmodule StitchConnect.Web do
       import StitchConnect.Web.Router.Helpers
       import StitchConnect.Web.ErrorHelpers
       import StitchConnect.Web.Gettext
-      use StitchConnect.Web.Api.V1.ErrorView
     end
   end
 

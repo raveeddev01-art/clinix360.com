@@ -58,7 +58,7 @@ defmodule Stitch.Message do
   end
 
   def create(group_id, user_id, attributes) do
-    changeset = %Message{} |> change() |> add_error(:type, "Unsupported message format")
+    changeset = %Message{} |> change() |> add_error(:type, "unsupported message format")
     {:error, changeset}
   end
 
