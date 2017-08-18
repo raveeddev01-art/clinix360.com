@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import PinnedMessage from "./pinned-message";
+import AddonMessage from "../addon-message/addon-message";
 
 @inject("messageStore")
 @observer
@@ -10,9 +10,9 @@ class PinnedMessages extends Component {
     const { messageStore } = this.props;
 
     return (
-      <div className="pinned-messages">
+      <div className="addon-messages">
         {messageStore.pinnedMessages.map(message =>
-          <PinnedMessage key={message.id} message={message} />
+          <AddonMessage key={message.id} message={message} />
         )}
       </div>
     );

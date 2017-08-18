@@ -1,11 +1,12 @@
 import "babel-polyfill";
 
-require("./util/delay.js");
-require("./util/fetch.js");
-require("./util/notify.js");
-require("./util/polyfills.js");
-require("./util/string.js");
-require("./socket.js");
-window._ = require("lodash");
+import "./socket";
+import "./util/delay";
+import "./util/fetch";
+import "./util/moment";
+import "./util/mounter";
+import "./util/notify";
+import "./util/polyfills";
+import "./util/string";
 
-import Mounter from "./util/mounter";
+window._ = require("lodash");
