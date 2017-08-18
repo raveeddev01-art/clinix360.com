@@ -3,6 +3,7 @@ import "babel-polyfill";
 import "./socket";
 import "./util/delay";
 import "./util/fetch";
+import "./util/moment";
 import "./util/mounter";
 import "./util/notify";
 import "./util/polyfills";

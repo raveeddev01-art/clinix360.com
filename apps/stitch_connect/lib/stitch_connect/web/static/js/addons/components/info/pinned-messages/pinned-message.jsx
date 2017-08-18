@@ -8,10 +8,7 @@ const PinnedMessage = ({ message }) => {
     inserted_at: insertedAt
   } = message;
   const userName = `${pinnedBy.first_name} ${pinnedBy.last_name}`;
-  const timestamp = moment(insertedAt).calendar(null, {
-    lastWeek: "MMM Do",
-    sameElse: "MMM Do"
-  });
+  const timestamp = moment(insertedAt);
 
   return (
     <div className="pinned-message">
