@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -8,7 +7,6 @@ import Room from "./room";
 import GroupsModal from "./modals/groups_modal";
 import CreateGroupModal from "./modals/create_group_modal";
 
-@observer
 export default class RoomsList extends Component {
   constructor(props) {
     super(props);
@@ -59,7 +57,6 @@ export default class RoomsList extends Component {
           showModal={this.state.showCreateGroupModal}
           toggleModal={this.toggleCreateGroupModal}
         />
-
       </div>
     );
   }

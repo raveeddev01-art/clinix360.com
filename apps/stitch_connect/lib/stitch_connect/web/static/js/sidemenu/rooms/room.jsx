@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default class Room extends Component {
-
   render() {
     return (
-      <Link to={`/groups/${this.props.room.slug}`} className="item">
+      <NavLink
+        to={`/groups/${this.props.room.slug}`}
+        className="item"
+        activeClassName="active"
+      >
         <div className="item-icon">
           <i className="fa fa-comments" />
         </div>
@@ -13,7 +16,7 @@ export default class Room extends Component {
           {this.props.room.name}
         </div>
         {/*<div className="item-badge text-center">3</div>*/}
-      </Link>
+      </NavLink>
     );
   }
 }

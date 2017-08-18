@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+import { withRouter } from "react-router-dom";
 
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
-import Team from "./team";
+import People from "./people/people";
 
 @inject("sidemenuStore")
 @observer
-export default class Sidemenu extends Component {
+class Sidemenu extends Component {
   _adminOptions = () => {
     return (
       <div>
@@ -78,11 +79,12 @@ export default class Sidemenu extends Component {
             rooms={sidemenuStore.favoriteGroups}
           />
 
-          <RoomsList heading={"Groups"} rooms={sidemenuStore.groups} />
-
-          <Team heading={"People"} />
+          <RoomsList heading="Groups" rooms={sidemenuStore.normalGroups} />
+          <People heading="People" />
         </div>
       </div>
     );
   }
 }
+
+export default withRouter(Sidemenu);
