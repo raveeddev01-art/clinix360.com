@@ -159,6 +159,8 @@
   }
 
   .flex-footer {
+    padding: 0 20px;
+
     .room-preview {
       text-align: center;
       font-size: 18px;
@@ -175,7 +177,8 @@
 
     .message-form {
       position: relative;
-      padding: 10px 20px 30px;
+      padding-top: 10px;
+      padding-bottom: 30px;
       width: 100%;
 
       .message-text {
@@ -188,10 +191,18 @@
         }
       }
 
-      .edit-info {
+      .editing-commands {
         position: absolute;
-        bottom: 10px;
+        left: 0;
+        right: 0;
+        bottom: 5px;
+        display: flex;
+        justify-content: space-between;
         font-size: 85%;
+
+        .btn-small {
+          padding: 0 8px;
+        }
       }
     }
   }
