@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   alias Stitch.{Group, GroupUser, GroupQueries}
   alias StitchConnect.Web.EventsChannel
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:rename, :join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite, :show]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:rename, :join, :leave, :users, :toggle_public, :toggle_favorite, :index, :search, :invite, :show, :create_multi_dm]
 
   defp if_favorited_group(group, user) do
     case user.favorite_groups do
