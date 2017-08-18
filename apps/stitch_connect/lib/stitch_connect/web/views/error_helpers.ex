@@ -37,13 +37,4 @@ defmodule StitchConnect.Web.ErrorHelpers do
       Gettext.dgettext(StitchConnect.Web.Gettext, "errors", msg, opts)
     end
   end
-
-  def changeset_errors_to_json(changeset) do
-    errors = Enum.reduce(changeset.errors, %{}, fn ({field, detail}, acc) ->
-      field_errors = Map.get(acc, field, [])
-      field_errors = [translate_error(detail) | field_errors]
-      Map.put(acc, field, field_errors)
-    end)
-    %{errors: errors}
-  end
 end
