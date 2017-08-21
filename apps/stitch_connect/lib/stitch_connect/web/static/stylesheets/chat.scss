@@ -121,7 +121,7 @@
                 &.icon-edited {
                   margin-left: 5px;
                   margin-right: 0;
-                  color: #eee;
+                  color: #333;
                   cursor: default;
                 }
 
@@ -150,6 +150,16 @@
 
               .time {
                 color: #ccc;
+              }
+            }
+
+            .message-pool-content {
+              .message {
+                .message-icon {
+                  &.icon-edited {
+                    color: #eee;
+                  }
+                }
               }
             }
           }
