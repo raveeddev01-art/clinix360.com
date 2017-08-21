@@ -115,8 +115,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
 
       assert response(conn, 204)
       message = MessageQueries.get_by_id(message.id)
-      assert message != nil
-      assert message.deleted == true
+      assert message == nil
     end
 
     test "user can't delete other users' messages", %{conn: conn} do

@@ -71,8 +71,7 @@ defmodule Stitch.Message do
 
   def delete(message) do
     message
-    |> changeset(%{deleted: true})
-    |> Repo.update
+    |> Repo.delete
   end
 
   def pin(message, user) do
