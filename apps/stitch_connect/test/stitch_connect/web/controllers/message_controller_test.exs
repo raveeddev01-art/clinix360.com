@@ -71,8 +71,8 @@ defmodule StitchConnect.Web.MessageControllerTest do
 
       json = json_response(conn, 200)
       assert json["text_content"] == "new message text"
-      assert json["updated"] == true
-      assert json["updated_at"] != nil
+      assert json["edited"] == true
+      assert json["edited_at"] != nil
       message = MessageQueries.get_by_id(message.id)
       assert message.text_content == "new message text"
       assert message.edited_at != nil
@@ -232,7 +232,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
     json = json_response(conn, 200)
     message = json |> List.first
     assert message["starred"] == false
-    assert message["updated"] == false
+    assert message["edited"] == false
     assert message["pinned"] == false
   end
 end

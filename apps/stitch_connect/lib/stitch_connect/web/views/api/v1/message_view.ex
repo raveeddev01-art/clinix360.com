@@ -23,8 +23,8 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       pinned: message.pinned,
       pinned_by: pinned_by_info(message),
       pinned_at: message.pinned_at,
-      updated: !!message.edited_at,
-      updated_at: message.edited_at,
+      edited: !!message.edited_at,
+      edited_at: message.edited_at,
     }
   end
 
