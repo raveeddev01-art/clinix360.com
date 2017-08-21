@@ -7,7 +7,9 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
+
 import UserMention from "./user-mention";
+import { confirm } from "../../common/modals";
 
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
@@ -16,6 +18,19 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     messageStore.startEdit(message.id);
+  };
+
+  delete = () => {
+    confirm({
+      title: "Delete Message",
+      message:
+        "Are you sure you want to delete this message? This cannot be undone.",
+      okLabel: "Delete"
+    }).then(result => {
+      const { message, messageStore } = this.props;
+
+      messageStore.delete(message.id);
+    });
   };
 
   copy = () => {
@@ -35,15 +50,15 @@ class Message extends Component {
   };
 
   renderEdited(message) {
-    const { updated, updated_at: updatedAt } = message;
+    const { edited, edited_at: editedAt } = message;
 
-    if (!updated) {
+    if (!edited) {
       return null;
     }
 
     const editedTooltip = (
       <Tooltip id="edited-tooltip">
-        {moment(updatedAt).calendar()}
+        {moment(editedAt).calendar()}
       </Tooltip>
     );
 
@@ -130,6 +145,13 @@ class Message extends Component {
             <MenuItem onClick={this.edit}>
               <span>
                 <i className="fa fa-pencil" />&nbsp;Edit
+              </span>
+            </MenuItem>}
+
+          {mine &&
+            <MenuItem onClick={this.delete}>
+              <span>
+                <i className="fa fa-trash" />&nbsp;Delete
               </span>
             </MenuItem>}
 

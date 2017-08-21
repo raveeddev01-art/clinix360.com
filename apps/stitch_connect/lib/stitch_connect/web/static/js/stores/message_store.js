@@ -176,13 +176,23 @@ class MessageStore {
       return;
     }
 
-    // TODO: trigger remote api
-    this.messageInEdit.text_content = this.textInEdit;
-    this.messageInEdit.updated = true;
-    this.messageInEdit.updated_at = new Date();
+    window
+      .put(`/api/v1/messages/${this.messageInEdit.id}`, {
+        body: {
+          message: {
+            text_content: this.textInEdit
+          }
+        }
+      })
+      .then(resp => {
+        const { data } = resp;
 
-    // TODO: Run cancelling in api promise callback
-    this.cancelEdit();
+        this.messageInEdit.edited = data.edited;
+        this.messageInEdit.edited_at = data.edited_at;
+        this.messageInEdit.text_content = data.text_content;
+
+        this.cancelEdit();
+      });
   }
 
   @action
@@ -192,11 +202,22 @@ class MessageStore {
   }
 
   @action
+  delete(id) {
+    const messageIndex = this.messages.findIndex(m => m.id === id);
+
+    if (messageIndex > -1) {
+      window.remove(`/api/v1/messages/${id}`).then(() => {
+        this.messages.splice(messageIndex, 1);
+      });
+    }
+  }
+
+  @action
   toggleStar(id) {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
+      window.post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
         const update = resp.data;
 
         message.starred = update.starred;
@@ -209,7 +230,7 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
+      window.post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
         const update = resp.data;
 
         message.pinned = update.pinned;
