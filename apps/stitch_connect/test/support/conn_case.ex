@@ -28,6 +28,10 @@ defmodule StitchConnect.Web.ConnCase do
         %{ conn | host: "#{subdomain}.localhost" }
       end
 
+      def get_as_user(conn, user, url, params \\ %{}) do
+        get(conn, "#{url}?authenticationToken=#{user.token}", params)
+      end
+
       def post_as_user(conn, user, url, params \\ %{}) do
         post(conn, "#{url}?authenticationToken=#{user.token}", params)
       end
