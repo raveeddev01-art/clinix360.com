@@ -176,13 +176,22 @@ class MessageStore {
       return;
     }
 
-    // TODO: trigger remote api
-    this.messageInEdit.text_content = this.textInEdit;
-    this.messageInEdit.updated = true;
-    this.messageInEdit.updated_at = new Date();
+    put(`/api/v1/messages/${this.messageInEdit.id}`, {
+      body: {
+        message: {
+          text_content: this.textInEdit
+        }
+      }
+    }).then(resp => {
+      const { data } = resp;
 
-    // TODO: Run cancelling in api promise callback
-    this.cancelEdit();
+      // TODO: Update `updated` and `updated_at` from response
+      this.messageInEdit.updated = true; // data.text_content
+      this.messageInEdit.updated_at = new Date(); // data.updated_at
+      this.messageInEdit.text_content = data.text_content;
+
+      this.cancelEdit();
+    });
   }
 
   @action
