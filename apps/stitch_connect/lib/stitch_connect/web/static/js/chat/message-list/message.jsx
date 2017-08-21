@@ -7,7 +7,9 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
+
 import UserMention from "./user-mention";
+import { confirm } from "../../common/modals";
 
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
@@ -19,8 +21,16 @@ class Message extends Component {
   };
 
   delete = () => {
-    const { message, messageStore } = this.props;
-    messageStore.delete(message.id);
+    confirm({
+      title: "Delete Message",
+      message:
+        "Are you sure you want to delete this message? This cannot be undone.",
+      okLabel: "Delete"
+    }).then(result => {
+      const { message, messageStore } = this.props;
+
+      messageStore.delete(message.id);
+    });
   };
 
   copy = () => {
