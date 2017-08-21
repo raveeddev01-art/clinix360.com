@@ -4,7 +4,7 @@ defmodule Stitch.Message do
   import Ecto.Query
   alias Stitch.{Repo, Message}
 
-  @valid_types ["user_message", "system", "upload"]
+  @valid_types ["chat", "system", "upload"]
 
   schema "messages" do
     belongs_to :user, Stitch.Accounts.User
@@ -42,9 +42,9 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, @valid_types)
   end
 
-  def create(group_id, user_id, %{"type" => "user_message", "text_content" => text_content}) do
+  def create(group_id, user_id, %{"type" => "chat", "text_content" => text_content}) do
     %Message{group_id: String.to_integer(group_id), user_id: user_id}
-    |> changeset(%{text_content: text_content, type: "user_message"})
+    |> changeset(%{text_content: text_content, type: "chat"})
     |> Repo.insert
   end
 
@@ -55,7 +55,7 @@ defmodule Stitch.Message do
   end
 
   def create(group_id, user_id, %{"text_content" => text_content}) do
-    create(group_id, user_id, %{"type" => "user_message", "text_content" => text_content})
+    create(group_id, user_id, %{"type" => "chat", "text_content" => text_content})
   end
 
   def create(group_id, user_id, attributes) do
