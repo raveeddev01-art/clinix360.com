@@ -101,7 +101,7 @@ class MessageStore {
 
   @action
   loadPastMessages = () => {
-    if (!this.canLoad || this.loadedAll) {
+    if (!this.canLoad || this.loadedAll || !this.messages.length) {
       return;
     }
 
