@@ -176,22 +176,24 @@ class MessageStore {
       return;
     }
 
-    put(`/api/v1/messages/${this.messageInEdit.id}`, {
-      body: {
-        message: {
-          text_content: this.textInEdit
+    window
+      .put(`/api/v1/messages/${this.messageInEdit.id}`, {
+        body: {
+          message: {
+            text_content: this.textInEdit
+          }
         }
-      }
-    }).then(resp => {
-      const { data } = resp;
+      })
+      .then(resp => {
+        const { data } = resp;
 
-      // TODO: Update `updated` and `updated_at` from response
-      this.messageInEdit.updated = true; // data.text_content
-      this.messageInEdit.updated_at = new Date(); // data.updated_at
-      this.messageInEdit.text_content = data.text_content;
+        // TODO: Update `updated` and `updated_at` from response
+        this.messageInEdit.updated = true; // data.text_content
+        this.messageInEdit.updated_at = new Date(); // data.updated_at
+        this.messageInEdit.text_content = data.text_content;
 
-      this.cancelEdit();
-    });
+        this.cancelEdit();
+      });
   }
 
   @action
@@ -201,11 +203,22 @@ class MessageStore {
   }
 
   @action
+  delete(id) {
+    const messageIndex = this.messages.findIndex(m => m.id === id);
+
+    if (messageIndex > -1) {
+      window.remove(`/api/v1/messages/${id}`).then(() => {
+        this.messages.splice(messageIndex, 1);
+      });
+    }
+  }
+
+  @action
   toggleStar(id) {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
+      window.post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
         const update = resp.data;
 
         message.starred = update.starred;
@@ -218,7 +231,7 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
+      window.post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
         const update = resp.data;
 
         message.pinned = update.pinned;

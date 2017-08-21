@@ -18,6 +18,11 @@ class Message extends Component {
     messageStore.startEdit(message.id);
   };
 
+  delete = () => {
+    const { message, messageStore } = this.props;
+    messageStore.delete(message.id);
+  };
+
   copy = () => {
     // Callback to run when message is copied
   };
@@ -130,6 +135,13 @@ class Message extends Component {
             <MenuItem onClick={this.edit}>
               <span>
                 <i className="fa fa-pencil" />&nbsp;Edit
+              </span>
+            </MenuItem>}
+
+          {mine &&
+            <MenuItem onClick={this.delete}>
+              <span>
+                <i className="fa fa-trash" />&nbsp;Delete
               </span>
             </MenuItem>}
 
