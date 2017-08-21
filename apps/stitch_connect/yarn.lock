@@ -3786,6 +3786,10 @@ react-bootstrap@^0.31.0:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
+react-confirm@^0.1.14:
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/react-confirm/-/react-confirm-0.1.14.tgz#c4202c1bddd43bd422979f3b804d64f8f0c51ea6"
+
 react-copy-to-clipboard@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/react-copy-to-clipboard/-/react-copy-to-clipboard-5.0.0.tgz#23ccdd7c4d9ec2cc763839e2a55b1220aeb4f33d"
