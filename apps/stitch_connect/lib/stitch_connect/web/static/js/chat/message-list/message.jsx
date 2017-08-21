@@ -50,15 +50,15 @@ class Message extends Component {
   };
 
   renderEdited(message) {
-    const { updated, updated_at: updatedAt } = message;
+    const { edited, edited_at: editedAt } = message;
 
-    if (!updated) {
+    if (!edited) {
       return null;
     }
 
     const editedTooltip = (
       <Tooltip id="edited-tooltip">
-        {moment(updatedAt).calendar()}
+        {moment(editedAt).calendar()}
       </Tooltip>
     );
 

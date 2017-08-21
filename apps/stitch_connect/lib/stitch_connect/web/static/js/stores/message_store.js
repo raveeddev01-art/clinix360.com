@@ -187,9 +187,8 @@ class MessageStore {
       .then(resp => {
         const { data } = resp;
 
-        // TODO: Update `updated` and `updated_at` from response
-        this.messageInEdit.updated = true; // data.text_content
-        this.messageInEdit.updated_at = new Date(); // data.updated_at
+        this.messageInEdit.edited = data.edited;
+        this.messageInEdit.edited_at = data.edited_at;
         this.messageInEdit.text_content = data.text_content;
 
         this.cancelEdit();
