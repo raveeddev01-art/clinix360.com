@@ -42,13 +42,13 @@ defmodule Stitch.Message do
   end
 
   def create(group_id, user_id, %{"type" => "user_message", "text_content" => text_content}) do
-    %Message{group_id: String.to_integer(group_id), user_id: user_id}
+    %Message{group_id: group_id, user_id: user_id}
     |> user_message_changeset(%{text_content: text_content, type: "user_message"})
     |> Repo.insert
   end
 
   def create(group_id, user_id, %{"type" => "upload", "fields" => fields}) do
-    %Message{group_id: String.to_integer(group_id), user_id: user_id}
+    %Message{group_id: group_id, user_id: user_id}
     |> upload_changeset(%{fields: fields, type: "upload"})
     |> Repo.insert
   end

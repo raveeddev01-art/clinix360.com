@@ -20,6 +20,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
+    group_id = String.to_integer(group_id)
     case GroupAuthorization.is_member?(group_id, conn.assigns.current_user.id) do
       true ->
         case Message.create(group_id, conn.assigns.current_user.id, message_params) do
