@@ -46,7 +46,7 @@ defmodule Stitch.Message.Mention do
           case String.split(word, word_splitter) do
             [word] -> acc
             list ->
-              Enum.reduce(list, %{}, fn (word, acc) ->
+              Enum.reduce(list, acc, fn (word, acc) ->
                 case Map.fetch(mention_keywords, word) do
                   {:ok, user_ids} -> check_user_ids(user_ids, acc)
                   :error -> acc

@@ -55,11 +55,28 @@ defmodule Stitch.Message do
     users = Repo.preload(group, :users).users
 
     mention_user_keywords = Stitch.Message.Mention.user_mention_keywords(users)
-    mention_user_ids = Stitch.Message.Mention.message_mentions(text_content, mention_user_keywords)
+    mentioned_user_ids = Stitch.Message.Mention.message_mentions(text_content, mention_user_keywords)
 
-    message = %Message{group_id: String.to_integer(group_id), user_id: user_id}
-    |> changeset(%{text_content: text_content, type: "chat", mention_user_ids: mention_user_ids})
-    |> Repo.insert
+    Repo.transaction fn ->
+      message_insert = %Message{group_id: String.to_integer(group_id), user_id: user_id}
+      |> changeset(%{text_content: text_content, type: "chat", mentioned_user_ids: mentioned_user_ids})
+      |> Repo.insert
+
+      case message_insert do
+        {:ok, message} ->
+          mentioned_user_id = %{message.id => "true"}
+
+          Stitch.GroupUser
+          |> where([gu], gu.group_id == ^group.id)
+          |> where([gu], gu.user_id in ^mentioned_user_ids)
+          |> update([gu], set: [mentioning_message_ids: fragment("? || ?", gu.mentioning_message_ids, ^mentioned_user_id)])
+          |> Repo.update_all([], returning: true)
+
+          message
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
+    end
   end
 
   def create(group_id, user_id, %{"text_content" => text_content}) do
@@ -76,16 +93,47 @@ defmodule Stitch.Message do
     users = Repo.preload(group, :users).users
 
     mention_user_keywords = Stitch.Message.Mention.user_mention_keywords(users)
-    mention_user_ids = Stitch.Message.Mention.message_mentions(attributes["text_content"], mention_user_keywords)
+    mentioned_user_ids = Stitch.Message.Mention.message_mentions(attributes["text_content"], mention_user_keywords)
 
-    message
-    |> user_edit_changeset(%{text_content: attributes["text_content"], mention_user_ids: mention_user_ids})
-    |> Repo.update
+    Repo.transaction fn ->
+      Stitch.GroupUser
+      |> where([gu], gu.group_id == ^group.id)
+      |> where([gu], gu.user_id in ^message.mentioned_user_ids)
+      |> update([gu], set: [mentioning_message_ids: fragment("? - ?", gu.mentioning_message_ids, ^Integer.to_string(message.id))])
+      |> Repo.update_all([], returning: true)
+
+      {:ok, message} = message
+      |> user_edit_changeset(%{text_content: attributes["text_content"], mentioned_user_ids: mentioned_user_ids})
+      |> Repo.update
+
+      mentioned_user_id = %{message.id => "true"}
+
+      Stitch.GroupUser
+      |> where([gu], gu.group_id == ^group.id)
+      |> where([gu], gu.user_id in ^mentioned_user_ids)
+      |> update([gu], set: [mentioning_message_ids: fragment("? || ?", gu.mentioning_message_ids, ^mentioned_user_id)])
+      |> Repo.update_all([], returning: true)
+
+      message
+    end
   end
 
   def delete(message) do
-    message
-    |> Repo.delete
+    {:ok, group} = Stitch.GroupQueries.get_by_id(message.group_id)
+    users = Repo.preload(group, :users).users
+
+    mention_user_keywords = Stitch.Message.Mention.user_mention_keywords(users)
+    mentioned_user_ids = Stitch.Message.Mention.message_mentions(message.text_content, mention_user_keywords)
+
+    Repo.transaction fn ->
+      Stitch.GroupUser
+      |> where([gu], gu.group_id == ^group.id)
+      |> where([gu], gu.user_id in ^message.mentioned_user_ids)
+      |> update([gu], set: [mentioning_message_ids: fragment("? - ?", gu.mentioning_message_ids, ^Integer.to_string(message.id))])
+      |> Repo.update_all([], returning: true)
+
+      message |> Repo.delete
+    end
   end
 
   def pin(message, user) do
