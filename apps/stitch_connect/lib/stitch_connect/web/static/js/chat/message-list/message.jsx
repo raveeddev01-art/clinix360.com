@@ -154,13 +154,13 @@ class Message extends Component {
               </span>
             </MenuItem>}
 
-          <MenuItem>
-            <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+          <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+            <MenuItem>
               <span>
                 <i className="fa fa-paste" />&nbsp;Copy
               </span>
-            </CopyToClipboard>
-          </MenuItem>
+            </MenuItem>
+          </CopyToClipboard>
           <MenuItem onClick={this.toggleStar}>
             <span>
               <i className="fa fa-star-o" />&nbsp;{message.starred ? "Unstar" : "Star"}
