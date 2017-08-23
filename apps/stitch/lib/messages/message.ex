@@ -93,7 +93,8 @@ defmodule Stitch.Message do
 
     Message
     |> where([m], m.id in ^message_ids)
-    |> update([m], set: [read_status: fragment("? || ?", ^value, m.read_status)])
-    |> Repo.update_all([])
+    |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user.id)))
+    |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^value)])
+    |> Repo.update_all([], returning: true)
   end
 end
