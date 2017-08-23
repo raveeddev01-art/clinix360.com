@@ -86,4 +86,14 @@ defmodule Stitch.Message do
     |> changeset(%{pinned: false, pinned_by_id: nil, pinned_at: nil})
     |> Repo.update
   end
+
+  def mark_as_read(user, message_ids) do
+    message_ids = List.wrap(message_ids)
+    value = %{user.id => %{read_at: DateTime.utc_now}}
+
+    Message
+    |> where([m], m.id in ^message_ids)
+    |> update([m], set: [read_status: fragment("? || ?", ^value, m.read_status)])
+    |> Repo.update_all([])
+  end
 end
