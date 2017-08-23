@@ -7,9 +7,8 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
-
-import UserMention from "./user-mention";
 import { confirm } from "../../common/modals";
+import getMessageText from "../../common/get-message-text/get-message-text";
 
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
@@ -177,40 +176,13 @@ class Message extends Component {
     );
   }
 
-  renderMessage() {
-    const { message, sidemenuStore } = this.props;
-    const words = message.text_content.split(" ");
-    const usernameMap = sidemenuStore.usernameMap;
-
-    return words.reduce((prev, word, i) => {
-      if (word.indexOf("@") === 0) {
-        const username = word.substr(1);
-        if (usernameMap[username]) {
-          return prev.concat(
-            <UserMention
-              key={`usermention_${i}`}
-              user={usernameMap[username]}
-            />
-          );
-        }
-      }
-
-      if (typeof prev[prev.length - 1] === "string") {
-        prev[prev.length - 1] += ` ${word}`;
-        return prev;
-      }
-
-      return prev.concat(word);
-    }, []);
-  }
-
   render() {
-    const { message } = this.props;
+    const { message, sidemenuStore } = this.props;
 
     return (
       <div className="message">
         <div>
-          {this.renderMessage(message)}
+          {getMessageText(message.text_content, sidemenuStore.usernameMap)}
           {this.renderEdited(message)}
         </div>
 
