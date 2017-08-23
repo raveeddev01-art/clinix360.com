@@ -4,6 +4,7 @@ import cx from "classnames";
 
 import Info from "./components/info/info";
 import Directory from "./components/directory/directory";
+import MessageSearch from "./components/message-search/message-search";
 
 import PeopleDetail from "./components/people-detail/people-detail";
 
@@ -55,6 +56,7 @@ class Addons extends Component {
           <div className={leftPanelClass}>
             {addonStore.addonPanelType === "info" && <Info />}
             {addonStore.addonPanelType === "directory" && <Directory />}
+            {addonStore.addonPanelType === "search" && <MessageSearch />}
           </div>
 
           <div className={rightPanelClass}>

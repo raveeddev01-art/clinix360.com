@@ -28,6 +28,13 @@ class TopNav extends Component {
     addonStore.toggleAddons(true);
   };
 
+  _toggleSearchAddon = () => {
+    const { addonStore } = this.props;
+
+    addonStore.setAddonPanel("search");
+    addonStore.toggleAddons();
+  };
+
   handleLeave = () => {
     this.props.groupStore.leave();
   };
@@ -59,14 +66,19 @@ class TopNav extends Component {
             </Dropdown>}
 
           <a
+            role="link"
             className="btn btn-default"
-            id="addons-toggle"
             onClick={this._toggleInfoAddon}
           >
             <i className="fa fa-info-circle" />
           </a>
-
-          <input type="text" className="form-control" placeholder="Search" />
+          <a
+            role="link"
+            className="btn btn-default"
+            onClick={this._toggleSearchAddon}
+          >
+            <i className="fa fa-search" />
+          </a>
 
           <Dropdown id="dropdown-group-controls" pullRight>
             <Dropdown.Toggle noCaret className="more-btn">

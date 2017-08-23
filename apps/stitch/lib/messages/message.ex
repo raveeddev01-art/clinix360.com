@@ -4,13 +4,14 @@ defmodule Stitch.Message do
   import Ecto.Query
   alias Stitch.{Repo, Message}
 
-  @valid_types ["user_message", "system", "upload"]
+  @valid_types ["chat", "system", "upload"]
 
   schema "messages" do
     belongs_to :user, Stitch.Accounts.User
     belongs_to :group, Stitch.Group
     belongs_to :pinned_by, Stitch.Accounts.User, foreign_key: :pinned_by_id
     field :deleted, :boolean, default: false
+    field :edited_at, :utc_datetime
     field :text_content, :string
     field :type, :string
     field :fields, :map
@@ -23,16 +24,16 @@ defmodule Stitch.Message do
 
   def changeset(%Stitch.Message{} = struct, params) do
     struct
-    |> cast(params, [:user_id, :group_id, :deleted, :text_content, :fields, :pinned, :pinned_by_id, :pinned_at])
+    |> cast(params, [:user_id, :group_id, :deleted, :text_content, :fields, :type, :pinned, :pinned_by_id, :pinned_at])
     |> validate_required([:user_id, :group_id, :deleted, :text_content])
     |> validate_inclusion(:type, @valid_types)
   end
 
-  def user_message_changeset(%Message{} = struct, params \\ %{}) do
+  def user_edit_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:text_content, :type])
-    |> validate_required([:text_content, :type])
-    |> validate_inclusion(:type, @valid_types)
+    |> cast(params, [:text_content])
+    |> validate_required([:text_content])
+    |> put_change(:edited_at, DateTime.utc_now())
   end
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
@@ -42,9 +43,9 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, @valid_types)
   end
 
-  def create(group_id, user_id, %{"type" => "user_message", "text_content" => text_content}) do
+  def create(group_id, user_id, %{"type" => "chat", "text_content" => text_content}) do
     %Message{group_id: group_id, user_id: user_id}
-    |> user_message_changeset(%{text_content: text_content, type: "user_message"})
+    |> changeset(%{text_content: text_content, type: "chat"})
     |> Repo.insert
   end
 
@@ -55,7 +56,7 @@ defmodule Stitch.Message do
   end
 
   def create(group_id, user_id, %{"text_content" => text_content}) do
-    create(group_id, user_id, %{"type" => "user_message", "text_content" => text_content})
+    create(group_id, user_id, %{"type" => "chat", "text_content" => text_content})
   end
 
   def create(group_id, user_id, attributes) do
@@ -65,14 +66,13 @@ defmodule Stitch.Message do
 
   def update(message, attributes) do
     message
-    |> changeset(%{text_content: attributes["text_content"]})
+    |> user_edit_changeset(%{text_content: attributes["text_content"]})
     |> Repo.update
   end
 
   def delete(message) do
     message
-    |> changeset(%{deleted: true})
-    |> Repo.update
+    |> Repo.delete
   end
 
   def pin(message, user) do

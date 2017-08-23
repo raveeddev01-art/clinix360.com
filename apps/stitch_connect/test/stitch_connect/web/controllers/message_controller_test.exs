@@ -71,8 +71,11 @@ defmodule StitchConnect.Web.MessageControllerTest do
 
       json = json_response(conn, 200)
       assert json["text_content"] == "new message text"
+      assert json["edited"] == true
+      assert json["edited_at"] != nil
       message = MessageQueries.get_by_id(message.id)
       assert message.text_content == "new message text"
+      assert message.edited_at != nil
     end
 
     test "user can't edit other users' messages", %{conn: conn} do
@@ -95,6 +98,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
       assert json["message"] == "You can't edit other users' messages"
       message = MessageQueries.get_by_id(message.id)
       assert message.text_content == "lorem ipsum"
+      assert message.edited_at == nil
     end
   end
 
@@ -111,8 +115,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
 
       assert response(conn, 204)
       message = MessageQueries.get_by_id(message.id)
-      assert message != nil
-      assert message.deleted == true
+      assert message == nil
     end
 
     test "user can't delete other users' messages", %{conn: conn} do
@@ -215,5 +218,21 @@ defmodule StitchConnect.Web.MessageControllerTest do
       json = json_response(conn, 422)
       assert json["message"] == "Type is not supported"
     end
+  end
+
+  test "GET /api/v1/groups/:id/messages", %{conn: conn} do
+    user = insert(:user)
+    message = insert(:message, user: user)
+    team = message.group.team
+
+    conn = conn
+    |> subdomain(team.slug)
+    |> get_as_user(user, "/api/v1/groups/#{message.group.id}/messages")
+
+    json = json_response(conn, 200)
+    message = json |> List.first
+    assert message["starred"] == false
+    assert message["edited"] == false
+    assert message["pinned"] == false
   end
 end

@@ -69,96 +69,12 @@
           top: -17px;
         }
       }
-
-      .message-pool-container {
-        display: flex;
-        margin-bottom: 15px;
-
-        .message-pool {
-          max-width: 70%;
-          font-size: 15px;
-          background: #fff;
-          border: 1px solid $border-color-secondary;
-          border-radius: 4px;
-          padding: 15px 20px;
-          flex-grow: 1;
-
-          .message-pool-header {
-            position: relative;
-            color: $brand-primary;
-            font-size: 15px;
-            line-height: 1.5;
-            font-weight: bold;
-            margin: 0;
-
-            .time {
-              color: #333;
-              font-weight: normal;
-              font-size: 85%;
-            }
-          }
-
-          .message-pool-content {
-            .message {
-              position: relative;
-              padding: 0 15px 10px 0;
-
-              p {
-                margin: 0;
-              }
-
-              .message-actions {
-                position: absolute;
-                right: 0;
-                top: 0;
-              }
-
-              .message-icon {
-                margin-right: 5px;
-                font-size: 85%;
-                cursor: pointer;
-
-                &.icon-edited {
-                  margin-left: 5px;
-                  margin-right: 0;
-                  color: #eee;
-                  cursor: default;
-                }
-
-                &.icon-pin {
-                  color: #4fb0fc;
-                }
-
-                &.icon-star {
-                  color: #fecb2f;
-                }
-              }
-            }
-          }
-        }
-
-        &.mine {
-          justify-content: flex-end;
-
-          .message-pool {
-            color: #fff;
-            background: $brand-primary;
-            border: 0;
-
-            .message-pool-header {
-              color: #fff;
-
-              .time {
-                color: #ccc;
-              }
-            }
-          }
-        }
-      }
     }
   }
 
   .flex-footer {
+    padding: 0 20px;
+
     .room-preview {
       text-align: center;
       font-size: 18px;
@@ -175,7 +91,8 @@
 
     .message-form {
       position: relative;
-      padding: 10px 20px 30px;
+      padding-top: 10px;
+      padding-bottom: 30px;
       width: 100%;
 
       .message-text {
@@ -188,10 +105,18 @@
         }
       }
 
-      .edit-info {
+      .editing-commands {
         position: absolute;
-        bottom: 10px;
+        left: 0;
+        right: 0;
+        bottom: 5px;
+        display: flex;
+        justify-content: space-between;
         font-size: 85%;
+
+        .btn-small {
+          padding: 0 8px;
+        }
       }
     }
   }
@@ -305,4 +230,137 @@
 
   margin-left: 3px;
   margin-right: 3px;
+}
+
+.message-pool-container {
+  display: flex;
+  margin-bottom: 15px;
+
+  .message-pool {
+    max-width: 70%;
+    font-size: 15px;
+    background: #fff;
+    border: 1px solid $border-color-secondary;
+    border-radius: 4px;
+    padding: 15px 20px;
+    flex-grow: 1;
+
+    .message-pool-header {
+      position: relative;
+      color: $brand-primary;
+      font-size: 15px;
+      line-height: 1.5;
+      font-weight: bold;
+      margin: 0;
+
+      .time {
+        color: #333;
+        font-weight: normal;
+        font-size: 85%;
+      }
+    }
+
+    .message-pool-content {
+      .message {
+        position: relative;
+        padding: 0 15px 10px 0;
+
+        p {
+          margin: 0;
+        }
+
+        .message-actions {
+          position: absolute;
+          right: 0;
+          top: 0;
+        }
+
+        .message-icon {
+          margin-right: 5px;
+          font-size: 85%;
+          cursor: pointer;
+
+          &.icon-edited {
+            margin-left: 5px;
+            margin-right: 0;
+            color: #333;
+            cursor: default;
+          }
+
+          &.icon-pin {
+            color: #4fb0fc;
+          }
+
+          &.icon-star {
+            color: #fecb2f;
+          }
+        }
+      }
+    }
+  }
+
+  &.mine {
+    justify-content: flex-end;
+
+    .message-pool {
+      color: #fff;
+      background: $brand-primary;
+      border: 0;
+
+      .message-pool-header {
+        color: #fff;
+
+        .time {
+          color: #ccc;
+        }
+      }
+
+      .message-pool-content {
+        .message {
+          .message-icon {
+            &.icon-edited {
+              color: #eee;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.search-result-item {
+    position: relative;
+
+    .message-pool {
+      max-width: 100%;
+
+      &:hover {
+        background-color: #fafafa;
+      }
+    }
+
+    .message-search-result-actions {
+      display: none;
+
+      z-index: 1;
+      position: absolute;
+      right: 10px;
+      top: -10px;
+
+      background: #fff;
+      border: 1px solid $border-color-secondary;
+      border-radius: 4px;
+
+      .message-search-result-action-item {
+        margin: 2px 0;
+        padding: 0 8px;
+        color: #333;
+      }
+    }
+
+    &:hover {
+      .message-search-result-actions {
+        display: block;
+      }
+    }
+  }
 }

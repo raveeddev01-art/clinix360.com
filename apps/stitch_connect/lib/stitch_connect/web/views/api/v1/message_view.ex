@@ -22,7 +22,9 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       starred: Map.get(message, :starred, :false),
       pinned: message.pinned,
       pinned_by: pinned_by_info(message),
-      pinned_at: message.pinned_at
+      pinned_at: message.pinned_at,
+      edited: !!message.edited_at,
+      edited_at: message.edited_at,
     }
   end
 
