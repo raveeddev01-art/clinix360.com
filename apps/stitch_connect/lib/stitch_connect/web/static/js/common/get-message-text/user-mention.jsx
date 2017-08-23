@@ -1,17 +1,22 @@
 import React, { Component, PropTypes } from "react";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import CustomToggle from "./custom-toggle";
 
 class UserMention extends Component {
+  goToDirectMessaging = () => {
+    console.log("goToDirectMessaging");
+  };
+
   render() {
     return (
       <Dropdown id="user-mention" className="user-mention-dropdown">
-        <CustomToggle bsRole="toggle">
+        <Dropdown.Toggle useAnchor noCaret>
           {`@${this.props.user.username}`}
-        </CustomToggle>
+        </Dropdown.Toggle>
         <Dropdown.Menu>
-          <MenuItem eventKey="1">Direct Messaging</MenuItem>
+          <MenuItem onClick={this.goToDirectMessaging}>
+            Direct Messaging
+          </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
     );
