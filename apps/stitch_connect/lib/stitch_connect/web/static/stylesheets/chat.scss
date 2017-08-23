@@ -46,27 +46,152 @@
   }
 
   .flex-content {
-    #chat {
+    #chat-container {
       position: relative;
-      padding: 20px;
 
-      .date-separator {
-        display: flex;
-        justify-content: center;
+      .unread-messages-info {
+        position: absolute;
+        z-index: 999;
+        top: 0;
+        left: 1px;
+        right: 1px;
+        height: 35px;
+        padding: 10px 10px 0 10px;
+        background: $body-bg;
+
+        .unread-messages-tooltip {
+          height: 25px;
+          line-height: 25px;
+          background: #29b2ee;
+          border-radius: 8px;
+          text-align: center;
+          color: #fff;
+          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+
+          &:hover {
+            filter: brightness(85%);
+          }
+        }
+      }
+
+      #chat {
         position: relative;
-        border-top: 1px solid $border-color;
-        margin: 20px 0 40px;
+        padding: 20px;
 
-        .date {
-          color: $brand-primary;
-          font-weight: bold;
-          line-height: 1.45;
-          background: #fff;
-          border: 1px solid $border-color;
-          border-radius: 6px;
-          padding: 6px 12px;
-          position: absolute;
-          top: -17px;
+        .date-separator {
+          display: flex;
+          justify-content: center;
+          position: relative;
+          border-top: 1px solid $border-color;
+          margin: 20px 0 40px;
+
+          .date {
+            color: $brand-primary;
+            font-weight: bold;
+            line-height: 1.45;
+            background: #fff;
+            border: 1px solid $border-color;
+            border-radius: 6px;
+            padding: 6px 12px;
+            position: absolute;
+            top: -17px;
+          }
+        }
+
+        .message-pool-container {
+          display: flex;
+          margin-bottom: 15px;
+
+          .message-pool {
+            max-width: 70%;
+            font-size: 15px;
+            background: #fff;
+            border: 1px solid $border-color-secondary;
+            border-radius: 4px;
+            padding: 15px 20px;
+            flex-grow: 1;
+
+            .message-pool-header {
+              position: relative;
+              color: $brand-primary;
+              font-size: 15px;
+              line-height: 1.5;
+              font-weight: bold;
+              margin: 0;
+
+              .time {
+                color: #333;
+                font-weight: normal;
+                font-size: 85%;
+              }
+            }
+
+            .message-pool-content {
+              .message {
+                position: relative;
+                padding: 0 15px 10px 0;
+
+                p {
+                  margin: 0;
+                }
+
+                .message-actions {
+                  position: absolute;
+                  right: 0;
+                  top: 0;
+                }
+
+                .message-icon {
+                  margin-right: 5px;
+                  font-size: 85%;
+                  cursor: pointer;
+
+                  &.icon-edited {
+                    margin-left: 5px;
+                    margin-right: 0;
+                    color: #333;
+                    cursor: default;
+                  }
+
+                  &.icon-pin {
+                    color: #4fb0fc;
+                  }
+
+                  &.icon-star {
+                    color: #fecb2f;
+                  }
+                }
+              }
+            }
+          }
+
+          &.mine {
+            justify-content: flex-end;
+
+            .message-pool {
+              color: #fff;
+              background: $brand-primary;
+              border: 0;
+
+              .message-pool-header {
+                color: #fff;
+
+                .time {
+                  color: #ccc;
+                }
+              }
+
+              .message-pool-content {
+                .message {
+                  .message-icon {
+                    &.icon-edited {
+                      color: #eee;
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

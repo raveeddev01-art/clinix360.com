@@ -78,6 +78,13 @@ class MessageStore {
   }
 
   @computed
+  get unreadMessages() {
+    return this.messages.filter(
+      message => message.user.id !== currentUser.id && !message.read
+    );
+  }
+
+  @computed
   get pinnedMessages() {
     return this.messages.filter(message => message.pinned);
   }
