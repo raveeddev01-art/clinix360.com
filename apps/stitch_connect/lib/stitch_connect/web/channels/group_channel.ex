@@ -64,6 +64,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+
   def handle_in("new_msg", params, socket) do
     %{group: group, current_user: user} = socket.assigns
     do_new_msg(socket, group, user, params)
@@ -115,5 +116,12 @@ defmodule StitchConnect.Web.GroupChannel do
     else
       {:reply, {:error, %{message: "Only members can write messages."}}, socket}
     end
+  end
+
+  def handle_in("mark_as_read", %{"message_ids" => message_ids}, socket) do
+    {_, messages} = Message.mark_as_read(socket.assigns.current_user, message_ids)
+    messages = MessageQueries.load_info(messages)
+    json = MessageView.render("index.json", %{messages: messages})
+    {:reply, {:ok, %{messages: json}}, socket}
   end
 end
