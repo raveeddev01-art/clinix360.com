@@ -16,6 +16,7 @@ defmodule Stitch.Message do
     field :fields, :map
     field :pinned, :boolean
     field :pinned_at, :utc_datetime
+    field :read_status, :map, default: %{}
 
     timestamps()
   end
