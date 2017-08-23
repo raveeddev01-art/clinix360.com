@@ -47,4 +47,9 @@ defmodule StitchConnect.Web.EventsChannel do
       end
     end
   end
+
+  def broadcast_marked_as_read(user, messages) do
+    json = MessageView.render("index.json", %{messages: messages})
+    @endpoint.broadcast("events:#{user.id}", "marked_as_read", %{messages: json})
+  end
 end

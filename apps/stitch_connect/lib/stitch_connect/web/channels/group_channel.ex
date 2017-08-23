@@ -70,6 +70,16 @@ defmodule StitchConnect.Web.GroupChannel do
     do_new_msg(socket, group, user, params)
   end
 
+  def handle_in("mark_as_read", %{"message_ids" => message_ids}, socket) do
+    {_, messages} = Message.mark_as_read(socket.assigns.current_user, message_ids)
+    messages = MessageQueries.load_info(messages)
+
+    EventsChannel.broadcast_marked_as_read(socket.assigns.current_user, messages)
+
+    json = MessageView.render("index.json", %{messages: messages})
+    {:reply, {:ok, %{messages: json}}, socket}
+  end
+
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
     attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
@@ -116,12 +126,5 @@ defmodule StitchConnect.Web.GroupChannel do
     else
       {:reply, {:error, %{message: "Only members can write messages."}}, socket}
     end
-  end
-
-  def handle_in("mark_as_read", %{"message_ids" => message_ids}, socket) do
-    {_, messages} = Message.mark_as_read(socket.assigns.current_user, message_ids)
-    messages = MessageQueries.load_info(messages)
-    json = MessageView.render("index.json", %{messages: messages})
-    {:reply, {:ok, %{messages: json}}, socket}
   end
 end
