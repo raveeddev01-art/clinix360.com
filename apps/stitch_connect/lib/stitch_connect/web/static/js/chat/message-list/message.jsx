@@ -16,10 +16,10 @@ import getMessageText from "../../common/get-message-text/get-message-text";
 @observer
 class Message extends Component {
   onVisibleChange = isVisible => {
-    console.log("Visible", this.props.message.text_content, isVisible);
+    const { message, messageStore } = this.props;
 
     if (isVisible) {
-      // TODO: Mark as read
+      messageStore.readMessage(message.id);
     }
   };
 
@@ -57,6 +57,16 @@ class Message extends Component {
 
     messageStore.toggleStar(message.id);
   };
+
+  shouldSenseVisibility() {
+    const { message, messageStore } = this.props;
+
+    return (
+      messageStore.loadedInitial &&
+      message.user.id !== currentUser.id &&
+      !message.read
+    );
+  }
 
   renderEdited(message) {
     const { edited, edited_at: editedAt } = message;
@@ -188,13 +198,12 @@ class Message extends Component {
 
   render() {
     const { message, messageStore, sidemenuStore } = this.props;
-    const { chatDiv } = messageStore;
     const { usernameMap } = sidemenuStore;
-    const mine = message.user.id === currentUser.id;
+    const { chatDiv } = messageStore;
 
     return (
       <VisibilitySensor
-        active={!mine}
+        active={this.shouldSenseVisibility()}
         onChange={this.onVisibleChange}
         intervalCheck={false}
         scrollCheck
