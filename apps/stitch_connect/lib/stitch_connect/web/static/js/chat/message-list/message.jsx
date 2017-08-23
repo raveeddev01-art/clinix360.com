@@ -7,12 +7,22 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
+import VisibilitySensor from "react-visibility-sensor";
+
 import { confirm } from "../../common/modals";
 import getMessageText from "../../common/get-message-text/get-message-text";
 
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
 class Message extends Component {
+  onVisibleChange = isVisible => {
+    console.log("Visible", this.props.message.text_content, isVisible);
+
+    if (isVisible) {
+      // TODO: Mark as read
+    }
+  };
+
   edit = () => {
     const { message, messageStore } = this.props;
 
@@ -177,19 +187,31 @@ class Message extends Component {
   }
 
   render() {
-    const { message, sidemenuStore } = this.props;
+    const { message, messageStore, sidemenuStore } = this.props;
+    const { chatDiv } = messageStore;
+    const { usernameMap } = sidemenuStore;
+    const mine = message.user.id === currentUser.id;
 
     return (
-      <div className="message">
-        <div>
-          {getMessageText(message.text_content, sidemenuStore.usernameMap)}
-          {this.renderEdited(message)}
-        </div>
+      <VisibilitySensor
+        active={!mine}
+        onChange={this.onVisibleChange}
+        intervalCheck={false}
+        scrollCheck
+        scrollThrottle={100}
+        containment={chatDiv}
+      >
+        <div className="message">
+          <div>
+            {getMessageText(message.text_content, usernameMap)}
+            {this.renderEdited(message)}
+          </div>
 
-        {this.renderStar(message)}
-        {this.renderPin(message)}
-        {this.renderActions(message)}
-      </div>
+          {this.renderStar(message)}
+          {this.renderPin(message)}
+          {this.renderActions(message)}
+        </div>
+      </VisibilitySensor>
     );
   }
 }

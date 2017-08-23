@@ -4,6 +4,7 @@ import _ from "lodash";
 import { animateScroll } from "react-scroll";
 
 class MessageStore {
+  @observable chatDiv = null;
   @observable messages = [];
   @observable messageInEdit = null;
   @observable textInEdit = "";
@@ -19,6 +20,14 @@ class MessageStore {
     animateScroll.scrollToBottom({
       containerId: "chat"
     });
+  }
+
+  loadChatDiv(div) {
+    this.chatDiv = div;
+  }
+
+  unloadChatDiv() {
+    this.chatDiv = null;
   }
 
   @computed
