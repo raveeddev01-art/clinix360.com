@@ -4,10 +4,12 @@ import _ from "lodash";
 import { animateScroll } from "react-scroll";
 
 class MessageStore {
+  @observable chatDiv = null;
   @observable messages = [];
   @observable messageInEdit = null;
   @observable textInEdit = "";
   @observable canLoad = false;
+  @observable loadedInitial = false;
   loadedAll = false;
   channel = null;
 
@@ -15,10 +17,25 @@ class MessageStore {
     this.rootStore = rootStore;
   }
 
-  scrollToBottom() {
+  scrollToBottom(duration = 1000, cb = null) {
     animateScroll.scrollToBottom({
-      containerId: "chat"
+      containerId: "chat",
+      duration
     });
+
+    setTimeout(() => {
+      if (typeof cb === "function") {
+        cb();
+      }
+    }, duration);
+  }
+
+  loadChatDiv(div) {
+    this.chatDiv = div;
+  }
+
+  unloadChatDiv() {
+    this.chatDiv = null;
   }
 
   @computed
@@ -61,6 +78,13 @@ class MessageStore {
   }
 
   @computed
+  get unreadMessages() {
+    return this.messages.filter(
+      message => message.user.id !== currentUser.id && !message.read
+    );
+  }
+
+  @computed
   get pinnedMessages() {
     return this.messages.filter(message => message.pinned);
   }
@@ -84,7 +108,9 @@ class MessageStore {
       .join()
       .receive("ok", this.loadMessages)
       .receive("error", err => notify.show(err.message, "error"));
+
     this.channel.on("new_msg", this.appendMessage);
+    this.channel.on("read_msg", this.markAsRead);
   };
 
   sendMessage = msg => {
@@ -98,6 +124,18 @@ class MessageStore {
         });
     });
   };
+
+  readMessage(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message && message.user.id !== currentUser.id && !message.read) {
+      // TODO: Send `read_msg` channel event
+      // this.channel.push("read_msg", { id: message.id });
+
+      // Manually marking the message as read
+      this.markAsRead(message);
+    }
+  }
 
   @action
   loadPastMessages = () => {
@@ -136,11 +174,27 @@ class MessageStore {
 
   @action
   loadMessages = data => {
-    this.messages = data.messages;
+    this.messages = data.messages.map(m => {
+      // TODO: Manually set `read` status of messages to false when initially loading
+      m.read = false;
+
+      return m;
+    });
 
     setTimeout(() => {
-      this.scrollToBottom();
+      this.scrollToBottom(1000, () => {
+        this.loadedInitial = true;
+      });
     }, 300);
+  };
+
+  @action
+  markAsRead = msg => {
+    const message = this.messages.find(m => m.id === msg.id);
+
+    if (message) {
+      message.read = true;
+    }
   };
 
   @action

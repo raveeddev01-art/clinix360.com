@@ -7,12 +7,22 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
+import VisibilitySensor from "react-visibility-sensor";
+
 import { confirm } from "../../common/modals";
 import getMessageText from "../../common/get-message-text/get-message-text";
 
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
 class Message extends Component {
+  onVisibleChange = isVisible => {
+    const { message, messageStore } = this.props;
+
+    if (isVisible) {
+      messageStore.readMessage(message.id);
+    }
+  };
+
   edit = () => {
     const { message, messageStore } = this.props;
 
@@ -47,6 +57,16 @@ class Message extends Component {
 
     messageStore.toggleStar(message.id);
   };
+
+  shouldSenseVisibility() {
+    const { message, messageStore } = this.props;
+
+    return (
+      messageStore.loadedInitial &&
+      message.user.id !== currentUser.id &&
+      !message.read
+    );
+  }
 
   renderEdited(message) {
     const { edited, edited_at: editedAt } = message;
@@ -177,19 +197,30 @@ class Message extends Component {
   }
 
   render() {
-    const { message, sidemenuStore } = this.props;
+    const { message, messageStore, sidemenuStore } = this.props;
+    const { usernameMap } = sidemenuStore;
+    const { chatDiv } = messageStore;
 
     return (
-      <div className="message">
-        <div>
-          {getMessageText(message.text_content, sidemenuStore.usernameMap)}
-          {this.renderEdited(message)}
-        </div>
+      <VisibilitySensor
+        active={this.shouldSenseVisibility()}
+        onChange={this.onVisibleChange}
+        intervalCheck={false}
+        scrollCheck
+        scrollThrottle={100}
+        containment={chatDiv}
+      >
+        <div className="message">
+          <div>
+            {getMessageText(message.text_content, usernameMap)}
+            {this.renderEdited(message)}
+          </div>
 
-        {this.renderStar(message)}
-        {this.renderPin(message)}
-        {this.renderActions(message)}
-      </div>
+          {this.renderStar(message)}
+          {this.renderPin(message)}
+          {this.renderActions(message)}
+        </div>
+      </VisibilitySensor>
     );
   }
 }
