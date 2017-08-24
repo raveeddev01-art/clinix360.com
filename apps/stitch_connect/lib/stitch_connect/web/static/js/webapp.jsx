@@ -7,7 +7,7 @@ import GroupMessaging from "./chat/group-messaging";
 import DirectMessaging from "./chat/direct-messaging";
 import UploadModal from "./file-upload/upload-modal";
 
-import RootStore from "./stores/root_store";
+import RootStore from "./common/stores/root_store";
 
 export default class Webapp extends Component {
   constructor(props) {
