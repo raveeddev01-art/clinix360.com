@@ -78,13 +78,6 @@ class MessageStore {
   }
 
   @computed
-  get unreadMessages() {
-    return this.messages.filter(
-      message => message.user.id !== currentUser.id && !message.read
-    );
-  }
-
-  @computed
   get pinnedMessages() {
     return this.messages.filter(message => message.pinned);
   }
@@ -174,12 +167,7 @@ class MessageStore {
 
   @action
   loadMessages = data => {
-    this.messages = data.messages.map(m => {
-      // TODO: Manually set `read` status of messages to false when initially loading
-      m.read = false;
-
-      return m;
-    });
+    this.messages = data.messages;
 
     setTimeout(() => {
       this.scrollToBottom(1000, () => {

@@ -5,7 +5,7 @@ import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
 import UploadProgress from "../file-upload/upload-progress";
 
-@inject("groupStore", "messageStore")
+@inject("groupStore")
 @observer
 export default class MessagePanel extends Component {
   handleJoin = () => {
@@ -15,15 +15,14 @@ export default class MessagePanel extends Component {
   };
 
   render() {
-    const { groupStore: group, messageStore } = this.props;
-    const { unreadMessages } = messageStore;
+    const { groupStore: group } = this.props;
 
     return (
       <div id="chat-container">
         <div className="container-bars">
-          {unreadMessages.length
+          {group.unreadMessagesCount
             ? <div className="unread-messages-tooltip">
-                {unreadMessages.length} new message{unreadMessages.length > 1 && "s"}
+                {group.unreadMessagesCount} new message{group.unreadMessagesCount > 1 && "s"}
               </div>
             : null}
           <UploadProgress />

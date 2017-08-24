@@ -10,6 +10,7 @@ class GroupStore {
   @observable public = true;
   @observable joined = false;
   @observable users = [];
+  @observable unreadMessagesCount = 0;
   @observable favorite = false;
   @observable notificationSetting = null;
   @observable showAllUsers = true;
@@ -55,6 +56,7 @@ class GroupStore {
     this.loading = true;
     get(`/api/v1/groups?slug=${slug}`).then(resp => {
       const { data } = resp;
+
       this.id = data.id;
       this.name = data.name;
       this.description = data.description;
@@ -62,6 +64,7 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.groupType = "group";
+      this.unreadMessagesCount = data.unread_messages_count;
 
       this.loading = false;
       this.loadUsers();
