@@ -157,8 +157,13 @@ class MessageStore {
   };
 
   @action
-  appendMessage = data => {
-    this.messages.unshift(data);
+  appendMessage = newMessage => {
+    // Increment unread messages count if it is from other user
+    if (newMessage.user_id !== currentUser.id) {
+      this.rootStore.groupStore.unreadMessagesCount += 1;
+    }
+
+    this.messages.unshift(newMessage);
 
     setTimeout(() => {
       this.scrollToBottom();
