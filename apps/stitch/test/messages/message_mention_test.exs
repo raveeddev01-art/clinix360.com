@@ -65,7 +65,7 @@ defmodule Stitch.Message.MentionTest do
     end
   end
 
-  describe "Message.create should trigger counter updates in the corresponding group_user records" do
+  describe "Message.create/3 should trigger counter updates in the corresponding group_user records" do
     test "when one user is mentioned" do
       bob = insert(:user, username: "bob")
       alice = insert(:user, username: "alice")
@@ -119,7 +119,7 @@ defmodule Stitch.Message.MentionTest do
     end
   end
 
-  describe "Message.update should update the corresponding group_user counters" do
+  describe "Message.update/2 should update the corresponding group_user counters" do
     test "when user is not mentioned in the new message edit" do
       bob = insert(:user, username: "bob")
       alice = insert(:user, username: "alice")
@@ -169,7 +169,7 @@ defmodule Stitch.Message.MentionTest do
     end
   end
 
-  test "Message.delete should decrement the corresponding group_user counters" do
+  test "Message.delete/1 should decrement the corresponding group_user counters" do
     bob = insert(:user, username: "bob")
     alice = insert(:user, username: "alice")
     group = insert(:group)
@@ -191,5 +191,20 @@ defmodule Stitch.Message.MentionTest do
 
     assert group_bob.mentioning_message_ids == %{}
     assert group_alice.mentioning_message_ids == %{}
+  end
+
+  test "Message.read_mentions/3 decrements mention counters" do
+    bob = insert(:user, username: "bob")
+    group = insert(:group)
+    group_bob = insert(:group_user, user: bob, group: group)
+
+    {:ok, message_a} = Stitch.Message.create(to_string(group.id), bob.id, %{"text_content" => "Hello, @bob.", "type" => "user_message"})
+    {:ok, message_b} = Stitch.Message.create(to_string(group.id), bob.id, %{"text_content" => "Hello.", "type" => "user_message"})
+
+    assert Repo.get(GroupUser, group_bob.id).mentioning_message_ids[to_string(message_a.id)] == "true"
+    Stitch.Message.read_mentions(group, bob, [message_b.id])
+    assert Repo.get(GroupUser, group_bob.id).mentioning_message_ids[to_string(message_a.id)] == "true"
+    Stitch.Message.read_mentions(group, bob, [message_a.id])
+    assert Repo.get(GroupUser, group_bob.id).mentioning_message_ids == %{}
   end
 end
