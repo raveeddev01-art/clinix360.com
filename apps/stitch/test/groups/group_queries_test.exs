@@ -31,16 +31,18 @@ defmodule Stitch.GroupQueriesTest do
     end
   end
 
-  describe "Stitch.GroupQueries.get_by_id/1" do
-    test "returns group for that team with id" do
+  describe "Stitch.GroupQueries.get_by_id/2" do
+    test "returns group for that user's team with id" do
       team = insert(:team)
+      user = insert(:user, %{team_id: team.id})
       group = insert(:group, %{slug: "example", team: team})
-      {:ok, found_group} = GroupQueries.get_by_id(group.id)
+      {:ok, found_group} = GroupQueries.get_by_id(group.id, user)
       assert group.id == found_group.id
     end
 
     test "returns error if group doesn't exist" do
-      {:error, reason} = GroupQueries.get_by_id(5432)
+      user = insert(:user)
+      {:error, reason} = GroupQueries.get_by_id(5432, user)
       assert reason == "Group with that id not found."
     end
   end

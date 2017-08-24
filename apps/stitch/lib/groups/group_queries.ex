@@ -26,22 +26,6 @@ defmodule Stitch.GroupQueries do
     {:ok, Repo.all(query)}
   end
 
-  @doc """
-  Returns group with the exist matching id.
-  """
-  def get_by_id(id) do
-    query =
-      from g in Group,
-      where: g.id == ^id,
-      preload: [:users]
-    case Repo.one(query) do
-      nil ->
-        {:error, "Group with that id not found."}
-      group ->
-        {:ok, group}
-    end
-  end
-
   defp load_groups_for_user(query, %User{id: user_id, favorite_groups: favorite_groups}) do
     query
     |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
@@ -54,6 +38,27 @@ defmodule Stitch.GroupQueries do
     |> Repo.all
     |> Enum.map(& %{&1 | favorite: Enum.member?(favorite_groups, &1.id)} )
   end
+
+  def load_user_data(%Group{id: group_id}, %User{} = user) do
+    Group
+    |> where(id: ^group_id)
+    |> load_groups_for_user(user)
+    |> List.first
+  end
+  def load_user_data(group, user_id), do: load_user_data(group, Repo.get!(User, user_id))
+
+  @doc """
+  Returns group with the exist matching id.
+  """
+  def get_by_id(id, %User{} = user) do
+    group = Group
+    |> where(team_id: ^user.team_id, id: ^id)
+    |> load_groups_for_user(user)
+    |> List.first
+
+    if group, do: {:ok, group}, else: {:error, "Group with that id not found."}
+  end
+  def get_by_id(id, user_id), do: get_by_id(id, Repo.get!(User, user_id))
 
   @doc """
   Returns group with the exist matching slug for the user's team.
