@@ -11,6 +11,11 @@ defmodule Stitch.Group do
     field :slug, :string
     field :description, :string
     field :public, :boolean, default: true
+
+    field :favorite, :boolean, default: false, virtual: true
+    field :joined, :boolean, default: false, virtual: true
+    field :unread_messages_count, :integer, default: 0, virtual: true
+
     belongs_to :team, Stitch.Team
     has_many :group_users, GroupUser
     has_many :users, through: [:group_users, :user]

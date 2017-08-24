@@ -3,7 +3,7 @@ defmodule Stitch.GroupQueries do
   Module in charge of all group related queries.
   """
 
-  alias Stitch.{Repo, Team, Group, GroupUser}
+  alias Stitch.{Repo, Group, GroupUser, Message}
   alias Stitch.Accounts.User
   import Ecto.Query
 
@@ -23,8 +23,7 @@ defmodule Stitch.GroupQueries do
       join: gu in GroupUser,
       where: gu.group_id == ^group_id,
       where: gu.user_id == u.id
-    users = Repo.all(query)
-    {:ok, users}
+    {:ok, Repo.all(query)}
   end
 
   @doc """
@@ -43,69 +42,52 @@ defmodule Stitch.GroupQueries do
     end
   end
 
+  defp load_groups_for_user(query, %User{id: user_id, favorite_groups: favorite_groups}) do
+    query
+    |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
+    |> where([g, gu], g.public or not is_nil(gu.id))
+    |> join(:left, [g, gu], m in Message, not is_nil(gu.id) and m.group_id == g.id and m.user_id != ^user_id
+      and not fragment("? \\? ?", m.read_status, ^to_string(user_id)))
+    |> preload(:users)
+    |> group_by([g, gu], [g.id, gu.id])
+    |> select([g, gu, m], %{g | joined: not is_nil(gu.id), unread_messages_count: count(m.id)})
+    |> Repo.all
+    |> Enum.map(& %{&1 | favorite: Enum.member?(favorite_groups, &1.id)} )
+  end
+
   @doc """
   Returns group with the exist matching slug for the user's team.
   """
-  def find_by_slug(slug, user_id) do
-    user = Repo.get(User, user_id)
-    query =
-      from g in Group,
-      where: g.team_id == ^user.team_id,
-      where: g.slug == ^slug,
-      preload: [:users]
-    case Repo.one(query) do
-      nil ->
-        {:error, "Group with that slug not found."}
-      group ->
-        {:ok, group}
-    end
+  def find_by_slug(slug, %User{} = user) do
+    group = Group
+    |> where(team_id: ^user.team_id, slug: ^slug)
+    |> load_groups_for_user(user)
+    |> List.first
+
+    if group, do: {:ok, group}, else: {:error, "Group with that slug not found."}
   end
+  def find_by_slug(slug, user_id), do: find_by_slug(slug, Repo.get!(User, user_id))
 
   @doc """
   Returns a list of public groups for the user's team, and
   also teams he's been invited to participate in.
   """
-  def available_groups(user_id) do
-    user = Repo.get!(User, user_id)
-
+  def available_groups(%User{} = user) do
     Group
     |> where(team_id: ^user.team_id)
-    |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
-    |> where([g, gu], g.public or not is_nil(gu.id))
-    |> preload(:users)
-    |> Repo.all
+    |> load_groups_for_user(user)
   end
+  def available_groups(user_id), do: available_groups(Repo.get!(User, user_id))
 
   @doc """
   Returns a list of visible groups for the user given
   a search term.
   """
-  def search(user_id, term) do
-    user = Repo.get(User, user_id)
-    team = Repo.get(Team, user.team_id)
-
-    public_groups =
-      from g in Group,
-      where: g.team_id == ^team.id,
-      where: g.public == ^true,
-      where: ilike(g.name, ^"%#{term}%") or ilike(g.slug, ^"%#{term}%"),
-      preload: [:users],
-      select: g
-
-    participating_groups =
-      from g in Group,
-      join: gu in GroupUser,
-      where: gu.group_id == g.id,
-      where: gu.user_id == ^user.id,
-      where: ilike(g.name, ^"%#{term}%") or ilike(g.slug, ^"%#{term}%"),
-      preload: [:users],
-      select: g
-
-    public_groups = Repo.all(public_groups)
-    participating_groups = Repo.all(participating_groups)
-    result_groups = public_groups ++ participating_groups
-
-    result_groups
-    |> Enum.uniq
+  def search(term, %User{} = user) do
+    Group
+    |> where(team_id: ^user.team_id)
+    |> where([g], ilike(g.name, ^"%#{term}%") or ilike(g.slug, ^"%#{term}%"))
+    |> load_groups_for_user(user)
   end
+  def search(slug, user_id), do: search(slug, Repo.get!(User, user_id))
 end
