@@ -34,9 +34,14 @@ defmodule Stitch.GroupQueries do
       and not fragment("? \\? ?", m.read_status, ^to_string(user_id)))
     |> preload(:users)
     |> group_by([g, gu], [g.id, gu.id])
-    |> select([g, gu, m], %{g | joined: not is_nil(gu.id), unread_messages_count: count(m.id)})
+    |> select([g, gu, m], {g, not is_nil(gu.id), count(m.id)})
     |> Repo.all
-    |> Enum.map(& %{&1 | favorite: Enum.member?(favorite_groups, &1.id)} )
+    |> Enum.map(fn {group, joined, unread_messages_count} ->
+      group
+      |> Map.put_new(:joined, joined)
+      |> Map.put_new(:unread_messages_count, unread_messages_count)
+      |> Map.put_new(:favorite, Enum.member?(favorite_groups, group.id))
+    end)
   end
 
   def load_user_data(%Group{id: group_id}, %User{} = user) do
