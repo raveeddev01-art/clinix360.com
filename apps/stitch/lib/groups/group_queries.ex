@@ -26,7 +26,7 @@ defmodule Stitch.GroupQueries do
     {:ok, Repo.all(query)}
   end
 
-  defp load_groups_for_user(query, %User{id: user_id, favorite_groups: favorite_groups}) do
+  defp load_groups_for_user(query, %{id: user_id, favorite_groups: favorite_groups}) do
     query
     |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
     |> where([g, gu], g.public or not is_nil(gu.id))
@@ -44,7 +44,7 @@ defmodule Stitch.GroupQueries do
     end)
   end
 
-  def load_user_data(%Group{id: group_id}, %User{} = user) do
+  def load_user_data(%Group{id: group_id}, %{} = user) do
     Group
     |> where(id: ^group_id)
     |> load_groups_for_user(user)
@@ -55,7 +55,7 @@ defmodule Stitch.GroupQueries do
   @doc """
   Returns group with the exist matching id.
   """
-  def get_by_id(id, %User{} = user) do
+  def get_by_id(id, %{} = user) do
     group = Group
     |> where(team_id: ^user.team_id, id: ^id)
     |> load_groups_for_user(user)
@@ -68,7 +68,7 @@ defmodule Stitch.GroupQueries do
   @doc """
   Returns group with the exist matching slug for the user's team.
   """
-  def find_by_slug(slug, %User{} = user) do
+  def find_by_slug(slug, %{} = user) do
     group = Group
     |> where(team_id: ^user.team_id, slug: ^slug)
     |> load_groups_for_user(user)
@@ -82,7 +82,7 @@ defmodule Stitch.GroupQueries do
   Returns a list of public groups for the user's team, and
   also teams he's been invited to participate in.
   """
-  def available_groups(%User{} = user) do
+  def available_groups(%{} = user) do
     Group
     |> where(team_id: ^user.team_id)
     |> load_groups_for_user(user)
@@ -93,7 +93,7 @@ defmodule Stitch.GroupQueries do
   Returns a list of visible groups for the user given
   a search term.
   """
-  def search(term, %User{} = user) do
+  def search(term, %{} = user) do
     Group
     |> where(team_id: ^user.team_id)
     |> where([g], ilike(g.name, ^"%#{term}%") or ilike(g.slug, ^"%#{term}%"))
