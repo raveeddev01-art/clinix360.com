@@ -10,29 +10,16 @@ import NavItemNotifications from "./nav-items/nav-item-notifications";
 import NavItemRename from "./nav-items/nav-item-rename";
 import NavItemConvert from "./nav-items/nav-item-convert";
 import GroupName from "./group-name";
+import DotOptions from "./dot-options";
 
 @inject("addonStore", "groupStore")
 @observer
 class TopNav extends Component {
-  _toggleInfoAddon = () => {
+  _toggleAddonMenu = menuName => () => {
     const { addonStore } = this.props;
 
-    addonStore.setAddonPanel("info");
-    addonStore.toggleAddons();
-  };
-
-  _toggleDirectoryAddon = () => {
-    const { addonStore } = this.props;
-
-    addonStore.setAddonPanel("directory");
+    addonStore.setAddonPanel(menuName);
     addonStore.toggleAddons(true);
-  };
-
-  _toggleSearchAddon = () => {
-    const { addonStore } = this.props;
-
-    addonStore.setAddonPanel("search");
-    addonStore.toggleAddons();
   };
 
   handleLeave = () => {
@@ -68,56 +55,19 @@ class TopNav extends Component {
           <a
             role="link"
             className="btn btn-default"
-            onClick={this._toggleInfoAddon}
+            onClick={this._toggleAddonMenu("info")}
           >
             <i className="fa fa-info-circle" />
           </a>
           <a
             role="link"
             className="btn btn-default"
-            onClick={this._toggleSearchAddon}
+            onClick={this._toggleAddonMenu("search")}
           >
             <i className="fa fa-search" />
           </a>
 
-          <Dropdown id="dropdown-group-controls" pullRight>
-            <Dropdown.Toggle noCaret className="more-btn">
-              <i className="fa fa-ellipsis-h" />
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu className="more-menu">
-              <MenuItem onSelect={this._toggleDirectoryAddon}>
-                <i className="fa fa-users" /> Directory
-              </MenuItem>
-              <MenuItem>
-                <i className="fa fa-folder-open" /> Files
-              </MenuItem>
-              <MenuItem>
-                <i className="fa fa-at" /> Mentions
-              </MenuItem>
-              <MenuItem>
-                <i className="fa fa-star" /> Starred
-              </MenuItem>
-              <MenuItem>
-                <i className="fa fa-flask" /> Labs
-              </MenuItem>
-              <MenuItem>
-                <i className="fa fa-address-card-o" /> Referrals
-              </MenuItem>
-              <MenuItem>
-                <i className="fa fa-check-square-o" /> Checklists
-              </MenuItem>
-              <MenuItem>
-                <i className="fa fa-medkit" /> Prescriptions
-              </MenuItem>
-              <MenuItem>
-                <i className="fa fa-bookmark-o" /> Clinical Notes
-              </MenuItem>
-              <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
-                <i className="fa fa-question-circle" /> Help
-              </MenuItem>
-            </Dropdown.Menu>
-          </Dropdown>
+          <DotOptions />
         </div>
       </div>
     );

@@ -7,6 +7,7 @@ import Directory from "./components/directory/directory";
 import MessageSearch from "./components/message-search/message-search";
 
 import PeopleDetail from "./components/people-detail/people-detail";
+import Mentions from "./components/mentions/mentions";
 
 @inject("addonStore")
 @observer
@@ -57,6 +58,7 @@ class Addons extends Component {
             {addonStore.addonPanelType === "info" && <Info />}
             {addonStore.addonPanelType === "directory" && <Directory />}
             {addonStore.addonPanelType === "search" && <MessageSearch />}
+            {addonStore.addonPanelType === "mentions" && <Mentions />}
           </div>
 
           <div className={rightPanelClass}>
