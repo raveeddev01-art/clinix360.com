@@ -122,10 +122,9 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message && message.user.id !== currentUser.id && !message.read) {
-      // TODO: Send `read_msg` channel event
-      // this.channel.push("read_msg", { id: message.id });
+      this.channel.push("mark_as_read", { message_ids: [message.id] });
 
-      // Manually marking the message as read
+      // TODO: Fix manually marking the message as read
       this.markAsRead(message);
     }
   }
