@@ -89,7 +89,7 @@ defmodule Stitch.Message do
 
   def mark_as_read(user, message_ids) do
     message_ids = List.wrap(message_ids)
-    value = %{user.id => %{read_at: DateTime.utc_now}}
+    value = %{user.id => DateTime.utc_now}
 
     Message
     |> where([m], m.id in ^message_ids and m.user_id != ^user.id)

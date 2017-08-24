@@ -5,13 +5,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   alias Stitch.Message
   alias Stitch.GroupAuthorization
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create, :update, :delete, :toggle_star, :toggle_pin]
+  plug StitchConnect.Plug.ApiAuthenticate
 
   def index(conn, %{"group_id" => group_id}) do
-    case GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
+    user = conn.assigns.current_user
+    case GroupAuthorization.can_view?(group_id, user.id) do
       true ->
-        messages = MessageQueries.group_latest_messages(group_id, conn.assigns.current_user)
-        render conn, "index.json", messages: messages
+        messages = MessageQueries.group_latest_messages(group_id, user)
+        render conn, "index.json", messages: messages, user_id: user.id
       false ->
         conn
         |> put_status(:unauthorized)
@@ -21,14 +22,15 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     group_id = String.to_integer(group_id)
-    case GroupAuthorization.is_member?(group_id, conn.assigns.current_user.id) do
+    user = conn.assigns.current_user
+    case GroupAuthorization.is_member?(group_id, user.id) do
       true ->
-        case Message.create(group_id, conn.assigns.current_user.id, message_params) do
+        case Message.create(group_id, user.id, message_params) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
             conn
             |> put_status(:created)
-            |> render("show.json", message: message)
+            |> render("show.json", message: message, user_id: user.id)
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
@@ -44,13 +46,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def update(conn, %{"id" => message_id, "message" => message_params}) do
     message = MessageQueries.get_by_id(message_id)
+    user = conn.assigns.current_user
 
-    case conn.assigns.current_user.id == message.user_id do
+    case user.id == message.user_id do
       true ->
         case Message.update(message, message_params) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
-            render conn, "show.json", message: message
+            render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
@@ -71,11 +74,11 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         case Message.delete(message) do
           {:ok, _message} ->
             send_resp(conn, :no_content, "")
-        end
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: changeset_errors_to_string(changeset)})
+        end
       false ->
         conn
         |> put_status(:unauthorized)
@@ -85,14 +88,15 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def toggle_star(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
+    user = conn.assigns.current_user
 
-    case GroupAuthorization.can_view?(message.group_id, conn.assigns.current_user.id) do
+    case GroupAuthorization.can_view?(message.group_id, user.id) do
       true ->
-        case MessageAction.toggle_star(message, conn.assigns.current_user) do
+        case MessageAction.toggle_star(message, user) do
           {:ok, result, _changeset} ->
             message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
-            render conn, "show.json", message: message
+            render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
@@ -107,13 +111,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def toggle_pin(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
+    user = conn.assigns.current_user
 
-    case GroupAuthorization.is_member?(message.group_id, conn.assigns.current_user.id) do
+    case GroupAuthorization.is_member?(message.group_id, user.id) do
       true ->
-        case MessageAction.toggle_pin(message, conn.assigns.current_user) do
+        case MessageAction.toggle_pin(message, user) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
-            render conn, "show.json", message: message
+            render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)

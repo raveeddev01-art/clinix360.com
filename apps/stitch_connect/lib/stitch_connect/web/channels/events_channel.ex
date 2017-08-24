@@ -19,9 +19,9 @@ defmodule StitchConnect.Web.EventsChannel do
   def broadcast_group_msg(group, user, message) do
     ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.user_id)
     |> Repo.all |> List.delete(user.id)
-    json = MessageView.message_json(message)
 
     for id <- ids do
+      json = MessageView.message_json(message, id)
       @endpoint.broadcast("events:#{id}", "new_message", json)
     end
   end
@@ -49,7 +49,7 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_marked_as_read(user, messages) do
-    json = MessageView.render("index.json", %{messages: messages})
+    json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
     @endpoint.broadcast("events:#{user.id}", "marked_as_read", %{messages: json})
   end
 end
