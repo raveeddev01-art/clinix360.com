@@ -11,6 +11,7 @@ defmodule Stitch.Group do
     field :slug, :string
     field :description, :string
     field :public, :boolean, default: true
+
     belongs_to :team, Stitch.Team
     has_many :group_users, GroupUser
     has_many :users, through: [:group_users, :user]

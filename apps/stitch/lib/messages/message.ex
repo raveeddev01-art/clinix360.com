@@ -17,6 +17,7 @@ defmodule Stitch.Message do
     field :fields, :map
     field :pinned, :boolean
     field :pinned_at, :utc_datetime
+    field :read_status, :map, default: %{}
 
     timestamps()
   end
@@ -43,13 +44,13 @@ defmodule Stitch.Message do
   end
 
   def create(group_id, user_id, %{"type" => "chat", "text_content" => text_content}) do
-    %Message{group_id: String.to_integer(group_id), user_id: user_id}
+    %Message{group_id: group_id, user_id: user_id}
     |> changeset(%{text_content: text_content, type: "chat"})
     |> Repo.insert
   end
 
   def create(group_id, user_id, %{"type" => "upload", "fields" => fields}) do
-    %Message{group_id: String.to_integer(group_id), user_id: user_id}
+    %Message{group_id: group_id, user_id: user_id}
     |> upload_changeset(%{fields: fields, type: "upload"})
     |> Repo.insert
   end
@@ -84,5 +85,16 @@ defmodule Stitch.Message do
     message
     |> changeset(%{pinned: false, pinned_by_id: nil, pinned_at: nil})
     |> Repo.update
+  end
+
+  def mark_as_read(user, message_ids) do
+    message_ids = List.wrap(message_ids)
+    value = %{user.id => DateTime.utc_now}
+
+    Message
+    |> where([m], m.id in ^message_ids and m.user_id != ^user.id)
+    |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user.id)))
+    |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^value)])
+    |> Repo.update_all([], returning: true)
   end
 end
