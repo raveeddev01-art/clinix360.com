@@ -180,6 +180,36 @@
             }
           }
 
+          .attachment-block {
+            margin: 5px 0;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e2e2;
+            border-radius: 2px;
+            color: #666;
+            background: #fff;
+            display: flex;
+
+            .attachment-icon {
+              width: 50px;
+              font-size: 40px;
+              color: $brand-primary;
+            }
+
+            .attachment-description {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+            }
+          }
+
+          .file-data-separator {
+            font-size: 8px;
+            vertical-align: middle;
+            margin: 0 5px;
+          }
+
           &.mine {
             justify-content: flex-end;
 
@@ -204,36 +234,6 @@
                     }
                   }
                 }
-              }
-
-              .attachment-block {
-                margin: 5px 0;
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #e2e2e2;
-                border-radius: 2px;
-                color: #666;
-                background: #fff;
-                display: flex;
-
-                .attachment-icon {
-                  width: 50px;
-                  font-size: 40px;
-                  color: $brand-primary;
-                }
-
-                .attachment-description {
-                  flex: 1;
-                  display: flex;
-                  flex-direction: column;
-                  justify-content: center;
-                }
-              }
-
-              .file-data-separator {
-                font-size: 8px;
-                vertical-align: middle;
-                margin: 0 5px;
               }
             }
           }
