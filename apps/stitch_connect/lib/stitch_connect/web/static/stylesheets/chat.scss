@@ -49,13 +49,12 @@
     #chat-container {
       position: relative;
 
-      .unread-messages-info {
+      .container-bars {
         position: absolute;
         z-index: 999;
         top: 0;
         left: 1px;
         right: 1px;
-        height: 35px;
         padding: 10px 10px 0 10px;
         background: $body-bg;
 
@@ -70,6 +69,22 @@
 
           &:hover {
             filter: brightness(85%);
+          }
+        }
+
+        .progress {
+          margin-top: 5px;
+          height: 25px;
+          border-radius: 8px;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+          background-color: #bbdefb;
+          color: #fff;
+          text-align: center;
+
+          .progress-bar {
+            background-color: #42a5f5;
+            line-height: 25px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
           }
         }
       }
@@ -190,6 +205,36 @@
                   }
                 }
               }
+
+              .attachment-block {
+                margin: 5px 0;
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e2e2e2;
+                border-radius: 2px;
+                color: #666;
+                background: #fff;
+                display: flex;
+
+                .attachment-icon {
+                  width: 50px;
+                  font-size: 40px;
+                  color: $brand-primary;
+                }
+
+                .attachment-description {
+                  flex: 1;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                }
+              }
+
+              .file-data-separator {
+                font-size: 8px;
+                vertical-align: middle;
+                margin: 0 5px;
+              }
             }
           }
         }
@@ -220,10 +265,36 @@
       padding-bottom: 30px;
       width: 100%;
 
+      .message-input-wrapper {
+        width: 100%;
+        position: relative;
+      }
+
+      .message-form-actions {
+        position: absolute;
+        right: 15px;
+        top: 5px;
+
+        .message-form-action-item {
+          border: none;
+          background: transparent;
+          padding: 0;
+          cursor: pointer;
+          font-size: 20px;
+          color: #ccc;
+          box-shadow: none;
+
+          &:hover {
+            color: $brand-primary;
+          }
+        }
+      }
+
       .message-text {
         height: 40px;
         border-width: 2px;
         box-shadow: none;
+        padding-right: 50px;
 
         &.editing {
           background-color: #fff7d8;

@@ -19,6 +19,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       deleted: message.deleted,
       text_content: message.text_content,
       fields: message.fields,
+      type: message.type,
       inserted_at: message.inserted_at,
       starred: Map.get(message, :starred, :false),
       pinned: message.pinned,

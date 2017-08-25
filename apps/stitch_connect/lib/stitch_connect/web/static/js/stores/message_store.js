@@ -113,13 +113,13 @@ class MessageStore {
     this.channel.on("read_msg", this.markAsRead);
   };
 
-  sendMessage = msg => {
+  sendMessage = (msg, additionalFields = {}) => {
     return new Promise((resolve, reject) => {
       this.channel
-        .push("new_msg", { text_content: msg })
+        .push("new_msg", Object.assign({ text_content: msg }, additionalFields))
         .receive("ok", resolve)
         .receive("error", err => {
-          window.notify.show(err.message, "error");
+          notify.show(err.message, "error");
           reject(err);
         });
     });

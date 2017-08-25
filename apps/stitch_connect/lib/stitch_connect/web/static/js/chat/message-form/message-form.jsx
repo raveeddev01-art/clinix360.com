@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
 
+import InsertMenu from "./insert-menu";
+
 @inject("messageStore", "sidemenuStore", "groupStore", "presenceStore")
 @observer
 class MessageForm extends Component {
@@ -231,19 +233,24 @@ class MessageForm extends Component {
     });
 
     return (
-      <input
-        className={className}
-        type="text"
-        placeholder="Write something"
-        value={text}
-        onChange={this.onTextChange}
-        onKeyUp={this.onKeyUp}
-        autoFocus
-        required
-        ref={input => {
-          this.textInput = input;
-        }}
-      />
+      <div className="message-input-wrapper">
+        <input
+          className={className}
+          type="text"
+          placeholder="Write something"
+          value={text}
+          onChange={this.onTextChange}
+          onKeyUp={this.onKeyUp}
+          autoFocus
+          required
+          ref={input => {
+            this.textInput = input;
+          }}
+        />
+        <div className="message-form-actions">
+          <InsertMenu />
+        </div>
+      </div>
     );
   }
 

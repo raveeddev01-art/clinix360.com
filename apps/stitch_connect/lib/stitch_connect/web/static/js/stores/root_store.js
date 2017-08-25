@@ -4,6 +4,7 @@ import MessageStore from "./message_store";
 import PresenceStore from "./presence_store";
 import SidemenuStore from "./sidemenu_store";
 import SearchStore from "./search_store";
+import UploadStore from "./upload_store";
 
 class RootStore {
   constructor(props) {
@@ -13,6 +14,7 @@ class RootStore {
     this.presenceStore = new PresenceStore(this);
     this.searchStore = new SearchStore(this);
     this.sidemenuStore = new SidemenuStore(this, props);
+    this.uploadStore = new UploadStore(this);
 
     this.presenceStore.connectPresence(props.teamId);
 
