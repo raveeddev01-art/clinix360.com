@@ -65,6 +65,8 @@ defmodule Stitch.GroupQueries do
   end
   def get_by_id(id, user_id), do: get_by_id(id, Repo.get!(User, user_id))
 
+  def get_by_id(id), do: Repo.get(Group, id)
+
   @doc """
   Returns group with the exist matching slug for the user's team.
   """

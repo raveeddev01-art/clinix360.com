@@ -7,6 +7,7 @@ defmodule Stitch.GroupUser do
   schema "group_users" do
     belongs_to :group, Group
     belongs_to :user, Accounts.User
+    field :mentioning_message_ids, :map, default: %{}
 
     timestamps()
   end

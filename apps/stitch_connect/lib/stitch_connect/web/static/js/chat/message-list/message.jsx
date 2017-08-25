@@ -10,7 +10,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
 
 import { confirm } from "../../common/modals";
-import getMessageText from "../../common/get-message-text/get-message-text";
+import MessageText from "../../common/components/message-text/message-text";
 
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
@@ -19,7 +19,7 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     if (isVisible) {
-      messageStore.readMessage(message.id);
+      messageStore.markAsRead(message.id);
     }
   };
 
@@ -209,10 +209,11 @@ class Message extends Component {
         scrollCheck
         scrollThrottle={100}
         containment={chatDiv}
+        offset={{ top: 70 }}
       >
         <div className="message">
           <div>
-            {getMessageText(message.text_content, usernameMap)}
+            <MessageText message={message} />
             {this.renderEdited(message)}
           </div>
 

@@ -1,11 +1,6 @@
 defmodule StitchConnect.Web.MessageControllerTest do
   use StitchConnect.Web.ConnCase, async: true
-  import Stitch.Factory
   alias Stitch.{MessageQueries}
-
-  setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
-  end
 
   test "POST /api/v1/messages/:id/toggle-star", %{conn: conn} do
     user = insert(:user)
@@ -168,6 +163,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
       |> post_as_user(user, "/api/v1/groups/#{group.id}/messages", %{
         message: %{
           type: "upload",
+          text_content: "comment",
           fields: %{
             filename: "foobar.pdf",
             mimetype: "pdf",

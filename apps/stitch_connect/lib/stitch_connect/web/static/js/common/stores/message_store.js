@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action, computed, autorun } from "mobx";
 import moment from "moment";
 import _ from "lodash";
 import { animateScroll } from "react-scroll";
@@ -11,10 +11,16 @@ class MessageStore {
   @observable canLoad = false;
   @observable loadedInitial = false;
   loadedAll = false;
-  channel = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+
+    autorun(() => {
+      // If group slug changes, join to messages channel of group
+      if (this.rootStore.groupStore.slug) {
+        this.joinGroupChannel();
+      }
+    });
   }
 
   scrollToBottom(duration = 1000, cb = null) {
@@ -36,6 +42,14 @@ class MessageStore {
 
   unloadChatDiv() {
     this.chatDiv = null;
+  }
+
+  get eventChannel() {
+    return this.rootStore.channelStore.eventChannel;
+  }
+
+  get groupChannel() {
+    return this.rootStore.channelStore.groupChannel;
   }
 
   @computed
@@ -78,13 +92,6 @@ class MessageStore {
   }
 
   @computed
-  get unreadMessages() {
-    return this.messages.filter(
-      message => message.user.id !== currentUser.id && !message.read
-    );
-  }
-
-  @computed
   get pinnedMessages() {
     return this.messages.filter(message => message.pinned);
   }
@@ -94,48 +101,52 @@ class MessageStore {
     return this.messages.filter(message => message.starred);
   }
 
-  @action
-  joinChannel = channelName => {
-    if (this.channel) {
-      this.channel.leave();
-    }
-
+  joinGroupChannel = () => {
     this.loadedAll = false;
     this.messages = [];
 
-    this.channel = socket.channel(channelName);
-    this.channel
-      .join()
+    this.rootStore.channelStore
+      .joinGroupChannel()
       .receive("ok", this.loadMessages)
       .receive("error", err => notify.show(err.message, "error"));
 
-    this.channel.on("new_msg", this.appendMessage);
-    this.channel.on("read_msg", this.markAsRead);
+    this.groupChannel.on("new_msg", this.onNewMessage);
+    this.eventChannel.on("marked_as_read", this.onMarkedAsRead);
   };
 
-  sendMessage = msg => {
+  sendMessage = (msg, additionalFields = {}) => {
     return new Promise((resolve, reject) => {
-      this.channel
-        .push("new_msg", { text_content: msg })
+      this.groupChannel
+        .push("new_msg", Object.assign({ text_content: msg }, additionalFields))
         .receive("ok", resolve)
         .receive("error", err => {
-          window.notify.show(err.message, "error");
+          notify.show(err.message, "error");
           reject(err);
         });
     });
   };
 
-  readMessage(id) {
+  markAsRead(id) {
     const message = this.messages.find(m => m.id === id);
 
     if (message && message.user.id !== currentUser.id && !message.read) {
-      // TODO: Send `read_msg` channel event
-      // this.channel.push("read_msg", { id: message.id });
-
-      // Manually marking the message as read
-      this.markAsRead(message);
+      this.groupChannel.push("mark_as_read", {
+        message_ids: [message.id]
+      });
     }
   }
+
+  @action
+  onMarkedAsRead = payload => {
+    payload.messages.forEach(markedMessage => {
+      const message = this.messages.find(m => m.id === markedMessage.id);
+
+      if (message) {
+        message.read = true;
+        this.rootStore.groupStore.decreaseUnreadMessagesCount();
+      }
+    });
+  };
 
   @action
   loadPastMessages = () => {
@@ -145,7 +156,7 @@ class MessageStore {
 
     this.canLoad = false;
 
-    this.channel
+    this.groupChannel
       .push("feed", { max_id: this.messages[this.messages.length - 1].id })
       .receive("ok", this.addPastMessages)
       .receive("error", err => {
@@ -164,8 +175,16 @@ class MessageStore {
   };
 
   @action
-  appendMessage = data => {
-    this.messages.unshift(data);
+  onNewMessage = newMessage => {
+    // Increment unread messages count if it is from other user
+    if (
+      newMessage.group_id === this.rootStore.groupStore.id &&
+      newMessage.user_id !== currentUser.id
+    ) {
+      this.rootStore.groupStore.increaseUnreadMessagesCount();
+    }
+
+    this.messages.unshift(newMessage);
 
     setTimeout(() => {
       this.scrollToBottom();
@@ -174,27 +193,13 @@ class MessageStore {
 
   @action
   loadMessages = data => {
-    this.messages = data.messages.map(m => {
-      // TODO: Manually set `read` status of messages to false when initially loading
-      m.read = false;
-
-      return m;
-    });
+    this.messages = data.messages;
 
     setTimeout(() => {
       this.scrollToBottom(1000, () => {
         this.loadedInitial = true;
       });
     }, 300);
-  };
-
-  @action
-  markAsRead = msg => {
-    const message = this.messages.find(m => m.id === msg.id);
-
-    if (message) {
-      message.read = true;
-    }
   };
 
   @action
@@ -269,12 +274,19 @@ class MessageStore {
   @action
   toggleStar(id) {
     const message = this.messages.find(m => m.id === id);
+    const globalStarredMessageStore = this.rootStore.globalStarredMessageStore;
 
     if (message) {
       window.post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
         const update = resp.data;
 
         message.starred = update.starred;
+
+        if (message.starred) {
+          globalStarredMessageStore.unshiftStarredMessage(message);
+        } else {
+          globalStarredMessageStore.removeStarredMessage(message);
+        }
       });
     }
   }

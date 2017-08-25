@@ -35,6 +35,13 @@ class TopNav extends Component {
     addonStore.toggleAddons();
   };
 
+  _toggleGlobalStarredMessagesAddon = () => {
+    const { addonStore } = this.props;
+
+    addonStore.setAddonPanel("starred");
+    addonStore.toggleAddons(true);
+  };
+
   handleLeave = () => {
     this.props.groupStore.leave();
   };
@@ -95,7 +102,7 @@ class TopNav extends Component {
               <MenuItem>
                 <i className="fa fa-at" /> Mentions
               </MenuItem>
-              <MenuItem>
+              <MenuItem onSelect={this._toggleGlobalStarredMessagesAddon}>
                 <i className="fa fa-star" /> Starred
               </MenuItem>
               <MenuItem>

@@ -3,8 +3,9 @@ import { inject, observer } from "mobx-react";
 
 import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
+import UploadProgress from "../file-upload/upload-progress";
 
-@inject("groupStore", "messageStore")
+@inject("groupStore")
 @observer
 export default class MessagePanel extends Component {
   handleJoin = () => {
@@ -14,17 +15,18 @@ export default class MessagePanel extends Component {
   };
 
   render() {
-    const { groupStore: group, messageStore } = this.props;
-    const { unreadMessages } = messageStore;
+    const { groupStore: group } = this.props;
 
     return (
       <div id="chat-container">
-        {unreadMessages.length > 0 &&
-          <div className="unread-messages-info">
-            <div className="unread-messages-tooltip">
-              {unreadMessages.length} new message{unreadMessages.length > 1 && "s"}
-            </div>
-          </div>}
+        <div className="container-bars">
+          {group.unreadMessagesCount
+            ? <div className="unread-messages-tooltip">
+                {group.unreadMessagesCount} new message{group.unreadMessagesCount > 1 && "s"}
+              </div>
+            : null}
+          <UploadProgress />
+        </div>
 
         <MessageList />
         <div className="flex-footer">

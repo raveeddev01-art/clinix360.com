@@ -4,6 +4,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   alias Stitch.MessageQueries
   alias Stitch.Message
   alias Stitch.GroupAuthorization
+  alias StitchConnect.Web.EventsChannel
 
   plug StitchConnect.Plug.ApiAuthenticate
 
@@ -28,6 +29,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         case Message.create(group_id, user.id, message_params) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
+            EventsChannel.broadcast_group_msg(%Stitch.Group{id: group_id}, user, message)
             conn
             |> put_status(:created)
             |> render("show.json", message: message, user_id: user.id)
