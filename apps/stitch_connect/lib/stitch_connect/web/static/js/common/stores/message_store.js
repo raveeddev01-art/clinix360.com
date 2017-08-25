@@ -110,7 +110,7 @@ class MessageStore {
       .receive("ok", this.loadMessages)
       .receive("error", err => notify.show(err.message, "error"));
 
-    this.groupChannel.on("new_msg", this.appendMessage);
+    this.groupChannel.on("new_msg", this.onNewMessage);
     this.eventChannel.on("marked_as_read", this.onMarkedAsRead);
   };
 
@@ -175,9 +175,12 @@ class MessageStore {
   };
 
   @action
-  appendMessage = newMessage => {
+  onNewMessage = newMessage => {
     // Increment unread messages count if it is from other user
-    if (newMessage.user_id !== currentUser.id) {
+    if (
+      newMessage.group_id === this.rootStore.groupStore.id &&
+      newMessage.user_id !== currentUser.id
+    ) {
       this.rootStore.groupStore.increaseUnreadMessagesCount();
     }
 
