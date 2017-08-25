@@ -1,16 +1,11 @@
 import React, { Component } from "react";
-import { inject, observer } from "mobx-react";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import getMessageText from "../../../common/get-message-text/get-message-text";
+import MessageText from "../../../common/components/message-text/message-text";
 import MessageHead from "../../../common/components/message-head/message-head";
 
-@inject("sidemenuStore")
-@observer
 class SearchResultItem extends Component {
   render() {
-    const { sidemenuStore } = this.props;
-
     return (
       <div className="message-pool-container search-result-item">
         <div className="message-search-result-actions">
@@ -56,7 +51,7 @@ class SearchResultItem extends Component {
             timestamp="2017-01-01"
             user={{ first_name: "John", last_name: "Smith" }}
           />
-          {getMessageText("test message", sidemenuStore.usernameMap)}
+          <MessageText message={{ text_content: "test message" }} />
         </div>
       </div>
     );

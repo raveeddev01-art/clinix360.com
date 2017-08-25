@@ -111,12 +111,11 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  defp do_new_msg(socket, group, user, %{"text_content" => content}) do
+  defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
     if GroupAuthorization.is_member?(group.id, user.id) do
-      attrs = %{user_id: user.id, group_id: group.id, text_content: content}
-      changeset = Message.changeset(%Message{}, attrs)
+      attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
 
-      case Repo.insert(changeset) do
+      case Message.create(group.id, user.id, attrs) do
         {:ok, message} ->
           message = MessageQueries.load_info(message)
 
