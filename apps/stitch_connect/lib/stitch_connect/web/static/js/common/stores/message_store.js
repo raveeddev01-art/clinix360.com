@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action, computed, autorun } from "mobx";
 import moment from "moment";
 import _ from "lodash";
 import { animateScroll } from "react-scroll";
@@ -15,6 +15,12 @@ class MessageStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+
+    autorun(() => {
+      if (this.rootStore.groupStore.slug) {
+        this.joinMessagesChannel(this.rootStore.groupStore.slug);
+      }
+    });
   }
 
   scrollToBottom(duration = 1000, cb = null) {
@@ -87,8 +93,8 @@ class MessageStore {
     return this.messages.filter(message => message.starred);
   }
 
-  @action
-  joinChannel = channelName => {
+  // @action
+  joinMessagesChannel = groupSlug => {
     if (this.channel) {
       this.channel.leave();
     }
@@ -96,7 +102,7 @@ class MessageStore {
     this.loadedAll = false;
     this.messages = [];
 
-    this.channel = socket.channel(channelName);
+    this.channel = socket.channel(`groups:${groupSlug}`);
     this.channel
       .join()
       .receive("ok", this.loadMessages)

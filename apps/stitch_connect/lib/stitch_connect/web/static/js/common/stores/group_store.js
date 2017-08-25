@@ -68,7 +68,8 @@ class GroupStore {
 
       this.loading = false;
       this.loadUsers();
-      this.joinMessageChannel(data.slug);
+
+      this.slug = data.slug;
     });
   };
 
@@ -80,7 +81,7 @@ class GroupStore {
     this.public = false;
     this.name = user.first_name;
     this.groupType = "single-dm";
-    this.joinMessageChannel(`__dm:${userIds.join(".")}`);
+    this.slug = `__dm:${userIds.join(".")}`;
   };
 
   @action
@@ -100,17 +101,8 @@ class GroupStore {
       this.public = false;
       this.name = users.map(user => user.first_name).join(", ");
       this.groupType = "multi-dm";
-      this.joinMessageChannel(`__dm:${userIds.join(".")}`);
+      this.slug = `__dm:${userIds.join(".")}`;
     });
-  };
-
-  joinMessageChannel = slug => {
-    if (slug === this.slug) {
-      return;
-    }
-
-    this.slug = slug;
-    this.rootStore.messageStore.joinChannel(`groups:${slug}`);
   };
 
   @action
