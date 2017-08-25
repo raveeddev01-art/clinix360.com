@@ -15,6 +15,18 @@ class GlobalStarredMessageStore {
       this.starredMessages = response.data;
     });
   };
+
+  @action
+  unshiftStarredMessage = message => {
+    this.starredMessages.unshift(message);
+  };
+
+  @action
+  removeStarredMessage = starredMessage => {
+    this.starredMessages = this.starredMessages.filter(
+      m => m.id !== starredMessage.id
+    );
+  };
 }
 
 export default GlobalStarredMessageStore;
