@@ -269,12 +269,19 @@ class MessageStore {
   @action
   toggleStar(id) {
     const message = this.messages.find(m => m.id === id);
+    const globalStarredMessageStore = this.rootStore.globalStarredMessageStore;
 
     if (message) {
       window.post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
         const update = resp.data;
 
         message.starred = update.starred;
+
+        if (message.starred) {
+          globalStarredMessageStore.unshiftStarredMessage(message);
+        } else {
+          globalStarredMessageStore.removeStarredMessage(message);
+        }
       });
     }
   }
