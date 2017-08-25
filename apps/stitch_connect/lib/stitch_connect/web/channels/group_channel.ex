@@ -1,10 +1,11 @@
 defmodule StitchConnect.Web.GroupChannel do
   use Phoenix.Channel
+  import Ecto.Query
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.EventsChannel
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
 
-  intercept ["new_msg"]
+  intercept ["new_msg", "edit_msg"]
 
   def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
@@ -85,6 +86,42 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:ok, %{messages: json}}, socket}
   end
 
+  def handle_in("edit_msg", %{"message_id" => message_id, "params" => params}, socket) do
+    %{group: group, current_user: user} = socket.assigns
+    message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
+    case message && Message.update(message, params) do
+      {:ok, message} ->
+        message = MessageQueries.load_info(message)
+
+        broadcast! socket, "edit_msg", message
+
+        json = MessageView.render("show.json", %{message: message, user_id: user.id})
+        {:reply, {:ok, json}, socket}
+
+      nil ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+      {:error, _changeset} ->
+        {:reply, {:error, %{message: "Failed to edit message."}}, socket}
+    end
+  end
+
+  def handle_in("delete_msg", %{"message_id" => message_id}, socket) do
+    %{group: group, current_user: user} = socket.assigns
+    message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
+    case message && Repo.delete(message) do
+      {:ok, message} ->
+        broadcast! socket, "delete_msg", %{id: message.id}
+        EventsChannel.broadcast_group_msg_deleted(group, message)
+
+        {:reply, {:ok, %{id: message.id}}, socket}
+
+      nil ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+      {:error, _changeset} ->
+        {:reply, {:error, %{message: "Failed to delete message."}}, socket}
+    end
+  end
+
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
     attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
@@ -120,7 +157,7 @@ defmodule StitchConnect.Web.GroupChannel do
           message = MessageQueries.load_info(message)
 
           broadcast! socket, "new_msg", message
-          EventsChannel.broadcast_group_msg(group, user, message)
+          EventsChannel.broadcast_group_new_msg(group, message)
 
           json = MessageView.render("show.json", %{message: message, user_id: user.id})
           {:reply, {:ok, json}, socket}
@@ -133,10 +170,10 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def handle_out("new_msg", payload, socket) do
+  def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg"] do
     json = MessageView.render("show.json",
       %{message: payload, user_id: socket.assigns.current_user.id})
-    push socket, "new_msg", json
+    push socket, event, json
     {:noreply, socket}
   end
 end
