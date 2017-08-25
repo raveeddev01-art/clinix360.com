@@ -5,17 +5,36 @@ class PresenceStore {
   @observable teamId = "";
   @observable onlineUsersMap = {};
 
-  constructor(rootStore) {
+  constructor(rootStore, props) {
     this.rootStore = rootStore;
+
+    this.teamId = props.teamId;
   }
 
-  connectPresence = id => {
-    this.teamId = id;
-    const lobby = socket.channel(`team:lobby:${this.teamId}`, {});
+  get teamLobbyChannelTopic() {
+    return `team:lobby:${this.teamId}`;
+  }
 
-    lobby.on("presence_state", this.onPresenceState);
-    lobby.on("presence_diff", this.onPresenceDiff);
-    lobby.join();
+  get teamLobbyChannel() {
+    return this.rootStore.channelStore.teamLobbyChannel;
+  }
+
+  @computed
+  get onlineUsers() {
+    return Object.keys(this.onlineUsersMap || {}).map(
+      id => this.onlineUsersMap[id].metas[0]
+    );
+  }
+
+  isOnline(userId) {
+    return !!this.onlineUsersMap[`${userId}`];
+  }
+
+  joinTeamLobbyChannel = () => {
+    this.rootStore.channelStore.joinTeamLobbyChannel();
+
+    this.teamLobbyChannel.on("presence_state", this.onPresenceState);
+    this.teamLobbyChannel.on("presence_diff", this.onPresenceDiff);
   };
 
   @action
@@ -28,15 +47,9 @@ class PresenceStore {
     this.onlineUsersMap = Presence.syncDiff(this.onlineUsersMap, diff);
   };
 
-  isOnline(userId) {
-    return !!this.onlineUsersMap[`${userId}`];
-  }
-
-  @computed
-  get onlineUsers() {
-    return Object.keys(this.onlineUsersMap || {}).map(
-      id => this.onlineUsersMap[id].metas[0]
-    );
+  @action
+  setTeamId(id) {
+    this.teamId = id;
   }
 }
 
