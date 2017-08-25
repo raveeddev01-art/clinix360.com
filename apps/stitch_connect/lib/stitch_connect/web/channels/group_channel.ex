@@ -88,8 +88,8 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def handle_in("edit_msg", %{"message_id" => message_id, "params" => params}, socket) do
     %{group: group, current_user: user} = socket.assigns
-    message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one!
-    case Message.update(message, params) do
+    message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
+    case message && Message.update(message, params) do
       {:ok, message} ->
         message = MessageQueries.load_info(message)
 
@@ -98,6 +98,8 @@ defmodule StitchConnect.Web.GroupChannel do
         json = MessageView.render("show.json", %{message: message, user_id: user.id})
         {:reply, {:ok, json}, socket}
 
+      nil ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
       {:error, _changeset} ->
         {:reply, {:error, %{message: "Failed to edit message."}}, socket}
     end
@@ -105,14 +107,16 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def handle_in("delete_msg", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
-    message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one!
-    case Repo.delete(message) do
+    message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
+    case message && Repo.delete(message) do
       {:ok, message} ->
         broadcast! socket, "delete_msg", %{id: message.id}
         EventsChannel.broadcast_group_msg_deleted(group, message)
 
         {:reply, {:ok, %{id: message.id}}, socket}
 
+      nil ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
       {:error, _changeset} ->
         {:reply, {:error, %{message: "Failed to delete message."}}, socket}
     end
