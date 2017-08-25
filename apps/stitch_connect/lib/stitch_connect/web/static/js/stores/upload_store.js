@@ -1,7 +1,8 @@
 import { observable, action } from "mobx";
+import Guid from "guid";
 
 class UploadStore {
-  @observable uploadProgress = {};
+  @observable uploadProgress = new Map();
   @observable title = "";
   @observable description = "";
   @observable isUploadModalVisible = false;
@@ -12,32 +13,30 @@ class UploadStore {
     this.rootStore = rootStore;
   }
 
-  @action
-  reset = () => {
-    this.isUploadModalVisible = false;
-    this.file = null;
-    this.title = "";
-    this.description = "";
-  };
-
   openFileDialog = () => {
     if (this.dropzoneRef) {
       this.dropzoneRef.open();
     }
   };
 
+  @action
   openUploadModal = file => {
     this.file = file;
     this.title = file.name;
+    this.description = "";
     this.isUploadModalVisible = true;
   };
 
   @action
   uploadFile = () => {
-    const { file } = this;
-    const key = "randomstring";
+    const { file, title, description } = this;
+    const filenameSplit = file.name.split(".");
+    const ext = filenameSplit.length
+      ? `.${filenameSplit[filenameSplit.length - 1]}`
+      : "";
+    const key = `${Guid.create()}${ext}`;
 
-    return post("/api/v1/uploads-signature", {
+    return post("/api/v1/upload-signature", {
       body: {
         filename: key,
         mimetype: file.type
@@ -55,7 +54,7 @@ class UploadStore {
         formData.append("signature", data.signature);
         formData.append("file", file);
 
-        this.uploadProgress[key] = 0;
+        this.uploadProgress.set(key, 0);
 
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
@@ -68,25 +67,38 @@ class UploadStore {
           xhr.send(formData);
         })
           .then(() => {
-            this.uploadProgress[key] = "done";
+            this.uploadProgress.set(key, "done");
             return `${data.action}/${data.key}`;
           })
           .catch(() => {
             notify.show("There was a problem uploading file", "error");
           });
       })
-      .then(fileName => {});
+      .then(url => {
+        return this.rootStore.messageStore.sendMessage(description, {
+          type: "upload",
+          fields: {
+            filename: title,
+            mimetype: file.type,
+            size_in_bytes: file.size,
+            url
+          }
+        });
+      })
+      .then(() => {
+        this.removeProgress(key);
+      });
   };
 
   @action
   removeProgress = key => {
-    delete this.uploadProgress[key];
+    this.uploadProgress.delete(key);
   };
 
   onProgress = key =>
     action(evt => {
       if (evt.lengthComputable) {
-        this.uploadProgress[key] = evt.loaded / evt.total * 100;
+        this.uploadProgress.set(key, evt.loaded / evt.total * 100);
       }
     });
 }

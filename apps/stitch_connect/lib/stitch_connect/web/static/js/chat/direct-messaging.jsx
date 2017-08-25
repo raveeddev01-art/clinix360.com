@@ -5,7 +5,6 @@ import { inject, observer } from "mobx-react";
 import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
-import UploadProgress from "../file-upload/upload-progress";
 
 @inject("groupStore", "sidemenuStore")
 @observer
@@ -37,7 +36,6 @@ export default class DirectMessaging extends Component {
       <div className="chat-wrapper">
         <div id="main">
           <TopNav />
-          <UploadProgress />
           <div className="flex-content">
             <MessagePanel />
             <Addons />

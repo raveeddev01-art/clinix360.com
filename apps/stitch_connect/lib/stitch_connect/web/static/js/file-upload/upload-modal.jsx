@@ -14,13 +14,12 @@ import Col from "react-bootstrap/lib/Col";
 export default class UploadModal extends Component {
   uploadFile = () => {
     this.props.uploadStore.uploadFile();
+    this.toggleModal();
   };
 
   toggleModal = () => {
     const { uploadStore } = this.props;
     uploadStore.isUploadModalVisible = false;
-    uploadStore.file = null;
-    uploadStore.reset();
   };
 
   handleChange = fieldName => evt => {
