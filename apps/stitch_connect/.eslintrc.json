@@ -44,6 +44,10 @@
   },
   "globals": {
     "notify": true,
-    "currentUser": false
+    "currentUser": false,
+    "post": true,
+    "get": true,
+    "remove": true,
+    "put": true
   }
 }

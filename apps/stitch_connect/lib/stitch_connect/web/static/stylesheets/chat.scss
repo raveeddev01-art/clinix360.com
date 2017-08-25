@@ -95,10 +95,36 @@
       padding-bottom: 30px;
       width: 100%;
 
+      .message-input-wrapper {
+        width: 100%;
+        position: relative;
+      }
+
+      .message-form-actions {
+        position: absolute;
+        right: 15px;
+        top: 5px;
+
+        .message-form-action-item {
+          border: none;
+          background: transparent;
+          padding: 0;
+          cursor: pointer;
+          font-size: 20px;
+          color: #ccc;
+          box-shadow: none;
+
+          &:hover {
+            color: $brand-primary;
+          }
+        }
+      }
+
       .message-text {
         height: 40px;
         border-width: 2px;
         box-shadow: none;
+        padding-right: 50px;
 
         &.editing {
           background-color: #fff7d8;
