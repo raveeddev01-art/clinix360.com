@@ -19,7 +19,7 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     if (isVisible) {
-      messageStore.readMessage(message.id);
+      messageStore.markAsRead(message.id);
     }
   };
 

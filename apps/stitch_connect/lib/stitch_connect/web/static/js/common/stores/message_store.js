@@ -44,6 +44,10 @@ class MessageStore {
     this.chatDiv = null;
   }
 
+  get eventChannel() {
+    return this.rootStore.channelStore.eventChannel;
+  }
+
   get groupChannel() {
     return this.rootStore.channelStore.groupChannel;
   }
@@ -107,7 +111,7 @@ class MessageStore {
       .receive("error", err => notify.show(err.message, "error"));
 
     this.groupChannel.on("new_msg", this.appendMessage);
-    this.groupChannel.on("read_msg", this.markAsRead);
+    this.eventChannel.on("marked_as_read", this.onMarkedAsRead);
   };
 
   sendMessage = (msg, additionalFields = {}) => {
@@ -122,18 +126,27 @@ class MessageStore {
     });
   };
 
-  readMessage(id) {
+  markAsRead(id) {
     const message = this.messages.find(m => m.id === id);
 
     if (message && message.user.id !== currentUser.id && !message.read) {
       this.groupChannel.push("mark_as_read", {
         message_ids: [message.id]
       });
-
-      // TODO: Fix manually marking the message as read
-      this.markAsRead(message);
     }
   }
+
+  @action
+  onMarkedAsRead = payload => {
+    payload.messages.forEach(markedMessage => {
+      const message = this.messages.find(m => m.id === markedMessage.id);
+
+      if (message) {
+        message.read = true;
+        this.rootStore.groupStore.decreaseUnreadMessagesCount();
+      }
+    });
+  };
 
   @action
   loadPastMessages = () => {
@@ -165,7 +178,7 @@ class MessageStore {
   appendMessage = newMessage => {
     // Increment unread messages count if it is from other user
     if (newMessage.user_id !== currentUser.id) {
-      this.rootStore.groupStore.unreadMessagesCount += 1;
+      this.rootStore.groupStore.increaseUnreadMessagesCount();
     }
 
     this.messages.unshift(newMessage);
@@ -184,15 +197,6 @@ class MessageStore {
         this.loadedInitial = true;
       });
     }, 300);
-  };
-
-  @action
-  markAsRead = msg => {
-    const message = this.messages.find(m => m.id === msg.id);
-
-    if (message) {
-      message.read = true;
-    }
   };
 
   @action

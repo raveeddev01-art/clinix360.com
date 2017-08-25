@@ -15,6 +15,18 @@ class ChannelStore {
     return this.channels[topic].join();
   }
 
+  get eventChannelTopic() {
+    return `events:${currentUser.id}`;
+  }
+
+  joinEventChannel(options = {}) {
+    return this.join(this.eventChannelTopic, options);
+  }
+
+  get eventChannel() {
+    return this.channels[this.eventChannelTopic];
+  }
+
   joinGroupChannel(options = {}) {
     return this.join(this.rootStore.groupStore.channelTopic, options);
   }

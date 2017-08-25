@@ -24,6 +24,7 @@ class RootStore {
     this.uploadStore = new UploadStore(this);
 
     // Join channels
+    this.channelStore.joinEventChannel();
     this.presenceStore.joinTeamLobbyChannel();
   }
 }
