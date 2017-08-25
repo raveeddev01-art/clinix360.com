@@ -11,14 +11,14 @@ class MessageStore {
   @observable canLoad = false;
   @observable loadedInitial = false;
   loadedAll = false;
-  channel = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
 
     autorun(() => {
+      // If group slug changes, join to messages channel of group
       if (this.rootStore.groupStore.slug) {
-        this.joinMessagesChannel(this.rootStore.groupStore.slug);
+        this.joinGroupChannel();
       }
     });
   }
@@ -42,6 +42,10 @@ class MessageStore {
 
   unloadChatDiv() {
     this.chatDiv = null;
+  }
+
+  get groupChannel() {
+    return this.rootStore.channelStore.groupChannel;
   }
 
   @computed
@@ -93,28 +97,22 @@ class MessageStore {
     return this.messages.filter(message => message.starred);
   }
 
-  // @action
-  joinMessagesChannel = groupSlug => {
-    if (this.channel) {
-      this.channel.leave();
-    }
-
+  joinGroupChannel = () => {
     this.loadedAll = false;
     this.messages = [];
 
-    this.channel = socket.channel(`groups:${groupSlug}`);
-    this.channel
-      .join()
+    this.rootStore.channelStore
+      .joinGroupChannel()
       .receive("ok", this.loadMessages)
       .receive("error", err => notify.show(err.message, "error"));
 
-    this.channel.on("new_msg", this.appendMessage);
-    this.channel.on("read_msg", this.markAsRead);
+    this.groupChannel.on("new_msg", this.appendMessage);
+    this.groupChannel.on("read_msg", this.markAsRead);
   };
 
   sendMessage = (msg, additionalFields = {}) => {
     return new Promise((resolve, reject) => {
-      this.channel
+      this.groupChannel
         .push("new_msg", Object.assign({ text_content: msg }, additionalFields))
         .receive("ok", resolve)
         .receive("error", err => {
@@ -128,7 +126,9 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message && message.user.id !== currentUser.id && !message.read) {
-      this.channel.push("mark_as_read", { message_ids: [message.id] });
+      this.groupChannel.push("mark_as_read", {
+        message_ids: [message.id]
+      });
 
       // TODO: Fix manually marking the message as read
       this.markAsRead(message);
@@ -143,7 +143,7 @@ class MessageStore {
 
     this.canLoad = false;
 
-    this.channel
+    this.groupChannel
       .push("feed", { max_id: this.messages[this.messages.length - 1].id })
       .receive("ok", this.addPastMessages)
       .receive("error", err => {
