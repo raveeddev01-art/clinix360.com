@@ -1,15 +1,16 @@
 defmodule StitchConnect.Web.Api.V1.MessageView do
   use StitchConnect.Web, :view
+  alias Stitch.{Message}
 
-  def render("index.json", %{messages: messages}) do
-    Enum.map(messages, &message_json/1)
+  def render("index.json", %{messages: messages, user_id: user_id}) do
+    Enum.map(messages, &message_json(&1, user_id))
   end
 
-  def render("show.json", %{message: message}) do
-    message_json(message)
+  def render("show.json", %{message: message, user_id: user_id}) do
+    message_json(message, user_id)
   end
 
-  def message_json(message) do
+  def message_json(message, user_id) do
     %{
       id: message.id,
       user_id: message.user_id,
@@ -25,8 +26,22 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       pinned_at: message.pinned_at,
       edited: !!message.edited_at,
       edited_at: message.edited_at,
+      read: read(user_id, message),
+      read_status: read_status(user_id, message),
     }
   end
+
+  def read(nil, _), do: false
+  def read(id, %Message{read_status: read_status}) do
+    Map.has_key?(read_status, to_string(id))
+  end
+
+  def read_status(user_id, %Message{user_id: user_id, read_status: read_status_map}) do
+    Enum.map(read_status_map, fn {id_str, read_at} ->
+      %{user_id: String.to_integer(id_str), read_at: read_at}
+    end)
+  end
+  def read_status(_, _), do: nil
 
   def user_info(%{user: user}) do
     %{ id: user.id, first_name: user.first_name, last_name: user.last_name }

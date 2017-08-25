@@ -1,3 +1,12 @@
+$body-bg: #fafafa;
+$brand-primary: #036;
+$border-color: #ccc;
+$border-color-secondary: #e4e4e4;
+
+$screen-sm: 768px;
+$screen-md: 992px;
+$screen-lg: 1200px;
+
 html,
 body {
   height: 100%;
@@ -7,7 +16,7 @@ body {
   line-height: 1.5;
   font-family: 'Lato', sans-serif;
   font-size: 14px;
-  background: #fafafa;
+  background: $body-bg;
   // overflow-y: hidden;
   // overflow-x: hidden;
 }
@@ -16,15 +25,6 @@ body {
   height: 100%;
   overflow: auto;
 }
-
-$body-bg: #fafafa;
-$brand-primary: #036;
-$border-color: #ccc;
-$border-color-secondary: #e4e4e4;
-
-$screen-sm: 768px;
-$screen-md: 992px;
-$screen-lg: 1200px;
 
 .text-muted {
   color: #999;

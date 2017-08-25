@@ -4,6 +4,8 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.EventsChannel
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
 
+  intercept ["new_msg"]
+
   def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
 
@@ -23,7 +25,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
           group ->
             messages = MessageQueries.group_latest_messages(group.id, user)
-            json = MessageView.render("index.json", %{messages: messages})
+            json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
             {:ok, %{messages: json}, assign(socket, :group, group)}
         end
       else
@@ -44,7 +46,7 @@ defmodule StitchConnect.Web.GroupChannel do
         case GroupAuthorization.can_view?(group.id, user.id) do
           true ->
             messages = MessageQueries.group_latest_messages(group.id, user)
-            json = MessageView.render("index.json", %{messages: messages})
+            json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
             {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
             {:error, %{message: "unauthorized"}}
@@ -53,20 +55,34 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   def handle_in("feed", %{"max_id" => max_id}, socket) do
-    case socket.assigns.group do
+    %{group: group, current_user: user} = socket.assigns
+
+    case group do
       {:create_dm, _, _} ->
         {:reply, {:ok, %{messages: []}}, socket}
 
       group ->
-        messages = MessageQueries.group_latest_messages(group.id, socket.assigns.current_user, max_id: max_id)
-        json = MessageView.render("index.json", %{messages: messages})
+        messages = MessageQueries.group_latest_messages(group.id, user, max_id: max_id)
+        json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
         {:reply, {:ok, %{messages: json}}, socket}
     end
   end
 
+
   def handle_in("new_msg", params, socket) do
     %{group: group, current_user: user} = socket.assigns
     do_new_msg(socket, group, user, params)
+  end
+
+  def handle_in("mark_as_read", %{"message_ids" => message_ids}, socket) do
+    user = socket.assigns.current_user
+    {_, messages} = Message.mark_as_read(user, message_ids)
+    messages = MessageQueries.load_info(messages)
+
+    EventsChannel.broadcast_marked_as_read(user, messages)
+
+    json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+    {:reply, {:ok, %{messages: json}}, socket}
   end
 
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
@@ -103,10 +119,11 @@ defmodule StitchConnect.Web.GroupChannel do
       case Repo.insert(changeset) do
         {:ok, message} ->
           message = MessageQueries.load_info(message)
-          json = MessageView.render("show.json", %{message: message})
 
-          broadcast! socket, "new_msg", json
+          broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_msg(group, user, message)
+
+          json = MessageView.render("show.json", %{message: message, user_id: user.id})
           {:reply, {:ok, json}, socket}
 
         {:error, _changeset} ->
@@ -115,5 +132,12 @@ defmodule StitchConnect.Web.GroupChannel do
     else
       {:reply, {:error, %{message: "Only members can write messages."}}, socket}
     end
+  end
+
+  def handle_out("new_msg", payload, socket) do
+    json = MessageView.render("show.json",
+      %{message: payload, user_id: socket.assigns.current_user.id})
+    push socket, "new_msg", json
+    {:noreply, socket}
   end
 end

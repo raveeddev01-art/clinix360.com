@@ -27,6 +27,7 @@
     "react-scroll": "^1.5.4",
     "react-select": "^1.0.0-rc.5",
     "react-toastr": "^2.8.2",
+    "react-visibility-sensor": "^3.10.1",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
