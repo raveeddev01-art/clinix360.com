@@ -209,6 +209,7 @@ class Message extends Component {
         scrollCheck
         scrollThrottle={100}
         containment={chatDiv}
+        offset={{ top: 70 }}
       >
         <div className="message">
           <div>
