@@ -168,6 +168,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
       |> post_as_user(user, "/api/v1/groups/#{group.id}/messages", %{
         message: %{
           type: "upload",
+          text_content: "comment",
           fields: %{
             filename: "foobar.pdf",
             mimetype: "pdf",
