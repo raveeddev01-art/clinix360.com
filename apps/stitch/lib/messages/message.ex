@@ -38,20 +38,20 @@ defmodule Stitch.Message do
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:fields, :type])
+    |> cast(params, [:fields, :type, :text_content])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, @valid_types)
+  end
+
+  def create(group_id, user_id, %{"type" => "upload", "text_content" => text_content, "fields" => fields}) do
+    %Message{group_id: group_id, user_id: user_id}
+    |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload"})
+    |> Repo.insert
   end
 
   def create(group_id, user_id, %{"type" => "chat", "text_content" => text_content}) do
     %Message{group_id: group_id, user_id: user_id}
     |> changeset(%{text_content: text_content, type: "chat"})
-    |> Repo.insert
-  end
-
-  def create(group_id, user_id, %{"type" => "upload", "fields" => fields}) do
-    %Message{group_id: group_id, user_id: user_id}
-    |> upload_changeset(%{fields: fields, type: "upload"})
     |> Repo.insert
   end
 

@@ -113,7 +113,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
     if GroupAuthorization.is_member?(group.id, user.id) do
-      attrs = %{ "text_content" => content, "type" => Map.get(attrs, "type", "chat"), "fields" => attrs["fields"] }
+      attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
 
       case Message.create(group.id, user.id, attrs) do
         {:ok, message} ->
