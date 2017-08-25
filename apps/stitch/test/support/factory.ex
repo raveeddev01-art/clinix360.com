@@ -9,12 +9,12 @@ defmodule Stitch.Factory do
       phone_number: "1231231234",
       roles: ["member"],
       onboarded: true,
-      token: sequence(:token, &"ezkLsxjGxnyU_mgcHepbliFeX1#{&1 |> Integer.to_string |> String.rjust(5, ?0)}-")
+      token: sequence(:token, &"ezkLsxjGxnyU_mgcHepbliFeX1#{&1 |> Integer.to_string |> String.pad_leading(5, "0")}-")
     }
   end
 
   def team_factory do
-    random_id = :rand.uniform(100)
+    random_id = sequence("team")
     %Stitch.Team{
       name: "Starbucks-#{random_id}",
       slug: "starbucks-#{random_id}",

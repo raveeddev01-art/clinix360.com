@@ -22,6 +22,7 @@ defmodule Stitch.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Stitch.DataCase
+      import Stitch.Factory
     end
   end
 
