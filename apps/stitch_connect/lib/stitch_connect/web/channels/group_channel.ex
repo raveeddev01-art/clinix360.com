@@ -152,7 +152,7 @@ defmodule StitchConnect.Web.GroupChannel do
     if GroupAuthorization.is_member?(group.id, user.id) do
       attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
 
-      case Message.create(group.id, user.id, attrs) do
+      case Message.create(group.id, user, attrs) do
         {:ok, message} ->
           message = MessageQueries.load_info(message)
 

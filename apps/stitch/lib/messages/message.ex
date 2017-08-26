@@ -44,20 +44,20 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, @valid_types)
   end
 
-  def create(group_id, user_id, %{"type" => "upload", "text_content" => text_content, "fields" => fields}) do
-    %Message{group_id: group_id, user_id: user_id}
+  def create(group_id, user, %{"type" => "upload", "text_content" => text_content, "fields" => fields}) do
+    %Message{group_id: group_id, user_id: user.id}
     |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload"})
     |> Repo.insert
   end
 
-  def create(group_id, user_id, %{"type" => "chat", "text_content" => text_content}) do
+  def create(group_id, user, %{"type" => "chat", "text_content" => text_content}) do
     group = Stitch.GroupQueries.get_by_id(group_id)
     users = Repo.preload(group, :users).users
 
-    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, text_content)
+    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, user, text_content)
 
     Repo.transaction fn ->
-      message_insert = %Message{group_id: group_id, user_id: user_id}
+      message_insert = %Message{group_id: group_id, user_id: user.id}
       |> changeset(%{text_content: text_content, type: "chat", mentioned_user_ids: mentioned_user_ids})
       |> Repo.insert
 
@@ -78,21 +78,22 @@ defmodule Stitch.Message do
     end
   end
 
-  def create(group_id, user_id, %{"text_content" => text_content}) do
-    create(group_id, user_id, %{"type" => "chat", "text_content" => text_content})
+  def create(group_id, user, %{"text_content" => text_content}) do
+    create(group_id, user, %{"type" => "chat", "text_content" => text_content})
   end
 
-  def create(group_id, user_id, attributes) do
+  def create(group_id, _user, attributes) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
     {:error, changeset}
   end
 
   def update(message, attributes) do
     group = Stitch.GroupQueries.get_by_id(message.group_id)
+    author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
 
     previous_mentioned_user_ids = message.mentioned_user_ids
-    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, attributes["text_content"])
+    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, author, attributes["text_content"])
 
     Repo.transaction fn ->
       message_update = message
@@ -125,8 +126,6 @@ defmodule Stitch.Message do
   def delete(message) do
     group = Stitch.GroupQueries.get_by_id(message.group_id)
     users = Repo.preload(group, :users).users
-
-    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, message.text_content)
 
     Repo.transaction fn ->
       Stitch.GroupUser
