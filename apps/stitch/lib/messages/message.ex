@@ -54,8 +54,7 @@ defmodule Stitch.Message do
     group = Stitch.GroupQueries.get_by_id(group_id)
     users = Repo.preload(group, :users).users
 
-    mention_user_keywords = Stitch.Message.Mention.user_mention_keywords(users)
-    mentioned_user_ids = Stitch.Message.Mention.message_mentions(text_content, mention_user_keywords)
+    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, text_content)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user_id}
@@ -93,8 +92,7 @@ defmodule Stitch.Message do
     users = Repo.preload(group, :users).users
 
     previous_mentioned_user_ids = message.mentioned_user_ids
-    mention_user_keywords = Stitch.Message.Mention.user_mention_keywords(users)
-    mentioned_user_ids = Stitch.Message.Mention.message_mentions(attributes["text_content"], mention_user_keywords)
+    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, attributes["text_content"])
 
     Repo.transaction fn ->
       message_update = message
@@ -128,8 +126,7 @@ defmodule Stitch.Message do
     group = Stitch.GroupQueries.get_by_id(message.group_id)
     users = Repo.preload(group, :users).users
 
-    mention_user_keywords = Stitch.Message.Mention.user_mention_keywords(users)
-    mentioned_user_ids = Stitch.Message.Mention.message_mentions(message.text_content, mention_user_keywords)
+    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, message.text_content)
 
     Repo.transaction fn ->
       Stitch.GroupUser

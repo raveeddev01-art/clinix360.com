@@ -1,4 +1,13 @@
 defmodule Stitch.Message.Mention do
+   @doc """
+   Takes a list of users and a mesage and returns which out of those users should be notified
+   by this message.
+   """
+   def notify_user_ids(users, message) do
+    mention_user_keywords = user_mention_keywords(users)
+    message_mentions(message, mention_user_keywords)
+  end
+
   @doc """
   Initially, use user nicknames.
   Expand later to add other keywords user might wish to be notified of, depending on user group preferences.
