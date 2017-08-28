@@ -138,6 +138,12 @@ defmodule Stitch.Message do
     end
   end
 
+  def read_mentions(user, []), do: {:ok, nil}
+  def read_mentions(user, [message_id|_] = message_ids) do
+    message = Repo.get(Message, message_id)
+    group = Repo.preload(message, :group).group
+    read_mentions(group, user, message_ids)
+  end
   def read_mentions(group, user, message_ids) do
     ids = "#{message_ids |> Enum.join(" - ")}"
     Stitch.GroupUser
@@ -163,6 +169,7 @@ defmodule Stitch.Message do
     message_ids = List.wrap(message_ids)
     value = %{user.id => DateTime.utc_now}
 
+    read_mentions(user, message_ids)
     Message
     |> where([m], m.id in ^message_ids and m.user_id != ^user.id)
     |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user.id)))
