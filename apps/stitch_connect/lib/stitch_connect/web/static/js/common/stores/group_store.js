@@ -60,33 +60,45 @@ class GroupStore {
 
     this.loading = true;
     get(`/api/v1/groups?slug=${slug}`).then(resp => {
+      this.loading = false;
+
       const { data } = resp;
 
       this.id = data.id;
+      this.slug = data.slug;
       this.name = data.name;
       this.description = data.description;
       this.public = data.public;
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.groupType = "group";
+      this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
-
-      this.loading = false;
-      this.loadUsers();
-
-      this.slug = data.slug;
     });
   };
 
   @action
   joinSingleDM = user => {
     const userIds = [currentUser.id, user.id].sort((a, b) => a > b);
-    this.users = [user];
-    this.joined = true;
-    this.public = false;
-    this.name = user.first_name;
-    this.groupType = "single-dm";
-    this.slug = `__dm:${userIds.join(".")}`;
+    const slug = `__dm:${userIds.join(".")}`;
+
+    this.loading = true;
+    get(`/api/v1/groups?slug=${slug}`).then(resp => {
+      this.loading = false;
+
+      const { data } = resp;
+
+      this.id = data.id;
+      this.slug = data.slug;
+      this.name = user.first_name; // data.name;
+      this.description = data.description;
+      this.public = data.public;
+      this.favorite = !!data.favorite;
+      this.joined = data.joined;
+      this.groupType = "single-dm";
+      this.users = data.users;
+      this.unreadMessagesCount = data.unread_messages_count;
+    });
   };
 
   @action
@@ -97,16 +109,24 @@ class GroupStore {
     }
 
     userIds = userIds.sort((a, b) => a > b);
-
+    this.loading = true;
     return post(`/api/v1/groups/multi-dm`, {
       body: { user_ids: userIds }
     }).then(resp => {
-      this.users = [...users];
-      this.joined = true;
-      this.public = false;
-      this.name = users.map(user => user.first_name).join(", ");
+      this.loading = false;
+
+      const { data } = resp;
+
+      this.id = data.id;
+      this.slug = data.slug;
+      this.users = data.users;
+      this.name = data.users.map(user => user.first_name).join(", ");
+      this.description = data.description;
+      this.public = data.public;
+      this.favorite = !!data.favorite;
+      this.joined = data.joined;
       this.groupType = "multi-dm";
-      this.slug = `__dm:${userIds.join(".")}`;
+      this.unreadMessagesCount = data.unread_messages_count;
     });
   };
 
