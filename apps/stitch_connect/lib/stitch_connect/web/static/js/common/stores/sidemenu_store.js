@@ -1,5 +1,4 @@
 import { observable, computed, action } from "mobx";
-import { Presence } from "phoenix";
 
 class SidemenuStore {
   @observable teamName = "";

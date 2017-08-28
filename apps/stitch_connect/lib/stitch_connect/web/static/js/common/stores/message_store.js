@@ -77,7 +77,8 @@ class MessageStore {
                 moment(lastMessage.inserted_at).diff(
                   message.inserted_at,
                   "minutes"
-                ) >= -30
+                ) >= -30 &&
+                message.type === `user_message`
               ) {
                 lastMessagePool.push(message);
               } else {
