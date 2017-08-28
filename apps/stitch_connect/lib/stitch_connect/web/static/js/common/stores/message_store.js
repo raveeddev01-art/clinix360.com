@@ -177,11 +177,12 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
+    if (newMessage.group_id !== this.rootStore.groupStore.id) {
+      return;
+    }
+
     // Increment unread messages count if it is from other user
-    if (
-      newMessage.group_id === this.rootStore.groupStore.id &&
-      newMessage.user_id !== currentUser.id
-    ) {
+    if (newMessage.user_id !== currentUser.id) {
       this.rootStore.groupStore.increaseUnreadMessagesCount();
     }
 
