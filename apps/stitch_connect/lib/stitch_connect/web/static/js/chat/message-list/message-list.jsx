@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PropTypes } from "react";
 import { inject, observer } from "mobx-react";
 import { Link, Element } from "react-scroll";
 
@@ -8,6 +8,18 @@ import DateSeparator from "./date-separator";
 @inject("messageStore")
 @observer
 class MessageList extends Component {
+  componentDidMount() {
+    const { messageStore } = this.props;
+
+    messageStore.loadChatDiv(this.chatDiv);
+  }
+
+  componentWillUnmount() {
+    const { messageStore } = this.props;
+
+    messageStore.unloadChatDiv();
+  }
+
   onScrollTop = () => {
     this.props.messageStore.loadPastMessages();
   };
@@ -21,7 +33,12 @@ class MessageList extends Component {
     const { messagesByDate } = messageStore;
 
     return (
-      <div id="chat">
+      <div
+        id="chat"
+        ref={div => {
+          this.chatDiv = div;
+        }}
+      >
         {Object.keys(messagesByDate).map(date =>
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />

@@ -30,7 +30,7 @@ class DotOptions extends Component {
           <MenuItem onSelect={this._toggleAddonMenu("mentions")}>
             <i className="fa fa-at" /> Mentions
           </MenuItem>
-          <MenuItem>
+          <MenuItem onSelect={this._toggleAddonMenu("starred")}>
             <i className="fa fa-star" /> Starred
           </MenuItem>
           <MenuItem>

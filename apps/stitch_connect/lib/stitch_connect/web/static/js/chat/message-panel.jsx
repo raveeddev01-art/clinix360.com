@@ -3,19 +3,31 @@ import { inject, observer } from "mobx-react";
 
 import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
+import UploadProgress from "../file-upload/upload-progress";
 
 @inject("groupStore")
 @observer
 export default class MessagePanel extends Component {
   handleJoin = () => {
     const { groupStore: group } = this.props;
+
     group.join();
   };
+
   render() {
     const { groupStore: group } = this.props;
 
     return (
       <div id="chat-container">
+        <div className="container-bars">
+          {group.unreadMessagesCount
+            ? <div className="unread-messages-tooltip">
+                {group.unreadMessagesCount} new message{group.unreadMessagesCount > 1 && "s"}
+              </div>
+            : null}
+          <UploadProgress />
+        </div>
+
         <MessageList />
         <div className="flex-footer">
           {group.joined

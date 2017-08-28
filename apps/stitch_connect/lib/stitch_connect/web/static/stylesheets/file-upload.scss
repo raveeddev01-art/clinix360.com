@@ -1,0 +1,30 @@
+.upload-modal {
+  .control-label {
+    small {
+      font-weight: normal;
+      color: #ccc;
+    }
+  }
+}
+
+.dropzone-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1000000;
+  font-size: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  div {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 40px;
+    border-radius: 10px;
+    pointer-events: none;
+  }
+}
