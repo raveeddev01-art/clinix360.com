@@ -7,15 +7,39 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
-import UserMention from "./user-mention";
+import VisibilitySensor from "react-visibility-sensor";
+
+import { confirm } from "../../common/modals";
+import MessageText from "../../common/components/message-text/message-text";
 
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
 class Message extends Component {
+  onVisibleChange = isVisible => {
+    const { message, messageStore } = this.props;
+
+    if (isVisible) {
+      messageStore.markAsRead(message.id);
+    }
+  };
+
   edit = () => {
     const { message, messageStore } = this.props;
 
     messageStore.startEdit(message.id);
+  };
+
+  delete = () => {
+    confirm({
+      title: "Delete Message",
+      message:
+        "Are you sure you want to delete this message? This cannot be undone.",
+      okLabel: "Delete"
+    }).then(result => {
+      const { message, messageStore } = this.props;
+
+      messageStore.delete(message.id);
+    });
   };
 
   copy = () => {
@@ -34,16 +58,26 @@ class Message extends Component {
     messageStore.toggleStar(message.id);
   };
 
-  renderEdited(message) {
-    const { updated, updated_at: updatedAt } = message;
+  shouldSenseVisibility() {
+    const { message, messageStore } = this.props;
 
-    if (!updated) {
+    return (
+      messageStore.loadedInitial &&
+      message.user.id !== currentUser.id &&
+      !message.read
+    );
+  }
+
+  renderEdited(message) {
+    const { edited, edited_at: editedAt } = message;
+
+    if (!edited) {
       return null;
     }
 
     const editedTooltip = (
       <Tooltip id="edited-tooltip">
-        {moment(updatedAt).calendar()}
+        {moment(editedAt).calendar()}
       </Tooltip>
     );
 
@@ -133,13 +167,20 @@ class Message extends Component {
               </span>
             </MenuItem>}
 
-          <MenuItem>
-            <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+          {mine &&
+            <MenuItem onClick={this.delete}>
+              <span>
+                <i className="fa fa-trash" />&nbsp;Delete
+              </span>
+            </MenuItem>}
+
+          <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+            <MenuItem>
               <span>
                 <i className="fa fa-paste" />&nbsp;Copy
               </span>
-            </CopyToClipboard>
-          </MenuItem>
+            </MenuItem>
+          </CopyToClipboard>
           <MenuItem onClick={this.toggleStar}>
             <span>
               <i className="fa fa-star-o" />&nbsp;{message.starred ? "Unstar" : "Star"}
@@ -155,47 +196,32 @@ class Message extends Component {
     );
   }
 
-  renderMessage() {
-    const { message, sidemenuStore } = this.props;
-    const words = message.text_content.split(" ");
-    const usernameMap = sidemenuStore.usernameMap;
-
-    return words.reduce((prev, word, i) => {
-      if (word.indexOf("@") === 0) {
-        const username = word.substr(1);
-        if (usernameMap[username]) {
-          return prev.concat(
-            <UserMention
-              key={`usermention_${i}`}
-              user={usernameMap[username]}
-            />
-          );
-        }
-      }
-
-      if (typeof prev[prev.length - 1] === "string") {
-        prev[prev.length - 1] += ` ${word}`;
-        return prev;
-      }
-
-      return prev.concat(word);
-    }, []);
-  }
-
   render() {
-    const { message } = this.props;
+    const { message, messageStore, sidemenuStore } = this.props;
+    const { usernameMap } = sidemenuStore;
+    const { chatDiv } = messageStore;
 
     return (
-      <div className="message">
-        <div>
-          {this.renderMessage(message)}
-          {this.renderEdited(message)}
-        </div>
+      <VisibilitySensor
+        active={this.shouldSenseVisibility()}
+        onChange={this.onVisibleChange}
+        intervalCheck={false}
+        scrollCheck
+        scrollThrottle={100}
+        containment={chatDiv}
+        offset={{ top: 70 }}
+      >
+        <div className="message">
+          <div>
+            <MessageText message={message} />
+            {this.renderEdited(message)}
+          </div>
 
-        {this.renderStar(message)}
-        {this.renderPin(message)}
-        {this.renderActions(message)}
-      </div>
+          {this.renderStar(message)}
+          {this.renderPin(message)}
+          {this.renderActions(message)}
+        </div>
+      </VisibilitySensor>
     );
   }
 }

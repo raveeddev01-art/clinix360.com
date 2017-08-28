@@ -26,6 +26,9 @@
     "no-undef": "warn",
     "no-unreachable": "warn",
     "no-unused-vars": "warn",
+    "no-underscore-dangle": "off",
+    "react/forbid-prop-types": "off",
+    "react/prefer-stateless-function": "off",
     "react/prop-types": [
       "error",
       {
@@ -41,6 +44,11 @@
     "valid-typeof": "warn"
   },
   "globals": {
-    "currentUser": false
+    "notify": true,
+    "currentUser": false,
+    "post": true,
+    "get": true,
+    "remove": true,
+    "put": true
   }
 }

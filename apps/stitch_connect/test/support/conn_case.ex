@@ -20,6 +20,7 @@ defmodule StitchConnect.Web.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       import StitchConnect.Web.Router.Helpers
+      import Stitch.Factory
 
       # The default endpoint for testing
       @endpoint StitchConnect.Web.Endpoint
@@ -28,15 +29,30 @@ defmodule StitchConnect.Web.ConnCase do
         %{ conn | host: "#{subdomain}.localhost" }
       end
 
+      def get_as_user(conn, user, url, params \\ %{}) do
+        get(conn, "#{url}?authenticationToken=#{user.token}", params)
+      end
+
       def post_as_user(conn, user, url, params \\ %{}) do
-        conn
-        |> post("#{url}?authenticationToken=#{user.token}", params)
+        post(conn, "#{url}?authenticationToken=#{user.token}", params)
+      end
+
+      def put_as_user(conn, user, url, params \\ %{}) do
+        put(conn, "#{url}?authenticationToken=#{user.token}", params)
+      end
+
+      def delete_as_user(conn, user, url, params \\ %{}) do
+        delete(conn, "#{url}?authenticationToken=#{user.token}", params)
       end
     end
   end
 
 
-  setup _tags do
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
+    end
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 

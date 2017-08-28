@@ -1,10 +1,5 @@
 defmodule Stitch.MessageQueriesTest do
-  use ExUnit.Case, async: true
-  import Stitch.Factory
-
-  setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
-  end
+  use Stitch.DataCase, async: true
 
   describe "Stitch.MessageQueries.search/2" do
     test "returns messages containing that word" do
@@ -46,5 +41,18 @@ defmodule Stitch.MessageQueriesTest do
       assert Enum.find(result, &( &1.id == private_member_message.id ))
       refute Enum.find(result, &( &1.id == private_message.id ))
     end
+  end
+
+  test "Stitch.MessageQueries.user_starred_messages/1" do
+    user = insert(:user)
+    message = insert(:message)
+    {:ok, true, _message_action} = Stitch.MessageAction.toggle_star(message, user)
+    _unstarred_message = insert(:message)
+
+    starred_message_ids =
+      Stitch.MessageQueries.user_starred_messages(user.id)
+      |> Enum.map(& &1.id)
+
+    assert starred_message_ids == [message.id]
   end
 end

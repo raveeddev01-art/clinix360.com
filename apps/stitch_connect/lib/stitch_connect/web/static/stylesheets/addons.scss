@@ -68,6 +68,7 @@
   }
 
   .addon-left-panel {
+    padding-top: 10px;
     transform: translateX(-100%);
     transition: -webkit-transform 0.45s cubic-bezier(0.5, 0, 0, 1),
       transform 0.45s cubic-bezier(0.5, 0, 0, 1), opacity 0.125s ease-out 0.1s;

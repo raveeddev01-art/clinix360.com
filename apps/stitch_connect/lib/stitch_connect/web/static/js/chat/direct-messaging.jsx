@@ -23,6 +23,11 @@ export default class DirectMessaging extends Component {
     if (usernames.length === 1) {
       const user = users.find(u => u.username === usernames[0]);
       this.props.groupStore.joinSingleDM(user);
+    } else {
+      const dmUsers = usernames.map(username =>
+        users.find(u => u.username === username)
+      );
+      this.props.groupStore.joinMultiDM(dmUsers);
     }
   };
 

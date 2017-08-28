@@ -4,8 +4,6 @@ import { render } from "react-dom";
 import AuthenticationRouter from "../authentication/authentication_router";
 import Login from "../authentication/login/login";
 import Webapp from "../webapp";
-import Team from "../sidemenu/team";
-import Addons from "../addons/addons";
 import Admin from "../admin/admin";
 import Invitation from "../invitation/index";
 import Toastr from "../common/components/toastr/toastr";

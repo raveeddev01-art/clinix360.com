@@ -4,8 +4,11 @@ import cx from "classnames";
 
 import Info from "./components/info/info";
 import Directory from "./components/directory/directory";
+import MessageSearch from "./components/message-search/message-search";
+import GlobalStarredMessages from "./components/global-starred-messages/global-starred-messages";
 
 import PeopleDetail from "./components/people-detail/people-detail";
+import Mentions from "./components/mentions/mentions";
 
 @inject("addonStore")
 @observer
@@ -55,6 +58,10 @@ class Addons extends Component {
           <div className={leftPanelClass}>
             {addonStore.addonPanelType === "info" && <Info />}
             {addonStore.addonPanelType === "directory" && <Directory />}
+            {addonStore.addonPanelType === "search" && <MessageSearch />}
+            {addonStore.addonPanelType === "mentions" && <Mentions />}
+            {addonStore.addonPanelType === "starred" &&
+              <GlobalStarredMessages />}
           </div>
 
           <div className={rightPanelClass}>

@@ -1,12 +1,6 @@
 defmodule StitchConnect.Web.MessageControllerTest do
   use StitchConnect.Web.ConnCase, async: true
-  import StitchConnect.Web.Router.Helpers
-  import Stitch.Factory
   alias Stitch.{MessageQueries}
-
-  setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
-  end
 
   test "POST /api/v1/messages/:id/toggle-star", %{conn: conn} do
     user = insert(:user)
@@ -55,6 +49,88 @@ defmodule StitchConnect.Web.MessageControllerTest do
     assert json["pinned_at"] == nil
   end
 
+  describe "PUT /api/v1/messages/:id" do
+    test "user can edit his own text message", %{conn: conn} do
+      user = insert(:user)
+      message = insert(:message, user: user)
+      insert(:group_user, user: user, group: message.group)
+      team = message.group.team
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> put_as_user(user, "/api/v1/messages/#{message.id}", %{
+        message: %{
+          text_content: "new message text"
+        }
+      })
+
+      json = json_response(conn, 200)
+      assert json["text_content"] == "new message text"
+      assert json["edited"] == true
+      assert json["edited_at"] != nil
+      message = MessageQueries.get_by_id(message.id)
+      assert message.text_content == "new message text"
+      assert message.edited_at != nil
+    end
+
+    test "user can't edit other users' messages", %{conn: conn} do
+      user = insert(:user)
+      user_eve = insert(:user)
+      message = insert(:message, user: user)
+      insert(:group_user, user: user, group: message.group)
+      insert(:group_user, user: user_eve, group: message.group)
+      team = message.group.team
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> put_as_user(user_eve, "/api/v1/messages/#{message.id}", %{
+        message: %{
+          text_content: "new message text"
+        }
+      })
+
+      json = json_response(conn, 401)
+      assert json["message"] == "You can't edit other users' messages"
+      message = MessageQueries.get_by_id(message.id)
+      assert message.text_content == "lorem ipsum"
+      assert message.edited_at == nil
+    end
+  end
+
+  describe "DELETE /api/v1/messages/:id" do
+    test "user can delete his own messages", %{conn: conn} do
+      user = insert(:user)
+      message = insert(:message, user: user)
+      insert(:group_user, user: user, group: message.group)
+      team = message.group.team
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> delete_as_user(user, "/api/v1/messages/#{message.id}")
+
+      assert response(conn, 204)
+      message = MessageQueries.get_by_id(message.id)
+      assert message == nil
+    end
+
+    test "user can't delete other users' messages", %{conn: conn} do
+      user = insert(:user)
+      user_eve = insert(:user)
+      message = insert(:message, user: user)
+      insert(:group_user, user: user, group: message.group)
+      insert(:group_user, user: user_eve, group: message.group)
+      team = message.group.team
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> delete_as_user(user_eve, "/api/v1/messages/#{message.id}")
+
+      json = json_response(conn, 401)
+      assert json["message"] == "You can't delete other users' messages"
+      assert MessageQueries.get_by_id(message.id) != nil
+    end
+  end
+
   describe "POST /api/v1/groups/:group_id/messages" do
     test "default message with text", %{conn: conn} do
       user = insert(:user)
@@ -87,6 +163,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
       |> post_as_user(user, "/api/v1/groups/#{group.id}/messages", %{
         message: %{
           type: "upload",
+          text_content: "comment",
           fields: %{
             filename: "foobar.pdf",
             mimetype: "pdf",
@@ -137,5 +214,21 @@ defmodule StitchConnect.Web.MessageControllerTest do
       json = json_response(conn, 422)
       assert json["message"] == "Type is not supported"
     end
+  end
+
+  test "GET /api/v1/groups/:id/messages", %{conn: conn} do
+    user = insert(:user)
+    message = insert(:message, user: user)
+    team = message.group.team
+
+    conn = conn
+    |> subdomain(team.slug)
+    |> get_as_user(user, "/api/v1/groups/#{message.group.id}/messages")
+
+    json = json_response(conn, 200)
+    message = json |> List.first
+    assert message["starred"] == false
+    assert message["edited"] == false
+    assert message["pinned"] == false
   end
 end

@@ -1,24 +1,55 @@
-import { observable, action, computed } from "mobx";
+import { observable, action, computed, autorun } from "mobx";
 import moment from "moment";
 import _ from "lodash";
 import { animateScroll } from "react-scroll";
 
 class MessageStore {
+  @observable chatDiv = null;
   @observable messages = [];
   @observable messageInEdit = null;
   @observable textInEdit = "";
   @observable canLoad = false;
+  @observable loadedInitial = false;
   loadedAll = false;
-  channel = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+
+    autorun(() => {
+      // If group slug changes, join to messages channel of group
+      if (this.rootStore.groupStore.slug) {
+        this.joinGroupChannel();
+      }
+    });
   }
 
-  scrollToBottom() {
+  scrollToBottom(duration = 1000, cb = null) {
     animateScroll.scrollToBottom({
-      containerId: "chat"
+      containerId: "chat",
+      duration
     });
+
+    setTimeout(() => {
+      if (typeof cb === "function") {
+        cb();
+      }
+    }, duration);
+  }
+
+  loadChatDiv(div) {
+    this.chatDiv = div;
+  }
+
+  unloadChatDiv() {
+    this.chatDiv = null;
+  }
+
+  get eventChannel() {
+    return this.rootStore.channelStore.eventChannel;
+  }
+
+  get groupChannel() {
+    return this.rootStore.channelStore.groupChannel;
   }
 
   @computed
@@ -46,7 +77,8 @@ class MessageStore {
                 moment(lastMessage.inserted_at).diff(
                   message.inserted_at,
                   "minutes"
-                ) >= -30
+                ) >= -30 &&
+                message.type === `user_message`
               ) {
                 lastMessagePool.push(message);
               } else {
@@ -70,44 +102,62 @@ class MessageStore {
     return this.messages.filter(message => message.starred);
   }
 
-  @action
-  joinChannel = channelName => {
-    if (this.channel) {
-      this.channel.leave();
-    }
-
+  joinGroupChannel = () => {
     this.loadedAll = false;
     this.messages = [];
 
-    this.channel = socket.channel(channelName);
-    this.channel
-      .join()
+    this.rootStore.channelStore
+      .joinGroupChannel()
       .receive("ok", this.loadMessages)
       .receive("error", err => notify.show(err.message, "error"));
-    this.channel.on("new_msg", this.appendMessage);
+
+    this.groupChannel.on("new_msg", this.onNewMessage);
+    this.eventChannel.on("marked_as_read", this.onMarkedAsRead);
   };
 
-  sendMessage = msg => {
+  sendMessage = (msg, additionalFields = {}) => {
     return new Promise((resolve, reject) => {
-      this.channel
-        .push("new_msg", { text_content: msg })
+      this.groupChannel
+        .push("new_msg", Object.assign({ text_content: msg }, additionalFields))
         .receive("ok", resolve)
         .receive("error", err => {
-          window.notify.show(err.message, "error");
+          notify.show(err.message, "error");
           reject(err);
         });
     });
   };
 
+  markAsRead(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message && message.user.id !== currentUser.id && !message.read) {
+      this.groupChannel.push("mark_as_read", {
+        message_ids: [message.id]
+      });
+    }
+  }
+
+  @action
+  onMarkedAsRead = payload => {
+    payload.messages.forEach(markedMessage => {
+      const message = this.messages.find(m => m.id === markedMessage.id);
+
+      if (message) {
+        message.read = true;
+        this.rootStore.groupStore.decreaseUnreadMessagesCount();
+      }
+    });
+  };
+
   @action
   loadPastMessages = () => {
-    if (!this.canLoad || this.loadedAll) {
+    if (!this.canLoad || this.loadedAll || !this.messages.length) {
       return;
     }
 
     this.canLoad = false;
 
-    this.channel
+    this.groupChannel
       .push("feed", { max_id: this.messages[this.messages.length - 1].id })
       .receive("ok", this.addPastMessages)
       .receive("error", err => {
@@ -126,8 +176,16 @@ class MessageStore {
   };
 
   @action
-  appendMessage = data => {
-    this.messages.unshift(data);
+  onNewMessage = newMessage => {
+    // Increment unread messages count if it is from other user
+    if (
+      newMessage.group_id === this.rootStore.groupStore.id &&
+      newMessage.user_id !== currentUser.id
+    ) {
+      this.rootStore.groupStore.increaseUnreadMessagesCount();
+    }
+
+    this.messages.unshift(newMessage);
 
     setTimeout(() => {
       this.scrollToBottom();
@@ -139,7 +197,9 @@ class MessageStore {
     this.messages = data.messages;
 
     setTimeout(() => {
-      this.scrollToBottom();
+      this.scrollToBottom(1000, () => {
+        this.loadedInitial = true;
+      });
     }, 300);
   };
 
@@ -176,13 +236,23 @@ class MessageStore {
       return;
     }
 
-    // TODO: trigger remote api
-    this.messageInEdit.text_content = this.textInEdit;
-    this.messageInEdit.updated = true;
-    this.messageInEdit.updated_at = new Date();
+    window
+      .put(`/api/v1/messages/${this.messageInEdit.id}`, {
+        body: {
+          message: {
+            text_content: this.textInEdit
+          }
+        }
+      })
+      .then(resp => {
+        const { data } = resp;
 
-    // TODO: Run cancelling in api promise callback
-    this.cancelEdit();
+        this.messageInEdit.edited = data.edited;
+        this.messageInEdit.edited_at = data.edited_at;
+        this.messageInEdit.text_content = data.text_content;
+
+        this.cancelEdit();
+      });
   }
 
   @action
@@ -192,14 +262,32 @@ class MessageStore {
   }
 
   @action
+  delete(id) {
+    const messageIndex = this.messages.findIndex(m => m.id === id);
+
+    if (messageIndex > -1) {
+      window.remove(`/api/v1/messages/${id}`).then(() => {
+        this.messages.splice(messageIndex, 1);
+      });
+    }
+  }
+
+  @action
   toggleStar(id) {
     const message = this.messages.find(m => m.id === id);
+    const globalStarredMessageStore = this.rootStore.globalStarredMessageStore;
 
     if (message) {
-      post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
+      window.post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
         const update = resp.data;
 
         message.starred = update.starred;
+
+        if (message.starred) {
+          globalStarredMessageStore.unshiftStarredMessage(message);
+        } else {
+          globalStarredMessageStore.removeStarredMessage(message);
+        }
       });
     }
   }
@@ -209,7 +297,7 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
+      window.post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
         const update = resp.data;
 
         message.pinned = update.pinned;

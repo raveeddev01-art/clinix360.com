@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
 
+import InsertMenu from "./insert-menu";
+
 @inject("messageStore", "sidemenuStore", "groupStore", "presenceStore")
 @observer
 class MessageForm extends Component {
@@ -161,17 +163,17 @@ class MessageForm extends Component {
     });
   };
 
-  finishEdit() {
+  finishEdit = () => {
     const { messageStore } = this.props;
 
     messageStore.finishEdit();
-  }
+  };
 
-  cancelEdit() {
+  cancelEdit = () => {
     const { messageStore } = this.props;
 
     messageStore.cancelEdit();
-  }
+  };
 
   renderMentionMenu() {
     const { messageStore, presenceStore } = this.props;
@@ -231,19 +233,55 @@ class MessageForm extends Component {
     });
 
     return (
-      <input
-        className={className}
-        type="text"
-        placeholder="Write something"
-        value={text}
-        onChange={this.onTextChange}
-        onKeyUp={this.onKeyUp}
-        autoFocus
-        required
-        ref={input => {
-          this.textInput = input;
-        }}
-      />
+      <div className="message-input-wrapper">
+        <input
+          className={className}
+          type="text"
+          placeholder="Write something"
+          value={text}
+          onChange={this.onTextChange}
+          onKeyUp={this.onKeyUp}
+          autoFocus
+          required
+          ref={input => {
+            this.textInput = input;
+          }}
+        />
+        <div className="message-form-actions">
+          <InsertMenu />
+        </div>
+      </div>
+    );
+  }
+
+  renderEditingCommands() {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+
+    return (
+      messageInEdit &&
+      <div className="editing-commands">
+        <div className="editing-commands-cancel">
+          <kbd>Esc</kbd> to{" "}
+          <button
+            type="button"
+            className="btn-fancy btn-default btn-small"
+            onClick={this.cancelEdit}
+          >
+            Cancel editing
+          </button>
+        </div>
+        <div className="editing-commands-save">
+          <kbd>Enter</kbd> to{" "}
+          <button
+            type="button"
+            className="btn-fancy btn-default btn-small"
+            onClick={this.finishEdit}
+          >
+            Save changes
+          </button>
+        </div>
+      </div>
     );
   }
 
@@ -252,6 +290,7 @@ class MessageForm extends Component {
       <div className="message-form">
         {this.renderMentionMenu()}
         {this.renderInput()}
+        {this.renderEditingCommands()}
       </div>
     );
   }

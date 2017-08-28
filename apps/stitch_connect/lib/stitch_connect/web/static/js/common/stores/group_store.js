@@ -10,6 +10,7 @@ class GroupStore {
   @observable public = true;
   @observable joined = false;
   @observable users = [];
+  @observable unreadMessagesCount = 0;
   @observable favorite = false;
   @observable notificationSetting = null;
   @observable showAllUsers = true;
@@ -18,6 +19,11 @@ class GroupStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+  }
+
+  @computed
+  get channelTopic() {
+    return `groups:${this.slug}`;
   }
 
   @computed
@@ -37,6 +43,16 @@ class GroupStore {
   }
 
   @action
+  createGroup = params => {
+    return post("/api/v1/groups", {
+      body: params
+    }).then(resp => {
+      const { data } = resp;
+      return data.slug;
+    });
+  };
+
+  @action
   loadGroupBySlug = slug => {
     if (slug === this.slug) {
       return;
@@ -45,6 +61,7 @@ class GroupStore {
     this.loading = true;
     get(`/api/v1/groups?slug=${slug}`).then(resp => {
       const { data } = resp;
+
       this.id = data.id;
       this.name = data.name;
       this.description = data.description;
@@ -52,10 +69,12 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.groupType = "group";
+      this.unreadMessagesCount = data.unread_messages_count;
 
       this.loading = false;
       this.loadUsers();
-      this.joinMessageChannel(data.slug);
+
+      this.slug = data.slug;
     });
   };
 
@@ -67,16 +86,28 @@ class GroupStore {
     this.public = false;
     this.name = user.first_name;
     this.groupType = "single-dm";
-    this.joinMessageChannel(`__dm:${userIds.join(".")}`);
+    this.slug = `__dm:${userIds.join(".")}`;
   };
 
-  joinMessageChannel = slug => {
-    if (slug === this.slug) {
-      return;
+  @action
+  joinMultiDM = users => {
+    let userIds = users.map(user => user.id);
+    if (userIds.indexOf(currentUser.id) === -1) {
+      userIds.push(currentUser.id);
     }
 
-    this.slug = slug;
-    this.rootStore.messageStore.joinChannel(`groups:${slug}`);
+    userIds = userIds.sort((a, b) => a > b);
+
+    return post(`/api/v1/groups/multi-dm`, {
+      body: { user_ids: userIds }
+    }).then(resp => {
+      this.users = [...users];
+      this.joined = true;
+      this.public = false;
+      this.name = users.map(user => user.first_name).join(", ");
+      this.groupType = "multi-dm";
+      this.slug = `__dm:${userIds.join(".")}`;
+    });
   };
 
   @action
@@ -165,6 +196,16 @@ class GroupStore {
       notify.show(`Notification setting saved for group ${this.name}`);
     });
   };
+
+  @action
+  increaseUnreadMessagesCount() {
+    this.unreadMessagesCount += 1;
+  }
+
+  @action
+  decreaseUnreadMessagesCount() {
+    this.unreadMessagesCount -= 1;
+  }
 }
 
 export default GroupStore;

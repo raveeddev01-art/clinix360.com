@@ -1,5 +1,4 @@
 import { observable, computed, action } from "mobx";
-import { Presence } from "phoenix";
 
 class SidemenuStore {
   @observable teamName = "";
@@ -26,6 +25,16 @@ class SidemenuStore {
       this.groups = response.data;
     });
   };
+
+  @computed
+  get normalGroups() {
+    return this.groups.filter(group => group.slug.indexOf("__dm:") === -1);
+  }
+
+  @computed
+  get multiDMGroups() {
+    return this.groups.filter(group => group.name === "__multi_dm_group__");
+  }
 
   @computed
   get favoriteGroups() {

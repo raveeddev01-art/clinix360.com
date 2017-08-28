@@ -59,7 +59,13 @@ window.jCSRFFetch = function(url, options = {}) {
         options
       )
     )
-    .then(response => response.json().then(json => ({ json, response })))
+    .then(response => {
+      if (response.status === 204) {
+        return { json: {}, response };
+      }
+
+      return response.json().then(json => ({ json, response }));
+    })
     .then(({ json, response }) => {
       if (!response.ok) {
         notify.show(
