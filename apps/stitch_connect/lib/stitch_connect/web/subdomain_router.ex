@@ -45,6 +45,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     delete "/messages/:id", MessageController, :delete
     post "/messages/:id/toggle-star", MessageController, :toggle_star
     post "/messages/:id/toggle-pin", MessageController, :toggle_pin
+    post "/messages/search", MessageController, :search
 
     get "/starred_messages", StarredMessageController, :index
 
@@ -86,7 +87,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/teams/:id", TeamController, :update
     post "/teams/:id/send-invite", TeamController, :send_invite
 
-    post "/upload-signature", UploadSignatureController, :create
+    get "/uploads",           UploadController, :index
+    post "/upload-signature", UploadController, :create
 
     post "/login", AuthenticationController, :submit_login
     post "/reset_password", AuthenticationController, :reset_password

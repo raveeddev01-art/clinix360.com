@@ -21,6 +21,11 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def search(conn, %{"term" => term}) do
+    messages = MessageQueries.search(conn.assigns.current_user.id, term)
+    render conn, "index.json", messages: messages
+  end
+
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     group_id = String.to_integer(group_id)
     user = conn.assigns.current_user
