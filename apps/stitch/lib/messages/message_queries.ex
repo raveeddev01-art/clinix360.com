@@ -88,7 +88,7 @@ defmodule Stitch.MessageQueries do
     Message
     |> join(:inner, [m], g in Group, m.group_id == g.id)
     |> join(:left, [m, g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
-    |> where([m, g, gu], m.type == fragment("'user_message'"))
+    |> where([m, g, gu], m.type == fragment("'upload'"))
     |> where([m, g, gu], g.public or not is_nil(gu.id))
     |> where([m, g, gu], g.team_id == ^user.team_id)
     |> preload([:user, :group, :pinned_by])
