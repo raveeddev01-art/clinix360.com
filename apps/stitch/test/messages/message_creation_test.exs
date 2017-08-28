@@ -6,7 +6,7 @@ defmodule Stitch.MessageCreationTest do
 
   describe "&Message.create/3" do
     test "creates message with given group, user, and content", %{group: group, user: user} do
-      assert {:ok, message} = Message.create(group.id, user.id, %{"text_content" => "Hello, World!"})
+      assert {:ok, message} = Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       assert message.text_content == "Hello, World!"
     end
   end
@@ -15,7 +15,7 @@ defmodule Stitch.MessageCreationTest do
     test "marks given message ids as read by given user", %{group: group, user: user} do
       user2 = insert(:user)
 
-      {:ok, message} = Message.create(group.id, user.id, %{"text_content" => "Hello, World!"})
+      {:ok, message} = Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       Message.mark_as_read(user2, message.id)
 
       message = Repo.get Message, message.id
@@ -25,7 +25,7 @@ defmodule Stitch.MessageCreationTest do
     test "when marking the same message as read twice, oldest entry is keeped", %{group: group, user: user} do
       user2 = insert(:user)
 
-      {:ok, message} = Message.create(group.id, user.id, %{"text_content" => "Hello, World!"})
+      {:ok, message} = Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       Message.mark_as_read(user2, message.id)
 
       message = Repo.get Message, message.id
@@ -39,7 +39,7 @@ defmodule Stitch.MessageCreationTest do
     test "returns updates messages and count", %{group: group, user: user} do
       user2 = insert(:user)
 
-      {:ok, message} = Message.create(group.id, user.id, %{"text_content" => "Hello, World!"})
+      {:ok, message} = Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       assert {1, [updated_message]} = Message.mark_as_read(user2, message.id)
       assert message.id == updated_message.id
       assert message.read_status != updated_message

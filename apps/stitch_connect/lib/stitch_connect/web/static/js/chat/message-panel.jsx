@@ -20,7 +20,7 @@ export default class MessagePanel extends Component {
     return (
       <div id="chat-container">
         <div className="container-bars">
-          {group.unreadMessagesCount
+          {group.unreadMessagesCount > 0
             ? <div className="unread-messages-tooltip">
                 {group.unreadMessagesCount} new message{group.unreadMessagesCount > 1 && "s"}
               </div>

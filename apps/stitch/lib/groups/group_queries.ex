@@ -27,6 +27,8 @@ defmodule Stitch.GroupQueries do
   end
 
   defp load_groups_for_user(query, %{id: user_id, favorite_groups: favorite_groups}) do
+    mention_count = load_mention_count(query, %{id: user_id})
+
     query
     |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
     |> where([g, gu], g.public or not is_nil(gu.id))
@@ -41,6 +43,20 @@ defmodule Stitch.GroupQueries do
       |> Map.put_new(:joined, joined)
       |> Map.put_new(:unread_messages_count, unread_messages_count)
       |> Map.put_new(:favorite, Enum.member?(favorite_groups, group.id))
+      |> Map.put_new(:mentions_count, mention_count[group.id])
+    end)
+  end
+
+  def load_mention_count(query, %{id: user_id}) do
+    query
+    |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
+    |> where([g, gu], g.public or not is_nil(gu.id))
+    |> select([g, gu], {g.id, fragment("""
+      COALESCE(ARRAY_LENGTH(ARRAY(SELECT JSONB_OBJECT_KEYS(?)), 1), 0)
+    """, gu.mentioning_message_ids)})
+    |> Repo.all
+    |> Enum.reduce(%{}, fn ({id, mention_counter}, acc) ->
+      Map.put(acc, id, mention_counter)
     end)
   end
 

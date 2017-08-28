@@ -44,21 +44,20 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, @valid_types)
   end
 
-  def create(group_id, user_id, %{"type" => "upload", "text_content" => text_content, "fields" => fields}) do
-    %Message{group_id: group_id, user_id: user_id}
+  def create(group_id, user, %{"type" => "upload", "text_content" => text_content, "fields" => fields}) do
+    %Message{group_id: group_id, user_id: user.id}
     |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload"})
     |> Repo.insert
   end
 
-  def create(group_id, user_id, %{"type" => "chat", "text_content" => text_content}) do
+  def create(group_id, user, %{"type" => "chat", "text_content" => text_content}) do
     group = Stitch.GroupQueries.get_by_id(group_id)
     users = Repo.preload(group, :users).users
 
-    mention_user_keywords = Stitch.Message.Mention.user_mention_keywords(users)
-    mentioned_user_ids = Stitch.Message.Mention.message_mentions(text_content, mention_user_keywords)
+    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, user, text_content)
 
     Repo.transaction fn ->
-      message_insert = %Message{group_id: group_id, user_id: user_id}
+      message_insert = %Message{group_id: group_id, user_id: user.id}
       |> changeset(%{text_content: text_content, type: "chat", mentioned_user_ids: mentioned_user_ids})
       |> Repo.insert
 
@@ -79,22 +78,22 @@ defmodule Stitch.Message do
     end
   end
 
-  def create(group_id, user_id, %{"text_content" => text_content}) do
-    create(group_id, user_id, %{"type" => "chat", "text_content" => text_content})
+  def create(group_id, user, %{"text_content" => text_content}) do
+    create(group_id, user, %{"type" => "chat", "text_content" => text_content})
   end
 
-  def create(group_id, user_id, attributes) do
+  def create(group_id, _user, attributes) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
     {:error, changeset}
   end
 
   def update(message, attributes) do
     group = Stitch.GroupQueries.get_by_id(message.group_id)
+    author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
 
     previous_mentioned_user_ids = message.mentioned_user_ids
-    mention_user_keywords = Stitch.Message.Mention.user_mention_keywords(users)
-    mentioned_user_ids = Stitch.Message.Mention.message_mentions(attributes["text_content"], mention_user_keywords)
+    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, author, attributes["text_content"])
 
     Repo.transaction fn ->
       message_update = message
@@ -128,9 +127,6 @@ defmodule Stitch.Message do
     group = Stitch.GroupQueries.get_by_id(message.group_id)
     users = Repo.preload(group, :users).users
 
-    mention_user_keywords = Stitch.Message.Mention.user_mention_keywords(users)
-    mentioned_user_ids = Stitch.Message.Mention.message_mentions(message.text_content, mention_user_keywords)
-
     Repo.transaction fn ->
       Stitch.GroupUser
       |> where([gu], gu.group_id == ^group.id)
@@ -138,10 +134,20 @@ defmodule Stitch.Message do
       |> update([gu], set: [mentioning_message_ids: fragment("? - ?", gu.mentioning_message_ids, ^Integer.to_string(message.id))])
       |> Repo.update_all([], returning: true)
 
-      message |> Repo.delete
+      case Repo.delete(message) do
+        {:ok, message} -> message
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
     end
   end
 
+  def read_mentions(user, []), do: {:ok, nil}
+  def read_mentions(user, [message_id|_] = message_ids) do
+    message = Repo.get(Message, message_id)
+    group = Repo.preload(message, :group).group
+    read_mentions(group, user, message_ids)
+  end
   def read_mentions(group, user, message_ids) do
     ids = "#{message_ids |> Enum.join(" - ")}"
     Stitch.GroupUser
@@ -167,6 +173,7 @@ defmodule Stitch.Message do
     message_ids = List.wrap(message_ids)
     value = %{user.id => DateTime.utc_now}
 
+    read_mentions(user, message_ids)
     Message
     |> where([m], m.id in ^message_ids and m.user_id != ^user.id)
     |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user.id)))

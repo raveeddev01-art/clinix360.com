@@ -77,7 +77,8 @@ class MessageStore {
                 moment(lastMessage.inserted_at).diff(
                   message.inserted_at,
                   "minutes"
-                ) >= -30
+                ) >= -30 &&
+                message.type === `user_message`
               ) {
                 lastMessagePool.push(message);
               } else {
@@ -111,6 +112,9 @@ class MessageStore {
       .receive("error", err => notify.show(err.message, "error"));
 
     this.groupChannel.on("new_msg", this.onNewMessage);
+    this.groupChannel.on("edit_msg", this.onEditMessage);
+    this.groupChannel.on("delete_msg", this.onDeleteMessage);
+
     this.eventChannel.on("marked_as_read", this.onMarkedAsRead);
   };
 
@@ -176,11 +180,12 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
+    if (newMessage.group_id !== this.rootStore.groupStore.id) {
+      return;
+    }
+
     // Increment unread messages count if it is from other user
-    if (
-      newMessage.group_id === this.rootStore.groupStore.id &&
-      newMessage.user_id !== currentUser.id
-    ) {
+    if (newMessage.user_id !== currentUser.id) {
       this.rootStore.groupStore.increaseUnreadMessagesCount();
     }
 
@@ -189,6 +194,32 @@ class MessageStore {
     setTimeout(() => {
       this.scrollToBottom();
     }, 300);
+  };
+
+  @action
+  onEditMessage = editedMessage => {
+    if (editedMessage.group_id !== this.rootStore.groupStore.id) {
+      return;
+    }
+
+    this.cancelEdit();
+
+    const message = this.messages.find(m => m.id === editedMessage.id);
+
+    message.edited = editedMessage.edited;
+    message.edited_at = editedMessage.edited_at;
+    message.text_content = editedMessage.text_content;
+  };
+
+  @action
+  onDeleteMessage = deletedMessage => {
+    const messageIndex = this.messages.findIndex(
+      m => m.id === deletedMessage.id
+    );
+
+    if (messageIndex > -1) {
+      this.messages.splice(messageIndex, 1);
+    }
   };
 
   @action
@@ -235,23 +266,12 @@ class MessageStore {
       return;
     }
 
-    window
-      .put(`/api/v1/messages/${this.messageInEdit.id}`, {
-        body: {
-          message: {
-            text_content: this.textInEdit
-          }
-        }
-      })
-      .then(resp => {
-        const { data } = resp;
-
-        this.messageInEdit.edited = data.edited;
-        this.messageInEdit.edited_at = data.edited_at;
-        this.messageInEdit.text_content = data.text_content;
-
-        this.cancelEdit();
-      });
+    this.groupChannel.push("edit_msg", {
+      message_id: this.messageInEdit.id,
+      params: {
+        text_content: this.textInEdit
+      }
+    });
   }
 
   @action
@@ -262,12 +282,10 @@ class MessageStore {
 
   @action
   delete(id) {
-    const messageIndex = this.messages.findIndex(m => m.id === id);
+    const message = this.messages.find(m => m.id === id);
 
-    if (messageIndex > -1) {
-      window.remove(`/api/v1/messages/${id}`).then(() => {
-        this.messages.splice(messageIndex, 1);
-      });
+    if (message) {
+      this.groupChannel.push("delete_msg", { message_id: id });
     }
   }
 

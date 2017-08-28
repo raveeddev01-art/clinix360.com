@@ -22,6 +22,7 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
       users: Enum.map(group.users, &UserView.user_json/1),
       user_count: Enum.count(group.users),
       unread_messages_count: group.unread_messages_count,
+      mentions_count: group.mentions_count,
     }
   end
 end

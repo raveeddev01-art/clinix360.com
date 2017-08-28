@@ -21,12 +21,17 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def search(conn, %{"term" => term}) do
+    messages = MessageQueries.search(conn.assigns.current_user.id, term)
+    render conn, "index.json", messages: messages
+  end
+
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     group_id = String.to_integer(group_id)
     user = conn.assigns.current_user
     case GroupAuthorization.is_member?(group_id, user.id) do
       true ->
-        case Message.create(group_id, user.id, message_params) do
+        case Message.create(group_id, user, message_params) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
             EventsChannel.broadcast_group_new_msg(%Stitch.Group{id: group_id}, message)
