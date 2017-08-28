@@ -22,8 +22,9 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def search(conn, %{"term" => term}) do
+    user = conn.assigns.current_user
     messages = MessageQueries.search(conn.assigns.current_user.id, term)
-    render conn, "index.json", messages: messages
+    render conn, "index.json", messages: messages, user_id: user.id
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
