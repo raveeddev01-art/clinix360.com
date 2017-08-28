@@ -26,7 +26,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     user = conn.assigns.current_user
     case GroupAuthorization.is_member?(group_id, user.id) do
       true ->
-        case Message.create(group_id, user.id, message_params) do
+        case Message.create(group_id, user, message_params) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
             EventsChannel.broadcast_group_new_msg(%Stitch.Group{id: group_id}, message)

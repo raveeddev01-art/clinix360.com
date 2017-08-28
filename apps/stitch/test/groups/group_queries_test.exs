@@ -176,4 +176,41 @@ defmodule Stitch.GroupQueriesTest do
       assert {:ok, %{unread_messages_count: 1}} = GroupQueries.find_by_slug("a", user_a)
     end
   end
+
+  describe "user mentions counter" do
+    test "includes mentions_count in the response" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      eve = insert(:user, username: "eve", team: team)
+      general = insert(:group, team: team, slug: "general")
+      random = insert(:group, team: team, slug: "random")
+      insert(:group_user, user: bob, group: general)
+      insert(:group_user, user: alice, group: general)
+      insert(:group_user, user: eve, group: general)
+      insert(:group_user, user: alice, group: random)
+      insert(:group_user, user: eve, group: random)
+
+      {:ok, message} = Stitch.Message.create(general.id, eve, %{"text_content" => "Mentions @alice, and @bob.", "type" => "chat"})
+      {:ok, message} = Stitch.Message.create(general.id, eve, %{"text_content" => "Mentions @bob second time.", "type" => "chat"})
+
+      bob_groups = available_groups_indexed_by_slug(bob)
+      assert bob_groups["general"].mentions_count == 2
+      assert bob_groups["random"].mentions_count == 0
+
+      alice_groups = available_groups_indexed_by_slug(alice)
+      assert alice_groups["general"].mentions_count == 1
+      assert alice_groups["random"].mentions_count == 0
+
+      eve_groups = available_groups_indexed_by_slug(eve)
+      assert eve_groups["general"].mentions_count == 0
+      assert eve_groups["random"].mentions_count == 0
+    end
+  end
+
+  defp available_groups_indexed_by_slug(user) do
+    user
+    |> Stitch.GroupQueries.available_groups
+    |> Enum.reduce(%{}, &Map.put(&2, &1.slug, &1))
+  end
 end

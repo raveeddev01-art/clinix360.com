@@ -108,7 +108,7 @@ defmodule StitchConnect.Web.GroupChannel do
   def handle_in("delete_msg", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
-    case message && Repo.delete(message) do
+    case message && Message.delete(message) do
       {:ok, message} ->
         broadcast! socket, "delete_msg", %{id: message.id}
         EventsChannel.broadcast_group_msg_deleted(group, message)
@@ -152,7 +152,7 @@ defmodule StitchConnect.Web.GroupChannel do
     if GroupAuthorization.is_member?(group.id, user.id) do
       attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
 
-      case Message.create(group.id, user.id, attrs) do
+      case Message.create(group.id, user, attrs) do
         {:ok, message} ->
           message = MessageQueries.load_info(message)
 

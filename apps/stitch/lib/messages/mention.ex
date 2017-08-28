@@ -1,8 +1,18 @@
 defmodule Stitch.Message.Mention do
   @doc """
+  Takes a list of users and a mesage and returns which out of those users should be notified
+  by this message.
+  """
+  def notify_user_ids(users, author, message) do
+    mention_user_keywords = user_mention_keywords(users, author)
+    message_mentions(message, mention_user_keywords)
+  end
+
+  @doc """
   Initially, use user nicknames.
   Expand later to add other keywords user might wish to be notified of, depending on user group preferences.
   Note, in some case, user might want to disable certain notifications (globally or only for a specific group).
+  Excludes authors.
 
   Example of keywords:
     - @here, @all, @everyone
@@ -15,19 +25,23 @@ defmodule Stitch.Message.Mention do
       Stitch.Mention.user_mention_keywords([
         %{id: 1, username: "bob"},
         %{id: 2, username: "alice"}
-      ])
+      ], %{username: "bob"})
 
       %{
-        "@bob" => [1],
+        "@bob" => [],
         "@alice" => [2],
         "@all" => [1, 2]
       }
   """
-  def user_mention_keywords(users) do
+  def user_mention_keywords(users, author) do
     mentions = Enum.reduce(users, %{}, fn (user, acc) ->
-      Map.put(acc, "@#{user.username}", [user.id])
+      if user.username == author.username do
+        acc
+      else
+        Map.put(acc, "@#{user.username}", [user.id])
+      end
     end)
-    Map.put(mentions, "@all", Enum.map(users, & &1.id))
+    Map.put(mentions, "@all", Enum.map(users, & &1.id) |> List.delete(author.id))
   end
 
   @doc """
