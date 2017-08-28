@@ -3,7 +3,7 @@ defmodule Stitch.MessageQueries do
   Module in charge of all message related queries.
   """
 
-  alias Stitch.{Repo, User, Group, GroupUser, Message, MessageAction}
+  alias Stitch.{Repo, User, Group, GroupUser, Message, MessageAction, Paginator}
   import Ecto.Query
 
   @doc """
@@ -83,4 +83,15 @@ defmodule Stitch.MessageQueries do
   def load_info(message) do
     Repo.preload(message, [:pinned_by, :user])
   end
+
+  def get_uploads_for_user(%{} = user, skip, limit) do
+    Group
+    |> where(team_id: ^user.team_id)
+    |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
+    |> join(:right, [g, gu], m in Message, not is_nil(gu.id) and m.group_id == g.id and m.type == fragment("'user_message'"))
+    |> where([g, gu], g.public or not is_nil(gu.id))
+    |> select([m], {m})
+    |> Paginator.new(skip: skip, limit: limit)
+  end
+  def get_uploads_for_user(user_id, skip, limit), do: get_uploads_for_user(Repo.get!(User, user_id), skip, limit)
 end
