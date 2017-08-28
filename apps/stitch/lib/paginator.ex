@@ -1,4 +1,8 @@
-defmodule Stitch.Paginator do  
+defmodule Stitch.Paginator do
+  import Ecto.Query
+  alias Stitch.Repo
+  alias Stitch.Paginator
+
   defstruct [:data, :meta]
 
   def new(query, params) do
@@ -36,8 +40,8 @@ defmodule Stitch.Paginator do
 
   defp data(query, skip, limit) do
     query
-    |> limit([_], ^limit)
-    |> offset([_], ^skip)
+    |> limit([q], ^limit)
+    |> offset([q], ^skip)
     |> Repo.all
   end
 
