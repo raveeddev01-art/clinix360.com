@@ -3,7 +3,7 @@ defmodule Stitch.MessageQueries do
   Module in charge of all message related queries.
   """
 
-  alias Stitch.{Repo, Group, Message, MessageAction}
+  alias Stitch.{Repo, User, Group, GroupUser, Message, MessageAction}
   import Ecto.Query
 
   @doc """
@@ -11,13 +11,21 @@ defmodule Stitch.MessageQueries do
   provided.
   """
   def search(user_id, term, opts \\ []) do
-    # TODO: only search against messsages the user has access to.
-    # Public groups, dms, multi-dms, etc.
+    user = Repo.get!(User, user_id)
+
+    user_groups_ids =
+      from(g in Group,
+      where: g.team_id == ^user.team_id,
+      left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id,
+      where: g.public or not is_nil(gu.id),
+      select: g.id) |> Repo.all
+
     limit = Keyword.get(opts, :limit, 30)
     query =
       from m in Message,
+      where: m.group_id in ^user_groups_ids,
       where: fragment("? % ?", m.text_content, ^term),
-      order_by: fragment("similarity(?, ?) DESC", m.text_content, ^term)),
+      order_by: fragment("similarity(?, ?) DESC", m.text_content, ^term),
       order_by: [desc: :inserted_at],
       limit: ^limit,
       select: m,
@@ -32,8 +40,7 @@ defmodule Stitch.MessageQueries do
       end
 
     messages = Repo.all(query)
-    messages = MessageAction.apply_user_message_actions(user, messages)
-    messages
+    MessageAction.apply_user_message_actions(user, messages)
   end
 
   @doc """
@@ -56,14 +63,11 @@ defmodule Stitch.MessageQueries do
     end
 
     messages = Repo.all(query)
-    messages = MessageAction.apply_user_message_actions(user, messages)
-    messages
+    MessageAction.apply_user_message_actions(user, messages)
   end
 
   def get_by_id(id) do
-    message = Repo.get(Message, id)
-    message = Repo.preload(message, [:user, :group])
-    message
+    Repo.get(Message, id) |> Repo.preload([:user, :group])
   end
 
   def load_info(message) do
