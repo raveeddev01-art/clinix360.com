@@ -8,7 +8,7 @@ defmodule Stitch.Message.MentionTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
   end
 
-  test "Stitch.Mention.user_mention_keywords/1" do
+  test "Stitch.Mention.user_mention_keywords/1 (excludes author)" do
     bob = insert(:user, username: "bob")
     alice = insert(:user, username: "alice")
     eve = insert(:user, username: "eve")
@@ -59,10 +59,6 @@ defmodule Stitch.Message.MentionTest do
 
     test "when @all is mentioned" do
       assert Stitch.Message.Mention.message_mentions("Hello, @all!", %{"@all" => [1, 2, 3]}) == [1, 2, 3]
-    end
-
-    test "exclude when author is mentioned" do
-      # TODO
     end
   end
 
