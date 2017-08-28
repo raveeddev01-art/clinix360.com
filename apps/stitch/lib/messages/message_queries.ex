@@ -85,13 +85,15 @@ defmodule Stitch.MessageQueries do
   end
 
   def get_uploads_for_user(%{} = user, skip, limit) do
-    Group
-    |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
-    |> join(:right, [g, gu], m in Message, not is_nil(gu.id) and m.group_id == g.id and m.type == fragment("'user_message'"))
-    |> where([g, gu], g.public or not is_nil(gu.id))
-    |> where(team_id: ^user.team_id)
+    Message
+    |> join(:inner, [m], g in Group, m.group_id == g.id)
+    |> join(:left, [m, g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user.id)
+    |> where([m, g, gu], m.type == fragment("'user_message'"))
+    |> where([m, g, gu], g.public or not is_nil(gu.id))
+    |> where([m, g, gu], g.team_id == ^user.team_id)
+    |> preload([:user, :group, :pinned_by])
     |> order_by([desc: :inserted_at])
-    |> select([m], {m})
+    |> select([m], m)
     |> Paginator.new(skip: skip, limit: limit)
   end
   def get_uploads_for_user(user_id, skip, limit), do: get_uploads_for_user(Repo.get!(User, user_id), skip, limit)
