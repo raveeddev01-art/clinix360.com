@@ -113,6 +113,7 @@ class MessageStore {
 
     this.groupChannel.on("new_msg", this.onNewMessage);
     this.groupChannel.on("edit_msg", this.onEditMessage);
+    this.groupChannel.on("delete_msg", this.onDeleteMessage);
 
     this.eventChannel.on("marked_as_read", this.onMarkedAsRead);
   };
@@ -211,6 +212,17 @@ class MessageStore {
   };
 
   @action
+  onDeleteMessage = deletedMessage => {
+    const messageIndex = this.messages.findIndex(
+      m => m.id === deletedMessage.id
+    );
+
+    if (messageIndex > -1) {
+      this.messages.splice(messageIndex, 1);
+    }
+  };
+
+  @action
   loadMessages = data => {
     this.messages = data.messages;
 
@@ -270,12 +282,10 @@ class MessageStore {
 
   @action
   delete(id) {
-    const messageIndex = this.messages.findIndex(m => m.id === id);
+    const message = this.messages.find(m => m.id === id);
 
-    if (messageIndex > -1) {
-      window.remove(`/api/v1/messages/${id}`).then(() => {
-        this.messages.splice(messageIndex, 1);
-      });
+    if (message) {
+      this.groupChannel.push("delete_msg", { message_id: id });
     }
   }
 
