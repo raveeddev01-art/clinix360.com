@@ -2,8 +2,15 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
   use StitchConnect.Web, :controller
   plug StitchConnect.Plug.ApiAuthenticate when action in [:create]
 
-  def index(conn) do
-    
+  def index(conn, %{"page" => page}) do
+    {page, _} = Integer.parse(page)
+    IO.inspect(page)
+    conn
+    |> render("index.json", %{uploads: []})
+  end
+
+  def index(conn, params) do
+    index(conn, Map.put_new(params, "page", "1"))
   end
 
   def create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
