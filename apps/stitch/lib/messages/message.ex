@@ -134,7 +134,11 @@ defmodule Stitch.Message do
       |> update([gu], set: [mentioning_message_ids: fragment("? - ?", gu.mentioning_message_ids, ^Integer.to_string(message.id))])
       |> Repo.update_all([], returning: true)
 
-      message |> Repo.delete
+      case Repo.delete(message) do
+        {:ok, message} -> message
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
     end
   end
 
