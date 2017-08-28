@@ -15,7 +15,10 @@ export default class Favorite extends Component {
         <div className="item-text">
           {this.props.room.name}
         </div>
-        {/*<div className="item-badge text-center">3</div>*/}
+        {this.props.room.mentions_count > 0 &&
+          <div className="item-badge text-center">
+            {this.props.room.mentions_count}
+          </div>}
       </NavLink>
     );
   }

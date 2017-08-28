@@ -3,19 +3,19 @@ import { NavLink } from "react-router-dom";
 
 export default class Room extends Component {
   render() {
+    const { room: { slug, name, mentions_count: mentionsCount } } = this.props;
     return (
-      <NavLink
-        to={`/groups/${this.props.room.slug}`}
-        className="item"
-        activeClassName="active"
-      >
+      <NavLink to={`/groups/${slug}`} className="item" activeClassName="active">
         <div className="item-icon">
           <i className="fa fa-comments" />
         </div>
         <div className="item-text">
-          {this.props.room.name}
+          {name}
         </div>
-        {/*<div className="item-badge text-center">3</div>*/}
+        {mentionsCount > 0 &&
+          <div className="item-badge text-center">
+            {mentionsCount}
+          </div>}
       </NavLink>
     );
   }

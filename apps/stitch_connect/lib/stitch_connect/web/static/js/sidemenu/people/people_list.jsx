@@ -13,37 +13,51 @@ class PeopleList extends Component {
     const multiDMGroups = sidemenuStore.multiDMGroups;
     return (
       <div>
-        {onlineUsers.map(user =>
-          <NavLink
-            key={`online-user-${user.id}`}
-            to={`/direct/${user.username}`}
-            className="item"
-            activeClassName="active"
-          >
-            <div className="item-icon">
-              <i className="fa fa-circle" />
-            </div>
-            <div className="item-text">
-              {`${user.first_name} ${user.last_name}`}
-            </div>
-          </NavLink>
-        )}
+        {onlineUsers.map(user => {
+          const mentionsCount =
+            sidemenuStore.singleDMGroupsMap[user.id] &&
+            sidemenuStore.singleDMGroupsMap[user.id].mentions_count;
+          return (
+            <NavLink
+              key={`online-user-${user.id}`}
+              to={`/direct/${user.username}`}
+              className="item"
+              activeClassName="active"
+            >
+              <div className="item-icon">
+                <i className="fa fa-circle" />
+              </div>
+              <div className="item-text">
+                {`${user.first_name} ${user.last_name}`}
+              </div>
+              {mentionsCount > 0 &&
+                <div className="item-badge text-center">
+                  {mentionsCount}
+                </div>}
+            </NavLink>
+          );
+        })}
 
-        {offlineUsers.map(user =>
-          <NavLink
-            key={`offline-user-${user.id}`}
-            to={`/direct/${user.username}`}
-            className="item"
-            activeClassName="active"
-          >
-            <div className="item-icon">
-              <i className="fa fa-circle-o" />
-            </div>
-            <div className="item-text">
-              {`${user.first_name} ${user.last_name}`}
-            </div>
-          </NavLink>
-        )}
+        {offlineUsers.map(user => {
+          const mentionsCount =
+            sidemenuStore.singleDMGroupsMap[user.id] &&
+            sidemenuStore.singleDMGroupsMap[user.id].mentions_count;
+          return (
+            <NavLink
+              key={`offline-user-${user.id}`}
+              to={`/direct/${user.username}`}
+              className="item"
+              activeClassName="active"
+            >
+              <div className="item-icon">
+                <i className="fa fa-circle-o" />
+              </div>
+              <div className="item-text">
+                {`${user.first_name} ${user.last_name}`}
+              </div>
+            </NavLink>
+          );
+        })}
 
         {multiDMGroups.map(group => {
           const users = _.differenceBy(group.users, [currentUser], "id");
@@ -62,6 +76,10 @@ class PeopleList extends Component {
               <div className="item-text">
                 {groupName}
               </div>
+              {group.mentions_count > 0 &&
+                <div className="item-badge text-center">
+                  {group.mentions_count}
+                </div>}
             </NavLink>
           );
         })}

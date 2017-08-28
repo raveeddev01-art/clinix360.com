@@ -27,6 +27,19 @@ class SidemenuStore {
   };
 
   @computed
+  get singleDMGroupsMap() {
+    const singleDMGroups = this.groups.filter(
+      group => group.slug.indexOf("__dm:") === 0
+    );
+    const userMap = {};
+    singleDMGroups.forEach(group => {
+      const user = group.users.find(u => u.id !== currentUser.id);
+      userMap[user ? user.id : currentUser.id] = group;
+    });
+    return userMap;
+  }
+
+  @computed
   get normalGroups() {
     return this.groups.filter(group => group.slug.indexOf("__dm:") === -1);
   }
