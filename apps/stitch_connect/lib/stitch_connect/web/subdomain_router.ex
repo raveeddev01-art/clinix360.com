@@ -87,7 +87,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/teams/:id", TeamController, :update
     post "/teams/:id/send-invite", TeamController, :send_invite
 
-    post "/upload-signature", UploadSignatureController, :create
+    get "/uploads",           UploadController, :index
+    post "/upload-signature", UploadController, :create
 
     post "/login", AuthenticationController, :submit_login
     post "/reset_password", AuthenticationController, :reset_password

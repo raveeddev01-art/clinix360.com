@@ -55,4 +55,37 @@ defmodule Stitch.MessageQueriesTest do
 
     assert starred_message_ids == [message.id]
   end
+
+  test "returns only uploads user can see with get_uploads_for_user/3" do
+    skip = 0
+    limit = 5
+    team = insert(:team)
+    author = insert(:user, team: team)
+
+    public_group = insert(:group, team: team, name: "X", slug: "x", public: true)
+    public_message = insert(:message, user: author, group: public_group, text_content: "Hello, world!")
+    public_message2 = insert(:message, user: author, group: public_group, text_content: "Hello, world! upload", type: "upload")
+
+    private_group = insert(:group, team: team, name: "Y", slug: "y", public: false)
+    private_message = insert(:message, user: author, group: private_group, text_content: "Hello, world!")
+    private_message2 = insert(:message, user: author, group: private_group, text_content: "Hello, world! upload", type: "upload")
+
+    private_member_group = insert(:group, team: team, name: "Z", slug: "z", public: false)
+    insert(:group_user, user: author, group: private_member_group)
+    private_member_message = insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
+    private_member_message2 = insert(:message, user: author, group: private_member_group, text_content: "Hello, world! upload", type: "upload")
+
+    user = insert(:user, team: team)
+    insert(:group_user, user: user, group: private_member_group)
+
+    %Stitch.Paginator{data: data, meta: meta} = Stitch.MessageQueries.get_uploads_for_user(user, skip, limit)
+
+    assert meta.skip == skip
+    assert meta.limit == limit
+    assert meta.count == 2
+
+    assert Enum.find(data, &( &1.id == public_message2.id ))
+    assert Enum.find(data, &( &1.id == private_member_message2.id ))
+    refute Enum.find(data, &( &1.id == private_message2.id ))
+  end
 end
