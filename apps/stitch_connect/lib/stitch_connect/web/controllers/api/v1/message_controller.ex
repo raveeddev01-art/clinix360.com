@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   alias Stitch.Message
   alias Stitch.GroupAuthorization
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create, :toggle_star, :toggle_pin]
+  plug StitchConnect.Plug.ApiAuthenticate
 
   def index(conn, %{"group_id" => group_id}) do
     case GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
@@ -20,7 +20,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def search(conn, %{"term" => term}) do
-    messages = MessageQueries.
+    messages = MessageQueries.search(conn.assigns.current_user.id, term)
+    render conn, "index.json", messages: messages
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
