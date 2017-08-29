@@ -120,18 +120,16 @@ defmodule Stitch.Group do
   group.
   """
   def toggle_favorite(group_id, user_id) do
-    user = Repo.get(User, user_id)
-    case Enum.member?(user.favorite_groups, group_id) do
-      true ->
-        favorite_groups = List.delete(user.favorite_groups, group_id)
-        favorited = false
-      false ->
-        favorite_groups = [group_id | user.favorite_groups]
-        favorited = true
+    result =
+      from(gu in GroupUser,
+      where: gu.group_id == ^group_id and gu.user_id == ^user_id,
+      update: [set: [is_favorite: not gu.is_favorite]])
+    |> Repo.update_all([], returning: [:is_favorite])
+
+    case result do
+      {0, []} -> {:error, "User has to be member of group to favorite it."}
+      {1, [%{is_favorite: is_favorite}]} -> {:ok, is_favorite}
     end
-    changeset = User.changeset(user, %{favorite_groups: favorite_groups})
-    Repo.update changeset
-    favorited
   end
 
   @doc """
