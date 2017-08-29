@@ -56,7 +56,6 @@ class CreateGroupModal extends Component {
         user_ids: this.state.members.map(user => user.id)
       })
       .then(slug => {
-        debugger;
         history.push(`/groups/${slug}`);
         toggleModal();
       });

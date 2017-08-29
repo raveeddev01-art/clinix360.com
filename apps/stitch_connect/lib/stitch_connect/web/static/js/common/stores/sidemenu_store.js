@@ -65,7 +65,7 @@ class SidemenuStore {
 
   @action
   onNewGroup = newGroup => {
-    this.groups.append(newGroup);
+    this.groups.push(newGroup);
   };
 
   @action
