@@ -20,7 +20,11 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
-    return this.join(this.eventChannelTopic, options);
+    const channel = this.join(this.eventChannelTopic, options);
+
+    this.eventChannel.on("new_group", this.rootStore.sidemenuStore.onNewGroup);
+
+    return channel;
   }
 
   get eventChannel() {

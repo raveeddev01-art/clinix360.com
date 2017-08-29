@@ -33,7 +33,7 @@ export default class RoomsList extends Component {
       <div className="menu-nav m-b-20">
         <div className="heading">
           <h5>
-            <a href="#" onClick={this.toggleGroupsModal}>
+            <a role="button" onClick={this.toggleGroupsModal}>
               {this.props.heading}
             </a>
           </h5>
@@ -41,7 +41,7 @@ export default class RoomsList extends Component {
             placement="top"
             overlay={<Tooltip id="create-new-group">Create new group</Tooltip>}
           >
-            <a href="#" onClick={this.toggleCreateGroupModal}>
+            <a role="button" onClick={this.toggleCreateGroupModal}>
               <i className="fa fa-plus" />
             </a>
           </OverlayTrigger>
