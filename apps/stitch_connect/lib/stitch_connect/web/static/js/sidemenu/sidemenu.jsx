@@ -32,9 +32,10 @@ class Sidemenu extends Component {
     );
   };
 
-  lockout = () => {
-    // TODO: Lock the account
-    console.log("lockout");
+  lock = () => {
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.lock();
   };
 
   render() {
@@ -72,7 +73,7 @@ class Sidemenu extends Component {
               <span>Stitch</span>
             </div>
 
-            <MenuItem eventKey="7" onClick={this.lockout}>
+            <MenuItem eventKey="7" onClick={this.lock}>
               Lockout
             </MenuItem>
             <MenuItem eventKey="6" href="/logout">

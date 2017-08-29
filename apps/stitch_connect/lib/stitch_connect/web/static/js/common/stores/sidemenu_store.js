@@ -7,6 +7,7 @@ class SidemenuStore {
   @observable groups = [];
   @observable users = [];
   @observable currentGroup = null;
+  @observable locked = false;
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
@@ -75,6 +76,18 @@ class SidemenuStore {
     if (index > -1) {
       Object.assign(this.groups[index], data);
     }
+  };
+
+  @action
+  lock = () => {
+    // TODO: POST `/api/v1/session-lock`
+    this.locked = true;
+  };
+
+  @action
+  unlock = () => {
+    // TODO: POST `/api/v1/session-unlock`
+    this.locked = false;
   };
 
   loadUsers = () => {
