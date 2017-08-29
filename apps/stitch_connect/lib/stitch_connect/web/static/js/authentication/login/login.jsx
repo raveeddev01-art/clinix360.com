@@ -14,7 +14,8 @@ import Button from "react-bootstrap/lib/Button";
 @observer
 export default class Login extends Component {
   constructor(props) {
-    super();
+    super(props);
+
     this.state = {
       email: "",
       password: ""
