@@ -68,7 +68,11 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     user = conn.assigns.current_user
     case Stitch.Group.create(params, user.team_id, user.id) do
       {:ok, group} ->
-        group = %{group | joined: true}
+        group = group
+        |> Map.put_new(:joined, true)
+        |> Map.put_new(:unread_messages_count, 0)
+        |> Map.put_new(:favorite, false)
+        |> Map.put_new(:mentions_count, 0)
 
         EventsChannel.broadcast_group_creation(group)
         render conn, "show.json", group: group
