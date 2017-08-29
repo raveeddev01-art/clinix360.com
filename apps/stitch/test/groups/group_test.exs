@@ -41,7 +41,7 @@ defmodule Stitch.GroupTest do
       user = insert(:user)
       insert(:group_user, group: group, user: user)
 
-      assert {:ok, true} = Stitch.Group.toggle_favorite(group.id, user.id)
+      assert {:ok, %{is_favorite: true}} = Stitch.Group.toggle_favorite(group.id, user.id)
     end
 
     test "it unfavorites favorited group for user" do
@@ -50,7 +50,7 @@ defmodule Stitch.GroupTest do
       insert(:group_user, group: group, user: user)
       Stitch.Group.toggle_favorite(group.id, user.id)
 
-      assert {:ok, false} = Stitch.Group.toggle_favorite(group.id, user.id)
+      assert {:ok, %{is_favorite: false}} = Stitch.Group.toggle_favorite(group.id, user.id)
     end
   end
 

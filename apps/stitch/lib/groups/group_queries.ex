@@ -60,6 +60,7 @@ defmodule Stitch.GroupQueries do
     end)
   end
 
+  def load_user_data(group, %{id: user_id}), do: load_user_data(group, user_id)
   def load_user_data(%Group{id: group_id}, user_id) do
     Group
     |> where(id: ^group_id)

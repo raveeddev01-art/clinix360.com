@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Group, GroupUser, GroupQueries}
+  alias Stitch.{Group, GroupUser, GroupQueries, GroupAuthorization}
   alias StitchConnect.Web.EventsChannel
 
   plug StitchConnect.Plug.ApiAuthenticate
@@ -33,13 +33,13 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def rename(conn, %{"id" => group_id, "name" => name}) do
-    case Stitch.GroupAuthorization.can_rename?(group_id, conn.assigns.current_user.id) do
+    case GroupAuthorization.can_rename?(group_id, conn.assigns.current_user.id) do
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to rename this group"})
       true ->
-        case Stitch.Group.rename(group_id, name) do
+        case Group.rename(group_id, name) do
           {:ok, group} ->
             group = GroupQueries.load_user_data(group, conn.assigns.current_user)
 
@@ -53,7 +53,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def users(conn, %{"id" => group_id}) do
-    case Stitch.GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
+    case GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
       false ->
         conn
         |> put_status(:unauthorized)
@@ -66,7 +66,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def create(conn, params) do
     user = conn.assigns.current_user
-    case Stitch.Group.create(params, user.team_id, user.id) do
+    case Group.create(params, user.team_id, user.id) do
       {:ok, group} ->
         group = group
         |> Map.put_new(:joined, true)
@@ -107,7 +107,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         params = %{"user_ids" => user_ids, "name" => "__multi_dm_group__",
           "slug" => slug, "public" => false}
 
-        case Stitch.Group.create(params, user.team_id, user.id) do
+        case Group.create(params, user.team_id, user.id) do
           {:ok, group} ->
             group = group
             |> Map.put_new(:joined, true)
@@ -131,7 +131,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def join(conn, %{"id" => group_id}) do
-    case Stitch.Group.invite(group_id, conn.assigns.current_user.id) do
+    case Group.invite(group_id, conn.assigns.current_user.id) do
       {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -143,7 +143,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def leave(conn, %{"id" => group_id}) do
-    case Stitch.Group.remove(group_id, conn.assigns.current_user.id) do
+    case Group.remove(group_id, conn.assigns.current_user.id) do
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -155,19 +155,24 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def toggle_favorite(conn, %{"id" => group_id}) do
-    result = Stitch.Group.toggle_favorite(group_id, conn.assigns.current_user.id)
-    conn
-    |> json(%{group_id: group_id, favorited: result})
+    case Group.toggle_favorite(group_id, conn.assigns.current_user.id) do
+      {:ok, %{group_id: group_id, is_favorite: is_favorite}} ->
+        conn |> json(%{group_id: group_id, favorited: is_favorite})
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: message})
+    end
   end
 
   def toggle_public(conn, %{"id" => group_id, "public" => public}) do
-    case Stitch.GroupAuthorization.can_toggle_public?(group_id, conn.assigns.current_user.id) do
+    case GroupAuthorization.can_toggle_public?(group_id, conn.assigns.current_user.id) do
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to toggle the group's privacy setting."})
       true ->
-        {:ok, group} = Stitch.Group.toggle_public(group_id, public)
+        {:ok, group} = Group.toggle_public(group_id, public)
         group = GroupQueries.load_user_data(group, conn.assigns.current_user)
         render conn, "show.json", group: group
     end
@@ -184,7 +189,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def invite(conn, %{"id" => group_id, "user_ids" => user_ids}) do
-    case Stitch.GroupAuthorization.can_invite?(group_id, conn.assigns.current_user.id) do
+    case GroupAuthorization.can_invite?(group_id, conn.assigns.current_user.id) do
       false ->
         conn
         |> put_status(:unauthorized)
@@ -193,7 +198,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         split_user_ids = String.split(user_ids, ",")
         Enum.each(split_user_ids, fn(user_id) ->
           user_id = String.to_integer(user_id)
-          Stitch.Group.invite(group_id, user_id)
+          Group.invite(group_id, user_id)
         end)
         conn
         |> json(%{message: "Users invited to group."})

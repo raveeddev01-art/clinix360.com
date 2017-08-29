@@ -124,11 +124,11 @@ defmodule Stitch.Group do
       from(gu in GroupUser,
       where: gu.group_id == ^group_id and gu.user_id == ^user_id,
       update: [set: [is_favorite: not gu.is_favorite]])
-    |> Repo.update_all([], returning: [:is_favorite])
+    |> Repo.update_all([], returning: true)
 
     case result do
       {0, []} -> {:error, "User has to be member of group to favorite it."}
-      {1, [%{is_favorite: is_favorite}]} -> {:ok, is_favorite}
+      {1, [group_user]} -> {:ok, group_user}
     end
   end
 
