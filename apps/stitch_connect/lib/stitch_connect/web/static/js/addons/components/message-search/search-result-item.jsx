@@ -6,6 +6,7 @@ import MessageHead from "../../../common/components/message-head/message-head";
 
 class SearchResultItem extends Component {
   render() {
+    const { message } = this.props;
     return (
       <div className="message-pool-container search-result-item">
         <div className="message-search-result-actions">
@@ -47,11 +48,8 @@ class SearchResultItem extends Component {
           </OverlayTrigger>
         </div>
         <div className="message-pool">
-          <MessageHead
-            timestamp="2017-01-01"
-            user={{ first_name: "John", last_name: "Smith" }}
-          />
-          <MessageText message={{ text_content: "test message" }} />
+          <MessageHead timestamp={message.inserted_at} user={message.user} />
+          <MessageText message={message} />
         </div>
       </div>
     );

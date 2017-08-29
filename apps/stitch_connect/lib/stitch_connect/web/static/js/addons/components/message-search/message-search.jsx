@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-
+import _ from "lodash";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Form from "react-bootstrap/lib/Form";
 import InputGroup from "react-bootstrap/lib/InputGroup";
@@ -15,18 +15,25 @@ class MessageSearch extends Component {
     this.state = {
       query: ""
     };
+    this.search = _.debounce(this.props.searchStore.searchMessages, 300);
+  }
+
+  componentWillMount() {
+    this.props.searchStore.reset();
   }
 
   onChange = evt => {
     this.setState({ query: evt.target.value });
+    this.search(evt.target.value);
   };
 
   onSearch = evt => {
     evt.preventDefault();
-    this.props.searchStore.searchMessages(this.state.query);
+    this.search(this.state.query);
   };
 
   render() {
+    const { messages, total } = this.props.searchStore;
     return (
       <div className="message-search-addon">
         <Form onSubmit={this.onSearch}>
@@ -44,9 +51,15 @@ class MessageSearch extends Component {
             </InputGroup>
           </FormGroup>
         </Form>
-        <SearchResultItem />
-        <SearchResultItem />
-        <SearchResultItem />
+        <p>
+          {total} Found
+        </p>
+        {messages.map(message =>
+          <SearchResultItem
+            key={`search_result_${message.id}`}
+            message={message}
+          />
+        )}
       </div>
     );
   }
