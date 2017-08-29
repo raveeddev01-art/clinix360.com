@@ -7,7 +7,7 @@ defmodule Stitch.GroupUser do
   schema "group_users" do
     belongs_to :group, Group
     belongs_to :user, Accounts.User
-    field :mentioning_message_ids, :map, default: %{}
+    field :mentioning_message_ids, {:array, :integer}, default: []
 
     timestamps()
   end
@@ -21,5 +21,10 @@ defmodule Stitch.GroupUser do
 
   def remove_all_users(group_id) do
     from(u in GroupUser, where: u.group_id == ^group_id) |> Repo.delete_all
+  end
+
+  def mentions_count(group_id, user_id) do
+    group_user = Repo.get_by(GroupUser, group_id: group_id, user_id: user_id)
+    group_user.mentioning_message_ids |> Enum.count
   end
 end
