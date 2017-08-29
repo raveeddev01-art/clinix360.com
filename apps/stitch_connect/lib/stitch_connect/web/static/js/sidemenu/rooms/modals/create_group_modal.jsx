@@ -46,7 +46,9 @@ class CreateGroupModal extends Component {
   };
 
   createGroup = () => {
-    this.props.groupStore
+    const { groupStore, history, toggleModal } = this.props;
+
+    groupStore
       .createGroup({
         name: this.state.name,
         public: this.state.public,
@@ -54,8 +56,8 @@ class CreateGroupModal extends Component {
         user_ids: this.state.members.map(user => user.id)
       })
       .then(slug => {
-        this.props.history.push(`/groups/${slug}`);
-        this.props.toggleModal();
+        history.push(`/groups/${slug}`);
+        toggleModal();
       });
   };
 

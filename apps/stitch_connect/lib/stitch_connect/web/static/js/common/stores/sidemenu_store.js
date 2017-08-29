@@ -19,13 +19,6 @@ class SidemenuStore {
     this.loadUsers();
   }
 
-  @action
-  loadGroups = () => {
-    get("/api/v1/groups").then(response => {
-      this.groups = response.data;
-    });
-  };
-
   @computed
   get singleDMGroupsMap() {
     const singleDMGroups = this.groups.filter(
@@ -62,6 +55,18 @@ class SidemenuStore {
     });
     return map;
   }
+
+  @action
+  loadGroups = () => {
+    get("/api/v1/groups").then(response => {
+      this.groups = response.data;
+    });
+  };
+
+  @action
+  onNewGroup = newGroup => {
+    this.groups.push(newGroup);
+  };
 
   @action
   updateGroupData = (id, data) => {
