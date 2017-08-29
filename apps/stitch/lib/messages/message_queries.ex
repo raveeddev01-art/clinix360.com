@@ -32,9 +32,9 @@ defmodule Stitch.MessageQueries do
       preload: [:user, :group, :pinned_by]
 
     query =
-      case Keyword.fetch(opts, :max_id) do
-        {:ok, max_id} ->
-          query |> where([m], m.id < ^max_id)
+      case Keyword.fetch(opts, :skip) do
+        {:ok, skip} ->
+          query |> offset([m], ^skip)
         :error ->
           query
       end

@@ -231,4 +231,55 @@ defmodule StitchConnect.Web.MessageControllerTest do
     assert message["edited"] == false
     assert message["pinned"] == false
   end
+
+  describe "POST /api/v1/messages/search" do
+    test "with limit", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+      insert(:group_user, user: user, group: group)
+
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 1")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 2")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 3")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 4")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 5")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 6")
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> post_as_user(user, "/api/v1/messages/search", %{
+        term: "lorem",
+        limit: 2,
+      })
+
+      json = json_response(conn, 200)
+      assert [%{"text_content" => "lorem ipsum 6"}, %{"text_content" => "lorem ipsum 5"}] = json
+    end
+
+    test "with limit and skip", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+      insert(:group_user, user: user, group: group)
+
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 1")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 2")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 3")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 4")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 5")
+      insert(:message, user: user, group: group, text_content: "lorem ipsum 6")
+
+      conn = conn
+      |> subdomain(team.slug)
+      |> post_as_user(user, "/api/v1/messages/search", %{
+        term: "lorem",
+        limit: 2,
+        skip: 2,
+      })
+
+      json = json_response(conn, 200)
+      assert [%{"text_content" => "lorem ipsum 4"}, %{"text_content" => "lorem ipsum 3"}] = json
+    end
+  end
 end
