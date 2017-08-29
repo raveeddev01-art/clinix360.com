@@ -21,9 +21,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
-  def search(conn, %{"term" => term}) do
+  def search(conn, %{"term" => term} = params) do
+    opts = [
+      limit: Enum.min([Map.get(params, "limit", 30), 1_000]),
+      skip: Map.get(params, "skip", 0),
+    ]
+
     user = conn.assigns.current_user
-    messages = MessageQueries.search(conn.assigns.current_user.id, term)
+    messages = MessageQueries.search(conn.assigns.current_user.id, term, opts)
     render conn, "index.json", messages: messages, user_id: user.id
   end
 
