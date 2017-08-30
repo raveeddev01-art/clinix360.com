@@ -87,6 +87,8 @@ defmodule Stitch.Message do
     mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, author, attributes["text_content"])
     remove_mention_from_ids = message.mentioned_user_ids -- mentioned_user_ids
     add_mention_to_ids = mentioned_user_ids -- message.mentioned_user_ids
+    update_counters_for_user_ids = remove_mention_from_ids ++ add_mention_to_ids
+    notify_user_ids = add_mention_to_ids
 
     Repo.transaction fn ->
       message_update = message
@@ -98,6 +100,7 @@ defmodule Stitch.Message do
           remove_mention_from_users(group, remove_mention_from_ids, updated_message)
           add_mention_to_users(group, add_mention_to_ids, updated_message)
           updated_message
+          %{message: updated_message, mentioned_user_ids: update_counters_for_user_ids, notify_mentioned_user_ids: notify_user_ids}
         {:error, changeset} ->
           Repo.rollback(changeset)
       end

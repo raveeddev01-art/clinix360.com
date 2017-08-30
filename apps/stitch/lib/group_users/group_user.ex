@@ -24,7 +24,9 @@ defmodule Stitch.GroupUser do
   end
 
   def mentions_count(group_id, user_id) do
-    group_user = Repo.get_by(GroupUser, group_id: group_id, user_id: user_id)
-    group_user.mentioning_message_ids |> Enum.count
+    GroupUser
+    |> where(group_id: ^group_id, user_id: ^user_id)
+    |> select([gu], fragment("COALESCE(ARRAY_LENGTH(?, 1), 0)", gu.mentioning_message_ids))
+    |> Repo.one
   end
 end
