@@ -19,6 +19,7 @@ defmodule StitchConnect.Web.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
+      import StitchConnect.Web.ChannelsTestHelper
       import StitchConnect.Web.Router.Helpers
       import Stitch.Factory
 

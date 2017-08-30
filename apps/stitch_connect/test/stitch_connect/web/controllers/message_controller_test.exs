@@ -1,11 +1,16 @@
 defmodule StitchConnect.Web.MessageControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   alias Stitch.{MessageQueries}
+  import Phoenix.ChannelTest, except: [connect: 2]
 
   test "POST /api/v1/messages/:id/toggle-star", %{conn: conn} do
     user = insert(:user)
     message = insert(:message, user: user)
     team = message.group.team
+
+    {:ok, socket} = connect_socket(%{user1: user})
+    {:ok, socket1: socket}
+    @endpoint.subscribe("events:#{user.id}")
 
     conn = conn
     |> subdomain(team.slug)
@@ -14,10 +19,16 @@ defmodule StitchConnect.Web.MessageControllerTest do
     json = json_response(conn, 200)
     assert json["starred"] == true
 
+    assert_broadcast "message_starred", %{id: message_id, starred: true}
+    assert message_id == message.id
+
     conn = conn
     |> recycle()
     |> subdomain(team.slug)
     |> post_as_user(user, "/api/v1/messages/#{message.id}/toggle-star")
+
+    assert_broadcast "message_starred", %{id: message_id, starred: false}
+    assert message_id == message.id
 
     json = json_response(conn, 200)
     assert json["starred"] == false
