@@ -10,6 +10,7 @@ class MessageStore {
   @observable textInEdit = "";
   @observable canLoad = false;
   @observable loadedInitial = false;
+  @observable isScrollBottom = false;
   loadedAll = false;
 
   constructor(rootStore) {
@@ -78,7 +79,7 @@ class MessageStore {
                   message.inserted_at,
                   "minutes"
                 ) >= -30 &&
-                message.type === `user_message`
+                message.type === `chat` // it was user_message before
               ) {
                 lastMessagePool.push(message);
               } else {
@@ -191,9 +192,11 @@ class MessageStore {
 
     this.messages.unshift(newMessage);
 
-    setTimeout(() => {
-      this.scrollToBottom();
-    }, 300);
+    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
+      setTimeout(() => {
+        this.scrollToBottom();
+      }, 300);
+    }
   };
 
   @action
