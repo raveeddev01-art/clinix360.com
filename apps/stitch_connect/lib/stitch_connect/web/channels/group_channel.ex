@@ -81,6 +81,7 @@ defmodule StitchConnect.Web.GroupChannel do
     messages = MessageQueries.load_info(messages)
 
     EventsChannel.broadcast_marked_as_read(user, messages)
+    EventsChannel.broadcast_mention_counter_for_user(user.id, messages)
 
     json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
     {:reply, {:ok, %{messages: json}}, socket}
@@ -90,10 +91,11 @@ defmodule StitchConnect.Web.GroupChannel do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.update(message, params) do
-      {:ok, message} ->
+      {:ok, %{message: message, mentioned_user_ids: mentioned_user_ids}} ->
         message = MessageQueries.load_info(message)
 
         broadcast! socket, "edit_msg", message
+        EventsChannel.broadcast_mention_counter_update(group, mentioned_user_ids)
 
         json = MessageView.render("show.json", %{message: message, user_id: user.id})
         {:reply, {:ok, json}, socket}
@@ -112,6 +114,7 @@ defmodule StitchConnect.Web.GroupChannel do
       {:ok, message} ->
         broadcast! socket, "delete_msg", %{id: message.id}
         EventsChannel.broadcast_group_msg_deleted(group, message)
+        EventsChannel.broadcast_mention_counter_update(group, message.mentioned_user_ids)
 
         {:reply, {:ok, %{id: message.id}}, socket}
 
@@ -158,6 +161,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
           broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_new_msg(group, message)
+          EventsChannel.broadcast_mention_counter_update(group, message.mentioned_user_ids)
 
           json = MessageView.render("show.json", %{message: message, user_id: user.id})
           {:reply, {:ok, json}, socket}
