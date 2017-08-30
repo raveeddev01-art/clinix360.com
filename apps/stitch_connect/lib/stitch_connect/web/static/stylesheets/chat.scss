@@ -344,6 +344,18 @@
   z-index: -1;
 }
 
+.bottomPositionWrapper {
+  position: relative;
+}
+
+.bottomPosition {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+}
+
 .user-mention-menu {
   width: 100%;
 

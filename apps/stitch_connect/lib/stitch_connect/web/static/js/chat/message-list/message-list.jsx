@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import { inject, observer } from "mobx-react";
-import { Link, Element } from "react-scroll";
+import { Link, Element, Events } from "react-scroll";
 
 import MessagePool from "./message-pool";
 import DateSeparator from "./date-separator";
@@ -28,6 +28,14 @@ class MessageList extends Component {
     this.props.messageStore.canLoad = true;
   };
 
+  onScrollBottom = () => {
+    this.props.messageStore.isScrollBottom = true;
+  };
+
+  onLoseBottomScroll = () => {
+    this.props.messageStore.isScrollBottom = false;
+  };
+
   render() {
     const { messageStore } = this.props;
     const { messagesByDate } = messageStore;
@@ -51,6 +59,19 @@ class MessageList extends Component {
           </div>
         )}
         <Element name="topPosition" className="topPosition" />
+        <div className="bottomPositionWrapper">
+          {/* react-scroll only checks for top position, so, to check bottom pos, it should take 100vh */}
+          <Element name="bottomPosition" className="bottomPosition" />
+        </div>
+        <Link
+          to="bottomPosition"
+          spy
+          smooth={false}
+          containerId="chat"
+          onSetActive={this.onScrollBottom}
+          onSetInactive={this.onLoseBottomScroll}
+          isDynamic
+        />
         <Link
           to="topPosition"
           spy
