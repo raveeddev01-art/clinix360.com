@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
+@inject("filesStore")
 @observer
 class Files extends Component {
   componentWillMount() {}
