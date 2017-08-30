@@ -93,9 +93,9 @@ defmodule StitchConnect.Web.GroupChannel do
     case message && Message.update(message, params) do
       {:ok, %{message: message, mentioned_user_ids: mentioned_user_ids}} ->
         message = MessageQueries.load_info(message)
-        EventsChannel.broadcast_mention_counter_update(group, mentioned_user_ids)
 
         broadcast! socket, "edit_msg", message
+        EventsChannel.broadcast_mention_counter_update(group, mentioned_user_ids)
 
         json = MessageView.render("show.json", %{message: message, user_id: user.id})
         {:reply, {:ok, json}, socket}

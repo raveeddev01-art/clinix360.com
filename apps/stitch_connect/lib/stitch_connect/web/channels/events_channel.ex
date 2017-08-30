@@ -57,6 +57,11 @@ defmodule StitchConnect.Web.EventsChannel do
     end
   end
 
+  def broadcast_marked_as_read(user, messages) do
+    json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+    @endpoint.broadcast("events:#{user.id}", "marked_as_read", %{messages: json})
+  end
+
   def broadcast_mention_counter_update(group, mentioned_user_ids) do
     for user_id <- mentioned_user_ids do
       broadcast_mention_counter_for_user(user_id, group)
@@ -64,10 +69,12 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_mention_counter_for_user(user_id, []), do: nil
+
   def broadcast_mention_counter_for_user(user_id, [message|_]) do
     group = Repo.preload(message, :group).group
     broadcast_mention_counter_for_user(user_id, group)
   end
+
   def broadcast_mention_counter_for_user(user_id, %{} = group) do
     json = %{
       group_id: group.id,
@@ -75,14 +82,5 @@ defmodule StitchConnect.Web.EventsChannel do
       mentions_count: GroupUser.mentions_count(group.id, user_id)
     }
     @endpoint.broadcast("events:#{user_id}", "mentions_count", json)
-  end
-
-  def b(a,b,c) do
-    @endpoint.broadcast(a,b,c)
-  end
-
-  def broadcast_marked_as_read(user, messages) do
-    json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
-    @endpoint.broadcast("events:#{user.id}", "marked_as_read", %{messages: json})
   end
 end
