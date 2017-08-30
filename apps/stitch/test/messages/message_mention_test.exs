@@ -172,7 +172,7 @@ defmodule Stitch.Message.MentionTest do
       assert group_alice.mentioning_message_ids == []
       assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 0
 
-      {:ok, message} = Stitch.Message.update(message, %{"text_content" => "Hello, @alice.", "type" => "chat"})
+      {:ok, %{message: message}} = Stitch.Message.update(message, %{"text_content" => "Hello, @alice.", "type" => "chat"})
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
