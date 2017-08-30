@@ -9,7 +9,6 @@ defmodule Stitch.Accounts.User do
   schema "users" do
     field :email, :string
     field :roles, {:array, :string}
-    field :favorite_groups, {:array, :integer}, default: []
     field :encrypted_password, :string
     field :first_name, :string
     field :last_name, :string
@@ -33,7 +32,7 @@ defmodule Stitch.Accounts.User do
     timestamps()
   end
 
-  def changeset(%Stitch.Accounts.User{} = struct, attrs) do
+  def changeset(%User{} = struct, attrs) do
     struct
     |> cast(attrs, [:favorite_groups])
   end

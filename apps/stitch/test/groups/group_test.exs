@@ -29,18 +29,28 @@ defmodule Stitch.GroupTest do
   end
 
   describe "Stitch.Group.toggle_favorite/2" do
-    test "it favorites new groups for user" do
+    test "returns error if user isn't member of group" do
       group = insert(:group)
-      user = insert(:user, %{favorite_groups: []})
-      result = Stitch.Group.toggle_favorite(group.id, user.id)
-      assert result == true
+      user = insert(:user)
+      assert {:error, error} = Stitch.Group.toggle_favorite(group.id, user.id)
+      assert error == "User has to be member of group to favorite it."
     end
 
-    test "it unfavorites existing group for user" do
+    test "it favorites new groups for user" do
       group = insert(:group)
-      user = insert(:user, %{favorite_groups: [group.id]})
-      result = Stitch.Group.toggle_favorite(group.id, user.id)
-      assert result == false
+      user = insert(:user)
+      insert(:group_user, group: group, user: user)
+
+      assert {:ok, %{is_favorite: true}} = Stitch.Group.toggle_favorite(group.id, user.id)
+    end
+
+    test "it unfavorites favorited group for user" do
+      group = insert(:group)
+      user = insert(:user)
+      insert(:group_user, group: group, user: user)
+      Stitch.Group.toggle_favorite(group.id, user.id)
+
+      assert {:ok, %{is_favorite: false}} = Stitch.Group.toggle_favorite(group.id, user.id)
     end
   end
 

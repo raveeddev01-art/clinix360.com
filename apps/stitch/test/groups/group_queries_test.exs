@@ -151,6 +151,7 @@ defmodule Stitch.GroupQueriesTest do
       user = insert(:user, %{team_id: team.id})
 
       group1 = insert(:group, %{team: team, name: "Group 1", slug: "a", public: true})
+      insert(:group_user, %{user: user, group: group1})
       insert(:group, %{team: team, name: "Group 2", slug: "b", public: true})
 
       Group.toggle_favorite(group1.id, user.id)
