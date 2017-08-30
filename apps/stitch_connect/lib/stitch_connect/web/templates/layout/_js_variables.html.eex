@@ -21,7 +21,6 @@ current_user =
         "lastName" => user.last_name,
         "roles" => user.roles,
         "username" => user.username,
-        "favoriteGroups" => user.favorite_groups
       })
   end
 %>
