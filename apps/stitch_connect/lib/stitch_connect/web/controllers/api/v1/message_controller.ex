@@ -109,6 +109,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, result, _changeset} ->
             message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
+            EventsChannel.broadcast_msg_starred(message, user)
             render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
             conn
