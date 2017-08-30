@@ -9,6 +9,7 @@ defmodule Stitch.GroupUser do
     belongs_to :user, Accounts.User
     field :mentioning_message_ids, :map, default: %{}
     field :is_favorite, :boolean, default: false
+    field :mentioning_message_ids, {:array, :integer}, default: []
 
     timestamps()
   end
@@ -22,5 +23,12 @@ defmodule Stitch.GroupUser do
 
   def remove_all_users(group_id) do
     from(u in GroupUser, where: u.group_id == ^group_id) |> Repo.delete_all
+  end
+
+  def mentions_count(group_id, user_id) do
+    GroupUser
+    |> where(group_id: ^group_id, user_id: ^user_id)
+    |> select([gu], fragment("COALESCE(ARRAY_LENGTH(?, 1), 0)", gu.mentioning_message_ids))
+    |> Repo.one
   end
 end

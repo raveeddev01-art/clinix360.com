@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import _ from "lodash";
+import InfiniteScroll from "react-infinite-scroller";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Form from "react-bootstrap/lib/Form";
 import InputGroup from "react-bootstrap/lib/InputGroup";
@@ -32,8 +33,12 @@ class MessageSearch extends Component {
     this.search(this.state.query);
   };
 
+  loadMore = () => {
+    this.search();
+  };
+
   render() {
-    const { messages, total } = this.props.searchStore;
+    const { messages, hasMore } = this.props.searchStore;
     return (
       <div className="message-search-addon">
         <Form onSubmit={this.onSearch}>
@@ -51,15 +56,20 @@ class MessageSearch extends Component {
             </InputGroup>
           </FormGroup>
         </Form>
-        <p>
-          {total} Found
-        </p>
-        {messages.map(message =>
-          <SearchResultItem
-            key={`search_result_${message.id}`}
-            message={message}
-          />
-        )}
+        <div>
+          <InfiniteScroll
+            loadMore={this.loadMore}
+            hasMore={hasMore}
+            useWindow={false}
+          >
+            {messages.map(message =>
+              <SearchResultItem
+                key={`search_result_${message.id}`}
+                message={message}
+              />
+            )}
+          </InfiniteScroll>
+        </div>
       </div>
     );
   }

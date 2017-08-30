@@ -63,14 +63,7 @@ defmodule Stitch.Message do
 
       case message_insert do
         {:ok, message} ->
-          mentioned_user_id = %{message.id => "true"}
-
-          Stitch.GroupUser
-          |> where([gu], gu.group_id == ^group.id)
-          |> where([gu], gu.user_id in ^mentioned_user_ids)
-          |> update([gu], set: [mentioning_message_ids: fragment("? || ?", gu.mentioning_message_ids, ^mentioned_user_id)])
-          |> Repo.update_all([], returning: true)
-
+          add_mention_to_users(group, mentioned_user_ids, message)
           message
         {:error, changeset} ->
           Repo.rollback(changeset)
@@ -91,9 +84,11 @@ defmodule Stitch.Message do
     group = Stitch.GroupQueries.get_by_id(message.group_id)
     author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
-
-    previous_mentioned_user_ids = message.mentioned_user_ids
     mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, author, attributes["text_content"])
+    remove_mention_from_ids = message.mentioned_user_ids -- mentioned_user_ids
+    add_mention_to_ids = mentioned_user_ids -- message.mentioned_user_ids
+    update_counters_for_user_ids = remove_mention_from_ids ++ add_mention_to_ids
+    notify_user_ids = add_mention_to_ids
 
     Repo.transaction fn ->
       message_update = message
@@ -101,22 +96,11 @@ defmodule Stitch.Message do
       |> Repo.update
 
       case message_update do
-        {:ok, message} ->
-          Stitch.GroupUser
-          |> where([gu], gu.group_id == ^group.id)
-          |> where([gu], gu.user_id in ^previous_mentioned_user_ids)
-          |> update([gu], set: [mentioning_message_ids: fragment("? - ?", gu.mentioning_message_ids, ^Integer.to_string(message.id))])
-          |> Repo.update_all([], returning: true)
-
-          mentioned_user_id = %{message.id => "true"}
-
-          Stitch.GroupUser
-          |> where([gu], gu.group_id == ^group.id)
-          |> where([gu], gu.user_id in ^mentioned_user_ids)
-          |> update([gu], set: [mentioning_message_ids: fragment("? || ?", gu.mentioning_message_ids, ^mentioned_user_id)])
-          |> Repo.update_all([], returning: true)
-
-          message
+        {:ok, updated_message} ->
+          remove_mention_from_users(group, remove_mention_from_ids, updated_message)
+          add_mention_to_users(group, add_mention_to_ids, updated_message)
+          updated_message
+          %{message: updated_message, mentioned_user_ids: update_counters_for_user_ids, notify_mentioned_user_ids: notify_user_ids}
         {:error, changeset} ->
           Repo.rollback(changeset)
       end
@@ -128,32 +112,52 @@ defmodule Stitch.Message do
     users = Repo.preload(group, :users).users
 
     Repo.transaction fn ->
-      Stitch.GroupUser
-      |> where([gu], gu.group_id == ^group.id)
-      |> where([gu], gu.user_id in ^message.mentioned_user_ids)
-      |> update([gu], set: [mentioning_message_ids: fragment("? - ?", gu.mentioning_message_ids, ^Integer.to_string(message.id))])
-      |> Repo.update_all([], returning: true)
+      remove_mention_from_users(group, message)
 
       case Repo.delete(message) do
         {:ok, message} -> message
-        {:error, changeset} ->
-          Repo.rollback(changeset)
+        {:error, changeset} -> Repo.rollback(changeset)
       end
     end
   end
 
-  def read_mentions(user, []), do: {:ok, nil}
-  def read_mentions(user, [message_id|_] = message_ids) do
-    message = Repo.get(Message, message_id)
-    group = Repo.preload(message, :group).group
-    read_mentions(group, user, message_ids)
+  def remove_mention_from_users(group, message) do
+    remove_mention_from_users(group, message.mentioned_user_ids, message)
   end
-  def read_mentions(group, user, message_ids) do
-    ids = "#{message_ids |> Enum.join(" - ")}"
+
+  def remove_mention_from_users(group, user_ids, message) do
     Stitch.GroupUser
     |> where([gu], gu.group_id == ^group.id)
-    |> where([gu], gu.user_id == ^user.id)
-    |> update([gu], set: [mentioning_message_ids: fragment("? - ?", gu.mentioning_message_ids, ^ids)])
+    |> where([gu], gu.user_id in ^user_ids)
+    |> update([gu], pull: [mentioning_message_ids: ^message.id])
+    |> Repo.update_all([], returning: true)
+  end
+
+  def add_mention_to_users(group, mentioned_user_ids, message) do
+    Stitch.GroupUser
+    |> where([gu], gu.group_id == ^group.id)
+    |> where([gu], gu.user_id in ^mentioned_user_ids)
+    |> update([gu], set: [
+      mentioning_message_ids: fragment("ARRAY(SELECT DISTINCT UNNEST(? || ?))", gu.mentioning_message_ids, ^[message.id])
+    ])
+    |> Repo.update_all([], returning: true)
+  end
+
+  def read_mentions([], _user_id), do: {:ok, nil}
+
+  def read_mentions([message_id|_] = message_ids, user_id) do
+    message = Repo.get(Message, message_id)
+    group = Repo.preload(message, :group).group
+    read_mentions(message_ids, user_id, group.id)
+  end
+
+  def read_mentions(message_ids, user_id, group_id) do
+    Stitch.GroupUser
+    |> where([gu], gu.group_id == ^group_id)
+    |> where([gu], gu.user_id == ^user_id)
+    |> update([gu], set: [
+      mentioning_message_ids: fragment("(select coalesce(array_agg(e), array[]::int[]) from unnest(?) e where e <> all(?))", gu.mentioning_message_ids, ^message_ids)
+    ])
     |> Repo.update_all([], returning: true)
   end
 
@@ -173,7 +177,7 @@ defmodule Stitch.Message do
     message_ids = List.wrap(message_ids)
     value = %{user.id => DateTime.utc_now}
 
-    read_mentions(user, message_ids)
+    read_mentions(message_ids, user.id)
     Message
     |> where([m], m.id in ^message_ids and m.user_id != ^user.id)
     |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user.id)))
