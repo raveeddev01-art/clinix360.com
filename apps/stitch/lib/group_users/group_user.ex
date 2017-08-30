@@ -7,7 +7,6 @@ defmodule Stitch.GroupUser do
   schema "group_users" do
     belongs_to :group, Group
     belongs_to :user, Accounts.User
-    field :mentioning_message_ids, :map, default: %{}
     field :is_favorite, :boolean, default: false
     field :mentioning_message_ids, {:array, :integer}, default: []
 
