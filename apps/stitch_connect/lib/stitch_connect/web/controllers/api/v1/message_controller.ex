@@ -1,10 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
-  alias Stitch.MessageAction
-  alias Stitch.MessageQueries
-  alias Stitch.Message
-  alias Stitch.GroupAuthorization
-  alias StitchConnect.Web.EventsChannel
+  alias Stitch.{Repo, Group, GroupAuthorization,
+                Message, MessageAction, MessageQueries}
+  alias StitchConnect.Web.{Endpoint, EventsChannel}
 
   plug StitchConnect.Plug.ApiAuthenticate
 
@@ -33,14 +31,18 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
-    group_id = String.to_integer(group_id)
+    group = Repo.get! Group, group_id
     user = conn.assigns.current_user
     case GroupAuthorization.is_member?(group_id, user.id) do
       true ->
-        case Message.create(group_id, user, message_params) do
+        case Message.create(group.id, user, message_params) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
-            EventsChannel.broadcast_group_new_msg(%Stitch.Group{id: group_id}, message)
+
+            Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
+            EventsChannel.broadcast_group_new_msg(group, message)
+            EventsChannel.broadcast_mention_counter_update(group, message.mentioned_user_ids)
+
             conn
             |> put_status(:created)
             |> render("show.json", message: message, user_id: user.id)
@@ -64,8 +66,12 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     case user.id == message.user_id do
       true ->
         case Message.update(message, message_params) do
-          {:ok, %{message: message}} ->
+          {:ok, %{message: message, mentioned_user_ids: mentioned_user_ids}} ->
             message = MessageQueries.load_info(message)
+
+            Endpoint.broadcast("groups:#{message.group.slug}", "edit_msg", message)
+            EventsChannel.broadcast_mention_counter_update(message.group, mentioned_user_ids)
+
             render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
             conn
@@ -86,6 +92,11 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.delete(message) do
           {:ok, _message} ->
+
+            Endpoint.broadcast("groups:#{message.group.slug}", "delete_msg", %{id: message.id})
+            EventsChannel.broadcast_group_msg_deleted(message.group, message)
+            EventsChannel.broadcast_mention_counter_update(message.group, message.mentioned_user_ids)
+
             send_resp(conn, :no_content, "")
           {:error, changeset} ->
             conn
