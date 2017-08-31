@@ -8,7 +8,8 @@ defmodule Stitch.GroupUser do
     belongs_to :group, Group
     belongs_to :user, Accounts.User
     field :is_favorite, :boolean, default: false
-    field :notification_preference, :string, default: "default"
+    field :desktop_notification_preference, :string, default: "everything"
+    field :mobile_notification_preference, :string, default: "everything"
     field :mentioning_message_ids, {:array, :integer}, default: []
 
     timestamps()
@@ -18,36 +19,38 @@ defmodule Stitch.GroupUser do
     struct
     |> cast(params, [:group_id, :user_id])
     |> validate_required([:group_id, :user_id])
-    |> validate_inclusion(:notification_preference, ["everything", "mentions", "nothing", "default"])
+    |> validate_inclusion(:desktop_notification_preference, ["everything", "mentions", "nothing", "default"])
+    |> validate_inclusion(:mobile_notification_preference, ["everything", "mentions", "nothing", "default"])
     |> unique_constraint(:user_id, name: :group_users_group_user_id_unique_index, message: "User is already part of group")
   end
 
   def preference_changeset(%GroupUser{} = struct, params) do
     struct
-    |> cast(params, [:notification_preference])
-    |> validate_required([:notification_preference])
-    |> validate_inclusion(:notification_preference, ["everything", "mentions", "nothing"])
+    |> cast(params, [:desktop_notification_preference, :mobile_notification_preference])
+    |> validate_required([:desktop_notification_preference, :mobile_notification_preference])
+    |> validate_inclusion(:desktop_notification_preference, ["everything", "mentions", "nothing"])
+    |> validate_inclusion(:mobile_notification_preference, ["everything", "mentions", "nothing"])
   end
 
-  def users_with_all_notifications_enabled(group_users) do
+  def with_desktop_notifications_enabled(group_users) do
     group_users
     |> Enum.filter(fn group_user ->
-      if group_user.notification_preference == "default" do
-        group_user.user.notification_preference == "everything"
+      if group_user.desktop_notification_preference == "default" do
+        group_user.user.desktop_notification_preference == "everything"
       else
-        group_user.notification_preference == "everything"
+        group_user.desktop_notification_preference == "everything"
       end
     end)
     |> Enum.map(& &1.user_id)
   end
 
-  def users_with_all_notifications_disabled(group_users) do
+  def with_desktop_notifications_disabled(group_users) do
     group_users
     |> Enum.filter(fn group_user ->
-      if group_user.notification_preference == "default" do
-        group_user.user.notification_preference == "nothing"
+      if group_user.desktop_notification_preference == "default" do
+        group_user.user.desktop_notification_preference == "nothing"
       else
-        group_user.notification_preference == "nothing"
+        group_user.desktop_notification_preference == "nothing"
       end
     end)
     |> Enum.map(& &1.user_id)

@@ -210,32 +210,32 @@ defmodule Stitch.GroupQueriesTest do
   end
 
   describe "notification settings (global and channel-specific)" do
-    test "users_with_all_notifications_disabled/1 (global specific)" do
+    test "with_desktop_notifications_disabled/1 (global specific)" do
       team = insert(:team)
       bob = insert(:user, username: "bob", team: team)
       alice = insert(:user, username: "alice", team: team)
       general = insert(:group, team: team, slug: "general")
       insert(:group_user, user: bob, group: general)
-      insert(:group_user, user: alice, group: general, notification_preference: "nothing")
+      insert(:group_user, user: alice, group: general, desktop_notification_preference: "nothing")
 
       group_users = GroupUser.for_group(general.id)
-      [alice_id] = GroupUser.users_with_all_notifications_disabled(group_users)
+      [alice_id] = GroupUser.with_desktop_notifications_disabled(group_users)
       assert alice_id == alice.id
     end
 
-    test "users_with_all_notifications_disabled/1 (channel specific overrides global)" do
+    test "with_desktop_notifications_disabled/1 (channel specific overrides global)" do
       team = insert(:team)
       bob = insert(:user, username: "bob", team: team)
-      alice = insert(:user, username: "alice", team: team, notification_preference: "nothing")
+      alice = insert(:user, username: "alice", team: team, desktop_notification_preference: "nothing")
       general = insert(:group, team: team, slug: "general")
       insert(:group_user, user: bob, group: general)
-      insert(:group_user, user: alice, group: general, notification_preference: "mentions")
+      insert(:group_user, user: alice, group: general, desktop_notification_preference: "mentions")
 
       group_users = GroupUser.for_group(general.id)
-      assert [] = GroupUser.users_with_all_notifications_disabled(group_users)
+      assert [] = GroupUser.with_desktop_notifications_disabled(group_users)
     end
 
-    test "users_with_all_notifications_enabled/1" do
+    test "with_desktop_notifications_enabled/1" do
     end
   end
 

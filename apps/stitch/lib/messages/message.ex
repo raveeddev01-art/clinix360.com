@@ -56,9 +56,9 @@ defmodule Stitch.Message do
     users = group_users |> Enum.map(& &1.user)
 
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
-    users_with_all_notifications_enabled = GroupUser.users_with_all_notifications_enabled(group_users)
-    users_with_all_notifications_disabled = GroupUser.users_with_all_notifications_disabled(group_users)
-    notify_user_ids = Enum.uniq(mentioned_user_ids ++ users_with_all_notifications_enabled -- users_with_all_notifications_disabled)
+    with_desktop_notifications_enabled = GroupUser.with_desktop_notifications_enabled(group_users)
+    with_desktop_notifications_disabled = GroupUser.with_desktop_notifications_disabled(group_users)
+    notify_user_ids = Enum.uniq(mentioned_user_ids ++ with_desktop_notifications_enabled -- with_desktop_notifications_disabled)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user.id}
