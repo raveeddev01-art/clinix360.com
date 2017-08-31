@@ -17,12 +17,20 @@ import UsersPending from "./users/pending";
 import userStore from "./stores/user_store";
 import teamStore from "./stores/team_store";
 import imageStore from "./stores/image_store";
+import membersStore from "./stores/members_store";
 import invitationStore from "./stores/invitation_store";
 
-const stores = { userStore, teamStore, imageStore, invitationStore };
+const stores = {
+  userStore,
+  teamStore,
+  imageStore,
+  invitationStore,
+  membersStore
+};
 
 export default class Admin extends Component {
   componentWillMount() {
+    membersStore.loadUsers(this.props.teamId);
     teamStore.loadTeam(this.props.teamId);
     userStore.loadUser(currentUser.id);
   }

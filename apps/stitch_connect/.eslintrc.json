@@ -17,6 +17,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "arrow-body-style": "off",
     "constructor-super": "warn",
     "class-methods-use-this": "off",
     "jsx-a11y/interactive-supports-focus": "off",
@@ -46,6 +47,8 @@
   "globals": {
     "notify": true,
     "currentUser": false,
+    "applicationHost": true,
+    "socket": true,
     "post": true,
     "get": true,
     "remove": true,
