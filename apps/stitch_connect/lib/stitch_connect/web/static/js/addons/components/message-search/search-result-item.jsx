@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import MessageText from "../../../common/components/message-text/message-text";
+import MessageContent from "../../../common/components/message-content/message-content";
 import MessageHeader from "../../../common/components/message-header/message-header";
 
 class SearchResultItem extends Component {
@@ -49,7 +49,7 @@ class SearchResultItem extends Component {
         </div>
         <div className="message-pool">
           <MessageHeader timestamp={message.inserted_at} user={message.user} />
-          <MessageText message={message} />
+          <MessageContent message={message} />
         </div>
       </div>
     );

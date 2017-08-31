@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { inject } from "mobx-react";
 import moment from "moment";
 
-import MessageText from "../../../common/components/message-text/message-text";
+import MessageContent from "../../../common/components/message-content/message-content";
 
 @inject("sidemenuStore")
 class File extends Component {
@@ -34,7 +34,7 @@ class File extends Component {
         </div>
 
         <div className="addon-message-content">
-          <MessageText message={file} />
+          <MessageContent message={file} />
           <div className="group">
             <a href={`/groups/${group.slug}`}>
               <i className="fa fa-tag" /> {group.name}
