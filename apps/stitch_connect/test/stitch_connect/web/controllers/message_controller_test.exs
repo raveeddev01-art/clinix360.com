@@ -294,6 +294,24 @@ defmodule StitchConnect.Web.MessageControllerTest do
         } = message
       end
     end
+
+    test "with limit", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+
+      fn -> insert(:message, group: group) end
+      |> Stream.repeatedly
+      |> Enum.take(3)
+
+      json =
+        conn
+        |> subdomain(group.team.slug)
+        |> get_as_user(user, "/api/v1/groups/#{group.id}/messages", %{limit: 2})
+        |> json_response(200)
+
+      assert Enum.count(json) == 2
+    end
   end
 
   describe "POST /api/v1/messages/search" do

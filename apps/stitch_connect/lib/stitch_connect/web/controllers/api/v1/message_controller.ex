@@ -6,11 +6,16 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   plug StitchConnect.Plug.ApiAuthenticate
 
-  def index(conn, %{"group_id" => group_id}) do
+  def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
     case GroupAuthorization.can_view?(group_id, user.id) do
       true ->
-        messages = MessageQueries.group_latest_messages(group_id, user)
+        opts =
+          params
+          |> Map.take(["limit"])
+          |> Enum.map(fn {key, value} -> {:"#{key}", value} end)
+
+        messages = MessageQueries.group_latest_messages(group_id, user, opts)
         render conn, "index.json", messages: messages, user_id: user.id
       false ->
         conn
