@@ -1,19 +1,14 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import MessageHead from "../../../common/components/message-head/message-head";
-import MessageText from "../../../common/components/message-text/message-text";
+
+import SearchResultItem from "../message-search/search-result-item";
 
 @observer
 class GlobalStarredMessage extends Component {
   render() {
     const { message } = this.props;
 
-    return (
-      <div>
-        <MessageHead timestamp={message.inserted_at} user={message.user} />
-        <MessageText message={message} />
-      </div>
-    );
+    return <SearchResultItem message={message} />;
   }
 }
 
