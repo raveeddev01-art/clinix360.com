@@ -1,22 +1,25 @@
 import React, { Component } from "react";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import MessageText from "../../../common/components/message-text/message-text";
-import MessageHead from "../../../common/components/message-head/message-head";
 
-class SearchResultItem extends Component {
+import MessageHeader from "./message-header/message-header";
+import MessageContent from "./message-content/message-content";
+import MessageFooter from "./message-footer/message-footer";
+
+class AddonMessage extends Component {
   render() {
     const { message } = this.props;
+
     return (
-      <div className="message-pool-container search-result-item">
-        <div className="message-search-result-actions">
+      <div className="message-pool-container addon">
+        <div className="addon-message-actions">
           <OverlayTrigger
             placement="top"
             overlay={<Tooltip id="open-a-direct-message">Jump</Tooltip>}
           >
             <a
               role="link"
-              className="message-search-result-action-item"
+              className="addon-message-action-item"
               onClick={() => {}}
             >
               <i className="fa fa-hand-o-left" />
@@ -28,7 +31,7 @@ class SearchResultItem extends Component {
           >
             <a
               role="link"
-              className="message-search-result-action-item"
+              className="addon-message-action-item"
               onClick={() => {}}
             >
               <i className="fa fa-link" />
@@ -40,7 +43,7 @@ class SearchResultItem extends Component {
           >
             <a
               role="link"
-              className="message-search-result-action-item"
+              className="addon-message-action-item"
               onClick={() => {}}
             >
               <i className="fa fa-clipboard" />
@@ -48,12 +51,13 @@ class SearchResultItem extends Component {
           </OverlayTrigger>
         </div>
         <div className="message-pool">
-          <MessageHead timestamp={message.inserted_at} user={message.user} />
-          <MessageText message={message} />
+          <MessageHeader timestamp={message.inserted_at} user={message.user} />
+          <MessageContent message={message} />
+          <MessageFooter message={message} />
         </div>
       </div>
     );
   }
 }
 
-export default SearchResultItem;
+export default AddonMessage;

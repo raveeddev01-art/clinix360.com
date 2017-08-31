@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import InfiniteScroll from "react-infinite-scroller";
 
-import SearchResultItem from "../message-search/search-result-item";
+import AddonMessage from "../../../common/components/messages/addon-message";
 
 @inject("searchStore")
 @observer
@@ -27,7 +27,7 @@ class Mentions extends Component {
           useWindow={false}
         >
           {messages.map(message =>
-            <SearchResultItem
+            <AddonMessage
               key={`search_result_${message.id}`}
               message={message}
             />

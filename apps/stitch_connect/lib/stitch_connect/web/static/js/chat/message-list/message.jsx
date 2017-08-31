@@ -10,7 +10,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
 
 import { confirm } from "../../common/modals";
-import MessageText from "../../common/components/message-text/message-text";
+import MessageContent from "../../common/components/messages/message-content/message-content";
 
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
@@ -213,7 +213,7 @@ class Message extends Component {
       >
         <div className="message">
           <div>
-            <MessageText message={message} />
+            <MessageContent message={message} />
             {this.renderEdited(message)}
           </div>
 

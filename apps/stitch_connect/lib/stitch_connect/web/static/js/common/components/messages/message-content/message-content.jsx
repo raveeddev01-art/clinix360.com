@@ -5,7 +5,7 @@ import FileAttachment from "./file-attachment";
 
 @inject("sidemenuStore")
 @observer
-class MessageText extends Component {
+class MessageContent extends Component {
   renderMessageText = () => {
     const { message, sidemenuStore } = this.props;
     const { usernameMap } = sidemenuStore;
@@ -44,4 +44,4 @@ class MessageText extends Component {
   }
 }
 
-export default MessageText;
+export default MessageContent;
