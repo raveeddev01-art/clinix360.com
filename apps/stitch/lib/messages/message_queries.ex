@@ -48,12 +48,14 @@ defmodule Stitch.MessageQueries do
   """
   def group_latest_messages(group_id, user, opts \\ []) do
     limit = Keyword.get(opts, :limit, 30)
+    offset = Keyword.get(opts, :skip, 0)
 
     query =
       from m in Message,
       where: m.group_id == ^group_id,
       order_by: [desc: :inserted_at],
       limit: ^limit,
+      offset: ^offset,
       select: m,
       preload: [:user, :group, :pinned_by]
 
