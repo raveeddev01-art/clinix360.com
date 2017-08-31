@@ -67,6 +67,8 @@ defmodule StitchConnect.Web.MessageControllerTest do
       insert(:group_user, user: user, group: message.group)
       team = message.group.team
 
+      @endpoint.subscribe("groups:#{message.group.slug}")
+
       conn = conn
       |> subdomain(team.slug)
       |> put_as_user(user, "/api/v1/messages/#{message.id}", %{
@@ -74,6 +76,9 @@ defmodule StitchConnect.Web.MessageControllerTest do
           text_content: "new message text"
         }
       })
+
+      assert_broadcast "edit_msg", message
+      assert message.text_content == "new message text"
 
       json = json_response(conn, 200)
       assert json["text_content"] == "new message text"
@@ -112,12 +117,22 @@ defmodule StitchConnect.Web.MessageControllerTest do
     test "user can delete his own messages", %{conn: conn} do
       user = insert(:user)
       message = insert(:message, user: user)
+      user2 = insert(:user)
       insert(:group_user, user: user, group: message.group)
+      insert(:group_user, user: user2, group: message.group)
       team = message.group.team
+
+      @endpoint.subscribe("groups:#{message.group.slug}")
+      @endpoint.subscribe("events:#{user2.id}")
 
       conn = conn
       |> subdomain(team.slug)
       |> delete_as_user(user, "/api/v1/messages/#{message.id}")
+
+      assert_broadcast "delete_msg", %{id: msg_id}
+      assert_broadcast "message_deleted", %{id: msg2_id}
+      assert msg_id == message.id
+      assert msg2_id == message.id
 
       assert response(conn, 204)
       message = MessageQueries.get_by_id(message.id)
@@ -146,7 +161,12 @@ defmodule StitchConnect.Web.MessageControllerTest do
     test "default message with text", %{conn: conn} do
       user = insert(:user)
       group = insert(:group)
+      user2 = insert(:user)
       insert(:group_user, user: user, group: group)
+      insert(:group_user, user: user2, group: group)
+
+      @endpoint.subscribe("groups:#{group.slug}")
+      @endpoint.subscribe("events:#{user2.id}")
 
       conn = conn
       |> subdomain(group.team.slug)
@@ -156,6 +176,11 @@ defmodule StitchConnect.Web.MessageControllerTest do
           text_content: "lorem ipsum"
         }
       })
+
+      assert_broadcast "new_msg", msg_json
+      assert_broadcast "new_message", msg2_json
+      assert msg_json.text_content == "lorem ipsum"
+      assert msg2_json.id == msg_json.id
 
       json = json_response(conn, 201)
       assert json["text_content"] == "lorem ipsum"
