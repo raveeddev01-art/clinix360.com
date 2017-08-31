@@ -252,20 +252,48 @@ defmodule StitchConnect.Web.MessageControllerTest do
     end
   end
 
-  test "GET /api/v1/groups/:id/messages", %{conn: conn} do
-    user = insert(:user)
-    message = insert(:message, user: user)
-    team = message.group.team
+  describe "GET /api/v1/groups/:id/messages" do
+    test "responds with 30 latest messages", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
 
-    conn = conn
-    |> subdomain(team.slug)
-    |> get_as_user(user, "/api/v1/groups/#{message.group.id}/messages")
+      [_old_message | latest_messages] =
+        fn -> insert(:message, group: group) end
+        |> Stream.repeatedly
+        |> Enum.take(31)
 
-    json = json_response(conn, 200)
-    message = json |> List.first
-    assert message["starred"] == false
-    assert message["edited"] == false
-    assert message["pinned"] == false
+      json =
+        conn
+        |> subdomain(group.team.slug)
+        |> get_as_user(user, "/api/v1/groups/#{group.id}/messages")
+        |> json_response(200)
+
+      assert Enum.map(json, &Map.fetch!(&1, "id")) ==
+        latest_messages |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+
+      Enum.each json, fn message ->
+        assert %{
+          "id" => _,
+          "user_id" => _,
+          "user" => %{"first_name" => _, "id" => _, "last_name" => _},
+          "group_id" => _,
+          "deleted" => _,
+          "text_content" => _,
+          "fields" => _,
+          "type" => _,
+          "inserted_at" => _,
+          "starred" => _,
+          "pinned" => _,
+          "pinned_by" => _,
+          "pinned_at" => _,
+          "edited" => _,
+          "edited_at" => _,
+          "read" => _,
+          "read_status" => _,
+        } = message
+      end
+    end
   end
 
   describe "POST /api/v1/messages/search" do
