@@ -23,6 +23,7 @@ defmodule Stitch.Accounts.User do
     field :token, :string
     field :disabled, :boolean, default: false
     field :password_reset_token, :string
+    field :notification_preference, :string, default: "everything"
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
     has_many :group_notification_preferences, Stitch.GroupNotificationPreference
@@ -35,6 +36,13 @@ defmodule Stitch.Accounts.User do
   def changeset(%User{} = struct, attrs) do
     struct
     |> cast(attrs, [:favorite_groups])
+  end
+
+  def preference_changeset(%User{} = struct, params) do
+    struct
+    |> cast(params, [:notification_preference])
+    |> validate_required([:notification_preference])
+    |> validate_inclusion(:notification_preference, ["everything", "mentions", "nothing"])
   end
 
   @doc """
