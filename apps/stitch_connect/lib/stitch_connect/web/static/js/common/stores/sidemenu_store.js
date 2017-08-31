@@ -85,6 +85,8 @@ class SidemenuStore {
   selectRoom = room => {
     this.selectedRoom = room;
   };
+
+  getGroupById = id => this.groups.find(group => group.id === id);
 }
 
 export default SidemenuStore;

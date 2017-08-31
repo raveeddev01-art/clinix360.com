@@ -24,7 +24,7 @@ class DotOptions extends Component {
           <MenuItem onSelect={this._toggleAddonMenu("directory")}>
             <i className="fa fa-users" /> Directory
           </MenuItem>
-          <MenuItem>
+          <MenuItem onSelect={this._toggleAddonMenu("files")}>
             <i className="fa fa-folder-open" /> Files
           </MenuItem>
           <MenuItem onSelect={this._toggleAddonMenu("mentions")}>

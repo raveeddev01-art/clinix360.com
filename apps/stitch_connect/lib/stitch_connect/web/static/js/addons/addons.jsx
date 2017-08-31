@@ -9,6 +9,7 @@ import GlobalStarredMessages from "./components/global-starred-messages/global-s
 
 import PeopleDetail from "./components/people-detail/people-detail";
 import Mentions from "./components/mentions/mentions";
+import Files from "./components/files/files";
 
 @inject("addonStore")
 @observer
@@ -62,6 +63,7 @@ class Addons extends Component {
             {addonStore.addonPanelType === "mentions" && <Mentions />}
             {addonStore.addonPanelType === "starred" &&
               <GlobalStarredMessages />}
+            {addonStore.addonPanelType === "files" && <Files />}
           </div>
 
           <div className={rightPanelClass}>
