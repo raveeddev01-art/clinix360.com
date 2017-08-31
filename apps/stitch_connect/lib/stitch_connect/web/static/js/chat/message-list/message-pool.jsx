@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
-import MessageHeader from "../../common/components/message-header/message-header";
+import MessageHeader from "../../common/components/messages/message-header/message-header";
 
 import Message from "./message";
 

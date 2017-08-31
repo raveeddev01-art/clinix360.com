@@ -10,7 +10,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
 
 import { confirm } from "../../common/modals";
-import MessageContent from "../../common/components/message-content/message-content";
+import MessageContent from "../../common/components/messages/message-content/message-content";
 
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer

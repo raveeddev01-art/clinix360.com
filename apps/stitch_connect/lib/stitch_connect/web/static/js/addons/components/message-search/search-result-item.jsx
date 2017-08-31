@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import MessageContent from "../../../common/components/message-content/message-content";
-import MessageHeader from "../../../common/components/message-header/message-header";
+import MessageContent from "../../../common/components/messages/message-content/message-content";
+import MessageHeader from "../../../common/components/messages/message-header/message-header";
 
 class SearchResultItem extends Component {
   render() {

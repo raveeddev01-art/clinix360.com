@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { inject } from "mobx-react";
 import moment from "moment";
 
-import MessageContent from "../../../common/components/message-content/message-content";
+import MessageContent from "../../../common/components/messages/message-content/message-content";
 
 @inject("sidemenuStore")
 class File extends Component {
