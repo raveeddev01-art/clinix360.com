@@ -15,7 +15,7 @@ class Info extends Component {
 
   render() {
     return (
-      <div>
+      <div className="info-addon">
         <AddonCollapse icon="group" title="People" onCollapse={this.loadUsers}>
           <PeopleList />
         </AddonCollapse>
