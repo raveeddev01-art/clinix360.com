@@ -28,8 +28,10 @@ class FilesStore {
       limit: this.limit
     });
 
+    this.loading = true;
+
     get(`/api/v1/uploads?${params}`).then(response => {
-      console.log("files", response);
+      this.loading = false;
 
       const { data, meta } = response.data;
 

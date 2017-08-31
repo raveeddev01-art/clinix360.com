@@ -14,12 +14,31 @@ class Files extends Component {
     }
   }
 
+  loadMore = event => {
+    const { filesStore } = this.props;
+
+    filesStore.loadMore();
+  };
+
   render() {
     const { filesStore } = this.props;
 
     return (
-      <div className="files-addon addon-messages">
-        {filesStore.files.map(file => <File key={file.id} file={file} />)}
+      <div className="files-addon">
+        <div className="addon-messages">
+          {filesStore.files.map(file => <File key={file.id} file={file} />)}
+        </div>
+
+        <div className="footer">
+          {filesStore.hasMore &&
+            <button
+              className="btn btn-default btn-sm"
+              disabled={filesStore.loading}
+              onClick={this.loadMore}
+            >
+              Load more…
+            </button>}
+        </div>
       </div>
     );
   }
