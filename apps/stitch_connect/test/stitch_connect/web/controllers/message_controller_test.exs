@@ -312,6 +312,52 @@ defmodule StitchConnect.Web.MessageControllerTest do
 
       assert Enum.count(json) == 2
     end
+
+    test "with skip", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+
+      messages =
+        fn -> insert(:message, group: group) end
+        |> Stream.repeatedly
+        |> Enum.take(33)
+
+      unskipped = Enum.take(messages, 31)
+      latest_30_unskipped = Enum.take(unskipped, -30)
+
+      json =
+        conn
+        |> subdomain(group.team.slug)
+        |> get_as_user(user, "/api/v1/groups/#{group.id}/messages", %{skip: 2})
+        |> json_response(200)
+
+      assert Enum.map(json, &Map.fetch!(&1, "id")) ==
+        latest_30_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+    end
+
+    test "with limit and skip", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+
+      messages =
+        fn -> insert(:message, group: group) end
+        |> Stream.repeatedly
+        |> Enum.take(7)
+
+      unskipped = Enum.take(messages, 5)
+      latest_two_unskipped = Enum.take(unskipped, -2)
+
+      json =
+        conn
+        |> subdomain(group.team.slug)
+        |> get_as_user(user, "/api/v1/groups/#{group.id}/messages", %{limit: 2, skip: 2})
+        |> json_response(200)
+
+      assert Enum.map(json, &Map.fetch!(&1, "id")) ==
+        latest_two_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+    end
   end
 
   describe "POST /api/v1/messages/search" do

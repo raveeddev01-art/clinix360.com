@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         opts =
           params
-          |> Map.take(["limit"])
+          |> Map.take(["limit", "skip"])
           |> Enum.map(fn {key, value} -> {:"#{key}", value} end)
 
         messages = MessageQueries.group_latest_messages(group_id, user, opts)
