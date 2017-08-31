@@ -34,6 +34,7 @@
       {
         "ignore": [
           "addonStore",
+          "filesStore",
           "groupStore",
           "messageStore",
           "presenceStore",
