@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import { Row, Col, Collapse, ButtonToolbar, Button } from "react-bootstrap";
 
+@inject("membersStore")
+@observer
 export default class MemberItem extends Component {
   constructor(props) {
     super(props);
@@ -14,12 +17,18 @@ export default class MemberItem extends Component {
   };
 
   _deactivateUser = () => {
-    let userId = this.props.user.id;
-    post(`/api/v1//users/${userId}/deactivate`, {
-      body: {}
-    }).then(response => {
-      notify.show("Account deactivated.");
-    });
+    const { membersStore, user } = this.props;
+    membersStore.deactivateUser(user.id);
+  };
+
+  _promoteAdmin = () => {
+    const { membersStore, user } = this.props;
+    membersStore.promoteAdmin(user.id);
+  };
+
+  _revokeAdmin = () => {
+    const { membersStore, user } = this.props;
+    membersStore.revokeAdmin(user.id);
   };
 
   render() {
@@ -50,7 +59,11 @@ export default class MemberItem extends Component {
           </Col>
 
           <Col sm={2} className="actions-column text-center">
-            <Button bsStyle="primary" onClick={this._toggleControls}>
+            <Button
+              bsStyle="primary"
+              onClick={this._toggleControls}
+              disabled={user.id === currentUser.id}
+            >
               Manage
             </Button>
           </Col>
@@ -59,8 +72,14 @@ export default class MemberItem extends Component {
           <Collapse in={this.state.open}>
             <div>
               <ButtonToolbar className="actions-toolbar">
-                {/* <Button bsSize="small">Convert to Guest</Button>
-                <Button bsSize="small">Revoke Admin</Button> */}
+                {/* <Button bsSize="small">Convert to Guest</Button> */}
+                {user.roles.indexOf("admin") > -1
+                  ? <Button bsSize="small" onClick={this._revokeAdmin}>
+                      Revoke Admin
+                    </Button>
+                  : <Button bsSize="small" onClick={this._promoteAdmin}>
+                      Promote Admin
+                    </Button>}
                 <Button
                   onClick={this._deactivateUser}
                   bsSize="small"
