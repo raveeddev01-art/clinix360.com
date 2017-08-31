@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 
-import SearchResultItem from "../message-search/search-result-item";
+import AddonMessage from "../../../common/components/messages/addon-message";
 
 @observer
 class GlobalStarredMessage extends Component {
   render() {
     const { message } = this.props;
 
-    return <SearchResultItem message={message} />;
+    return <AddonMessage message={message} />;
   }
 }
 

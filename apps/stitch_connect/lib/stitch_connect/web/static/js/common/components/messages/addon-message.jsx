@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import MessageContent from "../../../common/components/messages/message-content/message-content";
-import MessageHeader from "../../../common/components/messages/message-header/message-header";
 
-class SearchResultItem extends Component {
+import MessageContent from "./message-content/message-content";
+import MessageHeader from "./message-header/message-header";
+
+class AddonMessage extends Component {
   render() {
     const { message } = this.props;
     return (
@@ -56,4 +57,4 @@ class SearchResultItem extends Component {
   }
 }
 
-export default SearchResultItem;
+export default AddonMessage;
