@@ -55,6 +55,7 @@ defmodule Stitch.Message do
     users = Repo.preload(group, :users).users
 
     mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, user, text_content)
+    # notify_user_ids = Enum.uniq(mentioned_user_ids ++ users_with_all_enabled -- users_with_nothing_enabled)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user.id}

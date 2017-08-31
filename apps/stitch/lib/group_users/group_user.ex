@@ -8,6 +8,7 @@ defmodule Stitch.GroupUser do
     belongs_to :group, Group
     belongs_to :user, Accounts.User
     field :is_favorite, :boolean, default: false
+    field :notification_preference, :string, default: "default"
     field :mentioning_message_ids, {:array, :integer}, default: []
 
     timestamps()
@@ -17,7 +18,15 @@ defmodule Stitch.GroupUser do
     struct
     |> cast(params, [:group_id, :user_id])
     |> validate_required([:group_id, :user_id])
+    |> validate_inclusion(:notification_preference, ["everything", "mentions", "nothing", "default"])
     |> unique_constraint(:user_id, name: :group_users_group_user_id_unique_index, message: "User is already part of group")
+  end
+
+  def preference_changeset(%GroupUser{} = struct, params) do
+    struct
+    |> cast(params, [:notification_preference])
+    |> validate_required([:notification_preference])
+    |> validate_inclusion(:notification_preference, ["everything", "mentions", "nothing"])
   end
 
   def remove_all_users(group_id) do
