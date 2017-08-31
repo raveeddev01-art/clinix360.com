@@ -52,14 +52,13 @@ defmodule Stitch.Message do
 
   def create(group_id, user, %{"type" => "chat", "text_content" => text_content}) do
     group = Stitch.GroupQueries.get_by_id(group_id)
-    # users = Repo.preload(group, :users).users
-    group_users = GroupUser |> where([g], g.group_id == ^group_id) |> preload(:user) |> Repo.all
+    group_users = GroupUser.for_group(group_id)
     users = group_users |> Enum.map(& &1.user)
 
-    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, user, text_content)
-    users_with_all_notification_enabled = GroupUser.users_with_all_notification_enabled(group_users)
-    users_with_all_notification_disabled = GroupUser.users_with_all_notification_disabled(group_users)
-    notify_user_ids = Enum.uniq(mentioned_user_ids ++ users_with_all_notification_enabled -- users_with_all_notification_disabled)
+    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
+    users_with_all_notifications_enabled = GroupUser.users_with_all_notifications_enabled(group_users)
+    users_with_all_notifications_disabled = GroupUser.users_with_all_notifications_disabled(group_users)
+    notify_user_ids = Enum.uniq(mentioned_user_ids ++ users_with_all_notifications_enabled -- users_with_all_notifications_disabled)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user.id}
@@ -70,6 +69,7 @@ defmodule Stitch.Message do
         {:ok, message} ->
           add_mention_to_users(group, mentioned_user_ids, message)
           send_notifications(notify_user_ids)
+          %{message: message, notify_user_ids: notify_user_ids}
           message
         {:error, changeset} ->
           Repo.rollback(changeset)
@@ -94,7 +94,7 @@ defmodule Stitch.Message do
     group = Stitch.GroupQueries.get_by_id(message.group_id)
     author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
-    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, author, attributes["text_content"])
+    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"])
     remove_mention_from_ids = message.mentioned_user_ids -- mentioned_user_ids
     add_mention_to_ids = mentioned_user_ids -- message.mentioned_user_ids
     update_counters_for_user_ids = remove_mention_from_ids ++ add_mention_to_ids

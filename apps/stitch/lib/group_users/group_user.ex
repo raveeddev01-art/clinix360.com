@@ -29,7 +29,7 @@ defmodule Stitch.GroupUser do
     |> validate_inclusion(:notification_preference, ["everything", "mentions", "nothing"])
   end
 
-  def users_with_all_notification_enabled(group_users) do
+  def users_with_all_notifications_enabled(group_users) do
     group_users
     |> Enum.filter(fn group_user ->
       if group_user.notification_preference == "default" do
@@ -41,7 +41,7 @@ defmodule Stitch.GroupUser do
     |> Enum.map(& &1.user_id)
   end
 
-  def users_with_all_notification_disabled(group_users) do
+  def users_with_all_notifications_disabled(group_users) do
     group_users
     |> Enum.filter(fn group_user ->
       if group_user.notification_preference == "default" do
