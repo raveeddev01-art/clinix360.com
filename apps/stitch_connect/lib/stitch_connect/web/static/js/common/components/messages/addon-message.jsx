@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 
-import MessageContent from "./message-content/message-content";
 import MessageHeader from "./message-header/message-header";
+import MessageContent from "./message-content/message-content";
+import MessageFooter from "./message-footer/message-footer";
 
 class AddonMessage extends Component {
   render() {
     const { message } = this.props;
+
     return (
       <div className="message-pool-container addon">
         <div className="addon-message-actions">
@@ -51,6 +53,7 @@ class AddonMessage extends Component {
         <div className="message-pool">
           <MessageHeader timestamp={message.inserted_at} user={message.user} />
           <MessageContent message={message} />
+          <MessageFooter message={message} />
         </div>
       </div>
     );
