@@ -510,7 +510,7 @@
     }
   }
 
-  &.search-result-item {
+  &.addon {
     position: relative;
 
     .message-pool {
@@ -521,7 +521,7 @@
       }
     }
 
-    .message-search-result-actions {
+    .addon-message-actions {
       display: none;
 
       z-index: 1;
@@ -533,15 +533,16 @@
       border: 1px solid $border-color-secondary;
       border-radius: 4px;
 
-      .message-search-result-action-item {
+      .addon-message-action-item {
         margin: 2px 0;
         padding: 0 8px;
         color: #333;
+        cursor: pointer;
       }
     }
 
     &:hover {
-      .message-search-result-actions {
+      .addon-message-actions {
         display: block;
       }
     }

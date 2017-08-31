@@ -9,15 +9,15 @@ class AddonMessage extends Component {
   render() {
     const { message } = this.props;
     return (
-      <div className="message-pool-container search-result-item">
-        <div className="message-search-result-actions">
+      <div className="message-pool-container addon">
+        <div className="addon-message-actions">
           <OverlayTrigger
             placement="top"
             overlay={<Tooltip id="open-a-direct-message">Jump</Tooltip>}
           >
             <a
               role="link"
-              className="message-search-result-action-item"
+              className="addon-message-action-item"
               onClick={() => {}}
             >
               <i className="fa fa-hand-o-left" />
@@ -29,7 +29,7 @@ class AddonMessage extends Component {
           >
             <a
               role="link"
-              className="message-search-result-action-item"
+              className="addon-message-action-item"
               onClick={() => {}}
             >
               <i className="fa fa-link" />
@@ -41,7 +41,7 @@ class AddonMessage extends Component {
           >
             <a
               role="link"
-              className="message-search-result-action-item"
+              className="addon-message-action-item"
               onClick={() => {}}
             >
               <i className="fa fa-clipboard" />
