@@ -2,7 +2,7 @@ defmodule Stitch.Message do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias Stitch.{Repo, Message}
+  alias Stitch.{Repo, Message, GroupUser}
 
   @valid_types ["chat", "system", "upload"]
 
@@ -52,10 +52,14 @@ defmodule Stitch.Message do
 
   def create(group_id, user, %{"type" => "chat", "text_content" => text_content}) do
     group = Stitch.GroupQueries.get_by_id(group_id)
-    users = Repo.preload(group, :users).users
+    # users = Repo.preload(group, :users).users
+    group_users = GroupUser |> where([g], g.group_id == ^group_id) |> preload(:user) |> Repo.all
+    users = group_users |> Enum.map(& &1.user)
 
     mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, user, text_content)
-    # notify_user_ids = Enum.uniq(mentioned_user_ids ++ users_with_all_enabled -- users_with_nothing_enabled)
+    users_with_all_notification_enabled = GroupUser.users_with_all_notification_enabled(group_users)
+    users_with_all_notification_disabled = GroupUser.users_with_all_notification_disabled(group_users)
+    notify_user_ids = Enum.uniq(mentioned_user_ids ++ users_with_all_notification_enabled -- users_with_all_notification_disabled)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user.id}
@@ -65,11 +69,16 @@ defmodule Stitch.Message do
       case message_insert do
         {:ok, message} ->
           add_mention_to_users(group, mentioned_user_ids, message)
+          send_notifications(notify_user_ids)
           message
         {:error, changeset} ->
           Repo.rollback(changeset)
       end
     end
+  end
+
+  def send_notifications(user_ids) do
+    nil # TODO
   end
 
   def create(group_id, user, %{"text_content" => text_content}) do

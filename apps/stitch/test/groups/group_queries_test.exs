@@ -1,6 +1,6 @@
 defmodule Stitch.GroupQueriesTest do
   use Stitch.TestCase
-  alias Stitch.{GroupQueries, Group}
+  alias Stitch.{GroupQueries, Group, GroupUser}
 
   describe "Stitch.GroupQueries.user_is_member?/2" do
     test "returns true if user is a member" do
@@ -206,6 +206,36 @@ defmodule Stitch.GroupQueriesTest do
       eve_groups = available_groups_indexed_by_slug(eve)
       assert eve_groups["general"].mentions_count == 0
       assert eve_groups["random"].mentions_count == 0
+    end
+  end
+
+  describe "notification settings (global and channel-specific)" do
+    test "users_with_all_notification_disabled/1 (global specific)" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      general = insert(:group, team: team, slug: "general")
+      insert(:group_user, user: bob, group: general)
+      insert(:group_user, user: alice, group: general, notification_preference: "nothing")
+
+      group_users = GroupUser.for_group(general.id)
+      [alice_id] = GroupUser.users_with_all_notification_disabled(group_users)
+      assert alice_id == alice.id
+    end
+
+    test "users_with_all_notification_disabled/1 (channel specific overrides global)" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team, notification_preference: "nothing")
+      general = insert(:group, team: team, slug: "general")
+      insert(:group_user, user: bob, group: general)
+      insert(:group_user, user: alice, group: general, notification_preference: "mentions")
+
+      group_users = GroupUser.for_group(general.id)
+      assert [] = GroupUser.users_with_all_notification_disabled(group_users)
+    end
+
+    test "users_with_all_notification_enabled/1" do
     end
   end
 
