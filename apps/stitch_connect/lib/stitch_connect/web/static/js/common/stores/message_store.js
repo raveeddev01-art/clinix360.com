@@ -10,9 +10,7 @@ class MessageStore {
   @observable messageInEdit = null;
   @observable textInEdit = "";
   @observable canLoad = false;
-  @observable loadedInitial = false;
   @observable isScrollBottom = false;
-  @observable mountedAllMessages = false;
   loadedAll = false;
 
   constructor(rootStore) {
@@ -38,17 +36,21 @@ class MessageStore {
     this.chatDiv = div;
   }
 
-  onMessageMounted(messageId, messageDiv) {
-    console.log("onMessageMounted");
-    this.messageDivs[messageId] = messageDiv;
-
-    if (Object.keys(this.messageDivs).length === this.messages.length) {
-      this.mountedAllMessages = true;
-    }
-  }
-
   unloadChatDiv() {
     this.chatDiv = null;
+  }
+
+  onMessageMounted(messageId, messageDiv) {
+    console.log("onMessageMounted");
+    this.messageDivs = { ...this.messageDivs, [messageId]: messageDiv };
+  }
+
+  @computed
+  get mountedAllMessages() {
+    return (
+      this.messages.length > 0 &&
+      Object.keys(this.messageDivs).length === this.messages.length
+    );
   }
 
   get eventChannel() {
@@ -110,14 +112,13 @@ class MessageStore {
   }
 
   joinGroupChannel = () => {
-    this.mountedAllMessages = false;
     this.loadedAll = false;
     this.messages = [];
     this.messageDivs = {};
 
     this.rootStore.channelStore
       .joinGroupChannel()
-      .receive("ok", this.loadMessages)
+      .receive("ok", this.onJoinGroupChannel)
       .receive("error", err => notify.show(err.message, "error"));
 
     this.groupChannel.on("new_msg", this.onNewMessage);
@@ -232,12 +233,10 @@ class MessageStore {
   };
 
   @action
-  loadMessages = data => {
+  onJoinGroupChannel = data => {
     this.messages = data.messages;
 
-    this.scrollToBottom(() => {
-      this.loadedInitial = true;
-    });
+    this.scrollToBottom();
   };
 
   @action
