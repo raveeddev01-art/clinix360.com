@@ -17,13 +17,6 @@ class MessageStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-
-    autorun(() => {
-      // If group slug changes, join to messages channel of group
-      if (this.rootStore.groupStore.slug) {
-        this.joinGroupChannel();
-      }
-    });
   }
 
   scrollToBottom(cb = null, duration = 1000, delay = 300) {

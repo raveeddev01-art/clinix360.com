@@ -74,6 +74,9 @@ class GroupStore {
       this.groupType = "group";
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
+
+      // Load messages after join
+      this.rootStore.messageStore.joinGroupChannel();
     });
   };
 
@@ -98,6 +101,9 @@ class GroupStore {
       this.groupType = "single-dm";
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
+
+      // Load messages after join
+      this.rootStore.messageStore.joinGroupChannel();
     });
   };
 
@@ -127,6 +133,9 @@ class GroupStore {
       this.joined = data.joined;
       this.groupType = "multi-dm";
       this.unreadMessagesCount = data.unread_messages_count;
+
+      // Load messages after join
+      this.rootStore.messageStore.joinGroupChannel();
     });
   };
 
