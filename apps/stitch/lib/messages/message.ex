@@ -39,16 +39,32 @@ defmodule Stitch.Message do
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:fields, :type, :text_content])
+    |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, @valid_types)
   end
 
-  # TODO: should also handle notifications
   def create(group_id, user, %{"type" => "upload", "text_content" => text_content, "fields" => fields}) do
-    %Message{group_id: group_id, user_id: user.id}
-    |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload"})
-    |> Repo.insert
+    group = Stitch.GroupQueries.get_by_id(group_id)
+    users = Repo.preload(group, :users).users
+
+    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
+    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids)
+
+    Repo.transaction fn ->
+      message_insert = %Message{group_id: group_id, user_id: user.id}
+      |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload", mentioned_user_ids: mentioned_user_ids})
+      |> Repo.insert
+
+      case message_insert do
+        {:ok, message} ->
+          add_mention_to_users(group, mentioned_user_ids, message)
+          send_notifications(notify_user_ids)
+          %{message: message, notify_user_ids: notify_user_ids.desktop}
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
+    end
   end
 
   def create(group_id, user, %{"type" => "chat", "text_content" => text_content}) do
@@ -56,7 +72,7 @@ defmodule Stitch.Message do
     users = Repo.preload(group, :users).users
 
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
-    %{desktop: notify_user_ids} = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids)
+    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user.id}
@@ -67,15 +83,14 @@ defmodule Stitch.Message do
         {:ok, message} ->
           add_mention_to_users(group, mentioned_user_ids, message)
           send_notifications(notify_user_ids)
-          %{message: message, notify_user_ids: notify_user_ids}
-          message
+          %{message: message, notify_user_ids: notify_user_ids.desktop}
         {:error, changeset} ->
           Repo.rollback(changeset)
       end
     end
   end
 
-  def send_notifications(user_ids) do
+  def send_notifications(%{mobile: _mobile_notify_user_ids}) do
     nil # TODO email / push notifications
   end
 

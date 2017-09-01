@@ -156,11 +156,11 @@ defmodule StitchConnect.Web.GroupChannel do
       attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
 
       case Message.create(group.id, user, attrs) do
-        {:ok, message} ->
+        {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           message = MessageQueries.load_info(message)
 
           broadcast! socket, "new_msg", message
-          EventsChannel.broadcast_group_new_msg(group, message)
+          EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
           EventsChannel.broadcast_mention_counter_update(group, message.mentioned_user_ids)
 
           json = MessageView.render("show.json", %{message: message, user_id: user.id})

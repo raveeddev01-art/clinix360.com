@@ -10,15 +10,19 @@ defmodule Stitch.Message.Notification do
 
       %{desktop: [], mobile: []}
   """
-  def notify_user_ids(%{slug: "__dm:" <> _} = group, author) do
-    %{desktop: desktop} = dm_notify_categories(group.id)
-    %{desktop: desktop |> List.delete(author.id)}
+  def notify_user_ids(%{slug: "__dm:" <> _} = group, author, _mentioned_user_ids) do
+    %{desktop: desktop, mobile: mobile} = dm_notify_categories(group.id)
+    %{desktop: desktop |> List.delete(author.id),
+      mobile: mobile |> List.delete(author.id)}
   end
 
   def notify_user_ids(group, author, mentioned_user_ids) do
     %{desktop_everything: with_desktop_enabled,
-      desktop_nothing: with_desktop_disabled} = notify_categories(group.id)
-    %{desktop: Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- [author.id | with_desktop_disabled]}
+      desktop_nothing: with_desktop_disabled,
+      mobile_everything: with_mobile_enabled,
+      mobile_nothing: with_mobile_disabled} = notify_categories(group.id)
+    %{desktop: Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- [author.id | with_desktop_disabled],
+      mobile: Enum.uniq(mentioned_user_ids ++ with_mobile_enabled) -- [author.id | with_mobile_disabled]}
   end
 
   @doc """
@@ -42,7 +46,7 @@ defmodule Stitch.Message.Notification do
         u.id, gu.desktop_notification_preference, u.desktop_notification_preference, gu.desktop_notification_preference),
       desktop_nothing: fragment("coalesce (array_agg(?) filter (where (case ? when 'default' then ? = 'nothing' else ? = 'nothing' end)), array[]::int[])",
         u.id, gu.desktop_notification_preference, u.desktop_notification_preference, gu.desktop_notification_preference),
-      mobile_enabled: fragment("coalesce (array_agg(?) filter (where (case ? when 'default' then ? = 'everything' else ? = 'everything' end)), array[]::int[])",
+      mobile_everything: fragment("coalesce (array_agg(?) filter (where (case ? when 'default' then ? = 'everything' else ? = 'everything' end)), array[]::int[])",
         u.id, gu.mobile_notification_preference, u.mobile_notification_preference, gu.mobile_notification_preference),
       mobile_nothing: fragment("coalesce (array_agg(?) filter (where (case ? when 'default' then ? = 'nothing' else ? = 'nothing' end) ), array[]::int[])",
         u.id, gu.mobile_notification_preference, u.mobile_notification_preference, gu.mobile_notification_preference)
