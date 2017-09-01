@@ -53,7 +53,7 @@ class GroupStore {
   };
 
   @action
-  loadGroupBySlug = slug => {
+  joinGroup = slug => {
     if (slug === this.slug) {
       return;
     }
