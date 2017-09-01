@@ -1,7 +1,7 @@
 import { observable, action, computed, autorun } from "mobx";
 import moment from "moment";
 import _ from "lodash";
-import { animateScroll } from "react-scroll";
+import { animateScroll, scroller } from "react-scroll";
 
 class MessageStore {
   @observable chatDiv = null;
@@ -12,6 +12,7 @@ class MessageStore {
   @observable loadedInitial = false;
   @observable isScrollBottom = false;
   loadedAll = false;
+  messagePositions = {}; // { group: message_id }
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -34,7 +35,20 @@ class MessageStore {
       if (typeof cb === "function") {
         cb();
       }
-    }, duration);
+    }, duration || 300);
+  }
+
+  scrollTo(msgId, duration = 1000, cb) {
+    scroller.scrollTo(`msg_${msgId}`, {
+      containerId: "chat",
+      duration
+    });
+
+    setTimeout(() => {
+      if (typeof cb === "function") {
+        cb();
+      }
+    }, 300);
   }
 
   loadChatDiv(div) {
@@ -43,6 +57,10 @@ class MessageStore {
 
   unloadChatDiv() {
     this.chatDiv = null;
+  }
+
+  get groupTopic() {
+    return this.rootStore.groupStore.channelTopic;
   }
 
   get eventChannel() {
@@ -131,6 +149,23 @@ class MessageStore {
     });
   };
 
+  onInvisibleMessage = id => {
+    const currentPos = this.messagePositions[this.groupTopic];
+    if (!currentPos || currentPos === id) {
+      const index = this.messages.findIndex(m => m.id === id);
+      if (this.messages[index - 1]) {
+        this.messagePositions[this.groupTopic] = this.messages[index - 1].id;
+      }
+    }
+  };
+
+  onVisibleMessage = id => {
+    const currentPos = this.messagePositions[this.groupTopic];
+    if (!currentPos || currentPos > id) {
+      this.messagePositions[this.groupTopic] = id;
+    }
+  };
+
   markAsRead(id) {
     const message = this.messages.find(m => m.id === id);
 
@@ -194,7 +229,7 @@ class MessageStore {
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       setTimeout(() => {
-        this.scrollToBottom();
+        this.scrollToBottom(0);
       }, 300);
     }
   };
@@ -227,12 +262,20 @@ class MessageStore {
 
   @action
   loadMessages = data => {
+    this.loadedInitial = false;
     this.messages = data.messages;
 
     setTimeout(() => {
-      this.scrollToBottom(1000, () => {
-        this.loadedInitial = true;
-      });
+      const posHistory = this.messagePositions[this.groupTopic];
+      if (posHistory && this.messages.find(m => m.id === posHistory)) {
+        this.scrollTo(posHistory, 0, () => {
+          this.loadedInitial = true;
+        });
+      } else {
+        this.scrollToBottom(0, () => {
+          this.loadedInitial = true;
+        });
+      }
     }, 300);
   };
 

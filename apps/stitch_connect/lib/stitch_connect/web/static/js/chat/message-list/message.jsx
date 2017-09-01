@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
 import moment from "moment";
+import { Link, Element } from "react-scroll";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -18,8 +19,21 @@ class Message extends Component {
   onVisibleChange = isVisible => {
     const { message, messageStore } = this.props;
 
-    if (isVisible) {
+    if (
+      isVisible &&
+      messageStore.loadedInitial &&
+      message.user.id !== currentUser.id &&
+      !message.read
+    ) {
       messageStore.markAsRead(message.id);
+    }
+
+    if (!isVisible && messageStore.loadedInitial) {
+      messageStore.onInvisibleMessage(message.id);
+    }
+
+    if (isVisible && messageStore.loadedInitial) {
+      messageStore.onVisibleMessage(message.id);
     }
   };
 
@@ -57,16 +71,6 @@ class Message extends Component {
 
     messageStore.toggleStar(message.id);
   };
-
-  shouldSenseVisibility() {
-    const { message, messageStore } = this.props;
-
-    return (
-      messageStore.loadedInitial &&
-      message.user.id !== currentUser.id &&
-      !message.read
-    );
-  }
 
   renderEdited(message) {
     const { edited, edited_at: editedAt } = message;
@@ -197,13 +201,12 @@ class Message extends Component {
   }
 
   render() {
-    const { message, messageStore, sidemenuStore } = this.props;
-    const { usernameMap } = sidemenuStore;
+    const { message, messageStore } = this.props;
     const { chatDiv } = messageStore;
 
     return (
       <VisibilitySensor
-        active={this.shouldSenseVisibility()}
+        active
         onChange={this.onVisibleChange}
         intervalCheck={false}
         scrollCheck
@@ -211,7 +214,7 @@ class Message extends Component {
         containment={chatDiv}
         offset={{ top: 70 }}
       >
-        <div className="message">
+        <Element className="message" name={`msg_${message.id}`}>
           <div>
             <MessageContent message={message} />
             {this.renderEdited(message)}
@@ -220,7 +223,7 @@ class Message extends Component {
           {this.renderStar(message)}
           {this.renderPin(message)}
           {this.renderActions(message)}
-        </div>
+        </Element>
       </VisibilitySensor>
     );
   }
