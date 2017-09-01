@@ -209,36 +209,6 @@ defmodule Stitch.GroupQueriesTest do
     end
   end
 
-  describe "notification settings (global and channel-specific)" do
-    test "with_desktop_notifications_disabled/1 (global specific)" do
-      team = insert(:team)
-      bob = insert(:user, username: "bob", team: team)
-      alice = insert(:user, username: "alice", team: team)
-      general = insert(:group, team: team, slug: "general")
-      insert(:group_user, user: bob, group: general)
-      insert(:group_user, user: alice, group: general, desktop_notification_preference: "nothing")
-
-      group_users = GroupUser.for_group(general.id)
-      [alice_id] = GroupUser.with_desktop_notifications_disabled(group_users)
-      assert alice_id == alice.id
-    end
-
-    test "with_desktop_notifications_disabled/1 (channel specific overrides global)" do
-      team = insert(:team)
-      bob = insert(:user, username: "bob", team: team)
-      alice = insert(:user, username: "alice", team: team, desktop_notification_preference: "nothing")
-      general = insert(:group, team: team, slug: "general")
-      insert(:group_user, user: bob, group: general)
-      insert(:group_user, user: alice, group: general, desktop_notification_preference: "mentions")
-
-      group_users = GroupUser.for_group(general.id)
-      assert [] = GroupUser.with_desktop_notifications_disabled(group_users)
-    end
-
-    test "with_desktop_notifications_enabled/1" do
-    end
-  end
-
   defp available_groups_indexed_by_slug(user) do
     user
     |> Stitch.GroupQueries.available_groups

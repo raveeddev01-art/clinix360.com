@@ -32,30 +32,6 @@ defmodule Stitch.GroupUser do
     |> validate_inclusion(:mobile_notification_preference, ["everything", "mentions", "nothing"])
   end
 
-  def with_desktop_notifications_enabled(group_users) do
-    group_users
-    |> Enum.filter(fn group_user ->
-      if group_user.desktop_notification_preference == "default" do
-        group_user.user.desktop_notification_preference == "everything"
-      else
-        group_user.desktop_notification_preference == "everything"
-      end
-    end)
-    |> Enum.map(& &1.user_id)
-  end
-
-  def with_desktop_notifications_disabled(group_users) do
-    group_users
-    |> Enum.filter(fn group_user ->
-      if group_user.desktop_notification_preference == "default" do
-        group_user.user.desktop_notification_preference == "nothing"
-      else
-        group_user.desktop_notification_preference == "nothing"
-      end
-    end)
-    |> Enum.map(& &1.user_id)
-  end
-
   def remove_all_users(group_id) do
     from(u in GroupUser, where: u.group_id == ^group_id) |> Repo.delete_all
   end
@@ -65,12 +41,5 @@ defmodule Stitch.GroupUser do
     |> where(group_id: ^group_id, user_id: ^user_id)
     |> select([gu], fragment("COALESCE(ARRAY_LENGTH(?, 1), 0)", gu.mentioning_message_ids))
     |> Repo.one
-  end
-
-  def for_group(group_id) do
-    GroupUser
-    |> where([g], g.group_id == ^group_id)
-    |> preload(:user)
-    |> Repo.all
   end
 end
