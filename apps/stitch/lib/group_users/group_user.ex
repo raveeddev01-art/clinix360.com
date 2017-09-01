@@ -8,8 +8,8 @@ defmodule Stitch.GroupUser do
     belongs_to :group, Group
     belongs_to :user, Accounts.User
     field :is_favorite, :boolean, default: false
-    field :desktop_notification_preference, :string, default: "everything"
-    field :mobile_notification_preference, :string, default: "everything"
+    field :desktop_notification_preference, :string, default: "default"
+    field :mobile_notification_preference, :string, default: "default"
     field :mentioning_message_ids, {:array, :integer}, default: []
 
     timestamps()

@@ -44,6 +44,7 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, @valid_types)
   end
 
+  # TODO: should also handle notifications
   def create(group_id, user, %{"type" => "upload", "text_content" => text_content, "fields" => fields}) do
     %Message{group_id: group_id, user_id: user.id}
     |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload"})
@@ -52,13 +53,10 @@ defmodule Stitch.Message do
 
   def create(group_id, user, %{"type" => "chat", "text_content" => text_content}) do
     group = Stitch.GroupQueries.get_by_id(group_id)
-    group_users = GroupUser.for_group(group_id)
-    users = group_users |> Enum.map(& &1.user)
+    users = Repo.preload(group, :users).users
 
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
-    with_desktop_notifications_enabled = GroupUser.with_desktop_notifications_enabled(group_users)
-    with_desktop_notifications_disabled = GroupUser.with_desktop_notifications_disabled(group_users)
-    notify_user_ids = Enum.uniq(mentioned_user_ids ++ with_desktop_notifications_enabled -- with_desktop_notifications_disabled)
+    %{desktop: notify_user_ids} = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user.id}
@@ -78,7 +76,7 @@ defmodule Stitch.Message do
   end
 
   def send_notifications(user_ids) do
-    nil # TODO
+    nil # TODO email / push notifications
   end
 
   def create(group_id, user, %{"text_content" => text_content}) do
