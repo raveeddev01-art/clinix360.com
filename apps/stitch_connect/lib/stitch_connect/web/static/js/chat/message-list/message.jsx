@@ -15,6 +15,12 @@ import MessageContent from "../../common/components/messages/message-content/mes
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
 class Message extends Component {
+  componentDidMount() {
+    const { message, messageStore } = this.props;
+
+    messageStore.onMessageMounted(message.id, this.messageDiv);
+  }
+
   onVisibleChange = isVisible => {
     const { message, messageStore } = this.props;
 
@@ -211,7 +217,12 @@ class Message extends Component {
         containment={chatDiv}
         offset={{ top: 70 }}
       >
-        <div className="message">
+        <div
+          className="message"
+          ref={div => {
+            this.messageDiv = div;
+          }}
+        >
           <div>
             <MessageContent message={message} />
             {this.renderEdited(message)}

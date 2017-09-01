@@ -6,11 +6,13 @@ import { animateScroll } from "react-scroll";
 class MessageStore {
   @observable chatDiv = null;
   @observable messages = [];
+  @observable messageDivs = {};
   @observable messageInEdit = null;
   @observable textInEdit = "";
   @observable canLoad = false;
   @observable loadedInitial = false;
   @observable isScrollBottom = false;
+  @observable mountedAllMessages = false;
   loadedAll = false;
 
   constructor(rootStore) {
@@ -39,6 +41,15 @@ class MessageStore {
 
   loadChatDiv(div) {
     this.chatDiv = div;
+  }
+
+  onMessageMounted(messageId, messageDiv) {
+    console.log("onMessageMounted");
+    this.messageDivs[messageId] = messageDiv;
+
+    if (Object.keys(this.messageDivs).length === this.messages.length) {
+      this.mountedAllMessages = true;
+    }
   }
 
   unloadChatDiv() {
@@ -104,8 +115,10 @@ class MessageStore {
   }
 
   joinGroupChannel = () => {
+    this.mountedAllMessages = false;
     this.loadedAll = false;
     this.messages = [];
+    this.messageDivs = {};
 
     this.rootStore.channelStore
       .joinGroupChannel()
