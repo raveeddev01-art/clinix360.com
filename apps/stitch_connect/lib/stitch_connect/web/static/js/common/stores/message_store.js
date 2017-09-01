@@ -26,17 +26,19 @@ class MessageStore {
     });
   }
 
-  scrollToBottom(duration = 1000, cb = null) {
-    animateScroll.scrollToBottom({
-      containerId: "chat",
-      duration
-    });
-
+  scrollToBottom(cb = null, duration = 1000, delay = 300) {
     setTimeout(() => {
-      if (typeof cb === "function") {
-        cb();
-      }
-    }, duration);
+      animateScroll.scrollToBottom({
+        containerId: "chat",
+        duration
+      });
+
+      setTimeout(() => {
+        if (typeof cb === "function") {
+          cb();
+        }
+      }, duration);
+    }, delay);
   }
 
   loadChatDiv(div) {
@@ -206,9 +208,7 @@ class MessageStore {
     this.messages.unshift(newMessage);
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
-      setTimeout(() => {
-        this.scrollToBottom();
-      }, 300);
+      this.scrollToBottom();
     }
   };
 
@@ -242,11 +242,9 @@ class MessageStore {
   loadMessages = data => {
     this.messages = data.messages;
 
-    setTimeout(() => {
-      this.scrollToBottom(1000, () => {
-        this.loadedInitial = true;
-      });
-    }, 300);
+    this.scrollToBottom(() => {
+      this.loadedInitial = true;
+    });
   };
 
   @action
