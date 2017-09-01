@@ -85,6 +85,10 @@ class GroupStore {
     const userIds = [currentUser.id, user.id].sort((a, b) => a > b);
     const slug = `__dm:${userIds.join(".")}`;
 
+    if (slug === this.slug) {
+      return;
+    }
+
     this.loading = true;
     get(`/api/v1/groups?slug=${slug}`).then(resp => {
       this.loading = false;
@@ -115,8 +119,15 @@ class GroupStore {
     }
 
     userIds = userIds.sort((a, b) => a > b);
+
+    const slug = `__dm:${userIds.join(".")}`;
+
+    if (slug === this.slug) {
+      return;
+    }
+
     this.loading = true;
-    return post(`/api/v1/groups/multi-dm`, {
+    post(`/api/v1/groups/multi-dm`, {
       body: { user_ids: userIds }
     }).then(resp => {
       this.loading = false;
