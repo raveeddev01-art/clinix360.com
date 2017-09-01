@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
+import { withRouter } from "react-router-dom";
+
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 
@@ -6,7 +9,31 @@ import MessageHeader from "./message-header/message-header";
 import MessageContent from "./message-content/message-content";
 import MessageFooter from "./message-footer/message-footer";
 
+@inject("sidemenuStore")
 class AddonMessage extends Component {
+  onJump = () => {
+    const { history, sidemenuStore, message } = this.props;
+    const group = sidemenuStore.getGroupById(message.group_id);
+
+    let url;
+    if (group.slug.indexOf("__dm:") === -1) {
+      // If normal group
+      url = `/groups/${group.slug}`;
+    } else if (group.users.length > 2) {
+      // If multi direct messaging
+      const multiMessagingSlug = group.users
+        .map(user => user.username)
+        .join(",");
+      url = `/direct/${multiMessagingSlug}`;
+    } else {
+      // If single direct messaging
+      const recipient = group.users.find(user => user.id !== currentUser.id);
+      url = `/direct/${recipient.username}`;
+    }
+
+    history.push(url);
+  };
+
   render() {
     const { message } = this.props;
 
@@ -15,19 +42,19 @@ class AddonMessage extends Component {
         <div className="addon-message-actions">
           <OverlayTrigger
             placement="top"
-            overlay={<Tooltip id="open-a-direct-message">Jump</Tooltip>}
+            overlay={<Tooltip id="jump-to-message">Jump</Tooltip>}
           >
             <a
               role="link"
               className="addon-message-action-item"
-              onClick={() => {}}
+              onClick={this.onJump}
             >
               <i className="fa fa-hand-o-left" />
             </a>
           </OverlayTrigger>
           <OverlayTrigger
             placement="top"
-            overlay={<Tooltip id="open-a-direct-message">Permalink</Tooltip>}
+            overlay={<Tooltip id="permalink-message">Permalink</Tooltip>}
           >
             <a
               role="link"
@@ -39,7 +66,7 @@ class AddonMessage extends Component {
           </OverlayTrigger>
           <OverlayTrigger
             placement="top"
-            overlay={<Tooltip id="open-a-direct-message">Copy</Tooltip>}
+            overlay={<Tooltip id="copy-message">Copy</Tooltip>}
           >
             <a
               role="link"
@@ -60,4 +87,4 @@ class AddonMessage extends Component {
   }
 }
 
-export default AddonMessage;
+export default withRouter(AddonMessage);
