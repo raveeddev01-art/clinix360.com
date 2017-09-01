@@ -59,6 +59,9 @@ class GroupStore {
     }
 
     this.loading = true;
+    // Reset message store before join
+    this.rootStore.messageStore.reset();
+
     get(`/api/v1/groups?slug=${slug}`).then(resp => {
       this.loading = false;
 
@@ -90,6 +93,9 @@ class GroupStore {
     }
 
     this.loading = true;
+    // Reset message store before join
+    this.rootStore.messageStore.reset();
+
     get(`/api/v1/groups?slug=${slug}`).then(resp => {
       this.loading = false;
 
@@ -127,6 +133,9 @@ class GroupStore {
     }
 
     this.loading = true;
+    // Reset message store before join
+    this.rootStore.messageStore.reset();
+
     post(`/api/v1/groups/multi-dm`, {
       body: { user_ids: userIds }
     }).then(resp => {

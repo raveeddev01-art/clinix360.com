@@ -68,7 +68,7 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     return (
-      messageStore.mountedAllMessages &&
+      messageStore.loadedLastMessage &&
       message.user.id !== currentUser.id &&
       !message.read
     );

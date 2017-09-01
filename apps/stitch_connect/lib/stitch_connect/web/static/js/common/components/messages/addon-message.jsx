@@ -9,13 +9,13 @@ import MessageHeader from "./message-header/message-header";
 import MessageContent from "./message-content/message-content";
 import MessageFooter from "./message-footer/message-footer";
 
-@inject("sidemenuStore")
+@inject("sidemenuStore", "messageStore")
 class AddonMessage extends Component {
   onJump = () => {
-    const { history, sidemenuStore, message } = this.props;
+    const { history, sidemenuStore, messageStore, message } = this.props;
     const group = sidemenuStore.getGroupById(message.group_id);
-
     let url;
+
     if (group.slug.indexOf("__dm:") === -1) {
       // If normal group
       url = `/groups/${group.slug}`;
@@ -32,6 +32,7 @@ class AddonMessage extends Component {
     }
 
     history.push(url);
+    messageStore.jumpToMessage(message);
   };
 
   render() {

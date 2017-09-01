@@ -1,4 +1,4 @@
-import { observable, action, computed, autorun } from "mobx";
+import { observable, action, computed, autorun, when } from "mobx";
 import moment from "moment";
 import _ from "lodash";
 import { animateScroll } from "react-scroll";
@@ -9,15 +9,19 @@ class MessageStore {
   @observable messageDivs = {};
   @observable messageInEdit = null;
   @observable textInEdit = "";
-  @observable canLoad = false;
   @observable isScrollBottom = false;
+  @observable loadedLastMessage = false; // If TRUE, indicates loaded last message and scrolled to bottom
   loadedAll = false;
+
+  // mobx when() disposers
+  joinedTargetGroupDisposer = null;
+  loadedTargetMessageDisposer = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
 
-  scrollToBottom(cb = null, duration = 1000, delay = 300) {
+  scrollToBottom(cb = null, duration = 300, delay = 100) {
     setTimeout(() => {
       animateScroll.scrollToBottom({
         containerId: "chat",
@@ -30,6 +34,63 @@ class MessageStore {
         }
       }, duration);
     }, delay);
+  }
+
+  scrollToMessage(message) {
+    console.log("scrollToMessage");
+  }
+
+  @computed
+  get currentGroup() {
+    const { groupStore } = this.rootStore;
+
+    return {
+      id: groupStore.id
+    };
+  }
+
+  jumpToMessage(targetMessage) {
+    if (this.joinedTargetGroupDisposer) {
+      this.joinedTargetGroupDisposer();
+    }
+
+    // Ensure that joined the group to which target message belongs
+    this.joinedTargetGroupDisposer = when(
+      () =>
+        targetMessage.group_id === this.currentGroup.id &&
+        this.loadedLastMessage,
+      () => {
+        // Ensure that target message is loaded
+        if (this.loadedTargetMessageDisposer) {
+          this.loadedTargetMessageDisposer();
+        }
+
+        this.loadedTargetMessageDisposer = when(
+          () =>
+            this.loadedTargetMessage(targetMessage) && this.mountedAllMessages,
+          () => {
+            this.scrollToMessage(targetMessage);
+          }
+        );
+
+        // Load until target message is loaded
+        this.loadUntilTargetMessage(targetMessage);
+      }
+    );
+  }
+
+  loadedTargetMessage(targetMessage) {
+    return this.messages.findIndex(m => m.id === targetMessage.id) > -1;
+  }
+
+  loadUntilTargetMessage(targetMessage) {
+    if (this.loadedAll || this.loadedTargetMessage(targetMessage)) {
+      return;
+    }
+
+    this.loadPastMessages(() => {
+      this.loadUntilTargetMessage(targetMessage);
+    });
   }
 
   loadChatDiv(div) {
@@ -111,11 +172,14 @@ class MessageStore {
     return this.messages.filter(message => message.starred);
   }
 
-  joinGroupChannel = () => {
+  reset() {
     this.loadedAll = false;
+    this.loadedLastMessage = false;
     this.messages = [];
     this.messageDivs = {};
+  }
 
+  joinGroupChannel = () => {
     this.rootStore.channelStore
       .joinGroupChannel()
       .receive("ok", this.onJoinGroupChannel)
@@ -163,29 +227,30 @@ class MessageStore {
   };
 
   @action
-  loadPastMessages = () => {
-    if (!this.canLoad || this.loadedAll || !this.messages.length) {
+  loadPastMessages = (cb = null) => {
+    if (this.loadedAll || !this.messages.length) {
       return;
     }
-
-    this.canLoad = false;
 
     this.groupChannel
       .push("feed", { max_id: this.messages[this.messages.length - 1].id })
-      .receive("ok", this.addPastMessages)
+      .receive("ok", data => {
+        const { messages } = data;
+
+        if (!messages.length) {
+          this.loadedAll = true;
+          return;
+        }
+
+        this.messages.push(...messages);
+
+        if (typeof cb === "function") {
+          cb();
+        }
+      })
       .receive("error", err => {
         notify.show(err.message, "error");
       });
-  };
-
-  @action
-  addPastMessages = data => {
-    if (!data.messages.length) {
-      this.loadedAll = true;
-      return;
-    }
-
-    this.messages.push(...data.messages);
   };
 
   @action
@@ -236,7 +301,14 @@ class MessageStore {
   onJoinGroupChannel = data => {
     this.messages = data.messages;
 
-    this.scrollToBottom();
+    when(
+      () => this.mountedAllMessages,
+      () => {
+        this.scrollToBottom(() => {
+          this.loadedLastMessage = true;
+        });
+      }
+    );
   };
 
   @action
