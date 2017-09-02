@@ -252,20 +252,130 @@ defmodule StitchConnect.Web.MessageControllerTest do
     end
   end
 
-  test "GET /api/v1/groups/:id/messages", %{conn: conn} do
-    user = insert(:user)
-    message = insert(:message, user: user)
-    team = message.group.team
+  describe "GET /api/v1/groups/:id/messages" do
+    test "responds with 30 latest messages", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
 
-    conn = conn
-    |> subdomain(team.slug)
-    |> get_as_user(user, "/api/v1/groups/#{message.group.id}/messages")
+      [_old_message | latest_messages] =
+        fn -> insert(:message, group: group) end
+        |> Stream.repeatedly
+        |> Enum.take(31)
 
-    json = json_response(conn, 200)
-    message = json |> List.first
-    assert message["starred"] == false
-    assert message["edited"] == false
-    assert message["pinned"] == false
+      json =
+        conn
+        |> subdomain(group.team.slug)
+        |> get_as_user(user, "/api/v1/groups/#{group.id}/messages")
+        |> json_response(200)
+
+      assert Enum.map(json, &Map.fetch!(&1, "id")) ==
+        latest_messages |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+
+      Enum.each json, fn message ->
+        assert %{
+          "id" => _,
+          "user_id" => _,
+          "user" => %{"first_name" => _, "id" => _, "last_name" => _},
+          "group_id" => _,
+          "deleted" => _,
+          "text_content" => _,
+          "fields" => _,
+          "type" => _,
+          "inserted_at" => _,
+          "starred" => _,
+          "pinned" => _,
+          "pinned_by" => _,
+          "pinned_at" => _,
+          "edited" => _,
+          "edited_at" => _,
+          "read" => _,
+          "read_status" => _,
+        } = message
+      end
+    end
+
+    test "with limit", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+
+      fn -> insert(:message, group: group) end
+      |> Stream.repeatedly
+      |> Enum.take(3)
+
+      json =
+        conn
+        |> subdomain(group.team.slug)
+        |> get_as_user(user, "/api/v1/groups/#{group.id}/messages", %{limit: 2})
+        |> json_response(200)
+
+      assert Enum.count(json) == 2
+    end
+
+    test "with limit > 30", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+
+      fn -> insert(:message, group: group) end
+      |> Stream.repeatedly
+      |> Enum.take(31)
+
+      json =
+        conn
+        |> subdomain(group.team.slug)
+        |> get_as_user(user, "/api/v1/groups/#{group.id}/messages", %{limit: 31})
+        |> json_response(200)
+
+      assert Enum.count(json) == 30
+    end
+
+    test "with skip", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+
+      messages =
+        fn -> insert(:message, group: group) end
+        |> Stream.repeatedly
+        |> Enum.take(33)
+
+      unskipped = Enum.take(messages, 31)
+      latest_30_unskipped = Enum.take(unskipped, -30)
+
+      json =
+        conn
+        |> subdomain(group.team.slug)
+        |> get_as_user(user, "/api/v1/groups/#{group.id}/messages", %{skip: 2})
+        |> json_response(200)
+
+      assert Enum.map(json, &Map.fetch!(&1, "id")) ==
+        latest_30_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+    end
+
+    test "with limit and skip", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+
+      messages =
+        fn -> insert(:message, group: group) end
+        |> Stream.repeatedly
+        |> Enum.take(7)
+
+      unskipped = Enum.take(messages, 5)
+      latest_two_unskipped = Enum.take(unskipped, -2)
+
+      json =
+        conn
+        |> subdomain(group.team.slug)
+        |> get_as_user(user, "/api/v1/groups/#{group.id}/messages", %{limit: 2, skip: 2})
+        |> json_response(200)
+
+      assert Enum.map(json, &Map.fetch!(&1, "id")) ==
+        latest_two_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+    end
   end
 
   describe "POST /api/v1/messages/search" do

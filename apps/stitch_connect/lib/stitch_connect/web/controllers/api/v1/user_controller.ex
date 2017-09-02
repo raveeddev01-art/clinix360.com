@@ -1,7 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:search, :index, :send_invite, :update, :deactivate]
-  plug StitchConnect.Plug.TeamAdminOnly when action in [:deactivate]
+  plug StitchConnect.Plug.ApiAuthenticate when action in [:search, :index, :send_invite, :update,
+                                              :deactivate, :promote_admin, :revoke_admin]
+  plug StitchConnect.Plug.TeamAdminOnly when action in [:deactivate, :promote_admin, :revoke_admin]
 
   alias Stitch.{
     Repo,
@@ -40,6 +41,30 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update #{Enum.join(Map.keys(params), ", ")}"})
+    end
+  end
+
+  def promote_admin(conn, %{"id" => user_id}) do
+    case Stitch.Accounts.Admin.promote_admin(conn.assigns.current_user, user_id) do
+      {:ok, user} ->
+        conn
+        |> render("show.json", user: user)
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: message})
+    end
+  end
+
+  def revoke_admin(conn, %{"id" => user_id}) do
+    case Stitch.Accounts.Admin.revoke_admin(conn.assigns.current_user, user_id) do
+      {:ok, user} ->
+        conn
+        |> render("show.json", user: user)
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: message})
     end
   end
 

@@ -3,7 +3,7 @@ import moment from "moment";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-class MessageHead extends Component {
+class MessageHeader extends Component {
   render() {
     const { timestamp, user } = this.props;
     const timestampTooltip = (
@@ -26,4 +26,4 @@ class MessageHead extends Component {
   }
 }
 
-export default MessageHead;
+export default MessageHeader;

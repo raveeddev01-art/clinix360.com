@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import File from "./file";
+import AddonMessage from "../../../common/components/messages/addon-message";
 
 @inject("filesStore")
 @observer
@@ -25,9 +25,9 @@ class Files extends Component {
 
     return (
       <div className="files-addon">
-        <div className="addon-messages">
-          {filesStore.files.map(file => <File key={file.id} file={file} />)}
-        </div>
+        {filesStore.files.map(file =>
+          <AddonMessage key={file.id} message={file} />
+        )}
 
         <div className="footer">
           {filesStore.hasMore &&

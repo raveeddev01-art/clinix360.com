@@ -6,7 +6,8 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import Form from "react-bootstrap/lib/Form";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import SearchResultItem from "./search-result-item";
+
+import AddonMessage from "../../../common/components/messages/addon-message";
 
 @inject("messageStore", "searchStore")
 @observer
@@ -63,7 +64,7 @@ class MessageSearch extends Component {
             useWindow={false}
           >
             {messages.map(message =>
-              <SearchResultItem
+              <AddonMessage
                 key={`search_result_${message.id}`}
                 message={message}
               />

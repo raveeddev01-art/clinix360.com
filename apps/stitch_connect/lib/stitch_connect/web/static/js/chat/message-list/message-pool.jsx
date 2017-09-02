@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
-import MessageHead from "../../common/components/message-head/message-head";
+import MessageHeader from "../../common/components/messages/message-header/message-header";
 
 import Message from "./message";
 
@@ -18,7 +18,7 @@ class MessagePool extends Component {
     return (
       <div className={className}>
         <div className="message-pool">
-          <MessageHead timestamp={timestamp} user={user} />
+          <MessageHeader timestamp={timestamp} user={user} />
           <div className="message-pool-content">
             {messagePool.map(message =>
               <Message key={message.id} message={message} />

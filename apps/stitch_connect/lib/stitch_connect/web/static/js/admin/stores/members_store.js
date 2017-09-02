@@ -1,0 +1,84 @@
+import { observable, action, computed } from "mobx";
+import { Presence } from "phoenix";
+
+class MembersStore {
+  @observable loading = false;
+  @observable teamId = "";
+  @observable users = [];
+  @observable rawOnlineUsers = {};
+
+  @computed
+  get onlineUsers() {
+    return this.users.filter(u => !!this.rawOnlineUsers[`${u.id}`]);
+  }
+
+  @computed
+  get offlineUsers() {
+    return this.users.filter(u => !this.rawOnlineUsers[`${u.id}`]);
+  }
+
+  getUser = userId => this.users.find(u => u.id === userId);
+
+  @action
+  loadUsers = teamId => {
+    this.teamId = teamId;
+    get("/api/v1/users").then(response => {
+      this.users = response.data;
+      this.connectPresence();
+    });
+  };
+
+  @action
+  deactivateUser = userId => {
+    return post(`/api/v1/users/${userId}/deactivate`).then(() => {
+      const user = this.getUser(userId);
+      if (user) {
+        user.disabled = true;
+      }
+      notify.show("Account deactivated.");
+    });
+  };
+
+  @action
+  revokeAdmin = userId => {
+    return put(`/api/v1/users/${userId}/revoke-admin`).then(() => {
+      const user = this.getUser(userId);
+      if (user) {
+        user.roles = ["member"];
+      }
+      notify.show("Revoked admin role.");
+    });
+  };
+
+  @action
+  promoteAdmin = userId => {
+    return put(`/api/v1/users/${userId}/promote-admin`).then(() => {
+      const user = this.getUser(userId);
+      if (user) {
+        user.roles = ["admin"];
+      }
+      notify.show("Promoted to admin.");
+    });
+  };
+
+  connectPresence = () => {
+    const lobby = socket.channel(`team:lobby:${this.teamId}`, {});
+
+    lobby.on("presence_state", this.onPresenceState);
+    lobby.on("presence_diff", this.onPresenceDiff);
+    lobby.join();
+  };
+
+  @action
+  onPresenceState = state => {
+    this.rawOnlineUsers = Presence.syncState(this.rawOnlineUsers, state);
+  };
+
+  @action
+  onPresenceDiff = diff => {
+    this.rawOnlineUsers = Presence.syncDiff(this.rawOnlineUsers, diff);
+  };
+}
+
+const store = new MembersStore();
+export default store;

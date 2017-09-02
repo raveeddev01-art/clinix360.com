@@ -3,14 +3,14 @@ import { inject, observer } from "mobx-react";
 import { Panel, Row, Col } from "react-bootstrap";
 import MemberItem from "./member-item";
 
-@inject("teamStore")
+@inject("membersStore")
 @observer
 export default class UsersMembers extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
+    const { membersStore } = this.props;
+    const onlineUsers = membersStore.onlineUsers;
+    const offlineUsers = membersStore.offlineUsers;
+
     return (
       <Panel className="admin-panel">
         <h1 className="admin-title">Members</h1>
@@ -39,10 +39,10 @@ export default class UsersMembers extends Component {
               </Col>
             </Row>
           </div>
-          {this.props.teamStore.onlineUsers.map(user => {
-            return <MemberItem user={user} online={true} key={user.id} />;
+          {onlineUsers.map(user => {
+            return <MemberItem user={user} online key={user.id} />;
           })}
-          {this.props.teamStore.offlineUsers.map(user => {
+          {offlineUsers.map(user => {
             return <MemberItem user={user} online={false} key={user.id} />;
           })}
         </div>
