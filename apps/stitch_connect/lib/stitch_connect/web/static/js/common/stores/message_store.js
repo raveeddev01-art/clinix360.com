@@ -36,8 +36,32 @@ class MessageStore {
     }, delay);
   }
 
-  scrollToMessage(message) {
-    console.log("scrollToMessage");
+  scrollToMessage(message, cb = null, duration = 300, delay = 100) {
+    // Scroll to center of chat div
+
+    // TODO
+    // If element is visible, ignore scrolling
+    // After scroll, fade in and fade out the targeted message for 1 second
+
+    const messageDiv = this.messageDivs[message.id];
+    const toY = Math.max(
+      messageDiv.offsetTop -
+        (this.chatDiv.offsetHeight - messageDiv.offsetHeight) / 2,
+      0
+    );
+
+    setTimeout(() => {
+      animateScroll.scrollTo(toY, {
+        containerId: "chat",
+        duration
+      });
+
+      setTimeout(() => {
+        if (typeof cb === "function") {
+          cb();
+        }
+      }, duration);
+    }, delay);
   }
 
   @computed
