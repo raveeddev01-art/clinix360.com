@@ -7,6 +7,7 @@ defmodule Stitch.Group do
 
   schema "groups" do
     belongs_to :creator, Stitch.Accounts.User, foreign_key: :creator_user_id
+    # __multi_dm_group__ and __dm_group__ are reversed group names for dm groups
     field :name, :string
     field :slug, :string
     field :description, :string

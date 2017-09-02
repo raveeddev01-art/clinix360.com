@@ -6,9 +6,10 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   plug StitchConnect.Plug.ApiAuthenticate
 
   def index(conn, %{"slug" => slug}) do
-    case GroupQueries.find_by_slug(slug, conn.assigns.current_user) do
+    user = conn.assigns.current_user
+    case GroupQueries.find_by_slug(slug, user) do
       {:ok, group} ->
-        render conn, "show.json", group: group
+        render conn, "show.json", group: group, user_id: user.id
       {:error, reason} ->
         conn
         |> put_status(:not_found)
@@ -17,14 +18,16 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def index(conn, _params) do
-    groups = GroupQueries.available_groups(conn.assigns.current_user)
-    render conn, "index.json", groups: groups
+    user = conn.assigns.current_user
+    groups = GroupQueries.available_groups(user)
+    render conn, "index.json", groups: groups, user_id: user.id
   end
 
   def show(conn, %{"id" => group_id}) do
-    case GroupQueries.get_by_id(group_id, conn.assigns.current_user) do
+    user = conn.assigns.current_user
+    case GroupQueries.get_by_id(group_id, user) do
       {:ok, group} ->
-        render conn, "show.json", group: group
+        render conn, "show.json", group: group, user_id: user.id
       {:error, reason} ->
         conn
         |> put_status(:not_found)
@@ -33,7 +36,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def rename(conn, %{"id" => group_id, "name" => name}) do
-    case GroupAuthorization.can_rename?(group_id, conn.assigns.current_user.id) do
+    user = conn.assigns.current_user
+    case GroupAuthorization.can_rename?(group_id, user.id) do
       false ->
         conn
         |> put_status(:unauthorized)
@@ -41,9 +45,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       true ->
         case Group.rename(group_id, name) do
           {:ok, group} ->
-            group = GroupQueries.load_user_data(group, conn.assigns.current_user)
+            group = GroupQueries.load_user_data(group, user)
 
-            render conn, "show.json", group: group
+            render conn, "show.json", group: group, user_id: user.id
           {:error, reason} ->
             conn
             |> put_status(:unprocessable_entity)
@@ -75,7 +79,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> Map.put_new(:mentions_count, 0)
 
         EventsChannel.broadcast_group_creation(group)
-        render conn, "show.json", group: group
+        render conn, "show.json", group: group, user_id: user.id
       {:error, :already_exists} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -116,11 +120,11 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
             |> Map.put_new(:mentions_count, 0)
 
             EventsChannel.broadcast_group_creation(group)
-            render conn, "show.json", group: group
+            render conn, "show.json", group: group, user_id: user.id
 
           {:error, :already_exists} ->
             {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
-            render conn, "show.json", group: group
+            render conn, "show.json", group: group, user_id: user.id
 
           {:error, reason} ->
             conn
@@ -166,21 +170,23 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def toggle_public(conn, %{"id" => group_id, "public" => public}) do
-    case GroupAuthorization.can_toggle_public?(group_id, conn.assigns.current_user.id) do
+    user = conn.assigns.current_user
+    case GroupAuthorization.can_toggle_public?(group_id, user.id) do
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to toggle the group's privacy setting."})
       true ->
         {:ok, group} = Group.toggle_public(group_id, public)
-        group = GroupQueries.load_user_data(group, conn.assigns.current_user)
-        render conn, "show.json", group: group
+        group = GroupQueries.load_user_data(group, user)
+        render conn, "show.json", group: group, user_id: user.id
     end
   end
 
   def search(conn, %{"term" => term}) do
-    result_groups = GroupQueries.search(term, conn.assigns.current_user)
-    render conn, "index.json", groups: result_groups
+    user = conn.assigns.current_user
+    result_groups = GroupQueries.search(term, user)
+    render conn, "index.json", groups: result_groups, user_id: user.id
   end
 
   def invite(conn, %{"id" => group_id, "user_ids" => ""}) do
