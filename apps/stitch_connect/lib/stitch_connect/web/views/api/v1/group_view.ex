@@ -28,13 +28,15 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
     }
   end
 
-  defp group_name(%Group{name: name, users: users}, user_id)
-    when name in ["__multi_dm_group__", "__dm_group__"] do
-    case users do
-      [me] -> "#{me.first_name} #{me.last_name}"
-      users ->
-        users |> Enum.filter(& &1.id != user_id ) |> Enum.map(& &1.first_name ) |> Enum.join(", ")
-    end
+  defp group_name(%Group{name: "__dm_group__", users: users}, user_id) do
+    idx = Enum.find_index(users, &( &1.id == user_id ))
+    user = users |> List.delete_at(idx) |> List.first
+
+    "#{user.first_name} #{user.last_name}"
+  end
+
+  defp group_name(%Group{name: "__multi_dm_group__", users: users}, user_id) do
+    users |> Enum.filter(& &1.id != user_id ) |> Enum.map(& &1.first_name ) |> Enum.join(", ")
   end
 
   defp group_name(%Group{name: name}, _), do: name
