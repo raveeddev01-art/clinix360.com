@@ -89,7 +89,8 @@ class MessageStore {
       }, delay);
     }
 
-    // fade in and fade out the targeted message for 1 second
+    // fade in and fade out the targeted message for 3 seconds
+    $(messagePoolDiv).fadeTo(0, 0.5).fadeTo(3000, 1);
   }
 
   @computed
