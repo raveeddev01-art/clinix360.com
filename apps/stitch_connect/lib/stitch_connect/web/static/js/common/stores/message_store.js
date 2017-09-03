@@ -36,32 +36,57 @@ class MessageStore {
     }, delay);
   }
 
-  scrollToMessage(message, cb = null, duration = 300, delay = 100) {
+  isMessageDivVisible(messageDiv) {
+    const chatDivBoundingRect = this.chatDiv.getBoundingClientRect();
+    const messageDivBoundingRect = messageDiv.getBoundingClientRect();
+
+    return (
+      messageDivBoundingRect.top >= chatDivBoundingRect.top &&
+      messageDivBoundingRect.bottom <= chatDivBoundingRect.bottom
+    );
+  }
+
+  scrollToMessage(
+    message,
+    toCenter = true,
+    cb = null,
+    duration = 300,
+    delay = 100
+  ) {
     // Scroll to center of chat div
 
-    // TODO
-    // If element is visible, ignore scrolling
-    // After scroll, fade in and fade out the targeted message for 1 second
-
     const messageDiv = this.messageDivs[message.id];
-    const toY = Math.max(
-      messageDiv.offsetTop -
-        (this.chatDiv.offsetHeight - messageDiv.offsetHeight) / 2,
-      0
-    );
 
-    setTimeout(() => {
-      animateScroll.scrollTo(toY, {
-        containerId: "chat",
-        duration
-      });
+    // If message is not mounted, return
+    if (!messageDiv) {
+      return;
+    }
+
+    // Scroll only when message is not visible
+    if (!this.isMessageDivVisible(messageDiv)) {
+      const toY = toCenter
+        ? Math.max(
+            messageDiv.offsetTop -
+              (this.chatDiv.offsetHeight - messageDiv.offsetHeight) / 2,
+            0
+          )
+        : message.offsetTop;
 
       setTimeout(() => {
-        if (typeof cb === "function") {
-          cb();
-        }
-      }, duration);
-    }, delay);
+        animateScroll.scrollTo(toY, {
+          containerId: "chat",
+          duration
+        });
+
+        setTimeout(() => {
+          if (typeof cb === "function") {
+            cb();
+          }
+        }, duration);
+      }, delay);
+    }
+
+    // fade in and fade out the targeted message for 1 second
   }
 
   @computed
