@@ -62,15 +62,18 @@ class MessageStore {
       return;
     }
 
+    // Find messagePoolDiv
+    const messagePoolDiv = $(messageDiv).closest(".message-pool")[0];
+
     // Scroll only when message is not visible
-    if (!this.isMessageDivVisible(messageDiv)) {
+    if (!this.isMessageDivVisible(messagePoolDiv)) {
       const toY = toCenter
         ? Math.max(
-            messageDiv.offsetTop -
-              (this.chatDiv.offsetHeight - messageDiv.offsetHeight) / 2,
+            messagePoolDiv.offsetTop -
+              (this.chatDiv.offsetHeight - messagePoolDiv.offsetHeight) / 2,
             0
           )
-        : message.offsetTop;
+        : messagePoolDiv.offsetTop;
 
       setTimeout(() => {
         animateScroll.scrollTo(toY, {
