@@ -2,6 +2,7 @@ defmodule Stitch.GroupUser do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
+  alias Stitch.Accounts.User
   alias Stitch.{ Repo, GroupUser, Group, Accounts }
 
   schema "group_users" do
@@ -36,28 +37,25 @@ defmodule Stitch.GroupUser do
     from(u in GroupUser, where: u.group_id == ^group_id) |> Repo.delete_all
   end
 
-  def update_preference(slug, user, %{"desktop_notification_preference" => desktop_notification_preference}) do
-    case get_for_preference_update(slug, user) do
-      nil -> {:error, "Not found"}
-      group_user ->
-        if group_user.desktop_notification_preference == desktop_notification_preference do
-          {:error, "Not found"}
-        else
-          group_user
-          |> preference_changeset(%{desktop_notification_preference: desktop_notification_preference})
-          |> Repo.update
-        end
+  def update_preference(group_id, user_id, %{} = preferences) do
+    with {:ok, group_user} <- get_preference(group_id, user_id) do
+      group_user
+      |> preference_changeset(preferences)
+      |> Repo.update
     end
-
-    get_for_preference_update(slug, user)
   end
-  def update_preference(slug, user, _parms), do: {:error, "Not found"}
 
-  def get_for_preference_update(slug, user) do
-    GroupUser
-    |> join(:inner, [gu], g in Group, gu.group_id == g.id and gu.user_id == ^user.id)
-    |> where([gu, g], g.name != "__dm_group__" and g.slug == ^slug)
+  def get_preference(group_id, user_id) do
+    group_user = GroupUser
+    |> where(group_id: ^group_id, user_id: ^user_id)
+    |> preload([:group, :user])
     |> Repo.one
+
+    if group_user && group_user.group.name != "__dm_group__" do
+      {:ok, group_user}
+    else
+      {:error, "Not found"}
+    end
   end
 
   def mentions_count(group_id, user_id) do

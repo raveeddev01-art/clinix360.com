@@ -80,8 +80,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/groups/:id/users", GroupController, :users
     patch "/groups/:id/rename", GroupController, :rename
 
-    get "/groups/:group_id/notification-preference", GroupNotificationPreferenceController, :show
-    post "/groups/:group_id/update-notification-preference", GroupNotificationPreferenceController, :update
+    get "/groups/:group_id/notification-preference", NotificationPreferenceController, :show
+    put "/groups/:group_id/notification-preference", NotificationPreferenceController, :update
 
     get "/teams/:id", TeamController, :show
     delete "/teams/:id/", TeamController, :delete_team

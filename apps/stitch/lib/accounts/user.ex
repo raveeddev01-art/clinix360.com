@@ -51,20 +51,10 @@ defmodule Stitch.Accounts.User do
     |> validate_inclusion(:email_notification_preference, ["daily", "hourly", "15min", "never"])
   end
 
-  def update_preference(%User{} = user, params, group_preferences) do
-    Repo.transaction fn ->
-      Enum.each(group_preferences || [], fn
-        (%{"slug" => slug, "desktop_notification_preference" => desktop_notification_preference} = group_preference) ->
-          GroupUser.update_preference(slug, user, group_preference)
-        _ -> nil
-      end)
-
-      user_update = user |> preference_changeset(params) |> Repo.update
-      case user_update do
-        {:ok, updated_user} -> updated_user
-        {:error, changeset} -> Repo.rollback(changeset)
-      end
-    end
+  def update_preference(%User{} = user, params) do
+    user
+    |> preference_changeset(params)
+    |> Repo.update
   end
 
   @doc """
