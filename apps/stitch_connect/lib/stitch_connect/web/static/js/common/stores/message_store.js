@@ -41,13 +41,13 @@ class MessageStore {
     }, delay);
   }
 
-  isMessageDivVisible(messageDiv) {
+  isVisibleInChat(element) {
     const chatDivBoundingRect = this.chatDiv.getBoundingClientRect();
-    const messageDivBoundingRect = messageDiv.getBoundingClientRect();
+    const elementBoundingRect = element.getBoundingClientRect();
 
     return (
-      messageDivBoundingRect.top >= chatDivBoundingRect.top &&
-      messageDivBoundingRect.bottom <= chatDivBoundingRect.bottom
+      elementBoundingRect.top >= chatDivBoundingRect.top &&
+      elementBoundingRect.bottom <= chatDivBoundingRect.bottom
     );
   }
 
@@ -101,7 +101,7 @@ class MessageStore {
     const messagePoolDiv = $(messageDiv).closest(".message-pool")[0];
 
     // Scroll only when message is not visible
-    if (!this.isMessageDivVisible(messagePoolDiv)) {
+    if (!this.isVisibleInChat(messagePoolDiv)) {
       const toY = toCenter
         ? Math.max(
             messagePoolDiv.offsetTop -
@@ -189,7 +189,6 @@ class MessageStore {
   }
 
   onMessageMounted(messageId, messageDiv) {
-    console.log("onMessageMounted");
     this.messageDivs = { ...this.messageDivs, [messageId]: messageDiv };
   }
 
