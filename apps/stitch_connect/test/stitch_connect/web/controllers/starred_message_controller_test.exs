@@ -20,7 +20,8 @@ defmodule StitchConnect.Web.StarredMessageControllerTest do
         "id" => _,
         "first_name" => _,
         "last_name" => _
-      }
+      },
+      "group_id" => _
     }] = json
   end
 end

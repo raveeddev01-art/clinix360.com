@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
 import moment from "moment";
-import { Link, Element } from "react-scroll";
+import { Element } from "react-scroll";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -16,6 +16,12 @@ import MessageContent from "../../common/components/messages/message-content/mes
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
 class Message extends Component {
+  componentDidMount() {
+    const { message, messageStore } = this.props;
+
+    messageStore.onMessageMounted(message.id, this.messageDiv);
+  }
+
   onVisibleChange = isVisible => {
     const { message, messageStore } = this.props;
 
@@ -71,6 +77,16 @@ class Message extends Component {
 
     messageStore.toggleStar(message.id);
   };
+
+  shouldSenseVisibility() {
+    const { message, messageStore } = this.props;
+
+    return (
+      messageStore.loadedLastMessage &&
+      message.user.id !== currentUser.id &&
+      !message.read
+    );
+  }
 
   renderEdited(message) {
     const { edited, edited_at: editedAt } = message;
@@ -214,7 +230,13 @@ class Message extends Component {
         containment={chatDiv}
         offset={{ top: 70 }}
       >
-        <Element className="message" name={`msg_${message.id}`}>
+        <Element
+          className="message"
+          name={`msg_${message.id}`}
+          ref={div => {
+            this.messageDiv = div;
+          }}
+        >
           <div>
             <MessageContent message={message} />
             {this.renderEdited(message)}

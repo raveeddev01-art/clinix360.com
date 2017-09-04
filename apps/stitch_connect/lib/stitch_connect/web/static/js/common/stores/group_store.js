@@ -53,12 +53,15 @@ class GroupStore {
   };
 
   @action
-  loadGroupBySlug = slug => {
+  joinGroup = slug => {
     if (slug === this.slug) {
       return;
     }
 
     this.loading = true;
+    // Reset message store before join
+    this.rootStore.messageStore.reset();
+
     get(`/api/v1/groups?slug=${slug}`).then(resp => {
       this.loading = false;
 
@@ -74,6 +77,9 @@ class GroupStore {
       this.groupType = "group";
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
+
+      // Load messages after join
+      this.rootStore.messageStore.joinGroupChannel();
     });
   };
 
@@ -82,7 +88,14 @@ class GroupStore {
     const userIds = [currentUser.id, user.id].sort((a, b) => a > b);
     const slug = `__dm:${userIds.join(".")}`;
 
+    if (slug === this.slug) {
+      return;
+    }
+
     this.loading = true;
+    // Reset message store before join
+    this.rootStore.messageStore.reset();
+
     get(`/api/v1/groups?slug=${slug}`).then(resp => {
       this.loading = false;
 
@@ -98,6 +111,9 @@ class GroupStore {
       this.groupType = "single-dm";
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
+
+      // Load messages after join
+      this.rootStore.messageStore.joinGroupChannel();
     });
   };
 
@@ -109,8 +125,18 @@ class GroupStore {
     }
 
     userIds = userIds.sort((a, b) => a > b);
+
+    const slug = `__dm:${userIds.join(".")}`;
+
+    if (slug === this.slug) {
+      return;
+    }
+
     this.loading = true;
-    return post(`/api/v1/groups/multi-dm`, {
+    // Reset message store before join
+    this.rootStore.messageStore.reset();
+
+    post(`/api/v1/groups/multi-dm`, {
       body: { user_ids: userIds }
     }).then(resp => {
       this.loading = false;
@@ -127,6 +153,9 @@ class GroupStore {
       this.joined = data.joined;
       this.groupType = "multi-dm";
       this.unreadMessagesCount = data.unread_messages_count;
+
+      // Load messages after join
+      this.rootStore.messageStore.joinGroupChannel();
     });
   };
 

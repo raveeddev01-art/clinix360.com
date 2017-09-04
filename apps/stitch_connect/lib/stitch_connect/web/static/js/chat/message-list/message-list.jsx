@@ -24,9 +24,7 @@ class MessageList extends Component {
     this.props.messageStore.loadPastMessages();
   };
 
-  onLoseTopScroll = () => {
-    this.props.messageStore.canLoad = true;
-  };
+  onLoseTopScroll = () => {};
 
   onScrollBottom = () => {
     this.props.messageStore.isScrollBottom = true;
