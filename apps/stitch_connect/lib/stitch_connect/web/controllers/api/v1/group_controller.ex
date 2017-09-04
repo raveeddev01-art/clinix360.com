@@ -87,15 +87,35 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     end
   end
 
-  def create_multi_dm(conn, %{"user_ids" => user_ids}) do
-    user = conn.assigns.current_user
+  def create_single_dm(conn, %{"user_ids" => user_ids}) do
+    cond do
+      length(user_ids) != 2 ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{message: "user_ids param should contain 2 ids"})
+      true ->
+        conn
+        |> create_dm(user_ids, "__dm_group__")
+      end
+  end
 
+  def create_multi_dm(conn, %{"user_ids" => user_ids}) do
     cond do
       length(user_ids) <= 2 ->
         conn
         |> put_status(:bad_request)
         |> json(%{message: "user_ids param has contain more than 2 ids"})
+      true ->
+        conn
+        |> create_dm(user_ids, "__multi_dm_group__")
+      end
+  end
 
+  defp create_dm(conn, user_ids, name \\ "__dm_group__") do
+    user = conn.assigns.current_user
+    IO.inspect(user.id)
+    IO.inspect(user_ids)
+    cond do
       not user.id in user_ids ->
         conn
         |> put_status(:bad_request)
@@ -104,8 +124,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       true ->
         sorted_ids = user_ids |> Enum.sort |> Enum.join(".")
         slug = "__dm:#{sorted_ids}"
-        params = %{"user_ids" => user_ids, "name" => "__multi_dm_group__",
-          "slug" => slug, "public" => false}
+        params = %{"user_ids" => user_ids, "name" => name, "slug" => slug, "public" => false}
 
         case Group.create(params, user.team_id, user.id) do
           {:ok, group} ->
@@ -127,7 +146,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
             |> put_status(:unprocessable_entity)
             |> json(%{message: reason})
         end
-    end
+      end
   end
 
   def join(conn, %{"id" => group_id}) do
