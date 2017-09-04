@@ -49,6 +49,10 @@ defmodule Stitch.Accounts.User do
     |> validate_inclusion(:email_notification_preference, ["daily", "hourly", "15min", "never"])
   end
 
+  # def update_preference(%User{} = struct) do
+
+  # end
+
   @doc """
   Applies the attributes: email, confirmation_code and token
   to the Stitch.Accounts.User struct.
