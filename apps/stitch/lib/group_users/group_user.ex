@@ -36,6 +36,30 @@ defmodule Stitch.GroupUser do
     from(u in GroupUser, where: u.group_id == ^group_id) |> Repo.delete_all
   end
 
+  def update_preference(slug, user, %{"desktop_notification_preference" => desktop_notification_preference}) do
+    case get_for_preference_update(slug, user) do
+      nil -> {:error, "Not found"}
+      group_user ->
+        if group_user.desktop_notification_preference == desktop_notification_preference do
+          {:error, "Not found"}
+        else
+          group_user
+          |> preference_changeset(%{desktop_notification_preference: desktop_notification_preference})
+          |> Repo.update
+        end
+    end
+
+    get_for_preference_update(slug, user)
+  end
+  def update_preference(slug, user, _parms), do: {:error, "Not found"}
+
+  def get_for_preference_update(slug, user) do
+    GroupUser
+    |> join(:inner, [gu], g in Group, gu.group_id == g.id and gu.user_id == ^user.id)
+    |> where([gu, g], g.name != "__dm_group__" and g.slug == ^slug)
+    |> Repo.one
+  end
+
   def mentions_count(group_id, user_id) do
     GroupUser
     |> where(group_id: ^group_id, user_id: ^user_id)

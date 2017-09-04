@@ -12,9 +12,11 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceController do
   end
 
   def update_preference(conn, %{} = params) do
-    case User.update_preference(conn.assigns.current_user, params) do
+    case User.update_preference(conn.assigns.current_user, params, params["group_preferences"]) do
       {:ok, user} ->
-        render conn, "show.json", user: user
+        render conn, "show.json",
+          user: user,
+          group_preferences: Notification.for_user(conn.assigns.current_user.id)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
