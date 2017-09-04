@@ -18,12 +18,105 @@ class MessageStore {
   joinedTargetGroupDisposer = null; // Disposer of when() monitor that waits until joined the group to which jumping target message belongs to
   mountedTargetMessageDisposer = null; // Disposer of when() monitor that waits until target messages is mounted
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
+  // ////////////// //
+  //    GETTERS     //
+  // ////////////// //
+
   get groupTopic() {
     return this.rootStore.groupStore.channelTopic;
   }
 
-  constructor(rootStore) {
-    this.rootStore = rootStore;
+  @computed
+  get currentGroup() {
+    const { groupStore } = this.rootStore;
+
+    return {
+      id: groupStore.id
+    };
+  }
+
+  /**
+   * Returns TRUE if all the message divs are mounted
+   */
+  @computed
+  get mountedAllMessages() {
+    return (
+      this.messages.length > 0 &&
+      Object.keys(this.messageDivs).length === this.messages.length
+    );
+  }
+
+  get eventChannel() {
+    return this.rootStore.channelStore.eventChannel;
+  }
+
+  get groupChannel() {
+    return this.rootStore.channelStore.groupChannel;
+  }
+
+  @computed
+  get messagesByDate() {
+    return (
+      _.chain(this.messages)
+        .sortBy("inserted_at")
+        // Group messages by dates
+        .groupBy(message => moment(message.inserted_at).format(`YYYY-MM-DD`))
+        // Pool sequential messages by the same user
+        .transform((messagesByDate, messages, date) => {
+          messagesByDate[date] = _.transform(
+            messages,
+            (messagePools, message) => {
+              if (_.isEmpty(messagePools)) {
+                messagePools.push([message]);
+                return;
+              }
+
+              const lastMessagePool = _.last(messagePools);
+              const lastMessage = _.last(lastMessagePool);
+
+              if (
+                lastMessage.user.id === message.user.id &&
+                moment(lastMessage.inserted_at).diff(
+                  message.inserted_at,
+                  "minutes"
+                ) >= -30 &&
+                message.type === `chat` // it was user_message before
+              ) {
+                lastMessagePool.push(message);
+              } else {
+                messagePools.push([message]);
+              }
+            },
+            []
+          );
+        }, {})
+        .value()
+    );
+  }
+
+  @computed
+  get pinnedMessages() {
+    return this.messages.filter(message => message.pinned);
+  }
+
+  @computed
+  get starredMessages() {
+    return this.messages.filter(message => message.starred);
+  }
+
+  // ////////////// //
+  //    METHODS     //
+  // ////////////// //
+
+  reset() {
+    this.loadedAll = false;
+    this.loadedInitial = false;
+    this.messages = [];
+    this.messageDivs = {};
   }
 
   // Scroll to the bottom of chat div with animation
@@ -138,21 +231,12 @@ class MessageStore {
     $(messagePoolDiv).fadeTo(0, 0.5).fadeTo(3000, 1);
   }
 
-  @computed
-  get currentGroup() {
-    const { groupStore } = this.rootStore;
-
-    return {
-      id: groupStore.id
-    };
-  }
-
   /**
    * Jump to the specific message
    * The workflow is as following:
    *  1. Ensures that joined the group which target message belongs to.
    *    1.1. If already joined the target group, goes to Step 2.
-   *    1.2. If not joined, waits until joined. Switching group is triggered by URL changing.
+   *    1.2. If not joined, waits until joined. Switching group is triggered by URL change.
    *      1.2.1. When joined the target group, goes to Step 2.
    *  2. Ensures that target message is mounted.
    *    2.1. If target message is mounted already, goes to Step 3.
@@ -242,82 +326,6 @@ class MessageStore {
    */
   onMessageMounted(messageId, messageDiv) {
     this.messageDivs = { ...this.messageDivs, [messageId]: messageDiv };
-  }
-
-  /**
-   * Returns TRUE if all the message divs are mounted
-   */
-  @computed
-  get mountedAllMessages() {
-    return (
-      this.messages.length > 0 &&
-      Object.keys(this.messageDivs).length === this.messages.length
-    );
-  }
-
-  get eventChannel() {
-    return this.rootStore.channelStore.eventChannel;
-  }
-
-  get groupChannel() {
-    return this.rootStore.channelStore.groupChannel;
-  }
-
-  @computed
-  get messagesByDate() {
-    return (
-      _.chain(this.messages)
-        .sortBy("inserted_at")
-        // Group messages by dates
-        .groupBy(message => moment(message.inserted_at).format(`YYYY-MM-DD`))
-        // Pool sequential messages by the same user
-        .transform((messagesByDate, messages, date) => {
-          messagesByDate[date] = _.transform(
-            messages,
-            (messagePools, message) => {
-              if (_.isEmpty(messagePools)) {
-                messagePools.push([message]);
-                return;
-              }
-
-              const lastMessagePool = _.last(messagePools);
-              const lastMessage = _.last(lastMessagePool);
-
-              if (
-                lastMessage.user.id === message.user.id &&
-                moment(lastMessage.inserted_at).diff(
-                  message.inserted_at,
-                  "minutes"
-                ) >= -30 &&
-                message.type === `chat` // it was user_message before
-              ) {
-                lastMessagePool.push(message);
-              } else {
-                messagePools.push([message]);
-              }
-            },
-            []
-          );
-        }, {})
-        .value()
-    );
-  }
-
-  @computed
-  get pinnedMessages() {
-    return this.messages.filter(message => message.pinned);
-  }
-
-  @computed
-  get starredMessages() {
-    return this.messages.filter(message => message.starred);
-  }
-
-  reset() {
-    this.loadedAll = false;
-    this.loadedInitial = false;
-    this.messages = [];
-    this.messageDivs = {};
   }
 
   joinGroupChannel = () => {
