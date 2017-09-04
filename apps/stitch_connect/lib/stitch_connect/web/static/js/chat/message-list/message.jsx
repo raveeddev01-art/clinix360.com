@@ -78,16 +78,6 @@ class Message extends Component {
     messageStore.toggleStar(message.id);
   };
 
-  shouldSenseVisibility() {
-    const { message, messageStore } = this.props;
-
-    return (
-      messageStore.loadedLastMessage &&
-      message.user.id !== currentUser.id &&
-      !message.read
-    );
-  }
-
   renderEdited(message) {
     const { edited, edited_at: editedAt } = message;
 

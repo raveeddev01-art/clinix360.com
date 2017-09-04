@@ -11,7 +11,6 @@ class MessageStore {
   @observable textInEdit = "";
   @observable isScrollBottom = false;
   @observable loadedInitial = false;
-  @observable loadedLastMessage = false; // If TRUE, indicates loaded last message and scrolled to bottom
   loadedAll = false;
   messagePositions = {}; // { group: message_id }
 
@@ -146,8 +145,7 @@ class MessageStore {
     // Ensure that joined the group to which target message belongs
     this.joinedTargetGroupDisposer = when(
       () =>
-        targetMessage.group_id === this.currentGroup.id &&
-        this.loadedLastMessage,
+        targetMessage.group_id === this.currentGroup.id && this.loadedInitial,
       () => {
         // Ensure that target message is loaded
         if (this.loadedTargetMessageDisposer) {
@@ -263,7 +261,7 @@ class MessageStore {
 
   reset() {
     this.loadedAll = false;
-    this.loadedLastMessage = false;
+    this.loadedInitial = false;
     this.messages = [];
     this.messageDivs = {};
   }
@@ -388,7 +386,6 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
-    this.loadedInitial = false;
     this.messages = data.messages;
 
     when(
