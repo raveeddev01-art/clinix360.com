@@ -1,6 +1,6 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Link, Element, Events } from "react-scroll";
+import { Link, Element } from "react-scroll";
 
 import MessagePool from "./message-pool";
 import DateSeparator from "./date-separator";
@@ -24,9 +24,7 @@ class MessageList extends Component {
     this.props.messageStore.loadPastMessages();
   };
 
-  onLoseTopScroll = () => {
-    this.props.messageStore.canLoad = true;
-  };
+  onLoseTopScroll = () => {};
 
   onScrollBottom = () => {
     this.props.messageStore.isScrollBottom = true;

@@ -12,6 +12,7 @@ defmodule StitchConnect.Web.Api.V1.StarredMessageView do
       text_content: starred_message.text_content,
       user: MessageView.user_info(starred_message),
       inserted_at: starred_message.inserted_at,
+      group_id: starred_message.group_id
     }
   end
 end

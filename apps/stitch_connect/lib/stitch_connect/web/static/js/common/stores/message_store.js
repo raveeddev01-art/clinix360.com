@@ -1,31 +1,59 @@
-import { observable, action, computed, autorun } from "mobx";
+import { observable, action, computed, when } from "mobx";
 import moment from "moment";
 import _ from "lodash";
-import { animateScroll } from "react-scroll";
+import { animateScroll, scroller } from "react-scroll";
 
 class MessageStore {
   @observable chatDiv = null;
   @observable messages = [];
+  @observable messageDivs = {};
   @observable messageInEdit = null;
   @observable textInEdit = "";
-  @observable canLoad = false;
-  @observable loadedInitial = false;
   @observable isScrollBottom = false;
+  @observable loadedInitial = false;
+  @observable loadedLastMessage = false; // If TRUE, indicates loaded last message and scrolled to bottom
   loadedAll = false;
+  messagePositions = {}; // { group: message_id }
+
+  // mobx when() disposers
+  joinedTargetGroupDisposer = null;
+  loadedTargetMessageDisposer = null;
+
+  get groupTopic() {
+    return this.rootStore.groupStore.channelTopic;
+  }
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-
-    autorun(() => {
-      // If group slug changes, join to messages channel of group
-      if (this.rootStore.groupStore.slug) {
-        this.joinGroupChannel();
-      }
-    });
   }
 
-  scrollToBottom(duration = 1000, cb = null) {
-    animateScroll.scrollToBottom({
+  scrollToBottom(cb = null, duration = 300, delay = 100) {
+    setTimeout(() => {
+      animateScroll.scrollToBottom({
+        containerId: "chat",
+        duration
+      });
+
+      setTimeout(() => {
+        if (typeof cb === "function") {
+          cb();
+        }
+      }, duration);
+    }, delay);
+  }
+
+  isMessageDivVisible(messageDiv) {
+    const chatDivBoundingRect = this.chatDiv.getBoundingClientRect();
+    const messageDivBoundingRect = messageDiv.getBoundingClientRect();
+
+    return (
+      messageDivBoundingRect.top >= chatDivBoundingRect.top &&
+      messageDivBoundingRect.bottom <= chatDivBoundingRect.bottom
+    );
+  }
+
+  scrollTo(msgId, duration = 1000, cb) {
+    scroller.scrollTo(`msg_${msgId}`, {
       containerId: "chat",
       duration
     });
@@ -34,7 +62,124 @@ class MessageStore {
       if (typeof cb === "function") {
         cb();
       }
-    }, duration);
+    }, 300);
+  }
+
+  onInvisibleMessage = id => {
+    const currentPos = this.messagePositions[this.groupTopic];
+    if (!currentPos || currentPos === id) {
+      const index = this.messages.findIndex(m => m.id === id);
+      if (this.messages[index - 1]) {
+        this.messagePositions[this.groupTopic] = this.messages[index - 1].id;
+      }
+    }
+  };
+
+  onVisibleMessage = id => {
+    const currentPos = this.messagePositions[this.groupTopic];
+    if (!currentPos || currentPos > id) {
+      this.messagePositions[this.groupTopic] = id;
+    }
+  };
+
+  scrollToMessage(
+    message,
+    toCenter = true,
+    cb = null,
+    duration = 300,
+    delay = 100
+  ) {
+    // Scroll to center of chat div
+
+    const messageDiv = this.messageDivs[message.id];
+
+    // If message is not mounted, return
+    if (!messageDiv) {
+      return;
+    }
+
+    // Find messagePoolDiv
+    const messagePoolDiv = $(messageDiv).closest(".message-pool")[0];
+
+    // Scroll only when message is not visible
+    if (!this.isMessageDivVisible(messagePoolDiv)) {
+      const toY = toCenter
+        ? Math.max(
+            messagePoolDiv.offsetTop -
+              (this.chatDiv.offsetHeight - messagePoolDiv.offsetHeight) / 2,
+            0
+          )
+        : messagePoolDiv.offsetTop;
+
+      setTimeout(() => {
+        animateScroll.scrollTo(toY, {
+          containerId: "chat",
+          duration
+        });
+
+        setTimeout(() => {
+          if (typeof cb === "function") {
+            cb();
+          }
+        }, duration);
+      }, delay);
+    }
+
+    // fade in and fade out the targeted message for 3 seconds
+    $(messagePoolDiv).fadeTo(0, 0.5).fadeTo(3000, 1);
+  }
+
+  @computed
+  get currentGroup() {
+    const { groupStore } = this.rootStore;
+
+    return {
+      id: groupStore.id
+    };
+  }
+
+  jumpToMessage(targetMessage) {
+    if (this.joinedTargetGroupDisposer) {
+      this.joinedTargetGroupDisposer();
+    }
+
+    // Ensure that joined the group to which target message belongs
+    this.joinedTargetGroupDisposer = when(
+      () =>
+        targetMessage.group_id === this.currentGroup.id &&
+        this.loadedLastMessage,
+      () => {
+        // Ensure that target message is loaded
+        if (this.loadedTargetMessageDisposer) {
+          this.loadedTargetMessageDisposer();
+        }
+
+        this.loadedTargetMessageDisposer = when(
+          () =>
+            this.loadedTargetMessage(targetMessage) && this.mountedAllMessages,
+          () => {
+            this.scrollToMessage(targetMessage);
+          }
+        );
+
+        // Load until target message is loaded
+        this.loadUntilTargetMessage(targetMessage);
+      }
+    );
+  }
+
+  loadedTargetMessage(targetMessage) {
+    return this.messages.findIndex(m => m.id === targetMessage.id) > -1;
+  }
+
+  loadUntilTargetMessage(targetMessage) {
+    if (this.loadedAll || this.loadedTargetMessage(targetMessage)) {
+      return;
+    }
+
+    this.loadPastMessages(() => {
+      this.loadUntilTargetMessage(targetMessage);
+    });
   }
 
   loadChatDiv(div) {
@@ -43,6 +188,19 @@ class MessageStore {
 
   unloadChatDiv() {
     this.chatDiv = null;
+  }
+
+  onMessageMounted(messageId, messageDiv) {
+    console.log("onMessageMounted");
+    this.messageDivs = { ...this.messageDivs, [messageId]: messageDiv };
+  }
+
+  @computed
+  get mountedAllMessages() {
+    return (
+      this.messages.length > 0 &&
+      Object.keys(this.messageDivs).length === this.messages.length
+    );
   }
 
   get eventChannel() {
@@ -103,13 +261,17 @@ class MessageStore {
     return this.messages.filter(message => message.starred);
   }
 
-  joinGroupChannel = () => {
+  reset() {
     this.loadedAll = false;
+    this.loadedLastMessage = false;
     this.messages = [];
+    this.messageDivs = {};
+  }
 
+  joinGroupChannel = () => {
     this.rootStore.channelStore
       .joinGroupChannel()
-      .receive("ok", this.loadMessages)
+      .receive("ok", this.onJoinGroupChannel)
       .receive("error", err => notify.show(err.message, "error"));
 
     this.groupChannel.on("new_msg", this.onNewMessage);
@@ -154,29 +316,30 @@ class MessageStore {
   };
 
   @action
-  loadPastMessages = () => {
-    if (!this.canLoad || this.loadedAll || !this.messages.length) {
+  loadPastMessages = (cb = null) => {
+    if (this.loadedAll || !this.messages.length) {
       return;
     }
-
-    this.canLoad = false;
 
     this.groupChannel
       .push("feed", { max_id: this.messages[this.messages.length - 1].id })
-      .receive("ok", this.addPastMessages)
+      .receive("ok", data => {
+        const { messages } = data;
+
+        if (!messages.length) {
+          this.loadedAll = true;
+          return;
+        }
+
+        this.messages.push(...messages);
+
+        if (typeof cb === "function") {
+          cb();
+        }
+      })
       .receive("error", err => {
         notify.show(err.message, "error");
       });
-  };
-
-  @action
-  addPastMessages = data => {
-    if (!data.messages.length) {
-      this.loadedAll = true;
-      return;
-    }
-
-    this.messages.push(...data.messages);
   };
 
   @action
@@ -193,9 +356,7 @@ class MessageStore {
     this.messages.unshift(newMessage);
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
-      setTimeout(() => {
-        this.scrollToBottom();
-      }, 300);
+      this.scrollToBottom(() => {}, 0);
     }
   };
 
@@ -226,14 +387,25 @@ class MessageStore {
   };
 
   @action
-  loadMessages = data => {
+  onJoinGroupChannel = data => {
+    this.loadedInitial = false;
     this.messages = data.messages;
 
-    setTimeout(() => {
-      this.scrollToBottom(1000, () => {
-        this.loadedInitial = true;
-      });
-    }, 300);
+    when(
+      () => this.mountedAllMessages,
+      () => {
+        const posHistory = this.messagePositions[this.groupTopic];
+        if (posHistory && this.messages.find(m => m.id === posHistory)) {
+          this.scrollTo(posHistory, 0, () => {
+            this.loadedInitial = true;
+          });
+        } else {
+          this.scrollToBottom(() => {
+            this.loadedInitial = true;
+          }, 0);
+        }
+      }
+    );
   };
 
   @action
