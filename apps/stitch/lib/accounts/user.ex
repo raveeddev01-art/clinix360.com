@@ -5,6 +5,7 @@ defmodule Stitch.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
   alias Stitch.Accounts.User
+  alias Stitch.Repo
 
   schema "users" do
     field :email, :string
@@ -49,9 +50,11 @@ defmodule Stitch.Accounts.User do
     |> validate_inclusion(:email_notification_preference, ["daily", "hourly", "15min", "never"])
   end
 
-  # def update_preference(%User{} = struct) do
-
-  # end
+  def update_preference(%User{} = struct, params) do
+    struct
+    |> preference_changeset(params)
+    |> Repo.update
+  end
 
   @doc """
   Applies the attributes: email, confirmation_code and token
