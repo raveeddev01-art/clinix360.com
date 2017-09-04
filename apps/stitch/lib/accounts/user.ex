@@ -25,6 +25,7 @@ defmodule Stitch.Accounts.User do
     field :password_reset_token, :string
     field :desktop_notification_preference, :string, default: "everything"
     field :mobile_notification_preference, :string, default: "everything"
+    field :email_notification_preference, :string, default: "daily"
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
     has_many :group_notification_preferences, Stitch.GroupNotificationPreference
@@ -41,10 +42,11 @@ defmodule Stitch.Accounts.User do
 
   def preference_changeset(%User{} = struct, params) do
     struct
-    |> cast(params, [:desktop_notification_preference, :mobile_notification_preference])
-    |> validate_required([:desktop_notification_preference, :mobile_notification_preference])
+    |> cast(params, [:desktop_notification_preference, :mobile_notification_preference, :email_notification_preference])
+    |> validate_required([:desktop_notification_preference, :mobile_notification_preference, :email_notification_preference])
     |> validate_inclusion(:desktop_notification_preference, ["everything", "mentions", "nothing"])
     |> validate_inclusion(:mobile_notification_preference, ["everything", "mentions", "nothing"])
+    |> validate_inclusion(:email_notification_preference, ["daily", "hourly", "15min", "never"])
   end
 
   @doc """
