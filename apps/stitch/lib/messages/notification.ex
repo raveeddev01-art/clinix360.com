@@ -1,6 +1,7 @@
 defmodule Stitch.Message.Notification do
   alias Stitch.Repo
   alias Stitch.GroupUser
+  alias Stitch.Group
   alias Stitch.Accounts.User
   import Ecto.Query
 
@@ -68,5 +69,21 @@ defmodule Stitch.Message.Notification do
         u.id, u.mobile_notification_preference),
     })
     |> Repo.one
+  end
+
+  def for_user(user_id) do
+    GroupUser
+    |> join(:inner, [gu], g in Group, gu.group_id == g.id)
+    |> join(:inner, [gu, g], u in User, gu.user_id == u.id and u.id == ^user_id)
+    |> where([gu, g, u], gu.user_id == ^user_id)
+    |> where([gu, g, u], g.name != "__dm_group__")
+    |> select([gu, g, u], %{
+      group_id: g.id,
+      group_name: g.name,
+      group_slug: g.slug,
+      preference: fragment("case ? when 'default' then ? else ? end",
+        gu.desktop_notification_preference, u.desktop_notification_preference, gu.desktop_notification_preference),
+    })
+    |> Repo.all
   end
 end
