@@ -13,8 +13,15 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         opts =
           params
           |> Map.take(["limit", "skip"])
-          |> Map.update("limit", 30, fn limit -> Enum.min([limit, 30]) end)
-          |> Enum.map(fn {key, value} -> {:"#{key}", value} end)
+          |> Enum.map(fn {key, value} ->
+            value = case value do
+              value when is_binary(value) -> String.to_integer(value)
+              value when is_integer(value) -> value
+            end
+
+            {:"#{key}", value}
+          end)
+          |> Keyword.update(:limit, 30, fn limit -> Enum.min([limit, 30]) end)
 
         messages = MessageQueries.group_latest_messages(group_id, user, opts)
         render conn, "index.json", messages: messages, user_id: user.id
