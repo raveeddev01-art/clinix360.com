@@ -26,7 +26,7 @@ defmodule Stitch.Mixfile do
 
   defp deps do
     [
-      {:ecto, "~> 2.1"},
+      {:ecto, "~> 2.2"},
       {:postgrex, "~> 0.13.3"},
       {:comeonin, "~> 3.0"},
       {:ex_machina, "~> 2.0", only: :test},
