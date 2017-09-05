@@ -29,7 +29,7 @@ defmodule Stitch.Mixfile do
       {:ecto, "~> 2.2"},
       {:postgrex, "~> 0.13.3"},
       {:comeonin, "~> 3.0"},
-      {:ex_machina, "~> 2.0", only: :test},
+      {:ex_machina, "~> 2.1", only: :test},
       {:slugger, "~> 0.2"},
       {:bamboo, "~> 0.8"},
       {:ex_doc, "~> 0.14", only: :dev, runtime: false}
