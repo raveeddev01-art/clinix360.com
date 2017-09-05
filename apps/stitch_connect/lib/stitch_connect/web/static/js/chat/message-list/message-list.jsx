@@ -5,7 +5,7 @@ import { Link, Element } from "react-scroll";
 import MessagePool from "./message-pool";
 import DateSeparator from "./date-separator";
 
-@inject("messageStore", "groupStore")
+@inject("messageStore")
 @observer
 class MessageList extends Component {
   componentDidMount() {
@@ -35,7 +35,7 @@ class MessageList extends Component {
   };
 
   render() {
-    const { messageStore, groupStore } = this.props;
+    const { messageStore } = this.props;
     const { messagesByDate } = messageStore;
 
     return (
@@ -49,10 +49,7 @@ class MessageList extends Component {
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
             {messagesByDate[date].map(messagePool => {
-              if (
-                messagePool[0].unreadStart &&
-                groupStore.unreadMessagesCount
-              ) {
+              if (messageStore.unreadStartMessageID === messagePool[0].id) {
                 return [
                   <div className="new-message-banner">
                     <div className="banner-text">New Messages</div>

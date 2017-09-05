@@ -12,6 +12,7 @@ class MessageStore {
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
   @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
   @observable lastUnreadViewed = false; // TRUE: topmost unread message is viewed. Thus other messages can be marked as read.
+  @observable unreadStartMessageID = null; // indicates where new message banner starts
   loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
   messagePositions = {}; // { group: message_id }
 
@@ -75,7 +76,10 @@ class MessageStore {
           messagesByDate[date] = _.transform(
             messages,
             (messagePools, message) => {
-              if (_.isEmpty(messagePools) || message.unreadStart) {
+              if (
+                _.isEmpty(messagePools) ||
+                this.unreadStartMessageID === message.id
+              ) {
                 messagePools.push([message]);
                 return;
               }
@@ -423,6 +427,10 @@ class MessageStore {
 
     // Increment unread messages count if it is from other user
     if (newMessage.user_id !== currentUser.id) {
+      if (!this.isScrollBottom && !this.unreadMessagesCount) {
+        this.unreadStartMessageID = newMessage.id;
+      }
+
       this.rootStore.groupStore.increaseUnreadMessagesCount();
     }
 
@@ -461,9 +469,11 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
+    this.unreadStartMessageID = null;
+
     this.messages = data.messages.map((msg, index) => {
       if (this.unreadMessagesCount && index === this.unreadMessagesCount - 1) {
-        return Object.assign({}, msg, { unreadStart: true });
+        this.unreadStartMessageID = msg.id;
       }
 
       return msg;
