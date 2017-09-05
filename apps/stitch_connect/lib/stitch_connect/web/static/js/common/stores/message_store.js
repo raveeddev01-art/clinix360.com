@@ -75,7 +75,7 @@ class MessageStore {
           messagesByDate[date] = _.transform(
             messages,
             (messagePools, message) => {
-              if (_.isEmpty(messagePools)) {
+              if (_.isEmpty(messagePools) || message.unreadStart) {
                 messagePools.push([message]);
                 return;
               }
@@ -461,12 +461,15 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
-    this.messages = data.messages;
+    this.messages = data.messages.map((msg, index) => {
+      if (this.unreadMessagesCount && index === this.unreadMessagesCount - 1) {
+        return Object.assign({}, msg, { unreadStart: true });
+      }
 
-    when(
-      () => this.mountedAllMessages,
-      this.handleInitialLoading
-    );
+      return msg;
+    });
+
+    when(() => this.mountedAllMessages, this.handleInitialLoading);
   };
 
   /**
@@ -502,23 +505,25 @@ class MessageStore {
       } else {
         posHistory = this.messages[this.unreadMessagesCount].id; // B.1.a
         this.scrollToBottom(() => {
-          this.loadedInitial = true;  // B.1.b
+          this.loadedInitial = true; // B.1.b
           this.scrollTo(posHistory, 500);
         }, 0);
       }
     } else {
       posHistory = this.messagePositions[this.groupTopic];
-      if (posHistory && this.messages.find(m => m.id === posHistory)) { // A.1.a
+      if (posHistory && this.messages.find(m => m.id === posHistory)) {
+        // A.1.a
         this.scrollTo(posHistory, 0, () => {
           this.loadedInitial = true;
         });
-      } else { // A.1.b, A.2.a
+      } else {
+        // A.1.b, A.2.a
         this.scrollToBottom(() => {
           this.loadedInitial = true;
         }, 0);
       }
     }
-  }
+  };
 
   @action
   startEdit(id) {
