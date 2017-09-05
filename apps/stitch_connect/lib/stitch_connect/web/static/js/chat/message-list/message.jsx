@@ -28,6 +28,7 @@ class Message extends Component {
     if (
       isVisible &&
       messageStore.loadedInitial &&
+      messageStore.lastUnreadViewed &&
       message.user.id !== currentUser.id &&
       !message.read
     ) {

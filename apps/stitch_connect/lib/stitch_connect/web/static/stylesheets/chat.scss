@@ -59,6 +59,7 @@
         background: $body-bg;
 
         .unread-messages-tooltip {
+          cursor: pointer;
           height: 25px;
           line-height: 25px;
           background: #29b2ee;
