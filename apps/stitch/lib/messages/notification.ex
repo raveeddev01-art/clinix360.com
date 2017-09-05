@@ -81,8 +81,10 @@ defmodule Stitch.Message.Notification do
       group_id: g.id,
       group_name: g.name,
       group_slug: g.slug,
-      preference: fragment("case ? when 'default' then ? else ? end",
+      desktop_notification_preference: fragment("case ? when 'default' then ? else ? end",
         gu.desktop_notification_preference, u.desktop_notification_preference, gu.desktop_notification_preference),
+      mobile_notification_preference: fragment("case ? when 'default' then ? else ? end",
+        gu.mobile_notification_preference, u.mobile_notification_preference, gu.mobile_notification_preference),
     })
     |> Repo.all
   end

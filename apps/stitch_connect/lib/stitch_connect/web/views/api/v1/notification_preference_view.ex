@@ -6,7 +6,7 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceView do
       desktop_notification_preference: user.desktop_notification_preference,
       mobile_notification_preference: user.mobile_notification_preference,
       email_notification_preference: user.email_notification_preference,
-      group_preference: group_preferences,
+      group_preferences: group_preferences,
     }
   end
 
@@ -20,5 +20,5 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceView do
   def current_preference(group_user, :desktop_notification_preference), do:
     if group_user.desktop_notification_preference == "default", do: group_user.user.desktop_notification_preference, else: group_user.desktop_notification_preference
   def current_preference(group_user, :mobile_notification_preference), do:
-    if group_user.mobile_notification_preference == "default", do: group_user.user.mobile_notification_preference, else: group_user.moible_notification_preference
+    if group_user.mobile_notification_preference == "default", do: group_user.user.mobile_notification_preference, else: group_user.mobile_notification_preference
 end

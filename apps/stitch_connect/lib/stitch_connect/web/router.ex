@@ -23,8 +23,8 @@ defmodule StitchConnect.Web.Router do
     post "/users/submit-confirmation-code", UserController, :submit_confirmation_code
     post "/users/send-invite", UserController, :send_invite
     patch "/users/:id/complete-onboarding", UserController, :complete_onboarding
-    get "/users/notification_preference", NotificationPreferenceController, :show_global
-    put "/users/notification_preference", NotificationPreferenceController, :update_global
+    get "/users/notification-preference", NotificationPreferenceController, :show_global
+    put "/users/notification-preference", NotificationPreferenceController, :update_global
 
     post "/teams", TeamController, :create
     post "/teams/url-available", TeamController, :url_available
