@@ -29,8 +29,10 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
   end
 
   defp group_name(%Group{name: "__dm_group__", users: users}, user_id) do
-    idx = Enum.find_index(users, &( &1.id == user_id ))
-    user = users |> List.delete_at(idx) |> List.first
+    user = case users do
+      [me] -> me
+      users -> Enum.find(users, &( &1.id != user_id ))
+    end
 
     "#{user.first_name} #{user.last_name}"
   end
