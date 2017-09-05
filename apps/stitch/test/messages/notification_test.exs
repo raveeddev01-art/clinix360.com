@@ -12,8 +12,8 @@ defmodule Stitch.Message.NotificationTest do
       bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
       alice = insert(:user, username: "alice", team: team, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
       general = insert(:group, slug: "general", team: team)
-      general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
-      general_alice = insert(:group_user, user: alice, group: general, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
+      _general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
+      _general_alice = insert(:group_user, user: alice, group: general, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
 
       assert %{desktop: [], mobile: []} = Stitch.Message.Notification.notify_user_ids(general, bob, [])
       assert %{desktop: [bob_id], mobile: [bob_id]} = Stitch.Message.Notification.notify_user_ids(general, alice, [])
@@ -25,8 +25,8 @@ defmodule Stitch.Message.NotificationTest do
       bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
       alice = insert(:user, username: "alice", team: team, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
       dm = insert(:group, slug: "__dm:#{bob.id},#{alice.id}", team: team)
-      dm_bob = insert(:group_user, user: bob, group: dm)
-      dm_alice = insert(:group_user, user: alice, group: dm)
+      _dm_bob = insert(:group_user, user: bob, group: dm)
+      _dm_alice = insert(:group_user, user: alice, group: dm)
 
       assert %{desktop: [alice_id], mobile: [alice_id]} = Stitch.Message.Notification.notify_user_ids(dm, bob, [])
       assert alice_id == alice.id
@@ -37,8 +37,8 @@ defmodule Stitch.Message.NotificationTest do
       bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
       alice = insert(:user, username: "alice", team: team)
       general = insert(:group, slug: "general", team: team)
-      general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
-      general_alice = insert(:group_user, user: alice, group: general)
+      _general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
+      _general_alice = insert(:group_user, user: alice, group: general)
 
       assert %{desktop: [bob_id], mobile: [bob_id]} = Stitch.Message.Notification.notify_user_ids(general, alice, [])
       assert bob_id == bob.id
@@ -49,8 +49,8 @@ defmodule Stitch.Message.NotificationTest do
       bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
       alice = insert(:user, username: "alice", team: team)
       general = insert(:group, slug: "general", team: team)
-      general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "mentions", mobile_notification_preference: "mentions")
-      general_alice = insert(:group_user, user: alice, group: general)
+      _general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "mentions", mobile_notification_preference: "mentions")
+      _general_alice = insert(:group_user, user: alice, group: general)
 
       assert %{desktop: [], mobile: []} = Stitch.Message.Notification.notify_user_ids(general, alice, [])
     end
@@ -60,8 +60,8 @@ defmodule Stitch.Message.NotificationTest do
       bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
       alice = insert(:user, username: "alice", team: team)
       general = insert(:group, slug: "general", team: team)
-      general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
-      general_alice = insert(:group_user, user: alice, group: general)
+      _general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
+      _general_alice = insert(:group_user, user: alice, group: general)
 
       assert %{desktop: [], mobile: []} = Stitch.Message.Notification.notify_user_ids(general, alice, [bob.id])
     end
@@ -71,8 +71,8 @@ defmodule Stitch.Message.NotificationTest do
       bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "mentions", mobile_notification_preference: "mentions")
       alice = insert(:user, username: "alice", team: team)
       general = insert(:group, slug: "general", team: team)
-      general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
-      general_alice = insert(:group_user, user: alice, group: general)
+      _general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
+      _general_alice = insert(:group_user, user: alice, group: general)
 
       assert %{desktop: [bob_id], mobile: [bob_id]} = Stitch.Message.Notification.notify_user_ids(general, alice, [bob.id])
       assert bob_id == bob.id
@@ -83,8 +83,8 @@ defmodule Stitch.Message.NotificationTest do
       bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "mentions", mobile_notification_preference: "mentions")
       alice = insert(:user, username: "alice", team: team)
       general = insert(:group, slug: "general", team: team)
-      general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
-      general_alice = insert(:group_user, user: alice, group: general)
+      _general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
+      _general_alice = insert(:group_user, user: alice, group: general)
 
       assert %{desktop: [], mobile: []} = Stitch.Message.Notification.notify_user_ids(general, alice, [])
     end
@@ -94,8 +94,8 @@ defmodule Stitch.Message.NotificationTest do
       bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
       alice = insert(:user, username: "alice", team: team)
       dm = insert(:group, slug: "__dm:#{bob.id},#{alice.id}", team: team)
-      dm_bob = insert(:group_user, user: bob, group: dm)
-      dm_alice = insert(:group_user, user: alice, group: dm)
+      _dm_bob = insert(:group_user, user: bob, group: dm)
+      _dm_alice = insert(:group_user, user: alice, group: dm)
 
       assert %{desktop: [], mobile: []} = Stitch.Message.Notification.notify_user_ids(dm, alice, [])
     end
@@ -105,8 +105,8 @@ defmodule Stitch.Message.NotificationTest do
       bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "mentions", mobile_notification_preference: "mentions")
       alice = insert(:user, username: "alice", team: team)
       dm = insert(:group, slug: "__dm:#{bob.id},#{alice.id}", team: team)
-      dm_bob = insert(:group_user, user: bob, group: dm)
-      dm_alice = insert(:group_user, user: alice, group: dm)
+      _dm_bob = insert(:group_user, user: bob, group: dm)
+      _dm_alice = insert(:group_user, user: alice, group: dm)
 
       assert %{desktop: [bob_id], mobile: [bob_id]} = Stitch.Message.Notification.notify_user_ids(dm, alice, [])
       assert bob_id == bob.id
@@ -118,9 +118,9 @@ defmodule Stitch.Message.NotificationTest do
       alice = insert(:user, username: "alice", team: team, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
       eve = insert(:user, username: "eve", team: team, desktop_notification_preference: "mentions", mobile_notification_preference: "mentions")
       general = insert(:group, slug: "general", team: team)
-      general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
-      general_alice = insert(:group_user, user: alice, group: general, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
-      general_eve = insert(:group_user, user: eve, group: general, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
+      _general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "default", mobile_notification_preference: "default")
+      _general_alice = insert(:group_user, user: alice, group: general, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
+      _general_eve = insert(:group_user, user: eve, group: general, desktop_notification_preference: "nothing", mobile_notification_preference: "nothing")
 
       assert %{desktop: [], mobile: []} = Stitch.Message.Notification.notify_user_ids(general, bob, [])
 

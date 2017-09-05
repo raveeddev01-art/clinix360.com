@@ -76,7 +76,7 @@ defmodule Stitch.Message.Notification do
     |> join(:inner, [gu], g in Group, gu.group_id == g.id)
     |> join(:inner, [gu, g], u in User, gu.user_id == u.id and u.id == ^user_id)
     |> where([gu, g, u], gu.user_id == ^user_id)
-    |> where([gu, g, u], g.name != "__dm_group__")
+    |> where([gu, g, u], g.name != "__dm_group__" and g.name != "__multi_dm_group__")
     |> select([gu, g, u], %{
       group_id: g.id,
       group_name: g.name,

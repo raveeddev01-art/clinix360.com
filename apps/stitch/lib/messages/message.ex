@@ -59,7 +59,6 @@ defmodule Stitch.Message do
       case message_insert do
         {:ok, message} ->
           add_mention_to_users(group, mentioned_user_ids, message)
-          send_notifications(notify_user_ids)
           %{message: message, notify_user_ids: notify_user_ids.desktop}
         {:error, changeset} ->
           Repo.rollback(changeset)
@@ -82,16 +81,11 @@ defmodule Stitch.Message do
       case message_insert do
         {:ok, message} ->
           add_mention_to_users(group, mentioned_user_ids, message)
-          send_notifications(notify_user_ids)
           %{message: message, notify_user_ids: notify_user_ids.desktop}
         {:error, changeset} ->
           Repo.rollback(changeset)
       end
     end
-  end
-
-  def send_notifications(%{mobile: _mobile_notify_user_ids}) do
-    nil # TODO email / push notifications
   end
 
   def create(group_id, user, %{"text_content" => text_content}) do
