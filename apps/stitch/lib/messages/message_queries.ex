@@ -68,6 +68,28 @@ defmodule Stitch.MessageQueries do
     MessageAction.apply_user_message_actions(user, messages)
   end
 
+  def group_recent_messages(group_id, user, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 30)
+    offset = Keyword.get(opts, :skip, 0)
+
+    query =
+      from m in Message,
+      where: m.group_id == ^group_id,
+      order_by: [asc: :inserted_at],
+      limit: ^limit,
+      offset: ^offset,
+      select: m,
+      preload: [:user, :group, :pinned_by]
+
+    query = case Keyword.fetch(opts, :min_id) do
+      {:ok, min_id} -> query |> where([m], m.id > ^min_id)
+      :error -> query
+    end
+
+    messages = query |> Repo.all
+    MessageAction.apply_user_message_actions(user, messages)
+  end
+
   def user_starred_messages(user_id) do
     query = from m in Message,
       join: a in MessageAction, on: a.message_id == m.id,

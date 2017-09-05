@@ -55,7 +55,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def handle_in("feed", %{"max_id" => max_id}, socket) do
+  def handle_in("feed", %{"max_id" => _} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
 
     case group do
@@ -63,12 +63,35 @@ defmodule StitchConnect.Web.GroupChannel do
         {:reply, {:ok, %{messages: []}}, socket}
 
       group ->
-        messages = MessageQueries.group_latest_messages(group.id, user, max_id: max_id)
+        opts = params
+        |> Map.take(["limit", "max_id"])
+        |> Map.update("limit", 30, &Enum.min([&1, 50]))
+        |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
+
+        messages = MessageQueries.group_latest_messages(group.id, user, opts)
         json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
         {:reply, {:ok, %{messages: json}}, socket}
     end
   end
 
+  def handle_in("feed_recent", %{"min_id" => _} = params, socket) do
+    %{group: group, current_user: user} = socket.assigns
+
+    case group do
+      {:create_dm, _, _} ->
+        {:reply, {:ok, %{messages: []}}, socket}
+
+      group ->
+        opts = params
+        |> Map.take(["limit", "min_id"])
+        |> Map.update("limit", 30, &Enum.min([&1, 50]))
+        |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
+
+        messages = MessageQueries.group_recent_messages(group.id, user, opts)
+        json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+        {:reply, {:ok, %{messages: json}}, socket}
+    end
+  end
 
   def handle_in("new_msg", params, socket) do
     %{group: group, current_user: user} = socket.assigns
