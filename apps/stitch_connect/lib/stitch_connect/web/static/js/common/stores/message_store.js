@@ -4,129 +4,30 @@ import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
 
 class MessageStore {
-  @observable chatDiv = null;
-  @observable messages = [];
-  @observable messageDivs = {};
-  @observable messageInEdit = null;
-  @observable textInEdit = "";
-  @observable isScrollBottom = false;
-  @observable loadedInitial = false;
-  @observable loadedLastMessage = false; // If TRUE, indicates loaded last message and scrolled to bottom
-  loadedAll = false;
+  @observable chatDiv = null; // Div element of chat pane
+  @observable messageDivs = {}; // Div elements of messages loaded in the chat div
+  @observable messages = []; // messages currently loaded
+  @observable messageInEdit = null; // Message currently being edited
+  @observable textInEdit = ""; // Current text of message in edit
+  @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
+  @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
+  loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
   messagePositions = {}; // { group: message_id }
 
-  // mobx when() disposers
-  joinedTargetGroupDisposer = null;
-  loadedTargetMessageDisposer = null;
-
-  get groupTopic() {
-    return this.rootStore.groupStore.channelTopic;
-  }
+  // mobx when() monitor disposers
+  joinedTargetGroupDisposer = null; // Disposer of when() monitor that waits until joined the group to which jumping target message belongs to
+  mountedTargetMessageDisposer = null; // Disposer of when() monitor that waits until target messages is mounted
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
 
-  scrollToBottom(cb = null, duration = 300, delay = 100) {
-    setTimeout(() => {
-      animateScroll.scrollToBottom({
-        containerId: "chat",
-        duration
-      });
+  // ////////////// //
+  //    GETTERS     //
+  // ////////////// //
 
-      setTimeout(() => {
-        if (typeof cb === "function") {
-          cb();
-        }
-      }, duration);
-    }, delay);
-  }
-
-  isMessageDivVisible(messageDiv) {
-    const chatDivBoundingRect = this.chatDiv.getBoundingClientRect();
-    const messageDivBoundingRect = messageDiv.getBoundingClientRect();
-
-    return (
-      messageDivBoundingRect.top >= chatDivBoundingRect.top &&
-      messageDivBoundingRect.bottom <= chatDivBoundingRect.bottom
-    );
-  }
-
-  scrollTo(msgId, duration = 1000, cb) {
-    scroller.scrollTo(`msg_${msgId}`, {
-      containerId: "chat",
-      duration
-    });
-
-    setTimeout(() => {
-      if (typeof cb === "function") {
-        cb();
-      }
-    }, 300);
-  }
-
-  onInvisibleMessage = id => {
-    const currentPos = this.messagePositions[this.groupTopic];
-    if (!currentPos || currentPos === id) {
-      const index = this.messages.findIndex(m => m.id === id);
-      if (this.messages[index - 1]) {
-        this.messagePositions[this.groupTopic] = this.messages[index - 1].id;
-      }
-    }
-  };
-
-  onVisibleMessage = id => {
-    const currentPos = this.messagePositions[this.groupTopic];
-    if (!currentPos || currentPos > id) {
-      this.messagePositions[this.groupTopic] = id;
-    }
-  };
-
-  scrollToMessage(
-    message,
-    toCenter = true,
-    cb = null,
-    duration = 300,
-    delay = 100
-  ) {
-    // Scroll to center of chat div
-
-    const messageDiv = this.messageDivs[message.id];
-
-    // If message is not mounted, return
-    if (!messageDiv) {
-      return;
-    }
-
-    // Find messagePoolDiv
-    const messagePoolDiv = $(messageDiv).closest(".message-pool")[0];
-
-    // Scroll only when message is not visible
-    if (!this.isMessageDivVisible(messagePoolDiv)) {
-      const toY = toCenter
-        ? Math.max(
-            messagePoolDiv.offsetTop -
-              (this.chatDiv.offsetHeight - messagePoolDiv.offsetHeight) / 2,
-            0
-          )
-        : messagePoolDiv.offsetTop;
-
-      setTimeout(() => {
-        animateScroll.scrollTo(toY, {
-          containerId: "chat",
-          duration
-        });
-
-        setTimeout(() => {
-          if (typeof cb === "function") {
-            cb();
-          }
-        }, duration);
-      }, delay);
-    }
-
-    // fade in and fade out the targeted message for 3 seconds
-    $(messagePoolDiv).fadeTo(0, 0.5).fadeTo(3000, 1);
+  get groupTopic() {
+    return this.rootStore.groupStore.channelTopic;
   }
 
   @computed
@@ -138,63 +39,9 @@ class MessageStore {
     };
   }
 
-  jumpToMessage(targetMessage) {
-    if (this.joinedTargetGroupDisposer) {
-      this.joinedTargetGroupDisposer();
-    }
-
-    // Ensure that joined the group to which target message belongs
-    this.joinedTargetGroupDisposer = when(
-      () =>
-        targetMessage.group_id === this.currentGroup.id &&
-        this.loadedLastMessage,
-      () => {
-        // Ensure that target message is loaded
-        if (this.loadedTargetMessageDisposer) {
-          this.loadedTargetMessageDisposer();
-        }
-
-        this.loadedTargetMessageDisposer = when(
-          () =>
-            this.loadedTargetMessage(targetMessage) && this.mountedAllMessages,
-          () => {
-            this.scrollToMessage(targetMessage);
-          }
-        );
-
-        // Load until target message is loaded
-        this.loadUntilTargetMessage(targetMessage);
-      }
-    );
-  }
-
-  loadedTargetMessage(targetMessage) {
-    return this.messages.findIndex(m => m.id === targetMessage.id) > -1;
-  }
-
-  loadUntilTargetMessage(targetMessage) {
-    if (this.loadedAll || this.loadedTargetMessage(targetMessage)) {
-      return;
-    }
-
-    this.loadPastMessages(() => {
-      this.loadUntilTargetMessage(targetMessage);
-    });
-  }
-
-  loadChatDiv(div) {
-    this.chatDiv = div;
-  }
-
-  unloadChatDiv() {
-    this.chatDiv = null;
-  }
-
-  onMessageMounted(messageId, messageDiv) {
-    console.log("onMessageMounted");
-    this.messageDivs = { ...this.messageDivs, [messageId]: messageDiv };
-  }
-
+  /**
+   * Returns TRUE if all the message divs are mounted
+   */
   @computed
   get mountedAllMessages() {
     return (
@@ -261,11 +108,224 @@ class MessageStore {
     return this.messages.filter(message => message.starred);
   }
 
+  // ////////////// //
+  //    METHODS     //
+  // ////////////// //
+
   reset() {
     this.loadedAll = false;
-    this.loadedLastMessage = false;
+    this.loadedInitial = false;
     this.messages = [];
     this.messageDivs = {};
+  }
+
+  // Scroll to the bottom of chat div with animation
+  scrollToBottom(cb = null, duration = 300, delay = 100) {
+    setTimeout(() => {
+      animateScroll.scrollToBottom({
+        containerId: "chat",
+        duration
+      });
+
+      setTimeout(() => {
+        if (typeof cb === "function") {
+          cb();
+        }
+      }, duration);
+    }, delay);
+  }
+
+  // Checks if message element is visible in chat
+  isVisibleInChat(element) {
+    const chatDivBoundingRect = this.chatDiv.getBoundingClientRect();
+    const elementBoundingRect = element.getBoundingClientRect();
+
+    return (
+      elementBoundingRect.top >= chatDivBoundingRect.top &&
+      elementBoundingRect.bottom <= chatDivBoundingRect.bottom
+    );
+  }
+
+  // Scroll to specific message in chat div instantly
+  scrollTo(msgId, duration = 1000, cb) {
+    scroller.scrollTo(`msg_${msgId}`, {
+      containerId: "chat",
+      duration
+    });
+
+    setTimeout(() => {
+      if (typeof cb === "function") {
+        cb();
+      }
+    }, 300);
+  }
+
+  onInvisibleMessage = id => {
+    const currentPos = this.messagePositions[this.groupTopic];
+    if (!currentPos || currentPos === id) {
+      const index = this.messages.findIndex(m => m.id === id);
+      if (this.messages[index - 1]) {
+        this.messagePositions[this.groupTopic] = this.messages[index - 1].id;
+      }
+    }
+  };
+
+  onVisibleMessage = id => {
+    const currentPos = this.messagePositions[this.groupTopic];
+    if (!currentPos || currentPos > id) {
+      this.messagePositions[this.groupTopic] = id;
+    }
+  };
+
+  /**
+   * Scroll to a specific message in chat div
+   * 
+   * @param {Integer} messageId ID of message to scroll to
+   * @param {Boolean} toCenter IF TRUE, places the message in the center after scrolling
+   * @param {Function} cb Callback to run after scrolling ends
+   * @param {Integer} duration Duration of scroll animation
+   * @param {Integer} delay Delay before starting animation
+   */
+  scrollToMessage(
+    messageId,
+    toCenter = true,
+    cb = null,
+    duration = 300,
+    delay = 100
+  ) {
+    const messageDiv = this.messageDivs[messageId];
+
+    // If message is not mounted yet, return
+    if (!messageDiv) {
+      return;
+    }
+
+    // Find messagePoolDiv
+    const messagePoolDiv = $(messageDiv).closest(".message-pool")[0];
+
+    // Scroll only when message is not visible
+    if (!this.isVisibleInChat(messagePoolDiv)) {
+      const toY = toCenter
+        ? Math.max(
+            messagePoolDiv.offsetTop -
+              (this.chatDiv.offsetHeight - messagePoolDiv.offsetHeight) / 2,
+            0
+          )
+        : messagePoolDiv.offsetTop;
+
+      setTimeout(() => {
+        animateScroll.scrollTo(toY, {
+          containerId: "chat",
+          duration
+        });
+
+        setTimeout(() => {
+          if (typeof cb === "function") {
+            cb();
+          }
+        }, duration);
+      }, delay);
+    }
+
+    // Highlight the message jumped to by fading out for 3 seconds
+    $(messagePoolDiv).fadeTo(0, 0.5).fadeTo(3000, 1);
+  }
+
+  /**
+   * Jump to the specific message
+   * The workflow is as following:
+   *  1. Ensures that joined the group which target message belongs to.
+   *    1.1. If already joined the target group, goes to Step 2.
+   *    1.2. If not joined, waits until joined. Switching group is triggered by URL change.
+   *      1.2.1. When joined the target group, goes to Step 2.
+   *  2. Ensures that target message is mounted.
+   *    2.1. If target message is mounted already, goes to Step 3.
+   *    2.2. If not, keeps loading the old messages from server until target message is met.
+   *      2.2.1. When target message is mounted, goes to Step 3.
+   *  3. Scroll to the target message element
+   * 
+   * @param {Object} targetMessage 
+   */
+  jumpToMessage(targetMessage) {
+    if (this.joinedTargetGroupDisposer) {
+      this.joinedTargetGroupDisposer();
+    }
+
+    // Ensure that joined the group to which target message belongs
+    this.joinedTargetGroupDisposer = when(
+      () =>
+        targetMessage.group_id === this.currentGroup.id && this.loadedInitial,
+      () => {
+        // Ensure that target message is mounted
+        if (this.mountedTargetMessageDisposer) {
+          this.mountedTargetMessageDisposer();
+        }
+
+        this.mountedTargetMessageDisposer = when(
+          () =>
+            this.loadedTargetMessage(targetMessage) && this.mountedAllMessages,
+          () => {
+            this.scrollToMessage(targetMessage.id);
+          }
+        );
+
+        // Load until target message is loaded
+        this.loadUntilTargetMessage(targetMessage);
+      }
+    );
+  }
+
+  /**
+   * Checks if the message is loaded
+   * 
+   * @param {Object} targetMessage
+   * 
+   * @return TRUE if loaded, otherwise FALSE
+   */
+  loadedTargetMessage(targetMessage) {
+    return this.messages.findIndex(m => m.id === targetMessage.id) > -1;
+  }
+
+  /**
+   * Load old messages until target message is met
+   * 
+   * @param {Object} targetMessage 
+   */
+  loadUntilTargetMessage(targetMessage) {
+    if (this.loadedAll || this.loadedTargetMessage(targetMessage)) {
+      return;
+    }
+
+    this.loadPastMessages(() => {
+      this.loadUntilTargetMessage(targetMessage);
+    });
+  }
+
+  /**
+   * Registers chat div
+   * 
+   * @param {DOMElement} div 
+   */
+  loadChatDiv(div) {
+    this.chatDiv = div;
+  }
+
+  /**
+   * Unregisters chat div
+   * 
+   */
+  unloadChatDiv() {
+    this.chatDiv = null;
+  }
+
+  /**
+   * Registers message div when message component is mounted
+   * 
+   * @param {Integer} messageId 
+   * @param {DOMElement} messageDiv 
+   */
+  onMessageMounted(messageId, messageDiv) {
+    this.messageDivs = { ...this.messageDivs, [messageId]: messageDiv };
   }
 
   joinGroupChannel = () => {
@@ -388,7 +448,6 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
-    this.loadedInitial = false;
     this.messages = data.messages;
 
     when(
