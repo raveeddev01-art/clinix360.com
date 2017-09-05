@@ -59,6 +59,7 @@ class SidemenuStore {
   @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
+      console.log(response)
       this.groups = response.data;
     });
   };
