@@ -30,7 +30,6 @@ defmodule Stitch.Accounts.User do
     field :email_notification_preference, :string, default: "daily"
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
-    has_many :group_notification_preferences, Stitch.GroupNotificationPreference
 
     field :password, :string, virtual: true
 

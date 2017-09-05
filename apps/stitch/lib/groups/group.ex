@@ -16,7 +16,6 @@ defmodule Stitch.Group do
     has_many :group_users, GroupUser
     has_many :users, through: [:group_users, :user]
     has_many :messages, Stitch.Message
-    has_many :group_notification_preferences, Stitch.GroupNotificationPreference
 
     timestamps()
   end
