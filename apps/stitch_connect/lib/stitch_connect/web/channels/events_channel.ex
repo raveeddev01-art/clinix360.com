@@ -44,9 +44,9 @@ defmodule StitchConnect.Web.EventsChannel do
 
   def broadcast_group_creation(group) do
     ids = Enum.map(group.users, &( &1.id ))
-    json = GroupView.group_json(group)
 
     for id <- ids do
+      json = GroupView.group_json(group, id)
       @endpoint.broadcast("events:#{id}", "new_group", json)
     end
 
@@ -56,9 +56,8 @@ defmodule StitchConnect.Web.EventsChannel do
       |> Enum.map(& &1.id )
       |> Enum.reject(& &1 in ids )
 
-      json = group |> Map.put(:joined, false) |> GroupView.group_json
-
       for id <- remaining_user_ids do
+        json = group |> Map.put(:joined, false) |> GroupView.group_json(id)
         @endpoint.broadcast("events:#{id}", "new_group", json)
       end
     end
