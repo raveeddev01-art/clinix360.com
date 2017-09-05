@@ -115,9 +115,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       end
   end
 
-  defp create_dm(conn, user_ids, name \\ "__dm_group__") do
+  defp create_dm(conn, user_ids, name) do
     user = conn.assigns.current_user
-    
+
     cond do
       not user.id in user_ids ->
         conn
