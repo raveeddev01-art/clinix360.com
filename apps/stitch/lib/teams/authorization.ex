@@ -4,7 +4,7 @@ defmodule Stitch.Team.Authorization do
   platform.
   """
 
-  alias Stitch.{Repo, User, Team}
+  alias Stitch.{Repo, Accounts.User, Team}
 
   def user_is_member?(team_id, user_id) do
     user = Repo.get(User, user_id)
