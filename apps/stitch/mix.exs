@@ -28,7 +28,8 @@ defmodule Stitch.Mixfile do
     [
       {:ecto, "~> 2.2"},
       {:postgrex, "~> 0.13.3"},
-      {:comeonin, "~> 3.0"},
+      {:comeonin, "~> 4.0"},
+      {:bcrypt_elixir, "~> 0.12"},
       {:ex_machina, "~> 2.1", only: :test},
       {:slugger, "~> 0.2"},
       {:bamboo, "~> 0.8"},
