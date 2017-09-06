@@ -2,7 +2,7 @@ defmodule Stitch.Message do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias Stitch.{Repo, Message}
+  alias Stitch.{Repo, Message, GroupUser}
 
   @valid_types ["chat", "system", "upload"]
 
@@ -39,22 +39,39 @@ defmodule Stitch.Message do
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:fields, :type, :text_content])
+    |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, @valid_types)
   end
 
   def create(group_id, user, %{"type" => "upload", "text_content" => text_content, "fields" => fields}) do
-    %Message{group_id: group_id, user_id: user.id}
-    |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload"})
-    |> Repo.insert
+    group = Stitch.GroupQueries.get_by_id(group_id)
+    users = Repo.preload(group, :users).users
+
+    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
+    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids)
+
+    Repo.transaction fn ->
+      message_insert = %Message{group_id: group_id, user_id: user.id}
+      |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload", mentioned_user_ids: mentioned_user_ids})
+      |> Repo.insert
+
+      case message_insert do
+        {:ok, message} ->
+          add_mention_to_users(group, mentioned_user_ids, message)
+          %{message: message, notify_user_ids: notify_user_ids.desktop}
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
+    end
   end
 
   def create(group_id, user, %{"type" => "chat", "text_content" => text_content}) do
     group = Stitch.GroupQueries.get_by_id(group_id)
     users = Repo.preload(group, :users).users
 
-    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, user, text_content)
+    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
+    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user.id}
@@ -64,7 +81,7 @@ defmodule Stitch.Message do
       case message_insert do
         {:ok, message} ->
           add_mention_to_users(group, mentioned_user_ids, message)
-          message
+          %{message: message, notify_user_ids: notify_user_ids.desktop}
         {:error, changeset} ->
           Repo.rollback(changeset)
       end
@@ -84,7 +101,7 @@ defmodule Stitch.Message do
     group = Stitch.GroupQueries.get_by_id(message.group_id)
     author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
-    mentioned_user_ids = Stitch.Message.Mention.notify_user_ids(users, author, attributes["text_content"])
+    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"])
     remove_mention_from_ids = message.mentioned_user_ids -- mentioned_user_ids
     add_mention_to_ids = mentioned_user_ids -- message.mentioned_user_ids
     update_counters_for_user_ids = remove_mention_from_ids ++ add_mention_to_ids
