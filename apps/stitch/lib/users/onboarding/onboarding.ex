@@ -4,7 +4,7 @@ defmodule Stitch.User.Onboarding do
   platform and Teams within the Stitch platofrm.
   """
 
-  alias Stitch.{Repo, User}
+  alias Stitch.{Repo, Accounts.User}
 
   def send_confirmation_code(id) do
     case Repo.get(User, id) do

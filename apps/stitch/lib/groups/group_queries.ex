@@ -58,7 +58,7 @@ defmodule Stitch.GroupQueries do
     end)
   end
 
-  def load_user_data(group, %{id: user_id}), do: load_user_data(group, user_id)
+  def load_user_data(group, %User{id: user_id}), do: load_user_data(group, user_id)
   def load_user_data(%Group{id: group_id}, user_id) do
     Group
     |> where(id: ^group_id)
@@ -69,10 +69,10 @@ defmodule Stitch.GroupQueries do
   @doc """
   Returns group with the exist matching id.
   """
-  def get_by_id(id, %{} = user) do
+  def get_by_id(id, %User{team_id: team_id, id: user_id}) do
     group = Group
-    |> where(team_id: ^user.team_id, id: ^id)
-    |> load_groups_for_user(user.id)
+    |> where(team_id: ^team_id, id: ^id)
+    |> load_groups_for_user(user_id)
     |> List.first
 
     if group, do: {:ok, group}, else: {:error, "Group with that id not found."}
@@ -84,10 +84,10 @@ defmodule Stitch.GroupQueries do
   @doc """
   Returns group with the exist matching slug for the user's team.
   """
-  def find_by_slug(slug, %{} = user) do
+  def find_by_slug(slug, %User{team_id: team_id, id: user_id}) do
     group = Group
-    |> where(team_id: ^user.team_id, slug: ^slug)
-    |> load_groups_for_user(user.id)
+    |> where(team_id: ^team_id, slug: ^slug)
+    |> load_groups_for_user(user_id)
     |> List.first
 
     if group, do: {:ok, group}, else: {:error, "Group with that slug not found."}
@@ -98,10 +98,10 @@ defmodule Stitch.GroupQueries do
   Returns a list of public groups for the user's team, and
   also teams he's been invited to participate in.
   """
-  def available_groups(%{} = user) do
+  def available_groups(%User{team_id: team_id, id: user_id}) do
     Group
-    |> where(team_id: ^user.team_id)
-    |> load_groups_for_user(user.id)
+    |> where(team_id: ^team_id)
+    |> load_groups_for_user(user_id)
   end
   def available_groups(user_id), do: available_groups(Repo.get!(User, user_id))
 
@@ -109,11 +109,11 @@ defmodule Stitch.GroupQueries do
   Returns a list of visible groups for the user given
   a search term.
   """
-  def search(term, %{} = user) do
+  def search(term, %User{team_id: team_id, id: user_id}) do
     Group
-    |> where(team_id: ^user.team_id)
+    |> where(team_id: ^team_id)
     |> where([g], ilike(g.name, ^"%#{term}%") or ilike(g.slug, ^"%#{term}%"))
-    |> load_groups_for_user(user.id)
+    |> load_groups_for_user(user_id)
   end
   def search(slug, user_id), do: search(slug, Repo.get!(User, user_id))
 end

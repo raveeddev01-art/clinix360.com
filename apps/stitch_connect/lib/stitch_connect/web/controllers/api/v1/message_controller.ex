@@ -49,11 +49,11 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     case GroupAuthorization.is_member?(group_id, user.id) do
       true ->
         case Message.create(group.id, user, message_params) do
-          {:ok, message} ->
+          {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
             message = MessageQueries.load_info(message)
 
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
-            EventsChannel.broadcast_group_new_msg(group, message)
+            EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
             EventsChannel.broadcast_mention_counter_update(group, message.mentioned_user_ids)
 
             conn

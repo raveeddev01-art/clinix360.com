@@ -30,7 +30,7 @@ defmodule Stitch.User.OnboardingTest do
       user = insert(:user, %{confirmation_code: "123456"})
       result = Stitch.User.Onboarding.verify_confirmation_code(user.id, "123456")
       assert result == true
-      user = Stitch.Repo.get(Stitch.User, user.id)
+      user = Stitch.Repo.get(Stitch.Accounts.User, user.id)
       assert user.email_confirmed == true
     end
 

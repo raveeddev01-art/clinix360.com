@@ -6,7 +6,7 @@ defmodule Stitch.Group do
   alias Stitch.Accounts.User
 
   schema "groups" do
-    belongs_to :creator, Stitch.Accounts.User, foreign_key: :creator_user_id
+    belongs_to :creator, User, foreign_key: :creator_user_id
     # __multi_dm_group__ and __dm_group__ are reversed group names for dm groups
     field :name, :string
     field :slug, :string
@@ -17,7 +17,6 @@ defmodule Stitch.Group do
     has_many :group_users, GroupUser
     has_many :users, through: [:group_users, :user]
     has_many :messages, Stitch.Message
-    has_many :group_notification_preferences, Stitch.GroupNotificationPreference
 
     timestamps()
   end
