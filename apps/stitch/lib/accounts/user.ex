@@ -38,7 +38,10 @@ defmodule Stitch.Accounts.User do
 
   def changeset(%User{} = struct, attrs) do
     struct
-    |> cast(attrs, [:favorite_groups])
+    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :profile_image_url, :username])
+    |> unique_constraint(:username, name: :users_username_team_id_index)
+    |> unique_constraint(:email, name: :users_email_team_id_index)
+    |> validate_required([:first_name, :last_name])
   end
 
   def preference_changeset(%User{} = struct, params) do
@@ -94,11 +97,19 @@ defmodule Stitch.Accounts.User do
 
   # ====
 
+  def registration_changeset(struct, params) do
+    struct
+    |> changeset(params)
+    |> cast(params, [:email, :password])
+    |> validate_length(:password, min: 8)
+  end
+
   def onboarding_complete_changeset(struct, params) do
     struct
     |> cast(params, [:first_name, :last_name, :username, :password, :pin, :team_id, :roles])
     |> validate_length(:username, min: 2, max: 50)
     |> validate_format(:username, ~r/^[a-z0-9][a-z0-9\.\-\-]+$/)
+    |> unique_constraint(:username, name: :users_username_team_id_index)
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:username, :pin, :team_id, :roles])
     |> put_change(:onboarded, true)

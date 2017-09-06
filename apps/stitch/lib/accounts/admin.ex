@@ -5,7 +5,7 @@ defmodule Stitch.Accounts.Admin do
   """
 
   alias Stitch.Repo
-  alias Stitch.User
+  alias Stitch.Accounts.User
 
   @doc """
   Sets the disabled boolean flag to true for the provided user.

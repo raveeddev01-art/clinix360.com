@@ -20,7 +20,7 @@ defmodule StitchConnect.Web.AuthenticationController do
       false ->
         conn
         |> put_flash(:invalid_login, "Invalid email or password.")
-        |> redirect to: "/login"
+        |> redirect(to: "/login")
       user ->
         case user.disabled do
           false ->
@@ -28,11 +28,11 @@ defmodule StitchConnect.Web.AuthenticationController do
             |> put_session(:current_user, user)
             |> put_session(:authentication_token, user.token)
             |> configure_session(renew: true)
-            |> redirect to: "/"
+            |> redirect(to: "/")
           true ->
             conn
             |> put_flash(:invalid_login, "This account is disabled - contact your team admin.")
-            |> redirect to: "/login"
+            |> redirect(to: "/login")
         end
     end
   end
@@ -40,7 +40,7 @@ defmodule StitchConnect.Web.AuthenticationController do
   def logout(conn, _) do
     conn
     |> clear_session
-    |> redirect to: "/"
+    |> redirect(to: "/")
   end
 
   def reset_password(conn, _) do
@@ -53,16 +53,18 @@ defmodule StitchConnect.Web.AuthenticationController do
 
   def change_password(conn, %{"token" => token}) do
     case Stitch.User.Authentication.check_for_valid_reset_token(token) do
-      false -> conn
-              |> put_flash(:invalid_login, "Invalid Token.")
-              |> redirect to: "/login"
+      false ->
+        conn
+        |> put_flash(:invalid_login, "Invalid Token.")
+        |> redirect(to: "/login")
 
-       user ->  change_password_params = Poison.encode!(%{
-                  "teamName" => conn.private[:team_name],
-                  "teamSlug" => conn.private[:team_slug],
-                  "user_id"  => user.id,
-                  "token"    => token
-                  })
+      user ->
+        change_password_params = Poison.encode!(%{
+          "teamName" => conn.private[:team_name],
+          "teamSlug" => conn.private[:team_slug],
+          "user_id"  => user.id,
+          "token"    => token
+        })
         render(conn, "change_password.html", change_password_params: change_password_params)
     end
   end

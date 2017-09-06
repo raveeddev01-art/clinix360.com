@@ -3,7 +3,7 @@ defmodule Stitch.GroupUser do
   import Ecto.Changeset
   import Ecto.Query
   alias Stitch.Accounts.User
-  alias Stitch.{ Repo, GroupUser, Group, Accounts }
+  alias Stitch.{Repo, GroupUser, Group, Accounts}
 
   schema "group_users" do
     belongs_to :group, Group

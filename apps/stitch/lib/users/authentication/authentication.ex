@@ -1,6 +1,6 @@
 defmodule Stitch.User.Authentication do
   import Ecto.Changeset
-  alias Stitch.{Repo, User, Team}
+  alias Stitch.{Repo, Accounts.User, Team}
 
   def hash_password(password) do
     Comeonin.Bcrypt.hashpwsalt(password)

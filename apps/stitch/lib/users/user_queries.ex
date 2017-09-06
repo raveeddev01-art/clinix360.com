@@ -22,7 +22,7 @@ defmodule Stitch.UserQueries do
 
   def users_for_team(team_id) when is_integer(team_id) do
     query =
-      from u in Stitch.Accounts.User,
+      from u in User,
       where: u.team_id == ^team_id,
       where: u.onboarded == ^true
     Repo.all(query)
@@ -33,7 +33,7 @@ defmodule Stitch.UserQueries do
 
   def team_member_with_email(team_id, email) when is_integer(team_id) do
     query =
-      from u in Stitch.Accounts.User,
+      from u in User,
       where: u.team_id == ^team_id,
       where: u.onboarded == ^true,
       where: u.email == ^email

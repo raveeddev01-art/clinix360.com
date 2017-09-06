@@ -4,18 +4,15 @@ defmodule StitchConnect.Web.Api.V1.UserController do
                                               :deactivate, :promote_admin, :revoke_admin]
   plug StitchConnect.Plug.TeamAdminOnly when action in [:deactivate, :promote_admin, :revoke_admin]
 
-  alias Stitch.{
-    Repo,
-    User
-  }
+  alias Stitch.{Repo, Accounts.User, UserQueries}
 
   def index(conn, _) do
-    users = Stitch.UserQueries.users_for_team(conn.assigns.current_user.team_id)
+    users = UserQueries.users_for_team(conn.assigns.current_user.team_id)
     render conn, "index.json", users: users
   end
 
   def search(conn, %{"term" => term}) do
-    result_users = Stitch.UserQueries.search(conn.assigns.current_user.id, term)
+    result_users = UserQueries.search(conn.assigns.current_user.id, term)
     render conn, "index.json", users: result_users
   end
 
@@ -119,52 +116,49 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def show(conn, %{"id" => id}) do
     case Repo.get(User, id) do
-      nil ->  conn
-              |> put_status(:unprocessable_entity)
-              |> json(%{message: "No user found with ID: #{id}"})
+      nil ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "No user found with ID: #{id}"})
 
        user -> render conn,"show.json", user: user
      end
   end
 
-  def update_password(conn,%{"id" => id, "new_password" => new_password, "old_password" => old_password}) do
-
+  def update_password(conn, %{"id" => id, "new_password" => new_password, "old_password" => old_password}) do
     case Stitch.Accounts.update_user_password(String.to_integer(id),old_password,new_password) do
-      {:ok,user} -> conn
-              |> json(%{email: user.email, password: user.encrypted_password})
-
-      {:error,message} -> conn
-                          |> put_status(:unprocessable_entity)
-                          |> json(%{message: message})
-
+      {:ok, user} ->
+        conn |> json(%{email: user.email, password: user.encrypted_password})
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: message})
     end
   end
 
-  def update_avatar(conn, %{"id" => id, "profile_image_url" => profile_image_url }) do
-     changeset = Repo.get(User,id)
-                 |> User.changeset(%{profile_image_url: profile_image_url})
-
-     case Repo.update(changeset) do
-       {:ok,user} -> conn
-                     |> json(%{profile_image_url: user.profile_image_url})
-
-       {:error, _} -> conn
-                      |> put_status(:unprocessable_entity)
-                      |> json(%{message: "Cannot change the user avatar"})
-     end
-  end
-
-  def delete_avatar(conn,%{"id" => id}) do
-    changeset = Repo.get(User,id)
-                |> Ecto.Changeset.change(profile_image_url: nil)
+  def update_avatar(conn, %{"id" => id, "profile_image_url" => profile_image_url}) do
+    changeset = Repo.get(User, id) |> User.changeset(%{profile_image_url: profile_image_url})
 
     case Repo.update(changeset) do
-      {:ok,_} -> conn
-                |> send_resp(:ok,"")
+      {:ok, user} ->
+        conn |> json(%{profile_image_url: user.profile_image_url})
+      {:error, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot change the user avatar"})
+    end
+  end
 
-      {:error,_} -> conn
-                    |> put_status(:unprocessable_entity)
-                    |> json(%{message: "Cannot delete the user avatar"})
+  def delete_avatar(conn, %{"id" => id}) do
+    changeset = Repo.get(User, id) |> Ecto.Changeset.change(profile_image_url: nil)
+
+    case Repo.update(changeset) do
+      {:ok, _} -> conn |> send_resp(:ok, "")
+
+      {:error, _} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot delete the user avatar"})
     end
   end
 
@@ -175,7 +169,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def exists?(conn, %{"email" => email}) do
     team_id = conn.private[:team_id]
     case Stitch.UserQueries.team_member_with_email(team_id, email) do
-      %Stitch.Accounts.User{} -> json(conn, %{exists: true})
+      %User{} -> json(conn, %{exists: true})
       _ -> json(conn, %{exists: false})
     end
   end
