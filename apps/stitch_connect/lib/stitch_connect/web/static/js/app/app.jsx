@@ -2,14 +2,15 @@ import React, { Component } from "react";
 import { Provider, Observer } from "mobx-react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Dropzone from "react-dropzone";
-import Sidemenu from "./sidemenu/sidemenu";
-import Chat from "./chat/chat";
-import UploadModal from "./file-upload/upload-modal";
-import Lockout from "./lockout/lockout";
 
-import RootStore from "./common/stores/root_store";
+import Sidemenu from "../sidemenu/sidemenu";
+import Chat from "../chat/chat";
+import UploadModal from "../file-upload/upload-modal";
+import Lockout from "../lockout/lockout";
 
-export default class Webapp extends Component {
+import RootStore from "../common/stores/root_store";
+
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {

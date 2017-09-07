@@ -1,4 +1,4 @@
 <div id="root"
-     data-component="Webapp"
+     data-component="App"
      data-react-props="<%= @app_params %>">
 </div>

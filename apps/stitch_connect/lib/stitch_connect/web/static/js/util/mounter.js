@@ -3,7 +3,7 @@ import { render } from "react-dom";
 
 import AuthenticationRouter from "../authentication/authentication_router";
 import Login from "../authentication/login/login";
-import Webapp from "../webapp";
+import App from "../app/app";
 import Admin from "../admin/admin";
 import Invitation from "../invitation/index";
 import Toastr from "../common/components/toastr/toastr";
@@ -11,7 +11,7 @@ import Toastr from "../common/components/toastr/toastr";
 var componentMap = {
   AuthenticationRouter,
   Login,
-  Webapp,
+  App,
   Admin,
   Toastr,
   Invitation
