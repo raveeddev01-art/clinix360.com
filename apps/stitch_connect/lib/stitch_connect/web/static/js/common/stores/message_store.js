@@ -195,6 +195,14 @@ class MessageStore {
     }, 300);
   }
 
+  scrollToNewBanner = () => {
+    const nextPos = Math.min(
+      this.messages.length - 1,
+      this.newMessageBannerIndex + 1 // +1 to see banner
+    );
+    this.scrollTo(this.messages[nextPos].id, 500);
+  };
+
   @action
   onScrollBottomReached() {
     if (this.lastUnreadViewed && !this.isScrollBottom) {
@@ -229,7 +237,7 @@ class MessageStore {
 
     if (this.unreadMessagesCount) {
       const msgIndex = this.messages.findIndex(msg => msg.id === id);
-      if (msgIndex >= this.unreadMessagesCount) {
+      if (msgIndex >= this.unreadMessagesCount - 1) {
         this.markAllAsRead();
       }
     }
@@ -420,13 +428,7 @@ class MessageStore {
 
   @action
   loadPastUnreadMessages = () => {
-    this.loadPastMessages(() => {
-      const nextPos = Math.min(
-        this.messages.length - 1,
-        this.newMessageBannerIndex
-      );
-      this.scrollTo(this.messages[nextPos].id, 500);
-    });
+    this.loadPastMessages(this.scrollToNewBanner);
   };
 
   @action
@@ -571,11 +573,13 @@ class MessageStore {
         // A.1.a
         this.scrollTo(posHistory, 0, () => {
           this.loadedInitial = true;
+          this.lastUnreadViewed = true;
         });
       } else {
         // A.1.b, A.2.a
         this.scrollToBottom(() => {
           this.loadedInitial = true;
+          this.lastUnreadViewed = true;
         }, 0);
       }
     }

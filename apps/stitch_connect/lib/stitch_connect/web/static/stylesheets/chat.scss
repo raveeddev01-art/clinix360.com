@@ -59,6 +59,7 @@
         background: $body-bg;
 
         .unread-messages-tooltip {
+          position: relative;
           cursor: pointer;
           height: 25px;
           line-height: 25px;
@@ -70,6 +71,13 @@
 
           &:hover {
             filter: brightness(85%);
+          }
+
+          .close-unread-messages-tooltip {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            color: #fff;
           }
         }
 
