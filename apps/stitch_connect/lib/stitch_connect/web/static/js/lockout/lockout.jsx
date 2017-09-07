@@ -39,17 +39,26 @@ class Lockout extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
+    const { sidemenuStore } = this.props;
+
     console.log("submit PIN");
+    sidemenuStore.unlock(this.state.pin);
   };
 
   render() {
+    const { unlocking } = this.props.sidemenuStore;
+
     return (
       <div className="authentication-wrapper">
         <div id="lockout" className="authentication-card text-center">
           <div className="lockout-header">
-            <a className="logout" href="/logout">
-              <i className="fa fa-sign-out" />
-            </a>
+            {unlocking
+              ? <span className="unlocking">
+                  <i className="fa fa-circle-o-notch fa-spin" />
+                </span>
+              : <a className="logout" href="/logout">
+                  <i className="fa fa-sign-out" />
+                </a>}
           </div>
 
           <h2>Session Paused</h2>

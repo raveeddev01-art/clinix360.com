@@ -8,6 +8,7 @@ class SidemenuStore {
   @observable users = [];
   @observable currentGroup = null;
   @observable locked = false;
+  @observable unlocking = false; // Flag that indicates if unlocking request is being made
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
@@ -60,7 +61,7 @@ class SidemenuStore {
   @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
-      console.log(response)
+      console.log(response);
       this.groups = response.data;
     });
   };
@@ -79,16 +80,27 @@ class SidemenuStore {
   };
 
   @action
-  lock = () => {
+  lock() {
     // TODO: POST `/api/v1/session-lock`
     this.locked = true;
-  };
+  }
 
+  /**
+   * Unlock the session by calling backend api
+   * 
+   * @param {String} pin 
+   */
   @action
-  unlock = () => {
+  unlock(pin) {
     // TODO: POST `/api/v1/session-unlock`
-    this.locked = false;
-  };
+
+    // Mocking the api call using timeout
+    this.unlocking = true;
+    setTimeout(() => {
+      this.unlocking = false;
+      // this.locked = false;
+    }, 2000);
+  }
 
   loadUsers = () => {
     get("/api/v1/users").then(response => {
