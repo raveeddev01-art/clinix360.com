@@ -27,11 +27,11 @@ class MessageList extends Component {
   onLoseTopScroll = () => {};
 
   onScrollBottom = () => {
-    this.props.messageStore.isScrollBottom = true;
+    this.props.messageStore.onScrollBottomReached();
   };
 
   onLoseBottomScroll = () => {
-    this.props.messageStore.isScrollBottom = false;
+    this.props.messageStore.onScrollBottomLeft();
   };
 
   render() {
