@@ -170,11 +170,15 @@ defmodule Stitch.GroupQueriesTest do
 
       assert {:ok, %{unread_messages_count: 0}} = GroupQueries.find_by_slug("a", user_a)
 
-      insert(:message, user: user_b, group: group)
-      assert {:ok, %{unread_messages_count: 1}} = GroupQueries.find_by_slug("a", user_a)
+      message_b = insert(:message, user: user_b, group: group)
+      {:ok, %{unread_messages_count: unread_messages_count, unread_start_id: unread_start_id}} = GroupQueries.find_by_slug("a", user_a)
+      assert unread_messages_count == 1
+      assert unread_start_id == message_b.id
 
-      insert(:message, user: user_a, group: group)
-      assert {:ok, %{unread_messages_count: 1}} = GroupQueries.find_by_slug("a", user_a)
+      message_a = insert(:message, user: user_a, group: group)
+      {:ok, %{unread_messages_count: unread_messages_count, unread_start_id: unread_start_id}} = GroupQueries.find_by_slug("a", user_a)
+      assert unread_messages_count == 1
+      assert unread_start_id == message_b.id
     end
   end
 
