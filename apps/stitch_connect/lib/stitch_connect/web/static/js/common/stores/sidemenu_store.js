@@ -93,12 +93,27 @@ class SidemenuStore {
   @action
   unlock(pin) {
     // TODO: POST `/api/v1/session-unlock`
+    // In then response, cancel `unlocking` flag
+    // In error response, show notification `Incorrect password`
+
+    /*
+    this.unlocking = true;
+    post(`/api/v1/session-unlick`, { pin }).then(() => {
+      this.locked = false;
+    }, (error) => {
+      notify.show(error);
+    })
+    .finally(() => {
+      this.unlocking = false;
+    })
+    */
 
     // Mocking the api call using timeout
     this.unlocking = true;
+
     setTimeout(() => {
       this.unlocking = false;
-      // this.locked = false;
+      this.locked = false;
     }, 2000);
   }
 
