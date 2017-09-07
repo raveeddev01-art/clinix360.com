@@ -178,6 +178,17 @@ class MessageStore {
     }, 300);
   }
 
+  @action
+  onScrollBottomReached() {
+    this.isScrollBottom = true;
+    this.messageJumpedTo = null;
+  }
+
+  @action
+  onScrollBottomLeft() {
+    this.isScrollBottom = false;
+  }
+
   onInvisibleMessage = id => {
     const currentPos = this.messagePositions[this.groupTopic];
     if (!currentPos || currentPos === id) {
