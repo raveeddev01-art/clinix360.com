@@ -4,6 +4,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.EventsChannel
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
+  alias StitchConnect.Web.Presence
 
   intercept ["new_msg", "edit_msg"]
 
@@ -98,11 +99,23 @@ defmodule StitchConnect.Web.GroupChannel do
     do_new_msg(socket, group, user, params)
   end
 
+  def handle_in("mark_as_read_all", %{"group_id" => group_id}, socket) do
+    user = socket.assigns.current_user
+    
+    Message.mark_as_read_all(user, group_id)
+    |> mark_as_read_response(user, socket)
+  end
+
   def handle_in("mark_as_read", %{"message_ids" => message_ids}, socket) do
     user = socket.assigns.current_user
-    {_, messages} = Message.mark_as_read(user, message_ids)
-    messages = MessageQueries.load_info(messages)
+    
+    Message.mark_as_read(user, message_ids)
+    |> mark_as_read_response(user, socket)
+  end
 
+  defp mark_as_read_response({_, messages}, user, socket) do
+    messages = MessageQueries.load_info(messages)
+    
     EventsChannel.broadcast_marked_as_read(user, messages)
     EventsChannel.broadcast_mention_counter_for_user(user.id, messages)
 
@@ -177,11 +190,11 @@ defmodule StitchConnect.Web.GroupChannel do
   defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
     if GroupAuthorization.is_member?(group.id, user.id) do
       attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
+      online_in_group_ids = StitchConnect.Web.UserStatusService.online_in_group(user.team_id, group.slug)
 
-      case Message.create(group.id, user, attrs) do
+      case Message.create(group.id, user, attrs, online_in_group_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           message = MessageQueries.load_info(message)
-
           broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
           EventsChannel.broadcast_mention_counter_update(group, message.mentioned_user_ids)

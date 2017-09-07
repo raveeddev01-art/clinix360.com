@@ -44,12 +44,14 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, @valid_types)
   end
 
-  def create(group_id, user, %{"type" => "upload", "text_content" => text_content, "fields" => fields}) do
+  def create(group_id, user, attrs, online_in_group \\ [])
+
+  def create(group_id, user, %{"type" => "upload", "text_content" => text_content, "fields" => fields}, online_in_group) do
     group = Stitch.GroupQueries.get_by_id(group_id)
     users = Repo.preload(group, :users).users
 
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
-    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids)
+    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user.id}
@@ -66,12 +68,12 @@ defmodule Stitch.Message do
     end
   end
 
-  def create(group_id, user, %{"type" => "chat", "text_content" => text_content}) do
+  def create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group) do
     group = Stitch.GroupQueries.get_by_id(group_id)
     users = Repo.preload(group, :users).users
 
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
-    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids)
+    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
 
     Repo.transaction fn ->
       message_insert = %Message{group_id: group_id, user_id: user.id}
@@ -88,11 +90,11 @@ defmodule Stitch.Message do
     end
   end
 
-  def create(group_id, user, %{"text_content" => text_content}) do
-    create(group_id, user, %{"type" => "chat", "text_content" => text_content})
+  def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
+    create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group)
   end
 
-  def create(group_id, _user, attributes) do
+  def create(group_id, _user, attributes, _online_in_group) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
     {:error, changeset}
   end
@@ -192,12 +194,26 @@ defmodule Stitch.Message do
 
   def mark_as_read(user, message_ids) do
     message_ids = List.wrap(message_ids)
-    value = %{user.id => DateTime.utc_now}
 
     read_mentions(message_ids, user.id)
     Message
-    |> where([m], m.id in ^message_ids and m.user_id != ^user.id)
-    |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user.id)))
+    |> where([m], m.id in ^message_ids)
+    |> _mark_as_read(user.id)
+  end
+
+  def mark_as_read_all(user, group_id) do
+    # read_mentions(message_ids, user.id)
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> _mark_as_read(user.id)
+  end
+
+  defp _mark_as_read(queryable, user_id) do
+    value = %{user_id => DateTime.utc_now}
+    
+    queryable
+    |> where([m], m.user_id != ^user_id)
+    |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user_id)))
     |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^value)])
     |> Repo.update_all([], returning: true)
   end

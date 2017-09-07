@@ -5,25 +5,28 @@ defmodule Stitch.Message.Notification do
   alias Stitch.Accounts.User
   import Ecto.Query
 
+  def notify_user_ids(group, author, mentioned_user_ids, online_in_group \\ [])
+
   @doc """
   Takes id of a group and a list of mentioned user ids and returns which users should be
   notified by this message based on their global and channel specific notification settings.
 
       %{desktop: [], mobile: []}
   """
-  def notify_user_ids(%{slug: "__dm:" <> _} = group, author, _mentioned_user_ids) do
+
+  def notify_user_ids(%{slug: "__dm:" <> _} = group, author, _mentioned_user_ids, online_in_group) do
     %{desktop: desktop, mobile: mobile} = dm_notify_categories(group.id)
-    %{desktop: desktop |> List.delete(author.id),
-      mobile: mobile |> List.delete(author.id)}
+    %{desktop: desktop -- [author.id | online_in_group],
+      mobile: mobile -- [author.id | online_in_group]}
   end
 
-  def notify_user_ids(group, author, mentioned_user_ids) do
+  def notify_user_ids(group, author, mentioned_user_ids, online_in_group) do
     %{desktop_everything: with_desktop_enabled,
       desktop_nothing: with_desktop_disabled,
       mobile_everything: with_mobile_enabled,
       mobile_nothing: with_mobile_disabled} = notify_categories(group.id)
-    %{desktop: Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- [author.id | with_desktop_disabled],
-      mobile: Enum.uniq(mentioned_user_ids ++ with_mobile_enabled) -- [author.id | with_mobile_disabled]}
+    %{desktop: Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- ([author.id | with_desktop_disabled] ++ online_in_group),
+      mobile:  Enum.uniq(mentioned_user_ids ++ with_mobile_enabled)  -- ([author.id | with_mobile_disabled ] ++ online_in_group)}
   end
 
   @doc """
