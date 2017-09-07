@@ -1,6 +1,6 @@
 import "babel-polyfill";
 
-import "./socket";
+import "./util/socket";
 import "./util/delay";
 import "./util/fetch";
 import "./util/moment";
