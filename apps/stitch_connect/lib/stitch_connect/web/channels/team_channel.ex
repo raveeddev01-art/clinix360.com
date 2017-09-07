@@ -17,8 +17,10 @@ defmodule StitchConnect.Web.TeamChannel do
     push socket, "presence_state", Presence.list(socket)
     {:ok, _} = Presence.track(socket, user.id, %{
       status: "online",
+      current_group: nil,
       session_id: socket.assigns.session_id,
       online_at: inspect(System.system_time(:seconds)),
+      status_updated_at: inspect(System.system_time(:seconds)),
       id: user.id,
       first_name: user.first_name,
       last_name: user.last_name,
