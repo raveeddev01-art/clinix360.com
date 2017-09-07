@@ -27,7 +27,10 @@ defmodule StitchConnect.Web.UserSocket do
       nil ->
         :error
       user ->
-        socket = socket |> assign(:current_user, user) |> assign(:team_id, user.team_id)
+        socket = socket
+        |> assign(:current_user, user)
+        |> assign(:team_id, user.team_id)
+        |> assign(:session_id, random_string(8))
         {:ok, socket}
     end
   end
@@ -45,4 +48,8 @@ defmodule StitchConnect.Web.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   def id(socket), do: "users_socket:#{socket.assigns.current_user.id}"
+
+  defp random_string(length) do
+    :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
+  end
 end

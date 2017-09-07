@@ -4,6 +4,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.EventsChannel
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
+  alias StitchConnect.Web.Presence
 
   intercept ["new_msg", "edit_msg"]
 
@@ -177,11 +178,11 @@ defmodule StitchConnect.Web.GroupChannel do
   defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
     if GroupAuthorization.is_member?(group.id, user.id) do
       attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
+      online_in_group_ids = StitchConnect.Web.UserStatusService.online_in_group(user.team_id, group.slug)
 
-      case Message.create(group.id, user, attrs) do
+      case Message.create(group.id, user, attrs, online_in_group_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           message = MessageQueries.load_info(message)
-
           broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
           EventsChannel.broadcast_mention_counter_update(group, message.mentioned_user_ids)
