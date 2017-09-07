@@ -235,6 +235,29 @@
       padding-bottom: 30px;
       width: 100%;
 
+      .jumped-message-indicator {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 100%;
+        background: #ccc;
+        display: flex;
+
+        .timestamp {
+          flex: 1;
+          text-align: center;
+          font-weight: bold;
+        }
+
+        .scroll-to-bottom {
+          margin-right: 10px;
+
+          .fa {
+            font-size: 80%;
+          }
+        }
+      }
+
       .message-input-wrapper {
         width: 100%;
         position: relative;
