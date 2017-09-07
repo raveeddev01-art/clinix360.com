@@ -14,12 +14,12 @@ export default class MessagePanel extends Component {
     group.join();
   };
 
-  jumpToLastUnreadMessage = () => {
+  loadMore = () => {
     const { groupStore: group, messageStore } = this.props;
-    get(`/api/v1/groups/${group.id}/messages?skip=${group.unreadMessagesCount}&limit=1`).then(result => {
-      messageStore.jumpToMessage(result.data[0]);
-      // @TODO mark all messages in the channel as read
-    });
+
+    if (messageStore.messages.length < group.unreadMessagesCount) {
+      messageStore.loadPastUnreadMessages();
+    }
   };
 
   render() {
@@ -29,10 +29,7 @@ export default class MessagePanel extends Component {
       <div id="chat-container">
         <div className="container-bars">
           {group.unreadMessagesCount > 0
-            ? <div
-                className="unread-messages-tooltip"
-                onClick={this.jumpToLastUnreadMessage}
-              >
+            ? <div className="unread-messages-tooltip" onClick={this.loadMore}>
                 {group.unreadMessagesCount} new message{group.unreadMessagesCount > 1 && "s"}
               </div>
             : null}
