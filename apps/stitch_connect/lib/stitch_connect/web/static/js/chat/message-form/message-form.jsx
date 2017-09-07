@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
+import moment from "moment";
 
 import InsertMenu from "./insert-menu";
 
@@ -175,6 +176,30 @@ class MessageForm extends Component {
     messageStore.cancelEdit();
   };
 
+  renderJumpedMessageIndicator() {
+    const { messageStore } = this.props;
+    const { messageJumpedTo } = messageStore;
+
+    return (
+      messageStore.showJumpedMessageIndicator &&
+      <div
+        role="button"
+        className="jumped-message-indicator"
+        onClick={() => {
+          messageStore.scrollToBottom();
+        }}
+      >
+        <span className="timestamp">
+          Viewing messages from{" "}
+          {moment(messageJumpedTo.inserted_at).format("MMM Do, YYYY")}
+        </span>
+        <span className="scroll-to-bottom">
+          Jump to recent messages <i className="fa fa-arrow-down" />
+        </span>
+      </div>
+    );
+  }
+
   renderMentionMenu() {
     const { messageStore, presenceStore } = this.props;
     const { openMentionMenu, activeUserIndex } = this.state;
@@ -288,6 +313,7 @@ class MessageForm extends Component {
   render() {
     return (
       <div className="message-form">
+        {this.renderJumpedMessageIndicator()}
         {this.renderMentionMenu()}
         {this.renderInput()}
         {this.renderEditingCommands()}

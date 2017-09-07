@@ -8,6 +8,7 @@ class MessageStore {
   @observable messageDivs = {}; // Div elements of messages loaded in the chat div
   @observable messages = []; // messages currently loaded
   @observable messageInEdit = null; // Message currently being edited
+  @observable messageJumpedTo = null; // Message the user jumped to manually
   @observable textInEdit = ""; // Current text of message in edit
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
   @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
@@ -26,10 +27,16 @@ class MessageStore {
   //    GETTERS     //
   // ////////////// //
 
+  /**
+   * Socket channel topic of currently joined chat group
+   */
   get groupTopic() {
     return this.rootStore.groupStore.channelTopic;
   }
 
+  /**
+   * Currently joined chat group
+   */
   @computed
   get currentGroup() {
     const { groupStore } = this.rootStore;
@@ -48,6 +55,14 @@ class MessageStore {
       this.messages.length > 0 &&
       Object.keys(this.messageDivs).length === this.messages.length
     );
+  }
+
+  /**
+   * If TRUE, indicates jumped-message-indicator should show up
+   */
+  @computed
+  get showJumpedMessageIndicator() {
+    return this.messageJumpedTo && !this.isScrollBottom;
   }
 
   get eventChannel() {
@@ -117,6 +132,9 @@ class MessageStore {
     this.loadedInitial = false;
     this.messages = [];
     this.messageDivs = {};
+    this.messageInEdit = null;
+    this.messageJumpedTo = null;
+    this.textInEdit = "";
   }
 
   // Scroll to the bottom of chat div with animation
@@ -158,6 +176,17 @@ class MessageStore {
         cb();
       }
     }, 300);
+  }
+
+  @action
+  onScrollBottomReached() {
+    this.isScrollBottom = true;
+    this.messageJumpedTo = null;
+  }
+
+  @action
+  onScrollBottomLeft() {
+    this.isScrollBottom = false;
   }
 
   onInvisibleMessage = id => {
@@ -246,6 +275,7 @@ class MessageStore {
    * 
    * @param {Object} targetMessage 
    */
+  @action
   jumpToMessage(targetMessage) {
     if (this.joinedTargetGroupDisposer) {
       this.joinedTargetGroupDisposer();
@@ -266,6 +296,7 @@ class MessageStore {
             this.loadedTargetMessage(targetMessage) && this.mountedAllMessages,
           () => {
             this.scrollToMessage(targetMessage.id);
+            this.messageJumpedTo = targetMessage;
           }
         );
 
