@@ -3,7 +3,7 @@ import { render } from "react-dom";
 
 import AuthenticationRouter from "../authentication/authentication_router";
 import Login from "../authentication/login/login";
-import App from "../app/app";
+import App from "../app/App";
 import Admin from "../admin/admin";
 import Invitation from "../invitation/index";
 import Toastr from "../common/components/toastr/toastr";

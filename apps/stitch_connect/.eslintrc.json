@@ -39,7 +39,8 @@
           "groupStore",
           "messageStore",
           "presenceStore",
-          "sidemenuStore"
+          "sidemenuStore",
+          "uploadStore"
         ]
       }
     ],
