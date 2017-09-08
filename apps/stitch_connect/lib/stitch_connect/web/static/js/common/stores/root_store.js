@@ -28,6 +28,9 @@ class RootStore {
     // Join channels
     this.channelStore.joinEventChannel();
     this.presenceStore.joinTeamLobbyChannel();
+
+    // Actions triggered at the start of app
+    this.sidemenuStore.getLockState();
     this.sidemenuStore.getInactivityTimeout();
   }
 }

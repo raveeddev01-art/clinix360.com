@@ -132,6 +132,13 @@ class SidemenuStore {
   getGroupById = id => this.groups.find(group => group.id === id);
 
   /**
+   * Get lock state for the current session from the server
+   */
+  getLockState() {
+    // TODO: Get lock state for the current session from the server
+  }
+
+  /**
    * Retrieve from the server timeout amount for which the user gets locked if he is inactive
    */
   getInactivityTimeout() {
