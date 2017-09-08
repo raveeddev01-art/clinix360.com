@@ -24,6 +24,7 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
       type: type(group),
       user_count: Enum.count(group.users),
       unread_messages_count: group.unread_messages_count,
+      unread_start_id: group.unread_start_id,
       mentions_count: group.mentions_count,
     }
   end
