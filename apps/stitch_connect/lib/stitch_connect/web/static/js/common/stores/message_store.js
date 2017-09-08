@@ -203,6 +203,7 @@ class MessageStore {
     if (this.lastUnreadViewed && !this.isScrollBottom) {
       // if unread messages were viewed and it was scrolled to bottom
       this.rootStore.groupStore.unreadMessagesCount = 0;
+      this.markAllAsRead();
     }
 
     this.isScrollBottom = true;
@@ -393,18 +394,26 @@ class MessageStore {
 
   @action
   markAllAsRead = () => {
-    return new Promise((resolve, reject) => {
-      this.groupChannel
-        .push("mark_as_read_all", { group_id: this.rootStore.groupStore.id })
-        .receive("ok", () => {
-          this.lastUnreadViewed = true;
-          this.unreadMessagesCount = 0;
-          resolve();
-        })
-        .receive("error", err => {
-          notify.show(err.message, "error");
-          reject(err);
-        });
+    if (this.rootStore.groupStore.loading) {
+      // should not mark as read when in transition to other group
+      return;
+    }
+
+    this.groupChannel
+      .push("mark_as_read_all", { group_id: this.rootStore.groupStore.id })
+      .receive("ok", () => {
+        this.lastUnreadViewed = true;
+        this.unreadMessagesCount = 0;
+      })
+      .receive("error", err => {
+        notify.show(err.message, "error");
+      });
+  };
+
+  @action
+  markAsRead = id => {
+    this.groupChannel.push("mark_as_read", {
+      message_ids: [id]
     });
   };
 
@@ -483,6 +492,8 @@ class MessageStore {
     ) {
       this.unreadMessagesCount += 1;
       this.rootStore.groupStore.increaseUnreadMessagesCount();
+    } else {
+      this.markAsRead(newMessage.id);
     }
 
     if (
@@ -560,6 +571,7 @@ class MessageStore {
   handleInitialLoading = () => {
     let posHistory = null;
     if (this.unreadMessagesCount) {
+      this.messagePositions[this.groupTopic] = null;
       if (this.unreadMessagesCount >= 30) {
         posHistory = this.messages[this.messages.length - 1].id; // B.2.a
         this.scrollToBottom(() => {
@@ -584,6 +596,7 @@ class MessageStore {
           this.lastUnreadViewed = true;
         });
       } else {
+        this.messagePositions[this.groupTopic] = null;
         // A.1.b, A.2.a
         this.scrollToBottom(() => {
           this.loadedInitial = true;
