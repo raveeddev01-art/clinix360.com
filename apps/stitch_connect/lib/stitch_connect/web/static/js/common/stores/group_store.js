@@ -11,6 +11,7 @@ class GroupStore {
   @observable joined = false;
   @observable users = [];
   @observable unreadMessagesCount = 0;
+  @observable unreadStartID = null;
   @observable favorite = false;
   @observable notificationSetting = null;
   @observable showAllUsers = true;
@@ -77,6 +78,7 @@ class GroupStore {
       this.groupType = "group";
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
+      this.unreadStartID = data.unread_start_id;
 
       // Load messages after join
       this.rootStore.messageStore.joinGroupChannel();
