@@ -28,6 +28,7 @@ class RootStore {
     // Join channels
     this.channelStore.joinEventChannel();
     this.presenceStore.joinTeamLobbyChannel();
+    this.sidemenuStore.getInactivityTimeout();
   }
 }
 

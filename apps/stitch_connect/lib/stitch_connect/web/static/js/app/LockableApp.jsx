@@ -19,6 +19,20 @@ class LockableApp extends Component {
     };
   }
 
+  componentDidMount() {
+    const { sidemenuStore } = this.props;
+
+    // Active
+    window.addEventListener("focus", () => {
+      sidemenuStore.stopInactivityTimer();
+    });
+
+    // Inactive
+    window.addEventListener("blur", () => {
+      sidemenuStore.startInactivityTimer();
+    });
+  }
+
   onDragEnter = () => {
     this.setState({
       dropzoneActive: true

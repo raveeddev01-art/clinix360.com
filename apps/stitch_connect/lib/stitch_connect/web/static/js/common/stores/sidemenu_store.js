@@ -9,6 +9,8 @@ class SidemenuStore {
   @observable currentGroup = null;
   @observable locked = false;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
+  inactivityTimeout = -1;
+  inactivityTimer = null;
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
@@ -128,6 +130,35 @@ class SidemenuStore {
   };
 
   getGroupById = id => this.groups.find(group => group.id === id);
+
+  /**
+   * Retrieve from the server timeout amount for which the user gets locked if he is inactive
+   */
+  getInactivityTimeout() {
+    // TODO: Get from backend server
+
+    this.inactivityTimeout = 60 * 60; // Default: 1 hour
+  }
+
+  startInactivityTimer() {
+    if (this.locked) {
+      return;
+    }
+
+    this.stopInactivityTimer();
+
+    this.inactivityTimer = window.setTimeout(() => {
+      this.lock();
+      this.stopInactivityTimer();
+    }, this.inactivityTimeout * 1000);
+  }
+
+  stopInactivityTimer() {
+    if (this.inactivityTimer) {
+      window.clearTimeout(this.inactivityTimer);
+      this.inactivityTimer = null;
+    }
+  }
 }
 
 export default SidemenuStore;
