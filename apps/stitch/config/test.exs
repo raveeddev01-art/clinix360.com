@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :comeonin, :bcrypt_log_rounds, 4
+config :bcrypt_elixir, :log_rounds, 4
 
 config :stitch, Stitch.Repo,
   adapter: Ecto.Adapters.Postgres,

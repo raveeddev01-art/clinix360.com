@@ -46,7 +46,7 @@ defmodule Stitch.User.AuthenticationTest do
     assert user.first_name == "John"
     assert user.last_name == "Doe"
     assert user.email == "example@email.com"
-    assert String.length(user.encrypted_password) == 60
+    assert String.length(user.password_hash) == 60
   end
 
   test "rejects an invalid user  user account" do
@@ -74,7 +74,7 @@ defmodule Stitch.User.AuthenticationTest do
 
   describe "Stitch.User.Authentication.update_password/2" do
     test "it updates the password for a user" do
-      user = insert(:user, %{email: "example@email.com", encrypted_password: "password"})
+      user = insert(:user, %{email: "example@email.com", password_hash: "password"})
       team = insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
       user = Ecto.Changeset.change user, team_id: team.id
       {:ok, user} = Stitch.Repo.update user
@@ -118,7 +118,7 @@ defmodule Stitch.User.AuthenticationTest do
 
   test "it creates a password reset token for user " do
     team = insert(:team, %{name: "Test Team", slug: "test-team"})
-    user = insert(:user, %{email: "sadan@example.com", team_id: team.id, encrypted_password: Comeonin.Bcrypt.hashpwsalt("sadan123")})
+    user = insert(:user, %{email: "sadan@example.com", team_id: team.id, password_hash: Comeonin.Bcrypt.hashpwsalt("sadan123")})
 
     {:ok, returned_user} = Stitch.User.Authentication.create_reset_password_token_for_user(user.email, team.slug)
 

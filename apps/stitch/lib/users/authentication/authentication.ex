@@ -10,7 +10,7 @@ defmodule Stitch.User.Authentication do
     changeset = User.registration_changeset(%User{}, user_params)
     changeset = case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-        put_change(changeset, :encrypted_password, hash_password(pass))
+        put_change(changeset, :password_hash, hash_password(pass))
       _ ->
         changeset
     end
@@ -33,7 +33,7 @@ defmodule Stitch.User.Authentication do
         case Repo.get_by(User, %{email: email, team_id: team.id}) do
           nil -> Comeonin.Bcrypt.dummy_checkpw()
           user ->
-            case Comeonin.Bcrypt.checkpw(password, user.encrypted_password) do
+            case Comeonin.Bcrypt.checkpw(password, user.password_hash) do
               true ->
                 user
               _ ->
@@ -52,7 +52,7 @@ defmodule Stitch.User.Authentication do
     changeset = User.password_update_changeset(user, %{password: password})
     changeset = case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-        put_change(changeset, :encrypted_password, hash_password(pass))
+        put_change(changeset, :password_hash, hash_password(pass))
       _ ->
         changeset
     end
@@ -98,7 +98,7 @@ defmodule Stitch.User.Authentication do
 
         user ->
             user
-            |> Ecto.Changeset.change(encrypted_password: hash_password(password), password_reset_token: nil)
+            |> Ecto.Changeset.change(password_hash: hash_password(password), password_reset_token: nil)
             |> Repo.update
      end
    end

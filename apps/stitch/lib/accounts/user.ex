@@ -11,7 +11,7 @@ defmodule Stitch.Accounts.User do
   schema "users" do
     field :email, :string
     field :roles, {:array, :string}
-    field :encrypted_password, :string
+    field :password_hash, :string
     field :first_name, :string
     field :last_name, :string
     field :phone_number, :string

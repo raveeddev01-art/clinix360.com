@@ -67,7 +67,7 @@ defmodule Stitch.Accounts do
           changeset =
             case changeset do
               %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-                Ecto.Changeset.put_change(changeset, :encrypted_password, Comeonin.Bcrypt.hashpwsalt(pass))
+                Ecto.Changeset.put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(pass))
               _ ->
                 changeset
             end
@@ -121,8 +121,8 @@ defmodule Stitch.Accounts do
      case Repo.get(User,user_id) do
         nil -> {:error, "User doesn't exist"}
 
-        user ->  case Comeonin.Bcrypt.checkpw(old_password, user.encrypted_password) do
-                    true ->  changeset = Ecto.Changeset.change(user, encrypted_password: Comeonin.Bcrypt.hashpwsalt(new_password))
+        user ->  case Comeonin.Bcrypt.checkpw(old_password, user.password_hash) do
+                    true ->  changeset = Ecto.Changeset.change(user, password_hash: Comeonin.Bcrypt.hashpwsalt(new_password))
 
                               case Repo.update(changeset) do
                                 {:ok,user} -> {:ok,user}

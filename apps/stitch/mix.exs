@@ -26,13 +26,14 @@ defmodule Stitch.Mixfile do
 
   defp deps do
     [
-      {:ecto, "~> 2.1"},
+      {:ecto, "~> 2.2"},
       {:postgrex, "~> 0.13.3"},
-      {:comeonin, "~> 3.0"},
-      {:ex_machina, "~> 2.0", only: :test},
+      {:comeonin, "~> 4.0"},
+      {:bcrypt_elixir, "~> 0.12"},
+      {:ex_machina, "~> 2.1", only: :test},
       {:slugger, "~> 0.2"},
       {:bamboo, "~> 0.8"},
-      {:ex_doc, "~> 0.14", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false}
     ]
   end
 end
