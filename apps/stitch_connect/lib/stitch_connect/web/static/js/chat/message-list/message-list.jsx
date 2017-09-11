@@ -48,12 +48,25 @@ class MessageList extends Component {
         {Object.keys(messagesByDate).map(date =>
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
-            {messagesByDate[date].map(messagePool =>
-              <MessagePool
-                key={`${messagePool[0].id}`}
-                messagePool={messagePool}
-              />
-            )}
+            {messagesByDate[date].map(messagePool => {
+              if (messagePool[0].id === messageStore.unreadStartID) {
+                return [
+                  <div className="new-message-banner">
+                    <div className="banner-text">New Messages</div>
+                  </div>,
+                  <MessagePool
+                    key={`${messagePool[0].id}`}
+                    messagePool={messagePool}
+                  />
+                ];
+              }
+              return (
+                <MessagePool
+                  key={`${messagePool[0].id}`}
+                  messagePool={messagePool}
+                />
+              );
+            })}
           </div>
         )}
         <Element name="topPosition" className="topPosition" />

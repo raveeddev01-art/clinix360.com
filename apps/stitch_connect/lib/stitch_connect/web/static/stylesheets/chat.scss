@@ -59,6 +59,8 @@
         background: $body-bg;
 
         .unread-messages-tooltip {
+          position: relative;
+          cursor: pointer;
           height: 25px;
           line-height: 25px;
           background: #29b2ee;
@@ -69,6 +71,13 @@
 
           &:hover {
             filter: brightness(85%);
+          }
+
+          .close-unread-messages-tooltip {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            color: #fff;
           }
         }
 
@@ -106,6 +115,26 @@
             line-height: 1.45;
             background: #fff;
             border: 1px solid $border-color;
+            border-radius: 6px;
+            padding: 6px 12px;
+            position: absolute;
+            top: -17px;
+          }
+        }
+
+        .new-message-banner {
+          display: flex;
+          justify-content: center;
+          position: relative;
+          border-top: 1px solid $brand-primary;
+          margin: 30px 0 30px;
+
+          .banner-text {
+            color: $brand-primary;
+            font-weight: bold;
+            line-height: 1.45;
+            background: #f1f1f1;
+            border: 1px solid $brand-primary;
             border-radius: 6px;
             padding: 6px 12px;
             position: absolute;

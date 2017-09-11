@@ -194,12 +194,26 @@ defmodule Stitch.Message do
 
   def mark_as_read(user, message_ids) do
     message_ids = List.wrap(message_ids)
-    value = %{user.id => DateTime.utc_now}
 
     read_mentions(message_ids, user.id)
     Message
-    |> where([m], m.id in ^message_ids and m.user_id != ^user.id)
-    |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user.id)))
+    |> where([m], m.id in ^message_ids)
+    |> _mark_as_read(user.id)
+  end
+
+  def mark_as_read_all(user, group_id) do
+    # read_mentions(message_ids, user.id)
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> _mark_as_read(user.id)
+  end
+
+  defp _mark_as_read(queryable, user_id) do
+    value = %{user_id => DateTime.utc_now}
+    
+    queryable
+    |> where([m], m.user_id != ^user_id)
+    |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user_id)))
     |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^value)])
     |> Repo.update_all([], returning: true)
   end

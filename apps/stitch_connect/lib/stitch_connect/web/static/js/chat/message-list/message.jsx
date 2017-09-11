@@ -25,15 +25,6 @@ class Message extends Component {
   onVisibleChange = isVisible => {
     const { message, messageStore } = this.props;
 
-    if (
-      isVisible &&
-      messageStore.loadedInitial &&
-      message.user.id !== currentUser.id &&
-      !message.read
-    ) {
-      messageStore.markAsRead(message.id);
-    }
-
     if (!isVisible && messageStore.loadedInitial) {
       messageStore.onInvisibleMessage(message.id);
     }
