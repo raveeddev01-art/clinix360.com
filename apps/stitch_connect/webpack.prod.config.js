@@ -4,10 +4,10 @@ const webpack = require("webpack");
 
 module.exports = [
   {
-    entry: "./lib/stitch_connect/web/static/js/app.js",
+    entry: "./lib/stitch_connect/web/static/js/index.js",
     output: {
       path: path.resolve(__dirname, "priv/static/js"),
-      filename: "app.js"
+      filename: "index.js"
     },
     resolve: {
       extensions: [".js", ".jsx"],
