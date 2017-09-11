@@ -55,7 +55,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
-            EventsChannel.broadcast_mention_counter_update(group, message.mentioned_user_ids)
 
             conn
             |> put_status(:created)
@@ -84,7 +83,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
             message = MessageQueries.load_info(message)
 
             Endpoint.broadcast("groups:#{message.group.slug}", "edit_msg", message)
-            EventsChannel.broadcast_mention_counter_update(message.group, mentioned_user_ids)
 
             render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
@@ -109,7 +107,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
             Endpoint.broadcast("groups:#{message.group.slug}", "delete_msg", %{id: message.id})
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
-            EventsChannel.broadcast_mention_counter_update(message.group, message.mentioned_user_ids)
 
             send_resp(conn, :no_content, "")
           {:error, changeset} ->

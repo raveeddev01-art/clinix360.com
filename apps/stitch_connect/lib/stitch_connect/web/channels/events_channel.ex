@@ -17,13 +17,13 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_group_new_msg(group, message, notify_user_ids \\ []) do
-    notify_user_ids_map = user_ids_to_map(notify_user_ids)
+    notify_user_ids_set = MapSet.new(notify_user_ids)
     ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.user_id)
     |> Repo.all |> List.delete(message.user_id)
 
     for id <- ids do
       json = MessageView.message_json(message, id)
-      json = if notify_user_ids_map[id], do: Map.put(json, :notify, true), else: json
+      |> Map.put(:notify, MapSet.member?(notify_user_ids_set, id))
       @endpoint.broadcast("events:#{id}", "new_message", json)
     end
   end
@@ -68,33 +68,5 @@ defmodule StitchConnect.Web.EventsChannel do
   def broadcast_marked_as_read(user, messages) do
     json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
     @endpoint.broadcast("events:#{user.id}", "marked_as_read", %{messages: json})
-  end
-
-  def broadcast_mention_counter_update(group, mentioned_user_ids) do
-    for user_id <- mentioned_user_ids do
-      broadcast_mention_counter_for_user(user_id, group)
-    end
-  end
-
-  def broadcast_mention_counter_for_user(user_id, []), do: nil
-
-  def broadcast_mention_counter_for_user(user_id, [message|_]) do
-    group = Repo.preload(message, :group).group
-    broadcast_mention_counter_for_user(user_id, group)
-  end
-
-  def broadcast_mention_counter_for_user(user_id, %{} = group) do
-    json = %{
-      group_id: group.id,
-      group_slug: group.slug,
-      mentions_count: GroupUser.mentions_count(group.id, user_id)
-    }
-    @endpoint.broadcast("events:#{user_id}", "mentions_count", json)
-  end
-
-  defp user_ids_to_map(user_ids) do
-    Enum.reduce(user_ids, %{}, fn (user_id, acc) ->
-      Map.put(acc, user_id, true)
-    end)
   end
 end
