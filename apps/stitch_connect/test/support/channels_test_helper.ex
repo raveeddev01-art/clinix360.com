@@ -55,4 +55,18 @@ defmodule StitchConnect.Web.ChannelsTestHelper do
 
     {:ok, group: group}
   end
+
+  def create_dm(%{team: team, user1: user1, user2: user2}) do
+    sorted_ids = [user1.id, user2.id] |> Enum.sort |> Enum.join(".")
+    attrs = %{team_id: team.id, name: "__dm_group__", slug: "__dm:#{sorted_ids}", public: false}
+    {:ok, group} = %Group{} |> Group.changeset(attrs) |> Repo.insert
+
+    for id <- Enum.uniq([user1.id, user2.id]) do
+      %GroupUser{}
+      |> GroupUser.changeset(%{group_id: group.id, user_id: id})
+      |> Repo.insert!
+    end
+
+    {:ok, dm_group: group}
+  end
 end
