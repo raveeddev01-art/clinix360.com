@@ -19,13 +19,15 @@ import teamStore from "./stores/team_store";
 import imageStore from "./stores/image_store";
 import membersStore from "./stores/members_store";
 import invitationStore from "./stores/invitation_store";
+import notificationStore from "./stores/notification_store";
 
 const stores = {
   userStore,
   teamStore,
   imageStore,
   invitationStore,
-  membersStore
+  membersStore,
+  notificationStore
 };
 
 export default class Admin extends Component {
