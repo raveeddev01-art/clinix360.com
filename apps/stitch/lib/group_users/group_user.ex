@@ -45,6 +45,23 @@ defmodule Stitch.GroupUser do
     end
   end
 
+  def batch_preference_update([], _user), do: nil
+  def batch_preference_update(group_preferences, user) when is_list(group_preferences) do
+    group_preferences
+    |> Enum.each(fn
+      %{"group_id" => group_id, "desktop_notification_preference" => desktop_notification_preference} = group_preference ->
+        case get_preference(group_id, user.id) do
+          {:ok, group_user} ->
+            unless group_user.desktop_notification_preference == "default" and user.desktop_notification_preference == group_preference["desktop_notification_preference"] do
+              group_user
+              |> preference_changeset(%{"desktop_notification_preference" => group_preference["desktop_notification_preference"]})
+              |> Repo.update
+            end
+        end
+      _ -> nil
+    end)
+  end
+
   def get_preference(group_id, user_id) do
     group_user = GroupUser
     |> where(group_id: ^group_id, user_id: ^user_id)
