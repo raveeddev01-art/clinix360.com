@@ -49,7 +49,7 @@ export default class NavItemNotifications extends Component {
         <Modal
           show={this.state.showModal}
           onHide={this._toggleModal}
-          className="notifications-modal"
+          className="notifications"
         >
           <Modal.Header>
             <Modal.Title>Notification Preferences: General</Modal.Title>
