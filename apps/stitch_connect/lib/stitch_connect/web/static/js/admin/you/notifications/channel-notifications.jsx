@@ -9,11 +9,13 @@ import Button from "react-bootstrap/lib/Button";
 @observer
 class ChannelNotifications extends Component {
   onChange = (groupId, val) => () => {
-    this.props.notificationStore.groupPreferenceMap[groupId] = val;
+    this.props.notificationStore.groupPreferenceMap.set(groupId, val);
   };
 
   onSave = () => {
-    this.props.notificationStore.updateGroupPreferences();
+    this.props.notificationStore.updateGroupPreferences().then(() => {
+      notify.show("Room specific notification settings updated");
+    });
   };
 
   toggleEdit = val => () => {
@@ -21,9 +23,9 @@ class ChannelNotifications extends Component {
   };
 
   renderRow = preference => {
-    const val = this.props.notificationStore.groupPreferenceMap[
+    const val = this.props.notificationStore.groupPreferenceMap.get(
       preference.group_id
-    ];
+    );
     return (
       <div
         key={`group_${preference.group_id}`}
@@ -111,7 +113,7 @@ class ChannelNotifications extends Component {
           >
             Edit
           </Button>}
-        <h3>Channel Specific Preference</h3>
+        <h3>Room Specific Notifications</h3>
         <a name="groupPreference" />
         {isEditing && this.renderForm()}
       </div>

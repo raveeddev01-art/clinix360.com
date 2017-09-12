@@ -2,7 +2,7 @@ import { observable, action } from "mobx";
 
 class NotificationStore {
   @observable groupPreferences = [];
-  @observable groupPreferenceMap = {};
+  @observable groupPreferenceMap = new Map();
   @observable desktopPreference = null;
   @observable emailPreference = null;
   @observable openGroupPreferences = false;
@@ -24,10 +24,11 @@ class NotificationStore {
   toggleGroupPreferences = val => {
     this.openGroupPreferences = val;
     if (val) {
-      this.groupPreferenceMap = {};
       this.groupPreferences.forEach(preference => {
-        this.groupPreferenceMap[preference.group_id] =
-          preference.desktop_notification_preference;
+        this.groupPreferenceMap.set(
+          preference.group_id,
+          preference.desktop_notification_preference
+        );
       });
     }
   };
@@ -36,18 +37,18 @@ class NotificationStore {
   updateGroupPreferences = () => {
     return put("/api/v1/users/notification-preference", {
       body: {
-        group_preferences: Object.keys(
-          this.groupPreferenceMap
-        ).map(groupId => ({
-          group_id: groupId,
-          desktop_notification_preference: this.groupPreferenceMap[groupId]
+        group_preferences: this.groupPreferences.map(preference => ({
+          group_id: preference.group_id,
+          desktop_notification_preference: this.groupPreferenceMap.get(
+            preference.group_id
+          )
         }))
       }
     }).then(() => {
       this.groupPreferences.forEach(preference => {
-        preference.desktop_notification_preference = this.groupPreferenceMap[
+        preference.desktop_notification_preference = this.groupPreferenceMap.get(
           preference.group_id
-        ];
+        );
       });
     });
   };
