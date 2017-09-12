@@ -81,20 +81,28 @@
         align-items: center;
 
         i.fa {
-          color: #449d44;
+          color: #955589;
           font-size: 24px;
           margin: 0 15px 0 5px;
 
-          &.text-muted {
-            color: #999;
+          &.enabled {
+            color: #449d44;
+          }
+
+          &.disabled {
+            color: #ea182d;
           }
         }
 
         strong {
-          color: #449d44;
+          color: #955589;
 
-          &.text-muted {
-            color: #999;
+          &.enabled {
+            color: #449d44;
+          }
+
+          &.disabled {
+            color: #ea182d;
           }
         }
       }

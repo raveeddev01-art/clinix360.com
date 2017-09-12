@@ -21,40 +21,54 @@ class BrowserNotification extends Component {
         if (permission === "granted") {
           notify.show("Browser notification is enabled.");
         }
+        this.setState({ browserPermission: permission });
       });
     }
   };
 
-  expandGroupPreferences = () => {
-    this.props.notificationStore.toggleGroupPreferences(true);
-  };
-
   render() {
     const permissionGranted = Notification.permission === "granted";
+    let status = "not enabled";
+
+    switch (Notification.permission) {
+      case "granted":
+        status = "enabled";
+        break;
+      case "denied":
+        status = "disabled";
+        break;
+      default:
+    }
+
     return (
       <div>
         <h3 className="m-b-20">Browser Notifications</h3>
 
         <Well>
           <i
-            className={cx("fa", "fa-bell", {
-              "text-muted": !permissionGranted
+            className={cx("fa", {
+              "fa-bell": permissionGranted,
+              "fa-bell-slash": !permissionGranted,
+              enabled: status === "enabled",
+              disabled: status === "disabled"
             })}
           />
           <p className="m-b-0">
-            Desktop notifications are currently
-            <strong className={cx({ "text-muted": !permissionGranted })}>
-              {permissionGranted ? " enabled" : " not enabled"}
-            </strong>. You will {permissionGranted ? "" : " not"} receive
+            Desktop notifications are currently&nbsp;
+            <strong
+              className={cx({
+                enabled: status === "enabled",
+                disabled: status === "disabled"
+              })}
+            >
+              {status}
+            </strong>. You {permissionGranted ? "will" : " won't"} receive
             notifications in this browser.
           </p>
         </Well>
 
         <p>
-          You can&nbsp;
-          <a href="#groupPreference" onClick={this.expandGroupPreferences}>
-            adjust settings
-          </a>&nbsp; for each conversation. To disable notifications, open your
+          We recommend enabling notifications. You can do this by opening your
           browser settings.
         </p>
 

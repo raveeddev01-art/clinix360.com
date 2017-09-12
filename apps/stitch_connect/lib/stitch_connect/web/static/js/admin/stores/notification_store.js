@@ -5,7 +5,6 @@ class NotificationStore {
   @observable groupPreferenceMap = new Map();
   @observable desktopPreference = null;
   @observable emailPreference = null;
-  @observable openGroupPreferences = false;
 
   constructor() {
     this.loadPreferences();
@@ -21,16 +20,13 @@ class NotificationStore {
   };
 
   @action
-  toggleGroupPreferences = val => {
-    this.openGroupPreferences = val;
-    if (val) {
-      this.groupPreferences.forEach(preference => {
-        this.groupPreferenceMap.set(
-          preference.group_id,
-          preference.desktop_notification_preference
-        );
-      });
-    }
+  toggleGroupPreferences = () => {
+    this.groupPreferences.forEach(preference => {
+      this.groupPreferenceMap.set(
+        preference.group_id,
+        preference.desktop_notification_preference
+      );
+    });
   };
 
   @action

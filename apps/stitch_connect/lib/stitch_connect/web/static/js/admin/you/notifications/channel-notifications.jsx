@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import Radio from "react-bootstrap/lib/Radio";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import Button from "react-bootstrap/lib/Button";
+import SettingPanel from "../../components/setting-panel/setting-panel";
 
 @inject("notificationStore")
 @observer
@@ -18,7 +18,7 @@ class ChannelNotifications extends Component {
     });
   };
 
-  toggleEdit = val => () => {
+  onToggleEdit = val => {
     this.props.notificationStore.toggleGroupPreferences(val);
   };
 
@@ -63,10 +63,16 @@ class ChannelNotifications extends Component {
     );
   };
 
-  renderForm = () => {
+  render() {
     const { notificationStore } = this.props;
+
     return (
-      <div>
+      <SettingPanel
+        title="Room Specific Notifications"
+        description=""
+        onSave={this.onSave}
+        onEdit={this.onToggleEdit}
+      >
         <div className="clearfix notifications-table-heading text-center">
           <Col md={6} />
           <Col md={2}>
@@ -80,43 +86,7 @@ class ChannelNotifications extends Component {
           </Col>
         </div>
         {notificationStore.groupPreferences.map(group => this.renderRow(group))}
-        <div className="clearfix">
-          <Button
-            bsStyle="default"
-            className="btn-fancy pull-left"
-            onClick={this.toggleEdit(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            bsStyle="primary"
-            className="btn-fancy pull-right"
-            onClick={this.onSave}
-          >
-            Save
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
-  render() {
-    const { notificationStore } = this.props;
-    const isEditing = notificationStore.openGroupPreferences;
-    return (
-      <div>
-        {!isEditing &&
-          <Button
-            bsStyle="default"
-            className="action-edit btn-fancy pull-right"
-            onClick={this.toggleEdit(true)}
-          >
-            Edit
-          </Button>}
-        <h3>Room Specific Notifications</h3>
-        <a name="groupPreference" />
-        {isEditing && this.renderForm()}
-      </div>
+      </SettingPanel>
     );
   }
 }
