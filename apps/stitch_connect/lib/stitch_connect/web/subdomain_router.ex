@@ -50,6 +50,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/starred_messages", StarredMessageController, :index
 
     get "/users/", UserController, :index
+    get "/users/notification-preference", NotificationPreferenceController, :show_global
+    put "/users/notification-preference", NotificationPreferenceController, :update_global
     put "/users/:id", UserController, :update
     get "/users/:id", UserController, :show
     post "/users/:id/deactivate", UserController, :deactivate
