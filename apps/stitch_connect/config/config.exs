@@ -18,13 +18,13 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
   pubsub: [name: StitchConnect.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
-# Configure application environment.
-config :stitch_connect, env: Mix.env
-
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
+
+config :stitch_connect, :generators,
+  context_app: :stitch
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
