@@ -2,27 +2,30 @@ defmodule Stitch.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :stitch,
-     version: "0.1.0",
-     build_path: "../../_build",
-     config_path: "../../config/config.exs",
-     deps_path: "../../deps",
-     lockfile: "../../mix.lock",
-     elixir: "~> 1.4",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps(),
-     elixirc_paths: elixirc_paths(Mix.env)]
+    [
+      app: :stitch,
+      version: "0.1.0",
+      build_path: "../../_build",
+      config_path: "../../config/config.exs",
+      deps_path: "../../deps",
+      lockfile: "../../mix.lock",
+      elixir: "~> 1.4",
+      elixirc_paths: elixirc_paths(Mix.env),
+      start_permanent: Mix.env == :prod,
+      aliases: aliases(),
+      deps: deps()
+    ]
+  end
+
+  def application do
+    [
+      mod: {Stitch.Application, []},
+      extra_applications: [:logger, :runtime_tools]
+    ]
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib"]
-
-  def application do
-    # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger],
-     mod: {Stitch.Application, []}]
-  end
+  defp elixirc_paths(_),     do: ["lib"]
 
   defp deps do
     [
@@ -34,6 +37,14 @@ defmodule Stitch.Mixfile do
       {:slugger, "~> 0.2"},
       {:bamboo, "~> 0.8"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false}
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

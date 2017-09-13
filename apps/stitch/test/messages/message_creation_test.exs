@@ -1,6 +1,6 @@
 defmodule Stitch.MessageCreationTest do
-  use Stitch.TestCase
-  alias Stitch.{Repo, Message}
+  use Stitch.DataCase
+  alias Stitch.Message
 
   setup :create_user_and_group
 
