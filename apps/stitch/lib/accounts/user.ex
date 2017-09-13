@@ -54,9 +54,20 @@ defmodule Stitch.Accounts.User do
   end
 
   def update_preference(%User{} = user, params) do
-    user
-    |> preference_changeset(params)
-    |> Repo.update
+    Repo.transaction fn ->
+      user_update = user
+      |> preference_changeset(params)
+      |> Repo.update
+
+      case user_update do
+        {:ok, user} ->
+          group_preferences = params["group_preferences"]
+          if group_preferences, do: GroupUser.batch_preference_update(group_preferences, user)
+          %{user: user}
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
+    end
   end
 
   @doc """
