@@ -40,7 +40,8 @@
           "messageStore",
           "presenceStore",
           "sidemenuStore",
-          "uploadStore"
+          "uploadStore",
+          "notificationStore"
         ]
       }
     ],
