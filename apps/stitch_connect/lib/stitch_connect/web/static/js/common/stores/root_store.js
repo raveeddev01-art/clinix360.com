@@ -1,6 +1,7 @@
 import AddonStore from "./addon_store";
 import ChannelStore from "./channel_store";
 import FilesStore from "./files_store";
+import GroupPresenceStore from "./group_presence_store";
 import GlobalStarredMessageStore from "./global_starred_message_store";
 import GroupStore from "./group_store";
 import MessageStore from "./message_store";
@@ -18,6 +19,7 @@ class RootStore {
     this.channelStore = new ChannelStore(this);
     this.globalStarredMessageStore = new GlobalStarredMessageStore(this);
     this.filesStore = new FilesStore(this);
+    this.groupPresenceStore = new GroupPresenceStore(this);
     this.groupStore = new GroupStore(this);
     this.messageStore = new MessageStore(this);
     this.presenceStore = new PresenceStore(this, props);

@@ -82,6 +82,8 @@ class GroupStore {
 
       // Load messages after join
       this.rootStore.messageStore.joinGroupChannel();
+
+      this.rootStore.groupPresenceStore.subscribeToGroupChannel();
     });
   };
 
@@ -116,6 +118,8 @@ class GroupStore {
 
       // Load messages after join
       this.rootStore.messageStore.joinGroupChannel();
+
+      this.rootStore.groupPresenceStore.subscribeToGroupChannel();
     });
   };
 
@@ -158,6 +162,8 @@ class GroupStore {
 
       // Load messages after join
       this.rootStore.messageStore.joinGroupChannel();
+
+      this.rootStore.groupPresenceStore.subscribeToGroupChannel();
     });
   };
 

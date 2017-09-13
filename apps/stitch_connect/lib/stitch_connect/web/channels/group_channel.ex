@@ -20,6 +20,7 @@ defmodule StitchConnect.Web.GroupChannel do
           nil ->
             if length(ids_pair) == 2 do # if single user dm, create group on first message
               [other_user_id] = List.delete(ids_pair, user.id)
+              send self(), :after_join
               {:ok, %{messages: []}, assign(socket, :group, {:create_dm, id_pair, other_user_id})}
             else
               {:error, %{message: "group not found"}}
@@ -28,6 +29,7 @@ defmodule StitchConnect.Web.GroupChannel do
           group ->
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+            send self(), :after_join
             {:ok, %{messages: json}, assign(socket, :group, group)}
         end
       else
@@ -49,11 +51,38 @@ defmodule StitchConnect.Web.GroupChannel do
           true ->
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+            send self(), :after_join
             {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
             {:error, %{message: "unauthorized"}}
         end
     end
+  end
+
+  def handle_info(:after_join, socket) do
+    push socket, "presence_state", Presence.list(socket)
+
+    {:ok, _} = Presence.track(socket, socket.assigns.current_user.id, %{
+      is_typing: false,
+    })
+
+    {:noreply, socket}
+  end
+
+  def handle_in("typing_started", _params, socket) do
+    {:ok, _} = Presence.update(socket, socket.assigns.current_user.id, %{
+      is_typing: true,
+    })
+
+    {:noreply, socket}
+  end
+
+  def handle_in("typing_stopped", _params, socket) do
+    {:ok, _} = Presence.update(socket, socket.assigns.current_user.id, %{
+      is_typing: false,
+    })
+
+    {:noreply, socket}
   end
 
   def handle_in("feed", %{"max_id" => _} = params, socket) do
@@ -101,21 +130,21 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def handle_in("mark_as_read_all", %{"group_id" => group_id}, socket) do
     user = socket.assigns.current_user
-    
+
     Message.mark_as_read_all(user, group_id)
     |> mark_as_read_response(user, socket)
   end
 
   def handle_in("mark_as_read", %{"message_ids" => message_ids}, socket) do
     user = socket.assigns.current_user
-    
+
     Message.mark_as_read(user, message_ids)
     |> mark_as_read_response(user, socket)
   end
 
   defp mark_as_read_response({_, messages}, user, socket) do
     messages = MessageQueries.load_info(messages)
-    
+
     EventsChannel.broadcast_marked_as_read(user, messages)
 
     json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
