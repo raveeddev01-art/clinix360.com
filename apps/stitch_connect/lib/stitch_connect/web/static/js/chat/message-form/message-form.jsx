@@ -5,7 +5,14 @@ import moment from "moment";
 
 import InsertMenu from "./insert-menu";
 
-@inject("messageStore", "sidemenuStore", "groupStore", "presenceStore")
+@inject(
+  "messageStore",
+  "sidemenuStore",
+  "groupStore",
+  "presenceStore",
+  "groupPresenceStore",
+  "channelStore"
+)
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -17,6 +24,8 @@ class MessageForm extends Component {
       userFilter: "",
       activeUserIndex: 0
     };
+
+    this.typingTimoutId = null;
   }
 
   onTextChange = evt => {
@@ -78,6 +87,7 @@ class MessageForm extends Component {
       if (this.state.text) {
         this.props.messageStore.sendMessage(this.state.text).then(() => {
           this.setState({ text: "" });
+          this.typingStopped();
         });
       }
     } else if (evt.keyCode === 27) {
@@ -112,6 +122,8 @@ class MessageForm extends Component {
           openMentionMenu: false
         });
       }
+
+      this.typingStarted();
     }
   };
 
@@ -144,6 +156,16 @@ class MessageForm extends Component {
     const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
+  };
+
+  typingStarted = () => {
+    clearTimeout(this.typingTimoutId);
+    this.props.channelStore.groupChannel.push("typing_started");
+    this.typingTimoutId = setTimeout(this.typingStopped, 5000);
+  };
+
+  typingStopped = () => {
+    this.props.channelStore.groupChannel.push("typing_stopped");
   };
 
   replaceCurrentWord = word => {
@@ -279,6 +301,32 @@ class MessageForm extends Component {
     );
   }
 
+  renderTypingUsers() {
+    const { groupPresenceStore: { typingUsers }, presenceStore } = this.props;
+    let content;
+    const username = id => presenceStore.onlineUsersMap[id].metas[0].username;
+
+    switch (typingUsers.length) {
+      case 0:
+        content = <span>&nbsp;</span>;
+        break;
+      case 1:
+        content = `${username(typingUsers[0])} is typing...`;
+        break;
+      case 2:
+        content = `${typingUsers.map(username).join(" and ")} are typing...`;
+        break;
+      default:
+        content = "multiple people are typing...";
+    }
+
+    return (
+      <div>
+        {content}
+      </div>
+    );
+  }
+
   renderEditingCommands() {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -316,6 +364,7 @@ class MessageForm extends Component {
         {this.renderJumpedMessageIndicator()}
         {this.renderMentionMenu()}
         {this.renderInput()}
+        {this.renderTypingUsers()}
         {this.renderEditingCommands()}
       </div>
     );
