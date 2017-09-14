@@ -5,6 +5,7 @@ import Dropzone from "react-dropzone";
 
 import Sidemenu from "../sidemenu/sidemenu";
 import Chat from "../chat/chat";
+import BrowserNotificationAlert from "../chat/browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
 import Lockout from "../lockout/lockout";
 
@@ -76,10 +77,13 @@ class LockableApp extends Component {
               <div>Drop to Upload File</div>
             </div>}
           <UploadModal />
-          <Sidemenu />
-          <Route exact path={`/`} component={Chat} />
-          <Route path={`/groups/:slug`} component={Chat} />
-          <Route path={`/direct/:usernames`} component={Chat} />
+          <BrowserNotificationAlert />
+          <div className="appContainer">
+            <Sidemenu />
+            <Route exact path={`/`} component={Chat} />
+            <Route path={`/groups/:slug`} component={Chat} />
+            <Route path={`/direct/:usernames`} component={Chat} />
+          </div>
         </Dropzone>;
   }
 }
