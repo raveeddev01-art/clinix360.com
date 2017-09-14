@@ -1,8 +1,6 @@
 <%
 applicationHost =
-  case Application.get_env(:stitch_connect, :env) do
-    :dev ->
-      "localhost:4443"
+  case Application.fetch_env!(:stitch_connect, :env) do
     :prod ->
       "teamstitchapp.com"
     _ ->
