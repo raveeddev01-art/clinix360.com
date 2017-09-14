@@ -25,10 +25,12 @@ defmodule Stitch.Factory do
   end
 
   def group_factory do
+    name = Faker.Commerce.department
+
     %Stitch.Group{
-      name: "Onboarding",
-      slug: "onboarding",
-      description: "Group used to onboard new users to team procedures.",
+      name: name,
+      slug: sequence(:group_slug, &"#{name |> String.downcase |> Slugger.slugify}-#{&1}"),
+      description: Faker.Company.bs,
       public: true,
       team: build(:team),
       creator: build(:user)

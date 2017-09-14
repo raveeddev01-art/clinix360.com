@@ -34,6 +34,7 @@ defmodule Stitch.Mixfile do
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 0.12"},
       {:ex_machina, "~> 2.1", only: :test},
+      {:faker, "~> 0.9", only: :test},
       {:slugger, "~> 0.2"},
       {:bamboo, "~> 0.8"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false}

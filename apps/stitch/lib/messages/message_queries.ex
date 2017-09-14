@@ -90,11 +90,17 @@ defmodule Stitch.MessageQueries do
     MessageAction.apply_user_message_actions(user, messages)
   end
 
-  def user_starred_messages(user_id) do
+  def user_starred_messages(user_id, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 30)
+    offset = Keyword.get(opts, :skip, 0)
+
     query = from m in Message,
       join: a in MessageAction, on: a.message_id == m.id,
       where: a.category == "star",
       where: a.user_id == ^user_id,
+      order_by: [desc: :inserted_at],
+      limit: ^limit,
+      offset: ^offset,
       preload: :user
 
     Repo.all(query)
