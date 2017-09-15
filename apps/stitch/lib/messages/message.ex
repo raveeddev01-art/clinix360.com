@@ -2,6 +2,7 @@ defmodule Stitch.Message do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
+  alias Ecto.Multi
   alias Stitch.{Repo, Message, GroupUser}
 
   @valid_types ["chat", "system", "upload"]
@@ -39,7 +40,7 @@ defmodule Stitch.Message do
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids])
+    |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, @valid_types)
   end
@@ -52,20 +53,22 @@ defmodule Stitch.Message do
 
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
     notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
+    read_status = users |> Enum.reduce(%{}, fn (recipient, acc) ->
+      if recipient.id == user.id, do: acc, else: Map.put(acc, recipient.id, nil)
+    end)
 
-    Repo.transaction fn ->
-      message_insert = %Message{group_id: group_id, user_id: user.id}
-      |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload", mentioned_user_ids: mentioned_user_ids})
-      |> Repo.insert
+    message_changeset = %Message{group_id: group_id, user_id: user.id}
+    |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload", mentioned_user_ids: mentioned_user_ids, read_status: read_status})
 
-      case message_insert do
-        {:ok, message} ->
-          add_mention_to_users(group, mentioned_user_ids, message)
-          %{message: message, notify_user_ids: notify_user_ids.desktop}
-        {:error, changeset} ->
-          Repo.rollback(changeset)
-      end
-    end
+    Multi.new
+    |> Multi.insert(:message, message_changeset)
+    |> Multi.run(:mentions, fn %{message: message} ->
+      {:ok, add_mention_to_users(group, mentioned_user_ids, message)}
+    end)
+    |> Multi.run(:notify_user_ids, fn %{message: message} ->
+      {:ok, notify_user_ids.desktop}
+    end)
+    |> Repo.transaction
   end
 
   def create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group) do
@@ -74,20 +77,22 @@ defmodule Stitch.Message do
 
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
     notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
+    read_status = users |> Enum.reduce(%{}, fn (recipient, acc) ->
+      if recipient.id == user.id, do: acc, else: Map.put(acc, recipient.id, nil)
+    end)
 
-    Repo.transaction fn ->
-      message_insert = %Message{group_id: group_id, user_id: user.id}
-      |> changeset(%{text_content: text_content, type: "chat", mentioned_user_ids: mentioned_user_ids})
-      |> Repo.insert
+    message_changeset = %Message{group_id: group_id, user_id: user.id}
+    |> changeset(%{text_content: text_content, type: "chat", mentioned_user_ids: mentioned_user_ids, read_status: read_status})
 
-      case message_insert do
-        {:ok, message} ->
-          add_mention_to_users(group, mentioned_user_ids, message)
-          %{message: message, notify_user_ids: notify_user_ids.desktop}
-        {:error, changeset} ->
-          Repo.rollback(changeset)
-      end
-    end
+    Multi.new
+    |> Multi.insert(:message, message_changeset)
+    |> Multi.run(:mentions, fn %{message: message} ->
+      {:ok, add_mention_to_users(group, mentioned_user_ids, message)}
+    end)
+    |> Multi.run(:notify_user_ids, fn %{message: message} ->
+      {:ok, notify_user_ids.desktop}
+    end)
+    |> Repo.transaction
   end
 
   def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
@@ -96,7 +101,7 @@ defmodule Stitch.Message do
 
   def create(group_id, _user, attributes, _online_in_group) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
-    {:error, changeset}
+    {:error, :message, changeset, nil}
   end
 
   def update(message, attributes) do
@@ -210,7 +215,7 @@ defmodule Stitch.Message do
 
   defp _mark_as_read(queryable, user_id) do
     value = %{user_id => DateTime.utc_now}
-    
+
     queryable
     |> where([m], m.user_id != ^user_id)
     |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user_id)))

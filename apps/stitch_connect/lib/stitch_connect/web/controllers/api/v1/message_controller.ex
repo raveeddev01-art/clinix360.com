@@ -59,12 +59,15 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
             conn
             |> put_status(:created)
             |> render("show.json", message: message, user_id: user.id)
-          {:error, changeset} ->
+          {:error, :message, changeset, _changeset_so_far} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: changeset_errors_to_string(changeset)})
+          {:error, _failed_operation, _failed_value, _changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> json(%{message: "Failed to create message"})
         end
-
       false ->
         conn
         |> put_status(:unauthorized)
