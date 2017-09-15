@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
   def index(conn, params) do
     {skip, params} = Map.pop(params, "skip", 0)
     {limit, params} = Map.pop(params, "limit", 10)
-    current_user = get_session(conn, :current_user)
+    current_user = conn.assigns.current_user
 
     uploads = Stitch.MessageQueries.get_uploads_for_user(current_user, skip, limit)
 
