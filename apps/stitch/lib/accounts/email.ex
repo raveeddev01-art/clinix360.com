@@ -48,7 +48,6 @@ defmodule Stitch.Accounts.Email do
 
   @doc """
   Takes an array of messages with preloaded groups and users
-  TODO: handle uploads, include links to uploaded files, url formatting
   """
   def pack_messages(messages) do
     messages
@@ -71,8 +70,18 @@ defmodule Stitch.Accounts.Email do
     end)
   end
 
+  @doc """
+      "03:06 PM, September 4"
+  """
   def format_datetime(datetime) do
     Timex.format!(datetime, "{0h12}:{m} {AM}, {Mfull} {D}")
+  end
+
+  @doc """
+      "September 13, 2017 at 08:03 PM"
+  """
+  def format_datetime_subject(datetime) do
+    Timex.format!(datetime, "{Mfull} {D}, {YYYY} at {0h12}:{m} {AM}")
   end
 
   def new_messages(user, team, messages) do
@@ -80,7 +89,7 @@ defmodule Stitch.Accounts.Email do
     |> template("Unread messages")
     |> to(Application.get_env(:stitch, Stitch)[:recipient_email])
     |> from(Application.get_env(:stitch, Stitch)[:sender_email])
-    |> subject("Welcome.")
+    |> subject("[Stitch Connect] Notifications from the #{team.name} team for #{format_datetime_subject(DateTime.utc_now)}")
     |> put_param("merge_language", "handlebars")
     |> put_param("global_merge_vars", [
       %{

@@ -83,6 +83,12 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
+  def send_notification_emails(user_ids, message) do
+    Enum.each(user_ids, fn user_id ->
+      Stitch.EmailNotification.create_email_notification(user_id, message.id)
+    end)
+  end
+
   def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
     create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group)
   end

@@ -16,17 +16,22 @@ defmodule Stitch.Message.Notification do
 
   def notify_user_ids(%{slug: "__dm:" <> _} = group, author, _mentioned_user_ids, online_in_group) do
     %{desktop: desktop, mobile: mobile} = dm_notify_categories(group.id)
-    %{desktop: desktop -- [author.id | online_in_group],
-      mobile: mobile -- [author.id | online_in_group]}
+    notify_desktop_user_ids = desktop -- [author.id | online_in_group]
+    notify_mobile_user_ids = mobile -- [author.id | online_in_group]
+    %{desktop: notify_desktop_user_ids,
+      mobile: notify_mobile_user_ids,
+      email: notify_desktop_user_ids}
   end
 
+  # TODO: exclude users with email notification preference 'never'
   def notify_user_ids(group, author, mentioned_user_ids, online_in_group) do
     %{desktop_everything: with_desktop_enabled,
       desktop_nothing: with_desktop_disabled,
       mobile_everything: with_mobile_enabled,
       mobile_nothing: with_mobile_disabled} = notify_categories(group.id)
     %{desktop: Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- ([author.id | with_desktop_disabled] ++ online_in_group),
-      mobile:  Enum.uniq(mentioned_user_ids ++ with_mobile_enabled)  -- ([author.id | with_mobile_disabled ] ++ online_in_group)}
+      mobile: Enum.uniq(mentioned_user_ids ++ with_mobile_enabled) -- ([author.id | with_mobile_disabled ] ++ online_in_group),
+      email: mentioned_user_ids -- ([author.id | with_desktop_disabled] ++ online_in_group)}
   end
 
   @doc """
