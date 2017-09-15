@@ -155,7 +155,7 @@ defmodule StitchConnect.Web.GroupChannel do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.update(message, params) do
-      {:ok, %{message: message, mentioned_user_ids: mentioned_user_ids}} ->
+      {:ok, %{message: message}} ->
         message = MessageQueries.load_info(message)
 
         broadcast! socket, "edit_msg", message

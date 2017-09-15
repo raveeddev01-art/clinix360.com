@@ -109,26 +109,18 @@ defmodule Stitch.Message do
     author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"])
-    remove_mention_from_ids = message.mentioned_user_ids -- mentioned_user_ids
-    add_mention_to_ids = mentioned_user_ids -- message.mentioned_user_ids
-    update_counters_for_user_ids = remove_mention_from_ids ++ add_mention_to_ids
-    notify_user_ids = add_mention_to_ids
 
-    Repo.transaction fn ->
-      message_update = message
-      |> user_edit_changeset(%{text_content: attributes["text_content"], mentioned_user_ids: mentioned_user_ids})
-      |> Repo.update
+    message_changeset = message
+    |> user_edit_changeset(%{text_content: attributes["text_content"], mentioned_user_ids: mentioned_user_ids})
 
-      case message_update do
-        {:ok, updated_message} ->
-          remove_mention_from_users(group, remove_mention_from_ids, updated_message)
-          add_mention_to_users(group, add_mention_to_ids, updated_message)
-          updated_message
-          %{message: updated_message, mentioned_user_ids: update_counters_for_user_ids, notify_mentioned_user_ids: notify_user_ids}
-        {:error, changeset} ->
-          Repo.rollback(changeset)
-      end
-    end
+    Multi.new
+    |> Multi.update(:message, message_changeset)
+    |> Multi.run(:mentions, fn %{message: updated_message} ->
+      {_n, _term} = remove_mention_from_users(group, message.mentioned_user_ids -- mentioned_user_ids, updated_message)
+      {_n, _term} = add_mention_to_users(group, mentioned_user_ids -- message.mentioned_user_ids, updated_message)
+      {:ok, nil}
+    end)
+    |> Repo.transaction
   end
 
   def delete(message) do
