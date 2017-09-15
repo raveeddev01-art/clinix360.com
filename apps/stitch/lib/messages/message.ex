@@ -45,23 +45,21 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, @valid_types)
   end
 
-  def create(group_id, user, attrs, online_in_group \\ [])
-
-  def create(group_id, user, %{"type" => "upload", "text_content" => text_content, "fields" => fields}, online_in_group) do
+  def create(group_id, user, %{"type" => type} = params, online_in_group \\ []) when type in ["chat", "upload"] do
     group = Stitch.GroupQueries.get_by_id(group_id)
     users = Repo.preload(group, :users).users
 
-    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
+    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, params["text_content"])
     notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
     read_status = users |> Enum.reduce(%{}, fn (recipient, acc) ->
       if recipient.id == user.id, do: acc, else: Map.put(acc, recipient.id, nil)
     end)
 
-    message_changeset = %Message{group_id: group_id, user_id: user.id}
-    |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload", mentioned_user_ids: mentioned_user_ids, read_status: read_status})
+    message_struct = %Message{group_id: group_id, user_id: user.id}
+    attrs = Map.merge(params, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
 
     Multi.new
-    |> Multi.insert(:message, message_changeset)
+    |> Multi.insert(:message, message_changeset(message_struct, attrs))
     |> Multi.run(:mentions, fn %{message: message} ->
       {:ok, add_mention_to_users(group, mentioned_user_ids, message)}
     end)
@@ -71,28 +69,12 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
-  def create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group) do
-    group = Stitch.GroupQueries.get_by_id(group_id)
-    users = Repo.preload(group, :users).users
+  def message_changeset(message, %{"type" => "chat"} = attrs) do
+    message |> changeset(attrs)
+  end
 
-    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
-    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
-    read_status = users |> Enum.reduce(%{}, fn (recipient, acc) ->
-      if recipient.id == user.id, do: acc, else: Map.put(acc, recipient.id, nil)
-    end)
-
-    message_changeset = %Message{group_id: group_id, user_id: user.id}
-    |> changeset(%{text_content: text_content, type: "chat", mentioned_user_ids: mentioned_user_ids, read_status: read_status})
-
-    Multi.new
-    |> Multi.insert(:message, message_changeset)
-    |> Multi.run(:mentions, fn %{message: message} ->
-      {:ok, add_mention_to_users(group, mentioned_user_ids, message)}
-    end)
-    |> Multi.run(:notify_user_ids, fn %{message: message} ->
-      {:ok, notify_user_ids.desktop}
-    end)
-    |> Repo.transaction
+  def message_changeset(message, %{"type" => "upload"} = attrs) do
+    message |> upload_changeset(attrs)
   end
 
   def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
