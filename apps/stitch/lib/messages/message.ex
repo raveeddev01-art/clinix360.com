@@ -38,25 +38,34 @@ defmodule Stitch.Message do
     |> put_change(:edited_at, DateTime.utc_now())
   end
 
+  def chat_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:type, :text_content, :mentioned_user_ids, :read_status])
+    |> validate_required([:type, :text_content])
+    |> validate_inclusion(:type, ["chat"])
+  end
+
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
     |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:fields, :type])
-    |> validate_inclusion(:type, @valid_types)
+    |> validate_inclusion(:type, ["upload"])
   end
 
-  def create(group_id, user, %{"type" => type} = params, online_in_group \\ []) when type in ["chat", "upload"] do
+  def create(group_id, user, params, online_in_group \\ [])
+
+  def create(group_id, user, %{"type" => type} = attrs, online_in_group) when type in ["chat", "upload"] do
     group = Stitch.GroupQueries.get_by_id(group_id)
     users = Repo.preload(group, :users).users
 
-    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, params["text_content"])
+    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"])
     notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
     read_status = users |> Enum.reduce(%{}, fn (recipient, acc) ->
-      if recipient.id == user.id, do: acc, else: Map.put(acc, recipient.id, nil)
+      if recipient.id == user.id, do: acc, else: Map.put(acc, to_string(recipient.id), nil)
     end)
 
     message_struct = %Message{group_id: group_id, user_id: user.id}
-    attrs = Map.merge(params, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
+    attrs = Map.merge(attrs, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
 
     Multi.new
     |> Multi.insert(:message, message_changeset(message_struct, attrs))
@@ -69,21 +78,21 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
-  def message_changeset(message, %{"type" => "chat"} = attrs) do
-    message |> changeset(attrs)
-  end
-
-  def message_changeset(message, %{"type" => "upload"} = attrs) do
-    message |> upload_changeset(attrs)
-  end
-
   def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
     create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group)
   end
 
-  def create(group_id, _user, attributes, _online_in_group) do
+  def create(_group_id, _user, _attrs, _online_in_group) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
     {:error, :message, changeset, nil}
+  end
+
+  def message_changeset(message, %{"type" => "chat"} = attrs) do
+    message |> chat_changeset(attrs)
+  end
+
+  def message_changeset(message, %{"type" => "upload"} = attrs) do
+    message |> upload_changeset(attrs)
   end
 
   def update(message, attributes) do
@@ -177,7 +186,6 @@ defmodule Stitch.Message do
   end
 
   def mark_as_read_all(user, group_id) do
-    # read_mentions(message_ids, user.id)
     Message
     |> where([m], m.group_id == ^group_id)
     |> _mark_as_read(user.id)
@@ -188,8 +196,8 @@ defmodule Stitch.Message do
 
     queryable
     |> where([m], m.user_id != ^user_id)
-    |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user_id)))
-    |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^value)])
+    |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
+    |> update([m], set: [read_status: ^value])
     |> Repo.update_all([], returning: true)
   end
 end

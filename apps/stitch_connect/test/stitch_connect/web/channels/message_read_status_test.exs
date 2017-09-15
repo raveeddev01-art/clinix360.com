@@ -18,9 +18,9 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
     [message1, message2, message3] = messages |> Enum.map(&Repo.get(Message, &1.id))
     user_id_str = to_string(user2.id)
 
-    assert Map.has_key?(message1.read_status, user_id_str)
-    assert Map.has_key?(message2.read_status, user_id_str)
-    refute Map.has_key?(message3.read_status, user_id_str)
+    assert message1.read_status[user_id_str] != nil
+    assert message2.read_status[user_id_str] != nil
+    assert message3.read_status[user_id_str] == nil
   end
 
   test "mark_as_read event returns only updated messages",

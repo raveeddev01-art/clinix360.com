@@ -19,7 +19,7 @@ defmodule Stitch.MessageCreationTest do
       Message.mark_as_read(user2, message.id)
 
       message = Repo.get Message, message.id
-      assert Map.has_key?(message.read_status, to_string(user2.id))
+      assert message.read_status[to_string(user2.id)] == nil
     end
 
     test "when marking the same message as read twice, oldest entry is keeped", %{group: group, user: user} do
@@ -37,7 +37,8 @@ defmodule Stitch.MessageCreationTest do
     end
 
     test "returns updates messages and count", %{group: group, user: user} do
-      user2 = insert(:user)
+      user2 = insert(:user, team: user.team)
+      insert(:group_user, user: user2, group: group)
 
       {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       assert {1, [updated_message]} = Message.mark_as_read(user2, message.id)
@@ -50,7 +51,8 @@ defmodule Stitch.MessageCreationTest do
 
   describe "&Message.mark_as_read_all/2" do
     test "marks all messages of given group id as read by given user", %{group: group, user: user} do
-      user2 = insert(:user)
+      user2 = insert(:user, team: user.team)
+      insert(:group_user, user: user2, group: group)
 
       {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       Message.mark_as_read_all(user2, group.id)
@@ -74,7 +76,8 @@ defmodule Stitch.MessageCreationTest do
     end
 
     test "returns updates messages and count", %{group: group, user: user} do
-      user2 = insert(:user)
+      user2 = insert(:user, team: user.team)
+      insert(:group_user, user: user2, group: group)
 
       {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       assert {1, [updated_message]} = Message.mark_as_read_all(user2, group.id)
