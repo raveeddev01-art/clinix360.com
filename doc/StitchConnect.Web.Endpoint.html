@@ -4,11 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.16.2">
+    <meta name="generator" content="ExDoc v0.16.4">
     <title>StitchConnect.Web.Endpoint –  vdev</title>
-    <link rel="stylesheet" href="dist/app-268c9dc719.css" />
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
     
-    <script src="dist/sidebar_items-2c0454c901.js"></script>
+    
+    <script src="dist/sidebar_items-1eff67c96a.js"></script>
+    
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -33,10 +35,12 @@
     
   </a>
 
-  <div class="sidebar-search">
-    <span class="icon-search" aria-hidden="true"></span>
-    <input type="text" class="sidebar-searchInput" placeholder="search" aria-label="Search" autocomplete="off" />
-  </div>
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
 
   <ul class="sidebar-listNav">
     <li><a id="extras-list" href="#full-list">Pages</a></li>
@@ -98,11 +102,17 @@
     <a href="#broadcast/3">broadcast(topic, event, msg)</a>
   </div>
   
+    <div class="summary-synopsis"><p>Broadcasts a <code class="inline">msg</code> as <code class="inline">event</code> in the given <code class="inline">topic</code></p>
+</div>
+  
 </div>
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#broadcast!/3">broadcast!(topic, event, msg)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Broadcasts a <code class="inline">msg</code> as <code class="inline">event</code> in the given <code class="inline">topic</code></p>
+</div>
   
 </div>
 <div class="summary-row">
@@ -110,11 +120,17 @@
     <a href="#broadcast_from/4">broadcast_from(from, topic, event, msg)</a>
   </div>
   
+    <div class="summary-synopsis"><p>Broadcasts a <code class="inline">msg</code> from the given <code class="inline">from</code> as <code class="inline">event</code> in the given <code class="inline">topic</code></p>
+</div>
+  
 </div>
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#broadcast_from!/4">broadcast_from!(from, topic, event, msg)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Broadcasts a <code class="inline">msg</code> from the given <code class="inline">from</code> as <code class="inline">event</code> in the given <code class="inline">topic</code></p>
+</div>
   
 </div>
 <div class="summary-row">
@@ -122,7 +138,7 @@
     <a href="#call/2">call(conn, opts)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/plug/1.3.5/Plug.html#c:call/2"><code class="inline">Plug.call/2</code></a></p>
+    <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/plug/1.4.3/Plug.html#c:call/2"><code class="inline">Plug.call/2</code></a></p>
 </div>
   
 </div>
@@ -158,7 +174,16 @@
     <a href="#init/1">init(opts)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/plug/1.3.5/Plug.html#c:init/1"><code class="inline">Plug.init/1</code></a></p>
+    <div class="summary-synopsis"><p>Callback implementation for <a href="https://hexdocs.pm/plug/1.4.3/Plug.html#c:init/1"><code class="inline">Plug.init/1</code></a></p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#init/2">init(key, config)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Callback invoked on endpoint initialization</p>
 </div>
   
 </div>
@@ -201,7 +226,7 @@ on startup</p>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#start_link/0">start_link()</a>
+    <a href="#start_link/1">start_link(opts \\ [])</a>
   </div>
   
     <div class="summary-synopsis"><p>Starts the endpoint supervision tree</p>
@@ -252,6 +277,9 @@ on startup</p>
     <a href="#unsubscribe/1">unsubscribe(topic)</a>
   </div>
   
+    <div class="summary-synopsis"><p>Unsubscribes the caller from the given topic</p>
+</div>
+  
 </div>
 <div class="summary-row">
   <div class="summary-signature">
@@ -284,6 +312,7 @@ on startup</p>
           </h1>
           <div class="detail" id="__sockets__/0">
   
+  
   <div class="detail-header">
     <a href="#__sockets__/0" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -301,6 +330,7 @@ on startup</p>
 </div>
 <div class="detail" id="broadcast/3">
   
+  
   <div class="detail-header">
     <a href="#broadcast/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -312,10 +342,13 @@ on startup</p>
     
   </div>
   <section class="docstring">
-    
+    <p>Broadcasts a <code class="inline">msg</code> as <code class="inline">event</code> in the given <code class="inline">topic</code>.</p>
+<p>Callback implementation for <a href="https://hexdocs.pm/phoenix/1.3.0/Phoenix.Endpoint.html#c:broadcast/3"><code class="inline">Phoenix.Endpoint.broadcast/3</code></a>.</p>
+
   </section>
 </div>
 <div class="detail" id="broadcast!/3">
+  
   
   <div class="detail-header">
     <a href="#broadcast!/3" class="detail-link" title="Link to this function">
@@ -328,10 +361,14 @@ on startup</p>
     
   </div>
   <section class="docstring">
-    
+    <p>Broadcasts a <code class="inline">msg</code> as <code class="inline">event</code> in the given <code class="inline">topic</code>.</p>
+<p>Raises in case of failures.</p>
+<p>Callback implementation for <a href="https://hexdocs.pm/phoenix/1.3.0/Phoenix.Endpoint.html#c:broadcast!/3"><code class="inline">Phoenix.Endpoint.broadcast!/3</code></a>.</p>
+
   </section>
 </div>
 <div class="detail" id="broadcast_from/4">
+  
   
   <div class="detail-header">
     <a href="#broadcast_from/4" class="detail-link" title="Link to this function">
@@ -344,10 +381,13 @@ on startup</p>
     
   </div>
   <section class="docstring">
-    
+    <p>Broadcasts a <code class="inline">msg</code> from the given <code class="inline">from</code> as <code class="inline">event</code> in the given <code class="inline">topic</code>.</p>
+<p>Callback implementation for <a href="https://hexdocs.pm/phoenix/1.3.0/Phoenix.Endpoint.html#c:broadcast_from/4"><code class="inline">Phoenix.Endpoint.broadcast_from/4</code></a>.</p>
+
   </section>
 </div>
 <div class="detail" id="broadcast_from!/4">
+  
   
   <div class="detail-header">
     <a href="#broadcast_from!/4" class="detail-link" title="Link to this function">
@@ -360,10 +400,14 @@ on startup</p>
     
   </div>
   <section class="docstring">
-    
+    <p>Broadcasts a <code class="inline">msg</code> from the given <code class="inline">from</code> as <code class="inline">event</code> in the given <code class="inline">topic</code>.</p>
+<p>Raises in case of failures.</p>
+<p>Callback implementation for <a href="https://hexdocs.pm/phoenix/1.3.0/Phoenix.Endpoint.html#c:broadcast_from!/4"><code class="inline">Phoenix.Endpoint.broadcast_from!/4</code></a>.</p>
+
   </section>
 </div>
 <div class="detail" id="call/2">
+  
   
   <div class="detail-header">
     <a href="#call/2" class="detail-link" title="Link to this function">
@@ -376,11 +420,12 @@ on startup</p>
     
   </div>
   <section class="docstring">
-    <p>Callback implementation for <a href="https://hexdocs.pm/plug/1.3.5/Plug.html#c:call/2"><code class="inline">Plug.call/2</code></a>.</p>
+    <p>Callback implementation for <a href="https://hexdocs.pm/plug/1.4.3/Plug.html#c:call/2"><code class="inline">Plug.call/2</code></a>.</p>
 
   </section>
 </div>
 <div class="detail" id="config/2">
+  
   
     <span id="config/1"></span>
   
@@ -402,6 +447,7 @@ on startup</p>
 </div>
 <div class="detail" id="config_change/2">
   
+  
   <div class="detail-header">
     <a href="#config_change/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -418,6 +464,7 @@ on startup</p>
   </section>
 </div>
 <div class="detail" id="host/0">
+  
   
   <div class="detail-header">
     <a href="#host/0" class="detail-link" title="Link to this function">
@@ -436,6 +483,7 @@ on startup</p>
 </div>
 <div class="detail" id="init/1">
   
+  
   <div class="detail-header">
     <a href="#init/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -447,11 +495,30 @@ on startup</p>
     
   </div>
   <section class="docstring">
-    <p>Callback implementation for <a href="https://hexdocs.pm/plug/1.3.5/Plug.html#c:init/1"><code class="inline">Plug.init/1</code></a>.</p>
+    <p>Callback implementation for <a href="https://hexdocs.pm/plug/1.4.3/Plug.html#c:init/1"><code class="inline">Plug.init/1</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="init/2">
+  
+  
+  <div class="detail-header">
+    <a href="#init/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">init(key, config)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Callback invoked on endpoint initialization.</p>
 
   </section>
 </div>
 <div class="detail" id="instrument/3">
+  
   
     <span id="instrument/2"></span>
   
@@ -486,6 +553,7 @@ end</code></pre>
 </div>
 <div class="detail" id="load_from_system_env/1">
   
+  
   <div class="detail-header">
     <a href="#load_from_system_env/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -506,6 +574,7 @@ and must return the updated configuration.</p>
 </div>
 <div class="detail" id="path/1">
   
+  
   <div class="detail-header">
     <a href="#path/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -523,6 +592,7 @@ and must return the updated configuration.</p>
 </div>
 <div class="detail" id="script_name/0">
   
+  
   <div class="detail-header">
     <a href="#script_name/0" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -538,14 +608,17 @@ and must return the updated configuration.</p>
 
   </section>
 </div>
-<div class="detail" id="start_link/0">
+<div class="detail" id="start_link/1">
+  
+  
+    <span id="start_link/0"></span>
   
   <div class="detail-header">
-    <a href="#start_link/0" class="detail-link" title="Link to this function">
+    <a href="#start_link/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">start_link()</span>
+    <span class="signature">start_link(opts \\ [])</span>
     
     
     
@@ -556,6 +629,7 @@ and must return the updated configuration.</p>
   </section>
 </div>
 <div class="detail" id="static_path/1">
+  
   
   <div class="detail-header">
     <a href="#static_path/1" class="detail-link" title="Link to this function">
@@ -573,6 +647,7 @@ and must return the updated configuration.</p>
   </section>
 </div>
 <div class="detail" id="static_url/0">
+  
   
   <div class="detail-header">
     <a href="#static_url/0" class="detail-link" title="Link to this function">
@@ -592,6 +667,7 @@ such. It falls back to <code class="inline">:url</code> if <code class="inline">
   </section>
 </div>
 <div class="detail" id="struct_url/0">
+  
   
   <div class="detail-header">
     <a href="#struct_url/0" class="detail-link" title="Link to this function">
@@ -613,6 +689,7 @@ URL helpers.</p>
 </div>
 <div class="detail" id="subscribe/1">
   
+  
   <div class="detail-header">
     <a href="#subscribe/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -628,6 +705,7 @@ URL helpers.</p>
   </section>
 </div>
 <div class="detail" id="subscribe/3">
+  
   
   <div class="detail-header">
     <a href="#subscribe/3" class="detail-link" title="Link to this function">
@@ -645,6 +723,7 @@ URL helpers.</p>
 </div>
 <div class="detail" id="unsubscribe/1">
   
+  
   <div class="detail-header">
     <a href="#unsubscribe/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -656,10 +735,13 @@ URL helpers.</p>
     
   </div>
   <section class="docstring">
-    
+    <p>Unsubscribes the caller from the given topic.</p>
+<p>Callback implementation for <a href="https://hexdocs.pm/phoenix/1.3.0/Phoenix.Endpoint.html#c:unsubscribe/1"><code class="inline">Phoenix.Endpoint.unsubscribe/1</code></a>.</p>
+
   </section>
 </div>
 <div class="detail" id="url/0">
+  
   
   <div class="detail-header">
     <a href="#url/0" class="detail-link" title="Link to this function">
@@ -686,7 +768,7 @@ URL helpers.</p>
         <p>
           <span class="line">
             Built using
-            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.2),
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
           </span>
           <span class="line">
             designed by
@@ -699,7 +781,8 @@ URL helpers.</p>
   </div>
 </section>
 </div>
-  <script src="dist/app-4988ddd06b.js"></script>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
   </body>
 </html>
 

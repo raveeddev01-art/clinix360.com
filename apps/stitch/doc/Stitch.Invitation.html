@@ -5,10 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Stitch.User.Onboarding.Email –  vdev</title>
+    <title>Stitch.Invitation – stitch v0.1.0</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
-    <script src="dist/sidebar_items-2c0454c901.js"></script>
+    <script src="dist/sidebar_items-79327c5897.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -24,10 +24,10 @@
   <a href="api-reference.html" class="sidebar-projectLink">
     <div class="sidebar-projectDetails">
       <h1 class="sidebar-projectName">
-        
+        stitch
       </h1>
       <h2 class="sidebar-projectVersion">
-        vdev
+        v0.1.0
       </h2>
     </div>
     
@@ -61,11 +61,16 @@
 
 
       <h1>
-        <small class="visible-xs"> vdev</small>
-        Stitch.User.Onboarding.Email
+        <small class="visible-xs">stitch v0.1.0</small>
+        Stitch.Invitation
         
       </h1>
 
+      
+        <section id="moduledoc">
+          <p>Module in charge of handling team invitation actions.</p>
+
+        </section>
       
 
       
@@ -86,14 +91,21 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#confirmation_code_email/1">confirmation_code_email(user)</a>
+    <a href="#list_team_invitations/1">list_team_invitations(user_id)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Returns a list of Invitations associated with the team</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#team_invitation/3">team_invitation(inviter_name, team_name, user)</a>
+    <a href="#resend_invitation/2">resend_invitation(user_id, invitation_id)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Resends invitation email to the user provided the invite hasn’t
+been accepted yet</p>
+</div>
   
 </div>
 
@@ -116,36 +128,39 @@
             </a>
             Functions
           </h1>
-          <div class="detail" id="confirmation_code_email/1">
+          <div class="detail" id="list_team_invitations/1">
   
   <div class="detail-header">
-    <a href="#confirmation_code_email/1" class="detail-link" title="Link to this function">
+    <a href="#list_team_invitations/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">confirmation_code_email(user)</span>
+    <span class="signature">list_team_invitations(user_id)</span>
     
     
     
   </div>
   <section class="docstring">
-    
+    <p>Returns a list of Invitations associated with the team.</p>
+
   </section>
 </div>
-<div class="detail" id="team_invitation/3">
+<div class="detail" id="resend_invitation/2">
   
   <div class="detail-header">
-    <a href="#team_invitation/3" class="detail-link" title="Link to this function">
+    <a href="#resend_invitation/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">team_invitation(inviter_name, team_name, user)</span>
+    <span class="signature">resend_invitation(user_id, invitation_id)</span>
     
     
     
   </div>
   <section class="docstring">
-    
+    <p>Resends invitation email to the user provided the invite hasn’t
+been accepted yet.</p>
+
   </section>
 </div>
 

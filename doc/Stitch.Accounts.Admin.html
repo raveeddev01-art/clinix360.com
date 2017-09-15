@@ -4,11 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.16.2">
-    <title>Stitch.User –  vdev</title>
-    <link rel="stylesheet" href="dist/app-268c9dc719.css" />
+    <meta name="generator" content="ExDoc v0.16.4">
+    <title>Stitch.Accounts.Admin –  vdev</title>
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
     
-    <script src="dist/sidebar_items-2c0454c901.js"></script>
+    
+    <script src="dist/sidebar_items-1eff67c96a.js"></script>
+    
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -33,10 +35,12 @@
     
   </a>
 
-  <div class="sidebar-search">
-    <span class="icon-search" aria-hidden="true"></span>
-    <input type="text" class="sidebar-searchInput" placeholder="search" aria-label="Search" autocomplete="off" />
-  </div>
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
 
   <ul class="sidebar-listNav">
     <li><a id="extras-list" href="#full-list">Pages</a></li>
@@ -62,10 +66,16 @@
 
       <h1>
         <small class="visible-xs"> vdev</small>
-        Stitch.User
+        Stitch.Accounts.Admin
         
       </h1>
 
+      
+        <section id="moduledoc">
+          <p>The Accounts Admin context. Operations for administering a
+users account.</p>
+
+        </section>
       
 
       
@@ -86,41 +96,40 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#changeset/2">changeset(struct, params \\ %{})</a>
+    <a href="#deactivate/1">deactivate(user_id)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Sets the disabled boolean flag to true for the provided user</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#promote_admin/2">promote_admin(promoter, target_id)</a>
   </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#onboarding_complete_changeset/2">onboarding_complete_changeset(struct, params)</a>
+    <a href="#revoke_admin/2">revoke_admin(revoker, target_id)</a>
   </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#onboarding_email_changeset/2">onboarding_email_changeset(struct, params)</a>
+    <a href="#update_unread_message_notification_interval/2">update_unread_message_notification_interval(user_id, notification_interval)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Updates the user unread_message_notification_interval field</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#password_update_changeset/2">password_update_changeset(struct, params)</a>
+    <a href="#update_user/2">update_user(user_id, params)</a>
   </div>
   
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#registration_changeset/2">registration_changeset(struct, params)</a>
-  </div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#team_invite_changeset/2">team_invite_changeset(struct, params)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Changeset to create a User record for a team invite. Creates
-account with only email, invite_token and team_id</p>
+    <div class="summary-synopsis"><p>Updates the user information</p>
 </div>
   
 </div>
@@ -144,16 +153,33 @@ account with only email, invite_token and team_id</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="changeset/2">
+          <div class="detail" id="deactivate/1">
   
-    <span id="changeset/1"></span>
   
   <div class="detail-header">
-    <a href="#changeset/2" class="detail-link" title="Link to this function">
+    <a href="#deactivate/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">changeset(struct, params \\ %{})</span>
+    <span class="signature">deactivate(user_id)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Sets the disabled boolean flag to true for the provided user.</p>
+
+  </section>
+</div>
+<div class="detail" id="promote_admin/2">
+  
+  
+  <div class="detail-header">
+    <a href="#promote_admin/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">promote_admin(promoter, target_id)</span>
     
     
     
@@ -162,14 +188,15 @@ account with only email, invite_token and team_id</p>
     
   </section>
 </div>
-<div class="detail" id="onboarding_complete_changeset/2">
+<div class="detail" id="revoke_admin/2">
+  
   
   <div class="detail-header">
-    <a href="#onboarding_complete_changeset/2" class="detail-link" title="Link to this function">
+    <a href="#revoke_admin/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">onboarding_complete_changeset(struct, params)</span>
+    <span class="signature">revoke_admin(revoker, target_id)</span>
     
     
     
@@ -178,69 +205,47 @@ account with only email, invite_token and team_id</p>
     
   </section>
 </div>
-<div class="detail" id="onboarding_email_changeset/2">
+<div class="detail" id="update_unread_message_notification_interval/2">
+  
   
   <div class="detail-header">
-    <a href="#onboarding_email_changeset/2" class="detail-link" title="Link to this function">
+    <a href="#update_unread_message_notification_interval/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">onboarding_email_changeset(struct, params)</span>
+    <span class="signature">update_unread_message_notification_interval(user_id, notification_interval)</span>
     
     
+    
+      <div class="specs">
+        
+          <pre>update_unread_message_notification_interval(number, number) ::
+  {:ok, term} |
+  {:error, term}</pre>
+        
+      </div>
     
   </div>
   <section class="docstring">
-    
+    <p>Updates the user unread_message_notification_interval field.</p>
+
   </section>
 </div>
-<div class="detail" id="password_update_changeset/2">
+<div class="detail" id="update_user/2">
+  
   
   <div class="detail-header">
-    <a href="#password_update_changeset/2" class="detail-link" title="Link to this function">
+    <a href="#update_user/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">password_update_changeset(struct, params)</span>
+    <span class="signature">update_user(user_id, params)</span>
     
     
     
   </div>
   <section class="docstring">
-    
-  </section>
-</div>
-<div class="detail" id="registration_changeset/2">
-  
-  <div class="detail-header">
-    <a href="#registration_changeset/2" class="detail-link" title="Link to this function">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this function</span>
-    </a>
-    <span class="signature">registration_changeset(struct, params)</span>
-    
-    
-    
-  </div>
-  <section class="docstring">
-    
-  </section>
-</div>
-<div class="detail" id="team_invite_changeset/2">
-  
-  <div class="detail-header">
-    <a href="#team_invite_changeset/2" class="detail-link" title="Link to this function">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this function</span>
-    </a>
-    <span class="signature">team_invite_changeset(struct, params)</span>
-    
-    
-    
-  </div>
-  <section class="docstring">
-    <p>Changeset to create a User record for a team invite. Creates
-account with only email, invite_token and team_id.</p>
+    <p>Updates the user information</p>
 
   </section>
 </div>
@@ -253,7 +258,7 @@ account with only email, invite_token and team_id.</p>
         <p>
           <span class="line">
             Built using
-            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.2),
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
           </span>
           <span class="line">
             designed by
@@ -266,7 +271,8 @@ account with only email, invite_token and team_id.</p>
   </div>
 </section>
 </div>
-  <script src="dist/app-4988ddd06b.js"></script>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
   </body>
 </html>
 

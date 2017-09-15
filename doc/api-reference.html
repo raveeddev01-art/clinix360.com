@@ -4,11 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.16.2">
+    <meta name="generator" content="ExDoc v0.16.4">
     <title>API Reference –  vdev</title>
-    <link rel="stylesheet" href="dist/app-268c9dc719.css" />
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
     
-    <script src="dist/sidebar_items-2c0454c901.js"></script>
+    
+    <script src="dist/sidebar_items-1eff67c96a.js"></script>
+    
   </head>
   <body data-type="extras">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -33,10 +35,12 @@
     
   </a>
 
-  <div class="sidebar-search">
-    <span class="icon-search" aria-hidden="true"></span>
-    <input type="text" class="sidebar-searchInput" placeholder="search" aria-label="Search" autocomplete="off" />
-  </div>
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
 
   <ul class="sidebar-listNav">
     <li><a id="extras-list" href="#full-list">Pages</a></li>
@@ -76,7 +80,8 @@
       <div class="summary-row">
   <div class="summary-signature"><a href="Stitch.html">Stitch</a></div>
   
-    <div class="summary-synopsis"><p>Documentation for Stitch</p>
+    <div class="summary-synopsis"><p>Stitch keeps the contexts that define your domain
+and business logic</p>
 </div>
   
 </div>
@@ -88,9 +93,60 @@
   
 </div>
 <div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Accounts.Admin.html">Stitch.Accounts.Admin</a></div>
+  
+    <div class="summary-synopsis"><p>The Accounts Admin context. Operations for administering a
+users account</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Accounts.Email.html">Stitch.Accounts.Email</a></div>
+  
+    <div class="summary-synopsis"><p>Handles email for all user account actions</p>
+</div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature"><a href="Stitch.Accounts.User.html">Stitch.Accounts.User</a></div>
   
     <div class="summary-synopsis"><p>The User schema module</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Group.html">Stitch.Group</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.GroupAuthorization.html">Stitch.GroupAuthorization</a></div>
+  
+    <div class="summary-synopsis"><p>Module in charge of permission handling for group actions</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.GroupQueries.html">Stitch.GroupQueries</a></div>
+  
+    <div class="summary-synopsis"><p>Module in charge of all group related queries</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.GroupUser.html">Stitch.GroupUser</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Invitation.html">Stitch.Invitation</a></div>
+  
+    <div class="summary-synopsis"><p>Module in charge of handling team invitation actions</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Invitation.Email.html">Stitch.Invitation.Email</a></div>
+  
+    <div class="summary-synopsis"><p>Handles email for all user invitation features</p>
 </div>
   
 </div>
@@ -99,27 +155,45 @@
   
 </div>
 <div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Message.html">Stitch.Message</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Message.Mention.html">Stitch.Message.Mention</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Message.Notification.html">Stitch.Message.Notification</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.MessageAction.html">Stitch.MessageAction</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.MessageQueries.html">Stitch.MessageQueries</a></div>
+  
+    <div class="summary-synopsis"><p>Module in charge of all message related queries</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Paginator.html">Stitch.Paginator</a></div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature"><a href="Stitch.Repo.html">Stitch.Repo</a></div>
   
 </div>
 <div class="summary-row">
-  <div class="summary-signature"><a href="Stitch.Room.html">Stitch.Room</a></div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Stitch.Room.Authorization.html">Stitch.Room.Authorization</a></div>
-  
-    <div class="summary-synopsis"><p>Onboarding module used to onboard new teams to the Stitch
-platform</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Stitch.RoomQueries.html">Stitch.RoomQueries</a></div>
-  
-</div>
-<div class="summary-row">
   <div class="summary-signature"><a href="Stitch.Team.html">Stitch.Team</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Stitch.Team.Admin.html">Stitch.Team.Admin</a></div>
+  
+    <div class="summary-synopsis"><p>The Team Admin context. Operations for administering a team</p>
+</div>
   
 </div>
 <div class="summary-row">
@@ -142,10 +216,6 @@ platform</p>
   
 </div>
 <div class="summary-row">
-  <div class="summary-signature"><a href="Stitch.User.html">Stitch.User</a></div>
-  
-</div>
-<div class="summary-row">
   <div class="summary-signature"><a href="Stitch.User.Authentication.html">Stitch.User.Authentication</a></div>
   
 </div>
@@ -155,10 +225,6 @@ platform</p>
     <div class="summary-synopsis"><p>Onboarding module used to onboard new users to the Stitch
 platform and Teams within the Stitch platofrm</p>
 </div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Stitch.User.Onboarding.Email.html">Stitch.User.Onboarding.Email</a></div>
   
 </div>
 <div class="summary-row">
@@ -186,6 +252,10 @@ platform and Teams within the Stitch platofrm</p>
   
 </div>
 <div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Plug.TeamAdminOnly.html">StitchConnect.Plug.TeamAdminOnly</a></div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature"><a href="StitchConnect.Web.html">StitchConnect.Web</a></div>
   
     <div class="summary-synopsis"><p>A module that keeps using definitions for controllers,
@@ -194,19 +264,71 @@ views and so on</p>
   
 </div>
 <div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.AdminController.html">StitchConnect.Web.AdminController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.AdminView.html">StitchConnect.Web.AdminView</a></div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.AuthenticationController.html">StitchConnect.Web.Api.V1.AuthenticationController</a></div>
   
 </div>
 <div class="summary-row">
-  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.RoomController.html">StitchConnect.Web.Api.V1.RoomController</a></div>
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.AuthenticationView.html">StitchConnect.Web.Api.V1.AuthenticationView</a></div>
   
 </div>
 <div class="summary-row">
-  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.RoomView.html">StitchConnect.Web.Api.V1.RoomView</a></div>
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.GroupController.html">StitchConnect.Web.Api.V1.GroupController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.GroupView.html">StitchConnect.Web.Api.V1.GroupView</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.InvitationController.html">StitchConnect.Web.Api.V1.InvitationController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.InvitationView.html">StitchConnect.Web.Api.V1.InvitationView</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.MessageController.html">StitchConnect.Web.Api.V1.MessageController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.MessageView.html">StitchConnect.Web.Api.V1.MessageView</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.NotificationPreferenceController.html">StitchConnect.Web.Api.V1.NotificationPreferenceController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.NotificationPreferenceView.html">StitchConnect.Web.Api.V1.NotificationPreferenceView</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.StarredMessageController.html">StitchConnect.Web.Api.V1.StarredMessageController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.StarredMessageView.html">StitchConnect.Web.Api.V1.StarredMessageView</a></div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.TeamController.html">StitchConnect.Web.Api.V1.TeamController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.UploadController.html">StitchConnect.Web.Api.V1.UploadController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.Api.V1.UploadView.html">StitchConnect.Web.Api.V1.UploadView</a></div>
   
 </div>
 <div class="summary-row">
@@ -226,6 +348,10 @@ views and so on</p>
   
 </div>
 <div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.ControllerHelpers.html">StitchConnect.Web.ControllerHelpers</a></div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature"><a href="StitchConnect.Web.Endpoint.html">StitchConnect.Web.Endpoint</a></div>
   
 </div>
@@ -241,10 +367,30 @@ views and so on</p>
   
 </div>
 <div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.EventsChannel.html">StitchConnect.Web.EventsChannel</a></div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature"><a href="StitchConnect.Web.Gettext.html">StitchConnect.Web.Gettext</a></div>
   
     <div class="summary-synopsis"><p>A module providing Internationalization with a gettext-based API</p>
 </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.GroupChannel.html">StitchConnect.Web.GroupChannel</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.GroupController.html">StitchConnect.Web.GroupController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.InvitationController.html">StitchConnect.Web.InvitationController</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.InvitationView.html">StitchConnect.Web.InvitationView</a></div>
   
 </div>
 <div class="summary-row">
@@ -256,6 +402,10 @@ views and so on</p>
   
 </div>
 <div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.PageService.html">StitchConnect.Web.PageService</a></div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature"><a href="StitchConnect.Web.PageView.html">StitchConnect.Web.PageView</a></div>
   
 </div>
@@ -264,10 +414,6 @@ views and so on</p>
   
     <div class="summary-synopsis"><p>Provides presence tracking to channels and processes</p>
 </div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="StitchConnect.Web.RoomChannel.html">StitchConnect.Web.RoomChannel</a></div>
   
 </div>
 <div class="summary-row">
@@ -297,7 +443,15 @@ views and so on</p>
   
 </div>
 <div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.UserController.html">StitchConnect.Web.UserController</a></div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature"><a href="StitchConnect.Web.UserSocket.html">StitchConnect.Web.UserSocket</a></div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="StitchConnect.Web.UserStatusService.html">StitchConnect.Web.UserStatusService</a></div>
   
 </div>
 
@@ -315,7 +469,7 @@ views and so on</p>
         <p>
           <span class="line">
             Built using
-            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.2),
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
           </span>
           <span class="line">
             designed by
@@ -328,7 +482,8 @@ views and so on</p>
   </div>
 </section>
 </div>
-  <script src="dist/app-4988ddd06b.js"></script>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
   </body>
 </html>
 

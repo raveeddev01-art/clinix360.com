@@ -4,11 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.16.2">
+    <meta name="generator" content="ExDoc v0.16.4">
     <title>Stitch.Accounts.User –  vdev</title>
-    <link rel="stylesheet" href="dist/app-268c9dc719.css" />
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
     
-    <script src="dist/sidebar_items-2c0454c901.js"></script>
+    
+    <script src="dist/sidebar_items-1eff67c96a.js"></script>
+    
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -33,10 +35,12 @@
     
   </a>
 
-  <div class="sidebar-search">
-    <span class="icon-search" aria-hidden="true"></span>
-    <input type="text" class="sidebar-searchInput" placeholder="search" aria-label="Search" autocomplete="off" />
-  </div>
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
 
   <ul class="sidebar-listNav">
     <li><a id="extras-list" href="#full-list">Pages</a></li>
@@ -91,7 +95,13 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#email_changeset/2">email_changeset(user, attrs)</a>
+    <a href="#changeset/2">changeset(struct, attrs)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#email_changeset/2">email_changeset(struct, attrs)</a>
   </div>
   
     <div class="summary-synopsis"><p>Applies the attributes: email, confirmation_code and token
@@ -113,12 +123,29 @@ to the Stitch.Accounts.User struct</p>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#preference_changeset/2">preference_changeset(struct, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#registration_changeset/2">registration_changeset(struct, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#team_invite_changeset/2">team_invite_changeset(struct, params)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Changeset to create a User record for a team invite. Creates
-account with only email, invite_token and team_id</p>
+    <div class="summary-synopsis"><p>Applies the attributes: email, team_id to the Stitch.Accounts.User struct</p>
 </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_preference/2">update_preference(user, params)</a>
+  </div>
   
 </div>
 
@@ -141,14 +168,32 @@ account with only email, invite_token and team_id</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="email_changeset/2">
+          <div class="detail" id="changeset/2">
+  
+  
+  <div class="detail-header">
+    <a href="#changeset/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">changeset(struct, attrs)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="email_changeset/2">
+  
   
   <div class="detail-header">
     <a href="#email_changeset/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">email_changeset(user, attrs)</span>
+    <span class="signature">email_changeset(struct, attrs)</span>
     
     
     
@@ -168,6 +213,7 @@ Stitch.Accounts.User.email_changeset(user, %{email: &quot;a@email.com&quot;, con
 </div>
 <div class="detail" id="onboarding_complete_changeset/2">
   
+  
   <div class="detail-header">
     <a href="#onboarding_complete_changeset/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -184,6 +230,7 @@ Stitch.Accounts.User.email_changeset(user, %{email: &quot;a@email.com&quot;, con
 </div>
 <div class="detail" id="password_update_changeset/2">
   
+  
   <div class="detail-header">
     <a href="#password_update_changeset/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -198,7 +245,42 @@ Stitch.Accounts.User.email_changeset(user, %{email: &quot;a@email.com&quot;, con
     
   </section>
 </div>
+<div class="detail" id="preference_changeset/2">
+  
+  
+  <div class="detail-header">
+    <a href="#preference_changeset/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">preference_changeset(struct, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="registration_changeset/2">
+  
+  
+  <div class="detail-header">
+    <a href="#registration_changeset/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">registration_changeset(struct, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 <div class="detail" id="team_invite_changeset/2">
+  
   
   <div class="detail-header">
     <a href="#team_invite_changeset/2" class="detail-link" title="Link to this function">
@@ -211,9 +293,25 @@ Stitch.Accounts.User.email_changeset(user, %{email: &quot;a@email.com&quot;, con
     
   </div>
   <section class="docstring">
-    <p>Changeset to create a User record for a team invite. Creates
-account with only email, invite_token and team_id.</p>
+    <p>Applies the attributes: email, team_id to the Stitch.Accounts.User struct.</p>
 
+  </section>
+</div>
+<div class="detail" id="update_preference/2">
+  
+  
+  <div class="detail-header">
+    <a href="#update_preference/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_preference(user, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
   </section>
 </div>
 
@@ -225,7 +323,7 @@ account with only email, invite_token and team_id.</p>
         <p>
           <span class="line">
             Built using
-            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.2),
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
           </span>
           <span class="line">
             designed by
@@ -238,7 +336,8 @@ account with only email, invite_token and team_id.</p>
   </div>
 </section>
 </div>
-  <script src="dist/app-4988ddd06b.js"></script>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
   </body>
 </html>
 

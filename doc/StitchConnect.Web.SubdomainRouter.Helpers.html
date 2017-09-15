@@ -4,11 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.16.2">
+    <meta name="generator" content="ExDoc v0.16.4">
     <title>StitchConnect.Web.SubdomainRouter.Helpers –  vdev</title>
-    <link rel="stylesheet" href="dist/app-268c9dc719.css" />
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
     
-    <script src="dist/sidebar_items-2c0454c901.js"></script>
+    
+    <script src="dist/sidebar_items-1eff67c96a.js"></script>
+    
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -33,10 +35,12 @@
     
   </a>
 
-  <div class="sidebar-search">
-    <span class="icon-search" aria-hidden="true"></span>
-    <input type="text" class="sidebar-searchInput" placeholder="search" aria-label="Search" autocomplete="off" />
-  </div>
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
 
   <ul class="sidebar-listNav">
     <li><a id="extras-list" href="#full-list">Pages</a></li>
@@ -91,6 +95,30 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
+    <a href="#admin_path/2">admin_path(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#admin_path/3">admin_path(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#admin_url/2">admin_url(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#admin_url/3">admin_url(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#api_v1_authentication_path/2">api_v1_authentication_path(conn_or_endpoint, action)</a>
   </div>
   
@@ -115,25 +143,217 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#api_v1_room_path/2">api_v1_room_path(conn_or_endpoint, action)</a>
+    <a href="#api_v1_group_path/2">api_v1_group_path(conn_or_endpoint, action)</a>
   </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#api_v1_room_path/3">api_v1_room_path(conn_or_endpoint, action, params)</a>
+    <a href="#api_v1_group_path/3">api_v1_group_path(conn_or_endpoint, action, params)</a>
   </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#api_v1_room_url/2">api_v1_room_url(conn_or_endpoint, action)</a>
+    <a href="#api_v1_group_path/4">api_v1_group_path(conn_or_endpoint, action, id, params)</a>
   </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#api_v1_room_url/3">api_v1_room_url(conn_or_endpoint, action, params)</a>
+    <a href="#api_v1_group_url/2">api_v1_group_url(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_group_url/3">api_v1_group_url(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_group_url/4">api_v1_group_url(conn_or_endpoint, action, id, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_invitation_path/2">api_v1_invitation_path(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_invitation_path/3">api_v1_invitation_path(conn_or_endpoint, action, token)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_invitation_path/4">api_v1_invitation_path(conn_or_endpoint, action, token, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_invitation_url/2">api_v1_invitation_url(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_invitation_url/3">api_v1_invitation_url(conn_or_endpoint, action, token)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_invitation_url/4">api_v1_invitation_url(conn_or_endpoint, action, token, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_message_path/2">api_v1_message_path(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_message_path/3">api_v1_message_path(conn_or_endpoint, action, group_id)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_message_path/4">api_v1_message_path(conn_or_endpoint, action, group_id, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_message_url/2">api_v1_message_url(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_message_url/3">api_v1_message_url(conn_or_endpoint, action, group_id)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_message_url/4">api_v1_message_url(conn_or_endpoint, action, group_id, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_notification_preference_path/2">api_v1_notification_preference_path(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_notification_preference_path/3">api_v1_notification_preference_path(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_notification_preference_path/4">api_v1_notification_preference_path(conn_or_endpoint, action, group_id, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_notification_preference_url/2">api_v1_notification_preference_url(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_notification_preference_url/3">api_v1_notification_preference_url(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_notification_preference_url/4">api_v1_notification_preference_url(conn_or_endpoint, action, group_id, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_starred_message_path/2">api_v1_starred_message_path(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_starred_message_path/3">api_v1_starred_message_path(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_starred_message_url/2">api_v1_starred_message_url(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_starred_message_url/3">api_v1_starred_message_url(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_team_path/3">api_v1_team_path(conn_or_endpoint, action, id)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_team_path/4">api_v1_team_path(conn_or_endpoint, action, id, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_team_url/3">api_v1_team_url(conn_or_endpoint, action, id)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_team_url/4">api_v1_team_url(conn_or_endpoint, action, id, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_upload_path/2">api_v1_upload_path(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_upload_path/3">api_v1_upload_path(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_upload_url/2">api_v1_upload_url(conn_or_endpoint, action)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_upload_url/3">api_v1_upload_url(conn_or_endpoint, action, params)</a>
   </div>
   
 </div>
@@ -151,6 +371,12 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#api_v1_user_path/4">api_v1_user_path(conn_or_endpoint, action, id, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#api_v1_user_url/2">api_v1_user_url(conn_or_endpoint, action)</a>
   </div>
   
@@ -158,6 +384,12 @@
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#api_v1_user_url/3">api_v1_user_url(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#api_v1_user_url/4">api_v1_user_url(conn_or_endpoint, action, id, params)</a>
   </div>
   
 </div>
@@ -175,6 +407,12 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#authentication_path/4">authentication_path(conn_or_endpoint, action, token, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#authentication_url/2">authentication_url(conn_or_endpoint, action)</a>
   </div>
   
@@ -182,6 +420,60 @@
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#authentication_url/3">authentication_url(conn_or_endpoint, action, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#authentication_url/4">authentication_url(conn_or_endpoint, action, token, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#group_path/3">group_path(conn_or_endpoint, action, slug)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#group_path/4">group_path(conn_or_endpoint, action, slug, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#group_url/3">group_url(conn_or_endpoint, action, slug)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#group_url/4">group_url(conn_or_endpoint, action, slug, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#invitation_path/3">invitation_path(conn_or_endpoint, action, token)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#invitation_path/4">invitation_path(conn_or_endpoint, action, token, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#invitation_url/3">invitation_url(conn_or_endpoint, action, token)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#invitation_url/4">invitation_url(conn_or_endpoint, action, token, params)</a>
   </div>
   
 </div>
@@ -245,6 +537,30 @@
 </div>
   
 </div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_path/3">user_path(conn_or_endpoint, action, username)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_path/4">user_path(conn_or_endpoint, action, username, params)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_url/3">user_url(conn_or_endpoint, action, username)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_url/4">user_url(conn_or_endpoint, action, username, params)</a>
+  </div>
+  
+</div>
 
   </div>
 
@@ -265,7 +581,76 @@
             </a>
             Functions
           </h1>
-          <div class="detail" id="api_v1_authentication_path/2">
+          <div class="detail" id="admin_path/2">
+  
+  
+  <div class="detail-header">
+    <a href="#admin_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">admin_path(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="admin_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#admin_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">admin_path(conn_or_endpoint, action, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="admin_url/2">
+  
+  
+  <div class="detail-header">
+    <a href="#admin_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">admin_url(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="admin_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#admin_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">admin_url(conn_or_endpoint, action, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_authentication_path/2">
+  
   
   <div class="detail-header">
     <a href="#api_v1_authentication_path/2" class="detail-link" title="Link to this function">
@@ -283,6 +668,7 @@
 </div>
 <div class="detail" id="api_v1_authentication_path/3">
   
+  
   <div class="detail-header">
     <a href="#api_v1_authentication_path/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -298,6 +684,7 @@
   </section>
 </div>
 <div class="detail" id="api_v1_authentication_url/2">
+  
   
   <div class="detail-header">
     <a href="#api_v1_authentication_url/2" class="detail-link" title="Link to this function">
@@ -315,6 +702,7 @@
 </div>
 <div class="detail" id="api_v1_authentication_url/3">
   
+  
   <div class="detail-header">
     <a href="#api_v1_authentication_url/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -329,14 +717,15 @@
     
   </section>
 </div>
-<div class="detail" id="api_v1_room_path/2">
+<div class="detail" id="api_v1_group_path/2">
+  
   
   <div class="detail-header">
-    <a href="#api_v1_room_path/2" class="detail-link" title="Link to this function">
+    <a href="#api_v1_group_path/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">api_v1_room_path(conn_or_endpoint, action)</span>
+    <span class="signature">api_v1_group_path(conn_or_endpoint, action)</span>
     
     
     
@@ -345,14 +734,15 @@
     
   </section>
 </div>
-<div class="detail" id="api_v1_room_path/3">
+<div class="detail" id="api_v1_group_path/3">
+  
   
   <div class="detail-header">
-    <a href="#api_v1_room_path/3" class="detail-link" title="Link to this function">
+    <a href="#api_v1_group_path/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">api_v1_room_path(conn_or_endpoint, action, params)</span>
+    <span class="signature">api_v1_group_path(conn_or_endpoint, action, params)</span>
     
     
     
@@ -361,14 +751,15 @@
     
   </section>
 </div>
-<div class="detail" id="api_v1_room_url/2">
+<div class="detail" id="api_v1_group_path/4">
+  
   
   <div class="detail-header">
-    <a href="#api_v1_room_url/2" class="detail-link" title="Link to this function">
+    <a href="#api_v1_group_path/4" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">api_v1_room_url(conn_or_endpoint, action)</span>
+    <span class="signature">api_v1_group_path(conn_or_endpoint, action, id, params)</span>
     
     
     
@@ -377,14 +768,559 @@
     
   </section>
 </div>
-<div class="detail" id="api_v1_room_url/3">
+<div class="detail" id="api_v1_group_url/2">
+  
   
   <div class="detail-header">
-    <a href="#api_v1_room_url/3" class="detail-link" title="Link to this function">
+    <a href="#api_v1_group_url/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">api_v1_room_url(conn_or_endpoint, action, params)</span>
+    <span class="signature">api_v1_group_url(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_group_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_group_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_group_url(conn_or_endpoint, action, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_group_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_group_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_group_url(conn_or_endpoint, action, id, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_invitation_path/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_invitation_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_invitation_path(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_invitation_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_invitation_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_invitation_path(conn_or_endpoint, action, token)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_invitation_path/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_invitation_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_invitation_path(conn_or_endpoint, action, token, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_invitation_url/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_invitation_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_invitation_url(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_invitation_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_invitation_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_invitation_url(conn_or_endpoint, action, token)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_invitation_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_invitation_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_invitation_url(conn_or_endpoint, action, token, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_message_path/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_message_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_message_path(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_message_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_message_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_message_path(conn_or_endpoint, action, group_id)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_message_path/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_message_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_message_path(conn_or_endpoint, action, group_id, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_message_url/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_message_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_message_url(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_message_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_message_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_message_url(conn_or_endpoint, action, group_id)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_message_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_message_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_message_url(conn_or_endpoint, action, group_id, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_notification_preference_path/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_notification_preference_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_notification_preference_path(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_notification_preference_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_notification_preference_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_notification_preference_path(conn_or_endpoint, action, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_notification_preference_path/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_notification_preference_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_notification_preference_path(conn_or_endpoint, action, group_id, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_notification_preference_url/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_notification_preference_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_notification_preference_url(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_notification_preference_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_notification_preference_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_notification_preference_url(conn_or_endpoint, action, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_notification_preference_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_notification_preference_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_notification_preference_url(conn_or_endpoint, action, group_id, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_starred_message_path/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_starred_message_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_starred_message_path(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_starred_message_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_starred_message_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_starred_message_path(conn_or_endpoint, action, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_starred_message_url/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_starred_message_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_starred_message_url(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_starred_message_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_starred_message_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_starred_message_url(conn_or_endpoint, action, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_team_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_team_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_team_path(conn_or_endpoint, action, id)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_team_path/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_team_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_team_path(conn_or_endpoint, action, id, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_team_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_team_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_team_url(conn_or_endpoint, action, id)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_team_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_team_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_team_url(conn_or_endpoint, action, id, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_upload_path/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_upload_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_upload_path(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_upload_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_upload_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_upload_path(conn_or_endpoint, action, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_upload_url/2">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_upload_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_upload_url(conn_or_endpoint, action)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="api_v1_upload_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_upload_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_upload_url(conn_or_endpoint, action, params)</span>
     
     
     
@@ -394,6 +1330,7 @@
   </section>
 </div>
 <div class="detail" id="api_v1_user_path/2">
+  
   
   <div class="detail-header">
     <a href="#api_v1_user_path/2" class="detail-link" title="Link to this function">
@@ -411,6 +1348,7 @@
 </div>
 <div class="detail" id="api_v1_user_path/3">
   
+  
   <div class="detail-header">
     <a href="#api_v1_user_path/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -425,7 +1363,25 @@
     
   </section>
 </div>
+<div class="detail" id="api_v1_user_path/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_user_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_user_path(conn_or_endpoint, action, id, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 <div class="detail" id="api_v1_user_url/2">
+  
   
   <div class="detail-header">
     <a href="#api_v1_user_url/2" class="detail-link" title="Link to this function">
@@ -443,6 +1399,7 @@
 </div>
 <div class="detail" id="api_v1_user_url/3">
   
+  
   <div class="detail-header">
     <a href="#api_v1_user_url/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -457,7 +1414,25 @@
     
   </section>
 </div>
+<div class="detail" id="api_v1_user_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#api_v1_user_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">api_v1_user_url(conn_or_endpoint, action, id, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 <div class="detail" id="authentication_path/2">
+  
   
   <div class="detail-header">
     <a href="#authentication_path/2" class="detail-link" title="Link to this function">
@@ -475,6 +1450,7 @@
 </div>
 <div class="detail" id="authentication_path/3">
   
+  
   <div class="detail-header">
     <a href="#authentication_path/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -489,7 +1465,25 @@
     
   </section>
 </div>
+<div class="detail" id="authentication_path/4">
+  
+  
+  <div class="detail-header">
+    <a href="#authentication_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">authentication_path(conn_or_endpoint, action, token, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 <div class="detail" id="authentication_url/2">
+  
   
   <div class="detail-header">
     <a href="#authentication_url/2" class="detail-link" title="Link to this function">
@@ -507,6 +1501,7 @@
 </div>
 <div class="detail" id="authentication_url/3">
   
+  
   <div class="detail-header">
     <a href="#authentication_url/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -521,7 +1516,161 @@
     
   </section>
 </div>
+<div class="detail" id="authentication_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#authentication_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">authentication_url(conn_or_endpoint, action, token, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="group_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#group_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">group_path(conn_or_endpoint, action, slug)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="group_path/4">
+  
+  
+  <div class="detail-header">
+    <a href="#group_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">group_path(conn_or_endpoint, action, slug, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="group_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#group_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">group_url(conn_or_endpoint, action, slug)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="group_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#group_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">group_url(conn_or_endpoint, action, slug, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="invitation_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#invitation_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">invitation_path(conn_or_endpoint, action, token)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="invitation_path/4">
+  
+  
+  <div class="detail-header">
+    <a href="#invitation_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">invitation_path(conn_or_endpoint, action, token, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="invitation_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#invitation_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">invitation_url(conn_or_endpoint, action, token)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="invitation_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#invitation_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">invitation_url(conn_or_endpoint, action, token, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 <div class="detail" id="page_path/2">
+  
   
   <div class="detail-header">
     <a href="#page_path/2" class="detail-link" title="Link to this function">
@@ -539,6 +1688,7 @@
 </div>
 <div class="detail" id="page_path/3">
   
+  
   <div class="detail-header">
     <a href="#page_path/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -554,6 +1704,7 @@
   </section>
 </div>
 <div class="detail" id="page_url/2">
+  
   
   <div class="detail-header">
     <a href="#page_url/2" class="detail-link" title="Link to this function">
@@ -571,6 +1722,7 @@
 </div>
 <div class="detail" id="page_url/3">
   
+  
   <div class="detail-header">
     <a href="#page_url/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -586,6 +1738,7 @@
   </section>
 </div>
 <div class="detail" id="path/2">
+  
   
   <div class="detail-header">
     <a href="#path/2" class="detail-link" title="Link to this function">
@@ -604,6 +1757,7 @@
 </div>
 <div class="detail" id="static_path/2">
   
+  
   <div class="detail-header">
     <a href="#static_path/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -620,6 +1774,7 @@
   </section>
 </div>
 <div class="detail" id="static_url/2">
+  
   
   <div class="detail-header">
     <a href="#static_url/2" class="detail-link" title="Link to this function">
@@ -638,6 +1793,7 @@
 </div>
 <div class="detail" id="url/1">
   
+  
   <div class="detail-header">
     <a href="#url/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
@@ -653,6 +1809,74 @@
 
   </section>
 </div>
+<div class="detail" id="user_path/3">
+  
+  
+  <div class="detail-header">
+    <a href="#user_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">user_path(conn_or_endpoint, action, username)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="user_path/4">
+  
+  
+  <div class="detail-header">
+    <a href="#user_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">user_path(conn_or_endpoint, action, username, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="user_url/3">
+  
+  
+  <div class="detail-header">
+    <a href="#user_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">user_url(conn_or_endpoint, action, username)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="user_url/4">
+  
+  
+  <div class="detail-header">
+    <a href="#user_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">user_url(conn_or_endpoint, action, username, params)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 
         </section>
       
@@ -662,7 +1886,7 @@
         <p>
           <span class="line">
             Built using
-            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.2),
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
           </span>
           <span class="line">
             designed by
@@ -675,7 +1899,8 @@
   </div>
 </section>
 </div>
-  <script src="dist/app-4988ddd06b.js"></script>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
   </body>
 </html>
 

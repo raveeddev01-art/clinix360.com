@@ -1,0 +1,438 @@
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.16.2">
+    <title>Stitch.Accounts.Admin – stitch v0.1.0</title>
+    <link rel="stylesheet" href="dist/app-268c9dc719.css" />
+    
+    <script src="dist/sidebar_items-79327c5897.js"></script>
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        stitch
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.1.0
+      </h2>
+    </div>
+    
+  </a>
+
+  <div class="sidebar-search">
+    <span class="icon-search" aria-hidden="true"></span>
+    <input type="text" class="sidebar-searchInput" placeholder="search" aria-label="Search" autocomplete="off" />
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs">stitch v0.1.0</small>
+        Stitch.Accounts.Admin
+        
+      </h1>
+
+      
+        <section id="moduledoc">
+          <p>The Accounts Admin context. Operations for administering a
+users account.</p>
+
+        </section>
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+          
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_email/2">update_email(user_id, email)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Updates the user email field</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_firstname_and_lastname/3">update_firstname_and_lastname(user_id, firstname, lastname)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Updates the user firstname and lastname field</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_password/2">update_password(user_id, password)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Updates the user encrypted_password field</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_phone_number/2">update_phone_number(user_id, phone_number)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Updates the user phone_number field</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_pin/2">update_pin(user_id, pin)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Updates the user pin field</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_profile_image_url/2">update_profile_image_url(user_id, profile_image_url)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Updates the user profile_image_url field</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_title/2">update_title(user_id, title)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Updates the user title field</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_unread_message_notification_interval/2">update_unread_message_notification_interval(user_id, notification_interval)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Updates the user unread_message_notification_interval field</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#update_username/2">update_username(user_id, username)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Updates the user username field</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+
+        </section>
+      
+
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="update_email/2">
+  
+  <div class="detail-header">
+    <a href="#update_email/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_email(user_id, email)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>update_email(number, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) :: {:ok, term} | {:error, term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Updates the user email field.</p>
+
+  </section>
+</div>
+<div class="detail" id="update_firstname_and_lastname/3">
+  
+  <div class="detail-header">
+    <a href="#update_firstname_and_lastname/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_firstname_and_lastname(user_id, firstname, lastname)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>update_firstname_and_lastname(number, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) ::
+  {:ok, term} |
+  {:error, term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Updates the user firstname and lastname field.</p>
+
+  </section>
+</div>
+<div class="detail" id="update_password/2">
+  
+  <div class="detail-header">
+    <a href="#update_password/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_password(user_id, password)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>update_password(number, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) ::
+  {:ok, term} |
+  {:error, term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Updates the user encrypted_password field.</p>
+
+  </section>
+</div>
+<div class="detail" id="update_phone_number/2">
+  
+  <div class="detail-header">
+    <a href="#update_phone_number/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_phone_number(user_id, phone_number)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>update_phone_number(number, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) ::
+  {:ok, term} |
+  {:error, term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Updates the user phone_number field.</p>
+
+  </section>
+</div>
+<div class="detail" id="update_pin/2">
+  
+  <div class="detail-header">
+    <a href="#update_pin/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_pin(user_id, pin)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>update_pin(number, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) :: {:ok, term} | {:error, term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Updates the user pin field.</p>
+
+  </section>
+</div>
+<div class="detail" id="update_profile_image_url/2">
+  
+  <div class="detail-header">
+    <a href="#update_profile_image_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_profile_image_url(user_id, profile_image_url)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>update_profile_image_url(number, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) ::
+  {:ok, term} |
+  {:error, term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Updates the user profile_image_url field.</p>
+
+  </section>
+</div>
+<div class="detail" id="update_title/2">
+  
+  <div class="detail-header">
+    <a href="#update_title/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_title(user_id, title)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>update_title(number, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) :: {:ok, term} | {:error, term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Updates the user title field.</p>
+
+  </section>
+</div>
+<div class="detail" id="update_unread_message_notification_interval/2">
+  
+  <div class="detail-header">
+    <a href="#update_unread_message_notification_interval/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_unread_message_notification_interval(user_id, notification_interval)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>update_unread_message_notification_interval(number, number) ::
+  {:ok, term} |
+  {:error, term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Updates the user unread_message_notification_interval field.</p>
+
+  </section>
+</div>
+<div class="detail" id="update_username/2">
+  
+  <div class="detail-header">
+    <a href="#update_username/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">update_username(user_id, username)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>update_username(number, <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>) ::
+  {:ok, term} |
+  {:error, term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Updates the user username field.</p>
+
+  </section>
+</div>
+
+        </section>
+      
+
+      
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.2),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle"><span class="sr-only">Switch theme</span></button>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-4988ddd06b.js"></script>
+  </body>
+</html>
+
