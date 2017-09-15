@@ -127,14 +127,10 @@ defmodule Stitch.Message do
     group = Stitch.GroupQueries.get_by_id(message.group_id)
     users = Repo.preload(group, :users).users
 
-    Repo.transaction fn ->
-      remove_mention_from_users(group, message)
-
-      case Repo.delete(message) do
-        {:ok, message} -> message
-        {:error, changeset} -> Repo.rollback(changeset)
-      end
-    end
+    Multi.new
+    |> Multi.run(:remove_mention, fn _ -> {:ok, remove_mention_from_users(group, message)} end)
+    |> Multi.delete(:message, message)
+    |> Repo.transaction
   end
 
   def remove_mention_from_users(group, message) do

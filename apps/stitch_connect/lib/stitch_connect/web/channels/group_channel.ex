@@ -174,7 +174,7 @@ defmodule StitchConnect.Web.GroupChannel do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.delete(message) do
-      {:ok, message} ->
+      {:ok, %{message: message}} ->
         broadcast! socket, "delete_msg", %{id: message.id}
         EventsChannel.broadcast_group_msg_deleted(group, message)
 
