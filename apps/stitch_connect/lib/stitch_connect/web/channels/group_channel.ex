@@ -135,13 +135,6 @@ defmodule StitchConnect.Web.GroupChannel do
     |> mark_as_read_response(user, socket)
   end
 
-  def handle_in("mark_as_read", %{"message_ids" => message_ids}, socket) do
-    user = socket.assigns.current_user
-
-    Message.mark_as_read(user, message_ids)
-    |> mark_as_read_response(user, socket)
-  end
-
   defp mark_as_read_response({_, messages}, user, socket) do
     messages = MessageQueries.load_info(messages)
 

@@ -12,6 +12,9 @@ defmodule Stitch.GroupUser do
     field :desktop_notification_preference, :string, default: "default"
     field :mobile_notification_preference, :string, default: "default"
     field :mentioning_message_ids, {:array, :integer}, default: []
+    field :unread_messages_count, :integer, default: 0
+    field :mentions_count, :integer, default: 0
+    field :last_read_at, :utc_datetime
 
     timestamps()
   end
@@ -86,12 +89,5 @@ defmodule Stitch.GroupUser do
     else
       {:error, "Not found"}
     end
-  end
-
-  def mentions_count(group_id, user_id) do
-    GroupUser
-    |> where(group_id: ^group_id, user_id: ^user_id)
-    |> select([gu], fragment("COALESCE(ARRAY_LENGTH(?, 1), 0)", gu.mentioning_message_ids))
-    |> Repo.one
   end
 end
