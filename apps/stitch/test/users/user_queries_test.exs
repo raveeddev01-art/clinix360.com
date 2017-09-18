@@ -109,7 +109,7 @@ defmodule Stitch.UserQueriesTest do
       assert user.id != nil
     end
   end
-  
+
   describe "Stitch.UserQueries.team_member_with_email/2" do
     test "returns true or false if uesr exists or not" do
       team = insert(:team)

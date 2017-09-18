@@ -33,7 +33,7 @@ defmodule Stitch.MessageCreationTest do
       assert read_status[to_string(alice.id)] == nil
     end
 
-    test "updates group_users.last_read_at and group_users.mentions_count", %{bob: bob, alice: alice, eve: eve, group: group} do
+    test "updates group_users.last_read_at, group_users.unread_messages_count, and group_users.mentions_count", %{bob: bob, alice: alice, eve: eve, group: group} do
       {:ok, %{message: message}} = Message.create(group.id, eve, %{"text_content" => "Hi, @bob!", "type" => "chat"})
       assert Map.has_key?(message.read_status, to_string(bob.id))
       assert Map.has_key?(message.read_status, to_string(alice.id))
@@ -41,12 +41,14 @@ defmodule Stitch.MessageCreationTest do
 
       group_user_bob = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user_bob.mentions_count == 1
+      assert group_user_bob.unread_messages_count == 1
       last_read_at_before = group_user_bob.last_read_at
 
       Message.mark_as_read_all(bob.id, group.id)
 
       group_user_bob = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user_bob.mentions_count == 0
+      assert group_user_bob.unread_messages_count == 0
       assert group_user_bob.last_read_at != nil
       assert last_read_at_before != group_user_bob.last_read_at
     end

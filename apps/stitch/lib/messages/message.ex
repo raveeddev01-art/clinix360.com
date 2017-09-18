@@ -60,8 +60,10 @@ defmodule Stitch.Message do
 
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"])
     notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
-    read_status = users |> Enum.reduce(%{}, fn (recipient, acc) ->
-      if recipient.id == user.id, do: acc, else: Map.put(acc, to_string(recipient.id), nil)
+    {read_status, recipients} = users |> Enum.reduce({%{}, []}, fn (recipient, {acc_map, acc_list}) ->
+      acc_map = if recipient.id == user.id, do: acc_map, else: Map.put(acc_map, to_string(recipient.id), nil)
+      acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
+      {acc_map, acc_list}
     end)
 
     message_struct = %Message{group_id: group_id, user_id: user.id}
@@ -71,6 +73,9 @@ defmodule Stitch.Message do
     |> Multi.insert(:message, message_changeset(message_struct, attrs))
     |> Multi.run(:mentions, fn %{message: message} ->
       {:ok, mention_users(message)}
+    end)
+    |> Multi.run(:increment_unread_counter, fn %{message: message} ->
+      {:ok, increment_unread_counter(message, recipients)}
     end)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
       {:ok, notify_user_ids.desktop}
@@ -115,6 +120,14 @@ defmodule Stitch.Message do
     |> Multi.run(:remove_mention, fn _ -> {:ok, unmention_users(message)} end)
     |> Multi.delete(:message, message)
     |> Repo.transaction
+  end
+
+  def increment_unread_counter(message, user_ids) do
+    Stitch.GroupUser
+    |> where([gu], gu.group_id == ^message.group_id)
+    |> where([gu], gu.user_id in ^user_ids)
+    |> update([gu], inc: [unread_messages_count: ^1])
+    |> Repo.update_all([], returning: true)
   end
 
   def mention_users(message) do
@@ -164,7 +177,7 @@ defmodule Stitch.Message do
   def mark_group_as_read(group_id, user_id) do
     GroupUser
     |> where(group_id: ^group_id, user_id: ^user_id)
-    |> update([m], set: [last_read_at: ^DateTime.utc_now, mentions_count: 0])
+    |> update([m], set: [last_read_at: ^DateTime.utc_now, mentions_count: 0, unread_messages_count: 0])
     |> Repo.update_all([], returning: true)
   end
 end
