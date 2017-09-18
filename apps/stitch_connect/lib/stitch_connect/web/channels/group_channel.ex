@@ -135,13 +135,17 @@ defmodule StitchConnect.Web.GroupChannel do
     |> mark_as_read_response(user, socket)
   end
 
-  defp mark_as_read_response({:ok, %{mark_messages_as_read: {_, messages}}}, user, socket) do
+  defp mark_as_read_response({:ok, %{mark_messages_as_read: {_, messages}, update_last_read_at: {1, [group_user]}}}, user, socket) do
     messages = MessageQueries.load_info(messages)
-
-    EventsChannel.broadcast_marked_as_read(user, messages)
+    EventsChannel.broadcast_marked_as_read(user, messages) # TODO: is it used by frontnend?
 
     json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
-    {:reply, {:ok, %{messages: json}}, socket}
+    {:reply, {:ok, %{
+      messages: json,
+      last_read_at: group_user.last_read_at,
+      mentions_count: group_user.mentions_count,
+      unread_messages_count: group_user.unread_messages_count,
+    }}, socket}
   end
 
   def handle_in("edit_msg", %{"message_id" => message_id, "params" => params}, socket) do

@@ -11,7 +11,6 @@ defmodule Stitch.GroupUser do
     field :is_favorite, :boolean, default: false
     field :desktop_notification_preference, :string, default: "default"
     field :mobile_notification_preference, :string, default: "default"
-    field :mentioning_message_ids, {:array, :integer}, default: []
     field :unread_messages_count, :integer, default: 0
     field :mentions_count, :integer, default: 0
     field :last_read_at, :utc_datetime
