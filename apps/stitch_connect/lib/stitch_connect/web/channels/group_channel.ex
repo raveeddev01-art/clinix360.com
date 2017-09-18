@@ -128,10 +128,10 @@ defmodule StitchConnect.Web.GroupChannel do
     do_new_msg(socket, group, user, params)
   end
 
-  def handle_in("mark_as_read_all", %{"group_id" => group_id}, socket) do
+  def handle_in("mark_as_read", %{"group_id" => group_id}, socket) do
     user = socket.assigns.current_user
 
-    Message.mark_as_read_all(user.id, group_id)
+    Message.mark_as_read(user.id, group_id)
     |> mark_as_read_response(user, socket)
   end
 

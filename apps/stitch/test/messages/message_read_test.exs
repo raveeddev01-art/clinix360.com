@@ -4,14 +4,14 @@ defmodule Stitch.MessageReadingTest do
 
   setup :create_group_with_users
 
-  describe "&Message.mark_as_read_all/2" do
+  describe "&Message.mark_as_read/2" do
     test "updates read_status if it contains the user as a recipient", %{bob: bob, alice: alice, eve: eve, group: group} do
       {:ok, %{message: message}} = Message.create(group.id, eve, %{"text_content" => "Hi, all!", "type" => "chat"})
       assert Map.has_key?(message.read_status, to_string(bob.id))
       assert Map.has_key?(message.read_status, to_string(alice.id))
       assert [nil, nil] == Map.values(message.read_status)
 
-      Message.mark_as_read_all(bob.id, group.id)
+      Message.mark_as_read(bob.id, group.id)
       message = Repo.get(Message, message.id)
 
       read_status = Map.take(message.read_status, [to_string(bob.id), to_string(alice.id)])
@@ -25,7 +25,7 @@ defmodule Stitch.MessageReadingTest do
       assert Map.has_key?(message.read_status, to_string(alice.id))
       assert [nil, nil] == Map.values(message.read_status)
 
-      Message.mark_as_read_all(eve.id, group.id)
+      Message.mark_as_read(eve.id, group.id)
       message = Repo.get(Message, message.id)
 
       read_status = Map.take(message.read_status, [to_string(bob.id), to_string(alice.id)])
@@ -44,7 +44,7 @@ defmodule Stitch.MessageReadingTest do
       assert group_user_bob.unread_messages_count == 1
       last_read_at_before = group_user_bob.last_read_at
 
-      Message.mark_as_read_all(bob.id, group.id)
+      Message.mark_as_read(bob.id, group.id)
 
       group_user_bob = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user_bob.mentions_count == 0

@@ -158,7 +158,7 @@ defmodule Stitch.Message do
     |> Repo.update
   end
 
-  def mark_as_read_all(user_id, group_id) do
+  def mark_as_read(user_id, group_id) do
     Multi.new
     |> Multi.run(:mark_messages_as_read, fn _ -> {:ok, mark_messages_as_read(group_id, user_id)} end)
     |> Multi.run(:update_last_read_at, fn _ -> {:ok, mark_group_as_read(group_id, user_id)} end)
