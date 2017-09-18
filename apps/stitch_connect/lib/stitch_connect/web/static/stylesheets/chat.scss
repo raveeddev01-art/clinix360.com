@@ -10,10 +10,26 @@
       display: flex;
       align-items: center;
 
-      .form-control {
-        background: #fff;
-        border: 0;
-        box-shadow: none;
+      form {
+        margin-left: 10px;
+        position: relative;
+
+        i.fa {
+          color: $brand-primary;
+          font-size: 18px;
+          line-height: 34px;
+          position: absolute;
+          left: 14px;
+          top: 0;
+        }
+
+        .form-control {
+          background: #fff;
+          box-shadow: none;
+          border-radius: 20px;
+          border: 0;
+          padding-left: 38px;
+        }
       }
 
       .btn-default {
@@ -21,12 +37,9 @@
         font-size: 21px;
         background: transparent;
         border: 0;
+        box-shadow: none;
         padding: 2px 10px;
-        margin-right: 10px;
-      }
-
-      .more-btn {
-        margin: 0 0 0 10px;
+        margin-left: 10px;
       }
     }
 

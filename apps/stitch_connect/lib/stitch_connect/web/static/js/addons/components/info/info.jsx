@@ -26,9 +26,9 @@ class Info extends Component {
         <AddonCollapse icon="thumb-tack" title="Pinned">
           <PinnedMessages />
         </AddonCollapse>
-        {/* <AddonCollapse icon="star" title="Starred">
+        <AddonCollapse icon="star" title="Starred">
           <StarredMessages />
-        </AddonCollapse> */}
+        </AddonCollapse>
         {/* <AddonCollapse icon="list" title="Tasks">
           <p>placeholder</p>
         </AddonCollapse> */}

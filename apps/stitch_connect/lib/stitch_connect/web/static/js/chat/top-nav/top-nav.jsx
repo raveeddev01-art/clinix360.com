@@ -51,19 +51,6 @@ class TopNav extends Component {
   loadMore = () => {
     this.search();
   };
-  
-  /* handleChange = event => {
-    this.setState({ query: event.target.value });
-    this.search(event.target.value);
-  }; */
-
-  /* handleKeyPress = event => {
-    if(event.key == 'Enter'){
-      this.props.addonStore.setAddonPanel("search");
-      this.props.addonStore.toggleAddons(true);
-      console.log(this.state.query)
-    }
-  }; */
 
   render() {
     return (
@@ -100,21 +87,14 @@ class TopNav extends Component {
           </a>
 
           <Form onSubmit={this.onSearch}>
+            <i className="fa fa-search"></i>
             <FormControl
               type="text"
-              placeholder="Enter text"
+              placeholder="Search"
               onChange={this.onChange}
               value={this.state.query}
             />
           </Form>
-
-          <a
-            role="link"
-            className="btn btn-default"
-            onClick={this._toggleAddonMenu("search")}
-          >
-            <i className="fa fa-star" />
-          </a>
 
           <DotOptions />
         </div>
