@@ -5,6 +5,7 @@ class UploadStore {
   @observable uploadProgress = new Map();
   @observable title = "";
   @observable description = "";
+  @observable groupId = null;
   @observable isUploadModalVisible = false;
   dropzoneRef = null;
   file = null;
@@ -25,6 +26,12 @@ class UploadStore {
     this.title = file.name;
     this.description = "";
     this.isUploadModalVisible = true;
+    this.groupId = this.rootStore.groupStore.id;
+  };
+
+  @action
+  changeUploadGroup = groupId => {
+    this.groupId = groupId;
   };
 
   @action
@@ -75,13 +82,18 @@ class UploadStore {
           });
       })
       .then(url => {
-        return this.rootStore.messageStore.sendMessage(description, {
-          type: "upload",
-          fields: {
-            filename: title,
-            mimetype: file.type,
-            size_in_bytes: file.size,
-            url
+        return post(`/api/v1/groups/${this.groupId}/messages`, {
+          body: {
+            message: {
+              type: "upload",
+              fields: {
+                filename: title,
+                mimetype: file.type,
+                size_in_bytes: file.size,
+                url
+              },
+              text_content: description
+            }
           }
         });
       })

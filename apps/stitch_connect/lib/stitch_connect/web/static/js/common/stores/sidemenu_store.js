@@ -63,7 +63,6 @@ class SidemenuStore {
   @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
-      console.log(response);
       this.groups = response.data;
     });
   };
@@ -89,8 +88,8 @@ class SidemenuStore {
 
   /**
    * Unlock the session by calling backend api
-   * 
-   * @param {String} pin 
+   *
+   * @param {String} pin
    */
   @action
   unlock(pin) {
