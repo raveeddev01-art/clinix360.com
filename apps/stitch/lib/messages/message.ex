@@ -133,14 +133,6 @@ defmodule Stitch.Message do
     |> Repo.update_all([], returning: true)
   end
 
-  def reset_mentions(group_id, user_id) do
-    Stitch.GroupUser
-    |> where([gu], gu.group_id == ^group_id)
-    |> where([gu], gu.user_id in ^user_id)
-    |> update([gu], set: [mentions_count: 0])
-    |> Repo.update_all([], returning: true)
-  end
-
   def pin(message, user) do
     message
     |> changeset(%{pinned: true, pinned_by_id: user.id, pinned_at: DateTime.utc_now})
@@ -155,8 +147,8 @@ defmodule Stitch.Message do
 
   def mark_as_read_all(user_id, group_id) do
     Multi.new
-    |> Multi.run(:mark_messages_as_read, fn _ -> mark_messages_as_read(group_id, user_id) end)
-    |> Multi.run(:update_last_read_at, fn _ -> update_last_read_at(group_id, user_id) end)
+    |> Multi.run(:mark_messages_as_read, fn _ -> {:ok, mark_messages_as_read(group_id, user_id)} end)
+    |> Multi.run(:update_last_read_at, fn _ -> {:ok, mark_group_as_read(group_id, user_id)} end)
     |> Repo.transaction
   end
 
@@ -169,7 +161,7 @@ defmodule Stitch.Message do
     |> Repo.update_all([], returning: true)
   end
 
-  def update_last_read_at(user_id, group_id) do
+  def mark_group_as_read(group_id, user_id) do
     GroupUser
     |> where(group_id: ^group_id, user_id: ^user_id)
     |> update([m], set: [last_read_at: ^DateTime.utc_now, mentions_count: 0])
