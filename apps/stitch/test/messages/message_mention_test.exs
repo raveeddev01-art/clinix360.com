@@ -70,7 +70,7 @@ defmodule Stitch.Message.MentionTest do
       group_bob = insert(:group_user, user: bob, group: group)
       group_alice = insert(:group_user, user: alice, group: group)
 
-      {:ok, %{message: message}} = Stitch.Message.create(group.id, bob, %{"text_content" => "Hello, @alice.", "type" => "chat"})
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, bob, %{"text_content" => "Hello, @alice.", "type" => "chat"})
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -89,7 +89,7 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       _group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hello, @alice, and @bob.", "type" => "chat"})
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hello, @alice, and @bob.", "type" => "chat"})
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -111,7 +111,7 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, @all!", "type" => "chat"})
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, @all!", "type" => "chat"})
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)

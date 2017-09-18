@@ -170,10 +170,10 @@ defmodule Stitch.GroupQueriesTest do
 
       assert {:ok, %{unread_messages_count: 0}} = GroupQueries.find_by_slug("a", user_a)
 
-      {:ok, %{message: message}} = Message.create(group.id, user_b, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: _message}} = Message.create(group.id, user_b, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{unread_messages_count: 1}} = GroupQueries.find_by_slug("a", user_a)
 
-      {:ok, %{message: message}} = Message.create(group.id, user_a, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: _message}} = Message.create(group.id, user_a, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{unread_messages_count: 1}} = GroupQueries.find_by_slug("a", user_a)
     end
   end

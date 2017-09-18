@@ -1,4 +1,4 @@
-defmodule Stitch.MessageCreationTest do
+defmodule Stitch.MessageReadingTest do
   use Stitch.DataCase
   alias Stitch.{Repo, Message, GroupUser}
 
@@ -60,9 +60,9 @@ defmodule Stitch.MessageCreationTest do
     alice = insert(:user, username: "alice", team: team)
     eve = insert(:user, username: "eve", team: team)
     group = insert(:group, slug: "general", team: team)
-    group_bob = insert(:group_user, user: bob, group: group)
-    group_alice = insert(:group_user, user: alice, group: group)
-    group_eve = insert(:group_user, user: eve, group: group)
+    _group_user_bob = insert(:group_user, user: bob, group: group)
+    _group_users_alice = insert(:group_user, user: alice, group: group)
+    _group_user_eve = insert(:group_user, user: eve, group: group)
     {:ok, bob: bob, alice: alice, eve: eve, group: group}
   end
 end
