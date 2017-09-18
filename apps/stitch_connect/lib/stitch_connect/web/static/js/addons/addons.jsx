@@ -57,7 +57,7 @@ class Addons extends Component {
 
         <div className="flex-content">
           <div className={leftPanelClass}>
-            {addonStore.addonPanelType === "info" && <Info />}
+            {addonStore.addonPanelType === "Room Information" && <Info />}
             {addonStore.addonPanelType === "directory" && <Directory />}
             {addonStore.addonPanelType === "search" && <MessageSearch />}
             {addonStore.addonPanelType === "mentions" && <Mentions />}

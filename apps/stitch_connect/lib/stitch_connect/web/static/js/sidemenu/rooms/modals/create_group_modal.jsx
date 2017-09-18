@@ -65,7 +65,7 @@ class CreateGroupModal extends Component {
     return (
       <Modal className="sidemenu-modal" show={this.props.showModal}>
         <Modal.Header>
-          <Modal.Title>Create Group</Modal.Title>
+          <Modal.Title>Create Room</Modal.Title>
           <a role="link" onClick={this.props.toggleModal}>
             <i className="fa fa-close" />
           </a>
@@ -73,7 +73,7 @@ class CreateGroupModal extends Component {
 
         <Modal.Body>
           <h5>
-            Groups are where your team communicates. They’re best when organized
+            Rooms are where your team communicates. They’re best when organized
             around a topic — Radiology, for example.
           </h5>
 
@@ -109,7 +109,7 @@ class CreateGroupModal extends Component {
                   </label>
                 </div>
                 <HelpBlock className="text-muted m-b-0">
-                  Public groups can be joined by anyone in your team.
+                  Public rooms can be joined by anyone in your team.
                 </HelpBlock>
               </Col>
             </FormGroup>
@@ -128,7 +128,7 @@ class CreateGroupModal extends Component {
                 />
                 <HelpBlock className="text-muted m-b-0">
                   A standardize name will also be automatically created for use
-                  in <a>referencing</a> this group: <span>#radiology</span>
+                  in <a>referencing</a> this room: <span>#radiology</span>
                 </HelpBlock>
               </Col>
             </FormGroup>
@@ -145,7 +145,7 @@ class CreateGroupModal extends Component {
                   onChange={this.updateValue("description")}
                 />
                 <HelpBlock className="text-muted m-b-0">
-                  What will this group be about?
+                  What will this room be about?
                 </HelpBlock>
               </Col>
             </FormGroup>
@@ -161,7 +161,7 @@ class CreateGroupModal extends Component {
                   value={this.state.members}
                 />
                 <HelpBlock className="text-muted m-b-0">
-                  Click to select team members to invite to your group.
+                  Click to select team members to invite to your room.
                   Don&quot;t worry, you can always invite more.
                 </HelpBlock>
               </Col>
@@ -174,7 +174,7 @@ class CreateGroupModal extends Component {
             Cancel
           </Button>
           <Button bsSize="large" bsStyle="primary" onClick={this.createGroup}>
-            Create Group
+            Create Room
           </Button>
         </Modal.Footer>
       </Modal>

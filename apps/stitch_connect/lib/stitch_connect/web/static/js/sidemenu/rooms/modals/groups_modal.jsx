@@ -18,19 +18,19 @@ export default class GroupsModal extends Component {
     };
   }
 
-  handleChange = (event) => {
+  handleChange = event => {
     const { sidemenuStore } = this.props;
     const allGroups = sidemenuStore.groups;
     const { value } = event.target;
-    const filteredGroups = allGroups.filter(
-      group => group.name.toLowerCase().startsWith(value.toLowerCase())
+    const filteredGroups = allGroups.filter(group =>
+      group.name.toLowerCase().startsWith(value.toLowerCase())
     );
     this.setState({
       filter: value,
       filteredGroups
     });
-  }
-  
+  };
+
   render() {
     const { sidemenuStore } = this.props;
     const { filteredGroups, filter } = this.state;
@@ -39,7 +39,7 @@ export default class GroupsModal extends Component {
     return (
       <Modal className="sidemenu-modal" show={this.props.showModal}>
         <Modal.Header>
-          <Modal.Title>Browse Groups</Modal.Title>
+          <Modal.Title>Browse Rooms</Modal.Title>
           <a href="#" onClick={this.props.toggleModal}>
             <i className="fa fa-close" />
           </a>
@@ -49,20 +49,20 @@ export default class GroupsModal extends Component {
           <input
             type="text"
             className="form-control input-lg m-b-20"
-            placeholder="Search groups"
+            placeholder="Search rooms"
             onChange={this.handleChange}
           />
 
-          <h5 className="group-heading">Groups you belong to:</h5>
+          <h5 className="group-heading">Rooms you belong to:</h5>
 
           <div className="group-list">
             {groups.map(group =>
-                <GroupItem 
-                  key={group.id} 
-                  group={group} 
-                  toggleModal={this.props.toggleModal} 
-                />
-              )}
+              <GroupItem
+                key={group.id}
+                group={group}
+                toggleModal={this.props.toggleModal}
+              />
+            )}
           </div>
         </Modal.Body>
       </Modal>

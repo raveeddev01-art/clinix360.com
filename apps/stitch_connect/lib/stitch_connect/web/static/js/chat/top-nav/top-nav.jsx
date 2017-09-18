@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
+import Form from "react-bootstrap/lib/Form";
+import FormControl from "react-bootstrap/lib/FormControl";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import NavItemFavorite from "./nav-items/nav-item-favorite";
@@ -24,6 +26,12 @@ class TopNav extends Component {
 
   handleLeave = () => {
     this.props.groupStore.leave();
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    this._toggleAddonMenu("search");
+    console.log("Stopped form submition");
   };
 
   render() {
@@ -55,16 +63,33 @@ class TopNav extends Component {
           <a
             role="link"
             className="btn btn-default"
-            onClick={this._toggleAddonMenu("info")}
+            onClick={this._toggleAddonMenu("Room Information")}
           >
             <i className="fa fa-info-circle" />
           </a>
+
           <a
             role="link"
             className="btn btn-default"
             onClick={this._toggleAddonMenu("search")}
           >
             <i className="fa fa-search" />
+          </a>
+
+          <Form onSubmit={this.handleSubmit}>
+            <FormControl
+              type="text"
+              placeholder="Enter text"
+              onChange={this.handleChange}
+            />
+          </Form>
+
+          <a
+            role="link"
+            className="btn btn-default"
+            onClick={this._toggleAddonMenu("search")}
+          >
+            <i className="fa fa-star" />
           </a>
 
           <DotOptions />

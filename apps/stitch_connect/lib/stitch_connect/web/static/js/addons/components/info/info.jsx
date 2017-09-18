@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import AddonCollapse from "./addon-collapse/addon-collapse";
+import RoomDetails from "./room-details/room-details";
 import PeopleList from "../people-list/people-list";
 import PinnedMessages from "./pinned-messages/pinned-messages";
 import StarredMessages from "./starred-messages/starred-messages";
@@ -16,15 +17,18 @@ class Info extends Component {
   render() {
     return (
       <div className="info-addon">
+        <AddonCollapse icon="file-text" title="Details">
+          <RoomDetails />
+        </AddonCollapse>
         <AddonCollapse icon="group" title="People" onCollapse={this.loadUsers}>
           <PeopleList />
         </AddonCollapse>
         <AddonCollapse icon="thumb-tack" title="Pinned">
           <PinnedMessages />
         </AddonCollapse>
-        <AddonCollapse icon="star" title="Starred">
+        {/* <AddonCollapse icon="star" title="Starred">
           <StarredMessages />
-        </AddonCollapse>
+        </AddonCollapse> */}
         {/* <AddonCollapse icon="list" title="Tasks">
           <p>placeholder</p>
         </AddonCollapse> */}
@@ -49,6 +53,9 @@ class Info extends Component {
         <AddonCollapse icon="flask" title="Labs">
           <p className="text-muted">Add the first clinical note!</p>
         </AddonCollapse> */}
+        <AddonCollapse icon="bell" title="Notifications">
+          <p className="text-muted">Notifications panel</p>
+        </AddonCollapse>
       </div>
     );
   }
