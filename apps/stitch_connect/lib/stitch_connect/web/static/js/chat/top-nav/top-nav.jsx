@@ -14,9 +14,17 @@ import NavItemConvert from "./nav-items/nav-item-convert";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 
-@inject("addonStore", "groupStore")
+@inject("addonStore", "groupStore", "searchStore")
 @observer
 class TopNav extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      query: ""
+    };
+    this.search = _.debounce(this.props.searchStore.searchMessages, 300);
+  }
+
   _toggleAddonMenu = menuName => () => {
     const { addonStore } = this.props;
 
@@ -28,11 +36,34 @@ class TopNav extends Component {
     this.props.groupStore.leave();
   };
 
-  handleSubmit = event => {
-    event.preventDefault();
-    this._toggleAddonMenu("search");
-    console.log("Stopped form submition");
+  onChange = event => {
+    this.setState({ query: event.target.value });
+    this.search(event.target.value);
   };
+
+  onSearch = event => {
+    event.preventDefault();
+    this.props.addonStore.setAddonPanel("search");
+    this.props.addonStore.toggleAddons(true);
+    this.search(this.state.query);
+  };
+
+  loadMore = () => {
+    this.search();
+  };
+  
+  /* handleChange = event => {
+    this.setState({ query: event.target.value });
+    this.search(event.target.value);
+  }; */
+
+  /* handleKeyPress = event => {
+    if(event.key == 'Enter'){
+      this.props.addonStore.setAddonPanel("search");
+      this.props.addonStore.toggleAddons(true);
+      console.log(this.state.query)
+    }
+  }; */
 
   render() {
     return (
@@ -68,19 +99,12 @@ class TopNav extends Component {
             <i className="fa fa-info-circle" />
           </a>
 
-          <a
-            role="link"
-            className="btn btn-default"
-            onClick={this._toggleAddonMenu("search")}
-          >
-            <i className="fa fa-search" />
-          </a>
-
-          <Form onSubmit={this.handleSubmit}>
+          <Form onSubmit={this.onSearch}>
             <FormControl
               type="text"
               placeholder="Enter text"
-              onChange={this.handleChange}
+              onChange={this.onChange}
+              value={this.state.query}
             />
           </Form>
 
