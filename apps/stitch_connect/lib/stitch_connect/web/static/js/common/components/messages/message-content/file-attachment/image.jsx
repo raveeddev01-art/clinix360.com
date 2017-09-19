@@ -32,14 +32,9 @@ class ImageFileAttachment extends Component {
           <img src={url} className="img-responsive" alt={filename} />
         </a>
         <Modal show={showModal} bsSize="large">
-          <Modal.Body>
+          <Modal.Body onClick={this.onToggleModal}>
             <img src={url} className="modal-attachment-image" alt={filename} />
           </Modal.Body>
-          <Modal.Footer>
-            <Button bsSize="large" onClick={this.onToggleModal}>
-              Close
-            </Button>
-          </Modal.Footer>
         </Modal>
       </div>
     );
