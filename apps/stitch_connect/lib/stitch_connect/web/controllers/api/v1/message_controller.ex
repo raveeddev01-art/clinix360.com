@@ -59,12 +59,11 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
             conn
             |> put_status(:created)
             |> render("show.json", message: message, user_id: user.id)
-          {:error, changeset} ->
+          {:error, :message, changeset, _changeset_so_far} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: changeset_errors_to_string(changeset)})
         end
-
       false ->
         conn
         |> put_status(:unauthorized)
@@ -79,13 +78,11 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     case user.id == message.user_id do
       true ->
         case Message.update(message, message_params) do
-          {:ok, %{message: message, mentioned_user_ids: mentioned_user_ids}} ->
+          {:ok, message} ->
             message = MessageQueries.load_info(message)
-
             Endpoint.broadcast("groups:#{message.group.slug}", "edit_msg", message)
-
             render conn, "show.json", message: message, user_id: user.id
-          {:error, changeset} ->
+          {:error, :message, changeset, _changeset_so_far} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: changeset_errors_to_string(changeset)})
@@ -104,15 +101,13 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.delete(message) do
           {:ok, _message} ->
-
             Endpoint.broadcast("groups:#{message.group.slug}", "delete_msg", %{id: message.id})
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
-
             send_resp(conn, :no_content, "")
-          {:error, changeset} ->
+          {:error, _failed_operation, _failed_value, _changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> json(%{message: changeset_errors_to_string(changeset)})
+            |> json(%{message: "Failed to delete message"})
         end
       false ->
         conn

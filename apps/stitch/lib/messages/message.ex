@@ -2,6 +2,7 @@ defmodule Stitch.Message do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
+  alias Ecto.Multi
   alias Stitch.{Repo, Message, GroupUser}
 
   @valid_types ["chat", "system", "upload"]
@@ -37,66 +38,66 @@ defmodule Stitch.Message do
     |> put_change(:edited_at, DateTime.utc_now())
   end
 
+  def chat_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:type, :text_content, :mentioned_user_ids, :read_status])
+    |> validate_required([:type, :text_content])
+    |> validate_inclusion(:type, ["chat"])
+  end
+
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids])
+    |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:fields, :type])
-    |> validate_inclusion(:type, @valid_types)
+    |> validate_inclusion(:type, ["upload"])
   end
 
-  def create(group_id, user, attrs, online_in_group \\ [])
+  def create(group_id, user, params, online_in_group \\ [])
 
-  def create(group_id, user, %{"type" => "upload", "text_content" => text_content, "fields" => fields}, online_in_group) do
+  def create(group_id, user, %{"type" => type} = attrs, online_in_group) when type in ["chat", "upload"] do
     group = Stitch.GroupQueries.get_by_id(group_id)
     users = Repo.preload(group, :users).users
 
-    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
+    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"])
     notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
+    {read_status, recipients} = users |> Enum.reduce({%{}, []}, fn (recipient, {acc_map, acc_list}) ->
+      acc_map = if recipient.id == user.id, do: acc_map, else: Map.put(acc_map, to_string(recipient.id), nil)
+      acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
+      {acc_map, acc_list}
+    end)
 
-    Repo.transaction fn ->
-      message_insert = %Message{group_id: group_id, user_id: user.id}
-      |> upload_changeset(%{text_content: text_content, fields: fields, type: "upload", mentioned_user_ids: mentioned_user_ids})
-      |> Repo.insert
+    message_struct = %Message{group_id: group_id, user_id: user.id}
+    attrs = Map.merge(attrs, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
 
-      case message_insert do
-        {:ok, message} ->
-          add_mention_to_users(group, mentioned_user_ids, message)
-          %{message: message, notify_user_ids: notify_user_ids.desktop}
-        {:error, changeset} ->
-          Repo.rollback(changeset)
-      end
-    end
-  end
-
-  def create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group) do
-    group = Stitch.GroupQueries.get_by_id(group_id)
-    users = Repo.preload(group, :users).users
-
-    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, text_content)
-    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
-
-    Repo.transaction fn ->
-      message_insert = %Message{group_id: group_id, user_id: user.id}
-      |> changeset(%{text_content: text_content, type: "chat", mentioned_user_ids: mentioned_user_ids})
-      |> Repo.insert
-
-      case message_insert do
-        {:ok, message} ->
-          add_mention_to_users(group, mentioned_user_ids, message)
-          %{message: message, notify_user_ids: notify_user_ids.desktop}
-        {:error, changeset} ->
-          Repo.rollback(changeset)
-      end
-    end
+    Multi.new
+    |> Multi.insert(:message, message_changeset(message_struct, attrs))
+    |> Multi.run(:mentions, fn %{message: message} ->
+      {:ok, mention_users(message)}
+    end)
+    |> Multi.run(:increment_unread_counter, fn %{message: message} ->
+      {:ok, increment_unread_counter(message, recipients)}
+    end)
+    |> Multi.run(:notify_user_ids, fn %{message: message} ->
+      {:ok, notify_user_ids.desktop}
+    end)
+    |> Repo.transaction
   end
 
   def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
     create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group)
   end
 
-  def create(group_id, _user, attributes, _online_in_group) do
+  def create(_group_id, _user, _attrs, _online_in_group) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
-    {:error, changeset}
+    {:error, :message, changeset, nil}
+  end
+
+  def message_changeset(message, %{"type" => "chat"} = attrs) do
+    message |> chat_changeset(attrs)
+  end
+
+  def message_changeset(message, %{"type" => "upload"} = attrs) do
+    message |> upload_changeset(attrs)
   end
 
   def update(message, attributes) do
@@ -104,79 +105,40 @@ defmodule Stitch.Message do
     author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"])
-    remove_mention_from_ids = message.mentioned_user_ids -- mentioned_user_ids
-    add_mention_to_ids = mentioned_user_ids -- message.mentioned_user_ids
-    update_counters_for_user_ids = remove_mention_from_ids ++ add_mention_to_ids
-    notify_user_ids = add_mention_to_ids
 
-    Repo.transaction fn ->
-      message_update = message
-      |> user_edit_changeset(%{text_content: attributes["text_content"], mentioned_user_ids: mentioned_user_ids})
-      |> Repo.update
-
-      case message_update do
-        {:ok, updated_message} ->
-          remove_mention_from_users(group, remove_mention_from_ids, updated_message)
-          add_mention_to_users(group, add_mention_to_ids, updated_message)
-          updated_message
-          %{message: updated_message, mentioned_user_ids: update_counters_for_user_ids, notify_mentioned_user_ids: notify_user_ids}
-        {:error, changeset} ->
-          Repo.rollback(changeset)
-      end
-    end
+    message
+    |> user_edit_changeset(%{text_content: attributes["text_content"], mentioned_user_ids: mentioned_user_ids})
+    |> Repo.update
   end
 
   def delete(message) do
-    group = Stitch.GroupQueries.get_by_id(message.group_id)
-    users = Repo.preload(group, :users).users
-
-    Repo.transaction fn ->
-      remove_mention_from_users(group, message)
-
-      case Repo.delete(message) do
-        {:ok, message} -> message
-        {:error, changeset} -> Repo.rollback(changeset)
-      end
-    end
+    Multi.new
+    |> Multi.run(:remove_mention, fn _ -> {:ok, unmention_users(message)} end)
+    |> Multi.delete(:message, message)
+    |> Repo.transaction
   end
 
-  def remove_mention_from_users(group, message) do
-    remove_mention_from_users(group, message.mentioned_user_ids, message)
-  end
-
-  def remove_mention_from_users(group, user_ids, message) do
+  def increment_unread_counter(message, user_ids) do
     Stitch.GroupUser
-    |> where([gu], gu.group_id == ^group.id)
+    |> where([gu], gu.group_id == ^message.group_id)
     |> where([gu], gu.user_id in ^user_ids)
-    |> update([gu], pull: [mentioning_message_ids: ^message.id])
+    |> update([gu], inc: [unread_messages_count: ^1])
     |> Repo.update_all([], returning: true)
   end
 
-  def add_mention_to_users(group, mentioned_user_ids, message) do
+  def mention_users(message) do
     Stitch.GroupUser
-    |> where([gu], gu.group_id == ^group.id)
-    |> where([gu], gu.user_id in ^mentioned_user_ids)
-    |> update([gu], set: [
-      mentioning_message_ids: fragment("ARRAY(SELECT DISTINCT UNNEST(? || ?))", gu.mentioning_message_ids, ^[message.id])
-    ])
+    |> where([gu], gu.group_id == ^message.group_id)
+    |> where([gu], gu.user_id in ^message.mentioned_user_ids)
+    |> update([gu], inc: [mentions_count: ^1])
     |> Repo.update_all([], returning: true)
   end
 
-  def read_mentions([], _user_id), do: {:ok, nil}
-
-  def read_mentions([message_id|_] = message_ids, user_id) do
-    message = Repo.get(Message, message_id)
-    group = Repo.preload(message, :group).group
-    read_mentions(message_ids, user_id, group.id)
-  end
-
-  def read_mentions(message_ids, user_id, group_id) do
+  def unmention_users(message) do
     Stitch.GroupUser
-    |> where([gu], gu.group_id == ^group_id)
-    |> where([gu], gu.user_id == ^user_id)
-    |> update([gu], set: [
-      mentioning_message_ids: fragment("(select coalesce(array_agg(e), array[]::int[]) from unnest(?) e where e <> all(?))", gu.mentioning_message_ids, ^message_ids)
-    ])
+    |> where([gu], gu.group_id == ^message.group_id)
+    |> where([gu], gu.user_id in ^message.mentioned_user_ids)
+    |> update([gu], inc: [mentions_count: ^-1])
     |> Repo.update_all([], returning: true)
   end
 
@@ -192,29 +154,26 @@ defmodule Stitch.Message do
     |> Repo.update
   end
 
-  def mark_as_read(user, message_ids) do
-    message_ids = List.wrap(message_ids)
-
-    read_mentions(message_ids, user.id)
-    Message
-    |> where([m], m.id in ^message_ids)
-    |> _mark_as_read(user.id)
+  def mark_as_read(user_id, group_id) do
+    Multi.new
+    |> Multi.run(:mark_messages_as_read, fn _ -> {:ok, mark_messages_as_read(group_id, user_id)} end)
+    |> Multi.run(:update_last_read_at, fn _ -> {:ok, mark_group_as_read(group_id, user_id)} end)
+    |> Repo.transaction
   end
 
-  def mark_as_read_all(user, group_id) do
-    # read_mentions(message_ids, user.id)
+  def mark_messages_as_read(group_id, user_id) do
     Message
     |> where([m], m.group_id == ^group_id)
-    |> _mark_as_read(user.id)
+    |> where([m], m.user_id != ^user_id)
+    |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
+    |> update([m], set: [read_status: ^%{user_id => DateTime.utc_now}])
+    |> Repo.update_all([], returning: true)
   end
 
-  defp _mark_as_read(queryable, user_id) do
-    value = %{user_id => DateTime.utc_now}
-    
-    queryable
-    |> where([m], m.user_id != ^user_id)
-    |> where([m], not fragment("? \\? ?", m.read_status, ^to_string(user_id)))
-    |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^value)])
+  def mark_group_as_read(group_id, user_id) do
+    GroupUser
+    |> where(group_id: ^group_id, user_id: ^user_id)
+    |> update([m], set: [last_read_at: ^DateTime.utc_now, mentions_count: 0, unread_messages_count: 0])
     |> Repo.update_all([], returning: true)
   end
 end

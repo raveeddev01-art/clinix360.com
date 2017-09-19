@@ -4,7 +4,9 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
   alias Stitch.Group
 
   def render("index.json", %{groups: groups, user_id: user_id}) do
-    Enum.map(groups, &group_json(&1, user_id))
+    Enum.map(groups, fn group ->
+      group_json(group, user_id)
+    end)
   end
 
   def render("show.json", %{group: group, user_id: user_id}) do
@@ -24,8 +26,8 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
       type: type(group),
       user_count: Enum.count(group.users),
       unread_messages_count: group.unread_messages_count,
-      unread_start_id: group.unread_start_id,
       mentions_count: group.mentions_count,
+      last_read_at: group.last_read_at,
     }
   end
 
