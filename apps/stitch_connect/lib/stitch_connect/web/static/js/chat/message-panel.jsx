@@ -40,14 +40,14 @@ export default class MessagePanel extends Component {
   };
 
   loadMore = () => {
-    const { groupStore: group, messageStore } = this.props;
+    const { messageStore } = this.props;
 
-    if (messageStore.messages.length < group.unreadMessagesCount) {
+    if (messageStore.loadedAllUnreadMessages) {
+      // if messages are already loaded
+      messageStore.scrollToNewBanner();
+    } else {
       // if unread messages are not loaded yet, just load next batch
       messageStore.loadPastUnreadMessages();
-    } else if (messageStore.unreadStartID) {
-      // if messages are already loaded, and there is new message banner
-      messageStore.scrollToNewBanner();
     }
   };
 

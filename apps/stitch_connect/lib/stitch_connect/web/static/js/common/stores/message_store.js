@@ -12,9 +12,10 @@ class MessageStore {
   @observable textInEdit = ""; // Current text of message in edit
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
   @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
-  @observable lastUnreadViewed = false; // TRUE: topmost unread message is viewed. Thus other messages can be marked as read.
-  @observable unreadStartID = null; // indicates where new message banner starts
-  @observable unreadMessageCount = 0;
+
+  @observable unreadMessagesCount = 0;
+  @observable mentionsCount = 0;
+  @observable lastReadAt = null;
 
   loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
   messagePositions = {}; // { group: message_id }
@@ -78,6 +79,31 @@ class MessageStore {
   }
 
   @computed
+  get loadedAllUnreadMessages() {
+    if (this.messages.length === 0 || !this.lastReadAt) {
+      return true;
+    }
+
+    // Chronologically oldest message
+    const oldestMessage = this.messages[this.messages.length - 1];
+
+    return (
+      new Date(oldestMessage.inserted_at).getTime() <=
+      new Date(this.lastReadAt).getTime()
+    );
+  }
+
+  @computed
+  get firstUnreadMessage() {
+    return _.findLast(this.messages, message => {
+      const messageInsertedAt = new Date(message.inserted_at).getTime();
+      const lastReadAt = new Date(this.lastReadAt).getTime();
+
+      return messageInsertedAt > lastReadAt;
+    });
+  }
+
+  @computed
   get messagesByDate() {
     return (
       _.chain(this.messages)
@@ -91,7 +117,8 @@ class MessageStore {
             (messagePools, message) => {
               if (
                 _.isEmpty(messagePools) ||
-                this.unreadStartID === message.id
+                (this.loadedAllUnreadMessages &&
+                  this.firstUnreadMessage.id === message.id)
               ) {
                 messagePools.push([message]);
                 return;
@@ -187,20 +214,16 @@ class MessageStore {
   }
 
   scrollToNewBanner = () => {
-    const unreadStartIndex = this.messages.findIndex(
-      msg => msg.id === this.unreadStartID
-    );
-    let nextPos = this.messages.length - 1;
-
-    if (unreadStartIndex > -1 && this.messages[unreadStartIndex + 1]) {
-      nextPos = unreadStartIndex + 1;
+    if (!this.loadedAllUnreadMessages) {
+      return;
     }
-    this.scrollTo(this.messages[nextPos].id, 500);
+
+    this.scrollTo(this.firstUnreadMessage.id, 500);
   };
 
   @action
   onScrollBottomReached() {
-    if (this.lastUnreadViewed && !this.isScrollBottom) {
+    if (this.loadedAllUnreadMessages && !this.isScrollBottom) {
       // if unread messages were viewed and it was scrolled to bottom
       this.rootStore.groupStore.unreadMessagesCount = 0;
       this.markAllAsRead();
@@ -402,7 +425,6 @@ class MessageStore {
     this.groupChannel
       .push("mark_as_read_all", { group_id: this.rootStore.groupStore.id })
       .receive("ok", () => {
-        this.lastUnreadViewed = true;
         this.unreadMessagesCount = 0;
       })
       .receive("error", err => {
@@ -487,20 +509,12 @@ class MessageStore {
     }
 
     if (
-      !this.lastUnreadViewed ||
+      !this.loadedAllUnreadMessages ||
       (!this.isScrollBottom && newMessage.user_id !== currentUser.id)
     ) {
       this.unreadMessagesCount += 1;
     } else {
       this.markAsRead(newMessage.id);
-    }
-
-    if (
-      !this.isScrollBottom &&
-      !this.unreadStartID &&
-      newMessage.user_id !== currentUser.id
-    ) {
-      this.unreadStartID = newMessage.id;
     }
 
     this.messages.unshift(newMessage);
@@ -538,9 +552,11 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
-    this.unreadStartID = this.rootStore.groupStore.unreadStartID;
-    this.unreadMessagesCount = this.rootStore.groupStore.unreadMessagesCount;
-    this.lastUnreadViewed = false;
+    const { groupStore } = this.rootStore;
+
+    this.unreadMessagesCount = groupStore.unreadMessagesCount;
+    this.mentionsCount = groupStore.mentionsCount;
+    this.lastReadAt = groupStore.lastReadAt;
 
     this.messages = data.messages;
 
@@ -592,14 +608,12 @@ class MessageStore {
         // A.1.a
         this.scrollTo(posHistory, 0, () => {
           this.loadedInitial = true;
-          this.lastUnreadViewed = true;
         });
       } else {
         this.messagePositions[this.groupTopic] = null;
         // A.1.b, A.2.a
         this.scrollToBottom(() => {
           this.loadedInitial = true;
-          this.lastUnreadViewed = true;
         }, 0);
       }
     }
