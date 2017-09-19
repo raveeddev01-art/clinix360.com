@@ -11,7 +11,8 @@ class GroupStore {
   @observable joined = false;
   @observable users = [];
   @observable unreadMessagesCount = 0;
-  @observable unreadStartID = null;
+  @observable lastReadAt = null;
+  @observable mentionsCount = 0;
   @observable favorite = false;
   @observable notificationSetting = null;
   @observable showAllUsers = true;
@@ -78,7 +79,8 @@ class GroupStore {
       this.groupType = "group";
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
-      this.unreadStartID = data.unread_start_id;
+      this.mentionsCount = data.mentions_count;
+      this.lastReadAt = data.last_read_at;
 
       // Load messages after join
       this.rootStore.messageStore.joinGroupChannel();
@@ -115,6 +117,8 @@ class GroupStore {
       this.groupType = "single-dm";
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
+      this.mentionsCount = data.mentions_count;
+      this.lastReadAt = data.last_read_at;
 
       // Load messages after join
       this.rootStore.messageStore.joinGroupChannel();
@@ -159,6 +163,8 @@ class GroupStore {
       this.joined = data.joined;
       this.groupType = "multi-dm";
       this.unreadMessagesCount = data.unread_messages_count;
+      this.mentionsCount = data.mentions_count;
+      this.lastReadAt = data.last_read_at;
 
       // Load messages after join
       this.rootStore.messageStore.joinGroupChannel();
