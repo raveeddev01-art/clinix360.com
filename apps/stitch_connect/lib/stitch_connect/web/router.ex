@@ -28,6 +28,8 @@ defmodule StitchConnect.Web.Router do
 
     post "/teams", TeamController, :create
     post "/teams/url-available", TeamController, :url_available
+
+    post "/authentication/stress_login", AuthenticationController, :stress_login
   end
 
   scope "/", StitchConnect.Web do
