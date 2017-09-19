@@ -18,7 +18,7 @@ defmodule StitchConnect.Web.TeamChannel do
     {:ok, _} = Presence.track(socket, user.id, %{
       status: "online",
       current_group: nil,
-      session_id: socket.assigns.session_id,
+      connection_id: socket.assigns.connection_id,
       online_at: inspect(System.system_time(:seconds)),
       status_updated_at: inspect(System.system_time(:seconds)),
       id: user.id,
@@ -32,7 +32,7 @@ defmodule StitchConnect.Web.TeamChannel do
   end
 
   def handle_in("status_update", %{"status" => status}, socket) when status in ["online", "away"] do
-    update_session_meta(socket, %{
+    update_connection_meta(socket, %{
       status: status,
       status_updated_at: inspect(System.system_time(:seconds))
     })
@@ -41,7 +41,7 @@ defmodule StitchConnect.Web.TeamChannel do
   end
 
   def handle_in("current_group_update", %{"current_group" => current_group}, socket) do
-    update_session_meta(socket, %{current_group: current_group})
+    update_connection_meta(socket, %{current_group: current_group})
     {:noreply, socket}
   end
 
@@ -49,12 +49,12 @@ defmodule StitchConnect.Web.TeamChannel do
     {:ok, socket}
   end
 
-  defp update_session_meta(socket, updated_meta) do
+  defp update_connection_meta(socket, updated_meta) do
     user = socket.assigns.current_user
 
     with presence_list <- Presence.list(socket),
       {:ok, %{metas: metas}} <- Map.fetch(presence_list, to_string(user.id)),
-      previous_meta when not is_nil(previous_meta) <- Enum.find(metas, & &1.session_id == socket.assigns.session_id),
+      previous_meta when not is_nil(previous_meta) <- Enum.find(metas, & &1.connection_id == socket.assigns.connection_id),
       updated_meta <- Map.merge(previous_meta, updated_meta)
     do
       Presence.update(socket, user.id, updated_meta)

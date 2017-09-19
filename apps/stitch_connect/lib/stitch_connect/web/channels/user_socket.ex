@@ -30,7 +30,7 @@ defmodule StitchConnect.Web.UserSocket do
         socket = socket
         |> assign(:current_user, user)
         |> assign(:team_id, user.team_id)
-        |> assign(:session_id, random_string(8))
+        |> assign(:connection_id, random_string(8))
         {:ok, socket}
     end
   end
