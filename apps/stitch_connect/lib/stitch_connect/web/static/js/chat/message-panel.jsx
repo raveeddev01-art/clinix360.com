@@ -51,14 +51,14 @@ export default class MessagePanel extends Component {
   };
 
   render() {
-    const { groupStore: group } = this.props;
+    const { groupStore: group, messageStore } = this.props;
 
     return (
       <div id="chat-container">
         <div className="container-bars">
-          {group.unreadMessagesCount > 0
+          {messageStore.unreadMessagesCount > 0
             ? <div className="unread-messages-tooltip" onClick={this.loadMore}>
-                {group.unreadMessagesCount} new message{group.unreadMessagesCount > 1 && "s"}
+                {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}
                 <i
                   className="fa fa-close close-unread-messages-tooltip"
                   onClick={this.onTooltipClose}

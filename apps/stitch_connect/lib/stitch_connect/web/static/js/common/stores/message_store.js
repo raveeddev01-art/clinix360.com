@@ -80,9 +80,10 @@ class MessageStore {
 
   @computed
   get firstUnreadMessage() {
+    const lastReadAt = moment.utc(this.lastReadAt).valueOf();
+
     return _.findLast(this.messages, message => {
-      const messageInsertedAt = new Date(message.inserted_at).getTime();
-      const lastReadAt = new Date(this.lastReadAt).getTime();
+      const messageInsertedAt = moment.utc(message.inserted_at).valueOf();
 
       return messageInsertedAt > lastReadAt;
     });
@@ -478,8 +479,6 @@ class MessageStore {
     }
 
     this.messages.unshift(newMessage);
-
-    debugger;
 
     if (newMessage.user_id !== currentUser.id) {
       // For messages from other users
