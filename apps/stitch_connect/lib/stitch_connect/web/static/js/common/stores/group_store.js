@@ -253,16 +253,6 @@ class GroupStore {
       notify.show(`Notification setting saved for group ${this.name}`);
     });
   };
-
-  @action
-  increaseUnreadMessagesCount() {
-    this.unreadMessagesCount += 1;
-  }
-
-  @action
-  decreaseUnreadMessagesCount() {
-    this.unreadMessagesCount -= 1;
-  }
 }
 
 export default GroupStore;

@@ -491,7 +491,6 @@ class MessageStore {
       (!this.isScrollBottom && newMessage.user_id !== currentUser.id)
     ) {
       this.unreadMessagesCount += 1;
-      this.rootStore.groupStore.increaseUnreadMessagesCount();
     } else {
       this.markAsRead(newMessage.id);
     }
