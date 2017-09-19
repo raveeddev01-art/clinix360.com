@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from "react";
-import FILE_TYPES from "./file-types";
+import FILE_TYPES from "../file-types";
 
-class FileAttachment extends Component {
+class DefaultFileAttachment extends Component {
   getFileType = mimetype =>
     FILE_TYPES[mimetype] || {
       icon: "fa fa-file-o",
@@ -45,11 +45,11 @@ class FileAttachment extends Component {
   }
 }
 
-FileAttachment.propTypes = {
+DefaultFileAttachment.propTypes = {
   filename: PropTypes.string.isRequired,
   mimetype: PropTypes.string,
   size_in_bytes: PropTypes.number.isRequired,
   url: PropTypes.string.isRequired
 };
 
-export default FileAttachment;
+export default DefaultFileAttachment;

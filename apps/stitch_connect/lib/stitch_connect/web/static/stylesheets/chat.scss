@@ -649,6 +649,24 @@
   }
 }
 
+.attachment-image-block {
+  .attachment-title {
+    text-decoration: underline;
+    margin: 5px 0;
+  }
+
+  .attachment-image {
+    cursor: zoom-in;
+    display: block;
+    width: 100%;
+  }
+}
+
+.modal-attachment-image {
+  width: 100%;
+  cursor: zoom-out;
+}
+
 i.file-data-separator {
   font-size: 8px;
   vertical-align: middle;
