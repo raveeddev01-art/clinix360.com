@@ -75,7 +75,6 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         group = group
         |> Map.put_new(:joined, true)
         |> Map.put_new(:unread_messages_count, 0)
-        |> Map.put_new(:unread_start_id, 0)
         |> Map.put_new(:favorite, false)
         |> Map.put_new(:mentions_count, 0)
 
@@ -135,7 +134,6 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
             group = group
             |> Map.put_new(:joined, true)
             |> Map.put_new(:unread_messages_count, 0)
-            |> Map.put_new(:unread_start_id, 0)
             |> Map.put_new(:favorite, false)
             |> Map.put_new(:mentions_count, 0)
 
