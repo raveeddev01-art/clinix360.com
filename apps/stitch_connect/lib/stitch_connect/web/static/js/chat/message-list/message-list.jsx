@@ -50,8 +50,8 @@ class MessageList extends Component {
             <DateSeparator timestamp={date} />
             {messagesByDate[date].map(messagePool => {
               if (
-                messageStore.loadedAllUnreadMessages &&
-                messagePool[0].id === messageStore.firstUnreadMessage.id
+                messageStore.firstUnreadMessage &&
+                messageStore.firstUnreadMessage.id === messagePool[0].id
               ) {
                 return [
                   <div className="new-message-banner">

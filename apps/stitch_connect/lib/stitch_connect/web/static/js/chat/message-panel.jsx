@@ -19,18 +19,17 @@ export default class MessagePanel extends Component {
   onKeyDown = evt => {
     if (evt.keyCode === 27) {
       // ESC key
-      this.markAllAsRead();
+      this.markAsRead();
     }
   };
 
   onTooltipClose = evt => {
     evt.stopPropagation();
-    this.markAllAsRead();
+    this.markAsRead();
   };
 
-  markAllAsRead = () => {
-    this.props.messageStore.markAllAsRead();
-    this.props.groupStore.unreadMessagesCount = 0;
+  markAsRead = () => {
+    this.props.messageStore.markAsRead();
   };
 
   handleJoin = () => {
@@ -42,7 +41,7 @@ export default class MessagePanel extends Component {
   loadMore = () => {
     const { messageStore } = this.props;
 
-    if (messageStore.loadedAllUnreadMessages) {
+    if (messageStore.firstUnreadMessage) {
       // if messages are already loaded
       messageStore.scrollToNewBanner();
     } else {

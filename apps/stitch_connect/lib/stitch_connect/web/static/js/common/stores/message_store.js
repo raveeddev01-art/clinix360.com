@@ -79,21 +79,6 @@ class MessageStore {
   }
 
   @computed
-  get loadedAllUnreadMessages() {
-    if (this.messages.length === 0 || !this.lastReadAt) {
-      return true;
-    }
-
-    // Chronologically oldest message
-    const oldestMessage = this.messages[this.messages.length - 1];
-
-    return (
-      new Date(oldestMessage.inserted_at).getTime() <=
-      new Date(this.lastReadAt).getTime()
-    );
-  }
-
-  @computed
   get firstUnreadMessage() {
     return _.findLast(this.messages, message => {
       const messageInsertedAt = new Date(message.inserted_at).getTime();
@@ -117,7 +102,7 @@ class MessageStore {
             (messagePools, message) => {
               if (
                 _.isEmpty(messagePools) ||
-                (this.loadedAllUnreadMessages &&
+                (this.firstUnreadMessage &&
                   this.firstUnreadMessage.id === message.id)
               ) {
                 messagePools.push([message]);
@@ -214,21 +199,13 @@ class MessageStore {
   }
 
   scrollToNewBanner = () => {
-    if (!this.loadedAllUnreadMessages) {
-      return;
+    if (this.firstUnreadMessage) {
+      this.scrollTo(this.firstUnreadMessage.id, 500);
     }
-
-    this.scrollTo(this.firstUnreadMessage.id, 500);
   };
 
   @action
   onScrollBottomReached() {
-    if (this.loadedAllUnreadMessages && !this.isScrollBottom) {
-      // if unread messages were viewed and it was scrolled to bottom
-      this.rootStore.groupStore.unreadMessagesCount = 0;
-      this.markAllAsRead();
-    }
-
     this.isScrollBottom = true;
     this.messageJumpedTo = null;
   }
@@ -252,13 +229,6 @@ class MessageStore {
     const currentPos = this.messagePositions[this.groupTopic];
     if (!currentPos || currentPos > id) {
       this.messagePositions[this.groupTopic] = id;
-    }
-
-    if (this.unreadMessagesCount) {
-      const msgIndex = this.messages.findIndex(msg => msg.id === id);
-      if (msgIndex >= this.unreadMessagesCount - 1) {
-        this.markAllAsRead();
-      }
     }
   };
 
@@ -416,27 +386,26 @@ class MessageStore {
   }
 
   @action
-  markAllAsRead = () => {
+  markAsRead = () => {
     if (this.rootStore.groupStore.loading) {
       // should not mark as read when in transition to other group
       return;
     }
 
     this.groupChannel
-      .push("mark_as_read_all", { group_id: this.rootStore.groupStore.id })
+      .push("mark_as_read", { group_id: this.rootStore.groupStore.id })
       .receive("ok", () => {
+        const { groupStore } = this.rootStore;
+
+        groupStore.unreadMessagesCount = 0;
+        groupStore.lastReadAt = new Date();
+
         this.unreadMessagesCount = 0;
+        this.lastReadAt = new Date();
       })
       .receive("error", err => {
         notify.show(err.message, "error");
       });
-  };
-
-  @action
-  markAsRead = id => {
-    this.groupChannel.push("mark_as_read", {
-      message_ids: [id]
-    });
   };
 
   joinGroupChannel = () => {
@@ -508,16 +477,20 @@ class MessageStore {
       return;
     }
 
-    if (
-      !this.loadedAllUnreadMessages ||
-      (!this.isScrollBottom && newMessage.user_id !== currentUser.id)
-    ) {
-      this.unreadMessagesCount += 1;
-    } else {
-      this.markAsRead(newMessage.id);
-    }
-
     this.messages.unshift(newMessage);
+
+    debugger;
+
+    if (newMessage.user_id !== currentUser.id) {
+      // For messages from other users
+      if (this.unreadMessagesCount) {
+        this.unreadMessagesCount += 1;
+      } else if (!this.isScrollBottom) {
+        this.unreadMessagesCount += 1;
+      } else {
+        this.markAsRead();
+      }
+    }
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(() => {}, 0);
@@ -599,7 +572,7 @@ class MessageStore {
         this.scrollToBottom(() => {
           this.loadedInitial = true; // B.1.b
           this.scrollTo(posHistory, 500);
-          this.markAllAsRead();
+          this.markAsRead();
         }, 0);
       }
     } else {
