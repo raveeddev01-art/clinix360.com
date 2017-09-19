@@ -78,7 +78,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     case user.id == message.user_id do
       true ->
         case Message.update(message, message_params) do
-          {:ok, %{message: message}} ->
+          {:ok, message} ->
             message = MessageQueries.load_info(message)
             Endpoint.broadcast("groups:#{message.group.slug}", "edit_msg", message)
             render conn, "show.json", message: message, user_id: user.id

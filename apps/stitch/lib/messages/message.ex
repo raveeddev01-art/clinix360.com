@@ -106,13 +106,9 @@ defmodule Stitch.Message do
     users = Repo.preload(group, :users).users
     mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"])
 
-    message_changeset = message
+    message
     |> user_edit_changeset(%{text_content: attributes["text_content"], mentioned_user_ids: mentioned_user_ids})
-
-    # TODO: remove transaction
-    Multi.new
-    |> Multi.update(:message, message_changeset)
-    |> Repo.transaction
+    |> Repo.update
   end
 
   def delete(message) do
