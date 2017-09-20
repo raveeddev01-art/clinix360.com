@@ -67,20 +67,19 @@ defmodule Stitch.UnreadMessagesNotifier do
   end
 
   def send_email_notifications(notification_preference) do
-    users = Stitch.Accounts.User.with_email_notification_preference(notification_preference)
-    users = Stitch.Repo.preload(users, [:team])
-    users |> Enum.each(fn user ->
-      message_ids = Stitch.EmailNotification.not_delivered(user.id)
-      messages = Stitch.Message.find_by_ids(message_ids)
-      email = Stitch.Accounts.Email.new_messages(user, user.team, messages)
+    Stitch.Accounts.User.with_email_notification_preference(notification_preference)
+    |> Stitch.Repo.preload([:team])
+    |> Task.async_stream(fn user ->
       try do
-        # TODO: async
+        message_ids = Stitch.EmailNotification.not_delivered(user.id)
+        messages = Stitch.Message.find_by_ids(message_ids)
+        email = Stitch.Accounts.Email.unread_messages(user, user.team, messages)
         %Bamboo.Email{} = Stitch.Mailer.deliver_now(email)
         Stitch.EmailNotification.mark_as_delivered(user.id, message_ids)
-      rescue _e ->
-        # do not terminate the loop
-        # log error
+      rescue e ->
+        IO.puts "Error while delivering emails about unread messages #{inspect(e)}"
       end
-    end)
+    end, max_concurrency: 10, timeout: :infinity)
+    |> Enum.to_list
   end
 end

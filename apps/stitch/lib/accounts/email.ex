@@ -84,7 +84,7 @@ defmodule Stitch.Accounts.Email do
     Timex.format!(datetime, "{Mfull} {D}, {YYYY} at {0h12}:{m} {AM}")
   end
 
-  def new_messages(user, team, messages) do
+  def unread_messages(user, team, messages) do
     new_email
     |> template("Unread messages")
     |> to(Application.get_env(:stitch, Stitch)[:recipient_email])

@@ -40,7 +40,7 @@ defmodule Stitch.EmailNotification do
     EmailNotification
     |> where([en], en.user_id == ^user_id)
     |> where([en], en.message_id in ^message_ids)
-    |> update([m], set: [delivered: ^DateTime.utc_now])
+    |> update([m], set: [delivered_at: ^DateTime.utc_now])
     |> Repo.update_all([], returning: true)
   end
 
