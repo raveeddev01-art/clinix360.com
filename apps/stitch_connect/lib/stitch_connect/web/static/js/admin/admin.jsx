@@ -32,6 +32,7 @@ const stores = {
 
 export default class Admin extends Component {
   componentWillMount() {
+    notificationStore.loadPreferences();
     membersStore.loadUsers(this.props.teamId);
     teamStore.loadTeam(this.props.teamId);
     userStore.loadUser(currentUser.id);
