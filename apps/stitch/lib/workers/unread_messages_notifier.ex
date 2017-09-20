@@ -7,7 +7,6 @@ defmodule Stitch.UnreadMessagesNotifier do
 
 
   def init(state) do
-    # TODO: remove delivered records
     schedule_work(:every_15_min)
     schedule_work(:hourly)
     schedule_work(:daily)
@@ -28,6 +27,7 @@ defmodule Stitch.UnreadMessagesNotifier do
 
   def handle_info(:daily, state) do
     send_email_notifications("daily")
+    clean_delivered()
     schedule_work(:daily)
     {:noreply, state}
   end
@@ -58,6 +58,12 @@ defmodule Stitch.UnreadMessagesNotifier do
 
   def seconds_until(:day, datetime) do
     Timex.Comparable.diff(Timex.end_of_day(datetime), datetime, :seconds) + 1 # make sure one second overflow so that next cycle we are on the next day
+  end
+
+  def clean_delivered do
+    Task.start fn ->
+      Stitch.EmailNotification.clean_delivered()
+    end
   end
 
   def send_email_notifications(notification_preference) do
