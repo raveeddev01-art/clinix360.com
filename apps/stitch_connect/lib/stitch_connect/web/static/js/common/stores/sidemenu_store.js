@@ -6,7 +6,6 @@ class SidemenuStore {
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
-  @observable currentGroup = null;
   @observable locked = false;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
   inactivityTimeout = -1;
@@ -25,9 +24,7 @@ class SidemenuStore {
 
   @computed
   get singleDMGroupsMap() {
-    const singleDMGroups = this.groups.filter(
-      group => group.slug.indexOf("__dm:") === 0
-    );
+    const singleDMGroups = this.groups.filter(group => group.type === "dm");
     const userMap = {};
     singleDMGroups.forEach(group => {
       const user = group.users.find(u => u.id !== currentUser.id);
@@ -38,12 +35,12 @@ class SidemenuStore {
 
   @computed
   get normalGroups() {
-    return this.groups.filter(group => group.slug.indexOf("__dm:") === -1);
+    return this.groups.filter(group => group.type === "regular");
   }
 
   @computed
   get multiDMGroups() {
-    return this.groups.filter(group => group.name === "__multi_dm_group__");
+    return this.groups.filter(group => group.type === "multi_dm");
   }
 
   @computed
