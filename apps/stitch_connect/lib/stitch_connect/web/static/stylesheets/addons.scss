@@ -60,8 +60,16 @@
       }
     }
 
+    .collapse-content {
+      padding: 0 0 10px;
+
+      h5 {
+        margin: 0 0 5px;
+      }
+    }
+
     hr {
-      margin: 5px 0;
+      margin: 5px 0; 
     }
   }
 
@@ -82,9 +90,9 @@
       opacity: 1;
     }
 
-    .collapse h5 {
+    /* .collapse h5 {
       margin: 0 0 5px;
-    }
+    } */
   }
 
   .addon-right-panel {

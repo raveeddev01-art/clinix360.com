@@ -18,7 +18,7 @@ class PeopleList extends Component {
     const users = showAllUsers ? groupStore.users : groupStore.onlineUsers;
 
     return (
-      <div>
+      <div className="collapse-content">
         {users.map(user =>
           <PeopleListItem
             online={presenceStore.isOnline(`${user.id}`)}

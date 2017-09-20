@@ -8,7 +8,7 @@ class RoomDetails extends Component {
     const { groupStore } = this.props;
 
     return (
-      <div>
+      <div className="collapse-content">
         <h5 className="text-muted">Topic</h5>
         <p>
           {groupStore.description
@@ -16,7 +16,7 @@ class RoomDetails extends Component {
                 {groupStore.description}
               </span>
             : <span>
-                {groupStore.name}No room topic set
+                No room topic set
               </span>}
         </p>
 
