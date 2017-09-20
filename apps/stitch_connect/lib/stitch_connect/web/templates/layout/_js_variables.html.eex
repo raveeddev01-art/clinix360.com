@@ -7,6 +7,7 @@ applicationHost =
       "localhost:4443"
   end
 authenticationToken = Plug.Conn.get_session(@conn, :authentication_token)
+session_id = Plug.Conn.get_session(@conn, :session_id)
 locked = !!Plug.Conn.get_session(@conn, :locked)
 user = Plug.Conn.get_session(@conn, :current_user)
 current_user =
@@ -28,5 +29,6 @@ current_user =
   window.applicationHost = "<%= applicationHost %>";
   window.locked = <%= locked %>;
   window.authenticationToken = "<%= authenticationToken %>";
+  window.sessionId = "<%= session_id %>";
   window.currentUser = <%= raw current_user %>;
 </script>

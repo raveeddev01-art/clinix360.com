@@ -22,7 +22,7 @@ defmodule StitchConnect.Web.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(%{"authenticationToken" => token}, socket) do
+  def connect(%{"authenticationToken" => token} = params, socket) do
     case Stitch.User.Authentication.user_for_token(token) do
       nil ->
         :error
@@ -30,6 +30,7 @@ defmodule StitchConnect.Web.UserSocket do
         socket = socket
         |> assign(:current_user, user)
         |> assign(:team_id, user.team_id)
+        |> assign(:session_id, params["sessionId"])
         |> assign(:connection_id, random_string(8))
         {:ok, socket}
     end
