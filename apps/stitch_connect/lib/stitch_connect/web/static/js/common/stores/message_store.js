@@ -231,6 +231,14 @@ class MessageStore {
     if (!currentPos || currentPos > id) {
       this.messagePositions[this.groupTopic] = id;
     }
+
+    if (this.firstUnreadMessage && this.firstUnreadMessage.id === id) {
+      // If first unread message is visible, mark messages as read after 1s delay
+      // but, leave the new message line
+      setTimeout(() => {
+        this.markAsRead(false);
+      }, 1000);
+    }
   };
 
   /**
@@ -386,8 +394,13 @@ class MessageStore {
     this.messageDivs = { ...this.messageDivs, [messageId]: messageDiv };
   }
 
+  /**
+   * Mark group messages as read
+   * 
+   * @param resetNewMessageLine   IF True, reset lastReadtAt to current timestamp, causing `New Message Line` to disappear
+   */
   @action
-  markAsRead = () => {
+  markAsRead = (resetNewMessageLine = true) => {
     if (this.rootStore.groupStore.loading) {
       // should not mark as read when in transition to other group
       return;
@@ -399,10 +412,12 @@ class MessageStore {
         const { groupStore } = this.rootStore;
 
         groupStore.unreadMessagesCount = 0;
-        groupStore.lastReadAt = new Date();
-
         this.unreadMessagesCount = 0;
-        this.lastReadAt = new Date();
+
+        if (resetNewMessageLine) {
+          groupStore.lastReadAt = new Date();
+          this.lastReadAt = new Date();
+        }
       })
       .receive("error", err => {
         notify.show(err.message, "error");
@@ -479,6 +494,20 @@ class MessageStore {
     }
 
     this.messages.unshift(newMessage);
+
+    // 6. New Messages Line
+    //  1. new message line should ONLY disappear if You enter a new message
+    //
+    // In other words, if the user enters messages when messages are marked as read
+    // and new mesage line is visible, hide new message line
+    if (
+      newMessage.user_id === currentUser.id &&
+      this.unreadMessagesCount === 0 &&
+      this.firstUnreadMessage
+    ) {
+      this.rootStore.groupStore.lastReadAt = new Date();
+      this.lastReadAt = new Date();
+    }
 
     if (newMessage.user_id !== currentUser.id) {
       // For messages from other users
