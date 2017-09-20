@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import AddonCollapse from "./addon-collapse/addon-collapse";
+import RoomDetails from "./room-details/room-details";
 import PeopleList from "../people-list/people-list";
 import PinnedMessages from "./pinned-messages/pinned-messages";
 import StarredMessages from "./starred-messages/starred-messages";
@@ -13,19 +14,26 @@ class Info extends Component {
     this.props.groupStore.loadUsers();
   };
 
+  loadNotificationSetting = () => {
+    this.props.groupStore.loadNotificationSetting();
+  };
+
   render() {
     return (
       <div className="info-addon">
-        <AddonCollapse icon="group" title="People" onCollapse={this.loadUsers}>
+        <AddonCollapse icon="file-text" title="Details">
+          <RoomDetails />
+        </AddonCollapse>
+        <AddonCollapse icon="group" title="Members" onCollapse={this.loadUsers}>
           <PeopleList />
         </AddonCollapse>
         <AddonCollapse icon="thumb-tack" title="Pinned">
           <PinnedMessages />
         </AddonCollapse>
-        <AddonCollapse icon="star" title="Starred">
+        {/* <AddonCollapse icon="star" title="Starred">
           <StarredMessages />
         </AddonCollapse>
-        {/* <AddonCollapse icon="list" title="Tasks">
+        <AddonCollapse icon="list" title="Tasks">
           <p>placeholder</p>
         </AddonCollapse> */}
         <AddonCollapse icon="folder-open" title="Files">
@@ -49,6 +57,9 @@ class Info extends Component {
         <AddonCollapse icon="flask" title="Labs">
           <p className="text-muted">Add the first clinical note!</p>
         </AddonCollapse> */}
+        <AddonCollapse icon="bell" title="Notifications" onCollapse={this.loadNotificationSetting}>
+          <p>Room notifications set to: {this.props.groupStore.notificationSetting}.</p>
+        </AddonCollapse>
       </div>
     );
   }

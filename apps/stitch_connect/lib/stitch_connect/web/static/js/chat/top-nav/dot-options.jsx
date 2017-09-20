@@ -17,7 +17,7 @@ class DotOptions extends Component {
     return (
       <Dropdown id="dropdown-group-controls" pullRight>
         <Dropdown.Toggle noCaret className="more-btn">
-          <i className="fa fa-ellipsis-h" />
+          <i className="fa fa-ellipsis-v" />
         </Dropdown.Toggle>
 
         <Dropdown.Menu className="more-menu">

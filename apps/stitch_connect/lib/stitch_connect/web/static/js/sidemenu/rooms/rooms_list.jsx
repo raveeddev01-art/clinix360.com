@@ -39,10 +39,10 @@ export default class RoomsList extends Component {
           </h5>
           <OverlayTrigger
             placement="top"
-            overlay={<Tooltip id="create-new-group">Create new group</Tooltip>}
+            overlay={<Tooltip id="create-new-group">Create new room</Tooltip>}
           >
             <a role="button" onClick={this.toggleCreateGroupModal}>
-              <i className="fa fa-plus" />
+              <i className="fa fa-plus-square-o" />
             </a>
           </OverlayTrigger>
         </div>

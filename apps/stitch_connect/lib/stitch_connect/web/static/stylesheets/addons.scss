@@ -1,6 +1,6 @@
 #addons {
   box-shadow: -1px 0 0 $border-color;
-  padding: 20px 0 0;
+  padding: 15px 0 0;
 
   .flex-header {
     color: inherit;
@@ -9,26 +9,24 @@
     border-radius: 3px;
     padding: 8px 15px;
     flex-basis: auto;
-    margin: 0 15px 20px;
+    margin: 0 15px 10px;
 
     h4 {
-      padding-left: 20px;
       flex-grow: 1;
+      flex-direction: row;
       color: $brand-primary;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
       margin: 0;
     }
 
     a {
-      color: #333;
+      color: $brand-primary;
+      flex-shrink: 0;
     }
 
     .open-left {
-      position: absolute;
-      left: 30px;
-      top: 32px;
-      color: $brand-primary;
+      margin-right: 8px;
     }
   }
 
@@ -44,7 +42,7 @@
       flex-direction: row;
       align-items: center;
       font-size: 16px;
-      margin-bottom: 15px;
+      margin: 15px 0;
       opacity: .8;
 
       .addon-icon {
@@ -62,8 +60,16 @@
       }
     }
 
+    .collapse-content {
+      padding: 0 0 10px;
+
+      h5 {
+        margin: 0 0 5px;
+      }
+    }
+
     hr {
-      margin: 5px 0;
+      margin: 5px 0; 
     }
   }
 
@@ -83,6 +89,10 @@
       transform: translateX(0%);
       opacity: 1;
     }
+
+    /* .collapse h5 {
+      margin: 0 0 5px;
+    } */
   }
 
   .addon-right-panel {
@@ -136,10 +146,6 @@
     .display-name {
       margin-bottom: 8px;
     }
-
-    .usertitle {
-      color: #9b9b9b;
-    }
   }
 
   .userinfo {
@@ -155,14 +161,12 @@
 
     .userinfo__label {
       flex-basis: 40%;
-      color: #9b9b9b;
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
 
     .userinfo__value {
       flex-basis: 60%;
-      color: #9b9b9b;
       word-wrap: break-word;
       overflow-wrap: break-word;
       text-align: right;

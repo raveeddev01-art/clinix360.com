@@ -53,7 +53,7 @@ class People extends Component {
             }
           >
             <a href onClick={this.showInviteModal}>
-              <i className="fa fa-plus" />
+              <i className="fa fa-plus-square-o" />
             </a>
           </OverlayTrigger>
         </div>
