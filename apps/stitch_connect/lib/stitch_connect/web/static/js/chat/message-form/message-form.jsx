@@ -25,7 +25,7 @@ class MessageForm extends Component {
       activeUserIndex: 0
     };
 
-    this.typingTimoutId = null;
+    this.typingTimeoutId = null;
   }
 
   onTextChange = evt => {
@@ -159,9 +159,9 @@ class MessageForm extends Component {
   };
 
   typingStarted = () => {
-    clearTimeout(this.typingTimoutId);
+    clearTimeout(this.typingTimeoutId);
     this.props.channelStore.groupChannel.push("typing_started");
-    this.typingTimoutId = setTimeout(this.typingStopped, 5000);
+    this.typingTimeoutId = setTimeout(this.typingStopped, 5000);
   };
 
   typingStopped = () => {
