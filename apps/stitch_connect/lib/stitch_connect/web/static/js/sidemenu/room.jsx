@@ -40,15 +40,25 @@ class Room extends Component {
     return classNames("fa", iconClass);
   }
 
+  getBadge() {
+    const {
+      type,
+      unread_messages_count: unreadMessagesCount,
+      mentions_count: mentionsCount
+    } = this.props.room;
+
+    return type === "regular" ? mentionsCount : unreadMessagesCount;
+  }
+
   render() {
     const {
       name,
-      unread_messages_count: unreadMessagesCount,
-      mentions_count: mentionsCount
+      unread_messages_count: unreadMessagesCount
     } = this.props.room;
     const className = classNames("item", {
       "has-unread": unreadMessagesCount > 0
     });
+    const badge = this.getBadge();
 
     return (
       <NavLink
@@ -62,9 +72,9 @@ class Room extends Component {
         <div className="item-text">
           {name}
         </div>
-        {mentionsCount > 0 &&
+        {badge > 0 &&
           <div className="item-badge text-center">
-            {mentionsCount}
+            {badge}
           </div>}
       </NavLink>
     );
