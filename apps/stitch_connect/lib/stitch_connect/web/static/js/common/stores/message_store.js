@@ -527,13 +527,36 @@ class MessageStore {
     }
 
     if (newMessage.user_id !== currentUser.id) {
+      const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+
       // For messages from other users
       if (this.unreadMessagesCount) {
         this.unreadMessagesCount += 1;
+
+        if (isMention) {
+          this.mentionsCount += 1;
+        }
       } else if (!this.isScrollBottom) {
         this.unreadMessagesCount += 1;
+
+        if (isMention) {
+          this.mentionsCount += 1;
+        }
       } else {
         this.markAsRead();
+      }
+
+      // Play sound notification
+      const desktopNotification = this.rootStore.notificationStore.getGroupNotificationPreference(
+        this.rootStore.groupStore.id
+      );
+
+      if (desktopNotification === "everything") {
+        // Play sound
+        console.log("play sound");
+      } else if (desktopNotification === "mentions" && isMention) {
+        // Play sound
+        console.log("play sound");
       }
     }
 
