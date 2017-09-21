@@ -1,4 +1,5 @@
 import { observable, computed, action } from "mobx";
+import Favico from "favico.js";
 
 class SidemenuStore {
   @observable teamName = "";
@@ -8,8 +9,10 @@ class SidemenuStore {
   @observable users = [];
   @observable locked = false;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
+
   inactivityTimeout = -1;
   inactivityTimer = null;
+  favicon = null;
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
@@ -17,6 +20,10 @@ class SidemenuStore {
     this.teamId = props.teamId;
     this.subdomain = props.subdomain;
     this.users = props.dm_users || [];
+
+    this.favicon = new Favico({
+      animation: "slide"
+    });
 
     this.loadGroups();
     this.loadUsers();
@@ -62,10 +69,19 @@ class SidemenuStore {
     return map;
   }
 
+  @computed
+  get totalUnreadMessagesCount() {
+    return this.groups.reduce(
+      (count, group) => count + group.unread_messages_count,
+      0
+    );
+  }
+
   @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
       this.groups = response.data;
+      this.updateFavicon();
     });
   };
 
@@ -91,6 +107,8 @@ class SidemenuStore {
     if (newMessage.mentioned_user_ids.includes(currentUser.id)) {
       group.mentions_count += 1;
     }
+
+    this.updateFavicon();
   };
 
   @action
@@ -184,6 +202,14 @@ class SidemenuStore {
     if (this.inactivityTimer) {
       window.clearTimeout(this.inactivityTimer);
       this.inactivityTimer = null;
+    }
+  }
+
+  updateFavicon() {
+    if (this.totalUnreadMessagesCount > 0) {
+      this.favicon.badge(" ");
+    } else {
+      this.favicon.badge("");
     }
   }
 }

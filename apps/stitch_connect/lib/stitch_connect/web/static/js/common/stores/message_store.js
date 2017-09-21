@@ -429,6 +429,9 @@ class MessageStore {
           );
           this.lastReadAt = now;
         }
+
+        // Update favicon
+        sidemenuStore.updateFavicon();
       })
       .receive("error", err => {
         notify.show(err.message, "error");
@@ -506,6 +509,8 @@ class MessageStore {
 
     this.messages.unshift(newMessage);
 
+    const { sidemenuStore, groupStore, notificationStore } = this.rootStore;
+
     // 6. New Messages Line
     //  1. new message line should ONLY disappear if You enter a new message
     //
@@ -518,11 +523,8 @@ class MessageStore {
     ) {
       const now = new Date();
 
-      this.rootStore.groupStore.lastReadAt = now;
-      this.rootStore.sidemenuStore.updateGroupData(
-        this.rootStore.groupStore.id,
-        { last_read_at: now }
-      );
+      groupStore.lastReadAt = now;
+      sidemenuStore.updateGroupData(groupStore.id, { last_read_at: now });
       this.lastReadAt = now;
     }
 
@@ -536,19 +538,29 @@ class MessageStore {
         if (isMention) {
           this.mentionsCount += 1;
         }
+
+        sidemenuStore.updateGroupData(groupStore.id, {
+          unread_messages_count: this.unreadMessagesCount,
+          mentions_count: this.mentionsCount
+        });
       } else if (!this.isScrollBottom) {
         this.unreadMessagesCount += 1;
 
         if (isMention) {
           this.mentionsCount += 1;
         }
+
+        sidemenuStore.updateGroupData(groupStore.id, {
+          unread_messages_count: this.unreadMessagesCount,
+          mentions_count: this.mentionsCount
+        });
       } else {
         this.markAsRead();
       }
 
       // Play sound notification
-      const desktopNotification = this.rootStore.notificationStore.getGroupNotificationPreference(
-        this.rootStore.groupStore.id
+      const desktopNotification = notificationStore.getGroupNotificationPreference(
+        groupStore.id
       );
 
       if (desktopNotification === "everything") {
@@ -563,6 +575,9 @@ class MessageStore {
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(() => {}, 0);
     }
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
   };
 
   @action
