@@ -75,6 +75,25 @@ class SidemenuStore {
   };
 
   @action
+  onNewMessage = newMessage => {
+    // If the message is for the current group, ignore
+    if (newMessage.group_id === this.rootStore.groupStore.id) {
+      return;
+    }
+
+    const group = this.groups.find(g => g.id === newMessage.group_id);
+
+    if (!group) {
+      return;
+    }
+
+    group.unread_messages_count += 1;
+    if (newMessage.mentioned_user_ids.includes(currentUser.id)) {
+      group.mentions_count += 1;
+    }
+  };
+
+  @action
   updateGroupData = (id, data) => {
     const index = this.groups.findIndex(group => group.id === id);
     if (index > -1) {
