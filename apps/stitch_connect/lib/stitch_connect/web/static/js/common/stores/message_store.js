@@ -409,14 +409,23 @@ class MessageStore {
     this.groupChannel
       .push("mark_as_read", { group_id: this.rootStore.groupStore.id })
       .receive("ok", () => {
-        const { groupStore } = this.rootStore;
+        const { groupStore, sidemenuStore } = this.rootStore;
 
         groupStore.unreadMessagesCount = 0;
+        sidemenuStore.updateGroupData(groupStore.id, {
+          unread_messages_count: 0
+        });
         this.unreadMessagesCount = 0;
 
         if (resetNewMessageLine) {
-          groupStore.lastReadAt = new Date();
-          this.lastReadAt = new Date();
+          const now = new Date();
+
+          this.rootStore.groupStore.lastReadAt = now;
+          this.rootStore.sidemenuStore.updateGroupData(
+            this.rootStore.groupStore.id,
+            { last_read_at: now }
+          );
+          this.lastReadAt = now;
         }
       })
       .receive("error", err => {
@@ -505,8 +514,14 @@ class MessageStore {
       this.unreadMessagesCount === 0 &&
       this.firstUnreadMessage
     ) {
-      this.rootStore.groupStore.lastReadAt = new Date();
-      this.lastReadAt = new Date();
+      const now = new Date();
+
+      this.rootStore.groupStore.lastReadAt = now;
+      this.rootStore.sidemenuStore.updateGroupData(
+        this.rootStore.groupStore.id,
+        { last_read_at: now }
+      );
+      this.lastReadAt = now;
     }
 
     if (newMessage.user_id !== currentUser.id) {
