@@ -1,91 +1,83 @@
-import React, { Component } from "react";
-import { observer, inject } from "mobx-react";
-import { NavLink, withRouter } from "react-router-dom";
-import _ from "lodash";
+import React, { Component, PropTypes } from "react";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 
-@inject("sidemenuStore", "presenceStore")
-@observer
-class PeopleList extends Component {
+import CreateDMModal from "./modals/create-dm-modal";
+import InvitationModal from "./modals/invitation-modal";
+import Room from "../room";
+
+class People extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showTeamModal: false,
+      showInviteModal: false
+    };
+  }
+
+  toggleTeamModal = () => {
+    this.setState({
+      showTeamModal: !this.state.showTeamModal
+    });
+  };
+
+  toggleInviteModal = () => {
+    this.setState({
+      showInviteModal: !this.state.showInviteModal
+    });
+  };
+
+  showTeamModal = evt => {
+    evt.preventDefault();
+    this.toggleTeamModal();
+  };
+
+  showinviteModal = evt => {
+    evt.preventDefault();
+    this.toggleinviteModal();
+  };
+
   render() {
-    const { sidemenuStore, presenceStore } = this.props;
-    const onlineUsers = presenceStore.onlineUsers;
-    const offlineUsers = _.differenceBy(sidemenuStore.users, onlineUsers, "id");
-    const multiDMGroups = sidemenuStore.multiDMGroups;
+    const { heading, rooms } = this.props;
+
     return (
-      <div>
-        {onlineUsers.map(user => {
-          const mentionsCount =
-            sidemenuStore.singleDMGroupsMap[user.id] &&
-            sidemenuStore.singleDMGroupsMap[user.id].mentions_count;
-          return (
-            <NavLink
-              key={`online-user-${user.id}`}
-              to={`/direct/${user.username}`}
-              className="item"
-              activeClassName="active"
-            >
-              <div className="item-icon">
-                <i className="fa fa-circle" />
-              </div>
-              <div className="item-text">
-                {`${user.first_name} ${user.last_name}`}
-              </div>
-              {mentionsCount > 0 &&
-                <div className="item-badge text-center">
-                  {mentionsCount}
-                </div>}
-            </NavLink>
-          );
-        })}
+      <div className="menu-nav people m-b-20">
+        <div className="heading">
+          <h5>
+            <a href onClick={this.showTeamModal}>
+              {heading}
+            </a>
+          </h5>
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip id="open-a-direct-message">Invite People</Tooltip>
+            }
+          >
+            <a href onClick={this.showInviteModal}>
+              <i className="fa fa-plus-square-o" />
+            </a>
+          </OverlayTrigger>
+        </div>
 
-        {offlineUsers.map(user => {
-          const mentionsCount =
-            sidemenuStore.singleDMGroupsMap[user.id] &&
-            sidemenuStore.singleDMGroupsMap[user.id].mentions_count;
-          return (
-            <NavLink
-              key={`offline-user-${user.id}`}
-              to={`/direct/${user.username}`}
-              className="item"
-              activeClassName="active"
-            >
-              <div className="item-icon">
-                <i className="fa fa-circle-o" />
-              </div>
-              <div className="item-text">
-                {`${user.first_name} ${user.last_name}`}
-              </div>
-            </NavLink>
-          );
-        })}
+        {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
-        {multiDMGroups.map(group => {
-          const users = _.differenceBy(group.users, [currentUser], "id");
-          const groupName = users.map(user => user.first_name).join(", ");
-          const slug = group.users.map(user => user.username).join(",");
-          return (
-            <NavLink
-              key={`multi-dm-${group.id}`}
-              to={`/direct/${slug}`}
-              className="item"
-              activeClassName="active"
-            >
-              <div className="item-icon">
-                <i className="fa fa-link" />
-              </div>
-              <div className="item-text">
-                {groupName}
-              </div>
-              {group.mentions_count > 0 &&
-                <div className="item-badge text-center">
-                  {group.mentions_count}
-                </div>}
-            </NavLink>
-          );
-        })}
+        <CreateDMModal
+          show={this.state.showTeamModal}
+          toggle={this.toggleTeamModal}
+        />
+        <InvitationModal
+          show={this.state.showInviteModal}
+          toggle={this.toggleInviteModal}
+        />
       </div>
     );
   }
 }
 
-export default withRouter(PeopleList);
+People.propTypes = {
+  heading: PropTypes.string.isRequired
+};
+
+export default People;

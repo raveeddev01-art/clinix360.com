@@ -39,6 +39,11 @@ class SidemenuStore {
   }
 
   @computed
+  get directGroups() {
+    return this.groups.filter(group => group.type !== "regular");
+  }
+
+  @computed
   get multiDMGroups() {
     return this.groups.filter(group => group.type === "multi_dm");
   }
