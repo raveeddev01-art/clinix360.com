@@ -24,14 +24,14 @@ defmodule Stitch.EmailNotification do
   def not_delivered(user_id) do
     EmailNotification
     |> where(user_id: ^user_id)
-    |> where([en], not is_nil(en.delivered_at))
+    |> where([en], is_nil(en.delivered_at))
     |> select([en], en.message_id)
     |> Repo.all
   end
 
-  def clean_delivered(before_datetime \\ week_ago) do
+  def clean_delivered() do
     EmailNotification
-    |> where([en], en.delivered_at < ^before_datetime)
+    |> where([en], en.delivered_at < datetime_add(^NaiveDateTime.utc_now, -1, "week"))
     |> where([en], not is_nil(en.delivered_at))
     |> Repo.delete_all([])
   end
@@ -42,9 +42,5 @@ defmodule Stitch.EmailNotification do
     |> where([en], en.message_id in ^message_ids)
     |> update([m], set: [delivered_at: ^DateTime.utc_now])
     |> Repo.update_all([], returning: true)
-  end
-
-  defp week_ago do
-    Timex.from_now(Timex.shift(DateTime.utc_now(), days: -7))
   end
 end

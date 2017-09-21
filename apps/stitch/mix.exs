@@ -38,6 +38,7 @@ defmodule Stitch.Mixfile do
       {:slugger, "~> 0.2"},
       {:bamboo, "~> 0.8"},
       {:timex, "~> 3.1"},
+      {:quantum, ">= 2.1.0"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false}
     ]
   end

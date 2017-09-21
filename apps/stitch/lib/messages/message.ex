@@ -185,6 +185,7 @@ defmodule Stitch.Message do
   def find_by_ids(message_ids) do
     Message
     |> where([m], m.id in ^message_ids)
+    |> preload([:group, :user])
     |> Repo.all
   end
 end
