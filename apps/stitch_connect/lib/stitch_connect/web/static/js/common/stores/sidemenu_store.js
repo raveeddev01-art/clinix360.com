@@ -88,7 +88,9 @@ class SidemenuStore {
     }
 
     group.unread_messages_count += 1;
-    if (newMessage.mentioned_user_ids.includes(currentUser.id)) {
+    if (group.type === "dm" || group.type === "multi-dm") {
+      group.mentions_count += 1;
+    } else if (newMessage.mentioned_user_ids.includes(currentUser.id)) {
       group.mentions_count += 1;
     }
   };
