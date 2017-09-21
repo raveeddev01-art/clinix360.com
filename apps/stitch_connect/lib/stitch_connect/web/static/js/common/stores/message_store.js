@@ -412,8 +412,10 @@ class MessageStore {
         const { groupStore, sidemenuStore } = this.rootStore;
 
         groupStore.unreadMessagesCount = 0;
+        groupStore.mentionsCount = 0;
         sidemenuStore.updateGroupData(groupStore.id, {
-          unread_messages_count: 0
+          unread_messages_count: 0,
+          mentions_count: 0
         });
         this.unreadMessagesCount = 0;
 
