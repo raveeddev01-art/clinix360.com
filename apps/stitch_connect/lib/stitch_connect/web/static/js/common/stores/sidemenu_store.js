@@ -13,6 +13,7 @@ class SidemenuStore {
   inactivityTimeout = -1;
   inactivityTimer = null;
   favicon = null;
+  notificationAudio = null;
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
@@ -24,6 +25,7 @@ class SidemenuStore {
     this.favicon = new Favico({
       animation: "slide"
     });
+    this.notificationAudio = new Audio("/audios/pop.mp3");
 
     this.loadGroups();
     this.loadUsers();
@@ -98,17 +100,21 @@ class SidemenuStore {
     }
 
     const group = this.groups.find(g => g.id === newMessage.group_id);
+    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
     if (!group) {
       return;
     }
 
     group.unread_messages_count += 1;
-    if (newMessage.mentioned_user_ids.includes(currentUser.id)) {
+    if (isMention) {
       group.mentions_count += 1;
     }
 
     this.updateFavicon();
+
+    // Play sound notification
+    this.playNewMessageNotificationForGroup(newMessage.group_id, isMention);
   };
 
   @action
@@ -210,6 +216,23 @@ class SidemenuStore {
       this.favicon.badge(" ");
     } else {
       this.favicon.badge("");
+    }
+  }
+
+  playNotificationAudio() {
+    this.notificationAudio.play();
+  }
+
+  playNewMessageNotificationForGroup(groupId, isMention) {
+    const { notificationStore } = this.rootStore;
+    const desktopNotification = notificationStore.getGroupNotificationPreference(
+      groupId
+    );
+
+    if (desktopNotification === "everything") {
+      this.playNotificationAudio();
+    } else if (desktopNotification === "mentions" && isMention) {
+      this.playNotificationAudio();
     }
   }
 }

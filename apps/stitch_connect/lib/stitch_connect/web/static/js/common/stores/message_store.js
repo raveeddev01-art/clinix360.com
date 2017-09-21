@@ -503,13 +503,13 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    if (newMessage.group_id !== this.rootStore.groupStore.id) {
+    const { sidemenuStore, groupStore } = this.rootStore;
+
+    if (newMessage.group_id !== groupStore.id) {
       return;
     }
 
     this.messages.unshift(newMessage);
-
-    const { sidemenuStore, groupStore, notificationStore } = this.rootStore;
 
     // 6. New Messages Line
     //  1. new message line should ONLY disappear if You enter a new message
@@ -559,17 +559,10 @@ class MessageStore {
       }
 
       // Play sound notification
-      const desktopNotification = notificationStore.getGroupNotificationPreference(
-        groupStore.id
+      sidemenuStore.playNewMessageNotificationForGroup(
+        newMessage.group_id,
+        isMention
       );
-
-      if (desktopNotification === "everything") {
-        // Play sound
-        console.log("play sound");
-      } else if (desktopNotification === "mentions" && isMention) {
-        // Play sound
-        console.log("play sound");
-      }
     }
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
