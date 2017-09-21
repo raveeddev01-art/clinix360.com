@@ -10,6 +10,8 @@ import SearchStore from "./search_store";
 import SidemenuStore from "./sidemenu_store";
 import UploadStore from "./upload_store";
 
+import notificationStore from "../../admin/stores/notification_store";
+
 class RootStore {
   constructor(props) {
     this.appParams = Object.assign({}, props);
@@ -27,6 +29,8 @@ class RootStore {
     this.sidemenuStore = new SidemenuStore(this, props);
     this.uploadStore = new UploadStore(this);
 
+    this.notificationStore = notificationStore;
+
     // Join channels
     this.channelStore.joinEventChannel();
     this.presenceStore.joinTeamLobbyChannel();
@@ -34,6 +38,9 @@ class RootStore {
     // Actions triggered at the start of app
     this.sidemenuStore.getLockState();
     this.sidemenuStore.getInactivityTimeout();
+
+    // Load notification preferences
+    this.notificationStore.loadPreferences();
   }
 }
 
