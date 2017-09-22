@@ -120,6 +120,12 @@
             color: #fff;
           }
         }
+
+        &.has-unread {
+          .item-text {
+            font-weight: bold;
+          }
+        }
       }
     }
   }

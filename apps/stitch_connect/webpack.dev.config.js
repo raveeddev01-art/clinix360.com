@@ -1,6 +1,7 @@
 const path = require("path");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const webpack = require("webpack");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = [
   {
@@ -53,6 +54,20 @@ module.exports = [
         }
       ]
     },
-    plugins: [new ExtractTextPlugin("app.css")]
+    plugins: [
+      new ExtractTextPlugin("app.css"),
+      new CopyWebpackPlugin([
+        {
+          from: "./lib/stitch_connect/web/static/favicon.ico",
+          to: path.resolve(__dirname, "priv/static")
+        }
+      ]),
+      new CopyWebpackPlugin([
+        {
+          from: "./lib/stitch_connect/web/static/audios/pop.mp3",
+          to: path.resolve(__dirname, "priv/static/audios")
+        }
+      ])
+    ]
   }
 ];

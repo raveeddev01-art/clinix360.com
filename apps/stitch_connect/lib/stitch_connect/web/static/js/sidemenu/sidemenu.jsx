@@ -7,7 +7,7 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
-import People from "./people/people";
+import PeopleList from "./people/people_list";
 
 @inject("sidemenuStore")
 @observer
@@ -88,7 +88,10 @@ class Sidemenu extends Component {
           />
 
           <RoomsList heading="Rooms" rooms={sidemenuStore.normalGroups} />
-          <People heading="Direct Messages" />
+          <PeopleList
+            heading="Direct Messages"
+            rooms={sidemenuStore.directGroups}
+          />
         </div>
       </div>
     );

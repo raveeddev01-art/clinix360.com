@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/", from: :stitch_connect, gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(js css fonts images audios favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

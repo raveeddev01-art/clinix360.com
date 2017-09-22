@@ -409,15 +409,29 @@ class MessageStore {
     this.groupChannel
       .push("mark_as_read", { group_id: this.rootStore.groupStore.id })
       .receive("ok", () => {
-        const { groupStore } = this.rootStore;
+        const { groupStore, sidemenuStore } = this.rootStore;
 
         groupStore.unreadMessagesCount = 0;
+        groupStore.mentionsCount = 0;
+        sidemenuStore.updateGroupData(groupStore.id, {
+          unread_messages_count: 0,
+          mentions_count: 0
+        });
         this.unreadMessagesCount = 0;
 
         if (resetNewMessageLine) {
-          groupStore.lastReadAt = new Date();
-          this.lastReadAt = new Date();
+          const now = new Date();
+
+          this.rootStore.groupStore.lastReadAt = now;
+          this.rootStore.sidemenuStore.updateGroupData(
+            this.rootStore.groupStore.id,
+            { last_read_at: now }
+          );
+          this.lastReadAt = now;
         }
+
+        // Update favicon
+        sidemenuStore.updateFavicon();
       })
       .receive("error", err => {
         notify.show(err.message, "error");
@@ -489,7 +503,9 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    if (newMessage.group_id !== this.rootStore.groupStore.id) {
+    const { sidemenuStore, groupStore } = this.rootStore;
+
+    if (newMessage.group_id !== groupStore.id) {
       return;
     }
 
@@ -505,16 +521,39 @@ class MessageStore {
       this.unreadMessagesCount === 0 &&
       this.firstUnreadMessage
     ) {
-      this.rootStore.groupStore.lastReadAt = new Date();
-      this.lastReadAt = new Date();
+      const now = new Date();
+
+      groupStore.lastReadAt = now;
+      sidemenuStore.updateGroupData(groupStore.id, { last_read_at: now });
+      this.lastReadAt = now;
     }
 
     if (newMessage.user_id !== currentUser.id) {
+      const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+
       // For messages from other users
       if (this.unreadMessagesCount) {
         this.unreadMessagesCount += 1;
+
+        if (isMention) {
+          this.mentionsCount += 1;
+        }
+
+        sidemenuStore.updateGroupData(groupStore.id, {
+          unread_messages_count: this.unreadMessagesCount,
+          mentions_count: this.mentionsCount
+        });
       } else if (!this.isScrollBottom) {
         this.unreadMessagesCount += 1;
+
+        if (isMention) {
+          this.mentionsCount += 1;
+        }
+
+        sidemenuStore.updateGroupData(groupStore.id, {
+          unread_messages_count: this.unreadMessagesCount,
+          mentions_count: this.mentionsCount
+        });
       } else {
         this.markAsRead();
       }
@@ -523,6 +562,15 @@ class MessageStore {
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(() => {}, 0);
     }
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
+
+    // Play notification audio
+    sidemenuStore.playNotificationAudioForNewMessage(newMessage);
+
+    // Show notification card
+    sidemenuStore.showNotificationCardForNewMessage(newMessage);
   };
 
   @action
