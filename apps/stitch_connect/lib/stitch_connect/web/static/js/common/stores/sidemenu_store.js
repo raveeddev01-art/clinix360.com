@@ -115,8 +115,11 @@ class SidemenuStore {
     // Update Favicon
     this.updateFavicon();
 
-    // Play sound notification
-    this.playNewMessageNotificationForGroup(newMessage);
+    // Play notification audio
+    this.playNotificationAudioForNewMessage(newMessage);
+
+    // Show notification card
+    this.showNotificationCardForNewMessage(newMessage);
   };
 
   @action
@@ -265,7 +268,7 @@ class SidemenuStore {
     this.notificationAudio.play();
   }
 
-  playNewMessageNotificationForGroup(newMessage) {
+  playNotificationAudioForNewMessage(newMessage) {
     if (!this.shouldNotify(newMessage)) {
       return;
     }
@@ -276,10 +279,66 @@ class SidemenuStore {
     );
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
-    if (desktopNotification === "everything") {
+    if (
+      desktopNotification === "everything" ||
+      (desktopNotification === "mentions" && isMention)
+    ) {
       this.playNotificationAudio();
-    } else if (desktopNotification === "mentions" && isMention) {
-      this.playNotificationAudio();
+    }
+  }
+
+  showNotificationCard(title, body, duration = 3000) {
+    const notification = new Notification(title, {
+      body,
+      icon: "/favicon.ico"
+    });
+
+    setTimeout(() => {
+      notification.close();
+    }, duration);
+  }
+
+  showNotificationCardForNewMessage(newMessage) {
+    if (
+      !this.shouldNotify(newMessage) ||
+      Notification.permission === "denied"
+    ) {
+      return;
+    }
+
+    const { notificationStore } = this.rootStore;
+    const desktopNotification = notificationStore.getGroupNotificationPreference(
+      newMessage.group_id
+    );
+    const group = this.groups.find(g => g.id === newMessage.group_id);
+    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+
+    if (
+      desktopNotification === "everything" ||
+      (desktopNotification === "mentions" && isMention)
+    ) {
+      const predicatives = {
+        regular: "sent",
+        dm: "sent you",
+        multi_dm: "sent you"
+      };
+      const messageTypes = {
+        regular: "room",
+        dm: "1-on-1",
+        multi_dm: "direct"
+      };
+
+      const author = `${newMessage.user.first_name} ${newMessage.user
+        .last_name}`;
+      const predicative = isMention
+        ? "mentioned you in"
+        : predicatives[group.type];
+      const messageType = messageTypes[group.type];
+
+      this.showNotificationCard(
+        author,
+        `${author} ${predicative} a ${messageType} message`
+      );
     }
   }
 }

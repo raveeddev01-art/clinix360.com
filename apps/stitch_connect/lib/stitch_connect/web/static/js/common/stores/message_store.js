@@ -566,8 +566,11 @@ class MessageStore {
     // Update favicon
     sidemenuStore.updateFavicon();
 
-    // Play sound notification
-    sidemenuStore.playNewMessageNotificationForGroup(newMessage);
+    // Play notification audio
+    sidemenuStore.playNotificationAudioForNewMessage(newMessage);
+
+    // Show notification card
+    sidemenuStore.showNotificationCardForNewMessage(newMessage);
   };
 
   @action
