@@ -92,19 +92,49 @@
           }
         }
 
-        .progress {
+        .progress-bar-wrapper {
           margin-top: 5px;
-          height: 25px;
-          border-radius: 8px;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-          background-color: #bbdefb;
+          position: relative;
+          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
           color: #fff;
-          text-align: center;
 
-          .progress-bar {
-            background-color: #42a5f5;
-            line-height: 25px;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+          .progress {
+            height: 25px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            background-color: lighten(#42a5f5, 20%);
+
+            .progress-bar {
+              background-color: #42a5f5;
+            }
+
+            &.canceled {
+              background-color: lighten(#bd362f, 20%);
+
+              .progress-bar {
+                background-color: #bd362f;
+              }
+            }
+          }
+
+          .progress-bar-label {
+            position: absolute;
+            top: 0;
+            left: 15px;
+            line-height: 23px;
+          }
+
+          .progress-cancel {
+            color: #fff;
+            position: absolute;
+            top: 0;
+            right: 15px;
+            line-height: 23px;
+            cursor: pointer;
+
+            &:hover {
+              opacity: .7;
+            }
           }
         }
       }
@@ -671,6 +701,7 @@
     cursor: zoom-in;
     display: block;
     width: 100%;
+    max-width: 500px;
   }
 }
 

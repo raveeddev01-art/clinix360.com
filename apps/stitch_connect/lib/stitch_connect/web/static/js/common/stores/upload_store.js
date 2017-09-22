@@ -3,10 +3,12 @@ import Guid from "guid";
 
 class UploadStore {
   @observable uploadProgress = new Map();
+  @observable fileNames = new Map();
   @observable title = "";
   @observable description = "";
   @observable groupId = null;
   @observable isUploadModalVisible = false;
+  xhrs = {};
   dropzoneRef = null;
   file = null;
 
@@ -32,6 +34,13 @@ class UploadStore {
   @action
   changeUploadGroup = groupId => {
     this.groupId = groupId;
+  };
+
+  @action
+  abortUpload = key => {
+    if (this.xhrs[key]) {
+      this.xhrs[key].abort();
+    }
   };
 
   @action
@@ -62,22 +71,31 @@ class UploadStore {
         formData.append("file", file);
 
         this.uploadProgress.set(key, 0);
+        this.fileNames.set(key, title);
 
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
+          this.xhrs[data.key] = xhr;
+
           xhr.open("post", data.action);
           xhr.onload = e => resolve(e.target.responseText);
           xhr.onerror = reject;
+          xhr.onabort = () => reject("aborted");
           if (xhr.upload) {
             xhr.upload.onprogress = this.onProgress(key);
           }
           xhr.send(formData);
         })
           .then(() => {
+            delete this.xhrs[data.key];
+            this.setProcessing(key);
             this.uploadProgress.set(key, "done");
             return `${data.action}/${data.key}`;
           })
-          .catch(() => {
+          .catch(e => {
+            if (e === "aborted") {
+              throw e;
+            }
             notify.show("There was a problem uploading file", "error");
           });
       })
@@ -99,12 +117,20 @@ class UploadStore {
       })
       .then(() => {
         this.removeProgress(key);
+      })
+      .catch(e => {
+        if (e === "aborted") {
+          setTimeout(() => {
+            this.removeProgress(key);
+          }, 1000); // show cancelling for a blink
+        }
       });
   };
 
   @action
   removeProgress = key => {
     this.uploadProgress.delete(key);
+    this.fileNames.delete(key);
   };
 
   onProgress = key =>

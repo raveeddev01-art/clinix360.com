@@ -36,13 +36,12 @@ class Groups extends Component {
     return (
       <Select
         className="multi-select-large"
-        autofocus
         options={options}
         simpleValue
         value={value}
         onChange={this.onChange}
         clearable={false}
-        searchable
+        searchable={false}
       />
     );
   }
