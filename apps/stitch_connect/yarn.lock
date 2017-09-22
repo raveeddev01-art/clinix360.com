@@ -3915,13 +3915,7 @@ react-visibility-sensor@^3.10.1:
     create-react-class "^15.5.1"
     prop-types "^15.5.4"
 
-react-web-notification@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/react-web-notification/-/react-web-notification-0.2.4.tgz#a1d594ab7d11d384e4e25948fd2841e3cc61992c"
-  dependencies:
-    react "^0.14.3 || ^15.0.1"
-
-"react@^0.14.3 || ^15.0.1", react@^15.6.1:
+react@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
   dependencies:
