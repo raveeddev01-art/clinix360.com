@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-import Room from "./room";
+import Room from "../room";
 import GroupsModal from "./modals/groups_modal";
 import CreateGroupModal from "./modals/create_group_modal";
 
@@ -29,12 +29,14 @@ export default class RoomsList extends Component {
   };
 
   render() {
+    const { heading, rooms } = this.props;
+
     return (
       <div className="menu-nav m-b-20">
         <div className="heading">
           <h5>
             <a role="button" onClick={this.toggleGroupsModal}>
-              {this.props.heading}
+              {heading}
             </a>
           </h5>
           <OverlayTrigger
@@ -47,7 +49,7 @@ export default class RoomsList extends Component {
           </OverlayTrigger>
         </div>
 
-        {this.props.rooms.map(room => {
+        {rooms.map(room => {
           return <Room key={`room-${room.id}`} room={room} />;
         })}
 
