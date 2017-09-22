@@ -8,20 +8,21 @@ class RoomDetails extends Component {
     const { groupStore } = this.props;
 
     return (
-      <div className="collapse-content">
-        <h5 className="text-muted">Topic</h5>
+      <div className="collapse-content room-details">
+        <h5>Name</h5>
         <p>
-          {groupStore.description
-            ? <span>
-                {groupStore.description}
-              </span>
-            : <span>
-                No room topic set
-              </span>}
+          {groupStore.name} <code>#{groupStore.slug}</code>
         </p>
 
-        <h5 className="text-muted">Created by</h5>
-        <p>User on September 15, 2017</p>
+        <h5>Type</h5>
+        <p>
+          {groupStore.public === true
+            ? <span>Public Group</span>
+            : <span>Private Group</span>}
+        </p>
+
+        <h5>Created</h5>
+        <p>Created on</p>
       </div>
     );
   }

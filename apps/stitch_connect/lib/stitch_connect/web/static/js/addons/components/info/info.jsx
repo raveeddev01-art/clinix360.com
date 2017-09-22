@@ -6,16 +6,18 @@ import RoomDetails from "./room-details/room-details";
 import PeopleList from "../people-list/people-list";
 import PinnedMessages from "./pinned-messages/pinned-messages";
 import StarredMessages from "./starred-messages/starred-messages";
+import Files from "../files/files";
+import NotificationPreferences from "./notification-preferences/notification-preferences";
 
-@inject("groupStore")
+@inject("groupStore", "notificationStore")
 @observer
 class Info extends Component {
   loadUsers = () => {
     this.props.groupStore.loadUsers();
   };
 
-  loadNotificationSetting = () => {
-    this.props.groupStore.loadNotificationSetting();
+  loadNotifications = () => {
+    this.props.notificationStore.loadPreferences();
   };
 
   render() {
@@ -37,7 +39,7 @@ class Info extends Component {
           <p>placeholder</p>
         </AddonCollapse> */}
         <AddonCollapse icon="folder-open" title="Files">
-          <p className="text-muted">Upload the first file!</p>
+          <Files />
         </AddonCollapse>
         {/* <AddonCollapse icon="flask" title="Labs">
           <p className="text-muted">Add the first lab!</p>
@@ -57,8 +59,12 @@ class Info extends Component {
         <AddonCollapse icon="flask" title="Labs">
           <p className="text-muted">Add the first clinical note!</p>
         </AddonCollapse> */}
-        <AddonCollapse icon="bell" title="Notifications" onCollapse={this.loadNotificationSetting}>
-          <p>Room notifications set to: {this.props.groupStore.notificationSetting}.</p>
+        <AddonCollapse
+          icon="bell"
+          title="Notifications"
+          onCollapse={this.loadNotifications}
+        >
+          <NotificationPreferences />
         </AddonCollapse>
       </div>
     );

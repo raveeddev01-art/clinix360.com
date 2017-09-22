@@ -16,7 +16,7 @@ class AddonCollapse extends Component {
   };
 
   render() {
-    const { children, icon, title, border } = this.props;
+    const { children, icon, title } = this.props;
     const { collapsed } = this.state;
     const iconClass = cx("fa", `fa-${icon}`);
     const caretClass = cx("fa", {
@@ -39,7 +39,6 @@ class AddonCollapse extends Component {
             {children}
           </div>
         </Collapse>
-        {border && <hr />}
       </div>
     );
   }
@@ -52,13 +51,11 @@ AddonCollapse.propTypes = {
   ]),
   icon: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  border: PropTypes.bool.isRequired,
   onCollapse: PropTypes.func.isRequired
 };
 
 AddonCollapse.defaultProps = {
   children: null,
-  border: true,
   onCollapse: () => {}
 };
 
