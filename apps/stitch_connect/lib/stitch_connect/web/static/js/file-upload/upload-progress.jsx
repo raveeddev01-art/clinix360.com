@@ -6,14 +6,16 @@ import UploadProgressBar from "./upload-progress-bar";
 @observer
 class UploadProgress extends Component {
   renderProgressBar = (key, progress) => {
+    const { uploadStore } = this.props;
     if (typeof progress === "number") {
+      const filename = uploadStore.fileNames.get(key);
       return (
         <UploadProgressBar
           key={key}
           progress={progress}
-          filename={key}
-          label={`${key}: ${progress.toFixed(0)}%`}
-          cancel={() => {}}
+          filename={filename}
+          label={`${filename}: ${progress.toFixed(0)}%`}
+          cancel={() => uploadStore.abortUpload(key)}
         />
       );
     }
