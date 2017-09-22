@@ -10,6 +10,7 @@ class SidemenuStore {
   @observable locked = false;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
 
+  active = true; // If TRUE, the user is currently active in the app
   inactivityTimeout = -1;
   inactivityTimer = null;
   favicon = null;
@@ -129,6 +130,7 @@ class SidemenuStore {
   lock() {
     // TODO: POST `/api/v1/session-lock`
     this.locked = true;
+    this.active = false;
   }
 
   /**
@@ -160,6 +162,7 @@ class SidemenuStore {
     setTimeout(() => {
       this.unlocking = false;
       this.locked = false;
+      this.active = true;
     }, 2000);
   }
 
@@ -209,6 +212,18 @@ class SidemenuStore {
       window.clearTimeout(this.inactivityTimer);
       this.inactivityTimer = null;
     }
+  }
+
+  setActive() {
+    if (this.locked) {
+      return;
+    }
+
+    this.active = true;
+  }
+
+  setInactive() {
+    this.active = false;
   }
 
   updateFavicon() {

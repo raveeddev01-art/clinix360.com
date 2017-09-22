@@ -26,11 +26,13 @@ class LockableApp extends Component {
     // Active
     window.addEventListener("focus", () => {
       sidemenuStore.stopInactivityTimer();
+      sidemenuStore.setActive();
     });
 
     // Inactive
     window.addEventListener("blur", () => {
       sidemenuStore.startInactivityTimer();
+      sidemenuStore.setInactive();
     });
   }
 
