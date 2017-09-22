@@ -10,7 +10,7 @@ class PinnedMessages extends Component {
     const { messageStore } = this.props;
 
     return (
-      <div className="group-pinned-messages">
+      <div className="collapse-content group-pinned-messages">
         {messageStore.pinnedMessages.map(message =>
           <AddonMessage key={message.id} message={message} />
         )}
