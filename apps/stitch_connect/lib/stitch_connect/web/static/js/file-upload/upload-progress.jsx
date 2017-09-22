@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-
-import ProgressBar from "react-bootstrap/lib/ProgressBar";
+import UploadProgressBar from "./upload-progress-bar";
 
 @inject("uploadStore")
 @observer
@@ -9,15 +8,24 @@ class UploadProgress extends Component {
   renderProgressBar = (key, progress) => {
     if (typeof progress === "number") {
       return (
-        <ProgressBar
+        <UploadProgressBar
           key={key}
-          now={progress}
-          label={`${progress.toFixed(0)}%`}
+          progress={progress}
+          filename={key}
+          label={`${key}: ${progress.toFixed(0)}%`}
+          cancel={() => {}}
         />
       );
     }
 
-    return <ProgressBar key={key} now={100} label="Processing file..." />;
+    return (
+      <UploadProgressBar
+        key={key}
+        progress={100}
+        showCancel={false}
+        label={`Processing ${key}...`}
+      />
+    );
   };
 
   render() {
