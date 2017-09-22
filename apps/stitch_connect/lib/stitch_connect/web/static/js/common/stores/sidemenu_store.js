@@ -112,10 +112,11 @@ class SidemenuStore {
       group.mentions_count += 1;
     }
 
+    // Update Favicon
     this.updateFavicon();
 
     // Play sound notification
-    this.playNewMessageNotificationForGroup(newMessage.group_id, isMention);
+    this.playNewMessageNotificationForGroup(newMessage);
   };
 
   @action
@@ -226,6 +227,32 @@ class SidemenuStore {
     this.active = false;
   }
 
+  /**
+   * Returnns if the user is 'Currently in' the group
+   * 'Currently in' requires that the user is in the room + 'Active'
+   * 
+   * @param {*} groupId 
+   */
+  isCurrentlyInRoom(groupId) {
+    return groupId === this.rootStore.groupStore.id && this.active;
+  }
+
+  /**
+   * Check if notification should be made for the message
+   * 
+   *  Should notify ONLY when
+   *    - message is from others AND
+   *    - user is not 'Currently in' the room
+   * 
+   * @param {*} newMessage 
+   */
+  shouldNotify(newMessage) {
+    return (
+      newMessage.user_id !== currentUser.id &&
+      !this.isCurrentlyInRoom(newMessage.group_id)
+    );
+  }
+
   updateFavicon() {
     if (this.totalUnreadMessagesCount > 0) {
       this.favicon.badge(" ");
@@ -238,11 +265,16 @@ class SidemenuStore {
     this.notificationAudio.play();
   }
 
-  playNewMessageNotificationForGroup(groupId, isMention) {
+  playNewMessageNotificationForGroup(newMessage) {
+    if (!this.shouldNotify(newMessage)) {
+      return;
+    }
+
     const { notificationStore } = this.rootStore;
     const desktopNotification = notificationStore.getGroupNotificationPreference(
-      groupId
+      newMessage.group_id
     );
+    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
     if (desktopNotification === "everything") {
       this.playNotificationAudio();

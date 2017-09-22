@@ -557,12 +557,6 @@ class MessageStore {
       } else {
         this.markAsRead();
       }
-
-      // Play sound notification
-      sidemenuStore.playNewMessageNotificationForGroup(
-        newMessage.group_id,
-        isMention
-      );
     }
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
@@ -571,6 +565,9 @@ class MessageStore {
 
     // Update favicon
     sidemenuStore.updateFavicon();
+
+    // Play sound notification
+    sidemenuStore.playNewMessageNotificationForGroup(newMessage);
   };
 
   @action
