@@ -33,17 +33,6 @@ class SidemenuStore {
   }
 
   @computed
-  get singleDMGroupsMap() {
-    const singleDMGroups = this.groups.filter(group => group.type === "dm");
-    const userMap = {};
-    singleDMGroups.forEach(group => {
-      const user = group.users.find(u => u.id !== currentUser.id);
-      userMap[user ? user.id : currentUser.id] = group;
-    });
-    return userMap;
-  }
-
-  @computed
   get normalGroups() {
     return this.groups.filter(group => group.type === "regular");
   }
