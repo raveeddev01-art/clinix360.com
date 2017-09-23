@@ -102,7 +102,9 @@ class GroupStore {
     // Reset message store before join
     this.rootStore.messageStore.reset();
 
-    get(`/api/v1/groups?slug=${slug}`).then(resp => {
+    post(`/api/v1/groups/dm`, {
+      body: { user_ids: userIds }
+    }).then(resp => {
       this.loading = false;
 
       const { data } = resp;
