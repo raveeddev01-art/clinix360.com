@@ -16,6 +16,7 @@ class Room extends Component {
     let dmUsers = users;
     if (type === "dm") {
       dmUsers = users.filter(user => user.id !== currentUser.id);
+      dmUsers = dmUsers.length ? dmUsers : [currentUser];
     }
 
     return `/direct/${dmUsers.map(user => user.username).join(",")}`;
@@ -30,9 +31,10 @@ class Room extends Component {
       iconClass = "fa-comments";
     } else if (type === "dm") {
       let otherUser = users.find(user => user.id !== currentUser.id);
-      iconClass = presenceStore.isOnline(otherUser.id)
-        ? "fa-circle"
-        : "fa-circle-o";
+      iconClass =
+        !otherUser || presenceStore.isOnline(otherUser.id)
+          ? "fa-circle"
+          : "fa-circle-o";
     } else {
       iconClass = "fa-link";
     }
