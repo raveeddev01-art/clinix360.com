@@ -39,7 +39,7 @@ class SidemenuStore {
 
   @computed
   get directGroups() {
-    return this.groups.filter(group => group.type !== "regular");
+    return this.groups.filter(group => group.type !== "dm");
   }
 
   @computed
@@ -222,8 +222,8 @@ class SidemenuStore {
   /**
    * Returnns if the user is 'Currently in' the group
    * 'Currently in' requires that the user is in the room + 'Active'
-   * 
-   * @param {*} groupId 
+   *
+   * @param {*} groupId
    */
   isCurrentlyInRoom(groupId) {
     return groupId === this.rootStore.groupStore.id && this.active;
@@ -231,12 +231,12 @@ class SidemenuStore {
 
   /**
    * Check if notification should be made for the message
-   * 
+   *
    *  Should notify ONLY when
    *    - message is from others AND
    *    - user is not 'Currently in' the room
-   * 
-   * @param {*} newMessage 
+   *
+   * @param {*} newMessage
    */
   shouldNotify(newMessage) {
     return (
