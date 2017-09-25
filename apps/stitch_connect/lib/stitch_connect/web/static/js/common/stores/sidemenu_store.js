@@ -10,7 +10,6 @@ class SidemenuStore {
   @observable locked = false;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
 
-  active = true; // If TRUE, the user is currently active in the app
   inactivityTimeout = -1;
   inactivityTimer = null;
   favicon = null;
@@ -123,7 +122,6 @@ class SidemenuStore {
   lock() {
     // TODO: POST `/api/v1/session-lock`
     this.locked = true;
-    this.active = false;
   }
 
   /**
@@ -155,7 +153,6 @@ class SidemenuStore {
     setTimeout(() => {
       this.unlocking = false;
       this.locked = false;
-      this.active = true;
     }, 2000);
   }
 
@@ -207,18 +204,6 @@ class SidemenuStore {
     }
   }
 
-  setActive() {
-    if (this.locked) {
-      return;
-    }
-
-    this.active = true;
-  }
-
-  setInactive() {
-    this.active = false;
-  }
-
   /**
    * Returnns if the user is 'Currently in' the group
    * 'Currently in' requires that the user is in the room + 'Active'
@@ -226,7 +211,11 @@ class SidemenuStore {
    * @param {*} groupId 
    */
   isCurrentlyInRoom(groupId) {
-    return groupId === this.rootStore.groupStore.id && this.active;
+    return (
+      groupId === this.rootStore.groupStore.id &&
+      !this.locked &&
+      document.hasFocus()
+    );
   }
 
   /**
