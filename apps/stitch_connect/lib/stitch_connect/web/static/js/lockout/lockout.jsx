@@ -38,11 +38,11 @@ class Lockout extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-
     const { sidemenuStore } = this.props;
 
-    console.log("submit PIN");
-    sidemenuStore.unlock(this.state.pin);
+    sidemenuStore.unlock(this.state.pin).catch(() => {
+      this.setState({ pin: "" });
+    });
   };
 
   render() {

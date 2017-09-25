@@ -7,7 +7,7 @@ class SidemenuStore {
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
-  @observable locked = false;
+  @observable locked = window.locked;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
 
   inactivityTimeout = -1;
@@ -120,8 +120,9 @@ class SidemenuStore {
 
   @action
   lock() {
-    // TODO: POST `/api/v1/session-lock`
-    this.locked = true;
+    post("/api/v1/session-lock").then(() => {
+      this.locked = true;
+    });
   }
 
   /**
@@ -131,29 +132,17 @@ class SidemenuStore {
    */
   @action
   unlock(pin) {
-    // TODO: POST `/api/v1/session-unlock`
-    // In then response, cancel `unlocking` flag
-    // In error response, show notification `Incorrect password`
-
-    /*
-    this.unlocking = true;
-    post(`/api/v1/session-unlick`, { pin }).then(() => {
-      this.locked = false;
-    }, (error) => {
-      notify.show(error);
-    })
-    .finally(() => {
-      this.unlocking = false;
-    })
-    */
-
-    // Mocking the api call using timeout
     this.unlocking = true;
 
-    setTimeout(() => {
-      this.unlocking = false;
-      this.locked = false;
-    }, 2000);
+    return post("/api/v1/session-unlock", { body: { pin } })
+      .then(() => {
+        this.unlocking = false;
+        this.locked = false;
+      })
+      .catch(() => {
+        this.unlocking = false;
+        return Promise.reject();
+      });
   }
 
   loadUsers = () => {
@@ -207,8 +196,8 @@ class SidemenuStore {
   /**
    * Returnns if the user is 'Currently in' the group
    * 'Currently in' requires that the user is in the room + 'Active'
-   * 
-   * @param {*} groupId 
+   *
+   * @param {*} groupId
    */
   isCurrentlyInRoom(groupId) {
     return (
@@ -220,12 +209,12 @@ class SidemenuStore {
 
   /**
    * Check if notification should be made for the message
-   * 
+   *
    *  Should notify ONLY when
    *    - message is from others AND
    *    - user is not 'Currently in' the room
-   * 
-   * @param {*} newMessage 
+   *
+   * @param {*} newMessage
    */
   shouldNotify(newMessage) {
     return (

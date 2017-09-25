@@ -43,3 +43,5 @@ config :guardian, Guardian,
   verify_issuer: true, # optional
   secret_key: "daUyE9JOpu2Wqj4XGJ8Z7Gj/BHtQi+jWyRDtk31HWtdYu4FTUE7aimyONoeGIIBQ",
   serializer: StitchConnect.GuardianSerializer
+
+config :phoenix, :filter_parameters, ["password", "pin"]

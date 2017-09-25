@@ -98,6 +98,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     post "/login", AuthenticationController, :submit_login
     post "/reset_password", AuthenticationController, :reset_password
+
+    post "/session-lock", SessionLockController, :lock
+    post "/session-unlock", SessionLockController, :unlock
   end
 
   # Anonymous routes.
