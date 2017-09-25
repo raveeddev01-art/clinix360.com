@@ -30,8 +30,12 @@ class AddonStore {
   }
 
   @action
-  toggleAddonDetail() {
-    this.showAddonDetail = !this.showAddonDetail;
+  toggleAddonDetail(value) {
+    if (typeof value !== "undefined") {
+      this.showAddonDetail = value;
+    } else {
+      this.showAddonDetail = !this.showAddonDetail;
+    }
   }
 
   @action
