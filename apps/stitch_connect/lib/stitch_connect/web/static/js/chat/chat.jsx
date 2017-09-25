@@ -5,7 +5,7 @@ import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
 
-@inject("groupStore", "sidemenuStore")
+@inject("groupStore", "sidemenuStore", "messageStore")
 export default class Chat extends Component {
   componentWillMount() {
     this.joinChat(this.props.match.params);
@@ -16,8 +16,9 @@ export default class Chat extends Component {
   }
 
   joinChat(params) {
-    const { groupStore, sidemenuStore } = this.props;
+    const { groupStore, sidemenuStore, messageStore } = this.props;
 
+    messageStore.stopTyping();
     if (params.slug) {
       groupStore.joinGroup(params.slug);
     } else if (params.usernames) {

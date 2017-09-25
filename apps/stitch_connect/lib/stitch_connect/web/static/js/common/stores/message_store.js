@@ -292,7 +292,9 @@ class MessageStore {
     }
 
     // Highlight the message jumped to by fading out for 3 seconds
-    $(messagePoolDiv).fadeTo(0, 0.5).fadeTo(3000, 1);
+    $(messagePoolDiv)
+      .fadeTo(0, 0.5)
+      .fadeTo(3000, 1);
   }
 
   /**
@@ -396,7 +398,7 @@ class MessageStore {
 
   /**
    * Mark group messages as read
-   * 
+   *
    * @param resetNewMessageLine   IF True, reset lastReadtAt to current timestamp, causing `New Message Line` to disappear
    */
   @action
@@ -644,7 +646,9 @@ class MessageStore {
           });
         }, 0);
       } else {
-        posHistory = this.messages[this.unreadMessagesCount].id; // B.1.a
+        posHistory =
+          this.messages[this.unreadMessagesCount] &&
+          this.messages[this.unreadMessagesCount].id; // B.1.a
         this.scrollToBottom(() => {
           this.loadedInitial = true; // B.1.b
           this.scrollTo(posHistory, 500);
@@ -758,6 +762,18 @@ class MessageStore {
       });
     }
   }
+
+  stopTyping = () => {
+    if (this.groupChannel) {
+      this.groupChannel.push("typing_stopped");
+    }
+  };
+
+  startTyping = () => {
+    clearTimeout(this.typingTimeoutId);
+    this.groupChannel.push("typing_started");
+    this.typingTimeoutId = setTimeout(this.stopTyping, 5000);
+  };
 }
 
 export default MessageStore;
