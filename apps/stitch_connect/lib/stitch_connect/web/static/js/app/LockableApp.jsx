@@ -23,6 +23,7 @@ class LockableApp extends Component {
   componentDidMount() {
     window.addEventListener("focus", this.props.presenceStore.onWindowFocus);
     window.addEventListener("blur", this.props.presenceStore.onWindowBlur);
+    this.props.presenceStore.onWindowBlur();
   }
 
   onDragEnter = () => {
