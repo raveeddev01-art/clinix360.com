@@ -78,14 +78,10 @@ defmodule Stitch.Message do
       {:ok, increment_unread_counter(message, recipients)}
     end)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
-      send_notification_emails(message.id, notify_user_ids.email)
+      Stitch.EmailNotification.create(message.id, notify_user_ids.email)
       {:ok, notify_user_ids.desktop}
     end)
     |> Repo.transaction
-  end
-
-  def send_notification_emails(message_id, user_ids) do
-    Stitch.EmailNotification.create(message_id, user_ids)
   end
 
   def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
@@ -180,12 +176,5 @@ defmodule Stitch.Message do
     |> where(group_id: ^group_id, user_id: ^user_id)
     |> update([m], set: [last_read_at: ^DateTime.utc_now, mentions_count: 0, unread_messages_count: 0])
     |> Repo.update_all([], returning: true)
-  end
-
-  def find_by_ids(message_ids) do
-    Message
-    |> where([m], m.id in ^message_ids)
-    |> preload([:group, :user])
-    |> Repo.all
   end
 end
