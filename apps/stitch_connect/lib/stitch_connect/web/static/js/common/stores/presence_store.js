@@ -13,7 +13,9 @@ class PresenceStore {
     this.teamId = props.teamId;
 
     autorun(() => {
-      if (this.isCurrentUserSessionLockoutTimerExpired) this.lock();
+      if (!this.locked && this.isCurrentUserSessionLockoutTimerExpired) {
+        this.lock();
+      }
     });
   }
 
@@ -102,8 +104,12 @@ class PresenceStore {
     if (this.locked) return;
 
     post("/api/v1/session-lock").then(() => {
+      window.clearTimeout(this.lockoutTimerID);
+      window.clearTimeout(this.awayTimerID);
       this.locked = true;
       this.teamLobbyChannel.push("locked");
+      this.teamLobbyChannel.push("became_inactive");
+      this.teamLobbyChannel.push("away_timer_expired");
     });
   };
 
@@ -123,6 +129,8 @@ class PresenceStore {
   };
 
   onWindowBlur = () => {
+    if (this.locked) return;
+
     this.teamLobbyChannel.push("became_inactive");
     this.awayTimerID = window.setTimeout(
       this.onAwayTimerExpired,
@@ -135,6 +143,8 @@ class PresenceStore {
   };
 
   onWindowFocus = () => {
+    if (this.locked) return;
+
     window.clearTimeout(this.lockoutTimerID);
     window.clearTimeout(this.awayTimerID);
     this.teamLobbyChannel.push("became_active");
