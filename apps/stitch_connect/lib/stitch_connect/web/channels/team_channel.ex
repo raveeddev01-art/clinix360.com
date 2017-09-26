@@ -73,6 +73,16 @@ defmodule StitchConnect.Web.TeamChannel do
     {:noreply, socket}
   end
 
+  def handle_in("locked", _params, socket) do
+    broadcast_from(socket, "locked", %{sessionId: socket.assigns.session_id})
+    {:noreply, socket}
+  end
+
+  def handle_in("unlocked", _params, socket) do
+    broadcast_from(socket, "unlocked", %{sessionId: socket.assigns.session_id})
+    {:noreply, socket}
+  end
+
   def terminate(_reason, socket) do
     {:ok, socket}
   end

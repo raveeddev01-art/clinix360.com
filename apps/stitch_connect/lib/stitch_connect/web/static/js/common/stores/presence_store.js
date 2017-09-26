@@ -70,6 +70,8 @@ class PresenceStore {
 
     this.teamLobbyChannel.on("presence_state", this.onPresenceState);
     this.teamLobbyChannel.on("presence_diff", this.onPresenceDiff);
+    this.teamLobbyChannel.on("locked", this.onLocked);
+    this.teamLobbyChannel.on("unlocked", this.onUnlocked);
   };
 
   @action
@@ -80,6 +82,14 @@ class PresenceStore {
   @action
   onPresenceDiff = diff => {
     this.onlineUsersMap = Presence.syncDiff(this.onlineUsersMap, diff);
+  };
+
+  onLocked = ({ sessionId }) => {
+    if (sessionId === window.sessionId) this.lock();
+  };
+
+  onUnlocked = ({ sessionId }) => {
+    if (sessionId === window.sessionId) window.location.reload();
   };
 
   @action
@@ -93,6 +103,7 @@ class PresenceStore {
 
     post("/api/v1/session-lock").then(() => {
       this.locked = true;
+      this.teamLobbyChannel.push("locked");
     });
   };
 
@@ -102,6 +113,7 @@ class PresenceStore {
 
     return post("/api/v1/session-unlock", { body: { pin } })
       .then(() => {
+        this.teamLobbyChannel.push("unlocked");
         window.location.reload();
       })
       .catch(() => {
