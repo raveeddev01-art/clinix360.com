@@ -52,13 +52,15 @@ class Lockout extends Component {
       <div className="authentication-wrapper">
         <div id="lockout" className="authentication-card text-center">
           <div className="lockout-header">
-            {unlocking
-              ? <span className="unlocking">
-                  <i className="fa fa-circle-o-notch fa-spin" />
-                </span>
-              : <a className="logout" href="/logout">
-                  <i className="fa fa-sign-out" />
-                </a>}
+            {unlocking ? (
+              <span className="unlocking">
+                <i className="fa fa-circle-o-notch fa-spin" />
+              </span>
+            ) : (
+              <a className="logout" href="/logout">
+                <i className="fa fa-sign-out" />
+              </a>
+            )}
           </div>
 
           <h2>Session Paused</h2>

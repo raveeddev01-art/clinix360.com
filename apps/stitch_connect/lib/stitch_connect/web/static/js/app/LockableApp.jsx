@@ -61,30 +61,33 @@ class LockableApp extends Component {
   };
 
   render() {
-    return this.props.sidemenuStore.locked
-      ? <Lockout />
-      : <Dropzone
-          id="app"
-          disableClick
-          style={{}}
-          onDrop={this.onDrop}
-          ref={this.setDropzoneRef}
-          onDragEnter={this.onDragEnter}
-          onDragLeave={this.onDragLeave}
-        >
-          {this.state.dropzoneActive &&
-            <div className="dropzone-overlay">
-              <div>Drop to Upload File</div>
-            </div>}
-          <UploadModal />
-          <BrowserNotificationAlert />
-          <div className="appContainer">
-            <Sidemenu />
-            <Route exact path={`/`} component={Chat} />
-            <Route path={`/groups/:slug`} component={Chat} />
-            <Route path={`/direct/:usernames`} component={Chat} />
+    return this.props.sidemenuStore.locked ? (
+      <Lockout />
+    ) : (
+      <Dropzone
+        id="app"
+        disableClick
+        style={{}}
+        onDrop={this.onDrop}
+        ref={this.setDropzoneRef}
+        onDragEnter={this.onDragEnter}
+        onDragLeave={this.onDragLeave}
+      >
+        {this.state.dropzoneActive && (
+          <div className="dropzone-overlay">
+            <div>Drop to Upload File</div>
           </div>
-        </Dropzone>;
+        )}
+        <UploadModal />
+        <BrowserNotificationAlert />
+        <div className="appContainer">
+          <Sidemenu />
+          <Route exact path={`/`} component={Chat} />
+          <Route path={`/groups/:slug`} component={Chat} />
+          <Route path={`/direct/:usernames`} component={Chat} />
+        </div>
+      </Dropzone>
+    );
   }
 }
 
