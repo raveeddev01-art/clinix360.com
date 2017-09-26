@@ -30,7 +30,7 @@ Elixir dependencies.
 
 ```
 cd ~/Work/stitch-phoenix
-mix deps.get
+mix do deps.get, deps.compile, dialyzer --plt
 ```
 
 Change directory to the stitch project folder, and Create your local database.
@@ -89,4 +89,12 @@ Access the site.
 
 https://localhost:4443
 
+---
+
+We're using Dialyzer to write typed Elixir. To run Dialyzer
+in the project run the command:
+
+```
+mix dialyzer
+```
 
