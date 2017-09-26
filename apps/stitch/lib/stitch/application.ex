@@ -8,7 +8,6 @@ defmodule Stitch.Application do
 
     Supervisor.start_link([
       supervisor(Stitch.Repo, []),
-      worker(Stitch.MessageMailer, []),
     ], strategy: :one_for_one, name: Stitch.Supervisor)
   end
 end
