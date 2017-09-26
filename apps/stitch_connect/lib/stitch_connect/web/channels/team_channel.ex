@@ -18,7 +18,7 @@ defmodule StitchConnect.Web.TeamChannel do
     {:ok, _} = Presence.track(socket, user.id, %{
       status: "online",
       inactive: false,
-      away_timer_expired: false,
+      became_away: false,
       lockout_timer_expired: false,
       current_group: nil,
       session_id: socket.assigns.session_id,
@@ -54,8 +54,8 @@ defmodule StitchConnect.Web.TeamChannel do
     {:noreply, socket}
   end
 
-  def handle_in("away_timer_expired", _params, socket) do
-    update_connection_meta(socket, %{away_timer_expired: true})
+  def handle_in("became_away", _params, socket) do
+    update_connection_meta(socket, %{became_away: true})
     {:noreply, socket}
   end
 
@@ -67,7 +67,7 @@ defmodule StitchConnect.Web.TeamChannel do
   def handle_in("became_active", _params, socket) do
     update_connection_meta(socket, %{
       inactive: false,
-      away_timer_expired: false,
+      became_away: false,
       lockout_timer_expired: false,
     })
     {:noreply, socket}

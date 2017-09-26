@@ -55,7 +55,7 @@ class PresenceStore {
 
   @computed
   get isCurrentUserSessionAwayTimerExpired() {
-    return this.everyCurrentUserSession("away_timer_expired");
+    return this.everyCurrentUserSession("became_away");
   }
 
   @computed
@@ -109,7 +109,7 @@ class PresenceStore {
       this.locked = true;
       this.teamLobbyChannel.push("locked");
       this.teamLobbyChannel.push("became_inactive");
-      this.teamLobbyChannel.push("away_timer_expired");
+      this.teamLobbyChannel.push("became_away");
     });
   };
 
@@ -151,7 +151,7 @@ class PresenceStore {
   };
 
   onAwayTimerExpired = () => {
-    this.teamLobbyChannel.push("away_timer_expired");
+    this.teamLobbyChannel.push("became_away");
   };
 
   onLockoutTimerExpired = () => {
