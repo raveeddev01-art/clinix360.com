@@ -7,40 +7,30 @@ defmodule Stitch.EmailNotification do
   schema "email_notifications" do
     belongs_to :user, Stitch.Accounts.User
     belongs_to :message, Stitch.Message
-    field :delivered_at, :utc_datetime, default: nil
+    timestamps(updated_at: false)
   end
 
   def changeset(%Stitch.EmailNotification{} = struct, params) do
     struct
-    |> cast(params, [:user_id, :message_id, :delivered])
+    |> cast(params, [:user_id, :message_id])
     |> validate_required([:user_id, :message_id])
   end
 
   def create(message_id, user_ids) do
     EmailNotification
-    |> Repo.insert_all(Enum.map(user_ids, & [user_id: &1, message_id: message_id]))
+    |> Repo.insert_all(Enum.map(user_ids, & [user_id: &1, message_id: message_id, inserted_at: DateTime.utc_now()]))
   end
 
-  def not_delivered(user_id) do
+  def count(user_id) do
     EmailNotification
     |> where(user_id: ^user_id)
-    |> where([en], is_nil(en.delivered_at))
-    |> select([en], en.message_id)
-    |> Repo.all
+    |> select([en], count(en.message_id))
+    |> Repo.one
   end
 
-  def clean_delivered() do
-    EmailNotification
-    |> where([en], en.delivered_at < datetime_add(^NaiveDateTime.utc_now, -1, "week"))
-    |> where([en], not is_nil(en.delivered_at))
-    |> Repo.delete_all([])
-  end
-
-  def mark_as_delivered(user_id, message_ids) do
+  def clean_delivered(user_id) do
     EmailNotification
     |> where([en], en.user_id == ^user_id)
-    |> where([en], en.message_id in ^message_ids)
-    |> update([m], set: [delivered_at: ^DateTime.utc_now])
-    |> Repo.update_all([], returning: true)
+    |> Repo.delete_all([])
   end
 end

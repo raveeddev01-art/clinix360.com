@@ -12,7 +12,6 @@ config :stitch, Stitch.MessageMailer,
 
     # Every midnight
     {"@daily",         {Stitch.MessageMailer, :deliver, ["daily"]}},
-    {"@daily",         {Stitch.EmailNotification, :clean_delivered, []}},
   ],
   global: true,
   timeout: 10 * 60 * 1_000

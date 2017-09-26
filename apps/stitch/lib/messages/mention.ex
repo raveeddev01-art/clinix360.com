@@ -1,6 +1,7 @@
 defmodule Stitch.Message.Mention do
   @doc """
-  Takes a list of users and a message and returns which users were mentioned in this message.
+  Takes a list of users and a mesage and returns which out of those users should be notified
+  by this message.
   """
   def get_mentioned_user_ids(users, author, nil), do: []
   def get_mentioned_user_ids(users, author, message) do

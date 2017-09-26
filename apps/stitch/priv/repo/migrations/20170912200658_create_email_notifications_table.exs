@@ -5,7 +5,7 @@ defmodule Stitch.Repo.Migrations.CreateEmailNotificationsTable do
     create table(:email_notifications) do
       add :message_id, references(:messages, on_delete: :delete_all)
       add :user_id, references(:users, on_delete: :delete_all)
-      add :delivered_at, :utc_datetime, null: true
+      timestamps(updated_at: false)
     end
 
     create index(:email_notifications, :user_id)

@@ -47,62 +47,36 @@ defmodule Stitch.Accounts.Email do
   end
 
   @doc """
-  Takes an array of messages with preloaded groups and users
-  """
-  def pack_messages(messages) do
-    messages
-    |> Enum.reduce(%{}, fn (message, acc) ->
-      messages = Map.get(acc, message.group.id, [])
-      Map.put(acc, message.group.id, [message|messages])
-    end)
-    |> Enum.map(fn {group_id, messages} ->
-      [message|_] = messages
-      %{
-        "group_name" => message.group.name,
-        "messages" => messages |> Enum.reverse |> Enum.map(fn message ->
-          %{
-            "author_name" => "#{message.user.first_name} #{message.user.last_name}",
-            "time" => format_datetime(message.inserted_at),
-            "message_text" => message.text_content,
-          }
-        end)
-      }
-    end)
-  end
-
-  @doc """
-      "03:06 PM, September 4"
-  """
-  def format_datetime(datetime) do
-    Timex.format!(datetime, "{0h12}:{m} {AM}, {Mfull} {D}")
-  end
-
-  @doc """
       "September 13, 2017 at 08:03 PM"
   """
   def format_datetime_subject(datetime) do
     Timex.format!(datetime, "{Mfull} {D}, {YYYY} at {0h12}:{m} {AM}")
   end
 
-  def unread_messages(user, team, messages) do
+  def unread_messages(user, team, message_count) do
+    inflected_message = if message_count == 1, do: "message", else: "messages"
+
     new_email
     |> template("Unread messages")
-    |> to(Application.get_env(:stitch, Stitch)[:recipient_email])
-    |> from(Application.get_env(:stitch, Stitch)[:sender_email])
+    |> to(user.email)
+    |> from("welcome@teamstitch.com")
     |> subject("[Stitch Connect] Notifications from the #{team.name} team for #{format_datetime_subject(DateTime.utc_now)}")
-    |> put_param("merge_language", "handlebars")
     |> put_param("global_merge_vars", [
       %{
-        "name" => "full_name",
-        "content": "#{user.first_name} #{user.last_name}"
+        "name" => "receiverFirstName",
+        "content": user.first_name,
       },
       %{
-        "name": "team_name",
-        "content": team.name
+        "name": "unreadTotal",
+        "content": message_count,
       },
       %{
-        "name": "groups",
-        "content": pack_messages(messages)
+        "name": "singularMessage",
+        "content": inflected_message
+      },
+      %{
+        "name": "receiverEmail",
+        "content": user.email,
       }
     ])
   end

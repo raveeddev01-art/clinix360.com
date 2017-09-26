@@ -78,14 +78,14 @@ defmodule Stitch.Message do
       {:ok, increment_unread_counter(message, recipients)}
     end)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
-      send_notification_emails(notify_user_ids.desktop, message)
+      send_notification_emails(message.id, notify_user_ids.email)
       {:ok, notify_user_ids.desktop}
     end)
     |> Repo.transaction
   end
 
-  def send_notification_emails(user_ids, message) do
-    Stitch.EmailNotification.create(message.id, user_ids)
+  def send_notification_emails(message_id, user_ids) do
+    Stitch.EmailNotification.create(message_id, user_ids)
   end
 
   def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
