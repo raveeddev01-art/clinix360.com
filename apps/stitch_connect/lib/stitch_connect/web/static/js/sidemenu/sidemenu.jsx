@@ -11,7 +11,7 @@ import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
 
-@inject("sidemenuStore")
+@inject("presenceStore", "sidemenuStore")
 @observer
 class Sidemenu extends Component {
   _adminOptions = () => {
@@ -32,12 +32,6 @@ class Sidemenu extends Component {
         </MenuItem>
       </div>
     );
-  };
-
-  lock = () => {
-    const { sidemenuStore } = this.props;
-
-    sidemenuStore.lock();
   };
 
   render() {
@@ -75,7 +69,7 @@ class Sidemenu extends Component {
                 <span>Stitch</span>
               </div>
 
-              <MenuItem eventKey="7" onClick={this.lock}>
+              <MenuItem eventKey="7" onClick={this.props.presenceStore.lock}>
                 Lockout
               </MenuItem>
               <MenuItem eventKey="6" href="/logout">

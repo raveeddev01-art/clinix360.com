@@ -7,11 +7,7 @@ class SidemenuStore {
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
-  @observable locked = window.locked;
-  @observable unlocking = false; // Flag that indicates if unlocking request is being made
 
-  inactivityTimeout = -1;
-  inactivityTimer = null;
   favicon = null;
   notificationAudio = null;
 
@@ -118,33 +114,6 @@ class SidemenuStore {
     }
   };
 
-  @action
-  lock() {
-    post("/api/v1/session-lock").then(() => {
-      this.locked = true;
-    });
-  }
-
-  /**
-   * Unlock the session by calling backend api
-   *
-   * @param {String} pin
-   */
-  @action
-  unlock(pin) {
-    this.unlocking = true;
-
-    return post("/api/v1/session-unlock", { body: { pin } })
-      .then(() => {
-        this.unlocking = false;
-        this.locked = false;
-      })
-      .catch(() => {
-        this.unlocking = false;
-        return Promise.reject();
-      });
-  }
-
   loadUsers = () => {
     get("/api/v1/users").then(response => {
       this.users = response.data;
@@ -156,42 +125,6 @@ class SidemenuStore {
   };
 
   getGroupById = id => this.groups.find(group => group.id === id);
-
-  /**
-   * Get lock state for the current session from the server
-   */
-  getLockState() {
-    // TODO: Get lock state for the current session from the server
-  }
-
-  /**
-   * Retrieve from the server timeout amount for which the user gets locked if he is inactive
-   */
-  getInactivityTimeout() {
-    // TODO: Get from backend server
-
-    this.inactivityTimeout = 60 * 60; // Default: 1 hour
-  }
-
-  startInactivityTimer() {
-    if (this.locked) {
-      return;
-    }
-
-    this.stopInactivityTimer();
-
-    this.inactivityTimer = window.setTimeout(() => {
-      this.lock();
-      this.stopInactivityTimer();
-    }, this.inactivityTimeout * 1000);
-  }
-
-  stopInactivityTimer() {
-    if (this.inactivityTimer) {
-      window.clearTimeout(this.inactivityTimer);
-      this.inactivityTimer = null;
-    }
-  }
 
   /**
    * Returnns if the user is 'Currently in' the group

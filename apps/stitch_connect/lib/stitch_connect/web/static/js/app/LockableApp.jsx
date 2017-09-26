@@ -9,7 +9,7 @@ import BrowserNotificationAlert from "../chat/browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
 import Lockout from "../lockout/lockout";
 
-@inject("sidemenuStore", "uploadStore")
+@inject("presenceStore", "uploadStore")
 @observer
 class LockableApp extends Component {
   constructor(props) {
@@ -21,17 +21,8 @@ class LockableApp extends Component {
   }
 
   componentDidMount() {
-    const { sidemenuStore } = this.props;
-
-    // Active
-    window.addEventListener("focus", () => {
-      sidemenuStore.stopInactivityTimer();
-    });
-
-    // Inactive
-    window.addEventListener("blur", () => {
-      sidemenuStore.startInactivityTimer();
-    });
+    window.addEventListener("focus", this.props.presenceStore.onWindowFocus);
+    window.addEventListener("blur", this.props.presenceStore.onWindowBlur);
   }
 
   onDragEnter = () => {
@@ -61,7 +52,7 @@ class LockableApp extends Component {
   };
 
   render() {
-    return this.props.sidemenuStore.locked ? (
+    return this.props.presenceStore.locked ? (
       <Lockout />
     ) : (
       <Dropzone

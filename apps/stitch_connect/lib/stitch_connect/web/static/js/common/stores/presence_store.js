@@ -1,14 +1,20 @@
 import { Presence } from "phoenix";
-import { observable, action, computed } from "mobx";
+import { action, autorun, computed, observable } from "mobx";
 
 class PresenceStore {
   @observable teamId = "";
   @observable onlineUsersMap = {};
+  @observable locked = window.locked;
+  @observable unlocking = false; // Flag that indicates if unlocking request is being made
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
 
     this.teamId = props.teamId;
+
+    autorun(() => {
+      if (this.isCurrentUserSessionLockoutTimerExpired) this.lock();
+    });
   }
 
   get teamLobbyChannelTopic() {
@@ -80,6 +86,55 @@ class PresenceStore {
   setTeamId(id) {
     this.teamId = id;
   }
+
+  @action
+  lock = () => {
+    if (this.locked) return;
+
+    post("/api/v1/session-lock").then(() => {
+      this.locked = true;
+    });
+  };
+
+  @action
+  unlock = pin => {
+    this.unlocking = true;
+
+    return post("/api/v1/session-unlock", { body: { pin } })
+      .then(() => {
+        window.location.reload();
+      })
+      .catch(() => {
+        this.unlocking = false;
+        return Promise.reject();
+      });
+  };
+
+  onWindowBlur = () => {
+    this.teamLobbyChannel.push("became_inactive");
+    this.awayTimerID = window.setTimeout(
+      this.onAwayTimerExpired,
+      30 * 60 * 1000
+    );
+    this.lockoutTimerID = window.setTimeout(
+      this.onLockoutTimerExpired,
+      60 * 60 * 1000
+    );
+  };
+
+  onWindowFocus = () => {
+    window.clearTimeout(this.lockoutTimerID);
+    window.clearTimeout(this.awayTimerID);
+    this.teamLobbyChannel.push("became_active");
+  };
+
+  onAwayTimerExpired = () => {
+    this.teamLobbyChannel.push("away_timer_expired");
+  };
+
+  onLockoutTimerExpired = () => {
+    this.teamLobbyChannel.push("lockout_timer_expired");
+  };
 }
 
 export default PresenceStore;
