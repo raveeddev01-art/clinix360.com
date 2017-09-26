@@ -26,6 +26,35 @@ class PresenceStore {
     );
   }
 
+  everyCurrentUserSession(state) {
+    const currenUserPresence = this.onlineUsersMap[window.currentUser.id];
+
+    if (!currenUserPresence) return false;
+
+    const currentUserSessionMetas = currenUserPresence.metas.filter(
+      meta => meta.session_id === window.sessionId
+    );
+
+    if (!currentUserSessionMetas.length) return false;
+
+    return currentUserSessionMetas.every(meta => meta[state]);
+  }
+
+  @computed
+  get isCurrentUserSessionInactive() {
+    return this.everyCurrentUserSession("inactive");
+  }
+
+  @computed
+  get isCurrentUserSessionAwayTimerExpired() {
+    return this.everyCurrentUserSession("away_timer_expired");
+  }
+
+  @computed
+  get isCurrentUserSessionLockoutTimerExpired() {
+    return this.everyCurrentUserSession("lockout_timer_expired");
+  }
+
   isOnline(userId) {
     return !!this.onlineUsersMap[`${userId}`];
   }

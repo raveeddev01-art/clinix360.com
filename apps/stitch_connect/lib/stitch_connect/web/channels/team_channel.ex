@@ -17,6 +17,9 @@ defmodule StitchConnect.Web.TeamChannel do
     push socket, "presence_state", Presence.list(socket)
     {:ok, _} = Presence.track(socket, user.id, %{
       status: "online",
+      inactive: false,
+      away_timer_expired: false,
+      lockout_timer_expired: false,
       current_group: nil,
       session_id: socket.assigns.session_id,
       connection_id: socket.assigns.connection_id,
@@ -43,6 +46,30 @@ defmodule StitchConnect.Web.TeamChannel do
 
   def handle_in("current_group_update", %{"current_group" => current_group}, socket) do
     update_connection_meta(socket, %{current_group: current_group})
+    {:noreply, socket}
+  end
+
+  def handle_in("became_inactive", _params, socket) do
+    update_connection_meta(socket, %{inactive: true})
+    {:noreply, socket}
+  end
+
+  def handle_in("away_timer_expired", _params, socket) do
+    update_connection_meta(socket, %{away_timer_expired: true})
+    {:noreply, socket}
+  end
+
+  def handle_in("lockout_timer_expired", _params, socket) do
+    update_connection_meta(socket, %{lockout_timer_expired: true})
+    {:noreply, socket}
+  end
+
+  def handle_in("became_active", _params, socket) do
+    update_connection_meta(socket, %{
+      inactive: false,
+      away_timer_expired: false,
+      lockout_timer_expired: false,
+    })
     {:noreply, socket}
   end
 
