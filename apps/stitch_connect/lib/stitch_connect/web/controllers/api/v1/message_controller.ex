@@ -48,8 +48,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     user = conn.assigns.current_user
     case GroupAuthorization.is_member?(group_id, user.id) do
       true ->
-        online_in_group_ids = StitchConnect.Web.UserStatusService.online_in_group(user.team_id, group.slug)
-        case Message.create(group.id, user, message_params, online_in_group_ids) do
+        active_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
+        case Message.create(group.id, user, message_params, active_user_ids) do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
             message = MessageQueries.load_info(message)
 

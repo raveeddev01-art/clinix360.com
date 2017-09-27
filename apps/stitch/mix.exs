@@ -37,6 +37,7 @@ defmodule Stitch.Mixfile do
       {:faker, "~> 0.9", only: :test},
       {:slugger, "~> 0.2"},
       {:bamboo, "~> 0.8"},
+      {:timex, "~> 3.1"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false}
     ]
   end

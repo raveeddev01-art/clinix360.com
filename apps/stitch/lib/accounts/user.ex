@@ -3,6 +3,7 @@ defmodule Stitch.Accounts.User do
   The User schema module.
   """
   use Ecto.Schema
+  import Ecto.Query
   import Ecto.Changeset
   alias Stitch.Accounts.User
   alias Stitch.GroupUser
@@ -51,6 +52,12 @@ defmodule Stitch.Accounts.User do
     |> validate_inclusion(:desktop_notification_preference, ["everything", "mentions", "nothing"])
     |> validate_inclusion(:mobile_notification_preference, ["everything", "mentions", "nothing"])
     |> validate_inclusion(:email_notification_preference, ["daily", "hourly", "15min", "never"])
+  end
+
+  def with_email_notification_preference(preference) when preference in ["daily", "hourly", "15min", "never"] do
+    User
+    |> where(email_notification_preference: ^preference)
+    |> Repo.all
   end
 
   def update_preference(%User{} = user, params) do

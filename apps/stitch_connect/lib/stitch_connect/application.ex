@@ -9,6 +9,7 @@ defmodule StitchConnect.Application do
       # Start the endpoint when the application starts
       supervisor(StitchConnect.Web.Endpoint, []),
       supervisor(StitchConnect.Web.Presence, []),
+      worker(StitchConnect.MessageMailer, []),
       # Start your own worker by calling: StitchConnect.Worker.start_link(arg1, arg2, arg3)
       # worker(StitchConnect.Worker, [arg1, arg2, arg3]),
     ]
