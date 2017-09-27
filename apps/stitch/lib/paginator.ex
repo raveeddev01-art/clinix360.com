@@ -13,8 +13,8 @@ defmodule Stitch.Paginator do
   @default_skip 0
 
   def new(query, params) do
-    {skip, params} = get_skip_value(params)
-    {limit, params} = get_limit_value(params)
+    skip = get_skip_value(params)
+    limit = get_limit_value(params)
 
     %Paginator{
       data: data(query, skip, limit),
@@ -23,18 +23,16 @@ defmodule Stitch.Paginator do
   end
 
   defp get_skip_value(params) do
-    {skip, params} = Keyword.pop(params, :skip, @min_skip)
-    skip = to_int(skip)
+    skip = Keyword.get(params, :skip, @min_skip) |> to_int
     skip = if skip > @default_skip, do: skip, else: @default_skip
-    {skip, params}
+    skip
   end
 
   defp get_limit_value(params) do
-    {limit, params} = Keyword.pop(params, :limit, @default_limit)
-    limit = to_int(limit)
+    limit = Keyword.get(params, :limit, @default_limit) |> to_int
     limit = if limit > @min_limit, do: limit, else: @min_limit
     limit = if limit > @max_limit, do: @max_limit, else: limit
-    {limit, params}
+    limit
   end
 
   defp meta(query, skip, limit) do
@@ -53,7 +51,7 @@ defmodule Stitch.Paginator do
   end
 
   defp count(query) do
-    count = query
+    query
     |> exclude(:order_by)
     |> exclude(:preload)
     |> exclude(:select)
@@ -68,4 +66,4 @@ defmodule Stitch.Paginator do
       :error -> :error
     end
   end
-end  
+end

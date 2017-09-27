@@ -2,7 +2,7 @@ alias Stitch.Repo
 alias Stitch.Accounts.User
 alias Stitch.{Team, Group}
 
-team = Repo.insert! %Team{
+Repo.insert! %Team{
   name: "Care Clinic",
   slug: "care-clinic",
   open_invitations_enabled: true

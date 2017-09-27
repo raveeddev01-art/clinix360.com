@@ -11,15 +11,15 @@ defmodule Stitch.UserQueriesTest do
       team = insert(:team)
       user = insert(:user, %{team: team, email: "example@email.com"})
       team_2 = insert(:team)
-      user_2 = insert(:user, %{team: team_2, email: "example@email.com"})
+      _user_2 = insert(:user, %{team: team_2, email: "example@email.com"})
       results = Stitch.UserQueries.search(user.id, "exa")
       assert Enum.count(results) == 1
     end
 
     test "returns users matching first_name" do
       team = insert(:team)
-      user = insert(:user, %{first_name: "Sergio", email: "foobar@email.com", team: team})
-      user = insert(:user, %{first_name: "Example", team: team})
+      insert(:user, %{first_name: "Sergio", email: "foobar@email.com", team: team})
+      insert(:user, %{first_name: "Example", team: team})
       user = insert(:user, %{first_name: "fooexapple", team: team})
       results = Stitch.UserQueries.search(user.id, "Exa")
       assert Enum.count(results) == 2
@@ -27,8 +27,8 @@ defmodule Stitch.UserQueriesTest do
 
     test "returns users matching last_name" do
       team = insert(:team)
-      user = insert(:user, %{last_name: "Sergio", email: "foobar@email.com", team: team})
-      user = insert(:user, %{last_name: "Example", team: team})
+      insert(:user, %{last_name: "Sergio", email: "foobar@email.com", team: team})
+      insert(:user, %{last_name: "Example", team: team})
       user = insert(:user, %{last_name: "fooexapple", team: team})
       results = Stitch.UserQueries.search(user.id, "Exa")
       assert Enum.count(results) == 2
@@ -36,8 +36,8 @@ defmodule Stitch.UserQueriesTest do
 
     test "returns users matching username" do
       team = insert(:team)
-      user = insert(:user, %{username: "sergio", email: "foobar@email.com", team: team})
-      user = insert(:user, %{username: "example", team: team})
+      insert(:user, %{username: "sergio", email: "foobar@email.com", team: team})
+      insert(:user, %{username: "example", team: team})
       user = insert(:user, %{username: "fooexapple", team: team})
       results = Stitch.UserQueries.search(user.id, "Exa")
       assert Enum.count(results) == 2
@@ -45,8 +45,8 @@ defmodule Stitch.UserQueriesTest do
 
     test "returns users matching email" do
       team = insert(:team)
-      user = insert(:user, %{first_name: "Sergio", email: "foobar@email.com", team: team})
-      user = insert(:user, %{first_name: "Example", team: team})
+      insert(:user, %{first_name: "Sergio", email: "foobar@email.com", team: team})
+      insert(:user, %{first_name: "Example", team: team})
       user = insert(:user, %{first_name: "fooexapple", team: team})
       results = Stitch.UserQueries.search(user.id, "obar")
       assert Enum.count(results) == 1
@@ -114,7 +114,7 @@ defmodule Stitch.UserQueriesTest do
     test "returns true or false if uesr exists or not" do
       team = insert(:team)
       email = "example@email.com"
-      user = insert(:user, %{team: team, email: email})
+      insert(:user, %{team: team, email: email})
       record = Stitch.UserQueries.team_member_with_email(team.id, email)
       assert record.email == email
       assert record.email != email <> "Test"

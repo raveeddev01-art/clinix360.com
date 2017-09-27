@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.InvitationController do
       })
       render conn, "accept.html", app_params: app_params
     else
-      {:error, message} ->
+      {:error, _message} ->
         render conn, "invalid_invitation.html"
     end
   end

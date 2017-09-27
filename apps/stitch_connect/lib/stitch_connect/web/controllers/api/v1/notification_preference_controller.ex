@@ -6,7 +6,7 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceController do
 
   plug StitchConnect.Plug.ApiAuthenticate when action in [:show, :update, :show_global, :update_global]
 
-  def show_global(conn, %{} = params) do
+  def show_global(conn, _params) do
     render conn, "show_global.json",
       user: conn.assigns.current_user,
       group_preferences: Notification.for_user(conn.assigns.current_user.id)
@@ -25,7 +25,7 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceController do
     end
   end
 
-  def show(conn, %{"group_id" => group_id} = params) do
+  def show(conn, %{"group_id" => group_id}) do
     case GroupUser.get_preference(group_id, conn.assigns.current_user.id) do
       {:ok, group_user} ->
         render conn, "show.json", group_user: group_user

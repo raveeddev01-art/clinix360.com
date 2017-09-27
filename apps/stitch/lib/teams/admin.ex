@@ -68,7 +68,7 @@ defmodule Stitch.Team.Admin do
   can only be accessed using a special associated token. Returns
   true if the export went correctly.
   """
-  def export_history(team_id) do
+  def export_history(_team_id) do
     # TODO
   end
 end

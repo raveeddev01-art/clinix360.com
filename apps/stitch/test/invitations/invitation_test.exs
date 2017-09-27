@@ -20,7 +20,7 @@ defmodule Stitch.InvitationTest do
     test "returns error when account with that email already exists on team" do
       team = insert(:team, %{open_invitations_enabled: true})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
-      existing_user = insert(:user, %{team_id: team.id, email: "example@email.com"})
+      _existing_user = insert(:user, %{team_id: team.id, email: "example@email.com"})
       {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
       assert reason == "User already exists with this email address."
     end

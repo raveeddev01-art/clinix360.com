@@ -83,7 +83,7 @@ defmodule Stitch.Group do
       {:ok, group} ->
         group = Repo.preload(group, :users)
         {:ok, group}
-      {:error, changeset} ->
+      {:error, _changeset} ->
         {:error, "Name has to be unique"}
     end
   end

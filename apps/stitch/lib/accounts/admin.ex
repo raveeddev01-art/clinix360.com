@@ -60,7 +60,7 @@ defmodule Stitch.Accounts.Admin do
   @doc """
   Updates the user unread_message_notification_interval field.
   """
-  def update_unread_message_notification_interval(user_id, notification_interval) do
+  def update_unread_message_notification_interval(_user_id, _notification_interval) do
     # TODO
   end
 end
