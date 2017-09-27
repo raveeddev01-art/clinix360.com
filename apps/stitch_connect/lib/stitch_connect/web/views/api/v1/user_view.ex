@@ -38,8 +38,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
        profile_image_url: user.profile_image_url,
        user_name: user.username,
        email: user.email,
-       pin: user.pin,
-       title: user.title
+       pin: user.pin
       }
   end
 
