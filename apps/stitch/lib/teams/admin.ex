@@ -30,14 +30,14 @@ defmodule Stitch.Team.Admin do
     Repo.update changeset
   end
 
+  def update_security_lockout_time(_, _, _), do: {:error, "Security_lockout must be a boolean, and seconds_to_lockout must be an integer."}
+
   def update_security_lockout_time(team_id, security_lockout)
   when is_number(team_id) and is_boolean(security_lockout) do
     team = Repo.get(Team, team_id)
     changeset = Team.changeset(team, %{security_lockout: security_lockout})
     Repo.update changeset
   end
-
-  def update_security_lockout_time(_, _, _), do: {:error, "Security_lockout must be a boolean, and seconds_to_lockout must be an integer."}
 
 
   @spec update_open_invitation(number, boolean) :: {:ok, term} | {:error, term}
