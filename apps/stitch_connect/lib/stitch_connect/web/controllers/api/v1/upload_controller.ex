@@ -13,10 +13,6 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
     |> render("index.json", %{uploads: uploads, user_id: current_user.id})
   end
 
-  def index(conn, params) do
-    index(conn, Map.put_new(params, "page", "1"))
-  end
-
   def create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
     conn
     |> put_status(:created)
