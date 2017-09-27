@@ -1,4 +1,5 @@
 class ChannelStore {
+  groupChannelTopic = ""; // groupChannelTopic points to current group channel. used to leave the channel before joining a new.
   channels = {};
 
   constructor(rootStore) {
@@ -36,6 +37,10 @@ class ChannelStore {
   }
 
   joinGroupChannel(options = {}) {
+    if (this.groupChannelTopic) {
+      this.channels[this.groupChannelTopic].leave();
+    }
+    this.groupChannelTopic = this.rootStore.groupStore.channelTopic;
     return this.join(this.rootStore.groupStore.channelTopic, options);
   }
 
