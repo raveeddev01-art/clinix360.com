@@ -1,6 +1,4 @@
 defmodule StitchConnect.Web.ControllerHelpers do
-  import Plug.Conn
-  import Phoenix.Controller
   alias StitchConnect.Web.ErrorHelpers
 
   @doc """
