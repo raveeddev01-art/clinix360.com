@@ -46,7 +46,7 @@ config :guardian, Guardian,
 
 config :phoenix, :filter_parameters, ["password", "pin"]
 
-config :stitch, StitchConnect.MessageMailer,
+config :stitch_connect, StitchConnect.MessageMailer,
   jobs: [
     # Every 15 minutes
     {"*/15 * * * *",   {StitchConnect.MessageMailer, :deliver, ["15min"]}},

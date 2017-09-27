@@ -7,6 +7,7 @@ defmodule StitchConnect.MessageMailer do
       |> Stitch.Repo.stream
       |> Task.async_stream(fn user ->
         try do
+          user = user |> Stitch.Repo.preload([:team])
           message_count = Stitch.EmailNotification.count(user.id)
           if message_count > 0 do
             Stitch.Accounts.Email.unread_messages_email(user, message_count, login_url(user.team))
