@@ -17,3 +17,4 @@ erl_crash.dump
 .idea/
 
 tsconfig.json
+doc
