@@ -5,7 +5,6 @@ defmodule Stitch.Team.Admin do
 
   alias Stitch.Repo
   alias Stitch.Team
-  alias Ecto.Changeset
 
   @spec update_name(number, String.t) :: {:ok, term} | {:error, term}
   @doc """
@@ -30,14 +29,14 @@ defmodule Stitch.Team.Admin do
     Repo.update changeset
   end
 
+  def update_security_lockout_time(_, _, _), do: {:error, "Security_lockout must be a boolean, and seconds_to_lockout must be an integer."}
+
   def update_security_lockout_time(team_id, security_lockout)
   when is_number(team_id) and is_boolean(security_lockout) do
     team = Repo.get(Team, team_id)
     changeset = Team.changeset(team, %{security_lockout: security_lockout})
     Repo.update changeset
   end
-
-  def update_security_lockout_time(_, _, _), do: {:error, "Security_lockout must be a boolean, and seconds_to_lockout must be an integer."}
 
 
   @spec update_open_invitation(number, boolean) :: {:ok, term} | {:error, term}
@@ -68,7 +67,7 @@ defmodule Stitch.Team.Admin do
   can only be accessed using a special associated token. Returns
   true if the export went correctly.
   """
-  def export_history(team_id) do
+  def export_history(_team_id) do
     # TODO
   end
 end

@@ -2,7 +2,6 @@ defmodule Stitch.GroupUser do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias Stitch.Accounts.User
   alias Stitch.{Repo, GroupUser, Group, Accounts}
 
   schema "group_users" do
@@ -58,15 +57,23 @@ defmodule Stitch.GroupUser do
             desktop_notification_preference = group_preference["desktop_notification_preference"]
             mobile_notification_preference = group_preference["mobile_notification_preference"]
 
-            if desktop_notification_preference &&
-              not (group_user.desktop_notification_preference == "default" && user.desktop_notification_preference == desktop_notification_preference) do
-              updated_preferences = Map.put(updated_preferences, "desktop_notification_preference", desktop_notification_preference)
-            end
+            updated_preferences =
+              if desktop_notification_preference &&
+                not (group_user.desktop_notification_preference == "default" &&
+                user.desktop_notification_preference == desktop_notification_preference) do
+                  Map.put(updated_preferences, "desktop_notification_preference", desktop_notification_preference)
+              else
+                updated_preferences
+              end
 
-            if mobile_notification_preference &&
-              not (group_user.mobile_notification_preference == "default" && user.mobile_notification_preference == mobile_notification_preference) do
-              updated_preferences = Map.put(updated_preferences, "mobile_notification_preference", mobile_notification_preference)
-            end
+            updated_preferences =
+              if mobile_notification_preference &&
+                not (group_user.mobile_notification_preference == "default" &&
+                user.mobile_notification_preference == mobile_notification_preference) do
+                  Map.put(updated_preferences, "mobile_notification_preference", mobile_notification_preference)
+              else
+                updated_preferences
+              end
 
             group_user
             |> preference_changeset(updated_preferences)

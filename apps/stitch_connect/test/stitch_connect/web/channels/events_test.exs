@@ -18,7 +18,7 @@ defmodule StitchConnect.Web.EventsTest do
   end
 
   test "group participants receives message_deleted event",
-      %{socket1: socket1, user1: user1, user2: user2, group: group} do
+      %{socket1: socket1, user2: user2, group: group} do
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
     ref = push socket1, "new_msg", %{text_content: "Hello, World!"}

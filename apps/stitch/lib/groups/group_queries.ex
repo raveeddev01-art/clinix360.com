@@ -3,7 +3,7 @@ defmodule Stitch.GroupQueries do
   Module in charge of all group related queries.
   """
 
-  alias Stitch.{Repo, Group, GroupUser, Message}
+  alias Stitch.{Repo, Group, GroupUser}
   alias Stitch.Accounts.User
   import Ecto.Query
 

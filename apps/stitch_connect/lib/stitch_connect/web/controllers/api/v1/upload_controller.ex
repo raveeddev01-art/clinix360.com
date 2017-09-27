@@ -3,18 +3,14 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
   plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create]
 
   def index(conn, params) do
-    {skip, params} = Map.pop(params, "skip", 0)
-    {limit, params} = Map.pop(params, "limit", 10)
+    skip = Map.get(params, "skip", 0)
+    limit = Map.get(params, "limit", 10)
     current_user = conn.assigns.current_user
 
     uploads = Stitch.MessageQueries.get_uploads_for_user(current_user, skip, limit)
 
     conn
     |> render("index.json", %{uploads: uploads, user_id: current_user.id})
-  end
-
-  def index(conn, params) do
-    index(conn, Map.put_new(params, "page", "1"))
   end
 
   def create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
@@ -40,7 +36,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
 
   defp now_plus(minutes) do
     import Timex
-    now
+    now()
     |> shift(minutes: minutes)
     |> format!("{ISO:Extended:Z}")
   end

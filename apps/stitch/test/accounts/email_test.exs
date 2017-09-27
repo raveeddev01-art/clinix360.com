@@ -2,7 +2,6 @@ defmodule Stitch.Accounts.EmailTest do
   use ExUnit.Case, async: true
   use Bamboo.Test
   import Stitch.Factory
-  import Ecto.Query
 
   setup do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)

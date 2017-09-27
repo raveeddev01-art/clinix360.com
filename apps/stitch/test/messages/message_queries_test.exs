@@ -63,16 +63,16 @@ defmodule Stitch.MessageQueriesTest do
     author = insert(:user, team: team)
 
     public_group = insert(:group, team: team, name: "X", slug: "x", public: true)
-    public_message = insert(:message, user: author, group: public_group, text_content: "Hello, world!")
+    _public_message = insert(:message, user: author, group: public_group, text_content: "Hello, world!")
     public_message2 = insert(:message, user: author, group: public_group, text_content: "Hello, world! upload", type: "upload")
 
     private_group = insert(:group, team: team, name: "Y", slug: "y", public: false)
-    private_message = insert(:message, user: author, group: private_group, text_content: "Hello, world!")
+    _private_message = insert(:message, user: author, group: private_group, text_content: "Hello, world!")
     private_message2 = insert(:message, user: author, group: private_group, text_content: "Hello, world! upload", type: "upload")
 
     private_member_group = insert(:group, team: team, name: "Z", slug: "z", public: false)
     insert(:group_user, user: author, group: private_member_group)
-    private_member_message = insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
+    _private_member_message = insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
     private_member_message2 = insert(:message, user: author, group: private_member_group, text_content: "Hello, world! upload", type: "upload")
 
     user = insert(:user, team: team)

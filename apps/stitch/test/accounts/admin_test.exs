@@ -60,7 +60,7 @@ defmodule Stitch.Accounts.AdminTest do
 
     test "it dissallows the same username within the same team" do
       team = insert(:team)
-      user = insert(:user, %{username: "sergiotapia", team_id: team.id})
+      _user = insert(:user, %{username: "sergiotapia", team_id: team.id})
       user2 = insert(:user, %{username: "danieltapia", team_id: team.id})
       {:error, changeset} = Stitch.Accounts.Admin.update_user(user2.id, %{username: "sergiotapia" })
       assert Enum.count(changeset.errors) == 1
@@ -80,7 +80,7 @@ defmodule Stitch.Accounts.AdminTest do
 
     test "it dissallows the same email within the same team" do
       team = insert(:team)
-      user = insert(:user, %{email: "sergiotapia@outlook.com", team_id: team.id})
+      _user = insert(:user, %{email: "sergiotapia@outlook.com", team_id: team.id})
       user2 = insert(:user, %{email: "danieltapia@outlook.com", team_id: team.id})
       {:error, changeset} = Stitch.Accounts.Admin.update_user(user2.id,%{email: "sergiotapia@outlook.com"})
       assert Enum.count(changeset.errors) == 1

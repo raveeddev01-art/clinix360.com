@@ -3,7 +3,7 @@ defmodule Stitch.Message.Mention do
   Takes a list of users and a mesage and returns which out of those users should be notified
   by this message.
   """
-  def get_mentioned_user_ids(users, author, nil), do: []
+  def get_mentioned_user_ids(_users, _author, nil), do: []
   def get_mentioned_user_ids(users, author, message) do
     mention_user_keywords = user_mention_keywords(users, author)
     message_mentions(message, mention_user_keywords)
@@ -59,7 +59,7 @@ defmodule Stitch.Message.Mention do
         {:ok, user_ids} -> check_user_ids(user_ids, acc)
         :error ->
           case String.split(word, word_splitter) do
-            [word] -> acc
+            [_word] -> acc
             list ->
               Enum.reduce(list, acc, fn (word, acc) ->
                 case Map.fetch(mention_keywords, word) do

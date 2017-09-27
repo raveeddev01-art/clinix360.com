@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: "You cannot deactivate your own account."})
       false ->
-        {:ok, user} = Stitch.Accounts.Admin.deactivate(id)
+        {:ok, _user} = Stitch.Accounts.Admin.deactivate(id)
         conn
         |> json(%{message: "Account has been deactivated."})
     end
@@ -162,7 +162,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def send_invite(conn, %{"email" => email}) do
+  def send_invite(_conn, %{"email" => _email}) do
     # TODO
   end
 

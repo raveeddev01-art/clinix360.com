@@ -1,5 +1,4 @@
 defmodule Stitch.TeamQueries do
-  import Ecto.Query
   alias Stitch.{Repo, Team}
 
   def get_by_id(id) do
