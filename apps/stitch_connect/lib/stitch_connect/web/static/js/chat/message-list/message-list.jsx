@@ -45,7 +45,7 @@ class MessageList extends Component {
           this.chatDiv = div;
         }}
       >
-        {Object.keys(messagesByDate).map(date =>
+        {Object.keys(messagesByDate).map(date => (
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
             {messagesByDate[date].map(messagePool => {
@@ -54,11 +54,12 @@ class MessageList extends Component {
                 messageStore.firstUnreadMessage.id === messagePool[0].id
               ) {
                 return [
+                  <Element name="newMessageBanner" />,
                   <div className="new-message-banner">
                     <div className="banner-text">New Messages</div>
                   </div>,
                   <MessagePool
-                    key={`${messagePool[0].id}`}
+                    key={`message_pool_${messagePool[0].id}`}
                     messagePool={messagePool}
                   />
                 ];
@@ -71,7 +72,7 @@ class MessageList extends Component {
               );
             })}
           </div>
-        )}
+        ))}
         <Element name="topPosition" className="topPosition" />
         <div className="bottomPositionWrapper">
           {/* react-scroll only checks for top position, so, to check bottom pos, it should take 100vh */}

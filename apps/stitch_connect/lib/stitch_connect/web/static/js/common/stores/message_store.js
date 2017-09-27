@@ -82,11 +82,15 @@ class MessageStore {
   get firstUnreadMessage() {
     const lastReadAt = moment.utc(this.lastReadAt).valueOf();
 
-    return _.findLast(this.messages, message => {
+    const lastIndex = _.findLastIndex(this.messages, message => {
       const messageInsertedAt = moment.utc(message.inserted_at).valueOf();
 
       return messageInsertedAt > lastReadAt;
     });
+
+    return lastIndex >= this.unreadMessagesCount - 1
+      ? this.messages[lastIndex]
+      : null;
   }
 
   @computed
@@ -200,8 +204,16 @@ class MessageStore {
   }
 
   scrollToNewBanner = () => {
-    if (this.firstUnreadMessage) {
-      this.scrollTo(this.firstUnreadMessage.id, 500);
+    // if there are unread messages remain, scroll to top,
+    // otherwise just scroll to new banner
+    if (this.unreadMessagesCount > this.messages.length) {
+      this.scrollTo(this.messages[this.messages.length - 1].id, 500);
+    } else if (this.firstUnreadMessage) {
+      scroller.scrollTo("newMessageBanner", {
+        containerId: "chat",
+        smooth: true,
+        duration: 500
+      });
     }
   };
 
