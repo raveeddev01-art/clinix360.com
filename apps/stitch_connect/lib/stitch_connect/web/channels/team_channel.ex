@@ -16,8 +16,7 @@ defmodule StitchConnect.Web.TeamChannel do
     user = socket.assigns.current_user
     push socket, "presence_state", Presence.list(socket)
     {:ok, _} = Presence.track(socket, user.id, %{
-      status: "online",
-      current_group: nil,
+      inactive: false,
       session_id: socket.assigns.session_id,
       online_at: inspect(System.system_time(:seconds)),
       status_updated_at: inspect(System.system_time(:seconds)),
@@ -28,20 +27,6 @@ defmodule StitchConnect.Web.TeamChannel do
       roles: user.roles,
       disabled: user.disabled
     })
-    {:noreply, socket}
-  end
-
-  def handle_in("status_update", %{"status" => status}, socket) when status in ["online", "away"] do
-    update_session_meta(socket, %{
-      status: status,
-      status_updated_at: inspect(System.system_time(:seconds))
-    })
-    push socket, "presence_state", Presence.list(socket)
-    {:noreply, socket}
-  end
-
-  def handle_in("current_group_update", %{"current_group" => current_group}, socket) do
-    update_session_meta(socket, %{current_group: current_group})
     {:noreply, socket}
   end
 

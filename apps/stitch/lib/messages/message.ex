@@ -78,6 +78,7 @@ defmodule Stitch.Message do
       {:ok, increment_unread_counter(message, recipients)}
     end)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
+      Stitch.EmailNotification.create(message.id, notify_user_ids.email)
       {:ok, notify_user_ids.desktop}
     end)
     |> Repo.transaction
