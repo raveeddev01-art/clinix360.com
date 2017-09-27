@@ -20,9 +20,9 @@ class MessagePool extends Component {
         <div className="message-pool">
           <MessageHeader timestamp={timestamp} user={user} />
           <div className="message-pool-content">
-            {messagePool.map(message =>
-              <Message key={message.id} message={message} />
-            )}
+            {messagePool.map(message => (
+              <Message key={`msg_${message.id}`} message={message} />
+            ))}
           </div>
         </div>
       </div>
