@@ -1,6 +1,6 @@
 defmodule Stitch.GroupQueriesTest do
   use Stitch.DataCase
-  alias Stitch.{GroupQueries, Group, GroupUser, Message}
+  alias Stitch.{GroupQueries, Group, Message}
 
   describe "Stitch.GroupQueries.user_is_member?/2" do
     test "returns true if user is a member" do

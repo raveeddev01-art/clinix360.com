@@ -5,7 +5,6 @@ defmodule Stitch.Accounts do
 
   alias Stitch.Repo
   alias Stitch.Accounts.User
-  alias Stitch.Team
 
   @doc """
   Create a user with only the email field set. The user is not

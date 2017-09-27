@@ -5,7 +5,6 @@ defmodule Stitch.Team.Admin do
 
   alias Stitch.Repo
   alias Stitch.Team
-  alias Ecto.Changeset
 
   @spec update_name(number, String.t) :: {:ok, term} | {:error, term}
   @doc """

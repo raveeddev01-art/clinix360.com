@@ -1,6 +1,5 @@
 alias Stitch.Repo
-alias Stitch.Accounts.User
-alias Stitch.{Team, Group}
+alias Stitch.Team
 
 Repo.insert! %Team{
   name: "Care Clinic",
