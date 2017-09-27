@@ -49,7 +49,7 @@ defmodule Stitch.Accounts.Email do
   def unread_messages_email(user, message_count, login_url) do
     inflected_message = if message_count == 1, do: "message", else: "messages"
 
-    new_email
+    new_email()
     |> template("Message Waiting - Offline Email (Connect)")
     |> to(user.email)
     |> from("welcome@teamstitch.com")

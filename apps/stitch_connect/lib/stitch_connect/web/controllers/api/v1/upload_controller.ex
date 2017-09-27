@@ -40,7 +40,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
 
   defp now_plus(minutes) do
     import Timex
-    now
+    now()
     |> shift(minutes: minutes)
     |> format!("{ISO:Extended:Z}")
   end
