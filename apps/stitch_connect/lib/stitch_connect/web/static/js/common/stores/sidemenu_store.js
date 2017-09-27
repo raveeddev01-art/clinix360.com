@@ -7,11 +7,7 @@ class SidemenuStore {
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
-  @observable locked = false;
-  @observable unlocking = false; // Flag that indicates if unlocking request is being made
 
-  inactivityTimeout = -1;
-  inactivityTimer = null;
   favicon = null;
   notificationAudio = null;
 
@@ -118,44 +114,6 @@ class SidemenuStore {
     }
   };
 
-  @action
-  lock() {
-    // TODO: POST `/api/v1/session-lock`
-    this.locked = true;
-  }
-
-  /**
-   * Unlock the session by calling backend api
-   *
-   * @param {String} pin
-   */
-  @action
-  unlock(pin) {
-    // TODO: POST `/api/v1/session-unlock`
-    // In then response, cancel `unlocking` flag
-    // In error response, show notification `Incorrect password`
-
-    /*
-    this.unlocking = true;
-    post(`/api/v1/session-unlick`, { pin }).then(() => {
-      this.locked = false;
-    }, (error) => {
-      notify.show(error);
-    })
-    .finally(() => {
-      this.unlocking = false;
-    })
-    */
-
-    // Mocking the api call using timeout
-    this.unlocking = true;
-
-    setTimeout(() => {
-      this.unlocking = false;
-      this.locked = false;
-    }, 2000);
-  }
-
   loadUsers = () => {
     get("/api/v1/users").then(response => {
       this.users = response.data;
@@ -169,46 +127,10 @@ class SidemenuStore {
   getGroupById = id => this.groups.find(group => group.id === id);
 
   /**
-   * Get lock state for the current session from the server
-   */
-  getLockState() {
-    // TODO: Get lock state for the current session from the server
-  }
-
-  /**
-   * Retrieve from the server timeout amount for which the user gets locked if he is inactive
-   */
-  getInactivityTimeout() {
-    // TODO: Get from backend server
-
-    this.inactivityTimeout = 60 * 60; // Default: 1 hour
-  }
-
-  startInactivityTimer() {
-    if (this.locked) {
-      return;
-    }
-
-    this.stopInactivityTimer();
-
-    this.inactivityTimer = window.setTimeout(() => {
-      this.lock();
-      this.stopInactivityTimer();
-    }, this.inactivityTimeout * 1000);
-  }
-
-  stopInactivityTimer() {
-    if (this.inactivityTimer) {
-      window.clearTimeout(this.inactivityTimer);
-      this.inactivityTimer = null;
-    }
-  }
-
-  /**
    * Returnns if the user is 'Currently in' the group
    * 'Currently in' requires that the user is in the room + 'Active'
-   * 
-   * @param {*} groupId 
+   *
+   * @param {*} groupId
    */
   isCurrentlyInRoom(groupId) {
     return (
@@ -220,12 +142,12 @@ class SidemenuStore {
 
   /**
    * Check if notification should be made for the message
-   * 
+   *
    *  Should notify ONLY when
    *    - message is from others AND
    *    - user is not 'Currently in' the room
-   * 
-   * @param {*} newMessage 
+   *
+   * @param {*} newMessage
    */
   shouldNotify(newMessage) {
     return (
