@@ -193,7 +193,8 @@ class MessageStore {
     scroller.scrollTo(`msg_${msgId}`, {
       containerId: "chat",
       smooth: true,
-      duration
+      duration,
+      offset: -50
     });
 
     setTimeout(() => {

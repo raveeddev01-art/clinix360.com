@@ -77,9 +77,7 @@ class Message extends Component {
     }
 
     const editedTooltip = (
-      <Tooltip id="edited-tooltip">
-        {moment(editedAt).calendar()}
-      </Tooltip>
+      <Tooltip id="edited-tooltip">{moment(editedAt).calendar()}</Tooltip>
     );
 
     return (
@@ -161,25 +159,28 @@ class Message extends Component {
       >
         <Dropdown.Toggle useAnchor />
         <Dropdown.Menu>
-          {message.type === "upload" &&
+          {message.type === "upload" && (
             <MenuItem target="_blank" href={message.fields.url}>
               <span>
                 <i className="fa fa-download" />&nbsp;Download
               </span>
-            </MenuItem>}
-          {mine &&
+            </MenuItem>
+          )}
+          {mine && (
             <MenuItem onClick={this.edit}>
               <span>
                 <i className="fa fa-pencil" />&nbsp;Edit
               </span>
-            </MenuItem>}
+            </MenuItem>
+          )}
 
-          {mine &&
+          {mine && (
             <MenuItem onClick={this.delete}>
               <span>
                 <i className="fa fa-trash" />&nbsp;Delete
               </span>
-            </MenuItem>}
+            </MenuItem>
+          )}
 
           <CopyToClipboard text={message.text_content} onCopy={this.copy}>
             <MenuItem>
