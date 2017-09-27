@@ -57,7 +57,6 @@ defmodule Stitch.Accounts.User do
   def with_email_notification_preference(preference) when preference in ["daily", "hourly", "15min", "never"] do
     User
     |> where(email_notification_preference: ^preference)
-    |> Repo.all
   end
 
   def update_preference(%User{} = user, params) do

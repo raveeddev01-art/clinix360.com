@@ -1,21 +1,24 @@
 defmodule StitchConnect.MessageMailer do
-  use Quantum.Scheduler, otp_app: :stitch
+  use Quantum.Scheduler, otp_app: :stitch_connect
 
   def deliver(notification_preference) do
-    Stitch.Accounts.User.with_email_notification_preference(notification_preference)
-    |> Stitch.Repo.preload([:team])
-    |> Task.async_stream(fn user ->
-      try do
-        message_count = Stitch.EmailNotification.count(user.id)
-        if message_count > 0 do
-          Stitch.Accounts.Email.unread_messages_email(user, message_count, login_url(user.team))
-          Stitch.EmailNotification.clean_delivered(user.id)
+    Stitch.Repo.transaction fn ->
+      Stitch.Accounts.User.with_email_notification_preference(notification_preference)
+      |> Stitch.Repo.stream
+      |> Task.async_stream(fn user ->
+        try do
+          user = user |> Stitch.Repo.preload([:team])
+          message_count = Stitch.EmailNotification.count(user.id)
+          if message_count > 0 do
+            Stitch.Accounts.Email.unread_messages_email(user, message_count, login_url(user.team))
+            Stitch.EmailNotification.clean_delivered(user.id)
+          end
+        rescue e ->
+          IO.puts "Error while delivering emails about unread messages for user id #{user.id} (#{inspect(e)})"
         end
-      rescue e ->
-        IO.puts "Error while delivering emails about unread messages for user id #{user.id} (#{inspect(e)})"
-      end
-    end, max_concurrency: 50, timeout: 10 * 60 * 1000)
-    |> Enum.to_list
+      end, max_concurrency: 50, timeout: 10 * 60 * 1000)
+      |> Stream.run()
+    end
   end
 
   defp subdomain_url(subdomain) do

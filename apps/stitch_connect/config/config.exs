@@ -46,16 +46,16 @@ config :guardian, Guardian,
 
 config :phoenix, :filter_parameters, ["password", "pin"]
 
-config :stitch, StitchConnect.MessageMailer,
+config :stitch_connect, StitchConnect.MessageMailer,
   jobs: [
     # Every 15 minutes
-    {"*/15 * * * *",   {Stitch.MessageMailer, :deliver, ["15min"]}},
+    {"*/15 * * * *",   {StitchConnect.MessageMailer, :deliver, ["15min"]}},
 
     # Every hour
-    {"0 * * * *",      {Stitch.MessageMailer, :deliver, ["hourly"]}},
+    {"0 * * * *",      {StitchConnect.MessageMailer, :deliver, ["hourly"]}},
 
     # Every midnight
-    {"@daily",         {Stitch.MessageMailer, :deliver, ["daily"]}},
+    {"@daily",         {StitchConnect.MessageMailer, :deliver, ["daily"]}},
   ],
   global: true,
   timeout: 10 * 60 * 1_000
