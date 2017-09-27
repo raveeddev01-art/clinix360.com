@@ -14,7 +14,8 @@ defmodule StitchConnect.Mixfile do
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      dialyzer: [plt_add_deps: :transitive]
     ]
   end
 
@@ -47,6 +48,7 @@ defmodule StitchConnect.Mixfile do
      {:corsica, "~> 1.0"},
      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
      {:timex, "~> 3.1"},
+     {:quantum, ">= 2.1.0"},
      {:stitch, in_umbrella: true}]
   end
 

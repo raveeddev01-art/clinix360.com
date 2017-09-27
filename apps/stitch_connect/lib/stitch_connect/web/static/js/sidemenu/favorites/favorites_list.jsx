@@ -1,25 +1,16 @@
 import React, { Component } from "react";
 
-import Favorite from "./favorite";
+import Room from "../room";
 
-export default class FavoritesList extends Component {
-  constructor(props) {
-    super(props);
-  }
+const FavoritesList = ({ heading, rooms }) =>
+  <div className="menu-nav m-b-20">
+    <div className="heading">
+      <h5>
+        {heading}
+      </h5>
+    </div>
 
-  render() {
-    return (
-      <div className="menu-nav m-b-20">
-        <div className="heading">
-          <h5>
-            {this.props.heading}
-          </h5>
-        </div>
+    {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
+  </div>;
 
-        {this.props.rooms.map(room => {
-          return <Favorite key={`room-${room.id}`} room={room} />;
-        })}
-      </div>
-    );
-  }
-}
+export default FavoritesList;

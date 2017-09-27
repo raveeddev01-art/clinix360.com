@@ -17,8 +17,12 @@ defmodule StitchConnect.Web.TeamChannel do
     push socket, "presence_state", Presence.list(socket)
     {:ok, _} = Presence.track(socket, user.id, %{
       status: "online",
+      inactive: false,
+      became_away: false,
+      lockout_timer_expired: false,
       current_group: nil,
       session_id: socket.assigns.session_id,
+      connection_id: socket.assigns.connection_id,
       online_at: inspect(System.system_time(:seconds)),
       status_updated_at: inspect(System.system_time(:seconds)),
       id: user.id,
@@ -32,7 +36,7 @@ defmodule StitchConnect.Web.TeamChannel do
   end
 
   def handle_in("status_update", %{"status" => status}, socket) when status in ["online", "away"] do
-    update_session_meta(socket, %{
+    update_connection_meta(socket, %{
       status: status,
       status_updated_at: inspect(System.system_time(:seconds))
     })
@@ -41,7 +45,41 @@ defmodule StitchConnect.Web.TeamChannel do
   end
 
   def handle_in("current_group_update", %{"current_group" => current_group}, socket) do
-    update_session_meta(socket, %{current_group: current_group})
+    update_connection_meta(socket, %{current_group: current_group})
+    {:noreply, socket}
+  end
+
+  def handle_in("became_inactive", _params, socket) do
+    update_connection_meta(socket, %{inactive: true})
+    {:noreply, socket}
+  end
+
+  def handle_in("became_away", _params, socket) do
+    update_connection_meta(socket, %{became_away: true})
+    {:noreply, socket}
+  end
+
+  def handle_in("lockout_timer_expired", _params, socket) do
+    update_connection_meta(socket, %{lockout_timer_expired: true})
+    {:noreply, socket}
+  end
+
+  def handle_in("became_active", _params, socket) do
+    update_connection_meta(socket, %{
+      inactive: false,
+      became_away: false,
+      lockout_timer_expired: false,
+    })
+    {:noreply, socket}
+  end
+
+  def handle_in("locked", _params, socket) do
+    broadcast_from(socket, "locked", %{sessionId: socket.assigns.session_id})
+    {:noreply, socket}
+  end
+
+  def handle_in("unlocked", _params, socket) do
+    broadcast_from(socket, "unlocked", %{sessionId: socket.assigns.session_id})
     {:noreply, socket}
   end
 
@@ -49,12 +87,12 @@ defmodule StitchConnect.Web.TeamChannel do
     {:ok, socket}
   end
 
-  defp update_session_meta(socket, updated_meta) do
+  defp update_connection_meta(socket, updated_meta) do
     user = socket.assigns.current_user
 
     with presence_list <- Presence.list(socket),
       {:ok, %{metas: metas}} <- Map.fetch(presence_list, to_string(user.id)),
-      previous_meta when not is_nil(previous_meta) <- Enum.find(metas, & &1.session_id == socket.assigns.session_id),
+      previous_meta when not is_nil(previous_meta) <- Enum.find(metas, & &1.connection_id == socket.assigns.connection_id),
       updated_meta <- Map.merge(previous_meta, updated_meta)
     do
       Presence.update(socket, user.id, updated_meta)

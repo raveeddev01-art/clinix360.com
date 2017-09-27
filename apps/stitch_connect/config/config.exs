@@ -26,6 +26,9 @@ config :logger, :console,
 config :stitch_connect, :generators,
   context_app: :stitch
 
+# Configure application environment
+config :stitch_connect, env: Mix.env
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
@@ -35,8 +38,24 @@ config :guardian, Guardian,
   allowed_algos: ["HS512"],
   verify_module: Guardian.JWT,
   issuer: "StitchConnect",
-  ttl: { 30, :days },
+  ttl: {30, :days},
   allowed_drift: 2000,
   verify_issuer: true, # optional
   secret_key: "daUyE9JOpu2Wqj4XGJ8Z7Gj/BHtQi+jWyRDtk31HWtdYu4FTUE7aimyONoeGIIBQ",
   serializer: StitchConnect.GuardianSerializer
+
+config :phoenix, :filter_parameters, ["password", "pin"]
+
+config :stitch, StitchConnect.MessageMailer,
+  jobs: [
+    # Every 15 minutes
+    {"*/15 * * * *",   {Stitch.MessageMailer, :deliver, ["15min"]}},
+
+    # Every hour
+    {"0 * * * *",      {Stitch.MessageMailer, :deliver, ["hourly"]}},
+
+    # Every midnight
+    {"@daily",         {Stitch.MessageMailer, :deliver, ["daily"]}},
+  ],
+  global: true,
+  timeout: 10 * 60 * 1_000

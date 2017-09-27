@@ -1,0 +1,273 @@
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.16.4">
+    <title>Stitch.Message.Mention –  vdev</title>
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
+    
+    
+    <script src="dist/sidebar_items-1eff67c96a.js"></script>
+    
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        vdev
+      </h2>
+    </div>
+    
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs"> vdev</small>
+        Stitch.Message.Mention
+        
+      </h1>
+
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+          
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#cached_word_splitter/0">cached_word_splitter()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#get_mentioned_user_ids/3">get_mentioned_user_ids(users, author, message)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Takes a list of users and a mesage and returns which out of those users should be notified
+by this message</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#message_mentions/2">message_mentions(message, mention_keywords)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Return ids of users whose mention keywords are present in the message. (handles duplicates)</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_mention_keywords/2">user_mention_keywords(users, author)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Initially, use user nicknames.
+Expand later to add other keywords user might wish to be notified of, depending on user group preferences.
+Note, in some case, user might want to disable certain notifications (globally or only for a specific group).
+Excludes authors</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+
+        </section>
+      
+
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="cached_word_splitter/0">
+  
+  
+  <div class="detail-header">
+    <a href="#cached_word_splitter/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">cached_word_splitter()</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="get_mentioned_user_ids/3">
+  
+  
+  <div class="detail-header">
+    <a href="#get_mentioned_user_ids/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">get_mentioned_user_ids(users, author, message)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Takes a list of users and a mesage and returns which out of those users should be notified
+by this message.</p>
+
+  </section>
+</div>
+<div class="detail" id="message_mentions/2">
+  
+  
+  <div class="detail-header">
+    <a href="#message_mentions/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">message_mentions(message, mention_keywords)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Return ids of users whose mention keywords are present in the message. (handles duplicates)</p>
+<pre><code class="elixir">Stitch.Mention.message_mentions(&quot;Hello, @username!&quot;, %{&quot;@username&quot; =&gt; [1, 2, 3], &quot;my_custom_keyword&quot; =&gt; [2, 3, 4, 5]})
+[1, 2, 3, 4, 5]</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="user_mention_keywords/2">
+  
+  
+  <div class="detail-header">
+    <a href="#user_mention_keywords/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">user_mention_keywords(users, author)</span>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Initially, use user nicknames.
+Expand later to add other keywords user might wish to be notified of, depending on user group preferences.
+Note, in some case, user might want to disable certain notifications (globally or only for a specific group).
+Excludes authors.</p>
+<p>Example of keywords:</p>
+<ul>
+<li>@here, @all, @everyone
+</li>
+<li>@group,
+</li>
+<li>username
+</li>
+<li>user’s first/last/full name, depending on notificaiton preferences
+</li>
+<li><p>user’s custom keywords for this group</p>
+<p>Stitch.Mention.user_mention_keywords([
+  %{id: 1, username: “bob”},
+  %{id: 2, username: “alice”}
+], %{username: “bob”})</p>
+<p>%{
+  “@bob” =&gt; [],
+  “@alice” =&gt; [2],
+  “@all” =&gt; [1, 2]
+}</p>
+</li>
+</ul>
+
+  </section>
+</div>
+
+        </section>
+      
+
+      
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle"><span class="sr-only">Switch theme</span></button>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
+  </body>
+</html>
+

@@ -47,7 +47,7 @@ class Addons extends Component {
             >
               <i className="fa fa-chevron-left" />
             </a>}
-          <h4 className="text-capitalize">
+          <h4 className="text-uppercase">
             {addonPanelTitle}
           </h4>
           <a role="button" onClick={this.toggleAddons}>
@@ -57,7 +57,7 @@ class Addons extends Component {
 
         <div className="flex-content">
           <div className={leftPanelClass}>
-            {addonStore.addonPanelType === "info" && <Info />}
+            {addonStore.addonPanelType === "Room Information" && <Info />}
             {addonStore.addonPanelType === "directory" && <Directory />}
             {addonStore.addonPanelType === "search" && <MessageSearch />}
             {addonStore.addonPanelType === "mentions" && <Mentions />}

@@ -19,18 +19,17 @@ export default class MessagePanel extends Component {
   onKeyDown = evt => {
     if (evt.keyCode === 27) {
       // ESC key
-      this.markAllAsRead();
+      this.markAsRead();
     }
   };
 
   onTooltipClose = evt => {
     evt.stopPropagation();
-    this.markAllAsRead();
+    this.markAsRead();
   };
 
-  markAllAsRead = () => {
-    this.props.messageStore.markAllAsRead();
-    this.props.groupStore.unreadMessagesCount = 0;
+  markAsRead = () => {
+    this.props.messageStore.markAsRead();
   };
 
   handleJoin = () => {
@@ -40,26 +39,26 @@ export default class MessagePanel extends Component {
   };
 
   loadMore = () => {
-    const { groupStore: group, messageStore } = this.props;
+    const { messageStore } = this.props;
 
-    if (messageStore.messages.length < group.unreadMessagesCount) {
+    if (messageStore.firstUnreadMessage) {
+      // if messages are already loaded
+      messageStore.scrollToNewBanner();
+    } else {
       // if unread messages are not loaded yet, just load next batch
       messageStore.loadPastUnreadMessages();
-    } else if (messageStore.unreadStartID) {
-      // if messages are already loaded, and there is new message banner
-      messageStore.scrollToNewBanner();
     }
   };
 
   render() {
-    const { groupStore: group } = this.props;
+    const { groupStore: group, messageStore } = this.props;
 
     return (
       <div id="chat-container">
         <div className="container-bars">
-          {group.unreadMessagesCount > 0
+          {messageStore.unreadMessagesCount > 0
             ? <div className="unread-messages-tooltip" onClick={this.loadMore}>
-                {group.unreadMessagesCount} new message{group.unreadMessagesCount > 1 && "s"}
+                {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}
                 <i
                   className="fa fa-close close-unread-messages-tooltip"
                   onClick={this.onTooltipClose}

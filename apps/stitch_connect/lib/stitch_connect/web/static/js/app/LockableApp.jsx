@@ -5,10 +5,11 @@ import Dropzone from "react-dropzone";
 
 import Sidemenu from "../sidemenu/sidemenu";
 import Chat from "../chat/chat";
+import BrowserNotificationAlert from "../chat/browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
 import Lockout from "../lockout/lockout";
 
-@inject("sidemenuStore", "uploadStore")
+@inject("presenceStore", "uploadStore")
 @observer
 class LockableApp extends Component {
   constructor(props) {
@@ -20,17 +21,9 @@ class LockableApp extends Component {
   }
 
   componentDidMount() {
-    const { sidemenuStore } = this.props;
-
-    // Active
-    window.addEventListener("focus", () => {
-      sidemenuStore.stopInactivityTimer();
-    });
-
-    // Inactive
-    window.addEventListener("blur", () => {
-      sidemenuStore.startInactivityTimer();
-    });
+    window.addEventListener("focus", this.props.presenceStore.onWindowFocus);
+    window.addEventListener("blur", this.props.presenceStore.onWindowBlur);
+    this.props.presenceStore.onWindowBlur();
   }
 
   onDragEnter = () => {
@@ -60,27 +53,33 @@ class LockableApp extends Component {
   };
 
   render() {
-    return this.props.sidemenuStore.locked
-      ? <Lockout />
-      : <Dropzone
-          id="app"
-          disableClick
-          style={{}}
-          onDrop={this.onDrop}
-          ref={this.setDropzoneRef}
-          onDragEnter={this.onDragEnter}
-          onDragLeave={this.onDragLeave}
-        >
-          {this.state.dropzoneActive &&
-            <div className="dropzone-overlay">
-              <div>Drop to Upload File</div>
-            </div>}
-          <UploadModal />
+    return this.props.presenceStore.locked ? (
+      <Lockout />
+    ) : (
+      <Dropzone
+        id="app"
+        disableClick
+        style={{}}
+        onDrop={this.onDrop}
+        ref={this.setDropzoneRef}
+        onDragEnter={this.onDragEnter}
+        onDragLeave={this.onDragLeave}
+      >
+        {this.state.dropzoneActive && (
+          <div className="dropzone-overlay">
+            <div>Drop to Upload File</div>
+          </div>
+        )}
+        <UploadModal />
+        <BrowserNotificationAlert />
+        <div className="appContainer">
           <Sidemenu />
           <Route exact path={`/`} component={Chat} />
           <Route path={`/groups/:slug`} component={Chat} />
           <Route path={`/direct/:usernames`} component={Chat} />
-        </Dropzone>;
+        </div>
+      </Dropzone>
+    );
   }
 }
 

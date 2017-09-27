@@ -5,11 +5,13 @@ import { withRouter } from "react-router-dom";
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
+import Dropdown from "react-bootstrap/lib/Dropdown";
+
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
-import People from "./people/people";
+import PeopleList from "./people/people_list";
 
-@inject("sidemenuStore")
+@inject("presenceStore", "sidemenuStore")
 @observer
 class Sidemenu extends Component {
   _adminOptions = () => {
@@ -32,54 +34,49 @@ class Sidemenu extends Component {
     );
   };
 
-  lock = () => {
-    const { sidemenuStore } = this.props;
-
-    sidemenuStore.lock();
-  };
-
   render() {
     const { sidemenuStore } = this.props;
 
     return (
       <div id="sidemenu">
         <div className="flex-header">
-          <DropdownButton
-            className="text-capitalize"
-            block
-            title={sidemenuStore.teamName}
-            id="dropdown-size-medium"
-          >
-            <h5 className="text-center">{`${window.currentUser
-              .firstName} ${window.currentUser.lastName}`}</h5>
+          <Dropdown id="dropdown-custom-1">
+            <Dropdown.Toggle noCaret block>
+              {sidemenuStore.teamName}
+              <i className="fa fa-angle-down pull-right" />
+            </Dropdown.Toggle>
 
-            <div className="separator text-center">
-              <span>You</span>
-            </div>
+            <Dropdown.Menu className="super-colors">
+              <h5 className="text-center">{`${window.currentUser
+                .firstName} ${window.currentUser.lastName}`}</h5>
 
-            <MenuItem eventKey="1" href="/admin/you/profile">
-              Profile
-            </MenuItem>
-            <MenuItem eventKey="2" href="/admin/you/account">
-              Account
-            </MenuItem>
-            <MenuItem eventKey="3" href="/admin/you/notifications">
-              Notifications
-            </MenuItem>
+              <div className="separator text-center">
+                <span>You</span>
+              </div>
+              <MenuItem eventKey="1" href="/admin/you/profile">
+                Profile
+              </MenuItem>
+              <MenuItem eventKey="2" href="/admin/you/account">
+                Account
+              </MenuItem>
+              <MenuItem eventKey="3" href="/admin/you/notifications">
+                Notifications
+              </MenuItem>
 
-            {currentUser.roles.includes("admin") && this._adminOptions()}
+              {currentUser.roles.includes("admin") && this._adminOptions()}
 
-            <div className="separator text-center">
-              <span>Stitch</span>
-            </div>
+              <div className="separator text-center">
+                <span>Stitch</span>
+              </div>
 
-            <MenuItem eventKey="7" onClick={this.lock}>
-              Lockout
-            </MenuItem>
-            <MenuItem eventKey="6" href="/logout">
-              Sign Out
-            </MenuItem>
-          </DropdownButton>
+              <MenuItem eventKey="7" onClick={this.props.presenceStore.lock}>
+                Lockout
+              </MenuItem>
+              <MenuItem eventKey="6" href="/logout">
+                Sign Out
+              </MenuItem>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
         <div className="flex-content">
           <FavoritesList
@@ -87,8 +84,11 @@ class Sidemenu extends Component {
             rooms={sidemenuStore.favoriteGroups}
           />
 
-          <RoomsList heading="Groups" rooms={sidemenuStore.normalGroups} />
-          <People heading="People" />
+          <RoomsList heading="Rooms" rooms={sidemenuStore.normalGroups} />
+          <PeopleList
+            heading="Direct Messages"
+            rooms={sidemenuStore.directGroups}
+          />
         </div>
       </div>
     );

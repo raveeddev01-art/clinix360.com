@@ -5,7 +5,7 @@ defmodule Stitch.Message.Notification do
   alias Stitch.Accounts.User
   import Ecto.Query
 
-  def notify_user_ids(group, author, mentioned_user_ids, online_in_group \\ [])
+  def notify_user_ids(group, author, mentioned_user_ids, active_user_ids \\ [])
 
   @doc """
   Takes id of a group and a list of mentioned user ids and returns which users should be
@@ -14,19 +14,25 @@ defmodule Stitch.Message.Notification do
       %{desktop: [], mobile: []}
   """
 
-  def notify_user_ids(%{slug: "__dm:" <> _} = group, author, _mentioned_user_ids, online_in_group) do
-    %{desktop: desktop, mobile: mobile} = dm_notify_categories(group.id)
-    %{desktop: desktop -- [author.id | online_in_group],
-      mobile: mobile -- [author.id | online_in_group]}
+  def notify_user_ids(%{slug: "__dm:" <> _} = group, author, _mentioned_user_ids, active_user_ids) do
+    %{desktop: desktop, mobile: mobile, email: email} = dm_notify_categories(group.id)
+    notify_desktop_user_ids = desktop -- [author.id | active_user_ids]
+    notify_mobile_user_ids = mobile -- [author.id | active_user_ids]
+    notify_email_user_ids = email -- [author.id | active_user_ids]
+    %{desktop: notify_desktop_user_ids,
+      mobile: notify_mobile_user_ids,
+      email: notify_email_user_ids}
   end
 
-  def notify_user_ids(group, author, mentioned_user_ids, online_in_group) do
+  def notify_user_ids(group, author, mentioned_user_ids, active_user_ids) do
     %{desktop_everything: with_desktop_enabled,
       desktop_nothing: with_desktop_disabled,
       mobile_everything: with_mobile_enabled,
-      mobile_nothing: with_mobile_disabled} = notify_categories(group.id)
-    %{desktop: Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- ([author.id | with_desktop_disabled] ++ online_in_group),
-      mobile:  Enum.uniq(mentioned_user_ids ++ with_mobile_enabled)  -- ([author.id | with_mobile_disabled ] ++ online_in_group)}
+      mobile_nothing: with_mobile_disabled,
+      email_never: email_never} = notify_categories(group.id)
+    %{desktop: Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- ([author.id | with_desktop_disabled] ++ active_user_ids),
+      mobile: Enum.uniq(mentioned_user_ids ++ with_mobile_enabled) -- ([author.id | with_mobile_disabled ] ++ active_user_ids),
+      email: mentioned_user_ids -- ([author.id | email_never] ++ active_user_ids)}
   end
 
   @doc """
@@ -53,7 +59,8 @@ defmodule Stitch.Message.Notification do
       mobile_everything: fragment("coalesce (array_agg(?) filter (where (case ? when 'default' then ? = 'everything' else ? = 'everything' end)), array[]::int[])",
         u.id, gu.mobile_notification_preference, u.mobile_notification_preference, gu.mobile_notification_preference),
       mobile_nothing: fragment("coalesce (array_agg(?) filter (where (case ? when 'default' then ? = 'nothing' else ? = 'nothing' end) ), array[]::int[])",
-        u.id, gu.mobile_notification_preference, u.mobile_notification_preference, gu.mobile_notification_preference)
+        u.id, gu.mobile_notification_preference, u.mobile_notification_preference, gu.mobile_notification_preference),
+      email_never: fragment("coalesce (array_agg(?) filter (where (? = 'never')), array[]::int[])", u.id, u.email_notification_preference)
     })
     |> Repo.one
   end
@@ -70,6 +77,7 @@ defmodule Stitch.Message.Notification do
         u.id, u.desktop_notification_preference),
       mobile: fragment("coalesce (array_agg(?) filter (where (? != 'nothing')), array[]::int[])",
         u.id, u.mobile_notification_preference),
+      email: fragment("coalesce (array_agg(?) filter (where (? != 'never')), array[]::int[])", u.id, u.email_notification_preference)
     })
     |> Repo.one
   end

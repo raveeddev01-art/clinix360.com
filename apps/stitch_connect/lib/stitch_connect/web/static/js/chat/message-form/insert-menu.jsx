@@ -12,19 +12,29 @@ class InsertMenu extends Component {
   };
 
   render() {
+    // @TODO enable dropdown when we have more than one menu item
     return (
-      <Dropdown id="message-insert-menu" dropup pullRight>
-        <Dropdown.Toggle noCaret className="message-form-action-item">
-          <i className="fa fa-plus-square-o" />
-        </Dropdown.Toggle>
-
-        <Dropdown.Menu className="more-menu">
-          <MenuItem onClick={this.uploadFile}>
-            <i className="fa fa-folder-open" /> Files
-          </MenuItem>
-        </Dropdown.Menu>
-      </Dropdown>
+      <a
+        role="link"
+        className="message-form-action-item"
+        onClick={this.uploadFile}
+      >
+        <i className="fa fa-plus-square-o" />
+      </a>
     );
+    // return (
+    //   <Dropdown id="message-insert-menu" dropup pullRight>
+    //     <Dropdown.Toggle noCaret className="message-form-action-item">
+    //       <i className="fa fa-plus-square-o" />
+    //     </Dropdown.Toggle>
+    //
+    //     <Dropdown.Menu className="more-menu">
+    //       <MenuItem onClick={this.uploadFile}>
+    //         <i className="fa fa-folder-open" /> Files
+    //       </MenuItem>
+    //     </Dropdown.Menu>
+    //   </Dropdown>
+    // );
   }
 }
 

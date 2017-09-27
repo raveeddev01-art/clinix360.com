@@ -18,15 +18,26 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug StitchConnect.Plug.Authenticate
   end
 
+  pipeline :api_auth do
+    plug :accepts, ["json"]
+    plug :fetch_session
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  # API routes which don't need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
 
     post "/users/exists", UserController, :exists?
     post "/invitations/accept/:token", InvitationController, :accept
+  end
+
+  # API routes which need token.
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :api_auth
 
     get "/groups/:group_id/messages", MessageController, :index
     post "/groups/:group_id/messages", MessageController, :create
@@ -87,6 +98,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     post "/login", AuthenticationController, :submit_login
     post "/reset_password", AuthenticationController, :reset_password
+
+    post "/session-lock", SessionLockController, :lock
+    post "/session-unlock", SessionLockController, :unlock
   end
 
   # Anonymous routes.

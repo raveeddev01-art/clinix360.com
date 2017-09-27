@@ -161,6 +161,12 @@ class Message extends Component {
       >
         <Dropdown.Toggle useAnchor />
         <Dropdown.Menu>
+          {message.type === "upload" &&
+            <MenuItem target="_blank" href={message.fields.url}>
+              <span>
+                <i className="fa fa-download" />&nbsp;Download
+              </span>
+            </MenuItem>}
           {mine &&
             <MenuItem onClick={this.edit}>
               <span>

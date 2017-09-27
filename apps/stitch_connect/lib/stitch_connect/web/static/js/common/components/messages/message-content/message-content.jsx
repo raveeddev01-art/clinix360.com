@@ -38,7 +38,9 @@ class MessageContent extends Component {
     return (
       <div>
         {message.type === "upload" && <FileAttachment {...message.fields} />}
+        {message.type === "upload" && message.text_content && '"'}
         {this.renderMessageText()}
+        {message.type === "upload" && message.text_content && '"'}
       </div>
     );
   }

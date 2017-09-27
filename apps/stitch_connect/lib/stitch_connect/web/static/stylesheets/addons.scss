@@ -1,81 +1,112 @@
 #addons {
   box-shadow: -1px 0 0 $border-color;
-  padding: 20px 0 0;
 
   .flex-header {
     color: inherit;
     background: #fff;
-    border: 1px solid $border-color;
-    border-radius: 3px;
-    padding: 8px 15px;
+    border-bottom: 1px solid $border-color;
+    padding: 14px 15px;
     flex-basis: auto;
-    margin: 0 15px 20px;
 
     h4 {
-      padding-left: 20px;
       flex-grow: 1;
+      flex-direction: row;
       color: $brand-primary;
-      font-size: 20px;
+      font-size: 16px;
       font-weight: bold;
       margin: 0;
     }
 
     a {
-      color: #333;
+      color: $brand-primary;
+      flex-shrink: 0;
     }
 
     .open-left {
-      position: absolute;
-      left: 30px;
-      top: 32px;
-      color: $brand-primary;
+      margin-right: 8px;
     }
   }
 
   .flex-content {
     position: relative;
     flex-direction: column;
-    padding: 0 15px;
     overflow: hidden;
     overflow-y: auto;
 
-    .subheading {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      font-size: 16px;
-      margin-bottom: 15px;
-      opacity: .8;
+    .addon-collapse {
+      border-bottom: 1px solid $border-color;
 
-      .addon-icon {
-        margin-right: 5px;
+      .subheading {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        color: #666;
+        font-size: 18px;
+        padding: 16px;
+        margin: 0;
+
+        .addon-icon {
+          width: 18px;
+          text-align: center;
+          margin-right: 10px;
+        }
+
+        .flex-item {
+          flex-grow: 1;
+          flex-shrink: 0;
+        }
+
+        i.fa.fa-caret-right {
+          color: #ccc;
+        }
+        i.fa.fa-caret-down {
+          color: #666;
+        }
+
+        &:hover {
+          color: #333;
+          cursor: pointer;
+        }
       }
 
-      .flex-item {
-        flex-grow: 1;
-        flex-shrink: 0;
+      .collapse-content {
+        padding: 0 15px;
+        margin-bottom: 20px;
+
+        h5 {
+          color: $brand-primary;
+          font-weight: bold;
+          line-height: 1.5;
+          padding: 3px 0;
+          margin: 0;
+        }
+
+        &.room-details {
+          p {
+            margin-bottom: 8px;
+
+            code {
+              margin-left: 5px;
+            }
+          }
+        }
       }
 
-      &:hover {
-        cursor: pointer;
-        opacity: 1;
+      &:first-of-type .subheading {
+        padding-top: 0;
       }
-    }
-
-    hr {
-      margin: 5px 0;
     }
   }
 
   .addon-left-panel {
-    padding-top: 10px;
+    padding-top: 15px;
     transform: translateX(-100%);
     transition: -webkit-transform 0.45s cubic-bezier(0.5, 0, 0, 1),
       transform 0.45s cubic-bezier(0.5, 0, 0, 1), opacity 0.125s ease-out 0.1s;
     opacity: 0;
     position: absolute;
-    left: 15px;
-    right: 15px;
+    left: 0;
+    right: 0;
     top: 0;
     bottom: 0;
 
@@ -86,6 +117,7 @@
   }
 
   .addon-right-panel {
+    padding: 18px 15px 0;
     transform: translateX(100%);
     transition: -webkit-transform 0.45s cubic-bezier(0.5, 0, 0, 1),
       transform 0.45s cubic-bezier(0.5, 0, 0, 1), opacity 0.125s ease-out 0.1s;
@@ -100,17 +132,20 @@
 
 .people-list-item {
   display: flex;
-  color: #333;
+  align-items: center;
   font-size: 15px;
-  line-height: 1.45;
-  text-decoration: none;
-  border-radius: 3px;
-  padding: 5px 10px;
+  line-height: 1.4;
+  padding: 5px 0;
   cursor: pointer;
 
   .item-icon {
-    margin-right: 5px;
+    font-size: 12px;
     color: $brand-primary;
+    margin-right: 8px;
+
+    i.fa-circle-o {
+      color: rgba(20, 20, 20, .7);
+    }
   }
 
   .item-text {
@@ -134,11 +169,8 @@
     text-align: center;
 
     .display-name {
-      margin-bottom: 8px;
-    }
-
-    .usertitle {
-      color: #9b9b9b;
+      font-weight: bold;
+      margin: 0 0 8px;
     }
   }
 
@@ -155,14 +187,12 @@
 
     .userinfo__label {
       flex-basis: 40%;
-      color: #9b9b9b;
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
 
     .userinfo__value {
       flex-basis: 60%;
-      color: #9b9b9b;
       word-wrap: break-word;
       overflow-wrap: break-word;
       text-align: right;
@@ -170,16 +200,22 @@
   }
 }
 
-.directory-addon {
+.directory-addon,
+.files-addon {
+  padding: 0 15px;
+  margin-bottom: 20px;
+
   .status {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-}
 
-.files-addon {
   .footer {
     text-align: center;
   }
+}
+
+.message-search-addon {
+  padding: 10px 15px;
 }

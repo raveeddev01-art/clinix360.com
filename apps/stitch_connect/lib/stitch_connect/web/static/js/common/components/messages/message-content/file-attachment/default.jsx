@@ -1,13 +1,7 @@
 import React, { Component, PropTypes } from "react";
-import FILE_TYPES from "./file-types";
+import getFileType from "../file-types";
 
-class FileAttachment extends Component {
-  getFileType = mimetype =>
-    FILE_TYPES[mimetype] || {
-      icon: "fa fa-file-o",
-      type: "File"
-    };
-
+class DefaultFileAttachment extends Component {
   getFileSize = size => {
     if (size < 1024) {
       return `${size} bytes`;
@@ -21,7 +15,7 @@ class FileAttachment extends Component {
 
   render() {
     const { filename, mimetype, size_in_bytes: size, url } = this.props;
-    const filetype = this.getFileType(mimetype);
+    const filetype = getFileType(mimetype);
 
     return (
       <div className="attachment-block">
@@ -35,7 +29,7 @@ class FileAttachment extends Component {
             </a>
           </div>
           <div className="attachment-detail">
-            {filetype.type}
+            {filetype.title}
             <i className="file-data-separator fa fa-circle" />
             {this.getFileSize(size)}
           </div>
@@ -45,11 +39,11 @@ class FileAttachment extends Component {
   }
 }
 
-FileAttachment.propTypes = {
+DefaultFileAttachment.propTypes = {
   filename: PropTypes.string.isRequired,
   mimetype: PropTypes.string,
   size_in_bytes: PropTypes.number.isRequired,
   url: PropTypes.string.isRequired
 };
 
-export default FileAttachment;
+export default DefaultFileAttachment;

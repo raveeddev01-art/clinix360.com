@@ -3,9 +3,12 @@ import Guid from "guid";
 
 class UploadStore {
   @observable uploadProgress = new Map();
+  @observable fileNames = new Map();
   @observable title = "";
   @observable description = "";
+  @observable groupId = null;
   @observable isUploadModalVisible = false;
+  xhrs = {};
   dropzoneRef = null;
   file = null;
 
@@ -25,6 +28,19 @@ class UploadStore {
     this.title = file.name;
     this.description = "";
     this.isUploadModalVisible = true;
+    this.groupId = this.rootStore.groupStore.id;
+  };
+
+  @action
+  changeUploadGroup = groupId => {
+    this.groupId = groupId;
+  };
+
+  @action
+  abortUpload = key => {
+    if (this.xhrs[key]) {
+      this.xhrs[key].abort();
+    }
   };
 
   @action
@@ -55,44 +71,66 @@ class UploadStore {
         formData.append("file", file);
 
         this.uploadProgress.set(key, 0);
+        this.fileNames.set(key, title);
 
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
+          this.xhrs[data.key] = xhr;
+
           xhr.open("post", data.action);
           xhr.onload = e => resolve(e.target.responseText);
           xhr.onerror = reject;
+          xhr.onabort = () => reject("aborted");
           if (xhr.upload) {
             xhr.upload.onprogress = this.onProgress(key);
           }
           xhr.send(formData);
         })
           .then(() => {
+            delete this.xhrs[data.key];
+            this.setProcessing(key);
             this.uploadProgress.set(key, "done");
             return `${data.action}/${data.key}`;
           })
-          .catch(() => {
+          .catch(e => {
+            if (e === "aborted") {
+              throw e;
+            }
             notify.show("There was a problem uploading file", "error");
           });
       })
       .then(url => {
-        return this.rootStore.messageStore.sendMessage(description, {
-          type: "upload",
-          fields: {
-            filename: title,
-            mimetype: file.type,
-            size_in_bytes: file.size,
-            url
+        return post(`/api/v1/groups/${this.groupId}/messages`, {
+          body: {
+            message: {
+              type: "upload",
+              fields: {
+                filename: title,
+                mimetype: file.type,
+                size_in_bytes: file.size,
+                url
+              },
+              text_content: description
+            }
           }
         });
       })
       .then(() => {
         this.removeProgress(key);
+      })
+      .catch(e => {
+        if (e === "aborted") {
+          setTimeout(() => {
+            this.removeProgress(key);
+          }, 1000); // show cancelling for a blink
+        }
       });
   };
 
   @action
   removeProgress = key => {
     this.uploadProgress.delete(key);
+    this.fileNames.delete(key);
   };
 
   onProgress = key =>

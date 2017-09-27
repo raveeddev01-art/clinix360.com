@@ -1985,6 +1985,10 @@ fastparse@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.1.tgz#d1e2643b38a94d7583b479060e6c4affc94071f8"
 
+favico.js@^0.3.10:
+  version "0.3.10"
+  resolved "https://registry.yarnpkg.com/favico.js/-/favico.js-0.3.10.tgz#80586e27a117f24a8d51c18a99bdc714d4339301"
+
 fbjs@^0.8.9:
   version "0.8.12"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.12.tgz#10b5d92f76d45575fd63a217d4ea02bea2f8ed04"
@@ -3667,9 +3671,9 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
-prettier@^1.5.3:
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.5.3.tgz#59dadc683345ec6b88f88b94ed4ae7e1da394bfe"
+prettier@1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.7.0.tgz#47481588f41f7c90f63938feb202ac82554e7150"
 
 private@^0.1.6:
   version "0.1.7"

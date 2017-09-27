@@ -6,7 +6,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-@inject("sidemenuStore")
+@inject("presenceStore")
 @observer
 class Lockout extends Component {
   constructor(props) {
@@ -18,12 +18,6 @@ class Lockout extends Component {
   resetPassword = () => {
     // const { history } = this.props;
     // history.push(`/reset-password`);
-  };
-
-  unlock = () => {
-    const { sidemenuStore } = this.props;
-
-    sidemenuStore.unlock();
   };
 
   handleChange = event => {
@@ -39,26 +33,25 @@ class Lockout extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    const { sidemenuStore } = this.props;
-
-    console.log("submit PIN");
-    sidemenuStore.unlock(this.state.pin);
+    this.props.presenceStore.unlock(this.state.pin).catch(() => {
+      this.setState({ pin: "" });
+    });
   };
 
   render() {
-    const { unlocking } = this.props.sidemenuStore;
-
     return (
       <div className="authentication-wrapper">
         <div id="lockout" className="authentication-card text-center">
           <div className="lockout-header">
-            {unlocking
-              ? <span className="unlocking">
-                  <i className="fa fa-circle-o-notch fa-spin" />
-                </span>
-              : <a className="logout" href="/logout">
-                  <i className="fa fa-sign-out" />
-                </a>}
+            {this.props.presenceStore.unlocking ? (
+              <span className="unlocking">
+                <i className="fa fa-circle-o-notch fa-spin" />
+              </span>
+            ) : (
+              <a className="logout" href="/logout">
+                <i className="fa fa-sign-out" />
+              </a>
+            )}
           </div>
 
           <h2>Session Paused</h2>

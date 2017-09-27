@@ -1,4 +1,5 @@
 import { observable, computed, action } from "mobx";
+import Favico from "favico.js";
 
 class SidemenuStore {
   @observable teamName = "";
@@ -6,11 +7,9 @@ class SidemenuStore {
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
-  @observable currentGroup = null;
-  @observable locked = false;
-  @observable unlocking = false; // Flag that indicates if unlocking request is being made
-  inactivityTimeout = -1;
-  inactivityTimer = null;
+
+  favicon = null;
+  notificationAudio = null;
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
@@ -19,31 +18,28 @@ class SidemenuStore {
     this.subdomain = props.subdomain;
     this.users = props.dm_users || [];
 
+    this.favicon = new Favico({
+      animation: "slide"
+    });
+    this.notificationAudio = new Audio("/audios/pop.mp3");
+
     this.loadGroups();
     this.loadUsers();
   }
 
   @computed
-  get singleDMGroupsMap() {
-    const singleDMGroups = this.groups.filter(
-      group => group.slug.indexOf("__dm:") === 0
-    );
-    const userMap = {};
-    singleDMGroups.forEach(group => {
-      const user = group.users.find(u => u.id !== currentUser.id);
-      userMap[user ? user.id : currentUser.id] = group;
-    });
-    return userMap;
+  get normalGroups() {
+    return this.groups.filter(group => group.type === "regular");
   }
 
   @computed
-  get normalGroups() {
-    return this.groups.filter(group => group.slug.indexOf("__dm:") === -1);
+  get directGroups() {
+    return this.groups.filter(group => group.type !== "regular");
   }
 
   @computed
   get multiDMGroups() {
-    return this.groups.filter(group => group.name === "__multi_dm_group__");
+    return this.groups.filter(group => group.type === "multi_dm");
   }
 
   @computed
@@ -60,11 +56,19 @@ class SidemenuStore {
     return map;
   }
 
+  @computed
+  get totalUnreadMessagesCount() {
+    return this.groups.reduce(
+      (count, group) => count + group.unread_messages_count,
+      0
+    );
+  }
+
   @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
-      console.log(response);
       this.groups = response.data;
+      this.updateFavicon();
     });
   };
 
@@ -74,50 +78,41 @@ class SidemenuStore {
   };
 
   @action
+  onNewMessage = newMessage => {
+    // If the message is for the current group, ignore
+    if (newMessage.group_id === this.rootStore.groupStore.id) {
+      return;
+    }
+
+    const group = this.groups.find(g => g.id === newMessage.group_id);
+    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+
+    if (!group) {
+      return;
+    }
+
+    group.unread_messages_count += 1;
+    if (isMention) {
+      group.mentions_count += 1;
+    }
+
+    // Update Favicon
+    this.updateFavicon();
+
+    // Play notification audio
+    this.playNotificationAudioForNewMessage(newMessage);
+
+    // Show notification card
+    this.showNotificationCardForNewMessage(newMessage);
+  };
+
+  @action
   updateGroupData = (id, data) => {
     const index = this.groups.findIndex(group => group.id === id);
     if (index > -1) {
       Object.assign(this.groups[index], data);
     }
   };
-
-  @action
-  lock() {
-    // TODO: POST `/api/v1/session-lock`
-    this.locked = true;
-  }
-
-  /**
-   * Unlock the session by calling backend api
-   * 
-   * @param {String} pin 
-   */
-  @action
-  unlock(pin) {
-    // TODO: POST `/api/v1/session-unlock`
-    // In then response, cancel `unlocking` flag
-    // In error response, show notification `Incorrect password`
-
-    /*
-    this.unlocking = true;
-    post(`/api/v1/session-unlick`, { pin }).then(() => {
-      this.locked = false;
-    }, (error) => {
-      notify.show(error);
-    })
-    .finally(() => {
-      this.unlocking = false;
-    })
-    */
-
-    // Mocking the api call using timeout
-    this.unlocking = true;
-
-    setTimeout(() => {
-      this.unlocking = false;
-      this.locked = false;
-    }, 2000);
-  }
 
   loadUsers = () => {
     get("/api/v1/users").then(response => {
@@ -132,38 +127,118 @@ class SidemenuStore {
   getGroupById = id => this.groups.find(group => group.id === id);
 
   /**
-   * Get lock state for the current session from the server
+   * Returnns if the user is 'Currently in' the group
+   * 'Currently in' requires that the user is in the room + 'Active'
+   *
+   * @param {*} groupId
    */
-  getLockState() {
-    // TODO: Get lock state for the current session from the server
+  isCurrentlyInRoom(groupId) {
+    return (
+      groupId === this.rootStore.groupStore.id &&
+      !this.locked &&
+      document.hasFocus()
+    );
   }
 
   /**
-   * Retrieve from the server timeout amount for which the user gets locked if he is inactive
+   * Check if notification should be made for the message
+   *
+   *  Should notify ONLY when
+   *    - message is from others AND
+   *    - user is not 'Currently in' the room
+   *
+   * @param {*} newMessage
    */
-  getInactivityTimeout() {
-    // TODO: Get from backend server
-
-    this.inactivityTimeout = 60 * 60; // Default: 1 hour
+  shouldNotify(newMessage) {
+    return (
+      newMessage.user_id !== currentUser.id &&
+      !this.isCurrentlyInRoom(newMessage.group_id)
+    );
   }
 
-  startInactivityTimer() {
-    if (this.locked) {
+  updateFavicon() {
+    if (this.totalUnreadMessagesCount > 0) {
+      this.favicon.badge(" ");
+    } else {
+      this.favicon.badge("");
+    }
+  }
+
+  playNotificationAudio() {
+    this.notificationAudio.play();
+  }
+
+  playNotificationAudioForNewMessage(newMessage) {
+    if (!this.shouldNotify(newMessage)) {
       return;
     }
 
-    this.stopInactivityTimer();
+    const { notificationStore } = this.rootStore;
+    const desktopNotification = notificationStore.getGroupNotificationPreference(
+      newMessage.group_id
+    );
+    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
-    this.inactivityTimer = window.setTimeout(() => {
-      this.lock();
-      this.stopInactivityTimer();
-    }, this.inactivityTimeout * 1000);
+    if (
+      desktopNotification === "everything" ||
+      (desktopNotification === "mentions" && isMention)
+    ) {
+      this.playNotificationAudio();
+    }
   }
 
-  stopInactivityTimer() {
-    if (this.inactivityTimer) {
-      window.clearTimeout(this.inactivityTimer);
-      this.inactivityTimer = null;
+  showNotificationCard(title, body, duration = 3000) {
+    const notification = new Notification(title, {
+      body,
+      icon: "/favicon.ico"
+    });
+
+    setTimeout(() => {
+      notification.close();
+    }, duration);
+  }
+
+  showNotificationCardForNewMessage(newMessage) {
+    if (
+      !this.shouldNotify(newMessage) ||
+      Notification.permission === "denied"
+    ) {
+      return;
+    }
+
+    const { notificationStore } = this.rootStore;
+    const desktopNotification = notificationStore.getGroupNotificationPreference(
+      newMessage.group_id
+    );
+    const group = this.groups.find(g => g.id === newMessage.group_id);
+    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+
+    if (
+      desktopNotification === "everything" ||
+      (desktopNotification === "mentions" && isMention)
+    ) {
+      const predicatives = {
+        regular: "sent",
+        dm: "sent you",
+        multi_dm: "sent you"
+      };
+      const messageTypes = {
+        regular: "room",
+        dm: "1-on-1",
+        multi_dm: "direct"
+      };
+
+      const author = `${newMessage.user.first_name} ${newMessage.user
+        .last_name}`;
+      const predicative = isMention
+        ? "mentioned you in"
+        : predicatives[group.type];
+      const messageType = messageTypes[group.type];
+
+      this.showNotificationCard(
+        author,
+        `${author} ${predicative} a ${messageType} message`
+      );
     }
   }
 }

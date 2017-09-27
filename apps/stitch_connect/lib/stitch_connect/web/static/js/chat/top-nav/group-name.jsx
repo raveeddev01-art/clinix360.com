@@ -22,9 +22,6 @@ export default class GroupName extends Component {
       <h4>
         <i className={iconClassName} />
         {` ${groupStore.name}`}
-        <small>
-          {groupType === "group" && ` #${groupStore.slug}`}
-        </small>
       </h4>
     );
   }

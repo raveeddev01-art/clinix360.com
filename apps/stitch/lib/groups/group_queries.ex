@@ -27,35 +27,22 @@ defmodule Stitch.GroupQueries do
   end
 
   defp load_groups_for_user(query, user_id) do
-    mention_count = load_mention_count(query, user_id)
-
     query
     |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
+    |> preload(:users) # TODO: do not preload all team users by default
     |> where([g, gu], g.public or not is_nil(gu.id))
-    |> join(:left, [g, gu], m in Message, not is_nil(gu.id) and m.group_id == g.id and m.user_id != ^user_id
-      and not fragment("? \\? ?", m.read_status, ^to_string(user_id)))
-    |> preload(:users)
-    |> group_by([g, gu], [g.id, gu.id])
-    |> select([g, gu, m], {g, not is_nil(gu.id), not is_nil(gu.id) and gu.is_favorite, count(m.id), min(m.id)})
+    |> select([g, gu], %{
+      group: g,
+      joined: not is_nil(gu.id),
+      favorite: not is_nil(gu.id) and gu.is_favorite,
+      unread_messages_count: gu.unread_messages_count,
+      mentions_count: gu.mentions_count,
+      last_read_at: gu.last_read_at,
+    })
     |> Repo.all
-    |> Enum.map(fn {group, joined, is_favorite, unread_messages_count, unread_start_id} ->
-      group
-      |> Map.put_new(:joined, joined)
-      |> Map.put_new(:unread_messages_count, unread_messages_count)
-      |> Map.put_new(:unread_start_id, unread_start_id)
-      |> Map.put_new(:favorite, is_favorite)
-      |> Map.put_new(:mentions_count, mention_count[group.id])
-    end)
-  end
-
-  def load_mention_count(query, user_id) do
-    query
-    |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
-    |> where([g, gu], g.public or not is_nil(gu.id))
-    |> select([g, gu], {g.id, fragment("COALESCE(ARRAY_LENGTH(?, 1), 0)", gu.mentioning_message_ids)})
-    |> Repo.all
-    |> Enum.reduce(%{}, fn ({id, mention_counter}, acc) ->
-      Map.put(acc, id, mention_counter)
+    |> Enum.map(fn group ->
+      {group, group_info} = Map.pop(group, :group)
+      Map.merge(group, group_info)
     end)
   end
 

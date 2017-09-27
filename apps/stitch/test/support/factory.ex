@@ -9,6 +9,7 @@ defmodule Stitch.Factory do
       phone_number: "1231231234",
       roles: ["member"],
       onboarded: true,
+      password_hash: Stitch.User.Authentication.hash_password("password"),
       token: sequence(:token, &"ezkLsxjGxnyU_mgcHepbliFeX1#{&1 |> Integer.to_string |> String.pad_leading(5, "0")}-")
     }
   end

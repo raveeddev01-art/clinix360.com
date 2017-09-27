@@ -16,6 +16,8 @@ class GroupPresenceStore {
   }
 
   subscribeToGroupChannel = () => {
+    this.usersCurrentlyInGroup = {};
+
     this.rootStore.channelStore.groupChannel.on("presence_state", state => {
       this.usersCurrentlyInGroup = Presence.syncState(
         this.usersCurrentlyInGroup,

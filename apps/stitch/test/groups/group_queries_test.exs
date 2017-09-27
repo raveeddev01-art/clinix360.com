@@ -1,6 +1,6 @@
 defmodule Stitch.GroupQueriesTest do
   use Stitch.DataCase
-  alias Stitch.{GroupQueries, Group, GroupUser}
+  alias Stitch.{GroupQueries, Group, GroupUser, Message}
 
   describe "Stitch.GroupQueries.user_is_member?/2" do
     test "returns true if user is a member" do
@@ -170,15 +170,11 @@ defmodule Stitch.GroupQueriesTest do
 
       assert {:ok, %{unread_messages_count: 0}} = GroupQueries.find_by_slug("a", user_a)
 
-      message_b = insert(:message, user: user_b, group: group)
-      {:ok, %{unread_messages_count: unread_messages_count, unread_start_id: unread_start_id}} = GroupQueries.find_by_slug("a", user_a)
-      assert unread_messages_count == 1
-      assert unread_start_id == message_b.id
+      {:ok, %{message: _message}} = Message.create(group.id, user_b, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{unread_messages_count: 1}} = GroupQueries.find_by_slug("a", user_a)
 
-      message_a = insert(:message, user: user_a, group: group)
-      {:ok, %{unread_messages_count: unread_messages_count, unread_start_id: unread_start_id}} = GroupQueries.find_by_slug("a", user_a)
-      assert unread_messages_count == 1
-      assert unread_start_id == message_b.id
+      {:ok, %{message: _message}} = Message.create(group.id, user_a, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{unread_messages_count: 1}} = GroupQueries.find_by_slug("a", user_a)
     end
   end
 
@@ -201,7 +197,7 @@ defmodule Stitch.GroupQueriesTest do
 
       bob_groups = available_groups_indexed_by_slug(bob)
       assert bob_groups["general"].mentions_count == 2
-      assert bob_groups["random"].mentions_count == 0
+      assert bob_groups["random"].mentions_count == nil
 
       alice_groups = available_groups_indexed_by_slug(alice)
       assert alice_groups["general"].mentions_count == 1
