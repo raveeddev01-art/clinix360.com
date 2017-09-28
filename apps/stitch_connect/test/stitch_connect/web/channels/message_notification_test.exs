@@ -65,7 +65,7 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
       {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{dm_group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
       {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{dm_group.slug}")
-      {:ok, _, socket2} = subscribe_and_join(socket2, "team:lobby:#{dm_group.team_id}")
+      {:ok, _, _socket2} = subscribe_and_join(socket2, "team:lobby:#{dm_group.team_id}")
 
       @endpoint.subscribe("events:#{user2.id}")
       push socket1, "new_msg", %{text_content: "Lorem ipsum"}
@@ -94,7 +94,7 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
       {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{dm_group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
       {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{dm_group.slug}")
-      {:ok, _, socket2} = subscribe_and_join(socket2, "team:lobby:#{dm_group.team_id}")
+      {:ok, _, _socket2} = subscribe_and_join(socket2, "team:lobby:#{dm_group.team_id}")
 
       @endpoint.subscribe("events:#{user2.id}")
       push socket1, "new_msg", %{text_content: "Lorem ipsum"}
