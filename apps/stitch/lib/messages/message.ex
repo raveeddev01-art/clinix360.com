@@ -71,7 +71,7 @@ defmodule Stitch.Message do
 
     Multi.new
     |> Multi.insert(:message, message_changeset(message_struct, attrs))
-    |> Multi.run(:mentions, fn %{message: message} ->
+    |> Multi.run(:mention_users, fn %{message: message} ->
       {:ok, mention_users(message)}
     end)
     |> Multi.run(:increment_unread_counter, fn %{message: message} ->
@@ -114,7 +114,8 @@ defmodule Stitch.Message do
 
   def delete(message) do
     Multi.new
-    |> Multi.run(:remove_mention, fn _ -> {:ok, unmention_users(message)} end)
+    |> Multi.run(:unmention_users, fn _ -> {:ok, unmention_users(message)} end)
+    |> Multi.run(:decrement_unread_counter, fn _ -> {:ok, decrement_unread_counter(message)} end)
     |> Multi.delete(:message, message)
     |> Repo.transaction
   end
@@ -124,6 +125,14 @@ defmodule Stitch.Message do
     |> where([gu], gu.group_id == ^message.group_id)
     |> where([gu], gu.user_id in ^user_ids)
     |> update([gu], inc: [unread_messages_count: ^1])
+    |> Repo.update_all([], returning: true)
+  end
+
+  def decrement_unread_counter(message) do
+    Stitch.GroupUser
+    |> where([gu], gu.group_id == ^message.group_id)
+    |> where([gu], gu.user_id != ^message.user_id)
+    |> update([gu], set: [unread_messages_count: fragment("greatest(? - 1, 0)", gu.unread_messages_count)])
     |> Repo.update_all([], returning: true)
   end
 
@@ -139,7 +148,7 @@ defmodule Stitch.Message do
     Stitch.GroupUser
     |> where([gu], gu.group_id == ^message.group_id)
     |> where([gu], gu.user_id in ^message.mentioned_user_ids)
-    |> update([gu], inc: [mentions_count: ^-1])
+    |> update([gu], set: [mentions_count: fragment("greatest(? - 1, 0)", gu.mentions_count)])
     |> Repo.update_all([], returning: true)
   end
 
