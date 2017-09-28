@@ -6,10 +6,13 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
 
   describe "regular channel" do
     test "user is inactive", %{socket1: socket1, group: group, user2: user2} do
-      {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+      socket1 = subscribe_and_join!(socket1, "groups:#{group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-      {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
-      {:ok, _, socket2} = subscribe_and_join(socket2, "team:lobby:#{group.team_id}")
+
+      socket2 =
+        socket2
+        |> subscribe_and_join!("groups:#{group.slug}")
+        |> subscribe_and_join!("team:lobby:#{group.team_id}")
 
       push socket2, "became_inactive", %{}
       @endpoint.subscribe("events:#{user2.id}")
@@ -19,10 +22,13 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
     end
 
     test "user is inactive and isn't mentioned in the message", %{socket1: socket1, group: group, user2: user2} do
-      {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+      socket1 = subscribe_and_join!(socket1, "groups:#{group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-      {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
-      {:ok, _, socket2} = subscribe_and_join(socket2, "team:lobby:#{group.team_id}")
+
+      socket2 =
+        socket2
+        |> subscribe_and_join!("groups:#{group.slug}")
+        |> subscribe_and_join!("team:lobby:#{group.team_id}")
 
       push socket2, "became_inactive", %{}
       @endpoint.subscribe("events:#{user2.id}")
@@ -31,10 +37,13 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
     end
 
     test "user is active", %{socket1: socket1, group: group, user2: user2} do
-      {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+      socket1 = subscribe_and_join!(socket1, "groups:#{group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-      {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
-      {:ok, _, socket2} = subscribe_and_join(socket2, "team:lobby:#{group.team_id}")
+
+      socket2 =
+        socket2
+        |> subscribe_and_join!("groups:#{group.slug}")
+        |> subscribe_and_join!("team:lobby:#{group.team_id}")
 
       push socket2, "became_active", %{}
       @endpoint.subscribe("events:#{user2.id}")
@@ -48,10 +57,13 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
 
   describe "direct message" do
     test "user is inactive", %{socket1: socket1, user2: user2, dm_group: dm_group} do
-      {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{dm_group.slug}")
+      socket1 = subscribe_and_join!(socket1, "groups:#{dm_group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-      {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{dm_group.slug}")
-      {:ok, _, socket2} = subscribe_and_join(socket2, "team:lobby:#{dm_group.team_id}")
+
+      socket2 =
+        socket2
+        |> subscribe_and_join!("groups:#{dm_group.slug}")
+        |> subscribe_and_join!("team:lobby:#{dm_group.team_id}")
 
       push socket2, "became_inactive", %{}
       @endpoint.subscribe("events:#{user2.id}")
@@ -62,10 +74,12 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
     end
 
     test "user is active", %{socket1: socket1, user2: user2, dm_group: dm_group} do
-      {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{dm_group.slug}")
+      socket1 = subscribe_and_join!(socket1, "groups:#{dm_group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-      {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{dm_group.slug}")
-      {:ok, _, socket2} = subscribe_and_join(socket2, "team:lobby:#{dm_group.team_id}")
+
+      socket2
+      |> subscribe_and_join!("groups:#{dm_group.slug}")
+      |> subscribe_and_join!("team:lobby:#{dm_group.team_id}")
 
       @endpoint.subscribe("events:#{user2.id}")
       push socket1, "new_msg", %{text_content: "Lorem ipsum"}
@@ -77,10 +91,13 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
 
   describe "multi-direct message" do
     test "user is inactive", %{socket1: socket1, user2: user2, dm_group: dm_group} do
-      {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{dm_group.slug}")
+      socket1 = subscribe_and_join!(socket1, "groups:#{dm_group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-      {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{dm_group.slug}")
-      {:ok, _, socket2} = subscribe_and_join(socket2, "team:lobby:#{dm_group.team_id}")
+
+      socket2 =
+        socket2
+        |> subscribe_and_join!("groups:#{dm_group.slug}")
+        |> subscribe_and_join!("team:lobby:#{dm_group.team_id}")
 
       push socket2, "became_inactive", %{}
       @endpoint.subscribe("events:#{user2.id}")
@@ -91,10 +108,12 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
     end
 
     test "user is active", %{socket1: socket1, user2: user2, dm_group: dm_group} do
-      {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{dm_group.slug}")
+      socket1 = subscribe_and_join!(socket1, "groups:#{dm_group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-      {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{dm_group.slug}")
-      {:ok, _, socket2} = subscribe_and_join(socket2, "team:lobby:#{dm_group.team_id}")
+
+      socket2
+      |> subscribe_and_join!("groups:#{dm_group.slug}")
+      |> subscribe_and_join!("team:lobby:#{dm_group.team_id}")
 
       @endpoint.subscribe("events:#{user2.id}")
       push socket1, "new_msg", %{text_content: "Lorem ipsum"}
