@@ -123,6 +123,29 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  def handle_in("feed_surrounding", %{"id" => _} = params, socket) do
+    %{group: group, current_user: user} = socket.assigns
+  
+    case group do
+      {:create_dm, _, _} ->
+        {:reply, {:ok, %{messages: []}}, socket}
+  
+      group ->
+        opts = params
+        |> Map.take(["limit", "id"])
+        |> Map.update("limit", 30 , &Enum.min([&1, 50]))
+        |> Enum.map(fn {key,value} -> {String.to_atom(key), value} end)
+    
+        old_messages = MessageQueries.group_latest_messages(group.id, user, opts)
+        more_before = Enum.count(old_messages) > 0
+    
+        recent_messages = MessageQueries.group_recent_messages(group.id, user, opts)
+        more_after = Enum.count(recent_messages) > 0
+    
+        {:reply, {:ok, %{more_before: more_before, more_after: more_after}}, socket}
+    end
+  end
+
   def handle_in("new_msg", params, socket) do
     %{group: group, current_user: user} = socket.assigns
     do_new_msg(socket, group, user, params)

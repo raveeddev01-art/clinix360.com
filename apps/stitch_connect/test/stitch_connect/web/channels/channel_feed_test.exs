@@ -61,4 +61,22 @@ defmodule StitchConnect.Web.ChannelFeedTest do
       assert Enum.at(reply.messages, idx).id == Enum.at(newer, idx).id
     end)
   end
+
+  test "feed_surrounding event returns before and after status of a given id",
+    %{socket1: socket1, group: group, user2: user2}  do
+
+    messages = 1..100 |> Enum.map(fn n ->
+      attrs = %{user_id: user2.id, group_id: group.id, text_content: "Message ##{n}"}
+      %Message{} |> Message.changeset(attrs) |> Repo.insert!
+    end)
+    [mid | _older] = Enum.take(messages, 50) |> Enum.reverse
+
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+
+    ref = push socket1, "feed_surrounding", %{id: mid.id}
+    assert_reply ref, :ok, reply
+
+    assert reply.more_after == true
+    assert reply.more_before == true
+  end
 end
