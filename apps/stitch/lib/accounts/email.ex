@@ -46,37 +46,27 @@ defmodule Stitch.Accounts.Email do
     |> Stitch.Mailer.deliver_later
   end
 
-  def unread_messages_email(user, message_count, login_url) do
-    inflected_message = if message_count == 1, do: "message", else: "messages"
-
+  def unread_messages_email([]), do: nil
+  def unread_messages_email(recipients) do
     new_email()
     |> template("Message Waiting - Offline Email (Connect)")
-    |> to(user.email)
-    |> from("welcome@teamstitch.com")
+    |> to(Enum.map(recipients, & &1.email))
+    |> from("no-reply@teamstitch.com")
     |> subject("[Stitch Connect] Notifications for #{format_datetime_subject(DateTime.utc_now)}")
-    |> put_param("global_merge_vars", [
-      %{
-        "name" => "receiverFirstName",
-        "content": user.first_name,
-      },
-      %{
-        "name": "unreadTotal",
-        "content": message_count,
-      },
-      %{
-        "name": "singularMessage",
-        "content": inflected_message
-      },
-      %{
-        "name": "loginUrl",
-        "content": login_url
-      },
-      %{
-        "name": "receiverEmail",
-        "content": user.email,
-      }
-    ])
-    |> Stitch.Mailer.deliver_now
+    |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
+    |> Stitch.Mailer.deliver_later
+  end
+
+  defp unread_messages_for_recipient(%{email: email, first_name: first_name, message_count: message_count, login_url: login_url}) do
+    inflected_message = if message_count == 1, do: "message", else: "messages"
+    vars = [
+      %{"name": "receiverFirstName", "content": first_name},
+      %{"name": "unreadTotal", "content": "#{message_count}"},
+      %{"name": "singularMessage", "content": inflected_message},
+      %{"name": "receiverEmail", "content": email},
+      %{"name": "loginUrl", "content": login_url}
+    ]
+    %{ rcpt: email, vars: vars }
   end
 
   defp format_datetime_subject(datetime) do
