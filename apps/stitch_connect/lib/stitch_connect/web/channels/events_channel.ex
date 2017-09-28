@@ -16,24 +16,37 @@ defmodule StitchConnect.Web.EventsChannel do
     end
   end
 
+  def group_users_for(group_id, user_id) do
+    GroupUser
+    |> where(group_id: ^group_id)
+    |> where([gu], gu.user_id != ^user_id)
+    |> select([gu], %{
+      user_id: gu.user_id,
+      unread_messages_count: gu.unread_messages_count,
+      mentions_count: gu.mentions_count,
+    })
+    |> Repo.all
+  end
+
   def broadcast_group_new_msg(group, message, notify_user_ids \\ []) do
     notify_user_ids_set = MapSet.new(notify_user_ids)
-    ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.user_id)
-    |> Repo.all |> List.delete(message.user_id)
-
-    for id <- ids do
-      json = MessageView.message_json(message, id)
-      |> Map.put(:notify, MapSet.member?(notify_user_ids_set, id))
-      @endpoint.broadcast("events:#{id}", "new_message", json)
+    for group_user <- group_users_for(group.id, message.user_id) do
+      json = MessageView.message_json(message, group_user.user_id)
+      |> Map.put(:notify, MapSet.member?(notify_user_ids_set, group_user.user_id))
+      |> Map.put(:unread_messages_count, group_user.unread_messages_count)
+      |> Map.put(:mentions_count, group_user.mentions_count)
+      @endpoint.broadcast("events:#{group_user.user_id}", "new_message", json)
     end
   end
 
   def broadcast_group_msg_deleted(group, message) do
-    ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.user_id)
-    |> Repo.all |> List.delete(message.user_id)
-
-    for id <- ids do
-      @endpoint.broadcast("events:#{id}", "message_deleted", %{id: message.id})
+    for group_user <- group_users_for(group.id, message.user_id) do
+      json = %{
+        id: message.id,
+        unread_messages_count: group_user.unread_messages_count,
+        mentions_count: group_user.mentions_count,
+      }
+      @endpoint.broadcast("events:#{group_user.user_id}", "message_deleted", json)
     end
   end
 
