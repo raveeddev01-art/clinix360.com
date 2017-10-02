@@ -1,6 +1,8 @@
 defmodule Stitch.Factory do
   use ExMachina.Ecto, repo: Stitch.Repo
 
+  @password_hash Stitch.User.Authentication.hash_password("password")
+
   def user_factory do
     %Stitch.Accounts.User{
       first_name: "Sergio",
@@ -9,7 +11,7 @@ defmodule Stitch.Factory do
       phone_number: "1231231234",
       roles: ["member"],
       onboarded: true,
-      password_hash: Stitch.User.Authentication.hash_password("password"),
+      password_hash: @password_hash,
       token: sequence(:token, &"ezkLsxjGxnyU_mgcHepbliFeX1#{&1 |> Integer.to_string |> String.pad_leading(5, "0")}-")
     }
   end
