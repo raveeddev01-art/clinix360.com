@@ -133,7 +133,7 @@
             cursor: pointer;
 
             &:hover {
-              opacity: .7;
+              opacity: 0.7;
             }
           }
         }
@@ -502,7 +502,7 @@
       }
 
       small {
-        font-size: .9em;
+        font-size: 0.9em;
         color: #999;
       }
     }
@@ -634,7 +634,7 @@
       max-width: 100%;
 
       &:hover {
-        box-shadow: 0 2px 2px rgba(0, 0, 0, .065);
+        box-shadow: 0 2px 2px rgba(0, 0, 0, 0.065);
       }
     }
 
@@ -719,4 +719,9 @@ i.file-data-separator {
   font-size: 8px;
   vertical-align: middle;
   margin: 0 5px;
+}
+
+.loading-message {
+  font-style: italic;
+  padding: 10px 30px;
 }

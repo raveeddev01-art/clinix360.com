@@ -21,7 +21,7 @@ class MessageList extends Component {
   }
 
   onScrollTop = () => {
-    this.props.messageStore.loadPastMessages();
+    this.props.messageStore.onScrollTopReached();
   };
 
   onLoseTopScroll = () => {};
@@ -45,6 +45,9 @@ class MessageList extends Component {
           this.chatDiv = div;
         }}
       >
+        {messageStore.isLoadingPast && (
+          <div className="loading-message">Loading messages...</div>
+        )}
         {Object.keys(messagesByDate).map(date => (
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
@@ -73,6 +76,9 @@ class MessageList extends Component {
             })}
           </div>
         ))}
+        {messageStore.isLoadingRecent && (
+          <div className="loading-message">Loading recent messages...</div>
+        )}
         <Element name="topPosition" className="topPosition" />
         <div className="bottomPositionWrapper">
           {/* react-scroll only checks for top position, so, to check bottom pos, it should take 100vh */}
