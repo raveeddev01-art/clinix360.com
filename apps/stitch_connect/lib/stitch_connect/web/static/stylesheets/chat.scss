@@ -101,25 +101,77 @@
         background: $body-bg;
 
         .unread-messages-tooltip {
-          position: relative;
+          display: flex;
           cursor: pointer;
           height: 25px;
           line-height: 25px;
-          background: #29b2ee;
-          border-radius: 8px;
-          text-align: center;
           color: #fff;
-          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+          overflow: hidden !important;
+
+          .fa {
+            margin: 0 5px;
+          }
+
+          .messages-count-info {
+            flex: 1;
+            display: flex;
+            background: #29b2ee;
+            border-radius: 8px 0 0 8px;
+
+            .jump-button {
+              flex: 0 0 auto;
+              padding: 0 10px;
+              font-size: 90%;
+              visibility: hidden;
+
+              .jump-hover {
+                visibility: hidden;
+              }
+            }
+
+            .messages-count {
+              flex: 1;
+              text-align: center;
+              text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+            }
+          }
+
+          .mark-as-read-button {
+            flex: 0 0 auto;
+            padding: 0 10px;
+            font-size: 90%;
+            background: #29b2ee;
+            border-radius: 0 8px 8px 0;
+          }
 
           &:hover {
             filter: brightness(85%);
           }
 
-          .close-unread-messages-tooltip {
-            position: absolute;
-            right: 10px;
-            top: 5px;
-            color: #fff;
+          &.should-jump {
+            filter: none;
+
+            &:hover .messages-count-info .jump-button .jump-hover {
+              visibility: visible;
+            }
+
+            .messages-count-info {
+              border-right: 1px solid #3d9cd4;
+
+              &:hover {
+                filter: brightness(85%);
+              }
+
+              .jump-button {
+                visibility: visible;
+              }
+            }
+
+            .mark-as-read-button {
+              &:hover {
+                filter: brightness(85%);
+              }
+            }
           }
         }
 
