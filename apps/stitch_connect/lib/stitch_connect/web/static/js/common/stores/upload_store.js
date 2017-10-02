@@ -88,7 +88,6 @@ class UploadStore {
         })
           .then(() => {
             delete this.xhrs[data.key];
-            this.setProcessing(key);
             this.uploadProgress.set(key, "done");
             return `${data.action}/${data.key}`;
           })

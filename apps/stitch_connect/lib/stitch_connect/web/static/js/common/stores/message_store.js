@@ -21,8 +21,8 @@ class MessageStore {
   @observable isLoadingPast = false;
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
-  loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
-  loadedAllRecent = false; // If TRUE, indicates that there is no more recent messages to load from server
+  @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
+  @observable loadedAllRecent = false; // If TRUE, indicates that there is no more recent messages to load from server
   messagePositions = {}; // { group: message_id }
 
   // mobx when() monitor disposers
@@ -105,39 +105,6 @@ class MessageStore {
         .sortBy("inserted_at")
         // Group messages by dates
         .groupBy(message => moment(message.inserted_at).format(`YYYY-MM-DD`))
-        // Pool sequential messages by the same user
-        .transform((messagesByDate, messages, date) => {
-          messagesByDate[date] = _.transform(
-            messages,
-            (messagePools, message) => {
-              if (
-                _.isEmpty(messagePools) ||
-                (this.firstUnreadMessage &&
-                  this.firstUnreadMessage.id === message.id)
-              ) {
-                messagePools.push([message]);
-                return;
-              }
-
-              const lastMessagePool = _.last(messagePools);
-              const lastMessage = _.last(lastMessagePool);
-
-              if (
-                lastMessage.user.id === message.user.id &&
-                moment(lastMessage.inserted_at).diff(
-                  message.inserted_at,
-                  "minutes"
-                ) >= -30 &&
-                message.type === `chat` // it was user_message before
-              ) {
-                lastMessagePool.push(message);
-              } else {
-                messagePools.push([message]);
-              }
-            },
-            []
-          );
-        }, {})
         .value()
     );
   }
@@ -270,17 +237,13 @@ class MessageStore {
       return;
     }
 
-    // Find messagePoolDiv
-    const messagePoolDiv = $(messageDiv).closest(".message-pool")[0];
-
     // Scroll only when message is not visible
-    const offset =
-      (this.chatDiv.offsetHeight - messagePoolDiv.offsetHeight) / 2;
+    const offset = (this.chatDiv.offsetHeight - messageDiv.offsetHeight) / 2;
 
     this.scrollTo(messageId, 0, null, -offset);
 
     // Highlight the message jumped to by fading out for 3 seconds
-    $(messagePoolDiv)
+    $(messageDiv)
       .fadeTo(0, 0.5)
       .fadeTo(3000, 1);
   }
@@ -339,7 +302,11 @@ class MessageStore {
     this.messageTemp = this.messages.slice(0);
     this.messages = [targetMessage];
     this.loadedAround.set(targetMessage.id, false);
+    this.loadedAll = false;
+    this.loadedAllRecent = false;
     this.jumpMode = true;
+    this.messageInEdit = null;
+    this.textInEdit = "";
 
     // load messages around it
     Promise.all([
@@ -475,6 +442,10 @@ class MessageStore {
             return;
           }
 
+          if (messages.length < 30) {
+            this.loadedAll = true;
+          }
+
           this.messages.push(...messages);
 
           if (stayScroll) {
@@ -520,6 +491,10 @@ class MessageStore {
             this.loadedAllRecent = true;
             resolve();
             return;
+          }
+
+          if (messages.length < 30) {
+            this.loadedAllRecent = true;
           }
 
           this.messages.unshift(...messages.reverse());
@@ -651,7 +626,6 @@ class MessageStore {
     this.unreadMessagesCount = groupStore.unreadMessagesCount;
     this.mentionsCount = groupStore.mentionsCount;
     this.lastReadAt = groupStore.lastReadAt;
-
     this.messages = data.messages;
 
     when(() => this.mountedAllMessages, this.handleInitialLoading);
