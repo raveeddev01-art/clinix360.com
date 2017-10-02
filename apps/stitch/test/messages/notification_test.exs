@@ -128,4 +128,18 @@ defmodule Stitch.Message.NotificationTest do
       assert bob_id == bob.id
     end
   end
+
+  describe "Email notifications" do
+    test "processes users in batches" do
+      insert(:user, username: "a")
+      insert(:user, username: "b")
+      insert(:user, username: "c")
+
+      usernames = Stitch.Accounts.User.with_email_notification_preference("daily")
+      |> Stitch.ChunkStream.chunk(2)
+      |> Stream.map(fn l -> Enum.map(l, & &1.username) end) |> Enum.to_list
+
+      assert usernames == [["a", "b"], ["c"]]
+    end
+  end
 end

@@ -3,7 +3,7 @@ defmodule StitchConnect.MessageMailer do
 
   def deliver(notification_preference) do
     Stitch.Accounts.User.with_email_notification_preference(notification_preference)
-    |> Stitch.ChunkStream.chunk(100)
+    |> Stitch.ChunkStream.chunk(50)
     |> Stream.each(&deliver_for_users/1)
     |> Stream.run
   end
