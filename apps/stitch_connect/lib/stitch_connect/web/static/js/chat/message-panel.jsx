@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import classNames from "classnames";
 
 import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
@@ -23,8 +24,9 @@ export default class MessagePanel extends Component {
     }
   };
 
-  onTooltipClose = evt => {
-    evt.stopPropagation();
+  onUnreadMessagesCountClick = () => {};
+
+  onMarkAsReadClick = () => {
     this.markAsRead();
   };
 
@@ -52,19 +54,43 @@ export default class MessagePanel extends Component {
 
   render() {
     const { groupStore: group, messageStore } = this.props;
+    const unreadMessagesTooltipClass = classNames("unread-messages-tooltip", {
+      "should-jump": messageStore.firstUnreadMessageVisibility !== "visible"
+    });
+    const jumpArrowClass = classNames("fa", {
+      "fa-arrow-up": messageStore.firstUnreadMessageVisibility === "hidden-up",
+      "fa-arrow-down":
+        messageStore.firstUnreadMessageVisibility === "hidden-down"
+    });
 
     return (
       <div id="chat-container">
         <div className="container-bars">
-          {messageStore.unreadMessagesCount > 0
-            ? <div className="unread-messages-tooltip" onClick={this.loadMore}>
-                {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}
-                <i
-                  className="fa fa-close close-unread-messages-tooltip"
-                  onClick={this.onTooltipClose}
-                />
+          {messageStore.unreadMessagesCount > 0 &&
+            <div className={unreadMessagesTooltipClass}>
+              <div
+                role="button"
+                className="messages-count-info"
+                onClick={this.onUnreadMessagesCountClick}
+              >
+                <div className="jump-button">
+                  <i className={jumpArrowClass} />
+                  <span className="jump-hover">Jump</span>
+                </div>
+                <div className="messages-count">
+                  {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}
+                </div>
               </div>
-            : null}
+
+              <div
+                role="button"
+                className="mark-as-read-button"
+                onClick={this.onMarkAsReadClick}
+              >
+                Mark as read
+                <i className="fa fa-close" />
+              </div>
+            </div>}
           <UploadProgress />
         </div>
 

@@ -99,6 +99,17 @@ class MessageStore {
   }
 
   @computed
+  get firstUnreadMessageVisibility() {
+    if (!this.firstUnreadMessage) {
+      return "hidden-up";
+    }
+
+    return this.getElementVisibility(
+      this.messageDivs[this.firstUnreadMessage.id]
+    );
+  }
+
+  @computed
   get messagesByDate() {
     return (
       _.chain(this.messages)
@@ -148,6 +159,33 @@ class MessageStore {
         }
       }, duration || 300);
     }, delay);
+  }
+
+  /**
+   * Returns the position of element in chat div
+   * 
+   * Possible return values are:
+   *  'hidden-up': message is hidden in up the chat div
+   *  'visible': message is visible
+   *  'hidden-down': message is hidden in down the chat div
+   */
+  getElementVisibility(element) {
+    if (!element) {
+      return "hidden-up";
+    }
+
+    const chatDivBoundingRect = this.chatDiv.getBoundingClientRect();
+    const elementBoundingRect = element.getBoundingClientRect();
+
+    if (elementBoundingRect.top < chatDivBoundingRect.top) {
+      return "hidden-up";
+    }
+
+    if (elementBoundingRect.bottom > chatDivBoundingRect.bottom) {
+      return "hidden-down";
+    }
+
+    return "visible";
   }
 
   // Scroll to specific message in chat div instantly
@@ -243,9 +281,7 @@ class MessageStore {
     this.scrollTo(messageId, 0, null, -offset);
 
     // Highlight the message jumped to by fading out for 3 seconds
-    $(messageDiv)
-      .fadeTo(0, 0.5)
-      .fadeTo(3000, 1);
+    $(messageDiv).fadeTo(0, 0.5).fadeTo(3000, 1);
   }
 
   /**
