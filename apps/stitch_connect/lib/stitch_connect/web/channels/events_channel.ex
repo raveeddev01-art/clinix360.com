@@ -31,7 +31,7 @@ defmodule StitchConnect.Web.EventsChannel do
   def broadcast_group_new_msg(group, message, notify_user_ids \\ []) do
     notify_user_ids_set = MapSet.new(notify_user_ids)
     for group_user <- group_users_for(group.id, message.user_id) do
-      json = MessageView.message_json(message, group_user.user_id)
+      json = MessageView.message_json(message)
       |> Map.put(:notify, MapSet.member?(notify_user_ids_set, group_user.user_id))
       |> Map.put(:unread_messages_count, group_user.unread_messages_count)
       |> Map.put(:mentions_count, group_user.mentions_count)
@@ -78,8 +78,7 @@ defmodule StitchConnect.Web.EventsChannel do
     end
   end
 
-  def broadcast_marked_as_read(user, messages) do
-    json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
-    @endpoint.broadcast("events:#{user.id}", "marked_as_read", %{messages: json})
+  def broadcast_marked_as_read(user, json_response) do
+    @endpoint.broadcast("events:#{user.id}", "marked_as_read", json_response)
   end
 end
