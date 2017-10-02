@@ -2,23 +2,33 @@ defmodule StitchConnect.MessageMailer do
   use Quantum.Scheduler, otp_app: :stitch_connect
 
   def deliver(notification_preference) do
-    Stitch.Repo.transaction fn ->
-      Stitch.Accounts.User.with_email_notification_preference(notification_preference)
-      |> Stitch.Repo.stream
-      |> Task.async_stream(fn user ->
-        try do
-          user = user |> Stitch.Repo.preload([:team])
-          message_count = Stitch.EmailNotification.count(user.id)
-          if message_count > 0 do
-            Stitch.Accounts.Email.unread_messages_email(user, message_count, login_url(user.team))
-            Stitch.EmailNotification.clean_delivered(user.id)
-          end
-        rescue e ->
-          IO.puts "Error while delivering emails about unread messages for user id #{user.id} (#{inspect(e)})"
-        end
-      end, max_concurrency: 50, timeout: 10 * 60 * 1000)
-      |> Stream.run()
-    end
+    Stitch.Accounts.User.with_email_notification_preference(notification_preference)
+    |> Stitch.ChunkStream.chunk(50)
+    |> Stream.each(&deliver_for_users/1)
+    |> Stream.run
+  end
+
+  def deliver_for_users(users) do
+    users = users |> Stitch.Repo.preload(:team)
+    users_map = Enum.reduce(users, %{}, & Map.put(&2, &1.id, &1))
+    recipients = prepare_recipients(users, users_map)
+    Stitch.Accounts.Email.unread_messages_email(recipients)
+    Stitch.EmailNotification.clean_delivered(Enum.map(recipients, & &1.id))
+  end
+
+  def prepare_recipients(users, users_map) do
+    users
+    |> Enum.map(& &1.id)
+    |> Stitch.EmailNotification.count
+    |> Enum.map(& recipient(users_map[&1.user_id], &1.message_count))
+  end
+
+  defp recipient(user, message_count) do
+    %{first_name: user.first_name,
+      email: user.email,
+      id: user.id,
+      message_count: message_count,
+      login_url: login_url(user.team) }
   end
 
   defp subdomain_url(subdomain) do

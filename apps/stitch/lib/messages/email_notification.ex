@@ -21,16 +21,20 @@ defmodule Stitch.EmailNotification do
     |> Repo.insert_all(Enum.map(user_ids, & [user_id: &1, message_id: message_id, inserted_at: DateTime.utc_now()]))
   end
 
-  def count(user_id) do
+  def count(user_ids) do
     EmailNotification
-    |> where(user_id: ^user_id)
-    |> select([en], count(en.message_id))
-    |> Repo.one
+    |> where([en], en.user_id in ^user_ids)
+    |> group_by([en], en.user_id)
+    |> select([en], %{
+      user_id: en.user_id,
+      message_count: count(en.message_id)
+    })
+    |> Repo.all
   end
 
-  def clean_delivered(user_id) do
+  def clean_delivered(user_ids) do
     EmailNotification
-    |> where([en], en.user_id == ^user_id)
+    |> where([en], en.user_id in ^user_ids)
     |> Repo.delete_all([])
   end
 end
