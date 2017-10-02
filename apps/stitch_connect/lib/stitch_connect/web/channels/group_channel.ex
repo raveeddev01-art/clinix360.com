@@ -28,7 +28,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
           group ->
             messages = MessageQueries.group_latest_messages(group.id, user)
-            json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+            json = MessageView.render("index.json", %{messages: messages})
             send self(), :after_join
             {:ok, %{messages: json}, assign(socket, :group, group)}
         end
@@ -50,7 +50,7 @@ defmodule StitchConnect.Web.GroupChannel do
         case GroupAuthorization.can_view?(group.id, user.id) do
           true ->
             messages = MessageQueries.group_latest_messages(group.id, user)
-            json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+            json = MessageView.render("index.json", %{messages: messages})
             send self(), :after_join
             {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
@@ -99,7 +99,7 @@ defmodule StitchConnect.Web.GroupChannel do
         |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
         messages = MessageQueries.group_latest_messages(group.id, user, opts)
-        json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+        json = MessageView.render("index.json", %{messages: messages})
         {:reply, {:ok, %{messages: json}}, socket}
     end
   end
@@ -118,7 +118,7 @@ defmodule StitchConnect.Web.GroupChannel do
         |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
         messages = MessageQueries.group_recent_messages(group.id, user, opts)
-        json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+        json = MessageView.render("index.json", %{messages: messages})
         {:reply, {:ok, %{messages: json}}, socket}
     end
   end
@@ -144,7 +144,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
         broadcast! socket, "edit_msg", message
 
-        json = MessageView.render("show.json", %{message: message, user_id: user.id})
+        json = MessageView.render("show.json", %{message: message})
         {:reply, {:ok, json}, socket}
 
       nil ->
@@ -208,7 +208,7 @@ defmodule StitchConnect.Web.GroupChannel do
           broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
 
-          json = MessageView.render("show.json", %{message: message, user_id: user.id})
+          json = MessageView.render("show.json", %{message: message})
           {:reply, {:ok, json}, socket}
 
         {:error, _changeset} ->
@@ -221,7 +221,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   defp mark_as_read_response({:ok, %{mark_messages_as_read: {_, messages}, update_last_read_at: {1, [group_user]}}}, user, socket) do
     messages = MessageQueries.load_info(messages)
-    messages_json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+    messages_json = MessageView.render("index.json", %{messages: messages})
     json = %{
       messages: messages_json,
       group_id: group_user.group_id,
@@ -234,8 +234,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg"] do
-    json = MessageView.render("show.json",
-      %{message: payload, user_id: socket.assigns.current_user.id})
+    json = MessageView.render("show.json", %{message: payload})
     push socket, event, json
     {:noreply, socket}
   end

@@ -289,7 +289,6 @@ defmodule StitchConnect.Web.MessageControllerTest do
           "pinned_at" => _,
           "edited" => _,
           "edited_at" => _,
-          "read" => _,
           "read_status" => _,
         } = message
       end

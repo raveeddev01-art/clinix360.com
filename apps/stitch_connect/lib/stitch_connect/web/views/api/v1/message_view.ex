@@ -2,15 +2,15 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   use StitchConnect.Web, :view
   alias Stitch.{Message}
 
-  def render("index.json", %{messages: messages, user_id: user_id}) do
-    Enum.map(messages, &message_json(&1, user_id))
+  def render("index.json", %{messages: messages}) do
+    Enum.map(messages, &message_json/1)
   end
 
-  def render("show.json", %{message: message, user_id: user_id}) do
-    message_json(message, user_id)
+  def render("show.json", %{message: message}) do
+    message_json(message)
   end
 
-  def message_json(message, user_id) do
+  def message_json(message) do
     %{
       id: message.id,
       user_id: message.user_id,
