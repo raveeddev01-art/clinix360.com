@@ -28,7 +28,8 @@ defmodule StitchConnect.Web.ChannelMessageTest do
 
     @endpoint.subscribe("groups:#{group.slug}")
 
-    push socket1, "new_msg", %{text_content: "Hello, World!"}
+    ref = push socket1, "new_msg", %{text_content: "Hello, World!"}
+    assert_reply ref, :ok
 
     assert_broadcast "new_msg", data
 
