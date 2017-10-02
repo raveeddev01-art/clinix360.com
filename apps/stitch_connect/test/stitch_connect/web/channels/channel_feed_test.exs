@@ -69,14 +69,29 @@ defmodule StitchConnect.Web.ChannelFeedTest do
       attrs = %{user_id: user2.id, group_id: group.id, text_content: "Message ##{n}"}
       %Message{} |> Message.changeset(attrs) |> Repo.insert!
     end)
-    [mid | _older] = Enum.take(messages, 50) |> Enum.reverse
+
+    first_message = List.first(messages)
+    [mid_message] = Enum.slice(messages, 50..50)
+    last_message = List.last(messages)
 
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
-    ref = push socket1, "feed_surrounding", %{id: mid.id}
+    ref = push socket1, "feed_surrounding", %{id: mid_message.id}
     assert_reply ref, :ok, reply
 
     assert reply.more_after == true
+    assert reply.more_before == true
+
+    ref = push socket1, "feed_surrounding", %{id: first_message.id}
+    assert_reply ref, :ok, reply
+
+    assert reply.more_after == true
+    assert reply.more_before == false
+
+    ref = push socket1, "feed_surrounding", %{id: last_message.id}
+    assert_reply ref, :ok, reply
+
+    assert reply.more_after == false
     assert reply.more_before == true
   end
 end
