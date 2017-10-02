@@ -198,7 +198,8 @@ class MessageForm extends Component {
 
   renderJumpedMessageIndicator() {
     const { messageStore } = this.props;
-    const { messageJumpedTo } = messageStore;
+    const { messages } = messageStore;
+    const lastMesage = messages[messages.length - 1];
 
     return (
       messageStore.showJumpedMessageIndicator && (
@@ -206,12 +207,12 @@ class MessageForm extends Component {
           role="button"
           className="jumped-message-indicator"
           onClick={() => {
-            messageStore.scrollToBottom();
+            messageStore.switchFromJumpMode();
           }}
         >
           <span className="timestamp">
-            Viewing messages from{" "}
-            {moment(messageJumpedTo.inserted_at).format("MMM Do, YYYY")}
+            Viewing messages from&nbsp;
+            {moment(lastMesage.inserted_at).format("MMM Do, YYYY")}
           </span>
           <span className="scroll-to-bottom">
             Jump to recent messages <i className="fa fa-arrow-down" />

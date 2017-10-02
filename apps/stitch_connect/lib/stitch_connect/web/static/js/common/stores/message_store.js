@@ -2,22 +2,27 @@ import { observable, action, computed, when } from "mobx";
 import moment from "moment";
 import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
+import Promise from "bluebird";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
   @observable messageDivs = {}; // Div elements of messages loaded in the chat div
   @observable messages = []; // messages currently loaded
   @observable messageInEdit = null; // Message currently being edited
-  @observable messageJumpedTo = null; // Message the user jumped to manually
   @observable textInEdit = ""; // Current text of message in edit
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
   @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
-
+  @observable jumpMode = false; // indicates if message list is currently at jumping mode
   @observable unreadMessagesCount = 0;
   @observable mentionsCount = 0;
   @observable lastReadAt = null;
+  @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
+  @observable isLoadingRecent = false;
+  @observable isLoadingPast = false;
 
-  loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
+  messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
+  @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
+  @observable loadedAllRecent = false; // If TRUE, indicates that there is no more recent messages to load from server
   messagePositions = {}; // { group: message_id }
 
   // mobx when() monitor disposers
@@ -67,7 +72,7 @@ class MessageStore {
    */
   @computed
   get showJumpedMessageIndicator() {
-    return this.messageJumpedTo && !this.isScrollBottom;
+    return this.jumpMode && !this.loadedAllRecent;
   }
 
   get eventChannel() {
@@ -100,39 +105,6 @@ class MessageStore {
         .sortBy("inserted_at")
         // Group messages by dates
         .groupBy(message => moment(message.inserted_at).format(`YYYY-MM-DD`))
-        // Pool sequential messages by the same user
-        .transform((messagesByDate, messages, date) => {
-          messagesByDate[date] = _.transform(
-            messages,
-            (messagePools, message) => {
-              if (
-                _.isEmpty(messagePools) ||
-                (this.firstUnreadMessage &&
-                  this.firstUnreadMessage.id === message.id)
-              ) {
-                messagePools.push([message]);
-                return;
-              }
-
-              const lastMessagePool = _.last(messagePools);
-              const lastMessage = _.last(lastMessagePool);
-
-              if (
-                lastMessage.user.id === message.user.id &&
-                moment(lastMessage.inserted_at).diff(
-                  message.inserted_at,
-                  "minutes"
-                ) >= -30 &&
-                message.type === `chat` // it was user_message before
-              ) {
-                lastMessagePool.push(message);
-              } else {
-                messagePools.push([message]);
-              }
-            },
-            []
-          );
-        }, {})
         .value()
     );
   }
@@ -152,12 +124,13 @@ class MessageStore {
   // ////////////// //
 
   reset() {
+    this.jumpMode = false;
     this.loadedAll = false;
+    this.loadedAllRecent = false;
     this.loadedInitial = false;
     this.messages = [];
     this.messageDivs = {};
     this.messageInEdit = null;
-    this.messageJumpedTo = null;
     this.textInEdit = "";
   }
 
@@ -177,31 +150,20 @@ class MessageStore {
     }, delay);
   }
 
-  // Checks if message element is visible in chat
-  isVisibleInChat(element) {
-    const chatDivBoundingRect = this.chatDiv.getBoundingClientRect();
-    const elementBoundingRect = element.getBoundingClientRect();
-
-    return (
-      elementBoundingRect.top >= chatDivBoundingRect.top &&
-      elementBoundingRect.bottom <= chatDivBoundingRect.bottom
-    );
-  }
-
   // Scroll to specific message in chat div instantly
-  scrollTo(msgId, duration = 1000, cb) {
+  scrollTo(msgId, duration = 1000, cb, offset = -50) {
     scroller.scrollTo(`msg_${msgId}`, {
       containerId: "chat",
       smooth: true,
       duration,
-      offset: -50
+      offset
     });
 
     setTimeout(() => {
       if (typeof cb === "function") {
         cb();
       }
-    }, 300);
+    }, duration + 1);
   }
 
   scrollToNewBanner = () => {
@@ -219,9 +181,17 @@ class MessageStore {
   };
 
   @action
+  onScrollTopReached() {
+    this.loadPastMessages();
+  }
+
+  @action
   onScrollBottomReached() {
-    this.isScrollBottom = true;
-    this.messageJumpedTo = null;
+    if (this.jumpMode && !this.loadedAllRecent) {
+      this.loadRecentMessages();
+    } else {
+      this.isScrollBottom = true;
+    }
   }
 
   @action
@@ -258,18 +228,8 @@ class MessageStore {
    * Scroll to a specific message in chat div
    *
    * @param {Integer} messageId ID of message to scroll to
-   * @param {Boolean} toCenter IF TRUE, places the message in the center after scrolling
-   * @param {Function} cb Callback to run after scrolling ends
-   * @param {Integer} duration Duration of scroll animation
-   * @param {Integer} delay Delay before starting animation
    */
-  scrollToMessage(
-    messageId,
-    toCenter = true,
-    cb = null,
-    duration = 300,
-    delay = 100
-  ) {
+  centerMessage(messageId) {
     const messageDiv = this.messageDivs[messageId];
 
     // If message is not mounted yet, return
@@ -277,35 +237,13 @@ class MessageStore {
       return;
     }
 
-    // Find messagePoolDiv
-    const messagePoolDiv = $(messageDiv).closest(".message-pool")[0];
-
     // Scroll only when message is not visible
-    if (!this.isVisibleInChat(messagePoolDiv)) {
-      const toY = toCenter
-        ? Math.max(
-            messagePoolDiv.offsetTop -
-              (this.chatDiv.offsetHeight - messagePoolDiv.offsetHeight) / 2,
-            0
-          )
-        : messagePoolDiv.offsetTop;
+    const offset = (this.chatDiv.offsetHeight - messageDiv.offsetHeight) / 2;
 
-      setTimeout(() => {
-        animateScroll.scrollTo(toY, {
-          containerId: "chat",
-          duration
-        });
-
-        setTimeout(() => {
-          if (typeof cb === "function") {
-            cb();
-          }
-        }, duration);
-      }, delay);
-    }
+    this.scrollTo(messageId, 0, null, -offset);
 
     // Highlight the message jumped to by fading out for 3 seconds
-    $(messagePoolDiv)
+    $(messageDiv)
       .fadeTo(0, 0.5)
       .fadeTo(3000, 1);
   }
@@ -342,44 +280,47 @@ class MessageStore {
         }
 
         this.mountedTargetMessageDisposer = when(
-          () =>
-            this.loadedTargetMessage(targetMessage) && this.mountedAllMessages,
+          () => this.loadedAround.get(targetMessage.id),
           () => {
-            this.scrollToMessage(targetMessage.id);
-            this.messageJumpedTo = targetMessage;
+            this.centerMessage(targetMessage.id);
           }
         );
 
         // Load until target message is loaded
-        this.loadUntilTargetMessage(targetMessage);
+        this.loadJumpedMessage(targetMessage);
       }
     );
   }
 
   /**
-   * Checks if the message is loaded
+   * Load messages around targetMessage
    *
    * @param {Object} targetMessage
-   *
-   * @return TRUE if loaded, otherwise FALSE
    */
-  loadedTargetMessage(targetMessage) {
-    return this.messages.findIndex(m => m.id === targetMessage.id) > -1;
+  loadJumpedMessage(targetMessage) {
+    // temporarily move messages
+    this.messageTemp = this.messages.slice(0);
+    this.messages = [targetMessage];
+    this.loadedAround.set(targetMessage.id, false);
+    this.loadedAll = false;
+    this.loadedAllRecent = false;
+    this.jumpMode = true;
+    this.messageInEdit = null;
+    this.textInEdit = "";
+
+    // load messages around it
+    Promise.all([
+      this.loadPastMessages(false),
+      this.loadRecentMessages(false)
+    ]).then(() => {
+      this.loadedAround.set(targetMessage.id, true);
+    });
   }
 
-  /**
-   * Load old messages until target message is met
-   *
-   * @param {Object} targetMessage
-   */
-  loadUntilTargetMessage(targetMessage) {
-    if (this.loadedAll || this.loadedTargetMessage(targetMessage)) {
-      return;
-    }
-
-    this.loadPastMessages(() => {
-      this.loadUntilTargetMessage(targetMessage);
-    });
+  switchFromJumpMode() {
+    this.messages = this.messageTemp.slice(0);
+    this.jumpMode = false;
+    this.scrollToBottom();
   }
 
   /**
@@ -478,42 +419,106 @@ class MessageStore {
 
   @action
   loadPastUnreadMessages = () => {
-    this.loadPastMessages(this.scrollToNewBanner);
+    this.loadPastMessages().then(this.scrollToNewBanner);
   };
 
   @action
-  loadPastMessages = (cb = null) => {
-    if (this.loadedAll || !this.messages.length) {
-      return;
-    }
+  loadPastMessages = (stayScroll = true) => {
+    return new Promise((resolve, reject) => {
+      if (this.loadedAll || !this.messages.length) {
+        resolve();
+        return;
+      }
+      this.isLoadingPast = true;
+      this.groupChannel
+        .push("feed", { max_id: this.messages[this.messages.length - 1].id })
+        .receive("ok", data => {
+          const { messages } = data;
+          this.isLoadingPast = false;
 
-    this.groupChannel
-      .push("feed", { max_id: this.messages[this.messages.length - 1].id })
-      .receive("ok", data => {
-        const { messages } = data;
-
-        if (!messages.length) {
-          this.loadedAll = true;
-          return;
-        }
-
-        this.messages.push(...messages);
-
-        when(
-          () => this.mountedAllMessages,
-          () => {
-            // stay at the position
-            this.scrollTo(messages[0].id, 0, () => {
-              if (typeof cb === "function") {
-                cb();
-              }
-            });
+          if (!messages.length) {
+            this.loadedAll = true;
+            resolve();
+            return;
           }
-        );
-      })
-      .receive("error", err => {
-        notify.show(err.message, "error");
-      });
+
+          if (messages.length < 30) {
+            this.loadedAll = true;
+          }
+
+          this.messages.push(...messages);
+
+          if (stayScroll) {
+            when(
+              () => !this.isLoadingPast,
+              () => {
+                setTimeout(() => {
+                  this.scrollTo(messages[0].id, 0, () => {
+                    resolve();
+                  });
+                }, 100);
+              }
+            );
+          } else {
+            resolve();
+          }
+        })
+        .receive("error", err => {
+          this.isLoadingPast = false;
+          reject(err);
+          notify.show(err.message, "error");
+        });
+    });
+  };
+
+  @action
+  loadRecentMessages = (stayScroll = true) => {
+    return new Promise((resolve, reject) => {
+      if (this.loadedAllRecent || this.isLoadingRecent) {
+        resolve();
+        return;
+      }
+
+      this.isLoadingRecent = true;
+
+      this.groupChannel
+        .push("feed_recent", { min_id: this.messages[0].id })
+        .receive("ok", data => {
+          const { messages } = data;
+          this.isLoadingRecent = false;
+          if (!messages.length) {
+            this.jumpMode = false;
+            this.loadedAllRecent = true;
+            resolve();
+            return;
+          }
+
+          if (messages.length < 30) {
+            this.loadedAllRecent = true;
+          }
+
+          this.messages.unshift(...messages.reverse());
+
+          if (stayScroll) {
+            when(
+              () => this.mountedAllMessages,
+              () => {
+                // stay at the position
+                this.scrollTo(messages[messages.length - 1].id, 0, () => {
+                  resolve();
+                });
+              }
+            );
+          } else {
+            resolve();
+          }
+        })
+        .receive("error", err => {
+          this.isLoadingRecent = false;
+          reject(err);
+          notify.show(err.message, "error");
+        });
+    });
   };
 
   @action
@@ -621,7 +626,6 @@ class MessageStore {
     this.unreadMessagesCount = groupStore.unreadMessagesCount;
     this.mentionsCount = groupStore.mentionsCount;
     this.lastReadAt = groupStore.lastReadAt;
-
     this.messages = data.messages;
 
     when(() => this.mountedAllMessages, this.handleInitialLoading);

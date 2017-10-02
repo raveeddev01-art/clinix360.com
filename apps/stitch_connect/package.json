@@ -6,6 +6,7 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "babel-polyfill": "^6.23.0",
+    "bluebird": "^3.5.0",
     "classnames": "^2.2.5",
     "deepmerge": "^1.4.4",
     "es6-promise": "^4.1.0",

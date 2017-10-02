@@ -22,10 +22,6 @@ class Message extends Component {
     this.state = { selected: false };
   }
 
-  handleClick = () => {
-    this.setState({ selected: !this.state.selected });
-  };
-
   componentDidMount() {
     const { message, messageStore } = this.props;
 
@@ -42,6 +38,10 @@ class Message extends Component {
     if (isVisible && messageStore.loadedInitial) {
       messageStore.onVisibleMessage(message.id);
     }
+  };
+
+  handleClick = () => {
+    this.setState({ selected: !this.state.selected });
   };
 
   edit = () => {
@@ -220,48 +220,56 @@ class Message extends Component {
   render() {
     const { message, user, timestamp, messageStore } = this.props;
     const { chatDiv } = messageStore;
-    const className = cx({ selected: this.state.selected });
-
+    const elementClassName = cx({ selected: this.state.selected });
+    const containerClassName = cx("message-pool-container", {
+      mine: user.id === currentUser.id
+    });
     return (
-      <VisibilitySensor
-        active
-        onChange={this.onVisibleChange}
-        intervalCheck={false}
-        scrollCheck
-        scrollThrottle={100}
-        containment={chatDiv}
-        offset={{ top: 70 }}
+      <div
+        className={containerClassName}
+        ref={div => {
+          this.messageDiv = div;
+        }}
       >
-        <Element name={`msg_${message.id}`} className={className}>
-          <div
-            className="message"
-            ref={div => {
-              this.messageDiv = div;
-            }}
-          >
-            <div className="message-header">
-              <div className="name">
-                {user.first_name} {user.last_name}
-              </div>
+        <div className="message-pool">
+          <div className="message-pool-content">
+            <VisibilitySensor
+              active
+              onChange={this.onVisibleChange}
+              intervalCheck={false}
+              scrollCheck
+              scrollThrottle={100}
+              containment={chatDiv}
+              offset={{ top: 70 }}
+            >
+              <Element name={`msg_${message.id}`} className={elementClassName}>
+                <div className="message">
+                  <div className="message-header">
+                    <div className="name">
+                      {user.first_name} {user.last_name}
+                    </div>
 
-              <div
-                className="time"
-                data-time={moment(timestamp).format("HH:mm A")}
-              >
-                {this.renderActions(message)}
-              </div>
+                    <div
+                      className="time"
+                      data-time={moment(timestamp).format("HH:mm A")}
+                    >
+                      {this.renderActions(message)}
+                    </div>
 
-              {this.renderStar(message)}
-              {this.renderPin(message)}
-            </div>
+                    {this.renderStar(message)}
+                    {this.renderPin(message)}
+                  </div>
 
-            <div>
-              <MessageContent message={message} />
-              {this.renderEdited(message)}
-            </div>
+                  <div>
+                    <MessageContent message={message} />
+                    {this.renderEdited(message)}
+                  </div>
+                </div>
+              </Element>
+            </VisibilitySensor>
           </div>
-        </Element>
-      </VisibilitySensor>
+        </div>
+      </div>
     );
   }
 }

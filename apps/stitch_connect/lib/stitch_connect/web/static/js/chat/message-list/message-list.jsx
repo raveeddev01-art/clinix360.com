@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Link, Element } from "react-scroll";
 
-import MessagePool from "./message-pool";
+import Message from "./message";
 import DateSeparator from "./date-separator";
 
 @inject("messageStore")
@@ -21,7 +21,7 @@ class MessageList extends Component {
   }
 
   onScrollTop = () => {
-    this.props.messageStore.loadPastMessages();
+    this.props.messageStore.onScrollTopReached();
   };
 
   onLoseTopScroll = () => {};
@@ -45,34 +45,45 @@ class MessageList extends Component {
           this.chatDiv = div;
         }}
       >
+        {messageStore.isLoadingPast && (
+          <div className="loading-message">Loading messages...</div>
+        )}
         {Object.keys(messagesByDate).map(date => (
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
-            {messagesByDate[date].map(messagePool => {
+            {messagesByDate[date].map(message => {
+              const { user, inserted_at: timestamp } = message;
               if (
                 messageStore.firstUnreadMessage &&
-                messageStore.firstUnreadMessage.id === messagePool[0].id
+                messageStore.firstUnreadMessage.id === message.id
               ) {
                 return [
                   <Element name="newMessageBanner" />,
                   <div className="new-message-banner">
                     <div className="banner-text">New Messages</div>
                   </div>,
-                  <MessagePool
-                    key={`message_pool_${messagePool[0].id}`}
-                    messagePool={messagePool}
+                  <Message
+                    key={`msg_${message.id}`}
+                    message={message}
+                    timestamp={timestamp}
+                    user={user}
                   />
                 ];
               }
               return (
-                <MessagePool
-                  key={`${messagePool[0].id}`}
-                  messagePool={messagePool}
+                <Message
+                  key={`msg_${message.id}`}
+                  message={message}
+                  timestamp={timestamp}
+                  user={user}
                 />
               );
             })}
           </div>
         ))}
+        {messageStore.isLoadingRecent && (
+          <div className="loading-message">Loading recent messages...</div>
+        )}
         <Element name="topPosition" className="topPosition" />
         <div className="bottomPositionWrapper">
           {/* react-scroll only checks for top position, so, to check bottom pos, it should take 100vh */}
