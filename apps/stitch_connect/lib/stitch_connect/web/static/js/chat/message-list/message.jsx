@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
 import moment from "moment";
 import { Element } from "react-scroll";
+import cx from "classnames";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -16,6 +17,15 @@ import MessageContent from "../../common/components/messages/message-content/mes
 @inject("messageStore", "groupStore", "sidemenuStore")
 @observer
 class Message extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { selected: false };
+  }
+
+  handleClick = () => {
+    this.setState({ selected: !this.state.selected });
+  };
+
   componentDidMount() {
     const { message, messageStore } = this.props;
 
@@ -157,7 +167,10 @@ class Message extends Component {
         className="message-actions"
         pullRight
       >
-        <Dropdown.Toggle useAnchor />
+        <Dropdown.Toggle useAnchor noCaret onClick={this.handleClick}>
+          <i className="fa fa-angle-down" />
+        </Dropdown.Toggle>
+
         <Dropdown.Menu>
           {message.type === "upload" && (
             <MenuItem target="_blank" href={message.fields.url}>
@@ -205,8 +218,9 @@ class Message extends Component {
   }
 
   render() {
-    const { message, messageStore } = this.props;
+    const { message, user, timestamp, messageStore } = this.props;
     const { chatDiv } = messageStore;
+    const className = cx({ selected: this.state.selected });
 
     return (
       <VisibilitySensor
@@ -218,21 +232,33 @@ class Message extends Component {
         containment={chatDiv}
         offset={{ top: 70 }}
       >
-        <Element name={`msg_${message.id}`}>
+        <Element name={`msg_${message.id}`} className={className}>
           <div
             className="message"
             ref={div => {
               this.messageDiv = div;
             }}
           >
+            <div className="message-header">
+              <div className="name">
+                {user.first_name} {user.last_name}
+              </div>
+
+              <div
+                className="time"
+                data-time={moment(timestamp).format("HH:mm A")}
+              >
+                {this.renderActions(message)}
+              </div>
+
+              {this.renderStar(message)}
+              {this.renderPin(message)}
+            </div>
+
             <div>
               <MessageContent message={message} />
               {this.renderEdited(message)}
             </div>
-
-            {this.renderStar(message)}
-            {this.renderPin(message)}
-            {this.renderActions(message)}
           </div>
         </Element>
       </VisibilitySensor>

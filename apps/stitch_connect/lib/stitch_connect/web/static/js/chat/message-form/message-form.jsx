@@ -283,7 +283,7 @@ class MessageForm extends Component {
         <input
           className={className}
           type="text"
-          placeholder="Write something"
+          placeholder="Message"
           value={text}
           onChange={this.onTextChange}
           onKeyUp={this.onKeyUp}
