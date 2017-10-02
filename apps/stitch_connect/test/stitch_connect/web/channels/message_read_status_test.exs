@@ -13,7 +13,12 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
     assert [_message1, _message2, _message3] = messages
 
     ref = push socket2, "mark_as_read", %{"group_id": group.id}
-    assert_reply ref, :ok, _reply
+    assert_reply ref, :ok, reply
+
+    assert reply[:group_id] == group.id
+    assert reply[:last_read_at] != nil
+    assert reply[:mentions_count] == 0
+    assert reply[:unread_messages_count] == 0
 
     [message1, message2, message3] = messages |> Enum.map(&Repo.get(Message, &1.id))
     user_id_str = to_string(user2.id)

@@ -27,23 +27,10 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       pinned_at: message.pinned_at,
       edited: !!message.edited_at,
       edited_at: message.edited_at,
-      read: read(user_id, message),
-      read_status: read_status(user_id, message),
+      read_status: message.read_status,
       mentioned_user_ids: message.mentioned_user_ids,
     }
   end
-
-  def read(nil, _), do: false
-  def read(id, %Message{read_status: read_status}) do
-    Map.has_key?(read_status, to_string(id))
-  end
-
-  def read_status(user_id, %Message{user_id: user_id, read_status: read_status_map}) do
-    Enum.map(read_status_map, fn {id_str, read_at} ->
-      %{user_id: String.to_integer(id_str), read_at: read_at}
-    end)
-  end
-  def read_status(_, _), do: nil
 
   def user_info(%{user: user}) do
     %{ id: user.id, first_name: user.first_name, last_name: user.last_name }

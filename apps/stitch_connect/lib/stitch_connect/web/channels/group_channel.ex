@@ -221,15 +221,16 @@ defmodule StitchConnect.Web.GroupChannel do
 
   defp mark_as_read_response({:ok, %{mark_messages_as_read: {_, messages}, update_last_read_at: {1, [group_user]}}}, user, socket) do
     messages = MessageQueries.load_info(messages)
-    EventsChannel.broadcast_marked_as_read(user, messages)
-
-    json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
-    {:reply, {:ok, %{
-      messages: json,
+    messages_json = MessageView.render("index.json", %{messages: messages, user_id: user.id})
+    json = %{
+      messages: messages_json,
+      group_id: group_user.group_id,
       last_read_at: group_user.last_read_at,
       mentions_count: group_user.mentions_count,
       unread_messages_count: group_user.unread_messages_count,
-    }}, socket}
+    }
+    EventsChannel.broadcast_marked_as_read(user, json)
+    {:reply, {:ok, json}, socket}
   end
 
   def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg"] do
