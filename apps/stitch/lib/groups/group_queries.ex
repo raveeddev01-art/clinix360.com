@@ -37,7 +37,7 @@ defmodule Stitch.GroupQueries do
       favorite: not is_nil(gu.id) and gu.is_favorite,
       unread_messages_count: gu.unread_messages_count,
       mentions_count: gu.mentions_count,
-      last_read_at: gu.last_read_at,
+      last_read_at: type(fragment("COALESCE(?, ?)", gu.last_read_at, g.inserted_at), :utc_datetime),
     })
     |> Repo.all
     |> Enum.map(fn group ->
