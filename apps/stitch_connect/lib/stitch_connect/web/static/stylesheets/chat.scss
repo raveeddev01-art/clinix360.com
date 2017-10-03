@@ -17,7 +17,7 @@
         i.fa {
           color: $brand-primary;
           font-size: 18px;
-          line-height: 34px;
+          line-height: 36px;
           position: absolute;
           top: 0;
 
@@ -32,6 +32,8 @@
         }
 
         .form-control {
+          height: 36px;
+          width: 320px;
           background: #fff;
           box-shadow: none;
           border: 0;
