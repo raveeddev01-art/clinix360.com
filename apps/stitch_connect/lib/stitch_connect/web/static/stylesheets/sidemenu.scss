@@ -1,7 +1,7 @@
 #sidemenu {
   .flex-header {
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 1px 0 0 darken($brand-primary, 10%);
+    box-shadow: 1px 0 0 $body-bg;
     z-index: 10;
     padding: 0 14px 0 25px;
 
