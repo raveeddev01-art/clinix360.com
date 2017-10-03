@@ -523,7 +523,7 @@
     max-width: 50%;
 
     .message-pool-content {
-      [name^="msg"] {
+      .message {
         width: fit-content;
         font-size: 15px;
         background: #fff;
@@ -532,32 +532,6 @@
         padding: 15px 20px;
         margin-bottom: 10px;
 
-        .message-actions {
-          visibility: hidden;
-        }
-
-        &:hover {
-          .message-actions {
-            visibility: visible;
-          }
-          .time::before {
-            visibility: hidden;
-          }
-        }
-      }
-
-      [name^="msg"].selected {
-        .message .message-header .time {
-          .message-actions {
-            visibility: visible;
-          }
-          &:before {
-            visibility: hidden;
-          }
-        }
-      }
-
-      .message {
         .message-header {
           display: flex;
           flex-direction: row;
@@ -580,10 +554,7 @@
               position: absolute;
               right: 0;
               top: 0;
-
-              .dropdown-toggle {
-                color: #fff;
-              }
+              visibility: hidden;
             }
 
             &:before {
@@ -617,6 +588,17 @@
             color: #fecb2f;
           }
         }
+
+        &:hover,
+        &.selected {
+          .message-actions {
+            visibility: visible !important;
+          }
+
+          .time:before {
+            visibility: hidden;
+          }
+        }
       }
     }
   }
@@ -630,16 +612,21 @@
         flex-direction: column;
         align-items: flex-end;
 
-        [name^="msg"] {
+        .message {
           color: #fff;
           background: $brand-primary;
           border: 0;
-        }
 
-        .message {
-          .time::before {
-            color: rgba(255, 255, 255, 0.7);
+          .time {
+            .dropdown-toggle {
+              color: #fff;
+            }
+
+            &:before {
+              color: rgba(255, 255, 255, 0.7);
+            }
           }
+
           .message-icon {
             &.icon-edited {
               color: #eee;

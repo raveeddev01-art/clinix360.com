@@ -87,7 +87,9 @@ class Message extends Component {
     }
 
     const editedTooltip = (
-      <Tooltip id="edited-tooltip">{moment(editedAt).calendar()}</Tooltip>
+      <Tooltip id="edited-tooltip">
+        {moment(editedAt).calendar()}
+      </Tooltip>
     );
 
     return (
@@ -172,28 +174,25 @@ class Message extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {message.type === "upload" && (
+          {message.type === "upload" &&
             <MenuItem target="_blank" href={message.fields.url}>
               <span>
                 <i className="fa fa-download" />&nbsp;Download
               </span>
-            </MenuItem>
-          )}
-          {mine && (
+            </MenuItem>}
+          {mine &&
             <MenuItem onClick={this.edit}>
               <span>
                 <i className="fa fa-pencil" />&nbsp;Edit
               </span>
-            </MenuItem>
-          )}
+            </MenuItem>}
 
-          {mine && (
+          {mine &&
             <MenuItem onClick={this.delete}>
               <span>
                 <i className="fa fa-trash" />&nbsp;Delete
               </span>
-            </MenuItem>
-          )}
+            </MenuItem>}
 
           <CopyToClipboard text={message.text_content} onCopy={this.copy}>
             <MenuItem>
@@ -220,7 +219,7 @@ class Message extends Component {
   render() {
     const { message, user, timestamp, messageStore } = this.props;
     const { chatDiv } = messageStore;
-    const elementClassName = cx({ selected: this.state.selected });
+    const elementClassName = cx("message", { selected: this.state.selected });
     const containerClassName = cx("message-pool-container", {
       mine: user.id === currentUser.id
     });
@@ -243,27 +242,25 @@ class Message extends Component {
               offset={{ top: 70 }}
             >
               <Element name={`msg_${message.id}`} className={elementClassName}>
-                <div className="message">
-                  <div className="message-header">
-                    <div className="name">
-                      {user.first_name} {user.last_name}
-                    </div>
-
-                    <div
-                      className="time"
-                      data-time={moment(timestamp).format("HH:mm A")}
-                    >
-                      {this.renderActions(message)}
-                    </div>
-
-                    {this.renderStar(message)}
-                    {this.renderPin(message)}
+                <div className="message-header">
+                  <div className="name">
+                    {user.first_name} {user.last_name}
                   </div>
 
-                  <div>
-                    <MessageContent message={message} />
-                    {this.renderEdited(message)}
+                  <div
+                    className="time"
+                    data-time={moment(timestamp).format("HH:mm A")}
+                  >
+                    {this.renderActions(message)}
                   </div>
+
+                  {this.renderStar(message)}
+                  {this.renderPin(message)}
+                </div>
+
+                <div>
+                  <MessageContent message={message} />
+                  {this.renderEdited(message)}
                 </div>
               </Element>
             </VisibilitySensor>
