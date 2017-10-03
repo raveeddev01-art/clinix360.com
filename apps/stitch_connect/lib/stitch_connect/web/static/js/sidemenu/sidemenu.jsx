@@ -40,10 +40,11 @@ class Sidemenu extends Component {
     return (
       <div id="sidemenu">
         <div className="flex-header">
-          <Dropdown id="dropdown-custom-1">
-            <Dropdown.Toggle noCaret block>
-              {sidemenuStore.teamName}
-              <i className="fa fa-angle-down pull-right" />
+          <div className="team-name">{sidemenuStore.teamName}</div>
+
+          <Dropdown pullRight componentClass="div">
+            <Dropdown.Toggle noCaret bsStyle="link">
+              <i className="fa fa-chevron-down" />
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="super-colors">
