@@ -250,6 +250,7 @@
           font-size: 20px;
           color: #ccc;
           box-shadow: none;
+          margin-left: 10px;
 
           &:hover {
             color: $brand-primary;
@@ -680,4 +681,15 @@ i.file-data-separator {
 .loading-message {
   font-style: italic;
   padding: 10px 30px;
+}
+
+.emoji-picker-container {
+  position: relative;
+  display: inline;
+
+  .emoji-picker-wrapper {
+    position: absolute;
+    bottom: 34px;
+    right: -12px;
+  }
 }

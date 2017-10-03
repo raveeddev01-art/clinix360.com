@@ -4,6 +4,7 @@ import classNames from "classnames";
 import moment from "moment";
 
 import InsertMenu from "./insert-menu";
+import EmojiPicker from "./emoji-picker";
 
 @inject(
   "messageStore",
@@ -166,6 +167,15 @@ class MessageForm extends Component {
     this.props.messageStore.stopTyping();
   };
 
+  insertWord = word => {
+    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    let str = this.state.text;
+    str = str.substring(0, cursorPos) + word + str.substring(cursorPos);
+    this.setState({ text: str }, () => {
+      this.textInput.focus();
+    });
+  };
+
   replaceCurrentWord = word => {
     const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
     const str = this.state.text;
@@ -296,6 +306,7 @@ class MessageForm extends Component {
         />
         <div className="message-form-actions">
           <InsertMenu />
+          <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>
     );
