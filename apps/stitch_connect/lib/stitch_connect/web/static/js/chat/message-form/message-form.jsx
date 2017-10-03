@@ -1,19 +1,14 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
-import moment from "moment";
 
 import InsertMenu from "./insert-menu";
 import EmojiPicker from "./emoji-picker";
+import TypingUsers from "./typing-users";
+import JumpingIndicator from "./jumping-indicator";
+import EditingCommand from "./editing-command";
 
-@inject(
-  "messageStore",
-  "sidemenuStore",
-  "groupStore",
-  "presenceStore",
-  "groupPresenceStore",
-  "channelStore"
-)
+@inject("messageStore", "sidemenuStore", "groupStore", "presenceStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -206,32 +201,6 @@ class MessageForm extends Component {
     messageStore.cancelEdit();
   };
 
-  renderJumpedMessageIndicator() {
-    const { messageStore } = this.props;
-    const { messages } = messageStore;
-    const lastMesage = messages[messages.length - 1];
-
-    return (
-      messageStore.showJumpedMessageIndicator && (
-        <div
-          role="button"
-          className="jumped-message-indicator"
-          onClick={() => {
-            messageStore.switchFromJumpMode();
-          }}
-        >
-          <span className="timestamp">
-            Viewing messages from&nbsp;
-            {moment(lastMesage.inserted_at).format("MMM Do, YYYY")}
-          </span>
-          <span className="scroll-to-bottom">
-            Jump to recent messages <i className="fa fa-arrow-down" />
-          </span>
-        </div>
-      )
-    );
-  }
-
   renderMentionMenu() {
     const { messageStore, presenceStore } = this.props;
     const { openMentionMenu, activeUserIndex } = this.state;
@@ -312,68 +281,14 @@ class MessageForm extends Component {
     );
   }
 
-  renderTypingUsers() {
-    const { groupPresenceStore: { typingUsers }, presenceStore } = this.props;
-    let content;
-    const username = id => presenceStore.onlineUsersMap[id].metas[0].username;
-
-    switch (typingUsers.length) {
-      case 0:
-        content = <span>&nbsp;</span>;
-        break;
-      case 1:
-        content = `${username(typingUsers[0])} is typing...`;
-        break;
-      case 2:
-        content = `${typingUsers.map(username).join(" and ")} are typing...`;
-        break;
-      default:
-        content = "multiple people are typing...";
-    }
-
-    return <div>{content}</div>;
-  }
-
-  renderEditingCommands() {
-    const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
-
-    return (
-      messageInEdit && (
-        <div className="editing-commands">
-          <div className="editing-commands-cancel">
-            <kbd>Esc</kbd> to{" "}
-            <button
-              type="button"
-              className="btn-fancy btn-default btn-small"
-              onClick={this.cancelEdit}
-            >
-              Cancel editing
-            </button>
-          </div>
-          <div className="editing-commands-save">
-            <kbd>Enter</kbd> to{" "}
-            <button
-              type="button"
-              className="btn-fancy btn-default btn-small"
-              onClick={this.finishEdit}
-            >
-              Save changes
-            </button>
-          </div>
-        </div>
-      )
-    );
-  }
-
   render() {
     return (
       <div className="message-form">
-        {this.renderJumpedMessageIndicator()}
+        <JumpingIndicator />
         {this.renderMentionMenu()}
         {this.renderInput()}
-        {this.renderTypingUsers()}
-        {this.renderEditingCommands()}
+        <TypingUsers />
+        <EditingCommand />
       </div>
     );
   }
