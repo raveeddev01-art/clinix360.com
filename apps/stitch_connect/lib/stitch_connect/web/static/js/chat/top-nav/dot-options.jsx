@@ -34,19 +34,7 @@ class DotOptions extends Component {
             <i className="fa fa-star" /> Starred
           </MenuItem>
           <MenuItem>
-            <i className="fa fa-flask" /> Labs
-          </MenuItem>
-          <MenuItem>
-            <i className="fa fa-address-card-o" /> Referrals
-          </MenuItem>
-          <MenuItem>
-            <i className="fa fa-check-square-o" /> Checklists
-          </MenuItem>
-          <MenuItem>
-            <i className="fa fa-medkit" /> Prescriptions
-          </MenuItem>
-          <MenuItem>
-            <i className="fa fa-bookmark-o" /> Clinical Notes
+            <i className="fa fa-bullhorn" /> Feedback
           </MenuItem>
           <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
             <i className="fa fa-question-circle" /> Help
