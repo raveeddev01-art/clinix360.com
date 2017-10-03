@@ -151,6 +151,14 @@ defmodule StitchConnect.Web.GroupChannel do
     do_new_msg(socket, group, user, params)
   end
 
+  def handle_in("mark_as_unread", %{"group_id" => group_id, "message_id" => message_id}, socket) do
+    user = socket.assigns.current_user
+    message = Repo.get!(Message, message_id)
+
+    Message.mark_as_unread(user.id, group_id, message)
+    |> mark_as_unread_response(user, socket)
+  end
+
   def handle_in("mark_as_read", %{"group_id" => group_id}, socket) do
     user = socket.assigns.current_user
 
@@ -253,6 +261,20 @@ defmodule StitchConnect.Web.GroupChannel do
       unread_messages_count: group_user.unread_messages_count,
     }
     EventsChannel.broadcast_marked_as_read(user, json)
+    {:reply, {:ok, json}, socket}
+  end
+
+  defp mark_as_unread_response({:ok, %{unread_messages: {_, messages}, mark_group_as_unread: {1, [group_user]}}}, user, socket) do
+    messages = MessageQueries.load_info(messages)
+    messages_json = MessageView.render("index.json", %{messages: messages})
+    json = %{
+      messages: messages_json,
+      group_id: group_user.group_id,
+      last_read_at: group_user.last_read_at,
+      mentions_count: group_user.mentions_count,
+      unread_messages_count: group_user.unread_messages_count,
+    }
+    EventsChannel.broadcast_marked_as_unread(user, json)
     {:reply, {:ok, json}, socket}
   end
 
