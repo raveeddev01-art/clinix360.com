@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.MessageView do
   use StitchConnect.Web, :view
-  alias Stitch.{Message}
 
   def render("index.json", %{messages: messages}) do
     Enum.map(messages, &message_json/1)
