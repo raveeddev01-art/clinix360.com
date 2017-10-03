@@ -5,6 +5,8 @@ import Dropdown from "react-bootstrap/lib/Dropdown";
 import Form from "react-bootstrap/lib/Form";
 import FormControl from "react-bootstrap/lib/FormControl";
 import MenuItem from "react-bootstrap/lib/MenuItem";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import NavItemFavorite from "./nav-items/nav-item-favorite";
 import NavItemMembers from "./nav-items/nav-item-members";
@@ -78,7 +80,12 @@ class TopNav extends Component {
           {this.props.groupStore.groupType !== "single-dm" && (
             <Dropdown id="dropdown-group-controls" pullRight>
               <Dropdown.Toggle noCaret>
-                <i className="fa fa-cog" />
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={<Tooltip id="tooltip-settings">Settings</Tooltip>}
+                >
+                  <i className="fa fa-cog" />
+                </OverlayTrigger>
               </Dropdown.Toggle>
 
               <Dropdown.Menu className="group-controls-menu">
@@ -99,7 +106,12 @@ class TopNav extends Component {
             className="btn btn-default"
             onClick={this._toggleAddonMenu("Room Information")}
           >
-            <i className="fa fa-info-circle" />
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id="tooltip-info">Room Information</Tooltip>}
+            >
+              <i className="fa fa-info-circle" />
+            </OverlayTrigger>
           </a>
 
           <Form onSubmit={this.onSearch}>
