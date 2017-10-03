@@ -25,19 +25,26 @@ class Files extends Component {
 
     return (
       <div className="files-addon">
-        {filesStore.files.map(file =>
-          <AddonMessage key={file.id} message={file} />
+        {filesStore.files.length > 0 ? (
+          <div>
+            {filesStore.files.map(file => (
+              <AddonMessage key={file.id} message={file} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-muted">Upload the first file!</div>
         )}
 
         <div className="footer">
-          {filesStore.hasMore &&
+          {filesStore.hasMore && (
             <button
               className="btn btn-default btn-sm"
               disabled={filesStore.loading}
               onClick={this.loadMore}
             >
               Load more…
-            </button>}
+            </button>
+          )}
         </div>
       </div>
     );

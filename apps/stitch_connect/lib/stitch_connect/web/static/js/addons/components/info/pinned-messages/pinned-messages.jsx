@@ -11,8 +11,14 @@ class PinnedMessages extends Component {
 
     return (
       <div className="collapse-content group-pinned-messages">
-        {messageStore.pinnedMessages.map(message =>
-          <AddonMessage key={message.id} message={message} />
+        {messageStore.pinnedMessages.length > 0 ? (
+          <div>
+            {messageStore.pinnedMessages.map(message => (
+              <AddonMessage key={message.id} message={message} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-muted">Pin the first message!</div>
         )}
       </div>
     );
