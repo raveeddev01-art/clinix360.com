@@ -516,89 +516,84 @@
   }
 }
 
-.message-pool-container {
+.message-container {
   display: flex;
 
-  .message-pool {
+  .message {
     max-width: 50%;
+    width: fit-content;
+    font-size: 15px;
+    background: #fff;
+    border: 1px solid $border-color-secondary;
+    border-radius: 4px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
 
-    .message-pool-content {
-      .message {
-        width: fit-content;
-        font-size: 15px;
-        background: #fff;
-        border: 1px solid $border-color-secondary;
-        border-radius: 4px;
-        padding: 15px 20px;
-        margin-bottom: 10px;
+    .message-header {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
 
-        .message-header {
-          display: flex;
-          flex-direction: row;
-          align-items: baseline;
+      .name {
+        flex: 1;
+        font-weight: bold;
+        margin-right: 20px;
+      }
 
-          .name {
-            flex: 1;
-            font-weight: bold;
-            margin-right: 20px;
-          }
+      .time {
+        display: flex;
+        align-items: inherit;
+        white-space: nowrap;
+        position: relative;
 
-          .time {
-            display: flex;
-            align-items: inherit;
-            white-space: nowrap;
-            position: relative;
-
-            .message-actions {
-              line-height: 1.15;
-              position: absolute;
-              right: 0;
-              top: 0;
-              visibility: hidden;
-            }
-
-            &:before {
-              content: attr(data-time);
-              color: #999;
-              font-size: 12px;
-            }
-          }
+        .message-actions {
+          line-height: 1.15;
+          position: absolute;
+          right: 0;
+          top: 0;
+          visibility: hidden;
         }
 
-        p {
-          margin: 0;
+        &:before {
+          content: attr(data-time);
+          color: #999;
+          font-size: 12px;
         }
+      }
+    }
 
-        .message-icon {
-          margin-left: 8px;
-          font-size: 85%;
-          cursor: pointer;
+    p {
+      margin: 0;
+    }
 
-          &.icon-edited {
-            margin-right: 0;
-            color: #333;
-            cursor: default;
-          }
+    .message-icon {
+      margin-left: 8px;
+      font-size: 85%;
+      cursor: pointer;
 
-          &.icon-pin {
-            color: #4fb0fc;
-          }
+      &.icon-edited {
+        margin-right: 0;
+        color: #333;
+        cursor: default;
+      }
 
-          &.icon-star {
-            color: #fecb2f;
-          }
-        }
+      &.icon-pin {
+        color: #4fb0fc;
+      }
 
-        &:hover,
-        &.selected {
-          .message-actions {
-            visibility: visible !important;
-          }
+      &.icon-star {
+        color: #fecb2f;
+      }
+    }
 
-          .time:before {
-            visibility: hidden;
-          }
-        }
+    &:hover,
+    &.selected {
+      .message-actions {
+        visibility: visible !important;
+      }
+
+      .time:before {
+        visibility: hidden;
       }
     }
   }
@@ -606,32 +601,24 @@
   &.mine {
     justify-content: flex-end;
 
-    .message-pool {
-      .message-pool-content {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
+    .message {
+      color: #fff;
+      background: $brand-primary;
+      border: 0;
 
-        .message {
+      .time {
+        .dropdown-toggle {
           color: #fff;
-          background: $brand-primary;
-          border: 0;
+        }
 
-          .time {
-            .dropdown-toggle {
-              color: #fff;
-            }
+        &:before {
+          color: rgba(255, 255, 255, 0.7);
+        }
+      }
 
-            &:before {
-              color: rgba(255, 255, 255, 0.7);
-            }
-          }
-
-          .message-icon {
-            &.icon-edited {
-              color: #eee;
-            }
-          }
+      .message-icon {
+        &.icon-edited {
+          color: #eee;
         }
       }
     }

@@ -220,7 +220,7 @@ class Message extends Component {
     const { message, user, timestamp, messageStore } = this.props;
     const { chatDiv } = messageStore;
     const elementClassName = cx("message", { selected: this.state.selected });
-    const containerClassName = cx("message-pool-container", {
+    const containerClassName = cx("message-container", {
       mine: user.id === currentUser.id
     });
     return (
@@ -230,42 +230,38 @@ class Message extends Component {
           this.messageDiv = div;
         }}
       >
-        <div className="message-pool">
-          <div className="message-pool-content">
-            <VisibilitySensor
-              active
-              onChange={this.onVisibleChange}
-              intervalCheck={false}
-              scrollCheck
-              scrollThrottle={100}
-              containment={chatDiv}
-              offset={{ top: 70 }}
-            >
-              <Element name={`msg_${message.id}`} className={elementClassName}>
-                <div className="message-header">
-                  <div className="name">
-                    {user.first_name} {user.last_name}
-                  </div>
+        <VisibilitySensor
+          active
+          onChange={this.onVisibleChange}
+          intervalCheck={false}
+          scrollCheck
+          scrollThrottle={100}
+          containment={chatDiv}
+          offset={{ top: 70 }}
+        >
+          <Element name={`msg_${message.id}`} className={elementClassName}>
+            <div className="message-header">
+              <div className="name">
+                {user.first_name} {user.last_name}
+              </div>
 
-                  <div
-                    className="time"
-                    data-time={moment(timestamp).format("HH:mm A")}
-                  >
-                    {this.renderActions(message)}
-                  </div>
+              <div
+                className="time"
+                data-time={moment(timestamp).format("HH:mm A")}
+              >
+                {this.renderActions(message)}
+              </div>
 
-                  {this.renderStar(message)}
-                  {this.renderPin(message)}
-                </div>
+              {this.renderStar(message)}
+              {this.renderPin(message)}
+            </div>
 
-                <div>
-                  <MessageContent message={message} />
-                  {this.renderEdited(message)}
-                </div>
-              </Element>
-            </VisibilitySensor>
-          </div>
-        </div>
+            <div>
+              <MessageContent message={message} />
+              {this.renderEdited(message)}
+            </div>
+          </Element>
+        </VisibilitySensor>
       </div>
     );
   }
