@@ -27,6 +27,13 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug :accepts, ["json"]
   end
 
+  pipeline :team_admin_api do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug StitchConnect.Plug.ApiAuthenticate
+    plug StitchConnect.Plug.TeamAdminOnly
+  end
+
   # API routes which don't need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
@@ -54,12 +61,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/users/notification-preference", NotificationPreferenceController, :update_global
     put "/users/:id", UserController, :update
     get "/users/:id", UserController, :show
-    post "/users/:id/deactivate", UserController, :deactivate
     put "/users/:id/update_password", UserController, :update_password
     put "/users/:id/avatar", UserController, :update_avatar
     delete "/users/:id/avatar", UserController, :delete_avatar
-    put "/users/:id/promote-admin", UserController, :promote_admin
-    put "/users/:id/revoke-admin", UserController, :revoke_admin
 
     post "/users/search", UserController, :search
 
@@ -87,9 +91,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/groups/:group_id/notification-preference", NotificationPreferenceController, :update
 
     get "/teams/:id", TeamController, :show
-    delete "/teams/:id/", TeamController, :delete_team
-    put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
-    put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
     put "/teams/:id", TeamController, :update
     post "/teams/:id/send-invite", TeamController, :send_invite
 
@@ -101,6 +102,18 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     post "/session-lock", SessionLockController, :lock
     post "/session-unlock", SessionLockController, :unlock
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :team_admin_api
+
+    post "/users/:id/deactivate", UserController, :deactivate
+    put "/users/:id/promote-admin", UserController, :promote_admin
+    put "/users/:id/revoke-admin", UserController, :revoke_admin
+
+    delete "/teams/:id/", TeamController, :delete_team
+    put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
+    put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
   end
 
   # Anonymous routes.
