@@ -1,7 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:search, :index, :send_invite, :update]
-
   alias Stitch.{Repo, Accounts.User, UserQueries}
 
   def index(conn, _) do

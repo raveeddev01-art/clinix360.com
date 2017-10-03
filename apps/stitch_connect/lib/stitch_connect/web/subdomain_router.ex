@@ -27,6 +27,12 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug :accepts, ["json"]
   end
 
+  pipeline :authenticated_api do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug StitchConnect.Plug.ApiAuthenticate
+  end
+
   pipeline :team_admin_api do
     plug :accepts, ["json"]
     plug :fetch_session
@@ -46,6 +52,24 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api_auth
 
+    get "/users/:id", UserController, :show
+    put "/users/:id/update_password", UserController, :update_password
+    put "/users/:id/avatar", UserController, :update_avatar
+    delete "/users/:id/avatar", UserController, :delete_avatar
+
+    get "/invitations/:token", InvitationController, :show
+
+    get "/teams/:id", TeamController, :show
+    put "/teams/:id", TeamController, :update
+    post "/teams/:id/send-invite", TeamController, :send_invite
+
+    post "/login", AuthenticationController, :submit_login
+    post "/reset_password", AuthenticationController, :reset_password
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :authenticated_api
+
     get "/groups/:group_id/messages", MessageController, :index
     post "/groups/:group_id/messages", MessageController, :create
     put "/messages/:id", MessageController, :update
@@ -60,15 +84,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/users/notification-preference", NotificationPreferenceController, :show_global
     put "/users/notification-preference", NotificationPreferenceController, :update_global
     put "/users/:id", UserController, :update
-    get "/users/:id", UserController, :show
-    put "/users/:id/update_password", UserController, :update_password
-    put "/users/:id/avatar", UserController, :update_avatar
-    delete "/users/:id/avatar", UserController, :delete_avatar
-
     post "/users/search", UserController, :search
 
     get "/invitations", InvitationController, :index
-    get "/invitations/:token", InvitationController, :show
     post "/invitations", InvitationController, :create
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend
@@ -90,15 +108,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/groups/:group_id/notification-preference", NotificationPreferenceController, :show
     put "/groups/:group_id/notification-preference", NotificationPreferenceController, :update
 
-    get "/teams/:id", TeamController, :show
-    put "/teams/:id", TeamController, :update
-    post "/teams/:id/send-invite", TeamController, :send_invite
-
     get "/uploads",           UploadController, :index
     post "/upload-signature", UploadController, :create
-
-    post "/login", AuthenticationController, :submit_login
-    post "/reset_password", AuthenticationController, :reset_password
 
     post "/session-lock", SessionLockController, :lock
     post "/session-unlock", SessionLockController, :unlock
