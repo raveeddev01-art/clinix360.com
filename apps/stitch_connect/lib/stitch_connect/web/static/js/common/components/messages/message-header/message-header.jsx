@@ -13,8 +13,10 @@ class MessageHeader extends Component {
     );
 
     return (
-      <div className="message-pool-header">
-        {`${user.first_name} ${user.last_name} `}
+      <div className="message-header">
+        <div className="name">
+          {`${user.first_name} ${user.last_name} `}
+        </div>
 
         <OverlayTrigger placement="top" overlay={timestampTooltip}>
           <span className="time">

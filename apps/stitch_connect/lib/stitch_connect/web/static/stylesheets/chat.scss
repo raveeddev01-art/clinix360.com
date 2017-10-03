@@ -627,7 +627,7 @@
   &.addon {
     position: relative;
 
-    .message-pool {
+    .message {
       min-width: 100%;
       background: #fff;
       border: 1px solid $border-color-secondary;
@@ -635,7 +635,7 @@
       padding: 15px 20px;
       margin-bottom: 10px;
 
-      .message-pool-header {
+      .message-header {
         color: $brand-primary;
         font-weight: bold;
 
