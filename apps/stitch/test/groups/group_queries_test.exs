@@ -207,6 +207,19 @@ defmodule Stitch.GroupQueriesTest do
     end
   end
 
+  describe "default_group/1" do
+    test "returns the default group for a team given a user" do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      default_group = insert(:group, slug: "general", team: team)
+      insert(:group, slug: "other1", team: team)
+      insert(:group, slug: "other2", team: team)
+
+      found_group = GroupQueries.default_group(user)
+      assert default_group.id == found_group.id
+    end
+  end
+
   defp available_groups_indexed_by_slug(user) do
     user
     |> Stitch.GroupQueries.available_groups
