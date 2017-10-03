@@ -136,10 +136,7 @@ class PresenceStore {
       this.onAwayTimerExpired,
       30 * 60 * 1000
     );
-    this.lockoutTimerID = window.setTimeout(
-      this.onLockoutTimerExpired,
-      60 * 60 * 1000
-    );
+    this.startLockoutTimer();
   };
 
   onWindowFocus = () => {
@@ -157,6 +154,19 @@ class PresenceStore {
   onLockoutTimerExpired = () => {
     this.teamLobbyChannel.push("lockout_timer_expired");
   };
+
+  startLockoutTimer() {
+    this.teamLobbyChannel
+      .push("get_lockout_settings")
+      .receive("ok", ({ security_lockout_enabled, seconds_to_lockout }) => {
+        if (!security_lockout_enabled) return;
+
+        this.lockoutTimerID = window.setTimeout(
+          this.onLockoutTimerExpired,
+          seconds_to_lockout * 1000
+        );
+      });
+  }
 }
 
 export default PresenceStore;
