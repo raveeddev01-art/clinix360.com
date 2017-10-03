@@ -85,17 +85,7 @@ class MessageStore {
 
   @computed
   get firstUnreadMessage() {
-    const lastReadAt = moment.utc(this.lastReadAt).valueOf();
-
-    const lastIndex = _.findLastIndex(this.messages, message => {
-      const messageInsertedAt = moment.utc(message.inserted_at).valueOf();
-
-      return messageInsertedAt > lastReadAt;
-    });
-
-    return lastIndex >= this.unreadMessagesCount - 1
-      ? this.messages[lastIndex]
-      : null;
+    return this.getMessageByIndex(this.unreadMessagesCount - 1);
   }
 
   @computed
@@ -159,6 +149,14 @@ class MessageStore {
         }
       }, duration || 300);
     }, delay);
+  }
+
+  getMessageByIndex(index) {
+    if (index < 0 || index > this.messages.length - 1) {
+      return null;
+    }
+
+    return this.messages[index];
   }
 
   /**
@@ -402,24 +400,22 @@ class MessageStore {
       .push("mark_as_read", { group_id: this.rootStore.groupStore.id })
       .receive("ok", () => {
         const { groupStore, sidemenuStore } = this.rootStore;
+        const now = new Date();
 
         groupStore.unreadMessagesCount = 0;
         groupStore.mentionsCount = 0;
+        groupStore.lastReadAt = now;
         sidemenuStore.updateGroupData(groupStore.id, {
           unread_messages_count: 0,
-          mentions_count: 0
+          mentions_count: 0,
+          last_read_at: now
         });
+
         this.unreadMessagesCount = 0;
+        this.mentionsCount = 0;
+        this.lastReadAt = now;
 
         if (resetNewMessageLine) {
-          const now = new Date();
-
-          this.rootStore.groupStore.lastReadAt = now;
-          this.rootStore.sidemenuStore.updateGroupData(
-            this.rootStore.groupStore.id,
-            { last_read_at: now }
-          );
-          this.lastReadAt = now;
         }
 
         // Update favicon
