@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
 
-import InsertMenu from "./insert-menu";
-import EmojiPicker from "./emoji-picker";
-import TypingUsers from "./typing-users";
-import JumpingIndicator from "./jumping-indicator";
-import EditingCommand from "./editing-command";
+import InsertMenu from "./components/insert-menu";
+import EmojiPicker from "./components/emoji-picker";
+import TypingUsers from "./components/typing-users";
+import JumpingIndicator from "./components/jumping-indicator";
+import EditingCommand from "./components/editing-command";
+import MentionMenu from "./components/mention-menu";
 
-@inject("messageStore", "sidemenuStore", "groupStore", "presenceStore")
+@inject("messageStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -17,91 +18,44 @@ class MessageForm extends Component {
     this.state = {
       text: "",
       openMentionMenu: false,
-      userFilter: "",
-      activeUserIndex: 0
+      userFilter: ""
     };
 
     this.typingTimeoutId = null;
   }
 
   onTextChange = evt => {
-    const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
-    const { value } = evt.target;
-
-    if (messageInEdit) {
-      messageStore.editText(value);
-    } else {
-      this.setState({ text: value });
-    }
+    this.updateInputText(evt.target.value);
   };
 
   onKeyUp = evt => {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
-    const { activeUserIndex, openMentionMenu } = this.state;
+    const { openMentionMenu } = this.state;
 
-    if (evt.keyCode === 38) {
-      // arrow up
-
-      if (messageInEdit) {
-        return;
-      }
-
-      this.setState({ activeUserIndex: this.state.activeUserIndex - 1 });
-    } else if (evt.keyCode === 40) {
-      // arrow down
-
-      if (messageInEdit) {
-        return;
-      }
-
-      this.setState({ activeUserIndex: this.state.activeUserIndex + 1 });
-    } else if (evt.keyCode === 13) {
+    if (evt.keyCode === 13) {
       // enter
 
-      if (messageInEdit) {
-        this.finishEdit();
-        return;
-      }
-
-      // check if user mention menu is open first
-      if (openMentionMenu) {
-        const users = this.getUsers();
-        if (users.length) {
-          const selectedUser =
-            users[
-              (activeUserIndex % users.length + users.length) % users.length
-            ];
-
-          this.replaceCurrentWord(`@${selectedUser.username} `);
-          return;
+      if (!openMentionMenu) {
+        if (messageInEdit) {
+          messageStore.finishEdit();
+        } else if (this.state.text) {
+          this.props.messageStore.sendMessage(this.state.text).then(() => {
+            this.setState({ text: "" });
+            this.typingStopped();
+          });
         }
-      }
-
-      // otherwise sends message
-      if (this.state.text) {
-        this.props.messageStore.sendMessage(this.state.text).then(() => {
-          this.setState({ text: "" });
-          this.typingStopped();
-        });
       }
     } else if (evt.keyCode === 27) {
       // escape
 
-      if (messageInEdit) {
-        this.cancelEdit();
-        return;
+      if (openMentionMenu) {
+        this.setState({ openMentionMenu: false });
+      } else if (messageInEdit) {
+        messageStore.cancelEdit();
       }
-
-      this.setState({ openMentionMenu: false });
     } else {
       // other keys
-
-      if (messageInEdit) {
-        return;
-      }
-
       // get the word of current cursor
       const word = this.getCurrentWord();
 
@@ -123,35 +77,39 @@ class MessageForm extends Component {
     }
   };
 
-  onUserItemHover = index => () => {
-    this.setState({ activeUserIndex: index });
-  };
-
-  onSelectMention = username => () => {
+  onSelectMention = username => {
     this.replaceCurrentWord(`@${username} `);
   };
 
-  getUsers = () => {
-    const { groupStore, sidemenuStore } = this.props;
-    const { userFilter } = this.state;
+  getText = () => {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+    let { text: str } = this.state;
 
-    const users = groupStore.public ? sidemenuStore.users : groupStore.users;
-    return users
-      .filter(
-        user =>
-          `${user.first_name} ${user.last_name} ${user.username}`.indexOf(
-            userFilter
-          ) > -1
-      )
-      .slice(0, 5);
+    if (messageInEdit) {
+      str = messageStore.textInEdit;
+    }
+
+    return str;
   };
 
   getCurrentWord = () => {
+    const str = this.getText();
     const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
-    const str = this.state.text;
     const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
+  };
+
+  updateInputText = value => {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+
+    if (messageInEdit) {
+      messageStore.editText(value);
+    } else {
+      this.setState({ text: value });
+    }
   };
 
   typingStarted = () => {
@@ -164,16 +122,16 @@ class MessageForm extends Component {
 
   insertWord = word => {
     const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
-    let str = this.state.text;
-    str = str.substring(0, cursorPos) + word + str.substring(cursorPos);
-    this.setState({ text: str }, () => {
-      this.textInput.focus();
-    });
+    const str = this.getText();
+    this.updateInputText(
+      str.substring(0, cursorPos) + word + str.substring(cursorPos)
+    );
+    this.textInput.focus();
   };
 
   replaceCurrentWord = word => {
     const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
-    const str = this.state.text;
+    const str = this.getText();
     const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
     const updatedMsg =
@@ -181,69 +139,14 @@ class MessageForm extends Component {
       word +
       str.substring(cursorPos + postWord.length);
 
-    this.setState({ text: updatedMsg, openMentionMenu: false }, () => {
+    this.updateInputText(updatedMsg);
+    this.setState({ openMentionMenu: false }, () => {
       // after replacing, the cursor pos should be persistent
       const newPos = cursorPos - preWord.length + word.length;
       this.textInput.focus();
       this.textInput.setSelectionRange(newPos, newPos);
     });
   };
-
-  finishEdit = () => {
-    const { messageStore } = this.props;
-
-    messageStore.finishEdit();
-  };
-
-  cancelEdit = () => {
-    const { messageStore } = this.props;
-
-    messageStore.cancelEdit();
-  };
-
-  renderMentionMenu() {
-    const { messageStore, presenceStore } = this.props;
-    const { openMentionMenu, activeUserIndex } = this.state;
-    const users = this.getUsers();
-
-    if (messageStore.messageInEdit || !openMentionMenu || !users.length) {
-      return null;
-    }
-
-    return (
-      <div className="dropup user-mention-menu open">
-        <ul className="dropdown-menu">
-          {users.map((user, index) => {
-            const online = presenceStore.isOnline(user.id);
-            const itemClassName = classNames("user-list-item", {
-              active: (activeUserIndex + users.length) % users.length === index
-            });
-
-            return (
-              <li
-                key={`user_${user.id}`}
-                className={itemClassName}
-                onMouseEnter={this.onUserItemHover(index)}
-                onClick={this.onSelectMention(user.username)}
-              >
-                <span className="item-icon">
-                  {online ? (
-                    <i className="fa fa-circle" />
-                  ) : (
-                    <i className="fa fa-circle-o" />
-                  )}
-                </span>
-                <span className="item-text">
-                  <span>{`${user.first_name} ${user.last_name}`}</span>
-                  <small>{user.username}</small>
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    );
-  }
 
   renderInput() {
     const { messageStore } = this.props;
@@ -253,7 +156,7 @@ class MessageForm extends Component {
       this.textInput.focus();
     }
 
-    const text = messageInEdit ? messageStore.textInEdit : this.state.text;
+    const text = this.getText();
     const className = classNames("form-control", "message-text", {
       editing: !!messageInEdit
     });
@@ -282,10 +185,15 @@ class MessageForm extends Component {
   }
 
   render() {
+    const { openMentionMenu, userFilter } = this.state;
     return (
       <div className="message-form">
         <JumpingIndicator />
-        {this.renderMentionMenu()}
+        <MentionMenu
+          isOpen={openMentionMenu}
+          filter={userFilter}
+          onSelect={this.onSelectMention}
+        />
         {this.renderInput()}
         <TypingUsers />
         <EditingCommand />
