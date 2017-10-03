@@ -77,11 +77,31 @@ defmodule Stitch.Message do
     |> Multi.run(:increment_unread_counter, fn %{message: message} ->
       {:ok, increment_unread_counter(message, recipients)}
     end)
+    |> mark_as_read_if_within_limit(group.id, user.id, 30)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
       Stitch.EmailNotification.create(message.id, notify_user_ids.email)
       {:ok, notify_user_ids.desktop}
     end)
     |> Repo.transaction
+  end
+
+  def mark_as_read_if_within_limit(multi, group_id, user_id, limit) do
+    if unread_messages_count(group_id, user_id) < limit do
+      multi
+      |> Multi.run(:mark_messages_as_read, fn _ -> {:ok, mark_messages_as_read(group_id, user_id)} end)
+      |> Multi.run(:update_last_read_at, fn _ -> {:ok, mark_group_as_read(group_id, user_id)} end)
+    else
+      multi
+    end
+  end
+
+  def unread_messages_count(group_id, user_id) do
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> where([m], m.user_id != ^user_id)
+    |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
+    |> select([m], count(m.id))
+    |> Repo.one
   end
 
   def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
