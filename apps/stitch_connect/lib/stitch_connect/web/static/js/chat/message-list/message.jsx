@@ -250,7 +250,6 @@ class Message extends Component {
           scrollCheck
           scrollThrottle={100}
           containment={chatDiv}
-          offset={{ top: 70 }}
         >
           <Element name={`msg_${message.id}`} className={elementClassName}>
             <div className="message-header">

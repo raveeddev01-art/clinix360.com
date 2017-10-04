@@ -32,7 +32,11 @@ export default class MessagePanel extends Component {
 
     if (messageStore.firstUnreadMessage) {
       // if messages are already loaded
-      messageStore.scrollToNewBanner();
+      if (messageStore.firstUnreadMessageVisibility === "visible") {
+        messageStore.markAsRead();
+      } else {
+        messageStore.scrollToNewBanner();
+      }
     } else {
       // if unread messages are not loaded yet, just load next batch
       messageStore.loadPastUnreadMessages();
