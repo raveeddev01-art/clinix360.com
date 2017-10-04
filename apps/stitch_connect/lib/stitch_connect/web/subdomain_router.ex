@@ -31,6 +31,13 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug :accepts, ["json"]
     plug :fetch_session
     plug StitchConnect.Plug.ApiAuthenticate
+    plug StitchConnect.Plug.EnsureUnlocked
+  end
+
+  pipeline :authenticated_locked_api do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug StitchConnect.Plug.ApiAuthenticate
   end
 
   pipeline :team_admin_api do
@@ -91,6 +98,10 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/uploads",           UploadController, :index
     post "/upload-signature", UploadController, :create
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :authenticated_locked_api
 
     post "/session-lock", SessionLockController, :lock
     post "/session-unlock", SessionLockController, :unlock
