@@ -25,7 +25,6 @@ class MessageStore {
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
   @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
   @observable loadedAllRecent = false; // If TRUE, indicates that there is no more recent messages to load from server
-  groupCursors = {}; // { group_id: message_id }
 
   // mobx when() monitor disposers
   joinedTargetGroupDisposer = null; // Disposer of when() monitor that waits until joined the group to which jumping target message belongs to
@@ -163,6 +162,22 @@ class MessageStore {
     this.textInEdit = "";
   }
 
+  getMessageByIndex(index) {
+    if (index < 0 || index > this.messages.length - 1) {
+      return null;
+    }
+
+    return this.messages[index];
+  }
+
+  @action
+  updateGroupCursor(cursor) {
+    const { sidemenuStore } = this.rootStore;
+
+    this.groupCursor = cursor;
+    sidemenuStore.updateGroupCursor(this.groupId, cursor);
+  }
+
   // Scroll to the bottom of chat div with animation
   scrollToBottom(cb = null, duration = 300, delay = 100) {
     setTimeout(() => {
@@ -177,14 +192,6 @@ class MessageStore {
         }
       }, duration || 300);
     }, delay);
-  }
-
-  getMessageByIndex(index) {
-    if (index < 0 || index > this.messages.length - 1) {
-      return null;
-    }
-
-    return this.messages[index];
   }
 
   // Scroll to specific message in chat div instantly
@@ -245,12 +252,10 @@ class MessageStore {
       this.messageElements[id].visible = false;
     }
 
-    const cursor = this.groupCursors[this.groupId];
     if (!this.groupCursor || this.groupCursor === id) {
       const index = this.messages.findIndex(m => m.id === id);
       if (index > 0) {
-        this.groupCursor = this.messages[index - 1].id;
-        this.groupCursors[this.groupId] = this.groupCursor;
+        this.updateGroupCursor(this.messages[index - 1].id);
       }
     }
   };
@@ -265,8 +270,7 @@ class MessageStore {
     }
 
     if (!this.groupCursor || this.groupCursor > id) {
-      this.groupCursor = id;
-      this.groupCursors[this.groupId] = this.groupCursor;
+      this.updateGroupCursor(id);
     }
 
     if (this.firstUnreadMessage && this.firstUnreadMessage.id === id) {
@@ -713,9 +717,12 @@ class MessageStore {
    *        ii. Marks all messages in the conversation as read
    */
   handleInitialLoading = () => {
+    const { sidemenuStore } = this.rootStore;
     let posHistory = null;
+
     if (this.unreadMessagesCount) {
-      this.groupCursors[this.groupId] = null;
+      this.updateGroupCursor(null);
+
       if (this.unreadMessagesCount >= 30) {
         posHistory = this.messages[this.messages.length - 1].id; // B.2.a
         this.scrollToBottom(() => {
@@ -727,6 +734,7 @@ class MessageStore {
         posHistory =
           this.messages[this.unreadMessagesCount] &&
           this.messages[this.unreadMessagesCount].id; // B.1.a
+
         this.scrollToBottom(() => {
           this.loadedInitial = true; // B.1.b
           this.scrollTo(posHistory, 500);
@@ -734,14 +742,17 @@ class MessageStore {
         }, 0);
       }
     } else {
-      posHistory = this.groupCursors[this.groupId];
+      this.groupCursor = sidemenuStore.groupCursors[this.groupId];
+      posHistory = this.groupCursor;
+
       if (posHistory && this.messages.find(m => m.id === posHistory)) {
         // A.1.a
         this.scrollTo(posHistory, 0, () => {
           this.loadedInitial = true;
         });
       } else {
-        this.groupCursors[this.groupId] = null;
+        this.updateGroupCursor(null);
+
         // A.1.b, A.2.a
         this.scrollToBottom(() => {
           this.loadedInitial = true;
