@@ -4,6 +4,49 @@ defmodule Stitch.MessageReadingTest do
 
   setup :create_group_with_users
 
+  describe "&Message.mark_message_as_unread/3" do
+    test "updates read_status if the user is in the recipient list", %{bob: bob, alice: alice, group: group} do
+      {:ok, %{message: message1}} = Message.create(group.id, alice, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: message2}} = Message.create(group.id, alice, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: message3}} = Message.create(group.id, alice, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      Message.mark_as_read(bob.id, group.id)
+      Message.mark_as_unread(bob.id, group.id, message2)
+
+      refute Repo.get(Message, message1.id).read_status[to_string(bob.id)] == nil
+      assert Repo.get(Message, message2.id).read_status[to_string(bob.id)] == nil
+      assert Repo.get(Message, message3.id).read_status[to_string(bob.id)] == nil
+    end
+
+    test "doesn't update read_status if it the user isn't in the recipient list", %{bob: bob, group: group} do
+      {:ok, %{message: message1}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: message3}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      Message.mark_as_read(bob.id, group.id)
+      Message.mark_as_unread(bob.id, group.id, message2)
+
+      refute Map.has_key?(Repo.get(Message, message1.id).read_status, to_string(bob.id))
+      refute Map.has_key?(Repo.get(Message, message2.id).read_status, to_string(bob.id))
+      refute Map.has_key?(Repo.get(Message, message3.id).read_status, to_string(bob.id))
+    end
+
+    test "updates group_users.last_read_at, group_users.unread_messages_count, and group_users.mentions_count", %{bob: bob, alice: alice, group: group} do
+      {:ok, %{message: _message1}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: _message3}} = Message.create(group.id, bob, %{"text_content" => "Mentions @#{alice.username}", "type" => "chat"})
+
+      Message.mark_as_read(alice.id, group.id)
+      group_user = Repo.get_by(GroupUser, user_id: alice.id, group_id: group.id)
+      assert group_user.mentions_count == 0
+      assert group_user.unread_messages_count == 0
+
+      Message.mark_as_unread(alice.id, group.id, message2)
+      group_user = Repo.get_by(GroupUser, user_id: alice.id, group_id: group.id)
+      assert group_user.last_read_at == message2.inserted_at
+      assert group_user.mentions_count == 1
+      assert group_user.unread_messages_count == 2
+    end
+  end
+
   describe "&Message.mark_as_read/2" do
     test "updates read_status if it contains the user as a recipient", %{bob: bob, alice: alice, eve: eve, group: group} do
       {:ok, %{message: message}} = Message.create(group.id, eve, %{"text_content" => "Hi, all!", "type" => "chat"})
