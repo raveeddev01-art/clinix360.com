@@ -28,10 +28,15 @@ class MessageForm extends Component {
     this.updateInputText(evt.target.value);
   };
 
-  onKeyUp = evt => {
+  onKeyDown = evt => {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
     const { openMentionMenu } = this.state;
+
+    if ([37, 38, 39, 40].indexOf(evt.keyCode) > -1 && openMentionMenu) {
+      evt.preventDefault();
+      return;
+    }
 
     if (evt.keyCode === 13) {
       // enter
@@ -57,11 +62,12 @@ class MessageForm extends Component {
     } else {
       // other keys
       // get the word of current cursor
-      const word = this.getCurrentWord();
+      const word = this.getCurrentWord() + String.fromCharCode(evt.keyCode);
 
       // wants to mention another user
       if (word.substr(0, 1) === "@") {
         const filter = word.substr(1);
+
         this.setState({
           userFilter: filter,
           openMentionMenu: true
@@ -169,7 +175,7 @@ class MessageForm extends Component {
           placeholder="Message"
           value={text}
           onChange={this.onTextChange}
-          onKeyUp={this.onKeyUp}
+          onKeyDown={this.onKeyDown}
           autoFocus
           required
           ref={input => {

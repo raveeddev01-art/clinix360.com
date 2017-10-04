@@ -14,9 +14,10 @@ class MenutionMenu extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.isOpen && nextProps.isOpen) {
-      document.addEventListener("keyup", this.onKeyUp);
+      document.addEventListener("keydown", this.onKeyDown);
+      this.setState({ activeUserIndex: 0 });
     } else if (this.props.isOpen && !nextProps.isOpen) {
-      document.removeEventListener("keyup", this.onKeyUp);
+      document.removeEventListener("keydown", this.onKeyDown);
     }
   }
 
@@ -28,27 +29,27 @@ class MenutionMenu extends Component {
     this.props.onSelect(username);
   };
 
-  onKeyUp = evt => {
+  onKeyDown = evt => {
     const { activeUserIndex } = this.state;
+    const users = this.getUsers();
 
     switch (evt.keyCode) {
       case 38: // arrow up
-        this.setState({ activeUserIndex: activeUserIndex - 1 });
+        this.setState({
+          activeUserIndex:
+            activeUserIndex - 1 >= 0 ? activeUserIndex - 1 : users.length - 1
+        });
         break;
       case 40: // arrow down
-        this.setState({ activeUserIndex: activeUserIndex + 1 });
+        this.setState({
+          activeUserIndex:
+            activeUserIndex + 1 >= users.length ? 0 : activeUserIndex + 1
+        });
         break;
       case 13: // return
-        {
-          const users = this.getUsers();
-          if (users.length) {
-            const selectedUser =
-              users[
-                (activeUserIndex % users.length + users.length) % users.length
-              ];
-
-            this.onSelectMention(selectedUser.username)();
-          }
+        if (users.length) {
+          const selectedUser = users[activeUserIndex];
+          this.onSelectMention(selectedUser.username)();
         }
         break;
       default:
