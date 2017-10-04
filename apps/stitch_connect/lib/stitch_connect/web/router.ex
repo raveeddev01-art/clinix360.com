@@ -14,6 +14,12 @@ defmodule StitchConnect.Web.Router do
     plug :fetch_session
   end
 
+  pipeline :authenticated_api do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug StitchConnect.Plug.ApiAuthenticate
+  end
+
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
 
@@ -23,11 +29,16 @@ defmodule StitchConnect.Web.Router do
     post "/users/submit-confirmation-code", UserController, :submit_confirmation_code
     post "/users/send-invite", UserController, :send_invite
     patch "/users/:id/complete-onboarding", UserController, :complete_onboarding
-    get "/users/notification-preference", NotificationPreferenceController, :show_global
-    put "/users/notification-preference", NotificationPreferenceController, :update_global
 
     post "/teams", TeamController, :create
     post "/teams/url-available", TeamController, :url_available
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :authenticated_api
+
+    get "/users/notification-preference", NotificationPreferenceController, :show_global
+    put "/users/notification-preference", NotificationPreferenceController, :update_global
   end
 
   scope "/", StitchConnect.Web do

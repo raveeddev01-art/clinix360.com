@@ -66,6 +66,15 @@ defmodule StitchConnect.Web.TeamChannel do
     {:noreply, socket}
   end
 
+  def handle_in("get_lockout_settings", _params, socket) do
+    team = Stitch.TeamQueries.get_by_id(socket.assigns.team_id)
+
+    {:reply, {:ok, %{
+      security_lockout_enabled: team.security_lockout,
+      seconds_to_lockout: team.seconds_to_lockout
+    }}, socket}
+  end
+
   def terminate(_reason, socket) do
     {:ok, socket}
   end

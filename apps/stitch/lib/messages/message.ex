@@ -77,6 +77,7 @@ defmodule Stitch.Message do
     |> Multi.run(:increment_unread_counter, fn %{message: message} ->
       {:ok, increment_unread_counter(message, recipients)}
     end)
+    |> mark_as_read_on_creation(group.id, user.id, 30)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
       Stitch.EmailNotification.create(message.id, notify_user_ids.email)
       {:ok, notify_user_ids.desktop}
@@ -118,6 +119,25 @@ defmodule Stitch.Message do
     |> Multi.run(:decrement_unread_counter, fn _ -> {:ok, decrement_unread_counter(message)} end)
     |> Multi.delete(:message, message)
     |> Repo.transaction
+  end
+
+  def mark_as_read_on_creation(multi, group_id, user_id, limit) do
+    if unread_messages_count(group_id, user_id) < limit do
+      multi
+      |> Multi.run(:mark_messages_as_read, fn _ -> {:ok, mark_messages_as_read(group_id, user_id)} end)
+      |> Multi.run(:update_last_read_at, fn _ -> {:ok, mark_group_as_read(group_id, user_id)} end)
+    else
+      multi
+    end
+  end
+
+  def unread_messages_count(group_id, user_id) do
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> where([m], m.user_id != ^user_id)
+    |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
+    |> select([m], count(m.id))
+    |> Repo.one
   end
 
   def increment_unread_counter(message, user_ids) do
@@ -164,6 +184,46 @@ defmodule Stitch.Message do
     |> Repo.update
   end
 
+  def mark_as_unread(user_id, group_id, message) do
+    Multi.new
+    |> Multi.run(:unread_messages, fn _ -> {:ok, unread_messages(group_id, user_id, message.id)} end)
+    |> Multi.run(:count_after, fn _ -> {:ok, count_after(group_id, user_id, message.id)} end)
+    |> Multi.run(:mark_group_as_unread, fn %{count_after: count_after} -> {:ok, mark_group_as_unread(group_id, user_id, message, count_after)} end)
+    |> Repo.transaction
+  end
+
+  def mark_group_as_unread(group_id, user_id, message, %{mentions_count: mentions_count, unread_messages_count: unread_messages_count}) do
+    GroupUser
+    |> where(group_id: ^group_id, user_id: ^user_id)
+    |> update([m], set: [
+      last_read_at: ^message.inserted_at,
+      mentions_count: ^mentions_count,
+      unread_messages_count: ^unread_messages_count,
+    ])
+    |> Repo.update_all([], returning: true)
+  end
+
+  def unread_messages(group_id, user_id, message_id) do
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> where([m], m.id >= ^message_id)
+    |> where([m], fragment("(? \\? ?) and (not (? @> ?))",
+      m.read_status, ^to_string(user_id), m.read_status, ^%{to_string(user_id) => nil}))
+    |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => nil})])
+    |> Repo.update_all([], returning: true)
+  end
+
+  def count_after(group_id, user_id, message_id) do
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> where([m], m.id >= ^message_id)
+    |> select([m], %{
+      mentions_count: fragment("coalesce(count (*) filter (where ? @> ?), 0)", m.mentioned_user_ids, ^[user_id]),
+      unread_messages_count: count(m.id),
+    })
+    |> Repo.one
+  end
+
   def mark_as_read(user_id, group_id) do
     Multi.new
     |> Multi.run(:mark_messages_as_read, fn _ -> {:ok, mark_messages_as_read(group_id, user_id)} end)
@@ -176,7 +236,7 @@ defmodule Stitch.Message do
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.user_id != ^user_id)
     |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
-    |> update([m], set: [read_status: ^%{user_id => DateTime.utc_now}])
+    |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => NaiveDateTime.utc_now})])
     |> Repo.update_all([], returning: true)
   end
 

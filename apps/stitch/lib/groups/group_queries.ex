@@ -104,4 +104,19 @@ defmodule Stitch.GroupQueries do
     |> load_groups_for_user(user_id)
   end
   def search(slug, user_id), do: search(slug, Repo.get!(User, user_id))
+
+  @doc """
+  Returns the default group for a given team via a user.
+
+  The default group is the first group created for a team and will always exist.
+  """
+  @spec default_group(User.t) :: Group.t
+  def default_group(%User{team_id: team_id}) do
+    query =
+      from g in Group,
+      where: g.team_id == ^team_id,
+      order_by: [asc: g.inserted_at],
+      limit: 1
+    Repo.one(query)
+  end
 end

@@ -1,33 +1,27 @@
 #sidemenu {
   .flex-header {
-    border-bottom: 1px solid rgba(0, 0, 0, .2);
-    box-shadow: 1px 0 0 darken($brand-primary, 10%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 1px 0 0 $body-bg;
     z-index: 10;
-    padding: 0;
+    padding: 0 14px 0 25px;
 
-    .btn-group {
-      width: 100%;
+    .team-name {
+      flex: 1;
+      font-size: 20px;
+      font-weight: bold;
+    }
 
-      .btn {
-        height: 60px;
-        color: #fff;
-        font-size: 20px;
-        font-weight: bold;
-        text-align: left;
-        background: transparent;
-        border: 0;
-        padding: 0 25px;
-
-        i.fa {
-          padding: 4px 0;
-        }
-      }
+    .btn {
+      color: #fff;
+      line-height: 65px;
+      padding: 0 10px;
+      outline: none;
     }
 
     .dropdown-menu {
       width: 220px;
-      padding: 10px;
-      margin: 5px 15px;
+      padding: 15px;
+      margin: -10px -10px 0 0;
 
       h5 {
         color: $brand-primary;
@@ -37,8 +31,8 @@
       }
 
       .separator {
-        color: $border-color;
-        border-top: 1px solid $border-color-secondary;
+        color: #aaa;
+        border-top: 1px solid $border-color;
         position: relative;
         margin: 15px 0;
 
@@ -52,10 +46,18 @@
           padding: 0 6px;
         }
       }
-    }
 
-    &:hover {
-      background: darken($brand-primary, 5%);
+      &:before {
+        content: "";
+        position: absolute;
+        right: 16px;
+        top: -11px;
+        width: 0;
+        height: 0;
+        border: 11px solid transparent;
+        border-bottom-color: #fff;
+        border-top-width: 0;
+      }
     }
   }
 
@@ -111,7 +113,7 @@
           }
 
           i.fa-circle-o {
-            color: rgba(20, 20, 20, .75);
+            color: rgba(20, 20, 20, 0.75);
           }
         }
 

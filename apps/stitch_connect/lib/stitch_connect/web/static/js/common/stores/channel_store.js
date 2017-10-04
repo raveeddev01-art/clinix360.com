@@ -58,6 +58,14 @@ class ChannelStore {
   get teamLobbyChannel() {
     return this.channels[this.rootStore.presenceStore.teamLobbyChannelTopic];
   }
+
+  leaveAllChannelsButTeamLobby() {
+    Object.keys(this.channels)
+      .filter(
+        topic => topic !== this.rootStore.presenceStore.teamLobbyChannelTopic
+      )
+      .forEach(topic => this.channels[topic].leave());
+  }
 }
 
 export default ChannelStore;

@@ -4,8 +4,6 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceController do
   alias Stitch.GroupUser
   alias Stitch.Message.Notification
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:show, :update, :show_global, :update_global]
-
   def show_global(conn, _params) do
     render conn, "show_global.json",
       user: conn.assigns.current_user,

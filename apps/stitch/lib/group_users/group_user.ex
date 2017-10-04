@@ -12,7 +12,7 @@ defmodule Stitch.GroupUser do
     field :mobile_notification_preference, :string, default: "default"
     field :unread_messages_count, :integer, default: 0
     field :mentions_count, :integer, default: 0
-    field :last_read_at, :utc_datetime
+    field :last_read_at, :naive_datetime
 
     timestamps()
   end

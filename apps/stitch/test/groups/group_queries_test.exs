@@ -172,9 +172,7 @@ defmodule Stitch.GroupQueriesTest do
 
       {:ok, %{message: _message}} = Message.create(group.id, user_b, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{unread_messages_count: 1}} = GroupQueries.find_by_slug("a", user_a)
-
-      {:ok, %{message: _message}} = Message.create(group.id, user_a, %{"text_content" => "Lorem ipsum", "type" => "chat"})
-      {:ok, %{unread_messages_count: 1}} = GroupQueries.find_by_slug("a", user_a)
+      {:ok, %{unread_messages_count: 0}} = GroupQueries.find_by_slug("a", user_b)
     end
   end
 
@@ -206,6 +204,19 @@ defmodule Stitch.GroupQueriesTest do
       eve_groups = available_groups_indexed_by_slug(eve)
       assert eve_groups["general"].mentions_count == 0
       assert eve_groups["random"].mentions_count == 0
+    end
+  end
+
+  describe "default_group/1" do
+    test "returns the default group for a team given a user" do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      default_group = insert(:group, slug: "general", team: team)
+      insert(:group, slug: "other1", team: team)
+      insert(:group, slug: "other2", team: team)
+
+      found_group = GroupQueries.default_group(user)
+      assert default_group.id == found_group.id
     end
   end
 

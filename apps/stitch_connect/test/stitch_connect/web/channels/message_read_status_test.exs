@@ -5,6 +5,42 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
 
   setup [:create_users, :connect_socket, :create_group, :create_messages]
 
+  test "mark_as_unread event marks all messages after the target message as unread",
+    %{user2: user2, group: group, messages: messages} do
+
+    {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
+    {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
+
+    assert [_message1, message2, _message3] = messages
+
+    @endpoint.subscribe("events:#{user2.id}")
+
+    ref = push socket2, "mark_as_read", %{"group_id": group.id}
+    assert_reply ref, :ok, _reply
+
+    ref = push socket2, "mark_as_unread", %{"group_id": group.id, "message_id": message2.id}
+    assert_reply ref, :ok, _reply
+
+    assert_broadcast "marked_as_unread", %{
+      messages: updated_messages,
+      group_id: group_id,
+      last_read_at: last_read_at,
+      mentions_count: mentions_count,
+      unread_messages_count: unread_messages_count,
+    }
+
+    assert length(updated_messages) == 2
+    assert group_id == group.id
+    assert last_read_at == message2.inserted_at
+    assert mentions_count == 0
+    assert unread_messages_count == 2
+
+    [message1, message2, message3] = messages |> Enum.map(&Repo.get(Message, &1.id))
+    assert message1.read_status[to_string(user2.id)] != nil
+    assert message2.read_status[to_string(user2.id)] == nil
+    assert message3.read_status[to_string(user2.id)] == nil
+  end
+
   test "mark_as_read event marks all unread messages as read for given user",
       %{user2: user2, group: group, messages: messages} do
     {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})

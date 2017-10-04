@@ -81,4 +81,8 @@ defmodule StitchConnect.Web.EventsChannel do
   def broadcast_marked_as_read(user, json_response) do
     @endpoint.broadcast("events:#{user.id}", "marked_as_read", json_response)
   end
+
+  def broadcast_marked_as_unread(user, json_response) do
+    @endpoint.broadcast("events:#{user.id}", "marked_as_unread", json_response)
+  end
 end

@@ -111,7 +111,7 @@ class GroupStore {
 
       this.id = data.id;
       this.slug = data.slug;
-      this.name = user.first_name; // data.name;
+      this.name = user.first_name + " " + user.last_name; // data.name;
       this.description = data.description;
       this.public = data.public;
       this.favorite = !!data.favorite;
@@ -158,7 +158,9 @@ class GroupStore {
       this.id = data.id;
       this.slug = data.slug;
       this.users = data.users;
-      this.name = data.users.map(user => user.first_name).join(", ");
+      this.name = data.users
+        .map(user => user.first_name + " " + user.last_name)
+        .join(", ");
       this.description = data.description;
       this.public = data.public;
       this.favorite = !!data.favorite;
@@ -247,15 +249,17 @@ class GroupStore {
     return get(
       `/api/v1/groups/${this.id}/notification-preference`
     ).then(resp => {
-      this.notificationSetting = resp.data.setting;
+      this.notificationSetting = resp.data.desktop_notification_preference;
       return this.notificationSetting;
     });
   };
 
   @action
   saveNotificationSetting = setting => {
-    return post(`/api/v1/groups/${this.id}/update-notification-preference`, {
-      body: { setting }
+    return put(`/api/v1/groups/${this.id}/notification-preference`, {
+      body: {
+        desktop_notification_preference: setting
+      }
     }).then(resp => {
       this.notificationSetting = setting;
       notify.show(`Notification setting saved for group ${this.name}`);
