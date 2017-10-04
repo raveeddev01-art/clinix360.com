@@ -431,7 +431,9 @@ class MessageStore {
       ["desc"]
     ).slice(0, countToUpdate);
 
-    Object.assign(this.messages, processedUpdates);
+    processedUpdates.forEach((update, index) => {
+      Object.assign(this.messages[index], { read_status: update.read_status });
+    });
   }
 
   markAsUnread = messageId => {
