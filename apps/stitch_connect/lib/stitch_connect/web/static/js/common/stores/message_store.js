@@ -21,6 +21,7 @@ class MessageStore {
   @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
   @observable isLoadingRecent = false;
   @observable isLoadingPast = false;
+  markedAsUnread = false;
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
   @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
@@ -40,25 +41,6 @@ class MessageStore {
 
   get groupId() {
     return this.rootStore.groupStore.id;
-  }
-
-  /**
-   * Socket channel topic of currently joined chat group
-   */
-  get groupTopic() {
-    return this.rootStore.groupStore.channelTopic;
-  }
-
-  /**
-   * Currently joined chat group
-   */
-  @computed
-  get currentGroup() {
-    const { groupStore } = this.rootStore;
-
-    return {
-      id: groupStore.id
-    };
   }
 
   /**
@@ -156,6 +138,7 @@ class MessageStore {
     this.loadedAll = false;
     this.loadedAllRecent = false;
     this.loadedInitial = false;
+    this.markedAsUnread = false;
     this.messages = [];
     this.messageElements = {};
     this.messageInEdit = null;
@@ -273,7 +256,11 @@ class MessageStore {
       this.updateGroupCursor(id);
     }
 
-    if (this.firstUnreadMessage && this.firstUnreadMessage.id === id) {
+    if (
+      !this.markedAsUnread &&
+      this.firstUnreadMessage &&
+      this.firstUnreadMessage.id === id
+    ) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
       setTimeout(() => {
@@ -328,8 +315,7 @@ class MessageStore {
 
     // Ensure that joined the group to which target message belongs
     this.joinedTargetGroupDisposer = when(
-      () =>
-        targetMessage.group_id === this.currentGroup.id && this.loadedInitial,
+      () => targetMessage.group_id === this.groupId && this.loadedInitial,
       () => {
         // Ensure that target message is mounted
         if (this.mountedTargetMessageDisposer) {
@@ -413,9 +399,54 @@ class MessageStore {
     };
   }
 
+  @action
+  updateUnreadMessagesInfo(data) {
+    const { groupStore, sidemenuStore } = this.rootStore;
+    const allowedKeys = [
+      "unread_messages_count",
+      "mentions_count",
+      "last_read_at"
+    ];
+    const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
+    const camelCasedUpdates = _.mapKeys(updates, (value, key) =>
+      _.camelCase(key)
+    );
+
+    // Update message store
+    Object.assign(this, camelCasedUpdates);
+
+    // Update group store
+    groupStore.update(camelCasedUpdates);
+
+    // Update sidemenu store
+    sidemenuStore.updateGroupData(this.groupId, updates);
+  }
+
+  @action
+  updateUnreadMessages(updates) {
+    const countToUpdate = Math.min(updates.length, this.unreadMessagesCount);
+    const processedUpdates = _.orderBy(
+      updates,
+      ["inserted_at"],
+      ["desc"]
+    ).slice(0, countToUpdate);
+
+    Object.assign(this.messages, processedUpdates);
+  }
+
   markAsUnread = messageId => {
-    // Mark unread
-    console.log("marked unread", messageId);
+    this.groupChannel
+      .push("mark_as_unread", { group_id: this.groupId, message_id: messageId })
+      .receive("ok", response => {
+        this.updateUnreadMessagesInfo(response);
+        this.updateUnreadMessages(response.messages);
+
+        this.markedAsUnread = true;
+        this.newMessageLinePosition = this.unreadMessagesCount;
+      })
+      .receive("error", err => {
+        notify.show(err.message, "error");
+      });
   };
 
   /**
@@ -425,29 +456,21 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
-    if (this.rootStore.groupStore.loading) {
+    const { groupStore, sidemenuStore } = this.rootStore;
+
+    if (groupStore.loading) {
       // should not mark as read when in transition to other group
       return;
     }
 
     this.groupChannel
-      .push("mark_as_read", { group_id: this.rootStore.groupStore.id })
+      .push("mark_as_read", { group_id: this.groupId })
       .receive("ok", () => {
-        const { groupStore, sidemenuStore } = this.rootStore;
-        const now = new Date();
-
-        groupStore.unreadMessagesCount = 0;
-        groupStore.mentionsCount = 0;
-        groupStore.lastReadAt = now;
-        sidemenuStore.updateGroupData(groupStore.id, {
+        this.updateUnreadMessagesInfo({
           unread_messages_count: 0,
           mentions_count: 0,
-          last_read_at: now
+          last_read_at: new Date()
         });
-
-        this.unreadMessagesCount = 0;
-        this.mentionsCount = 0;
-        this.lastReadAt = now;
 
         if (resetNewMessageLine) {
           this.newMessageLinePosition = 0;
@@ -590,9 +613,9 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    const { sidemenuStore, groupStore } = this.rootStore;
+    const { sidemenuStore } = this.rootStore;
 
-    if (newMessage.group_id !== groupStore.id) {
+    if (newMessage.group_id !== this.groupId) {
       return;
     }
 
@@ -603,45 +626,21 @@ class MessageStore {
     //
     // In other words, if the user enters messages when messages are marked as read
     // and new mesage line is visible, hide new message line
-    if (
-      newMessage.user_id === currentUser.id &&
-      this.unreadMessagesCount === 0
-    ) {
-      const now = new Date();
-
-      groupStore.lastReadAt = now;
-      sidemenuStore.updateGroupData(groupStore.id, { last_read_at: now });
-      this.lastReadAt = now;
-    }
-
-    if (newMessage.user_id !== currentUser.id) {
+    if (newMessage.user_id === currentUser.id) {
+      if (this.unreadMessagesCount === 0) {
+        this.updateUnreadMessagesInfo({ last_read_at: new Date() });
+      }
+    } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       // For messages from other users
-      if (this.unreadMessagesCount) {
-        this.unreadMessagesCount += 1;
-        this.newMessageLinePosition = this.unreadMessagesCount;
-
-        if (isMention) {
-          this.mentionsCount += 1;
-        }
-
-        sidemenuStore.updateGroupData(groupStore.id, {
-          unread_messages_count: this.unreadMessagesCount,
-          mentions_count: this.mentionsCount
+      if (this.unreadMessagesCount || !this.isScrollBottom) {
+        this.updateUnreadMessagesInfo({
+          unread_messages_count: this.unreadMessagesCount + 1,
+          mentions_count: this.mentionsCount + (isMention ? 1 : 0)
         });
-      } else if (!this.isScrollBottom) {
-        this.unreadMessagesCount += 1;
+
         this.newMessageLinePosition = this.unreadMessagesCount;
-
-        if (isMention) {
-          this.mentionsCount += 1;
-        }
-
-        sidemenuStore.updateGroupData(groupStore.id, {
-          unread_messages_count: this.unreadMessagesCount,
-          mentions_count: this.mentionsCount
-        });
       } else {
         this.markAsRead();
       }
@@ -663,7 +662,7 @@ class MessageStore {
 
   @action
   onEditMessage = editedMessage => {
-    if (editedMessage.group_id !== this.rootStore.groupStore.id) {
+    if (editedMessage.group_id !== this.groupId) {
       return;
     }
 

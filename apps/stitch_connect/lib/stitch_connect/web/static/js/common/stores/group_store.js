@@ -45,6 +45,11 @@ class GroupStore {
   }
 
   @action
+  update(data) {
+    Object.assign(this, data);
+  }
+
+  @action
   createGroup = params => {
     return post("/api/v1/groups", {
       body: params
