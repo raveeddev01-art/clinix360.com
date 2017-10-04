@@ -6,6 +6,7 @@ defmodule Stitch.MessageQueriesTest do
       team = insert(:team)
       user = insert(:user, team: team)
       group = insert(:group, team: team)
+      insert(:group_user, group: group, user: user)
 
       message_bar = insert(:message, user: user, group: group, text_content: "bar")
       message_baz = insert(:message, user: user, group: group, text_content: "baz")
@@ -33,6 +34,7 @@ defmodule Stitch.MessageQueriesTest do
       private_member_message = insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
 
       user = insert(:user, team: team)
+      insert(:group_user, user: user, group: public_group)
       insert(:group_user, user: user, group: private_member_group)
 
       result = Stitch.MessageQueries.search(user.id, "hello")
