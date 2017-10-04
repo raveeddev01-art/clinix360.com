@@ -16,6 +16,7 @@ class MessageStore {
   @observable unreadMessagesCount = 0;
   @observable mentionsCount = 0;
   @observable lastReadAt = null;
+  @observable newMessageLinePosition = 0;
   @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
   @observable isLoadingRecent = false;
   @observable isLoadingPast = false;
@@ -97,6 +98,11 @@ class MessageStore {
     return this.getElementVisibility(
       this.messageDivs[this.firstUnreadMessage.id]
     );
+  }
+
+  @computed
+  get newMessageLineMessage() {
+    return this.getMessageByIndex(this.newMessageLinePosition - 1);
   }
 
   @computed
@@ -416,6 +422,7 @@ class MessageStore {
         this.lastReadAt = now;
 
         if (resetNewMessageLine) {
+          this.newMessageLinePosition = 0;
         }
 
         // Update favicon
@@ -570,8 +577,7 @@ class MessageStore {
     // and new mesage line is visible, hide new message line
     if (
       newMessage.user_id === currentUser.id &&
-      this.unreadMessagesCount === 0 &&
-      this.firstUnreadMessage
+      this.unreadMessagesCount === 0
     ) {
       const now = new Date();
 
@@ -586,6 +592,7 @@ class MessageStore {
       // For messages from other users
       if (this.unreadMessagesCount) {
         this.unreadMessagesCount += 1;
+        this.newMessageLinePosition = this.unreadMessagesCount;
 
         if (isMention) {
           this.mentionsCount += 1;
@@ -597,6 +604,7 @@ class MessageStore {
         });
       } else if (!this.isScrollBottom) {
         this.unreadMessagesCount += 1;
+        this.newMessageLinePosition = this.unreadMessagesCount;
 
         if (isMention) {
           this.mentionsCount += 1;
@@ -653,12 +661,14 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
+    this.messages = data.messages;
+
     const { groupStore } = this.rootStore;
 
     this.unreadMessagesCount = groupStore.unreadMessagesCount;
     this.mentionsCount = groupStore.mentionsCount;
     this.lastReadAt = groupStore.lastReadAt;
-    this.messages = data.messages;
+    this.newMessageLinePosition = this.unreadMessagesCount;
 
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };

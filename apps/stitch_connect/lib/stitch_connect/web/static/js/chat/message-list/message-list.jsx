@@ -45,17 +45,16 @@ class MessageList extends Component {
           this.chatDiv = div;
         }}
       >
-        {messageStore.isLoadingPast && (
-          <div className="loading-message">Loading messages...</div>
-        )}
-        {Object.keys(messagesByDate).map(date => (
+        {messageStore.isLoadingPast &&
+          <div className="loading-message">Loading messages...</div>}
+        {Object.keys(messagesByDate).map(date =>
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
             {messagesByDate[date].map(message => {
               const { user, inserted_at: timestamp } = message;
               if (
-                messageStore.firstUnreadMessage &&
-                messageStore.firstUnreadMessage.id === message.id
+                messageStore.newMessageLineMessage &&
+                messageStore.newMessageLineMessage.id === message.id
               ) {
                 return [
                   <Element name="newMessageBanner" />,
@@ -80,10 +79,9 @@ class MessageList extends Component {
               );
             })}
           </div>
-        ))}
-        {messageStore.isLoadingRecent && (
-          <div className="loading-message">Loading recent messages...</div>
         )}
+        {messageStore.isLoadingRecent &&
+          <div className="loading-message">Loading recent messages...</div>}
         <Element name="topPosition" className="topPosition" />
         <div className="bottomPositionWrapper">
           {/* react-scroll only checks for top position, so, to check bottom pos, it should take 100vh */}
