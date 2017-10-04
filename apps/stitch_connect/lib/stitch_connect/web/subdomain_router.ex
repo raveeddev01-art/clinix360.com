@@ -48,25 +48,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/invitations/accept/:token", InvitationController, :accept
   end
 
-  # API routes which need token.
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through :api_auth
-
-    get "/users/:id", UserController, :show
-    put "/users/:id/update_password", UserController, :update_password
-    put "/users/:id/avatar", UserController, :update_avatar
-    delete "/users/:id/avatar", UserController, :delete_avatar
-
-    get "/invitations/:token", InvitationController, :show
-
-    get "/teams/:id", TeamController, :show
-    put "/teams/:id", TeamController, :update
-    post "/teams/:id/send-invite", TeamController, :send_invite
-
-    post "/login", AuthenticationController, :submit_login
-    post "/reset_password", AuthenticationController, :reset_password
-  end
-
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :authenticated_api
 
@@ -125,6 +106,25 @@ defmodule StitchConnect.Web.SubdomainRouter do
     delete "/teams/:id/", TeamController, :delete_team
     put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
     put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
+  end
+
+  # API routes which need token.
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :api_auth
+
+    get "/users/:id", UserController, :show
+    put "/users/:id/update_password", UserController, :update_password
+    put "/users/:id/avatar", UserController, :update_avatar
+    delete "/users/:id/avatar", UserController, :delete_avatar
+
+    get "/invitations/:token", InvitationController, :show
+
+    get "/teams/:id", TeamController, :show
+    put "/teams/:id", TeamController, :update
+    post "/teams/:id/send-invite", TeamController, :send_invite
+
+    post "/login", AuthenticationController, :submit_login
+    post "/reset_password", AuthenticationController, :reset_password
   end
 
   # Anonymous routes.
