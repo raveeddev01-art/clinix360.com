@@ -95,6 +95,7 @@ export default class MessagePanel extends Component {
       </div>
     );
   }
+
   render() {
     const { groupStore: group } = this.props;
 

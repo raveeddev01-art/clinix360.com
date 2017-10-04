@@ -230,50 +230,60 @@ class Message extends Component {
   }
 
   render() {
-    const { message, user, timestamp, messageStore } = this.props;
-    const { chatDiv } = messageStore;
+    const { message, messageStore } = this.props;
+    const { user, inserted_at: timestamp } = message;
+    const { chatDiv, newMessageLineMessage } = messageStore;
     const elementClassName = cx("message", { selected: this.state.selected });
     const containerClassName = cx("message-container", {
       mine: user.id === currentUser.id
     });
+
     return (
-      <div
-        className={containerClassName}
-        ref={div => {
-          this.messageDiv = div;
-        }}
-      >
-        <VisibilitySensor
-          active
-          onChange={this.onVisibleChange}
-          intervalCheck={false}
-          scrollCheck
-          scrollThrottle={100}
-          containment={chatDiv}
+      <div>
+        {newMessageLineMessage &&
+          newMessageLineMessage.id === message.id &&
+          <Element name="newMessageBanner" className="new-message-banner">
+            <div className="banner-text">New Messages</div>
+          </Element>}
+
+        <div
+          className={containerClassName}
+          ref={div => {
+            this.messageDiv = div;
+          }}
         >
-          <Element name={`msg_${message.id}`} className={elementClassName}>
-            <div className="message-header">
-              <div className="name">
-                {user.first_name} {user.last_name}
+          <VisibilitySensor
+            active
+            onChange={this.onVisibleChange}
+            intervalCheck={false}
+            scrollCheck
+            scrollThrottle={100}
+            containment={chatDiv}
+          >
+            <Element name={`msg_${message.id}`} className={elementClassName}>
+              <div className="message-header">
+                <div className="name">
+                  {user.first_name} {user.last_name}
+                </div>
+
+                <div
+                  className="time"
+                  data-time={moment(timestamp).format("HH:mm A")}
+                >
+                  {this.renderActions(message)}
+                </div>
+
+                {this.renderStar(message)}
+                {this.renderPin(message)}
               </div>
 
-              <div
-                className="time"
-                data-time={moment(timestamp).format("HH:mm A")}
-              >
-                {this.renderActions(message)}
+              <div>
+                <MessageContent message={message} />
+                {this.renderEdited(message)}
               </div>
-
-              {this.renderStar(message)}
-              {this.renderPin(message)}
-            </div>
-
-            <div>
-              <MessageContent message={message} />
-              {this.renderEdited(message)}
-            </div>
-          </Element>
-        </VisibilitySensor>
+            </Element>
+          </VisibilitySensor>
+        </div>
       </div>
     );
   }

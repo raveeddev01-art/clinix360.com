@@ -47,37 +47,13 @@ class MessageList extends Component {
       >
         {messageStore.isLoadingPast &&
           <div className="loading-message">Loading messages...</div>}
+
         {Object.keys(messagesByDate).map(date =>
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
-            {messagesByDate[date].map(message => {
-              const { user, inserted_at: timestamp } = message;
-              if (
-                messageStore.newMessageLineMessage &&
-                messageStore.newMessageLineMessage.id === message.id
-              ) {
-                return [
-                  <Element name="newMessageBanner" />,
-                  <div className="new-message-banner">
-                    <div className="banner-text">New Messages</div>
-                  </div>,
-                  <Message
-                    key={`msg_${message.id}`}
-                    message={message}
-                    timestamp={timestamp}
-                    user={user}
-                  />
-                ];
-              }
-              return (
-                <Message
-                  key={`msg_${message.id}`}
-                  message={message}
-                  timestamp={timestamp}
-                  user={user}
-                />
-              );
-            })}
+            {messagesByDate[date].map(message =>
+              <Message key={`msg_${message.id}`} message={message} />
+            )}
           </div>
         )}
         {messageStore.isLoadingRecent &&
