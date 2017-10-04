@@ -67,6 +67,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/messages/search", MessageController, :search
 
     get "/starred_messages", StarredMessageController, :index
+    get "/mentions", MentionController, :index
 
     get "/users/", UserController, :index
     get "/users/notification-preference", NotificationPreferenceController, :show_global

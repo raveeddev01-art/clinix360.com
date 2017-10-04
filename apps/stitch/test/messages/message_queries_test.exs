@@ -88,4 +88,37 @@ defmodule Stitch.MessageQueriesTest do
     assert Enum.find(data, &( &1.id == private_member_message2.id ))
     refute Enum.find(data, &( &1.id == private_message2.id ))
   end
+
+  test "user_mentioned_in/2" do
+    team = insert(:team)
+    group = insert(:group, team: team)
+    user = insert(:user, team: team)
+    mentioned_user = insert(:user, team: team)
+    mentioned_user_ids = [mentioned_user.id]
+
+    max_messages = 50
+
+    for i <- 1..max_messages do
+      insert(:message, user: user, group: group, text_content: "@#{mentioned_user.username} #{i}", mentioned_user_ids: mentioned_user_ids)
+      insert(:message, user: mentioned_user, group: group, text_content: "#{i}")
+    end
+
+    result = Stitch.MessageQueries.user_mentioned_in(mentioned_user)
+    assert length(result.data) == 30
+    for message <- result.data do
+      assert %Stitch.Accounts.User{} = message.user
+      assert mentioned_user.id in message.mentioned_user_ids
+    end
+
+    result = Stitch.MessageQueries.user_mentioned_in(mentioned_user, limit: 1)
+    assert length(result.data) == 1
+    assert hd(result.data).text_content =~ " #{max_messages}"
+
+    result = Stitch.MessageQueries.user_mentioned_in(mentioned_user, limit: 1, skip: 1)
+    assert length(result.data) == 1
+    assert hd(result.data).text_content =~ " #{max_messages - 1}"
+
+    result = Stitch.MessageQueries.user_mentioned_in(user)
+    assert result.data == []
+  end
 end
