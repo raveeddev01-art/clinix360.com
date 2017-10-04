@@ -115,7 +115,7 @@
           .messages-count-info {
             flex: 1;
             display: flex;
-            background: #29b2ee;
+            background: #036;
             border-radius: 8px 0 0 8px;
 
             .jump-button {
@@ -140,7 +140,7 @@
             flex: 0 0 auto;
             padding: 0 10px;
             font-size: 90%;
-            background: #29b2ee;
+            background: #036;
             border-radius: 0 8px 8px 0;
           }
 
@@ -156,8 +156,6 @@
             }
 
             .messages-count-info {
-              border-right: 1px solid #3d9cd4;
-
               &:hover {
                 filter: brightness(85%);
               }
@@ -168,6 +166,8 @@
             }
 
             .mark-as-read-button {
+              border-left: 1px solid lighten(#036, 40%);
+
               &:hover {
                 filter: brightness(85%);
               }
