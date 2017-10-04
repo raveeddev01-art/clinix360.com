@@ -413,6 +413,11 @@ class MessageStore {
     };
   }
 
+  markAsUnread = messageId => {
+    // Mark unread
+    console.log("marked unread", messageId);
+  };
+
   /**
    * Mark group messages as read
    *

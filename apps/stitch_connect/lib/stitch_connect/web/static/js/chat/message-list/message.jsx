@@ -42,6 +42,12 @@ class Message extends Component {
     this.setState({ selected: !this.state.selected });
   };
 
+  markAsUnread = () => {
+    const { message, messageStore } = this.props;
+
+    messageStore.markAsUnread(message.id);
+  };
+
   edit = () => {
     const { message, messageStore } = this.props;
 
@@ -172,12 +178,19 @@ class Message extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
+          <MenuItem onClick={this.markAsUnread}>
+            <span>
+              <i className="fa fa-circle" />&nbsp;Mark unread
+            </span>
+          </MenuItem>
+
           {message.type === "upload" &&
             <MenuItem target="_blank" href={message.fields.url}>
               <span>
                 <i className="fa fa-download" />&nbsp;Download
               </span>
             </MenuItem>}
+
           {mine &&
             <MenuItem onClick={this.edit}>
               <span>
@@ -199,11 +212,13 @@ class Message extends Component {
               </span>
             </MenuItem>
           </CopyToClipboard>
+
           <MenuItem onClick={this.toggleStar}>
             <span>
               <i className="fa fa-star-o" />&nbsp;{message.starred ? "Unstar" : "Star"}
             </span>
           </MenuItem>
+
           <MenuItem onClick={this.togglePin}>
             <span>
               <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
