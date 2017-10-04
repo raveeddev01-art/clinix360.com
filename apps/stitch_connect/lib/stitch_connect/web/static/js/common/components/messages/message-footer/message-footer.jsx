@@ -13,7 +13,7 @@ class MessageFooter extends Component {
     const group = this.getGroup();
 
     return (
-      <div className="message-pool-footer">
+      <div className="message-footer">
         <a href={`/groups/${group.slug}`}>
           <i className="fa fa-tag" /> {group.name}
         </a>

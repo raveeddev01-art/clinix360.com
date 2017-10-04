@@ -85,7 +85,7 @@ class MessageForm extends Component {
 
       // otherwise sends message
       if (this.state.text) {
-        this.props.messageStore.sendMessage(this.state.text).then(() => {
+        messageStore.sendMessage(this.state.text).then(() => {
           this.setState({ text: "" });
           this.typingStopped();
         });
@@ -202,23 +202,22 @@ class MessageForm extends Component {
     const lastMesage = messages[messages.length - 1];
 
     return (
-      messageStore.showJumpedMessageIndicator && (
-        <div
-          role="button"
-          className="jumped-message-indicator"
-          onClick={() => {
-            messageStore.switchFromJumpMode();
-          }}
-        >
-          <span className="timestamp">
-            Viewing messages from&nbsp;
-            {moment(lastMesage.inserted_at).format("MMM Do, YYYY")}
-          </span>
-          <span className="scroll-to-bottom">
-            Jump to recent messages <i className="fa fa-arrow-down" />
-          </span>
-        </div>
-      )
+      messageStore.showJumpedMessageIndicator &&
+      <div
+        role="button"
+        className="jumped-message-indicator"
+        onClick={() => {
+          messageStore.switchFromJumpMode();
+        }}
+      >
+        <span className="timestamp">
+          Viewing messages from&nbsp;
+          {moment(lastMesage.inserted_at).format("MMM Do, YYYY")}
+        </span>
+        <span className="scroll-to-bottom">
+          Jump to recent messages <i className="fa fa-arrow-down" />
+        </span>
+      </div>
     );
   }
 
@@ -248,15 +247,15 @@ class MessageForm extends Component {
                 onClick={this.onSelectMention(user.username)}
               >
                 <span className="item-icon">
-                  {online ? (
-                    <i className="fa fa-circle" />
-                  ) : (
-                    <i className="fa fa-circle-o" />
-                  )}
+                  {online
+                    ? <i className="fa fa-circle" />
+                    : <i className="fa fa-circle-o" />}
                 </span>
                 <span className="item-text">
                   <span>{`${user.first_name} ${user.last_name}`}</span>
-                  <small>{user.username}</small>
+                  <small>
+                    {user.username}
+                  </small>
                 </span>
               </li>
             );
@@ -320,7 +319,11 @@ class MessageForm extends Component {
         content = "multiple people are typing...";
     }
 
-    return <div>{content}</div>;
+    return (
+      <div>
+        {content}
+      </div>
+    );
   }
 
   renderEditingCommands() {
@@ -328,30 +331,29 @@ class MessageForm extends Component {
     const { messageInEdit } = messageStore;
 
     return (
-      messageInEdit && (
-        <div className="editing-commands">
-          <div className="editing-commands-cancel">
-            <kbd>Esc</kbd> to{" "}
-            <button
-              type="button"
-              className="btn-fancy btn-default btn-small"
-              onClick={this.cancelEdit}
-            >
-              Cancel editing
-            </button>
-          </div>
-          <div className="editing-commands-save">
-            <kbd>Enter</kbd> to{" "}
-            <button
-              type="button"
-              className="btn-fancy btn-default btn-small"
-              onClick={this.finishEdit}
-            >
-              Save changes
-            </button>
-          </div>
+      messageInEdit &&
+      <div className="editing-commands">
+        <div className="editing-commands-cancel">
+          <kbd>Esc</kbd> to{" "}
+          <button
+            type="button"
+            className="btn-fancy btn-default btn-small"
+            onClick={this.cancelEdit}
+          >
+            Cancel editing
+          </button>
         </div>
-      )
+        <div className="editing-commands-save">
+          <kbd>Enter</kbd> to{" "}
+          <button
+            type="button"
+            className="btn-fancy btn-default btn-small"
+            onClick={this.finishEdit}
+          >
+            Save changes
+          </button>
+        </div>
+      </div>
     );
   }
 

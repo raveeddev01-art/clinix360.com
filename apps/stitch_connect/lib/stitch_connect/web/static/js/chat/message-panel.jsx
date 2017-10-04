@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import classNames from "classnames";
+import moment from "moment";
 
 import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
@@ -17,19 +19,34 @@ export default class MessagePanel extends Component {
   }
 
   onKeyDown = evt => {
+    const { messageStore } = this.props;
+
     if (evt.keyCode === 27) {
       // ESC key
-      this.markAsRead();
+      messageStore.markAsRead();
     }
   };
 
-  onTooltipClose = evt => {
-    evt.stopPropagation();
-    this.markAsRead();
+  onUnreadMessagesCountClick = () => {
+    const { messageStore } = this.props;
+
+    if (messageStore.firstUnreadMessage) {
+      // if messages are already loaded
+      if (messageStore.firstUnreadMessageVisibility === "visible") {
+        messageStore.markAsRead();
+      } else {
+        messageStore.scrollToNewBanner();
+      }
+    } else {
+      // if unread messages are not loaded yet, just load next batch
+      messageStore.loadPastUnreadMessages();
+    }
   };
 
-  markAsRead = () => {
-    this.props.messageStore.markAsRead();
+  onMarkAsReadClick = () => {
+    const { messageStore } = this.props;
+
+    messageStore.markAsRead();
   };
 
   handleJoin = () => {
@@ -38,33 +55,54 @@ export default class MessagePanel extends Component {
     group.join();
   };
 
-  loadMore = () => {
+  renderUnreadMessagesBar() {
     const { messageStore } = this.props;
+    const unreadMessagesTooltipClass = classNames("unread-messages-tooltip", {
+      "should-jump": messageStore.firstUnreadMessageVisibility !== "visible"
+    });
+    const jumpArrowClass = classNames("fa", {
+      "fa-arrow-up": messageStore.firstUnreadMessageVisibility === "hidden-up",
+      "fa-arrow-down":
+        messageStore.firstUnreadMessageVisibility === "hidden-down"
+    });
 
-    if (messageStore.firstUnreadMessage) {
-      // if messages are already loaded
-      messageStore.scrollToNewBanner();
-    } else {
-      // if unread messages are not loaded yet, just load next batch
-      messageStore.loadPastUnreadMessages();
-    }
-  };
+    return (
+      messageStore.unreadMessagesCount > 0 &&
+      <div className={unreadMessagesTooltipClass}>
+        <div
+          role="button"
+          className="messages-count-info"
+          onClick={this.onUnreadMessagesCountClick}
+        >
+          <div className="jump-button">
+            <i className={jumpArrowClass} />
+            <span className="jump-hover">Jump</span>
+          </div>
+          <div className="messages-count">
+            {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}{" "}
+            since {moment(messageStore.lastReadAt).format("h:mm A on MMMM Do")}
+          </div>
+        </div>
+
+        <div
+          role="button"
+          className="mark-as-read-button"
+          onClick={this.onMarkAsReadClick}
+        >
+          Mark as read
+          <i className="fa fa-close" />
+        </div>
+      </div>
+    );
+  }
 
   render() {
-    const { groupStore: group, messageStore } = this.props;
+    const { groupStore: group } = this.props;
 
     return (
       <div id="chat-container">
         <div className="container-bars">
-          {messageStore.unreadMessagesCount > 0
-            ? <div className="unread-messages-tooltip" onClick={this.loadMore}>
-                {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}
-                <i
-                  className="fa fa-close close-unread-messages-tooltip"
-                  onClick={this.onTooltipClose}
-                />
-              </div>
-            : null}
+          {this.renderUnreadMessagesBar()}
           <UploadProgress />
         </div>
 
