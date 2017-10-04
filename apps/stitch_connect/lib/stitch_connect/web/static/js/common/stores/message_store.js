@@ -24,7 +24,7 @@ class MessageStore {
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
   @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
   @observable loadedAllRecent = false; // If TRUE, indicates that there is no more recent messages to load from server
-  messagePositions = {}; // { group: message_id }
+  groupCursors = {}; // { group_id: message_id }
 
   // mobx when() monitor disposers
   joinedTargetGroupDisposer = null; // Disposer of when() monitor that waits until joined the group to which jumping target message belongs to
@@ -37,6 +37,10 @@ class MessageStore {
   // ////////////// //
   //    GETTERS     //
   // ////////////// //
+
+  get groupId() {
+    return this.rootStore.groupStore.id;
+  }
 
   /**
    * Socket channel topic of currently joined chat group
@@ -246,11 +250,11 @@ class MessageStore {
       return;
     }
 
-    const currentPos = this.messagePositions[this.groupTopic];
-    if (!currentPos || currentPos === id) {
+    const cursor = this.groupCursors[this.groupId];
+    if (!cursor || cursor === id) {
       const index = this.messages.findIndex(m => m.id === id);
       if (this.messages[index - 1]) {
-        this.messagePositions[this.groupTopic] = this.messages[index - 1].id;
+        this.groupCursors[this.groupId] = this.messages[index - 1].id;
       }
     }
   };
@@ -260,9 +264,9 @@ class MessageStore {
       return;
     }
 
-    const currentPos = this.messagePositions[this.groupTopic];
-    if (!currentPos || currentPos > id) {
-      this.messagePositions[this.groupTopic] = id;
+    const cursor = this.groupCursors[this.groupId];
+    if (!cursor || cursor > id) {
+      this.groupCursors[this.groupId] = id;
     }
 
     if (this.firstUnreadMessage && this.firstUnreadMessage.id === id) {
@@ -704,7 +708,7 @@ class MessageStore {
   handleInitialLoading = () => {
     let posHistory = null;
     if (this.unreadMessagesCount) {
-      this.messagePositions[this.groupTopic] = null;
+      this.groupCursors[this.groupId] = null;
       if (this.unreadMessagesCount >= 30) {
         posHistory = this.messages[this.messages.length - 1].id; // B.2.a
         this.scrollToBottom(() => {
@@ -723,14 +727,14 @@ class MessageStore {
         }, 0);
       }
     } else {
-      posHistory = this.messagePositions[this.groupTopic];
+      posHistory = this.groupCursors[this.groupId];
       if (posHistory && this.messages.find(m => m.id === posHistory)) {
         // A.1.a
         this.scrollTo(posHistory, 0, () => {
           this.loadedInitial = true;
         });
       } else {
-        this.messagePositions[this.groupTopic] = null;
+        this.groupCursors[this.groupId] = null;
         // A.1.b, A.2.a
         this.scrollToBottom(() => {
           this.loadedInitial = true;
