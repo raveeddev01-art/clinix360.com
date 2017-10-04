@@ -247,15 +247,17 @@ class GroupStore {
     return get(
       `/api/v1/groups/${this.id}/notification-preference`
     ).then(resp => {
-      this.notificationSetting = resp.data.setting;
+      this.notificationSetting = resp.data.desktop_notification_preference;
       return this.notificationSetting;
     });
   };
 
   @action
   saveNotificationSetting = setting => {
-    return post(`/api/v1/groups/${this.id}/update-notification-preference`, {
-      body: { setting }
+    return put(`/api/v1/groups/${this.id}/notification-preference`, {
+      body: {
+        desktop_notification_preference: setting
+      }
     }).then(resp => {
       this.notificationSetting = setting;
       notify.show(`Notification setting saved for group ${this.name}`);
