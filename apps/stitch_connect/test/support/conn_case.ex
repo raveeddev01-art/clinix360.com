@@ -22,7 +22,7 @@ defmodule StitchConnect.Web.ConnCase do
       import StitchConnect.Web.ChannelsTestHelper
       import StitchConnect.Web.Router.Helpers
       import Stitch.Factory
-      import StitchConnect.Web.ConnCase, only: [with_user_session: 2, with_team_subdomain: 2]
+      import StitchConnect.Web.ConnCase, only: [with_user_session: 2, with_team_subdomain: 2, with_api_user: 2]
 
       # The default endpoint for testing
       @endpoint StitchConnect.Web.Endpoint
@@ -67,6 +67,17 @@ defmodule StitchConnect.Web.ConnCase do
   @spec with_team_subdomain(Plug.Conn.t, Stitch.Team.t) :: Plug.Conn.t
   def with_team_subdomain(conn, %Stitch.Team{slug: team_slug}) do
     %Plug.Conn{conn | host: "#{team_slug}.localhost"}
+  end
+
+
+  @doc """
+  Mimics a request being made by a user via the API.
+
+  When calling this function, any existing query params on the conn will be overwritten.
+  """
+  @spec with_api_user(Plug.Conn.t, Stitch.Accounts.User.t) :: Plug.Conn.t
+  def with_api_user(conn, %Stitch.Accounts.User{token: token}) do
+    %Plug.Conn{conn | query_params: %{"authenticationToken" => token}}
   end
 
   setup tags do
