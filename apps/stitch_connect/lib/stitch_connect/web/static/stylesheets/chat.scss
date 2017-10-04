@@ -512,6 +512,11 @@
           }
         }
 
+        .message-body {
+          display: flex;
+          align-items: center;
+        }
+
         p {
           margin: 0;
         }
@@ -534,6 +539,11 @@
           &.icon-star {
             color: #fecb2f;
           }
+        }
+
+        .emoji-mart-emoji {
+          vertical-align: middle;
+          margin-right: 2px;
         }
       }
     }
