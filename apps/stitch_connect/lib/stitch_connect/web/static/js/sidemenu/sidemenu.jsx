@@ -4,6 +4,8 @@ import { withRouter } from "react-router-dom";
 
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
 
@@ -40,10 +42,22 @@ class Sidemenu extends Component {
     return (
       <div id="sidemenu">
         <div className="flex-header">
-          <Dropdown id="dropdown-custom-1">
-            <Dropdown.Toggle noCaret block>
-              {sidemenuStore.teamName}
-              <i className="fa fa-angle-down pull-right" />
+          <div className="team-name">{sidemenuStore.teamName}</div>
+
+          <Dropdown
+            id="dropdown-preferences-menu"
+            pullRight
+            componentClass="div"
+          >
+            <Dropdown.Toggle noCaret bsStyle="link">
+              <OverlayTrigger
+                placement="bottom"
+                overlay={
+                  <Tooltip id="tooltip-preferences">Preferences</Tooltip>
+                }
+              >
+                <i className="fa fa-chevron-down" />
+              </OverlayTrigger>
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="super-colors">

@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 
 @inject("addonStore")
 @observer
@@ -17,7 +19,12 @@ class DotOptions extends Component {
     return (
       <Dropdown id="dropdown-group-controls" pullRight>
         <Dropdown.Toggle noCaret className="more-btn">
-          <i className="fa fa-ellipsis-v" />
+          <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="tooltip-more">More</Tooltip>}
+          >
+            <i className="fa fa-ellipsis-v" />
+          </OverlayTrigger>
         </Dropdown.Toggle>
 
         <Dropdown.Menu className="more-menu">
@@ -34,19 +41,7 @@ class DotOptions extends Component {
             <i className="fa fa-star" /> Starred
           </MenuItem>
           <MenuItem>
-            <i className="fa fa-flask" /> Labs
-          </MenuItem>
-          <MenuItem>
-            <i className="fa fa-address-card-o" /> Referrals
-          </MenuItem>
-          <MenuItem>
-            <i className="fa fa-check-square-o" /> Checklists
-          </MenuItem>
-          <MenuItem>
-            <i className="fa fa-medkit" /> Prescriptions
-          </MenuItem>
-          <MenuItem>
-            <i className="fa fa-bookmark-o" /> Clinical Notes
+            <i className="fa fa-bullhorn" /> Feedback
           </MenuItem>
           <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
             <i className="fa fa-question-circle" /> Help
