@@ -31,12 +31,10 @@ class Message extends Component {
   onVisibleChange = isVisible => {
     const { message, messageStore } = this.props;
 
-    if (!isVisible && messageStore.loadedInitial) {
-      messageStore.onInvisibleMessage(message.id);
-    }
-
-    if (isVisible && messageStore.loadedInitial) {
+    if (isVisible) {
       messageStore.onVisibleMessage(message.id);
+    } else {
+      messageStore.onInvisibleMessage(message.id);
     }
   };
 

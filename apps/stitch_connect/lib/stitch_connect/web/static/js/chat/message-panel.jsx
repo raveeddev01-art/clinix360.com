@@ -19,29 +19,15 @@ export default class MessagePanel extends Component {
   }
 
   onKeyDown = evt => {
+    const { messageStore } = this.props;
+
     if (evt.keyCode === 27) {
       // ESC key
-      this.markAsRead();
+      messageStore.markAsRead();
     }
   };
 
-  onUnreadMessagesCountClick = () => {};
-
-  onMarkAsReadClick = () => {
-    this.markAsRead();
-  };
-
-  markAsRead = () => {
-    this.props.messageStore.markAsRead();
-  };
-
-  handleJoin = () => {
-    const { groupStore: group } = this.props;
-
-    group.join();
-  };
-
-  loadMore = () => {
+  onUnreadMessagesCountClick = () => {
     const { messageStore } = this.props;
 
     if (messageStore.firstUnreadMessage) {
@@ -51,6 +37,18 @@ export default class MessagePanel extends Component {
       // if unread messages are not loaded yet, just load next batch
       messageStore.loadPastUnreadMessages();
     }
+  };
+
+  onMarkAsReadClick = () => {
+    const { messageStore } = this.props;
+
+    messageStore.markAsRead();
+  };
+
+  handleJoin = () => {
+    const { groupStore: group } = this.props;
+
+    group.join();
   };
 
   renderUnreadMessagesBar() {

@@ -242,6 +242,10 @@ class MessageStore {
   }
 
   onInvisibleMessage = id => {
+    if (!this.loadedInitial) {
+      return;
+    }
+
     const currentPos = this.messagePositions[this.groupTopic];
     if (!currentPos || currentPos === id) {
       const index = this.messages.findIndex(m => m.id === id);
@@ -252,6 +256,10 @@ class MessageStore {
   };
 
   onVisibleMessage = id => {
+    if (!this.loadedInitial) {
+      return;
+    }
+
     const currentPos = this.messagePositions[this.groupTopic];
     if (!currentPos || currentPos > id) {
       this.messagePositions[this.groupTopic] = id;
