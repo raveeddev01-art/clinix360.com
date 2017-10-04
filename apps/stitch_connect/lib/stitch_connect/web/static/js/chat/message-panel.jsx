@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
+import moment from "moment";
 
 import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
@@ -52,8 +53,8 @@ export default class MessagePanel extends Component {
     }
   };
 
-  render() {
-    const { groupStore: group, messageStore } = this.props;
+  renderUnreadMessagesBar() {
+    const { messageStore } = this.props;
     const unreadMessagesTooltipClass = classNames("unread-messages-tooltip", {
       "should-jump": messageStore.firstUnreadMessageVisibility !== "visible"
     });
@@ -64,33 +65,41 @@ export default class MessagePanel extends Component {
     });
 
     return (
+      messageStore.unreadMessagesCount &&
+      <div className={unreadMessagesTooltipClass}>
+        <div
+          role="button"
+          className="messages-count-info"
+          onClick={this.onUnreadMessagesCountClick}
+        >
+          <div className="jump-button">
+            <i className={jumpArrowClass} />
+            <span className="jump-hover">Jump</span>
+          </div>
+          <div className="messages-count">
+            {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}{" "}
+            since {moment(messageStore.lastReadAt).format("h:mm A on MMMM Do")}
+          </div>
+        </div>
+
+        <div
+          role="button"
+          className="mark-as-read-button"
+          onClick={this.onMarkAsReadClick}
+        >
+          Mark as read
+          <i className="fa fa-close" />
+        </div>
+      </div>
+    );
+  }
+  render() {
+    const { groupStore: group } = this.props;
+
+    return (
       <div id="chat-container">
         <div className="container-bars">
-          {messageStore.unreadMessagesCount > 0 &&
-            <div className={unreadMessagesTooltipClass}>
-              <div
-                role="button"
-                className="messages-count-info"
-                onClick={this.onUnreadMessagesCountClick}
-              >
-                <div className="jump-button">
-                  <i className={jumpArrowClass} />
-                  <span className="jump-hover">Jump</span>
-                </div>
-                <div className="messages-count">
-                  {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}
-                </div>
-              </div>
-
-              <div
-                role="button"
-                className="mark-as-read-button"
-                onClick={this.onMarkAsReadClick}
-              >
-                Mark as read
-                <i className="fa fa-close" />
-              </div>
-            </div>}
+          {this.renderUnreadMessagesBar()}
           <UploadProgress />
         </div>
 
