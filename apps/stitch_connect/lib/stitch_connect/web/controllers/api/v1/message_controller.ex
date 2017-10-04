@@ -4,8 +4,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
                 Message, MessageAction, MessageQueries}
   alias StitchConnect.Web.{Endpoint, EventsChannel}
 
-  plug StitchConnect.Plug.ApiAuthenticate
-
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
     case GroupAuthorization.can_view?(group_id, user.id) do

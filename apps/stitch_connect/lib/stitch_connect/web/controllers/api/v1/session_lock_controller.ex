@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.SessionLockController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate
 
   def lock(conn, _) do
     conn

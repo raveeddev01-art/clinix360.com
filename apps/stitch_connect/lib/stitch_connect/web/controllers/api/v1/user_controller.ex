@@ -1,9 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:search, :index, :send_invite, :update,
-                                              :deactivate, :promote_admin, :revoke_admin]
-  plug StitchConnect.Plug.TeamAdminOnly when action in [:deactivate, :promote_admin, :revoke_admin]
-
   alias Stitch.{Repo, Accounts.User, UserQueries}
 
   def index(conn, _) do

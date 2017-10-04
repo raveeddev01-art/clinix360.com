@@ -3,8 +3,6 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   alias Stitch.{Group, GroupUser, GroupQueries, GroupAuthorization}
   alias StitchConnect.Web.EventsChannel
 
-  plug StitchConnect.Plug.ApiAuthenticate
-
   def index(conn, %{"slug" => slug}) do
     user = conn.assigns.current_user
     case GroupQueries.find_by_slug(slug, user) do

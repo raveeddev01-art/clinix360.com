@@ -110,6 +110,7 @@ class PresenceStore {
       this.teamLobbyChannel.push("locked");
       this.teamLobbyChannel.push("became_inactive");
       this.teamLobbyChannel.push("became_away");
+      this.rootStore.channelStore.leaveAllChannelsButTeamLobby();
     });
   };
 

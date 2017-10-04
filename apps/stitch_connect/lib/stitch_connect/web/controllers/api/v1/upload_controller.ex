@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.UploadController do
   use StitchConnect.Web, :controller
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index, :create]
 
   def index(conn, params) do
     skip = Map.get(params, "skip", 0)

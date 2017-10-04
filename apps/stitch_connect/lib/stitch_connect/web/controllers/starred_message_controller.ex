@@ -2,8 +2,6 @@ defmodule StitchConnect.Web.Api.V1.StarredMessageController do
   use StitchConnect.Web, :controller
   alias Stitch.MessageQueries
 
-  plug StitchConnect.Plug.ApiAuthenticate when action in [:index]
-
   def index(conn, params) do
     opts =
       params
