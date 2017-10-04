@@ -6,7 +6,7 @@ import Promise from "bluebird";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
-  @observable messageDivs = {}; // Div elements of messages loaded in the chat div
+  @observable messageElements = {}; // Div elements of messages loaded in the chat div
   @observable messages = []; // messages currently loaded
   @observable messageInEdit = null; // Message currently being edited
   @observable textInEdit = ""; // Current text of message in edit
@@ -17,6 +17,7 @@ class MessageStore {
   @observable mentionsCount = 0;
   @observable lastReadAt = null;
   @observable newMessageLinePosition = 0;
+  @observable groupCursor = null;
   @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
   @observable isLoadingRecent = false;
   @observable isLoadingPast = false;
@@ -68,7 +69,7 @@ class MessageStore {
   get mountedAllMessages() {
     return (
       this.messages.length > 0 &&
-      Object.keys(this.messageDivs).length === this.messages.length
+      Object.keys(this.messageElements).length === this.messages.length
     );
   }
 
@@ -93,15 +94,32 @@ class MessageStore {
     return this.getMessageByIndex(this.unreadMessagesCount - 1);
   }
 
+  /**
+   * Returns the position of first unread message in chat div
+   * 
+   * Possible return values are:
+   *  'hidden-up': message is hidden in up the chat div
+   *  'visible': message is visible
+   *  'hidden-down': message is hidden in down the chat div
+   */
   @computed
   get firstUnreadMessageVisibility() {
-    if (!this.firstUnreadMessage) {
+    if (!this.firstUnreadMessage || !this.groupCursor) {
       return "hidden-up";
     }
 
-    return this.getElementVisibility(
-      this.messageDivs[this.firstUnreadMessage.id]
-    );
+    const messageElement = this.messageElements[this.firstUnreadMessage.id];
+    if (!messageElement) {
+      return "hidden-up";
+    }
+
+    if (messageElement.visible) {
+      return "visible";
+    }
+
+    return this.firstUnreadMessage.id < this.groupCursor
+      ? "hidden-up"
+      : "hidden-down";
   }
 
   @computed
@@ -140,7 +158,7 @@ class MessageStore {
     this.loadedAllRecent = false;
     this.loadedInitial = false;
     this.messages = [];
-    this.messageDivs = {};
+    this.messageElements = {};
     this.messageInEdit = null;
     this.textInEdit = "";
   }
@@ -167,33 +185,6 @@ class MessageStore {
     }
 
     return this.messages[index];
-  }
-
-  /**
-   * Returns the position of element in chat div
-   * 
-   * Possible return values are:
-   *  'hidden-up': message is hidden in up the chat div
-   *  'visible': message is visible
-   *  'hidden-down': message is hidden in down the chat div
-   */
-  getElementVisibility(element) {
-    if (!element) {
-      return "hidden-up";
-    }
-
-    const chatDivBoundingRect = this.chatDiv.getBoundingClientRect();
-    const elementBoundingRect = element.getBoundingClientRect();
-
-    if (elementBoundingRect.top < chatDivBoundingRect.top) {
-      return "hidden-up";
-    }
-
-    if (elementBoundingRect.bottom > chatDivBoundingRect.bottom) {
-      return "hidden-down";
-    }
-
-    return "visible";
   }
 
   // Scroll to specific message in chat div instantly
@@ -250,11 +241,16 @@ class MessageStore {
       return;
     }
 
+    if (this.messageElements[id]) {
+      this.messageElements[id].visible = false;
+    }
+
     const cursor = this.groupCursors[this.groupId];
-    if (!cursor || cursor === id) {
+    if (!this.groupCursor || this.groupCursor === id) {
       const index = this.messages.findIndex(m => m.id === id);
-      if (this.messages[index - 1]) {
-        this.groupCursors[this.groupId] = this.messages[index - 1].id;
+      if (index > 0) {
+        this.groupCursor = this.messages[index - 1].id;
+        this.groupCursors[this.groupId] = this.groupCursor;
       }
     }
   };
@@ -264,9 +260,13 @@ class MessageStore {
       return;
     }
 
-    const cursor = this.groupCursors[this.groupId];
-    if (!cursor || cursor > id) {
-      this.groupCursors[this.groupId] = id;
+    if (this.messageElements[id]) {
+      this.messageElements[id].visible = true;
+    }
+
+    if (!this.groupCursor || this.groupCursor > id) {
+      this.groupCursor = id;
+      this.groupCursors[this.groupId] = this.groupCursor;
     }
 
     if (this.firstUnreadMessage && this.firstUnreadMessage.id === id) {
@@ -284,20 +284,21 @@ class MessageStore {
    * @param {Integer} messageId ID of message to scroll to
    */
   centerMessage(messageId) {
-    const messageDiv = this.messageDivs[messageId];
+    const messageElement = this.messageElements[messageId];
 
     // If message is not mounted yet, return
-    if (!messageDiv) {
+    if (!messageElement) {
       return;
     }
 
     // Scroll only when message is not visible
-    const offset = (this.chatDiv.offsetHeight - messageDiv.offsetHeight) / 2;
+    const offset =
+      (this.chatDiv.offsetHeight - messageElement.div.offsetHeight) / 2;
 
     this.scrollTo(messageId, 0, null, -offset);
 
     // Highlight the message jumped to by fading out for 3 seconds
-    $(messageDiv).fadeTo(0, 0.5).fadeTo(3000, 1);
+    $(messageElement.div).fadeTo(0, 0.5).fadeTo(3000, 1);
   }
 
   /**
@@ -399,7 +400,13 @@ class MessageStore {
    * @param {DOMElement} messageDiv
    */
   onMessageMounted(messageId, messageDiv) {
-    this.messageDivs = { ...this.messageDivs, [messageId]: messageDiv };
+    this.messageElements = {
+      ...this.messageElements,
+      [messageId]: {
+        div: messageDiv,
+        visible: false
+      }
+    };
   }
 
   /**
