@@ -264,7 +264,7 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:ok, json}, socket}
   end
 
-  defp mark_as_unread_response({:ok, %{unread_messages: {_, messages}, mark_group_as_unread: {1, [group_user]}}}, user, socket) do
+  defp mark_as_unread_response({:ok, %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}}, user, socket) do
     messages = MessageQueries.load_info(messages)
     messages_json = MessageView.render("index.json", %{messages: messages})
     json = %{
