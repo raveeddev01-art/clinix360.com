@@ -33,9 +33,9 @@ class People extends Component {
     this.toggleTeamModal();
   };
 
-  showinviteModal = evt => {
+  showInviteModal = evt => {
     evt.preventDefault();
-    this.toggleinviteModal();
+    this.toggleInviteModal();
   };
 
   render() {
@@ -51,7 +51,7 @@ class People extends Component {
                 <Tooltip id="open-a-direct-message">Direct Message</Tooltip>
               }
             >
-              <a href onClick={this.showTeamModal}>
+              <a role="button" onClick={this.showTeamModal}>
                 {heading}
               </a>
             </OverlayTrigger>
@@ -63,13 +63,26 @@ class People extends Component {
               <Tooltip id="open-a-direct-message">Direct Message</Tooltip>
             }
           >
-            <a href onClick={this.showTeamModal}>
+            <a onClick={this.showTeamModal}>
               <i className="fa fa-plus-square-o" />
             </a>
           </OverlayTrigger>
         </div>
 
         {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
+
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip id="invite-people-modal">Invite People</Tooltip>}
+        >
+          <a
+            role="button"
+            className="invite-link"
+            onClick={this.showInviteModal}
+          >
+            Invite People
+          </a>
+        </OverlayTrigger>
 
         <CreateDMModal
           show={this.state.showTeamModal}
