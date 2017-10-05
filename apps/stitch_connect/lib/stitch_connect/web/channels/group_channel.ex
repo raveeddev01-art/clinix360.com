@@ -250,7 +250,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  defp mark_as_read_response({:ok, %{mark_messages_as_read: {_, messages}, update_last_read_at: {1, [group_user]}}}, user, socket) do
+  defp mark_as_read_response({:ok, %{mark_messages_as_read: {_, messages}, mark_group_as_read: {1, [group_user]}}}, user, socket) do
     messages = MessageQueries.load_info(messages)
     messages_json = MessageView.render("index.json", %{messages: messages})
     json = %{

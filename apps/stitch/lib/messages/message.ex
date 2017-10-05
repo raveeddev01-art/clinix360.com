@@ -3,7 +3,7 @@ defmodule Stitch.Message do
   import Ecto.Changeset
   import Ecto.Query
   alias Ecto.Multi
-  alias Stitch.{Repo, Message, GroupUser}
+  alias Stitch.{Repo, Message, GroupUser, GroupQueries}
 
   @valid_types ["chat", "system", "upload"]
   @unread_limit 30
@@ -25,7 +25,7 @@ defmodule Stitch.Message do
     timestamps()
   end
 
-  def changeset(%Stitch.Message{} = struct, params) do
+  def changeset(%Message{} = struct, params) do
     struct
     |> cast(params, [:user_id, :group_id, :deleted, :text_content, :fields, :type, :pinned, :pinned_by_id, :pinned_at, :mentioned_user_ids])
     |> validate_required([:user_id, :group_id, :deleted, :text_content])
@@ -56,12 +56,12 @@ defmodule Stitch.Message do
   def create(group_id, user, params, online_in_group \\ [])
 
   def create(group_id, user, %{"type" => type} = attrs, online_in_group) when type in ["chat", "upload"] do
-    group = Stitch.GroupQueries.get_by_id(group_id)
-    group_user = Repo.get_by(Stitch.GroupUser, user_id: user.id, group_id: group.id)
+    group = GroupQueries.get_by_id(group_id)
+    group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
-    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"])
-    notify_user_ids = Stitch.Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
+    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"])
+    notify_user_ids = Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
     {read_status, recipients} = users |> Enum.reduce({%{}, []}, fn (recipient, {acc_map, acc_list}) ->
       acc_map = if recipient.id == user.id, do: acc_map, else: Map.put(acc_map, to_string(recipient.id), nil)
       acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
@@ -101,10 +101,10 @@ defmodule Stitch.Message do
   end
 
   def update(message, attributes) do
-    group = Stitch.GroupQueries.get_by_id(message.group_id)
+    group = GroupQueries.get_by_id(message.group_id)
     author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
-    mentioned_user_ids = Stitch.Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"])
+    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"])
 
     message
     |> user_edit_changeset(%{text_content: attributes["text_content"], mentioned_user_ids: mentioned_user_ids})
@@ -123,7 +123,7 @@ defmodule Stitch.Message do
     if below_unread_limit?(group_id, last_read_at, unread_limit) do
       multi
       |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [])
-      |> Multi.update_all(:update_last_read_at, mark_group_as_read(group_id, user_id), [])
+      |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [])
     else
       multi
     end
@@ -143,28 +143,28 @@ defmodule Stitch.Message do
   end
 
   def increment_unread_counter(group_id, user_ids) do
-    Stitch.GroupUser
+    GroupUser
     |> where([gu], gu.group_id == ^group_id)
     |> where([gu], gu.user_id in ^user_ids)
     |> update([gu], inc: [unread_messages_count: ^1])
   end
 
   def decrement_unread_counter(message) do
-    Stitch.GroupUser
+    GroupUser
     |> where([gu], gu.group_id == ^message.group_id)
     |> where([gu], gu.user_id != ^message.user_id)
     |> update([gu], set: [unread_messages_count: fragment("greatest(? - 1, 0)", gu.unread_messages_count)])
   end
 
   def mention_users(group_id, mentioned_user_ids) do
-    Stitch.GroupUser
+    GroupUser
     |> where([gu], gu.group_id == ^group_id)
     |> where([gu], gu.user_id in ^mentioned_user_ids)
     |> update([gu], inc: [mentions_count: ^1])
   end
 
   def unmention_users(message) do
-    Stitch.GroupUser
+    GroupUser
     |> where([gu], gu.group_id == ^message.group_id)
     |> where([gu], gu.user_id in ^message.mentioned_user_ids)
     |> update([gu], set: [mentions_count: fragment("greatest(? - 1, 0)", gu.mentions_count)])
@@ -190,7 +190,7 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
-  def mark_messages_as_unread(group_id, user_id, message_id) do
+  defp mark_messages_as_unread(group_id, user_id, message_id) do
     Message
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.id >= ^message_id)
@@ -199,7 +199,7 @@ defmodule Stitch.Message do
     |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => nil})])
   end
 
-  def mark_group_as_unread(group_id, user_id, message) do
+  defp mark_group_as_unread(group_id, user_id, message) do
     %{mentions_count: mentions_count, unread_messages_count: unread_messages_count} = count_after(group_id, user_id, message.id)
 
     GroupUser
@@ -211,7 +211,7 @@ defmodule Stitch.Message do
     ])
   end
 
-  def count_after(group_id, user_id, message_id) do
+  defp count_after(group_id, user_id, message_id) do
     Message
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.id >= ^message_id)
@@ -225,11 +225,11 @@ defmodule Stitch.Message do
   def mark_as_read(user_id, group_id) do
     Multi.new
     |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [], [returning: true])
-    |> Multi.update_all(:update_last_read_at, mark_group_as_read(group_id, user_id), [], [returning: true])
+    |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [], [returning: true])
     |> Repo.transaction
   end
 
-  def mark_messages_as_read(group_id, user_id) do
+  defp mark_messages_as_read(group_id, user_id) do
     Message
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.user_id != ^user_id)
@@ -237,12 +237,12 @@ defmodule Stitch.Message do
     |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => NaiveDateTime.utc_now})])
   end
 
-  def mark_messages_as_read(group_id, user_id, message_id) do
+  defp mark_messages_as_read(group_id, user_id, message_id) do
     mark_messages_as_read(group_id, user_id)
     |> where([m], m.id < ^message_id)
   end
 
-  def mark_group_as_read(group_id, user_id) do
+  defp mark_group_as_read(group_id, user_id) do
     GroupUser
     |> where(group_id: ^group_id, user_id: ^user_id)
     |> update([m], set: [last_read_at: ^DateTime.utc_now, mentions_count: 0, unread_messages_count: 0])
