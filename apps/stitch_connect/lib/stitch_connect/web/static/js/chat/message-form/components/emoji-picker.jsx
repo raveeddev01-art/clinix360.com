@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import { Picker } from "emoji-mart";
+import cx from "classnames";
 
 class EmojiPicker extends Component {
   constructor(...args) {
@@ -44,16 +45,14 @@ class EmojiPicker extends Component {
 
     return (
       <div className="emoji-picker-container">
-        {showPicker && (
-          <div
-            className="emoji-picker-wrapper"
-            ref={node => {
-              this.pickerEl = node;
-            }}
-          >
-            <Picker set="apple" autoFocus onClick={onSelectEmoji} />
-          </div>
-        )}
+        <div
+          className={cx("emoji-picker-wrapper", { hidden: !showPicker })}
+          ref={node => {
+            this.pickerEl = node;
+          }}
+        >
+          <Picker set="apple" autoFocus onClick={onSelectEmoji} />
+        </div>
         <a
           role="link"
           className="message-form-action-item"
