@@ -54,7 +54,7 @@ class CreateDMModal extends Component {
     return (
       <Modal className="sidemenu-modal" show={this.state.show}>
         <Modal.Header>
-          <Modal.Title>People</Modal.Title>
+          <Modal.Title>Direct Messages</Modal.Title>
           <a role="link" onClick={this.props.toggle}>
             <i className="fa fa-close" />
           </a>
@@ -85,9 +85,7 @@ class CreateDMModal extends Component {
                 >
                   <i className={iconClasName} />
                   {` ${user.first_name} ${user.last_name} `}
-                  <span className="text-muted">
-                    {user.username}
-                  </span>
+                  <span className="text-muted">{user.username}</span>
                 </div>
               );
             })}

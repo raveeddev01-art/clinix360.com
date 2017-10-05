@@ -45,17 +45,25 @@ class People extends Component {
       <div className="menu-nav people m-b-20">
         <div className="heading">
           <h5>
-            <a href onClick={this.showTeamModal}>
-              {heading}
-            </a>
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="open-a-direct-message">Direct Message</Tooltip>
+              }
+            >
+              <a href onClick={this.showTeamModal}>
+                {heading}
+              </a>
+            </OverlayTrigger>
           </h5>
+
           <OverlayTrigger
             placement="top"
             overlay={
-              <Tooltip id="open-a-direct-message">Invite People</Tooltip>
+              <Tooltip id="open-a-direct-message">Direct Message</Tooltip>
             }
           >
-            <a href onClick={this.showInviteModal}>
+            <a href onClick={this.showTeamModal}>
               <i className="fa fa-plus-square-o" />
             </a>
           </OverlayTrigger>

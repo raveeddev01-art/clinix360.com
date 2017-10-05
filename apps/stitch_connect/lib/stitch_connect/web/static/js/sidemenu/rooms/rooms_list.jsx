@@ -35,13 +35,19 @@ export default class RoomsList extends Component {
       <div className="menu-nav m-b-20">
         <div className="heading">
           <h5>
-            <a role="button" onClick={this.toggleGroupsModal}>
-              {heading}
-            </a>
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip id="browse-groups">Browse Rooms</Tooltip>}
+            >
+              <a role="button" onClick={this.toggleGroupsModal}>
+                {heading}
+              </a>
+            </OverlayTrigger>
           </h5>
+
           <OverlayTrigger
             placement="top"
-            overlay={<Tooltip id="create-new-group">Create new room</Tooltip>}
+            overlay={<Tooltip id="create-new-group">Create Room</Tooltip>}
           >
             <a role="button" onClick={this.toggleCreateGroupModal}>
               <i className="fa fa-plus-square-o" />
