@@ -31,17 +31,21 @@ class Message extends Component {
   onVisibleChange = isVisible => {
     const { message, messageStore } = this.props;
 
-    if (!isVisible && messageStore.loadedInitial) {
-      messageStore.onInvisibleMessage(message.id);
-    }
-
-    if (isVisible && messageStore.loadedInitial) {
+    if (isVisible) {
       messageStore.onVisibleMessage(message.id);
+    } else {
+      messageStore.onInvisibleMessage(message.id);
     }
   };
 
   handleClick = () => {
     this.setState({ selected: !this.state.selected });
+  };
+
+  markAsUnread = () => {
+    const { message, messageStore } = this.props;
+
+    messageStore.markAsUnread(message.id);
   };
 
   edit = () => {
@@ -87,7 +91,9 @@ class Message extends Component {
     }
 
     const editedTooltip = (
-      <Tooltip id="edited-tooltip">{moment(editedAt).calendar()}</Tooltip>
+      <Tooltip id="edited-tooltip">
+        {moment(editedAt).calendar()}
+      </Tooltip>
     );
 
     return (
@@ -172,28 +178,32 @@ class Message extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {message.type === "upload" && (
+          <MenuItem onClick={this.markAsUnread}>
+            <span>
+              <i className="fa fa-circle" />&nbsp;Mark unread
+            </span>
+          </MenuItem>
+
+          {message.type === "upload" &&
             <MenuItem target="_blank" href={message.fields.url}>
               <span>
                 <i className="fa fa-download" />&nbsp;Download
               </span>
-            </MenuItem>
-          )}
-          {mine && (
+            </MenuItem>}
+
+          {mine &&
             <MenuItem onClick={this.edit}>
               <span>
                 <i className="fa fa-pencil" />&nbsp;Edit
               </span>
-            </MenuItem>
-          )}
+            </MenuItem>}
 
-          {mine && (
+          {mine &&
             <MenuItem onClick={this.delete}>
               <span>
                 <i className="fa fa-trash" />&nbsp;Delete
               </span>
-            </MenuItem>
-          )}
+            </MenuItem>}
 
           <CopyToClipboard text={message.text_content} onCopy={this.copy}>
             <MenuItem>
@@ -202,11 +212,13 @@ class Message extends Component {
               </span>
             </MenuItem>
           </CopyToClipboard>
+
           <MenuItem onClick={this.toggleStar}>
             <span>
               <i className="fa fa-star-o" />&nbsp;{message.starred ? "Unstar" : "Star"}
             </span>
           </MenuItem>
+
           <MenuItem onClick={this.togglePin}>
             <span>
               <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
@@ -218,56 +230,59 @@ class Message extends Component {
   }
 
   render() {
-    const { message, user, timestamp, messageStore } = this.props;
-    const { chatDiv } = messageStore;
-    const elementClassName = cx({ selected: this.state.selected });
-    const containerClassName = cx("message-pool-container", {
+    const { message, messageStore } = this.props;
+    const { user, inserted_at: timestamp } = message;
+    const { chatDiv, newMessageLineMessage } = messageStore;
+    const elementClassName = cx("message", { selected: this.state.selected });
+    const containerClassName = cx("message-container", {
       mine: user.id === currentUser.id
     });
+
     return (
-      <div
-        className={containerClassName}
-        ref={div => {
-          this.messageDiv = div;
-        }}
-      >
-        <div className="message-pool">
-          <div className="message-pool-content">
-            <VisibilitySensor
-              active
-              onChange={this.onVisibleChange}
-              intervalCheck={false}
-              scrollCheck
-              scrollThrottle={100}
-              containment={chatDiv}
-              offset={{ top: 70 }}
-            >
-              <Element name={`msg_${message.id}`} className={elementClassName}>
-                <div className="message">
-                  <div className="message-header">
-                    <div className="name">
-                      {user.first_name} {user.last_name}
-                    </div>
+      <div>
+        {newMessageLineMessage &&
+          newMessageLineMessage.id === message.id &&
+          <Element name="newMessageBanner" className="new-message-banner">
+            <div className="banner-text">New Messages</div>
+          </Element>}
 
-                    <div
-                      className="time"
-                      data-time={moment(timestamp).format("HH:mm A")}
-                    >
-                      {this.renderActions(message)}
-                    </div>
-
-                    {this.renderStar(message)}
-                    {this.renderPin(message)}
-                  </div>
-
-                  <div>
-                    <MessageContent message={message} />
-                    {this.renderEdited(message)}
-                  </div>
+        <div
+          className={containerClassName}
+          ref={div => {
+            this.messageDiv = div;
+          }}
+        >
+          <VisibilitySensor
+            active
+            onChange={this.onVisibleChange}
+            intervalCheck={false}
+            scrollCheck
+            scrollThrottle={100}
+            containment={chatDiv}
+          >
+            <Element name={`msg_${message.id}`} className={elementClassName}>
+              <div className="message-header">
+                <div className="name">
+                  {user.first_name} {user.last_name}
                 </div>
-              </Element>
-            </VisibilitySensor>
-          </div>
+
+                <div
+                  className="time"
+                  data-time={moment(timestamp).format("HH:mm A")}
+                >
+                  {this.renderActions(message)}
+                </div>
+
+                {this.renderStar(message)}
+                {this.renderPin(message)}
+              </div>
+
+              <div>
+                <MessageContent message={message} />
+                {this.renderEdited(message)}
+              </div>
+            </Element>
+          </VisibilitySensor>
         </div>
       </div>
     );

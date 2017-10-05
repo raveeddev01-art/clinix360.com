@@ -7,6 +7,7 @@ class SidemenuStore {
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
+  @observable groupCursors = {}; // { group_id: message_id }
 
   favicon = null;
   notificationAudio = null;
@@ -30,7 +31,7 @@ class SidemenuStore {
   @computed
   get normalGroups() {
     return this.groups.filter(
-      group => group.type === "regular" && group.favorite == false
+      group => group.type === "regular" && group.favorite === false
     );
   }
 
@@ -114,6 +115,11 @@ class SidemenuStore {
     if (index > -1) {
       Object.assign(this.groups[index], data);
     }
+  };
+
+  @action
+  updateGroupCursor = (groupId, cursor) => {
+    this.groupCursors[groupId] = cursor;
   };
 
   loadUsers = () => {

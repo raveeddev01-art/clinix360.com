@@ -14,11 +14,10 @@ defmodule Stitch.MessageQueries do
     user = Repo.get!(User, user_id)
 
     user_groups_ids =
-      from(g in Group,
-      where: g.team_id == ^user.team_id,
-      left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id,
-      where: g.public or not is_nil(gu.id),
-      select: g.id) |> Repo.all
+      GroupUser
+      |> where([gu], gu.user_id == ^user_id)
+      |> select([gu], gu.group_id)
+      |> Repo.all
 
     limit = Keyword.get(opts, :limit, 30)
     query =
@@ -127,4 +126,30 @@ defmodule Stitch.MessageQueries do
     |> Paginator.new(skip: skip, limit: limit)
   end
   def get_uploads_for_user(user_id, skip, limit), do: get_uploads_for_user(Repo.get!(User, user_id), skip, limit)
+
+  @doc """
+  Retrieves all messages a given user was recently mentioned in.
+
+  ## Options
+    * `:limit` - Maximum number of messages to return. Default limit is 30.
+    * `:skip` - Number of messages to offset. Default skip amount is 0.
+
+  ## Example
+
+      iex> user_mentioned_in(%User{...}, limit: 10)
+      %Paginator{...}
+  """
+  @spec user_mentioned_in(User.t, [{:limit | :skip, integer}]) :: Paginator.t
+  def user_mentioned_in(%User{id: user_id}, opts \\ []) do
+    limit = opts[:limit] || 30
+    offset = opts[:skip] || 0
+
+    query =
+      from m in Message,
+      where: ^user_id in m.mentioned_user_ids,
+      order_by: [desc: m.inserted_at],
+      preload: [:user]
+
+    Paginator.new(query, limit: limit, skip: offset)
+  end
 end

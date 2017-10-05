@@ -21,13 +21,11 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
+    const { sidemenuStore } = this.rootStore;
     const channel = this.join(this.eventChannelTopic, options);
 
-    this.eventChannel.on("new_group", this.rootStore.sidemenuStore.onNewGroup);
-    this.eventChannel.on(
-      "new_message",
-      this.rootStore.sidemenuStore.onNewMessage
-    );
+    this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
+    this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
 
     return channel;
   }

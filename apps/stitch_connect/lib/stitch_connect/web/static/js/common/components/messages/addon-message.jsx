@@ -39,7 +39,7 @@ class AddonMessage extends Component {
     const { message } = this.props;
 
     return (
-      <div className="message-pool-container addon">
+      <div className="message-container addon">
         <div className="addon-message-actions">
           <OverlayTrigger
             placement="top"
@@ -78,7 +78,7 @@ class AddonMessage extends Component {
             </a>
           </OverlayTrigger>
         </div>
-        <div className="message-pool">
+        <div className="message">
           <MessageHeader timestamp={message.inserted_at} user={message.user} />
           <MessageContent message={message} />
           <MessageFooter message={message} />
