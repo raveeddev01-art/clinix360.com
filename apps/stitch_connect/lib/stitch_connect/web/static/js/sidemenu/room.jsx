@@ -27,7 +27,9 @@ class Room extends Component {
     const { type, users } = this.props.room;
     let iconClass;
 
-    if (type === "regular") {
+    if (type === "regular" && this.props.room.public === false) {
+      iconClass = "fa-lock";
+    } else if (type === "regular") {
       iconClass = "fa-comments";
     } else if (type === "dm") {
       let otherUser = users.find(user => user.id !== currentUser.id);
@@ -71,13 +73,8 @@ class Room extends Component {
         <div className="item-icon">
           <i className={this.getIconClass()} />
         </div>
-        <div className="item-text">
-          {name}
-        </div>
-        {badge > 0 &&
-          <div className="item-badge text-center">
-            {badge}
-          </div>}
+        <div className="item-text">{name}</div>
+        {badge > 0 && <div className="item-badge text-center">{badge}</div>}
       </NavLink>
     );
   }

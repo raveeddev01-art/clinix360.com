@@ -100,11 +100,13 @@
         font-size: 15px;
         text-decoration: none;
         border-radius: 3px;
-        padding: 7px 10px;
+        padding: 7px 10px 7px 7px;
 
         .item-icon {
           display: flex;
-          margin-right: 8px;
+          justify-content: center;
+          flex-basis: 21px;
+          margin-right: 4px;
 
           i.fa-circle,
           i.fa-circle-o {
