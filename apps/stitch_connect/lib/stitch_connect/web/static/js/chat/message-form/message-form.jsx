@@ -8,6 +8,7 @@ import TypingUsers from "./components/typing-users";
 import JumpingIndicator from "./components/jumping-indicator";
 import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
+import EmojiSearch from "./components/emoji-search";
 
 @inject("messageStore")
 @observer
@@ -18,7 +19,8 @@ class MessageForm extends Component {
     this.state = {
       text: "",
       openMentionMenu: false,
-      userFilter: ""
+      searchFilter: "",
+      openEmojiSearch: false
     };
 
     this.typingTimeoutId = null;
@@ -29,54 +31,68 @@ class MessageForm extends Component {
   };
 
   onKeyDown = evt => {
-    const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
-    const { openMentionMenu } = this.state;
-
-    if ([37, 38, 39, 40].indexOf(evt.keyCode) > -1 && openMentionMenu) {
+    const { openMentionMenu, openEmojiSearch } = this.state;
+    if (
+      [37, 38, 39, 40, 13].indexOf(evt.keyCode) > -1 &&
+      (openMentionMenu || openEmojiSearch)
+    ) {
       evt.preventDefault();
-      return;
     }
 
     if (evt.keyCode === 13) {
-      // enter
-
-      if (!openMentionMenu) {
-        if (messageInEdit) {
-          messageStore.finishEdit();
-        } else if (this.state.text) {
-          this.props.messageStore.sendMessage(this.state.text).then(() => {
-            this.setState({ text: "" });
-            this.typingStopped();
-          });
-        }
+      if (!openMentionMenu && !openEmojiSearch) {
+        this.onEnter();
       }
-    } else if (evt.keyCode === 27) {
+    }
+  };
+
+  onEnter = () => {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+
+    if (messageInEdit) {
+      messageStore.finishEdit();
+    } else if (this.state.text) {
+      this.props.messageStore.sendMessage(this.state.text.trim()).then(() => {
+        this.setState({ text: "" });
+        this.typingStopped();
+      });
+    }
+  };
+
+  onKeyUp = evt => {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+    const { openMentionMenu, openEmojiSearch } = this.state;
+
+    if (evt.keyCode === 27) {
       // escape
 
-      if (openMentionMenu) {
-        this.setState({ openMentionMenu: false });
+      if (openMentionMenu || openEmojiSearch) {
+        this.setState({ openMentionMenu: false, openEmojiSearch: false });
       } else if (messageInEdit) {
         messageStore.cancelEdit();
       }
     } else {
       // other keys
       // get the word of current cursor
-      const word = this.getCurrentWord() + String.fromCharCode(evt.keyCode);
+      const word = this.getCurrentWord();
+      const firstLetter = word.substr(0, 1);
+      const filter = word.substr(1);
+      this.setState({
+        searchFilter: "",
+        openMentionMenu: false,
+        openEmojiSearch: false
+      });
 
-      // wants to mention another user
-      if (word.substr(0, 1) === "@") {
-        const filter = word.substr(1);
-
-        this.setState({
-          userFilter: filter,
-          openMentionMenu: true
-        });
-      } else {
-        this.setState({
-          userFilter: "",
-          openMentionMenu: false
-        });
+      switch (firstLetter) {
+        case "@":
+          this.setState({ searchFilter: filter, openMentionMenu: true });
+          break;
+        case ":":
+          this.setState({ searchFilter: filter, openEmojiSearch: true });
+          break;
+        default:
       }
 
       this.typingStarted();
@@ -84,7 +100,21 @@ class MessageForm extends Component {
   };
 
   onSelectMention = username => {
-    this.replaceCurrentWord(`@${username} `);
+    if (username) {
+      this.replaceCurrentWord(`@${username} `);
+    } else {
+      this.onEnter();
+    }
+    this.setState({ searchFilter: "", openMentionMenu: false });
+  };
+
+  onSelectEmoji = emoji => {
+    if (emoji) {
+      this.replaceCurrentWord(`${emoji} `);
+    } else {
+      this.onEnter();
+    }
+    this.setState({ searchFilter: "", openEmojiSearch: false });
   };
 
   getText = () => {
@@ -102,8 +132,8 @@ class MessageForm extends Component {
   getCurrentWord = () => {
     const str = this.getText();
     const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
-    const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
-    const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
+    const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
+    const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
   };
 
@@ -138,8 +168,8 @@ class MessageForm extends Component {
   replaceCurrentWord = word => {
     const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
     const str = this.getText();
-    const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
-    const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
+    const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
+    const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     const updatedMsg =
       str.substring(0, cursorPos - preWord.length) +
       word +
@@ -175,6 +205,7 @@ class MessageForm extends Component {
           placeholder="Message"
           value={text}
           onChange={this.onTextChange}
+          onKeyUp={this.onKeyUp}
           onKeyDown={this.onKeyDown}
           autoFocus
           required
@@ -191,14 +222,19 @@ class MessageForm extends Component {
   }
 
   render() {
-    const { openMentionMenu, userFilter } = this.state;
+    const { openMentionMenu, searchFilter, openEmojiSearch } = this.state;
     return (
       <div className="message-form">
         <JumpingIndicator />
         <MentionMenu
           isOpen={openMentionMenu}
-          filter={userFilter}
+          filter={searchFilter}
           onSelect={this.onSelectMention}
+        />
+        <EmojiSearch
+          isOpen={openEmojiSearch}
+          filter={searchFilter}
+          onSelect={this.onSelectEmoji}
         />
         {this.renderInput()}
         <TypingUsers />

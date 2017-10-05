@@ -22,6 +22,7 @@
     "class-methods-use-this": "off",
     "jsx-a11y/interactive-supports-focus": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/no-autofocus": "off",
     "no-const-assign": "warn",
     "no-param-reassign": ["error", { "props": false }],
     "no-this-before-super": "warn",

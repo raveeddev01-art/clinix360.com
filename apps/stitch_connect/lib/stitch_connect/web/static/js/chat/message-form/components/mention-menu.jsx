@@ -14,10 +14,10 @@ class MenutionMenu extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.isOpen && nextProps.isOpen) {
-      document.addEventListener("keydown", this.onKeyDown);
+      document.addEventListener("keyup", this.onKeyUp);
       this.setState({ activeUserIndex: 0 });
     } else if (this.props.isOpen && !nextProps.isOpen) {
-      document.removeEventListener("keydown", this.onKeyDown);
+      document.removeEventListener("keyup", this.onKeyUp);
     }
   }
 
@@ -29,7 +29,7 @@ class MenutionMenu extends Component {
     this.props.onSelect(username);
   };
 
-  onKeyDown = evt => {
+  onKeyUp = evt => {
     const { activeUserIndex } = this.state;
     const users = this.getUsers();
 
@@ -50,6 +50,8 @@ class MenutionMenu extends Component {
         if (users.length) {
           const selectedUser = users[activeUserIndex];
           this.onSelectMention(selectedUser.username)();
+        } else {
+          this.onSelectMention("")();
         }
         break;
       default:
@@ -85,7 +87,7 @@ class MenutionMenu extends Component {
           {users.map((user, index) => {
             const online = presenceStore.isOnline(user.id);
             const itemClassName = cx("user-list-item", {
-              active: (activeUserIndex + users.length) % users.length === index
+              active: activeUserIndex % users.length === index
             });
 
             return (
