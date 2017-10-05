@@ -333,6 +333,7 @@
           font-size: 20px;
           color: #ccc;
           box-shadow: none;
+          margin-left: 10px;
 
           &:hover {
             color: $brand-primary;
@@ -562,6 +563,11 @@
       }
     }
 
+    .message-body {
+      display: flex;
+      align-items: center;
+    }
+
     p {
       margin: 0;
     }
@@ -584,6 +590,11 @@
       &.icon-star {
         color: #fecb2f;
       }
+    }
+
+    .emoji-mart-emoji {
+      vertical-align: middle;
+      margin-right: 2px;
     }
 
     &:hover,
@@ -737,4 +748,41 @@ i.file-data-separator {
 .loading-message {
   font-style: italic;
   padding: 10px 30px;
+}
+
+.emoji-search-menu {
+  width: 100%;
+
+  .dropdown-menu {
+    width: 100%;
+
+    .emoji-list-item {
+      display: inline-block;
+      cursor: pointer;
+      margin-right: 10px;
+      border-radius: 10px;
+      padding: 0 5px;
+
+      .emoji-mart-emoji {
+        vertical-align: text-bottom;
+        margin-right: 3px;
+      }
+
+      &.active {
+        background-color: $brand-primary;
+        color: white;
+      }
+    }
+  }
+}
+
+.emoji-picker-container {
+  position: relative;
+  display: inline;
+
+  .emoji-picker-wrapper {
+    position: absolute;
+    bottom: 34px;
+    right: -12px;
+  }
 }

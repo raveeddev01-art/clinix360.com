@@ -1,18 +1,16 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
-import moment from "moment";
 
-import InsertMenu from "./insert-menu";
+import InsertMenu from "./components/insert-menu";
+import EmojiPicker from "./components/emoji-picker";
+import TypingUsers from "./components/typing-users";
+import JumpingIndicator from "./components/jumping-indicator";
+import EditingCommand from "./components/editing-command";
+import MentionMenu from "./components/mention-menu";
+import EmojiSearch from "./components/emoji-search";
 
-@inject(
-  "messageStore",
-  "sidemenuStore",
-  "groupStore",
-  "presenceStore",
-  "groupPresenceStore",
-  "channelStore"
-)
+@inject("messageStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -21,141 +19,133 @@ class MessageForm extends Component {
     this.state = {
       text: "",
       openMentionMenu: false,
-      userFilter: "",
-      activeUserIndex: 0
+      searchFilter: "",
+      openEmojiSearch: false
     };
 
     this.typingTimeoutId = null;
   }
 
   onTextChange = evt => {
+    this.updateInputText(evt.target.value);
+  };
+
+  onKeyDown = evt => {
+    const { openMentionMenu, openEmojiSearch } = this.state;
+    if (
+      [37, 38, 39, 40, 13].indexOf(evt.keyCode) > -1 &&
+      (openMentionMenu || openEmojiSearch)
+    ) {
+      evt.preventDefault();
+    }
+
+    if (evt.keyCode === 13) {
+      if (!openMentionMenu && !openEmojiSearch) {
+        this.onEnter();
+      }
+    }
+  };
+
+  onEnter = () => {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
-    const { value } = evt.target;
 
     if (messageInEdit) {
-      messageStore.editText(value);
-    } else {
-      this.setState({ text: value });
+      messageStore.finishEdit();
+    } else if (this.state.text) {
+      this.props.messageStore.sendMessage(this.state.text.trim()).then(() => {
+        this.setState({ text: "" });
+        this.typingStopped();
+      });
     }
   };
 
   onKeyUp = evt => {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
-    const { activeUserIndex, openMentionMenu } = this.state;
+    const { openMentionMenu, openEmojiSearch } = this.state;
 
-    if (evt.keyCode === 38) {
-      // arrow up
-
-      if (messageInEdit) {
-        return;
-      }
-
-      this.setState({ activeUserIndex: this.state.activeUserIndex - 1 });
-    } else if (evt.keyCode === 40) {
-      // arrow down
-
-      if (messageInEdit) {
-        return;
-      }
-
-      this.setState({ activeUserIndex: this.state.activeUserIndex + 1 });
-    } else if (evt.keyCode === 13) {
-      // enter
-
-      if (messageInEdit) {
-        this.finishEdit();
-        return;
-      }
-
-      // check if user mention menu is open first
-      if (openMentionMenu) {
-        const users = this.getUsers();
-        if (users.length) {
-          const selectedUser =
-            users[
-              (activeUserIndex % users.length + users.length) % users.length
-            ];
-
-          this.replaceCurrentWord(`@${selectedUser.username} `);
-          return;
-        }
-      }
-
-      // otherwise sends message
-      if (this.state.text) {
-        messageStore.sendMessage(this.state.text).then(() => {
-          this.setState({ text: "" });
-          this.typingStopped();
-        });
-      }
-    } else if (evt.keyCode === 27) {
+    if (evt.keyCode === 27) {
       // escape
 
-      if (messageInEdit) {
-        this.cancelEdit();
-        return;
+      if (openMentionMenu || openEmojiSearch) {
+        this.setState({ openMentionMenu: false, openEmojiSearch: false });
+      } else if (messageInEdit) {
+        messageStore.cancelEdit();
       }
-
-      this.setState({ openMentionMenu: false });
     } else {
       // other keys
-
-      if (messageInEdit) {
-        return;
-      }
-
       // get the word of current cursor
       const word = this.getCurrentWord();
+      const firstLetter = word.substr(0, 1);
+      const filter = word.substr(1);
+      this.setState({
+        searchFilter: "",
+        openMentionMenu: false,
+        openEmojiSearch: false
+      });
 
-      // wants to mention another user
-      if (word.substr(0, 1) === "@") {
-        const filter = word.substr(1);
-        this.setState({
-          userFilter: filter,
-          openMentionMenu: true
-        });
-      } else {
-        this.setState({
-          userFilter: "",
-          openMentionMenu: false
-        });
+      switch (firstLetter) {
+        case "@":
+          this.setState({ searchFilter: filter, openMentionMenu: true });
+          break;
+        case ":":
+          this.setState({ searchFilter: filter, openEmojiSearch: true });
+          break;
+        default:
       }
 
       this.typingStarted();
     }
   };
 
-  onUserItemHover = index => () => {
-    this.setState({ activeUserIndex: index });
+  onSelectMention = username => {
+    if (username) {
+      this.replaceCurrentWord(`@${username} `);
+    } else {
+      this.onEnter();
+    }
+    this.setState({ searchFilter: "", openMentionMenu: false });
   };
 
-  onSelectMention = username => () => {
-    this.replaceCurrentWord(`@${username} `);
+  onSelectEmoji = emoji => {
+    if (emoji) {
+      this.replaceCurrentWord(`${emoji} `);
+    } else {
+      this.onEnter();
+    }
+    this.setState({ searchFilter: "", openEmojiSearch: false });
   };
 
-  getUsers = () => {
-    const { groupStore, sidemenuStore } = this.props;
-    const { userFilter } = this.state;
+  getText = () => {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+    let { text: str } = this.state;
 
-    const users = groupStore.public ? sidemenuStore.users : groupStore.users;
-    return users
-      .filter(
-        user =>
-          `${user.first_name} ${user.last_name} ${user.username}`.indexOf(
-            userFilter
-          ) > -1
-      )
-      .slice(0, 5);
+    if (messageInEdit) {
+      str = messageStore.textInEdit;
+    }
+
+    return str;
   };
 
   getCurrentWord = () => {
+    const str = this.getText();
     const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
-    const str = this.state.text;
-    const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
-    const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
+    const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
+    const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
+  };
+
+  updateInputText = value => {
+    const { messageStore } = this.props;
+    const { messageInEdit } = messageStore;
+
+    if (messageInEdit) {
+      messageStore.editText(value);
+    } else {
+      this.setState({ text: value });
+    }
   };
 
   typingStarted = () => {
@@ -166,104 +156,33 @@ class MessageForm extends Component {
     this.props.messageStore.stopTyping();
   };
 
+  insertWord = word => {
+    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const str = this.getText();
+    this.updateInputText(
+      str.substring(0, cursorPos) + word + str.substring(cursorPos)
+    );
+    this.textInput.focus();
+  };
+
   replaceCurrentWord = word => {
     const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
-    const str = this.state.text;
-    const preWord = str.substring(0, cursorPos).match(/[@A-Za-z0-9_]*$/)[0];
-    const postWord = str.substring(cursorPos).match(/^[A-Za-z0-9_]*/)[0];
+    const str = this.getText();
+    const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
+    const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     const updatedMsg =
       str.substring(0, cursorPos - preWord.length) +
       word +
       str.substring(cursorPos + postWord.length);
 
-    this.setState({ text: updatedMsg, openMentionMenu: false }, () => {
+    this.updateInputText(updatedMsg);
+    this.setState({ openMentionMenu: false }, () => {
       // after replacing, the cursor pos should be persistent
       const newPos = cursorPos - preWord.length + word.length;
       this.textInput.focus();
       this.textInput.setSelectionRange(newPos, newPos);
     });
   };
-
-  finishEdit = () => {
-    const { messageStore } = this.props;
-
-    messageStore.finishEdit();
-  };
-
-  cancelEdit = () => {
-    const { messageStore } = this.props;
-
-    messageStore.cancelEdit();
-  };
-
-  renderJumpedMessageIndicator() {
-    const { messageStore } = this.props;
-    const { messages } = messageStore;
-    const lastMesage = messages[messages.length - 1];
-
-    return (
-      messageStore.showJumpedMessageIndicator &&
-      <div
-        role="button"
-        className="jumped-message-indicator"
-        onClick={() => {
-          messageStore.switchFromJumpMode();
-        }}
-      >
-        <span className="timestamp">
-          Viewing messages from&nbsp;
-          {moment(lastMesage.inserted_at).format("MMM Do, YYYY")}
-        </span>
-        <span className="scroll-to-bottom">
-          Jump to recent messages <i className="fa fa-arrow-down" />
-        </span>
-      </div>
-    );
-  }
-
-  renderMentionMenu() {
-    const { messageStore, presenceStore } = this.props;
-    const { openMentionMenu, activeUserIndex } = this.state;
-    const users = this.getUsers();
-
-    if (messageStore.messageInEdit || !openMentionMenu || !users.length) {
-      return null;
-    }
-
-    return (
-      <div className="dropup user-mention-menu open">
-        <ul className="dropdown-menu">
-          {users.map((user, index) => {
-            const online = presenceStore.isOnline(user.id);
-            const itemClassName = classNames("user-list-item", {
-              active: (activeUserIndex + users.length) % users.length === index
-            });
-
-            return (
-              <li
-                key={`user_${user.id}`}
-                className={itemClassName}
-                onMouseEnter={this.onUserItemHover(index)}
-                onClick={this.onSelectMention(user.username)}
-              >
-                <span className="item-icon">
-                  {online
-                    ? <i className="fa fa-circle" />
-                    : <i className="fa fa-circle-o" />}
-                </span>
-                <span className="item-text">
-                  <span>{`${user.first_name} ${user.last_name}`}</span>
-                  <small>
-                    {user.username}
-                  </small>
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    );
-  }
 
   renderInput() {
     const { messageStore } = this.props;
@@ -273,7 +192,7 @@ class MessageForm extends Component {
       this.textInput.focus();
     }
 
-    const text = messageInEdit ? messageStore.textInEdit : this.state.text;
+    const text = this.getText();
     const className = classNames("form-control", "message-text", {
       editing: !!messageInEdit
     });
@@ -287,6 +206,7 @@ class MessageForm extends Component {
           value={text}
           onChange={this.onTextChange}
           onKeyUp={this.onKeyUp}
+          onKeyDown={this.onKeyDown}
           autoFocus
           required
           ref={input => {
@@ -295,76 +215,30 @@ class MessageForm extends Component {
         />
         <div className="message-form-actions">
           <InsertMenu />
-        </div>
-      </div>
-    );
-  }
-
-  renderTypingUsers() {
-    const { groupPresenceStore: { typingUsers }, presenceStore } = this.props;
-    let content;
-    const username = id => presenceStore.onlineUsersMap[id].metas[0].username;
-
-    switch (typingUsers.length) {
-      case 0:
-        content = <span>&nbsp;</span>;
-        break;
-      case 1:
-        content = `${username(typingUsers[0])} is typing...`;
-        break;
-      case 2:
-        content = `${typingUsers.map(username).join(" and ")} are typing...`;
-        break;
-      default:
-        content = "multiple people are typing...";
-    }
-
-    return (
-      <div>
-        {content}
-      </div>
-    );
-  }
-
-  renderEditingCommands() {
-    const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
-
-    return (
-      messageInEdit &&
-      <div className="editing-commands">
-        <div className="editing-commands-cancel">
-          <kbd>Esc</kbd> to{" "}
-          <button
-            type="button"
-            className="btn-fancy btn-default btn-small"
-            onClick={this.cancelEdit}
-          >
-            Cancel editing
-          </button>
-        </div>
-        <div className="editing-commands-save">
-          <kbd>Enter</kbd> to{" "}
-          <button
-            type="button"
-            className="btn-fancy btn-default btn-small"
-            onClick={this.finishEdit}
-          >
-            Save changes
-          </button>
+          <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>
     );
   }
 
   render() {
+    const { openMentionMenu, searchFilter, openEmojiSearch } = this.state;
     return (
       <div className="message-form">
-        {this.renderJumpedMessageIndicator()}
-        {this.renderMentionMenu()}
+        <JumpingIndicator />
+        <MentionMenu
+          isOpen={openMentionMenu}
+          filter={searchFilter}
+          onSelect={this.onSelectMention}
+        />
+        <EmojiSearch
+          isOpen={openEmojiSearch}
+          filter={searchFilter}
+          onSelect={this.onSelectEmoji}
+        />
         {this.renderInput()}
-        {this.renderTypingUsers()}
-        {this.renderEditingCommands()}
+        <TypingUsers />
+        <EditingCommand />
       </div>
     );
   }
