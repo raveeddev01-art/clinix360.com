@@ -17,7 +17,18 @@ defmodule Stitch.MessageReadingTest do
       assert Repo.get(Message, message3.id).read_status[to_string(bob.id)] == nil
     end
 
-    test "doesn't update read_status if it the user isn't in the recipient list", %{bob: bob, group: group} do
+    test "when messages are already unread, marks messages before the target message as read", %{bob: bob, alice: alice, group: group} do
+      {:ok, %{message: message1}} = Message.create(group.id, alice, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: message2}} = Message.create(group.id, alice, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: message3}} = Message.create(group.id, alice, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      Message.mark_as_unread(bob.id, group.id, message2)
+
+      refute Repo.get(Message, message1.id).read_status[to_string(bob.id)] == nil
+      assert Repo.get(Message, message2.id).read_status[to_string(bob.id)] == nil
+      assert Repo.get(Message, message3.id).read_status[to_string(bob.id)] == nil
+    end
+
+    test "doesn't update read_status if the user isn't in the recipient list", %{bob: bob, group: group} do
       {:ok, %{message: message1}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: message3}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
@@ -94,6 +105,21 @@ defmodule Stitch.MessageReadingTest do
       assert group_user_bob.unread_messages_count == 0
       assert group_user_bob.last_read_at != nil
       assert last_read_at_before != group_user_bob.last_read_at
+    end
+  end
+
+  describe "&Message.create/3" do
+    test "marks existing messages in the group as read when within the unread limit", %{bob: bob, alice: alice, group: group} do
+      {:ok, %{message: message1}} = Message.create(group.id, alice, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: _message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      refute Repo.get(Message, message1.id).read_status[to_string(bob.id)] == nil
+    end
+
+    test "doesn't mark existing messages in the group as read if the unread limit is excedeed", %{bob: bob, alice: alice, group: group} do
+      messages = 1..30 |> Enum.map(fn _ -> [user_id: alice.id, group_id: group.id, text_content: "Lorem ipsum", type: "chat", read_status: %{bob.id => nil}, inserted_at: NaiveDateTime.utc_now, updated_at: NaiveDateTime.utc_now] end)
+      {30, [message1|_]} = Repo.insert_all(Message, messages, returning: true)
+      {:ok, %{message: _message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      assert Repo.get(Message, message1.id).read_status[to_string(bob.id)] == nil
     end
   end
 

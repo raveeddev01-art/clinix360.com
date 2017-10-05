@@ -120,7 +120,7 @@ defmodule Stitch.Message do
   end
 
   def mark_as_read_on_creation(multi, group_id, user_id, last_read_at, unread_limit) do
-    if messages_since(group_id, last_read_at) < unread_limit do
+    if below_unread_limit?(group_id, last_read_at, unread_limit) do
       multi
       |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [])
       |> Multi.update_all(:update_last_read_at, mark_group_as_read(group_id, user_id), [])
@@ -129,12 +129,17 @@ defmodule Stitch.Message do
     end
   end
 
-  def messages_since(group_id, timestamp) do
-    Message
-    |> where([m], m.group_id == ^group_id)
-    |> where([m], m.inserted_at >= ^timestamp)
-    |> select([m], count(m.id))
-    |> Repo.one
+  def below_unread_limit?(group_id, timestamp, unread_limit) do
+    count =
+      Message
+      |> where([m], m.group_id == ^group_id)
+      |> where([m], m.inserted_at >= ^timestamp)
+      |> limit(^unread_limit)
+      |> subquery
+      |> select([q], count(q.id))
+      |> Repo.one
+
+    count < unread_limit
   end
 
   def increment_unread_counter(group_id, user_ids) do
@@ -195,7 +200,8 @@ defmodule Stitch.Message do
   end
 
   def mark_group_as_unread(group_id, user_id, message) do
-    %{mentions_count: mentions_count, unread_messages_count: unread_messages_count} = count_unreads(group_id, user_id, message.id)
+    %{mentions_count: mentions_count, unread_messages_count: unread_messages_count} = count_after(group_id, user_id, message.id)
+
     GroupUser
     |> where(group_id: ^group_id, user_id: ^user_id)
     |> update([m], set: [
@@ -205,7 +211,7 @@ defmodule Stitch.Message do
     ])
   end
 
-  def count_unreads(group_id, user_id, message_id) do
+  def count_after(group_id, user_id, message_id) do
     Message
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.id >= ^message_id)
