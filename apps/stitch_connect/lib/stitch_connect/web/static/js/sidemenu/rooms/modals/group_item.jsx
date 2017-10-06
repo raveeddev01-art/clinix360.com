@@ -1,17 +1,18 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
-class GroupItem extends Component {
+class RoomItem extends Component {
   handleClick = () => {
-    const { group, history, toggleModal } = this.props;
+    const { group, toggleModal } = this.props;
+
     toggleModal();
-    history.push(`/groups/${group.slug}`);
+    history.push(`/rooms/${group.slug}`);
   };
 
   render() {
     const { group } = this.props;
     return (
-      <div className="group-item" onClick={this.handleClick}>
+      <div className="group-item" role="link" onClick={this.handleClick}>
         <div className="content">
           <div className="name">
             <i className="fa fa-comments" /> {group.name}
@@ -24,12 +25,10 @@ class GroupItem extends Component {
           </div>
         </div>
 
-        <div className="description text-muted">
-          {group.description}
-        </div>
+        <div className="description text-muted">{group.description}</div>
       </div>
     );
   }
 }
 
-export default withRouter(GroupItem);
+export default withRouter(RoomItem);

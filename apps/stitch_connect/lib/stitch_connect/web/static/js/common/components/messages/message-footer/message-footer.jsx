@@ -14,7 +14,7 @@ class MessageFooter extends Component {
 
     return (
       <div className="message-footer">
-        <a href={`/groups/${group.slug}`}>
+        <a href={`/rooms/${group.slug}`}>
           <i className="fa fa-tag" /> {group.name}
         </a>
       </div>

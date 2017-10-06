@@ -18,7 +18,7 @@ class AddonMessage extends Component {
 
     if (group.slug.indexOf("__dm:") === -1) {
       // If normal group
-      url = `/groups/${group.slug}`;
+      url = `/rooms/${group.slug}`;
     } else if (group.users.length > 2) {
       // If multi direct messaging
       const multiMessagingSlug = group.users
