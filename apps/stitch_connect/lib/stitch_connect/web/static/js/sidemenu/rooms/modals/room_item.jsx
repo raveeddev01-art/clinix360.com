@@ -3,29 +3,30 @@ import { withRouter } from "react-router-dom";
 
 class RoomItem extends Component {
   handleClick = () => {
-    const { group, toggleModal } = this.props;
+    const { room, toggleModal, history } = this.props;
 
     toggleModal();
-    history.push(`/rooms/${group.slug}`);
+    history.push(`/rooms/${room.slug}`);
   };
 
   render() {
-    const { group } = this.props;
+    const { room } = this.props;
+
     return (
       <div className="group-item" role="link" onClick={this.handleClick}>
         <div className="content">
           <div className="name">
-            <i className="fa fa-comments" /> {group.name}
-            <span className="text-muted">#{group.slug}</span>
+            <i className="fa fa-comments" /> {room.name}
+            <span className="text-muted">#{room.slug}</span>
           </div>
 
           <div className="member-count text-muted">
             <i className="fa fa-user-o" />
-            {group.user_count}
+            {room.user_count}
           </div>
         </div>
 
-        <div className="description text-muted">{group.description}</div>
+        <div className="description text-muted">{room.description}</div>
       </div>
     );
   }

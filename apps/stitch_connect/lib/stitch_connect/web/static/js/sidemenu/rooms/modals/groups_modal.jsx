@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-
 import Modal from "react-bootstrap/lib/Modal";
 
-import Select from "react-select";
-
-import GroupItem from "./group_item";
+import RoomItem from "./room_item";
 
 @inject("sidemenuStore")
 @observer
@@ -40,7 +37,7 @@ export default class GroupsModal extends Component {
       <Modal className="sidemenu-modal" show={this.props.showModal}>
         <Modal.Header>
           <Modal.Title>Browse Rooms</Modal.Title>
-          <a href="#" onClick={this.props.toggleModal}>
+          <a role="link" onClick={this.props.toggleModal}>
             <i className="fa fa-close" />
           </a>
         </Modal.Header>
@@ -56,13 +53,13 @@ export default class GroupsModal extends Component {
           <h5 className="group-heading">Rooms you belong to:</h5>
 
           <div className="group-list">
-            {groups.map(group =>
-              <GroupItem
+            {groups.map(group => (
+              <RoomItem
                 key={group.id}
-                group={group}
+                room={group}
                 toggleModal={this.props.toggleModal}
               />
-            )}
+            ))}
           </div>
         </Modal.Body>
       </Modal>
