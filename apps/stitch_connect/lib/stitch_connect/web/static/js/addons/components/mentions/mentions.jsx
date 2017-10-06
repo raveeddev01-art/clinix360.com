@@ -26,11 +26,19 @@ class Mentions extends Component {
           hasMore={hasMore}
           useWindow={false}
         >
-          {messages.map(message =>
-            <AddonMessage
-              key={`search_result_${message.id}`}
-              message={message}
-            />
+          {messages.length > 0 ? (
+            <div>
+              {messages.map(message => (
+                <AddonMessage
+                  key={`search_result_${message.id}`}
+                  message={message}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-muted text-center">
+              No mentions of you found.
+            </div>
           )}
         </InfiniteScroll>
       </div>
