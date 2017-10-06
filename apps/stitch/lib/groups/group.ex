@@ -34,7 +34,7 @@ defmodule Stitch.Group do
     attrs = case {attrs["name"], attrs["slug"]} do
       {nil, _} -> attrs # would error during creation
       {name, nil} ->
-        slug = name |> String.downcase |> Slugger.slugify
+        slug = Slugger.slugify_downcase(name)
         Map.put(attrs, "slug", slug)
       _ -> attrs
     end
@@ -72,10 +72,7 @@ defmodule Stitch.Group do
   Rename the group with the provided name.
   """
   def rename(group_id, name) when byte_size(name) > 0 do
-    new_slug =
-      name
-      |> String.downcase
-      |> Slugger.slugify
+    new_slug = Slugger.slugify_downcase(name)
     group = Repo.get(Group, group_id)
 
     changeset = Group.changeset(group, %{name: name, slug: new_slug})
