@@ -144,7 +144,7 @@
     margin-right: 8px;
 
     i.fa-circle-o {
-      color: rgba(20, 20, 20, .7);
+      color: rgba(20, 20, 20, 0.7);
     }
   }
 
@@ -157,7 +157,7 @@
     }
 
     small {
-      font-size: .9em;
+      font-size: 0.9em;
       color: #999;
     }
   }
@@ -200,8 +200,9 @@
   }
 }
 
+.files-addon,
 .directory-addon,
-.files-addon {
+.global-starred-messages-addon {
   padding: 0 15px;
   margin-bottom: 20px;
 
