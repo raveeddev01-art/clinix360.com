@@ -21,8 +21,11 @@ body {
   // overflow-x: hidden;
 }
 
-a:hover {
-  cursor: pointer;
+a,
+[role="link"] {
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 #root {
