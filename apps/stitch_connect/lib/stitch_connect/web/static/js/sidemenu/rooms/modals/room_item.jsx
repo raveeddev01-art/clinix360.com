@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import classNames from "classnames";
 
 class RoomItem extends Component {
   handleClick = () => {
@@ -21,7 +22,12 @@ class RoomItem extends Component {
           </div>
 
           <div className="member-count text-muted">
-            <i className="fa fa-user-o" />
+            <i
+              className={classNames(
+                "fa",
+                room.user_count > 1 ? "fa-users" : "fa-user"
+              )}
+            />
             {room.user_count}
           </div>
         </div>
