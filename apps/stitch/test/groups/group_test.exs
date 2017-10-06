@@ -100,7 +100,7 @@ defmodule Stitch.GroupTest do
 
     test "it returns a message if the user is not part of the group" do
       {:error, message} = Stitch.Group.remove(1, 1)
-      assert message == "User is not part of the this group"
+      assert message == "User is not part of this group"
     end
   end
 end
