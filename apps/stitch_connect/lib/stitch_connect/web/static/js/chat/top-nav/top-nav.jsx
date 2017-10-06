@@ -13,6 +13,7 @@ import NavItemMembers from "./nav-items/nav-item-members";
 import NavItemNotifications from "./nav-items/nav-item-notifications";
 import NavItemRename from "./nav-items/nav-item-rename";
 import NavItemConvert from "./nav-items/nav-item-convert";
+import NavItemLeave from "./nav-items/nav-item-leave";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 
@@ -32,10 +33,6 @@ class TopNav extends Component {
 
     addonStore.setAddonPanel(menuName);
     addonStore.toggleAddons(true);
-  };
-
-  handleLeave = () => {
-    this.props.groupStore.leave();
   };
 
   onChange = event => {
@@ -94,8 +91,7 @@ class TopNav extends Component {
                 <NavItemNotifications />
                 <NavItemRename />
                 <NavItemConvert />
-
-                <MenuItem onSelect={this.handleLeave}>Leave</MenuItem>
+                <NavItemLeave />
                 <MenuItem>Delete</MenuItem>
               </Dropdown.Menu>
             </Dropdown>

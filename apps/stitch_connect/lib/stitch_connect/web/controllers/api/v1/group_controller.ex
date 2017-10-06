@@ -165,14 +165,17 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def leave(conn, %{"id" => group_id}) do
-    case Group.remove(group_id, conn.assigns.current_user.id) do
+    current_user = conn.assigns.current_user
+
+    case Group.remove(group_id, current_user.id) do
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: message})
       {:ok, message} ->
+        default_group = GroupQueries.default_group(current_user)
         conn
-        |> json(%{message: message})
+        |> json(%{message: message, redirect_to: "/groups/#{default_group.slug}"})
     end
   end
 

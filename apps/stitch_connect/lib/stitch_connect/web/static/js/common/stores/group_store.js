@@ -246,6 +246,7 @@ class GroupStore {
     return post(`/api/v1/groups/${this.id}/leave`).then(resp => {
       this.joined = false;
       notify.show("User has been removed from the group");
+      return resp.data.redirect_to;
     });
   };
 
