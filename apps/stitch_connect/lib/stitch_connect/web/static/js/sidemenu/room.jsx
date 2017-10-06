@@ -57,9 +57,10 @@ class Room extends Component {
     return type === "regular" ? mentionsCount : unreadMessagesCount;
   }
 
-  hideDM() {
+  hideDM = event => {
+    event.preventDefault();
     console.log("Hide this DM");
-  }
+  };
 
   getHideDMIcon() {
     const { type } = this.props.room;
