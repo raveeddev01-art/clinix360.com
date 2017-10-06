@@ -37,6 +37,7 @@ class Sidemenu extends Component {
 
   render() {
     const { sidemenuStore } = this.props;
+    const filterJoined = rooms => rooms.filter(room => room.joined);
 
     return (
       <div id="sidemenu">
@@ -97,10 +98,13 @@ class Sidemenu extends Component {
             rooms={sidemenuStore.favoriteGroups}
           />
 
-          <RoomsList heading="Rooms" rooms={sidemenuStore.normalGroups} />
+          <RoomsList
+            heading="Rooms"
+            rooms={filterJoined(sidemenuStore.normalGroups)}
+          />
           <PeopleList
             heading="Direct Messages"
-            rooms={sidemenuStore.directGroups}
+            rooms={filterJoined(sidemenuStore.directGroups)}
           />
         </div>
       </div>

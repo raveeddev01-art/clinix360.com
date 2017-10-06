@@ -21,6 +21,10 @@ body {
   // overflow-x: hidden;
 }
 
+a:hover {
+  cursor: pointer;
+}
+
 #root {
   height: 100%;
   overflow: auto;
