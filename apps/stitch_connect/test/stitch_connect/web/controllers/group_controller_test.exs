@@ -105,7 +105,7 @@ defmodule StitchConnect.Web.GroupControllerTest do
     setup %{conn: conn} do
       team = insert(:team)
       user = insert(:user, team: team)
-      default_group = insert(:group, team: team)
+      default_group = insert(:group, team: team, slug: "general")
       other_group = insert(:group, team: team)
 
       conn =
@@ -120,6 +120,7 @@ defmodule StitchConnect.Web.GroupControllerTest do
       conn: conn, user: user, other_group: group
     } do
       insert(:group_user, group: group, user: user)
+      expected_redirect_path = "/groups/general"
 
       json =
         conn
@@ -127,7 +128,10 @@ defmodule StitchConnect.Web.GroupControllerTest do
         |> post(api_v1_group_path(conn, :leave, group))
         |> json_response(200)
 
-      assert %{"message" => "User has been removed from the group"} = json
+      assert %{
+        "message" => "User has been removed from the group",
+        "redirect_to" => ^expected_redirect_path
+      } = json
     end
 
     test "when user is leaving a non-default group that he isn't a part of", %{
