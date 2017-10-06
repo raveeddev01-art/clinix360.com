@@ -106,6 +106,7 @@
         text-decoration: none;
         border-radius: 3px;
         padding: 7px 10px 7px 7px;
+        position: relative;
 
         .item-icon {
           display: flex;
@@ -129,24 +130,44 @@
         }
 
         .item-badge {
-          width: 20px;
+          min-width: 16px;
           color: #fff;
           font-size: 12px;
-          line-height: 20px;
+          line-height: 16px;
           background: $brand-primary;
-          border-radius: 3px;
+          border-radius: 2px;
+          padding: 0 4px;
+          z-index: 10;
+        }
+
+        .hide-dm {
+          font-size: 20px;
+          color: $brand-primary;
+          visibility: hidden;
+          position: absolute;
+          right: 10px;
         }
 
         &:hover {
           background: darken(#fff, 5%);
+
+          .hide-dm {
+            visibility: visible;
+          }
         }
 
         &.active {
           color: #fff;
           background: $brand-primary;
 
-          .item-icon {
+          .item-icon,
+          .hide-dm {
             color: #fff;
+
+            i.fa-circle,
+            i.fa-circle-o {
+              color: #fff;
+            }
           }
         }
 
@@ -165,6 +186,10 @@
         border-bottom: 1px dashed #003366;
         margin: 15px 10px 0;
         padding: 3px 0;
+
+        &:hover {
+          border-bottom-style: solid;
+        }
       }
     }
   }

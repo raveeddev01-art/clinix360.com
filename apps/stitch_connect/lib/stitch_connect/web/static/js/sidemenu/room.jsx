@@ -3,6 +3,9 @@ import { observer, inject } from "mobx-react";
 import { NavLink, withRouter } from "react-router-dom";
 import classNames from "classnames";
 
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
+
 @inject("presenceStore")
 @observer
 class Room extends Component {
@@ -54,6 +57,22 @@ class Room extends Component {
     return type === "regular" ? mentionsCount : unreadMessagesCount;
   }
 
+  getHideDMIcon() {
+    const { type } = this.props.room;
+    if (type !== "regular") {
+      return (
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip id="hide-dm">Hide Conversation</Tooltip>}
+        >
+          <a role="button" className="hide-dm">
+            <i className="fa fa-minus-square-o" />
+          </a>
+        </OverlayTrigger>
+      );
+    }
+  }
+
   render() {
     const {
       name,
@@ -74,6 +93,7 @@ class Room extends Component {
           <i className={this.getIconClass()} />
         </div>
         <div className="item-text">{name}</div>
+        {this.getHideDMIcon()}
         {badge > 0 && <div className="item-badge text-center">{badge}</div>}
       </NavLink>
     );
