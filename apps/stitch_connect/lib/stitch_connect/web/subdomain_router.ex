@@ -158,7 +158,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/", PageController, :index
 
-    get "/groups/:slug", GroupController, :index
+    get "/rooms/:slug", GroupController, :index
     get "/direct/:username", UserController, :index
 
     get "/admin/team", AdminController, :index

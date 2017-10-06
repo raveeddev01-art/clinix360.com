@@ -64,7 +64,7 @@ defmodule StitchConnect.Web.GroupControllerTest do
     end
   end
 
-  describe "GET /groups/:slug" do
+  describe "GET /rooms/:slug" do
     setup %{conn: conn} do
       team = insert(:team)
       user = insert(:user, team: team)
