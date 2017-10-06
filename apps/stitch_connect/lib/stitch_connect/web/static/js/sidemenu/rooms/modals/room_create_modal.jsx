@@ -21,8 +21,8 @@ class RoomCreateModal extends Component {
     this.state = {
       members: [],
       public: true,
-      name: "",
-      description: ""
+      name: ""
+      // description: ""
     };
   }
 
@@ -52,7 +52,7 @@ class RoomCreateModal extends Component {
       .createGroup({
         name: this.state.name,
         public: this.state.public,
-        description: this.state.description,
+        // description: this.state.description,
         user_ids: this.state.members.map(user => user.id)
       })
       .then(slug => {
@@ -128,7 +128,7 @@ class RoomCreateModal extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup bsSize="large">
+            {/* <FormGroup bsSize="large">
               <Col componentClass={ControlLabel} sm={3}>
                 Description
               </Col>
@@ -143,7 +143,7 @@ class RoomCreateModal extends Component {
                   What will this room be about?
                 </HelpBlock>
               </Col>
-            </FormGroup>
+            </FormGroup> */}
 
             <FormGroup bsSize="large">
               <Col componentClass={ControlLabel} sm={3}>
