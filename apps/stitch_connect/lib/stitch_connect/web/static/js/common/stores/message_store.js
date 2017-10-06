@@ -21,6 +21,7 @@ class MessageStore {
   @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
   @observable isLoadingRecent = false;
   @observable isLoadingPast = false;
+  @observable highlightId = null; // message will be highlighted
   markedAsUnread = false;
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
@@ -77,7 +78,7 @@ class MessageStore {
 
   /**
    * Returns the position of first unread message in chat div
-   * 
+   *
    * Possible return values are:
    *  'hidden-up': message is hidden in up the chat div
    *  'visible': message is visible
@@ -289,7 +290,20 @@ class MessageStore {
     this.scrollTo(messageId, 0, null, -offset);
 
     // Highlight the message jumped to by fading out for 3 seconds
-    $(messageElement.div).fadeTo(0, 0.5).fadeTo(3000, 1);
+    this.highlightMessage(messageId);
+  }
+
+  @action
+  highlightMessage = (id, duration = 3000) => {
+    if (this.highlightTimeout) {
+      clearTimeout(this.highlightTimeout);
+    }
+
+    this.highlightId = id;
+    this.highlightTimeout = setTimeout(() => {
+      this.highlightId = null;
+    }, duration);
+
   }
 
   /**

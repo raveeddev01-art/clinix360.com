@@ -232,8 +232,8 @@ class Message extends Component {
   render() {
     const { message, messageStore } = this.props;
     const { user, inserted_at: timestamp } = message;
-    const { chatDiv, newMessageLineMessage } = messageStore;
-    const elementClassName = cx("message", { selected: this.state.selected });
+    const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
+    const elementClassName = cx("message", { selected: this.state.selected, highlight: highlightId === message.id });
     const containerClassName = cx("message-container", {
       mine: user.id === currentUser.id
     });
