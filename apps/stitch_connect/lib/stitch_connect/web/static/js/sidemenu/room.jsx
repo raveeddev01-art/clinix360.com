@@ -3,6 +3,9 @@ import { observer, inject } from "mobx-react";
 import { NavLink, withRouter } from "react-router-dom";
 import classNames from "classnames";
 
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
+
 @inject("presenceStore")
 @observer
 class Room extends Component {
@@ -27,7 +30,9 @@ class Room extends Component {
     const { type, users } = this.props.room;
     let iconClass;
 
-    if (type === "regular") {
+    if (type === "regular" && this.props.room.public === false) {
+      iconClass = "fa-lock";
+    } else if (type === "regular") {
       iconClass = "fa-comments";
     } else if (type === "dm") {
       let otherUser = users.find(user => user.id !== currentUser.id);
@@ -52,6 +57,27 @@ class Room extends Component {
     return type === "regular" ? mentionsCount : unreadMessagesCount;
   }
 
+  hideDM = event => {
+    event.preventDefault();
+    console.log("Hide this DM");
+  };
+
+  getHideDMIcon() {
+    const { type } = this.props.room;
+    if (type !== "regular") {
+      return (
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip id="hide-dm">Hide Conversation</Tooltip>}
+        >
+          <span role="button" className="hide-dm" onClick={this.hideDM}>
+            <i className="fa fa-minus-square-o" />
+          </span>
+        </OverlayTrigger>
+      );
+    }
+  }
+
   render() {
     const {
       name,
@@ -71,13 +97,9 @@ class Room extends Component {
         <div className="item-icon">
           <i className={this.getIconClass()} />
         </div>
-        <div className="item-text">
-          {name}
-        </div>
-        {badge > 0 &&
-          <div className="item-badge text-center">
-            {badge}
-          </div>}
+        <div className="item-text">{name}</div>
+        {this.getHideDMIcon()}
+        {badge > 0 && <div className="item-badge text-center">{badge}</div>}
       </NavLink>
     );
   }

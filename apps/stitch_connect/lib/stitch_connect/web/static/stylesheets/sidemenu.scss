@@ -80,6 +80,10 @@
           line-height: 1.5;
           text-transform: uppercase;
           margin: 0;
+
+          a {
+            display: inline-block;
+          }
         }
 
         i.fa {
@@ -90,6 +94,7 @@
           display: flex;
           color: $brand-primary;
           outline: none;
+          text-decoration: none;
         }
       }
 
@@ -100,11 +105,14 @@
         font-size: 15px;
         text-decoration: none;
         border-radius: 3px;
-        padding: 7px 10px;
+        padding: 7px 10px 7px 7px;
+        position: relative;
 
         .item-icon {
           display: flex;
-          margin-right: 8px;
+          justify-content: center;
+          flex-basis: 21px;
+          margin-right: 4px;
 
           i.fa-circle,
           i.fa-circle-o {
@@ -122,24 +130,44 @@
         }
 
         .item-badge {
-          width: 20px;
+          min-width: 16px;
           color: #fff;
           font-size: 12px;
-          line-height: 20px;
+          line-height: 16px;
           background: $brand-primary;
-          border-radius: 3px;
+          border-radius: 2px;
+          padding: 0 4px;
+          z-index: 10;
+        }
+
+        .hide-dm {
+          font-size: 20px;
+          color: $brand-primary;
+          visibility: hidden;
+          position: absolute;
+          right: 10px;
         }
 
         &:hover {
           background: darken(#fff, 5%);
+
+          .hide-dm {
+            visibility: visible;
+          }
         }
 
         &.active {
           color: #fff;
           background: $brand-primary;
 
-          .item-icon {
+          .item-icon,
+          .hide-dm {
             color: #fff;
+
+            i.fa-circle,
+            i.fa-circle-o {
+              color: #fff;
+            }
           }
         }
 
@@ -147,6 +175,20 @@
           .item-text {
             font-weight: bold;
           }
+        }
+      }
+
+      .invite-link {
+        display: inline-block;
+        color: #036;
+        font-weight: bold;
+        text-decoration: none;
+        border-bottom: 1px dashed #003366;
+        margin: 15px 10px 0;
+        padding: 3px 0;
+
+        &:hover {
+          border-bottom-style: solid;
         }
       }
     }
