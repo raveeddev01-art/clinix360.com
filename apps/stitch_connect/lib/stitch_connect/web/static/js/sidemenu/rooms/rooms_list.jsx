@@ -5,7 +5,7 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Room from "../room";
 import RoomsListModal from "./modals/rooms_list_modal";
-import CreateGroupModal from "./modals/create_group_modal";
+import RoomCreateModal from "./modals/room_create_modal";
 
 export default class RoomsList extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ export default class RoomsList extends Component {
 
     this.state = {
       showRoomsListModal: false,
-      showCreateGroupModal: false
+      showRoomCreateModal: false
     };
   }
 
@@ -23,9 +23,9 @@ export default class RoomsList extends Component {
     });
   };
 
-  toggleCreateGroupModal = () => {
+  toggleRoomCreateModal = () => {
     this.setState({
-      showCreateGroupModal: !this.state.showCreateGroupModal
+      showRoomCreateModal: !this.state.showRoomCreateModal
     });
   };
 
@@ -50,7 +50,7 @@ export default class RoomsList extends Component {
             placement="top"
             overlay={<Tooltip id="create-new-group">Create Room</Tooltip>}
           >
-            <a role="button" onClick={this.toggleCreateGroupModal}>
+            <a role="button" onClick={this.toggleRoomCreateModal}>
               <i className="fa fa-plus-square-o" />
             </a>
           </OverlayTrigger>
@@ -65,9 +65,9 @@ export default class RoomsList extends Component {
           toggleModal={this.toggleRoomsListModal}
         />
 
-        <CreateGroupModal
-          showModal={this.state.showCreateGroupModal}
-          toggleModal={this.toggleCreateGroupModal}
+        <RoomCreateModal
+          showModal={this.state.showRoomCreateModal}
+          toggleModal={this.toggleRoomCreateModal}
         />
       </div>
     );

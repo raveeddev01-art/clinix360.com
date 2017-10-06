@@ -14,7 +14,7 @@ import Members from "../../../common/components/members/members";
 
 @inject("groupStore")
 @observer
-class CreateGroupModal extends Component {
+class RoomCreateModal extends Component {
   constructor(props) {
     super(props);
 
@@ -45,7 +45,7 @@ class CreateGroupModal extends Component {
     this.setState({ public: value });
   };
 
-  createGroup = () => {
+  createRoom = () => {
     const { groupStore, history, toggleModal } = this.props;
 
     groupStore
@@ -168,7 +168,7 @@ class CreateGroupModal extends Component {
           <Button bsSize="large" onClick={this.props.toggleModal}>
             Cancel
           </Button>
-          <Button bsSize="large" bsStyle="primary" onClick={this.createGroup}>
+          <Button bsSize="large" bsStyle="primary" onClick={this.createRoom}>
             Create Room
           </Button>
         </Modal.Footer>
@@ -177,14 +177,14 @@ class CreateGroupModal extends Component {
   }
 }
 
-CreateGroupModal.propTypes = {
+RoomCreateModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired
 };
 
-CreateGroupModal.defaultProp = {
+RoomCreateModal.defaultProp = {
   showModal: false,
   toggleModal: () => {}
 };
 
-export default withRouter(CreateGroupModal);
+export default withRouter(RoomCreateModal);
