@@ -105,5 +105,17 @@ defmodule Stitch.GroupTest do
       {:error, message} = Group.remove(group, user.id)
       assert message == "User is not part of this group"
     end
+
+    test "does not remove a user from a single DM group" do
+      group = %Group{name: "__dm_group__"}
+      {:error, message} = Group.remove(group, 42)
+      assert message == "Users can't leave direct messages"
+    end
+
+    test "does not remove a user from a multi DM group" do
+      group = %Group{name: "__multi_dm_group__"}
+      {:error, message} = Group.remove(group, 42)
+      assert message == "Users can't leave direct messages"
+    end
   end
 end

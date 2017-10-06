@@ -101,6 +101,9 @@ defmodule Stitch.Group do
   @doc """
   Removes a user from the group
   """
+  def remove(%Group{name: name}, _) when name in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Users can't leave direct messages"}
+  end
 
   def remove(%Group{id: group_id}, user_id) do
     case Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) do
