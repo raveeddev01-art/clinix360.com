@@ -6,33 +6,35 @@ import RoomItem from "./room_item";
 
 @inject("sidemenuStore")
 @observer
-export default class GroupsModal extends Component {
+export default class RoomsListModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filteredGroups: [],
+      filteredRooms: [],
       filter: ""
     };
   }
 
   handleChange = event => {
     const { sidemenuStore } = this.props;
-    const allGroups = sidemenuStore.groups;
+    const allRooms = sidemenuStore.groups;
     const { value } = event.target;
-    const filteredGroups = allGroups.filter(group =>
-      group.name.toLowerCase().startsWith(value.toLowerCase())
+    const filteredRooms = allRooms.filter(room =>
+      room.name.toLowerCase().startsWith(value.toLowerCase())
     );
+
     this.setState({
       filter: value,
-      filteredGroups
+      filteredRooms
     });
   };
 
   render() {
     const { sidemenuStore } = this.props;
-    const { filteredGroups, filter } = this.state;
-    const allGroups = sidemenuStore.groups;
-    const groups = filter !== "" ? filteredGroups : allGroups;
+    const { filteredRooms, filter } = this.state;
+    const allRooms = sidemenuStore.groups;
+    const rooms = filter !== "" ? filteredRooms : allRooms;
+
     return (
       <Modal className="sidemenu-modal" show={this.props.showModal}>
         <Modal.Header>
@@ -53,10 +55,10 @@ export default class GroupsModal extends Component {
           <h5 className="group-heading">Rooms you belong to:</h5>
 
           <div className="group-list">
-            {groups.map(group => (
+            {rooms.map(room => (
               <RoomItem
-                key={group.id}
-                room={group}
+                key={room.id}
+                room={room}
                 toggleModal={this.props.toggleModal}
               />
             ))}

@@ -4,7 +4,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Room from "../room";
-import GroupsModal from "./modals/groups_modal";
+import RoomsListModal from "./modals/rooms_list_modal";
 import CreateGroupModal from "./modals/create_group_modal";
 
 export default class RoomsList extends Component {
@@ -12,14 +12,14 @@ export default class RoomsList extends Component {
     super(props);
 
     this.state = {
-      showGroupsModal: false,
+      showRoomsListModal: false,
       showCreateGroupModal: false
     };
   }
 
-  toggleGroupsModal = () => {
+  toggleRoomsListModal = () => {
     this.setState({
-      showGroupsModal: !this.state.showGroupsModal
+      showRoomsListModal: !this.state.showRoomsListModal
     });
   };
 
@@ -38,9 +38,9 @@ export default class RoomsList extends Component {
           <h5>
             <OverlayTrigger
               placement="top"
-              overlay={<Tooltip id="browse-groups">Browse Rooms</Tooltip>}
+              overlay={<Tooltip id="browse-rooms">Browse Rooms</Tooltip>}
             >
-              <a role="button" onClick={this.toggleGroupsModal}>
+              <a role="button" onClick={this.toggleRoomsListModal}>
                 {heading}
               </a>
             </OverlayTrigger>
@@ -60,9 +60,9 @@ export default class RoomsList extends Component {
           return <Room key={`room-${room.id}`} room={room} />;
         })}
 
-        <GroupsModal
-          showModal={this.state.showGroupsModal}
-          toggleModal={this.toggleGroupsModal}
+        <RoomsListModal
+          showModal={this.state.showRoomsListModal}
+          toggleModal={this.toggleRoomsListModal}
         />
 
         <CreateGroupModal
