@@ -41,42 +41,46 @@ export default class RoomsListModal extends Component {
         </Modal.Header>
 
         <Modal.Body>
-          <input
-            type="text"
-            className="form-control input-lg"
-            placeholder="Search rooms"
-            onChange={this.handleChange}
-          />
+          <div className="rooms-filter">
+            <input
+              type="text"
+              className="form-control input-lg"
+              placeholder="Find room"
+              onChange={this.handleChange}
+            />
+          </div>
 
-          {roomsJoined.length > 0 && (
-            <div className="rooms-joined m-b-20">
-              <h5 className="room-heading">Rooms you belong to</h5>
-              <div className="room-list">
-                {roomsJoined.map(room => (
-                  <RoomItem
-                    key={room.id}
-                    room={room}
-                    toggleModal={this.props.toggleModal}
-                  />
-                ))}
+          <div className="rooms-filter-result">
+            {roomsNotJoined.length > 0 && (
+              <div className="rooms-list">
+                <h5 className="rooms-list-heading">Rooms you can join</h5>
+                <div className="rooms-list-content">
+                  {roomsNotJoined.map(room => (
+                    <RoomItem
+                      key={room.id}
+                      room={room}
+                      toggleModal={this.props.toggleModal}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {roomsNotJoined.length > 0 && (
-            <div className="rooms-not-joined m-b-20">
-              <h5 className="room-heading">Rooms you can join</h5>
-              <div className="room-list">
-                {roomsNotJoined.map(room => (
-                  <RoomItem
-                    key={room.id}
-                    room={room}
-                    toggleModal={this.props.toggleModal}
-                  />
-                ))}
+            {roomsJoined.length > 0 && (
+              <div className="rooms-list">
+                <h5 className="rooms-list-heading">Rooms you belong to</h5>
+                <div className="rooms-list-content">
+                  {roomsJoined.map(room => (
+                    <RoomItem
+                      key={room.id}
+                      room={room}
+                      toggleModal={this.props.toggleModal}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </Modal.Body>
       </Modal>
     );

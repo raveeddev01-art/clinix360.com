@@ -13,7 +13,7 @@ class RoomItem extends Component {
     const { room } = this.props;
 
     return (
-      <div className="group-item" role="link" onClick={this.handleClick}>
+      <div className="room-item" role="link" onClick={this.handleClick}>
         <div className="content">
           <div className="name">
             <i className="fa fa-comments" /> {room.name}
