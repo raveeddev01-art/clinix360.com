@@ -30,7 +30,9 @@ class SidemenuStore {
 
   @computed
   get normalGroups() {
-    return this.groups.filter(group => group.type === "regular");
+    return this.groups.filter(
+      group => group.type === "regular" && group.favorite == false
+    );
   }
 
   @computed

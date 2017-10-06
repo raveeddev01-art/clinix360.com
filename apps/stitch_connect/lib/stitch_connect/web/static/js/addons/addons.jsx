@@ -39,17 +39,16 @@ class Addons extends Component {
     return (
       <div id="addons" className={addonsClass}>
         <div className="flex-header">
-          {addonStore.showAddonDetail &&
+          {addonStore.showAddonDetail && (
             <a
               className="open-left"
               role="button"
               onClick={this.toggleAddonDetail}
             >
               <i className="fa fa-chevron-left" />
-            </a>}
-          <h4 className="text-uppercase">
-            {addonPanelTitle}
-          </h4>
+            </a>
+          )}
+          <h4 className="text-uppercase">{addonPanelTitle}</h4>
           <a role="button" onClick={this.toggleAddons}>
             <i className="fa fa-close" />
           </a>
@@ -59,16 +58,20 @@ class Addons extends Component {
           <div className={leftPanelClass}>
             {addonStore.addonPanelType === "Room Information" && <Info />}
             {addonStore.addonPanelType === "directory" && <Directory />}
-            {addonStore.addonPanelType === "search" && <MessageSearch />}
+            {addonStore.addonPanelType === "Search Results" && (
+              <MessageSearch />
+            )}
             {addonStore.addonPanelType === "mentions" && <Mentions />}
-            {addonStore.addonPanelType === "starred" &&
-              <GlobalStarredMessages />}
+            {addonStore.addonPanelType === "starred" && (
+              <GlobalStarredMessages />
+            )}
             {addonStore.addonPanelType === "files" && <Files />}
           </div>
 
           <div className={rightPanelClass}>
-            {addonStore.detailPanelType === "people" &&
-              <PeopleDetail user={addonStore.detailPanelData} />}
+            {addonStore.detailPanelType === "people" && (
+              <PeopleDetail user={addonStore.detailPanelData} />
+            )}
           </div>
         </div>
       </div>
