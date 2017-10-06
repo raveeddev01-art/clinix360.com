@@ -72,11 +72,6 @@ class CreateGroupModal extends Component {
         </Modal.Header>
 
         <Modal.Body>
-          <h5>
-            Rooms are where your team communicates. They’re best when organized
-            around a topic — Radiology, for example.
-          </h5>
-
           <Form horizontal>
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>

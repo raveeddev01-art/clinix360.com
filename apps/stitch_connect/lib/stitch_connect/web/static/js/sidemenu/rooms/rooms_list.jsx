@@ -10,6 +10,7 @@ import CreateGroupModal from "./modals/create_group_modal";
 export default class RoomsList extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       showGroupsModal: false,
       showCreateGroupModal: false
