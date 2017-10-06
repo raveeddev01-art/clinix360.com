@@ -10,7 +10,7 @@ defmodule Stitch.Team.Onboarding do
   the Stitch platform.
   """
   def slug_available?(slug) when byte_size(slug) > 0 do
-    slug = Slugger.slugify(slug)
+    slug = Slugger.slugify_downcase(slug)
     case Repo.get_by(Team, slug: slug) do
       nil ->
         true
@@ -24,7 +24,7 @@ defmodule Stitch.Team.Onboarding do
   Creates a team with the given name and slug.
   """
   def create_team(name, slug) when byte_size(name) > 0 and byte_size(slug) > 0 do
-    slug = Slugger.slugify(slug)
+    slug = Slugger.slugify_downcase(slug)
     changeset = Team.changeset(%Team{}, %{name: name, slug: slug})
     case Repo.insert(changeset) do
       {:ok, team} ->
