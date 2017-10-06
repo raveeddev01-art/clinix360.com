@@ -10,33 +10,29 @@ export default class RoomsListModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filteredRooms: [],
       filter: ""
     };
   }
 
   handleChange = event => {
-    const { sidemenuStore } = this.props;
-    const allRooms = sidemenuStore.groups;
     const { value } = event.target;
-    const filteredRooms = allRooms.filter(room =>
-      room.name.toLowerCase().startsWith(value.toLowerCase())
-    );
 
     this.setState({
-      filter: value,
-      filteredRooms
+      filter: value
     });
   };
 
   render() {
     const { sidemenuStore } = this.props;
-    const { filteredRooms, filter } = this.state;
-    const allRooms = sidemenuStore.groups;
-    const rooms = filter !== "" ? filteredRooms : allRooms;
+    const { filter } = this.state;
+    const rooms = sidemenuStore.normalGroups.filter(room =>
+      room.name.toLowerCase().startsWith(filter.toLowerCase())
+    );
+    const roomsJoined = rooms.filter(room => room.joined);
+    const roomsNotJoined = rooms.filter(room => !room.joined);
 
     return (
-      <Modal className="sidemenu-modal" show={this.props.showModal}>
+      <Modal className="rooms-list-modal" show={this.props.showModal}>
         <Modal.Header>
           <Modal.Title>Browse Rooms</Modal.Title>
           <a role="link" onClick={this.props.toggleModal}>
@@ -47,22 +43,40 @@ export default class RoomsListModal extends Component {
         <Modal.Body>
           <input
             type="text"
-            className="form-control input-lg m-b-20"
+            className="form-control input-lg"
             placeholder="Search rooms"
             onChange={this.handleChange}
           />
 
-          <h5 className="group-heading">Rooms you belong to:</h5>
+          {roomsJoined.length > 0 && (
+            <div className="rooms-joined m-b-20">
+              <h5 className="room-heading">Rooms you belong to</h5>
+              <div className="room-list">
+                {roomsJoined.map(room => (
+                  <RoomItem
+                    key={room.id}
+                    room={room}
+                    toggleModal={this.props.toggleModal}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
-          <div className="group-list">
-            {rooms.map(room => (
-              <RoomItem
-                key={room.id}
-                room={room}
-                toggleModal={this.props.toggleModal}
-              />
-            ))}
-          </div>
+          {roomsNotJoined.length > 0 && (
+            <div className="rooms-not-joined m-b-20">
+              <h5 className="room-heading">Rooms you can join</h5>
+              <div className="room-list">
+                {roomsNotJoined.map(room => (
+                  <RoomItem
+                    key={room.id}
+                    room={room}
+                    toggleModal={this.props.toggleModal}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </Modal.Body>
       </Modal>
     );
