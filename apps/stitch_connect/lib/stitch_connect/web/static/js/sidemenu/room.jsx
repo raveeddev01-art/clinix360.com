@@ -57,6 +57,10 @@ class Room extends Component {
     return type === "regular" ? mentionsCount : unreadMessagesCount;
   }
 
+  hideDM() {
+    console.log("Hide this DM");
+  }
+
   getHideDMIcon() {
     const { type } = this.props.room;
     if (type !== "regular") {
@@ -65,9 +69,9 @@ class Room extends Component {
           placement="top"
           overlay={<Tooltip id="hide-dm">Hide Conversation</Tooltip>}
         >
-          <a role="button" className="hide-dm">
+          <span role="button" className="hide-dm" onClick={this.hideDM}>
             <i className="fa fa-minus-square-o" />
-          </a>
+          </span>
         </OverlayTrigger>
       );
     }
