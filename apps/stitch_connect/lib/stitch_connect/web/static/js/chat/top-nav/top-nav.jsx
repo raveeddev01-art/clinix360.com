@@ -42,7 +42,7 @@ class TopNav extends Component {
 
   onSearch = event => {
     event.preventDefault();
-    this.props.addonStore.setAddonPanel("search");
+    this.props.addonStore.setAddonPanel("Search Results");
     this.props.addonStore.toggleAddons(true);
     this.search(this.state.query);
   };

@@ -32,7 +32,7 @@ class Files extends Component {
             ))}
           </div>
         ) : (
-          <div className="text-muted">Upload the first file!</div>
+          <div className="text-muted text-center">Nothing uploaded yet.</div>
         )}
 
         <div className="footer">

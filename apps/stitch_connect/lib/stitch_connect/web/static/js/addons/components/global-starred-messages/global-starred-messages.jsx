@@ -11,8 +11,14 @@ class GlobalStarredMessages extends Component {
 
     return (
       <div className="global-starred-messages-addon">
-        {globalStarredMessageStore.starredMessages.map(message =>
-          <AddonMessage key={message.id} message={message} />
+        {globalStarredMessageStore.starredMessages.length > 0 ? (
+          <div>
+            {globalStarredMessageStore.starredMessages.map(message => (
+              <AddonMessage key={message.id} message={message} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-muted text-center">Nothing starred yet.</div>
         )}
       </div>
     );
