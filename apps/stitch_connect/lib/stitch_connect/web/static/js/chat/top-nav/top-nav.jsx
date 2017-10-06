@@ -67,6 +67,8 @@ class TopNav extends Component {
   };
 
   render() {
+    const groupType = this.props.groupStore.groupType;
+
     return (
       <div className="flex-header main-header">
         <div className="header-content">
@@ -74,28 +76,26 @@ class TopNav extends Component {
         </div>
 
         <div className="header-nav">
-          {this.props.groupStore.groupType !== "single-dm" && (
-            <Dropdown id="dropdown-group-controls" pullRight>
-              <Dropdown.Toggle noCaret>
-                <OverlayTrigger
-                  placement="bottom"
-                  overlay={<Tooltip id="tooltip-settings">Settings</Tooltip>}
-                >
-                  <i className="fa fa-cog" />
-                </OverlayTrigger>
-              </Dropdown.Toggle>
+          <Dropdown id="dropdown-group-controls" pullRight>
+            <Dropdown.Toggle noCaret>
+              <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id="tooltip-settings">Settings</Tooltip>}
+              >
+                <i className="fa fa-cog" />
+              </OverlayTrigger>
+            </Dropdown.Toggle>
 
-              <Dropdown.Menu className="group-controls-menu">
-                <NavItemFavorite />
-                <NavItemMembers />
-                <NavItemNotifications />
-                <NavItemRename />
-                <NavItemConvert />
-                <NavItemLeave />
-                <MenuItem>Delete</MenuItem>
-              </Dropdown.Menu>
-            </Dropdown>
-          )}
+            <Dropdown.Menu className="group-controls-menu">
+              <NavItemFavorite />
+              <NavItemMembers />
+              <NavItemNotifications />
+              <NavItemRename />
+              <NavItemConvert />
+              {groupType === "group" && <NavItemLeave />}
+              <MenuItem>Delete</MenuItem>
+            </Dropdown.Menu>
+          </Dropdown>
 
           <a
             role="link"

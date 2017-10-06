@@ -166,8 +166,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def leave(conn, %{"id" => group_id}) do
     current_user = conn.assigns.current_user
+    group = GroupQueries.get_by_id(group_id)
 
-    case Group.remove(group_id, current_user.id) do
+    case Group.remove(group, current_user.id) do
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)
