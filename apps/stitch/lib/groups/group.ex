@@ -71,11 +71,10 @@ defmodule Stitch.Group do
   @doc """
   Rename the group with the provided name.
   """
-  def rename(group_id, name) when byte_size(name) > 0 do
-    new_slug = Slugger.slugify_downcase(name)
-    group = Repo.get(Group, group_id)
+  def rename(%Group{} = group, new_name) when byte_size(new_name) > 0 do
+    new_slug = Slugger.slugify_downcase(new_name)
+    changeset = Group.changeset(group, %{name: new_name, slug: new_slug})
 
-    changeset = Group.changeset(group, %{name: name, slug: new_slug})
     case Repo.update(changeset) do
       {:ok, group} ->
         group = Repo.preload(group, :users)
