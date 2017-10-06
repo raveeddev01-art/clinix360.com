@@ -102,7 +102,7 @@ defmodule Stitch.Group do
   Removes a user from the group
   """
 
-  def remove(group_id, user_id) do
+  def remove(%Group{id: group_id}, user_id) do
     case Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) do
       nil ->
         {:error, "User is not part of this group"}

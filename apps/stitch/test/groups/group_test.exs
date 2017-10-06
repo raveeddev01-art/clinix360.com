@@ -95,12 +95,14 @@ defmodule Stitch.GroupTest do
       group = insert(:group)
       user = insert(:user)
       {:ok, _} = Group.invite(group.id, user.id)
-      {:ok, message} = Group.remove(group.id, user.id)
+      {:ok, message} = Group.remove(group, user.id)
       assert message == "User has been removed from the group"
     end
 
     test "it returns a message if the user is not part of the group" do
-      {:error, message} = Group.remove(1, 1)
+      group = insert(:group)
+      user = insert(:user)
+      {:error, message} = Group.remove(group, user.id)
       assert message == "User is not part of this group"
     end
   end
