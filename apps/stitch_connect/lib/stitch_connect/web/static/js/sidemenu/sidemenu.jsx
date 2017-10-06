@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 
-import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -38,6 +37,7 @@ class Sidemenu extends Component {
 
   render() {
     const { sidemenuStore } = this.props;
+    const filterJoined = rooms => rooms.filter(room => room.joined);
 
     return (
       <div id="sidemenu">
@@ -98,10 +98,13 @@ class Sidemenu extends Component {
             rooms={sidemenuStore.favoriteGroups}
           />
 
-          <RoomsList heading="Rooms" rooms={sidemenuStore.normalGroups} />
+          <RoomsList
+            heading="Rooms"
+            rooms={filterJoined(sidemenuStore.normalGroups)}
+          />
           <PeopleList
             heading="Direct Messages"
-            rooms={sidemenuStore.directGroups}
+            rooms={filterJoined(sidemenuStore.directGroups)}
           />
         </div>
       </div>

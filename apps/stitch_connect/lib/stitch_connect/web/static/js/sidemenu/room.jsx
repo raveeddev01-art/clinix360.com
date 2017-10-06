@@ -13,7 +13,7 @@ class Room extends Component {
     const { slug, type, users } = this.props.room;
 
     if (type === "regular") {
-      return `/groups/${slug}`;
+      return `/rooms/${slug}`;
     }
 
     let dmUsers = users;

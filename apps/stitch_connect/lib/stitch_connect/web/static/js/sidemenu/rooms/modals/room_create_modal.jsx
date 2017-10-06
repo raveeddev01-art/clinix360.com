@@ -14,15 +14,15 @@ import Members from "../../../common/components/members/members";
 
 @inject("groupStore")
 @observer
-class CreateGroupModal extends Component {
+class RoomCreateModal extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       members: [],
       public: true,
-      name: "",
-      description: ""
+      name: ""
+      // description: ""
     };
   }
 
@@ -45,18 +45,18 @@ class CreateGroupModal extends Component {
     this.setState({ public: value });
   };
 
-  createGroup = () => {
+  createRoom = () => {
     const { groupStore, history, toggleModal } = this.props;
 
     groupStore
       .createGroup({
         name: this.state.name,
         public: this.state.public,
-        description: this.state.description,
+        // description: this.state.description,
         user_ids: this.state.members.map(user => user.id)
       })
       .then(slug => {
-        history.push(`/groups/${slug}`);
+        history.push(`/rooms/${slug}`);
         toggleModal();
       });
   };
@@ -72,11 +72,6 @@ class CreateGroupModal extends Component {
         </Modal.Header>
 
         <Modal.Body>
-          <h5>
-            Rooms are where your team communicates. They’re best when organized
-            around a topic — Radiology, for example.
-          </h5>
-
           <Form horizontal>
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>
@@ -133,7 +128,7 @@ class CreateGroupModal extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup bsSize="large">
+            {/* <FormGroup bsSize="large">
               <Col componentClass={ControlLabel} sm={3}>
                 Description
               </Col>
@@ -148,7 +143,7 @@ class CreateGroupModal extends Component {
                   What will this room be about?
                 </HelpBlock>
               </Col>
-            </FormGroup>
+            </FormGroup> */}
 
             <FormGroup bsSize="large">
               <Col componentClass={ControlLabel} sm={3}>
@@ -173,7 +168,7 @@ class CreateGroupModal extends Component {
           <Button bsSize="large" onClick={this.props.toggleModal}>
             Cancel
           </Button>
-          <Button bsSize="large" bsStyle="primary" onClick={this.createGroup}>
+          <Button bsSize="large" bsStyle="primary" onClick={this.createRoom}>
             Create Room
           </Button>
         </Modal.Footer>
@@ -182,14 +177,14 @@ class CreateGroupModal extends Component {
   }
 }
 
-CreateGroupModal.propTypes = {
+RoomCreateModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired
 };
 
-CreateGroupModal.defaultProp = {
+RoomCreateModal.defaultProp = {
   showModal: false,
   toggleModal: () => {}
 };
 
-export default withRouter(CreateGroupModal);
+export default withRouter(RoomCreateModal);
