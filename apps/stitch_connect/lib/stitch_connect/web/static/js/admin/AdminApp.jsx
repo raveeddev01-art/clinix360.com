@@ -22,49 +22,48 @@ class AdminApp extends Component {
 
   render() {
     return (
-      <div className="admin-wrapper container">
-        <Grid>
-          <Row>
-            <Col xs={3}>
-              <Button
-                block
-                bsSize="large"
-                className="back-btn m-b-20"
-                onClick={this.toChat}
-              >
-                Back to chat
-              </Button>
-
-              <Sidebar />
-            </Col>
-            <Col xs={9}>
-              <Switch>
-                <Route exact path={`/admin/team`} component={TeamSettings} />
-                <Route path={`/admin/team/settings`} component={TeamSettings} />
-                <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
-                <Route path={`/admin/team/export`} component={TeamExport} />
-                <Route
-                  path={`/admin/you/notifications`}
-                  component={YouNotifications}
-                />
-                <Route
-                  path={`/admin/you/profile`}
-                  component={ProfileSettings}
-                />
-                <Route
-                  path={`/admin/you/account`}
-                  component={AccountSettings}
-                />
-                <Route
-                  path={`/admin/users/invitations`}
-                  component={UsersInvitations}
-                />
-                <Route path={`/admin/users/members`} component={UsersMembers} />
-                <Route path={`/admin/users/pending`} component={UsersPending} />
-              </Switch>
-            </Col>
-          </Row>
-        </Grid>
+      <div className="admin-wrapper">
+        <Sidebar />
+        <div className="admin-content">
+          <Topbar />
+          <Switch>
+            <Route
+              exact
+              path={`/admin/team`}
+              component={TeamSettings}
+            />
+            <Route
+              path={`/admin/team/settings`}
+              component={TeamSettings}
+            />
+            <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
+            <Route path={`/admin/team/export`} component={TeamExport} />
+            <Route
+              path={`/admin/you/notifications`}
+              component={YouNotifications}
+            />
+            <Route
+              path={`/admin/you/profile`}
+              component={ProfileSettings}
+            />
+            <Route
+              path={`/admin/you/account`}
+              component={AccountSettings}
+            />
+            <Route
+              path={`/admin/users/invitations`}
+              component={UsersInvitations}
+            />
+            <Route
+              path={`/admin/users/members`}
+              component={UsersMembers}
+            />
+            <Route
+              path={`/admin/users/pending`}
+              component={UsersPending}
+            />
+          </Switch>
+        </div>
       </div>
     );
   }

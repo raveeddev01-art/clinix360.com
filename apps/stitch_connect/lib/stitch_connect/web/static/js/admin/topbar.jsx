@@ -1,0 +1,101 @@
+import React, { Component } from "react";
+import { observer, inject } from "mobx-react";
+import { Link, withRouter, matchPath } from "react-router-dom";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
+
+@inject("teamStore")
+@observer
+class Topbar extends Component {
+
+  render() {
+    const { teamStore } = this.props;
+
+    return (
+      <div className="flex-header admin-topbar">
+        <a className="toggle-menu">
+          <i className="fa fa-bars"></i>
+          <i className="fa fa-times"></i>
+          <span>Menu</span>
+        </a>
+        <span className="separator"></span>
+        <h4>
+          <i className="fa fa-sliders"></i> Control Panel
+        </h4>
+        <ul className="nav navbar-nav">
+          <li>
+            <a
+              role="link"
+              href="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect"
+              target="_blank"
+            >
+              <OverlayTrigger
+                placement="bottom"
+                container={this}
+                overlay={<Tooltip id="tooltip-info">Help</Tooltip>}
+              >
+                <div>
+                  <i className="fa fa-question-circle" />
+                  <span>Help</span>
+                </div>
+              </OverlayTrigger>
+            </a>
+          </li>
+          <li>
+            <a
+              role="link"
+              href="/"
+            >
+              <OverlayTrigger
+                placement="bottom"
+                container={this}
+                overlay={<Tooltip id="tooltip-info">Launch</Tooltip>}
+              >
+                <div>
+                  <i className="fa fa-rocket" />
+                  <span>Launch</span>
+                </div>
+              </OverlayTrigger>
+            </a>
+          </li>
+          <li>
+            <a
+              role="link"
+              href="#"
+            >
+              <OverlayTrigger
+                placement="bottom"
+                container={this}
+                overlay={<Tooltip id="tooltip-info">Lockout</Tooltip>}
+              >
+                <div>
+                  <i className="fa fa-lock" />
+                  <span>Lockout</span>
+                </div>
+              </OverlayTrigger>
+            </a>
+          </li>
+          <li>
+            <a
+              role="link"
+              href="#"
+            >
+              <OverlayTrigger
+                placement="bottom"
+                container={this}
+                overlay={<Tooltip id="tooltip-info">Sign Out</Tooltip>}
+              >
+                <div>
+                  <i className="fa fa-sign-out" />
+                  <span>Sign Out</span>
+                </div>
+              </OverlayTrigger>
+            </a>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+}
+
+export default withRouter(Topbar);
