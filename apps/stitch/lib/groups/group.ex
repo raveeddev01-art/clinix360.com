@@ -71,6 +71,11 @@ defmodule Stitch.Group do
   @doc """
   Rename the group with the provided name.
   """
+  def rename(%Group{name: old_name}, _new_name)
+      when old_name in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Direct messages can't be renamed"}
+  end
+
   def rename(%Group{} = group, new_name) when byte_size(new_name) > 0 do
     new_slug = Slugger.slugify_downcase(new_name)
     changeset = Group.changeset(group, %{name: new_name, slug: new_slug})

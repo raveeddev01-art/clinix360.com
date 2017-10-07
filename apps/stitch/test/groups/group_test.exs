@@ -27,6 +27,18 @@ defmodule Stitch.GroupTest do
       {:error, reason} = Group.rename(group, nil)
       assert reason == "Name cannot be blank or nil"
     end
+
+    test "does not rename a single DM group" do
+      group = %Group{name: "__dm_group__"}
+      {:error, reason} = Group.rename(group, "Foo")
+      assert reason == "Direct messages can't be renamed"
+    end
+
+    test "does not rename a multi DM group" do
+      group = %Group{name: "__multi_dm_group__"}
+      {:error, reason} = Group.rename(group, "Foo")
+      assert reason == "Direct messages can't be renamed"
+    end
   end
 
   describe "Stitch.Group.toggle_favorite/2" do
