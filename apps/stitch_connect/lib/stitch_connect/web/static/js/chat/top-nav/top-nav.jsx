@@ -88,7 +88,7 @@ class TopNav extends Component {
 
             <Dropdown.Menu className="group-controls-menu">
               <NavItemFavorite />
-              <NavItemMembers />
+              {isNotDM && <NavItemMembers />}
               <NavItemNotifications />
               {isNotDM && <NavItemRename />}
               <NavItemConvert />
