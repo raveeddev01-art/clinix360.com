@@ -67,7 +67,7 @@ class TopNav extends Component {
   };
 
   render() {
-    const groupType = this.props.groupStore.groupType;
+    const isNotDM = this.props.groupStore.groupType === "group";
 
     return (
       <div className="flex-header main-header">
@@ -90,9 +90,9 @@ class TopNav extends Component {
               <NavItemFavorite />
               <NavItemMembers />
               <NavItemNotifications />
-              <NavItemRename />
+              {isNotDM && <NavItemRename />}
               <NavItemConvert />
-              {groupType === "group" && <NavItemLeave />}
+              {isNotDM && <NavItemLeave />}
               <MenuItem>Delete</MenuItem>
             </Dropdown.Menu>
           </Dropdown>
