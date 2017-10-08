@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Provider } from "mobx-react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Grid, Row, Col, Button } from "react-bootstrap";
+import classNames from 'classnames';
 
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
@@ -32,6 +33,14 @@ const stores = {
 };
 
 export default class Admin extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sidebarOpened: false
+    };
+  }
+
   componentWillMount() {
     notificationStore.loadPreferences();
     membersStore.loadUsers(this.props.teamId);
@@ -39,51 +48,72 @@ export default class Admin extends Component {
     userStore.loadUser(currentUser.id);
   }
 
+  toggleSidebar = () => {
+    this.setState({
+      sidebarOpened: !this.state.sidebarOpened
+    });
+  };
+
+  hideSidebar = () => {
+    this.setState({
+      sidebarOpened: false
+    });
+  };
+
   render() {
+    const wrapperClassName = classNames('admin-wrapper', {
+      'sidebar-opened': this.state.sidebarOpened
+    });
+
     return (
       <Router>
         <Provider {...stores}>
-          <div className="admin-wrapper">
+          <div className={wrapperClassName}>
             <Sidebar />
             <div className="admin-content">
-              <Topbar />
-              <Switch>
-                <Route
-                  exact
-                  path={`/admin/team`}
-                  component={TeamSettings}
-                />
-                <Route
-                  path={`/admin/team/settings`}
-                  component={TeamSettings}
-                />
-                <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
-                <Route path={`/admin/team/export`} component={TeamExport} />
-                <Route
-                  path={`/admin/you/notifications`}
-                  component={YouNotifications}
-                />
-                <Route
-                  path={`/admin/you/profile`}
-                  component={ProfileSettings}
-                />
-                <Route
-                  path={`/admin/you/account`}
-                  component={AccountSettings}
-                />
-                <Route
-                  path={`/admin/users/invitations`}
-                  component={UsersInvitations}
-                />
-                <Route
-                  path={`/admin/users/members`}
-                  component={UsersMembers}
-                />
-                <Route
-                  path={`/admin/users/pending`}
-                  component={UsersPending}
-                />
-              </Switch>
+              <Topbar onToggleSidebar={this.toggleSidebar} />
+              <div
+                className="admin-panel-wrapper"
+                onClick={this.hideSidebar}
+              >
+                <Switch>
+                  <Route
+                    exact
+                    path={`/admin/team`}
+                    component={TeamSettings}
+                  />
+                  <Route
+                    path={`/admin/team/settings`}
+                    component={TeamSettings}
+                  />
+                  <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
+                  <Route path={`/admin/team/export`} component={TeamExport} />
+                  <Route
+                    path={`/admin/you/notifications`}
+                    component={YouNotifications}
+                  />
+                  <Route
+                    path={`/admin/you/profile`}
+                    component={ProfileSettings}
+                  />
+                  <Route
+                    path={`/admin/you/account`}
+                    component={AccountSettings}
+                  />
+                  <Route
+                    path={`/admin/users/invitations`}
+                    component={UsersInvitations}
+                  />
+                  <Route
+                    path={`/admin/users/members`}
+                    component={UsersMembers}
+                  />
+                  <Route
+                    path={`/admin/users/pending`}
+                    component={UsersPending}
+                  />
+                </Switch>
+              </div>
             </div>
           </div>
         </Provider>

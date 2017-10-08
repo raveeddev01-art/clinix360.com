@@ -9,11 +9,15 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 class Topbar extends Component {
 
   render() {
-    const { teamStore } = this.props;
+    const { onToggleSidebar, teamStore } = this.props;
 
     return (
       <div className="flex-header admin-topbar">
-        <a className="toggle-menu">
+        <a
+          role="button"
+          className="toggle-menu"
+          onClick={onToggleSidebar}
+        >
           <i className="fa fa-bars"></i>
           <i className="fa fa-times"></i>
           <span>Menu</span>
@@ -58,7 +62,7 @@ class Topbar extends Component {
               </OverlayTrigger>
             </a>
           </li>
-          <li>
+          <li className="hidden-xss">
             <a
               role="link"
               href="#"
@@ -75,7 +79,7 @@ class Topbar extends Component {
               </OverlayTrigger>
             </a>
           </li>
-          <li>
+          <li className="hidden-xss">
             <a
               role="link"
               href="#"
