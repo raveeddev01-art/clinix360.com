@@ -107,7 +107,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       length(user_ids) <= 2 ->
         conn
         |> put_status(:bad_request)
-        |> json(%{message: "user_ids param has contain more than 2 ids"})
+        |> json(%{message: "user_ids param should contain more than 2 ids"})
       true ->
         conn
         |> create_dm(user_ids, "__multi_dm_group__")
