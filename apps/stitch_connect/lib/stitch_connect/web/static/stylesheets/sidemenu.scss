@@ -220,3 +220,26 @@
     }
   }
 }
+
+.dm-modal-user-search {
+  .is-open > .Select-control {
+    border-radius: 4px;
+  }
+
+  .Select-menu-outer {
+    display: none;
+  }
+
+  .Select-arrow-zone {
+    display: none;
+  }
+
+  .Select--multi .Select-clear-zone {
+    width: 20px;
+  }
+}
+
+.team-list {
+  overflow-y: auto;
+  max-height: 400px;
+}
