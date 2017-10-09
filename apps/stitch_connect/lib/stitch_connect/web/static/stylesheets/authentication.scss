@@ -152,6 +152,15 @@
     .copyright {
       color: #999;
     }
+
+    &.team-picker-card {
+      max-width: 480px;
+
+      .form-control {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    }
   }
 
   .download-card {
