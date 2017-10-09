@@ -8,8 +8,8 @@ export default class GetStarted extends Component {
         <h2>Healthcare Messaging</h2>
 
         <h4>
-          Communicate, write notes, track tasks, upload files, and collaborate
-          on any device.
+          Communicate, write notes, <br />track tasks, upload files, and <br />
+          collaborate on any device.
         </h4>
 
         <Link to="/signin" className="btn btn-block btn-lg btn-primary">
