@@ -1,13 +1,13 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Room from "../room";
 import RoomsModal from "./modals/rooms_modal";
-import RoomCreateModal from "./modals/room_create_modal";
 
-export default class RoomsList extends Component {
+class RoomsList extends Component {
   constructor(props) {
     super(props);
 
@@ -75,3 +75,10 @@ export default class RoomsList extends Component {
     );
   }
 }
+
+RoomsList.propTypes = {
+  heading: PropTypes.string.isRequired,
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired
+};
+
+export default RoomsList;
