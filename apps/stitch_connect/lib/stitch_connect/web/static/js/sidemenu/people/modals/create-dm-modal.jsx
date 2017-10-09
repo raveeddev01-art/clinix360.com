@@ -2,10 +2,9 @@ import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
 import { withRouter } from "react-router-dom";
-import _ from "lodash";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
-import Members from "../../../common/components/members/members";
+import Select from "react-select";
 
 @inject("sidemenuStore", "presenceStore")
 @observer
@@ -14,15 +13,20 @@ class CreateDMModal extends Component {
     super(props);
     this.state = {
       show: props.show,
-      members: []
+      members: [],
+      searchFilter: ""
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.show !== this.props.show) {
-      this.setState({ show: nextProps.show });
+      this.setState({ show: nextProps.show, members: [], searchFilter: "" });
     }
   }
+
+  onChangeFilter = searchFilter => {
+    this.setState({ searchFilter });
+  };
 
   handleChange = value => {
     this.setState({ members: value });
@@ -41,18 +45,39 @@ class CreateDMModal extends Component {
   };
 
   selectUser = user => () => {
-    this.setState({ members: this.state.members.concat(user) });
+    const { history, toggle } = this.props;
+    if (user.id === currentUser.id) {
+      history.push(`/direct/${user.username}`);
+      toggle();
+      return;
+    }
+
+    this.setState({
+      members: this.state.members.concat(
+        Object.assign({}, user, {
+          label: `${user.first_name} ${user.last_name}${user.id ===
+          currentUser.id
+            ? " (You)"
+            : ""}`
+        })
+      )
+    });
   };
 
   render() {
-    const users = _.differenceBy(
-      this.props.sidemenuStore.users,
-      this.state.members,
-      "id"
-    );
+    const { searchFilter, members } = this.state;
+    const users = this.props.sidemenuStore.users.filter(u => {
+      if (u.id === currentUser.id && members.length > 0) return false;
+      return (
+        members.findIndex(member => member.id === u.id) === -1 &&
+        `${u.first_name} ${u.last_name}`
+          .toLowerCase()
+          .indexOf(searchFilter.toLowerCase()) > -1
+      );
+    });
 
     return (
-      <Modal className="sidemenu-modal" show={this.state.show}>
+      <Modal show={this.state.show}>
         <Modal.Header>
           <Modal.Title>Direct Messages</Modal.Title>
           <a role="link" onClick={this.props.toggle}>
@@ -61,8 +86,16 @@ class CreateDMModal extends Component {
         </Modal.Header>
 
         <Modal.Body>
-          <div className="modal-search">
-            <Members onChange={this.handleChange} value={this.state.members} />
+          <div className="modal-search dm-modal-user-search">
+            <Select
+              multi
+              valueKey="id"
+              className="multi-select-large"
+              onInputChange={this.onChangeFilter}
+              onChange={this.handleChange}
+              placeholder="Search"
+              value={this.state.members}
+            />
           </div>
 
           <h5 className="team-heading text-muted">
@@ -84,7 +117,10 @@ class CreateDMModal extends Component {
                   onClick={this.selectUser(user)}
                 >
                   <i className={iconClasName} />
-                  {` ${user.first_name} ${user.last_name} `}
+                  {` ${user.first_name} ${user.last_name}${user.id ===
+                  currentUser.id
+                    ? " (You)"
+                    : ""}`}
                   <span className="text-muted">{user.username}</span>
                 </div>
               );
@@ -106,7 +142,8 @@ class CreateDMModal extends Component {
 
 CreateDMModal.propTypes = {
   show: PropTypes.bool.isRequired,
-  toggle: PropTypes.func.isRequired
+  toggle: PropTypes.func.isRequired,
+  history: PropTypes.any.isRequired
 };
 
 CreateDMModal.defaultProp = {
