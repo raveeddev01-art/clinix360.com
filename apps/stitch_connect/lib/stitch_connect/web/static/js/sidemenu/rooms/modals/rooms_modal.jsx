@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import Modal from "react-bootstrap/lib/Modal";
 
@@ -6,7 +7,7 @@ import RoomItem from "./room_item";
 
 @inject("sidemenuStore")
 @observer
-export default class RoomsListModal extends Component {
+class RoomsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,7 +24,13 @@ export default class RoomsListModal extends Component {
   };
 
   render() {
-    const { sidemenuStore } = this.props;
+    const {
+      sidemenuStore,
+      state,
+      showRoomsListModal,
+      showRoomCreateModal,
+      closeModal
+    } = this.props;
     const { filter } = this.state;
     const rooms = sidemenuStore.normalGroups.filter(room =>
       room.name.toLowerCase().startsWith(filter.toLowerCase())
@@ -32,10 +39,10 @@ export default class RoomsListModal extends Component {
     const roomsNotJoined = rooms.filter(room => !room.joined);
 
     return (
-      <Modal className="rooms-list-modal" show={this.props.showModal}>
+      <Modal className="rooms-list-modal" show={!!state}>
         <Modal.Header>
           <Modal.Title>Browse Rooms</Modal.Title>
-          <a role="link" onClick={this.props.toggleModal}>
+          <a role="link" onClick={closeModal}>
             <i className="fa fa-close" />
           </a>
         </Modal.Header>
@@ -59,7 +66,7 @@ export default class RoomsListModal extends Component {
                     <RoomItem
                       key={room.id}
                       room={room}
-                      toggleModal={this.props.toggleModal}
+                      closeModal={closeModal}
                     />
                   ))}
                 </div>
@@ -74,7 +81,7 @@ export default class RoomsListModal extends Component {
                     <RoomItem
                       key={room.id}
                       room={room}
-                      toggleModal={this.props.toggleModal}
+                      closeModal={closeModal}
                     />
                   ))}
                 </div>
@@ -86,3 +93,12 @@ export default class RoomsListModal extends Component {
     );
   }
 }
+
+RoomsModal.propTypes = {
+  state: PropTypes.string.isRequired,
+  showRoomsListModal: PropTypes.func.isRequired,
+  showRoomCreateModal: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired
+};
+
+export default RoomsModal;
