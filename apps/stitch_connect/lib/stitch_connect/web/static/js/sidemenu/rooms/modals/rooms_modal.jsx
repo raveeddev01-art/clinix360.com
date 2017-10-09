@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import Modal from "react-bootstrap/lib/Modal";
+import Button from "react-bootstrap/lib/Button";
 
 import RoomItem from "./room_item";
 
@@ -23,72 +24,104 @@ class RoomsModal extends Component {
     });
   };
 
-  render() {
+  filterRooms() {
+    const { sidemenuStore } = this.props;
+    const { filter } = this.state;
+    const rooms = sidemenuStore.normalGroups.filter(room =>
+      room.name.toLowerCase().startsWith(filter.toLowerCase())
+    );
+
+    return {
+      joined: rooms.filter(room => room.joined),
+      notJoined: rooms.filter(room => !room.joined)
+    };
+  }
+
+  renderModalHeader() {
     const {
-      sidemenuStore,
       state,
       showRoomsListModal,
       showRoomCreateModal,
       closeModal
     } = this.props;
-    const { filter } = this.state;
-    const rooms = sidemenuStore.normalGroups.filter(room =>
-      room.name.toLowerCase().startsWith(filter.toLowerCase())
-    );
-    const roomsJoined = rooms.filter(room => room.joined);
-    const roomsNotJoined = rooms.filter(room => !room.joined);
 
     return (
-      <Modal className="rooms-list-modal" show={!!state}>
-        <Modal.Header>
-          <Modal.Title>Browse Rooms</Modal.Title>
-          <a role="link" onClick={closeModal}>
-            <i className="fa fa-close" />
-          </a>
-        </Modal.Header>
+      <Modal.Header>
+        <Modal.Title>
+          {state === "list" && "Browse Rooms"}
+          {state === "create" && "Create Room"}
+        </Modal.Title>
+        {state === "list" && (
+          <Button bsSize="xsmall" onClick={showRoomCreateModal}>
+            Create Room
+          </Button>
+        )}
+        {state === "create" && (
+          <Button bsSize="xsmall" onClick={showRoomsListModal}>
+            Browse Rooms
+          </Button>
+        )}
+        <a role="link" onClick={closeModal}>
+          <i className="fa fa-close" />
+        </a>
+      </Modal.Header>
+    );
+  }
 
-        <Modal.Body>
-          <div className="rooms-filter">
-            <input
-              type="text"
-              className="form-control input-lg"
-              placeholder="Find room"
-              onChange={this.handleChange}
-            />
-          </div>
+  renderRoomsListModal() {
+    const { closeModal } = this.props;
+    const rooms = this.filterRooms();
 
-          <div className="rooms-filter-result">
-            {roomsNotJoined.length > 0 && (
-              <div className="rooms-list">
-                <h5 className="rooms-list-heading">Rooms you can join</h5>
-                <div className="rooms-list-content">
-                  {roomsNotJoined.map(room => (
-                    <RoomItem
-                      key={room.id}
-                      room={room}
-                      closeModal={closeModal}
-                    />
-                  ))}
-                </div>
+    return (
+      <Modal.Body>
+        <div className="rooms-filter">
+          <input
+            type="text"
+            className="form-control input-lg"
+            placeholder="Find room"
+            onChange={this.handleChange}
+          />
+        </div>
+
+        <div className="rooms-filter-result">
+          {rooms.notJoined.length > 0 && (
+            <div className="rooms-list">
+              <h5 className="rooms-list-heading">Rooms you can join</h5>
+              <div className="rooms-list-content">
+                {rooms.notJoined.map(room => (
+                  <RoomItem key={room.id} room={room} closeModal={closeModal} />
+                ))}
               </div>
-            )}
+            </div>
+          )}
 
-            {roomsJoined.length > 0 && (
-              <div className="rooms-list">
-                <h5 className="rooms-list-heading">Rooms you belong to</h5>
-                <div className="rooms-list-content">
-                  {roomsJoined.map(room => (
-                    <RoomItem
-                      key={room.id}
-                      room={room}
-                      closeModal={closeModal}
-                    />
-                  ))}
-                </div>
+          {rooms.joined.length > 0 && (
+            <div className="rooms-list">
+              <h5 className="rooms-list-heading">Rooms you belong to</h5>
+              <div className="rooms-list-content">
+                {rooms.joined.map(room => (
+                  <RoomItem key={room.id} room={room} closeModal={closeModal} />
+                ))}
               </div>
-            )}
-          </div>
-        </Modal.Body>
+            </div>
+          )}
+        </div>
+      </Modal.Body>
+    );
+  }
+
+  renderRoomCreateModal() {
+    return <Modal.Body>Room create</Modal.Body>;
+  }
+
+  render() {
+    const { state } = this.props;
+
+    return (
+      <Modal className="rooms-modal" show={!!state}>
+        {this.renderModalHeader()}
+        {state === "list" && this.renderRoomsListModal()}
+        {state === "create" && this.renderRoomCreateModal()}
       </Modal>
     );
   }

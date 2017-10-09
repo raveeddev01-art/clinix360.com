@@ -1,4 +1,10 @@
-.rooms-list-modal {
+.rooms-modal {
+  .modal-header {
+    button {
+      margin-right: 10px;
+    }
+  }
+
   .modal-body {
     display: flex;
     flex-direction: column;
