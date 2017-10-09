@@ -99,7 +99,7 @@ export default class TeamPicker extends Component {
 
           <h5>
             Don't know your team's URL?{" "}
-            <Link to="/signup/app-download">
+            <Link to="/find-teams">
               <strong>Find your team</strong>
             </Link>
           </h5>
