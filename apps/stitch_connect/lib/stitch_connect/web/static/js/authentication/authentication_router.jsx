@@ -4,6 +4,7 @@ import { Provider } from "mobx-react";
 
 import GetStarted from "./get_started";
 import TeamPicker from "./team/team_picker";
+import FindTeam from "./team/find_team";
 
 import Login from "./login/login";
 
@@ -46,6 +47,7 @@ export default class AuthenticationRouter extends Component {
           <div className="authentication-wrapper">
             <Route exact path={`/`} component={GetStarted} />
             <Route exact path={`/signin`} component={TeamPicker} />
+            <Route exact path="/find-teams" component={FindTeam} />
 
             <Route exact path={`/login`} component={Login} />
 

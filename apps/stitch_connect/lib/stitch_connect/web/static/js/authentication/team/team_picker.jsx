@@ -52,7 +52,7 @@ export default class TeamPicker extends Component {
       <div>
         {this.state.error && <Alert>This team doesn't seem to exist.</Alert>}
 
-        <div className="authentication-card text-center">
+        <div className="authentication-card text-center team-picker-card">
           <div className="card-header">
             <Row>
               <Col xs={12} className="text-right">
@@ -99,7 +99,7 @@ export default class TeamPicker extends Component {
 
           <h5>
             Don't know your team's URL?{" "}
-            <Link to="/signup/app-download">
+            <Link to="/find-teams">
               <strong>Find your team</strong>
             </Link>
           </h5>

@@ -6,7 +6,7 @@
   padding: 15px;
 
   .alert {
-    max-width: 480px;
+    max-width: 440px;
     color: inherit;
     font-size: 16px;
     background: #fff;
@@ -37,7 +37,7 @@
   }
 
   .authentication-card {
-    max-width: 480px;
+    max-width: 440px;
     width: 100%;
     background: #fff;
     border: 1px solid $border-color;
@@ -151,6 +151,16 @@
 
     .copyright {
       color: #999;
+    }
+
+    &.team-picker-card {
+      max-width: 480px;
+
+      .form-control {
+        color: #333;
+        font-size: 20px;
+        font-weight: bold;
+      }
     }
   }
 
