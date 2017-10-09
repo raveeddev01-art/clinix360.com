@@ -5,6 +5,19 @@ import cx from "classnames";
 @inject("groupStore", "presenceStore")
 @observer
 export default class GroupName extends Component {
+  getName() {
+    const { groupStore } = this.props;
+    if (
+      groupStore.groupType === "single-dm" &&
+      groupStore.users.length === 1 &&
+      groupStore.users[0].id === currentUser.id
+    ) {
+      return `${groupStore.name} (You)`;
+    }
+
+    return groupStore.name;
+  }
+
   render() {
     const { groupStore, presenceStore } = this.props;
     const { groupType } = groupStore;
@@ -21,7 +34,7 @@ export default class GroupName extends Component {
     return (
       <h4>
         <i className={iconClassName} />
-        {` ${groupStore.name}`}
+        {` ${this.getName()}`}
       </h4>
     );
   }
