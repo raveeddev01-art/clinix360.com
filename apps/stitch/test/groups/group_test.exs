@@ -10,22 +10,34 @@ defmodule Stitch.GroupTest do
   describe "Stitch.Group.rename/2" do
     test "it renames the group" do
       group = insert(:group, %{name: "Example"})
-      {:ok, group} = Group.rename(group.id, "Deploy")
+      {:ok, group} = Group.rename(group, "Deploy")
       assert group.name == "Deploy"
       assert group.slug == "deploy"
       assert Enum.count(group.users) == 0
     end
 
     test "it returns error for blank string" do
-      group = insert(:group, %{name: "Example"})
-      {:error, reason} = Group.rename(group.id, "")
+      group = %Group{}
+      {:error, reason} = Group.rename(group, "")
       assert reason == "Name cannot be blank or nil"
     end
 
     test "it return error for nil name" do
-      group = insert(:group, %{name: "Example"})
-      {:error, reason} = Group.rename(group.id, nil)
+      group = %Group{}
+      {:error, reason} = Group.rename(group, nil)
       assert reason == "Name cannot be blank or nil"
+    end
+
+    test "does not rename a single DM group" do
+      group = %Group{name: "__dm_group__"}
+      {:error, reason} = Group.rename(group, "Foo")
+      assert reason == "Direct messages can't be renamed"
+    end
+
+    test "does not rename a multi DM group" do
+      group = %Group{name: "__multi_dm_group__"}
+      {:error, reason} = Group.rename(group, "Foo")
+      assert reason == "Direct messages can't be renamed"
     end
   end
 

@@ -32,7 +32,7 @@ defmodule Stitch.Factory do
 
     %Stitch.Group{
       name: name,
-      slug: sequence(:group_slug, &"#{name |> String.downcase |> Slugger.slugify}-#{&1}"),
+      slug: sequence(:group_slug, &"#{Slugger.slugify_downcase(name)}-#{&1}"),
       description: Faker.Company.bs,
       public: true,
       team: build(:team),

@@ -42,7 +42,7 @@ class TopNav extends Component {
 
   onSearch = event => {
     event.preventDefault();
-    this.props.addonStore.setAddonPanel("search");
+    this.props.addonStore.setAddonPanel("Search Results");
     this.props.addonStore.toggleAddons(true);
     this.search(this.state.query);
   };
@@ -67,7 +67,7 @@ class TopNav extends Component {
   };
 
   render() {
-    const groupType = this.props.groupStore.groupType;
+    const isNotDM = this.props.groupStore.groupType === "group";
 
     return (
       <div className="flex-header main-header">
@@ -88,11 +88,11 @@ class TopNav extends Component {
 
             <Dropdown.Menu className="group-controls-menu">
               <NavItemFavorite />
-              <NavItemMembers />
+              {isNotDM && <NavItemMembers />}
               <NavItemNotifications />
-              <NavItemRename />
+              {isNotDM && <NavItemRename />}
               <NavItemConvert />
-              {groupType === "group" && <NavItemLeave />}
+              {isNotDM && <NavItemLeave />}
               <MenuItem>Delete</MenuItem>
             </Dropdown.Menu>
           </Dropdown>
