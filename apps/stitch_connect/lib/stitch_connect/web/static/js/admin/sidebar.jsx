@@ -103,11 +103,11 @@ class Sidebar extends Component {
             <ListGroupItem href="/">
               <i className="fa fa-rocket"></i> Launch
             </ListGroupItem>
-            <ListGroupItem>
-              <Link to="/"><i className="fa fa-lock"></i> Lockout</Link>
+            <ListGroupItem href="#">
+              <i className="fa fa-lock"></i> Lockout
             </ListGroupItem>
-            <ListGroupItem>
-              <Link to="/"><i className="fa fa-sign-out"></i> Sign Out</Link>
+            <ListGroupItem href="/logout">
+              <i className="fa fa-sign-out"></i> Sign Out
             </ListGroupItem>
           </ListGroup>
         </div>

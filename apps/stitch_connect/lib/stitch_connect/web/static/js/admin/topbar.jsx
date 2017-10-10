@@ -82,7 +82,7 @@ class Topbar extends Component {
           <li className="hidden-xss">
             <a
               role="link"
-              href="#"
+              href="/logout"
             >
               <OverlayTrigger
                 placement="bottom"
