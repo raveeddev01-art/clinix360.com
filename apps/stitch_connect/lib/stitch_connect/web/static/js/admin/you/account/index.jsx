@@ -5,11 +5,14 @@ import EmailPanel from "./email-panel";
 import PasswordPanel from "./password-panel";
 import PINPanel from "./pin-panel";
 
+const header = (
+  <h1><i className="fa fa-cog"></i> Account</h1>
+);
+
 class AccountSettings extends Component {
   render() {
     return (
-      <Panel className="admin-panel">
-        <h1 className="admin-title text-center">Account</h1>
+      <Panel className="admin-panel" header={header}>
         <UsernamePanel />
         <hr />
         <EmailPanel />

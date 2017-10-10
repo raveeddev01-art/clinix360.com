@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Panel, Well, Row, Col, Button } from "react-bootstrap";
+import { Well, Row, Col, Button } from "react-bootstrap";
 
 export default class TeamExport extends Component {
   constructor(props) {
@@ -8,8 +8,8 @@ export default class TeamExport extends Component {
 
   render() {
     return (
-      <Panel className="admin-panel">
-        <h1 className="admin-title">Data Export</h1>
+      <div>
+        <h3 className="text-center">Data Export</h3>
         <p>
           In the event that you need to delete your Stitch account, or require
           electronic discovery for legal purposes, Stitch provides full data
@@ -85,7 +85,7 @@ export default class TeamExport extends Component {
             Frequently Asked Questions
           </a>
         </p>
-      </Panel>
+      </div>
     );
   }
 }

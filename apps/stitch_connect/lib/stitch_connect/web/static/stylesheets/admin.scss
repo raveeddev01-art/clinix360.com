@@ -191,11 +191,14 @@ $admin-topbar-height-sm: 65px;
   }
 
   .admin-panel {
+    @include stitch-scroll();
     border: none;
     background-color: $body-bg;
     flex-grow: 1;
     position: relative;
     margin-bottom: 0;
+    padding: 36px 3em 3em 3em;
+    overflow-y: auto;
 
     &:after {
       position: absolute;
@@ -206,16 +209,29 @@ $admin-topbar-height-sm: 65px;
       background: rgba(0, 0, 0, 0.1);
     }
 
-    .panel-body {
-      font-size: 15px;
-      padding: 50px;
+    .panel-heading {
+      background: transparent;
+      border: none;
+      padding: 0;
 
       h1 {
         font-size: 30px;
+        line-height: 30px;
         font-weight: bold;
-        margin: 0 0 40px;
-        text-align: center;
+        margin: 0 0 24px;
+        text-align: left;
+        i.fa {
+          color: $brand-primary;
+        }
       }
+    }
+
+    .panel-body {
+      background-color: #fff;
+      font-size: 15px;
+      border: 1px solid $border-color;
+      border-radius: 4px;
+      padding: 2em;
 
       .export-heading {
         font-weight: bold;
@@ -359,6 +375,49 @@ $admin-topbar-height-sm: 65px;
 
       .btn-lg {
         padding: 8px 20px;
+      }
+    }
+
+    &.tabs-panel {
+      .panel-body {
+        padding: 0;
+        border: none;
+        background-color: $body-bg;
+
+        ul.nav-tabs {
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16.1px;
+          li {
+            a {
+              padding-left: 24px;
+              padding-right: 24px;
+              color: $brand-primary;
+            }
+            &.active {
+              a {
+                color: inherit;
+              }
+            }
+          }
+        }
+
+        .tab-content {
+          background-color: #fff;
+          padding: 2em;
+          border-width: 0 1px 1px;
+          border-style: solid;
+          border-color: $border-color;
+          font-size: 15px;
+
+          h3 {
+            margin: 0;
+            padding-top: 12px;
+            padding-bottom: 24px;
+            font-size: 30px;
+            font-weight: 700;
+          }
+        }
       }
     }
   }

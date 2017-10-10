@@ -6,8 +6,7 @@ import classNames from 'classnames';
 
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
-import TeamHipaa from "./team/hipaa";
-import TeamExport from "./team/export";
+import TeamSecurity from "./team/security";
 import TeamSettings from "./team/settings/index";
 import YouNotifications from "./you/notifications";
 import ProfileSettings from "./you/profile/index";
@@ -86,8 +85,10 @@ export default class Admin extends Component {
                     path={`/admin/team/settings`}
                     component={TeamSettings}
                   />
-                  <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
-                  <Route path={`/admin/team/export`} component={TeamExport} />
+                  <Route
+                    path={`/admin/team/security`}
+                    component={TeamSecurity}
+                  />
                   <Route
                     path={`/admin/you/notifications`}
                     component={YouNotifications}

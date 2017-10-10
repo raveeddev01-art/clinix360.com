@@ -3,6 +3,10 @@ import { inject, observer } from "mobx-react";
 import { Panel, Row, Col } from "react-bootstrap";
 import MemberItem from "./member-item";
 
+const header = (
+  <h1><i className="fa fa-users"></i> Members</h1>
+);
+
 @inject("membersStore")
 @observer
 export default class UsersMembers extends Component {
@@ -12,9 +16,7 @@ export default class UsersMembers extends Component {
     const offlineUsers = membersStore.offlineUsers;
 
     return (
-      <Panel className="admin-panel">
-        <h1 className="admin-title">Members</h1>
-
+      <Panel className="admin-panel" header={header}>
         <p className="m-b-20">
           Manage your users by controlling admin abilities and account status.
           For more information on how account enabling and disabling works, see
