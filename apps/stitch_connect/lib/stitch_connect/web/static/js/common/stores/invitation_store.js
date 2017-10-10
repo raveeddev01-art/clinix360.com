@@ -4,6 +4,10 @@ class InvitationStore {
   @observable loading = false;
   @observable invitations = [];
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   @action
   loadInvitations = () => {
     this.loading = true;
@@ -43,5 +47,4 @@ class InvitationStore {
   };
 }
 
-const store = new InvitationStore();
-export default store;
+export default InvitationStore;

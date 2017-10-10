@@ -1,3 +1,12 @@
+// Admin stores
+import ImageStore from "./image_store";
+import InvitationStore from "./invitation_store";
+import MembersStore from "./members_store";
+import NotificationStore from "./notification_store";
+import TeamStore from "./team_store";
+import UserStore from "./user_store";
+
+// Client stores
 import AddonStore from "./addon_store";
 import ChannelStore from "./channel_store";
 import FilesStore from "./files_store";
@@ -10,13 +19,19 @@ import SearchStore from "./search_store";
 import SidemenuStore from "./sidemenu_store";
 import UploadStore from "./upload_store";
 
-import notificationStore from "../../admin/stores/notification_store";
-
 class RootStore {
   constructor(props) {
     this.appParams = Object.assign({}, props);
 
-    // Init stores
+    // Init admin stores
+    this.imageStore = new ImageStore(this);
+    this.invitationStore = new InvitationStore(this);
+    this.membersStore = new MembersStore(this);
+    this.notificationStore = new NotificationStore(this);
+    this.teamStore = new TeamStore(this);
+    this.userStore = new UserStore(this);
+
+    // Init client stores
     this.addonStore = new AddonStore(this);
     this.channelStore = new ChannelStore(this);
     this.globalStarredMessageStore = new GlobalStarredMessageStore(this);
@@ -29,14 +44,15 @@ class RootStore {
     this.sidemenuStore = new SidemenuStore(this, props);
     this.uploadStore = new UploadStore(this);
 
-    this.notificationStore = notificationStore;
+    // Initial actions for admin stores
+    this.notificationStore.loadPreferences();
+    this.membersStore.loadUsers(props.teamId);
+    this.teamStore.loadTeam(props.teamId);
+    this.userStore.loadUser(currentUser.id);
 
     // Join channels
     this.channelStore.joinEventChannel();
     this.presenceStore.joinTeamLobbyChannel();
-
-    // Load notification preferences
-    this.notificationStore.loadPreferences();
   }
 }
 

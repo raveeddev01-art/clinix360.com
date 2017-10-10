@@ -11,6 +11,10 @@ class UserStore {
   @observable lastName = "";
   @observable profileImgUrl = "";
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   @action
   loadUser = id => {
     this.loading = true;
@@ -107,5 +111,4 @@ class UserStore {
   };
 }
 
-const userStore = new UserStore();
-export default userStore;
+export default UserStore;
