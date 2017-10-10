@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Switch, Route, withRouter } from "react-router-dom";
 
-import Lockout from "../lockout/lockout";
+import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
 import ChatApp from "../chat/ChatApp";
 
@@ -20,7 +20,7 @@ class LockableApp extends Component {
 
   render() {
     return this.props.presenceStore.locked ? (
-      <Lockout />
+      <LockedApp />
     ) : (
       <Switch>
         <Route path="/admin" component={AdminApp} />

@@ -8,7 +8,7 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 @inject("presenceStore")
 @observer
-class Lockout extends Component {
+class LockedApp extends Component {
   constructor(props) {
     super(props);
 
@@ -99,4 +99,4 @@ class Lockout extends Component {
   }
 }
 
-export default withRouter(Lockout);
+export default withRouter(LockedApp);
