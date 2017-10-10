@@ -80,5 +80,4 @@ class NotificationStore {
   }
 }
 
-const store = new NotificationStore();
-export default store;
+export default NotificationStore;

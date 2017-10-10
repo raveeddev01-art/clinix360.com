@@ -43,5 +43,4 @@ class InvitationStore {
   };
 }
 
-const store = new InvitationStore();
-export default store;
+export default InvitationStore;

@@ -32,5 +32,4 @@ class ImageStore {
   };
 }
 
-const imageStore = new ImageStore();
-export default imageStore;
+export default ImageStore;

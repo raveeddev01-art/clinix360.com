@@ -80,5 +80,4 @@ class MembersStore {
   };
 }
 
-const store = new MembersStore();
-export default store;
+export default MembersStore;

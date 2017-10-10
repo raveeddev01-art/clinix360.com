@@ -63,5 +63,4 @@ class TeamStore {
   };
 }
 
-const store = new TeamStore();
-export default store;
+export default TeamStore;
