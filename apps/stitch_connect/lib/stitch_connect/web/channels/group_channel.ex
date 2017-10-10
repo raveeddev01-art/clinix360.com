@@ -151,18 +151,18 @@ defmodule StitchConnect.Web.GroupChannel do
     do_new_msg(socket, group, user, params)
   end
 
-  def handle_in("mark_as_unread", %{"group_id" => group_id, "message_id" => message_id}, socket) do
-    user = socket.assigns.current_user
+  def handle_in("mark_as_unread", %{"message_id" => message_id}, socket) do
+    %{group: group, current_user: user} = socket.assigns
     message = Repo.get!(Message, message_id)
 
-    Message.mark_as_unread(user.id, group_id, message)
+    Message.mark_as_unread(user.id, group.id, message)
     |> mark_as_unread_response(user, socket)
   end
 
-  def handle_in("mark_as_read", %{"group_id" => group_id}, socket) do
-    user = socket.assigns.current_user
+  def handle_in("mark_as_read", _params, socket) do
+    %{group: group, current_user: user} = socket.assigns
 
-    Message.mark_as_read(user.id, group_id)
+    Message.mark_as_read(user.id, group.id)
     |> mark_as_read_response(user, socket)
   end
 
