@@ -19,6 +19,7 @@ class AdminApp extends Component {
 
     history.push("/");
   };
+
   render() {
     return (
       <div className="admin-wrapper container">
@@ -38,22 +39,28 @@ class AdminApp extends Component {
             </Col>
             <Col xs={9}>
               <Switch>
-                <Route exact path={`/team`} component={TeamSettings} />
-                <Route path={`/team/settings`} component={TeamSettings} />
-                <Route path={`/team/hipaa`} component={TeamHipaa} />
-                <Route path={`/team/export`} component={TeamExport} />
+                <Route exact path={`/admin/team`} component={TeamSettings} />
+                <Route path={`/admin/team/settings`} component={TeamSettings} />
+                <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
+                <Route path={`/admin/team/export`} component={TeamExport} />
                 <Route
-                  path={`/you/notifications`}
+                  path={`/admin/you/notifications`}
                   component={YouNotifications}
                 />
-                <Route path={`/you/profile`} component={ProfileSettings} />
-                <Route path={`/you/account`} component={AccountSettings} />
                 <Route
-                  path={`/users/invitations`}
+                  path={`/admin/you/profile`}
+                  component={ProfileSettings}
+                />
+                <Route
+                  path={`/admin/you/account`}
+                  component={AccountSettings}
+                />
+                <Route
+                  path={`/admin/users/invitations`}
                   component={UsersInvitations}
                 />
-                <Route path={`/users/members`} component={UsersMembers} />
-                <Route path={`/users/pending`} component={UsersPending} />
+                <Route path={`/admin/users/members`} component={UsersMembers} />
+                <Route path={`/admin/users/pending`} component={UsersPending} />
               </Switch>
             </Col>
           </Row>
