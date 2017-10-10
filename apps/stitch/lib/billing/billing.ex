@@ -91,7 +91,7 @@ defmodule Stitch.Billing do
       where: pm.id == ^payment_method_id
 
     with payment_method when not is_nil(payment_method) <- Repo.one(query),
-         {:default?, false} <- {:default, payment_method.default},
+         {:default?, false} <- {:default?, payment_method.default},
          true <- @stripe_client.remove_card(team.subscription.customer_id, payment_method.card_id) do
       {:ok, _} = Repo.delete(payment_method)
       :ok

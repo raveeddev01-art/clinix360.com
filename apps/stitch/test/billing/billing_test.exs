@@ -40,8 +40,8 @@ defmodule Stitch.Billing.BillingTest do
   describe "delete_card/2" do
     setup do
       subscription = insert(:subscription)
-      default_card = Billing.add_card(subscription.team, "tok_valid")
-      other_card = Billing.add_card(subscription.team, "tok_valid")
+      {:ok, default_card} = Billing.add_card(subscription.team, "tok_valid")
+      {:ok, other_card} = Billing.add_card(subscription.team, "tok_valid")
       {:ok, subscription: subscription, default_card: default_card, other_card: other_card}
     end
 
