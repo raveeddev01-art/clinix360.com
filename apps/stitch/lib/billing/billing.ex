@@ -29,7 +29,14 @@ defmodule Stitch.Billing do
     end
   end
 
+  defp trial_end_datetime do
+    DateTime.utc_now()
+    |> DateTime.to_unix()
+    |> Kernel.+(@trial_duration)
+    |> DateTime.from_unix!()
+  end
   @doc """
+
   Adds a credict card to the team.
 
   If the card is the first card to be added, the card will be set as the default card.
@@ -66,10 +73,32 @@ defmodule Stitch.Billing do
     |> Repo.insert()
   end
 
-  defp trial_end_datetime do
-    DateTime.utc_now()
-    |> DateTime.to_unix()
-    |> Kernel.+(@trial_duration)
-    |> DateTime.from_unix!()
+  @doc """
+  Removes a card from a Team.
+
+  Cards that are the default payment method cannot be deleted.
+
+  ## Examples
+
+      iex> delete_card(%Team{...}, 123)
+      :ok
+  """
+  def delete_card(%Team{id: team_id} = team, payment_method_id) do
+    team = Repo.preload(team, :subscription)
+    query =
+      from pm in PaymentMethod,
+      where: pm.team_id == ^team_id,
+      where: pm.id == ^payment_method_id
+
+    with payment_method when not is_nil(payment_method) <- Repo.one(query),
+         {:default?, false} <- {:default, payment_method.default},
+         true <- @stripe_client.remove_card(team.subscription.customer_id, payment_method.card_id) do
+      {:ok, _} = Repo.delete(payment_method)
+      :ok
+    else
+      nil -> {:error, :not_found}
+      {:default?, true} -> {:error, :default_card}
+      false -> {:error, :not_found}
+    end
   end
 end

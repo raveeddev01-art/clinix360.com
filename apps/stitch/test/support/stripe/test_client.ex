@@ -24,6 +24,9 @@ defmodule Stitch.Stripe.TestClient do
   end
   def add_card(_customer_id, "tok_invalid"), do: :error
 
+  def remove_card(_customer_id, "card_valid"), do: true
+  def remove_card(_customer_id, "card_invalid"), do: false
+
   defp timestamp do
     DateTime.to_unix(DateTime.utc_now())
   end

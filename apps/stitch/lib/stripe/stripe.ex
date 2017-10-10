@@ -18,4 +18,9 @@ defmodule Stitch.Stripe do
   Adds a new credit card to a customer.
   """
   @callback add_card(customer_id :: String.t, source_token :: String.t) :: {:ok, card} | :error
+
+  @doc """
+  Removes a card from a customer.
+  """
+  @callback remove_card(customer_id :: String.t, card_id :: String.t) :: boolean
  end

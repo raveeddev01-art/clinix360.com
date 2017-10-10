@@ -65,4 +65,22 @@ defmodule Stitch.Stripe.Client do
       exp_year: exp_year
     }
   end
+
+  @doc """
+  Removes a card from a customer.
+
+  ## Examples
+
+      iex> remove_card("cus_1234567", "card_1234567")
+      true
+
+      iex> remove_card("cus_1234567", "bad_id")
+      false
+  """
+  def remove_card(customer_id, card_id) do
+    case Stripe.Cards.delete(:customer, customer_id, card_id) do
+      {:ok, %{delete: true}} -> true
+      _ -> false
+    end
+  end
 end
