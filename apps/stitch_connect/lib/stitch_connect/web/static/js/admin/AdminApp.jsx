@@ -14,13 +14,11 @@ import UsersMembers from "./users/members";
 import UsersPending from "./users/pending";
 
 class AdminApp extends Component {
-  componentWillMount() {
-    notificationStore.loadPreferences();
-    membersStore.loadUsers(this.props.teamId);
-    teamStore.loadTeam(this.props.teamId);
-    userStore.loadUser(currentUser.id);
-  }
+  toChat = () => {
+    const { history } = this.props;
 
+    history.push("/");
+  };
   render() {
     return (
       <div className="admin-wrapper container">
@@ -31,7 +29,7 @@ class AdminApp extends Component {
                 block
                 bsSize="large"
                 className="back-btn m-b-20"
-                href={`https://${this.props.subdomain}.${applicationHost}`}
+                onClick={this.toChat}
               >
                 Back to chat
               </Button>
@@ -40,28 +38,22 @@ class AdminApp extends Component {
             </Col>
             <Col xs={9}>
               <Switch>
-                <Route exact path={`/admin/team`} component={TeamSettings} />
-                <Route path={`/admin/team/settings`} component={TeamSettings} />
-                <Route path={`/admin/team/hipaa`} component={TeamHipaa} />
-                <Route path={`/admin/team/export`} component={TeamExport} />
+                <Route exact path={`/team`} component={TeamSettings} />
+                <Route path={`/team/settings`} component={TeamSettings} />
+                <Route path={`/team/hipaa`} component={TeamHipaa} />
+                <Route path={`/team/export`} component={TeamExport} />
                 <Route
-                  path={`/admin/you/notifications`}
+                  path={`/you/notifications`}
                   component={YouNotifications}
                 />
+                <Route path={`/you/profile`} component={ProfileSettings} />
+                <Route path={`/you/account`} component={AccountSettings} />
                 <Route
-                  path={`/admin/you/profile`}
-                  component={ProfileSettings}
-                />
-                <Route
-                  path={`/admin/you/account`}
-                  component={AccountSettings}
-                />
-                <Route
-                  path={`/admin/users/invitations`}
+                  path={`/users/invitations`}
                   component={UsersInvitations}
                 />
-                <Route path={`/admin/users/members`} component={UsersMembers} />
-                <Route path={`/admin/users/pending`} component={UsersPending} />
+                <Route path={`/users/members`} component={UsersMembers} />
+                <Route path={`/users/pending`} component={UsersPending} />
               </Switch>
             </Col>
           </Row>
