@@ -68,6 +68,24 @@ defmodule Stitch.Group do
     end
   end
 
+  def create_single_dm(_, user_ids) when length(user_ids) != 2 do
+    {:error, :user_id_count_is_not_2}
+  end
+
+  def create_single_dm(%{id: creator_id}, [user_id_1, user_id_2])
+      when creator_id != user_id_1 and creator_id != user_id_2 do
+    {:error, :creator_id_is_not_in_user_ids}
+  end
+
+  def create_single_dm(%User{} = creator, user_ids) do
+    create(%{
+      "name" => "__dm_group__",
+      "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
+      "user_ids" => user_ids,
+      "public" => false
+    }, creator.team_id, creator.id)
+  end
+
   @doc """
   Rename the group with the provided name.
   """
