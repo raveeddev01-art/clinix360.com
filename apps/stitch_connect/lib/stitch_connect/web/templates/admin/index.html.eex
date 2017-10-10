@@ -1,4 +1,0 @@
-<div id="root"
-     data-component="Admin"
-     data-react-props="<%= @app_params %>">
-</div>
