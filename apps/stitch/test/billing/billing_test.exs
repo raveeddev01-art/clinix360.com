@@ -55,7 +55,7 @@ defmodule Stitch.Billing.BillingTest do
     end
 
     test "gives error when a card isn't found", %{subscription: subscription} do
-      assert {:error, :not_found} == Billing.delete_card(subscription, -1)
+      assert {:error, :not_found} == Billing.delete_card(subscription.team, -1)
     end
   end
 end
