@@ -91,65 +91,57 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def create_single_dm(conn, %{"user_ids" => user_ids}) do
-    cond do
-      length(user_ids) != 2 ->
+    case Group.create_single_dm(conn.assigns.current_user, user_ids) do
+      {:error, :user_id_count_is_not_2} ->
         conn
         |> put_status(:bad_request)
         |> json(%{message: "user_ids param should contain 2 ids"})
-      true ->
-        conn
-        |> create_dm(user_ids, "__dm_group__")
-      end
+
+      result -> respond_to_dm_creation(conn, result)
+    end
   end
 
   def create_multi_dm(conn, %{"user_ids" => user_ids}) do
-    cond do
-      length(user_ids) <= 2 ->
+    case Group.create_multi_dm(conn.assigns.current_user, user_ids) do
+      {:error, :user_id_count_is_not_3_or_more} ->
         conn
         |> put_status(:bad_request)
-        |> json(%{message: "user_ids param has contain more than 2 ids"})
-      true ->
-        conn
-        |> create_dm(user_ids, "__multi_dm_group__")
-      end
+        |> json(%{message: "user_ids param should contain more than 2 ids"})
+
+      result -> respond_to_dm_creation(conn, result)
+    end
   end
 
-  defp create_dm(conn, user_ids, name) do
+  defp respond_to_dm_creation(conn, result) do
     user = conn.assigns.current_user
 
-    cond do
-      not user.id in user_ids ->
+    case result do
+      {:ok, group} ->
+        group =
+          group
+          |> Map.put_new(:joined, true)
+          |> Map.put_new(:unread_messages_count, 0)
+          |> Map.put_new(:favorite, false)
+          |> Map.put_new(:last_read_at, nil)
+          |> Map.put_new(:mentions_count, 0)
+
+        EventsChannel.broadcast_group_creation(group)
+        render conn, "show.json", group: group, user_id: user.id
+
+      {:error, {:already_exists, slug}} ->
+        {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
+        render conn, "show.json", group: group, user_id: user.id
+
+      {:error, :creator_id_is_not_in_user_ids} ->
         conn
         |> put_status(:bad_request)
         |> json(%{message: "user_ids param has to contain current user's id"})
 
-      true ->
-        sorted_ids = user_ids |> Enum.sort |> Enum.join(".")
-        slug = "__dm:#{sorted_ids}"
-        params = %{"user_ids" => user_ids, "name" => name, "slug" => slug, "public" => false}
-
-        case Group.create(params, user.team_id, user.id) do
-          {:ok, group} ->
-            group = group
-            |> Map.put_new(:joined, true)
-            |> Map.put_new(:unread_messages_count, 0)
-            |> Map.put_new(:favorite, false)
-            |> Map.put_new(:last_read_at, nil)
-            |> Map.put_new(:mentions_count, 0)
-
-            EventsChannel.broadcast_group_creation(group)
-            render conn, "show.json", group: group, user_id: user.id
-
-          {:error, :already_exists} ->
-            {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
-            render conn, "show.json", group: group, user_id: user.id
-
-          {:error, reason} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: reason})
-        end
-      end
+      {:error, reason} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: reason})
+    end
   end
 
   def join(conn, %{"id" => group_id}) do

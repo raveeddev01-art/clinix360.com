@@ -6,6 +6,10 @@ class NotificationStore {
   @observable desktopPreference = null;
   @observable emailPreference = null;
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   @action
   loadPreferences = () => {
     get("/api/v1/users/notification-preference").then(response => {
@@ -80,5 +84,4 @@ class NotificationStore {
   }
 }
 
-const store = new NotificationStore();
-export default store;
+export default NotificationStore;

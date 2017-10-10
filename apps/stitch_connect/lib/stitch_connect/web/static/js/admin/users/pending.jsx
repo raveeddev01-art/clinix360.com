@@ -3,6 +3,10 @@ import { inject, observer } from "mobx-react";
 import { Panel, Row, Col } from "react-bootstrap";
 import PendingInvitationItem from "./pending-invitation-item";
 
+const header = (
+  <h1><i className="fa fa-inbox"></i> Pending</h1>
+);
+
 @inject("invitationStore")
 @observer
 class UsersPending extends Component {
@@ -29,9 +33,7 @@ class UsersPending extends Component {
 
   render() {
     return (
-      <Panel className="admin-panel">
-        <h1 className="admin-title">Pending</h1>
-
+      <Panel className="admin-panel" header={header}>
         <p className="m-b-20">
           View any outstanding invitations to join the team here. Revoking an
           invite will remove it from this list and deactivate the invite link.

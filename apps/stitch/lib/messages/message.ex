@@ -194,6 +194,7 @@ defmodule Stitch.Message do
     Message
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.id >= ^message_id)
+    |> where([m], m.user_id != ^user_id)
     |> where([m], fragment("(? \\? ?) and (not (? @> ?))",
       m.read_status, ^to_string(user_id), m.read_status, ^%{to_string(user_id) => nil}))
     |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => nil})])
@@ -230,9 +231,13 @@ defmodule Stitch.Message do
   end
 
   defp mark_messages_as_read(group_id, user_id) do
+    group_user = Repo.get_by(GroupUser, group_id: group_id, user_id: user_id)
+    last_read_at = group_user.last_read_at || group_user.inserted_at
+
     Message
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.user_id != ^user_id)
+    |> where([m], m.inserted_at >= ^last_read_at)
     |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
     |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => NaiveDateTime.utc_now})])
   end
