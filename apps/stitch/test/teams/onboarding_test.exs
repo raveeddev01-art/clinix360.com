@@ -52,5 +52,11 @@ defmodule Stitch.Team.OnboardingTest do
       {:error, message} = Stitch.Team.Onboarding.create_team("A new team", "a-team")
       assert message == "Team wasn't created"
     end
+
+    test "configures the team with a trial subscription" do
+      team = Stitch.Team.Onboarding.create_team("Care Clinic", "care-clinic-12")
+      assert subscription = Stitch.Repo.get_by(Stitch.Billing.Subscription, team_id: team.id)
+      assert subscription.tier == "TRIAL"
+    end
   end
 end
