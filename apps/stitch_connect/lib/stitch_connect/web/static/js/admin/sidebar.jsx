@@ -4,7 +4,7 @@ import { Link, withRouter, matchPath } from "react-router-dom";
 import ListGroup from "react-bootstrap/lib/ListGroup";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 
-@inject("teamStore")
+@inject("teamStore", "presenceStore")
 @observer
 class Sidebar extends Component {
   _isSelected(path) {
@@ -103,7 +103,7 @@ class Sidebar extends Component {
             <ListGroupItem href="/">
               <i className="fa fa-rocket"></i> Launch
             </ListGroupItem>
-            <ListGroupItem href="#">
+            <ListGroupItem href="#" onClick={this.props.presenceStore.lock}>
               <i className="fa fa-lock"></i> Lockout
             </ListGroupItem>
             <ListGroupItem href="/logout">
