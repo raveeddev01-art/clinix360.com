@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import { Panel, Well } from "react-bootstrap";
+import { Well } from "react-bootstrap";
 
 export default class TeamHipaa extends Component {
   constructor(props) {
@@ -9,9 +9,8 @@ export default class TeamHipaa extends Component {
 
   render() {
     return (
-      <Panel className="admin-panel">
-        <h1 className="text-center">HIPAA</h1>
-
+      <div>
+        <h3 className="text-center">HIPAA</h3>
         <Well>
           <i className="fa fa-check-circle" />
           <p className="m-b-0">
@@ -49,7 +48,7 @@ export default class TeamHipaa extends Component {
             here
           </a>.
         </p>
-      </Panel>
+      </div>
     );
   }
 }

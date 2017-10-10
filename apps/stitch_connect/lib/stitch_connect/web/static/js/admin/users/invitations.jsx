@@ -12,6 +12,10 @@ import {
   Button
 } from "react-bootstrap";
 
+const header = (
+  <h1><i className="fa fa-envelope-o"></i> Invitations</h1>
+);
+
 @inject("teamStore")
 @observer
 export default class UsersInvitations extends Component {
@@ -52,9 +56,7 @@ export default class UsersInvitations extends Component {
 
   render() {
     return (
-      <Panel className="admin-panel">
-        <h1 className="text-center">Invitations</h1>
-
+      <Panel className="admin-panel" header={header}>
         <h4>Add invitation e-mails</h4>
 
         <FormGroup controlId="formControlsTextarea">
