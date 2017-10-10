@@ -8,7 +8,7 @@ class SidemenuStore {
   @observable groups = [];
   @observable users = [];
   @observable groupCursors = {}; // { group_id: message_id }
-
+  badge = null;
   favicon = null;
   notificationAudio = null;
 
@@ -20,7 +20,8 @@ class SidemenuStore {
     this.users = props.dm_users || [];
 
     this.favicon = new Favico({
-      animation: "slide"
+      animation: "slide",
+      position: "up"
     });
     this.notificationAudio = new Audio("/audios/pop.mp3");
 
@@ -31,7 +32,7 @@ class SidemenuStore {
   @computed
   get normalGroups() {
     return this.groups.filter(
-      group => group.type === "regular" && group.favorite == false
+      group => group.type === "regular" && !group.favorite
     );
   }
 
@@ -165,10 +166,17 @@ class SidemenuStore {
   }
 
   updateFavicon() {
-    if (this.totalUnreadMessagesCount > 0) {
-      this.favicon.badge(" ");
-    } else {
-      this.favicon.badge("");
+    let badge = "";
+    if (this.totalUnreadMessagesCount > 9) {
+      badge = "9+";
+    } else if (this.totalUnreadMessagesCount > 0) {
+      badge = `${this.totalUnreadMessagesCount}`;
+    }
+
+    // avoid favicon animation when not changed
+    if (badge !== this.badge) {
+      this.badge = badge;
+      this.favicon.badge(badge);
     }
   }
 
