@@ -60,12 +60,48 @@ defmodule Stitch.Group do
 
         {:error, changeset} ->
           if changeset.errors == [slug: {"has already been taken", []}] do
-            Repo.rollback(:already_exists)
+            Repo.rollback({:already_exists, changeset.changes.slug})
           else
             Repo.rollback("Failed to create group.")
           end
       end
     end
+  end
+
+  def create_single_dm(_, user_ids) when length(user_ids) != 2 do
+    {:error, :user_id_count_is_not_2}
+  end
+
+  def create_single_dm(%{id: creator_id}, [user_id_1, user_id_2])
+      when creator_id != user_id_1 and creator_id != user_id_2 do
+    {:error, :creator_id_is_not_in_user_ids}
+  end
+
+  def create_single_dm(%User{} = creator, user_ids) do
+    create(%{
+      "name" => "__dm_group__",
+      "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
+      "user_ids" => user_ids,
+      "public" => false
+    }, creator.team_id, creator.id)
+  end
+
+  def create_multi_dm(_, user_ids) when length(user_ids) != 3 do
+    {:error, :user_id_count_is_not_3_or_more}
+  end
+
+  def create_multi_dm(%{id: creator_id}, [user_id_1, user_id_2, user_id_3])
+      when creator_id != user_id_1 and creator_id != user_id_2 and creator_id != user_id_3 do
+    {:error, :creator_id_is_not_in_user_ids}
+  end
+
+  def create_multi_dm(%User{} = creator, user_ids) do
+    create(%{
+      "name" => "__multi_dm_group__",
+      "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
+      "user_ids" => user_ids,
+      "public" => false
+    }, creator.team_id, creator.id)
   end
 
   @doc """

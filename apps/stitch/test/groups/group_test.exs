@@ -1,11 +1,6 @@
 defmodule Stitch.GroupTest do
-  use ExUnit.Case, async: true
-  import Stitch.Factory
+  use Stitch.DataCase, async: true
   alias Stitch.Group
-
-  setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
-  end
 
   describe "Stitch.Group.rename/2" do
     test "it renames the group" do
