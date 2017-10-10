@@ -4,8 +4,8 @@ import { Route, withRouter } from "react-router-dom";
 import Dropzone from "react-dropzone";
 
 import Sidemenu from "../sidemenu/sidemenu";
-import Chat from "../chat/chat";
-import BrowserNotificationAlert from "../chat/browser-notification-alert";
+import Chat from "./chat";
+import BrowserNotificationAlert from "./browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
 
 @inject("uploadStore")

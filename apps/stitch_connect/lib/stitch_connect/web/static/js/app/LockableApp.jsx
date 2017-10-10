@@ -4,7 +4,7 @@ import { Switch, Route, withRouter } from "react-router-dom";
 
 import Lockout from "../lockout/lockout";
 import AdminApp from "../admin/AdminApp";
-import ChatApp from "./ChatApp";
+import ChatApp from "../chat/ChatApp";
 
 @inject("presenceStore")
 @observer
