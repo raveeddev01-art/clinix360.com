@@ -15,11 +15,11 @@ defmodule Stitch.Billing.BillingTest do
   describe "add_card/2" do
     setup do
       subscription = insert(:subscription)
-      {:ok, subscription: subscription}
+      {:ok, team: subscription.team}
     end
 
-    test "adds a card", %{subscription: subscription} do
-      assert {:ok, card} = Billing.add_card(subscription.team, "tok_valid")
+    test "adds a card", %{team: team} do
+      assert {:ok, card} = Billing.add_card(team, "tok_valid")
       assert card.card_id
       assert card.brand
       assert card.exp_month
@@ -27,13 +27,13 @@ defmodule Stitch.Billing.BillingTest do
       assert card.last_four
     end
 
-    test "sets the first card to be the default payment method", %{subscription: subscription} do
-      assert {:ok, %{default: true}} = Billing.add_card(subscription.team, "tok_valid")
-      assert {:ok, %{default: false}} = Billing.add_card(subscription.team, "tok_valid")
+    test "sets the first card to be the default payment method", %{team: team} do
+      assert {:ok, %{default: true}} = Billing.add_card(team, "tok_valid")
+      assert {:ok, %{default: false}} = Billing.add_card(team, "tok_valid")
     end
 
-    test "gives an error with invalid source token", %{subscription: subscription} do
-      assert :error == Billing.add_card(subscription.team, "tok_invalid")
+    test "gives an error with invalid source token", %{team: team} do
+      assert :error == Billing.add_card(team, "tok_invalid")
     end
   end
 
@@ -42,20 +42,40 @@ defmodule Stitch.Billing.BillingTest do
       subscription = insert(:subscription)
       {:ok, default_card} = Billing.add_card(subscription.team, "tok_valid")
       {:ok, other_card} = Billing.add_card(subscription.team, "tok_valid")
-      {:ok, subscription: subscription, default_card: default_card, other_card: other_card}
+      {:ok, team: subscription.team, default_card: default_card, other_card: other_card}
     end
 
-    test "gives error when deleting the default card", %{subscription: subscription, default_card: card} do
-      assert {:error, :default_card} == Billing.delete_card(subscription.team, card.id)
+    test "gives error when deleting the default card", %{team: team, default_card: card} do
+      assert {:error, :default_card} == Billing.delete_card(team, card.id)
     end
 
-    test "deletes a card", %{subscription: subscription, other_card: card} do
-      assert :ok == Billing.delete_card(subscription.team, card.id)
+    test "deletes a card", %{team: team, other_card: card} do
+      assert :ok == Billing.delete_card(team, card.id)
       refute Stitch.Repo.get(Stitch.Billing.PaymentMethod, card.id)
     end
 
-    test "gives error when a card isn't found", %{subscription: subscription} do
-      assert {:error, :not_found} == Billing.delete_card(subscription.team, -1)
+    test "gives error when a card isn't found", %{team: team} do
+      assert {:error, :not_found} == Billing.delete_card(team, -1)
+    end
+  end
+
+  describe "set_as_default/2" do
+    setup do
+      subscription = insert(:subscription)
+      {:ok, default_card} = Billing.add_card(subscription.team, "tok_valid")
+      {:ok, other_card} = Billing.add_card(subscription.team, "tok_valid")
+      {:ok, team: subscription.team, default_card: default_card, other_card: other_card}
+    end
+
+    test "sets a card as the default", %{team: team, default_card: default_card, other_card: other_card} do
+      assert {:ok, result} = Billing.set_as_default(team, other_card.id)
+      assert result.default
+      assert result.id == other_card.id
+      refute Stitch.Repo.get(Stitch.Billing.PaymentMethod, default_card.id).default
+    end
+
+    test "gives an error when a card isn't found", %{team: team} do
+      assert {:error, :not_found} == Billing.set_as_default(team, -1)
     end
   end
 end

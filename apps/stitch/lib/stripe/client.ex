@@ -76,10 +76,27 @@ defmodule Stitch.Stripe.Client do
 
       iex> remove_card("cus_1234567", "bad_id")
       false
+
   """
   def remove_card(customer_id, card_id) do
     case Stripe.Cards.delete(:customer, customer_id, card_id) do
       {:ok, %{delete: true}} -> true
+      _ -> false
+    end
+  end
+
+  @doc """
+  Sets a card as the default card for the customer.
+
+  ## Examples
+
+      iev> set_as_default_card("cus_1234567", "card_1234567")
+      true
+
+  """
+  def set_as_default_card(customer_id, card_id) do
+    case Stripe.Customers.update(customer_id, default_source: card_id) do
+      {:ok, _} -> true
       _ -> false
     end
   end

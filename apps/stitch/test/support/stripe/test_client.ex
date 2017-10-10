@@ -26,6 +26,8 @@ defmodule Stitch.Stripe.TestClient do
 
   def remove_card(_customer_id, _card_id), do: true
 
+  def set_as_default_card(_customer_id, _card_id), do: true
+
   defp timestamp do
     DateTime.to_unix(DateTime.utc_now())
   end

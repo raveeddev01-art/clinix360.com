@@ -83,6 +83,7 @@ defmodule Stitch.Billing do
       iex> delete_card(%Team{...}, 123)
       :ok
   """
+  @spec delete_card(Team.t, pos_integer) :: :ok | {:error, :not_found | :default_card}
   def delete_card(%Team{id: team_id} = team, payment_method_id) do
     team = Repo.preload(team, :subscription)
     query =
@@ -100,5 +101,41 @@ defmodule Stitch.Billing do
       {:default?, true} -> {:error, :default_card}
       false -> {:error, :not_found}
     end
+  end
+
+  @doc """
+  Sets the payment method as the default payment method.
+
+  ## Examples
+
+      iex> set_as_default(%Team{...}, 5) do
+      {:ok, %PaymentMethod{id: 5, ..., default: true}}
+
+  """
+  @spec set_as_default(Team.t, pos_integer) :: {:ok, PaymentMethod.t} | {:error, :not_found}
+  def set_as_default(%Team{id: team_id} = team, payment_method_id) do
+    team = Repo.preload(team, :subscription)
+
+    with payment_method when not is_nil(payment_method) <- Repo.get_by(PaymentMethod, id: payment_method_id, team_id: team_id),
+         @stripe_client.set_as_default_card(team.subscription.customer_id, payment_method.card_id),
+         {:ok, %{new_default: payment_method}} <- do_set_as_default(payment_method, team_id) do
+      {:ok, payment_method}
+    else
+      nil -> {:error, :not_found}
+      false -> {:error, :not_found}
+    end
+  end
+
+  defp do_set_as_default(payment_method, team_id) do
+    clear_previous_default_query =
+      from pm in PaymentMethod,
+      where: pm.team_id == ^team_id,
+      where: pm.id != ^payment_method.id,
+      update: [set: [default: false]]
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:new_default, Ecto.Changeset.change(payment_method, default: true))
+    |> Ecto.Multi.update_all(:clear_old_default, clear_previous_default_query, [])
+    |> Repo.transaction()
   end
 end
