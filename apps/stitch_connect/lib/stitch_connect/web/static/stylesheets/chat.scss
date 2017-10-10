@@ -275,14 +275,17 @@
     .room-preview {
       text-align: center;
       font-size: 18px;
-      line-height: 60px;
-      height: 60px;
       width: 100%;
 
       .btn {
         padding: 8px 10px;
         font-size: 18px;
-        margin: -4px 0 0 6px;
+        margin: 0 0 0 6px;
+
+        @media (max-width: 768px) {
+          display: block;
+          margin: 0 auto;
+        }
       }
     }
 

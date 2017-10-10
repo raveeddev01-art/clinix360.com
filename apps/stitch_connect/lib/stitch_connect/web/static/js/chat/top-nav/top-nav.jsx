@@ -40,6 +40,37 @@ class TopNav extends Component {
     this.search(event.target.value);
   };
 
+  handleJoin = () => {
+    const { groupStore: group } = this.props;
+    group.join();
+  };
+
+  renderRoomControls = () => {
+    const isNotDM = this.props.groupStore.groupType === "group";
+
+    if (this.props.groupStore.joined === true) {
+      return (
+        <div>
+          <NavItemFavorite />
+          {isNotDM && <NavItemMembers />}
+          <NavItemNotifications />
+          {isNotDM && <NavItemRename />}
+          <NavItemConvert />
+          {isNotDM && <NavItemLeave />}
+          <MenuItem>Delete</MenuItem>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <MenuItem onClick={this.handleJoin}>
+            Join <strong>#{this.props.groupStore.slug}</strong>
+          </MenuItem>
+        </div>
+      );
+    }
+  };
+
   onSearch = event => {
     event.preventDefault();
     this.props.addonStore.setAddonPanel("Search Results");
@@ -67,8 +98,6 @@ class TopNav extends Component {
   };
 
   render() {
-    const isNotDM = this.props.groupStore.groupType === "group";
-
     return (
       <div className="flex-header main-header">
         <div className="header-content">
@@ -76,7 +105,7 @@ class TopNav extends Component {
         </div>
 
         <div className="header-nav">
-          <Dropdown id="dropdown-group-controls" pullRight>
+          <Dropdown id="dropdown-room-controls" pullRight>
             <Dropdown.Toggle noCaret>
               <OverlayTrigger
                 placement="bottom"
@@ -86,14 +115,8 @@ class TopNav extends Component {
               </OverlayTrigger>
             </Dropdown.Toggle>
 
-            <Dropdown.Menu className="group-controls-menu">
-              <NavItemFavorite />
-              {isNotDM && <NavItemMembers />}
-              <NavItemNotifications />
-              {isNotDM && <NavItemRename />}
-              <NavItemConvert />
-              {isNotDM && <NavItemLeave />}
-              <MenuItem>Delete</MenuItem>
+            <Dropdown.Menu className="room-controls-menu">
+              {this.renderRoomControls()}
             </Dropdown.Menu>
           </Dropdown>
 

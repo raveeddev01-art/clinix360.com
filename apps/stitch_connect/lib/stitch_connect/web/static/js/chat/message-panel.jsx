@@ -67,32 +67,34 @@ export default class MessagePanel extends Component {
     });
 
     return (
-      messageStore.unreadMessagesCount > 0 &&
-      <div className={unreadMessagesTooltipClass}>
-        <div
-          role="button"
-          className="messages-count-info"
-          onClick={this.onUnreadMessagesCountClick}
-        >
-          <div className="jump-button">
-            <i className={jumpArrowClass} />
-            <span className="jump-hover">Jump</span>
+      messageStore.unreadMessagesCount > 0 && (
+        <div className={unreadMessagesTooltipClass}>
+          <div
+            role="button"
+            className="messages-count-info"
+            onClick={this.onUnreadMessagesCountClick}
+          >
+            <div className="jump-button">
+              <i className={jumpArrowClass} />
+              <span className="jump-hover">Jump</span>
+            </div>
+            <div className="messages-count">
+              {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}{" "}
+              since{" "}
+              {moment(messageStore.lastReadAt).format("h:mm A on MMMM Do")}
+            </div>
           </div>
-          <div className="messages-count">
-            {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}{" "}
-            since {moment(messageStore.lastReadAt).format("h:mm A on MMMM Do")}
-          </div>
-        </div>
 
-        <div
-          role="button"
-          className="mark-as-read-button"
-          onClick={this.onMarkAsReadClick}
-        >
-          Mark as read
-          <i className="fa fa-close" />
+          <div
+            role="button"
+            className="mark-as-read-button"
+            onClick={this.onMarkAsReadClick}
+          >
+            Mark as read
+            <i className="fa fa-close" />
+          </div>
         </div>
-      </div>
+      )
     );
   }
 
@@ -108,21 +110,22 @@ export default class MessagePanel extends Component {
 
         <MessageList />
         <div className="flex-footer">
-          {group.joined
-            ? <MessageForm />
-            : <div className="room-preview">
-                This is a preview of the group{" "}
-                <strong>
-                  <i className="fa fa-tag" />
-                  {group.name}
-                </strong>
-                <button
-                  className="join btn btn-fancy btn-primary"
-                  onClick={this.handleJoin}
-                >
-                  <i className="fa fa-sign-in" /> Join
-                </button>
-              </div>}
+          {group.joined ? (
+            <MessageForm />
+          ) : (
+            <div className="room-preview">
+              This is a preview of the room{" "}
+              <strong>
+                <i className="fa fa-comments" />  {group.name}
+              </strong>
+              <button
+                className="join btn btn-fancy btn-primary"
+                onClick={this.handleJoin}
+              >
+                <i className="fa fa-sign-in" /> Join
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
