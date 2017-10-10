@@ -1,4 +1,8 @@
 class ImageStore {
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   uploadImage = (file, key) => {
     return post("/api/v1/upload-signature", {
       body: {

@@ -4,6 +4,10 @@ class InvitationStore {
   @observable loading = false;
   @observable invitations = [];
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   @action
   loadInvitations = () => {
     this.loading = true;

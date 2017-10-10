@@ -7,6 +7,10 @@ class MembersStore {
   @observable users = [];
   @observable rawOnlineUsers = {};
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   @computed
   get onlineUsers() {
     return this.users.filter(u => !!this.rawOnlineUsers[`${u.id}`]);

@@ -9,6 +9,10 @@ class TeamStore {
   @observable secondsToLockout = null;
   @observable openInvitationsEnabled = false;
 
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+  }
+
   @action
   loadTeam = id => {
     this.loading = true;
