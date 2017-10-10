@@ -13,91 +13,85 @@ class InvitationModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: props.show
+      show: props.show,
+      emails: ['']
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.show !== this.props.show) {
-      this.setState({ show: nextProps.show });
+      this.setState({ show: nextProps.show, emails: [''] });
     }
   }
 
+  handleChange = (index) => (evt) => {
+    const { emails } = this.state;
+    this.state.emails[index] = evt.target.value;
+    this.setState({ emails });
+  }
+
+  addEmail = () => {
+    this.setState({ emails: [...this.state.emails, '']});
+  }
+
+  inviteUsers = () => {
+    const { emails } = this.state;
+    const filteredEmails = emails.filter(email => !!email.trim());
+    if (filteredEmails.length) {
+      post(`/api/v1/invitations`, {
+        body: { email_collection: filteredEmails.join(",") }
+      }).then(() => {
+        notify.show(`Invitations sent to ${filteredEmails.length} users`);
+      });
+    }
+
+    this.props.toggle();
+  }
+
   render() {
+    const { show, emails } = this.state;
+    const { toggle } = this.props;
     return (
-      <Modal className="sidemenu-modal" show={this.state.show}>
+      <Modal className="sidemenu-modal" show={show}>
         <Modal.Header>
           <Modal.Title>Invite People</Modal.Title>
-          <a role="link" onClick={this.props.toggle}>
+          <a role="link" onClick={toggle}>
             <i className="fa fa-close" />
           </a>
         </Modal.Header>
 
         <Modal.Body>
           <h5>
-            New team members will automatically join <strong>general</strong>.
-            Enter invitations to email out.
+            Enter <strong>invitations</strong> to email out.
           </h5>
           <Form horizontal className="invite-forms">
-            <FormGroup bsSize="large">
-              <Col componentClass={ControlLabel} sm={2}>
-                Email
-              </Col>
+            {emails.map((email, index) => (
+              <FormGroup bsSize="large" key={`email_${index}`}>
+                <Col componentClass={ControlLabel} sm={2}>
+                  Email
+                </Col>
 
-              <Col sm={9}>
-                <FormControl
-                  name="name"
-                  type="text"
-                  placeholder="name@example.com"
-                  onChange={this.handleChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup bsSize="large">
-              <Col componentClass={ControlLabel} sm={2}>
-                Email
-              </Col>
-
-              <Col sm={9}>
-                <FormControl
-                  name="name"
-                  type="text"
-                  placeholder="name@example.com"
-                  onChange={this.handleChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup bsSize="large">
-              <Col componentClass={ControlLabel} sm={2}>
-                Email
-              </Col>
-
-              <Col sm={9}>
-                <FormControl
-                  name="name"
-                  type="text"
-                  placeholder="name@example.com"
-                  onChange={this.handleChange}
-                />
-              </Col>
-            </FormGroup>
+                <Col sm={9}>
+                  <FormControl
+                    type="email"
+                    value={email}
+                    onChange={this.handleChange(index)}
+                  />
+                </Col>
+              </FormGroup>
+            ))}
           </Form>
 
           <Row>
-            <Col sm={9} smOffset={2}>
-              <a role="link" className="btn btn-block btn-default add-invite">
+            <Col sm={3} smOffset={9}>
+              <Button bsStyle="default" bsSize="xs" className="btn-block add-invite" onClick={this.addEmail}>
                 Add Invitation
-              </a>
+              </Button>
             </Col>
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsSize="large" onClick={this.props.toggle}>
-            Cancel
-          </Button>
-          <Button bsSize="large" bsStyle="primary" onClick={this.props.toggle}>
+          <Button bsSize="large" bsStyle="primary" onClick={this.inviteUsers}>
             Send
           </Button>
         </Modal.Footer>
