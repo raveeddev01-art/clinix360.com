@@ -91,15 +91,40 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def create_single_dm(conn, %{"user_ids" => user_ids}) do
-    cond do
-      length(user_ids) != 2 ->
+    user = conn.assigns.current_user
+
+    case Group.create_single_dm(user, user_ids) do
+      {:ok, group} ->
+        group =
+          group
+          |> Map.put_new(:joined, true)
+          |> Map.put_new(:unread_messages_count, 0)
+          |> Map.put_new(:favorite, false)
+          |> Map.put_new(:last_read_at, nil)
+          |> Map.put_new(:mentions_count, 0)
+
+        EventsChannel.broadcast_group_creation(group)
+        render conn, "show.json", group: group, user_id: user.id
+
+      {:error, :user_id_count_is_not_2} ->
         conn
         |> put_status(:bad_request)
         |> json(%{message: "user_ids param should contain 2 ids"})
-      true ->
+
+      {:error, {:already_exists, slug}} ->
+        {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
+        render conn, "show.json", group: group, user_id: user.id
+
+      {:error, :creator_id_is_not_in_user_ids} ->
         conn
-        |> create_dm(user_ids, "__dm_group__")
-      end
+        |> put_status(:bad_request)
+        |> json(%{message: "user_ids param has to contain current user's id"})
+
+      {:error, reason} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: reason})
+    end
   end
 
   def create_multi_dm(conn, %{"user_ids" => user_ids}) do
@@ -140,7 +165,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
             EventsChannel.broadcast_group_creation(group)
             render conn, "show.json", group: group, user_id: user.id
 
-          {:error, :already_exists} ->
+          {:error, {:already_exists, slug}} ->
             {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
             render conn, "show.json", group: group, user_id: user.id
 

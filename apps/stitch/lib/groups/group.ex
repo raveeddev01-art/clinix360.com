@@ -60,7 +60,7 @@ defmodule Stitch.Group do
 
         {:error, changeset} ->
           if changeset.errors == [slug: {"has already been taken", []}] do
-            Repo.rollback(:already_exists)
+            Repo.rollback({:already_exists, changeset.changes.slug})
           else
             Repo.rollback("Failed to create group.")
           end
