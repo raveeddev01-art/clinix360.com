@@ -11,6 +11,19 @@ defmodule Stitch.Stripe.TestClient do
 
   def delete_customer(_customer_id), do: true
 
+  def add_card(_customer_id, "tok_valid") do
+    card = %{
+      card_id: "card_#{timestamp()}",
+      brand: "Visa",
+      exp_month: Enum.random(1..12),
+      exp_year: Enum.random(2018..2025),
+      last_four: "4242"
+    }
+
+    {:ok, card}
+  end
+  def add_card(_customer_id, "tok_invalid"), do: :error
+
   defp timestamp do
     DateTime.to_unix(DateTime.utc_now())
   end

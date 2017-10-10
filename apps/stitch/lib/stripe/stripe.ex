@@ -2,6 +2,7 @@ defmodule Stitch.Stripe do
   @moduledoc """
   Defines an interface for expected interactions with Stripe.
   """
+  @type card :: %{card_id: String.t, brand: String.t, last_four: String.t, exp_month: 1..12, exp_year: pos_integer}
 
   @doc """
   Creates a new customer.
@@ -12,4 +13,9 @@ defmodule Stitch.Stripe do
   Deletes a customer.
   """
   @callback delete_customer(customer_id :: String.t) :: boolean
+
+  @doc """
+  Adds a new credit card to a customer.
+  """
+  @callback add_card(customer_id :: String.t, source_token :: String.t) :: {:ok, card} | :error
  end

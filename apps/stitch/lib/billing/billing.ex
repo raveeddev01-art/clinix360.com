@@ -3,8 +3,9 @@ defmodule Stitch.Billing do
   Manage team billing and subscriptions.
   """
 
+  import Ecto.Query
   alias Stitch.{Repo, Team}
-  alias Stitch.Billing.Subscription
+  alias Stitch.Billing.{PaymentMethod, Subscription}
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
   @trial_duration 14 * 24 * 60 * 60 # 14 days in seconds
@@ -26,6 +27,43 @@ defmodule Stitch.Billing do
         @stripe_client.delete_customer(customer_id)
         {:error, changeset}
     end
+  end
+
+  @doc """
+  Adds a credict card to the team.
+
+  If the card is the first card to be added, the card will be set as the default card.
+
+  ## Example
+
+      iex> add_card(%Team{...}, "tok_1234567")
+      {:ok, %PaymentMethod{...}}
+
+  """
+  @spec add_card(Team.t, String.t) :: {:ok, PaymentMethod.t} | :error
+  def add_card(%Team{id: team_id} = team, source_token) do
+    team = Repo.preload(team, :subscription)
+    case @stripe_client.add_card(team.subscription.customer_id, source_token) do
+      {:ok, card} -> do_insert_card(team_id, card)
+      _ -> :error
+    end
+  end
+
+  defp do_insert_card(team_id, card_params) do
+    query =
+      from pm in PaymentMethod,
+      where: pm.team_id == ^team_id,
+      select: count(pm.id)
+    set_as_default? = Repo.one(query) == 0
+
+    params =
+      card_params
+      |> Map.put(:default, set_as_default?)
+      |> Map.put(:team_id, team_id)
+
+    params
+    |> PaymentMethod.new()
+    |> Repo.insert()
   end
 
   defp trial_end_datetime do

@@ -70,4 +70,14 @@ defmodule Stitch.Factory do
       token: Faker.String.base64
     }
   end
+
+  def subscription_factory do
+    end_date = Timex.shift(DateTime.utc_now(), days: 14)
+    %Stitch.Billing.Subscription{
+      team: build(:team),
+      customer_id: sequence(:customer_id, &"cus_#{&1}"),
+      tier: "TRIAL",
+      valid_until: end_date
+    }
+  end
 end

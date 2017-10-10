@@ -11,4 +11,29 @@ defmodule Stitch.Billing.BillingTest do
     assert subscription.tier == "TRIAL"
     refute subscription.renews
   end
+
+  describe "add_card/2" do
+    setup do
+      subscription = insert(:subscription)
+      {:ok, subscription: subscription}
+    end
+
+    test "adds a card", %{subscription: subscription} do
+      assert {:ok, card} = Billing.add_card(subscription.team, "tok_valid")
+      assert card.card_id
+      assert card.brand
+      assert card.exp_month
+      assert card.exp_year
+      assert card.last_four
+    end
+
+    test "sets the first card to be the default payment method", %{subscription: subscription} do
+      assert {:ok, %{default: true}} = Billing.add_card(subscription.team, "tok_valid")
+      assert {:ok, %{default: false}} = Billing.add_card(subscription.team, "tok_valid")
+    end
+
+    test "gives an error with invalid source token", %{subscription: subscription} do
+      assert :error == Billing.add_card(subscription.team, "tok_invalid")
+    end
+  end
 end
