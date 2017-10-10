@@ -12,6 +12,7 @@ import AccountSettings from "./you/account/index";
 import UsersInvitations from "./users/invitations";
 import UsersMembers from "./users/members";
 import UsersPending from "./users/pending";
+import Billing from "./billing/billing";
 
 class AdminApp extends Component {
   toChat = () => {
@@ -63,6 +64,10 @@ class AdminApp extends Component {
             <Route
               path={`/admin/users/pending`}
               component={UsersPending}
+            />
+            <Route
+              path={`/admin/billing`}
+              component={Billing}
             />
           </Switch>
         </div>
