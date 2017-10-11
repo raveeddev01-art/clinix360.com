@@ -176,9 +176,11 @@ class RoomsModal extends Component {
             </Col>
 
             <Col sm={9}>
-              {this.state.public
-                ? "Open to all members"
-                : "Restricted to invited members"}
+              <div className="publicity-description">
+                {this.state.public
+                  ? "Open to all members"
+                  : "Restricted to invited members"}
+              </div>
             </Col>
           </FormGroup>
 
@@ -198,9 +200,10 @@ class RoomsModal extends Component {
           </FormGroup>
 
           <FormGroup bsSize="large">
-            <Col componentClass={ControlLabel} sm={3}>
-              Reference <br />
-              <span className="text-muted">(automatic)</span>
+            <Col componentClass={ControlLabel} sm={3} className="optional">
+              Reference
+              <br />
+              <span>(automatic)</span>
             </Col>
 
             <Col sm={9}>
@@ -210,7 +213,7 @@ class RoomsModal extends Component {
                 value={this.getSlug()}
                 disabled
               />
-              <HelpBlock className="text-muted m-b-0">
+              <HelpBlock>
                 The reference name is the unique ID for a room and can be
                 mentioned in a conversation to link right to it.
               </HelpBlock>
@@ -218,8 +221,10 @@ class RoomsModal extends Component {
           </FormGroup>
 
           <FormGroup bsSize="large" className="members-select">
-            <Col componentClass={ControlLabel} sm={3}>
+            <Col componentClass={ControlLabel} sm={3} className="optional">
               Members
+              <br />
+              <span>(optional)</span>
             </Col>
 
             <Col sm={9}>
@@ -227,7 +232,7 @@ class RoomsModal extends Component {
                 onChange={this.updateMembers}
                 value={this.state.members}
               />
-              <HelpBlock className="text-muted m-b-0">
+              <HelpBlock>
                 Click to select team members to invite to your room. You can
                 always invite members later.
               </HelpBlock>
