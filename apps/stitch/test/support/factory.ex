@@ -80,4 +80,16 @@ defmodule Stitch.Factory do
       valid_until: end_date
     }
   end
+
+  def card_factory do
+    timestamp = DateTime.utc_now() |> DateTime.to_unix()
+    %Stitch.Billing.PaymentMethod{
+      team: build(:team),
+      card_id: "card_#{timestamp}",
+      brand: "Visa",
+      last_four: "4242",
+      exp_month: Enum.random(1..12),
+      exp_year: Enum.random(2020..2025)
+    }
+  end
 end

@@ -22,7 +22,7 @@ defmodule Stitch.Billing.BillingTest do
       card_count = 5
       card_ids =
         for _ <- 1..card_count do
-          {:ok, card} = Billing.add_card(team, "tok_valid")
+          card = insert(:card, team: team)
           card.id
         end
 
@@ -31,6 +31,16 @@ defmodule Stitch.Billing.BillingTest do
       for card <- cards do
         assert card.id in card_ids
       end
+    end
+
+    test "doesn't include other team's cards", %{team: team} do
+      other_team = insert(:team)
+      _other_team_card = insert(:card, team: other_team)
+
+      expected_card = insert(:card, team: team)
+      results = Billing.list_cards(team)
+      assert length(results) == 1
+      assert hd(results).id == expected_card.id
     end
   end
 
@@ -62,9 +72,10 @@ defmodule Stitch.Billing.BillingTest do
   describe "delete_card/2" do
     setup do
       subscription = insert(:subscription)
-      {:ok, default_card} = Billing.add_card(subscription.team, "tok_valid")
-      {:ok, other_card} = Billing.add_card(subscription.team, "tok_valid")
-      {:ok, team: subscription.team, default_card: default_card, other_card: other_card}
+      team = subscription.team
+      default_card = insert(:card, team: team, default: true)
+      other_card = insert(:card, team: team)
+      {:ok, team: team, default_card: default_card, other_card: other_card}
     end
 
     test "gives error when deleting the default card", %{team: team, default_card: card} do
