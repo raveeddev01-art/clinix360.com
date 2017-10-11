@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Grid, Row, Col, Button } from "react-bootstrap";
+import cx from "classnames";
 
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
@@ -15,61 +16,79 @@ import UsersPending from "./users/pending";
 import Billing from "./billing/billing";
 
 class AdminApp extends Component {
-  toChat = () => {
-    const { history } = this.props;
+  constructor(props) {
+    super(props);
+    this.state = {
+      sidebarOpened: false
+    };
+  }
 
-    history.push("/");
+  _toggleSidebar = () => {
+    this.setState({ sidebarOpened: !this.state.sidebarOpened });
   };
 
+  _hideSidebar = () => {
+    this.setState({ sidebarOpened: false });
+  };
+
+
   render() {
+    const { sidebarOpened } = this.state;
+
+    const adminWrapperClass = cx("admin-wrapper", {
+      "sidebar-opened": sidebarOpened
+    });
+
     return (
-      <div className="admin-wrapper">
+      <div className={adminWrapperClass}>
         <Sidebar />
         <div className="admin-content">
-          <Topbar />
-          <Switch>
-            <Route
-              exact
-              path={`/admin/team`}
-              component={TeamSettings}
-            />
-            <Route
-              path={`/admin/team/settings`}
-              component={TeamSettings}
-            />
-            <Route
-              path={`/admin/team/security`}
-              component={TeamSecurity}
-            />
-            <Route
-              path={`/admin/you/notifications`}
-              component={YouNotifications}
-            />
-            <Route
-              path={`/admin/you/profile`}
-              component={ProfileSettings}
-            />
-            <Route
-              path={`/admin/you/account`}
-              component={AccountSettings}
-            />
-            <Route
-              path={`/admin/users/invitations`}
-              component={UsersInvitations}
-            />
-            <Route
-              path={`/admin/users/members`}
-              component={UsersMembers}
-            />
-            <Route
-              path={`/admin/users/pending`}
-              component={UsersPending}
-            />
-            <Route
-              path={`/admin/billing`}
-              component={Billing}
-            />
-          </Switch>
+          <Topbar onToggleSidebar={this._toggleSidebar} />
+          <div className="admin-content-wrapper" onClick={() => this._hideSidebar()}>
+            <Switch>
+              <Route
+                exact
+                path={`/admin/team`}
+                component={TeamSettings}
+              />
+              <Route
+                path={`/admin/team/settings`}
+                component={TeamSettings}
+              />
+              <Route
+                path={`/admin/team/security`}
+                component={TeamSecurity}
+              />
+              <Route
+                path={`/admin/you/notifications`}
+                component={YouNotifications}
+              />
+              <Route
+                path={`/admin/you/profile`}
+                component={ProfileSettings}
+              />
+              <Route
+                path={`/admin/you/account`}
+                component={AccountSettings}
+              />
+              <Route
+                path={`/admin/users/invitations`}
+                component={UsersInvitations}
+              />
+              <Route
+                path={`/admin/users/members`}
+                component={UsersMembers}
+              />
+              <Route
+                path={`/admin/users/pending`}
+                component={UsersPending}
+              />
+              <Route
+                path={`/admin/billing`}
+                component={Billing}
+              />
+            </Switch>
+          </div>
         </div>
       </div>
     );
