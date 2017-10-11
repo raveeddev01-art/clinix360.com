@@ -31,4 +31,5 @@ current_user =
   window.authenticationToken = "<%= authenticationToken %>";
   window.sessionId = "<%= session_id %>";
   window.currentUser = <%= raw current_user %>;
+  window.applicationVersion = "<%= StitchConnect.version() %>";
 </script>

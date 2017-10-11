@@ -59,3 +59,7 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
 #
 #     config :stitch_connect, StitchConnect.Web.Endpoint, server: true
 #
+
+# General application configuration
+config :stitch_connect,
+  version: System.get_env("SOURCE_VERSION") # https://devcenter.heroku.com/changelog-items/630
