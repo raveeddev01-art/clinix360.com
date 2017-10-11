@@ -8,7 +8,7 @@ class SidemenuStore {
   @observable groups = [];
   @observable users = [];
   @observable groupCursors = {}; // { group_id: message_id }
-
+  badge = null;
   favicon = null;
   notificationAudio = null;
 
@@ -20,7 +20,8 @@ class SidemenuStore {
     this.users = props.dm_users || [];
 
     this.favicon = new Favico({
-      animation: "slide"
+      animation: "none",
+      position: "up"
     });
     this.notificationAudio = new Audio("/audios/pop.mp3");
 
@@ -31,7 +32,7 @@ class SidemenuStore {
   @computed
   get normalGroups() {
     return this.groups.filter(
-      group => group.type === "regular" && group.favorite == false
+      group => group.type === "regular" && !group.favorite
     );
   }
 
@@ -60,9 +61,15 @@ class SidemenuStore {
   }
 
   @computed
-  get totalUnreadMessagesCount() {
+  get totalMentionsCount() {
     return this.groups.reduce(
-      (count, group) => count + group.unread_messages_count,
+      (count, group) => {
+        if (group.type === 'regular') {
+          return count + group.mentions_count;
+        }
+
+        return count + group.unread_messages_count;
+      },
       0
     );
   }
@@ -165,10 +172,17 @@ class SidemenuStore {
   }
 
   updateFavicon() {
-    if (this.totalUnreadMessagesCount > 0) {
-      this.favicon.badge(" ");
-    } else {
-      this.favicon.badge("");
+    let badge = "";
+    if (this.totalMentionsCount > 9) {
+      badge = "9+";
+    } else if (this.totalMentionsCount > 0) {
+      badge = `${this.totalMentionsCount}`;
+    }
+
+    // avoid favicon animation when not changed
+    if (badge !== this.badge) {
+      this.badge = badge;
+      this.favicon.badge(badge);
     }
   }
 
@@ -195,7 +209,7 @@ class SidemenuStore {
     }
   }
 
-  showNotificationCard(title, body, duration = 3000) {
+  showNotificationCard(title, body, duration = 5000) {
     const notification = new Notification(title, {
       body,
       icon: "/favicon.ico"
@@ -231,8 +245,8 @@ class SidemenuStore {
         multi_dm: "sent you"
       };
       const messageTypes = {
-        regular: "room",
-        dm: "1-on-1",
+        regular: "group",
+        dm: "direct",
         multi_dm: "direct"
       };
 
@@ -244,7 +258,7 @@ class SidemenuStore {
       const messageType = messageTypes[group.type];
 
       this.showNotificationCard(
-        author,
+        `${group.type === 'regular' ? '#' : ''}${group.name}`,
         `${author} ${predicative} a ${messageType} message`
       );
     }
