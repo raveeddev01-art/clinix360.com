@@ -33,6 +33,7 @@
     "react-select": "^1.0.0-rc.5",
     "react-toastr": "^2.8.2",
     "react-visibility-sensor": "^3.10.1",
+    "slugify": "^1.2.1",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

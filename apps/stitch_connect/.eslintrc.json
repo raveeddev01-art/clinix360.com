@@ -20,6 +20,7 @@
     "arrow-body-style": "off",
     "constructor-super": "warn",
     "class-methods-use-this": "off",
+    "import/no-extraneous-dependencies": "off",
     "jsx-a11y/interactive-supports-focus": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
     "jsx-a11y/no-autofocus": "off",
@@ -45,7 +46,10 @@
           "sidemenuStore",
           "uploadStore",
           "groupPresenceStore",
-          "notificationStore"
+          "notificationStore",
+          "match",
+          "location",
+          "history"
         ]
       }
     ],

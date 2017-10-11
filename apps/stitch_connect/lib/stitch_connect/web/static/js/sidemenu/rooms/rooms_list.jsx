@@ -1,31 +1,36 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Room from "../room";
-import RoomsListModal from "./modals/rooms_list_modal";
-import RoomCreateModal from "./modals/room_create_modal";
+import RoomsModal from "./modals/rooms_modal";
 
-export default class RoomsList extends Component {
+class RoomsList extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      showRoomsListModal: false,
-      showRoomCreateModal: false
+      modal: ""
     };
   }
 
-  toggleRoomsListModal = () => {
+  showRoomsListModal = () => {
     this.setState({
-      showRoomsListModal: !this.state.showRoomsListModal
+      modal: "list"
     });
   };
 
-  toggleRoomCreateModal = () => {
+  showRoomCreateModal = () => {
     this.setState({
-      showRoomCreateModal: !this.state.showRoomCreateModal
+      modal: "create"
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      modal: ""
     });
   };
 
@@ -40,7 +45,7 @@ export default class RoomsList extends Component {
               placement="top"
               overlay={<Tooltip id="browse-rooms">Browse Rooms</Tooltip>}
             >
-              <a role="button" onClick={this.toggleRoomsListModal}>
+              <a role="button" onClick={this.showRoomsListModal}>
                 {heading}
               </a>
             </OverlayTrigger>
@@ -50,7 +55,7 @@ export default class RoomsList extends Component {
             placement="top"
             overlay={<Tooltip id="create-new-group">Create Room</Tooltip>}
           >
-            <a role="button" onClick={this.toggleRoomCreateModal}>
+            <a role="button" onClick={this.showRoomCreateModal}>
               <i className="fa fa-plus-square-o" />
             </a>
           </OverlayTrigger>
@@ -60,16 +65,20 @@ export default class RoomsList extends Component {
           return <Room key={`room-${room.id}`} room={room} />;
         })}
 
-        <RoomsListModal
-          showModal={this.state.showRoomsListModal}
-          toggleModal={this.toggleRoomsListModal}
-        />
-
-        <RoomCreateModal
-          showModal={this.state.showRoomCreateModal}
-          toggleModal={this.toggleRoomCreateModal}
+        <RoomsModal
+          state={this.state.modal}
+          showRoomsListModal={this.showRoomsListModal}
+          showRoomCreateModal={this.showRoomCreateModal}
+          closeModal={this.closeModal}
         />
       </div>
     );
   }
 }
+
+RoomsList.propTypes = {
+  heading: PropTypes.string.isRequired,
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired
+};
+
+export default RoomsList;
