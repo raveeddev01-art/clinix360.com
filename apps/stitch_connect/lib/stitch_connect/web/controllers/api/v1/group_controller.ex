@@ -168,7 +168,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       {:ok, message} ->
         default_group = GroupQueries.default_group(current_user)
         conn
-        |> json(%{message: message, redirect_to: "/groups/#{default_group.slug}"})
+        |> json(%{message: message, redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)})
+
     end
   end
 

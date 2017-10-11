@@ -120,7 +120,7 @@ defmodule StitchConnect.Web.GroupControllerTest do
       conn: conn, user: user, other_group: group
     } do
       insert(:group_user, group: group, user: user)
-      expected_redirect_path = "/groups/general"
+      expected_redirect_path = "/rooms/general"
 
       json =
         conn
