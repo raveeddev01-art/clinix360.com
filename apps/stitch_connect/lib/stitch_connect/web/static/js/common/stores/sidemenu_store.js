@@ -62,16 +62,13 @@ class SidemenuStore {
 
   @computed
   get totalMentionsCount() {
-    return this.groups.reduce(
-      (count, group) => {
-        if (group.type === 'regular') {
-          return count + group.mentions_count;
-        }
+    return this.groups.reduce((count, group) => {
+      if (group.type === "regular") {
+        return count + group.mentions_count;
+      }
 
-        return count + group.unread_messages_count;
-      },
-      0
-    );
+      return count + group.unread_messages_count;
+    }, 0);
   }
 
   @action
@@ -258,7 +255,7 @@ class SidemenuStore {
       const messageType = messageTypes[group.type];
 
       this.showNotificationCard(
-        `${group.type === 'regular' ? '#' : ''}${group.name}`,
+        `${group.type === "regular" ? "#" : ""}${group.name}`,
         `${author} ${predicative} a ${messageType} message`
       );
     }
