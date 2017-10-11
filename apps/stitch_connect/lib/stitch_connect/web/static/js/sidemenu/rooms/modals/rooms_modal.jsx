@@ -14,6 +14,7 @@ import Button from "react-bootstrap/lib/Button";
 
 import RoomItem from "./room_item";
 import Members from "../../../common/components/members/members";
+import Toggle from "../../../common/components/toggle/Toggle";
 
 @inject("sidemenuStore", "groupStore")
 @observer
@@ -68,8 +69,8 @@ class RoomsModal extends Component {
     this.setState({ members: value });
   };
 
-  updatePublic = value => () => {
-    this.setState({ public: value });
+  togglePublic = () => {
+    this.setState({ public: !this.state.public });
   };
 
   createRoom = () => {
@@ -165,38 +166,19 @@ class RoomsModal extends Component {
       <Modal.Body>
         <Form horizontal>
           <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>
-              Type
+            <Col sm={3}>
+              <Toggle
+                onClick={this.togglePublic}
+                on="Public"
+                off="Private"
+                active={this.state.public}
+              />
             </Col>
 
             <Col sm={9}>
-              <div className="switch-field">
-                <input
-                  type="radio"
-                  id="switch_left"
-                  name="switch_2"
-                  value="public"
-                  onChange={this.updatePublic(true)}
-                  checked={this.state.public}
-                />
-                <label htmlFor="switch_left">
-                  <i className="fa fa-comments" /> Public
-                </label>
-                <input
-                  type="radio"
-                  id="switch_right"
-                  name="switch_2"
-                  value="private"
-                  onChange={this.updatePublic(false)}
-                  checked={!this.state.public}
-                />
-                <label htmlFor="switch_right">
-                  <i className="fa fa-lock" /> Private
-                </label>
-              </div>
-              <HelpBlock className="text-muted m-b-0">
-                Public rooms can be joined by anyone in your team.
-              </HelpBlock>
+              {this.state.public
+                ? "Open to all members"
+                : "Restricted to invited members"}
             </Col>
           </FormGroup>
 
