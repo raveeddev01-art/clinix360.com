@@ -79,5 +79,14 @@
         }
       }
     }
+
+    .form-group.members-select {
+      margin-bottom: 140px;
+
+      .Select-menu-outer {
+        max-height: 160px;
+        overflow-y: auto;
+      }
+    }
   }
 }

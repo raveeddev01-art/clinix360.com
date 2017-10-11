@@ -235,7 +235,7 @@ class RoomsModal extends Component {
             </Col>
           </FormGroup>
 
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" className="members-select">
             <Col componentClass={ControlLabel} sm={3}>
               Members
             </Col>
@@ -246,8 +246,8 @@ class RoomsModal extends Component {
                 value={this.state.members}
               />
               <HelpBlock className="text-muted m-b-0">
-                Click to select team members to invite to your room. Don&quot;t
-                worry, you can always invite more.
+                Click to select team members to invite to your room. You can
+                always invite members later.
               </HelpBlock>
             </Col>
           </FormGroup>
