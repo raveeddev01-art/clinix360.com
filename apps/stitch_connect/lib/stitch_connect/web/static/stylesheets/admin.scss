@@ -183,6 +183,13 @@ $admin-topbar-height-sm: 65px;
       }
     }
 
+    .admin-content-wrapper {
+      @include stitch-scroll();
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 36px 3em 3em 3em;
+    }
+
     .admin-panel-wrapper {
       flex-grow: 1;
       display: flex;
@@ -191,14 +198,12 @@ $admin-topbar-height-sm: 65px;
   }
 
   .admin-panel {
-    @include stitch-scroll();
     border: none;
     background-color: $body-bg;
     flex-grow: 1;
     position: relative;
-    margin-bottom: 0;
-    padding: 36px 3em 3em 3em;
-    overflow-y: auto;
+    max-width: 1000px;
+    margin: 0 auto;
 
     &:after {
       position: absolute;
