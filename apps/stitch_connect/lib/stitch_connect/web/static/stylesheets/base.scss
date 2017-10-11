@@ -257,45 +257,6 @@ hr {
         font-size: 16px;
       }
 
-      .switch-field {
-        display: inline-block;
-        background: $body-bg;
-        border: 1px solid $border-color-secondary;
-        border-radius: 20px;
-        padding: 2px;
-        overflow: hidden;
-
-        label {
-          float: left;
-          width: 120px;
-          color: inherit;
-          font-size: 14px;
-          font-weight: normal;
-          text-align: center;
-          border-radius: 20px;
-          padding: 4px 12px;
-          margin-bottom: 0;
-
-          &:hover {
-            cursor: pointer;
-          }
-        }
-
-        input {
-          position: absolute !important;
-          clip: rect(0, 0, 0, 0);
-          height: 1px;
-          width: 1px;
-          border: 0;
-          overflow: hidden;
-
-          &:checked + label {
-            color: #fff;
-            background: $brand-primary;
-          }
-        }
-      }
-
       .team-heading {
         font-size: 14px;
         margin: 10px 0;
@@ -385,5 +346,46 @@ i.fa {
   text-align: center;
   &.fa-rotate-45 {
     transform: rotate(45deg);
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  color: $brand-primary;
+  background: #fff;
+  box-shadow: 0 0 0 1px $brand-primary;
+  border-radius: 2px;
+  padding: 2px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  height: 27px;
+  max-width: 100px;
+  transition: 150ms ease-out;
+
+  .toggle-text {
+    flex: 1;
+    padding: 0 5px;
+  }
+
+  .toggle-handle {
+    background: $brand-primary;
+    width: 23px;
+    height: 23px;
+    border-radius: 2px;
+    transition: 150ms ease-out;
+    order: -1;
+  }
+
+  &[aria-checked="true"] {
+    color: #fff;
+    background: $brand-primary;
+
+    .toggle-handle {
+      background: #fff;
+      order: 1;
+    }
   }
 }
