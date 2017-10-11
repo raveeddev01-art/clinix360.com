@@ -31,26 +31,26 @@ class ChannelNotifications extends Component {
         key={`group_${preference.group_id}`}
         className="clearfix notifications-table-row"
       >
-        <Col md={6}>
+        <Col xs={6}>
           {preference.group_name}
         </Col>
-        <Col md={6} className="text-center">
+        <Col xs={6} className="text-center">
           <Row className="radio-group">
-            <Col md={4}>
+            <Col sm={4}>
               <Radio
                 name={`radioGroup_${preference.group_id}`}
                 checked={val === "everything"}
                 onChange={this.onChange(preference.group_id, "everything")}
               />
             </Col>
-            <Col md={4}>
+            <Col sm={4}>
               <Radio
                 name={`radioGroup_${preference.group_id}`}
                 checked={val === "mentions"}
                 onChange={this.onChange(preference.group_id, "mentions")}
               />
             </Col>
-            <Col md={4}>
+            <Col sm={4}>
               <Radio
                 name={`radioGroup_${preference.group_id}`}
                 checked={val === "nothing"}
@@ -74,15 +74,19 @@ class ChannelNotifications extends Component {
         onEdit={this.onToggleEdit}
       >
         <div className="clearfix notifications-table-heading text-center">
-          <Col md={6} />
-          <Col md={2}>
-            <b>Everything</b>
-          </Col>
-          <Col md={2}>
-            <b>Mentions</b>
-          </Col>
-          <Col md={2}>
-            <b>Nothing</b>
+          <Col xs={6} />
+          <Col xs={6}>
+            <Row>
+              <Col sm={4}>
+                <b>Everything</b>
+              </Col>
+              <Col sm={4}>
+                <b>Mentions</b>
+              </Col>
+              <Col sm={4}>
+                <b>Nothing</b>
+              </Col>
+            </Row>
           </Col>
         </div>
         {notificationStore.groupPreferences.map(group => this.renderRow(group))}

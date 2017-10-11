@@ -238,11 +238,30 @@ $admin-topbar-height-sm: 65px;
       border-radius: 4px;
       padding: 2em;
 
+      h3 {
+        font-weight: 600;
+      }
+
+      input.form-control,
+      .form-group-lg input.form-control {
+        font-size: 18px;
+        border-radius: 6px;
+      }
+
       .export-heading {
         font-weight: bold;
         line-height: 1.45;
         padding: 8px 0;
         margin: 0;
+      }
+
+      .action-edit {
+        padding: 6px 12px;
+        width: 80px;
+
+        &:focus {
+          outline: none;
+        }
       }
 
       .well {
@@ -256,7 +275,7 @@ $admin-topbar-height-sm: 65px;
         align-items: center;
 
         i.fa {
-          color: #955589;
+          color: #8C5888;
           font-size: 24px;
           margin: 0 15px 0 5px;
 
@@ -270,7 +289,7 @@ $admin-topbar-height-sm: 65px;
         }
 
         strong {
-          color: #955589;
+          color: #8C5888;
 
           &.enabled {
             color: #449d44;

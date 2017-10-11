@@ -34,13 +34,6 @@ class SettingPanel extends Component {
         {children}
         <div className="clearfix">
           <Button
-            bsStyle="default"
-            className="btn-fancy pull-left"
-            onClick={this._toggleEdit(false)}
-          >
-            Cancel
-          </Button>
-          <Button
             bsStyle="primary"
             className="btn-fancy pull-right"
             onClick={this._onSave}
@@ -69,14 +62,13 @@ class SettingPanel extends Component {
 
     return (
       <div>
-        {!isEditing &&
-          <Button
-            bsStyle="default"
-            className="action-edit btn-fancy pull-right"
-            onClick={this._toggleEdit(true)}
-          >
-            Edit
-          </Button>}
+        <Button
+          bsStyle="default"
+          className="action-edit btn-fancy pull-right"
+          onClick={this._toggleEdit(!isEditing)}
+        >
+          { !isEditing ? 'Edit' : 'Cancel' }
+        </Button>
         <h3>
           {title}
         </h3>
