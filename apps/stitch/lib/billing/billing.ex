@@ -35,9 +35,27 @@ defmodule Stitch.Billing do
     |> Kernel.+(@trial_duration)
     |> DateTime.from_unix!()
   end
-  @doc """
 
-  Adds a credict card to the team.
+  @doc """
+  Lists all the saved cards for a Team.
+
+  ## Example
+
+      iex> list_cards(%Team{...})
+      [%PaymentMethod{...}, ...]
+  """
+  @spec list_cards(Team.t) :: [PaymentMethod.t]
+  def list_cards(%Team{id: team_id}) do
+    query =
+      from pm in PaymentMethod,
+      where: pm.team_id == ^team_id,
+      order_by: [asc: pm.inserted_at]
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Adds a credit card to the team.
 
   If the card is the first card to be added, the card will be set as the default card.
 

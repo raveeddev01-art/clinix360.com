@@ -12,6 +12,28 @@ defmodule Stitch.Billing.BillingTest do
     refute subscription.renews
   end
 
+  describe "list_cards/1" do
+    setup do
+      subscription = insert(:subscription)
+      {:ok, team: subscription.team}
+    end
+
+    test "lists all cards for a team", %{team: team} do
+      card_count = 5
+      card_ids =
+        for _ <- 1..card_count do
+          {:ok, card} = Billing.add_card(team, "tok_valid")
+          card.id
+        end
+
+      cards = Billing.list_cards(team)
+      assert length(cards) == card_count
+      for card <- cards do
+        assert card.id in card_ids
+      end
+    end
+  end
+
   describe "add_card/2" do
     setup do
       subscription = insert(:subscription)
