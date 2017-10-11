@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
+import slugify from "slugify";
+
 import Modal from "react-bootstrap/lib/Modal";
 import Form from "react-bootstrap/lib/Form";
 import Col from "react-bootstrap/lib/Col";
@@ -31,6 +33,10 @@ class RoomsModal extends Component {
       // members should be set manualy set empty when modal is open
       this.setState({ members: [] });
     }
+  }
+
+  getSlug() {
+    return this.state.name ? `#${slugify(this.state.name)}` : "";
   }
 
   handleChange = event => {
@@ -203,12 +209,28 @@ class RoomsModal extends Component {
               <FormControl
                 name="name"
                 type="text"
-                placeholder="e.g. Radiology"
+                placeholder="e.g. Emergency Room"
                 onChange={this.updateValue("name")}
               />
+            </Col>
+          </FormGroup>
+
+          <FormGroup bsSize="large">
+            <Col componentClass={ControlLabel} sm={3}>
+              Reference <br />
+              <span className="text-muted">(automatic)</span>
+            </Col>
+
+            <Col sm={9}>
+              <FormControl
+                name="reference"
+                placeholder="e.g. #emergency-room"
+                value={this.getSlug()}
+                disabled
+              />
               <HelpBlock className="text-muted m-b-0">
-                A standardize name will also be automatically created for use in{" "}
-                <a>referencing</a> this room: <span>#radiology</span>
+                The reference name is the unique ID for a room and can be
+                mentioned in a conversation to link right to it.
               </HelpBlock>
             </Col>
           </FormGroup>
