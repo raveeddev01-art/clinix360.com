@@ -86,4 +86,65 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardControllerTest do
       assert response["message"] =~ "administrator"
     end
   end
+
+  describe "UPDATE /api/v1/cards/:id" do
+  describe "PUT /api/v1/cards/:id" do
+    setup %{conn: conn} do
+      subscription = insert(:subscription)
+      team = subscription.team
+      admin_user = insert(:user, team: team, roles: ["admin"])
+      card = insert(:card, team: team, default: false)
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(admin_user)
+
+      {:ok, conn: conn, team: team, card: card}
+    end
+
+    test "can update a card to be the default", %{conn: conn, card: card} do
+      params = %{"default" => true}
+      conn = put(conn, Routes.api_v1_billing_card_path(conn, :update, card), params)
+
+      assert response = json_response(conn, 200)
+      assert response["data"]["default"]
+    end
+
+    test "sets other cards to not be the default", %{conn: conn, card: card, team: team} do
+      default = insert(:card, team: team, default: true)
+      params = %{"default" => true}
+      conn = put(conn, Routes.api_v1_billing_card_path(conn, :update, card), params)
+
+      assert json_response(conn, 200)
+      refute Stitch.Repo.get(Stitch.Billing.PaymentMethod, default.id).default
+    end
+
+    test "requires the `default` params to be set to `true`", %{conn: base_conn, card: card} do
+      conn = put(base_conn, Routes.api_v1_billing_card_path(base_conn, :update, card), %{})
+      assert response = json_response(conn, 422)
+      assert hd(response["errors"]["default"]) =~ ~r"must be .*true"
+    end
+
+    test "gives 404 for bad card ids", %{conn: conn} do
+      params = %{"default" => true}
+      conn = put(conn, Routes.api_v1_billing_card_path(conn, :update, -1), params)
+
+      assert response = json_response(conn, 404)
+      assert response["errors"] =~ "does not exist"
+    end
+
+    test "requires an admin role", %{conn: conn, team: team, card: card} do
+      regular_user = insert(:user, team: team)
+      params = %{"default" => true}
+
+      conn =
+        conn
+        |> with_api_user(regular_user)
+        |> put(Routes.api_v1_billing_card_path(conn, :update, card), params)
+
+      assert response = json_response(conn, 401)
+      assert response["message"] =~ "administrator"
+    end
+  end
 end

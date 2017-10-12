@@ -25,4 +25,17 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardController do
       error -> error
     end
   end
+
+  def update(conn, %{"id" => card_id, "default" => true}) do
+    team = conn.assigns.team
+    with {:ok, card} <- Billing.set_as_default(team, card_id) do
+      render(conn, "show.json", card: card)
+    end
+  end
+  def update(conn, _) do
+    errors = %{"default" => ["must be set to `true`"]}
+    conn
+    |> put_status(:unprocessable_entity)
+    |> render(ErrorView, :"422", errors: errors)
+  end
 end
