@@ -76,11 +76,11 @@ defmodule Stitch.GroupTest do
     end
   end
 
-  describe "Stitch.Group.invite/2" do
+  describe "Stitch.Group.add_user/2" do
     test "it adds a user to group" do
       group = insert(:group)
       user = insert(:user)
-      {:ok, group_user} = Group.invite(group.id, user.id)
+      {:ok, group_user} = Group.add_user(group, user.id)
 
       assert group_user.group_id == group.id
       assert group_user.user_id == user.id
@@ -89,11 +89,23 @@ defmodule Stitch.GroupTest do
     test "it returns an error if the user is already part of group" do
       group = insert(:group)
       user = insert(:user)
-      {:ok, _} = Group.invite(group.id, user.id)
+      {:ok, _} = Group.add_user(group, user.id)
 
-      {:error, changeset} = Group.invite(group.id, user.id)
+      {:error, changeset} = Group.add_user(group, user.id)
       {message, _} = changeset.errors[:user_id]
       assert message == "User is already part of group"
+    end
+
+    test "does not add a user to a single DM group" do
+      group = %Group{name: "__dm_group__"}
+      {:error, message} = Group.add_user(group, 42)
+      assert message == "Users can't join existing direct messages"
+    end
+
+    test "does not add a user to a multi DM group" do
+      group = %Group{name: "__multi_dm_group__"}
+      {:error, message} = Group.add_user(group, 42)
+      assert message == "Users can't join existing direct messages"
     end
   end
 
@@ -101,7 +113,7 @@ defmodule Stitch.GroupTest do
     test "it removes a user from group" do
       group = insert(:group)
       user = insert(:user)
-      {:ok, _} = Group.invite(group.id, user.id)
+      {:ok, _} = Group.add_user(group, user.id)
       {:ok, message} = Group.remove(group, user.id)
       assert message == "User has been removed from the group"
     end

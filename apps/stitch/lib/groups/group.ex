@@ -129,8 +129,12 @@ defmodule Stitch.Group do
   @doc """
   Add user to the group.
   """
-  def invite(group_id, user_id) do
-    params = %{group_id: group_id, user_id: user_id}
+  def add_user(%Group{name: name}, _) when name in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Users can't join existing direct messages"}
+  end
+
+  def add_user(%Group{} = group, user_id) do
+    params = %{group_id: group.id, user_id: user_id}
     changeset = GroupUser.changeset(%GroupUser{}, params)
     Repo.insert changeset
   end
