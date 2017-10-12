@@ -95,6 +95,18 @@ defmodule Stitch.GroupTest do
       {message, _} = changeset.errors[:user_id]
       assert message == "User is already part of group"
     end
+
+    test "does not add a user to a single DM group" do
+      group = %Group{name: "__dm_group__"}
+      {:error, message} = Group.add_user(group, 42)
+      assert message == "Users can't join existing direct messages"
+    end
+
+    test "does not add a user to a multi DM group" do
+      group = %Group{name: "__multi_dm_group__"}
+      {:error, message} = Group.add_user(group, 42)
+      assert message == "Users can't join existing direct messages"
+    end
   end
 
   describe "Stitch.Group.remove/2" do
