@@ -26,18 +26,9 @@ class Sidebar extends Component {
           >
             <Link to="/admin/team/settings"><i className="fa fa-cogs"></i> Settings</Link>
           </ListGroupItem>
-
           <ListGroupItem active={this._isSelected("/admin/team/security")}>
             <Link to="/admin/team/security"><i className="fa fa-shield"></i> Security</Link>
           </ListGroupItem>
-          {/*<ListGroupItem active={this._isSelected("/admin/team/hipaa")}>
-            <Link to="/admin/team/hipaa">HIPAA</Link>
-          </ListGroupItem> */}
-          {/* <ListGroupItem
-            active={this._isSelected("/admin/team/export")}
-          >
-            <Link to="/admin/team/export">Export</Link>
-          </ListGroupItem> */}
           <ListGroupItem
             active={this._isSelected("/admin/users/members")}
           >
@@ -64,7 +55,7 @@ class Sidebar extends Component {
   };
 
   render() {
-    const { teamStore } = this.props;
+    const { onHideSidebar, teamStore } = this.props;
 
     return (
       <div className="sidebar">
@@ -89,7 +80,7 @@ class Sidebar extends Component {
             >
               <Link to="/admin/you/notifications"><i className="fa fa-bell"></i> Notifications</Link>
             </ListGroupItem>
-            <ListGroupItem>
+            <ListGroupItem onClick={onHideSidebar}>
               <Link to="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect" target="_blank"><i className="fa fa-question-circle"></i> Help <i className="fa fa-external-link sm"></i></Link>
             </ListGroupItem>
           </ListGroup>

@@ -63,6 +63,7 @@ $admin-topbar-height-sm: 65px;
         border-radius: 4px;
         border: none;
         padding: 10px 6px;
+        color: inherit;
 
         &.active {
           background-color: $brand-primary;
