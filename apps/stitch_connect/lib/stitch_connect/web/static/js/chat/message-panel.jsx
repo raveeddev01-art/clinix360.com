@@ -7,7 +7,7 @@ import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
 import UploadProgress from "../file-upload/upload-progress";
 
-@inject("groupStore", "messageStore")
+@inject("groupStore", "messageStore", "sidemenuStore")
 @observer
 export default class MessagePanel extends Component {
   componentWillMount() {
@@ -50,9 +50,11 @@ export default class MessagePanel extends Component {
   };
 
   handleJoin = () => {
-    const { groupStore: group } = this.props;
+    const { groupStore: group, sidemenuStore } = this.props;
 
     group.join();
+
+    sidemenuStore.loadGroups();
   };
 
   renderUnreadMessagesBar() {
@@ -116,7 +118,7 @@ export default class MessagePanel extends Component {
             <div className="room-preview">
               This is a preview of the room{" "}
               <strong>
-                <i className="fa fa-comments" />  {group.name}
+                <i className="fa fa-comments" /> {group.name}
               </strong>
               <button
                 className="join btn btn-fancy btn-primary"
