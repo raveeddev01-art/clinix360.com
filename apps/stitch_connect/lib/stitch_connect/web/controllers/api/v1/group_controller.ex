@@ -145,7 +145,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def join(conn, %{"id" => group_id}) do
-    case Group.invite(group_id, conn.assigns.current_user.id) do
+    case Group.add_user(group_id, conn.assigns.current_user.id) do
       {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -219,7 +219,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         split_user_ids = String.split(user_ids, ",")
         Enum.each(split_user_ids, fn(user_id) ->
           user_id = String.to_integer(user_id)
-          Group.invite(group_id, user_id)
+          Group.add_user(group_id, user_id)
         end)
         conn
         |> json(%{message: "Users invited to group."})
