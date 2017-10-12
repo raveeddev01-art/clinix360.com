@@ -1,18 +1,26 @@
 import React, { Component } from "react";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
+import { Helmet } from "react-helmet";
+import { withRouter } from "react-router";
 
 import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
 
 @inject("groupStore", "sidemenuStore", "messageStore")
-export default class Chat extends Component {
+@observer
+class Chat extends Component {
   componentWillMount() {
     this.joinChat(this.props.match.params);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.joinChat(nextProps.match.params);
+    if (
+      this.props.match.params.slug !== nextProps.match.params.slug ||
+      this.props.match.params.usernames !== nextProps.match.params.usernames
+    ) {
+      this.joinChat(nextProps.match.params);
+    }
   }
 
   joinChat(params) {
@@ -40,8 +48,17 @@ export default class Chat extends Component {
   }
 
   render() {
+    const { groupStore, sidemenuStore } = this.props;
+    let title = `${groupStore.name} | Stitch Connect`;
+    if (groupStore.groupType === "group") {
+      title = `${groupStore.name} | ${sidemenuStore.teamName} | Stitch Connect`;
+    }
+
     return (
       <div className="chat-wrapper">
+        <Helmet>
+          <title>{title}</title>
+        </Helmet>
         <div id="main">
           <TopNav />
           <div className="flex-content">
@@ -53,3 +70,5 @@ export default class Chat extends Component {
     );
   }
 }
+
+export default withRouter(Chat);
