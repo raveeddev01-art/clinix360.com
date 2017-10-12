@@ -38,4 +38,20 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardController do
     |> put_status(:unprocessable_entity)
     |> render(ErrorView, :"422", errors: errors)
   end
+
+  def delete(conn, %{"id" => card_id}) do
+    team = conn.assigns.team
+
+    with :ok <- Billing.delete_card(team, card_id) do
+      conn
+      |> put_status(:no_content)
+      |> json(%{})
+    else
+      {:error, :default_card} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(ErrorView, :"422", errors: "Cannot delete the default card.")
+      error -> error
+    end
+  end
 end

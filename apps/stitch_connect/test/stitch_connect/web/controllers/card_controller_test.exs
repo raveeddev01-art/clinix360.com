@@ -87,7 +87,6 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardControllerTest do
     end
   end
 
-  describe "UPDATE /api/v1/cards/:id" do
   describe "PUT /api/v1/cards/:id" do
     setup %{conn: conn} do
       subscription = insert(:subscription)
@@ -142,6 +141,54 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardControllerTest do
         conn
         |> with_api_user(regular_user)
         |> put(Routes.api_v1_billing_card_path(conn, :update, card), params)
+
+      assert response = json_response(conn, 401)
+      assert response["message"] =~ "administrator"
+    end
+  end
+
+  describe "DELETE /api/v1/cards/:id" do
+    setup %{conn: conn} do
+      subscription = insert(:subscription)
+      team = subscription.team
+      admin_user = insert(:user, team: team, roles: ["admin"])
+      card = insert(:card, team: team, default: true)
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(admin_user)
+
+      {:ok, conn: conn, team: team, card: card}
+    end
+
+    test "deletes a card", %{conn: conn, team: team} do
+      card = insert(:card, team: team)
+      conn = delete(conn, Routes.api_v1_billing_card_path(conn, :delete, card))
+      assert json_response(conn, 204)
+      refute Stitch.Repo.get(Stitch.Billing.PaymentMethod, card.id)
+    end
+
+    test "gives a 404 for a card that doesn't exist", %{conn: conn} do
+      conn = delete(conn, Routes.api_v1_billing_card_path(conn, :delete, -1))
+      assert response = json_response(conn, 404)
+      assert response["errors"] =~ "does not exist"
+    end
+
+    test "doesn't allow the default card to be deleted", %{conn: conn, card: card} do
+      conn = delete(conn, Routes.api_v1_billing_card_path(conn, :delete, card))
+      assert response = json_response(conn, 422)
+      assert response["errors"] =~ "default card"
+    end
+
+    test "requires an admin role", %{conn: conn, team: team, card: card} do
+      regular_user = insert(:user, team: team)
+      params = %{"default" => true}
+
+      conn =
+        conn
+        |> with_api_user(regular_user)
+        |> delete(Routes.api_v1_billing_card_path(conn, :delete, card), params)
 
       assert response = json_response(conn, 401)
       assert response["message"] =~ "administrator"
