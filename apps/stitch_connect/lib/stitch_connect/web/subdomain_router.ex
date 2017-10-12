@@ -134,6 +134,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :team_admin_api
 
     get "/cards", CardController, :index
+    post "/cards", CardController, :create
   end
 
   # API routes which need token.

@@ -15,10 +15,19 @@ defmodule Stitch.Billing.PaymentMethod do
 
     belongs_to :team, Stitch.Team
 
+    field :source_token, :string, virtual: true
+
     timestamps()
   end
 
+  @doc false
+  def stripe(params \\ %{}) do
+    %__MODULE__{}
+    |> cast(params, [:source_token])
+    |> validate_required([:source_token])
+  end
 
+  @doc false
   def new(params \\ %{}) do
     fields = ~w(card_id brand last_four exp_month exp_year default team_id)a
 

@@ -59,13 +59,18 @@ defmodule Stitch.Billing.BillingTest do
       assert card.last_four
     end
 
+    test "requires a source token", %{team: team} do
+      assert {:error, changeset} = Billing.add_card(team, nil)
+      assert elem(changeset.errors[:source_token], 0) =~ "can't be blank"
+    end
+
     test "sets the first card to be the default payment method", %{team: team} do
       assert {:ok, %{default: true}} = Billing.add_card(team, "tok_valid")
       assert {:ok, %{default: false}} = Billing.add_card(team, "tok_valid")
     end
 
     test "gives an error with invalid source token", %{team: team} do
-      assert :error == Billing.add_card(team, "tok_invalid")
+      assert {:error, :invalid_token} == Billing.add_card(team, "tok_invalid")
     end
   end
 

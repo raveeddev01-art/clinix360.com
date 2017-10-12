@@ -65,12 +65,17 @@ defmodule Stitch.Billing do
       {:ok, %PaymentMethod{...}}
 
   """
-  @spec add_card(Team.t, String.t) :: {:ok, PaymentMethod.t} | :error
+  @spec add_card(Team.t, String.t) :: {:ok, PaymentMethod.t} | {:error, Ecto.Changeset.t | :invalid_token}
   def add_card(%Team{id: team_id} = team, source_token) do
     team = Repo.preload(team, :subscription)
-    case @stripe_client.add_card(team.subscription.customer_id, source_token) do
-      {:ok, card} -> do_insert_card(team_id, card)
-      _ -> :error
+    customer_id = team.subscription.customer_id
+
+    with %{valid?: true} = changeset <- PaymentMethod.stripe(%{source_token: source_token}),
+         {:ok, card} <- @stripe_client.add_card(customer_id, changeset.changes.source_token) do
+      do_insert_card(team_id, card)
+    else
+      %Ecto.Changeset{} = changeset -> {:error, changeset}
+      :error -> {:error, :invalid_token}
     end
   end
 
@@ -100,6 +105,7 @@ defmodule Stitch.Billing do
 
       iex> delete_card(%Team{...}, 123)
       :ok
+
   """
   @spec delete_card(Team.t, pos_integer) :: :ok | {:error, :not_found | :default_card}
   def delete_card(%Team{id: team_id} = team, payment_method_id) do

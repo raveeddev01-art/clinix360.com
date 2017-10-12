@@ -5,6 +5,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardView do
     data = for card <- cards, do: card(card)
     %{data: data}
   end
+
   def render("show.json", %{card: card}) do
     %{data: card(card)}
   end
