@@ -292,7 +292,7 @@
     .message-form {
       position: relative;
       padding-top: 10px;
-      padding-bottom: 30px;
+      padding-bottom: 5px;
       width: 100%;
 
       .jumped-message-indicator {
@@ -327,6 +327,11 @@
         position: absolute;
         right: 15px;
         top: 5px;
+        display: flex;
+        align-items: center;
+        height: 30px;
+        width: 45px;
+        justify-content: space-between;
 
         .message-form-action-item {
           border: none;
@@ -334,12 +339,14 @@
           padding: 0;
           cursor: pointer;
           font-size: 20px;
+          vertical-align: middle;
           color: #ccc;
           box-shadow: none;
-          margin-left: 10px;
 
           &:hover {
+            font-size: 24px;
             color: $brand-primary;
+            animation: iconZoom ease-in 0.2s;
           }
         }
       }
@@ -574,6 +581,18 @@
     .message-body {
       display: flex;
       align-items: center;
+
+      a {
+        color: #003366;
+        text-decoration-style: dotted;
+        text-decoration-color: #003366;
+        text-decoration-line: underline;
+        text-underline-position: under;
+
+        &:hover {
+          text-decoration-style: solid;
+        }
+      }
     }
 
     p {
@@ -636,6 +655,13 @@
 
         &:before {
           color: rgba(255, 255, 255, 0.7);
+        }
+      }
+
+      .message-body {
+        a {
+          color: #fff;
+          text-decoration-color: #fff;
         }
       }
 
