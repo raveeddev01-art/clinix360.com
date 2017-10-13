@@ -23,7 +23,7 @@ defmodule Stitch.Group do
 
   def changeset(%Stitch.Group{} = struct, params) do
     struct
-    |> cast(params, [:name, :slug, :description, :public, :team_id])
+    |> cast(params, [:name, :slug, :description, :public, :team_id, :creator_user_id])
     |> validate_required([:name, :slug, :public, :team_id])
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
   end
