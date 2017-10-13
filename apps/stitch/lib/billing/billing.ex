@@ -37,6 +37,34 @@ defmodule Stitch.Billing do
   end
 
   @doc """
+  Gets the subscription for a team.
+
+  ## Example
+
+      iex> get_subscription(%Team{...})
+      %Subscription{...}
+
+  """
+  @spec get_subscription(Team.t) :: Subscription.t
+  def get_subscription(%Team{} = team) do
+    team = Repo.preload(team, :subscription)
+    subscription = team.subscription
+
+    active_user_count =
+      team
+      |> Stitch.TeamQueries.list_active_users()
+      |> length()
+    estimated_invoice_amount = estimated_invoice_amount(subscription.tier, active_user_count)
+
+    %Subscription{subscription | estimated_invoice_amount: estimated_invoice_amount}
+  end
+
+  defp estimated_invoice_amount("TRIAL", active_user_count), do: 0
+  defp estimated_invoice_amount("BASIC", active_user_count), do: 5 * active_user_count
+  defp estimated_invoice_amount("PREMIUM", active_user_count), do: 10 * active_user_count
+  defp estimated_invoice_amount("POWER", active_user_count), do: 15 * active_user_count
+
+  @doc """
   Lists all the saved cards for a Team.
 
   ## Example

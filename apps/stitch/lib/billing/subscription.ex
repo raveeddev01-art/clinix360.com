@@ -13,6 +13,8 @@ defmodule Stitch.Billing.Subscription do
     field :renewal_frequency, :string
     field :renews, :boolean, default: false
 
+    field :estimated_invoice_amount, :integer, virtual: true
+
     belongs_to :team, Stitch.Team
 
     timestamps()
