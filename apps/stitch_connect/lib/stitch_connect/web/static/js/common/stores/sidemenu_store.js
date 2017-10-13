@@ -180,6 +180,8 @@ class SidemenuStore {
     if (badge !== this.badge) {
       this.badge = badge;
       this.favicon.badge(badge);
+      // to be consumed by electron app
+      window.dispatchEvent(new CustomEvent('unread-changed', { detail: badge }));
     }
   }
 
@@ -209,7 +211,8 @@ class SidemenuStore {
   showNotificationCard(title, body, duration = 5000) {
     const notification = new Notification(title, {
       body,
-      icon: "/favicon.ico"
+      icon: "/favicon.ico",
+      silent: true
     });
 
     setTimeout(() => {
