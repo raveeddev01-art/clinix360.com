@@ -180,12 +180,7 @@ defmodule Stitch.Group do
   Toggles public setting for the user for the specified
   group.
   """
-  def toggle_public(group_id, public) do
-    query =
-      from g in Group,
-      where: g.id == ^group_id,
-      preload: [:users]
-    group = Repo.one(query)
+  def toggle_public(%Group{} = group, public) do
     changeset = Group.changeset(group, %{public: public})
     Repo.update changeset
   end
