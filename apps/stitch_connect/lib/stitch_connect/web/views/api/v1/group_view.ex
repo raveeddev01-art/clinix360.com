@@ -28,6 +28,8 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
       unread_messages_count: group.unread_messages_count,
       mentions_count: group.mentions_count,
       last_read_at: group.last_read_at,
+      inserted_at: group.inserted_at,
+      creator_user_id: group.creator_user_id,
     }
   end
 
