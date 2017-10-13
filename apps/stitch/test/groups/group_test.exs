@@ -74,6 +74,18 @@ defmodule Stitch.GroupTest do
       {:ok, group} = Group.toggle_public(group, false)
       assert group.public == false
     end
+
+    test "does not change single DM groups" do
+      group = %Group{name: "__dm_group__"}
+      {:error, message} = Group.toggle_public(group, false)
+      assert message == "Direct messages' privacy setting can't be changed"
+    end
+
+    test "does not change multi DM groups" do
+      group = %Group{name: "__multi_dm_group__"}
+      {:error, message} = Group.toggle_public(group, false)
+      assert message == "Direct messages' privacy setting can't be changed"
+    end
   end
 
   describe "Stitch.Group.add_user/2" do

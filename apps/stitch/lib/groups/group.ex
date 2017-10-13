@@ -180,6 +180,11 @@ defmodule Stitch.Group do
   Toggles public setting for the user for the specified
   group.
   """
+  def toggle_public(%Group{name: name}, _public)
+      when name in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Direct messages' privacy setting can't be changed"}
+  end
+
   def toggle_public(%Group{} = group, public) do
     changeset = Group.changeset(group, %{public: public})
     Repo.update changeset
