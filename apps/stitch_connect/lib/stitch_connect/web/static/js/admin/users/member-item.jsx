@@ -16,6 +16,11 @@ export default class MemberItem extends Component {
     this.setState({ open: !this.state.open });
   };
 
+  _activateUser = () => {
+    const { membersStore, user } = this.props;
+    membersStore.activateUser(user.id);
+  };
+
   _deactivateUser = () => {
     const { membersStore, user } = this.props;
     membersStore.deactivateUser(user.id);
@@ -55,7 +60,7 @@ export default class MemberItem extends Component {
           </Col>
 
           <Col sm={2} className="status-column text-center">
-            {user.disabled && "deactivated"}
+            {user.disabled && "Deactivated"}
           </Col>
 
           <Col sm={2} className="actions-column text-center">
@@ -80,13 +85,23 @@ export default class MemberItem extends Component {
                   : <Button bsSize="small" onClick={this._promoteAdmin}>
                       Promote Admin
                     </Button>}
-                <Button
-                  onClick={this._deactivateUser}
-                  bsSize="small"
-                  className="pull-right"
-                >
-                  Disable Account
-                </Button>
+                {
+                  user.disabled
+                  ? <Button
+                      onClick={this._activateUser}
+                      bsSize="small"
+                      className="pull-right"
+                    >
+                      Enable Account
+                    </Button>
+                  : <Button
+                      onClick={this._deactivateUser}
+                      bsSize="small"
+                      className="pull-right"
+                    >
+                      Disable Account
+                    </Button>
+                }
               </ButtonToolbar>
             </div>
           </Collapse>

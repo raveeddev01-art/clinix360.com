@@ -111,6 +111,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :team_admin_api
 
+    post "/users/:id/activate", UserController, :activate
     post "/users/:id/deactivate", UserController, :deactivate
     put "/users/:id/promote-admin", UserController, :promote_admin
     put "/users/:id/revoke-admin", UserController, :revoke_admin
