@@ -543,6 +543,7 @@
       align-items: baseline;
 
       .name {
+        color: #003366;
         flex: 1;
         font-weight: bold;
         margin-right: 20px;
@@ -623,6 +624,10 @@
       color: #fff;
       background: $brand-primary;
       border: 0;
+
+      .name {
+        color: #fff;
+      }
 
       .time {
         .dropdown-toggle {
