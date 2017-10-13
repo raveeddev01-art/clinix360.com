@@ -59,7 +59,7 @@ class TopNav extends Component {
           {isNotDM && <NavItemMembers />}
           <NavItemNotifications />
           {isNotDM && <NavItemRename />}
-          <NavItemConvert />
+          {isNotDM && <NavItemConvert />}
           {isNotDM && <NavItemLeave />}
           <MenuItem>Delete</MenuItem>
         </div>
