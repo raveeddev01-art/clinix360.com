@@ -45,7 +45,7 @@ class WelcomeMessage extends Component {
 
     return (
       <div className="welcome-message__text">
-        Welcome to the public room
+        Welcome to the {group.public ? "public" : "private"} room
         <span className="welcome-message__name">
           {this.getIcon()}
           {` ${group.name}`}
