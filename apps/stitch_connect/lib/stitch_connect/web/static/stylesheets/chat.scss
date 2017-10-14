@@ -225,6 +225,8 @@
       #chat {
         position: relative;
         padding: 20px;
+        display: flex;
+        flex-direction: column;
 
         .date-separator {
           display: flex;
@@ -822,5 +824,40 @@ i.file-data-separator {
     position: absolute;
     bottom: 34px;
     right: -12px;
+  }
+}
+
+.welcome-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex-grow: 1;
+  margin-bottom: 30px;
+
+  &__container {
+    border: 1px solid #d8d8d8;
+    background-color: #ffffff;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 15px;
+  }
+
+  &__title {
+    font-size: 40px;
+    color: $brand-primary;
+    font-weight: 900;
+  }
+
+  &__text {
+    font-size: 14px;
+  }
+
+  &__name {
+    font-size: 15px;
+    color: $brand-primary;
+    font-weight: 900;
+    margin: 0 3px;
   }
 }

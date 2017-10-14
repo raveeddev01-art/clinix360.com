@@ -303,8 +303,7 @@ class MessageStore {
     this.highlightTimeout = setTimeout(() => {
       this.highlightId = null;
     }, duration);
-
-  }
+  };
 
   /**
    * Jump to the specific message
@@ -705,6 +704,10 @@ class MessageStore {
   @action
   onJoinGroupChannel = data => {
     this.messages = data.messages;
+
+    if (data.messages.length <= 30) {
+      this.loadedAll = true;
+    }
 
     const { groupStore } = this.rootStore;
 
