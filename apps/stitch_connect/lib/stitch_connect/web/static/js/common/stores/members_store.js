@@ -33,6 +33,17 @@ class MembersStore {
   };
 
   @action
+  activateUser = userId => {
+    return post(`/api/v1/users/${userId}/activate`).then(() => {
+      const user = this.getUser(userId);
+      if (user) {
+        user.disabled = false;
+      }
+      notify.show("Account activated.");
+    });
+  };
+
+  @action
   deactivateUser = userId => {
     return post(`/api/v1/users/${userId}/deactivate`).then(() => {
       const user = this.getUser(userId);

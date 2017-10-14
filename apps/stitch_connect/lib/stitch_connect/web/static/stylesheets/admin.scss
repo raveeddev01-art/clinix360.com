@@ -63,6 +63,7 @@ $admin-topbar-height-sm: 65px;
         border-radius: 4px;
         border: none;
         padding: 10px 6px;
+        color: inherit;
 
         &.active {
           background-color: $brand-primary;
@@ -332,9 +333,9 @@ $admin-topbar-height-sm: 65px;
       .admin-table {
         .table-head {
           color: $brand-primary;
-          font-size: 16px;
+          font-size: 18px;
           font-weight: bold;
-          border-bottom: 2px solid rgba($brand-primary, .15);
+          border-bottom: 1px solid $border-color;
           padding: 10px 15px;
           margin-bottom: 1em;
         }
@@ -364,6 +365,7 @@ $admin-topbar-height-sm: 65px;
             font-size: 16px;
             font-weight: bold;
             padding: 10px 15px;
+            text-transform: capitalize;
           }
 
           .email-column {
@@ -392,13 +394,38 @@ $admin-topbar-height-sm: 65px;
         }
 
         .btn-default {
-          color: $brand-primary;
-          border-color: $brand-primary;
+          background: #fff;
         }
+      }
+
+      .btn {
+        &:active {
+          position: relative;
+          top: 3px;
+        }
+
+        &:active,
+        &:focus {
+          outline: none;
+        }
+      }
+
+      .btn-sm {
+        padding: 3px 8px;
+        font-size: 12px;
+        line-height: 1.5;
       }
 
       .btn-lg {
         padding: 8px 20px;
+      }
+
+      .btn-primary {
+        &:active,
+        &:focus {
+          background-color: $brand-primary;
+          border-color: $brand-primary;
+        }
       }
     }
 

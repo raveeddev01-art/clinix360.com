@@ -23,6 +23,19 @@ class AdminApp extends Component {
     };
   }
 
+  componentWillMount() {
+    const { history } = this.props;
+    this.unsubscribeFromHistory = history.listen(this.handleLocationChange);
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeFromHistory) this.unsubscribeFromHistory();
+  }
+
+  handleLocationChange = (location) => {
+    this._hideSidebar();
+  }
+
   _toggleSidebar = () => {
     this.setState({ sidebarOpened: !this.state.sidebarOpened });
   };
@@ -30,7 +43,6 @@ class AdminApp extends Component {
   _hideSidebar = () => {
     this.setState({ sidebarOpened: false });
   };
-
 
   render() {
     const { sidebarOpened } = this.state;
@@ -41,7 +53,7 @@ class AdminApp extends Component {
 
     return (
       <div className={adminWrapperClass}>
-        <Sidebar />
+        <Sidebar onHideSidebar={this._hideSidebar}/>
         <div className="admin-content">
           <Topbar onToggleSidebar={this._toggleSidebar} />
           <div className="admin-content-wrapper" onClick={() => this._hideSidebar()}>

@@ -8,6 +8,15 @@ defmodule Stitch.Accounts.Admin do
   alias Stitch.Accounts.User
 
   @doc """
+  Sets the disabled boolean flag to false for the provided user.
+  """
+  def activate(user_id) do
+    Repo.get(User, user_id)
+    |> Ecto.Changeset.change(disabled: false)
+    |> Repo.update
+  end
+
+  @doc """
   Sets the disabled boolean flag to true for the provided user.
   """
   def deactivate(user_id) do
