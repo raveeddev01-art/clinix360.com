@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Creatable } from "react-select";
 import { inject, observer } from "mobx-react";
 
 import {
@@ -26,15 +25,15 @@ export default class UsersInvitations extends Component {
     };
   }
 
-  _handleChange = value => {
-    this.setState({ email: value });
+  _handleChange = event => {
+    this.setState({ email: event.target.value });
   };
 
   _onSave = () => {
     const { email } = this.state;
 
     // Perform email validation
-    const lines = email.map(item => item.value);
+    const lines = email.split('\n');
     let emails = [];
     for (let line of lines) {
       // only push this line if it contains a valid email.
@@ -55,25 +54,20 @@ export default class UsersInvitations extends Component {
   };
 
   render() {
+    const { email } = this.state;
+
     return (
       <Panel className="admin-panel" header={header}>
         <h4>Add invitation e-mails</h4>
-
         <FormGroup controlId="formControlsTextarea">
-          <Creatable
-            multi={true}
-            joinValues={true}
-            className="multi-select-large"
-            placeholder="Type in an email"
+          <FormControl
+            componentClass="textarea"
+            rows="6"
             onChange={this._handleChange}
-            value={this.state.email}
-            noResultsText=""
-            promptTextCreator={label => `Add an email - ${label}`}
           />
-
           <Row>
             <Col md={10}>
-              <HelpBlock>
+              <HelpBlock className="text-muted">
                 You can send multiple e-mail invitations at once.
               </HelpBlock>
             </Col>

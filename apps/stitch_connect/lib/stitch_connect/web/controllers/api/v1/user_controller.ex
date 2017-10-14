@@ -12,6 +12,19 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     render conn, "index.json", users: result_users
   end
 
+  def activate(conn, %{"id" => id}) do
+    case String.to_integer(id) == conn.assigns.current_user.id do
+      true ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "You cannot activate your own account."})
+      false ->
+        {:ok, _user} = Stitch.Accounts.Admin.activate(id)
+        conn
+        |> json(%{message: "Account has been activated."})
+    end
+  end
+
   def deactivate(conn, %{"id" => id}) do
     case String.to_integer(id) == conn.assigns.current_user.id do
       true ->
