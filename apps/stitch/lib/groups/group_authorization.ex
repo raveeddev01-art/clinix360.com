@@ -5,8 +5,6 @@ defmodule Stitch.GroupAuthorization do
 
   alias Stitch.Repo
   alias Stitch.{Group, GroupUser}
-  alias Stitch.Accounts.User
-  import Ecto.Query
 
   @doc """
   """
@@ -32,16 +30,8 @@ defmodule Stitch.GroupAuthorization do
   @doc """
   Return true/false whether user can invite other users to this group.
   """
-  def can_invite?(group_id, user_id) do
-    user = Repo.get(User, user_id)
-    query =
-      from g in Group,
-      where: g.id == ^group_id,
-      preload: [:creator]
-
-    group = Repo.one(query)
-
-    Enum.member?(user.roles, "admin") || group.public || group.creator.id == user.id
+  def can_invite?(group, user) do
+    Enum.member?(user.roles, "admin") || group.public || group.creator_user_id == user.id
   end
 
   @doc """

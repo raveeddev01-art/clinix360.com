@@ -215,13 +215,14 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def invite(conn, %{"id" => group_id, "user_ids" => user_ids}) do
-    case GroupAuthorization.can_invite?(group_id, conn.assigns.current_user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_invite?(group, conn.assigns.current_user) do
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to invite people to this group."})
       true ->
-        group = GroupQueries.get_by_id(group_id)
         split_user_ids = String.split(user_ids, ",")
         Enum.each(split_user_ids, fn(user_id) ->
           user_id = String.to_integer(user_id)

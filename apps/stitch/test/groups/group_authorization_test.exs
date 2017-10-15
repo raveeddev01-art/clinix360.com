@@ -51,28 +51,28 @@ defmodule Stitch.GroupAuthorizationTest do
     test "returns true for admin users" do
       group = insert(:group, %{public: false})
       user = insert(:user, %{roles: ["admin"]})
-      result = Stitch.GroupAuthorization.can_invite?(group.id, user.id)
+      result = Stitch.GroupAuthorization.can_invite?(group, user)
       assert result == true
     end
 
     test "returns true for public groups" do
       group = insert(:group, %{public: true})
       user = insert(:user, %{roles: ["member"]})
-      result = Stitch.GroupAuthorization.can_invite?(group.id, user.id)
+      result = Stitch.GroupAuthorization.can_invite?(group, user)
       assert result == true
     end
 
     test "returns true for private groups for group creator" do
       user = insert(:user, %{roles: ["member"]})
       group = insert(:group, %{public: false, creator: user})
-      result = Stitch.GroupAuthorization.can_invite?(group.id, user.id)
+      result = Stitch.GroupAuthorization.can_invite?(group, user)
       assert result == true
     end
 
     test "returns false for private groups" do
       user = insert(:user, %{roles: ["member"]})
       group = insert(:group, %{public: false})
-      result = Stitch.GroupAuthorization.can_invite?(group.id, user.id)
+      result = Stitch.GroupAuthorization.can_invite?(group, user)
       assert result == false
     end
   end
