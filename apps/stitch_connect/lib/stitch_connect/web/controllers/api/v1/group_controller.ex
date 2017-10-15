@@ -189,13 +189,14 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def toggle_public(conn, %{"id" => group_id, "public" => public}) do
     user = conn.assigns.current_user
-    case GroupAuthorization.can_toggle_public?(group_id, user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_toggle_public?(group, user) do
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to toggle the group's privacy setting."})
       true ->
-        group = GroupQueries.get_by_id(group_id)
         {:ok, group} = Group.toggle_public(group, public)
         group = GroupQueries.load_user_data(group, user)
         render conn, "show.json", group: group, user_id: user.id

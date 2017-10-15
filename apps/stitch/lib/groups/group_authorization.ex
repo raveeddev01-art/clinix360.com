@@ -47,15 +47,7 @@ defmodule Stitch.GroupAuthorization do
   @doc """
   Return true/false whether user can change the public setting for this group.
   """
-  def can_toggle_public?(group_id, user_id) do
-    user = Repo.get(User, user_id)
-    query =
-      from g in Group,
-      where: g.id == ^group_id,
-      preload: [:creator]
-
-    group = Repo.one(query)
-
-    Enum.member?(user.roles, "admin") || group.creator.id == user.id
+  def can_toggle_public?(group, user) do
+    Enum.member?(user.roles, "admin") || group.creator_user_id == user.id
   end
 end
