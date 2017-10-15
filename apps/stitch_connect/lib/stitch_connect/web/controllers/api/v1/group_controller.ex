@@ -223,11 +223,11 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to invite people to this group."})
       true ->
-        split_user_ids = String.split(user_ids, ",")
-        Enum.each(split_user_ids, fn(user_id) ->
-          user_id = String.to_integer(user_id)
-          Group.add_user(group, user_id)
-        end)
+        user_ids
+        |> String.split(",")
+        |> Enum.map(&String.to_integer/1)
+        |> Enum.each(&Group.add_user(group, &1))
+
         conn
         |> json(%{message: "Users invited to group."})
     end
