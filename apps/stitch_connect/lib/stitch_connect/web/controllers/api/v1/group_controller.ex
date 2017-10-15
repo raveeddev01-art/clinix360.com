@@ -35,16 +35,17 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def rename(conn, %{"id" => group_id, "name" => name}) do
     user = conn.assigns.current_user
-    case GroupAuthorization.can_rename?(group_id, user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_rename?(group, user) do
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to rename this group"})
       true ->
-        case Group.rename(GroupQueries.get_by_id(group_id), name) do
+        case Group.rename(group, name) do
           {:ok, group} ->
             group = GroupQueries.load_user_data(group, user)
-
             render conn, "show.json", group: group, user_id: user.id
           {:error, reason} ->
             conn
