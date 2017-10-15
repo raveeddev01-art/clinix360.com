@@ -68,7 +68,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def create(conn, params) do
     user = conn.assigns.current_user
-    case Group.create(params, user.team_id, user.id) do
+    case Group.create(params, user) do
       {:ok, group} ->
         group = group
         |> Map.put_new(:joined, true)
