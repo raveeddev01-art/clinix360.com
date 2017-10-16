@@ -44,6 +44,29 @@ defmodule Stitch.Billing.BillingTest do
     end
   end
 
+  describe "modify_subscription/2" do
+    test "creates a stripe subscription when on a trial" do
+      subscription = insert(:subscription)
+      assert {:ok, result} = Billing.modify_subscription(subscription, %{tier: "BASIC", renewal_frequency: "MONTHLY"})
+      assert result.subscription_id
+      assert result.tier == "BASIC"
+      assert result.renewal_frequency == "MONTHLY"
+      assert DateTime.compare(result.valid_until, subscription.valid_until) == :gt
+      assert result.renews
+    end
+
+   "gives errors when expected params are missing/invalid" do
+      subscription = insert(:subscription)
+      assert {:error, result} = Billing.modify_subscription(subscription)
+      assert elem(result.errors[:tier], 0) =~ "blank"
+      assert elem(result.errors[:renewal_frequency], 0) =~ "blank"
+
+      assert {:error, result} = Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
+      assert elem(result.errors[:tier], 0) =~ "expects"
+      assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
+    end
+  end
+
   describe "list_cards/1" do
     setup do
       subscription = insert(:subscription)

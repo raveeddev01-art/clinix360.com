@@ -4,7 +4,7 @@ defmodule Stitch.Repo.Migrations.CreateSubscriptions do
   def change do
     create table(:subscriptions) do
       add :valid_until, :utc_datetime
-      add :tier, :string, default: "TRIAL"
+      add :tier, :string
       add :customer_id, :string
       add :subscription_id, :string
       add :renewal_frequency, :string

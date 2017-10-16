@@ -7,7 +7,7 @@ defmodule Stitch.Billing.Subscription do
 
   schema "subscriptions" do
     field :valid_until, :utc_datetime
-    field :tier, :string, default: "TRIAL"
+    field :tier, :string
     field :customer_id, :string
     field :subscription_id, :string
     field :renewal_frequency, :string
@@ -23,8 +23,22 @@ defmodule Stitch.Billing.Subscription do
   @doc false
   def new(params \\ %{}) do
     %__MODULE__{}
-    |> cast(params, ~w(valid_until team_id customer_id)a)
-    |> validate_required(~w(valid_until team_id customer_id)a)
+    |> cast(params, ~w(valid_until tier team_id customer_id)a)
+    |> validate_required(~w(valid_until tier team_id customer_id)a)
     |> unique_constraint(:team_id)
+  end
+
+  @doc false
+  def modify_by_user(params \\ %{}) do
+    %__MODULE__{}
+    |> cast(params, ~w(tier renewal_frequency renews)a)
+    |> validate_required(~w(tier renewal_frequency)a)
+    |> validate_inclusion(:tier, ~w(BASIC PREMIUM POWER), message: "expects BASIC|PREMIUM|POWER")
+    |> validate_inclusion(:renewal_frequency, ~w(MONTHLY YEARLY), message: "expects MONTHLY|YEARLY")
+  end
+
+  @doc false
+  def update(struct, params \\ %{}) do
+    cast(struct, params, ~w(tier renewal_frequency subscription_id valid_until renews)a)
   end
 end

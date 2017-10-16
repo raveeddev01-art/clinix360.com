@@ -4,6 +4,7 @@ defmodule Stitch.Stripe do
   """
 
   @type card :: %{card_id: String.t, brand: String.t, last_four: String.t, exp_month: 1..12, exp_year: pos_integer}
+  @type subscription :: %{subscription_id: String.t, valid_until: DateTime.t, status: String.t}
 
   @doc """
   Creates a new customer.
@@ -29,4 +30,9 @@ defmodule Stitch.Stripe do
   Sets the card as the default card for the customer.
   """
   @callback set_as_default_card(customer_id :: String.t, card_id :: String.t) :: boolean
+
+  @doc """
+  Creates a new subscription for a customer.
+  """
+  @callback create_subscription(customer_id :: String, plan_id :: String.t, user_count :: pos_integer) :: {:ok, subscription} | :error
 end

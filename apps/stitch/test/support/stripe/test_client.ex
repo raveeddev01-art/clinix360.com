@@ -28,6 +28,16 @@ defmodule Stitch.Stripe.TestClient do
 
   def set_as_default_card(_customer_id, _card_id), do: true
 
+  def create_subscription(_, _, _) do
+    sub = %{
+      subscription_id: "sub_#{timestamp()}",
+      valid_until: DateTime.from_unix!(Kernel.+(timestamp(), 2_000_000)),
+      status: "active"
+    }
+
+    {:ok, sub}
+  end
+
   defp timestamp do
     DateTime.to_unix(DateTime.utc_now())
   end

@@ -100,4 +100,28 @@ defmodule Stitch.Stripe.Client do
       _ -> false
     end
   end
+
+  @doc """
+  Creates a new subscription for a customer.
+
+  ## Examples
+
+      iex> create_subscription("cus_1234567", "basic_monthly", 5)
+      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}}}
+
+  """
+  def create_subscription(customer_id, plan_id, user_count) do
+    case Stripe.Subscriptions.create(customer_id, plan: plan_id, quantity: user_count) do
+      {:ok, sub} -> {:ok, transform_subscription(sub)}
+      _ -> :error
+    end
+  end
+
+  defp transform_subscription(%{id: subscription_id, status: status, current_period_ends: valid_until}) do
+    %{
+      subscription_id: subscription_id,
+      status: status,
+      valid_until: DateTime.from_unix!(valid_until)
+    }
+  end
 end

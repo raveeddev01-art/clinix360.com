@@ -17,7 +17,7 @@ defmodule Stitch.Billing do
   def setup_new_team(%Team{id: team_id, name: team_name}) do
     customer_id = @stripe_client.create_customer(team_id, team_name)
 
-    %{valid_until: trial_end_datetime(), team_id: team_id, customer_id: customer_id}
+    %{valid_until: trial_end_datetime(), team_id: team_id, customer_id: customer_id, tier: "TRIAL"}
     |> Subscription.new()
     |> Repo.insert()
     |> case do
@@ -50,19 +50,59 @@ defmodule Stitch.Billing do
     team = Repo.preload(team, :subscription)
     subscription = team.subscription
 
-    active_user_count =
-      team
-      |> Stitch.TeamQueries.list_active_users()
-      |> length()
+    active_user_count = active_user_count(team)
     estimated_invoice_amount = estimated_invoice_amount(subscription.tier, active_user_count)
 
     %Subscription{subscription | estimated_invoice_amount: estimated_invoice_amount}
   end
 
-  defp estimated_invoice_amount("TRIAL", active_user_count), do: 0
+  defp active_user_count(%Team{} = team) do
+    team
+    |> Stitch.TeamQueries.list_active_users()
+    |> length()
+  end
+
+  defp estimated_invoice_amount("TRIAL", _active_user_count), do: 0
   defp estimated_invoice_amount("BASIC", active_user_count), do: 5 * active_user_count
   defp estimated_invoice_amount("PREMIUM", active_user_count), do: 10 * active_user_count
   defp estimated_invoice_amount("POWER", active_user_count), do: 15 * active_user_count
+
+  @doc """
+  Modifies a subscription for a team.
+
+  ## Examples
+
+      # TODO
+  """
+  def modify_subscription(%Subscription{tier: "TRIAL"} = subscription, params \\ %{}) do
+    subscription = Repo.preload(subscription, :team)
+    team = subscription.team
+    customer_id = subscription.customer_id
+
+    with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
+         plan_id <- determine_plan_id(changeset.changes),
+         user_count <- active_user_count(team),
+         {:ok, stripe_sub_params} <- @stripe_client.create_subscription(customer_id, plan_id, user_count) do
+      subscription
+      |> subscription_update_changeset(changeset.changes, stripe_sub_params)
+      |> Repo.update()
+    else
+      %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
+    end
+  end
+
+  defp determine_plan_id(%{tier: "BASIC", renewal_frequency: "MONTHLY"}),   do: "basic_monthly"
+  defp determine_plan_id(%{tier: "BASIC", renewal_frequency: "YEARLY"}),    do: "basic_yearly"
+  defp determine_plan_id(%{tier: "PREMIUM", renewal_frequency: "MONTHLY"}), do: "premium_monthly"
+  defp determine_plan_id(%{tier: "PREMIUM", renewal_frequency: "YEARLY"}),  do: "premium_yearly"
+  defp determine_plan_id(%{tier: "POWER", renewal_frequency: "MONTHLY"}),   do: "power_monthly"
+  defp determine_plan_id(%{tier: "POWER", renewal_frequency: "YEARLY"}),    do: "power_yearly"
+
+  @spec subscription_update_changeset(Subscription.t, map, map) :: Ecto.Changeset.t
+  defp subscription_update_changeset(%Subscription{} = subscription, user_changes, stripe_changes) do
+    update_params = Map.merge(user_changes, stripe_changes)
+    Subscription.update(subscription, update_params)
+  end
 
   @doc """
   Lists all the saved cards for a Team.
