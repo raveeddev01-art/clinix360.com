@@ -68,6 +68,12 @@ module.exports = [
           from: "./lib/stitch_connect/web/static/favicon.ico",
           to: path.resolve(__dirname, "priv/static")
         }
+      ]),
+      new CopyWebpackPlugin([
+        {
+          from: "./lib/stitch_connect/web/static/audios/pop.mp3",
+          to: path.resolve(__dirname, "priv/static/audios")
+        }
       ])
     ]
   }
