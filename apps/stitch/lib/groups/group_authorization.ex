@@ -4,7 +4,6 @@ defmodule Stitch.GroupAuthorization do
   """
 
   alias Stitch.Repo
-  alias Stitch.{Group, GroupUser}
 
   @doc """
   """
@@ -15,7 +14,7 @@ defmodule Stitch.GroupAuthorization do
   @doc """
   """
   def is_member?(group_id, user_id) do
-    Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) != nil
+    Repo.get_by(Stitch.GroupUser, group_id: group_id, user_id: user_id) != nil
   end
 
   @doc """
