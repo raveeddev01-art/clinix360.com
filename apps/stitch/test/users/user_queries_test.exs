@@ -96,13 +96,13 @@ defmodule Stitch.UserQueriesTest do
     end
 
     test "returns not found message for unknown token" do
-      token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+      token = Stitch.Rand.token(32)
       {:not_found, message} = Stitch.UserQueries.get_by_token(token)
       assert message == "User with token #{token} was not found."
     end
 
     test "returns user given an existing token" do
-      token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+      token = Stitch.Rand.token(32)
       insert(:user, %{token: token})
       user = Stitch.UserQueries.get_by_token(token)
       assert user.token == token

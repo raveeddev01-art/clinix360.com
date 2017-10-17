@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.ControllerHelpers do
     conn
     |> put_session(:current_user, user)
     |> put_session(:authentication_token, user.token)
-    |> put_session(:session_id, random_session_id())
+    |> put_session(:session_id, Stitch.Rand.token(12))
     |> put_session(:locked, false)
     |> configure_session(renew: true)
   end
@@ -103,8 +103,4 @@ defmodule StitchConnect.Web.ControllerHelpers do
     end
   end
   defp ensure_integer(_), do: nil
-
-  defp random_session_id do
-    :crypto.strong_rand_bytes(8) |> Base.url_encode64
-  end
 end
