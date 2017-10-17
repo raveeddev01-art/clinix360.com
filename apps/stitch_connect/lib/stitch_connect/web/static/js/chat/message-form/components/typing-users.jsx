@@ -23,7 +23,7 @@ class TypingUsers extends Component {
         content = "multiple people are typing...";
     }
 
-    return <div>{content}</div>;
+    return <div className="users-typing">{content}</div>;
   }
 }
 
