@@ -47,7 +47,7 @@ defmodule StitchConnect.Web.GroupChannel do
       nil ->
         {:error, %{message: "group not found"}}
       group ->
-        case GroupAuthorization.can_view?(group.id, user.id) do
+        case GroupAuthorization.can_view?(group, user) do
           true ->
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})

@@ -17,6 +17,7 @@ import MessageStore from "./message_store";
 import PresenceStore from "./presence_store";
 import SearchStore from "./search_store";
 import SidemenuStore from "./sidemenu_store";
+import SocketStore from "./socket_store";
 import UploadStore from "./upload_store";
 
 class RootStore {
@@ -42,6 +43,7 @@ class RootStore {
     this.presenceStore = new PresenceStore(this, props);
     this.searchStore = new SearchStore(this);
     this.sidemenuStore = new SidemenuStore(this, props);
+    this.socketStore = new SocketStore(this);
     this.uploadStore = new UploadStore(this);
 
     // Initial actions for admin stores

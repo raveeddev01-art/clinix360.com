@@ -28,7 +28,7 @@ defmodule Stitch.Group do
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
   end
 
-  def create(attrs, team_id, user_id) do
+  def create(attrs, %User{team_id: team_id, id: user_id}) do
     attrs = attrs |> Map.put("team_id", team_id) |> Map.put("creator_user_id", user_id)
 
     attrs = case {attrs["name"], attrs["slug"]} do
@@ -83,7 +83,7 @@ defmodule Stitch.Group do
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
-    }, creator.team_id, creator.id)
+    }, creator)
   end
 
   def create_multi_dm(_, user_ids) when length(user_ids) != 3 do
@@ -101,7 +101,7 @@ defmodule Stitch.Group do
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
-    }, creator.team_id, creator.id)
+    }, creator)
   end
 
   @doc """
