@@ -11,7 +11,7 @@ import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 import { confirm } from "../../common/modals";
 
-@inject("messageStore")
+@inject("messageStore", "socketStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -199,7 +199,7 @@ class MessageForm extends Component {
   };
 
   renderInput() {
-    const { messageStore } = this.props;
+    const { messageStore, socketStore } = this.props;
     const { messageInEdit } = messageStore;
 
     if (messageInEdit) {
@@ -208,7 +208,7 @@ class MessageForm extends Component {
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
-      editing: !!messageInEdit
+      editing: (!!messageInEdit || !socketStore.isConnected),
     });
 
     return (
