@@ -139,6 +139,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     delete "/cards/:id", CardController, :delete
 
     get "/subscription", SubscriptionController, :show
+    put "/subscription", SubscriptionController, :update
   end
 
   # API routes which need token.
