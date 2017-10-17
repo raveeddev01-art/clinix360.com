@@ -795,6 +795,15 @@ class MessageStore {
   }
 
   @action
+  editLastMessage() {
+    const message = this.messages.find(m => m.user_id === currentUser.id);
+    if (message) {
+      this.messageInEdit = message;
+      this.textInEdit = message.text_content;
+    }
+  }
+
+  @action
   editText(text) {
     if (!this.messageInEdit) {
       return;
@@ -809,10 +818,14 @@ class MessageStore {
       return;
     }
 
-    if (
-      !this.textInEdit ||
-      this.messageInEdit.text_content === this.textInEdit
-    ) {
+    if (this.messageInEdit.text_content === this.textInEdit) {
+      this.cancelEdit();
+      return;
+    }
+
+    // if empty, just delete
+    if (!this.textInEdit) {
+      this.delete(this.messageInEdit.id);
       this.cancelEdit();
       return;
     }
