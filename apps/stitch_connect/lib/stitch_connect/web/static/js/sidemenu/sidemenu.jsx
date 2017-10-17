@@ -21,15 +21,23 @@ class Sidemenu extends Component {
         <div className="separator text-center">
           <span>Admin</span>
         </div>
-
-        <MenuItem eventKey="4" href="/admin/team">
-          Team
+        <MenuItem eventKey="4" href="/admin/team/settings">
+          Settings
         </MenuItem>
-        <MenuItem eventKey="5" href="/admin/users/members">
-          Users
+        <MenuItem eventKey="5" href="/admin/team/security">
+          Security
         </MenuItem>
-        <MenuItem eventKey="6" href="/admin/users/invitations">
-          Invite
+        <MenuItem eventKey="6" href="/admin/users/members">
+          Members
+        </MenuItem>
+        <MenuItem eventKey="7" href="/admin/users/invitations">
+          Invitations
+        </MenuItem>
+        <MenuItem eventKey="8" href="/admin/users/pending">
+          Pending
+        </MenuItem>
+        <MenuItem eventKey="9" href="/admin/billing">
+          Billing
         </MenuItem>
       </div>
     );
@@ -67,11 +75,11 @@ class Sidemenu extends Component {
               <div className="separator text-center">
                 <span>You</span>
               </div>
-              <MenuItem eventKey="1" href="/admin/you/profile">
-                Profile
-              </MenuItem>
-              <MenuItem eventKey="2" href="/admin/you/account">
+              <MenuItem eventKey="1" href="/admin/you/account">
                 Account
+              </MenuItem>
+              <MenuItem eventKey="2" href="/admin/you/profile">
+                Profile
               </MenuItem>
               <MenuItem eventKey="3" href="/admin/you/notifications">
                 Notifications
@@ -83,10 +91,10 @@ class Sidemenu extends Component {
                 <span>Stitch</span>
               </div>
 
-              <MenuItem eventKey="7" onClick={this.props.presenceStore.lock}>
+              <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
                 Lockout
               </MenuItem>
-              <MenuItem eventKey="6" href="/logout">
+              <MenuItem eventKey="11" href="/logout">
                 Sign Out
               </MenuItem>
             </Dropdown.Menu>
