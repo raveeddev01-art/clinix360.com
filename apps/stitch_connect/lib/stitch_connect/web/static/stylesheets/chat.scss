@@ -294,7 +294,7 @@
     .message-form {
       position: relative;
       padding-top: 10px;
-      padding-bottom: 5px;
+      padding-bottom: 25px;
       width: 100%;
 
       .jumped-message-indicator {
@@ -362,16 +362,34 @@
         &.editing {
           background-color: #fff7d8;
         }
+        &:focus {
+          border-color: #ccc;
+        }
+      }
+
+      .users-typing {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 23px;
+        font-size: 12px;
+        color: #888;
       }
 
       .editing-commands {
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 5px;
+        bottom: 0;
         display: flex;
         justify-content: space-between;
         font-size: 85%;
+        background: $body-bg;
+
+        & > div {
+          height: 23px;
+        }
 
         .btn-small {
           padding: 0 8px;
