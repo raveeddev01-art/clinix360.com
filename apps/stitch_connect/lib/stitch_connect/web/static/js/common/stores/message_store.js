@@ -818,14 +818,10 @@ class MessageStore {
       return;
     }
 
-    if (this.messageInEdit.text_content === this.textInEdit) {
-      this.cancelEdit();
-      return;
-    }
-
-    // if empty, just delete
-    if (!this.textInEdit) {
-      this.delete(this.messageInEdit.id);
+    if (
+      !this.textInEdit ||
+      this.messageInEdit.text_content === this.textInEdit
+    ) {
       this.cancelEdit();
       return;
     }
