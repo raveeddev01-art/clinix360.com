@@ -8,6 +8,7 @@ import Col from "react-bootstrap/lib/Col";
 import GetStarted from "./get_started";
 import TeamPicker from "./team/team_picker";
 import FindTeam from "./team/find_team";
+import SelectTeam from "./team/select_team";
 import Login from "./login/login";
 import Registration from "./registration";
 import SendEmail from "./reset-password/send-email";
@@ -61,6 +62,7 @@ class AuthenticationRouter extends Component {
             <Route exact path="/getstarted" component={GetStarted} />
             <Route exact path="/signin" component={TeamPicker} />
             <Route exact path="/find-teams" component={FindTeam} />
+            <Route exact path="/select-team" component={SelectTeam} />
 
             <Route
               exact

@@ -98,6 +98,10 @@ export default class FindTeam extends Component {
             Submit
           </Button>
         </Form>
+
+        <Link to="/select-team">
+          <strong>Select Team</strong>
+        </Link>
       </Card>
     );
   }
