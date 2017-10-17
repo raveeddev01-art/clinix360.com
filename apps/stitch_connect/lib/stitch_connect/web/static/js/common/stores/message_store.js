@@ -303,8 +303,7 @@ class MessageStore {
     this.highlightTimeout = setTimeout(() => {
       this.highlightId = null;
     }, duration);
-
-  }
+  };
 
   /**
    * Jump to the specific message
@@ -755,11 +754,12 @@ class MessageStore {
           this.messages[this.unreadMessagesCount] &&
           this.messages[this.unreadMessagesCount].id; // B.1.a
 
+        this.markAsRead();
+
         this.scrollToBottom(() => {
           this.loadedInitial = true; // B.1.b
           this.scrollTo(posHistory, 500);
-          this.markAsRead();
-        }, 0);
+        }, 1);
       }
     } else {
       this.groupCursor = sidemenuStore.groupCursors[this.groupId];
