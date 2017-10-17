@@ -16,6 +16,8 @@ class GroupStore {
   @observable favorite = false;
   @observable notificationSetting = null;
   @observable showAllUsers = true;
+  @observable createdBy = null;
+  @observable createdAt = null;
   @observable groupType = "group"; // group, single-dm, multi-dm
   @observable dmUsers = [];
 
@@ -86,6 +88,8 @@ class GroupStore {
       this.unreadMessagesCount = data.unread_messages_count;
       this.mentionsCount = data.mentions_count;
       this.lastReadAt = data.last_read_at;
+      this.createdBy = data.creator_user_id;
+      this.createdAt = data.inserted_at;
 
       // Load messages after join
       this.rootStore.messageStore.joinGroupChannel();

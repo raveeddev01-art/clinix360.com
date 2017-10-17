@@ -303,8 +303,7 @@ class MessageStore {
     this.highlightTimeout = setTimeout(() => {
       this.highlightId = null;
     }, duration);
-
-  }
+  };
 
   /**
    * Jump to the specific message
@@ -706,6 +705,10 @@ class MessageStore {
   onJoinGroupChannel = data => {
     this.messages = data.messages;
 
+    if (data.messages.length < 30) {
+      this.loadedAll = true;
+    }
+
     const { groupStore } = this.rootStore;
 
     this.unreadMessagesCount = groupStore.unreadMessagesCount;
@@ -785,6 +788,15 @@ class MessageStore {
   startEdit(id) {
     const message = this.messages.find(m => m.id === id);
 
+    if (message) {
+      this.messageInEdit = message;
+      this.textInEdit = message.text_content;
+    }
+  }
+
+  @action
+  editLastMessage() {
+    const message = this.messages.find(m => m.user_id === currentUser.id);
     if (message) {
       this.messageInEdit = message;
       this.textInEdit = message.text_content;
