@@ -3,7 +3,7 @@ defmodule Stitch.Message do
   import Ecto.Changeset
   import Ecto.Query
   alias Ecto.Multi
-  alias Stitch.{Repo, Message, GroupUser, GroupQueries}
+  alias Stitch.{Repo, Message, Group, GroupUser, GroupQueries, Accounts.User}
 
   @valid_types ["chat", "system", "upload"]
   @unread_limit 30
@@ -51,6 +51,13 @@ defmodule Stitch.Message do
     |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
+  end
+
+  def system_changeset(%Message{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:fields, :type, :text_content])
+    |> validate_required([:fields, :type])
+    |> validate_inclusion(:type, ["system"])
   end
 
   def create(group_id, user, params, online_in_group \\ [])
@@ -251,5 +258,41 @@ defmodule Stitch.Message do
     GroupUser
     |> where(group_id: ^group_id, user_id: ^user_id)
     |> update([m], set: [last_read_at: ^DateTime.utc_now, mentions_count: 0, unread_messages_count: 0])
+  end
+
+  def join_message_changeset(%Group{} = group, %User{} = user) do
+    system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
+      type: "system",
+      text_content: "{user} joined group at {time}",
+      fields: %{
+        type: "join_group",
+        user: %{
+          id: user.id,
+          name: "#{user.first_name} #{user.last_name}"
+        },
+        time: NaiveDateTime.utc_now,
+      }
+    })
+  end
+  def join_message_changeset(%Group{} = group, user_id) do
+    join_message_changeset(group, Repo.get(User, user_id))
+  end
+
+  def leave_message_changeset(%Group{} = group, %User{} = user) do
+    system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
+      type: "system",
+      text_content: "{user} left group at {time}",
+      fields: %{
+        type: "leave_group",
+        user: %{
+          id: user.id,
+          name: "#{user.first_name} #{user.last_name}"
+        },
+        time: NaiveDateTime.utc_now,
+      }
+    })
+  end
+  def leave_message_changeset(%Group{} = group, user_id) do
+    leave_message_changeset(group, Repo.get(User, user_id))
   end
 end

@@ -2,7 +2,7 @@ defmodule Stitch.Group do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias Stitch.{Repo, Group, GroupUser}
+  alias Stitch.{Repo, Group, GroupUser, Message}
   alias Stitch.Accounts.User
 
   schema "groups" do
@@ -136,7 +136,9 @@ defmodule Stitch.Group do
   def add_user(%Group{} = group, user_id) do
     params = %{group_id: group.id, user_id: user_id}
     changeset = GroupUser.changeset(%GroupUser{}, params)
-    Repo.insert changeset
+    group_user = Repo.insert changeset
+    Repo.insert(Message.join_message_changeset(group, user_id))
+    group_user
   end
 
   @doc """
@@ -146,14 +148,14 @@ defmodule Stitch.Group do
     {:error, "Users can't leave direct messages"}
   end
 
-  def remove(%Group{id: group_id}, user_id) do
+  def remove(%Group{id: group_id} = group, user_id) do
     case Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) do
       nil ->
         {:error, "User is not part of this group"}
 
       group_user ->
-        group_user
-        |> Repo.delete
+        group_user = group_user |> Repo.delete
+        Repo.insert(Message.leave_message_changeset(group, user_id))
         {:ok, "User has been removed from the group"}
 
     end
