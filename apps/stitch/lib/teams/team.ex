@@ -11,6 +11,7 @@ defmodule Stitch.Team do
     has_many :users, Stitch.Accounts.User, on_delete: :delete_all
     has_many :groups, Stitch.Group, on_delete: :delete_all
     has_many :invitations, Stitch.Invitation, on_delete: :delete_all
+    has_many :exports, Stitch.Exports.Export, on_delete: :delete_all
 
     timestamps()
   end

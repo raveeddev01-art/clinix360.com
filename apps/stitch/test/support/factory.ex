@@ -61,4 +61,10 @@ defmodule Stitch.Factory do
       text_content: "lorem ipsum"
     }
   end
+
+  def export_factory do
+    %Stitch.Exports.Export{
+      team: build(:team),
+    }
+  end
 end

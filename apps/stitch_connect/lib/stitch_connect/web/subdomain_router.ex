@@ -119,6 +119,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
     delete "/teams/:id/", TeamController, :delete_team
     put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
     put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
+
+    resources  "/exports", ExportController, only: [:index, :create]
+    get  "/exports/:id/download", ExportController, :download
   end
 
   # API routes which need token.

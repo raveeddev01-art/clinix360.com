@@ -8,3 +8,6 @@ config :stitch, Stitch.Repo,
 config :stitch, Stitch.Mailer,
   adapter: Bamboo.MandrillAdapter,
   api_key: System.get_env("MANDRILL_API_KEY")
+
+config :stitch, Stitch.Exports,
+  enabled: true
