@@ -130,7 +130,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         render conn, "show.json", group: group, user_id: user.id
 
       {:error, {:already_exists, slug}} ->
-        {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
+        {:ok, group} = GroupQueries.find_by_slug(slug, user)
         render conn, "show.json", group: group, user_id: user.id
 
       {:error, :creator_id_is_not_in_user_ids} ->
