@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Route, withRouter } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Dropzone from "react-dropzone";
 
 import Sidemenu from "../sidemenu/sidemenu";
@@ -65,9 +65,11 @@ class ChatApp extends Component {
         <BrowserNotificationAlert />
         <div className="appContainer">
           <Sidemenu />
-          <Route exact path={`/`} component={Chat} />
-          <Route path={`/rooms/:slug`} component={Chat} />
-          <Route path={`/direct/:usernames`} component={Chat} />
+          <Switch>
+            <Route path={`/rooms/:slug`} component={Chat} />
+            <Route path={`/direct/:usernames`} component={Chat} />
+            <Route component={() => <Redirect to="/rooms/general" />} />
+          </Switch>
         </div>
       </Dropzone>
     );
