@@ -16,6 +16,8 @@ class GroupStore {
   @observable favorite = false;
   @observable notificationSetting = null;
   @observable showAllUsers = true;
+  @observable createdBy = null;
+  @observable createdAt = null;
   @observable groupType = "group"; // group, single-dm, multi-dm
   @observable dmUsers = [];
 
@@ -86,6 +88,8 @@ class GroupStore {
       this.unreadMessagesCount = data.unread_messages_count;
       this.mentionsCount = data.mentions_count;
       this.lastReadAt = data.last_read_at;
+      this.createdBy = data.creator_user_id;
+      this.createdAt = data.inserted_at;
 
       // Load messages after join
       this.rootStore.messageStore.joinGroupChannel();
@@ -116,7 +120,10 @@ class GroupStore {
 
       this.id = data.id;
       this.slug = data.slug;
-      this.name = user.first_name + " " + user.last_name; // data.name;
+      this.name = `${user.first_name} ${user.last_name}${user.id ===
+      currentUser.id
+        ? " (You)"
+        : ""}`;
       this.description = data.description;
       this.public = data.public;
       this.favorite = !!data.favorite;
@@ -164,7 +171,8 @@ class GroupStore {
       this.slug = data.slug;
       this.users = data.users;
       this.name = data.users
-        .map(user => user.first_name + " " + user.last_name)
+        .filter(user => user.id !== currentUser.id)
+        .map(user => `${user.first_name} ${user.last_name}`)
         .join(", ");
       this.description = data.description;
       this.public = data.public;

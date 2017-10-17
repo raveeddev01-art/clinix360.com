@@ -17,7 +17,7 @@ import NavItemLeave from "./nav-items/nav-item-leave";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 
-@inject("addonStore", "groupStore", "searchStore")
+@inject("addonStore", "groupStore", "searchStore", "sidemenuStore")
 @observer
 class TopNav extends Component {
   constructor(props) {
@@ -31,8 +31,12 @@ class TopNav extends Component {
   _toggleAddonMenu = menuName => () => {
     const { addonStore } = this.props;
 
-    addonStore.setAddonPanel(menuName);
-    addonStore.toggleAddons(true);
+    if (addonStore.addonPanelType === menuName && addonStore.showAddons) {
+      addonStore.toggleAddons(false);
+    } else {
+      addonStore.setAddonPanel(menuName);
+      addonStore.toggleAddons(true);
+    }
   };
 
   onChange = event => {
@@ -41,21 +45,25 @@ class TopNav extends Component {
   };
 
   handleJoin = () => {
-    const { groupStore: group } = this.props;
+    const { groupStore: group, sidemenuStore } = this.props;
     group.join();
+    sidemenuStore.loadGroups();
+
+    // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
+    document.dispatchEvent(new MouseEvent("click"));
   };
 
   renderRoomControls = () => {
     const isNotDM = this.props.groupStore.groupType === "group";
 
-    if (this.props.groupStore.joined === true) {
+    if (this.props.groupStore.joined) {
       return (
         <div>
           <NavItemFavorite />
           {isNotDM && <NavItemMembers />}
           <NavItemNotifications />
           {isNotDM && <NavItemRename />}
-          <NavItemConvert />
+          {isNotDM && <NavItemConvert />}
           {isNotDM && <NavItemLeave />}
           <MenuItem>Delete</MenuItem>
         </div>
@@ -63,7 +71,7 @@ class TopNav extends Component {
     } else {
       return (
         <div>
-          <MenuItem onClick={this.handleJoin}>
+          <MenuItem onSelect={this.handleJoin}>
             Join <strong>#{this.props.groupStore.slug}</strong>
           </MenuItem>
         </div>
@@ -105,7 +113,11 @@ class TopNav extends Component {
         </div>
 
         <div className="header-nav">
-          <Dropdown id="dropdown-room-controls" pullRight>
+          <Dropdown
+            id="dropdown-room-controls"
+            pullRight
+            rootCloseEvent="click"
+          >
             <Dropdown.Toggle noCaret>
               <OverlayTrigger
                 placement="bottom"

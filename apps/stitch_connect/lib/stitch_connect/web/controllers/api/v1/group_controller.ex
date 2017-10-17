@@ -35,16 +35,17 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def rename(conn, %{"id" => group_id, "name" => name}) do
     user = conn.assigns.current_user
-    case GroupAuthorization.can_rename?(group_id, user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_rename?(group, user) do
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to rename this group"})
       true ->
-        case Group.rename(GroupQueries.get_by_id(group_id), name) do
+        case Group.rename(group, name) do
           {:ok, group} ->
             group = GroupQueries.load_user_data(group, user)
-
             render conn, "show.json", group: group, user_id: user.id
           {:error, reason} ->
             conn
@@ -55,7 +56,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def users(conn, %{"id" => group_id}) do
-    case GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_view?(group, conn.assigns.current_user) do
       false ->
         conn
         |> put_status(:unauthorized)
@@ -68,7 +71,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def create(conn, params) do
     user = conn.assigns.current_user
-    case Group.create(params, user.team_id, user.id) do
+    case Group.create(params, user) do
       {:ok, group} ->
         group = group
         |> Map.put_new(:joined, true)
@@ -129,7 +132,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         render conn, "show.json", group: group, user_id: user.id
 
       {:error, {:already_exists, slug}} ->
-        {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
+        {:ok, group} = GroupQueries.find_by_slug(slug, user)
         render conn, "show.json", group: group, user_id: user.id
 
       {:error, :creator_id_is_not_in_user_ids} ->
@@ -145,7 +148,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def join(conn, %{"id" => group_id}) do
-    case Group.invite(group_id, conn.assigns.current_user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case Group.add_user(group, conn.assigns.current_user.id) do
       {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -168,7 +173,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       {:ok, message} ->
         default_group = GroupQueries.default_group(current_user)
         conn
-        |> json(%{message: message, redirect_to: "/groups/#{default_group.slug}"})
+        |> json(%{message: message, redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)})
+
     end
   end
 
@@ -185,13 +191,15 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def toggle_public(conn, %{"id" => group_id, "public" => public}) do
     user = conn.assigns.current_user
-    case GroupAuthorization.can_toggle_public?(group_id, user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_toggle_public?(group, user) do
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to toggle the group's privacy setting."})
       true ->
-        {:ok, group} = Group.toggle_public(group_id, public)
+        {:ok, group} = Group.toggle_public(group, public)
         group = GroupQueries.load_user_data(group, user)
         render conn, "show.json", group: group, user_id: user.id
     end
@@ -209,17 +217,19 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def invite(conn, %{"id" => group_id, "user_ids" => user_ids}) do
-    case GroupAuthorization.can_invite?(group_id, conn.assigns.current_user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_invite?(group, conn.assigns.current_user) do
       false ->
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to invite people to this group."})
       true ->
-        split_user_ids = String.split(user_ids, ",")
-        Enum.each(split_user_ids, fn(user_id) ->
-          user_id = String.to_integer(user_id)
-          Group.invite(group_id, user_id)
-        end)
+        user_ids
+        |> String.split(",")
+        |> Enum.map(&String.to_integer/1)
+        |> Enum.each(&Group.add_user(group, &1))
+
         conn
         |> json(%{message: "Users invited to group."})
     end

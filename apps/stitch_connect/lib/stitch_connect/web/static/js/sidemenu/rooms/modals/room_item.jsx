@@ -1,12 +1,13 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import classNames from "classnames";
 
 class RoomItem extends Component {
   handleClick = () => {
-    const { room, toggleModal, history } = this.props;
+    const { room, closeModal, history } = this.props;
 
-    toggleModal();
+    closeModal();
     history.push(`/rooms/${room.slug}`);
   };
 
@@ -37,5 +38,10 @@ class RoomItem extends Component {
     );
   }
 }
+
+RoomItem.propTypes = {
+  room: PropTypes.object.isRequired,
+  closeModal: PropTypes.func.isRequired
+};
 
 export default withRouter(RoomItem);

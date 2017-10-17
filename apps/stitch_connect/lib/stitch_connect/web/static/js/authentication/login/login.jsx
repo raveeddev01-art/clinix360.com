@@ -34,68 +34,72 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div className="authentication-card text-center">
-        <h2>
-          {this.props.authenticationStore.instance.teamName}
-        </h2>
-        <h5 className="text-muted url-heading">
-          {this.props.authenticationStore.instance.teamSlug}.teamstitch.com
-        </h5>
+      <div>
+        <div className="authentication-card text-center m-b-20">
+          <h2>{this.props.authenticationStore.instance.teamName}</h2>
+          <h5 className="text-muted url-heading">
+            {this.props.authenticationStore.instance.teamSlug}.teamstitch.com
+          </h5>
 
-        <h5>
-          Enter your <strong>email address</strong> and{" "}
-          <strong>password</strong>.
-        </h5>
+          <h5>
+            Enter your <strong>email address</strong> and{" "}
+            <strong>password</strong>.
+          </h5>
 
-        <form action="/login" method="post">
-          <input type="hidden" name="_csrf_token" value={window.csrfToken} />
+          <form action="/login" method="post">
+            <input type="hidden" name="_csrf_token" value={window.csrfToken} />
 
-          <FormGroup bsSize="large">
-            <FormControl
-              name="email"
-              required
-              autoFocus
-              type="email"
-              placeholder="Email"
-              value={this.state.email}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
+            <FormGroup bsSize="large">
+              <FormControl
+                name="email"
+                required
+                autoFocus
+                type="email"
+                placeholder="Email"
+                value={this.state.email}
+                onChange={this.handleChange}
+              />
+            </FormGroup>
 
-          <FormGroup bsSize="large">
-            <FormControl
-              name="password"
-              required
-              type="password"
-              placeholder="Password"
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
+            <FormGroup bsSize="large">
+              <FormControl
+                name="password"
+                required
+                type="password"
+                placeholder="Password"
+                value={this.state.password}
+                onChange={this.handleChange}
+              />
+            </FormGroup>
 
-          {
-            <p>
-              {this.props.invalidLogin}
-            </p>
-          }
+            {<p>{this.props.invalidLogin}</p>}
 
-          <Button
-            type="submit"
-            bsStyle="primary"
-            bsSize="lg"
-            className="btn-block"
-          >
-            Login
-          </Button>
-          <Link
-            to="/reset-password"
-            className="btn btn-block btn-lg btn-default m-b-40"
-          >
-            Reset Password
-          </Link>
-        </form>
+            <Button
+              type="submit"
+              bsStyle="primary"
+              bsSize="lg"
+              className="btn-block"
+            >
+              Login
+            </Button>
+            <Link
+              to="/reset-password"
+              className="btn btn-block btn-lg btn-default m-b-40"
+            >
+              Reset Password
+            </Link>
+          </form>
 
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
+          <p className="copyright m-b-0">
+            &copy; 2017 Stitch Technologies, Inc
+          </p>
+        </div>
+
+        <div className="text-center">
+          <a className="cancel-login" href={`https://${applicationHost}`}>
+            <strong>Sign in to a different team</strong>
+          </a>
+        </div>
       </div>
     );
   }

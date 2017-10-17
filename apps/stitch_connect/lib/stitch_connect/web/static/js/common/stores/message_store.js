@@ -303,8 +303,7 @@ class MessageStore {
     this.highlightTimeout = setTimeout(() => {
       this.highlightId = null;
     }, duration);
-
-  }
+  };
 
   /**
    * Jump to the specific message
@@ -644,7 +643,7 @@ class MessageStore {
     // and new mesage line is visible, hide new message line
     if (newMessage.user_id === currentUser.id) {
       if (this.unreadMessagesCount === 0) {
-        this.updateUnreadMessagesInfo({ last_read_at: new Date() });
+        this.markAsRead();
       }
     } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
@@ -706,6 +705,10 @@ class MessageStore {
   onJoinGroupChannel = data => {
     this.messages = data.messages;
 
+    if (data.messages.length < 30) {
+      this.loadedAll = true;
+    }
+
     const { groupStore } = this.rootStore;
 
     this.unreadMessagesCount = groupStore.unreadMessagesCount;
@@ -755,11 +758,12 @@ class MessageStore {
           this.messages[this.unreadMessagesCount] &&
           this.messages[this.unreadMessagesCount].id; // B.1.a
 
+        this.markAsRead();
+
         this.scrollToBottom(() => {
           this.loadedInitial = true; // B.1.b
           this.scrollTo(posHistory, 500);
-          this.markAsRead();
-        }, 0);
+        }, 1);
       }
     } else {
       this.groupCursor = sidemenuStore.groupCursors[this.groupId];
@@ -785,6 +789,15 @@ class MessageStore {
   startEdit(id) {
     const message = this.messages.find(m => m.id === id);
 
+    if (message) {
+      this.messageInEdit = message;
+      this.textInEdit = message.text_content;
+    }
+  }
+
+  @action
+  editLastMessage() {
+    const message = this.messages.find(m => m.user_id === currentUser.id);
     if (message) {
       this.messageInEdit = message;
       this.textInEdit = message.text_content;

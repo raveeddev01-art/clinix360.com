@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import { ToastContainer, ToastMessage } from "react-toastr";
 import notify from "../../../util/notify";
 

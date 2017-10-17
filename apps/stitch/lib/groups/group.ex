@@ -23,12 +23,12 @@ defmodule Stitch.Group do
 
   def changeset(%Stitch.Group{} = struct, params) do
     struct
-    |> cast(params, [:name, :slug, :description, :public, :team_id])
+    |> cast(params, [:name, :slug, :description, :public, :team_id, :creator_user_id])
     |> validate_required([:name, :slug, :public, :team_id])
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
   end
 
-  def create(attrs, team_id, user_id) do
+  def create(attrs, %User{team_id: team_id, id: user_id}) do
     attrs = attrs |> Map.put("team_id", team_id) |> Map.put("creator_user_id", user_id)
 
     attrs = case {attrs["name"], attrs["slug"]} do
@@ -83,7 +83,7 @@ defmodule Stitch.Group do
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
-    }, creator.team_id, creator.id)
+    }, creator)
   end
 
   def create_multi_dm(_, user_ids) when length(user_ids) != 3 do
@@ -101,7 +101,7 @@ defmodule Stitch.Group do
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
-    }, creator.team_id, creator.id)
+    }, creator)
   end
 
   @doc """
@@ -129,8 +129,12 @@ defmodule Stitch.Group do
   @doc """
   Add user to the group.
   """
-  def invite(group_id, user_id) do
-    params = %{group_id: group_id, user_id: user_id}
+  def add_user(%Group{name: name}, _) when name in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Users can't join existing direct messages"}
+  end
+
+  def add_user(%Group{} = group, user_id) do
+    params = %{group_id: group.id, user_id: user_id}
     changeset = GroupUser.changeset(%GroupUser{}, params)
     Repo.insert changeset
   end
@@ -176,12 +180,12 @@ defmodule Stitch.Group do
   Toggles public setting for the user for the specified
   group.
   """
-  def toggle_public(group_id, public) do
-    query =
-      from g in Group,
-      where: g.id == ^group_id,
-      preload: [:users]
-    group = Repo.one(query)
+  def toggle_public(%Group{name: name}, _public)
+      when name in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Direct messages' privacy setting can't be changed"}
+  end
+
+  def toggle_public(%Group{} = group, public) do
     changeset = Group.changeset(group, %{public: public})
     Repo.update changeset
   end
