@@ -43,8 +43,6 @@ class Chat extends Component {
         );
         groupStore.joinMultiDM(dmUsers);
       }
-    } else {
-      groupStore.joinGroup("general");
     }
   }
 

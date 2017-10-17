@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
+import { withRouter } from "react-router-dom";
 import slugify from "slugify";
 
 import Modal from "react-bootstrap/lib/Modal";
@@ -279,4 +280,4 @@ RoomsModal.propTypes = {
   closeModal: PropTypes.func.isRequired
 };
 
-export default RoomsModal;
+export default withRouter(RoomsModal);
