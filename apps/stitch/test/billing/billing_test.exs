@@ -47,15 +47,15 @@ defmodule Stitch.Billing.BillingTest do
   describe "modify_subscription/2" do
     test "creates a stripe subscription when on a trial" do
       subscription = insert(:subscription)
-      assert {:ok, result} = Billing.modify_subscription(subscription, %{tier: "BASIC", renewal_frequency: "MONTHLY"})
+      params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
+      assert {:ok, result} = Billing.modify_subscription(subscription, params)
       assert result.subscription_id
       assert result.tier == "BASIC"
       assert result.renewal_frequency == "MONTHLY"
       assert DateTime.compare(result.valid_until, subscription.valid_until) == :gt
-      assert result.renews
     end
 
-   "gives errors when expected params are missing/invalid" do
+    test "gives errors when expected params are missing/invalid" do
       subscription = insert(:subscription)
       assert {:error, result} = Billing.modify_subscription(subscription)
       assert elem(result.errors[:tier], 0) =~ "blank"
@@ -64,6 +64,19 @@ defmodule Stitch.Billing.BillingTest do
       assert {:error, result} = Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
+
+      subscription = insert(:subscription, tier: "BASIC", renewal_frequency: "MONTLY")
+      assert {:error, result} = Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
+      assert elem(result.errors[:tier], 0) =~ "expects"
+      assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
+    end
+
+    test "can change a subscription tier" do
+      subscription = insert(:subscription, tier: "BASIC", renewal_frequency: "MONTHLY")
+      assert {:ok, sub} = Billing.modify_subscription(subscription, %{tier: "POWER", renewal_frequency: "MONTHLY"})
+      assert sub.tier == "POWER"
+      assert sub.renewal_frequency == "MONTHLY"
+      assert DateTime.compare(sub.valid_until, subscription.valid_until) == :gt
     end
   end
 

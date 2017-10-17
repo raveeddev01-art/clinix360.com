@@ -72,22 +72,44 @@ defmodule Stitch.Billing do
 
   ## Examples
 
-      # TODO
+      iex> modify_subscription(%Subscription{...}, %{tier: "POWER", renewal_frequency: "MONTHLY"})
+      {:ok, %Subscription{...}}
+
   """
-  def modify_subscription(%Subscription{tier: "TRIAL"} = subscription, params \\ %{}) do
+  @spec modify_subscription(Subscription.t, map) :: {:ok, Subscription.t} | {:error, Ecto.Changeset.t}
+  def modify_subscription(subscription, params \\ %{})
+  def modify_subscription(%Subscription{tier: "TRIAL"} = subscription, params) do
     subscription = Repo.preload(subscription, :team)
     team = subscription.team
     customer_id = subscription.customer_id
 
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
-         plan_id <- determine_plan_id(changeset.changes),
-         user_count <- active_user_count(team),
+         plan_id = determine_plan_id(changeset.changes),
+         user_count = active_user_count(team),
          {:ok, stripe_sub_params} <- @stripe_client.create_subscription(customer_id, plan_id, user_count) do
       subscription
       |> subscription_update_changeset(changeset.changes, stripe_sub_params)
       |> Repo.update()
     else
       %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
+      error -> error
+    end
+  end
+  def modify_subscription(%Subscription{} = subscription, params) do
+    subscription = Repo.preload(subscription, :team)
+    team = subscription.team
+    customer_id = subscription.customer_id
+    subscription_id = subscription.subscription_id
+
+    with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
+         plan_id = determine_plan_id(changeset.changes),
+         {:ok, stripe_sub_params} <- @stripe_client.update_subscription(customer_id, subscription_id, plan_id) do
+      subscription
+      |> subscription_update_changeset(changeset.changes, stripe_sub_params)
+      |> Repo.update()
+    else
+      %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
+      error -> error
     end
   end
 

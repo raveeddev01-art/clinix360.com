@@ -13,6 +13,7 @@ defmodule Stitch.Stripe.Client do
       "cus_1234567"
 
   """
+  @impl Stitch.Stripe
   def create_customer(team_id, team_name) do
     customer_opts = [
       metadata: [
@@ -33,6 +34,7 @@ defmodule Stitch.Stripe.Client do
       true
 
   """
+  @impl Stitch.Stripe
   def delete_customer(customer_id) do
     case Stripe.Customers.delete(customer_id) do
       {:ok, _} -> true
@@ -49,6 +51,7 @@ defmodule Stitch.Stripe.Client do
       %{card_id: "card_1234567", brand: "Visa", exp_month: 8, exp_year: 2020, last_four: "4242"}
 
   """
+  @impl Stitch.Stripe
   def add_card(customer_id, source_token) do
     case Stripe.Cards.create(:customer, customer_id, source: source_token) do
       {:ok, card} -> {:ok, transform_card(card)}
@@ -78,6 +81,7 @@ defmodule Stitch.Stripe.Client do
       false
 
   """
+  @impl Stitch.Stripe
   def remove_card(customer_id, card_id) do
     case Stripe.Cards.delete(:customer, customer_id, card_id) do
       {:ok, %{delete: true}} -> true
@@ -90,10 +94,11 @@ defmodule Stitch.Stripe.Client do
 
   ## Examples
 
-      iev> set_as_default_card("cus_1234567", "card_1234567")
+      iex> set_as_default_card("cus_1234567", "card_1234567")
       true
 
   """
+  @impl Stitch.Stripe
   def set_as_default_card(customer_id, card_id) do
     case Stripe.Customers.update(customer_id, default_source: card_id) do
       {:ok, _} -> true
@@ -110,6 +115,7 @@ defmodule Stitch.Stripe.Client do
       {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}}}
 
   """
+  @impl Stitch.Stripe
   def create_subscription(customer_id, plan_id, user_count) do
     case Stripe.Subscriptions.create(customer_id, plan: plan_id, quantity: user_count) do
       {:ok, sub} -> {:ok, transform_subscription(sub)}
@@ -123,5 +129,22 @@ defmodule Stitch.Stripe.Client do
       status: status,
       valid_until: DateTime.from_unix!(valid_until)
     }
+  end
+
+  @doc """
+  Updates an existing subscription to a different tier.
+
+  ## Examples
+
+      iex> update_subscription("cus_1234567", "sub_1234567", "power_monthly")
+      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}}}
+
+  """
+  @impl Stitch.Stripe
+  def update_subscription(customer_id, subscription_id, plan_id) do
+    case Stripe.Subscriptions.change(customer_id, subscription_id, plan_id) do
+      {:ok, sub} -> {:ok, transform_subscription(sub)}
+      _ -> :error
+    end
   end
 end
