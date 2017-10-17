@@ -31,8 +31,12 @@ class TopNav extends Component {
   _toggleAddonMenu = menuName => () => {
     const { addonStore } = this.props;
 
-    addonStore.setAddonPanel(menuName);
-    addonStore.toggleAddons(true);
+    if (addonStore.addonPanelType === menuName && addonStore.showAddons) {
+      addonStore.toggleAddons(false);
+    } else {
+      addonStore.setAddonPanel(menuName);
+      addonStore.toggleAddons(true);
+    }
   };
 
   onChange = event => {
