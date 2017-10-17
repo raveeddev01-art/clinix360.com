@@ -1,12 +1,14 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Repo, Group, GroupAuthorization,
+  alias Stitch.{Repo, Group, GroupAuthorization, GroupQueries,
                 Message, MessageAction, MessageQueries}
   alias StitchConnect.Web.{Endpoint, EventsChannel}
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
-    case GroupAuthorization.can_view?(group_id, user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_view?(group, user) do
       true ->
         opts =
           params
@@ -116,9 +118,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def toggle_star(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
+    group = GroupQueries.get_by_id(message.group_id)
     user = conn.assigns.current_user
 
-    case GroupAuthorization.can_view?(message.group_id, user.id) do
+    case GroupAuthorization.can_view?(group, user) do
       true ->
         case MessageAction.toggle_star(message, user) do
           {:ok, result, _changeset} ->

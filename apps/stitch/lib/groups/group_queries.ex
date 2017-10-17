@@ -80,7 +80,6 @@ defmodule Stitch.GroupQueries do
 
     if group, do: {:ok, group}, else: {:error, "Group with that slug not found."}
   end
-  def find_by_slug(slug, user_id), do: find_by_slug(slug, Repo.get!(User, user_id))
 
   @doc """
   Returns a list of public groups for the user's team, and
