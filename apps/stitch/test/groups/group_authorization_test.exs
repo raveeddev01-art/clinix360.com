@@ -10,7 +10,7 @@ defmodule Stitch.GroupAuthorizationTest do
     test "returns true public groups" do
       user = insert(:user)
       group = insert(:group)
-      result = Stitch.GroupAuthorization.can_view?(group.id, user.id)
+      result = Stitch.GroupAuthorization.can_view?(group, user)
       assert result == true
     end
 
@@ -18,14 +18,14 @@ defmodule Stitch.GroupAuthorizationTest do
       user = insert(:user)
       group = insert(:group)
       insert(:group_user, %{user: user, group: group})
-      result = Stitch.GroupAuthorization.can_view?(group.id, user.id)
+      result = Stitch.GroupAuthorization.can_view?(group, user)
       assert result == true
     end
 
     test "returns false for private groups he doesn't belong to" do
       user = insert(:user)
       group = insert(:group, %{public: false})
-      result = Stitch.GroupAuthorization.can_view?(group.id, user.id)
+      result = Stitch.GroupAuthorization.can_view?(group, user)
       assert result == false
     end
   end

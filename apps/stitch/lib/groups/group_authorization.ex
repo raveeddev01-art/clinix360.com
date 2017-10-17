@@ -8,9 +8,8 @@ defmodule Stitch.GroupAuthorization do
 
   @doc """
   """
-  def can_view?(group_id, user_id) do
-    group = Repo.get(Group, group_id)
-    group.public || is_member?(group_id, user_id)
+  def can_view?(group, user) do
+    group.public || is_member?(group.id, user.id)
   end
 
   @doc """

@@ -56,7 +56,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def users(conn, %{"id" => group_id}) do
-    case GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_view?(group, conn.assigns.current_user) do
       false ->
         conn
         |> put_status(:unauthorized)
