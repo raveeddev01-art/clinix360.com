@@ -643,7 +643,7 @@ class MessageStore {
     // and new mesage line is visible, hide new message line
     if (newMessage.user_id === currentUser.id) {
       if (this.unreadMessagesCount === 0) {
-        this.updateUnreadMessagesInfo({ last_read_at: new Date() });
+        this.markAsRead();
       }
     } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
