@@ -705,7 +705,7 @@ class MessageStore {
   onJoinGroupChannel = data => {
     this.messages = data.messages;
 
-    if (data.messages.length <= 30) {
+    if (data.messages.length < 30) {
       this.loadedAll = true;
     }
 
