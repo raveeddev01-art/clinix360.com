@@ -9,6 +9,7 @@ import JumpingIndicator from "./components/jumping-indicator";
 import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
+import { confirm } from "../../common/modals";
 
 @inject("messageStore")
 @observer
@@ -51,7 +52,19 @@ class MessageForm extends Component {
     const { messageInEdit } = messageStore;
 
     if (messageInEdit) {
-      messageStore.finishEdit();
+      if (!messageStore.textInEdit) {
+        confirm({
+          title: "Delete Message",
+          message:
+            "Are you sure you want to delete this message? This cannot be undone.",
+          okLabel: "Delete"
+        }).then(() => {
+          messageStore.delete(messageInEdit.id);
+          messageStore.finishEdit();
+        });
+      } else {
+        messageStore.finishEdit();
+      }
     } else if (this.state.text) {
       this.props.messageStore.sendMessage(this.state.text.trim()).then(() => {
         this.setState({ text: "" });
@@ -67,12 +80,13 @@ class MessageForm extends Component {
 
     if (evt.keyCode === 27) {
       // escape
-
       if (openMentionMenu || openEmojiSearch) {
         this.setState({ openMentionMenu: false, openEmojiSearch: false });
       } else if (messageInEdit) {
         messageStore.cancelEdit();
       }
+    } else if (evt.keyCode === 38) {
+      messageStore.editLastMessage();
     } else {
       // other keys
       // get the word of current cursor

@@ -225,6 +225,8 @@
       #chat {
         position: relative;
         padding: 20px;
+        display: flex;
+        flex-direction: column;
 
         .date-separator {
           display: flex;
@@ -292,7 +294,7 @@
     .message-form {
       position: relative;
       padding-top: 10px;
-      padding-bottom: 30px;
+      padding-bottom: 5px;
       width: 100%;
 
       .jumped-message-indicator {
@@ -327,6 +329,11 @@
         position: absolute;
         right: 15px;
         top: 5px;
+        display: flex;
+        align-items: center;
+        height: 30px;
+        width: 45px;
+        justify-content: space-between;
 
         .message-form-action-item {
           border: none;
@@ -334,12 +341,14 @@
           padding: 0;
           cursor: pointer;
           font-size: 20px;
+          vertical-align: middle;
           color: #ccc;
           box-shadow: none;
-          margin-left: 10px;
 
           &:hover {
+            font-size: 24px;
             color: $brand-primary;
+            animation: iconZoom ease-in 0.2s;
           }
         }
       }
@@ -543,6 +552,7 @@
       align-items: baseline;
 
       .name {
+        color: #003366;
         flex: 1;
         font-weight: bold;
         margin-right: 20px;
@@ -573,6 +583,18 @@
     .message-body {
       display: flex;
       align-items: center;
+
+      a {
+        color: #003366;
+        text-decoration-style: dotted;
+        text-decoration-color: #003366;
+        text-decoration-line: underline;
+        text-underline-position: under;
+
+        &:hover {
+          text-decoration-style: solid;
+        }
+      }
     }
 
     p {
@@ -624,6 +646,10 @@
       background: $brand-primary;
       border: 0;
 
+      .name {
+        color: #fff;
+      }
+
       .time {
         .dropdown-toggle {
           color: #fff;
@@ -631,6 +657,13 @@
 
         &:before {
           color: rgba(255, 255, 255, 0.7);
+        }
+      }
+
+      .message-body {
+        a {
+          color: #fff;
+          text-decoration-color: #fff;
         }
       }
 
@@ -791,5 +824,40 @@ i.file-data-separator {
     position: absolute;
     bottom: 34px;
     right: -12px;
+  }
+}
+
+.welcome-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex-grow: 1;
+  margin-bottom: 30px;
+
+  &__container {
+    border: 1px solid #d8d8d8;
+    background-color: #ffffff;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 15px;
+  }
+
+  &__title {
+    font-size: 40px;
+    color: $brand-primary;
+    font-weight: 900;
+  }
+
+  &__text {
+    font-size: 14px;
+  }
+
+  &__name {
+    font-size: 15px;
+    color: $brand-primary;
+    font-weight: 900;
+    margin: 0 3px;
   }
 }
