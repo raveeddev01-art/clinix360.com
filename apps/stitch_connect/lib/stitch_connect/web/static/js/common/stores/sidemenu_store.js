@@ -85,6 +85,15 @@ class SidemenuStore {
   };
 
   @action
+  onJoinedGroup = joinedGroup => {
+    const group = this.groups.find(g => g.id === joinedGroup.id);
+
+    if (group) {
+      group.joined = true;
+    }
+  };
+
+  @action
   onNewMessage = newMessage => {
     // If the message is for the current group, ignore
     if (newMessage.group_id === this.rootStore.groupStore.id) {
@@ -181,7 +190,9 @@ class SidemenuStore {
       this.badge = badge;
       this.favicon.badge(badge);
       // to be consumed by electron app
-      window.dispatchEvent(new CustomEvent('unread-changed', { detail: badge }));
+      window.dispatchEvent(
+        new CustomEvent("unread-changed", { detail: badge })
+      );
     }
   }
 

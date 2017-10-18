@@ -50,11 +50,9 @@ export default class MessagePanel extends Component {
   };
 
   handleJoin = () => {
-    const { groupStore: group, sidemenuStore } = this.props;
+    const { groupStore } = this.props;
 
-    group.join();
-
-    sidemenuStore.loadGroups();
+    groupStore.join();
   };
 
   renderUnreadMessagesBar() {
