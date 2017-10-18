@@ -15,6 +15,10 @@ defmodule Stitch.FindYourTeam do
     end
   end
 
+  def delete_token(%Token{} = token) do
+    Repo.delete(token)
+  end
+
   def email(%Token{} = token, endpoint_base_url) do
     Bamboo.Email.new_email(
       to: token.email,
@@ -23,5 +27,9 @@ defmodule Stitch.FindYourTeam do
       html_body: "#{endpoint_base_url}/find-your-team/#{token.token}",
       text_body: "#{endpoint_base_url}/find-your-team/#{token.token}"
     )
+  end
+
+  def get_by_token(token) do
+    Repo.get_by(Token, token: token)
   end
 end

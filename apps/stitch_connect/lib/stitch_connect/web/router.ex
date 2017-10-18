@@ -34,6 +34,7 @@ defmodule StitchConnect.Web.Router do
     post "/teams/url-available", TeamController, :url_available
 
     post "/find-your-team", FindYourTeamController, :create
+    delete "/find-your-team/:token", FindYourTeamController, :delete
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -66,6 +67,7 @@ defmodule StitchConnect.Web.Router do
     get "/getstarted", AuthenticationController, :index
     get "/signin", AuthenticationController, :index
     get "/find-your-team", AuthenticationController, :index
+    get "/find-your-team/:token", AuthenticationController, :index
 
     # get "/login", AuthenticationController, :index
     # get "/reset-password", AuthenticationController, :index

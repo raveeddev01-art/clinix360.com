@@ -28,4 +28,37 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
       assert json["message"] == "Email not found."
     end
   end
+
+  describe "DELETE /find-your-team/:token" do
+    test "when the token exists", %{conn: conn} do
+      team_1 = insert(:team)
+      team_2 = insert(:team)
+      team_3 = insert(:team)
+      insert(:user, team: team_1, email: "foo@example.com")
+      insert(:user, team: team_2, email: "foo@example.com")
+      insert(:user, team: team_3, email: "bar@example.com")
+
+      %{token: token} = FindYourTeam.create_or_get_token!("foo@example.com")
+
+      %{"teams" => teams} =
+        conn
+        |> delete(api_v1_find_your_team_path(conn, :delete, token))
+        |> json_response(200)
+
+      assert length(teams) == 2
+      assert %{"name" => team_1.name, "slug" => team_1.slug} in teams
+      assert %{"name" => team_2.name, "slug" => team_2.slug} in teams
+
+      refute FindYourTeam.get_by_token(token)
+    end
+
+    test "when the token doesn't exist", %{conn: conn} do
+      json =
+        conn
+        |> delete(api_v1_find_your_team_path(conn, :delete, "DoesntExist"))
+        |> json_response(:not_found)
+
+      assert json["message"] == "Token not found."
+    end
+  end
 end

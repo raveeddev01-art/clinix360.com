@@ -16,4 +16,22 @@ defmodule StitchConnect.Web.Api.V1.FindYourTeamController do
       |> json(%{message: "Email not found."})
     end
   end
+
+  def delete(conn, %{"token" => token}) do
+    case FindYourTeam.get_by_token(token) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "Token not found."})
+      token ->
+        {:ok, token} = FindYourTeam.delete_token(token)
+
+        teams =
+          token.email
+          |> TeamQueries.all_with_user_email()
+          |> Enum.map(&Map.take(&1, [:name, :slug]))
+
+        json(conn, %{teams: teams})
+    end
+  end
 end

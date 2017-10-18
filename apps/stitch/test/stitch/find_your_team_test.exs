@@ -31,6 +31,13 @@ defmodule Stitch.FindYourTeamTest do
     end
   end
 
+  test "delete_token/1" do
+    token = FindYourTeam.create_or_get_token!("foo@example.com")
+
+    assert {:ok, %Token{}} = FindYourTeam.delete_token(token)
+    refute FindYourTeam.get_by_token(token.token)
+  end
+
   test "email/2" do
     token = FindYourTeam.create_or_get_token!("foo@example.com")
 
@@ -42,5 +49,16 @@ defmodule Stitch.FindYourTeamTest do
     assert email.subject =~ "Stitch"
     assert email.html_body =~ "http://endpoint.base.url/find-your-team/#{token.token}"
     assert email.text_body =~ "http://endpoint.base.url/find-your-team/#{token.token}"
+  end
+
+  describe "get_by_token/1" do
+    test "returns the token if it exists" do
+      token = FindYourTeam.create_or_get_token!("foo@example.com")
+      assert FindYourTeam.get_by_token(token.token) == token
+    end
+
+    test "returns nil if it doesn't exist" do
+      refute FindYourTeam.get_by_token("DoesntExist")
+    end
   end
 end
