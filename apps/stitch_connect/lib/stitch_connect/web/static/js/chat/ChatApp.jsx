@@ -8,7 +8,7 @@ import Chat from "./chat";
 import BrowserNotificationAlert from "./browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
 
-@inject("uploadStore")
+@inject("uploadStore", "sidemenuStore")
 @observer
 class ChatApp extends Component {
   constructor(props) {
@@ -17,6 +17,12 @@ class ChatApp extends Component {
     this.state = {
       dropzoneActive: false
     };
+  }
+
+  componentDidMount() {
+    const { sidemenuStore, history } = this.props;
+
+    sidemenuStore.setHistory(history);
   }
 
   onDragEnter = () => {
