@@ -91,7 +91,7 @@
           flex-grow: 1;
           flex-shrink: 0;
           color: $brand-primary;
-          font-size: 14px;
+          font-size: 15px;
           font-weight: bold;
           line-height: 1.5;
           text-transform: uppercase;
@@ -143,6 +143,8 @@
 
         .item-text {
           flex-grow: 1;
+          opacity: 0.75;
+          font-weight: 600;
         }
 
         .item-badge {
@@ -176,6 +178,10 @@
           color: #fff;
           background: $brand-primary;
 
+          .item-text {
+            opacity: 1;
+          }
+
           .item-icon,
           .hide-dm {
             color: #fff;
@@ -197,15 +203,12 @@
       .invite-link {
         display: inline-block;
         color: $brand-primary;
+        font-size: 15px;
         font-weight: bold;
         text-decoration: none;
         border-bottom: 1px dashed #003366;
         margin: 15px 10px 0;
         padding: 3px 0;
-
-        &:hover {
-          border-bottom-style: solid;
-        }
       }
     }
 
