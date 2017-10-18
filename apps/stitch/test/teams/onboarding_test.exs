@@ -36,6 +36,7 @@ defmodule Stitch.Team.OnboardingTest do
       assert team.slug == "care-clinic-12"
       assert Enum.count(groups) == 1
       assert Enum.at(groups, 0).name == "General"
+      assert Enum.at(groups, 0).is_default
     end
 
     test "it returns an error given a name for an existing team" do
