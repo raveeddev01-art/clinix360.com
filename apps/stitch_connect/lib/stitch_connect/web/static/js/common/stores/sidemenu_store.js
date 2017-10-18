@@ -215,14 +215,16 @@ class SidemenuStore {
     }
   }
 
-  showNotificationCard(title, body, duration = 5000) {
+  showNotificationCard(title, body, duration = 5000, cb = null) {
     const notification = new Notification(title, {
       body,
       icon: "/favicon.ico",
       silent: true
     });
 
-    notification.onclick = event => {};
+    if (cb) {
+      notification.onclick = cb;
+    }
 
     setTimeout(() => {
       notification.close();
@@ -268,7 +270,11 @@ class SidemenuStore {
 
       this.showNotificationCard(
         `${group.type === "regular" ? "#" : ""}${group.name}`,
-        `${author} ${predicative} a ${messageType} message`
+        `${author} ${predicative} a ${messageType} message`,
+        5000,
+        event => {
+          this.jumpToMessage(newMessage);
+        }
       );
     }
   }
