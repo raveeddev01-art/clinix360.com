@@ -26,6 +26,7 @@ class ChannelStore {
 
     this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
     this.eventChannel.on("joined_group", sidemenuStore.onJoinedGroup);
+    this.eventChannel.on("left_group", sidemenuStore.onLeftGroup);
 
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
     this.eventChannel.on("new_app_version", () => {

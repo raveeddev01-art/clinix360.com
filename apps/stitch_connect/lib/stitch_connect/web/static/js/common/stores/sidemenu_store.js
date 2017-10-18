@@ -94,6 +94,15 @@ class SidemenuStore {
   };
 
   @action
+  onLeftGroup = ({ group_id: groupId }) => {
+    const group = this.groups.find(g => g.id === groupId);
+
+    if (group) {
+      group.joined = false;
+    }
+  };
+
+  @action
   onNewMessage = newMessage => {
     // If the message is for the current group, ignore
     if (newMessage.group_id === this.rootStore.groupStore.id) {
