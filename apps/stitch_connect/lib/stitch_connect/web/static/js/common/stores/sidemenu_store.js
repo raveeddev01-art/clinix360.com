@@ -273,7 +273,7 @@ class SidemenuStore {
     }
   }
 
-  jumpToMessage(history, message) {
+  jumpToMessage(message) {
     const group = this.getGroupById(message.group_id);
     let url;
 
@@ -292,7 +292,7 @@ class SidemenuStore {
       url = `/direct/${recipient.username}`;
     }
 
-    history.push(url);
+    this.history.push(url);
     this.rootStore.messageStore.jumpToMessage(message);
   }
 }

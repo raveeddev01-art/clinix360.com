@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { inject } from "mobx-react";
-import { withRouter } from "react-router-dom";
 
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -12,9 +11,9 @@ import MessageFooter from "./message-footer/message-footer";
 @inject("sidemenuStore", "messageStore")
 class AddonMessage extends Component {
   onJump = () => {
-    const { sidemenuStore, history, message } = this.props;
+    const { sidemenuStore, message } = this.props;
 
-    sidemenuStore.jumpToMessage(history, message);
+    sidemenuStore.jumpToMessage(message);
   };
 
   render() {
@@ -70,4 +69,4 @@ class AddonMessage extends Component {
   }
 }
 
-export default withRouter(AddonMessage);
+export default AddonMessage;
