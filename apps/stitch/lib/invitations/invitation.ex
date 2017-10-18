@@ -24,6 +24,11 @@ defmodule Stitch.Invitation do
     |> put_change(:invite_token, invite_token)
   end
 
+  def accept_changeset(%Invitation{} = struct, params) do
+    struct
+    |> cast(params, [:accepted])
+  end
+
   @doc """
   Invites user to the team via email address. If pending account
   for team with same email exists it returns error.
@@ -70,6 +75,15 @@ defmodule Stitch.Invitation do
   end
   def get_by_invite_token(_) do
     {:error, "Invite_token cannot be blank or nil."}
+  end
+
+  @doc """
+  Accepts the invitation.
+  """
+  def accept(%Invitation{} = invitation) do
+    invitation
+    |> accept_changeset(%{accepted: true})
+    |> Repo.update
   end
 
   @doc """
