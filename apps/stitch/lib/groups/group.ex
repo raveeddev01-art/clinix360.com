@@ -136,9 +136,11 @@ defmodule Stitch.Group do
   def add_user(%Group{} = group, user_id) do
     params = %{group_id: group.id, user_id: user_id}
     changeset = GroupUser.changeset(%GroupUser{}, params)
-    group_user = Repo.insert changeset
-    Repo.insert(Message.join_message_changeset(group, user_id))
-    group_user
+
+    Ecto.Multi.new
+    |> Ecto.Multi.insert(:group_user, changeset)
+    |> log_system_join_messages(group, user_id)
+    |> Repo.transaction
   end
 
   @doc """
@@ -154,10 +156,17 @@ defmodule Stitch.Group do
         {:error, "User is not part of this group"}
 
       group_user ->
-        group_user = group_user |> Repo.delete
-        Repo.insert(Message.leave_message_changeset(group, user_id))
-        {:ok, "User has been removed from the group"}
+        multi =
+          Ecto.Multi.new
+          |> Ecto.Multi.delete(:group_user, group_user)
+          |> log_system_leave_messages(group, user_id)
 
+        case Repo.transaction(multi) do
+          {:ok, %{system_message: system_message}} ->
+            {:ok, "User has been removed from the group", system_message}
+          {:error, _, _, _} ->
+            {:error, "Error leaving the group"}
+        end
     end
   end
 
@@ -191,4 +200,22 @@ defmodule Stitch.Group do
     changeset = Group.changeset(group, %{public: public})
     Repo.update changeset
   end
+
+  @doc """
+  Creates system messages when the user joins a public or private group.
+  """
+  def log_system_join_messages(multi, %Group{name: name} = group, user_id) when name not in ["__dm_group__", "__multi_dm_group__"] do
+    multi
+    |> Ecto.Multi.insert(:system_message, Message.join_message_changeset(group, user_id))
+  end
+  def log_system_join_messages(multi, _group, _user_id), do: multi
+
+  @doc """
+  Creates system messages when the user joins a public or private group.
+  """
+  def log_system_leave_messages(multi, %Group{name: name} = group, user_id) when name not in ["__dm_group__", "__multi_dm_group__"] do
+    multi
+    |> Ecto.Multi.insert(:system_message, Message.leave_message_changeset(group, user_id))
+  end
+  def log_system_leave_messages(multi, _group, _user_id), do: multi
 end

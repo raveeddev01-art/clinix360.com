@@ -92,7 +92,7 @@ defmodule Stitch.GroupTest do
     test "it adds a user to group" do
       group = insert(:group)
       user = insert(:user)
-      {:ok, group_user} = Group.add_user(group, user.id)
+      {:ok, %{group_user: group_user}} = Group.add_user(group, user.id)
 
       assert group_user.group_id == group.id
       assert group_user.user_id == user.id
@@ -103,7 +103,7 @@ defmodule Stitch.GroupTest do
       user = insert(:user)
       {:ok, _} = Group.add_user(group, user.id)
 
-      {:error, changeset} = Group.add_user(group, user.id)
+      {:error, :group_user, changeset, _} = Group.add_user(group, user.id)
       {message, _} = changeset.errors[:user_id]
       assert message == "User is already part of group"
     end
@@ -126,7 +126,7 @@ defmodule Stitch.GroupTest do
       group = insert(:group)
       user = insert(:user)
       {:ok, _} = Group.add_user(group, user.id)
-      {:ok, message} = Group.remove(group, user.id)
+      {:ok, message, _} = Group.remove(group, user.id)
       assert message == "User has been removed from the group"
     end
 
