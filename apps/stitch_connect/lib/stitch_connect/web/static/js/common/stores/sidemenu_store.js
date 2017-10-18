@@ -11,6 +11,7 @@ class SidemenuStore {
   badge = null;
   favicon = null;
   notificationAudio = null;
+  history = null;
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
@@ -27,6 +28,10 @@ class SidemenuStore {
 
     this.loadGroups();
     this.loadUsers();
+  }
+
+  setHistory(history) {
+    this.history = history;
   }
 
   @computed
