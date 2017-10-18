@@ -181,7 +181,9 @@ class SidemenuStore {
       this.badge = badge;
       this.favicon.badge(badge);
       // to be consumed by electron app
-      window.dispatchEvent(new CustomEvent('unread-changed', { detail: badge }));
+      window.dispatchEvent(
+        new CustomEvent("unread-changed", { detail: badge })
+      );
     }
   }
 
@@ -214,6 +216,8 @@ class SidemenuStore {
       icon: "/favicon.ico",
       silent: true
     });
+
+    notification.onclick = event => {};
 
     setTimeout(() => {
       notification.close();
@@ -262,6 +266,29 @@ class SidemenuStore {
         `${author} ${predicative} a ${messageType} message`
       );
     }
+  }
+
+  jumpToMessage(history, message) {
+    const group = this.getGroupById(message.group_id);
+    let url;
+
+    if (group.type === "regular") {
+      // If normal group
+      url = `/rooms/${group.slug}`;
+    } else if (group.type === "multi_dm") {
+      // If multi direct messaging
+      const multiMessagingSlug = group.users
+        .map(user => user.username)
+        .join(",");
+      url = `/direct/${multiMessagingSlug}`;
+    } else {
+      // If single direct messaging
+      const recipient = group.users.find(user => user.id !== currentUser.id);
+      url = `/direct/${recipient.username}`;
+    }
+
+    history.push(url);
+    this.rootStore.messageStore.jumpToMessage(message);
   }
 }
 

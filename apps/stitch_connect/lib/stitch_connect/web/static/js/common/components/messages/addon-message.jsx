@@ -12,27 +12,9 @@ import MessageFooter from "./message-footer/message-footer";
 @inject("sidemenuStore", "messageStore")
 class AddonMessage extends Component {
   onJump = () => {
-    const { history, sidemenuStore, messageStore, message } = this.props;
-    const group = sidemenuStore.getGroupById(message.group_id);
-    let url;
+    const { sidemenuStore, history, message } = this.props;
 
-    if (group.slug.indexOf("__dm:") === -1) {
-      // If normal group
-      url = `/rooms/${group.slug}`;
-    } else if (group.users.length > 2) {
-      // If multi direct messaging
-      const multiMessagingSlug = group.users
-        .map(user => user.username)
-        .join(",");
-      url = `/direct/${multiMessagingSlug}`;
-    } else {
-      // If single direct messaging
-      const recipient = group.users.find(user => user.id !== currentUser.id);
-      url = `/direct/${recipient.username}`;
-    }
-
-    history.push(url);
-    messageStore.jumpToMessage(message);
+    sidemenuStore.jumpToMessage(history, message);
   };
 
   render() {
