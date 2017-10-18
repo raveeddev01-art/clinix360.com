@@ -156,8 +156,11 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Cannot add user to the group"})
       {:ok, %{group_user: group_user, system_message: system_message}} ->
+        {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
         system_message = MessageQueries.load_info(system_message)
         Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
+        EventsChannel.broadcast_group_join(group, conn.assigns.current_user.id)
+
         conn
         |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
     end
@@ -175,6 +178,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       {:ok, message, system_message} ->
         default_group = GroupQueries.default_group(current_user)
         Endpoint.broadcast("groups:#{group.slug}", "new_msg", MessageQueries.load_info(system_message))
+        Endpoint.broadcast("events:#{current_user.id}", "left_group", %{group_id: group.id})
         conn
         |> json(%{message: message, redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)})
 
