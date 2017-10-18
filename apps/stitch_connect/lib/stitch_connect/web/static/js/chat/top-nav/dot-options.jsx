@@ -40,7 +40,10 @@ class DotOptions extends Component {
           <MenuItem onSelect={this._toggleAddonMenu("starred")}>
             <i className="fa fa-star" /> Starred
           </MenuItem>
-          <MenuItem>
+          <MenuItem
+            id="intercom-link"
+            href="jig8cj9z@inbound.intercom-mail.com"
+          >
             <i className="fa fa-bullhorn" /> Feedback
           </MenuItem>
           <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
