@@ -35,4 +35,19 @@ defmodule StitchConnect.Web.EventsTest do
     assert unread_messages_count == 0
     assert mentions_count == 0
   end
+
+  describe "new_app_version events" do
+    test "new app version triggers new_app_version event", %{socket1: socket1, user1: user1} do
+      socket1 = Phoenix.Socket.assign(socket1, :application_version, "OLD_VERSION")
+      {:ok, _, _} = subscribe_and_join(socket1, "events:#{user1.id}")
+      current_version = StitchConnect.version()
+      assert_push "new_app_version", %{new_version: ^current_version}
+    end
+
+    test "same app version doesn't trigger new_app_version event", %{socket1: socket1, user1: user1} do
+      socket1 = Phoenix.Socket.assign(socket1, :application_version, StitchConnect.version())
+      {:ok, _, _} = subscribe_and_join(socket1, "events:#{user1.id}")
+      refute_push "new_app_version", _
+    end
+  end
 end
