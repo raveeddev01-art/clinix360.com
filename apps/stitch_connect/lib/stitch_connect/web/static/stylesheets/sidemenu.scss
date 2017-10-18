@@ -77,6 +77,8 @@
 
   .flex-content {
     padding: 20px 15px;
+    @include stitch-scroll();
+    overflow-y: hidden;
 
     .menu-nav {
       .heading {
@@ -205,6 +207,11 @@
           border-bottom-style: solid;
         }
       }
+    }
+
+    &:hover {
+      overflow-y: auto;
+      overflow-y: overlay;
     }
   }
 

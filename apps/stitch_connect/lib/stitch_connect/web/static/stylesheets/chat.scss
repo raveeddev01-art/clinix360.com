@@ -272,6 +272,7 @@
       }
 
       #chat {
+        @include stitch-scroll();
         position: relative;
         padding: 20px;
         display: flex;
@@ -342,7 +343,7 @@
 
     .message-form {
       position: relative;
-      padding-top: 10px;
+      padding-top: 5px;
       padding-bottom: 25px;
       width: 100%;
 
@@ -923,6 +924,7 @@ i.file-data-separator {
   flex-direction: column;
   justify-content: flex-end;
   flex-grow: 1;
+  flex-shrink: 0;
   margin-bottom: 30px;
 
   &__container {
@@ -933,6 +935,8 @@ i.file-data-separator {
     flex-direction: column;
     align-items: center;
     padding-bottom: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   &__title {
