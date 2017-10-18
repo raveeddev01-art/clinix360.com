@@ -70,6 +70,25 @@ defmodule Stitch.Billing do
   @doc """
   Modifies a subscription for a team.
 
+  ## Upgrading From a Trial
+
+  If a subscription is in a trial, the subscription will be upgraded to a paid subscription.
+  A map with `:tier` and `:renewal_frequency` is expected.
+
+      %{
+        tier: "BASIC" | "PREMIUM" | "POWER",
+        renewal_frequency: "MONTHLY" | "YEARLY"
+      }
+
+  ## Changing Tiers
+
+  A subscription can change tiers. A map with `:tier` and `:renewal_frequency` is expected.
+
+      %{
+        tier: "BASIC" | "PREMIUM" | "POWER",
+        renewal_frequency: "MONTHLY" | "YEARLY"
+      }
+
   ## Examples
 
       iex> modify_subscription(%Subscription{...}, %{tier: "POWER", renewal_frequency: "MONTHLY"})
@@ -79,36 +98,57 @@ defmodule Stitch.Billing do
   @spec modify_subscription(Subscription.t, map) :: {:ok, Subscription.t} | {:error, Ecto.Changeset.t}
   def modify_subscription(subscription, params \\ %{})
   def modify_subscription(%Subscription{tier: "TRIAL"} = subscription, params) do
-    subscription = Repo.preload(subscription, :team)
-    team = subscription.team
-    customer_id = subscription.customer_id
-
-    with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
-         plan_id = determine_plan_id(changeset.changes),
-         user_count = active_user_count(team),
-         {:ok, stripe_sub_params} <- @stripe_client.create_subscription(customer_id, plan_id, user_count) do
-      subscription
-      |> subscription_update_changeset(changeset.changes, stripe_sub_params)
-      |> Repo.update()
-    else
-      %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
-      error -> error
-    end
+    do_modify_subscription(subscription, params, &create_subscription/2)
   end
   def modify_subscription(%Subscription{} = subscription, params) do
-    subscription = Repo.preload(subscription, :team)
-    team = subscription.team
-    customer_id = subscription.customer_id
-    subscription_id = subscription.subscription_id
+    do_modify_subscription(subscription, params, &update_subscription/2)
+  end
 
+  defp do_modify_subscription(subscription, params, fun) when is_function(fun, 2) do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
          plan_id = determine_plan_id(changeset.changes),
-         {:ok, stripe_sub_params} <- @stripe_client.update_subscription(customer_id, subscription_id, plan_id) do
+         {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
       subscription
       |> subscription_update_changeset(changeset.changes, stripe_sub_params)
       |> Repo.update()
     else
       %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
+    error -> error
+    end
+  end
+
+  defp create_subscription(subscription, plan_id) do
+    customer_id = subscription.customer_id
+    subscription = Repo.preload(subscription, :team)
+    user_count = active_user_count(subscription.team)
+    @stripe_client.create_subscription(customer_id, plan_id, user_count)
+  end
+
+  defp update_subscription(subscription, plan_id) do
+    customer_id = subscription.customer_id
+    subscription_id = subscription.subscription_id
+    @stripe_client.update_subscription(customer_id, subscription_id, plan_id)
+  end
+
+  @doc """
+  Cancels a subscription and doesn't renew at the end of the billing period.
+
+  ## Examples
+
+      iex> cancel_subscription(%Subscription{...})
+      {:ok, %Subscription{renews: false, ...}}
+
+  """
+  @spec cancel_subscription(Subscription.t) :: {:ok, Subscription.t} | {:error, Changeset.t | :expired | :trial}
+  def cancel_subscription(%Subscription{tier: "TRIAL"}), do: {:error, :trial}
+  def cancel_subscription(%Subscription{customer_id: customer_id, subscription_id: subscription_id} = subscription) do
+    with {:time, :lt} <- {:time, DateTime.compare(DateTime.utc_now(), subscription.valid_until)},
+         {:ok, stripe_sub_params} <- @stripe_client.cancel_subscription(customer_id, subscription_id) do
+      subscription
+      |> Subscription.update(stripe_sub_params)
+      |> Repo.update()
+    else
+      {:time, _} -> {:error, :expired}
       error -> error
     end
   end

@@ -37,8 +37,9 @@ defmodule Stitch.Stripe.TestClient do
   def create_subscription(_customer_id, _subscription_id, _user_count) do
     sub = %{
       subscription_id: "sub_#{timestamp()}",
-      valid_until: DateTime.from_unix!(Kernel.+(timestamp(), 2_000_000)),
-      status: "active"
+      valid_until: future_time(),
+      status: "active",
+      renews: true
     }
 
     {:ok, sub}
@@ -48,11 +49,25 @@ defmodule Stitch.Stripe.TestClient do
   def update_subscription(_customer_id, subscription_id, _plan_id) do
     sub = %{
       subscription_id: subscription_id,
-      valid_until: DateTime.from_unix!(Kernel.+(timestamp(), 2_000_000)),
-      status: "active"
+      valid_until: future_time(),
+      status: "active",
+      renews: true
     }
     {:ok, sub}
   end
+
+  @impl Stitch.Stripe
+  def cancel_subscription(_customer_id, subscription_id) do
+    sub = %{
+      subscription_id: subscription_id,
+      valid_until: future_time(),
+      status: "active",
+      renews: false
+    }
+    {:ok, sub}
+  end
+
+  defp future_time, do: DateTime.from_unix!(Kernel.+(timestamp(), 2_000_000))
 
   defp timestamp do
     DateTime.to_unix(DateTime.utc_now())

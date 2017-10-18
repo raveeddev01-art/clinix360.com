@@ -112,7 +112,7 @@ defmodule Stitch.Stripe.Client do
   ## Examples
 
       iex> create_subscription("cus_1234567", "basic_monthly", 5)
-      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}}}
+      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
 
   """
   @impl Stitch.Stripe
@@ -123,11 +123,12 @@ defmodule Stitch.Stripe.Client do
     end
   end
 
-  defp transform_subscription(%{id: subscription_id, status: status, current_period_ends: valid_until}) do
+  defp transform_subscription(subscription) do
     %{
-      subscription_id: subscription_id,
-      status: status,
-      valid_until: DateTime.from_unix!(valid_until)
+      subscription_id: subscription.id,
+      status: subscription.status,
+      valid_until: DateTime.from_unix!(subscription.current_period_ends),
+      renews: !subscription.cancel_at_period_end
     }
   end
 
@@ -137,12 +138,29 @@ defmodule Stitch.Stripe.Client do
   ## Examples
 
       iex> update_subscription("cus_1234567", "sub_1234567", "power_monthly")
-      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}}}
+      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
 
   """
   @impl Stitch.Stripe
   def update_subscription(customer_id, subscription_id, plan_id) do
     case Stripe.Subscriptions.change(customer_id, subscription_id, plan_id) do
+      {:ok, sub} -> {:ok, transform_subscription(sub)}
+      _ -> :error
+    end
+  end
+
+  @doc """
+  Cancels a valid/paid subscription to not rewew at the end of the billing cycle.
+
+  ## Examples
+
+      iex> cancel_subscription("cus_1234567", "sub_1234567")
+      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}, renews: false}}
+
+  """
+  @impl Stitch.Stripe
+  def cancel_subscription(customer_id, subscription_id) do
+    case Stripe.Subscriptions.cancel(customer_id, subscription_id, at_period_end: true) do
       {:ok, sub} -> {:ok, transform_subscription(sub)}
       _ -> :error
     end

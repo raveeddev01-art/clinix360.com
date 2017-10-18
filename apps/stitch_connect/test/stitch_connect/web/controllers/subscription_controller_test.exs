@@ -115,4 +115,62 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
       assert response["message"] =~ "administrator"
     end
   end
+
+  describe "PUT /api/v1/billing/subscription/cancel" do
+    setup %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team, roles: ["admin"])
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
+
+      {:ok, conn: conn, team: team}
+    end
+
+    test "cancels an active subscription", %{conn: conn, team: team} do
+      sub_opts = [team: team, tier: "BASIC", renewal_frequency: "MONTHLY", renews: true]
+      insert(:subscription, sub_opts)
+
+      conn = put(conn, Routes.api_v1_billing_subscription_path(conn, :cancel))
+
+      assert response = json_response(conn, 200)
+      refute response["data"]["renews"]
+    end
+
+    test "cancels an active/non-renewing subscription", %{conn: conn, team: team} do
+      sub_opts = [team: team, tier: "BASIC", renewal_frequency: "MONTHLY", renews: false]
+      insert(:subscription, sub_opts)
+
+      conn = put(conn, Routes.api_v1_billing_subscription_path(conn, :cancel))
+
+      assert response = json_response(conn, 200)
+      refute response["data"]["renews"]
+    end
+
+    test "errors when canceling a trial", %{conn: conn, team: team} do
+      sub_opts = [team: team, tier: "TRIAL", renews: false]
+      insert(:subscription, sub_opts)
+
+      conn = put(conn, Routes.api_v1_billing_subscription_path(conn, :cancel))
+
+      assert response = json_response(conn, 422)
+      assert response["errors"] =~ ~r"cannot cancel a trial"i
+    end
+
+    test "requires an admin role", %{conn: conn, team: team} do
+      sub_opts = [team: team, tier: "BASIC", renewal_frequency: "MONTHLY", renews: true]
+      insert(:subscription, sub_opts)
+      regular_user = insert(:user, team: team, roles: ["member"])
+
+      conn =
+        conn
+        |> with_api_user(regular_user)
+        |> put(Routes.api_v1_billing_subscription_path(conn, :cancel))
+
+      assert response = json_response(conn, 401)
+      assert response["message"] =~ "administrator"
+    end
+  end
 end

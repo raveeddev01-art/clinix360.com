@@ -80,6 +80,29 @@ defmodule Stitch.Billing.BillingTest do
     end
   end
 
+  describe "cancel_subscription/1" do
+    test "cancels an active subscription" do
+      subscription = insert(:subscription, tier: "BASIC", renewal_frequency: "MONTHLY", renews: true)
+      assert {:ok, %Stitch.Billing.Subscription{renews: false}} = Billing.cancel_subscription(subscription)
+    end
+
+    test "cancels an active/non-renewing subscription" do
+      subscription = insert(:subscription, tier: "BASIC", renewal_frequency: "MONTHLY", renews: false)
+      assert {:ok, %Stitch.Billing.Subscription{renews: false}} = Billing.cancel_subscription(subscription)
+    end
+
+    test "errors on an expired subscription" do
+      sub_opts = [valid_until: DateTime.utc_now(), tier: "BASIC", renewal_frequency: "MONTHLY", renews: false]
+      subscription = insert(:subscription, sub_opts)
+      assert {:error, :expired} = Billing.cancel_subscription(subscription)
+    end
+
+    test "errors when the subscription is a trial" do
+      subscription = insert(:subscription, renews: false, tier: "TRIAL")
+      assert {:error, :trial} = Billing.cancel_subscription(subscription)
+    end
+  end
+
   describe "list_cards/1" do
     setup do
       subscription = insert(:subscription)
