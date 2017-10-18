@@ -128,6 +128,7 @@
           display: flex;
           justify-content: center;
           flex-basis: 21px;
+          flex-shrink: 0;
           margin-right: 4px;
 
           i.fa-circle,
@@ -145,6 +146,9 @@
           flex-grow: 1;
           opacity: 0.75;
           font-weight: 600;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
 
         .item-badge {
