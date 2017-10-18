@@ -36,4 +36,18 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionController do
       error -> error
     end
   end
+
+  def renew(conn, _) do
+    team = conn.assigns.team
+    subscription = Billing.get_subscription(team)
+    with {:ok, subscription} <- Billing.renew_subscription(subscription) do
+      render(conn, "show.json", subscription: subscription)
+    else
+      {:error, :trial} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(ErrorView, :"422", errors: "Cannot renew a trial subscription.")
+      error -> error
+    end
+  end
 end

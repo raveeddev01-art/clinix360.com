@@ -141,15 +141,42 @@ defmodule Stitch.Billing do
   """
   @spec cancel_subscription(Subscription.t) :: {:ok, Subscription.t} | {:error, Changeset.t | :expired | :trial}
   def cancel_subscription(%Subscription{tier: "TRIAL"}), do: {:error, :trial}
+  def cancel_subscription(%Subscription{subscription_id: nil}), do: {:error, :expired}
   def cancel_subscription(%Subscription{customer_id: customer_id, subscription_id: subscription_id} = subscription) do
-    with {:time, :lt} <- {:time, DateTime.compare(DateTime.utc_now(), subscription.valid_until)},
-         {:ok, stripe_sub_params} <- @stripe_client.cancel_subscription(customer_id, subscription_id) do
+    with {:ok, stripe_sub_params} <- @stripe_client.cancel_subscription(customer_id, subscription_id) do
       subscription
       |> Subscription.update(stripe_sub_params)
       |> Repo.update()
-    else
-      {:time, _} -> {:error, :expired}
-      error -> error
+    end
+  end
+
+  @doc """
+  Renews a subscription.
+
+  If a subscription is set to be cancelled at the end of the billing period, the subscription will be changed to renew.
+  Otherwise, an expired/cancelled subscription cannot be reused and a new subscription will need to be created on Stripe.Accounts
+
+  ## Examples
+
+      iex> renew_subscription(%Subscription{...})
+      {:ok, %Subscription{renews: true, ...}}
+
+  """
+  @spec renew_subscription(Subscription.t) :: {:ok, Subscription.t} | {:error, Changeset.t | :trial}
+  def renew_subscription(%Subscription{tier: "TRIAL"}), do: {:error, :trial}
+  def renew_subscription(%Subscription{subscription_id: nil} = subscription) do
+    plan_id = determine_plan_id(subscription)
+    with {:ok, stripe_sub_params} <- create_subscription(subscription, plan_id) do
+      subscription
+      |> Subscription.update(stripe_sub_params)
+      |> Repo.update()
+    end
+  end
+  def renew_subscription(%Subscription{customer_id: customer_id, subscription_id: subscription_id} = subscription) do
+    with {:ok, stripe_sub_params} <- @stripe_client.renew_subscription(customer_id, subscription_id) do
+      subscription
+      |> Subscription.update(stripe_sub_params)
+      |> Repo.update()
     end
   end
 

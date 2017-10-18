@@ -72,11 +72,26 @@ defmodule Stitch.Factory do
   end
 
   def subscription_factory do
+    end_date = Timex.shift(DateTime.utc_now(), days: 30)
+    %Stitch.Billing.Subscription{
+      team: build(:team),
+      customer_id: sequence(:customer_id, &"cus_#{&1}"),
+      subscription_id: sequence(:subscription_id, &"sub_#{&1}"),
+      tier: "BASIC",
+      renewal_frequency: "MONTHLY",
+      renews: true,
+      valid_until: end_date
+    }
+  end
+
+  def trial_subscription_factory do
     end_date = Timex.shift(DateTime.utc_now(), days: 14)
     %Stitch.Billing.Subscription{
       team: build(:team),
       customer_id: sequence(:customer_id, &"cus_#{&1}"),
+      subscription_id: nil,
       tier: "TRIAL",
+      renewal_frequency: nil,
       valid_until: end_date
     }
   end

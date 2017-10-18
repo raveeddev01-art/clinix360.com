@@ -45,4 +45,9 @@ defmodule Stitch.Stripe do
   Cancels a subscription to no longer renew at the end of a billing cycle.
   """
   @callback cancel_subscription(customer_id :: String.t, subscription_id :: String.t) :: {:ok, subscription} | :error
+
+  @doc """
+  Sets a valid subscription to renew at the end of the billing cycle.
+  """
+  @callback renew_subscription(customer_id :: String.t, subscription_id :: String.t) :: {:ok, subscription} | :error
 end

@@ -142,6 +142,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/subscription", SubscriptionController, :update
 
     put "/subscription/cancel", SubscriptionController, :cancel
+    put "/subscription/renew", SubscriptionController, :renew
   end
 
   # API routes which need token.

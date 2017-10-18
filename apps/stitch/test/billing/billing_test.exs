@@ -23,7 +23,7 @@ defmodule Stitch.Billing.BillingTest do
 
     test "gives an estimated invoice amount" do
       # Trial Tier
-      %{team: team} = insert(:subscription)
+      %{team: team} = insert(:subscription, tier: "TRIAL")
       insert(:user, team: team)
       assert Billing.get_subscription(team).estimated_invoice_amount == 0
 
@@ -46,7 +46,7 @@ defmodule Stitch.Billing.BillingTest do
 
   describe "modify_subscription/2" do
     test "creates a stripe subscription when on a trial" do
-      subscription = insert(:subscription)
+      subscription = insert(:trial_subscription)
       params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
       assert {:ok, result} = Billing.modify_subscription(subscription, params)
       assert result.subscription_id
@@ -56,7 +56,7 @@ defmodule Stitch.Billing.BillingTest do
     end
 
     test "gives errors when expected params are missing/invalid" do
-      subscription = insert(:subscription)
+      subscription = insert(:trial_subscription)
       assert {:error, result} = Billing.modify_subscription(subscription)
       assert elem(result.errors[:tier], 0) =~ "blank"
       assert elem(result.errors[:renewal_frequency], 0) =~ "blank"
@@ -65,41 +65,66 @@ defmodule Stitch.Billing.BillingTest do
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
 
-      subscription = insert(:subscription, tier: "BASIC", renewal_frequency: "MONTLY")
+      subscription = insert(:subscription)
       assert {:error, result} = Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
     end
 
     test "can change a subscription tier" do
-      subscription = insert(:subscription, tier: "BASIC", renewal_frequency: "MONTHLY")
+      subscription = insert(:subscription)
       assert {:ok, sub} = Billing.modify_subscription(subscription, %{tier: "POWER", renewal_frequency: "MONTHLY"})
       assert sub.tier == "POWER"
       assert sub.renewal_frequency == "MONTHLY"
-      assert DateTime.compare(sub.valid_until, subscription.valid_until) == :gt
     end
   end
 
   describe "cancel_subscription/1" do
     test "cancels an active subscription" do
-      subscription = insert(:subscription, tier: "BASIC", renewal_frequency: "MONTHLY", renews: true)
+      subscription = insert(:subscription)
       assert {:ok, %Stitch.Billing.Subscription{renews: false}} = Billing.cancel_subscription(subscription)
     end
 
     test "cancels an active/non-renewing subscription" do
-      subscription = insert(:subscription, tier: "BASIC", renewal_frequency: "MONTHLY", renews: false)
+      subscription = insert(:subscription, renews: false)
       assert {:ok, %Stitch.Billing.Subscription{renews: false}} = Billing.cancel_subscription(subscription)
     end
 
     test "errors on an expired subscription" do
-      sub_opts = [valid_until: DateTime.utc_now(), tier: "BASIC", renewal_frequency: "MONTHLY", renews: false]
+      sub_opts = [valid_until: DateTime.utc_now(), renews: false, subscription_id: nil]
       subscription = insert(:subscription, sub_opts)
       assert {:error, :expired} = Billing.cancel_subscription(subscription)
     end
 
     test "errors when the subscription is a trial" do
-      subscription = insert(:subscription, renews: false, tier: "TRIAL")
+      subscription = insert(:trial_subscription)
       assert {:error, :trial} = Billing.cancel_subscription(subscription)
+    end
+  end
+
+  describe "renews_subscription/1" do
+    test "renews an active/renewing subscription" do
+      subscription = insert(:subscription)
+      assert {:ok, %Stitch.Billing.Subscription{renews: true}} = Billing.renew_subscription(subscription)
+    end
+
+    test "renews an active/non-renewing subscription" do
+      subscription = insert(:subscription, renews: false)
+      assert {:ok, %Stitch.Billing.Subscription{renews: true}} = Billing.renew_subscription(subscription)
+    end
+
+    test "renews an expired subscription" do
+      sub_opts = [valid_until: DateTime.utc_now(), renews: false, subscription_id: nil]
+      subscription = insert(:subscription, sub_opts)
+      assert {:ok, result} = Billing.renew_subscription(subscription)
+      assert result.subscription_id
+      assert result.renews
+      assert DateTime.compare(result.valid_until, subscription.valid_until) == :gt
+    end
+
+    test "errors when the subscription is a trial" do
+      subscription = insert(:trial_subscription)
+      assert {:error, :trial} = Billing.renew_subscription(subscription)
     end
   end
 

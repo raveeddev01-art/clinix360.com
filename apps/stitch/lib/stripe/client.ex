@@ -165,4 +165,22 @@ defmodule Stitch.Stripe.Client do
       _ -> :error
     end
   end
+
+  @doc """
+  Sets a subscription to renew only if the subscription is set to cancel at the period end and
+  if it is still active.
+
+  ## Examples
+
+      iex> renew_subscription("cus_1234567", "sub_1234567")
+      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
+
+  """
+  @impl Stitch.Stripe
+  def renew_subscription(customer_id, subscription_id) do
+    case Stripe.Subscriptions.change(customer_id, subscription_id, [], Stripe.config_or_env_key()) do
+      {:ok, sub} -> {:ok, transform_subscription(sub)}
+      _ -> :error
+    end
+  end
 end
