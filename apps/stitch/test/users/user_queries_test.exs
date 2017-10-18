@@ -120,4 +120,16 @@ defmodule Stitch.UserQueriesTest do
       assert record.email != email <> "Test"
     end
   end
+
+  describe "Stitch.UserQueries.user_with_email_exists?/1" do
+    test "returns true if a user with the given email exists" do
+      insert(:user, email: "foo@example.com")
+      assert Stitch.UserQueries.user_with_email_exists?("foo@example.com")
+    end
+
+    test "returns false when no user with the given email exists" do
+      insert(:user, email: "bar@example.com")
+      refute Stitch.UserQueries.user_with_email_exists?("foo@example.com")
+    end
+  end
 end

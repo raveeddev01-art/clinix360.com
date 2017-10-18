@@ -32,6 +32,8 @@ defmodule StitchConnect.Web.Router do
 
     post "/teams", TeamController, :create
     post "/teams/url-available", TeamController, :url_available
+
+    post "/find-your-team", FindYourTeamController, :create
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -63,6 +65,7 @@ defmodule StitchConnect.Web.Router do
 
     get "/getstarted", AuthenticationController, :index
     get "/signin", AuthenticationController, :index
+    get "/find-your-team", AuthenticationController, :index
 
     # get "/login", AuthenticationController, :index
     # get "/reset-password", AuthenticationController, :index
