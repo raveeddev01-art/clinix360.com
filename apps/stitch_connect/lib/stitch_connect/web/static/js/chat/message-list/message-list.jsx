@@ -4,6 +4,7 @@ import { Link, Element } from "react-scroll";
 
 import WelcomeMessage from "./welcome-message";
 import Message from "./message";
+import SystemMessage from "./system-message";
 import DateSeparator from "./date-separator";
 
 @inject("messageStore")
@@ -54,9 +55,14 @@ class MessageList extends Component {
         {Object.keys(messagesByDate).map(date => (
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
-            {messagesByDate[date].map(message => (
-              <Message key={`msg_${message.id}`} message={message} />
-            ))}
+            {messagesByDate[date].map(
+              message =>
+                message.type === "system" ? (
+                  <SystemMessage key={`msg_${message.id}`} message={message} />
+                ) : (
+                  <Message key={`msg_${message.id}`} message={message} />
+                )
+            )}
           </div>
         ))}
         {messageStore.isLoadingRecent && (
