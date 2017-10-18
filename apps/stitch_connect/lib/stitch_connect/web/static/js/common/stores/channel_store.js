@@ -26,6 +26,9 @@ class ChannelStore {
 
     this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
+    this.eventChannel.on("new_app_version", () => {
+      window.location.reload(true); // force reload without cache
+    });
 
     return channel;
   }
