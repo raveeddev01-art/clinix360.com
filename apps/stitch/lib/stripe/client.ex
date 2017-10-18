@@ -183,4 +183,21 @@ defmodule Stitch.Stripe.Client do
       _ -> :error
     end
   end
+
+  @doc """
+  Gets an event from Stripe.
+
+  ## Examples
+
+      iex> get_event("evt_1234567")
+      {:ok, %{...}}
+
+  """
+  @impl Stitch.Stripe
+  def get_event(event_id) do
+    case Stripe.Events.get(event_id) do
+      {:ok, event} -> {:ok, event}
+      _ -> :error
+    end
+  end
 end

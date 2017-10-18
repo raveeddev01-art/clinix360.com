@@ -48,4 +48,15 @@ defmodule Stitch.TeamQueriesTest do
       refute Enum.any?(users, &(&1.id == non_onboarded_user.id))
     end
   end
+
+  describe "get_team_owner/1" do
+    test "returns the owner" do
+      team = insert(:team)
+      owner = insert(:user, team: team, roles: ["admin"])
+      insert(:user, team: team, roles: ["admin"])
+      insert(:user, team: team)
+
+      assert TeamQueries.get_team_owner(team) == clear_assoc(owner, :team)
+    end
+  end
 end

@@ -15,7 +15,6 @@ defmodule Stitch.TeamQueries do
   @doc """
   Returns a list of currently active/onboarded users for a team.
 
-
   ## Examples
 
       iex> list_active_users(%Team{...})
@@ -30,5 +29,24 @@ defmodule Stitch.TeamQueries do
       where: u.disabled == false,
       where: u.team_id == ^team_id
     Repo.all(query)
+  end
+
+  @doc """
+  Returns the team owner who originally created the team.
+
+  ## Examples
+
+      iex> get_team_owner(%Team{...})
+      %User{...}
+
+  """
+  def get_team_owner(%Team{id: team_id}) do
+    query =
+      from u in User,
+      where: u.team_id == ^team_id,
+      where: "admin" in u.roles,
+      order_by: [asc: :inserted_at],
+      limit: 1
+    Repo.one(query)
   end
 end

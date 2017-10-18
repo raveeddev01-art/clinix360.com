@@ -78,6 +78,9 @@ defmodule Stitch.Stripe.TestClient do
     {:ok, sub}
   end
 
+  @impl Stitch.Stripe
+  def get_event(_), do: %{}
+
   defp future_time, do: DateTime.from_unix!(Kernel.+(timestamp(), 2_000_000))
 
   defp timestamp do

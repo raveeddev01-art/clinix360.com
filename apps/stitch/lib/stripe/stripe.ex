@@ -50,4 +50,9 @@ defmodule Stitch.Stripe do
   Sets a valid subscription to renew at the end of the billing cycle.
   """
   @callback renew_subscription(customer_id :: String.t, subscription_id :: String.t) :: {:ok, subscription} | :error
+
+  @doc """
+  Gets an event from Stripe.
+  """
+  @callback get_event(event_id :: String.t) :: {:ok, %{}} | :error
 end

@@ -193,6 +193,15 @@ defmodule Stitch.Billing do
     Subscription.update(subscription, update_params)
   end
 
+  @doc false
+  def update_subscription(customer_id, subscription_id, params) do
+    if subscription = Repo.get_by(Subscription, customer_id: customer_id, subscription_id: subscription_id) do
+      subscription
+      |> Subscription.update(params)
+      |> Repo.update()
+    end
+  end
+
   @doc """
   Lists all the saved cards for a Team.
 
