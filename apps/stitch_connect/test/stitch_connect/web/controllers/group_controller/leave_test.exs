@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.GroupController.LeaveTest do
   setup %{conn: conn} do
     team = insert(:team)
     user = insert(:user, team: team)
-    default_group = insert(:group, team: team, slug: "general")
+    default_group = insert(:group, team: team, slug: "general", is_default: true)
     other_group = insert(:group, team: team)
 
     conn =
