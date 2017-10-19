@@ -41,6 +41,21 @@ defmodule Stitch.Stripe.Events do
     end
   end
 
+  # Subscription deleted either by customer's choosing or due to failed payments
+  def handle_event(%{type: "customer.subscription.deleted"} = event) do
+    customer_id = get_in(event, [:data, "object", "customer"])
+    subscription_id = get_in(event, [:data, "object", "id"])
+
+    sub_params = %{
+      renews: false,
+      subscription_id: nil
+    }
+
+    with {:ok, _subscription} <- Billing.update_subscription(customer_id, subscription_id, sub_params) do
+      :ok
+    end
+  end
+
   def handle_event(_), do: :ok
 
   defp days_until_retry(nil), do: nil

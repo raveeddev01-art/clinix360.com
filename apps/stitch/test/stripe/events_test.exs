@@ -73,4 +73,19 @@ defmodule Stitch.Stripe.EventsTest do
       refute :ok == Events.handle_event(event)
     end
   end
+
+  test "handles the `customer.subscription.deleted` event" do
+    subscription = insert(:subscription)
+    event = %{
+      type: "customer.subscription.deleted",
+      data: %{
+        "object" => %{
+          "id" => subscription.subscription_id,
+          "customer" => subscription.customer_id
+        }
+      }
+    }
+    assert :ok == Events.handle_event(event)
+    assert %{subscription_id: nil, renews: false} = Billing.get_subscription(subscription.team)
+  end
 end
