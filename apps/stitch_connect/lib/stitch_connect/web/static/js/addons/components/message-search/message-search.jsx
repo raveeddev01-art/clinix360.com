@@ -1,47 +1,50 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import _ from "lodash";
-import InfiniteScroll from "react-infinite-scroller";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import Form from "react-bootstrap/lib/Form";
-import InputGroup from "react-bootstrap/lib/InputGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
 
 import AddonMessage from "../../../common/components/messages/addon-message";
 
-@inject("messageStore", "searchStore")
+@inject("searchStore")
 @observer
 class MessageSearch extends Component {
-  constructor(props) {
-    super(props);
-    this.search = _.debounce(this.props.searchStore.searchMessages, 300);
-  }
-
   componentWillMount() {
-    this.props.searchStore.reset();
+    const { searchStore } = this.props;
+
+    if (searchStore.isEmpty) {
+      searchStore.loadMore();
+    }
   }
 
   loadMore = () => {
-    this.search();
+    const { searchStore } = this.props;
+
+    searchStore.loadMore();
   };
 
   render() {
-    const { messages, hasMore } = this.props.searchStore;
+    const { searchStore } = this.props;
+
     return (
       <div className="message-search-addon">
-        <div>
-          <InfiniteScroll
-            loadMore={this.loadMore}
-            hasMore={hasMore}
-            useWindow={false}
-          >
-            {messages.map(message =>
-              <AddonMessage
-                key={`search_result_${message.id}`}
-                message={message}
-              />
-            )}
-          </InfiniteScroll>
+        {searchStore.messages.length > 0 ? (
+          <div>
+            {searchStore.messages.map(message => (
+              <AddonMessage key={message.id} message={message} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-muted text-center">No messages found.</div>
+        )}
+
+        <div className="footer">
+          {searchStore.hasMore && (
+            <button
+              className="btn btn-default btn-sm"
+              disabled={searchStore.loading}
+              onClick={this.loadMore}
+            >
+              Load more…
+            </button>
+          )}
         </div>
       </div>
     );

@@ -1,46 +1,53 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import InfiniteScroll from "react-infinite-scroller";
 
 import AddonMessage from "../../../common/components/messages/addon-message";
 
-@inject("searchStore")
+@inject("mentionsStore")
 @observer
 class Mentions extends Component {
   componentWillMount() {
-    this.props.searchStore.reset();
-    this.props.searchStore.searchMentions();
+    const { mentionsStore } = this.props;
+
+    if (mentionsStore.isEmpty) {
+      mentionsStore.loadMore();
+    }
   }
 
   loadMore = () => {
-    this.props.searchStore.searchMessages();
+    const { mentionsStore } = this.props;
+
+    mentionsStore.loadMore();
   };
 
   render() {
-    const { messages, hasMore } = this.props.searchStore;
+    const { mentionsStore } = this.props;
 
     return (
       <div className="message-search-addon">
-        <InfiniteScroll
-          loadMore={this.loadMore}
-          hasMore={hasMore}
-          useWindow={false}
-        >
-          {messages.length > 0 ? (
-            <div>
-              {messages.map(message => (
-                <AddonMessage
-                  key={`search_result_${message.id}`}
-                  message={message}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-muted text-center">
-              No mentions of you found.
-            </div>
+        {mentionsStore.mentions.length > 0 ? (
+          <div>
+            {mentionsStore.mentions.map(mention => (
+              <AddonMessage key={mention.id} message={mention} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-muted text-center">
+            No mentions of you found.
+          </div>
+        )}
+
+        <div className="footer">
+          {mentionsStore.hasMore && (
+            <button
+              className="btn btn-default btn-sm"
+              disabled={mentionsStore.loading}
+              onClick={this.loadMore}
+            >
+              Load more…
+            </button>
           )}
-        </InfiniteScroll>
+        </div>
       </div>
     );
   }

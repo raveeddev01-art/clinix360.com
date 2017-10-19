@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import debounce from "lodash/debounce";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import Form from "react-bootstrap/lib/Form";
@@ -23,10 +24,14 @@ import DotOptions from "./dot-options";
 class TopNav extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       query: ""
     };
-    this.search = _.debounce(this.props.searchStore.searchMessages, 300);
+
+    this.debouncedSearch = debounce(query => {
+      props.searchStore.setQuery(query);
+    }, 500);
   }
 
   _toggleAddonMenu = menuName => () => {
@@ -40,9 +45,9 @@ class TopNav extends Component {
     }
   };
 
-  onChange = event => {
+  onSearchQueryChange = event => {
     this.setState({ query: event.target.value });
-    this.search(event.target.value);
+    this.debouncedSearch(event.target.value);
   };
 
   handleJoin = () => {
@@ -55,10 +60,11 @@ class TopNav extends Component {
   };
 
   renderRoomControls = () => {
-    const isNotDM = this.props.groupStore.groupType === "group";
-    const isDefault = this.props.groupStore.isDefault;
+    const { groupStore } = this.props;
+    const isNotDM = groupStore.groupType === "group";
+    const isDefault = groupStore.isDefault;
 
-    if (this.props.groupStore.joined) {
+    if (groupStore.joined) {
       return (
         <div>
           <NavItemFavorite />
@@ -70,41 +76,41 @@ class TopNav extends Component {
           {!isDefault && !isNotDM && <NavItemHide />}
         </div>
       );
-    } else {
-      return (
-        <div>
-          <MenuItem onSelect={this.handleJoin}>
-            Join <strong>#{this.props.groupStore.slug}</strong>
-          </MenuItem>
-        </div>
-      );
     }
+
+    return (
+      <div>
+        <MenuItem onSelect={this.handleJoin}>
+          Join <strong>#{groupStore.slug}</strong>
+        </MenuItem>
+      </div>
+    );
   };
 
   onSearch = event => {
     event.preventDefault();
-    this.props.addonStore.setAddonPanel("Search Results");
-    this.props.addonStore.toggleAddons(true);
-    this.search(this.state.query);
+
+    const { addonStore } = this.props;
+
+    addonStore.setAddonPanel("Search Results");
+    addonStore.toggleAddons(true);
   };
 
   renderClearButton = () => {
-    if (this.state.query.length > 0) {
-      return (
-        <a onClick={this.clearSearch}>
-          <i className="fa fa-times-circle-o" />
-        </a>
-      );
-    }
+    return this.state.query.length > 0 ? (
+      <a onClick={this.clearSearch}>
+        <i className="fa fa-times-circle-o" />
+      </a>
+    ) : null;
   };
 
   clearSearch = event => {
-    event.preventDefault;
-    this.setState({ query: "" });
-  };
+    const { searchStore } = this.props;
 
-  loadMore = () => {
-    this.search();
+    event.preventDefault();
+
+    this.setState({ query: "" });
+    searchStore.reset();
   };
 
   render() {
@@ -151,16 +157,15 @@ class TopNav extends Component {
             <i className="fa fa-search" />
             <FormControl
               type="text"
-              ref="search"
               placeholder="Search"
-              onChange={this.onChange}
+              onChange={this.onSearchQueryChange}
               value={this.state.query}
             />
 
             {this.renderClearButton()}
           </Form>
 
-          <DotOptions />
+          <DotOptions toggleAddonMenu={this._toggleAddonMenu} />
         </div>
       </div>
     );
