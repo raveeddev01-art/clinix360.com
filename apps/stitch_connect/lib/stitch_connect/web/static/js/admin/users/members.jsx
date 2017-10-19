@@ -4,12 +4,18 @@ import { Panel, Row, Col } from "react-bootstrap";
 import MemberItem from "./member-item";
 
 const header = (
-  <h1><i className="fa fa-users"></i> Members</h1>
+  <h1>
+    <i className="fa fa-users" /> Members
+  </h1>
 );
 
-@inject("membersStore")
+@inject("membersStore", "titleStore")
 @observer
 export default class UsersMembers extends Component {
+  componentWillMount() {
+    this.props.titleStore.setPageName("Members");
+  }
+
   render() {
     const { membersStore } = this.props;
     const onlineUsers = membersStore.onlineUsers;
@@ -20,7 +26,7 @@ export default class UsersMembers extends Component {
         <p className="m-b-20">
           Manage your users by controlling admin abilities and account status.
           For more information on how account enabling and disabling works, see
-          our support article{" "}
+          our support article&nbsp;
           <a href="https://teamstitch.zendesk.com/hc/en-us/articles/216488668-User-management">
             here
           </a>.

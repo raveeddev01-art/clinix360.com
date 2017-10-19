@@ -12,10 +12,12 @@ import {
 } from "react-bootstrap";
 
 const header = (
-  <h1><i className="fa fa-envelope-o"></i> Invitations</h1>
+  <h1>
+    <i className="fa fa-envelope-o" /> Invitations
+  </h1>
 );
 
-@inject("teamStore")
+@inject("teamStore", "titleStore")
 @observer
 export default class UsersInvitations extends Component {
   constructor(props) {
@@ -23,6 +25,10 @@ export default class UsersInvitations extends Component {
     this.state = {
       email: ""
     };
+  }
+
+  componentWillMount() {
+    this.props.titleStore.setPageName("Invitations");
   }
 
   _handleChange = event => {
@@ -33,19 +39,18 @@ export default class UsersInvitations extends Component {
     const { email } = this.state;
 
     // Perform email validation
-    const lines = email.split('\n');
-    let emails = [];
-    for (let line of lines) {
-      // only push this line if it contains a valid email.
-      if (/(\w+)\@(\w+)\.[a-zA-Z]/g.test(line)) {
-        emails.push($.trim(line));
+    const lines = email.split("\n");
+    const emails = [];
+    lines.forEach(line => {
+      if (/(\w+)@(\w+)\.[a-zA-Z]/g.test(line)) {
+        emails.push(line.trim());
       }
-    }
+    });
 
     if (emails.length > 0) {
       post(`/api/v1/invitations`, {
         body: { email_collection: emails.join(",") }
-      }).then(response => {
+      }).then(() => {
         notify.show("Invitations sent to all users");
       });
     } else {
@@ -63,6 +68,7 @@ export default class UsersInvitations extends Component {
           <FormControl
             componentClass="textarea"
             rows="6"
+            value={email}
             onChange={this._handleChange}
           />
           <Row>
