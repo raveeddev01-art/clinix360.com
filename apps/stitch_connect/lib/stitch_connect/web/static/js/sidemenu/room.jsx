@@ -95,25 +95,32 @@ class Room extends Component {
   }
 
   render() {
-    const { unread_messages_count: unreadMessagesCount } = this.props.room;
+    const {
+      unread_messages_count: unreadMessagesCount,
+      type: roomType,
+      is_hidden: isHidden
+    } = this.props.room;
     const className = classNames("item", {
       "has-unread": unreadMessagesCount > 0
     });
     const badge = this.getBadge();
+    const roomHidden = roomType === "dm" && isHidden;
 
     return (
-      <NavLink
-        to={this.getNavLink()}
-        className={className}
-        activeClassName="active"
-      >
-        <div className="item-icon">
-          <i className={this.getIconClass()} />
-        </div>
-        <div className="item-text">{this.getName()}</div>
-        {this.getHideDMIcon()}
-        {badge > 0 && <div className="item-badge text-center">{badge}</div>}
-      </NavLink>
+      !roomHidden && (
+        <NavLink
+          to={this.getNavLink()}
+          className={className}
+          activeClassName="active"
+        >
+          <div className="item-icon">
+            <i className={this.getIconClass()} />
+          </div>
+          <div className="item-text">{this.getName()}</div>
+          {this.getHideDMIcon()}
+          {badge > 0 && <div className="item-badge text-center">{badge}</div>}
+        </NavLink>
+      )
     );
   }
 }

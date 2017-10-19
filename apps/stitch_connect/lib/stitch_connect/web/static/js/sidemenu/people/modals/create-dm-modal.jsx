@@ -33,7 +33,7 @@ class CreateDMModal extends Component {
   };
 
   startDM = () => {
-    const { history, toggle } = this.props;
+    const { history, toggle, sidemenuStore } = this.props;
     if (!this.state.members.length) {
       notify.show(`Choose people to start conversation with`, "error");
       return;
@@ -42,6 +42,8 @@ class CreateDMModal extends Component {
 
     history.push(`/direct/${usernames}`);
     toggle();
+
+    sidemenuStore.loadGroups();
   };
 
   selectUser = user => () => {
