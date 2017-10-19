@@ -8,19 +8,47 @@ defmodule Stitch.Stripe.Events do
 
   # Successful payment
   def handle_event(%{type: "invoice.payment_succeeded"} = event) do
-    customer_id = event.data.object.customer
-    [subscription] = event.data.object.lines.data
+    [subscription] = get_in(event, [:data, "object", "lines", "data"])
+    customer_id = get_in(event, [:data, "object", "customer"])
+    subscription_id = subscription["id"]
 
     sub_params = %{
-      valid_until: DateTime.from_unix!(subscription.period.end)
+      valid_until: DateTime.from_unix!(subscription["period"]["end"])
     }
 
-    with {:ok, subscription} <- Billing.update_subscription(customer_id, subscription.id, sub_params),
+    with {:ok, subscription} <- Billing.update_subscription(customer_id, subscription_id, sub_params),
          team = TeamQueries.get_by_id(subscription.team_id),
          owner = TeamQueries.get_team_owner(team) do
       Notifications.send_successful_payment(owner, team)
       :ok
     end
   end
+
+  # Failed payment
+  def handle_event(%{type: "invoice.payment_failed"} = event) do
+    [subscription] = get_in(event, [:data, "object", "lines", "data"])
+    customer_id = get_in(event, [:data, "object", "customer"])
+    subscription_id = subscription["id"]
+    next_payment_date = get_in(event, [:data, "object", "next_payment_attempt"])
+
+    with {:ok, days_until_retry} <- days_until_retry(next_payment_date),
+         subscription <- Billing.get_subscription(customer_id, subscription_id) do
+      team = TeamQueries.get_by_id(subscription.team_id)
+      owner = TeamQueries.get_team_owner(team)
+      plan_name = Billing.plan_display_name(subscription.tier)
+      Notifications.send_failed_payment(owner, team, plan_name, days_until_retry)
+      :ok
+    end
+  end
+
   def handle_event(_), do: :ok
+
+  defp days_until_retry(nil), do: nil
+  defp days_until_retry(unix_timestamp) do
+    next_attempt = DateTime.from_unix!(unix_timestamp)
+    days = Timex.diff(next_attempt, DateTime.utc_now(), :days)
+    if days > 0 do
+      {:ok, days}
+    end
+  end
 end

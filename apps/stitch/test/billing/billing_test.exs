@@ -44,6 +44,19 @@ defmodule Stitch.Billing.BillingTest do
     end
   end
 
+  describe "get_subscription/2" do
+    test "returns a subscription" do
+      subscription = insert(:subscription)
+      insert(:subscription)
+      assert Billing.get_subscription(subscription.customer_id, subscription.subscription_id) == clear_assoc(subscription, :team)
+    end
+
+    test "returns nil for bad ids" do
+      insert(:subscription)
+      refute Billing.get_subscription("bad", "bad")
+    end
+  end
+
   describe "modify_subscription/2" do
     test "creates a stripe subscription when on a trial" do
       subscription = insert(:trial_subscription)

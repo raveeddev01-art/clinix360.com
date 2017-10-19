@@ -44,6 +44,12 @@ defmodule Stitch.Billing do
       iex> get_subscription(%Team{...})
       %Subscription{...}
 
+      iex> get_subscription("cus_1234567", "sub_1234567")
+      %Subscription{...}
+
+      iex> get_subscription("bad_id", "bad_id")
+      nil
+
   """
   @spec get_subscription(Team.t) :: Subscription.t
   def get_subscription(%Team{} = team) do
@@ -54,6 +60,11 @@ defmodule Stitch.Billing do
     estimated_invoice_amount = estimated_invoice_amount(subscription.tier, active_user_count)
 
     %Subscription{subscription | estimated_invoice_amount: estimated_invoice_amount}
+  end
+
+  @spec get_subscription(String.t, String.t) :: Subscription.t | nil
+  def get_subscription(customer_id, subscription_id) do
+    Repo.get_by(Subscription, customer_id: customer_id, subscription_id: subscription_id)
   end
 
   defp active_user_count(%Team{} = team) do
@@ -328,4 +339,12 @@ defmodule Stitch.Billing do
     |> Ecto.Multi.update_all(:clear_old_default, clear_previous_default_query, [])
     |> Repo.transaction()
   end
+
+  @doc """
+  Returns a user-friendly plan name.
+  """
+  def plan_display_name("BASIC"), do: "Basic"
+  def plan_display_name("PREMIUM"), do: "Premium"
+  def plan_display_name("POWER"), do: "Power"
+  def plan_display_name("TRIAL"), do: "Trial"
 end
