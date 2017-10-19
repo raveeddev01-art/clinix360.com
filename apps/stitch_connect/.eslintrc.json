@@ -23,6 +23,7 @@
     "import/no-extraneous-dependencies": "off",
     "jsx-a11y/interactive-supports-focus": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
     "jsx-a11y/no-autofocus": "off",
     "no-const-assign": "warn",
     "no-param-reassign": ["error", { "props": false }],
@@ -47,6 +48,9 @@
           "uploadStore",
           "groupPresenceStore",
           "notificationStore",
+          "titleStore",
+          "membersStore",
+          "invitationStore",
           "match",
           "location",
           "history"
