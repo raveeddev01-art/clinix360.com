@@ -65,7 +65,7 @@ defmodule StitchConnect.Web.GroupController.IndexTest do
     setup %{conn: conn} do
       team = insert(:team)
       user = insert(:user, team: team)
-      default_group = insert(:group, team: team)
+      default_group = insert(:group, team: team, is_default: true)
       public_group = insert(:group, team: team)
       private_group = insert(:group, team: team, public: false)
 

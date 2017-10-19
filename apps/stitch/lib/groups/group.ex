@@ -11,6 +11,7 @@ defmodule Stitch.Group do
     field :name, :string
     field :slug, :string
     field :description, :string
+    field :is_default, :boolean, default: false
     field :public, :boolean, default: true
 
     belongs_to :team, Stitch.Team

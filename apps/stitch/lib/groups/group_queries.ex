@@ -111,11 +111,9 @@ defmodule Stitch.GroupQueries do
   """
   @spec default_group(User.t) :: Group.t
   def default_group(%User{team_id: team_id}) do
-    query =
-      from g in Group,
-      where: g.team_id == ^team_id,
-      order_by: [asc: g.inserted_at],
-      limit: 1
-    Repo.one(query)
+    Group
+    |> where(team_id: ^team_id)
+    |> where(is_default: ^true)
+    |> Repo.one
   end
 end

@@ -211,7 +211,7 @@ defmodule Stitch.GroupQueriesTest do
     test "returns the default group for a team given a user" do
       team = insert(:team)
       user = insert(:user, team: team)
-      default_group = insert(:group, slug: "general", team: team)
+      default_group = insert(:group, slug: "general", team: team, is_default: true)
       insert(:group, slug: "other1", team: team)
       insert(:group, slug: "other2", team: team)
 
