@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import slugify from "slugify";
+import { withRouter } from "react-router-dom";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
@@ -14,7 +15,7 @@ import Button from "react-bootstrap/lib/Button";
 
 @inject("groupStore")
 @observer
-export default class NavItemRename extends Component {
+class NavItemRename extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,6 +40,11 @@ export default class NavItemRename extends Component {
     }
   };
 
+  canRenameRoom = e => {
+    const { groupName } = this.state;
+    return groupName.trim() !== '';
+  }
+
   handleChangeName = event => {
     const value = event.target.value;
 
@@ -49,8 +55,11 @@ export default class NavItemRename extends Component {
   };
 
   handleSubmit = () => {
-    this.props.groupStore.rename(this.state.groupName);
-    this.setState({ showModal: false });
+    this.props.groupStore.rename(this.state.groupName, group => {
+      this.setState({ showModal: false });
+      const { history } = this.props;
+      history.push(`/rooms/${group.slug}`);
+    });
   };
 
   render() {
@@ -59,7 +68,7 @@ export default class NavItemRename extends Component {
         Rename
         <Modal show={this.state.showModal} onHide={this.toggleModal}>
           <Modal.Header>
-            <Modal.Title>Rename Room</Modal.Title>
+            <Modal.Title>Rename</Modal.Title>
             <a href="#" onClick={this.toggleModal}>
               <i className="fa fa-close" />
             </a>
@@ -69,7 +78,7 @@ export default class NavItemRename extends Component {
             <Form horizontal>
               <FormGroup bsSize="large">
                 <Col componentClass={ControlLabel} sm={3}>
-                  Room Name:
+                  Name
                 </Col>
 
                 <Col sm={9}>
@@ -84,14 +93,13 @@ export default class NavItemRename extends Component {
                     onChange={this.handleChangeName}
                   />
                   <HelpBlock className="text-muted m-b-0">
-                    The standardize name for use in <a href="#">referencing</a>{" "}
-                    this room will also be updated: <span>#placeholder</span>
+                    Names must be shorter than 25 characters and without punctuation.
                   </HelpBlock>
                 </Col>
               </FormGroup>
               <FormGroup bsSize="large">
                 <Col componentClass={ControlLabel} sm={3} className="optional">
-                  Reference Name:
+                  Reference
                   <br />
                   <span>(automatic)</span>
                 </Col>
@@ -119,6 +127,7 @@ export default class NavItemRename extends Component {
             <Button
               bsSize="large"
               bsStyle="primary"
+              disabled={!this.canRenameRoom()}
               onClick={this.handleSubmit}
             >
               Rename
@@ -129,3 +138,5 @@ export default class NavItemRename extends Component {
     );
   }
 }
+
+export default withRouter(NavItemRename);
