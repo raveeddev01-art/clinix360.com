@@ -35,6 +35,7 @@ defmodule Stitch.GroupQueries do
       group: g,
       joined: not is_nil(gu.id),
       favorite: not is_nil(gu.id) and gu.is_favorite,
+      is_hidden: not is_nil(gu.id) and gu.is_hidden,
       unread_messages_count: gu.unread_messages_count,
       mentions_count: gu.mentions_count,
       last_read_at: type(fragment("COALESCE(?, ?)", gu.last_read_at, gu.inserted_at), :naive_datetime),

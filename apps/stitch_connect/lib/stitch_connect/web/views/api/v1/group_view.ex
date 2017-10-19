@@ -22,6 +22,7 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
       favorite: group.favorite,
       description: group.description,
       is_default: group.is_default,
+      is_hidden: group.is_hidden,
       joined: group.joined,
       users: Enum.map(group.users, &UserView.user_json/1),
       type: type(group),
