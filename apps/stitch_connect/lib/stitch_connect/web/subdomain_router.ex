@@ -93,6 +93,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/groups/:id/leave", GroupController, :leave
     get "/groups/:id/users", GroupController, :users
     patch "/groups/:id/rename", GroupController, :rename
+    put "/groups/:id/hide", GroupController, :hide
 
     get "/groups/:group_id/notification-preference", NotificationPreferenceController, :show
     put "/groups/:group_id/notification-preference", NotificationPreferenceController, :update

@@ -241,4 +241,17 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> json(%{message: "Users invited to group."})
     end
   end
+
+  def hide(conn, %{"id" => group_id}) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case Group.hide(group, conn.assigns.current_user.id) do
+      {:ok, _} ->
+        json(conn, %{message: "Group hidden"})
+      {:error, message} ->
+        conn
+        |> put_status(:forbidden)
+        |> json(%{message: message})
+    end
+  end
 end

@@ -1,6 +1,6 @@
 defmodule Stitch.GroupTest do
   use Stitch.DataCase, async: true
-  alias Stitch.Group
+  alias Stitch.{Group, GroupUser}
 
   describe "Stitch.Group.rename/2" do
     test "it renames the group" do
@@ -147,6 +147,53 @@ defmodule Stitch.GroupTest do
       group = %Group{name: "__multi_dm_group__"}
       {:error, message} = Group.remove(group, 42)
       assert message == "Users can't leave direct messages"
+    end
+  end
+
+  describe "Stitch.Group.hide/2" do
+    test "it sets single-dm group_user's is_hidden field to true" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      {:ok, single_dm} = Group.create_single_dm(bob, [bob.id, joe.id])
+
+      {:ok, group_user} = Group.hide(single_dm, bob.id)
+
+      assert group_user.is_hidden
+      assert Repo.get!(GroupUser, group_user.id).is_hidden
+    end
+
+    test "it sets multi-dm group_user's is_hidden field to true" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      sam = insert(:user, team: team)
+      {:ok, single_dm} = Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
+
+      {:ok, group_user} = Group.hide(single_dm, bob.id)
+
+      assert group_user.is_hidden
+      assert Repo.get!(GroupUser, group_user.id).is_hidden
+    end
+
+    test "when group is not a DM" do
+      group = build(:group)
+
+      {:error, message} = Group.hide(group, 42)
+
+      assert message == "Only direct messages can be hidden"
+    end
+
+    test "when user is not part of the group" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      sam = insert(:user, team: team)
+      {:ok, group} = Group.create_single_dm(bob, [bob.id, joe.id])
+
+      {:error, message} = Group.hide(group, sam.id)
+
+      assert message == "User is not part of this group"
     end
   end
 end
