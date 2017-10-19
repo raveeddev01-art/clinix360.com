@@ -23,9 +23,11 @@ import DotOptions from "./dot-options";
 class TopNav extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       query: ""
     };
+
     this.search = _.debounce(this.props.searchStore.searchMessages, 300);
   }
 
@@ -70,15 +72,15 @@ class TopNav extends Component {
           {!isDefault && !isNotDM && <NavItemHide />}
         </div>
       );
-    } else {
-      return (
-        <div>
-          <MenuItem onSelect={this.handleJoin}>
-            Join <strong>#{this.props.groupStore.slug}</strong>
-          </MenuItem>
-        </div>
-      );
     }
+
+    return (
+      <div>
+        <MenuItem onSelect={this.handleJoin}>
+          Join <strong>#{this.props.groupStore.slug}</strong>
+        </MenuItem>
+      </div>
+    );
   };
 
   onSearch = event => {
@@ -89,17 +91,15 @@ class TopNav extends Component {
   };
 
   renderClearButton = () => {
-    if (this.state.query.length > 0) {
-      return (
-        <a onClick={this.clearSearch}>
-          <i className="fa fa-times-circle-o" />
-        </a>
-      );
-    }
+    return this.state.query.length > 0 ? (
+      <a onClick={this.clearSearch}>
+        <i className="fa fa-times-circle-o" />
+      </a>
+    ) : null;
   };
 
   clearSearch = event => {
-    event.preventDefault;
+    event.preventDefault();
     this.setState({ query: "" });
   };
 
@@ -151,7 +151,6 @@ class TopNav extends Component {
             <i className="fa fa-search" />
             <FormControl
               type="text"
-              ref="search"
               placeholder="Search"
               onChange={this.onChange}
               value={this.state.query}
