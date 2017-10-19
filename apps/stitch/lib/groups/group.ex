@@ -199,6 +199,10 @@ defmodule Stitch.Group do
     {:error, "Direct messages' privacy setting can't be changed"}
   end
 
+  def toggle_public(%Group{is_default: true}, _public) do
+    {:error, "Default group's privacy setting can't be changed"}
+  end
+
   def toggle_public(%Group{} = group, public) do
     changeset = Group.changeset(group, %{public: public})
     Repo.update changeset
