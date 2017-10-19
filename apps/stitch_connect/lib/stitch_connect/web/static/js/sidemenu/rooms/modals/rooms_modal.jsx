@@ -38,7 +38,7 @@ class RoomsModal extends Component {
   }
 
   getSlug() {
-    return this.state.name ? `#${slugify(this.state.name)}` : "";
+    return this.state.name ? `#${slugify(this.state.name, {lower: true})}` : "";
   }
 
   handleChange = event => {
