@@ -12,17 +12,23 @@ defmodule Stitch.Repo.Migrations.SetDefaultGroupForTheExistingTeams do
     Team
     |> Repo.all
     |> Enum.each(fn team ->
-      Group
-      |> where(team_id: ^team.id)
-      |> order_by([g], asc: g.inserted_at)
-      |> limit(1)
-      |> Repo.one
-      |> change(is_default: true)
-      |> Repo.update!
+      group =
+        Group
+        |> where(team_id: ^team.id)
+        |> order_by([g], asc: g.inserted_at)
+        |> limit(1)
+        |> Repo.one
+
+      case group do
+        nil -> nil
+        group ->
+          group
+          |> change(is_default: true)
+          |> Repo.update!
+      end
     end)
   end
 
   def down do
   end
 end
-
