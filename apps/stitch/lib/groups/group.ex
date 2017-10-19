@@ -153,6 +153,10 @@ defmodule Stitch.Group do
     {:error, "Users can't leave direct messages"}
   end
 
+  def remove(%Group{is_default: true}, _) do
+    {:error, "Users can't leave the default group"}
+  end
+
   def remove(%Group{id: group_id} = group, user_id) do
     case Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) do
       nil ->

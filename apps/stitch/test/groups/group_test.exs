@@ -166,6 +166,12 @@ defmodule Stitch.GroupTest do
       {:error, message} = Group.remove(group, 42)
       assert message == "Users can't leave direct messages"
     end
+
+    test "does not remove a user from the default group" do
+      group = %Group{name: "General", is_default: true}
+      {:error, message} = Group.remove(group, group.id)
+      assert message == "Users can't leave the default group"
+    end
   end
 
   describe "Stitch.Group.hide/2" do
