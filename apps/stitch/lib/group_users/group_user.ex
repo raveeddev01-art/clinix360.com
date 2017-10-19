@@ -8,6 +8,7 @@ defmodule Stitch.GroupUser do
     belongs_to :group, Group
     belongs_to :user, Accounts.User
     field :is_favorite, :boolean, default: false
+    field :is_hidden, :boolean, default: false
     field :desktop_notification_preference, :string, default: "default"
     field :mobile_notification_preference, :string, default: "default"
     field :unread_messages_count, :integer, default: 0

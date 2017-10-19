@@ -201,6 +201,25 @@ defmodule Stitch.Group do
     Repo.update changeset
   end
 
+  def hide(%Group{name: name}, _user_id)
+      when name not in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Only direct messages can be hidden"}
+  end
+
+  def hide(%Group{} = group, user_id) do
+    case Repo.get_by(GroupUser, group_id: group.id, user_id: user_id) do
+      nil ->
+        {:error, "User is not part of this group"}
+      group_user ->
+          {:ok, group_user} =
+            group_user
+            |> change(%{is_hidden: true})
+            |> Repo.update
+
+          {:ok, group_user}
+    end
+  end
+
   @doc """
   Creates system messages when the user joins a public or private group.
   """
