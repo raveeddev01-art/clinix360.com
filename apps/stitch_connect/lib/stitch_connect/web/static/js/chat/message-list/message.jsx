@@ -288,7 +288,7 @@ class Message extends Component {
 
                 <div
                   className="time"
-                  data-time={moment(timestamp).format("HH:mm A")}
+                  data-time={moment(timestamp).format("hh:mm A")}
                 >
                   {this.renderActions(message)}
                 </div>

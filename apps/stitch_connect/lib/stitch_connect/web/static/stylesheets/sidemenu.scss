@@ -77,6 +77,8 @@
 
   .flex-content {
     padding: 20px 15px;
+    @include stitch-scroll();
+    overflow-y: hidden;
 
     .menu-nav {
       .heading {
@@ -89,7 +91,7 @@
           flex-grow: 1;
           flex-shrink: 0;
           color: $brand-primary;
-          font-size: 14px;
+          font-size: 15px;
           font-weight: bold;
           line-height: 1.5;
           text-transform: uppercase;
@@ -126,6 +128,7 @@
           display: flex;
           justify-content: center;
           flex-basis: 21px;
+          flex-shrink: 0;
           margin-right: 4px;
 
           i.fa-circle,
@@ -141,6 +144,11 @@
 
         .item-text {
           flex-grow: 1;
+          opacity: 0.75;
+          font-weight: 600;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
 
         .item-badge {
@@ -174,6 +182,10 @@
           color: #fff;
           background: $brand-primary;
 
+          .item-text {
+            opacity: 1;
+          }
+
           .item-icon,
           .hide-dm {
             color: #fff;
@@ -195,16 +207,18 @@
       .invite-link {
         display: inline-block;
         color: $brand-primary;
+        font-size: 15px;
         font-weight: bold;
         text-decoration: none;
         border-bottom: 1px dashed #003366;
         margin: 15px 10px 0;
         padding: 3px 0;
-
-        &:hover {
-          border-bottom-style: solid;
-        }
       }
+    }
+
+    &:hover {
+      overflow-y: auto;
+      overflow-y: overlay;
     }
   }
 

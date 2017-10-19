@@ -6,7 +6,7 @@ import classNames from "classnames";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-@inject("presenceStore")
+@inject("presenceStore", "sidemenuStore")
 @observer
 class Room extends Component {
   getNavLink() {
@@ -72,7 +72,10 @@ class Room extends Component {
 
   hideDM = event => {
     event.preventDefault();
-    console.log("Hide this DM");
+    const { sidemenuStore } = this.props;
+    sidemenuStore.hideGroup(this.props.room.id).then(() => {
+      sidemenuStore.loadGroups();
+    });
   };
 
   getHideDMIcon() {

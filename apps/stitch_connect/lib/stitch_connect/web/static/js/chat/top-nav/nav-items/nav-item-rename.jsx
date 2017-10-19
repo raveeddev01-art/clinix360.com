@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import slugify from "slugify";
+import { withRouter } from "react-router-dom";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
@@ -13,34 +15,50 @@ import Button from "react-bootstrap/lib/Button";
 
 @inject("groupStore")
 @observer
-export default class NavItemRename extends Component {
+class NavItemRename extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showModal: false,
-      groupName: ""
+      groupName: "",
+      groupSlug: ""
     };
   }
 
   toggleModal = () => {
     this.setState({
       showModal: !this.state.showModal,
-      groupName: this.props.groupStore.name
+      groupName: this.props.groupStore.name,
+      groupSlug: `#${this.props.groupStore.slug}`
     });
   };
 
-  handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
+  cleanName = e => {
+    const re = /^[\w\-\s]+$/;
+    if (!re.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  canRenameRoom = () => {
+    const { groupName } = this.state;
+    return groupName.trim() !== "";
+  };
+
+  handleChangeName = event => {
+    const value = event.target.value;
 
     this.setState({
-      [name]: value
+      groupName: value,
+      groupSlug: `#${slugify(value, { lower: true })}`
     });
   };
 
   handleSubmit = () => {
-    this.props.groupStore.rename(this.state.groupName);
+    this.props.groupStore.rename(this.state.groupName).then(group => {
+      const { history } = this.props;
+      history.push(`/rooms/${group.slug}`);
+    });
     this.setState({ showModal: false });
   };
 
@@ -50,7 +68,7 @@ export default class NavItemRename extends Component {
         Rename
         <Modal show={this.state.showModal} onHide={this.toggleModal}>
           <Modal.Header>
-            <Modal.Title>Rename Group</Modal.Title>
+            <Modal.Title>Rename</Modal.Title>
             <a href="#" onClick={this.toggleModal}>
               <i className="fa fa-close" />
             </a>
@@ -60,7 +78,7 @@ export default class NavItemRename extends Component {
             <Form horizontal>
               <FormGroup bsSize="large">
                 <Col componentClass={ControlLabel} sm={3}>
-                  Group Name:
+                  Name
                 </Col>
 
                 <Col sm={9}>
@@ -68,13 +86,35 @@ export default class NavItemRename extends Component {
                     name="groupName"
                     type="text"
                     autoFocus
+                    maxLength="25"
                     placeholder="e.g. Radiology"
                     value={this.state.groupName}
-                    onChange={this.handleChange}
+                    onKeyPress={this.cleanName}
+                    onChange={this.handleChangeName}
                   />
                   <HelpBlock className="text-muted m-b-0">
-                    The standardize name for use in <a href="#">referencing</a>{" "}
-                    this group will also be updated: <span>#placeholder</span>
+                    Names must be shorter than 25 characters and without
+                    punctuation.
+                  </HelpBlock>
+                </Col>
+              </FormGroup>
+              <FormGroup bsSize="large">
+                <Col componentClass={ControlLabel} sm={3} className="optional">
+                  Reference
+                  <br />
+                  <span>(automatic)</span>
+                </Col>
+
+                <Col sm={9}>
+                  <FormControl
+                    name="reference"
+                    placeholder="e.g. #radiology"
+                    value={this.state.groupSlug}
+                    disabled
+                  />
+                  <HelpBlock className="text-muted m-b-0">
+                    The reference name is the unique ID for a room and can be
+                    mentioned in a conversation to link right to it.
                   </HelpBlock>
                 </Col>
               </FormGroup>
@@ -88,6 +128,7 @@ export default class NavItemRename extends Component {
             <Button
               bsSize="large"
               bsStyle="primary"
+              disabled={!this.canRenameRoom()}
               onClick={this.handleSubmit}
             >
               Rename
@@ -98,3 +139,5 @@ export default class NavItemRename extends Component {
     );
   }
 }
+
+export default withRouter(NavItemRename);

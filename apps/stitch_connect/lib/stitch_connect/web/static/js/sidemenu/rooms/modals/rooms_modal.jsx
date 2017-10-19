@@ -38,7 +38,9 @@ class RoomsModal extends Component {
   }
 
   getSlug() {
-    return this.state.name ? `#${slugify(this.state.name)}` : "";
+    return this.state.name
+      ? `#${slugify(this.state.name, { lower: true })}`
+      : "";
   }
 
   handleChange = event => {
@@ -66,6 +68,13 @@ class RoomsModal extends Component {
     this.setState({ [field]: evt.target.value });
   };
 
+  cleanName = e => {
+    const re = /^[\w\-\s]+$/;
+    if (!re.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   updateMembers = value => {
     this.setState({ members: value });
   };
@@ -87,6 +96,11 @@ class RoomsModal extends Component {
         history.push(`/rooms/${slug}`);
         closeModal();
       });
+  };
+
+  canCreateRoom = () => {
+    const { name, members } = this.state;
+    return name.trim() !== "" && members && members.length !== 0;
   };
 
   renderModalHeader() {
@@ -195,8 +209,14 @@ class RoomsModal extends Component {
                 name="name"
                 type="text"
                 placeholder="e.g. Emergency Room"
+                maxLength="25"
+                onKeyPress={this.cleanName}
                 onChange={this.updateValue("name")}
               />
+              <HelpBlock>
+                Names must be shorter than 25 characters and without
+                punctuation.
+              </HelpBlock>
             </Col>
           </FormGroup>
 
@@ -245,14 +265,19 @@ class RoomsModal extends Component {
   }
 
   renderModalFooter() {
-    const { closeModal } = this.props;
+    const { closeModal, name, members } = this.props;
 
     return (
       <Modal.Footer>
         <Button bsSize="large" onClick={closeModal}>
           Cancel
         </Button>
-        <Button bsSize="large" bsStyle="primary" onClick={this.createRoom}>
+        <Button
+          bsSize="large"
+          bsStyle="primary"
+          onClick={this.createRoom}
+          disabled={!this.canCreateRoom()}
+        >
           Create Room
         </Button>
       </Modal.Footer>

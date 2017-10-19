@@ -20,8 +20,10 @@ export default class GroupName extends Component {
     });
     return (
       <h4>
-        <i className={iconClassName} />
-        {` ${groupStore.name}`}
+        <span>
+          <i className={iconClassName} />
+          {` ${groupStore.name}`}
+        </span>
       </h4>
     );
   }

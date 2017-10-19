@@ -20,7 +20,7 @@ class MessageHeader extends Component {
 
         <OverlayTrigger placement="top" overlay={timestampTooltip}>
           <span className="time">
-            {moment(timestamp).format("HH:mm A")}
+            {moment(timestamp).format("hh:mm A")}
           </span>
         </OverlayTrigger>
       </div>

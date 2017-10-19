@@ -14,6 +14,7 @@ import NavItemNotifications from "./nav-items/nav-item-notifications";
 import NavItemRename from "./nav-items/nav-item-rename";
 import NavItemConvert from "./nav-items/nav-item-convert";
 import NavItemLeave from "./nav-items/nav-item-leave";
+import NavItemHide from "./nav-items/nav-item-hide";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 
@@ -55,17 +56,18 @@ class TopNav extends Component {
 
   renderRoomControls = () => {
     const isNotDM = this.props.groupStore.groupType === "group";
+    const isDefault = this.props.groupStore.isDefault;
 
     if (this.props.groupStore.joined) {
       return (
         <div>
           <NavItemFavorite />
-          {isNotDM && <NavItemMembers />}
-          <NavItemNotifications />
+          {isNotDM && !isDefault && <NavItemMembers />}
+          {isNotDM && <NavItemNotifications />}
           {isNotDM && <NavItemRename />}
-          {isNotDM && <NavItemConvert />}
-          {isNotDM && <NavItemLeave />}
-          <MenuItem>Delete</MenuItem>
+          {isNotDM && !isDefault && <NavItemConvert />}
+          {isNotDM && !isDefault && <NavItemLeave />}
+          {!isDefault && !isNotDM && <NavItemHide />}
         </div>
       );
     } else {
