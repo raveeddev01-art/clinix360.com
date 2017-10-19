@@ -90,6 +90,13 @@ class SidemenuStore {
   };
 
   @action
+  hideGroup = (id) => {
+    return put(`/api/v1/groups/${id}/hide`).then(resp => {
+      notify.show("Room has been closed");
+    });
+  };
+
+  @action
   onJoinedGroup = joinedGroup => {
     const group = this.groups.find(g => g.id === joinedGroup.id);
 
