@@ -43,32 +43,6 @@ class SearchStore {
       this.messages.push(...result.data);
     });
   };
-
-  @action
-  searchMentions = () => {
-    if (this.loading) {
-      return null;
-    }
-
-    this.loading = true;
-    this.hasMore = true;
-    this.skip = 0;
-    this.messages = [];
-
-    return get(
-      `/api/v1/mentions?skip=${this.skip}&limit=${this.limit}`
-    ).then(result => {
-      this.skip += this.limit;
-      if (result.data.data.length === this.limit) {
-        this.hasMore = true;
-      } else {
-        this.hasMore = false;
-      }
-
-      this.loading = false;
-      this.messages.push(...result.data.data);
-    });
-  };
 }
 
 export default SearchStore;

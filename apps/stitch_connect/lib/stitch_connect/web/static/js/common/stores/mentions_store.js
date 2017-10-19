@@ -35,7 +35,7 @@ class MentionsStore {
 
       const { data, meta } = response.data;
 
-      this.mentions.push(data);
+      this.mentions = this.mentions.concat(data);
       this.hasMore = this.mentions.length < meta.count;
     });
   }
