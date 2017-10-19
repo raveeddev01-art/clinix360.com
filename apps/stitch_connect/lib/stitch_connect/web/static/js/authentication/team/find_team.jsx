@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -12,12 +13,17 @@ import Button from "react-bootstrap/lib/Button";
 
 import Card from "../components/card/card";
 
+@inject("titleStore")
 export default class FindTeam extends Component {
-  constructor(props) {
-    super();
+  constructor(...args) {
+    super(...args);
     this.state = {
       email: ""
     };
+  }
+
+  componentWillMount() {
+    this.props.titleStore.setPageName("Find Team");
   }
 
   _onChange = event => {
@@ -30,7 +36,6 @@ export default class FindTeam extends Component {
   };
 
   _renderHeader = () => {
-    const { backUrl, restartUrl } = this.props;
     return (
       <div className="card-header">
         <Row>

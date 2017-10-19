@@ -20,10 +20,9 @@ class AuthenticationStore {
   }
 }
 
-var authenticationStore;
+let authenticationStore;
 
 const store = {
-  instance() {},
   get instance() {
     return authenticationStore;
   },
