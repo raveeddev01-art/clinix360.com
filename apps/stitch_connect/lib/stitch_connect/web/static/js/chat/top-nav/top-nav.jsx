@@ -57,10 +57,11 @@ class TopNav extends Component {
   };
 
   renderRoomControls = () => {
-    const isNotDM = this.props.groupStore.groupType === "group";
-    const isDefault = this.props.groupStore.isDefault;
+    const { groupStore } = this.props;
+    const isNotDM = groupStore.groupType === "group";
+    const isDefault = groupStore.isDefault;
 
-    if (this.props.groupStore.joined) {
+    if (groupStore.joined) {
       return (
         <div>
           <NavItemFavorite />
@@ -77,7 +78,7 @@ class TopNav extends Component {
     return (
       <div>
         <MenuItem onSelect={this.handleJoin}>
-          Join <strong>#{this.props.groupStore.slug}</strong>
+          Join <strong>#{groupStore.slug}</strong>
         </MenuItem>
       </div>
     );
@@ -85,8 +86,12 @@ class TopNav extends Component {
 
   onSearch = event => {
     event.preventDefault();
-    this.props.addonStore.setAddonPanel("Search Results");
-    this.props.addonStore.toggleAddons(true);
+
+    const { addonStore } = this.props;
+
+    addonStore.setAddonPanel("Search Results");
+    addonStore.toggleAddons(true);
+
     this.search(this.state.query);
   };
 
@@ -159,7 +164,7 @@ class TopNav extends Component {
             {this.renderClearButton()}
           </Form>
 
-          <DotOptions />
+          <DotOptions toggleAddonMenu={this._toggleAddonMenu} />
         </div>
       </div>
     );
