@@ -55,11 +55,11 @@ class NavItemRename extends Component {
   };
 
   handleSubmit = () => {
-    this.props.groupStore.rename(this.state.groupName, group => {
-      this.setState({ showModal: false });
+    this.props.groupStore.rename(this.state.groupName).then(group => {
       const { history } = this.props;
       history.push(`/rooms/${group.slug}`);
     });
+    this.setState({ showModal: false });
   };
 
   render() {
