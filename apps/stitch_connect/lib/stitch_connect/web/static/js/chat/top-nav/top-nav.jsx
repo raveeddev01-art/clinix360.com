@@ -14,6 +14,7 @@ import NavItemNotifications from "./nav-items/nav-item-notifications";
 import NavItemRename from "./nav-items/nav-item-rename";
 import NavItemConvert from "./nav-items/nav-item-convert";
 import NavItemLeave from "./nav-items/nav-item-leave";
+import NavItemHide from "./nav-items/nav-item-hide";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 
@@ -62,11 +63,11 @@ class TopNav extends Component {
         <div>
           <NavItemFavorite />
           {isNotDM && !isDefault && <NavItemMembers />}
-          <NavItemNotifications />
+          {isNotDM && <NavItemNotifications />}
           {isNotDM && <NavItemRename />}
           {isNotDM && !isDefault && <NavItemConvert />}
           {isNotDM && !isDefault && <NavItemLeave />}
-          {!isDefault && <MenuItem>Delete</MenuItem>}
+          {!isDefault && !isNotDM && <NavItemHide />}
         </div>
       );
     } else {

@@ -263,6 +263,13 @@ class GroupStore {
   };
 
   @action
+  hide = () => {
+    return put(`/api/v1/groups/${this.id}/hide`).then(resp => {
+      notify.show("Room has been closed");
+    });
+  };
+
+  @action
   loadNotificationSetting = () => {
     return get(
       `/api/v1/groups/${this.id}/notification-preference`
