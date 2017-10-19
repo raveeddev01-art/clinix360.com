@@ -91,9 +91,7 @@ class SidemenuStore {
 
   @action
   hideGroup = (id) => {
-    return put(`/api/v1/groups/${id}/hide`).then(resp => {
-      notify.show("Room has been closed");
-    });
+    return put(`/api/v1/groups/${id}/hide`);
   };
 
   @action
