@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import debounce from "lodash/debounce";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import Form from "react-bootstrap/lib/Form";
@@ -28,7 +29,9 @@ class TopNav extends Component {
       query: ""
     };
 
-    this.search = _.debounce(this.props.searchStore.searchMessages, 300);
+    this.debouncedSearch = debounce(query => {
+      props.searchStore.setQuery(query);
+    }, 500);
   }
 
   _toggleAddonMenu = menuName => () => {
@@ -42,9 +45,9 @@ class TopNav extends Component {
     }
   };
 
-  onChange = event => {
+  onSearchQueryChange = event => {
     this.setState({ query: event.target.value });
-    this.search(event.target.value);
+    this.debouncedSearch(event.target.value);
   };
 
   handleJoin = () => {
@@ -91,8 +94,6 @@ class TopNav extends Component {
 
     addonStore.setAddonPanel("Search Results");
     addonStore.toggleAddons(true);
-
-    this.search(this.state.query);
   };
 
   renderClearButton = () => {
@@ -104,12 +105,12 @@ class TopNav extends Component {
   };
 
   clearSearch = event => {
-    event.preventDefault();
-    this.setState({ query: "" });
-  };
+    const { searchStore } = this.props;
 
-  loadMore = () => {
-    this.search();
+    event.preventDefault();
+
+    this.setState({ query: "" });
+    searchStore.reset();
   };
 
   render() {
@@ -157,7 +158,7 @@ class TopNav extends Component {
             <FormControl
               type="text"
               placeholder="Search"
-              onChange={this.onChange}
+              onChange={this.onSearchQueryChange}
               value={this.state.query}
             />
 

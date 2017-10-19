@@ -1,48 +1,60 @@
-import { observable, action } from "mobx";
+import { observable, action, computed } from "mobx";
 
 class SearchStore {
   @observable messages = [];
-  @observable total = 0;
   @observable loading = false;
-  @observable skip = 0;
   @observable hasMore = false;
-  limit = 10;
-  query = "";
+
+  constructor(rootStore) {
+    this.rootStore = rootStore;
+
+    this.limit = 10;
+    this.query = "";
+  }
+
+  @computed
+  get isEmpty() {
+    return this.messages.length === 0;
+  }
 
   @action
-  reset = () => {
+  reset() {
+    this.query = "";
     this.messages = [];
-    this.skip = 0;
-  };
+    this.loading = false;
+    this.hasMore = true;
+  }
 
   @action
-  searchMessages = query => {
-    if (this.loading) {
-      return null;
+  setQuery(query) {
+    this.reset();
+    this.query = query;
+    this.loadMore();
+  }
+
+  @action
+  loadMore() {
+    if (this.loading || !this.hasMore) {
+      return;
     }
 
     this.loading = true;
-    if (query) {
-      this.hasMore = true;
-      this.query = query;
-      this.skip = 0;
-      this.messages = [];
-    }
 
-    return post(`/api/v1/messages/search`, {
-      body: { term: this.query, skip: this.skip, limit: this.limit }
-    }).then(result => {
-      this.skip += this.limit;
-      if (result.data.length === this.limit) {
-        this.hasMore = true;
-      } else {
-        this.hasMore = false;
+    post(`/api/v1/messages/search`, {
+      body: {
+        term: this.query,
+        skip: this.messages.length,
+        limit: this.limit
       }
-
+    }).then(response => {
       this.loading = false;
-      this.messages.push(...result.data);
+
+      const { data } = response;
+
+      this.messages = this.messages.concat(data);
+      this.hasMore = data.length === this.limit;
     });
-  };
+  }
 }
 
 export default SearchStore;

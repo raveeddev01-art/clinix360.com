@@ -19,7 +19,7 @@ class MentionsStore {
 
   @action
   loadMore() {
-    if (!this.hasMore) {
+    if (this.loading || !this.hasMore) {
       return;
     }
 
