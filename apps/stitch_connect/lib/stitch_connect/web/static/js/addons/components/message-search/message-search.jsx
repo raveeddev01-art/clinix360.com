@@ -2,14 +2,10 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import _ from "lodash";
 import InfiniteScroll from "react-infinite-scroller";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import Form from "react-bootstrap/lib/Form";
-import InputGroup from "react-bootstrap/lib/InputGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
 
 import AddonMessage from "../../../common/components/messages/addon-message";
 
-@inject("messageStore", "searchStore")
+@inject("searchStore")
 @observer
 class MessageSearch extends Component {
   constructor(props) {
@@ -35,12 +31,12 @@ class MessageSearch extends Component {
             hasMore={hasMore}
             useWindow={false}
           >
-            {messages.map(message =>
+            {messages.map(message => (
               <AddonMessage
                 key={`search_result_${message.id}`}
                 message={message}
               />
-            )}
+            ))}
           </InfiniteScroll>
         </div>
       </div>
