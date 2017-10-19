@@ -19,6 +19,7 @@ import SearchStore from "./search_store";
 import SidemenuStore from "./sidemenu_store";
 import SocketStore from "./socket_store";
 import UploadStore from "./upload_store";
+import TitleStore from "./title_store";
 
 class RootStore {
   constructor(props) {
@@ -45,6 +46,7 @@ class RootStore {
     this.sidemenuStore = new SidemenuStore(this, props);
     this.socketStore = new SocketStore(this);
     this.uploadStore = new UploadStore(this);
+    this.titleStore = new TitleStore(this, props);
 
     // Initial actions for admin stores
     this.notificationStore.loadPreferences();
