@@ -84,12 +84,12 @@
       }
     }
 
-    .form-group {
-      .publicity-description {
-        font-size: 16px;
-        font-weight: 600;
-      }
+    .publicity-description {
+      font-size: 16px;
+      font-weight: 600;
+    }
 
+    .form-group {
       .form-control {
         font-size: 18px;
       }
@@ -107,5 +107,17 @@
         }
       }
     }
+  }
+}
+
+.convert-room-modal {
+  .publicity-description {
+    font-size: 16px;
+    font-weight: 600;
+    color: #555459;
+  }
+
+  .modal-content .modal-body {
+    min-height: initial;
   }
 }
