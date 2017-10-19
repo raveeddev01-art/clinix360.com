@@ -20,6 +20,7 @@ class GroupStore {
   @observable createdAt = null;
   @observable groupType = "group"; // group, single-dm, multi-dm
   @observable dmUsers = [];
+  @observable isDefault = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -84,6 +85,7 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.groupType = "group";
+      this.isDefault = data.is_default;
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
       this.mentionsCount = data.mentions_count;
@@ -129,6 +131,7 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.groupType = "single-dm";
+      this.isDefault = false;
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
       this.mentionsCount = data.mentions_count;
@@ -179,6 +182,7 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.groupType = "multi-dm";
+      this.isDefault = false;
       this.unreadMessagesCount = data.unread_messages_count;
       this.mentionsCount = data.mentions_count;
       this.lastReadAt = data.last_read_at;

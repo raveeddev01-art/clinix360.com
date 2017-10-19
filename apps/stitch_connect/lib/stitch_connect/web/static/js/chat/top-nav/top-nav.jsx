@@ -55,17 +55,18 @@ class TopNav extends Component {
 
   renderRoomControls = () => {
     const isNotDM = this.props.groupStore.groupType === "group";
+    const isDefault = this.props.groupStore.isDefault;
 
     if (this.props.groupStore.joined) {
       return (
         <div>
           <NavItemFavorite />
-          {isNotDM && <NavItemMembers />}
+          {isNotDM && !isDefault && <NavItemMembers />}
           <NavItemNotifications />
           {isNotDM && <NavItemRename />}
-          {isNotDM && <NavItemConvert />}
-          {isNotDM && <NavItemLeave />}
-          <MenuItem>Delete</MenuItem>
+          {isNotDM && !isDefault && <NavItemConvert />}
+          {isNotDM && !isDefault && <NavItemLeave />}
+          {!isDefault && <MenuItem>Delete</MenuItem>}
         </div>
       );
     } else {
