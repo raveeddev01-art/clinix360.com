@@ -31,7 +31,6 @@ defmodule Stitch.GroupQueries do
     |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
     |> preload(:users) # TODO: do not preload all team users by default
     |> where([g, gu], g.public or not is_nil(gu.id))
-    |> where([g, gu], gu.is_hidden == false)
     |> select([g, gu], %{
       group: g,
       joined: not is_nil(gu.id),
