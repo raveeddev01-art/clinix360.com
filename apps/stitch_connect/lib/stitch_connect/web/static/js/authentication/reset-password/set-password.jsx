@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import PasswordValidator from "password-validator";
 import FormGroup from "react-bootstrap/lib/FormGroup";
@@ -8,7 +8,7 @@ import Form from "react-bootstrap/lib/Form";
 import Button from "react-bootstrap/lib/Button";
 import Card from "../components/card/card";
 
-@inject("resetPasswordStore")
+@inject("resetPasswordStore", "titleStore")
 @observer
 class SetPassword extends Component {
   constructor(props) {
@@ -23,6 +23,10 @@ class SetPassword extends Component {
       passwordDigitsValid: false,
       passwordSymbolsValid: false
     };
+  }
+
+  componentWillMount() {
+    this.props.titleStore.setPageName("Reset Password");
   }
 
   _isPasswordValid = val => {

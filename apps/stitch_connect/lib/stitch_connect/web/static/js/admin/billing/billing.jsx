@@ -1,13 +1,17 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 import { Panel, Tabs, Tab } from "react-bootstrap";
 
 const header = (
-  <h1><i className="fa fa-credit-card"></i> Billing</h1>
+  <h1>
+    <i className="fa fa-credit-card" /> Billing
+  </h1>
 );
 
+@inject("titleStore")
 export default class TeamBilling extends Component {
-  constructor(props) {
-    super(props);
+  componentWillMount() {
+    this.props.titleStore.setPageName("Billing");
   }
 
   render() {

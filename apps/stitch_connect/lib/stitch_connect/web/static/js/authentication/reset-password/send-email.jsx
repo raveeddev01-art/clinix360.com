@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import Form from "react-bootstrap/lib/Form";
 import Row from "react-bootstrap/lib/Row";
@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 import Card from "../components/card/card";
 
-@inject("resetPasswordStore")
+@inject("resetPasswordStore", "titleStore")
 @observer
 class SendEmail extends Component {
   constructor(props) {
@@ -23,6 +23,10 @@ class SendEmail extends Component {
     };
   }
 
+  componentWillMount() {
+    this.props.titleStore.setPageName("Reset Password");
+  }
+
   _onChange = evt => this.setState({ email: evt.target.value });
   _onSubmit = evt => {
     evt.preventDefault();
@@ -30,7 +34,6 @@ class SendEmail extends Component {
   };
 
   _renderHeader = () => {
-    const { backUrl, restartUrl } = this.props;
     return (
       <div className="card-header">
         <Row>

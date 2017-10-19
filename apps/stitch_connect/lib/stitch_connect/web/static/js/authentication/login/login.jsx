@@ -2,15 +2,11 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
-@inject("authenticationStore")
+@inject("authenticationStore", "titleStore")
 @observer
 export default class Login extends Component {
   constructor(props) {
@@ -20,6 +16,10 @@ export default class Login extends Component {
       email: "",
       password: ""
     };
+  }
+
+  componentWillMount() {
+    this.props.titleStore.setPageName("Sign In");
   }
 
   handleChange = event => {

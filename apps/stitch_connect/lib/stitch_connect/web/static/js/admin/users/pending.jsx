@@ -4,14 +4,17 @@ import { Panel, Row, Col } from "react-bootstrap";
 import PendingInvitationItem from "./pending-invitation-item";
 
 const header = (
-  <h1><i className="fa fa-inbox"></i> Pending</h1>
+  <h1>
+    <i className="fa fa-inbox" /> Pending
+  </h1>
 );
 
-@inject("invitationStore")
+@inject("invitationStore", "titleStore")
 @observer
 class UsersPending extends Component {
   componentWillMount() {
     this.props.invitationStore.loadInvitations();
+    this.props.titleStore.setPageName("Pending");
   }
 
   _renderInvitations = () => {
