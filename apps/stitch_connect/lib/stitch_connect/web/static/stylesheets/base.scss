@@ -66,6 +66,11 @@ a,
   }
 }
 
+.btn-primary[disabled]:hover {
+  background: $brand-primary;
+  border-color: $brand-primary;
+}
+
 .form-control,
 .form-group-lg .form-control {
   font-size: 16px;
@@ -206,12 +211,18 @@ hr {
 
 .modal-dialog {
   width: 100%;
+  height: 100%;
   max-width: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
 
   .modal-content {
     border: 0;
     border-radius: 3px;
     box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.15);
+    width: 100%;
 
     .modal-header {
       color: #fff;
@@ -243,6 +254,23 @@ hr {
       }
 
       .form-group {
+        .form-control {
+          border-radius: 6px;
+        }
+
+        .control-label {
+          &.optional {
+            padding-top: 3px;
+            line-height: 18px;
+
+            span {
+              font-size: 14px;
+              color: #9e9ea6;
+              font-weight: normal;
+            }
+          }
+        }
+
         .help-block {
           font-size: 13px;
 
@@ -315,6 +343,11 @@ hr {
       border-top: 0;
       padding: 0 25px 25px;
 
+      .btn {
+        &:focus {
+          outline: none;
+        }
+      }
       .btn-lg {
         padding: 8px 20px;
       }
