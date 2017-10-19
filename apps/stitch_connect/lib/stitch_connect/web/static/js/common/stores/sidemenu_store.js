@@ -90,7 +90,7 @@ class SidemenuStore {
   };
 
   @action
-  hideGroup = (id) => {
+  hideGroup = id => {
     return put(`/api/v1/groups/${id}/hide`);
   };
 

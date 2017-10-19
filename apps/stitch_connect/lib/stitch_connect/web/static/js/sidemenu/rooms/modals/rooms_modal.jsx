@@ -38,7 +38,9 @@ class RoomsModal extends Component {
   }
 
   getSlug() {
-    return this.state.name ? `#${slugify(this.state.name, {lower: true})}` : "";
+    return this.state.name
+      ? `#${slugify(this.state.name, { lower: true })}`
+      : "";
   }
 
   handleChange = event => {
@@ -98,7 +100,7 @@ class RoomsModal extends Component {
 
   canCreateRoom = () => {
     const { name, members } = this.state;
-    return name.trim() !== '' && members && members.length !== 0;
+    return name.trim() !== "" && members && members.length !== 0;
   };
 
   renderModalHeader() {
@@ -212,7 +214,8 @@ class RoomsModal extends Component {
                 onChange={this.updateValue("name")}
               />
               <HelpBlock>
-                Names must be shorter than 25 characters and without punctuation.
+                Names must be shorter than 25 characters and without
+                punctuation.
               </HelpBlock>
             </Col>
           </FormGroup>

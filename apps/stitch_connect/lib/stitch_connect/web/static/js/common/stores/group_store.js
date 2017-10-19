@@ -217,7 +217,7 @@ class GroupStore {
   };
 
   @action
-  rename = (groupName) => {
+  rename = groupName => {
     return patch(`/api/v1/groups/${this.id}/rename`, {
       body: { name: groupName, slug: groupName }
     }).then(resp => {

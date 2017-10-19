@@ -40,17 +40,17 @@ class NavItemRename extends Component {
     }
   };
 
-  canRenameRoom = e => {
+  canRenameRoom = () => {
     const { groupName } = this.state;
-    return groupName.trim() !== '';
-  }
+    return groupName.trim() !== "";
+  };
 
   handleChangeName = event => {
     const value = event.target.value;
 
     this.setState({
       groupName: value,
-      groupSlug: `#${slugify(value, {lower: true})}`
+      groupSlug: `#${slugify(value, { lower: true })}`
     });
   };
 
@@ -93,7 +93,8 @@ class NavItemRename extends Component {
                     onChange={this.handleChangeName}
                   />
                   <HelpBlock className="text-muted m-b-0">
-                    Names must be shorter than 25 characters and without punctuation.
+                    Names must be shorter than 25 characters and without
+                    punctuation.
                   </HelpBlock>
                 </Col>
               </FormGroup>
