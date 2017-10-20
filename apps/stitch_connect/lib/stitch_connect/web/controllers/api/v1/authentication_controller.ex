@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
 
       {:ok, user} ->
         Stitch.Accounts.Email.reset_password_email(user, StitchConnect.Web.Api.V1.AuthenticationView.reset_password_link(user, conn))
-        conn |> json(%{resetToken: user.password_reset_token})
+        conn |> json(%{status: "ok"})
     end
   end
 
