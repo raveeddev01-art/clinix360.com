@@ -10,9 +10,9 @@ export default class NavItemMembers extends Component {
     groupStore.toggleFavorite().then(favorite => {
       sidemenuStore.updateGroupData(groupStore.id, { favorite });
       if (favorite) {
-        notify.show(`You added ${groupStore.name} group as favorite`);
+        notify.show(`You added ${groupStore.name} room as favorite`);
       } else {
-        notify.show(`You removed ${groupStore.name} group from favorite`);
+        notify.show(`You removed ${groupStore.name} room from favorite`);
       }
     });
 

@@ -70,14 +70,6 @@ class Room extends Component {
     return type === "regular" ? mentionsCount : unreadMessagesCount;
   }
 
-  hideDM = event => {
-    event.preventDefault();
-    const { sidemenuStore } = this.props;
-    sidemenuStore.hideGroup(this.props.room.id).then(() => {
-      sidemenuStore.loadGroups();
-    });
-  };
-
   getHideDMIcon() {
     const { type } = this.props.room;
     if (type !== "regular") {
@@ -94,26 +86,42 @@ class Room extends Component {
     }
   }
 
+  hideDM = event => {
+    event.preventDefault();
+    const { sidemenuStore } = this.props;
+    sidemenuStore.hideGroup(this.props.room.id).then(() => {
+      sidemenuStore.loadGroups();
+    });
+  };
+
   render() {
-    const { unread_messages_count: unreadMessagesCount } = this.props.room;
+    const {
+      unread_messages_count: unreadMessagesCount,
+      type: roomType,
+      is_hidden: isHidden
+    } = this.props.room;
     const className = classNames("item", {
       "has-unread": unreadMessagesCount > 0
     });
     const badge = this.getBadge();
+    const roomHidden =
+      (roomType === "dm" || roomType === "multi_dm") && isHidden;
 
     return (
-      <NavLink
-        to={this.getNavLink()}
-        className={className}
-        activeClassName="active"
-      >
-        <div className="item-icon">
-          <i className={this.getIconClass()} />
-        </div>
-        <div className="item-text">{this.getName()}</div>
-        {this.getHideDMIcon()}
-        {badge > 0 && <div className="item-badge text-center">{badge}</div>}
-      </NavLink>
+      !roomHidden && (
+        <NavLink
+          to={this.getNavLink()}
+          className={className}
+          activeClassName="active"
+        >
+          <div className="item-icon">
+            <i className={this.getIconClass()} />
+          </div>
+          <div className="item-text">{this.getName()}</div>
+          {this.getHideDMIcon()}
+          {badge > 0 && <div className="item-badge text-center">{badge}</div>}
+        </NavLink>
+      )
     );
   }
 }

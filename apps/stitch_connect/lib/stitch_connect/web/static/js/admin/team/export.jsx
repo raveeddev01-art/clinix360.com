@@ -17,7 +17,7 @@ export default class TeamExport extends Component {
         </p>
         <ul className="list-unstyled">
           <li>
-            <i className="fa fa-circle" /> Public and private group message
+            <i className="fa fa-circle" /> Public and private room message
             history
           </li>
           <li>
@@ -27,7 +27,7 @@ export default class TeamExport extends Component {
             <i className="fa fa-circle" /> Edited and deleted messages
           </li>
           <li>
-            <i className="fa fa-circle" /> Archived group message history
+            <i className="fa fa-circle" /> Archived room message history
           </li>
           <li>
             <i className="fa fa-circle" /> Links to uploaded files

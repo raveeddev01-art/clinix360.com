@@ -36,12 +36,12 @@ class Chat extends Component {
 
       if (usernames.length === 1) {
         const user = users.find(u => u.username === usernames[0]);
-        groupStore.joinSingleDM(user);
+        groupStore.joinSingleDM(user).then(() => sidemenuStore.loadGroups());
       } else {
         const dmUsers = usernames.map(username =>
           users.find(u => u.username === username)
         );
-        groupStore.joinMultiDM(dmUsers);
+        groupStore.joinMultiDM(dmUsers).then(() => sidemenuStore.loadGroups());
       }
     }
   }

@@ -10,12 +10,12 @@ import ChatApp from "../chat/ChatApp";
 @observer
 class LockableApp extends Component {
   componentDidMount() {
-    const { onWindowFocus, onWindowBlur } = this.props.presenceStore;
+    const { onWindowFocus, onWindowBlur, getLockoutSettings } = this.props.presenceStore;
 
     window.addEventListener("focus", onWindowFocus);
     window.addEventListener("blur", onWindowBlur);
 
-    onWindowBlur();
+    getLockoutSettings();
   }
 
   render() {

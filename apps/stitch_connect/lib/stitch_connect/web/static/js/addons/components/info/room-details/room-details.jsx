@@ -19,9 +19,9 @@ class RoomDetails extends Component {
         <h5>Type</h5>
         <p>
           {groupStore.public === true ? (
-            <span>Public Group</span>
+            <span>Public Room</span>
           ) : (
-            <span>Private Group</span>
+            <span>Private Room</span>
           )}
         </p>
 

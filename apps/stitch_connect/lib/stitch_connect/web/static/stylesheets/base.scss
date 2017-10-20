@@ -43,6 +43,16 @@ a,
 .btn {
   border-radius: 3px;
   outline: none;
+
+  &:active,
+  &:focus,
+  &:active:focus {
+    outline: none;
+  }
+}
+
+.btn-xs {
+  padding: 3px 8px;
 }
 
 .btn-lg {
@@ -59,6 +69,12 @@ a,
 .btn-primary {
   background: $brand-primary;
   border-color: $brand-primary;
+
+  &:active,
+  &:focus,
+  &:active:focus {
+    background: $brand-primary;
+  }
 
   &:hover {
     background: darken($brand-primary, 5%);
@@ -224,6 +240,13 @@ hr {
     box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.15);
     width: 100%;
 
+    .btn {
+      &:active {
+        position: relative;
+        top: 3px;
+      }
+    }
+
     .modal-header {
       color: #fff;
       background: $brand-primary;
@@ -246,6 +269,7 @@ hr {
 
     .modal-body {
       padding: 25px;
+      min-height: 300px;
 
       h5 {
         font-size: 15px;
@@ -320,34 +344,15 @@ hr {
           position: relative;
         }
       }
-
-      .invite-forms .form-group {
-        margin-bottom: 10px;
-
-        .col-sm-1 {
-          padding-left: 0;
-
-          i.fa {
-            display: none;
-            font-size: 20px;
-          }
-        }
-
-        &:hover i.fa {
-          display: block;
-        }
-      }
     }
 
     .modal-footer {
       border-radius: 0 0 3px 3px;
       border-top: 0;
-      padding: 0 25px 25px;
+      padding: 0 25px 20px 25px;
 
       .btn {
-        &:focus {
-          outline: none;
-        }
+        min-width: 90px;
       }
       .btn-lg {
         padding: 8px 20px;
