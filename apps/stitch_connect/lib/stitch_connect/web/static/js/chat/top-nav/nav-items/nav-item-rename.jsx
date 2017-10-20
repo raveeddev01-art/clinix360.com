@@ -13,7 +13,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
-@inject("groupStore")
+@inject("groupStore", "sidemenuStore")
 @observer
 class NavItemRename extends Component {
   constructor(props) {
@@ -56,7 +56,9 @@ class NavItemRename extends Component {
 
   handleSubmit = () => {
     this.props.groupStore.rename(this.state.groupName).then(group => {
-      const { history } = this.props;
+      const { history, sidemenuStore } = this.props;
+      // @TODO This updates left sidebar only for the current user, but we need a socket based broadcasting for room_renamed event
+      sidemenuStore.loadGroups();
       history.push(`/rooms/${group.slug}`);
     });
     this.setState({ showModal: false });
