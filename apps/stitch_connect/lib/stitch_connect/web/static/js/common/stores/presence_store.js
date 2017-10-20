@@ -72,7 +72,6 @@ class PresenceStore {
   }
 
   joinTeamLobbyChannel = () => {
-    console.log('joining', this.teamLobbyChannelTopic);
     this.rootStore.channelStore.joinTeamLobbyChannel();
 
     this.teamLobbyChannel.on("presence_state", this.onPresenceState);
@@ -135,7 +134,6 @@ class PresenceStore {
   };
 
   onWindowBlur = () => {
-    console.log('window blur', this.locked);
     if (this.locked) return;
 
     this.teamLobbyChannel.push("became_inactive");
@@ -147,7 +145,6 @@ class PresenceStore {
   };
 
   onWindowFocus = () => {
-    console.log('resetting lock', this.locked);
     if (this.locked) return;
     window.clearTimeout(this.lockoutTimerID);
     window.clearTimeout(this.awayTimerID);
@@ -164,11 +161,9 @@ class PresenceStore {
   };
 
   getLockoutSettings = (cb) => {
-    console.log('getLockoutSettings');
     this.teamLobbyChannel
       .push("get_lockout_settings")
       .receive("ok", (data) => {
-        console.log(data);
         this.secondsToLockout = data.seconds_to_lockout;
         this.lockoutEnabled = data.security_lockout_enabled;
         this.lockoutSettingLoaded = true;
@@ -177,17 +172,14 @@ class PresenceStore {
       });
   }
 
-  startLockoutTimer() {
-    console.log('start lockout');
-    console.log(this.lockoutEnabled, this.lockoutSettingLoaded, this.secondsToLockout);
-
+  startLockoutTimer = () => {
     if (!this.lockoutSettingLoaded) {
       this.getLockoutSettings(this.startLockoutTimer);
     } else if (this.lockoutEnabled) {
       clearTimeout(this.lockoutTimerID);
       this.lockoutTimerID = setTimeout(
         this.onLockoutTimerExpired,
-        this.secondsToLockout * 3
+        this.secondsToLockout * 1000
       );
     }
   }

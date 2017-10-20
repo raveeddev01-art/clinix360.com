@@ -50,13 +50,15 @@ class RootStore {
 
     // Initial actions for admin stores
     this.notificationStore.loadPreferences();
-    this.membersStore.loadUsers(props.teamId);
     this.teamStore.loadTeam(props.teamId);
     this.userStore.loadUser(currentUser.id);
 
     // Join channels
     this.channelStore.joinEventChannel();
     this.presenceStore.joinTeamLobbyChannel();
+
+    // load users at the end after team lobby is joined
+    this.membersStore.loadUsers(props.teamId);
   }
 }
 
