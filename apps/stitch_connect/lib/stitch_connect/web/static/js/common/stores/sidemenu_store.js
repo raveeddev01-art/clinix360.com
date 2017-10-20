@@ -297,6 +297,9 @@ class SidemenuStore {
         5000,
         event => {
           this.jumpToMessage(newMessage);
+          window.dispatchEvent(
+            new CustomEvent("notification-clicked")
+          );
         }
       );
     }
