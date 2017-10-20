@@ -1,0 +1,86 @@
+.landing-hero {
+  height: 580px;
+  color: #fff;
+  background: #003366;
+
+  .header {
+    padding: 40px 0;
+
+    .brand img {
+      width: 81px;
+    }
+
+    a {
+      display: block;
+      color: #fff;
+      border-radius: 4px;
+      padding: 8px 15px;
+      @media (min-width: 768px) {
+        font-size: 16px;
+      }
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      &.btn-outline {
+        border: 2px solid #fff;
+        @media (min-width: 768) {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+
+  .welcome-message {
+    h1 {
+      font-size: 28px;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+      margin: 20px 0;
+      @media (min-width: 768px) {
+        font-size: 42px;
+        margin: 40px 0;
+      }
+    }
+
+    h3 {
+      font-size: 16px;
+      line-height: 1.5;
+      text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+      margin: 0 0 50px;
+      @media (min-width: 768px) {
+        font-size: 24px;
+      }
+    }
+
+    .flex-form {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 30px;
+
+      .form-input {
+        flex-grow: 1;
+        margin-right: 15px;
+
+        .form-control {
+          height: 40px;
+          border: 0;
+          border-radius: 4px;
+        }
+      }
+
+      .btn {
+        font-size: 16px;
+        border: 0;
+        border-radius: 4px;
+        padding: 7px 20px;
+      }
+    }
+  }
+
+  .trial {
+    font-size: 15px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  }
+}
