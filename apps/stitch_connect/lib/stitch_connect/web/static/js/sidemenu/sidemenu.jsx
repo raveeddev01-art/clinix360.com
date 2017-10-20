@@ -27,7 +27,7 @@ class Sidemenu extends Component {
     sidemenuStore.unloadSidemenuDiv();
   }
 
-  _adminOptions = () => {
+  renderAdminOptions() {
     return (
       <div>
         <div className="separator text-center">
@@ -53,7 +53,23 @@ class Sidemenu extends Component {
         </MenuItem>
       </div>
     );
-  };
+  }
+
+  renderUnreadBadgesUp() {
+    return (
+      <div className="unreads-badge up">
+        <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
+      </div>
+    );
+  }
+
+  renderUnreadBadgesDown() {
+    return (
+      <div className="unreads-badge down">
+        <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
+      </div>
+    );
+  }
 
   render() {
     const { sidemenuStore } = this.props;
@@ -101,7 +117,7 @@ class Sidemenu extends Component {
                 Notifications
               </MenuItem>
 
-              {currentUser.roles.includes("admin") && this._adminOptions()}
+              {currentUser.roles.includes("admin") && this.renderAdminOptions()}
 
               <div className="separator text-center">
                 <span>Stitch</span>
@@ -136,6 +152,9 @@ class Sidemenu extends Component {
             heading="Direct Messages"
             rooms={filterJoined(sidemenuStore.directGroups)}
           />
+
+          {this.renderUnreadBadgesUp()}
+          {this.renderUnreadBadgesDown()}
         </div>
       </div>
     );

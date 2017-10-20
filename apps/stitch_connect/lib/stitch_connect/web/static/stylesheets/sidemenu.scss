@@ -76,9 +76,14 @@
   }
 
   .flex-content {
+    position: relative;
     padding: 20px 15px;
     @include stitch-scroll();
     overflow-y: hidden;
+
+    &:hover {
+      overflow-y: overlay;
+    }
 
     .menu-nav {
       .heading {
@@ -226,9 +231,28 @@
       }
     }
 
-    &:hover {
-      overflow-y: auto;
-      overflow-y: overlay;
+    .unreads-badge {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      background-color: $brand-primary;
+      color: #fff;
+      font-size: 16px;
+
+      &.up {
+        top: 1px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+
+      &.down {
+        bottom: 1px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
     }
   }
 
