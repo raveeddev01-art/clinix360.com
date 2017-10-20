@@ -80,16 +80,15 @@ defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
   end
 
   test "when DM with the same user IDs exists", %{conn: conn, bob: bob, joe: joe} do
-    %{"id" => group_id} =
-      conn
-      |> post(api_v1_group_path(conn, :create_single_dm), %{"user_ids" => [bob.id, joe.id]})
-      |> json_response(200)
+    {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
+    {:ok, _group_user} = Stitch.Group.hide(group, bob.id)
 
     json =
       conn
       |> post(api_v1_group_path(conn, :create_single_dm), %{"user_ids" => [bob.id, joe.id]})
       |> json_response(200)
 
+    group_id = group.id
     expected_slug = "__dm:#{bob.id}.#{joe.id}"
 
     assert %{
@@ -98,6 +97,7 @@ defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
       "slug" => ^expected_slug,
       "public" => false,
       "favorite" => false,
+      "is_hidden" => false,
       "description" => nil,
       "joined" => true,
       "users" => [_, _],
