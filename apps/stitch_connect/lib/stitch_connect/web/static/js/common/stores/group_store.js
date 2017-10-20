@@ -106,14 +106,16 @@ class GroupStore {
     const slug = `__dm:${userIds.join(".")}`;
 
     if (slug === this.slug) {
-      return;
+      return new Promise(resolve => {
+        resolve();
+      });
     }
 
     this.loading = true;
     // Reset message store before join
     this.rootStore.messageStore.reset();
 
-    post(`/api/v1/groups/dm`, {
+    return post(`/api/v1/groups/dm`, {
       body: { user_ids: userIds }
     }).then(resp => {
       this.loading = false;
@@ -156,14 +158,16 @@ class GroupStore {
     const slug = `__dm:${userIds.join(".")}`;
 
     if (slug === this.slug) {
-      return;
+      return new Promise(resolve => {
+        resolve();
+      });
     }
 
     this.loading = true;
     // Reset message store before join
     this.rootStore.messageStore.reset();
 
-    post(`/api/v1/groups/multi-dm`, {
+    return post(`/api/v1/groups/multi-dm`, {
       body: { user_ids: userIds }
     }).then(resp => {
       this.loading = false;
@@ -198,7 +202,7 @@ class GroupStore {
   togglePublic = value => {
     return post(`/api/v1/groups/${this.id}/toggle-public`, {
       body: { public: value }
-    }).then(resp => {
+    }).then(() => {
       this.public = !this.public;
     });
   };
@@ -232,7 +236,7 @@ class GroupStore {
       body: {
         user_ids: _.map(members, "id").join(",")
       }
-    }).then(resp => {
+    }).then(() => {
       notify.show("Users invited to group");
     });
   };
@@ -248,7 +252,7 @@ class GroupStore {
 
   @action
   join = () => {
-    return post(`/api/v1/groups/${this.id}/join`).then(resp => {
+    return post(`/api/v1/groups/${this.id}/join`).then(() => {
       this.joined = true;
       notify.show("User has joined the group");
     });
@@ -283,7 +287,7 @@ class GroupStore {
       body: {
         desktop_notification_preference: setting
       }
-    }).then(resp => {
+    }).then(() => {
       this.notificationSetting = setting;
       notify.show(`Notification setting saved for group ${this.name}`);
     });

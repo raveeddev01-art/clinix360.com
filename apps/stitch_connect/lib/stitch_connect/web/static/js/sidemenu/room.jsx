@@ -70,14 +70,6 @@ class Room extends Component {
     return type === "regular" ? mentionsCount : unreadMessagesCount;
   }
 
-  hideDM = event => {
-    event.preventDefault();
-    const { sidemenuStore } = this.props;
-    sidemenuStore.hideGroup(this.props.room.id).then(() => {
-      sidemenuStore.loadGroups();
-    });
-  };
-
   getHideDMIcon() {
     const { type } = this.props.room;
     if (type !== "regular") {
@@ -94,6 +86,14 @@ class Room extends Component {
     }
   }
 
+  hideDM = event => {
+    event.preventDefault();
+    const { sidemenuStore } = this.props;
+    sidemenuStore.hideGroup(this.props.room.id).then(() => {
+      sidemenuStore.loadGroups();
+    });
+  };
+
   render() {
     const {
       unread_messages_count: unreadMessagesCount,
@@ -104,7 +104,8 @@ class Room extends Component {
       "has-unread": unreadMessagesCount > 0
     });
     const badge = this.getBadge();
-    const roomHidden = roomType === "dm" && isHidden;
+    const roomHidden =
+      (roomType === "dm" || roomType === "multi_dm") && isHidden;
 
     return (
       !roomHidden && (
