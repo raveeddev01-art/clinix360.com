@@ -156,4 +156,27 @@ defmodule Stitch.Invitation do
       {:error, "User unauthorized to revoke invitation."}
     end
   end
+
+  def accept_and_complete_onboarding(invite_token, params) do
+    Ecto.Multi.new
+    |> Ecto.Multi.run(:invite, fn _ -> Invitation.get_by_invite_token(invite_token) end)
+    |> Ecto.Multi.run(:accept, fn %{invite: invite} -> Stitch.Invitation.accept(invite) end)
+    |> Ecto.Multi.run(:onboarded_user, fn %{invite: invite} ->
+      params = params |> Map.put("team_id", invite.team_id) |> Map.put("roles", ["member"])
+      case Stitch.Accounts.update_and_complete_user_onboarding(invite.user_id, params) do
+        %User{} = user -> {:ok, user}
+        error -> error
+      end
+    end)
+    |> Ecto.Multi.run(:default_group, fn %{onboarded_user: onboarded_user} ->
+      {:ok, Stitch.GroupQueries.default_group(onboarded_user)}
+    end)
+    |> Ecto.Multi.run(:group_user, fn %{onboarded_user: onboarded_user, default_group: default_group} ->
+      Repo.insert(%Stitch.GroupUser{group_id: default_group.id, user_id: onboarded_user.id})
+    end)
+    |> Ecto.Multi.run(:system_message, fn %{onboarded_user: onboarded_user, default_group: default_group} ->
+      Repo.insert(Stitch.Message.join_message_changeset(default_group, onboarded_user.id))
+    end)
+    |> Repo.transaction
+  end
 end
