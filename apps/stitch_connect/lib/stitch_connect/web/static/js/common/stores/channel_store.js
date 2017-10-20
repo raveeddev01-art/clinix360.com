@@ -12,7 +12,6 @@ class ChannelStore {
     }
 
     this.channels[topic] = socket.channel(topic, options);
-
     return this.channels[topic].join();
   }
 
