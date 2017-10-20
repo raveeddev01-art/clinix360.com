@@ -12,6 +12,14 @@ defmodule Stitch.Team.OnboardingTest do
       assert result == true
     end
 
+    test "returns false if team slug is reserved word" do
+      result = Stitch.Team.Onboarding.slug_available?("www")
+      assert result == false
+
+      result = Stitch.Team.Onboarding.slug_available?("admin")
+      assert result == false
+    end
+
     test "returns false if team name is not available" do
       insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
       result = Stitch.Team.Onboarding.slug_available?("care clinic")

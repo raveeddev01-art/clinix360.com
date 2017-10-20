@@ -4,12 +4,13 @@ defmodule Stitch.Team.Onboarding do
   """
 
   alias Stitch.{Repo, Team, Group}
+  @blacklisted_subdomains Stitch.Blacklist.blacklisted_subdomains()
 
   @doc """
   Returns whether a team slug is unused and available for use within
   the Stitch platform.
   """
-  def slug_available?(slug) when byte_size(slug) > 0 do
+  def slug_available?(slug) when byte_size(slug) > 0 and slug not in @blacklisted_subdomains do
     slug = Slugger.slugify_downcase(slug)
     case Repo.get_by(Team, slug: slug) do
       nil ->
