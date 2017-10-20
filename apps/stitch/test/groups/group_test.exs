@@ -2,6 +2,13 @@ defmodule Stitch.GroupTest do
   use Stitch.DataCase, async: true
   alias Stitch.{Group, GroupUser}
 
+  describe "Stitch.Group.changeset/2" do
+    test "doesn't allow puncuation marks in name" do
+      changeset = Group.changeset(%Group{}, %{name: "General."})
+      assert {"has invalid format", [validation: :format]} = changeset.errors[:name]
+    end
+  end
+
   describe "Stitch.Group.rename/2" do
     test "it renames the group" do
       group = insert(:group, %{name: "Example"})
