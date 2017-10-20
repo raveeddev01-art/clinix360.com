@@ -222,8 +222,16 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def invite(conn, %{"id" => group_id, "user_ids" => ""}) do
-    GroupUser.remove_all_users(group_id)
-    conn |> json(%{message: "Users invited to room."})
+    group = GroupQueries.get_by_id(group_id)
+    case GroupAuthorization.can_invite?(group, conn.assigns.current_user) do
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not authorized to invite people to this room."})
+      true ->
+        GroupUser.remove_all_users(group_id)
+        conn |> json(%{message: "Users invited to room."})
+      end
   end
 
   def invite(conn, %{"id" => group_id, "user_ids" => user_ids}) do
