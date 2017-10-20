@@ -17,18 +17,17 @@ defmodule StitchConnect.Web.InvitationControllerTest do
     {:ok, conn: conn, group: group, team: team, user: user}
   end
 
-  test "can't invite user from another team", %{conn: conn, user: user, group: group} do
+  test "can't invite user from another team", %{conn: conn, group: group} do
     team2 = insert(:team)
     group2 = insert(:group, team: team2, is_default: true)
     user2 = insert(:user, team: team2)
     insert(:group_user, group: group2, user: user2)
 
-    json =
-      conn
-      |> post(api_v1_group_path(conn, :invite, group.id), %{
-        "user_ids" => [user2.id] |> Enum.join(",")
-      })
-      |> json_response(200)
+    conn
+    |> post(api_v1_group_path(conn, :invite, group.id), %{
+      "user_ids" => [user2.id] |> Enum.join(",")
+    })
+    |> json_response(200)
 
     assert Stitch.Repo.get_by(Stitch.GroupUser, user_id: user2.id, group_id: group.id) == nil
   end
