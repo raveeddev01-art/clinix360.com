@@ -3,6 +3,11 @@ defmodule Stitch.GroupTest do
   alias Stitch.{Group, GroupUser}
 
   describe "Stitch.Group.changeset/2" do
+    test "allows letters, numbers and dashes in names" do
+      changeset = Group.changeset(%Group{}, %{name: "Emergency-Room 42"})
+      assert changeset.errors[:name] == nil
+    end
+
     test "doesn't allow puncuation marks in name" do
       changeset = Group.changeset(%Group{}, %{name: "General."})
       assert {"has invalid format", [validation: :format]} = changeset.errors[:name]
