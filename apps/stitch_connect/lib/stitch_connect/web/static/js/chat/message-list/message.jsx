@@ -297,7 +297,7 @@ class Message extends Component {
                 {this.renderPin(message)}
               </div>
 
-              <div>
+              <div className="message-content-wrapper">
                 <MessageContent message={message} />
                 {this.renderEdited(message)}
               </div>
