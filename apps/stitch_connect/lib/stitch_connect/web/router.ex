@@ -44,7 +44,7 @@ defmodule StitchConnect.Web.Router do
   scope "/", StitchConnect.Web do
     pipe_through :browser
 
-    get "/", AuthenticationController, :index
+    get "/", HomeController, :index
     get "/signin", AuthenticationController, :index
 
 
