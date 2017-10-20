@@ -1,1 +1,44 @@
-<h1>This is the new home page.</h1>
+<div class="landing-hero">
+  <div class="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-5">
+          <a href="/" class="brand">
+            <img src="<%= static_path(@conn, "/images/stitch-brand.png") %>" alt="Stitch">
+          </a>
+        </div>
+
+        <div class="col-xs-7">
+          <ul class="list-inline text-right">
+            <li><a href="#">Sign In</a></li>
+            <li><a href="#" class="btn-outline">Create Team</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="welcome-message text-center">
+    <div class="container">
+      <h1>Care Coordination</h1>
+      <h3>Communicate, write notes, track tasks, <br/>upload files, and collaborate on any device.</h3>
+
+      <div class="row">
+        <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+          <form class="flex-form">
+            <div class="form-input">
+              <input type="email" class="form-control" id="createTeam" placeholder="Email Address">
+            </div>
+
+            <button type="submit" class="btn btn-default">Create Team</button>
+          </form>
+
+          <div class="trial">Get started with an unlimited number of people on our free 14-day trial.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="our-customers"></div>
