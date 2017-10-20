@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { NavLink, withRouter } from "react-router-dom";
 import classNames from "classnames";
+import _ from "lodash";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -20,6 +21,8 @@ class Room extends Component {
     if (type === "dm") {
       dmUsers = users.filter(user => user.id !== currentUser.id);
       dmUsers = dmUsers.length ? dmUsers : [currentUser];
+    } else {
+      dmUsers = _.sortBy(users, "id");
     }
 
     return `/direct/${dmUsers.map(user => user.username).join(",")}`;
@@ -57,7 +60,16 @@ class Room extends Component {
       return `${room.name} (You)`;
     }
 
-    return room.name;
+    const { type, users } = room;
+    let dmUsers = users;
+    if (type === "dm") {
+      return room.name;
+    }
+
+    dmUsers = users.filter(user => user.id !== currentUser.id);
+    return dmUsers
+      .map(user => `${user.first_name} ${user.last_name}`)
+      .join(", ");
   }
 
   getBadge() {

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
+import _ from "lodash";
 import { withRouter } from "react-router-dom";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
@@ -43,7 +44,12 @@ class CreateDMModal extends Component {
       notify.show(`Choose people to start conversation with`, "error");
       return;
     }
-    const usernames = this.state.members.map(user => user.username).join(",");
+
+    const members = this.state.members;
+    members.push(currentUser);
+    const usernames = _.sortBy(members, "id")
+      .map(user => user.username)
+      .join(",");
 
     history.push(`/direct/${usernames}`);
     toggle();
