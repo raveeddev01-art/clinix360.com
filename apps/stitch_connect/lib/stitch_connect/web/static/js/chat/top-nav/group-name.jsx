@@ -9,7 +9,8 @@ export default class GroupName extends Component {
     const { groupStore, presenceStore } = this.props;
     const { groupType } = groupStore;
     const iconClassName = cx("fa", {
-      "fa-comments": groupType === "group",
+      "fa-comments": groupType === "group" && groupStore.public,
+      "fa-lock": groupType === "group" && !groupStore.public,
       "fa-link": groupType === "multi-dm",
       "fa-circle":
         groupType === "single-dm" &&

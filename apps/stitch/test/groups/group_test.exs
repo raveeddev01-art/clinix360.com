@@ -53,7 +53,7 @@ defmodule Stitch.GroupTest do
       group = insert(:group)
       user = insert(:user)
       assert {:error, error} = Group.toggle_favorite(group.id, user.id)
-      assert error == "User has to be member of group to favorite it."
+      assert error == "User has to be member of room to favorite it."
     end
 
     test "it favorites new groups for user" do
@@ -117,7 +117,7 @@ defmodule Stitch.GroupTest do
 
       {:error, :group_user, changeset, _} = Group.add_user(group, user.id)
       {message, _} = changeset.errors[:user_id]
-      assert message == "User is already part of group"
+      assert message == "User is already part of room"
     end
 
     test "does not add a user to a single DM group" do
@@ -139,14 +139,14 @@ defmodule Stitch.GroupTest do
       user = insert(:user)
       {:ok, _} = Group.add_user(group, user.id)
       {:ok, message, _} = Group.remove(group, user.id)
-      assert message == "User has been removed from the group"
+      assert message == "User has been removed from the room"
     end
 
     test "it returns a message if the user is not part of the group" do
       group = insert(:group)
       user = insert(:user)
       {:error, message} = Group.remove(group, user.id)
-      assert message == "User is not part of this group"
+      assert message == "User is not part of this room"
     end
 
     test "does not remove a user from a single DM group" do
@@ -205,7 +205,7 @@ defmodule Stitch.GroupTest do
 
       {:error, message} = Group.hide(group, sam.id)
 
-      assert message == "User is not part of this group"
+      assert message == "User is not part of this room"
     end
   end
 
@@ -252,7 +252,7 @@ defmodule Stitch.GroupTest do
 
       {:error, message} = Group.unhide(group, sam.id)
 
-      assert message == "User is not part of this group"
+      assert message == "User is not part of this room"
     end
   end
 end

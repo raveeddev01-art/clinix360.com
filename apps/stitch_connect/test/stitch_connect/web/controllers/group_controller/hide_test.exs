@@ -28,7 +28,7 @@ defmodule StitchConnect.Web.GroupController.HideTest do
 
     group_user = Repo.get_by(GroupUser, group_id: group.id, user_id: bob.id)
     assert group_user.is_hidden
-    assert message == "Group hidden"
+    assert message == "Room hidden"
   end
 
   test "sets a multi DM's is_hidden field to true", %{conn: conn, bob: bob, joe: joe, sam: sam} do
@@ -41,7 +41,7 @@ defmodule StitchConnect.Web.GroupController.HideTest do
 
     group_user = Repo.get_by(GroupUser, group_id: group.id, user_id: bob.id)
     assert group_user.is_hidden
-    assert message == "Group hidden"
+    assert message == "Room hidden"
   end
 
   test "when the group is not a DM", %{conn: conn, team: team, bob: bob} do
@@ -63,6 +63,6 @@ defmodule StitchConnect.Web.GroupController.HideTest do
       |> put(api_v1_group_path(conn, :hide, group))
       |> json_response(:forbidden)
 
-    assert message == "User is not part of this group"
+    assert message == "User is not part of this room"
   end
 end

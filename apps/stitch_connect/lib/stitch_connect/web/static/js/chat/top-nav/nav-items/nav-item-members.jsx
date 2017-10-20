@@ -50,7 +50,7 @@ export default class NavItemMembers extends Component {
             </a>
           </Modal.Header>
           <Modal.Body>
-            <h5>Select users to invite to this group.</h5>
+            <h5>Select users to invite to this room.</h5>
             <Members onChange={this._handleChange} value={this.state.members} />
           </Modal.Body>
           <Modal.Footer>

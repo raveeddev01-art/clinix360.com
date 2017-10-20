@@ -25,7 +25,7 @@ defmodule StitchConnect.Web.GroupController.InviteTest do
       |> post(api_v1_group_path(conn, :invite, group), %{"user_ids" => Enum.join([sam.id], ",")})
       |> json_response(:unauthorized)
 
-    assert message == "Not authorized to invite people to this group."
+    assert message == "Not authorized to invite people to this room."
   end
 
   test "responds with 200 and a success message", %{conn: conn, team: team, bob: bob, joe: joe, sam: sam} do
@@ -36,6 +36,6 @@ defmodule StitchConnect.Web.GroupController.InviteTest do
       |> post(api_v1_group_path(conn, :invite, group), %{"user_ids" => Enum.join([joe.id, sam.id], ",")})
       |> json_response(200)
 
-    assert message == "Users invited to group."
+    assert message == "Users invited to room."
   end
 end

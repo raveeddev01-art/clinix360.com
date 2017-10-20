@@ -33,9 +33,13 @@ class RoomsModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.state !== this.props.state && !!nextProps.state) {
       // members should be set manualy set empty when modal is open
-      this.setState({ members: [] });
+      this.setState({ members: [], filter: "" });
     }
   }
+
+  onModalEntered = () => {
+    this.setState({ members: [], filter: "", name: "" });
+  };
 
   getSlug() {
     return this.state.name
@@ -83,12 +87,17 @@ class RoomsModal extends Component {
     this.setState({ public: !this.state.public });
   };
 
+  switchToCreateModal = () => {
+    this.setState({ name: this.state.filter });
+    this.props.showRoomCreateModal();
+  };
+
   createRoom = () => {
     const { groupStore, history, closeModal } = this.props;
 
     groupStore
       .createGroup({
-        name: this.state.name,
+        name: this.state.name.trim(),
         public: this.state.public,
         user_ids: this.state.members.map(user => user.id)
       })
@@ -160,7 +169,6 @@ class RoomsModal extends Component {
               </div>
             </div>
           )}
-
           {rooms.joined.length > 0 && (
             <div className="rooms-list">
               <h5 className="rooms-list-heading">Rooms you belong to</h5>
@@ -171,12 +179,23 @@ class RoomsModal extends Component {
               </div>
             </div>
           )}
+          {rooms.notJoined.length === 0 &&
+            rooms.joined.length === 0 && (
+              <div className="no-result text-center">
+                <p>No rooms found.</p>
+                <Button bsSize="large" onClick={this.switchToCreateModal}>
+                  Create a room called <strong>{this.state.filter}</strong>
+                </Button>
+              </div>
+            )}
         </div>
       </Modal.Body>
     );
   }
 
   renderRoomCreateModal() {
+    const { name } = this.state;
+
     return (
       <Modal.Body>
         <Form horizontal>
@@ -210,6 +229,7 @@ class RoomsModal extends Component {
                 type="text"
                 placeholder="e.g. Emergency Room"
                 maxLength="25"
+                value={name}
                 onKeyPress={this.cleanName}
                 onChange={this.updateValue("name")}
               />
@@ -265,7 +285,7 @@ class RoomsModal extends Component {
   }
 
   renderModalFooter() {
-    const { closeModal, name, members } = this.props;
+    const { closeModal } = this.props;
 
     return (
       <Modal.Footer>
@@ -288,7 +308,11 @@ class RoomsModal extends Component {
     const { state } = this.props;
 
     return (
-      <Modal className="rooms-modal" show={!!state}>
+      <Modal
+        className="rooms-modal"
+        show={!!state}
+        onEnter={this.onModalEntered}
+      >
         {this.renderModalHeader()}
         {state === "list" && this.renderRoomsListModal()}
         {state === "create" && this.renderRoomCreateModal()}

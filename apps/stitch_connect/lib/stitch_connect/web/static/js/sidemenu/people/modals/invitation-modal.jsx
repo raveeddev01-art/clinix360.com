@@ -14,25 +14,25 @@ class InvitationModal extends Component {
     super(props);
     this.state = {
       show: props.show,
-      emails: ['']
+      emails: [""]
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.show !== this.props.show) {
-      this.setState({ show: nextProps.show, emails: [''] });
+      this.setState({ show: nextProps.show, emails: [""] });
     }
   }
 
-  handleChange = (index) => (evt) => {
+  handleChange = index => evt => {
     const { emails } = this.state;
     this.state.emails[index] = evt.target.value;
     this.setState({ emails });
-  }
+  };
 
   addEmail = () => {
-    this.setState({ emails: [...this.state.emails, '']});
-  }
+    this.setState({ emails: [...this.state.emails, ""] });
+  };
 
   inviteUsers = () => {
     const { emails } = this.state;
@@ -46,13 +46,13 @@ class InvitationModal extends Component {
     }
 
     this.props.toggle();
-  }
+  };
 
   render() {
     const { show, emails } = this.state;
     const { toggle } = this.props;
     return (
-      <Modal className="sidemenu-modal" show={show}>
+      <Modal className="invite-people-modal" show={show}>
         <Modal.Header>
           <Modal.Title>Invite People</Modal.Title>
           <a role="link" onClick={toggle}>
@@ -67,7 +67,7 @@ class InvitationModal extends Component {
           <Form horizontal className="invite-forms">
             {emails.map((email, index) => (
               <FormGroup bsSize="large" key={`email_${index}`}>
-                <Col componentClass={ControlLabel} sm={2}>
+                <Col componentClass={ControlLabel} sm={3}>
                   Email
                 </Col>
 
@@ -83,8 +83,13 @@ class InvitationModal extends Component {
           </Form>
 
           <Row>
-            <Col sm={3} smOffset={9}>
-              <Button bsStyle="default" bsSize="xs" className="btn-block add-invite" onClick={this.addEmail}>
+            <Col sm={12} className="text-right">
+              <Button
+                bsStyle="default"
+                bsSize="xs"
+                className="add-invite"
+                onClick={this.addEmail}
+              >
                 Add Invitation
               </Button>
             </Col>

@@ -14,7 +14,7 @@ $admin-topbar-height-sm: 65px;
 
   .flex-header {
     flex-basis: $admin-topbar-height;
-    @include transition(flex-basis .2s ease);
+    @include transition(flex-basis 0.2s ease);
   }
 
   .sidebar {
@@ -23,7 +23,7 @@ $admin-topbar-height-sm: 65px;
     top: 0;
     bottom: 0;
     left: 0;
-    @include transition(left .2s ease);
+    @include transition(left 0.2s ease);
     width: $admin-sidebar-width;
     overflow: visible;
     z-index: 1;
@@ -81,7 +81,7 @@ $admin-topbar-height-sm: 65px;
 
         i {
           width: 1em;
-          margin-right: .2em;
+          margin-right: 0.2em;
           margin-left: 0.2em;
           &.sm {
             font-size: 12px;
@@ -122,7 +122,7 @@ $admin-topbar-height-sm: 65px;
         float: left;
         line-height: 20px;
         padding: 6px 15px 6px 0;
-        border-right: 1px solid rgba(255,255,255,0.5);
+        border-right: 1px solid rgba(255, 255, 255, 0.5);
 
         &:hover {
           text-decoration: none;
@@ -161,7 +161,7 @@ $admin-topbar-height-sm: 65px;
           background-color: transparent;
         }
 
-       @media (max-width: 400px) {
+        @media (max-width: 400px) {
           padding-left: 8px;
           padding-right: 8px;
         }
@@ -276,7 +276,7 @@ $admin-topbar-height-sm: 65px;
         align-items: center;
 
         i.fa {
-          color: #8C5888;
+          color: #8c5888;
           font-size: 24px;
           margin: 0 15px 0 5px;
 
@@ -290,7 +290,7 @@ $admin-topbar-height-sm: 65px;
         }
 
         strong {
-          color: #8C5888;
+          color: #8c5888;
 
           &.enabled {
             color: #449d44;
@@ -385,7 +385,7 @@ $admin-topbar-height-sm: 65px;
           }
 
           &:nth-of-type(even) {
-            background: rgba($brand-primary, .1);
+            background: rgba($brand-primary, 0.1);
           }
         }
 
@@ -402,11 +402,6 @@ $admin-topbar-height-sm: 65px;
         &:active {
           position: relative;
           top: 3px;
-        }
-
-        &:active,
-        &:focus {
-          outline: none;
         }
       }
 
@@ -556,7 +551,7 @@ $admin-topbar-height-sm: 65px;
         }
 
         .admin-content-wrapper:after {
-          content: '';
+          content: "";
         }
       }
     }
@@ -565,7 +560,6 @@ $admin-topbar-height-sm: 65px;
 
 @media (max-width: 767px) {
   .admin-wrapper {
-
     .flex-header {
       flex-basis: $admin-topbar-height-sm;
     }
