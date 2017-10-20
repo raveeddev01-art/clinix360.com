@@ -9,11 +9,6 @@ export default class NavItemMembers extends Component {
     const { groupStore, sidemenuStore } = this.props;
     groupStore.toggleFavorite().then(favorite => {
       sidemenuStore.updateGroupData(groupStore.id, { favorite });
-      if (favorite) {
-        notify.show(`You added ${groupStore.name} room as favorite`);
-      } else {
-        notify.show(`You removed ${groupStore.name} room from favorite`);
-      }
     });
 
     // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
