@@ -26,6 +26,8 @@ defmodule Stitch.Group do
     struct
     |> cast(params, [:name, :slug, :description, :public, :team_id, :creator_user_id])
     |> validate_required([:name, :slug, :public, :team_id])
+    |> validate_length(:name, max: 25)
+    |> validate_format(:name, ~r/^[\w-\s]+$/)
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
   end
 
