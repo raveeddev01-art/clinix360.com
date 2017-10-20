@@ -14,7 +14,6 @@
     flex-direction: column;
     color: #555459;
     max-height: 540px;
-    padding-bottom: 0 !important;
 
     .rooms-filter {
       margin-bottom: 20px;
@@ -119,5 +118,23 @@
 
   .modal-content .modal-body {
     min-height: initial;
+  }
+}
+
+.invite-people-modal {
+  .modal-content .modal-body {
+    min-height: initial;
+  }
+
+  .invite-forms {
+    @include stitch-scroll();
+    max-height: 280px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-right: 40px;
+
+    .form-group {
+      margin-bottom: 10px;
+    }
   }
 }
