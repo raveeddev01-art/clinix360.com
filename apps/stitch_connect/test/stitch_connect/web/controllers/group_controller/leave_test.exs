@@ -29,7 +29,7 @@ defmodule StitchConnect.Web.GroupController.LeaveTest do
       |> json_response(200)
 
     assert %{
-      "message" => "User has been removed from the group",
+      "message" => "User has been removed from the room",
       "redirect_to" => ^expected_redirect_path
     } = json
   end
@@ -42,6 +42,6 @@ defmodule StitchConnect.Web.GroupController.LeaveTest do
       |> post(api_v1_group_path(conn, :leave, group))
       |> json_response(:unprocessable_entity)
 
-    assert %{"message" => "User is not part of this group"} = json
+    assert %{"message" => "User is not part of this room"} = json
   end
 end
