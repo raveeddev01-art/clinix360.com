@@ -212,12 +212,25 @@ defmodule Stitch.Group do
       nil ->
         {:error, "User is not part of this group"}
       group_user ->
-          {:ok, group_user} =
-            group_user
-            |> change(%{is_hidden: true})
-            |> Repo.update
+        group_user
+        |> change(%{is_hidden: true})
+        |> Repo.update
+    end
+  end
 
-          {:ok, group_user}
+  def unhide(%Group{name: name}, _user_id)
+      when name not in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Only direct messages can be hidden"}
+  end
+
+  def unhide(%Group{} = group, user_id) do
+    case Repo.get_by(GroupUser, group_id: group.id, user_id: user_id) do
+      nil ->
+        {:error, "User is not part of this group"}
+      group_user ->
+        group_user
+        |> change(%{is_hidden: false})
+        |> Repo.update
     end
   end
 
