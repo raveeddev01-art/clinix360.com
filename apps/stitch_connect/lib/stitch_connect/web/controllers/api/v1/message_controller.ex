@@ -28,7 +28,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You can't see the messages for this group."})
+        |> json(%{message: "You can't see the messages for this room."})
     end
   end
 
@@ -67,7 +67,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You can't see the messages for this group."})
+        |> json(%{message: "You can't see the messages for this room."})
     end
   end
 
@@ -137,7 +137,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You can't star messages belonging to this group."})
+        |> json(%{message: "You can't star messages belonging to this room."})
     end
   end
 
@@ -159,7 +159,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You can't pin messages belonging to this group."})
+        |> json(%{message: "You can't pin messages belonging to this room."})
     end
   end
 end

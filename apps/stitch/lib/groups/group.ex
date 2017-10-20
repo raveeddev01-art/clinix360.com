@@ -55,7 +55,7 @@ defmodule Stitch.Group do
           end)
 
           case group_users_res do
-            :error -> Repo.rollback("Failed to add group members.")
+            :error -> Repo.rollback("Failed to add room members.")
             users -> %{group | users: users}
           end
 
@@ -63,7 +63,7 @@ defmodule Stitch.Group do
           if changeset.errors == [slug: {"has already been taken", []}] do
             Repo.rollback({:already_exists, changeset.changes.slug})
           else
-            Repo.rollback("Failed to create group.")
+            Repo.rollback("Failed to create room.")
           end
       end
     end
@@ -154,7 +154,7 @@ defmodule Stitch.Group do
   def remove(%Group{id: group_id} = group, user_id) do
     case Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) do
       nil ->
-        {:error, "User is not part of this group"}
+        {:error, "User is not part of this room"}
 
       group_user ->
         multi =
@@ -164,9 +164,9 @@ defmodule Stitch.Group do
 
         case Repo.transaction(multi) do
           {:ok, %{system_message: system_message}} ->
-            {:ok, "User has been removed from the group", system_message}
+            {:ok, "User has been removed from the room", system_message}
           {:error, _, _, _} ->
-            {:error, "Error leaving the group"}
+            {:error, "Error leaving the room"}
         end
     end
   end
@@ -183,7 +183,7 @@ defmodule Stitch.Group do
     |> Repo.update_all([], returning: true)
 
     case result do
-      {0, []} -> {:error, "User has to be member of group to favorite it."}
+      {0, []} -> {:error, "User has to be member of room to favorite it."}
       {1, [group_user]} -> {:ok, group_user}
     end
   end
@@ -210,7 +210,7 @@ defmodule Stitch.Group do
   def hide(%Group{} = group, user_id) do
     case Repo.get_by(GroupUser, group_id: group.id, user_id: user_id) do
       nil ->
-        {:error, "User is not part of this group"}
+        {:error, "User is not part of this room"}
       group_user ->
         group_user
         |> change(%{is_hidden: true})
@@ -226,7 +226,7 @@ defmodule Stitch.Group do
   def unhide(%Group{} = group, user_id) do
     case Repo.get_by(GroupUser, group_id: group.id, user_id: user_id) do
       nil ->
-        {:error, "User is not part of this group"}
+        {:error, "User is not part of this room"}
       group_user ->
         group_user
         |> change(%{is_hidden: false})

@@ -60,7 +60,7 @@ export default class NavItemNotifications extends Component {
 
           <Modal.Body>
             <h5>
-              Set notification preferences for the group. These preferences will
+              Set notification preferences for the room. These preferences will
               apply to desktop and mobile.
             </h5>
 

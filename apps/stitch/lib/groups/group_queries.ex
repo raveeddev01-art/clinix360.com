@@ -64,7 +64,7 @@ defmodule Stitch.GroupQueries do
     |> load_groups_for_user(user_id)
     |> List.first
 
-    if group, do: {:ok, group}, else: {:error, "Group with that id not found."}
+    if group, do: {:ok, group}, else: {:error, "Room with that id not found."}
   end
   def get_by_id(id, user_id), do: get_by_id(id, Repo.get!(User, user_id))
 
@@ -79,7 +79,7 @@ defmodule Stitch.GroupQueries do
     |> load_groups_for_user(user_id)
     |> List.first
 
-    if group, do: {:ok, group}, else: {:error, "Group with that slug not found."}
+    if group, do: {:ok, group}, else: {:error, "Room with that slug not found."}
   end
 
   @doc """
