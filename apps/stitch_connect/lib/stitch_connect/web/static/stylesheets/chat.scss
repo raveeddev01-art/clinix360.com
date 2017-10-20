@@ -653,12 +653,13 @@
 
           ul.dropdown-menu {
             padding: 8px 0;
+            min-width: 120px;
 
             li {
               a {
                 font-size: 15px;
                 line-height: 25px;
-                padding: 0 24px 0 8px;
+                padding: 0 8px;
                 margin: 0 8px;
 
                 i.fa {

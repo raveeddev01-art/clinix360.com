@@ -193,7 +193,7 @@ class Message extends Component {
         <Dropdown.Menu>
           <MenuItem onClick={this.markAsUnread}>
             <span>
-              <i className="fa fa-circle" />&nbsp;Mark unread
+              <i className="fa fa-circle" />&nbsp;Unread
             </span>
           </MenuItem>
 
