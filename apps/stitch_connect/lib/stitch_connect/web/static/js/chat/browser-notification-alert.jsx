@@ -17,9 +17,6 @@ export default class BrowserNotificationAlert extends Component {
     const { browserPermission } = this.state;
     if (browserPermission !== "denied") {
       Notification.requestPermission(permission => {
-        if (permission === "granted") {
-          notify.show("Browser notification is enabled.");
-        }
         this.setState({ browserPermission: permission });
       });
     }
