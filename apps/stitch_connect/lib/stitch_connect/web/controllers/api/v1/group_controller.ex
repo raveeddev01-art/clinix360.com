@@ -238,6 +238,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         user_ids
         |> String.split(",")
         |> Enum.map(&String.to_integer/1)
+        |> Enum.filter(& Stitch.Accounts.get_for_team_id(&1, conn.assigns.current_user.team_id))
         |> Enum.each(&Group.add_user(group, &1))
 
         conn

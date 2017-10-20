@@ -9,4 +9,5 @@ defmodule Stitch.TeamQueries do
     Repo.get_by(Team, slug: slug)
   end
   def get_by_slug(_), do: nil
+
 end
