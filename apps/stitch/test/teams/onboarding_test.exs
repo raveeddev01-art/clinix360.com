@@ -17,7 +17,7 @@ defmodule Stitch.Team.OnboardingTest do
       assert result == false
 
       result = Stitch.Team.Onboarding.slug_available?("admin")
-      assert result == true
+      assert result == false
     end
 
     test "returns false if team name is not available" do
