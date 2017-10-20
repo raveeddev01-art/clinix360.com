@@ -72,6 +72,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/users/", UserController, :index
     get "/users/notification-preference", NotificationPreferenceController, :show_global
     put "/users/notification-preference", NotificationPreferenceController, :update_global
+    get "/users/:id", UserController, :show
     put "/users/:id", UserController, :update
     post "/users/search", UserController, :search
 
@@ -126,7 +127,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api_auth
 
-    get "/users/:id", UserController, :show
     put "/users/:id/update_password", UserController, :update_password
     put "/users/:id/avatar", UserController, :update_avatar
     delete "/users/:id/avatar", UserController, :delete_avatar
