@@ -55,10 +55,9 @@ class NavItemRename extends Component {
   };
 
   handleSubmit = () => {
-    this.props.groupStore.rename(this.state.groupName).then(group => {
+    this.props.groupStore.rename(this.state.groupName.trim()).then(group => {
       const { history, sidemenuStore } = this.props;
-      // @TODO This updates left sidebar only for the current user, but we need a socket based broadcasting for room_renamed event
-      sidemenuStore.loadGroups();
+      sidemenuStore.updateGroupData(group.id, group);
       history.push(`/rooms/${group.slug}`);
     });
     this.setState({ showModal: false });

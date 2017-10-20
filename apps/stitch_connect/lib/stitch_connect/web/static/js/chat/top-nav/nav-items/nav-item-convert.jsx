@@ -7,9 +7,6 @@ import Modal from "react-bootstrap/lib/Modal";
 import Form from "react-bootstrap/lib/Form";
 import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
-import ControlLabel from "react-bootstrap/lib/ControlLabel";
-import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
 import Toggle from "../../../common/components/toggle/Toggle";
@@ -54,9 +51,11 @@ export default class NavItemConvert extends Component {
 
   handleSubmit = () => {
     if (this.props.groupStore.public !== this.state.public) {
-      this.props.groupStore
-        .togglePublic(this.state.public)
-        .then(() => this.props.sidemenuStore.loadGroups());
+      this.props.groupStore.togglePublic(this.state.public).then(group => {
+        this.props.sidemenuStore.updateGroupData(group.id, {
+          public: group.public
+        });
+      });
     }
     this.toggleModal();
   };

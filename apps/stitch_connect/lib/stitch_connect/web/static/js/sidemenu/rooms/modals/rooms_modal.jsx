@@ -97,7 +97,7 @@ class RoomsModal extends Component {
 
     groupStore
       .createGroup({
-        name: this.state.name,
+        name: this.state.name.trim(),
         public: this.state.public,
         user_ids: this.state.members.map(user => user.id)
       })

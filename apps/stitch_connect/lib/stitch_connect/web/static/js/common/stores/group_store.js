@@ -204,6 +204,7 @@ class GroupStore {
       body: { public: value }
     }).then(() => {
       this.public = !this.public;
+      return this;
     });
   };
 
