@@ -32,6 +32,11 @@ class CreateDMModal extends Component {
     this.setState({ members: value });
   };
 
+  canCreateDM = () => {
+    const { members } = this.state;
+    return members && members.length !== 0;
+  };
+
   startDM = () => {
     const { history, toggle } = this.props;
     if (!this.state.members.length) {
@@ -131,7 +136,12 @@ class CreateDMModal extends Component {
           <Button bsSize="large" onClick={this.props.toggle}>
             Cancel
           </Button>
-          <Button bsSize="large" bsStyle="primary" onClick={this.startDM}>
+          <Button
+            bsSize="large"
+            bsStyle="primary"
+            onClick={this.startDM}
+            disabled={!this.canCreateDM()}
+          >
             Start Conversation
           </Button>
         </Modal.Footer>
