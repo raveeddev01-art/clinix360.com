@@ -6,7 +6,7 @@ import CreateDMModal from "./modals/create-dm-modal";
 import InvitationModal from "./modals/invitation-modal";
 import Room from "../room";
 
-class People extends Component {
+class PeopleList extends Component {
   constructor(props) {
     super(props);
 
@@ -39,7 +39,7 @@ class People extends Component {
   };
 
   render() {
-    const { heading, rooms } = this.props;
+    const { heading, rooms, sidemenuDiv } = this.props;
 
     return (
       <div className="menu-nav people m-b-20">
@@ -69,7 +69,9 @@ class People extends Component {
           </OverlayTrigger>
         </div>
 
-        {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
+        {rooms.map(room => (
+          <Room key={`room-${room.id}`} room={room} sidemenuDiv={sidemenuDiv} />
+        ))}
 
         <OverlayTrigger
           placement="top"
@@ -97,8 +99,14 @@ class People extends Component {
   }
 }
 
-People.propTypes = {
-  heading: PropTypes.string.isRequired
+PeopleList.defaultProps = {
+  sidemenuDiv: null
 };
 
-export default People;
+PeopleList.propTypes = {
+  heading: PropTypes.string.isRequired,
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  sidemenuDiv: PropTypes.object
+};
+
+export default PeopleList;

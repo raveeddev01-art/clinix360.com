@@ -104,7 +104,12 @@ class Sidemenu extends Component {
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        <div className="flex-content">
+        <div
+          className="flex-content"
+          ref={div => {
+            this.sidemenuDiv = div;
+          }}
+        >
           <FavoritesList
             heading={"Favorites"}
             rooms={sidemenuStore.favoriteGroups}
@@ -113,10 +118,13 @@ class Sidemenu extends Component {
           <RoomsList
             heading="Rooms"
             rooms={filterJoined(sidemenuStore.normalGroups)}
+            sidemenuDiv={this.sidemenuDiv}
           />
+
           <PeopleList
             heading="Direct Messages"
             rooms={filterJoined(sidemenuStore.directGroups)}
+            sidemenuDiv={this.sidemenuDiv}
           />
         </div>
       </div>
