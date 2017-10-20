@@ -32,9 +32,9 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     if (isVisible) {
-      messageStore.onVisibleMessage(message.id);
+      messageStore.onMessageShow(message.id);
     } else {
-      messageStore.onInvisibleMessage(message.id);
+      messageStore.onMessageHide(message.id);
     }
   };
 

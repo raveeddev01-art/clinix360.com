@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { NavLink, withRouter } from "react-router-dom";
+import { Element } from "react-scroll";
 import VisibilitySensor from "react-visibility-sensor";
 import classNames from "classnames";
 import _ from "lodash";
@@ -14,8 +15,8 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 class Room extends Component {
   hideDM = event => {
     event.preventDefault();
-    const { sidemenuStore } = this.props;
-    sidemenuStore.hideGroup(this.props.room.id).then(() => {
+    const { sidemenuStore, room } = this.props;
+    sidemenuStore.hideGroup(room.id).then(() => {
       sidemenuStore.loadGroups();
     });
   };
@@ -46,16 +47,15 @@ class Room extends Component {
   }
 
   getIconClass() {
-    const { presenceStore } = this.props;
-    const { type, users } = this.props.room;
+    const { presenceStore, room } = this.props;
     let iconClass;
 
-    if (type === "regular" && this.props.room.public === false) {
+    if (room.type === "regular" && room.public === false) {
       iconClass = "fa-lock";
-    } else if (type === "regular") {
+    } else if (room.type === "regular") {
       iconClass = "fa-comments";
-    } else if (type === "dm") {
-      const otherUser = users.find(user => user.id !== currentUser.id);
+    } else if (room.type === "dm") {
+      const otherUser = room.users.find(user => user.id !== currentUser.id);
       iconClass =
         !otherUser || presenceStore.isOnline(otherUser.id)
           ? "fa-circle"
@@ -126,14 +126,12 @@ class Room extends Component {
   };
 
   render() {
-    const {
-      room: { unread_messages_count: unreadMessagesCount },
-      sidemenuStore: { sidemenuDiv }
-    } = this.props;
+    const { room, sidemenuStore } = this.props;
     const className = classNames("item", {
-      "has-unread": unreadMessagesCount > 0
+      "has-unread": room.unread_messages_count > 0
     });
     const badge = this.getBadge();
+    const anchorName = `${sidemenuStore.ROOM_MENU_ITEM_ANCHOR_PREFIX}${room.id}`;
     const roomHidden =
       (room.type === "dm" || room.type === "multi_dm") && room.is_hidden;
 
@@ -145,20 +143,24 @@ class Room extends Component {
           intervalCheck={false}
           scrollCheck
           scrollThrottle={100}
-          containment={sidemenuDiv}
+          containment={sidemenuStore.sidemenuDiv}
         >
-          <NavLink
-            to={this.getNavLink()}
-            className={className}
-            activeClassName="active"
-          >
-            <div className="item-icon">
-              <i className={this.getIconClass()} />
-            </div>
-            <div className="item-text">{this.getName()}</div>
-            {this.getHideDMIcon()}
-            {badge > 0 && <div className="item-badge text-center">{badge}</div>}
-          </NavLink>
+          <Element name={anchorName}>
+            <NavLink
+              to={this.getNavLink()}
+              className={className}
+              activeClassName="active"
+            >
+              <div className="item-icon">
+                <i className={this.getIconClass()} />
+              </div>
+              <div className="item-text">{this.getName()}</div>
+              {this.getHideDMIcon()}
+              {badge > 0 && (
+                <div className="item-badge text-center">{badge}</div>
+              )}
+            </NavLink>
+          </Element>
         </VisibilitySensor>
       )
     );

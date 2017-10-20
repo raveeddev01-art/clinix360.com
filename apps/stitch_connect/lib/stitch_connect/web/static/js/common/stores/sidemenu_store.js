@@ -3,12 +3,15 @@ import Favico from "favico.js";
 
 class SidemenuStore {
   @observable sidemenuDiv = null; // Div element of sidemenu
+  @observable roomMenuItems = {};
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
   @observable groupCursors = {}; // { group_id: message_id }
+
+  ROOM_MENU_ITEM_ANCHOR_PREFIX = "sidemenu_room_";
   badge = null;
   favicon = null;
   notificationAudio = null;
@@ -170,6 +173,14 @@ class SidemenuStore {
    */
   unloadSidemenuDiv() {
     this.sidemenuDiv = null;
+  }
+
+  onRoomMenuItemShow(roomId) {
+    this.roomMenuItems[roomId] = true;
+  }
+
+  onRoomMenuItemHide(roomId) {
+    this.roomMenuItems[roomId] = false;
   }
 
   loadUsers = () => {

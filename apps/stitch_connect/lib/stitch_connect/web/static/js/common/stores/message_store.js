@@ -227,7 +227,7 @@ class MessageStore {
     this.isScrollBottom = false;
   }
 
-  onInvisibleMessage = id => {
+  onMessageHide(id) {
     if (!this.loadedInitial) {
       return;
     }
@@ -242,9 +242,9 @@ class MessageStore {
         this.updateGroupCursor(this.messages[index - 1].id);
       }
     }
-  };
+  }
 
-  onVisibleMessage = id => {
+  onMessageShow(id) {
     if (!this.loadedInitial) {
       return;
     }
@@ -268,7 +268,7 @@ class MessageStore {
         this.markAsRead(false);
       }, 1000);
     }
-  };
+  }
 
   /**
    * Scroll to a specific message in chat div
