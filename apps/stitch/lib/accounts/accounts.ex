@@ -136,6 +136,6 @@ defmodule Stitch.Accounts do
   def update_user_password(_,_,_), do: {:error, "Invalid Parameters provided for password update"}
 
   def get_for_team_id(user_id, team_id) do
-    !!Repo.get_by(User, id: user_id, team_id: team_id)
+    Repo.get_by(User, id: user_id, team_id: team_id)
   end
 end
