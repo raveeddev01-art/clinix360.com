@@ -126,9 +126,12 @@ class Room extends Component {
   };
 
   render() {
-    const { room, sidemenuDiv } = this.props;
+    const {
+      room: { unread_messages_count: unreadMessagesCount },
+      sidemenuStore: { sidemenuDiv }
+    } = this.props;
     const className = classNames("item", {
-      "has-unread": room.unread_messages_count > 0
+      "has-unread": unreadMessagesCount > 0
     });
     const badge = this.getBadge();
     const roomHidden =
@@ -162,13 +165,8 @@ class Room extends Component {
   }
 }
 
-Room.defaultProps = {
-  sidemenuDiv: null
-};
-
 Room.propTypes = {
-  room: PropTypes.object.isRequired,
-  sidemenuDiv: PropTypes.object
+  room: PropTypes.object.isRequired
 };
 
 export default withRouter(Room);

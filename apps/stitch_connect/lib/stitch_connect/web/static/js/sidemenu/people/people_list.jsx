@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
@@ -39,7 +40,7 @@ class PeopleList extends Component {
   };
 
   render() {
-    const { heading, rooms, sidemenuDiv } = this.props;
+    const { heading, rooms } = this.props;
 
     return (
       <div className="menu-nav people m-b-20">
@@ -69,9 +70,7 @@ class PeopleList extends Component {
           </OverlayTrigger>
         </div>
 
-        {rooms.map(room => (
-          <Room key={`room-${room.id}`} room={room} sidemenuDiv={sidemenuDiv} />
-        ))}
+        {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
         <OverlayTrigger
           placement="top"
@@ -99,14 +98,9 @@ class PeopleList extends Component {
   }
 }
 
-PeopleList.defaultProps = {
-  sidemenuDiv: null
-};
-
 PeopleList.propTypes = {
   heading: PropTypes.string.isRequired,
-  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  sidemenuDiv: PropTypes.object
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default PeopleList;

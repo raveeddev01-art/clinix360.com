@@ -2,6 +2,7 @@ import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 
 class SidemenuStore {
+  @observable sidemenuDiv = null; // Div element of sidemenu
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
@@ -154,6 +155,23 @@ class SidemenuStore {
     this.groupCursors[groupId] = cursor;
   };
 
+  /**
+   * Registers sidemenu div
+   *
+   * @param {DOMElement} div
+   */
+  loadSidemenuDiv(div) {
+    this.sidemenuDiv = div;
+  }
+
+  /**
+   * Unregisters sidemenu div
+   *
+   */
+  unloadSidemenuDiv() {
+    this.sidemenuDiv = null;
+  }
+
   loadUsers = () => {
     get("/api/v1/users").then(response => {
       this.users = response.data;
@@ -297,9 +315,7 @@ class SidemenuStore {
         5000,
         event => {
           this.jumpToMessage(newMessage);
-          window.dispatchEvent(
-            new CustomEvent("notification-clicked")
-          );
+          window.dispatchEvent(new CustomEvent("notification-clicked"));
         }
       );
     }

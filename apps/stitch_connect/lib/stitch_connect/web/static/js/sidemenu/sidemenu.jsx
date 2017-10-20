@@ -15,6 +15,18 @@ import PeopleList from "./people/people_list";
 @inject("presenceStore", "sidemenuStore")
 @observer
 class Sidemenu extends Component {
+  componentDidMount() {
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.loadSidemenuDiv(this.sidemenuDiv);
+  }
+
+  componentWillUnmount() {
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.unloadSidemenuDiv();
+  }
+
   _adminOptions = () => {
     return (
       <div>
@@ -118,13 +130,11 @@ class Sidemenu extends Component {
           <RoomsList
             heading="Rooms"
             rooms={filterJoined(sidemenuStore.normalGroups)}
-            sidemenuDiv={this.sidemenuDiv}
           />
 
           <PeopleList
             heading="Direct Messages"
             rooms={filterJoined(sidemenuStore.directGroups)}
-            sidemenuDiv={this.sidemenuDiv}
           />
         </div>
       </div>
