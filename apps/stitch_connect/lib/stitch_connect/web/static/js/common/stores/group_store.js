@@ -225,10 +225,7 @@ class GroupStore {
   rename = groupName => {
     return patch(`/api/v1/groups/${this.id}/rename`, {
       body: { name: groupName, slug: groupName }
-    }).then(resp => {
-      notify.show("Room name has been changed successfully");
-      return resp.data;
-    });
+    }).then(resp => resp.data);
   };
 
   @action
@@ -237,8 +234,6 @@ class GroupStore {
       body: {
         user_ids: _.map(members, "id").join(",")
       }
-    }).then(() => {
-      notify.show("Users invited to room");
     });
   };
 
@@ -255,7 +250,6 @@ class GroupStore {
   join = () => {
     return post(`/api/v1/groups/${this.id}/join`).then(() => {
       this.joined = true;
-      notify.show("User has joined the room");
     });
   };
 
@@ -290,7 +284,6 @@ class GroupStore {
       }
     }).then(() => {
       this.notificationSetting = setting;
-      notify.show(`Notification setting saved for room ${this.name}`);
     });
   };
 }
