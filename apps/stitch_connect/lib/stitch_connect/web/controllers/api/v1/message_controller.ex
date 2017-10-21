@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           end)
           |> Keyword.update(:limit, 30, fn limit -> Enum.min([limit, 30]) end)
 
-        messages = MessageQueries.group_latest_messages(group_id, user, opts)
+        messages = MessageQueries.group_latest_messages(group_id, user, opts) |> StitchConnect.Upload.presign_uploads
         render conn, "index.json", messages: messages, user_id: user.id
       false ->
         conn
