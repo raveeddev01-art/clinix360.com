@@ -73,3 +73,10 @@ config :stitch_connect, StitchConnect.MessageMailer,
   ],
   global: true,
   timeout: 10 * 60 * 1_000
+
+# Push notifications configuration used by Pigeon.
+config :pigeon, workers: [
+  {StitchConnect.Pigeon, :apns_config},
+  {StitchConnect.Pigeon, :fcm_config},
+  {StitchConnect.Pigeon, :adm_config},
+]
