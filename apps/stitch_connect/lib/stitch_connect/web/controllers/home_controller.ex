@@ -4,6 +4,6 @@ defmodule StitchConnect.Web.HomeController do
   def index(conn, _params) do
     conn
     |> put_layout("home_layout.html")
-    |> render "index.html"
+    |> render("index.html")
   end
 end
