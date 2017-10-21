@@ -193,7 +193,7 @@ class Message extends Component {
         <Dropdown.Menu>
           <MenuItem onClick={this.markAsUnread}>
             <span>
-              <i className="fa fa-circle" />&nbsp;Mark unread
+              <i className="fa fa-circle" />&nbsp;Unread
             </span>
           </MenuItem>
 
@@ -297,7 +297,7 @@ class Message extends Component {
                 {this.renderPin(message)}
               </div>
 
-              <div>
+              <div className="message-content-wrapper">
                 <MessageContent message={message} />
                 {this.renderEdited(message)}
               </div>

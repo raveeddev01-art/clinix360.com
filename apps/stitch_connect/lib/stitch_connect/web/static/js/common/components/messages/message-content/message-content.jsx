@@ -68,7 +68,7 @@ class MessageContent extends Component {
   render() {
     const { message } = this.props;
     return (
-      <div>
+      <div className="message-body-wrapper">
         {message.type === "upload" && <FileAttachment {...message.fields} />}
         <div className="message-body">
           {message.type === "upload" && message.text_content && '"'}

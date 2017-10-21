@@ -126,6 +126,7 @@
     transition: -webkit-transform 0.45s cubic-bezier(0.5, 0, 0, 1),
       transform 0.45s cubic-bezier(0.5, 0, 0, 1), opacity 0.125s ease-out 0.1s;
     opacity: 0;
+    width: 100%;
 
     &.opened {
       transform: translateX(0);
