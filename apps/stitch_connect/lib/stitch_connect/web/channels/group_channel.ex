@@ -98,9 +98,55 @@ defmodule StitchConnect.Web.GroupChannel do
         |> Map.update("limit", 30, &Enum.min([&1, 50]))
         |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
-        messages = MessageQueries.group_latest_messages(group.id, user, opts)
+        messages = MessageQueries.group_latest_messages(group.id, user, opts) |> presign_uploads
         json = MessageView.render("index.json", %{messages: messages})
         {:reply, {:ok, %{messages: json}}, socket}
+    end
+  end
+
+  def presign_uploads(messages) do
+    Enum.map(messages, fn
+      %Message{type: "upload", fields: %{"url" => url}} = message ->
+        filename =
+          with %{path: path} <- URI.parse(url) do
+            {:ok, Path.basename(path)}
+          end
+
+        case filename do
+          {:ok, filename} ->
+            fields = Map.put(message.fields, "presigned_url", presign(filename))
+            Map.put(message, :fields, fields)
+          _ ->
+            message
+        end
+
+      message ->
+        message
+    end)
+  end
+
+  def presign(filename) do
+    case Application.get_env(:stitch_connect, :env) do
+      :test ->
+        "temporary fallback value"
+      env ->
+        config = %{
+          access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+          secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
+          region: System.get_env("S3_REGION"),
+          scheme: "https://",
+          host: "s3.#{System.get_env("S3_REGION")}.amazonaws.com",
+        }
+
+        url = ExAws.S3.presigned_url(config, :get, System.get_env("S3_BUCKET_NAME"), filename, [
+          virtual_host: false,
+          expires_in: 60_000,
+        ])
+
+        case url do
+          {:ok, url} -> url
+          _ -> nil
+        end
     end
   end
 
