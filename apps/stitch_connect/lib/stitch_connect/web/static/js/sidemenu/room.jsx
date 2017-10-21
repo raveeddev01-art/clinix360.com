@@ -64,12 +64,13 @@ class Room extends Component {
     let dmUsers = users;
     if (type === "dm") {
       return room.name;
+    } else if (type === "multi_dm") {
+      dmUsers = users.filter(user => user.id !== currentUser.id);
+      return dmUsers
+        .map(user => `${user.first_name} ${user.last_name}`)
+        .join(", ");
     }
-
-    dmUsers = users.filter(user => user.id !== currentUser.id);
-    return dmUsers
-      .map(user => `${user.first_name} ${user.last_name}`)
-      .join(", ");
+    return room.name;
   }
 
   getBadge() {
