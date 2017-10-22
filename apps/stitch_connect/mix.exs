@@ -49,6 +49,7 @@ defmodule StitchConnect.Mixfile do
      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
      {:timex, "~> 3.1"},
      {:quantum, ">= 2.1.0"},
+     {:sweet_xml, "~> 0.6.5"},
      {:stitch, in_umbrella: true}]
   end
 

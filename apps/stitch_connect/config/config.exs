@@ -46,6 +46,10 @@ config :guardian, Guardian,
 
 config :phoenix, :filter_parameters, ["password", "pin"]
 
+config :ex_aws,
+  access_key_id: [{:system, "AWS_ACCESS_KEY_ID"}, :instance_role],
+  secret_access_key: [{:system, "AWS_SECRET_ACCESS_KEY"}, :instance_role]
+
 config :stitch_connect, StitchConnect.MessageMailer,
   jobs: [
     # Every 15 minutes
