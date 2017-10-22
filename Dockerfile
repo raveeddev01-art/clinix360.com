@@ -84,7 +84,8 @@ RUN wget -q https://github.com/elixir-lang/elixir/releases/download/v1.5.1/Preco
 RUN /usr/local/bin/mix local.hex --force && \
   /usr/local/bin/mix local.rebar --force
 
-WORKDIR /
+# /app is where Aptible places the project.
+WORKDIR /app
 
 RUN mix deps.get
 
