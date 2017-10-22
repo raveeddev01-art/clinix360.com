@@ -33,6 +33,7 @@ defmodule Stitch.Mixfile do
       {:postgrex, "~> 0.13.3"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
+      {:ex_aws, "~> 1.0"},
       {:ex_machina, "~> 2.1", only: :test},
       {:faker, "~> 0.9", only: :test},
       {:slugger, "~> 0.2"},
