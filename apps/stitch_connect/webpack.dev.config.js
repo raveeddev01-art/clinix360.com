@@ -67,6 +67,12 @@ module.exports = [
           from: "./lib/stitch_connect/web/static/audios/pop.mp3",
           to: path.resolve(__dirname, "priv/static/audios")
         }
+      ]),
+      new CopyWebpackPlugin([
+        {
+          from: "./lib/stitch_connect/web/static/images",
+          to: path.resolve(__dirname, "priv/static/images")
+        }
       ])
     ]
   }
