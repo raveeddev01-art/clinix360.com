@@ -68,6 +68,7 @@ class UploadStore {
         formData.append("success_action_status", data.success_action_status);
         formData.append("policy", data.policy);
         formData.append("signature", data.signature);
+        formData.append("x-amz-server-side-encryption", "AES256");
         formData.append("file", file);
 
         this.uploadProgress.set(key, 0);

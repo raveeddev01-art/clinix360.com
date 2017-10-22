@@ -56,6 +56,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
         %{acl: "private"},
         # You have to upload the mime type you said you would upload.
         ["starts-with", "$Content-Type", mimetype],
+        %{"x-amz-server-side-encryption" => "AES256"},
         # You have to upload the file name you said you would upload.
         ["starts-with", "$key", key],
         # When things work out ok, AWS should send a 201 response.
