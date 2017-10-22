@@ -84,7 +84,19 @@ RUN wget -q https://github.com/elixir-lang/elixir/releases/download/v1.5.1/Preco
 RUN /usr/local/bin/mix local.hex --force && \
   /usr/local/bin/mix local.rebar --force
 
+<<<<<<< Updated upstream
 ENV PORT 443
 EXPOSE 443
 
 WORKDIR /
+=======
+WORKDIR /
+
+RUN mix deps.get
+
+ENV PORT 443
+EXPOSE 443
+
+WORKDIR /apps/stitch_connect
+RUN MIX_ENV=prod mix phx.server
+>>>>>>> Stashed changes
