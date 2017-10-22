@@ -22,7 +22,22 @@ defmodule StitchConnect.Upload do
     end)
   end
 
-  def presign(filename) do
+  def presign(%Message{type: "upload", fields: %{"url" => url}} = message) do
+    filename =
+      with %{path: path} <- URI.parse(url) do
+        {:ok, Path.basename(path)}
+      end
+
+    case filename do
+      {:ok, filename} ->
+        fields = Map.put(message.fields, "url", presign(filename))
+        Map.put(message, :fields, fields)
+      _ ->
+        message
+    end
+  end
+
+  def presign(filename) when is_binary(filename) do
     case Application.get_env(:stitch_connect, :env) do
       :test ->
         "temporary fallback value"
@@ -46,4 +61,6 @@ defmodule StitchConnect.Upload do
         end
     end
   end
+
+  def presign(message), do: message
 end
