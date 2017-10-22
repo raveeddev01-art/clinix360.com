@@ -18,11 +18,12 @@ class Room extends Component {
     }
 
     let dmUsers = users;
+    if (dmUsers.length > 1)
+      dmUsers = dmUsers.filter(user => user.id !== currentUser.id);
     if (type === "dm") {
-      dmUsers = users.filter(user => user.id !== currentUser.id);
       dmUsers = dmUsers.length ? dmUsers : [currentUser];
     } else {
-      dmUsers = _.sortBy(users, "id");
+      dmUsers = _.sortBy(dmUsers, "id");
     }
 
     return `/direct/${dmUsers.map(user => user.username).join(",")}`;
