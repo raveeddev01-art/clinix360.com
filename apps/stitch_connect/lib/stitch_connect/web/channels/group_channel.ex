@@ -236,6 +236,7 @@ defmodule StitchConnect.Web.GroupChannel do
       case Message.create(group.id, user, attrs, acitve_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           message = MessageQueries.load_info(message)
+          message = StitchConnect.Upload.presign(message)
           broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
 

@@ -51,7 +51,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         active_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
         case Message.create(group.id, user, message_params, active_user_ids) do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
-            message = MessageQueries.load_info(message)
+            message =
+              message
+              |> MessageQueries.load_info
+              |> StitchConnect.Upload.presign
 
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
