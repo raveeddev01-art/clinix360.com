@@ -53,7 +53,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
             message = message |> MessageQueries.load_info
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
-            EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
+            EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
 
             conn
             |> put_status(:created)

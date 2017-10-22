@@ -249,7 +249,7 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           message = MessageQueries.load_info(message)
           broadcast! socket, "new_msg", message
-          EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
+          EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
 
           json = MessageView.render("show.json", %{message: message})
           {:reply, {:ok, json}, socket}
