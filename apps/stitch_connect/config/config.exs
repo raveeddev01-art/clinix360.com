@@ -76,7 +76,5 @@ config :stitch_connect, StitchConnect.MessageMailer,
 
 # Push notifications configuration used by Pigeon.
 config :pigeon, workers: [
-  {StitchConnect.Pigeon, :apns_config},
-  {StitchConnect.Pigeon, :fcm_config},
-  {StitchConnect.Pigeon, :adm_config},
+  {StitchConnect.Pigeon, :apns_config}
 ]
