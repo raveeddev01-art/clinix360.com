@@ -11,7 +11,7 @@ defmodule StitchConnect.Upload do
 
         case filename do
           {:ok, filename} ->
-            fields = Map.put(message.fields, "presigned_url", presign(filename))
+            fields = Map.put(message.fields, "url", presign(filename))
             Map.put(message, :fields, fields)
           _ ->
             message
