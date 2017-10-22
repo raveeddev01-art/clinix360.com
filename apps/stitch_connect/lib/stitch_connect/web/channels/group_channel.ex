@@ -4,7 +4,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   import Ecto.Query
   alias StitchConnect.Web.Api.V1.MessageView
-  alias StitchConnect.Web.EventsChannel
+  alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
   alias StitchConnect.Web.Presence
 
@@ -250,6 +250,7 @@ defmodule StitchConnect.Web.GroupChannel do
           message = MessageQueries.load_info(message)
           broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
+          PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
 
           json = MessageView.render("show.json", %{message: message})
           {:reply, {:ok, json}, socket}

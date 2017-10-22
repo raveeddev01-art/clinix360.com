@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
   alias Stitch.{Repo, Group, GroupAuthorization, GroupQueries,
                 Message, MessageAction, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, PushNotifications}
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
@@ -54,6 +54,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
             message = message |> MessageQueries.load_info
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
+            PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
 
             conn
             |> put_status(:created)
