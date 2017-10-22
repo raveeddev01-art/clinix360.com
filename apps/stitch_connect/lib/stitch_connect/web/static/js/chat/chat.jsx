@@ -31,17 +31,19 @@ class Chat extends Component {
     if (params.slug) {
       groupStore.joinGroup(params.slug);
     } else if (params.usernames) {
-      const usernames = params.usernames.split(",");
       const users = sidemenuStore.users;
-
-      if (usernames.length === 1) {
-        const user = users.find(u => u.username === usernames[0]);
-        groupStore.joinSingleDM(user).then(() => sidemenuStore.loadGroups());
-      } else {
+      let usernames = params.usernames.split(",");
+      if (usernames.length > 1) {
+        usernames = usernames.filter(
+          username => username !== currentUser.username
+        );
         const dmUsers = usernames.map(username =>
           users.find(u => u.username === username)
         );
         groupStore.joinMultiDM(dmUsers).then(() => sidemenuStore.loadGroups());
+      } else {
+        const user = users.find(u => u.username === usernames[0]);
+        groupStore.joinSingleDM(user).then(() => sidemenuStore.loadGroups());
       }
     }
   }
