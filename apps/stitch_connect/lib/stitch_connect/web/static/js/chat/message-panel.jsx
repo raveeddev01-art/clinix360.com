@@ -110,22 +110,24 @@ export default class MessagePanel extends Component {
 
         <MessageList />
         <div className="flex-footer">
-          {group.joined ? (
-            <MessageForm />
-          ) : (
-            <div className="room-preview">
-              This is a preview of the room{" "}
-              <strong>
-                <i className="fa fa-comments" /> {group.name}
-              </strong>
-              <button
-                className="join btn btn-fancy btn-primary"
-                onClick={this.handleJoin}
-              >
-                <i className="fa fa-sign-in" /> Join
-              </button>
-            </div>
-          )}
+          {!group.loading ? (
+            group.joined ? (
+              <MessageForm />
+            ) : (
+              <div className="room-preview">
+                This is a preview of the room{" "}
+                <strong>
+                  <i className="fa fa-comments" /> {group.name}
+                </strong>
+                <button
+                  className="join btn btn-fancy btn-primary"
+                  onClick={this.handleJoin}
+                >
+                  <i className="fa fa-sign-in" /> Join
+                </button>
+              </div>
+            )
+          ) : null}
         </div>
       </div>
     );

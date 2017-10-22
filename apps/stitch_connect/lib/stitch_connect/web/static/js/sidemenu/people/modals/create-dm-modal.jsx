@@ -46,7 +46,6 @@ class CreateDMModal extends Component {
     }
 
     const members = this.state.members;
-    members.push(currentUser);
     const usernames = _.sortBy(members, "id")
       .map(user => user.username)
       .join(",");

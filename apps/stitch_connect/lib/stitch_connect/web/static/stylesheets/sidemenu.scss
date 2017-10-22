@@ -8,7 +8,7 @@
     .team-name {
       flex: 1;
       font-size: 20px;
-      font-weight: bold;
+      font-weight: 900;
     }
 
     .btn {
@@ -91,10 +91,10 @@
           flex-grow: 1;
           flex-shrink: 0;
           color: $brand-primary;
-          font-size: 15px;
+          font-size: 16px;
           font-weight: bold;
           line-height: 1.5;
-          text-transform: uppercase;
+          text-transform: capitalize;
           margin: 0;
 
           a {
@@ -118,7 +118,7 @@
         display: flex;
         align-items: center;
         color: #333;
-        font-size: 15px;
+        font-size: 16px;
         text-decoration: none;
         border-radius: 3px;
         padding: 7px 10px 7px 7px;
@@ -149,6 +149,7 @@
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+          padding-right: 10px;
         }
 
         .item-badge {
@@ -159,7 +160,7 @@
           background: $brand-primary;
           border-radius: 2px;
           padding: 0 4px;
-          z-index: 10;
+          z-index: 9;
         }
 
         .hide-dm {

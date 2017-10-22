@@ -9,6 +9,7 @@
       h4 {
         display: flex;
         align-items: center;
+        font-weight: 900;
 
         > span {
           width: calc(100% - 450px);
@@ -22,7 +23,7 @@
         }
 
         i.fa {
-          margin-right: 8px;
+          margin-right: 2px;
         }
         i.fa-circle-o,
         i.fa-circle {
@@ -298,15 +299,14 @@
           margin: 20px 0 40px;
 
           .date {
-            color: $brand-primary;
+            font-size: 16px;
             font-weight: bold;
             line-height: 1.45;
-            background: #fff;
-            border: 1px solid $border-color;
-            border-radius: 6px;
+            background: #fafafa;
             padding: 6px 12px;
             position: absolute;
-            top: -17px;
+            top: -20px;
+            color: #036;
           }
         }
 
@@ -944,12 +944,9 @@ i.file-data-separator {
   margin-bottom: 30px;
 
   &__container {
-    border: 1px solid #d8d8d8;
-    background-color: #ffffff;
-    border-radius: 4px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     padding-bottom: 15px;
     padding-left: 10px;
     padding-right: 10px;
@@ -961,16 +958,15 @@ i.file-data-separator {
     font-weight: 900;
     line-height: 1;
     margin-top: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     text-align: center;
   }
 
   &__text {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   &__name {
-    font-size: 15px;
     color: $brand-primary;
     font-weight: 900;
     margin: 0 3px;
