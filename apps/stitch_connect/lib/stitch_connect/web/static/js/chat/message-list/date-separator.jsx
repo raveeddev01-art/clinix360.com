@@ -7,9 +7,7 @@ class DateSeparator extends Component {
 
     return (
       <div className="date-separator">
-        <span className="date">
-          {moment(timestamp).format("MMMM D, YYYY")}
-        </span>
+        <span className="date">{moment(timestamp).format("dddd, MMMM D")}</span>
       </div>
     );
   }
