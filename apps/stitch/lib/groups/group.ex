@@ -89,7 +89,7 @@ defmodule Stitch.Group do
     }, creator)
   end
 
-  def create_multi_dm(_, user_ids) when length(user_ids) != 3 do
+  def create_multi_dm(_, user_ids) when length(user_ids) < 3 do
     {:error, :user_id_count_is_not_3_or_more}
   end
 
