@@ -1,5 +1,7 @@
 defmodule StitchConnect.Web.SubdomainRouter do
   use StitchConnect.Web, :router
+  use Plug.ErrorHandler
+  use Sentry.Plug
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -62,6 +64,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/groups/:group_id/messages", MessageController, :create
     put "/messages/:id", MessageController, :update
     delete "/messages/:id", MessageController, :delete
+    get "/messages/:id/download", MessageController, :download
     post "/messages/:id/toggle-star", MessageController, :toggle_star
     post "/messages/:id/toggle-pin", MessageController, :toggle_pin
     post "/messages/search", MessageController, :search

@@ -74,6 +74,32 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def download(conn, %{"id" => message_id} = params) do
+    message = MessageQueries.get_by_id(message_id)
+    user = conn.assigns.current_user
+    group = GroupQueries.get_by_id(message.group_id)
+
+    case GroupAuthorization.can_view?(group, user) do
+      true ->
+        message =
+          message
+          |> MessageQueries.load_info
+          |> StitchConnect.Upload.presign
+
+        case message do
+          %Message{type: "upload", fields: %{"url" => url}} ->
+            redirect conn, external: url
+          message ->
+            render conn, "show.json", message: message, user_id: user.id
+        end
+
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not found"})
+    end
+  end
+
   def update(conn, %{"id" => message_id, "message" => message_params}) do
     message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
