@@ -32,7 +32,7 @@ defmodule StitchConnect.Upload do
           secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
           region: System.get_env("S3_REGION"),
           scheme: "https://",
-          host: "s3.#{System.get_env("S3_REGION")}.amazonaws.com",
+          host: "s3.amazonaws.com",
         }
 
         url = ExAws.S3.presigned_url(config, :get, System.get_env("S3_BUCKET_NAME"), filename, [

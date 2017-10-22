@@ -24,7 +24,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
     %{
       key: filename,
       'Content-Type': mimetype,
-      acl: "public-read",
+      acl: "private",
       success_action_status: "201",
       action: "https://s3.amazonaws.com/#{System.get_env("S3_BUCKET_NAME")}",
       'AWSAccessKeyId': System.get_env("AWS_ACCESS_KEY_ID"),
@@ -53,7 +53,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
         # You can only upload to the bucket we specify.
         %{bucket: System.get_env("S3_BUCKET_NAME")},
         # The uploaded file must be publicly readable.
-        %{acl: "public-read"},
+        %{acl: "private"},
         # You have to upload the mime type you said you would upload.
         ["starts-with", "$Content-Type", mimetype],
         # You have to upload the file name you said you would upload.
