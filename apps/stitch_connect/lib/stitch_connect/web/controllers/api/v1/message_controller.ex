@@ -74,6 +74,25 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def download(conn, %{"id" => message_id} = params) do
+    message = MessageQueries.get_by_id(message_id)
+    user = conn.assigns.current_user
+
+    case user.id == message.user_id do
+      true ->
+        message =
+          message
+          |> MessageQueries.load_info
+          |> StitchConnect.Upload.presign
+        render conn, "show.json", message: message, user_id: user.id
+
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not found"})
+    end
+  end
+
   def update(conn, %{"id" => message_id, "message" => message_params}) do
     message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
