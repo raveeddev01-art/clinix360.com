@@ -37,20 +37,23 @@ defmodule StitchConnect.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.3.0"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_html, "~> 2.10"},
-     {:phoenix_live_reload, "~> 1.1", only: :dev},
-     {:gettext, "~> 0.13"},
-     {:cowboy, "~> 1.1"},
-     {:guardian, "~> 0.14"},
-     {:poison, "~> 3.1"},
-     {:corsica, "~> 1.0"},
-     {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
-     {:timex, "~> 3.1"},
-     {:quantum, ">= 2.1.0"},
-     {:sweet_xml, "~> 0.6.5"},
-     {:stitch, in_umbrella: true}]
+    [
+      {:phoenix, "~> 1.3.0"},
+      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_html, "~> 2.10"},
+      {:phoenix_live_reload, "~> 1.1", only: :dev},
+      {:gettext, "~> 0.13"},
+      {:cowboy, "~> 1.1"},
+      {:guardian, "~> 0.14"},
+      {:poison, "~> 3.1"},
+      {:corsica, "~> 1.0"},
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:timex, "~> 3.1"},
+      {:quantum, ">= 2.1.0"},
+      {:sweet_xml, "~> 0.6.5"},
+      {:stitch, in_umbrella: true},
+      {:sentry, "~> 6.0.0"}
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
