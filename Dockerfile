@@ -57,8 +57,6 @@ ENV LC_ALL en_US.UTF-8
 
 RUN ls
 
-RUN pwd
-
 WORKDIR /tmp
 
 # See : https://github.com/phusion/baseimage-docker/issues/58
@@ -91,7 +89,6 @@ RUN /usr/local/bin/mix local.hex --force && \
 # /app is where Aptible places the project.
 WORKDIR /app
 
-RUN ls -a
 RUN mix deps.get
 
 ENV PORT 443
