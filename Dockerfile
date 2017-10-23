@@ -87,6 +87,7 @@ RUN /usr/local/bin/mix local.hex --force && \
 # /app is where Aptible places the project.
 WORKDIR /app
 
+RUN ls -a
 RUN mix deps.get
 
 ENV PORT 443
