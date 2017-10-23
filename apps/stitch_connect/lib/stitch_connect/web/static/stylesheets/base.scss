@@ -18,9 +18,12 @@ html {
 
 body {
   line-height: 1.5;
-  font-family: "Lato", sans-serif;
+  font-family: "lato", sans-serif;
   font-size: 14px;
   background: $body-bg;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   // overflow-y: hidden;
   // overflow-x: hidden;
 }
