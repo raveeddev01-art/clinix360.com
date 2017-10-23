@@ -614,34 +614,28 @@
   display: flex;
 
   .message {
-    max-width: 50%;
     width: fit-content;
     font-size: 15px;
-    background: #fff;
-    border: 1px solid $border-color-secondary;
-    border-radius: 4px;
-    padding: 15px 20px;
-    margin: 5px 0;
+    padding: 8px;
+    margin-bottom: 4px;
 
     &.highlight {
       animation: highlightBubble 3s, fadeIn 3s;
     }
 
     .message-header {
-      display: flex;
-      flex-direction: row;
-      align-items: baseline;
+      margin-bottom: 2px;
 
+      > * {
+        display: inline;
+      }
       .name {
         color: #003366;
-        flex: 1;
         font-weight: bold;
         margin-right: 20px;
       }
 
       .time {
-        display: flex;
-        align-items: inherit;
         white-space: nowrap;
         position: relative;
 
@@ -746,44 +740,6 @@
 
       .time:before {
         visibility: hidden;
-      }
-    }
-  }
-
-  &.mine {
-    justify-content: flex-end;
-
-    .message {
-      color: #fff;
-      background: $brand-primary;
-      border: 0;
-
-      .name {
-        color: #fff;
-      }
-
-      .time {
-        .dropdown-toggle {
-          color: #fff;
-        }
-
-        &:before {
-          color: rgba(255, 255, 255, 0.7);
-        }
-      }
-
-      .message-body {
-        .message-link,
-        .dropdown-toggle {
-          color: #fff;
-          border-color: #fff;
-        }
-      }
-
-      .message-icon {
-        &.icon-edited {
-          color: #eee;
-        }
       }
     }
   }
