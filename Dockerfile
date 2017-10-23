@@ -29,6 +29,10 @@ RUN apt-get update \
   && apt-get install make \
   && rm -rf /var/lib/apt/lists/*
 
+# This actually adds the app
+ADD . .
+RUN ls
+
 # This precompiles your deps before adding your code, which lets you take advantage of Docker
 # caching while you iterate on your app.
 ADD mix.exs mix.exs
@@ -42,6 +46,3 @@ CMD ["mix", "phx.server"]
 # The default Elixir config looks up the port in the $PORT environment variable, so that works for us.
 ENV PORT 443
 EXPOSE 443
-
-# This actually adds the app
-ADD . .
