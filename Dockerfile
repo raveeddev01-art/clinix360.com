@@ -87,10 +87,9 @@ RUN /usr/local/bin/mix local.hex --force && \
 # /app is where Aptible places the project.
 WORKDIR /app
 
-RUN mix deps.get
+RUN cd apps/stitch_connect && mix deps.get
 
 ENV PORT 443
 EXPOSE 443
 
-WORKDIR /apps/stitch_connect
-RUN MIX_ENV=prod mix phx.server
+RUN cd apps/stitch_connect && MIX_ENV=prod mix phx.server
