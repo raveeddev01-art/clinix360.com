@@ -5,4 +5,8 @@ defmodule StitchConnect.Web.PageController do
   def index(conn, _params) do
     render conn, "index.html", app_params: PageService.app_params(conn)
   end
+
+  def download(conn, _params) do
+    render conn, "download.html"
+  end
 end

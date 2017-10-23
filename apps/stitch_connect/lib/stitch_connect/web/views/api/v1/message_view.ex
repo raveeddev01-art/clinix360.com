@@ -49,7 +49,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   def render_fields(%Message{fields: fields}), do: fields
 
   def put_download_link(fields, message_id) do
-    download_path = StitchConnect.Web.SubdomainRouter.Helpers.message_path(StitchConnect.Web.Endpoint, :download, message_id)
+    download_path = StitchConnect.Web.SubdomainRouter.Helpers.api_v1_message_path(StitchConnect.Web.Endpoint, :download, message_id)
     %{fields | "url" => download_path }
   end
 
