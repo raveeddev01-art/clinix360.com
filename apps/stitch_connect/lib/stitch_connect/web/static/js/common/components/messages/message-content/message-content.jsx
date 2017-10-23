@@ -69,7 +69,10 @@ class MessageContent extends Component {
   render() {
     const { message } = this.props;
     return (
-      <Linkify className="message-body-wrapper">
+      <Linkify
+        properties={{ target: "_blank" }}
+        className="message-body-wrapper"
+      >
         {message.type === "upload" && <FileAttachment {...message.fields} />}
         <div className="message-body">
           {message.type === "upload" && message.text_content && '"'}
