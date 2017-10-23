@@ -3,7 +3,7 @@ FROM elixir:1.5.2
 RUN mix archive.install \
   --force \
   --sha512 f02d2320a5135cff961324baad4ab784483af9c934759a7041c6d11e260fc0c61a90b204342b8ab6b5a1a13941d74e352c99003d9753dd404f8f90cf2693b86f \
-  https://github.com/phoenixframework/archives/raw/master/phoenix_new-1.2.4.ez
+  https://github.com/phoenixframework/archives/raw/master/phx_new.ez
 
 WORKDIR /app
 
