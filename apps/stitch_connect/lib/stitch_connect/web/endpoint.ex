@@ -44,6 +44,9 @@ defmodule StitchConnect.Web.Endpoint do
   plug StitchConnect.Plug.Subdomain, StitchConnect.Web.SubdomainRouter
   plug StitchConnect.Web.Router
 
+  # Add AppSignal instrumentation
+  use Appsignal.Phoenix
+
   @doc """
   Dynamically loads configuration from the system environment
   on startup.

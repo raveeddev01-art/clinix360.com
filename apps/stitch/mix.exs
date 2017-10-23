@@ -40,7 +40,8 @@ defmodule Stitch.Mixfile do
       {:bamboo, "~> 0.8"},
       {:timex, "~> 3.1"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-      {:sentry, "~> 6.0.0"}
+      {:sentry, "~> 6.0.0"},
+      {:appsignal, "~> 1.3"}
     ]
   end
 
