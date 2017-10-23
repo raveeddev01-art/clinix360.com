@@ -12,11 +12,17 @@ config :stitch_connect,
 
 # Configures the endpoint
 config :stitch_connect, StitchConnect.Web.Endpoint,
+  instrumenters: [Appsignal.Phoenix.Instrumenter],
   url: [host: "localhost"],
   secret_key_base: "rp9jtclD/mgOBBlbo+mFKHVZ0UKNdC6DoofvmAy0Z/gSmgPy0/73DhzLrDalDf/G",
   render_errors: [view: StitchConnect.Web.ErrorView, accepts: ~w(html json)],
   pubsub: [name: StitchConnect.PubSub,
            adapter: Phoenix.PubSub.PG2]
+
+# Configure AppSignal Template Instrumentation
+config :phoenix, :template_engines,
+  eex: Appsignal.Phoenix.Template.EExEngine,
+  exs: Appsignal.Phoenix.Template.ExsEngine
 
 # Configures Elixir's Logger
 config :logger, :console,
