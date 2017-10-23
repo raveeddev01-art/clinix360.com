@@ -18,7 +18,12 @@ class CreateTeam extends Component {
     post("/api/v1/users", {
       body: { email: this.state.email }
     }).then(resp => {
-      window.location.href = `/signup/confirmation-code?userId=${resp.data.id}`;
+      return post("/api/v1/users/send-confirmation-code", {
+        body: { id: resp.data.id }
+      }).then(() => {
+        window.location.href = `/signup/confirmation-code?userId=${resp.data
+          .id}`;
+      });
     });
   };
 
