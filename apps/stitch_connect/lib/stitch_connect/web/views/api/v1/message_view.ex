@@ -1,6 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.MessageView do
   use StitchConnect.Web, :view
   alias Stitch.{Message}
+  import StitchConnect.Web.SubdomainRouter.Helpers
+  @endpoint StitchConnect.Web.Endpoint
 
   def render("index.json", %{messages: messages}) do
     Enum.map(messages, &message_json/1)
@@ -44,21 +46,13 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   def render_fields(%Message{id: message_id, type: "upload", fields: %{"url" => url} = fields}) when is_map(fields) and is_binary(url) do
     fields
     |> put_download_link(message_id)
-    |> put_preview_presigned_url
   end
   def render_fields(%Message{fields: fields}), do: fields
 
   def put_download_link(fields, message_id) do
-    download_path = StitchConnect.Web.SubdomainRouter.Helpers.api_v1_message_path(StitchConnect.Web.Endpoint, :download, message_id)
-    %{fields | "url" => download_path }
+    Map.merge(fields, %{
+      "url" => message_path(@endpoint, :download, message_id),
+      "api_url" => api_v1_message_path(@endpoint, :download, message_id),
+    })
   end
-
-  def put_preview_presigned_url(fields)
-  def put_preview_presigned_url(%{"url" => url, "mimetype" => "image/" <> _image} = fields) do
-    case StitchConnect.Upload.presign_url(url) do
-      {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
-      :error -> fields
-    end
-  end
-  def put_preview_presigned_url(fields), do: fields
 end

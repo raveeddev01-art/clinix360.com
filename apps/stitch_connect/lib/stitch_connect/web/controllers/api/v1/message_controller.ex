@@ -77,8 +77,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case StitchConnect.Upload.presign(message) do
           {:ok, presigned_url} ->
-            conn
-            |> json(%{presigned_url: presigned_url})
+            redirect conn, external: presigned_url
           :error ->
             conn
             |> put_status(:unauthorized)
