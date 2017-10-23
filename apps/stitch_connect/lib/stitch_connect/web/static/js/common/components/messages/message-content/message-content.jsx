@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from "react";
 import { observer, inject } from "mobx-react";
 import { Emoji } from "emoji-mart";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
+import Linkify from "react-linkify";
 import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 
@@ -68,14 +69,14 @@ class MessageContent extends Component {
   render() {
     const { message } = this.props;
     return (
-      <div className="message-body-wrapper">
+      <Linkify className="message-body-wrapper">
         {message.type === "upload" && <FileAttachment {...message.fields} />}
         <div className="message-body">
           {message.type === "upload" && message.text_content && '"'}
           {this.renderMessageText()}
           {message.type === "upload" && message.text_content && '"'}
         </div>
-      </div>
+      </Linkify>
     );
   }
 }
