@@ -3,7 +3,7 @@ $admin-topbar-height: 80px;
 $admin-topbar-height-sm: 65px;
 
 .admin-wrapper {
-  display: block;
+  display: flex;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -18,13 +18,9 @@ $admin-topbar-height-sm: 65px;
   }
 
   .sidebar {
-    position: absolute;
     display: block;
-    top: 0;
-    bottom: 0;
-    left: 0;
     @include transition(left 0.2s ease);
-    width: $admin-sidebar-width;
+    flex-basis: $admin-sidebar-width;
     overflow: visible;
     z-index: 1;
     display: flex;
@@ -104,11 +100,7 @@ $admin-topbar-height-sm: 65px;
 
   .admin-content {
     box-shadow: none;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: $admin-sidebar-width;
-    right: 0;
+    flex: 1;
     @include transition(left 0.2s ease, right 0.2s ease);
     display: flex;
     flex-direction: column;

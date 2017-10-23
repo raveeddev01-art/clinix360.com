@@ -2,7 +2,7 @@ $sidebar_width: 270px;
 
 .appContainer {
   flex-grow: 1;
-  display: block;
+  display: flex;
   width: auto;
   min-width: 840px;
   height: auto;
@@ -27,11 +27,7 @@ $sidebar_width: 270px;
   overflow-x: visible;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: $sidebar_width;
+  flex-basis: $sidebar_width;
 }
 
 #main {
@@ -111,12 +107,8 @@ $sidebar_width: 270px;
 .chat-wrapper {
   display: flex;
   flex-direction: row;
-  position: absolute;
-  top: 0;
   bottom: 0;
-  left: $sidebar_width;
-  right: 0;
-  width: auto;
+  flex: 1;
   height: auto;
 }
 
