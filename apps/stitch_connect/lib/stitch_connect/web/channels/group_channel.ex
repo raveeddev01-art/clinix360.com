@@ -27,7 +27,7 @@ defmodule StitchConnect.Web.GroupChannel do
             end
 
           group ->
-            messages = MessageQueries.group_latest_messages(group.id, user) |> StitchConnect.Upload.presign_uploads
+            messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             send self(), :after_join
             {:ok, %{messages: json}, assign(socket, :group, group)}
@@ -49,7 +49,7 @@ defmodule StitchConnect.Web.GroupChannel do
       group ->
         case GroupAuthorization.can_view?(group, user) do
           true ->
-            messages = MessageQueries.group_latest_messages(group.id, user) |> StitchConnect.Upload.presign_uploads
+            messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             send self(), :after_join
             {:ok, %{messages: json}, assign(socket, :group, group)}
@@ -98,7 +98,7 @@ defmodule StitchConnect.Web.GroupChannel do
         |> Map.update("limit", 30, &Enum.min([&1, 50]))
         |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
-        messages = MessageQueries.group_latest_messages(group.id, user, opts) |> StitchConnect.Upload.presign_uploads
+        messages = MessageQueries.group_latest_messages(group.id, user, opts)
         json = MessageView.render("index.json", %{messages: messages})
         {:reply, {:ok, %{messages: json}}, socket}
     end
@@ -117,7 +117,7 @@ defmodule StitchConnect.Web.GroupChannel do
         |> Map.update("limit", 30, &Enum.min([&1, 50]))
         |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
-        messages = MessageQueries.group_recent_messages(group.id, user, opts) |> StitchConnect.Upload.presign_uploads
+        messages = MessageQueries.group_recent_messages(group.id, user, opts)
         json = MessageView.render("index.json", %{messages: messages})
         {:reply, {:ok, %{messages: json}}, socket}
     end
@@ -236,7 +236,6 @@ defmodule StitchConnect.Web.GroupChannel do
       case Message.create(group.id, user, attrs, acitve_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           message = MessageQueries.load_info(message)
-          message = StitchConnect.Upload.presign(message)
           broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
 

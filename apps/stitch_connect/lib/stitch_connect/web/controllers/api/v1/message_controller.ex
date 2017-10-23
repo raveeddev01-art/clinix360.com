@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           end)
           |> Keyword.update(:limit, 30, fn limit -> Enum.min([limit, 30]) end)
 
-        messages = MessageQueries.group_latest_messages(group_id, user, opts) |> StitchConnect.Upload.presign_uploads
+        messages = MessageQueries.group_latest_messages(group_id, user, opts)
         render conn, "index.json", messages: messages, user_id: user.id
       false ->
         conn
@@ -51,11 +51,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         active_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
         case Message.create(group.id, user, message_params, active_user_ids) do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
-            message =
-              message
-              |> MessageQueries.load_info
-              |> StitchConnect.Upload.presign
-
+            message = message |> MessageQueries.load_info
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
 
@@ -74,23 +70,18 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
-  def download(conn, %{"id" => message_id} = params) do
+  def download(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
-    user = conn.assigns.current_user
-    group = GroupQueries.get_by_id(message.group_id)
 
-    case GroupAuthorization.can_view?(group, user) do
+    case GroupAuthorization.can_view?(message.group, conn.assigns.current_user) do
       true ->
-        message =
-          message
-          |> MessageQueries.load_info
-          |> StitchConnect.Upload.presign
-
-        case message do
-          %Message{type: "upload", fields: %{"url" => url}} ->
-            redirect conn, external: url
-          message ->
-            render conn, "show.json", message: message, user_id: user.id
+        case StitchConnect.Upload.presign(message) do
+          {:ok, presigned_url} ->
+            redirect conn, external: presigned_url
+          :error ->
+            conn
+            |> put_status(:unauthorized)
+            |> json(%{message: "Not found"})
         end
 
       false ->
