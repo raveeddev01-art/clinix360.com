@@ -296,7 +296,7 @@
           justify-content: center;
           position: relative;
           border-top: 1px solid $border-color;
-          margin: 35px 0;
+          margin: 20px 0 30px;
 
           .date {
             color: $brand-primary;
@@ -632,7 +632,7 @@
       .name {
         color: #003366;
         font-weight: bold;
-        margin-right: 20px;
+        margin-right: 10px;
       }
 
       .time {
@@ -642,7 +642,7 @@
         .message-actions {
           line-height: 1.15;
           position: absolute;
-          right: 0;
+          left: 0;
           top: 0;
           visibility: hidden;
 
