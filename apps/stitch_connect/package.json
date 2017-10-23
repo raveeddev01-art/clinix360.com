@@ -20,6 +20,7 @@
     "moment": "^2.18.1",
     "password-validator": "^4.0.0",
     "phoenix": "file:../../deps/phoenix",
+    "qs": "^6.5.1",
     "query-string": "^5.0.0",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.0",
