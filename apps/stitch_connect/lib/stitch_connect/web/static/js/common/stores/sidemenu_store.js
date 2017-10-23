@@ -229,11 +229,17 @@ class SidemenuStore {
   }
 
   onRoomMenuItemShow(roomId) {
-    this.roomMenuItemVisibles[roomId] = true;
+    this.roomMenuItemVisibles = {
+      ...this.roomMenuItemVisibles,
+      [roomId]: true
+    };
   }
 
   onRoomMenuItemHide(roomId) {
-    this.roomMenuItemVisibles[roomId] = false;
+    this.roomMenuItemVisibles = {
+      ...this.roomMenuItemVisibles,
+      [roomId]: false
+    };
   }
 
   loadUsers = () => {
