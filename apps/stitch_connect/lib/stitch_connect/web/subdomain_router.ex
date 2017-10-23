@@ -62,7 +62,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/groups/:group_id/messages", MessageController, :create
     put "/messages/:id", MessageController, :update
     delete "/messages/:id", MessageController, :delete
-    get "/messages/:id/download", MessageController, :download
     post "/messages/:id/toggle-star", MessageController, :toggle_star
     post "/messages/:id/toggle-pin", MessageController, :toggle_pin
     post "/messages/search", MessageController, :search
@@ -163,6 +162,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/rooms/:slug", GroupController, :index
     get "/direct/:username", UserController, :index
+    get "/messages/:id/download", MessageController, :download
 
     get "/admin/team", AdminController, :index
     get "/admin/team/settings", AdminController, :index

@@ -1,65 +1,32 @@
 defmodule StitchConnect.Upload do
+  alias ExAws.S3
   alias Stitch.{Message}
 
-  def presign_uploads(messages) do
-    Enum.map(messages, fn
-      %Message{type: "upload", fields: %{"url" => url}} = message ->
-        filename =
-          with %{path: path} <- URI.parse(url) do
-            {:ok, Path.basename(path)}
-          end
-
-        case filename do
-          {:ok, filename} ->
-            fields = Map.put(message.fields, "url", presign(filename))
-            Map.put(message, :fields, fields)
-          _ ->
-            message
-        end
-
-      message ->
-        message
-    end)
+  def presign(message, config \\ get_config())
+  def presign(%Message{type: "upload", fields: %{"url" => url}}, config) do
+    presign_url(url, config)
   end
+  def presign(_message, _config), do: :error
 
-  def presign(%Message{type: "upload", fields: %{"url" => url}} = message) do
-    filename =
-      with %{path: path} <- URI.parse(url) do
-        {:ok, Path.basename(path)}
-      end
-
-    case filename do
-      {:ok, filename} ->
-        fields = Map.put(message.fields, "url", presign(filename))
-        Map.put(message, :fields, fields)
-      _ ->
-        message
+  def presign_url(url, config \\ get_config()) do
+    with %{path: path} <- URI.parse(url),
+         object = Path.basename(path),
+         {:ok, presigned_url} <- presign_object(object, config) do
+      {:ok, presigned_url}
     end
   end
 
-  def presign(filename) when is_binary(filename) do
-    if Application.get_env(:stitch_connect, :env) == :test or System.get_env("S3_REGION") == nil do
-      nil
-    else
-      config = %{
-        access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
-        secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
-        region: System.get_env("S3_REGION"),
-        scheme: "https://",
-        host: "s3.amazonaws.com",
-      }
+  def presign_object(object, %{bucket: bucket} = config) when is_binary(object) and is_binary(bucket) do
+    url = S3.presigned_url(config, :get, bucket, object, virtual_host: false, expires_in: 60_000)
 
-      url = ExAws.S3.presigned_url(config, :get, System.get_env("S3_BUCKET_NAME"), filename, [
-        virtual_host: false,
-        expires_in: 60_000,
-      ])
-
-      case url do
-        {:ok, url} -> url
-        _ -> nil
-      end
+    case url do
+      {:ok, presigned_url} -> {:ok, presigned_url}
+      _ -> :error
     end
   end
+  def presign_object(_object, _config), do: :error
 
-  def presign(message), do: message
+  def get_config do
+    Application.get_env(:stitch_connect, StitchConnect.Upload) |> Enum.into(%{})
+  end
 end
