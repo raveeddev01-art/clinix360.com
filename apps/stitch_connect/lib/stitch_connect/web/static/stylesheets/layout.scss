@@ -107,9 +107,7 @@ $sidebar_width: 270px;
 .chat-wrapper {
   display: flex;
   flex-direction: row;
-  bottom: 0;
   flex: 1;
-  height: auto;
 }
 
 @media only screen and (max-width: 991px) {
