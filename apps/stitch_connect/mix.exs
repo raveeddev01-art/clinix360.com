@@ -25,7 +25,7 @@ defmodule StitchConnect.Mixfile do
   def application do
     [
       mod: {StitchConnect.Application, []},
-      extra_applications: [:logger, :runtime_tools, :appsignal]
+      extra_applications: [:logger, :appsignal, :runtime_tools]
     ]
   end
 
