@@ -3,7 +3,7 @@ import Favico from "favico.js";
 
 class SidemenuStore {
   @observable sidemenuDiv = null; // Div element of sidemenu
-  @observable roomMenuItems = {};
+  @observable roomMenuItemVisibles = {};
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
@@ -39,6 +39,11 @@ class SidemenuStore {
   }
 
   @computed
+  get favoriteGroups() {
+    return this.groups.filter(group => group.favorite);
+  }
+
+  @computed
   get normalGroups() {
     return this.groups.filter(
       group => group.type === "regular" && !group.favorite
@@ -56,8 +61,56 @@ class SidemenuStore {
   }
 
   @computed
-  get favoriteGroups() {
-    return this.groups.filter(group => group.favorite);
+  get roomsInShowOrder() {
+    return this.favoriteGroups.concat(this.normalGroups, this.directGroups);
+  }
+
+  @computed
+  get unreadRoomItemHiddenUp() {
+    if (!Object.keys(this.roomsInShowOrder).length) {
+      return null;
+    }
+
+    let room = null;
+
+    for (let i = 0; i < this.roomsInShowOrder.length; i += 1) {
+      const r = this.roomsInShowOrder[i];
+
+      if (this.roomMenuItemVisibles[r.id]) {
+        break;
+      }
+
+      if (r.unread_messages_count > 0) {
+        room = r;
+        break;
+      }
+    }
+
+    return room;
+  }
+
+  @computed
+  get unreadRoomItemHiddenDown() {
+    if (!Object.keys(this.roomsInShowOrder).length) {
+      return null;
+    }
+
+    let room = null;
+
+    for (let i = this.roomsInShowOrder.length - 1; i >= 0; i -= 1) {
+      const r = this.roomsInShowOrder[i];
+
+      if (this.roomMenuItemVisibles[r.id]) {
+        break;
+      }
+
+      if (r.unread_messages_count > 0) {
+        room = r;
+        break;
+      }
+    }
+
+    return room;
   }
 
   @computed
@@ -176,11 +229,11 @@ class SidemenuStore {
   }
 
   onRoomMenuItemShow(roomId) {
-    this.roomMenuItems[roomId] = true;
+    this.roomMenuItemVisibles[roomId] = true;
   }
 
   onRoomMenuItemHide(roomId) {
-    this.roomMenuItems[roomId] = false;
+    this.roomMenuItemVisibles[roomId] = false;
   }
 
   loadUsers = () => {

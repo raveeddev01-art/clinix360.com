@@ -56,18 +56,30 @@ class Sidemenu extends Component {
   }
 
   renderUnreadBadgesUp() {
+    const { sidemenuStore } = this.props;
+
+    console.log("hiddenUp", sidemenuStore.unreadRoomItemHiddenUp);
+
     return (
-      <div className="unreads-badge up">
-        <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
-      </div>
+      sidemenuStore.unreadRoomItemHiddenUp && (
+        <div className="unreads-badge up">
+          <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
+        </div>
+      )
     );
   }
 
   renderUnreadBadgesDown() {
+    const { sidemenuStore } = this.props;
+
+    console.log("hiddenDown", sidemenuStore.unreadRoomItemHiddenDown);
+
     return (
-      <div className="unreads-badge down">
-        <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
-      </div>
+      sidemenuStore.unreadRoomItemHiddenDown && (
+        <div className="unreads-badge down">
+          <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
+        </div>
+      )
     );
   }
 

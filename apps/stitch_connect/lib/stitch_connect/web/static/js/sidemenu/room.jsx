@@ -22,9 +22,13 @@ class Room extends Component {
   };
 
   onVisibleChange = isVisible => {
-    const { room } = this.props;
+    const { sidemenuStore, room } = this.props;
 
-    console.log("room item visibility", room.name, isVisible);
+    if (isVisible) {
+      sidemenuStore.onRoomMenuItemShow(room.id);
+    } else {
+      sidemenuStore.onRoomMenuItemHide(room.id);
+    }
   };
 
   getNavLink() {
