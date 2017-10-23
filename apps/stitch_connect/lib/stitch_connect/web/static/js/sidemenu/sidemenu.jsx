@@ -144,26 +144,28 @@ class Sidemenu extends Component {
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        <div
-          className="flex-content"
-          ref={div => {
-            this.sidemenuDiv = div;
-          }}
-        >
-          <FavoritesList
-            heading={"Favorites"}
-            rooms={sidemenuStore.favoriteGroups}
-          />
+        <div className="flex-content">
+          <div
+            className="rooms-menu"
+            ref={div => {
+              this.sidemenuDiv = div;
+            }}
+          >
+            <FavoritesList
+              heading={"Favorites"}
+              rooms={sidemenuStore.favoriteGroups}
+            />
 
-          <RoomsList
-            heading="Rooms"
-            rooms={filterJoined(sidemenuStore.normalGroups)}
-          />
+            <RoomsList
+              heading="Rooms"
+              rooms={filterJoined(sidemenuStore.normalGroups)}
+            />
 
-          <PeopleList
-            heading="Direct Messages"
-            rooms={filterJoined(sidemenuStore.directGroups)}
-          />
+            <PeopleList
+              heading="Direct Messages"
+              rooms={filterJoined(sidemenuStore.directGroups)}
+            />
+          </div>
 
           {this.renderUnreadBadgesUp()}
           {this.renderUnreadBadgesDown()}
