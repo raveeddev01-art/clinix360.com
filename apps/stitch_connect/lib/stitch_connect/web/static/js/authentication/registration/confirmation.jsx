@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 import { observer } from "mobx-react";
-import store from "../authentication_store";
-
+import { parse } from "qs";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Alert from "react-bootstrap/lib/Alert";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -12,12 +11,13 @@ import Col from "react-bootstrap/lib/Col";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Button from "react-bootstrap/lib/Button";
+
+import store from "../authentication_store";
 
 @observer
 export default class Confirmation extends Component {
-  constructor(props) {
-    super();
+  constructor(...args) {
+    super(...args);
     this.state = {
       error: false,
       digit_one: "",
@@ -27,6 +27,16 @@ export default class Confirmation extends Component {
       digit_five: "",
       digit_six: ""
     };
+  }
+
+  componentWillMount() {
+    const { search } = this.props.location;
+    if (search) {
+      const query = parse(search.substr(1));
+      if (query.userId) {
+        store.instance.userId = query.userId;
+      }
+    }
   }
 
   handleChange = event => {
@@ -59,11 +69,12 @@ export default class Confirmation extends Component {
       case "digit_six":
         this.submitConfirmationCode();
         break;
+      default:
     }
   };
 
   submitConfirmationCode = () => {
-    let confirmationCode =
+    const confirmationCode =
       this.state.digit_one +
       this.state.digit_two +
       this.state.digit_three +
@@ -88,10 +99,11 @@ export default class Confirmation extends Component {
   render() {
     return (
       <div>
-        {this.state.error &&
+        {this.state.error && (
           <Alert>
             The confirmation code doesn't match the one we have on record.
-          </Alert>}
+          </Alert>
+        )}
 
         <div className="authentication-card text-center">
           <div className="card-header">
