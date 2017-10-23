@@ -9,10 +9,16 @@ WORKDIR /app
 # Even our staging app runs with MIX_ENV = prod on Enclave. I recommend
 # this because otherwise you'll be showing error stacktraces, etc.
 ENV MIX_ENV prod
-RUN apt-get update && apt-get install -y locales && locale-gen en_US.UTF-8
+
+RUN apt-get update && apt-get install -y --no-install-recommends locales
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8 \
+  && echo $LANG UTF-8 > /etc/locale.gen \
+  && locale-gen \
+  && update-locale LANG=$LANG
+
 
 RUN mix local.hex --force
 RUN mix local.rebar --force
