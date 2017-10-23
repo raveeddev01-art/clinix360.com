@@ -23,7 +23,8 @@ defmodule StitchUmbrella.Mixfile do
   # and cannot be accessed from applications inside the apps folder
   defp deps do
     [
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:appsignal, "~> 1.3"}
     ]
   end
 end
