@@ -41,6 +41,7 @@ RUN mix compile
 
 FROM node:8.2
 WORKDIR /app/apps/stitch_connect
+RUN ls -a
 RUN npm install -g yarn
 RUN yarn
 RUN npm run deploy
