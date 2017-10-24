@@ -4,50 +4,6 @@ defmodule StitchConnect.Web.MessageControllerTest do
   import Phoenix.ChannelTest, except: [connect: 2]
   import StitchConnect.Web.SubdomainRouter.Helpers
 
-  describe "DELETE /api/v1/messages/:id" do
-    test "user can delete his own messages", %{conn: conn} do
-      user = insert(:user)
-      message = insert(:message, user: user)
-      user2 = insert(:user)
-      insert(:group_user, user: user, group: message.group)
-      insert(:group_user, user: user2, group: message.group)
-      team = message.group.team
-
-      @endpoint.subscribe("groups:#{message.group.slug}")
-      @endpoint.subscribe("events:#{user2.id}")
-
-      conn = conn
-      |> subdomain(team.slug)
-      |> delete_as_user(user, "/api/v1/messages/#{message.id}")
-
-      assert_broadcast "delete_msg", %{id: msg_id}
-      assert_broadcast "message_deleted", %{id: msg2_id}
-      assert msg_id == message.id
-      assert msg2_id == message.id
-
-      assert response(conn, 204)
-      message = MessageQueries.get_by_id(message.id)
-      assert message == nil
-    end
-
-    test "user can't delete other users' messages", %{conn: conn} do
-      user = insert(:user)
-      user_eve = insert(:user)
-      message = insert(:message, user: user)
-      insert(:group_user, user: user, group: message.group)
-      insert(:group_user, user: user_eve, group: message.group)
-      team = message.group.team
-
-      conn = conn
-      |> subdomain(team.slug)
-      |> delete_as_user(user_eve, "/api/v1/messages/#{message.id}")
-
-      json = json_response(conn, 401)
-      assert json["message"] == "You can't delete other users' messages"
-      assert MessageQueries.get_by_id(message.id) != nil
-    end
-  end
-
   describe "POST /api/v1/groups/:group_id/messages" do
     test "default message with text", %{conn: conn} do
       user = insert(:user)
