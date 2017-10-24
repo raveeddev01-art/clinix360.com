@@ -113,9 +113,10 @@ defmodule Stitch.MessageQueries do
     Message
     |> where(pinned: ^true)
     |> where(group_id: ^group_id)
-    |> order_by([m], desc: m.id)
-    |> preload([m], [:user])
-    |> Paginator.new(limit: limit, skip: offset).data
+    |> order_by([m], desc: m.inserted_at)
+    |> preload([m], [:user, :pinned_by])
+    |> select([m], m)
+    |> Paginator.new(skip: offset, limit: limit)
   end
 
   def get_by_id(id) do
