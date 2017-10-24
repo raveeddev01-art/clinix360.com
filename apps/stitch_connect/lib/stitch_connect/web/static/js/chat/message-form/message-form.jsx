@@ -11,7 +11,7 @@ import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 import { confirm } from "../../common/modals";
 
-@inject("messageStore", "socketStore")
+@inject("messageStore", "socketStore", "uploadStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -131,6 +131,23 @@ class MessageForm extends Component {
     this.setState({ searchFilter: "", openEmojiSearch: false });
   };
 
+  onPaste = evt => {
+    const items = evt.clipboardData.items;
+    for (let i = 0; i < items.length; i += 1) {
+      if (items[i].kind === "file") {
+        const file = items[i].getAsFile();
+        // browser only allows reading images. other files will be returned as null
+        if (file) {
+          const fileName = evt.clipboardData.getData("Text");
+          this.props.uploadStore.openUploadModal(file, fileName);
+          // NOTE: for now, we supports pasting only 1 file. Stacking can be done later.
+          evt.preventDefault();
+          break;
+        }
+      }
+    }
+  };
+
   getText = () => {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -208,7 +225,7 @@ class MessageForm extends Component {
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
-      editing: (!!messageInEdit || !socketStore.isConnected),
+      editing: !!messageInEdit || !socketStore.isConnected
     });
 
     return (
@@ -221,6 +238,7 @@ class MessageForm extends Component {
           onChange={this.onTextChange}
           onKeyUp={this.onKeyUp}
           onKeyDown={this.onKeyDown}
+          onPaste={this.onPaste}
           autoFocus
           required
           ref={input => {
