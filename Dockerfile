@@ -11,6 +11,8 @@ WORKDIR /app
 ENV MIX_ENV prod
 
 RUN apt-get update && apt-get install -y --no-install-recommends locales
+RUN apt-get install node -y
+RUN apt-get install npm -y
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8

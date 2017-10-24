@@ -23,7 +23,7 @@ class AuthenticationRouter extends Component {
           <title>{titleStore.title}</title>
         </Helmet>
         <Switch>
-          <Route exact path="/" component={GetStarted} />
+          <Route exact path="/getstarted" component={GetStarted} />
           <Route exact path="/signin" component={TeamPicker} />
           <Route exact path="/find-teams" component={FindTeam} />
 
