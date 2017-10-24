@@ -44,7 +44,7 @@ WORKDIR /app
 # This actually adds the app
 ADD . .
 WORKDIR /app/apps/stitch_connect
-RUN ls
+RUN ls -a ../../deps
 RUN npm install -g yarn
 RUN yarn
 RUN npm run deploy
