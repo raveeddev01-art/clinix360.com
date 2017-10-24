@@ -657,7 +657,7 @@ class MessageStore {
     }
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
-      this.scrollToBottom(() => {}, 500);
+      this.scrollToBottom(() => {}, 100);
     }
 
     // Update favicon
