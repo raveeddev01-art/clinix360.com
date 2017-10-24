@@ -692,13 +692,11 @@
         .message-link,
         .dropdown-toggle {
           color: #003366;
-          text-decoration-style: dotted;
-          text-decoration-color: #003366;
-          text-decoration-line: underline;
-          text-underline-position: under;
+          text-decoration: none;
+          border-bottom: 1px dotted $brand-primary;
 
           &:hover {
-            text-decoration-style: solid;
+            border-bottom-style: solid;
           }
         }
       }
@@ -771,7 +769,7 @@
         .message-link,
         .dropdown-toggle {
           color: #fff;
-          text-decoration-color: #fff;
+          border-color: #fff;
         }
       }
 
