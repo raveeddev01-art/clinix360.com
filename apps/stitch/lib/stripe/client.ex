@@ -84,7 +84,7 @@ defmodule Stitch.Stripe.Client do
   @impl Stitch.Stripe
   def remove_card(customer_id, card_id) do
     case Stripe.Cards.delete(:customer, customer_id, card_id) do
-      {:ok, %{delete: true}} -> true
+      {:ok, %{deleted: true}} -> true
       _ -> false
     end
   end
@@ -112,7 +112,7 @@ defmodule Stitch.Stripe.Client do
   ## Examples
 
       iex> create_subscription("cus_1234567", "basic_monthly", 5)
-      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
+      {:ok, %{subscription_id: "sub_1234567", subscription_line_item_id: "si_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
 
   """
   @impl Stitch.Stripe
@@ -124,8 +124,10 @@ defmodule Stitch.Stripe.Client do
   end
 
   defp transform_subscription(subscription) do
+    %{items: %{"data" => [%{"id" => subscription_line_item_id}]}} = subscription
     %{
       subscription_id: subscription.id,
+      subscription_line_item_id: subscription_line_item_id,
       status: subscription.status,
       valid_until: DateTime.from_unix!(subscription.current_period_ends),
       renews: !subscription.cancel_at_period_end
@@ -133,18 +135,46 @@ defmodule Stitch.Stripe.Client do
   end
 
   @doc """
-  Updates an existing subscription to a different tier.
+  Updates an existing subscription to a different plan.
 
   ## Examples
 
-      iex> update_subscription("cus_1234567", "sub_1234567", "power_monthly")
-      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
+      iex> update_subscription_plan("cus_1234567", "sub_1234567", "power_monthly")
+      {:ok, %{subscription_id: "sub_1234567", subscription_line_item_id: "si_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
 
   """
   @impl Stitch.Stripe
-  def update_subscription(customer_id, subscription_id, plan_id) do
+  def update_subscription_plan(customer_id, subscription_id, plan_id) do
     case Stripe.Subscriptions.change(customer_id, subscription_id, plan_id) do
       {:ok, sub} -> {:ok, transform_subscription(sub)}
+      _ -> :error
+    end
+  end
+
+  @doc """
+  Updates a subscription's quantity for its plan.
+
+  Updating the subscription quantity requires the subscription item's id instead of the subscription id.
+  Refer to https://stripe.com/docs/api#update_subscription_item for information.
+
+  ## Examples
+
+      iex> update_subscription_quantity("si_1234567", 5)
+      :ok
+
+  """
+  @impl Stitch.Stripe
+  def update_subscription_quantity(subscription_line_item_id, user_count) do
+    request_opts = [quantity: user_count, prorate: true]
+    key = Stripe.config_or_env_key()
+
+    request =
+      :post
+      |> Stripe.make_request_with_key("subscription_items/#{subscription_line_item_id}", key, request_opts)
+      |> Stripe.Util.handle_stripe_response()
+
+    case request do
+      {:ok, _} -> :ok
       _ -> :error
     end
   end
@@ -155,7 +185,7 @@ defmodule Stitch.Stripe.Client do
   ## Examples
 
       iex> cancel_subscription("cus_1234567", "sub_1234567")
-      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}, renews: false}}
+      {:ok, %{subscription_id: "sub_1234567", subscriptiion_line_item_id: "si_1234567", status: "active", valid_until: %DateTime{...}, renews: false}}
 
   """
   @impl Stitch.Stripe
@@ -173,7 +203,7 @@ defmodule Stitch.Stripe.Client do
   ## Examples
 
       iex> renew_subscription("cus_1234567", "sub_1234567")
-      {:ok, %{subscription_id: "sub_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
+      {:ok, %{subscription_id: "sub_1234567", subscription_line_item_id: "si_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
 
   """
   @impl Stitch.Stripe

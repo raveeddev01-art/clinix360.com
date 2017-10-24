@@ -77,6 +77,7 @@ defmodule Stitch.Factory do
       team: build(:team),
       customer_id: sequence(:customer_id, &"cus_#{&1}"),
       subscription_id: sequence(:subscription_id, &"sub_#{&1}"),
+      subscription_line_item_id: sequence(:subscription_line_item_id, &"si_#{&1}"),
       tier: "BASIC",
       renewal_frequency: "MONTHLY",
       renews: true,

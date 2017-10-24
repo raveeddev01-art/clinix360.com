@@ -138,7 +138,7 @@ defmodule Stitch.Billing do
   defp update_subscription(subscription, plan_id) do
     customer_id = subscription.customer_id
     subscription_id = subscription.subscription_id
-    @stripe_client.update_subscription(customer_id, subscription_id, plan_id)
+    @stripe_client.update_subscription_plan(customer_id, subscription_id, plan_id)
   end
 
   @doc """
@@ -347,4 +347,26 @@ defmodule Stitch.Billing do
   def plan_display_name("PREMIUM"), do: "Premium"
   def plan_display_name("POWER"), do: "Power"
   def plan_display_name("TRIAL"), do: "Trial"
+
+  @doc """
+  Updates the current active user count for the team.
+
+  ## Examples
+
+      iex> update_subscriber_count(%Team{...})
+      :ok
+
+  """
+  @spec update_subscriber_count(Team.t) :: :ok | :error | false
+  def update_subscriber_count(%Team{} = team) do
+    team = Repo.preload(team, :subscription)
+    with subscription_line_item_id when not is_nil(subscription_line_item_id) <- team.subscription.subscription_line_item_id,
+         active_user_count = active_user_count(team),
+         :ok <- @stripe_client.update_subscription_quantity(subscription_line_item_id, active_user_count) do
+      :ok
+    else
+      :error -> :error
+      nil -> false
+    end
+  end
 end

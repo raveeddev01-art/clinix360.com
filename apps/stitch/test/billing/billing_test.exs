@@ -245,4 +245,20 @@ defmodule Stitch.Billing.BillingTest do
       assert {:error, :not_found} == Billing.set_as_default(team, -1)
     end
   end
+
+  describe "update_subscriber_count/1" do
+    test "updates a paid subscription's subscriber count" do
+     subscription = insert(:subscription)
+     team = subscription.team
+     insert(:user, team: team)
+     insert(:user, team: team)
+
+     assert :ok == Billing.update_subscriber_count(team)
+    end
+
+    test "ignores trial/unpaid subscriptions" do
+      trial_subscription = insert(:trial_subscription)
+      refute Billing.update_subscriber_count(trial_subscription.team)
+    end
+  end
 end
