@@ -41,7 +41,9 @@ ADD mix.exs mix.exs
 ADD mix.lock mix.lock
 RUN mix deps.get
 RUN mix compile
+RUN ls -a
 WORKDIR /app/apps/stitch_connect
+RUN ls -a
 RUN yarn
 WORKDIR /app
 
