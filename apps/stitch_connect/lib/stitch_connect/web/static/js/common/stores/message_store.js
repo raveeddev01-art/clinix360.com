@@ -158,7 +158,7 @@ class MessageStore {
   }
 
   // Scroll to the bottom of chat div with animation
-  scrollToBottom(cb = null, duration = 300, delay = 100) {
+  scrollToBottom(cb = null, duration = 0, delay = 100) {
     setTimeout(() => {
       animateScroll.scrollToBottom({
         containerId: "chat",
@@ -657,7 +657,7 @@ class MessageStore {
     }
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
-      this.scrollToBottom(() => {}, 0);
+      this.scrollToBottom(() => {}, 500);
     }
 
     // Update favicon
@@ -744,7 +744,7 @@ class MessageStore {
       if (this.unreadMessagesCount >= 30) {
         posHistory = this.messages[this.messages.length - 1].id; // B.2.a
         this.scrollToBottom(() => {
-          this.scrollTo(posHistory, 500, () => {
+          this.scrollTo(posHistory, 0, () => {
             this.loadedInitial = true; // B.2.a.i
           });
         }, 0);
@@ -757,7 +757,7 @@ class MessageStore {
 
         this.scrollToBottom(() => {
           this.loadedInitial = true; // B.1.b
-          this.scrollTo(posHistory, 500);
+          this.scrollTo(posHistory, 0);
         }, 1);
       }
     } else {
