@@ -123,4 +123,23 @@ defmodule Stitch.MessageQueriesTest do
     result = Stitch.MessageQueries.user_mentioned_in(user)
     assert result.data == []
   end
+
+  test "pinned_messages/2" do
+    team = insert(:team)
+    group = insert(:group, team: team)
+    user_a = insert(:user, team: team)
+    user_b = insert(:user, team: team)
+
+    message_bar = insert(:message, user: user_a, group: group, text_content: "bar")
+    message_baz = insert(:message, user: user_b, group: group, text_content: "baz")
+    _message_qux = insert(:message, user: user_b, group: group, text_content: "baz")
+
+    assert {:ok, message_bar} = Stitch.MessageAction.toggle_pin(message_bar, user_a)
+    assert {:ok, _message_baz} = Stitch.MessageAction.toggle_pin(message_baz, user_b)
+
+    assert %{data: [message], meta: meta} = Stitch.MessageQueries.pinned_messages(group, limit: 1, skip: 1)
+    assert %{limit: 1, skip: 1, count: 2} = meta
+
+    assert message.id == message_bar.id
+  end
 end

@@ -32,6 +32,12 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, @valid_types)
   end
 
+  def pin_changeset(%Message{} = struct, params) do
+    struct
+    |> cast(params, [:pinned, :pinned_by_id, :pinned_at])
+    |> validate_required([:pinned])
+  end
+
   def user_edit_changeset(%Message{} = struct, params \\ %{}) do
     struct
     |> cast(params, [:text_content, :mentioned_user_ids])
@@ -179,13 +185,13 @@ defmodule Stitch.Message do
 
   def pin(message, user) do
     message
-    |> changeset(%{pinned: true, pinned_by_id: user.id, pinned_at: DateTime.utc_now})
+    |> pin_changeset(%{pinned: true, pinned_by_id: user.id, pinned_at: DateTime.utc_now})
     |> Repo.update
   end
 
   def unpin(message) do
     message
-    |> changeset(%{pinned: false, pinned_by_id: nil, pinned_at: nil})
+    |> pin_changeset(%{pinned: false, pinned_by_id: nil, pinned_at: nil})
     |> Repo.update
   end
 
