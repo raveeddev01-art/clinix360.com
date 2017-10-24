@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   alias Stitch.{MessageQueries}
   import Phoenix.ChannelTest, except: [connect: 2]
+  import StitchConnect.Web.SubdomainRouter.Helpers
 
   test "POST /api/v1/messages/:id/toggle-star", %{conn: conn} do
     team = insert(:team)
@@ -398,6 +399,27 @@ defmodule StitchConnect.Web.MessageControllerTest do
 
       assert Enum.map(json, &Map.fetch!(&1, "id")) ==
         latest_two_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+    end
+
+    test "doesn't allow to view messages from another team's public group", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group_a = insert(:group, team: team)
+
+      group_b = insert(:group, public: true)
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_user_session(user)
+        |> with_api_user(user)
+
+      json =
+        conn
+        |> get(api_v1_message_path(conn, :index, group_b))
+        |> json_response(401)
+
+      assert %{"message" => "You can't see the messages for this room."} = json
     end
   end
 
