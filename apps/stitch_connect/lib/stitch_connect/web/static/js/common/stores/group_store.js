@@ -63,6 +63,13 @@ class GroupStore {
   };
 
   @action
+  postJoin = () => {
+    this.rootStore.messageStore.joinGroupChannel();
+    this.rootStore.pinnedMessageStore.reset();
+    this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+  };
+
+  @action
   joinGroup = slug => {
     if (slug === this.slug) {
       return;
@@ -93,10 +100,7 @@ class GroupStore {
       this.createdBy = data.creator_user_id;
       this.createdAt = data.inserted_at;
 
-      // Load messages after join
-      this.rootStore.messageStore.joinGroupChannel();
-
-      this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+      this.postJoin();
     });
   };
 
@@ -139,10 +143,7 @@ class GroupStore {
       this.mentionsCount = data.mentions_count;
       this.lastReadAt = data.last_read_at;
 
-      // Load messages after join
-      this.rootStore.messageStore.joinGroupChannel();
-
-      this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+      this.postJoin();
     });
   };
 
@@ -191,10 +192,7 @@ class GroupStore {
       this.mentionsCount = data.mentions_count;
       this.lastReadAt = data.last_read_at;
 
-      // Load messages after join
-      this.rootStore.messageStore.joinGroupChannel();
-
-      this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+      this.postJoin();
     });
   };
 

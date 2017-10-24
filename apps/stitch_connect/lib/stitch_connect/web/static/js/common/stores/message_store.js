@@ -121,11 +121,6 @@ class MessageStore {
   }
 
   @computed
-  get pinnedMessages() {
-    return this.messages.filter(message => message.pinned);
-  }
-
-  @computed
   get starredMessages() {
     return this.messages.filter(message => message.starred);
   }
@@ -875,12 +870,20 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      window.post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
-        const update = resp.data;
+      post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
+        const pinnedMsg = resp.data;
 
-        message.pinned = update.pinned;
-        message.pinned_at = update.pinned_at;
-        message.pinned_by = update.pinned_by;
+        message.pinned = pinnedMsg.pinned;
+        message.pinned_at = pinnedMsg.pinned_at;
+        message.pinned_by = pinnedMsg.pinned_by;
+
+        if (pinnedMsg.pinned) {
+          this.rootStore.pinnedMessageStore.messages.push(pinnedMsg);
+        } else {
+          this.rootStore.pinnedMessageStore.messages = this.rootStore.pinnedMessageStore.messages.filter(
+            m => m.id === pinnedMsg.id
+          );
+        }
       });
     }
   }

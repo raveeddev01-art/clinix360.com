@@ -55,6 +55,7 @@
           "sidemenuStore",
           "titleStore",
           "uploadStore",
+          "pinnedMessageStore",
           "match",
           "location",
           "history"
