@@ -4,64 +4,6 @@ defmodule StitchConnect.Web.MessageControllerTest do
   import Phoenix.ChannelTest, except: [connect: 2]
   import StitchConnect.Web.SubdomainRouter.Helpers
 
-  test "POST /api/v1/messages/:id/toggle-star", %{conn: conn} do
-    team = insert(:team)
-    user = insert(:user, team: team)
-    group = insert(:group, team: team)
-    message = insert(:message, user: user, group: group)
-
-    {:ok, socket} = connect_socket(%{user1: user})
-    {:ok, socket1: socket}
-    @endpoint.subscribe("events:#{user.id}")
-
-    conn = conn
-    |> subdomain(team.slug)
-    |> post_as_user(user, "/api/v1/messages/#{message.id}/toggle-star")
-
-    json = json_response(conn, 200)
-    assert json["starred"] == true
-
-    assert_broadcast "message_starred", %{id: message_id, starred: true}
-    assert message_id == message.id
-
-    conn = conn
-    |> recycle()
-    |> subdomain(team.slug)
-    |> post_as_user(user, "/api/v1/messages/#{message.id}/toggle-star")
-
-    assert_broadcast "message_starred", %{id: message_id, starred: false}
-    assert message_id == message.id
-
-    json = json_response(conn, 200)
-    assert json["starred"] == false
-  end
-
-  test "POST /api/v1/messages/:id/toggle-pin", %{conn: conn} do
-    user = insert(:user)
-    message = insert(:message, user: user)
-    insert(:group_user, user: user, group: message.group)
-    team = message.group.team
-
-    conn = conn
-    |> subdomain(team.slug)
-    |> post_as_user(user, "/api/v1/messages/#{message.id}/toggle-pin")
-
-    json = json_response(conn, 200)
-    assert json["pinned"] == true
-    assert json["pinned_by"]["id"] == user.id
-    assert json["pinned_at"] != nil
-
-    conn = conn
-    |> recycle()
-    |> subdomain(team.slug)
-    |> post_as_user(user, "/api/v1/messages/#{message.id}/toggle-pin")
-
-    json = json_response(conn, 200)
-    assert json["pinned"] == false
-    assert json["pinned_by"] == nil
-    assert json["pinned_at"] == nil
-  end
-
   describe "PUT /api/v1/messages/:id" do
     test "user can edit his own text message", %{conn: conn} do
       user = insert(:user)
@@ -404,7 +346,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
     test "doesn't allow to view messages from another team's public group", %{conn: conn} do
       team = insert(:team)
       user = insert(:user, team: team)
-      group_a = insert(:group, team: team)
+      _group_a = insert(:group, team: team)
 
       group_b = insert(:group, public: true)
 
