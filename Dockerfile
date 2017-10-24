@@ -1,9 +1,5 @@
 FROM elixir:1.5.2
 FROM node:8.2
-WORKDIR /app/apps/stitch_connect
-RUN npm install -g yarn
-RUN yarn
-RUN npm run deploy
 
 RUN mix archive.install \
   --force \
@@ -43,6 +39,11 @@ ADD mix.exs mix.exs
 ADD mix.lock mix.lock
 RUN mix deps.get
 RUN mix compile
+
+WORKDIR /app/apps/stitch_connect
+RUN npm install -g yarn
+RUN yarn
+RUN npm run deploy
 
 WORKDIR /app
 
