@@ -7,7 +7,10 @@ class TypingUsers extends Component {
   render() {
     const { groupPresenceStore: { typingUsers }, presenceStore } = this.props;
     let content;
-    const username = id => presenceStore.onlineUsersMap[id].metas[0].username;
+    const username = id => {
+      const u = presenceStore.onlineUsersMap[id].metas[0];
+      return `${u.first_name} ${u.last_name}`;
+    };
 
     switch (typingUsers.length) {
       case 0:
