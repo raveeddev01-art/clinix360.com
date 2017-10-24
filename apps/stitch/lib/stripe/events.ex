@@ -48,7 +48,8 @@ defmodule Stitch.Stripe.Events do
 
     sub_params = %{
       renews: false,
-      subscription_id: nil
+      subscription_id: nil,
+      subscription_line_item_id: nil
     }
 
     with {:ok, _subscription} <- Billing.update_subscription(customer_id, subscription_id, sub_params) do
