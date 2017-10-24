@@ -32,21 +32,6 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
-  def pinned_messages(conn, %{"group_id" => group_id} = params) do
-    pagination_opts = parse_pagination_params(params, [:limit, :skip])
-    group = Repo.get! Group, group_id
-
-    case GroupAuthorization.can_view?(group, conn.assigns.current_user) do
-      true ->
-        pinned_messages = MessageQueries.pinned_messages(group, pagination_opts)
-        render conn, "pinned_messages.json", pinned_messages: pinned_messages, user_id: conn.assigns.current_user.id
-      false ->
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "You can't see the messages for this room."})
-    end
-  end
-
   def search(conn, %{"term" => term} = params) do
     opts = [
       limit: Enum.min([Map.get(params, "limit", 30), 1_000]),
