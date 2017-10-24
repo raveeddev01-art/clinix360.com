@@ -8,6 +8,13 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     Enum.map(messages, &message_json/1)
   end
 
+  def render("pinned_messages.json", %{pinned_messages: %Stitch.Paginator{data: data, meta: meta}}) do
+    %{
+      data: Enum.map(data, &message_json/1),
+      meta: meta
+    }
+  end
+
   def render("show.json", %{message: message}) do
     message_json(message)
   end

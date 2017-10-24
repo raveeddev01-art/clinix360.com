@@ -39,7 +39,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     case GroupAuthorization.can_view?(group, conn.assigns.current_user) do
       true ->
         pinned_messages = MessageQueries.pinned_messages(group, pagination_opts)
-        render conn, "index.json", messages: pinned_messages.data, user_id: conn.assigns.current_user.id
+        render conn, "pinned_messages.json", pinned_messages: pinned_messages, user_id: conn.assigns.current_user.id
       false ->
         conn
         |> put_status(:unauthorized)
