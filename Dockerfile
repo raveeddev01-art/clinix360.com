@@ -16,11 +16,6 @@ WORKDIR /app
 ENV MIX_ENV prod
 
 RUN apt-get update && apt-get install -y --no-install-recommends locales
-RUN apt-get install node -y
-RUN apt-get install npm -y
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install yarn
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
