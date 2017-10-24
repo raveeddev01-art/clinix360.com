@@ -12,3 +12,6 @@ config :stitch, Stitch.Repo,
 
 config :stitch, Stitch.Mailer,
   adapter: Bamboo.TestAdapter
+
+config :stitch,
+  stripe_client: Stitch.Stripe.TestClient
