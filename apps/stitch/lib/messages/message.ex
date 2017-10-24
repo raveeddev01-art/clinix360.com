@@ -263,7 +263,7 @@ defmodule Stitch.Message do
   def join_message_changeset(%Group{} = group, %User{} = user) do
     system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
       type: "system",
-      text_content: "{user} joined room at {time}",
+      text_content: "{user} joined the room at {time}",
       fields: %{
         type: "join_group",
         user: %{
@@ -281,7 +281,7 @@ defmodule Stitch.Message do
   def leave_message_changeset(%Group{} = group, %User{} = user) do
     system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
       type: "system",
-      text_content: "{user} left room at {time}",
+      text_content: "{user} left the room at {time}",
       fields: %{
         type: "leave_group",
         user: %{

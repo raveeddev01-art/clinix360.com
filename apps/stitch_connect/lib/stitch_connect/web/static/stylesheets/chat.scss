@@ -296,17 +296,19 @@
           justify-content: center;
           position: relative;
           border-top: 1px solid $border-color;
-          margin: 20px 0 40px;
+          margin: 35px 0;
 
           .date {
-            font-size: 16px;
-            font-weight: bold;
-            line-height: 1.45;
-            background: #fafafa;
-            padding: 6px 12px;
+            color: $brand-primary;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 32px;
+            background: #fff;
+            border: 1px solid $border-color;
+            border-radius: 4px;
+            padding: 0 12px;
             position: absolute;
-            top: -20px;
-            color: #036;
+            top: -18px;
           }
         }
 
@@ -620,7 +622,7 @@
     border: 1px solid $border-color-secondary;
     border-radius: 4px;
     padding: 15px 20px;
-    margin-bottom: 10px;
+    margin: 5px 0;
 
     &.highlight {
       animation: highlightBubble 3s, fadeIn 3s;
@@ -946,7 +948,6 @@ i.file-data-separator {
   justify-content: flex-end;
   flex-grow: 1;
   flex-shrink: 0;
-  margin-bottom: 30px;
 
   &__container {
     display: flex;
@@ -973,24 +974,19 @@ i.file-data-separator {
 
   &__name {
     color: $brand-primary;
-    font-weight: 900;
+    font-weight: 800;
     margin: 0 3px;
   }
 }
 
 .system-message {
-  margin: 5px 0;
+  font-size: 15px;
   text-align: center;
-  font-size: 14px;
-
-  &__time {
-    margin: 0 3px;
-  }
+  padding: 6px 0;
 
   &__user {
-    font-size: 15px;
     color: $brand-primary;
-    font-weight: 900;
-    margin: 0 3px;
+    font-size: 15px;
+    font-weight: 800;
   }
 }
