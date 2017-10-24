@@ -45,6 +45,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
 
   def render_fields(%Message{id: message_id, type: "upload", fields: %{"url" => url} = fields}) when is_map(fields) and is_binary(url) do
     fields
+    |> put_preview_presigned_url
     |> put_download_link(message_id)
   end
   def render_fields(%Message{fields: fields}), do: fields
@@ -55,4 +56,13 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       "api_url" => api_v1_message_path(@endpoint, :download, message_id),
     })
   end
+
+  def put_preview_presigned_url(fields)
+  def put_preview_presigned_url(%{"url" => url, "mimetype" => "image/" <> _image} = fields) do
+    case StitchConnect.Upload.presign_url(url) do
+      {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
+      :error -> fields
+    end
+  end
+  def put_preview_presigned_url(fields), do: fields
 end
