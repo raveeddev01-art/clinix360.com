@@ -1,13 +1,18 @@
 import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
+import { scroller } from "react-scroll";
 
 class SidemenuStore {
+  @observable sidemenuDiv = null; // Div element of sidemenu
+  @observable roomMenuItemVisibles = {};
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
   @observable groupCursors = {}; // { group_id: message_id }
+
+  ROOM_MENU_ITEM_ANCHOR_PREFIX = "sidemenu_room_";
   badge = null;
   favicon = null;
   notificationAudio = null;
@@ -35,6 +40,11 @@ class SidemenuStore {
   }
 
   @computed
+  get favoriteGroups() {
+    return this.groups.filter(group => group.favorite);
+  }
+
+  @computed
   get normalGroups() {
     return this.groups.filter(
       group => group.type === "regular" && !group.favorite
@@ -52,8 +62,56 @@ class SidemenuStore {
   }
 
   @computed
-  get favoriteGroups() {
-    return this.groups.filter(group => group.favorite);
+  get roomsInShowOrder() {
+    return this.favoriteGroups.concat(this.normalGroups, this.directGroups);
+  }
+
+  @computed
+  get unreadRoomItemHiddenUp() {
+    if (!Object.keys(this.roomsInShowOrder).length) {
+      return null;
+    }
+
+    let room = null;
+
+    for (let i = 0; i < this.roomsInShowOrder.length; i += 1) {
+      const r = this.roomsInShowOrder[i];
+
+      if (this.roomMenuItemVisibles[r.id]) {
+        break;
+      }
+
+      if (r.unread_messages_count > 0) {
+        room = r;
+        break;
+      }
+    }
+
+    return room;
+  }
+
+  @computed
+  get unreadRoomItemHiddenDown() {
+    if (!Object.keys(this.roomsInShowOrder).length) {
+      return null;
+    }
+
+    let room = null;
+
+    for (let i = this.roomsInShowOrder.length - 1; i >= 0; i -= 1) {
+      const r = this.roomsInShowOrder[i];
+
+      if (this.roomMenuItemVisibles[r.id]) {
+        break;
+      }
+
+      if (r.unread_messages_count > 0) {
+        room = r;
+        break;
+      }
+    }
+
+    return room;
   }
 
   @computed
@@ -153,6 +211,37 @@ class SidemenuStore {
   updateGroupCursor = (groupId, cursor) => {
     this.groupCursors[groupId] = cursor;
   };
+
+  /**
+   * Registers sidemenu div
+   *
+   * @param {DOMElement} div
+   */
+  loadSidemenuDiv(div) {
+    this.sidemenuDiv = div;
+  }
+
+  /**
+   * Unregisters sidemenu div
+   *
+   */
+  unloadSidemenuDiv() {
+    this.sidemenuDiv = null;
+  }
+
+  onRoomMenuItemShow(roomId) {
+    this.roomMenuItemVisibles = {
+      ...this.roomMenuItemVisibles,
+      [roomId]: true
+    };
+  }
+
+  onRoomMenuItemHide(roomId) {
+    this.roomMenuItemVisibles = {
+      ...this.roomMenuItemVisibles,
+      [roomId]: false
+    };
+  }
 
   loadUsers = () => {
     get("/api/v1/users").then(response => {
@@ -297,9 +386,7 @@ class SidemenuStore {
         5000,
         event => {
           this.jumpToMessage(newMessage);
-          window.dispatchEvent(
-            new CustomEvent("notification-clicked")
-          );
+          window.dispatchEvent(new CustomEvent("notification-clicked"));
         }
       );
     }
@@ -326,6 +413,16 @@ class SidemenuStore {
 
     this.history.push(url);
     this.rootStore.messageStore.jumpToMessage(message);
+  }
+
+  scrollToRoomItem(roomId, duration = 300) {
+    const anchorName = `${this.ROOM_MENU_ITEM_ANCHOR_PREFIX}${roomId}`;
+
+    scroller.scrollTo(anchorName, {
+      container: this.sidemenuDiv,
+      smooth: true,
+      duration
+    });
   }
 }
 

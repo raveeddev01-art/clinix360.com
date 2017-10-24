@@ -61,9 +61,7 @@ class RoomsList extends Component {
           </OverlayTrigger>
         </div>
 
-        {rooms.map(room => {
-          return <Room key={`room-${room.id}`} room={room} />;
-        })}
+        {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
         <RoomsModal
           state={this.state.modal}

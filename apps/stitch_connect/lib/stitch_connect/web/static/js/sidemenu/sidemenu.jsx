@@ -15,7 +15,19 @@ import PeopleList from "./people/people_list";
 @inject("presenceStore", "sidemenuStore")
 @observer
 class Sidemenu extends Component {
-  _adminOptions = () => {
+  componentDidMount() {
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.loadSidemenuDiv(this.sidemenuDiv);
+  }
+
+  componentWillUnmount() {
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.unloadSidemenuDiv();
+  }
+
+  renderAdminOptions() {
     return (
       <div>
         <div className="separator text-center">
@@ -41,7 +53,49 @@ class Sidemenu extends Component {
         </MenuItem>
       </div>
     );
-  };
+  }
+
+  renderUnreadBadgesUp() {
+    const { sidemenuStore } = this.props;
+    const roomItem = sidemenuStore.unreadRoomItemHiddenUp;
+
+    if (!roomItem) {
+      return null;
+    }
+
+    const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+
+    return (
+      <div
+        className="unreads-badge up"
+        role="link"
+        onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
+      >
+        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
+      </div>
+    );
+  }
+
+  renderUnreadBadgesDown() {
+    const { sidemenuStore } = this.props;
+    const roomItem = sidemenuStore.unreadRoomItemHiddenDown;
+
+    if (!roomItem) {
+      return null;
+    }
+
+    const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+
+    return (
+      <div
+        className="unreads-badge down"
+        role="link"
+        onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
+      >
+        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
+      </div>
+    );
+  }
 
   render() {
     const { sidemenuStore } = this.props;
@@ -89,7 +143,7 @@ class Sidemenu extends Component {
                 Notifications
               </MenuItem>
 
-              {currentUser.roles.includes("admin") && this._adminOptions()}
+              {currentUser.roles.includes("admin") && this.renderAdminOptions()}
 
               <div className="separator text-center">
                 <span>Stitch</span>
@@ -105,19 +159,30 @@ class Sidemenu extends Component {
           </Dropdown>
         </div>
         <div className="flex-content">
-          <FavoritesList
-            heading={"Favorites"}
-            rooms={sidemenuStore.favoriteGroups}
-          />
+          <div
+            className="rooms-menu"
+            ref={div => {
+              this.sidemenuDiv = div;
+            }}
+          >
+            <FavoritesList
+              heading={"Favorites"}
+              rooms={sidemenuStore.favoriteGroups}
+            />
 
-          <RoomsList
-            heading="Rooms"
-            rooms={filterJoined(sidemenuStore.normalGroups)}
-          />
-          <PeopleList
-            heading="Direct Messages"
-            rooms={filterJoined(sidemenuStore.directGroups)}
-          />
+            <RoomsList
+              heading="Rooms"
+              rooms={filterJoined(sidemenuStore.normalGroups)}
+            />
+
+            <PeopleList
+              heading="Direct Messages"
+              rooms={filterJoined(sidemenuStore.directGroups)}
+            />
+          </div>
+
+          {this.renderUnreadBadgesUp()}
+          {this.renderUnreadBadgesDown()}
         </div>
       </div>
     );

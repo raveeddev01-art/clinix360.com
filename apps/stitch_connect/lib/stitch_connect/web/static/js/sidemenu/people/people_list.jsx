@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
@@ -6,7 +7,7 @@ import CreateDMModal from "./modals/create-dm-modal";
 import InvitationModal from "./modals/invitation-modal";
 import Room from "../room";
 
-class People extends Component {
+class PeopleList extends Component {
   constructor(props) {
     super(props);
 
@@ -97,8 +98,9 @@ class People extends Component {
   }
 }
 
-People.propTypes = {
-  heading: PropTypes.string.isRequired
+PeopleList.propTypes = {
+  heading: PropTypes.string.isRequired,
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
-export default People;
+export default PeopleList;
