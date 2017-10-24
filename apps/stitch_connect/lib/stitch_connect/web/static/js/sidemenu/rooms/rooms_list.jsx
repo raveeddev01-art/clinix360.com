@@ -35,7 +35,7 @@ class RoomsList extends Component {
   };
 
   render() {
-    const { heading, rooms, sidemenuDiv } = this.props;
+    const { heading, rooms } = this.props;
 
     return (
       <div className="menu-nav m-b-20">
@@ -61,9 +61,7 @@ class RoomsList extends Component {
           </OverlayTrigger>
         </div>
 
-        {rooms.map(room => (
-          <Room key={`room-${room.id}`} room={room} sidemenuDiv={sidemenuDiv} />
-        ))}
+        {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
         <RoomsModal
           state={this.state.modal}
@@ -76,14 +74,9 @@ class RoomsList extends Component {
   }
 }
 
-RoomsList.defaultProps = {
-  sidemenuDiv: null
-};
-
 RoomsList.propTypes = {
   heading: PropTypes.string.isRequired,
-  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  sidemenuDiv: PropTypes.object
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default RoomsList;

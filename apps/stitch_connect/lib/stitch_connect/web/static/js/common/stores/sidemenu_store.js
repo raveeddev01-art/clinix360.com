@@ -1,5 +1,6 @@
 import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
+import { scroller } from "react-scroll";
 
 class SidemenuStore {
   @observable sidemenuDiv = null; // Div element of sidemenu
@@ -412,6 +413,16 @@ class SidemenuStore {
 
     this.history.push(url);
     this.rootStore.messageStore.jumpToMessage(message);
+  }
+
+  scrollToRoomItem(roomId, duration = 300) {
+    const anchorName = `${this.ROOM_MENU_ITEM_ANCHOR_PREFIX}${roomId}`;
+
+    scroller.scrollTo(anchorName, {
+      container: this.sidemenuDiv,
+      smooth: true,
+      duration
+    });
   }
 }
 

@@ -144,8 +144,9 @@ class Room extends Component {
         <VisibilitySensor
           active
           onChange={this.onVisibleChange}
-          intervalCheck={false}
           scrollCheck
+          partialVisibility
+          intervalCheck={false}
           scrollThrottle={100}
           containment={sidemenuStore.sidemenuDiv}
         >

@@ -57,25 +57,42 @@ class Sidemenu extends Component {
 
   renderUnreadBadgesUp() {
     const { sidemenuStore } = this.props;
+    const roomItem = sidemenuStore.unreadRoomItemHiddenUp;
+
+    if (!roomItem) {
+      return null;
+    }
+
+    console.log("up", roomItem.name);
 
     return (
-      sidemenuStore.unreadRoomItemHiddenUp && (
-        <div className="unreads-badge up">
-          <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
-        </div>
-      )
+      <div
+        className="unreads-badge up"
+        role="link"
+        onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
+      >
+        <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
+      </div>
     );
   }
 
   renderUnreadBadgesDown() {
     const { sidemenuStore } = this.props;
 
+    const roomItem = sidemenuStore.unreadRoomItemHiddenDown;
+
+    if (!roomItem) {
+      return null;
+    }
+
     return (
-      sidemenuStore.unreadRoomItemHiddenDown && (
-        <div className="unreads-badge down">
-          <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
-        </div>
-      )
+      <div
+        className="unreads-badge down"
+        role="link"
+        onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
+      >
+        <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
+      </div>
     );
   }
 
