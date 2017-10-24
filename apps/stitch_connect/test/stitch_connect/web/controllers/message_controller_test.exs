@@ -4,59 +4,6 @@ defmodule StitchConnect.Web.MessageControllerTest do
   import Phoenix.ChannelTest, except: [connect: 2]
   import StitchConnect.Web.SubdomainRouter.Helpers
 
-  describe "PUT /api/v1/messages/:id" do
-    test "user can edit his own text message", %{conn: conn} do
-      user = insert(:user)
-      message = insert(:message, user: user)
-      insert(:group_user, user: user, group: message.group)
-      team = message.group.team
-
-      @endpoint.subscribe("groups:#{message.group.slug}")
-
-      conn = conn
-      |> subdomain(team.slug)
-      |> put_as_user(user, "/api/v1/messages/#{message.id}", %{
-        message: %{
-          text_content: "new message text"
-        }
-      })
-
-      assert_broadcast "edit_msg", message
-      assert message.text_content == "new message text"
-
-      json = json_response(conn, 200)
-      assert json["text_content"] == "new message text"
-      assert json["edited"] == true
-      assert json["edited_at"] != nil
-      message = MessageQueries.get_by_id(message.id)
-      assert message.text_content == "new message text"
-      assert message.edited_at != nil
-    end
-
-    test "user can't edit other users' messages", %{conn: conn} do
-      user = insert(:user)
-      user_eve = insert(:user)
-      message = insert(:message, user: user)
-      insert(:group_user, user: user, group: message.group)
-      insert(:group_user, user: user_eve, group: message.group)
-      team = message.group.team
-
-      conn = conn
-      |> subdomain(team.slug)
-      |> put_as_user(user_eve, "/api/v1/messages/#{message.id}", %{
-        message: %{
-          text_content: "new message text"
-        }
-      })
-
-      json = json_response(conn, 401)
-      assert json["message"] == "You can't edit other users' messages"
-      message = MessageQueries.get_by_id(message.id)
-      assert message.text_content == "lorem ipsum"
-      assert message.edited_at == nil
-    end
-  end
-
   describe "DELETE /api/v1/messages/:id" do
     test "user can delete his own messages", %{conn: conn} do
       user = insert(:user)
