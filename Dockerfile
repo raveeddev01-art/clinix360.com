@@ -1,3 +1,14 @@
+FROM node:8.2
+
+# This actually adds the app
+ADD . .
+
+WORKDIR /app/apps/stitch_connect
+RUN ls -a
+RUN npm install -g yarn
+RUN yarn
+RUN npm run deploy
+
 FROM elixir:1.5.2
 
 RUN mix archive.install \
@@ -29,22 +40,12 @@ RUN apt-get update \
   && apt-get install make \
   && rm -rf /var/lib/apt/lists/*
 
-# This actually adds the app
-ADD . .
-
 # This precompiles your deps before adding your code, which lets you take advantage of Docker
 # caching while you iterate on your app.
 ADD mix.exs mix.exs
 ADD mix.lock mix.lock
 RUN mix deps.get
 RUN mix compile
-
-FROM node:8.2
-WORKDIR /app/apps/stitch_connect
-RUN ls -a
-RUN npm install -g yarn
-RUN yarn
-RUN npm run deploy
 
 WORKDIR /app
 
