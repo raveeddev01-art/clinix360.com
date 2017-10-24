@@ -694,6 +694,12 @@
           color: #003366;
           text-decoration: none;
           border-bottom: 1px dotted $brand-primary;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          display: inline-block;
+          vertical-align: top;
+          max-width: 100%;
 
           &:hover {
             border-bottom-style: solid;
