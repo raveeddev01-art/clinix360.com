@@ -1,14 +1,3 @@
-FROM node:8.2
-
-# This actually adds the app
-ADD . .
-
-WORKDIR /app/apps/stitch_connect
-RUN ls -a
-RUN npm install -g yarn
-RUN yarn
-RUN npm run deploy
-
 FROM elixir:1.5.2
 
 RUN mix archive.install \
@@ -16,6 +5,10 @@ RUN mix archive.install \
   https://github.com/phoenixframework/archives/raw/master/phx_new.ez
 
 WORKDIR /app
+
+# This actually adds the app
+ADD . .
+RUN ls
 
 # Even our staging app runs with MIX_ENV = prod on Enclave. I recommend
 # this because otherwise you'll be showing error stacktraces, etc.
@@ -46,8 +39,6 @@ ADD mix.exs mix.exs
 ADD mix.lock mix.lock
 RUN mix deps.get
 RUN mix compile
-
-WORKDIR /app
 
 # Obviates the need for a Procfile
 CMD ["mix", "phx.server"]
