@@ -47,6 +47,9 @@ ENV NODE_VERSION 8.2
 # https://github.com/creationix/nvm#install-script
 RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
 
+# replace shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 # install node and npm
 RUN source $NVM_DIR/nvm.sh \
   && nvm install $NODE_VERSION \
