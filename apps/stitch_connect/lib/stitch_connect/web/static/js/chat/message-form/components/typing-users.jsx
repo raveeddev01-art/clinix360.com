@@ -20,7 +20,7 @@ class TypingUsers extends Component {
         content = `${typingUsers.map(username).join(" and ")} are typing...`;
         break;
       default:
-        content = "multiple people are typing...";
+        content = "Multiple people are typing...";
     }
 
     return <div className="users-typing">{content}</div>;
