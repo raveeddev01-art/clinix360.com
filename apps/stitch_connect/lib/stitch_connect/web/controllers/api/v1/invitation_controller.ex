@@ -59,6 +59,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
 
     case result do
       {:ok, %{user: user, groups: groups}} ->
+        Stitch.Billing.update_subscriber_count(conn.assigns.team)
         Enum.each(groups, fn {group, system_message} ->
           system_message = system_message |> MessageQueries.load_info
           Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)

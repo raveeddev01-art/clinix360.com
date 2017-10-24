@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.UserControllerTest do
   use StitchConnect.Web.ConnCase, async: true
+  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.Repo
   alias Stitch.Accounts.User
 
@@ -68,6 +69,98 @@ defmodule StitchConnect.Web.UserControllerTest do
 
       assert %{"message" => "You cannot revoke admin role from your own account."} == json
       assert Repo.get(User, admin.id).roles == ["admin"]
+    end
+  end
+
+  describe "POST /api/v1/users/:id/activate" do
+    setup %{conn: conn} do
+      subscription = insert(:subscription)
+      team = subscription.team
+      admin = insert(:user, team: team, roles: ["admin"])
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(admin)
+
+      {:ok, conn: conn, team: team, admin: admin}
+    end
+
+    test "activates a deactivated user", %{conn: conn, team: team} do
+      user = insert(:user, team: team, disabled: true)
+      conn = post(conn, Routes.api_v1_user_path(conn, :activate, user), %{})
+      assert response = json_response(conn, 200)
+      assert response["message"] =~ "activated"
+    end
+
+    test "activates an already activated user", %{conn: conn, team: team} do
+      user = insert(:user, team: team)
+      conn = post(conn, Routes.api_v1_user_path(conn, :activate, user), %{})
+      assert response = json_response(conn, 200)
+      assert response["message"] =~ "activated"
+    end
+
+    test "doesn't allow you to activate yourself", %{conn: conn, admin: admin} do
+      conn = post(conn, Routes.api_v1_user_path(conn, :activate, admin), %{})
+      assert response = json_response(conn, 422)
+      assert response["message"] =~ "cannot activate"
+    end
+
+    test "requires an admin role", %{conn: conn, team: team, admin: admin} do
+      user = insert(:user, team: team)
+      conn =
+        conn
+        |> with_api_user(user)
+        |> post(Routes.api_v1_user_path(conn, :activate, admin), %{})
+
+      assert response = json_response(conn, 401)
+      assert response["message"] =~ "administrator"
+    end
+  end
+
+  describe "POST /api/v1/users/:id/deactivate" do
+    setup %{conn: conn} do
+      subscription = insert(:subscription)
+      team = subscription.team
+      admin = insert(:user, team: team, roles: ["admin"])
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(admin)
+
+      {:ok, conn: conn, team: team, admin: admin}
+    end
+
+    test "deactivates an already deactivated user", %{conn: conn, team: team} do
+      user = insert(:user, team: team, disabled: true)
+      conn = post(conn, Routes.api_v1_user_path(conn, :deactivate, user), %{})
+      assert response = json_response(conn, 200)
+      assert response["message"] =~ "deactivated"
+    end
+
+    test "deactivates an activated user", %{conn: conn, team: team} do
+      user = insert(:user, team: team)
+      conn = post(conn, Routes.api_v1_user_path(conn, :deactivate, user), %{})
+      assert response = json_response(conn, 200)
+      assert response["message"] =~ "deactivated"
+    end
+
+    test "doesn't allow you to deactivate yourself", %{conn: conn, admin: admin} do
+      conn = post(conn, Routes.api_v1_user_path(conn, :deactivate, admin), %{})
+      assert response = json_response(conn, 422)
+      assert response["message"] =~ "cannot deactivate"
+    end
+
+    test "requires an admin role", %{conn: conn, team: team, admin: admin} do
+      user = insert(:user, team: team)
+      conn =
+        conn
+        |> with_api_user(user)
+        |> post(Routes.api_v1_user_path(conn, :deactivate, admin), %{})
+
+      assert response = json_response(conn, 401)
+      assert response["message"] =~ "administrator"
     end
   end
 end
