@@ -4,8 +4,8 @@ defmodule StitchConnect.Pigeon do
     Pigeon.APNS.Config.new(
       name: :apns_default,
       mode: :dev,
-      cert: System.get_env("APNS_CERT"),
-      key: System.get_env("APNS_KEY"),
+      cert: "APNS_CERT_B64" |> System.get_env |> Base.decode64!,
+      key: "APNS_KEY_B64" |> System.get_env |> Base.decode64!,
       reconnect: false,
       port: 2197,
       ping_period: 300_000
