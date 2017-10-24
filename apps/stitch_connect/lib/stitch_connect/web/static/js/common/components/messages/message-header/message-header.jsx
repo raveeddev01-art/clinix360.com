@@ -7,25 +7,29 @@ class MessageHeader extends Component {
   render() {
     const { timestamp, user } = this.props;
     const timestampTooltip = (
-      <Tooltip id="date-tooltip">
-        {moment(timestamp).calendar()}
-      </Tooltip>
+      <Tooltip id="date-tooltip">{moment(timestamp).calendar()}</Tooltip>
     );
 
     return (
       <div className="message-header">
-        <div className="name">
-          {`${user.first_name} ${user.last_name} `}
-        </div>
+        <div className="name">{`${user.first_name} ${user.last_name} `}</div>
 
         <OverlayTrigger placement="top" overlay={timestampTooltip}>
           <span className="time">
-            {moment(timestamp).format("hh:mm A")}
+            {moment
+              .utc(timestamp)
+              .local()
+              .format("hh:mm A")}
           </span>
         </OverlayTrigger>
       </div>
     );
   }
 }
+
+MessageHeader.propTypes = {
+  timestamp: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
+};
 
 export default MessageHeader;
