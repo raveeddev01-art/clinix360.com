@@ -346,6 +346,10 @@ hr {
           border-radius: 3px;
           position: relative;
         }
+
+        &:first-of-type {
+          margin-top: 0;
+        }
       }
     }
 

@@ -421,7 +421,7 @@
         height: 40px;
         border-width: 2px;
         box-shadow: none;
-        padding-right: 50px;
+        padding-right: 70px;
 
         &.editing {
           background-color: #fff7d8;
@@ -736,7 +736,7 @@
 
     .emoji-mart-emoji {
       vertical-align: middle;
-      margin-right: 2px;
+      margin: 0 3px;
     }
 
     &:hover,

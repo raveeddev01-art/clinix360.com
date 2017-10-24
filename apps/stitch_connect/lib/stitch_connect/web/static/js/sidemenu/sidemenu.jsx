@@ -21,22 +21,22 @@ class Sidemenu extends Component {
         <div className="separator text-center">
           <span>Admin</span>
         </div>
-        <MenuItem eventKey="4" href="/admin/team/settings">
+        <MenuItem eventKey="4" href="/admin/team/settings" target="_blank">
           Settings
         </MenuItem>
-        <MenuItem eventKey="5" href="/admin/team/security">
+        <MenuItem eventKey="5" href="/admin/team/security" target="_blank">
           Security
         </MenuItem>
-        <MenuItem eventKey="6" href="/admin/users/members">
+        <MenuItem eventKey="6" href="/admin/users/members" target="_blank">
           Members
         </MenuItem>
-        <MenuItem eventKey="7" href="/admin/users/invitations">
+        <MenuItem eventKey="7" href="/admin/users/invitations" target="_blank">
           Invitations
         </MenuItem>
-        <MenuItem eventKey="8" href="/admin/users/pending">
+        <MenuItem eventKey="8" href="/admin/users/pending" target="_blank">
           Pending
         </MenuItem>
-        <MenuItem eventKey="9" href="/admin/billing">
+        <MenuItem eventKey="9" href="/admin/billing" target="_blank">
           Billing
         </MenuItem>
       </div>
@@ -75,13 +75,17 @@ class Sidemenu extends Component {
               <div className="separator text-center">
                 <span>You</span>
               </div>
-              <MenuItem eventKey="1" href="/admin/you/account">
+              <MenuItem eventKey="1" href="/admin/you/account" target="_blank">
                 Account
               </MenuItem>
-              <MenuItem eventKey="2" href="/admin/you/profile">
+              <MenuItem eventKey="2" href="/admin/you/profile" target="_blank">
                 Profile
               </MenuItem>
-              <MenuItem eventKey="3" href="/admin/you/notifications">
+              <MenuItem
+                eventKey="3"
+                href="/admin/you/notifications"
+                target="_blank"
+              >
                 Notifications
               </MenuItem>
 
