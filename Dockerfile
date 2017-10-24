@@ -39,14 +39,11 @@ ADD mix.lock mix.lock
 RUN mix deps.get
 RUN mix compile
 
+COPY . .
+
 FROM node:8.2
-WORKDIR /app
-RUN ls -a
-RUN echo "==========="
 # This actually adds the app
 ADD . .
-RUN ls -a
-RUN echo "==========="
 WORKDIR /app/apps/stitch_connect
 RUN npm install -g yarn
 RUN yarn
