@@ -65,7 +65,7 @@ export default class TeamPicker extends Component {
                   placement="top"
                   overlay={<Tooltip id="close">Close</Tooltip>}
                 >
-                  <Link to="/">
+                  <Link to="/getstarted">
                     <i className="fa fa-times" />
                   </Link>
                 </OverlayTrigger>

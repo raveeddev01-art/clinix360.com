@@ -55,7 +55,7 @@ export default class FindTeam extends Component {
               placement="top"
               overlay={<Tooltip id="restart">Close</Tooltip>}
             >
-              <Link to="/">
+              <Link to="/getstarted">
                 <i className="fa fa-close" />
               </Link>
             </OverlayTrigger>
