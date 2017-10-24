@@ -41,10 +41,13 @@ RUN mix compile
 
 FROM node:8.2
 WORKDIR /app
+RUN ls -a
+RUN echo "==========="
 # This actually adds the app
 ADD . .
+RUN ls -a
+RUN echo "==========="
 WORKDIR /app/apps/stitch_connect
-RUN ls -a ../../deps
 RUN npm install -g yarn
 RUN yarn
 RUN npm run deploy
