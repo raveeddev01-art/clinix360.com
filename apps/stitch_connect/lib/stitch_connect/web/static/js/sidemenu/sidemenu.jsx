@@ -63,7 +63,7 @@ class Sidemenu extends Component {
       return null;
     }
 
-    console.log("up", roomItem.name);
+    const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
 
     return (
       <div
@@ -71,19 +71,20 @@ class Sidemenu extends Component {
         role="link"
         onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
       >
-        <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
+        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
       </div>
     );
   }
 
   renderUnreadBadgesDown() {
     const { sidemenuStore } = this.props;
-
     const roomItem = sidemenuStore.unreadRoomItemHiddenDown;
 
     if (!roomItem) {
       return null;
     }
+
+    const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
 
     return (
       <div
@@ -91,7 +92,7 @@ class Sidemenu extends Component {
         role="link"
         onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
       >
-        <span>More Unreads</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
+        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
       </div>
     );
   }
