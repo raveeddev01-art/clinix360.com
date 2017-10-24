@@ -1,17 +1,3 @@
-FROM node:8.2
-
-WORKDIR /app
-
-# This actually adds the app
-ADD . .
-
-RUN ls
-WORKDIR /app/apps/stitch_connect
-RUN npm install -g yarn
-RUN yarn
-RUN npm run deploy
-
-# Installing Elixir now.
 FROM elixir:1.5.2
 
 RUN mix archive.install \
@@ -52,6 +38,16 @@ ADD mix.exs mix.exs
 ADD mix.lock mix.lock
 RUN mix deps.get
 RUN mix compile
+
+FROM node:8.2
+WORKDIR /app
+# This actually adds the app
+ADD . .
+WORKDIR /app/apps/stitch_connect
+RUN ls
+RUN npm install -g yarn
+RUN yarn
+RUN npm run deploy
 
 # Obviates the need for a Procfile
 CMD ["mix", "phx.server"]
