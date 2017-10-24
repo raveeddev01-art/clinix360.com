@@ -1,4 +1,4 @@
-FROM elixir:1.5.2 as elixir
+FROM elixir:1.5.2
 
 RUN mix archive.install \
   --force \
@@ -39,9 +39,9 @@ ADD mix.lock mix.lock
 RUN mix deps.get
 RUN mix compile
 
-COPY --from=elixir . .
+COPY --from=0 . .
 
-FROM node:8.2 as node
+FROM node:8.2
 # This actually adds the app
 ADD . .
 WORKDIR /app/apps/stitch_connect
