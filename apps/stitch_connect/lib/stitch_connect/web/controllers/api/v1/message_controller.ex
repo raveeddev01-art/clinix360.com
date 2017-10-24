@@ -32,6 +32,12 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def pinned_messages(conn, %{"group_id" => group_id} = params) do
+    pagination_opts = parse_pagination_params(params, [:limit, :skip])
+    pinned_messages = MessageQueries.user_starred_messages(conn.assigns.current_user.id, pagination_opts)
+    render conn, "index.json", messages: pinned_messages, user_id: conn.assigns.current_user.id
+  end
+
   def search(conn, %{"term" => term} = params) do
     opts = [
       limit: Enum.min([Map.get(params, "limit", 30), 1_000]),
