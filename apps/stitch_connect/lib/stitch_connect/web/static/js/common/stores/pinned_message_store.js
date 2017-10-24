@@ -5,11 +5,11 @@ class PinnedMessageStore {
   @observable messages = [];
   @observable loading = false;
   @observable hasMore = true;
+  skip = 0;
+  limit = 10;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-
-    this.limit = 10;
   }
 
   @computed
@@ -24,6 +24,7 @@ class PinnedMessageStore {
 
   @action
   reset() {
+    this.skip = 0;
     this.loading = false;
     this.hasMore = true;
     this.messages = [];
@@ -37,7 +38,7 @@ class PinnedMessageStore {
     }
 
     const params = queryString.stringify({
-      skip: this.messages.length,
+      skip: this.skip,
       limit: this.limit,
       group_id: this.groupId
     });
@@ -51,6 +52,7 @@ class PinnedMessageStore {
 
       this.messages = this.messages.concat(data);
       this.hasMore = this.messages.length < meta.count;
+      this.skip = meta.skip + meta.limit;
     });
   }
 }

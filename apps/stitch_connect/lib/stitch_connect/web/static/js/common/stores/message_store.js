@@ -881,7 +881,7 @@ class MessageStore {
           this.rootStore.pinnedMessageStore.messages.push(pinnedMsg);
         } else {
           this.rootStore.pinnedMessageStore.messages = this.rootStore.pinnedMessageStore.messages.filter(
-            m => m.id === pinnedMsg.id
+            m => m.id !== pinnedMsg.id
           );
         }
       });
