@@ -1,3 +1,17 @@
+FROM node:8.2
+
+WORKDIR /app
+
+# This actually adds the app
+ADD . .
+
+RUN ls
+WORKDIR /app/apps/stitch_connect
+RUN npm install -g yarn
+RUN yarn
+RUN npm run deploy
+
+# Installing Elixir now.
 FROM elixir:1.5.2
 
 RUN mix archive.install \
@@ -8,7 +22,6 @@ WORKDIR /app
 
 # This actually adds the app
 ADD . .
-RUN ls
 
 # Even our staging app runs with MIX_ENV = prod on Enclave. I recommend
 # this because otherwise you'll be showing error stacktraces, etc.
