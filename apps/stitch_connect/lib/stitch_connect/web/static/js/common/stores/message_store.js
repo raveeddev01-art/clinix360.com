@@ -158,7 +158,7 @@ class MessageStore {
   }
 
   // Scroll to the bottom of chat div with animation
-  scrollToBottom(cb = null, duration = 0, delay = 0) {
+  scrollToBottom(cb = null, duration = 0, delay = 100) {
     setTimeout(() => {
       animateScroll.scrollToBottom({
         containerId: "chat",
