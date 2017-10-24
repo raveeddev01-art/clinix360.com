@@ -35,7 +35,7 @@ defmodule Stitch.Message do
   def pin_changeset(%Message{} = struct, params) do
     struct
     |> cast(params, [:pinned, :pinned_by_id, :pinned_at])
-    |> validate_required([:pinned, :pinned_by_id, :pinned_at])
+    |> validate_required([:pinned])
   end
 
   def user_edit_changeset(%Message{} = struct, params \\ %{}) do
