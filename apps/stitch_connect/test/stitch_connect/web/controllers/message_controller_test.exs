@@ -4,9 +4,10 @@ defmodule StitchConnect.Web.MessageControllerTest do
   import Phoenix.ChannelTest, except: [connect: 2]
 
   test "POST /api/v1/messages/:id/toggle-star", %{conn: conn} do
-    user = insert(:user)
-    message = insert(:message, user: user)
-    team = message.group.team
+    team = insert(:team)
+    user = insert(:user, team: team)
+    group = insert(:group, team: team)
+    message = insert(:message, user: user, group: group)
 
     {:ok, socket} = connect_socket(%{user1: user})
     {:ok, socket1: socket}
