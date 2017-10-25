@@ -50,8 +50,9 @@ class MessageStore {
   @computed
   get mountedAllMessages() {
     return (
-      this.messages.length > 0 &&
-      Object.keys(this.messageElements).length === this.messages.length
+      this.messages.length === 0 ||
+      (this.messages.length > 0 &&
+        Object.keys(this.messageElements).length === this.messages.length)
     );
   }
 
@@ -740,26 +741,13 @@ class MessageStore {
 
     if (this.unreadMessagesCount) {
       this.updateGroupCursor(null);
-
-      if (this.unreadMessagesCount >= 30) {
-        posHistory = this.messages[this.messages.length - 1].id; // B.2.a
-        this.scrollToBottom(() => {
-          this.scrollTo(posHistory, 0, () => {
-            this.loadedInitial = true; // B.2.a.i
-          });
-        }, 0);
-      } else {
-        posHistory =
-          this.messages[this.unreadMessagesCount] &&
-          this.messages[this.unreadMessagesCount].id; // B.1.a
-
-        this.markAsRead();
-
-        this.scrollToBottom(() => {
-          this.loadedInitial = true; // B.1.b
-          this.scrollTo(posHistory, 0);
-        }, 1);
-      }
+      this.scrollToBottom(
+        () => {
+          this.loadedInitial = true;
+        },
+        0,
+        300
+      );
     } else {
       this.groupCursor = sidemenuStore.groupCursors[this.groupId];
       posHistory = this.groupCursor;
