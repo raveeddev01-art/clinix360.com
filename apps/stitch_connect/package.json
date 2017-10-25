@@ -34,6 +34,7 @@
     "react-router-dom": "^4.1.2",
     "react-scroll": "^1.5.4",
     "react-select": "^1.0.0-rc.5",
+    "react-textarea-autosize": "^5.1.0",
     "react-toastr": "2.9.5",
     "react-visibility-sensor": "^3.10.1",
     "slugify": "^1.2.1",
