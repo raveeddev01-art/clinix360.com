@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from "react";
-import { Link } from "react-router-dom";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
@@ -34,9 +34,7 @@ class OnboardInputCard extends Component {
             onChange={this._onChange}
           />
         </FormGroup>
-        <HelpBlock className="m-b-20">
-          {helperText}
-        </HelpBlock>
+        <HelpBlock className="m-b-20">{helperText}</HelpBlock>
       </OnboardCard>
     );
   }

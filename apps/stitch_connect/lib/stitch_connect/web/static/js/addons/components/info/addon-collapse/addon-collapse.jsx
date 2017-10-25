@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import Collapse from "react-bootstrap/lib/Collapse";
 import cx from "classnames";
 
@@ -29,15 +30,11 @@ class AddonCollapse extends Component {
           <div className="addon-icon">
             <i className={iconClass} />
           </div>
-          <div className="flex-item">
-            {title}
-          </div>
+          <div className="flex-item">{title}</div>
           <i className={caretClass} />
         </h5>
         <Collapse in={collapsed}>
-          <div>
-            {children}
-          </div>
+          <div>{children}</div>
         </Collapse>
       </div>
     );
