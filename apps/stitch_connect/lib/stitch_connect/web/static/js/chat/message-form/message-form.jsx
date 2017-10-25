@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
+import Textarea from "react-textarea-autosize";
 
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
@@ -241,10 +242,10 @@ class MessageForm extends Component {
 
     return (
       <div className="message-input-wrapper">
-        <textarea
+        <Textarea
           className={className}
-          type="text"
           placeholder="Message"
+          maxRows={6}
           value={text}
           onChange={this.onTextChange}
           onKeyUp={this.onKeyUp}
