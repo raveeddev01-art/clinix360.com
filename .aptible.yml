@@ -1,2 +1,0 @@
-before_release:
-  cd apps/stitch_connect && npm run deploy
