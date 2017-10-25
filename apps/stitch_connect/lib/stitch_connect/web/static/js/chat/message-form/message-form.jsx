@@ -236,6 +236,12 @@ class MessageForm extends Component {
 
   newLine = () => {
     this.insertWord("\n");
+
+    setTimeout(() => {
+      // Ensure cursor is in viewport
+      this.textInput.blur();
+      this.textInput.focus();
+    });
   };
 
   renderInput() {
