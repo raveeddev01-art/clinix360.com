@@ -10,6 +10,8 @@ import _ from "lodash";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
+import { getRoomNavLink } from "../lib/room";
+
 @inject("presenceStore", "sidemenuStore")
 @observer
 class Room extends Component {
@@ -30,25 +32,6 @@ class Room extends Component {
       sidemenuStore.onRoomMenuItemHide(room.id);
     }
   };
-
-  getNavLink() {
-    const { slug, type, users } = this.props.room;
-
-    if (type === "regular") {
-      return `/rooms/${slug}`;
-    }
-
-    let dmUsers = users;
-    if (dmUsers.length > 1)
-      dmUsers = dmUsers.filter(user => user.id !== currentUser.id);
-    if (type === "dm") {
-      dmUsers = dmUsers.length ? dmUsers : [currentUser];
-    } else {
-      dmUsers = _.sortBy(dmUsers, "id");
-    }
-
-    return `/direct/${dmUsers.map(user => user.username).join(",")}`;
-  }
 
   getIconClass() {
     const { presenceStore, room } = this.props;
@@ -152,7 +135,7 @@ class Room extends Component {
         >
           <Element name={anchorName}>
             <NavLink
-              to={this.getNavLink()}
+              to={getRoomNavLink(room)}
               className={className}
               activeClassName="active"
             >
