@@ -43,8 +43,8 @@ RUN mix compile
 ADD . .
 WORKDIR /app/apps/stitch_connect
 RUN apt-get update
-RUN apt-get install nodejs
-RUN apt-get install npm
+RUN apt-get install nodejs -y
+RUN apt-get install npm -y
 RUN npm install -g yarn
 ADD . .
 RUN yarn
