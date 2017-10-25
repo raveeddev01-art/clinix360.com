@@ -230,7 +230,7 @@ class MessageForm extends Component {
 
     return (
       <div className="message-input-wrapper">
-        <input
+        <textarea
           className={className}
           type="text"
           placeholder="Message"
