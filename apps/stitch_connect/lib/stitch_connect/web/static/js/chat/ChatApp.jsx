@@ -69,7 +69,7 @@ class ChatApp extends Component {
         )}
         <UploadModal />
         <BrowserNotificationAlert />
-        <div className="appContainer">
+        <div className="app-container">
           <Sidemenu />
           <Switch>
             <Route path={`/rooms/:slug`} component={Chat} />
