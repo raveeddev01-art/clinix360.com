@@ -899,6 +899,12 @@ class MessageStore {
     this.groupChannel.push("typing_started");
     this.typingTimeoutId = setTimeout(this.stopTyping, 5000);
   };
+
+  keepScrollAtBottom() {
+    if (this.isScrollBottom) {
+      this.scrollToBottom();
+    }
+  }
 }
 
 export default MessageStore;

@@ -3,16 +3,17 @@ import { observer, inject } from "mobx-react";
 import { Emoji } from "emoji-mart";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
 import Linkify from "react-linkify";
+
 import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 
 @inject("sidemenuStore")
 @observer
 class MessageContent extends Component {
-  renderMessageText = () => {
-    const { message, sidemenuStore } = this.props;
+  renderMessageLine(line) {
+    const { sidemenuStore } = this.props;
     const { usernameMap } = sidemenuStore;
-    const words = (message.text_content || "").split(" ");
+    const words = line.split(" ");
 
     return words.reduce((prev, word, i) => {
       if (word.indexOf("@") === 0) {
@@ -39,7 +40,7 @@ class MessageContent extends Component {
             if (hasEmoji) {
               result.push(
                 <Emoji
-                  key={`emoji_${message.id}_${i}_${index}`}
+                  key={`emoji_${i}_${index}`}
                   emoji={emojis[index - 1]}
                   size={size}
                 />
@@ -64,10 +65,22 @@ class MessageContent extends Component {
 
       return prev.concat(word);
     }, []);
-  };
+  }
+
+  renderMessageText() {
+    const { message } = this.props;
+    const newline = "\n";
+    const lines = message.text_content.split(newline);
+
+    return lines.reduce(
+      (result, line) => result.concat(this.renderMessageLine(line), <br />),
+      []
+    );
+  }
 
   render() {
     const { message } = this.props;
+
     return (
       <Linkify
         properties={{ target: "_blank", className: "message-link" }}

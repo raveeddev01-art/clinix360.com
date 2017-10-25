@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
+import Textarea from "react-textarea-autosize";
 
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
@@ -41,7 +43,15 @@ class MessageForm extends Component {
     }
 
     if (evt.keyCode === 13) {
-      if (!openMentionMenu && !openEmojiSearch) {
+      evt.preventDefault();
+
+      if (
+        (evt.altKey && !evt.ctrlKey && !evt.shiftKey) ||
+        (!evt.altKey && evt.ctrlKey && !evt.shiftKey) ||
+        (!evt.altKey && !evt.ctrlKey && evt.shiftKey)
+      ) {
+        this.newLine();
+      } else if (!openMentionMenu && !openEmojiSearch) {
         this.onEnter();
       }
     }
@@ -49,9 +59,8 @@ class MessageForm extends Component {
 
   onEnter = () => {
     const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
 
-    if (messageInEdit) {
+    if (messageStore.messageInEdit) {
       if (!messageStore.textInEdit) {
         confirm({
           title: "Delete Message",
@@ -59,7 +68,7 @@ class MessageForm extends Component {
             "Are you sure you want to delete this message? This cannot be undone.",
           okLabel: "Delete"
         }).then(() => {
-          messageStore.delete(messageInEdit.id);
+          messageStore.delete(messageStore.messageInEdit.id);
           messageStore.finishEdit();
         });
       } else {
@@ -86,7 +95,10 @@ class MessageForm extends Component {
         messageStore.cancelEdit();
       }
     } else if (evt.keyCode === 38) {
-      messageStore.editLastMessage();
+      // Up arrow
+      if (!this.state.text) {
+        messageStore.editLastMessage();
+      }
     } else {
       // other keys
       // get the word of current cursor
@@ -162,7 +174,7 @@ class MessageForm extends Component {
 
   getCurrentWord = () => {
     const str = this.getText();
-    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const cursorPos = this.textInput.selectionStart;
     const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
@@ -188,16 +200,22 @@ class MessageForm extends Component {
   };
 
   insertWord = word => {
-    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const cursorPos = this.textInput.selectionStart;
     const str = this.getText();
     this.updateInputText(
-      str.substring(0, cursorPos) + word + str.substring(cursorPos)
+      str.substring(0, this.textInput.selectionStart) +
+        word +
+        str.substring(this.textInput.selectionEnd)
     );
-    this.textInput.focus();
+
+    setTimeout(() => {
+      this.textInput.setSelectionRange(cursorPos + 1, cursorPos + 1);
+      this.textInput.focus();
+    });
   };
 
   replaceCurrentWord = word => {
-    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const cursorPos = this.textInput.selectionStart;
     const str = this.getText();
     const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
@@ -212,6 +230,21 @@ class MessageForm extends Component {
       const newPos = cursorPos - preWord.length + word.length;
       this.textInput.focus();
       this.textInput.setSelectionRange(newPos, newPos);
+    });
+  };
+
+  newLine = () => {
+    const { messageStore } = this.props;
+
+    this.insertWord("\n");
+
+    setTimeout(() => {
+      // Ensure cursor is in viewport
+      this.textInput.blur();
+      this.textInput.focus();
+
+      // Keep message list's scroll at bottom if at bottom
+      messageStore.keepScrollAtBottom();
     });
   };
 
@@ -230,10 +263,10 @@ class MessageForm extends Component {
 
     return (
       <div className="message-input-wrapper">
-        <input
+        <Textarea
           className={className}
-          type="text"
           placeholder="Message"
+          maxRows={6}
           value={text}
           onChange={this.onTextChange}
           onKeyUp={this.onKeyUp}
@@ -242,7 +275,7 @@ class MessageForm extends Component {
           autoFocus
           required
           ref={input => {
-            this.textInput = input;
+            this.textInput = ReactDOM.findDOMNode(input);
           }}
         />
         <div className="message-form-actions">
