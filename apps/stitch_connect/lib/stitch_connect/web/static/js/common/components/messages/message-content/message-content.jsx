@@ -71,10 +71,11 @@ class MessageContent extends Component {
   renderMessageText() {
     const { message } = this.props;
     const newline = "\n";
-    const lines = message.text_content.split(newline);
+    const lines = (message.text_content || "").split(newline);
 
     return lines.reduce(
-      (result, line) => result.concat(this.renderMessageLine(line), <br />),
+      (result, line, i) =>
+        result.concat(this.renderMessageLine(line), <br key={`br_${i}`} />),
       []
     );
   }
