@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -68,5 +69,9 @@ class AddonMessage extends Component {
     );
   }
 }
+
+AddonMessage.propTypes = {
+  message: PropTypes.object.isRequired
+};
 
 export default AddonMessage;
