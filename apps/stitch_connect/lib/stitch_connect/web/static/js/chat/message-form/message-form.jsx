@@ -43,13 +43,14 @@ class MessageForm extends Component {
     }
 
     if (evt.keyCode === 13) {
+      evt.preventDefault();
+
       if (
         (evt.altKey && !evt.ctrlKey && !evt.shiftKey) ||
         (!evt.altKey && evt.ctrlKey && !evt.shiftKey) ||
         (!evt.altKey && !evt.ctrlKey && evt.shiftKey)
       ) {
         this.newLine();
-        evt.preventDefault();
       } else if (!openMentionMenu && !openEmojiSearch) {
         this.onEnter();
       }
@@ -95,7 +96,10 @@ class MessageForm extends Component {
         messageStore.cancelEdit();
       }
     } else if (evt.keyCode === 38) {
-      messageStore.editLastMessage();
+      // Up arrow
+      if (!this.state.text) {
+        messageStore.editLastMessage();
+      }
     } else {
       // other keys
       // get the word of current cursor
@@ -171,7 +175,7 @@ class MessageForm extends Component {
 
   getCurrentWord = () => {
     const str = this.getText();
-    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const cursorPos = this.textInput.selectionStart;
     const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
@@ -197,16 +201,22 @@ class MessageForm extends Component {
   };
 
   insertWord = word => {
-    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const cursorPos = this.textInput.selectionStart;
     const str = this.getText();
     this.updateInputText(
-      str.substring(0, cursorPos) + word + str.substring(cursorPos)
+      str.substring(0, this.textInput.selectionStart) +
+        word +
+        str.substring(this.textInput.selectionEnd)
     );
-    this.textInput.focus();
+
+    setTimeout(() => {
+      this.textInput.setSelectionRange(cursorPos + 1, cursorPos + 1);
+      this.textInput.focus();
+    });
   };
 
   replaceCurrentWord = word => {
-    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const cursorPos = this.textInput.selectionStart;
     const str = this.getText();
     const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
@@ -225,7 +235,7 @@ class MessageForm extends Component {
   };
 
   newLine = () => {
-    this.updateInputText(this.state.text + "\n");
+    this.insertWord("\n");
   };
 
   renderInput() {
