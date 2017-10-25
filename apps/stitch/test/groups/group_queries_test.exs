@@ -43,7 +43,7 @@ defmodule Stitch.GroupQueriesTest do
     test "returns error if group doesn't exist" do
       user = insert(:user)
       {:error, reason} = GroupQueries.get_by_id(5432, user)
-      assert reason == "Group with that id not found."
+      assert reason == "Room with that id not found."
     end
   end
 
@@ -60,7 +60,7 @@ defmodule Stitch.GroupQueriesTest do
       team = insert(:team)
       user = insert(:user, %{team_id: team.id})
       {:error, reason} = GroupQueries.find_by_slug("example", user)
-      assert reason == "Group with that slug not found."
+      assert reason == "Room with that slug not found."
     end
 
     test "doesn't match groups for other teams" do
@@ -71,7 +71,7 @@ defmodule Stitch.GroupQueriesTest do
       insert(:group, %{slug: "example", team: team_2})
 
       {:error, reason} = GroupQueries.find_by_slug("example", user)
-      assert reason == "Group with that slug not found."
+      assert reason == "Room with that slug not found."
     end
 
     test "doesn't return group if user shouldn't see it" do
@@ -80,7 +80,7 @@ defmodule Stitch.GroupQueriesTest do
       insert(:group, %{slug: "example", team: team, public: false})
 
       {:error, reason} = GroupQueries.find_by_slug("example", user)
-      assert reason == "Group with that slug not found."
+      assert reason == "Room with that slug not found."
     end
   end
 
@@ -156,8 +156,8 @@ defmodule Stitch.GroupQueriesTest do
 
       Group.toggle_favorite(group1.id, user.id)
 
-      assert {:ok, %{favorite: true}} = GroupQueries.find_by_slug("a", user.id)
-      assert {:ok, %{favorite: false}} = GroupQueries.find_by_slug("b", user.id)
+      assert {:ok, %{favorite: true}} = GroupQueries.find_by_slug("a", user)
+      assert {:ok, %{favorite: false}} = GroupQueries.find_by_slug("b", user)
     end
 
     test "has correct unread_messages_count value set" do
@@ -211,7 +211,7 @@ defmodule Stitch.GroupQueriesTest do
     test "returns the default group for a team given a user" do
       team = insert(:team)
       user = insert(:user, team: team)
-      default_group = insert(:group, slug: "general", team: team)
+      default_group = insert(:group, slug: "general", team: team, is_default: true)
       insert(:group, slug: "other1", team: team)
       insert(:group, slug: "other2", team: team)
 

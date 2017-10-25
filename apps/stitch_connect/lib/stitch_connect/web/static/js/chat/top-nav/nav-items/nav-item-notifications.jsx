@@ -52,7 +52,9 @@ export default class NavItemNotifications extends Component {
           className="notifications"
         >
           <Modal.Header>
-            <Modal.Title>Notification Preferences: General</Modal.Title>
+            <Modal.Title>
+              Notification Preferences: {this.props.groupStore.name}
+            </Modal.Title>
             <a href="#" onClick={this._toggleModal}>
               <i className="fa fa-close" />
             </a>
@@ -60,7 +62,7 @@ export default class NavItemNotifications extends Component {
 
           <Modal.Body>
             <h5>
-              Set notification preferences for the group. These preferences will
+              Set notification preferences for the room. These preferences will
               apply to desktop and mobile.
             </h5>
 

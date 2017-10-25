@@ -15,25 +15,87 @@ import PeopleList from "./people/people_list";
 @inject("presenceStore", "sidemenuStore")
 @observer
 class Sidemenu extends Component {
-  _adminOptions = () => {
+  componentDidMount() {
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.loadSidemenuDiv(this.sidemenuDiv);
+  }
+
+  componentWillUnmount() {
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.unloadSidemenuDiv();
+  }
+
+  renderAdminOptions() {
     return (
       <div>
         <div className="separator text-center">
           <span>Admin</span>
         </div>
-
-        <MenuItem eventKey="4" href="/admin/team">
-          Team
+        <MenuItem eventKey="4" href="/admin/team/settings" target="_blank">
+          Settings
         </MenuItem>
-        <MenuItem eventKey="5" href="/admin/users/members">
-          Users
+        <MenuItem eventKey="5" href="/admin/team/security" target="_blank">
+          Security
         </MenuItem>
-        <MenuItem eventKey="6" href="/admin/users/invitations">
-          Invite
+        <MenuItem eventKey="6" href="/admin/users/members" target="_blank">
+          Members
+        </MenuItem>
+        <MenuItem eventKey="7" href="/admin/users/invitations" target="_blank">
+          Invitations
+        </MenuItem>
+        <MenuItem eventKey="8" href="/admin/users/pending" target="_blank">
+          Pending
+        </MenuItem>
+        <MenuItem eventKey="9" href="/admin/billing" target="_blank">
+          Billing
         </MenuItem>
       </div>
     );
-  };
+  }
+
+  renderUnreadBadgesUp() {
+    const { sidemenuStore } = this.props;
+    const roomItem = sidemenuStore.unreadRoomItemHiddenUp;
+
+    if (!roomItem) {
+      return null;
+    }
+
+    const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+
+    return (
+      <div
+        className="unreads-badge up"
+        role="link"
+        onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
+      >
+        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
+      </div>
+    );
+  }
+
+  renderUnreadBadgesDown() {
+    const { sidemenuStore } = this.props;
+    const roomItem = sidemenuStore.unreadRoomItemHiddenDown;
+
+    if (!roomItem) {
+      return null;
+    }
+
+    const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+
+    return (
+      <div
+        className="unreads-badge down"
+        role="link"
+        onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
+      >
+        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
+      </div>
+    );
+  }
 
   render() {
     const { sidemenuStore } = this.props;
@@ -67,45 +129,60 @@ class Sidemenu extends Component {
               <div className="separator text-center">
                 <span>You</span>
               </div>
-              <MenuItem eventKey="1" href="/admin/you/profile">
-                Profile
-              </MenuItem>
-              <MenuItem eventKey="2" href="/admin/you/account">
+              <MenuItem eventKey="1" href="/admin/you/account" target="_blank">
                 Account
               </MenuItem>
-              <MenuItem eventKey="3" href="/admin/you/notifications">
+              <MenuItem eventKey="2" href="/admin/you/profile" target="_blank">
+                Profile
+              </MenuItem>
+              <MenuItem
+                eventKey="3"
+                href="/admin/you/notifications"
+                target="_blank"
+              >
                 Notifications
               </MenuItem>
 
-              {currentUser.roles.includes("admin") && this._adminOptions()}
+              {currentUser.roles.includes("admin") && this.renderAdminOptions()}
 
               <div className="separator text-center">
                 <span>Stitch</span>
               </div>
 
-              <MenuItem eventKey="7" onClick={this.props.presenceStore.lock}>
+              <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
                 Lockout
               </MenuItem>
-              <MenuItem eventKey="6" href="/logout">
+              <MenuItem eventKey="11" href="/logout">
                 Sign Out
               </MenuItem>
             </Dropdown.Menu>
           </Dropdown>
         </div>
         <div className="flex-content">
-          <FavoritesList
-            heading={"Favorites"}
-            rooms={sidemenuStore.favoriteGroups}
-          />
+          <div
+            className="rooms-menu"
+            ref={div => {
+              this.sidemenuDiv = div;
+            }}
+          >
+            <FavoritesList
+              heading={"Favorites"}
+              rooms={sidemenuStore.favoriteGroups}
+            />
 
-          <RoomsList
-            heading="Rooms"
-            rooms={filterJoined(sidemenuStore.normalGroups)}
-          />
-          <PeopleList
-            heading="Direct Messages"
-            rooms={filterJoined(sidemenuStore.directGroups)}
-          />
+            <RoomsList
+              heading="Rooms"
+              rooms={filterJoined(sidemenuStore.normalGroups)}
+            />
+
+            <PeopleList
+              heading="Direct Messages"
+              rooms={filterJoined(sidemenuStore.directGroups)}
+            />
+          </div>
+
+          {this.renderUnreadBadgesUp()}
+          {this.renderUnreadBadgesDown()}
         </div>
       </div>
     );

@@ -20,7 +20,7 @@ defmodule Stitch.Mixfile do
   def application do
     [
       mod: {Stitch.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :sentry, :appsignal]
     ]
   end
 
@@ -40,7 +40,10 @@ defmodule Stitch.Mixfile do
       {:slugger, "~> 0.2"},
       {:bamboo, "~> 0.8"},
       {:timex, "~> 3.1"},
-      {:ex_doc, "~> 0.16", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:sentry, "~> 6.0.0"},
+      {:appsignal, "~> 1.3"},
+      {:stripity_stripe, "~> 1.6"}
     ]
   end
 

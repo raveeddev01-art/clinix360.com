@@ -19,16 +19,16 @@ export default class UploadModal extends Component {
     this.props.uploadStore.changeUploadGroup(groupId);
   };
 
-  onSubmit = (evt) => {
+  onSubmit = evt => {
     evt.preventDefault();
     evt.stopPropagation();
     this.uploadFile();
-  }
+  };
 
   uploadFile = () => {
     const { uploadStore } = this.props;
     if (!uploadStore.groupId) {
-      notify.show("Please select a group to upload file.", "error");
+      notify.show("Please select a room to upload file.", "error");
       return;
     }
 

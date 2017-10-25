@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
@@ -49,11 +50,9 @@ class SettingPanel extends Component {
   _renderDescription = () => {
     const { description } = this.props;
     const items = Array.isArray(description) ? description : [description];
-    return items.map((item, index) =>
-      <HelpBlock key={`desc_${index}`}>
-        {item}
-      </HelpBlock>
-    );
+    return items.map((item, index) => (
+      <HelpBlock key={`desc_${index}`}>{item}</HelpBlock>
+    ));
   };
 
   render() {
@@ -67,11 +66,9 @@ class SettingPanel extends Component {
           className="action-edit btn-fancy pull-right"
           onClick={this._toggleEdit(!isEditing)}
         >
-          { !isEditing ? 'Edit' : 'Cancel' }
+          {!isEditing ? "Edit" : "Cancel"}
         </Button>
-        <h3>
-          {title}
-        </h3>
+        <h3>{title}</h3>
         {this._renderDescription()}
         {isEditing && this._renderForm()}
       </div>

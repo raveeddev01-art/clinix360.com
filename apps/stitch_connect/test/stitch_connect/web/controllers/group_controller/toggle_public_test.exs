@@ -15,7 +15,7 @@ defmodule StitchConnect.Web.GroupController.TogglePublicTest do
     {:ok, conn: conn, team: team, bob: bob}
   end
 
-  test "when the user is not authorized to toggle the group's privacy setting", %{conn: conn, team: team} do
+  test "when the user is not authorized to toggle the room's privacy setting", %{conn: conn, team: team} do
     joe = insert(:user, team: team)
     group = insert(:group, team: team, creator: joe)
 
@@ -24,7 +24,7 @@ defmodule StitchConnect.Web.GroupController.TogglePublicTest do
       |> post(api_v1_group_path(conn, :toggle_public, group), %{"public" => false})
       |> json_response(:unauthorized)
 
-    assert message == "Not authorized to toggle the group's privacy setting."
+    assert message == "Not authorized to toggle the room's privacy setting."
   end
 
   test "can make a group public", %{conn: conn, team: team, bob: bob} do

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import cx from "classnames";
 
 class MemberOption extends Component {
@@ -25,13 +26,13 @@ class MemberOption extends Component {
         onMouseMove={this.handleMouseMove}
         title={option.username}
       >
-        {option.online
-          ? <i className="fa fa-circle" />
-          : <i className="fa fa-circle-o" />}
+        {option.online ? (
+          <i className="fa fa-circle" />
+        ) : (
+          <i className="fa fa-circle-o" />
+        )}
         <span>{`${option.first_name} ${option.last_name}`}</span>
-        <small>
-          {option.username}
-        </small>
+        <small>{option.username}</small>
       </div>
     );
   }

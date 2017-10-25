@@ -12,11 +12,17 @@ config :stitch_connect,
 
 # Configures the endpoint
 config :stitch_connect, StitchConnect.Web.Endpoint,
+  instrumenters: [Appsignal.Phoenix.Instrumenter],
   url: [host: "localhost"],
   secret_key_base: "rp9jtclD/mgOBBlbo+mFKHVZ0UKNdC6DoofvmAy0Z/gSmgPy0/73DhzLrDalDf/G",
   render_errors: [view: StitchConnect.Web.ErrorView, accepts: ~w(html json)],
   pubsub: [name: StitchConnect.PubSub,
            adapter: Phoenix.PubSub.PG2]
+
+# Configure AppSignal Template Instrumentation
+config :phoenix, :template_engines,
+  eex: Appsignal.Phoenix.Template.EExEngine,
+  exs: Appsignal.Phoenix.Template.ExsEngine
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -45,6 +51,14 @@ config :guardian, Guardian,
   serializer: StitchConnect.GuardianSerializer
 
 config :phoenix, :filter_parameters, ["password", "pin"]
+
+config :stitch_connect, StitchConnect.Upload,
+  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
+  region: System.get_env("S3_REGION"),
+  bucket: System.get_env("S3_BUCKET_NAME"),
+  scheme: "https://",
+  host: "s3.amazonaws.com"
 
 config :stitch_connect, StitchConnect.MessageMailer,
   jobs: [

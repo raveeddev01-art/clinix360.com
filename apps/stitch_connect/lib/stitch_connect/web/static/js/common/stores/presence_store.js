@@ -7,9 +7,13 @@ class PresenceStore {
   @observable locked = window.locked;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
 
+  // lockout settings
+  lockoutSettingLoaded = false;
+  lockoutEnabled = false;
+  secondsToLockout = null;
+
   constructor(rootStore, props) {
     this.rootStore = rootStore;
-
     this.teamId = props.teamId;
 
     autorun(() => {
@@ -142,7 +146,6 @@ class PresenceStore {
 
   onWindowFocus = () => {
     if (this.locked) return;
-
     window.clearTimeout(this.lockoutTimerID);
     window.clearTimeout(this.awayTimerID);
     this.teamLobbyChannel.push("became_active");
@@ -154,19 +157,31 @@ class PresenceStore {
 
   onLockoutTimerExpired = () => {
     this.teamLobbyChannel.push("lockout_timer_expired");
+    this.lock();
   };
 
-  startLockoutTimer() {
+  getLockoutSettings = (cb) => {
     this.teamLobbyChannel
       .push("get_lockout_settings")
-      .receive("ok", ({ security_lockout_enabled, seconds_to_lockout }) => {
-        if (!security_lockout_enabled) return;
+      .receive("ok", (data) => {
+        this.secondsToLockout = data.seconds_to_lockout;
+        this.lockoutEnabled = data.security_lockout_enabled;
+        this.lockoutSettingLoaded = true;
 
-        this.lockoutTimerID = window.setTimeout(
-          this.onLockoutTimerExpired,
-          seconds_to_lockout * 1000
-        );
+        if (typeof cb === 'function') cb();
       });
+  }
+
+  startLockoutTimer = () => {
+    if (!this.lockoutSettingLoaded) {
+      this.getLockoutSettings(this.startLockoutTimer);
+    } else if (this.lockoutEnabled) {
+      clearTimeout(this.lockoutTimerID);
+      this.lockoutTimerID = setTimeout(
+        this.onLockoutTimerExpired,
+        this.secondsToLockout * 1000
+      );
+    }
   }
 }
 

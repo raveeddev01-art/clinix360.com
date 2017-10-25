@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Group, GroupUser, GroupQueries, GroupAuthorization}
-  alias StitchConnect.Web.EventsChannel
+  alias Stitch.{Group, GroupUser, GroupQueries, GroupAuthorization, MessageQueries}
+  alias StitchConnect.Web.{Endpoint, EventsChannel}
 
   def index(conn, %{"slug" => slug}) do
     user = conn.assigns.current_user
@@ -35,16 +35,17 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def rename(conn, %{"id" => group_id, "name" => name}) do
     user = conn.assigns.current_user
-    case GroupAuthorization.can_rename?(group_id, user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_rename?(group, user) do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "Not authorized to rename this group"})
+        |> json(%{message: "Not authorized to rename this room"})
       true ->
-        case Group.rename(GroupQueries.get_by_id(group_id), name) do
+        case Group.rename(group, name) do
           {:ok, group} ->
             group = GroupQueries.load_user_data(group, user)
-
             render conn, "show.json", group: group, user_id: user.id
           {:error, reason} ->
             conn
@@ -55,11 +56,13 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def users(conn, %{"id" => group_id}) do
-    case GroupAuthorization.can_view?(group_id, conn.assigns.current_user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_view?(group, conn.assigns.current_user) do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "Not authorized to view this group."})
+        |> json(%{message: "Not authorized to view this room."})
       true ->
         {:ok, users} = GroupQueries.get_users(group_id)
         render(conn, StitchConnect.Web.Api.V1.UserView, "index.json", users: users)
@@ -68,12 +71,13 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def create(conn, params) do
     user = conn.assigns.current_user
-    case Group.create(params, user.team_id, user.id) do
+    case Group.create(params, user) do
       {:ok, group} ->
         group = group
         |> Map.put_new(:joined, true)
         |> Map.put_new(:unread_messages_count, 0)
         |> Map.put_new(:favorite, false)
+        |> Map.put_new(:is_hidden, false)
         |> Map.put_new(:last_read_at, nil)
         |> Map.put_new(:mentions_count, 0)
 
@@ -82,7 +86,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       {:error, :already_exists} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: "Group with given name already exists."})
+        |> json(%{message: "Room with given name already exists."})
       {:error, reason} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -122,6 +126,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
           |> Map.put_new(:joined, true)
           |> Map.put_new(:unread_messages_count, 0)
           |> Map.put_new(:favorite, false)
+          |> Map.put_new(:is_hidden, false)
           |> Map.put_new(:last_read_at, nil)
           |> Map.put_new(:mentions_count, 0)
 
@@ -129,7 +134,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         render conn, "show.json", group: group, user_id: user.id
 
       {:error, {:already_exists, slug}} ->
-        {:ok, group} = GroupQueries.find_by_slug(slug, user.id)
+        {:ok, group} = GroupQueries.find_by_slug(slug, user)
+        {:ok, _group_user} = Group.unhide(group, user.id)
+        group = GroupQueries.load_user_data(group, user)
         render conn, "show.json", group: group, user_id: user.id
 
       {:error, :creator_id_is_not_in_user_ids} ->
@@ -148,11 +155,16 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     group = GroupQueries.get_by_id(group_id)
 
     case Group.add_user(group, conn.assigns.current_user.id) do
-      {:error, _} ->
+      {:error, _, _, _} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: "Cannot add user to the group"})
-      {:ok, group_user} ->
+        |> json(%{message: "Cannot add user to the room"})
+      {:ok, %{group_user: group_user, system_message: system_message}} ->
+        {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
+        system_message = MessageQueries.load_info(system_message)
+        Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
+        EventsChannel.broadcast_group_join(group, conn.assigns.current_user.id)
+
         conn
         |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
     end
@@ -167,8 +179,10 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: message})
-      {:ok, message} ->
+      {:ok, message, system_message} ->
         default_group = GroupQueries.default_group(current_user)
+        Endpoint.broadcast("groups:#{group.slug}", "new_msg", MessageQueries.load_info(system_message))
+        Endpoint.broadcast("events:#{current_user.id}", "left_group", %{group_id: group.id})
         conn
         |> json(%{message: message, redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)})
 
@@ -188,13 +202,14 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def toggle_public(conn, %{"id" => group_id, "public" => public}) do
     user = conn.assigns.current_user
-    case GroupAuthorization.can_toggle_public?(group_id, user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_toggle_public?(group, user) do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "Not authorized to toggle the group's privacy setting."})
+        |> json(%{message: "Not authorized to toggle the room's privacy setting."})
       true ->
-        group = GroupQueries.get_by_id(group_id)
         {:ok, group} = Group.toggle_public(group, public)
         group = GroupQueries.load_user_data(group, user)
         render conn, "show.json", group: group, user_id: user.id
@@ -209,24 +224,39 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def invite(conn, %{"id" => group_id, "user_ids" => ""}) do
     GroupUser.remove_all_users(group_id)
-    conn |> json(%{message: "Users invited to group."})
+    conn |> json(%{message: "Users invited to room."})
   end
 
   def invite(conn, %{"id" => group_id, "user_ids" => user_ids}) do
-    case GroupAuthorization.can_invite?(group_id, conn.assigns.current_user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_invite?(group, conn.assigns.current_user) do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "Not authorized to invite people to this group."})
+        |> json(%{message: "Not authorized to invite people to this room."})
       true ->
-        group = GroupQueries.get_by_id(group_id)
-        split_user_ids = String.split(user_ids, ",")
-        Enum.each(split_user_ids, fn(user_id) ->
-          user_id = String.to_integer(user_id)
-          Group.add_user(group, user_id)
-        end)
+        user_ids
+        |> String.split(",")
+        |> Enum.map(&String.to_integer/1)
+        |> Enum.filter(& !!Stitch.Accounts.get_for_team_id(&1, conn.assigns.current_user.team_id))
+        |> Enum.each(&Group.add_user(group, &1))
+
         conn
-        |> json(%{message: "Users invited to group."})
+        |> json(%{message: "Users invited to room."})
+    end
+  end
+
+  def hide(conn, %{"id" => group_id}) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case Group.hide(group, conn.assigns.current_user.id) do
+      {:ok, _} ->
+        json(conn, %{message: "Room hidden"})
+      {:error, message} ->
+        conn
+        |> put_status(:forbidden)
+        |> json(%{message: message})
     end
   end
 end

@@ -124,7 +124,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Repo.get(User, id) do
+    case Stitch.Accounts.get_for_team_id(id, conn.assigns.current_user.team_id) do
       nil ->
         conn
         |> put_status(:unprocessable_entity)

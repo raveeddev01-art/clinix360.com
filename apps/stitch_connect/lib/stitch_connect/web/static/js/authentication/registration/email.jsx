@@ -57,7 +57,7 @@ export default class Email extends Component {
                 placement="top"
                 overlay={<Tooltip id="close">Close</Tooltip>}
               >
-                <Link to="/">
+                <Link to="/getstarted">
                   <i className="fa fa-close" />
                 </Link>
               </OverlayTrigger>

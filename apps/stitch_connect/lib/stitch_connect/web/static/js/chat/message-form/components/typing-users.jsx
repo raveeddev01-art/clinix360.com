@@ -7,7 +7,10 @@ class TypingUsers extends Component {
   render() {
     const { groupPresenceStore: { typingUsers }, presenceStore } = this.props;
     let content;
-    const username = id => presenceStore.onlineUsersMap[id].metas[0].username;
+    const username = id => {
+      const u = presenceStore.onlineUsersMap[id].metas[0];
+      return `${u.first_name} ${u.last_name}`;
+    };
 
     switch (typingUsers.length) {
       case 0:
@@ -20,10 +23,10 @@ class TypingUsers extends Component {
         content = `${typingUsers.map(username).join(" and ")} are typing...`;
         break;
       default:
-        content = "multiple people are typing...";
+        content = "Multiple people are typing...";
     }
 
-    return <div>{content}</div>;
+    return <div className="users-typing">{content}</div>;
   }
 }
 

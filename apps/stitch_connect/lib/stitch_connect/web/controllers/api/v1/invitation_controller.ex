@@ -54,12 +54,13 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   end
 
   def accept(conn, %{"token" => invite_token} = params) do
-    result = case Invitation.get_by_invite_token(invite_token) do
-      {:ok, invitation} ->
-        params = params |> Map.put("team_id", invitation.team_id) |> Map.put("roles", ["member"])
+    result =
+      with {:ok, invitation} <- Invitation.get_by_invite_token(invite_token),
+           params = params |> Map.put("team_id", invitation.team_id) |> Map.put("roles", ["member"]),
+           {:ok, _invitation} <- Stitch.Invitation.accept(invitation)
+      do
         Stitch.Accounts.update_and_complete_user_onboarding(invitation.user_id, params)
-      error -> error
-    end
+      end
 
     case result do
       %User{} = user ->

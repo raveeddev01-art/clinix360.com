@@ -23,9 +23,9 @@ class UploadStore {
   };
 
   @action
-  openUploadModal = file => {
+  openUploadModal = (file, fileName) => {
     this.file = file;
-    this.title = file.name;
+    this.title = fileName || file.name;
     this.description = "";
     this.isUploadModalVisible = true;
     this.groupId = this.rootStore.groupStore.id;
@@ -68,6 +68,7 @@ class UploadStore {
         formData.append("success_action_status", data.success_action_status);
         formData.append("policy", data.policy);
         formData.append("signature", data.signature);
+        formData.append("x-amz-server-side-encryption", "AES256");
         formData.append("file", file);
 
         this.uploadProgress.set(key, 0);

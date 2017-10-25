@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Async } from "react-select";
 
@@ -39,11 +39,11 @@ class Members extends Component {
       <Async
         multi
         className="multi-select-large"
-        placeholder="Type a name or email to add collegues"
+        placeholder="Search by name or username"
         onChange={this.props.onChange}
         value={this.state.members}
         valueKey="id"
-        labelKey="username"
+        labelKey="full_name"
         optionComponent={MemberOption}
         loadOptions={this._getMembers}
         promptTextCreator={label => `Add member - ${label}`}

@@ -10,14 +10,18 @@ import UserStore from "./user_store";
 import AddonStore from "./addon_store";
 import ChannelStore from "./channel_store";
 import FilesStore from "./files_store";
-import GroupPresenceStore from "./group_presence_store";
 import GlobalStarredMessageStore from "./global_starred_message_store";
 import GroupStore from "./group_store";
+import GroupPresenceStore from "./group_presence_store";
 import MessageStore from "./message_store";
+import MentionsStore from "./mentions_store";
 import PresenceStore from "./presence_store";
 import SearchStore from "./search_store";
 import SidemenuStore from "./sidemenu_store";
+import SocketStore from "./socket_store";
+import TitleStore from "./title_store";
 import UploadStore from "./upload_store";
+import PinnedMessageStore from "./pinned_message_store";
 
 class RootStore {
   constructor(props) {
@@ -34,25 +38,31 @@ class RootStore {
     // Init client stores
     this.addonStore = new AddonStore(this);
     this.channelStore = new ChannelStore(this);
-    this.globalStarredMessageStore = new GlobalStarredMessageStore(this);
     this.filesStore = new FilesStore(this);
-    this.groupPresenceStore = new GroupPresenceStore(this);
+    this.globalStarredMessageStore = new GlobalStarredMessageStore(this);
     this.groupStore = new GroupStore(this);
+    this.groupPresenceStore = new GroupPresenceStore(this);
     this.messageStore = new MessageStore(this);
+    this.mentionsStore = new MentionsStore(this);
     this.presenceStore = new PresenceStore(this, props);
     this.searchStore = new SearchStore(this);
     this.sidemenuStore = new SidemenuStore(this, props);
+    this.socketStore = new SocketStore(this);
     this.uploadStore = new UploadStore(this);
+    this.titleStore = new TitleStore(this, props);
+    this.pinnedMessageStore = new PinnedMessageStore(this);
 
     // Initial actions for admin stores
     this.notificationStore.loadPreferences();
-    this.membersStore.loadUsers(props.teamId);
     this.teamStore.loadTeam(props.teamId);
     this.userStore.loadUser(currentUser.id);
 
     // Join channels
     this.channelStore.joinEventChannel();
     this.presenceStore.joinTeamLobbyChannel();
+
+    // load users at the end after team lobby is joined
+    this.membersStore.loadUsers(props.teamId);
   }
 }
 

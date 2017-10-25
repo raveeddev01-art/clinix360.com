@@ -16,8 +16,11 @@ class GroupStore {
   @observable favorite = false;
   @observable notificationSetting = null;
   @observable showAllUsers = true;
+  @observable createdBy = null;
+  @observable createdAt = null;
   @observable groupType = "group"; // group, single-dm, multi-dm
   @observable dmUsers = [];
+  @observable isDefault = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -60,6 +63,13 @@ class GroupStore {
   };
 
   @action
+  postJoin = () => {
+    this.rootStore.messageStore.joinGroupChannel();
+    this.rootStore.pinnedMessageStore.reset();
+    this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+  };
+
+  @action
   joinGroup = slug => {
     if (slug === this.slug) {
       return;
@@ -82,15 +92,15 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.groupType = "group";
+      this.isDefault = data.is_default;
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
       this.mentionsCount = data.mentions_count;
       this.lastReadAt = data.last_read_at;
+      this.createdBy = data.creator_user_id;
+      this.createdAt = data.inserted_at;
 
-      // Load messages after join
-      this.rootStore.messageStore.joinGroupChannel();
-
-      this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+      this.postJoin();
     });
   };
 
@@ -100,14 +110,16 @@ class GroupStore {
     const slug = `__dm:${userIds.join(".")}`;
 
     if (slug === this.slug) {
-      return;
+      return new Promise(resolve => {
+        resolve();
+      });
     }
 
     this.loading = true;
     // Reset message store before join
     this.rootStore.messageStore.reset();
 
-    post(`/api/v1/groups/dm`, {
+    return post(`/api/v1/groups/dm`, {
       body: { user_ids: userIds }
     }).then(resp => {
       this.loading = false;
@@ -125,15 +137,13 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.groupType = "single-dm";
+      this.isDefault = false;
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
       this.mentionsCount = data.mentions_count;
       this.lastReadAt = data.last_read_at;
 
-      // Load messages after join
-      this.rootStore.messageStore.joinGroupChannel();
-
-      this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+      this.postJoin();
     });
   };
 
@@ -149,14 +159,16 @@ class GroupStore {
     const slug = `__dm:${userIds.join(".")}`;
 
     if (slug === this.slug) {
-      return;
+      return new Promise(resolve => {
+        resolve();
+      });
     }
 
     this.loading = true;
     // Reset message store before join
     this.rootStore.messageStore.reset();
 
-    post(`/api/v1/groups/multi-dm`, {
+    return post(`/api/v1/groups/multi-dm`, {
       body: { user_ids: userIds }
     }).then(resp => {
       this.loading = false;
@@ -175,14 +187,12 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.groupType = "multi-dm";
+      this.isDefault = false;
       this.unreadMessagesCount = data.unread_messages_count;
       this.mentionsCount = data.mentions_count;
       this.lastReadAt = data.last_read_at;
 
-      // Load messages after join
-      this.rootStore.messageStore.joinGroupChannel();
-
-      this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+      this.postJoin();
     });
   };
 
@@ -190,8 +200,9 @@ class GroupStore {
   togglePublic = value => {
     return post(`/api/v1/groups/${this.id}/toggle-public`, {
       body: { public: value }
-    }).then(resp => {
+    }).then(() => {
       this.public = !this.public;
+      return this;
     });
   };
 
@@ -212,9 +223,7 @@ class GroupStore {
   rename = groupName => {
     return patch(`/api/v1/groups/${this.id}/rename`, {
       body: { name: groupName, slug: groupName }
-    }).then(resp => {
-      notify.show("Group name has been changed successfully");
-    });
+    }).then(resp => resp.data);
   };
 
   @action
@@ -223,8 +232,6 @@ class GroupStore {
       body: {
         user_ids: _.map(members, "id").join(",")
       }
-    }).then(resp => {
-      notify.show("Users invited to group");
     });
   };
 
@@ -239,9 +246,8 @@ class GroupStore {
 
   @action
   join = () => {
-    return post(`/api/v1/groups/${this.id}/join`).then(resp => {
+    return post(`/api/v1/groups/${this.id}/join`).then(() => {
       this.joined = true;
-      notify.show("User has joined the group");
     });
   };
 
@@ -251,6 +257,11 @@ class GroupStore {
       this.joined = false;
       return resp.data.redirect_to;
     });
+  };
+
+  @action
+  hide = () => {
+    return put(`/api/v1/groups/${this.id}/hide`);
   };
 
   @action
@@ -269,9 +280,8 @@ class GroupStore {
       body: {
         desktop_notification_preference: setting
       }
-    }).then(resp => {
+    }).then(() => {
       this.notificationSetting = setting;
-      notify.show(`Notification setting saved for group ${this.name}`);
     });
   };
 }

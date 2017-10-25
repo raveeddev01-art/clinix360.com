@@ -121,11 +121,6 @@ class MessageStore {
   }
 
   @computed
-  get pinnedMessages() {
-    return this.messages.filter(message => message.pinned);
-  }
-
-  @computed
   get starredMessages() {
     return this.messages.filter(message => message.starred);
   }
@@ -163,7 +158,7 @@ class MessageStore {
   }
 
   // Scroll to the bottom of chat div with animation
-  scrollToBottom(cb = null, duration = 300, delay = 100) {
+  scrollToBottom(cb = null, duration = 0, delay = 100) {
     setTimeout(() => {
       animateScroll.scrollToBottom({
         containerId: "chat",
@@ -227,7 +222,7 @@ class MessageStore {
     this.isScrollBottom = false;
   }
 
-  onInvisibleMessage = id => {
+  onMessageHide(id) {
     if (!this.loadedInitial) {
       return;
     }
@@ -242,9 +237,9 @@ class MessageStore {
         this.updateGroupCursor(this.messages[index - 1].id);
       }
     }
-  };
+  }
 
-  onVisibleMessage = id => {
+  onMessageShow(id) {
     if (!this.loadedInitial) {
       return;
     }
@@ -268,7 +263,7 @@ class MessageStore {
         this.markAsRead(false);
       }, 1000);
     }
-  };
+  }
 
   /**
    * Scroll to a specific message in chat div
@@ -303,8 +298,7 @@ class MessageStore {
     this.highlightTimeout = setTimeout(() => {
       this.highlightId = null;
     }, duration);
-
-  }
+  };
 
   /**
    * Jump to the specific message
@@ -644,7 +638,7 @@ class MessageStore {
     // and new mesage line is visible, hide new message line
     if (newMessage.user_id === currentUser.id) {
       if (this.unreadMessagesCount === 0) {
-        this.updateUnreadMessagesInfo({ last_read_at: new Date() });
+        this.markAsRead();
       }
     } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
@@ -663,7 +657,7 @@ class MessageStore {
     }
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
-      this.scrollToBottom(() => {}, 0);
+      this.scrollToBottom(() => {}, 100);
     }
 
     // Update favicon
@@ -706,6 +700,10 @@ class MessageStore {
   onJoinGroupChannel = data => {
     this.messages = data.messages;
 
+    if (data.messages.length < 30) {
+      this.loadedAll = true;
+    }
+
     const { groupStore } = this.rootStore;
 
     this.unreadMessagesCount = groupStore.unreadMessagesCount;
@@ -746,7 +744,7 @@ class MessageStore {
       if (this.unreadMessagesCount >= 30) {
         posHistory = this.messages[this.messages.length - 1].id; // B.2.a
         this.scrollToBottom(() => {
-          this.scrollTo(posHistory, 500, () => {
+          this.scrollTo(posHistory, 0, () => {
             this.loadedInitial = true; // B.2.a.i
           });
         }, 0);
@@ -755,11 +753,12 @@ class MessageStore {
           this.messages[this.unreadMessagesCount] &&
           this.messages[this.unreadMessagesCount].id; // B.1.a
 
+        this.markAsRead();
+
         this.scrollToBottom(() => {
           this.loadedInitial = true; // B.1.b
-          this.scrollTo(posHistory, 500);
-          this.markAsRead();
-        }, 0);
+          this.scrollTo(posHistory, 0);
+        }, 1);
       }
     } else {
       this.groupCursor = sidemenuStore.groupCursors[this.groupId];
@@ -785,6 +784,15 @@ class MessageStore {
   startEdit(id) {
     const message = this.messages.find(m => m.id === id);
 
+    if (message) {
+      this.messageInEdit = message;
+      this.textInEdit = message.text_content;
+    }
+  }
+
+  @action
+  editLastMessage() {
+    const message = this.messages.find(m => m.user_id === currentUser.id);
     if (message) {
       this.messageInEdit = message;
       this.textInEdit = message.text_content;
@@ -862,12 +870,20 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      window.post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
-        const update = resp.data;
+      post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
+        const pinnedMsg = resp.data;
 
-        message.pinned = update.pinned;
-        message.pinned_at = update.pinned_at;
-        message.pinned_by = update.pinned_by;
+        message.pinned = pinnedMsg.pinned;
+        message.pinned_at = pinnedMsg.pinned_at;
+        message.pinned_by = pinnedMsg.pinned_by;
+
+        if (pinnedMsg.pinned) {
+          this.rootStore.pinnedMessageStore.messages.push(pinnedMsg);
+        } else {
+          this.rootStore.pinnedMessageStore.messages = this.rootStore.pinnedMessageStore.messages.filter(
+            m => m.id !== pinnedMsg.id
+          );
+        }
       });
     }
   }
@@ -883,6 +899,12 @@ class MessageStore {
     this.groupChannel.push("typing_started");
     this.typingTimeoutId = setTimeout(this.stopTyping, 5000);
   };
+
+  keepScrollAtBottom() {
+    if (this.isScrollBottom) {
+      this.scrollToBottom();
+    }
+  }
 }
 
 export default MessageStore;

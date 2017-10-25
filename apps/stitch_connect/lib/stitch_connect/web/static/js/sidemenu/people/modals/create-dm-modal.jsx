@@ -1,6 +1,8 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
+import _ from "lodash";
 import { withRouter } from "react-router-dom";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
@@ -32,13 +34,22 @@ class CreateDMModal extends Component {
     this.setState({ members: value });
   };
 
+  canCreateDM = () => {
+    const { members } = this.state;
+    return members && members.length !== 0;
+  };
+
   startDM = () => {
     const { history, toggle } = this.props;
     if (!this.state.members.length) {
       notify.show(`Choose people to start conversation with`, "error");
       return;
     }
-    const usernames = this.state.members.map(user => user.username).join(",");
+
+    const members = this.state.members;
+    const usernames = _.sortBy(members, "id")
+      .map(user => user.username)
+      .join(",");
 
     history.push(`/direct/${usernames}`);
     toggle();
@@ -131,7 +142,12 @@ class CreateDMModal extends Component {
           <Button bsSize="large" onClick={this.props.toggle}>
             Cancel
           </Button>
-          <Button bsSize="large" bsStyle="primary" onClick={this.startDM}>
+          <Button
+            bsSize="large"
+            bsStyle="primary"
+            onClick={this.startDM}
+            disabled={!this.canCreateDM()}
+          >
             Start Conversation
           </Button>
         </Modal.Footer>

@@ -4,12 +4,13 @@ defmodule Stitch.Team.Onboarding do
   """
 
   alias Stitch.{Repo, Team, Group}
+  @blacklisted_subdomains Stitch.Blacklist.blacklisted_subdomains()
 
   @doc """
   Returns whether a team slug is unused and available for use within
   the Stitch platform.
   """
-  def slug_available?(slug) when byte_size(slug) > 0 do
+  def slug_available?(slug) when byte_size(slug) > 0 and slug not in @blacklisted_subdomains do
     slug = Slugger.slugify_downcase(slug)
     case Repo.get_by(Team, slug: slug) do
       nil ->
@@ -28,7 +29,8 @@ defmodule Stitch.Team.Onboarding do
     changeset = Team.changeset(%Team{}, %{name: name, slug: slug})
     case Repo.insert(changeset) do
       {:ok, team} ->
-        Repo.insert(%Group{team_id: team.id, name: "General", slug: "general"})
+        Repo.insert(%Group{team_id: team.id, name: "General", slug: "general", is_default: true})
+        Stitch.Billing.setup_new_team(team)
         team
       {:error, _} ->
         {:error, "Team wasn't created"}

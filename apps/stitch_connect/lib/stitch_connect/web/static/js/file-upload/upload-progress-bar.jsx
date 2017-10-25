@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import cx from "classnames";
 
 class UploadProgress extends Component {
@@ -33,10 +34,11 @@ class UploadProgress extends Component {
           {canceling ? `Canceling ${filename}...` : label}
         </span>
         {showCancel &&
-          !canceling &&
-          <a className="progress-cancel" role="link" onClick={this.onCancel}>
-            Cancel
-          </a>}
+          !canceling && (
+            <a className="progress-cancel" role="link" onClick={this.onCancel}>
+              Cancel
+            </a>
+          )}
       </div>
     );
   }

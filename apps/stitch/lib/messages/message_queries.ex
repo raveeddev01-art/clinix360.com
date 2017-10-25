@@ -24,6 +24,7 @@ defmodule Stitch.MessageQueries do
       from m in Message,
       where: m.group_id in ^user_groups_ids,
       where: fragment("? % ?", m.text_content, ^term),
+      where: m.type != ^"system",
       order_by: fragment("similarity(?, ?) DESC", m.text_content, ^term),
       order_by: [desc: :inserted_at],
       limit: ^limit,
@@ -103,6 +104,19 @@ defmodule Stitch.MessageQueries do
       preload: :user
 
     Repo.all(query)
+  end
+
+  def pinned_messages(%Group{id: group_id}, opts \\ []) do
+    limit = opts[:limit] || 30
+    offset = opts[:skip] || 0
+
+    Message
+    |> where(pinned: ^true)
+    |> where(group_id: ^group_id)
+    |> order_by([m], desc: m.inserted_at)
+    |> preload([m], [:user, :pinned_by])
+    |> select([m], m)
+    |> Paginator.new(skip: offset, limit: limit)
   end
 
   def get_by_id(id) do

@@ -15,3 +15,6 @@ config :stitch, Stitch.Mailer,
 
 config :stitch, Stitch.Exports,
   enabled: false
+
+config :stitch,
+  stripe_client: Stitch.Stripe.TestClient

@@ -12,7 +12,6 @@ class ChannelStore {
     }
 
     this.channels[topic] = socket.channel(topic, options);
-
     return this.channels[topic].join();
   }
 
@@ -25,7 +24,13 @@ class ChannelStore {
     const channel = this.join(this.eventChannelTopic, options);
 
     this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
+    this.eventChannel.on("joined_group", sidemenuStore.onJoinedGroup);
+    this.eventChannel.on("left_group", sidemenuStore.onLeftGroup);
+
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
+    this.eventChannel.on("new_app_version", () => {
+      window.location.reload(true); // force reload without cache
+    });
 
     return channel;
   }

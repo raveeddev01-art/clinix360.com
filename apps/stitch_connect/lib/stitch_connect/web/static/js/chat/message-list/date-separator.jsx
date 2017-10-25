@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import moment from "moment";
 
 class DateSeparator extends Component {
@@ -7,9 +8,7 @@ class DateSeparator extends Component {
 
     return (
       <div className="date-separator">
-        <span className="date">
-          {moment(timestamp).format("MMMM D, YYYY")}
-        </span>
+        <span className="date">{moment(timestamp).format("dddd, MMMM D")}</span>
       </div>
     );
   }

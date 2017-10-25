@@ -1,5 +1,7 @@
 defmodule StitchConnect.Web.Router do
   use StitchConnect.Web, :router
+  use Plug.ErrorHandler
+  use Sentry.Plug
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -44,9 +46,10 @@ defmodule StitchConnect.Web.Router do
   scope "/", StitchConnect.Web do
     pipe_through :browser
 
-    get "/", AuthenticationController, :index
-    get "/signin", AuthenticationController, :index
+    get "/", HomeController, :index
 
+    get "/getstarted", AuthenticationController, :index
+    get "/signin", AuthenticationController, :index
 
     # get "/login", AuthenticationController, :index
     # get "/reset-password", AuthenticationController, :index

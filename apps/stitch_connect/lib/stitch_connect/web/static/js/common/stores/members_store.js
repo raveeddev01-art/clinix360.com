@@ -77,11 +77,11 @@ class MembersStore {
   };
 
   connectPresence = () => {
-    const lobby = socket.channel(`team:lobby:${this.teamId}`, {});
+    // @TODO refactor presence stuff to presence_store
+    const lobby = this.rootStore.channelStore.teamLobbyChannel;
 
     lobby.on("presence_state", this.onPresenceState);
     lobby.on("presence_diff", this.onPresenceDiff);
-    lobby.join();
   };
 
   @action

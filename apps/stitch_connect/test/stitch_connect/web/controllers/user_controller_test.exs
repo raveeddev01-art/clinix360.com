@@ -19,6 +19,26 @@ defmodule StitchConnect.Web.UserControllerTest do
     assert Repo.get(User, user.id).roles == ["admin"]
   end
 
+  test "doesn't disclose user info to the users from other teams", %{conn: conn} do
+    team = insert(:team)
+    team2 = insert(:team)
+    user = insert(:user, team: team)
+    user2 = insert(:user, team: team2)
+
+    conn =
+      conn
+      |> with_team_subdomain(team)
+      |> with_user_session(user)
+      |> with_api_user(user)
+
+    json =
+      conn
+      |> get("/api/v1/users/#{user2.id}")
+      |> json_response(422)
+
+    assert json["message"] == "No user found with ID: #{user2.id}"
+  end
+
   describe "PUT /api/v1/users/:id/revoke-admin" do
     test "revokes admin role from existing user", %{conn: conn} do
       team = insert(:team)

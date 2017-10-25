@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 
 import PeopleListItem from "./people-list-item/people-list-item";
@@ -19,14 +20,14 @@ class PeopleList extends Component {
 
     return (
       <div className="collapse-content">
-        {users.map(user =>
+        {users.map(user => (
           <PeopleListItem
             online={presenceStore.isOnline(`${user.id}`)}
             key={`user_${user.id}`}
             onClick={this._onClickItem(user)}
             {...user}
           />
-        )}
+        ))}
       </div>
     );
   }

@@ -10,10 +10,20 @@ defmodule StitchConnect.Web.EventsChannel do
   def join("events:" <> user_id, _params, socket) do
     user_id = String.to_integer(user_id)
     if user_id == socket.assigns.current_user.id do
+      send self(), :after_join
       {:ok, socket}
     else
       {:error, %{message: "Unauthorized"}}
     end
+  end
+
+  def handle_info(:after_join, socket) do
+    current_app_version = StitchConnect.version()
+    socket_app_version = socket.assigns.application_version
+    if current_app_version != socket_app_version do
+      push socket, "new_app_version", %{new_version: current_app_version}
+    end
+    {:noreply, socket}
   end
 
   def group_users_for(group_id, user_id) do
@@ -55,6 +65,11 @@ defmodule StitchConnect.Web.EventsChannel do
       id: message.id,
       starred: message.starred,
     })
+  end
+
+  def broadcast_group_join(group, user_id) do
+    json = GroupView.group_json(group, user_id)
+    @endpoint.broadcast("events:#{user_id}", "joined_group", json)
   end
 
   def broadcast_group_creation(group) do

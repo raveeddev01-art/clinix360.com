@@ -2,7 +2,7 @@ defmodule Stitch.Group do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias Stitch.{Repo, Group, GroupUser}
+  alias Stitch.{Repo, Group, GroupUser, Message}
   alias Stitch.Accounts.User
 
   schema "groups" do
@@ -11,6 +11,7 @@ defmodule Stitch.Group do
     field :name, :string
     field :slug, :string
     field :description, :string
+    field :is_default, :boolean, default: false
     field :public, :boolean, default: true
 
     belongs_to :team, Stitch.Team
@@ -25,10 +26,12 @@ defmodule Stitch.Group do
     struct
     |> cast(params, [:name, :slug, :description, :public, :team_id, :creator_user_id])
     |> validate_required([:name, :slug, :public, :team_id])
+    |> validate_length(:name, max: 25)
+    |> validate_format(:name, ~r/^[\w-\s]+$/)
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
   end
 
-  def create(attrs, team_id, user_id) do
+  def create(attrs, %User{team_id: team_id, id: user_id}) do
     attrs = attrs |> Map.put("team_id", team_id) |> Map.put("creator_user_id", user_id)
 
     attrs = case {attrs["name"], attrs["slug"]} do
@@ -54,7 +57,7 @@ defmodule Stitch.Group do
           end)
 
           case group_users_res do
-            :error -> Repo.rollback("Failed to add group members.")
+            :error -> Repo.rollback("Failed to add room members.")
             users -> %{group | users: users}
           end
 
@@ -62,7 +65,7 @@ defmodule Stitch.Group do
           if changeset.errors == [slug: {"has already been taken", []}] do
             Repo.rollback({:already_exists, changeset.changes.slug})
           else
-            Repo.rollback("Failed to create group.")
+            Repo.rollback("Failed to create room.")
           end
       end
     end
@@ -83,10 +86,10 @@ defmodule Stitch.Group do
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
-    }, creator.team_id, creator.id)
+    }, creator)
   end
 
-  def create_multi_dm(_, user_ids) when length(user_ids) != 3 do
+  def create_multi_dm(_, user_ids) when length(user_ids) < 3 do
     {:error, :user_id_count_is_not_3_or_more}
   end
 
@@ -101,7 +104,7 @@ defmodule Stitch.Group do
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
-    }, creator.team_id, creator.id)
+    }, creator)
   end
 
   @doc """
@@ -136,7 +139,11 @@ defmodule Stitch.Group do
   def add_user(%Group{} = group, user_id) do
     params = %{group_id: group.id, user_id: user_id}
     changeset = GroupUser.changeset(%GroupUser{}, params)
-    Repo.insert changeset
+
+    Ecto.Multi.new
+    |> Ecto.Multi.insert(:group_user, changeset)
+    |> log_system_join_messages(group, user_id)
+    |> Repo.transaction
   end
 
   @doc """
@@ -146,16 +153,23 @@ defmodule Stitch.Group do
     {:error, "Users can't leave direct messages"}
   end
 
-  def remove(%Group{id: group_id}, user_id) do
+  def remove(%Group{id: group_id} = group, user_id) do
     case Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) do
       nil ->
-        {:error, "User is not part of this group"}
+        {:error, "User is not part of this room"}
 
       group_user ->
-        group_user
-        |> Repo.delete
-        {:ok, "User has been removed from the group"}
+        multi =
+          Ecto.Multi.new
+          |> Ecto.Multi.delete(:group_user, group_user)
+          |> log_system_leave_messages(group, user_id)
 
+        case Repo.transaction(multi) do
+          {:ok, %{system_message: system_message}} ->
+            {:ok, "User has been removed from the room", system_message}
+          {:error, _, _, _} ->
+            {:error, "Error leaving the room"}
+        end
     end
   end
 
@@ -171,7 +185,7 @@ defmodule Stitch.Group do
     |> Repo.update_all([], returning: true)
 
     case result do
-      {0, []} -> {:error, "User has to be member of group to favorite it."}
+      {0, []} -> {:error, "User has to be member of room to favorite it."}
       {1, [group_user]} -> {:ok, group_user}
     end
   end
@@ -189,4 +203,54 @@ defmodule Stitch.Group do
     changeset = Group.changeset(group, %{public: public})
     Repo.update changeset
   end
+
+  def hide(%Group{name: name}, _user_id)
+      when name not in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Only direct messages can be hidden"}
+  end
+
+  def hide(%Group{} = group, user_id) do
+    case Repo.get_by(GroupUser, group_id: group.id, user_id: user_id) do
+      nil ->
+        {:error, "User is not part of this room"}
+      group_user ->
+        group_user
+        |> change(%{is_hidden: true})
+        |> Repo.update
+    end
+  end
+
+  def unhide(%Group{name: name}, _user_id)
+      when name not in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Only direct messages can be hidden"}
+  end
+
+  def unhide(%Group{} = group, user_id) do
+    case Repo.get_by(GroupUser, group_id: group.id, user_id: user_id) do
+      nil ->
+        {:error, "User is not part of this room"}
+      group_user ->
+        group_user
+        |> change(%{is_hidden: false})
+        |> Repo.update
+    end
+  end
+
+  @doc """
+  Creates system messages when the user joins a public or private group.
+  """
+  def log_system_join_messages(multi, %Group{name: name} = group, user_id) when name not in ["__dm_group__", "__multi_dm_group__"] do
+    multi
+    |> Ecto.Multi.insert(:system_message, Message.join_message_changeset(group, user_id))
+  end
+  def log_system_join_messages(multi, _group, _user_id), do: multi
+
+  @doc """
+  Creates system messages when the user joins a public or private group.
+  """
+  def log_system_leave_messages(multi, %Group{name: name} = group, user_id) when name not in ["__dm_group__", "__multi_dm_group__"] do
+    multi
+    |> Ecto.Multi.insert(:system_message, Message.leave_message_changeset(group, user_id))
+  end
+  def log_system_leave_messages(multi, _group, _user_id), do: multi
 end

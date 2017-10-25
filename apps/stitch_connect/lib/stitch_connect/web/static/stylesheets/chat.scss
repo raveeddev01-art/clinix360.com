@@ -9,9 +9,21 @@
       h4 {
         display: flex;
         align-items: center;
+        font-weight: 700;
+
+        > span {
+          width: calc(100% - 450px);
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          line-height: 24px;
+          @media (max-width: 991px) {
+            width: calc(100% - 400px);
+          }
+        }
 
         i.fa {
-          margin-right: 8px;
+          margin-right: 2px;
         }
         i.fa-circle-o,
         i.fa-circle {
@@ -24,11 +36,9 @@
       display: flex;
       align-items: center;
 
-      @media (max-width: 992px) {
-        background: $brand-primary;
-        position: absolute;
-        right: 7px;
-      }
+      background: $brand-primary;
+      position: absolute;
+      right: 7px;
 
       form {
         margin-left: 10px;
@@ -53,12 +63,15 @@
 
         .form-control {
           height: 36px;
-          width: 320px;
+          width: 310px;
           background: #fff;
           box-shadow: none;
           border: 0;
           padding-left: 38px;
           padding-right: 34px;
+          @media (max-width: 991px) {
+            width: 260px;
+          }
         }
       }
 
@@ -70,6 +83,55 @@
         box-shadow: none;
         padding: 2px 10px;
         margin-left: 10px;
+      }
+
+      ul.dropdown-menu {
+        padding: 12px 0;
+        margin-top: 4px;
+
+        li {
+          a {
+            font-size: 15px;
+            line-height: 25px;
+            padding: 0 15px;
+            margin: 0 12px;
+
+            i.fa {
+              width: 1em;
+            }
+
+            &:focus {
+              outline: none;
+            }
+          }
+        }
+
+        &:before {
+          content: "";
+          position: absolute;
+          right: 16px;
+          top: -11px;
+          width: 0;
+          height: 0;
+          border: 11px solid transparent;
+          border-bottom-color: #fff;
+          border-top-width: 0;
+        }
+      }
+
+      ul.room-controls-menu {
+        padding: 12px 0;
+        right: -8px;
+      }
+
+      ul.more-menu {
+        right: -6px;
+
+        &:before {
+          content: "";
+          position: absolute;
+          right: 6px;
+        }
       }
     }
 
@@ -115,7 +177,7 @@
           .messages-count-info {
             flex: 1;
             display: flex;
-            background: #036;
+            background: $brand-primary;
             border-radius: 8px 0 0 8px;
 
             .jump-button {
@@ -140,7 +202,7 @@
             flex: 0 0 auto;
             padding: 0 10px;
             font-size: 90%;
-            background: #036;
+            background: $brand-primary;
             border-radius: 0 8px 8px 0;
           }
 
@@ -166,7 +228,7 @@
             }
 
             .mark-as-read-button {
-              border-left: 1px solid lighten(#036, 40%);
+              border-left: 1px solid lighten($brand-primary, 40%);
 
               &:hover {
                 filter: brightness(85%);
@@ -223,26 +285,29 @@
       }
 
       #chat {
+        @include stitch-scroll();
         position: relative;
         padding: 20px;
+        display: flex;
+        flex-direction: column;
 
         .date-separator {
           display: flex;
           justify-content: center;
           position: relative;
           border-top: 1px solid $border-color;
-          margin: 20px 0 40px;
+          margin: 35px 0;
 
           .date {
             color: $brand-primary;
-            font-weight: bold;
-            line-height: 1.45;
-            background: #fff;
-            border: 1px solid $border-color;
-            border-radius: 6px;
-            padding: 6px 12px;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 32px;
+            background: $body-bg;
+            border-radius: 4px;
+            padding: 0 12px;
             position: absolute;
-            top: -17px;
+            top: -18px;
           }
         }
 
@@ -257,7 +322,7 @@
             color: $brand-primary;
             font-weight: bold;
             line-height: 1.45;
-            background: #f1f1f1;
+            background: #fff;
             border: 1px solid $brand-primary;
             border-radius: 6px;
             padding: 6px 12px;
@@ -291,8 +356,8 @@
 
     .message-form {
       position: relative;
-      padding-top: 10px;
-      padding-bottom: 30px;
+      padding-top: 5px;
+      padding-bottom: 25px;
       width: 100%;
 
       .jumped-message-indicator {
@@ -327,6 +392,11 @@
         position: absolute;
         right: 15px;
         top: 5px;
+        display: flex;
+        align-items: center;
+        height: 30px;
+        width: 45px;
+        justify-content: space-between;
 
         .message-form-action-item {
           border: none;
@@ -334,12 +404,14 @@
           padding: 0;
           cursor: pointer;
           font-size: 20px;
+          vertical-align: middle;
           color: #ccc;
           box-shadow: none;
-          margin-left: 10px;
 
           &:hover {
+            font-size: 24px;
             color: $brand-primary;
+            animation: iconZoom ease-in 0.2s;
           }
         }
       }
@@ -348,21 +420,40 @@
         height: 40px;
         border-width: 2px;
         box-shadow: none;
-        padding-right: 50px;
+        padding-right: 70px;
+        resize: none;
 
         &.editing {
           background-color: #fff7d8;
         }
+        &:focus {
+          border-color: #ccc;
+        }
+      }
+
+      .users-typing {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 23px;
+        font-size: 12px;
+        color: #888;
       }
 
       .editing-commands {
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 5px;
+        bottom: 0;
         display: flex;
         justify-content: space-between;
         font-size: 85%;
+        background: $body-bg;
+
+        & > div {
+          height: 23px;
+        }
 
         .btn-small {
           padding: 0 8px;
@@ -531,7 +622,7 @@
     border: 1px solid $border-color-secondary;
     border-radius: 4px;
     padding: 15px 20px;
-    margin-bottom: 10px;
+    margin: 5px 0;
 
     &.highlight {
       animation: highlightBubble 3s, fadeIn 3s;
@@ -543,6 +634,7 @@
       align-items: baseline;
 
       .name {
+        color: #003366;
         flex: 1;
         font-weight: bold;
         margin-right: 20px;
@@ -560,6 +652,29 @@
           right: 0;
           top: 0;
           visibility: hidden;
+
+          ul.dropdown-menu {
+            padding: 8px 0;
+            min-width: 120px;
+
+            li {
+              a {
+                font-size: 15px;
+                line-height: 25px;
+                padding: 0 8px;
+                margin: 0 8px;
+
+                i.fa {
+                  width: 1em;
+                  margin-right: 2px;
+                }
+
+                &:focus {
+                  outline: none;
+                }
+              }
+            }
+          }
         }
 
         &:before {
@@ -570,9 +685,29 @@
       }
     }
 
-    .message-body {
-      display: flex;
-      align-items: center;
+    .message-body-wrapper {
+      display: inline;
+
+      .message-body {
+        display: inline;
+
+        .message-link,
+        .dropdown-toggle {
+          color: #003366;
+          text-decoration: none;
+          border-bottom: 1px dotted $brand-primary;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          display: inline-block;
+          vertical-align: top;
+          max-width: 100%;
+
+          &:hover {
+            border-bottom-style: solid;
+          }
+        }
+      }
     }
 
     p {
@@ -601,7 +736,7 @@
 
     .emoji-mart-emoji {
       vertical-align: middle;
-      margin-right: 2px;
+      margin: 0 3px;
     }
 
     &:hover,
@@ -624,6 +759,10 @@
       background: $brand-primary;
       border: 0;
 
+      .name {
+        color: #fff;
+      }
+
       .time {
         .dropdown-toggle {
           color: #fff;
@@ -631,6 +770,14 @@
 
         &:before {
           color: rgba(255, 255, 255, 0.7);
+        }
+      }
+
+      .message-body {
+        .message-link,
+        .dropdown-toggle {
+          color: #fff;
+          border-color: #fff;
         }
       }
 
@@ -754,7 +901,8 @@ i.file-data-separator {
 
 .loading-message {
   font-style: italic;
-  padding: 10px 30px;
+  padding: 10px;
+  text-align: center;
 }
 
 .emoji-search-menu {
@@ -791,5 +939,54 @@ i.file-data-separator {
     position: absolute;
     bottom: 34px;
     right: -12px;
+  }
+}
+
+.welcome-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex-grow: 1;
+  flex-shrink: 0;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  &__title {
+    font-size: 40px;
+    color: $brand-primary;
+    font-weight: 900;
+    line-height: 1;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  &__text {
+    font-size: 16px;
+  }
+
+  &__name {
+    color: $brand-primary;
+    font-weight: 800;
+    margin: 0 3px;
+  }
+}
+
+.system-message {
+  font-size: 15px;
+  text-align: center;
+  padding: 6px 0;
+
+  &__user {
+    color: $brand-primary;
+    font-size: 15px;
+    font-weight: 800;
   }
 }

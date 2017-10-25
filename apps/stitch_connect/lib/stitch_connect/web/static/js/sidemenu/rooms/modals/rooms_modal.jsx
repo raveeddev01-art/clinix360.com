@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
+import { withRouter } from "react-router-dom";
 import slugify from "slugify";
 
 import Modal from "react-bootstrap/lib/Modal";
@@ -32,12 +33,18 @@ class RoomsModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.state !== this.props.state && !!nextProps.state) {
       // members should be set manualy set empty when modal is open
-      this.setState({ members: [] });
+      this.setState({ members: [], filter: "" });
     }
   }
 
+  onModalEntered = () => {
+    this.setState({ members: [], filter: "", name: "" });
+  };
+
   getSlug() {
-    return this.state.name ? `#${slugify(this.state.name)}` : "";
+    return this.state.name
+      ? `#${slugify(this.state.name, { lower: true })}`
+      : "";
   }
 
   handleChange = event => {
@@ -65,6 +72,13 @@ class RoomsModal extends Component {
     this.setState({ [field]: evt.target.value });
   };
 
+  cleanName = e => {
+    const re = /^[\w\-\s]+$/;
+    if (!re.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   updateMembers = value => {
     this.setState({ members: value });
   };
@@ -73,12 +87,17 @@ class RoomsModal extends Component {
     this.setState({ public: !this.state.public });
   };
 
+  switchToCreateModal = () => {
+    this.setState({ name: this.state.filter });
+    this.props.showRoomCreateModal();
+  };
+
   createRoom = () => {
     const { groupStore, history, closeModal } = this.props;
 
     groupStore
       .createGroup({
-        name: this.state.name,
+        name: this.state.name.trim(),
         public: this.state.public,
         user_ids: this.state.members.map(user => user.id)
       })
@@ -86,6 +105,11 @@ class RoomsModal extends Component {
         history.push(`/rooms/${slug}`);
         closeModal();
       });
+  };
+
+  canCreateRoom = () => {
+    const { name, members } = this.state;
+    return name.trim() !== "" && members && members.length !== 0;
   };
 
   renderModalHeader() {
@@ -145,7 +169,6 @@ class RoomsModal extends Component {
               </div>
             </div>
           )}
-
           {rooms.joined.length > 0 && (
             <div className="rooms-list">
               <h5 className="rooms-list-heading">Rooms you belong to</h5>
@@ -156,12 +179,23 @@ class RoomsModal extends Component {
               </div>
             </div>
           )}
+          {rooms.notJoined.length === 0 &&
+            rooms.joined.length === 0 && (
+              <div className="no-result text-center">
+                <p>No rooms found.</p>
+                <Button bsSize="large" onClick={this.switchToCreateModal}>
+                  Create a room called <strong>{this.state.filter}</strong>
+                </Button>
+              </div>
+            )}
         </div>
       </Modal.Body>
     );
   }
 
   renderRoomCreateModal() {
+    const { name } = this.state;
+
     return (
       <Modal.Body>
         <Form horizontal>
@@ -194,8 +228,15 @@ class RoomsModal extends Component {
                 name="name"
                 type="text"
                 placeholder="e.g. Emergency Room"
+                maxLength="25"
+                value={name}
+                onKeyPress={this.cleanName}
                 onChange={this.updateValue("name")}
               />
+              <HelpBlock>
+                Names must be shorter than 25 characters and without
+                punctuation.
+              </HelpBlock>
             </Col>
           </FormGroup>
 
@@ -251,7 +292,12 @@ class RoomsModal extends Component {
         <Button bsSize="large" onClick={closeModal}>
           Cancel
         </Button>
-        <Button bsSize="large" bsStyle="primary" onClick={this.createRoom}>
+        <Button
+          bsSize="large"
+          bsStyle="primary"
+          onClick={this.createRoom}
+          disabled={!this.canCreateRoom()}
+        >
           Create Room
         </Button>
       </Modal.Footer>
@@ -262,7 +308,11 @@ class RoomsModal extends Component {
     const { state } = this.props;
 
     return (
-      <Modal className="rooms-modal" show={!!state}>
+      <Modal
+        className="rooms-modal"
+        show={!!state}
+        onEnter={this.onModalEntered}
+      >
         {this.renderModalHeader()}
         {state === "list" && this.renderRoomsListModal()}
         {state === "create" && this.renderRoomCreateModal()}
@@ -279,4 +329,4 @@ RoomsModal.propTypes = {
   closeModal: PropTypes.func.isRequired
 };
 
-export default RoomsModal;
+export default withRouter(RoomsModal);

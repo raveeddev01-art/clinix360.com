@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import moment from "moment";
 import { Element } from "react-scroll";
@@ -19,7 +20,7 @@ import MessageContent from "../../common/components/messages/message-content/mes
 class Message extends Component {
   constructor(props) {
     super(props);
-    this.state = { selected: false };
+    this.state = { selected: false, dropup: false };
   }
 
   componentDidMount() {
@@ -32,9 +33,9 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     if (isVisible) {
-      messageStore.onVisibleMessage(message.id);
+      messageStore.onMessageShow(message.id);
     } else {
-      messageStore.onInvisibleMessage(message.id);
+      messageStore.onMessageHide(message.id);
     }
   };
 
@@ -83,6 +84,18 @@ class Message extends Component {
     messageStore.toggleStar(message.id);
   };
 
+  checkPosition = isActionDropdownOpen => {
+    const { chatDiv } = this.props.messageStore;
+
+    if (isActionDropdownOpen) {
+      this.setState({
+        dropup:
+          chatDiv.scrollTop + chatDiv.offsetHeight / 2 <
+          this.messageDiv.offsetTop
+      });
+    }
+  };
+
   renderEdited(message) {
     const { edited, edited_at: editedAt } = message;
 
@@ -91,9 +104,7 @@ class Message extends Component {
     }
 
     const editedTooltip = (
-      <Tooltip id="edited-tooltip">
-        {moment(editedAt).calendar()}
-      </Tooltip>
+      <Tooltip id="edited-tooltip">{moment(editedAt).calendar()}</Tooltip>
     );
 
     return (
@@ -165,13 +176,16 @@ class Message extends Component {
 
   renderActions(message) {
     const mine = message.user.id === currentUser.id;
+    const { dropup } = this.state;
 
     return (
       <Dropdown
         id={`message-actions-${message.id}`}
         componentClass="div"
         className="message-actions"
+        dropup={dropup}
         pullRight
+        onToggle={this.checkPosition}
       >
         <Dropdown.Toggle useAnchor noCaret onClick={this.handleClick}>
           <i className="fa fa-angle-down" />
@@ -180,30 +194,33 @@ class Message extends Component {
         <Dropdown.Menu>
           <MenuItem onClick={this.markAsUnread}>
             <span>
-              <i className="fa fa-circle" />&nbsp;Mark unread
+              <i className="fa fa-circle" />&nbsp;Unread
             </span>
           </MenuItem>
 
-          {message.type === "upload" &&
+          {message.type === "upload" && (
             <MenuItem target="_blank" href={message.fields.url}>
               <span>
                 <i className="fa fa-download" />&nbsp;Download
               </span>
-            </MenuItem>}
+            </MenuItem>
+          )}
 
-          {mine &&
+          {mine && (
             <MenuItem onClick={this.edit}>
               <span>
                 <i className="fa fa-pencil" />&nbsp;Edit
               </span>
-            </MenuItem>}
+            </MenuItem>
+          )}
 
-          {mine &&
+          {mine && (
             <MenuItem onClick={this.delete}>
               <span>
                 <i className="fa fa-trash" />&nbsp;Delete
               </span>
-            </MenuItem>}
+            </MenuItem>
+          )}
 
           <CopyToClipboard text={message.text_content} onCopy={this.copy}>
             <MenuItem>
@@ -233,7 +250,10 @@ class Message extends Component {
     const { message, messageStore } = this.props;
     const { user, inserted_at: timestamp } = message;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
-    const elementClassName = cx("message", { selected: this.state.selected, highlight: highlightId === message.id });
+    const elementClassName = cx("message", {
+      selected: this.state.selected,
+      highlight: highlightId === message.id
+    });
     const containerClassName = cx("message-container", {
       mine: user.id === currentUser.id
     });
@@ -241,10 +261,11 @@ class Message extends Component {
     return (
       <div>
         {newMessageLineMessage &&
-          newMessageLineMessage.id === message.id &&
-          <Element name="newMessageBanner" className="new-message-banner">
-            <div className="banner-text">New Messages</div>
-          </Element>}
+          newMessageLineMessage.id === message.id && (
+            <Element name="newMessageBanner" className="new-message-banner">
+              <div className="banner-text">New Messages</div>
+            </Element>
+          )}
 
         <div
           className={containerClassName}
@@ -268,7 +289,10 @@ class Message extends Component {
 
                 <div
                   className="time"
-                  data-time={moment(timestamp).format("HH:mm A")}
+                  data-time={moment
+                    .utc(timestamp)
+                    .local()
+                    .format("hh:mm A")}
                 >
                   {this.renderActions(message)}
                 </div>
@@ -277,7 +301,7 @@ class Message extends Component {
                 {this.renderPin(message)}
               </div>
 
-              <div>
+              <div className="message-content-wrapper">
                 <MessageContent message={message} />
                 {this.renderEdited(message)}
               </div>

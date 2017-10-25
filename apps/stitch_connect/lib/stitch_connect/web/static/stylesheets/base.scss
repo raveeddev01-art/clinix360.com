@@ -18,9 +18,12 @@ html {
 
 body {
   line-height: 1.5;
-  font-family: "Lato", sans-serif;
+  font-family: "lato", sans-serif;
   font-size: 14px;
   background: $body-bg;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   // overflow-y: hidden;
   // overflow-x: hidden;
 }
@@ -30,11 +33,6 @@ a,
   &:hover {
     cursor: pointer;
   }
-}
-
-#root {
-  height: 100%;
-  overflow: auto;
 }
 
 .text-muted {
@@ -48,6 +46,16 @@ a,
 .btn {
   border-radius: 3px;
   outline: none;
+
+  &:active,
+  &:focus,
+  &:active:focus {
+    outline: none;
+  }
+}
+
+.btn-xs {
+  padding: 3px 8px;
 }
 
 .btn-lg {
@@ -65,10 +73,21 @@ a,
   background: $brand-primary;
   border-color: $brand-primary;
 
+  &:active,
+  &:focus,
+  &:active:focus {
+    background: $brand-primary;
+  }
+
   &:hover {
     background: darken($brand-primary, 5%);
     border-color: darken($brand-primary, 5%);
   }
+}
+
+.btn-primary[disabled]:hover {
+  background: $brand-primary;
+  border-color: $brand-primary;
 }
 
 .form-control,
@@ -206,17 +225,30 @@ hr {
 .dropdown-menu > div > li > a:focus {
   text-decoration: none;
   color: #fff;
-  background: #036;
+  background: $brand-primary;
 }
 
 .modal-dialog {
   width: 100%;
+  height: 100%;
   max-width: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
 
   .modal-content {
     border: 0;
     border-radius: 3px;
     box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.15);
+    width: 100%;
+
+    .btn {
+      &:active {
+        position: relative;
+        top: 3px;
+      }
+    }
 
     .modal-header {
       color: #fff;
@@ -240,6 +272,7 @@ hr {
 
     .modal-body {
       padding: 25px;
+      min-height: 300px;
 
       h5 {
         font-size: 15px;
@@ -248,6 +281,23 @@ hr {
       }
 
       .form-group {
+        .form-control {
+          border-radius: 6px;
+        }
+
+        .control-label {
+          &.optional {
+            padding-top: 3px;
+            line-height: 18px;
+
+            span {
+              font-size: 14px;
+              color: #9e9ea6;
+              font-weight: normal;
+            }
+          }
+        }
+
         .help-block {
           font-size: 13px;
 
@@ -259,6 +309,7 @@ hr {
 
       label {
         font-size: 16px;
+        color: #333;
       }
 
       .team-heading {
@@ -295,22 +346,9 @@ hr {
           border-radius: 3px;
           position: relative;
         }
-      }
 
-      .invite-forms .form-group {
-        margin-bottom: 10px;
-
-        .col-sm-1 {
-          padding-left: 0;
-
-          i.fa {
-            display: none;
-            font-size: 20px;
-          }
-        }
-
-        &:hover i.fa {
-          display: block;
+        &:first-of-type {
+          margin-top: 0;
         }
       }
     }
@@ -318,8 +356,11 @@ hr {
     .modal-footer {
       border-radius: 0 0 3px 3px;
       border-top: 0;
-      padding: 0 25px 25px;
+      padding: 0 25px 20px 25px;
 
+      .btn {
+        min-width: 90px;
+      }
       .btn-lg {
         padding: 8px 20px;
       }

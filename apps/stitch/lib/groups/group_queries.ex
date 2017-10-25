@@ -35,6 +35,7 @@ defmodule Stitch.GroupQueries do
       group: g,
       joined: not is_nil(gu.id),
       favorite: not is_nil(gu.id) and gu.is_favorite,
+      is_hidden: not is_nil(gu.id) and gu.is_hidden,
       unread_messages_count: gu.unread_messages_count,
       mentions_count: gu.mentions_count,
       last_read_at: type(fragment("COALESCE(?, ?)", gu.last_read_at, gu.inserted_at), :naive_datetime),
@@ -63,7 +64,7 @@ defmodule Stitch.GroupQueries do
     |> load_groups_for_user(user_id)
     |> List.first
 
-    if group, do: {:ok, group}, else: {:error, "Group with that id not found."}
+    if group, do: {:ok, group}, else: {:error, "Room with that id not found."}
   end
   def get_by_id(id, user_id), do: get_by_id(id, Repo.get!(User, user_id))
 
@@ -78,9 +79,8 @@ defmodule Stitch.GroupQueries do
     |> load_groups_for_user(user_id)
     |> List.first
 
-    if group, do: {:ok, group}, else: {:error, "Group with that slug not found."}
+    if group, do: {:ok, group}, else: {:error, "Room with that slug not found."}
   end
-  def find_by_slug(slug, user_id), do: find_by_slug(slug, Repo.get!(User, user_id))
 
   @doc """
   Returns a list of public groups for the user's team, and
@@ -112,11 +112,9 @@ defmodule Stitch.GroupQueries do
   """
   @spec default_group(User.t) :: Group.t
   def default_group(%User{team_id: team_id}) do
-    query =
-      from g in Group,
-      where: g.team_id == ^team_id,
-      order_by: [asc: g.inserted_at],
-      limit: 1
-    Repo.one(query)
+    Group
+    |> where(team_id: ^team_id)
+    |> where(is_default: ^true)
+    |> Repo.one
   end
 end

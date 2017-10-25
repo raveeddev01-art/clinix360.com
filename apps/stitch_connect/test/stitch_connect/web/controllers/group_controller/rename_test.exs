@@ -36,4 +36,15 @@ defmodule StitchConnect.Web.GroupController.RenameTest do
 
     assert %{"message" => "Name has to be unique"} = json
   end
+
+  test "doesn't allow to rename group from another team", %{conn: conn} do
+    group = insert(:group)
+
+    json =
+      conn
+      |> patch(api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
+      |> json_response(401)
+
+    assert %{"message" => "Not authorized to rename this room"} = json
+  end
 end

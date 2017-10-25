@@ -1,12 +1,14 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Repo, Group, GroupAuthorization,
+  alias Stitch.{Repo, Group, GroupAuthorization, GroupQueries,
                 Message, MessageAction, MessageQueries}
   alias StitchConnect.Web.{Endpoint, EventsChannel}
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
-    case GroupAuthorization.can_view?(group_id, user.id) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case GroupAuthorization.can_view?(group, user) do
       true ->
         opts =
           params
@@ -26,7 +28,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You can't see the messages for this group."})
+        |> json(%{message: "You can't see the messages for this room."})
     end
   end
 
@@ -49,8 +51,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         active_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
         case Message.create(group.id, user, message_params, active_user_ids) do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
-            message = MessageQueries.load_info(message)
-
+            message = message |> MessageQueries.load_info
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
 
@@ -65,7 +66,29 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You can't see the messages for this group."})
+        |> json(%{message: "You can't see the messages for this room."})
+    end
+  end
+
+  def download(conn, %{"id" => message_id}) do
+    message = MessageQueries.get_by_id(message_id)
+
+    case GroupAuthorization.can_view?(message.group, conn.assigns.current_user) do
+      true ->
+        case StitchConnect.Upload.presign(message) do
+          {:ok, presigned_url} ->
+            conn
+            |> json(%{presigned_url: presigned_url})
+          :error ->
+            conn
+            |> put_status(:unauthorized)
+            |> json(%{message: "Not found"})
+        end
+
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not found"})
     end
   end
 
@@ -116,9 +139,10 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def toggle_star(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
+    group = GroupQueries.get_by_id(message.group_id)
     user = conn.assigns.current_user
 
-    case GroupAuthorization.can_view?(message.group_id, user.id) do
+    case GroupAuthorization.can_view?(group, user) do
       true ->
         case MessageAction.toggle_star(message, user) do
           {:ok, result, _changeset} ->
@@ -134,7 +158,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You can't star messages belonging to this group."})
+        |> json(%{message: "You can't star messages belonging to this room."})
     end
   end
 
@@ -156,7 +180,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       false ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{message: "You can't pin messages belonging to this group."})
+        |> json(%{message: "You can't pin messages belonging to this room."})
     end
   end
 end

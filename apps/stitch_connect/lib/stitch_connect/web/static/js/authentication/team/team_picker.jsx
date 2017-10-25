@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 import { Link } from "react-router-dom";
 
 import Alert from "react-bootstrap/lib/Alert";
@@ -8,15 +9,19 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@inject("titleStore")
 export default class TeamPicker extends Component {
-  constructor(props) {
-    super();
+  constructor(...args) {
+    super(...args);
     this.state = {
       team_name: "",
       teamExists: false
     };
+  }
+
+  componentWillMount() {
+    this.props.titleStore.setPageName("Sign In");
   }
 
   handleChange = event => {
@@ -60,7 +65,7 @@ export default class TeamPicker extends Component {
                   placement="top"
                   overlay={<Tooltip id="close">Close</Tooltip>}
                 >
-                  <Link to="/">
+                  <Link to="/getstarted">
                     <i className="fa fa-times" />
                   </Link>
                 </OverlayTrigger>

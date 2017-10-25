@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Provider } from "mobx-react";
 
 import Welcome from "./wizard-steps/welcome";
@@ -7,15 +8,15 @@ import LastName from "./wizard-steps/last_name";
 import Username from "./wizard-steps/username";
 import Password from "./wizard-steps/password";
 import Pin from "./wizard-steps/pin";
-
 import invitationStore from "./stores/invitation_store";
+
 const stores = { invitationStore };
 const stepList = [Welcome, FirstName, LastName, Username, Password, Pin];
 
 class Invitation extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
+
     this.state = {
       step: 0
     };
@@ -55,12 +56,16 @@ class Invitation extends Component {
   render() {
     return (
       <Provider {...stores}>
-        <div className="authentication-wrapper">
-          {this._renderStep()}
-        </div>
+        <div className="authentication-wrapper">{this._renderStep()}</div>
       </Provider>
     );
   }
 }
+
+Invitation.propTypes = {
+  teamName: PropTypes.string.isRequired,
+  subdomain: PropTypes.string.isRequired,
+  inviteToken: PropTypes.string.isRequired
+};
 
 export default Invitation;

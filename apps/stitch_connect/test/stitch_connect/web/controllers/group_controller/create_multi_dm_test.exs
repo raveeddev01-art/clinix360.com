@@ -81,16 +81,15 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
   end
 
   test "when DM with the same user IDs exists", %{conn: conn, bob: bob, joe: joe, sam: sam} do
-    %{"id" => group_id} =
-      conn
-      |> post(api_v1_group_path(conn, :create_multi_dm), %{"user_ids" => [bob.id, joe.id, sam.id]})
-      |> json_response(200)
+    {:ok, group} = Stitch.Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
+    {:ok, _group_user} = Stitch.Group.hide(group, bob.id)
 
     json =
       conn
       |> post(api_v1_group_path(conn, :create_multi_dm), %{"user_ids" => [bob.id, joe.id, sam.id]})
       |> json_response(200)
 
+    group_id = group.id
     expected_slug = "__dm:#{bob.id}.#{joe.id}.#{sam.id}"
 
     assert %{
@@ -99,6 +98,7 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
       "slug" => ^expected_slug,
       "public" => false,
       "favorite" => false,
+      "is_hidden" => false,
       "description" => nil,
       "joined" => true,
       "users" => [_, _, _],

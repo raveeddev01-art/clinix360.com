@@ -12,6 +12,14 @@ defmodule Stitch.Team.OnboardingTest do
       assert result == true
     end
 
+    test "returns false if team slug is reserved word" do
+      result = Stitch.Team.Onboarding.slug_available?("www")
+      assert result == false
+
+      result = Stitch.Team.Onboarding.slug_available?("admin")
+      assert result == false
+    end
+
     test "returns false if team name is not available" do
       insert(:team, %{name: "Care Clinic", slug: "care-clinic"})
       result = Stitch.Team.Onboarding.slug_available?("care clinic")
@@ -36,12 +44,19 @@ defmodule Stitch.Team.OnboardingTest do
       assert team.slug == "care-clinic-12"
       assert Enum.count(groups) == 1
       assert Enum.at(groups, 0).name == "General"
+      assert Enum.at(groups, 0).is_default
     end
 
     test "it returns an error given a name for an existing team" do
       insert(:team, %{name: "A Team", slug: "a-team"})
       {:error, message} = Stitch.Team.Onboarding.create_team("A new team", "a-team")
       assert message == "Team wasn't created"
+    end
+
+    test "configures the team with a trial subscription" do
+      team = Stitch.Team.Onboarding.create_team("Care Clinic", "care-clinic-12")
+      assert subscription = Stitch.Repo.get_by(Stitch.Billing.Subscription, team_id: team.id)
+      assert subscription.tier == "TRIAL"
     end
   end
 end

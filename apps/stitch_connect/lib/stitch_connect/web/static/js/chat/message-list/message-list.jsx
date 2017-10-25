@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Link, Element } from "react-scroll";
 
+import WelcomeMessage from "./welcome-message";
 import Message from "./message";
+import SystemMessage from "./system-message";
 import DateSeparator from "./date-separator";
 
 @inject("messageStore")
@@ -45,19 +47,27 @@ class MessageList extends Component {
           this.chatDiv = div;
         }}
       >
-        {messageStore.isLoadingPast &&
-          <div className="loading-message">Loading messages...</div>}
+        {messageStore.loadedAll && <WelcomeMessage />}
+        {messageStore.isLoadingPast && (
+          <div className="loading-message">Loading messages...</div>
+        )}
 
-        {Object.keys(messagesByDate).map(date =>
+        {Object.keys(messagesByDate).map(date => (
           <div key={`${date}`}>
             <DateSeparator timestamp={date} />
-            {messagesByDate[date].map(message =>
-              <Message key={`msg_${message.id}`} message={message} />
+            {messagesByDate[date].map(
+              message =>
+                message.type === "system" ? (
+                  <SystemMessage key={`msg_${message.id}`} message={message} />
+                ) : (
+                  <Message key={`msg_${message.id}`} message={message} />
+                )
             )}
           </div>
+        ))}
+        {messageStore.isLoadingRecent && (
+          <div className="loading-message">Loading recent messages...</div>
         )}
-        {messageStore.isLoadingRecent &&
-          <div className="loading-message">Loading recent messages...</div>}
         <Element name="topPosition" className="topPosition" />
         <div className="bottomPositionWrapper">
           {/* react-scroll only checks for top position, so, to check bottom pos, it should take 100vh */}

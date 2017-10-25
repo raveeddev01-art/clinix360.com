@@ -19,7 +19,7 @@ class FilesStore {
 
   @action
   loadMore() {
-    if (!this.hasMore) {
+    if (this.loading || !this.hasMore) {
       return;
     }
 
@@ -36,7 +36,7 @@ class FilesStore {
       const { data, meta } = response.data;
 
       this.files = this.files.concat(data);
-      this.hasMore = meta.count === meta.limit;
+      this.hasMore = this.files.length < meta.count;
     });
   }
 }

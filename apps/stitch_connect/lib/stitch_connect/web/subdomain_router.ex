@@ -1,5 +1,7 @@
 defmodule StitchConnect.Web.SubdomainRouter do
   use StitchConnect.Web, :router
+  use Plug.ErrorHandler
+  use Sentry.Plug
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -62,16 +64,19 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/groups/:group_id/messages", MessageController, :create
     put "/messages/:id", MessageController, :update
     delete "/messages/:id", MessageController, :delete
+    get "/messages/:id/download", MessageController, :download
     post "/messages/:id/toggle-star", MessageController, :toggle_star
     post "/messages/:id/toggle-pin", MessageController, :toggle_pin
     post "/messages/search", MessageController, :search
 
     get "/starred_messages", StarredMessageController, :index
+    get "/pinned_messages", PinnedMessageController, :index
     get "/mentions", MentionController, :index
 
     get "/users/", UserController, :index
     get "/users/notification-preference", NotificationPreferenceController, :show_global
     put "/users/notification-preference", NotificationPreferenceController, :update_global
+    get "/users/:id", UserController, :show
     put "/users/:id", UserController, :update
     post "/users/search", UserController, :search
 
@@ -93,6 +98,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/groups/:id/leave", GroupController, :leave
     get "/groups/:id/users", GroupController, :users
     patch "/groups/:id/rename", GroupController, :rename
+    put "/groups/:id/hide", GroupController, :hide
 
     get "/groups/:group_id/notification-preference", NotificationPreferenceController, :show
     put "/groups/:group_id/notification-preference", NotificationPreferenceController, :update
@@ -128,7 +134,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api_auth
 
-    get "/users/:id", UserController, :show
     put "/users/:id/update_password", UserController, :update_password
     put "/users/:id/avatar", UserController, :update_avatar
     delete "/users/:id/avatar", UserController, :delete_avatar
@@ -164,6 +169,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/rooms/:slug", GroupController, :index
     get "/direct/:username", UserController, :index
+    get "/messages/:id/download", MessageController, :download
 
     get "/admin/team", AdminController, :index
     get "/admin/team/settings", AdminController, :index

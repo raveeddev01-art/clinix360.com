@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 import { withRouter } from "react-router";
 
+import ReconnectionAlert from "./reconnection-alert";
 import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
@@ -30,20 +31,20 @@ class Chat extends Component {
     if (params.slug) {
       groupStore.joinGroup(params.slug);
     } else if (params.usernames) {
-      const usernames = params.usernames.split(",");
       const users = sidemenuStore.users;
-
-      if (usernames.length === 1) {
-        const user = users.find(u => u.username === usernames[0]);
-        groupStore.joinSingleDM(user);
-      } else {
+      let usernames = params.usernames.split(",");
+      if (usernames.length > 1) {
+        usernames = usernames.filter(
+          username => username !== currentUser.username
+        );
         const dmUsers = usernames.map(username =>
           users.find(u => u.username === username)
         );
-        groupStore.joinMultiDM(dmUsers);
+        groupStore.joinMultiDM(dmUsers).then(() => sidemenuStore.loadGroups());
+      } else {
+        const user = users.find(u => u.username === usernames[0]);
+        groupStore.joinSingleDM(user).then(() => sidemenuStore.loadGroups());
       }
-    } else {
-      groupStore.joinGroup("general");
     }
   }
 
@@ -61,6 +62,7 @@ class Chat extends Component {
         </Helmet>
         <div id="main">
           <TopNav />
+          <ReconnectionAlert />
           <div className="flex-content">
             <MessagePanel />
             <Addons />

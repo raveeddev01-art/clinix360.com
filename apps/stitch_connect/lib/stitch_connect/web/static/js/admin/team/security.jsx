@@ -1,15 +1,19 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 import { Panel, Tabs, Tab } from "react-bootstrap";
 import TeamExport from "./export";
 import TeamHipaa from "./hipaa";
 
 const header = (
-  <h1><i className="fa fa-shield"></i> Security</h1>
+  <h1>
+    <i className="fa fa-shield" /> Security
+  </h1>
 );
 
-export default class TeamSecurity extends Component {
-  constructor(props) {
-    super(props);
+@inject("titleStore")
+class TeamSecurity extends Component {
+  componentWillMount() {
+    this.props.titleStore.setPageName("Security");
   }
 
   render() {
@@ -27,3 +31,5 @@ export default class TeamSecurity extends Component {
     );
   }
 }
+
+export default TeamSecurity;

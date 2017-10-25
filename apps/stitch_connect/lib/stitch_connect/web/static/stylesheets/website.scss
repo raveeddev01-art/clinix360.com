@@ -1,0 +1,140 @@
+.landing-hero {
+  color: #fff;
+  background: #003366;
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 44px 0;
+
+    .brand {
+      img {
+        width: 81px;
+      }
+    }
+
+    .nav-items {
+      flex-grow: 1;
+
+      a {
+        display: block;
+        color: #fff;
+        border-radius: 4px;
+        padding: 7px 15px;
+        @media (min-width: 768px) {
+          font-size: 16px;
+        }
+
+        &:hover {
+          text-decoration: none;
+        }
+
+        &.btn-outline {
+          border: 2px solid #fff;
+          @media (min-width: 768) {
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+  }
+
+  .landing-message {
+    max-width: 570px;
+    padding: 10px 0 100px;
+    margin: 0 auto;
+
+    h1 {
+      font-size: 28px;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+      margin: 20px 0;
+      @media (min-width: 768px) {
+        font-size: 42px;
+        margin: 40px 0;
+      }
+    }
+
+    h3 {
+      font-size: 16px;
+      line-height: 1.5;
+      text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+      margin: 0 0 50px;
+      @media (min-width: 768px) {
+        font-size: 24px;
+      }
+    }
+
+    .flex-form {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 30px;
+
+      .form-input {
+        flex-grow: 1;
+        margin-right: 15px;
+
+        .form-control {
+          height: 40px;
+          border: 0;
+          border-radius: 4px;
+        }
+      }
+
+      .btn {
+        font-size: 16px;
+        border: 0;
+        border-radius: 4px;
+        padding: 7px 20px;
+      }
+    }
+  }
+
+  .trial {
+    font-size: 13px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    @media (min-width: 768px) {
+      font-size: 15px;
+    }
+  }
+}
+
+.our-customers {
+  padding: 50px 0;
+
+  h3 {
+    color: #003366;
+    font-size: 18px;
+    line-height: 1.75;
+    margin: 0 0 30px;
+    @media (min-width: 768px) {
+      font-size: 24px;
+    }
+  }
+
+  .logo-row {
+    margin-bottom: 10px;
+
+    @media (min-width: 1200px) {
+      .col-lg-5ths {
+        width: 20%;
+        float: left;
+      }
+    }
+
+    img {
+      max-width: 100%;
+      margin: 12px 0;
+      filter: grayscale(100%);
+      transition: 300ms;
+      @media (min-width: 576px) {
+        max-width: 150px;
+      }
+
+      &:hover {
+        filter: grayscale(0);
+      }
+    }
+  }
+}

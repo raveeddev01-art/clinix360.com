@@ -9,23 +9,30 @@ defmodule Stitch.GroupAuthorizationTest do
   describe "Stitch.GroupAuthorization.can_view?/2" do
     test "returns true public groups" do
       user = insert(:user)
-      group = insert(:group)
-      result = Stitch.GroupAuthorization.can_view?(group.id, user.id)
+      group = insert(:group, team: user.team)
+      result = Stitch.GroupAuthorization.can_view?(group, user)
       assert result == true
     end
 
     test "return true for groups he belongs to" do
       user = insert(:user)
-      group = insert(:group)
+      group = insert(:group, team: user.team)
       insert(:group_user, %{user: user, group: group})
-      result = Stitch.GroupAuthorization.can_view?(group.id, user.id)
+      result = Stitch.GroupAuthorization.can_view?(group, user)
       assert result == true
     end
 
     test "returns false for private groups he doesn't belong to" do
       user = insert(:user)
-      group = insert(:group, %{public: false})
-      result = Stitch.GroupAuthorization.can_view?(group.id, user.id)
+      group = insert(:group, team: user.team, public: false)
+      result = Stitch.GroupAuthorization.can_view?(group, user)
+      assert result == false
+    end
+
+    test "returns false for public groups belinging to another team" do
+      user = insert(:user)
+      group = insert(:group, public: true)
+      result = Stitch.GroupAuthorization.can_view?(group, user)
       assert result == false
     end
   end
@@ -33,7 +40,7 @@ defmodule Stitch.GroupAuthorizationTest do
   describe "Stitch.GroupAuthorization.is_member?2" do
     test "returns true if user is member" do
       user = insert(:user)
-      group = insert(:group)
+      group = insert(:group, team: user.team)
       insert(:group_user, %{user: user, group: group})
       result = Stitch.GroupAuthorization.is_member?(group.id, user.id)
       assert result == true
@@ -41,7 +48,7 @@ defmodule Stitch.GroupAuthorizationTest do
 
     test "returns false if user isn't member" do
       user = insert(:user)
-      group = insert(:group)
+      group = insert(:group, team: user.team)
       result = Stitch.GroupAuthorization.is_member?(group.id, user.id)
       assert result == false
     end
@@ -49,53 +56,67 @@ defmodule Stitch.GroupAuthorizationTest do
 
   describe "Stitch.GroupAuthorization.can_invite?/2" do
     test "returns true for admin users" do
-      group = insert(:group, %{public: false})
       user = insert(:user, %{roles: ["admin"]})
-      result = Stitch.GroupAuthorization.can_invite?(group.id, user.id)
+      group = insert(:group, team: user.team, public: false)
+      result = Stitch.GroupAuthorization.can_invite?(group, user)
       assert result == true
     end
 
     test "returns true for public groups" do
-      group = insert(:group, %{public: true})
       user = insert(:user, %{roles: ["member"]})
-      result = Stitch.GroupAuthorization.can_invite?(group.id, user.id)
+      group = insert(:group, team: user.team, public: true)
+      result = Stitch.GroupAuthorization.can_invite?(group, user)
       assert result == true
     end
 
     test "returns true for private groups for group creator" do
       user = insert(:user, %{roles: ["member"]})
-      group = insert(:group, %{public: false, creator: user})
-      result = Stitch.GroupAuthorization.can_invite?(group.id, user.id)
+      group = insert(:group, team: user.team, public: false, creator: user)
+      result = Stitch.GroupAuthorization.can_invite?(group, user)
       assert result == true
     end
 
     test "returns false for private groups" do
       user = insert(:user, %{roles: ["member"]})
-      group = insert(:group, %{public: false})
-      result = Stitch.GroupAuthorization.can_invite?(group.id, user.id)
+      group = insert(:group, team: user.team, public: false)
+      result = Stitch.GroupAuthorization.can_invite?(group, user)
+      assert result == false
+    end
+
+    test "returns false for group belinging to another team" do
+      user = insert(:user, %{roles: ["admin"]})
+      group = insert(:group, public: false)
+      result = Stitch.GroupAuthorization.can_invite?(group, user)
       assert result == false
     end
   end
 
   describe "Stitch.GroupAuthorization.can_toggle_public?/2" do
     test "returns true for admin users" do
-      group = insert(:group, %{public: false})
-      user = insert(:user, %{roles: ["admin"]})
-      result = Stitch.GroupAuthorization.can_toggle_public?(group.id, user.id)
+      user = insert(:user, roles: ["admin"])
+      group = insert(:group, team: user.team, public: false)
+      result = Stitch.GroupAuthorization.can_toggle_public?(group, user)
       assert result == true
     end
 
     test "returns true for private groups for group creator" do
       user = insert(:user, %{roles: ["member"]})
-      group = insert(:group, %{public: false, creator: user})
-      result = Stitch.GroupAuthorization.can_toggle_public?(group.id, user.id)
+      group = insert(:group, team: user.team, public: false, creator: user)
+      result = Stitch.GroupAuthorization.can_toggle_public?(group, user)
       assert result == true
     end
 
     test "returns false for regular users" do
       user = insert(:user, %{roles: ["member"]})
-      group = insert(:group, %{public: false})
-      result = Stitch.GroupAuthorization.can_toggle_public?(group.id, user.id)
+      group = insert(:group, team: user.team, public: false)
+      result = Stitch.GroupAuthorization.can_toggle_public?(group, user)
+      assert result == false
+    end
+
+    test "returns false for groups belonging to another team" do
+      user = insert(:user, roles: ["admin"])
+      group = insert(:group, public: false)
+      result = Stitch.GroupAuthorization.can_toggle_public?(group, user)
       assert result == false
     end
   end

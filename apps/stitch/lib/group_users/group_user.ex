@@ -8,6 +8,7 @@ defmodule Stitch.GroupUser do
     belongs_to :group, Group
     belongs_to :user, Accounts.User
     field :is_favorite, :boolean, default: false
+    field :is_hidden, :boolean, default: false
     field :desktop_notification_preference, :string, default: "default"
     field :mobile_notification_preference, :string, default: "default"
     field :unread_messages_count, :integer, default: 0
@@ -23,7 +24,7 @@ defmodule Stitch.GroupUser do
     |> validate_required([:group_id, :user_id])
     |> validate_inclusion(:desktop_notification_preference, ["everything", "mentions", "nothing", "default"])
     |> validate_inclusion(:mobile_notification_preference, ["everything", "mentions", "nothing", "default"])
-    |> unique_constraint(:user_id, name: :group_users_group_user_id_unique_index, message: "User is already part of group")
+    |> unique_constraint(:user_id, name: :group_users_group_user_id_unique_index, message: "User is already part of room")
   end
 
   def preference_changeset(%GroupUser{} = struct, params) do

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Route, withRouter } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Dropzone from "react-dropzone";
 
 import Sidemenu from "../sidemenu/sidemenu";
@@ -8,7 +8,7 @@ import Chat from "./chat";
 import BrowserNotificationAlert from "./browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
 
-@inject("uploadStore")
+@inject("uploadStore", "sidemenuStore")
 @observer
 class ChatApp extends Component {
   constructor(props) {
@@ -17,6 +17,12 @@ class ChatApp extends Component {
     this.state = {
       dropzoneActive: false
     };
+  }
+
+  componentDidMount() {
+    const { sidemenuStore, history } = this.props;
+
+    sidemenuStore.setHistory(history);
   }
 
   onDragEnter = () => {
@@ -63,11 +69,13 @@ class ChatApp extends Component {
         )}
         <UploadModal />
         <BrowserNotificationAlert />
-        <div className="appContainer">
+        <div className="app-container">
           <Sidemenu />
-          <Route exact path={`/`} component={Chat} />
-          <Route path={`/rooms/:slug`} component={Chat} />
-          <Route path={`/direct/:usernames`} component={Chat} />
+          <Switch>
+            <Route path={`/rooms/:slug`} component={Chat} />
+            <Route path={`/direct/:usernames`} component={Chat} />
+            <Route component={() => <Redirect to="/rooms/general" />} />
+          </Switch>
         </div>
       </Dropzone>
     );
