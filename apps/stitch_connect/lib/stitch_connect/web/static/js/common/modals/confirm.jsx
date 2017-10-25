@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
@@ -14,7 +15,7 @@ const Confirm = ({
   dismiss,
   cancel,
   enableEscape
-}) =>
+}) => (
   <Modal
     show={show}
     onHide={dismiss}
@@ -22,17 +23,13 @@ const Confirm = ({
     keyboard={enableEscape}
   >
     <Modal.Header>
-      <Modal.Title>
-        {title}
-      </Modal.Title>
+      <Modal.Title>{title}</Modal.Title>
       <a role="button" onClick={dismiss}>
         <i className="fa fa-close" />
       </a>
     </Modal.Header>
     <Modal.Body>
-      <h5>
-        {message}
-      </h5>
+      <h5>{message}</h5>
     </Modal.Body>
     <Modal.Footer>
       <Button bsSize="large" onClick={cancel}>
@@ -42,7 +39,8 @@ const Confirm = ({
         {okLabel}
       </Button>
     </Modal.Footer>
-  </Modal>;
+  </Modal>
+);
 
 Confirm.defaultProps = {
   okLabel: "OK",
