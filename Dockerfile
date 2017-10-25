@@ -43,7 +43,7 @@ RUN mix compile
 ADD . .
 WORKDIR /app/apps/stitch_connect
 RUN apt-get update
-RUN curl -sL https://deb.nodesource.com/setup_8.x | -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get install -y nodejs
 RUN apt-get install -y npm
 RUN npm install -g yarn
