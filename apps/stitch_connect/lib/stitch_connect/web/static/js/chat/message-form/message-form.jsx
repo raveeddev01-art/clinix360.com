@@ -41,7 +41,14 @@ class MessageForm extends Component {
     }
 
     if (evt.keyCode === 13) {
-      if (!openMentionMenu && !openEmojiSearch) {
+      if (
+        (evt.altKey && !evt.ctrlKey && !evt.shiftKey) ||
+        (!evt.altKey && evt.ctrlKey && !evt.shiftKey) ||
+        (!evt.altKey && !evt.ctrlKey && evt.shiftKey)
+      ) {
+        this.newLine();
+        evt.preventDefault();
+      } else if (!openMentionMenu && !openEmojiSearch) {
         this.onEnter();
       }
     }
@@ -213,6 +220,10 @@ class MessageForm extends Component {
       this.textInput.focus();
       this.textInput.setSelectionRange(newPos, newPos);
     });
+  };
+
+  newLine = () => {
+    this.updateInputText(this.state.text + "\n");
   };
 
   renderInput() {
