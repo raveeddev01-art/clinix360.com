@@ -2,160 +2,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   alias Stitch.{MessageQueries}
   import Phoenix.ChannelTest, except: [connect: 2]
-
-  test "POST /api/v1/messages/:id/toggle-star", %{conn: conn} do
-    user = insert(:user)
-    message = insert(:message, user: user)
-    team = message.group.team
-
-    {:ok, socket} = connect_socket(%{user1: user})
-    {:ok, socket1: socket}
-    @endpoint.subscribe("events:#{user.id}")
-
-    conn = conn
-    |> subdomain(team.slug)
-    |> post_as_user(user, "/api/v1/messages/#{message.id}/toggle-star")
-
-    json = json_response(conn, 200)
-    assert json["starred"] == true
-
-    assert_broadcast "message_starred", %{id: message_id, starred: true}
-    assert message_id == message.id
-
-    conn = conn
-    |> recycle()
-    |> subdomain(team.slug)
-    |> post_as_user(user, "/api/v1/messages/#{message.id}/toggle-star")
-
-    assert_broadcast "message_starred", %{id: message_id, starred: false}
-    assert message_id == message.id
-
-    json = json_response(conn, 200)
-    assert json["starred"] == false
-  end
-
-  test "POST /api/v1/messages/:id/toggle-pin", %{conn: conn} do
-    user = insert(:user)
-    message = insert(:message, user: user)
-    insert(:group_user, user: user, group: message.group)
-    team = message.group.team
-
-    conn = conn
-    |> subdomain(team.slug)
-    |> post_as_user(user, "/api/v1/messages/#{message.id}/toggle-pin")
-
-    json = json_response(conn, 200)
-    assert json["pinned"] == true
-    assert json["pinned_by"]["id"] == user.id
-    assert json["pinned_at"] != nil
-
-    conn = conn
-    |> recycle()
-    |> subdomain(team.slug)
-    |> post_as_user(user, "/api/v1/messages/#{message.id}/toggle-pin")
-
-    json = json_response(conn, 200)
-    assert json["pinned"] == false
-    assert json["pinned_by"] == nil
-    assert json["pinned_at"] == nil
-  end
-
-  describe "PUT /api/v1/messages/:id" do
-    test "user can edit his own text message", %{conn: conn} do
-      user = insert(:user)
-      message = insert(:message, user: user)
-      insert(:group_user, user: user, group: message.group)
-      team = message.group.team
-
-      @endpoint.subscribe("groups:#{message.group.slug}")
-
-      conn = conn
-      |> subdomain(team.slug)
-      |> put_as_user(user, "/api/v1/messages/#{message.id}", %{
-        message: %{
-          text_content: "new message text"
-        }
-      })
-
-      assert_broadcast "edit_msg", message
-      assert message.text_content == "new message text"
-
-      json = json_response(conn, 200)
-      assert json["text_content"] == "new message text"
-      assert json["edited"] == true
-      assert json["edited_at"] != nil
-      message = MessageQueries.get_by_id(message.id)
-      assert message.text_content == "new message text"
-      assert message.edited_at != nil
-    end
-
-    test "user can't edit other users' messages", %{conn: conn} do
-      user = insert(:user)
-      user_eve = insert(:user)
-      message = insert(:message, user: user)
-      insert(:group_user, user: user, group: message.group)
-      insert(:group_user, user: user_eve, group: message.group)
-      team = message.group.team
-
-      conn = conn
-      |> subdomain(team.slug)
-      |> put_as_user(user_eve, "/api/v1/messages/#{message.id}", %{
-        message: %{
-          text_content: "new message text"
-        }
-      })
-
-      json = json_response(conn, 401)
-      assert json["message"] == "You can't edit other users' messages"
-      message = MessageQueries.get_by_id(message.id)
-      assert message.text_content == "lorem ipsum"
-      assert message.edited_at == nil
-    end
-  end
-
-  describe "DELETE /api/v1/messages/:id" do
-    test "user can delete his own messages", %{conn: conn} do
-      user = insert(:user)
-      message = insert(:message, user: user)
-      user2 = insert(:user)
-      insert(:group_user, user: user, group: message.group)
-      insert(:group_user, user: user2, group: message.group)
-      team = message.group.team
-
-      @endpoint.subscribe("groups:#{message.group.slug}")
-      @endpoint.subscribe("events:#{user2.id}")
-
-      conn = conn
-      |> subdomain(team.slug)
-      |> delete_as_user(user, "/api/v1/messages/#{message.id}")
-
-      assert_broadcast "delete_msg", %{id: msg_id}
-      assert_broadcast "message_deleted", %{id: msg2_id}
-      assert msg_id == message.id
-      assert msg2_id == message.id
-
-      assert response(conn, 204)
-      message = MessageQueries.get_by_id(message.id)
-      assert message == nil
-    end
-
-    test "user can't delete other users' messages", %{conn: conn} do
-      user = insert(:user)
-      user_eve = insert(:user)
-      message = insert(:message, user: user)
-      insert(:group_user, user: user, group: message.group)
-      insert(:group_user, user: user_eve, group: message.group)
-      team = message.group.team
-
-      conn = conn
-      |> subdomain(team.slug)
-      |> delete_as_user(user_eve, "/api/v1/messages/#{message.id}")
-
-      json = json_response(conn, 401)
-      assert json["message"] == "You can't delete other users' messages"
-      assert MessageQueries.get_by_id(message.id) != nil
-    end
-  end
+  import StitchConnect.Web.SubdomainRouter.Helpers
 
   describe "POST /api/v1/groups/:group_id/messages" do
     test "default message with text", %{conn: conn} do
@@ -397,6 +244,27 @@ defmodule StitchConnect.Web.MessageControllerTest do
 
       assert Enum.map(json, &Map.fetch!(&1, "id")) ==
         latest_two_unskipped |> Enum.map(&Map.fetch!(&1, :id)) |> Enum.reverse
+    end
+
+    test "doesn't allow to view messages from another team's public group", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      _group_a = insert(:group, team: team)
+
+      group_b = insert(:group, public: true)
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_user_session(user)
+        |> with_api_user(user)
+
+      json =
+        conn
+        |> get(api_v1_message_path(conn, :index, group_b))
+        |> json_response(401)
+
+      assert %{"message" => "You can't see the messages for this room."} = json
     end
   end
 
