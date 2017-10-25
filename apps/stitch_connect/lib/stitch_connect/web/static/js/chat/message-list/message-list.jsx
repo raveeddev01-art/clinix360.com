@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Link, Element } from "react-scroll";
+import moment from "moment";
 
 import WelcomeMessage from "./welcome-message";
 import Message from "./message";
@@ -36,9 +37,33 @@ class MessageList extends Component {
     this.props.messageStore.onScrollBottomLeft();
   };
 
+  getCompiledDateMessages = () => {
+    const { messagesByDate } = this.props.messageStore;
+
+    Object.keys(messagesByDate).forEach(date => {
+      const messages = messagesByDate[date];
+      if (!messages || !messages.length) return;
+      let lastMessage = messages[0];
+      for (let i = 1; i < messages.length; i += 1) {
+        if (
+          messages[i].user.id === lastMessage.user.id &&
+          moment(messages[i].inserted_at).diff(
+            moment(lastMessage.inserted_at),
+            "seconds"
+          ) < 180
+        ) {
+          messages[i].is_sequential = true;
+        } else {
+          lastMessage = messages[i];
+        }
+      }
+    });
+    return messagesByDate;
+  };
+
   render() {
     const { messageStore } = this.props;
-    const { messagesByDate } = messageStore;
+    const messagesByDate = this.getCompiledDateMessages();
 
     return (
       <div

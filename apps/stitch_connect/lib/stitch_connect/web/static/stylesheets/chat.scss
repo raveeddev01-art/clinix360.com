@@ -623,6 +623,13 @@
       animation: highlightBubble 3s, fadeIn 3s;
     }
 
+    &.sequential {
+      margin-top: -16px;
+      .message-header {
+        display: none;
+      }
+    }
+
     .message-header {
       margin-bottom: 2px;
 

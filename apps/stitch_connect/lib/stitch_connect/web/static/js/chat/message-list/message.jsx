@@ -251,7 +251,8 @@ class Message extends Component {
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
     const elementClassName = cx("message", {
       selected: this.state.selected,
-      highlight: highlightId === message.id
+      highlight: highlightId === message.id,
+      sequential: message.is_sequential
     });
     const containerClassName = cx("message-container", {
       mine: user.id === currentUser.id
