@@ -40,18 +40,22 @@ RUN mix deps.get
 RUN mix compile
 
 # This actually adds the app
-ADD . .
+# Unnecessary; you've already run this above
+# ADD . .
 WORKDIR /app/apps/stitch_connect
 RUN apt-get update
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get install -y nodejs
-RUN apt-get install -y npm
+# RUN apt-get install -y npm
 RUN npm install -g yarn
-ADD . .
+
+# Unnecessary; you've already run this above
+# ADD . .
 RUN yarn
 RUN npm run deploy
 
-ADD . .
+# Unnecessary; you've already run this above
+# ADD . .
 
 # Obviates the need for a Procfile
 CMD ["mix", "phx.server"]
