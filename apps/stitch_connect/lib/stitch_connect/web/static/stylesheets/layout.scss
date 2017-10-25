@@ -1,11 +1,9 @@
 $sidebar_width: 270px;
 
-.appContainer {
-  flex-grow: 1;
-  display: block;
-  width: auto;
+#app {
+  display: flex;
+  flex-direction: column;
   min-width: 840px;
-  height: auto;
   position: fixed;
   left: 0;
   right: 0;
@@ -13,10 +11,16 @@ $sidebar_width: 270px;
   bottom: 0;
 }
 
+.app-container {
+  position: relative;
+  flex: 1;
+}
+
 #sidemenu,
 #main,
 #addons {
   position: relative;
+  display: flex;
   display: flex;
   flex-direction: column;
 }
