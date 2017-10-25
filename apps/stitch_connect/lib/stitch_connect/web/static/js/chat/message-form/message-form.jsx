@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
@@ -254,7 +255,7 @@ class MessageForm extends Component {
           autoFocus
           required
           ref={input => {
-            this.textInput = input;
+            this.textInput = ReactDOM.findDOMNode(input);
           }}
         />
         <div className="message-form-actions">
