@@ -59,9 +59,8 @@ class MessageForm extends Component {
 
   onEnter = () => {
     const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
 
-    if (messageInEdit) {
+    if (messageStore.messageInEdit) {
       if (!messageStore.textInEdit) {
         confirm({
           title: "Delete Message",
@@ -69,7 +68,7 @@ class MessageForm extends Component {
             "Are you sure you want to delete this message? This cannot be undone.",
           okLabel: "Delete"
         }).then(() => {
-          messageStore.delete(messageInEdit.id);
+          messageStore.delete(messageStore.messageInEdit.id);
           messageStore.finishEdit();
         });
       } else {
