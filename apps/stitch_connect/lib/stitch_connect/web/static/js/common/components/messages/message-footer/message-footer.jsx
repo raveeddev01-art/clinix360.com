@@ -1,5 +1,9 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject } from "mobx-react";
+import { NavLink } from "react-router-dom";
+
+import { getRoomNavLink } from "../../../../lib/room";
 
 @inject("sidemenuStore")
 class MessageFooter extends Component {
@@ -14,12 +18,16 @@ class MessageFooter extends Component {
 
     return (
       <div className="message-footer">
-        <a href={`/rooms/${group.slug}`}>
+        <NavLink to={getRoomNavLink(group)}>
           <i className="fa fa-tag" /> {group.name}
-        </a>
+        </NavLink>
       </div>
     );
   }
 }
+
+MessageFooter.propTypes = {
+  message: PropTypes.object.isRequired
+};
 
 export default MessageFooter;

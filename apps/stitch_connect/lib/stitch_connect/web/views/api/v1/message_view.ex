@@ -57,7 +57,6 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     })
   end
 
-  def put_preview_presigned_url(fields)
   def put_preview_presigned_url(%{"url" => url, "mimetype" => "image/" <> _image} = fields) do
     case StitchConnect.Upload.presign_url(url) do
       {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
