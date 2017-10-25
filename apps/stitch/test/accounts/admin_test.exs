@@ -1,16 +1,61 @@
 defmodule Stitch.Accounts.AdminTest do
-  use ExUnit.Case, async: true
-  import Stitch.Factory
+  use Stitch.DataCase, async: true
 
-  setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
+  describe "Stitch.Accounts.Admin.activate/2" do
+    setup do
+      team = insert(:team)
+      {:ok, team: team}
+    end
+
+    test "actives an active account", %{team: team} do
+      user = insert(:user, team: team, disabled: false)
+      {:ok, user} = Stitch.Accounts.Admin.activate(team, user.id)
+      refute user.disabled
+    end
+
+    test "actives a deactived account", %{team: team} do
+      user = insert(:user, team: team, disabled: false)
+      {:ok, user} = Stitch.Accounts.Admin.activate(team, user.id)
+      refute user.disabled
+    end
+
+    test "gives error when user isn't found", %{team: team} do
+      assert {:error, :not_found} == Stitch.Accounts.Admin.activate(team, -1)
+    end
+
+    test "gives errors when modifying users from other teams", %{team: team} do
+      other_team = insert(:team)
+      other_team_user = insert(:user, team: other_team)
+      assert {:error, :not_found} == Stitch.Accounts.Admin.activate(team, other_team_user.id)
+    end
   end
 
-  describe "Stitch.Accounts.Admin.deactivate/1" do
-    test "it deactivates the account" do
-      user = insert(:user, %{disabled: false})
-      {:ok, user} = Stitch.Accounts.Admin.deactivate(user.id)
+  describe "Stitch.Accounts.Admin.deactivate/2" do
+    setup do
+      team = insert(:team)
+      {:ok, team: team}
+    end
+
+    test "deactives an active account", %{team: team} do
+      user = insert(:user, team: team, disabled: false)
+      {:ok, user} = Stitch.Accounts.Admin.deactivate(team, user.id)
       assert user.disabled == true
+    end
+
+    test "deactives a deactived account", %{team: team} do
+      user = insert(:user, team: team, disabled: false)
+      {:ok, user} = Stitch.Accounts.Admin.deactivate(team, user.id)
+      assert user.disabled == true
+    end
+
+    test "gives error when user isn't found", %{team: team} do
+      assert {:error, :not_found} == Stitch.Accounts.Admin.deactivate(team, -1)
+    end
+
+    test "gives errors when modifying users from other teams", %{team: team} do
+      other_team = insert(:team)
+      other_team_user = insert(:user, team: other_team)
+      assert {:error, :not_found} == Stitch.Accounts.Admin.deactivate(team, other_team_user.id)
     end
   end
 
