@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 import Form from "react-bootstrap/lib/Form";
 import Card from "../card/card";
@@ -30,12 +30,7 @@ class OnboardCard extends Component {
 
   _renderDescription = () => {
     const { description } = this.props;
-    return (
-      description &&
-      <h5>
-        {description}
-      </h5>
-    );
+    return description && <h5>{description}</h5>;
   };
 
   _renderHeader = () => {

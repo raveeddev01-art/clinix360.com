@@ -1,14 +1,10 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 class Card extends Component {
   _renderDescription = () => {
     const { description } = this.props;
-    return (
-      description &&
-      <h5>
-        {description}
-      </h5>
-    );
+    return description && <h5>{description}</h5>;
   };
 
   render() {
@@ -16,9 +12,7 @@ class Card extends Component {
     return (
       <div className="authentication-card text-center">
         {header}
-        <h2>
-          {title}
-        </h2>
+        <h2>{title}</h2>
         {this._renderDescription()}
         {children}
         <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>

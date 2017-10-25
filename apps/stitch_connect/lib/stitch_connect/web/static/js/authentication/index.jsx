@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "mobx-react";
 import resetPasswordStore from "./stores/reset_password_store";

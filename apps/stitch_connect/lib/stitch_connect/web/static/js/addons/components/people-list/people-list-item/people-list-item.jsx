@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 class PeopleListItem extends Component {
   render() {
@@ -7,15 +8,15 @@ class PeopleListItem extends Component {
     return (
       <div className="people-list-item" onClick={onClick}>
         <div className="item-icon">
-          {online
-            ? <i className="fa fa-circle" />
-            : <i className="fa fa-circle-o" />}
+          {online ? (
+            <i className="fa fa-circle" />
+          ) : (
+            <i className="fa fa-circle-o" />
+          )}
         </div>
         <div className="item-text">
           <span>{`${first_name} ${last_name}`}</span>
-          <small>
-            {username}
-          </small>
+          <small>{username}</small>
         </div>
       </div>
     );
