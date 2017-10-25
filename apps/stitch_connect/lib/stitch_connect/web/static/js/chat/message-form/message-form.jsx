@@ -234,12 +234,17 @@ class MessageForm extends Component {
   };
 
   newLine = () => {
+    const { messageStore } = this.props;
+
     this.insertWord("\n");
 
     setTimeout(() => {
       // Ensure cursor is in viewport
       this.textInput.blur();
       this.textInput.focus();
+
+      // Keep message list's scroll at bottom if at bottom
+      messageStore.keepScrollAtBottom();
     });
   };
 
