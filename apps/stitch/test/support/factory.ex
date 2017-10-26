@@ -62,6 +62,12 @@ defmodule Stitch.Factory do
     }
   end
 
+  def export_factory do
+    %Stitch.Exports.Export{
+      team: build(:team),
+    }
+  end
+
   def mobile_device_factory do
     %Stitch.Mobile.Device{
       user: build(:user),

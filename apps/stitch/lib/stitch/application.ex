@@ -6,8 +6,12 @@ defmodule Stitch.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    Supervisor.start_link([
+    children = [
       supervisor(Stitch.Repo, []),
-    ], strategy: :one_for_one, name: Stitch.Supervisor)
+      supervisor(Task.Supervisor, [[name: Stitch.Exports.Supervisor]])
+    ]
+
+    opts = [strategy: :one_for_one, name: Stitch.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 end
