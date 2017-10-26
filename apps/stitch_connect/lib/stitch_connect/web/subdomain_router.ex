@@ -105,6 +105,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/uploads",           UploadController, :index
     post "/upload-signature", UploadController, :create
+
+    resources "/devices", DeviceController, only: [:create]
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do

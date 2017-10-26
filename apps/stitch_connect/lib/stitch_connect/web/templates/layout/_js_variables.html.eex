@@ -2,7 +2,7 @@
 applicationHost =
   case Application.fetch_env!(:stitch_connect, :env) do
     :prod ->
-      "teamstitchapp.com"
+      "teamstitch.com"
     _ ->
       "localhost:4443"
   end

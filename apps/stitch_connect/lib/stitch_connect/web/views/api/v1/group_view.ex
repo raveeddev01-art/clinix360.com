@@ -45,7 +45,11 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
   end
 
   defp group_name(%Group{name: "__multi_dm_group__", users: users}, user_id) do
-    users |> Enum.filter(& &1.id != user_id ) |> Enum.map(& &1.first_name ) |> Enum.join(", ")
+    users
+    |> Enum.filter(& &1.id != user_id )
+    |> Enum.sort(& &1.id <= &2.id)
+    |> Enum.map(& "#{&1.first_name} #{&1.last_name}" )
+    |> Enum.join(", ")
   end
 
   defp group_name(%Group{name: name}, _), do: name

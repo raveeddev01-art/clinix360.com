@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
+import SmartDropdown from "../../smart-dropdown/index";
 
 @inject("addonStore")
 @observer
@@ -28,7 +29,11 @@ class UserMention extends Component {
     const { username } = this.props.user;
 
     return (
-      <Dropdown id="user-mention" className="user-mention-dropdown">
+      <SmartDropdown
+        id="user-mention"
+        className="user-mention-dropdown"
+        pullRight
+      >
         <Dropdown.Toggle useAnchor noCaret>
           {`@${username}`}
         </Dropdown.Toggle>
@@ -39,7 +44,7 @@ class UserMention extends Component {
             Direct Messaging
           </MenuItem>
         </Dropdown.Menu>
-      </Dropdown>
+      </SmartDropdown>
     );
   }
 }

@@ -42,8 +42,8 @@ defmodule Stitch.Mixfile do
       {:timex, "~> 3.1"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:sentry, "~> 6.0.0"},
-      {:appsignal, "~> 1.3"},
-      {:stripity_stripe, "~> 1.6"}
+      {:stripity_stripe, "~> 1.6"},
+      {:appsignal, "~> 1.3"}
     ]
   end
 

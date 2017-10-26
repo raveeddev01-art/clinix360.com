@@ -67,4 +67,13 @@ defmodule Stitch.Factory do
       team: build(:team),
     }
   end
+
+  def mobile_device_factory do
+    %Stitch.Mobile.Device{
+      user: build(:user),
+      name: Faker.Lorem.words |> Enum.join(" "),
+      type: Enum.random(["ios", "android"]),
+      token: Faker.String.base64
+    }
+  end
 end

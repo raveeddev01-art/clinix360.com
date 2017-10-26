@@ -6,23 +6,32 @@ defmodule Stitch.Accounts.Admin do
 
   alias Stitch.Repo
   alias Stitch.Accounts.User
+  alias Stitch.Team
 
   @doc """
   Sets the disabled boolean flag to false for the provided user.
   """
-  def activate(user_id) do
-    Repo.get(User, user_id)
-    |> Ecto.Changeset.change(disabled: false)
-    |> Repo.update
+  def activate(%Team{id: team_id}, user_id) do
+    if user = Repo.get_by(User, team_id: team_id, id: user_id) do
+      user
+      |> Ecto.Changeset.change(disabled: false)
+      |> Repo.update
+    else
+      {:error, :not_found}
+    end
   end
 
   @doc """
   Sets the disabled boolean flag to true for the provided user.
   """
-  def deactivate(user_id) do
-    Repo.get(User, user_id)
-    |> Ecto.Changeset.change(disabled: true)
-    |> Repo.update
+  def deactivate(%Team{id: team_id}, user_id) do
+    if user = Repo.get_by(User, team_id: team_id, id: user_id) do
+      user
+      |> Ecto.Changeset.change(disabled: true)
+      |> Repo.update
+    else
+      {:error, :not_found}
+    end
   end
 
   @doc """

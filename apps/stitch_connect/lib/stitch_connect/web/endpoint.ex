@@ -41,11 +41,11 @@ defmodule StitchConnect.Web.Endpoint do
     key: "_stitch_connect_key",
     signing_salt: "o9McnPJj"
 
-  plug StitchConnect.Plug.Subdomain, StitchConnect.Web.SubdomainRouter
-  plug StitchConnect.Web.Router
-
   # Add AppSignal instrumentation
   use Appsignal.Phoenix
+
+  plug StitchConnect.Plug.Subdomain, StitchConnect.Web.SubdomainRouter
+  plug StitchConnect.Web.Router
 
   @doc """
   Dynamically loads configuration from the system environment

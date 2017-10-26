@@ -1,6 +1,7 @@
 import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
+import orderBy from "lodash/orderBy";
 
 class SidemenuStore {
   @observable sidemenuDiv = null; // Div element of sidemenu
@@ -137,7 +138,7 @@ class SidemenuStore {
   @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
-      this.groups = response.data;
+      this.groups = orderBy(response.data, ["name"]);
       this.updateFavicon();
     });
   };
