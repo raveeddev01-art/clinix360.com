@@ -1,10 +1,11 @@
 defmodule StitchConnect.Web.InvitationControllerTest do
-  use StitchConnect.Web.ConnCase
+  use StitchConnect.Web.ConnCase, async: true
   import Phoenix.ChannelTest, except: [connect: 2]
   import StitchConnect.Web.SubdomainRouter.Helpers
 
   setup %{conn: conn} do
-    team = insert(:team)
+    subscription = insert(:subscription)
+    team = subscription.team
     group = insert(:group, team: team, is_default: true)
     user = insert(:user, team: team)
     user_b = insert(:user, team: team)
@@ -14,7 +15,6 @@ defmodule StitchConnect.Web.InvitationControllerTest do
     conn =
       conn
       |> with_team_subdomain(team)
-      |> with_user_session(user)
       |> with_api_user(user)
 
     @endpoint.subscribe("groups:#{group.slug}")
@@ -51,7 +51,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
   end
 
   test "accepts the invite", %{conn: conn, team: team} do
-    user = insert(:user, onboarded: false)
+    user = insert(:user, onboarded: false, team: nil)
     invite = insert(:invitation, user: user, team: team)
 
     json =
