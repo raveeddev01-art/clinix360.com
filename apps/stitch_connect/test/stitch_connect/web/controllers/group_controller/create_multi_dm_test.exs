@@ -5,10 +5,10 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
 
   setup %{conn: conn} do
     team = insert(:team)
-    bob = insert(:user, team: team, first_name: "Bob")
-    joe = insert(:user, team: team, first_name: "Joe")
-    sam = insert(:user, team: team, first_name: "Sam")
-    tim = insert(:user, team: team, first_name: "Tim")
+    bob = insert(:user, team: team, first_name: "Bob", last_name: "Hadden")
+    joe = insert(:user, team: team, first_name: "Joe", last_name: "Schmo")
+    sam = insert(:user, team: team, first_name: "Sam", last_name: "Capra")
+    tim = insert(:user, team: team, first_name: "Tim", last_name: "Kilaru")
 
     conn =
       conn
@@ -65,7 +65,7 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
 
     assert %{
       "id" => _,
-      "name" => "Joe, Sam",
+      "name" => "Joe Schmo, Sam Capra",
       "slug" => ^expected_slug,
       "public" => false,
       "favorite" => false,
@@ -94,7 +94,7 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
 
     assert %{
       "id" => ^group_id,
-      "name" => "Joe, Sam",
+      "name" => "Joe Schmo, Sam Capra",
       "slug" => ^expected_slug,
       "public" => false,
       "favorite" => false,
@@ -119,8 +119,8 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
       |> post(api_v1_group_path(conn, :create_multi_dm), %{"user_ids" => user_ids})
       |> json_response(200)
 
-    assert_broadcast "new_group", %{id: ^group_id, name: "Bob, Joe"}
-    assert_broadcast "new_group", %{id: ^group_id, name: "Bob, Sam"}
-    assert_broadcast "new_group", %{id: ^group_id, name: "Joe, Sam"}
+    assert_broadcast "new_group", %{id: ^group_id, name: "Bob Hadden, Joe Schmo"}
+    assert_broadcast "new_group", %{id: ^group_id, name: "Bob Hadden, Sam Capra"}
+    assert_broadcast "new_group", %{id: ^group_id, name: "Joe Schmo, Sam Capra"}
   end
 end

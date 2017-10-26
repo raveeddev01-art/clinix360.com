@@ -91,7 +91,7 @@ defmodule Stitch.Message do
     |> mark_as_read_on_creation(group.id, user.id, (group_user.last_read_at || group_user.inserted_at), @unread_limit)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
       Stitch.EmailNotification.create(message.id, notify_user_ids.email)
-      {:ok, notify_user_ids.desktop}
+      {:ok, notify_user_ids}
     end)
     |> Repo.transaction
   end

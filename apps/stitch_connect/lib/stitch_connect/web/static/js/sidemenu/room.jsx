@@ -56,6 +56,7 @@ class Room extends Component {
 
   getName() {
     const { room } = this.props;
+
     if (
       room.type === "dm" &&
       room.users.length === 1 &&
@@ -64,16 +65,6 @@ class Room extends Component {
       return `${room.name} (You)`;
     }
 
-    const { type, users } = room;
-    let dmUsers = users;
-    if (type === "dm") {
-      return room.name;
-    } else if (type === "multi_dm") {
-      dmUsers = users.filter(user => user.id !== currentUser.id);
-      return dmUsers
-        .map(user => `${user.first_name} ${user.last_name}`)
-        .join(", ");
-    }
     return room.name;
   }
 
