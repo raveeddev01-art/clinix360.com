@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Invitation}
-  alias StitchConnect.Web.{Endpoint}
+  alias Stitch.{Invitation, MessageQueries}
+  alias StitchConnect.Web.{Endpoint, EventsChannel}
 
   def index(conn, _params) do
     case Invitation.list_pending_team_invitations(conn.assigns.current_user.id) do
@@ -55,21 +55,27 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   end
 
   def accept(conn, %{"token" => invite_token} = params) do
-    result = Stitch.Invitation.accept_and_complete_onboarding(invite_token, params)
+    result = Invitation.accept_and_complete_onboarding(invite_token, params)
 
     case result do
-      {:ok, %{onboarded_user: user, default_group: default_group, system_message: system_message}} ->
-        Endpoint.broadcast("groups:#{default_group.slug}", "new_msg", system_message)
+      {:ok, %{user: user, groups: groups}} ->
+        Enum.each(groups, fn {group, system_message} ->
+          system_message = system_message |> MessageQueries.load_info
+          Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
+          EventsChannel.broadcast_group_new_msg(group, system_message)
+        end)
         conn
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
-      {:error, _, message, _} when is_binary(message) ->
+
+      {:error, message} when is_binary(message) ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: message})
-      {:error, _, _, _} ->
+
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: "Error onboarding the user."})
+        |> json(%{message: "Could not finish onboarding user."})
     end
   end
 

@@ -1,18 +1,24 @@
 defmodule StitchConnect.Web.InvitationControllerTest do
   use StitchConnect.Web.ConnCase
+  import Phoenix.ChannelTest, except: [connect: 2]
   import StitchConnect.Web.SubdomainRouter.Helpers
 
   setup %{conn: conn} do
     team = insert(:team)
     group = insert(:group, team: team, is_default: true)
     user = insert(:user, team: team)
+    user_b = insert(:user, team: team)
     insert(:group_user, group: group, user: user)
+    insert(:group_user, group: group, user: user_b)
 
     conn =
       conn
       |> with_team_subdomain(team)
       |> with_user_session(user)
       |> with_api_user(user)
+
+    @endpoint.subscribe("groups:#{group.slug}")
+    @endpoint.subscribe("events:#{user_b.id}")
 
     {:ok, conn: conn, group: group, team: team, user: user}
   end
@@ -32,12 +38,12 @@ defmodule StitchConnect.Web.InvitationControllerTest do
 
     json =
       conn
-      |> post(api_v1_invitation_path(conn, :accept, invite.invite_token, %{
-        fullname: "Test",
-        username: "Test",
+      |> post(api_v1_invitation_path(conn, :accept, invite.invite_token), %{
+        fullname: "Joe",
+        username: "Joe",
         password: "Password1",
         pin: "0000",
-      }))
+      })
       |> json_response(422)
 
     assert json == %{"message" => "Could not finish onboarding user."}
@@ -50,13 +56,18 @@ defmodule StitchConnect.Web.InvitationControllerTest do
 
     json =
       conn
-      |> post(api_v1_invitation_path(conn, :accept, invite.invite_token, %{
-        fullname: "Test",
-        username: "test",
+      |> post(api_v1_invitation_path(conn, :accept, invite.invite_token), %{
+        fullname: "Joe",
+        username: "joe",
         password: "Password1",
         pin: "0000",
-      }))
+      })
       |> json_response(200)
+
+    assert_broadcast "new_msg", new_message_1
+    assert_broadcast "new_message", new_message_2
+    assert new_message_1.text_content == "{user} joined the room at {time}"
+    assert new_message_2.text_content == "{user} joined the room at {time}"
 
     assert json["onboarded"]
     assert %{accepted: true} = Stitch.Repo.get(Stitch.Invitation, invite.id)

@@ -157,26 +157,40 @@ defmodule Stitch.Invitation do
     end
   end
 
+  @doc """
+  Attempts to accept the invitation, and in case of success invites the user to the default group
+  """
   def accept_and_complete_onboarding(invite_token, params) do
-    Ecto.Multi.new
-    |> Ecto.Multi.run(:invite, fn _ -> Invitation.get_by_invite_token(invite_token) end)
-    |> Ecto.Multi.run(:accept, fn %{invite: invite} -> Stitch.Invitation.accept(invite) end)
-    |> Ecto.Multi.run(:onboarded_user, fn %{invite: invite} ->
-      params = params |> Map.put("team_id", invite.team_id) |> Map.put("roles", ["member"])
-      case Stitch.Accounts.update_and_complete_user_onboarding(invite.user_id, params) do
-        %User{} = user -> {:ok, user}
-        error -> error
+    result =
+      Ecto.Multi.new
+      |> Ecto.Multi.run(:invite, fn _ -> Invitation.get_by_invite_token(invite_token) end)
+      |> Ecto.Multi.run(:accept, fn %{invite: invite} -> Stitch.Invitation.accept(invite) end)
+      |> Ecto.Multi.run(:user, fn %{invite: invite} ->
+        params = params |> Map.put("team_id", invite.team_id) |> Map.put("roles", ["member"])
+        case Stitch.Accounts.update_and_complete_user_onboarding(invite.user_id, params) do
+          %User{} = user -> {:ok, user}
+          error -> error
+        end
+      end)
+      |> Repo.transaction
+
+    case result do
+      {:ok, %{user: user}} ->
+        default_group = Stitch.GroupQueries.default_group(user)
+        groups = add_user_to_groups(user, [default_group])
+        {:ok, %{user: user, groups: groups}}
+
+      {:error, _, error, _} ->
+        {:error, error}
+    end
+  end
+
+  defp add_user_to_groups(user, groups) do
+    groups |> Enum.reduce([], fn (group, acc) ->
+      case Stitch.Group.add_user(group, user.id) do
+        {:ok, %{system_message: system_message}} -> [{group, system_message} | acc]
+        _ -> acc
       end
     end)
-    |> Ecto.Multi.run(:default_group, fn %{onboarded_user: onboarded_user} ->
-      {:ok, Stitch.GroupQueries.default_group(onboarded_user)}
-    end)
-    |> Ecto.Multi.run(:group_user, fn %{onboarded_user: onboarded_user, default_group: default_group} ->
-      Repo.insert(%Stitch.GroupUser{group_id: default_group.id, user_id: onboarded_user.id})
-    end)
-    |> Ecto.Multi.run(:system_message, fn %{onboarded_user: onboarded_user, default_group: default_group} ->
-      Repo.insert(Stitch.Message.join_message_changeset(default_group, onboarded_user.id))
-    end)
-    |> Repo.transaction
   end
 end
