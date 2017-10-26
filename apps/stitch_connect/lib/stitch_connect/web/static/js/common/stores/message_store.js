@@ -740,14 +740,10 @@ class MessageStore {
     let posHistory = null;
 
     if (this.unreadMessagesCount) {
-      this.updateGroupCursor(null);
-      this.scrollToBottom(
-        () => {
-          this.loadedInitial = true;
-        },
-        0,
-        300
-      );
+      this.scrollToBottom(() => {
+        this.updateGroupCursor(null);
+        this.loadedInitial = true;
+      }, 0);
     } else {
       this.groupCursor = sidemenuStore.groupCursors[this.groupId];
       posHistory = this.groupCursor;
@@ -767,7 +763,7 @@ class MessageStore {
         this.scrollToBottom(() => {
           this.updateGroupCursor(null);
           this.loadedInitial = true;
-        }, 300);
+        }, 0);
       }
     }
   };
