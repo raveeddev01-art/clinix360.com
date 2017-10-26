@@ -1,3 +1,59 @@
+.website-wrapper {
+  display: flex;
+  min-height: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  padding-bottom: 250px;
+  background: #fafafa;
+
+  #header {
+    background: #003366;
+    padding: 40px 0;
+
+    a {
+      display: block;
+      color: #fff;
+      line-height: 20px;
+      font-weight: 600;
+      padding: 15px;
+      @media (min-width: 768px) {
+        font-size: 16px;
+      }
+    }
+
+    .btn-outline {
+      border-radius: 4px;
+      box-shadow: 0 0 0 2px #fff;
+      padding: 10px 15px;
+    }
+  }
+
+  #footer {
+    width: 100%;
+    height: 250px;
+    background-color: #fff;
+    box-shadow: 0 -1px 0 #eaeaea;
+    padding: 20px 0;
+    position: absolute;
+    bottom: 0;
+
+    h5 {
+      color: #666;
+      font-weight: 700;
+    }
+
+    a {
+      display: block;
+      color: #999;
+      text-decoration: none;
+
+      &:hover {
+        color: #666;
+      }
+    }
+  }
+}
+
 .landing-hero {
   color: #fff;
   background: #003366;
