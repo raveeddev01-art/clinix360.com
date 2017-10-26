@@ -129,6 +129,22 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
   end
 
+  # Subscription/Billing routes
+  scope "/api/v1/billing", StitchConnect.Web.Api.V1.Billing, as: :api_v1_billing do
+    pipe_through :team_admin_api
+
+    get "/cards", CardController, :index
+    post "/cards", CardController, :create
+    put "/cards/:id", CardController, :update
+    delete "/cards/:id", CardController, :delete
+
+    get "/subscription", SubscriptionController, :show
+    put "/subscription", SubscriptionController, :update
+
+    put "/subscription/cancel", SubscriptionController, :cancel
+    put "/subscription/renew", SubscriptionController, :renew
+  end
+
   # API routes which need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api_auth
