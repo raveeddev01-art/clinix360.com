@@ -25,7 +25,7 @@ defmodule StitchConnect.Mixfile do
   def application do
     [
       mod: {StitchConnect.Application, []},
-      extra_applications: [:logger, :appsignal, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :appsignal]
     ]
   end
 
@@ -52,7 +52,8 @@ defmodule StitchConnect.Mixfile do
       {:quantum, ">= 2.1.0"},
       {:sweet_xml, "~> 0.6.5"},
       {:stitch, in_umbrella: true},
-      {:sentry, "~> 6.0.0"}
+      {:sentry, "~> 6.0.0"},
+      {:appsignal, "~> 1.3"}
     ]
   end
 
