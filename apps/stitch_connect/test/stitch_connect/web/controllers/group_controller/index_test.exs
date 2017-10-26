@@ -45,7 +45,7 @@ defmodule StitchConnect.Web.GroupController.IndexTest do
     end
 
     test "for multi DMs", %{conn: conn, team: team, bob: bob, joe: joe} do
-      tim = insert(:user, team: team, first_name: "Tim")
+      tim = insert(:user, team: team, first_name: "Tim", last_name: "Kilaru")
 
       %{"slug" => slug} =
         conn
@@ -57,7 +57,7 @@ defmodule StitchConnect.Web.GroupController.IndexTest do
         |> get(api_v1_group_path(conn, :index), %{slug: slug})
         |> json_response(200)
 
-      assert json["name"] == "Joe, Tim"
+      assert json["name"] == "Joe Schmo, Tim Kilaru"
     end
   end
 
