@@ -18,3 +18,11 @@ config :stitch, Stitch.Exports,
 
 config :stitch,
   stripe_client: Stitch.Stripe.TestClient
+
+config :stitch, :aws_presigned_urls, %{
+  access_key_id: "some-access-key-id",
+  secret_access_key: "some-secret-access-key",
+  region: "us-east-1",
+  host: "s3.amazonaws.com",
+  scheme: "https://"
+}
