@@ -52,7 +52,6 @@ defmodule StitchConnect.Mixfile do
       {:quantum, ">= 2.1.0"},
       {:sweet_xml, "~> 0.6.5"},
       {:stitch, in_umbrella: true},
-      {:sentry, "~> 6.0.0"},
       {:appsignal, "~> 1.3"},
       {:pigeon, "~> 1.1.0"}, # For mobile push notifications.
       {:kadabra, "~> 0.3.2"}, # Used by Pigeon for push notifications.

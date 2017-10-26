@@ -44,14 +44,3 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
       ~r{lib/stitch_connect/web/templates/.*(eex)$}
     ]
   ]
-
-# Sentry configuration for Development
-config :sentry,
-  dsn: "https://6067162547ba4f29b3f0114b9cee78e4:7f982ad38fda42d89caaef319eb23ec1@sentry.io/233794",
-  environment_name: :dev,
-  enable_source_code_context: true,
-  root_source_code_path: File.cwd!,
-  tags: %{
-    env: "development"
-  },
-  included_environments: [:dev]

@@ -50,8 +50,9 @@ class MessageStore {
   @computed
   get mountedAllMessages() {
     return (
-      this.messages.length > 0 &&
-      Object.keys(this.messageElements).length === this.messages.length
+      this.messages.length === 0 ||
+      (this.messages.length > 0 &&
+        Object.keys(this.messageElements).length === this.messages.length)
     );
   }
 
@@ -223,7 +224,7 @@ class MessageStore {
   }
 
   onMessageHide(id) {
-    if (!this.loadedInitial) {
+    if (!this.loadedInitial || this.isScrollBottom) {
       return;
     }
 
@@ -525,7 +526,7 @@ class MessageStore {
   @action
   loadPastMessages = (stayScroll = true) => {
     return new Promise((resolve, reject) => {
-      if (this.loadedAll || !this.messages.length) {
+      if (this.loadedAll || !this.messages.length || !this.loadedInitial) {
         resolve();
         return;
       }
@@ -739,41 +740,28 @@ class MessageStore {
     let posHistory = null;
 
     if (this.unreadMessagesCount) {
-      this.updateGroupCursor(null);
-
-      if (this.unreadMessagesCount >= 30) {
-        posHistory = this.messages[this.messages.length - 1].id; // B.2.a
-        this.scrollToBottom(() => {
-          this.scrollTo(posHistory, 0, () => {
-            this.loadedInitial = true; // B.2.a.i
-          });
-        }, 0);
-      } else {
-        posHistory =
-          this.messages[this.unreadMessagesCount] &&
-          this.messages[this.unreadMessagesCount].id; // B.1.a
-
-        this.markAsRead();
-
-        this.scrollToBottom(() => {
-          this.loadedInitial = true; // B.1.b
-          this.scrollTo(posHistory, 0);
-        }, 1);
-      }
+      this.scrollToBottom(() => {
+        this.updateGroupCursor(null);
+        this.loadedInitial = true;
+      }, 0);
     } else {
       this.groupCursor = sidemenuStore.groupCursors[this.groupId];
       posHistory = this.groupCursor;
 
       if (posHistory && this.messages.find(m => m.id === posHistory)) {
         // A.1.a
-        this.scrollTo(posHistory, 0, () => {
-          this.loadedInitial = true;
-        });
+        this.scrollTo(
+          posHistory,
+          0,
+          () => {
+            this.loadedInitial = true;
+          },
+          -10
+        );
       } else {
-        this.updateGroupCursor(null);
-
         // A.1.b, A.2.a
         this.scrollToBottom(() => {
+          this.updateGroupCursor(null);
           this.loadedInitial = true;
         }, 0);
       }

@@ -1,13 +1,25 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import partRenderers from "./part-renderers";
 
+@inject("messageStore")
 class SystemMessage extends Component {
+  componentDidMount() {
+    const { message, messageStore } = this.props;
+    messageStore.onMessageMounted(message.id, this.messageDiv);
+  }
+
   render() {
     const { message } = this.props;
     const parts = message.text_content.split(/(\{[a-z]*\})/).filter(Boolean);
     return (
-      <div className="system-message">
+      <div
+        className="system-message"
+        ref={div => {
+          this.messageDiv = div;
+        }}
+      >
         {parts.reduce((prev, part, index) => {
           const matches = part.match(/\{([a-z]*)\}/);
           if (matches && matches.length) {

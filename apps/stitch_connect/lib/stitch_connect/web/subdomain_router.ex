@@ -1,7 +1,5 @@
 defmodule StitchConnect.Web.SubdomainRouter do
   use StitchConnect.Web, :router
-  use Plug.ErrorHandler
-  use Sentry.Plug
 
   pipeline :browser do
     plug :accepts, ["html"]

@@ -161,6 +161,7 @@
         right: 1px;
         padding: 10px 10px 0 10px;
         background: $body-bg;
+        visibility: hidden;
 
         .unread-messages-tooltip {
           display: flex;
@@ -290,6 +291,7 @@
         padding: 20px;
         display: flex;
         flex-direction: column;
+        visibility: hidden;
 
         .date-separator {
           display: flex;
@@ -329,6 +331,13 @@
             position: absolute;
             top: -17px;
           }
+        }
+      }
+
+      &.loaded {
+        .container-bars,
+        #chat {
+          visibility: visible;
         }
       }
     }
