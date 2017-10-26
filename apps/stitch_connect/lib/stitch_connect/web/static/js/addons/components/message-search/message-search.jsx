@@ -36,7 +36,7 @@ class MessageSearch extends Component {
         )}
 
         <div className="footer">
-          {searchStore.hasMore && (
+          {searchStore.hasMore && searchStore.messages.length ? (
             <button
               className="btn btn-default btn-sm"
               disabled={searchStore.loading}
@@ -44,7 +44,7 @@ class MessageSearch extends Component {
             >
               Load more…
             </button>
-          )}
+          ) : null}
         </div>
       </div>
     );
