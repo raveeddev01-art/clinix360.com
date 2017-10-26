@@ -1,7 +1,5 @@
 defmodule StitchConnect.Web.Router do
   use StitchConnect.Web, :router
-  use Plug.ErrorHandler
-  use Sentry.Plug
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -41,6 +39,10 @@ defmodule StitchConnect.Web.Router do
 
     get "/users/notification-preference", NotificationPreferenceController, :show_global
     put "/users/notification-preference", NotificationPreferenceController, :update_global
+  end
+
+  scope "/stripe", StitchConnect.Web do
+    post "/", StripeWebhookController, :event
   end
 
   scope "/", StitchConnect.Web do

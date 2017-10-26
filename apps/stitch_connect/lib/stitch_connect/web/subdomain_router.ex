@@ -1,7 +1,5 @@
 defmodule StitchConnect.Web.SubdomainRouter do
   use StitchConnect.Web, :router
-  use Plug.ErrorHandler
-  use Sentry.Plug
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -130,6 +128,22 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     resources "/exports", ExportController, only: [:index, :create]
     get "/exports/:id/download", ExportController, :download
+  end
+
+  # Subscription/Billing routes
+  scope "/api/v1/billing", StitchConnect.Web.Api.V1.Billing, as: :api_v1_billing do
+    pipe_through :team_admin_api
+
+    get "/cards", CardController, :index
+    post "/cards", CardController, :create
+    put "/cards/:id", CardController, :update
+    delete "/cards/:id", CardController, :delete
+
+    get "/subscription", SubscriptionController, :show
+    put "/subscription", SubscriptionController, :update
+
+    put "/subscription/cancel", SubscriptionController, :cancel
+    put "/subscription/renew", SubscriptionController, :renew
   end
 
   # API routes which need token.

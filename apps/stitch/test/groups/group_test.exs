@@ -98,6 +98,12 @@ defmodule Stitch.GroupTest do
       {:error, message} = Group.toggle_public(group, false)
       assert message == "Direct messages' privacy setting can't be changed"
     end
+
+    test "does not change the default group" do
+      group = %Group{name: "General", is_default: true}
+      {:error, message} = Group.toggle_public(group, false)
+      assert message == "Default group's privacy setting can't be changed"
+    end
   end
 
   describe "Stitch.Group.add_user/2" do
@@ -159,6 +165,12 @@ defmodule Stitch.GroupTest do
       group = %Group{name: "__multi_dm_group__"}
       {:error, message} = Group.remove(group, 42)
       assert message == "Users can't leave direct messages"
+    end
+
+    test "does not remove a user from the default group" do
+      group = %Group{name: "General", is_default: true}
+      {:error, message} = Group.remove(group, group.id)
+      assert message == "Users can't leave the default group"
     end
   end
 

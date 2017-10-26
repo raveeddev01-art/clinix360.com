@@ -99,10 +99,13 @@ export default class MessagePanel extends Component {
   }
 
   render() {
-    const { groupStore: group } = this.props;
+    const { groupStore: group, messageStore } = this.props;
+    const chatContainerClassName = classNames({
+      loaded: messageStore.loadedInitial
+    });
 
     return (
-      <div id="chat-container">
+      <div id="chat-container" className={chatContainerClassName}>
         <div className="container-bars">
           {this.renderUnreadMessagesBar()}
           <UploadProgress />
@@ -110,23 +113,21 @@ export default class MessagePanel extends Component {
 
         <MessageList />
         <div className="flex-footer">
-          {!group.loading ? (
-            group.joined ? (
-              <MessageForm />
-            ) : (
-              <div className="room-preview">
-                This is a preview of the room{" "}
-                <strong>
-                  <i className="fa fa-comments" /> {group.name}
-                </strong>
-                <button
-                  className="join btn btn-fancy btn-primary"
-                  onClick={this.handleJoin}
-                >
-                  <i className="fa fa-sign-in" /> Join
-                </button>
-              </div>
-            )
+          {group.joined ? (
+            <MessageForm />
+          ) : !group.loading ? (
+            <div className="room-preview">
+              This is a preview of the room{" "}
+              <strong>
+                <i className="fa fa-comments" /> {group.name}
+              </strong>
+              <button
+                className="join btn btn-fancy btn-primary"
+                onClick={this.handleJoin}
+              >
+                <i className="fa fa-sign-in" /> Join
+              </button>
+            </div>
           ) : null}
         </div>
       </div>

@@ -13,14 +13,3 @@ config :stitch, Stitch.Mailer,
 
 config :stitch, Stitch.Exports,
   enabled: true
-
-# Sentry configuration for Production
-config :sentry,
-  dsn: "https://9b8f91a0ec7349c5a75ff5c9f87a78bb:f83a2dd1467e42b48fb6111af7a894e8@sentry.io/233795",
-  environment_name: :prod,
-  enable_source_code_context: true,
-  root_source_code_path: File.cwd!,
-  tags: %{
-    env: "prod"
-  },
-  included_environments: [:prod]

@@ -51,4 +51,23 @@ defmodule Stitch.DataCase do
       end)
     end)
   end
+
+  @doc """
+  Helper to remove already set associations in a struct.
+
+  This should only be used on structs that use Ecto and fields that use an association.
+
+  ## Example
+
+      iex> clear_assoc(%User{team: %Team{...}, ...}, :team)
+      %User{team: %Ecto.Association.NotLoaded{...}, ...}
+
+  """
+  def clear_assoc(%mod{} = data, key) do
+    default_value =
+      mod
+      |> struct()
+      |> Map.get(key)
+    Map.put(data, key, default_value)
+  end
 end
