@@ -224,7 +224,7 @@ class MessageStore {
   }
 
   onMessageHide(id) {
-    if (!this.loadedInitial) {
+    if (!this.loadedInitial || this.isScrollBottom) {
       return;
     }
 
@@ -526,7 +526,7 @@ class MessageStore {
   @action
   loadPastMessages = (stayScroll = true) => {
     return new Promise((resolve, reject) => {
-      if (this.loadedAll || !this.messages.length) {
+      if (this.loadedAll || !this.messages.length || !this.loadedInitial) {
         resolve();
         return;
       }
@@ -754,16 +754,20 @@ class MessageStore {
 
       if (posHistory && this.messages.find(m => m.id === posHistory)) {
         // A.1.a
-        this.scrollTo(posHistory, 0, () => {
-          this.loadedInitial = true;
-        });
+        this.scrollTo(
+          posHistory,
+          0,
+          () => {
+            this.loadedInitial = true;
+          },
+          -10
+        );
       } else {
-        this.updateGroupCursor(null);
-
         // A.1.b, A.2.a
         this.scrollToBottom(() => {
+          this.updateGroupCursor(null);
           this.loadedInitial = true;
-        }, 0);
+        }, 300);
       }
     }
   };
