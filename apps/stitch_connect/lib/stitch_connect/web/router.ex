@@ -43,6 +43,10 @@ defmodule StitchConnect.Web.Router do
     put "/users/notification-preference", NotificationPreferenceController, :update_global
   end
 
+  scope "/stripe", StitchConnect.Web do
+    post "/", StripeWebhookController, :event
+  end
+
   scope "/", StitchConnect.Web do
     pipe_through :browser
 

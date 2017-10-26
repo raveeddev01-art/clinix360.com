@@ -15,6 +15,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def activate(conn, %{"id" => id}) do
     with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
          {:ok, _user} <- Stitch.Accounts.Admin.activate(conn.assigns.team, id) do
+      Stitch.Billing.update_subscriber_count(conn.assigns.team)
       json(conn, %{message: "Account has been activated."})
     else
       {:error, :not_found} ->
@@ -31,6 +32,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def deactivate(conn, %{"id" => id}) do
     with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
          {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do
+      Stitch.Billing.update_subscriber_count(conn.assigns.team)
       json(conn, %{message: "Account has been deactivated."})
     else
       {:error, :not_found} ->

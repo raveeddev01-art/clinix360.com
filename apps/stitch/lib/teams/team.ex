@@ -12,6 +12,8 @@ defmodule Stitch.Team do
     has_many :groups, Stitch.Group, on_delete: :delete_all
     has_many :invitations, Stitch.Invitation, on_delete: :delete_all
     has_many :exports, Stitch.Exports.Export, on_delete: :delete_all
+    has_one :subscription, Stitch.Billing.Subscription, on_delete: :delete_all
+    has_many :payment_methods, Stitch.Billing.PaymentMethod, on_delete: :delete_all
 
     timestamps()
   end

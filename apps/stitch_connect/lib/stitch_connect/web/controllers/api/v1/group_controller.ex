@@ -72,7 +72,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def create(conn, params) do
     user = conn.assigns.current_user
     case Group.create(params, user) do
-      {:ok, group} ->
+      {:ok, %{group: group, system_messages: system_messages}} ->
         group = group
         |> Map.put_new(:joined, true)
         |> Map.put_new(:unread_messages_count, 0)
@@ -82,6 +82,11 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> Map.put_new(:mentions_count, 0)
 
         EventsChannel.broadcast_group_creation(group)
+        Enum.each(system_messages, fn system_message ->
+          system_message = system_message |> MessageQueries.load_info
+          EventsChannel.broadcast_group_new_msg(group, system_message)
+        end)
+
         render conn, "show.json", group: group, user_id: user.id
       {:error, :already_exists} ->
         conn
