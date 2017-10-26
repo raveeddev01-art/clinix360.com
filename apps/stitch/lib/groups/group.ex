@@ -48,17 +48,18 @@ defmodule Stitch.Group do
           user_ids = Map.get(attrs, "user_ids", []) |> List.insert_at(0, user_id) |> Enum.uniq
           users = User |> where([u], u.team_id == ^team_id and u.id in ^user_ids) |> Repo.all
 
-          group_users_res = users |> Enum.reduce_while([], fn user, group_users ->
-            changeset = GroupUser.changeset(%GroupUser{}, %{group_id: group.id, user_id: user.id})
-            case Repo.insert(changeset) do
-              {:ok, _} -> {:cont, group_users ++ [user]}
-              {:error, _} -> {:halt, :error}
-            end
-          end)
+          add_users_result = add_users(group, users)
 
-          case group_users_res do
-            :error -> Repo.rollback("Failed to add room members.")
-            users -> %{group | users: users}
+          case add_users_result do
+            :error ->
+              Repo.rollback("Failed to add room members.")
+            system_messages ->
+              if group.name in ["__dm_group__", "__multi_dm_group__"] do
+                %{group | users: users}
+              else
+                group = %{group | users: users}
+                %{group: group, system_messages: system_messages}
+              end
           end
 
         {:error, changeset} ->
@@ -69,6 +70,25 @@ defmodule Stitch.Group do
           end
       end
     end
+  end
+
+  def add_users(%Group{name: name} = group, users) when name in ["__dm_group__", "__multi_dm_group__"] do
+    Enum.reduce_while(users, [], fn (user, group_users) ->
+      changeset = GroupUser.changeset(%GroupUser{}, %{group_id: group.id, user_id: user.id})
+      case Repo.insert(changeset) do
+        {:ok, _} -> {:cont, group_users ++ [user]}
+        {:error, _} -> {:halt, :error}
+      end
+    end)
+  end
+
+  def add_users(%Group{} = group, users) do
+    Enum.reduce_while(users, [], fn user, acc ->
+      case Group.add_user(group, user.id) do
+        {:ok, %{system_message: system_message}} -> {:cont, [system_message | acc]}
+        _ -> {:halt, :error}
+      end
+    end)
   end
 
   def create_single_dm(_, user_ids) when length(user_ids) != 2 do
@@ -153,6 +173,10 @@ defmodule Stitch.Group do
     {:error, "Users can't leave direct messages"}
   end
 
+  def remove(%Group{is_default: true}, _) do
+    {:error, "Users can't leave the default group"}
+  end
+
   def remove(%Group{id: group_id} = group, user_id) do
     case Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) do
       nil ->
@@ -197,6 +221,10 @@ defmodule Stitch.Group do
   def toggle_public(%Group{name: name}, _public)
       when name in ["__dm_group__", "__multi_dm_group__"] do
     {:error, "Direct messages' privacy setting can't be changed"}
+  end
+
+  def toggle_public(%Group{is_default: true}, _public) do
+    {:error, "Default group's privacy setting can't be changed"}
   end
 
   def toggle_public(%Group{} = group, public) do
