@@ -15,6 +15,14 @@ import PeopleList from "./people/people_list";
 @inject("presenceStore", "sidemenuStore")
 @observer
 class Sidemenu extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isDropdownOpen: false
+    };
+  }
+
   componentDidMount() {
     const { sidemenuStore } = this.props;
 
@@ -26,6 +34,12 @@ class Sidemenu extends Component {
 
     sidemenuStore.unloadSidemenuDiv();
   }
+
+  onDropdownToggle = isDropdownOpen => {
+    this.setState({
+      isDropdownOpen
+    });
+  };
 
   renderAdminOptions() {
     return (
@@ -110,16 +124,21 @@ class Sidemenu extends Component {
             id="dropdown-preferences-menu"
             pullRight
             componentClass="div"
+            onToggle={this.onDropdownToggle}
           >
             <Dropdown.Toggle noCaret bsStyle="link">
-              <OverlayTrigger
-                placement="bottom"
-                overlay={
-                  <Tooltip id="tooltip-preferences">Preferences</Tooltip>
-                }
-              >
+              {this.state.isDropdownOpen ? (
                 <i className="fa fa-chevron-down" />
-              </OverlayTrigger>
+              ) : (
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={
+                    <Tooltip id="tooltip-preferences">Preferences</Tooltip>
+                  }
+                >
+                  <i className="fa fa-chevron-down" />
+                </OverlayTrigger>
+              )}
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="super-colors">
