@@ -8,14 +8,3 @@ config :stitch, Stitch.Repo,
 config :stitch, Stitch.Mailer,
   adapter: Bamboo.MandrillAdapter,
   api_key: System.get_env("MANDRILL_API_KEY")
-
-# Sentry configuration for Development
-config :sentry,
-  dsn: "https://6067162547ba4f29b3f0114b9cee78e4:7f982ad38fda42d89caaef319eb23ec1@sentry.io/233794",
-  environment_name: :dev,
-  enable_source_code_context: true,
-  root_source_code_path: File.cwd!,
-  tags: %{
-    env: "development"
-  },
-  included_environments: [:dev]
