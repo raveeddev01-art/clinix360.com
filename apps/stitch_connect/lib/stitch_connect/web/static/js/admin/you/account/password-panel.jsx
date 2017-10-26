@@ -7,6 +7,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
+import cx from "classnames";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Password";
@@ -99,17 +100,19 @@ class PasswordPanel extends Component {
       <HelpBlock className="m-b-20">
         Your password must contain:
         <ul className="list-unstyled text-success">
-          <li className={!passwordLengthValid && "text-danger"}>
+          <li className={cx({ "text-danger": !passwordLengthValid })}>
             At least 8 characters
           </li>
-          <li className={!passwordUppercaseValid && "text-danger"}>
+          <li className={cx({ "text-danger": !passwordUppercaseValid })}>
             An uppercase letter
           </li>
-          <li className={!passwordLowercaseValid && "text-danger"}>
+          <li className={cx({ "text-danger": !passwordLowercaseValid })}>
             A lowercase letter
           </li>
-          <li className={!passwordDigitsValid && "text-danger"}>A number</li>
-          <li className={!passwordSymbolsValid && "text-danger"}>
+          <li className={cx({ "text-danger": !passwordDigitsValid })}>
+            A number
+          </li>
+          <li className={cx({ "text-danger": !passwordSymbolsValid })}>
             A special character (e.g. !$#)
           </li>
         </ul>
