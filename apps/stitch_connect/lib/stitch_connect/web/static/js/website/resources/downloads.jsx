@@ -149,7 +149,7 @@ export default class Downloads extends Component {
                       <Row>
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="http://connect-desktop.teamstitch.com/download/latest/osx_64">
+                            <a href="https://teamstitch.typeform.com/to/Ncn8x8">
                               <img
                                 src="/images/mac-icon.png"
                                 alt="Connect for Mac"
@@ -171,7 +171,7 @@ export default class Downloads extends Component {
 
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="http://connect-desktop.teamstitch.com/download/latest/windows_32">
+                            <a href="https://teamstitch.typeform.com/to/Ncn8x8">
                               <img
                                 src="/images/windows-icon.png"
                                 alt="Connect for Windows"
@@ -233,7 +233,7 @@ export default class Downloads extends Component {
                       <Row>
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="http://connect-desktop.teamstitch.com/download/latest/osx_64">
+                            <a href="https://teamstitch.typeform.com/to/Ncn8x8">
                               <img
                                 src="/images/mac-icon.png"
                                 alt="Connect for Mac"
@@ -255,7 +255,7 @@ export default class Downloads extends Component {
 
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="http://connect-desktop.teamstitch.com/download/latest/windows_32">
+                            <a href="https://teamstitch.typeform.com/to/Ncn8x8">
                               <img
                                 src="/images/windows-icon.png"
                                 alt="Connect for Windows"

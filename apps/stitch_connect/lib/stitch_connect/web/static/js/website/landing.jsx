@@ -97,13 +97,79 @@ export default class Landing extends Component {
 
           <div className="product-section">
             <div className="container">
-              <h3>Engage</h3>
+              <div className="flex-box">
+                <div className="flex-item">
+                  <div className="product-image">
+                    <img
+                      src="/images/engage-feature-1.png"
+                      alt="Stitch Engage"
+                      className="img-responsive"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex-item">
+                  <div className="product-info">
+                    <h2>Engage</h2>
+                    <h3>Patient Messaging</h3>
+
+                    <p className="m-b-20">
+                      Stitch Engage offers a complete patient engagement
+                      solution. Send messages, share files and start video calls
+                      directly with patients. Relax knowing your patients can
+                      easily access important communications with our
+                      intuitively designed app on any device.
+                    </p>
+
+                    <Button
+                      bsStyle="primary"
+                      bsSize="large"
+                      href="https://teamstitch.typeform.com/to/Ncn8x8"
+                    >
+                      Join Beta
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           <div className="product-section">
             <div className="container">
-              <h3>Manage</h3>
+              <div className="flex-box">
+                <div className="flex-item">
+                  <div className="product-info">
+                    <h2>Manage</h2>
+                    <h3>Patient Management</h3>
+
+                    <p className="m-b-20">
+                      Stitch Manage is the easiest way to collaborate on
+                      patients. Post clinical notes, status updates and key data
+                      points to keep everyone on the same page. Use Manage to
+                      track patient tasks and keep your workflow organized,
+                      wherever you are.
+                    </p>
+
+                    <Button
+                      bsStyle="primary"
+                      bsSize="large"
+                      href="https://teamstitch.typeform.com/to/Ncn8x8"
+                    >
+                      Join Beta
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex-item">
+                  <div className="product-image">
+                    <img
+                      src="/images/manage-feature-1.png"
+                      alt="Stitch Manage"
+                      className="img-responsive"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>

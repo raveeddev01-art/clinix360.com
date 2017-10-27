@@ -201,6 +201,24 @@
   }
 }
 
+.product-section:nth-child(even) {
+  color: #fff;
+  background: #036;
+
+  h2 {
+    color: #fff;
+  }
+
+  h3 {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .btn-primary {
+    color: #036;
+    background: #fff;
+  }
+}
+
 .product-feature {
   .product-info {
     h2 {
