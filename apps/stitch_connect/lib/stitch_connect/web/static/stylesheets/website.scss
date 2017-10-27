@@ -55,7 +55,7 @@
     background: #036;
 
     .landing-message {
-      max-width: 570px;
+      max-width: 580px;
       padding: 10px 0 100px;
       margin: 0 auto;
 
@@ -170,7 +170,8 @@
   }
 }
 
-.product-section {
+.product-section,
+.product-feature {
   .product-info {
     @media (min-width: 768px) {
       padding: 50px;
@@ -198,13 +199,30 @@
   .product-image {
     padding: 50px 0;
   }
+}
 
-  &:nth-child(even) {
-    background: red;
+.product-feature {
+  .product-info {
+    h2 {
+      margin: 0 0 30px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+  }
+  &:nth-child(odd) {
+    color: #fff;
+    background: #036;
+
+    .product-info h2 {
+      color: #fff;
+    }
   }
 }
 
-.pricing {
+.pricing,
+.downloads {
   padding: 40px 0;
 
   .nav-tabs li a {
@@ -277,7 +295,15 @@
       }
 
       .price-details {
-        margin: 0 0 10px;
+        color: rgba(0, 0, 0, 0.3);
+        font-size: 16px;
+        margin: 0 0 20px;
+
+        span {
+          color: #555459;
+          border-bottom: 1px dashed #555459;
+          cursor: pointer;
+        }
       }
 
       .plan-features {
@@ -295,6 +321,44 @@
         }
       }
     }
+  }
+}
+
+.downloads .tab-content .plan {
+  margin: 20px 0;
+
+  a {
+    display: inline-block;
+
+    img {
+      width: 70px;
+    }
+
+    &.appstore-link img {
+      width: 135px;
+    }
+
+    &.playstore-link img {
+      width: 110px;
+    }
+  }
+
+  h3 {
+    display: block;
+    border-bottom: 0;
+    margin: 20px 0 10px;
+    padding-bottom: 0;
+  }
+
+  .btn-lg {
+    padding: 8px 20px;
+  }
+}
+
+.privacy-policy,
+.terms-of-service {
+  @media (min-width: 768px) {
+    font-size: 16px;
   }
 }
 

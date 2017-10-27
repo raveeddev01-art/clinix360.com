@@ -14,7 +14,7 @@ export default class Footer extends Component {
               <h5>Products</h5>
               <ul className="list-unstyled">
                 <li>
-                  <a href="#">Connect</a>
+                  <Link to="/connect">Connect</Link>
                 </li>
               </ul>
             </Col>
@@ -23,10 +23,10 @@ export default class Footer extends Component {
               <h5>Resources</h5>
               <ul className="list-unstyled">
                 <li>
-                  <a href="#">Pricing</a>
+                  <Link to="/pricing">Pricing</Link>
                 </li>
                 <li>
-                  <a href="#">Downloads</a>
+                  <Link to="/downloads">Downloads</Link>
                 </li>
                 <li>
                   <a
@@ -43,10 +43,10 @@ export default class Footer extends Component {
               <h5>Company</h5>
               <ul className="list-unstyled">
                 <li>
-                  <a href="#">Privacy Policy</a>
+                  <Link to="/privacy-policy">Privacy Policy</Link>
                 </li>
                 <li>
-                  <a href="#">Terms of Service</a>
+                  <Link to="/terms-of-service">Terms of Service</Link>
                 </li>
               </ul>
             </Col>

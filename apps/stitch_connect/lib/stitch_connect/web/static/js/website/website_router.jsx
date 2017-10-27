@@ -9,8 +9,9 @@ import Landing from "./landing";
 import Connect from "./products/connect";
 import Pricing from "./resources/pricing";
 import Downloads from "./resources/downloads";
+import PrivacyPolicy from "./resources/privacy-policy";
+import TermsOfService from "./resources/terms-of-service";
 
-@inject("titleStore")
 @observer
 class WebsiteRouter extends Component {
   render() {
@@ -23,14 +24,8 @@ class WebsiteRouter extends Component {
           <Route exact path="/connect" component={Connect} />
           <Route exact path="/pricing" component={Pricing} />
           <Route exact path="/downloads" component={Downloads} />
-          {/* <Route exact path="/signin" component={TeamPicker} />
-          <Route exact path="/find-teams" component={FindTeam} />
-
-          <Route exact path="/login" component={Login} />
-          <Route path="/signup" component={Registration} />
-
-          <Route exact path="/reset-password" component={SendEmail} />
-          <Route exact path="/reset-password/:token" component={SetPassword} /> */}
+          <Route exact path="/privacy-policy" component={PrivacyPolicy} />
+          <Route exact path="/terms-of-service" component={TermsOfService} />
 
           <Route component={() => <Redirect to="/" />} />
         </Switch>

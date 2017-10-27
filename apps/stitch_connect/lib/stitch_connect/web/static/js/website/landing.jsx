@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import cx from "classnames";
 
+import CreateTeamForm from "./components/create-team";
 import CUSTOMERS from "./components/customers";
 
 import Form from "react-bootstrap/lib/Form";
@@ -12,13 +13,6 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 
 export default class Landing extends Component {
-  constructor(...args) {
-    super(...args);
-    this.state = {
-      email: ""
-    };
-  }
-
   renderCustomers() {
     return CUSTOMERS.map((c, index) => {
       const className = cx("col-lg-5ths col-md-3 col-xs-4", {
@@ -32,27 +26,7 @@ export default class Landing extends Component {
     });
   }
 
-  onChange = evt => {
-    this.setState({ email: evt.target.value });
-  };
-
-  onSubmit = evt => {
-    evt.preventDefault();
-    post("/api/v1/users", {
-      body: { email: this.state.email }
-    }).then(resp => {
-      return post("/api/v1/users/send-confirmation-code", {
-        body: { id: resp.data.id }
-      }).then(() => {
-        window.location.href = `/signup/confirmation-code?userId=${resp.data
-          .id}`;
-      });
-    });
-  };
-
   render() {
-    const { email } = this.state;
-
     return (
       <div>
         <div className="subheader">
@@ -64,20 +38,7 @@ export default class Landing extends Component {
                 collaborate on any device.
               </h3>
 
-              <Form className="flex-form" onSubmit={this.onSubmit}>
-                <div className="form-input">
-                  <FormControl
-                    required
-                    id="createTeam"
-                    placeholder="Email Address"
-                    type="email"
-                    value={email}
-                    onChange={this.onChange}
-                  />
-                </div>
-
-                <Button type="submit">Create Team</Button>
-              </Form>
+              <CreateTeamForm />
 
               <div className="trial">
                 Get started with an unlimited{" "}
@@ -124,7 +85,7 @@ export default class Landing extends Component {
                 <div className="flex-item">
                   <div className="product-image">
                     <img
-                      src="/images/connect-apps.png"
+                      src="/images/connect-feature-1.png"
                       alt="Stitch Connect"
                       className="img-responsive"
                     />

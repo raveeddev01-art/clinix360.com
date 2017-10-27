@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
-// import CreateTeamForm from "./create-team";
-// import Navigation from "./navigation";
 
 import Navbar from "react-bootstrap/lib/Navbar";
 import Nav from "react-bootstrap/lib/Nav";
@@ -70,7 +68,7 @@ export default class Header extends Component {
             </li>
 
             <li role="presentation">
-              <a href="/signup/email" className="nav-link">
+              <a href="/signup/email" className="nav-link btn-outline">
                 Create Team
               </a>
             </li>

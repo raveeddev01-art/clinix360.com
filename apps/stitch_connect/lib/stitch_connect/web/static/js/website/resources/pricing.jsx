@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import Tabs from "react-bootstrap/lib/Tabs";
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import NavItem from "react-bootstrap/lib/NavItem";
+import Button from "react-bootstrap/lib/Button";
 
 export default class Pricing extends Component {
   constructor(props) {
@@ -75,7 +75,7 @@ export default class Pricing extends Component {
                   <Tab.Content animation>
                     <Tab.Pane eventKey="first">
                       <Row>
-                        <Col xs={4}>
+                        <Col sm={4}>
                           <div className="plan text-center">
                             <h3>Basic</h3>
                             <div className="price">
@@ -92,6 +92,9 @@ export default class Pricing extends Component {
                             </div>
 
                             <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Features</mark>
+                              </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />HIPAA
                                 Compliant
@@ -124,7 +127,7 @@ export default class Pricing extends Component {
                           </div>
                         </Col>
 
-                        <Col xs={4}>
+                        <Col sm={4}>
                           <div className="plan text-center">
                             <h3>Premium</h3>
                             <div className="price">
@@ -141,6 +144,9 @@ export default class Pricing extends Component {
                             </div>
 
                             <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Features</mark>
+                              </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />
                                 <em>
@@ -175,7 +181,7 @@ export default class Pricing extends Component {
                           </div>
                         </Col>
 
-                        <Col xs={4}>
+                        <Col sm={4}>
                           <div className="plan text-center">
                             <h3>Power</h3>
                             <div className="price">
@@ -192,6 +198,9 @@ export default class Pricing extends Component {
                             </div>
 
                             <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Features</mark>
+                              </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />
                                 <em>
@@ -228,8 +237,284 @@ export default class Pricing extends Component {
                       </Row>
                     </Tab.Pane>
 
-                    <Tab.Pane eventKey="second">Tab 2 content</Tab.Pane>
-                    <Tab.Pane eventKey="third">Tab 3 content</Tab.Pane>
+                    <Tab.Pane eventKey="second">
+                      <Row>
+                        <Col sm={4}>
+                          <div className="plan text-center">
+                            <h3>Basic</h3>
+
+                            <div className="m-b-20">
+                              <Button
+                                bsSize="large"
+                                bsStyle="primary"
+                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                              >
+                                Contact Us
+                              </Button>
+                            </div>
+
+                            <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Features</mark>
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />HIPAA
+                                Compliant
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Mac &
+                                Windows Apps
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />iOS &
+                                Android Apps
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Patient
+                                Messaging
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Search &
+                                File Uploads
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Task
+                                Management
+                              </li>
+                            </ul>
+                          </div>
+                        </Col>
+
+                        <Col sm={4}>
+                          <div className="plan text-center">
+                            <h3>Premium</h3>
+                            <div className="m-b-20">
+                              <Button
+                                bsSize="large"
+                                bsStyle="primary"
+                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                              >
+                                Contact Us
+                              </Button>
+                            </div>
+
+                            <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Includes Basic, plus:</mark>
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Internal
+                                Notes
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Custom
+                                Data Retention
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Extended
+                                File Storage
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Advanced
+                                Security Controls
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Usage
+                                Analytics
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Priority
+                                Support
+                              </li>
+                            </ul>
+                          </div>
+                        </Col>
+
+                        <Col sm={4}>
+                          <div className="plan text-center">
+                            <h3>Power</h3>
+                            <div className="m-b-20">
+                              <Button
+                                bsSize="large"
+                                bsStyle="primary"
+                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                              >
+                                Contact Us
+                              </Button>
+                            </div>
+
+                            <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Includes Premium, plus:</mark>
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Voice and
+                                Video Calls
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Call
+                                Recording
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Payments
+                                Portal
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Response
+                                Forms
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Patient
+                                Scheduling
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Priority
+                                24/7 Support
+                              </li>
+                            </ul>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Tab.Pane>
+
+                    <Tab.Pane eventKey="third">
+                      <Row>
+                        <Col sm={4}>
+                          <div className="plan text-center">
+                            <h3>Basic</h3>
+                            <div className="m-b-20">
+                              <Button
+                                bsSize="large"
+                                bsStyle="primary"
+                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                              >
+                                Contact Us
+                              </Button>
+                            </div>
+
+                            <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Features</mark>
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />HIPAA
+                                Compliant
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Mac &
+                                Windows Apps
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />iOS &
+                                Android Apps
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Patient
+                                Workspaces
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Search &
+                                File Uploads
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Task
+                                Management
+                              </li>
+                            </ul>
+                          </div>
+                        </Col>
+
+                        <Col sm={4}>
+                          <div className="plan text-center">
+                            <h3>Premium</h3>
+                            <div className="m-b-20">
+                              <Button
+                                bsSize="large"
+                                bsStyle="primary"
+                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                              >
+                                Contact Us
+                              </Button>
+                            </div>
+
+                            <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Features</mark>
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Guest
+                                Access
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Custom
+                                Data Retention
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Advanced
+                                Security Controls
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Extended
+                                File Storage
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Usage
+                                Analytics
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Priority
+                                Support
+                              </li>
+                            </ul>
+                          </div>
+                        </Col>
+
+                        <Col sm={4}>
+                          <div className="plan text-center">
+                            <h3>Power</h3>
+                            <div className="m-b-20">
+                              <Button
+                                bsSize="large"
+                                bsStyle="primary"
+                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                              >
+                                Contact Us
+                              </Button>
+                            </div>
+
+                            <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Features</mark>
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Response
+                                Forms
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Custom
+                                Profile Fields
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />EHR
+                                Integrations
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Voice &
+                                Video Calls
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Single
+                                Sign-On (SSO)
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Priority
+                                24/7 Support
+                              </li>
+                            </ul>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Tab.Pane>
                   </Tab.Content>
                 </Col>
               </Row>
