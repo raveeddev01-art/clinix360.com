@@ -27,7 +27,7 @@ defmodule Stitch.Mobile do
 
       case notification_preference do
         "nothing" -> acc
-        "mentions" -> group_user.mention_counter + acc
+        "mentions" -> group_user.mentions_count + acc
         "everything" -> group_user.unread_messages_count + acc
       end
     end)
