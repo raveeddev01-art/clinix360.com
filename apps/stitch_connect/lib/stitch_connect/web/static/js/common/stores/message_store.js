@@ -642,6 +642,11 @@ class MessageStore {
     if (newMessage.user_id === currentUser.id) {
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();
+      } else {
+        this.updateUnreadMessagesInfo({
+          unread_messages_count: this.unreadMessagesCount + 1
+        });
+        this.newMessageLinePosition = this.unreadMessagesCount;
       }
     } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
