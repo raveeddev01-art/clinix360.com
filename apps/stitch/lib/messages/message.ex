@@ -86,7 +86,7 @@ defmodule Stitch.Message do
 
     Multi.new
     |> Multi.insert(:message, message_changeset(message_struct, attrs))
-    |> Multi.update_all(:mention_users, mention_users(group.id, mentioned_user_ids), [])
+    |> Multi.update_all(:mention_users, mention_users(group, mentioned_user_ids, recipients), [])
     |> Multi.update_all(:increment_unread_counter, increment_unread_counter(group.id, recipients), [])
     |> mark_as_read_on_creation(group.id, user.id, (group_user.last_read_at || group_user.inserted_at), @unread_limit)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
@@ -169,7 +169,14 @@ defmodule Stitch.Message do
     |> update([gu], set: [unread_messages_count: fragment("greatest(? - 1, 0)", gu.unread_messages_count)])
   end
 
-  def mention_users(group_id, mentioned_user_ids) do
+  def mention_users(%Group{name: name, id: group_id}, _mentioned_user_ids, user_ids) when name in ["__dm_group__", "__multi_dm_group__"] do
+    GroupUser
+    |> where([gu], gu.group_id == ^group_id)
+    |> where([gu], gu.user_id in ^user_ids)
+    |> update([gu], inc: [mentions_count: ^1])
+  end
+
+  def mention_users(%Group{id: group_id}, mentioned_user_ids, _user_ids) do
     GroupUser
     |> where([gu], gu.group_id == ^group_id)
     |> where([gu], gu.user_id in ^mentioned_user_ids)

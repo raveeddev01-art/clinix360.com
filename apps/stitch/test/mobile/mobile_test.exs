@@ -33,4 +33,36 @@ defmodule Stitch.MobileTest do
       }] = Mobile.list_user_devices(bob.id)
     end
   end
+
+  describe "badge_value/1" do
+    test "sums values accross all the groups the user is member of" do
+    end
+
+    test "when global mobile notification setting is 'everything'" do
+    end
+
+    test "when global mobile notification setting is 'mentions'" do
+    end
+
+    test "when global mobile notification setting is 'nothing'" do
+    end
+
+    test "when room-specific mobile notification setting is 'everything'" do
+    end
+
+    test "when room-specific mobile notification setting is 'mentions'" do
+    end
+
+    test "when room-specific mobile notification setting is 'nothing'" do
+    end
+
+    test "when room is dm and global mobile notification setting is 'everything'" do
+    end
+
+    test "when room is dm global mobile notification setting is 'mentions'" do
+    end
+
+    test "when room is dm global mobile notification setting is 'nothing'" do
+    end
+  end
 end

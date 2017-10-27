@@ -50,7 +50,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         active_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
         case Message.create(group.id, user, message_params, active_user_ids) do
-          {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
+          {:ok, %{message: message, notify_user_ids: notify_user_ids, increment_unread_counter: unread_counter, mention_users: mention_counter}} ->
             message = message |> MessageQueries.load_info
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
