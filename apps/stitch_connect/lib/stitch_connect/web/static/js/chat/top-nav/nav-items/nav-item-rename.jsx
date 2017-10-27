@@ -16,8 +16,8 @@ import Button from "react-bootstrap/lib/Button";
 @inject("groupStore", "sidemenuStore")
 @observer
 class NavItemRename extends Component {
-  constructor(props) {
-    super(props);
+  constructor(...args) {
+    super(...args);
     this.state = {
       showModal: false,
       groupName: "",
@@ -25,12 +25,16 @@ class NavItemRename extends Component {
     };
   }
 
-  toggleModal = () => {
+  openModal = () => {
     this.setState({
-      showModal: !this.state.showModal,
+      showModal: true,
       groupName: this.props.groupStore.name,
       groupSlug: `#${this.props.groupStore.slug}`
     });
+  };
+
+  closeModal = () => {
+    this.setState({ showModal: false });
   };
 
   cleanName = e => {
@@ -64,80 +68,80 @@ class NavItemRename extends Component {
   };
 
   render() {
-    return (
-      <MenuItem onClick={this.toggleModal}>
+    return [
+      <MenuItem key="rename_menuitem" onClick={this.openModal}>
         Rename
-        <Modal show={this.state.showModal} onHide={this.toggleModal}>
-          <Modal.Header>
-            <Modal.Title>Rename</Modal.Title>
-            <a href="#" onClick={this.toggleModal}>
-              <i className="fa fa-close" />
-            </a>
-          </Modal.Header>
+      </MenuItem>,
+      <Modal key="rename_modal" show={this.state.showModal}>
+        <Modal.Header>
+          <Modal.Title>Rename</Modal.Title>
+          <a role="link" onClick={this.closeModal}>
+            <i className="fa fa-close" />
+          </a>
+        </Modal.Header>
 
-          <Modal.Body>
-            <Form horizontal>
-              <FormGroup bsSize="large">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Name
-                </Col>
+        <Modal.Body>
+          <Form horizontal>
+            <FormGroup bsSize="large">
+              <Col componentClass={ControlLabel} sm={3}>
+                Name
+              </Col>
 
-                <Col sm={9}>
-                  <FormControl
-                    name="groupName"
-                    type="text"
-                    autoFocus
-                    maxLength="25"
-                    placeholder="e.g. Radiology"
-                    value={this.state.groupName}
-                    onKeyPress={this.cleanName}
-                    onChange={this.handleChangeName}
-                  />
-                  <HelpBlock className="text-muted m-b-0">
-                    Names must be shorter than 25 characters and without
-                    punctuation.
-                  </HelpBlock>
-                </Col>
-              </FormGroup>
-              <FormGroup bsSize="large">
-                <Col componentClass={ControlLabel} sm={3} className="optional">
-                  Reference
-                  <br />
-                  <span>(automatic)</span>
-                </Col>
+              <Col sm={9}>
+                <FormControl
+                  name="groupName"
+                  type="text"
+                  autoFocus
+                  maxLength="25"
+                  placeholder="e.g. Radiology"
+                  value={this.state.groupName}
+                  onKeyPress={this.cleanName}
+                  onChange={this.handleChangeName}
+                />
+                <HelpBlock className="text-muted m-b-0">
+                  Names must be shorter than 25 characters and without
+                  punctuation.
+                </HelpBlock>
+              </Col>
+            </FormGroup>
+            <FormGroup bsSize="large">
+              <Col componentClass={ControlLabel} sm={3} className="optional">
+                Reference
+                <br />
+                <span>(automatic)</span>
+              </Col>
 
-                <Col sm={9}>
-                  <FormControl
-                    name="reference"
-                    placeholder="e.g. #radiology"
-                    value={this.state.groupSlug}
-                    disabled
-                  />
-                  <HelpBlock className="text-muted m-b-0">
-                    The reference name is the unique ID for a room and can be
-                    mentioned in a conversation to link right to it.
-                  </HelpBlock>
-                </Col>
-              </FormGroup>
-            </Form>
-          </Modal.Body>
+              <Col sm={9}>
+                <FormControl
+                  name="reference"
+                  placeholder="e.g. #radiology"
+                  value={this.state.groupSlug}
+                  disabled
+                />
+                <HelpBlock className="text-muted m-b-0">
+                  The reference name is the unique ID for a room and can be
+                  mentioned in a conversation to link right to it.
+                </HelpBlock>
+              </Col>
+            </FormGroup>
+          </Form>
+        </Modal.Body>
 
-          <Modal.Footer>
-            <Button bsSize="large" onClick={this.toggleModal}>
-              Cancel
-            </Button>
-            <Button
-              bsSize="large"
-              bsStyle="primary"
-              disabled={!this.canRenameRoom()}
-              onClick={this.handleSubmit}
-            >
-              Rename
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </MenuItem>
-    );
+        <Modal.Footer>
+          <Button bsSize="large" onClick={this.closeModal}>
+            Cancel
+          </Button>
+          <Button
+            bsSize="large"
+            bsStyle="primary"
+            disabled={!this.canRenameRoom()}
+            onClick={this.handleSubmit}
+          >
+            Rename
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    ];
   }
 }
 

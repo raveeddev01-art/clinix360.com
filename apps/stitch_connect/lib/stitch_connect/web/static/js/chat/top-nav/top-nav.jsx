@@ -34,15 +34,13 @@ class TopNav extends Component {
     }, 500);
   }
 
-  _toggleAddonMenu = menuName => () => {
+  onSearch = event => {
+    event.preventDefault();
+
     const { addonStore } = this.props;
 
-    if (addonStore.addonPanelType === menuName && addonStore.showAddons) {
-      addonStore.toggleAddons(false);
-    } else {
-      addonStore.setAddonPanel(menuName);
-      addonStore.toggleAddons(true);
-    }
+    addonStore.setAddonPanel("Search Results");
+    addonStore.toggleAddons(true);
   };
 
   onSearchQueryChange = event => {
@@ -57,6 +55,26 @@ class TopNav extends Component {
 
     // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
     document.dispatchEvent(new MouseEvent("click"));
+  };
+
+  _toggleAddonMenu = menuName => () => {
+    const { addonStore } = this.props;
+
+    if (addonStore.addonPanelType === menuName && addonStore.showAddons) {
+      addonStore.toggleAddons(false);
+    } else {
+      addonStore.setAddonPanel(menuName);
+      addonStore.toggleAddons(true);
+    }
+  };
+
+  clearSearch = event => {
+    const { searchStore } = this.props;
+
+    event.preventDefault();
+
+    this.setState({ query: "" });
+    searchStore.reset();
   };
 
   renderRoomControls = () => {
@@ -87,30 +105,12 @@ class TopNav extends Component {
     );
   };
 
-  onSearch = event => {
-    event.preventDefault();
-
-    const { addonStore } = this.props;
-
-    addonStore.setAddonPanel("Search Results");
-    addonStore.toggleAddons(true);
-  };
-
   renderClearButton = () => {
     return this.state.query.length > 0 ? (
       <a onClick={this.clearSearch}>
         <i className="fa fa-times-circle-o" />
       </a>
     ) : null;
-  };
-
-  clearSearch = event => {
-    const { searchStore } = this.props;
-
-    event.preventDefault();
-
-    this.setState({ query: "" });
-    searchStore.reset();
   };
 
   render() {
