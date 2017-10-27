@@ -1,66 +1,82 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 // import CreateTeamForm from "./create-team";
 // import Navigation from "./navigation";
 
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
+import Navbar from "react-bootstrap/lib/Navbar";
+import Nav from "react-bootstrap/lib/Nav";
+import Dropdown from "react-bootstrap/lib/Dropdown";
+import MenuItem from "react-bootstrap/lib/MenuItem";
 
 export default class Header extends Component {
   render() {
     return (
-      // <div className="landing-hero">
-      //   <div className="container">
-      //     <Navigation />
+      <Navbar id="header" inverse collapseOnSelect>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <Link to="/" className="brand">
+              <img src="/images/stitch-brand.png" alt="Stitch" />
+            </Link>
+          </Navbar.Brand>
+          <Navbar.Toggle />
+        </Navbar.Header>
+        <Navbar.Collapse>
+          <ul className="nav navbar-nav navbar-right">
+            <li>
+              <Dropdown id="products-dropdown-menu">
+                <Dropdown.Toggle className="btn-dropdown">
+                  Products
+                </Dropdown.Toggle>
 
-      //     <div className="landing-message text-center">
-      //       <h1>Care Coordination</h1>
-      //       <h3>
-      //         Communicate, write notes, track tasks, <br />upload files, and
-      //         collaborate on any device.
-      //       </h3>
+                <Dropdown.Menu>
+                  <LinkContainer to="/connect">
+                    <MenuItem>Connect</MenuItem>
+                  </LinkContainer>
+                </Dropdown.Menu>
+              </Dropdown>
+            </li>
 
-      //       <CreateTeamForm />
+            <li role="presentation">
+              <Link to="/pricing" className="nav-link">
+                Pricing
+              </Link>
+            </li>
 
-      //       <div className="trial">
-      //         Get started with an unlimited <br className="visible-xs-inline" />number
-      //         of people on our free 14-day trial.
-      //       </div>
-      //     </div>
-      //   </div>
-      // </div>
+            <li>
+              <Dropdown id="resources-dropdown-menu">
+                <Dropdown.Toggle className="btn-dropdown">
+                  Resources
+                </Dropdown.Toggle>
 
-      <header id="header">
-        <div className="container">
-          <Row>
-            <Col md={4}>Stitch</Col>
-            <Col md={8}>
-              <ul className="list-inline text-right m-b-0">
-                <li>
-                  <Link to="/connect">Connect</Link>
-                </li>
-                <li>
-                  <Link to="/pricing">Pricing</Link>
-                </li>
-                <li>
-                  <Link to="/downloads">Downloads</Link>
-                </li>
-                <li>
-                  <a href="https://teamstitch.zendesk.com/hc/en-us">Support</a>
-                </li>
-                <li>
-                  <a href="/signin">Sign In</a>
-                </li>
-                <li>
-                  <a href="/signup/email" className="btn-outline">
-                    Create Team
-                  </a>
-                </li>
-              </ul>
-            </Col>
-          </Row>
-        </div>
-      </header>
+                <Dropdown.Menu>
+                  <LinkContainer to="/downloads">
+                    <MenuItem>
+                      <i className="fa fa-cloud-download" /> Downloads
+                    </MenuItem>
+                  </LinkContainer>
+
+                  <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
+                    <i className="fa fa-life-ring" /> Support
+                  </MenuItem>
+                </Dropdown.Menu>
+              </Dropdown>
+            </li>
+
+            <li role="presentation">
+              <a href="/signin" className="nav-link">
+                Sign In
+              </a>
+            </li>
+
+            <li role="presentation">
+              <a href="/signup/email" className="nav-link">
+                Create Team
+              </a>
+            </li>
+          </ul>
+        </Navbar.Collapse>
+      </Navbar>
     );
   }
 }

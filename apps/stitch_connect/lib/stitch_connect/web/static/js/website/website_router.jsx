@@ -1,31 +1,26 @@
 import React, { Component } from "react";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import { Helmet } from "react-helmet";
 
 import Header from "./components/header";
 import Footer from "./components/footer";
 
-import Landing from "./landing/landing";
-import Pricing from "./pricing/pricing";
+import Landing from "./landing";
+import Connect from "./products/connect";
+import Pricing from "./resources/pricing";
 import Downloads from "./resources/downloads";
 
 @inject("titleStore")
 @observer
 class WebsiteRouter extends Component {
   render() {
-    const { titleStore } = this.props;
-
     return (
       <div className="website-wrapper">
-        <Helmet>
-          <title>{titleStore.title}</title>
-        </Helmet>
-
         <Header />
 
         <Switch>
           <Route exact path="/" component={Landing} />
+          <Route exact path="/connect" component={Connect} />
           <Route exact path="/pricing" component={Pricing} />
           <Route exact path="/downloads" component={Downloads} />
           {/* <Route exact path="/signin" component={TeamPicker} />

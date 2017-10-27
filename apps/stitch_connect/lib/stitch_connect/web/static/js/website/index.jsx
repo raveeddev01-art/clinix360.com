@@ -3,7 +3,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "mobx-react";
 
 // import Header from "./header";
-import OurCustomers from "./our-customers";
 import WebsiteRouter from "./website_router";
 import TitleStore from "../common/stores/title_store";
 
