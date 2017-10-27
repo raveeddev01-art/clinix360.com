@@ -33,7 +33,9 @@ config :stitch_connect, :generators,
   context_app: :stitch
 
 # Configure application environment
-config :stitch_connect, env: Mix.env
+config :stitch_connect,
+  env: Mix.env,
+  application_host: System.get_env("APP_HOST")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

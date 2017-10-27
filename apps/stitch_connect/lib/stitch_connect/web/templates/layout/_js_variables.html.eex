@@ -1,11 +1,5 @@
 <%
-applicationHost =
-  case Application.fetch_env!(:stitch_connect, :env) do
-    :prod ->
-      "teamstitch.com"
-    _ ->
-      "localhost:4443"
-  end
+applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
 authenticationToken = Plug.Conn.get_session(@conn, :authentication_token)
 session_id = Plug.Conn.get_session(@conn, :session_id)
 locked = !!Plug.Conn.get_session(@conn, :locked)
