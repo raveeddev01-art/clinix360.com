@@ -15,10 +15,10 @@ defmodule Stitch.Mobile.BadgeValueTest do
   end
 
   describe "non-DM rooms" do
-    test "when global mobile notification setting is 'everything'", %{} do
+    test "when global mobile notification setting is 'everything'" do
       user = insert(:user, mobile_notification_preference: "everything")
-      insert(:group_user, user: user, mobile_notification_preference: "default", mentions_count: 0, unread_messages_count: 1)
-      assert Mobile.badge_value(user) == 1
+      insert(:group_user, user: user, mobile_notification_preference: "default", mentions_count: 1, unread_messages_count: 100)
+      assert Mobile.badge_value(user) == 100
     end
 
     test "when global mobile notification setting is 'mentions'" do
@@ -29,7 +29,7 @@ defmodule Stitch.Mobile.BadgeValueTest do
 
     test "when global mobile notification setting is 'nothing'" do
       user = insert(:user, mobile_notification_preference: "nothing")
-      insert(:group_user, user: user, mobile_notification_preference: "default", mentions_count: 50, unread_messages_count: 100)
+      insert(:group_user, user: user, mobile_notification_preference: "default", mentions_count: 1, unread_messages_count: 100)
       assert Mobile.badge_value(user) == 0
     end
   end

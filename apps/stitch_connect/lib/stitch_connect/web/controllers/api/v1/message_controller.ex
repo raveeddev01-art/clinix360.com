@@ -50,7 +50,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         active_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
         case Message.create(group.id, user, message_params, active_user_ids) do
-          {:ok, %{message: message, notify_user_ids: notify_user_ids, increment_unread_counter: unread_counter, mention_users: mention_counter}} ->
+          {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
             message = message |> MessageQueries.load_info
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
@@ -125,6 +125,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, _message} ->
             Endpoint.broadcast("groups:#{message.group.slug}", "delete_msg", %{id: message.id})
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
+            PushNotifications.push_badge_update(message)
             send_resp(conn, :no_content, "")
           {:error, _failed_operation, _failed_value, _changeset} ->
             conn

@@ -1,6 +1,48 @@
 defmodule StitchConnect.Web.PushNotifications do
-  alias Stitch.{Group, Message, Mobile, Repo, Accounts.User}
+  alias Stitch.{Accounts.User, Group, GroupUser, Message, Mobile, Repo}
   import Ecto.Query
+
+  def push_badge_update(%Message{user_id: author_id, group_id: group_id}) do
+    user_ids =
+      GroupUser
+      |> where(group_id: ^group_id)
+      |> where([gu], gu.user_id != ^author_id)
+      |> select([gu], gu.user_id)
+      |> Repo.all
+
+    users =
+      Stitch.Accounts.User
+      |> where([u], u.id in ^user_ids)
+      |> Repo.all
+
+    Enum.each users, fn user ->
+      push_badge_update_to_user(user)
+    end
+  end
+
+  def push_badge_update_to_user(user) do
+    %{"ios" => ios_devices, "android" => _android_devices} =
+      user.id
+      |> Mobile.list_user_devices
+      |> Enum.group_by(fn device -> device.type end)
+      |> Map.put_new("ios", [])
+      |> Map.put_new("android", [])
+
+    badge_value = Mobile.badge_value(user)
+
+    Enum.each(ios_devices, fn ios_device ->
+      push_badge_update_to_ios_device(badge_value, ios_device)
+    end)
+  end
+
+  def push_badge_update_to_ios_device(badge_value, %{type: "ios", token: token}) do
+    import Pigeon.APNS.Notification
+
+    new("", token)
+    |> put_badge(badge_value)
+    |> put_alert(%{})
+    |> Pigeon.APNS.push
+  end
 
   def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
     msg = Repo.preload(msg, :user)
