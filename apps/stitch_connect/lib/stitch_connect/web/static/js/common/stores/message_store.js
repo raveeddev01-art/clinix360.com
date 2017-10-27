@@ -217,6 +217,7 @@ class MessageStore {
       this.loadRecentMessages();
     } else {
       this.isScrollBottom = true;
+      this.updateGroupCursor(null);
     }
   }
 
