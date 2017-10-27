@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 export default class BrowserNotificationAlert extends Component {
-  constructor(props) {
-    super(props);
+  constructor(...args) {
+    super(...args);
     this.state = {
       browserPermission: Notification.permission,
       close: false
@@ -11,7 +11,7 @@ export default class BrowserNotificationAlert extends Component {
 
   onTooltipClose = () => {
     this.setState({ close: true });
-  }
+  };
 
   enableNotification = () => {
     const { browserPermission } = this.state;
@@ -23,14 +23,17 @@ export default class BrowserNotificationAlert extends Component {
   };
 
   render() {
-    if (this.state.browserPermission !== 'default' || this.state.close) {
+    if (this.state.browserPermission !== "default" || this.state.close) {
       return null;
     }
 
     return (
       <div className="browser-notification-alert">
         <span>
-          We recommend you to <a role="link" onClick={this.enableNotification}>enable</a> desktop notifications for Stitch Connect.
+          We recommend you&nbsp;
+          <a role="link" onClick={this.enableNotification}>
+            enable
+          </a>&nbsp; desktop notifications for Stitch Connect.
         </span>
         <i
           role="link"
