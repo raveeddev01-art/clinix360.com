@@ -17,8 +17,14 @@ defmodule StitchConnect.Web.ChannelsTestHelper do
       roles: ["admin"], team_id: team.id
     }
 
+    member_attrs = %{
+      fullname: "Daniel Tapia", username: "user2",
+      password: "Password123!", pin: "0000",
+      roles: ["member"], team_id: team.id
+    }
+
     user1 = Accounts.update_and_complete_user_onboarding(user1.id, attrs)
-    user2 = Accounts.update_and_complete_user_onboarding(user2.id, %{attrs | username: "user2"})
+    user2 = Accounts.update_and_complete_user_onboarding(user2.id, member_attrs)
 
     {:ok, team: team, user1: user1, user2: user2}
   end

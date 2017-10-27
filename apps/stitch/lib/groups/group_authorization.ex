@@ -8,7 +8,7 @@ defmodule Stitch.GroupAuthorization do
   @doc """
   """
   def can_view?(%Group{team_id: team_id} = group, %User{team_id: team_id} = user) do
-    group.public || is_member?(group.id, user.id)
+    group.public || is_member?(group.id, user.id) || Enum.member?(user.roles, "admin")
   end
   def can_view?(_group, _user), do: false
 
