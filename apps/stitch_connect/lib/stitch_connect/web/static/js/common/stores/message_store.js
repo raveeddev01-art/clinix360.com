@@ -199,7 +199,8 @@ class MessageStore {
       scroller.scrollTo("newMessageBanner", {
         containerId: "chat",
         smooth: true,
-        duration: 500
+        duration: 500,
+        offset: -60
       });
     }
   };
