@@ -22,6 +22,13 @@ defmodule Stitch.GroupAuthorizationTest do
       assert result == true
     end
 
+    test "returns true for admin user" do
+      user = insert(:user, %{roles: ["admin"]})
+      group = insert(:group, team: user.team)
+      result = Stitch.GroupAuthorization.can_view?(group, user)
+      assert result == true
+    end
+
     test "returns false for private groups he doesn't belong to" do
       user = insert(:user)
       group = insert(:group, team: user.team, public: false)
