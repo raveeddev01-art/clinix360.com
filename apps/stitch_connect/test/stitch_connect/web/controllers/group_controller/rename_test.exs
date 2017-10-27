@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.GroupController.RenameTest do
 
   setup %{conn: conn} do
     team = insert(:team)
-    user = insert(:user, team: team)
+    user = insert(:user, team: team, roles: ["admin"])
     group = insert(:group, team: team)
 
     conn =
@@ -38,7 +38,7 @@ defmodule StitchConnect.Web.GroupController.RenameTest do
   end
 
   test "doesn't allow to rename group from another team", %{conn: conn} do
-    group = insert(:group)
+    group = insert(:group, public: false)
 
     json =
       conn
