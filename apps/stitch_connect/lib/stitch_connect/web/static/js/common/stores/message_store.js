@@ -87,10 +87,11 @@ class MessageStore {
    */
   @computed
   get firstUnreadMessageVisibility() {
-    if (!this.firstUnreadMessage || !this.groupCursor) {
+    if (!this.firstUnreadMessage || !this.loadedInitial) {
       return "hidden-up";
     }
 
+    const lastMessageId = this.groupCursor || this.messages[0].id;
     const messageElement = this.messageElements[this.firstUnreadMessage.id];
     if (!messageElement) {
       return "hidden-up";
@@ -100,7 +101,7 @@ class MessageStore {
       return "visible";
     }
 
-    return this.firstUnreadMessage.id < this.groupCursor
+    return this.firstUnreadMessage.id < lastMessageId
       ? "hidden-up"
       : "hidden-down";
   }
@@ -199,7 +200,8 @@ class MessageStore {
       scroller.scrollTo("newMessageBanner", {
         containerId: "chat",
         smooth: true,
-        duration: 500
+        duration: 500,
+        offset: -40
       });
     }
   };
@@ -215,6 +217,7 @@ class MessageStore {
       this.loadRecentMessages();
     } else {
       this.isScrollBottom = true;
+      this.updateGroupCursor(null);
     }
   }
 
@@ -224,12 +227,12 @@ class MessageStore {
   }
 
   onMessageHide(id) {
-    if (!this.loadedInitial || this.isScrollBottom) {
-      return;
-    }
-
     if (this.messageElements[id]) {
       this.messageElements[id].visible = false;
+    }
+
+    if (!this.loadedInitial || this.isScrollBottom) {
+      return;
     }
 
     if (!this.groupCursor || this.groupCursor === id) {
@@ -241,16 +244,8 @@ class MessageStore {
   }
 
   onMessageShow(id) {
-    if (!this.loadedInitial) {
-      return;
-    }
-
     if (this.messageElements[id]) {
       this.messageElements[id].visible = true;
-    }
-
-    if (!this.groupCursor || this.groupCursor > id) {
-      this.updateGroupCursor(id);
     }
 
     if (
@@ -263,6 +258,14 @@ class MessageStore {
       setTimeout(() => {
         this.markAsRead(false);
       }, 1000);
+    }
+
+    if (!this.loadedInitial) {
+      return;
+    }
+
+    if (!this.groupCursor || this.groupCursor > id) {
+      this.updateGroupCursor(id);
     }
   }
 
@@ -640,6 +643,11 @@ class MessageStore {
     if (newMessage.user_id === currentUser.id) {
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();
+      } else {
+        this.updateUnreadMessagesInfo({
+          unread_messages_count: this.unreadMessagesCount + 1
+        });
+        this.newMessageLinePosition = this.unreadMessagesCount;
       }
     } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);

@@ -209,6 +209,11 @@
                 color: #fff;
               }
             }
+
+            .item-badge {
+              background-color: #fff;
+              color: $brand-primary;
+            }
           }
 
           &.has-unread {
