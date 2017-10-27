@@ -204,6 +204,7 @@ defmodule StitchConnect.Web.GroupChannel do
       {:ok, %{message: message}} ->
         broadcast! socket, "delete_msg", %{id: message.id}
         EventsChannel.broadcast_group_msg_deleted(group, message)
+        PushNotifications.push_badge_update(message)
 
         {:reply, {:ok, %{id: message.id}}, socket}
 
@@ -274,6 +275,7 @@ defmodule StitchConnect.Web.GroupChannel do
       unread_messages_count: group_user.unread_messages_count,
     }
     EventsChannel.broadcast_marked_as_read(user, json)
+    PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
   end
 
@@ -288,6 +290,7 @@ defmodule StitchConnect.Web.GroupChannel do
       unread_messages_count: group_user.unread_messages_count,
     }
     EventsChannel.broadcast_marked_as_unread(user, json)
+    PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
   end
 

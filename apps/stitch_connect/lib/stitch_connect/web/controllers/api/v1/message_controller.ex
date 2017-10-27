@@ -125,6 +125,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, _message} ->
             Endpoint.broadcast("groups:#{message.group.slug}", "delete_msg", %{id: message.id})
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
+            PushNotifications.push_badge_update(message)
             send_resp(conn, :no_content, "")
           {:error, _failed_operation, _failed_value, _changeset} ->
             conn

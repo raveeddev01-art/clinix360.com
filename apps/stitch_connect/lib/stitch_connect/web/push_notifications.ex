@@ -1,16 +1,63 @@
 defmodule StitchConnect.Web.PushNotifications do
-  alias Stitch.{Group, GroupQueries, Message, Mobile, Repo}
+  alias Stitch.{Accounts.User, Group, GroupUser, Message, Mobile, Repo}
+  import Ecto.Query
+
+  def push_badge_update(%Message{user_id: author_id, group_id: group_id}) do
+    user_ids =
+      GroupUser
+      |> where(group_id: ^group_id)
+      |> where([gu], gu.user_id != ^author_id)
+      |> select([gu], gu.user_id)
+      |> Repo.all
+
+    users =
+      Stitch.Accounts.User
+      |> where([u], u.id in ^user_ids)
+      |> Repo.all
+
+    Enum.each users, fn user ->
+      push_badge_update_to_user(user)
+    end
+  end
+
+  def push_badge_update_to_user(user) do
+    %{"ios" => ios_devices, "android" => _android_devices} =
+      user.id
+      |> Mobile.list_user_devices
+      |> Enum.group_by(fn device -> device.type end)
+      |> Map.put_new("ios", [])
+      |> Map.put_new("android", [])
+
+    badge_value = Mobile.badge_value(user)
+
+    Enum.each(ios_devices, fn ios_device ->
+      push_badge_update_to_ios_device(badge_value, ios_device)
+    end)
+  end
+
+  def push_badge_update_to_ios_device(badge_value, %{type: "ios", token: token}) do
+    import Pigeon.APNS.Notification
+
+    new("", token)
+    |> put_badge(badge_value)
+    |> put_alert(%{})
+    |> Pigeon.APNS.push
+  end
 
   def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
     msg = Repo.preload(msg, :user)
 
-    Enum.each user_ids, fn user_id ->
-      grp_with_user_data = GroupQueries.load_user_data(grp, user_id)
-      push_new_msg_notification_to_user(grp_with_user_data, msg, user_id)
+    users =
+      Stitch.Accounts.User
+      |> where([u], u.id in ^user_ids)
+      |> Repo.all
+
+    Enum.each users, fn user ->
+      push_new_msg_notification_to_user(grp, msg, user)
     end
   end
 
-  def push_new_msg_notification_to_user(grp, msg, user_id) do
+  def push_new_msg_notification_to_user(grp, msg, %User{id: user_id} = user) do
     %{"ios" => ios_devices, "android" => android_devices} =
       user_id
       |> Mobile.list_user_devices
@@ -18,18 +65,20 @@ defmodule StitchConnect.Web.PushNotifications do
       |> Map.put_new("ios", [])
       |> Map.put_new("android", [])
 
+    badge_value = Mobile.badge_value(user)
+
     Enum.each(ios_devices, fn ios_device ->
-      push_new_msg_notification_to_ios_device(grp, msg, ios_device)
+      push_new_msg_notification_to_ios_device(grp, msg, badge_value, ios_device)
     end)
 
     push_new_msg_notification_to_android_devices(grp, msg, android_devices)
   end
 
-  def push_new_msg_notification_to_ios_device(grp, msg, %{type: "ios", token: token}) do
+  def push_new_msg_notification_to_ios_device(grp, msg, badge_value, %{type: "ios", token: token}) do
     import Pigeon.APNS.Notification
 
     new(new_msg_notification_body(grp, msg), token)
-    |> put_badge(42)
+    |> put_badge(badge_value)
     |> put_sound("chime")
     |> Pigeon.APNS.push
   end
