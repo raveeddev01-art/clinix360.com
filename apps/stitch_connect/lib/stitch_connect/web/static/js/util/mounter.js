@@ -5,7 +5,7 @@ import AuthenticationRouter from "../authentication/index";
 import Login from "../authentication/login/login";
 import App from "../app/app";
 import Invitation from "../invitation/index";
-import WebFront from "../front/index";
+import Website from "../website/index";
 import Toastr from "../common/components/toastr/toastr";
 
 const componentMap = {
@@ -14,7 +14,7 @@ const componentMap = {
   App,
   Toastr,
   Invitation,
-  WebFront
+  Website
 };
 
 window.mountComponents = () => {

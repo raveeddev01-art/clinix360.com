@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import { Form, FormControl, Button } from "react-bootstrap";
+
+import Form from "react-bootstrap/lib/Form";
+import FormControl from "react-bootstrap/lib/FormControl";
+import Button from "react-bootstrap/lib/Button";
 
 class CreateTeam extends Component {
   constructor(...args) {
