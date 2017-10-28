@@ -9,7 +9,7 @@
       h4 {
         display: flex;
         align-items: center;
-        font-weight: 700;
+        font-weight: 900;
 
         > span {
           width: calc(100% - 450px);
@@ -303,10 +303,9 @@
           .date {
             color: $brand-primary;
             font-size: 15px;
-            font-weight: 800;
+            font-weight: 700;
             line-height: 32px;
             background: $body-bg;
-            border-radius: 4px;
             padding: 0 12px;
             position: absolute;
             top: -18px;
@@ -323,10 +322,9 @@
           .banner-text {
             color: $brand-primary;
             font-size: 15px;
-            font-weight: 800;
+            font-weight: 700;
             line-height: 32px;
-            background: #fafafa;
-            border-radius: 6px;
+            background: $body-bg;
             padding: 0 12px;
             position: absolute;
             top: -18px;
