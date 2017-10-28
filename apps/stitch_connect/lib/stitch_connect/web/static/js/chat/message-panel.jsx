@@ -23,7 +23,8 @@ export default class MessagePanel extends Component {
 
     if (evt.keyCode === 27) {
       // ESC key
-      messageStore.markAsRead();
+      if (messageStore.unreadMessagesCount > 0) messageStore.markAsRead(false);
+      else messageStore.markAsRead();
     }
   };
 
