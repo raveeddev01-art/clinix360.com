@@ -22,7 +22,7 @@ class MessageStore {
   @observable isLoadingRecent = false;
   @observable isLoadingPast = false;
   @observable highlightId = null; // message will be highlighted
-  markedAsUnread = false;
+  @observable markedAsUnread = false;
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
   @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
@@ -635,33 +635,26 @@ class MessageStore {
 
     this.messages.unshift(newMessage);
 
-    // 6. New Messages Line
-    //  1. new message line should ONLY disappear if You enter a new message
-    //
-    // In other words, if the user enters messages when messages are marked as read
-    // and new mesage line is visible, hide new message line
     if (newMessage.user_id === currentUser.id) {
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();
-      } else {
-        this.updateUnreadMessagesInfo({
-          unread_messages_count: this.unreadMessagesCount + 1
-        });
-        this.newMessageLinePosition = this.unreadMessagesCount;
       }
+      this.newMessageLinePosition = 0;
     } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       // For messages from other users
+      if (this.newMessageLinePosition || !this.isScrollBottom) {
+        this.newMessageLinePosition = this.newMessageLinePosition + 1;
+      }
+
       if (this.unreadMessagesCount || !this.isScrollBottom) {
         this.updateUnreadMessagesInfo({
           unread_messages_count: this.unreadMessagesCount + 1,
           mentions_count: this.mentionsCount + (isMention ? 1 : 0)
         });
-
-        this.newMessageLinePosition = this.unreadMessagesCount;
       } else {
-        this.markAsRead();
+        this.markAsRead(false);
       }
     }
 
@@ -723,26 +716,6 @@ class MessageStore {
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };
 
-  /**
-   * Conversation Loading/Unreads/New Messages
-   * A. When you enter or load a conversation with no unread messages...
-   *    1. If the user hasn't loaded past 30 then...
-   *      a. Start user at the PREVIOUS place they were in the conversation (Instant) OR
-   *      b. Start user at bottom (Instant)
-   *    2. If the user has loaded a conversation more than 30 messages (e.g. another 60), then...
-   *      a. Start user at the bottom. (Instant)
-   * B. When you enter or load a conversation with unread messages...
-   *    1. If oldest unread message is within limit (e.g. 30)
-   *      a. Start user at where they left off (at the oldest unread message). Autoscroll Target Top from the bottom. (Animation)
-   *      b. Mark all messages in the conversation as read
-   *    2. If oldest unread message is beyond rendered message limit (e.g. 30 messages)...
-   *      a. take user so target message is at top of viewport and show thin blue bar with # of unread messages. (Animation)
-   *        i. Don't mark messages as read
-   * NOTE B.2.b logic inside ./chat/message-panel.jsx
-   *      b. Clicking this thin blue bar OR trying to scroll past rendered message list...
-   *        i. autoscrolls to oldest unread message. (Animation)
-   *        ii. Marks all messages in the conversation as read
-   */
   handleInitialLoading = () => {
     const { sidemenuStore } = this.rootStore;
     let posHistory = null;

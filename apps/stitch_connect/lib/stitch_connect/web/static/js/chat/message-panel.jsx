@@ -108,7 +108,7 @@ export default class MessagePanel extends Component {
     return (
       <div id="chat-container" className={chatContainerClassName}>
         <div className="container-bars">
-          {this.renderUnreadMessagesBar()}
+          {!messageStore.markedAsUnread && this.renderUnreadMessagesBar()}
           <UploadProgress />
         </div>
 
