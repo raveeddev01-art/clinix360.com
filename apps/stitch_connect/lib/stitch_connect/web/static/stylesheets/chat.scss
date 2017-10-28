@@ -322,14 +322,14 @@
 
           .banner-text {
             color: $brand-primary;
-            font-weight: bold;
-            line-height: 1.45;
-            background: #fff;
-            border: 1px solid $brand-primary;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 32px;
+            background: #fafafa;
             border-radius: 6px;
-            padding: 6px 12px;
+            padding: 0 12px;
             position: absolute;
-            top: -17px;
+            top: -18px;
           }
         }
       }
