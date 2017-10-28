@@ -153,8 +153,9 @@ class MessageStore {
 
   @action
   updateGroupCursor(cursor) {
-    const { sidemenuStore } = this.rootStore;
+    const { sidemenuStore, groupStore } = this.rootStore;
 
+    if (groupStore.loading) return;
     this.groupCursor = cursor;
     sidemenuStore.updateGroupCursor(this.groupId, cursor);
   }
