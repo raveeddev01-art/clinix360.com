@@ -69,7 +69,7 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
     assert [] = json
   end
 
-  test "when user is admin isn't a member of a private group", %{conn: conn, team: team, admin: admin} do
+  test "when user is admin and isn't a member of a private group", %{conn: conn, team: team, admin: admin} do
     conn =
       conn
       |> with_team_subdomain(team)
@@ -81,9 +81,9 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
     json =
       conn
       |> get(api_v1_group_path(conn, :users, group))
-      |> json_response(401)
+      |> json_response(200)
 
-    assert %{"message" => "Not authorized to view this room."} = json
+    assert [] = json
   end
 
   test "when user is admin and isn't a member of a public group belonging to another team", %{conn: conn, team: team, admin: admin} do

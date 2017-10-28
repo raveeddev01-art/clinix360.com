@@ -2,7 +2,6 @@ defmodule StitchConnect.Web.MessageControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   alias Stitch.{MessageQueries}
   import Phoenix.ChannelTest, except: [connect: 2]
-  import StitchConnect.Web.SubdomainRouter.Helpers
 
   describe "POST /api/v1/groups/:group_id/messages" do
     test "default message with text", %{conn: conn} do
