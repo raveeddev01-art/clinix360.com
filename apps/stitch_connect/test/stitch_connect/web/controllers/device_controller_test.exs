@@ -34,5 +34,20 @@ defmodule StitchConnect.Web.DeviceControllerTest do
         token: "foobarbaz"
       }] = Mobile.list_user_devices(bob.id)
     end
+
+    test "renders errors when data is invalid", %{conn: conn} do
+      json =
+        conn
+        |> post("/api/v1/devices", %{})
+        |> json_response(:unprocessable_entity)
+
+      assert json == %{
+        "errors" => %{
+          "name" => ["can't be blank"],
+          "token" => ["can't be blank"]
+        },
+        "message" => "name can't be blank, and token can't be blank"
+      }
+    end
   end
 end
