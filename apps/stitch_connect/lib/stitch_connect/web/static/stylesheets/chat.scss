@@ -229,7 +229,7 @@
             }
 
             .mark-as-read-button {
-              border-left: 1px solid lighten($brand-primary, 40%);
+              border-left: 1px solid #fff;
 
               &:hover {
                 filter: brightness(85%);
