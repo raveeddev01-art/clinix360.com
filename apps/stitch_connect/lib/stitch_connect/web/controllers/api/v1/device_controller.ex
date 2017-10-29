@@ -2,6 +2,8 @@ defmodule StitchConnect.Web.Api.V1.DeviceController do
   use StitchConnect.Web, :controller
   alias Stitch.Mobile
 
+  action_fallback StitchConnect.Web.Api.V1.FallbackController
+
   def create(conn, params) do
     user = conn.assigns.current_user
 

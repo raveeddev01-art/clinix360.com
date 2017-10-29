@@ -16,11 +16,7 @@ defmodule StitchConnect.Pigeon do
   def fcm_config do
     Pigeon.FCM.Config.new(
       name: :fcm_default,
-      mode: :prod,
-      key: System.get_env("FCM_KEY"),
-      reconnect: false,
-      port: 2197,
-      ping_period: 300_000
+      key: System.get_env("FCM_KEY")
     )
   end
 
