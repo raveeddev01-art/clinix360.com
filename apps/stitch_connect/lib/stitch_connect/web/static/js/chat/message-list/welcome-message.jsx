@@ -94,8 +94,12 @@ class WelcomeMessage extends Component {
       <div className="welcome-message">
         <div className="welcome-message__container">
           <div className="welcome-message__title">
-            {this.getIcon()}
-            {` ${group.name}`}
+            <h3>
+              <span>
+                {this.getIcon()}
+                {` ${group.name}`}
+              </span>
+            </h3>
           </div>
           {group.groupType === "group"
             ? this.renderForRoom()
