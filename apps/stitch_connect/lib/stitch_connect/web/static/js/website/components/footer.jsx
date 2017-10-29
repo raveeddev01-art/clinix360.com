@@ -31,6 +31,14 @@ export default class Footer extends Component {
                 <li>
                   <a
                     target="_blank"
+                    href="https://calendly.com/teamstitch/demo"
+                  >
+                    Demo
+                  </a>
+                </li>
+                <li>
+                  <a
+                    target="_blank"
                     href="https://teamstitch.zendesk.com/hc/en-us"
                   >
                     Support

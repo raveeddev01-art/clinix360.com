@@ -61,7 +61,10 @@ export default class Header extends Component {
                     <i className="fa fa-desktop" /> Demo
                   </MenuItem>
 
-                  <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
+                  <MenuItem
+                    href="https://teamstitch.zendesk.com/hc/en-us"
+                    target="_blank"
+                  >
                     <i className="fa fa-life-ring" /> Support
                   </MenuItem>
 
