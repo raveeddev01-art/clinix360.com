@@ -40,6 +40,7 @@ $sidebar_width: 270px;
 
 #main {
   flex-grow: 1;
+  width: 100%;
 
   .flex-content {
     display: flex;
@@ -50,11 +51,16 @@ $sidebar_width: 270px;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      width: calc(100% - 350px);
 
       #chat {
         flex-grow: 1;
         overflow-x: hidden;
         overflow-y: scroll;
+      }
+
+      @media only screen and (max-width: 991px) {
+        width: calc(100% - 300px);
       }
     }
   }
