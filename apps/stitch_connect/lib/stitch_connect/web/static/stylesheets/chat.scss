@@ -9,7 +9,7 @@
       h4 {
         display: flex;
         align-items: center;
-        font-weight: 700;
+        font-weight: 900;
 
         > span {
           width: calc(100% - 450px);
@@ -229,7 +229,7 @@
             }
 
             .mark-as-read-button {
-              border-left: 1px solid lighten($brand-primary, 40%);
+              border-left: 1px solid #fff;
 
               &:hover {
                 filter: brightness(85%);
@@ -303,10 +303,9 @@
           .date {
             color: $brand-primary;
             font-size: 15px;
-            font-weight: 800;
+            font-weight: 700;
             line-height: 32px;
             background: $body-bg;
-            border-radius: 4px;
             padding: 0 12px;
             position: absolute;
             top: -18px;
@@ -322,14 +321,13 @@
 
           .banner-text {
             color: $brand-primary;
-            font-weight: bold;
-            line-height: 1.45;
-            background: #fff;
-            border: 1px solid $brand-primary;
-            border-radius: 6px;
-            padding: 6px 12px;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 32px;
+            background: $body-bg;
+            padding: 0 12px;
             position: absolute;
-            top: -17px;
+            top: -18px;
           }
         }
       }
