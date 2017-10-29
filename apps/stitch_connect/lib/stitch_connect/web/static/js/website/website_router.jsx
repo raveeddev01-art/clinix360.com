@@ -9,6 +9,7 @@ import Landing from "./landing";
 import Connect from "./products/connect";
 import Pricing from "./resources/pricing";
 import Downloads from "./resources/downloads";
+import Customers from "./resources/customers";
 import PrivacyPolicy from "./resources/privacy-policy";
 import TermsOfService from "./resources/terms-of-service";
 
@@ -24,6 +25,7 @@ class WebsiteRouter extends Component {
           <Route exact path="/connect" component={Connect} />
           <Route exact path="/pricing" component={Pricing} />
           <Route exact path="/downloads" component={Downloads} />
+          <Route exact path="/customers" component={Customers} />
           <Route exact path="/privacy-policy" component={PrivacyPolicy} />
           <Route exact path="/terms-of-service" component={TermsOfService} />
 

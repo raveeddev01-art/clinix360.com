@@ -65,7 +65,7 @@ export default class Downloads extends Component {
                       <Row>
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="http://connect-desktop.teamstitch.com/download/latest/osx_64">
+                            <a href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch-1.0.2.dmg">
                               <img
                                 src="/images/mac-icon.png"
                                 alt="Connect for Mac"
@@ -78,7 +78,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
-                              href="http://connect-desktop.teamstitch.com/download/latest/osx_64"
+                              href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch-1.0.2.dmg"
                             >
                               Download
                             </Button>
@@ -87,7 +87,7 @@ export default class Downloads extends Component {
 
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="http://connect-desktop.teamstitch.com/download/latest/windows_32">
+                            <a href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.exe">
                               <img
                                 src="/images/windows-icon.png"
                                 alt="Connect for Windows"
@@ -100,7 +100,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
-                              href="http://connect-desktop.teamstitch.com/download/latest/windows_32conn"
+                              href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.execonn"
                             >
                               Download
                             </Button>

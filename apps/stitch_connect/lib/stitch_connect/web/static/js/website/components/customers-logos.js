@@ -7,7 +7,7 @@ export default [
   { img: "/images/customer-rma.png", title: "Clarity" },
   { img: "/images/customer-coastal.png", title: "Clarity" },
   { img: "/images/customer-luminance.png", title: "Clarity" },
-  { img: "/images/customer-opternative.png", title: "Clarity" },
+  { img: "/images/customer-firstcall.png", title: "Clarity" },
   { img: "/images/customer-mihaw.png", title: "Clarity" },
   { img: "/images/customer-vosrx.png", title: "Clarity" },
   { img: "/images/customer-pchhh.png", title: "Clarity" },

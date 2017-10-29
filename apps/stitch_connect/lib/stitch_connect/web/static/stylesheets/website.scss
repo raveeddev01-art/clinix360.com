@@ -44,8 +44,39 @@
       background: transparent;
       border: 0;
       padding: 15px;
+      box-shadow: none;
       @media (min-width: 768px) {
         font-size: 15px;
+      }
+    }
+
+    .dropdown-menu {
+      a {
+        border-radius: 3px;
+        @media (min-width: 768px) {
+          font-size: 15px;
+        }
+
+        i.fa {
+          color: #036;
+        }
+
+        &:hover i.fa {
+          color: #fff;
+        }
+      }
+
+      .active > a {
+        color: #333;
+        background: transparent;
+
+        &:hover {
+          color: #fff;
+          background: #036;
+          i.fa {
+            color: #fff;
+          }
+        }
       }
     }
   }
@@ -126,6 +157,10 @@
     h5 {
       color: #666;
       font-weight: 700;
+    }
+
+    li {
+      padding: 3px 0;
     }
 
     a {
@@ -370,6 +405,32 @@
 
   .btn-lg {
     padding: 8px 20px;
+  }
+}
+
+.website-wrapper .customers-subheader .landing-message {
+  max-width: 760px;
+}
+
+.customer-box {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  padding: 25px 50px;
+  margin: 40px 0;
+
+  .page-header {
+    margin-top: 20px;
+    h1 {
+      font-weight: 700;
+    }
+  }
+
+  p {
+    @media (min-width: 768px) {
+      font-size: 16px;
+    }
   }
 }
 

@@ -43,6 +43,9 @@ export default class Footer extends Component {
               <h5>Company</h5>
               <ul className="list-unstyled">
                 <li>
+                  <Link to="/customers">Customers</Link>
+                </li>
+                <li>
                   <Link to="/privacy-policy">Privacy Policy</Link>
                 </li>
                 <li>

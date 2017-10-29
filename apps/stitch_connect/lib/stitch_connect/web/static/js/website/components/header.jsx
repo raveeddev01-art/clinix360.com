@@ -57,6 +57,12 @@ export default class Header extends Component {
                   <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
                     <i className="fa fa-life-ring" /> Support
                   </MenuItem>
+
+                  <LinkContainer to="/customers">
+                    <MenuItem>
+                      <i className="fa fa-users" /> Customers
+                    </MenuItem>
+                  </LinkContainer>
                 </Dropdown.Menu>
               </Dropdown>
             </li>
