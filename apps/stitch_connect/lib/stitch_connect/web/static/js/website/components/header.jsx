@@ -54,6 +54,13 @@ export default class Header extends Component {
                     </MenuItem>
                   </LinkContainer>
 
+                  <MenuItem
+                    href="https://calendly.com/teamstitch/demo"
+                    target="_blank"
+                  >
+                    <i className="fa fa-desktop" /> Demo
+                  </MenuItem>
+
                   <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
                     <i className="fa fa-life-ring" /> Support
                   </MenuItem>
