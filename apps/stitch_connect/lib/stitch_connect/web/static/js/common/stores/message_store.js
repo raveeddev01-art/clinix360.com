@@ -153,11 +153,14 @@ class MessageStore {
 
   @action
   updateGroupCursor(cursor) {
+    // Disable saving group cursor until we revisit
+    /*
     const { sidemenuStore, groupStore } = this.rootStore;
-
     if (groupStore.loading) return;
+
     this.groupCursor = cursor;
     sidemenuStore.updateGroupCursor(this.groupId, cursor);
+    */
   }
 
   // Scroll to the bottom of chat div with animation
