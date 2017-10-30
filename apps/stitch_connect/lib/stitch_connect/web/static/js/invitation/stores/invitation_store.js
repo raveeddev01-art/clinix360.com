@@ -37,7 +37,7 @@ class InvitationStore {
       }
     }).then(resp => {
       notify.show("Thanks for completing your profile.");
-      window.location.href = "/login";
+      window.location.href = "/";
     });
   };
 }
