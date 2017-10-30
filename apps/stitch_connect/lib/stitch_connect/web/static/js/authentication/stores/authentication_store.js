@@ -20,16 +20,5 @@ class AuthenticationStore {
   }
 }
 
-let authenticationStore;
-
-const store = {
-  get instance() {
-    return authenticationStore;
-  },
-  set instance(props) {
-    authenticationStore = new AuthenticationStore(props);
-  }
-};
-
-export default store;
-export { AuthenticationStore };
+const authenticationStore = new AuthenticationStore(props);
+export default authenticationStore;

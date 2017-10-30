@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "mobx-react";
 import resetPasswordStore from "./stores/reset_password_store";
-import authenticationStore from "./authentication_store";
+import authenticationStore from "./stores/authentication_store";
 import TitleStore from "../common/stores/title_store";
 import AuthenticationRouter from "./authentication_router";
 
@@ -12,10 +12,8 @@ const stores = { resetPasswordStore, authenticationStore };
 
 class Auth extends Component {
   componentWillMount() {
-    authenticationStore.instance = {
-      teamName: this.props.teamName,
-      teamSlug: this.props.teamSlug
-    };
+    authenticationStore.teamName = this.props.teamName;
+    authenticationStore.teamSlug = this.props.teamSlug;
     resetPasswordStore.token = this.props.token;
     resetPasswordStore.teamId = this.props.teamId;
 
