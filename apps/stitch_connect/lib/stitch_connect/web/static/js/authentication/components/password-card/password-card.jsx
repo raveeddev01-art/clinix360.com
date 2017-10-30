@@ -17,8 +17,7 @@ class PasswordCard extends Component {
 
   _onChange = evt => {
     this.setState({
-      password: evt.target.value,
-      formValid: this._isPasswordValid(evt.target.value)
+      password: evt.target.value
     });
   };
 
