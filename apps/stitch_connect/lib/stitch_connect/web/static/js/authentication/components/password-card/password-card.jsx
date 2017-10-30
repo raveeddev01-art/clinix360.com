@@ -39,7 +39,7 @@ class PasswordCard extends Component {
           </span>
         }
         onNext={this._onNext}
-        disableNext={!formValid}
+        disableNext={formValid}
       >
         <FormGroup bsSize="large">
           <FormControl
