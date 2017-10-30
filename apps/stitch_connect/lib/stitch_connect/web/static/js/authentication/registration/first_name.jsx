@@ -1,18 +1,23 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
+import { observer, inject } from "mobx-react";
 import FirstNameCard from "../components/first-name-card/first-name-card";
 
 @observer
+@inject("registrationStore")
 export default class FirstName extends Component {
   _onSubmit = value => {
-    store.instance.firstName = value;
-    this.props.history.push("/signup/last-name");
+    const { registrationStore, history } = this.props;
+
+    registrationStore.firstName = value;
+    history.push("/signup/last-name");
   };
 
   render() {
+    const { registrationStore } = this.props;
+
     return (
       <FirstNameCard
+        value={registrationStore.firstName}
         backUrl="/signup/team-url"
         restartUrl="/signup/team-name"
         onNext={this._onSubmit}

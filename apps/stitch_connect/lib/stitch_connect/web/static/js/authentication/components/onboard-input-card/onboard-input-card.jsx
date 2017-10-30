@@ -11,7 +11,7 @@ class OnboardInputCard extends Component {
     super(props);
 
     this.state = {
-      value: ""
+      value: props.value
     };
   }
 
@@ -50,6 +50,7 @@ OnboardInputCard.propTypes = {
   placeholder: PropTypes.string.isRequired,
   helperText: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
+  value: PropTypes.string,
   disableNext: PropTypes.bool.isRequired
 };
 
@@ -61,6 +62,7 @@ OnboardInputCard.defaultProps = {
   helperText: "",
   nextButtonText: "Next",
   type: "text",
+  value: "",
   disableNext: false
 };
 
