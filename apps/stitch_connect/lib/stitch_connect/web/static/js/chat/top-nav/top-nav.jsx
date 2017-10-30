@@ -48,6 +48,12 @@ class TopNav extends Component {
     this.debouncedSearch(event.target.value);
   };
 
+  onToggleSettings = isOpen => {
+    if (isOpen) {
+      this.settingsOverlay.hide();
+    }
+  };
+
   onRoomInfoClick = () => {
     this.roomInfoOverlay.hide();
 
@@ -132,11 +138,15 @@ class TopNav extends Component {
             id="dropdown-room-controls"
             pullRight
             rootCloseEvent="click"
+            onToggle={this.onToggleSettings}
           >
             <Dropdown.Toggle noCaret>
               <OverlayTrigger
                 placement="bottom"
                 overlay={<Tooltip id="tooltip-settings">Settings</Tooltip>}
+                ref={ref => {
+                  this.settingsOverlay = ref;
+                }}
               >
                 <i className="fa fa-cog" />
               </OverlayTrigger>
