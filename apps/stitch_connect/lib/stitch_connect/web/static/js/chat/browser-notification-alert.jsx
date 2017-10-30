@@ -32,12 +32,12 @@ export default class BrowserNotificationAlert extends Component {
         <span>
           We recommend you&nbsp;
           <a role="link" onClick={this.enableNotification}>
-            enable
-          </a>&nbsp; desktop notifications for Stitch Connect.
+            enable desktop notifications
+          </a>&nbsp; for Stitch Connect.
         </span>
         <i
           role="link"
-          className="fa fa-close close-browser-notification-alert"
+          className="fa fa-times-circle-o close-browser-notification-alert"
           onClick={this.onTooltipClose}
         />
       </div>
