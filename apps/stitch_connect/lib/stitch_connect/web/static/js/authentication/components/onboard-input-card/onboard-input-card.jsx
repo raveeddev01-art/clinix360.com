@@ -17,6 +17,13 @@ class OnboardInputCard extends Component {
 
   _onChange = evt => this.setState({ value: evt.target.value });
 
+  _onFocus = evt => {
+    const tempValue = evt.target.value;
+
+    evt.target.value = "";
+    evt.target.value = tempValue;
+  };
+
   _onNext = () => this.props.onNext(this.state.value);
 
   render() {
@@ -32,6 +39,7 @@ class OnboardInputCard extends Component {
             placeholder={placeholder}
             value={value}
             onChange={this._onChange}
+            onFocus={this._onFocus}
           />
         </FormGroup>
         <HelpBlock className="m-b-20">{helperText}</HelpBlock>
