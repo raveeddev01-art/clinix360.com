@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.PushNotifications do
   alias Stitch.{Accounts.User, Group, GroupUser, Message, Mobile, Repo}
+  alias Pigeon.{APNS, FCM}
   import Ecto.Query
 
   def push_badge_update(%Message{user_id: author_id, group_id: group_id}) do
@@ -21,7 +22,6 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   def push_badge_update_to_user(user) do
-    alias Pigeon.APNS
     badge_value = Mobile.badge_value(user)
 
     user.id
@@ -61,7 +61,7 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
-    import Pigeon.APNS.Notification
+    import APNS.Notification
 
     ios_devices
     |> Enum.map(fn %{token: token} ->
@@ -71,17 +71,17 @@ defmodule StitchConnect.Web.PushNotifications do
       |> put_badge(badge_value)
       |> put_sound("chime")
     end)
-    |> Pigeon.APNS.push
+    |> APNS.push
   end
 
   defp push_new_msg_notification_to_android_devices(grp, msg, android_devices) do
-    import Pigeon.FCM.Notification
+    import FCM.Notification
 
     android_devices
     |> Enum.map(&(&1.token))
     |> new
     |> put_notification(%{"body" => new_msg_notification_body(grp, msg)})
-    |> Pigeon.FCM.push
+    |> FCM.push
   end
 
   defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
