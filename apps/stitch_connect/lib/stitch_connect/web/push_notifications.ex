@@ -3,11 +3,10 @@ defmodule StitchConnect.Web.PushNotifications do
   alias Pigeon.{APNS, FCM}
   import Ecto.Query
 
-  def push_badge_update(%Message{user_id: author_id, group_id: group_id}) do
+  def push_badge_update(%Message{group_id: group_id}) do
     user_ids =
       GroupUser
       |> where(group_id: ^group_id)
-      |> where([gu], gu.user_id != ^author_id)
       |> select([gu], gu.user_id)
       |> Repo.all
 
