@@ -11,8 +11,8 @@ export default class TeamUrl extends Component {
     super(props);
 
     this.state = {
-      urlAvailable: false,
-      teamUrl: props.registrationStore.teamUrl
+      teamUrl: props.registrationStore.teamUrl,
+      urlAvailable: !!props.registrationStore.teamUrl
     };
   }
 
@@ -30,6 +30,13 @@ export default class TeamUrl extends Component {
       this.checkAvailability(value);
     }, 300);
   };
+
+  moveCaretAtEnd(e) {
+    const tempValue = e.target.value;
+
+    e.target.value = "";
+    e.target.value = tempValue;
+  }
 
   checkAvailability = url => {
     post("/api/v1/teams/url-available", {
@@ -66,6 +73,7 @@ export default class TeamUrl extends Component {
               placeholder="Ex. care-clinic"
               value={this.state.teamUrl}
               onChange={this.handleChange}
+              onFocus={this.moveCaretAtEnd}
             />
           </FormGroup>
 
