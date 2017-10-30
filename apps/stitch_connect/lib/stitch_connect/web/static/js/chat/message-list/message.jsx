@@ -39,10 +39,6 @@ class Message extends Component {
     }
   };
 
-  handleClick = () => {
-    this.setState({ selected: !this.state.selected });
-  };
-
   markAsUnread = () => {
     const { message, messageStore } = this.props;
 
@@ -84,10 +80,12 @@ class Message extends Component {
     messageStore.toggleStar(message.id);
   };
 
-  checkPosition = isActionDropdownOpen => {
+  onToggle = isOpen => {
     const { chatDiv } = this.props.messageStore;
 
-    if (isActionDropdownOpen) {
+    this.setState({ selected: isOpen });
+
+    if (isOpen) {
       this.setState({
         dropup:
           chatDiv.scrollTop + chatDiv.offsetHeight / 2 <
@@ -185,9 +183,9 @@ class Message extends Component {
         className="message-actions"
         dropup={dropup}
         pullRight
-        onToggle={this.checkPosition}
+        onToggle={this.onToggle}
       >
-        <Dropdown.Toggle useAnchor noCaret onClick={this.handleClick}>
+        <Dropdown.Toggle useAnchor noCaret>
           <i className="fa fa-angle-down" />
         </Dropdown.Toggle>
 
