@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import PhoneNumberCard from "../components/phone-number-card/phone-number-card";
 
-@observer
 @inject("registrationStore")
+@observer
 class PhoneNumber extends Component {
   _onSubmit = value => {
     const { registrationStore, history } = this.props;

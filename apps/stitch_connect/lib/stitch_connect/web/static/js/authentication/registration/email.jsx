@@ -10,8 +10,8 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-@observer
 @inject("registrationStore")
+@observer
 export default class Email extends Component {
   constructor(props) {
     super(props);

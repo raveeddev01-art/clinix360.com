@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import FirstNameCard from "../components/first-name-card/first-name-card";
 
-@observer
 @inject("registrationStore")
+@observer
 export default class FirstName extends Component {
   _onSubmit = value => {
     const { registrationStore, history } = this.props;

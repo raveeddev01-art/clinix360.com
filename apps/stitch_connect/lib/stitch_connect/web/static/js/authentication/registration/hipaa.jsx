@@ -9,8 +9,8 @@ import Col from "react-bootstrap/lib/Col";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-@observer
 @inject("registrationStore")
+@observer
 export default class Hipaa extends Component {
   constructor(props) {
     super(props);

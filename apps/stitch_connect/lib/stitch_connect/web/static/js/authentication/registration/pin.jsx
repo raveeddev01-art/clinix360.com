@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import PinCard from "../components/pin-card/pin-card";
 
-@observer
 @inject("registrationStore")
+@observer
 export default class Pin extends Component {
   _onSubmit = value => {
     const { registrationStore, history } = this.props;

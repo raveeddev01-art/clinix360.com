@@ -3,8 +3,8 @@ import { observer, inject } from "mobx-react";
 
 import PasswordCard from "../components/password-card/password-card";
 
-@observer
 @inject("registrationStore")
+@observer
 export default class Password extends Component {
   _onSubmit = value => {
     const { registrationStore, history } = this.props;
@@ -14,6 +14,8 @@ export default class Password extends Component {
   };
 
   render() {
+    const { registrationStore } = this.props;
+
     return (
       <PasswordCard
         value={registrationStore.password}

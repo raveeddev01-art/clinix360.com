@@ -8,8 +8,8 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Button from "react-bootstrap/lib/Button";
 
-@observer
 @inject("registrationStore")
+@observer
 export default class AppDownload extends Component {
   render() {
     const { registrationStore } = this.props;

@@ -10,8 +10,8 @@ import Col from "react-bootstrap/lib/Col";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-@observer
 @inject("registrationStore")
+@observer
 export default class Confirmation extends Component {
   constructor(...args) {
     super(...args);
