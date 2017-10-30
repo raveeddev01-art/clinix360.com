@@ -33,7 +33,8 @@ defmodule Stitch.TeamQueriesTest do
       insert(:user, team: team, onboarded: true, disabled: true)
       insert(:user, team: team, onboarded: true, disabled: true)
       insert(:user, team: team, onboarded: false, disabled: false)
-      assert TeamQueries.list_active_users(team) == active_users
+      users = TeamQueries.list_active_users(team)
+      assert Enum.sort_by(users, & &1.id) == active_users
     end
 
     test "doesn't list disabled users", %{team: team} do
