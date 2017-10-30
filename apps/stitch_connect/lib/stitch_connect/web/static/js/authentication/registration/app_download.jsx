@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
+import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -10,12 +9,11 @@ import Col from "react-bootstrap/lib/Col";
 import Button from "react-bootstrap/lib/Button";
 
 @observer
+@inject("registrationStore")
 export default class AppDownload extends Component {
-  constructor(props) {
-    super();
-  }
-
   render() {
+    const { registrationStore } = this.props;
+
     return (
       <div className="authentication-card download-card text-center">
         <div className="card-header">
@@ -81,7 +79,7 @@ export default class AppDownload extends Component {
         </Row>
 
         <a
-          href={`https://${store.instance.teamSlug}.localhost:4443`}
+          href={`https://${registrationStore.teamSlug}.localhost:4443`}
           className="btn btn-lg btn-default m-b-40"
         >
           Skip & Launch
