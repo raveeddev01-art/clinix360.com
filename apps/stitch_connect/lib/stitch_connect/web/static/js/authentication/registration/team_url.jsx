@@ -1,21 +1,18 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { observer, inject } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 @observer
-@inject("authenticationStore")
+@inject("registrationStore")
 export default class TeamUrl extends Component {
   constructor(props) {
     super(props);
 
-    console.log(props.authenticationStore.teamUrl);
-
     this.state = {
       urlAvailable: false,
-      teamUrl: props.authenticationStore.teamUrl
+      teamUrl: props.registrationStore.teamUrl
     };
   }
 
@@ -45,8 +42,8 @@ export default class TeamUrl extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    const { authenticationStore, history } = this.props;
-    authenticationStore.teamUrl = this.state.teamUrl;
+    const { registrationStore, history } = this.props;
+    registrationStore.teamUrl = this.state.teamUrl;
     history.push("/signup/first-name");
   };
 
