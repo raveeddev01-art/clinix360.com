@@ -281,4 +281,27 @@ defmodule Stitch.Group do
     |> Ecto.Multi.insert(:system_message, Message.leave_message_changeset(group, user_id))
   end
   def log_system_leave_messages(multi, _group, _user_id), do: multi
+
+  def update_members(%Group{name: name}, _) when name in ["__dm_group__", "__multi_dm_group__"] do
+    {:error, "Can't update members in a direct message room"}
+  end
+
+  def update_members(%Group{id: group_id, creator_user_id: creator_user_id, team_id: team_id} = group, user_ids) do
+    user_ids = Enum.filter(user_ids, & !!Stitch.Accounts.get_for_team_id(&1, team_id))
+
+    current_member_ids =
+      GroupUser
+      |> where(group_id: ^group_id)
+      |> select([gu], gu.user_id)
+      |> Repo.all
+
+    remove_user_ids = current_member_ids -- [creator_user_id | user_ids]
+    add_user_ids = user_ids -- [creator_user_id | current_member_ids]
+
+    Repo.transaction fn ->
+      remove_user_ids |> Enum.each(&Group.remove(group, &1))
+      add_user_ids |> Enum.each(&Group.add_user(group, &1))
+      %{removed: remove_user_ids, added: add_user_ids}
+    end
+  end
 end
