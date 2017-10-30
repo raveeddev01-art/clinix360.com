@@ -21,27 +21,17 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   def push_badge_update_to_user(user) do
-    %{"ios" => ios_devices, "android" => _android_devices} =
-      user.id
-      |> Mobile.list_user_devices
-      |> Enum.group_by(fn device -> device.type end)
-      |> Map.put_new("ios", [])
-      |> Map.put_new("android", [])
-
+    alias Pigeon.APNS
     badge_value = Mobile.badge_value(user)
 
-    Enum.each(ios_devices, fn ios_device ->
-      push_badge_update_to_ios_device(badge_value, ios_device)
+    user.id
+    |> Mobile.list_user_devices
+    |> Enum.filter(&(&1.type == "ios"))
+    |> Enum.map(fn %{token: token} ->
+      %APNS.Notification{device_token: token}
+      |> APNS.Notification.put_badge(badge_value)
     end)
-  end
-
-  def push_badge_update_to_ios_device(badge_value, %{type: "ios", token: token}) do
-    import Pigeon.APNS.Notification
-
-    new("", token)
-    |> put_badge(badge_value)
-    |> put_alert(%{})
-    |> Pigeon.APNS.push
+    |> APNS.push
   end
 
   def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
@@ -57,7 +47,7 @@ defmodule StitchConnect.Web.PushNotifications do
     end
   end
 
-  def push_new_msg_notification_to_user(grp, msg, %User{id: user_id} = user) do
+  defp push_new_msg_notification_to_user(grp, msg, %User{id: user_id} = user) do
     %{"ios" => ios_devices, "android" => android_devices} =
       user_id
       |> Mobile.list_user_devices
@@ -66,20 +56,21 @@ defmodule StitchConnect.Web.PushNotifications do
       |> Map.put_new("android", [])
 
     badge_value = Mobile.badge_value(user)
-
-    Enum.each(ios_devices, fn ios_device ->
-      push_new_msg_notification_to_ios_device(grp, msg, badge_value, ios_device)
-    end)
-
+    push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices)
     push_new_msg_notification_to_android_devices(grp, msg, android_devices)
   end
 
-  def push_new_msg_notification_to_ios_device(grp, msg, badge_value, %{type: "ios", token: token}) do
+  defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
     import Pigeon.APNS.Notification
 
-    new(new_msg_notification_body(grp, msg), token)
-    |> put_badge(badge_value)
-    |> put_sound("chime")
+    ios_devices
+    |> Enum.map(fn %{token: token} ->
+      grp
+      |> new_msg_notification_body(msg)
+      |> new(token)
+      |> put_badge(badge_value)
+      |> put_sound("chime")
+    end)
     |> Pigeon.APNS.push
   end
 
