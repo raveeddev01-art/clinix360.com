@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
+import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -11,10 +10,12 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@inject("registrationStore")
 @observer
 export default class Email extends Component {
   constructor(props) {
-    super();
+    super(props);
+
     this.state = {
       email: "",
       formValid: false
@@ -34,11 +35,12 @@ export default class Email extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+
     post("/api/v1/users", {
       body: { email: this.state.email }
     }).then(response => {
-      store.instance.userId = response.data.id;
-      store.instance.email = this.state.email;
+      this.props.registrationStore.userId = response.data.id;
+      this.props.registrationStore.email = this.state.email;
       post("/api/v1/users/send-confirmation-code", {
         body: { id: response.data.id }
       }).then(response => {

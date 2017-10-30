@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
+import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -11,10 +10,12 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@inject("registrationStore")
 @observer
 export default class FullName extends Component {
   constructor(props) {
-    super();
+    super(props);
+
     this.state = {
       firstName: "",
       lastName: ""
@@ -37,9 +38,12 @@ export default class FullName extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    store.instance.firstName = this.state.firstName;
-    store.instance.lastName = this.state.lastName;
-    this.props.history.push("/signup/username");
+
+    const { registrationStore, history } = this.props;
+
+    registrationStore.firstName = this.state.firstName;
+    registrationStore.lastName = this.state.lastName;
+    history.push("/signup/username");
   };
 
   render() {

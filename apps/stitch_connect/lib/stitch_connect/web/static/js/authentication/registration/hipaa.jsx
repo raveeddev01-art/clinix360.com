@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
+import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -9,12 +8,13 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Button from "react-bootstrap/lib/Button";
 
+@inject("registrationStore")
 @observer
 export default class Hipaa extends Component {
   constructor(props) {
-    super();
+    super(props);
+
     this.state = {
       hipaaAgreed: false
     };
@@ -31,21 +31,24 @@ export default class Hipaa extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+
+    const { registrationStore } = this.props;
+
     post(`/api/v1/teams`, {
       body: {
-        name: store.instance.teamName,
-        url: store.instance.teamUrl
+        name: registrationStore.teamName,
+        url: registrationStore.teamUrl
       }
     }).then(response => {
-      store.instance.teamId = response.data.id;
-      store.instance.teamUrl = response.data.slug;
-      patch(`/api/v1/users/${store.instance.userId}/complete-onboarding`, {
+      registrationStore.teamId = response.data.id;
+      registrationStore.teamUrl = response.data.slug;
+      patch(`/api/v1/users/${registrationStore.userId}/complete-onboarding`, {
         body: {
-          first_name: store.instance.firstName,
-          last_name: store.instance.lastName,
-          username: store.instance.username,
-          password: store.instance.password,
-          pin: store.instance.pin,
+          first_name: registrationStore.firstName,
+          last_name: registrationStore.lastName,
+          username: registrationStore.username,
+          password: registrationStore.password,
+          pin: registrationStore.pin,
           team_id: response.data.id
         }
       }).then(response => {
@@ -64,7 +67,7 @@ export default class Hipaa extends Component {
                 placement="top"
                 overlay={<Tooltip id="back">Back</Tooltip>}
               >
-                <Link to="/signup/invites">
+                <Link to="/signup/pin">
                   <i className="fa fa-arrow-left" />
                 </Link>
               </OverlayTrigger>

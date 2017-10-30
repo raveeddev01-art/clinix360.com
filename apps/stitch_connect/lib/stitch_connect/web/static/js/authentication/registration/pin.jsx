@@ -1,18 +1,23 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
+import { observer, inject } from "mobx-react";
 import PinCard from "../components/pin-card/pin-card";
 
+@inject("registrationStore")
 @observer
 export default class Pin extends Component {
   _onSubmit = value => {
-    store.instance.pin = value;
-    this.props.history.push("/signup/hipaa");
+    const { registrationStore, history } = this.props;
+
+    registrationStore.pin = value;
+    history.push("/signup/hipaa");
   };
 
   render() {
+    const { registrationStore } = this.props;
+
     return (
       <PinCard
+        value={registrationStore.pin}
         backUrl="/signup/password"
         restartUrl="/signup/team-name"
         onNext={this._onSubmit}

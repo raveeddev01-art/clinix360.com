@@ -1,18 +1,18 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
+import { observer, inject } from "mobx-react";
 
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@inject("registrationStore")
 @observer
 export default class TeamName extends Component {
   constructor(props) {
-    super();
+    super(props);
+
     this.state = {
-      team_name: "",
+      team_name: props.registrationStore.teamName,
       formValid: false
     };
   }
@@ -30,8 +30,11 @@ export default class TeamName extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    store.instance.teamName = this.state.team_name;
-    this.props.history.push("/signup/team-url");
+
+    const { registrationStore, history } = this.props;
+
+    registrationStore.teamName = this.state.team_name;
+    history.push("/signup/team-url");
   };
 
   render() {

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
 import { parse } from "qs";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Alert from "react-bootstrap/lib/Alert";
@@ -10,8 +10,7 @@ import Col from "react-bootstrap/lib/Col";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
-import store from "../authentication_store";
-
+@inject("registrationStore")
 @observer
 export default class Confirmation extends Component {
   constructor(...args) {
@@ -21,12 +20,13 @@ export default class Confirmation extends Component {
       digits: new Array(6).fill("")
     };
   }
+
   componentWillMount() {
     const { search } = this.props.location;
     if (search) {
       const query = parse(search.substr(1));
       if (query.userId) {
-        store.instance.userId = query.userId;
+        this.props.registrationStore.userId = query.userId;
       }
     }
   }
@@ -105,7 +105,7 @@ export default class Confirmation extends Component {
     if (confirmationCode.length === 6) {
       post("/api/v1/users/submit-confirmation-code", {
         body: {
-          user_id: store.instance.userId,
+          user_id: this.props.registrationStore.userId,
           confirmation_code: confirmationCode
         }
       })
@@ -188,8 +188,8 @@ export default class Confirmation extends Component {
 
             <HelpBlock className="m-b-20">
               We sent a six-digit confirmation code to&nbsp;
-              <strong>{store.instance.email}</strong> to verify your email
-              address.
+              <strong>{this.props.registrationStore.email}</strong> to verify
+              your email address.
             </HelpBlock>
           </form>
 

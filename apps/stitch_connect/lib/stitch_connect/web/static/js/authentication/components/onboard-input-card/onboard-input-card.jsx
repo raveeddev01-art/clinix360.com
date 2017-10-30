@@ -11,11 +11,18 @@ class OnboardInputCard extends Component {
     super(props);
 
     this.state = {
-      value: ""
+      value: props.value
     };
   }
 
   _onChange = evt => this.setState({ value: evt.target.value });
+
+  _onFocus = evt => {
+    const tempValue = evt.target.value;
+
+    evt.target.value = "";
+    evt.target.value = tempValue;
+  };
 
   _onNext = () => this.props.onNext(this.state.value);
 
@@ -32,6 +39,7 @@ class OnboardInputCard extends Component {
             placeholder={placeholder}
             value={value}
             onChange={this._onChange}
+            onFocus={this._onFocus}
           />
         </FormGroup>
         <HelpBlock className="m-b-20">{helperText}</HelpBlock>
@@ -50,6 +58,7 @@ OnboardInputCard.propTypes = {
   placeholder: PropTypes.string.isRequired,
   helperText: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
+  value: PropTypes.string,
   disableNext: PropTypes.bool.isRequired
 };
 
@@ -61,6 +70,7 @@ OnboardInputCard.defaultProps = {
   helperText: "",
   nextButtonText: "Next",
   type: "text",
+  value: "",
   disableNext: false
 };
 

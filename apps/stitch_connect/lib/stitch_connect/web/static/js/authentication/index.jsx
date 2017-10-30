@@ -2,20 +2,19 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "mobx-react";
+
 import resetPasswordStore from "./stores/reset_password_store";
-import authenticationStore from "./authentication_store";
+import registrationStore from "./stores/registration_store";
 import TitleStore from "../common/stores/title_store";
 import AuthenticationRouter from "./authentication_router";
 
-const stores = { resetPasswordStore, authenticationStore };
+const stores = { resetPasswordStore, registrationStore };
 // @TODO refactor authentication_store and provide by using provider
 
 class Auth extends Component {
   componentWillMount() {
-    authenticationStore.instance = {
-      teamName: this.props.teamName,
-      teamSlug: this.props.teamSlug
-    };
+    registrationStore.teamName = this.props.teamName;
+    registrationStore.teamSlug = this.props.teamSlug;
     resetPasswordStore.token = this.props.token;
     resetPasswordStore.teamId = this.props.teamId;
 
