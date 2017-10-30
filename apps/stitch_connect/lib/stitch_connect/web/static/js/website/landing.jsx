@@ -4,7 +4,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import cx from "classnames";
 
 import CreateTeamForm from "./components/create-team";
-import CUSTOMERS from "./components/customers";
+import CUSTOMERS from "./components/customers-logos";
 
 import Form from "react-bootstrap/lib/Form";
 import FormControl from "react-bootstrap/lib/FormControl";
