@@ -9,18 +9,22 @@ export default class ReconnectionAlert extends Component {
   }
 
   reconnect = () => {
-    this.props.socketStore.reconnect()
-  }
+    this.props.socketStore.reconnect();
+  };
 
   render() {
-    if (this.props.socketStore.isConnected == true) {
-      return null
+    if (this.props.socketStore.isConnected === true) {
+      return null;
     }
 
     return (
       <div className="browser-notification-alert reconnection-alert">
         <span>
-          Waiting for server connection, trying again in {this.props.socketStore.reconnectIn} seconds... <a role="link" onClick={this.reconnect}>Try now</a>
+          Waiting for server connection, trying again in{" "}
+          {this.props.socketStore.reconnectIn} seconds...{" "}
+          <a role="link" onClick={this.reconnect}>
+            Try now
+          </a>
         </span>
       </div>
     );

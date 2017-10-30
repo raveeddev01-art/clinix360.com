@@ -4,7 +4,7 @@ import cx from "classnames";
 import Well from "react-bootstrap/lib/Well";
 import Button from "react-bootstrap/lib/Button";
 
-@inject("notificationStore")
+@inject("notificationStore", "sidemenuStore")
 @observer
 class BrowserNotification extends Component {
   constructor(props) {
@@ -19,7 +19,10 @@ class BrowserNotification extends Component {
     if (browserPermission !== "denied") {
       Notification.requestPermission(permission => {
         if (permission === "granted") {
-          notify.show("Browser notification is enabled.");
+          this.props.sidemenuStore.showNotificationCard(
+            "Success",
+            "Great! Notification are now enabled."
+          );
         }
         this.setState({ browserPermission: permission });
       });
@@ -72,7 +75,7 @@ class BrowserNotification extends Component {
           browser settings.
         </p>
 
-        {!permissionGranted &&
+        {!permissionGranted && (
           <div className="clearfix">
             <Button
               bsStyle="primary"
@@ -81,7 +84,8 @@ class BrowserNotification extends Component {
             >
               Enable Desktop Notifications
             </Button>
-          </div>}
+          </div>
+        )}
       </div>
     );
   }
