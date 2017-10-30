@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.PushNotifications do
   alias Stitch.{Accounts.User, Group, GroupUser, Message, Mobile, Repo}
+  alias Pigeon.{APNS, FCM}
   import Ecto.Query
 
   def push_badge_update(%Message{user_id: author_id, group_id: group_id}) do
@@ -21,27 +22,16 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   def push_badge_update_to_user(user) do
-    %{"ios" => ios_devices, "android" => _android_devices} =
-      user.id
-      |> Mobile.list_user_devices
-      |> Enum.group_by(fn device -> device.type end)
-      |> Map.put_new("ios", [])
-      |> Map.put_new("android", [])
-
     badge_value = Mobile.badge_value(user)
 
-    Enum.each(ios_devices, fn ios_device ->
-      push_badge_update_to_ios_device(badge_value, ios_device)
+    user.id
+    |> Mobile.list_user_devices
+    |> Enum.filter(&(&1.type == "ios"))
+    |> Enum.map(fn %{token: token} ->
+      %APNS.Notification{device_token: token}
+      |> APNS.Notification.put_badge(badge_value)
     end)
-  end
-
-  def push_badge_update_to_ios_device(badge_value, %{type: "ios", token: token}) do
-    import Pigeon.APNS.Notification
-
-    new("", token)
-    |> put_badge(badge_value)
-    |> put_alert(%{})
-    |> Pigeon.APNS.push
+    |> APNS.push(on_response: &handle_response/1)
   end
 
   def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
@@ -57,7 +47,7 @@ defmodule StitchConnect.Web.PushNotifications do
     end
   end
 
-  def push_new_msg_notification_to_user(grp, msg, %User{id: user_id} = user) do
+  defp push_new_msg_notification_to_user(grp, msg, %User{id: user_id} = user) do
     %{"ios" => ios_devices, "android" => android_devices} =
       user_id
       |> Mobile.list_user_devices
@@ -66,57 +56,61 @@ defmodule StitchConnect.Web.PushNotifications do
       |> Map.put_new("android", [])
 
     badge_value = Mobile.badge_value(user)
-
-    Enum.each(ios_devices, fn ios_device ->
-      push_new_msg_notification_to_ios_device(grp, msg, badge_value, ios_device)
-    end)
-
+    push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices)
     push_new_msg_notification_to_android_devices(grp, msg, android_devices)
   end
 
-  def push_new_msg_notification_to_ios_device(grp, msg, badge_value, %{type: "ios", token: token}) do
-    import Pigeon.APNS.Notification
+  defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
+    import APNS.Notification
 
-    new(new_msg_notification_body(grp, msg), token)
-    |> put_badge(badge_value)
-    |> put_sound("chime")
-    |> Pigeon.APNS.push
+    ios_devices
+    |> Enum.map(fn %{token: token} ->
+      grp
+      |> new_msg_notification_body(msg)
+      |> new(token)
+      |> put_badge(badge_value)
+      |> put_sound("chime")
+    end)
+    |> APNS.push(on_response: &handle_response/1)
   end
 
-  def push_new_msg_notification_to_android_devices(grp, msg, android_devices) do
-    import Pigeon.FCM.Notification
+  defp push_new_msg_notification_to_android_devices(grp, msg, android_devices) do
+    import FCM.Notification
 
     android_devices
     |> Enum.map(&(&1.token))
     |> new
     |> put_notification(%{"body" => new_msg_notification_body(grp, msg)})
+    |> FCM.push(on_response: &handle_response/1)
   end
 
-  def new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a 1-on-1 file."
   end
 
-  def new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user}) do
+  defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user}) do
     "#{display_name(user)} sent you a 1-on-1 message."
   end
 
-  def new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a direct file."
   end
 
-  def new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user}) do
+  defp new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user}) do
     "#{display_name(user)} sent you a direct message."
   end
 
-  def new_msg_notification_body(_grp, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(_grp, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a room file."
   end
 
-  def new_msg_notification_body(_grp, %{user: user}) do
+  defp new_msg_notification_body(_grp, %{user: user}) do
     "#{display_name(user)} sent a room message."
   end
 
   defp display_name(%{first_name: first_name, last_name: last_name}) do
     "#{first_name} #{last_name}"
   end
+
+  defp handle_response(_), do: nil
 end
