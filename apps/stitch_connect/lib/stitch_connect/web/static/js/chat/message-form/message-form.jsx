@@ -75,8 +75,10 @@ class MessageForm extends Component {
         messageStore.finishEdit();
       }
     } else if (this.state.text) {
-      this.props.messageStore.sendMessage(this.state.text.trim()).then(() => {
-        this.props.messageStore.scrollToBottom();
+      messageStore.sendMessage(this.state.text.trim()).then(() => {
+        messageStore.scrollToBottom(() => {
+          messageStore.updateGroupCursor(null);
+        });
         this.setState({ text: "" });
         this.typingStopped();
       });
