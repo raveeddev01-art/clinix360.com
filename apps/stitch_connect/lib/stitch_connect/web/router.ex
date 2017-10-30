@@ -53,6 +53,7 @@ defmodule StitchConnect.Web.Router do
     get "/pricing", HomeController, :index
     get "/downloads", HomeController, :index
     get "/customers", HomeController, :index
+    get "/customers/princeton-brain-spine", HomeController, :index
     get "/privacy-policy", HomeController, :index
     get "/terms-of-service", HomeController, :index
 
