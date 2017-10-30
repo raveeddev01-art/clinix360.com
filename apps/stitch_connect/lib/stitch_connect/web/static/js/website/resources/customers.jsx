@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import cx from "classnames";
 
 import CUSTOMERS from "../components/customers-logos";
@@ -96,6 +97,13 @@ export default class Customers extends Component {
                     out Stitch to improve the collaboration between providers in
                     different locations.
                   </p>
+
+                  <Link
+                    to="/customers/princeton-brain-spine"
+                    className="text-uppercase"
+                  >
+                    Read More
+                  </Link>
                 </Panel>
               </div>
 

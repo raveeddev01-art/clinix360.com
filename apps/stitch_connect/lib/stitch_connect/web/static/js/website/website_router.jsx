@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 
 import Header from "./components/header";
 import Footer from "./components/footer";
+import ScrollToTop from "./components/scrollToTop";
 
 import Landing from "./landing";
 import Connect from "./products/connect";
 import Pricing from "./resources/pricing";
 import Downloads from "./resources/downloads";
 import Customers from "./resources/customers";
+import CasePBSC from "./case-studies/pbsc";
 import PrivacyPolicy from "./resources/privacy-policy";
 import TermsOfService from "./resources/terms-of-service";
 
@@ -20,17 +22,24 @@ class WebsiteRouter extends Component {
       <div className="website-wrapper">
         <Header />
 
-        <Switch>
-          <Route exact path="/" component={Landing} />
-          <Route exact path="/connect" component={Connect} />
-          <Route exact path="/pricing" component={Pricing} />
-          <Route exact path="/downloads" component={Downloads} />
-          <Route exact path="/customers" component={Customers} />
-          <Route exact path="/privacy-policy" component={PrivacyPolicy} />
-          <Route exact path="/terms-of-service" component={TermsOfService} />
+        <ScrollToTop>
+          <Switch>
+            <Route exact path="/" component={Landing} />
+            <Route exact path="/connect" component={Connect} />
+            <Route exact path="/pricing" component={Pricing} />
+            <Route exact path="/downloads" component={Downloads} />
+            <Route exact path="/customers" component={Customers} />
+            <Route
+              exact
+              path="/customers/princeton-brain-spine"
+              component={CasePBSC}
+            />
+            <Route exact path="/privacy-policy" component={PrivacyPolicy} />
+            <Route exact path="/terms-of-service" component={TermsOfService} />
 
-          <Route component={() => <Redirect to="/" />} />
-        </Switch>
+            <Route component={() => <Redirect to="/" />} />
+          </Switch>
+        </ScrollToTop>
 
         <Footer />
       </div>
