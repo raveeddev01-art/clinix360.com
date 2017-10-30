@@ -31,7 +31,7 @@ defmodule StitchConnect.Web.PushNotifications do
       %APNS.Notification{device_token: token}
       |> APNS.Notification.put_badge(badge_value)
     end)
-    |> APNS.push
+    |> APNS.push(on_response: &handle_response/1)
   end
 
   def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
@@ -71,7 +71,7 @@ defmodule StitchConnect.Web.PushNotifications do
       |> put_badge(badge_value)
       |> put_sound("chime")
     end)
-    |> APNS.push
+    |> APNS.push(on_response: &handle_response/1)
   end
 
   defp push_new_msg_notification_to_android_devices(grp, msg, android_devices) do
@@ -81,7 +81,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> Enum.map(&(&1.token))
     |> new
     |> put_notification(%{"body" => new_msg_notification_body(grp, msg)})
-    |> FCM.push
+    |> FCM.push(on_response: &handle_response/1)
   end
 
   defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
@@ -111,4 +111,6 @@ defmodule StitchConnect.Web.PushNotifications do
   defp display_name(%{first_name: first_name, last_name: last_name}) do
     "#{first_name} #{last_name}"
   end
+
+  defp handle_response(_), do: nil
 end
