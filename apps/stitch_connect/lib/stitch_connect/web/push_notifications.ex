@@ -81,6 +81,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> Enum.map(&(&1.token))
     |> new
     |> put_notification(%{"body" => new_msg_notification_body(grp, msg)})
+    |> Pigeon.FCM.push
   end
 
   defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
