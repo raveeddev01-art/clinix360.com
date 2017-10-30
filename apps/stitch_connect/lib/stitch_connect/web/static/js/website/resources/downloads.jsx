@@ -100,7 +100,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
-                              href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.execonn"
+                              href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.exe"
                             >
                               Download
                             </Button>
