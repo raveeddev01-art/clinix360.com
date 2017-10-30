@@ -1,6 +1,6 @@
 import { observable } from "mobx";
 
-class AuthenticationStore {
+class RegistrationStore {
   @observable userId = "";
   @observable email = "";
   @observable firstName = "";
@@ -13,12 +13,7 @@ class AuthenticationStore {
   @observable teamSlug = "";
   @observable teamId = "";
   @observable teamUrl = "";
-
-  constructor(props) {
-    this.teamName = props.teamName;
-    this.teamSlug = props.teamSlug;
-  }
 }
 
-const authenticationStore = new AuthenticationStore(props);
-export default authenticationStore;
+const registrationStore = new RegistrationStore();
+export default registrationStore;
