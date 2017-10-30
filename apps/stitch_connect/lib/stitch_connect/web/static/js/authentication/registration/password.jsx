@@ -14,11 +14,9 @@ export default class Password extends Component {
   };
 
   render() {
-    const { registrationStore } = this.props;
-
     return (
       <PasswordCard
-        value={registrationStore.password}
+        value=""
         backUrl="/signup/username"
         restartUrl="/signup/team-name"
         onNext={this._onSubmit}
