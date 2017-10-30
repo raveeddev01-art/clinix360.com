@@ -64,7 +64,7 @@ export default class Hipaa extends Component {
                 placement="top"
                 overlay={<Tooltip id="back">Back</Tooltip>}
               >
-                <Link to="/signup/invites">
+                <Link to="/signup/pin">
                   <i className="fa fa-arrow-left" />
                 </Link>
               </OverlayTrigger>
