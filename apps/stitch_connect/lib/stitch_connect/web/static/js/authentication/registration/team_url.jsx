@@ -1,19 +1,21 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
-
+import { observer, inject } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 @observer
+@inject("authenticationStore")
 export default class TeamUrl extends Component {
   constructor(props) {
-    super();
+    super(props);
+
+    console.log(props.authenticationStore.teamUrl);
+
     this.state = {
       urlAvailable: false,
-      teamUrl: ""
+      teamUrl: props.authenticationStore.teamUrl
     };
   }
 
@@ -34,7 +36,7 @@ export default class TeamUrl extends Component {
 
   checkAvailability = url => {
     post("/api/v1/teams/url-available", {
-      body: { url: url }
+      body: { url }
     }).then(response => {
       this.setState({ urlAvailable: response.data.available });
     });
@@ -42,8 +44,10 @@ export default class TeamUrl extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    store.instance.teamUrl = this.state.teamUrl;
-    this.props.history.push("/signup/first-name");
+
+    const { authenticationStore, history } = this.props;
+    authenticationStore.teamUrl = this.state.teamUrl;
+    history.push("/signup/first-name");
   };
 
   render() {
@@ -75,10 +79,11 @@ export default class TeamUrl extends Component {
           </HelpBlock>
 
           {this.state.teamUrl.length > 0 &&
-            !this.state.urlAvailable &&
-            <HelpBlock className="m-b-20">
-              This team url is taken. Please choose another one.
-            </HelpBlock>}
+            !this.state.urlAvailable && (
+              <HelpBlock className="m-b-20">
+                This team url is taken. Please choose another one.
+              </HelpBlock>
+            )}
 
           <input
             disabled={!this.state.urlAvailable}
