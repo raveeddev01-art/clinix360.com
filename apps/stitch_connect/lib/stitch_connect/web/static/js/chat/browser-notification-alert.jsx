@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 
+@inject("sidemenuStore")
 export default class BrowserNotificationAlert extends Component {
   constructor(...args) {
     super(...args);
@@ -17,6 +19,12 @@ export default class BrowserNotificationAlert extends Component {
     const { browserPermission } = this.state;
     if (browserPermission !== "denied") {
       Notification.requestPermission(permission => {
+        if (permission === "granted") {
+          this.props.sidemenuStore.showNotificationCard(
+            "Success",
+            "Great! Notification are now enabled."
+          );
+        }
         this.setState({ browserPermission: permission });
       });
     }
@@ -33,7 +41,7 @@ export default class BrowserNotificationAlert extends Component {
           We recommend you&nbsp;
           <a role="link" onClick={this.enableNotification}>
             enable desktop notifications
-          </a>&nbsp; for Stitch Connect.
+          </a>&nbsp;for Stitch.
         </span>
         <i
           role="link"

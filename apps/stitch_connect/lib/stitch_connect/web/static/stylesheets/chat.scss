@@ -497,8 +497,9 @@
   .close-browser-notification-alert {
     cursor: pointer;
     position: absolute;
-    right: 11px;
-    top: 21px;
+    right: 10px;
+    top: 19px;
+    font-size: 20px;
   }
 
   &.reconnection-alert {
