@@ -74,7 +74,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> Pigeon.APNS.push
   end
 
-  def push_new_msg_notification_to_android_devices(grp, msg, android_devices) do
+  defp push_new_msg_notification_to_android_devices(grp, msg, android_devices) do
     import Pigeon.FCM.Notification
 
     android_devices
@@ -83,27 +83,27 @@ defmodule StitchConnect.Web.PushNotifications do
     |> put_notification(%{"body" => new_msg_notification_body(grp, msg)})
   end
 
-  def new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a 1-on-1 file."
   end
 
-  def new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user}) do
+  defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user}) do
     "#{display_name(user)} sent you a 1-on-1 message."
   end
 
-  def new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a direct file."
   end
 
-  def new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user}) do
+  defp new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user}) do
     "#{display_name(user)} sent you a direct message."
   end
 
-  def new_msg_notification_body(_grp, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(_grp, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a room file."
   end
 
-  def new_msg_notification_body(_grp, %{user: user}) do
+  defp new_msg_notification_body(_grp, %{user: user}) do
     "#{display_name(user)} sent a room message."
   end
 
