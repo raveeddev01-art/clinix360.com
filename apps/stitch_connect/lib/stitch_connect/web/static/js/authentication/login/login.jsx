@@ -6,7 +6,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
-@inject("authenticationStore", "titleStore")
+@inject("registrationStore", "titleStore")
 @observer
 export default class Login extends Component {
   constructor(props) {
@@ -36,9 +36,9 @@ export default class Login extends Component {
     return (
       <div>
         <div className="authentication-card text-center m-b-20">
-          <h2>{this.props.authenticationStore.instance.teamName}</h2>
+          <h2>{this.props.registrationStore.teamName}</h2>
           <h5 className="text-muted url-heading">
-            {this.props.authenticationStore.instance.teamSlug}.teamstitch.com
+            {this.props.registrationStore.teamSlug}.teamstitch.com
           </h5>
 
           <h5>
