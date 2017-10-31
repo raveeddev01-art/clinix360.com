@@ -4,4 +4,8 @@ use Mix.Config
 # you can enable the server option below.
 config :stitch_connect, StitchConnect.Web.Endpoint,
   http: [port: 4001],
-  server: false
+  server: true
+
+config :wallaby,
+  screenshot_on_failure: true,
+  driver: Wallaby.Experimental.Chrome
