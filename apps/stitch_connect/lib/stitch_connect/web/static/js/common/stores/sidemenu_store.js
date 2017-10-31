@@ -364,19 +364,14 @@ class SidemenuStore {
       desktopNotification === "everything" ||
       (desktopNotification === "mentions" && isMention)
     ) {
-      const groupName =
-        group.name.length <= 20
-          ? group.name
-          : `${group.name.substring(0, 20)}...`;
       const message = isMention
         ? "mentioned you"
         : group.type === "regular"
           ? "sent a room message"
           : "sent you a message";
-      let text = `${newMessage.user.first_name} ${newMessage.user
+      const text = `${newMessage.user.first_name} ${newMessage.user
         .last_name} ${message}`;
-      if (text.length > 28) text = `${text.substring(0, 28)}...`;
-      this.showNotificationCard(groupName, text, 5000, event => {
+      this.showNotificationCard(`${group.name}`, text, 5000, event => {
         this.jumpToMessage(newMessage);
         window.dispatchEvent(new CustomEvent("notification-clicked"));
       });
