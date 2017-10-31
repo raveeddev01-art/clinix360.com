@@ -116,19 +116,19 @@ defmodule StitchConnect.Web.PushNotifications do
     |> FCM.push(on_response: & handle_response_andriod(user, &1))
   end
 
-  defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{name: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a 1-on-1 file."
   end
 
-  defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user}) do
+  defp new_msg_notification_body(%{name: "__dm_group__" <> _}, %{user: user}) do
     "#{display_name(user)} sent you a 1-on-1 message."
   end
 
-  defp new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{name: "__multi_dm_group__" <> _}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a direct file."
   end
 
-  defp new_msg_notification_body(%{slug: "__multi_dm_group__" <> _}, %{user: user}) do
+  defp new_msg_notification_body(%{name: "__multi_dm_group__" <> _}, %{user: user}) do
     "#{display_name(user)} sent you a direct message."
   end
 
