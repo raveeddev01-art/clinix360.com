@@ -3,10 +3,11 @@ defmodule StitchConnect.Web.PushNotifications do
   alias Pigeon.{APNS, FCM}
   import Ecto.Query
 
-  def push_badge_update(%Message{group_id: group_id}) do
+  def push_badge_update(%Message{group_id: group_id}, exclude_user_ids \\ []) do
     user_ids =
       GroupUser
       |> where(group_id: ^group_id)
+      |> where([gu], gu.user_id not in ^exclude_user_ids)
       |> select([gu], gu.user_id)
       |> Repo.all
 
@@ -102,7 +103,7 @@ defmodule StitchConnect.Web.PushNotifications do
       msg
       |> Repo.preload(:user)
       |> StitchConnect.Web.Api.V1.MessageView.message_json
-      |> Map.delete(:text_content)
+      |> Map.drop([:text_content, :fields])
       |> Poison.encode!
 
     android_devices
@@ -116,19 +117,19 @@ defmodule StitchConnect.Web.PushNotifications do
     |> FCM.push(on_response: & handle_response_andriod(user, &1))
   end
 
-  defp new_msg_notification_body(%{name: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{name: "__dm_group__"}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a 1-on-1 file."
   end
 
-  defp new_msg_notification_body(%{name: "__dm_group__" <> _}, %{user: user}) do
+  defp new_msg_notification_body(%{name: "__dm_group__"}, %{user: user}) do
     "#{display_name(user)} sent you a 1-on-1 message."
   end
 
-  defp new_msg_notification_body(%{name: "__multi_dm_group__" <> _}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{name: "__multi_dm_group__"}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a direct file."
   end
 
-  defp new_msg_notification_body(%{name: "__multi_dm_group__" <> _}, %{user: user}) do
+  defp new_msg_notification_body(%{name: "__multi_dm_group__"}, %{user: user}) do
     "#{display_name(user)} sent you a direct message."
   end
 
