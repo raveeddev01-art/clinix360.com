@@ -137,4 +137,11 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   defp handle_response(_), do: nil
+
+  defp handle_response_andriod(user, response) do
+    bad_regids = FCM.Notification.remove?(response)
+    bad_regids |> Enum.each(fn token ->
+      Mobile.remove_device(user, device.token)
+    end)
+  end
 end

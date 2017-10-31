@@ -33,6 +33,7 @@ export S3_REGION="us-east-1"
 
 export APNS_CERT_B64=
 export APNS_KEY_B64=
+export APNS_MODE=dev
 ```
 
 Source the file to add these environment variables to your current shell
