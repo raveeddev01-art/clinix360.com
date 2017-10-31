@@ -101,9 +101,9 @@ defmodule StitchConnect.Web.PushNotifications do
     android_devices
     |> Enum.map(&(&1.token))
     |> new
-    |> put_notification(%{
-      "body" => new_msg_notification_body(grp, msg),
+    |> put_data(%{
       "badge" => to_string(badge_value),
+      "body" => new_msg_notification_body(grp, msg)
     })
     |> FCM.push(on_response: &handle_response/1)
   end
