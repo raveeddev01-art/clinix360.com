@@ -77,11 +77,11 @@ defmodule StitchConnect.Web.PushNotifications do
       |> Map.put_new("android", [])
 
     badge_value = Mobile.badge_value(user)
-    push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices)
-    push_new_msg_notification_to_android_devices(grp, msg, badge_value, android_devices)
+    push_new_msg_notification_to_ios_devices(grp, msg, user, badge_value, ios_devices)
+    push_new_msg_notification_to_android_devices(grp, msg, user, badge_value, android_devices)
   end
 
-  defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
+  defp push_new_msg_notification_to_ios_devices(grp, msg, user, badge_value, ios_devices) do
     import APNS.Notification
 
     ios_devices
@@ -92,20 +92,28 @@ defmodule StitchConnect.Web.PushNotifications do
       |> put_badge(badge_value)
       |> put_sound("chime")
     end)
-    |> APNS.push(on_response: &handle_response/1)
+    |> APNS.push(on_response: & handle_response_ios(user, &1))
   end
 
-  defp push_new_msg_notification_to_android_devices(grp, msg, badge_value, android_devices) do
+  defp push_new_msg_notification_to_android_devices(grp, msg, user, badge_value, android_devices) do
     import FCM.Notification
+
+    message_json =
+      msg
+      |> Repo.preload(:user)
+      |> StitchConnect.Web.Api.V1.MessageView.message_json
+      |> Map.delete(:text_content)
+      |> Poison.encode!
 
     android_devices
     |> Enum.map(&(&1.token))
     |> new
     |> put_data(%{
       "badge" => to_string(badge_value),
-      "body" => new_msg_notification_body(grp, msg)
+      "message" => new_msg_notification_body(grp, msg),
+      "ejson" => message_json
     })
-    |> FCM.push(on_response: &handle_response/1)
+    |> FCM.push(on_response: & handle_response_andriod(user, &1))
   end
 
   defp new_msg_notification_body(%{slug: "__dm_group__" <> _}, %{user: user, type: "upload"}) do
@@ -139,9 +147,13 @@ defmodule StitchConnect.Web.PushNotifications do
   defp handle_response(_), do: nil
 
   defp handle_response_andriod(user, response) do
-    bad_regids = FCM.Notification.remove?(response)
-    bad_regids |> Enum.each(fn token ->
-      Mobile.remove_device(user, device.token)
-    end)
+    response
+    |> FCM.Notification.remove?()
+    |> Enum.each(& Mobile.remove_device(user, &1))
   end
+
+  defp handle_response_ios(user, %{response: :bad_device_token, device_token: token}) do
+    Mobile.remove_device(user, token)
+  end
+  defp handle_response_ios(_user, _response), do: nil
 end
