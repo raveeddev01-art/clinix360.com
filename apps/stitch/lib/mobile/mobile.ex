@@ -13,6 +13,13 @@ defmodule Stitch.Mobile do
     |> Repo.insert
   end
 
+  def remove_device(%User{id: user_id}, token) do
+    Device
+    |> where(user_id: ^user_id)
+    |> where(token: ^token)
+    |> Repo.delete_all
+  end
+
   def badge_value(%User{} = user) do
     Stitch.GroupUser
     |> where(user_id: ^user.id)

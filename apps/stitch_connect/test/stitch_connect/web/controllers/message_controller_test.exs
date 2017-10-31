@@ -8,8 +8,6 @@ defmodule StitchConnect.Web.MessageControllerTest do
       user = insert(:user)
       group = insert(:group)
       user2 = insert(:user)
-      insert(:mobile_device, user: user2, type: "ios")
-      insert(:mobile_device, user: user2, type: "android")
       insert(:group_user, user: user, group: group)
       insert(:group_user, user: user2, group: group)
 
