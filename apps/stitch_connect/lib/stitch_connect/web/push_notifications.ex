@@ -23,14 +23,36 @@ defmodule StitchConnect.Web.PushNotifications do
   def push_badge_update_to_user(user) do
     badge_value = Mobile.badge_value(user)
 
-    user.id
-    |> Mobile.list_user_devices
-    |> Enum.filter(&(&1.type == "ios"))
+    %{"ios" => ios_devices, "android" => android_devices} =
+      user.id
+      |> Mobile.list_user_devices
+      |> Enum.group_by(fn device -> device.type end)
+      |> Map.put_new("ios", [])
+      |> Map.put_new("android", [])
+
+    push_badge_update_to_ios_devices(badge_value, ios_devices)
+    push_badge_update_to_android_devices(badge_value, android_devices)
+  end
+
+  def push_badge_update_to_ios_devices(badge_value, ios_devices) do
+    import APNS.Notification
+
+    ios_devices
     |> Enum.map(fn %{token: token} ->
       %APNS.Notification{device_token: token}
       |> APNS.Notification.put_badge(badge_value)
     end)
     |> APNS.push(on_response: &handle_response/1)
+  end
+
+  def push_badge_update_to_android_devices(badge_value, android_devices) do
+    import FCM.Notification
+
+    android_devices
+    |> Enum.map(&(&1.token))
+    |> new
+    |> put_data(%{"badge" => to_string(badge_value)})
+    |> FCM.push(on_response: &handle_response/1)
   end
 
   def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
