@@ -352,7 +352,8 @@ class SidemenuStore {
       return;
     }
 
-    const { notificationStore } = this.rootStore;
+    const { notificationStore, messageStore } = this.rootStore;
+    if (messageStore.groupId === newMessage.group_id) return;
     const desktopNotification = notificationStore.getGroupNotificationPreference(
       newMessage.group_id
     );
@@ -365,7 +366,7 @@ class SidemenuStore {
     ) {
       const groupName =
         group.name.length <= 20
-          ? group.name.length
+          ? group.name
           : `${group.name.substring(0, 20)}...`;
       const message = isMention
         ? "mentioned you"
@@ -374,7 +375,7 @@ class SidemenuStore {
           : "sent you a message";
       let text = `${newMessage.user.first_name} ${newMessage.user
         .last_name} ${message}`;
-      if (text.length > 30) text = `${text.substring(0, 30)}...`;
+      if (text.length > 28) text = `${text.substring(0, 28)}...`;
       this.showNotificationCard(groupName, text, 5000, event => {
         this.jumpToMessage(newMessage);
         window.dispatchEvent(new CustomEvent("notification-clicked"));
