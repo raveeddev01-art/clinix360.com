@@ -51,8 +51,8 @@ export default class Hipaa extends Component {
           pin: registrationStore.pin,
           team_id: response.data.id
         }
-      }).then(response => {
-        this.props.history.push("/signin");
+      }).then(() => {
+        window.location.href = `https://${registrationStore.teamUrl}.${applicationHost}`
       });
     });
   };
@@ -103,9 +103,9 @@ export default class Hipaa extends Component {
           </Checkbox>
 
           <HelpBlock className="m-b-20">
-            Learn more about BAAs <a href="#">here</a>. By checking the box
+            Learn more about BAAs <a role="link">here</a>. By checking the box
             above, you represent that your team agrees to the terms of the{" "}
-            <a href="#">HIPAA BAA</a>.
+            <a role="link">HIPAA BAA</a>.
           </HelpBlock>
 
           <input
@@ -117,7 +117,7 @@ export default class Hipaa extends Component {
 
           <HelpBlock className="m-b-20">
             By proceeding to use Stitch, you agree to our{" "}
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            <a role="link">Terms of Service</a> and <a role="link">Privacy Policy</a>.
           </HelpBlock>
         </form>
 
