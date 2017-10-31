@@ -43,7 +43,11 @@ export default class NavItemMembers extends Component {
       <MenuItem key="members_menuitem" onClick={this.openModal}>
         Members
       </MenuItem>,
-      <Modal key="members_modal" show={this.state.showModal}>
+      <Modal
+        key="members_modal"
+        show={this.state.showModal}
+        onHide={this.closeModal}
+      >
         <Modal.Header>
           <Modal.Title>Members</Modal.Title>
           <a role="link" onClick={this.closeModal}>

@@ -49,7 +49,11 @@ export default class UploadModal extends Component {
     const { uploadStore } = this.props;
     const show = uploadStore.isUploadModalVisible;
     return (
-      <Modal className="sidemenu-modal upload-modal" show={show}>
+      <Modal
+        className="sidemenu-modal upload-modal"
+        show={show}
+        onHide={this.toggleModal}
+      >
         <Modal.Header>
           <Modal.Title>File</Modal.Title>
           <a role="link" onClick={this.toggleModal}>

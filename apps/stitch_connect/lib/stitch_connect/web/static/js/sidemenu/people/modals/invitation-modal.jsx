@@ -53,7 +53,7 @@ class InvitationModal extends Component {
     const { show, emails } = this.state;
     const { toggle } = this.props;
     return (
-      <Modal className="invite-people-modal" show={show}>
+      <Modal className="invite-people-modal" show={show} onHide={toggle}>
         <Modal.Header>
           <Modal.Title>Invite People</Modal.Title>
           <a role="link" onClick={toggle}>

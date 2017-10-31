@@ -72,7 +72,11 @@ class NavItemRename extends Component {
       <MenuItem key="rename_menuitem" onClick={this.openModal}>
         Rename
       </MenuItem>,
-      <Modal key="rename_modal" show={this.state.showModal}>
+      <Modal
+        key="rename_modal"
+        show={this.state.showModal}
+        onHide={this.closeModal}
+      >
         <Modal.Header>
           <Modal.Title>Rename</Modal.Title>
           <a role="link" onClick={this.closeModal}>
