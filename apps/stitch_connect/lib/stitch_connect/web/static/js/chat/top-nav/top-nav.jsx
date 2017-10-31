@@ -48,9 +48,22 @@ class TopNav extends Component {
     this.debouncedSearch(event.target.value);
   };
 
+  onToggleSettings = isOpen => {
+    if (isOpen) {
+      this.settingsOverlay.hide();
+    }
+  };
+
+  onRoomInfoClick = () => {
+    this.roomInfoOverlay.hide();
+
+    this._toggleAddonMenu("Room Information")();
+  };
+
   handleJoin = () => {
-    const { groupStore: group, sidemenuStore } = this.props;
-    group.join();
+    const { groupStore, sidemenuStore } = this.props;
+
+    groupStore.join();
     sidemenuStore.loadGroups();
 
     // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
@@ -125,11 +138,15 @@ class TopNav extends Component {
             id="dropdown-room-controls"
             pullRight
             rootCloseEvent="click"
+            onToggle={this.onToggleSettings}
           >
             <Dropdown.Toggle noCaret>
               <OverlayTrigger
                 placement="bottom"
                 overlay={<Tooltip id="tooltip-settings">Settings</Tooltip>}
+                ref={ref => {
+                  this.settingsOverlay = ref;
+                }}
               >
                 <i className="fa fa-cog" />
               </OverlayTrigger>
@@ -143,11 +160,14 @@ class TopNav extends Component {
           <a
             role="link"
             className="btn btn-default"
-            onClick={this._toggleAddonMenu("Room Information")}
+            onClick={this.onRoomInfoClick}
           >
             <OverlayTrigger
               placement="bottom"
               overlay={<Tooltip id="tooltip-info">Room Information</Tooltip>}
+              ref={ref => {
+                this.roomInfoOverlay = ref;
+              }}
             >
               <i className="fa fa-info-circle" />
             </OverlayTrigger>

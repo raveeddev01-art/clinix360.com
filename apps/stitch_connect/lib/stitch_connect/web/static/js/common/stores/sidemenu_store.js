@@ -328,10 +328,11 @@ class SidemenuStore {
     }
   }
 
-  showNotificationCard(title, body, duration = 5000, cb = null) {
+  showNotificationCard(title, body, tag, duration = 5000, cb = null) {
     const notification = new Notification(title, {
       body,
-      icon: "/favicon.ico",
+      tag,
+      icon: "/favicon-192x192.png",
       silent: true
     });
 
@@ -352,7 +353,8 @@ class SidemenuStore {
       return;
     }
 
-    const { notificationStore } = this.rootStore;
+    const { notificationStore, messageStore } = this.rootStore;
+    if (messageStore.groupId === newMessage.group_id) return;
     const desktopNotification = notificationStore.getGroupNotificationPreference(
       newMessage.group_id
     );
@@ -363,27 +365,17 @@ class SidemenuStore {
       desktopNotification === "everything" ||
       (desktopNotification === "mentions" && isMention)
     ) {
-      const predicatives = {
-        regular: "sent",
-        dm: "sent you",
-        multi_dm: "sent you"
-      };
-      const messageTypes = {
-        regular: "group",
-        dm: "direct",
-        multi_dm: "direct"
-      };
-
-      const author = `${newMessage.user.first_name} ${newMessage.user
-        .last_name}`;
-      const predicative = isMention
-        ? "mentioned you in"
-        : predicatives[group.type];
-      const messageType = messageTypes[group.type];
-
+      const message = isMention
+        ? "mentioned you"
+        : group.type === "regular"
+          ? "sent a room message"
+          : "sent you a message";
+      const text = `${newMessage.user.first_name} ${newMessage.user
+        .last_name} ${message}`;
       this.showNotificationCard(
-        `${group.type === "regular" ? "#" : ""}${group.name}`,
-        `${author} ${predicative} a ${messageType} message`,
+        `${group.name}`,
+        text,
+        "new-message",
         5000,
         event => {
           this.jumpToMessage(newMessage);
@@ -413,7 +405,6 @@ class SidemenuStore {
     }
 
     this.history.push(url);
-    this.rootStore.messageStore.jumpToMessage(message);
   }
 
   scrollToRoomItem(roomId, duration = 300) {

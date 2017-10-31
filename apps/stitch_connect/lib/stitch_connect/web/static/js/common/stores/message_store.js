@@ -153,14 +153,11 @@ class MessageStore {
 
   @action
   updateGroupCursor(cursor) {
-    // Disable saving group cursor until we revisit
-    /*
     const { sidemenuStore, groupStore } = this.rootStore;
     if (groupStore.loading) return;
 
     this.groupCursor = cursor;
     sidemenuStore.updateGroupCursor(this.groupId, cursor);
-    */
   }
 
   // Scroll to the bottom of chat div with animation
@@ -721,35 +718,16 @@ class MessageStore {
   };
 
   handleInitialLoading = () => {
-    const { sidemenuStore } = this.rootStore;
-    let posHistory = null;
-
     if (this.unreadMessagesCount) {
       this.scrollToBottom(() => {
         this.updateGroupCursor(null);
         this.loadedInitial = true;
       }, 0);
     } else {
-      this.groupCursor = sidemenuStore.groupCursors[this.groupId];
-      posHistory = this.groupCursor;
-
-      if (posHistory && this.messages.find(m => m.id === posHistory)) {
-        // A.1.a
-        this.scrollTo(
-          posHistory,
-          0,
-          () => {
-            this.loadedInitial = true;
-          },
-          -10
-        );
-      } else {
-        // A.1.b, A.2.a
-        this.scrollToBottom(() => {
-          this.updateGroupCursor(null);
-          this.loadedInitial = true;
-        }, 0);
-      }
+      this.scrollToBottom(() => {
+        this.updateGroupCursor(null);
+        this.loadedInitial = true;
+      }, 0);
     }
   };
 
@@ -870,7 +848,7 @@ class MessageStore {
   startTyping = () => {
     clearTimeout(this.typingTimeoutId);
     this.groupChannel.push("typing_started");
-    this.typingTimeoutId = setTimeout(this.stopTyping, 5000);
+    this.typingTimeoutId = setTimeout(this.stopTyping, 2000);
   };
 
   keepScrollAtBottom() {

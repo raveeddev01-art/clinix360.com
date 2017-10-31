@@ -252,6 +252,7 @@ defmodule StitchConnect.Web.GroupChannel do
           broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
           PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+          PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
           json = MessageView.render("show.json", %{message: message})
           {:reply, {:ok, json}, socket}

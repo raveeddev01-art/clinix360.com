@@ -91,6 +91,7 @@ class CreateDMModal extends Component {
       <Modal
         show={this.state.show}
         onEntered={() => this.selectComponent.focus()}
+        onHide={this.props.toggle}
       >
         <Modal.Header>
           <Modal.Title>Direct Messages</Modal.Title>

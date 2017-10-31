@@ -3,10 +3,12 @@ import "babel-polyfill";
 import "./util/delay";
 import "./util/fetch";
 import "./util/moment";
-import "./util/mounter";
+import componentMap from "./util/app_component_map";
+import mounter from "./util/mounter";
 import "./util/notify";
 import "./util/polyfills";
 import "./util/socket";
-import "./util/string";
 
-window._ = require("lodash");
+document.addEventListener("DOMContentLoaded", () => {
+  mounter(componentMap);
+});

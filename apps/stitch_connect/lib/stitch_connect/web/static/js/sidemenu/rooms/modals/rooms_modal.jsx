@@ -305,13 +305,14 @@ class RoomsModal extends Component {
   }
 
   render() {
-    const { state } = this.props;
+    const { state, closeModal } = this.props;
 
     return (
       <Modal
         className="rooms-modal"
         show={!!state}
         onEnter={this.onModalEntered}
+        onHide={closeModal}
       >
         {this.renderModalHeader()}
         {state === "list" && this.renderRoomsListModal()}
