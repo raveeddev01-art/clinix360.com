@@ -78,7 +78,7 @@ defmodule StitchConnect.Web.PushNotifications do
 
     badge_value = Mobile.badge_value(user)
     push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices)
-    push_new_msg_notification_to_android_devices(grp, msg, android_devices)
+    push_new_msg_notification_to_android_devices(grp, msg, badge_value, android_devices)
   end
 
   defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
@@ -95,13 +95,16 @@ defmodule StitchConnect.Web.PushNotifications do
     |> APNS.push(on_response: &handle_response/1)
   end
 
-  defp push_new_msg_notification_to_android_devices(grp, msg, android_devices) do
+  defp push_new_msg_notification_to_android_devices(grp, msg, badge_value, android_devices) do
     import FCM.Notification
 
     android_devices
     |> Enum.map(&(&1.token))
     |> new
-    |> put_notification(%{"body" => new_msg_notification_body(grp, msg)})
+    |> put_notification(%{
+      "body" => new_msg_notification_body(grp, msg),
+      "badge" => to_string(badge_value),
+    })
     |> FCM.push(on_response: &handle_response/1)
   end
 
