@@ -1,5 +1,10 @@
 @import "~animate.css/animate";
 @import "~emoji-mart/css/emoji-mart.css";
+@import "~react-select/dist/react-select.css";
+
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
+@import "fonts";
 
 @import "vendor/bootstrap";
 @import "vendor/toastr";
