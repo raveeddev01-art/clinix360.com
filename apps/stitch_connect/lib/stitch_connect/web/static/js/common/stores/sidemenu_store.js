@@ -328,9 +328,10 @@ class SidemenuStore {
     }
   }
 
-  showNotificationCard(title, body, duration = 5000, cb = null) {
+  showNotificationCard(title, body, tag, duration = 5000, cb = null) {
     const notification = new Notification(title, {
       body,
+      tag,
       icon: "/favicon-192x192.png",
       silent: true
     });
@@ -371,10 +372,16 @@ class SidemenuStore {
           : "sent you a message";
       const text = `${newMessage.user.first_name} ${newMessage.user
         .last_name} ${message}`;
-      this.showNotificationCard(`${group.name}`, text, 5000, event => {
-        this.jumpToMessage(newMessage);
-        window.dispatchEvent(new CustomEvent("notification-clicked"));
-      });
+      this.showNotificationCard(
+        `${group.name}`,
+        text,
+        "new-message",
+        5000,
+        event => {
+          this.jumpToMessage(newMessage);
+          window.dispatchEvent(new CustomEvent("notification-clicked"));
+        }
+      );
     }
   }
 

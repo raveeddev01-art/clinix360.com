@@ -21,7 +21,8 @@ class BrowserNotification extends Component {
         if (permission === "granted") {
           this.props.sidemenuStore.showNotificationCard(
             "Success",
-            "Great! Notification are now enabled."
+            "Great! Notification are now enabled.",
+            "notification-enabled"
           );
         }
         this.setState({ browserPermission: permission });
