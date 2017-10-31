@@ -31,6 +31,7 @@ class BrowserNotification extends Component {
 
   render() {
     const permissionGranted = Notification.permission === "granted";
+    const permissionDefault = Notification.permission === "default";
     let status = "not enabled";
 
     switch (Notification.permission) {
@@ -75,7 +76,7 @@ class BrowserNotification extends Component {
           browser settings.
         </p>
 
-        {!permissionGranted && (
+        {permissionDefault && (
           <div className="clearfix">
             <Button
               bsStyle="primary"
