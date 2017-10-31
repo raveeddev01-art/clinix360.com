@@ -398,7 +398,6 @@ class SidemenuStore {
     }
 
     this.history.push(url);
-    this.rootStore.messageStore.jumpToMessage(message);
   }
 
   scrollToRoomItem(roomId, duration = 300) {
