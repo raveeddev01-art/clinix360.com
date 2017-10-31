@@ -30,11 +30,11 @@ defmodule StitchConnect.Web.PushNotifications do
       |> Map.put_new("ios", [])
       |> Map.put_new("android", [])
 
-    push_badge_update_to_ios_devices(badge_value, ios_devices)
-    push_badge_update_to_android_devices(badge_value, android_devices)
+    push_badge_update_to_ios_devices(badge_value, user, ios_devices)
+    push_badge_update_to_android_devices(badge_value, user, android_devices)
   end
 
-  def push_badge_update_to_ios_devices(badge_value, ios_devices) do
+  def push_badge_update_to_ios_devices(badge_value, user, ios_devices) do
     import APNS.Notification
 
     ios_devices
@@ -42,17 +42,17 @@ defmodule StitchConnect.Web.PushNotifications do
       %APNS.Notification{device_token: token}
       |> APNS.Notification.put_badge(badge_value)
     end)
-    |> APNS.push(on_response: &handle_response/1)
+    |> APNS.push(on_response: & handle_response_ios(user, &1))
   end
 
-  def push_badge_update_to_android_devices(badge_value, android_devices) do
+  def push_badge_update_to_android_devices(badge_value, user, android_devices) do
     import FCM.Notification
 
     android_devices
     |> Enum.map(&(&1.token))
     |> new
     |> put_data(%{"badge" => to_string(badge_value)})
-    |> FCM.push(on_response: &handle_response/1)
+    |> FCM.push(on_response: & handle_response_andriod(user, &1))
   end
 
   def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
@@ -144,16 +144,14 @@ defmodule StitchConnect.Web.PushNotifications do
     "#{first_name} #{last_name}"
   end
 
-  defp handle_response(_), do: nil
-
-  defp handle_response_andriod(user, response) do
+  def handle_response_andriod(user, response) do
     response
     |> FCM.Notification.remove?()
     |> Enum.each(& Mobile.remove_device(user, &1))
   end
 
-  defp handle_response_ios(user, %{response: :bad_device_token, device_token: token}) do
+  def handle_response_ios(user, %{response: :bad_device_token, device_token: token}) do
     Mobile.remove_device(user, token)
   end
-  defp handle_response_ios(_user, _response), do: nil
+  def handle_response_ios(_user, _response), do: nil
 end
