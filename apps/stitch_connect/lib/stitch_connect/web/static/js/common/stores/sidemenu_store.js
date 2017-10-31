@@ -331,7 +331,7 @@ class SidemenuStore {
   showNotificationCard(title, body, duration = 5000, cb = null) {
     const notification = new Notification(title, {
       body,
-      icon: "/favicon.ico",
+      icon: "/favicon-64x64.png",
       silent: true
     });
 
