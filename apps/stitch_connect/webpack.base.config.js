@@ -70,6 +70,10 @@ module.exports = [
           to: path.resolve(__dirname, "priv/static")
         },
         {
+          from: "./lib/stitch_connect/web/static/favicon-192x192.png",
+          to: path.resolve(__dirname, "priv/static")
+        }
+        {
           from: "./lib/stitch_connect/web/static/audios/pop.mp3",
           to: path.resolve(__dirname, "priv/static/audios")
         },
