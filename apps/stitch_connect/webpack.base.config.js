@@ -5,10 +5,13 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = [
   {
-    entry: "./lib/stitch_connect/web/static/js/index.js",
+    entry: {
+      index: "./lib/stitch_connect/web/static/js/index.js",
+      landing_app: "./lib/stitch_connect/web/static/js/landing_app.js",
+    },
     output: {
       path: path.resolve(__dirname, "priv/static/js"),
-      filename: "index.js"
+      filename: "[name].js"
     },
     resolve: {
       extensions: [".js", ".jsx"],
@@ -73,10 +76,6 @@ module.exports = [
         {
           from: "./lib/stitch_connect/web/static/images",
           to: path.resolve(__dirname, "priv/static/images")
-        },
-        {
-          from: "./lib/stitch_connect/web/static/fonts",
-          to: path.resolve(__dirname, "priv/static/fonts")
         }
       ])
     ]

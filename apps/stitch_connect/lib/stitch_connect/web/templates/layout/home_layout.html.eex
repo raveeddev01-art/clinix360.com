@@ -36,7 +36,6 @@
       <span class="logo"></span>
     </header> -->
 
-    <div id="toastr" data-component="Toastr"></div>
     <%= render @view_module, @view_template, assigns %>
 
     <!-- <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
@@ -47,7 +46,7 @@
     </main> -->
 
     <%= render "_js_variables.html", conn: @conn %>
-    <script src="<%= static_path(@conn, "/js/index.js") %>"></script>
+    <script src="<%= static_path(@conn, "/js/landing_app.js") %>"></script>
     <%= render "_intercom.html", conn: @conn %>
   </body>
 </html>
