@@ -10,6 +10,8 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
+import isEmail from "validator/lib/isEmail";
+
 class InvitationModal extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +20,8 @@ class InvitationModal extends Component {
       show: props.show,
       invites: [
         {
-          email: ""
+          email: "",
+          error: ""
         }
       ],
       sent: false
@@ -31,9 +34,11 @@ class InvitationModal extends Component {
         show: nextProps.show,
         invites: [
           {
-            email: ""
+            email: "",
+            error: ""
           }
-        ]
+        ],
+        sent: false
       });
     }
   }
@@ -58,6 +63,30 @@ class InvitationModal extends Component {
 
   sendInvites = () => {
     const { invites } = this.state;
+    let valid = true;
+
+    invites.forEach(invite => {
+      const email = invite.email.trim();
+
+      if (!email) {
+        return;
+      }
+
+      if (isEmail(email)) {
+        invite.error = "";
+      } else {
+        invite.error = "Invalid email";
+
+        valid = false;
+      }
+    });
+
+    this.setState({ invites });
+
+    if (!valid) {
+      return;
+    }
+
     const filteredEmails = invites
       .map(invite => invite.email)
       .filter(email => !!email.trim());
@@ -66,15 +95,13 @@ class InvitationModal extends Component {
       post(`/api/v1/invitations`, {
         body: { email_collection: filteredEmails.join(",") }
       }).then(() => {
-        notify.show(`Invitations sent to ${filteredEmails.length} users`);
+        this.setState({ sent: true });
       });
     }
-
-    this.props.toggle();
   };
 
   render() {
-    const { show, invites } = this.state;
+    const { show, invites, sent } = this.state;
     const { toggle } = this.props;
 
     return (
