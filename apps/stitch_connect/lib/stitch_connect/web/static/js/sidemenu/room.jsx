@@ -136,7 +136,9 @@ class Room extends Component {
               <div className="item-text">{this.getName()}</div>
               {this.getHideDMIcon()}
               {badge > 0 && (
-                <div className="item-badge text-center">{badge}</div>
+                <div className="item-badge text-center">
+                  {badge < 10 ? badge : "9+"}
+                </div>
               )}
             </NavLink>
           </Element>
