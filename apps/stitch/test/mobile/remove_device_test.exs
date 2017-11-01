@@ -12,7 +12,7 @@ defmodule Stitch.Mobile.RemoveDeviceTest do
       "token" => "foobarbaz"
     })
 
-    assert {1, _} = Mobile.remove_device(bob, device.token)
+    assert {1, _} = Mobile.remove_device("ios", "foobarbaz")
     assert Repo.get(Device, device.id) == nil
   end
 
@@ -25,7 +25,7 @@ defmodule Stitch.Mobile.RemoveDeviceTest do
       "token" => "foobarbaz"
     })
 
-    assert {0, _} = Mobile.remove_device(bob, "42")
+    assert {0, _} = Mobile.remove_device("ios", "doesntexist")
     assert Repo.get(Device, device.id) != nil
   end
 end

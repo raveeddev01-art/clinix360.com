@@ -31,29 +31,27 @@ defmodule StitchConnect.Web.PushNotifications do
       |> Map.put_new("ios", [])
       |> Map.put_new("android", [])
 
-    push_badge_update_to_ios_devices(badge_value, user, ios_devices)
-    push_badge_update_to_android_devices(badge_value, user, android_devices)
+    push_badge_update_to_ios_devices(badge_value, ios_devices)
+    push_badge_update_to_android_devices(badge_value, android_devices)
   end
 
-  def push_badge_update_to_ios_devices(badge_value, user, ios_devices) do
-    import APNS.Notification
-
+  def push_badge_update_to_ios_devices(badge_value, ios_devices) do
     ios_devices
     |> Enum.map(fn %{token: token} ->
       %APNS.Notification{device_token: token}
       |> APNS.Notification.put_badge(badge_value)
     end)
-    |> APNS.push(on_response: & handle_response_ios(user, &1))
+    |> APNS.push(on_response: &handle_response_ios/1)
   end
 
-  def push_badge_update_to_android_devices(badge_value, user, android_devices) do
+  def push_badge_update_to_android_devices(badge_value, android_devices) do
     import FCM.Notification
 
     android_devices
     |> Enum.map(&(&1.token))
     |> new
     |> put_data(%{"badge" => to_string(badge_value)})
-    |> FCM.push(on_response: & handle_response_andriod(user, &1))
+    |> FCM.push(on_response: &handle_response_andriod/1)
   end
 
   def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
@@ -78,11 +76,11 @@ defmodule StitchConnect.Web.PushNotifications do
       |> Map.put_new("android", [])
 
     badge_value = Mobile.badge_value(user)
-    push_new_msg_notification_to_ios_devices(grp, msg, user, badge_value, ios_devices)
-    push_new_msg_notification_to_android_devices(grp, msg, user, badge_value, android_devices)
+    push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices)
+    push_new_msg_notification_to_android_devices(grp, msg, badge_value, android_devices)
   end
 
-  defp push_new_msg_notification_to_ios_devices(grp, msg, user, badge_value, ios_devices) do
+  defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
     import APNS.Notification
 
     ios_devices
@@ -93,10 +91,10 @@ defmodule StitchConnect.Web.PushNotifications do
       |> put_badge(badge_value)
       |> put_sound("chime")
     end)
-    |> APNS.push(on_response: & handle_response_ios(user, &1))
+    |> APNS.push(on_response: &handle_response_ios/1)
   end
 
-  defp push_new_msg_notification_to_android_devices(grp, msg, user, badge_value, android_devices) do
+  defp push_new_msg_notification_to_android_devices(grp, msg, badge_value, android_devices) do
     import FCM.Notification
 
     message_json =
@@ -114,7 +112,7 @@ defmodule StitchConnect.Web.PushNotifications do
       "message" => new_msg_notification_body(grp, msg),
       "ejson" => message_json
     })
-    |> FCM.push(on_response: & handle_response_andriod(user, &1))
+    |> FCM.push(on_response: &handle_response_andriod/1)
   end
 
   defp new_msg_notification_body(%{name: "__dm_group__"}, %{user: user, type: "upload"}) do
@@ -145,14 +143,14 @@ defmodule StitchConnect.Web.PushNotifications do
     "#{first_name} #{last_name}"
   end
 
-  def handle_response_andriod(user, response) do
-    response
+  def handle_response_andriod(notification) do
+    notification
     |> FCM.Notification.remove?()
-    |> Enum.each(& Mobile.remove_device(user, &1))
+    |> Enum.each(& Mobile.remove_device("android", &1))
   end
 
-  def handle_response_ios(user, %{response: :bad_device_token, device_token: token}) do
-    Mobile.remove_device(user, token)
+  def handle_response_ios(%{response: :bad_device_token, device_token: token}) do
+    Mobile.remove_device("ios", token)
   end
-  def handle_response_ios(_user, _response), do: nil
+  def handle_response_ios(_notification), do: nil
 end

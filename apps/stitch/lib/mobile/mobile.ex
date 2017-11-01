@@ -13,9 +13,9 @@ defmodule Stitch.Mobile do
     |> Repo.insert
   end
 
-  def remove_device(%User{id: user_id}, token) do
+  def remove_device(type, token) when type in ["ios", "android"] do
     Device
-    |> where(user_id: ^user_id)
+    |> where(type: ^type)
     |> where(token: ^token)
     |> Repo.delete_all
   end
