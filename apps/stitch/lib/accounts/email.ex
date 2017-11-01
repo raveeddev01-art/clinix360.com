@@ -13,7 +13,7 @@ defmodule Stitch.Accounts.Email do
     new_email()
     |> template("Sign-Up 1: Authenticate Provider Code (Connect)")
     |> to(user.email)
-    |> from("welcome@teamstitch.com")
+    |> from({"Stitch", "support@teamstitch.com"})
     |> subject("Confirm your email")
     |> put_param("global_merge_vars", [
       %{
@@ -31,7 +31,7 @@ defmodule Stitch.Accounts.Email do
     new_email()
     |> template("Password Reset (Connect)")
     |> to(user.email)
-    |> from("support@teamstitch.com")
+    |> from({"Stitch", "support@teamstitch.com"})
     |> subject("Reset Password Requests")
     |> put_param("global_merge_vars", [
       %{
@@ -51,7 +51,7 @@ defmodule Stitch.Accounts.Email do
     new_email()
     |> template("Message Waiting - Offline Email (Connect)")
     |> to(Enum.map(recipients, & &1.email))
-    |> from("no-reply@teamstitch.com")
+    |> from({"Stitch", "support@teamstitch.com"})
     |> subject("[Stitch Connect] Notifications for #{format_datetime_subject(DateTime.utc_now)}")
     |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
     |> Stitch.Mailer.deliver_later
