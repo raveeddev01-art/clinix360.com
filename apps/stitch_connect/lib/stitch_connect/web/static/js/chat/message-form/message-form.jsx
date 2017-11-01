@@ -147,20 +147,25 @@ class MessageForm extends Component {
   };
 
   onPaste = evt => {
+    const { uploadStore } = this.props;
     const items = evt.clipboardData.items;
-    for (let i = 0; i < items.length; i += 1) {
-      if (items[i].kind === "file") {
-        const file = items[i].getAsFile();
+
+    items.some(item => {
+      const file = item.getAsFile();
+
+      if (file) {
         // browser only allows reading images. other files will be returned as null
         if (file) {
           const fileName = evt.clipboardData.getData("Text");
-          this.props.uploadStore.openUploadModal(file, fileName);
+          uploadStore.openUploadModal(file, fileName);
           // NOTE: for now, we supports pasting only 1 file. Stacking can be done later.
           evt.preventDefault();
-          break;
+          return true;
         }
       }
-    }
+
+      return false;
+    });
   };
 
   getText = () => {
@@ -195,11 +200,15 @@ class MessageForm extends Component {
   };
 
   typingStarted = () => {
-    this.props.messageStore.startTyping();
+    const { messageStore } = this.props;
+
+    messageStore.startTyping();
   };
 
   typingStopped = () => {
-    this.props.messageStore.stopTyping();
+    const { messageStore } = this.props;
+
+    messageStore.stopTyping();
   };
 
   insertWord = word => {
