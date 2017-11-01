@@ -35,6 +35,7 @@
     "react/forbid-prop-types": "off",
     "react/prefer-stateless-function": "off",
     "react/no-array-index-key": "off",
+    "react/no-find-dom-node": "off",
     "react/prop-types": [
       "error",
       {
@@ -49,14 +50,16 @@
           "mentionsStore",
           "messageStore",
           "notificationStore",
+          "pinnedMessageStore",
           "presenceStore",
           "resetPasswordStore",
           "searchStore",
           "sidemenuStore",
+          "socketStore",
           "titleStore",
           "uploadStore",
-          "pinnedMessageStore",
           "userStore",
+
           "match",
           "location",
           "history"
