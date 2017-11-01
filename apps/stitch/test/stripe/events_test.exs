@@ -86,6 +86,6 @@ defmodule Stitch.Stripe.EventsTest do
       }
     }
     assert :ok == Events.handle_event(event)
-    assert %{subscription_id: nil, subscription_line_item_id: nil, renews: false} = Billing.get_subscription(subscription.team)
+    assert %{subscription_id: nil, subscription_line_item_id: nil, estimated_invoice_amount: 0, renews: false} = Billing.get_subscription(subscription.team)
   end
 end

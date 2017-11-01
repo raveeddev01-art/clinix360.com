@@ -4,7 +4,7 @@ defmodule Stitch.Stripe do
   """
 
   @type card :: %{card_id: String.t, brand: String.t, last_four: String.t, exp_month: 1..12, exp_year: pos_integer}
-  @type subscription :: %{subscription_id: String.t, subscription_line_item_id: String.t, valid_until: DateTime.t, status: String.t, renews: boolean}
+  @type subscription :: %{subscription_id: String.t, subscription_line_item_id: String.t, estimated_invoice_amount: integer | nil, valid_until: DateTime.t, status: String.t, renews: boolean}
 
   @doc """
   Creates a new customer.
@@ -44,7 +44,7 @@ defmodule Stitch.Stripe do
   @doc """
   Updates the subscription's quantity.
   """
-  @callback update_subscription_quantity(subscription_line_item_id :: String.t, user_count :: pos_integer) :: :ok | :error
+  @callback update_subscription_quantity(customer_id :: String.t, subscription_id :: String.t, subscription_line_item_id :: String.t, user_count :: pos_integer) :: {:ok, subscription} | :error
 
   @doc """
   Cancels a subscription to no longer renew at the end of a billing cycle.
