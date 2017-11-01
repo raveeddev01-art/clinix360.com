@@ -163,7 +163,6 @@
           }
 
           .item-badge {
-            min-width: 16px;
             color: #fff;
             font-size: 12px;
             font-weight: 700;
@@ -226,6 +225,10 @@
               .item-text {
                 color: #000;
               }
+            }
+
+            .hide-dm {
+              display: none;
             }
           }
         }
