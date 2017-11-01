@@ -8,50 +8,115 @@ import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
+
+import isEmail from "validator/lib/isEmail";
 
 class InvitationModal extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       show: props.show,
-      emails: [""]
+      invites: [
+        {
+          email: ""
+        }
+      ],
+      sent: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.show !== this.props.show) {
-      this.setState({ show: nextProps.show, emails: [""] });
+      this.setState({
+        show: nextProps.show,
+        invites: [
+          {
+            email: ""
+          }
+        ],
+        sent: false
+      });
     }
   }
 
-  handleChange = index => evt => {
-    const { emails } = this.state;
-    this.state.emails[index] = evt.target.value;
-    this.setState({ emails });
+  onChange = index => evt => {
+    const { invites } = this.state;
+    const invite = invites[index];
+
+    invite.email = evt.target.value;
+    invite.error =
+      !invite.email || isEmail(invite.email) ? "" : "Invalid email";
+
+    this.setState({ invites });
   };
 
-  addEmail = () => {
-    this.setState({ emails: [...this.state.emails, ""] });
+  onAddInvite = () => {
+    this.setState({
+      invites: [
+        ...this.state.invites,
+        {
+          email: ""
+        }
+      ]
+    });
   };
 
-  inviteUsers = () => {
-    const { emails } = this.state;
-    const filteredEmails = emails.filter(email => !!email.trim());
+  onSubmit = evt => {
+    evt.preventDefault();
+
+    const { sent } = this.state;
+
+    if (sent) {
+      this.reset();
+    } else {
+      this.sendInvites();
+    }
+  };
+
+  reset() {
+    this.setState({
+      invites: [
+        {
+          email: ""
+        }
+      ],
+      sent: false
+    });
+  }
+
+  trimEmptyInvites() {
+    const { invites } = this.state;
+
+    return invites.filter(invite => !!invite.email.trim());
+  }
+
+  isValid() {
+    return this.trimEmptyInvites().every(invite => !invite.error);
+  }
+
+  sendInvites() {
+    if (!this.isValid()) {
+      return;
+    }
+
+    const filteredEmails = this.trimEmptyInvites().map(invite => invite.email);
+
     if (filteredEmails.length) {
       post(`/api/v1/invitations`, {
         body: { email_collection: filteredEmails.join(",") }
       }).then(() => {
-        notify.show(`Invitations sent to ${filteredEmails.length} users`);
+        this.setState({ sent: true });
       });
     }
-
-    this.props.toggle();
-  };
+  }
 
   render() {
-    const { show, emails } = this.state;
+    const { show, invites, sent } = this.state;
     const { toggle } = this.props;
+
     return (
       <Modal className="invite-people-modal" show={show} onHide={toggle}>
         <Modal.Header>
@@ -65,22 +130,54 @@ class InvitationModal extends Component {
           <h5>
             Enter <strong>invitations</strong> to email out.
           </h5>
-          <Form horizontal className="invite-forms">
-            {emails.map((email, index) => (
-              <FormGroup bsSize="large" key={`email_${index}`}>
-                <Col componentClass={ControlLabel} sm={3}>
-                  Email
-                </Col>
+          <Form
+            horizontal
+            className="invite-forms"
+            onSubmit={this.onSubmit}
+            noValidate
+          >
+            {invites.map((invite, index) => {
+              const inviteError = !!invite.error;
+              const inviteSent = sent && !!invite.email.trim();
+              const validationState = inviteError
+                ? "error"
+                : inviteSent ? "success" : null;
 
-                <Col sm={9}>
-                  <FormControl
-                    type="email"
-                    value={email}
-                    onChange={this.handleChange(index)}
-                  />
-                </Col>
-              </FormGroup>
-            ))}
+              return (
+                <FormGroup
+                  bsSize="large"
+                  key={`invite_${index}`}
+                  validationState={validationState}
+                >
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Email
+                  </Col>
+
+                  <Col sm={9}>
+                    <FormControl
+                      type="email"
+                      value={invite.email}
+                      disabled={sent}
+                      onChange={this.onChange(index)}
+                    />
+
+                    {inviteError && (
+                      <HelpBlock>
+                        <i className="fa fa-exclamation-circle" />{" "}
+                        {invite.error}
+                      </HelpBlock>
+                    )}
+
+                    {inviteSent && (
+                      <HelpBlock>
+                        <i className="fa fa-check-circle" /> Invite has been
+                        sent
+                      </HelpBlock>
+                    )}
+                  </Col>
+                </FormGroup>
+              );
+            })}
           </Form>
 
           <Row>
@@ -89,7 +186,8 @@ class InvitationModal extends Component {
                 bsStyle="default"
                 bsSize="xs"
                 className="add-invite"
-                onClick={this.addEmail}
+                disabled={sent}
+                onClick={this.onAddInvite}
               >
                 Add Invitation
               </Button>
@@ -97,8 +195,8 @@ class InvitationModal extends Component {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsSize="large" bsStyle="primary" onClick={this.inviteUsers}>
-            Send
+          <Button bsSize="large" bsStyle="primary" onClick={this.onSubmit}>
+            {sent ? "Clear" : "Send"}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -109,11 +207,6 @@ class InvitationModal extends Component {
 InvitationModal.propTypes = {
   show: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired
-};
-
-InvitationModal.defaultProp = {
-  show: false,
-  toggle: () => {}
 };
 
 export default InvitationModal;
