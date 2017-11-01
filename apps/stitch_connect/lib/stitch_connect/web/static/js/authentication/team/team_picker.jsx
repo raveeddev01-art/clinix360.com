@@ -16,7 +16,8 @@ export default class TeamPicker extends Component {
     super(...args);
     this.state = {
       team_name: "",
-      teamExists: false
+      teamExists: undefined,
+      isLoading: false
     };
   }
 
@@ -30,32 +31,33 @@ export default class TeamPicker extends Component {
     const name = target.name;
 
     this.setState({
-      [name]: value,
-      teamExists: false
+      [name]: value
     });
-
-    delay(() => {
-      this.checkAvailability(value);
-    }, 300);
   };
 
   checkAvailability = name => {
+    this.setState({ isLoading: true });
     post("/api/v1/teams/url-available", {
       body: { url: name }
     }).then(response => {
-      this.setState({ teamExists: !response.data.available });
+      this.setState({ teamExists: !response.data.available, isLoading: false });
+      if (this.state.teamExists === true) {
+        window.location = `https://${this.state.team_name}.${applicationHost}`;
+      }
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    window.location = `https://${this.state.team_name}.${applicationHost}`;
+    this.checkAvailability(this.state.team_name);
   };
 
   render() {
     return (
       <div>
-        {this.state.error && <Alert>This team doesn't seem to exist.</Alert>}
+        {this.state.teamExists === false && (
+          <Alert>This team doesn't seem to exist.</Alert>
+        )}
 
         <div className="authentication-card text-center team-picker-card">
           <div className="card-header">
@@ -95,7 +97,7 @@ export default class TeamPicker extends Component {
             </FormGroup>
 
             <input
-              disabled={!this.state.teamExists}
+              disabled={this.state.isLoading || this.state.team_name === ""}
               value="Continue"
               type="submit"
               className="btn btn-block btn-lg btn-primary"
