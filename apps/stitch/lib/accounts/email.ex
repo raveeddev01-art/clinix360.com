@@ -18,7 +18,7 @@ defmodule Stitch.Accounts.Email do
     |> put_param("global_merge_vars", [
       %{
         "name": "confirmationCode",
-        "content": user.confirmation_code
+        "content": String.to_charlist(user.confirmation_code) |> List.insert_at(3, " - ") |> List.to_string # code looks like "123 - 456" in email only
       }
     ])
     |> Stitch.Mailer.deliver_later
