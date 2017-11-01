@@ -35,7 +35,7 @@ class WebsiteRouter extends Component {
               path="/customers/princeton-brain-spine"
               component={CasePBSC}
             />
-            <Route exact path="/security" component={Security} />
+            <Route exact path="/baa" component={Security} />
             <Route exact path="/privacy-policy" component={PrivacyPolicy} />
             <Route exact path="/terms-of-service" component={TermsOfService} />
 
