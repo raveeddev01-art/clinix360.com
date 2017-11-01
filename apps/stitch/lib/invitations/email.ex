@@ -14,7 +14,7 @@ defmodule Stitch.Invitation.Email do
     new_email()
     |> template("Sign-up 3: You are Invited (Connect)")
     |> to(invitation.user.email)
-    |> from("welcome@teamstitch.com")
+    |> from({"Stitch", "support@teamstitch.com"})
     |> subject("Stitch Connect - Team Invite")
     |> put_param("global_merge_vars", [
       %{
