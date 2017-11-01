@@ -7,7 +7,7 @@ defmodule StitchConnect.Plug.EnsureUnlocked do
     if get_session(conn, :locked) do
       conn
       |> put_status(:unauthorized)
-      |> Phoenix.Controller.json(%{message: "Session is locked."})
+      |> Phoenix.Controller.json(nil)
       |> halt
     else
       conn
