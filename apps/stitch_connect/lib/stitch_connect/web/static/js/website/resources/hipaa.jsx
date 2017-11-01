@@ -4,14 +4,14 @@ import { Link } from "react-router-dom";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 
-export default class Security extends Component {
+export default class Hipaa extends Component {
   render() {
     return (
       <div className="container security-page">
         <Row>
           <Col sm={8}>
             <div className="page-header">
-              <h1>Security</h1>
+              <h1>HIPAA</h1>
             </div>
 
             <div className="page-header makeid" id="what-is-hipaa">
