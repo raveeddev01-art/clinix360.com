@@ -35,7 +35,7 @@ defmodule StitchConnect.Web.PushNotifications do
     push_badge_update_to_android_devices(badge_value, android_devices)
   end
 
-  def push_badge_update_to_ios_devices(badge_value, ios_devices) do
+  defp push_badge_update_to_ios_devices(badge_value, ios_devices) do
     ios_devices
     |> Enum.map(fn %{token: token} ->
       %APNS.Notification{device_token: token}
@@ -44,7 +44,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> APNS.push(on_response: &handle_response_ios/1)
   end
 
-  def push_badge_update_to_android_devices(badge_value, android_devices) do
+  defp push_badge_update_to_android_devices(badge_value, android_devices) do
     import FCM.Notification
 
     android_devices
