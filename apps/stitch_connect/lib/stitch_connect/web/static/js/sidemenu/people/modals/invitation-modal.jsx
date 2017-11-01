@@ -44,8 +44,12 @@ class InvitationModal extends Component {
 
   onChange = index => evt => {
     const { invites } = this.state;
+    const invite = invites[index];
 
-    invites[index].email = evt.target.value;
+    invite.email = evt.target.value;
+    invite.error =
+      !invite.email || isEmail(invite.email) ? "" : "Invalid email";
+
     this.setState({ invites });
   };
 
@@ -83,41 +87,22 @@ class InvitationModal extends Component {
     });
   }
 
-  validate() {
+  trimEmptyInvites() {
     const { invites } = this.state;
-    let valid = true;
 
-    invites.forEach(invite => {
-      const email = invite.email.trim();
+    return invites.filter(invite => !!invite.email.trim());
+  }
 
-      if (!email) {
-        return;
-      }
-
-      if (isEmail(email)) {
-        invite.error = "";
-      } else {
-        invite.error = "Invalid email";
-
-        valid = false;
-      }
-    });
-
-    this.setState({ invites });
-
-    return valid;
+  isValid() {
+    return this.trimEmptyInvites().every(invite => !invite.error);
   }
 
   sendInvites() {
-    const { invites } = this.state;
-
-    if (!this.validate()) {
+    if (!this.isValid()) {
       return;
     }
 
-    const filteredEmails = invites
-      .map(invite => invite.email)
-      .filter(email => !!email.trim());
+    const filteredEmails = this.trimEmptyInvites().map(invite => invite.email);
 
     if (filteredEmails.length) {
       post(`/api/v1/invitations`, {
