@@ -29,6 +29,10 @@ class MessageForm extends Component {
     this.typingTimeoutId = null;
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.textInput.focus();
+  }
+
   onTextChange = evt => {
     this.updateInputText(evt.target.value);
   };
