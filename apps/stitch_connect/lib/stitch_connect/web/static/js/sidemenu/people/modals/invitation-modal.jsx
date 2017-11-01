@@ -213,9 +213,4 @@ InvitationModal.propTypes = {
   toggle: PropTypes.func.isRequired
 };
 
-InvitationModal.defaultProp = {
-  show: false,
-  toggle: () => {}
-};
-
 export default InvitationModal;
