@@ -42,25 +42,14 @@ class InvitationModal extends Component {
     }
   }
 
-  reset = () => {
-    this.setState({
-      invites: [
-        {
-          email: ""
-        }
-      ],
-      sent: false
-    });
-  };
-
-  handleChange = index => evt => {
+  onChange = index => evt => {
     const { invites } = this.state;
 
     invites[index].email = evt.target.value;
     this.setState({ invites });
   };
 
-  addInvite = () => {
+  onAddInvite = () => {
     this.setState({
       invites: [
         ...this.state.invites,
@@ -70,6 +59,29 @@ class InvitationModal extends Component {
       ]
     });
   };
+
+  onSubmit = evt => {
+    evt.preventDefault();
+
+    const { sent } = this.state;
+
+    if (sent) {
+      this.reset();
+    } else {
+      this.sendInvites();
+    }
+  };
+
+  reset() {
+    this.setState({
+      invites: [
+        {
+          email: ""
+        }
+      ],
+      sent: false
+    });
+  }
 
   validate() {
     const { invites } = this.state;
@@ -96,7 +108,7 @@ class InvitationModal extends Component {
     return valid;
   }
 
-  sendInvites = () => {
+  sendInvites() {
     const { invites } = this.state;
 
     if (!this.validate()) {
@@ -114,7 +126,7 @@ class InvitationModal extends Component {
         this.setState({ sent: true });
       });
     }
-  };
+  }
 
   render() {
     const { show, invites, sent } = this.state;
@@ -133,7 +145,12 @@ class InvitationModal extends Component {
           <h5>
             Enter <strong>invitations</strong> to email out.
           </h5>
-          <Form horizontal className="invite-forms">
+          <Form
+            horizontal
+            className="invite-forms"
+            onSubmit={this.onSubmit}
+            noValidate
+          >
             {invites.map((invite, index) => {
               const inviteError = !!invite.error;
               const inviteSent = sent && !!invite.email.trim();
@@ -156,7 +173,7 @@ class InvitationModal extends Component {
                       type="email"
                       value={invite.email}
                       disabled={sent}
-                      onChange={this.handleChange(index)}
+                      onChange={this.onChange(index)}
                     />
 
                     {inviteError && (
@@ -185,7 +202,7 @@ class InvitationModal extends Component {
                 bsSize="xs"
                 className="add-invite"
                 disabled={sent}
-                onClick={this.addInvite}
+                onClick={this.onAddInvite}
               >
                 Add Invitation
               </Button>
@@ -193,15 +210,9 @@ class InvitationModal extends Component {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          {sent ? (
-            <Button bsSize="large" bsStyle="primary" onClick={this.reset}>
-              Clear
-            </Button>
-          ) : (
-            <Button bsSize="large" bsStyle="primary" onClick={this.sendInvites}>
-              Send
-            </Button>
-          )}
+          <Button bsSize="large" bsStyle="primary" onClick={this.onSubmit}>
+            {sent ? "Clear" : "Send"}
+          </Button>
         </Modal.Footer>
       </Modal>
     );
