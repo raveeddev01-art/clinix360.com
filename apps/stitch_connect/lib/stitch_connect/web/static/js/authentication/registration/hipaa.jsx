@@ -51,8 +51,8 @@ export default class Hipaa extends Component {
           pin: registrationStore.pin,
           team_id: response.data.id
         }
-      }).then(response => {
-        this.props.history.push("/signin");
+      }).then(() => {
+        window.location.href = `https://${registrationStore.teamUrl}.${applicationHost}`;
       });
     });
   };
@@ -103,9 +103,16 @@ export default class Hipaa extends Component {
           </Checkbox>
 
           <HelpBlock className="m-b-20">
-            Learn more about BAAs <a href="#">here</a>. By checking the box
-            above, you represent that your team agrees to the terms of the{" "}
-            <a href="#">HIPAA BAA</a>.
+            Learn more about BAAs&nbsp;
+            <a
+              href="https://teamstitch.zendesk.com/hc/en-us/articles/226677427-Business-Associates-Agreement-BAA-"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </a>. By checking the box above, you represent that your team agrees
+            to the terms of the&nbsp;
+            <a role="link">HIPAA BAA</a>.
           </HelpBlock>
 
           <input
@@ -116,8 +123,13 @@ export default class Hipaa extends Component {
           />
 
           <HelpBlock className="m-b-20">
-            By proceeding to use Stitch, you agree to our{" "}
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            By proceeding to use Stitch, you agree to our&nbsp;
+            <a href="/terms-of-service" target="_blank">
+              Terms of Service
+            </a>&nbsp;and&nbsp;
+            <a href="/privacy-policy" target="_blank">
+              Privacy Policy
+            </a>.
           </HelpBlock>
         </form>
 

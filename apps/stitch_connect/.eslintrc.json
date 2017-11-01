@@ -58,8 +58,9 @@
           "socketStore",
           "titleStore",
           "uploadStore",
+          "pinnedMessageStore",
+          "registrationStore",
           "userStore",
-
           "match",
           "location",
           "history"
