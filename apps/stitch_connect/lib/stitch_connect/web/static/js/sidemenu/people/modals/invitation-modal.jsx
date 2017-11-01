@@ -13,31 +13,55 @@ import Button from "react-bootstrap/lib/Button";
 class InvitationModal extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       show: props.show,
-      emails: [""]
+      invites: [
+        {
+          email: ""
+        }
+      ],
+      sent: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.show !== this.props.show) {
-      this.setState({ show: nextProps.show, emails: [""] });
+      this.setState({
+        show: nextProps.show,
+        invites: [
+          {
+            email: ""
+          }
+        ]
+      });
     }
   }
 
   handleChange = index => evt => {
-    const { emails } = this.state;
-    this.state.emails[index] = evt.target.value;
-    this.setState({ emails });
+    const { invites } = this.state;
+
+    invites[index].email = evt.target.value;
+    this.setState({ invites });
   };
 
-  addEmail = () => {
-    this.setState({ emails: [...this.state.emails, ""] });
+  addInvite = () => {
+    this.setState({
+      invites: [
+        ...this.state.invites,
+        {
+          email: ""
+        }
+      ]
+    });
   };
 
-  inviteUsers = () => {
-    const { emails } = this.state;
-    const filteredEmails = emails.filter(email => !!email.trim());
+  sendInvites = () => {
+    const { invites } = this.state;
+    const filteredEmails = invites
+      .map(invite => invite.email)
+      .filter(email => !!email.trim());
+
     if (filteredEmails.length) {
       post(`/api/v1/invitations`, {
         body: { email_collection: filteredEmails.join(",") }
@@ -50,8 +74,9 @@ class InvitationModal extends Component {
   };
 
   render() {
-    const { show, emails } = this.state;
+    const { show, invites } = this.state;
     const { toggle } = this.props;
+
     return (
       <Modal className="invite-people-modal" show={show} onHide={toggle}>
         <Modal.Header>
@@ -66,8 +91,8 @@ class InvitationModal extends Component {
             Enter <strong>invitations</strong> to email out.
           </h5>
           <Form horizontal className="invite-forms">
-            {emails.map((email, index) => (
-              <FormGroup bsSize="large" key={`email_${index}`}>
+            {invites.map((invite, index) => (
+              <FormGroup bsSize="large" key={`invite_${index}`}>
                 <Col componentClass={ControlLabel} sm={3}>
                   Email
                 </Col>
@@ -75,7 +100,7 @@ class InvitationModal extends Component {
                 <Col sm={9}>
                   <FormControl
                     type="email"
-                    value={email}
+                    value={invite.email}
                     onChange={this.handleChange(index)}
                   />
                 </Col>
@@ -89,7 +114,7 @@ class InvitationModal extends Component {
                 bsStyle="default"
                 bsSize="xs"
                 className="add-invite"
-                onClick={this.addEmail}
+                onClick={this.addInvite}
               >
                 Add Invitation
               </Button>
@@ -97,7 +122,7 @@ class InvitationModal extends Component {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsSize="large" bsStyle="primary" onClick={this.inviteUsers}>
+          <Button bsSize="large" bsStyle="primary" onClick={this.sendInvites}>
             Send
           </Button>
         </Modal.Footer>
