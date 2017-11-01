@@ -3,7 +3,9 @@ defmodule StitchConnect.Web.PushNotifications do
   alias Pigeon.{APNS, FCM}
   import Ecto.Query
 
-  def push_badge_update(%Message{group_id: group_id}, exclude_user_ids \\ []) do
+  def push_badge_update(msg, exclude_user_ids \\ [])
+  def push_badge_update(%Message{type: "system"}, _exclude_user_ids), do: nil
+  def push_badge_update(%Message{group_id: group_id}, exclude_user_ids) do
     user_ids =
       GroupUser
       |> where(group_id: ^group_id)
@@ -35,7 +37,7 @@ defmodule StitchConnect.Web.PushNotifications do
     push_badge_update_to_android_devices(badge_value, android_devices)
   end
 
-  def push_badge_update_to_ios_devices(badge_value, ios_devices) do
+  defp push_badge_update_to_ios_devices(badge_value, ios_devices) do
     ios_devices
     |> Enum.map(fn %{token: token} ->
       %APNS.Notification{device_token: token}
@@ -44,7 +46,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> APNS.push(on_response: &handle_response_ios/1)
   end
 
-  def push_badge_update_to_android_devices(badge_value, android_devices) do
+  defp push_badge_update_to_android_devices(badge_value, android_devices) do
     import FCM.Notification
 
     android_devices
@@ -54,6 +56,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> FCM.push(on_response: &handle_response_andriod/1)
   end
 
+  def push_new_msg_notification(_grp, %Message{type: "system"}, _user_ids), do: nil
   def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
     msg = Repo.preload(msg, :user)
 
