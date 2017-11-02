@@ -8,7 +8,6 @@ import CUSTOMERS from "./components/customers-logos";
 
 import Navbar from "react-bootstrap/lib/Navbar";
 import Nav from "react-bootstrap/lib/Nav";
-import NavItem from "react-bootstrap/lib/NavItem";
 import Button from "react-bootstrap/lib/Button";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -41,17 +40,15 @@ export default class Landing extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav pullRight>
-              <NavItem eventKey={1} href="/signin">
-                Sign In
-              </NavItem>
+              <li role="presentation">
+                <a href="/signin">Sign In</a>
+              </li>
 
-              <NavItem
-                eventKey={2}
-                href="/signup/email"
-                className="btn-outline"
-              >
-                Create Team
-              </NavItem>
+              <li role="presentation">
+                <a href="/signup/email" className="btn-outline">
+                  Create Team
+                </a>
+              </li>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

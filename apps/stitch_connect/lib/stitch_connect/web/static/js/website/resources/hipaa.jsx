@@ -83,7 +83,7 @@ export default class Hipaa extends Component {
                 relying on us to protect your patient data, so we use only the
                 highest levels of security and strictest practices to secure
                 your PHI. To help us do this, we use{" "}
-                <a href="https://www.aptible.com">Aptible</a>, a world-className
+                <a href="https://www.aptible.com">Aptible</a>, a world-class
                 HIPAA compliance deployment and management platform.
                 Specifically, there are 4 HIPAA Rules that Stitch complies with
                 to achieve the highest level of HIPAA compliance:
