@@ -126,6 +126,8 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: message})
       user ->
+        group = Stitch.GroupQueries.default_group(user)
+        Stitch.Group.add_user(group, user.id)
         conn
         |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
