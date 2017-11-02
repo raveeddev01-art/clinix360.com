@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-
-import {
-  Panel,
-  Row,
-  Col,
-  FormGroup,
-  FormControl,
-  HelpBlock,
-  Button
-} from "react-bootstrap";
+import Panel from 'react-bootstrap/lib/Panel';
+import Row from 'react-bootstrap/lib/Row';
+import Col from 'react-bootstrap/lib/Col';
+import FormGroup from 'react-bootstrap/lib/FormGroup';
+import FormControl from 'react-bootstrap/lib/FormControl';
+import HelpBlock from 'react-bootstrap/lib/HelpBlock';
+import Button from 'react-bootstrap/lib/Button';
 
 const header = (
   <h1>
@@ -51,6 +48,7 @@ export default class UsersInvitations extends Component {
       post(`/api/v1/invitations`, {
         body: { email_collection: emails.join(",") }
       }).then(() => {
+        this.setState({ email: '' });
         notify.show("Invitations sent to all users");
       });
     } else {
