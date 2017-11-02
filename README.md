@@ -28,14 +28,14 @@ Create an `.env` file in `apps/stitch/` with the following contents, and ask the
 team for the environment values you need to set here:
 
 ```sh
-export APP_HOST="localhost.app"
+export APP_HOST=localhost.app
 
 export MANDRILL_API_KEY=keygoeshere
 
-export AWS_ACCESS_KEY_ID=keygoeshere
-export AWS_SECRET_ACCESS_KEY=keygoeshere
-export S3_BUCKET_NAME=xxxx
-export S3_REGION="us-east-1"
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+export S3_BUCKET_NAME=
+export S3_REGION=us-east-1
 
 export APNS_CERT_B64=
 export APNS_KEY_B64=
