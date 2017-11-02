@@ -12,6 +12,8 @@ import Pricing from "./resources/pricing";
 import Downloads from "./resources/downloads";
 import Customers from "./resources/customers";
 import CasePBSC from "./case-studies/pbsc";
+import Baa from "./resources/baa";
+import Hipaa from "./resources/hipaa";
 import PrivacyPolicy from "./resources/privacy-policy";
 import TermsOfService from "./resources/terms-of-service";
 
@@ -34,6 +36,8 @@ class WebsiteRouter extends Component {
               path="/customers/princeton-brain-spine"
               component={CasePBSC}
             />
+            <Route exact path="/baa" component={Baa} />
+            <Route exact path="/hipaa" component={Hipaa} />
             <Route exact path="/privacy-policy" component={PrivacyPolicy} />
             <Route exact path="/terms-of-service" component={TermsOfService} />
 
