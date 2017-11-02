@@ -15,7 +15,7 @@ It contains two apps:
 Update `/etc/hosts` (`subdomain` should the name of a team)
 
 ```
-127.0.0.1 localhost.app subdomain.localhost.app
+127.0.0.1 localhost.app YOURTEAMSUBDOMAIN.localhost.app
 ```
 
 You should be working from the `develop` branch:
