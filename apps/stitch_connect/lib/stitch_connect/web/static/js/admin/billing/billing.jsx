@@ -5,6 +5,7 @@ import { Panel, Tabs, Tab } from "react-bootstrap";
 import Subscription from "./subscription/Subscription";
 import Contact from "./contact/Contact";
 import Payment from "./payment/Payment";
+import History from "./history/History";
 
 const header = (
   <h1>
@@ -32,7 +33,7 @@ class TeamBilling extends Component {
             <Payment />
           </Tab>
           <Tab eventKey={4} title="History">
-            History
+            <History />
           </Tab>
         </Tabs>
       </Panel>
