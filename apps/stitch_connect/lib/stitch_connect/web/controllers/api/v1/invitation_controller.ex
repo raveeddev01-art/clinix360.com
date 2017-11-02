@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
   alias Stitch.{Invitation, MessageQueries}
   alias StitchConnect.Web.{Endpoint, EventsChannel}
+  plug :fetch_session when action in [:accept]
 
   def index(conn, _params) do
     case Invitation.list_pending_team_invitations(conn.assigns.current_user.id) do
@@ -66,6 +67,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
           EventsChannel.broadcast_group_new_msg(group, system_message)
         end)
         conn
+        |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
 
       {:error, message} when is_binary(message) ->
@@ -85,5 +87,4 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     |> put_status(:unprocessable_entity)
     |> json(%{message: "Some parameter missing out of token, first_name, last_name, username, password, pin."})
   end
-
 end

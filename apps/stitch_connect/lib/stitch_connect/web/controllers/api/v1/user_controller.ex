@@ -126,12 +126,10 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: message})
       user ->
+        group = Stitch.GroupQueries.default_group(user)
+        Stitch.Group.add_user(group, user.id)
         conn
-        |> put_session(:current_user, user)
-        |> put_session(:authentication_token, user.token)
-        |> put_session(:session_id, random_session_id())
-        |> put_session(:locked, false)
-        |> configure_session(renew: true)
+        |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
     end
   end
@@ -194,9 +192,5 @@ defmodule StitchConnect.Web.Api.V1.UserController do
       %User{} -> json(conn, %{exists: true})
       _ -> json(conn, %{exists: false})
     end
-  end
-
-  defp random_session_id do
-    :crypto.strong_rand_bytes(8) |> Base.url_encode64
   end
 end
