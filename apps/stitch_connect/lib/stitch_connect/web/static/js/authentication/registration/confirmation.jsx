@@ -37,7 +37,11 @@ export default class Confirmation extends Component {
 
   onKeyDown = index => event => {
     const specialKeys = [8, 37, 39, 46];
-    if (specialKeys.includes(event.keyCode)) {
+    const char = String.fromCharCode(event.keyCode);
+    if (
+      (specialKeys.includes(event.keyCode) || isNaN(char)) &&
+      !(char.toLowerCase() === "v" && (event.metaKey || event.ctrlKey))
+    ) {
       event.preventDefault();
     }
 
@@ -63,6 +67,7 @@ export default class Confirmation extends Component {
     const text = evt.clipboardData
       .getData("Text")
       .trim()
+      .replace(/[^0-9]/g, "")
       .substr(0, 6);
     if (text.length === 6 && !isNaN(text)) {
       this.setState({ digits: text.split("") }, () => {
@@ -146,7 +151,7 @@ export default class Confirmation extends Component {
       <div>
         {this.state.error && (
           <Alert>
-            The confirmation code doesn&#39;t match the one we have on record.
+            The confirmation code doesn&#39;t match the one we have on record. Please check your email again.
           </Alert>
         )}
 

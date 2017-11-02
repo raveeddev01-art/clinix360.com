@@ -3,6 +3,7 @@ import { observer, inject } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import Alert from "react-bootstrap/lib/Alert";
 
 @inject("registrationStore")
 @observer
@@ -12,23 +13,12 @@ export default class TeamUrl extends Component {
 
     this.state = {
       teamUrl: props.registrationStore.teamUrl,
-      urlAvailable: !!props.registrationStore.teamUrl
+      error: false
     };
   }
 
   handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-      urlAvailable: false
-    });
-
-    delay(() => {
-      this.checkAvailability(value);
-    }, 300);
+    this.setState({ teamUrl: event.target.value });
   };
 
   moveCaretAtEnd(e) {
@@ -38,67 +28,72 @@ export default class TeamUrl extends Component {
     e.target.value = tempValue;
   }
 
-  checkAvailability = url => {
-    post("/api/v1/teams/url-available", {
-      body: { url }
-    }).then(response => {
-      this.setState({ urlAvailable: response.data.available });
-    });
-  };
-
   handleSubmit = event => {
-    event.preventDefault();
-
     const { registrationStore, history } = this.props;
-    registrationStore.teamUrl = this.state.teamUrl;
-    history.push("/signup/first-name");
+    event.preventDefault();
+    post("/api/v1/teams/url-available", {
+      body: { url: this.state.teamUrl }
+    })
+      .then(response => {
+        if (response.data.available) {
+          registrationStore.teamUrl = this.state.teamUrl;
+          history.push("/signup/first-name");
+        } else {
+          this.setState({ error: true });
+        }
+      })
+      .catch(() => {
+        this.setState({ error: true });
+      });
   };
 
   render() {
+    const { error, teamUrl } = this.state;
+
     return (
-      <div className="authentication-card text-center">
-        <h2>Team URL</h2>
+      <div>
+        {error && (
+          <Alert>This team url is taken. Please choose another one.</Alert>
+        )}
 
-        <h5>
-          Enter your <strong>team url</strong>.
-        </h5>
+        <div className="authentication-card text-center">
+          <h2>Team URL</h2>
 
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup bsSize="large">
-            <FormControl
-              name="teamUrl"
-              required
-              autoFocus
-              type="text"
-              placeholder="Ex. care-clinic"
-              value={this.state.teamUrl}
-              onChange={this.handleChange}
-              onFocus={this.moveCaretAtEnd}
+          <h5>
+            Enter your <strong>team url</strong>.
+          </h5>
+
+          <form onSubmit={this.handleSubmit}>
+            <FormGroup bsSize="large">
+              <FormControl
+                name="teamUrl"
+                required
+                autoFocus
+                type="text"
+                placeholder="Ex. care-clinic"
+                value={teamUrl}
+                onChange={this.handleChange}
+                onFocus={this.moveCaretAtEnd}
+              />
+            </FormGroup>
+
+            <HelpBlock className="m-b-20">
+              This is the URL you will use to access Stitch.
+              <br />
+              You'll login here.
+            </HelpBlock>
+
+            <input
+              value="Next"
+              type="submit"
+              className="btn btn-block btn-lg btn-primary m-b-40"
             />
-          </FormGroup>
+          </form>
 
-          <HelpBlock className="m-b-20">
-            This is the URL you will use to access Stitch.
-            <br />
-            You'll login here.
-          </HelpBlock>
-
-          {this.state.teamUrl.length > 0 &&
-            !this.state.urlAvailable && (
-              <HelpBlock className="m-b-20">
-                This team url is taken. Please choose another one.
-              </HelpBlock>
-            )}
-
-          <input
-            disabled={!this.state.urlAvailable}
-            value="Next"
-            type="submit"
-            className="btn btn-block btn-lg btn-primary m-b-40"
-          />
-        </form>
-
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
+          <p className="copyright m-b-0">
+            &copy; 2017 Stitch Technologies, Inc
+          </p>
+        </div>
       </div>
     );
   }

@@ -104,15 +104,11 @@ export default class Hipaa extends Component {
 
           <HelpBlock className="m-b-20">
             Learn more about BAAs&nbsp;
-            <a
-              href="https://teamstitch.zendesk.com/hc/en-us/articles/226677427-Business-Associates-Agreement-BAA-"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="/baa" target="_blank">
               here
             </a>. By checking the box above, you represent that your team agrees
             to the terms of the&nbsp;
-            <a role="link">HIPAA BAA</a>.
+            <a href="/hipaa" target="_blank">HIPAA BAA</a>.
           </HelpBlock>
 
           <input
