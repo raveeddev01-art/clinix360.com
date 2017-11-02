@@ -8,8 +8,13 @@ class TypingUsers extends Component {
     const { groupPresenceStore: { typingUsers }, presenceStore } = this.props;
     let content;
     const username = id => {
-      const u = presenceStore.onlineUsersMap[id].metas[0];
-      return `${u.first_name} ${u.last_name}`;
+      const u =
+        presenceStore.onlineUsersMap[id] &&
+        presenceStore.onlineUsersMap[id].metas[0];
+      if (u) {
+        return `${u.first_name} ${u.last_name}`;
+      }
+      return "";
     };
 
     switch (typingUsers.length) {
