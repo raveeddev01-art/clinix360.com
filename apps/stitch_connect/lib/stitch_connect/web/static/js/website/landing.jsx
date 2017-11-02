@@ -57,7 +57,7 @@ export default class Landing extends Component {
           <Row>
             <Col sm={5}>
               <div className="landing-message">
-                <h1>Care Coordination</h1>
+                <h1>Care Coordination </h1>
                 <h3>
                   Communicate, write notes, track tasks, upload files, and
                   collaborate on any device.
