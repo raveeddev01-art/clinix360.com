@@ -56,7 +56,10 @@ export default class TeamPicker extends Component {
     return (
       <div>
         {this.state.teamExists === false && (
-          <Alert>This team doesn't seem to exist.</Alert>
+          <Alert>
+            We don't have that team URL in our system. If you'd like, we can
+            help you <Link to="/find-teams">find your team</Link>.
+          </Alert>
         )}
 
         <div className="authentication-card text-center team-picker-card">
