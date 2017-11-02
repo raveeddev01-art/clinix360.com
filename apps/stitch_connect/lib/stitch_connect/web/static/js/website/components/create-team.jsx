@@ -34,7 +34,7 @@ class CreateTeam extends Component {
     const { email } = this.state;
 
     return (
-      <Form className="flex-form" onSubmit={this.onSubmit}>
+      <Form className="form-holder" onSubmit={this.onSubmit}>
         <div className="form-input">
           <FormControl
             required
@@ -46,7 +46,9 @@ class CreateTeam extends Component {
           />
         </div>
 
-        <Button type="submit">Create Team</Button>
+        <Button type="submit" bsStyle="primary" bsSize="large">
+          Create Team
+        </Button>
       </Form>
     );
   }

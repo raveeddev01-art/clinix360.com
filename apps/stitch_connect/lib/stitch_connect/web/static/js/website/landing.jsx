@@ -6,8 +6,9 @@ import cx from "classnames";
 import CreateTeamForm from "./components/create-team";
 import CUSTOMERS from "./components/customers-logos";
 
-import Form from "react-bootstrap/lib/Form";
-import FormControl from "react-bootstrap/lib/FormControl";
+import Navbar from "react-bootstrap/lib/Navbar";
+import Nav from "react-bootstrap/lib/Nav";
+import NavItem from "react-bootstrap/lib/NavItem";
 import Button from "react-bootstrap/lib/Button";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -28,8 +29,58 @@ export default class Landing extends Component {
 
   render() {
     return (
-      <div>
-        <div className="subheader">
+      <div id="pre-launch-landing">
+        <Navbar id="header" inverse collapseOnSelect>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <Link to="/" className="brand">
+                <img src="/images/stitch-brand.png" alt="Stitch" />
+              </Link>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav pullRight>
+              <NavItem eventKey={1} href="/signin">
+                Sign In
+              </NavItem>
+
+              <NavItem
+                eventKey={2}
+                href="/signup/email"
+                className="btn-outline"
+              >
+                Create Team
+              </NavItem>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+
+        <div className="container">
+          <Row>
+            <Col sm={5}>
+              <div className="landing-message">
+                <h1>Care Coordination</h1>
+                <h3>
+                  Communicate, write notes, track tasks, upload files, and
+                  collaborate on any device.
+                </h3>
+              </div>
+
+              <CreateTeamForm />
+            </Col>
+
+            <Col sm={7}>
+              <img
+                src="/images/landing-products.png"
+                alt=""
+                className="img-responsive"
+              />
+            </Col>
+          </Row>
+        </div>
+
+        {/* <div className="subheader">
           <div className="container">
             <div className="landing-message text-center">
               <h1>Care Coordination</h1>
@@ -172,7 +223,7 @@ export default class Landing extends Component {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
     );
   }

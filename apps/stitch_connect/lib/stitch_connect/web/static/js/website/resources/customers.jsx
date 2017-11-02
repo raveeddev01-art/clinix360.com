@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import cx from "classnames";
 
+import Header from "../components/header";
+import Footer from "../components/footer";
 import CUSTOMERS from "../components/customers-logos";
 import CreateTeamForm from "../components/create-team";
 
@@ -26,146 +28,150 @@ export default class Customers extends Component {
 
   render() {
     return (
-      <div className="customers-page">
-        <div className="subheader ">
+      <div>
+        <Header />
+        <div className="customers-page">
+          <div className="subheader ">
+            <div className="container">
+              <div className="landing-message text-center">
+                <h1>Customers</h1>
+                <h3>
+                  See how customers have improved care coordination on our
+                  platform.
+                </h3>
+              </div>
+            </div>
+          </div>
+
           <div className="container">
-            <div className="landing-message text-center">
-              <h1>Customers</h1>
-              <h3>
-                See how customers have improved care coordination on our
-                platform.
+            <div className="featured-box">
+              <div className="flex-box">
+                <div className="flex-item">
+                  <h2>Luminance Recovery</h2>
+
+                  <p>
+                    Luminance Recovery is a residential drug addiction treatment
+                    and rehabilitation center. Their approach integrates a
+                    personalized treatment plan for every patient. Treatment
+                    begins with detox, which includes 24-hour care,
+                    stabilization, and medical attention for discomfort and
+                    withdrawal. After detox, clients move to the next phase of
+                    recovery: a 30, 60, or 90-day inpatient recovery program.
+                    Luminance adopted Stitch to help improve critical
+                    communications and keep clients in the recovery program.
+                  </p>
+                </div>
+
+                <div className="flex-item">
+                  <ResponsiveEmbed a16by9>
+                    <embed src="https://www.youtube.com/embed/v1fjEFYMiyA?rel=0" />
+                  </ResponsiveEmbed>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="our-customers text-center">
+            <div className="container">
+              <h3 className="text-center m-b-20">
+                Thousands of healthcare providers are improving patient care
+                through Stitch. <br /> Join the movement.
               </h3>
-            </div>
-          </div>
-        </div>
-
-        <div className="container">
-          <div className="featured-box">
-            <div className="flex-box">
-              <div className="flex-item">
-                <h2>Luminance Recovery</h2>
-
-                <p>
-                  Luminance Recovery is a residential drug addiction treatment
-                  and rehabilitation center. Their approach integrates a
-                  personalized treatment plan for every patient. Treatment
-                  begins with detox, which includes 24-hour care, stabilization,
-                  and medical attention for discomfort and withdrawal. After
-                  detox, clients move to the next phase of recovery: a 30, 60,
-                  or 90-day inpatient recovery program. Luminance adopted Stitch
-                  to help improve critical communications and keep clients in
-                  the recovery program.
-                </p>
-              </div>
-
-              <div className="flex-item">
-                <ResponsiveEmbed a16by9>
-                  <embed src="https://www.youtube.com/embed/v1fjEFYMiyA?rel=0" />
-                </ResponsiveEmbed>
+              <div className="customer-logos">
+                <div className="row logo-row">{this.renderCustomers()}</div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="our-customers text-center">
-          <div className="container">
-            <h3 className="text-center m-b-20">
-              Thousands of healthcare providers are improving patient care
-              through Stitch. <br /> Join the movement.
-            </h3>
-            <div className="customer-logos">
-              <div className="row logo-row">{this.renderCustomers()}</div>
-            </div>
-          </div>
-        </div>
+          <div className="customer-study-section text-center">
+            <div className="container">
+              <h3>
+                Learn how all kinds of healthcare teams use Stitch every day.
+              </h3>
 
-        <div className="customer-study-section text-center">
-          <div className="container">
-            <h3>
-              Learn how all kinds of healthcare teams use Stitch every day.
-            </h3>
+              <div className="flex-box">
+                <div className="flex-item">
+                  <Panel>
+                    <img src="/images/customer-pbsc.png" alt="" />
+                    <h4 className="m-b-20">Princeton Brain & Spine</h4>
+                    <p>
+                      Princeton Brain & Spine is one of America's leading
+                      neurosurgical practices. As a multi-site practice
+                      coordinating patient care, Princeton Brain & Spine sought
+                      out Stitch to improve the collaboration between providers
+                      in different locations.
+                    </p>
 
-            <div className="flex-box">
-              <div className="flex-item">
-                <Panel>
-                  <img src="/images/customer-pbsc.png" alt="" />
-                  <h4 className="m-b-20">Princeton Brain & Spine</h4>
-                  <p>
-                    Princeton Brain & Spine is one of America's leading
-                    neurosurgical practices. As a multi-site practice
-                    coordinating patient care, Princeton Brain & Spine sought
-                    out Stitch to improve the collaboration between providers in
-                    different locations.
-                  </p>
+                    <Link
+                      to="/customers/princeton-brain-spine"
+                      className="text-uppercase"
+                    >
+                      Read More
+                    </Link>
+                  </Panel>
+                </div>
 
-                  <Link
-                    to="/customers/princeton-brain-spine"
-                    className="text-uppercase"
-                  >
-                    Read More
-                  </Link>
-                </Panel>
+                <div className="flex-item">
+                  <Panel>
+                    <img src="/images/customer-dssi.png" alt="" />
+                    <h4 className="m-b-20">
+                      Dermatology & Skin Surgery Institute
+                    </h4>
+                    <p>
+                      DSSI provides state-of-the-art procedures for skin cancer
+                      removal, microscopic tissue analysis, and advanced
+                      reconstructive techniques. The team used Stitch to sync
+                      providers and staff during patient consultations for
+                      improved efficiency and care.
+                    </p>
+                  </Panel>
+                </div>
               </div>
 
-              <div className="flex-item">
-                <Panel>
-                  <img src="/images/customer-dssi.png" alt="" />
-                  <h4 className="m-b-20">
-                    Dermatology & Skin Surgery Institute
-                  </h4>
-                  <p>
-                    DSSI provides state-of-the-art procedures for skin cancer
-                    removal, microscopic tissue analysis, and advanced
-                    reconstructive techniques. The team used Stitch to sync
-                    providers and staff during patient consultations for
-                    improved efficiency and care.
-                  </p>
-                </Panel>
-              </div>
-            </div>
+              <div className="flex-box">
+                <div className="flex-item">
+                  <Panel>
+                    <img src="/images/customer-citywide.png" alt="" />
+                    <h4 className="m-b-20">UCSF Citywide</h4>
+                    <p>
+                      Citywide Case Management is a division of UCSF's
+                      Department of Psychiatry. The multidisciplinary staff
+                      provide comprehensive and continuous services to 200
+                      severely mentally ill adults. Citywide sought Stitch to
+                      manage field communication during client work.
+                    </p>
+                  </Panel>
+                </div>
 
-            <div className="flex-box">
-              <div className="flex-item">
-                <Panel>
-                  <img src="/images/customer-citywide.png" alt="" />
-                  <h4 className="m-b-20">UCSF Citywide</h4>
-                  <p>
-                    Citywide Case Management is a division of UCSF's Department
-                    of Psychiatry. The multidisciplinary staff provide
-                    comprehensive and continuous services to 200 severely
-                    mentally ill adults. Citywide sought Stitch to manage field
-                    communication during client work.
-                  </p>
-                </Panel>
-              </div>
-
-              <div className="flex-item">
-                <Panel>
-                  <img src="/images/customer-orchard.png" alt="" />
-                  <h4 className="m-b-20">Orchard Medical Associates</h4>
-                  <p>
-                    Orchard Medical Associates is a primary care practice
-                    focused on expert medical care and attentive disease
-                    prevention. By adopting Stitch, Orchard Medical was able to
-                    rapidly integrate a new tool to improve the flow of patient
-                    care throughout the office.
-                  </p>
-                </Panel>
+                <div className="flex-item">
+                  <Panel>
+                    <img src="/images/customer-orchard.png" alt="" />
+                    <h4 className="m-b-20">Orchard Medical Associates</h4>
+                    <p>
+                      Orchard Medical Associates is a primary care practice
+                      focused on expert medical care and attentive disease
+                      prevention. By adopting Stitch, Orchard Medical was able
+                      to rapidly integrate a new tool to improve the flow of
+                      patient care throughout the office.
+                    </p>
+                  </Panel>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="sign-up-section">
-          <div className="container">
-            <Row>
-              <Col sm={8} smOffset={2}>
-                <h3 className="text-center m-b-30">Ready to start?</h3>
-                <CreateTeamForm />
-              </Col>
-            </Row>
+          <div className="sign-up-section">
+            <div className="container">
+              <Row>
+                <Col sm={8} smOffset={2}>
+                  <h3 className="text-center m-b-30">Ready to start?</h3>
+                  <CreateTeamForm />
+                </Col>
+              </Row>
+            </div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }

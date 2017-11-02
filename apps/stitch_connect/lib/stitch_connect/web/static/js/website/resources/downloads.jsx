@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
+import Header from "../components/header";
+import Footer from "../components/footer";
+
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import Row from "react-bootstrap/lib/Row";
@@ -12,6 +15,7 @@ export default class Downloads extends Component {
   render() {
     return (
       <div>
+        <Header />
         <div className="subheader">
           <div className="container">
             <div className="landing-message text-center">
@@ -318,6 +322,7 @@ export default class Downloads extends Component {
             </Tab.Container>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
