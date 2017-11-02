@@ -3,10 +3,14 @@ import { Link } from "react-router-dom";
 
 import CreateTeamForm from "../components/create-team";
 
+import Header from "../components/header";
+import Footer from "../components/footer";
+
 export default class Connect extends Component {
   render() {
     return (
       <div>
+        <Header />
         <div className="subheader">
           <div className="container">
             <div className="landing-message text-center">
@@ -157,6 +161,8 @@ export default class Connect extends Component {
             </div>
           </div>
         </div>
+
+        <Footer />
       </div>
     );
   }

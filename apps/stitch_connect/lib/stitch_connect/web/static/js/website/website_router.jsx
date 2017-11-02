@@ -22,8 +22,6 @@ class WebsiteRouter extends Component {
   render() {
     return (
       <div className="website-wrapper">
-        <Header />
-
         <ScrollToTop>
           <Switch>
             <Route exact path="/" component={Landing} />
@@ -44,8 +42,6 @@ class WebsiteRouter extends Component {
             <Route component={() => <Redirect to="/" />} />
           </Switch>
         </ScrollToTop>
-
-        <Footer />
       </div>
     );
   }
