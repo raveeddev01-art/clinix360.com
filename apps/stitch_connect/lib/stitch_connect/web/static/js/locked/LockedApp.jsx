@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Link } from "react-router-dom";
 import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import PinInput from "../common/components/pin-input/index";
@@ -75,9 +74,9 @@ class LockedApp extends Component {
             <HelpBlock>
               Forgot your PIN? Just enter your password.<br />
               Forgot both? Reset your password{" "}
-              <Link to="/reset-password">
+              <a href="/reset-password">
                 here
-              </Link>.
+              </a>.
             </HelpBlock>
           </form>
 
