@@ -29,7 +29,7 @@ export default class Email extends Component {
 
     this.setState({
       [name]: value,
-      formValid: value.length > 0
+      formValid: value.length > 0 && /.+@.+\..+/.test(value)
     });
   };
 
@@ -43,7 +43,7 @@ export default class Email extends Component {
       this.props.registrationStore.email = this.state.email;
       post("/api/v1/users/send-confirmation-code", {
         body: { id: response.data.id }
-      }).then(response => {
+      }).then(() => {
         this.props.history.push("/signup/confirmation-code");
       });
     });
@@ -91,11 +91,6 @@ export default class Email extends Component {
             team already has an account, ask your admin for an invitation.
           </HelpBlock>
 
-          {/*<input
-            value="Next"
-            type="submit"
-            className="btn btn-block btn-lg btn-primary m-b-40"
-          />*/}
           <input
             disabled={!this.state.formValid}
             value="Next"
