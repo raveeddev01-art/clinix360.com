@@ -5,6 +5,7 @@ import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
+import Alert from "react-bootstrap/lib/Alert";
 
 @inject("registrationStore", "titleStore")
 @observer
@@ -35,6 +36,8 @@ export default class Login extends Component {
   render() {
     return (
       <div>
+        {this.props.invalidLogin && <Alert>{this.props.invalidLogin}</Alert>}
+
         <div className="authentication-card text-center m-b-20">
           <h2>{this.props.registrationStore.teamName}</h2>
           <h5 className="text-muted url-heading">
@@ -72,8 +75,6 @@ export default class Login extends Component {
               />
             </FormGroup>
 
-            {<p>{this.props.invalidLogin}</p>}
-
             <Button
               type="submit"
               bsStyle="primary"
@@ -82,24 +83,34 @@ export default class Login extends Component {
             >
               Login
             </Button>
-            <Link
-              to="/reset-password"
-              className="btn btn-block btn-lg btn-default m-b-40"
-            >
-              Reset Password
-            </Link>
+
+            <h5>
+              Forgot your password?{" "}
+              <Link to="/reset-password">
+                <strong>Reset Password</strong>
+              </Link>
+            </h5>
           </form>
-
-          <p className="copyright m-b-0">
-            &copy; 2017 Stitch Technologies, Inc
-          </p>
         </div>
 
-        <div className="text-center">
-          <a className="cancel-login" href={`https://${applicationHost}`}>
+        <h5>
+          Don't have an account with this team?<br />
+          <strong>Contact the team administrator</strong>.
+        </h5>
+
+        <h5>
+          Wrong team?{" "}
+          <Link to={`https://${applicationHost}/signin/`}>
             <strong>Sign in to a different team</strong>
-          </a>
-        </div>
+          </Link>
+        </h5>
+
+        <h5>
+          Just getting started?{" "}
+          <Link to="/signup/email">
+            <strong>Create a new team</strong>
+          </Link>
+        </h5>
       </div>
     );
   }

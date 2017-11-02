@@ -26,7 +26,7 @@ class Auth extends Component {
     return (
       <Router>
         <Provider {...stores}>
-          <AuthenticationRouter />
+          <AuthenticationRouter {...this.props} />
         </Provider>
       </Router>
     );
