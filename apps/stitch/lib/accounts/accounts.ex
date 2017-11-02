@@ -73,6 +73,7 @@ defmodule Stitch.Accounts do
 
           case Repo.update(changeset) do
             {:ok, user} ->
+              {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               user
             {:error, _} ->
               {:error, "Could not finish onboarding user."}

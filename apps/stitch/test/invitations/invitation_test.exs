@@ -137,7 +137,7 @@ defmodule Stitch.InvitationTest do
       })
     end
 
-    test "accepts invitation, adds user to the default group and creates a system message" do
+    test "accepts invitation, adds user to the default group, creates a system message and creates a self DM" do
       team = insert(:team, open_invitations_enabled: false)
       user = insert(:user, team_id: team.id, roles: ["admin"])
       default_group = insert(:group, team: team, is_default: true)
@@ -156,6 +156,10 @@ defmodule Stitch.InvitationTest do
       assert group.id == default_group.id
       assert system_message.type == "system"
       assert system_message.fields.type == "join_group"
+      assert Stitch.Repo.get_by Stitch.Group, %{
+        name: "__dm_group__",
+        slug: "__dm:#{user.id}.#{user.id}"
+      }
     end
   end
 end
