@@ -68,19 +68,39 @@ class PasswordValidatorComponent extends Component {
         Your password must contain:
         <ul className="list-unstyled text-success">
           <li className={cx({ "text-danger": !passwordLengthValid })}>
-            At least 8 characters
+            {passwordLengthValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; At least 8 characters
           </li>
           <li className={cx({ "text-danger": !passwordUppercaseValid })}>
-            An uppercase letter
+            {passwordUppercaseValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; An uppercase letter
           </li>
           <li className={cx({ "text-danger": !passwordLowercaseValid })}>
-            A lowercase letter
+            {passwordLowercaseValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; A lowercase letter
           </li>
           <li className={cx({ "text-danger": !passwordDigitsValid })}>
-            A number
+            {passwordDigitsValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; A number
           </li>
           <li className={cx({ "text-danger": !passwordSymbolsValid })}>
-            A special character (e.g. !$#)
+            {passwordSymbolsValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; A special character (e.g. !$#)
           </li>
         </ul>
       </HelpBlock>
