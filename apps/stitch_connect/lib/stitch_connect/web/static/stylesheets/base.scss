@@ -117,6 +117,11 @@ hr {
   }
 }
 
+.m-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 // ::-webkit-scrollbar {
 //   width: 8px;
 //   background: rgba(0, 0, 0, .05);
@@ -435,6 +440,26 @@ i.fa {
     .toggle-handle {
       background: #fff;
       order: 1;
+    }
+  }
+}
+
+.pin-code {
+  width: 250px;
+
+  .form-control {
+    width: 25%;
+    height: 60px;
+    font-size: 28px;
+    text-align: center;
+
+    &:nth-child(2) {
+      border-left: 0;
+      border-right: 0;
+    }
+
+    &:nth-child(3) {
+      border-right: 0;
     }
   }
 }
