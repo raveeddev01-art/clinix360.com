@@ -3,6 +3,7 @@ import { inject } from "mobx-react";
 import { Panel, Tabs, Tab } from "react-bootstrap";
 
 import Subscription from "./subscription/Subscription";
+import Contact from "./contact/Contact";
 
 const header = (
   <h1>
@@ -24,7 +25,7 @@ class TeamBilling extends Component {
             <Subscription />
           </Tab>
           <Tab eventKey={2} title="Contact">
-            Contact
+            <Contact />
           </Tab>
           <Tab eventKey={3} title="Payment">
             Payment
