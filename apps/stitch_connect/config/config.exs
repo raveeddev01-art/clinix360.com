@@ -13,7 +13,7 @@ config :stitch_connect,
 # Configures the endpoint
 config :stitch_connect, StitchConnect.Web.Endpoint,
   instrumenters: [Appsignal.Phoenix.Instrumenter],
-  url: [host: "localhost"],
+  url: [host: System.get_env("APP_HOST")],
   secret_key_base: "rp9jtclD/mgOBBlbo+mFKHVZ0UKNdC6DoofvmAy0Z/gSmgPy0/73DhzLrDalDf/G",
   render_errors: [view: StitchConnect.Web.ErrorView, accepts: ~w(html json)],
   pubsub: [name: StitchConnect.PubSub,
@@ -35,7 +35,7 @@ config :stitch_connect, :generators,
 # Configure application environment
 config :stitch_connect,
   env: Mix.env,
-  application_host: System.get_env("APP_HOST")
+  application_host: "#{System.get_env("APP_HOST")}#{if Mix.env == :dev, do: ":4443"}"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
