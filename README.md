@@ -24,8 +24,8 @@ You should be working from the `develop` branch:
 git checkout develop
 ```
 
-Create an `.env` file in `apps/stitch/` with the following contents, and ask the
-team for the environment values you need to set here:
+Create an `.env` file in the root project directiry with the following
+contents, and ask the team for the environment values you need to set here:
 
 ```sh
 export APP_HOST=localhost.app
@@ -47,7 +47,7 @@ Source the file to add these environment variables to your current shell
 session.
 
 ```sh
-cd ~/Work/stitch-phoenix/apps/stitch
+cd ~/Work/stitch-phoenix/
 source .env
 ```
 
@@ -114,7 +114,7 @@ foreman start -f Procfile.dev
 
 Access the site.
 
-https://localhost:4443
+https://localhost.app:4443/
 
 ---
 
