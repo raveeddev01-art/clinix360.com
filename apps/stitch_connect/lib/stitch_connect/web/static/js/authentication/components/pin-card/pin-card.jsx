@@ -24,6 +24,8 @@ class PinCard extends Component {
     });
   };
 
+  onNext = () => this.props.onNext(this.state.pin);
+
   render() {
     return (
       <OnboardCard
@@ -34,6 +36,7 @@ class PinCard extends Component {
             Enter a <strong>4-digit PIN</strong>.
           </span>
         }
+        onNext={this.onNext}
         disableNext={!this.state.formValid}
       >
         <PinInput
