@@ -20,7 +20,7 @@ defmodule Stitch.AccountsTest do
   end
 
   describe "Accounts.update_and_complete_user_onboarding/2" do
-    test "it onboards the user and sets the admin role for his new team" do
+    test "it onboards the user, sets his roles and creates his self DM" do
       team = insert(:team)
       user = insert(:user, %{email: "sergio@email.com", onboarded: false})
       attrs = %{
@@ -35,6 +35,10 @@ defmodule Stitch.AccountsTest do
       user = Accounts.update_and_complete_user_onboarding(user.id, attrs)
       assert user.team_id == team.id
       assert user.roles == ["admin"]
+      assert Stitch.Repo.get_by Stitch.Group, %{
+        name: "__dm_group__",
+        slug: "__dm:#{user.id}.#{user.id}"
+      }
     end
   end
 
