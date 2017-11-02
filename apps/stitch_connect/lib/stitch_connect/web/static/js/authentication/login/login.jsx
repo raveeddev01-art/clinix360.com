@@ -96,7 +96,10 @@ export default class Login extends Component {
         </div>
 
         <div className="text-center">
-          <a className="cancel-login" href={`https://${applicationHost}`}>
+          <a
+            className="cancel-login"
+            href={`https://${applicationHost}/signin/`}
+          >
             <strong>Sign in to a different team</strong>
           </a>
         </div>
