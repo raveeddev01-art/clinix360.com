@@ -19,7 +19,7 @@ defmodule StitchConnect.Web.AuthenticationController do
     case Stitch.User.Authentication.validate_email_and_password(email, password, team_slug) do
       false ->
         conn
-        |> put_flash(:invalid_login, "Invalid email or password.")
+        |> put_flash(:invalid_login, "Sorry, you entered an invalid email or password.")
         |> redirect(to: "/login")
       user ->
         case user.disabled do
