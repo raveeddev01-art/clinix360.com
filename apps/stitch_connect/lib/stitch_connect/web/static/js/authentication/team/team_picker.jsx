@@ -91,10 +91,9 @@ export default class TeamPicker extends Component {
                 required
                 autoFocus
                 type="text"
-                placeholder="my-team-name"
+                placeholder="Subdomain"
                 value={this.state.team_name}
                 onChange={this.handleChange}
-                className="text-right"
               />
               <span className="domain">.teamstitch.com</span>
             </FormGroup>
@@ -114,6 +113,13 @@ export default class TeamPicker extends Component {
             </Link>
           </h5>
         </div>
+
+        <h5>
+          Just getting started?{" "}
+          <Link to="/signup/email">
+            <strong>Create a new team</strong>
+          </Link>
+        </h5>
       </div>
     );
   }

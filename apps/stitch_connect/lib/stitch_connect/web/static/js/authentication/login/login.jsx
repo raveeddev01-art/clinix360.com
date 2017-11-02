@@ -89,10 +89,6 @@ export default class Login extends Component {
               Reset Password
             </Link>
           </form>
-
-          <p className="copyright m-b-0">
-            &copy; 2017 Stitch Technologies, Inc
-          </p>
         </div>
 
         <div className="text-center">
