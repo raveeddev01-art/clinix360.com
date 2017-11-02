@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
   alias Stitch.{Invitation, MessageQueries}
   alias StitchConnect.Web.{Endpoint, EventsChannel}
+  plug :fetch_session when action in [:accept]
 
   def index(conn, _params) do
     case Invitation.list_pending_team_invitations(conn.assigns.current_user.id) do
@@ -54,6 +55,10 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     end
   end
 
+  defp random_session_id do
+    :crypto.strong_rand_bytes(8) |> Base.url_encode64
+  end
+
   def accept(conn, %{"token" => invite_token} = params) do
     result = Invitation.accept_and_complete_onboarding(invite_token, params)
 
@@ -66,6 +71,11 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
           EventsChannel.broadcast_group_new_msg(group, system_message)
         end)
         conn
+        |> put_session(:current_user, user)
+        |> put_session(:authentication_token, user.token)
+        |> put_session(:session_id, random_session_id())
+        |> put_session(:locked, false)
+        |> configure_session(renew: true)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
 
       {:error, message} when is_binary(message) ->
