@@ -151,7 +151,7 @@ export default class Confirmation extends Component {
       <div>
         {this.state.error && (
           <Alert>
-            The confirmation code doesn&#39;t match the one we have on record.
+            The confirmation code doesn&#39;t match the one we have on record. Please check your email again.
           </Alert>
         )}
 
