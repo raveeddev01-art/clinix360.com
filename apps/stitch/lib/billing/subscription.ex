@@ -13,8 +13,7 @@ defmodule Stitch.Billing.Subscription do
     field :subscription_line_item_id, :string   # Stripe subscription line item with plan and quantity
     field :renewal_frequency, :string
     field :renews, :boolean, default: false
-
-    field :estimated_invoice_amount, :integer, virtual: true
+    field :estimated_invoice_amount, :integer
 
     belongs_to :team, Stitch.Team
 
@@ -40,6 +39,6 @@ defmodule Stitch.Billing.Subscription do
 
   @doc false
   def update(struct, params \\ %{}) do
-    cast(struct, params, ~w(tier renewal_frequency subscription_id subscription_line_item_id valid_until renews)a)
+    cast(struct, params, ~w(tier renewal_frequency subscription_id subscription_line_item_id valid_until renews estimated_invoice_amount)a)
   end
 end

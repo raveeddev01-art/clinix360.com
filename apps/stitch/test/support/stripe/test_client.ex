@@ -40,6 +40,7 @@ defmodule Stitch.Stripe.TestClient do
       subscription_id: "sub_#{timestamp}",
       subscription_line_item_id: "si_#{timestamp}",
       valid_until: future_time(),
+      estimated_invoice_amount: Enum.random(100..40_000),
       status: "active",
       renews: true
     }
@@ -55,6 +56,7 @@ defmodule Stitch.Stripe.TestClient do
       subscription_id: subscription_id,
       subscription_line_item_id: "si_#{uid}",
       valid_until: future_time(),
+      estimated_invoice_amount: Enum.random(100..40_000),
       status: "active",
       renews: true
     }
@@ -62,7 +64,17 @@ defmodule Stitch.Stripe.TestClient do
   end
 
   @impl Stitch.Stripe
-  def update_subscription_quantity(_subscription_line_item_id, _user_count), do: :ok
+  def update_subscription_quantity(_customer_id, subscription_id, subscription_line_item_id, _user_count) do
+    sub = %{
+      subscription_id: subscription_id,
+      subscription_line_item_id: subscription_line_item_id,
+      valid_until: future_time(),
+      estimated_invoice_amount: Enum.random(100..40_000),
+      status: "active",
+      renews: true
+    }
+    {:ok, sub}
+  end
 
   @impl Stitch.Stripe
   def cancel_subscription(_customer_id, subscription_id) do
@@ -72,6 +84,7 @@ defmodule Stitch.Stripe.TestClient do
       subscription_id: subscription_id,
       subscription_line_item_id: "si_#{uid}",
       valid_until: future_time(),
+      estimated_invoice_amount: nil,
       status: "active",
       renews: false
     }
@@ -86,6 +99,7 @@ defmodule Stitch.Stripe.TestClient do
       subscription_id: subscription_id,
       subscription_line_item_id: "si_#{uid}",
       valid_until: future_time(),
+      estimated_invoice_amount: nil,
       status: "active",
       renews: true
     }

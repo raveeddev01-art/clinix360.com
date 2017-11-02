@@ -117,8 +117,10 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def create_subscription(customer_id, plan_id, user_count) do
-    case Stripe.Subscriptions.create(customer_id, plan: plan_id, quantity: user_count) do
-      {:ok, sub} -> {:ok, transform_subscription(sub)}
+    with {:ok, sub} <- Stripe.Subscriptions.create(customer_id, plan: plan_id, quantity: user_count),
+         {:ok, upcoming_invoice} <- Stripe.Invoices.upcoming(customer_id, [subscription: sub.id]) do
+      {:ok, transform_subscription(sub, upcoming_invoice)}
+    else
       _ -> :error
     end
   end
@@ -128,10 +130,16 @@ defmodule Stitch.Stripe.Client do
     %{
       subscription_id: subscription.id,
       subscription_line_item_id: subscription_line_item_id,
+      estimated_invoice_amount: nil,
       status: subscription.status,
-      valid_until: DateTime.from_unix!(subscription.current_period_ends),
+      valid_until: DateTime.from_unix!(subscription.current_period_end),
       renews: !subscription.cancel_at_period_end
     }
+  end
+  defp transform_subscription(subscription, upcoming_invoice) do
+    subscription
+    |> transform_subscription()
+    |> Map.put(:estimated_invoice_amount, upcoming_invoice.amount_due)
   end
 
   @doc """
@@ -145,8 +153,10 @@ defmodule Stitch.Stripe.Client do
   """
   @impl Stitch.Stripe
   def update_subscription_plan(customer_id, subscription_id, plan_id) do
-    case Stripe.Subscriptions.change(customer_id, subscription_id, plan_id) do
-      {:ok, sub} -> {:ok, transform_subscription(sub)}
+    with {:ok, sub} <- Stripe.Subscriptions.change(customer_id, subscription_id, [plan: plan_id]),
+         {:ok, upcoming_invoice} <- Stripe.Invoices.upcoming(customer_id, [subscription: sub.id]) do
+      {:ok, transform_subscription(sub, upcoming_invoice)}
+    else
       _ -> :error
     end
   end
@@ -159,22 +169,26 @@ defmodule Stitch.Stripe.Client do
 
   ## Examples
 
-      iex> update_subscription_quantity("si_1234567", 5)
+      iex> update_subscription_quantity("cus_1234567", "sub_1234567", "si_1234567", 5)
       :ok
 
   """
   @impl Stitch.Stripe
-  def update_subscription_quantity(subscription_line_item_id, user_count) do
-    request_opts = [quantity: user_count, prorate: true]
-    key = Stripe.config_or_env_key()
+  def update_subscription_quantity(customer_id, subscription_id, subscription_line_item_id, user_count) do
+    request_opts = [
+      prorate: true,
+      items: [
+        "0": [
+          id: subscription_line_item_id,
+          quantity: user_count
+        ]
+      ]
+    ]
 
-    request =
-      :post
-      |> Stripe.make_request_with_key("subscription_items/#{subscription_line_item_id}", key, request_opts)
-      |> Stripe.Util.handle_stripe_response()
-
-    case request do
-      {:ok, _} -> :ok
+    with {:ok, sub} <- Stripe.Subscriptions.change(customer_id, subscription_id, request_opts),
+         {:ok, upcoming_invoice} <- Stripe.Invoices.upcoming(customer_id, [subscription: sub.id]) do
+      {:ok, transform_subscription(sub, upcoming_invoice)}
+    else
       _ -> :error
     end
   end

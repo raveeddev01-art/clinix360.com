@@ -42,6 +42,8 @@ defmodule StitchConnect.Web.Router do
   end
 
   scope "/stripe", StitchConnect.Web do
+    pipe_through :api
+
     post "/", StripeWebhookController, :event
   end
 

@@ -84,6 +84,7 @@ defmodule Stitch.Factory do
       customer_id: sequence(:customer_id, &"cus_#{&1}"),
       subscription_id: sequence(:subscription_id, &"sub_#{&1}"),
       subscription_line_item_id: sequence(:subscription_line_item_id, &"si_#{&1}"),
+      estimated_invoice_amount: 12_345,
       tier: "BASIC",
       renewal_frequency: "MONTHLY",
       renews: true,
@@ -97,6 +98,8 @@ defmodule Stitch.Factory do
       team: build(:team),
       customer_id: sequence(:customer_id, &"cus_#{&1}"),
       subscription_id: nil,
+      subscription_line_item_id: nil,
+      estimated_invoice_amount: 0,
       tier: "TRIAL",
       renewal_frequency: nil,
       valid_until: end_date

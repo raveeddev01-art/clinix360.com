@@ -20,28 +20,6 @@ defmodule Stitch.Billing.BillingTest do
       assert result.id == subscription.id
       assert %Stitch.Billing.Subscription{} = result
     end
-
-    test "gives an estimated invoice amount" do
-      # Trial Tier
-      %{team: team} = insert(:subscription, tier: "TRIAL")
-      insert(:user, team: team)
-      assert Billing.get_subscription(team).estimated_invoice_amount == 0
-
-      # Basic Tier
-      %{team: team} = insert(:subscription, tier: "BASIC")
-      for _ <- 1..2, do: insert(:user, team: team)
-      assert Billing.get_subscription(team).estimated_invoice_amount == 10
-
-      # Premium Tier
-      %{team: team} = insert(:subscription, tier: "PREMIUM")
-      for _ <- 1..3, do: insert(:user, team: team)
-      assert Billing.get_subscription(team).estimated_invoice_amount == 30
-
-      # Power Tier
-      %{team: team} = insert(:subscription, tier: "POWER")
-      for _ <- 1..4, do: insert(:user, team: team)
-      assert Billing.get_subscription(team).estimated_invoice_amount == 60
-    end
   end
 
   describe "get_subscription/2" do

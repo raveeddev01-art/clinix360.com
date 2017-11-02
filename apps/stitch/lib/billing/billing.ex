@@ -54,12 +54,7 @@ defmodule Stitch.Billing do
   @spec get_subscription(Team.t) :: Subscription.t
   def get_subscription(%Team{} = team) do
     team = Repo.preload(team, :subscription)
-    subscription = team.subscription
-
-    active_user_count = active_user_count(team)
-    estimated_invoice_amount = estimated_invoice_amount(subscription.tier, active_user_count)
-
-    %Subscription{subscription | estimated_invoice_amount: estimated_invoice_amount}
+    team.subscription
   end
 
   @spec get_subscription(String.t, String.t) :: Subscription.t | nil
@@ -72,11 +67,6 @@ defmodule Stitch.Billing do
     |> Stitch.TeamQueries.list_active_users()
     |> length()
   end
-
-  defp estimated_invoice_amount("TRIAL", _active_user_count), do: 0
-  defp estimated_invoice_amount("BASIC", active_user_count), do: 5 * active_user_count
-  defp estimated_invoice_amount("PREMIUM", active_user_count), do: 10 * active_user_count
-  defp estimated_invoice_amount("POWER", active_user_count), do: 15 * active_user_count
 
   @doc """
   Modifies a subscription for a team.
@@ -201,6 +191,12 @@ defmodule Stitch.Billing do
   @spec subscription_update_changeset(Subscription.t, map, map) :: Ecto.Changeset.t
   defp subscription_update_changeset(%Subscription{} = subscription, user_changes, stripe_changes) do
     update_params = Map.merge(user_changes, stripe_changes)
+    update_params =
+      if update_params.estimated_invoice_amount == nil do
+        Map.delete(update_params, :estimated_invoice_amount)
+      else
+        update_params
+      end
     Subscription.update(subscription, update_params)
   end
 
@@ -360,9 +356,12 @@ defmodule Stitch.Billing do
   @spec update_subscriber_count(Team.t) :: :ok | :error | false
   def update_subscriber_count(%Team{} = team) do
     team = Repo.preload(team, :subscription)
+    subscription = team.subscription
+
     with subscription_line_item_id when not is_nil(subscription_line_item_id) <- team.subscription.subscription_line_item_id,
          active_user_count = active_user_count(team),
-         :ok <- @stripe_client.update_subscription_quantity(subscription_line_item_id, active_user_count) do
+         {:ok, stripe_sub_params} <- @stripe_client.update_subscription_quantity(subscription.customer_id, subscription.subscription_id, subscription_line_item_id, active_user_count),
+         {:ok, _} <- Repo.update(subscription_update_changeset(subscription, %{}, stripe_sub_params)) do
       :ok
     else
       :error -> :error
