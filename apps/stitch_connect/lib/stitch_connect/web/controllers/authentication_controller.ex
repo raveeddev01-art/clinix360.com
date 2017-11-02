@@ -25,11 +25,7 @@ defmodule StitchConnect.Web.AuthenticationController do
         case user.disabled do
           false ->
             conn
-            |> put_session(:current_user, user)
-            |> put_session(:authentication_token, user.token)
-            |> put_session(:session_id, random_session_id())
-            |> put_session(:locked, false)
-            |> configure_session(renew: true)
+            |> login_user(user)
             |> redirect(to: "/")
           true ->
             conn
@@ -69,9 +65,5 @@ defmodule StitchConnect.Web.AuthenticationController do
         })
         render(conn, "change_password.html", change_password_params: change_password_params)
     end
-  end
-
-  defp random_session_id do
-    :crypto.strong_rand_bytes(8) |> Base.url_encode64
   end
 end
