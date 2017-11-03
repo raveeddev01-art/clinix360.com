@@ -1,0 +1,18 @@
+#admin-billing-tabs {
+  .subscription {
+    .plans {
+      .frequency-container {
+        display: flex;
+        align-items: center;
+
+        .frequency-description {
+          margin-left: 20px;
+          flex: 1 1 auto;
+
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,8 @@ import { Well } from "react-bootstrap";
 import moment from "moment";
 import capitalize from "lodash/capitalize";
 
+import Toggle from "../../../common/components/toggle/Toggle";
+
 const SUBSCRIPTION_ITEMS = {
   BASIC: [
     "HIPAA Compliant",
@@ -18,12 +20,17 @@ const SUBSCRIPTION_ITEMS = {
   POWER: []
 };
 
+const FREQUENCIES = ["MONTHLY", "ANNUALLY"];
+
 class Subscription extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      subscription: null
+      subscription: null,
+      plan: {
+        frequency: 1
+      }
     };
   }
 
@@ -41,6 +48,15 @@ class Subscription extends React.Component {
 
   onUpgrade = () => {
     console.log("upgrade");
+  };
+
+  onToggleFrequency = () => {
+    this.setState({
+      plan: {
+        ...this.state.plan,
+        frequency: 1 - this.state.plan.frequency
+      }
+    });
   };
 
   renderStatus() {
@@ -152,7 +168,26 @@ class Subscription extends React.Component {
   }
 
   renderPlans() {
-    return <div className="unsubscribed">Unsubscribed</div>;
+    return (
+      <div className="plans">
+        <p>Please select a plan to continue service:</p>
+
+        <div className="frequency-container">
+          <Toggle
+            onClick={this.onToggleFrequency}
+            on={capitalize(FREQUENCIES[1])}
+            off={capitalize(FREQUENCIES[0])}
+            active={!!this.state.plan.frequency}
+          />
+
+          <div className="frequency-description">
+            {this.state.plan.frequency
+              ? "Billed annually or monthly with an 1 year contract"
+              : "Billed monthly with no contract"}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   render() {
@@ -160,7 +195,7 @@ class Subscription extends React.Component {
 
     return (
       subscription && (
-        <div className="billing-subscription">
+        <div className="subscription">
           <h3 className="text-center">Subscription</h3>
 
           {this.renderStatus()}
