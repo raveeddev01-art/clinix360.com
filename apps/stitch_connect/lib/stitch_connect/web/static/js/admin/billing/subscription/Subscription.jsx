@@ -5,7 +5,11 @@ class Subscription extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      subscription: {
+        status: "trial"
+      }
+    };
   }
 
   componentWillMount() {
@@ -22,20 +26,36 @@ class Subscription extends React.Component {
   renderStatus() {
     const { subscription } = this.state;
 
-    return subscription ? (
-      <Well>
-        <i className="fa fa-check-circle" />
-        <p className="m-b-0">
-          Your team is subscribed to <b>Basic</b>.
-        </p>
-      </Well>
-    ) : (
-      <Well>
-        <i className="fa fa-times-circle" />
-        <p className="m-b-0">
-          Your team's trial of Stitch Connect has completed.
-        </p>
-      </Well>
+    return (
+      <div>
+        {subscription.status === "trial" && (
+          <Well>
+            <i className="fa fa-times-circle" />
+            <p className="m-b-0">
+              Your team is currently using a free trial of <b>Stitch Connect</b>{" "}
+              with <b>2 days</b> remaining.
+            </p>
+          </Well>
+        )}
+
+        {subscription.status === "expired" && (
+          <Well>
+            <i className="fa fa-times-circle" />
+            <p className="m-b-0">
+              Your team's trial of Stitch Connect has completed.
+            </p>
+          </Well>
+        )}
+
+        {subscription.status === "subscribed" && (
+          <Well>
+            <i className="fa fa-check-circle" />
+            <p className="m-b-0">
+              Your team is subscribed to <b>Basic</b>.
+            </p>
+          </Well>
+        )}
+      </div>
     );
   }
 
@@ -52,17 +72,18 @@ class Subscription extends React.Component {
         >
           here
         </a>.{" "}
-        {subscription ? (
-          <span>
-            Click <a className="downgrade-plan">here</a> to cancel your
-            subscription.
-          </span>
-        ) : (
+        {subscription.status === "expired" && (
           <span>
             Request a free trial extension by{" "}
             <a href="mailto:support@teamstitch.com?subject=Trial Extension Request&amp;body=I would like to request an extension to our Stitch Connect trial for the following reasons:">
               clicking here
             </a>.
+          </span>
+        )}
+        {subscription.status === "subscribed" && (
+          <span>
+            Click <a className="downgrade-plan">here</a> to cancel your
+            subscription.
           </span>
         )}
       </p>
@@ -132,7 +153,8 @@ class Subscription extends React.Component {
 
         {this.renderStatus()}
 
-        {subscription ? this.renderSubscribed() : this.renderUnsubscribed()}
+        {subscription.status === "subscribed" && this.renderSubscribed()}
+        {subscription.status !== "subscribed" && this.renderUnsubscribed()}
 
         <br />
 
