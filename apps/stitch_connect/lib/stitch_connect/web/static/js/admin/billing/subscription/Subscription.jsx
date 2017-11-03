@@ -3,6 +3,21 @@ import { Well } from "react-bootstrap";
 import moment from "moment";
 import capitalize from "lodash/capitalize";
 
+const SUBSCRIPTION_ITEMS = {
+  BASIC: [
+    "HIPAA Compliant",
+    "Public & Private Rooms",
+    "Direct Messaging",
+    "Healthcare Workflows",
+    "Searchable Archives",
+    "File Storage",
+    "Mac & Windows Apps",
+    "iOS & Android Apps"
+  ],
+  PREMIUM: [],
+  POWER: []
+};
+
 class Subscription extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +38,10 @@ class Subscription extends React.Component {
       this.setState({ subscription });
     });
   }
+
+  onUpgrade = () => {
+    console.log("upgrade");
+  };
 
   renderStatus() {
     const { subscription } = this.state;
@@ -51,10 +70,10 @@ class Subscription extends React.Component {
         <i className="fa fa-times-circle" />
         {subscription.tier === "TRIAL" ? (
           <p className="m-b-0">
-            Your team's trial of Stitch Connect has completed.
+            Your team&#39;s trial of Stitch Connect has completed.
           </p>
         ) : (
-          <p className="m-b-0">Your team's subscription has completed.</p>
+          <p className="m-b-0">Your team&#39;s subscription has completed.</p>
         )}
       </Well>
     );
@@ -93,48 +112,37 @@ class Subscription extends React.Component {
     );
   }
 
-  renderSubscribed() {
+  renderSubscription() {
     const { subscription } = this.state;
+    const validUntil = moment
+      .utc(subscription.valid_until)
+      .format("dddd, MMMM Do YYYY");
 
-    // TODO: Replace necessary information using subscription object
     return (
       <div className="subscribed">
         <p>
-          Your plan will renew on <b>Wednesday, November 22nd 2017</b> for{" "}
-          <b>$72</b>. <b>Basic</b> includes:
+          Your plan will renew on <b>{validUntil}</b> for{" "}
+          <b>${subscription.estimated_invoice_amount}</b>.{" "}
+          <b>{capitalize(subscription.tier)}</b> includes:
         </p>
 
-        <ul className="list-unstyled">
-          <li>
-            <i className="fa fa-check-circle-o" />HIPAA Compliant
-          </li>
-          <li>
-            <i className="fa fa-check-circle-o" />Public &amp; Private Rooms
-          </li>
-          <li>
-            <i className="fa fa-check-circle-o" />Direct Messaging
-          </li>
-          <li>
-            <i className="fa fa-check-circle-o" />Healthcare Workflows
-          </li>
-          <li>
-            <i className="fa fa-check-circle-o" />Searchable Archives
-          </li>
-          <li>
-            <i className="fa fa-check-circle-o" />File Storage
-          </li>
-          <li>
-            <i className="fa fa-check-circle-o" />Mac &amp; Windows Apps
-          </li>
-          <li>
-            <i className="fa fa-check-circle-o" />iOS &amp; Android Apps
-          </li>
-        </ul>
+        {SUBSCRIPTION_ITEMS[subscription.tier] &&
+          SUBSCRIPTION_ITEMS[subscription.tier].length > 0 && (
+            <ul className="list-unstyled">
+              {SUBSCRIPTION_ITEMS[subscription.tier].map((item, index) => (
+                <li key={`item_${index}`}>
+                  <i className="fa fa-check-circle-o" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
 
         <div className="clearfix">
           <button
             type="button"
             className="btn btn-fancy btn-primary pull-right"
+            onClick={this.onUpgrade}
           >
             Upgrade Plan
           </button>
@@ -143,7 +151,7 @@ class Subscription extends React.Component {
     );
   }
 
-  renderUnsubscribed() {
+  renderPlans() {
     return <div className="unsubscribed">Unsubscribed</div>;
   }
 
@@ -157,8 +165,9 @@ class Subscription extends React.Component {
 
           {this.renderStatus()}
 
-          {subscription.status === "subscribed" && this.renderSubscribed()}
-          {subscription.status !== "subscribed" && this.renderUnsubscribed()}
+          {subscription.tier === "TRIAL"
+            ? this.renderPlans()
+            : this.renderSubscription()}
 
           <br />
 
