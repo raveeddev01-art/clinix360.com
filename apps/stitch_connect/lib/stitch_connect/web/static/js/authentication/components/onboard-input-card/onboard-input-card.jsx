@@ -15,7 +15,13 @@ class OnboardInputCard extends Component {
     };
   }
 
-  _onChange = evt => this.setState({ value: evt.target.value });
+  _onChange = evt => {
+    let value = evt.target.value;
+    if (this.props.isLowerCase) {
+      value = value.toLowerCase();
+    }
+    this.setState({ value });
+  };
 
   _onFocus = evt => {
     const tempValue = evt.target.value;
@@ -59,7 +65,8 @@ OnboardInputCard.propTypes = {
   helperText: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   value: PropTypes.string,
-  disableNext: PropTypes.bool.isRequired
+  disableNext: PropTypes.bool.isRequired,
+  isLowerCase: PropTypes.bool
 };
 
 OnboardInputCard.defaultProps = {
@@ -71,7 +78,8 @@ OnboardInputCard.defaultProps = {
   nextButtonText: "Next",
   type: "text",
   value: "",
-  disableNext: false
+  disableNext: false,
+  isLowerCase: false
 };
 
 export default OnboardInputCard;
