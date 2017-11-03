@@ -202,7 +202,7 @@ class RoomsModal extends Component {
           <FormGroup>
             <Col sm={3}>
               <Toggle
-                onClick={this.togglePublic}
+                onToggle={this.togglePublic}
                 on="Public"
                 off="Private"
                 active={this.state.public}
