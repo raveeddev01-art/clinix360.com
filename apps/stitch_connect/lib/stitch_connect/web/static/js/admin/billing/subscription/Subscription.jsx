@@ -18,7 +18,7 @@ class Subscription extends React.Component {
       upgrade: false,
       subscribePlan: {
         frequency: 1,
-        tier: ""
+        tier: "BASIC"
       },
       upgradePlan: {
         frequency: 1,
