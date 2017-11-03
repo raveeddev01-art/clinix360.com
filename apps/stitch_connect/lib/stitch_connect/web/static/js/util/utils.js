@@ -1,3 +1,3 @@
 export function isAdmin() {
-  return currentUser.roles.includes("admin");
+  return currentUser.roles && currentUser.roles.includes("admin");
 }

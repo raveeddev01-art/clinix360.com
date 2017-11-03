@@ -8,6 +8,7 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
 
+import { isAdmin } from "../util/utils";
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
@@ -153,7 +154,7 @@ class Sidemenu extends Component {
                 Notifications
               </MenuItem>
 
-              {currentUser.roles.includes("admin") && this.renderAdminOptions()}
+              {isAdmin() && this.renderAdminOptions()}
 
               <div className="separator text-center">
                 <span>Stitch</span>
