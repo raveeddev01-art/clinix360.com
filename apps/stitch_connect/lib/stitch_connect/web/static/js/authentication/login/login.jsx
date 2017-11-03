@@ -100,9 +100,9 @@ export default class Login extends Component {
 
         <h5>
           Wrong team?{" "}
-          <Link to={`https://${applicationHost}/signin/`}>
+          <a href={`https://${applicationHost}/signin`}>
             <strong>Sign in to a different team</strong>
-          </Link>
+          </a>
         </h5>
 
         <h5>
