@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Well } from "react-bootstrap";
 
 export default class TeamHipaa extends Component {
