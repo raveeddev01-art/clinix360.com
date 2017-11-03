@@ -34,12 +34,18 @@ class OnboardInputCard extends Component {
 
   render() {
     const { value } = this.state;
-    const { type, helperText, placeholder, ...otherProps } = this.props;
+    const {
+      type,
+      helperText,
+      placeholder,
+      isRequired,
+      ...otherProps
+    } = this.props;
     return (
       <OnboardCard {...otherProps} onNext={this._onNext}>
         <FormGroup bsSize="large">
           <FormControl
-            required
+            required={isRequired}
             autoFocus
             type={type}
             placeholder={placeholder}
@@ -66,7 +72,8 @@ OnboardInputCard.propTypes = {
   type: PropTypes.string.isRequired,
   value: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
-  isLowerCase: PropTypes.bool
+  isLowerCase: PropTypes.bool,
+  isRequired: PropTypes.bool
 };
 
 OnboardInputCard.defaultProps = {
@@ -79,7 +86,8 @@ OnboardInputCard.defaultProps = {
   type: "text",
   value: "",
   disableNext: false,
-  isLowerCase: false
+  isLowerCase: false,
+  isRequired: true
 };
 
 export default OnboardInputCard;
