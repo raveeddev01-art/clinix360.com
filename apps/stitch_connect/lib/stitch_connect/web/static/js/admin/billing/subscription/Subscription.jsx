@@ -224,7 +224,7 @@ class Subscription extends React.Component {
 
         <div className="frequency-container">
           <Toggle
-            onClick={this.onToggleFrequency}
+            onToggle={this.onToggleFrequency}
             on={capitalize(FREQUENCIES[1])}
             off={capitalize(FREQUENCIES[0])}
             active={!!frequency}
@@ -280,7 +280,7 @@ class Subscription extends React.Component {
       <div className="plans">
         <div className="frequency-container">
           <Toggle
-            onClick={this.onToggleFrequency}
+            onToggle={this.onToggleFrequency}
             on={capitalize(FREQUENCIES[1])}
             off={capitalize(FREQUENCIES[0])}
             active={!!frequency}
