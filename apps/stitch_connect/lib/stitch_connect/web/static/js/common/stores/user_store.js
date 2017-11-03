@@ -45,6 +45,7 @@ class UserStore {
   @action
   onUpdateUser = payload => {
     if (payload.roles) {
+      window.currentUser.roles = payload.roles;
       this.roles = payload.roles;
     }
   };
