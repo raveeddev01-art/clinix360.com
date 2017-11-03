@@ -1,5 +1,7 @@
 import React from "react";
 import { Well } from "react-bootstrap";
+import moment from "moment";
+import capitalize from "lodash/capitalize";
 
 class Subscription extends React.Component {
   constructor(props) {
@@ -12,43 +14,49 @@ class Subscription extends React.Component {
 
   componentWillMount() {
     get("/api/v1/billing/subscription").then(response => {
-      this.setState({ subscription: response.data.data });
+      const subscription = response.data.data;
+      const validUntil = moment.utc(subscription.valid_until);
+      const today = moment.utc();
+
+      subscription.remaining_days = validUntil.diff(today, "days");
+
+      this.setState({ subscription });
     });
   }
 
   renderStatus() {
     const { subscription } = this.state;
 
-    return (
-      <div>
-        {subscription.tier === "TRIAL" && (
-          <Well>
-            <i className="fa fa-times-circle" />
+    if (subscription.remaining_days > 0) {
+      return (
+        <Well>
+          <i className="fa fa-check-circle" />
+
+          {subscription.tier === "TRIAL" ? (
             <p className="m-b-0">
               Your team is currently using a free trial of <b>Stitch Connect</b>{" "}
-              with <b>2 days</b> remaining.
+              with <b>{subscription.remaining_days} days</b> remaining.
             </p>
-          </Well>
-        )}
-
-        {subscription.tier === "EXPIRED" && (
-          <Well>
-            <i className="fa fa-times-circle" />
+          ) : (
             <p className="m-b-0">
-              Your team's trial of Stitch Connect has completed.
+              Your team is subscribed to <b>{capitalize(subscription.tier)}</b>.
             </p>
-          </Well>
-        )}
+          )}
+        </Well>
+      );
+    }
 
-        {subscription.tier === "SUBSCRIBED" && (
-          <Well>
-            <i className="fa fa-check-circle" />
-            <p className="m-b-0">
-              Your team is subscribed to <b>Basic</b>.
-            </p>
-          </Well>
+    return (
+      <Well>
+        <i className="fa fa-times-circle" />
+        {subscription.tier === "TRIAL" ? (
+          <p className="m-b-0">
+            Your team's trial of Stitch Connect has completed.
+          </p>
+        ) : (
+          <p className="m-b-0">Your team's subscription has completed.</p>
         )}
-      </div>
+      </Well>
     );
   }
 
