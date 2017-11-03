@@ -9,7 +9,7 @@ export default class Pin extends Component {
     const { registrationStore, history } = this.props;
 
     registrationStore.pin = value;
-    history.push("/signup/hipaa");
+    history.push("/signup/invites");
   };
 
   render() {
