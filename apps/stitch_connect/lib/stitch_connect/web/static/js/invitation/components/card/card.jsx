@@ -15,7 +15,6 @@ class Card extends Component {
         <h2>{title}</h2>
         {this._renderDescription()}
         {children}
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }
