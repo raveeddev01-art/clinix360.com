@@ -10,6 +10,7 @@ class UserStore {
   @observable firstName = "";
   @observable lastName = "";
   @observable profileImgUrl = "";
+  @observable roles = [];
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -22,6 +23,9 @@ class UserStore {
 
     get(`/api/v1/users/${id}`).then(resp => {
       const { data } = resp;
+
+      this.loading = false;
+
       this.username = data.username;
       this.phone = data.phone || "";
       this.title = data.title || "";
@@ -29,9 +33,15 @@ class UserStore {
       this.firstName = data.first_name;
       this.lastName = data.last_name;
       this.profileImgUrl = data.avatar;
-
-      this.loading = false;
+      this.roles = data.roles;
     });
+  };
+
+  @action
+  onUpdateUser = payload => {
+    if (payload.roles) {
+      this.roles = payload.roles;
+    }
   };
 
   @action
