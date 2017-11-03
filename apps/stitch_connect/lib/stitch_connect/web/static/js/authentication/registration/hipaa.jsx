@@ -8,6 +8,7 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import Button from "react-bootstrap/lib/Button";
 
 @inject("registrationStore")
 @observer
@@ -20,44 +21,21 @@ export default class Hipaa extends Component {
     };
   }
 
-  handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
+  onChange = event => {
     this.setState({
-      [name]: value
+      hipaaAgreed: event.target.checked
     });
   };
 
-  handleSubmit = event => {
-    event.preventDefault();
-
+  onSubmit = event => {
     const { registrationStore } = this.props;
-
-    post(`/api/v1/teams`, {
-      body: {
-        name: registrationStore.teamName,
-        url: registrationStore.teamUrl
-      }
-    }).then(response => {
-      registrationStore.teamId = response.data.id;
-      registrationStore.teamUrl = response.data.slug;
-      patch(`/api/v1/users/${registrationStore.userId}/complete-onboarding`, {
-        body: {
-          first_name: registrationStore.firstName,
-          last_name: registrationStore.lastName,
-          username: registrationStore.username,
-          password: registrationStore.password,
-          pin: registrationStore.pin,
-          team_id: response.data.id
-        }
-      }).then(() => {
-        window.location.href = `https://${registrationStore.teamUrl}.${applicationHost}`;
-      });
-    });
+    event.preventDefault();
+    registrationStore.createTeam();
   };
 
   render() {
+    const { registrationStore } = this.props;
+
     return (
       <div className="authentication-card text-center">
         <div className="card-header">
@@ -67,7 +45,7 @@ export default class Hipaa extends Component {
                 placement="top"
                 overlay={<Tooltip id="back">Back</Tooltip>}
               >
-                <Link to="/signup/pin">
+                <Link to="/signup/invites">
                   <i className="fa fa-arrow-left" />
                 </Link>
               </OverlayTrigger>
@@ -92,11 +70,11 @@ export default class Hipaa extends Component {
           <strong>Business Associate Agreement</strong>
         </h5>
 
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.onSubmit}>
           <Checkbox
             name="hipaaAgreed"
             checked={this.state.hipaaAgreed}
-            onChange={this.handleChange}
+            onChange={this.onChange}
             className="m-b-20"
           >
             I agree to the terms of the HIPAA BAA
@@ -108,15 +86,21 @@ export default class Hipaa extends Component {
               here
             </a>. By checking the box above, you represent that your team agrees
             to the terms of the&nbsp;
-            <a href="/hipaa" target="_blank">HIPAA BAA</a>.
+            <a href="/hipaa" target="_blank">
+              HIPAA BAA
+            </a>.
           </HelpBlock>
 
-          <input
-            disabled={!this.state.hipaaAgreed}
-            value="Done!"
+          <Button
+            block
+            bsSize="lg"
+            bsStyle="primary"
+            disabled={!this.state.hipaaAgreed || registrationStore.saving}
             type="submit"
-            className="btn btn-block btn-lg btn-primary m-b-20"
-          />
+            className="m-b-20"
+          >
+            Done!
+          </Button>
 
           <HelpBlock className="m-b-20">
             By proceeding to use Stitch, you agree to our&nbsp;
