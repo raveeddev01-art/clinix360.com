@@ -2,9 +2,8 @@ import React from "react";
 import { Well } from "react-bootstrap";
 import moment from "moment";
 import capitalize from "lodash/capitalize";
-import classNames from "classnames";
 
-import { TIERS, PLANS, FREQUENCIES } from "./constants";
+import { TIERS, PLANS } from "./constants";
 import { getUpgradableTiers } from "./utils";
 import FrequencyToggle from "./FrequencyToggle";
 import Plan from "./Plan";
