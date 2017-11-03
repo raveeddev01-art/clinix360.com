@@ -22,7 +22,8 @@ class Subscription extends React.Component {
       upgradePlan: {
         frequency: 1,
         tier: ""
-      }
+      },
+      checkout: false
     };
   }
 
@@ -83,7 +84,7 @@ class Subscription extends React.Component {
   };
 
   onCheckoutPlan = () => {
-    console.log("checkout plan");
+    this.setState({ checkout: true });
   };
 
   renderLoading() {
@@ -99,7 +100,7 @@ class Subscription extends React.Component {
 
     return (
       <h3 className="text-center">
-        {upgrade ? "Upgrade Plan" : "Subscription"}
+        {upgrade ? "Upgrade Subscription" : "Subscription"}
       </h3>
     );
   }
@@ -177,7 +178,7 @@ class Subscription extends React.Component {
     );
   }
 
-  renderSubscription() {
+  renderSubscribedPlan() {
     const { subscription } = this.state;
     const validUntil = moment
       .utc(subscription.valid_until)
@@ -287,32 +288,40 @@ class Subscription extends React.Component {
     );
   }
 
-  render() {
+  renderSubscription() {
     const { subscription, upgrade } = this.state;
+
+    return (
+      <div>
+        {this.renderStatus()}
+
+        {subscription.tier === "TRIAL" && this.renderSelectPlan()}
+        {subscription.tier !== "TRIAL" && upgrade && this.renderUpgradePlan()}
+        {subscription.tier !== "TRIAL" &&
+          !upgrade &&
+          this.renderSubscribedPlan()}
+
+        <br />
+
+        {this.renderFooter()}
+      </div>
+    );
+  }
+
+  renderCheckout() {
+    return "Checkout";
+  }
+
+  render() {
+    const { subscription, checkout } = this.state;
 
     return (
       <div className="subscription">
         {this.renderHeader()}
 
-        {subscription ? (
-          <div>
-            {this.renderStatus()}
-
-            {subscription.tier === "TRIAL" && this.renderSelectPlan()}
-            {subscription.tier !== "TRIAL" &&
-              upgrade &&
-              this.renderUpgradePlan()}
-            {subscription.tier !== "TRIAL" &&
-              !upgrade &&
-              this.renderSubscription()}
-
-            <br />
-
-            {this.renderFooter()}
-          </div>
-        ) : (
-          this.renderLoading()
-        )}
+        {subscription
+          ? checkout ? this.renderCheckout() : this.renderSubscription()
+          : this.renderLoading()}
       </div>
     );
   }
