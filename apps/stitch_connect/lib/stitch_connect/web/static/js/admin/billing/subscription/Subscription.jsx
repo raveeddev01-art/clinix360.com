@@ -6,6 +6,8 @@ import classNames from "classnames";
 
 import Toggle from "../../../common/components/toggle/Toggle";
 
+const TIERS = ["BASIC", "PREMIUM", "POWER"];
+
 const PLANS = {
   BASIC: {
     pricePerMonth: {
@@ -91,6 +93,14 @@ class Subscription extends React.Component {
   onUpgradePlan = () => {
     console.log("upgrade plan");
   };
+
+  renderLoading() {
+    return (
+      <div className="loading">
+        <i className="fa fa-circle-o-notch fa-spin fa-3x fa-fw" />
+      </div>
+    );
+  }
 
   renderStatus() {
     const { subscription } = this.state;
@@ -222,7 +232,7 @@ class Subscription extends React.Component {
           </div>
         </div>
 
-        {Object.keys(PLANS).map(t => {
+        {TIERS.map(t => {
           const plan = PLANS[t];
           const price = plan.pricePerMonth[FREQUENCIES[frequency]];
           const className = classNames("plan-container", {
@@ -262,21 +272,25 @@ class Subscription extends React.Component {
     const { subscription } = this.state;
 
     return (
-      subscription && (
-        <div className="subscription">
-          <h3 className="text-center">Subscription</h3>
+      <div className="subscription">
+        <h3 className="text-center">Subscription</h3>
 
-          {this.renderStatus()}
+        {subscription ? (
+          <div>
+            {this.renderStatus()}
 
-          {subscription.tier === "TRIAL"
-            ? this.renderPlans()
-            : this.renderSubscription()}
+            {subscription.tier === "TRIAL"
+              ? this.renderPlans()
+              : this.renderSubscription()}
 
-          <br />
+            <br />
 
-          {this.renderFooter()}
-        </div>
-      )
+            {this.renderFooter()}
+          </div>
+        ) : (
+          this.renderLoading()
+        )}
+      </div>
     );
   }
 }
