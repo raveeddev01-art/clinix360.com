@@ -74,29 +74,51 @@ class Subscription extends React.Component {
   }
 
   onToggleFrequency = () => {
-    this.setState({
-      subscribePlan: {
-        ...this.state.subscribePlan,
-        frequency: 1 - this.state.subscribePlan.frequency
-      }
-    });
+    const { upgrade } = this.state;
+
+    if (upgrade) {
+      this.setState({
+        upgradePlan: {
+          ...this.state.upgradePlan,
+          frequency: 1 - this.state.upgradePlan.frequency
+        }
+      });
+    } else {
+      this.setState({
+        subscribePlan: {
+          ...this.state.subscribePlan,
+          frequency: 1 - this.state.subscribePlan.frequency
+        }
+      });
+    }
   };
 
   onSelectPlan = tier => () => {
-    this.setState({
-      subscribePlan: {
-        ...this.state.subscribePlan,
-        tier
-      }
-    });
+    const { upgrade } = this.state;
+
+    if (upgrade) {
+      this.setState({
+        upgradePlan: {
+          ...this.state.upgradePlan,
+          tier
+        }
+      });
+    } else {
+      this.setState({
+        subscribePlan: {
+          ...this.state.subscribePlan,
+          tier
+        }
+      });
+    }
+  };
+
+  onUpgradePlan = () => {
+    this.setState({ upgrade: true });
   };
 
   onCheckoutPlan = () => {
     console.log("checkout plan");
-  };
-
-  onUpgradePlan = () => {
-    console.log("upgrade plan");
   };
 
   renderLoading() {
@@ -107,8 +129,22 @@ class Subscription extends React.Component {
     );
   }
 
+  renderHeader() {
+    const { upgrade } = this.state;
+
+    return (
+      <h3 className="text-center">
+        {upgrade ? "Upgrade Plan" : "Subscription"}
+      </h3>
+    );
+  }
+
   renderStatus() {
-    const { subscription } = this.state;
+    const { subscription, upgrade } = this.state;
+
+    if (upgrade) {
+      return null;
+    }
 
     if (subscription.remaining_days > 0) {
       return (
@@ -274,12 +310,10 @@ class Subscription extends React.Component {
   }
 
   renderUpgradePlan() {
-    const { frequency, tier } = this.state.subscribePlan;
+    const { frequency, tier } = this.state.upgradePlan;
 
     return (
       <div className="plans">
-        <p>Please select a plan to continue service:</p>
-
         <div className="frequency-container">
           <Toggle
             onClick={this.onToggleFrequency}
@@ -336,7 +370,7 @@ class Subscription extends React.Component {
 
     return (
       <div className="subscription">
-        <h3 className="text-center">Subscription</h3>
+        {this.renderHeader()}
 
         {subscription ? (
           <div>
