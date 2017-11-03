@@ -1,4 +1,4 @@
-import { observable, action } from "mobx";
+import { observable, computed, action } from "mobx";
 
 class UserStore {
   @observable id = "";
@@ -14,6 +14,11 @@ class UserStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+  }
+
+  @computed
+  get isAdmin() {
+    return this.roles.includes("admin");
   }
 
   @action

@@ -8,12 +8,11 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
 
-import { isAdmin } from "../util/utils";
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
 
-@inject("presenceStore", "sidemenuStore")
+@inject("presenceStore", "sidemenuStore", "userStore")
 @observer
 class Sidemenu extends Component {
   componentDidMount() {
@@ -105,7 +104,7 @@ class Sidemenu extends Component {
   }
 
   render() {
-    const { sidemenuStore } = this.props;
+    const { sidemenuStore, userStore } = this.props;
     const filterJoined = rooms => rooms.filter(room => room.joined);
 
     return (
@@ -154,7 +153,7 @@ class Sidemenu extends Component {
                 Notifications
               </MenuItem>
 
-              {isAdmin() && this.renderAdminOptions()}
+              {userStore.isAdmin && this.renderAdminOptions()}
 
               <div className="separator text-center">
                 <span>Stitch</span>
