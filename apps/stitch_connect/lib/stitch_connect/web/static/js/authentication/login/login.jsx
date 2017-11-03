@@ -107,9 +107,9 @@ export default class Login extends Component {
 
         <h5>
           Just getting started?{" "}
-          <Link to="/signup/email">
+          <a href={`https://${applicationHost}/signup/email`}>
             <strong>Create a new team</strong>
-          </Link>
+          </a>
         </h5>
       </div>
     );
