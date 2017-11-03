@@ -4,9 +4,12 @@
   align-items: center;
   justify-content: center;
   padding: 15px;
+  > div {
+    max-width: 440px;
+  }
 
   .alert {
-    max-width: 480px;
+    width: 100%;
     color: inherit;
     font-size: 16px;
     background: #fff;
@@ -37,7 +40,6 @@
   }
 
   .authentication-card {
-    max-width: 440px;
     width: 100%;
     background: #fff;
     border: 1px solid $border-color;
@@ -154,8 +156,6 @@
     }
 
     &.team-picker-card {
-      max-width: 480px;
-
       .form-control {
         color: #333;
         font-size: 16px;

@@ -109,8 +109,6 @@ export default class Invites extends Component {
             Skip this step
           </Button>
         </form>
-
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }
