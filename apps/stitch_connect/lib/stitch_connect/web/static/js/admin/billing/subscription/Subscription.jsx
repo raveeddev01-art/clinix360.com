@@ -5,7 +5,7 @@ import capitalize from "lodash/capitalize";
 import classNames from "classnames";
 
 import { TIERS, PLANS, FREQUENCIES } from "./constants";
-import Toggle from "../../../common/components/toggle/Toggle";
+import FrequencyToggle from "./FrequencyToggle";
 
 class Subscription extends React.Component {
   constructor(props) {
@@ -222,20 +222,10 @@ class Subscription extends React.Component {
       <div className="plans">
         <p>Please select a plan to continue service:</p>
 
-        <div className="frequency-container">
-          <Toggle
-            onToggle={this.onToggleFrequency}
-            on={capitalize(FREQUENCIES[1])}
-            off={capitalize(FREQUENCIES[0])}
-            active={!!frequency}
-          />
-
-          <div className="frequency-description">
-            {frequency
-              ? "Billed annually or monthly with an 1 year contract"
-              : "Billed monthly with no contract"}
-          </div>
-        </div>
+        <FrequencyToggle
+          frequency={!!frequency}
+          onToggle={this.onToggleFrequency}
+        />
 
         {TIERS.map(t => {
           const plan = PLANS[t];
@@ -278,20 +268,10 @@ class Subscription extends React.Component {
 
     return (
       <div className="plans">
-        <div className="frequency-container">
-          <Toggle
-            onToggle={this.onToggleFrequency}
-            on={capitalize(FREQUENCIES[1])}
-            off={capitalize(FREQUENCIES[0])}
-            active={!!frequency}
-          />
-
-          <div className="frequency-description">
-            {frequency
-              ? "Billed annually or monthly with an 1 year contract"
-              : "Billed monthly with no contract"}
-          </div>
-        </div>
+        <FrequencyToggle
+          frequency={!!frequency}
+          onToggle={this.onToggleFrequency}
+        />
 
         {TIERS.map(t => {
           const plan = PLANS[t];
