@@ -84,8 +84,12 @@ class Subscription extends React.Component {
     });
   };
 
-  onUpgrade = () => {
-    console.log("upgrade");
+  onCheckoutPlan = () => {
+    console.log("checkout plan");
+  };
+
+  onUpgradePlan = () => {
+    console.log("upgrade plan");
   };
 
   renderStatus() {
@@ -187,7 +191,7 @@ class Subscription extends React.Component {
           <button
             type="button"
             className="btn btn-fancy btn-primary pull-right"
-            onClick={this.onUpgrade}
+            onClick={this.onUpgradePlan}
           >
             Upgrade Plan
           </button>
@@ -197,7 +201,7 @@ class Subscription extends React.Component {
   }
 
   renderPlans() {
-    const frequency = FREQUENCIES[this.state.plan.frequency];
+    const { frequency, tier } = this.state.plan;
 
     return (
       <div className="plans">
@@ -208,41 +212,48 @@ class Subscription extends React.Component {
             onClick={this.onToggleFrequency}
             on={capitalize(FREQUENCIES[1])}
             off={capitalize(FREQUENCIES[0])}
-            active={!!this.state.plan.frequency}
+            active={!!frequency}
           />
 
           <div className="frequency-description">
-            {this.state.plan.frequency
+            {frequency
               ? "Billed annually or monthly with an 1 year contract"
               : "Billed monthly with no contract"}
           </div>
         </div>
 
-        {Object.keys(PLANS).map(tier => {
-          const plan = PLANS[tier];
-          const price = plan.pricePerMonth[frequency];
+        {Object.keys(PLANS).map(t => {
+          const plan = PLANS[t];
+          const price = plan.pricePerMonth[FREQUENCIES[frequency]];
           const className = classNames("plan-container", {
-            selected: tier === this.state.plan.tier
+            selected: t === tier
           });
 
           return (
-            <div
-              key={tier}
-              className={className}
-              onClick={this.onSelectPlan(tier)}
-            >
+            <div key={t} className={className} onClick={this.onSelectPlan(t)}>
               <div className="plan-description">
-                <h4>{capitalize(tier)} Basic Monthly Plan</h4>
+                <h4>{capitalize(t)} Basic Monthly Plan</h4>
                 <span>${price} per month for 1 user</span>
               </div>
 
               <div className="plan-price">
                 <h4>${price}</h4>
-                <span>per user / month </span>
+                <span>per user / month</span>
               </div>
             </div>
           );
         })}
+
+        <div className="clearfix">
+          <button
+            type="button"
+            className="btn btn-fancy btn-primary pull-right"
+            disabled={!tier}
+            onClick={this.onCheckoutPlan}
+          >
+            Select Plan
+          </button>
+        </div>
       </div>
     );
   }
