@@ -7,6 +7,7 @@ import classNames from "classnames";
 import { TIERS, PLANS, FREQUENCIES } from "./constants";
 import { getUpgradableTiers } from "./utils";
 import FrequencyToggle from "./FrequencyToggle";
+import Plan from "./Plan";
 
 class Subscription extends React.Component {
   constructor(props) {
@@ -228,27 +229,15 @@ class Subscription extends React.Component {
           onToggle={this.onToggleFrequency}
         />
 
-        {TIERS.map(t => {
-          const plan = PLANS[t];
-          const price = plan.pricePerMonth[FREQUENCIES[frequency]];
-          const className = classNames("plan-container", {
-            selected: t === tier
-          });
-
-          return (
-            <div key={t} className={className} onClick={this.onSelectPlan(t)}>
-              <div className="plan-description">
-                <h4>{capitalize(t)} Basic Monthly Plan</h4>
-                <span>${price} per month for 1 user</span>
-              </div>
-
-              <div className="plan-price">
-                <h4>${price}</h4>
-                <span>per user / month</span>
-              </div>
-            </div>
-          );
-        })}
+        {TIERS.map(t => (
+          <Plan
+            key={t}
+            tier={t}
+            frequency={frequency}
+            selected={tier === t}
+            onSelect={this.onSelectPlan(t)}
+          />
+        ))}
 
         <div className="clearfix">
           <button
@@ -275,27 +264,15 @@ class Subscription extends React.Component {
           onToggle={this.onToggleFrequency}
         />
 
-        {tiers.map(t => {
-          const plan = PLANS[t];
-          const price = plan.pricePerMonth[FREQUENCIES[frequency]];
-          const className = classNames("plan-container", {
-            selected: t === tier
-          });
-
-          return (
-            <div key={t} className={className} onClick={this.onSelectPlan(t)}>
-              <div className="plan-description">
-                <h4>{capitalize(t)} Basic Monthly Plan</h4>
-                <span>${price} per month for 1 user</span>
-              </div>
-
-              <div className="plan-price">
-                <h4>${price}</h4>
-                <span>per user / month</span>
-              </div>
-            </div>
-          );
-        })}
+        {tiers.map(t => (
+          <Plan
+            key={t}
+            tier={t}
+            frequency={frequency}
+            selected={tier === t}
+            onSelect={this.onSelectPlan(t)}
+          />
+        ))}
 
         <div className="clearfix">
           <button
