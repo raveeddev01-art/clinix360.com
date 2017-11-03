@@ -37,6 +37,7 @@ export AWS_SECRET_ACCESS_KEY=
 export S3_BUCKET_NAME=
 export S3_REGION=us-east-1
 
+export APNS_TOPIC=
 export APNS_CERT_B64=
 export APNS_KEY_B64=
 export APNS_MODE=dev
