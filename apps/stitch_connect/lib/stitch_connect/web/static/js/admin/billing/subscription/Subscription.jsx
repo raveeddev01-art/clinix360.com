@@ -6,21 +6,14 @@ class Subscription extends React.Component {
     super(props);
 
     this.state = {
-      subscription: {
-        status: "trial"
-      }
+      subscription: null
     };
   }
 
   componentWillMount() {
-    get("/api/v1/billing/subscription").then(
-      response => {
-        console.log("subscription response", response);
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    get("/api/v1/billing/subscription").then(response => {
+      this.setState({ subscription: response.data.data });
+    });
   }
 
   renderStatus() {
@@ -28,7 +21,7 @@ class Subscription extends React.Component {
 
     return (
       <div>
-        {subscription.status === "trial" && (
+        {subscription.tier === "TRIAL" && (
           <Well>
             <i className="fa fa-times-circle" />
             <p className="m-b-0">
@@ -38,7 +31,7 @@ class Subscription extends React.Component {
           </Well>
         )}
 
-        {subscription.status === "expired" && (
+        {subscription.tier === "EXPIRED" && (
           <Well>
             <i className="fa fa-times-circle" />
             <p className="m-b-0">
@@ -47,7 +40,7 @@ class Subscription extends React.Component {
           </Well>
         )}
 
-        {subscription.status === "subscribed" && (
+        {subscription.tier === "SUBSCRIBED" && (
           <Well>
             <i className="fa fa-check-circle" />
             <p className="m-b-0">
@@ -148,18 +141,20 @@ class Subscription extends React.Component {
     const { subscription } = this.state;
 
     return (
-      <div className="billing-subscription">
-        <h3 className="text-center">Subscription</h3>
+      subscription && (
+        <div className="billing-subscription">
+          <h3 className="text-center">Subscription</h3>
 
-        {this.renderStatus()}
+          {this.renderStatus()}
 
-        {subscription.status === "subscribed" && this.renderSubscribed()}
-        {subscription.status !== "subscribed" && this.renderUnsubscribed()}
+          {subscription.status === "subscribed" && this.renderSubscribed()}
+          {subscription.status !== "subscribed" && this.renderUnsubscribed()}
 
-        <br />
+          <br />
 
-        {this.renderFooter()}
-      </div>
+          {this.renderFooter()}
+        </div>
+      )
     );
   }
 }
