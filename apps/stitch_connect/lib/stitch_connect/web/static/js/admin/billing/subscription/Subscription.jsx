@@ -8,6 +8,17 @@ class Subscription extends React.Component {
     this.state = {};
   }
 
+  componentWillMount() {
+    get("/api/v1/billing/subscription").then(
+      response => {
+        console.log("subscription response", response);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
   render() {
     return (
       <div className="billing-subscription">
@@ -22,8 +33,7 @@ class Subscription extends React.Component {
 
         <p>
           Your plan will renew on <b>Wednesday, November 22nd 2017</b> for{" "}
-          <b>$72</b>. <b>Basic</b>
-          includes:
+          <b>$72</b>. <b>Basic</b> includes:
         </p>
 
         <ul className="list-unstyled">
