@@ -14,7 +14,7 @@ class UsernameCard extends Component {
             Enter a <strong>username</strong>.
           </span>
         }
-        helperText="Your username is how other users will mention you in conversations. Unique & lowercase."
+        helperText="Your username is how others will mention you. It should be unique and lowercase."
         placeholder={placeholder || "username"}
         isRequired={false}
       />

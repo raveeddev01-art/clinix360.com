@@ -77,8 +77,8 @@ class Username extends Component {
           />
         </FormGroup>
         <HelpBlock className="m-b-20">
-          Your username is how other users will mention you in conversations.
-          Pick something familiar.
+          Your username is how others will mention you. It should be unique and
+          lowercase.
         </HelpBlock>
       </OnboardCard>
     ];
