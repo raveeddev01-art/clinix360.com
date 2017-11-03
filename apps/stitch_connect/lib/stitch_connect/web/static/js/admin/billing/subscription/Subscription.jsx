@@ -5,22 +5,40 @@ import capitalize from "lodash/capitalize";
 
 import Toggle from "../../../common/components/toggle/Toggle";
 
-const SUBSCRIPTION_ITEMS = {
-  BASIC: [
-    "HIPAA Compliant",
-    "Public & Private Rooms",
-    "Direct Messaging",
-    "Healthcare Workflows",
-    "Searchable Archives",
-    "File Storage",
-    "Mac & Windows Apps",
-    "iOS & Android Apps"
-  ],
-  PREMIUM: [],
-  POWER: []
+const PLANS = {
+  BASIC: {
+    pricePerMonth: {
+      monthly: 6,
+      annually: 5
+    },
+    items: [
+      "HIPAA Compliant",
+      "Public & Private Rooms",
+      "Direct Messaging",
+      "Healthcare Workflows",
+      "Searchable Archives",
+      "File Storage",
+      "Mac & Windows Apps",
+      "iOS & Android Apps"
+    ]
+  },
+  PREMIUM: {
+    pricePerMonth: {
+      monthly: 12,
+      annually: 10
+    },
+    items: []
+  },
+  POWER: {
+    pricePerMonth: {
+      monthly: 18,
+      annually: 15
+    },
+    items: []
+  }
 };
 
-const FREQUENCIES = ["MONTHLY", "ANNUALLY"];
+const FREQUENCIES = ["monthly", "annually"];
 
 class Subscription extends React.Component {
   constructor(props) {
@@ -142,10 +160,10 @@ class Subscription extends React.Component {
           <b>{capitalize(subscription.tier)}</b> includes:
         </p>
 
-        {SUBSCRIPTION_ITEMS[subscription.tier] &&
-          SUBSCRIPTION_ITEMS[subscription.tier].length > 0 && (
+        {PLANS[subscription.tier].items &&
+          PLANS[subscription.tier].items.length > 0 && (
             <ul className="list-unstyled">
-              {SUBSCRIPTION_ITEMS[subscription.tier].map((item, index) => (
+              {PLANS[subscription.tier].items.map((item, index) => (
                 <li key={`item_${index}`}>
                   <i className="fa fa-check-circle-o" />
                   {item}
@@ -168,6 +186,8 @@ class Subscription extends React.Component {
   }
 
   renderPlans() {
+    const frequency = FREQUENCIES[this.state.plan.frequency];
+
     return (
       <div className="plans">
         <p>Please select a plan to continue service:</p>
@@ -186,6 +206,25 @@ class Subscription extends React.Component {
               : "Billed monthly with no contract"}
           </div>
         </div>
+
+        {Object.keys(PLANS).map(key => {
+          const plan = PLANS[key];
+          const price = plan.pricePerMonth[frequency];
+
+          return (
+            <div key={key} className="plan-container">
+              <div className="plan-description">
+                <h4>{capitalize(key)} Basic Monthly Plan</h4>
+                <span>${price} per month for 1 user</span>
+              </div>
+
+              <div className="plan-price">
+                <h4>${price}</h4>
+                <span>per user / month </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   }

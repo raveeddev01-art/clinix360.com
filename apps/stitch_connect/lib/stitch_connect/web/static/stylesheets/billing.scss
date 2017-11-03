@@ -4,6 +4,7 @@
       .frequency-container {
         display: flex;
         align-items: center;
+        margin-bottom: 20px;
 
         .frequency-description {
           margin-left: 20px;
@@ -11,6 +12,43 @@
 
           font-size: 16px;
           font-weight: 600;
+        }
+      }
+
+      .plan-container {
+        display: flex;
+        justify-content: space-between;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        padding: 25px;
+        margin-bottom: 10px;
+
+        &.selected {
+          border-color: $brand-primary;
+          background-color: #f0f7fb;
+        }
+
+        .plan-description {
+          h4 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            font-weight: bold;
+          }
+        }
+
+        .plan-price {
+          text-align: center;
+
+          h4 {
+            font-size: 24px;
+            color: $brand-primary;
+            margin: 0;
+          }
+
+          span {
+            font-weight: 500;
+            color: #9e9ea6;
+          }
         }
       }
     }
