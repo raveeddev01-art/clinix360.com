@@ -31,8 +31,7 @@ export default class Username extends Component {
 
   render() {
     const { registrationStore } = this.props;
-    const { email } = registrationStore;
-    const username = email.replace(/@.*$/, "");
+    const username = registrationStore.email.replace(/@.*$/, "").toLowerCase();
     const { invalidUsername } = this.state;
 
     return [
