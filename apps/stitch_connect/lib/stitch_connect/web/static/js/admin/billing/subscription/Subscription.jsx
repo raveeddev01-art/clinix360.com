@@ -4,44 +4,8 @@ import moment from "moment";
 import capitalize from "lodash/capitalize";
 import classNames from "classnames";
 
+import { TIERS, PLANS, FREQUENCIES } from "./constants";
 import Toggle from "../../../common/components/toggle/Toggle";
-
-const TIERS = ["BASIC", "PREMIUM", "POWER"];
-
-const PLANS = {
-  BASIC: {
-    pricePerMonth: {
-      monthly: 6,
-      annually: 5
-    },
-    items: [
-      "HIPAA Compliant",
-      "Public & Private Rooms",
-      "Direct Messaging",
-      "Healthcare Workflows",
-      "Searchable Archives",
-      "File Storage",
-      "Mac & Windows Apps",
-      "iOS & Android Apps"
-    ]
-  },
-  PREMIUM: {
-    pricePerMonth: {
-      monthly: 12,
-      annually: 10
-    },
-    items: []
-  },
-  POWER: {
-    pricePerMonth: {
-      monthly: 18,
-      annually: 15
-    },
-    items: []
-  }
-};
-
-const FREQUENCIES = ["monthly", "annually"];
 
 class Subscription extends React.Component {
   constructor(props) {
