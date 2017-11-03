@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 
 class Toggle extends React.Component {
   render() {
-    const { active, on, off, onClick } = this.props;
+    const { active, on, off, onToggle } = this.props;
 
     return (
       <div
         className="toggle"
         role="checkbox"
         aria-checked={active}
-        onClick={onClick}
+        onClick={onToggle}
       >
         <div className="toggle-text">{active ? on : off}</div>
         <span className="toggle-handle" />
@@ -23,7 +23,7 @@ Toggle.propTypes = {
   active: PropTypes.bool.isRequired,
   on: PropTypes.any.isRequired,
   off: PropTypes.any.isRequired,
-  onClick: PropTypes.func.isRequired
+  onToggle: PropTypes.func.isRequired
 };
 
 export default Toggle;
