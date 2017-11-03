@@ -5,6 +5,7 @@ import capitalize from "lodash/capitalize";
 import classNames from "classnames";
 
 import { TIERS, PLANS, FREQUENCIES } from "./constants";
+import { getUpgradableTiers } from "./utils";
 import FrequencyToggle from "./FrequencyToggle";
 
 class Subscription extends React.Component {
@@ -264,6 +265,7 @@ class Subscription extends React.Component {
   }
 
   renderUpgradePlan() {
+    const tiers = getUpgradableTiers(this.state.subscription.tier);
     const { frequency, tier } = this.state.upgradePlan;
 
     return (
@@ -273,7 +275,7 @@ class Subscription extends React.Component {
           onToggle={this.onToggleFrequency}
         />
 
-        {TIERS.map(t => {
+        {tiers.map(t => {
           const plan = PLANS[t];
           const price = plan.pricePerMonth[FREQUENCIES[frequency]];
           const className = classNames("plan-container", {
