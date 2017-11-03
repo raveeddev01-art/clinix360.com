@@ -58,6 +58,7 @@
           "searchStore",
           "sidemenuStore",
           "socketStore",
+          "teamStore",
           "titleStore",
           "uploadStore",
           "pinnedMessageStore",
