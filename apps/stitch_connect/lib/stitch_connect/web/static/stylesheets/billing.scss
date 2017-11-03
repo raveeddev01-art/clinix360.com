@@ -16,21 +16,21 @@
       background: rgba(255, 255, 255, 0.7);
     }
 
-    .plans {
-      .frequency-container {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
+    .frequency-toggle {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
 
-        .frequency-description {
-          margin-left: 20px;
-          flex: 1 1 auto;
+      .frequency-description {
+        margin-left: 20px;
+        flex: 1 1 auto;
 
-          font-size: 16px;
-          font-weight: 600;
-        }
+        font-size: 16px;
+        font-weight: 600;
       }
+    }
 
+    .plans {
       .plan-container {
         display: flex;
         justify-content: space-between;
