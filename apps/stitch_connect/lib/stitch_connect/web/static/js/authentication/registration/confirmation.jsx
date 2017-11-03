@@ -151,7 +151,8 @@ export default class Confirmation extends Component {
       <div>
         {this.state.error && (
           <Alert>
-            The confirmation code doesn&#39;t match the one we have on record. Please check your email again.
+            The confirmation code doesn&#39;t match the one we have on record.
+            Please check your email again.
           </Alert>
         )}
 
@@ -197,10 +198,6 @@ export default class Confirmation extends Component {
               your email address.
             </HelpBlock>
           </form>
-
-          <p className="copyright m-b-0">
-            &copy; 2017 Stitch Technologies, Inc
-          </p>
         </div>
       </div>
     );

@@ -8,14 +8,13 @@ class Card extends Component {
   };
 
   render() {
-    const { children, header, title, description } = this.props;
+    const { children, header, title } = this.props;
     return (
       <div className="authentication-card text-center">
         {header}
         <h2>{title}</h2>
         {this._renderDescription()}
         {children}
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }
