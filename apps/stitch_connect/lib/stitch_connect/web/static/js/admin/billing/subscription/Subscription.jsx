@@ -2,6 +2,7 @@ import React from "react";
 import { Well } from "react-bootstrap";
 import moment from "moment";
 import capitalize from "lodash/capitalize";
+import classNames from "classnames";
 
 import Toggle from "../../../common/components/toggle/Toggle";
 
@@ -47,7 +48,8 @@ class Subscription extends React.Component {
     this.state = {
       subscription: null,
       plan: {
-        frequency: 1
+        frequency: 1,
+        tier: ""
       }
     };
   }
@@ -64,10 +66,6 @@ class Subscription extends React.Component {
     });
   }
 
-  onUpgrade = () => {
-    console.log("upgrade");
-  };
-
   onToggleFrequency = () => {
     this.setState({
       plan: {
@@ -75,6 +73,19 @@ class Subscription extends React.Component {
         frequency: 1 - this.state.plan.frequency
       }
     });
+  };
+
+  onSelectPlan = tier => () => {
+    this.setState({
+      plan: {
+        ...this.state.plan,
+        tier
+      }
+    });
+  };
+
+  onUpgrade = () => {
+    console.log("upgrade");
   };
 
   renderStatus() {
@@ -207,14 +218,21 @@ class Subscription extends React.Component {
           </div>
         </div>
 
-        {Object.keys(PLANS).map(key => {
-          const plan = PLANS[key];
+        {Object.keys(PLANS).map(tier => {
+          const plan = PLANS[tier];
           const price = plan.pricePerMonth[frequency];
+          const className = classNames("plan-container", {
+            selected: tier === this.state.plan.tier
+          });
 
           return (
-            <div key={key} className="plan-container">
+            <div
+              key={tier}
+              className={className}
+              onClick={this.onSelectPlan(tier)}
+            >
               <div className="plan-description">
-                <h4>{capitalize(key)} Basic Monthly Plan</h4>
+                <h4>{capitalize(tier)} Basic Monthly Plan</h4>
                 <span>${price} per month for 1 user</span>
               </div>
 
