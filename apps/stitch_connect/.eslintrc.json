@@ -63,6 +63,7 @@
           "uploadStore",
           "pinnedMessageStore",
           "registrationStore",
+          "teamStore",
           "userStore",
           "match",
           "location",
