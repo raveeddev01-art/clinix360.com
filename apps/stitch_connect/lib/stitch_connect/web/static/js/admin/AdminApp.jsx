@@ -19,6 +19,8 @@ import Billing from "./billing/billing";
 @inject("titleStore")
 @observer
 class AdminApp extends Component {
+  static requiresAdmin = true;
+
   constructor(props) {
     super(props);
     this.state = {
