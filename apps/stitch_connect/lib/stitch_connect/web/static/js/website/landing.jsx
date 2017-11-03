@@ -105,6 +105,9 @@ export default class Landing extends Component {
               </Col>
             </Row>
           </div>
+          <a id="intercom-link" href="jig8cj9z@inbound.intercom-mail.com">
+            Intercom
+          </a>
         </div>
 
         {/* <div className="subheader">
