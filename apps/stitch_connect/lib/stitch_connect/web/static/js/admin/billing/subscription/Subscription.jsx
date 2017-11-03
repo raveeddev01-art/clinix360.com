@@ -49,7 +49,12 @@ class Subscription extends React.Component {
 
     this.state = {
       subscription: null,
-      plan: {
+      upgrade: false,
+      subscribePlan: {
+        frequency: 1,
+        tier: ""
+      },
+      upgradePlan: {
         frequency: 1,
         tier: ""
       }
@@ -70,17 +75,17 @@ class Subscription extends React.Component {
 
   onToggleFrequency = () => {
     this.setState({
-      plan: {
-        ...this.state.plan,
-        frequency: 1 - this.state.plan.frequency
+      subscribePlan: {
+        ...this.state.subscribePlan,
+        frequency: 1 - this.state.subscribePlan.frequency
       }
     });
   };
 
   onSelectPlan = tier => () => {
     this.setState({
-      plan: {
-        ...this.state.plan,
+      subscribePlan: {
+        ...this.state.subscribePlan,
         tier
       }
     });
@@ -210,8 +215,66 @@ class Subscription extends React.Component {
     );
   }
 
-  renderPlans() {
-    const { frequency, tier } = this.state.plan;
+  renderSelectPlan() {
+    const { frequency, tier } = this.state.subscribePlan;
+
+    return (
+      <div className="plans">
+        <p>Please select a plan to continue service:</p>
+
+        <div className="frequency-container">
+          <Toggle
+            onClick={this.onToggleFrequency}
+            on={capitalize(FREQUENCIES[1])}
+            off={capitalize(FREQUENCIES[0])}
+            active={!!frequency}
+          />
+
+          <div className="frequency-description">
+            {frequency
+              ? "Billed annually or monthly with an 1 year contract"
+              : "Billed monthly with no contract"}
+          </div>
+        </div>
+
+        {TIERS.map(t => {
+          const plan = PLANS[t];
+          const price = plan.pricePerMonth[FREQUENCIES[frequency]];
+          const className = classNames("plan-container", {
+            selected: t === tier
+          });
+
+          return (
+            <div key={t} className={className} onClick={this.onSelectPlan(t)}>
+              <div className="plan-description">
+                <h4>{capitalize(t)} Basic Monthly Plan</h4>
+                <span>${price} per month for 1 user</span>
+              </div>
+
+              <div className="plan-price">
+                <h4>${price}</h4>
+                <span>per user / month</span>
+              </div>
+            </div>
+          );
+        })}
+
+        <div className="clearfix">
+          <button
+            type="button"
+            className="btn btn-fancy btn-primary pull-right"
+            disabled={!tier}
+            onClick={this.onCheckoutPlan}
+          >
+            Select Plan
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  renderUpgradePlan() {
+    const { frequency, tier } = this.state.subscribePlan;
 
     return (
       <div className="plans">
@@ -269,7 +332,7 @@ class Subscription extends React.Component {
   }
 
   render() {
-    const { subscription } = this.state;
+    const { subscription, upgrade } = this.state;
 
     return (
       <div className="subscription">
@@ -279,9 +342,13 @@ class Subscription extends React.Component {
           <div>
             {this.renderStatus()}
 
-            {subscription.tier === "TRIAL"
-              ? this.renderPlans()
-              : this.renderSubscription()}
+            {subscription.tier === "TRIAL" && this.renderSelectPlan()}
+            {subscription.tier !== "TRIAL" &&
+              upgrade &&
+              this.renderUpgradePlan()}
+            {subscription.tier !== "TRIAL" &&
+              !upgrade &&
+              this.renderSubscription()}
 
             <br />
 
