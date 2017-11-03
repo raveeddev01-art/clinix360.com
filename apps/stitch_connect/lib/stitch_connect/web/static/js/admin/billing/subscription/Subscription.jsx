@@ -19,18 +19,62 @@ class Subscription extends React.Component {
     );
   }
 
-  render() {
+  renderStatus() {
+    const { subscription } = this.state;
+
+    return subscription ? (
+      <Well>
+        <i className="fa fa-check-circle" />
+        <p className="m-b-0">
+          Your team is subscribed to <b>Basic</b>.
+        </p>
+      </Well>
+    ) : (
+      <Well>
+        <i className="fa fa-times-circle" />
+        <p className="m-b-0">
+          Your team's trial of Stitch Connect has completed.
+        </p>
+      </Well>
+    );
+  }
+
+  renderFooter() {
+    const { subscription } = this.state;
+
     return (
-      <div className="billing-subscription">
-        <h3 className="text-center">Subscription</h3>
+      <p>
+        For an explanation of pricing, see{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://teamstitch.zendesk.com/hc/en-us/articles/217055037-Subscribing-and-billing"
+        >
+          here
+        </a>.{" "}
+        {subscription ? (
+          <span>
+            Click <a className="downgrade-plan">here</a> to cancel your
+            subscription.
+          </span>
+        ) : (
+          <span>
+            Request a free trial extension by{" "}
+            <a href="mailto:support@teamstitch.com?subject=Trial Extension Request&amp;body=I would like to request an extension to our Stitch Connect trial for the following reasons:">
+              clicking here
+            </a>.
+          </span>
+        )}
+      </p>
+    );
+  }
 
-        <Well>
-          <i className="fa fa-check-circle" />
-          <p className="m-b-0">
-            Your team is subscribed to <b>Basic</b>.
-          </p>
-        </Well>
+  renderSubscribed() {
+    const { subscription } = this.state;
 
+    // TODO: Replace necessary information using subscription object
+    return (
+      <div className="subscribed">
         <p>
           Your plan will renew on <b>Wednesday, November 22nd 2017</b> for{" "}
           <b>$72</b>. <b>Basic</b> includes:
@@ -71,20 +115,28 @@ class Subscription extends React.Component {
             Upgrade Plan
           </button>
         </div>
+      </div>
+    );
+  }
+
+  renderUnsubscribed() {
+    return <div className="unsubscribed">Unsubscribed</div>;
+  }
+
+  render() {
+    const { subscription } = this.state;
+
+    return (
+      <div className="billing-subscription">
+        <h3 className="text-center">Subscription</h3>
+
+        {this.renderStatus()}
+
+        {subscription ? this.renderSubscribed() : this.renderUnsubscribed()}
 
         <br />
 
-        <p>
-          For an explanation of pricing, see{" "}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://teamstitch.zendesk.com/hc/en-us/articles/217055037-Subscribing-and-billing"
-          >
-            here
-          </a>. Click <a className="downgrade-plan">here</a> to cancel your
-          subscription.
-        </p>
+        {this.renderFooter()}
       </div>
     );
   }
