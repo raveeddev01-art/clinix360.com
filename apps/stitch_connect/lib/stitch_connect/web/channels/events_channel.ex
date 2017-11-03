@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.EventsChannel do
   use Phoenix.Channel
 
   import Ecto.Query
-  alias Stitch.{Repo, GroupUser, UserQueries}
+  alias Stitch.{Repo, GroupUser, UserQueries, Accounts.User}
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView}
 
   @endpoint StitchConnect.Web.Endpoint
@@ -36,6 +36,11 @@ defmodule StitchConnect.Web.EventsChannel do
       mentions_count: gu.mentions_count,
     })
     |> Repo.all
+  end
+
+  def broadcast_user_info(%User{} = user) do
+    json = %{first_name: user.first_name, last_name: user.last_name, roles: user.roles, username: user.username}
+    @endpoint.broadcast("events:#{user.id}", "user_info", json)
   end
 
   def broadcast_group_new_msg(group, message, notify_user_ids \\ []) do

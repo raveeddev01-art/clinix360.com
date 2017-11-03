@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   alias Stitch.{Repo, Accounts.User, UserQueries}
+  alias StitchConnect.Web.{EventsChannel}
 
   def index(conn, _) do
     users = UserQueries.users_for_team(conn.assigns.current_user.team_id)
@@ -61,6 +62,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def promote_admin(conn, %{"id" => user_id}) do
     case Stitch.Accounts.Admin.promote_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
+        EventsChannel.broadcast_user_info(user)
         conn
         |> render("show.json", user: user)
       {:error, message} ->
