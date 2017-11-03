@@ -13,8 +13,8 @@ class UsernameCard extends Component {
             Enter a <strong>username</strong>.
           </span>
         }
-        helperText="Your username is how other users will mention you in conversations. Pick something familiar."
-        placeholder="Username"
+        helperText="Your username is how other users will mention you in conversations. Unique & lowercase."
+        placeholder="username"
       />
     );
   }
@@ -23,11 +23,13 @@ class UsernameCard extends Component {
 UsernameCard.propTypes = {
   onNext: PropTypes.func.isRequired,
   backUrl: PropTypes.string,
-  restartUrl: PropTypes.string
+  restartUrl: PropTypes.string,
+  isLowerCase: PropTypes.bool
 };
 
 UsernameCard.defaultProps = {
-  onNext: () => {}
+  onNext: () => {},
+  isLowerCase: true
 };
 
 export default UsernameCard;
