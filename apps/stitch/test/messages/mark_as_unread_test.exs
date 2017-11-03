@@ -45,7 +45,8 @@ defmodule Stitch.Message.MarkAsUnreadTest do
       {:ok, %{message: _message3}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
       Message.mark_as_read(bob.id, group.id)
-      {:error, "No messages to unread"} = Message.mark_as_unread(bob.id, group.id, message2)
+      assert {:ok, response} = Message.mark_as_unread(bob.id, group.id, message2)
+      assert %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [%{unread_messages_count: 0}]}} = response
     end
   end
 
@@ -135,19 +136,21 @@ defmodule Stitch.Message.MarkAsUnreadTest do
       {:ok, _} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
       Message.mark_as_read(bob.id, group.id)
-      assert {:error, _} = Message.mark_as_unread(bob.id, group.id, system_message2)
+      assert {:ok, response} = Message.mark_as_unread(bob.id, group.id, system_message2)
+      assert %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [%{unread_messages_count: 0}]}} = response
 
       group_user = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user.mentions_count == 0
       assert group_user.unread_messages_count == 0
     end
 
-    test "when the target message is a system message and there no messages before it", %{bob: bob, joe: joe, group: group, team: team} do
+    test "when the target message is a system message and there are no messages before it", %{bob: bob, joe: joe, group: group, team: team} do
       {:ok, %{system_message: system_message2}} = Stitch.Group.add_user(group, insert(:user, team: team).id)
       {:ok, _} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
       Message.mark_as_read(bob.id, group.id)
-      assert {:error, _} = Message.mark_as_unread(bob.id, group.id, system_message2)
+      assert {:ok, response} = Message.mark_as_unread(bob.id, group.id, system_message2)
+      assert %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [%{unread_messages_count: 0}]}} = response
 
       group_user = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user.mentions_count == 0

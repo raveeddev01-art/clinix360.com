@@ -212,8 +212,9 @@ defmodule Stitch.Message do
     mark_as_unread(user_id, group_id, message)
   end
 
-  def mark_as_unread(_user_id, _group_id, nil) do
-    {:error, "No messages to unread"}
+  def mark_as_unread(user_id, group_id, nil) do
+    group_user = Repo.get_by(GroupUser, user_id: user_id, group_id: group_id)
+    {:ok, %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [group_user]}}}
   end
 
   def mark_as_unread(user_id, group_id, message) do

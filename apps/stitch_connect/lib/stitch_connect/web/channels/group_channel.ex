@@ -295,11 +295,6 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:ok, json}, socket}
   end
 
-  defp mark_as_unread_response({:error, "No messages to unread"}, _user, socket) do
-    json = %{message: "No messages to unread"}
-    {:reply, {:error, json}, socket}
-  end
-
   def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg"] do
     json = MessageView.render("show.json", %{message: payload})
     push socket, event, json
