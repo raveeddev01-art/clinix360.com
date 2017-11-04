@@ -1,4 +1,4 @@
-import { observable, action } from "mobx";
+import { observable, action, computed } from "mobx";
 
 class UserStore {
   @observable id = "";
@@ -10,9 +10,20 @@ class UserStore {
   @observable firstName = "";
   @observable lastName = "";
   @observable profileImgUrl = "";
+  @observable roles = [];
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+  }
+
+  @computed
+  get isAdmin() {
+    return this.roles.indexOf('admin') > -1;
+  }
+
+  @computed
+  get canInvite() {
+    return this.isAdmin || this.rootStore.teamStore.openInvitationsEnabled;
   }
 
   @action
@@ -29,6 +40,7 @@ class UserStore {
       this.firstName = data.first_name;
       this.lastName = data.last_name;
       this.profileImgUrl = data.avatar;
+      this.roles = data.roles;
 
       this.loading = false;
     });
@@ -66,18 +78,18 @@ class UserStore {
   };
 
   @action
-  saveName = (first_name, last_name) => {
-    this.save({ first_name, last_name }).then(() => {
-      this.firstName = first_name;
-      this.lastName = last_name;
+  saveName = (firstName, lastName) => {
+    this.save({ first_name: firstName, last_name: lastName }).then(() => {
+      this.firstName = firstName;
+      this.lastName = lastName;
       notify.show("Name updated");
     });
   };
 
   @action
-  savePhone = phone_number => {
-    this.save({ phone_number }).then(() => {
-      this.phone = phone_number;
+  savePhone = phoneNumber => {
+    this.save({ phone_number: phoneNumber }).then(() => {
+      this.phone = phoneNumber;
       notify.show("Phone updated");
     });
   };
@@ -91,9 +103,9 @@ class UserStore {
   };
 
   @action
-  saveProfileImg = profile_image_url => {
-    this.save({ profile_image_url }).then(() => {
-      this.profileImg = profile_image_url;
+  saveProfileImg = profileImgUrl => {
+    this.save({ profile_image_url: profileImgUrl }).then(() => {
+      this.profileImg = profileImgUrl;
       notify.show("Profile Image updated");
     });
   };
