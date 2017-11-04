@@ -18,7 +18,7 @@ class UserStore {
 
   @computed
   get isAdmin() {
-    return this.roles.indexOf('admin') > -1;
+    return this.roles.includes("admin");
   }
 
   @computed
@@ -33,6 +33,9 @@ class UserStore {
 
     get(`/api/v1/users/${id}`).then(resp => {
       const { data } = resp;
+
+      this.loading = false;
+
       this.username = data.username;
       this.phone = data.phone || "";
       this.title = data.title || "";
@@ -41,9 +44,16 @@ class UserStore {
       this.lastName = data.last_name;
       this.profileImgUrl = data.avatar;
       this.roles = data.roles;
-
       this.loading = false;
     });
+  };
+
+  @action
+  onUpdateUser = payload => {
+    if (payload.roles) {
+      window.currentUser.roles = payload.roles;
+      this.roles = payload.roles;
+    }
   };
 
   @action
