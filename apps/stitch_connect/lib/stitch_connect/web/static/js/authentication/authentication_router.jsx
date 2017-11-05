@@ -61,8 +61,8 @@ class AuthenticationRouter extends Component {
           <Switch>
             <Route exact path="/getstarted" component={GetStarted} />
             <Route exact path="/signin" component={TeamPicker} />
-            <Route exact path="/find-teams" component={FindTeam} />
-            <Route exact path="/select-team" component={SelectTeam} />
+            <Route exact path="/find-your-team" component={FindTeam} />
+            <Route exact path="/find-your-team/:token" component={SelectTeam} />
 
             <Route
               exact
