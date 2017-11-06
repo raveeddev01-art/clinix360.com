@@ -14,6 +14,7 @@ import Downloads from "./resources/downloads";
 import Customers from "./resources/customers";
 import CasePBSC from "./case-studies/pbsc";
 import CaseDSSI from "./case-studies/dssi";
+import CaseUCSF from "./case-studies/ucsf";
 import CaseOrchardMedical from "./case-studies/orchard-medical";
 import Baa from "./resources/baa";
 import Hipaa from "./resources/hipaa";
@@ -43,6 +44,7 @@ class WebsiteRouter extends Component {
               path="/customers/dermatology-skin-surgery-institute"
               component={CaseDSSI}
             />
+            <Route exact path="/customers/UCSF-citywide" component={CaseUCSF} />
             <Route
               exact
               path="/customers/orchard-medical-associates"

@@ -147,6 +147,12 @@ export default class Customers extends Component {
                       severely mentally ill adults. Citywide sought Stitch to
                       manage field communication during client work.
                     </p>
+                    <Link
+                      to="/customers/UCSF-citywide"
+                      className="text-uppercase"
+                    >
+                      Read More
+                    </Link>
                   </Panel>
                 </div>
 
