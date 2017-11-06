@@ -23,11 +23,13 @@ class Subscription extends React.Component {
         frequency: 1,
         tier: ""
       },
-      checkout: false
+      checkout: false,
+      cards: []
     };
   }
 
   componentWillMount() {
+    // Read subscription status
     get("/api/v1/billing/subscription").then(response => {
       const subscription = response.data.data;
       const validUntil = moment.utc(subscription.valid_until);
@@ -36,6 +38,13 @@ class Subscription extends React.Component {
       subscription.remaining_days = validUntil.diff(today, "days");
 
       this.setState({ subscription });
+    });
+
+    // Read cards
+    get("/api/v1/billing/cards").then(response => {
+      const cards = response.data.data;
+
+      this.setState({ cards });
     });
   }
 
@@ -309,6 +318,8 @@ class Subscription extends React.Component {
   }
 
   renderCheckout() {
+    const { cards } = this.state;
+
     return (
       <div className="checkout">
         <h4>Step 1: Billing Summary</h4>
@@ -365,7 +376,7 @@ class Subscription extends React.Component {
           <div className="existing-card">
             <h5>Option A: Use an existing payment method.</h5>
 
-            <p className="help-block">No saved cards</p>
+            {cards.length === 0 && <p className="help-block">No saved cards</p>}
           </div>
 
           <div className="add-new-card">
