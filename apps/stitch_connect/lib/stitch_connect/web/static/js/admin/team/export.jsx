@@ -93,16 +93,8 @@ class TeamExport extends Component {
               </Col>
             </Row>
           </div>
-
           {this._renderExports()}
         </div>
-
-        <p className="text-center">
-          Questions? Learn more with our <br />{" "}
-          <a href="https://teamstitch.zendesk.com/hc/en-us">
-            Frequently Asked Questions
-          </a>
-        </p>
       </div>
     );
   }
