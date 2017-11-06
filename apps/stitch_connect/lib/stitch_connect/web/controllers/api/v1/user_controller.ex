@@ -75,6 +75,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def revoke_admin(conn, %{"id" => user_id}) do
     case Stitch.Accounts.Admin.revoke_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
+        EventsChannel.broadcast_user_info(user)
         conn
         |> render("show.json", user: user)
       {:error, message} ->
