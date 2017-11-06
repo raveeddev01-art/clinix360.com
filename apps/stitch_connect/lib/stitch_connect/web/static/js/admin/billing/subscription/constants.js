@@ -4,7 +4,7 @@ export const PLANS = {
   BASIC: {
     pricePerMonth: {
       monthly: 6,
-      annually: 5
+      annual: 5
     },
     items: [
       "HIPAA Compliant",
