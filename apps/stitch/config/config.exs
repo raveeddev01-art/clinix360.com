@@ -28,6 +28,19 @@ config :stitch,
 config :stitch, :twilio, %{
   account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
   auth_token: System.get_env("TWILIO_AUTH_TOKEN")
+
+config :stitch, :aws_user_upload, %{
+  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
+  region: System.get_env("S3_REGION"),
+  bucket: System.get_env("S3_BUCKET_NAME"),
+  scheme: "https://",
+  host: "s3.amazonaws.com"
+}
+
+config :stitch, :user_upload_settings, %{
+  max_preview_width: 720,
+  max_preview_height: 720,
 }
 
 import_config "#{Mix.env}.exs"
