@@ -80,6 +80,7 @@
     "notify": true,
     "currentUser": false,
     "applicationHost": true,
+    "stripePublishableKey": true,
     "socket": true,
     "post": true,
     "get": true,

@@ -6,13 +6,11 @@ import { StripeProvider } from "react-stripe-elements";
 import RootStore from "../common/stores/root_store";
 import LockableApp from "./LockableApp";
 
-const stripeKey = "pk_test_6pRNASCoBOKtIshFeQd4XMUh";
-
 const App = props => {
   const rootStore = new RootStore(props);
 
   return (
-    <StripeProvider apiKey={stripeKey}>
+    <StripeProvider apiKey={stripePublishableKey}>
       <Router>
         <Provider {...rootStore}>
           <LockableApp />
