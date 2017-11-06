@@ -6,11 +6,16 @@ class Switcher extends Component {
     return (
       <div className="switcher">
         <div className="switcher__top">
-          <div className="switcher__logo" />
+          {/* <div className="switcher__logo" /> */}
+          <NavLink
+            to="/admin/you/account"
+            className="switcher__link"
+          >
+            <i className="fa fa-home" />
+          </NavLink>
           <NavLink
             to="/"
             className="switcher__link"
-            activeClassName="switcher__link--active"
           >
             <i className="fa fa-comments" />
           </NavLink>
@@ -19,7 +24,6 @@ class Switcher extends Component {
           <NavLink
             to="/admin/you/account"
             className="switcher__link"
-            activeClassName="switcher__link--active"
           >
             <i className="fa fa-cog" />
           </NavLink>
