@@ -75,20 +75,18 @@ class PeopleList extends Component {
 
         {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
-        {userStore.canInvite && (
-          <OverlayTrigger
-            placement="top"
-            overlay={<Tooltip id="invite-people-modal">Invite People</Tooltip>}
+        {userStore.canInvite && <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip id="invite-people-modal">Invite People</Tooltip>}
+        >
+          <a
+            role="button"
+            className="invite-link"
+            onClick={this.showInviteModal}
           >
-            <a
-              role="button"
-              className="invite-link"
-              onClick={this.showInviteModal}
-            >
-              Invite People
-            </a>
-          </OverlayTrigger>
-        )}
+            Invite People
+          </a>
+        </OverlayTrigger>}
 
         <CreateDMModal
           show={this.state.showTeamModal}

@@ -47,6 +47,14 @@ class UserStore {
   };
 
   @action
+  onUpdateUser = payload => {
+    if (payload.roles) {
+      window.currentUser.roles = payload.roles;
+      this.roles = payload.roles;
+    }
+  };
+
+  @action
   save = data => {
     return put(`/api/v1/users/${this.id}`, {
       body: data
