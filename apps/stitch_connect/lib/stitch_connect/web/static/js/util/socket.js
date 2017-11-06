@@ -6,7 +6,8 @@ if (window.authenticationToken !== "") {
       authenticationToken: window.authenticationToken,
       sessionId: window.sessionId,
       applicationVersion: window.applicationVersion
-    }
+    },
+    timeout: 1000
   });
   socket.connect();
 }
