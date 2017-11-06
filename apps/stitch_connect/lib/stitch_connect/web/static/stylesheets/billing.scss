@@ -80,12 +80,26 @@
         margin: 20px 0 10px;
       }
 
+      h5 {
+        line-height: 2em;
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin: 20px 0 10px;
+        border-bottom: 1px dashed #ddd;
+      }
+
       ul {
         margin-bottom: 10px;
       }
 
       .text-muted {
         color: #666;
+      }
+
+      input.form-control {
+        font-size: 14px;
+        border-radius: 3px;
       }
     }
   }

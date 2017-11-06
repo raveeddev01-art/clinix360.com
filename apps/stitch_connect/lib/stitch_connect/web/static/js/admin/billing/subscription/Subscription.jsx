@@ -339,7 +339,7 @@ class Subscription extends React.Component {
               name="team-name"
               className="form-control"
               id="team-name"
-              required=""
+              required
             />
             <p className="help-block">
               Your team name and address will be used on all billing invoices on
@@ -357,6 +357,124 @@ class Subscription extends React.Component {
             <p className="help-block">
               This field can also be for adding additional invoice information.
             </p>
+          </div>
+        </div>
+
+        <h4>Step 3: Add Payment Method</h4>
+        <div className="step3-payment">
+          <div className="existing-card">
+            <h5>Option A: Use an existing payment method.</h5>
+
+            <p className="help-block">No saved cards</p>
+          </div>
+
+          <div className="add-new-card">
+            <h5>Option B: Add a new card.</h5>
+            <form id="payment-form">
+              <div className="form-group">
+                <label htmlFor="card-name">
+                  Name on card{" "}
+                  <span className="secure-label">
+                    <i className="icon-shield-key" /> Secure Form
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  id="card-name"
+                  className="form-control"
+                  required
+                  autoComplete="off"
+                />
+              </div>
+              <div className="row">
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label htmlFor="card-number">Card Number</label>
+                    <input
+                      type="number"
+                      id="card-number"
+                      name="card-number"
+                      className="form-control"
+                      placeholder="•••• •••• •••• ••••"
+                      size="20"
+                      data-stripe="number"
+                      required
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+                <div className="col-sm-3">
+                  <div className="form-group">
+                    <label htmlFor="card-exp-month">Expiry</label>
+
+                    <input
+                      type="number"
+                      id="card-exp-month"
+                      className="form-control"
+                      placeholder="Month"
+                      size="2"
+                      data-stripe="exp-month"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+                <div className="col-sm-3">
+                  <div className="form-group">
+                    <label htmlFor="card-exp-year">&nbsp;</label>
+                    <input
+                      type="number"
+                      id="card-exp-year"
+                      className="form-control"
+                      placeholder="Year"
+                      size="4"
+                      data-stripe="exp-year"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label htmlFor="card-cvc">CVV</label>
+                    <input
+                      type="text"
+                      id="card-cvc"
+                      className="form-control"
+                      size="4"
+                      data-stripe="cvc"
+                      placeholder="3 digits on back"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label htmlFor="card-zip">Zip Code</label>
+                    <input
+                      type="text"
+                      id="card-zip"
+                      className="form-control"
+                      placeholder="US cards only"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="submit">
+                <button className="btn btn-fancy btn-primary btn-block">
+                  Complete Purchase
+                </button>
+                <p className="help-block">
+                  Your account will be credited when team members are removed
+                  and charged when new team members are added. It is not
+                  possible to issue refunds, so please read instructions
+                  carefully.
+                </p>
+              </div>
+            </form>
           </div>
         </div>
       </div>
