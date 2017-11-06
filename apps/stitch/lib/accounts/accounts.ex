@@ -75,8 +75,8 @@ defmodule Stitch.Accounts do
             {:ok, user} ->
               {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               user
-            {:error, _} ->
-              {:error, "Could not finish onboarding user."}
+            {:error, changeset} ->
+              {:error, changeset}
           end
         end
     end
