@@ -1,13 +1,15 @@
 import React from "react";
 import { Well } from "react-bootstrap";
+import { Elements } from "react-stripe-elements";
+import classNames from "classnames";
 import moment from "moment";
 import capitalize from "lodash/capitalize";
-import classNames from "classnames";
 
-import { TIERS, PLANS, FREQUENCIES } from "./constants";
+import { TIERS, PLANS } from "./constants";
 import { getUpgradableTiers } from "./utils";
 import FrequencyToggle from "./FrequencyToggle";
 import Plan from "./Plan";
+import CheckoutForm from "./CheckoutForm";
 
 class Subscription extends React.Component {
   constructor(props) {
@@ -18,24 +20,55 @@ class Subscription extends React.Component {
       upgrade: false,
       subscribePlan: {
         frequency: 1,
-        tier: ""
+        tier: "BASIC"
       },
       upgradePlan: {
         frequency: 1,
         tier: ""
-      }
+      },
+      checkout: false,
+      cards: []
     };
   }
 
   componentWillMount() {
+    // Read subscription status
     get("/api/v1/billing/subscription").then(response => {
-      const subscription = response.data.data;
+      // const subscription = response.data.data;
+      // MOCK for BASIC subscription
+      const subscription = {
+        valid_until: "2017-11-17T03:32:36.000000Z",
+        updated_at: "2017-11-03T03:32:36.958730",
+        tier: "BASIC",
+        renews: false,
+        renewal_frequency: null,
+        estimated_invoice_amount: 72
+      };
       const validUntil = moment.utc(subscription.valid_until);
       const today = moment.utc();
 
       subscription.remaining_days = validUntil.diff(today, "days");
 
       this.setState({ subscription });
+    });
+
+    // Read cards
+    get("/api/v1/billing/cards").then(response => {
+      // const cards = response.data.data;
+      const cards = [
+        {
+          id: 1,
+          brand: "visa",
+          last_four: "9292",
+          exp_month: 12,
+          exp_year: 2020,
+          default: "123",
+          inserted_at: "2017-11-3",
+          updated_at: "2017-11-3"
+        }
+      ];
+
+      this.setState({ cards });
     });
   }
 
@@ -84,7 +117,7 @@ class Subscription extends React.Component {
   };
 
   onCheckoutPlan = () => {
-    console.log("checkout plan");
+    this.setState({ checkout: true });
   };
 
   renderLoading() {
@@ -100,7 +133,7 @@ class Subscription extends React.Component {
 
     return (
       <h3 className="text-center">
-        {upgrade ? "Upgrade Plan" : "Subscription"}
+        {upgrade ? "Upgrade Subscription" : "Subscription"}
       </h3>
     );
   }
@@ -178,7 +211,7 @@ class Subscription extends React.Component {
     );
   }
 
-  renderSubscription() {
+  renderSubscribedPlan() {
     const { subscription } = this.state;
     const validUntil = moment
       .utc(subscription.valid_until)
@@ -288,32 +321,244 @@ class Subscription extends React.Component {
     );
   }
 
-  render() {
+  renderSubscription() {
     const { subscription, upgrade } = this.state;
+
+    return (
+      <div>
+        {this.renderStatus()}
+
+        {subscription.tier === "TRIAL" && this.renderSelectPlan()}
+        {subscription.tier !== "TRIAL" && upgrade && this.renderUpgradePlan()}
+        {subscription.tier !== "TRIAL" &&
+          !upgrade &&
+          this.renderSubscribedPlan()}
+
+        <br />
+
+        {this.renderFooter()}
+      </div>
+    );
+  }
+
+  renderCheckout() {
+    const { cards } = this.state;
+
+    return (
+      <div className="checkout">
+        <h4>Step 1: Billing Summary</h4>
+        <div className="step1-billing-summary">
+          <ul>
+            <li>
+              You are subscribing to <b>Power</b>
+            </li>
+            <li>
+              You will be charged <b>$180 per user per year</b>
+            </li>
+            <li>
+              Your subscription will renew each <b>year</b>
+            </li>
+          </ul>
+          <p className="text-muted">
+            We will automatically update your balance when members are added to
+            or removed from your team.
+          </p>
+        </div>
+
+        <h4>Step 2: Add Contact Information</h4>
+        <div className="step2-contact-info">
+          <div className="form-group">
+            <label htmlFor="team-name">Team Name</label>
+            <input
+              type="text"
+              name="team-name"
+              className="form-control"
+              id="team-name"
+              required
+            />
+            <p className="help-block">
+              Your team name and address will be used on all billing invoices on
+              your account.
+            </p>
+          </div>
+          <div className="form-group">
+            <label htmlFor="team-address">Address</label>
+            <textarea
+              name="team-address"
+              className="form-control"
+              id="team-address"
+              rows="5"
+            />
+            <p className="help-block">
+              This field can also be for adding additional invoice information.
+            </p>
+          </div>
+        </div>
+
+        <h4>Step 3: Add Payment Method</h4>
+        <div className="step3-payment">
+          <div className="existing-card">
+            <h5>Option A: Use an existing payment method.</h5>
+
+            {cards.length === 0 && <p className="help-block">No saved cards</p>}
+            {cards.length > 0 &&
+              cards.map(card => {
+                const iconClassName = classNames(
+                  "credit-card-icon",
+                  card.brand
+                );
+
+                return (
+                  <div className="credit-card" key={card.id}>
+                    <div className="credit-card-desc">
+                      <div className="credit-card-desc-row">
+                        <span className={iconClassName} />
+                        <span className="credit-card-holder">{`${currentUser.firstName} ${currentUser.lastName}`}</span>
+                      </div>
+
+                      <div>
+                        {capitalize(card.brand)} ending in {card.last_four}
+                        &nbsp;&#183;&nbsp;
+                        {`${card.exp_month}/${card.exp_year}`}
+                      </div>
+                    </div>
+
+                    <button className="btn btn-fancy btn-primary btn-md">
+                      Use this Card
+                    </button>
+                  </div>
+                );
+              })}
+          </div>
+
+          <div className="add-new-card">
+            <h5>Option B: Add a new card.</h5>
+
+            <Elements>
+              <CheckoutForm />
+            </Elements>
+
+            {/* <form id="payment-form">
+              <div className="form-group">
+                <label htmlFor="card-name" className="card-name-label">
+                  Name on card{" "}
+                  <span className="secure-label">
+                    <i className="fa fa-shield" /> Secure Form
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  id="card-name"
+                  className="form-control"
+                  required
+                  autoComplete="off"
+                />
+              </div>
+              <div className="row">
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label htmlFor="card-number">Card Number</label>
+                    <input
+                      type="number"
+                      id="card-number"
+                      name="card-number"
+                      className="form-control"
+                      placeholder="•••• •••• •••• ••••"
+                      size="20"
+                      data-stripe="number"
+                      required
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+                <div className="col-sm-3">
+                  <div className="form-group">
+                    <label htmlFor="card-exp-month">Expiry</label>
+
+                    <input
+                      type="number"
+                      id="card-exp-month"
+                      className="form-control"
+                      placeholder="Month"
+                      size="2"
+                      data-stripe="exp-month"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+                <div className="col-sm-3">
+                  <div className="form-group">
+                    <label htmlFor="card-exp-year">&nbsp;</label>
+                    <input
+                      type="number"
+                      id="card-exp-year"
+                      className="form-control"
+                      placeholder="Year"
+                      size="4"
+                      data-stripe="exp-year"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label htmlFor="card-cvc">CVV</label>
+                    <input
+                      type="text"
+                      id="card-cvc"
+                      className="form-control"
+                      size="4"
+                      data-stripe="cvc"
+                      placeholder="3 digits on back"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+
+                <div className="col-sm-6">
+                  <div className="form-group">
+                    <label htmlFor="card-zip">Zip Code</label>
+                    <input
+                      type="text"
+                      id="card-zip"
+                      className="form-control"
+                      placeholder="US cards only"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="submit">
+                <button className="btn btn-fancy btn-primary btn-block">
+                  Complete Purchase
+                </button>
+                <p className="help-block">
+                  Your account will be credited when team members are removed
+                  and charged when new team members are added. It is not
+                  possible to issue refunds, so please read instructions
+                  carefully.
+                </p>
+              </div>
+            </form> */}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { subscription, checkout } = this.state;
 
     return (
       <div className="subscription">
         {this.renderHeader()}
 
-        {subscription ? (
-          <div>
-            {this.renderStatus()}
-
-            {subscription.tier === "TRIAL" && this.renderSelectPlan()}
-            {subscription.tier !== "TRIAL" &&
-              upgrade &&
-              this.renderUpgradePlan()}
-            {subscription.tier !== "TRIAL" &&
-              !upgrade &&
-              this.renderSubscription()}
-
-            <br />
-
-            {this.renderFooter()}
-          </div>
-        ) : (
-          this.renderLoading()
-        )}
+        {subscription
+          ? checkout ? this.renderCheckout() : this.renderSubscription()
+          : this.renderLoading()}
       </div>
     );
   }

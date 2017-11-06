@@ -4,7 +4,7 @@ export const PLANS = {
   BASIC: {
     pricePerMonth: {
       monthly: 6,
-      annually: 5
+      annual: 5
     },
     items: [
       "HIPAA Compliant",
@@ -20,17 +20,26 @@ export const PLANS = {
   PREMIUM: {
     pricePerMonth: {
       monthly: 12,
-      annually: 10
+      annual: 10
     },
     items: []
   },
   POWER: {
     pricePerMonth: {
       monthly: 18,
-      annually: 15
+      annual: 15
     },
     items: []
   }
 };
 
-export const FREQUENCIES = ["monthly", "annually"];
+export const FREQUENCIES = [
+  {
+    title: "monthly",
+    name: "monthly"
+  },
+  {
+    title: "annually",
+    name: "annual"
+  }
+];

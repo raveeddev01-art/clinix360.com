@@ -10,8 +10,8 @@ const FrequencyToggle = ({ frequency, onToggle }) => {
     <div className="frequency-toggle">
       <Toggle
         onToggle={onToggle}
-        on={capitalize(FREQUENCIES[1])}
-        off={capitalize(FREQUENCIES[0])}
+        on={capitalize(FREQUENCIES[1].title)}
+        off={capitalize(FREQUENCIES[0].title)}
         active={frequency}
       />
 
