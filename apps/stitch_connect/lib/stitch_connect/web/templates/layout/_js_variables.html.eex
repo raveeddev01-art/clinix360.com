@@ -26,4 +26,5 @@ current_user =
   window.sessionId = "<%= session_id %>";
   window.currentUser = <%= raw current_user %>;
   window.applicationVersion = "<%= StitchConnect.version() %>";
+  window.stripePublishableKey = "<%= Application.get_env(:stitch, :stripe_publishable_key) %>";
 </script>
