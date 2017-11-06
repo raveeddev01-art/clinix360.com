@@ -202,7 +202,7 @@ class RoomsModal extends Component {
           <FormGroup>
             <Col sm={3}>
               <Toggle
-                onClick={this.togglePublic}
+                onToggle={this.togglePublic}
                 on="Public"
                 off="Private"
                 active={this.state.public}
@@ -305,13 +305,14 @@ class RoomsModal extends Component {
   }
 
   render() {
-    const { state } = this.props;
+    const { state, closeModal } = this.props;
 
     return (
       <Modal
         className="rooms-modal"
         show={!!state}
         onEnter={this.onModalEntered}
+        onHide={closeModal}
       >
         {this.renderModalHeader()}
         {state === "list" && this.renderRoomsListModal()}

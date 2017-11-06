@@ -12,11 +12,17 @@ config :stitch_connect,
 
 # Configures the endpoint
 config :stitch_connect, StitchConnect.Web.Endpoint,
-  url: [host: "localhost"],
+  instrumenters: [Appsignal.Phoenix.Instrumenter],
+  url: [host: System.get_env("APP_HOST")],
   secret_key_base: "rp9jtclD/mgOBBlbo+mFKHVZ0UKNdC6DoofvmAy0Z/gSmgPy0/73DhzLrDalDf/G",
   render_errors: [view: StitchConnect.Web.ErrorView, accepts: ~w(html json)],
   pubsub: [name: StitchConnect.PubSub,
            adapter: Phoenix.PubSub.PG2]
+
+# Configure AppSignal Template Instrumentation
+config :phoenix, :template_engines,
+  eex: Appsignal.Phoenix.Template.EExEngine,
+  exs: Appsignal.Phoenix.Template.ExsEngine
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -27,7 +33,10 @@ config :stitch_connect, :generators,
   context_app: :stitch
 
 # Configure application environment
-config :stitch_connect, env: Mix.env
+config :stitch_connect,
+  env: Mix.env,
+  application_host: "#{System.get_env("APP_HOST")}#{if Mix.env == :dev, do: ":4443"}",
+  apns_topic: System.get_env("APNS_TOPIC")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
@@ -67,3 +76,9 @@ config :stitch_connect, StitchConnect.MessageMailer,
   ],
   global: true,
   timeout: 10 * 60 * 1_000
+
+# Push notifications configuration used by Pigeon.
+config :pigeon, workers: [
+  {StitchConnect.Pigeon, :apns_config},
+  {StitchConnect.Pigeon, :fcm_config}
+]

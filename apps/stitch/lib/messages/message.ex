@@ -32,6 +32,12 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, @valid_types)
   end
 
+  def pin_changeset(%Message{} = struct, params) do
+    struct
+    |> cast(params, [:pinned, :pinned_by_id, :pinned_at])
+    |> validate_required([:pinned])
+  end
+
   def user_edit_changeset(%Message{} = struct, params \\ %{}) do
     struct
     |> cast(params, [:text_content, :mentioned_user_ids])
@@ -80,12 +86,12 @@ defmodule Stitch.Message do
 
     Multi.new
     |> Multi.insert(:message, message_changeset(message_struct, attrs))
-    |> Multi.update_all(:mention_users, mention_users(group.id, mentioned_user_ids), [])
+    |> Multi.update_all(:mention_users, mention_users(group, mentioned_user_ids, recipients), [])
     |> Multi.update_all(:increment_unread_counter, increment_unread_counter(group.id, recipients), [])
     |> mark_as_read_on_creation(group.id, user.id, (group_user.last_read_at || group_user.inserted_at), @unread_limit)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
       Stitch.EmailNotification.create(message.id, notify_user_ids.email)
-      {:ok, notify_user_ids.desktop}
+      {:ok, notify_user_ids}
     end)
     |> Repo.transaction
   end
@@ -163,7 +169,14 @@ defmodule Stitch.Message do
     |> update([gu], set: [unread_messages_count: fragment("greatest(? - 1, 0)", gu.unread_messages_count)])
   end
 
-  def mention_users(group_id, mentioned_user_ids) do
+  def mention_users(%Group{name: name, id: group_id}, _mentioned_user_ids, user_ids) when name in ["__dm_group__", "__multi_dm_group__"] do
+    GroupUser
+    |> where([gu], gu.group_id == ^group_id)
+    |> where([gu], gu.user_id in ^user_ids)
+    |> update([gu], inc: [mentions_count: ^1])
+  end
+
+  def mention_users(%Group{id: group_id}, mentioned_user_ids, _user_ids) do
     GroupUser
     |> where([gu], gu.group_id == ^group_id)
     |> where([gu], gu.user_id in ^mentioned_user_ids)
@@ -179,13 +192,13 @@ defmodule Stitch.Message do
 
   def pin(message, user) do
     message
-    |> changeset(%{pinned: true, pinned_by_id: user.id, pinned_at: DateTime.utc_now})
+    |> pin_changeset(%{pinned: true, pinned_by_id: user.id, pinned_at: DateTime.utc_now})
     |> Repo.update
   end
 
   def unpin(message) do
     message
-    |> changeset(%{pinned: false, pinned_by_id: nil, pinned_at: nil})
+    |> pin_changeset(%{pinned: false, pinned_by_id: nil, pinned_at: nil})
     |> Repo.update
   end
 
@@ -263,7 +276,7 @@ defmodule Stitch.Message do
   def join_message_changeset(%Group{} = group, %User{} = user) do
     system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
       type: "system",
-      text_content: "{user} joined room at {time}",
+      text_content: "{user} joined the room at {time}",
       fields: %{
         type: "join_group",
         user: %{
@@ -281,7 +294,7 @@ defmodule Stitch.Message do
   def leave_message_changeset(%Group{} = group, %User{} = user) do
     system_changeset(%Message{user_id: user.id, group_id: group.id}, %{
       type: "system",
-      text_content: "{user} left room at {time}",
+      text_content: "{user} left the room at {time}",
       fields: %{
         type: "leave_group",
         user: %{

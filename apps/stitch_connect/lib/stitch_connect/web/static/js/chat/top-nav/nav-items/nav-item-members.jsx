@@ -17,52 +17,56 @@ export default class NavItemMembers extends Component {
     };
   }
 
-  _saveUsers = () => {
+  saveUsers = () => {
     this.props.groupStore.saveUsers(this.state.members);
     this.setState({ showModal: false });
   };
 
-  _toggleModal = () => {
-    if (!this.state.showModal) {
-      this.props.groupStore.loadUsers().then(members => {
-        this.setState({ members });
-      });
-    }
-
-    this.setState({
-      showModal: !this.state.showModal
+  openModal = () => {
+    this.props.groupStore.loadUsers().then(members => {
+      this.setState({ members });
     });
+
+    this.setState({ showModal: true });
   };
 
-  _handleChange = value => {
+  closeModal = () => {
+    this.setState({ showModal: false });
+  };
+
+  handleChange = value => {
     this.setState({ members: value });
   };
 
   render() {
-    return (
-      <MenuItem onClick={this._toggleModal}>
+    return [
+      <MenuItem key="members_menuitem" onClick={this.openModal}>
         Members
-        <Modal show={this.state.showModal} onHide={this._toggleModal}>
-          <Modal.Header>
-            <Modal.Title>Members</Modal.Title>
-            <a href="#" onClick={this._toggleModal}>
-              <i className="fa fa-close" />
-            </a>
-          </Modal.Header>
-          <Modal.Body>
-            <h5>Select users to invite to this room.</h5>
-            <Members onChange={this._handleChange} value={this.state.members} />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button bsSize="large" onClick={this._toggleModal}>
-              Cancel
-            </Button>
-            <Button bsSize="large" bsStyle="primary" onClick={this._saveUsers}>
-              Done
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </MenuItem>
-    );
+      </MenuItem>,
+      <Modal
+        key="members_modal"
+        show={this.state.showModal}
+        onHide={this.closeModal}
+      >
+        <Modal.Header>
+          <Modal.Title>Members</Modal.Title>
+          <a role="link" onClick={this.closeModal}>
+            <i className="fa fa-close" />
+          </a>
+        </Modal.Header>
+        <Modal.Body>
+          <h5>Select users to invite to this room.</h5>
+          <Members onChange={this.handleChange} value={this.state.members} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button bsSize="large" onClick={this.closeModal}>
+            Cancel
+          </Button>
+          <Button bsSize="large" bsStyle="primary" onClick={this.saveUsers}>
+            Done
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    ];
   }
 }

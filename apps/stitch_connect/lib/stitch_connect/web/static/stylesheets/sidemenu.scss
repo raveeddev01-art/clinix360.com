@@ -76,154 +76,198 @@
   }
 
   .flex-content {
-    padding: 20px 15px;
-    @include stitch-scroll();
-    overflow-y: hidden;
+    position: relative;
+    display: flex;
 
-    .menu-nav {
-      .heading {
-        display: flex;
-        align-items: center;
-        padding: 0 10px;
-        margin: 0 0 5px;
+    .rooms-menu {
+      position: relative;
+      flex: 1;
+      padding: 20px 15px;
+      @include stitch-scroll();
+      overflow-y: hidden;
 
-        h5 {
-          flex-grow: 1;
-          flex-shrink: 0;
-          color: $brand-primary;
-          font-size: 16px;
-          font-weight: bold;
-          line-height: 1.5;
-          text-transform: capitalize;
-          margin: 0;
-
-          a {
-            display: inline-block;
-          }
-        }
-
-        i.fa {
-          font-size: 20px;
-        }
-
-        a {
-          display: flex;
-          color: $brand-primary;
-          outline: none;
-          text-decoration: none;
-        }
+      &:hover {
+        overflow-y: overlay;
       }
 
-      .item {
-        display: flex;
-        align-items: center;
-        color: #333;
-        font-size: 16px;
-        text-decoration: none;
-        border-radius: 3px;
-        padding: 7px 10px 7px 7px;
-        position: relative;
-
-        .item-icon {
+      .menu-nav {
+        .heading {
           display: flex;
-          justify-content: center;
-          flex-basis: 21px;
-          flex-shrink: 0;
-          margin-right: 4px;
+          align-items: center;
+          padding: 0 10px;
+          margin: 0 0 5px;
 
-          i.fa-circle,
-          i.fa-circle-o {
-            font-size: 12px;
+          h5 {
+            flex-grow: 1;
+            flex-shrink: 0;
             color: $brand-primary;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1.5;
+            text-transform: capitalize;
+            margin: 0;
+
+            a {
+              display: inline-block;
+            }
           }
 
-          i.fa-circle-o {
-            color: rgba(20, 20, 20, 0.75);
+          i.fa {
+            font-size: 20px;
           }
-        }
 
-        .item-text {
-          flex-grow: 1;
-          opacity: 0.75;
-          font-weight: 600;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          padding-right: 4px;
-        }
-
-        .item-badge {
-          min-width: 16px;
-          color: #fff;
-          font-size: 12px;
-          line-height: 16px;
-          background: $brand-primary;
-          border-radius: 2px;
-          padding: 0 4px;
-          z-index: 9;
-        }
-
-        .hide-dm {
-          font-size: 20px;
-          color: $brand-primary;
-          visibility: hidden;
-          position: absolute;
-          right: 10px;
-        }
-
-        &:hover {
-          background: darken(#fff, 5%);
-
-          .item-text {
-            padding-right: 24px;
-          }
-          .hide-dm {
-            visibility: visible;
+          a {
+            display: flex;
+            color: $brand-primary;
+            outline: none;
+            text-decoration: none;
           }
         }
 
-        &.active {
-          color: #fff;
-          background: $brand-primary;
+        .item {
+          display: flex;
+          align-items: center;
+          color: #333;
+          font-size: 16px;
+          text-decoration: none;
+          border-radius: 3px;
+          padding: 7px 10px 7px 7px;
+          position: relative;
 
-          .item-text {
-            opacity: 1;
-          }
-
-          .item-icon,
-          .hide-dm {
-            color: #fff;
+          .item-icon {
+            display: flex;
+            justify-content: center;
+            flex-basis: 21px;
+            flex-shrink: 0;
+            margin-right: 4px;
 
             i.fa-circle,
             i.fa-circle-o {
+              font-size: 12px;
+              color: $brand-primary;
+            }
+
+            i.fa-circle-o {
+              color: rgba(20, 20, 20, 0.75);
+            }
+          }
+
+          .item-text {
+            flex-grow: 1;
+            opacity: 0.75;
+            font-weight: 600;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding-right: 4px;
+          }
+
+          .item-badge {
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 16px;
+            background: $brand-primary;
+            border-radius: 2px;
+            padding: 0 4px;
+            z-index: 9;
+          }
+
+          .hide-dm {
+            font-size: 20px;
+            color: $brand-primary;
+            visibility: hidden;
+            position: absolute;
+            right: 10px;
+          }
+
+          &:hover {
+            background: darken(#fff, 5%);
+
+            .item-text {
+              padding-right: 24px;
+            }
+            .hide-dm {
+              visibility: visible;
+            }
+          }
+
+          &.active {
+            color: #fff;
+            background: $brand-primary;
+
+            .item-text {
+              opacity: 1;
+            }
+
+            .item-icon,
+            .hide-dm {
               color: #fff;
+
+              i.fa-circle,
+              i.fa-circle-o {
+                color: #fff;
+              }
+            }
+
+            .item-badge {
+              background-color: #fff;
+              color: $brand-primary;
+            }
+          }
+
+          &.has-unread {
+            .item-text {
+              font-weight: 900;
+              padding-right: 10px;
+            }
+            &:not(.active) {
+              .item-text {
+                color: #000;
+              }
+            }
+
+            .hide-dm {
+              display: none;
             }
           }
         }
 
-        &.has-unread {
-          .item-text {
-            font-weight: bold;
-            padding-right: 10px;
-          }
+        .invite-link {
+          display: inline-block;
+          color: $brand-primary;
+          font-size: 15px;
+          font-weight: bold;
+          text-decoration: none;
+          border-bottom: 1px dashed #003366;
+          margin: 15px 10px 0;
+          padding: 3px 0;
         }
-      }
-
-      .invite-link {
-        display: inline-block;
-        color: $brand-primary;
-        font-size: 15px;
-        font-weight: bold;
-        text-decoration: none;
-        border-bottom: 1px dashed #003366;
-        margin: 15px 10px 0;
-        padding: 3px 0;
       }
     }
 
-    &:hover {
-      overflow-y: auto;
-      overflow-y: overlay;
+    .unreads-badge {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      background-color: $brand-primary;
+      color: #fff;
+      font-size: 16px;
+
+      &.up {
+        top: 1px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+
+      &.down {
+        bottom: 1px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
     }
   }
 
@@ -274,7 +318,7 @@
 
 .team-list {
   overflow-y: auto;
-  max-height: 400px;
+  height: 300px;
 }
 
 .add-invite {

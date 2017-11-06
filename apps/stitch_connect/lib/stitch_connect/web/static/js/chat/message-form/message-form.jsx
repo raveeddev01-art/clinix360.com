@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
+import Textarea from "react-textarea-autosize";
 
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
@@ -11,7 +13,7 @@ import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 import { confirm } from "../../common/modals";
 
-@inject("messageStore", "socketStore")
+@inject("messageStore", "socketStore", "uploadStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -25,6 +27,10 @@ class MessageForm extends Component {
     };
 
     this.typingTimeoutId = null;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.textInput.focus();
   }
 
   onTextChange = evt => {
@@ -41,7 +47,15 @@ class MessageForm extends Component {
     }
 
     if (evt.keyCode === 13) {
-      if (!openMentionMenu && !openEmojiSearch) {
+      evt.preventDefault();
+
+      if (
+        (evt.altKey && !evt.ctrlKey && !evt.shiftKey) ||
+        (!evt.altKey && evt.ctrlKey && !evt.shiftKey) ||
+        (!evt.altKey && !evt.ctrlKey && evt.shiftKey)
+      ) {
+        this.newLine();
+      } else if (!openMentionMenu && !openEmojiSearch) {
         this.onEnter();
       }
     }
@@ -49,9 +63,8 @@ class MessageForm extends Component {
 
   onEnter = () => {
     const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
 
-    if (messageInEdit) {
+    if (messageStore.messageInEdit) {
       if (!messageStore.textInEdit) {
         confirm({
           title: "Delete Message",
@@ -59,14 +72,21 @@ class MessageForm extends Component {
             "Are you sure you want to delete this message? This cannot be undone.",
           okLabel: "Delete"
         }).then(() => {
-          messageStore.delete(messageInEdit.id);
+          messageStore.delete(messageStore.messageInEdit.id);
           messageStore.finishEdit();
         });
       } else {
         messageStore.finishEdit();
       }
     } else if (this.state.text) {
-      this.props.messageStore.sendMessage(this.state.text.trim()).then(() => {
+      messageStore.sendMessage(this.state.text.trim()).then(() => {
+        messageStore.scrollToBottom(
+          () => {
+            messageStore.updateGroupCursor(null);
+          },
+          0,
+          0
+        );
         this.setState({ text: "" });
         this.typingStopped();
       });
@@ -86,7 +106,10 @@ class MessageForm extends Component {
         messageStore.cancelEdit();
       }
     } else if (evt.keyCode === 38) {
-      messageStore.editLastMessage();
+      // Up arrow
+      if (!this.state.text) {
+        messageStore.editLastMessage();
+      }
     } else {
       // other keys
       // get the word of current cursor
@@ -131,6 +154,28 @@ class MessageForm extends Component {
     this.setState({ searchFilter: "", openEmojiSearch: false });
   };
 
+  onPaste = evt => {
+    const { uploadStore } = this.props;
+    const items = evt.clipboardData.items;
+
+    items.some(item => {
+      const file = item.getAsFile();
+
+      if (file) {
+        // browser only allows reading images. other files will be returned as null
+        if (file) {
+          const fileName = evt.clipboardData.getData("Text");
+          uploadStore.openUploadModal(file, fileName);
+          // NOTE: for now, we supports pasting only 1 file. Stacking can be done later.
+          evt.preventDefault();
+          return true;
+        }
+      }
+
+      return false;
+    });
+  };
+
   getText = () => {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -145,7 +190,7 @@ class MessageForm extends Component {
 
   getCurrentWord = () => {
     const str = this.getText();
-    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const cursorPos = this.textInput.selectionStart;
     const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
@@ -163,24 +208,34 @@ class MessageForm extends Component {
   };
 
   typingStarted = () => {
-    this.props.messageStore.startTyping();
+    const { messageStore } = this.props;
+
+    messageStore.startTyping();
   };
 
   typingStopped = () => {
-    this.props.messageStore.stopTyping();
+    const { messageStore } = this.props;
+
+    messageStore.stopTyping();
   };
 
   insertWord = word => {
-    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const cursorPos = this.textInput.selectionStart;
     const str = this.getText();
     this.updateInputText(
-      str.substring(0, cursorPos) + word + str.substring(cursorPos)
+      str.substring(0, this.textInput.selectionStart) +
+        word +
+        str.substring(this.textInput.selectionEnd)
     );
-    this.textInput.focus();
+
+    setTimeout(() => {
+      this.textInput.setSelectionRange(cursorPos + 1, cursorPos + 1);
+      this.textInput.focus();
+    });
   };
 
   replaceCurrentWord = word => {
-    const cursorPos = parseInt(this.textInput.selectionStart || 0, 10);
+    const cursorPos = this.textInput.selectionStart;
     const str = this.getText();
     const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
@@ -198,6 +253,21 @@ class MessageForm extends Component {
     });
   };
 
+  newLine = () => {
+    const { messageStore } = this.props;
+
+    this.insertWord("\n");
+
+    setTimeout(() => {
+      // Ensure cursor is in viewport
+      this.textInput.blur();
+      this.textInput.focus();
+
+      // Keep message list's scroll at bottom if at bottom
+      messageStore.keepScrollAtBottom();
+    });
+  };
+
   renderInput() {
     const { messageStore, socketStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -208,23 +278,24 @@ class MessageForm extends Component {
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
-      editing: (!!messageInEdit || !socketStore.isConnected),
+      editing: !!messageInEdit || !socketStore.isConnected
     });
 
     return (
       <div className="message-input-wrapper">
-        <input
+        <Textarea
           className={className}
-          type="text"
           placeholder="Message"
+          maxRows={6}
           value={text}
           onChange={this.onTextChange}
           onKeyUp={this.onKeyUp}
           onKeyDown={this.onKeyDown}
+          onPaste={this.onPaste}
           autoFocus
           required
           ref={input => {
-            this.textInput = input;
+            this.textInput = ReactDOM.findDOMNode(input);
           }}
         />
         <div className="message-form-actions">

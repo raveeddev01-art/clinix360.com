@@ -12,27 +12,43 @@ It contains two apps:
 
 ## Getting started (work in progress)
 
+Update `/etc/hosts` (`subdomain` should the name of a team)
+
+```
+127.0.0.1 localhost.app YOURTEAMSUBDOMAIN.localhost.app
+```
+
 You should be working from the `develop` branch:
 
 ```sh
 git checkout develop
 ```
 
-Create an `.env` file in `apps/stitch/` with the following contents, and ask the
-team for the environment values you need to set here:
+Create an `.env` file in the root project directiry with the following
+contents, and ask the team for the environment values you need to set here:
 
 ```sh
+export APP_HOST=localhost.app
+
 export MANDRILL_API_KEY=keygoeshere
-export AWS_ACCESS_KEY_ID=keygoeshere
-export AWS_SECRET_ACCESS_KEY=keygoeshere
-export S3_BUCKET_NAME=xxxx
+
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+export S3_BUCKET_NAME=
+export S3_REGION=us-east-1
+
+export APNS_TOPIC=
+export APNS_CERT_B64=
+export APNS_KEY_B64=
+export APNS_MODE=dev
+export FCM_KEY=
 ```
 
 Source the file to add these environment variables to your current shell
 session.
 
 ```sh
-cd ~/Work/stitch-phoenix/apps/stitch
+cd ~/Work/stitch-phoenix/
 source .env
 ```
 
@@ -99,7 +115,7 @@ foreman start -f Procfile.dev
 
 Access the site.
 
-https://localhost:4443
+https://localhost.app:4443/
 
 ---
 

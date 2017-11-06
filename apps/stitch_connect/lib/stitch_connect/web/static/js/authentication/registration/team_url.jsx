@@ -1,94 +1,99 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
-
+import { observer, inject } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import Alert from "react-bootstrap/lib/Alert";
 
+@inject("registrationStore")
 @observer
 export default class TeamUrl extends Component {
   constructor(props) {
-    super();
+    super(props);
+
     this.state = {
-      urlAvailable: false,
-      teamUrl: ""
+      teamUrl: props.registrationStore.teamUrl,
+      error: false
     };
   }
 
   handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-      urlAvailable: false
-    });
-
-    delay(() => {
-      this.checkAvailability(value);
-    }, 300);
+    this.setState({ teamUrl: event.target.value });
   };
 
-  checkAvailability = url => {
-    post("/api/v1/teams/url-available", {
-      body: { url: url }
-    }).then(response => {
-      this.setState({ urlAvailable: response.data.available });
-    });
-  };
+  moveCaretAtEnd(e) {
+    const tempValue = e.target.value;
+
+    e.target.value = "";
+    e.target.value = tempValue;
+  }
 
   handleSubmit = event => {
+    const { registrationStore, history } = this.props;
     event.preventDefault();
-    store.instance.teamUrl = this.state.teamUrl;
-    this.props.history.push("/signup/first-name");
+    post("/api/v1/teams/url-available", {
+      body: { url: this.state.teamUrl }
+    })
+      .then(response => {
+        if (response.data.available) {
+          registrationStore.teamUrl = this.state.teamUrl;
+          history.push("/signup/first-name");
+        } else {
+          this.setState({ error: true });
+        }
+      })
+      .catch(() => {
+        this.setState({ error: true });
+      });
   };
 
   render() {
+    const { error, teamUrl } = this.state;
+
     return (
-      <div className="authentication-card text-center">
-        <h2>Team URL</h2>
+      <div>
+        {error && (
+          <Alert>This team url is taken. Please choose another one.</Alert>
+        )}
 
-        <h5>
-          Enter your <strong>team url</strong>.
-        </h5>
+        <div className="authentication-card text-center">
+          <h2>Team URL</h2>
 
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup bsSize="large">
-            <FormControl
-              name="teamUrl"
-              required
-              autoFocus
-              type="text"
-              placeholder="Ex. care-clinic"
-              value={this.state.teamUrl}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
+          <h5>
+            Enter your <strong>team url</strong>.
+          </h5>
 
-          <HelpBlock className="m-b-20">
-            This is the URL you will use to access Stitch.
-            <br />
-            You'll login here.
-          </HelpBlock>
+          <form onSubmit={this.handleSubmit}>
+            <FormGroup bsSize="large">
+              <FormControl
+                name="teamUrl"
+                required
+                autoFocus
+                type="text"
+                placeholder="Ex. care-clinic"
+                value={teamUrl}
+                onChange={this.handleChange}
+                onFocus={this.moveCaretAtEnd}
+              />
+            </FormGroup>
 
-          {this.state.teamUrl.length > 0 &&
-            !this.state.urlAvailable &&
             <HelpBlock className="m-b-20">
-              This team url is taken. Please choose another one.
-            </HelpBlock>}
+              This is the URL you will use to access Stitch.
+              <br />
+              You'll login here.
+            </HelpBlock>
 
-          <input
-            disabled={!this.state.urlAvailable}
-            value="Next"
-            type="submit"
-            className="btn btn-block btn-lg btn-primary m-b-40"
-          />
-        </form>
+            <input
+              value="Next"
+              type="submit"
+              className="btn btn-block btn-lg btn-primary m-b-40"
+            />
+          </form>
 
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
+          <p className="copyright m-b-0">
+            &copy; 2017 Stitch Technologies, Inc
+          </p>
+        </div>
       </div>
     );
   }

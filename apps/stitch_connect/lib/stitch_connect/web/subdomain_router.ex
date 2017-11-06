@@ -1,7 +1,5 @@
 defmodule StitchConnect.Web.SubdomainRouter do
   use StitchConnect.Web, :router
-  use Plug.ErrorHandler
-  use Sentry.Plug
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -70,6 +68,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/messages/search", MessageController, :search
 
     get "/starred_messages", StarredMessageController, :index
+    get "/pinned_messages", PinnedMessageController, :index
     get "/mentions", MentionController, :index
 
     get "/users/", UserController, :index
@@ -104,6 +103,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/uploads",           UploadController, :index
     post "/upload-signature", UploadController, :create
+
+    resources "/devices", DeviceController, only: [:create]
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -124,6 +125,25 @@ defmodule StitchConnect.Web.SubdomainRouter do
     delete "/teams/:id/", TeamController, :delete_team
     put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
     put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
+
+    resources "/exports", ExportController, only: [:index, :create]
+    get "/exports/:id/download", ExportController, :download
+  end
+
+  # Subscription/Billing routes
+  scope "/api/v1/billing", StitchConnect.Web.Api.V1.Billing, as: :api_v1_billing do
+    pipe_through :team_admin_api
+
+    get "/cards", CardController, :index
+    post "/cards", CardController, :create
+    put "/cards/:id", CardController, :update
+    delete "/cards/:id", CardController, :delete
+
+    get "/subscription", SubscriptionController, :show
+    put "/subscription", SubscriptionController, :update
+
+    put "/subscription/cancel", SubscriptionController, :cancel
+    put "/subscription/renew", SubscriptionController, :renew
   end
 
   # API routes which need token.

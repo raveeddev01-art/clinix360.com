@@ -1,13 +1,19 @@
 import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
+import { scroller } from "react-scroll";
+import orderBy from "lodash/orderBy";
 
 class SidemenuStore {
+  @observable sidemenuDiv = null; // Div element of sidemenu
+  @observable roomMenuItemVisibles = {};
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
   @observable groups = [];
   @observable users = [];
   @observable groupCursors = {}; // { group_id: message_id }
+
+  ROOM_MENU_ITEM_ANCHOR_PREFIX = "sidemenu_room_";
   badge = null;
   favicon = null;
   notificationAudio = null;
@@ -35,6 +41,11 @@ class SidemenuStore {
   }
 
   @computed
+  get favoriteGroups() {
+    return this.groups.filter(group => group.favorite);
+  }
+
+  @computed
   get normalGroups() {
     return this.groups.filter(
       group => group.type === "regular" && !group.favorite
@@ -52,8 +63,56 @@ class SidemenuStore {
   }
 
   @computed
-  get favoriteGroups() {
-    return this.groups.filter(group => group.favorite);
+  get roomsInShowOrder() {
+    return this.favoriteGroups.concat(this.normalGroups, this.directGroups);
+  }
+
+  @computed
+  get unreadRoomItemHiddenUp() {
+    if (!Object.keys(this.roomsInShowOrder).length) {
+      return null;
+    }
+
+    let room = null;
+
+    for (let i = 0; i < this.roomsInShowOrder.length; i += 1) {
+      const r = this.roomsInShowOrder[i];
+
+      if (this.roomMenuItemVisibles[r.id]) {
+        break;
+      }
+
+      if (r.unread_messages_count > 0) {
+        room = r;
+        break;
+      }
+    }
+
+    return room;
+  }
+
+  @computed
+  get unreadRoomItemHiddenDown() {
+    if (!Object.keys(this.roomsInShowOrder).length) {
+      return null;
+    }
+
+    let room = null;
+
+    for (let i = this.roomsInShowOrder.length - 1; i >= 0; i -= 1) {
+      const r = this.roomsInShowOrder[i];
+
+      if (this.roomMenuItemVisibles[r.id]) {
+        break;
+      }
+
+      if (r.unread_messages_count > 0) {
+        room = r;
+        break;
+      }
+    }
+
+    return room;
   }
 
   @computed
@@ -79,7 +138,7 @@ class SidemenuStore {
   @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
-      this.groups = response.data;
+      this.groups = orderBy(response.data, ["name"]);
       this.updateFavicon();
     });
   };
@@ -153,6 +212,37 @@ class SidemenuStore {
   updateGroupCursor = (groupId, cursor) => {
     this.groupCursors[groupId] = cursor;
   };
+
+  /**
+   * Registers sidemenu div
+   *
+   * @param {DOMElement} div
+   */
+  loadSidemenuDiv(div) {
+    this.sidemenuDiv = div;
+  }
+
+  /**
+   * Unregisters sidemenu div
+   *
+   */
+  unloadSidemenuDiv() {
+    this.sidemenuDiv = null;
+  }
+
+  onRoomMenuItemShow(roomId) {
+    this.roomMenuItemVisibles = {
+      ...this.roomMenuItemVisibles,
+      [roomId]: true
+    };
+  }
+
+  onRoomMenuItemHide(roomId) {
+    this.roomMenuItemVisibles = {
+      ...this.roomMenuItemVisibles,
+      [roomId]: false
+    };
+  }
 
   loadUsers = () => {
     get("/api/v1/users").then(response => {
@@ -238,10 +328,11 @@ class SidemenuStore {
     }
   }
 
-  showNotificationCard(title, body, duration = 5000, cb = null) {
+  showNotificationCard(title, body, tag, duration = 5000, cb = null) {
     const notification = new Notification(title, {
       body,
-      icon: "/favicon.ico",
+      tag,
+      icon: "/favicon-192x192.png",
       silent: true
     });
 
@@ -262,7 +353,8 @@ class SidemenuStore {
       return;
     }
 
-    const { notificationStore } = this.rootStore;
+    const { notificationStore, messageStore } = this.rootStore;
+    if (messageStore.groupId === newMessage.group_id) return;
     const desktopNotification = notificationStore.getGroupNotificationPreference(
       newMessage.group_id
     );
@@ -273,33 +365,21 @@ class SidemenuStore {
       desktopNotification === "everything" ||
       (desktopNotification === "mentions" && isMention)
     ) {
-      const predicatives = {
-        regular: "sent",
-        dm: "sent you",
-        multi_dm: "sent you"
-      };
-      const messageTypes = {
-        regular: "group",
-        dm: "direct",
-        multi_dm: "direct"
-      };
-
-      const author = `${newMessage.user.first_name} ${newMessage.user
-        .last_name}`;
-      const predicative = isMention
-        ? "mentioned you in"
-        : predicatives[group.type];
-      const messageType = messageTypes[group.type];
-
+      const message = isMention
+        ? "mentioned you"
+        : group.type === "regular"
+          ? "sent a room message"
+          : "sent you a message";
+      const text = `${newMessage.user.first_name} ${newMessage.user
+        .last_name} ${message}`;
       this.showNotificationCard(
-        `${group.type === "regular" ? "#" : ""}${group.name}`,
-        `${author} ${predicative} a ${messageType} message`,
+        `${group.name}`,
+        text,
+        "new-message",
         5000,
         event => {
           this.jumpToMessage(newMessage);
-          window.dispatchEvent(
-            new CustomEvent("notification-clicked")
-          );
+          window.dispatchEvent(new CustomEvent("notification-clicked"));
         }
       );
     }
@@ -325,7 +405,16 @@ class SidemenuStore {
     }
 
     this.history.push(url);
-    this.rootStore.messageStore.jumpToMessage(message);
+  }
+
+  scrollToRoomItem(roomId, duration = 300) {
+    const anchorName = `${this.ROOM_MENU_ITEM_ANCHOR_PREFIX}${roomId}`;
+
+    scroller.scrollTo(anchorName, {
+      container: this.sidemenuDiv,
+      smooth: true,
+      duration
+    });
   }
 }
 

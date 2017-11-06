@@ -16,18 +16,17 @@ import SetPassword from "./reset-password/set-password";
 class AuthenticationRouter extends Component {
   render() {
     const { titleStore } = this.props;
-
     return (
       <div className="authentication-wrapper">
         <Helmet>
           <title>{titleStore.title}</title>
         </Helmet>
         <Switch>
-          <Route exact path="/" component={GetStarted} />
+          <Route exact path="/getstarted" component={GetStarted} />
           <Route exact path="/signin" component={TeamPicker} />
           <Route exact path="/find-teams" component={FindTeam} />
 
-          <Route exact path="/login" component={Login} />
+          <Route exact path="/login" render={() => <Login {...this.props} />} />
           <Route path="/signup" component={Registration} />
 
           <Route exact path="/reset-password" component={SendEmail} />

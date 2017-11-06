@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
   alias Stitch.{Repo, Group, GroupAuthorization, GroupQueries,
                 Message, MessageAction, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, PushNotifications}
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
@@ -53,7 +53,9 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
             message = message |> MessageQueries.load_info
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
-            EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
+            EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
+            PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+            PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
             conn
             |> put_status(:created)
@@ -77,7 +79,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case StitchConnect.Upload.presign(message) do
           {:ok, presigned_url} ->
-            redirect conn, external: presigned_url
+            conn
+            |> json(%{presigned_url: presigned_url})
           :error ->
             conn
             |> put_status(:unauthorized)
@@ -123,6 +126,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, _message} ->
             Endpoint.broadcast("groups:#{message.group.slug}", "delete_msg", %{id: message.id})
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
+            PushNotifications.push_badge_update(message)
             send_resp(conn, :no_content, "")
           {:error, _failed_operation, _failed_value, _changeset} ->
             conn

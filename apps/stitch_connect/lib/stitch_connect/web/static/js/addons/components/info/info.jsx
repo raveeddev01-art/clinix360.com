@@ -5,7 +5,7 @@ import AddonCollapse from "./addon-collapse/addon-collapse";
 import RoomDetails from "./room-details/room-details";
 import PeopleList from "../people-list/people-list";
 import PinnedMessages from "./pinned-messages/pinned-messages";
-import StarredMessages from "./starred-messages/starred-messages";
+// import StarredMessages from "./starred-messages/starred-messages";
 import Files from "../files/files";
 import NotificationPreferences from "./notification-preferences/notification-preferences";
 

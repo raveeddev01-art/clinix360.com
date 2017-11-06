@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
+import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -11,50 +10,32 @@ import Checkbox from "react-bootstrap/lib/Checkbox";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
+@inject("registrationStore")
 @observer
 export default class Hipaa extends Component {
   constructor(props) {
-    super();
+    super(props);
+
     this.state = {
       hipaaAgreed: false
     };
   }
 
-  handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
+  onChange = event => {
     this.setState({
-      [name]: value
+      hipaaAgreed: event.target.checked
     });
   };
 
-  handleSubmit = event => {
+  onSubmit = event => {
+    const { registrationStore } = this.props;
     event.preventDefault();
-    post(`/api/v1/teams`, {
-      body: {
-        name: store.instance.teamName,
-        url: store.instance.teamUrl
-      }
-    }).then(response => {
-      store.instance.teamId = response.data.id;
-      store.instance.teamUrl = response.data.slug;
-      patch(`/api/v1/users/${store.instance.userId}/complete-onboarding`, {
-        body: {
-          first_name: store.instance.firstName,
-          last_name: store.instance.lastName,
-          username: store.instance.username,
-          password: store.instance.password,
-          pin: store.instance.pin,
-          team_id: response.data.id
-        }
-      }).then(response => {
-        this.props.history.push("/signin");
-      });
-    });
+    registrationStore.createTeam();
   };
 
   render() {
+    const { registrationStore } = this.props;
+
     return (
       <div className="authentication-card text-center">
         <div className="card-header">
@@ -89,32 +70,46 @@ export default class Hipaa extends Component {
           <strong>Business Associate Agreement</strong>
         </h5>
 
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.onSubmit}>
           <Checkbox
             name="hipaaAgreed"
             checked={this.state.hipaaAgreed}
-            onChange={this.handleChange}
+            onChange={this.onChange}
             className="m-b-20"
           >
             I agree to the terms of the HIPAA BAA
           </Checkbox>
 
           <HelpBlock className="m-b-20">
-            Learn more about BAAs <a href="#">here</a>. By checking the box
-            above, you represent that your team agrees to the terms of the{" "}
-            <a href="#">HIPAA BAA</a>.
+            Learn more about BAAs&nbsp;
+            <a href="/baa" target="_blank">
+              here
+            </a>. By checking the box above, you represent that your team agrees
+            to the terms of the&nbsp;
+            <a href="/hipaa" target="_blank">
+              HIPAA BAA
+            </a>.
           </HelpBlock>
 
-          <input
-            disabled={!this.state.hipaaAgreed}
-            value="Done!"
+          <Button
+            block
+            bsSize="lg"
+            bsStyle="primary"
+            disabled={!this.state.hipaaAgreed || registrationStore.saving}
             type="submit"
-            className="btn btn-block btn-lg btn-primary m-b-20"
-          />
+            className="m-b-20"
+          >
+            Done!
+          </Button>
 
           <HelpBlock className="m-b-20">
-            By proceeding to use Stitch, you agree to our{" "}
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            By proceeding to use Stitch, you agree to our&nbsp;
+            <a href="/terms-of-service" target="_blank">
+              Terms of Service
+            </a>&nbsp;and&nbsp;
+            <a href="/privacy-policy" target="_blank">
+              Privacy Policy
+            </a>.
           </HelpBlock>
         </form>
 

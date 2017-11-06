@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
-import store from "../authentication_store";
+import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -11,10 +10,12 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@inject("registrationStore")
 @observer
 export default class Email extends Component {
   constructor(props) {
-    super();
+    super(props);
+
     this.state = {
       email: "",
       formValid: false
@@ -28,20 +29,21 @@ export default class Email extends Component {
 
     this.setState({
       [name]: value,
-      formValid: value.length > 0
+      formValid: value.length > 0 && /.+@.+\..+/.test(value)
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
+
     post("/api/v1/users", {
       body: { email: this.state.email }
     }).then(response => {
-      store.instance.userId = response.data.id;
-      store.instance.email = this.state.email;
+      this.props.registrationStore.userId = response.data.id;
+      this.props.registrationStore.email = this.state.email;
       post("/api/v1/users/send-confirmation-code", {
         body: { id: response.data.id }
-      }).then(response => {
+      }).then(() => {
         this.props.history.push("/signup/confirmation-code");
       });
     });
@@ -57,7 +59,7 @@ export default class Email extends Component {
                 placement="top"
                 overlay={<Tooltip id="close">Close</Tooltip>}
               >
-                <Link to="/">
+                <Link to="/getstarted">
                   <i className="fa fa-close" />
                 </Link>
               </OverlayTrigger>
@@ -89,11 +91,6 @@ export default class Email extends Component {
             team already has an account, ask your admin for an invitation.
           </HelpBlock>
 
-          {/*<input
-            value="Next"
-            type="submit"
-            className="btn btn-block btn-lg btn-primary m-b-40"
-          />*/}
           <input
             disabled={!this.state.formValid}
             value="Next"

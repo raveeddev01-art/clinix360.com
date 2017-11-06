@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { withRouter } from "react-router-dom";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import PinInput from "../common/components/pin-input/index";
 
 @inject("presenceStore")
 @observer
@@ -12,21 +10,17 @@ class LockedApp extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pin: "" };
+    this.state = { pin: "", formValid: false };
   }
 
-  resetPassword = () => {
-    // const { history } = this.props;
-    // history.push(`/reset-password`);
+  onInvalid = () => {
+    this.setState({ formValid: false, pin: "" });
   };
 
-  handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
+  onValid = pin => {
     this.setState({
-      [name]: value
+      pin,
+      formValid: pin.length === 4
     });
   };
 
@@ -34,7 +28,7 @@ class LockedApp extends Component {
     event.preventDefault();
 
     this.props.presenceStore.unlock(this.state.pin).catch(() => {
-      this.setState({ pin: "" });
+      this.setState({ pin: "", formValid: false });
     });
   };
 
@@ -61,22 +55,18 @@ class LockedApp extends Component {
           </h5>
 
           <form className="m-b-40" onSubmit={this.handleSubmit}>
-            <FormGroup bsSize="large">
-              <FormControl
-                name="pin"
-                required
-                autoFocus
-                type="password"
-                value={this.state.pin}
-                onChange={this.handleChange}
-              />
-            </FormGroup>
+            <PinInput
+              className="m-b-20 m-center"
+              onValid={this.onValid}
+              onInvalid={this.onInvalid}
+            />
 
             <Button
               type="submit"
               bsStyle="primary"
               bsSize="lg"
               className="btn-block"
+              disabled={!this.state.formValid}
             >
               Enter
             </Button>
@@ -84,7 +74,7 @@ class LockedApp extends Component {
             <HelpBlock>
               Forgot your PIN? Just enter your password.<br />
               Forgot both? Reset your password{" "}
-              <a role="link" onClick={this.resetPassword}>
+              <a href="/reset-password">
                 here
               </a>.
             </HelpBlock>
@@ -98,5 +88,4 @@ class LockedApp extends Component {
     );
   }
 }
-
-export default withRouter(LockedApp);
+export default LockedApp;

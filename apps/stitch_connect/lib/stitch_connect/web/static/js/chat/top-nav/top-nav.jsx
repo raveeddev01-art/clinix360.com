@@ -34,6 +34,42 @@ class TopNav extends Component {
     }, 500);
   }
 
+  onSearch = event => {
+    event.preventDefault();
+
+    const { addonStore } = this.props;
+
+    addonStore.setAddonPanel("Search Results");
+    addonStore.toggleAddons(true);
+  };
+
+  onSearchQueryChange = event => {
+    this.setState({ query: event.target.value });
+    this.debouncedSearch(event.target.value);
+  };
+
+  onToggleSettings = isOpen => {
+    if (isOpen) {
+      this.settingsOverlay.hide();
+    }
+  };
+
+  onRoomInfoClick = () => {
+    this.roomInfoOverlay.hide();
+
+    this._toggleAddonMenu("Room Information")();
+  };
+
+  handleJoin = () => {
+    const { groupStore, sidemenuStore } = this.props;
+
+    groupStore.join();
+    sidemenuStore.loadGroups();
+
+    // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
+    document.dispatchEvent(new MouseEvent("click"));
+  };
+
   _toggleAddonMenu = menuName => () => {
     const { addonStore } = this.props;
 
@@ -45,18 +81,13 @@ class TopNav extends Component {
     }
   };
 
-  onSearchQueryChange = event => {
-    this.setState({ query: event.target.value });
-    this.debouncedSearch(event.target.value);
-  };
+  clearSearch = event => {
+    const { searchStore } = this.props;
 
-  handleJoin = () => {
-    const { groupStore: group, sidemenuStore } = this.props;
-    group.join();
-    sidemenuStore.loadGroups();
+    event.preventDefault();
 
-    // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
-    document.dispatchEvent(new MouseEvent("click"));
+    this.setState({ query: "" });
+    searchStore.reset();
   };
 
   renderRoomControls = () => {
@@ -87,30 +118,12 @@ class TopNav extends Component {
     );
   };
 
-  onSearch = event => {
-    event.preventDefault();
-
-    const { addonStore } = this.props;
-
-    addonStore.setAddonPanel("Search Results");
-    addonStore.toggleAddons(true);
-  };
-
   renderClearButton = () => {
     return this.state.query.length > 0 ? (
       <a onClick={this.clearSearch}>
         <i className="fa fa-times-circle-o" />
       </a>
     ) : null;
-  };
-
-  clearSearch = event => {
-    const { searchStore } = this.props;
-
-    event.preventDefault();
-
-    this.setState({ query: "" });
-    searchStore.reset();
   };
 
   render() {
@@ -125,11 +138,15 @@ class TopNav extends Component {
             id="dropdown-room-controls"
             pullRight
             rootCloseEvent="click"
+            onToggle={this.onToggleSettings}
           >
             <Dropdown.Toggle noCaret>
               <OverlayTrigger
                 placement="bottom"
                 overlay={<Tooltip id="tooltip-settings">Settings</Tooltip>}
+                ref={ref => {
+                  this.settingsOverlay = ref;
+                }}
               >
                 <i className="fa fa-cog" />
               </OverlayTrigger>
@@ -143,11 +160,14 @@ class TopNav extends Component {
           <a
             role="link"
             className="btn btn-default"
-            onClick={this._toggleAddonMenu("Room Information")}
+            onClick={this.onRoomInfoClick}
           >
             <OverlayTrigger
               placement="bottom"
               overlay={<Tooltip id="tooltip-info">Room Information</Tooltip>}
+              ref={ref => {
+                this.roomInfoOverlay = ref;
+              }}
             >
               <i className="fa fa-info-circle" />
             </OverlayTrigger>

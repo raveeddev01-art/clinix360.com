@@ -5,7 +5,6 @@ $sidebar_width: 270px;
   display: flex;
   width: auto;
   min-width: 840px;
-  height: auto;
   position: fixed;
   left: 0;
   right: 0;
@@ -13,10 +12,16 @@ $sidebar_width: 270px;
   bottom: 0;
 }
 
+.app-container {
+  position: relative;
+  flex: 1;
+}
+
 #sidemenu,
 #main,
 #addons {
   position: relative;
+  display: flex;
   display: flex;
   flex-direction: column;
 }
@@ -32,6 +37,7 @@ $sidebar_width: 270px;
 
 #main {
   flex-grow: 1;
+  width: 100%;
 
   .flex-content {
     display: flex;
@@ -42,11 +48,16 @@ $sidebar_width: 270px;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      width: calc(100% - 350px);
 
       #chat {
         flex-grow: 1;
         overflow-x: hidden;
         overflow-y: scroll;
+      }
+
+      @media only screen and (max-width: 991px) {
+        width: calc(100% - 300px);
       }
     }
   }

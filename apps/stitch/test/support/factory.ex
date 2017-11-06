@@ -61,4 +61,60 @@ defmodule Stitch.Factory do
       text_content: "lorem ipsum"
     }
   end
+
+  def export_factory do
+    %Stitch.Exports.Export{
+      team: build(:team),
+    }
+  end
+
+  def mobile_device_factory do
+    %Stitch.Mobile.Device{
+      user: build(:user),
+      name: Faker.Lorem.words |> Enum.join(" "),
+      type: Enum.random(["ios", "android"]),
+      token: Faker.String.base64
+    }
+  end
+
+  def subscription_factory do
+    end_date = Timex.shift(DateTime.utc_now(), days: 30)
+    %Stitch.Billing.Subscription{
+      team: build(:team),
+      customer_id: sequence(:customer_id, &"cus_#{&1}"),
+      subscription_id: sequence(:subscription_id, &"sub_#{&1}"),
+      subscription_line_item_id: sequence(:subscription_line_item_id, &"si_#{&1}"),
+      estimated_invoice_amount: 12_345,
+      tier: "BASIC",
+      renewal_frequency: "MONTHLY",
+      renews: true,
+      valid_until: end_date
+    }
+  end
+
+  def trial_subscription_factory do
+    end_date = Timex.shift(DateTime.utc_now(), days: 14)
+    %Stitch.Billing.Subscription{
+      team: build(:team),
+      customer_id: sequence(:customer_id, &"cus_#{&1}"),
+      subscription_id: nil,
+      subscription_line_item_id: nil,
+      estimated_invoice_amount: 0,
+      tier: "TRIAL",
+      renewal_frequency: nil,
+      valid_until: end_date
+    }
+  end
+
+  def card_factory do
+    timestamp = DateTime.utc_now() |> DateTime.to_unix()
+    %Stitch.Billing.PaymentMethod{
+      team: build(:team),
+      card_id: "card_#{timestamp}",
+      brand: "Visa",
+      last_four: "4242",
+      exp_month: Enum.random(1..12),
+      exp_year: Enum.random(2020..2025)
+    }
+  end
 end

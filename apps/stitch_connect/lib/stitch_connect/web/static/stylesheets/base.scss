@@ -18,7 +18,10 @@ html {
 
 body {
   line-height: 1.5;
-  font-family: "Lato", sans-serif;
+  font-family: "Stitch Lato", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
   background: $body-bg;
   // overflow-y: hidden;
@@ -98,7 +101,6 @@ hr {
 }
 
 .tooltip {
-  font-family: "Lato", sans-serif;
   font-size: 14px;
 }
 .tooltip-inner {
@@ -113,6 +115,11 @@ hr {
   .m-u-#{$i * 10} {
     margin-top: #{$i * 10}px;
   }
+}
+
+.m-center {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 // ::-webkit-scrollbar {
@@ -343,6 +350,10 @@ hr {
           border-radius: 3px;
           position: relative;
         }
+
+        &:first-of-type {
+          margin-top: 0;
+        }
       }
     }
 
@@ -378,6 +389,11 @@ hr {
     line-height: 46px;
     padding: 0 15px;
   }
+
+  .Select-input > input {
+    line-height: 24px;
+    padding: 6px 0 6px;
+  }
 }
 
 i.fa {
@@ -405,7 +421,7 @@ i.fa {
 
   .toggle-text {
     flex: 1;
-    padding: 0 5px;
+    padding: 0 12px;
   }
 
   .toggle-handle {
@@ -424,6 +440,26 @@ i.fa {
     .toggle-handle {
       background: #fff;
       order: 1;
+    }
+  }
+}
+
+.pin-code {
+  width: 250px;
+
+  .form-control {
+    width: 25%;
+    height: 60px;
+    font-size: 28px;
+    text-align: center;
+
+    &:nth-child(2) {
+      border-left: 0;
+      border-right: 0;
+    }
+
+    &:nth-child(3) {
+      border-right: 0;
     }
   }
 }

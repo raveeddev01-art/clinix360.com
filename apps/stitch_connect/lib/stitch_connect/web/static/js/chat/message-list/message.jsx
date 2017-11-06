@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import moment from "moment";
 import { Element } from "react-scroll";
@@ -32,14 +33,10 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     if (isVisible) {
-      messageStore.onVisibleMessage(message.id);
+      messageStore.onMessageShow(message.id);
     } else {
-      messageStore.onInvisibleMessage(message.id);
+      messageStore.onMessageHide(message.id);
     }
-  };
-
-  handleClick = () => {
-    this.setState({ selected: !this.state.selected });
   };
 
   markAsUnread = () => {
@@ -83,10 +80,12 @@ class Message extends Component {
     messageStore.toggleStar(message.id);
   };
 
-  checkPosition = isActionDropdownOpen => {
+  onToggle = isOpen => {
     const { chatDiv } = this.props.messageStore;
 
-    if (isActionDropdownOpen) {
+    this.setState({ selected: isOpen });
+
+    if (isOpen) {
       this.setState({
         dropup:
           chatDiv.scrollTop + chatDiv.offsetHeight / 2 <
@@ -184,9 +183,9 @@ class Message extends Component {
         className="message-actions"
         dropup={dropup}
         pullRight
-        onToggle={this.checkPosition}
+        onToggle={this.onToggle}
       >
-        <Dropdown.Toggle useAnchor noCaret onClick={this.handleClick}>
+        <Dropdown.Toggle useAnchor noCaret>
           <i className="fa fa-angle-down" />
         </Dropdown.Toggle>
 
@@ -288,7 +287,10 @@ class Message extends Component {
 
                 <div
                   className="time"
-                  data-time={moment(timestamp).format("hh:mm A")}
+                  data-time={moment
+                    .utc(timestamp)
+                    .local()
+                    .format("hh:mm A")}
                 >
                   {this.renderActions(message)}
                 </div>

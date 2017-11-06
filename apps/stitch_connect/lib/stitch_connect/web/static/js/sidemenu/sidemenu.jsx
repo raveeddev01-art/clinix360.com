@@ -12,39 +12,99 @@ import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
 
-@inject("presenceStore", "sidemenuStore")
+@inject("presenceStore", "sidemenuStore", "userStore")
 @observer
 class Sidemenu extends Component {
-  _adminOptions = () => {
+  componentDidMount() {
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.loadSidemenuDiv(this.sidemenuDiv);
+  }
+
+  componentWillUnmount() {
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.unloadSidemenuDiv();
+  }
+
+  onDropdownToggle = isDropdownOpen => {
+    if (isDropdownOpen) {
+      this.overlayTrigger.hide();
+    }
+  };
+
+  renderAdminOptions() {
     return (
       <div>
         <div className="separator text-center">
           <span>Admin</span>
         </div>
-        <MenuItem eventKey="4" href="/admin/team/settings">
+        <MenuItem eventKey="4" href="/admin/team/settings" target="_blank">
           Settings
         </MenuItem>
-        <MenuItem eventKey="5" href="/admin/team/security">
+        <MenuItem eventKey="5" href="/admin/team/security" target="_blank">
           Security
         </MenuItem>
-        <MenuItem eventKey="6" href="/admin/users/members">
+        <MenuItem eventKey="6" href="/admin/users/members" target="_blank">
           Members
         </MenuItem>
-        <MenuItem eventKey="7" href="/admin/users/invitations">
+        <MenuItem eventKey="7" href="/admin/users/invitations" target="_blank">
           Invitations
         </MenuItem>
-        <MenuItem eventKey="8" href="/admin/users/pending">
+        <MenuItem eventKey="8" href="/admin/users/pending" target="_blank">
           Pending
         </MenuItem>
-        <MenuItem eventKey="9" href="/admin/billing">
+        <MenuItem eventKey="9" href="/admin/billing" target="_blank">
           Billing
         </MenuItem>
       </div>
     );
-  };
+  }
+
+  renderUnreadBadgesUp() {
+    const { sidemenuStore } = this.props;
+    const roomItem = sidemenuStore.unreadRoomItemHiddenUp;
+
+    if (!roomItem) {
+      return null;
+    }
+
+    const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+
+    return (
+      <div
+        className="unreads-badge up"
+        role="link"
+        onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
+      >
+        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-up" />
+      </div>
+    );
+  }
+
+  renderUnreadBadgesDown() {
+    const { sidemenuStore } = this.props;
+    const roomItem = sidemenuStore.unreadRoomItemHiddenDown;
+
+    if (!roomItem) {
+      return null;
+    }
+
+    const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+
+    return (
+      <div
+        className="unreads-badge down"
+        role="link"
+        onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
+      >
+        <span>{text}</span>&nbsp;&nbsp;<i className="fa fa-arrow-down" />
+      </div>
+    );
+  }
 
   render() {
-    const { sidemenuStore } = this.props;
+    const { sidemenuStore, userStore } = this.props;
     const filterJoined = rooms => rooms.filter(room => room.joined);
 
     return (
@@ -56,9 +116,13 @@ class Sidemenu extends Component {
             id="dropdown-preferences-menu"
             pullRight
             componentClass="div"
+            onToggle={this.onDropdownToggle}
           >
             <Dropdown.Toggle noCaret bsStyle="link">
               <OverlayTrigger
+                ref={ref => {
+                  this.overlayTrigger = ref;
+                }}
                 placement="bottom"
                 overlay={
                   <Tooltip id="tooltip-preferences">Preferences</Tooltip>
@@ -75,17 +139,21 @@ class Sidemenu extends Component {
               <div className="separator text-center">
                 <span>You</span>
               </div>
-              <MenuItem eventKey="1" href="/admin/you/account">
+              <MenuItem eventKey="1" href="/admin/you/account" target="_blank">
                 Account
               </MenuItem>
-              <MenuItem eventKey="2" href="/admin/you/profile">
+              <MenuItem eventKey="2" href="/admin/you/profile" target="_blank">
                 Profile
               </MenuItem>
-              <MenuItem eventKey="3" href="/admin/you/notifications">
+              <MenuItem
+                eventKey="3"
+                href="/admin/you/notifications"
+                target="_blank"
+              >
                 Notifications
               </MenuItem>
 
-              {currentUser.roles.includes("admin") && this._adminOptions()}
+              {userStore.isAdmin && this.renderAdminOptions()}
 
               <div className="separator text-center">
                 <span>Stitch</span>
@@ -101,19 +169,30 @@ class Sidemenu extends Component {
           </Dropdown>
         </div>
         <div className="flex-content">
-          <FavoritesList
-            heading={"Favorites"}
-            rooms={sidemenuStore.favoriteGroups}
-          />
+          <div
+            className="rooms-menu"
+            ref={div => {
+              this.sidemenuDiv = div;
+            }}
+          >
+            <FavoritesList
+              heading={"Favorites"}
+              rooms={sidemenuStore.favoriteGroups}
+            />
 
-          <RoomsList
-            heading="Rooms"
-            rooms={filterJoined(sidemenuStore.normalGroups)}
-          />
-          <PeopleList
-            heading="Direct Messages"
-            rooms={filterJoined(sidemenuStore.directGroups)}
-          />
+            <RoomsList
+              heading="Rooms"
+              rooms={filterJoined(sidemenuStore.normalGroups)}
+            />
+
+            <PeopleList
+              heading="Direct Messages"
+              rooms={filterJoined(sidemenuStore.directGroups)}
+            />
+          </div>
+
+          {this.renderUnreadBadgesUp()}
+          {this.renderUnreadBadgesDown()}
         </div>
       </div>
     );

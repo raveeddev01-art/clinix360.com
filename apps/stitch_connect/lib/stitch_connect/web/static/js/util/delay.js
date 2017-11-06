@@ -1,7 +1,3 @@
-window.delay = (function() {
-  var timer = 0;
-  return function(callback, ms) {
-    clearTimeout(timer);
-    timer = setTimeout(callback, ms);
-  };
-})();
+import delay from "lodash/delay";
+
+window.delay = delay;

@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import PasswordValidator from "password-validator";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import SettingPanel from "../../components/setting-panel/setting-panel";
+import PasswordValidator from "../../../common/components/password-validator/index";
 
 const title = "Password";
 const description =
@@ -22,12 +21,7 @@ class PasswordPanel extends Component {
     this.state = {
       oldPassword: "",
       newPassword: "",
-      formValid: false,
-      passwordLengthValid: false,
-      passwordLowercaseValid: false,
-      passwordUppercaseValid: false,
-      passwordDigitsValid: false,
-      passwordSymbolsValid: false
+      formValid: false
     };
   }
 
@@ -35,14 +29,10 @@ class PasswordPanel extends Component {
     this.setState({
       oldPassword: "",
       newPassword: "",
-      formValid: false,
-      passwordLengthValid: false,
-      passwordLowercaseValid: false,
-      passwordUppercaseValid: false,
-      passwordDigitsValid: false,
-      passwordSymbolsValid: false
+      formValid: false
     });
   };
+
   _onSave = () => {
     this.props.userStore.savePassword(
       this.state.oldPassword,
@@ -50,71 +40,17 @@ class PasswordPanel extends Component {
     );
   };
 
-  _isPasswordValid = val => {
-    this.passwordValidator
-      .is()
-      .min(8)
-      .is()
-      .max(100)
-      .has()
-      .uppercase()
-      .has()
-      .lowercase()
-      .has()
-      .digits()
-      .has()
-      .not()
-      .spaces()
-      .has()
-      .symbols();
-
-    const result = this.passwordValidator.validate(val, { list: true });
-    this.setState({ passwordLengthValid: !result.includes("min") });
-    this.setState({ passwordLowercaseValid: !result.includes("lowercase") });
-    this.setState({ passwordUppercaseValid: !result.includes("uppercase") });
-    this.setState({ passwordDigitsValid: !result.includes("digits") });
-    this.setState({ passwordSymbolsValid: !result.includes("symbols") });
-    return result.length === 0;
-  };
-
   _onChangeOldPassword = evt =>
     this.setState({ oldPassword: evt.target.value });
 
   _onChangeNewPassword = evt => {
     this.setState({
-      newPassword: evt.target.value,
-      formValid: this._isPasswordValid(evt.target.value)
+      newPassword: evt.target.value
     });
   };
 
-  _renderPasswordHelper = () => {
-    const {
-      passwordLengthValid,
-      passwordUppercaseValid,
-      passwordLowercaseValid,
-      passwordDigitsValid,
-      passwordSymbolsValid
-    } = this.state;
-    return (
-      <HelpBlock className="m-b-20">
-        Your password must contain:
-        <ul className="list-unstyled text-success">
-          <li className={!passwordLengthValid && "text-danger"}>
-            At least 8 characters
-          </li>
-          <li className={!passwordUppercaseValid && "text-danger"}>
-            An uppercase letter
-          </li>
-          <li className={!passwordLowercaseValid && "text-danger"}>
-            A lowercase letter
-          </li>
-          <li className={!passwordDigitsValid && "text-danger"}>A number</li>
-          <li className={!passwordSymbolsValid && "text-danger"}>
-            A special character (e.g. !$#)
-          </li>
-        </ul>
-      </HelpBlock>
-    );
+  _onChangeValid = formValid => {
+    this.setState({ formValid });
   };
 
   render() {
@@ -125,7 +61,7 @@ class PasswordPanel extends Component {
         description={description}
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
-        disableSave={!formValid}
+        disableSave={formValid}
       >
         <Row>
           <Col sm={6} componentClass={FormGroup}>
@@ -147,7 +83,10 @@ class PasswordPanel extends Component {
               value={newPassword}
               onChange={this._onChangeNewPassword}
             />
-            {this._renderPasswordHelper()}
+            <PasswordValidator
+              password={newPassword}
+              onChangeValid={this._onChangeValid}
+            />
           </Col>
         </Row>
       </SettingPanel>

@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   alias Stitch.{Repo, Accounts.User, UserQueries}
+  alias StitchConnect.Web.{EventsChannel}
 
   def index(conn, _) do
     users = UserQueries.users_for_team(conn.assigns.current_user.team_id)
@@ -13,28 +14,36 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def activate(conn, %{"id" => id}) do
-    case String.to_integer(id) == conn.assigns.current_user.id do
-      true ->
+    with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
+         {:ok, _user} <- Stitch.Accounts.Admin.activate(conn.assigns.team, id) do
+      Stitch.Billing.update_subscriber_count(conn.assigns.team)
+      json(conn, %{message: "Account has been activated."})
+    else
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "User does not exist."})
+    {:self, :true} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "You cannot activate your own account."})
-      false ->
-        {:ok, _user} = Stitch.Accounts.Admin.activate(id)
-        conn
-        |> json(%{message: "Account has been activated."})
     end
   end
 
   def deactivate(conn, %{"id" => id}) do
-    case String.to_integer(id) == conn.assigns.current_user.id do
-      true ->
+    with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
+         {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do
+      Stitch.Billing.update_subscriber_count(conn.assigns.team)
+      json(conn, %{message: "Account has been deactivated."})
+    else
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "User does not exist."})
+      {:self, :true} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "You cannot deactivate your own account."})
-      false ->
-        {:ok, _user} = Stitch.Accounts.Admin.deactivate(id)
-        conn
-        |> json(%{message: "Account has been deactivated."})
     end
   end
 
@@ -53,6 +62,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def promote_admin(conn, %{"id" => user_id}) do
     case Stitch.Accounts.Admin.promote_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
+        EventsChannel.broadcast_user_info(user)
         conn
         |> render("show.json", user: user)
       {:error, message} ->
@@ -65,6 +75,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def revoke_admin(conn, %{"id" => user_id}) do
     case Stitch.Accounts.Admin.revoke_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
+        EventsChannel.broadcast_user_info(user)
         conn
         |> render("show.json", user: user)
       {:error, message} ->
@@ -118,7 +129,10 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: message})
       user ->
+        group = Stitch.GroupQueries.default_group(user)
+        Stitch.Group.add_user(group, user.id)
         conn
+        |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
     end
   end

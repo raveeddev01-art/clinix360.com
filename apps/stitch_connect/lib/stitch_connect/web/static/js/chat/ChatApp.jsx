@@ -12,6 +12,8 @@ import Switcher from "../common/components/switcher/index";
 @inject("uploadStore", "sidemenuStore")
 @observer
 class ChatApp extends Component {
+  static requiresAdmin = false;
+
   constructor(props) {
     super(props);
 

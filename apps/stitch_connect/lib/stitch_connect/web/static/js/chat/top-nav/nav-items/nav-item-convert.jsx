@@ -32,13 +32,12 @@ export default class NavItemConvert extends Component {
     }
   }
 
-  toggleModal = () => {
-    this.setState({
-      showModal: !this.state.showModal
-    });
+  openModal = () => {
+    this.setState({ showModal: true });
+  };
 
-    // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
-    document.dispatchEvent(new MouseEvent("click"));
+  closeModal = () => {
+    this.setState({ showModal: false });
   };
 
   togglePublic = () => {
@@ -57,61 +56,57 @@ export default class NavItemConvert extends Component {
         });
       });
     }
-    this.toggleModal();
+    this.closeModal();
   };
 
   render() {
-    return (
-      <MenuItem onClick={this.toggleModal}>
+    return [
+      <MenuItem key="convert_menuitem" onClick={this.openModal}>
         Convert
-        <Modal
-          className="convert-room-modal"
-          show={this.state.showModal}
-          onHide={this.toggleModal}
-        >
-          <Modal.Header>
-            <Modal.Title>Convert</Modal.Title>
-            <a href="#" onClick={this.toggleModal}>
-              <i className="fa fa-close" />
-            </a>
-          </Modal.Header>
-          <Modal.Body>
-            <Form horizontal>
-              <FormGroup>
-                <Col sm={3}>
-                  <Toggle
-                    onClick={this.togglePublic}
-                    on="Public"
-                    off="Private"
-                    active={this.state.public}
-                  />
-                </Col>
+      </MenuItem>,
+      <Modal
+        key="convert_modal"
+        className="convert-room-modal"
+        show={this.state.showModal}
+      >
+        <Modal.Header>
+          <Modal.Title>Convert</Modal.Title>
+          <a role="link" onClick={this.closeModal}>
+            <i className="fa fa-close" />
+          </a>
+        </Modal.Header>
+        <Modal.Body>
+          <Form horizontal>
+            <FormGroup>
+              <Col sm={3}>
+                <Toggle
+                  onToggle={this.togglePublic}
+                  on="Public"
+                  off="Private"
+                  active={this.state.public}
+                />
+              </Col>
 
-                <Col sm={9}>
-                  <div className="publicity-description">
-                    {this.state.public
-                      ? "Public rooms can be discovered and joined by anyone."
-                      : "Private rooms can be accessed only by invitation."}
-                  </div>
-                </Col>
-              </FormGroup>
-            </Form>
-          </Modal.Body>
+              <Col sm={9}>
+                <div className="publicity-description">
+                  {this.state.public
+                    ? "Public rooms can be discovered and joined by anyone."
+                    : "Private rooms can be accessed only by invitation."}
+                </div>
+              </Col>
+            </FormGroup>
+          </Form>
+        </Modal.Body>
 
-          <Modal.Footer>
-            <Button bsSize="large" onClick={this.toggleModal}>
-              Cancel
-            </Button>
-            <Button
-              bsSize="large"
-              bsStyle="primary"
-              onClick={this.handleSubmit}
-            >
-              Convert
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </MenuItem>
-    );
+        <Modal.Footer>
+          <Button bsSize="large" onClick={this.closeModal}>
+            Cancel
+          </Button>
+          <Button bsSize="large" bsStyle="primary" onClick={this.handleSubmit}>
+            Convert
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    ];
   }
 }

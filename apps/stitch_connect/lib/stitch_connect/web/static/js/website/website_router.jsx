@@ -1,0 +1,50 @@
+import React, { Component } from "react";
+import { withRouter, Route, Switch, Redirect } from "react-router-dom";
+import { observer } from "mobx-react";
+
+import Header from "./components/header";
+import Footer from "./components/footer";
+import ScrollToTop from "./components/scrollToTop";
+
+import Landing from "./landing";
+import Connect from "./products/connect";
+import Pricing from "./resources/pricing";
+import Downloads from "./resources/downloads";
+import Customers from "./resources/customers";
+import CasePBSC from "./case-studies/pbsc";
+import Baa from "./resources/baa";
+import Hipaa from "./resources/hipaa";
+import PrivacyPolicy from "./resources/privacy-policy";
+import TermsOfService from "./resources/terms-of-service";
+
+@observer
+class WebsiteRouter extends Component {
+  render() {
+    return (
+      <div className="website-wrapper">
+        <ScrollToTop>
+          <Switch>
+            <Route exact path="/" component={Landing} />
+            <Route exact path="/connect" component={Connect} />
+            <Route exact path="/pricing" component={Pricing} />
+            <Route exact path="/downloads" component={Downloads} />
+            <Route exact path="/customers" component={Customers} />
+            <Route
+              exact
+              path="/customers/princeton-brain-spine"
+              component={CasePBSC}
+            />
+            <Route exact path="/baa" component={Baa} />
+            <Route exact path="/hipaa" component={Hipaa} />
+            <Route exact path="/privacy-policy" component={PrivacyPolicy} />
+            <Route exact path="/terms-of-service" component={TermsOfService} />
+
+            <Route component={() => <Redirect to="/" />} />
+          </Switch>
+        </ScrollToTop>
+      </div>
+    );
+  }
+}
+
+export default withRouter(WebsiteRouter);

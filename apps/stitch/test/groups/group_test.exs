@@ -98,6 +98,12 @@ defmodule Stitch.GroupTest do
       {:error, message} = Group.toggle_public(group, false)
       assert message == "Direct messages' privacy setting can't be changed"
     end
+
+    test "does not change the default group" do
+      group = %Group{name: "General", is_default: true}
+      {:error, message} = Group.toggle_public(group, false)
+      assert message == "Default group's privacy setting can't be changed"
+    end
   end
 
   describe "Stitch.Group.add_user/2" do
@@ -159,6 +165,12 @@ defmodule Stitch.GroupTest do
       group = %Group{name: "__multi_dm_group__"}
       {:error, message} = Group.remove(group, 42)
       assert message == "Users can't leave direct messages"
+    end
+
+    test "does not remove a user from the default group" do
+      group = %Group{name: "General", is_default: true}
+      {:error, message} = Group.remove(group, group.id)
+      assert message == "Users can't leave the default group"
     end
   end
 
@@ -253,6 +265,58 @@ defmodule Stitch.GroupTest do
       {:error, message} = Group.unhide(group, sam.id)
 
       assert message == "User is not part of this room"
+    end
+  end
+
+  describe "Stitch.Group.update_members/2" do
+    setup do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      sam = insert(:user, team: team)
+      group = insert(:group, team: team, creator: bob)
+      insert(:group_user, user: bob, group: group)
+      insert(:group_user, user: joe, group: group)
+
+      {:ok, team: team, bob: bob, joe: joe, sam: sam, group: group}
+    end
+
+    test "updates group list", %{group: group, bob: bob, joe: joe, sam: sam} do
+      assert {:ok, %{removed: removed, added: added}} = Group.update_members(group, [bob.id, sam.id])
+
+      assert removed == [joe.id]
+      assert added == [sam.id]
+      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) != nil
+      assert Stitch.Repo.get_by(GroupUser, user_id: joe.id, group_id: group.id) == nil
+      assert Stitch.Repo.get_by(GroupUser, user_id: sam.id, group_id: group.id) != nil
+    end
+
+    test "when user_ids is empty", %{group: group, bob: bob} do
+      assert {:ok, _} = Group.update_members(group, [])
+
+      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) != nil
+    end
+
+    test "doesn't remove creator", %{group: group, bob: bob, sam: sam} do
+      assert {:ok, _} = Group.update_members(group, [sam.id])
+
+      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) != nil
+    end
+
+    test "doesn't add user from another team", %{group: group, bob: bob} do
+      sam = insert(:user)
+
+      assert {:ok, _} = Group.update_members(group, [bob.id, sam.id])
+
+      assert Stitch.Repo.get_by(GroupUser, user_id: sam.id, group_id: group.id) == nil
+    end
+
+    test "doesn't allow to update members in a direct message room", %{bob: bob, joe: joe, sam: sam} do
+      {:ok, group} = Group.create_single_dm(bob, [bob.id, joe.id])
+
+      {:error, message} = Group.update_members(group, [bob.id, sam.id])
+
+      assert message == "Can't update members in a direct message room"
     end
   end
 end

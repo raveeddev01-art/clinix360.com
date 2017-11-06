@@ -16,7 +16,7 @@ use Mix.Config
 config :stitch_connect, StitchConnect.Web.Endpoint,
   load_from_system_env: true,
   http: [port: {:system, "PORT"}],
-  url: [scheme: "https", host: "teamstitchapp.com", port: 443],
+  url: [scheme: "https", host: System.get_env("APP_HOST"), port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: System.get_env("SECRET_KEY_BASE")
@@ -63,14 +63,3 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
 # General application configuration
 config :stitch_connect,
   version: System.get_env("SOURCE_VERSION") # https://devcenter.heroku.com/changelog-items/630
-
-# Sentry configuration for Production
-config :sentry,
-  dsn: "https://9b8f91a0ec7349c5a75ff5c9f87a78bb:f83a2dd1467e42b48fb6111af7a894e8@sentry.io/233795",
-  environment_name: :prod,
-  enable_source_code_context: true,
-  root_source_code_path: File.cwd!,
-  tags: %{
-    env: "prod"
-  },
-  included_environments: [:prod]

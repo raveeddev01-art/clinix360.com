@@ -23,9 +23,9 @@ class UploadStore {
   };
 
   @action
-  openUploadModal = file => {
+  openUploadModal = (file, fileName) => {
     this.file = file;
-    this.title = file.name;
+    this.title = fileName || file.name;
     this.description = "";
     this.isUploadModalVisible = true;
     this.groupId = this.rootStore.groupStore.id;

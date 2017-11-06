@@ -161,6 +161,7 @@
         right: 1px;
         padding: 10px 10px 0 10px;
         background: $body-bg;
+        visibility: hidden;
 
         .unread-messages-tooltip {
           display: flex;
@@ -228,7 +229,7 @@
             }
 
             .mark-as-read-button {
-              border-left: 1px solid lighten($brand-primary, 40%);
+              border-left: 1px solid #fff;
 
               &:hover {
                 filter: brightness(85%);
@@ -290,23 +291,24 @@
         padding: 20px;
         display: flex;
         flex-direction: column;
+        visibility: hidden;
 
         .date-separator {
           display: flex;
           justify-content: center;
           position: relative;
           border-top: 1px solid $border-color;
-          margin: 20px 0 40px;
+          margin: 35px 0;
 
           .date {
-            font-size: 16px;
-            font-weight: bold;
-            line-height: 1.45;
-            background: #fafafa;
-            padding: 6px 12px;
+            color: $brand-primary;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 32px;
+            background: $body-bg;
+            padding: 0 12px;
             position: absolute;
-            top: -20px;
-            color: #036;
+            top: -18px;
           }
         }
 
@@ -319,15 +321,21 @@
 
           .banner-text {
             color: $brand-primary;
-            font-weight: bold;
-            line-height: 1.45;
-            background: #fff;
-            border: 1px solid $brand-primary;
-            border-radius: 6px;
-            padding: 6px 12px;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 32px;
+            background: $body-bg;
+            padding: 0 12px;
             position: absolute;
-            top: -17px;
+            top: -18px;
           }
+        }
+      }
+
+      &.loaded {
+        .container-bars,
+        #chat {
+          visibility: visible;
         }
       }
     }
@@ -419,7 +427,8 @@
         height: 40px;
         border-width: 2px;
         box-shadow: none;
-        padding-right: 50px;
+        padding-right: 70px;
+        resize: none;
 
         &.editing {
           background-color: #fff7d8;
@@ -462,23 +471,41 @@
 }
 
 .browser-notification-alert {
-  min-height: 40px;
+  min-height: 60px;
   line-height: 38px;
   font-size: 16px;
+  font-weight: 700;
   width: 100%;
   border: 1px solid #999;
   position: relative;
   text-align: center;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   a {
     cursor: pointer;
+    color: inherit;
+    border-bottom: 1px dotted;
+    &:hover {
+      text-decoration: none;
+      border-bottom-style: solid;
+    }
   }
 
   .close-browser-notification-alert {
     cursor: pointer;
     position: absolute;
     right: 10px;
-    top: 10px;
+    top: 19px;
+    font-size: 20px;
+  }
+
+  &.reconnection-alert {
+    min-height: 40px;
+    background-color: #fecb2f;
+    border: 1px solid #fecb2f;
   }
 }
 
@@ -620,7 +647,7 @@
     border: 1px solid $border-color-secondary;
     border-radius: 4px;
     padding: 15px 20px;
-    margin-bottom: 10px;
+    margin: 5px 0;
 
     &.highlight {
       animation: highlightBubble 3s, fadeIn 3s;
@@ -692,13 +719,17 @@
         .message-link,
         .dropdown-toggle {
           color: #003366;
-          text-decoration-style: dotted;
-          text-decoration-color: #003366;
-          text-decoration-line: underline;
-          text-underline-position: under;
+          text-decoration: none;
+          border-bottom: 1px dotted $brand-primary;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          display: inline-block;
+          vertical-align: top;
+          max-width: 100%;
 
           &:hover {
-            text-decoration-style: solid;
+            border-bottom-style: solid;
           }
         }
       }
@@ -730,7 +761,7 @@
 
     .emoji-mart-emoji {
       vertical-align: middle;
-      margin-right: 2px;
+      margin: 0 3px;
     }
 
     &:hover,
@@ -771,7 +802,7 @@
         .message-link,
         .dropdown-toggle {
           color: #fff;
-          text-decoration-color: #fff;
+          border-color: #fff;
         }
       }
 
@@ -942,7 +973,6 @@ i.file-data-separator {
   justify-content: flex-end;
   flex-grow: 1;
   flex-shrink: 0;
-  margin-bottom: 30px;
 
   &__container {
     display: flex;
@@ -954,13 +984,22 @@ i.file-data-separator {
   }
 
   &__title {
-    font-size: 40px;
-    color: $brand-primary;
-    font-weight: 900;
-    line-height: 1;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    text-align: center;
+    width: 100%;
+
+    h3 span {
+      font-size: 40px;
+      text-align: left;
+      color: $brand-primary;
+      font-weight: 900;
+      line-height: 1;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      display: block;
+      padding-right: 9px;
+    }
   }
 
   &__text {
@@ -969,24 +1008,19 @@ i.file-data-separator {
 
   &__name {
     color: $brand-primary;
-    font-weight: 900;
+    font-weight: 800;
     margin: 0 3px;
   }
 }
 
 .system-message {
-  margin: 5px 0;
+  font-size: 15px;
   text-align: center;
-  font-size: 14px;
-
-  &__time {
-    margin: 0 3px;
-  }
+  padding: 6px 0;
 
   &__user {
-    font-size: 15px;
     color: $brand-primary;
-    font-weight: 900;
-    margin: 0 3px;
+    font-size: 15px;
+    font-weight: 800;
   }
 }

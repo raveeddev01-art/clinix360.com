@@ -1,45 +1,48 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { NavLink, withRouter } from "react-router-dom";
+import { Element } from "react-scroll";
+import VisibilitySensor from "react-visibility-sensor";
 import classNames from "classnames";
 import _ from "lodash";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
+import { getRoomNavLink } from "../lib/room";
+
 @inject("presenceStore", "sidemenuStore")
 @observer
 class Room extends Component {
-  getNavLink() {
-    const { slug, type, users } = this.props.room;
+  hideDM = event => {
+    event.preventDefault();
+    const { sidemenuStore, room } = this.props;
+    sidemenuStore.hideGroup(room.id).then(() => {
+      sidemenuStore.loadGroups();
+    });
+  };
 
-    if (type === "regular") {
-      return `/rooms/${slug}`;
-    }
+  onVisibleChange = isVisible => {
+    const { sidemenuStore, room } = this.props;
 
-    let dmUsers = users;
-    if (dmUsers.length > 1)
-      dmUsers = dmUsers.filter(user => user.id !== currentUser.id);
-    if (type === "dm") {
-      dmUsers = dmUsers.length ? dmUsers : [currentUser];
+    if (isVisible) {
+      sidemenuStore.onRoomMenuItemShow(room.id);
     } else {
-      dmUsers = _.sortBy(dmUsers, "id");
+      sidemenuStore.onRoomMenuItemHide(room.id);
     }
-
-    return `/direct/${dmUsers.map(user => user.username).join(",")}`;
-  }
+  };
 
   getIconClass() {
-    const { presenceStore } = this.props;
-    const { type, users } = this.props.room;
+    const { presenceStore, room } = this.props;
     let iconClass;
 
-    if (type === "regular" && this.props.room.public === false) {
+    if (room.type === "regular" && room.public === false) {
       iconClass = "fa-lock";
-    } else if (type === "regular") {
+    } else if (room.type === "regular") {
       iconClass = "fa-comments";
-    } else if (type === "dm") {
-      let otherUser = users.find(user => user.id !== currentUser.id);
+    } else if (room.type === "dm") {
+      const otherUser = room.users.find(user => user.id !== currentUser.id);
       iconClass =
         !otherUser || presenceStore.isOnline(otherUser.id)
           ? "fa-circle"
@@ -53,6 +56,7 @@ class Room extends Component {
 
   getName() {
     const { room } = this.props;
+
     if (
       room.type === "dm" &&
       room.users.length === 1 &&
@@ -61,16 +65,6 @@ class Room extends Component {
       return `${room.name} (You)`;
     }
 
-    const { type, users } = room;
-    let dmUsers = users;
-    if (type === "dm") {
-      return room.name;
-    } else if (type === "multi_dm") {
-      dmUsers = users.filter(user => user.id !== currentUser.id);
-      return dmUsers
-        .map(user => `${user.first_name} ${user.last_name}`)
-        .join(", ");
-    }
     return room.name;
   }
 
@@ -86,8 +80,9 @@ class Room extends Component {
 
   getHideDMIcon() {
     const { type } = this.props.room;
-    if (type !== "regular") {
-      return (
+
+    return (
+      type !== "regular" && (
         <OverlayTrigger
           placement="top"
           overlay={<Tooltip id="hide-dm">Hide Conversation</Tooltip>}
@@ -96,8 +91,8 @@ class Room extends Component {
             <i className="fa fa-minus-square-o" />
           </span>
         </OverlayTrigger>
-      );
-    }
+      )
+    );
   }
 
   hideDM = event => {
@@ -109,35 +104,52 @@ class Room extends Component {
   };
 
   render() {
-    const {
-      unread_messages_count: unreadMessagesCount,
-      type: roomType,
-      is_hidden: isHidden
-    } = this.props.room;
+    const { room, sidemenuStore } = this.props;
     const className = classNames("item", {
-      "has-unread": unreadMessagesCount > 0
+      "has-unread": room.unread_messages_count > 0
     });
     const badge = this.getBadge();
+    const anchorName = `${sidemenuStore.ROOM_MENU_ITEM_ANCHOR_PREFIX}${room.id}`;
     const roomHidden =
-      (roomType === "dm" || roomType === "multi_dm") && isHidden;
+      (room.type === "dm" || room.type === "multi_dm") && room.is_hidden;
 
     return (
       !roomHidden && (
-        <NavLink
-          to={this.getNavLink()}
-          className={className}
-          activeClassName="active"
+        <VisibilitySensor
+          active
+          onChange={this.onVisibleChange}
+          scrollCheck
+          partialVisibility
+          intervalCheck={false}
+          scrollThrottle={100}
+          containment={sidemenuStore.sidemenuDiv}
         >
-          <div className="item-icon">
-            <i className={this.getIconClass()} />
-          </div>
-          <div className="item-text">{this.getName()}</div>
-          {this.getHideDMIcon()}
-          {badge > 0 && <div className="item-badge text-center">{badge}</div>}
-        </NavLink>
+          <Element name={anchorName}>
+            <NavLink
+              to={getRoomNavLink(room)}
+              className={className}
+              activeClassName="active"
+            >
+              <div className="item-icon">
+                <i className={this.getIconClass()} />
+              </div>
+              <div className="item-text">{this.getName()}</div>
+              {this.getHideDMIcon()}
+              {badge > 0 && (
+                <div className="item-badge text-center">
+                  {badge < 10 ? badge : "9+"}
+                </div>
+              )}
+            </NavLink>
+          </Element>
+        </VisibilitySensor>
       )
     );
   }
 }
+
+Room.propTypes = {
+  room: PropTypes.object.isRequired
+};
 
 export default withRouter(Room);

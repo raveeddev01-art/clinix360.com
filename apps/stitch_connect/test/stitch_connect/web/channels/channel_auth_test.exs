@@ -50,6 +50,11 @@ defmodule StitchConnect.Web.ChannelAuthTest do
 
       assert {:ok, _, _} = subscribe_and_join(socket1, "groups:#{group1.slug}")
     end
+
+    test "admins can join private groups", %{socket1: _socket1, group1: group1, user1: user1} do
+      {:ok, socket1} = connect(UserSocket, %{"authenticationToken" => user1.token})
+      assert {:ok, _, _} = subscribe_and_join(socket1, "groups:#{group1.slug}")
+    end
   end
 
   describe "joining events channel" do

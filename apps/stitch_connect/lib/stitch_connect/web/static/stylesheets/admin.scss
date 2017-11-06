@@ -235,7 +235,7 @@ $admin-topbar-height-sm: 65px;
         font-weight: 600;
       }
 
-      input.form-control,
+      :not(.input-group) > input.form-control,
       .form-group-lg input.form-control {
         font-size: 18px;
         border-radius: 6px;

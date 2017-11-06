@@ -1,17 +1,20 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { Emoji } from "emoji-mart";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
+import Linkify from "react-linkify";
+
 import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 
 @inject("sidemenuStore")
 @observer
 class MessageContent extends Component {
-  renderMessageText = () => {
-    const { message, sidemenuStore } = this.props;
+  renderMessageLine(line) {
+    const { sidemenuStore } = this.props;
     const { usernameMap } = sidemenuStore;
-    const words = (message.text_content || "").split(" ");
+    const words = line.split(" ");
 
     return words.reduce((prev, word, i) => {
       if (word.indexOf("@") === 0) {
@@ -38,7 +41,7 @@ class MessageContent extends Component {
             if (hasEmoji) {
               result.push(
                 <Emoji
-                  key={`emoji_${message.id}_${i}_${index}`}
+                  key={`emoji_${i}_${index}`}
                   emoji={emojis[index - 1]}
                   size={size}
                 />
@@ -63,19 +66,35 @@ class MessageContent extends Component {
 
       return prev.concat(word);
     }, []);
-  };
+  }
+
+  renderMessageText() {
+    const { message } = this.props;
+    const newline = "\n";
+    const lines = (message.text_content || "").split(newline);
+
+    return lines.reduce(
+      (result, line, i) =>
+        result.concat(this.renderMessageLine(line), <br key={`br_${i}`} />),
+      []
+    );
+  }
 
   render() {
     const { message } = this.props;
+
     return (
-      <div className="message-body-wrapper">
+      <Linkify
+        properties={{ target: "_blank", className: "message-link" }}
+        className="message-body-wrapper"
+      >
         {message.type === "upload" && <FileAttachment {...message.fields} />}
         <div className="message-body">
           {message.type === "upload" && message.text_content && '"'}
           {this.renderMessageText()}
           {message.type === "upload" && message.text_content && '"'}
         </div>
-      </div>
+      </Linkify>
     );
   }
 }

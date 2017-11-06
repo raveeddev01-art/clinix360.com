@@ -20,6 +20,8 @@ import Switcher from "../common/components/switcher/index";
 @inject("titleStore")
 @observer
 class AdminApp extends Component {
+  static requiresAdmin = true;
+
   constructor(props) {
     super(props);
     this.state = {

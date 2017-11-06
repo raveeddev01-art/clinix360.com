@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 
+@inject("sidemenuStore")
 export default class BrowserNotificationAlert extends Component {
-  constructor(props) {
-    super(props);
+  constructor(...args) {
+    super(...args);
     this.state = {
       browserPermission: Notification.permission,
       close: false
@@ -11,30 +13,40 @@ export default class BrowserNotificationAlert extends Component {
 
   onTooltipClose = () => {
     this.setState({ close: true });
-  }
+  };
 
   enableNotification = () => {
     const { browserPermission } = this.state;
     if (browserPermission !== "denied") {
       Notification.requestPermission(permission => {
+        if (permission === "granted") {
+          this.props.sidemenuStore.showNotificationCard(
+            "Success",
+            "Great! Notification are now enabled.",
+            "notification-enabled"
+          );
+        }
         this.setState({ browserPermission: permission });
       });
     }
   };
 
   render() {
-    if (this.state.browserPermission !== 'default' || this.state.close) {
+    if (this.state.browserPermission !== "default" || this.state.close) {
       return null;
     }
 
     return (
       <div className="browser-notification-alert">
         <span>
-          We recommend you to <a role="link" onClick={this.enableNotification}>enable</a> desktop notifications for Stitch Connect.
+          We recommend you&nbsp;
+          <a role="link" onClick={this.enableNotification}>
+            enable desktop notifications
+          </a>&nbsp;for Stitch.
         </span>
         <i
           role="link"
-          className="fa fa-close close-browser-notification-alert"
+          className="fa fa-times-circle-o close-browser-notification-alert"
           onClick={this.onTooltipClose}
         />
       </div>

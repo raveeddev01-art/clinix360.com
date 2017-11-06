@@ -1,8 +1,10 @@
 defmodule StitchConnect.Web.GroupChannel do
   use Phoenix.Channel
+  use Appsignal.Instrumentation.Decorators
+
   import Ecto.Query
   alias StitchConnect.Web.Api.V1.MessageView
-  alias StitchConnect.Web.EventsChannel
+  alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
   alias StitchConnect.Web.Presence
 
@@ -69,6 +71,7 @@ defmodule StitchConnect.Web.GroupChannel do
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("typing_started", _params, socket) do
     {:ok, _} = Presence.update(socket, socket.assigns.current_user.id, %{
       is_typing: true,
@@ -77,6 +80,7 @@ defmodule StitchConnect.Web.GroupChannel do
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("typing_stopped", _params, socket) do
     {:ok, _} = Presence.update(socket, socket.assigns.current_user.id, %{
       is_typing: false,
@@ -85,6 +89,7 @@ defmodule StitchConnect.Web.GroupChannel do
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("feed", %{"max_id" => _} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
 
@@ -104,6 +109,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  @decorate channel_action()
   def handle_in("feed_recent", %{"min_id" => _} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
 
@@ -123,6 +129,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  @decorate channel_action()
   def handle_in("feed_surrounding", %{"id" => _} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
 
@@ -146,11 +153,13 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  @decorate channel_action()
   def handle_in("new_msg", params, socket) do
     %{group: group, current_user: user} = socket.assigns
     do_new_msg(socket, group, user, params)
   end
 
+  @decorate channel_action()
   def handle_in("mark_as_unread", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Repo.get!(Message, message_id)
@@ -159,6 +168,7 @@ defmodule StitchConnect.Web.GroupChannel do
     |> mark_as_unread_response(user, socket)
   end
 
+  @decorate channel_action()
   def handle_in("mark_as_read", _params, socket) do
     %{group: group, current_user: user} = socket.assigns
 
@@ -166,6 +176,7 @@ defmodule StitchConnect.Web.GroupChannel do
     |> mark_as_read_response(user, socket)
   end
 
+  @decorate channel_action()
   def handle_in("edit_msg", %{"message_id" => message_id, "params" => params}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
@@ -185,6 +196,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  @decorate channel_action()
   def handle_in("delete_msg", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
@@ -192,6 +204,7 @@ defmodule StitchConnect.Web.GroupChannel do
       {:ok, %{message: message}} ->
         broadcast! socket, "delete_msg", %{id: message.id}
         EventsChannel.broadcast_group_msg_deleted(group, message)
+        PushNotifications.push_badge_update(message)
 
         {:reply, {:ok, %{id: message.id}}, socket}
 
@@ -237,7 +250,9 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           message = MessageQueries.load_info(message)
           broadcast! socket, "new_msg", message
-          EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
+          EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
+          PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+          PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
           json = MessageView.render("show.json", %{message: message})
           {:reply, {:ok, json}, socket}
@@ -261,6 +276,7 @@ defmodule StitchConnect.Web.GroupChannel do
       unread_messages_count: group_user.unread_messages_count,
     }
     EventsChannel.broadcast_marked_as_read(user, json)
+    PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
   end
 
@@ -275,6 +291,7 @@ defmodule StitchConnect.Web.GroupChannel do
       unread_messages_count: group_user.unread_messages_count,
     }
     EventsChannel.broadcast_marked_as_unread(user, json)
+    PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
   end
 

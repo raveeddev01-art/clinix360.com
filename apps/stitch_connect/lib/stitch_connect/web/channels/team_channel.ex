@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.TeamChannel do
   use Phoenix.Channel
+  use Appsignal.Instrumentation.Decorators
   alias StitchConnect.Web.Presence
 
   def join("team:lobby:" <> team_id, _, socket) do
@@ -32,21 +33,25 @@ defmodule StitchConnect.Web.TeamChannel do
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("became_inactive", _params, socket) do
     update_connection_meta(socket, %{inactive: true})
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("became_away", _params, socket) do
     update_connection_meta(socket, %{became_away: true})
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("lockout_timer_expired", _params, socket) do
     update_connection_meta(socket, %{lockout_timer_expired: true})
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("became_active", _params, socket) do
     update_connection_meta(socket, %{
       inactive: false,
@@ -56,16 +61,19 @@ defmodule StitchConnect.Web.TeamChannel do
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("locked", _params, socket) do
     broadcast_from(socket, "locked", %{sessionId: socket.assigns.session_id})
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("unlocked", _params, socket) do
     broadcast_from(socket, "unlocked", %{sessionId: socket.assigns.session_id})
     {:noreply, socket}
   end
 
+  @decorate channel_action()
   def handle_in("get_lockout_settings", _params, socket) do
     team = Stitch.TeamQueries.get_by_id(socket.assigns.team_id)
 

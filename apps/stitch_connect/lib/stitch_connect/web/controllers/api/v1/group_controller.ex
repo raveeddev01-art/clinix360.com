@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Group, GroupUser, GroupQueries, GroupAuthorization, MessageQueries}
+  alias Stitch.{Group, GroupQueries, GroupAuthorization, MessageQueries}
   alias StitchConnect.Web.{Endpoint, EventsChannel}
 
   def index(conn, %{"slug" => slug}) do
@@ -72,7 +72,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def create(conn, params) do
     user = conn.assigns.current_user
     case Group.create(params, user) do
-      {:ok, group} ->
+      {:ok, %{group: group, system_messages: system_messages}} ->
         group = group
         |> Map.put_new(:joined, true)
         |> Map.put_new(:unread_messages_count, 0)
@@ -82,6 +82,11 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> Map.put_new(:mentions_count, 0)
 
         EventsChannel.broadcast_group_creation(group)
+        Enum.each(system_messages, fn system_message ->
+          system_message = system_message |> MessageQueries.load_info
+          EventsChannel.broadcast_group_new_msg(group, system_message)
+        end)
+
         render conn, "show.json", group: group, user_id: user.id
       {:error, :already_exists} ->
         conn
@@ -222,11 +227,6 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     render conn, "index.json", groups: result_groups, user_id: user.id
   end
 
-  def invite(conn, %{"id" => group_id, "user_ids" => ""}) do
-    GroupUser.remove_all_users(group_id)
-    conn |> json(%{message: "Users invited to room."})
-  end
-
   def invite(conn, %{"id" => group_id, "user_ids" => user_ids}) do
     group = GroupQueries.get_by_id(group_id)
 
@@ -236,11 +236,12 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> put_status(:unauthorized)
         |> json(%{message: "Not authorized to invite people to this room."})
       true ->
-        user_ids
-        |> String.split(",")
-        |> Enum.map(&String.to_integer/1)
-        |> Enum.filter(& !!Stitch.Accounts.get_for_team_id(&1, conn.assigns.current_user.team_id))
-        |> Enum.each(&Group.add_user(group, &1))
+        user_ids =
+          user_ids
+          |> String.split(",")
+          |> Enum.map(&String.to_integer/1)
+
+        Group.update_members(group, user_ids)
 
         conn
         |> json(%{message: "Users invited to room."})

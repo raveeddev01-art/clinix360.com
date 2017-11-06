@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
 import _ from "lodash";
@@ -87,7 +88,11 @@ class CreateDMModal extends Component {
     });
 
     return (
-      <Modal show={this.state.show}>
+      <Modal
+        show={this.state.show}
+        onEntered={() => this.selectComponent.focus()}
+        onHide={this.props.toggle}
+      >
         <Modal.Header>
           <Modal.Title>Direct Messages</Modal.Title>
           <a role="link" onClick={this.props.toggle}>
@@ -98,6 +103,9 @@ class CreateDMModal extends Component {
         <Modal.Body>
           <div className="modal-search dm-modal-user-search">
             <Select
+              ref={node => {
+                this.selectComponent = node;
+              }}
               multi
               valueKey="id"
               className="multi-select-large"

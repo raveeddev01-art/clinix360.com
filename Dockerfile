@@ -1,87 +1,52 @@
-# ----------------------------------------------------------------------------
-# "THE BEER-WARE LICENSE" (Revision 42):
-# @trenpixster wrote this file. As long as you retain this notice you
-# can do whatever you want with this stuff. If we meet some day, and you think
-# this stuff is worth it, you can buy me a beer in return
-# ----------------------------------------------------------------------------
+FROM elixir:1.5.2
 
-# Use phusion/baseimage as base image. To make your builds reproducible, make
-# sure you lock down to a specific version, not to `latest`!
-# See https://github.com/phusion/baseimage-docker/blob/master/Changelog.md for
-# a list of version numbers.
-#
-# Usage Example : Run One-Off commands
-# where <VERSION> is one of the baseimage-docker version numbers.
-# See : https://github.com/phusion/baseimage-docker#oneshot for more examples.
-#
-#  docker run --rm -t -i phusion/baseimage:<VERSION> /sbin/my_init -- bash -l
-#
-# Thanks to @hqmq_ for the heads up
-FROM phusion/baseimage:0.9.18
-MAINTAINER Nizar Venturini @trenpixster
+RUN mix archive.install \
+  --force \
+  https://github.com/phoenixframework/archives/raw/master/phx_new.ez
 
-# Important!  Update this no-op ENV variable when this Dockerfile
-# is updated with the current date. It will force refresh of all
-# of the base images and things like `apt-get update` won't be using
-# old cached versions when the Dockerfile is built.
-ENV REFRESHED_AT 2017-08-05
+WORKDIR /app
 
-# Set correct environment variables.
+# Even our staging app runs with MIX_ENV = prod on Enclave. I recommend
+# this because otherwise you'll be showing error stacktraces, etc.
+ENV MIX_ENV prod
 
-# Setting ENV HOME does not seem to work currently. HOME is unset in Docker container.
-# See bug : https://github.com/phusion/baseimage-docker/issues/119
-#ENV HOME /root
-# Workaround:
-RUN echo /root > /etc/container_environment/HOME
-
-# Regenerate SSH host keys. baseimage-docker does not contain any, so you
-# have to do that yourself. You may also comment out this instruction; the
-# init system will auto-generate one during boot.
-# RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
-
-# Baseimage-docker enables an SSH server by default, so that you can use SSH
-# to administer your container. In case you do not want to enable SSH, here's
-# how you can disable it. Uncomment the following:
-#RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
-
-# Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
-
-# ...put your own build instructions here...
-
-# Set the locale
-RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+RUN apt-get update && apt-get install -y --no-install-recommends locales
+RUN echo en_US.UTF-8 UTF-8 > /etc/locale.gen && locale-gen && \
+  update-locale LANG=en_US.UTF-8
 
-WORKDIR /tmp
+# Install Node, NPM, YARN
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install -g yarn
 
-# See : https://github.com/phusion/baseimage-docker/issues/58
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+RUN mix local.hex --force
+RUN mix local.rebar --force
 
-RUN echo "deb http://packages.erlang-solutions.com/ubuntu trusty contrib" >> /etc/apt/sources.list && \
-  apt-key adv --fetch-keys http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc && \
-  apt-get -qq update && apt-get install -y \
-  esl-erlang=1:20.0 \
-  git \
-  unzip \
-  build-essential \
-  wget && \
-  apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# This precompiles your deps before adding your code, which lets you take advantage of Docker
+# caching while you iterate on your app.
+ADD mix.exs mix.exs
+ADD mix.lock mix.lock
+ADD apps/stitch_connect/mix.exs apps/stitch_connect/mix.exs
+ADD apps/stitch/mix.exs apps/stitch/mix.exs
+RUN mix deps.get
+RUN mix compile
 
-# Download and Install Specific Version of Elixir
-WORKDIR /elixir
-RUN wget -q https://github.com/elixir-lang/elixir/releases/download/v1.5.1/Precompiled.zip && \
-  unzip Precompiled.zip && \
-  rm -f Precompiled.zip && \
-  ln -s /elixir/bin/elixirc /usr/local/bin/elixirc && \
-  ln -s /elixir/bin/elixir /usr/local/bin/elixir && \
-  ln -s /elixir/bin/mix /usr/local/bin/mix && \
-  ln -s /elixir/bin/iex /usr/local/bin/iex
+ADD apps/stitch_connect/package.json apps/stitch_connect/package.json
+ADD apps/stitch_connect/yarn.lock apps/stitch_connect/yarn.lock
+RUN cd apps/stitch_connect && yarn
 
-# Install local Elixir hex and rebar
-RUN /usr/local/bin/mix local.hex --force && \
-  /usr/local/bin/mix local.rebar --force
+# This actually adds the app
+ADD . .
+WORKDIR /app/apps/stitch_connect
 
-WORKDIR /
+RUN npm run deploy
+
+# Obviates the need for a Procfile
+CMD ["mix", "phx.server"]
+
+# The default Elixir config looks up the port in the $PORT environment variable, so that works for us.
+ENV PORT 443
+EXPOSE 443

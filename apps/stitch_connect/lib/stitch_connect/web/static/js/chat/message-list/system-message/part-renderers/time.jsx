@@ -4,7 +4,10 @@ import moment from "moment";
 export default function userRenderer(field, key) {
   return (
     <span className="system-message__time" key={key}>
-      {moment(field).format("MMMM D, YYYY")}
+      {moment
+        .utc(field)
+        .local()
+        .format("hh:mm A")}
     </span>
   );
 }

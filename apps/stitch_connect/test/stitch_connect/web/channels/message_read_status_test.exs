@@ -91,10 +91,11 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
 
     [_message1, _message2, _message3] = messages
 
-    push socket2, "mark_as_read", %{}
-
     @endpoint.subscribe("events:#{user2.id}")
 
+    ref = push socket2, "mark_as_read", %{}
+
+    assert_reply ref, :ok
     assert_broadcast "marked_as_read", %{messages: updated_messages}
     assert length(updated_messages) == 3
   end
