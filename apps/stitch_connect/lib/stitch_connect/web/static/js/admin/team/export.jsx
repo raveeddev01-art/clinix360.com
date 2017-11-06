@@ -1,10 +1,35 @@
 import React, { Component } from "react";
-import { Well, Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
+import { inject, observer } from "mobx-react";
+import ExportItem from "./export-item";
 
-export default class TeamExport extends Component {
+@inject("exportStore")
+@observer
+class TeamExport extends Component {
   constructor(props) {
     super(props);
+    this.props.exportStore.loadExports();
   }
+
+  _renderExports = () => {
+    const { exportStore } = this.props;
+    return exportStore.exports.map(exportItem => {
+      return (
+        <ExportItem
+          key={`export_{exportItem.id}`}
+          id={exportItem.id}
+          insertedAt={exportItem.inserted_at}
+          status={exportItem.status}
+          downloadLink={exportStore.downloadLink(exportItem.id)}
+        />
+      );
+    });
+  };
+
+  _newExport = () => {
+    const { exportStore } = this.props;
+    exportStore.createExport();
+  };
 
   render() {
     return (
@@ -47,7 +72,12 @@ export default class TeamExport extends Component {
             <h4 className="export-heading">Export History</h4>
           </Col>
           <Col md={3}>
-            <Button block bsSize="large" bsStyle="primary">
+            <Button
+              block
+              bsSize="large"
+              bsStyle="primary"
+              onClick={this._newExport}
+            >
               New Export
             </Button>
           </Col>
@@ -64,19 +94,7 @@ export default class TeamExport extends Component {
             </Row>
           </div>
 
-          <div className="table-item">
-            <Row>
-              <Col sm={6}>Thursday, July 27, 2017 11:34 AM</Col>
-
-              <Col sm={4}>abcdefg123456!@#$%</Col>
-
-              <Col sm={2} className="text-center">
-                <a href="#">
-                  <i className="fa fa-download" />
-                </a>
-              </Col>
-            </Row>
-          </div>
+          {this._renderExports()}
         </div>
 
         <p className="text-center">
@@ -89,3 +107,5 @@ export default class TeamExport extends Component {
     );
   }
 }
+
+export default TeamExport;
