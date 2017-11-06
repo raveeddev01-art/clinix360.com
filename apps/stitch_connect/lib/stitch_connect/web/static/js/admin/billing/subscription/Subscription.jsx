@@ -42,7 +42,19 @@ class Subscription extends React.Component {
 
     // Read cards
     get("/api/v1/billing/cards").then(response => {
-      const cards = response.data.data;
+      // const cards = response.data.data;
+      const cards = [
+        {
+          id: 1,
+          brand: "visa",
+          last_four: "9292",
+          exp_month: 12,
+          exp_year: 2020,
+          default: "123",
+          inserted_at: "2017-11-3",
+          updated_at: "2017-11-3"
+        }
+      ];
 
       this.setState({ cards });
     });
@@ -377,6 +389,27 @@ class Subscription extends React.Component {
             <h5>Option A: Use an existing payment method.</h5>
 
             {cards.length === 0 && <p className="help-block">No saved cards</p>}
+            {cards.length > 0 &&
+              cards.map(card => {
+                return (
+                  <div className="credit-card">
+                    <div className="credit-card-desc">
+                      <span className="card visa" />{" "}
+                      <b className="card-holder">{`${currentUser.firstName} ${currentUser.lastName}`}</b>
+                      <br />
+                      <span>
+                        {capitalize(card.brand)} ending in {card.last_four}
+                        &nbsp;&#183;&nbsp;
+                        {`${card.exp_month}/${card.exp_year}`}
+                      </span>
+                    </div>
+
+                    <button className="btn btn-fancy btn-primary btn-sm">
+                      Use this Card
+                    </button>
+                  </div>
+                );
+              })}
           </div>
 
           <div className="add-new-card">
