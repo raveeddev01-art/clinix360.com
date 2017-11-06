@@ -75,8 +75,8 @@ defmodule Stitch.Accounts do
             {:ok, user} ->
               {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               user
-            {:error, _} ->
-              {:error, "Could not finish onboarding user."}
+            {:error, changeset} ->
+              {:error, changeset}
           end
         end
     end
@@ -135,6 +135,10 @@ defmodule Stitch.Accounts do
   end
 
   def update_user_password(_,_,_), do: {:error, "Invalid Parameters provided for password update"}
+
+  def get_by_id(user_id) do
+    Repo.get(User, user_id)
+  end
 
   def get_for_team_id(user_id, team_id) do
     Repo.get_by(User, id: user_id, team_id: team_id)

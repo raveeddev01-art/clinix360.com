@@ -21,8 +21,6 @@ export default class GetStarted extends Component {
         >
           Create Team
         </Link>
-
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

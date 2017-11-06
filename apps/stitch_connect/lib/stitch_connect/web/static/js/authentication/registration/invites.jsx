@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -11,29 +11,45 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
+@inject("registrationStore")
 @observer
 export default class Invites extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      emails: [],
-      formValid: false
-    };
-  }
-
-  handleSubmit = event => {
+  onNext = event => {
+    const { registrationStore, history } = this.props;
     event.preventDefault();
-    // this.props.history.push("/signup/team-url");
+    registrationStore.sendInvites = true;
+    history.push("/signup/hipaa");
+  };
+
+  onSkip = event => {
+    const { registrationStore, history } = this.props;
+    event.preventDefault();
+    registrationStore.sendInvites = false;
+    history.push("/signup/hipaa");
+  };
+
+  onChange = index => evt => {
+    const { registrationStore } = this.props;
+    registrationStore.invites[index] = evt.target.value;
+  };
+
+  onAddEmail = () => {
+    const { registrationStore } = this.props;
+    registrationStore.invites.push("");
   };
 
   render() {
+    const { registrationStore: { invites } } = this.props;
+
     return (
       <div className="authentication-card text-center">
         <div className="card-header">
           <Row>
             <Col xs={6} className="text-left">
-              <OverlayTrigger placement="top" overlay={<Tooltip>Back</Tooltip>}>
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="back">Back</Tooltip>}
+              >
                 <Link to="/signup/pin">
                   <i className="fa fa-arrow-left" />
                 </Link>
@@ -43,7 +59,7 @@ export default class Invites extends Component {
             <Col xs={6} className="text-right">
               <OverlayTrigger
                 placement="top"
-                overlay={<Tooltip>Restart</Tooltip>}
+                overlay={<Tooltip id="restart">Restart</Tooltip>}
               >
                 <Link to="/signup/team-name">
                   <i className="fa fa-refresh" />
@@ -59,42 +75,40 @@ export default class Invites extends Component {
           Enter <strong>invitations</strong> to email out.
         </h5>
 
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup bsSize="large">
-            <FormControl type="text" />
-          </FormGroup>
-          <FormGroup bsSize="large">
-            <FormControl type="text" />
-          </FormGroup>
-          <FormGroup bsSize="large">
-            <FormControl type="text" />
-          </FormGroup>
+        <form onSubmit={this.onNext}>
+          {invites.map((email, index) => (
+            <FormGroup bsSize="large" key={`invite_email_${index}`}>
+              <FormControl
+                type="text"
+                value={email}
+                onChange={this.onChange(index)}
+              />
+            </FormGroup>
+          ))}
 
-          <Button block className="m-b-10">
+          <Button block className="m-b-10" onClick={this.onAddEmail}>
             Add Invitations
           </Button>
 
           <HelpBlock className="m-b-20">
-            Enter your team members' email addresses so they can join your team.
-            You can also do this later after you set up your team.
+            Enter your team members&#39; email addresses so they can join your
+            team. You can also do this later after you set up your team.
           </HelpBlock>
 
-          <input
-            disabled={!this.state.formValid}
-            type="submit"
-            value="Send Invites"
-            className="btn btn-block btn-lg btn-primary"
-          />
+          <Button block bsSize="lg" bsStyle="primary" type="submit">
+            Next
+          </Button>
 
-          <Link
-            to="/signup/hipaa"
-            className="btn btn-block btn-lg btn-default m-b-40"
+          <Button
+            block
+            bsSize="lg"
+            bsStyle="default"
+            className="m-b-40"
+            onClick={this.onSkip}
           >
             Skip this step
-          </Link>
+          </Button>
         </form>
-
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

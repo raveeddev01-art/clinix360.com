@@ -129,12 +129,13 @@ defmodule Stitch.InvitationTest do
       user = insert(:user, team_id: team.id, roles: ["admin"])
       {:ok, invitation} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
 
-      assert {:error, "Could not finish onboarding user."} = Stitch.Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
+      assert {:error, changeset} = Stitch.Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
         "fullname" => "Joe",
         "username" => "Joe",
         "password" => "Password1",
         "pin" => "0000",
       })
+      assert {"has invalid format", _} = changeset.errors[:username]
     end
 
     test "accepts invitation, adds user to the default group, creates a system message and creates a self DM" do
