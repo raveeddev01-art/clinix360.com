@@ -161,6 +161,13 @@ export default class Customers extends Component {
                       to rapidly integrate a new tool to improve the flow of
                       patient care throughout the office.
                     </p>
+
+                    <Link
+                      to="/customers/orchard-medical-associates"
+                      className="text-uppercase"
+                    >
+                      Read More
+                    </Link>
                   </Panel>
                 </div>
               </div>
