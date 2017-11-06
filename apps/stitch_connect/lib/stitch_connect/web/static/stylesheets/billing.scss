@@ -109,36 +109,53 @@
 
         .credit-card-icon {
           display: inline-block;
-          width: 54px;
-          height: 37px;
+          width: 45px;
+          height: 31px;
           background-image: #369;
           background-image: url("/images/cc-type.png");
-          background-position: 2px -57px;
+          background-position: 0 -55px;
           background-size: 120px 361px;
           background-repeat: no-repeat;
 
           &.visa {
-            background-position: 2px -102px;
+            background-position: 0 -104px;
           }
 
           &.visa-electron {
-            background-position: 2px -147px;
+            background-position: 0 -149px;
           }
 
           &.mastercard {
-            background-position: 2px -192px;
+            background-position: 0 -194px;
           }
 
           &.maestro {
-            background-position: 2px -237px;
+            background-position: 0 -239px;
           }
 
           &.discover {
-            background-position: 2px -282px;
+            background-position: 0 -284px;
           }
 
           &.american-express {
-            background-position: 2px -327px;
+            background-position: 0 -329px;
+          }
+        }
+
+        .credit-card-desc {
+          display: flex;
+          flex-direction: column;
+
+          .credit-card-desc-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+
+            .credit-card-holder {
+              font-size: 16px;
+              font-weight: 600;
+              margin-left: 10px;
+            }
           }
         }
       }

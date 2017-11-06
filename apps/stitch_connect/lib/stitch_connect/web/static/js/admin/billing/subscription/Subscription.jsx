@@ -409,17 +409,19 @@ class Subscription extends React.Component {
                 return (
                   <div className="credit-card">
                     <div className="credit-card-desc">
-                      <span className={iconClassName} />{" "}
-                      <b className="card-holder">{`${currentUser.firstName} ${currentUser.lastName}`}</b>
-                      <br />
-                      <span>
+                      <div className="credit-card-desc-row">
+                        <span className={iconClassName} />
+                        <span className="credit-card-holder">{`${currentUser.firstName} ${currentUser.lastName}`}</span>
+                      </div>
+
+                      <div>
                         {capitalize(card.brand)} ending in {card.last_four}
                         &nbsp;&#183;&nbsp;
                         {`${card.exp_month}/${card.exp_year}`}
-                      </span>
+                      </div>
                     </div>
 
-                    <button className="btn btn-fancy btn-primary btn-sm">
+                    <button className="btn btn-fancy btn-primary btn-md">
                       Use this Card
                     </button>
                   </div>
