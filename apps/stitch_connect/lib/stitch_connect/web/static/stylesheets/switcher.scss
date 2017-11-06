@@ -4,15 +4,15 @@
   align-items: center;
   justify-content: space-between;
   background-color: $brand-primary;
-  padding: 20px;
+  padding: 20px 10px;
   border-right: 1px solid #fff;
 
   &__logo {
-    width: 30px;
-    height: 30px;
-    background-image: url("/images/stitch-brand.png"); // @TODO replace with logo
+    width: 40px;
+    height: 40px;
+    background-image: url("/images/rounded-logo.png");
     background-repeat: no-repeat;
-    background-position: center left;
+    background-position: center center;
     background-size: cover;
     margin-bottom: 20px;
   }
@@ -35,7 +35,7 @@
     justify-content: flex-start;
   }
 
-  &__top {
+  &__bottom {
     display: flex;
     flex-direction: column;
     align-items: center;
