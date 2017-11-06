@@ -84,6 +84,22 @@
         }
       }
     }
+
+    #footer {
+      font-size: 15px;
+      color: #036;
+      font-weight: 700;
+      padding: 24px 0;
+      a {
+        display: block;
+        color: #036;
+        padding: 0 12px;
+      }
+
+      li:last-child a {
+        padding-right: 0;
+      }
+    }
   }
 
   #header {
