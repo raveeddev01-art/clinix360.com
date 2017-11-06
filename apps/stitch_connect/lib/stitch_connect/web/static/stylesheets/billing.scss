@@ -101,6 +101,17 @@
         font-size: 14px;
         border-radius: 3px;
       }
+
+      .card-name-label {
+        display: block;
+        position: relative;
+
+        .secure-label {
+          position: absolute;
+          right: 0;
+          color: #999;
+        }
+      }
     }
   }
 }

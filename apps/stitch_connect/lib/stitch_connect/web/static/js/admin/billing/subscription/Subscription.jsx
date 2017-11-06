@@ -383,10 +383,10 @@ class Subscription extends React.Component {
             <h5>Option B: Add a new card.</h5>
             <form id="payment-form">
               <div className="form-group">
-                <label htmlFor="card-name">
+                <label htmlFor="card-name" className="card-name-label">
                   Name on card{" "}
                   <span className="secure-label">
-                    <i className="icon-shield-key" /> Secure Form
+                    <i className="fa fa-shield" /> Secure Form
                   </span>
                 </label>
                 <input
