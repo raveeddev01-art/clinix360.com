@@ -27,32 +27,6 @@ export default class Landing extends Component {
   render() {
     return (
       <div id="pre-launch-landing">
-        {/* <Navbar id="header" inverse>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <Link to="/" className="brand">
-                <img src="/images/stitch-brand.png" alt="Stitch" />
-              </Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight>
-              <NavItem eventKey={1} href="/signin">
-                Sign In
-              </NavItem>
-
-              <NavItem
-                eventKey={2}
-                href="/signup/email"
-                className="btn-outline"
-              >
-                Create Team
-              </NavItem>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar> */}
-
         <div id="header">
           <div className="container">
             <Row>
@@ -108,6 +82,35 @@ export default class Landing extends Component {
           <a id="intercom-link" href="jig8cj9z@inbound.intercom-mail.com">
             Intercom
           </a>
+        </div>
+
+        <div id="footer">
+          <div className="container">
+            <Row>
+              <Col sm={4}>Stitch Technologies, Inc</Col>
+              <Col sm={8}>
+                <ul className="list-inline m-b-0 text-right">
+                  <li>
+                    <Link to="/hipaa">HIPAA</Link>
+                  </li>
+                  <li>
+                    <Link to="/privacy-policy">Privacy Policy</Link>
+                  </li>
+                  <li>
+                    <Link to="/terms-of-service">Terms of Service</Link>
+                  </li>
+                  {/* <li>
+                    <a
+                      id="intercom-link"
+                      href="jig8cj9z@inbound.intercom-mail.com"
+                    >
+                      Intercom
+                    </a>
+                  </li> */}
+                </ul>
+              </Col>
+            </Row>
+          </div>
         </div>
 
         {/* <div className="subheader">
