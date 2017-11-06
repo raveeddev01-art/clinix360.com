@@ -409,7 +409,7 @@ class Subscription extends React.Component {
                 );
 
                 return (
-                  <div className="credit-card">
+                  <div className="credit-card" key={card.id}>
                     <div className="credit-card-desc">
                       <div className="credit-card-desc-row">
                         <span className={iconClassName} />
