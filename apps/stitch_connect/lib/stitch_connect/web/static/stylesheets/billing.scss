@@ -69,5 +69,24 @@
         }
       }
     }
+
+    .checkout {
+      h4 {
+        line-height: 2em;
+        color: #333;
+        border-bottom: 1px solid #ddd;
+        font-size: 24px;
+        font-weight: 600;
+        margin: 20px 0 10px;
+      }
+
+      ul {
+        margin-bottom: 10px;
+      }
+
+      .text-muted {
+        color: #666;
+      }
+    }
   }
 }

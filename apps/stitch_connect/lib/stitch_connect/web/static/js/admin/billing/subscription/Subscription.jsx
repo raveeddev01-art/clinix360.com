@@ -309,7 +309,58 @@ class Subscription extends React.Component {
   }
 
   renderCheckout() {
-    return "Checkout";
+    return (
+      <div className="checkout">
+        <h4>Step 1: Billing Summary</h4>
+        <div className="step1-billing-summary">
+          <ul>
+            <li>
+              You are subscribing to <b>Power</b>
+            </li>
+            <li>
+              You will be charged <b>$180 per user per year</b>
+            </li>
+            <li>
+              Your subscription will renew each <b>year</b>
+            </li>
+          </ul>
+          <p className="text-muted">
+            We will automatically update your balance when members are added to
+            or removed from your team.
+          </p>
+        </div>
+
+        <h4>Step 2: Add Contact Information</h4>
+        <div className="step2-contact-info">
+          <div className="form-group">
+            <label htmlFor="team-name">Team Name</label>
+            <input
+              type="text"
+              name="team-name"
+              className="form-control"
+              id="team-name"
+              required=""
+            />
+            <p className="help-block">
+              Your team name and address will be used on all billing invoices on
+              your account.
+            </p>
+          </div>
+          <div className="form-group">
+            <label htmlFor="team-address">Address</label>
+            <textarea
+              name="team-address"
+              className="form-control"
+              id="team-address"
+              rows="5"
+            />
+            <p className="help-block">
+              This field can also be for adding additional invoice information.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   render() {
