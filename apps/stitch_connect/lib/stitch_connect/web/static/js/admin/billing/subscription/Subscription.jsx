@@ -1,5 +1,6 @@
 import React from "react";
 import { Well } from "react-bootstrap";
+import classNames from "classnames";
 import moment from "moment";
 import capitalize from "lodash/capitalize";
 
@@ -31,7 +32,16 @@ class Subscription extends React.Component {
   componentWillMount() {
     // Read subscription status
     get("/api/v1/billing/subscription").then(response => {
-      const subscription = response.data.data;
+      // const subscription = response.data.data;
+      // MOCK for BASIC subscription
+      const subscription = {
+        valid_until: "2017-11-17T03:32:36.000000Z",
+        updated_at: "2017-11-03T03:32:36.958730",
+        tier: "BASIC",
+        renews: false,
+        renewal_frequency: null,
+        estimated_invoice_amount: 72
+      };
       const validUntil = moment.utc(subscription.valid_until);
       const today = moment.utc();
 
@@ -391,10 +401,15 @@ class Subscription extends React.Component {
             {cards.length === 0 && <p className="help-block">No saved cards</p>}
             {cards.length > 0 &&
               cards.map(card => {
+                const iconClassName = classNames(
+                  "credit-card-icon",
+                  card.brand
+                );
+
                 return (
                   <div className="credit-card">
                     <div className="credit-card-desc">
-                      <span className="card visa" />{" "}
+                      <span className={iconClassName} />{" "}
                       <b className="card-holder">{`${currentUser.firstName} ${currentUser.lastName}`}</b>
                       <br />
                       <span>
