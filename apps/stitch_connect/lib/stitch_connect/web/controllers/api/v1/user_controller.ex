@@ -124,10 +124,10 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def complete_onboarding(conn, %{"id" => id, "first_name" => first_name, "last_name" => last_name, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
     case Stitch.Accounts.update_and_complete_user_onboarding(id, %{first_name: first_name, last_name: last_name, username: username, password: password, pin: pin, team_id: team_id, roles: ["admin"]}) do
-      {:error, message} ->
+      {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: message})
+        |> json(%{message: changeset_errors_to_string(changeset)})
       user ->
         group = Stitch.GroupQueries.default_group(user)
         Stitch.Group.add_user(group, user.id)
