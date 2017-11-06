@@ -12,6 +12,7 @@ import Connect from "./products/connect";
 import Pricing from "./resources/pricing";
 import Downloads from "./resources/downloads";
 import Customers from "./resources/customers";
+import CaseLuminance from "./case-studies/luminance";
 import CasePBSC from "./case-studies/pbsc";
 import CaseDSSI from "./case-studies/dssi";
 import CaseUCSF from "./case-studies/ucsf";
@@ -34,6 +35,11 @@ class WebsiteRouter extends Component {
             <Route exact path="/pricing" component={Pricing} />
             <Route exact path="/downloads" component={Downloads} />
             <Route exact path="/customers" component={Customers} />
+            <Route
+              exact
+              path="/customers/luminance-recovery"
+              component={CaseLuminance}
+            />
             <Route
               exact
               path="/customers/princeton-brain-spine"

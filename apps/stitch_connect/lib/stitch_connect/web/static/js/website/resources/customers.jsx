@@ -60,6 +60,13 @@ export default class Customers extends Component {
                     Luminance adopted Stitch to help improve critical
                     communications and keep clients in the recovery program.
                   </p>
+
+                  <Link
+                    to="/customers/luminance-recovery"
+                    className="text-uppercase"
+                  >
+                    Read More
+                  </Link>
                 </div>
 
                 <div className="flex-item">
