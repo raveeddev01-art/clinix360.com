@@ -124,6 +124,13 @@ export default class Customers extends Component {
                       providers and staff during patient consultations for
                       improved efficiency and care.
                     </p>
+
+                    <Link
+                      to="/customers/dermatology-skin-surgery-institute"
+                      className="text-uppercase"
+                    >
+                      Read More
+                    </Link>
                   </Panel>
                 </div>
               </div>

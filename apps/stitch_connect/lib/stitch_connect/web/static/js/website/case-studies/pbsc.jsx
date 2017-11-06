@@ -19,10 +19,7 @@ export default class CasePBSC extends Component {
             <div className="container">
               <div className="landing-message text-center">
                 <h1>Customers</h1>
-                <h3>
-                  See how customers have improved care coordination on our
-                  platform.
-                </h3>
+                <h3>Princeton Brain & Spine</h3>
               </div>
             </div>
           </div>
