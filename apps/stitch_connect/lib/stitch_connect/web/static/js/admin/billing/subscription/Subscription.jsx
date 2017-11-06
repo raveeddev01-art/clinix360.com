@@ -1,5 +1,6 @@
 import React from "react";
 import { Well } from "react-bootstrap";
+import { Elements } from "react-stripe-elements";
 import classNames from "classnames";
 import moment from "moment";
 import capitalize from "lodash/capitalize";
@@ -8,6 +9,7 @@ import { TIERS, PLANS } from "./constants";
 import { getUpgradableTiers } from "./utils";
 import FrequencyToggle from "./FrequencyToggle";
 import Plan from "./Plan";
+import CheckoutForm from "./CheckoutForm";
 
 class Subscription extends React.Component {
   constructor(props) {
@@ -431,7 +433,12 @@ class Subscription extends React.Component {
 
           <div className="add-new-card">
             <h5>Option B: Add a new card.</h5>
-            <form id="payment-form">
+
+            <Elements>
+              <CheckoutForm />
+            </Elements>
+
+            {/* <form id="payment-form">
               <div className="form-group">
                 <label htmlFor="card-name" className="card-name-label">
                   Name on card{" "}
@@ -535,7 +542,7 @@ class Subscription extends React.Component {
                   carefully.
                 </p>
               </div>
-            </form>
+            </form> */}
           </div>
         </div>
       </div>
