@@ -165,14 +165,43 @@
         border-radius: 3px;
       }
 
-      .card-name-label {
-        display: block;
-        position: relative;
+      .card-form {
+        .card-name {
+          label {
+            display: block;
+            position: relative;
 
-        .secure-label {
-          position: absolute;
-          right: 0;
-          color: #999;
+            .secure-label {
+              position: absolute;
+              right: 0;
+              color: #999;
+            }
+          }
+
+          .form-control {
+            font-weight: 600;
+          }
+        }
+
+        .stripe-element-container {
+          display: block;
+          line-height: 30px;
+          margin-top: -5px;
+          margin-bottom: 15px;
+
+          .stripe-element {
+            height: 34px;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+
+            &.stripe-element-focus {
+              border-color: #66afe9;
+              outline: 0;
+              box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+                0 0 8px rgba(102, 175, 233, 0.6);
+            }
+          }
         }
       }
     }

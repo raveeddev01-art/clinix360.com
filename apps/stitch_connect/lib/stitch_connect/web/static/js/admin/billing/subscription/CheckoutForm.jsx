@@ -11,12 +11,15 @@ import {
 
 const createOptions = fontSize => {
   return {
+    classes: {
+      base: "stripe-element",
+      focus: "stripe-element-focus"
+    },
     style: {
       base: {
         fontSize,
-        color: "#424770",
-        letterSpacing: "0.025em",
-        fontFamily: "Source Code Pro, Menlo, monospace",
+        color: "#555",
+        fontFamily: "Stitch Lato, sans-serif",
         "::placeholder": {
           color: "#aab7c4"
         }
@@ -35,30 +38,10 @@ class CheckoutForm extends React.Component {
   };
 
   render() {
-    // <form onSubmit={this.handleSubmit}>
-    //   <label>
-    //     Card number
-    //     <CardNumberElement {...createOptions(this.props.fontSize)} />
-    //   </label>
-    //   <label>
-    //     Expiration date
-    //     <CardExpiryElement {...createOptions(this.props.fontSize)} />
-    //   </label>
-    //   <label>
-    //     CVC
-    //     <CardCVCElement {...createOptions(this.props.fontSize)} />
-    //   </label>
-    //   <label>
-    //     Postal code
-    //     <PostalCodeElement {...createOptions(this.props.fontSize)} />
-    //   </label>
-    //   <button>Pay</button>
-    // </form>
-
     return (
-      <form id="payment-form">
-        <div className="form-group">
-          <label htmlFor="card-name" className="card-name-label">
+      <form onSubmit={this.handleSubmit} className="card-form">
+        <div className="form-group card-name">
+          <label htmlFor="card-name">
             Name on card{" "}
             <span className="secure-label">
               <i className="fa fa-shield" /> Secure Form
@@ -72,80 +55,30 @@ class CheckoutForm extends React.Component {
             autoComplete="off"
           />
         </div>
-        <div className="row">
-          <div className="col-sm-6">
-            <div className="form-group">
-              <label htmlFor="card-number">Card Number</label>
-              <input
-                type="number"
-                id="card-number"
-                name="card-number"
-                className="form-control"
-                placeholder="•••• •••• •••• ••••"
-                size="20"
-                data-stripe="number"
-                required
-                autoComplete="off"
-              />
-            </div>
-          </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label htmlFor="card-exp-month">Expiry</label>
 
-              <input
-                type="number"
-                id="card-exp-month"
-                className="form-control"
-                placeholder="Month"
-                size="2"
-                data-stripe="exp-month"
-                autoComplete="off"
-              />
-            </div>
-          </div>
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label htmlFor="card-exp-year">&nbsp;</label>
-              <input
-                type="number"
-                id="card-exp-year"
-                className="form-control"
-                placeholder="Year"
-                size="4"
-                data-stripe="exp-year"
-                autoComplete="off"
-              />
-            </div>
-          </div>
-        </div>
+        <label className="stripe-element-container">
+          Card Number
+          <CardNumberElement {...createOptions(this.props.fontSize)} />
+        </label>
 
         <div className="row">
-          <div className="col-sm-6">
-            <div className="form-group">
-              <label htmlFor="card-cvc">CVV</label>
-              <input
-                type="text"
-                id="card-cvc"
-                className="form-control"
-                size="4"
-                data-stripe="cvc"
-                placeholder="3 digits on back"
-                autoComplete="off"
-              />
-            </div>
+          <div className="col-sm-4">
+            <label className="stripe-element-container">
+              Expiration date
+              <CardExpiryElement {...createOptions(this.props.fontSize)} />
+            </label>
           </div>
-
-          <div className="col-sm-6">
-            <div className="form-group">
-              <label htmlFor="card-zip">Zip Code</label>
-              <input
-                type="text"
-                id="card-zip"
-                className="form-control"
-                placeholder="US cards only"
-              />
-            </div>
+          <div className="col-sm-4">
+            <label className="stripe-element-container">
+              CVC
+              <CardCVCElement {...createOptions(this.props.fontSize)} />
+            </label>
+          </div>
+          <div className="col-sm-4">
+            <label className="stripe-element-container">
+              Postal code
+              <PostalCodeElement {...createOptions(this.props.fontSize)} />
+            </label>
           </div>
         </div>
 
