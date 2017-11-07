@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 
 import GetStarted from "./get_started";
 import TeamPicker from "./team/team_picker";

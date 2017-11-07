@@ -14,13 +14,12 @@
 }
 
 .authentication-wrapper {
-  height: 100%;
+  // height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 0;
-  overflow-y: auto;
+  padding: 50px 0;
 
   > div {
     max-width: 440px;

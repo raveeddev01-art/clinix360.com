@@ -1,9 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { LinkContainer } from "react-router-bootstrap";
 
 import Navbar from "react-bootstrap/lib/Navbar";
-import Nav from "react-bootstrap/lib/Nav";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
@@ -13,7 +10,7 @@ export default class Header extends Component {
       <Navbar id="header" inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href={`https://${applicationHost}/`} className="brand">
+            <a href={`https://${applicationHost}`} className="brand">
               <img src="/images/stitch-brand.png" alt="Stitch" />
             </a>
           </Navbar.Brand>
@@ -28,17 +25,20 @@ export default class Header extends Component {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <LinkContainer to="/connect">
-                    <MenuItem>Connect</MenuItem>
-                  </LinkContainer>
+                  <MenuItem href={`https://${applicationHost}/connect`}>
+                    Connect
+                  </MenuItem>
                 </Dropdown.Menu>
               </Dropdown>
             </li>
 
             <li role="presentation">
-              <Link to="/pricing" className="nav-link">
+              <a
+                href={`https://${applicationHost}/pricing`}
+                className="nav-link"
+              >
                 Pricing
-              </Link>
+              </a>
             </li>
 
             <li>
@@ -48,11 +48,9 @@ export default class Header extends Component {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <LinkContainer to="/downloads">
-                    <MenuItem>
-                      <i className="fa fa-cloud-download" /> Downloads
-                    </MenuItem>
-                  </LinkContainer>
+                  <MenuItem href={`https://${applicationHost}/downloads`}>
+                    <i className="fa fa-cloud-download" /> Downloads
+                  </MenuItem>
 
                   <MenuItem
                     href="https://calendly.com/teamstitch/demo"
@@ -62,29 +60,33 @@ export default class Header extends Component {
                   </MenuItem>
 
                   <MenuItem
-                    href="https://teamstitch.zendesk.com/hc/en-us"
+                    href="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect"
                     target="_blank"
                   >
                     <i className="fa fa-life-ring" /> Support
                   </MenuItem>
 
-                  <LinkContainer to="/customers">
-                    <MenuItem>
-                      <i className="fa fa-users" /> Customers
-                    </MenuItem>
-                  </LinkContainer>
+                  <MenuItem href={`https://${applicationHost}/customers`}>
+                    <i className="fa fa-users" /> Customers
+                  </MenuItem>
                 </Dropdown.Menu>
               </Dropdown>
             </li>
 
             <li role="presentation">
-              <a href="/signin" className="nav-link">
+              <a
+                href={`https://${applicationHost}/signin`}
+                className="nav-link"
+              >
                 Sign In
               </a>
             </li>
 
             <li role="presentation">
-              <a href="/signup/email" className="nav-link btn-outline">
+              <a
+                href={`https://${applicationHost}/signin/email`}
+                className="nav-link btn-outline"
+              >
                 Create Team
               </a>
             </li>
