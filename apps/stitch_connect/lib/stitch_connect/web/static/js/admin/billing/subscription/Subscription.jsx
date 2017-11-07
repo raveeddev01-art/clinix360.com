@@ -8,6 +8,7 @@ import { getUpgradableTiers } from "./utils";
 import FrequencyToggle from "./FrequencyToggle";
 import Plan from "./Plan";
 import Checkout from "./Checkout";
+import Loading from "./Loading";
 
 class Subscription extends React.Component {
   constructor(props) {
@@ -120,14 +121,6 @@ class Subscription extends React.Component {
   onCheckoutPlan = () => {
     this.setState({ checkout: true });
   };
-
-  renderLoading() {
-    return (
-      <div className="loading">
-        <i className="fa fa-circle-o-notch fa-spin fa-3x fa-fw" />
-      </div>
-    );
-  }
 
   renderHeader() {
     const { upgrade } = this.state;
@@ -358,9 +351,10 @@ class Subscription extends React.Component {
       <div className="subscription">
         {this.renderHeader()}
 
-        {subscription
-          ? checkout ? this.renderCheckout() : this.renderSubscription()
-          : this.renderLoading()}
+        {subscription &&
+          (checkout ? this.renderCheckout() : this.renderSubscription())}
+
+        <Loading show={!subscription} />
       </div>
     );
   }
