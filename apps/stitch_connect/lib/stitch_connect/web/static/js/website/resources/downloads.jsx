@@ -113,7 +113,10 @@ export default class Downloads extends Component {
 
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a disabled>
+                            <a
+                              target="_blank"
+                              href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
+                            >
                               <img
                                 src="/images/connect-app-icon.png"
                                 alt="Connect for iOS"
@@ -123,9 +126,16 @@ export default class Downloads extends Component {
                             <h3>iOS</h3>
                             <div className="m-b-10">iOS 9.0+</div>
 
-                            <Button bsStyle="primary" bsSize="large" disabled>
-                              Coming Soon
-                            </Button>
+                            <a
+                              class="appstore-link"
+                              target="_blank"
+                              href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
+                            >
+                              <img
+                                src="/images/appstore.png"
+                                alt="Connect for iOS"
+                              />
+                            </a>
                           </div>
                         </Col>
 
