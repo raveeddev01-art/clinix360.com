@@ -17,16 +17,14 @@ defmodule Stitch.Exports.TeamHistory do
   @spec generate_zip(Team.t, timeout) :: {:ok, String.t} | {:error, [term, ...]}
   def generate_zip(team, timeout \\ 5_000) do
     with_zippable_directory(team, fn parent_path, name ->
-      File.cd!(parent_path, fn ->
-        with {:ok, subpaths} <- write_to_zippable_directory(name, team, timeout) do
-          filepaths = Enum.map(subpaths, &String.to_charlist/1)
+      with {:ok, subpaths} <- write_to_zippable_directory(parent_path, name, team, timeout) do
+        filepaths = prepare_filepaths(parent_path, subpaths)
 
-          System.tmp_dir!()
-          |> Path.join("#{Ecto.UUID.generate()}.zip")
-          |> String.to_charlist()
-          |> :zip.create(filepaths)
-        end
-      end)
+        System.tmp_dir!()
+        |> Path.join("#{Ecto.UUID.generate()}.zip")
+        |> String.to_charlist()
+        |> :zip.create(filepaths, cwd: String.to_charlist(parent_path))
+      end
     end)
   end
 
@@ -52,16 +50,25 @@ defmodule Stitch.Exports.TeamHistory do
     "#{name} Stitch Export #{timestamp}"
   end
 
-  @spec write_to_zippable_directory(String.t, Team.t, timeout) :: {:ok, [String.t, ...]} | {:error, [term, ...]}
-  defp write_to_zippable_directory(zippable_directory, team, timeout) do
-    write_rooms_task    = Task.async(fn -> write_rooms(zippable_directory, team) end)
-    write_users_task    = Task.async(fn -> write_users(zippable_directory, team) end)
-    write_messages_task = Task.async(fn -> write_messages(zippable_directory, team) end)
+  @spec write_to_zippable_directory(String.t, String.t, Team.t, timeout) :: {:ok, [String.t, ...]} | {:error, [term, ...]}
+  defp write_to_zippable_directory(parent_path, zippable_directory, team, timeout) do
+    directory = Path.join(parent_path, zippable_directory)
+    write_rooms_task    = Task.async(fn -> write_rooms(directory, team) end)
+    write_users_task    = Task.async(fn -> write_users(directory, team) end)
+    write_messages_task = Task.async(fn -> write_messages(directory, team) end)
 
     [write_rooms_task, write_users_task, write_messages_task]
     |> Task.yield_many(timeout)
     |> process_task_results()
     |> prepare_final_result()
+  end
+
+  defp prepare_filepaths(parent_path, subpaths) do
+    Enum.map(subpaths, fn subpath ->
+      subpath
+      |> Path.relative_to(parent_path)
+      |> String.to_charlist()
+    end)
   end
 
   defp process_task_results(task_results) do

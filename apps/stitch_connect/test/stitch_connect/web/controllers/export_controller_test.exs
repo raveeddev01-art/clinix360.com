@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.Api.V1.ExportControllerTest do
         |> get(Routes.api_v1_export_path(conn, :index))
 
       assert response = json_response(conn, 200)
-      assert length(response["data"]) == length(exports)
+      assert length(response) == length(exports)
     end
 
     test "requires an admin user", %{conn: conn, team: team} do
@@ -84,7 +84,7 @@ defmodule StitchConnect.Web.Api.V1.ExportControllerTest do
         |> post(Routes.api_v1_export_path(conn, :create))
 
       assert response = json_response(conn, 429)
-      assert response["error"] =~ "24 hour period"
+      assert response["message"] =~ "24 hour period"
     end
   end
 
