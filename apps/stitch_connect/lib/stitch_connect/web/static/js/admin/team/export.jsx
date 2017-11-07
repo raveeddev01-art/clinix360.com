@@ -13,17 +13,21 @@ class TeamExport extends Component {
 
   _renderExports = () => {
     const { exportStore } = this.props;
-    return exportStore.exports.map(exportItem => {
-      return (
-        <ExportItem
-          key={`export_{exportItem.id}`}
-          id={exportItem.id}
-          insertedAt={exportItem.inserted_at}
-          status={exportItem.status}
-          downloadLink={exportStore.downloadLink(exportItem.id)}
-        />
-      );
-    });
+    return exportStore.exports.length > 0 ? (
+      exportStore.exports.map(exportItem => {
+        return (
+          <ExportItem
+            key={`export_{exportItem.id}`}
+            id={exportItem.id}
+            insertedAt={exportItem.inserted_at}
+            status={exportItem.status}
+            downloadLink={exportStore.downloadLink(exportItem.id)}
+          />
+        );
+      })
+    ) : (
+      <p>No exports found.</p>
+    );
   };
 
   _newExport = () => {
@@ -87,9 +91,9 @@ class TeamExport extends Component {
           <div className="table-head">
             <Row>
               <Col sm={6}>Date</Col>
-              <Col sm={4}>Uploads Token</Col>
+              <Col sm={4}>Status</Col>
               <Col sm={2} className="text-center">
-                Downloads
+                Download
               </Col>
             </Row>
           </div>

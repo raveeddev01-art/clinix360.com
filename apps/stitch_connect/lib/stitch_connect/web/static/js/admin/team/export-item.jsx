@@ -21,9 +21,11 @@ class TeamExportItem extends Component {
           </Col>
           <Col sm={4}>{status}</Col>
           <Col sm={2} className="text-center">
-            <a href={downloadLink}>
-              <i className="fa fa-download" />
-            </a>
+            {status === "COMPLETE" && (
+              <a href={downloadLink}>
+                <i className="fa fa-download" />
+              </a>
+            )}
           </Col>
         </Row>
       </div>
