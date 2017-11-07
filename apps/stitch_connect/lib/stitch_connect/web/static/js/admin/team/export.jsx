@@ -67,8 +67,10 @@ class TeamExport extends Component {
           Message history will be provided in JSON format. You will also receive
           a special token allowing you to access file uploads at their specified
           URLs. See our support article{" "}
-          <a href="https://teamstitch.zendesk.com/hc/en-us">here</a> for more on
-          how to use these files and tokens.
+          <a href="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect">
+            here
+          </a>{" "}
+          for more on how to use these files and tokens.
         </p>
 
         <Row className="m-b-20">
