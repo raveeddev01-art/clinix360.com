@@ -22,6 +22,7 @@ import SocketStore from "./socket_store";
 import TitleStore from "./title_store";
 import UploadStore from "./upload_store";
 import PinnedMessageStore from "./pinned_message_store";
+import ExportStore from "./export_store";
 
 class RootStore {
   constructor(props) {
@@ -51,6 +52,7 @@ class RootStore {
     this.uploadStore = new UploadStore(this);
     this.titleStore = new TitleStore(this, props);
     this.pinnedMessageStore = new PinnedMessageStore(this);
+    this.exportStore = new ExportStore(this);
 
     // Initial actions for admin stores
     this.notificationStore.loadPreferences();

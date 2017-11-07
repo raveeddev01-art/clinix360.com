@@ -84,7 +84,7 @@ defmodule Stitch.User.Authentication do
 
         user ->
           user
-          |> Ecto.Changeset.change(password_reset_token: :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32) )
+          |> Ecto.Changeset.change(password_reset_token: Stitch.Rand.token(32))
           |> Repo.update
     end
   end

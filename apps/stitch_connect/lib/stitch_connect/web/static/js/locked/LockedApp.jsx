@@ -34,7 +34,7 @@ class LockedApp extends Component {
 
   render() {
     return (
-      <div className="onboarding-wrapper">
+      <div className="locked-app-wrapper">
         <div className="authentication-wrapper">
           <div id="lockout" className="authentication-card text-center">
             <div className="lockout-header">
@@ -75,9 +75,7 @@ class LockedApp extends Component {
               <HelpBlock>
                 Forgot your PIN? Just enter your password.<br />
                 Forgot both? Reset your password{" "}
-                <a href="/reset-password">
-                  here
-                </a>.
+                <a href="/reset-password">here</a>.
               </HelpBlock>
             </form>
 

@@ -6,12 +6,18 @@ defmodule StitchConnect.Web.AuthenticationController do
   end
 
   def login(conn, _params) do
-    login_params = Poison.encode!(%{
-      "teamName" => conn.private[:team_name],
-      "teamSlug" => conn.private[:team_slug],
-      "invalidLogin" => get_flash(conn, :invalid_login)
-    })
-    render conn, "login.html", login_params: login_params
+    with %Stitch.Accounts.User{} = current_user <- get_session(conn, :current_user),
+         %Stitch.Accounts.User{} = current_user <- Stitch.Accounts.get_for_team_id(current_user.id, conn.assigns.team.id) do
+      default_group = Stitch.GroupQueries.default_group(current_user)
+      redirect(conn, to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug))
+    else _error ->
+      login_params = Poison.encode!(%{
+        "teamName" => conn.private[:team_name],
+        "teamSlug" => conn.private[:team_slug],
+        "invalidLogin" => get_flash(conn, :invalid_login)
+      })
+      render conn, "login.html", login_params: login_params
+    end
   end
 
   def submit_login(conn, %{"email" => email, "password" => password}) do

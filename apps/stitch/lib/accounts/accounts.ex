@@ -27,7 +27,7 @@ defmodule Stitch.Accounts do
     confirmation_code = digits
       |> Enum.join
 
-    token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+    token = Stitch.Rand.token(32)
 
     {:ok, user} =
       %User{}

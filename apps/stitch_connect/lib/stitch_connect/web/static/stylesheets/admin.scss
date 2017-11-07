@@ -376,6 +376,10 @@ $admin-topbar-height-sm: 65px;
             }
           }
 
+          a {
+            color: $brand-primary;
+          }
+
           &:nth-of-type(even) {
             background: rgba($brand-primary, 0.1);
           }
