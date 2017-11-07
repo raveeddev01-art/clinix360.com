@@ -108,7 +108,7 @@ export default class TeamPicker extends Component {
 
           <h5>
             Don't know your team's URL?{" "}
-            <Link to="/find-teams">
+            <Link to="/find-your-team">
               <strong>Find your team</strong>
             </Link>
           </h5>

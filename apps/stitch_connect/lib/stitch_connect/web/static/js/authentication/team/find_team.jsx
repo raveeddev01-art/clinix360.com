@@ -32,7 +32,14 @@ export default class FindTeam extends Component {
 
   _onSubmit = event => {
     event.preventDefault();
-    window.location = `https://${this.state.team_name}.${applicationHost}`;
+    window
+      .post("/api/v1/find-your-team", {
+        body: { email: this.state.email }
+      })
+      .then(response => {
+        notify.show(response.data.message);
+        this.setState({ email: "" });
+      });
   };
 
   _renderHeader = () => {
