@@ -13,17 +13,21 @@ class TeamExport extends Component {
 
   _renderExports = () => {
     const { exportStore } = this.props;
-    return exportStore.exports.map(exportItem => {
-      return (
-        <ExportItem
-          key={`export_{exportItem.id}`}
-          id={exportItem.id}
-          insertedAt={exportItem.inserted_at}
-          status={exportItem.status}
-          downloadLink={exportStore.downloadLink(exportItem.id)}
-        />
-      );
-    });
+    return exportStore.exports.length > 0 ? (
+      exportStore.exports.map(exportItem => {
+        return (
+          <ExportItem
+            key={`export_{exportItem.id}`}
+            id={exportItem.id}
+            insertedAt={exportItem.inserted_at}
+            status={exportItem.status}
+            downloadLink={exportStore.downloadLink(exportItem.id)}
+          />
+        );
+      })
+    ) : (
+      <p>No exports found.</p>
+    );
   };
 
   _newExport = () => {
@@ -63,8 +67,10 @@ class TeamExport extends Component {
           Message history will be provided in JSON format. You will also receive
           a special token allowing you to access file uploads at their specified
           URLs. See our support article{" "}
-          <a href="https://teamstitch.zendesk.com/hc/en-us">here</a> for more on
-          how to use these files and tokens.
+          <a href="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect">
+            here
+          </a>{" "}
+          for more on how to use these files and tokens.
         </p>
 
         <Row className="m-b-20">
@@ -87,9 +93,9 @@ class TeamExport extends Component {
           <div className="table-head">
             <Row>
               <Col sm={6}>Date</Col>
-              <Col sm={4}>Uploads Token</Col>
+              <Col sm={4}>Status</Col>
               <Col sm={2} className="text-center">
-                Downloads
+                Download
               </Col>
             </Row>
           </div>
