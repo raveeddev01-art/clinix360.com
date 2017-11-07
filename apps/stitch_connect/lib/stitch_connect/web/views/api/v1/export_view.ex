@@ -2,14 +2,13 @@ defmodule StitchConnect.Web.Api.V1.ExportView do
   use StitchConnect.Web, :view
 
   def render("index.json", %{exports: exports}) do
-    data = for export <- exports, do: export(export)
-    %{data: data}
+    Enum.map(exports, &export/1)
   end
 
   def render("show.json", %{export: export}), do: %{data: export(export)}
 
   def render("429.json", _) do
-    %{error: "Only one export request allowed per 24 hour period."}
+    %{message: "Only one export request allowed per 24 hour period."}
   end
 
   defp export(export) do

@@ -102,61 +102,6 @@
     }
   }
 
-  #header {
-    background: #036;
-    border-radius: 0;
-    border: 0;
-    padding: 40px 0;
-    margin: 0;
-
-    .navbar-brand {
-      padding: 10px 15px;
-      img {
-        width: 81px;
-      }
-    }
-
-    .nav-link {
-      color: #fff;
-      font-weight: 600;
-      text-decoration: none;
-      @media (min-width: 768px) {
-        font-size: 15px;
-      }
-
-      &.btn-outline {
-        display: inline-block;
-        border-radius: 4px;
-        box-shadow: 0 0 0 2px #fff;
-        padding: 10px 15px;
-        margin: 5px 0 5px 10px;
-      }
-    }
-
-    .btn-dropdown {
-      color: #fff;
-      font-weight: 600;
-      line-height: 20px;
-      background: transparent;
-      border: 0;
-      box-shadow: none;
-      padding: 15px;
-      @media (min-width: 768px) {
-        font-size: 15px;
-      }
-    }
-
-    .dropdown-menu > .active > a {
-      color: #333;
-      background: transparent;
-
-      &:hover {
-        color: #fff;
-        background: #036;
-      }
-    }
-  }
-
   .subheader {
     color: #fff;
     background: #036;
@@ -200,32 +145,87 @@
       }
     }
   }
+}
 
-  #footer {
-    width: 100%;
-    background-color: #fff;
-    box-shadow: 0 -1px 0 #eaeaea;
-    padding: 20px 0;
+#header {
+  background: #036;
+  border-radius: 0;
+  border: 0;
+  padding: 40px 0;
+  margin: 0;
 
-    h5 {
+  .navbar-brand {
+    padding: 10px 15px;
+    img {
+      width: 81px;
+    }
+  }
+
+  .nav-link {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    @media (min-width: 768px) {
+      font-size: 15px;
+    }
+
+    &.btn-outline {
+      display: inline-block;
+      border-radius: 4px;
+      box-shadow: 0 0 0 2px #fff;
+      padding: 10px 15px;
+      margin: 5px 0 5px 10px;
+    }
+  }
+
+  .btn-dropdown {
+    color: #fff;
+    font-weight: 600;
+    line-height: 20px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 15px;
+    @media (min-width: 768px) {
+      font-size: 15px;
+    }
+  }
+
+  .dropdown-menu > .active > a {
+    color: #333;
+    background: transparent;
+
+    &:hover {
+      color: #fff;
+      background: #036;
+    }
+  }
+}
+
+#footer {
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 -1px 0 #eaeaea;
+  padding: 20px 0;
+
+  h5 {
+    color: #666;
+    font-weight: 700;
+  }
+
+  a {
+    display: block;
+    color: #999;
+    text-decoration: none;
+
+    &:hover {
       color: #666;
-      font-weight: 700;
     }
+  }
 
-    a {
-      display: block;
-      color: #999;
-      text-decoration: none;
-
-      &:hover {
-        color: #666;
-      }
-    }
-
-    address {
-      color: #999;
-      line-height: 1.75;
-    }
+  address {
+    color: #999;
+    line-height: 1.75;
   }
 }
 

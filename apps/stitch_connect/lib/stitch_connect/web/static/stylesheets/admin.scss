@@ -384,6 +384,10 @@ $admin-topbar-height-sm: 65px;
             }
           }
 
+          a {
+            color: $brand-primary;
+          }
+
           &:nth-of-type(even) {
             background: rgba($brand-primary, 0.1);
           }
@@ -409,6 +413,11 @@ $admin-topbar-height-sm: 65px;
         padding: 3px 8px;
         font-size: 12px;
         line-height: 1.5;
+      }
+
+      .btn-md {
+        font-size: 14px;
+        padding: 8px 12px;
       }
 
       .btn-lg {
