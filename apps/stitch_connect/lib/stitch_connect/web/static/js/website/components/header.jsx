@@ -84,7 +84,7 @@ export default class Header extends Component {
 
             <li role="presentation">
               <a
-                href={`https://${applicationHost}/signin/email`}
+                href={`https://${applicationHost}/signup/email`}
                 className="nav-link btn-outline"
               >
                 Create Team

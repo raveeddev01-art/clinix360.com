@@ -130,14 +130,6 @@ $sidebar_width: 270px;
   height: auto;
 }
 
-.locked-app-wrapper {
-  height: 100vh;
-
-  .authentication-wrapper {
-    height: 100%;
-  }
-}
-
 @media only screen and (max-width: 991px) {
   #addons {
     flex-basis: 300px;
