@@ -15,6 +15,10 @@ $admin-topbar-height-sm: 65px;
   .flex-header {
     flex-basis: $admin-topbar-height;
     @include transition(flex-basis 0.2s ease);
+
+    h4 {
+      font-weight: 900;
+    }
   }
 
   .sidebar {
@@ -523,7 +527,7 @@ $admin-topbar-height-sm: 65px;
       top: 0;
       left: 60px;
       width: $admin-sidebar-width;
-      transform: translateX(-100%);
+      transform: translateX(-$admin-sidebar-width);
     }
 
     .admin-content {
@@ -540,7 +544,7 @@ $admin-topbar-height-sm: 65px;
       }
 
       .admin-content {
-        margin-left: $admin-sidebar-width;
+        transform: translateX($admin-sidebar-width);
         .admin-topbar {
           > .toggle-menu {
             > i {
