@@ -15,6 +15,7 @@ import UsersInvitations from "./users/invitations";
 import UsersMembers from "./users/members";
 import UsersPending from "./users/pending";
 import Billing from "./billing/billing";
+import Switcher from "../common/components/switcher/index";
 
 @inject("titleStore")
 @observer
@@ -62,6 +63,7 @@ class AdminApp extends Component {
         <Helmet>
           <title>{titleStore.title}</title>
         </Helmet>
+        <Switcher />
         <Sidebar onHideSidebar={this._hideSidebar} />
         <div className="admin-content">
           <Topbar onToggleSidebar={this._toggleSidebar} />
