@@ -32,13 +32,22 @@ const createOptions = fontSize => {
 };
 
 class CheckoutForm extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      nameOnCard: ""
+    };
+  }
+
   handleSubmit = evt => {
     evt.preventDefault();
 
     const { onSubmitStart, onSubmitSuccess, onSubmitError } = this.props;
+    const { nameOnCard: name } = this.state;
 
     onSubmitStart();
-    this.props.stripe.createToken().then(
+    this.props.stripe.createToken({ name }).then(
       payload => {
         onSubmitSuccess(payload);
       },
@@ -48,11 +57,17 @@ class CheckoutForm extends React.Component {
     );
   };
 
+  handleChange = evt => {
+    this.setState({
+      [evt.target.name]: evt.target.value
+    });
+  };
+
   render() {
     return (
       <form onSubmit={this.handleSubmit} className="card-form">
-        <div className="form-group card-name">
-          <label htmlFor="card-name">
+        <div className="form-group name-on-card">
+          <label htmlFor="name-on-card">
             Name on card{" "}
             <span className="secure-label">
               <i className="fa fa-shield" /> Secure Form
@@ -60,10 +75,13 @@ class CheckoutForm extends React.Component {
           </label>
           <input
             type="text"
-            id="card-name"
+            id="name-on-card"
+            name="nameOnCard"
             className="form-control"
             required
             autoComplete="off"
+            value={this.state.nameOnCard}
+            onChange={this.handleChange}
           />
         </div>
 
