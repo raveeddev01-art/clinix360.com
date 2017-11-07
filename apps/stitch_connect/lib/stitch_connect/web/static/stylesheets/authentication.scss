@@ -1,54 +1,25 @@
 .onboarding-wrapper {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  // @include stitch-scroll();
+  // display: flex;
+  // flex-direction: column;
+  // position: fixed;
+  // left: 0;
+  // right: 0;
+  // top: 0;
+  // bottom: 0;
 
   #header {
-    background: $brand-primary;
-    border-radius: 0;
-    border: 0;
     padding: 10px 0;
-    margin: 0;
-
-    .brand {
-      display: block;
-      padding: 10px 15px;
-      img {
-        width: 81px;
-      }
-    }
-
-    .nav-link {
-      color: #fff;
-      font-weight: 600;
-      text-decoration: none;
-      @media (min-width: 768px) {
-        font-size: 15px;
-      }
-
-      &.btn-outline {
-        display: inline-block;
-        border-radius: 4px;
-        box-shadow: 0 0 0 2px #fff;
-        padding: 10px 15px;
-        margin: 5px 0 5px 10px;
-      }
-    }
   }
 }
 
 .authentication-wrapper {
-  @include stitch-scroll();
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 15px;
+  padding: 40px 0;
   overflow-y: auto;
 
   > div {

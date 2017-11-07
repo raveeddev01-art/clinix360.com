@@ -13,6 +13,8 @@ import Login from "./login/login";
 import Registration from "./registration";
 import SendEmail from "./reset-password/send-email";
 import SetPassword from "./reset-password/set-password";
+import Header from "../website/components/header";
+import Footer from "../website/components/footer";
 
 @inject("titleStore")
 @observer
@@ -21,39 +23,7 @@ class AuthenticationRouter extends Component {
     const { titleStore } = this.props;
     return (
       <div className="onboarding-wrapper">
-        <div id="header">
-          <div className="container">
-            <Row>
-              <Col xs={5}>
-                <a href={`https://${applicationHost}/`} className="brand">
-                  <img src="/images/stitch-brand.png" alt="Stitch" />
-                </a>
-              </Col>
-
-              <Col xs={7}>
-                <ul className="list-inline text-right m-b-0">
-                  <li>
-                    <a
-                      href={`https://${applicationHost}/signin`}
-                      className="nav-link"
-                    >
-                      Sign In
-                    </a>
-                  </li>
-
-                  <li>
-                    <a
-                      href={`https://${applicationHost}/signup/email`}
-                      className="nav-link btn-outline"
-                    >
-                      Create Team
-                    </a>
-                  </li>
-                </ul>
-              </Col>
-            </Row>
-          </div>
-        </div>
+        <Header />
         <div className="authentication-wrapper">
           <Helmet>
             <title>{titleStore.title}</title>
@@ -81,6 +51,7 @@ class AuthenticationRouter extends Component {
             <Route component={() => <Redirect to="/" />} />
           </Switch>
         </div>
+        <Footer />
       </div>
     );
   }

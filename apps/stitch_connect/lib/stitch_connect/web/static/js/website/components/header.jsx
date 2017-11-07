@@ -13,9 +13,9 @@ export default class Header extends Component {
       <Navbar id="header" inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to="/" className="brand">
+            <a href={`https://${applicationHost}/`} className="brand">
               <img src="/images/stitch-brand.png" alt="Stitch" />
-            </Link>
+            </a>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
