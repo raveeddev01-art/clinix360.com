@@ -32,16 +32,17 @@ class Subscription extends React.Component {
   componentWillMount() {
     // Read subscription status
     get("/api/v1/billing/subscription").then(response => {
-      // const subscription = response.data.data;
+      const subscription = response.data.data;
+
       // MOCK for BASIC subscription
-      const subscription = {
-        valid_until: "2017-11-17T03:32:36.000000Z",
-        updated_at: "2017-11-03T03:32:36.958730",
-        tier: "BASIC",
-        renews: false,
-        renewal_frequency: null,
-        estimated_invoice_amount: 72
-      };
+      // const subscription = {
+      //   valid_until: "2017-11-17T03:32:36.000000Z",
+      //   updated_at: "2017-11-03T03:32:36.958730",
+      //   tier: "BASIC",
+      //   renews: false,
+      //   renewal_frequency: null,
+      //   estimated_invoice_amount: 72
+      // };
       const validUntil = moment.utc(subscription.valid_until);
       const today = moment.utc();
 
@@ -52,19 +53,21 @@ class Subscription extends React.Component {
 
     // Read cards
     get("/api/v1/billing/cards").then(response => {
-      // const cards = response.data.data;
-      const cards = [
-        {
-          id: 1,
-          brand: "visa",
-          last_four: "9292",
-          exp_month: 12,
-          exp_year: 2020,
-          default: "123",
-          inserted_at: "2017-11-3",
-          updated_at: "2017-11-3"
-        }
-      ];
+      const cards = response.data.data;
+
+      // MOCK for VISA card
+      // const cards = [
+      //   {
+      //     id: 1,
+      //     brand: "visa",
+      //     last_four: "9292",
+      //     exp_month: 12,
+      //     exp_year: 2020,
+      //     default: "123",
+      //     inserted_at: "2017-11-3",
+      //     updated_at: "2017-11-3"
+      //   }
+      // ];
 
       this.setState({ cards });
     });

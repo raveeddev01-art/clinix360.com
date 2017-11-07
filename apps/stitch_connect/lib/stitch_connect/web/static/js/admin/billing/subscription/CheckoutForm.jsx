@@ -84,7 +84,7 @@ class CheckoutForm extends React.Component {
 
         <div className="submit">
           <button className="btn btn-fancy btn-primary btn-block">
-            Complete Purchase
+            Save card info for future payments
           </button>
           <p className="help-block">
             Your account will be credited when team members are removed and
