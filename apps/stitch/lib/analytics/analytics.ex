@@ -5,6 +5,7 @@ defmodule Stitch.Analytics do
 
   """
 
+  import Ecto.Query
   alias Stitch.Analytics.Event
   alias Stitch.Repo
 
@@ -76,15 +77,32 @@ defmodule Stitch.Analytics do
     create_event(%{payload: payload})
   end
 
+  defp create_event(params) do
+    params
+    |> Event.new()
+    |> Repo.insert()
+  end
+
   @doc false
   def list_events() do
     Repo.all(Event)
   end
 
-  defp create_event(params) do
-    params
-    |> Event.new()
-    |> Repo.insert()
+  @doc false
+  def list_events([limit: limit]) do
+    query =
+      from e in Event,
+      limit: ^limit
+    Repo.all(query)
+  end
+
+  @doc false
+  def delete_events(events) do
+    ids = Enum.map(events, &(&1.id))
+    query =
+      from e in Event,
+      where: e.id in ^ids
+    Repo.delete_all(query)
   end
 
 end

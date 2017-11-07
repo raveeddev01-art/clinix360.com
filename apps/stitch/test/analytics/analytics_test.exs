@@ -52,4 +52,5 @@ defmodule Stitch.AnalyticsTest do
     assert payload["properties"] == properties
     assert payload["timestamp"]
   end
+
 end
