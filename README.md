@@ -42,6 +42,9 @@ export APNS_CERT_B64=
 export APNS_KEY_B64=
 export APNS_MODE=dev
 export FCM_KEY=
+
+export STRIPE_SECRET_KEY=
+export STRIPE_PUBLISHABLE_KEY=
 ```
 
 Source the file to add these environment variables to your current shell

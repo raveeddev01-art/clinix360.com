@@ -70,6 +70,11 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
         |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
 
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
+
       {:error, message} when is_binary(message) ->
         conn
         |> put_status(:unprocessable_entity)

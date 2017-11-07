@@ -69,5 +69,112 @@
         }
       }
     }
+
+    .checkout {
+      h4 {
+        line-height: 2em;
+        color: #333;
+        border-bottom: 1px solid #ddd;
+        font-size: 24px;
+        font-weight: 600;
+        margin: 20px 0 10px;
+      }
+
+      h5 {
+        line-height: 2em;
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin: 20px 0 10px;
+        border-bottom: 1px dashed #ddd;
+      }
+
+      ul {
+        margin-bottom: 10px;
+      }
+
+      .text-muted {
+        color: #666;
+      }
+
+      .credit-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 10px;
+
+        .credit-card-icon {
+          display: inline-block;
+          width: 45px;
+          height: 31px;
+          background-image: #369;
+          background-image: url("/images/cc-type.png");
+          background-position: 0 -55px;
+          background-size: 120px 361px;
+          background-repeat: no-repeat;
+
+          &.visa {
+            background-position: 0 -104px;
+          }
+
+          &.visa-electron {
+            background-position: 0 -149px;
+          }
+
+          &.mastercard {
+            background-position: 0 -194px;
+          }
+
+          &.maestro {
+            background-position: 0 -239px;
+          }
+
+          &.discover {
+            background-position: 0 -284px;
+          }
+
+          &.american-express {
+            background-position: 0 -329px;
+          }
+        }
+
+        .credit-card-desc {
+          display: flex;
+          flex-direction: column;
+
+          .credit-card-desc-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+
+            .credit-card-holder {
+              font-size: 16px;
+              font-weight: 600;
+              margin-left: 10px;
+            }
+          }
+        }
+      }
+
+      input.form-control {
+        font-size: 14px;
+        border-radius: 3px;
+      }
+
+      .card-name-label {
+        display: block;
+        position: relative;
+
+        .secure-label {
+          position: absolute;
+          right: 0;
+          color: #999;
+        }
+      }
+    }
   }
 }

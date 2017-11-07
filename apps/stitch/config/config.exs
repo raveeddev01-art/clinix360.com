@@ -22,6 +22,7 @@ config :stripity_stripe,
   secret_key: System.get_env("STRIPE_SECRET_KEY")
 
 config :stitch,
-  stripe_client: Stitch.Stripe.Client
+  stripe_client: Stitch.Stripe.Client,
+  stripe_publishable_key: System.get_env("STRIPE_PUBLISHABLE_KEY")
 
 import_config "#{Mix.env}.exs"

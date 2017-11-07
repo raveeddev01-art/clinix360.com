@@ -7,13 +7,16 @@ import { PLANS, FREQUENCIES } from "./constants";
 
 const Plan = ({ tier, frequency, selected, onSelect }) => {
   const plan = PLANS[tier];
-  const price = plan.pricePerMonth[FREQUENCIES[frequency]];
+  const frequencyName = FREQUENCIES[frequency].name;
+  const price = plan.pricePerMonth[frequencyName];
   const className = classNames("plan-container", { selected });
 
   return (
     <div className={className} onClick={onSelect}>
       <div className="plan-description">
-        <h4>{capitalize(tier)} Basic Monthly Plan</h4>
+        <h4>
+          {capitalize(tier)} {capitalize(frequencyName)} Plan
+        </h4>
         <span>${price} per month for 1 user</span>
       </div>
 

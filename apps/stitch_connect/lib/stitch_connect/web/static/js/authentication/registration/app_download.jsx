@@ -84,8 +84,6 @@ export default class AppDownload extends Component {
         >
           Skip & Launch
         </a>
-
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

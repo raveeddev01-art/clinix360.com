@@ -116,8 +116,6 @@ export default class FullName extends Component {
             className="btn btn-block btn-lg btn-primary m-b-40"
           />
         </form>
-
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

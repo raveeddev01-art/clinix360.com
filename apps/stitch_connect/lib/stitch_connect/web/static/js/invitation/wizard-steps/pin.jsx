@@ -6,16 +6,41 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 import OnboardCard from "../components/onboard-card/onboard-card";
+import PinInput from "../../common/components/pin-input/index";
 
 @inject("invitationStore")
 @observer
 class Pin extends Component {
-  _onChange = evt => {
-    this.props.invitationStore.pin = evt.target.value;
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      pin: "",
+      formValid: false
+    };
+  }
+
+  onInvalid = () => {
+    this.setState({ formValid: false, pin: "" });
   };
 
+  onValid = pin => {
+    this.setState({
+      pin,
+      formValid: pin.length === 4
+    });
+  };
+
+  onSubmit = () => {
+    const { onNext, invitationStore } = this.props;
+    const { formValid, pin } = this.state;
+
+    if (!formValid) return;
+    invitationStore.pin = pin;
+    onNext();
+  };
   render() {
-    const { onNext, onBack, onRestart, invitationStore } = this.props;
+    const { onBack, onRestart } = this.props;
+    const { formValid } = this.state;
     return (
       <OnboardCard
         title="PIN"
@@ -24,20 +49,16 @@ class Pin extends Component {
             Enter a <strong>4-digit pin</strong>.
           </span>
         }
-        onNext={onNext}
+        onNext={this.onSubmit}
         onBack={onBack}
         onRestart={onRestart}
+        disableNext={!formValid}
       >
-        <FormGroup bsSize="large">
-          <FormControl
-            required
-            autoFocus
-            type="password"
-            placeholder="0000"
-            value={invitationStore.pin}
-            onChange={this._onChange}
-          />
-        </FormGroup>
+        <PinInput
+          className="m-b-20 m-center"
+          onValid={this.onValid}
+          onInvalid={this.onInvalid}
+        />
         <HelpBlock className="m-b-20">
           You can use this pin when your screen is locked after a period of
           inactivity.

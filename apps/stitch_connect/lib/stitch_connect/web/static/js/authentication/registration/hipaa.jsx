@@ -112,8 +112,6 @@ export default class Hipaa extends Component {
             </a>.
           </HelpBlock>
         </form>
-
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }
