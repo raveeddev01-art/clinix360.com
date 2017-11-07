@@ -16,7 +16,7 @@ class Checkout extends React.Component {
         <div className="step1-billing-summary">
           <ul>
             <li>
-              You are subscribing to <b>Power</b>
+              You are subscribing to <b>{capitalize(plan.tier)}</b>
             </li>
             <li>
               You will be charged <b>$180 per user per year</b>

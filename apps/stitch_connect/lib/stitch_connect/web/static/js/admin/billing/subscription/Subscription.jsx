@@ -1,6 +1,5 @@
 import React from "react";
 import { Well } from "react-bootstrap";
-import classNames from "classnames";
 import moment from "moment";
 import capitalize from "lodash/capitalize";
 
@@ -342,8 +341,11 @@ class Subscription extends React.Component {
 
   renderCheckout() {
     const { cards } = this.state;
+    const plan = this.state.upgrade
+      ? this.state.upgradePlan
+      : this.state.subscribePlan;
 
-    return <Checkout cards={cards} />;
+    return <Checkout cards={cards} plan={plan} />;
   }
 
   render() {
