@@ -8,7 +8,13 @@ import CheckoutForm from "./CheckoutForm";
 
 class Checkout extends React.Component {
   render() {
-    const { cards, plan } = this.props;
+    const {
+      cards,
+      plan,
+      onSubmitStart,
+      onSubmitSuccess,
+      onSubmitError
+    } = this.props;
 
     return (
       <div className="checkout">
@@ -101,7 +107,11 @@ class Checkout extends React.Component {
             <h5>Option B: Add a new card.</h5>
 
             <Elements>
-              <CheckoutForm />
+              <CheckoutForm
+                onSubmitStart={onSubmitStart}
+                onSubmitError={onSubmitError}
+                onSubmitSuccess={onSubmitSuccess}
+              />
             </Elements>
           </div>
         </div>
@@ -116,7 +126,10 @@ Checkout.defaultProps = {
 
 Checkout.propTypes = {
   cards: PropTypes.array,
-  plan: PropTypes.object.isRequired
+  plan: PropTypes.object.isRequired,
+  onSubmitStart: PropTypes.func.isRequired,
+  onSubmitSuccess: PropTypes.func.isRequired,
+  onSubmitError: PropTypes.func.isRequired
 };
 
 export default Checkout;

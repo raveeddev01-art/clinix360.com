@@ -34,7 +34,18 @@ const createOptions = fontSize => {
 class CheckoutForm extends React.Component {
   handleSubmit = evt => {
     evt.preventDefault();
-    this.props.stripe.createToken().then(payload => console.log(payload));
+
+    const { onSubmitStart, onSubmitSuccess, onSubmitError } = this.props;
+
+    onSubmitStart();
+    this.props.stripe.createToken().then(
+      payload => {
+        onSubmitSuccess(payload);
+      },
+      error => {
+        onSubmitError(error);
+      }
+    );
   };
 
   render() {
@@ -102,7 +113,10 @@ CheckoutForm.defaultProps = {
 };
 
 CheckoutForm.propTypes = {
-  fontSize: PropTypes.string
+  fontSize: PropTypes.string,
+  onSubmitStart: PropTypes.func.isRequired,
+  onSubmitSuccess: PropTypes.func.isRequired,
+  onSubmitError: PropTypes.func.isRequired
 };
 
 export default injectStripe(CheckoutForm);
