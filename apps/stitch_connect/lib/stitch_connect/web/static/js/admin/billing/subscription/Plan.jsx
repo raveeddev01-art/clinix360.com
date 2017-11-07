@@ -3,12 +3,11 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
-import { PLANS, FREQUENCIES } from "./constants";
+import { getPrice, getFrequencyName } from "./utils";
 
 const Plan = ({ tier, frequency, selected, onSelect }) => {
-  const plan = PLANS[tier];
-  const frequencyName = FREQUENCIES[frequency].name;
-  const price = plan.pricePerMonth[frequencyName];
+  const frequencyName = getFrequencyName(frequency);
+  const price = getPrice(tier, frequency);
   const className = classNames("plan-container", { selected });
 
   return (

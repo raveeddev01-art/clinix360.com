@@ -1,4 +1,4 @@
-import { TIERS } from "./constants";
+import { TIERS, PLANS, FREQUENCIES } from "./constants";
 
 export function getUpgradableTiers(tier) {
   const index = TIERS.findIndex(t => t === tier);
@@ -8,4 +8,15 @@ export function getUpgradableTiers(tier) {
   }
 
   return TIERS.slice(index + 1);
+}
+
+export function getFrequencyName(frequencyIndex) {
+  return FREQUENCIES[frequencyIndex].name;
+}
+
+export function getPrice(tier, frequencyIndex) {
+  const plan = PLANS[tier];
+  const frequencyName = getFrequencyName(frequencyIndex);
+
+  return plan.pricePerMonth[frequencyName];
 }

@@ -8,7 +8,7 @@ import CheckoutForm from "./CheckoutForm";
 
 class Checkout extends React.Component {
   render() {
-    const { cards } = this.props;
+    const { cards, plan } = this.props;
 
     return (
       <div className="checkout">
@@ -115,7 +115,8 @@ Checkout.defaultProps = {
 };
 
 Checkout.propTypes = {
-  cards: PropTypes.array
+  cards: PropTypes.array,
+  plan: PropTypes.object.isRequired
 };
 
 export default Checkout;
