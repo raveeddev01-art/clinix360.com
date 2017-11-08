@@ -141,7 +141,10 @@ export default class Downloads extends Component {
 
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a disabled>
+                            <a
+                              target="_blank"
+                              href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
+                            >
                               <img
                                 src="/images/connect-app-icon.png"
                                 alt="Connect for Android"
@@ -151,9 +154,16 @@ export default class Downloads extends Component {
                             <h3>Android</h3>
                             <div className="m-b-10">Android 4.0+</div>
 
-                            <Button bsStyle="primary" bsSize="large" disabled>
-                              Coming Soon
-                            </Button>
+                            <a
+                              className="playstore-link"
+                              href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
+                              target="_blank"
+                            >
+                              <img
+                                src="/images/playstore.png"
+                                alt="Connect for Android"
+                              />
+                            </a>
                           </div>
                         </Col>
                       </Row>
