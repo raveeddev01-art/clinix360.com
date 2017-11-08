@@ -73,6 +73,8 @@ defmodule Stitch.Message do
     group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
+    analytics_track_message_sent(user, group)
+
     mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"])
     notify_user_ids = Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
     {read_status, recipients} = users |> Enum.reduce({%{}, []}, fn (recipient, {acc_map, acc_list}) ->
@@ -94,6 +96,20 @@ defmodule Stitch.Message do
       {:ok, notify_user_ids}
     end)
     |> Repo.transaction
+  end
+
+  defp analytics_track_message_sent(user, group) do
+    Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      properties = %{
+        "room_id"   => Integer.to_string(group.id),
+        "room_slug" => group.slug,
+        "team_id"   => Integer.to_string(team.id),
+        "team_slug" => team.slug
+      }
+      Stitch.Analytics.track(user.id, "Message Sent", properties)
+    end)
   end
 
   def create(group_id, user, %{"text_content" => text_content}, online_in_group) do

@@ -3,6 +3,7 @@ defmodule Stitch.TeamQueries do
   alias Stitch.Accounts.User
   alias Stitch.{Repo, Team}
 
+  def get_by_id(id) when is_binary(id), do: get_by_id(String.to_integer(id))
   def get_by_id(id) do
     Repo.get(Team, id)
   end

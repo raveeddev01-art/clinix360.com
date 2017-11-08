@@ -22,7 +22,7 @@ defmodule Stitch.Analytics do
   def identify(user_id, traits) do
     payload = %{
       type: "identify",
-      userId: Integer.to_string(user_id), # segment expects camelCase (userId)
+      userId: ensure_binary(user_id), # segment expects camelCase (userId)
       traits: traits,
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601()
     }
@@ -47,8 +47,8 @@ defmodule Stitch.Analytics do
   def group(%{user_id: user_id, team_id: team_id}, traits) do
     payload = %{
       type: "group",
-      userId: Integer.to_string(user_id), # segment expects camelCase (userId)
-      groupId: Integer.to_string(team_id), # segment expects camelCase (groupId)
+      userId: ensure_binary(user_id), # segment expects camelCase (userId)
+      groupId: ensure_binary(team_id), # segment expects camelCase (groupId)
       traits: traits,
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601()
     }
@@ -69,7 +69,7 @@ defmodule Stitch.Analytics do
   def track(user_id, event, properties) do
     payload = %{
       type: "track",
-      userId: Integer.to_string(user_id), # segment expects camelCase (userId)
+      userId: ensure_binary(user_id), # segment expects camelCase (userId)
       event: event,
       properties: properties,
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601()
@@ -82,6 +82,9 @@ defmodule Stitch.Analytics do
     |> Event.new()
     |> Repo.insert()
   end
+
+  defp ensure_binary(arg) when is_binary(arg), do: arg
+  defp ensure_binary(arg) when is_integer(arg), do: Integer.to_string(arg)
 
   @doc false
   def list_events() do

@@ -73,6 +73,7 @@ defmodule Stitch.Accounts do
 
           case Repo.update(changeset) do
             {:ok, user} ->
+              analytics_identify_and_group(user)
               {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               user
             {:error, _} ->
@@ -80,6 +81,16 @@ defmodule Stitch.Accounts do
           end
         end
     end
+  end
+
+  defp analytics_identify_and_group(user) do
+    Task.start(fn ->
+      Stitch.Analytics.identify(user.id, %{"email" => user.email})
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      traits = %{"team_name" => team.name}
+      Stitch.Analytics.group(%{user_id: user.id, team_id: team_id}, traits)
+    end)
   end
 
   @doc """
