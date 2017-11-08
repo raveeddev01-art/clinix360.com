@@ -61,7 +61,7 @@ export default class CaseUCSF extends Component {
               <hr />
 
               <h4 className="m-b-30">
-                A UCSF and SF Department of San Francisco joint effort
+                A UCSF and SF Department of Public Health joint effort
               </h4>
 
               <p className="m-b-30">
@@ -170,7 +170,7 @@ export default class CaseUCSF extends Component {
               </p>
 
               <h4 className="m-b-30">
-                Uniting a team spread out across San Francisco
+                Improving the patient experience and clinical workflow
               </h4>
 
               <p className="m-b-40">

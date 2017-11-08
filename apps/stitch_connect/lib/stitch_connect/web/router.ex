@@ -55,6 +55,8 @@ defmodule StitchConnect.Web.Router do
 
     get "/", HomeController, :index
     get "/connect", HomeController, :index
+    get "/engage", HomeController, :index
+    get "/manage", HomeController, :index
     get "/pricing", HomeController, :index
     get "/downloads", HomeController, :index
     get "/customers", HomeController, :index

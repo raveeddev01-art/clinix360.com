@@ -143,8 +143,8 @@ export default class CaseOrchardMedical extends Component {
                 Stitch has changed the way care coordination happens at Orchard
                 Medical. “Now, we just Stitch the MA and say ‘Susan is returning
                 your call on Line 1.’ This way, when the MA is done, they have
-                the message front of them and they'll just pick up the phone and
-                complete the waiting call. It saves us time from waiting and
+                the message in front of them and they'll just pick up the phone
+                and complete the waiting call. It saves us time from waiting and
                 waiting,” says St. Marie. Stitch has enabled the core workflow
                 at Orchard Medical to become asynchronous, leading to gains in
                 efficiency and productivity.

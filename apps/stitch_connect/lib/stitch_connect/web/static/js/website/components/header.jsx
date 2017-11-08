@@ -28,6 +28,12 @@ export default class Header extends Component {
                   <MenuItem href={`https://${applicationHost}/connect`}>
                     Connect
                   </MenuItem>
+                  <MenuItem href={`https://${applicationHost}/engage`}>
+                    Engage
+                  </MenuItem>
+                  <MenuItem href={`https://${applicationHost}/manage`}>
+                    Manage
+                  </MenuItem>
                 </Dropdown.Menu>
               </Dropdown>
             </li>

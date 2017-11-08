@@ -98,7 +98,7 @@ export default class CaseLuminance extends Component {
               </p>
 
               <h4 className="m-b-30">
-                A pioneering model for addiction treatment and rehabilitation
+                Decreasing the AMA rate by 70% to save lives and improve revenue
               </h4>
 
               <p className="m-b-30">

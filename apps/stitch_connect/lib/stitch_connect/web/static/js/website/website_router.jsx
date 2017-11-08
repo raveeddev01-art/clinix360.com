@@ -9,6 +9,8 @@ import ScrollToTop from "./components/scrollToTop";
 import Landing from "./landing";
 import Homepage from "./homepage";
 import Connect from "./products/connect";
+import Engage from "./products/engage";
+import Manage from "./products/manage";
 import Pricing from "./resources/pricing";
 import Downloads from "./resources/downloads";
 import Customers from "./resources/customers";
@@ -32,6 +34,8 @@ class WebsiteRouter extends Component {
             {/* <Route exact path="/" component={Landing} /> */}
             <Route exact path="/" component={Homepage} />
             <Route exact path="/connect" component={Connect} />
+            <Route exact path="/engage" component={Engage} />
+            <Route exact path="/manage" component={Manage} />
             <Route exact path="/pricing" component={Pricing} />
             <Route exact path="/downloads" component={Downloads} />
             <Route exact path="/customers" component={Customers} />

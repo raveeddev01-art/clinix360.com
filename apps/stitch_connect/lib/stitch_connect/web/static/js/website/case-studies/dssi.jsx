@@ -96,8 +96,9 @@ export default class CaseDSSI extends Component {
                 that “it was tough when we had decisions that needed to be made
                 immediately and one of the providers was in a room with a
                 patient for 20-30 minutes. I would have something that needed to
-                be urgently taken of, and you don’t want to be disrespectful to
-                the patient by taking time away from their appointment.”
+                be urgently taken care of, and you don’t want to be
+                disrespectful to the patient by taking time away from their
+                appointment.”
               </p>
 
               <p className="m-b-30">
@@ -152,7 +153,7 @@ export default class CaseDSSI extends Component {
                 Spencer gives an additional example of how DSSI has been able to
                 improve the quality of patient care by using Stitch. “We’re able
                 to use Stitch while we’re in the room with patients to give
-                price estimates in real-time. We’ll be in an exam room and
+                price estimates in real-time. We’ll be in an exam room and a
                 patient will want to know how much a service will cost. We can
                 quickly send that to the front desk, they’ll see it, and we’ll
                 get an estimate back in less than a minute. So this can help
@@ -180,7 +181,7 @@ export default class CaseDSSI extends Component {
                 something, so the archival ability is nice to have from a
                 medical legal standpoint, among other things.” Healthcare teams
                 generally communicate through SMS, sticky notes, phone calls,
-                pagers and faxes, none of these are easily traceable or
+                pagers and faxes, none of which are easily traceable or
                 searchable.
               </p>
 
