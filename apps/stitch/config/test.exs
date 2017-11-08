@@ -17,7 +17,8 @@ config :stitch, Stitch.Exports,
   enabled: false
 
 config :stitch,
-  stripe_client: Stitch.Stripe.TestClient
+  stripe_client: Stitch.Stripe.TestClient,
+  segment_api: Stitch.Analytics.Segment.InMemory
 
 config :stitch, :aws_presigned_urls, %{
   access_key_id: "some-access-key-id",
@@ -26,3 +27,6 @@ config :stitch, :aws_presigned_urls, %{
   host: "s3.amazonaws.com",
   scheme: "https://"
 }
+
+config :stitch, Stitch.Analytics.Sync.RecurringSync,
+  enabled: false

@@ -10,6 +10,7 @@ defmodule Stitch.TeamQueries do
     |> Repo.all
   end
 
+  def get_by_id(id) when is_binary(id), do: get_by_id(String.to_integer(id))
   def get_by_id(id) do
     Repo.get(Team, id)
   end
