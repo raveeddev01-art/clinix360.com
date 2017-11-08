@@ -264,13 +264,20 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def unhide(conn, %{"id" => group_id}) do
     group = GroupQueries.get_by_id(group_id)
 
-    case Group.unhide(group, conn.assigns.current_user.id) do
-      {:ok, _} ->
-        json(conn, %{message: "Room unhidden"})
-      {:error, message} ->
+    case Stitch.GroupAuthorization.can_view?(group, conn.assigns.current_user) do
+      false ->
         conn
-        |> put_status(:forbidden)
-        |> json(%{message: message})
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not authorized to access this room."})
+      true ->
+        case Group.unhide(group, conn.assigns.current_user.id) do
+          {:ok, _} ->
+            json(conn, %{message: "Room unhidden"})
+          {:error, message} ->
+            conn
+            |> put_status(:forbidden)
+            |> json(%{message: message})
+        end
     end
   end
 end
