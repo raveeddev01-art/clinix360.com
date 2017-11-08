@@ -19,11 +19,11 @@ class Subscription extends React.Component {
       subscription: null,
       upgrade: false,
       subscribePlan: {
-        frequency: 1,
+        planFrequency: 1,
         tier: "BASIC"
       },
       upgradePlan: {
-        frequency: 1,
+        planFrequency: 1,
         tier: ""
       },
       checkout: false,
@@ -77,40 +77,40 @@ class Subscription extends React.Component {
     });
   }
 
-  onToggleFrequency = () => {
-    const { upgrade } = this.state;
+  onTogglePlanFrequency = () => {
+    const { upgrade, upgradePlan, subscribePlan } = this.state;
 
     if (upgrade) {
       this.setState({
         upgradePlan: {
-          ...this.state.upgradePlan,
-          frequency: 1 - this.state.upgradePlan.frequency
+          ...upgradePlan,
+          planFrequency: 1 - upgradePlan.planFrequency
         }
       });
     } else {
       this.setState({
         subscribePlan: {
-          ...this.state.subscribePlan,
-          frequency: 1 - this.state.subscribePlan.frequency
+          ...subscribePlan,
+          planFrequency: 1 - subscribePlan.planFrequency
         }
       });
     }
   };
 
   onSelectPlan = tier => () => {
-    const { upgrade } = this.state;
+    const { upgrade, upgradePlan, subscribePlan } = this.state;
 
     if (upgrade) {
       this.setState({
         upgradePlan: {
-          ...this.state.upgradePlan,
+          ...upgradePlan,
           tier
         }
       });
     } else {
       this.setState({
         subscribePlan: {
-          ...this.state.subscribePlan,
+          ...subscribePlan,
           tier
         }
       });
@@ -229,6 +229,7 @@ class Subscription extends React.Component {
     const validUntil = moment
       .utc(subscription.valid_until)
       .format("dddd, MMMM Do YYYY");
+    const planItems = PLANS[subscription.tier].items;
 
     return (
       <div className="subscribed">
@@ -238,10 +239,10 @@ class Subscription extends React.Component {
           <b>{capitalize(subscription.tier)}</b> includes:
         </p>
 
-        {PLANS[subscription.tier].items &&
-          PLANS[subscription.tier].items.length > 0 && (
+        {planItems &&
+          planItems.length > 0 && (
             <ul className="list-unstyled">
-              {PLANS[subscription.tier].items.map((item, index) => (
+              {planItems.map((item, index) => (
                 <li key={`item_${index}`}>
                   <i className="fa fa-check-circle-o" />
                   {item}
@@ -264,22 +265,22 @@ class Subscription extends React.Component {
   }
 
   renderSelectPlan() {
-    const { frequency, tier } = this.state.subscribePlan;
+    const { planFrequency, tier } = this.state.subscribePlan;
 
     return (
       <div className="plans">
         <p>Please select a plan to continue service:</p>
 
         <FrequencyToggle
-          frequency={!!frequency}
-          onToggle={this.onToggleFrequency}
+          frequency={!!planFrequency}
+          onToggle={this.onTogglePlanFrequency}
         />
 
         {TIERS.map(t => (
           <Plan
             key={t}
             tier={t}
-            frequency={frequency}
+            frequency={planFrequency}
             selected={tier === t}
             onSelect={this.onSelectPlan(t)}
           />
@@ -301,20 +302,20 @@ class Subscription extends React.Component {
 
   renderUpgradePlan() {
     const tiers = getUpgradableTiers(this.state.subscription.tier);
-    const { frequency, tier } = this.state.upgradePlan;
+    const { planFrequency, tier } = this.state.upgradePlan;
 
     return (
       <div className="plans">
         <FrequencyToggle
-          frequency={!!frequency}
-          onToggle={this.onToggleFrequency}
+          frequency={!!planFrequency}
+          onToggle={this.onTogglePlanFrequency}
         />
 
         {tiers.map(t => (
           <Plan
             key={t}
             tier={t}
-            frequency={frequency}
+            frequency={planFrequency}
             selected={tier === t}
             onSelect={this.onSelectPlan(t)}
           />
