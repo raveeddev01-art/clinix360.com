@@ -80,6 +80,11 @@ class Subscription extends React.Component {
     this.setState({ checkout: true });
   };
 
+  onUseCreditCard = card => {
+    // TODO: Process checkout using card selected
+    console.log("onUse", card);
+  };
+
   onCardSubmitStart = () => {
     this.setState({ loading: true });
   };
@@ -339,6 +344,7 @@ class Subscription extends React.Component {
         cards={cards}
         plan={plan}
         upgrade={upgrade}
+        onUseCreditCard={this.onUseCreditCard}
         onSubmitStart={this.onCardSubmitStart}
         onSubmitSuccess={this.onCardSubmitSuccess}
         onSubmitError={this.onCardSubmitError}

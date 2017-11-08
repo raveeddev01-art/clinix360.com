@@ -29,7 +29,13 @@ class Checkout extends React.Component {
   }
 
   render() {
-    const { cards, onSubmitStart, onSubmitSuccess, onSubmitError } = this.props;
+    const {
+      cards,
+      onUseCreditCard,
+      onSubmitStart,
+      onSubmitSuccess,
+      onSubmitError
+    } = this.props;
     const billingSummary = this.getBillingSummary();
 
     return (
@@ -90,7 +96,9 @@ class Checkout extends React.Component {
 
             {cards.length === 0 && <p className="help-block">No saved cards</p>}
             {cards.length > 0 &&
-              cards.map(card => <CreditCard key={card.id} card={card} />)}
+              cards.map(card => (
+                <CreditCard key={card.id} card={card} onUse={onUseCreditCard} />
+              ))}
           </div>
 
           <div className="add-new-card">
@@ -117,6 +125,7 @@ Checkout.defaultProps = {
 Checkout.propTypes = {
   cards: PropTypes.array,
   plan: PropTypes.object.isRequired,
+  onUseCreditCard: PropTypes.func.isRequired,
   onSubmitStart: PropTypes.func.isRequired,
   onSubmitSuccess: PropTypes.func.isRequired,
   onSubmitError: PropTypes.func.isRequired

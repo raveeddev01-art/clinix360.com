@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
-const CreditCard = ({ card }) => {
+const CreditCard = ({ card, onUse }) => {
   const iconClassName = classNames(
     "credit-card-icon",
     card.brand.toLowerCase()
@@ -26,7 +26,12 @@ const CreditCard = ({ card }) => {
         </div>
       </div>
 
-      <button className="btn btn-fancy btn-primary btn-md">
+      <button
+        className="btn btn-fancy btn-primary btn-md"
+        onClick={() => {
+          onUse(card);
+        }}
+      >
         Use this Card
       </button>
     </div>
@@ -34,7 +39,8 @@ const CreditCard = ({ card }) => {
 };
 
 CreditCard.propTypes = {
-  card: PropTypes.object.isRequired
+  card: PropTypes.object.isRequired,
+  onUse: PropTypes.func.isRequired
 };
 
 export default CreditCard;
