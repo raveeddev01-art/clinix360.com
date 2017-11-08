@@ -16,7 +16,6 @@ class MessageStore {
   @observable unreadMessagesCount = 0;
   @observable mentionsCount = 0;
   @observable lastReadAt = null;
-  @observable newMessageLinePosition = 0;
   @observable groupCursor = null;
   @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
   @observable isLoadingRecent = false;
@@ -108,7 +107,24 @@ class MessageStore {
 
   @computed
   get newMessageLineMessage() {
-    return this.getMessageByIndex(this.newMessageLinePosition - 1);
+    const lastReadAt = moment.utc(this.lastReadAt);
+    const index = this.messages
+      .slice()
+      .reverse()
+      .findIndex(m => moment.utc(m.inserted_at).diff(lastReadAt) >= 0);
+
+    if (index > 0) {
+      console.log(
+        this.messages[this.messages.length - index - 1].inserted_at,
+        this.lastReadAt,
+        moment
+          .utc(this.messages[this.messages.length - index - 1].inserted_at)
+          .diff(lastReadAt)
+      );
+      return this.messages[this.messages.length - index - 1];
+    }
+
+    return null;
   }
 
   @computed
@@ -117,7 +133,9 @@ class MessageStore {
       _.chain(this.messages)
         .sortBy("inserted_at")
         // Group messages by dates
-        .groupBy(message => moment(message.inserted_at).format(`YYYY-MM-DD`))
+        .groupBy(message =>
+          moment.utc(message.inserted_at).format(`YYYY-MM-DD`)
+        )
         .value()
     );
   }
@@ -457,7 +475,7 @@ class MessageStore {
         this.updateUnreadMessages(response.messages);
 
         this.markedAsUnread = true;
-        this.newMessageLinePosition = this.unreadMessagesCount;
+        this.lastReadAt = response.lastReadAt;
       })
       .receive("error", err => {
         notify.show(err.message, "error");
@@ -488,7 +506,7 @@ class MessageStore {
         });
 
         if (resetNewMessageLine) {
-          this.newMessageLinePosition = 0;
+          this.lastReadAt = moment.utc().format();
         }
 
         // Update favicon
@@ -638,15 +656,21 @@ class MessageStore {
 
     if (newMessage.user_id === currentUser.id) {
       if (this.unreadMessagesCount === 0) {
-        this.markAsRead();
+        this.markAsRead(false);
       }
-      this.newMessageLinePosition = 0;
+      this.lastReadAt = moment
+        .utc(newMessage.inserted_at)
+        .add(1, "second")
+        .format();
     } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       // For messages from other users
-      if (this.newMessageLinePosition || !this.isScrollBottom) {
-        this.newMessageLinePosition = this.newMessageLinePosition + 1;
+      if (!this.isScrollBottom) {
+        this.lastReadAt = moment
+          .utc()
+          .subtract(1, "second")
+          .format();
       }
 
       if (this.unreadMessagesCount || !this.isScrollBottom) {
@@ -712,7 +736,6 @@ class MessageStore {
     this.unreadMessagesCount = groupStore.unreadMessagesCount;
     this.mentionsCount = groupStore.mentionsCount;
     this.lastReadAt = groupStore.lastReadAt;
-    this.newMessageLinePosition = this.unreadMessagesCount;
 
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };
