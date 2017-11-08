@@ -3,6 +3,7 @@ import { Well } from "react-bootstrap";
 import moment from "moment";
 import capitalize from "lodash/capitalize";
 
+import { alert } from "../../../common/modals";
 import { TIERS, PLANS } from "./constants";
 import { getUpgradableTiers } from "./utils";
 import Plans from "./plans/Plans";
@@ -90,7 +91,10 @@ class Subscription extends React.Component {
   onCardSubmitError = error => {
     this.setState({ loading: false });
 
-    console.log("card submit error", error);
+    alert({
+      title: "Error in creating a stripe Token",
+      message: error.message
+    });
   };
 
   loadSubscription() {
@@ -131,14 +135,24 @@ class Subscription extends React.Component {
         source_token: token.id
       }
     }).then(response => {
-      this.setState({ loading: false });
-
-      alert(
-        "We successfully saved your card info. We won't begin billing until your trial expires in 9 days"
-      );
+      const { cards, subscription } = this.state;
 
       this.setState({
-        cards: this.state.cards.push(response.data.data)
+        loading: false,
+        cards: cards.push(response.data.data)
+      });
+
+      alert({
+        title: "Thanks for using Stitch!",
+        message: (
+          <p>
+            We successfully saved your card info. <br />{" "}
+            <b>
+              We won&rsquo;t begin billing until your trial expires in{" "}
+              {subscription.remaining_days} days.
+            </b>
+          </p>
+        )
       });
     });
   }
