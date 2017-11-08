@@ -33,49 +33,8 @@ class Subscription extends React.Component {
   }
 
   componentWillMount() {
-    // Read subscription status
-    this.setState({ loading: true });
-
-    get("/api/v1/billing/subscription").then(response => {
-      const subscription = response.data.data;
-
-      // MOCK for BASIC subscription
-      // const subscription = {
-      //   valid_until: "2017-11-17T03:32:36.000000Z",
-      //   updated_at: "2017-11-03T03:32:36.958730",
-      //   tier: "BASIC",
-      //   renews: false,
-      //   renewal_frequency: null,
-      //   estimated_invoice_amount: 72
-      // };
-      const validUntil = moment.utc(subscription.valid_until);
-      const today = moment.utc();
-
-      subscription.remaining_days = validUntil.diff(today, "days");
-
-      this.setState({ loading: false, subscription });
-    });
-
-    // Read cards
-    get("/api/v1/billing/cards").then(response => {
-      const cards = response.data.data;
-
-      // MOCK for VISA card
-      // const cards = [
-      //   {
-      //     id: 1,
-      //     brand: "visa",
-      //     last_four: "9292",
-      //     exp_month: 12,
-      //     exp_year: 2020,
-      //     default: "123",
-      //     inserted_at: "2017-11-3",
-      //     updated_at: "2017-11-3"
-      //   }
-      // ];
-
-      this.setState({ cards });
-    });
+    this.loadSubscription();
+    this.loadCards();
   }
 
   onSelectPlanFrequency = freq => {
@@ -124,10 +83,8 @@ class Subscription extends React.Component {
     this.setState({ loading: true });
   };
 
-  onCardSubmitSuccess = payload => {
-    this.setState({ loading: false });
-
-    console.log("card submit success", payload);
+  onCardSubmitSuccess = token => {
+    this.addCard(token);
   };
 
   onCardSubmitError = error => {
@@ -135,6 +92,56 @@ class Subscription extends React.Component {
 
     console.log("card submit error", error);
   };
+
+  loadSubscription() {
+    this.setState({ loading: true });
+
+    get("/api/v1/billing/subscription").then(response => {
+      const subscription = response.data.data;
+
+      // MOCK for BASIC subscription
+      // const subscription = {
+      //   valid_until: "2017-11-17T03:32:36.000000Z",
+      //   updated_at: "2017-11-03T03:32:36.958730",
+      //   tier: "BASIC",
+      //   renews: false,
+      //   renewal_frequency: null,
+      //   estimated_invoice_amount: 72
+      // };
+      const validUntil = moment.utc(subscription.valid_until);
+      const today = moment.utc();
+
+      subscription.remaining_days = validUntil.diff(today, "days");
+
+      this.setState({ loading: false, subscription });
+    });
+  }
+
+  loadCards() {
+    get("/api/v1/billing/cards").then(response => {
+      const cards = response.data.data;
+
+      this.setState({ cards });
+    });
+  }
+
+  addCard(token) {
+    post("/api/v1/billing/cards", {
+      body: {
+        source_token: token.id
+      }
+    }).then(response => {
+      this.setState({ loading: false });
+
+      alert(
+        "We successfully saved your card info. We won't begin billing until your trial expires in 9 days"
+      );
+
+      this.setState({
+        cards: this.state.cards.push(response.data.data)
+      });
+    });
+  }
 
   renderHeader() {
     const { upgrade } = this.state;

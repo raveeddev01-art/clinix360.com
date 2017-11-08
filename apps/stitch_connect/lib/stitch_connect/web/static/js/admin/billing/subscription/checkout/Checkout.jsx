@@ -77,7 +77,7 @@ class Checkout extends React.Component {
               cards.map(card => {
                 const iconClassName = classNames(
                   "credit-card-icon",
-                  card.brand
+                  card.brand.toLowerCase()
                 );
 
                 return (
