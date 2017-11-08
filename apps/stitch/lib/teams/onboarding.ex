@@ -36,4 +36,6 @@ defmodule Stitch.Team.Onboarding do
         {:error, "Team wasn't created"}
     end
   end
+
+  def create_team(_, _), do: {:error, "Team name or slug cannot be empty or nil."}
 end

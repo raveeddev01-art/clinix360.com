@@ -38,6 +38,11 @@ defmodule Stitch.Team.OnboardingTest do
       assert message == "Team wasn't created"
     end
 
+    test "it returns an error given empty name and slug" do
+      {:error, message} = Onboarding.create_team("", "")
+      assert message == "Team name or slug cannot be empty or nil."
+    end
+
     test "configures the team with a trial subscription" do
       team = Onboarding.create_team("Care Clinic", "care-clinic-12")
       assert subscription = Repo.get_by(Stitch.Billing.Subscription, team_id: team.id)
