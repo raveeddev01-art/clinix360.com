@@ -11,10 +11,8 @@
 
 .locked-app-wrapper {
   height: 100vh;
-
-  .authentication-wrapper {
-    height: 100%;
-  }
+  display: flex;
+  justify-content: center;
 }
 
 .authentication-wrapper {
