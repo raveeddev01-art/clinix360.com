@@ -7,10 +7,13 @@ import Sidemenu from "../sidemenu/sidemenu";
 import Chat from "./chat";
 import BrowserNotificationAlert from "./browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
+import Switcher from "../common/components/switcher/index";
 
 @inject("uploadStore", "sidemenuStore")
 @observer
 class ChatApp extends Component {
+  static requiresAdmin = false;
+
   constructor(props) {
     super(props);
 
@@ -69,7 +72,8 @@ class ChatApp extends Component {
         )}
         <UploadModal />
         <BrowserNotificationAlert />
-        <div className="app-container">
+        <div className="appContainer">
+          <Switcher />
           <Sidemenu />
           <Switch>
             <Route path={`/rooms/:slug`} component={Chat} />

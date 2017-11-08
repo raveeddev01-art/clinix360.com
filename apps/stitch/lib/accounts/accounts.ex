@@ -27,7 +27,7 @@ defmodule Stitch.Accounts do
     confirmation_code = digits
       |> Enum.join
 
-    token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+    token = Stitch.Rand.token(32)
 
     {:ok, user} =
       %User{}
@@ -76,8 +76,8 @@ defmodule Stitch.Accounts do
               analytics_identify_and_group(user)
               {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               user
-            {:error, _} ->
-              {:error, "Could not finish onboarding user."}
+            {:error, changeset} ->
+              {:error, changeset}
           end
         end
     end
@@ -146,6 +146,10 @@ defmodule Stitch.Accounts do
   end
 
   def update_user_password(_,_,_), do: {:error, "Invalid Parameters provided for password update"}
+
+  def get_by_id(user_id) do
+    Repo.get(User, user_id)
+  end
 
   def get_for_team_id(user_id, team_id) do
     Repo.get_by(User, id: user_id, team_id: team_id)

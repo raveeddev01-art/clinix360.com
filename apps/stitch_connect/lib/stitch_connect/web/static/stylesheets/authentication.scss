@@ -1,12 +1,31 @@
+.onboarding-wrapper {
+  #header {
+    padding: 10px 0;
+  }
+}
+
+.locked-app-wrapper {
+  height: 100vh;
+
+  .authentication-wrapper {
+    height: 100%;
+  }
+}
+
 .authentication-wrapper {
-  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 15px;
+  padding: 50px 0;
+
+  > div {
+    max-width: 440px;
+    max-height: 100%;
+  }
 
   .alert {
-    max-width: 480px;
+    width: 100%;
     color: inherit;
     font-size: 16px;
     background: #fff;
@@ -37,7 +56,6 @@
   }
 
   .authentication-card {
-    max-width: 440px;
     width: 100%;
     background: #fff;
     border: 1px solid $border-color;
@@ -154,8 +172,6 @@
     }
 
     &.team-picker-card {
-      max-width: 480px;
-
       .form-control {
         color: #333;
         font-size: 16px;

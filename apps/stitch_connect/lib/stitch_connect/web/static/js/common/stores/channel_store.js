@@ -20,9 +20,10 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
-    const { sidemenuStore } = this.rootStore;
+    const { sidemenuStore, userStore } = this.rootStore;
     const channel = this.join(this.eventChannelTopic, options);
 
+    this.eventChannel.on("user_info", userStore.onUpdateUser);
     this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
     this.eventChannel.on("joined_group", sidemenuStore.onJoinedGroup);
     this.eventChannel.on("left_group", sidemenuStore.onLeftGroup);

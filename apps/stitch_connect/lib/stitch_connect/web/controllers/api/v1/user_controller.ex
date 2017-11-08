@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   alias Stitch.{Repo, Accounts.User, UserQueries}
+  alias StitchConnect.Web.{EventsChannel}
 
   def index(conn, _) do
     users = UserQueries.users_for_team(conn.assigns.current_user.team_id)
@@ -61,6 +62,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def promote_admin(conn, %{"id" => user_id}) do
     case Stitch.Accounts.Admin.promote_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
+        EventsChannel.broadcast_user_info(user)
         conn
         |> render("show.json", user: user)
       {:error, message} ->
@@ -73,6 +75,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def revoke_admin(conn, %{"id" => user_id}) do
     case Stitch.Accounts.Admin.revoke_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
+        EventsChannel.broadcast_user_info(user)
         conn
         |> render("show.json", user: user)
       {:error, message} ->
@@ -121,10 +124,10 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def complete_onboarding(conn, %{"id" => id, "first_name" => first_name, "last_name" => last_name, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
     case Stitch.Accounts.update_and_complete_user_onboarding(id, %{first_name: first_name, last_name: last_name, username: username, password: password, pin: pin, team_id: team_id, roles: ["admin"]}) do
-      {:error, message} ->
+      {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: message})
+        |> json(%{message: changeset_errors_to_string(changeset)})
       user ->
         group = Stitch.GroupQueries.default_group(user)
         Stitch.Group.add_user(group, user.id)

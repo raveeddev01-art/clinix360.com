@@ -2,6 +2,11 @@ import React, { Component } from "react";
 import { inject } from "mobx-react";
 import { Panel, Tabs, Tab } from "react-bootstrap";
 
+import Subscription from "./subscription/Subscription";
+import Contact from "./contact/Contact";
+import Payment from "./payment/Payment";
+import History from "./history/History";
+
 const header = (
   <h1>
     <i className="fa fa-credit-card" /> Billing
@@ -9,7 +14,7 @@ const header = (
 );
 
 @inject("titleStore")
-export default class TeamBilling extends Component {
+class TeamBilling extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Billing");
   }
@@ -19,19 +24,21 @@ export default class TeamBilling extends Component {
       <Panel className="admin-panel tabs-panel" header={header}>
         <Tabs defaultActiveKey={1} id="admin-billing-tabs">
           <Tab eventKey={1} title="Subscription">
-            Subscription
+            <Subscription />
           </Tab>
           <Tab eventKey={2} title="Contact">
-            Contact
+            <Contact />
           </Tab>
           <Tab eventKey={3} title="Payment">
-            Payment
+            <Payment />
           </Tab>
           <Tab eventKey={4} title="History">
-            History
+            <History />
           </Tab>
         </Tabs>
       </Panel>
     );
   }
 }
+
+export default TeamBilling;

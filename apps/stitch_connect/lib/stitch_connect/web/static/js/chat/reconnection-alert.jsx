@@ -4,16 +4,10 @@ import { inject, observer } from "mobx-react";
 @inject("socketStore")
 @observer
 export default class ReconnectionAlert extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  reconnect = () => {
-    this.props.socketStore.reconnect();
-  };
-
   render() {
-    if (this.props.socketStore.isConnected === true) {
+    const { socketStore } = this.props;
+
+    if (socketStore.isConnected) {
       return null;
     }
 
@@ -21,8 +15,8 @@ export default class ReconnectionAlert extends Component {
       <div className="browser-notification-alert reconnection-alert">
         <span>
           Waiting for server connection, trying again in{" "}
-          {this.props.socketStore.reconnectIn} seconds...{" "}
-          <a role="link" onClick={this.reconnect}>
+          {socketStore.reconnectIn} seconds...{" "}
+          <a role="link" onClick={socketStore.reconnect}>
             Try now
           </a>
         </span>

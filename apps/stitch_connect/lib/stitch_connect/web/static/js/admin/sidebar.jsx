@@ -4,6 +4,8 @@ import { Link, withRouter, matchPath } from "react-router-dom";
 import ListGroup from "react-bootstrap/lib/ListGroup";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 
+import { isAdmin } from "../util/utils";
+
 @inject("teamStore", "presenceStore")
 @observer
 class Sidebar extends Component {
@@ -24,30 +26,34 @@ class Sidebar extends Component {
               this._isSelected("/admin/team")
             }
           >
-            <Link to="/admin/team/settings"><i className="fa fa-cogs"></i> Settings</Link>
+            <Link to="/admin/team/settings">
+              <i className="fa fa-cogs" /> Settings
+            </Link>
           </ListGroupItem>
           <ListGroupItem active={this._isSelected("/admin/team/security")}>
-            <Link to="/admin/team/security"><i className="fa fa-shield"></i> Security</Link>
+            <Link to="/admin/team/security">
+              <i className="fa fa-shield" /> Security
+            </Link>
           </ListGroupItem>
-          <ListGroupItem
-            active={this._isSelected("/admin/users/members")}
-          >
-            <Link to="/admin/users/members"><i className="fa fa-users"></i> Members</Link>
+          <ListGroupItem active={this._isSelected("/admin/users/members")}>
+            <Link to="/admin/users/members">
+              <i className="fa fa-users" /> Members
+            </Link>
           </ListGroupItem>
-          <ListGroupItem
-            active={this._isSelected("/admin/users/invitations")}
-          >
-            <Link to="/admin/users/invitations"><i className="fa fa-envelope-o"></i> Invitations</Link>
+          <ListGroupItem active={this._isSelected("/admin/users/invitations")}>
+            <Link to="/admin/users/invitations">
+              <i className="fa fa-envelope-o" /> Invitations
+            </Link>
           </ListGroupItem>
-          <ListGroupItem
-            active={this._isSelected("/admin/users/pending")}
-          >
-            <Link to="/admin/users/pending"><i className="fa fa-inbox"></i> Pending</Link>
+          <ListGroupItem active={this._isSelected("/admin/users/pending")}>
+            <Link to="/admin/users/pending">
+              <i className="fa fa-inbox" /> Pending
+            </Link>
           </ListGroupItem>
-          <ListGroupItem
-            active={this._isSelected("/admin/billing")}
-          >
-            <Link to="/admin/billing"><i className="fa fa-credit-card"></i> Billing</Link>
+          <ListGroupItem active={this._isSelected("/admin/billing")}>
+            <Link to="/admin/billing">
+              <i className="fa fa-credit-card" /> Billing
+            </Link>
           </ListGroupItem>
         </ListGroup>
       </div>
@@ -65,40 +71,46 @@ class Sidebar extends Component {
         <div className="flex-container">
           <h3>You</h3>
           <ListGroup>
-            <ListGroupItem
-              active={this._isSelected("/admin/you/account")}
-            >
-              <Link to="/admin/you/account"><i className="fa fa-cog"></i> Account</Link>
+            <ListGroupItem active={this._isSelected("/admin/you/account")}>
+              <Link to="/admin/you/account">
+                <i className="fa fa-cog" /> Account
+              </Link>
             </ListGroupItem>
-            <ListGroupItem
-              active={this._isSelected("/admin/you/profile")}
-            >
-              <Link to="/admin/you/profile"><i className="fa fa-user"></i> Profile</Link>
+            <ListGroupItem active={this._isSelected("/admin/you/profile")}>
+              <Link to="/admin/you/profile">
+                <i className="fa fa-user" /> Profile
+              </Link>
             </ListGroupItem>
             <ListGroupItem
               active={this._isSelected("/admin/you/notifications")}
             >
-              <Link to="/admin/you/notifications"><i className="fa fa-bell"></i> Notifications</Link>
+              <Link to="/admin/you/notifications">
+                <i className="fa fa-bell" /> Notifications
+              </Link>
             </ListGroupItem>
             <ListGroupItem onClick={onHideSidebar}>
-              <Link to="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect" target="_blank"><i className="fa fa-question-circle"></i> Help <i className="fa fa-external-link sm"></i></Link>
+              <Link
+                to="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect"
+                target="_blank"
+              >
+                <i className="fa fa-question-circle" /> Help{" "}
+                <i className="fa fa-external-link sm" />
+              </Link>
             </ListGroupItem>
           </ListGroup>
 
-          {currentUser.roles &&
-            currentUser.roles.includes("admin") &&
-            this._adminTeamsOptions()}
+          {isAdmin() && this._adminTeamsOptions()}
 
           <h3>Stitch</h3>
           <ListGroup>
             <ListGroupItem href="/">
-              <i className="fa fa-rocket"></i> Launch
+              <i className="fa fa-rocket" /> Launch
             </ListGroupItem>
             <ListGroupItem href="#" onClick={this.props.presenceStore.lock}>
-              <i className="fa fa-lock"></i> Lockout
+              <i className="fa fa-lock" /> Lockout
             </ListGroupItem>
             <ListGroupItem href="/logout">
-              <i className="fa fa-sign-out"></i> Sign Out
+              <i className="fa fa-sign-out" /> Sign Out
             </ListGroupItem>
           </ListGroup>
         </div>

@@ -96,13 +96,13 @@ defmodule Stitch.UserQueriesTest do
     end
 
     test "returns not found message for unknown token" do
-      token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+      token = Stitch.Rand.token(32)
       {:not_found, message} = Stitch.UserQueries.get_by_token(token)
       assert message == "User with token #{token} was not found."
     end
 
     test "returns user given an existing token" do
-      token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+      token = Stitch.Rand.token(32)
       insert(:user, %{token: token})
       user = Stitch.UserQueries.get_by_token(token)
       assert user.token == token
@@ -118,6 +118,18 @@ defmodule Stitch.UserQueriesTest do
       record = Stitch.UserQueries.team_member_with_email(team.id, email)
       assert record.email == email
       assert record.email != email <> "Test"
+    end
+  end
+
+  describe "Stitch.UserQueries.user_with_email_exists?/1" do
+    test "returns true if a user with the given email exists" do
+      insert(:user, email: "foo@example.com")
+      assert Stitch.UserQueries.user_with_email_exists?("foo@example.com")
+    end
+
+    test "returns false when no user with the given email exists" do
+      insert(:user, email: "bar@example.com")
+      refute Stitch.UserQueries.user_with_email_exists?("foo@example.com")
     end
   end
 end

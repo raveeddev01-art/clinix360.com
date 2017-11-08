@@ -21,6 +21,8 @@
     "constructor-super": "warn",
     "class-methods-use-this": "off",
     "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "warn",
+    "jsx-a11y/label-has-for": "warn",
     "jsx-a11y/interactive-supports-focus": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
     "jsx-a11y/no-static-element-interactions": "off",
@@ -57,14 +59,17 @@
           "searchStore",
           "sidemenuStore",
           "socketStore",
+          "teamStore",
           "titleStore",
           "uploadStore",
           "pinnedMessageStore",
           "registrationStore",
+          "teamStore",
           "userStore",
           "match",
           "location",
-          "history"
+          "history",
+          "stripe"
         ]
       }
     ],
@@ -75,6 +80,7 @@
     "notify": true,
     "currentUser": false,
     "applicationHost": true,
+    "stripePublishableKey": true,
     "socket": true,
     "post": true,
     "get": true,

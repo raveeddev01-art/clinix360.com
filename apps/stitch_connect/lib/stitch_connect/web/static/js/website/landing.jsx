@@ -6,8 +6,6 @@ import cx from "classnames";
 import CreateTeamForm from "./components/create-team";
 import CUSTOMERS from "./components/customers-logos";
 
-import Navbar from "react-bootstrap/lib/Navbar";
-import Nav from "react-bootstrap/lib/Nav";
 import Button from "react-bootstrap/lib/Button";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -29,52 +27,87 @@ export default class Landing extends Component {
   render() {
     return (
       <div id="pre-launch-landing">
-        <Navbar id="header" inverse collapseOnSelect>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <Link to="/" className="brand">
-                <img src="/images/stitch-brand.png" alt="Stitch" />
-              </Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight>
-              <li role="presentation">
-                <a href="/signin">Sign In</a>
-              </li>
-
-              <li role="presentation">
-                <a href="/signup/email" className="btn-outline">
-                  Create Team
+        <div id="header">
+          <div className="container">
+            <Row>
+              <Col xs={5}>
+                <a href="/" className="brand">
+                  <img src="/images/stitch-brand.png" alt="Stitch" />
                 </a>
-              </li>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
+              </Col>
 
-        <div className="container">
-          <Row>
-            <Col sm={5}>
-              <div className="landing-message">
-                <h1>Care Coordination</h1>
-                <h3>
-                  Communicate, write notes, track tasks, upload files, and
-                  collaborate on any device.
-                </h3>
-              </div>
+              <Col xs={7}>
+                <ul className="list-inline text-right m-b-0">
+                  <li>
+                    <a href="/signin" className="nav-link">
+                      Sign In
+                    </a>
+                  </li>
 
-              <CreateTeamForm />
-            </Col>
+                  <li>
+                    <a href="/signup/email" className="nav-link btn-outline">
+                      Create Team
+                    </a>
+                  </li>
+                </ul>
+              </Col>
+            </Row>
+          </div>
+        </div>
 
-            <Col sm={7}>
-              <img
-                src="/images/landing-products.png"
-                alt=""
-                className="img-responsive"
-              />
-            </Col>
-          </Row>
+        <div className="landing-content">
+          <div className="container">
+            <Row>
+              <Col md={5}>
+                <div className="landing-message">
+                  <h1>Care Coordination</h1>
+                  <h3>
+                    Communicate, write notes, track tasks, upload files, and
+                    collaborate on any device.
+                  </h3>
+
+                  <CreateTeamForm />
+                </div>
+              </Col>
+
+              <Col md={7}>
+                <img
+                  src="/images/landing-products.png"
+                  alt=""
+                  className="img-responsive"
+                />
+              </Col>
+            </Row>
+          </div>
+        </div>
+
+        <div id="footer">
+          <div className="container">
+            <Row>
+              <Col sm={4}>Stitch Technologies, Inc</Col>
+              <Col sm={8}>
+                <ul className="list-inline m-b-0 text-right">
+                  <li>
+                    <Link to="/hipaa">HIPAA</Link>
+                  </li>
+                  <li>
+                    <Link to="/privacy-policy">Privacy Policy</Link>
+                  </li>
+                  <li>
+                    <Link to="/terms-of-service">Terms of Service</Link>
+                  </li>
+                  {/* <li>
+                    <a
+                      id="intercom-link"
+                      href="jig8cj9z@inbound.intercom-mail.com"
+                    >
+                      Intercom
+                    </a>
+                  </li> */}
+                </ul>
+              </Col>
+            </Row>
+          </div>
         </div>
 
         {/* <div className="subheader">

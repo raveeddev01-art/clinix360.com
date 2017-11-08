@@ -9,6 +9,8 @@ import Username from "./wizard-steps/username";
 import Password from "./wizard-steps/password";
 import Pin from "./wizard-steps/pin";
 import invitationStore from "./stores/invitation_store";
+import Header from "../website/components/header";
+import Footer from "../website/components/footer";
 
 const stores = { invitationStore };
 const stepList = [Welcome, FirstName, LastName, Username, Password, Pin];
@@ -56,7 +58,11 @@ class Invitation extends Component {
   render() {
     return (
       <Provider {...stores}>
-        <div className="authentication-wrapper">{this._renderStep()}</div>
+        <div className="onboarding-wrapper">
+          <Header />
+          <div className="authentication-wrapper">{this._renderStep()}</div>
+          <Footer />
+        </div>
       </Provider>
     );
   }

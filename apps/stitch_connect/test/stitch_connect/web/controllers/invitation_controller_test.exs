@@ -46,7 +46,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       })
       |> json_response(422)
 
-    assert json == %{"message" => "Could not finish onboarding user."}
+    assert json == %{"message" => "Username has invalid format"}
     assert %{accepted: false} = Stitch.Repo.get(Stitch.Invitation, invite.id)
   end
 

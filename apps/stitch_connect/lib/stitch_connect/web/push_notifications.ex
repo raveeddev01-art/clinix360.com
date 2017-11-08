@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.PushNotifications do
   alias Stitch.{Accounts.User, Group, GroupUser, Message, Mobile, Repo}
   alias Pigeon.{APNS, FCM}
   import Ecto.Query
+  require Logger
 
   def push_badge_update(msg, exclude_user_ids \\ [])
   def push_badge_update(%Message{type: "system"}, _exclude_user_ids), do: nil
@@ -85,12 +86,14 @@ defmodule StitchConnect.Web.PushNotifications do
 
   defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
     import APNS.Notification
+    apns_topic = Application.get_env(:stitch_connect, :apns_topic)
 
     ios_devices
     |> Enum.map(fn %{token: token} ->
-      grp
-      |> new_msg_notification_body(msg)
-      |> new(token)
+      push_notification = grp |> new_msg_notification_body(msg)
+      push_notification = if apns_topic, do: new(push_notification, token, apns_topic), else: new(push_notification, token)
+
+      push_notification
       |> put_badge(badge_value)
       |> put_sound("chime")
     end)
@@ -155,5 +158,8 @@ defmodule StitchConnect.Web.PushNotifications do
   def handle_response_ios(%{response: :bad_device_token, device_token: token}) do
     Mobile.remove_device("ios", token)
   end
-  def handle_response_ios(_notification), do: nil
+  def handle_response_ios(%{response: :success}), do: nil
+  def handle_response_ios(%{response: response_error, device_token: token}) do
+    Logger.info(inspect(%{response: response_error, device_token: token}))
+  end
 end
