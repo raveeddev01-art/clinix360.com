@@ -182,9 +182,12 @@ defmodule Stitch.Billing.BillingTest do
       assert elem(changeset.errors[:source_token], 0) =~ "can't be blank"
     end
 
-    test "sets the first card to be the default payment method", %{team: team} do
-      assert {:ok, %{default: true}} = Billing.add_card(team, "tok_valid")
-      assert {:ok, %{default: false}} = Billing.add_card(team, "tok_valid")
+    test "sets the card to be the default payment method", %{team: team} do
+      old_card = insert(:card, team: team, default: true)
+      assert {:ok, %{id: new_id, default: true}} = Billing.add_card(team, "tok_valid")
+      cards = Billing.list_cards(team)
+      assert %{default: false} = Enum.find(cards, &(&1.id == old_card.id))
+      assert %{default: true} = Enum.find(cards, &(&1.id == new_id))
     end
 
     test "gives an error with invalid source token", %{team: team} do
@@ -218,9 +221,10 @@ defmodule Stitch.Billing.BillingTest do
   describe "set_as_default/2" do
     setup do
       subscription = insert(:subscription)
-      {:ok, default_card} = Billing.add_card(subscription.team, "tok_valid")
-      {:ok, other_card} = Billing.add_card(subscription.team, "tok_valid")
-      {:ok, team: subscription.team, default_card: default_card, other_card: other_card}
+      team = subscription.team
+      default_card = insert(:card, team: team, default: true)
+      other_card = insert(:card, team: team, default: false)
+      {:ok, team: team, default_card: default_card, other_card: other_card}
     end
 
     test "sets a card as the default", %{team: team, default_card: default_card, other_card: other_card} do

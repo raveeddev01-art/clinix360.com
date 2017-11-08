@@ -240,12 +240,12 @@ defmodule Stitch.Billing do
   @doc """
   Adds a credit card to the team.
 
-  If the card is the first card to be added, the card will be set as the default card.
+  New cards are set as the default card.
 
   ## Example
 
       iex> add_card(%Team{...}, "tok_1234567")
-      {:ok, %PaymentMethod{...}}
+      {:ok, %PaymentMethod{default: true, ...}}
 
   """
   @spec add_card(Team.t, String.t) :: {:ok, PaymentMethod.t} | {:error, Ecto.Changeset.t | :invalid_token}
@@ -254,8 +254,11 @@ defmodule Stitch.Billing do
     customer_id = team.subscription.customer_id
 
     with %{valid?: true} = changeset <- PaymentMethod.stripe(%{source_token: source_token}),
-         {:ok, card} <- @stripe_client.add_card(customer_id, changeset.changes.source_token) do
-      do_insert_card(team_id, card)
+         {:ok, card} <- @stripe_client.add_card(customer_id, changeset.changes.source_token),
+         :true <- @stripe_client.set_as_default_card(customer_id, card.card_id),
+         {:ok, payment_method} <- do_insert_card(team_id, card) do
+      do_set_as_default(payment_method)
+      {:ok, payment_method}
     else
       %Ecto.Changeset{} = changeset -> {:error, changeset}
       :error -> {:error, :invalid_token}
@@ -263,15 +266,9 @@ defmodule Stitch.Billing do
   end
 
   defp do_insert_card(team_id, card_params) do
-    query =
-      from pm in PaymentMethod,
-      where: pm.team_id == ^team_id,
-      select: count(pm.id)
-    set_as_default? = Repo.one(query) == 0
-
     params =
       card_params
-      |> Map.put(:default, set_as_default?)
+      |> Map.put(:default, true)
       |> Map.put(:team_id, team_id)
 
     params
@@ -324,26 +321,23 @@ defmodule Stitch.Billing do
     team = Repo.preload(team, :subscription)
 
     with payment_method when not is_nil(payment_method) <- Repo.get_by(PaymentMethod, id: payment_method_id, team_id: team_id),
-         @stripe_client.set_as_default_card(team.subscription.customer_id, payment_method.card_id),
-         {:ok, %{new_default: payment_method}} <- do_set_as_default(payment_method, team_id) do
-      {:ok, payment_method}
+         true <- @stripe_client.set_as_default_card(team.subscription.customer_id, payment_method.card_id) do
+      {:ok, do_set_as_default(payment_method)}
     else
       nil -> {:error, :not_found}
       false -> {:error, :not_found}
     end
   end
 
-  defp do_set_as_default(payment_method, team_id) do
-    clear_previous_default_query =
+  defp do_set_as_default(%PaymentMethod{id: id, team_id: team_id}) do
+    query =
       from pm in PaymentMethod,
       where: pm.team_id == ^team_id,
-      where: pm.id != ^payment_method.id,
-      update: [set: [default: false]]
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:new_default, Ecto.Changeset.change(payment_method, default: true))
-    |> Ecto.Multi.update_all(:clear_old_default, clear_previous_default_query, [])
-    |> Repo.transaction()
+      update: [
+        set: [default: fragment("CASE WHEN id = ? THEN true ELSE false END", ^id)]
+      ]
+    {_update_count, updates} = Repo.update_all(query, [], returning: true)
+    Enum.find(updates, &(&1.id == id))
   end
 
   @doc """
