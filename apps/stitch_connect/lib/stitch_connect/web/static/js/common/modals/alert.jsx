@@ -19,6 +19,7 @@ const Alert = ({
     onHide={dismiss}
     backdrop={enableEscape ? true : "static"}
     keyboard={enableEscape}
+    className="message-modal"
   >
     <Modal.Header>
       <Modal.Title>{title}</Modal.Title>

@@ -21,6 +21,7 @@ const Confirm = ({
     onHide={dismiss}
     backdrop={enableEscape ? true : "static"}
     keyboard={enableEscape}
+    className="message-modal"
   >
     <Modal.Header>
       <Modal.Title>{title}</Modal.Title>
@@ -42,7 +43,12 @@ const Confirm = ({
   </Modal>
 );
 
+const noop = () => {};
+
 Confirm.defaultProps = {
+  proceed: noop,
+  cancel: noop,
+  dismiss: noop,
   okLabel: "OK",
   cancelLabel: "Cancel",
   title: "Confirm",
