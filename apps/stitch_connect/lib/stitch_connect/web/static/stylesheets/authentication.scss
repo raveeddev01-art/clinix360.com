@@ -1,4 +1,9 @@
 .onboarding-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   #header {
     padding: 10px 0;
   }
