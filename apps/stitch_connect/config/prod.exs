@@ -62,4 +62,5 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
 
 # General application configuration
 config :stitch_connect,
-  version: System.get_env("SOURCE_VERSION") # https://devcenter.heroku.com/changelog-items/630
+  version: System.get_env("SOURCE_VERSION") || System.get_env("APTIBLE_RELEASE_HREF")
+# https://devcenter.heroku.com/changelog-items/630
