@@ -15,6 +15,7 @@ class Subscription extends React.Component {
     super(props);
 
     this.state = {
+      loading: false,
       subscription: null,
       upgrade: false,
       subscribePlan: {
@@ -32,6 +33,8 @@ class Subscription extends React.Component {
 
   componentWillMount() {
     // Read subscription status
+    this.setState({ loading: true });
+
     get("/api/v1/billing/subscription").then(response => {
       const subscription = response.data.data;
 
@@ -49,7 +52,7 @@ class Subscription extends React.Component {
 
       subscription.remaining_days = validUntil.diff(today, "days");
 
-      this.setState({ subscription });
+      this.setState({ loading: false, subscription });
     });
 
     // Read cards
@@ -122,11 +125,21 @@ class Subscription extends React.Component {
     this.setState({ checkout: true });
   };
 
-  onCardSubmitStart = () => {};
+  onCardSubmitStart = () => {
+    this.setState({ loading: true });
+  };
 
-  onCardSubmitSuccess = payload => {};
+  onCardSubmitSuccess = payload => {
+    this.setState({ loading: false });
 
-  onCardSubmitError = error => {};
+    console.log("card submit success", payload);
+  };
+
+  onCardSubmitError = error => {
+    this.setState({ loading: false });
+
+    console.log("card submit error", error);
+  };
 
   renderHeader() {
     const { upgrade } = this.state;
@@ -359,7 +372,7 @@ class Subscription extends React.Component {
   }
 
   render() {
-    const { subscription, checkout } = this.state;
+    const { loading, subscription, checkout } = this.state;
 
     return (
       <div className="subscription">
@@ -368,7 +381,7 @@ class Subscription extends React.Component {
         {subscription &&
           (checkout ? this.renderCheckout() : this.renderSubscription())}
 
-        <Loading show={!subscription} />
+        <Loading show={loading} />
       </div>
     );
   }
