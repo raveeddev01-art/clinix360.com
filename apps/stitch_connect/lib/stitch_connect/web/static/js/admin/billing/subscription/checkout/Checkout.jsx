@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Elements } from "react-stripe-elements";
-import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
 import { getFrequency, getMonthlyPrice } from "../utils";
+import CreditCard from "./CreditCard";
 import CheckoutForm from "./CheckoutForm";
 
 class Checkout extends React.Component {
@@ -90,33 +90,7 @@ class Checkout extends React.Component {
 
             {cards.length === 0 && <p className="help-block">No saved cards</p>}
             {cards.length > 0 &&
-              cards.map(card => {
-                const iconClassName = classNames(
-                  "credit-card-icon",
-                  card.brand.toLowerCase()
-                );
-
-                return (
-                  <div className="credit-card" key={card.id}>
-                    <div className="credit-card-desc">
-                      <div className="credit-card-desc-row">
-                        <span className={iconClassName} />
-                        <span className="credit-card-holder">{`${currentUser.firstName} ${currentUser.lastName}`}</span>
-                      </div>
-
-                      <div>
-                        {capitalize(card.brand)} ending in {card.last_four}
-                        &nbsp;&#183;&nbsp;
-                        {`${card.exp_month}/${card.exp_year}`}
-                      </div>
-                    </div>
-
-                    <button className="btn btn-fancy btn-primary btn-md">
-                      Use this Card
-                    </button>
-                  </div>
-                );
-              })}
+              cards.map(card => <CreditCard key={card.id} card={card} />)}
           </div>
 
           <div className="add-new-card">
@@ -143,7 +117,6 @@ Checkout.defaultProps = {
 Checkout.propTypes = {
   cards: PropTypes.array,
   plan: PropTypes.object.isRequired,
-  upgrade: PropTypes.bool.isRequired,
   onSubmitStart: PropTypes.func.isRequired,
   onSubmitSuccess: PropTypes.func.isRequired,
   onSubmitError: PropTypes.func.isRequired
