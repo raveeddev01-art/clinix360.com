@@ -30,3 +30,5 @@ config :stitch, :aws_presigned_urls, %{
 
 config :stitch, Stitch.Analytics.Sync.RecurringSync,
   enabled: false
+
+config :stitch, async_tasks?: false

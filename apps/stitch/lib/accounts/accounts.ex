@@ -85,7 +85,7 @@ defmodule Stitch.Accounts do
   end
 
   defp analytics_identify_and_group(user) do
-    Task.start(fn ->
+    Stitch.Task.start(fn ->
       Stitch.Analytics.identify(user.id, %{"email" => user.email})
       team_id = user.team_id
       team = Stitch.TeamQueries.get_by_id(team_id)
@@ -95,7 +95,7 @@ defmodule Stitch.Accounts do
   end
 
   defp analytics_track_new_team_created(user) do
-    Task.start(fn ->
+    Stitch.Task.start(fn ->
       team_id = user.team_id
       team = Stitch.TeamQueries.get_by_id(team_id)
       properties = %{

@@ -99,7 +99,7 @@ defmodule Stitch.Message do
   end
 
   defp analytics_track_message_sent(user, group) do
-    Task.start(fn ->
+    Stitch.Task.start(fn ->
       team_id = user.team_id
       team = Stitch.TeamQueries.get_by_id(team_id)
       properties = %{
