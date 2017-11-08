@@ -17,7 +17,9 @@ const Plans = ({
       <p>Please select a plan to continue service:</p>
       <FrequencyToggle
         frequency={!!plan.planFrequency}
-        onToggle={onSelectPlanFrequency(1 - plan.planFrequency)}
+        onToggle={() => {
+          onSelectPlanFrequency(1 - plan.planFrequency);
+        }}
       />
 
       {tiers.map(tier => (

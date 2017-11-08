@@ -78,7 +78,7 @@ class Subscription extends React.Component {
     });
   }
 
-  onSelectPlanFrequency = freq => () => {
+  onSelectPlanFrequency = freq => {
     const { upgrade } = this.state;
     const planName = upgrade ? "upgradePlan" : "subscribePlan";
     const plan = this.state[planName];
