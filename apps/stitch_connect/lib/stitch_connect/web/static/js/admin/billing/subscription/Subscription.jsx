@@ -7,7 +7,7 @@ import { TIERS, PLANS } from "./constants";
 import { getUpgradableTiers } from "./utils";
 import FrequencyToggle from "./FrequencyToggle";
 import Plan from "./Plan";
-import Checkout from "./Checkout";
+import Checkout from "./checkout/Checkout";
 import Loading from "./loading/Loading";
 
 class Subscription extends React.Component {
