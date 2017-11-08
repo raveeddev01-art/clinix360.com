@@ -112,15 +112,7 @@ class MessageStore {
       .slice()
       .reverse()
       .findIndex(m => moment.utc(m.inserted_at).diff(lastReadAt) >= 0);
-
     if (index > 0) {
-      console.log(
-        this.messages[this.messages.length - index - 1].inserted_at,
-        this.lastReadAt,
-        moment
-          .utc(this.messages[this.messages.length - index - 1].inserted_at)
-          .diff(lastReadAt)
-      );
       return this.messages[this.messages.length - index - 1];
     }
 
@@ -502,11 +494,11 @@ class MessageStore {
         this.updateUnreadMessagesInfo({
           unread_messages_count: 0,
           mentions_count: 0,
-          last_read_at: new Date()
+          last_read_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS")
         });
 
         if (resetNewMessageLine) {
-          this.lastReadAt = moment.utc().format();
+          this.lastReadAt = moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS");
         }
 
         // Update favicon
@@ -660,17 +652,17 @@ class MessageStore {
       }
       this.lastReadAt = moment
         .utc(newMessage.inserted_at)
-        .add(1, "second")
-        .format();
+        .add(1, "millisecond")
+        .format("YYYY-MM-DDTHH:mm:ss.SSS");
     } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       // For messages from other users
       if (!this.isScrollBottom) {
         this.lastReadAt = moment
-          .utc()
-          .subtract(1, "second")
-          .format();
+          .utc(newMessage.inserted_at)
+          .subtract(1, "millisecond")
+          .format("YYYY-MM-DDTHH:mm:ss.SSS");
       }
 
       if (this.unreadMessagesCount || !this.isScrollBottom) {
