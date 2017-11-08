@@ -149,3 +149,10 @@
     }
   }
 }
+
+.message-modal {
+  .modal-body {
+    min-height: 70px !important;
+    font-size: 15px;
+  }
+}

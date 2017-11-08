@@ -21,6 +21,7 @@ const Confirm = ({
     onHide={dismiss}
     backdrop={enableEscape ? true : "static"}
     keyboard={enableEscape}
+    className="message-modal"
   >
     <Modal.Header>
       <Modal.Title>{title}</Modal.Title>
@@ -28,9 +29,7 @@ const Confirm = ({
         <i className="fa fa-close" />
       </a>
     </Modal.Header>
-    <Modal.Body>
-      <h5>{message}</h5>
-    </Modal.Body>
+    <Modal.Body>{message}</Modal.Body>
     <Modal.Footer>
       <Button bsSize="large" onClick={cancel}>
         {cancelLabel}
@@ -42,11 +41,14 @@ const Confirm = ({
   </Modal>
 );
 
+const noop = () => {};
+
 Confirm.defaultProps = {
+  proceed: noop,
+  cancel: noop,
+  dismiss: noop,
   okLabel: "OK",
   cancelLabel: "Cancel",
-  title: "Confirm",
-  message: "Are you sure?",
   show: false,
   enableEscape: true
 };
@@ -58,8 +60,9 @@ Confirm.propTypes = {
 
   okLabel: PropTypes.string,
   cancelLabel: PropTypes.string,
-  title: PropTypes.string,
-  message: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  message: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+    .isRequired,
   show: PropTypes.bool,
   enableEscape: PropTypes.bool
 };
