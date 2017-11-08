@@ -5,8 +5,7 @@ import capitalize from "lodash/capitalize";
 
 import { TIERS, PLANS } from "./constants";
 import { getUpgradableTiers } from "./utils";
-import FrequencyToggle from "./plans/FrequencyToggle";
-import Plan from "./plans/Plan";
+import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
 import Loading from "./loading/Loading";
 
@@ -265,73 +264,32 @@ class Subscription extends React.Component {
   }
 
   renderSelectPlan() {
-    const { planFrequency, tier } = this.state.subscribePlan;
+    const { subscribePlan: plan } = this.state;
+    const tiers = TIERS;
 
     return (
-      <div className="plans">
-        <p>Please select a plan to continue service:</p>
-
-        <FrequencyToggle
-          frequency={!!planFrequency}
-          onToggle={this.onTogglePlanFrequency}
-        />
-
-        {TIERS.map(t => (
-          <Plan
-            key={t}
-            tier={t}
-            frequency={planFrequency}
-            selected={tier === t}
-            onSelect={this.onSelectPlan(t)}
-          />
-        ))}
-
-        <div className="clearfix">
-          <button
-            type="button"
-            className="btn btn-fancy btn-primary pull-right"
-            disabled={!tier}
-            onClick={this.onCheckoutPlan}
-          >
-            Select Plan
-          </button>
-        </div>
-      </div>
+      <Plans
+        plan={plan}
+        tiers={tiers}
+        onToggleFrequency={this.onTogglePlanFrequency}
+        onSelect={this.onSelectPlan}
+        onCheckout={this.onCheckoutPlan}
+      />
     );
   }
 
   renderUpgradePlan() {
-    const tiers = getUpgradableTiers(this.state.subscription.tier);
-    const { planFrequency, tier } = this.state.upgradePlan;
+    const { upgradePlan: plan, subscription } = this.state;
+    const tiers = getUpgradableTiers(subscription.tier);
 
     return (
-      <div className="plans">
-        <FrequencyToggle
-          frequency={!!planFrequency}
-          onToggle={this.onTogglePlanFrequency}
-        />
-
-        {tiers.map(t => (
-          <Plan
-            key={t}
-            tier={t}
-            frequency={planFrequency}
-            selected={tier === t}
-            onSelect={this.onSelectPlan(t)}
-          />
-        ))}
-
-        <div className="clearfix">
-          <button
-            type="button"
-            className="btn btn-fancy btn-primary pull-right"
-            disabled={!tier}
-            onClick={this.onCheckoutPlan}
-          >
-            Select Plan
-          </button>
-        </div>
-      </div>
+      <Plans
+        plan={plan}
+        tiers={tiers}
+        onToggleFrequency={this.onTogglePlanFrequency}
+        onSelect={this.onSelectPlan}
+        onCheckout={this.onCheckoutPlan}
+      />
     );
   }
 
@@ -342,11 +300,9 @@ class Subscription extends React.Component {
       <div>
         {this.renderStatus()}
 
-        {subscription.tier === "TRIAL" && this.renderSelectPlan()}
-        {subscription.tier !== "TRIAL" && upgrade && this.renderUpgradePlan()}
-        {subscription.tier !== "TRIAL" &&
-          !upgrade &&
-          this.renderSubscribedPlan()}
+        {subscription.tier === "TRIAL"
+          ? this.renderSelectPlan()
+          : upgrade ? this.renderUpgradePlan() : this.renderSubscribedPlan()}
 
         <br />
 
