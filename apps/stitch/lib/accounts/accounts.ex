@@ -27,7 +27,7 @@ defmodule Stitch.Accounts do
     confirmation_code = digits
       |> Enum.join
 
-    token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+    token = Stitch.Rand.token(32)
 
     {:ok, user} =
       %User{}
@@ -73,6 +73,8 @@ defmodule Stitch.Accounts do
 
           case Repo.update(changeset) do
             {:ok, user} ->
+              analytics_identify_and_group(user)
+              analytics_track_new_team_created(user)
               {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               user
             {:error, changeset} ->
@@ -80,6 +82,32 @@ defmodule Stitch.Accounts do
           end
         end
     end
+  end
+
+  defp analytics_identify_and_group(user) do
+    Task.start(fn ->
+      Stitch.Analytics.identify(user.id, %{"email" => user.email})
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      traits = %{"team_name" => team.name}
+      Stitch.Analytics.group(%{user_id: user.id, team_id: team_id}, traits)
+    end)
+  end
+
+  defp analytics_track_new_team_created(user) do
+    Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      properties = %{
+        "first_name" => user.first_name,
+        "last_name"  => user.last_name,
+        "email"      => user.email,
+        "team_id"    => Integer.to_string(team.id),
+        "team_name"  => team.name,
+        "team_slug"  => team.slug
+      }
+      Stitch.Analytics.track(user.id, "Team Created", properties)
+    end)
   end
 
   @doc """

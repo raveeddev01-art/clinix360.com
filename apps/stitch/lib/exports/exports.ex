@@ -98,7 +98,7 @@ defmodule Stitch.Exports do
       do_start_export(team, export)
     rescue
       e ->
-        Logger.error("Failed to complete export for team id #{team.id}: #{e}")
+        Logger.error("Failed to complete export for team id #{inspect team.id}. #{inspect e}")
         update_export(export, %{status: "FAILED"})
     end
   end

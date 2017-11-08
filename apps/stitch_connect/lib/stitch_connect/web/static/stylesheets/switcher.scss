@@ -1,0 +1,45 @@
+.switcher {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $brand-primary;
+  padding: 15px 10px;
+  border-right: 1px solid #fff;
+  min-width: 60px;
+  z-index: 2;
+
+  &__logo {
+    width: 40px;
+    height: 40px;
+    background-image: url("/images/rounded-logo.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    margin-bottom: 20px;
+  }
+
+  &__link {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 20px;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  &__top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  &__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}

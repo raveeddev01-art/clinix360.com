@@ -16,7 +16,7 @@ defmodule Stitch.Invitation do
   end
 
   def changeset(struct, params) do
-    invite_token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+    invite_token = Stitch.Rand.token(32)
 
     struct
     |> cast(params, [:user_id, :team_id])

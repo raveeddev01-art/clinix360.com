@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Provider } from "mobx-react";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 
 import Welcome from "./wizard-steps/welcome";
 import FirstName from "./wizard-steps/first_name";
@@ -11,6 +9,8 @@ import Username from "./wizard-steps/username";
 import Password from "./wizard-steps/password";
 import Pin from "./wizard-steps/pin";
 import invitationStore from "./stores/invitation_store";
+import Header from "../website/components/header";
+import Footer from "../website/components/footer";
 
 const stores = { invitationStore };
 const stepList = [Welcome, FirstName, LastName, Username, Password, Pin];
@@ -59,40 +59,9 @@ class Invitation extends Component {
     return (
       <Provider {...stores}>
         <div className="onboarding-wrapper">
-          <div id="header">
-            <div className="container">
-              <Row>
-                <Col xs={5}>
-                  <a href={`https://${applicationHost}/`} className="brand">
-                    <img src="/images/stitch-brand.png" alt="Stitch" />
-                  </a>
-                </Col>
-
-                <Col xs={7}>
-                  <ul className="list-inline text-right m-b-0">
-                    <li>
-                      <a
-                        href={`https://${applicationHost}/signin`}
-                        className="nav-link"
-                      >
-                        Sign In
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href={`https://${applicationHost}/signup/email`}
-                        className="nav-link btn-outline"
-                      >
-                        Create Team
-                      </a>
-                    </li>
-                  </ul>
-                </Col>
-              </Row>
-            </div>
-          </div>
+          <Header />
           <div className="authentication-wrapper">{this._renderStep()}</div>
+          <Footer />
         </div>
       </Provider>
     );

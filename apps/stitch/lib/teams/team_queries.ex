@@ -3,6 +3,14 @@ defmodule Stitch.TeamQueries do
   alias Stitch.Accounts.User
   alias Stitch.{Repo, Team}
 
+  def all_with_user_email(email) do
+    Team
+    |> join(:inner, [t], u in User, u.team_id == t.id and u.email == ^email)
+    |> select([t, u], t)
+    |> Repo.all
+  end
+
+  def get_by_id(id) when is_binary(id), do: get_by_id(String.to_integer(id))
   def get_by_id(id) do
     Repo.get(Team, id)
   end
