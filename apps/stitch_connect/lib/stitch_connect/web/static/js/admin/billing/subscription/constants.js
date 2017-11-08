@@ -36,10 +36,12 @@ export const PLANS = {
 export const FREQUENCIES = [
   {
     title: "monthly",
-    name: "monthly"
+    name: "monthly",
+    months: 1
   },
   {
     title: "annually",
-    name: "annual"
+    name: "annual",
+    months: 12
   }
 ];

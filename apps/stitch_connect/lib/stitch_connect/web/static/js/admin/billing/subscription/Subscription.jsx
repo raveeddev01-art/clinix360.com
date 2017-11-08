@@ -329,11 +329,11 @@ class Subscription extends React.Component {
 
     return (
       <div className="subscription">
-        {this.state.subscribePlan.planFrequency}&nbsp;
-        {this.state.subscribePlan.billingFrequency}
         {this.renderHeader()}
+
         {subscription &&
           (checkout ? this.renderCheckout() : this.renderSubscription())}
+
         <Loading show={loading} />
       </div>
     );

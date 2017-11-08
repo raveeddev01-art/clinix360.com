@@ -14,7 +14,7 @@ export function getFrequencyName(frequencyIndex) {
   return FREQUENCIES[frequencyIndex].name;
 }
 
-export function getPrice(tier, frequencyIndex) {
+export function getMonthlyPrice(tier, frequencyIndex) {
   const plan = PLANS[tier];
   const frequencyName = getFrequencyName(frequencyIndex);
 

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
 import { FREQUENCIES } from "../constants";
-import { getPrice, getFrequencyName } from "../utils";
+import { getMonthlyPrice, getFrequencyName } from "../utils";
 
 class Plan extends React.Component {
   onSelectTier = () => {
@@ -17,11 +17,13 @@ class Plan extends React.Component {
 
   renderBillingFrequency() {
     const {
+      tier,
       planFrequency,
       selected,
       billingFrequency,
       onSelectBillingFrequency
     } = this.props;
+    const monthlyPrice = getMonthlyPrice(tier, planFrequency);
 
     return (
       selected &&
@@ -47,7 +49,10 @@ class Plan extends React.Component {
                 >
                   <div className="billing-title">{capitalize(freq.title)}:</div>
                   <div className="billing-desc">
-                    <span className="billing-price">$120</span> per user
+                    <span className="billing-price">
+                      ${freq.months * monthlyPrice}
+                    </span>{" "}
+                    per user
                   </div>
                 </div>
               );
@@ -61,7 +66,7 @@ class Plan extends React.Component {
   render() {
     const { tier, planFrequency, selected } = this.props;
     const frequencyName = getFrequencyName(planFrequency);
-    const price = getPrice(tier, planFrequency);
+    const monthlyPrice = getMonthlyPrice(tier, planFrequency);
     const className = classNames("plan-container", { selected });
 
     return (
@@ -71,11 +76,11 @@ class Plan extends React.Component {
             <h4>
               {capitalize(tier)} {capitalize(frequencyName)} Plan
             </h4>
-            <span>${price} per month for 1 user</span>
+            <span>${monthlyPrice} per month for 1 user</span>
           </div>
 
           <div className="plan-price">
-            <h4>${price}</h4>
+            <h4>${monthlyPrice}</h4>
             <span>per user / month</span>
           </div>
         </div>
