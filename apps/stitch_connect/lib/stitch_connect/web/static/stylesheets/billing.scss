@@ -32,8 +32,6 @@
 
     .plans {
       .plan-container {
-        display: flex;
-        justify-content: space-between;
         border: 2px solid #ddd;
         border-radius: 5px;
         padding: 25px;
@@ -45,26 +43,71 @@
           background-color: #f0f7fb;
         }
 
-        .plan-description {
-          h4 {
-            margin: 0 0 10px;
-            font-size: 15px;
-            font-weight: bold;
+        .plan-content {
+          display: flex;
+          justify-content: space-between;
+
+          .plan-title {
+            h4 {
+              margin: 0 0 10px;
+              font-size: 15px;
+              font-weight: bold;
+            }
+          }
+
+          .plan-price {
+            text-align: center;
+
+            h4 {
+              font-size: 24px;
+              color: $brand-primary;
+              margin: 0;
+            }
+
+            span {
+              font-weight: 500;
+              color: #9e9ea6;
+            }
           }
         }
 
-        .plan-price {
-          text-align: center;
+        .plan-billing-frequency {
+          margin-top: 10px;
 
-          h4 {
-            font-size: 24px;
-            color: $brand-primary;
-            margin: 0;
+          .plan-billing-frequency-title {
+            font-weight: 600;
+            font-style: italic;
           }
 
-          span {
-            font-weight: 500;
-            color: #9e9ea6;
+          .plan-billing-frequency-options {
+            display: flex;
+            justify-content: space-between;
+
+            .plan-billing-frequency-option {
+              display: flex;
+              justify-content: space-between;
+              min-width: 250px;
+              font-weight: bold;
+
+              background: transparent;
+              border: 2px solid #ddd;
+              padding: 5px 10px;
+              border-radius: 4px;
+              margin-bottom: 0;
+
+              &.selected {
+                background: #fff;
+                border: 2px solid $brand-primary;
+              }
+
+              .billing-desc {
+                color: #9e9ea6;
+
+                .billing-price {
+                  color: $brand-primary;
+                }
+              }
+            }
           }
         }
       }

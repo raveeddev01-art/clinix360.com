@@ -6,50 +6,70 @@ import capitalize from "lodash/capitalize";
 import { FREQUENCIES } from "../constants";
 import { getPrice, getFrequencyName } from "../utils";
 
-const Plan = ({
-  tier,
-  planFrequency,
-  billingFrequency,
-  selected,
-  onSelectBillingFrequency,
-  onSelectTier
-}) => {
-  const frequencyName = getFrequencyName(planFrequency);
-  const price = getPrice(tier, planFrequency);
-  const className = classNames("plan-container", { selected });
+class Plan extends React.Component {
+  renderBillingFrequency() {
+    const {
+      planFrequency,
+      selected,
+      billingFrequency,
+      onSelectBillingFrequency
+    } = this.props;
 
-  return (
-    <div className={className} onClick={onSelectTier}>
-      <div className="plan-description">
-        <h4>
-          {capitalize(tier)} {capitalize(frequencyName)} Plan
-        </h4>
-        <span>${price} per month for 1 user</span>
-      </div>
+    return (
+      selected &&
+      planFrequency && (
+        <div className="plan-billing-frequency">
+          <p className="plan-billing-frequency-title">
+            Select billing frequency:
+          </p>
+          <div className="plan-billing-frequency-options">
+            {FREQUENCIES.map((freq, index) => {
+              const className = classNames("plan-billing-frequency-option", {
+                selected: billingFrequency === index
+              });
 
-      <div className="plan-price">
-        <h4>${price}</h4>
-        <span>per user / month</span>
-      </div>
-
-      {planFrequency && (
-        <div className="billing-frequency">
-          <p>Select billing frequency:</p>
-          <div className="billing-frequency-options">
-            {FREQUENCIES.map(freq => {
               return (
-                <div key={freq.name} className="billing-frequency-option">
-                  <span>{freq.title}:</span>
-                  <span>$120 per user</span>
+                <div key={freq.name} className={className}>
+                  <div className="billing-title">{capitalize(freq.title)}:</div>
+                  <div className="billing-desc">
+                    <span className="billing-price">$120</span> per user
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
-      )}
-    </div>
-  );
-};
+      )
+    );
+  }
+
+  render() {
+    const { tier, planFrequency, selected, onSelectTier } = this.props;
+    const frequencyName = getFrequencyName(planFrequency);
+    const price = getPrice(tier, planFrequency);
+    const className = classNames("plan-container", { selected });
+
+    return (
+      <div className={className} onClick={onSelectTier}>
+        <div className="plan-content">
+          <div className="plan-title">
+            <h4>
+              {capitalize(tier)} {capitalize(frequencyName)} Plan
+            </h4>
+            <span>${price} per month for 1 user</span>
+          </div>
+
+          <div className="plan-price">
+            <h4>${price}</h4>
+            <span>per user / month</span>
+          </div>
+        </div>
+
+        {this.renderBillingFrequency()}
+      </div>
+    );
+  }
+}
 
 Plan.propTypes = {
   tier: PropTypes.string.isRequired,
