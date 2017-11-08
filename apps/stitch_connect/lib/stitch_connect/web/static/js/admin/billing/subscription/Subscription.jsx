@@ -19,10 +19,12 @@ class Subscription extends React.Component {
       upgrade: false,
       subscribePlan: {
         planFrequency: 1,
+        billingFrequency: 1,
         tier: "BASIC"
       },
       upgradePlan: {
         planFrequency: 1,
+        billingFrequency: 1,
         tier: ""
       },
       checkout: false,
@@ -76,24 +78,30 @@ class Subscription extends React.Component {
     });
   }
 
-  onTogglePlanFrequency = () => {
-    const { upgrade, upgradePlan, subscribePlan } = this.state;
+  onSelectPlanFrequency = freq => () => {
+    const { upgrade } = this.state;
+    const planName = upgrade ? "upgradePlan" : "subscribePlan";
+    const plan = this.state[planName];
 
-    if (upgrade) {
-      this.setState({
-        upgradePlan: {
-          ...upgradePlan,
-          planFrequency: 1 - upgradePlan.planFrequency
-        }
-      });
-    } else {
-      this.setState({
-        subscribePlan: {
-          ...subscribePlan,
-          planFrequency: 1 - subscribePlan.planFrequency
-        }
-      });
-    }
+    this.setState({
+      [planName]: {
+        ...plan,
+        planFrequency: freq
+      }
+    });
+  };
+
+  onSelectBillingFrequency = freq => () => {
+    const { upgrade } = this.state;
+    const planName = upgrade ? "upgradePlan" : "subscribePlan";
+    const plan = this.state[planName];
+
+    this.setState({
+      [planName]: {
+        ...plan,
+        billingFrequency: freq
+      }
+    });
   };
 
   onSelectPlan = tier => () => {
@@ -271,9 +279,10 @@ class Subscription extends React.Component {
       <Plans
         plan={plan}
         tiers={tiers}
-        onToggleFrequency={this.onTogglePlanFrequency}
-        onSelect={this.onSelectPlan}
-        onCheckout={this.onCheckoutPlan}
+        onSelectPlanFrequency={this.onSelectPlanFrequency}
+        onSelectBillingFrequency={this.onSelectBillingFrequency}
+        onSelectPlan={this.onSelectPlan}
+        onCheckoutPlan={this.onCheckoutPlan}
       />
     );
   }
@@ -286,9 +295,10 @@ class Subscription extends React.Component {
       <Plans
         plan={plan}
         tiers={tiers}
-        onToggleFrequency={this.onTogglePlanFrequency}
-        onSelect={this.onSelectPlan}
-        onCheckout={this.onCheckoutPlan}
+        onSelectPlanFrequency={this.onSelectPlanFrequency}
+        onSelectBillingFrequency={this.onSelectBillingFrequency}
+        onSelectPlan={this.onSelectPlan}
+        onCheckoutPlan={this.onCheckoutPlan}
       />
     );
   }
@@ -312,10 +322,8 @@ class Subscription extends React.Component {
   }
 
   renderCheckout() {
-    const { cards } = this.state;
-    const plan = this.state.upgrade
-      ? this.state.upgradePlan
-      : this.state.subscribePlan;
+    const { cards, upgrade, upgradePlan, subscribePlan } = this.state;
+    const plan = upgrade ? upgradePlan : subscribePlan;
 
     return (
       <Checkout

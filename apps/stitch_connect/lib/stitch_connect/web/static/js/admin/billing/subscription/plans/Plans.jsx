@@ -4,14 +4,21 @@ import PropTypes from "prop-types";
 import FrequencyToggle from "./FrequencyToggle";
 import Plan from "./Plan";
 
-const Plans = ({ plan, tiers, onToggleFrequency, onSelect, onCheckout }) => {
+const Plans = ({
+  plan,
+  tiers,
+  onSelectPlanFrequency,
+  onSelectBillingFrequency,
+  onSelectPlan,
+  onCheckoutPlan
+}) => {
   return (
     <div className="plans">
       <p>Please select a plan to continue service:</p>
 
       <FrequencyToggle
         frequency={!!plan.planFrequency}
-        onToggle={onToggleFrequency}
+        onToggle={onSelectPlanFrequency(1 - plan.planFrequency)}
       />
 
       {tiers.map(tier => (
@@ -20,7 +27,7 @@ const Plans = ({ plan, tiers, onToggleFrequency, onSelect, onCheckout }) => {
           tier={tier}
           frequency={plan.planFrequency}
           selected={plan.tier === tier}
-          onSelect={onSelect(tier)}
+          onSelect={onSelectPlan(tier)}
         />
       ))}
 
@@ -29,7 +36,7 @@ const Plans = ({ plan, tiers, onToggleFrequency, onSelect, onCheckout }) => {
           type="button"
           className="btn btn-fancy btn-primary pull-right"
           disabled={!plan.tier}
-          onClick={onCheckout}
+          onClick={onCheckoutPlan}
         >
           Select Plan
         </button>
@@ -41,9 +48,10 @@ const Plans = ({ plan, tiers, onToggleFrequency, onSelect, onCheckout }) => {
 Plans.propTypes = {
   plan: PropTypes.object.isRequired,
   tiers: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onToggleFrequency: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  onCheckout: PropTypes.func.isRequired
+  onSelectPlanFrequency: PropTypes.func.isRequired,
+  onSelectBillingFrequency: PropTypes.func.isRequired,
+  onSelectPlan: PropTypes.func.isRequired,
+  onCheckoutPlan: PropTypes.func.isRequired
 };
 
 export default Plans;
