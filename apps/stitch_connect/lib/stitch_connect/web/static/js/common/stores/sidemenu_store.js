@@ -198,6 +198,14 @@ class SidemenuStore {
 
     // Show notification card
     this.showNotificationCardForNewMessage(newMessage);
+
+    // if it's DM and hidden, show it on sidebar
+    if (group.type !== "regular" && group.is_hidden) {
+      put(`/api/v1/groups/${group.id}/unhide`).then(() => {
+        const sidebarGroup = this.groups.find(g => g.id === group.id);
+        sidebarGroup.is_hidden = false;
+      });
+    }
   };
 
   @action
