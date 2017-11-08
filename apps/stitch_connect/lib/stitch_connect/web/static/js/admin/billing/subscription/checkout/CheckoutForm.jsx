@@ -195,7 +195,7 @@ class CheckoutForm extends React.Component {
             className="btn btn-fancy btn-primary btn-block"
             disabled={!this.canSubmit()}
           >
-            Save card info for future payments
+            Complete Purchase
           </button>
           <p className="help-block">
             Your account will be credited when team members are removed and

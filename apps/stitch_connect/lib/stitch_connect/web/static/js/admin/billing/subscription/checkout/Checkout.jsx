@@ -4,17 +4,33 @@ import { Elements } from "react-stripe-elements";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
+import { getFrequency, getMonthlyPrice } from "../utils";
 import CheckoutForm from "./CheckoutForm";
 
 class Checkout extends React.Component {
+  getBillingSummary() {
+    const { plan } = this.props;
+    const planFrequency = getFrequency(plan.planFrequency);
+    const billingFrequency = getFrequency(plan.billingFrequency);
+    const monthlyPrice = getMonthlyPrice(plan.tier, plan.planFrequency);
+    const annualPrice = monthlyPrice * 12;
+    const charge =
+      planFrequency.unit === "month"
+        ? `$${monthlyPrice} per user per month`
+        : billingFrequency.unit === "month"
+          ? `$${monthlyPrice} per month for 12 months`
+          : `$${annualPrice} per user per year`;
+
+    return {
+      tier: capitalize(plan.tier),
+      charge,
+      renewal: planFrequency.unit
+    };
+  }
+
   render() {
-    const {
-      cards,
-      plan,
-      onSubmitStart,
-      onSubmitSuccess,
-      onSubmitError
-    } = this.props;
+    const { cards, onSubmitStart, onSubmitSuccess, onSubmitError } = this.props;
+    const billingSummary = this.getBillingSummary();
 
     return (
       <div className="checkout">
@@ -22,13 +38,13 @@ class Checkout extends React.Component {
         <div className="step1-billing-summary">
           <ul>
             <li>
-              You are subscribing to <b>{capitalize(plan.tier)}</b>
+              You are subscribing to <b>{billingSummary.tier}</b>
             </li>
             <li>
-              You will be charged <b>$180 per user per year</b>
+              You will be charged <b>{billingSummary.charge}</b>
             </li>
             <li>
-              Your subscription will renew each <b>year</b>
+              Your subscription will renew each <b>{billingSummary.renewal}</b>
             </li>
           </ul>
           <p className="text-muted">
@@ -127,6 +143,7 @@ Checkout.defaultProps = {
 Checkout.propTypes = {
   cards: PropTypes.array,
   plan: PropTypes.object.isRequired,
+  upgrade: PropTypes.bool.isRequired,
   onSubmitStart: PropTypes.func.isRequired,
   onSubmitSuccess: PropTypes.func.isRequired,
   onSubmitError: PropTypes.func.isRequired

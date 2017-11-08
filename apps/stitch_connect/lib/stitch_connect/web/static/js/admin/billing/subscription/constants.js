@@ -37,11 +37,13 @@ export const FREQUENCIES = [
   {
     title: "monthly",
     name: "monthly",
+    unit: "month",
     months: 1
   },
   {
     title: "annually",
     name: "annual",
+    unit: "year",
     months: 12
   }
 ];
