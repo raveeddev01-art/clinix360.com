@@ -312,12 +312,12 @@ defmodule Stitch.Billing do
 
   ## Examples
 
-      iex> set_as_default(%Team{...}, 5) do
+      iex> set_card_as_default(%Team{...}, 5) do
       {:ok, %PaymentMethod{id: 5, ..., default: true}}
 
   """
-  @spec set_as_default(Team.t, pos_integer) :: {:ok, PaymentMethod.t} | {:error, :not_found}
-  def set_as_default(%Team{id: team_id} = team, payment_method_id) do
+  @spec set_card_as_default(Team.t, pos_integer) :: {:ok, PaymentMethod.t} | {:error, :not_found}
+  def set_card_as_default(%Team{id: team_id} = team, payment_method_id) do
     team = Repo.preload(team, :subscription)
 
     with payment_method when not is_nil(payment_method) <- Repo.get_by(PaymentMethod, id: payment_method_id, team_id: team_id),

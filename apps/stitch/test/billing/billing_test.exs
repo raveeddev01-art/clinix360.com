@@ -218,7 +218,7 @@ defmodule Stitch.Billing.BillingTest do
     end
   end
 
-  describe "set_as_default/2" do
+  describe "set_card_as_default/2" do
     setup do
       subscription = insert(:subscription)
       team = subscription.team
@@ -228,14 +228,14 @@ defmodule Stitch.Billing.BillingTest do
     end
 
     test "sets a card as the default", %{team: team, default_card: default_card, other_card: other_card} do
-      assert {:ok, result} = Billing.set_as_default(team, other_card.id)
+      assert {:ok, result} = Billing.set_card_as_default(team, other_card.id)
       assert result.default
       assert result.id == other_card.id
       refute Stitch.Repo.get(Stitch.Billing.PaymentMethod, default_card.id).default
     end
 
     test "gives an error when a card isn't found", %{team: team} do
-      assert {:error, :not_found} == Billing.set_as_default(team, -1)
+      assert {:error, :not_found} == Billing.set_card_as_default(team, -1)
     end
   end
 
