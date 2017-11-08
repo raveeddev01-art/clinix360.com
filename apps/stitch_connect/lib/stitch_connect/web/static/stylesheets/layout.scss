@@ -33,6 +33,7 @@ $sidebar_width: 270px;
   display: flex;
   flex-direction: column;
   flex-basis: $sidebar_width;
+  max-width: $sidebar_width;
 }
 
 #main {
