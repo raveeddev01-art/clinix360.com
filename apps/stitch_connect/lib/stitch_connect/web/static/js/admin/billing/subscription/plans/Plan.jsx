@@ -7,6 +7,14 @@ import { FREQUENCIES } from "../constants";
 import { getPrice, getFrequencyName } from "../utils";
 
 class Plan extends React.Component {
+  onSelectTier = () => {
+    const { selected, tier, onSelectTier } = this.props;
+
+    if (!selected) {
+      onSelectTier(tier);
+    }
+  };
+
   renderBillingFrequency() {
     const {
       planFrequency,
@@ -17,11 +25,12 @@ class Plan extends React.Component {
 
     return (
       selected &&
-      planFrequency && (
+      !!planFrequency && (
         <div className="plan-billing-frequency">
           <p className="plan-billing-frequency-title">
             Select billing frequency:
           </p>
+
           <div className="plan-billing-frequency-options">
             {FREQUENCIES.map((freq, index) => {
               const className = classNames("plan-billing-frequency-option", {
@@ -29,7 +38,13 @@ class Plan extends React.Component {
               });
 
               return (
-                <div key={freq.name} className={className}>
+                <div
+                  key={freq.name}
+                  className={className}
+                  onClick={() => {
+                    onSelectBillingFrequency(index);
+                  }}
+                >
                   <div className="billing-title">{capitalize(freq.title)}:</div>
                   <div className="billing-desc">
                     <span className="billing-price">$120</span> per user
@@ -44,13 +59,13 @@ class Plan extends React.Component {
   }
 
   render() {
-    const { tier, planFrequency, selected, onSelectTier } = this.props;
+    const { tier, planFrequency, selected } = this.props;
     const frequencyName = getFrequencyName(planFrequency);
     const price = getPrice(tier, planFrequency);
     const className = classNames("plan-container", { selected });
 
     return (
-      <div className={className} onClick={onSelectTier}>
+      <div className={className} onClick={this.onSelectTier}>
         <div className="plan-content">
           <div className="plan-title">
             <h4>

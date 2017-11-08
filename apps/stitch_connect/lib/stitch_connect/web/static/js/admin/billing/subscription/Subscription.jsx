@@ -91,7 +91,7 @@ class Subscription extends React.Component {
     });
   };
 
-  onSelectBillingFrequency = freq => () => {
+  onSelectBillingFrequency = freq => {
     const { upgrade } = this.state;
     const planName = upgrade ? "upgradePlan" : "subscribePlan";
     const plan = this.state[planName];
@@ -104,7 +104,7 @@ class Subscription extends React.Component {
     });
   };
 
-  onSelectTier = tier => () => {
+  onSelectTier = tier => {
     const { upgrade } = this.state;
     const planName = upgrade ? "upgradePlan" : "subscribePlan";
     const plan = this.state[planName];
@@ -329,11 +329,11 @@ class Subscription extends React.Component {
 
     return (
       <div className="subscription">
+        {this.state.subscribePlan.planFrequency}&nbsp;
+        {this.state.subscribePlan.billingFrequency}
         {this.renderHeader()}
-
         {subscription &&
           (checkout ? this.renderCheckout() : this.renderSubscription())}
-
         <Loading show={loading} />
       </div>
     );

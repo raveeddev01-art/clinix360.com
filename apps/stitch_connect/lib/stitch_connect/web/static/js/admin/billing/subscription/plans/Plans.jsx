@@ -15,7 +15,6 @@ const Plans = ({
   return (
     <div className="plans">
       <p>Please select a plan to continue service:</p>
-
       <FrequencyToggle
         frequency={!!plan.planFrequency}
         onToggle={onSelectPlanFrequency(1 - plan.planFrequency)}
@@ -29,7 +28,7 @@ const Plans = ({
           planFrequency={plan.planFrequency}
           billingFrequency={plan.billingFrequency}
           onSelectBillingFrequency={onSelectBillingFrequency}
-          onSelectTier={onSelectTier(tier)}
+          onSelectTier={onSelectTier}
         />
       ))}
 
