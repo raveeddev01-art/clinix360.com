@@ -27,9 +27,7 @@ const Alert = ({
         <i className="fa fa-close" />
       </a>
     </Modal.Header>
-    <Modal.Body>
-      <h5>{message}</h5>
-    </Modal.Body>
+    <Modal.Body>{message}</Modal.Body>
     <Modal.Footer>
       <Button bsSize="large" bsStyle="primary" onClick={proceed}>
         {okLabel}
@@ -54,7 +52,8 @@ Alert.propTypes = {
 
   okLabel: PropTypes.string,
   title: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
+  message: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+    .isRequired,
   show: PropTypes.bool,
   enableEscape: PropTypes.bool
 };
