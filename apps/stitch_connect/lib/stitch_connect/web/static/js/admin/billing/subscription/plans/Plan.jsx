@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
-import { getPrice, getFrequencyName } from "./utils";
+import { getPrice, getFrequencyName } from "../utils";
 
 const Plan = ({ tier, frequency, selected, onSelect }) => {
   const frequencyName = getFrequencyName(frequency);

@@ -5,8 +5,8 @@ import capitalize from "lodash/capitalize";
 
 import { TIERS, PLANS } from "./constants";
 import { getUpgradableTiers } from "./utils";
-import FrequencyToggle from "./FrequencyToggle";
-import Plan from "./Plan";
+import FrequencyToggle from "./plans/FrequencyToggle";
+import Plan from "./plans/Plan";
 import Checkout from "./checkout/Checkout";
 import Loading from "./loading/Loading";
 

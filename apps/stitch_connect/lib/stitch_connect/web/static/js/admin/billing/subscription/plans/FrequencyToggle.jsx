@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import capitalize from "lodash/capitalize";
 
-import { FREQUENCIES } from "./constants";
-import Toggle from "../../../common/components/toggle/Toggle";
+import { FREQUENCIES } from "../constants";
+import Toggle from "../../../../common/components/toggle/Toggle";
 
 const FrequencyToggle = ({ frequency, onToggle }) => {
   return (
