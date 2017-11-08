@@ -44,6 +44,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
     test "can convert from a trial to a paid tier", %{conn: conn} do
       subscription = insert(:trial_subscription)
       team = subscription.team
+      insert(:card, team: team)
       user = insert(:user, team: team, roles: ["admin"])
 
       params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
@@ -62,6 +63,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
     test "can convert between paid tiers", %{conn: conn} do
       subscription = insert(:subscription)
       team = subscription.team
+      insert(:card, team: team)
       user = insert(:user, team: team, roles: ["admin"])
 
       params = %{tier: "POWER", renewal_frequency: "MONTHLY"}
@@ -80,6 +82,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
     test "gives errors for bad params", %{conn: base_conn} do
       subscription = insert(:subscription)
       team = subscription.team
+      insert(:card, team: team)
       user = insert(:user, team: team, roles: ["admin"])
 
       base_conn =
@@ -102,6 +105,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
     test "requires an admin role", %{conn: conn} do
       subscription = insert(:subscription)
       team = subscription.team
+      insert(:card, team: team)
       user = insert(:user, team: team, roles: ["member"])
 
       params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
@@ -113,6 +117,22 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
 
       assert response = json_response(conn, 401)
       assert response["message"] =~ "administrator"
+    end
+
+    test "requires at least 1 card on file", %{conn: conn} do
+      subscription = insert(:trial_subscription)
+      team = subscription.team
+      user = insert(:user, team: team, roles: ["admin"])
+
+      params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
+        |> put(api_v1_billing_subscription_path(conn, :update), params)
+
+      assert response = json_response(conn, 422)
+      assert response["errors"] =~ "one card"
     end
   end
 

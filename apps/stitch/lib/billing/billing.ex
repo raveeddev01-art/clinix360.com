@@ -96,7 +96,7 @@ defmodule Stitch.Billing do
       {:ok, %Subscription{...}}
 
   """
-  @spec modify_subscription(Subscription.t, map) :: {:ok, Subscription.t} | {:error, Ecto.Changeset.t}
+  @spec modify_subscription(Subscription.t, map) :: {:ok, Subscription.t} | {:error, Ecto.Changeset.t | :card_required}
   def modify_subscription(subscription, params \\ %{})
   def modify_subscription(%Subscription{tier: "TRIAL"} = subscription, params) do
     do_modify_subscription(subscription, params, &create_subscription/2)
@@ -107,6 +107,7 @@ defmodule Stitch.Billing do
 
   defp do_modify_subscription(subscription, params, fun) when is_function(fun, 2) do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
+         {:count, count} when count > 0 <- {:count, card_count(subscription.team_id)},
          plan_id = determine_plan_id(changeset.changes),
          {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
       subscription
@@ -114,7 +115,8 @@ defmodule Stitch.Billing do
       |> Repo.update()
     else
       %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
-    error -> error
+      {:count, _} -> {:error, :card_required}
+      error -> error
     end
   end
 
@@ -207,6 +209,14 @@ defmodule Stitch.Billing do
       |> Subscription.update(params)
       |> Repo.update()
     end
+  end
+
+  defp card_count(team_id) do
+    query =
+      from pm in PaymentMethod,
+      where: pm.team_id == ^team_id,
+      select: count(pm.id)
+    Repo.one(query)
   end
 
   @doc """

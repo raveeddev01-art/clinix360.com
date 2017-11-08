@@ -38,6 +38,7 @@ defmodule Stitch.Billing.BillingTest do
   describe "modify_subscription/2" do
     test "creates a stripe subscription when on a trial" do
       subscription = insert(:trial_subscription)
+      insert(:card, team: subscription.team)
       params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
       assert {:ok, result} = Billing.modify_subscription(subscription, params)
       assert result.subscription_id
@@ -48,6 +49,7 @@ defmodule Stitch.Billing.BillingTest do
 
     test "gives errors when expected params are missing/invalid" do
       subscription = insert(:trial_subscription)
+      insert(:card, team: subscription.team)
       assert {:error, result} = Billing.modify_subscription(subscription)
       assert elem(result.errors[:tier], 0) =~ "blank"
       assert elem(result.errors[:renewal_frequency], 0) =~ "blank"
@@ -57,6 +59,7 @@ defmodule Stitch.Billing.BillingTest do
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
 
       subscription = insert(:subscription)
+      insert(:card, team: subscription.team)
       assert {:error, result} = Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
@@ -64,9 +67,16 @@ defmodule Stitch.Billing.BillingTest do
 
     test "can change a subscription tier" do
       subscription = insert(:subscription)
+      insert(:card, team: subscription.team)
       assert {:ok, sub} = Billing.modify_subscription(subscription, %{tier: "POWER", renewal_frequency: "MONTHLY"})
       assert sub.tier == "POWER"
       assert sub.renewal_frequency == "MONTHLY"
+    end
+
+    test "requires a card on file" do
+      subscription = insert(:trial_subscription)
+      params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
+      assert {:error, :card_required} = Billing.modify_subscription(subscription, params)
     end
   end
 

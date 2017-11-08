@@ -17,7 +17,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardView do
       last_four: card.last_four,
       exp_month: card.exp_month,
       exp_year: card.exp_year,
-      cardholder_name: card.cardholder_name
+      cardholder_name: card.cardholder_name,
       default: card.default,
       inserted_at: card.inserted_at,
       updated_at: card.updated_at
