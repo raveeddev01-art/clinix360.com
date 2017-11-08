@@ -48,7 +48,7 @@ defmodule Stitch.Stripe.Client do
   ## Example
 
       iex> add_card("cus_1234567", "tok_2134567")
-      %{card_id: "card_1234567", brand: "Visa", exp_month: 8, exp_year: 2020, last_four: "4242"}
+      %{card_id: "card_1234567", brand: "Visa", exp_month: 8, exp_year: 2020, last_four: "4242", cardholder_name: "John Doe"}
 
   """
   @impl Stitch.Stripe
@@ -59,13 +59,14 @@ defmodule Stitch.Stripe.Client do
     end
   end
 
-  defp transform_card(%{id: card_id, brand: brand, last4: last_four, exp_month: exp_month, exp_year: exp_year}) do
+  defp transform_card(%{id: card_id, brand: brand, last4: last_four, exp_month: exp_month, exp_year: exp_year, name: cardholder_name}) do
     %{
       card_id: card_id,
       brand: brand,
       last_four: last_four,
       exp_month: exp_month,
-      exp_year: exp_year
+      exp_year: exp_year,
+      cardholder_name: cardholder_name
     }
   end
 

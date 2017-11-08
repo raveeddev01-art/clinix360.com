@@ -164,6 +164,7 @@ defmodule Stitch.Billing.BillingTest do
       assert card.exp_month
       assert card.exp_year
       assert card.last_four
+      assert card.cardholder_name
     end
 
     test "requires a source token", %{team: team} do

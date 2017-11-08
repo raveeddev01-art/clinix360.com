@@ -3,7 +3,7 @@ defmodule Stitch.Stripe do
   Defines an interface for expected interactions with Stripe.
   """
 
-  @type card :: %{card_id: String.t, brand: String.t, last_four: String.t, exp_month: 1..12, exp_year: pos_integer}
+  @type card :: %{card_id: String.t, brand: String.t, last_four: String.t, exp_month: 1..12, exp_year: pos_integer, cardholder_name: String.t}
   @type subscription :: %{subscription_id: String.t, subscription_line_item_id: String.t, estimated_invoice_amount: integer | nil, valid_until: DateTime.t, status: String.t, renews: boolean}
 
   @doc """
