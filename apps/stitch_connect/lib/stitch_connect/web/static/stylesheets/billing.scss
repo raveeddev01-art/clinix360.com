@@ -32,8 +32,6 @@
 
     .plans {
       .plan-container {
-        display: flex;
-        justify-content: space-between;
         border: 2px solid #ddd;
         border-radius: 5px;
         padding: 25px;
@@ -45,26 +43,71 @@
           background-color: #f0f7fb;
         }
 
-        .plan-description {
-          h4 {
-            margin: 0 0 10px;
-            font-size: 15px;
-            font-weight: bold;
+        .plan-content {
+          display: flex;
+          justify-content: space-between;
+
+          .plan-title {
+            h4 {
+              margin: 0 0 10px;
+              font-size: 15px;
+              font-weight: bold;
+            }
+          }
+
+          .plan-price {
+            text-align: center;
+
+            h4 {
+              font-size: 24px;
+              color: $brand-primary;
+              margin: 0;
+            }
+
+            span {
+              font-weight: 500;
+              color: #9e9ea6;
+            }
           }
         }
 
-        .plan-price {
-          text-align: center;
+        .plan-billing-frequency {
+          margin-top: 10px;
 
-          h4 {
-            font-size: 24px;
-            color: $brand-primary;
-            margin: 0;
+          .plan-billing-frequency-title {
+            font-weight: 600;
+            font-style: italic;
           }
 
-          span {
-            font-weight: 500;
-            color: #9e9ea6;
+          .plan-billing-frequency-options {
+            display: flex;
+            justify-content: space-between;
+
+            .plan-billing-frequency-option {
+              display: flex;
+              justify-content: space-between;
+              min-width: 250px;
+              font-weight: bold;
+
+              background: transparent;
+              border: 2px solid #ddd;
+              padding: 5px 10px;
+              border-radius: 4px;
+              margin-bottom: 0;
+
+              &.selected {
+                background: #fff;
+                border: 2px solid $brand-primary;
+              }
+
+              .billing-desc {
+                color: #9e9ea6;
+
+                .billing-price {
+                  color: $brand-primary;
+                }
+              }
+            }
           }
         }
       }
@@ -165,14 +208,43 @@
         border-radius: 3px;
       }
 
-      .card-name-label {
-        display: block;
-        position: relative;
+      .card-form {
+        .name-on-card {
+          label {
+            display: block;
+            position: relative;
 
-        .secure-label {
-          position: absolute;
-          right: 0;
-          color: #999;
+            .secure-label {
+              position: absolute;
+              right: 0;
+              color: #999;
+            }
+          }
+
+          .form-control {
+            font-weight: 600;
+          }
+        }
+
+        .stripe-element-container {
+          display: block;
+          line-height: 30px;
+          margin-top: -5px;
+          margin-bottom: 15px;
+
+          .stripe-element {
+            height: 34px;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+
+            &.stripe-element-focus {
+              border-color: #66afe9;
+              outline: 0;
+              box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+                0 0 8px rgba(102, 175, 233, 0.6);
+            }
+          }
         }
       }
     }
