@@ -36,36 +36,102 @@ class CheckoutForm extends React.Component {
     super(props);
 
     this.state = {
-      nameOnCard: ""
+      nameOnCard: "",
+      elements: {
+        cardNumber: false,
+        cardExpiry: false,
+        cardCvc: false,
+        postalCode: false
+      }
     };
   }
 
-  handleSubmit = evt => {
+  onSubmit = evt => {
     evt.preventDefault();
 
-    const { onSubmitStart, onSubmitSuccess, onSubmitError } = this.props;
+    const {
+      onSubmitStart,
+      onSubmitSuccess,
+      onSubmitError,
+      stripe
+    } = this.props;
     const { nameOnCard: name } = this.state;
 
     onSubmitStart();
-    this.props.stripe.createToken({ name }).then(
-      payload => {
-        onSubmitSuccess(payload);
-      },
-      error => {
-        onSubmitError(error);
+    stripe.createToken({ name }).then(payload => {
+      if (payload.error) {
+        onSubmitError(payload.error);
+        return;
       }
-    );
+      onSubmitSuccess(payload.token);
+    });
   };
 
-  handleChange = evt => {
+  onChange = evt => {
     this.setState({
       [evt.target.name]: evt.target.value
     });
   };
 
+  onCardNumberChange = change => {
+    const { elements } = this.state;
+
+    this.setState({
+      elements: {
+        ...elements,
+        cardNumber: change.complete
+      }
+    });
+  };
+
+  onCardExpiryChange = change => {
+    const { elements } = this.state;
+
+    this.setState({
+      elements: {
+        ...elements,
+        cardExpiry: change.complete
+      }
+    });
+  };
+
+  onCardCvcChange = change => {
+    const { elements } = this.state;
+
+    this.setState({
+      elements: {
+        ...elements,
+        cardCvc: change.complete
+      }
+    });
+  };
+
+  onPostalCodeChange = change => {
+    const { elements } = this.state;
+
+    this.setState({
+      elements: {
+        ...elements,
+        postalCode: change.complete
+      }
+    });
+  };
+
+  canSubmit() {
+    const { nameOnCard, elements } = this.state;
+
+    return (
+      !!nameOnCard &&
+      elements.cardNumber &&
+      elements.cardExpiry &&
+      elements.cardCvc &&
+      elements.postalCode
+    );
+  }
+
   render() {
     return (
-      <form onSubmit={this.handleSubmit} className="card-form">
+      <form onSubmit={this.onSubmit} className="card-form">
         <div className="form-group name-on-card">
           <label htmlFor="name-on-card">
             Name on card{" "}
@@ -81,38 +147,54 @@ class CheckoutForm extends React.Component {
             required
             autoComplete="off"
             value={this.state.nameOnCard}
-            onChange={this.handleChange}
+            onChange={this.onChange}
           />
         </div>
 
         <label className="stripe-element-container">
           Card Number
-          <CardNumberElement {...createOptions(this.props.fontSize)} />
+          <CardNumberElement
+            {...createOptions(this.props.fontSize)}
+            onChange={this.onCardNumberChange}
+          />
         </label>
 
         <div className="row">
           <div className="col-sm-4">
             <label className="stripe-element-container">
               Expiration date
-              <CardExpiryElement {...createOptions(this.props.fontSize)} />
+              <CardExpiryElement
+                {...createOptions(this.props.fontSize)}
+                onChange={this.onCardExpiryChange}
+              />
             </label>
           </div>
           <div className="col-sm-4">
             <label className="stripe-element-container">
               CVC
-              <CardCVCElement {...createOptions(this.props.fontSize)} />
+              <CardCVCElement
+                {...createOptions(this.props.fontSize)}
+                onChange={this.onCardCvcChange}
+              />
             </label>
           </div>
           <div className="col-sm-4">
             <label className="stripe-element-container">
               Postal code
-              <PostalCodeElement {...createOptions(this.props.fontSize)} />
+              <PostalCodeElement
+                {...createOptions(this.props.fontSize)}
+                onChange={this.onPostalCodeChange}
+              />
             </label>
           </div>
         </div>
 
         <div className="submit">
-          <button className="btn btn-fancy btn-primary btn-block">
+          <button
+            type="submit"
+            className="btn btn-fancy btn-primary btn-block"
+            disabled={!this.canSubmit()}
+          >
             Save card info for future payments
           </button>
           <p className="help-block">
