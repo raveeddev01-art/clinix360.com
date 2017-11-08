@@ -9,7 +9,7 @@ const Plans = ({
   tiers,
   onSelectPlanFrequency,
   onSelectBillingFrequency,
-  onSelectPlan,
+  onSelectTier,
   onCheckoutPlan
 }) => {
   return (
@@ -25,9 +25,11 @@ const Plans = ({
         <Plan
           key={tier}
           tier={tier}
-          frequency={plan.planFrequency}
           selected={plan.tier === tier}
-          onSelect={onSelectPlan(tier)}
+          planFrequency={plan.planFrequency}
+          billingFrequency={plan.billingFrequency}
+          onSelectBillingFrequency={onSelectBillingFrequency}
+          onSelectTier={onSelectTier(tier)}
         />
       ))}
 
@@ -50,7 +52,7 @@ Plans.propTypes = {
   tiers: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSelectPlanFrequency: PropTypes.func.isRequired,
   onSelectBillingFrequency: PropTypes.func.isRequired,
-  onSelectPlan: PropTypes.func.isRequired,
+  onSelectTier: PropTypes.func.isRequired,
   onCheckoutPlan: PropTypes.func.isRequired
 };
 

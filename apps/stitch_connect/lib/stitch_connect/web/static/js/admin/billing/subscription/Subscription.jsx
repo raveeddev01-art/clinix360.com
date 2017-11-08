@@ -104,24 +104,12 @@ class Subscription extends React.Component {
     });
   };
 
-  onSelectPlan = tier => () => {
-    const { upgrade, upgradePlan, subscribePlan } = this.state;
+  onSelectTier = tier => () => {
+    const { upgrade } = this.state;
+    const planName = upgrade ? "upgradePlan" : "subscribePlan";
+    const plan = this.state[planName];
 
-    if (upgrade) {
-      this.setState({
-        upgradePlan: {
-          ...upgradePlan,
-          tier
-        }
-      });
-    } else {
-      this.setState({
-        subscribePlan: {
-          ...subscribePlan,
-          tier
-        }
-      });
-    }
+    this.setState({ [planName]: { ...plan, tier } });
   };
 
   onUpgradePlan = () => {
@@ -281,7 +269,7 @@ class Subscription extends React.Component {
         tiers={tiers}
         onSelectPlanFrequency={this.onSelectPlanFrequency}
         onSelectBillingFrequency={this.onSelectBillingFrequency}
-        onSelectPlan={this.onSelectPlan}
+        onSelectTier={this.onSelectTier}
         onCheckoutPlan={this.onCheckoutPlan}
       />
     );
@@ -297,7 +285,7 @@ class Subscription extends React.Component {
         tiers={tiers}
         onSelectPlanFrequency={this.onSelectPlanFrequency}
         onSelectBillingFrequency={this.onSelectBillingFrequency}
-        onSelectPlan={this.onSelectPlan}
+        onSelectTier={this.onSelectTier}
         onCheckoutPlan={this.onCheckoutPlan}
       />
     );
