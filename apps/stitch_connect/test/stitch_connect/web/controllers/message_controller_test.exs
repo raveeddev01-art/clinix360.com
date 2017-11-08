@@ -5,9 +5,10 @@ defmodule StitchConnect.Web.MessageControllerTest do
 
   describe "POST /api/v1/groups/:group_id/messages" do
     test "default message with text", %{conn: conn} do
-      user = insert(:user)
-      group = insert(:group)
-      user2 = insert(:user)
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
+      user2 = insert(:user, team: team)
       insert(:group_user, user: user, group: group)
       insert(:group_user, user: user2, group: group)
 
@@ -36,8 +37,9 @@ defmodule StitchConnect.Web.MessageControllerTest do
     end
 
     test "message with an attached upload", %{conn: conn} do
-      user = insert(:user)
-      group = insert(:group)
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
       insert(:group_user, user: user, group: group)
 
       conn = conn
@@ -62,8 +64,9 @@ defmodule StitchConnect.Web.MessageControllerTest do
     end
 
     test "whem message is blank", %{conn: conn} do
-      user = insert(:user)
-      group = insert(:group)
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group, team: team)
       insert(:group_user, user: user, group: group)
 
       conn = conn
