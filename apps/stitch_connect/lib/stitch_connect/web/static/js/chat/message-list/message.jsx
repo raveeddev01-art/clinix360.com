@@ -39,6 +39,20 @@ class Message extends Component {
     }
   };
 
+  onToggle = isOpen => {
+    const { chatDiv } = this.props.messageStore;
+
+    this.setState({ selected: isOpen });
+
+    if (isOpen) {
+      this.setState({
+        dropup:
+          chatDiv.scrollTop + chatDiv.offsetHeight / 2 <
+          this.messageDiv.offsetTop
+      });
+    }
+  };
+
   markAsUnread = () => {
     const { message, messageStore } = this.props;
 
@@ -78,20 +92,6 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     messageStore.toggleStar(message.id);
-  };
-
-  onToggle = isOpen => {
-    const { chatDiv } = this.props.messageStore;
-
-    this.setState({ selected: isOpen });
-
-    if (isOpen) {
-      this.setState({
-        dropup:
-          chatDiv.scrollTop + chatDiv.offsetHeight / 2 <
-          this.messageDiv.offsetTop
-      });
-    }
   };
 
   renderEdited(message) {
