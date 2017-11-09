@@ -185,6 +185,17 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
+  def validate_phone_number(conn, %{"phone_number" => phone_number}) do
+    case Stitch.Twilio.lookup(phone_number) do
+      :ok ->
+        conn |> json(%{status: "ok"})
+      :error ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Phone number is invalid."})
+    end
+  end
+
   def send_invite(_conn, %{"email" => _email}) do
     # TODO
   end

@@ -25,4 +25,9 @@ config :stitch,
   stripe_client: Stitch.Stripe.Client,
   stripe_publishable_key: System.get_env("STRIPE_PUBLISHABLE_KEY")
 
+config :stitch, :twilio, %{
+  account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
+  auth_token: System.get_env("TWILIO_AUTH_TOKEN")
+}
+
 import_config "#{Mix.env}.exs"
