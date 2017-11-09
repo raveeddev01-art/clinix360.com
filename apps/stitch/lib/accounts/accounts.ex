@@ -73,9 +73,9 @@ defmodule Stitch.Accounts do
 
           case Repo.update(changeset) do
             {:ok, user} ->
+              {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               analytics_identify_and_group(user)
               analytics_track_new_team_created(user)
-              {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               user
             {:error, changeset} ->
               {:error, changeset}
@@ -106,7 +106,10 @@ defmodule Stitch.Accounts do
         "team_name"  => team.name,
         "team_slug"  => team.slug
       }
-      Stitch.Analytics.track(user.id, "Team Created", properties)
+      list_active_user = Stitch.TeamQueries.list_active_users(team)
+      if length(list_active_user) == 1 do
+        Stitch.Analytics.track(user.id, "Team Created", properties)
+      end
     end)
   end
 
