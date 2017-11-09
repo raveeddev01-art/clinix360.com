@@ -45,6 +45,9 @@ export FCM_KEY=
 
 export STRIPE_SECRET_KEY=
 export STRIPE_PUBLISHABLE_KEY=
+
+export TWILIO_ACCOUNT_SID=
+export TWILIO_AUTH_TOKEN=
 ```
 
 Source the file to add these environment variables to your current shell
