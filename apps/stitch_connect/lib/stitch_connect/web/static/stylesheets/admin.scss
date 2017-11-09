@@ -310,7 +310,7 @@ $admin-topbar-height-sm: 65px;
         resize: none;
       }
 
-      ul {
+      ul:not(.dropdown-menu) {
         padding-left: 25px;
         margin-bottom: 25px;
 
@@ -470,6 +470,25 @@ $admin-topbar-height-sm: 65px;
             font-size: 30px;
             font-weight: 700;
           }
+        }
+      }
+    }
+
+    &.analytics-panel {
+      margin-bottom: 24px;
+
+      h3 {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      canvas {
+        margin-bottom: 10px;
+      }
+
+      .help-block {
+        &.total {
+          color: #000;
         }
       }
     }
