@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
-import { FREQUENCIES } from "../constants";
 import { getMonthlyPrice, getFrequencyName } from "../utils";
 
 class Plan extends React.Component {

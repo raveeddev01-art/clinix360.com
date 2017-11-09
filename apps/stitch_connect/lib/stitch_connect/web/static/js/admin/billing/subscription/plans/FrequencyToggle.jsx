@@ -2,16 +2,19 @@ import React from "react";
 import PropTypes from "prop-types";
 import capitalize from "lodash/capitalize";
 
-import { FREQUENCIES } from "../constants";
+import { getAnnualFrequency, getMonthlyFrequency } from "../utils";
 import Toggle from "../../../../common/components/toggle/Toggle";
 
 const FrequencyToggle = ({ frequency, onToggle }) => {
+  const annualFrequency = capitalize(getAnnualFrequency().title);
+  const monthlyFrequency = capitalize(getMonthlyFrequency().title);
+
   return (
     <div className="frequency-toggle">
       <Toggle
         onToggle={onToggle}
-        on={capitalize(FREQUENCIES[1].title)}
-        off={capitalize(FREQUENCIES[0].title)}
+        on={annualFrequency}
+        off={monthlyFrequency}
         active={frequency}
       />
 
