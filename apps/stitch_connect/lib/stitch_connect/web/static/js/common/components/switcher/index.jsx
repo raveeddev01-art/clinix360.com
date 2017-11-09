@@ -7,26 +7,20 @@ class Switcher extends Component {
       <div className="switcher">
         <div className="switcher__top">
           {/* <div className="switcher__logo" /> */}
-          <NavLink
-            to="/admin/you/account"
-            className="switcher__link"
-          >
+          <NavLink to="/admin/you/account" className="switcher__link">
             <i className="fa fa-home" />
           </NavLink>
-          <NavLink
-            to="/"
-            className="switcher__link"
-          >
+          <NavLink to="/" className="switcher__link">
             <i className="fa fa-comments" />
           </NavLink>
         </div>
         <div className="switcher__bottom">
-          <NavLink
-            to="/admin/you/account"
-            className="switcher__link"
-          >
+          <NavLink to="/admin/you/account" className="switcher__link">
             <i className="fa fa-cog" />
           </NavLink>
+          <a href="/logout" className="switcher__link">
+            <i className="fa fa-sign-out" />
+          </a>
         </div>
       </div>
     );
