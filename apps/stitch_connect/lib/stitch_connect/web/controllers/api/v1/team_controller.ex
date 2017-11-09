@@ -32,6 +32,11 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
     |> json(%{available: Team.Onboarding.slug_available?(url)})
   end
 
+  def slug_exists(conn, %{"url" => url}) do
+    conn
+    |> json(%{available: Team.Onboarding.slug_exists?(url)})
+  end
+
   def update(conn, %{"id" => _, "name" => name}) do
     case Team.Admin.update_name(conn.private[:team_id], name) do
       {:error, _} ->
