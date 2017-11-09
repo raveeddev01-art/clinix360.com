@@ -1,6 +1,7 @@
 import "babel-polyfill";
 
 import "./util/delay";
+import "./util/electron";
 import "./util/fetch";
 import "./util/moment";
 import componentMap from "./util/app_component_map";
