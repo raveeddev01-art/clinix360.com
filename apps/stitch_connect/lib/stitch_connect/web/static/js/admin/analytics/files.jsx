@@ -57,48 +57,26 @@ export default class Messages extends Component {
 
     this.state = {
       chartData,
-      chartOptions,
-      selectedPeriod: "month"
+      chartOptions
     };
   }
 
-  _handleSelect = key => {
-    this.setState({
-      selectedPeriod: key
-    });
-  };
-
   render() {
-    const { selectedPeriod, chartData, chartOptions } = this.state;
+    const { chartData, chartOptions } = this.state;
 
     return (
       <div className="panel-chart">
         <div className="chart-heading">
-          <div className="pull-left">
-            <h3>Files</h3>
-            <HelpBlock key="messages_chart_help">
-              Learn how your team has sent files.
-            </HelpBlock>
-          </div>
-          <div className="pull-right">
-            <DropdownButton
-              id="dropdown-analytics-timespan"
-              pullRight
-              title={datePeriodNames[selectedPeriod]}
-              className="dropdown-timespan"
-              onSelect={this._handleSelect}
-            >
-              <MenuItem eventKey="week">Last 1 week</MenuItem>
-              <MenuItem eventKey="month">Last 30 days</MenuItem>
-              <MenuItem eventKey="allTime">All time</MenuItem>
-            </DropdownButton>
-          </div>
+          <h3>Files</h3>
+          <HelpBlock key="messages_chart_help">
+            Learn how your team has uploaded files.
+          </HelpBlock>
         </div>
 
         <LineChart data={chartData} options={chartOptions} />
 
         <HelpBlock key="messages_chart_total" className="total">
-          Total Files Sent: 500
+          Total Files Uploaded: 500
         </HelpBlock>
       </div>
     );

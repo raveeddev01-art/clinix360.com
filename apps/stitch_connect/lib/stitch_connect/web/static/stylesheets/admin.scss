@@ -475,7 +475,24 @@ $admin-topbar-height-sm: 65px;
     }
 
     &.analytics-panel {
-      margin-bottom: 24px;
+      .panel-body {
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        background: transparent;
+
+        .period-dropdown {
+          margin-top: -50px;
+        }
+      }
+
+      .panel-chart {
+        background-color: #fff;
+        border: 1px solid #d8d8d8;
+        border-radius: 4px;
+        padding: 2em;
+        margin-bottom: 24px;
+      }
 
       h3 {
         margin-top: 0;
