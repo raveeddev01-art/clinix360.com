@@ -109,6 +109,7 @@ $admin-topbar-height-sm: 65px;
     display: flex;
     flex-direction: column;
     position: relative;
+    min-width: 0;
 
     .admin-topbar {
       padding-left: 20px;

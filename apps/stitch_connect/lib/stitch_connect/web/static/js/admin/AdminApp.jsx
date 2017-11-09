@@ -15,6 +15,7 @@ import UsersInvitations from "./users/invitations";
 import UsersMembers from "./users/members";
 import UsersPending from "./users/pending";
 import Billing from "./billing/billing";
+import Analytics from "./analytics/index";
 import Switcher from "../common/components/switcher/index";
 
 @inject("titleStore")
@@ -88,6 +89,7 @@ class AdminApp extends Component {
               <Route path={`/admin/users/members`} component={UsersMembers} />
               <Route path={`/admin/users/pending`} component={UsersPending} />
               <Route path={`/admin/billing`} component={Billing} />
+              <Route path={`/admin/analytics`} component={Analytics} />
             </Switch>
           </div>
         </div>

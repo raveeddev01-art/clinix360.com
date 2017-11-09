@@ -200,5 +200,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/admin/users/members", AdminController, :index
     get "/admin/users/pending", AdminController, :index
     get "/admin/billing", AdminController, :index
+    get "/admin/analytics", AdminController, :index
   end
 end
