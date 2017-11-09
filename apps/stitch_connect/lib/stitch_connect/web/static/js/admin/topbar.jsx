@@ -25,7 +25,7 @@ class Topbar extends Component {
         <ul className="nav navbar-nav">
           <li>
             <a
-              href="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect"
+              href="https://intercom.help/teamstitch"
               rel="noopener noreferrer"
               target="_blank"
             >
