@@ -8,15 +8,13 @@ const CreditCard = ({ card, onUse }) => {
     "credit-card-icon",
     card.brand.toLowerCase()
   );
-  // TODO: Fix card holder name
-  const cardHolder = `${currentUser.firstName} ${currentUser.lastName}`;
 
   return (
     <div className="credit-card">
       <div className="credit-card-desc">
         <div className="credit-card-desc-row">
           <span className={iconClassName} />
-          <span className="credit-card-holder">{cardHolder}</span>
+          <span className="credit-card-holder">{card.cardholder_name}</span>
         </div>
 
         <div>
