@@ -7,14 +7,38 @@ export const PLANS = {
       annual: 5
     },
     items: [
-      "HIPAA Compliant",
-      "Public & Private Rooms",
-      "Direct Messaging",
-      "Healthcare Workflows",
-      "Searchable Archives",
-      "File Storage",
-      "Mac & Windows Apps",
-      "iOS & Android Apps"
+      {
+        content: "HIPAA Compliant",
+        beta: false
+      },
+      {
+        content: "Public & Private Rooms",
+        beta: false
+      },
+      {
+        content: "Direct Messaging",
+        beta: false
+      },
+      {
+        content: "Healthcare Workflows",
+        beta: false
+      },
+      {
+        content: "Searchable Archives",
+        beta: false
+      },
+      {
+        content: "File Storage",
+        beta: false
+      },
+      {
+        content: "Mac & Windows Apps",
+        beta: false
+      },
+      {
+        content: "iOS & Android Apps",
+        beta: false
+      }
     ]
   },
   PREMIUM: {
@@ -23,12 +47,30 @@ export const PLANS = {
       annual: 10
     },
     items: [
-      "Task Management",
-      "Guest Access",
-      "Custom User Groups (Beta)",
-      "Custom Data Retention (Beta)",
-      "Custom Profiles (Beta)",
-      "Priority Support"
+      {
+        content: "Task Management",
+        beta: false
+      },
+      {
+        content: "Guest Access",
+        beta: false
+      },
+      {
+        content: "Custom User Groups",
+        beta: true
+      },
+      {
+        content: "Custom Data Retention",
+        beta: true
+      },
+      {
+        content: "Custom Profiles",
+        beta: true
+      },
+      {
+        content: "Priority Support",
+        beta: false
+      }
     ]
   },
   POWER: {
@@ -37,12 +79,30 @@ export const PLANS = {
       annual: 15
     },
     items: [
-      "Voice & Video Calls (Beta)",
-      "Priority Messaging (Beta)",
-      "EHR Integrations (Beta)",
-      "Advanced Security Controls",
-      "On-Site Training",
-      "Dedicated Support"
+      {
+        content: "Voice & Video Calls",
+        beta: true
+      },
+      {
+        content: "Priority Messaging",
+        beta: true
+      },
+      {
+        content: "EHR Integrations",
+        beta: true
+      },
+      {
+        content: "Advanced Security Controls",
+        beta: false
+      },
+      {
+        content: "On-Site Training",
+        beta: false
+      },
+      {
+        content: "Dedicated Support",
+        beta: false
+      }
     ]
   }
 };

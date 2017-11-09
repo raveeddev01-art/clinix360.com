@@ -4,8 +4,12 @@ import moment from "moment";
 import capitalize from "lodash/capitalize";
 
 import { alert } from "../../../common/modals";
-import { TIERS, PLANS } from "./constants";
-import { getUpgradableTiers } from "./utils";
+import {
+  getSelectableTiers,
+  getUpgradableTiers,
+  getBelowTier,
+  getPlanForTier
+} from "./utils";
 import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
 import Loading from "./loading/Loading";
@@ -235,14 +239,20 @@ class Subscription extends React.Component {
     const validUntil = moment
       .utc(subscription.valid_until)
       .format("dddd, MMMM Do YYYY");
-    const planItems = PLANS[subscription.tier].items;
+    const belowTier = capitalize(getBelowTier(subscription.tier));
+    const planItems = getPlanForTier(subscription.tier).items;
 
     return (
       <div className="subscribed">
         <p>
           Your plan will renew on <b>{validUntil}</b> for{" "}
           <b>${subscription.estimated_invoice_amount}</b>.{" "}
-          <b>{capitalize(subscription.tier)}</b> includes:
+          <b>{capitalize(subscription.tier)}</b> includes{belowTier && (
+            <span>
+              {" "}
+              everything in <b>{belowTier}</b>, and
+            </span>
+          )}:
         </p>
 
         {planItems &&
@@ -251,7 +261,7 @@ class Subscription extends React.Component {
               {planItems.map((item, index) => (
                 <li key={`item_${index}`}>
                   <i className="fa fa-check-circle-o" />
-                  {item}
+                  {item.content} {item.beta && <i>(Beta)</i>}
                 </li>
               ))}
             </ul>
@@ -272,7 +282,7 @@ class Subscription extends React.Component {
 
   renderSelectPlan() {
     const { subscribePlan: plan } = this.state;
-    const tiers = TIERS;
+    const tiers = getSelectableTiers();
 
     return (
       <Plans

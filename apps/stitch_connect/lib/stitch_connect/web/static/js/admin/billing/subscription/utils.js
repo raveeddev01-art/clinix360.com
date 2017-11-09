@@ -1,5 +1,9 @@
 import { TIERS, PLANS, FREQUENCIES } from "./constants";
 
+const getSelectableTiers = () => {
+  return TIERS;
+};
+
 const getUpgradableTiers = tier => {
   const index = TIERS.findIndex(t => t === tier);
 
@@ -8,6 +12,20 @@ const getUpgradableTiers = tier => {
   }
 
   return TIERS.slice(index + 1);
+};
+
+const getBelowTier = tier => {
+  const index = TIERS.findIndex(t => t === tier);
+
+  if (index < 1) {
+    return "";
+  }
+
+  return TIERS[index - 1];
+};
+
+const getPlanForTier = tier => {
+  return PLANS[tier];
 };
 
 const getFrequency = frequencyIndex => {
@@ -19,10 +37,18 @@ const getFrequencyName = frequencyIndex => {
 };
 
 const getMonthlyPrice = (tier, frequencyIndex) => {
-  const plan = PLANS[tier];
+  const plan = getPlanForTier(tier);
   const frequencyName = getFrequencyName(frequencyIndex);
 
   return plan.pricePerMonth[frequencyName];
 };
 
-export { getUpgradableTiers, getFrequency, getFrequencyName, getMonthlyPrice };
+export {
+  getSelectableTiers,
+  getUpgradableTiers,
+  getBelowTier,
+  getPlanForTier,
+  getFrequency,
+  getFrequencyName,
+  getMonthlyPrice
+};
