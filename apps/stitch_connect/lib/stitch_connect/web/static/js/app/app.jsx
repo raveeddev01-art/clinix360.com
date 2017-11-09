@@ -1,6 +1,6 @@
 import React from "react";
 import { Provider } from "mobx-react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { StripeProvider } from "react-stripe-elements";
 
 import history from "../util/history";

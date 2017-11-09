@@ -151,9 +151,17 @@ class SidemenuStore {
   };
 
   @action
-  onRenameGroup = group => {
-    this.updateGroupData(group.id, group);
-    history.push(`/rooms/${group.slug}`);
+  onRenameGroup = params => {
+    const data = {
+      slug: params.group_slug,
+      name: params.group_name
+    };
+
+    this.updateGroupData(params.group_id, data);
+
+    if (this.rootStore.groupStore.id === params.group_id) {
+      history.push(`/rooms/${params.group_slug}`);
+    }
   };
 
   @action
