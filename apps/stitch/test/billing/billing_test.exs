@@ -38,6 +38,7 @@ defmodule Stitch.Billing.BillingTest do
   describe "modify_subscription/2" do
     test "creates a stripe subscription when on a trial" do
       subscription = insert(:trial_subscription)
+      insert(:card, team: subscription.team)
       params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
       assert {:ok, result} = Billing.modify_subscription(subscription, params)
       assert result.subscription_id
@@ -48,6 +49,7 @@ defmodule Stitch.Billing.BillingTest do
 
     test "gives errors when expected params are missing/invalid" do
       subscription = insert(:trial_subscription)
+      insert(:card, team: subscription.team)
       assert {:error, result} = Billing.modify_subscription(subscription)
       assert elem(result.errors[:tier], 0) =~ "blank"
       assert elem(result.errors[:renewal_frequency], 0) =~ "blank"
@@ -57,6 +59,7 @@ defmodule Stitch.Billing.BillingTest do
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
 
       subscription = insert(:subscription)
+      insert(:card, team: subscription.team)
       assert {:error, result} = Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
@@ -64,9 +67,16 @@ defmodule Stitch.Billing.BillingTest do
 
     test "can change a subscription tier" do
       subscription = insert(:subscription)
+      insert(:card, team: subscription.team)
       assert {:ok, sub} = Billing.modify_subscription(subscription, %{tier: "POWER", renewal_frequency: "MONTHLY"})
       assert sub.tier == "POWER"
       assert sub.renewal_frequency == "MONTHLY"
+    end
+
+    test "requires a card on file" do
+      subscription = insert(:trial_subscription)
+      params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
+      assert {:error, :card_required} = Billing.modify_subscription(subscription, params)
     end
   end
 
@@ -164,6 +174,7 @@ defmodule Stitch.Billing.BillingTest do
       assert card.exp_month
       assert card.exp_year
       assert card.last_four
+      assert card.cardholder_name
     end
 
     test "requires a source token", %{team: team} do
@@ -171,9 +182,12 @@ defmodule Stitch.Billing.BillingTest do
       assert elem(changeset.errors[:source_token], 0) =~ "can't be blank"
     end
 
-    test "sets the first card to be the default payment method", %{team: team} do
-      assert {:ok, %{default: true}} = Billing.add_card(team, "tok_valid")
-      assert {:ok, %{default: false}} = Billing.add_card(team, "tok_valid")
+    test "sets the card to be the default payment method", %{team: team} do
+      old_card = insert(:card, team: team, default: true)
+      assert {:ok, %{id: new_id, default: true}} = Billing.add_card(team, "tok_valid")
+      cards = Billing.list_cards(team)
+      assert %{default: false} = Enum.find(cards, &(&1.id == old_card.id))
+      assert %{default: true} = Enum.find(cards, &(&1.id == new_id))
     end
 
     test "gives an error with invalid source token", %{team: team} do
@@ -204,23 +218,24 @@ defmodule Stitch.Billing.BillingTest do
     end
   end
 
-  describe "set_as_default/2" do
+  describe "set_card_as_default/2" do
     setup do
       subscription = insert(:subscription)
-      {:ok, default_card} = Billing.add_card(subscription.team, "tok_valid")
-      {:ok, other_card} = Billing.add_card(subscription.team, "tok_valid")
-      {:ok, team: subscription.team, default_card: default_card, other_card: other_card}
+      team = subscription.team
+      default_card = insert(:card, team: team, default: true)
+      other_card = insert(:card, team: team, default: false)
+      {:ok, team: team, default_card: default_card, other_card: other_card}
     end
 
     test "sets a card as the default", %{team: team, default_card: default_card, other_card: other_card} do
-      assert {:ok, result} = Billing.set_as_default(team, other_card.id)
+      assert {:ok, result} = Billing.set_card_as_default(team, other_card.id)
       assert result.default
       assert result.id == other_card.id
       refute Stitch.Repo.get(Stitch.Billing.PaymentMethod, default_card.id).default
     end
 
     test "gives an error when a card isn't found", %{team: team} do
-      assert {:error, :not_found} == Billing.set_as_default(team, -1)
+      assert {:error, :not_found} == Billing.set_card_as_default(team, -1)
     end
   end
 

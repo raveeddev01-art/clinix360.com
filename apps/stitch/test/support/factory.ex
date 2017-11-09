@@ -114,7 +114,8 @@ defmodule Stitch.Factory do
       brand: "Visa",
       last_four: "4242",
       exp_month: Enum.random(1..12),
-      exp_year: Enum.random(2020..2025)
+      exp_year: Enum.random(2020..2025),
+      cardholder_name: "John Doe"
     }
   end
 end

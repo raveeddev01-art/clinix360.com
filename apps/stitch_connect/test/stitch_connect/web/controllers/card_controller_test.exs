@@ -58,6 +58,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardControllerTest do
       conn = post(conn, Routes.api_v1_billing_card_path(conn, :create), body)
       assert response = json_response(conn, 201)
       assert response["data"]
+      assert response["data"]["default"]
     end
 
     test "requires a source token", %{conn: conn} do

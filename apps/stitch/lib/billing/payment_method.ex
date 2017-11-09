@@ -11,6 +11,7 @@ defmodule Stitch.Billing.PaymentMethod do
     field :last_four, :string
     field :exp_month, :integer
     field :exp_year, :integer
+    field :cardholder_name, :string
     field :default, :boolean, default: false
 
     belongs_to :team, Stitch.Team
@@ -29,7 +30,7 @@ defmodule Stitch.Billing.PaymentMethod do
 
   @doc false
   def new(params \\ %{}) do
-    fields = ~w(card_id brand last_four exp_month exp_year default team_id)a
+    fields = ~w(card_id brand last_four exp_month exp_year cardholder_name default team_id)a
 
     %__MODULE__{}
     |> cast(params, fields)
