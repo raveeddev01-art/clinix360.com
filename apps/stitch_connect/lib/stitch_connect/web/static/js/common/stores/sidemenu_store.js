@@ -2,6 +2,7 @@ import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
 import orderBy from "lodash/orderBy";
+import history from "../../util/history";
 
 class SidemenuStore {
   @observable sidemenuDiv = null; // Div element of sidemenu
@@ -34,10 +35,6 @@ class SidemenuStore {
 
     this.loadGroups();
     this.loadUsers();
-  }
-
-  setHistory(history) {
-    this.history = history;
   }
 
   @computed
@@ -151,6 +148,12 @@ class SidemenuStore {
   @action
   hideGroup = id => {
     return put(`/api/v1/groups/${id}/hide`);
+  };
+
+  @action
+  onRenameGroup = group => {
+    this.updateGroupData(group.id, group);
+    history.push(`/rooms/${group.slug}`);
   };
 
   @action
@@ -412,7 +415,7 @@ class SidemenuStore {
       url = `/direct/${recipient.username}`;
     }
 
-    this.history.push(url);
+    history.push(url);
   }
 
   scrollToRoomItem(roomId, duration = 300) {

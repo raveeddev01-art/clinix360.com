@@ -22,12 +22,6 @@ class ChatApp extends Component {
     };
   }
 
-  componentDidMount() {
-    const { sidemenuStore, history } = this.props;
-
-    sidemenuStore.setHistory(history);
-  }
-
   onDragEnter = () => {
     this.setState({
       dropzoneActive: true
