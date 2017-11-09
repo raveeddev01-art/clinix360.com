@@ -1,4 +1,5 @@
 import "babel-polyfill";
+import "./util/electron";
 import "./util/fetch";
 import "./util/moment";
 import "./util/polyfills";

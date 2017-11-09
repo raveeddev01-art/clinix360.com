@@ -21,7 +21,7 @@ class AuthenticationRouter extends Component {
     const { titleStore } = this.props;
     return (
       <div className="onboarding-wrapper">
-        <Header />
+        {!window.electronApp && <Header />}
         <div className="authentication-wrapper">
           <Helmet>
             <title>{titleStore.title}</title>
@@ -49,7 +49,7 @@ class AuthenticationRouter extends Component {
             <Route component={() => <Redirect to="/" />} />
           </Switch>
         </div>
-        <Footer />
+        {!window.electronApp && <Footer />}
       </div>
     );
   }
