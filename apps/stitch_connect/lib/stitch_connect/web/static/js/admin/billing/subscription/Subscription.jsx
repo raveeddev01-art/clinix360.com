@@ -19,11 +19,11 @@ class Subscription extends React.Component {
       subscription: null,
       upgrade: false,
       subscribePlan: {
-        planFrequency: 1,
+        frequency: 1,
         tier: "BASIC"
       },
       upgradePlan: {
-        planFrequency: 1,
+        frequency: 1,
         tier: ""
       },
       checkout: false,
@@ -36,7 +36,7 @@ class Subscription extends React.Component {
     this.loadCards();
   }
 
-  onSelectPlanFrequency = freq => {
+  onSelectFrequency = frequency => {
     const { upgrade } = this.state;
     const planName = upgrade ? "upgradePlan" : "subscribePlan";
     const plan = this.state[planName];
@@ -44,7 +44,7 @@ class Subscription extends React.Component {
     this.setState({
       [planName]: {
         ...plan,
-        planFrequency: freq
+        frequency
       }
     });
   };
@@ -278,7 +278,7 @@ class Subscription extends React.Component {
       <Plans
         plan={plan}
         tiers={tiers}
-        onSelectPlanFrequency={this.onSelectPlanFrequency}
+        onSelectFrequency={this.onSelectFrequency}
         onSelectTier={this.onSelectTier}
         onCheckoutPlan={this.onCheckoutPlan}
       />
@@ -293,7 +293,7 @@ class Subscription extends React.Component {
       <Plans
         plan={plan}
         tiers={tiers}
-        onSelectPlanFrequency={this.onSelectPlanFrequency}
+        onSelectFrequency={this.onSelectFrequency}
         onSelectTier={this.onSelectTier}
         onCheckoutPlan={this.onCheckoutPlan}
       />

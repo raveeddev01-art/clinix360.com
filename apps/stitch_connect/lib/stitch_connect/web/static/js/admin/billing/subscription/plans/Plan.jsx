@@ -16,9 +16,9 @@ class Plan extends React.Component {
   };
 
   render() {
-    const { tier, planFrequency, selected } = this.props;
-    const frequencyName = getFrequencyName(planFrequency);
-    const monthlyPrice = getMonthlyPrice(tier, planFrequency);
+    const { tier, frequency, selected } = this.props;
+    const frequencyName = getFrequencyName(frequency);
+    const monthlyPrice = getMonthlyPrice(tier, frequency);
     const className = classNames("plan-container", { selected });
 
     return (
@@ -43,7 +43,7 @@ class Plan extends React.Component {
 
 Plan.propTypes = {
   tier: PropTypes.string.isRequired,
-  planFrequency: PropTypes.number.isRequired,
+  frequency: PropTypes.number.isRequired,
   selected: PropTypes.bool.isRequired,
   onSelectTier: PropTypes.func.isRequired
 };

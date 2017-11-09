@@ -10,18 +10,18 @@ import CheckoutForm from "./CheckoutForm";
 class Checkout extends React.Component {
   getBillingSummary() {
     const { plan } = this.props;
-    const planFrequency = getFrequency(plan.planFrequency);
-    const monthlyPrice = getMonthlyPrice(plan.tier, plan.planFrequency);
+    const frequency = getFrequency(plan.frequency);
+    const monthlyPrice = getMonthlyPrice(plan.tier, plan.frequency);
     const annualPrice = monthlyPrice * 12;
     const charge =
-      planFrequency.unit === "month"
+      frequency.unit === "month"
         ? `$${monthlyPrice} per user per month`
         : `$${annualPrice} per user per year`;
 
     return {
       tier: capitalize(plan.tier),
       charge,
-      renewal: planFrequency.unit
+      renewal: frequency.unit
     };
   }
 
