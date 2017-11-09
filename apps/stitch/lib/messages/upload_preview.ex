@@ -27,8 +27,9 @@ defmodule Stitch.UploadPreview do
         {:ok, :done} <- download(filename, dest),
         %Mogrify.Image{path: preview_path} = image <- generate_preview(dest),
         %Mogrify.Image{height: preview_height, width: preview_width} <- Mogrify.verbose(image),
-        {:ok, %{status_code: 200}} <- upload(preview_path) do
-      # TODO: clean the images
+        {:ok, %{status_code: 200}} <- upload(preview_path),
+        :ok <- File.rm(dest),
+        :ok <- File.rm(preview_path) do
       preview = %{
         preview_height: preview_height,
         preview_width: preview_width,
