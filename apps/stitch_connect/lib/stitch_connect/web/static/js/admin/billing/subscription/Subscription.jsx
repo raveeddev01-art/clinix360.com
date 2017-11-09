@@ -62,8 +62,31 @@ class Subscription extends React.Component {
   };
 
   onUseCreditCard = card => {
-    // TODO: Process checkout using card selected
-    console.log("onUse", card);
+    // Make the card as default
+    this.setState({ loading: true });
+    put(`/api/v1/billing/cards/${card.id}`, {
+      body: {
+        default: true
+      }
+    }).then(
+      () => {
+        const { cards } = this.state;
+
+        cards.forEach(c => {
+          c.default = c.id === card.id;
+        });
+
+        this.setState({
+          loading: false,
+          cards
+        });
+
+        this.subscribe();
+      },
+      error => {
+        this.setState({ loading: false });
+      }
+    );
   };
 
   onCardSubmitStart = () => {
