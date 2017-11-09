@@ -98,8 +98,17 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
+  def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
+    create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group)
+  end
+
+  def create(_group_id, _user, _attrs, _online_in_group) do
+    changeset = %Message{} |> change() |> add_error(:type, "is not supported")
+    {:error, :message, changeset, nil}
+  end
+
   defp analytics_track_message_sent(user, group) do
-    Task.start(fn ->
+    Stitch.Task.start(fn ->
       team_id = user.team_id
       team = Stitch.TeamQueries.get_by_id(team_id)
       properties = %{
@@ -110,15 +119,6 @@ defmodule Stitch.Message do
       }
       Stitch.Analytics.track(user.id, "Message Sent", properties)
     end)
-  end
-
-  def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
-    create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group)
-  end
-
-  def create(_group_id, _user, _attrs, _online_in_group) do
-    changeset = %Message{} |> change() |> add_error(:type, "is not supported")
-    {:error, :message, changeset, nil}
   end
 
   def message_changeset(message, %{"type" => "chat"} = attrs) do

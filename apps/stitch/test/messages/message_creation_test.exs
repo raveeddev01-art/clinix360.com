@@ -12,8 +12,9 @@ defmodule Stitch.MessageCreationTest do
   end
 
   defp create_user_and_group(_) do
-    user = insert(:user)
-    group = insert(:group)
+    team = insert(:team)
+    user = insert(:user, team: team)
+    group = insert(:group, team: team)
     insert(:group_user, user: user, group: group)
 
     {:ok, user: user, group: group}
