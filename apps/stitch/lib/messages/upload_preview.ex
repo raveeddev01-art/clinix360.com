@@ -35,12 +35,31 @@ defmodule Stitch.UploadPreview do
         preview_width: preview_width,
         preview_url: "https://#{@s3.host}/#{@s3.bucket}/#{Path.basename(preview_path)}"
       }
+      preview = Map.merge(preview, preview_display_dimensions(preview))
       {:ok, preview}
     else error ->
       {:error, error}
     end
   end
   def create_preview(_fields), do: {:error, "Unsupported type"}
+
+  defp preview_display_dimensions(%{preview_height: height, preview_width: width}) do
+    ratio = (height / 1) / (width / 1)
+    opt_ration = (@settings.max_preview_height / 1) / (@settings.max_preview_width / 1)
+
+    if width > @settings.display_preview_width || height > @settings.display_preview_height do
+      if width > height do
+        %{display_width: @settings.display_preview_width,
+          display_height: Float.round((height / 1) * ((@settings.display_preview_width / 1) / (width / 1))) }
+      else
+        %{display_width: Float.round((width / 1) * ((@settings.display_preview_height / 1) / (height / 1))),
+          display_height: @settings.display_preview_height }
+      end
+    else
+      %{display_width: width,
+        display_height: height }
+    end
+  end
 
   @spec upload(binary) :: {:ok, map} | {:error, term}
   def upload(path) do
