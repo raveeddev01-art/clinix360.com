@@ -22,14 +22,28 @@ export const PLANS = {
       monthly: 12,
       annual: 10
     },
-    items: []
+    items: [
+      "Task Management",
+      "Guest Access",
+      "Custom User Groups (Beta)",
+      "Custom Data Retention (Beta)",
+      "Custom Profiles (Beta)",
+      "Priority Support"
+    ]
   },
   POWER: {
     pricePerMonth: {
       monthly: 18,
       annual: 15
     },
-    items: []
+    items: [
+      "Voice & Video Calls (Beta)",
+      "Priority Messaging (Beta)",
+      "EHR Integrations (Beta)",
+      "Advanced Security Controls",
+      "On-Site Training",
+      "Dedicated Support"
+    ]
   }
 };
 

@@ -16,6 +16,16 @@
       background: rgba(255, 255, 255, 0.7);
     }
 
+    .subscribed {
+      .list-unstyled {
+        li {
+          i.fa {
+            color: $brand-primary;
+          }
+        }
+      }
+    }
+
     .frequency-toggle {
       display: flex;
       align-items: center;
