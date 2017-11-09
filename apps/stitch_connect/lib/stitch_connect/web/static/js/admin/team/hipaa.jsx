@@ -40,10 +40,10 @@ export default class TeamHipaa extends Component {
 
         <p>
           For an explanation of our BAA, see{" "}
-          <a href="https://teamstitch.zendesk.com/hc/en-us/articles/226677427-Business-Associates-Agreement-BAA-">
+          <a href="https://intercom.help/teamstitch/connect/security/business-associate-agreement-baa">
             here
           </a>. For details on our HIPAA compliance, see{" "}
-          <a href="https://teamstitch.zendesk.com/hc/en-us/articles/226676267-HIPAA-compliance">
+          <a href="https://intercom.help/teamstitch/connect/security/hipaa-compliance">
             here
           </a>.
         </p>

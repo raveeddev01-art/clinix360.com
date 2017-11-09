@@ -64,9 +64,10 @@ defmodule Stitch.Message.MentionTest do
 
   describe "Message.create/3 should trigger counter updates in the corresponding group_user records" do
     test "when one user is mentioned" do
-      bob = insert(:user, username: "bob")
-      alice = insert(:user, username: "alice")
-      group = insert(:group)
+      team = insert(:team)
+      bob = insert(:user, team: team, username: "bob")
+      alice = insert(:user, team: team, username: "alice")
+      group = insert(:group, team: team)
       group_bob = insert(:group_user, user: bob, group: group)
       group_alice = insert(:group_user, user: alice, group: group)
 

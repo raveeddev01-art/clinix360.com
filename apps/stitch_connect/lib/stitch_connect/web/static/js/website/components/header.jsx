@@ -66,7 +66,7 @@ export default class Header extends Component {
                   </MenuItem>
 
                   <MenuItem
-                    href="http://intercom.help/teamstitch"
+                    href="https://intercom.help/teamstitch"
                     target="_blank"
                   >
                     <i className="fa fa-life-ring" /> Support

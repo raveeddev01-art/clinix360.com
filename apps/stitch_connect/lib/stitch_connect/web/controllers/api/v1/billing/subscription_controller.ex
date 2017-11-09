@@ -16,6 +16,12 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionController do
     subscription = Billing.get_subscription(team)
     with {:ok, subscription} <- Billing.modify_subscription(subscription, params) do
       render(conn, "show.json", subscription: subscription)
+    else
+      {:error, :card_required} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(ErrorView, :"422", errors: "At least one card on file is required.")
+      error -> error
     end
   end
 

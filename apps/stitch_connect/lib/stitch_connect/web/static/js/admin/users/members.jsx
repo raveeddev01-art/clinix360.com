@@ -27,7 +27,7 @@ export default class UsersMembers extends Component {
           Manage your users by controlling admin abilities and account status.
           For more information on how account enabling and disabling works, see
           our support article&nbsp;
-          <a href="https://teamstitch.zendesk.com/hc/en-us/articles/216488668-User-management">
+          <a href="https://intercom.help/teamstitch/connect/admin/user-management">
             here
           </a>.
         </p>

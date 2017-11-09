@@ -20,7 +20,8 @@ defmodule Stitch.Stripe.TestClient do
       brand: "Visa",
       exp_month: Enum.random(1..12),
       exp_year: Enum.random(2018..2025),
-      last_four: "4242"
+      last_four: "4242",
+      cardholder_name: "John Doe"
     }
 
     {:ok, card}

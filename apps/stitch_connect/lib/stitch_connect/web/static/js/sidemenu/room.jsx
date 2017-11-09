@@ -5,7 +5,6 @@ import { NavLink, withRouter } from "react-router-dom";
 import { Element } from "react-scroll";
 import VisibilitySensor from "react-visibility-sensor";
 import classNames from "classnames";
-import _ from "lodash";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -15,14 +14,6 @@ import { getRoomNavLink } from "../lib/room";
 @inject("presenceStore", "sidemenuStore")
 @observer
 class Room extends Component {
-  hideDM = event => {
-    event.preventDefault();
-    const { sidemenuStore, room } = this.props;
-    sidemenuStore.hideGroup(room.id).then(() => {
-      sidemenuStore.loadGroups();
-    });
-  };
-
   onVisibleChange = isVisible => {
     const { sidemenuStore, room } = this.props;
 
@@ -97,9 +88,10 @@ class Room extends Component {
 
   hideDM = event => {
     event.preventDefault();
-    const { sidemenuStore } = this.props;
-    sidemenuStore.hideGroup(this.props.room.id).then(() => {
+    const { sidemenuStore, room, history } = this.props;
+    sidemenuStore.hideGroup(room.id).then(() => {
       sidemenuStore.loadGroups();
+      history.push("/rooms/general"); // when room is hidden, should redirect to general
     });
   };
 

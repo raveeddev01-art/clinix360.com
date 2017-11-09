@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.EventsChannel do
   use Phoenix.Channel
 
   import Ecto.Query
-  alias Stitch.{Repo, GroupUser, UserQueries, Accounts.User}
+  alias Stitch.{Repo, Group, GroupUser, UserQueries, Accounts.User}
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView}
 
   @endpoint StitchConnect.Web.Endpoint
@@ -94,6 +94,32 @@ defmodule StitchConnect.Web.EventsChannel do
       for id <- remaining_user_ids do
         json = group |> Map.put(:joined, false) |> GroupView.group_json(id)
         @endpoint.broadcast("events:#{id}", "new_group", json)
+      end
+    end
+  end
+
+  def broadcast_group_rename(%Group{} = group) do
+    ids = Enum.map(group.users, &( &1.id ))
+
+    json = %{
+      group_id: group.id,
+      group_name: group.name,
+      group_slug: group.slug,
+    }
+
+    for id <- ids do
+      @endpoint.broadcast("events:#{id}", "group_renamed", json)
+    end
+
+    if group.public do
+      remaining_user_ids =
+        group.team_id
+        |> UserQueries.users_for_team
+        |> Enum.map(& &1.id )
+        |> Enum.reject(& &1 in ids)
+
+      for id <- remaining_user_ids do
+        @endpoint.broadcast("events:#{id}", "group_renamed", json)
       end
     end
   end

@@ -59,11 +59,7 @@ class NavItemRename extends Component {
   };
 
   handleSubmit = () => {
-    this.props.groupStore.rename(this.state.groupName.trim()).then(group => {
-      const { history, sidemenuStore } = this.props;
-      sidemenuStore.updateGroupData(group.id, group);
-      history.push(`/rooms/${group.slug}`);
-    });
+    this.props.groupStore.rename(this.state.groupName.trim());
     this.setState({ showModal: false });
   };
 
