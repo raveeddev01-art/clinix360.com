@@ -9,16 +9,20 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
+import debounce from "lodash/debounce";
 
 @inject("titleStore")
 export default class TeamPicker extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
-      team_name: "",
+      teamName: "",
       teamExists: undefined,
+      blacklisted: true,
       isLoading: false
     };
+
+    this.checkBlacklist = debounce(this.checkBlacklist, 500);
   }
 
   componentWillMount() {
@@ -26,12 +30,19 @@ export default class TeamPicker extends Component {
   }
 
   handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
+    const teamName = event.target.value;
     this.setState({
-      [name]: value
+      teamName
+    });
+    this.checkBlacklist(teamName);
+  };
+
+  checkBlacklist = url => {
+    this.setState({ blacklisted: true });
+    post("/api/v1/teams/slug-exists", {
+      body: { url }
+    }).then(res => {
+      this.setState({ blacklisted: !res.data.available });
     });
   };
 
@@ -42,20 +53,22 @@ export default class TeamPicker extends Component {
     }).then(response => {
       this.setState({ teamExists: !response.data.available, isLoading: false });
       if (this.state.teamExists === true) {
-        window.location = `https://${this.state.team_name}.${applicationHost}`;
+        window.location = `https://${this.state.teamName}.${applicationHost}`;
       }
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    this.checkAvailability(this.state.team_name);
+    this.checkAvailability(this.state.teamName);
   };
 
   render() {
+    const { teamExists, teamName, isLoading, blacklisted } = this.state;
+
     return (
       <div>
-        {this.state.teamExists === false && (
+        {teamExists === false && (
           <Alert>
             We don't have that team URL in our system. If you'd like, we can
             help you <Link to="/find-teams">find your team</Link>.
@@ -87,19 +100,19 @@ export default class TeamPicker extends Component {
           <form onSubmit={this.handleSubmit} className="m-b-40">
             <FormGroup bsSize="large" className="team-form">
               <FormControl
-                name="team_name"
+                name="teamName"
                 required
                 autoFocus
                 type="text"
                 placeholder="Subdomain"
-                value={this.state.team_name}
+                value={teamName}
                 onChange={this.handleChange}
               />
               <span className="domain">.teamstitch.com</span>
             </FormGroup>
 
             <input
-              disabled={this.state.isLoading || this.state.team_name === ""}
+              disabled={isLoading || !teamName || blacklisted}
               value="Continue"
               type="submit"
               className="btn btn-block btn-lg btn-primary"
