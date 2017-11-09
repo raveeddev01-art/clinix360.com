@@ -1,0 +1,9 @@
+defmodule Stitch.Repo.Migrations.AddLinkPreviewsToMessages do
+  use Ecto.Migration
+
+  def change do
+    alter table(:messages) do
+      add :has_links, :boolean, default: false, null: false
+    end
+  end
+end
