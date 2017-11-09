@@ -70,46 +70,6 @@
             }
           }
         }
-
-        .plan-billing-frequency {
-          margin-top: 10px;
-
-          .plan-billing-frequency-title {
-            font-weight: 600;
-            font-style: italic;
-          }
-
-          .plan-billing-frequency-options {
-            display: flex;
-            justify-content: space-between;
-
-            .plan-billing-frequency-option {
-              display: flex;
-              justify-content: space-between;
-              min-width: 250px;
-              font-weight: bold;
-
-              background: transparent;
-              border: 2px solid #ddd;
-              padding: 5px 10px;
-              border-radius: 4px;
-              margin-bottom: 0;
-
-              &.selected {
-                background: #fff;
-                border: 2px solid $brand-primary;
-              }
-
-              .billing-desc {
-                color: #9e9ea6;
-
-                .billing-price {
-                  color: $brand-primary;
-                }
-              }
-            }
-          }
-        }
       }
     }
 

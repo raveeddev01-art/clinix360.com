@@ -15,54 +15,6 @@ class Plan extends React.Component {
     }
   };
 
-  renderBillingFrequency() {
-    const {
-      tier,
-      planFrequency,
-      selected,
-      billingFrequency,
-      onSelectBillingFrequency
-    } = this.props;
-    const monthlyPrice = getMonthlyPrice(tier, planFrequency);
-
-    return (
-      selected &&
-      !!planFrequency && (
-        <div className="plan-billing-frequency">
-          <p className="plan-billing-frequency-title">
-            Select billing frequency:
-          </p>
-
-          <div className="plan-billing-frequency-options">
-            {FREQUENCIES.map((freq, index) => {
-              const className = classNames("plan-billing-frequency-option", {
-                selected: billingFrequency === index
-              });
-
-              return (
-                <div
-                  key={freq.name}
-                  className={className}
-                  onClick={() => {
-                    onSelectBillingFrequency(index);
-                  }}
-                >
-                  <div className="billing-title">{capitalize(freq.title)}:</div>
-                  <div className="billing-desc">
-                    <span className="billing-price">
-                      ${freq.months * monthlyPrice}
-                    </span>{" "}
-                    per user
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )
-    );
-  }
-
   render() {
     const { tier, planFrequency, selected } = this.props;
     const frequencyName = getFrequencyName(planFrequency);
@@ -84,8 +36,6 @@ class Plan extends React.Component {
             <span>per user / month</span>
           </div>
         </div>
-
-        {this.renderBillingFrequency()}
       </div>
     );
   }
@@ -94,9 +44,7 @@ class Plan extends React.Component {
 Plan.propTypes = {
   tier: PropTypes.string.isRequired,
   planFrequency: PropTypes.number.isRequired,
-  billingFrequency: PropTypes.number.isRequired,
   selected: PropTypes.bool.isRequired,
-  onSelectBillingFrequency: PropTypes.func.isRequired,
   onSelectTier: PropTypes.func.isRequired
 };
 

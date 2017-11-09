@@ -20,12 +20,10 @@ class Subscription extends React.Component {
       upgrade: false,
       subscribePlan: {
         planFrequency: 1,
-        billingFrequency: 1,
         tier: "BASIC"
       },
       upgradePlan: {
         planFrequency: 1,
-        billingFrequency: 1,
         tier: ""
       },
       checkout: false,
@@ -47,19 +45,6 @@ class Subscription extends React.Component {
       [planName]: {
         ...plan,
         planFrequency: freq
-      }
-    });
-  };
-
-  onSelectBillingFrequency = freq => {
-    const { upgrade } = this.state;
-    const planName = upgrade ? "upgradePlan" : "subscribePlan";
-    const plan = this.state[planName];
-
-    this.setState({
-      [planName]: {
-        ...plan,
-        billingFrequency: freq
       }
     });
   };
@@ -294,7 +279,6 @@ class Subscription extends React.Component {
         plan={plan}
         tiers={tiers}
         onSelectPlanFrequency={this.onSelectPlanFrequency}
-        onSelectBillingFrequency={this.onSelectBillingFrequency}
         onSelectTier={this.onSelectTier}
         onCheckoutPlan={this.onCheckoutPlan}
       />
@@ -310,7 +294,6 @@ class Subscription extends React.Component {
         plan={plan}
         tiers={tiers}
         onSelectPlanFrequency={this.onSelectPlanFrequency}
-        onSelectBillingFrequency={this.onSelectBillingFrequency}
         onSelectTier={this.onSelectTier}
         onCheckoutPlan={this.onCheckoutPlan}
       />

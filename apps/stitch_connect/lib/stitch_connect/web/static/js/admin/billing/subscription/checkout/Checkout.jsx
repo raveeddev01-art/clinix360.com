@@ -11,15 +11,12 @@ class Checkout extends React.Component {
   getBillingSummary() {
     const { plan } = this.props;
     const planFrequency = getFrequency(plan.planFrequency);
-    const billingFrequency = getFrequency(plan.billingFrequency);
     const monthlyPrice = getMonthlyPrice(plan.tier, plan.planFrequency);
     const annualPrice = monthlyPrice * 12;
     const charge =
       planFrequency.unit === "month"
         ? `$${monthlyPrice} per user per month`
-        : billingFrequency.unit === "month"
-          ? `$${monthlyPrice} per month for 12 months`
-          : `$${annualPrice} per user per year`;
+        : `$${annualPrice} per user per year`;
 
     return {
       tier: capitalize(plan.tier),
