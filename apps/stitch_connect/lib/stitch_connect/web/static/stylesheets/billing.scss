@@ -120,6 +120,10 @@
         padding: 15px;
         margin-bottom: 10px;
 
+        &.selected {
+          background: rgba(0, 51, 102, 0.1);
+        }
+
         .credit-card-icon {
           display: inline-block;
           width: 45px;

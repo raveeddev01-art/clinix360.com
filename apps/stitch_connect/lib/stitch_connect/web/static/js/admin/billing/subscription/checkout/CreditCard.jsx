@@ -4,13 +4,14 @@ import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
 const CreditCard = ({ card, onUse }) => {
+  const cardClassName = classNames("credit-card", { selected: card.default });
   const iconClassName = classNames(
     "credit-card-icon",
     card.brand.toLowerCase()
   );
 
   return (
-    <div className="credit-card">
+    <div className={cardClassName}>
       <div className="credit-card-desc">
         <div className="credit-card-desc-row">
           <span className={iconClassName} />
