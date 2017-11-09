@@ -1,10 +1,15 @@
 import React from "react";
 import { Well } from "react-bootstrap";
-import moment from "moment";
 import capitalize from "lodash/capitalize";
 
 import { alert } from "../../../common/modals";
-import { getSelectableTiers, getBelowTier, getPlanForTier } from "./utils";
+import {
+  processSubscriptionData,
+  getSelectableTiers,
+  getBelowTier,
+  getPlanForTier,
+  getFrequency
+} from "./utils";
 import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
 import Loading from "./loading/Loading";
@@ -82,21 +87,7 @@ class Subscription extends React.Component {
     this.setState({ loading: true });
 
     get("/api/v1/billing/subscription").then(response => {
-      const subscription = response.data.data;
-
-      // MOCK for BASIC subscription
-      // const subscription = {
-      //   valid_until: "2017-11-17T03:32:36.000000Z",
-      //   updated_at: "2017-11-03T03:32:36.958730",
-      //   tier: "BASIC",
-      //   renews: false,
-      //   renewal_frequency: null,
-      //   estimated_invoice_amount: 72
-      // };
-      const validUntil = moment.utc(subscription.valid_until);
-      const today = moment.utc();
-
-      subscription.remaining_days = validUntil.diff(today, "days");
+      const subscription = processSubscriptionData(response.data.data);
 
       this.setState({ loading: false, subscription });
     });
@@ -115,27 +106,64 @@ class Subscription extends React.Component {
       body: {
         source_token: token.id
       }
-    }).then(response => {
-      const { cards, subscription } = this.state;
+    }).then(
+      response => {
+        const { cards } = this.state;
 
-      this.setState({
-        loading: false,
-        cards: cards.push(response.data.data)
-      });
+        this.setState({
+          loading: false,
+          cards: [...cards, response.data.data]
+        });
 
-      alert({
-        title: "Thanks for using Stitch!",
-        message: (
-          <p>
-            We successfully saved your card info. <br />{" "}
-            <b>
-              We won&rsquo;t begin billing until your trial expires in{" "}
-              {subscription.remaining_days} days.
-            </b>
-          </p>
-        )
-      });
-    });
+        this.subscribe();
+      },
+      error => {
+        this.setState({
+          loading: false
+        });
+      }
+    );
+  }
+
+  subscribe() {
+    const { plan } = this.state;
+
+    this.setState({ loading: true });
+    put("/api/v1/billing/subscription", {
+      body: {
+        tier: plan.tier,
+        renewal_frequency: getFrequency(plan.frequency).value
+      }
+    }).then(
+      response => {
+        const subscription = processSubscriptionData(response.data.data);
+
+        alert({
+          title: "Thanks for using Stitch!",
+          message: (
+            <p>
+              We successfully saved your card info. <br />{" "}
+              <b>
+                We won&rsquo;t begin billing until your trial expires in{" "}
+                {subscription.remaining_days} days.
+              </b>
+            </p>
+          )
+        });
+
+        this.setState({
+          loading: false,
+          checkout: false,
+          upgrade: false,
+          subscription
+        });
+      },
+      error => {
+        this.setState({
+          loading: false
+        });
+      }
+    );
   }
 
   renderHeader() {
@@ -223,16 +251,13 @@ class Subscription extends React.Component {
 
   renderSubscribedPlan() {
     const { subscription } = this.state;
-    const validUntil = moment
-      .utc(subscription.valid_until)
-      .format("dddd, MMMM Do YYYY");
     const belowTier = capitalize(getBelowTier(subscription.tier));
     const planItems = getPlanForTier(subscription.tier).items;
 
     return (
       <div className="subscribed">
         <p>
-          Your plan will renew on <b>{validUntil}</b> for{" "}
+          Your plan will renew on <b>{subscription.valid_until}</b> for{" "}
           <b>${subscription.estimated_invoice_amount}</b>.{" "}
           <b>{capitalize(subscription.tier)}</b> includes{belowTier && (
             <span>

@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const TIERS = ["BASIC", "PREMIUM", "POWER"];
 
 const PLANS = {
@@ -112,16 +114,27 @@ const FREQUENCIES = [
     title: "monthly",
     name: "monthly",
     unit: "month",
-    months: 1
+    months: 1,
+    value: "MONTHLY"
   },
   {
     title: "annually",
     name: "annual",
     unit: "year",
-    months: 12
+    months: 12,
+    value: "YEARLY"
   }
 ];
 
+const processSubscriptionData = subscription => {
+  const today = moment.utc();
+  const validUntil = moment.utc(subscription.valid_until);
+
+  subscription.remaining_days = validUntil.diff(today, "days");
+  subscription.valid_until = validUntil.format("dddd, MMMM Do YYYY");
+
+  return subscription;
+};
 const getSelectableTiers = tier => {
   const index = TIERS.findIndex(t => t === tier);
 
@@ -166,6 +179,7 @@ const getMonthlyPrice = (tier, frequencyIndex) => {
 };
 
 export {
+  processSubscriptionData,
   getSelectableTiers,
   getBelowTier,
   getPlanForTier,
