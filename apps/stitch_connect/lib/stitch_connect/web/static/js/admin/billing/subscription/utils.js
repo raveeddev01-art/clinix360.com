@@ -122,16 +122,8 @@ const FREQUENCIES = [
   }
 ];
 
-const getSelectableTiers = () => {
-  return TIERS;
-};
-
-const getUpgradableTiers = tier => {
+const getSelectableTiers = tier => {
   const index = TIERS.findIndex(t => t === tier);
-
-  if (index < 0) {
-    return [];
-  }
 
   return TIERS.slice(index + 1);
 };
@@ -175,7 +167,6 @@ const getMonthlyPrice = (tier, frequencyIndex) => {
 
 export {
   getSelectableTiers,
-  getUpgradableTiers,
   getBelowTier,
   getPlanForTier,
   getFrequency,

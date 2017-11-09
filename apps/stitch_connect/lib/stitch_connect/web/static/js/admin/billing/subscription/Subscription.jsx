@@ -4,12 +4,7 @@ import moment from "moment";
 import capitalize from "lodash/capitalize";
 
 import { alert } from "../../../common/modals";
-import {
-  getSelectableTiers,
-  getUpgradableTiers,
-  getBelowTier,
-  getPlanForTier
-} from "./utils";
+import { getSelectableTiers, getBelowTier, getPlanForTier } from "./utils";
 import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
 import Loading from "./loading/Loading";
@@ -22,11 +17,7 @@ class Subscription extends React.Component {
       loading: false,
       subscription: null,
       upgrade: false,
-      subscribePlan: {
-        frequency: 1,
-        tier: "BASIC"
-      },
-      upgradePlan: {
+      plan: {
         frequency: 1,
         tier: ""
       },
@@ -41,12 +32,10 @@ class Subscription extends React.Component {
   }
 
   onSelectFrequency = frequency => {
-    const { upgrade } = this.state;
-    const planName = upgrade ? "upgradePlan" : "subscribePlan";
-    const plan = this.state[planName];
+    const { plan } = this.state;
 
     this.setState({
-      [planName]: {
+      plan: {
         ...plan,
         frequency
       }
@@ -54,11 +43,9 @@ class Subscription extends React.Component {
   };
 
   onSelectTier = tier => {
-    const { upgrade } = this.state;
-    const planName = upgrade ? "upgradePlan" : "subscribePlan";
-    const plan = this.state[planName];
+    const { plan } = this.state;
 
-    this.setState({ [planName]: { ...plan, tier } });
+    this.setState({ plan: { ...plan, tier } });
   };
 
   onUpgradePlan = () => {
@@ -281,23 +268,8 @@ class Subscription extends React.Component {
   }
 
   renderSelectPlan() {
-    const { subscribePlan: plan } = this.state;
-    const tiers = getSelectableTiers();
-
-    return (
-      <Plans
-        plan={plan}
-        tiers={tiers}
-        onSelectFrequency={this.onSelectFrequency}
-        onSelectTier={this.onSelectTier}
-        onCheckoutPlan={this.onCheckoutPlan}
-      />
-    );
-  }
-
-  renderUpgradePlan() {
-    const { upgradePlan: plan, subscription } = this.state;
-    const tiers = getUpgradableTiers(subscription.tier);
+    const { plan, subscription } = this.state;
+    const tiers = getSelectableTiers(subscription.tier);
 
     return (
       <Plans
@@ -317,9 +289,9 @@ class Subscription extends React.Component {
       <div>
         {this.renderStatus()}
 
-        {subscription.tier === "TRIAL"
+        {subscription.tier === "TRIAL" || upgrade
           ? this.renderSelectPlan()
-          : upgrade ? this.renderUpgradePlan() : this.renderSubscribedPlan()}
+          : this.renderSubscribedPlan()}
 
         <br />
 
@@ -329,8 +301,7 @@ class Subscription extends React.Component {
   }
 
   renderCheckout() {
-    const { cards, upgrade, upgradePlan, subscribePlan } = this.state;
-    const plan = upgrade ? upgradePlan : subscribePlan;
+    const { cards, plan } = this.state;
 
     return (
       <Checkout
