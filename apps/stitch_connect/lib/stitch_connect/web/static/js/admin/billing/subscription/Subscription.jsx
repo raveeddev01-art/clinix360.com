@@ -326,7 +326,6 @@ class Subscription extends React.Component {
       <Checkout
         cards={cards}
         plan={plan}
-        upgrade={upgrade}
         onUseCreditCard={this.onUseCreditCard}
         onSubmitStart={this.onCardSubmitStart}
         onSubmitSuccess={this.onCardSubmitSuccess}

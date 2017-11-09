@@ -56,7 +56,7 @@ class Checkout extends React.Component {
           </p>
         </div>
 
-        <h4>Step 2: Add Contact Information</h4>
+        {/* <h4>Step 2: Add Contact Information</h4>
         <div className="step2-contact-info">
           <div className="form-group">
             <label htmlFor="team-name">Team Name</label>
@@ -84,10 +84,10 @@ class Checkout extends React.Component {
               This field can also be for adding additional invoice information.
             </p>
           </div>
-        </div>
+        </div> */}
 
-        <h4>Step 3: Add Payment Method</h4>
-        <div className="step3-payment">
+        <h4>Step 2: Add Payment Method</h4>
+        <div className="step2-payment">
           <div className="existing-card">
             <h5>Option A: Use an existing payment method.</h5>
 
