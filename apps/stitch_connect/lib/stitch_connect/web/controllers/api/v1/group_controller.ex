@@ -46,6 +46,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         case Group.rename(group, name) do
           {:ok, group} ->
             group = GroupQueries.load_user_data(group, user)
+            EventsChannel.broadcast_group_rename(group)
             render conn, "show.json", group: group, user_id: user.id
           {:error, reason} ->
             conn
