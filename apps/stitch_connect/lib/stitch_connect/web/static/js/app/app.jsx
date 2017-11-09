@@ -3,6 +3,7 @@ import { Provider } from "mobx-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { StripeProvider } from "react-stripe-elements";
 
+import history from "../util/history";
 import RootStore from "../common/stores/root_store";
 import LockableApp from "./LockableApp";
 
@@ -11,7 +12,7 @@ const App = props => {
 
   return (
     <StripeProvider apiKey={stripePublishableKey}>
-      <Router>
+      <Router history={history}>
         <Provider {...rootStore}>
           <LockableApp />
         </Provider>
