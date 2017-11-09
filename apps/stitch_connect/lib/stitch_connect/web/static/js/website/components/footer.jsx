@@ -30,6 +30,7 @@ export default class Footer extends Component {
                 <li>
                   <a
                     target="_blank"
+                    rel="noopener noreferrer"
                     href="https://calendly.com/teamstitch/demo"
                   >
                     Demo
@@ -38,7 +39,8 @@ export default class Footer extends Component {
                 <li>
                   <a
                     target="_blank"
-                    href="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect"
+                    rel="noopener noreferrer"
+                    href="https://intercom.help/teamstitch"
                   >
                     Support
                   </a>

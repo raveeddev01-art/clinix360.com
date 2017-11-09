@@ -89,10 +89,7 @@ class Sidebar extends Component {
               </Link>
             </ListGroupItem>
             <ListGroupItem onClick={onHideSidebar}>
-              <Link
-                to="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect"
-                target="_blank"
-              >
+              <Link to="https://intercom.help/teamstitch" target="_blank">
                 <i className="fa fa-question-circle" /> Help{" "}
                 <i className="fa fa-external-link sm" />
               </Link>

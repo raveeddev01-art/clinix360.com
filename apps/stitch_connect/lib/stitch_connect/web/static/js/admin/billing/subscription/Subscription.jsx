@@ -221,7 +221,7 @@ class Subscription extends React.Component {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://teamstitch.zendesk.com/hc/en-us/articles/217055037-Subscribing-and-billing"
+          href="https://intercom.help/teamstitch/connect/admin/subscribing-and-billing"
         >
           here
         </a>.{" "}

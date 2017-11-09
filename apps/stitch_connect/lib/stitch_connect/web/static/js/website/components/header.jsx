@@ -60,7 +60,7 @@ export default class Header extends Component {
                   </MenuItem>
 
                   <MenuItem
-                    href="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect"
+                    href="https://intercom.help/teamstitch"
                     target="_blank"
                   >
                     <i className="fa fa-life-ring" /> Support
