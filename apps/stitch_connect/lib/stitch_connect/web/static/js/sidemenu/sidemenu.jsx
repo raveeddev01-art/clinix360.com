@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -39,24 +40,24 @@ class Sidemenu extends Component {
         <div className="separator text-center">
           <span>Admin</span>
         </div>
-        <MenuItem eventKey="4" href="/admin/team/settings" target="_blank">
-          Settings
-        </MenuItem>
-        <MenuItem eventKey="5" href="/admin/team/security" target="_blank">
-          Security
-        </MenuItem>
-        <MenuItem eventKey="6" href="/admin/users/members" target="_blank">
-          Members
-        </MenuItem>
-        <MenuItem eventKey="7" href="/admin/users/invitations" target="_blank">
-          Invitations
-        </MenuItem>
-        <MenuItem eventKey="8" href="/admin/users/pending" target="_blank">
-          Pending
-        </MenuItem>
-        <MenuItem eventKey="9" href="/admin/billing" target="_blank">
-          Billing
-        </MenuItem>
+        <LinkContainer to="/admin/team/settings">
+          <MenuItem eventKey="4">Settings</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/team/security">
+          <MenuItem eventKey="5">Security</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/users/members">
+          <MenuItem eventKey="6">Members</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/users/invitations">
+          <MenuItem eventKey="7">Invitations</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/users/pending">
+          <MenuItem eventKey="8">Pending</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/billing">
+          <MenuItem eventKey="9">Billing</MenuItem>
+        </LinkContainer>
       </div>
     );
   }
@@ -133,25 +134,20 @@ class Sidemenu extends Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="super-colors">
-              <h5 className="text-center">{`${window.currentUser
-                .firstName} ${window.currentUser.lastName}`}</h5>
+              <h5 className="text-center">{`${currentUser.firstName} ${currentUser.lastName}`}</h5>
 
               <div className="separator text-center">
                 <span>You</span>
               </div>
-              <MenuItem eventKey="1" href="/admin/you/account" target="_blank">
-                Account
-              </MenuItem>
-              <MenuItem eventKey="2" href="/admin/you/profile" target="_blank">
-                Profile
-              </MenuItem>
-              <MenuItem
-                eventKey="3"
-                href="/admin/you/notifications"
-                target="_blank"
-              >
-                Notifications
-              </MenuItem>
+              <LinkContainer to="/admin/you/account">
+                <MenuItem eventKey="1">Account</MenuItem>
+              </LinkContainer>
+              <LinkContainer to="/admin/you/profile">
+                <MenuItem eventKey="2">Profile</MenuItem>
+              </LinkContainer>
+              <LinkContainer to="/admin/you/notifications">
+                <MenuItem eventKey="3">Notifications</MenuItem>
+              </LinkContainer>
 
               {userStore.isAdmin && this.renderAdminOptions()}
 
