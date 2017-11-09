@@ -106,8 +106,11 @@ defmodule Stitch.Accounts do
         "team_name"  => team.name,
         "team_slug"  => team.slug
       }
-      list_active_user = Stitch.TeamQueries.list_active_users(team)
-      if length(list_active_user) == 1 do
+      active_users = Stitch.TeamQueries.list_active_users(team)
+      IO.puts "*****VALUE HERE*****"
+      IO.puts Enum.count(active_users)
+      IO.inspect active_users
+      if Enum.count(active_users) == 1 do
         Stitch.Analytics.track(user.id, "Team Created", properties)
       end
     end)
