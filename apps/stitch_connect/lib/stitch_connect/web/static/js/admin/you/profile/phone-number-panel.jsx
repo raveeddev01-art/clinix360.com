@@ -25,7 +25,13 @@ class PhoneNumberPanel extends Component {
     });
   };
   _onSave = () => {
-    this.props.userStore.savePhone(this.state.phoneNumber);
+    post(`/api/v1/users/validate-phone-number`, {
+      body: { phone_number: this.state.phoneNumber }
+    })
+      .then(() => {
+        this.props.userStore.savePhone(this.state.phoneNumber);
+      })
+      .catch(() => {});
   };
 
   _onChangePhoneNumber = evt =>

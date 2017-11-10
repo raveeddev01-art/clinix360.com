@@ -122,7 +122,7 @@ class PresenceStore {
   unlock = pin => {
     this.unlocking = true;
 
-    return post("/api/v1/session-unlock", { body: { pin } })
+    return post("/api/v1/session-unlock", { hideNotify: true, body: { pin } })
       .then(() => {
         this.teamLobbyChannel.push("unlocked");
         window.location.reload();
@@ -160,17 +160,15 @@ class PresenceStore {
     this.lock();
   };
 
-  getLockoutSettings = (cb) => {
-    this.teamLobbyChannel
-      .push("get_lockout_settings")
-      .receive("ok", (data) => {
-        this.secondsToLockout = data.seconds_to_lockout;
-        this.lockoutEnabled = data.security_lockout_enabled;
-        this.lockoutSettingLoaded = true;
+  getLockoutSettings = cb => {
+    this.teamLobbyChannel.push("get_lockout_settings").receive("ok", data => {
+      this.secondsToLockout = data.seconds_to_lockout;
+      this.lockoutEnabled = data.security_lockout_enabled;
+      this.lockoutSettingLoaded = true;
 
-        if (typeof cb === 'function') cb();
-      });
-  }
+      if (typeof cb === "function") cb();
+    });
+  };
 
   startLockoutTimer = () => {
     if (!this.lockoutSettingLoaded) {
@@ -182,7 +180,7 @@ class PresenceStore {
         this.secondsToLockout * 1000
       );
     }
-  }
+  };
 }
 
 export default PresenceStore;

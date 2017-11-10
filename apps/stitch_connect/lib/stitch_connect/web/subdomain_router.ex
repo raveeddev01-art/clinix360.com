@@ -52,6 +52,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :api
 
     post "/users/exists", UserController, :exists?
+    post "/users/validate-phone-number", UserController, :validate_phone_number
     post "/invitations/accept/:token", InvitationController, :accept
   end
 
@@ -72,7 +73,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/mentions", MentionController, :index
 
     get "/users/", UserController, :index
-    get "/users/validate_phone_number/:phone_number", UserController, :validate_phone_number
     get "/users/notification-preference", NotificationPreferenceController, :show_global
     put "/users/notification-preference", NotificationPreferenceController, :update_global
     get "/users/:id", UserController, :show

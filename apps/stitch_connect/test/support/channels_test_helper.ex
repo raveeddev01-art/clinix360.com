@@ -14,12 +14,14 @@ defmodule StitchConnect.Web.ChannelsTestHelper do
     attrs = %{
       fullname: "Sergio Tapia", username: "user1",
       password: "Password123!", pin: "0000",
+      phone_number: "1231231234",
       roles: ["admin"], team_id: team.id
     }
 
     member_attrs = %{
       fullname: "Daniel Tapia", username: "user2",
       password: "Password123!", pin: "0000",
+      phone_number: "1231231234",
       roles: ["member"], team_id: team.id
     }
 

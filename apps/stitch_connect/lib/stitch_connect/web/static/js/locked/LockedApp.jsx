@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import Alert from "react-bootstrap/lib/Alert";
 import PinInput from "../common/components/pin-input/index";
 
 @inject("presenceStore")
@@ -10,32 +10,40 @@ class LockedApp extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pin: "", formValid: false };
+    this.state = { pin: "", hasError: false };
   }
 
   onInvalid = () => {
-    this.setState({ formValid: false, pin: "" });
+    this.setState({ pin: "", hasError: false });
   };
 
   onValid = pin => {
-    this.setState({
-      pin,
-      formValid: pin.length === 4
+    this.setState({ pin }, () => {
+      if (pin.length === 4) {
+        this.attemptUnlock();
+      }
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
 
+    this.attemptUnlock();
+  };
+
+  attemptUnlock = () => {
     this.props.presenceStore.unlock(this.state.pin).catch(() => {
-      this.setState({ pin: "", formValid: false });
+      this.setState({ pin: "", hasError: true });
     });
   };
 
   render() {
+    const { hasError } = this.state;
     return (
       <div className="locked-app-wrapper">
         <div className="authentication-wrapper">
+          {hasError && <Alert bsStyle="danger">PIN is incorrect.</Alert>}
+
           <div id="lockout" className="authentication-card text-center">
             <div className="lockout-header">
               {this.props.presenceStore.unlocking ? (
@@ -61,16 +69,6 @@ class LockedApp extends Component {
                 onValid={this.onValid}
                 onInvalid={this.onInvalid}
               />
-
-              <Button
-                type="submit"
-                bsStyle="primary"
-                bsSize="lg"
-                className="btn-block"
-                disabled={!this.state.formValid}
-              >
-                Enter
-              </Button>
 
               <HelpBlock>
                 Forgot your PIN? Just enter your password.<br />

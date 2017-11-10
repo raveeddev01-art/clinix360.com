@@ -9,7 +9,7 @@ export default class LastName extends Component {
     const { registrationStore, history } = this.props;
 
     registrationStore.lastName = value;
-    history.push("/signup/username");
+    history.push("/signup/phone-number");
   };
 
   render() {
