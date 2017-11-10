@@ -52,7 +52,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :api
 
     post "/users/exists", UserController, :exists?
-    post "/users/validate_phone_number", UserController, :validate_phone_number
+    post "/users/validate-phone-number", UserController, :validate_phone_number
     post "/invitations/accept/:token", InvitationController, :accept
   end
 

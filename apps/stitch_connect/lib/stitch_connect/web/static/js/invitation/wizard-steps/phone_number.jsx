@@ -25,7 +25,7 @@ class PhoneNumberCard extends Component {
   };
 
   onNext = () => {
-    post(`/api/v1/users/validate_phone_number`, {
+    post(`/api/v1/users/validate-phone-number`, {
       body: { phone_number: this.state.phone }
     })
       .then(() => {
