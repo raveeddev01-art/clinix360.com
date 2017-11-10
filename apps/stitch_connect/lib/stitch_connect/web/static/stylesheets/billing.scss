@@ -1,5 +1,5 @@
 #admin-billing-tabs {
-  .subscription {
+  .subscription-tab {
     position: relative;
     min-height: 400px;
 
@@ -14,6 +14,12 @@
       align-items: center;
       color: $brand-primary;
       background: rgba(255, 255, 255, 0.7);
+    }
+
+    .subscription {
+      i.fa {
+        color: $brand-primary;
+      }
     }
 
     .frequency-toggle {
@@ -70,46 +76,6 @@
             }
           }
         }
-
-        .plan-billing-frequency {
-          margin-top: 10px;
-
-          .plan-billing-frequency-title {
-            font-weight: 600;
-            font-style: italic;
-          }
-
-          .plan-billing-frequency-options {
-            display: flex;
-            justify-content: space-between;
-
-            .plan-billing-frequency-option {
-              display: flex;
-              justify-content: space-between;
-              min-width: 250px;
-              font-weight: bold;
-
-              background: transparent;
-              border: 2px solid #ddd;
-              padding: 5px 10px;
-              border-radius: 4px;
-              margin-bottom: 0;
-
-              &.selected {
-                background: #fff;
-                border: 2px solid $brand-primary;
-              }
-
-              .billing-desc {
-                color: #9e9ea6;
-
-                .billing-price {
-                  color: $brand-primary;
-                }
-              }
-            }
-          }
-        }
       }
     }
 
@@ -149,6 +115,10 @@
         border-radius: 4px;
         padding: 15px;
         margin-bottom: 10px;
+
+        &.selected {
+          background: rgba(0, 51, 102, 0.1);
+        }
 
         .credit-card-icon {
           display: inline-block;

@@ -1,17 +1,170 @@
-import { TIERS, PLANS, FREQUENCIES } from "./constants";
+import moment from "moment";
 
-const getUpgradableTiers = tier => {
-  const index = TIERS.findIndex(t => t === tier);
+const TIERS = ["BASIC", "PREMIUM", "POWER"];
 
-  if (index < 0) {
-    return [];
+const PLANS = {
+  BASIC: {
+    pricePerMonth: {
+      monthly: 6,
+      annual: 5
+    },
+    items: [
+      {
+        content: "HIPAA Compliant",
+        beta: false
+      },
+      {
+        content: "Public & Private Rooms",
+        beta: false
+      },
+      {
+        content: "Direct Messaging",
+        beta: false
+      },
+      {
+        content: "Healthcare Workflows",
+        beta: false
+      },
+      {
+        content: "Searchable Archives",
+        beta: false
+      },
+      {
+        content: "File Storage",
+        beta: false
+      },
+      {
+        content: "Mac & Windows Apps",
+        beta: false
+      },
+      {
+        content: "iOS & Android Apps",
+        beta: false
+      }
+    ]
+  },
+  PREMIUM: {
+    pricePerMonth: {
+      monthly: 12,
+      annual: 10
+    },
+    items: [
+      {
+        content: "Task Management",
+        beta: false
+      },
+      {
+        content: "Guest Access",
+        beta: false
+      },
+      {
+        content: "Custom User Groups",
+        beta: true
+      },
+      {
+        content: "Custom Data Retention",
+        beta: true
+      },
+      {
+        content: "Custom Profiles",
+        beta: true
+      },
+      {
+        content: "Priority Support",
+        beta: false
+      }
+    ]
+  },
+  POWER: {
+    pricePerMonth: {
+      monthly: 18,
+      annual: 15
+    },
+    items: [
+      {
+        content: "Voice & Video Calls",
+        beta: true
+      },
+      {
+        content: "Priority Messaging",
+        beta: true
+      },
+      {
+        content: "EHR Integrations",
+        beta: true
+      },
+      {
+        content: "Advanced Security Controls",
+        beta: false
+      },
+      {
+        content: "On-Site Training",
+        beta: false
+      },
+      {
+        content: "Dedicated Support",
+        beta: false
+      }
+    ]
   }
+};
+
+const FREQUENCIES = [
+  {
+    title: "monthly",
+    name: "monthly",
+    unit: "month",
+    months: 1,
+    value: "MONTHLY"
+  },
+  {
+    title: "annually",
+    name: "annual",
+    unit: "year",
+    months: 12,
+    value: "YEARLY"
+  }
+];
+
+const processSubscriptionData = subscription => {
+  const today = moment.utc();
+  const validUntil = moment.utc(subscription.valid_until);
+
+  subscription.remaining_days = validUntil.diff(today, "days");
+  subscription.valid_until = validUntil.format("dddd, MMMM Do YYYY");
+
+  return subscription;
+};
+const getSelectableTiers = tier => {
+  const index = TIERS.findIndex(t => t === tier);
 
   return TIERS.slice(index + 1);
 };
 
+const getBelowTier = tier => {
+  const index = TIERS.findIndex(t => t === tier);
+
+  if (index < 1) {
+    return "";
+  }
+
+  return TIERS[index - 1];
+};
+
+const getPlanForTier = tier => {
+  return PLANS[tier];
+};
+
 const getFrequency = frequencyIndex => {
   return FREQUENCIES[frequencyIndex];
+};
+
+const getAnnualFrequency = () => {
+  return FREQUENCIES[1];
+};
+
+const getMonthlyFrequency = () => {
+  return FREQUENCIES[0];
 };
 
 const getFrequencyName = frequencyIndex => {
@@ -19,10 +172,20 @@ const getFrequencyName = frequencyIndex => {
 };
 
 const getMonthlyPrice = (tier, frequencyIndex) => {
-  const plan = PLANS[tier];
+  const plan = getPlanForTier(tier);
   const frequencyName = getFrequencyName(frequencyIndex);
 
   return plan.pricePerMonth[frequencyName];
 };
 
-export { getUpgradableTiers, getFrequency, getFrequencyName, getMonthlyPrice };
+export {
+  processSubscriptionData,
+  getSelectableTiers,
+  getBelowTier,
+  getPlanForTier,
+  getFrequency,
+  getAnnualFrequency,
+  getMonthlyFrequency,
+  getFrequencyName,
+  getMonthlyPrice
+};
