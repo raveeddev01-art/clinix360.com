@@ -50,10 +50,29 @@ defmodule Stitch.Invitation do
           invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
           {:ok, invitation} = Repo.insert(invitation_changeset)
           Invitation.resend_invitation(user_id, invitation.id)
+          analytics_track_new_invitation(user, email)
       end
     else
       {:error, "User unauthorized to create a new invitation."}
     end
+  end
+
+  defp analytics_track_new_invitation(user, email) do
+    Stitch.Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      active_users = Stitch.TeamQueries.list_active_users(team)
+      properties = %{
+        "first_name"   => user.first_name,
+        "last_name"    => user.last_name,
+        "email"        => email,
+        "team_id"      => Integer.to_string(team.id),
+        "team_name"    => team.name,
+        "team_slug"    => team.slug,
+        "active_users" => active_users
+      }
+      Stitch.Analytics.track(user.id, "Team Invitation Sent", properties)
+    end)
   end
 
   @doc """
