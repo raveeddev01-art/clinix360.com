@@ -18,61 +18,66 @@ export default class Header extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           <ul className="nav navbar-nav navbar-right">
-            <li>
-              <Dropdown id="products-dropdown-menu">
-                <Dropdown.Toggle className="btn-dropdown">
-                  Products
-                </Dropdown.Toggle>
+            {!window.electronApp && (
+              <li>
+                <Dropdown id="products-dropdown-menu">
+                  <Dropdown.Toggle className="btn-dropdown">
+                    Products
+                  </Dropdown.Toggle>
 
-                <Dropdown.Menu>
-                  <MenuItem href={`https://${applicationHost}/connect`}>
-                    Connect
-                  </MenuItem>
-                </Dropdown.Menu>
-              </Dropdown>
-            </li>
+                  <Dropdown.Menu>
+                    <MenuItem href={`https://${applicationHost}/connect`}>
+                      Connect
+                    </MenuItem>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </li>
+            )}
 
-            <li role="presentation">
-              <a
-                href={`https://${applicationHost}/pricing`}
-                className="nav-link"
-              >
-                Pricing
-              </a>
-            </li>
+            {!window.electronApp && (
+              <li role="presentation">
+                <a
+                  href={`https://${applicationHost}/pricing`}
+                  className="nav-link"
+                >
+                  Pricing
+                </a>
+              </li>
+            )}
 
-            <li>
-              <Dropdown id="resources-dropdown-menu">
-                <Dropdown.Toggle className="btn-dropdown">
-                  Resources
-                </Dropdown.Toggle>
+            {!window.electronApp && (
+              <li>
+                <Dropdown id="resources-dropdown-menu">
+                  <Dropdown.Toggle className="btn-dropdown">
+                    Resources
+                  </Dropdown.Toggle>
 
-                <Dropdown.Menu>
-                  <MenuItem href={`https://${applicationHost}/downloads`}>
-                    <i className="fa fa-cloud-download" /> Downloads
-                  </MenuItem>
+                  <Dropdown.Menu>
+                    <MenuItem href={`https://${applicationHost}/downloads`}>
+                      <i className="fa fa-cloud-download" /> Downloads
+                    </MenuItem>
 
-                  <MenuItem
-                    href="https://calendly.com/teamstitch/demo"
-                    target="_blank"
-                  >
-                    <i className="fa fa-desktop" /> Demo
-                  </MenuItem>
+                    <MenuItem
+                      href="https://calendly.com/teamstitch/demo"
+                      target="_blank"
+                    >
+                      <i className="fa fa-desktop" /> Demo
+                    </MenuItem>
 
-                  <MenuItem
-                    href="https://intercom.help/teamstitch"
-                    target="_blank"
-                  >
-                    <i className="fa fa-life-ring" /> Support
-                  </MenuItem>
+                    <MenuItem
+                      href="https://intercom.help/teamstitch"
+                      target="_blank"
+                    >
+                      <i className="fa fa-life-ring" /> Support
+                    </MenuItem>
 
-                  <MenuItem href={`https://${applicationHost}/customers`}>
-                    <i className="fa fa-users" /> Customers
-                  </MenuItem>
-                </Dropdown.Menu>
-              </Dropdown>
-            </li>
-
+                    <MenuItem href={`https://${applicationHost}/customers`}>
+                      <i className="fa fa-users" /> Customers
+                    </MenuItem>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </li>
+            )}
             <li role="presentation">
               <a
                 href={`https://${applicationHost}/signin`}
