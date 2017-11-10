@@ -25,6 +25,7 @@ defmodule StitchConnect.Web.Router do
 
     # Onboarding routes for new users.
     post "/users", UserController, :create
+    post "/users/validate_phone_number", UserController, :validate_phone_number
     post "/users/send-confirmation-code", UserController, :send_confirmation_code
     post "/users/submit-confirmation-code", UserController, :submit_confirmation_code
     post "/users/send-invite", UserController, :send_invite
