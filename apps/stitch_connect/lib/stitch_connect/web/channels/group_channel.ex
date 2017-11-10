@@ -3,6 +3,7 @@ defmodule StitchConnect.Web.GroupChannel do
   use Appsignal.Instrumentation.Decorators
 
   import Ecto.Query
+  alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
@@ -182,6 +183,7 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.update(message, params) do
       {:ok, message} ->
+        MessageLinkPreviewGenerator.queue(message)
         message = MessageQueries.load_info(message)
 
         broadcast! socket, "edit_msg", message
@@ -248,6 +250,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
       case Message.create(group.id, user, attrs, acitve_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
+          MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
           broadcast! socket, "new_msg", message
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)

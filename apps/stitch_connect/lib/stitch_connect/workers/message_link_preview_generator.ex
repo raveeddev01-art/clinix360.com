@@ -10,10 +10,18 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
     )
   end
 
+  def queue(message) do
+    GenServer.cast(__MODULE__, {:queue, message})
+  end
+
   def init(messages) do
     queue = :queue.from_list(messages)
     schedule_queue_processing()
     {:ok, queue}
+  end
+
+  def handle_cast({:queue, message}, queue) do
+    {:noreply, :queue.in(message, queue)}
   end
 
   def handle_info(:process_queue, queue) do
