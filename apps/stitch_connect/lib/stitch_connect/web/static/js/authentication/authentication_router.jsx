@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
+import cx from "classnames";
 
 import GetStarted from "./get_started";
 import TeamPicker from "./team/team_picker";
@@ -19,9 +20,12 @@ import Footer from "../website/components/footer";
 class AuthenticationRouter extends Component {
   render() {
     const { titleStore } = this.props;
+    const onboardingWrapperClass = cx("onboarding-wrapper", {
+      "on-electron": window.electronApp
+    });
     return (
-      <div className="onboarding-wrapper">
-        {!window.electronApp && <Header />}
+      <div className={onboardingWrapperClass}>
+        <Header />
         <div className="authentication-wrapper">
           <Helmet>
             <title>{titleStore.title}</title>
