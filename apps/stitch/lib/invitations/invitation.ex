@@ -69,7 +69,7 @@ defmodule Stitch.Invitation do
         "team_id"      => Integer.to_string(team.id),
         "team_name"    => team.name,
         "team_slug"    => team.slug,
-        "active_users" => active_users
+        "active_users" => length(active_users)
       }
       Stitch.Analytics.track(user.id, "Team Invitation Sent", properties)
     end)
