@@ -27,6 +27,7 @@ defmodule Stitch.AccountsTest do
         fullname: "Sergio Tapia",
         username: "sergiotapia",
         password: "Password123!",
+        phone_number: "1231231234",
         pin: "0000",
         roles: ["admin"],
         team_id: team.id
@@ -50,6 +51,7 @@ defmodule Stitch.AccountsTest do
         fullname: "Sergio Tapia",
         username: "sergiotapia3",
         password: "Password123!",
+        phone_number: "1231231234",
         pin: "0000",
         roles: ["admin"],
         team_id: team.id

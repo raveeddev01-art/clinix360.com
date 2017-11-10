@@ -5,6 +5,7 @@ class InvitationStore {
   @observable lastName = "";
   @observable username = "";
   @observable password = "";
+  @observable phone = "";
   @observable pin = "";
   @observable email = "";
   @observable teamName = "";
@@ -33,9 +34,10 @@ class InvitationStore {
         last_name: this.lastName,
         password: this.password,
         pin: this.pin,
-        username: this.username
+        username: this.username,
+        phone_number: this.phone
       }
-    }).then(resp => {
+    }).then(() => {
       notify.show("Thanks for completing your profile.");
       window.location.href = "/";
     });

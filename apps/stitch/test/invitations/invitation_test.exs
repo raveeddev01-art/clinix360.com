@@ -133,6 +133,7 @@ defmodule Stitch.InvitationTest do
         "fullname" => "Joe",
         "username" => "Joe",
         "password" => "Password1",
+        "phone_number" => "1231231234",
         "pin" => "0000",
       })
       assert {"has invalid format", _} = changeset.errors[:username]
@@ -148,6 +149,7 @@ defmodule Stitch.InvitationTest do
         "fullname" => "Joe",
         "username" => "joe",
         "password" => "Password1",
+        "phone_number" => "1231231234",
         "pin" => "0000",
       })
 

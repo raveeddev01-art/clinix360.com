@@ -123,12 +123,12 @@ defmodule Stitch.Accounts.User do
 
   def onboarding_complete_changeset(struct, params) do
     struct
-    |> cast(params, [:first_name, :last_name, :username, :password, :pin, :team_id, :roles])
+    |> cast(params, [:first_name, :phone_number, :last_name, :username, :password, :pin, :team_id, :roles])
     |> validate_length(:username, min: 2, max: 50)
     |> validate_format(:username, ~r/^[a-z0-9][a-z0-9\.\-\-]+$/)
     |> unique_constraint(:username, name: :users_username_team_id_index)
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
-    |> validate_required([:username, :pin, :team_id, :roles])
+    |> validate_required([:username, :phone_number, :pin, :team_id, :roles])
     |> put_change(:onboarded, true)
   end
 
