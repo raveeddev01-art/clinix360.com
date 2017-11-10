@@ -76,6 +76,7 @@ defmodule Stitch.Accounts do
               {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               analytics_identify_and_group(user)
               analytics_track_new_team_created(user)
+              analytics_track_joined_team(user)
               user
             {:error, changeset} ->
               {:error, changeset}
@@ -109,6 +110,26 @@ defmodule Stitch.Accounts do
       active_users = Stitch.TeamQueries.list_active_users(team)
       if Enum.count(active_users) == 1 do
         Stitch.Analytics.track(user.id, "Team Created", properties)
+      end
+    end)
+  end
+
+  defp analytics_track_joined_team(user) do
+    Stitch.Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      active_users = Stitch.TeamQueries.list_active_users(team)
+      properties = %{
+        "first_name" => user.first_name,
+        "last_name"  => user.last_name,
+        "email"      => user.email,
+        "team_id"    => Integer.to_string(team.id),
+        "team_name"  => team.name,
+        "team_slug"  => team.slug,
+        "active_users" => length(active_users)
+      }
+      if Enum.count(active_users) > 1 do
+        Stitch.Analytics.track(user.id, "Joined Team", properties)
       end
     end)
   end
