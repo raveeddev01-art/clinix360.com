@@ -27,7 +27,8 @@ config :stitch,
 
 config :stitch, :twilio, %{
   account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
-  auth_token: System.get_env("TWILIO_AUTH_TOKEN")
+  auth_token: System.get_env("TWILIO_AUTH_TOKEN"),
+}
 
 config :stitch, :aws_user_upload, %{
   access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
