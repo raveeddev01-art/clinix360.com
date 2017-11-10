@@ -49,8 +49,8 @@ defmodule Stitch.Invitation do
         {:ok, new_user} ->
           invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
           {:ok, invitation} = Repo.insert(invitation_changeset)
-          Invitation.resend_invitation(user_id, invitation.id)
           analytics_track_new_invitation(user, email)
+          Invitation.resend_invitation(user_id, invitation.id)
       end
     else
       {:error, "User unauthorized to create a new invitation."}
