@@ -44,9 +44,6 @@ defmodule Stitch.UploadPreview do
   def create_preview(_fields), do: {:error, "Unsupported type"}
 
   defp preview_display_dimensions(%{preview_height: height, preview_width: width}) do
-    ratio = (height / 1) / (width / 1)
-    opt_ration = (@settings.max_preview_height / 1) / (@settings.max_preview_width / 1)
-
     if width > @settings.display_preview_width || height > @settings.display_preview_height do
       if width > height do
         %{display_width: @settings.display_preview_width,
