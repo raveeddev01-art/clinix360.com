@@ -27,7 +27,8 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
   def handle_info(:process_queue, queue) do
     queue =
       case :queue.out(queue) do
-        {{:value, _message}, queue} ->
+        {{:value, message}, queue} ->
+          LinkPreview.generate_link_previews(message)
           queue
 
         {:empty, queue} ->
