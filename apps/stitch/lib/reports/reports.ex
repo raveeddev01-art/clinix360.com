@@ -16,7 +16,7 @@ defmodule Stitch.Reports do
 
   @doc """
   The 'messages sent' report contains a daily message count for a given team
-  and time period.
+  and time period. This report is for messages of type "chat".
 
   ## Example
 
@@ -27,5 +27,21 @@ defmodule Stitch.Reports do
   @spec messages_sent(Team.t, [option]) :: map
   def messages_sent(%Team{} = team, opts) do
     MessagesSent.build(team, opts)
+  end
+
+  @doc """
+  The 'files uploaded' report contains a daily file count for a given team
+  and time period. This report is for messages of type "upload".
+
+  ## Example
+
+      iex> files_uploaded(%Team{...}, time_period: :last_30_days)
+      %{"2017-01-01" => 3, "2017-01-02" => 0, ...}
+
+  """
+  @spec files_uploaded(Team.t, [option]) :: map
+  def files_uploaded(%Team{} = team, opts) do
+    opts_with_upload_type = Keyword.merge(opts, [type: :upload])
+    MessagesSent.build(team, opts_with_upload_type)
   end
 end
