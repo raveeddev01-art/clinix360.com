@@ -1,5 +1,14 @@
 defmodule Stitch.Message.LinkPreview do
+  use Ecto.Schema
   alias Stitch.Message
+
+  @primary_key false
+  embedded_schema do
+    field :link, :string, primary: true
+    field :title
+    field :description
+    field :image_url
+  end
 
   def messages_with_ungenerated_link_previews do
     import Ecto.Query, only: [where: 3]
