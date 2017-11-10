@@ -24,6 +24,7 @@ defmodule StitchConnect.Web.UserOnboardingTest do
           last_name: "Name",
           username: "username",
           password: "Password1!",
+          phone_number: "1231231234",
           pin: "0000",
           roles: ["admin"],
           team_id: team.id
@@ -44,6 +45,7 @@ defmodule StitchConnect.Web.UserOnboardingTest do
           last_name: "Name",
           username: "Username",
           password: "Password1!",
+          phone_number: "1231231234",
           pin: "0000",
           roles: ["admin"],
           team_id: team.id
@@ -74,6 +76,7 @@ defmodule StitchConnect.Web.UserOnboardingTest do
     test "accepts invitation", %{conn: conn, invite: invite} do
       conn = post(conn, SubdomainRoutes.api_v1_invitation_path(conn, :accept, invite.invite_token), %{
         username: "username",
+        phone_number: "1231231234",
         pin: "0000",
       })
       assert response = json_response(conn, 200)
@@ -84,6 +87,7 @@ defmodule StitchConnect.Web.UserOnboardingTest do
     test "username is already taken", %{conn: conn, invite: invite} do
       conn = post(conn, SubdomainRoutes.api_v1_invitation_path(conn, :accept, invite.invite_token), %{
         username: "admin",
+        phone_number: "1231231234",
         pin: "0000",
       })
       assert response = json_response(conn, 422)

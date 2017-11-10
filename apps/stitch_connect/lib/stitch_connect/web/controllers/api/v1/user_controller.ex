@@ -122,8 +122,8 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def complete_onboarding(conn, %{"id" => id, "first_name" => first_name, "last_name" => last_name, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
-    case Stitch.Accounts.update_and_complete_user_onboarding(id, %{first_name: first_name, last_name: last_name, username: username, password: password, pin: pin, team_id: team_id, roles: ["admin"]}) do
+  def complete_onboarding(conn, %{"id" => id, "first_name" => first_name, "last_name" => last_name, "phone_number" => phone_number, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
+    case Stitch.Accounts.update_and_complete_user_onboarding(id, %{first_name: first_name, last_name: last_name, username: username, phone_number: phone_number, password: password, pin: pin, team_id: team_id, roles: ["admin"]}) do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
