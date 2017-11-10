@@ -7,6 +7,14 @@
   #header {
     padding: 10px 0;
   }
+
+  &.on-electron {
+    justify-content: flex-start;
+
+    #header {
+      margin-bottom: 40px;
+    }
+  }
 }
 
 .locked-app-wrapper {

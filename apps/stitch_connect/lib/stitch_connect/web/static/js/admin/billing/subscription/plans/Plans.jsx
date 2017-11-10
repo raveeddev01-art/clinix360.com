@@ -7,8 +7,7 @@ import Plan from "./Plan";
 const Plans = ({
   plan,
   tiers,
-  onSelectPlanFrequency,
-  onSelectBillingFrequency,
+  onSelectFrequency,
   onSelectTier,
   onCheckoutPlan
 }) => {
@@ -16,9 +15,9 @@ const Plans = ({
     <div className="plans">
       <p>Please select a plan to continue service:</p>
       <FrequencyToggle
-        frequency={!!plan.planFrequency}
+        frequency={!!plan.frequency}
         onToggle={() => {
-          onSelectPlanFrequency(1 - plan.planFrequency);
+          onSelectFrequency(1 - plan.frequency);
         }}
       />
 
@@ -27,9 +26,7 @@ const Plans = ({
           key={tier}
           tier={tier}
           selected={plan.tier === tier}
-          planFrequency={plan.planFrequency}
-          billingFrequency={plan.billingFrequency}
-          onSelectBillingFrequency={onSelectBillingFrequency}
+          frequency={plan.frequency}
           onSelectTier={onSelectTier}
         />
       ))}
@@ -51,8 +48,7 @@ const Plans = ({
 Plans.propTypes = {
   plan: PropTypes.object.isRequired,
   tiers: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onSelectPlanFrequency: PropTypes.func.isRequired,
-  onSelectBillingFrequency: PropTypes.func.isRequired,
+  onSelectFrequency: PropTypes.func.isRequired,
   onSelectTier: PropTypes.func.isRequired,
   onCheckoutPlan: PropTypes.func.isRequired
 };

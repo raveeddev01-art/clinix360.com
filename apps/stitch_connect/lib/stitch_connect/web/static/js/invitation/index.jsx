@@ -7,13 +7,22 @@ import FirstName from "./wizard-steps/first_name";
 import LastName from "./wizard-steps/last_name";
 import Username from "./wizard-steps/username";
 import Password from "./wizard-steps/password";
+import PhoneNumber from "./wizard-steps/phone_number";
 import Pin from "./wizard-steps/pin";
 import invitationStore from "./stores/invitation_store";
 import Header from "../website/components/header";
 import Footer from "../website/components/footer";
 
 const stores = { invitationStore };
-const stepList = [Welcome, FirstName, LastName, Username, Password, Pin];
+const stepList = [
+  Welcome,
+  FirstName,
+  LastName,
+  PhoneNumber,
+  Username,
+  Password,
+  Pin
+];
 
 class Invitation extends Component {
   constructor(props) {

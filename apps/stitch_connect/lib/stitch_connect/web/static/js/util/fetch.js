@@ -36,7 +36,7 @@ window.CSRFFetch = function(url, options = {}) {
   );
 };
 
-window.jCSRFFetch = function(url, options = {}) {
+window.jCSRFFetch = function(url, params = {}) {
   if (window.authenticationToken) {
     let modifiedUrl =
       url +
@@ -44,6 +44,9 @@ window.jCSRFFetch = function(url, options = {}) {
       `authenticationToken=${window.authenticationToken}`;
     url = modifiedUrl;
   }
+
+  const { hideNotify, ...options } = params;
+
   return window
     .CSRFFetch(
       url,
@@ -68,10 +71,12 @@ window.jCSRFFetch = function(url, options = {}) {
     })
     .then(({ json, response }) => {
       if (!response.ok) {
-        notify.show(
-          json.message || "There was problem with your request",
-          "error"
-        );
+        if (!hideNotify) {
+          notify.show(
+            json.message || "There was problem with your request",
+            "error"
+          );
+        }
 
         return Promise.reject({
           status: response.status,

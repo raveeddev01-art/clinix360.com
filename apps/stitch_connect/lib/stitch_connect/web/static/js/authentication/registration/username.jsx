@@ -44,7 +44,7 @@ export default class Username extends Component {
       <UsernameCard
         key="username-card"
         value={registrationStore.username}
-        backUrl="/signup/last-name"
+        backUrl="/signup/phone-number"
         restartUrl="/signup/team-name"
         onNext={this._onSubmit}
         placeholder={username}
