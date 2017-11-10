@@ -43,6 +43,7 @@ class RegistrationStore {
           body: {
             first_name: this.firstName,
             last_name: this.lastName,
+            phone_number: this.phone,
             username: this.username,
             password: this.password,
             pin: this.pin,
