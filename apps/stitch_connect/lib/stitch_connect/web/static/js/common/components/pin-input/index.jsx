@@ -94,6 +94,7 @@ class PinInput extends Component {
     for (let i = from; i < to; i += 1) {
       comps.push(
         <input
+          type="password"
           className="form-control"
           autoFocus={i === 0}
           key={`code_${i}`}
