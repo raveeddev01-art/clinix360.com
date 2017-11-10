@@ -1,5 +1,5 @@
 #admin-billing-tabs {
-  .subscription {
+  .subscription-tab {
     position: relative;
     min-height: 400px;
 
@@ -16,13 +16,9 @@
       background: rgba(255, 255, 255, 0.7);
     }
 
-    .subscribed {
-      .list-unstyled {
-        li {
-          i.fa {
-            color: $brand-primary;
-          }
-        }
+    .subscription {
+      i.fa {
+        color: $brand-primary;
       }
     }
 

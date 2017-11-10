@@ -308,7 +308,7 @@ class Subscription extends React.Component {
             className="btn btn-fancy btn-primary pull-right"
             onClick={this.onUpgradePlan}
           >
-            Upgrade Plan
+            Change Plan
           </button>
         </div>
       </div>
@@ -334,7 +334,7 @@ class Subscription extends React.Component {
     const { subscription, upgrade } = this.state;
 
     return (
-      <div>
+      <div className="subscription">
         {this.renderStatus()}
 
         {subscription.tier === "TRIAL" || upgrade
@@ -367,7 +367,7 @@ class Subscription extends React.Component {
     const { loading, subscription, checkout } = this.state;
 
     return (
-      <div className="subscription">
+      <div className="subscription-tab">
         {this.renderHeader()}
 
         {subscription &&
