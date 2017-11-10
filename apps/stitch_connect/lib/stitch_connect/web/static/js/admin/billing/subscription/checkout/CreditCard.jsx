@@ -4,19 +4,18 @@ import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
 const CreditCard = ({ card, onUse }) => {
+  const cardClassName = classNames("credit-card", { selected: card.default });
   const iconClassName = classNames(
     "credit-card-icon",
     card.brand.toLowerCase()
   );
-  // TODO: Fix card holder name
-  const cardHolder = `${currentUser.firstName} ${currentUser.lastName}`;
 
   return (
-    <div className="credit-card">
+    <div className={cardClassName}>
       <div className="credit-card-desc">
         <div className="credit-card-desc-row">
           <span className={iconClassName} />
-          <span className="credit-card-holder">{cardHolder}</span>
+          <span className="credit-card-holder">{card.cardholder_name}</span>
         </div>
 
         <div>

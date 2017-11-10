@@ -10,21 +10,18 @@ import CheckoutForm from "./CheckoutForm";
 class Checkout extends React.Component {
   getBillingSummary() {
     const { plan } = this.props;
-    const planFrequency = getFrequency(plan.planFrequency);
-    const billingFrequency = getFrequency(plan.billingFrequency);
-    const monthlyPrice = getMonthlyPrice(plan.tier, plan.planFrequency);
+    const frequency = getFrequency(plan.frequency);
+    const monthlyPrice = getMonthlyPrice(plan.tier, plan.frequency);
     const annualPrice = monthlyPrice * 12;
     const charge =
-      planFrequency.unit === "month"
+      frequency.unit === "month"
         ? `$${monthlyPrice} per user per month`
-        : billingFrequency.unit === "month"
-          ? `$${monthlyPrice} per month for 12 months`
-          : `$${annualPrice} per user per year`;
+        : `$${annualPrice} per user per year`;
 
     return {
       tier: capitalize(plan.tier),
       charge,
-      renewal: planFrequency.unit
+      renewal: frequency.unit
     };
   }
 
@@ -59,7 +56,7 @@ class Checkout extends React.Component {
           </p>
         </div>
 
-        <h4>Step 2: Add Contact Information</h4>
+        {/* <h4>Step 2: Add Contact Information</h4>
         <div className="step2-contact-info">
           <div className="form-group">
             <label htmlFor="team-name">Team Name</label>
@@ -87,10 +84,10 @@ class Checkout extends React.Component {
               This field can also be for adding additional invoice information.
             </p>
           </div>
-        </div>
+        </div> */}
 
-        <h4>Step 3: Add Payment Method</h4>
-        <div className="step3-payment">
+        <h4>Step 2: Add Payment Method</h4>
+        <div className="step2-payment">
           <div className="existing-card">
             <h5>Option A: Use an existing payment method.</h5>
 

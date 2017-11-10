@@ -1,11 +1,15 @@
 import React from "react";
 import { Well } from "react-bootstrap";
-import moment from "moment";
 import capitalize from "lodash/capitalize";
 
 import { alert } from "../../../common/modals";
-import { TIERS, PLANS } from "./constants";
-import { getUpgradableTiers } from "./utils";
+import {
+  processSubscriptionData,
+  getSelectableTiers,
+  getBelowTier,
+  getPlanForTier,
+  getFrequency
+} from "./utils";
 import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
 import Loading from "./loading/Loading";
@@ -18,14 +22,8 @@ class Subscription extends React.Component {
       loading: false,
       subscription: null,
       upgrade: false,
-      subscribePlan: {
-        planFrequency: 1,
-        billingFrequency: 1,
-        tier: "BASIC"
-      },
-      upgradePlan: {
-        planFrequency: 1,
-        billingFrequency: 1,
+      plan: {
+        frequency: 1,
         tier: ""
       },
       checkout: false,
@@ -38,38 +36,21 @@ class Subscription extends React.Component {
     this.loadCards();
   }
 
-  onSelectPlanFrequency = freq => {
-    const { upgrade } = this.state;
-    const planName = upgrade ? "upgradePlan" : "subscribePlan";
-    const plan = this.state[planName];
+  onSelectFrequency = frequency => {
+    const { plan } = this.state;
 
     this.setState({
-      [planName]: {
+      plan: {
         ...plan,
-        planFrequency: freq
-      }
-    });
-  };
-
-  onSelectBillingFrequency = freq => {
-    const { upgrade } = this.state;
-    const planName = upgrade ? "upgradePlan" : "subscribePlan";
-    const plan = this.state[planName];
-
-    this.setState({
-      [planName]: {
-        ...plan,
-        billingFrequency: freq
+        frequency
       }
     });
   };
 
   onSelectTier = tier => {
-    const { upgrade } = this.state;
-    const planName = upgrade ? "upgradePlan" : "subscribePlan";
-    const plan = this.state[planName];
+    const { plan } = this.state;
 
-    this.setState({ [planName]: { ...plan, tier } });
+    this.setState({ plan: { ...plan, tier } });
   };
 
   onUpgradePlan = () => {
@@ -81,8 +62,31 @@ class Subscription extends React.Component {
   };
 
   onUseCreditCard = card => {
-    // TODO: Process checkout using card selected
-    console.log("onUse", card);
+    // Make the card as default
+    this.setState({ loading: true });
+    put(`/api/v1/billing/cards/${card.id}`, {
+      body: {
+        default: true
+      }
+    }).then(
+      () => {
+        const { cards } = this.state;
+
+        cards.forEach(c => {
+          c.default = c.id === card.id;
+        });
+
+        this.setState({
+          loading: false,
+          cards
+        });
+
+        this.subscribe();
+      },
+      error => {
+        this.setState({ loading: false });
+      }
+    );
   };
 
   onCardSubmitStart = () => {
@@ -106,21 +110,7 @@ class Subscription extends React.Component {
     this.setState({ loading: true });
 
     get("/api/v1/billing/subscription").then(response => {
-      const subscription = response.data.data;
-
-      // MOCK for BASIC subscription
-      // const subscription = {
-      //   valid_until: "2017-11-17T03:32:36.000000Z",
-      //   updated_at: "2017-11-03T03:32:36.958730",
-      //   tier: "BASIC",
-      //   renews: false,
-      //   renewal_frequency: null,
-      //   estimated_invoice_amount: 72
-      // };
-      const validUntil = moment.utc(subscription.valid_until);
-      const today = moment.utc();
-
-      subscription.remaining_days = validUntil.diff(today, "days");
+      const subscription = processSubscriptionData(response.data.data);
 
       this.setState({ loading: false, subscription });
     });
@@ -139,27 +129,64 @@ class Subscription extends React.Component {
       body: {
         source_token: token.id
       }
-    }).then(response => {
-      const { cards, subscription } = this.state;
+    }).then(
+      response => {
+        const { cards } = this.state;
 
-      this.setState({
-        loading: false,
-        cards: cards.push(response.data.data)
-      });
+        this.setState({
+          loading: false,
+          cards: [...cards, response.data.data]
+        });
 
-      alert({
-        title: "Thanks for using Stitch!",
-        message: (
-          <p>
-            We successfully saved your card info. <br />{" "}
-            <b>
-              We won&rsquo;t begin billing until your trial expires in{" "}
-              {subscription.remaining_days} days.
-            </b>
-          </p>
-        )
-      });
-    });
+        this.subscribe();
+      },
+      error => {
+        this.setState({
+          loading: false
+        });
+      }
+    );
+  }
+
+  subscribe() {
+    const { plan } = this.state;
+
+    this.setState({ loading: true });
+    put("/api/v1/billing/subscription", {
+      body: {
+        tier: plan.tier,
+        renewal_frequency: getFrequency(plan.frequency).value
+      }
+    }).then(
+      response => {
+        const subscription = processSubscriptionData(response.data.data);
+
+        alert({
+          title: "Thanks for using Stitch!",
+          message: (
+            <p>
+              We successfully saved your card info. <br />{" "}
+              <b>
+                We won&rsquo;t begin billing until your trial expires in{" "}
+                {subscription.remaining_days} days.
+              </b>
+            </p>
+          )
+        });
+
+        this.setState({
+          loading: false,
+          checkout: false,
+          upgrade: false,
+          subscription
+        });
+      },
+      error => {
+        this.setState({
+          loading: false
+        });
+      }
+    );
   }
 
   renderHeader() {
@@ -247,17 +274,20 @@ class Subscription extends React.Component {
 
   renderSubscribedPlan() {
     const { subscription } = this.state;
-    const validUntil = moment
-      .utc(subscription.valid_until)
-      .format("dddd, MMMM Do YYYY");
-    const planItems = PLANS[subscription.tier].items;
+    const belowTier = capitalize(getBelowTier(subscription.tier));
+    const planItems = getPlanForTier(subscription.tier).items;
 
     return (
       <div className="subscribed">
         <p>
-          Your plan will renew on <b>{validUntil}</b> for{" "}
+          Your plan will renew on <b>{subscription.valid_until}</b> for{" "}
           <b>${subscription.estimated_invoice_amount}</b>.{" "}
-          <b>{capitalize(subscription.tier)}</b> includes:
+          <b>{capitalize(subscription.tier)}</b> includes{belowTier && (
+            <span>
+              {" "}
+              everything in <b>{belowTier}</b>, and
+            </span>
+          )}:
         </p>
 
         {planItems &&
@@ -266,7 +296,7 @@ class Subscription extends React.Component {
               {planItems.map((item, index) => (
                 <li key={`item_${index}`}>
                   <i className="fa fa-check-circle-o" />
-                  {item}
+                  {item.content} {item.beta && <i>(Beta)</i>}
                 </li>
               ))}
             </ul>
@@ -278,7 +308,7 @@ class Subscription extends React.Component {
             className="btn btn-fancy btn-primary pull-right"
             onClick={this.onUpgradePlan}
           >
-            Upgrade Plan
+            Change Plan
           </button>
         </div>
       </div>
@@ -286,31 +316,14 @@ class Subscription extends React.Component {
   }
 
   renderSelectPlan() {
-    const { subscribePlan: plan } = this.state;
-    const tiers = TIERS;
+    const { plan, subscription } = this.state;
+    const tiers = getSelectableTiers(subscription.tier);
 
     return (
       <Plans
         plan={plan}
         tiers={tiers}
-        onSelectPlanFrequency={this.onSelectPlanFrequency}
-        onSelectBillingFrequency={this.onSelectBillingFrequency}
-        onSelectTier={this.onSelectTier}
-        onCheckoutPlan={this.onCheckoutPlan}
-      />
-    );
-  }
-
-  renderUpgradePlan() {
-    const { upgradePlan: plan, subscription } = this.state;
-    const tiers = getUpgradableTiers(subscription.tier);
-
-    return (
-      <Plans
-        plan={plan}
-        tiers={tiers}
-        onSelectPlanFrequency={this.onSelectPlanFrequency}
-        onSelectBillingFrequency={this.onSelectBillingFrequency}
+        onSelectFrequency={this.onSelectFrequency}
         onSelectTier={this.onSelectTier}
         onCheckoutPlan={this.onCheckoutPlan}
       />
@@ -321,12 +334,12 @@ class Subscription extends React.Component {
     const { subscription, upgrade } = this.state;
 
     return (
-      <div>
+      <div className="subscription">
         {this.renderStatus()}
 
-        {subscription.tier === "TRIAL"
+        {subscription.tier === "TRIAL" || upgrade
           ? this.renderSelectPlan()
-          : upgrade ? this.renderUpgradePlan() : this.renderSubscribedPlan()}
+          : this.renderSubscribedPlan()}
 
         <br />
 
@@ -336,14 +349,12 @@ class Subscription extends React.Component {
   }
 
   renderCheckout() {
-    const { cards, upgrade, upgradePlan, subscribePlan } = this.state;
-    const plan = upgrade ? upgradePlan : subscribePlan;
+    const { cards, plan } = this.state;
 
     return (
       <Checkout
         cards={cards}
         plan={plan}
-        upgrade={upgrade}
         onUseCreditCard={this.onUseCreditCard}
         onSubmitStart={this.onCardSubmitStart}
         onSubmitSuccess={this.onCardSubmitSuccess}
@@ -356,7 +367,7 @@ class Subscription extends React.Component {
     const { loading, subscription, checkout } = this.state;
 
     return (
-      <div className="subscription">
+      <div className="subscription-tab">
         {this.renderHeader()}
 
         {subscription &&
