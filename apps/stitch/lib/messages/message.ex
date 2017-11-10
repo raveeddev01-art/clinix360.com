@@ -22,6 +22,7 @@ defmodule Stitch.Message do
     field :read_status, :map, default: %{}
     field :mentioned_user_ids, {:array, :integer}, default: []
     field :has_links, :boolean, default: false
+    field :link_previews_generated, :boolean, default: false
 
     timestamps()
   end
