@@ -26,12 +26,31 @@ defmodule Stitch.Accounts.Admin do
   """
   def deactivate(%Team{id: team_id}, user_id) do
     if user = Repo.get_by(User, team_id: team_id, id: user_id) do
+      analytics_track_user_disabled(user)
       user
       |> Ecto.Changeset.change(disabled: true)
       |> Repo.update
     else
       {:error, :not_found}
     end
+  end
+
+  defp analytics_track_user_disabled(user) do
+    Stitch.Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      active_users = Stitch.TeamQueries.list_active_users(team)
+      properties = %{
+        "first_name"   => user.first_name,
+        "last_name"    => user.last_name,
+        "email"        => user.email,
+        "team_id"      => Integer.to_string(team.id),
+        "team_name"    => team.name,
+        "team_slug"    => team.slug,
+        "active_users" => length(active_users)
+      }
+      Stitch.Analytics.track(user.id, "Account Disabled", properties)
+    end)
   end
 
   @doc """
