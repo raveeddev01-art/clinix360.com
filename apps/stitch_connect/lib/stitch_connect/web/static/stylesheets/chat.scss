@@ -899,11 +899,17 @@
     margin: 5px 0;
   }
 
-  .attachment-image {
+  .attachment-image-holder {
     cursor: zoom-in;
     display: block;
-    width: 100%;
-    max-width: 500px;
+    overflow-y: hidden;
+  }
+
+  .attachment-preview-placeholder {
+    position: relative;
+    max-width: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
   }
 }
 
