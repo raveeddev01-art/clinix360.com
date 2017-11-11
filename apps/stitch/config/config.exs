@@ -42,8 +42,6 @@ config :stitch, :aws_user_upload, %{
 config :stitch, :user_upload_settings, %{
   max_preview_width: 720,
   max_preview_height: 720,
-  display_preview_width: 360,
-  display_preview_height: 360,
 }
 
 import_config "#{Mix.env}.exs"

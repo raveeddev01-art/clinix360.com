@@ -31,9 +31,9 @@ defmodule Stitch.UploadPreview do
         :ok <- File.rm(dest),
         :ok <- File.rm(preview_path) do
       preview = %{
-        preview_height: preview_height,
-        preview_width: preview_width,
-        preview_url: "https://#{@s3.host}/#{@s3.bucket}/#{Path.basename(preview_path)}"
+        "preview_height" => preview_height,
+        "preview_width" => preview_width,
+        "preview_url" => "https://#{@s3.host}/#{@s3.bucket}/#{Path.basename(preview_path)}"
       }
       {:ok, preview}
     else error ->
