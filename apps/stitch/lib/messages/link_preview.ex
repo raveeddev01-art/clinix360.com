@@ -44,12 +44,18 @@ defmodule Stitch.Message.LinkPreview do
   end
 
   def generate_link_previews(%Message{text_content: text_content} = message) do
+    links = get_links(text_content)
+
     link_preview_params =
-      text_content
-      |> get_links
-      |> Enum.map(fn link ->
-        generate_link_preview_param(link)
-      end)
+      if length(links) > 5 do
+        []
+      else
+        links
+        |> Enum.map(fn link ->
+          generate_link_preview_param(link)
+        end)
+        |> Enum.reject(&is_nil/1)
+      end
 
     changeset = message_changeset(message, %{
       link_previews_generated: true,
@@ -67,12 +73,16 @@ defmodule Stitch.Message.LinkPreview do
         description = og_metadata(html, "description")
         image_url = og_metadata(html, "image")
 
-        %{
-          link: link,
-          title: title,
-          description: description,
-          image_url: image_url
-        }
+        if title do
+          %{
+            link: link,
+            title: title,
+            description: description,
+            image_url: image_url
+          }
+        else
+          nil
+        end
 
       {:error, _error} ->
         nil
