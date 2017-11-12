@@ -6,11 +6,13 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 
 export default class Header extends Component {
   render() {
+    const logoLink = !window.electronApp ? `https://${applicationHost}` : "#";
+
     return (
       <Navbar id="header" inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href={`https://${applicationHost}`} className="brand">
+            <a href={logoLink} className="brand">
               <img src="/images/stitch-brand.png" alt="Stitch" />
             </a>
           </Navbar.Brand>
