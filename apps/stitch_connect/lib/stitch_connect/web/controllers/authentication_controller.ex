@@ -43,12 +43,11 @@ defmodule StitchConnect.Web.AuthenticationController do
   end
 
   def logout(conn, _) do
-    current_user = conn.assigns.current_user
     session_id = get_session(conn, :session_id)
-
-    conn = conn |> clear_session
-    EventsChannel.broadcast_logout(current_user, session_id)
-    conn |> redirect(to: "/")
+    conn
+    |> clear_session
+    |> broadcast_logout(session_id)
+    |> redirect(to: "/")
   end
 
   def reset_password(conn, _) do
@@ -75,5 +74,10 @@ defmodule StitchConnect.Web.AuthenticationController do
         })
         render(conn, "change_password.html", change_password_params: change_password_params)
     end
+  end
+
+  defp broadcast_logout(conn, session_id) do
+    EventsChannel.broadcast_logout(conn.assigns.current_user, session_id)
+    conn
   end
 end
