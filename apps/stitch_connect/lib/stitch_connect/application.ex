@@ -14,6 +14,12 @@ defmodule StitchConnect.Application do
       # worker(StitchConnect.Worker, [arg1, arg2, arg3]),
     ]
 
+    children = if Application.get_env(:stitch_connect, :start_message_link_preview_generator, true) do
+      children ++ [worker(StitchConnect.MessageLinkPreviewGenerator, [])]
+    else
+      children
+    end
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: StitchConnect.Supervisor]
