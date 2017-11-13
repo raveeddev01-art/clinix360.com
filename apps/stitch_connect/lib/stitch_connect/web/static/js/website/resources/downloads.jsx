@@ -69,7 +69,7 @@ export default class Downloads extends Component {
                       <Row>
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch-1.0.2.dmg">
+                            <a href="/download-mac">
                               <img
                                 src="/images/mac-icon.png"
                                 alt="Connect for Mac"
@@ -82,7 +82,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
-                              href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch-1.0.2.dmg"
+                              href="/download-mac"
                             >
                               Download
                             </Button>
@@ -91,7 +91,7 @@ export default class Downloads extends Component {
 
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.exe">
+                            <a href="/download-win">
                               <img
                                 src="/images/windows-icon.png"
                                 alt="Connect for Windows"
@@ -104,7 +104,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
-                              href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.exe"
+                              href="/download-win"
                             >
                               Download
                             </Button>
