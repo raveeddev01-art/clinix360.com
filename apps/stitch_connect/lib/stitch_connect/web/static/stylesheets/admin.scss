@@ -108,6 +108,7 @@ $admin-topbar-height-sm: 65px;
     @include transition(all 0.2s ease);
     display: flex;
     flex-direction: column;
+    position: relative;
 
     .admin-topbar {
       padding-left: 20px;
