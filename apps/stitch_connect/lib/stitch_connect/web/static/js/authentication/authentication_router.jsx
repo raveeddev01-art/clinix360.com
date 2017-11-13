@@ -9,6 +9,7 @@ import TeamPicker from "./team/team_picker";
 import FindTeam from "./team/find_team";
 import SelectTeam from "./team/select_team";
 import Login from "./login/login";
+import DownloadApps from "./apps";
 import Registration from "./registration";
 import SendEmail from "./reset-password/send-email";
 import SetPassword from "./reset-password/set-password";
@@ -40,6 +41,11 @@ class AuthenticationRouter extends Component {
               exact
               path="/login"
               render={() => <Login {...this.props} />}
+            />
+            <Route
+              exact
+              path="/apps"
+              render={() => <DownloadApps {...this.props} />}
             />
             <Route path="/signup" component={Registration} />
 

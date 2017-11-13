@@ -185,6 +185,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser_authenticate
 
     get "/", PageController, :index
+    get "/apps", AuthenticationController, :apps
 
     get "/logout", AuthenticationController, :logout
 
