@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
   alias StitchConnect.Web.Presence
 
-  intercept ["new_msg", "edit_msg"]
+  intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
 
   def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
@@ -298,7 +298,7 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:ok, json}, socket}
   end
 
-  def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg"] do
+  def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg", "msg_link_previews_generated"] do
     json = MessageView.render("show.json", %{message: payload})
     push socket, event, json
     {:noreply, socket}
