@@ -35,7 +35,7 @@ defmodule Stitch.Stripe.TestClient do
   def set_as_default_card(_customer_id, _card_id), do: true
 
   @impl Stitch.Stripe
-  def create_subscription(_customer_id, _plan_id, _user_count) do
+  def create_subscription(_customer_id, _plan_id, _user_count, _opts) do
     timestamp = timestamp()
     sub = %{
       subscription_id: "sub_#{timestamp}",
@@ -50,7 +50,7 @@ defmodule Stitch.Stripe.TestClient do
   end
 
   @impl Stitch.Stripe
-  def update_subscription_plan(_customer_id, subscription_id, _plan_id) do
+  def update_subscription_plan(_customer_id, subscription_id, _plan_id, _opts) do
     "sub_" <> uid = subscription_id
 
     sub = %{

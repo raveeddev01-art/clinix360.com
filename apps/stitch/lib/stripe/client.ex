@@ -110,15 +110,31 @@ defmodule Stitch.Stripe.Client do
   @doc """
   Creates a new subscription for a customer.
 
+  ## Options
+
+  * `:trial_end_date` - DateTime of when trial period should end.
+
   ## Examples
 
       iex> create_subscription("cus_1234567", "basic_monthly", 5)
       {:ok, %{subscription_id: "sub_1234567", subscription_line_item_id: "si_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
 
+      iex> create_subscription("cus_1234567", "basic_monthly", 5, trial_end_date: %DateTime{...})
+      {:ok, %{subscription_id: "sub_1234567", subscription_line_item_id: "si_1234567", status: "trialing", valid_until: %DateTime{...}, renews: true}}
+
   """
   @impl Stitch.Stripe
-  def create_subscription(customer_id, plan_id, user_count) do
-    with {:ok, sub} <- Stripe.Subscriptions.create(customer_id, plan: plan_id, quantity: user_count),
+  def create_subscription(customer_id, plan_id, user_count, opts \\ []) do
+    default_opts = [plan: plan_id, quantity: user_count]
+    subscription_opts =
+      case opts[:trial_end_date] do
+        %DateTime{} = date ->
+          unix_timestamp = DateTime.to_unix(date)
+          Keyword.put(default_opts, :trial_end, unix_timestamp)
+        _ -> default_opts
+      end
+
+    with {:ok, sub} <- Stripe.Subscriptions.create(customer_id, subscription_opts),
          {:ok, upcoming_invoice} <- Stripe.Invoices.upcoming(customer_id, [subscription: sub.id]) do
       {:ok, transform_subscription(sub, upcoming_invoice)}
     else
@@ -146,15 +162,31 @@ defmodule Stitch.Stripe.Client do
   @doc """
   Updates an existing subscription to a different plan.
 
+  ## Options
+
+  * `:trial_end_date` - DateTime of when trial period should end.
+
   ## Examples
 
       iex> update_subscription_plan("cus_1234567", "sub_1234567", "power_monthly")
       {:ok, %{subscription_id: "sub_1234567", subscription_line_item_id: "si_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
 
+      iex> update_subscription_plan("cus_1234567", "sub_1234567", "power_monthly", trial_end_date: %DateTime{...})
+      {:ok, %{subscription_id: "sub_1234567", subscription_line_item_id: "si_1234567", status: "trialing", valid_until: %DateTime{...}, renews: true}}
+
   """
   @impl Stitch.Stripe
-  def update_subscription_plan(customer_id, subscription_id, plan_id) do
-    with {:ok, sub} <- Stripe.Subscriptions.change(customer_id, subscription_id, [plan: plan_id]),
+  def update_subscription_plan(customer_id, subscription_id, plan_id, opts \\ []) do
+    default_opts = [plan: plan_id]
+    subscription_opts =
+      case opts[:trial_end_date] do
+        %DateTime{} = date ->
+          unix_timestamp = DateTime.to_unix(date)
+          Keyword.put(default_opts, :trial_end, unix_timestamp)
+        _ -> default_opts
+      end
+
+    with {:ok, sub} <- Stripe.Subscriptions.change(customer_id, subscription_id, subscription_opts),
          {:ok, upcoming_invoice} <- Stripe.Invoices.upcoming(customer_id, [subscription: sub.id]) do
       {:ok, transform_subscription(sub, upcoming_invoice)}
     else
