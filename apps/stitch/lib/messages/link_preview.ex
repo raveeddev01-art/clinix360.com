@@ -14,7 +14,7 @@ defmodule Stitch.Message.LinkPreview do
   def changeset(%__MODULE__{} = link_preview, params) do
     link_preview
     |> cast(params, [:link, :title, :description, :image_url])
-    |> validate_required([:link])
+    |> validate_required([:link, :title])
     |> resolve_relative_image_url
   end
 
