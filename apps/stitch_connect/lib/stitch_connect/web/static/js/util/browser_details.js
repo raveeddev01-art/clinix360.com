@@ -1,95 +1,116 @@
-var unknown = "-";
+const unknown = "-";
 
 // screen
 let screenSize = "";
 if (screen.width) {
-  var width = screen.width ? screen.width : "";
-  var height = screen.height ? screen.height : "";
-  screenSize += "" + width + " x " + height;
+  const width = screen.width ? screen.width : "";
+  const height = screen.height ? screen.height : "";
+  screenSize += `${width} x ${height}`;
 }
 
 // browser
-var nVer = navigator.appVersion;
-var nAgt = navigator.userAgent;
-var browser = navigator.appName;
-var version = "" + parseFloat(navigator.appVersion);
-var majorVersion = parseInt(navigator.appVersion, 10);
-let nameOffset, verOffset, ix;
+const nVer = navigator.appVersion;
+const nAgt = navigator.userAgent;
+let browser = navigator.appName;
+let version = `${parseFloat(navigator.appVersion)}`;
+let majorVersion = parseInt(navigator.appVersion, 10);
+let nameOffset;
+let verOffset;
+let ix;
 
 // Opera
-if ((verOffset = nAgt.indexOf("Opera")) != -1) {
+verOffset = nAgt.indexOf("Opera");
+if (verOffset !== -1) {
   browser = "Opera";
   version = nAgt.substring(verOffset + 6);
-  if ((verOffset = nAgt.indexOf("Version")) != -1) {
+  verOffset = nAgt.indexOf("Version");
+  if (verOffset !== -1) {
     version = nAgt.substring(verOffset + 8);
   }
 }
 // Opera Next
-if ((verOffset = nAgt.indexOf("OPR")) != -1) {
+
+if (nAgt.indexOf("OPR") !== -1) {
+  verOffset = nAgt.indexOf("OPR");
   browser = "Opera";
   version = nAgt.substring(verOffset + 4);
-} else if ((verOffset = nAgt.indexOf("Edge")) != -1) {
+} else if (nAgt.indexOf("Edge") !== -1) {
   // Edge
+  verOffset = nAgt.indexOf("Edge");
   browser = "Microsoft Edge";
   version = nAgt.substring(verOffset + 5);
-} else if ((verOffset = nAgt.indexOf("MSIE")) != -1) {
+} else if (nAgt.indexOf("MSIE") !== -1) {
   // MSIE
+  verOffset = nAgt.indexOf("MSIE");
   browser = "Microsoft Internet Explorer";
   version = nAgt.substring(verOffset + 5);
-} else if ((verOffset = nAgt.indexOf("Chrome")) != -1) {
+} else if (nAgt.indexOf("Chrome") !== -1) {
   // Chrome
+  verOffset = nAgt.indexOf("Chrome");
   browser = "Chrome";
   version = nAgt.substring(verOffset + 7);
-} else if ((verOffset = nAgt.indexOf("Safari")) != -1) {
+} else if (nAgt.indexOf("Safari") !== -1) {
   // Safari
+  verOffset = nAgt.indexOf("Safari");
   browser = "Safari";
   version = nAgt.substring(verOffset + 7);
-  if ((verOffset = nAgt.indexOf("Version")) != -1) {
+  verOffset = nAgt.indexOf("Version");
+  if (verOffset !== -1) {
     version = nAgt.substring(verOffset + 8);
   }
-} else if ((verOffset = nAgt.indexOf("Firefox")) != -1) {
+} else if (nAgt.indexOf("Firefox") !== -1) {
   // Firefox
+  verOffset = nAgt.indexOf("Firefox");
   browser = "Firefox";
   version = nAgt.substring(verOffset + 8);
-} else if (nAgt.indexOf("Trident/") != -1) {
+} else if (nAgt.indexOf("Trident/") !== -1) {
   // MSIE 11+
   browser = "Microsoft Internet Explorer";
   version = nAgt.substring(nAgt.indexOf("rv:") + 3);
-} else if (
-  (nameOffset = nAgt.lastIndexOf(" ") + 1) < (verOffset = nAgt.lastIndexOf("/"))
-) {
+} else if (nAgt.lastIndexOf(" ") + 1 < nAgt.lastIndexOf("/")) {
   // Other browsers
+  nameOffset = nAgt.lastIndexOf(" ") + 1;
+  verOffset = nAgt.lastIndexOf("/");
   browser = nAgt.substring(nameOffset, verOffset);
   version = nAgt.substring(verOffset + 1);
-  if (browser.toLowerCase() == browser.toUpperCase()) {
+  if (browser.toLowerCase() === browser.toUpperCase()) {
     browser = navigator.appName;
   }
 }
 // trim the version string
-if ((ix = version.indexOf(";")) != -1) version = version.substring(0, ix);
-if ((ix = version.indexOf(" ")) != -1) version = version.substring(0, ix);
-if ((ix = version.indexOf(")")) != -1) version = version.substring(0, ix);
+if (version.indexOf(";") !== -1) {
+  ix = version.indexOf(";");
+  version = version.substring(0, ix);
+}
+if (version.indexOf(" ") !== -1) {
+  ix = version.indexOf(" ");
+  version = version.substring(0, ix);
+}
+if (version.indexOf(")") !== -1) {
+  ix = version.indexOf(")");
+  version = version.substring(0, ix);
+}
 
-majorVersion = parseInt("" + version, 10);
+majorVersion = parseInt(version, 10);
 if (isNaN(majorVersion)) {
-  version = "" + parseFloat(navigator.appVersion);
+  version = `${parseFloat(navigator.appVersion)}`;
   majorVersion = parseInt(navigator.appVersion, 10);
 }
 
 // mobile version
-var mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
+const mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
 
 // cookie
-var cookieEnabled = navigator.cookieEnabled ? true : false;
+let cookieEnabled = navigator.cookieEnabled === true;
 
-if (typeof navigator.cookieEnabled == "undefined" && !cookieEnabled) {
+if (typeof navigator.cookieEnabled === "undefined" && !cookieEnabled) {
   document.cookie = "testcookie";
-  cookieEnabled = document.cookie.indexOf("testcookie") != -1 ? true : false;
+  cookieEnabled = document.cookie.indexOf("testcookie") !== -1;
 }
 
 // system
-var os = unknown;
-var clientStrings = [
+let os = unknown;
+const clientStrings = [
   { s: "Windows 10", r: /(Windows 10.0|Windows NT 10.0)/ },
   { s: "Windows 8.1", r: /(Windows 8.1|Windows NT 6.3)/ },
   { s: "Windows 8", r: /(Windows 8|Windows NT 6.2)/ },
@@ -120,15 +141,16 @@ var clientStrings = [
     r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/
   }
 ];
-for (var id in clientStrings) {
-  var cs = clientStrings[id];
+
+for (let id = 0; id < clientStrings.length; id += 1) {
+  const cs = clientStrings[id];
   if (cs.r.test(nAgt)) {
     os = cs.s;
     break;
   }
 }
 
-var osVersion = unknown;
+let osVersion = unknown;
 
 if (/Windows/.test(os)) {
   osVersion = /Windows (.*)/.exec(os)[1];
@@ -137,17 +159,18 @@ if (/Windows/.test(os)) {
 
 switch (os) {
   case "Mac OS X":
-    osVersion = /Mac OS X (10[\.\_\d]+)/.exec(nAgt)[1];
+    osVersion = /Mac OS X (10[._\d]+)/.exec(nAgt)[1];
     break;
 
   case "Android":
-    osVersion = /Android ([\.\_\d]+)/.exec(nAgt)[1];
+    osVersion = /Android ([._\d]+)/.exec(nAgt)[1];
     break;
 
   case "iOS":
     osVersion = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
-    osVersion = osVersion[1] + "." + osVersion[2] + "." + (osVersion[3] | 0);
+    osVersion = `${osVersion[1]}.${osVersion[2]}.${osVersion[3] || 0}`;
     break;
+  default:
 }
 
 export default {
