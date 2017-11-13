@@ -30,9 +30,11 @@ export default class Manage extends Component {
             <div className="flex-box">
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>Manage your patient data securely.</h2>
+                  <h2 className="alt-heading">
+                    Manage your patient data securely.
+                  </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Stitch Manage offers healthcare teams a HIPAA-compliant,
                     patient collaboration experience that transforms care
                     coordination. Stitch Manage includes everything you need to
@@ -72,11 +74,11 @@ export default class Manage extends Component {
 
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>
+                  <h2 className="alt-heading">
                     Create a dedicated collaboration space for every patient.
                   </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Stitch Manage creates a patient-centric collaboration space
                     for each patient. Rapidly add in your patient population via
                     individual or batch uploads. Need an MRN? We can
@@ -97,9 +99,11 @@ export default class Manage extends Component {
             <div className="flex-box">
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>Thread conversations for coordinated care.</h2>
+                  <h2 className="alt-heading">
+                    Thread conversations for coordinated care.
+                  </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     It's easy for important information to drown in the flow of
                     healthcare conversations. That's why we've built powerful
                     conversation threads into Stitch Manage. Continue the
@@ -140,9 +144,11 @@ export default class Manage extends Component {
 
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>Upload images, audio, or video for access anywhere.</h2>
+                  <h2 className="alt-heading">
+                    Upload images, audio, or video for access anywhere.
+                  </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Healthcare is all about data. That's why we've made it easy
                     to upload files of nearly any type — JPEG, PNG, PDF, MP3,
                     Word, Excel, and more. No more faxing or mailing your

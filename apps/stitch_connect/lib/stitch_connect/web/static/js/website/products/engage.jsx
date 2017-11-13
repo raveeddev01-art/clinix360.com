@@ -30,11 +30,11 @@ export default class Engage extends Component {
             <div className="flex-box">
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>
+                  <h2 className="alt-heading">
                     Communicate with patients on a secure and powerful platform.
                   </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Stitch Engage offers healthcare teams a HIPAA-compliant,
                     patient communication experience. Our secure interface
                     creates a single place for managing all patient
@@ -75,12 +75,12 @@ export default class Engage extends Component {
 
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>
+                  <h2 className="alt-heading">
                     Create patient-centric conversations for coordinated team
                     care.
                   </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Stitch Engage creates a dedicated conversational interface
                     for every patient. Team members can jump into and out of
                     patient conversations as necessary, consolidating various
@@ -101,11 +101,11 @@ export default class Engage extends Component {
             <div className="flex-box">
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>
+                  <h2 className="alt-heading">
                     Present images, audio and video directly in conversations.
                   </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     In addition to standard text messaging, Stitch Engage allows
                     you to upload almost any type of file — JPEG, PNG, PDF, MP3,
                     Word, Excel, and more. No more faxing or mailing your
@@ -147,9 +147,11 @@ export default class Engage extends Component {
 
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>Powerful premium features when you need them.</h2>
+                  <h2 className="alt-heading">
+                    Powerful premium features when you need them.
+                  </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Communicating with patients comes in many forms. Standard
                     messaging is always free on Stitch Engage. For voice and
                     video calls to patients, our premium tiers have you covered.

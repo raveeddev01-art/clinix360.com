@@ -33,11 +33,11 @@ export default class Connect extends Component {
             <div className="flex-box">
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>
+                  <h2 className="alt-heading">
                     Secure all your healthcare communication in one place.
                   </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Stitch Connect offers healthcare teams a HIPAA-compliant,
                     team communication experience across all devices. We
                     complement a great user experience with advanced security
@@ -78,9 +78,11 @@ export default class Connect extends Component {
 
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>Organize your conversations by groups or 1-on-1.</h2>
+                  <h2 className="alt-heading">
+                    Organize your conversations by groups or 1-on-1.
+                  </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Stitch Connect organizes conversations into groups and
                     private messages. Public and private groups bring healthcare
                     teams together for powerful team dialogue. Discuss patients,
@@ -99,11 +101,11 @@ export default class Connect extends Component {
             <div className="flex-box">
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>
+                  <h2 className="alt-heading">
                     Upload images, audio, or video into your conversations.
                   </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Use Stitch Connect as a searchable archive of your team’s
                     files. You can upload almost any type — JPEG, PNG, PDF, MP3,
                     Word, Excel, PowerPoint, and more. We employ cutting edge
@@ -143,11 +145,11 @@ export default class Connect extends Component {
 
               <div className="flex-item">
                 <div className="product-info">
-                  <h2>
+                  <h2 className="alt-heading">
                     Notifications keep you in sync across all your devices.
                   </h2>
 
-                  <p className="m-b-20">
+                  <p className="alt-text">
                     Never miss a beat in Stitch Connect. Access your account
                     everywhere you go with our web, desktop, and mobile apps.
                     Receive and customize notifications across all your

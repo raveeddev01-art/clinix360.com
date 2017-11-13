@@ -6,6 +6,24 @@
   background: #fafafa;
   position: relative;
 
+  .container {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .flex-box {
+    display: flex;
+    flex-direction: column;
+    margin-right: -15px;
+    margin-left: -15px;
+
+    .flex-item {
+      flex: 1;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+
   #pre-launch-landing {
     display: flex;
     flex-direction: column;
@@ -151,30 +169,38 @@
   background: #036;
   border-radius: 0;
   border: 0;
-  padding: 40px 0;
+  padding: 10px 0;
   margin: 0;
 
   .navbar-brand {
-    padding: 10px 15px;
+    padding: 12px 15px;
     img {
-      width: 81px;
+      width: auto;
+      height: 26px;
     }
+  }
+
+  .navbar-collapse {
+    border: 0;
+    box-shadow: none;
+  }
+
+  .navbar-toggle {
+    border-color: #fff;
+    background: transparent;
   }
 
   .nav-link {
     color: #fff;
     font-weight: 600;
     text-decoration: none;
-    @media (min-width: 768px) {
-      font-size: 15px;
-    }
 
     &.btn-outline {
       display: inline-block;
       border-radius: 4px;
-      box-shadow: 0 0 0 2px #fff;
-      padding: 10px 15px;
-      margin: 5px 0 5px 10px;
+      box-shadow: inset 0 0 0 2px #fff;
+      padding: 10px 20px;
+      margin: 5px 0 5px 15px;
     }
   }
 
@@ -186,18 +212,49 @@
     border: 0;
     box-shadow: none;
     padding: 15px;
-    @media (min-width: 768px) {
-      font-size: 15px;
+  }
+
+  .navbar-nav .open .dropdown-menu > li > a {
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 15px 8px 25px;
+
+    i.fa {
+      margin-right: 5px;
+    }
+
+    span {
+      display: block;
+      color: #9e9ea6;
+      font-size: 14px;
+      font-weight: 400;
+      padding-left: 22px;
     }
   }
 
-  .dropdown-menu > .active > a {
-    color: #333;
-    background: transparent;
+  .products-menu {
+    min-width: 200px;
 
-    &:hover {
-      color: #fff;
-      background: #036;
+    .product-icon {
+      width: 16px;
+      height: 16px;
+      float: left;
+      overflow: hidden;
+      position: relative;
+      margin-right: 5px;
+      margin-top: 4px;
+
+      img {
+        width: 16px;
+        height: 32px;
+        position: absolute;
+        top: -15px;
+        left: 0;
+      }
+    }
+
+    a:hover .product-icon img {
+      top: -15px;
     }
   }
 }
@@ -289,18 +346,26 @@
   }
 }
 
-.product-section,
+// -------------------- PRODUCT PAGES --------------------
 .product-feature {
+  padding: 50px 0;
+
   .product-info {
-    @media (min-width: 768px) {
-      padding: 50px;
-    }
+    text-align: center;
 
     h2 {
       color: #036;
       font-size: 28px;
       font-weight: 900;
       margin: 0 0 5px;
+
+      &.alt-heading {
+        margin-bottom: 30px;
+      }
+    }
+
+    p.alt-text {
+      margin-bottom: 30px;
     }
 
     h3 {
@@ -310,54 +375,35 @@
       margin: 0 0 20px;
     }
 
-    p {
-      font-size: 18px;
+    .btn {
+      margin-bottom: 40px;
     }
   }
 
-  .product-image {
-    padding: 50px 0;
-  }
-}
-
-.product-section:nth-child(even) {
-  color: #fff;
-  background: #036;
-
-  h2 {
-    color: #fff;
-  }
-
-  h3 {
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  .btn-primary {
-    color: #036;
-    background: #fff;
-  }
-}
-
-.product-feature {
-  .product-info {
-    h2 {
-      margin: 0 0 30px;
-    }
-
-    p {
-      font-size: 16px;
-    }
-  }
   &:nth-child(even) {
     color: #fff;
     background: #036;
 
-    .product-info h2 {
+    h2 {
       color: #fff;
+    }
+
+    h3 {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-primary {
+      color: #036;
+      background: #fff;
+    }
+
+    .flex-box {
+      flex-direction: column-reverse;
     }
   }
 }
 
+// -------------------- PRICING PAGES --------------------
 .pricing,
 .downloads {
   padding: 40px 0;
@@ -728,15 +774,77 @@
   }
 }
 
-.flex-box {
-  display: flex;
-  flex-direction: column;
-  @media (min-width: 768px) {
-    flex-direction: row;
-    align-items: center;
-  }
+// -------------------- DESKTOP BREAKPOINT --------------------
+@media (min-width: 768px) {
+  .website-wrapper {
+    .flex-box {
+      flex-direction: row;
+      align-items: center;
+    }
 
-  .flex-item {
-    flex: 1;
+    #header {
+      padding: 40px 0;
+
+      .brand {
+        display: block;
+        padding: 10px 15px;
+        img {
+          width: 81px;
+          height: auto;
+        }
+      }
+
+      .nav-link,
+      .btn-dropdown {
+        font-size: 15px;
+      }
+
+      .navbar-nav .open .dropdown-menu > li > a {
+        color: #333;
+        font-size: 15px;
+        padding: 5px 8px;
+
+        i.fa {
+          color: #036;
+          margin-right: 4px;
+        }
+
+        &:hover {
+          color: #fff;
+
+          i.fa {
+            color: #fff;
+          }
+        }
+      }
+
+      .dropdown-menu {
+        padding: 8px;
+      }
+
+      .products-menu .product-icon img {
+        top: 0;
+      }
+    }
+
+    .product-feature {
+      .product-info {
+        text-align: left;
+        padding: 0 50px;
+
+        p {
+          font-size: 18px;
+
+          &.alt-text {
+            font-size: 16px;
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      &:nth-child(even) .flex-box {
+        flex-direction: row;
+      }
+    }
   }
 }

@@ -99,7 +99,7 @@ export default class Downloads extends Component {
                             </a>
 
                             <h3>Windows</h3>
-                            <div className="m-b-10">macOS 10.8+</div>
+                            <div className="m-b-10">Windows 7+</div>
 
                             <Button
                               bsStyle="primary"
@@ -127,7 +127,7 @@ export default class Downloads extends Component {
                             <div className="m-b-10">iOS 9.0+</div>
 
                             <a
-                              class="appstore-link"
+                              className="appstore-link"
                               target="_blank"
                               href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
                             >
@@ -203,7 +203,7 @@ export default class Downloads extends Component {
                             </a>
 
                             <h3>Windows</h3>
-                            <div className="m-b-10">macOS 10.8+</div>
+                            <div className="m-b-10">Windows 7+</div>
 
                             <Button
                               bsStyle="primary"
@@ -287,7 +287,7 @@ export default class Downloads extends Component {
                             </a>
 
                             <h3>Windows</h3>
-                            <div className="m-b-10">macOS 10.8+</div>
+                            <div className="m-b-10">Windows 7+</div>
 
                             <Button
                               bsStyle="primary"

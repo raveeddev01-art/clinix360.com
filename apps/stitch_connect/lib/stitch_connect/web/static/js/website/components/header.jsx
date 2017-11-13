@@ -24,15 +24,27 @@ export default class Header extends Component {
                   <Dropdown.Toggle className="btn-dropdown">
                     Products
                   </Dropdown.Toggle>
-                  <Dropdown.Menu>
+                  <Dropdown.Menu className="products-menu">
                     <MenuItem href={`https://${applicationHost}/connect`}>
+                      <div className="product-icon">
+                        <img src="/images/connect-menu.png" alt="" />
+                      </div>
                       Connect
+                      <span>Team Messaging</span>
                     </MenuItem>
                     <MenuItem href={`https://${applicationHost}/engage`}>
+                      <div className="product-icon">
+                        <img src="/images/engage-menu.png" alt="" />
+                      </div>
                       Engage
+                      <span>Patient Messaging</span>
                     </MenuItem>
                     <MenuItem href={`https://${applicationHost}/manage`}>
+                      <div className="product-icon">
+                        <img src="/images/manage-menu.png" alt="" />
+                      </div>
                       Manage
+                      <span>Patient Management</span>
                     </MenuItem>
                   </Dropdown.Menu>
                 </Dropdown>

@@ -60,7 +60,7 @@ export default class Homepage extends Component {
         </div>
 
         <section className="stitch-products">
-          <div className="product-section">
+          <div className="product-feature">
             <div className="container">
               <div className="flex-box">
                 <div className="flex-item">
@@ -97,7 +97,7 @@ export default class Homepage extends Component {
             </div>
           </div>
 
-          <div className="product-section">
+          <div className="product-feature">
             <div className="container">
               <div className="flex-box">
                 <div className="flex-item">
@@ -136,7 +136,7 @@ export default class Homepage extends Component {
             </div>
           </div>
 
-          <div className="product-section">
+          <div className="product-feature">
             <div className="container">
               <div className="flex-box">
                 <div className="flex-item">

@@ -9,16 +9,22 @@ export default class Footer extends Component {
       <footer id="footer">
         <div className="container">
           <Row>
-            <Col md={3}>
+            <Col xs={6} md={3}>
               <h5>Products</h5>
               <ul className="list-unstyled">
                 <li>
                   <a href={`https://${applicationHost}/connect`}>Connect</a>
                 </li>
+                <li>
+                  <a href={`https://${applicationHost}/engage`}>Engage</a>
+                </li>
+                <li>
+                  <a href={`https://${applicationHost}/manage`}>Manage</a>
+                </li>
               </ul>
             </Col>
 
-            <Col md={3}>
+            <Col xs={6} md={3}>
               <h5>Resources</h5>
               <ul className="list-unstyled">
                 <li>
@@ -48,7 +54,7 @@ export default class Footer extends Component {
               </ul>
             </Col>
 
-            <Col md={3}>
+            <Col xs={6} md={3}>
               <h5>Company</h5>
               <ul className="list-unstyled">
                 <li>
@@ -67,7 +73,7 @@ export default class Footer extends Component {
               </ul>
             </Col>
 
-            <Col md={3}>
+            <Col xs={6} md={3}>
               <h5>Contact</h5>
               <address>
                 <strong>Stitch Technologies, Inc.</strong>
