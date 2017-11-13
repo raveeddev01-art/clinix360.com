@@ -14,7 +14,10 @@ defmodule Stitch.Reports.MessagesSent do
   @type message_type :: :chat | :upload
 
   @typedoc "Supported options"
-  @type option :: Reports.option | {:type, message_type}
+  @type option :: {:time_period, Reports.time_period}
+                  | {:type, message_type}
+                  | {:start_at, Date.t}
+                  | {:end_at, Date.t}
 
   @doc """
   Builds a messages sent report.
@@ -40,13 +43,16 @@ defmodule Stitch.Reports.MessagesSent do
     start_at = Date.add(end_at, day_diff(time_period))
     build(team, type: type, start_at: start_at, end_at: end_at)
   end
-  def build(%Team{} = team, [type: type, time_period: time_period]) do
+  def build(%Team{} = team, [time_period: time_period, type: type]) do
     today = Date.utc_today()
     two_days_ago = Date.add(today, -2)
     build(team, type: type, time_period: time_period, end_at: two_days_ago)
   end
-  def build(%Team{} = team, time_period: time_period, end_at: end_at) do
+  def build(%Team{} = team, [time_period: time_period, end_at: end_at]) do
     build(team, type: :chat, time_period: time_period, end_at: end_at)
+  end
+  def build(%Team{} = team, [time_period: time_period]) do
+    build(team, time_period: time_period, type: :chat)
   end
 
   defp day_diff(time_period) do
