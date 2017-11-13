@@ -32,7 +32,10 @@
 
   > div {
     max-width: 440px;
+    width: 100%;
     max-height: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 
   .alert {
@@ -73,6 +76,7 @@
     border-radius: 6px;
     position: relative;
     padding: 15px 20px 20px;
+
     @media (min-width: $screen-sm) {
       padding: 40px 70px 50px;
     }

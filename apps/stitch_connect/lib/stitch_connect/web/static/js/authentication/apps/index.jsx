@@ -25,6 +25,45 @@ export default class DownloadApps extends Component {
     return <h2>{mobile ? "Mobile App" : "Desktop App"}</h2>;
   }
 
+  renderAlternateOS() {
+    let link = "#";
+    let title = "";
+    let platform = "";
+    if (browserDetails.os === "iOS") {
+      if (browserDetails.mobile) {
+        link = "#";
+        title = "Android";
+        platform = "mobile";
+      } else {
+        link = "#";
+        title = "Android";
+        platform = "desktop";
+      }
+    } else if (browserDetails.os === "Android") {
+      if (browserDetails.mobile) {
+        link = "#";
+        title = "iOS";
+        platform = "mobile";
+      } else {
+        link = "#";
+        title = "Mac";
+        platform = "desktop";
+      }
+    }
+
+    if (link !== "#")
+      return (
+        <h5>
+          Looking for{" "}
+          <a href={link}>
+            <strong>{title}</strong>
+          </a>{" "}
+          {platform} app?
+        </h5>
+      );
+    return null;
+  }
+
   render() {
     const { shouldRedirect } = this.state;
     return (
@@ -52,12 +91,14 @@ export default class DownloadApps extends Component {
           {browserDetails.os === "Android" &&
             browserDetails.mobile && <AndroidMobile />}
 
-          <h5>
-            Looking for web app?{" "}
-            <a href="/">
-              <strong>Skip & Launch</strong>
-            </a>
-          </h5>
+          {!browserDetails.mobile && (
+            <h5>
+              Looking for web app?{" "}
+              <a href="/">
+                <strong>Skip & Launch</strong>
+              </a>
+            </h5>
+          )}
         </div>
 
         <h5>
@@ -72,7 +113,7 @@ export default class DownloadApps extends Component {
             <strong>Create a new team</strong>
           </a>
         </h5>
-        <h5>Looking for Mac desktop app?</h5>
+        {this.renderAlternateOS()}
       </div>
     );
   }
