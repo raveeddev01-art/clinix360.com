@@ -94,4 +94,8 @@ defmodule StitchConnect.Web.Router do
 
     # get "/signup/phone-number", AuthenticationController, :index
   end
+
+  # Application download links.
+  get "/download-mac", Redirect, external: "https://fz0pxcjnx9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-mac"
+  get "/download-win", Redirect, external: "https://1lyrransd9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-win"
 end
