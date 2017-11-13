@@ -57,7 +57,18 @@ defmodule Stitch.Message do
     |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
+    |> add_preview()
   end
+
+  def add_preview(%{valid?: true, changes: %{fields: fields}} = changeset) do
+    case Stitch.UploadPreview.create_preview(fields) do
+      {:ok, preview_metadata} ->
+        put_change(changeset, :fields, Map.merge(fields, preview_metadata))
+      {:error, _error} ->
+        changeset
+    end
+  end
+  def add_preview(changeset), do: changeset
 
   def system_changeset(%Message{} = struct, params \\ %{}) do
     struct

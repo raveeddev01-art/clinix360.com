@@ -174,7 +174,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/login", AuthenticationController, :login
     post "/login", AuthenticationController, :submit_login
-    get "/logout", AuthenticationController, :logout
     get "/reset-password", AuthenticationController, :reset_password
     get "/reset-password/:token", AuthenticationController, :change_password
   end
@@ -184,6 +183,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser_authenticate
 
     get "/", PageController, :index
+
+    get "/logout", AuthenticationController, :logout
 
     get "/rooms/:slug", GroupController, :index
     get "/direct/:username", UserController, :index

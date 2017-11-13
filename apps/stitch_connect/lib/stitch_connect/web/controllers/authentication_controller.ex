@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.AuthenticationController do
   use StitchConnect.Web, :controller
+  alias StitchConnect.Web.{EventsChannel}
 
   def index(conn, _params) do
     render conn, "index.html", subdomain: conn.private[:subdomain]
@@ -42,8 +43,10 @@ defmodule StitchConnect.Web.AuthenticationController do
   end
 
   def logout(conn, _) do
+    session_id = get_session(conn, :session_id)
     conn
     |> clear_session
+    |> broadcast_logout(session_id)
     |> redirect(to: "/")
   end
 
@@ -71,5 +74,10 @@ defmodule StitchConnect.Web.AuthenticationController do
         })
         render(conn, "change_password.html", change_password_params: change_password_params)
     end
+  end
+
+  defp broadcast_logout(conn, session_id) do
+    EventsChannel.broadcast_logout(conn.assigns.current_user, session_id)
+    conn
   end
 end

@@ -12,6 +12,10 @@ It contains two apps:
 
 ## Getting started (work in progress)
 
+Install external dependencies
+
+- `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
+
 Update `/etc/hosts` (`subdomain` should the name of a team)
 
 ```

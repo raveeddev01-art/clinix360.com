@@ -15,8 +15,27 @@ class ImageFileAttachment extends Component {
   };
 
   render() {
-    const { filename, url } = this.props;
+    const {
+      filename,
+      url,
+      preview_height: height,
+      preview_width: width,
+      preview_url: previewUrl
+    } = this.props;
     const { showModal } = this.state;
+    let placeholderStyle = null;
+    let holderStyle = null;
+    if (height) {
+      placeholderStyle = {
+        width,
+        paddingTop: `${height / width * 100}%`,
+        backgroundImage: `url(${previewUrl})`
+      };
+      holderStyle = {
+        maxHeight: height // constraint holder size for when paddingTop is bigger than height
+      };
+    }
+
     return (
       <div className="attachment-image-block">
         <div className="attachment-title">
@@ -25,11 +44,23 @@ class ImageFileAttachment extends Component {
           </a>
         </div>
         <a
-          className="attachment-image"
+          className="attachment-image-holder"
           onClick={this.onToggleModal}
+          style={holderStyle}
           role="link"
         >
-          <img src={url} className="img-responsive" alt={filename} />
+          {placeholderStyle ? (
+            <div
+              className="attachment-preview-placeholder"
+              style={placeholderStyle}
+            />
+          ) : (
+            <img
+              src={previewUrl || url}
+              className="img-responsive"
+              alt={filename}
+            />
+          )}
         </a>
         <Modal
           show={showModal}
@@ -46,6 +77,9 @@ class ImageFileAttachment extends Component {
 }
 
 ImageFileAttachment.propTypes = {
+  preview_height: PropTypes.number,
+  preview_width: PropTypes.number,
+  preview_url: PropTypes.string,
   filename: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired
 };
