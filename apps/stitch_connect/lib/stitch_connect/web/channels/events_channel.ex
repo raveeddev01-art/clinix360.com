@@ -124,6 +124,10 @@ defmodule StitchConnect.Web.EventsChannel do
     end
   end
 
+  def broadcast_logout(%User{} = user, session_id) do
+    @endpoint.broadcast("events:#{user.id}", "logout", %{session_id: session_id})
+  end
+
   def broadcast_marked_as_read(user, json_response) do
     @endpoint.broadcast("events:#{user.id}", "marked_as_read", json_response)
   end

@@ -33,6 +33,11 @@ class ChannelStore {
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache
     });
+    this.eventChannel.on("logout", ({session_id}) => {
+      if (window.sessionId == session_id) {
+        window.location.reload();
+      }
+    })
 
     return channel;
   }
