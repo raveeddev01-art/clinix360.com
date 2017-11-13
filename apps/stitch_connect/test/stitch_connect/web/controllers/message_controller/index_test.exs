@@ -20,7 +20,17 @@ defmodule StitchConnect.Web.MessageController.IndexTest do
 
   test "responds with 30 latest messages", %{conn: conn, group: group} do
     [_old_message | latest_messages] =
-      fn -> insert(:message, group: group) end
+      fn ->
+        insert(:message,
+          group: group,
+          link_previews: [%{
+            link: "http://foo.bar",
+            title: "Foobar",
+            description: "Lorem ipsum dolor",
+            image_url: "http://foo.bar/logo.png"
+          }]
+        )
+      end
       |> Stream.repeatedly
       |> Enum.take(31)
 
@@ -50,6 +60,12 @@ defmodule StitchConnect.Web.MessageController.IndexTest do
         "edited" => _,
         "edited_at" => _,
         "read_status" => _,
+        "link_previews" => [%{
+          "link" => "http://foo.bar",
+          "title" => "Foobar",
+          "description" => "Lorem ipsum dolor",
+          "image_url" => "http://foo.bar/logo.png"
+        }]
       } = message
     end
   end
