@@ -8,7 +8,7 @@ defmodule StitchConnect.Web.MessageController do
 
     case GroupAuthorization.can_view?(message.group, current_user) do
       true ->
-        case StitchConnect.Upload.presign(message) do
+        case Stitch.Upload.presign(message) do
           {:ok, presigned_url} ->
             redirect conn, external: presigned_url
           :error ->

@@ -77,7 +77,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
     case GroupAuthorization.can_view?(message.group, conn.assigns.current_user) do
       true ->
-        case StitchConnect.Upload.presign(message) do
+        case Stitch.Upload.presign(message) do
           {:ok, presigned_url} ->
             conn
             |> json(%{presigned_url: presigned_url})
