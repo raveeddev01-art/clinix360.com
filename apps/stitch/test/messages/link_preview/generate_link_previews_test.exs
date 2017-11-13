@@ -12,6 +12,7 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
     assert link_preview.link == "https://reactjs.org"
     assert link_preview.title == "React - A JavaScript library for building user interfaces"
     assert link_preview.description == "A JavaScript library for building user interfaces"
+    assert link_preview.favicon_url == "https://reactjs.org/favicon.ico"
     assert link_preview.image_url == "https://reactjs.org/logo-og.png"
   end
 

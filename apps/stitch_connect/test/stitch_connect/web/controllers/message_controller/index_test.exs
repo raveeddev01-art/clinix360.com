@@ -27,6 +27,7 @@ defmodule StitchConnect.Web.MessageController.IndexTest do
             link: "http://foo.bar",
             title: "Foobar",
             description: "Lorem ipsum dolor",
+            favicon_url: "http://foo.bar/favicon.ico",
             image_url: "http://foo.bar/logo.png"
           }]
         )
@@ -64,6 +65,7 @@ defmodule StitchConnect.Web.MessageController.IndexTest do
           "link" => "http://foo.bar",
           "title" => "Foobar",
           "description" => "Lorem ipsum dolor",
+          "favicon_url" => "http://foo.bar/favicon.ico",
           "image_url" => "http://foo.bar/logo.png"
         }]
       } = message

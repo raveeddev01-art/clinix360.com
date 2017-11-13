@@ -8,15 +8,27 @@ defmodule Stitch.Message.LinkPreview do
     field :link, :string, primary: true
     field :title
     field :description
+    field :favicon_url
     field :image_url
   end
 
   def changeset(%__MODULE__{} = link_preview, params) do
     link_preview
-    |> cast(params, [:link, :title, :description, :image_url])
+    |> cast(params, [:link, :title, :description, :favicon_url, :image_url])
     |> validate_required([:link, :title])
+    |> resolve_relative_favicon_url
     |> resolve_relative_image_url
   end
+
+  defp resolve_relative_favicon_url(%Ecto.Changeset{
+    valid?: true,
+    changes: %{favicon_url: favicon_url}
+  } = changeset) when is_binary(favicon_url) do
+    link = Map.get(changeset.changes, :link, changeset.data.link)
+    favicon_url = URI.merge(link, favicon_url) |> URI.to_string
+    put_change(changeset, :favicon_url, favicon_url)
+  end
+  defp resolve_relative_favicon_url(changeset), do: changeset
 
   defp resolve_relative_image_url(%Ecto.Changeset{
     valid?: true,
@@ -71,6 +83,10 @@ defmodule Stitch.Message.LinkPreview do
         html = response.body
         title = og_metadata(html, "title")
         description = og_metadata(html, "description")
+        favicon_url =
+          html
+          |> Floki.attribute("head link[rel~='icon']", "href")
+          |> List.first
         image_url = og_metadata(html, "image")
 
         if title do
@@ -78,6 +94,7 @@ defmodule Stitch.Message.LinkPreview do
             link: link,
             title: title,
             description: description,
+            favicon_url: favicon_url,
             image_url: image_url
           }
         else
