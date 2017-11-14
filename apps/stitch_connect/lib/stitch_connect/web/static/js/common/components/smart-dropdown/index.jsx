@@ -13,7 +13,7 @@ class SmartDropdown extends Component {
     if (isActionDropdownOpen) {
       const pos = this.node.getBoundingClientRect();
       this.setState({
-        dropup: pos.y > window.innerHeight / 2
+        dropup: pos.bottom > window.innerHeight * 2 / 3
       });
     }
 
