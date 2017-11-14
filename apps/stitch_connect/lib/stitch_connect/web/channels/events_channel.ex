@@ -124,6 +124,13 @@ defmodule StitchConnect.Web.EventsChannel do
     end
   end
 
+  def broadcast_group_favorite(%User{} = user, group_id, is_favorite) do
+    @endpoint.broadcast("events:#{user.id}", "group_favorite", %{
+      group_id: group_id,
+      is_favorite: is_favorite,
+    })
+  end
+
   def broadcast_logout(%User{} = user, session_id) do
     @endpoint.broadcast("events:#{user.id}", "logout", %{session_id: session_id})
   end

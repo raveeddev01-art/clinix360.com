@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import { inject, observer } from "mobx-react";
+
 import ExportItem from "./export-item";
 
 @inject("exportStore")
 @observer
-class TeamExport extends Component {
+export default class TeamExport extends Component {
   constructor(props) {
     super(props);
+
     this.props.exportStore.loadExports();
   }
 
@@ -17,8 +19,7 @@ class TeamExport extends Component {
       exportStore.exports.map(exportItem => {
         return (
           <ExportItem
-            key={`export_{exportItem.id}`}
-            id={exportItem.id}
+            key={`export_${exportItem.id}`}
             insertedAt={exportItem.inserted_at}
             status={exportItem.status}
             downloadLink={exportStore.downloadLink(exportItem.id)}
@@ -103,5 +104,3 @@ class TeamExport extends Component {
     );
   }
 }
-
-export default TeamExport;

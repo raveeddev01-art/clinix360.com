@@ -40,23 +40,26 @@ class Sidemenu extends Component {
         <div className="separator text-center">
           <span>Admin</span>
         </div>
+        <LinkContainer to="/admin/analytics">
+          <MenuItem eventKey="4">Analytics</MenuItem>
+        </LinkContainer>
         <LinkContainer to="/admin/team/settings">
-          <MenuItem eventKey="4">Settings</MenuItem>
+          <MenuItem eventKey="5">Settings</MenuItem>
         </LinkContainer>
         <LinkContainer to="/admin/team/security">
-          <MenuItem eventKey="5">Security</MenuItem>
+          <MenuItem eventKey="6">Security</MenuItem>
         </LinkContainer>
         <LinkContainer to="/admin/users/members">
-          <MenuItem eventKey="6">Members</MenuItem>
+          <MenuItem eventKey="7">Members</MenuItem>
         </LinkContainer>
         <LinkContainer to="/admin/users/invitations">
-          <MenuItem eventKey="7">Invitations</MenuItem>
+          <MenuItem eventKey="8">Invitations</MenuItem>
         </LinkContainer>
         <LinkContainer to="/admin/users/pending">
-          <MenuItem eventKey="8">Pending</MenuItem>
+          <MenuItem eventKey="9">Pending</MenuItem>
         </LinkContainer>
         <LinkContainer to="/admin/billing">
-          <MenuItem eventKey="9">Billing</MenuItem>
+          <MenuItem eventKey="10">Billing</MenuItem>
         </LinkContainer>
       </div>
     );
@@ -155,10 +158,10 @@ class Sidemenu extends Component {
                 <span>Stitch</span>
               </div>
 
-              <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
+              <MenuItem eventKey="11" onClick={this.props.presenceStore.lock}>
                 Lockout
               </MenuItem>
-              <MenuItem eventKey="11" href="/logout">
+              <MenuItem eventKey="12" href="/logout">
                 Sign Out
               </MenuItem>
             </Dropdown.Menu>

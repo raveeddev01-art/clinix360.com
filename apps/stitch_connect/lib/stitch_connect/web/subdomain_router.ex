@@ -160,7 +160,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get "/teams/:id", TeamController, :show
     put "/teams/:id", TeamController, :update
-    post "/teams/:id/send-invite", TeamController, :send_invite
 
     post "/login", AuthenticationController, :submit_login
     post "/reset_password", AuthenticationController, :reset_password
@@ -200,5 +199,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/admin/users/members", AdminController, :index
     get "/admin/users/pending", AdminController, :index
     get "/admin/billing", AdminController, :index
+    get "/admin/analytics", AdminController, :index
   end
 end
