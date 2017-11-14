@@ -26,7 +26,7 @@ class TeamBilling extends Component {
           <Tab eventKey={1} title="Subscription">
             <Subscription />
           </Tab>
-          <Tab eventKey={2} title="Contact">
+          {/* <Tab eventKey={2} title="Contact">
             <Contact />
           </Tab>
           <Tab eventKey={3} title="Payment">
@@ -34,7 +34,7 @@ class TeamBilling extends Component {
           </Tab>
           <Tab eventKey={4} title="History">
             <History />
-          </Tab>
+          </Tab> */}
         </Tabs>
       </Panel>
     );
