@@ -38,11 +38,13 @@ class ImageFileAttachment extends Component {
 
     return (
       <div className="attachment-image-block">
-        <div className="attachment-title">
-          <a target="_blank" href={url}>
-            {filename}
-          </a>
-        </div>
+        {filename && (
+          <div className="attachment-title">
+            <a target="_blank" href={url}>
+              {filename}
+            </a>
+          </div>
+        )}
         <a
           className="attachment-image-holder"
           onClick={this.onToggleModal}
@@ -80,7 +82,7 @@ ImageFileAttachment.propTypes = {
   preview_height: PropTypes.number,
   preview_width: PropTypes.number,
   preview_url: PropTypes.string,
-  filename: PropTypes.string.isRequired,
+  filename: PropTypes.string,
   url: PropTypes.string.isRequired
 };
 

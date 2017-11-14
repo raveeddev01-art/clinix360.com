@@ -127,14 +127,18 @@ const FREQUENCIES = [
 ];
 
 const processSubscriptionData = subscription => {
+  const dateFormat = "dddd, MMMM Do YYYY";
   const today = moment.utc();
   const validUntil = moment.utc(subscription.valid_until);
+  const trialValidUntil = moment.utc(subscription.trial_valid_until);
 
-  subscription.remaining_days = validUntil.diff(today, "days");
-  subscription.valid_until = validUntil.format("dddd, MMMM Do YYYY");
+  subscription.valid_until = validUntil.format(dateFormat);
+  subscription.remaining_days = trialValidUntil.diff(today, "days");
+  subscription.trial_valid_until = trialValidUntil.format(dateFormat);
 
   return subscription;
 };
+
 const getSelectableTiers = tier => {
   const index = TIERS.findIndex(t => t === tier);
 

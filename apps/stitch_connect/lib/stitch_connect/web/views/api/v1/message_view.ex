@@ -31,6 +31,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       edited_at: message.edited_at,
       read_status: message.read_status,
       mentioned_user_ids: message.mentioned_user_ids,
+      link_previews: message.link_previews
     }
   end
 

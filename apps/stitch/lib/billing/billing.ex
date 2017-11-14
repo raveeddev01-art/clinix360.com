@@ -16,8 +16,17 @@ defmodule Stitch.Billing do
   @spec setup_new_team(Team.t) :: Subscription.t
   def setup_new_team(%Team{id: team_id, name: team_name}) do
     customer_id = @stripe_client.create_customer(team_id, team_name)
+    end_time = trial_end_datetime()
 
-    %{valid_until: trial_end_datetime(), team_id: team_id, customer_id: customer_id, tier: "TRIAL"}
+    params = %{
+      valid_until: end_time,
+      trial_valid_until: end_time,
+      team_id: team_id,
+      customer_id: customer_id,
+      tier: "TRIAL"
+    }
+
+    params
     |> Subscription.new()
     |> Repo.insert()
     |> case do
@@ -124,13 +133,24 @@ defmodule Stitch.Billing do
     customer_id = subscription.customer_id
     subscription = Repo.preload(subscription, :team)
     user_count = active_user_count(subscription.team)
-    @stripe_client.create_subscription(customer_id, plan_id, user_count)
+    opts = subscription_opts(subscription)
+
+    @stripe_client.create_subscription(customer_id, plan_id, user_count, opts)
   end
 
   defp update_subscription(subscription, plan_id) do
     customer_id = subscription.customer_id
     subscription_id = subscription.subscription_id
-    @stripe_client.update_subscription_plan(customer_id, subscription_id, plan_id)
+    opts = subscription_opts(subscription)
+
+    @stripe_client.update_subscription_plan(customer_id, subscription_id, plan_id, opts)
+  end
+
+  defp subscription_opts(subscription) do
+    case DateTime.compare(subscription.trial_valid_until, DateTime.utc_now()) do
+      :gt -> [trial_end_date: subscription.trial_valid_until]
+      _ -> []
+    end
   end
 
   @doc """

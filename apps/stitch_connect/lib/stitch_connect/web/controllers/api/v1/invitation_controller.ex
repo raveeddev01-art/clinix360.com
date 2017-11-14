@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
   alias Stitch.{Invitation, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
   plug :fetch_session when action in [:accept]
 
   def index(conn, _params) do
@@ -65,6 +65,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
           system_message = system_message |> MessageQueries.load_info
           Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
           EventsChannel.broadcast_group_new_msg(group, system_message)
+          TeamChannel.broadcast_user_joined(conn.assigns.team, user)
         end)
         conn
         |> login_user(user)

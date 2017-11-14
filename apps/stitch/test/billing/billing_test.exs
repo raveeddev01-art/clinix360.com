@@ -7,7 +7,8 @@ defmodule Stitch.Billing.BillingTest do
     team = insert(:team)
     result = Billing.setup_new_team(team)
     assert {:ok, subscription} = result
-    assert DateTime.compare(subscription.valid_until, DateTime.utc_now())
+    assert DateTime.compare(subscription.valid_until, DateTime.utc_now()) == :gt
+    assert DateTime.compare(subscription.valid_until, subscription.trial_valid_until) == :eq
     assert subscription.tier == "TRIAL"
     refute subscription.renews
   end
