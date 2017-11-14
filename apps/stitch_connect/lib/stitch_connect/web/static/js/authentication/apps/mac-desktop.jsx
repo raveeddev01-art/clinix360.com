@@ -9,7 +9,7 @@ export default class MacDesktop extends Component {
         </h5>
 
         <a
-          href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch-1.0.2.dmg"
+          href="https://teamstitchapp.com/download-mac"
           className="btn btn-primary btn-lg btn-block m-b-40"
           alt="Download Stitch on iTunes store"
         >

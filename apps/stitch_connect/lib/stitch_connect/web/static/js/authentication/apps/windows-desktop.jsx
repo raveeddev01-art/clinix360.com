@@ -10,17 +10,10 @@ export default class WindowsDesktop extends Component {
         </h5>
 
         <a
-          href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.exe"
-          className="btn btn-primary btn-lg btn-block m-b-20"
-        >
-          Download (32-bit)
-        </a>
-
-        <a
-          href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.exe"
+          href="https://teamstitchapp.com/download-win"
           className="btn btn-primary btn-lg btn-block m-b-40"
         >
-          Download (64-bit)
+          Download
         </a>
       </div>
     );

@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import browserDetails from "../../util/browser_details";
 import WindowsDesktop from "./windows-desktop";
 import MacDesktop from "./mac-desktop";
+import LinuxDesktop from "./linux-desktop";
 import IOSMobile from "./ios-mobile";
 import AndroidMobile from "./android-mobile";
 
@@ -13,12 +14,25 @@ export default class DownloadApps extends Component {
   constructor(props) {
     super(props);
 
-    const shouldRedirect = window.electronApp || browserDetails.os === "Linux";
+    const shouldRedirect =
+      !!window.electronApp ||
+      (browserDetails.mobile &&
+        browserDetails.os !== "Android" &&
+        browserDetails.os !== "iOS");
+
     this.state = {
-      shouldRedirect
+      shouldRedirect,
+      os: browserDetails.os,
+      mobile: browserDetails.mobile
     };
     if (shouldRedirect) window.location.href = "/";
   }
+
+  _changeOS = os => {
+    this.setState({
+      os
+    });
+  };
 
   renderHeader() {
     const { mobile } = browserDetails;
@@ -26,46 +40,49 @@ export default class DownloadApps extends Component {
   }
 
   renderAlternateOS() {
-    let link = "#";
-    let title = "";
-    let platform = "";
-    if (browserDetails.os === "iOS") {
-      if (browserDetails.mobile) {
-        link = "#";
-        title = "Android";
-        platform = "mobile";
-      } else {
-        link = "#";
-        title = "Android";
-        platform = "desktop";
-      }
-    } else if (browserDetails.os === "Android") {
-      if (browserDetails.mobile) {
-        link = "#";
-        title = "iOS";
-        platform = "mobile";
-      } else {
-        link = "#";
-        title = "Mac";
-        platform = "desktop";
+    const { os, mobile } = this.state;
+    const macButton = (
+      <a onClick={() => this._changeOS("Mac OS X")}>
+        <strong>Mac</strong>
+      </a>
+    );
+    const winButton = (
+      <a onClick={() => this._changeOS("Windows")}>
+        <strong>Windows</strong>
+      </a>
+    );
+    const linuxButton = (
+      <a onClick={() => this._changeOS("Linux")}>
+        <strong>Linux</strong>
+      </a>
+    );
+    if (!mobile) {
+      if (os === "Mac OS X") {
+        return (
+          <h5>
+            Looking for {winButton} or {linuxButton} desktop apps?
+          </h5>
+        );
+      } else if (os === "Windows") {
+        return (
+          <h5>
+            Looking for {macButton} or {linuxButton} desktop apps?
+          </h5>
+        );
+      } else if (os === "Linux") {
+        return (
+          <h5>
+            Looking for {macButton} or {winButton} desktop apps?
+          </h5>
+        );
       }
     }
 
-    if (link !== "#")
-      return (
-        <h5>
-          Looking for{" "}
-          <a href={link}>
-            <strong>{title}</strong>
-          </a>{" "}
-          {platform} app?
-        </h5>
-      );
     return null;
   }
 
   render() {
-    const { shouldRedirect } = this.state;
+    const { shouldRedirect, os, mobile } = this.state;
     return (
       <div>
         <div className="authentication-card text-center m-b-20">
@@ -79,19 +96,17 @@ export default class DownloadApps extends Component {
             {this.props.registrationStore.teamSlug}.teamstitch.com
           </h5>
 
-          {browserDetails.os === "Windows" &&
-            !browserDetails.mobile && <WindowsDesktop />}
+          {os === "Windows" && !mobile && <WindowsDesktop />}
 
-          {browserDetails.os === "Mac OS X" &&
-            !browserDetails.mobile && <MacDesktop />}
+          {os === "Mac OS X" && !mobile && <MacDesktop />}
 
-          {browserDetails.os === "iOS" &&
-            browserDetails.mobile && <IOSMobile />}
+          {os === "Linux" && !mobile && <LinuxDesktop />}
 
-          {browserDetails.os === "Android" &&
-            browserDetails.mobile && <AndroidMobile />}
+          {os === "iOS" && mobile && <IOSMobile />}
 
-          {!browserDetails.mobile && (
+          {os === "Android" && mobile && <AndroidMobile />}
+
+          {!mobile && (
             <h5>
               Looking for web app?{" "}
               <a href="/">
