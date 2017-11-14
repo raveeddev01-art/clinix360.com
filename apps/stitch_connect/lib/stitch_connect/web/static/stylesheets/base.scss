@@ -470,3 +470,12 @@ i.fa {
     color: $brand-primary;
   }
 }
+
+#loading-screen-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: $brand-primary;
+}
