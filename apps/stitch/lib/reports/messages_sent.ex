@@ -20,11 +20,17 @@ defmodule Stitch.Reports.MessagesSent do
                   | {:end_at, Date.t}
 
   @doc """
-  Builds a messages sent report.
+  Builds a messages sent report for a given team and options.
+
+  Options are expected to be a keyword list, order matters.
+  `time_period` option is required. `type` defaults to `:chat`.
 
   ## Example
 
-      iex> messages_sent(%Team{...}, type: :upload, time_period: :last_30_days)
+      iex> build(%Team{...}, time_period: :last_30_days)
+      %{"2017-01-01" => 3, "2017-01-02" => 0, ...}
+
+      iex> build(%Team{...}, time_period: :last_7_days, type: :upload)
       %{"2017-01-01" => 3, "2017-01-02" => 0, ...}
 
   """
