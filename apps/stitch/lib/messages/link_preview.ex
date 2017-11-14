@@ -81,21 +81,15 @@ defmodule Stitch.Message.LinkPreview do
     case HTTPoison.get(link) do
       {:ok, response} ->
         html = response.body
-        title = og_metadata(html, "title")
-        description = og_metadata(html, "description")
-        favicon_url =
-          html
-          |> Floki.attribute("head link[rel~='icon']", "href")
-          |> List.first
-        image_url = og_metadata(html, "image")
+        title = title(html)
 
         if title do
           %{
             link: link,
             title: title,
-            description: description,
-            favicon_url: favicon_url,
-            image_url: image_url
+            description: description(html),
+            favicon_url: favicon_url(html),
+            image_url: image_url(html)
           }
         else
           nil
@@ -111,6 +105,31 @@ defmodule Stitch.Message.LinkPreview do
     |> cast(params, [:link_previews_generated])
     |> cast_embed(:link_previews)
     |> validate_required([:link_previews_generated, :link_previews])
+  end
+
+  def title(html) do
+    og_metadata(html, "title") ||
+      case html |> Floki.find("head > title") |> Floki.text do
+        title when is_binary(title) and byte_size(title) > 0 ->
+          title
+
+        _ -> nil
+      end
+  end
+
+  def description(html) do
+    og_metadata(html, "description") ||
+      html |> Floki.attribute("meta[name='description']", "content") |> List.first
+  end
+
+  def favicon_url(html) do
+    html
+    |> Floki.attribute("head link[rel~='icon']", "href")
+    |> List.first
+  end
+
+  def image_url(html) do
+    og_metadata(html, "image") || og_metadata(html, "image:url") || favicon_url(html)
   end
 
   defp og_metadata(html, property) do

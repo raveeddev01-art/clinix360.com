@@ -43,8 +43,8 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
     assert message.link_previews == []
   end
 
-  test "message with a link without OG metadata" do
-    message = insert(:message, text_content: "lorem http://www.erlang.org/ ipsum")
+  test "message with a link without metadata" do
+    message = insert(:message, text_content: "lorem http://home.mcom.com/home/welcome.html ipsum")
 
     Stitch.Message.LinkPreview.generate_link_previews(message)
 
