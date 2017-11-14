@@ -459,6 +459,7 @@ class MessageStore {
     });
   }
 
+  @action
   markAsUnread = messageId => {
     this.groupChannel
       .push("mark_as_unread", { group_id: this.groupId, message_id: messageId })
@@ -467,7 +468,6 @@ class MessageStore {
         this.updateUnreadMessages(response.messages);
 
         this.markedAsUnread = true;
-        this.lastReadAt = response.lastReadAt;
       })
       .receive("error", err => {
         notify.show(err.message, "error");
@@ -493,8 +493,7 @@ class MessageStore {
       .receive("ok", () => {
         this.updateUnreadMessagesInfo({
           unread_messages_count: 0,
-          mentions_count: 0,
-          last_read_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS")
+          mentions_count: 0
         });
 
         if (resetNewMessageLine) {
