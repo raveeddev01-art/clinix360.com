@@ -89,7 +89,8 @@ defmodule Stitch.Factory do
       tier: "BASIC",
       renewal_frequency: "MONTHLY",
       renews: true,
-      valid_until: end_date
+      valid_until: end_date,
+      trial_valid_until: DateTime.utc_now()
     }
   end
 
@@ -103,7 +104,8 @@ defmodule Stitch.Factory do
       estimated_invoice_amount: 0,
       tier: "TRIAL",
       renewal_frequency: nil,
-      valid_until: end_date
+      valid_until: end_date,
+      trial_valid_until: end_date
     }
   end
 
