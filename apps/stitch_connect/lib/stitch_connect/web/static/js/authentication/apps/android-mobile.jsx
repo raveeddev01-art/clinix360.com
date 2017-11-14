@@ -5,8 +5,8 @@ export default class AndroidMobile extends Component {
     return (
       <div>
         <h5>
-          Download the Android mobile app to get the best experience using
-          Stitch.
+          Download the <strong>Android mobile app</strong> to get the best
+          experience using Stitch.
         </h5>
 
         <a
@@ -15,6 +15,7 @@ export default class AndroidMobile extends Component {
         >
           <img
             src="/images/playstore.png"
+            className="img-responsive"
             alt="Download Stitch on Play store"
           />
         </a>

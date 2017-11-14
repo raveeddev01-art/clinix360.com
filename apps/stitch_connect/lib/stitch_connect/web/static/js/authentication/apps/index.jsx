@@ -116,19 +116,21 @@ export default class DownloadApps extends Component {
           )}
         </div>
 
+        {this.renderAlternateOS()}
+
         <h5>
           Wrong team?{" "}
           <a href={`https://${applicationHost}/signin`}>
             <strong>Sign in to a different team</strong>
           </a>
         </h5>
+
         <h5>
           Just getting started?{" "}
           <a href={`https://${applicationHost}/signup/email`}>
             <strong>Create a new team</strong>
           </a>
         </h5>
-        {this.renderAlternateOS()}
       </div>
     );
   }

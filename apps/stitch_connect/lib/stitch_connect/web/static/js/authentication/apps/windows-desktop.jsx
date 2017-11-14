@@ -5,8 +5,8 @@ export default class WindowsDesktop extends Component {
     return (
       <div>
         <h5>
-          Download the Windows desktop app to get the best experience using
-          Stitch.
+          Download the <strong>Windows desktop app</strong> to get the best
+          experience using Stitch.
         </h5>
 
         <a

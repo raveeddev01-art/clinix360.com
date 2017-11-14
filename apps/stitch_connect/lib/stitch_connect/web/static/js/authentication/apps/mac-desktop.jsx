@@ -5,7 +5,8 @@ export default class MacDesktop extends Component {
     return (
       <div>
         <h5>
-          Download the Mac desktop app to get the best experience using Stitch.
+          Download the <strong>Mac desktop app</strong> to get the best
+          experience using Stitch.
         </h5>
 
         <a

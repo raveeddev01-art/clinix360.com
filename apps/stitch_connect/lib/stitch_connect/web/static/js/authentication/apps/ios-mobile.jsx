@@ -5,7 +5,8 @@ export default class IOSMobile extends Component {
     return (
       <div>
         <h5 className="m-b-40">
-          Download the iOS mobile app to get the best experience using Stitch.
+          Download the <strong>iOS mobile app</strong> to get the best
+          experience using Stitch.
         </h5>
 
         <a
@@ -14,6 +15,7 @@ export default class IOSMobile extends Component {
         >
           <img
             src="/images/appstore.png"
+            className="img-responsive"
             alt="Download Stitch on iTunes store"
           />
         </a>
