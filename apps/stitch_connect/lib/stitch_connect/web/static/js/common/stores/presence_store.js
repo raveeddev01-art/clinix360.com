@@ -99,11 +99,12 @@ class PresenceStore {
     post("/api/v1/session-lock").then(() => {
       window.clearTimeout(this.lockoutTimerID);
       window.clearTimeout(this.awayTimerID);
+
       this.locked = true;
       this.teamChannel.push("locked");
       this.teamChannel.push("became_inactive");
       this.teamChannel.push("became_away");
-      this.rootStore.channelStore.leaveAllChannelsButTeamLobby();
+      this.rootStore.channelStore.leaveAllChannelsButTeam();
     });
   };
 

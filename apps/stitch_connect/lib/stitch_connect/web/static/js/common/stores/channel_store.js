@@ -6,19 +6,30 @@ class ChannelStore {
   }
 
   /**
-   * Joins to the channel
+   * Joins the channel topic
    * 
-   * @param {String} topic 
+   * @param {string} topic 
    * @param {Object} options 
    */
   join(topic, options = {}) {
-    if (this.channels[topic]) {
-      this.channels[topic].leave();
-    }
+    this.leave(topic);
 
     this.channels[topic] = socket.channel(topic, options);
 
     return this.channels[topic].join();
+  }
+
+  /**
+   * Leaves the channel topic
+   * 
+   * @param {string} topic 
+   */
+  leave(topic) {
+    if (this.channels[topic]) {
+      this.channels[topic].leave();
+
+      delete this.channels[topic];
+    }
   }
 
   // ///////////// //
@@ -100,10 +111,12 @@ class ChannelStore {
     return joined;
   }
 
-  leaveAllChannelsButTeamLobby() {
+  leaveAllChannelsButTeam() {
     Object.keys(this.channels)
       .filter(topic => topic !== this.teamChannelTopic)
-      .forEach(topic => this.channels[topic].leave());
+      .forEach(topic => {
+        this.leave(topic);
+      });
   }
 }
 
