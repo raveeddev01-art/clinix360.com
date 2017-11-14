@@ -155,8 +155,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :api_auth
 
     put "/users/:id/update_password", UserController, :update_password
-    put "/users/:id/avatar", UserController, :update_avatar
-    delete "/users/:id/avatar", UserController, :delete_avatar
 
     get "/invitations/:token", InvitationController, :show
 
