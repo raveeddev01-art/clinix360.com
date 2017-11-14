@@ -435,6 +435,11 @@ class SidemenuStore {
       duration
     });
   }
+
+  @action
+  onUserJoined = user => {
+    this.users.push(user);
+  };
 }
 
 export default SidemenuStore;

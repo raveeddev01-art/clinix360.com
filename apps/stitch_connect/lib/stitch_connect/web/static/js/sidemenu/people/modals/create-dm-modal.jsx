@@ -77,7 +77,8 @@ class CreateDMModal extends Component {
 
   render() {
     const { searchFilter, members } = this.state;
-    const users = this.props.sidemenuStore.users.filter(u => {
+    const { sidemenuStore } = this.props;
+    const users = sidemenuStore.users.filter(u => {
       if (u.id === currentUser.id && members.length > 0) return false;
       return (
         members.findIndex(member => member.id === u.id) === -1 &&

@@ -99,7 +99,7 @@ class ChannelStore {
   }
 
   joinTeamChannel(options = {}) {
-    const { presenceStore, teamStore } = this.rootStore;
+    const { presenceStore, teamStore, sidemenuStore } = this.rootStore;
 
     const joined = this.join(this.teamChannelTopic, options);
 
@@ -109,6 +109,7 @@ class ChannelStore {
     this.teamChannel.on("unlocked", presenceStore.onUnlocked);
 
     this.teamChannel.on("team_renamed", teamStore.onRenamed);
+    this.teamChannel.on("user_joined", sidemenuStore.onUserJoined);
 
     return joined;
   }
