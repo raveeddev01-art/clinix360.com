@@ -1,13 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import moment from "moment";
 
 class TeamExportItem extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { insertedAt, status, downloadLink } = this.props;
     return (
@@ -36,7 +32,6 @@ class TeamExportItem extends Component {
 TeamExportItem.propTypes = {
   insertedAt: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
-  id: PropTypes.number.isRequired,
   downloadLink: PropTypes.string.isRequired
 };
 
