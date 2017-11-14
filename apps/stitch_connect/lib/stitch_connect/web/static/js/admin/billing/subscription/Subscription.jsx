@@ -72,13 +72,12 @@ class Subscription extends React.Component {
       () => {
         const { cards } = this.state;
 
-        cards.forEach(c => {
-          c.default = c.id === card.id;
-        });
-
         this.setState({
           loading: false,
-          cards
+          cards: cards.map(c => ({
+            ...c,
+            default: c.id === card.id
+          }))
         });
 
         this.subscribe();
@@ -135,7 +134,10 @@ class Subscription extends React.Component {
 
         this.setState({
           loading: false,
-          cards: [...cards, response.data.data]
+          cards: [
+            ...cards.map(c => ({ ...c, default: false })),
+            response.data.data
+          ]
         });
 
         this.subscribe();
