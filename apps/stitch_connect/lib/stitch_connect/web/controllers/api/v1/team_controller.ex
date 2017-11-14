@@ -44,6 +44,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update name"})
       {:ok, team} ->
+        StitchConnect.Web.TeamChannel.broadcast_team_rename(team)
         conn
         |> json(%{id: team.id, name: team.name})
     end

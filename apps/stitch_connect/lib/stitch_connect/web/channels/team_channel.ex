@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.TeamChannel do
   use Phoenix.Channel
   use Appsignal.Instrumentation.Decorators
   alias StitchConnect.Web.Presence
+  @endpoint StitchConnect.Web.Endpoint
 
   def join("team:lobby:" <> team_id, _, socket) do
     team_id = String.to_integer(team_id)
@@ -81,6 +82,13 @@ defmodule StitchConnect.Web.TeamChannel do
       security_lockout_enabled: team.security_lockout,
       seconds_to_lockout: team.seconds_to_lockout
     }}, socket}
+  end
+
+  def broadcast_team_rename(%Stitch.Team{} = team) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "team_renamed", %{
+      name: team.name,
+      slug: team.slug,
+    })
   end
 
   def terminate(_reason, socket) do
