@@ -58,7 +58,8 @@ defmodule Stitch.Factory do
     %Stitch.Message{
       user: build(:user),
       group: build(:group),
-      text_content: "lorem ipsum"
+      text_content: "lorem ipsum",
+      type: "chat"
     }
   end
 
