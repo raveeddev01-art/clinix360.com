@@ -61,7 +61,7 @@ class RootStore {
 
     // Join channels
     this.channelStore.joinEventChannel();
-    this.presenceStore.joinTeamLobbyChannel();
+    this.channelStore.joinTeamChannel();
 
     // load users at the end after team lobby is joined
     this.membersStore.loadUsers(props.teamId);

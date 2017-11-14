@@ -23,12 +23,10 @@ class PresenceStore {
     });
   }
 
-  get teamLobbyChannelTopic() {
-    return `team:lobby:${this.teamId}`;
-  }
+  get teamChannel() {
+    const { channelStore } = this.rootStore;
 
-  get teamLobbyChannel() {
-    return this.rootStore.channelStore.teamLobbyChannel;
+    return channelStore.teamChannel;
   }
 
   @computed
@@ -71,15 +69,6 @@ class PresenceStore {
     return !!this.onlineUsersMap[`${userId}`];
   }
 
-  joinTeamLobbyChannel = () => {
-    this.rootStore.channelStore.joinTeamLobbyChannel();
-
-    this.teamLobbyChannel.on("presence_state", this.onPresenceState);
-    this.teamLobbyChannel.on("presence_diff", this.onPresenceDiff);
-    this.teamLobbyChannel.on("locked", this.onLocked);
-    this.teamLobbyChannel.on("unlocked", this.onUnlocked);
-  };
-
   @action
   onPresenceState = state => {
     this.onlineUsersMap = Presence.syncState(this.onlineUsersMap, state);
@@ -111,9 +100,9 @@ class PresenceStore {
       window.clearTimeout(this.lockoutTimerID);
       window.clearTimeout(this.awayTimerID);
       this.locked = true;
-      this.teamLobbyChannel.push("locked");
-      this.teamLobbyChannel.push("became_inactive");
-      this.teamLobbyChannel.push("became_away");
+      this.teamChannel.push("locked");
+      this.teamChannel.push("became_inactive");
+      this.teamChannel.push("became_away");
       this.rootStore.channelStore.leaveAllChannelsButTeamLobby();
     });
   };
@@ -124,7 +113,7 @@ class PresenceStore {
 
     return post("/api/v1/session-unlock", { hideNotify: true, body: { pin } })
       .then(() => {
-        this.teamLobbyChannel.push("unlocked");
+        this.teamChannel.push("unlocked");
         window.location.reload();
       })
       .catch(() => {
@@ -136,7 +125,7 @@ class PresenceStore {
   onWindowBlur = () => {
     if (this.locked) return;
 
-    this.teamLobbyChannel.push("became_inactive");
+    this.teamChannel.push("became_inactive");
     this.awayTimerID = window.setTimeout(
       this.onAwayTimerExpired,
       30 * 60 * 1000
@@ -148,20 +137,20 @@ class PresenceStore {
     if (this.locked) return;
     window.clearTimeout(this.lockoutTimerID);
     window.clearTimeout(this.awayTimerID);
-    this.teamLobbyChannel.push("became_active");
+    this.teamChannel.push("became_active");
   };
 
   onAwayTimerExpired = () => {
-    this.teamLobbyChannel.push("became_away");
+    this.teamChannel.push("became_away");
   };
 
   onLockoutTimerExpired = () => {
-    this.teamLobbyChannel.push("lockout_timer_expired");
+    this.teamChannel.push("lockout_timer_expired");
     this.lock();
   };
 
   getLockoutSettings = cb => {
-    this.teamLobbyChannel.push("get_lockout_settings").receive("ok", data => {
+    this.teamChannel.push("get_lockout_settings").receive("ok", data => {
       this.secondsToLockout = data.seconds_to_lockout;
       this.lockoutEnabled = data.security_lockout_enabled;
       this.lockoutSettingLoaded = true;

@@ -59,9 +59,15 @@ class GroupStore {
 
   @action
   postJoin = () => {
-    this.rootStore.messageStore.joinGroupChannel();
-    this.rootStore.pinnedMessageStore.reset();
-    this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+    const {
+      messageStore,
+      pinnedMessageStore,
+      groupPresenceStore
+    } = this.rootStore;
+
+    messageStore.joinGroupChannel();
+    pinnedMessageStore.reset();
+    groupPresenceStore.subscribeToGroupChannel();
   };
 
   @action

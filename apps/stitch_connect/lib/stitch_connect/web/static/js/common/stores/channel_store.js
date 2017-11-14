@@ -17,6 +17,7 @@ class ChannelStore {
     }
 
     this.channels[topic] = socket.channel(topic, options);
+
     return this.channels[topic].join();
   }
 
@@ -33,7 +34,7 @@ class ChannelStore {
 
   joinEventChannel(options = {}) {
     const { sidemenuStore, userStore } = this.rootStore;
-    const channel = this.join(this.eventChannelTopic, options);
+    const joined = this.join(this.eventChannelTopic, options);
 
     this.eventChannel.on("user_info", userStore.onUpdateUser);
     this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
@@ -51,7 +52,7 @@ class ChannelStore {
       }
     });
 
-    return channel;
+    return joined;
   }
 
   // ///////////// //
@@ -68,30 +69,40 @@ class ChannelStore {
   }
 
   joinGroupChannel(options = {}) {
-    const channel = this.join(this.groupChannelTopic, options);
+    const joined = this.join(this.groupChannelTopic, options);
 
-    return channel;
+    return joined;
   }
 
-  // ///////////////// //
-  // TeamLobby Channel //
-  // ///////////////// //
-  get teamLobbyChannel() {
-    return this.channels[this.rootStore.presenceStore.teamLobbyChannelTopic];
+  // //////////// //
+  // Team Channel //
+  // //////////// //
+  get teamChannelTopic() {
+    const { presenceStore } = this.rootStore;
+
+    return `team:lobby:${presenceStore.teamId}`;
   }
 
-  joinTeamLobbyChannel(options = {}) {
-    return this.join(
-      this.rootStore.presenceStore.teamLobbyChannelTopic,
-      options
-    );
+  get teamChannel() {
+    return this.channels[this.teamChannelTopic];
+  }
+
+  joinTeamChannel(options = {}) {
+    const { presenceStore } = this.rootStore;
+
+    const joined = this.join(this.teamChannelTopic, options);
+
+    this.teamChannel.on("presence_state", presenceStore.onPresenceState);
+    this.teamChannel.on("presence_diff", presenceStore.onPresenceDiff);
+    this.teamChannel.on("locked", presenceStore.onLocked);
+    this.teamChannel.on("unlocked", presenceStore.onUnlocked);
+
+    return joined;
   }
 
   leaveAllChannelsButTeamLobby() {
     Object.keys(this.channels)
-      .filter(
-        topic => topic !== this.rootStore.presenceStore.teamLobbyChannelTopic
-      )
+      .filter(topic => topic !== this.teamChannelTopic)
       .forEach(topic => this.channels[topic].leave());
   }
 }
