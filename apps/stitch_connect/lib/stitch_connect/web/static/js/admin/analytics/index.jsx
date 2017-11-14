@@ -14,7 +14,7 @@ const header = (
 );
 
 const datePeriodNames = {
-  week: "Last 1 week",
+  week: "Last 7 days",
   month: "Last 30 days",
   allTime: "All time"
 };
@@ -26,22 +26,54 @@ export default class Analytics extends Component {
     super(props);
 
     this.state = {
-      selectedPeriod: "month"
+      timePeriod: "month",
+      messagesData: null,
+      filesData: null
     };
   }
 
   componentWillMount() {
     this.props.titleStore.setPageName("Analytics");
+    this.loadReports(this.state.timePeriod);
   }
 
   _handleSelect = key => {
     this.setState({
-      selectedPeriod: key
+      timePeriod: key
+    });
+    this.loadReports(key);
+  };
+
+  loadReports = key => {
+    const timePeriod = datePeriodNames[key].toLowerCase();
+
+    post("/api/v1/reports", {
+      body: {
+        type: "Messages Sent",
+        time_period: timePeriod
+      }
+    }).then(resp => {
+      const { data } = resp.data;
+      this.setState({
+        messagesData: data
+      });
+    });
+
+    post("/api/v1/reports", {
+      body: {
+        type: "Files Uploaded",
+        time_period: timePeriod
+      }
+    }).then(resp => {
+      const { data } = resp.data;
+      this.setState({
+        filesData: data
+      });
     });
   };
 
   render() {
-    const { selectedPeriod } = this.state;
+    const { timePeriod, messagesData, filesData } = this.state;
 
     return (
       <Panel className="admin-panel analytics-panel" header={header}>
@@ -49,7 +81,7 @@ export default class Analytics extends Component {
           <DropdownButton
             id="dropdown-analytics-timespan"
             pullRight
-            title={datePeriodNames[selectedPeriod]}
+            title={datePeriodNames[timePeriod]}
             className="dropdown-timespan"
             onSelect={this._handleSelect}
           >
@@ -58,8 +90,8 @@ export default class Analytics extends Component {
             <MenuItem eventKey="allTime">All time</MenuItem>
           </DropdownButton>
         </div>
-        <Messages />
-        <Files />
+        <Messages reportsData={messagesData} />
+        <Files reportsData={filesData} />
       </Panel>
     );
   }
