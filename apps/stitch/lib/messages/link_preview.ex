@@ -1,7 +1,7 @@
 defmodule Stitch.Message.LinkPreview do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Stitch.Message
+  alias Stitch.{Message, Repo}
 
   @primary_key false
   embedded_schema do
@@ -46,7 +46,7 @@ defmodule Stitch.Message.LinkPreview do
     Message
     |> where([m], m.has_links == true)
     |> where([m], m.link_previews_generated == false)
-    |> Stitch.Repo.all
+    |> Repo.all
   end
 
   def get_links(text) do
@@ -77,7 +77,7 @@ defmodule Stitch.Message.LinkPreview do
     Stitch.Repo.update!(changeset)
   end
 
-  def generate_link_preview_param(link) do
+  defp generate_link_preview_param(link) do
     case HTTPoison.get(link) do
       {:ok, response} ->
         html = response.body
@@ -117,5 +117,15 @@ defmodule Stitch.Message.LinkPreview do
     html
     |> Floki.attribute("meta[property='og:#{property}']", "content")
     |> List.first
+  end
+
+  def delete!(%Message{} = message, link) do
+    link_previews = Enum.reject message.link_previews, fn link_preview ->
+      link_preview.link == link
+    end
+
+    message
+    |> Ecto.Changeset.change(link_previews: link_previews)
+    |> Repo.update!
   end
 end
