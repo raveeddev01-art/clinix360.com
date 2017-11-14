@@ -6,6 +6,12 @@ class ChannelStore {
     this.rootStore = rootStore;
   }
 
+  /**
+   * Joins to the channel
+   * 
+   * @param {String} topic 
+   * @param {Object} options 
+   */
   join(topic, options = {}) {
     if (this.channels[topic]) {
       this.channels[topic].leave();
@@ -15,8 +21,15 @@ class ChannelStore {
     return this.channels[topic].join();
   }
 
+  // ///////////// //
+  // Event Channel //
+  // ///////////// //
   get eventChannelTopic() {
     return `events:${currentUser.id}`;
+  }
+
+  get eventChannel() {
+    return this.channels[this.eventChannelTopic];
   }
 
   joinEventChannel(options = {}) {
@@ -33,29 +46,34 @@ class ChannelStore {
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache
     });
-    this.eventChannel.on("logout", ({session_id}) => {
-      if (window.sessionId == session_id) {
+    this.eventChannel.on("logout", ({ session_id: sessionId }) => {
+      if (window.sessionId === sessionId) {
         window.location.reload();
       }
-    })
+    });
 
     return channel;
   }
 
-  get eventChannel() {
-    return this.channels[this.eventChannelTopic];
+  // ///////////// //
+  // Group Channel //
+  // ///////////// //
+  get groupChannel() {
+    return this.channels[this.rootStore.groupStore.channelTopic];
   }
 
   joinGroupChannel(options = {}) {
-    if (this.groupChannelTopic) {
-      this.channels[this.groupChannelTopic].leave();
-    }
-    this.groupChannelTopic = this.rootStore.groupStore.channelTopic;
-    return this.join(this.rootStore.groupStore.channelTopic, options);
+    const { groupStore } = this.rootStore;
+
+    this.groupChannelTopic = groupStore.channelTopic;
+    return this.join(groupStore.channelTopic, options);
   }
 
-  get groupChannel() {
-    return this.channels[this.rootStore.groupStore.channelTopic];
+  // ///////////////// //
+  // TeamLobby Channel //
+  // ///////////////// //
+  get teamLobbyChannel() {
+    return this.channels[this.rootStore.presenceStore.teamLobbyChannelTopic];
   }
 
   joinTeamLobbyChannel(options = {}) {
@@ -63,10 +81,6 @@ class ChannelStore {
       this.rootStore.presenceStore.teamLobbyChannelTopic,
       options
     );
-  }
-
-  get teamLobbyChannel() {
-    return this.channels[this.rootStore.presenceStore.teamLobbyChannelTopic];
   }
 
   leaveAllChannelsButTeamLobby() {
