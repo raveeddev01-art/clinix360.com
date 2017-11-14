@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.TeamChannel do
   use Phoenix.Channel
   use Appsignal.Instrumentation.Decorators
   alias StitchConnect.Web.Presence
+  alias StitchConnect.Web.Api.V1.UserView
   @endpoint StitchConnect.Web.Endpoint
 
   def join("team:lobby:" <> team_id, _, socket) do
@@ -82,6 +83,11 @@ defmodule StitchConnect.Web.TeamChannel do
       security_lockout_enabled: team.security_lockout,
       seconds_to_lockout: team.seconds_to_lockout
     }}, socket}
+  end
+
+  def broadcast_user_joined(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
+    user_json = UserView.user_json(user)
+    @endpoint.broadcast("team:lobby:#{team.id}", "user_joined", user_json)
   end
 
   def broadcast_team_rename(%Stitch.Team{} = team) do
