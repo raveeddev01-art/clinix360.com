@@ -1,0 +1,23 @@
+.link-preview {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  border-left: 2px solid #ccc;
+  padding-left: 20px;
+
+  &__site {
+    margin-bottom: 5px;
+  }
+
+  &__favicon {
+    margin-right: 5px;
+  }
+
+  &__title {
+    margin-bottom: 5px;
+  }
+
+  &__description {
+    margin-bottom: 10px;
+  }
+}
