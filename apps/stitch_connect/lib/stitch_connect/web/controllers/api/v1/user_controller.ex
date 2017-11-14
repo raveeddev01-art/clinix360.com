@@ -159,32 +159,6 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def update_avatar(conn, %{"id" => id, "profile_image_url" => profile_image_url}) do
-    changeset = Repo.get(User, id) |> User.changeset(%{profile_image_url: profile_image_url})
-
-    case Repo.update(changeset) do
-      {:ok, user} ->
-        conn |> json(%{profile_image_url: user.profile_image_url})
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Cannot change the user avatar"})
-    end
-  end
-
-  def delete_avatar(conn, %{"id" => id}) do
-    changeset = Repo.get(User, id) |> Ecto.Changeset.change(profile_image_url: nil)
-
-    case Repo.update(changeset) do
-      {:ok, _} -> conn |> send_resp(:ok, "")
-
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Cannot delete the user avatar"})
-    end
-  end
-
   def validate_phone_number(conn, %{"phone_number" => phone_number}) do
     case Stitch.Twilio.lookup(phone_number) do
       :ok ->
