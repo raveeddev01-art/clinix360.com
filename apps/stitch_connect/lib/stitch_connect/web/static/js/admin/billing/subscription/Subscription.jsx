@@ -278,13 +278,16 @@ class Subscription extends React.Component {
     const { subscription } = this.state;
     const belowTier = capitalize(getBelowTier(subscription.tier));
     const planItems = getPlanForTier(subscription.tier).items;
+    const invoiceAmount = (subscription.estimated_invoice_amount / 100).toFixed(
+      2
+    );
 
     return (
       <div className="subscribed">
         <p>
           Your plan will renew on <b>{subscription.valid_until}</b> for{" "}
-          <b>${subscription.estimated_invoice_amount}</b>.{" "}
-          <b>{capitalize(subscription.tier)}</b> includes{belowTier && (
+          <b>${invoiceAmount}</b>. <b>{capitalize(subscription.tier)}</b>{" "}
+          includes{belowTier && (
             <span>
               {" "}
               everything in <b>{belowTier}</b>, and
