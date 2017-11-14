@@ -97,6 +97,11 @@ defmodule StitchConnect.Web.TeamChannel do
     })
   end
 
+  def broadcast_user_info(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
+    user_json = UserView.user_json(user)
+    @endpoint.broadcast("team:lobby:#{team.id}", "user_info", user_json)
+  end
+
   def terminate(_reason, socket) do
     {:ok, socket}
   end

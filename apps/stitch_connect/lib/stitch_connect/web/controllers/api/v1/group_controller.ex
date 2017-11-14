@@ -198,7 +198,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def toggle_favorite(conn, %{"id" => group_id}) do
     case Group.toggle_favorite(group_id, conn.assigns.current_user.id) do
       {:ok, %{group_id: group_id, is_favorite: is_favorite}} ->
-        conn |> json(%{group_id: group_id, favorited: is_favorite})
+        EventsChannel.broadcast_group_favorite(conn.assigns.current_user, group_id, is_favorite)
+        conn
+        |> json(%{group_id: group_id, favorited: is_favorite})
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)
