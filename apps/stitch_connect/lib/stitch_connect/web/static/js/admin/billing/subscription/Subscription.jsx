@@ -250,16 +250,16 @@ class Subscription extends React.Component {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://intercom.help/teamstitch/connect/admin/subscribing-and-billing"
+          href="https://teamstitch.com/pricing"
         >
           here
         </a>.{" "}
         {subscription.tier === "TRIAL" &&
           subscription.remaining_days <= 0 && (
             <span>
-              Request a free trial extension by{" "}
+              Request a free trial extension by clicking&nbsp;
               <a href="mailto:support@teamstitch.com?subject=Trial Extension Request&amp;body=I would like to request an extension to our Stitch Connect trial for the following reasons:">
-                clicking here
+                here
               </a>.
             </span>
           )}
@@ -348,7 +348,7 @@ class Subscription extends React.Component {
 
         <br />
 
-        {/* this.renderFooter() */}
+        {this.renderFooter()}
       </div>
     );
   }
