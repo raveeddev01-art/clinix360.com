@@ -109,6 +109,7 @@ $admin-topbar-height-sm: 65px;
     display: flex;
     flex-direction: column;
     position: relative;
+    min-width: 0;
 
     .admin-topbar {
       padding-left: 20px;
@@ -189,8 +190,8 @@ $admin-topbar-height-sm: 65px;
       position: relative;
 
       &:after {
-        position: absolute;
-        top: 0;
+        position: fixed;
+        top: $admin-topbar-height;
         bottom: 0;
         left: 0;
         right: 0;
@@ -309,7 +310,7 @@ $admin-topbar-height-sm: 65px;
         resize: none;
       }
 
-      ul {
+      ul:not(.dropdown-menu) {
         padding-left: 25px;
         margin-bottom: 25px;
 
@@ -472,6 +473,42 @@ $admin-topbar-height-sm: 65px;
         }
       }
     }
+
+    &.analytics-panel {
+      .panel-body {
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        background: transparent;
+
+        .period-dropdown {
+          margin-top: -50px;
+        }
+      }
+
+      .panel-chart {
+        background-color: #fff;
+        border: 1px solid #d8d8d8;
+        border-radius: 4px;
+        padding: 2em;
+        margin-bottom: 24px;
+      }
+
+      h3 {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      canvas {
+        margin-bottom: 10px;
+      }
+
+      .help-block {
+        &.total {
+          color: #000;
+        }
+      }
+    }
   }
 
   .lockout-time-label {
@@ -526,7 +563,8 @@ $admin-topbar-height-sm: 65px;
     .sidebar {
       position: absolute;
       top: 0;
-      left: 60px;
+      left: 65px;
+      bottom: 0;
       width: $admin-sidebar-width;
       transform: translateX(-$admin-sidebar-width);
     }
