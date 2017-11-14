@@ -99,7 +99,7 @@ class ChannelStore {
   }
 
   joinTeamChannel(options = {}) {
-    const { presenceStore } = this.rootStore;
+    const { presenceStore, teamStore } = this.rootStore;
 
     const joined = this.join(this.teamChannelTopic, options);
 
@@ -107,6 +107,8 @@ class ChannelStore {
     this.teamChannel.on("presence_diff", presenceStore.onPresenceDiff);
     this.teamChannel.on("locked", presenceStore.onLocked);
     this.teamChannel.on("unlocked", presenceStore.onUnlocked);
+
+    this.teamChannel.on("team_renamed", teamStore.onRenamed);
 
     return joined;
   }
