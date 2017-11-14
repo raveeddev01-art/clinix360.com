@@ -348,7 +348,7 @@ class Subscription extends React.Component {
 
         <br />
 
-        {this.renderFooter()}
+        {/* this.renderFooter() */}
       </div>
     );
   }
