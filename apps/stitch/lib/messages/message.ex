@@ -21,6 +21,9 @@ defmodule Stitch.Message do
     field :pinned_at, :utc_datetime
     field :read_status, :map, default: %{}
     field :mentioned_user_ids, {:array, :integer}, default: []
+    field :has_links, :boolean, default: false
+    field :link_previews_generated, :boolean, default: false
+    embeds_many :link_previews, Message.LinkPreview
 
     timestamps()
   end
@@ -42,6 +45,7 @@ defmodule Stitch.Message do
     struct
     |> cast(params, [:text_content, :mentioned_user_ids])
     |> validate_required([:text_content])
+    |> check_for_links
     |> put_change(:edited_at, DateTime.utc_now())
   end
 
@@ -50,7 +54,19 @@ defmodule Stitch.Message do
     |> cast(params, [:type, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
+    |> check_for_links
   end
+
+  defp check_for_links(%Ecto.Changeset{valid?: true, changes: %{text_content: text_content}} = changeset) do
+    has_links =
+      text_content
+      |> Message.LinkPreview.get_links
+      |> Enum.empty?
+      |> Kernel.not
+
+    put_change(changeset, :has_links, has_links)
+  end
+  defp check_for_links(changeset), do: changeset
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct

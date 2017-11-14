@@ -6,3 +6,5 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
   http: [port: 4001],
   url: [host: "localhost"],
   server: false
+
+config :stitch_connect, :start_message_link_preview_generator, false
