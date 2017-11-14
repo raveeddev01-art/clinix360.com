@@ -27,11 +27,6 @@ class GroupStore {
   }
 
   @computed
-  get channelTopic() {
-    return `groups:${this.slug}`;
-  }
-
-  @computed
   get onlineUsers() {
     return this.users.filter(user =>
       this.rootStore.presenceStore.isOnline(`${user.id}`)

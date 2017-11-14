@@ -1,5 +1,4 @@
 class ChannelStore {
-  groupChannelTopic = ""; // groupChannelTopic points to current group channel. used to leave the channel before joining a new.
   channels = {};
 
   constructor(rootStore) {
@@ -58,15 +57,20 @@ class ChannelStore {
   // ///////////// //
   // Group Channel //
   // ///////////// //
+  get groupChannelTopic() {
+    const { groupStore } = this.rootStore;
+
+    return `groups:${groupStore.slug}`;
+  }
+
   get groupChannel() {
-    return this.channels[this.rootStore.groupStore.channelTopic];
+    return this.channels[this.groupChannelTopic];
   }
 
   joinGroupChannel(options = {}) {
-    const { groupStore } = this.rootStore;
+    const channel = this.join(this.groupChannelTopic, options);
 
-    this.groupChannelTopic = groupStore.channelTopic;
-    return this.join(groupStore.channelTopic, options);
+    return channel;
   }
 
   // ///////////////// //
