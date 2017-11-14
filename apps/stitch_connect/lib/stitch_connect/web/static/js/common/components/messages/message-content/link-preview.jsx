@@ -1,19 +1,45 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import ImageFileAttachment from "./file-attachment/image";
+import { isAdmin } from "../../../../util/utils";
+import { confirm } from "../../../modals";
 
+@inject("messageStore")
+@observer
 class LinkPreview extends Component {
+  onClose = () => {
+    confirm({
+      title: "Delete Preview",
+      message: "Are you sure you want to remove the link preview?",
+      okLable: "Delete"
+    }).then(() => {
+      const { link, msgId, messageStore } = this.props;
+      messageStore.deleteLinkPreview(msgId, link);
+    });
+  };
+
   render() {
     const {
       description,
       title,
       image_url: imageUrl,
       favicon_url: favicon,
-      link
+      link,
+      senderId
     } = this.props;
 
     return (
       <div className="link-preview">
+        {(isAdmin() || currentUser.id === senderId) && (
+            <a
+              role="link"
+              onClick={this.onClose}
+              className="link-preview__close"
+            >
+              <i className="fa fa-times-circle-o" onClick={this.close} />
+            </a>
+          )}
         {favicon && (
           <span className="link-preview__site">
             <img className="link-preview__favicon" src={favicon} alt={title} />
@@ -42,7 +68,9 @@ LinkPreview.propTypes = {
   image_url: PropTypes.string,
   link: PropTypes.string,
   title: PropTypes.string,
-  favicon_url: PropTypes.string
+  favicon_url: PropTypes.string,
+  senderId: PropTypes.number.isRequired,
+  msgId: PropTypes.number.isRequired
 };
 
 LinkPreview.defaultProps = {

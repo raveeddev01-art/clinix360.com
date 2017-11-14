@@ -1,9 +1,17 @@
 .link-preview {
   display: flex;
   flex-direction: column;
+  position: relative;
   margin-top: 20px;
   border-left: 2px solid #ccc;
   padding-left: 20px;
+
+  &__close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+  }
 
   &__site {
     margin-bottom: 5px;

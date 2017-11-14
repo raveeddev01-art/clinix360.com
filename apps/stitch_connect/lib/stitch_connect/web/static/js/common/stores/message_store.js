@@ -522,6 +522,7 @@ class MessageStore {
       "msg_link_previews_generated",
       this.onLinkPreviewGenerated
     );
+    this.groupChannel.on("msg_link_preview_deleted", this.onLinkPreviewDeleted);
   };
 
   sendMessage = (msg, additionalFields = {}) => {
@@ -543,8 +544,37 @@ class MessageStore {
     }
 
     const message = this.messages.find(m => m.id === payload.id);
-    message.link_previews = payload.link_previews;
-    this.keepScrollAtBottom();
+    if (message) {
+      message.link_previews = payload.link_previews;
+      this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  onLinkPreviewDeleted = payload => {
+    const message = this.messages.find(m => m.id === payload.message_id);
+    if (message) {
+      message.link_previews = message.link_previews.filter(
+        p => p.link !== payload.link
+      );
+      this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  deleteLinkPreview = (msgId, link) => {
+    return new Promise((resolve, reject) => {
+      this.groupChannel
+        .push("delete_msg_link_preview", {
+          message_id: msgId,
+          link
+        })
+        .receive("ok", resolve)
+        .receive("error", err => {
+          notify.show(err.message, "error");
+          reject(err);
+        });
+    });
   };
 
   @action

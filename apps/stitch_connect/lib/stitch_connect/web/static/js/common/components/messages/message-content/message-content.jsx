@@ -82,11 +82,18 @@ class MessageContent extends Component {
   }
 
   renderLinkPreviews() {
-    const { message: { link_previews: linkPreviews, id } } = this.props;
+    const {
+      message: { link_previews: linkPreviews, id, user_id: userId }
+    } = this.props;
 
     if (linkPreviews && linkPreviews.length) {
       return linkPreviews.map((link, index) => (
-        <LinkPreview key={`msg_${id}_link_${index}`} {...link} />
+        <LinkPreview
+          key={`msg_${id}_link_${index}`}
+          {...link}
+          msgId={id}
+          senderId={userId}
+        />
       ));
     }
 
