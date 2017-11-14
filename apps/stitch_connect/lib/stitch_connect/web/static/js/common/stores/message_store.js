@@ -518,12 +518,57 @@ class MessageStore {
     this.groupChannel.on("new_msg", this.onNewMessage);
     this.groupChannel.on("edit_msg", this.onEditMessage);
     this.groupChannel.on("delete_msg", this.onDeleteMessage);
+    this.groupChannel.on(
+      "msg_link_previews_generated",
+      this.onLinkPreviewGenerated
+    );
+    this.groupChannel.on("msg_link_preview_deleted", this.onLinkPreviewDeleted);
   };
 
   sendMessage = (msg, additionalFields = {}) => {
     return new Promise((resolve, reject) => {
       this.groupChannel
         .push("new_msg", Object.assign({ text_content: msg }, additionalFields))
+        .receive("ok", resolve)
+        .receive("error", err => {
+          notify.show(err.message, "error");
+          reject(err);
+        });
+    });
+  };
+
+  @action
+  onLinkPreviewGenerated = payload => {
+    if (payload.group_id !== this.groupId) {
+      return;
+    }
+
+    const message = this.messages.find(m => m.id === payload.id);
+    if (message) {
+      message.link_previews = payload.link_previews;
+      this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  onLinkPreviewDeleted = payload => {
+    const message = this.messages.find(m => m.id === payload.message_id);
+    if (message) {
+      message.link_previews = message.link_previews.filter(
+        p => p.link !== payload.link
+      );
+      this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  deleteLinkPreview = (msgId, link) => {
+    return new Promise((resolve, reject) => {
+      this.groupChannel
+        .push("delete_msg_link_preview", {
+          message_id: msgId,
+          link
+        })
         .receive("ok", resolve)
         .receive("error", err => {
           notify.show(err.message, "error");
@@ -866,11 +911,11 @@ class MessageStore {
     this.typingTimeoutId = setTimeout(this.stopTyping, 2000);
   };
 
-  keepScrollAtBottom() {
+  keepScrollAtBottom = () => {
     if (this.isScrollBottom) {
       this.scrollToBottom();
     }
-  }
+  };
 }
 
 export default MessageStore;

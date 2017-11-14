@@ -90,4 +90,51 @@ defmodule StitchConnect.Web.ChannelMessageTest do
     assert message_id == message.id
     refute Repo.get(Message, message.id)
   end
+
+  test "delete_msg_link_preview event deletes link preview and broadcasts it",
+      %{socket1: socket1, user1: user1, group: group} do
+    message = insert :message,
+      user: user1,
+      group: group,
+      link_previews: [%{link: "http://foo.bar", title: "Foobar"}]
+
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+    @endpoint.subscribe("groups:#{group.slug}")
+
+    ref = push socket1, "delete_msg_link_preview", %{message_id: message.id, link: "http://foo.bar"}
+
+    assert_reply ref, :ok
+    assert_broadcast "msg_link_preview_deleted", %{message_id: message_id, link: link}
+    assert message_id == message.id
+    assert link == "http://foo.bar"
+  end
+
+  test "delete_msg_link_preview event only allows message author or admins to delete link preview",
+      %{socket1: socket1, user1: user1, user2: user2, group: group} do
+    {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
+    {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+
+    message1 = insert :message,
+      user: user1,
+      group: group,
+      link_previews: [%{link: "http://foo.bar", title: "Foobar"}]
+
+    ref = push socket2, "delete_msg_link_preview", %{message_id: message1.id, link: "http://foo.bar"}
+    assert_reply ref, :error, %{message: "Only the message sender or an admin can delete a message's link preview."}
+
+    message2 = insert :message,
+      user: user2,
+      group: group,
+      link_previews: [
+        %{link: "http://foo.com", title: "Foo"},
+        %{link: "http://bar.com", title: "Bar"},
+      ]
+
+    ref = push socket2, "delete_msg_link_preview", %{message_id: message2.id, link: "http://foo.com"}
+    assert_reply ref, :ok
+
+    ref = push socket1, "delete_msg_link_preview", %{message_id: message2.id, link: "http://bar.com"}
+    assert_reply ref, :ok
+  end
 end

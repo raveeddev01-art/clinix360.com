@@ -6,7 +6,8 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
-  alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
+  alias Stitch.{Repo, Group, GroupUser, GroupAuthorization,
+    Message, MessageAuthorization, MessageQueries}
   alias StitchConnect.Web.Presence
 
   intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
@@ -214,6 +215,26 @@ defmodule StitchConnect.Web.GroupChannel do
         {:reply, {:error, %{message: "Message not found."}}, socket}
       {:error, _changeset} ->
         {:reply, {:error, %{message: "Failed to delete message."}}, socket}
+    end
+  end
+
+  @decorate channel_action()
+  def handle_in("delete_msg_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
+    %{group: group, current_user: user} = socket.assigns
+    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one
+
+    case {message, message && MessageAuthorization.can_delete?(message, user)} do
+      {nil, _} ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+
+      {_, false} ->
+        reason = "Only the message sender or an admin can delete a message's link preview."
+        {:reply, {:error, %{message: reason}}, socket}
+
+      {message, true} ->
+        %Message{id: message_id} = Message.LinkPreview.delete!(message, link)
+        broadcast! socket, "msg_link_preview_deleted", %{message_id: message_id, link: link}
+        {:reply, :ok, socket}
     end
   end
 

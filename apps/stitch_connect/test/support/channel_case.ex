@@ -19,7 +19,7 @@ defmodule StitchConnect.Web.ChannelCase do
     quote do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
-
+      import Stitch.Factory
       import StitchConnect.Web.ChannelsTestHelper
       alias Stitch.Repo
 
