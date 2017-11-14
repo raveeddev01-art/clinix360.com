@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Repo, Accounts.User, UserQueries}
+  alias Stitch.{Accounts.User, UserQueries}
   alias StitchConnect.Web.{EventsChannel, TeamChannel}
 
   def index(conn, _) do
