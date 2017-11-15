@@ -14,17 +14,17 @@ import LinkPreview from "./link-preview";
 class MessageContent extends Component {
   renderMessageLine(line) {
     const { sidemenuStore } = this.props;
-    const { usernameMap } = sidemenuStore;
+    const { usersByUsername } = sidemenuStore;
     const words = line.split(" ");
 
     return words.reduce((prev, word, i) => {
       if (word.indexOf("@") === 0) {
         const username = word.substr(1);
-        if (usernameMap[username]) {
+        if (usersByUsername[username]) {
           return prev.concat(
             <UserMention
               key={`usermention_${i}`}
-              user={usernameMap[username]}
+              user={usersByUsername[username]}
             />
           );
         }

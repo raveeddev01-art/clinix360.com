@@ -138,12 +138,18 @@ class Message extends Component {
   }
 
   renderPin(message) {
-    const { pinned, pinned_by: pinnedBy, pinned_at: pinnedAt } = message;
-
-    if (!pinned || !pinnedAt || !pinnedBy) {
+    if (
+      !message.pinned ||
+      !message.pinned_at ||
+      !message.pinned_by ||
+      !message.pinned_by.id
+    ) {
       return null;
     }
 
+    const { sidemenuStore } = this.props;
+    const { pinned_at: pinnedAt, pinned_by: { id: pinnedById } } = message;
+    const pinnedBy = sidemenuStore.usersById[pinnedById];
     const pinTooltip = (
       <Tooltip id="pin-tooltip">
         <span>
@@ -245,16 +251,17 @@ class Message extends Component {
   }
 
   render() {
-    const { message, messageStore } = this.props;
-    const { user, inserted_at: timestamp } = message;
+    const { message, messageStore, sidemenuStore } = this.props;
+    const { user: { id: userId }, inserted_at: timestamp } = message;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
     const elementClassName = cx("message", {
       selected: this.state.selected,
       highlight: highlightId === message.id
     });
     const containerClassName = cx("message-container", {
-      mine: user.id === currentUser.id
+      mine: userId === currentUser.id
     });
+    const user = sidemenuStore.usersById[userId];
 
     return (
       <div>

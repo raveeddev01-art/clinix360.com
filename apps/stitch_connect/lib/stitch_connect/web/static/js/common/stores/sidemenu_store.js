@@ -113,11 +113,24 @@ class SidemenuStore {
   }
 
   @computed
-  get usernameMap() {
+  get usersByUsername() {
     const map = {};
+
     this.users.forEach(user => {
       map[user.username] = user;
     });
+
+    return map;
+  }
+
+  @computed
+  get usersById() {
+    const map = {};
+
+    this.users.forEach(user => {
+      map[user.id] = user;
+    });
+
     return map;
   }
 
