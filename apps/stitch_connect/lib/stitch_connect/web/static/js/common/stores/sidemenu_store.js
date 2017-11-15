@@ -13,6 +13,7 @@ class SidemenuStore {
   @observable groups = [];
   @observable users = [];
   @observable groupCursors = {}; // { group_id: message_id }
+  @observable loadedGroups = false; // indicates if the group list is loaded. This is used for default route rendering.
 
   ROOM_MENU_ITEM_ANCHOR_PREFIX = "sidemenu_room_";
   badge = null;
@@ -145,10 +146,16 @@ class SidemenuStore {
     }, 0);
   }
 
+  @computed
+  get defaultGroup() {
+    return this.groups.find(g => g.is_default);
+  }
+
   @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
       this.groups = orderBy(response.data, ["name"]);
+      this.loadedGroups = true;
       this.updateFavicon();
     });
   };
