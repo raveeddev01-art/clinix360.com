@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Group, GroupQueries, GroupAuthorization, MessageQueries}
+  alias Stitch.{Group, GroupQueries, GroupAuthorization, TeamAuthorization, MessageQueries}
   alias StitchConnect.Web.{Endpoint, EventsChannel}
 
   def index(conn, %{"slug" => slug}) do
@@ -160,19 +160,26 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def join(conn, %{"id" => group_id}) do
     group = GroupQueries.get_by_id(group_id)
 
-    case Group.add_user(group, conn.assigns.current_user.id) do
-      {:error, _, _, _} ->
+    case Stitch.TeamAuthorization.user_is_member?(conn.assigns.current_user.team_id, conn.assigns.current_user.id) do
+      true ->
+        case Group.add_user(group, conn.assigns.current_user.id) do
+          {:error, _, _, _} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> json(%{message: "Cannot add user to the room"})
+          {:ok, %{group_user: group_user, system_message: system_message}} ->
+            {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
+            system_message = MessageQueries.load_info(system_message)
+            Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
+            EventsChannel.broadcast_group_join(group, conn.assigns.current_user.id)
+
+            conn
+            |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
+        end
+      false ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Cannot add user to the room"})
-      {:ok, %{group_user: group_user, system_message: system_message}} ->
-        {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
-        system_message = MessageQueries.load_info(system_message)
-        Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
-        EventsChannel.broadcast_group_join(group, conn.assigns.current_user.id)
-
-        conn
-        |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
     end
   end
 
