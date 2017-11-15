@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Switch, withRouter } from "react-router-dom";
+import { Switch, withRouter, Route } from "react-router-dom";
 
-import AuthRoute from "./AuthRoute";
 import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
 import ChatApp from "../chat/ChatApp";
@@ -28,8 +27,8 @@ class LockableApp extends Component {
       <LockedApp />
     ) : (
       <Switch>
-        <AuthRoute path="/admin" component={AdminApp} />
-        <AuthRoute path="/" component={ChatApp} />
+        <Route path="/admin" component={AdminApp} />
+        <Route path="/" component={ChatApp} />
       </Switch>
     );
   }
