@@ -14,7 +14,7 @@ const header = (
 class TeamSecurity extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Security");
-    this.props.adminPanelStore.setHeading("Security");
+    this.props.adminPanelStore.setHeading("Security", "fa-shield");
   }
 
   render() {

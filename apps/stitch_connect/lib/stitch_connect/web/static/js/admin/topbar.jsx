@@ -10,7 +10,7 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 class Topbar extends Component {
   render() {
     const { onToggleSidebar, adminPanelStore } = this.props;
-    const { heading } = adminPanelStore;
+    const { heading, icon } = adminPanelStore;
 
     return (
       <div className="flex-header admin-topbar">
@@ -21,7 +21,7 @@ class Topbar extends Component {
         </a>
         <span className="separator" />
         <h4>
-          <i className="fa fa-sliders" /> {heading}
+          <i className={`fa ${icon}`} /> {heading}
         </h4>
         <ul className="nav navbar-nav">
           <li>

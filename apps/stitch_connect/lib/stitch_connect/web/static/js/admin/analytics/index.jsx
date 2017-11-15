@@ -34,7 +34,7 @@ export default class Analytics extends Component {
 
   componentWillMount() {
     this.props.titleStore.setPageName("Analytics");
-    this.props.adminPanelStore.setHeading("Analytics");
+    this.props.adminPanelStore.setHeading("Analytics", "fa-bar-chart");
     this.loadReports(this.state.timePeriod);
   }
 

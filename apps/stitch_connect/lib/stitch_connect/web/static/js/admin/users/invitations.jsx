@@ -26,7 +26,7 @@ export default class UsersInvitations extends Component {
 
   componentWillMount() {
     this.props.titleStore.setPageName("Invitations");
-    this.props.adminPanelStore.setHeading("Invitations");
+    this.props.adminPanelStore.setHeading("Invitations", "fa-envelope-o");
   }
 
   _handleChange = event => {

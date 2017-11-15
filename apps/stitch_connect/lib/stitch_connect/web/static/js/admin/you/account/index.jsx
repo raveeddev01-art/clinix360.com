@@ -16,7 +16,7 @@ const header = (
 class AccountSettings extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Account");
-    this.props.adminPanelStore.setHeading("Account");
+    this.props.adminPanelStore.setHeading("Account", "fa-cog");
   }
 
   render() {

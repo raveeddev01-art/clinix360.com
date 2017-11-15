@@ -15,7 +15,7 @@ class UsersPending extends Component {
   componentWillMount() {
     this.props.invitationStore.loadInvitations();
     this.props.titleStore.setPageName("Pending");
-    this.props.adminPanelStore.setHeading("Pending");
+    this.props.adminPanelStore.setHeading("Pending", "fa-inbox");
   }
 
   _renderInvitations = () => {

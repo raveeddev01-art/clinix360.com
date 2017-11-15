@@ -17,7 +17,7 @@ const header = (
 class TeamBilling extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Billing");
-    this.props.adminPanelStore.setHeading("Billing");
+    this.props.adminPanelStore.setHeading("Billing", "fa-credit-card");
   }
 
   render() {

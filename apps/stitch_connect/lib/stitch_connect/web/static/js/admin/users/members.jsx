@@ -14,7 +14,7 @@ const header = (
 export default class UsersMembers extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Members");
-    this.props.adminPanelStore.setHeading("Members");
+    this.props.adminPanelStore.setHeading("Members", "fa-users");
   }
 
   render() {

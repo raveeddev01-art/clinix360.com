@@ -16,7 +16,7 @@ const header = (
 class TeamSettings extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Team Settings");
-    this.props.adminPanelStore.setHeading("Settings");
+    this.props.adminPanelStore.setHeading("Settings", "fa-cogs");
   }
 
   render() {

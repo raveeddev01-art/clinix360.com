@@ -15,7 +15,7 @@ const header = (
 export default class YouNotifications extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Notifications");
-    this.props.adminPanelStore.setHeading("Notifications");
+    this.props.adminPanelStore.setHeading("Notifications", "fa-bell");
   }
 
   render() {
