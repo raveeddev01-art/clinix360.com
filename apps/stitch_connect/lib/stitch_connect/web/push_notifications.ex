@@ -90,12 +90,12 @@ defmodule StitchConnect.Web.PushNotifications do
 
     ios_devices
     |> Enum.map(fn %{token: token} ->
-      push_notification = grp |> new_msg_notification_body(msg)
-      push_notification = if apns_topic, do: new(push_notification, token, apns_topic), else: new(push_notification, token)
-
-      push_notification
+      grp
+      |> new_msg_notification_body(msg)
+      |> new(token, apns_topic)
       |> put_badge(badge_value)
       |> put_sound("chime")
+      |> put_custom(new_msg_notification_custom_data(msg))
     end)
     |> APNS.push(on_response: &handle_response_ios/1)
   end
@@ -103,20 +103,13 @@ defmodule StitchConnect.Web.PushNotifications do
   defp push_new_msg_notification_to_android_devices(grp, msg, badge_value, android_devices) do
     import FCM.Notification
 
-    message_json =
-      msg
-      |> Repo.preload(:user)
-      |> StitchConnect.Web.Api.V1.MessageView.message_json
-      |> Map.drop([:text_content, :fields])
-      |> Poison.encode!
-
     android_devices
     |> Enum.map(&(&1.token))
     |> new
     |> put_data(%{
       "badge" => to_string(badge_value),
       "message" => new_msg_notification_body(grp, msg),
-      "ejson" => message_json
+      "ejson" => new_msg_notification_custom_data(msg)
     })
     |> FCM.push(on_response: &handle_response_andriod/1)
   end
@@ -147,6 +140,14 @@ defmodule StitchConnect.Web.PushNotifications do
 
   defp display_name(%{first_name: first_name, last_name: last_name}) do
     "#{first_name} #{last_name}"
+  end
+
+  defp new_msg_notification_custom_data(msg) do
+    msg
+    |> Repo.preload(:user)
+    |> StitchConnect.Web.Api.V1.MessageView.message_json
+    |> Map.drop([:text_content, :fields])
+    |> Poison.encode!
   end
 
   def handle_response_andriod(notification) do
