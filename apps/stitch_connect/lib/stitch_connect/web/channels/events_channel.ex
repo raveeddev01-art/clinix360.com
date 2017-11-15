@@ -38,11 +38,6 @@ defmodule StitchConnect.Web.EventsChannel do
     |> Repo.all
   end
 
-  def broadcast_user_info(%User{} = user) do
-    json = %{first_name: user.first_name, last_name: user.last_name, roles: user.roles, username: user.username}
-    @endpoint.broadcast("events:#{user.id}", "user_info", json)
-  end
-
   def broadcast_group_new_msg(group, message, notify_user_ids \\ []) do
     notify_user_ids_set = MapSet.new(notify_user_ids)
     for group_user <- group_users_for(group.id, message.user_id) do
