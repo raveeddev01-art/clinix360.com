@@ -49,6 +49,7 @@ class ChatApp extends Component {
   };
 
   render() {
+    const { defaultGroup } = this.props.sidemenuStore;
     return (
       <Dropzone
         id="app"
@@ -72,7 +73,13 @@ class ChatApp extends Component {
           <Switch>
             <Route path={`/rooms/:slug`} component={Chat} />
             <Route path={`/direct/:usernames`} component={Chat} />
-            <Route component={() => <Redirect to="/rooms/general" />} />
+            {defaultGroup ? (
+              <Route
+                component={() => (
+                  <Redirect to={`/rooms/${defaultGroup.slug}`} />
+                )}
+              />
+            ) : null}
           </Switch>
         </div>
       </Dropzone>
