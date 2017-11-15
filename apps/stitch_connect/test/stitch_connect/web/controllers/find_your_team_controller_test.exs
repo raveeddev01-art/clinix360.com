@@ -23,9 +23,9 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
       json =
         conn
         |> post(api_v1_find_your_team_path(conn, :create), %{"email" => "nonexistentuer@example.com"})
-        |> json_response(:not_found)
+        |> json_response(200)
 
-      assert json["message"] == "Email not found."
+        assert json["message"] == "Email has been sent to nonexistentuer@example.com. Please check your inbox."
     end
   end
 
