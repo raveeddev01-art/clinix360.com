@@ -10,6 +10,8 @@ defmodule Stitch.Analytics do
   alias Stitch.Repo
   alias Stitch.Accounts.User
 
+  @behaviour Stitch.Analytics.Behaviour
+
   @doc """
   Gets user traits, gets team traits, and records them. It associates an
   identified user with their team.
@@ -21,6 +23,7 @@ defmodule Stitch.Analytics do
 
   """
   @spec identify_and_group(User.t) :: :ok | :error
+  @impl Stitch.Analytics.Behaviour
   def identify_and_group(%User{} = user) do
     team            = Stitch.TeamQueries.get_by_id(user.team_id)
     subscription    = Stitch.Billing.get_subscription(team)
@@ -45,6 +48,7 @@ defmodule Stitch.Analytics do
 
   """
   @spec identify(User.t) :: {:ok, Event.t} | {:error, Ecto.Changeset.t}
+  @impl Stitch.Analytics.Behaviour
   def identify(%User{} = user) do
     team         = Stitch.TeamQueries.get_by_id(user.team_id)
     subscription = Stitch.Billing.get_subscription(team)
@@ -109,6 +113,7 @@ defmodule Stitch.Analytics do
   """
   @spec track(pos_integer, String.t, map) ::
   {:ok, Event.t} | {:error, Ecto.Changeset.t}
+  @impl Stitch.Analytics.Behaviour
   def track(user_id, event, properties) do
     payload = %{
       type: "track",

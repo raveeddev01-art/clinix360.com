@@ -6,6 +6,8 @@ defmodule Stitch.Accounts do
   alias Stitch.Repo
   alias Stitch.Accounts.User
 
+  @analytics Application.get_env(:stitch, :analytics)
+
   @doc """
   Create a user with only the email field set. The user is not
   associated with any team.
@@ -87,7 +89,7 @@ defmodule Stitch.Accounts do
 
   defp analytics_identify_and_group(user) do
     Stitch.Task.start(fn ->
-      Stitch.Analytics.identify_and_group(user)
+      @analytics.identify_and_group(user)
     end)
   end
 

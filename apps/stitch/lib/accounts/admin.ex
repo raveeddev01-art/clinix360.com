@@ -8,6 +8,8 @@ defmodule Stitch.Accounts.Admin do
   alias Stitch.Accounts.User
   alias Stitch.Team
 
+  @analytics Application.get_env(:stitch, :analytics)
+
   @doc """
   Sets the disabled boolean flag to false for the provided user.
   """
@@ -70,7 +72,7 @@ defmodule Stitch.Accounts.Admin do
   def update_user(_, _), do: {:error, "Invalid User ID or Parameters"}
 
   defp analytics_identify(user) do
-    Task.start(fn -> Stitch.Analytics.identify(user) end)
+    Task.start(fn -> @analytics.identify(user) end)
   end
 
   def promote_admin(promoter, target_id) do
