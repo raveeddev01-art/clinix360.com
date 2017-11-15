@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.{Group, GroupQueries, GroupAuthorization, TeamAuthorization, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
 
   def index(conn, %{"slug" => slug}) do
     user = conn.assigns.current_user
@@ -226,6 +226,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> json(%{message: "Not authorized to toggle the room's privacy setting."})
       true ->
         {:ok, group} = Group.toggle_public(group, public)
+        TeamChannel.broadcast_group_public_status(conn.assigns.team, group)
         group = GroupQueries.load_user_data(group, user)
         render conn, "show.json", group: group, user_id: user.id
     end

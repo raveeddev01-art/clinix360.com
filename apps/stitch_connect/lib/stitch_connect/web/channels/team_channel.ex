@@ -102,6 +102,10 @@ defmodule StitchConnect.Web.TeamChannel do
     @endpoint.broadcast("team:lobby:#{team.id}", "user_info", user_json)
   end
 
+  def broadcast_group_public_status(%Stitch.Team{} = team, %Stitch.Group{} = group) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "group_public_status", %{group_id: group.id, public: group.public})
+  end
+
   def terminate(_reason, socket) do
     {:ok, socket}
   end
