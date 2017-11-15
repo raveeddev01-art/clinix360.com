@@ -78,7 +78,7 @@ defmodule Stitch.Message.LinkPreview do
   end
 
   defp generate_link_preview_param(link) do
-    case HTTPoison.get(link) do
+    case HTTPoison.get(link, [], follow_redirect: true) do
       {:ok, response} ->
         html = response.body
         title = title(html)

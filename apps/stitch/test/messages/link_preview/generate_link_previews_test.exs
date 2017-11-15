@@ -16,6 +16,18 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
     assert link_preview.image_url == "https://reactjs.org/logo-og.png"
   end
 
+  test "message with a link that redirects" do
+    message = insert(:message, text_content: "lorem https://www.google.com ipsum")
+
+    Stitch.Message.LinkPreview.generate_link_previews(message)
+
+    message = Stitch.MessageQueries.get_by_id(message.id)
+    assert message.link_previews_generated
+    assert [link_preview] = message.link_previews
+    assert link_preview.link == "https://www.google.com"
+    assert link_preview.title == "Google"
+  end
+
   test "message with more than 5 links" do
     message = insert :message, text_content: """
     https://www.youtube.com/watch?v=3tmd-ClpJxA
