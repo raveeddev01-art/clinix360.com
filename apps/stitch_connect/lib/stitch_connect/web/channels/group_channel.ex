@@ -10,6 +10,8 @@ defmodule StitchConnect.Web.GroupChannel do
     Message, MessageAuthorization, MessageQueries}
   alias StitchConnect.Web.Presence
 
+  @endpoint StitchConnect.Web.Endpoint
+
   intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
 
   def join("groups:__dm:" <> id_pair, _params, socket) do
@@ -236,6 +238,12 @@ defmodule StitchConnect.Web.GroupChannel do
         broadcast! socket, "msg_link_preview_deleted", %{message_id: message_id, link: link}
         {:reply, :ok, socket}
     end
+  end
+
+  def broadcast_message_pinned(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.message_json(message)
+    @endpoint.broadcast("groups:#{group.slug}", "message_pinned", message_json)
   end
 
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do

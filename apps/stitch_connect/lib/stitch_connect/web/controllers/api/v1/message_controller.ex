@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   alias Stitch.{Repo, Group, GroupAuthorization, GroupQueries,
                 Message, MessageAction, MessageQueries}
   alias StitchConnect.MessageLinkPreviewGenerator
-  alias StitchConnect.Web.{Endpoint, EventsChannel, PushNotifications}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, GroupChannel, PushNotifications}
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
@@ -177,6 +177,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         case MessageAction.toggle_pin(message, user) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
+            GroupChannel.broadcast_message_pinned(message)
             render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
             conn

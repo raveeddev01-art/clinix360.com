@@ -73,6 +73,10 @@ defmodule Stitch.Accounts do
 
           case Repo.update(changeset) do
             {:ok, user} ->
+              attrs
+              |> Map.get("invites", [])
+              |> Enum.each(& Stitch.Invitation.invite_to_team(user.id, &1))
+
               {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               analytics_identify_and_group(user)
               analytics_track_new_team_created(user)
