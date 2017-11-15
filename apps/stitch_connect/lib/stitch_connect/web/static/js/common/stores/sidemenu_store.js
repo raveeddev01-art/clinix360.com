@@ -466,6 +466,14 @@ class SidemenuStore {
       userStore.onUserInfo(user);
     }
   };
+
+  @action
+  onTeamRenamed = ({ name }) => {
+    const { teamStore } = this.rootStore;
+
+    this.teamName = name;
+    teamStore.onRenamed({ name });
+  };
 }
 
 export default SidemenuStore;

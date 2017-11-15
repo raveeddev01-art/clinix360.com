@@ -72,10 +72,7 @@ class TeamStore {
 
   @action
   onRenamed = ({ name }) => {
-    const { sidemenuStore } = this.rootStore;
-
     this.name = name;
-    sidemenuStore.teamName = name;
   };
 }
 
