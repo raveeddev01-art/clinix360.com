@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
+import some from "lodash/some";
 
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
@@ -160,18 +161,16 @@ class MessageForm extends Component {
     const { uploadStore } = this.props;
     const items = evt.clipboardData.items;
 
-    items.some(item => {
+    some(items, item => {
       const file = item.getAsFile();
 
-      if (file) {
         // browser only allows reading images. other files will be returned as null
-        if (file) {
-          const fileName = evt.clipboardData.getData("Text");
-          uploadStore.openUploadModal(file, fileName);
-          // NOTE: for now, we supports pasting only 1 file. Stacking can be done later.
-          evt.preventDefault();
-          return true;
-        }
+      if (file) {
+        const fileName = evt.clipboardData.getData("Text");
+        uploadStore.openUploadModal(file, fileName);
+        // NOTE: for now, we supports pasting only 1 file. Stacking can be done later.
+        evt.preventDefault();
+        return true;
       }
 
       return false;
