@@ -257,7 +257,7 @@ class Subscription extends React.Component {
         {subscription.tier === "TRIAL" &&
           subscription.remaining_days <= 0 && (
             <span>
-              Request a free trial extension by clicking&nbsp;
+              Request a free trial extension by clicking{" "}
               <a href="mailto:support@teamstitch.com?subject=Trial Extension Request&amp;body=I would like to request an extension to our Stitch Connect trial for the following reasons:">
                 here
               </a>.
@@ -266,8 +266,11 @@ class Subscription extends React.Component {
         {subscription.tier !== "TRIAL" &&
           subscription.remaining_days > 0 && (
             <span>
-              Click <a className="downgrade-plan">here</a> to cancel your
-              subscription.
+              Click{" "}
+              <a href="mailto:support@teamstitch.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Stitch Connect subscription for the following reasons:">
+                here
+              </a>{" "}
+              to cancel your subscription.
             </span>
           )}
       </p>
