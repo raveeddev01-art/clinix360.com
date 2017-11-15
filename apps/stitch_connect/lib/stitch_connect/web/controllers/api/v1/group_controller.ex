@@ -263,6 +263,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
     case Group.hide(group, conn.assigns.current_user.id) do
       {:ok, _} ->
+        EventsChannel.broadcast_group_hidden(conn.assigns.current_user, group, true)
         json(conn, %{message: "Room hidden"})
       {:error, message} ->
         conn
@@ -282,6 +283,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       true ->
         case Group.unhide(group, conn.assigns.current_user.id) do
           {:ok, _} ->
+            EventsChannel.broadcast_group_hidden(conn.assigns.current_user, group, false)
             json(conn, %{message: "Room unhidden"})
           {:error, message} ->
             conn
