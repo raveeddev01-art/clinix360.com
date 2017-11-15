@@ -34,6 +34,5 @@ defmodule Stitch.Invitation.Email do
         "content": "https://#{invitation.team.slug}.teamstitch.com/invitations/accept/#{invitation.invite_token}"
       },
     ])
-    |> Stitch.Mailer.deliver_later
   end
 end

@@ -143,6 +143,7 @@ defmodule Stitch.Invitation do
           {:error, "This invitation has been accepted already."}
         false ->
           Invitation.Email.team_invitation("#{user.first_name} #{user.last_name}", invitation)
+          |> Stitch.Mailer.deliver_later
           {:ok, invitation}
       end
     else
