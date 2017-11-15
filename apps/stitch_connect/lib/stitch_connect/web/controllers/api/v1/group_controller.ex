@@ -160,7 +160,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def join(conn, %{"id" => group_id}) do
     group = GroupQueries.get_by_id(group_id)
 
-    case Stitch.TeamAuthorization.user_is_member?(conn.assigns.current_user.team_id, conn.assigns.current_user.id) do
+    case TeamAuthorization.user_is_member?(conn.assigns.current_user.team_id, conn.assigns.current_user.id) do
       true ->
         case Group.add_user(group, conn.assigns.current_user.id) do
           {:error, _, _, _} ->
