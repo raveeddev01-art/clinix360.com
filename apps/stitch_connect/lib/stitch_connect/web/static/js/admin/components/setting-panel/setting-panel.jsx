@@ -57,10 +57,10 @@ class SettingPanel extends Component {
 
   render() {
     const { isEditing } = this.state;
-    const { title, description } = this.props;
+    const { title } = this.props;
 
     return (
-      <div>
+      <div className="panel-settings">
         <Button
           bsStyle="default"
           className="action-edit btn-fancy pull-right"
@@ -96,6 +96,7 @@ SettingPanel.defaultProps = {
   children: null,
   onSave: () => {},
   onEdit: () => {},
+  description: "",
   saveButtonText: "Save Changes",
   disableSave: false
 };

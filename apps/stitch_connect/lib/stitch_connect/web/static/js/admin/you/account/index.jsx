@@ -23,11 +23,8 @@ class AccountSettings extends Component {
     return (
       <Panel className="admin-panel" header={header}>
         <UsernamePanel />
-        <hr />
         <EmailPanel />
-        <hr />
         <PasswordPanel />
-        <hr />
         <PINPanel />
       </Panel>
     );

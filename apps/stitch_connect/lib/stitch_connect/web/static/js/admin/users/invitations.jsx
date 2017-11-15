@@ -61,7 +61,7 @@ export default class UsersInvitations extends Component {
     const { email } = this.state;
 
     return (
-      <Panel className="admin-panel" header={header}>
+      <Panel className="admin-panel has-style" header={header}>
         <h4>Add invitation e-mails</h4>
         <FormGroup controlId="formControlsTextarea">
           <FormControl

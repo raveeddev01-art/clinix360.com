@@ -23,12 +23,9 @@ class TeamSettings extends Component {
     return (
       <Panel className="admin-panel" header={header}>
         <TeamNamePanel />
-        <hr />
         <SecurityLockoutPanel />
-        <hr />
         <InvitationControlPanel />
-        {/* <hr />
-        <DeleteTeamPanel /> */}
+        {/* <DeleteTeamPanel /> */}
       </Panel>
     );
   }

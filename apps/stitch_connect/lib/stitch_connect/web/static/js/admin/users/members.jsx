@@ -23,7 +23,7 @@ export default class UsersMembers extends Component {
     const offlineUsers = membersStore.offlineUsers;
 
     return (
-      <Panel className="admin-panel" header={header}>
+      <Panel className="admin-panel has-style" header={header}>
         <p className="m-b-20">
           Manage your users by controlling admin abilities and account status.
           For more information on how account enabling and disabling works, see

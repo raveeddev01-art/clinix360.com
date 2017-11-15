@@ -23,12 +23,9 @@ class ProfileSettings extends Component {
     return (
       <Panel className="admin-panel" header={header}>
         <NamePanel />
-        <hr />
         <PhoneNumberPanel />
-        <hr />
         <TitlePanel />
-        {/* <hr />
-        <ProfileImagePanel /> */}
+        {/* <ProfileImagePanel /> */}
       </Panel>
     );
   }

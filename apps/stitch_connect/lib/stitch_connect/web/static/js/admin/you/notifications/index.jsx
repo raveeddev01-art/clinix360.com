@@ -22,11 +22,8 @@ export default class YouNotifications extends Component {
     return (
       <Panel className="admin-panel" header={header}>
         <BrowserNotification />
-        <hr />
         <EmailNotification />
-        <hr />
         <DesktopNotification />
-        <hr />
         <ChannelNotifications />
       </Panel>
     );

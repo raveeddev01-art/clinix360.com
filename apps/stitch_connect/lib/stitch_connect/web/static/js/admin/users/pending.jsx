@@ -37,7 +37,7 @@ class UsersPending extends Component {
 
   render() {
     return (
-      <Panel className="admin-panel" header={header}>
+      <Panel className="admin-panel has-style" header={header}>
         <p className="m-b-20">
           View any outstanding invitations to join the team here. Revoking an
           invite will remove it from this list and deactivate the invite link.
