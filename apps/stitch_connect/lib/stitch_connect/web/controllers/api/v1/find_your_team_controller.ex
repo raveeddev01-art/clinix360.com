@@ -8,13 +8,10 @@ defmodule StitchConnect.Web.Api.V1.FindYourTeamController do
       |> FindYourTeam.create_or_get_token!
       |> FindYourTeam.email(StitchConnect.Web.Endpoint.url)
       |> Stitch.Mailer.deliver_later
-
-      json(conn, %{message: "Email has been sent to #{email}. Please check your inbox."})
-    else
-      conn
-      |> put_status(:not_found)
-      |> json(%{message: "Email not found."})
     end
+
+    conn
+    |> json(%{message: "Email has been sent to #{email}. Please check your inbox."})
   end
 
   def delete(conn, %{"token" => token}) do
