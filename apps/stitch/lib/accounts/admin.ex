@@ -15,9 +15,12 @@ defmodule Stitch.Accounts.Admin do
   """
   def activate(%Team{id: team_id}, user_id) do
     if user = Repo.get_by(User, team_id: team_id, id: user_id) do
-      user
-      |> Ecto.Changeset.change(disabled: false)
-      |> Repo.update
+      result =
+        user
+        |> Ecto.Changeset.change(disabled: false)
+        |> Repo.update
+      case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+      result
     else
       {:error, :not_found}
     end
@@ -29,9 +32,12 @@ defmodule Stitch.Accounts.Admin do
   def deactivate(%Team{id: team_id}, user_id) do
     if user = Repo.get_by(User, team_id: team_id, id: user_id) do
       analytics_track_user_disabled(user)
-      user
-      |> Ecto.Changeset.change(disabled: true)
-      |> Repo.update
+      result =
+        user
+        |> Ecto.Changeset.change(disabled: true)
+        |> Repo.update
+      case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+      result
     else
       {:error, :not_found}
     end
@@ -66,7 +72,7 @@ defmodule Stitch.Accounts.Admin do
       |> User.changeset(params)
       |> Repo.update
 
-    case result, do: ({:ok, user} -> analytics_identify(user); _ -> :ignore)
+    case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
     result
   end
   def update_user(_, _), do: {:error, "Invalid User ID or Parameters"}
