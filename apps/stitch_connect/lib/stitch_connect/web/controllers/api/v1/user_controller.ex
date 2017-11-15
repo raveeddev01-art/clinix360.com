@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   alias Stitch.{Accounts.User, UserQueries}
-  alias StitchConnect.Web.{EventsChannel, TeamChannel}
+  alias StitchConnect.Web.TeamChannel
 
   def index(conn, _) do
     users = UserQueries.users_for_team(conn.assigns.current_user.team_id)
