@@ -1,29 +1,52 @@
 class ChannelStore {
-  groupChannelTopic = ""; // groupChannelTopic points to current group channel. used to leave the channel before joining a new.
   channels = {};
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
 
+  /**
+   * Joins the channel topic
+   * 
+   * @param {string} topic 
+   * @param {Object} options 
+   */
   join(topic, options = {}) {
-    if (this.channels[topic]) {
-      this.channels[topic].leave();
-    }
+    this.leave(topic);
 
     this.channels[topic] = socket.channel(topic, options);
+
     return this.channels[topic].join();
   }
 
+  /**
+   * Leaves the channel topic
+   * 
+   * @param {string} topic 
+   */
+  leave(topic) {
+    if (this.channels[topic]) {
+      this.channels[topic].leave();
+
+      delete this.channels[topic];
+    }
+  }
+
+  // ///////////// //
+  // Event Channel //
+  // ///////////// //
   get eventChannelTopic() {
     return `events:${currentUser.id}`;
   }
 
-  joinEventChannel(options = {}) {
-    const { sidemenuStore, userStore } = this.rootStore;
-    const channel = this.join(this.eventChannelTopic, options);
+  get eventChannel() {
+    return this.channels[this.eventChannelTopic];
+  }
 
-    this.eventChannel.on("user_info", userStore.onUpdateUser);
+  joinEventChannel(options = {}) {
+    const { sidemenuStore } = this.rootStore;
+    const joined = this.join(this.eventChannelTopic, options);
+
     this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
     this.eventChannel.on("joined_group", sidemenuStore.onJoinedGroup);
     this.eventChannel.on("left_group", sidemenuStore.onLeftGroup);
@@ -33,48 +56,70 @@ class ChannelStore {
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache
     });
-    this.eventChannel.on("logout", ({session_id}) => {
-      if (window.sessionId == session_id) {
+    this.eventChannel.on("logout", ({ session_id: sessionId }) => {
+      if (window.sessionId === sessionId) {
         window.location.reload();
       }
-    })
+    });
 
-    return channel;
+    return joined;
   }
 
-  get eventChannel() {
-    return this.channels[this.eventChannelTopic];
-  }
+  // ///////////// //
+  // Group Channel //
+  // ///////////// //
+  get groupChannelTopic() {
+    const { groupStore } = this.rootStore;
 
-  joinGroupChannel(options = {}) {
-    if (this.groupChannelTopic) {
-      this.channels[this.groupChannelTopic].leave();
-    }
-    this.groupChannelTopic = this.rootStore.groupStore.channelTopic;
-    return this.join(this.rootStore.groupStore.channelTopic, options);
+    return `groups:${groupStore.slug}`;
   }
 
   get groupChannel() {
-    return this.channels[this.rootStore.groupStore.channelTopic];
+    return this.channels[this.groupChannelTopic];
   }
 
-  joinTeamLobbyChannel(options = {}) {
-    return this.join(
-      this.rootStore.presenceStore.teamLobbyChannelTopic,
-      options
-    );
+  joinGroupChannel(options = {}) {
+    const joined = this.join(this.groupChannelTopic, options);
+
+    return joined;
   }
 
-  get teamLobbyChannel() {
-    return this.channels[this.rootStore.presenceStore.teamLobbyChannelTopic];
+  // //////////// //
+  // Team Channel //
+  // //////////// //
+  get teamChannelTopic() {
+    const { presenceStore } = this.rootStore;
+
+    return `team:lobby:${presenceStore.teamId}`;
   }
 
-  leaveAllChannelsButTeamLobby() {
+  get teamChannel() {
+    return this.channels[this.teamChannelTopic];
+  }
+
+  joinTeamChannel(options = {}) {
+    const { presenceStore, sidemenuStore } = this.rootStore;
+
+    const joined = this.join(this.teamChannelTopic, options);
+
+    this.teamChannel.on("presence_state", presenceStore.onPresenceState);
+    this.teamChannel.on("presence_diff", presenceStore.onPresenceDiff);
+    this.teamChannel.on("locked", presenceStore.onLocked);
+    this.teamChannel.on("unlocked", presenceStore.onUnlocked);
+
+    this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
+    this.teamChannel.on("user_joined", sidemenuStore.onUserJoined);
+    this.teamChannel.on("user_info", sidemenuStore.onUserInfo);
+
+    return joined;
+  }
+
+  leaveAllChannelsButTeam() {
     Object.keys(this.channels)
-      .filter(
-        topic => topic !== this.rootStore.presenceStore.teamLobbyChannelTopic
-      )
-      .forEach(topic => this.channels[topic].leave());
+      .filter(topic => topic !== this.teamChannelTopic)
+      .forEach(topic => {
+        this.leave(topic);
+      });
   }
 }
 

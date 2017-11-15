@@ -27,11 +27,6 @@ class GroupStore {
   }
 
   @computed
-  get channelTopic() {
-    return `groups:${this.slug}`;
-  }
-
-  @computed
   get onlineUsers() {
     return this.users.filter(user =>
       this.rootStore.presenceStore.isOnline(`${user.id}`)
@@ -64,9 +59,15 @@ class GroupStore {
 
   @action
   postJoin = () => {
-    this.rootStore.messageStore.joinGroupChannel();
-    this.rootStore.pinnedMessageStore.reset();
-    this.rootStore.groupPresenceStore.subscribeToGroupChannel();
+    const {
+      messageStore,
+      pinnedMessageStore,
+      groupPresenceStore
+    } = this.rootStore;
+
+    messageStore.joinGroupChannel();
+    pinnedMessageStore.reset();
+    groupPresenceStore.subscribeToGroupChannel();
   };
 
   @action

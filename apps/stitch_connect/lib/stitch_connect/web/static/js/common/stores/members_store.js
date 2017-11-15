@@ -78,7 +78,7 @@ class MembersStore {
 
   connectPresence = () => {
     // @TODO refactor presence stuff to presence_store
-    const lobby = this.rootStore.channelStore.teamLobbyChannel;
+    const lobby = this.rootStore.channelStore.teamChannel;
 
     lobby.on("presence_state", this.onPresenceState);
     lobby.on("presence_diff", this.onPresenceDiff);
