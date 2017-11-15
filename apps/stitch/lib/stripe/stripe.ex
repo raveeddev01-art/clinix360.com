@@ -34,11 +34,13 @@ defmodule Stitch.Stripe do
   @doc """
   Creates a new subscription for a customer.
   """
+  @callback create_subscription(customer_id :: String.t, plan_id :: String.t, user_count :: pos_integer) :: {:ok, subscription} | :error
   @callback create_subscription(customer_id :: String.t, plan_id :: String.t, user_count :: pos_integer, options :: [{:trial_end_date, DateTime.t}]) :: {:ok, subscription} | :error
 
   @doc """
   Updates an existing subscription for a customer to a different plan.
   """
+  @callback update_subscription_plan(customer_id :: String.t, subscription_id :: String.t, plan_id :: String.t) :: {:ok, subscription} | :error
   @callback update_subscription_plan(customer_id :: String.t, subscription_id :: String.t, plan_id :: String.t, options :: [{:trial_end_date, DateTime.t}]) :: {:ok, subscription} | :error
 
   @doc """
