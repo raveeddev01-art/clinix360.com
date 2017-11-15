@@ -7,7 +7,7 @@ defmodule Stitch.Analytics do
 
   import Ecto.Query
   alias Stitch.Analytics.Event
-  alias Stitch.Repo
+  alias Stitch.{Repo, Team}
   alias Stitch.Accounts.User
 
   @behaviour Stitch.Analytics.Behaviour
@@ -16,13 +16,19 @@ defmodule Stitch.Analytics do
   Gets user traits, gets team traits, and records them. It associates an
   identified user with their team.
 
+  If given a team struct it finds all users in a team and runs an identify and
+  group call per user.
+
   ## Example
 
       iex> identify_and_group(%User{...})
       :ok
 
+      iex> identify_and_group(%Team{...})
+      :ok
+
   """
-  @spec identify_and_group(User.t) :: :ok | :error
+  @spec identify_and_group(User.t | Team.t) :: :ok | :error
   @impl Stitch.Analytics.Behaviour
   def identify_and_group(%User{} = user) do
     team            = Stitch.TeamQueries.get_by_id(user.team_id)
@@ -36,6 +42,13 @@ defmodule Stitch.Analytics do
     else
       _ -> :error
     end
+  end
+  def identify_and_group(%Team{} = team) do
+    results =
+      for user <- Stitch.TeamQueries.list_users(team) do
+        Stitch.Analytics.identify_and_group(user)
+      end
+    if Enum.all?(results, &(&1 == :ok)), do: :ok, else: :error
   end
 
   @doc """

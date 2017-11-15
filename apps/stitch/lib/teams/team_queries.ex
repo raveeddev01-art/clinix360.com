@@ -40,6 +40,23 @@ defmodule Stitch.TeamQueries do
   end
 
   @doc """
+  Returns a list of users for a team.
+
+  ## Examples
+
+      iex> list_users(%Team{...})
+      [%User{...}, %User{...}, ...]
+
+  """
+  @spec list_users(Team.t) :: [User.t]
+  def list_users(%Team{id: team_id}) do
+    query =
+      from u in User,
+      where: u.team_id == ^team_id
+    Repo.all(query)
+  end
+
+  @doc """
   Returns the team owner who originally created the team.
 
   ## Examples

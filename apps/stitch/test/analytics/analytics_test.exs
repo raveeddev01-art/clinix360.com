@@ -2,47 +2,68 @@ defmodule Stitch.AnalyticsTest do
   use Stitch.DataCase
   alias Stitch.Analytics
 
-  test "identify_and_group/1 creates two event records with correct payload" do
-    subscription = insert(:subscription)
-    team = insert(:team, subscription: subscription)
-    user = insert(:user, team: team)
+  describe "identify_and_group/1" do
+    test "identify_and_group/1 with user" do
+      subscription = insert(:subscription)
+      team = insert(:team, subscription: subscription)
+      user = insert(:user, team: team)
 
-    :ok = Analytics.identify_and_group(user)
+      :ok = Analytics.identify_and_group(user)
 
-    events = Analytics.list_events()
+      events = Analytics.list_events()
 
-    assert length(events) == 2
+      assert length(events) == 2
 
-    identify_request = Enum.find(events, &(&1.payload["type"] == "identify"))
-    group_request = Enum.find(events, &(&1.payload["type"] == "group"))
-    identify_payload = identify_request.payload
-    group_payload = group_request.payload
+      identify_request = Enum.find(events, &(&1.payload["type"] == "identify"))
+      group_request = Enum.find(events, &(&1.payload["type"] == "group"))
+      identify_payload = identify_request.payload
+      group_payload = group_request.payload
 
-    expected_identify_traits = %{
-      "email"     => user.email,
-      "team_name" => team.name,
-      "team_slug" => team.slug,
-      "team_id"   => Integer.to_string(team.id),
-      "plan"      => subscription.tier,
-      "status"    => "enabled"
-    }
+      expected_identify_traits = %{
+        "email"     => user.email,
+        "team_name" => team.name,
+        "team_slug" => team.slug,
+        "team_id"   => Integer.to_string(team.id),
+        "plan"      => subscription.tier,
+        "status"    => "enabled"
+      }
 
-    assert identify_payload["type"] == "identify"
-    assert identify_payload["userId"] == Integer.to_string(user.id)
-    assert identify_payload["traits"] == expected_identify_traits
-    assert identify_payload["timestamp"]
+      assert identify_payload["type"] == "identify"
+      assert identify_payload["userId"] == Integer.to_string(user.id)
+      assert identify_payload["traits"] == expected_identify_traits
+      assert identify_payload["timestamp"]
 
-    expected_group_traits = %{
-      "team_name" => team.name,
-      "team_slug" => team.slug,
-      "team_id"   => Integer.to_string(team.id),
-      "plan"      => subscription.tier,
-    }
+      expected_group_traits = %{
+        "team_name" => team.name,
+        "team_slug" => team.slug,
+        "team_id"   => Integer.to_string(team.id),
+        "plan"      => subscription.tier,
+      }
 
-    assert group_payload["type"] == "group"
-    assert group_payload["userId"] == Integer.to_string(user.id)
-    assert group_payload["traits"] == expected_group_traits
-    assert group_payload["timestamp"]
+      assert group_payload["type"] == "group"
+      assert group_payload["userId"] == Integer.to_string(user.id)
+      assert group_payload["traits"] == expected_group_traits
+      assert group_payload["timestamp"]
+    end
+
+    test "identify_and_group/1 with team" do
+      subscription = insert(:subscription)
+      team = insert(:team, subscription: subscription)
+      insert(:user, team: team)
+      insert(:user, team: team)
+
+      :ok = Analytics.identify_and_group(team)
+
+      events = Analytics.list_events()
+
+      assert length(events) == 4
+
+      identify_request = Enum.filter(events, &(&1.payload["type"] == "identify"))
+      group_request = Enum.filter(events, &(&1.payload["type"] == "group"))
+
+      assert length(identify_request) == 2
+      assert length(group_request) == 2
+    end
   end
 
   test "identify/1 creates event record with correct payload" do
