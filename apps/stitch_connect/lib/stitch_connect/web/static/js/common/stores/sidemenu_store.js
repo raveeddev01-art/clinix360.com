@@ -453,6 +453,19 @@ class SidemenuStore {
   onUserJoined = user => {
     this.users.push(user);
   };
+
+  @action
+  onUserInfo = user => {
+    const index = this.users.findIndex(u => u.id === user.id);
+
+    this.users[index] = user;
+
+    if (user.id === currentUser.id) {
+      const { userStore } = this.rootStore;
+
+      userStore.onUserInfo(user);
+    }
+  };
 }
 
 export default SidemenuStore;

@@ -44,10 +44,9 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
-    const { sidemenuStore, userStore } = this.rootStore;
+    const { sidemenuStore } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
-    this.eventChannel.on("user_info", userStore.onUpdateUser);
     this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
     this.eventChannel.on("joined_group", sidemenuStore.onJoinedGroup);
     this.eventChannel.on("left_group", sidemenuStore.onLeftGroup);
@@ -110,6 +109,7 @@ class ChannelStore {
 
     this.teamChannel.on("team_renamed", teamStore.onRenamed);
     this.teamChannel.on("user_joined", sidemenuStore.onUserJoined);
+    this.teamChannel.on("user_info", sidemenuStore.onUserInfo);
 
     return joined;
   }
