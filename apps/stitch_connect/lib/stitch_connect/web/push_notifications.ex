@@ -95,7 +95,7 @@ defmodule StitchConnect.Web.PushNotifications do
       |> new(token, apns_topic)
       |> put_badge(badge_value)
       |> put_sound("chime")
-      |> put_custom(new_msg_notification_custom_data(msg))
+      |> put_custom(%{ejson: new_msg_notification_custom_data(msg)})
     end)
     |> APNS.push(on_response: &handle_response_ios/1)
   end
@@ -109,7 +109,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> put_data(%{
       "badge" => to_string(badge_value),
       "message" => new_msg_notification_body(grp, msg),
-      "ejson" => new_msg_notification_custom_data(msg)
+      "ejson" => msg |> new_msg_notification_custom_data |> Poison.encode!
     })
     |> FCM.push(on_response: &handle_response_andriod/1)
   end
@@ -147,7 +147,6 @@ defmodule StitchConnect.Web.PushNotifications do
     |> Repo.preload(:user)
     |> StitchConnect.Web.Api.V1.MessageView.message_json
     |> Map.drop([:text_content, :fields])
-    |> Poison.encode!
   end
 
   def handle_response_andriod(notification) do
