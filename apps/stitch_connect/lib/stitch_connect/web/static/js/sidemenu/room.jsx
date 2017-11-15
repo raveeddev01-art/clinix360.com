@@ -91,7 +91,7 @@ class Room extends Component {
     const { sidemenuStore, room, history } = this.props;
     sidemenuStore.hideGroup(room.id).then(() => {
       sidemenuStore.loadGroups();
-      history.push("/rooms/general"); // when room is hidden, should redirect to general
+      history.push(`/rooms/${sidemenuStore.defaultGroup.slug}`); // when room is hidden, should redirect to general
     });
   };
 

@@ -145,6 +145,11 @@ class SidemenuStore {
     }, 0);
   }
 
+  @computed
+  get defaultGroup() {
+    return this.groups.find(g => g.is_default);
+  }
+
   @action
   loadGroups = () => {
     get("/api/v1/groups").then(response => {
