@@ -87,35 +87,8 @@ defmodule Stitch.Accounts do
 
   defp analytics_identify_and_group(user) do
     Stitch.Task.start(fn ->
-      team_id = user.team_id
-      team = Stitch.TeamQueries.get_by_id(team_id)
-      subscription = Stitch.Billing.get_subscription(team)
-      analytics_identify(user, team, subscription)
-      analytics_group(user, team, subscription)
+      Stitch.Analytics.identify_and_group(user)
     end)
-  end
-
-  defp analytics_identify(user, team, subscription) do
-    status = if user.disabled, do: "disabled", else: "enabled"
-    identify_traits = %{
-      "email"     => user.email,
-      "team_name" => team.name,
-      "team_slug" => team.slug,
-      "team_id"   => Integer.to_string(team.id),
-      "plan"      => subscription.tier,
-      "status"    => status
-    }
-    Stitch.Analytics.identify(user.id, identify_traits)
-  end
-
-  defp analytics_group(user, team, subscription) do
-    group_traits = %{
-      "team_name" => team.name,
-      "team_slug" => team.slug,
-      "team_id"   => Integer.to_string(team.id),
-      "plan"      => subscription.tier,
-    }
-    Stitch.Analytics.group(%{user_id: user.id, team_id: team.id}, group_traits)
   end
 
   defp analytics_track_new_team_created(user) do

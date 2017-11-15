@@ -70,18 +70,7 @@ defmodule Stitch.Accounts.Admin do
   def update_user(_, _), do: {:error, "Invalid User ID or Parameters"}
 
   defp analytics_identify(user) do
-    team = Stitch.TeamQueries.get_by_id(user.team_id)
-    subscription = Stitch.Billing.get_subscription(team)
-    status = if user.disabled, do: "disabled", else: "enabled"
-    identify_traits = %{
-      "email"     => user.email,
-      "team_name" => team.name,
-      "team_slug" => team.slug,
-      "team_id"   => Integer.to_string(team.id),
-      "plan"      => subscription.tier,
-      "status"    => status
-    }
-    Stitch.Analytics.identify(user.id, identify_traits)
+    Task.start(fn -> Stitch.Analytics.identify(user) end)
   end
 
   def promote_admin(promoter, target_id) do

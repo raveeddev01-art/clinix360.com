@@ -8,6 +8,49 @@ defmodule Stitch.Analytics do
   import Ecto.Query
   alias Stitch.Analytics.Event
   alias Stitch.Repo
+  alias Stitch.Accounts.User
+
+  @doc """
+  Gets user traits, gets team traits, and records them. It associates an
+  identified user with their team.
+
+  ## Example
+
+      iex> identify_and_group(%User{...})
+      :ok
+
+  """
+  @spec identify_and_group(User.t) :: :ok | :error
+  def identify_and_group(%User{} = user) do
+    team            = Stitch.TeamQueries.get_by_id(user.team_id)
+    subscription    = Stitch.Billing.get_subscription(team)
+    identify_traits = identify_traits(user, team, subscription)
+    group_traits    = group_traits(team, subscription)
+
+    with {:ok, _} <- identify(user.id, identify_traits),
+         {:ok, _} <- group(%{user_id: user.id, team_id: team.id}, group_traits) do
+      :ok
+    else
+      _ -> :error
+    end
+  end
+
+  @doc """
+  Gets user traits and records them.
+
+  ## Example
+
+      iex> identify(%User{...})
+      {:ok, %Event{...}}
+
+  """
+  @spec identify(User.t) :: {:ok, Event.t} | {:error, Ecto.Changeset.t}
+  def identify(%User{} = user) do
+    team         = Stitch.TeamQueries.get_by_id(user.team_id)
+    subscription = Stitch.Billing.get_subscription(team)
+    traits       = identify_traits(user, team, subscription)
+    identify(user.id, traits)
+  end
 
   @doc """
   Lets us tie a user to their actions and record traits about them.
@@ -85,6 +128,23 @@ defmodule Stitch.Analytics do
 
   defp ensure_binary(arg) when is_binary(arg), do: arg
   defp ensure_binary(arg) when is_integer(arg), do: Integer.to_string(arg)
+
+  defp identify_traits(user, team, subscription) do
+    status = if user.disabled, do: "disabled", else: "enabled"
+    %{"email"     => user.email,
+      "team_name" => team.name,
+      "team_slug" => team.slug,
+      "team_id"   => Integer.to_string(team.id),
+      "plan"      => subscription.tier,
+      "status"    => status}
+  end
+
+  defp group_traits(team, subscription) do
+    %{"team_name" => team.name,
+      "team_slug" => team.slug,
+      "team_id"   => Integer.to_string(team.id),
+      "plan"      => subscription.tier}
+  end
 
   @doc false
   def list_events() do
