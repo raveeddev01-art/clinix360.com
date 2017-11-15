@@ -9,12 +9,13 @@ const header = (
   </h1>
 );
 
-@inject("invitationStore", "titleStore")
+@inject("invitationStore", "titleStore", "adminPanelStore")
 @observer
 class UsersPending extends Component {
   componentWillMount() {
     this.props.invitationStore.loadInvitations();
     this.props.titleStore.setPageName("Pending");
+    this.props.adminPanelStore.setHeading("Pending");
   }
 
   _renderInvitations = () => {

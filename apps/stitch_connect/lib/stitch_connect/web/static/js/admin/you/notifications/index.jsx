@@ -11,10 +11,11 @@ const header = (
     <i className="fa fa-bell" /> Notifications
   </h1>
 );
-@inject("titleStore")
+@inject("titleStore", "adminPanelStore")
 export default class YouNotifications extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Notifications");
+    this.props.adminPanelStore.setHeading("Notifications");
   }
 
   render() {

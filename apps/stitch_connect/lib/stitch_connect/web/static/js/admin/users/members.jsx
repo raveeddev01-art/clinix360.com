@@ -9,11 +9,12 @@ const header = (
   </h1>
 );
 
-@inject("membersStore", "titleStore")
+@inject("membersStore", "titleStore", "adminPanelStore")
 @observer
 export default class UsersMembers extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Members");
+    this.props.adminPanelStore.setHeading("Members");
   }
 
   render() {

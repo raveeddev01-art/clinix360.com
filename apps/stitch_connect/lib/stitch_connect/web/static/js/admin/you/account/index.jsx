@@ -12,10 +12,11 @@ const header = (
   </h1>
 );
 
-@inject("titleStore")
+@inject("titleStore", "adminPanelStore")
 class AccountSettings extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Account");
+    this.props.adminPanelStore.setHeading("Account");
   }
 
   render() {

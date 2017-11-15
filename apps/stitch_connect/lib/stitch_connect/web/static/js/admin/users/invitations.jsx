@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import Panel from 'react-bootstrap/lib/Panel';
-import Row from 'react-bootstrap/lib/Row';
-import Col from 'react-bootstrap/lib/Col';
-import FormGroup from 'react-bootstrap/lib/FormGroup';
-import FormControl from 'react-bootstrap/lib/FormControl';
-import HelpBlock from 'react-bootstrap/lib/HelpBlock';
-import Button from 'react-bootstrap/lib/Button';
+import Panel from "react-bootstrap/lib/Panel";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import FormControl from "react-bootstrap/lib/FormControl";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import Button from "react-bootstrap/lib/Button";
 
 const header = (
   <h1>
@@ -14,7 +14,7 @@ const header = (
   </h1>
 );
 
-@inject("teamStore", "titleStore")
+@inject("teamStore", "titleStore", "adminPanelStore")
 @observer
 export default class UsersInvitations extends Component {
   constructor(props) {
@@ -26,6 +26,7 @@ export default class UsersInvitations extends Component {
 
   componentWillMount() {
     this.props.titleStore.setPageName("Invitations");
+    this.props.adminPanelStore.setHeading("Invitations");
   }
 
   _handleChange = event => {
@@ -48,7 +49,7 @@ export default class UsersInvitations extends Component {
       post(`/api/v1/invitations`, {
         body: { email_collection: emails.join(",") }
       }).then(() => {
-        this.setState({ email: '' });
+        this.setState({ email: "" });
         notify.show("Invitations sent to all users");
       });
     } else {

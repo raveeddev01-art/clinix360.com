@@ -5,11 +5,12 @@ import { withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-@inject("teamStore", "presenceStore")
+@inject("teamStore", "presenceStore", "adminPanelStore")
 @observer
 class Topbar extends Component {
   render() {
-    const { onToggleSidebar } = this.props;
+    const { onToggleSidebar, adminPanelStore } = this.props;
+    const { heading } = adminPanelStore;
 
     return (
       <div className="flex-header admin-topbar">
@@ -20,7 +21,7 @@ class Topbar extends Component {
         </a>
         <span className="separator" />
         <h4>
-          <i className="fa fa-sliders" /> Control Panel
+          <i className="fa fa-sliders" /> {heading}
         </h4>
         <ul className="nav navbar-nav">
           <li>

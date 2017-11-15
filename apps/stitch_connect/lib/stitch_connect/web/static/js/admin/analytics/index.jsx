@@ -19,7 +19,7 @@ const datePeriodNames = {
   allTime: "All time"
 };
 
-@inject("titleStore")
+@inject("titleStore", "adminPanelStore")
 @observer
 export default class Analytics extends Component {
   constructor(props) {
@@ -34,6 +34,7 @@ export default class Analytics extends Component {
 
   componentWillMount() {
     this.props.titleStore.setPageName("Analytics");
+    this.props.adminPanelStore.setHeading("Analytics");
     this.loadReports(this.state.timePeriod);
   }
 
