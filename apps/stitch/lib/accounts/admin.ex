@@ -59,11 +59,30 @@ defmodule Stitch.Accounts.Admin do
 
   def update_user(user_id, params)
   when is_integer(user_id) and is_map(params) do
-     Repo.get(User, user_id)
-     |> User.changeset(params)
-     |> Repo.update
+    result =
+      Repo.get(User, user_id)
+      |> User.changeset(params)
+      |> Repo.update
+
+    case result, do: ({:ok, user} -> analytics_identify(user); _ -> :ignore)
+    result
   end
   def update_user(_, _), do: {:error, "Invalid User ID or Parameters"}
+
+  defp analytics_identify(user) do
+    team = Stitch.TeamQueries.get_by_id(user.team_id)
+    subscription = Stitch.Billing.get_subscription(team)
+    status = if user.disabled, do: "disabled", else: "enabled"
+    identify_traits = %{
+      "email"     => user.email,
+      "team_name" => team.name,
+      "team_slug" => team.slug,
+      "team_id"   => Integer.to_string(team.id),
+      "plan"      => subscription.tier,
+      "status"    => status
+    }
+    Stitch.Analytics.identify(user.id, identify_traits)
+  end
 
   def promote_admin(promoter, target_id) do
     user = Repo.get_by!(User, id: target_id, team_id: promoter.team_id)
