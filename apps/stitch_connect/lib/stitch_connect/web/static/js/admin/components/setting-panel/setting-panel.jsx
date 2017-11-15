@@ -6,8 +6,10 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 class SettingPanel extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       isEditing: false,
+      isSaving: false,
       disableSave: props.disableSave
     };
   }
@@ -24,23 +26,29 @@ class SettingPanel extends Component {
   };
 
   _onSave = () => {
-    this.props.onSave();
+    this.setState({ isSaving: true });
+    this.props.onSave().then(() => {
+      this.setState({ isSaving: false });
+    });
     this._toggleEdit(false);
   };
 
   _renderForm = () => {
     const { children, saveButtonText } = this.props;
+    const { isSaving } = this.state;
+
     return (
       <div className="clearfix edit-form">
         {children}
         <div className="clearfix">
           <Button
             bsStyle="primary"
-            className="btn-fancy pull-right"
+            className="btn-fancy"
             onClick={this._onSave}
-            disabled={this.state.disableSave}
+            disabled={isSaving || this.state.disableSave}
           >
             {saveButtonText}
+            {this._renderLoadingIcon()}
           </Button>
         </div>
       </div>
@@ -55,6 +63,13 @@ class SettingPanel extends Component {
     ));
   };
 
+  _renderLoadingIcon = () => {
+    const { isSaving } = this.state;
+    return isSaving ? (
+      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
+    ) : null;
+  };
+
   render() {
     const { isEditing } = this.state;
     const { title } = this.props;
@@ -66,7 +81,7 @@ class SettingPanel extends Component {
           className="action-edit btn-fancy pull-right"
           onClick={this._toggleEdit(!isEditing)}
         >
-          {!isEditing ? "Edit" : "Cancel"}
+          {!isEditing ? "Open" : "Close"}
         </Button>
         <h3>{title}</h3>
         {this._renderDescription()}
@@ -97,7 +112,7 @@ SettingPanel.defaultProps = {
   onSave: () => {},
   onEdit: () => {},
   description: "",
-  saveButtonText: "Save Changes",
+  saveButtonText: "Save",
   disableSave: false
 };
 

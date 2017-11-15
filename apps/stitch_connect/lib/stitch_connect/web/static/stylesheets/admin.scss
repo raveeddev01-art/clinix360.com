@@ -240,11 +240,18 @@ $admin-topbar-height-sm: 65px;
         background-color: #fff;
         border: 1px solid $border-color;
         border-radius: 4px;
-        padding: 2em 2em 1em;
+        padding: 2em;
         margin-bottom: 24px;
 
         h3 {
           margin-top: 0;
+          + .help-block {
+            margin-bottom: 0;
+          }
+        }
+
+        .edit-form {
+          margin-top: 10px;
         }
       }
 
@@ -321,7 +328,7 @@ $admin-topbar-height-sm: 65px;
         resize: none;
       }
 
-      ul:not(.dropdown-menu) {
+      ul:not(.dropdown-menu):not(.password-checklist) {
         padding-left: 25px;
         margin-bottom: 25px;
 
@@ -415,6 +422,12 @@ $admin-topbar-height-sm: 65px;
         &:active {
           position: relative;
           top: 3px;
+        }
+
+        i.fa {
+          &.on-right {
+            margin-left: 8px;
+          }
         }
       }
 

@@ -89,26 +89,26 @@ class UserStore {
 
   @action
   saveName = (firstName, lastName) => {
-    this.save({ first_name: firstName, last_name: lastName }).then(() => {
+    return this.save({
+      first_name: firstName,
+      last_name: lastName
+    }).then(() => {
       this.firstName = firstName;
       this.lastName = lastName;
-      notify.show("Name updated");
     });
   };
 
   @action
   savePhone = phoneNumber => {
-    this.save({ phone_number: phoneNumber }).then(() => {
+    return this.save({ phone_number: phoneNumber }).then(() => {
       this.phone = phoneNumber;
-      notify.show("Phone updated");
     });
   };
 
   @action
   saveTitle = title => {
-    this.save({ title }).then(() => {
+    return this.save({ title }).then(() => {
       this.title = title;
-      notify.show("Title updated");
     });
   };
 

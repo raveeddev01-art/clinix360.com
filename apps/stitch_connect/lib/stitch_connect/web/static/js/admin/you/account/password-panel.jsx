@@ -69,7 +69,7 @@ class PasswordPanel extends Component {
             <FormControl
               type="password"
               bsSize="large"
-              placeholder="Enter Old Password"
+              placeholder="Old Password"
               value={oldPassword}
               onChange={this._onChangeOldPassword}
             />
@@ -79,7 +79,7 @@ class PasswordPanel extends Component {
             <FormControl
               type="password"
               bsSize="large"
-              placeholder="Enter New Password"
+              placeholder="New Password"
               value={newPassword}
               onChange={this._onChangeNewPassword}
             />
