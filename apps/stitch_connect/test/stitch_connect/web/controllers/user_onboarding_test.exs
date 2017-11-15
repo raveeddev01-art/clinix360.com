@@ -1,9 +1,10 @@
 defmodule StitchConnect.Web.UserOnboardingTest do
   use StitchConnect.Web.ConnCase, async: true
+  use Bamboo.Test
+  import Ecto.Query
   alias StitchConnect.Web.Router.Helpers, as: Routes
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: SubdomainRoutes
-  alias Stitch.Repo
-  alias Stitch.Invitation
+  alias Stitch.{Accounts.User, Invitation, Repo}
 
   describe "PATCH /users/:id/complete-onboarding" do
     setup %{conn: conn} do
@@ -17,6 +18,7 @@ defmodule StitchConnect.Web.UserOnboardingTest do
     test "successful onboarding", %{conn: conn, team: team} do
       user = insert(:user, %{email: "user@example.com", onboarded: false})
 
+      invited_emails = ["foo@email.com", "bar@email.com"]
       conn =
         conn
         |> patch(Routes.api_v1_user_path(conn, :complete_onboarding, user.id), %{
@@ -27,12 +29,36 @@ defmodule StitchConnect.Web.UserOnboardingTest do
           phone_number: "1231231234",
           pin: "0000",
           roles: ["admin"],
-          team_id: team.id
+          team_id: team.id,
+          invites: invited_emails
         })
 
       assert response = json_response(conn, 200)
       assert response["id"] == user.id
       assert response["onboarded"] == true
+
+      invitee_ids = Repo.all from u in User,
+        select: u.id,
+        where: u.team_id == ^team.id,
+        where: u.onboarded == false,
+        where: u.email in ^invited_emails
+
+      invites = Repo.all from i in Invitation,
+        where: i.user_id in ^invitee_ids,
+        preload: [:user, :team]
+
+      assert length(invitee_ids) == 2
+      assert length(invites) == 2
+
+      inviter = Repo.get!(User, user.id)
+      inviter_name = "#{inviter.first_name} #{inviter.last_name}"
+      invites
+      |> Enum.map(fn invite ->
+        Invitation.Email.team_invitation(inviter_name, invite)
+      end)
+      |> Enum.each(fn email ->
+        assert_delivered_email email
+      end)
     end
 
     test "username format is invalid", %{conn: conn, team: team} do
