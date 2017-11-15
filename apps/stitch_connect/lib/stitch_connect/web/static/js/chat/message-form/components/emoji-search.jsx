@@ -107,11 +107,7 @@ class EmojiSearch extends Component {
       return this.searchResult;
     }
 
-    // filtering weird response when `_` is included
     const result = emojiIndex.search(filter);
-    if (result[0] && result[0].length) {
-      return [];
-    }
 
     this.currentFilter = filter;
     this.searchResult = result;

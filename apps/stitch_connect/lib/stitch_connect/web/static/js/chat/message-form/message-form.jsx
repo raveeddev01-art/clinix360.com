@@ -110,6 +110,8 @@ class MessageForm extends Component {
       if (!this.state.text) {
         messageStore.editLastMessage();
       }
+    } else if ([37, 38, 39, 40].indexOf(evt.keyCode) > -1) {
+      // Do nothing for arrow keys
     } else {
       // other keys
       // get the word of current cursor
@@ -229,7 +231,10 @@ class MessageForm extends Component {
     );
 
     setTimeout(() => {
-      this.textInput.setSelectionRange(cursorPos + 1, cursorPos + 1);
+      this.textInput.setSelectionRange(
+        cursorPos + word.length + 1,
+        cursorPos + word.length + 1
+      );
       this.textInput.focus();
     });
   };
