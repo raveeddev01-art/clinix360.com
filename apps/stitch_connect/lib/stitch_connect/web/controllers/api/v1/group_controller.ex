@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.{Group, GroupQueries, GroupAuthorization, TeamAuthorization, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
 
   def index(conn, %{"slug" => slug}) do
     user = conn.assigns.current_user
@@ -160,7 +160,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def join(conn, %{"id" => group_id}) do
     group = GroupQueries.get_by_id(group_id)
 
-    case Stitch.TeamAuthorization.user_is_member?(conn.assigns.current_user.team_id, conn.assigns.current_user.id) do
+    case TeamAuthorization.user_is_member?(conn.assigns.current_user.team_id, conn.assigns.current_user.id) do
       true ->
         case Group.add_user(group, conn.assigns.current_user.id) do
           {:error, _, _, _} ->
@@ -226,6 +226,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> json(%{message: "Not authorized to toggle the room's privacy setting."})
       true ->
         {:ok, group} = Group.toggle_public(group, public)
+        TeamChannel.broadcast_group_public_status(conn.assigns.team, group)
         group = GroupQueries.load_user_data(group, user)
         render conn, "show.json", group: group, user_id: user.id
     end
@@ -263,6 +264,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
     case Group.hide(group, conn.assigns.current_user.id) do
       {:ok, _} ->
+        EventsChannel.broadcast_group_hidden(conn.assigns.current_user, group, true)
         json(conn, %{message: "Room hidden"})
       {:error, message} ->
         conn
@@ -282,6 +284,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       true ->
         case Group.unhide(group, conn.assigns.current_user.id) do
           {:ok, _} ->
+            EventsChannel.broadcast_group_hidden(conn.assigns.current_user, group, false)
             json(conn, %{message: "Room unhidden"})
           {:error, message} ->
             conn
