@@ -1,4 +1,4 @@
-defmodule Stitch.Team.AuthorizationTest do
+defmodule Stitch.TeamAuthorizationTest do
   use ExUnit.Case, async: true
   import Stitch.Factory
 
@@ -11,9 +11,8 @@ defmodule Stitch.Team.AuthorizationTest do
       team = insert(:team)
       user = insert(:user, %{team_id: team.id})
 
-      team = Stitch.Team.Authorization.user_is_member?(team.id, user.id)
-      assert team != nil
-      assert user.team_id == team.id
+      result = Stitch.TeamAuthorization.user_is_member?(team.id, user.id)
+      assert result == true
     end
 
     test "returns false for non-matching team_id" do
@@ -21,7 +20,7 @@ defmodule Stitch.Team.AuthorizationTest do
       team_2 = insert(:team, %{slug: "def"})
       user = insert(:user, %{team_id: team_2.id})
 
-      result = Stitch.Team.Authorization.user_is_member?(team.id, user.id)
+      result = Stitch.TeamAuthorization.user_is_member?(team.id, user.id)
       assert result == false
     end
   end

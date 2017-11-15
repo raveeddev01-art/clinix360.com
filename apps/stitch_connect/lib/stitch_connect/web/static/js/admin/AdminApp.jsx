@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import cx from "classnames";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
@@ -17,12 +17,11 @@ import UsersPending from "./users/pending";
 import Billing from "./billing/billing";
 import Analytics from "./analytics/index";
 import Switcher from "../common/components/switcher/index";
+import { isAdmin } from "../util/utils";
 
 @inject("titleStore")
 @observer
 class AdminApp extends Component {
-  static requiresAdmin = true;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -51,6 +50,22 @@ class AdminApp extends Component {
     this.setState({ sidebarOpened: false });
   };
 
+  renderAdminRoutes = () => {
+    return [
+      <Route key="route_admin_team" exact path={`/admin/team`} component={TeamSettings} />,
+      <Route key="route_admin_team_settings" path={`/admin/team/settings`} component={TeamSettings} />,
+      <Route key="route_admin_team_security" path={`/admin/team/security`} component={TeamSecurity} />,
+      <Route key="route_admin_user_invitations"
+        path={`/admin/users/invitations`}
+        component={UsersInvitations}
+      />,
+      <Route key="route_admin_users_members" path={`/admin/users/members`} component={UsersMembers} />,
+      <Route key="route_admin_pending" path={`/admin/users/pending`} component={UsersPending} />,
+      <Route key="route_admin_billing" path={`/admin/billing`} component={Billing} />,
+      <Route key="route_admin_analytics" path={`/admin/analytics`} component={Analytics} />
+    ];
+  }
+
   render() {
     const { sidebarOpened } = this.state;
     const { titleStore } = this.props;
@@ -73,23 +88,15 @@ class AdminApp extends Component {
             onClick={() => this._hideSidebar()}
           >
             <Switch>
-              <Route exact path={`/admin/team`} component={TeamSettings} />
-              <Route path={`/admin/team/settings`} component={TeamSettings} />
-              <Route path={`/admin/team/security`} component={TeamSecurity} />
+              {isAdmin() && this.renderAdminRoutes()}
               <Route
                 path={`/admin/you/notifications`}
                 component={YouNotifications}
               />
               <Route path={`/admin/you/profile`} component={ProfileSettings} />
               <Route path={`/admin/you/account`} component={AccountSettings} />
-              <Route
-                path={`/admin/users/invitations`}
-                component={UsersInvitations}
-              />
-              <Route path={`/admin/users/members`} component={UsersMembers} />
-              <Route path={`/admin/users/pending`} component={UsersPending} />
-              <Route path={`/admin/billing`} component={Billing} />
-              <Route path={`/admin/analytics`} component={Analytics} />
+
+              <Redirect to={`/admin/you/account`} />
             </Switch>
           </div>
         </div>

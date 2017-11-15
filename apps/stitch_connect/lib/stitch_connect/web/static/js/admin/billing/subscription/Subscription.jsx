@@ -250,24 +250,27 @@ class Subscription extends React.Component {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://intercom.help/teamstitch/connect/admin/subscribing-and-billing"
+          href="https://teamstitch.com/pricing"
         >
           here
         </a>.{" "}
         {subscription.tier === "TRIAL" &&
           subscription.remaining_days <= 0 && (
             <span>
-              Request a free trial extension by{" "}
+              Request a free trial extension by clicking{" "}
               <a href="mailto:support@teamstitch.com?subject=Trial Extension Request&amp;body=I would like to request an extension to our Stitch Connect trial for the following reasons:">
-                clicking here
+                here
               </a>.
             </span>
           )}
         {subscription.tier !== "TRIAL" &&
           subscription.remaining_days > 0 && (
             <span>
-              Click <a className="downgrade-plan">here</a> to cancel your
-              subscription.
+              Click{" "}
+              <a href="mailto:support@teamstitch.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Stitch Connect subscription for the following reasons:">
+                here
+              </a>{" "}
+              to cancel your subscription.
             </span>
           )}
       </p>
@@ -278,13 +281,16 @@ class Subscription extends React.Component {
     const { subscription } = this.state;
     const belowTier = capitalize(getBelowTier(subscription.tier));
     const planItems = getPlanForTier(subscription.tier).items;
+    const invoiceAmount = (subscription.estimated_invoice_amount / 100).toFixed(
+      2
+    );
 
     return (
       <div className="subscribed">
         <p>
           Your plan will renew on <b>{subscription.valid_until}</b> for{" "}
-          <b>${subscription.estimated_invoice_amount}</b>.{" "}
-          <b>{capitalize(subscription.tier)}</b> includes{belowTier && (
+          <b>${invoiceAmount}</b>. <b>{capitalize(subscription.tier)}</b>{" "}
+          includes{belowTier && (
             <span>
               {" "}
               everything in <b>{belowTier}</b>, and
