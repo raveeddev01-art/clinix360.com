@@ -28,12 +28,16 @@ class TeamStore {
   };
 
   @action
-  editTeamName = newName => {
+  editTeamName = name => {
+    const { sidemenuStore } = this.rootStore;
+
     return put(`/api/v1/teams/${this.id}`, {
-      body: { name: newName }
+      body: { name }
     }).then(() => {
       notify.show("Team name updated");
-      this.name = newName;
+
+      this.name = name;
+      sidemenuStore.teamName = name;
     });
   };
 
@@ -64,6 +68,11 @@ class TeamStore {
       notify.show("Invitation settings updated");
       this.openInvitationsEnabled = enabled;
     });
+  };
+
+  @action
+  onRenamed = ({ name }) => {
+    this.name = name;
   };
 }
 

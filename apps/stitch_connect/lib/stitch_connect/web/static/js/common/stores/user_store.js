@@ -49,10 +49,10 @@ class UserStore {
   };
 
   @action
-  onUpdateUser = payload => {
-    if (payload.roles) {
-      window.currentUser.roles = payload.roles;
-      this.roles = payload.roles;
+  onUserInfo = user => {
+    if (user.roles) {
+      window.currentUser.roles = user.roles;
+      this.roles = user.roles;
     }
   };
 

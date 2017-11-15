@@ -29,7 +29,10 @@ class NamePanel extends Component {
     });
   };
   _onSave = () => {
-    this.props.userStore.saveName(this.state.firstName, this.state.lastName);
+    const { userStore } = this.props;
+    const { firstName, lastName } = this.state;
+
+    userStore.saveName(firstName, lastName);
   };
 
   _onChangeFirstName = evt => this.setState({ firstName: evt.target.value });

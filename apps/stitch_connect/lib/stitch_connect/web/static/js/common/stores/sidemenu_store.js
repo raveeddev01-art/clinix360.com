@@ -113,11 +113,24 @@ class SidemenuStore {
   }
 
   @computed
-  get usernameMap() {
+  get usersByUsername() {
     const map = {};
+
     this.users.forEach(user => {
       map[user.username] = user;
     });
+
+    return map;
+  }
+
+  @computed
+  get usersById() {
+    const map = {};
+
+    this.users.forEach(user => {
+      map[user.id] = user;
+    });
+
     return map;
   }
 
@@ -435,6 +448,32 @@ class SidemenuStore {
       duration
     });
   }
+
+  @action
+  onUserJoined = user => {
+    this.users.push(user);
+  };
+
+  @action
+  onUserInfo = user => {
+    const index = this.users.findIndex(u => u.id === user.id);
+
+    this.users[index] = user;
+
+    if (user.id === currentUser.id) {
+      const { userStore } = this.rootStore;
+
+      userStore.onUserInfo(user);
+    }
+  };
+
+  @action
+  onTeamRenamed = ({ name }) => {
+    const { teamStore } = this.rootStore;
+
+    this.teamName = name;
+    teamStore.onRenamed({ name });
+  };
 }
 
 export default SidemenuStore;
