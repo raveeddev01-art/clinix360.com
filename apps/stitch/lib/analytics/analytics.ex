@@ -16,8 +16,8 @@ defmodule Stitch.Analytics do
   Gets user traits, gets team traits, and records them. It associates an
   identified user with their team.
 
-  If given a team struct it finds all users in a team and runs an identify and
-  group call per user.
+  If given a team struct or id it finds all users in a team and runs an identify
+  and group call per user.
 
   ## Example
 
@@ -49,6 +49,11 @@ defmodule Stitch.Analytics do
         Stitch.Analytics.identify_and_group(user)
       end
     if Enum.all?(results, &(&1 == :ok)), do: :ok, else: :error
+  end
+  def identify_and_group(%{team_id: team_id}) do
+    team_id
+    |> Stitch.TeamQueries.get_by_id()
+    |> identify_and_group()
   end
 
   @doc """

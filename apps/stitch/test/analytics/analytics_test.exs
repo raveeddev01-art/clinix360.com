@@ -64,6 +64,25 @@ defmodule Stitch.AnalyticsTest do
       assert length(identify_request) == 2
       assert length(group_request) == 2
     end
+
+    test "identify_and_group/1 with team id" do
+      subscription = insert(:subscription)
+      team = insert(:team, subscription: subscription)
+      insert(:user, team: team)
+      insert(:user, team: team)
+
+      :ok = Analytics.identify_and_group(%{team_id: team.id})
+
+      events = Analytics.list_events()
+
+      assert length(events) == 4
+
+      identify_request = Enum.filter(events, &(&1.payload["type"] == "identify"))
+      group_request = Enum.filter(events, &(&1.payload["type"] == "group"))
+
+      assert length(identify_request) == 2
+      assert length(group_request) == 2
+    end
   end
 
   test "identify/1 creates event record with correct payload" do
