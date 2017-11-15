@@ -1,0 +1,2 @@
+before_release:
+  - mix ecto.migrate
