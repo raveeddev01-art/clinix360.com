@@ -20,11 +20,11 @@ class DisabledMembersPanel extends Component {
         <div className="admin-table m-b-20">
           <div className="table-head">
             <Row>
-              <Col sm={6}>Users</Col>
-              <Col sm={3} className="text-center">
+              <Col xs={6}>Users</Col>
+              <Col xs={3} className="text-center">
                 Roles
               </Col>
-              <Col sm={3} className="text-right">
+              <Col xs={3} className="text-right">
                 Actions
               </Col>
             </Row>

@@ -83,7 +83,7 @@ class MemberItem extends Component {
     return (
       <div className="table-item">
         <Row>
-          <Col sm={6} className="users-column">
+          <Col xs={6} className="users-column">
             <div className="title">
               {online ? (
                 <i className="fa fa-circle" />
@@ -96,11 +96,11 @@ class MemberItem extends Component {
             <div className="email text-muted">{user.email}</div>
           </Col>
 
-          <Col sm={3} className="status-column text-center">
+          <Col xs={3} className="status-column text-center">
             {user.roles.join(",")}
           </Col>
 
-          <Col sm={3} className="actions-column text-right">
+          <Col xs={3} className="actions-column text-right">
             <Button
               bsStyle="primary"
               onClick={this._toggleControls}

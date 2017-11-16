@@ -45,8 +45,10 @@ class PendingInvitationsPanel extends Component {
         <div className="admin-table m-b-20">
           <div className="table-head">
             <Row>
-              <Col xs={8}>Email Address</Col>
-              <Col xs={4} className="text-center">
+              <Col xs={7} lg={8}>
+                Email Address
+              </Col>
+              <Col xs={5} lg={4} className="text-center">
                 Actions
               </Col>
             </Row>

@@ -40,11 +40,11 @@ class PendingInvitationItem extends Component {
     return (
       <div className="table-item">
         <Row>
-          <Col xs={8} className="email-column">
+          <Col xs={7} lg={8} className="email-column">
             {this.props.email}
           </Col>
 
-          <Col xs={4} className="text-center">
+          <Col xs={5} lg={4} className="text-center">
             <Button onClick={this._revoke}>Revoke</Button>
             <Button onClick={this._resend}>Resend</Button>
           </Col>
