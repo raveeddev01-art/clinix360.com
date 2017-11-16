@@ -14,8 +14,8 @@ const description =
 class FullMembersPanel extends Component {
   render() {
     const { membersStore } = this.props;
-    const onlineUsers = membersStore.onlineUsers;
-    const offlineUsers = membersStore.offlineUsers;
+    const onlineUsers = membersStore.onlineUsers.filter(u => !u.disabled);
+    const offlineUsers = membersStore.offlineUsers.filter(u => !u.disabled);
 
     return (
       <SettingPanel saveButtonText="" title={title} description={description}>
@@ -23,13 +23,10 @@ class FullMembersPanel extends Component {
           <div className="table-head">
             <Row>
               <Col sm={6}>Users</Col>
-              <Col sm={2} className="text-center">
+              <Col sm={3} className="text-center">
                 Roles
               </Col>
-              <Col sm={2} className="text-center">
-                Status
-              </Col>
-              <Col sm={2} className="text-center">
+              <Col sm={3} className="text-right">
                 Actions
               </Col>
             </Row>

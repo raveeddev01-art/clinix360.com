@@ -21,6 +21,11 @@ class MembersStore {
     return this.users.filter(u => !this.rawOnlineUsers[`${u.id}`]);
   }
 
+  @computed
+  get deactivatedUsers() {
+    return this.users.filter(u => u.disabled);
+  }
+
   getUser = userId => this.users.find(u => u.id === userId);
 
   @action

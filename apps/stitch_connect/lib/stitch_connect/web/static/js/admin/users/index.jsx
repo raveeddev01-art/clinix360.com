@@ -4,6 +4,7 @@ import Panel from "react-bootstrap/lib/Panel";
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
 import FullMembersPanel from "./full-members-panel";
+import DeactivatedMembersPanel from "./deactivated-members-panel";
 import PendingInvitationsPanel from "./pending-invitations-panel";
 import InviteModal from "./invite-modal";
 
@@ -86,6 +87,11 @@ class TeamSettings extends Component {
         </p>
         {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
         <FullMembersPanel
+          onSuccess={this.onSuccess}
+          onError={this.onError}
+          hideAlert={this.hideAlert}
+        />
+        <DeactivatedMembersPanel
           onSuccess={this.onSuccess}
           onError={this.onError}
           hideAlert={this.hideAlert}

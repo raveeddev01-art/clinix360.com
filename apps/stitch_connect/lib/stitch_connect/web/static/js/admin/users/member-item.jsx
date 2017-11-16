@@ -96,15 +96,11 @@ class MemberItem extends Component {
             <div className="email text-muted">{user.email}</div>
           </Col>
 
-          <Col sm={2} className="status-column text-center">
+          <Col sm={3} className="status-column text-center">
             {user.roles.join(",")}
           </Col>
 
-          <Col sm={2} className="status-column text-center">
-            {user.disabled && "Deactivated"}
-          </Col>
-
-          <Col sm={2} className="actions-column text-center">
+          <Col sm={3} className="actions-column text-right">
             <Button
               bsStyle="primary"
               onClick={this._toggleControls}
@@ -116,10 +112,10 @@ class MemberItem extends Component {
 
           <div className="clearfix" />
           <Collapse in={this.state.open}>
-            <div>
-              <ButtonToolbar className="actions-toolbar">
-                {/* <Button bsSize="small">Convert to Guest</Button> */}
-                {user.roles.indexOf("admin") > -1 ? (
+            <ButtonToolbar className="actions-toolbar">
+              {/* <Button bsSize="small">Convert to Guest</Button> */}
+              {!user.disabled &&
+                (user.roles.indexOf("admin") > -1 ? (
                   <Button bsSize="small" onClick={this._revokeAdmin}>
                     Revoke Admin
                   </Button>
@@ -127,26 +123,25 @@ class MemberItem extends Component {
                   <Button bsSize="small" onClick={this._promoteAdmin}>
                     Promote Admin
                   </Button>
-                )}
-                {user.disabled ? (
-                  <Button
-                    onClick={this._activateUser}
-                    bsSize="small"
-                    className="pull-right"
-                  >
-                    Enable Account
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={this._deactivateUser}
-                    bsSize="small"
-                    className="pull-right"
-                  >
-                    Disable Account
-                  </Button>
-                )}
-              </ButtonToolbar>
-            </div>
+                ))}
+              {user.disabled ? (
+                <Button
+                  onClick={this._activateUser}
+                  bsSize="small"
+                  className="pull-right"
+                >
+                  Enable Account
+                </Button>
+              ) : (
+                <Button
+                  onClick={this._deactivateUser}
+                  bsSize="small"
+                  className="pull-right"
+                >
+                  Disable Account
+                </Button>
+              )}
+            </ButtonToolbar>
           </Collapse>
         </Row>
       </div>
