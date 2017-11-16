@@ -60,10 +60,10 @@ class EmailNotification extends Component {
         </HelpBlock>
         <Form horizontal>
           <FormGroup controlId="emailNotifications">
-            <Col componentClass={ControlLabel} md={4}>
+            <Col componentClass={ControlLabel} xs={4}>
               Send email about unread messages:
             </Col>
-            <Col sm={4}>
+            <Col xs={4}>
               <FormControl
                 componentClass="select"
                 placeholder="select"
