@@ -39,17 +39,6 @@ class Topbar extends Component {
               </OverlayTrigger>
             </a>
           </li>
-          <li>
-            <a href="/">
-              <OverlayTrigger
-                placement="bottom"
-                container={this}
-                overlay={<Tooltip id="tooltip-info">Launch</Tooltip>}
-              >
-                <i className="fa fa-rocket" />
-              </OverlayTrigger>
-            </a>
-          </li>
           <li className="hidden-xss">
             <a role="link" onClick={this.props.presenceStore.lock}>
               <OverlayTrigger

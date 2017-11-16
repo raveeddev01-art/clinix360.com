@@ -105,9 +105,6 @@ class Sidebar extends Component {
 
           <h3>Stitch</h3>
           <ListGroup>
-            <ListGroupItem href="/">
-              <i className="fa fa-rocket" /> Launch
-            </ListGroupItem>
             <ListGroupItem href="#" onClick={this.props.presenceStore.lock}>
               <i className="fa fa-lock" /> Lockout
             </ListGroupItem>
