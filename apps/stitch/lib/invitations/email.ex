@@ -12,7 +12,7 @@ defmodule Stitch.Invitation.Email do
   """
   def team_invitation(inviter_name, invitation) do
     new_email()
-    |> template("Sign-up 3: You are Invited (Connect)")
+    |> template("Invitation (Phoenix)")
     |> to(invitation.user.email)
     |> from({"Stitch", "support@teamstitch.com"})
     |> subject("Stitch Connect - Team Invite")
