@@ -13,10 +13,11 @@ const header = (
   </h1>
 );
 
-@inject("titleStore")
+@inject("titleStore", "adminPanelStore")
 class TeamBilling extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Billing");
+    this.props.adminPanelStore.setHeading("Billing", "fa-credit-card");
   }
 
   render() {

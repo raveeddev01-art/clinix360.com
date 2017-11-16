@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
@@ -34,10 +35,17 @@ class PasswordPanel extends Component {
   };
 
   _onSave = () => {
-    this.props.userStore.savePassword(
-      this.state.oldPassword,
-      this.state.newPassword
-    );
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
+
+    hideAlert();
+    return userStore
+      .savePassword(this.state.oldPassword, this.state.newPassword)
+      .then(() => {
+        onSuccess("Your password has been successfully updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _onChangeOldPassword = evt =>
@@ -69,7 +77,7 @@ class PasswordPanel extends Component {
             <FormControl
               type="password"
               bsSize="large"
-              placeholder="Enter Old Password"
+              placeholder="Old Password"
               value={oldPassword}
               onChange={this._onChangeOldPassword}
             />
@@ -79,7 +87,7 @@ class PasswordPanel extends Component {
             <FormControl
               type="password"
               bsSize="large"
-              placeholder="Enter New Password"
+              placeholder="New Password"
               value={newPassword}
               onChange={this._onChangeNewPassword}
             />
@@ -93,5 +101,11 @@ class PasswordPanel extends Component {
     );
   }
 }
+
+PasswordPanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default PasswordPanel;

@@ -1,0 +1,51 @@
+.alert {
+  width: 100%;
+  color: inherit;
+  font-size: 16px;
+  background: #fff;
+  border-radius: 6px;
+  padding-left: 60px;
+  position: relative;
+
+  &:before {
+    width: 40px;
+    color: #fff;
+    border-radius: 3px 0 0 3px;
+    font-family: FontAwesome;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+  }
+
+  strong {
+    display: block;
+  }
+
+  &.alert-success {
+    border-color: $brand-primary;
+
+    &:before {
+      content: "\f00c";
+      background: $brand-primary;
+    }
+  }
+
+  &.alert-danger {
+    border-color: #d04437;
+
+    &:before {
+      content: "\f071";
+      background: #d04437;
+    }
+  }
+
+  &.alert-dismissable {
+    .close {
+      top: 0;
+    }
+  }
+}

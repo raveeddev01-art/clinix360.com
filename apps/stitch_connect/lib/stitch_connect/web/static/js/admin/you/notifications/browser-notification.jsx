@@ -46,7 +46,7 @@ class BrowserNotification extends Component {
     }
 
     return (
-      <div>
+      <div className="panel-settings">
         <h3 className="m-b-20">Browser Notifications</h3>
 
         <Well>

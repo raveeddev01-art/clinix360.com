@@ -42,44 +42,46 @@ class LockedApp extends Component {
     return (
       <div className="locked-app-wrapper">
         <div className="authentication-wrapper">
-          {hasError && <Alert bsStyle="danger">PIN is incorrect.</Alert>}
+          <div>
+            {hasError && <Alert bsStyle="danger">PIN is incorrect.</Alert>}
 
-          <div id="lockout" className="authentication-card text-center">
-            <div className="lockout-header">
-              {this.props.presenceStore.unlocking ? (
-                <span className="unlocking">
-                  <i className="fa fa-circle-o-notch fa-spin" />
-                </span>
-              ) : (
-                <a className="logout" href="/logout">
-                  <i className="fa fa-sign-out" />
-                </a>
-              )}
+            <div id="lockout" className="authentication-card text-center">
+              <div className="lockout-header">
+                {this.props.presenceStore.unlocking ? (
+                  <span className="unlocking">
+                    <i className="fa fa-circle-o-notch fa-spin" />
+                  </span>
+                ) : (
+                  <a className="logout" href="/logout">
+                    <i className="fa fa-sign-out" />
+                  </a>
+                )}
+              </div>
+
+              <h2>Session Paused</h2>
+
+              <h5>
+                Enter <strong>PIN</strong> to resume Stitch.
+              </h5>
+
+              <form className="m-b-40" onSubmit={this.handleSubmit}>
+                <PinInput
+                  className="m-b-20 m-center"
+                  onValid={this.onValid}
+                  onInvalid={this.onInvalid}
+                />
+
+                <HelpBlock>
+                  Forgot your PIN? Just enter your password.<br />
+                  Forgot both? Reset your password{" "}
+                  <a href="/reset-password">here</a>.
+                </HelpBlock>
+              </form>
+
+              <p className="copyright m-b-0">
+                &copy; 2017 Stitch Technologies, Inc
+              </p>
             </div>
-
-            <h2>Session Paused</h2>
-
-            <h5>
-              Enter <strong>PIN</strong> to resume Stitch.
-            </h5>
-
-            <form className="m-b-40" onSubmit={this.handleSubmit}>
-              <PinInput
-                className="m-b-20 m-center"
-                onValid={this.onValid}
-                onInvalid={this.onInvalid}
-              />
-
-              <HelpBlock>
-                Forgot your PIN? Just enter your password.<br />
-                Forgot both? Reset your password{" "}
-                <a href="/reset-password">here</a>.
-              </HelpBlock>
-            </form>
-
-            <p className="copyright m-b-0">
-              &copy; 2017 Stitch Technologies, Inc
-            </p>
           </div>
         </div>
       </div>

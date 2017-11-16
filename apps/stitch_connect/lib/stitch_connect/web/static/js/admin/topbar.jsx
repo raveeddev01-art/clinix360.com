@@ -5,11 +5,12 @@ import { withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-@inject("teamStore", "presenceStore")
+@inject("teamStore", "presenceStore", "adminPanelStore")
 @observer
 class Topbar extends Component {
   render() {
-    const { onToggleSidebar } = this.props;
+    const { onToggleSidebar, adminPanelStore } = this.props;
+    const { heading, icon } = adminPanelStore;
 
     return (
       <div className="flex-header admin-topbar">
@@ -20,7 +21,7 @@ class Topbar extends Component {
         </a>
         <span className="separator" />
         <h4>
-          <i className="fa fa-sliders" /> Control Panel
+          <i className={`fa ${icon}`} /> {heading}
         </h4>
         <ul className="nav navbar-nav">
           <li>
@@ -39,17 +40,6 @@ class Topbar extends Component {
             </a>
           </li>
           <li>
-            <a href="/">
-              <OverlayTrigger
-                placement="bottom"
-                container={this}
-                overlay={<Tooltip id="tooltip-info">Launch</Tooltip>}
-              >
-                <i className="fa fa-rocket" />
-              </OverlayTrigger>
-            </a>
-          </li>
-          <li className="hidden-xss">
             <a role="link" onClick={this.props.presenceStore.lock}>
               <OverlayTrigger
                 placement="bottom"
@@ -60,7 +50,7 @@ class Topbar extends Component {
               </OverlayTrigger>
             </a>
           </li>
-          <li className="hidden-xss">
+          <li>
             <a href="/logout">
               <OverlayTrigger
                 placement="bottom"

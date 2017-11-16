@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
@@ -25,7 +26,17 @@ class UsernamePanel extends Component {
     });
   };
   _onSave = () => {
-    this.props.userStore.saveUsername(this.state.username);
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
+
+    hideAlert();
+    return userStore
+      .saveUsername(this.state.username)
+      .then(() => {
+        onSuccess("Your username has been successfully updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _onChangeUsername = evt => this.setState({ username: evt.target.value });
@@ -51,5 +62,11 @@ class UsernamePanel extends Component {
     );
   }
 }
+
+UsernamePanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default UsernamePanel;

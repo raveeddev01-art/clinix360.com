@@ -11,6 +11,7 @@ $admin-topbar-height-sm: 65px;
   right: 0;
   width: auto;
   height: auto;
+  min-width: 840px;
 
   .flex-header {
     flex-basis: $admin-topbar-height;
@@ -212,6 +213,7 @@ $admin-topbar-height-sm: 65px;
     flex-grow: 1;
     max-width: 1000px;
     margin: 0 auto;
+    box-shadow: none;
 
     .panel-heading {
       background: transparent;
@@ -231,11 +233,29 @@ $admin-topbar-height-sm: 65px;
     }
 
     .panel-body {
-      background-color: #fff;
       font-size: 15px;
-      border: 1px solid $border-color;
-      border-radius: 4px;
-      padding: 2em;
+      border: none;
+      padding: 0;
+      background-color: transparent;
+
+      .panel-settings {
+        background-color: #fff;
+        border: 1px solid $border-color;
+        border-radius: 4px;
+        padding: 2em;
+        margin-bottom: 24px;
+
+        h3 {
+          margin-top: 0;
+          + .help-block {
+            margin-bottom: 0;
+          }
+        }
+
+        .edit-form {
+          margin-top: 10px;
+        }
+      }
 
       h3 {
         font-weight: 600;
@@ -310,7 +330,7 @@ $admin-topbar-height-sm: 65px;
         resize: none;
       }
 
-      ul:not(.dropdown-menu) {
+      ul:not(.dropdown-menu):not(.password-checklist) {
         padding-left: 25px;
         margin-bottom: 25px;
 
@@ -378,7 +398,7 @@ $admin-topbar-height-sm: 65px;
             margin: 10px 15px 0;
 
             .btn {
-              margin: 0 5px 0 0;
+              margin: 0;
             }
           }
 
@@ -404,6 +424,12 @@ $admin-topbar-height-sm: 65px;
         &:active {
           position: relative;
           top: 3px;
+        }
+
+        i.fa {
+          &.on-right {
+            margin-left: 8px;
+          }
         }
       }
 
@@ -431,11 +457,20 @@ $admin-topbar-height-sm: 65px;
       }
     }
 
+    &.has-style {
+      .panel-body {
+        background-color: #fff;
+        border-radius: 4px;
+        border: 1px solid $border-color;
+        padding: 2em 2em 1em;
+        margin-bottom: 24px;
+      }
+    }
+
     &.tabs-panel {
       .panel-body {
         padding: 0;
         border: none;
-        background-color: $body-bg;
 
         ul.nav-tabs {
           padding-left: 0;
@@ -475,17 +510,6 @@ $admin-topbar-height-sm: 65px;
     }
 
     &.analytics-panel {
-      .panel-body {
-        border: none;
-        border-radius: 0;
-        padding: 0;
-        background: transparent;
-
-        .period-dropdown {
-          margin-top: -50px;
-        }
-      }
-
       .panel-chart {
         background-color: #fff;
         border: 1px solid #d8d8d8;
@@ -521,6 +545,10 @@ $admin-topbar-height-sm: 65px;
       line-height: 15px;
     }
   }
+}
+
+.m-u-50 {
+  margin-top: -50px;
 }
 
 .profile-image-form {
@@ -600,37 +628,5 @@ $admin-topbar-height-sm: 65px;
         }
       }
     }
-  }
-}
-
-@media (max-width: 767px) {
-  .admin-wrapper {
-    .flex-header {
-      flex-basis: $admin-topbar-height-sm;
-    }
-
-    .admin-content {
-      .admin-topbar {
-        a {
-          i {
-            font-size: 18px;
-          }
-
-          span {
-            display: none !important;
-          }
-        }
-
-        h4 {
-          font-size: 18px;
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 575px) {
-  .hidden-xss {
-    display: none !important;
   }
 }

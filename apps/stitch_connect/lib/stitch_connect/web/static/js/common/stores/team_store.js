@@ -32,10 +32,9 @@ class TeamStore {
     const { sidemenuStore } = this.rootStore;
 
     return put(`/api/v1/teams/${this.id}`, {
-      body: { name }
+      body: { name },
+      hideNotify: true
     }).then(() => {
-      notify.show("Team name updated");
-
       this.name = name;
       sidemenuStore.teamName = name;
     });
@@ -44,9 +43,9 @@ class TeamStore {
   @action
   editSecurityLockout = (enabled, secondsToLockout) => {
     return put(`/api/v1/teams/${this.id}/update-security-lockout-time`, {
-      body: { enabled, seconds_to_lockout: parseInt(secondsToLockout, 10) }
+      body: { enabled, seconds_to_lockout: parseInt(secondsToLockout, 10) },
+      hideNotify: true
     }).then(() => {
-      notify.show("Security lockout settings updated");
       this.securityLockoutEnabled = enabled;
       this.secondsToLockout = secondsToLockout;
     });
@@ -63,9 +62,9 @@ class TeamStore {
   @action
   updateOpenInvitation = enabled => {
     return put(`/api/v1/teams/${this.id}/update-open-invitation`, {
-      body: { enabled }
+      body: { enabled },
+      hideNotify: true
     }).then(() => {
-      notify.show("Invitation settings updated");
       this.openInvitationsEnabled = enabled;
     });
   };

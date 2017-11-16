@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { Link, withRouter, matchPath } from "react-router-dom";
 import ListGroup from "react-bootstrap/lib/ListGroup";
@@ -20,11 +21,6 @@ class Sidebar extends Component {
       <div>
         <h3>Administration</h3>
         <ListGroup>
-          <ListGroupItem active={this._isSelected("/admin/analytics")}>
-            <Link to="/admin/analytics">
-              <i className="fa fa-bar-chart" /> Analytics
-            </Link>
-          </ListGroupItem>
           <ListGroupItem
             active={
               this._isSelected("/admin/team/settings") ||
@@ -40,19 +36,14 @@ class Sidebar extends Component {
               <i className="fa fa-shield" /> Security
             </Link>
           </ListGroupItem>
-          <ListGroupItem active={this._isSelected("/admin/users/members")}>
-            <Link to="/admin/users/members">
+          <ListGroupItem active={this._isSelected("/admin/analytics")}>
+            <Link to="/admin/analytics">
+              <i className="fa fa-bar-chart" /> Analytics
+            </Link>
+          </ListGroupItem>
+          <ListGroupItem active={this._isSelected("/admin/members")}>
+            <Link to="/admin/members">
               <i className="fa fa-users" /> Members
-            </Link>
-          </ListGroupItem>
-          <ListGroupItem active={this._isSelected("/admin/users/invitations")}>
-            <Link to="/admin/users/invitations">
-              <i className="fa fa-envelope-o" /> Invitations
-            </Link>
-          </ListGroupItem>
-          <ListGroupItem active={this._isSelected("/admin/users/pending")}>
-            <Link to="/admin/users/pending">
-              <i className="fa fa-inbox" /> Pending
             </Link>
           </ListGroupItem>
           <ListGroupItem active={this._isSelected("/admin/billing")}>
@@ -105,9 +96,6 @@ class Sidebar extends Component {
 
           <h3>Stitch</h3>
           <ListGroup>
-            <ListGroupItem href="/">
-              <i className="fa fa-rocket" /> Launch
-            </ListGroupItem>
             <ListGroupItem href="#" onClick={this.props.presenceStore.lock}>
               <i className="fa fa-lock" /> Lockout
             </ListGroupItem>
@@ -120,5 +108,9 @@ class Sidebar extends Component {
     );
   }
 }
+
+Sidebar.propTypes = {
+  onHideSidebar: PropTypes.func.isRequired
+};
 
 export default withRouter(Sidebar);
