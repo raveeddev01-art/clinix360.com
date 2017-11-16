@@ -1,6 +1,6 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
@@ -31,7 +31,17 @@ class TeamNamePanel extends Component {
   };
 
   _onSave = () => {
-    this.props.teamStore.editTeamName(this.state.teamName);
+    const { hideAlert, onSuccess, onError, teamStore } = this.props;
+
+    hideAlert();
+    return teamStore
+      .editTeamName(this.state.teamName)
+      .then(() => {
+        onSuccess("Team name has been successfully updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   render() {
@@ -55,5 +65,11 @@ class TeamNamePanel extends Component {
     );
   }
 }
+
+TeamNamePanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default TeamNamePanel;
