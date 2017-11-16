@@ -1,35 +1,28 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Panel, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
+import SettingPanel from "../components/setting-panel/setting-panel";
 import PendingInvitationItem from "./pending-invitation-item";
 
-const header = (
-  <h1>
-    <i className="fa fa-inbox" /> Pending
-  </h1>
-);
+const title = "Pending Members";
+const description = "Review pending accounts to revoke or resend invitations.";
 
-@inject("invitationStore", "titleStore", "adminPanelStore")
+@inject("invitationStore")
 @observer
-class UsersPending extends Component {
+class PendingInvitationsPanel extends Component {
   componentWillMount() {
     this.props.invitationStore.loadInvitations();
-    this.props.titleStore.setPageName("Pending");
-    this.props.adminPanelStore.setHeading("Pending", "fa-inbox");
   }
 
   _renderInvitations = () => {
     const { invitationStore } = this.props;
     return invitationStore.invitations.map(invitation => {
-      const onRevoke = () => invitationStore.revokeInvitation(invitation.id);
-      const onResend = () => invitationStore.resendInvitation(invitation.id);
       return (
         <PendingInvitationItem
+          {...this.props}
           key={`invitation_${invitation.id}`}
           email={invitation.email}
           id={invitation.id}
-          onRevoke={onRevoke}
-          onResend={onResend}
         />
       );
     });
@@ -37,7 +30,7 @@ class UsersPending extends Component {
 
   render() {
     return (
-      <Panel className="admin-panel has-style" header={header}>
+      <SettingPanel saveButtonText="" title={title} description={description}>
         <p className="m-b-20">
           View any outstanding invitations to join the team here. Revoking an
           invite will remove it from this list and deactivate the invite link.
@@ -55,9 +48,15 @@ class UsersPending extends Component {
           </div>
           {this._renderInvitations()}
         </div>
-      </Panel>
+      </SettingPanel>
     );
   }
 }
 
-export default UsersPending;
+// PendingInvitationsPanel.propTypes = {
+//   onSuccess: PropTypes.func.isRequired,
+//   onError: PropTypes.func.isRequired,
+//   hideAlert: PropTypes.func.isRequired
+// };
+
+export default PendingInvitationsPanel;

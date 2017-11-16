@@ -3,6 +3,7 @@ import { inject } from "mobx-react";
 import Panel from "react-bootstrap/lib/Panel";
 import Alert from "react-bootstrap/lib/Alert";
 import FullMembersPanel from "./full-members-panel";
+import PendingInvitationsPanel from "./pending-invitations-panel";
 
 const header = (
   <h1>
@@ -64,6 +65,11 @@ class TeamSettings extends Component {
         </p>
         {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
         <FullMembersPanel
+          onSuccess={this.onSuccess}
+          onError={this.onError}
+          hideAlert={this.hideAlert}
+        />
+        <PendingInvitationsPanel
           onSuccess={this.onSuccess}
           onError={this.onError}
           hideAlert={this.hideAlert}

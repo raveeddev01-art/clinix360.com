@@ -60,4 +60,5 @@ FullMembersPanel.propTypes = {
   onError: PropTypes.func.isRequired,
   hideAlert: PropTypes.func.isRequired
 };
+
 export default FullMembersPanel;

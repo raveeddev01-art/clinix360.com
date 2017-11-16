@@ -55,11 +55,8 @@ class Sidemenu extends Component {
         <LinkContainer to="/admin/users/invitations">
           <MenuItem eventKey="8">Invitations</MenuItem>
         </LinkContainer>
-        <LinkContainer to="/admin/users/pending">
-          <MenuItem eventKey="9">Pending</MenuItem>
-        </LinkContainer>
         <LinkContainer to="/admin/billing">
-          <MenuItem eventKey="10">Billing</MenuItem>
+          <MenuItem eventKey="9">Billing</MenuItem>
         </LinkContainer>
       </div>
     );
@@ -158,10 +155,10 @@ class Sidemenu extends Component {
                 <span>Stitch</span>
               </div>
 
-              <MenuItem eventKey="11" onClick={this.props.presenceStore.lock}>
+              <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
                 Lockout
               </MenuItem>
-              <MenuItem eventKey="12" href="/logout">
+              <MenuItem eventKey="11" href="/logout">
                 Sign Out
               </MenuItem>
             </Dropdown.Menu>

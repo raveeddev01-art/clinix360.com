@@ -12,8 +12,7 @@ import YouNotifications from "./you/notifications";
 import ProfileSettings from "./you/profile/index";
 import AccountSettings from "./you/account/index";
 import UsersInvitations from "./users/invitations";
-import UsersMembers from "./users/index";
-import UsersPending from "./users/pending";
+import Users from "./users/";
 import Billing from "./billing/billing";
 import Analytics from "./analytics/index";
 import Switcher from "../common/components/switcher/index";
@@ -74,14 +73,9 @@ class AdminApp extends Component {
         component={UsersInvitations}
       />,
       <Route
-        key="route_admin_users_members"
+        key="route_admin_users"
         path={`/admin/members`}
-        component={UsersMembers}
-      />,
-      <Route
-        key="route_admin_pending"
-        path={`/admin/users/pending`}
-        component={UsersPending}
+        component={Users}
       />,
       <Route
         key="route_admin_billing"
