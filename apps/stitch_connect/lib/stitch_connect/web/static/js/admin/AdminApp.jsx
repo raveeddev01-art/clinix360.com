@@ -12,7 +12,7 @@ import YouNotifications from "./you/notifications";
 import ProfileSettings from "./you/profile/index";
 import AccountSettings from "./you/account/index";
 import UsersInvitations from "./users/invitations";
-import UsersMembers from "./users/members";
+import UsersMembers from "./users/index";
 import UsersPending from "./users/pending";
 import Billing from "./billing/billing";
 import Analytics from "./analytics/index";
@@ -52,19 +52,49 @@ class AdminApp extends Component {
 
   renderAdminRoutes = () => {
     return [
-      <Route key="route_admin_team" exact path={`/admin/team`} component={TeamSettings} />,
-      <Route key="route_admin_team_settings" path={`/admin/team/settings`} component={TeamSettings} />,
-      <Route key="route_admin_team_security" path={`/admin/team/security`} component={TeamSecurity} />,
-      <Route key="route_admin_user_invitations"
+      <Route
+        key="route_admin_team"
+        exact
+        path={`/admin/team`}
+        component={TeamSettings}
+      />,
+      <Route
+        key="route_admin_team_settings"
+        path={`/admin/team/settings`}
+        component={TeamSettings}
+      />,
+      <Route
+        key="route_admin_team_security"
+        path={`/admin/team/security`}
+        component={TeamSecurity}
+      />,
+      <Route
+        key="route_admin_user_invitations"
         path={`/admin/users/invitations`}
         component={UsersInvitations}
       />,
-      <Route key="route_admin_users_members" path={`/admin/users/members`} component={UsersMembers} />,
-      <Route key="route_admin_pending" path={`/admin/users/pending`} component={UsersPending} />,
-      <Route key="route_admin_billing" path={`/admin/billing`} component={Billing} />,
-      <Route key="route_admin_analytics" path={`/admin/analytics`} component={Analytics} />
+      <Route
+        key="route_admin_users_members"
+        path={`/admin/members`}
+        component={UsersMembers}
+      />,
+      <Route
+        key="route_admin_pending"
+        path={`/admin/users/pending`}
+        component={UsersPending}
+      />,
+      <Route
+        key="route_admin_billing"
+        path={`/admin/billing`}
+        component={Billing}
+      />,
+      <Route
+        key="route_admin_analytics"
+        path={`/admin/analytics`}
+        component={Analytics}
+      />
     ];
-  }
+  };
 
   render() {
     const { sidebarOpened } = this.state;

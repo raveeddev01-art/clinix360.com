@@ -49,7 +49,7 @@ class Sidemenu extends Component {
         <LinkContainer to="/admin/analytics">
           <MenuItem eventKey="6">Analytics</MenuItem>
         </LinkContainer>
-        <LinkContainer to="/admin/users/members">
+        <LinkContainer to="/admin/members">
           <MenuItem eventKey="7">Members</MenuItem>
         </LinkContainer>
         <LinkContainer to="/admin/users/invitations">

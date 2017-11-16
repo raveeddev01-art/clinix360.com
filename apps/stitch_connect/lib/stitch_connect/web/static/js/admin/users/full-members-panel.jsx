@@ -1,0 +1,63 @@
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
+import { Row, Col } from "react-bootstrap";
+import MemberItem from "./member-item";
+import SettingPanel from "../components/setting-panel/setting-panel";
+
+const title = "Full Members";
+const description =
+  "Manage full team members and their roles as owners, admins, or members.";
+
+@inject("membersStore")
+@observer
+class FullMembersPanel extends Component {
+  render() {
+    const { membersStore } = this.props;
+    const onlineUsers = membersStore.onlineUsers;
+    const offlineUsers = membersStore.offlineUsers;
+
+    return (
+      <SettingPanel saveButtonText="" title={title} description={description}>
+        <div className="admin-table m-b-20">
+          <div className="table-head">
+            <Row>
+              <Col sm={6}>Users</Col>
+              <Col sm={2} className="text-center">
+                Roles
+              </Col>
+              <Col sm={2} className="text-center">
+                Status
+              </Col>
+              <Col sm={2} className="text-center">
+                Actions
+              </Col>
+            </Row>
+          </div>
+          {onlineUsers.map(user => {
+            return (
+              <MemberItem {...this.props} user={user} online key={user.id} />
+            );
+          })}
+          {offlineUsers.map(user => {
+            return (
+              <MemberItem
+                {...this.props}
+                user={user}
+                online={false}
+                key={user.id}
+              />
+            );
+          })}
+        </div>
+      </SettingPanel>
+    );
+  }
+}
+
+FullMembersPanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
+export default FullMembersPanel;

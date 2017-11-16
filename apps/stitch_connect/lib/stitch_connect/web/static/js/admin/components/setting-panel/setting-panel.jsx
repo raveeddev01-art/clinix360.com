@@ -40,17 +40,19 @@ class SettingPanel extends Component {
     return (
       <div className="clearfix edit-form">
         {children}
-        <div className="clearfix">
-          <Button
-            bsStyle="primary"
-            className="btn-fancy"
-            onClick={this._onSave}
-            disabled={isSaving || this.state.disableSave}
-          >
-            {saveButtonText}
-            {this._renderLoadingIcon()}
-          </Button>
-        </div>
+        {saveButtonText !== "" && (
+          <div className="clearfix">
+            <Button
+              bsStyle="primary"
+              className="btn-fancy"
+              onClick={this._onSave}
+              disabled={isSaving || this.state.disableSave}
+            >
+              {saveButtonText}
+              {this._renderLoadingIcon()}
+            </Button>
+          </div>
+        )}
       </div>
     );
   };

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { Link, withRouter, matchPath } from "react-router-dom";
 import ListGroup from "react-bootstrap/lib/ListGroup";
@@ -40,8 +41,8 @@ class Sidebar extends Component {
               <i className="fa fa-bar-chart" /> Analytics
             </Link>
           </ListGroupItem>
-          <ListGroupItem active={this._isSelected("/admin/users/members")}>
-            <Link to="/admin/users/members">
+          <ListGroupItem active={this._isSelected("/admin/members")}>
+            <Link to="/admin/members">
               <i className="fa fa-users" /> Members
             </Link>
           </ListGroupItem>
@@ -117,5 +118,9 @@ class Sidebar extends Component {
     );
   }
 }
+
+Sidebar.propTypes = {
+  onHideSidebar: PropTypes.func.isRequired
+};
 
 export default withRouter(Sidebar);

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Row, Col, Collapse, ButtonToolbar, Button } from "react-bootstrap";
 
 @inject("membersStore")
 @observer
-export default class MemberItem extends Component {
+class MemberItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,22 +19,62 @@ export default class MemberItem extends Component {
 
   _activateUser = () => {
     const { membersStore, user } = this.props;
-    membersStore.activateUser(user.id);
+    const { hideAlert, onSuccess, onError } = this.props;
+
+    hideAlert();
+    membersStore
+      .activateUser(user.id)
+      .then(() => {
+        onSuccess(`${user.full_name} has been activated.`);
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _deactivateUser = () => {
     const { membersStore, user } = this.props;
-    membersStore.deactivateUser(user.id);
+    const { hideAlert, onSuccess, onError } = this.props;
+
+    hideAlert();
+    membersStore
+      .deactivateUser(user.id)
+      .then(() => {
+        onSuccess(`${user.full_name} has been deactivated.`);
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _promoteAdmin = () => {
     const { membersStore, user } = this.props;
-    membersStore.promoteAdmin(user.id);
+    const { hideAlert, onSuccess, onError } = this.props;
+
+    hideAlert();
+    membersStore
+      .promoteAdmin(user.id)
+      .then(() => {
+        onSuccess(`${user.full_name} has been promoted to admin.`);
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _revokeAdmin = () => {
     const { membersStore, user } = this.props;
-    membersStore.revokeAdmin(user.id);
+    const { hideAlert, onSuccess, onError } = this.props;
+
+    hideAlert();
+    membersStore
+      .revokeAdmin(user.id)
+      .then(() => {
+        onSuccess(`${user.full_name}'s admin role has been revoked.`);
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   render() {
@@ -44,15 +85,15 @@ export default class MemberItem extends Component {
         <Row>
           <Col sm={6} className="users-column">
             <div className="title">
-              {online
-                ? <i className="fa fa-circle" />
-                : <i className="fa fa-circle-o" />}
+              {online ? (
+                <i className="fa fa-circle" />
+              ) : (
+                <i className="fa fa-circle-o" />
+              )}
               <span className="name">{`${user.first_name} ${user.last_name}`}</span>{" "}
               <span className="username text-muted">{user.username}</span>
             </div>
-            <div className="email text-muted">
-              {user.email}
-            </div>
+            <div className="email text-muted">{user.email}</div>
           </Col>
 
           <Col sm={2} className="status-column text-center">
@@ -78,30 +119,32 @@ export default class MemberItem extends Component {
             <div>
               <ButtonToolbar className="actions-toolbar">
                 {/* <Button bsSize="small">Convert to Guest</Button> */}
-                {user.roles.indexOf("admin") > -1
-                  ? <Button bsSize="small" onClick={this._revokeAdmin}>
-                      Revoke Admin
-                    </Button>
-                  : <Button bsSize="small" onClick={this._promoteAdmin}>
-                      Promote Admin
-                    </Button>}
-                {
-                  user.disabled
-                  ? <Button
-                      onClick={this._activateUser}
-                      bsSize="small"
-                      className="pull-right"
-                    >
-                      Enable Account
-                    </Button>
-                  : <Button
-                      onClick={this._deactivateUser}
-                      bsSize="small"
-                      className="pull-right"
-                    >
-                      Disable Account
-                    </Button>
-                }
+                {user.roles.indexOf("admin") > -1 ? (
+                  <Button bsSize="small" onClick={this._revokeAdmin}>
+                    Revoke Admin
+                  </Button>
+                ) : (
+                  <Button bsSize="small" onClick={this._promoteAdmin}>
+                    Promote Admin
+                  </Button>
+                )}
+                {user.disabled ? (
+                  <Button
+                    onClick={this._activateUser}
+                    bsSize="small"
+                    className="pull-right"
+                  >
+                    Enable Account
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={this._deactivateUser}
+                    bsSize="small"
+                    className="pull-right"
+                  >
+                    Disable Account
+                  </Button>
+                )}
               </ButtonToolbar>
             </div>
           </Collapse>
@@ -110,3 +153,13 @@ export default class MemberItem extends Component {
     );
   }
 }
+
+MemberItem.propTypes = {
+  user: PropTypes.object.isRequired,
+  online: PropTypes.bool.isRequired,
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
+
+export default MemberItem;
