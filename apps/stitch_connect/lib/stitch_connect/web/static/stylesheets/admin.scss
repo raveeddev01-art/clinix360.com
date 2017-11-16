@@ -11,6 +11,7 @@ $admin-topbar-height-sm: 65px;
   right: 0;
   width: auto;
   height: auto;
+  min-width: 840px;
 
   .flex-header {
     flex-basis: $admin-topbar-height;
