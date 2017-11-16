@@ -39,7 +39,7 @@ class Topbar extends Component {
               </OverlayTrigger>
             </a>
           </li>
-          <li className="hidden-xss">
+          <li>
             <a role="link" onClick={this.props.presenceStore.lock}>
               <OverlayTrigger
                 placement="bottom"
@@ -50,7 +50,7 @@ class Topbar extends Component {
               </OverlayTrigger>
             </a>
           </li>
-          <li className="hidden-xss">
+          <li>
             <a href="/logout">
               <OverlayTrigger
                 placement="bottom"
