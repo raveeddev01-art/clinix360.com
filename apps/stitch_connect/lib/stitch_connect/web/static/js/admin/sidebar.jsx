@@ -20,11 +20,6 @@ class Sidebar extends Component {
       <div>
         <h3>Administration</h3>
         <ListGroup>
-          <ListGroupItem active={this._isSelected("/admin/analytics")}>
-            <Link to="/admin/analytics">
-              <i className="fa fa-bar-chart" /> Analytics
-            </Link>
-          </ListGroupItem>
           <ListGroupItem
             active={
               this._isSelected("/admin/team/settings") ||
@@ -38,6 +33,11 @@ class Sidebar extends Component {
           <ListGroupItem active={this._isSelected("/admin/team/security")}>
             <Link to="/admin/team/security">
               <i className="fa fa-shield" /> Security
+            </Link>
+          </ListGroupItem>
+          <ListGroupItem active={this._isSelected("/admin/analytics")}>
+            <Link to="/admin/analytics">
+              <i className="fa fa-bar-chart" /> Analytics
             </Link>
           </ListGroupItem>
           <ListGroupItem active={this._isSelected("/admin/users/members")}>

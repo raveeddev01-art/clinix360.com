@@ -40,14 +40,14 @@ class Sidemenu extends Component {
         <div className="separator text-center">
           <span>Admin</span>
         </div>
-        <LinkContainer to="/admin/analytics">
-          <MenuItem eventKey="4">Analytics</MenuItem>
-        </LinkContainer>
         <LinkContainer to="/admin/team/settings">
-          <MenuItem eventKey="5">Settings</MenuItem>
+          <MenuItem eventKey="4">Settings</MenuItem>
         </LinkContainer>
         <LinkContainer to="/admin/team/security">
-          <MenuItem eventKey="6">Security</MenuItem>
+          <MenuItem eventKey="5">Security</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/analytics">
+          <MenuItem eventKey="6">Analytics</MenuItem>
         </LinkContainer>
         <LinkContainer to="/admin/users/members">
           <MenuItem eventKey="7">Members</MenuItem>
