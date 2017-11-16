@@ -21,7 +21,7 @@ class SettingPanel extends Component {
   }
 
   _toggleEdit = val => () => {
-    this.props.onEdit();
+    this.props.onEdit(val);
     this.setState({ isEditing: val });
   };
 

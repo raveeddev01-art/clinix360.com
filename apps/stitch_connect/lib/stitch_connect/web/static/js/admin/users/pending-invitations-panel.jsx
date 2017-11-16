@@ -10,9 +10,9 @@ const description = "Review pending accounts to revoke or resend invitations.";
 @inject("invitationStore")
 @observer
 class PendingInvitationsPanel extends Component {
-  componentWillMount() {
-    this.props.invitationStore.loadInvitations();
-  }
+  onToggleEdit = isEditing => {
+    if (isEditing) this.props.invitationStore.loadInvitations();
+  };
 
   _renderInvitations = () => {
     const { invitationStore } = this.props;
@@ -30,7 +30,12 @@ class PendingInvitationsPanel extends Component {
 
   render() {
     return (
-      <SettingPanel saveButtonText="" title={title} description={description}>
+      <SettingPanel
+        saveButtonText=""
+        title={title}
+        description={description}
+        onEdit={this.onToggleEdit}
+      >
         <p className="m-b-20">
           View any outstanding invitations to join the team here. Revoking an
           invite will remove it from this list and deactivate the invite link.
@@ -40,8 +45,8 @@ class PendingInvitationsPanel extends Component {
         <div className="admin-table m-b-20">
           <div className="table-head">
             <Row>
-              <Col sm={8}>Email Address</Col>
-              <Col sm={4} className="text-center">
+              <Col xs={8}>Email Address</Col>
+              <Col xs={4} className="text-center">
                 Actions
               </Col>
             </Row>

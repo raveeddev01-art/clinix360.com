@@ -78,7 +78,7 @@ export default class Analytics extends Component {
 
     return (
       <Panel className="admin-panel analytics-panel" header={header}>
-        <div className="pull-right period-dropdown">
+        <div className="pull-right m-u-50">
           <DropdownButton
             id="dropdown-analytics-timespan"
             pullRight

@@ -510,12 +510,6 @@ $admin-topbar-height-sm: 65px;
     }
 
     &.analytics-panel {
-      .panel-body {
-        .period-dropdown {
-          margin-top: -50px;
-        }
-      }
-
       .panel-chart {
         background-color: #fff;
         border: 1px solid #d8d8d8;
@@ -551,6 +545,10 @@ $admin-topbar-height-sm: 65px;
       line-height: 15px;
     }
   }
+}
+
+.m-u-50 {
+  margin-top: -50px;
 }
 
 .profile-image-form {
