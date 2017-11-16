@@ -57,64 +57,61 @@ class UserStore {
   @action
   save = data => {
     return put(`/api/v1/users/${this.id}`, {
-      body: data
+      body: data,
+      hideNotify: true
     });
   };
 
   @action
   saveUsername = username => {
-    this.save({ username }).then(() => {
+    return this.save({ username }).then(() => {
       this.username = username;
-      notify.show("Username updated");
     });
   };
 
   @action
   saveEmail = email => {
-    this.save({ email }).then(() => {
+    return this.save({ email }).then(() => {
       this.email = email;
-      notify.show("Email updated");
     });
   };
 
   @action
   savePIN = pin => {
-    this.save({ pin }).then(() => {
+    return this.save({ pin }).then(() => {
       this.pin = pin;
-      notify.show("PIN updated");
     });
   };
 
   @action
   saveName = (firstName, lastName) => {
-    this.save({ first_name: firstName, last_name: lastName }).then(() => {
+    return this.save({
+      first_name: firstName,
+      last_name: lastName
+    }).then(() => {
       this.firstName = firstName;
       this.lastName = lastName;
-      notify.show("Name updated");
     });
   };
 
   @action
   savePhone = phoneNumber => {
-    this.save({ phone_number: phoneNumber }).then(() => {
+    return this.save({ phone_number: phoneNumber }).then(() => {
       this.phone = phoneNumber;
-      notify.show("Phone updated");
     });
   };
 
   @action
   saveTitle = title => {
-    this.save({ title }).then(() => {
+    return this.save({ title }).then(() => {
       this.title = title;
-      notify.show("Title updated");
     });
   };
 
   @action
   saveProfileImg = profileImgUrl => {
-    this.save({ profile_image_url: profileImgUrl }).then(() => {
+    return this.save({ profile_image_url: profileImgUrl }).then(() => {
       this.profileImg = profileImgUrl;
-      notify.show("Profile Image updated");
     });
   };
 
@@ -124,9 +121,8 @@ class UserStore {
       body: {
         new_password: newPassword,
         old_password: oldPassword
-      }
-    }).then(() => {
-      notify.show("Your password has been changed");
+      },
+      hideNotify: true
     });
   };
 }

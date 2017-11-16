@@ -191,7 +191,7 @@ hr {
 .btn-fancy,
 .sweet-alert .btn-fancy {
   border: none;
-  border-radius: 2px;
+  border-radius: 4px;
   padding: 12px 20px;
   font-size: 16px;
   outline: none;
@@ -446,6 +446,7 @@ i.fa {
 
 .pin-code {
   width: 250px;
+  margin-bottom: 15px;
 
   .form-control {
     width: 25%;
@@ -461,5 +462,11 @@ i.fa {
     &:nth-child(3) {
       border-right: 0;
     }
+  }
+}
+
+.password-validator {
+  ul {
+    color: $brand-primary;
   }
 }

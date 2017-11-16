@@ -54,7 +54,8 @@ class NotificationStore {
     return put("/api/v1/users/notification-preference", {
       body: {
         desktop_notification_preference: val
-      }
+      },
+      hideNotify: true
     }).then(() => {
       this.desktopPreference = val;
       return val;
@@ -66,7 +67,8 @@ class NotificationStore {
     return put("/api/v1/users/notification-preference", {
       body: {
         email_notification_preference: val
-      }
+      },
+      hideNotify: true
     }).then(() => {
       this.emailPreference = val;
       return val;

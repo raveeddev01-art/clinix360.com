@@ -38,37 +38,6 @@
     padding-right: 15px;
   }
 
-  .alert {
-    width: 100%;
-    color: inherit;
-    font-size: 16px;
-    background: #fff;
-    border-color: #d04437;
-    border-radius: 6px;
-    padding: 15px 20px 15px 60px;
-    position: relative;
-
-    &:before {
-      width: 40px;
-      color: #fff;
-      background: #d04437;
-      border-radius: 3px 0 0 3px;
-      font-family: FontAwesome;
-      content: "\f071";
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      top: 0;
-    }
-
-    strong {
-      display: block;
-    }
-  }
-
   .authentication-card {
     width: 100%;
     background: #fff;

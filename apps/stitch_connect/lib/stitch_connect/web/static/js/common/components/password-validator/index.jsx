@@ -64,9 +64,9 @@ class PasswordValidatorComponent extends Component {
     } = this.state;
 
     return (
-      <HelpBlock className="m-b-20">
+      <HelpBlock className="m-b-20 password-validator">
         Your password must contain:
-        <ul className="list-unstyled text-success">
+        <ul className="list-unstyled password-checklist">
           <li className={cx({ "text-danger": !passwordLengthValid })}>
             {passwordLengthValid ? (
               <i className="fa fa-check" />

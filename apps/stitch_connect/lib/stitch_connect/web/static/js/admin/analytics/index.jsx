@@ -19,7 +19,7 @@ const datePeriodNames = {
   allTime: "All time"
 };
 
-@inject("titleStore")
+@inject("titleStore", "adminPanelStore")
 @observer
 export default class Analytics extends Component {
   constructor(props) {
@@ -34,6 +34,7 @@ export default class Analytics extends Component {
 
   componentWillMount() {
     this.props.titleStore.setPageName("Analytics");
+    this.props.adminPanelStore.setHeading("Analytics", "fa-bar-chart");
     this.loadReports(this.state.timePeriod);
   }
 
@@ -77,7 +78,7 @@ export default class Analytics extends Component {
 
     return (
       <Panel className="admin-panel analytics-panel" header={header}>
-        <div className="pull-right period-dropdown">
+        <div className="pull-right m-u-50">
           <DropdownButton
             id="dropdown-analytics-timespan"
             pullRight

@@ -67,6 +67,8 @@
           "registrationStore",
           "teamStore",
           "userStore",
+          "exportStore",
+          "adminPanelStore",
           "match",
           "location",
           "history",

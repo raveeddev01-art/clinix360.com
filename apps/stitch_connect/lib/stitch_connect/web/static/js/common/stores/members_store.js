@@ -21,6 +21,11 @@ class MembersStore {
     return this.users.filter(u => !this.rawOnlineUsers[`${u.id}`]);
   }
 
+  @computed
+  get deactivatedUsers() {
+    return this.users.filter(u => u.disabled);
+  }
+
   getUser = userId => this.users.find(u => u.id === userId);
 
   @action
@@ -34,45 +39,49 @@ class MembersStore {
 
   @action
   activateUser = userId => {
-    return post(`/api/v1/users/${userId}/activate`).then(() => {
+    return post(`/api/v1/users/${userId}/activate`, {
+      hideNotify: true
+    }).then(() => {
       const user = this.getUser(userId);
       if (user) {
         user.disabled = false;
       }
-      notify.show("Account activated.");
     });
   };
 
   @action
   deactivateUser = userId => {
-    return post(`/api/v1/users/${userId}/deactivate`).then(() => {
+    return post(`/api/v1/users/${userId}/deactivate`, {
+      hideNotify: true
+    }).then(() => {
       const user = this.getUser(userId);
       if (user) {
         user.disabled = true;
       }
-      notify.show("Account deactivated.");
     });
   };
 
   @action
   revokeAdmin = userId => {
-    return put(`/api/v1/users/${userId}/revoke-admin`).then(() => {
+    return put(`/api/v1/users/${userId}/revoke-admin`, {
+      hideNotify: true
+    }).then(() => {
       const user = this.getUser(userId);
       if (user) {
         user.roles = ["member"];
       }
-      notify.show("Revoked admin role.");
     });
   };
 
   @action
   promoteAdmin = userId => {
-    return put(`/api/v1/users/${userId}/promote-admin`).then(() => {
+    return put(`/api/v1/users/${userId}/promote-admin`, {
+      hideNotify: true
+    }).then(() => {
       const user = this.getUser(userId);
       if (user) {
         user.roles = ["admin"];
       }
-      notify.show("Promoted to admin.");
     });
   };
 

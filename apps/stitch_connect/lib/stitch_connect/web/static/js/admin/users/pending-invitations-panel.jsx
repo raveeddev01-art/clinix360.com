@@ -1,34 +1,28 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Panel, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
+import SettingPanel from "../components/setting-panel/setting-panel";
 import PendingInvitationItem from "./pending-invitation-item";
 
-const header = (
-  <h1>
-    <i className="fa fa-inbox" /> Pending
-  </h1>
-);
+const title = "Pending Members";
+const description = "Review pending accounts to revoke or resend invitations.";
 
-@inject("invitationStore", "titleStore")
+@inject("invitationStore")
 @observer
-class UsersPending extends Component {
-  componentWillMount() {
-    this.props.invitationStore.loadInvitations();
-    this.props.titleStore.setPageName("Pending");
-  }
+class PendingInvitationsPanel extends Component {
+  onToggleEdit = isEditing => {
+    if (isEditing) this.props.invitationStore.loadInvitations();
+  };
 
   _renderInvitations = () => {
     const { invitationStore } = this.props;
     return invitationStore.invitations.map(invitation => {
-      const onRevoke = () => invitationStore.revokeInvitation(invitation.id);
-      const onResend = () => invitationStore.resendInvitation(invitation.id);
       return (
         <PendingInvitationItem
+          {...this.props}
           key={`invitation_${invitation.id}`}
           email={invitation.email}
           id={invitation.id}
-          onRevoke={onRevoke}
-          onResend={onResend}
         />
       );
     });
@@ -36,7 +30,12 @@ class UsersPending extends Component {
 
   render() {
     return (
-      <Panel className="admin-panel" header={header}>
+      <SettingPanel
+        saveButtonText=""
+        title={title}
+        description={description}
+        onEdit={this.onToggleEdit}
+      >
         <p className="m-b-20">
           View any outstanding invitations to join the team here. Revoking an
           invite will remove it from this list and deactivate the invite link.
@@ -46,17 +45,25 @@ class UsersPending extends Component {
         <div className="admin-table m-b-20">
           <div className="table-head">
             <Row>
-              <Col sm={8}>Email Address</Col>
-              <Col sm={4} className="text-center">
+              <Col xs={7} lg={8}>
+                Email Address
+              </Col>
+              <Col xs={5} lg={4} className="text-center">
                 Actions
               </Col>
             </Row>
           </div>
           {this._renderInvitations()}
         </div>
-      </Panel>
+      </SettingPanel>
     );
   }
 }
 
-export default UsersPending;
+// PendingInvitationsPanel.propTypes = {
+//   onSuccess: PropTypes.func.isRequired,
+//   onError: PropTypes.func.isRequired,
+//   hideAlert: PropTypes.func.isRequired
+// };
+
+export default PendingInvitationsPanel;

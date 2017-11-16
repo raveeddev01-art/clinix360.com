@@ -36,7 +36,9 @@ export default class Login extends Component {
   render() {
     return (
       <div>
-        {this.props.invalidLogin && <Alert>{this.props.invalidLogin}</Alert>}
+        {this.props.invalidLogin && (
+          <Alert bsStyle="danger">{this.props.invalidLogin}</Alert>
+        )}
 
         <div className="authentication-card text-center m-b-20">
           <h2>{this.props.registrationStore.teamName}</h2>
