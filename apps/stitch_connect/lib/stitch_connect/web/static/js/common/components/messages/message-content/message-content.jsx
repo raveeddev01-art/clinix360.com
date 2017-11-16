@@ -13,7 +13,7 @@ import LinkPreview from "./link-preview";
 @observer
 class MessageContent extends Component {
   renderMessageLine(line) {
-    const { sidemenuStore } = this.props;
+    const { sidemenuStore, message } = this.props;
     const { usersByUsername } = sidemenuStore;
     const words = line.split(" ");
 
@@ -24,6 +24,7 @@ class MessageContent extends Component {
           return prev.concat(
             <UserMention
               key={`usermention_${i}`}
+              isMine={message.user_id === currentUser.id}
               user={usersByUsername[username]}
             />
           );
