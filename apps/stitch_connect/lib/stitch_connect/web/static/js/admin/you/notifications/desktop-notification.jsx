@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Radio from "react-bootstrap/lib/Radio";
@@ -26,10 +27,17 @@ class DesktopNotification extends Component {
   };
 
   onSave = () => {
-    const { notificationStore } = this.props;
-    notificationStore.updateDesktopPreference(this.state.setting).then(() => {
-      notify.show("Desktop notification preference updated");
-    });
+    const { hideAlert, onSuccess, onError, notificationStore } = this.props;
+
+    hideAlert();
+    return notificationStore
+      .updateDesktopPreference(this.state.setting)
+      .then(() => {
+        onSuccess("Desktop notification preference has been updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   render() {
@@ -88,5 +96,11 @@ class DesktopNotification extends Component {
     );
   }
 }
+
+DesktopNotification.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default DesktopNotification;

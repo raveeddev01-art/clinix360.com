@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import Radio from "react-bootstrap/lib/Radio";
 import Row from "react-bootstrap/lib/Row";
@@ -13,9 +14,17 @@ class ChannelNotifications extends Component {
   };
 
   onSave = () => {
-    this.props.notificationStore.updateGroupPreferences().then(() => {
-      notify.show("Room specific notification settings updated");
-    });
+    const { hideAlert, onSuccess, onError, notificationStore } = this.props;
+
+    hideAlert();
+    return notificationStore
+      .updateGroupPreferences()
+      .then(() => {
+        onSuccess("Room specific notification settings have been updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   onToggleEdit = val => {
@@ -31,9 +40,7 @@ class ChannelNotifications extends Component {
         key={`group_${preference.group_id}`}
         className="clearfix notifications-table-row"
       >
-        <Col xs={6}>
-          {preference.group_name}
-        </Col>
+        <Col xs={6}>{preference.group_name}</Col>
         <Col xs={6} className="text-center">
           <Row className="radio-group">
             <Col sm={4}>
@@ -94,5 +101,11 @@ class ChannelNotifications extends Component {
     );
   }
 }
+
+ChannelNotifications.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default ChannelNotifications;

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Col from "react-bootstrap/lib/Col";
@@ -20,10 +21,17 @@ class EmailNotification extends Component {
   }
 
   onSave = () => {
-    const { notificationStore } = this.props;
-    notificationStore.updateEmailPreference(this.state.setting).then(() => {
-      notify.show("Email notification preference updated");
-    });
+    const { hideAlert, onSuccess, onError, notificationStore } = this.props;
+
+    hideAlert();
+    return notificationStore
+      .updateEmailPreference(this.state.setting)
+      .then(() => {
+        onSuccess("Email notification preference has been updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   onToggleEdit = () => {
@@ -74,5 +82,11 @@ class EmailNotification extends Component {
     );
   }
 }
+
+EmailNotification.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default EmailNotification;
