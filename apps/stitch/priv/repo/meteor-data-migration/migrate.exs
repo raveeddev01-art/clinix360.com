@@ -20,6 +20,10 @@ defmodule Stitch.MeteorMigration do
     indexed_users = index_users(users)
     rooms = MeteorMigration.Room.parse_rooms_json(indexed_users, parse_json_file(rooms_json_file))
     rooms = MeteorMigration.Room.migrate_rooms(team.id, rooms)
+
+    # Remove auto-generate sysmem messages
+    group_ids = Group |> where(team_id: ^team.id) |> select([g], g.id) |> Repo.all
+    Message |> where([gu], gu.group_id in ^group_ids) |> Repo.delete_all()
   end
 
   def index_users(users), do: Enum.reduce(users, %{}, & Map.put(&2, &1.username, &1))
