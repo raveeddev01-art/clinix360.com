@@ -26,13 +26,12 @@ class UserMention extends Component {
   };
 
   render() {
-    const { username } = this.props.user;
-
+    const { user: { username }, isMine } = this.props;
     return (
       <SmartDropdown
         id="user-mention"
         className="user-mention-dropdown"
-        pullRight
+        pullRight={isMine}
       >
         <Dropdown.Toggle useAnchor noCaret>
           {`@${username}`}
@@ -50,7 +49,8 @@ class UserMention extends Component {
 }
 
 UserMention.propTypes = {
-  user: PropTypes.any.isRequired
+  user: PropTypes.any.isRequired,
+  isMine: PropTypes.bool.isRequired
 };
 
 export default withRouter(UserMention);
