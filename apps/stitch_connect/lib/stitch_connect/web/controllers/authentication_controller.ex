@@ -33,7 +33,7 @@ defmodule StitchConnect.Web.AuthenticationController do
           false ->
             conn
             |> login_user(user)
-            |> redirect(to: "/")
+            |> redirect(to: "/apps")
           true ->
             conn
             |> put_flash(:invalid_login, "This account is disabled - contact your team admin.")
@@ -79,5 +79,13 @@ defmodule StitchConnect.Web.AuthenticationController do
   defp broadcast_logout(conn, session_id) do
     EventsChannel.broadcast_logout(conn.assigns.current_user, session_id)
     conn
+  end
+
+  def apps(conn, _) do
+    apps_page_params = Poison.encode!(%{
+      "teamName" => conn.private[:team_name],
+      "teamSlug" => conn.private[:team_slug]
+    })
+    render(conn, "apps_page.html", apps_page_params: apps_page_params)
   end
 end
