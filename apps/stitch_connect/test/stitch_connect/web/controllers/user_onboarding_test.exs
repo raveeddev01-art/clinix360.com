@@ -10,7 +10,6 @@ defmodule StitchConnect.Web.UserOnboardingTest do
     setup %{conn: conn} do
       team = insert(:team)
       _group = insert(:group, team: team, is_default: true)
-      conn = %Plug.Conn{conn | host: "localhost"}
 
       {:ok, conn: conn, team: team}
     end
