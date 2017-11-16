@@ -16,7 +16,8 @@ config :stitch, Stitch.Exports,
 
 config :stitch,
   stripe_client: Stitch.Stripe.Client,
-  segment_api: Stitch.Analytics.Segment.HTTPClient
+  segment_api: Stitch.Analytics.Segment.HTTPClient,
+  analytics: Stitch.Analytics
 
 config :stitch, Stitch.Analytics.Sync.RecurringSync,
   enabled: true

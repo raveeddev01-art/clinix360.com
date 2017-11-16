@@ -8,14 +8,19 @@ defmodule Stitch.Accounts.Admin do
   alias Stitch.Accounts.User
   alias Stitch.Team
 
+  @analytics Application.get_env(:stitch, :analytics)
+
   @doc """
   Sets the disabled boolean flag to false for the provided user.
   """
   def activate(%Team{id: team_id}, user_id) do
     if user = Repo.get_by(User, team_id: team_id, id: user_id) do
-      user
-      |> Ecto.Changeset.change(disabled: false)
-      |> Repo.update
+      result =
+        user
+        |> Ecto.Changeset.change(disabled: false)
+        |> Repo.update
+      case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+      result
     else
       {:error, :not_found}
     end
@@ -27,9 +32,12 @@ defmodule Stitch.Accounts.Admin do
   def deactivate(%Team{id: team_id}, user_id) do
     if user = Repo.get_by(User, team_id: team_id, id: user_id) do
       analytics_track_user_disabled(user)
-      user
-      |> Ecto.Changeset.change(disabled: true)
-      |> Repo.update
+      result =
+        user
+        |> Ecto.Changeset.change(disabled: true)
+        |> Repo.update
+      case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+      result
     else
       {:error, :not_found}
     end
@@ -59,11 +67,19 @@ defmodule Stitch.Accounts.Admin do
 
   def update_user(user_id, params)
   when is_integer(user_id) and is_map(params) do
-     Repo.get(User, user_id)
-     |> User.changeset(params)
-     |> Repo.update
+    result =
+      Repo.get(User, user_id)
+      |> User.changeset(params)
+      |> Repo.update
+
+    case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+    result
   end
   def update_user(_, _), do: {:error, "Invalid User ID or Parameters"}
+
+  defp analytics_identify(user) do
+    Task.start(fn -> @analytics.identify(user) end)
+  end
 
   def promote_admin(promoter, target_id) do
     user = Repo.get_by!(User, id: target_id, team_id: promoter.team_id)
