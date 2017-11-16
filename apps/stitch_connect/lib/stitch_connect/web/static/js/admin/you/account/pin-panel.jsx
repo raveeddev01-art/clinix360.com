@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 import PinInput from "../../../common/components/pin-input/index";
@@ -9,7 +10,7 @@ const description =
 
 @inject("userStore")
 @observer
-class UsernamePanel extends Component {
+class PinPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,7 +37,17 @@ class UsernamePanel extends Component {
   };
 
   onSave = () => {
-    this.props.userStore.savePIN(this.state.pin);
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
+
+    hideAlert();
+    return userStore
+      .savePIN(this.state.pin)
+      .then(() => {
+        onSuccess("Your PIN has been successfully updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   render() {
@@ -48,13 +59,16 @@ class UsernamePanel extends Component {
         onEdit={this.onToggleEdit}
         disableSave={!this.state.formValid}
       >
-        <PinInput
-          onValid={this.onValid}
-          onInvalid={this.onInvalid}
-        />
+        <PinInput onValid={this.onValid} onInvalid={this.onInvalid} />
       </SettingPanel>
     );
   }
 }
 
-export default UsernamePanel;
+PinPanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
+
+export default PinPanel;

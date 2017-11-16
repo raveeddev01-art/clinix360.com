@@ -59,31 +59,29 @@ class UserStore {
   @action
   save = data => {
     return put(`/api/v1/users/${this.id}`, {
-      body: data
+      body: data,
+      hideNotify: true
     });
   };
 
   @action
   saveUsername = username => {
-    this.save({ username }).then(() => {
+    return this.save({ username }).then(() => {
       this.username = username;
-      notify.show("Username updated");
     });
   };
 
   @action
   saveEmail = email => {
-    this.save({ email }).then(() => {
+    return this.save({ email }).then(() => {
       this.email = email;
-      notify.show("Email updated");
     });
   };
 
   @action
   savePIN = pin => {
-    this.save({ pin }).then(() => {
+    return this.save({ pin }).then(() => {
       this.pin = pin;
-      notify.show("PIN updated");
     });
   };
 
@@ -114,9 +112,8 @@ class UserStore {
 
   @action
   saveProfileImg = profileImgUrl => {
-    this.save({ profile_image_url: profileImgUrl }).then(() => {
+    return this.save({ profile_image_url: profileImgUrl }).then(() => {
       this.profileImg = profileImgUrl;
-      notify.show("Profile Image updated");
     });
   };
 
@@ -126,9 +123,8 @@ class UserStore {
       body: {
         new_password: newPassword,
         old_password: oldPassword
-      }
-    }).then(() => {
-      notify.show("Your password has been changed");
+      },
+      hideNotify: true
     });
   };
 }

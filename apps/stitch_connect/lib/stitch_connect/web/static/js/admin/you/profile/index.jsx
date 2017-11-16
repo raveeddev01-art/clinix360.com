@@ -18,12 +18,14 @@ const header = (
 class ProfileSettings extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       alertMessage: "",
       alertStyle: "",
       alertVisible: false
     };
   }
+
   componentWillMount() {
     this.props.titleStore.setPageName("Profile");
     this.props.adminPanelStore.setHeading("Profile", "fa-user");
@@ -57,13 +59,21 @@ class ProfileSettings extends Component {
     return (
       <Panel className="admin-panel" header={header}>
         {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
-        <NamePanel onSuccess={this.onSuccess} hideAlert={this.hideAlert} />
+        <NamePanel
+          onSuccess={this.onSuccess}
+          onError={this.onError}
+          hideAlert={this.hideAlert}
+        />
         <PhoneNumberPanel
           onSuccess={this.onSuccess}
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
-        <TitlePanel onSuccess={this.onSuccess} hideAlert={this.hideAlert} />
+        <TitlePanel
+          onSuccess={this.onSuccess}
+          onError={this.onError}
+          hideAlert={this.hideAlert}
+        />
         {/* <ProfileImagePanel /> */}
       </Panel>
     );

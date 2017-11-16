@@ -27,7 +27,7 @@ class PhoneNumberPanel extends Component {
   };
 
   _onSave = () => {
-    const { hideAlert, onSuccess, onError } = this.props;
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
 
     hideAlert();
     return post(`/api/v1/users/validate-phone-number`, {
@@ -35,11 +35,9 @@ class PhoneNumberPanel extends Component {
       hideNotify: true
     })
       .then(() => {
-        return this.props.userStore
-          .savePhone(this.state.phoneNumber)
-          .then(() => {
-            onSuccess("Your phone number has been successfully updated.");
-          });
+        return userStore.savePhone(this.state.phoneNumber).then(() => {
+          onSuccess("Your phone number has been successfully updated.");
+        });
       })
       .catch(err => {
         onError(err.data.message);

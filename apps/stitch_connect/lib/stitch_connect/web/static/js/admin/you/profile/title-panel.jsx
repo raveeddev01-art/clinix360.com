@@ -26,12 +26,17 @@ class TitlePanel extends Component {
   };
 
   _onSave = () => {
-    const { hideAlert, onSuccess } = this.props;
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
 
     hideAlert();
-    return this.props.userStore.saveTitle(this.state.title).then(() => {
-      onSuccess("Your title has been successfully updated.");
-    });
+    return userStore
+      .saveTitle(this.state.title)
+      .then(() => {
+        onSuccess("Your title has been successfully updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _onChangeTitle = evt => this.setState({ title: evt.target.value });
@@ -60,6 +65,7 @@ class TitlePanel extends Component {
 
 TitlePanel.propTypes = {
   onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
   hideAlert: PropTypes.func.isRequired
 };
 

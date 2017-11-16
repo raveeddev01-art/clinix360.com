@@ -32,12 +32,17 @@ class NamePanel extends Component {
 
   _onSave = () => {
     const { firstName, lastName } = this.state;
-    const { hideAlert, onSuccess, userStore } = this.props;
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
 
     hideAlert();
-    return userStore.saveName(firstName, lastName).then(() => {
-      onSuccess("Your name has been successfully updated.");
-    });
+    return userStore
+      .saveName(firstName, lastName)
+      .then(() => {
+        onSuccess("Your name has been successfully updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _onChangeFirstName = evt => this.setState({ firstName: evt.target.value });
@@ -79,6 +84,7 @@ class NamePanel extends Component {
 
 NamePanel.propTypes = {
   onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
   hideAlert: PropTypes.func.isRequired
 };
 
