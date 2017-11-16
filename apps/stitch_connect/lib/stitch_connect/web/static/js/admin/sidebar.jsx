@@ -46,11 +46,6 @@ class Sidebar extends Component {
               <i className="fa fa-users" /> Members
             </Link>
           </ListGroupItem>
-          <ListGroupItem active={this._isSelected("/admin/users/invitations")}>
-            <Link to="/admin/users/invitations">
-              <i className="fa fa-envelope-o" /> Invitations
-            </Link>
-          </ListGroupItem>
           <ListGroupItem active={this._isSelected("/admin/billing")}>
             <Link to="/admin/billing">
               <i className="fa fa-credit-card" /> Billing

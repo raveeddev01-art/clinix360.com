@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
-
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
-
 import Dropdown from "react-bootstrap/lib/Dropdown";
 
 import FavoritesList from "./favorites/favorites_list";
@@ -52,11 +50,8 @@ class Sidemenu extends Component {
         <LinkContainer to="/admin/members">
           <MenuItem eventKey="7">Members</MenuItem>
         </LinkContainer>
-        <LinkContainer to="/admin/users/invitations">
-          <MenuItem eventKey="8">Invitations</MenuItem>
-        </LinkContainer>
         <LinkContainer to="/admin/billing">
-          <MenuItem eventKey="9">Billing</MenuItem>
+          <MenuItem eventKey="8">Billing</MenuItem>
         </LinkContainer>
       </div>
     );
@@ -155,10 +150,10 @@ class Sidemenu extends Component {
                 <span>Stitch</span>
               </div>
 
-              <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
+              <MenuItem eventKey="9" onClick={this.props.presenceStore.lock}>
                 Lockout
               </MenuItem>
-              <MenuItem eventKey="11" href="/logout">
+              <MenuItem eventKey="10" href="/logout">
                 Sign Out
               </MenuItem>
             </Dropdown.Menu>

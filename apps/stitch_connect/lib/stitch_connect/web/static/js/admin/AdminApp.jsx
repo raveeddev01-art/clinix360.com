@@ -11,7 +11,6 @@ import TeamSettings from "./team/settings/index";
 import YouNotifications from "./you/notifications";
 import ProfileSettings from "./you/profile/index";
 import AccountSettings from "./you/account/index";
-import UsersInvitations from "./users/invitations";
 import Users from "./users/";
 import Billing from "./billing/billing";
 import Analytics from "./analytics/index";
@@ -68,9 +67,9 @@ class AdminApp extends Component {
         component={TeamSecurity}
       />,
       <Route
-        key="route_admin_user_invitations"
-        path={`/admin/users/invitations`}
-        component={UsersInvitations}
+        key="route_admin_analytics"
+        path={`/admin/analytics`}
+        component={Analytics}
       />,
       <Route
         key="route_admin_users"
@@ -81,11 +80,6 @@ class AdminApp extends Component {
         key="route_admin_billing"
         path={`/admin/billing`}
         component={Billing}
-      />,
-      <Route
-        key="route_admin_analytics"
-        path={`/admin/analytics`}
-        component={Analytics}
       />
     ];
   };
