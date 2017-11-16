@@ -1,6 +1,8 @@
 defmodule Stitch.MeteorMigration.Room do
   alias Stitch.Repo
   alias Stitch.{Accounts.User, Group}
+  import Ecto.Query
+  import Ecto.Changeset
   require Logger
 
   defmodule ParserError do
@@ -142,13 +144,26 @@ defmodule Stitch.MeteorMigration.Room do
     Group.create_single_dm(creator, user_ids)
   end
 
-  def create_group(team_id, %{dm: false, users: users, name: name, slug: slug, public: public, creator_user: creator}) do
+  def create_group(team_id, %{dm: false, users: users, name: name, slug: slug, public: public, creator_user: creator, is_default: is_default}) do
     user_ids = Enum.map(users, & &1.id)
-    Group.create(%{
+    group = Group.create(%{
       "name" => name,
       "slug" => slug,
       "user_ids" => user_ids,
       "public" => public,
     }, creator)
+
+    case group do
+      {:ok, %{group: group}} = group_inserted ->
+        if is_default == true do
+          group
+          |> change(is_default: true)
+          |> Repo.update!
+          group_inserted
+        else
+          group_inserted
+        end
+      group -> group
+    end
   end
 end

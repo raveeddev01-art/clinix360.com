@@ -70,7 +70,7 @@ defmodule Stitch.MeteorMigration.User do
       username: username,
       first_name: first_name,
       last_name: last_name,
-      password: encode_password(password_hash),
+      password: password_hash,
       phone_number: phone_number,
       pin: pin,
       roles: map_roles(roles),
@@ -122,19 +122,12 @@ defmodule Stitch.MeteorMigration.User do
       pin: pin,
       roles: roles,
       password_hash: password,
+      token: token(),
       inserted_at: DateTime.utc_now(),
       updated_at: DateTime.utc_now(),
       onboarded: true}
   end
   def user_attributes(json), do: raise ParserError, message: "Invalid format for Phoenix app: #{inspect(json)}"
-
-  @doc """
-  Encode password hash the same it's encoded in the Meteor app.
-  This allows it to be seamlessly used in the Phoenix app.
-  """
-  def encode_password(password) when is_binary(password) do
-    Base.encode16(:crypto.hash(:sha256, password), case: :lower)
-  end
 
   @doc """
   Maps roles from Meteor the app to roles in the Phoenix app.
@@ -155,5 +148,9 @@ defmodule Stitch.MeteorMigration.User do
       role -> raise ParserError, message: "Invalid role format: #{inspect(role)}"
     end)
     |> Enum.uniq
+  end
+
+  def token do
+    Stitch.Rand.token(32)
   end
 end
