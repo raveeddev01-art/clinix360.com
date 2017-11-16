@@ -102,7 +102,7 @@ defmodule Stitch.MeteorMigration.User do
   """
   def migrate_users(team_id, users) do
     users = users |> Enum.map(& user_attributes(team_id, &1))
-    Repo.insert_all(User, users)
+    Repo.insert_all(User, users, returning: true)
   end
 
   def user_attributes(team_id, %{
