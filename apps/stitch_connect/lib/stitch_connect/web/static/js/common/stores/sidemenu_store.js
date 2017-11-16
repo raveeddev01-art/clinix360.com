@@ -3,6 +3,7 @@ import Favico from "favico.js";
 import { scroller } from "react-scroll";
 import orderBy from "lodash/orderBy";
 import history from "../../util/history";
+import { getRoomNavLink } from "../../lib/room";
 
 class SidemenuStore {
   @observable sidemenuDiv = null; // Div element of sidemenu
@@ -18,7 +19,6 @@ class SidemenuStore {
   badge = null;
   favicon = null;
   notificationAudio = null;
-  history = null;
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
@@ -469,6 +469,20 @@ class SidemenuStore {
       const { userStore } = this.rootStore;
 
       userStore.onUserInfo(user);
+    }
+
+    // if username of the user in multi-dm or single-dm current user is on, is changed,
+    // it should redirect
+    const { groupStore } = this.rootStore;
+    if (groupStore.groupType === 'single-dm' || groupStore.groupType === 'multi-dm') {
+      const changedUser = groupStore.users.find(u => u.id === user.id);
+      if (changedUser.username !== user.username) {
+        changedUser.username = user.username;
+        history.replace(getRoomNavLink({
+          type: groupStore.groupType === 'single-dm' ? 'dm' : 'multi-dm',
+          users: groupStore.users
+        }));
+      }
     }
   };
 

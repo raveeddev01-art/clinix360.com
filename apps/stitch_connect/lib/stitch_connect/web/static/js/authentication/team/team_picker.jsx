@@ -18,11 +18,12 @@ export default class TeamPicker extends Component {
     this.state = {
       teamName: "",
       teamExists: undefined,
-      blacklisted: true,
-      isLoading: false
+      blacklisted: false,
+      alert: false
     };
 
     this.checkBlacklist = debounce(this.checkBlacklist, 500);
+    this.checkAvailability = debounce(this.checkAvailability, 500);
   }
 
   componentWillMount() {
@@ -31,14 +32,12 @@ export default class TeamPicker extends Component {
 
   handleChange = event => {
     const teamName = event.target.value;
-    this.setState({
-      teamName
-    });
+    this.setState({ teamName });
     this.checkBlacklist(teamName);
+    this.checkAvailability(teamName);
   };
 
   checkBlacklist = url => {
-    this.setState({ blacklisted: true });
     post("/api/v1/teams/slug-exists", {
       body: { url }
     }).then(res => {
@@ -47,31 +46,31 @@ export default class TeamPicker extends Component {
   };
 
   checkAvailability = name => {
-    this.setState({ isLoading: true });
     post("/api/v1/teams/url-available", {
       body: { url: name }
     }).then(response => {
-      this.setState({ teamExists: !response.data.available, isLoading: false });
-      if (this.state.teamExists === true) {
-        window.location = `https://${this.state.teamName}.${applicationHost}`;
-      }
+      this.setState({ teamExists: !response.data.available });
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    this.checkAvailability(this.state.teamName);
+    if (this.state.teamExists === true && this.state.blacklisted === false) {
+      window.location = `https://${this.state.teamName}.${applicationHost}`;
+    } else {
+      this.setState({ alert: true });
+    }
   };
 
   render() {
-    const { teamExists, teamName, isLoading, blacklisted } = this.state;
+    const { alert, teamName } = this.state;
 
     return (
       <div>
-        {teamExists === false && (
+        {alert === true && (
           <Alert>
             We don't have that team URL in our system. If you'd like, we can
-            help you <Link to="/find-teams">find your team</Link>.
+            help you <Link to="/find-your-team">find your team</Link>.
           </Alert>
         )}
 
@@ -97,7 +96,7 @@ export default class TeamPicker extends Component {
             Enter your team's <strong>Stitch URL</strong>.
           </h5>
 
-          <form onSubmit={this.handleSubmit} className="m-b-40">
+          <form onSubmit={this.handleSubmit} noValidate className="m-b-40">
             <FormGroup bsSize="large" className="team-form">
               <FormControl
                 name="teamName"
@@ -112,7 +111,6 @@ export default class TeamPicker extends Component {
             </FormGroup>
 
             <input
-              disabled={isLoading || !teamName || blacklisted}
               value="Continue"
               type="submit"
               className="btn btn-block btn-lg btn-primary"

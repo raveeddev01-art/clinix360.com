@@ -18,7 +18,8 @@ config :stitch, Stitch.Exports,
 
 config :stitch,
   stripe_client: Stitch.Stripe.TestClient,
-  segment_api: Stitch.Analytics.Segment.InMemory
+  segment_api: Stitch.Analytics.Segment.InMemory,
+  analytics: Stitch.Analytics.TestClient
 
 config :stitch, :aws_presigned_urls, %{
   access_key_id: "some-access-key-id",

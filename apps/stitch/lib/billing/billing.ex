@@ -9,6 +9,7 @@ defmodule Stitch.Billing do
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
   @trial_duration 14 * 24 * 60 * 60 # 14 days in seconds
+  @analytics Application.get_env(:stitch, :analytics)
 
   @doc """
   Configures a newly created team with a trial.
@@ -119,14 +120,23 @@ defmodule Stitch.Billing do
          {:count, count} when count > 0 <- {:count, card_count(subscription.team_id)},
          plan_id = determine_plan_id(changeset.changes),
          {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
-      subscription
-      |> subscription_update_changeset(changeset.changes, stripe_sub_params)
-      |> Repo.update()
+      result =
+        subscription
+        |> subscription_update_changeset(changeset.changes, stripe_sub_params)
+        |> Repo.update()
+      case result, do: ({:ok, _} -> analytics_identify_and_group(subscription.team_id); _ -> :ignore)
+      result
     else
       %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
       {:count, _} -> {:error, :card_required}
       error -> error
     end
+  end
+
+  defp analytics_identify_and_group(team_id) do
+    Task.start(fn ->
+      @analytics.identify_and_group(%{team_id: team_id})
+    end)
   end
 
   defp create_subscription(subscription, plan_id) do
