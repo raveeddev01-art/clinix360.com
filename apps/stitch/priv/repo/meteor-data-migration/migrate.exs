@@ -1,27 +1,61 @@
 defmodule Stitch.Migrate do
   alias Stitch.Repo
   alias Stitch.{Accounts, Accounts.User}
-  alias Stitch.{Team, Group, GroupUser, Message}
+  alias Stitch.{Team, TeamQueries, Group, GroupUser, Message}
 
   defmodule ParserError do
     defexception message: "Invalid JSON format"
   end
 
-  def run_migration(users_json_file) do
+  def run_migration(users_json_file \\ "_meteor-data/users.json") do
     # Parse json file (stop if there are errors -- it means we won't be able to insert all records into the database)
+
+    team = create_first_team_unless_exists()
+    users = parse_users_json(parse_json_file(users_json_file))
+    migrate_users(team.id, users)
   end
 
-  def parse_team_json(team) do
+  def parse_json_file(filepath) when is_binary(filepath) do
+    case File.read(filepath) do
+      {:error, error} ->
+        IO.puts "Error reading file #{filepath}"
+        raise error
+      {:ok, file} ->
+        case Poison.decode(file) do
+          {:error, error} ->
+            IO.puts "Erro parsing json file #{file}"
+            raise error
+          {:ok, json} -> json
+        end
+    end
+  end
+
+  def create_first_team_unless_exists do
+    team_name = "Migration Clinic 1"
+    team_slug = "migrationclinic1"
+
+    case TeamQueries.get_by_slug(team_slug) do
+      nil ->
+        team = Team.Onboarding.create_team(team_name, team_slug)
+        Repo.update!(Ecto.Changeset.change(team, open_invitations_enabled: true))
+        team
+      team ->
+        IO.puts "#{team_slug} already exists."
+        team
+    end
+  end
+
+  def parse_team_json(_team) do
     # TODO:
   end
 
   @doc """
   Expected format
 
-    [{name: "team name", slug: "team_slug"}, ...]
+    [%{name: "team name", slug: "team_slug"}, ...]
 
   """
-  def migrate_team(teams) do
+  def migrate_teams(teams) do
     teams |> Enum.each(fn team ->
       team_name = team["name"]
       team_slug = team["slug"]
@@ -91,7 +125,7 @@ defmodule Stitch.Migrate do
 
     %{
       email: email,
-      username: usernmae,
+      username: username,
       first_name: first_name,
       last_name: last_name,
       password: encode_password(password_hash),
@@ -102,7 +136,9 @@ defmodule Stitch.Migrate do
       meteor_team_id: team_id,
     }
   end
-  def parse_user_json(json), do: raise ParserError, message: "Invalid format from Meteor app: inspect(json)"
+  def parse_user_json(json) do
+    raise ParserError, message: "Invalid format from Meteor app: #{inspect(json)}"
+  end
 
   @doc """
   Expected format
@@ -123,11 +159,11 @@ defmodule Stitch.Migrate do
     ]
   """
   def migrate_users(team_id, users) do
-    users = users |> Enum.map(&user_attributes/1)
+    users = users |> Enum.map(& user_attributes(team_id, &1))
     Repo.insert_all(User, users)
-  end)
+  end
 
-  def user_attributes(%{
+  def user_attributes(team_id, %{
     email: email,
     username: username,
     first_name: first_name,
@@ -136,19 +172,19 @@ defmodule Stitch.Migrate do
     roles: roles,
     password: password}) do
 
-    %{team_id: team_id
+    %{team_id: team_id,
       email: email,
       username: username,
       first_name: first_name,
       last_name: last_name,
       pin: pin,
       roles: roles,
-      password: password,
+      password_hash: password,
       inserted_at: DateTime.utc_now(),
       updated_at: DateTime.utc_now(),
       onboarded: true}
   end
-  def user_attributes(json), do: raise ParserError, message: "Invalid format for Phoenix app: inspect(json)"
+  def user_attributes(json), do: raise ParserError, message: "Invalid format for Phoenix app: #{inspect(json)}"
 
   @doc """
   Encode password hash the same it's encoded in the Meteor app.
@@ -168,10 +204,13 @@ defmodule Stitch.Migrate do
   """
   def map_roles(roles) do
     Enum.map(roles, fn
-      "user" -> "member",
+      "user" -> "member"
       "admin" -> "admin"
+      "billing-admin" -> "admin"
       "superAdmin" -> "admin"
-      role -> raise ParserError, message: "Invalid role format: inspect(role)"
+      role -> raise ParserError, message: "Invalid role format: #{inspect(role)}"
     end)
   end
 end
+
+Stitch.Migrate.run_migration
