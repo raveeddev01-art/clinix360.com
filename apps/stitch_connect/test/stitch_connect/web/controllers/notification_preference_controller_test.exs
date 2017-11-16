@@ -1,11 +1,6 @@
 defmodule StitchConnect.Web.NotificationPreferenceControllerTest do
   use StitchConnect.Web.ConnCase, async: true
 
-  setup %{conn: conn} do
-    conn = %{ conn | host: "localhost" }
-    {:ok, conn: conn}
-  end
-
   describe "Global notification preferences" do
     test "GET /users/notification-preference", %{conn: conn} do
       user = insert(:user, desktop_notification_preference: "nothing", mobile_notification_preference: "mentions", email_notification_preference: "hourly")

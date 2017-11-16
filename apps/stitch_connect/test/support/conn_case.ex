@@ -14,6 +14,7 @@ defmodule StitchConnect.Web.ConnCase do
   """
 
   use ExUnit.CaseTemplate
+  alias StitchConnect.Web.Endpoint
 
   using do
     quote do
@@ -28,7 +29,7 @@ defmodule StitchConnect.Web.ConnCase do
       @endpoint StitchConnect.Web.Endpoint
 
       def subdomain(conn, subdomain) do
-        %{ conn | host: "#{subdomain}.localhost" }
+        %{ conn | host: "#{subdomain}.#{Endpoint.host}" }
       end
 
       def get_as_user(conn, user, url, params \\ %{}) do
@@ -66,7 +67,7 @@ defmodule StitchConnect.Web.ConnCase do
   """
   @spec with_team_subdomain(Plug.Conn.t, Stitch.Team.t) :: Plug.Conn.t
   def with_team_subdomain(conn, %Stitch.Team{slug: team_slug}) do
-    %Plug.Conn{conn | host: "#{team_slug}.localhost"}
+    %Plug.Conn{conn | host: "#{team_slug}.#{Endpoint.host}"}
   end
 
 
@@ -85,7 +86,7 @@ defmodule StitchConnect.Web.ConnCase do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
     end
-    {:ok, conn: %{Phoenix.ConnTest.build_conn() | host: "localhost"}}
+    {:ok, conn: Phoenix.ConnTest.build_conn(:get, Endpoint.url <> "/", nil)}
   end
 
 end

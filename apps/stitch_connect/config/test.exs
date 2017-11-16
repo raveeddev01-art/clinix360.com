@@ -4,7 +4,7 @@ use Mix.Config
 # you can enable the server option below.
 config :stitch_connect, StitchConnect.Web.Endpoint,
   http: [port: 4001],
-  url: [host: "localhost"],
+  url: [host: "localhost.app"],
   server: false
 
 config :stitch_connect, :start_message_link_preview_generator, false

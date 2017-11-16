@@ -1,5 +1,6 @@
 defmodule StitchConnect.Plug.Subdomain do
   import Plug.Conn
+  alias StitchConnect.Web.Endpoint
 
   def init(default), do: default
 
@@ -9,7 +10,7 @@ defmodule StitchConnect.Plug.Subdomain do
         case Stitch.TeamQueries.get_by_slug(subdomain) do
           nil ->
             conn
-            |> Phoenix.Controller.redirect(external: root_url(conn))
+            |> Phoenix.Controller.redirect(external: Endpoint.url)
             |> halt
           team ->
             conn
@@ -25,20 +26,7 @@ defmodule StitchConnect.Plug.Subdomain do
     end
   end
 
-  defp root_url(conn) do
-    host = conn.host
-      |> String.split(".")
-      |> Enum.at(1)
-
-    if conn.port do
-      "#{conn.scheme}://#{host}:#{conn.port}"
-    else
-      "#{conn.scheme}://#{host}"
-    end
-  end
-
   defp get_subdomain(host) do
-    root_host = StitchConnect.Web.Endpoint.config(:url)[:host]
-    String.replace(host, ~r/.?#{root_host}/, "")
+    String.replace(host, ~r/.?#{Endpoint.host}/, "")
   end
 end
