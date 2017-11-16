@@ -67,15 +67,42 @@ defmodule Stitch.Migrate do
         password: "",
         pin: "0000",
         roles: ["member"],
-        team_id: team_id,
+        meteor_team_id: team_id,
       }
     ]
 
-  Throws and error if some of the attributes are not present
+  Throws an error if some of the attributes are not present
   """
-  def parse_users_json(team, users) do
-    # TODO:
+  def parse_users_json(users) do
+    users |> Enum.map(&parse_user_json/1)
   end
+
+  def parse_user_json(%{
+    "_id" => id,
+    "services" => %{"password" => %{"bcrypt" => password_hash}},
+    "emails" => [%{"address" => email}],
+    "roles" => roles,
+    "firstName" => first_name,
+    "lastName" => last_name,
+    "username" => username,
+    "mobilePhone" => phone_number,
+    "pin" => pin,
+    "teamId" => team_id}) when is_list(roles) do
+
+    %{
+      email: email,
+      username: usernmae,
+      first_name: first_name,
+      last_name: last_name,
+      password: encode_password(password_hash),
+      phone_number: phone_number,
+      pin: pin,
+      roles: map_roles(roles),
+      meteor_id: id,
+      meteor_team_id: team_id,
+    }
+  end
+  def parse_user_json(json), do: raise ParserError, message: "Invalid format from Meteor app: inspect(json)"
 
   @doc """
   Expected format
@@ -87,6 +114,7 @@ defmodule Stitch.Migrate do
         last_name: "Name",
         username: "username",
         password: "password_hash",
+        phone_number: "+12345678910"
         pin: "0000",
         roles: ["member"],
         team_id: team_id,
@@ -100,13 +128,13 @@ defmodule Stitch.Migrate do
   end)
 
   def user_attributes(%{
-    "email" => email,
-    "username" => username,
-    "first_name" => first_name,
-    "last_name" => last_name,
-    "pin" => pin,
-    "roles" => roles,
-    "password" => password}) do
+    email: email,
+    username: username,
+    first_name: first_name,
+    last_name: last_name,
+    pin: pin,
+    roles: roles,
+    password: password}) do
 
     %{team_id: team_id
       email: email,
@@ -120,9 +148,30 @@ defmodule Stitch.Migrate do
       updated_at: DateTime.utc_now(),
       onboarded: true}
   end
-  def user_attributes(json), do: raise ParserError, "Invalid format: inspect(json)"
+  def user_attributes(json), do: raise ParserError, message: "Invalid format for Phoenix app: inspect(json)"
 
+  @doc """
+  Encode password hash the same it's encoded in the Meteor app.
+  This allows it to be seamlessly used in the Phoenix app.
+  """
   def encode_password(password) when is_binary(password) do
     Base.encode16(:crypto.hash(:sha256, password), case: :lower)
+  end
+
+  @doc """
+  Maps roles from Meteor the app to roles in the Phoenix app.
+
+    user => member
+    admin => admin
+    superAdmin => admin
+
+  """
+  def map_roles(roles) do
+    Enum.map(roles, fn
+      "user" -> "member",
+      "admin" -> "admin"
+      "superAdmin" -> "admin"
+      role -> raise ParserError, message: "Invalid role format: inspect(role)"
+    end)
   end
 end
