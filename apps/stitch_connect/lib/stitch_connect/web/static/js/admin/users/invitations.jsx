@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import Panel from "react-bootstrap/lib/Panel";
+import Alert from "react-bootstrap/lib/Alert";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
@@ -20,7 +21,10 @@ export default class UsersInvitations extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: ""
+      email: "",
+      alertMessage: "",
+      alertStyle: "",
+      alertVisible: false
     };
   }
 
@@ -45,48 +49,71 @@ export default class UsersInvitations extends Component {
       }
     });
 
+    this.setState({
+      alertVisible: false
+    });
     if (emails.length > 0) {
       post(`/api/v1/invitations`, {
         body: { email_collection: emails.join(",") }
-      }).then(() => {
-        this.setState({ email: "" });
-        notify.show("Invitations sent to all users");
-      });
+      })
+        .then(() => {
+          this.setState({ email: "" });
+          this.setState({
+            alertMessage: "Invitations sent to all users.",
+            alertVisible: true,
+            alertStyle: "success"
+          });
+        })
+        .catch(err => {
+          this.setState({
+            alertMessage: err.data.message,
+            alertVisible: true,
+            alertStyle: "danger"
+          });
+        });
     } else {
-      notify.show("You haven't provided any valid email address!", "error");
+      this.setState({
+        alertMessage: "You haven't provided any valid email address!",
+        alertVisible: true,
+        alertStyle: "danger"
+      });
     }
   };
 
   render() {
     const { email } = this.state;
+    const { alertMessage, alertVisible, alertStyle } = this.state;
 
     return (
-      <Panel className="admin-panel has-style" header={header}>
-        <h4>Add invitation e-mails</h4>
-        <FormGroup controlId="formControlsTextarea">
-          <FormControl
-            componentClass="textarea"
-            rows="6"
-            value={email}
-            onChange={this._handleChange}
-          />
-          <Row>
-            <Col md={10}>
-              <HelpBlock className="text-muted">
-                You can send multiple e-mail invitations at once.
-              </HelpBlock>
-            </Col>
-          </Row>
-        </FormGroup>
+      <Panel className="admin-panel " header={header}>
+        {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+        <div className="panel-settings">
+          <h4>Add invitation e-mails</h4>
+          <FormGroup controlId="formControlsTextarea">
+            <FormControl
+              componentClass="textarea"
+              rows="6"
+              value={email}
+              onChange={this._handleChange}
+            />
+            <Row>
+              <Col md={10}>
+                <HelpBlock className="text-muted">
+                  You can send multiple e-mail invitations at once.
+                </HelpBlock>
+              </Col>
+            </Row>
+          </FormGroup>
 
-        <Button
-          bsStyle="primary"
-          bsSize="large"
-          className="btn-fancy pull-right"
-          onClick={this._onSave}
-        >
-          Send
-        </Button>
+          <Button
+            bsStyle="primary"
+            bsSize="large"
+            className="btn-fancy"
+            onClick={this._onSave}
+          >
+            Send
+          </Button>
+        </div>
       </Panel>
     );
   }
