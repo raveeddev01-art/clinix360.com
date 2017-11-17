@@ -152,8 +152,6 @@ class Confirmation extends Component {
         )}
 
         <OnboardCard
-          header={this.renderHeader()}
-          x
           title="Check your email!"
           description={
             <span>
