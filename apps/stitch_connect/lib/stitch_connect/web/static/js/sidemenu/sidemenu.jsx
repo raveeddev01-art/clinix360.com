@@ -10,10 +10,19 @@ import Dropdown from "react-bootstrap/lib/Dropdown";
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
+import InviteModal from "../common/modals/invite-modal";
 
 @inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
 @observer
 class Sidemenu extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showInviteModal: false
+    };
+  }
+
   componentDidMount() {
     const { sidemenuStore } = this.props;
 
@@ -30,6 +39,17 @@ class Sidemenu extends Component {
     if (isDropdownOpen) {
       this.overlayTrigger.hide();
     }
+  };
+
+  toggleInviteModal = () => {
+    this.setState({
+      showInviteModal: !this.state.showInviteModal
+    });
+  };
+
+  showInviteModal = evt => {
+    evt.preventDefault();
+    this.toggleInviteModal();
   };
 
   renderAdminOptions() {
@@ -150,10 +170,13 @@ class Sidemenu extends Component {
                 <span>Stitch</span>
               </div>
 
-              <MenuItem eventKey="9" onClick={this.props.presenceStore.lock}>
+              <MenuItem eventKey="9" onClick={this.showInviteModal}>
+                Invite
+              </MenuItem>
+              <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
                 Lockout
               </MenuItem>
-              <MenuItem eventKey="10" href="/logout">
+              <MenuItem eventKey="11" href="/logout">
                 Sign Out
               </MenuItem>
             </Dropdown.Menu>
@@ -179,6 +202,12 @@ class Sidemenu extends Component {
             <PeopleList
               heading="Direct Messages"
               rooms={filterJoined(groupsStore.directGroups)}
+              showInviteModal={this.showInviteModal}
+            />
+
+            <InviteModal
+              show={this.state.showInviteModal}
+              toggle={this.toggleInviteModal}
             />
           </div>
 

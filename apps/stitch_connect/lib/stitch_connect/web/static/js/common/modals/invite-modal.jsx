@@ -274,7 +274,7 @@ class InviteModal extends Component {
     return (
       <Modal className="invite-people-modal" show={show} onHide={toggle}>
         <Modal.Header>
-          <Modal.Title>Invite People</Modal.Title>
+          <Modal.Title>Invite Members</Modal.Title>
           <a role="link" onClick={toggle}>
             <i className="fa fa-close" />
           </a>

@@ -74,7 +74,7 @@ class TeamSettings extends Component {
       <Panel className="admin-panel" header={header}>
         <div className="pull-right m-u-50">
           <Button bsStyle="primary" onClick={this.showInviteModal}>
-            Invite Members
+            <i className="fa fa-envelope-o" /> Invite Members
           </Button>
         </div>
         <p className="m-b-20">
