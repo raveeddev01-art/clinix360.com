@@ -5,7 +5,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import CreateDMModal from "./modals/create-dm-modal";
-import InvitationModal from "./modals/invitation-modal";
+import InviteModal from "../../common/modals/invite-modal";
 import Room from "../room";
 
 @inject("userStore")
@@ -75,24 +75,26 @@ class PeopleList extends Component {
 
         {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
-        {userStore.canInvite && <OverlayTrigger
-          placement="top"
-          overlay={<Tooltip id="invite-people-modal">Invite People</Tooltip>}
-        >
-          <a
-            role="button"
-            className="invite-link"
-            onClick={this.showInviteModal}
+        {userStore.canInvite && (
+          <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip id="invite-people-modal">Invite People</Tooltip>}
           >
-            Invite People
-          </a>
-        </OverlayTrigger>}
+            <a
+              role="button"
+              className="invite-link"
+              onClick={this.showInviteModal}
+            >
+              Invite People
+            </a>
+          </OverlayTrigger>
+        )}
 
         <CreateDMModal
           show={this.state.showTeamModal}
           toggle={this.toggleTeamModal}
         />
-        <InvitationModal
+        <InviteModal
           show={this.state.showInviteModal}
           toggle={this.toggleInviteModal}
         />

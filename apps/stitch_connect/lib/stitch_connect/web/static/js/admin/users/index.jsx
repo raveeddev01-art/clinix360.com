@@ -6,7 +6,7 @@ import Button from "react-bootstrap/lib/Button";
 import FullMembersPanel from "./full-members-panel";
 import DeactivatedMembersPanel from "./deactivated-members-panel";
 import PendingInvitationsPanel from "./pending-invitations-panel";
-import InviteModal from "./invite-modal";
+import InviteModal from "../../common/modals/invite-modal";
 
 const header = (
   <h1>

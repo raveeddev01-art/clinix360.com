@@ -10,6 +10,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
+import _ from "lodash";
 
 import isEmail from "validator/lib/isEmail";
 
@@ -36,6 +37,7 @@ class InviteModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.show !== this.props.show) {
       this.setState({
+        mode: "default",
         show: nextProps.show,
         invites: [
           {
@@ -43,7 +45,8 @@ class InviteModal extends Component {
           }
         ],
         sent: false,
-        emails: ""
+        emails: "",
+        alertVisible: false
       });
     }
   }
@@ -51,11 +54,10 @@ class InviteModal extends Component {
   onChange = index => evt => {
     const { invites } = this.state;
     const invite = invites[index];
-
     invite.email = evt.target.value;
-    invite.error =
-      !invite.email || isEmail(invite.email) ? "" : "Invalid email";
-
+    if (invite.email.trim() === "") {
+      invite.error = "";
+    }
     this.setState({ invites });
   };
 
@@ -74,15 +76,38 @@ class InviteModal extends Component {
     });
   };
 
-  onAddBulk = () => {
-    this.setState({
-      mode: "bulk"
-    });
-  };
+  onAddEmails = () => {
+    const emails = this.state.emails.split(",");
 
-  onAddSingles = () => {
+    let invites = [];
+    emails.forEach(em => {
+      const email = em.trim();
+      if (email !== "" && isEmail(email)) {
+        invites.push({
+          email
+        });
+      }
+    });
+    invites = _.uniqBy(invites, invite => {
+      return invite.email;
+    });
+
+    if (invites.length === 0) {
+      this.setState({
+        alertVisible: true,
+        alertMessage: "We are not able to identify any valid emails.",
+        alertStyle: "danger"
+      });
+      return;
+    }
+
     this.setState({
-      mode: "default"
+      invites,
+      mode: "default",
+      emails: "",
+      alertVisible: true,
+      alertMessage: `Found ${invites.length} emails to invite.`,
+      alertStyle: "success"
     });
   };
 
@@ -98,6 +123,27 @@ class InviteModal extends Component {
     }
   };
 
+  switchToBulk = () => {
+    const { invites } = this.state;
+    const emails = _.uniqBy(invites, invite => {
+      return invite.email.trim();
+    })
+      .map(invite => invite.email)
+      .join(", ");
+
+    this.setState({
+      mode: "bulk",
+      emails,
+      alertVisible: false
+    });
+  };
+
+  switchToSingles = () => {
+    this.setState({
+      mode: "default"
+    });
+  };
+
   reset() {
     this.setState({
       invites: [
@@ -111,38 +157,37 @@ class InviteModal extends Component {
     });
   }
 
-  trimEmptyInvites() {
+  prepareInvites() {
     const { invites } = this.state;
 
+    let setFocus = false;
+    invites.forEach((invite, id) => {
+      invite.email = invite.email.trim();
+      invite.error =
+        !invite.email || isEmail(invite.email) ? "" : "Invalid email";
+      if (invite.error && !setFocus) {
+        this[`invite_${id}`].focus();
+        setFocus = true;
+      }
+    });
+    this.setState({
+      invites
+    });
     return invites.filter(invite => !!invite.email.trim());
   }
 
   isValid() {
-    return this.trimEmptyInvites().every(invite => !invite.error);
+    return this.prepareInvites().every(invite => !invite.error);
   }
 
   sendInvites() {
     this.setState({ alertVisible: false });
 
-    const { mode } = this.state;
-    let filteredEmails = [];
-
-    if (mode === "default") {
-      if (!this.isValid()) {
-        return;
-      }
-      filteredEmails = this.trimEmptyInvites().map(invite => invite.email);
-    } else {
-      const { emails } = this.state;
-      // Perform email validation
-      const lines = emails.split("\n");
-      lines.forEach(line => {
-        if (/(\w+)@(\w+)\.[a-zA-Z]/g.test(line)) {
-          filteredEmails.push(line.trim());
-        }
-      });
+    if (!this.isValid()) {
+      return;
     }
-
+    const { invites } = this.state;
+    const filteredEmails = invites.map(invite => invite.email);
     if (filteredEmails.length) {
       post(`/api/v1/invitations`, {
         body: { email_collection: filteredEmails.join(",") }
@@ -150,7 +195,8 @@ class InviteModal extends Component {
         .then(() => {
           this.setState({ sent: true });
           this.setState({
-            alertMessage: "Invitations sent to all users.",
+            alertMessage:
+              "You have successfully sent the following invitations.",
             alertVisible: true,
             alertStyle: "success"
           });
@@ -210,16 +256,15 @@ class InviteModal extends Component {
                     disabled={sent}
                     onChange={this.onChangeEmails}
                   />
-                  <HelpBlock className="text-muted">
-                    You can send multiple e-mail invitations at once.
-                  </HelpBlock>
                 </Col>
               </FormGroup>
             ) : (
               invites.map((invite, index) => {
                 const inviteError = !!invite.error;
-                // const inviteSent = sent && !!invite.email.trim();
-                const validationState = inviteError ? "error" : null;
+                const inviteSent = sent && !!invite.email.trim();
+                const validationState = inviteError
+                  ? "error"
+                  : inviteSent ? "success" : null;
 
                 return (
                   <FormGroup
@@ -237,12 +282,22 @@ class InviteModal extends Component {
                         value={invite.email}
                         disabled={sent}
                         onChange={this.onChange(index)}
+                        inputRef={node => {
+                          this[`invite_${index}`] = node;
+                        }}
                       />
 
                       {inviteError && (
                         <HelpBlock>
                           <i className="fa fa-exclamation-circle" />{" "}
                           {invite.error}
+                        </HelpBlock>
+                      )}
+
+                      {inviteSent && (
+                        <HelpBlock>
+                          <i className="fa fa-check-circle" /> Invite has been
+                          sent
                         </HelpBlock>
                       )}
                     </Col>
@@ -253,29 +308,44 @@ class InviteModal extends Component {
           </Form>
 
           <Row className="m-u-20">
-            {mode === "bulk" ? (
-              <Col sm={12}>
-                <a disabled={sent} onClick={this.onAddSingles}>
-                  <strong>Switch back to single entries</strong>
-                </a>
-              </Col>
-            ) : (
+            {mode === "default" && (
               <Col sm={12}>
                 <a disabled={sent} onClick={this.onAddInvite}>
-                  <strong>Add Invitation</strong>
+                  <strong>Add Single Invitation</strong>
                 </a>{" "}
                 or{" "}
-                <a disabled={sent} onClick={this.onAddBulk}>
-                  <strong>Add Bulk</strong>
+                <a disabled={sent} onClick={this.switchToBulk}>
+                  <strong>Add Multiple Invitations</strong>
                 </a>
               </Col>
             )}
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsSize="large" bsStyle="primary" onClick={this.onSubmit}>
-            {sent ? "Clear" : "Send"}
-          </Button>
+          {mode === "bulk" ? (
+            <div>
+              <Button
+                bsSize="large"
+                bsStyle="primary"
+                onClick={this.onAddEmails}
+                className="pull-left"
+              >
+                Add Emails
+              </Button>
+              <Button
+                bsSize="large"
+                bsStyle="default"
+                onClick={this.switchToSingles}
+                className="pull-left"
+              >
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <Button bsSize="large" bsStyle="primary" onClick={this.onSubmit}>
+              {sent ? "Clear" : "Send"}
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     );
