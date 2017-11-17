@@ -126,8 +126,9 @@ defmodule Stitch.MeteorMigration.Room do
       case create_group(team_id, room) do
         {:ok, %{group: group}} -> group
         {:ok, group} -> group
-        _ ->
+        error ->
           Logger.warn("Error creating group #{inspect(room)}")
+          Logger.warn(inspect(error))
           nil
       end
     end)
@@ -156,9 +157,13 @@ defmodule Stitch.MeteorMigration.Room do
     case group do
       {:ok, %{group: group}} = group_inserted ->
         if is_default == true do
-          group
-          |> change(is_default: true)
-          |> Repo.update!
+
+          unless Repo.get_by(Group, team_id: team_id, is_default: true) do
+            group
+            |> change(is_default: true)
+            |> Repo.update
+          end
+
           group_inserted
         else
           group_inserted

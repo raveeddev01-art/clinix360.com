@@ -45,7 +45,7 @@ defmodule Stitch.MeteorMigration do
 
   def clean_db(%{team_json: team_json}) do
     unless @allow_retry, do: raise "Not allowed"
-    {:ok, team} = create_team_unless_exists(parse_json_file(team_json))
+    {:ok, %{is_legacy: true} = team} = create_team_unless_exists(parse_json_file(team_json))
 
     group_ids =
       Group
@@ -72,6 +72,8 @@ defmodule Stitch.MeteorMigration do
       User
       |> where(team_id: ^team.id)
       |> Repo.delete_all(returning: false)
+
+    Repo.delete!(team)
 
     Logger.info "Deleted #{user_count} users"
     Logger.info "Deleted #{group_count} groups"
