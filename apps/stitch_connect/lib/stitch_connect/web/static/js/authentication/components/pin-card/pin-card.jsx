@@ -44,7 +44,7 @@ class PinCard extends Component {
           onInvalid={this.onInvalid}
         />
         <HelpBlock className="m-b-20">
-          You can use this pin when your screen is locked after a period of
+          You can use this PIN when your screen is locked after a period of
           inactivity.
         </HelpBlock>
       </OnboardCard>
