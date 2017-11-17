@@ -1,0 +1,1274 @@
+[
+  {
+    "_id" : "4HsxkdJvKZa2m2Num",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$x/qUI.aEoFyfXT4Y3BJyQuxHX3NBKly3Cg76iJZz3Cm2tytgZi0JG"
+        }
+    },
+    "emails" : [
+        {
+            "address" : "fxpage.biz@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Felix Page",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Felix",
+    "lastName" : "Page",
+    "displayName" : "Felix Page",
+    "username" : "fxpage.biz",
+    "mobilePhone" : "1111111",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "82262abb-4861-4037-a2b3-b2d245832645",
+    "pin" : "1111",
+    "statusConnection" : "offline",
+    "statusDefault" : "away",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "profileImage" : "/file-upload/i5KwA2hxinufQRRWa/4HsxkdJvKZa2m2Num.png",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "e40082da0ad9bbe20b44f11e725f5fb4e07834c3ce3c14a0baf5ebddbf6e5952"
+  },
+  {
+    "_id" : "8ZeacSD39o3JAkNAZ",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$mbuOCsLmXDNJ4nB51vbI3OVVk3LEjfm4EhHTGEbq7qj3DF5jhtGxm"
+        }
+    },
+    "emails" : [
+        {
+            "address" : "mlightning9@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : true,
+    "name" : "Marius Dalca",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Marius",
+    "lastName" : "Dalca",
+    "displayName" : "Marius Dalca",
+    "username" : "marius",
+    "mobilePhone" : "9782897053",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_3jp9XBtSAW59FpZPe8ZeacSD39o3JAkNAZ",
+    "uuid" : "415426b9-3c25-477f-9a02-86de45827a3c",
+    "pin" : "7918",
+    "statusConnection" : "offline",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "profileImage" : "/file-upload/MNJbwokmhTpAAiBd4/8ZeacSD39o3JAkNAZ.png",
+    "intercomHash" : "5c2d89fc937d1642871d0046a95225c7a7d207b445b9bae8def5012a28b82fc3",
+    "statusDefault" : "away"
+  },
+  {
+    "_id" : "8rRDPcDdZGGiEic5k",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$PxI6/GzTDtCS4oo0fxr9/.s8QvU6Mqzyqi1z9wPgu.gL5Zoo52UQu"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "antonverhoeven32@outlook.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "statusConnection" : "offline",
+    "active" : false,
+    "name" : "Anton Verhoeven",
+    "roles" : [
+        "user",
+        "admin"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Anton",
+    "lastName" : "Verhoeven",
+    "displayName" : "Anton Verhoeven",
+    "username" : "anton_verhoeven",
+    "mobilePhone" : "1234567890",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_WzP4yxRNZb9u97TMS",
+    "uuid" : "92999888-5fe2-4853-bfa4-d37e5cfcdd5d",
+    "pin" : "1234",
+    "status" : "offline",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "statusDefault" : "away",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "intercomHash" : "23f01ede530ec13188342a6239b9d49aff2b13e79cc8e80beb70fc6266b01ff8"
+  },
+  {
+    "_id" : "GvuY3SFZi5NtJMast",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$tx43WjDRp3ZZQ24F67edKOzS35VZRLXfgFJ5b/8Npn167b90plX8y"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "bigbryanloon@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Bryan Loon",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Bryan",
+    "lastName" : "Loon",
+    "displayName" : "Bryan Loon",
+    "username" : "bigbryan",
+    "mobilePhone" : "+1-541-754-3014",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_Bo2F3GcWvwJZQYsFF",
+    "uuid" : "12348e7d-1e70-4021-a1de-f8e9116549be",
+    "pin" : "0909",
+    "statusConnection" : "offline",
+    "statusDefault" : "online",
+    "usernameLowerCase" : "bigbryan",
+    "title" : "Stitch Developer",
+    "profileImage" : "/file-upload/xCjDK9D4wfRmj2rMA/GvuY3SFZi5NtJMast.png",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "08e65400a40735616c00f3dfd176549cf89489a61e30e4699a599fa64fb0dacf"
+  },
+  {
+    "_id" : "HhXg3vmotoWZRE5z2",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$rpImPOlxPmx6fvvXh4plKeMfmMBmA0ADyIjQcC4cNKHMCNNbUBJuC"
+        },
+        "resume" : {
+            "loginTokens" : [
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "jonathan@teamstitch.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "statusConnection" : "offline",
+    "active" : true,
+    "name" : "Ellen Clark",
+    "roles" : [
+        "user",
+        "admin",
+        "superAdmin"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Ellen",
+    "lastName" : "Clark",
+    "displayName" : "Ellen Clark",
+    "username" : "ellen",
+    "mobilePhone" : "9782897053",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_ZjBLGb2EvNTJQujA3",
+    "uuid" : "39830e82-e920-4789-a8d7-33bae24e15c4",
+    "pin" : "1234",
+    "status" : "offline",
+    "statusDefault" : "away",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "title" : "Cardiologist (MD)",
+    "profileImage" : "/file-upload/8H2YnoCzvtr7XLFEF/HhXg3vmotoWZRE5z2.png",
+    "analytics" : {
+    },
+    "teamName" : "Care Clinic",
+    "usernameLowerCase" : "ellen",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "intercomHash" : "98502539f68fb5fbd8fa447e40ea975d144a0487a3b0fe7eb485b2a995380b89"
+  },
+  {
+    "_id" : "KZonZ23h9FLuu58Kt",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$dXRyI187D/h3MnLgQ.Bm5eW4DT9o9I1VEifAfGkp6RAZjDADmVWei"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "aweinstein@umass.edu",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Alisha Weinstein",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Alisha",
+    "lastName" : "Weinstein",
+    "displayName" : "Alisha Weinstein",
+    "username" : "aweinstein",
+    "mobilePhone" : "9783037632",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "3151554d-fd1a-44e3-8d21-7eb9287d06fb",
+    "pin" : "1111",
+    "statusConnection" : "offline",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "usernameLowerCase" : "aweinstein",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "8be78ea7772a50f16a00145d5d04ccc7545447c9b48bc6426729dd8db5520f40"
+  },
+  {
+    "_id" : "R48Pp7ceowwSj3MPa",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$3nu9oM1MQQR.LheEEM.L/OjoFUUwfNOenKG7.lDi4HNr7IdUx8rkm"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "hans.brunner121@hotmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Hans Brunner",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Hans",
+    "lastName" : "Brunner",
+    "displayName" : "Hans Brunner",
+    "username" : "hans.brunner",
+    "mobilePhone" : "978-289-7053",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "77873e1f-b27f-4d6f-8ad3-5e26b9ebf3d1",
+    "pin" : "0211",
+    "statusConnection" : "offline",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "fcbb00a890c68fea91b2dbbde200e2742875ddeb2eff792e6ed4c35ac8378bd5"
+  },
+  {
+    "_id" : "Rrsh2JoScNNNjvQGG",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$euXm.FXbPLydI0yxqYsMT.L9m5AvnrmTJ6VEXCp5R4MVPB8CMzeo2"
+        },
+        "resume" : {
+            "loginTokens" : [
+                {
+                    "hashedToken" : "2663Pok82Pbm6NL3GRap09tXcaqZK9ZSuN/gwHNQjTY="
+                },
+                {
+                    "hashedToken" : "d4NiLa6eIxhw/EZoD9gtWu+MFqnDModpYM8JrgcN6NI="
+                }
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "admin@teamstitch.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : true,
+    "name" : "Rachel Smith",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Rachel",
+    "lastName" : "Smith",
+    "displayName" : "Rachel Smith",
+    "username" : "admin",
+    "mobilePhone" : "7793489597",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "92509797-033d-47df-bacd-d38bc55e2f7d",
+    "pin" : "1234",
+    "statusConnection" : "offline",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "statusDefault" : "online",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "df6c0a49860d560750039c4cee1ccb1d064dde77544824d0e243b5499f7778ed"
+  },
+  {
+    "_id" : "WniRBrZMuj2DThenJ",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$RdZ12VnDBaJMecdtkb4WD.xDH8jbMnIC5SBEy3IDn8YRCKRl4j986"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "alexeyw@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Alexey Volodin",
+    "roles" : [
+        "user",
+        "admin"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Alexey",
+    "lastName" : "Volodin",
+    "displayName" : "Alexey Volodin",
+    "username" : "alexeyw",
+    "mobilePhone" : "+56951392406",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "16819783-ac1b-470c-91ad-8ef378910886",
+    "pin" : "6849",
+    "statusConnection" : "offline",
+    "statusDefault" : "online",
+    "usernameLowerCase" : "alexeyw",
+    "title" : "Android Developer",
+    "profileImage" : "/file-upload/z2Mjxa6iezxNG3YY3/WniRBrZMuj2DThenJ.png",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "intercomHash" : "e268e24d891163828c81931607a122a235c5976c6dc76dc84a76cf101a5f42ff"
+  },
+  {
+    "_id" : "Xn2cm9TebfEqzmcPM",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$8xwDIfMbyUoa46y66.UoCOqx213dK7df/7GVKDjZgNXeSG2JHP7M6"
+        }
+    },
+    "emails" : [
+        {
+            "address" : "khaled3abbas@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "statusConnection" : "offline",
+    "active" : true,
+    "name" : "Khaled Abbas",
+    "roles" : [
+        "admin",
+        "billing-admin",
+        "superAdmin"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Khaled",
+    "lastName" : "Abbas",
+    "displayName" : "Khaled Abbas",
+    "username" : "khaledabbas",
+    "mobilePhone" : "+905319521287",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "149101e1-d9e7-49b9-856e-257ec4b29fbf",
+    "pin" : "1234",
+    "status" : "offline",
+    "statusDefault" : "online",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "profileImage" : "/file-upload/2rq54hwQHkzxp8oWP/Xn2cm9TebfEqzmcPM.png",
+    "intercomHash" : "c1b10f53c112a20b645cc92fccfc5afc07fbf884272a16c63b8bc6007b68f4e1"
+},
+{
+    "_id" : "eG4SY8p9RMZYgka8B",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$A1ot8gtxWZas1o14YukNruoeikDeQyrozD.0sIi3oCqbXtQ4U3sSG"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "stitchtester@mailinator.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Stitchtest User",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Stitchtest",
+    "lastName" : "User",
+    "displayName" : "Stitchtest User",
+    "username" : "stitchtester",
+    "mobilePhone" : "9782897053",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "68557d93-8a45-4826-a272-f70572d9b039",
+    "pin" : "1234",
+    "statusConnection" : "offline",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "5cddf8fbba01bbbbaba8eb4348950b22102567ddf160c18e3ce4599f5afd29d4"
+},
+{
+    "_id" : "gbJ9ANxFZyK3pNDEW",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$MVtXOl0aMfTC8DALpiKpO.k9w8G/fAPJsTnFBB1eUtRBWGGzOqCXy"
+        },
+        "resume" : {
+            "loginTokens" : [
+                {
+                    "hashedToken" : "e70BCSILEVGcVC7IkdFKUgRIEp4MjGYjoxACCBAuRo8="
+                }
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "testinvite@mailinator.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : true,
+    "name" : "Test Invite",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Test",
+    "lastName" : "Invite",
+    "displayName" : "Test Invite",
+    "username" : "testinvite",
+    "mobilePhone" : "+905319521287",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "92901392-0a4d-43bc-97ec-4a886faee965",
+    "pin" : "1234",
+    "statusConnection" : "offline",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "profileImage" : "",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "8f128bc0309ef63cd7c60b529f54fafc67439407e8e56d59d2e9b9aac5f9bdc8"
+},
+{
+    "_id" : "iPn9h78cWSrbxobJi",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$zO.pcTvl7Ks./Zd.3QOApO8VAFlr3CIQZuabMTtEs/y5zMiLpNxOO"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "stitch_testaccount@mailinator.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Test Account",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Test",
+    "lastName" : "Account",
+    "displayName" : "Test Account",
+    "username" : "stitch_testaccount",
+    "mobilePhone" : "7793489597",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "1099205e-b911-4b44-ac2e-170ae2bb0370",
+    "pin" : "7918",
+    "statusConnection" : "offline",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "d3ed1ae957ed387d4f22da693f1f1f4f5750a09ba9079af35eb49827828ea443"
+},
+{
+    "_id" : "np8bvKTK5239hvny7",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$SmHXixgdXak7WVbOumE4o.aDxbOVRmC5zCZx9E9GmHasi5FlkOaYO"
+        }
+    },
+    "emails" : [
+        {
+            "address" : "veto44@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : true,
+    "name" : "Mahmoud Abod",
+    "roles" : [
+        "user",
+        "admin",
+        "superAdmin"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Mahmoud",
+    "lastName" : "Abod",
+    "displayName" : "Mahmoud Abod",
+    "username" : "mabed",
+    "mobilePhone" : "0788726250",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "uuid" : "464170f8-93ed-410c-8783-0dbd7e8edaf4",
+    "pin" : "0000",
+    "statusConnection" : "offline",
+    "statusDefault" : "away",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "intercomHash" : "bf3d119bce9c63abd09236bb9495e4bf5fe8787b011e008b3c53c09230400e55"
+},
+{
+    "_id" : "ntYqZ8AamDfaznTGZ",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$RfL22g6zQbjap2H9RNUBc.XQR6xDggZTl7Jo3dU4sKg7vShtuaNam"
+        }
+    },
+    "emails" : [
+        {
+            "address" : "bharat@teamstitch.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "away",
+    "active" : true,
+    "name" : "James Evans",
+    "roles" : [
+        "admin",
+        "billing-admin",
+        "superAdmin"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "James",
+    "lastName" : "Evans",
+    "displayName" : "James Evans",
+    "username" : "bharat",
+    "mobilePhone" : "7793489597",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_ZjBLGb2EvNTJQujA3",
+    "uuid" : "42697100-6b16-4795-a03a-4416ecc48f64",
+    "pin" : "7918",
+    "statusConnection" : "away",
+    "statusDefault" : "away",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "intercomHash" : "436ab371c2a89e4de14cb56de6ece1c9a739963c246b17b147dcd3ccaf66fc19"
+},
+{
+    "_id" : "qqHBmZ5b7BoEGXbRk",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$YAo/n781G6RBLU8fGZbZ4O1x7B70h9ToosZmkStdbckiG/Xy4KnN2"
+        }
+    },
+    "emails" : [
+        {
+            "address" : "antonverhoeven32@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "statusConnection" : "offline",
+    "active" : true,
+    "name" : "Anton Verhoeven",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Anton",
+    "lastName" : "Verhoeven",
+    "displayName" : "Anton Verhoeven",
+    "username" : "antonverhoeven",
+    "mobilePhone" : "1234567890",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_qJ4Cygt6bSXpkkDodqqHBmZ5b7BoEGXbRk",
+    "uuid" : "98662ea2-2630-4b2a-aaf1-5edd08510286",
+    "pin" : "1234",
+    "status" : "offline",
+    "statusDefault" : "away",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "intercomHash" : "ab01ddf2d84fd0c61c2d534c94369b73db275e89c66923123cc4f99ceae5c8c0"
+},
+{
+    "_id" : "u5pekj7u7hnvtigJN",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$tMgrpRwtCAMPNRKtxqKL0uQ25E1z3IGGP6H4qeXBsQqoLMytqLwz."
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "stitchandroid@mailinator.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "statusConnection" : "offline",
+    "active" : false,
+    "name" : "Rachel Smith",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Rachel",
+    "lastName" : "Smith",
+    "displayName" : "Rachel Smith",
+    "username" : "stitchandroid",
+    "mobilePhone" : "9782897053",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_HhXg3vmotoWZRE5z2u5pekj7u7hnvtigJN",
+    "uuid" : "23276a3f-0fe3-479d-acef-edebaed5238a",
+    "pin" : "1234",
+    "status" : "offline",
+    "statusDefault" : "away",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "e99e73a89a42a02389dd625a25c49184f5b9e9c3e4fcc397384fd8b042b23dfd"
+},
+{
+    "_id" : "xzX9fkEDDZqecWma5",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$ZSHAForZee.sNKVR0XYbDuim09LJ76hpafDLmIe8gnye6olg4q3.."
+        },
+        "resume" : {
+            "loginTokens" : [
+                {
+                    "hashedToken" : "vW3Vsly93xszbTdfW4MrOTS0QlIIxZ4PjoD6CagBjsc="
+                },
+                {
+                    "hashedToken" : "ZWWP+IB7d7NDFCsQcPQE6CzVP21RxpwVQauzjNdJk/Y="
+                }
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "styx@hidev.it",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : true,
+    "name" : "Sergii Pravdzivyi",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Sergii",
+    "lastName" : "Pravdzivyi",
+    "displayName" : "Sergii Pravdzivyi",
+    "username" : "styx",
+    "mobilePhone" : "+380913194041",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_zsCHyP3k9c6ABWRzn",
+    "uuid" : "76609587-e68c-42e2-9204-94cdd48048d3",
+    "pin" : "1122",
+    "statusConnection" : "offline",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "statusDefault" : "away",
+    "intercomHash" : "8474e9dd52f5da08262e97e1c4668d4922cca46c090aad7a078569e78545ac5b"
+},
+{
+    "_id" : "AAhAXyerX6PXwa4GB",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$cXj9lMPINbjWx8Xrgpui8.6hoiEeUJhme7Ll1a6KLo43V3V/UM65a"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "chris@okgrow.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Chris Cuilla",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Chris",
+    "lastName" : "Cuilla",
+    "displayName" : "Chris Cuilla",
+    "username" : "ccuilla",
+    "mobilePhone" : "720-883-3799",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "uuid" : "12495d67-d588-42be-97a6-4b6bf8c20213",
+    "pin" : "2668",
+    "statusConnection" : "offline",
+    "teamName" : "Care Clinic",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "intercomHash" : "5501e10db0e36d4c35ba110d9ac21cb4b6b537020bb6977c38bbee640a693b01"
+},
+{
+    "_id" : "qJ4Cygt6bSXpkkDod",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$Vwnb8detLUJ6PWRCUXBpvO42xnqZBduvK6KnPQSavKMGxxX/aWML6"
+        }
+    },
+    "emails" : [
+        {
+            "address" : "lucas.leon.777@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : true,
+    "name" : "Lucas Leon",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Lucas",
+    "lastName" : "Leon",
+    "displayName" : "Lucas Leon",
+    "username" : "lucas.leon",
+    "mobilePhone" : "402-1203-4213",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "uuid" : "7925131f-8253-44ae-aebd-a5f7fe5af5c1",
+    "pin" : "1012",
+    "statusConnection" : "offline",
+    "statusDefault" : "away",
+    "isLocked" : false,
+    "teamName" : "Care Clinic",
+    "resetIdleTime" : true,
+    "intercomHash" : "df4621701209d7968b9aaa125feb89e5d38cef14612bdf7f95966659fc389937"
+},
+{
+    "_id" : "7AfvmXFvk7owoTkD7",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$8GoelTpF8betMRD9lEA6pOToskzEapkA.VzGdV2aIHEVnCM9jeHbe"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "sergiotapiagutierrez@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Sergio Tapia",
+    "roles" : [
+        "user",
+        "admin"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Sergio",
+    "lastName" : "Tapia",
+    "displayName" : "Sergio Tapia",
+    "username" : "sergiotapiagutierrez",
+    "mobilePhone" : "7866265122",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "uuid" : "874152ae-0625-471b-be22-f0516bae8bb8",
+    "pin" : "1234",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "statusConnection" : "offline",
+    "intercomHash" : "c0aa44f4c5ce2c12caa26640e4a80755b0c0f16df4b3a96fd4cd4dd3dd63581c"
+},
+{
+    "_id" : "6WeHtmBb3uPfYwqrc",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$uZrIhZlqQI1lxk37tftXBO9woSGl0mP3Bxu.0ef2u/K5VBVcUp9Ha"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "mariorodriguespt@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Mário Rodrigues",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Mário",
+    "lastName" : "Rodrigues",
+    "displayName" : "Mário Rodrigues",
+    "username" : "mariorodriguespt",
+    "mobilePhone" : "+351913073726",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "uuid" : "4773012a-b55e-4c10-b48d-1242906ff0a7",
+    "pin" : "4800",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "statusConnection" : "offline",
+    "intercomHash" : "3987ef2ed3dfb2e675af7a07c3e4e273e858ce7983060bfbf81531879fa8651b"
+},
+{
+    "_id" : "bgwnbrfvdrFd58FAf",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$xLpc9PSR2HM9bsBSvvVkgOaL0.QflyUMDzgeGySwAGYAgOE4ZejkG"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "aram.bv@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "name" : "Aram Bayadyan",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Aram",
+    "lastName" : "Bayadyan",
+    "displayName" : "Aram Bayadyan",
+    "username" : "aramix",
+    "mobilePhone" : "+37455089980",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "teamName" : "Care Clinic",
+    "uuid" : "51917d21-3879-4663-aa18-091bb1e6458a",
+    "pin" : "2308",
+    "isLocked" : false,
+    "resetIdleTime" : true,
+    "statusConnection" : "offline",
+    "intercomHash" : "3db85f0b19e4990a91c917d4cb5fa03278b3bd14a1bf48459446fea3f6a82cfe"
+},
+{
+    "_id" : "t3qJGN572L6jYY5pC",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$7lid11rCm.Bp8kh4kkkkiuzp8iiM0.OaamLM2NiuCcSGxaBVtbxDK"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "styx+2@hidev.it",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "username" : "styx2",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Сергей",
+    "lastName" : "Правдзивый",
+    "displayName" : "Сергей Правдзивый",
+    "name" : "Сергей Правдзивый",
+    "mobilePhone" : "+380913194041",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "teamName" : "Care Clinic",
+    "uuid" : "6208546f-fe54-42b4-a902-da905b57b4a6",
+    "pin" : "1111",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "statusConnection" : "offline",
+    "intercomHash" : "5f9978414b4f76ca5d921758e119abb120cee0c4c4f2cfeaa3ddc0c2f3f31de9"
+},
+{
+    "_id" : "hyW9GNyvCk7xpDxiz",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$SQnVtBDFcFRySnKcra3VcO.21x0ndCo4Bg5PvVA.GRKDGe.G6G39e"
+        }
+    },
+    "emails" : [
+        {
+            "address" : "weidai1122@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "away",
+    "active" : true,
+    "username" : "haohong",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "roles" : [
+        "user",
+        "admin"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Haohong",
+    "lastName" : "Xu",
+    "displayName" : "Haohong Xu",
+    "name" : "Haohong Xu",
+    "mobilePhone" : "4087525280",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "teamName" : "Care Clinic",
+    "uuid" : "256130ad-8e06-44ea-9ee0-78b6fab4c406",
+    "pin" : "1234",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "statusConnection" : "away",
+    "intercomHash" : "8153d13f9a619440a4aeaf3a81e0f0076a3466b9b72361315d877c5bef244ccd"
+},
+{
+    "_id" : "NYnTNki3uTmBNrx5F",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$/LnxLxUpXQPzYhr15NrLrOCZE3gp/AeMbg7IYnKaSkEISkkhd4SRi"
+        },
+        "resume" : {
+            "loginTokens" : [
+
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "marius.dalca220@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : false,
+    "username" : "marius.dalca220",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Marius",
+    "lastName" : "Tester",
+    "displayName" : "Marius Tester",
+    "name" : "Marius Tester",
+    "mobilePhone" : "9782897053",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "teamName" : "Care Clinic",
+    "uuid" : "44094787-776c-4456-9d28-6710755af986",
+    "pin" : "1234",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "statusConnection" : "offline",
+    "intercomHash" : "858f1536e1344ed2a259b63b4bfbc7d9793db20915e33572bb3330b28d8bd266"
+},
+{
+    "_id" : "3jp9XBtSAW59FpZPe",
+    "services" : {
+        "password" : {
+            "bcrypt" : "$2a$10$T7RUhrnAYLrA5f/Z4yIJe.Gn9hThVowpDuLk7oybHyfVKGgIcTBLW"
+        },
+        "resume" : {
+            "loginTokens" : [
+                {
+                    "hashedToken" : "hL3dtcpU08OrIX+TOLJGu0Z5i0EJwLUX2jVSFYtjjsQ="
+                },
+                {
+                    "hashedToken" : "KTEmYhgj8ILQPiF8u4KJ0PfR5ipWDPbh3Zt7RWMHiaY="
+                },
+                {
+                    "hashedToken" : "evhXrGTwFS6RmkrVMopOCnKOKMbTF2kHnoYeLRVwris="
+                },
+                {
+                    "hashedToken" : "T2NKX1y/sCXlnX+iIVI+CUKyinb+2jbHBk5QRBJaLbo="
+                },
+                {
+                    "hashedToken" : "rRyV58644kqF7ikHrevNeA7IOHaX4fx6DSRWQ+3PbhU="
+                },
+                {
+                    "hashedToken" : "bQWVH7dm+hefhiDJIo+hgI6ohvRgnBLdYPua/shHKfc="
+                }
+            ]
+        }
+    },
+    "emails" : [
+        {
+            "address" : "bkkilaru@gmail.com",
+            "verified" : true
+        }
+    ],
+    "type" : "user",
+    "status" : "offline",
+    "active" : true,
+    "username" : "bkkilaru",
+    "teamId" : "8J2CSuBwCmop7PQmh",
+    "roles" : [
+        "user"
+    ],
+    "degree" : null,
+    "otherDegree" : null,
+    "firstName" : "Bharat",
+    "lastName" : "Kilaru",
+    "displayName" : "Bharat Kilaru",
+    "name" : "Bharat Kilaru",
+    "mobilePhone" : "7793489597",
+    "notifications" : {
+        "desktop" : true,
+        "mobile" : true
+    },
+    "lastRoomId" : "c_rNhg5Xa7pHTEZSqhu",
+    "teamName" : "Care Clinic",
+    "uuid" : "86134c5d-c93d-4a6b-a22b-eed0ab5deac6",
+    "pin" : "7918",
+    "isLocked" : false,
+    "resetIdleTime" : false,
+    "statusConnection" : "offline",
+    "intercomHash" : "11e809b4bfe72ddaa79605463bf0f8cce824c1d4c7b113c5103de44dd72e7285"
+  }
+]

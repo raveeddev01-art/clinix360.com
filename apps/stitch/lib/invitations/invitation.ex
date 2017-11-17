@@ -4,7 +4,7 @@ defmodule Stitch.Invitation do
   """
   use Ecto.Schema
   import Ecto.{Changeset, Query}
-  alias Stitch.{Repo, Accounts.User, Team, Invitation}
+  alias Stitch.{Repo, Accounts.User, Team, Invitation, TeamAuthorization}
 
   schema "invitations" do
     belongs_to :user, User
@@ -36,7 +36,7 @@ defmodule Stitch.Invitation do
   def invite_to_team(user_id, email) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
-    if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
+    if TeamAuthorization.can_send_invites?(user, team) do
       new_user_changeset = User.team_invite_changeset(
         %User{}, %{
           email: email,
@@ -45,7 +45,14 @@ defmodule Stitch.Invitation do
       )
       case Repo.insert(new_user_changeset) do
         {:error, _changeset} ->
-          {:error, "User already exists with this email address."}
+          invited_user = Repo.get_by(User, email: email, team_id: team.id)
+
+          if invited_user.onboarded do
+            {:error, "Email has already been registered."}
+          else
+            {:error, "Email has already been invited."}
+          end
+
         {:ok, new_user} ->
           invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
           {:ok, invitation} = Repo.insert(invitation_changeset)
@@ -117,7 +124,7 @@ defmodule Stitch.Invitation do
       where: i.accepted == ^false,
       preload: [:user]
 
-    if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
+    if TeamAuthorization.can_send_invites?(user, team) do
       Repo.all(query)
     else
       {:error, "User unauthorized to see list of invitations."}
@@ -131,7 +138,7 @@ defmodule Stitch.Invitation do
   def resend_invitation(user_id, invitation_id) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
-    if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
+    if TeamAuthorization.can_send_invites?(user, team) do
       query =
         from i in Invitation,
         where: i.id == ^invitation_id,
@@ -158,7 +165,7 @@ defmodule Stitch.Invitation do
   def revoke_invitation(user_id, invitation_id) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
-    if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
+    if TeamAuthorization.can_send_invites?(user, team) do
       query =
         from i in Invitation,
         where: i.id == ^invitation_id,

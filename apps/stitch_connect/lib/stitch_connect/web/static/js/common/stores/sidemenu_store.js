@@ -11,7 +11,7 @@ import { scroller } from "react-scroll";
 import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../util/constants";
 
 class SidemenuStore {
-  @observable loading = true; // IF True, shows loading page
+  @observable loading = false; // IF True, shows loading page
   @observable sidemenuDiv = null; // Div element of sidemenu
   @observable roomMenuItemVisibles = {};
   @observable teamName = "";
@@ -98,14 +98,16 @@ class SidemenuStore {
 
   @action
   loadApp = async () => {
-    const { usersStore, groupsStore } = this.rootStore;
+    const { presenceStore, usersStore, groupsStore } = this.rootStore;
 
-    this.loading = true;
+    if (!presenceStore.locked) {
+      this.loading = true;
 
-    await usersStore.loadUsers();
-    await groupsStore.loadGroups();
+      await usersStore.loadUsers();
+      await groupsStore.loadGroups();
 
-    this.loading = false;
+      this.loading = false;
+    }
   };
 
   @action

@@ -77,18 +77,17 @@ defmodule Stitch.Accounts.Admin do
   end
   def update_user(_, _), do: {:error, "Invalid User ID or Parameters"}
 
-  defp analytics_identify(user) do
-    Task.start(fn -> @analytics.identify(user) end)
-  end
-
   def promote_admin(promoter, target_id) do
     user = Repo.get_by!(User, id: target_id, team_id: promoter.team_id)
 
     if user.id != promoter.id do
       changeset = Ecto.Changeset.change(user, roles: ["admin"])
       case Repo.update(changeset) do
-        {:error, _changeset} -> {:error, "Failed to promote user."}
-        success -> success
+        {:error, _changeset} ->
+          {:error, "Failed to promote user."}
+        {:ok, updated_user} = success ->
+          analytics_identify(updated_user)
+          success
       end
     else
       {:error, "You cannot promote own account."}
@@ -101,8 +100,11 @@ defmodule Stitch.Accounts.Admin do
     if user.id != revoker.id do
       changeset = Ecto.Changeset.change(user, roles: ["member"])
       case Repo.update(changeset) do
-        {:error, _changeset} -> {:error, "Failed to revoke admin role from user."}
-        success -> success
+        {:error, _changeset} ->
+          {:error, "Failed to revoke admin role from user."}
+        {:ok, updated_user} = success ->
+          analytics_identify(updated_user)
+          success
       end
     else
       {:error, "You cannot revoke admin role from your own account."}
@@ -116,4 +118,9 @@ defmodule Stitch.Accounts.Admin do
   def update_unread_message_notification_interval(_user_id, _notification_interval) do
     # TODO
   end
+
+  defp analytics_identify(user) do
+    Task.start(fn -> @analytics.identify(user) end)
+  end
+
 end

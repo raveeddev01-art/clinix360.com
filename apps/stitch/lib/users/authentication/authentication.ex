@@ -33,6 +33,7 @@ defmodule Stitch.User.Authentication do
         case Repo.get_by(User, %{email: email, team_id: team.id}) do
           nil -> Comeonin.Bcrypt.dummy_checkpw()
           user ->
+            password = if team.is_legacy, do: Base.encode16(:crypto.hash(:sha256, password), case: :lower), else: password
             case Comeonin.Bcrypt.checkpw(password, user.password_hash) do
               true ->
                 user
