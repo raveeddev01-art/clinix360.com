@@ -4,7 +4,11 @@ defmodule Stitch.MeteorMigration.Message do
   require Logger
 
   def migrate_messages(messages) do
-    Repo.insert_all(Message, messages, returning: false)
+    messages
+    |> Enum.chunk_every(5_000)
+    |> Enum.each(fn chunk ->
+      Repo.insert_all(Message, chunk, returning: false)
+    end)
   end
 
   def parse_messages_json(rooms, users, messages) do
@@ -14,6 +18,10 @@ defmodule Stitch.MeteorMigration.Message do
     end)
     |> Enum.map(& parse_message_json(rooms, users, &1))
     |> Enum.filter(& &1 != nil)
+  end
+
+  def parse_message_json(_rooms, _users, %{"msg"=> ""}) do
+    nil
   end
 
   def parse_message_json(rooms, users, %{
