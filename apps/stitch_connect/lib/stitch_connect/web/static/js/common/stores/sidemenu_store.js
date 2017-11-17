@@ -34,8 +34,7 @@ class SidemenuStore {
     });
     this.notificationAudio = new Audio("/audios/pop.mp3");
 
-    this.loadGroups();
-    this.loadUsers();
+    this.loadApp();
   }
 
   @computed
@@ -152,10 +151,25 @@ class SidemenuStore {
   }
 
   @action
+  loadApp = async () => {
+    await this.loadGroups();
+    await this.loadUsers();
+
+    this.loading = false;
+  };
+
+  @action
   loadGroups = () => {
-    get("/api/v1/groups").then(response => {
+    return get("/api/v1/groups").then(response => {
       this.groups = orderBy(response.data, ["name"]);
       this.updateFavicon();
+    });
+  };
+
+  @action
+  loadUsers = () => {
+    return get("/api/v1/users").then(response => {
+      this.users = response.data;
     });
   };
 
@@ -281,12 +295,6 @@ class SidemenuStore {
       [roomId]: false
     };
   }
-
-  loadUsers = () => {
-    get("/api/v1/users").then(response => {
-      this.users = response.data;
-    });
-  };
 
   selectRoom = room => {
     this.selectedRoom = room;
@@ -475,14 +483,19 @@ class SidemenuStore {
     // if username of the user in multi-dm or single-dm current user is on, is changed,
     // it should redirect
     const { groupStore } = this.rootStore;
-    if (groupStore.groupType === 'single-dm' || groupStore.groupType === 'multi-dm') {
+    if (
+      groupStore.groupType === "single-dm" ||
+      groupStore.groupType === "multi-dm"
+    ) {
       const changedUser = groupStore.users.find(u => u.id === user.id);
       if (changedUser.username !== user.username) {
         changedUser.username = user.username;
-        history.replace(getRoomNavLink({
-          type: groupStore.groupType === 'single-dm' ? 'dm' : 'multi-dm',
-          users: groupStore.users
-        }));
+        history.replace(
+          getRoomNavLink({
+            type: groupStore.groupType === "single-dm" ? "dm" : "multi-dm",
+            users: groupStore.users
+          })
+        );
       }
     }
   };
