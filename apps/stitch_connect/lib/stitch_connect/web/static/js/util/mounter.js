@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 
 export default componentMap => {
-  document.querySelectorAll("[data-component]").forEach(el => {
+  [...document.querySelectorAll("[data-component]")].forEach(el => {
     const json = JSON.parse(el.getAttribute("data-react-props"));
     const key = el.getAttribute("data-component");
     if (componentMap[key]) {
