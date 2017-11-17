@@ -33,8 +33,6 @@ class SidemenuStore {
       position: "up"
     });
     this.notificationAudio = new Audio("/audios/pop.mp3");
-
-    this.loadApp();
   }
 
   @computed

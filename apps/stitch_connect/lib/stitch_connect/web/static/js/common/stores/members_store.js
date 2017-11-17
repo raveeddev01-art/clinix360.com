@@ -1,24 +1,29 @@
-import { observable, action, computed } from "mobx";
-import { Presence } from "phoenix";
+import { computed, action } from "mobx";
 
 class MembersStore {
-  @observable loading = false;
-  @observable teamId = "";
-  @observable users = [];
-  @observable rawOnlineUsers = {};
-
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
 
   @computed
+  get users() {
+    const { sidemenuStore } = this.rootStore;
+
+    return sidemenuStore.users;
+  }
+
+  @computed
   get onlineUsers() {
-    return this.users.filter(u => !!this.rawOnlineUsers[`${u.id}`]);
+    const { presenceStore } = this.rootStore;
+
+    return this.users.filter(u => presenceStore.isOnline(u.id));
   }
 
   @computed
   get offlineUsers() {
-    return this.users.filter(u => !this.rawOnlineUsers[`${u.id}`]);
+    const { presenceStore } = this.rootStore;
+
+    return this.users.filter(u => !presenceStore.isOnline(u.id));
   }
 
   @computed
@@ -27,15 +32,6 @@ class MembersStore {
   }
 
   getUser = userId => this.users.find(u => u.id === userId);
-
-  @action
-  loadUsers = teamId => {
-    this.teamId = teamId;
-    get("/api/v1/users").then(response => {
-      this.users = response.data;
-      this.connectPresence();
-    });
-  };
 
   @action
   activateUser = userId => {
@@ -83,24 +79,6 @@ class MembersStore {
         user.roles = ["admin"];
       }
     });
-  };
-
-  connectPresence = () => {
-    // @TODO refactor presence stuff to presence_store
-    const lobby = this.rootStore.channelStore.teamChannel;
-
-    lobby.on("presence_state", this.onPresenceState);
-    lobby.on("presence_diff", this.onPresenceDiff);
-  };
-
-  @action
-  onPresenceState = state => {
-    this.rawOnlineUsers = Presence.syncState(this.rawOnlineUsers, state);
-  };
-
-  @action
-  onPresenceDiff = diff => {
-    this.rawOnlineUsers = Presence.syncDiff(this.rawOnlineUsers, diff);
   };
 }
 

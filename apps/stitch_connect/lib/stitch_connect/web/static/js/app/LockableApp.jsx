@@ -24,19 +24,17 @@ class LockableApp extends Component {
   }
 
   render() {
-    const { loading } = this.props.sidemenuStore;
+    const { sidemenuStore, presenceStore } = this.props;
 
-    return this.props.presenceStore.locked ? (
+    return sidemenuStore.loading ? (
+      <Loading />
+    ) : presenceStore.locked ? (
       <LockedApp />
     ) : (
-      <div>
-        {loading && <Loading />}
-
-        <Switch>
-          <Route path="/admin" component={AdminApp} />
-          <Route path="/" component={ChatApp} />
-        </Switch>
-      </div>
+      <Switch>
+        <Route path="/admin" component={AdminApp} />
+        <Route path="/" component={ChatApp} />
+      </Switch>
     );
   }
 }
