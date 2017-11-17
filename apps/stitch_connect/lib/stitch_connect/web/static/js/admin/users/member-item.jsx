@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Row, Col, Collapse, ButtonToolbar, Button } from "react-bootstrap";
 
-@inject("membersStore")
+@inject("userStore")
 @observer
 class MemberItem extends Component {
   constructor(props) {
@@ -18,11 +18,11 @@ class MemberItem extends Component {
   };
 
   _activateUser = () => {
-    const { membersStore, user } = this.props;
+    const { userStore, user } = this.props;
     const { hideAlert, onSuccess, onError } = this.props;
 
     hideAlert();
-    membersStore
+    userStore
       .activateUser(user.id)
       .then(() => {
         onSuccess(`${user.full_name} has been activated.`);
@@ -33,11 +33,11 @@ class MemberItem extends Component {
   };
 
   _deactivateUser = () => {
-    const { membersStore, user } = this.props;
+    const { userStore, user } = this.props;
     const { hideAlert, onSuccess, onError } = this.props;
 
     hideAlert();
-    membersStore
+    userStore
       .deactivateUser(user.id)
       .then(() => {
         onSuccess(`${user.full_name} has been deactivated.`);
@@ -48,11 +48,11 @@ class MemberItem extends Component {
   };
 
   _promoteAdmin = () => {
-    const { membersStore, user } = this.props;
+    const { userStore, user } = this.props;
     const { hideAlert, onSuccess, onError } = this.props;
 
     hideAlert();
-    membersStore
+    userStore
       .promoteAdmin(user.id)
       .then(() => {
         onSuccess(`${user.full_name} has been promoted to admin.`);
@@ -63,11 +63,11 @@ class MemberItem extends Component {
   };
 
   _revokeAdmin = () => {
-    const { membersStore, user } = this.props;
+    const { userStore, user } = this.props;
     const { hideAlert, onSuccess, onError } = this.props;
 
     hideAlert();
-    membersStore
+    userStore
       .revokeAdmin(user.id)
       .then(() => {
         onSuccess(`${user.full_name}'s admin role has been revoked.`);

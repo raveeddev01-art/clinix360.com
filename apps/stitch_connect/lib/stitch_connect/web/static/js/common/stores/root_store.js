@@ -1,7 +1,6 @@
 // Admin stores
 import ImageStore from "./image_store";
 import InvitationStore from "./invitation_store";
-import MembersStore from "./members_store";
 import NotificationStore from "./notification_store";
 import TeamStore from "./team_store";
 import UserStore from "./user_store";
@@ -32,7 +31,6 @@ class RootStore {
     // Init admin stores
     this.imageStore = new ImageStore(this);
     this.invitationStore = new InvitationStore(this);
-    this.membersStore = new MembersStore(this);
     this.notificationStore = new NotificationStore(this);
     this.teamStore = new TeamStore(this);
     this.userStore = new UserStore(this);
