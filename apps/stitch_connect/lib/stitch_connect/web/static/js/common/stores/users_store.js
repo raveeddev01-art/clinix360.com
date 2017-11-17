@@ -80,6 +80,55 @@ class UsersStore {
   };
 
   @action
+  updateUserData = (id, data) => {
+    const user = this.getUserById(id);
+
+    if (user) {
+      Object.assign(user, data);
+    }
+  };
+
+  @action
+  activateUser = userId => {
+    return post(`/api/v1/users/${userId}/activate`, {
+      hideNotify: true
+    }).then(() => {
+      this.updateUserData(userId, { disabled: false });
+    });
+  };
+
+  @action
+  deactivateUser = userId => {
+    return post(`/api/v1/users/${userId}/deactivate`, {
+      hideNotify: true
+    }).then(() => {
+      this.updateUserData(userId, { disabled: true });
+    });
+  };
+
+  @action
+  revokeAdmin = userId => {
+    return put(`/api/v1/users/${userId}/revoke-admin`, {
+      hideNotify: true
+    }).then(() => {
+      this.updateUserData(userId, { roles: ["member"] });
+    });
+  };
+
+  @action
+  promoteAdmin = userId => {
+    return put(`/api/v1/users/${userId}/promote-admin`, {
+      hideNotify: true
+    }).then(() => {
+      this.updateUserData(userId, { roles: ["admin"] });
+    });
+  };
+
+  // ////////////////////// //
+  // Channel Event Handlers //
+  // ////////////////////// //
+
+  @action
   onUserJoined = user => {
     this.users.push(user);
   };
