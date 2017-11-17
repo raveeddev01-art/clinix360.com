@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { observer, inject } from "mobx-react";
-import { parse } from "qs";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Alert from "react-bootstrap/lib/Alert";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -13,7 +12,7 @@ import { OnboardCard } from "common/components";
 
 @inject("registrationStore")
 @observer
-export default class Confirmation extends Component {
+class Confirmation extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
@@ -23,16 +22,9 @@ export default class Confirmation extends Component {
   }
 
   componentWillMount() {
-    const { search } = this.props.location;
-    if (search) {
-      const query = parse(search.substr(1));
-      if (query.userId) {
-        this.props.registrationStore.userId = query.userId;
-      }
-
-      if (query.email) {
-        this.props.registrationStore.email = query.email;
-      }
+    const { registrationStore, history } = this.props;
+    if (!registrationStore.verifyCookie()) {
+      history.replace(`/signup/email`);
     }
   }
 
@@ -111,17 +103,19 @@ export default class Confirmation extends Component {
   };
 
   submitConfirmationCode = () => {
+    const { registrationStore, history } = this.props;
     const confirmationCode = this.state.digits.join("");
     if (confirmationCode.length === 6) {
       post("/api/v1/users/submit-confirmation-code", {
         body: {
-          user_id: this.props.registrationStore.userId,
+          user_id: registrationStore.userId,
           confirmation_code: confirmationCode
         }
       })
         .then(() => {
           this.setState({ error: false });
-          this.props.history.push("/signup/onboarding");
+          registrationStore.verified = true;
+          history.push("/signup/onboarding/teamname");
         })
         .catch(() => {
           this.setState({ error: true });
@@ -212,3 +206,5 @@ export default class Confirmation extends Component {
     );
   }
 }
+
+export default withRouter(Confirmation);

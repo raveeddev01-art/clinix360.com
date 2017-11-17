@@ -21,7 +21,12 @@ class Registration extends Component {
           path="/signup/confirmation-code"
           component={Confirmation}
         />
-        <Route exact path="/signup/onboarding" component={Onboarding} />
+
+        <Route
+          exact
+          path="/signup/onboarding/:currentStep"
+          component={Onboarding}
+        />
 
         <Route component={() => <Redirect to="/signup/email" />} />
       </Switch>

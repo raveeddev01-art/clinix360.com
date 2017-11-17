@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { alert } from "common/modals";
+import { withRouter, Redirect } from "react-router-dom";
 
 import TeamName from "../components/team-name-card/team-name-card";
 import TeamUrl from "../components/team-url-card/team-url-card";
@@ -14,10 +15,10 @@ import Invites from "../components/invites-card/invites-card";
 import Hipaa from "../components/hipaa-card/hipaa-card";
 
 const stepList = [
-  { field: "teamName", component: TeamName },
-  { field: "teamUrl", component: TeamUrl },
-  { field: "firstName", component: FirstName },
-  { field: "lastName", component: LastName },
+  { field: "teamname", component: TeamName },
+  { field: "teamurl", component: TeamUrl },
+  { field: "firstname", component: FirstName },
+  { field: "lastname", component: LastName },
   { field: "phone", component: PhoneNumber },
   { field: "username", component: Username },
   { field: "password", component: Password },
@@ -29,16 +30,19 @@ const stepList = [
 @inject("registrationStore")
 @observer
 class Onboarding extends Component {
-  constructor(props) {
-    super(props);
+  componentWillMount() {
+    const { registrationStore, history } = this.props;
+    if (!registrationStore.verifyCookie()) {
+      history.replace(`/signup/email`);
+    }
 
-    this.state = {
-      step: 0
-    };
+    if (!registrationStore.verified) {
+      history.replace(`/signup/confirmation-code`);
+    }
   }
 
   onSave = () => {
-    const { registrationStore } = this.props;
+    const { registrationStore, history } = this.props;
     registrationStore.createTeam().catch(() => {
       alert({
         title: "Error in creating team",
@@ -46,26 +50,35 @@ class Onboarding extends Component {
           "Sorry, we had an issue completing your onboarding. Could you please start over?",
         okLabel: "Restart"
       }).then(() => {
-        this.setState({ step: 0 });
+        history.push(`/signup/onboarding/${stepList[0].field}`);
       });
     });
   };
 
   render() {
-    const { step } = this.state;
-    const { registrationStore } = this.props;
-    return React.createElement(stepList[step].component, {
+    const {
+      registrationStore,
+      match: { params: { currentStep } },
+      history
+    } = this.props;
+    const stepIndex = stepList.findIndex(s => s.field === currentStep);
+
+    if (stepIndex === -1) {
+      return <Redirect to="/signup/confirmation-code" />;
+    }
+
+    return React.createElement(stepList[stepIndex].component, {
       onNext: value => {
-        if (stepList.length <= step + 1) {
+        if (stepList.length <= stepIndex + 1) {
           this.onSave();
         } else {
           if (typeof value === "object") {
             Object.assign(registrationStore, value);
           } else {
-            registrationStore[stepList[step].field] = value;
+            registrationStore[currentStep] = value;
           }
 
-          this.setState({ step: step + 1 });
+          history.push(`/signup/onboarding/${stepList[stepIndex + 1].field}`);
         }
       },
       saving: registrationStore.saving
@@ -73,4 +86,4 @@ class Onboarding extends Component {
   }
 }
 
-export default Onboarding;
+export default withRouter(Onboarding);

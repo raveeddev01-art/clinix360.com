@@ -27,8 +27,10 @@ class EmailCard extends Component {
     post("/api/v1/users", {
       body: { email: this.state.email }
     }).then(response => {
-      this.props.registrationStore.userId = response.data.id;
-      this.props.registrationStore.email = this.state.email;
+      this.props.registrationStore.setCookie(
+        response.data.id,
+        this.state.email
+      );
       post("/api/v1/users/send-confirmation-code", {
         body: { id: response.data.id }
       }).then(() => {

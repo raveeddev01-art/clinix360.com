@@ -82,7 +82,7 @@ defmodule StitchConnect.Web.Router do
 
     get "/signup/email", AuthenticationController, :index
     get "/signup/confirmation-code", AuthenticationController, :index
-    get "/signup/onboarding", AuthenticationController, :index
+    get "/signup/onboarding/:step", AuthenticationController, :index
     get "/signup/app-download", AuthenticationController, :index
 
     # get "/signup/phone-number", AuthenticationController, :index
