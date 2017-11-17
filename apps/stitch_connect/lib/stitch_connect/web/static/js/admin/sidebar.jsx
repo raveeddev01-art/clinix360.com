@@ -28,7 +28,7 @@ class Sidebar extends Component {
   _adminTeamsOptions = () => {
     return (
       <div>
-        <h3>Administration</h3>
+        <h5>Administration</h5>
         <ListGroup>
           <ListGroupItem
             active={
@@ -85,7 +85,7 @@ class Sidebar extends Component {
           <h4 className="team-name">{teamStore.name}</h4>
         </div>
         <div className="flex-container">
-          <h3>You</h3>
+          <h5>You</h5>
           <ListGroup>
             <ListGroupItem active={this._isSelected("/admin/you/account")}>
               <Link to="/admin/you/account">
@@ -114,7 +114,7 @@ class Sidebar extends Component {
 
           {isAdmin() && this._adminTeamsOptions()}
 
-          <h3>Stitch</h3>
+          <h5>Stitch</h5>
           <ListGroup>
             <ListGroupItem href="#" onClick={this.showInviteModal}>
               <i className="fa fa-envelope-o" /> Invite

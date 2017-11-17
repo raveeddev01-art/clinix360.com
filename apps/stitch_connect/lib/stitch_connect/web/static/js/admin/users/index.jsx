@@ -72,7 +72,7 @@ class TeamSettings extends Component {
 
     return (
       <Panel className="admin-panel" header={header}>
-        <div className="pull-right m-u-50">
+        <div className="pull-right m-u-58">
           <Button
             bsStyle="primary"
             onClick={this.showInviteModal}

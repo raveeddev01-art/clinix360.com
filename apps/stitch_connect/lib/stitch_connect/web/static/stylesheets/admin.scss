@@ -43,13 +43,13 @@ $admin-topbar-height-sm: 65px;
       overflow-y: hidden;
       padding: 20px 1em 1em 1em;
 
-      h3 {
-        font-size: 15px;
+      h5 {
+        font-size: 16px;
         line-height: 13px;
         height: 14px;
-        text-transform: uppercase;
+        text-transform: capitalize;
         color: $brand-primary;
-        font-weight: 800;
+        font-weight: bold;
         padding-left: 10px;
       }
 
@@ -72,9 +72,6 @@ $admin-topbar-height-sm: 65px;
           a {
             color: #fff;
           }
-        }
-        &:focus {
-          outline: none;
         }
       }
 
@@ -550,8 +547,8 @@ $admin-topbar-height-sm: 65px;
   }
 }
 
-.m-u-50 {
-  margin-top: -50px;
+.m-u-58 {
+  margin-top: -58px;
 }
 
 .profile-image-form {
