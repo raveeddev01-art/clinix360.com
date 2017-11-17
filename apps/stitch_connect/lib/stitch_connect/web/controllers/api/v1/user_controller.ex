@@ -185,4 +185,15 @@ defmodule StitchConnect.Web.Api.V1.UserController do
       _ -> json(conn, %{exists: false})
     end
   end
+
+  def validate_username(conn, %{"username" => username}) do
+    params = %{username: username, team_id: conn.private[:team_id]}
+    json(conn, User.username_changeset(%User{}, params).valid?)
+  end
+
+  def validate_username(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{message: "Requires a username query."})
+  end
 end
