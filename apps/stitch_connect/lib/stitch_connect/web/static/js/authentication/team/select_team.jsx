@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Button from "react-bootstrap/lib/Button";
-import FindTeam from "./find_team";
+import { Card } from "common/components";
 
-import Card from "../components/card/card";
+import FindTeam from "./find_team";
 
 export default class SelectTeam extends Component {
   constructor(props) {

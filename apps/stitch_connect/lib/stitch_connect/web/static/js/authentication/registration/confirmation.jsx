@@ -9,6 +9,7 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import { OnboardCard } from "common/components";
 
 @inject("registrationStore")
 @observer
@@ -27,6 +28,10 @@ export default class Confirmation extends Component {
       const query = parse(search.substr(1));
       if (query.userId) {
         this.props.registrationStore.userId = query.userId;
+      }
+
+      if (query.email) {
+        this.props.registrationStore.email = query.email;
       }
     }
   }
@@ -116,7 +121,7 @@ export default class Confirmation extends Component {
       })
         .then(() => {
           this.setState({ error: false });
-          this.props.history.push("/signup/team-name");
+          this.props.history.push("/signup/onboarding");
         })
         .catch(() => {
           this.setState({ error: true });
@@ -146,6 +151,25 @@ export default class Confirmation extends Component {
     return comps;
   };
 
+  renderHeader() {
+    return (
+      <div className="card-header">
+        <Row>
+          <Col xs={12} className="text-right">
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip id="close">Close</Tooltip>}
+            >
+              <Link to="/getstarted">
+                <i className="fa fa-close" />
+              </Link>
+            </OverlayTrigger>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -156,49 +180,34 @@ export default class Confirmation extends Component {
           </Alert>
         )}
 
-        <div className="authentication-card text-center">
-          <div className="card-header">
-            <Row>
-              <Col xs={12} className="text-right">
-                <OverlayTrigger
-                  placement="top"
-                  overlay={<Tooltip id="close">Close</Tooltip>}
-                >
-                  <Link to="/getstarted">
-                    <i className="fa fa-close" />
-                  </Link>
-                </OverlayTrigger>
-              </Col>
-            </Row>
+        <OnboardCard
+          header={this.renderHeader()}
+          title="Check your email!"
+          description={
+            <span>
+              Enter your <strong>confirmation code</strong>.
+            </span>
+          }
+          onNext={this.onNext}
+        >
+          <div className="confirmation-code m-b-20">
+            <InputGroup className="code-group">
+              {this.renderCodeInput(0, 3)}
+            </InputGroup>
+
+            <div className="code-separator">—</div>
+
+            <InputGroup className="code-group">
+              {this.renderCodeInput(3, 6)}
+            </InputGroup>
+            <div className="clearfix" />
           </div>
-
-          <h2>Check your email!</h2>
-
-          <h5>
-            Enter your <strong>confirmation code</strong>.
-          </h5>
-
-          <form>
-            <div className="confirmation-code m-b-20">
-              <InputGroup className="code-group">
-                {this.renderCodeInput(0, 3)}
-              </InputGroup>
-
-              <div className="code-separator">—</div>
-
-              <InputGroup className="code-group">
-                {this.renderCodeInput(3, 6)}
-              </InputGroup>
-              <div className="clearfix" />
-            </div>
-
-            <HelpBlock className="m-b-20">
-              We sent a six-digit confirmation code to&nbsp;
-              <strong>{this.props.registrationStore.email}</strong> to verify
-              your email address.
-            </HelpBlock>
-          </form>
-        </div>
+          <HelpBlock className="m-b-20">
+            We sent a six-digit confirmation code to&nbsp;
+            <strong>{this.props.registrationStore.email}</strong> to verify your
+            email address.
+          </HelpBlock>
+        </OnboardCard>
       </div>
     );
   }

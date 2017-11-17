@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import OnboardInputCard from "../onboard-input-card/onboard-input-card";
+import { OnboardInputCard } from "common/components";
 
 class LastNameCard extends Component {
   render() {
@@ -8,22 +8,17 @@ class LastNameCard extends Component {
       <OnboardInputCard
         {...this.props}
         title="Last Name"
-        description={
-          <span>
-            Enter your <strong>last name</strong>.
-          </span>
-        }
         helperText="Your name will be shown next to your profile and messages."
         placeholder="Last Name"
-      />
+      >
+        Enter your <strong>last name</strong>.
+      </OnboardInputCard>
     );
   }
 }
 
 LastNameCard.propTypes = {
-  onNext: PropTypes.func.isRequired,
-  backUrl: PropTypes.string,
-  restartUrl: PropTypes.string
+  onNext: PropTypes.func.isRequired
 };
 
 LastNameCard.defaultProps = {
