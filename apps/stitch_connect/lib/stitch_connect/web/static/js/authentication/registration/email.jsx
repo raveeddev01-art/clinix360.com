@@ -9,8 +9,9 @@ import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import isEmail from "validator/lib/isEmail";
+
 import { OnboardCard } from "common/components";
-import { isEmail } from "util/validators";
 
 @inject("registrationStore")
 @observer

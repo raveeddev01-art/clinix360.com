@@ -1,5 +1,5 @@
 import { observable, action } from "mobx";
-import { isEmail } from "util/validators";
+import isEmail from "validator/lib/isEmail";
 
 class RegistrationStore {
   @observable userId = "";
