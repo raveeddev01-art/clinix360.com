@@ -73,6 +73,9 @@ $admin-topbar-height-sm: 65px;
             color: #fff;
           }
         }
+        &:focus {
+          outline: none;
+        }
       }
 
       a {
