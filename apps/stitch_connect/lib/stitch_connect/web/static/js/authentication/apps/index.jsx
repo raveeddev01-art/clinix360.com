@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import browserDetails from "../../util/browser_details";
+import browserDetails from "../../lib/browser_details";
 import WindowsDesktop from "./windows-desktop";
 import MacDesktop from "./mac-desktop";
 import LinuxDesktop from "./linux-desktop";
