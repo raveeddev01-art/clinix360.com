@@ -8,6 +8,8 @@ defmodule Stitch.MeteorMigration do
   import Ecto.Query
   require Logger
 
+  @meteor_data_dir "_meteor-data"
+
   defmodule MigrationError do
     defexception message: "Meteor migration data couldn't be found."
   end
@@ -122,7 +124,7 @@ defmodule Stitch.MeteorMigration do
   end
 
   def get_config do
-    meteor_data_dir = "_meteor-data"
+    meteor_data_dir = @meteor_data_dir
     team_name = System.get_env("METEOR_TEAM_NAME")
 
     unless File.exists?(meteor_data_dir), do: log_error "#{meteor_data_dir} doesn't exist."
