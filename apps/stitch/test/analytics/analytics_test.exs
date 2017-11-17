@@ -20,12 +20,18 @@ defmodule Stitch.AnalyticsTest do
       group_payload = group_request.payload
 
       expected_identify_traits = %{
-        "email"     => user.email,
-        "team_name" => team.name,
-        "team_slug" => team.slug,
-        "team_id"   => Integer.to_string(team.id),
-        "plan"      => subscription.tier,
-        "status"    => "enabled"
+        "email"      => user.email,
+        "name"       => "#{user.first_name} #{user.last_name}",
+        "first_name" => user.first_name,
+        "last_name"  => user.last_name,
+        "status"     => "enabled",
+        "role"       => "member",
+        "phone"      => user.phone_number,
+        "team_name"  => team.name,
+        "team_slug"  => team.slug,
+        "team_id"    => Integer.to_string(team.id),
+        "plan"       => subscription.tier,
+        "created_at" => NaiveDateTime.to_iso8601(user.inserted_at)
       }
 
       assert identify_payload["type"] == "identify"
@@ -34,10 +40,11 @@ defmodule Stitch.AnalyticsTest do
       assert identify_payload["timestamp"]
 
       expected_group_traits = %{
-        "team_name" => team.name,
-        "team_slug" => team.slug,
+        "name" => team.name,
+        "slug" => team.slug,
         "team_id"   => Integer.to_string(team.id),
         "plan"      => subscription.tier,
+        "created_at" => NaiveDateTime.to_iso8601(team.inserted_at)
       }
 
       assert group_payload["type"] == "group"
@@ -95,12 +102,18 @@ defmodule Stitch.AnalyticsTest do
     [%{payload: payload}] = Analytics.list_events()
 
     expected_identify_traits = %{
-      "email"     => user.email,
-      "team_name" => team.name,
-      "team_slug" => team.slug,
-      "team_id"   => Integer.to_string(team.id),
-      "plan"      => subscription.tier,
-      "status"    => "enabled"
+      "email"      => user.email,
+      "name"       => "#{user.first_name} #{user.last_name}",
+      "first_name" => user.first_name,
+      "last_name"  => user.last_name,
+      "status"     => "enabled",
+      "role"       => "member",
+      "phone"      => user.phone_number,
+      "team_name"  => team.name,
+      "team_slug"  => team.slug,
+      "team_id"    => Integer.to_string(team.id),
+      "plan"       => subscription.tier,
+      "created_at" => NaiveDateTime.to_iso8601(user.inserted_at)
     }
 
     assert payload["type"] == "identify"

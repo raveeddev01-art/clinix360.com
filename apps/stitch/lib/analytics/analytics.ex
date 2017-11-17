@@ -154,19 +154,26 @@ defmodule Stitch.Analytics do
 
   defp identify_traits(user, team, subscription) do
     status = if user.disabled, do: "disabled", else: "enabled"
-    %{"email"     => user.email,
-      "team_name" => team.name,
-      "team_slug" => team.slug,
-      "team_id"   => Integer.to_string(team.id),
-      "plan"      => subscription.tier,
-      "status"    => status}
+    %{"email"      => user.email,
+      "name"       => "#{user.first_name} #{user.last_name}",
+      "first_name" => user.first_name,
+      "last_name"  => user.last_name,
+      "status"     => status,
+      "role"       => List.to_string(user.roles),
+      "phone"      => user.phone_number,
+      "team_name"  => team.name,
+      "team_slug"  => team.slug,
+      "team_id"    => Integer.to_string(team.id),
+      "plan"       => subscription.tier,
+      "created_at" => user.inserted_at}
   end
 
   defp group_traits(team, subscription) do
-    %{"team_name" => team.name,
-      "team_slug" => team.slug,
-      "team_id"   => Integer.to_string(team.id),
-      "plan"      => subscription.tier}
+    %{"name"       => team.name,
+      "slug"       => team.slug,
+      "team_id"    => Integer.to_string(team.id),
+      "plan"       => subscription.tier,
+      "created_at" => team.inserted_at}
   end
 
   @doc false
