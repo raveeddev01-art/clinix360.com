@@ -1,10 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 import Button from "react-bootstrap/lib/Button";
 import Form from "react-bootstrap/lib/Form";
 import Card from "../card/card";
@@ -34,46 +29,11 @@ class OnboardCard extends Component {
     return description && <h5>{description}</h5>;
   };
 
-  _renderHeader = () => {
-    const { backUrl, restartUrl } = this.props;
-    return (
-      <div className="card-header">
-        <Row>
-          <Col xs={6} className="text-left">
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip id="back">Back</Tooltip>}
-            >
-              <Link to={backUrl}>
-                <i className="fa fa-arrow-left" />
-              </Link>
-            </OverlayTrigger>
-          </Col>
-
-          <Col xs={6} className="text-right">
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip id="restart">Restart</Tooltip>}
-            >
-              <Link to={restartUrl}>
-                <i className="fa fa-refresh" />
-              </Link>
-            </OverlayTrigger>
-          </Col>
-        </Row>
-      </div>
-    );
-  };
-
   render() {
-    const { title, onNext, children, nextButtonText, description } = this.props;
+    const { title, children, nextButtonText, description, header } = this.props;
     const { disableNext } = this.state;
     return (
-      <Card
-        header={this._renderHeader()}
-        title={title}
-        description={description}
-      >
+      <Card header={header} title={title} description={description}>
         <Form onSubmit={this._onNext}>
           {children}
           <Button
@@ -96,9 +56,11 @@ OnboardCard.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
+  header: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
   onNext: PropTypes.func.isRequired,
-  backUrl: PropTypes.string,
-  restartUrl: PropTypes.string,
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
   nextButtonText: PropTypes.string.isRequired,
@@ -107,6 +69,7 @@ OnboardCard.propTypes = {
 
 OnboardCard.defaultProps = {
   children: null,
+  header: null,
   onNext: () => {},
   description: "",
   title: "",
