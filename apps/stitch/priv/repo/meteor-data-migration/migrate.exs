@@ -22,13 +22,13 @@ defmodule Stitch.MeteorMigration do
       {:ok, team} ->
         Logger.info("Migrating users")
 
-        users = MeteorMigration.User.parse_users_json(parse_json_file(users_json))
+        users = MeteorMigration.User.parse_users_json(parse_meteor_json(users_json))
         {_count, users} = MeteorMigration.User.migrate_users(team.id, users)
 
         Logger.info("Migrating rooms")
 
         indexed_users = index_users(users)
-        rooms = MeteorMigration.Room.parse_rooms_json(indexed_users, parse_json_file(rooms_json))
+        rooms = MeteorMigration.Room.parse_rooms_json(indexed_users, parse_meteor_json(rooms_json))
         rooms = MeteorMigration.Room.migrate_rooms(team.id, rooms)
 
         Logger.info("Cleaning auto-generated system messages")
@@ -160,7 +160,7 @@ defmodule Stitch.MeteorMigration do
   end
 
   def parse_meteor_json(file) do
-    room = File.read!("_my_scripts/rooms2.json")
+    room = File.read!(file)
     room = "[" <> room <> "]"
     room = room |> String.split |> Enum.map_join(& String.trim(&1)) |> String.replace("}{", "},{")
     room = room |> String.split |> Enum.map_join(fn line ->
@@ -168,6 +168,7 @@ defmodule Stitch.MeteorMigration do
       line = String.replace(line, ~r/ISODate\(([^)]+)\)/, "\\1")
       line
     end)
+    Poison.decode!(room)
   end
 
   def run do

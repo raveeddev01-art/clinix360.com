@@ -82,7 +82,7 @@ defmodule Stitch.MeteorMigration.Room do
           name: Map.get(attributes, "fname", slug),
           slug: slug,
           dm: false,
-          public: true,
+          public: false,
           creator_user: user,
           description: attributes["topic"],
           is_default: !!attributes["default"],
