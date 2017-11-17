@@ -24,6 +24,7 @@ defmodule StitchConnect.Web.Router do
     pipe_through :api
 
     # Onboarding routes for new users.
+    get "/users/validate-username", UserController, :validate_username
     post "/users", UserController, :create
     post "/users/validate-phone-number", UserController, :validate_phone_number
     post "/users/send-confirmation-code", UserController, :send_confirmation_code

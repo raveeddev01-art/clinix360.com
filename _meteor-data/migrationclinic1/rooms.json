@@ -1,5 +1,4 @@
-[
-  {
+{
     "_id" : "c_3LZsHsWG2TjE9F8sa",
     "t" : "public-ch",
     "name" : "emergency",
@@ -8,15 +7,16 @@
         "bharat",
         "antonverhoeven"
     ],
+    "msgs" : NumberInt(39),
     "u" : {
         "_id" : "HhXg3vmotoWZRE5z2",
         "username" : "ellen"
     },
-    "ts" : "2016-10-09T15:08:16.616+0000",
-    "lm" : "2017-10-26T19:01:34.841+0000",
+    "ts" : ISODate("2016-10-09T15:08:16.616+0000"),
+    "lm" : ISODate("2017-10-26T19:01:34.841+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
     "fname" : "Emergency"
-  },
+}
 {
     "_id" : "c_4CJJdSsguNmX9GENh",
     "t" : "public-ch",
@@ -29,15 +29,16 @@
         "khaledabbas",
         "ellen"
     ],
+    "msgs" : NumberInt(136),
     "u" : {
         "_id" : "CpGPoYnvEYMRHKFZ2",
         "username" : "admin"
     },
-    "ts" : "2016-09-12T16:56:35.569+0000",
-    "lm" : "2017-10-09T16:11:36.859+0000",
+    "ts" : ISODate("2016-09-12T16:56:35.569+0000"),
+    "lm" : ISODate("2017-10-09T16:11:36.859+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
     "fname" : "Clinical"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2Num4HsxkdJvKZa2m2Num",
     "usernames" : [
@@ -45,10 +46,11 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-23T08:10:14.835+0000",
-    "lm" : "2017-01-24T19:27:02.629+0000",
+    "msgs" : NumberInt(7),
+    "ts" : ISODate("2016-09-23T08:10:14.835+0000"),
+    "lm" : ISODate("2017-01-24T19:27:02.629+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2Num8ZeacSD39o3JAkNAZ",
     "usernames" : [
@@ -56,9 +58,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:19:52.072+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:19:52.072+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2Num8rRDPcDdZGGiEic5k",
     "usernames" : [
@@ -66,10 +69,11 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:26:37.721+0000",
-    "lm" : "2016-10-29T11:20:37.073+0000",
+    "msgs" : NumberInt(18),
+    "ts" : ISODate("2016-09-29T09:26:37.721+0000"),
+    "lm" : ISODate("2016-10-29T11:20:37.073+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumCpGPoYnvEYMRHKFZ2",
     "usernames" : [
@@ -77,9 +81,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-12T08:46:57.265+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-12T08:46:57.265+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumGvuY3SFZi5NtJMast",
     "usernames" : [
@@ -87,9 +92,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.354+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.354+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumHhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -97,10 +103,11 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T14:43:50.510+0000",
-    "lm" : "2017-02-08T13:33:40.904+0000",
+    "msgs" : NumberInt(42),
+    "ts" : ISODate("2016-09-26T14:43:50.510+0000"),
+    "lm" : ISODate("2017-02-08T13:33:40.904+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumKZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -108,9 +115,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:57.650+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:57.650+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumR48Pp7ceowwSj3MPa",
     "usernames" : [
@@ -118,9 +126,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.062+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T21:01:58.062+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumRrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -129,8 +138,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-17T20:39:28.354+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-17T20:39:28.354+0000")
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -138,9 +148,10 @@
         "alexeyw"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:35.885+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:35.885+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -148,9 +159,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T19:24:13.402+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-26T19:24:13.402+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -158,9 +170,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:27.386+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-13T16:26:27.386+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -168,9 +181,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:05.552+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:05.552+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -178,9 +192,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:31.139+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:31.139+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2Numnp8bvKTK5239hvny7",
     "usernames" : [
@@ -188,10 +203,11 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-08T01:04:39.445+0000",
-    "lm" : "2016-10-01T17:55:40.705+0000",
+    "msgs" : NumberInt(2),
+    "ts" : ISODate("2016-09-08T01:04:39.445+0000"),
+    "lm" : ISODate("2016-10-01T17:55:40.705+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -199,9 +215,10 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-07T16:37:56.919+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-07T16:37:56.919+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -209,10 +226,11 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:32:18.930+0000",
-    "lm" : "2016-11-02T06:18:59.810+0000",
+    "msgs" : NumberInt(164),
+    "ts" : ISODate("2016-09-29T09:32:18.930+0000"),
+    "lm" : ISODate("2016-11-02T06:18:59.810+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2Numu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -220,10 +238,11 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:11:59.560+0000",
-    "lm" : "2016-10-24T12:23:22.772+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2016-09-29T19:11:59.560+0000"),
+    "lm" : ISODate("2016-10-24T12:23:22.772+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -231,9 +250,10 @@
         "fxpage.biz"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-09T10:30:30.356+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-09T10:30:30.356+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_4Ms2Amp9iS4fxae4t",
     "t" : "private-ch",
@@ -243,14 +263,15 @@
         "stitchandroid",
         "testinvite"
     ],
+    "msgs" : NumberInt(125),
     "u" : {
         "_id" : "WniRBrZMuj2DThenJ",
         "username" : "alexeyw"
     },
-    "ts" : "2017-01-14T12:01:57.245+0000",
-    "lm" : "2017-03-28T18:35:11.414+0000",
+    "ts" : ISODate("2017-01-14T12:01:57.245+0000"),
+    "lm" : ISODate("2017-03-28T18:35:11.414+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZ8ZeacSD39o3JAkNAZ",
     "usernames" : [
@@ -258,10 +279,11 @@
         "marius"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:20:10.512+0000",
-    "lm" : "2017-07-03T19:19:33.238+0000",
+    "msgs" : NumberInt(194),
+    "ts" : ISODate("2016-10-28T20:20:10.512+0000"),
+    "lm" : ISODate("2017-07-03T19:19:33.238+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZ8rRDPcDdZGGiEic5k",
     "usernames" : [
@@ -269,9 +291,10 @@
         "anton_verhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:20:00.945+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:20:00.945+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZCpGPoYnvEYMRHKFZ2",
     "usernames" : [
@@ -279,9 +302,10 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:19:56.621+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:19:56.621+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZGvuY3SFZi5NtJMast",
     "usernames" : [
@@ -289,9 +313,10 @@
         "marius"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:50.012+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:50.012+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZHhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -299,10 +324,11 @@
         "ellen"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:19:58.750+0000",
-    "lm" : "2016-11-02T18:23:10.629+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2016-10-28T20:19:58.750+0000"),
+    "lm" : ISODate("2016-11-02T18:23:10.629+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZKZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -310,9 +336,10 @@
         "marius"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:58.280+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:58.280+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZR48Pp7ceowwSj3MPa",
     "usernames" : [
@@ -320,9 +347,10 @@
         "marius"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.756+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T21:01:58.756+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -330,9 +358,10 @@
         "marius"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.698+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:36.698+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -340,9 +369,10 @@
         "khaledabbas"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:20:00.062+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:20:00.062+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -350,9 +380,10 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:20:09.664+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:20:09.664+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -360,9 +391,10 @@
         "marius"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:07.332+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:07.332+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -370,9 +402,10 @@
         "marius"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:32.341+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:32.341+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZnp8bvKTK5239hvny7",
     "usernames" : [
@@ -380,9 +413,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:19:54.564+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:19:54.564+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -390,9 +424,10 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:19:51.233+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:19:51.233+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -400,9 +435,10 @@
         "antonverhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:20:05.644+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:20:05.644+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -410,9 +446,10 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:20:08.786+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:20:08.786+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -420,9 +457,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-28T20:19:55.405+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-28T20:19:55.405+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5k8rRDPcDdZGGiEic5k",
     "usernames" : [
@@ -430,9 +468,10 @@
         "anton_verhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:26:38.749+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:26:38.749+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kCpGPoYnvEYMRHKFZ2",
     "usernames" : [
@@ -440,9 +479,10 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:26:38.156+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:26:38.156+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kGvuY3SFZi5NtJMast",
     "usernames" : [
@@ -450,9 +490,10 @@
         "bigbryan"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.778+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.778+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kHhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -460,10 +501,11 @@
         "anton_verhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:26:38.458+0000",
-    "lm" : "2016-12-08T21:19:15.294+0000",
+    "msgs" : NumberInt(16),
+    "ts" : ISODate("2016-09-29T09:26:38.458+0000"),
+    "lm" : ISODate("2016-12-08T21:19:15.294+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kKZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -471,9 +513,10 @@
         "aweinstein"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:58.062+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:58.062+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kR48Pp7ceowwSj3MPa",
     "usernames" : [
@@ -481,9 +524,10 @@
         "anton_verhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.499+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T21:01:58.499+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kRrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -492,8 +536,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-15T21:42:20.457+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-15T21:42:20.457+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -501,9 +546,10 @@
         "alexeyw"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.403+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:36.403+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -511,9 +557,10 @@
         "khaledabbas"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:26:38.664+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:26:38.664+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5keG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -521,9 +568,10 @@
         "anton_verhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:32.205+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-13T16:26:32.205+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -531,10 +579,11 @@
         "testinvite"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:06.690+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2016-12-21T23:26:06.690+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "lm" : "2017-04-24T06:54:59.838+0000"
-},
+    "lm" : ISODate("2017-04-24T06:54:59.838+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -542,9 +591,10 @@
         "anton_verhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:31.825+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:31.825+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5knp8bvKTK5239hvny7",
     "usernames" : [
@@ -552,9 +602,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:26:37.877+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:26:37.877+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -562,9 +613,10 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:26:37.617+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:26:37.617+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -572,10 +624,11 @@
         "anton_verhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:32:19.969+0000",
-    "lm" : "2017-03-02T09:36:08.660+0000",
+    "msgs" : NumberInt(145),
+    "ts" : ISODate("2016-09-29T09:32:19.969+0000"),
+    "lm" : ISODate("2017-03-02T09:36:08.660+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5ku5pekj7u7hnvtigJN",
     "usernames" : [
@@ -583,9 +636,10 @@
         "anton_verhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:12:03.770+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T19:12:03.770+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -593,9 +647,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:26:38.017+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:26:38.017+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_BRTzZ9tcut3sBzxAW",
     "t" : "private-ch",
@@ -603,14 +658,15 @@
     "usernames" : [
 
     ],
+    "msgs" : NumberInt(8),
     "u" : {
         "_id" : "ntYqZ8AamDfaznTGZ",
         "username" : "bharat"
     },
-    "ts" : "2016-09-10T15:25:35.573+0000",
-    "lm" : "2016-12-06T17:32:57.971+0000",
+    "ts" : ISODate("2016-09-10T15:25:35.573+0000"),
+    "lm" : ISODate("2016-12-06T17:32:57.971+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_Bo2F3GcWvwJZQYsFF",
     "t" : "private-ch",
@@ -618,14 +674,15 @@
     "usernames" : [
         "bigbryan"
     ],
+    "msgs" : NumberInt(27),
     "u" : {
         "_id" : "GvuY3SFZi5NtJMast",
         "username" : "bigbryan"
     },
-    "ts" : "2017-01-13T17:10:03.288+0000",
-    "lm" : "2017-03-13T09:14:46.307+0000",
+    "ts" : ISODate("2017-01-13T17:10:03.288+0000"),
+    "lm" : ISODate("2017-03-13T09:14:46.307+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2CpGPoYnvEYMRHKFZ2",
     "usernames" : [
@@ -633,10 +690,11 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-22T22:39:33.042+0000",
-    "lm" : "2016-10-27T09:18:45.707+0000",
+    "msgs" : NumberInt(7),
+    "ts" : ISODate("2016-09-22T22:39:33.042+0000"),
+    "lm" : ISODate("2016-10-27T09:18:45.707+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2GvuY3SFZi5NtJMast",
     "usernames" : [
@@ -644,9 +702,10 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.539+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.539+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2HhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -654,9 +713,10 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T14:43:50.901+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-26T14:43:50.901+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2KZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -664,9 +724,10 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:57.806+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:57.806+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2R48Pp7ceowwSj3MPa",
     "usernames" : [
@@ -674,9 +735,10 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.322+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T21:01:58.322+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2WniRBrZMuj2DThenJ",
     "usernames" : [
@@ -684,9 +746,10 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.111+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:36.111+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2Xn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -694,10 +757,11 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T19:24:13.811+0000",
-    "lm" : "2016-11-14T06:51:30.686+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2016-09-26T19:24:13.811+0000"),
+    "lm" : ISODate("2016-11-14T06:51:30.686+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2eG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -705,9 +769,10 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:29.065+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-13T16:26:29.065+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2np8bvKTK5239hvny7",
     "usernames" : [
@@ -715,9 +780,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-12T08:46:57.294+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-12T08:46:57.294+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2ntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -725,10 +791,11 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-12T08:46:57.239+0000",
-    "lm" : "2016-12-07T18:24:09.158+0000",
+    "msgs" : NumberInt(49),
+    "ts" : ISODate("2016-09-12T08:46:57.239+0000"),
+    "lm" : ISODate("2016-12-07T18:24:09.158+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2qqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -736,9 +803,10 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:32:19.346+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:32:19.346+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2u5pekj7u7hnvtigJN",
     "usernames" : [
@@ -746,10 +814,11 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:12:00.603+0000",
-    "lm" : "2016-12-31T18:59:54.203+0000",
+    "msgs" : NumberInt(5),
+    "ts" : ISODate("2016-09-29T19:12:00.603+0000"),
+    "lm" : ISODate("2016-12-31T18:59:54.203+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_CpGPoYnvEYMRHKFZ2xzX9fkEDDZqecWma5",
     "usernames" : [
@@ -757,9 +826,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-12T08:46:57.320+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-12T08:46:57.320+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastGvuY3SFZi5NtJMast",
     "usernames" : [
@@ -767,10 +837,11 @@
         "bigbryan"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:50.125+0000",
-    "lm" : "2016-12-28T13:33:36.715+0000",
+    "msgs" : NumberInt(63),
+    "ts" : ISODate("2016-11-02T00:28:50.125+0000"),
+    "lm" : ISODate("2016-12-28T13:33:36.715+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastHhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -778,9 +849,10 @@
         "ellen"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.660+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.660+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastKZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -788,9 +860,10 @@
         "bigbryan"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:58.380+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:58.380+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastR48Pp7ceowwSj3MPa",
     "usernames" : [
@@ -798,9 +871,10 @@
         "hans.brunner"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T19:55:53.444+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T19:55:53.444+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -808,9 +882,10 @@
         "bigbryan"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:50.066+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:50.066+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -818,9 +893,10 @@
         "khaledabbas"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.718+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.718+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMasteG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -828,9 +904,10 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.953+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.953+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -838,9 +915,10 @@
         "bigbryan"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:07.724+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:07.724+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -848,9 +926,10 @@
         "bigbryan"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:32.625+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:32.625+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastnp8bvKTK5239hvny7",
     "usernames" : [
@@ -858,9 +937,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.416+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.416+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -868,9 +948,10 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.291+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.291+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -878,9 +959,10 @@
         "bigbryan"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.837+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.837+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -888,9 +970,10 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.898+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.898+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -898,9 +981,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-02T00:28:49.474+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-02T00:28:49.474+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2HhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -908,10 +992,11 @@
         "jonathan"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T14:43:51.128+0000",
-    "lm" : "2017-05-15T20:15:25.121+0000",
+    "msgs" : NumberInt(75),
+    "ts" : ISODate("2016-09-26T14:43:51.128+0000"),
+    "lm" : ISODate("2017-05-15T20:15:25.121+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2KZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -919,10 +1004,11 @@
         "aweinstein"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:57.905+0000",
-    "lm" : "2016-12-13T23:01:01.927+0000",
+    "msgs" : NumberInt(44),
+    "ts" : ISODate("2016-11-25T22:30:57.905+0000"),
+    "lm" : ISODate("2016-12-13T23:01:01.927+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2R48Pp7ceowwSj3MPa",
     "usernames" : [
@@ -930,10 +1016,11 @@
         "hans.brunner"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T19:55:29.009+0000",
-    "lm" : "2016-11-23T16:13:52.092+0000",
+    "msgs" : NumberInt(2),
+    "ts" : ISODate("2016-11-10T19:55:29.009+0000"),
+    "lm" : ISODate("2016-11-23T16:13:52.092+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2Rrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -942,8 +1029,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-17T22:00:35.608+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-17T22:00:35.608+0000")
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2WniRBrZMuj2DThenJ",
     "usernames" : [
@@ -951,9 +1039,10 @@
         "ellen"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.254+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:36.254+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2Xn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -961,10 +1050,11 @@
         "ellen"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T19:24:14.078+0000",
-    "lm" : "2016-11-24T00:23:11.273+0000",
+    "msgs" : NumberInt(21),
+    "ts" : ISODate("2016-09-26T19:24:14.078+0000"),
+    "lm" : ISODate("2016-11-24T00:23:11.273+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2eG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -972,10 +1062,11 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:30.921+0000",
-    "lm" : "2016-10-17T22:06:00.911+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2016-10-13T16:26:30.921+0000"),
+    "lm" : ISODate("2016-10-17T22:06:00.911+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2gbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -983,9 +1074,10 @@
         "ellen"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:06.415+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:06.415+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2iPn9h78cWSrbxobJi",
     "usernames" : [
@@ -993,9 +1085,10 @@
         "ellen"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:31.605+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:31.605+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2np8bvKTK5239hvny7",
     "usernames" : [
@@ -1003,10 +1096,11 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T14:43:50.643+0000",
-    "lm" : "2016-10-03T18:07:31.359+0000",
+    "msgs" : NumberInt(2),
+    "ts" : ISODate("2016-09-26T14:43:50.643+0000"),
+    "lm" : ISODate("2016-10-03T18:07:31.359+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2ntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1014,10 +1108,11 @@
         "ellen"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T14:43:50.379+0000",
-    "lm" : "2017-10-03T23:44:50.954+0000",
+    "msgs" : NumberInt(415),
+    "ts" : ISODate("2016-09-26T14:43:50.379+0000"),
+    "lm" : ISODate("2017-10-03T23:44:50.954+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2qqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1025,10 +1120,11 @@
         "antonverhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:32:19.667+0000",
-    "lm" : "2017-09-22T19:30:33.346+0000",
+    "msgs" : NumberInt(36),
+    "ts" : ISODate("2016-09-29T09:32:19.667+0000"),
+    "lm" : ISODate("2017-09-22T19:30:33.346+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2u5pekj7u7hnvtigJN",
     "usernames" : [
@@ -1036,10 +1132,11 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:12:02.494+0000",
-    "lm" : "2017-01-04T18:29:21.534+0000",
+    "msgs" : NumberInt(143),
+    "ts" : ISODate("2016-09-29T19:12:02.494+0000"),
+    "lm" : ISODate("2017-01-04T18:29:21.534+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2xzX9fkEDDZqecWma5",
     "usernames" : [
@@ -1047,10 +1144,11 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T14:43:50.767+0000",
-    "lm" : "2016-11-23T20:15:29.372+0000",
+    "msgs" : NumberInt(2),
+    "ts" : ISODate("2016-09-26T14:43:50.767+0000"),
+    "lm" : ISODate("2016-11-23T20:15:29.372+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtKZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -1058,9 +1156,10 @@
         "aweinstein"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:58.443+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:58.443+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtRrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -1069,8 +1168,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-15T21:42:19.240+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-15T21:42:19.240+0000")
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -1078,9 +1178,10 @@
         "aweinstein"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:58.329+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:58.329+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -1088,9 +1189,10 @@
         "khaledabbas"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:57.975+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:57.975+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KteG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -1098,9 +1200,10 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:58.233+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:58.233+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -1108,9 +1211,10 @@
         "aweinstein"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:07.999+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:07.999+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -1118,9 +1222,10 @@
         "aweinstein"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:32.748+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:32.748+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58Ktnp8bvKTK5239hvny7",
     "usernames" : [
@@ -1128,9 +1233,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:57.708+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:57.708+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1138,9 +1244,10 @@
         "aweinstein"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:57.546+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:57.546+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1148,9 +1255,10 @@
         "aweinstein"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:58.127+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:58.127+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58Ktu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -1158,9 +1266,10 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:58.175+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:58.175+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -1168,9 +1277,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-25T22:30:57.760+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-25T22:30:57.760+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_PBsAjJntGGj2pxjBb",
     "t" : "private-ch",
@@ -1178,14 +1288,15 @@
     "usernames" : [
         "fxpage.biz"
     ],
+    "msgs" : NumberInt(3),
     "u" : {
         "_id" : "4HsxkdJvKZa2m2Num",
         "username" : "fxpage.biz"
     },
-    "ts" : "2016-09-08T13:36:15.906+0000",
-    "lm" : "2016-11-17T14:25:10.465+0000",
+    "ts" : ISODate("2016-09-08T13:36:15.906+0000"),
+    "lm" : ISODate("2016-11-17T14:25:10.465+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_R48Pp7ceowwSj3MPaR48Pp7ceowwSj3MPa",
     "usernames" : [
@@ -1193,9 +1304,10 @@
         "hans.brunner"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.920+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T21:01:58.920+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_R48Pp7ceowwSj3MPaWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -1203,10 +1315,11 @@
         "alexeyw"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.841+0000",
-    "lm" : "2016-11-23T16:05:48.133+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2016-11-10T21:01:58.841+0000"),
+    "lm" : ISODate("2016-11-23T16:05:48.133+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_R48Pp7ceowwSj3MPaXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -1214,9 +1327,10 @@
         "hans.brunner"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T18:11:14.278+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T18:11:14.278+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_R48Pp7ceowwSj3MPaeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -1224,9 +1338,10 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.671+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T21:01:58.671+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_R48Pp7ceowwSj3MPanp8bvKTK5239hvny7",
     "usernames" : [
@@ -1234,9 +1349,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.158+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T21:01:58.158+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_R48Pp7ceowwSj3MPantYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1244,9 +1360,10 @@
         "hans.brunner"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T19:55:33.886+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T19:55:33.886+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_R48Pp7ceowwSj3MPaqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1254,9 +1371,10 @@
         "hans.brunner"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T17:17:17.995+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T17:17:17.995+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_R48Pp7ceowwSj3MPau5pekj7u7hnvtigJN",
     "usernames" : [
@@ -1264,9 +1382,10 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.578+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T21:01:58.578+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_R48Pp7ceowwSj3MPaxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -1274,9 +1393,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-10T21:01:58.237+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-10T21:01:58.237+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGRrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -1285,8 +1405,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-23T01:53:13.679+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-23T01:53:13.679+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -1295,8 +1416,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-15T21:42:17.153+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-15T21:42:17.153+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -1305,8 +1427,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-18T23:14:35.013+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-18T23:14:35.013+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -1315,8 +1438,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-18T23:56:54.678+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-18T23:56:54.678+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -1325,8 +1449,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-17T23:01:21.116+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-17T23:01:21.116+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGnp8bvKTK5239hvny7",
     "usernames" : [
@@ -1335,8 +1460,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-17T20:39:54.318+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-17T20:39:54.318+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1344,10 +1470,11 @@
         "admin"
     ],
     "t" : "direct-ch",
-    "ts" : "2017-01-15T05:07:30.293+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2017-01-15T05:07:30.293+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "lm" : "2017-01-23T01:53:56.706+0000"
-},
+    "lm" : ISODate("2017-01-23T01:53:56.706+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1356,8 +1483,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-18T23:16:23.327+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-18T23:16:23.327+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -1366,8 +1494,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-18T23:23:50.860+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-18T23:23:50.860+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -1376,8 +1505,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-17T20:40:27.530+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-17T20:40:27.530+0000")
+}
 {
     "_id" : "c_SubZN5pCSN3xTaxN6",
     "t" : "private-ch",
@@ -1385,14 +1515,15 @@
     "usernames" : [
 
     ],
+    "msgs" : NumberInt(3),
     "u" : {
         "_id" : "HhXg3vmotoWZRE5z2",
         "username" : "ellen"
     },
-    "ts" : "2016-11-26T04:35:10.067+0000",
-    "lm" : "2016-11-26T04:56:31.897+0000",
+    "ts" : ISODate("2016-11-26T04:35:10.067+0000"),
+    "lm" : ISODate("2016-11-26T04:56:31.897+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -1400,10 +1531,11 @@
         "alexeyw"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.771+0000",
-    "lm" : "2017-07-26T18:33:05.988+0000",
+    "msgs" : NumberInt(126),
+    "ts" : ISODate("2016-11-01T20:40:36.771+0000"),
+    "lm" : ISODate("2017-07-26T18:33:05.988+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -1411,9 +1543,10 @@
         "khaledabbas"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.329+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:36.329+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -1421,9 +1554,10 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.626+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:36.626+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -1431,9 +1565,10 @@
         "testinvite"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:07.555+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:07.555+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -1441,9 +1576,10 @@
         "alexeyw"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:32.470+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:32.470+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJnp8bvKTK5239hvny7",
     "usernames" : [
@@ -1451,9 +1587,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:35.963+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:35.963+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1461,9 +1598,10 @@
         "alexeyw"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:35.810+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:35.810+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1471,9 +1609,10 @@
         "antonverhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.477+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:36.477+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -1481,9 +1620,10 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.551+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:36.551+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -1491,9 +1631,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-11-01T20:40:36.038+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-11-01T20:40:36.038+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_WzP4yxRNZb9u97TMS",
     "t" : "public-ch",
@@ -1510,15 +1651,16 @@
         "lucas.leon",
         "bigbryan"
     ],
+    "msgs" : NumberInt(149),
     "u" : {
         "_id" : "HhXg3vmotoWZRE5z2",
         "username" : "ellen"
     },
-    "ts" : "2016-11-01T20:29:55.075+0000",
-    "lm" : "2017-10-17T18:36:01.340+0000",
+    "ts" : ISODate("2016-11-01T20:29:55.075+0000"),
+    "lm" : ISODate("2017-10-17T18:36:01.340+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
     "fname" : "ICU"
-},
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -1526,10 +1668,11 @@
         "khaledabbas"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T19:24:14.226+0000",
-    "lm" : "2017-09-29T00:44:16.640+0000",
+    "msgs" : NumberInt(240),
+    "ts" : ISODate("2016-09-26T19:24:14.226+0000"),
+    "lm" : ISODate("2017-09-29T00:44:16.640+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -1537,10 +1680,11 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:31.844+0000",
-    "lm" : "2017-01-17T15:36:36.075+0000",
+    "msgs" : NumberInt(66),
+    "ts" : ISODate("2016-10-13T16:26:31.844+0000"),
+    "lm" : ISODate("2017-01-17T15:36:36.075+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -1548,10 +1692,11 @@
         "khaledabbas"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:06.551+0000",
-    "lm" : "2017-11-11T21:41:17.368+0000",
+    "msgs" : NumberInt(449),
+    "ts" : ISODate("2016-12-21T23:26:06.551+0000"),
+    "lm" : ISODate("2017-11-11T21:41:17.368+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -1559,10 +1704,11 @@
         "khaledabbas"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:31.715+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2016-12-21T23:28:31.715+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "lm" : "2017-04-28T16:16:52.087+0000"
-},
+    "lm" : ISODate("2017-04-28T16:16:52.087+0000")
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMnp8bvKTK5239hvny7",
     "usernames" : [
@@ -1570,10 +1716,11 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T19:24:13.531+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2016-09-26T19:24:13.531+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "lm" : "2017-01-18T23:35:01.152+0000"
-},
+    "lm" : ISODate("2017-01-18T23:35:01.152+0000")
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1581,9 +1728,10 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T19:24:13.254+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-26T19:24:13.254+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1591,9 +1739,10 @@
         "antonverhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:32:19.818+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:32:19.818+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -1601,9 +1750,10 @@
         "khaledabbas"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:12:03.229+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T19:12:03.229+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -1611,9 +1761,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T19:24:13.680+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-26T19:24:13.680+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_ZjBLGb2EvNTJQujA3",
     "t" : "public-ch",
@@ -1635,15 +1786,16 @@
         "ellen",
         "bkkilaru"
     ],
+    "msgs" : NumberInt(131),
     "u" : {
         "_id" : "Xn2cm9TebfEqzmcPM",
         "username" : "khaledabbas"
     },
-    "ts" : "2016-09-26T19:58:02.069+0000",
-    "lm" : "2017-11-13T19:19:53.472+0000",
+    "ts" : ISODate("2016-09-26T19:58:02.069+0000"),
+    "lm" : ISODate("2017-11-13T19:19:53.472+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
     "fname" : "Cardiology"
-},
+}
 {
     "_id" : "c_cPJKLL75pp4wvoapE",
     "t" : "private-ch",
@@ -1651,14 +1803,15 @@
     "usernames" : [
         "khaledabbas"
     ],
+    "msgs" : NumberInt(1),
     "u" : {
         "_id" : "Xn2cm9TebfEqzmcPM",
         "username" : "khaledabbas"
     },
-    "ts" : "2016-11-02T13:26:12.975+0000",
-    "lm" : "2016-11-02T13:26:13.021+0000",
+    "ts" : ISODate("2016-11-02T13:26:12.975+0000"),
+    "lm" : ISODate("2016-11-02T13:26:13.021+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_czh9RZZnnqhaejqiS",
     "t" : "private-ch",
@@ -1666,14 +1819,15 @@
     "usernames" : [
 
     ],
+    "msgs" : NumberInt(2),
     "u" : {
         "_id" : "HhXg3vmotoWZRE5z2",
         "username" : "ellen"
     },
-    "ts" : "2016-10-10T20:06:01.806+0000",
-    "lm" : "2016-10-25T18:40:43.509+0000",
+    "ts" : ISODate("2016-10-10T20:06:01.806+0000"),
+    "lm" : ISODate("2016-10-25T18:40:43.509+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8BeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -1681,9 +1835,10 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:33.252+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-13T16:26:33.252+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8BgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -1691,9 +1846,10 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:07.135+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:07.135+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8BiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -1701,9 +1857,10 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:32.170+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:32.170+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8Bnp8bvKTK5239hvny7",
     "usernames" : [
@@ -1711,9 +1868,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:27.761+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-13T16:26:27.761+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8BntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1721,9 +1879,10 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:27.046+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-13T16:26:27.046+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8BqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1731,10 +1890,11 @@
         "stitchtester"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:32.537+0000",
-    "lm" : "2016-10-13T20:24:50.557+0000",
+    "msgs" : NumberInt(2),
+    "ts" : ISODate("2016-10-13T16:26:32.537+0000"),
+    "lm" : ISODate("2016-10-13T20:24:50.557+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8Bu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -1742,10 +1902,11 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:32.884+0000",
-    "lm" : "2016-10-18T17:16:01.710+0000",
+    "msgs" : NumberInt(2),
+    "ts" : ISODate("2016-10-13T16:26:32.884+0000"),
+    "lm" : ISODate("2016-10-18T17:16:01.710+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8BxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -1753,9 +1914,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-13T16:26:28.314+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-10-13T16:26:28.314+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_fYWNxsKyamwGCRz2b",
     "t" : "private-ch",
@@ -1763,14 +1925,15 @@
     "usernames" : [
         "antonverhoeven"
     ],
+    "msgs" : NumberInt(1),
     "u" : {
         "_id" : "qqHBmZ5b7BoEGXbRk",
         "username" : "antonverhoeven"
     },
-    "ts" : "2016-10-06T02:50:17.246+0000",
-    "lm" : "2016-10-06T02:50:17.448+0000",
+    "ts" : ISODate("2016-10-06T02:50:17.246+0000"),
+    "lm" : ISODate("2016-10-06T02:50:17.448+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -1778,10 +1941,11 @@
         "testinvite"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:08.227+0000",
+    "msgs" : NumberInt(9),
+    "ts" : ISODate("2016-12-21T23:26:08.227+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "lm" : "2017-05-12T20:08:15.816+0000"
-},
+    "lm" : ISODate("2017-05-12T20:08:15.816+0000")
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -1789,9 +1953,10 @@
         "testinvite"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:32.859+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:32.859+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWnp8bvKTK5239hvny7",
     "usernames" : [
@@ -1799,9 +1964,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:05.830+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:05.830+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1809,10 +1975,11 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:05.135+0000",
+    "msgs" : NumberInt(5),
+    "ts" : ISODate("2016-12-21T23:26:05.135+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "lm" : "2017-05-31T23:54:44.332+0000"
-},
+    "lm" : ISODate("2017-05-31T23:54:44.332+0000")
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1820,9 +1987,10 @@
         "antonverhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:06.821+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:06.821+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -1830,9 +1998,10 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:06.953+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:06.953+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -1840,9 +2009,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:26:06.083+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:26:06.083+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_herxGcfqKsPKLo8xE",
     "t" : "private-ch",
@@ -1851,15 +2021,16 @@
         "bharat",
         "ellen"
     ],
+    "msgs" : NumberInt(21),
     "u" : {
         "_id" : "ntYqZ8AamDfaznTGZ",
         "username" : "bharat"
     },
-    "ts" : "2017-01-09T22:15:48.672+0000",
-    "lm" : "2017-11-03T15:08:27.113+0000",
+    "ts" : ISODate("2017-01-09T22:15:48.672+0000"),
+    "lm" : ISODate("2017-11-03T15:08:27.113+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
     "fname" : "Administration"
-},
+}
 {
     "_id" : "c_iPn9h78cWSrbxobJiiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -1867,9 +2038,10 @@
         "stitch_testaccount"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:33.004+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:33.004+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_iPn9h78cWSrbxobJinp8bvKTK5239hvny7",
     "usernames" : [
@@ -1877,9 +2049,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:31.289+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:31.289+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_iPn9h78cWSrbxobJintYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1887,9 +2060,10 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:30.981+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:30.981+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_iPn9h78cWSrbxobJiqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1897,9 +2071,10 @@
         "antonverhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:31.946+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:31.946+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_iPn9h78cWSrbxobJiu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -1907,9 +2082,10 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:32.056+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:32.056+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_iPn9h78cWSrbxobJixzX9fkEDDZqecWma5",
     "usernames" : [
@@ -1917,9 +2093,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-12-21T23:28:31.386+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-12-21T23:28:31.386+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_jEdCfeGdE3YfNPiPG",
     "t" : "private-ch",
@@ -1927,14 +2104,15 @@
     "usernames" : [
         "admin"
     ],
+    "msgs" : NumberInt(34),
     "u" : {
         "_id" : "CpGPoYnvEYMRHKFZ2",
         "username" : "admin"
     },
-    "ts" : "2016-10-11T07:04:03.137+0000",
-    "lm" : "2016-12-06T17:32:53.488+0000",
+    "ts" : ISODate("2016-10-11T07:04:03.137+0000"),
+    "lm" : ISODate("2016-12-06T17:32:53.488+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_nCucmfaM5AfRNJSsC",
     "t" : "private-ch",
@@ -1942,14 +2120,15 @@
     "usernames" : [
         "mabed"
     ],
+    "msgs" : NumberInt(7),
     "u" : {
         "_id" : "np8bvKTK5239hvny7",
         "username" : "mabed"
     },
-    "ts" : "2016-11-01T20:41:21.890+0000",
-    "lm" : "2017-01-18T23:21:25.137+0000",
+    "ts" : ISODate("2016-11-01T20:41:21.890+0000"),
+    "lm" : ISODate("2017-01-18T23:21:25.137+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_neh2gdEMeEjZMEeSG",
     "t" : "private-ch",
@@ -1957,14 +2136,15 @@
     "usernames" : [
 
     ],
+    "msgs" : NumberInt(2),
     "u" : {
         "_id" : "HhXg3vmotoWZRE5z2",
         "username" : "ellen"
     },
-    "ts" : "2016-09-28T14:52:55.094+0000",
-    "lm" : "2016-09-28T14:53:01.212+0000",
+    "ts" : ISODate("2016-09-28T14:52:55.094+0000"),
+    "lm" : ISODate("2016-09-28T14:53:01.212+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_np8bvKTK5239hvny7np8bvKTK5239hvny7",
     "usernames" : [
@@ -1972,10 +2152,11 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-10-21T06:46:08.635+0000",
-    "lm" : "2017-08-23T16:10:58.590+0000",
+    "msgs" : NumberInt(8),
+    "ts" : ISODate("2016-10-21T06:46:08.635+0000"),
+    "lm" : ISODate("2017-08-23T16:10:58.590+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_np8bvKTK5239hvny7ntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -1983,10 +2164,11 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-08T01:04:39.338+0000",
+    "msgs" : NumberInt(16),
+    "ts" : ISODate("2016-09-08T01:04:39.338+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "lm" : "2017-07-21T20:28:52.573+0000"
-},
+    "lm" : ISODate("2017-07-21T20:28:52.573+0000")
+}
 {
     "_id" : "c_np8bvKTK5239hvny7qqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -1994,9 +2176,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:32:19.030+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:32:19.030+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_np8bvKTK5239hvny7u5pekj7u7hnvtigJN",
     "usernames" : [
@@ -2004,10 +2187,11 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:11:59.849+0000",
-    "lm" : "2016-10-03T18:03:26.834+0000",
+    "msgs" : NumberInt(4),
+    "ts" : ISODate("2016-09-29T19:11:59.849+0000"),
+    "lm" : ISODate("2016-10-03T18:03:26.834+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_np8bvKTK5239hvny7xzX9fkEDDZqecWma5",
     "usernames" : [
@@ -2015,9 +2199,10 @@
         "mabed"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-09T10:30:30.380+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-09T10:30:30.380+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_ntYqZ8AamDfaznTGZntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -2025,10 +2210,11 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-20T19:45:50.352+0000",
-    "lm" : "2017-10-23T22:57:49.601+0000",
+    "msgs" : NumberInt(35),
+    "ts" : ISODate("2016-09-20T19:45:50.352+0000"),
+    "lm" : ISODate("2017-10-23T22:57:49.601+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_ntYqZ8AamDfaznTGZqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -2036,9 +2222,10 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:32:18.783+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:32:18.783+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_ntYqZ8AamDfaznTGZu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -2046,10 +2233,11 @@
         "bharat"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:11:58.904+0000",
-    "lm" : "2017-01-23T01:54:43.219+0000",
+    "msgs" : NumberInt(13),
+    "ts" : ISODate("2016-09-29T19:11:58.904+0000"),
+    "lm" : ISODate("2017-01-23T01:54:43.219+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_ntYqZ8AamDfaznTGZxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -2057,10 +2245,11 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-09T10:30:30.332+0000",
-    "lm" : "2017-10-18T09:01:15.707+0000",
+    "msgs" : NumberInt(18),
+    "ts" : ISODate("2016-09-09T10:30:30.332+0000"),
+    "lm" : ISODate("2017-10-18T09:01:15.707+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_qqHBmZ5b7BoEGXbRkqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -2068,10 +2257,11 @@
         "antonverhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:32:20.130+0000",
-    "lm" : "2017-11-09T19:28:07.170+0000",
+    "msgs" : NumberInt(27),
+    "ts" : ISODate("2016-09-29T09:32:20.130+0000"),
+    "lm" : ISODate("2017-11-09T19:28:07.170+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_qqHBmZ5b7BoEGXbRku5pekj7u7hnvtigJN",
     "usernames" : [
@@ -2079,10 +2269,11 @@
         "antonverhoeven"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:12:04.387+0000",
-    "lm" : "2016-10-18T17:16:22.796+0000",
+    "msgs" : NumberInt(12),
+    "ts" : ISODate("2016-09-29T19:12:04.387+0000"),
+    "lm" : ISODate("2016-10-18T17:16:22.796+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_qqHBmZ5b7BoEGXbRkxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -2090,12 +2281,13 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T09:32:19.145+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T09:32:19.145+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_rNhg5Xa7pHTEZSqhu",
-    "ts" : "2016-09-07T16:28:00.844+0000",
+    "ts" : ISODate("2016-09-07T16:28:00.844+0000"),
     "t" : "public-ch",
     "name" : "announcements",
     "usernames" : [
@@ -2127,12 +2319,13 @@
         "marius.dalca220",
         "bkkilaru"
     ],
+    "msgs" : NumberInt(1547),
     "default" : true,
     "topic" : "Team collaboration for Care Clinic",
-    "lm" : "2017-11-13T18:34:31.890+0000",
+    "lm" : ISODate("2017-11-13T18:34:31.890+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
     "fname" : "Announcements"
-},
+}
 {
     "_id" : "c_u5pekj7u7hnvtigJNu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -2140,10 +2333,11 @@
         "stitchandroid"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:12:05.252+0000",
-    "lm" : "2017-01-10T16:47:20.393+0000",
+    "msgs" : NumberInt(4),
+    "ts" : ISODate("2016-09-29T19:12:05.252+0000"),
+    "lm" : ISODate("2017-01-10T16:47:20.393+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_u5pekj7u7hnvtigJNxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -2151,9 +2345,10 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-29T19:12:00.141+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2016-09-29T19:12:00.141+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_xzX9fkEDDZqecWma5xzX9fkEDDZqecWma5",
     "usernames" : [
@@ -2161,10 +2356,11 @@
         "styx"
     ],
     "t" : "direct-ch",
-    "ts" : "2016-09-26T20:04:35.354+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2016-09-26T20:04:35.354+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "lm" : "2017-04-24T09:00:20.256+0000"
-},
+    "lm" : ISODate("2017-04-24T09:00:20.256+0000")
+}
 {
     "_id" : "c_zauAGxrAqg6DL5SDx",
     "t" : "private-ch",
@@ -2172,14 +2368,15 @@
     "usernames" : [
 
     ],
+    "msgs" : NumberInt(2),
     "u" : {
         "_id" : "HhXg3vmotoWZRE5z2",
         "username" : "ellen"
     },
-    "ts" : "2016-10-10T20:06:09.189+0000",
-    "lm" : "2016-11-01T20:24:11.311+0000",
+    "ts" : ISODate("2016-10-10T20:06:09.189+0000"),
+    "lm" : ISODate("2016-11-01T20:24:11.311+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_zsCHyP3k9c6ABWRzn",
     "t" : "private-ch",
@@ -2188,14 +2385,15 @@
         "styx",
         "ellen"
     ],
+    "msgs" : NumberInt(7),
     "u" : {
         "_id" : "HhXg3vmotoWZRE5z2",
         "username" : "ellen"
     },
-    "ts" : "2016-11-01T20:28:11.802+0000",
-    "lm" : "2017-05-23T13:27:46.534+0000",
+    "ts" : ISODate("2016-11-01T20:28:11.802+0000"),
+    "lm" : ISODate("2017-05-23T13:27:46.534+0000"),
     "teamId" : "8J2CSuBwCmop7PQmh"
-},
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -2204,8 +2402,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:31.792+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:31.792+0000")
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumAAhAXyerX6PXwa4GB",
     "usernames" : [
@@ -2214,8 +2413,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:31.834+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:31.834+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBnp8bvKTK5239hvny7",
     "usernames" : [
@@ -2224,8 +2424,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:31.867+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:31.867+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -2234,8 +2435,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:31.901+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:31.901+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBHhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -2244,8 +2446,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:31.974+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:31.974+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -2254,8 +2457,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.017+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.017+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kAAhAXyerX6PXwa4GB",
     "usernames" : [
@@ -2264,8 +2468,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.052+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.052+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -2274,8 +2479,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.095+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.095+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -2284,8 +2490,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.140+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.140+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -2294,8 +2501,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.187+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.187+0000")
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZAAhAXyerX6PXwa4GB",
     "usernames" : [
@@ -2304,8 +2512,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.228+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.228+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -2314,8 +2523,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.266+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.266+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBGvuY3SFZi5NtJMast",
     "usernames" : [
@@ -2324,8 +2534,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.307+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.307+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBKZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -2334,8 +2545,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.346+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.346+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -2344,8 +2556,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.426+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.426+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -2354,8 +2567,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.455+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.455+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBRrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -2364,8 +2578,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.483+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.483+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBAAhAXyerX6PXwa4GB",
     "usernames" : [
@@ -2374,8 +2589,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-01-25T18:38:32.521+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-01-25T18:38:32.521+0000")
+}
 {
     "_id" : "c_RStTcMECuSaLvEb67",
     "t" : "private-ch",
@@ -2383,14 +2599,15 @@
     "usernames" : [
 
     ],
+    "msgs" : NumberInt(4),
     "u" : {
         "_id" : "HhXg3vmotoWZRE5z2",
         "username" : "ellen"
     },
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "ts" : "2017-02-03T17:57:02.498+0000",
-    "lm" : "2017-06-14T22:33:15.052+0000"
-},
+    "ts" : ISODate("2017-02-03T17:57:02.498+0000"),
+    "lm" : ISODate("2017-06-14T22:33:15.052+0000")
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtWniRBrZMuj2DThenJntYqZ8AamDfaznTGZ",
     "name" : "alexeyw,aweinstein,bharat",
@@ -2401,9 +2618,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-03-04T22:29:18.264+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-03-04T22:29:18.264+0000"),
     "multi" : true
-},
+}
 {
     "_id" : "c_ntYqZ8AamDfaznTGZqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2412,9 +2630,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-21T08:41:19.419+0000",
-    "lm" : "2017-10-18T16:59:58.806+0000"
-},
+    "msgs" : NumberInt(38),
+    "ts" : ISODate("2017-04-21T08:41:19.419+0000"),
+    "lm" : ISODate("2017-10-18T16:59:58.806+0000")
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2423,8 +2642,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-21T08:42:20.171+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-21T08:42:20.171+0000")
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2433,8 +2653,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-21T09:07:10.983+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-21T09:07:10.983+0000")
+}
 {
     "_id" : "c_np8bvKTK5239hvny7qJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2443,8 +2664,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-21T19:57:43.133+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-21T19:57:43.133+0000")
+}
 {
     "_id" : "c_qJ4Cygt6bSXpkkDodxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -2453,9 +2675,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-21T19:58:57.749+0000",
-    "lm" : "2017-07-11T09:43:31.197+0000"
-},
+    "msgs" : NumberInt(2),
+    "ts" : ISODate("2017-04-21T19:58:57.749+0000"),
+    "lm" : ISODate("2017-07-11T09:43:31.197+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2464,9 +2687,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-23T14:34:13.565+0000",
-    "lm" : "2017-10-05T19:03:30.830+0000"
-},
+    "msgs" : NumberInt(3233),
+    "ts" : ISODate("2017-04-23T14:34:13.565+0000"),
+    "lm" : ISODate("2017-10-05T19:03:30.830+0000")
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2475,8 +2699,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T06:34:39.949+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T06:34:39.949+0000")
+}
 {
     "_id" : "c_iPn9h78cWSrbxobJiqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2485,8 +2710,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T06:34:42.703+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T06:34:42.703+0000")
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2qJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2495,8 +2721,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T07:27:07.824+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T07:27:07.824+0000")
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2505,8 +2732,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T07:58:26.087+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T07:58:26.087+0000")
+}
 {
     "_id" : "c_qJ4Cygt6bSXpkkDodu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -2515,8 +2743,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T09:03:59.962+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T09:03:59.962+0000")
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8BqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2525,8 +2754,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T10:29:48.514+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T10:29:48.514+0000")
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2535,8 +2765,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T10:29:48.712+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T10:29:48.712+0000")
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2545,8 +2776,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T10:29:48.800+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T10:29:48.800+0000")
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2555,8 +2787,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T10:29:48.892+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T10:29:48.892+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2565,8 +2798,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T10:29:48.988+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T10:29:48.988+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2575,8 +2809,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T10:29:49.063+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-04-24T10:29:49.063+0000")
+}
 {
     "_id" : "c_qJ4Cygt6bSXpkkDodqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2585,9 +2820,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-04-24T10:29:49.275+0000",
-    "lm" : "2017-09-29T04:47:23.703+0000"
-},
+    "msgs" : NumberInt(27),
+    "ts" : ISODate("2017-04-24T10:29:49.275+0000"),
+    "lm" : ISODate("2017-09-29T04:47:23.703+0000")
+}
 {
     "_id" : "c_qJ4Cygt6bSXpkkDodqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -2596,9 +2832,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-10T06:23:04.023+0000",
-    "lm" : "2017-10-19T12:49:45.763+0000"
-},
+    "msgs" : NumberInt(449),
+    "ts" : ISODate("2017-06-10T06:23:04.023+0000"),
+    "lm" : ISODate("2017-10-19T12:49:45.763+0000")
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMntYqZ8AamDfaznTGZxzX9fkEDDZqecWma5",
     "name" : "bharat,khaledabbas,styx",
@@ -2609,10 +2846,11 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-13T02:32:06.829+0000",
+    "msgs" : NumberInt(2),
+    "ts" : ISODate("2017-06-13T02:32:06.829+0000"),
     "multi" : true,
-    "lm" : "2017-07-11T09:43:21.479+0000"
-},
+    "lm" : ISODate("2017-07-11T09:43:21.479+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kGvuY3SFZi5NtJMastntYqZ8AamDfaznTGZ",
     "name" : "anton_verhoeven,bharat,bigbryan",
@@ -2623,9 +2861,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-13T18:20:14.923+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-13T18:20:14.923+0000"),
     "multi" : true
-},
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7ntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -2634,8 +2873,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.436+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:31.436+0000")
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2Num7AfvmXFvk7owoTkD7",
     "usernames" : [
@@ -2644,8 +2884,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.505+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:31.505+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7np8bvKTK5239hvny7",
     "usernames" : [
@@ -2654,8 +2895,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.568+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:31.568+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7xzX9fkEDDZqecWma5",
     "usernames" : [
@@ -2664,8 +2906,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.626+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:31.626+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7HhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -2674,9 +2917,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.696+0000",
-    "lm" : "2017-08-09T16:18:11.182+0000"
-},
+    "msgs" : NumberInt(9),
+    "ts" : ISODate("2017-06-14T23:17:31.696+0000"),
+    "lm" : ISODate("2017-08-09T16:18:11.182+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7Xn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -2685,8 +2929,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.741+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:31.741+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD78rRDPcDdZGGiEic5k",
     "usernames" : [
@@ -2695,8 +2940,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.795+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:31.795+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7u5pekj7u7hnvtigJN",
     "usernames" : [
@@ -2705,8 +2951,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.863+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:31.863+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7eG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -2715,8 +2962,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.932+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:31.932+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD78ZeacSD39o3JAkNAZ",
     "usernames" : [
@@ -2725,8 +2973,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:31.986+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:31.986+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7WniRBrZMuj2DThenJ",
     "usernames" : [
@@ -2735,8 +2984,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:32.057+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:32.057+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7GvuY3SFZi5NtJMast",
     "usernames" : [
@@ -2745,8 +2995,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:32.113+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:32.113+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7KZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -2755,8 +3006,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:32.187+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:32.187+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7gbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -2765,8 +3017,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:32.250+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:32.250+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7iPn9h78cWSrbxobJi",
     "usernames" : [
@@ -2775,8 +3028,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:32.305+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:32.305+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7Rrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -2785,8 +3039,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:32.358+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:32.358+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7AAhAXyerX6PXwa4GB",
     "usernames" : [
@@ -2795,8 +3050,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:32.412+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:32.412+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7qJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -2805,8 +3061,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:32.469+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:32.469+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD77AfvmXFvk7owoTkD7",
     "usernames" : [
@@ -2815,8 +3072,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-14T23:17:32.530+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-14T23:17:32.530+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kHhXg3vmotoWZRE5z2ntYqZ8AamDfaznTGZ",
     "name" : "anton_verhoeven,bharat,ellen",
@@ -2827,10 +3085,11 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-16T22:12:57.495+0000",
+    "msgs" : NumberInt(7),
+    "ts" : ISODate("2017-06-16T22:12:57.495+0000"),
     "multi" : true,
-    "lm" : "2017-06-17T01:44:19.762+0000"
-},
+    "lm" : ISODate("2017-06-17T01:44:19.762+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -2839,8 +3098,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:40.822+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:40.822+0000")
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2Num6WeHtmBb3uPfYwqrc",
     "usernames" : [
@@ -2849,8 +3109,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:40.893+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:40.893+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcnp8bvKTK5239hvny7",
     "usernames" : [
@@ -2859,8 +3120,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:40.946+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:40.946+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -2869,8 +3131,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.005+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.005+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcHhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -2879,8 +3142,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.076+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.076+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -2889,8 +3153,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.138+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.138+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrc8rRDPcDdZGGiEic5k",
     "usernames" : [
@@ -2899,8 +3164,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.211+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.211+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -2909,8 +3175,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.268+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.268+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrceG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -2919,8 +3186,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.323+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.323+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrc8ZeacSD39o3JAkNAZ",
     "usernames" : [
@@ -2929,8 +3197,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.394+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.394+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -2939,8 +3208,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.452+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.452+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcGvuY3SFZi5NtJMast",
     "usernames" : [
@@ -2949,8 +3219,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.507+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.507+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcKZonZ23h9FLuu58Kt",
     "usernames" : [
@@ -2959,8 +3230,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.565+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.565+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -2969,8 +3241,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.618+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.618+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrciPn9h78cWSrbxobJi",
     "usernames" : [
@@ -2979,8 +3252,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.671+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.671+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcRrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -2989,8 +3263,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.730+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.730+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcAAhAXyerX6PXwa4GB",
     "usernames" : [
@@ -2999,8 +3274,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.789+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.789+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -3009,8 +3285,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.844+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.844+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrc7AfvmXFvk7owoTkD7",
     "usernames" : [
@@ -3019,8 +3296,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:41.944+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:41.944+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrc6WeHtmBb3uPfYwqrc",
     "usernames" : [
@@ -3029,8 +3307,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T01:46:42.007+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T01:46:42.007+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -3039,8 +3318,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:25.831+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:25.831+0000")
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3049,8 +3329,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:25.909+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:25.909+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfnp8bvKTK5239hvny7",
     "usernames" : [
@@ -3059,8 +3340,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.010+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.010+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -3069,8 +3351,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.130+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.130+0000")
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2bgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3079,8 +3362,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.255+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.255+0000")
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3089,8 +3373,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.336+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.336+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3099,8 +3384,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.460+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.460+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -3109,8 +3395,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.538+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.538+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -3119,8 +3406,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.631+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.631+0000")
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3129,8 +3417,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.727+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.727+0000")
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3139,8 +3428,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.824+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.824+0000")
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3149,8 +3439,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:26.931+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:26.931+0000")
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3159,8 +3450,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:27.011+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:27.011+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -3169,8 +3461,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:27.111+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:27.111+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -3179,8 +3472,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:27.207+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:27.207+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3189,8 +3483,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:27.315+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:27.315+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3199,8 +3494,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:27.411+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:27.411+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -3209,8 +3505,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:27.526+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:27.526+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7bgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3219,8 +3516,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:27.627+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:27.627+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3229,8 +3527,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:27.727+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:27.727+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3239,8 +3538,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-23T03:23:27.817+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-23T03:23:27.817+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kHhXg3vmotoWZRE5z2KZonZ23h9FLuu58KtWniRBrZMuj2DThenJ",
     "name" : "alexeyw,anton_verhoeven,aweinstein,ellen",
@@ -3252,10 +3552,11 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-27T22:48:28.289+0000",
+    "msgs" : NumberInt(7),
+    "ts" : ISODate("2017-06-27T22:48:28.289+0000"),
     "multi" : true,
-    "lm" : "2017-07-12T06:05:37.101+0000"
-},
+    "lm" : ISODate("2017-07-12T06:05:37.101+0000")
+}
 {
     "_id" : "c_ntYqZ8AamDfaznTGZt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3264,8 +3565,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.423+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.423+0000")
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2Numt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3274,8 +3576,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.481+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.481+0000")
+}
 {
     "_id" : "c_np8bvKTK5239hvny7t3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3284,8 +3587,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.531+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.531+0000")
+}
 {
     "_id" : "c_t3qJGN572L6jYY5pCxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -3294,9 +3598,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.599+0000",
-    "lm" : "2017-06-30T16:43:38.117+0000"
-},
+    "msgs" : NumberInt(8),
+    "ts" : ISODate("2017-06-30T16:25:49.599+0000"),
+    "lm" : ISODate("2017-06-30T16:43:38.117+0000")
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2t3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3305,8 +3610,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.658+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.658+0000")
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3315,8 +3621,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.726+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.726+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3325,8 +3632,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.778+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.778+0000")
+}
 {
     "_id" : "c_t3qJGN572L6jYY5pCu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -3335,8 +3643,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.838+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.838+0000")
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8Bt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3345,8 +3654,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.889+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.889+0000")
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3355,8 +3665,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.935+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.935+0000")
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3365,8 +3676,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:49.980+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:49.980+0000")
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3375,8 +3687,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.034+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.034+0000")
+}
 {
     "_id" : "c_KZonZ23h9FLuu58Ktt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3385,8 +3698,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.097+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.097+0000")
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3395,8 +3709,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.164+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.164+0000")
+}
 {
     "_id" : "c_iPn9h78cWSrbxobJit3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3405,8 +3720,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.210+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.210+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3415,8 +3731,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.255+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.255+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3425,8 +3742,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.305+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.305+0000")
+}
 {
     "_id" : "c_qJ4Cygt6bSXpkkDodt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3435,8 +3753,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.340+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.340+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7t3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3445,8 +3764,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.409+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.409+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrct3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3455,8 +3775,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.447+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.447+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAft3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3465,8 +3786,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.496+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.496+0000")
+}
 {
     "_id" : "c_t3qJGN572L6jYY5pCt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3475,8 +3797,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T16:25:50.547+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T16:25:50.547+0000")
+}
 {
     "_id" : "c_hyW9GNyvCk7xpDxizntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -3485,8 +3808,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:38.247+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:38.247+0000")
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3495,8 +3819,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:38.393+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:38.393+0000")
+}
 {
     "_id" : "c_hyW9GNyvCk7xpDxiznp8bvKTK5239hvny7",
     "usernames" : [
@@ -3505,8 +3830,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:38.478+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:38.478+0000")
+}
 {
     "_id" : "c_hyW9GNyvCk7xpDxizxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -3515,8 +3841,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:38.576+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:38.576+0000")
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2hyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3525,8 +3852,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:38.655+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:38.655+0000")
+}
 {
     "_id" : "c_Xn2cm9TebfEqzmcPMhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3535,8 +3863,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:38.754+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:38.754+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5khyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3545,8 +3874,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:38.849+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:38.849+0000")
+}
 {
     "_id" : "c_hyW9GNyvCk7xpDxizu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -3555,8 +3885,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:38.980+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:38.980+0000")
+}
 {
     "_id" : "c_eG4SY8p9RMZYgka8BhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3565,8 +3896,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:39.104+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:39.104+0000")
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3575,9 +3907,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:39.199+0000",
-    "lm" : "2017-06-30T19:18:03.873+0000"
-},
+    "msgs" : NumberInt(5),
+    "ts" : ISODate("2017-06-30T19:15:39.199+0000"),
+    "lm" : ISODate("2017-06-30T19:18:03.873+0000")
+}
 {
     "_id" : "c_WniRBrZMuj2DThenJhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3586,8 +3919,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:39.290+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:39.290+0000")
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMasthyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3596,8 +3930,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:39.435+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:39.435+0000")
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KthyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3606,8 +3941,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:39.515+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:39.515+0000")
+}
 {
     "_id" : "c_gbJ9ANxFZyK3pNDEWhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3616,8 +3952,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:39.622+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:39.622+0000")
+}
 {
     "_id" : "c_hyW9GNyvCk7xpDxiziPn9h78cWSrbxobJi",
     "usernames" : [
@@ -3626,8 +3963,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:39.717+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:39.717+0000")
+}
 {
     "_id" : "c_Rrsh2JoScNNNjvQGGhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3636,8 +3974,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:39.825+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:39.825+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3646,8 +3985,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:39.959+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:39.959+0000")
+}
 {
     "_id" : "c_hyW9GNyvCk7xpDxizqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -3656,8 +3996,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:40.051+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:40.051+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7hyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3666,8 +4007,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:40.149+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:40.149+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrchyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3676,8 +4018,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:40.235+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:40.235+0000")
+}
 {
     "_id" : "c_bgwnbrfvdrFd58FAfhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3686,8 +4029,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:40.334+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:40.334+0000")
+}
 {
     "_id" : "c_hyW9GNyvCk7xpDxizt3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3696,8 +4040,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:40.419+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-06-30T19:15:40.419+0000")
+}
 {
     "_id" : "c_hyW9GNyvCk7xpDxizhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3706,9 +4051,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-06-30T19:15:40.527+0000",
-    "lm" : "2017-08-24T12:41:38.974+0000"
-},
+    "msgs" : NumberInt(2),
+    "ts" : ISODate("2017-06-30T19:15:40.527+0000"),
+    "lm" : ISODate("2017-08-24T12:41:38.974+0000")
+}
 {
     "_id" : "c_ubdaC6yiCvzpBi2Cy",
     "t" : "public-ch",
@@ -3717,14 +4063,15 @@
         "haohong",
         "marius"
     ],
+    "msgs" : NumberInt(12),
     "u" : {
         "_id" : "8ZeacSD39o3JAkNAZ",
         "username" : "marius"
     },
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "ts" : "2017-06-30T19:17:20.771+0000",
-    "lm" : "2017-07-03T19:19:24.277+0000"
-},
+    "ts" : ISODate("2017-06-30T19:17:20.771+0000"),
+    "lm" : ISODate("2017-07-03T19:19:24.277+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FntYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -3733,8 +4080,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.256+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.256+0000")
+}
 {
     "_id" : "c_4HsxkdJvKZa2m2NumNYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3743,8 +4091,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.313+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.313+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5Fnp8bvKTK5239hvny7",
     "usernames" : [
@@ -3753,8 +4102,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.364+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.364+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FxzX9fkEDDZqecWma5",
     "usernames" : [
@@ -3763,8 +4113,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.427+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.427+0000")
+}
 {
     "_id" : "c_HhXg3vmotoWZRE5z2NYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3773,8 +4124,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.483+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.483+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -3783,8 +4135,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.531+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.531+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kNYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3793,8 +4146,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.581+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.581+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5Fu5pekj7u7hnvtigJN",
     "usernames" : [
@@ -3803,8 +4157,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.638+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.638+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FeG4SY8p9RMZYgka8B",
     "usernames" : [
@@ -3813,8 +4168,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.685+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.685+0000")
+}
 {
     "_id" : "c_8ZeacSD39o3JAkNAZNYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3823,8 +4179,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.735+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.735+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FWniRBrZMuj2DThenJ",
     "usernames" : [
@@ -3833,8 +4190,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.801+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.801+0000")
+}
 {
     "_id" : "c_GvuY3SFZi5NtJMastNYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3843,8 +4201,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.855+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.855+0000")
+}
 {
     "_id" : "c_KZonZ23h9FLuu58KtNYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3853,8 +4212,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:21:59.929+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:21:59.929+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FgbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -3863,8 +4223,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.086+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.086+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FiPn9h78cWSrbxobJi",
     "usernames" : [
@@ -3873,8 +4234,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.185+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.185+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FRrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -3883,8 +4245,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.237+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.237+0000")
+}
 {
     "_id" : "c_AAhAXyerX6PXwa4GBNYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3893,8 +4256,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.309+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.309+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -3903,8 +4267,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.355+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.355+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD7NYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3913,8 +4278,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.402+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.402+0000")
+}
 {
     "_id" : "c_6WeHtmBb3uPfYwqrcNYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3923,8 +4289,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.463+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.463+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FbgwnbrfvdrFd58FAf",
     "usernames" : [
@@ -3933,8 +4300,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.506+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.506+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5Ft3qJGN572L6jYY5pC",
     "usernames" : [
@@ -3943,8 +4311,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.545+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.545+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FhyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -3953,8 +4322,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.610+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.610+0000")
+}
 {
     "_id" : "c_NYnTNki3uTmBNrx5FNYnTNki3uTmBNrx5F",
     "usernames" : [
@@ -3963,8 +4333,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-07-07T14:22:00.669+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-07-07T14:22:00.669+0000")
+}
 {
     "_id" : "c_2aeWdKd6c5a86vg98",
     "t" : "public-ch",
@@ -3974,14 +4345,15 @@
         "marius.dalca220",
         "antonverhoeven"
     ],
+    "msgs" : NumberInt(47),
     "u" : {
         "_id" : "NYnTNki3uTmBNrx5F",
         "username" : "marius.dalca220"
     },
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "ts" : "2017-07-07T14:22:52.008+0000",
-    "lm" : "2017-10-22T10:26:08.091+0000"
-},
+    "ts" : ISODate("2017-07-07T14:22:52.008+0000"),
+    "lm" : ISODate("2017-10-22T10:26:08.091+0000")
+}
 {
     "_id" : "c_LZTYg6CANjsmsaTBB",
     "t" : "public-ch",
@@ -3990,14 +4362,15 @@
         "marius.dalca220",
         "marius"
     ],
+    "msgs" : NumberInt(16),
     "u" : {
         "_id" : "8ZeacSD39o3JAkNAZ",
         "username" : "marius"
     },
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "ts" : "2017-07-07T14:23:23.976+0000",
-    "lm" : "2017-07-07T17:57:25.146+0000"
-},
+    "ts" : ISODate("2017-07-07T14:23:23.976+0000"),
+    "lm" : ISODate("2017-07-07T17:57:25.146+0000")
+}
 {
     "_id" : "c_8rRDPcDdZGGiEic5kHhXg3vmotoWZRE5z2WniRBrZMuj2DThenJntYqZ8AamDfaznTGZ",
     "name" : "alexeyw,anton_verhoeven,bharat,ellen",
@@ -4009,10 +4382,11 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-08-09T16:37:30.776+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2017-08-09T16:37:30.776+0000"),
     "multi" : true,
-    "lm" : "2017-08-09T16:37:34.512+0000"
-},
+    "lm" : ISODate("2017-08-09T16:37:34.512+0000")
+}
 {
     "_id" : "c_7AfvmXFvk7owoTkD78rRDPcDdZGGiEic5kHhXg3vmotoWZRE5z2",
     "name" : "anton_verhoeven,ellen,sergiotapiagutierrez",
@@ -4023,9 +4397,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-08-18T15:16:15.548+0000",
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-08-18T15:16:15.548+0000"),
     "multi" : true
-},
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPentYqZ8AamDfaznTGZ",
     "usernames" : [
@@ -4034,9 +4409,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-08-30T19:16:54.868+0000",
-    "lm" : "2017-10-18T17:11:38.343+0000"
-},
+    "msgs" : NumberInt(23),
+    "ts" : ISODate("2017-08-30T19:16:54.868+0000"),
+    "lm" : ISODate("2017-10-18T17:11:38.343+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPenp8bvKTK5239hvny7",
     "usernames" : [
@@ -4045,8 +4421,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-08-30T19:16:54.937+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-08-30T19:16:54.937+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPeHhXg3vmotoWZRE5z2",
     "usernames" : [
@@ -4055,8 +4432,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-08-30T19:16:54.993+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-08-30T19:16:54.993+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPeXn2cm9TebfEqzmcPM",
     "usernames" : [
@@ -4065,8 +4443,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-08-30T19:16:55.049+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-08-30T19:16:55.049+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPeqJ4Cygt6bSXpkkDod",
     "usernames" : [
@@ -4075,9 +4454,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-08-30T19:16:55.109+0000",
-    "lm" : "2017-10-18T16:13:38.749+0000"
-},
+    "msgs" : NumberInt(23),
+    "ts" : ISODate("2017-08-30T19:16:55.109+0000"),
+    "lm" : ISODate("2017-10-18T16:13:38.749+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPehyW9GNyvCk7xpDxiz",
     "usernames" : [
@@ -4086,8 +4466,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-08-30T19:16:55.160+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-08-30T19:16:55.160+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPe3jp9XBtSAW59FpZPe",
     "usernames" : [
@@ -4096,8 +4477,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-08-30T19:16:55.232+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-08-30T19:16:55.232+0000")
+}
 {
     "_id" : "c_hyW9GNyvCk7xpDxizqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -4106,8 +4488,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-09-01T12:40:48.590+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-09-01T12:40:48.590+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPeqqHBmZ5b7BoEGXbRk",
     "usernames" : [
@@ -4116,8 +4499,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-09-01T12:40:48.632+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-09-01T12:40:48.632+0000")
+}
 {
     "_id" : "c_uviYeKwJmmWjpG22c",
     "t" : "public-ch",
@@ -4126,14 +4510,15 @@
     "usernames" : [
         "bharat"
     ],
+    "msgs" : NumberInt(1),
     "u" : {
         "_id" : "ntYqZ8AamDfaznTGZ",
         "username" : "bharat"
     },
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "ts" : "2017-09-19T17:08:08.592+0000",
-    "lm" : "2017-09-19T17:08:08.637+0000"
-},
+    "ts" : ISODate("2017-09-19T17:08:08.592+0000"),
+    "lm" : ISODate("2017-09-19T17:08:08.637+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPeHhXg3vmotoWZRE5z2ntYqZ8AamDfaznTGZ",
     "name" : "bharat,bkkilaru,ellen",
@@ -4144,10 +4529,11 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-09-22T19:13:50.813+0000",
+    "msgs" : NumberInt(1),
+    "ts" : ISODate("2017-09-22T19:13:50.813+0000"),
     "multi" : true,
-    "lm" : "2017-09-22T19:19:28.460+0000"
-},
+    "lm" : ISODate("2017-09-22T19:19:28.460+0000")
+}
 {
     "_id" : "c_BLceGASqEqekCRMp2",
     "t" : "public-ch",
@@ -4156,14 +4542,15 @@
     "usernames" : [
         "khaledabbas"
     ],
+    "msgs" : NumberInt(1),
     "u" : {
         "_id" : "Xn2cm9TebfEqzmcPM",
         "username" : "khaledabbas"
     },
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "ts" : "2017-09-26T22:30:18.838+0000",
-    "lm" : "2017-09-26T22:30:18.876+0000"
-},
+    "ts" : ISODate("2017-09-26T22:30:18.838+0000"),
+    "lm" : ISODate("2017-09-26T22:30:18.876+0000")
+}
 {
     "_id" : "c_jXyMiDxbZHfvZbYfj",
     "t" : "public-ch",
@@ -4172,14 +4559,15 @@
     "usernames" : [
         "khaledabbas"
     ],
+    "msgs" : NumberInt(1),
     "u" : {
         "_id" : "Xn2cm9TebfEqzmcPM",
         "username" : "khaledabbas"
     },
     "teamId" : "8J2CSuBwCmop7PQmh",
-    "ts" : "2017-09-26T22:31:06.110+0000",
-    "lm" : "2017-09-26T22:31:06.148+0000"
-},
+    "ts" : ISODate("2017-09-26T22:31:06.110+0000"),
+    "lm" : ISODate("2017-09-26T22:31:06.148+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPe8ZeacSD39o3JAkNAZ",
     "usernames" : [
@@ -4188,9 +4576,10 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-10-09T09:21:39.698+0000",
-    "lm" : "2017-11-11T07:00:15.840+0000"
-},
+    "msgs" : NumberInt(11),
+    "ts" : ISODate("2017-10-09T09:21:39.698+0000"),
+    "lm" : ISODate("2017-11-11T07:00:15.840+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPegbJ9ANxFZyK3pNDEW",
     "usernames" : [
@@ -4199,8 +4588,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-10-18T07:36:10.607+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-10-18T07:36:10.607+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPexzX9fkEDDZqecWma5",
     "usernames" : [
@@ -4209,8 +4599,9 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-10-18T08:28:44.839+0000"
-},
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-10-18T08:28:44.839+0000")
+}
 {
     "_id" : "c_3jp9XBtSAW59FpZPeRrsh2JoScNNNjvQGG",
     "usernames" : [
@@ -4219,6 +4610,6 @@
     ],
     "teamId" : "8J2CSuBwCmop7PQmh",
     "t" : "direct-ch",
-    "ts" : "2017-11-10T06:57:37.226+0000"
+    "msgs" : NumberInt(0),
+    "ts" : ISODate("2017-11-10T06:57:37.226+0000")
 }
-]

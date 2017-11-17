@@ -163,4 +163,56 @@ defmodule StitchConnect.Web.UserControllerTest do
       assert response["message"] =~ "administrator"
     end
   end
+
+  describe "GET /api/v1/users/validate-username" do
+    test "on the base domain", %{conn: conn} do
+      result = fn query ->
+        conn
+        |> get(api_v1_user_path(conn, :validate_username, query))
+        |> json_response(200)
+      end
+
+      assert result.(username: "foobar-_0_-")
+
+      refute result.(username: nil)
+      refute result.(username: "!")
+    end
+
+    test "on a team subdomain", %{conn: conn} do
+      team = insert(:team)
+      insert(:user, team: team, username: "existing")
+
+      result = fn query ->
+        conn
+        |> with_team_subdomain(team)
+        |> get(Routes.api_v1_user_path(conn, :validate_username, query))
+        |> json_response(200)
+      end
+
+      assert result.(username: "foobar-_0_-")
+
+      refute result.(username: nil)
+      refute result.(username: "!")
+      refute result.(username: "existing")
+    end
+
+    test "no username param", %{conn: conn} do
+      team = insert(:team)
+
+      %{"message" => message} =
+        conn
+        |> get(api_v1_user_path(conn, :validate_username))
+        |> json_response(:bad_request)
+
+      assert message == "Requires a username query."
+
+      %{"message" => message} =
+        conn
+        |> with_team_subdomain(team)
+        |> get(Routes.api_v1_user_path(conn, :validate_username))
+        |> json_response(:bad_request)
+
+      assert message == "Requires a username query."
+    end
+  end
 end
