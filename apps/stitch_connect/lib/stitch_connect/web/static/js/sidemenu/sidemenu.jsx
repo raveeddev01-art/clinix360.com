@@ -11,7 +11,7 @@ import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
 
-@inject("presenceStore", "sidemenuStore", "userStore")
+@inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
 @observer
 class Sidemenu extends Component {
   componentDidMount() {
@@ -100,7 +100,7 @@ class Sidemenu extends Component {
   }
 
   render() {
-    const { sidemenuStore, userStore } = this.props;
+    const { sidemenuStore, userStore, groupsStore } = this.props;
     const filterJoined = rooms => rooms.filter(room => room.joined);
 
     return (
@@ -168,17 +168,17 @@ class Sidemenu extends Component {
           >
             <FavoritesList
               heading={"Favorites"}
-              rooms={sidemenuStore.favoriteGroups}
+              rooms={groupsStore.favoriteGroups}
             />
 
             <RoomsList
               heading="Rooms"
-              rooms={filterJoined(sidemenuStore.normalGroups)}
+              rooms={filterJoined(groupsStore.normalGroups)}
             />
 
             <PeopleList
               heading="Direct Messages"
-              rooms={filterJoined(sidemenuStore.directGroups)}
+              rooms={filterJoined(groupsStore.directGroups)}
             />
           </div>
 

@@ -5,12 +5,12 @@ import { NavLink } from "react-router-dom";
 
 import { getRoomNavLink } from "../../../../lib/room";
 
-@inject("sidemenuStore")
+@inject("groupsStore")
 class MessageFooter extends Component {
   getGroup() {
-    const { sidemenuStore, message } = this.props;
+    const { groupsStore, message } = this.props;
 
-    return sidemenuStore.getGroupById(message.group_id);
+    return groupsStore.getGroupById(message.group_id);
   }
 
   render() {

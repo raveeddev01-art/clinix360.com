@@ -8,7 +8,7 @@ import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import Select from "react-select";
 
-@inject("sidemenuStore", "presenceStore")
+@inject("usersStore", "presenceStore")
 @observer
 class CreateDMModal extends Component {
   constructor(props) {
@@ -77,8 +77,8 @@ class CreateDMModal extends Component {
 
   render() {
     const { searchFilter, members } = this.state;
-    const { sidemenuStore } = this.props;
-    const users = sidemenuStore.users.filter(u => {
+    const { usersStore } = this.props;
+    const users = usersStore.users.filter(u => {
       if (u.id === currentUser.id && members.length > 0) return false;
       return (
         members.findIndex(member => member.id === u.id) === -1 &&

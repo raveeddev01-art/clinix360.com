@@ -11,7 +11,7 @@ import Button from "react-bootstrap/lib/Button";
 
 import Toggle from "../../../common/components/toggle/Toggle";
 
-@inject("groupStore", "sidemenuStore")
+@inject("groupStore", "groupsStore")
 @observer
 export default class NavItemConvert extends Component {
   constructor(props) {
@@ -49,9 +49,11 @@ export default class NavItemConvert extends Component {
   };
 
   handleSubmit = () => {
-    if (this.props.groupStore.public !== this.state.public) {
-      this.props.groupStore.togglePublic(this.state.public).then(group => {
-        this.props.sidemenuStore.updateGroupData(group.id, {
+    const { groupStore, groupsStore } = this.props;
+
+    if (groupStore.public !== this.state.public) {
+      groupStore.togglePublic(this.state.public).then(group => {
+        groupsStore.updateGroupData(group.id, {
           public: group.public
         });
       });

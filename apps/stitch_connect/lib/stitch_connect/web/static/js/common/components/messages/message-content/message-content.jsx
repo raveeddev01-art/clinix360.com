@@ -9,12 +9,12 @@ import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
 
-@inject("sidemenuStore")
+@inject("usersStore")
 @observer
 class MessageContent extends Component {
   renderMessageLine(line) {
-    const { sidemenuStore, message } = this.props;
-    const { usersByUsername } = sidemenuStore;
+    const { usersStore, message } = this.props;
+    const { usersByUsername } = usersStore;
     const words = line.split(" ");
 
     return words.reduce((prev, word, i) => {
