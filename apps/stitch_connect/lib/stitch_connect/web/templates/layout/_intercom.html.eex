@@ -1,9 +1,6 @@
 <script>
   window.intercomSettings = {
     app_id: "jig8cj9z",
-    alignment: 'left',
-    horizontal_padding: 20,
-    vertical_padding: 20,
     custom_launcher_selector: '#intercom-link'
   };
 </script>

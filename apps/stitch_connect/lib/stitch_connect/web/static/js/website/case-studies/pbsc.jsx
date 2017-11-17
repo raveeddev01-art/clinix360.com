@@ -19,10 +19,7 @@ export default class CasePBSC extends Component {
             <div className="container">
               <div className="landing-message text-center">
                 <h1>Customers</h1>
-                <h3>
-                  See how customers have improved care coordination on our
-                  platform.
-                </h3>
+                <h3>Princeton Brain & Spine</h3>
               </div>
             </div>
           </div>
@@ -84,8 +81,8 @@ export default class CasePBSC extends Component {
 
               <p className="m-b-40">
                 Lyndsey Caliendo, Director of Operations and Business
-                Development, credits the organizational philosophy of innovation
-                and experimentation to Princeton Brain & Spine’s success.
+                Development, credits Princeton Brain & Spine’s success to the
+                organizational philosophy of innovation and experimentation.
                 “Doctors here are all really interested in new and changing
                 technologies, and growing in healthcare with technology. They’re
                 really open to new ideas and trying new tools.” When Princeton
@@ -180,12 +177,11 @@ export default class CasePBSC extends Component {
               </div>
 
               <p className="m-b-40">
-                By being able to find critical information through Stitch’s deep
-                search function, team members were also able to more easily find
-                the information needed to provide the correct care. As a result,
-                a significant portion of team members reported reductions in the
-                likelihood of a clinical error occurring as a result of
-                communication issues:
+                By using Stitch’s deep search function, team members were also
+                able to more easily find the critical information needed to
+                provide the correct care. As a result, a significant portion of
+                team members reported reductions in the likelihood of a clinical
+                error occurring as a result of communication issues:
               </p>
 
               <div className="infographic text-center">

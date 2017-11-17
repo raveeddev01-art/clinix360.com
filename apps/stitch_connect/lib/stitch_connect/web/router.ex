@@ -57,10 +57,16 @@ defmodule StitchConnect.Web.Router do
 
     get "/", HomeController, :index
     get "/connect", HomeController, :index
+    get "/engage", HomeController, :index
+    get "/manage", HomeController, :index
     get "/pricing", HomeController, :index
     get "/downloads", HomeController, :index
     get "/customers", HomeController, :index
+    get "/customers/luminance-recovery", HomeController, :index
     get "/customers/princeton-brain-spine", HomeController, :index
+    get "/customers/dermatology-skin-surgery-institute", HomeController, :index
+    get "/customers/UCSF-citywide", HomeController, :index
+    get "/customers/orchard-medical-associates", HomeController, :index
     get "/baa", HomeController, :index
     get "/hipaa", HomeController, :index
     get "/privacy-policy", HomeController, :index
@@ -81,4 +87,8 @@ defmodule StitchConnect.Web.Router do
 
     # get "/signup/phone-number", AuthenticationController, :index
   end
+
+  # Application download links.
+  get "/download-mac", Redirect, external: "https://fz0pxcjnx9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-mac"
+  get "/download-win", Redirect, external: "https://1lyrransd9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-win"
 end

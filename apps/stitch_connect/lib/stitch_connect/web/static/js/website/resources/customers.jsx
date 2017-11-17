@@ -60,6 +60,13 @@ export default class Customers extends Component {
                     Luminance adopted Stitch to help improve critical
                     communications and keep clients in the recovery program.
                   </p>
+
+                  <Link
+                    to="/customers/luminance-recovery"
+                    className="text-uppercase"
+                  >
+                    Read More
+                  </Link>
                 </div>
 
                 <div className="flex-item">
@@ -124,6 +131,13 @@ export default class Customers extends Component {
                       providers and staff during patient consultations for
                       improved efficiency and care.
                     </p>
+
+                    <Link
+                      to="/customers/dermatology-skin-surgery-institute"
+                      className="text-uppercase"
+                    >
+                      Read More
+                    </Link>
                   </Panel>
                 </div>
               </div>
@@ -140,6 +154,12 @@ export default class Customers extends Component {
                       severely mentally ill adults. Citywide sought Stitch to
                       manage field communication during client work.
                     </p>
+                    <Link
+                      to="/customers/UCSF-citywide"
+                      className="text-uppercase"
+                    >
+                      Read More
+                    </Link>
                   </Panel>
                 </div>
 
@@ -154,6 +174,13 @@ export default class Customers extends Component {
                       to rapidly integrate a new tool to improve the flow of
                       patient care throughout the office.
                     </p>
+
+                    <Link
+                      to="/customers/orchard-medical-associates"
+                      className="text-uppercase"
+                    >
+                      Read More
+                    </Link>
                   </Panel>
                 </div>
               </div>
