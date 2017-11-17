@@ -45,7 +45,7 @@ class PasswordCard extends Component {
             required
             autoFocus
             name={`password_${new Date().getTime()}`}
-            autocomplete="off"
+            autoComplete="off"
             type="password"
             placeholder="Password"
             value={password}
