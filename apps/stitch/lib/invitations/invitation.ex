@@ -48,7 +48,14 @@ defmodule Stitch.Invitation do
       )
       case Repo.insert(new_user_changeset) do
         {:error, _changeset} ->
-          {:error, "User already exists with this email address."}
+          invited_user = Repo.get_by(User, email: email, team_id: team.id)
+
+          if invited_user.onboarded do
+            {:error, "Email has already been registered."}
+          else
+            {:error, "Email has already been invited."}
+          end
+
         {:ok, new_user} ->
           invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
           {:ok, invitation} = Repo.insert(invitation_changeset)

@@ -22,7 +22,7 @@ defmodule Stitch.InvitationTest do
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       _existing_user = insert(:user, %{team_id: team.id, email: "example@email.com"})
       {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
-      assert reason == "User already exists with this email address."
+      assert reason == "Email has already been registered."
     end
   end
 
