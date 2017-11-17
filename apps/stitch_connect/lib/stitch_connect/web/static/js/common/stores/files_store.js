@@ -1,5 +1,5 @@
 import { observable, computed, action } from "mobx";
-import queryString from "query-string";
+import { stringify } from "qs";
 
 class FilesStore {
   @observable files = [];
@@ -23,7 +23,7 @@ class FilesStore {
       return;
     }
 
-    const params = queryString.stringify({
+    const params = stringify({
       skip: this.files.length,
       limit: this.limit
     });

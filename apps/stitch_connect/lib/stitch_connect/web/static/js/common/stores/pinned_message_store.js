@@ -1,5 +1,5 @@
 import { observable, computed, action } from "mobx";
-import queryString from "query-string";
+import { stringify } from "qs";
 
 class PinnedMessageStore {
   @observable messages = [];
@@ -37,7 +37,7 @@ class PinnedMessageStore {
       return;
     }
 
-    const params = queryString.stringify({
+    const params = stringify({
       skip: this.skip,
       limit: this.limit,
       group_id: this.groupId
