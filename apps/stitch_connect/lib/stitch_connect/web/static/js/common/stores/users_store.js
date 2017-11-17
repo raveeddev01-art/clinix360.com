@@ -6,7 +6,7 @@
 
 import { observable, computed, action } from "mobx";
 
-import history from "../../util/history";
+import history from "../../lib/history";
 import { getRoomNavLink } from "../../lib/utils";
 
 class UsersStore {

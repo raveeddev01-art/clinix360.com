@@ -9,7 +9,7 @@ import classNames from "classnames";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../util/constants";
+import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../lib/constants";
 import { getRoomNavLink } from "../lib/utils";
 
 @inject("presenceStore", "sidemenuStore", "groupsStore", "groupsStore")

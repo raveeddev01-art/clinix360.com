@@ -8,7 +8,7 @@ import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
 
-import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../util/constants";
+import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../lib/constants";
 
 class SidemenuStore {
   @observable loading = false; // IF True, shows loading page

@@ -3,7 +3,7 @@ import { Provider } from "mobx-react";
 import { Router } from "react-router-dom";
 import { StripeProvider } from "react-stripe-elements";
 
-import history from "../util/history";
+import history from "../lib/history";
 import RootStore from "../common/stores/root_store";
 import LockableApp from "./LockableApp";
 
