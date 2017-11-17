@@ -11,7 +11,8 @@ class TeamUrlCard extends Component {
     super(...args);
     this.state = {
       teamUrl: "",
-      hasError: false
+      hasUniquenessError: false,
+      hasPatternError: false
     };
   }
 
@@ -22,6 +23,12 @@ class TeamUrlCard extends Component {
   };
 
   onNext = () => {
+    this.setState({ hasPatternError: false });
+
+    if (!this.patternValidate()) {
+      return;
+    }
+
     post("/api/v1/teams/url-available", {
       body: { url: this.state.teamUrl },
       hideNotify: true
@@ -30,12 +37,31 @@ class TeamUrlCard extends Component {
         if (response.data.available) {
           this.props.onNext(this.state.teamUrl);
         } else {
-          this.setState({ hasError: true });
+          this.setState({ hasUniquenessError: true });
         }
       })
       .catch(() => {
-        this.setState({ hasError: true });
+        this.setState({ hasUniquenessError: true });
       });
+  };
+
+  patternValidate = () => {
+    const { teamUrl } = this.state;
+
+    if (!/^[a-z0-9]/.test(teamUrl)) {
+      // starts with letter or number
+      this.setState({ hasPatternError: true });
+      return false;
+    } else if (/[^0-9a-z-]/.test(teamUrl)) {
+      // has only letter, number, dash
+      this.setState({ hasPatternError: true });
+      return false;
+    } else if (teamUrl.length < 3 || teamUrl.length > 20) {
+      this.setState({ hasPatternError: true });
+      return false;
+    }
+
+    return true;
   };
 
   moveCaretAtEnd(e) {
@@ -46,15 +72,23 @@ class TeamUrlCard extends Component {
   }
 
   render() {
-    const { teamUrl, hasError } = this.state;
+    const { teamUrl, hasUniquenessError, hasPatternError } = this.state;
 
     return (
       <div>
-        {hasError && (
+        {hasPatternError && (
           <Alert bsStyle="danger">
-            This team URL is taken. Please choose another one.
+            Your team URL can only contain lowercase letters, numbers and
+            dashes. It also must start with a letter or number.
           </Alert>
         )}
+
+        {!hasPatternError &&
+          hasUniquenessError && (
+            <Alert bsStyle="danger">
+              This team URL is taken. Please choose another one.
+            </Alert>
+          )}
 
         <OnboardCard
           {...this.props}
