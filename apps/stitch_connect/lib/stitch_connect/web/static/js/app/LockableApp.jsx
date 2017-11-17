@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Switch, withRouter, Route } from "react-router-dom";
 
+import Loading from "../common/components/loading/Loading";
 import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
 import ChatApp from "../chat/ChatApp";
 
-@inject("presenceStore")
+@inject("presenceStore", "sidemenuStore")
 @observer
 class LockableApp extends Component {
   componentDidMount() {
@@ -23,13 +24,19 @@ class LockableApp extends Component {
   }
 
   render() {
+    const { loading } = this.props.sidemenuStore;
+
     return this.props.presenceStore.locked ? (
       <LockedApp />
     ) : (
-      <Switch>
-        <Route path="/admin" component={AdminApp} />
-        <Route path="/" component={ChatApp} />
-      </Switch>
+      <div>
+        {loading && <Loading />}
+
+        <Switch>
+          <Route path="/admin" component={AdminApp} />
+          <Route path="/" component={ChatApp} />
+        </Switch>
+      </div>
     );
   }
 }

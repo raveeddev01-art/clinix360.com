@@ -6,6 +6,7 @@ import history from "../../util/history";
 import { getRoomNavLink } from "../../lib/room";
 
 class SidemenuStore {
+  @observable loading = true; // IF True, shows loading page
   @observable sidemenuDiv = null; // Div element of sidemenu
   @observable roomMenuItemVisibles = {};
   @observable teamName = "";
