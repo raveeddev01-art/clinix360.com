@@ -56,7 +56,7 @@ class InviteModal extends Component {
     const { invites } = this.state;
     const invite = invites[index];
     invite.email = evt.target.value;
-    if (invite.email.trim() === "") {
+    if (invite.email.trim() === "" || isEmail(invite.email)) {
       invite.error = "";
     }
     this.setState({ invites });
