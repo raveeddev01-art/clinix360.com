@@ -170,6 +170,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser
 
     get "/invitations/accept/:token", InvitationController, :accept
+    get "/invitations/accept/:token/:step", InvitationController, :accept
+    get "/invitations/error", InvitationController, :error
 
     get "/login", AuthenticationController, :login
     post "/login", AuthenticationController, :submit_login

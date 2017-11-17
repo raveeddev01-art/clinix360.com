@@ -1,4 +1,4 @@
 <div id="root"
-     data-component="Invitation"
+     data-component="AuthenticationRouter"
      data-react-props="<%= @app_params %>">
 </div>

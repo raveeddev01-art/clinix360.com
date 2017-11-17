@@ -13,6 +13,8 @@ import DownloadApps from "./apps";
 import Registration from "./registration";
 import SendEmail from "./reset-password/send-email";
 import SetPassword from "./reset-password/set-password";
+import Invitation from "./invitation";
+import InvitationError from "./invitation/error";
 import Header from "../website/components/header";
 import Footer from "../website/components/footer";
 
@@ -54,6 +56,16 @@ class AuthenticationRouter extends Component {
               exact
               path="/reset-password/:token"
               component={SetPassword}
+            />
+
+            <Route
+              path="/invitations/accept/:token"
+              render={() => <Invitation {...this.props} />}
+            />
+            <Route
+              exact
+              path="/invitations/error"
+              component={InvitationError}
             />
 
             <Route component={() => <Redirect to="/" />} />

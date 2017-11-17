@@ -14,11 +14,24 @@ defmodule StitchConnect.Web.InvitationController do
           })
           render conn, "accept.html", app_params: app_params
         false ->
-          render conn, "invalid_invitation.html"
+          app_params = Poison.encode!(%{
+            "inviteToken" => ""
+          })
+          render conn, "accept.html", app_params: app_params
       end
     else
       {:error, _message} ->
-        render conn, "invalid_invitation.html"
+        app_params = Poison.encode!(%{
+          "inviteToken" => ""
+        })
+        render conn, "accept.html", app_params: app_params
     end
+  end
+
+  def error(conn, _params) do
+    app_params = Poison.encode!(%{
+      "inviteToken" => ""
+    })
+    render conn, "accept.html", app_params: app_params
   end
 end
