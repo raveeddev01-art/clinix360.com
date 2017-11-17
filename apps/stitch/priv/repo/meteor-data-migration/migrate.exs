@@ -13,7 +13,10 @@ defmodule Stitch.MeteorMigration do
   end
 
   def run_migration do
-    run_migration("_meteor-data/users.json", "_meteor-data/rooms.json")
+    run_migration(
+      "_meteor-data/migrationclinic1/users.json",
+      "_meteor-data/migrationclinic1/rooms.json"
+    )
   end
 
   def run_migration(users_json_file, rooms_json_file) do
