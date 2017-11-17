@@ -157,6 +157,7 @@ class GroupStore {
   @action
   joinMultiDM = users => {
     let userIds = users.map(user => user.id);
+
     if (userIds.indexOf(currentUser.id) === -1) {
       userIds.push(currentUser.id);
     }
@@ -208,7 +209,8 @@ class GroupStore {
     return post(`/api/v1/groups/${this.id}/toggle-public`, {
       body: { public: value }
     }).then(() => {
-      this.public = !this.public;
+      this.public = value;
+
       return this;
     });
   };

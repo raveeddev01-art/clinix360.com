@@ -74,13 +74,9 @@ class ChatApp extends Component {
           <Switch>
             <Route path={`/rooms/:slug`} component={Chat} />
             <Route path={`/direct/:usernames`} component={Chat} />
-            {defaultGroup ? (
-              <Route
-                component={() => (
-                  <Redirect to={`/rooms/${defaultGroup.slug}`} />
-                )}
-              />
-            ) : null}
+            {defaultGroup && (
+              <Redirect from="*" to={`/rooms/${defaultGroup.slug}`} />
+            )}
           </Switch>
         </div>
       </Dropzone>
