@@ -15,7 +15,7 @@ module.exports = [
     },
     resolve: {
       extensions: [".js", ".jsx"],
-      modules: ["node_modules", __dirname + "/web/static/js"]
+      modules: ["node_modules", path.resolve(__dirname, "./lib/stitch_connect/web/static/js")],
     },
     module: {
       loaders: [
