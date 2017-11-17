@@ -178,8 +178,8 @@ defmodule Stitch.MeteorMigration do
   def parse_meteor_json(file) do
     room = File.read!(file)
     room = "[" <> room <> "]"
-    room = room |> String.split |> Enum.map_join(& String.trim(&1)) |> String.replace("}{", "},{")
-    room = room |> String.split |> Enum.map_join(fn line ->
+    room = room |> String.split("\n") |> Enum.map_join(& String.trim(&1)) |> String.replace("}{", "},{")
+    room = room |> String.split("\n") |> Enum.map_join(fn line ->
       line = String.replace(line, ~r/NumberInt\(([^)]+)\)/, "\\1")
       line = String.replace(line, ~r/ISODate\(([^)]+)\)/, "\\1")
       line
