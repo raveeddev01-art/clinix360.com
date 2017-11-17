@@ -38,7 +38,8 @@ defmodule Stitch.MeteorMigration.Room do
           description: attributes["topic"],
           creator_user: user,
           is_default: !!attributes["default"],
-          users: get_users(users, usernames)
+          users: get_users(users, usernames),
+          meteor_id: meteor_id,
         }
       :error -> raise RelationError
     end
@@ -62,7 +63,8 @@ defmodule Stitch.MeteorMigration.Room do
           description: attributes["topic"],
           creator_user: user,
           is_default: !!attributes["default"],
-          users: get_users(users, usernames)
+          users: get_users(users, usernames),
+          meteor_id: meteor_id,
         }
       :error -> raise RelationError
     end
@@ -82,11 +84,12 @@ defmodule Stitch.MeteorMigration.Room do
           name: Map.get(attributes, "fname", slug),
           slug: slug,
           dm: false,
-          public: true,
+          public: false,
           creator_user: user,
           description: attributes["topic"],
           is_default: !!attributes["default"],
-          users: get_users(users, usernames)
+          users: get_users(users, usernames),
+          meteor_id: meteor_id,
         }
       :error -> raise RelationError
     end
@@ -101,7 +104,8 @@ defmodule Stitch.MeteorMigration.Room do
     %{
       dm: true,
       multi: !!attributes["multi"],
-      users: get_users(users, usernames)
+      users: get_users(users, usernames),
+      meteor_id: meteor_id,
     }
   end
 
@@ -124,10 +128,11 @@ defmodule Stitch.MeteorMigration.Room do
   def migrate_rooms(team_id, rooms) do
     rooms |> Enum.map(fn room ->
       case create_group(team_id, room) do
-        {:ok, %{group: group}} -> group
-        {:ok, group} -> group
-        _ ->
+        {:ok, %{group: group}} -> {group, room.meteor_id}
+        {:ok, group} -> {group, room.meteor_id}
+        error ->
           Logger.warn("Error creating group #{inspect(room)}")
+          Logger.warn(inspect(error))
           nil
       end
     end)
@@ -156,9 +161,13 @@ defmodule Stitch.MeteorMigration.Room do
     case group do
       {:ok, %{group: group}} = group_inserted ->
         if is_default == true do
-          group
-          |> change(is_default: true)
-          |> Repo.update!
+
+          unless Repo.get_by(Group, team_id: team_id, is_default: true) do
+            group
+            |> change(is_default: true)
+            |> Repo.update
+          end
+
           group_inserted
         else
           group_inserted

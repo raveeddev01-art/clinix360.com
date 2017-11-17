@@ -1,5 +1,6 @@
 Code.load_file("apps/stitch/priv/repo/meteor-data-migration/user.ex")
 Code.load_file("apps/stitch/priv/repo/meteor-data-migration/room.ex")
+Code.load_file("apps/stitch/priv/repo/meteor-data-migration/message.ex")
 
 defmodule Stitch.MeteorMigration do
   alias Stitch.Repo
@@ -15,26 +16,32 @@ defmodule Stitch.MeteorMigration do
     defexception message: "Meteor migration data couldn't be found."
   end
 
-  def run_migration(%{team_json: team_json, users_json: users_json, rooms_json: rooms_json}) do
+  def run_migration(%{team_json: team_json, users_json: users_json, rooms_json: rooms_json, messages_json: messages_json}) do
     Logger.info("Creating team")
 
     case create_team_unless_exists(parse_json_file(team_json)) do
       {:ok, team} ->
         Logger.info("Migrating users")
 
-        users = MeteorMigration.User.parse_users_json(parse_json_file(users_json))
+        users = MeteorMigration.User.parse_users_json(parse_meteor_json(users_json))
         {_count, users} = MeteorMigration.User.migrate_users(team.id, users)
 
         Logger.info("Migrating rooms")
 
         indexed_users = index_users(users)
-        rooms = MeteorMigration.Room.parse_rooms_json(indexed_users, parse_json_file(rooms_json))
+        rooms = MeteorMigration.Room.parse_rooms_json(indexed_users, parse_meteor_json(rooms_json))
         rooms = MeteorMigration.Room.migrate_rooms(team.id, rooms)
 
         Logger.info("Cleaning auto-generated system messages")
 
         group_ids = Group |> where(team_id: ^team.id) |> select([g], g.id) |> Repo.all
         Message |> where([gu], gu.group_id in ^group_ids) |> Repo.delete_all()
+
+        Logger.info("Migrating messages")
+
+        indexed_rooms = index_rooms(rooms)
+        messages = MeteorMigration.Message.parse_messages_json(indexed_rooms, indexed_users, parse_meteor_json(messages_json))
+        messages = MeteorMigration.Message.migrate_messages(messages)
 
       {:error, team} ->
         Logger.warn "Skipping migration for #{team.slug}"
@@ -43,9 +50,15 @@ defmodule Stitch.MeteorMigration do
 
   def index_users(users), do: Enum.reduce(users, %{}, & Map.put(&2, &1.username, &1))
 
+  def index_rooms(rooms) do
+    rooms |> Enum.reduce(%{}, fn ({group, meteor_id}, acc) ->
+      Map.put(acc, meteor_id, group)
+    end)
+  end
+
   def clean_db(%{team_json: team_json}) do
     unless @allow_retry, do: raise "Not allowed"
-    {:ok, team} = create_team_unless_exists(parse_json_file(team_json))
+    {:ok, %{is_legacy: true} = team} = create_team_unless_exists(parse_json_file(team_json))
 
     group_ids =
       Group
@@ -72,6 +85,8 @@ defmodule Stitch.MeteorMigration do
       User
       |> where(team_id: ^team.id)
       |> Repo.delete_all(returning: false)
+
+    Repo.delete!(team)
 
     Logger.info "Deleted #{user_count} users"
     Logger.info "Deleted #{group_count} groups"
@@ -139,16 +154,19 @@ defmodule Stitch.MeteorMigration do
     team_json = Path.join(team_directory, "team.json")
     users_json = Path.join(team_directory, "users.json")
     rooms_json = Path.join(team_directory, "rooms.json")
+    messages_json = Path.join(team_directory, "messages.json")
 
     unless File.exists?(team_directory), do: log_meteor_data_error "#{team_directory} doesn't exist."
     unless File.exists?(team_json), do: log_meteor_data_error "#{team_json} doesn't exist."
     unless File.exists?(users_json), do: log_meteor_data_error "#{users_json} doesn't exist."
     unless File.exists?(rooms_json), do: log_meteor_data_error "#{rooms_json} doesn't exist."
+    unless File.exists?(rooms_json), do: log_meteor_data_error "#{messages_json} doesn't exist."
 
     %{
       team_json: team_json,
       users_json: users_json,
       rooms_json: rooms_json,
+      messages_json: messages_json,
     }
   end
 
@@ -158,14 +176,15 @@ defmodule Stitch.MeteorMigration do
   end
 
   def parse_meteor_json(file) do
-    room = File.read!("_my_scripts/rooms2.json")
+    room = File.read!(file)
     room = "[" <> room <> "]"
-    room = room |> String.split |> Enum.map_join(& String.trim(&1)) |> String.replace("}{", "},{")
-    room = room |> String.split |> Enum.map_join(fn line ->
+    room = room |> String.split("\n") |> Enum.map_join(& String.trim(&1)) |> String.replace("}{", "},{")
+    room = room |> String.split("\n") |> Enum.map_join(fn line ->
       line = String.replace(line, ~r/NumberInt\(([^)]+)\)/, "\\1")
       line = String.replace(line, ~r/ISODate\(([^)]+)\)/, "\\1")
       line
     end)
+    Poison.decode!(room)
   end
 
   def run do
