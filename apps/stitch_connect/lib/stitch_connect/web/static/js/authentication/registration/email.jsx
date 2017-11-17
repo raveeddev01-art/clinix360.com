@@ -1,11 +1,5 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Link } from "react-router-dom";
-
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
@@ -46,30 +40,10 @@ class EmailCard extends Component {
     });
   };
 
-  renderHeader() {
-    return (
-      <div className="card-header">
-        <Row>
-          <Col xs={12} className="text-right">
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip id="close">Close</Tooltip>}
-            >
-              <Link to="/getstarted">
-                <i className="fa fa-close" />
-              </Link>
-            </OverlayTrigger>
-          </Col>
-        </Row>
-      </div>
-    );
-  }
-
   render() {
     return (
       <OnboardCard
         title="Email"
-        header={this.renderHeader()}
         description={
           <span>
             Enter your <strong>work email address</strong>.

@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { observer, inject } from "mobx-react";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Alert from "react-bootstrap/lib/Alert";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 import InputGroup from "react-bootstrap/lib/InputGroup";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import { OnboardCard } from "common/components";
@@ -145,25 +141,6 @@ class Confirmation extends Component {
     return comps;
   };
 
-  renderHeader() {
-    return (
-      <div className="card-header">
-        <Row>
-          <Col xs={12} className="text-right">
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip id="close">Close</Tooltip>}
-            >
-              <Link to="/getstarted">
-                <i className="fa fa-close" />
-              </Link>
-            </OverlayTrigger>
-          </Col>
-        </Row>
-      </div>
-    );
-  }
-
   render() {
     return (
       <div>
@@ -176,6 +153,7 @@ class Confirmation extends Component {
 
         <OnboardCard
           header={this.renderHeader()}
+          x
           title="Check your email!"
           description={
             <span>
