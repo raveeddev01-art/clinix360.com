@@ -11,4 +11,7 @@ defmodule Stitch.TeamAuthorization do
     team = Repo.get(Team, user.team_id)
     team.id == team_id
   end
+
+  def can_send_invites?(_, %Team{open_invitations_enabled: true}), do: true
+  def can_send_invites?(%User{roles: roles}, _), do: "admin" in roles
 end

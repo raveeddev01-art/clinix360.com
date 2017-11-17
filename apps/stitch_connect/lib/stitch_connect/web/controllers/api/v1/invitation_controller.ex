@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Invitation, MessageQueries}
+  alias Stitch.{Invitation, MessageQueries, TeamAuthorization}
   alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
   plug :fetch_session when action in [:accept]
 
@@ -32,7 +32,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     team = conn.assigns.team
     emails = email_collection |> String.split(",") |> Enum.uniq
 
-    if Invitation.can_send_invites?(current_user, team) do
+    if TeamAuthorization.can_send_invites?(current_user, team) do
       results = Enum.reduce emails, %{}, fn email, map ->
         result = case Invitation.invite_to_team(current_user.id, email) do
           {:ok, _user} -> "ok"
