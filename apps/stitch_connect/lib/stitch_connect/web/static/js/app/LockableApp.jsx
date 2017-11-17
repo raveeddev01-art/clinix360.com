@@ -26,10 +26,10 @@ class LockableApp extends Component {
   render() {
     const { sidemenuStore, presenceStore } = this.props;
 
-    return sidemenuStore.loading ? (
-      <Loading />
-    ) : presenceStore.locked ? (
+    return presenceStore.locked ? (
       <LockedApp />
+    ) : sidemenuStore.loading ? (
+      <Loading />
     ) : (
       <Switch>
         <Route path="/admin" component={AdminApp} />
