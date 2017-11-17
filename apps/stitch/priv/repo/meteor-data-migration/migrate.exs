@@ -113,6 +113,13 @@ defmodule Stitch.MeteorMigration do
       nil ->
         team = Team.Onboarding.create_team(team_name, team_slug)
         Repo.update!(Ecto.Changeset.change(team, open_invitations_enabled: true, is_legacy: true))
+
+        {group_count, groups} =
+          Group
+          |> where(team_id: ^team.id)
+          |> where(is_default: true)
+          |> Repo.delete_all(returning: true)
+
         {:ok, team}
       team ->
         Logger.warn "#{team_slug} already exists."
