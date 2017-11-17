@@ -16,10 +16,7 @@ class OnboardInputCard extends Component {
   }
 
   _onChange = evt => {
-    let value = evt.target.value;
-    if (this.props.isLowerCase) {
-      value = value.toLowerCase();
-    }
+    const value = evt.target.value;
     this.setState({ value });
   };
 
@@ -74,7 +71,6 @@ OnboardInputCard.propTypes = {
   type: PropTypes.string.isRequired,
   value: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
-  isLowerCase: PropTypes.bool,
   isRequired: PropTypes.bool
 };
 
@@ -88,7 +84,6 @@ OnboardInputCard.defaultProps = {
   type: "text",
   value: "",
   disableNext: false,
-  isLowerCase: false,
   isRequired: true
 };
 
