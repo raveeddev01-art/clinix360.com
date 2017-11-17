@@ -115,7 +115,9 @@ class InviteModal extends Component {
       mode: "default",
       emails: "",
       alertVisible: true,
-      alertMessage: `We found ${invites.length} emails to invite. If this looks correct, click Send.`,
+      alertMessage: `We found ${invites.length === 1
+        ? "1 email"
+        : `${invites.length} emails`} to invite. If this looks correct, click Send.`,
       alertStyle: "success"
     });
   };
@@ -131,18 +133,23 @@ class InviteModal extends Component {
     }
   };
 
+  cleanBlanks = invites => {
+    return invites.filter(invite => !!invite.email.trim());
+  };
+
   switchToBulk = () => {
-    const { invites } = this.state;
+    const invites = this.cleanBlanks(this.state.invites);
     const emails = _.uniqBy(invites, invite => {
-      return invite.email.trim();
+      return invite.email;
     })
-      .map(invite => invite.email)
+      .map(invite => `<${invite.email}>`)
       .join(", ");
 
     this.setState({
       mode: "bulk",
       emails,
-      alertVisible: false
+      alertVisible: false,
+      invites
     });
   };
 
@@ -179,7 +186,7 @@ class InviteModal extends Component {
         setFocus = true;
       }
     });
-    return invites.filter(invite => !!invite.email.trim());
+    return this.cleanBlanks(invites);
   }
 
   isValid() {
