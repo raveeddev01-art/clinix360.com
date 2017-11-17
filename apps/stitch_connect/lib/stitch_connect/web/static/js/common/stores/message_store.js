@@ -1,3 +1,9 @@
+/**
+ * Message store
+ * 
+ * This store keps track of data that are related with messages in the current group
+ */
+
 import { observable, action, computed, when } from "mobx";
 import moment from "moment";
 import _ from "lodash";

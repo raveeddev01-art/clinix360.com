@@ -1,3 +1,10 @@
+/**
+ * Channel store
+ * 
+ * This store is the central hub for socket channels that are used across the app.
+ * All socket channels used in the app MUST be registered in this store.
+ */
+
 class ChannelStore {
   channels = {};
 

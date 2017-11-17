@@ -1,3 +1,9 @@
+/**
+ * User store
+ * 
+ * This store keeps track of data of current logged in user
+ */
+
 import { observable, action, computed } from "mobx";
 
 class UserStore {
