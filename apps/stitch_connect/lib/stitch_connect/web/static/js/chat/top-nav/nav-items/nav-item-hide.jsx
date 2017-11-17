@@ -3,13 +3,13 @@ import { inject } from "mobx-react";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import { withRouter } from "react-router-dom";
 
-@inject("groupStore", "sidemenuStore")
+@inject("groupStore", "groupsStore")
 class NavItemHide extends Component {
   handleHide = () => {
-    const { sidemenuStore } = this.props;
+    const { groupStore, groupsStore } = this.props;
 
-    this.props.groupStore.hide().then(() => {
-      sidemenuStore.loadGroups();
+    groupStore.hide().then(() => {
+      groupsStore.loadGroups();
     });
 
     // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541

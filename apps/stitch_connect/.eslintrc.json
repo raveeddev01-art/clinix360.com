@@ -51,6 +51,7 @@
           "filesStore",
           "groupPresenceStore",
           "groupStore",
+          "groupsStore",
           "invitationStore",
           "membersStore",
           "mentionsStore",

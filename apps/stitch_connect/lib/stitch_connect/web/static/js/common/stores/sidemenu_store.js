@@ -7,7 +7,8 @@
 import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
-import orderBy from "lodash/orderBy";
+
+import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../util/constants";
 
 class SidemenuStore {
   @observable loading = true; // IF True, shows loading page
@@ -16,16 +17,14 @@ class SidemenuStore {
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
-  @observable groups = [];
-  @observable groupCursors = {}; // { group_id: message_id }
 
-  ROOM_MENU_ITEM_ANCHOR_PREFIX = "sidemenu_room_";
   badge = null;
   favicon = null;
   notificationAudio = null;
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
+
     this.teamName = props.teamName;
     this.teamId = props.teamId;
     this.subdomain = props.subdomain;
@@ -41,52 +40,18 @@ class SidemenuStore {
   // COMPUTED //
   // //////// //
 
-  /* Group/Room related */
-
-  getGroupById = id => this.groups.find(group => group.id === id);
-
-  @computed
-  get defaultGroup() {
-    return this.groups.find(g => g.is_default);
-  }
-
-  @computed
-  get favoriteGroups() {
-    return this.groups.filter(group => group.favorite);
-  }
-
-  @computed
-  get normalGroups() {
-    return this.groups.filter(
-      group => group.type === "regular" && !group.favorite
-    );
-  }
-
-  @computed
-  get directGroups() {
-    return this.groups.filter(group => group.type !== "regular");
-  }
-
-  @computed
-  get multiDMGroups() {
-    return this.groups.filter(group => group.type === "multi_dm");
-  }
-
-  @computed
-  get roomsInShowOrder() {
-    return this.favoriteGroups.concat(this.normalGroups, this.directGroups);
-  }
-
   @computed
   get unreadRoomItemHiddenUp() {
-    if (!Object.keys(this.roomsInShowOrder).length) {
+    const { groupsStore: { roomsInShowOrder } } = this.rootStore;
+
+    if (!Object.keys(roomsInShowOrder).length) {
       return null;
     }
 
     let room = null;
 
-    for (let i = 0; i < this.roomsInShowOrder.length; i += 1) {
-      const r = this.roomsInShowOrder[i];
+    for (let i = 0; i < roomsInShowOrder.length; i += 1) {
+      const r = roomsInShowOrder[i];
 
       if (this.roomMenuItemVisibles[r.id]) {
         break;
@@ -103,14 +68,16 @@ class SidemenuStore {
 
   @computed
   get unreadRoomItemHiddenDown() {
-    if (!Object.keys(this.roomsInShowOrder).length) {
+    const { groupsStore: { roomsInShowOrder } } = this.rootStore;
+
+    if (!Object.keys(roomsInShowOrder).length) {
       return null;
     }
 
     let room = null;
 
-    for (let i = this.roomsInShowOrder.length - 1; i >= 0; i -= 1) {
-      const r = this.roomsInShowOrder[i];
+    for (let i = roomsInShowOrder.length - 1; i >= 0; i -= 1) {
+      const r = roomsInShowOrder[i];
 
       if (this.roomMenuItemVisibles[r.id]) {
         break;
@@ -125,91 +92,32 @@ class SidemenuStore {
     return room;
   }
 
-  @computed
-  get totalMentionsCount() {
-    return this.groups.reduce((count, group) => {
-      if (group.type === "regular") {
-        return count + group.mentions_count;
-      }
-
-      return count + group.unread_messages_count;
-    }, 0);
-  }
-
   // //////////
   // ACTIONS //
   // /////// //
 
   @action
   loadApp = async () => {
-    const { usersStore } = this.rootStore;
+    const { usersStore, groupsStore } = this.rootStore;
 
     this.loading = true;
 
-    await this.loadGroups();
     await usersStore.loadUsers();
+    await groupsStore.loadGroups();
 
     this.loading = false;
   };
 
   @action
-  loadGroups = () => {
-    return get("/api/v1/groups").then(response => {
-      this.groups = orderBy(response.data, ["name"]);
-      this.updateFavicon();
-    });
-  };
-
-  @action
-  onNewGroup = newGroup => {
-    this.groups.push(newGroup);
-  };
-
-  @action
-  hideGroup = id => {
-    return put(`/api/v1/groups/${id}/hide`);
-  };
-
-  @action
-  onRenameGroup = params => {
-    const data = {
-      slug: params.group_slug,
-      name: params.group_name
-    };
-
-    this.updateGroupData(params.group_id, data);
-
-    if (this.rootStore.groupStore.id === params.group_id) {
-      history.push(`/rooms/${params.group_slug}`);
-    }
-  };
-
-  @action
-  onJoinedGroup = joinedGroup => {
-    const group = this.getGroupById(joinedGroup.id);
-
-    if (group) {
-      group.joined = true;
-    }
-  };
-
-  @action
-  onLeftGroup = ({ group_id: groupId }) => {
-    const group = this.getGroupById(groupId);
-
-    if (group) {
-      group.joined = false;
-    }
-  };
-
-  @action
   onNewMessage = newMessage => {
+    const { groupStore, groupsStore } = this.rootStore;
+
     // If the message is for the current group, ignore
-    if (newMessage.group_id === this.rootStore.groupStore.id) {
+    if (newMessage.group_id === groupStore.id) {
       return;
     }
 
-    const group = this.getGroupById(newMessage.group_id);
+    const group = groupsStore.getGroupById(newMessage.group_id);
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
     if (!group) {
@@ -233,24 +141,10 @@ class SidemenuStore {
     // if it's DM and hidden, show it on sidebar
     if (group.type !== "regular" && group.is_hidden) {
       put(`/api/v1/groups/${group.id}/unhide`).then(() => {
-        const sidebarGroup = this.getGroupById(group.id);
+        const sidebarGroup = groupsStore.getGroupById(group.id);
         sidebarGroup.is_hidden = false;
       });
     }
-  };
-
-  @action
-  updateGroupData = (id, data) => {
-    const group = this.getGroupById(id);
-
-    if (group) {
-      Object.assign(group, data);
-    }
-  };
-
-  @action
-  updateGroupCursor = (groupId, cursor) => {
-    this.groupCursors[groupId] = cursor;
   };
 
   /**
@@ -295,11 +189,9 @@ class SidemenuStore {
    * @param {*} groupId
    */
   isCurrentlyInRoom(groupId) {
-    return (
-      groupId === this.rootStore.groupStore.id &&
-      !this.locked &&
-      document.hasFocus()
-    );
+    const { groupStore } = this.rootStore;
+
+    return groupId === groupStore.id && !this.locked && document.hasFocus();
   }
 
   /**
@@ -319,11 +211,13 @@ class SidemenuStore {
   }
 
   updateFavicon() {
+    const { groupsStore: { totalMentionsCount } } = this.rootStore;
     let badge = "";
-    if (this.totalMentionsCount > 9) {
+
+    if (totalMentionsCount > 9) {
       badge = "9+";
-    } else if (this.totalMentionsCount > 0) {
-      badge = `${this.totalMentionsCount}`;
+    } else if (totalMentionsCount > 0) {
+      badge = `${totalMentionsCount}`;
     }
 
     // avoid favicon animation when not changed
@@ -385,12 +279,12 @@ class SidemenuStore {
       return;
     }
 
-    const { notificationStore, messageStore } = this.rootStore;
+    const { notificationStore, messageStore, groupsStore } = this.rootStore;
     if (messageStore.groupId === newMessage.group_id) return;
     const desktopNotification = notificationStore.getGroupNotificationPreference(
       newMessage.group_id
     );
-    const group = this.getGroupById(newMessage.group_id);
+    const group = groupsStore.getGroupById(newMessage.group_id);
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
     if (
@@ -418,7 +312,8 @@ class SidemenuStore {
   }
 
   jumpToMessage(message) {
-    const group = this.getGroupById(message.group_id);
+    const { groupsStore } = this.rootStore;
+    const group = groupsStore.getGroupById(message.group_id);
     let url;
 
     if (group.type === "regular") {
@@ -440,7 +335,7 @@ class SidemenuStore {
   }
 
   scrollToRoomItem(roomId, duration = 300) {
-    const anchorName = `${this.ROOM_MENU_ITEM_ANCHOR_PREFIX}${roomId}`;
+    const anchorName = `${ROOM_MENU_ITEM_ANCHOR_PREFIX}${roomId}`;
 
     scroller.scrollTo(anchorName, {
       container: this.sidemenuDiv,

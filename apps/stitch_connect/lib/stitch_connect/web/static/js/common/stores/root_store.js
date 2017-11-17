@@ -6,6 +6,7 @@ import FilesStore from "./files_store";
 import GlobalStarredMessageStore from "./global_starred_message_store";
 import GroupPresenceStore from "./group_presence_store";
 import GroupStore from "./group_store";
+import GroupsStore from "./groups_store";
 import ImageStore from "./image_store";
 import InvitationStore from "./invitation_store";
 import MentionsStore from "./mentions_store";
@@ -40,6 +41,7 @@ class RootStore {
     this.globalStarredMessageStore = new GlobalStarredMessageStore(this);
     this.groupPresenceStore = new GroupPresenceStore(this);
     this.groupStore = new GroupStore(this);
+    this.groupsStore = new GroupsStore(this);
     this.imageStore = new ImageStore(this);
     this.invitationStore = new InvitationStore(this);
     this.notificationStore = new NotificationStore(this);

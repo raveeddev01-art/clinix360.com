@@ -8,7 +8,13 @@ import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
 
-@inject("groupStore", "sidemenuStore", "usersStore", "messageStore")
+@inject(
+  "groupStore",
+  "groupsStore",
+  "sidemenuStore",
+  "usersStore",
+  "messageStore"
+)
 @observer
 class Chat extends Component {
   componentWillMount() {
@@ -25,7 +31,7 @@ class Chat extends Component {
   }
 
   joinChat(params) {
-    const { groupStore, sidemenuStore, usersStore, messageStore } = this.props;
+    const { groupStore, groupsStore, usersStore, messageStore } = this.props;
 
     messageStore.stopTyping();
     if (params.slug) {
@@ -40,10 +46,10 @@ class Chat extends Component {
         const dmUsers = usernames.map(username =>
           users.find(u => u.username === username)
         );
-        groupStore.joinMultiDM(dmUsers).then(() => sidemenuStore.loadGroups());
+        groupStore.joinMultiDM(dmUsers).then(() => groupsStore.loadGroups());
       } else {
         const user = users.find(u => u.username === usernames[0]);
-        groupStore.joinSingleDM(user).then(() => sidemenuStore.loadGroups());
+        groupStore.joinSingleDM(user).then(() => groupsStore.loadGroups());
       }
     }
   }

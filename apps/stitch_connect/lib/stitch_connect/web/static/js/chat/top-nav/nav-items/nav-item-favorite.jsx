@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
-@inject("groupStore", "sidemenuStore")
+@inject("groupStore", "groupsStore")
 @observer
 export default class NavItemMembers extends Component {
   _toggleFavorite = () => {
-    const { groupStore, sidemenuStore } = this.props;
+    const { groupStore, groupsStore } = this.props;
+
     groupStore.toggleFavorite().then(favorite => {
-      sidemenuStore.updateGroupData(groupStore.id, { favorite });
+      groupsStore.updateGroupData(groupStore.id, { favorite });
     });
 
     // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541

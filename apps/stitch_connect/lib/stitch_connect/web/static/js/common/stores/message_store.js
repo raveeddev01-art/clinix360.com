@@ -169,11 +169,14 @@ class MessageStore {
 
   @action
   updateGroupCursor(cursor) {
-    const { sidemenuStore, groupStore } = this.rootStore;
-    if (groupStore.loading) return;
+    const { groupsStore, groupStore } = this.rootStore;
+
+    if (groupStore.loading) {
+      return;
+    }
 
     this.groupCursor = cursor;
-    sidemenuStore.updateGroupCursor(this.groupId, cursor);
+    groupsStore.updateGroupCursor(this.groupId, cursor);
   }
 
   // Scroll to the bottom of chat div with animation
@@ -430,7 +433,7 @@ class MessageStore {
 
   @action
   updateUnreadMessagesInfo(data) {
-    const { groupStore, sidemenuStore } = this.rootStore;
+    const { groupStore, groupsStore } = this.rootStore;
     const allowedKeys = [
       "unread_messages_count",
       "mentions_count",
@@ -447,8 +450,8 @@ class MessageStore {
     // Update group store
     groupStore.update(camelCasedUpdates);
 
-    // Update sidemenu store
-    sidemenuStore.updateGroupData(this.groupId, updates);
+    // Update group info
+    groupsStore.updateGroupData(this.groupId, updates);
   }
 
   @action

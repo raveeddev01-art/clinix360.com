@@ -17,7 +17,7 @@ import RoomItem from "./room_item";
 import Members from "../../../common/components/members/members";
 import Toggle from "../../../common/components/toggle/Toggle";
 
-@inject("sidemenuStore", "groupStore")
+@inject("groupsStore", "groupStore")
 @observer
 class RoomsModal extends Component {
   constructor(props) {
@@ -56,9 +56,9 @@ class RoomsModal extends Component {
   };
 
   filterRooms() {
-    const { sidemenuStore } = this.props;
+    const { groupsStore } = this.props;
     const { filter } = this.state;
-    const rooms = sidemenuStore.normalGroups.filter(room =>
+    const rooms = groupsStore.normalGroups.filter(room =>
       room.name.toLowerCase().startsWith(filter.toLowerCase())
     );
 
