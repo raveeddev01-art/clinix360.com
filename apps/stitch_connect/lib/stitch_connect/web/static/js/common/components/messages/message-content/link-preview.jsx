@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import ImageFileAttachment from "./file-attachment/image";
-import { isAdmin } from "../../../../util/utils";
+import { isAdmin } from "../../../../lib/utils";
 import { confirm } from "../../../modals";
 
 @inject("messageStore")

@@ -1,3 +1,9 @@
+import sortBy from "lodash/sortBy";
+
+export function isAdmin() {
+  return currentUser.roles && currentUser.roles.includes("admin");
+}
+
 export function getRoomNavLink(room) {
   const { slug, type, users } = room;
 
@@ -6,13 +12,20 @@ export function getRoomNavLink(room) {
   }
 
   let dmUsers = users;
-  if (dmUsers.length > 1)
+
+  if (dmUsers.length > 1) {
     dmUsers = dmUsers.filter(user => user.id !== currentUser.id);
+  }
+
   if (type === "dm") {
     dmUsers = dmUsers.length ? dmUsers : [currentUser];
   } else {
-    dmUsers = _.sortBy(dmUsers, "id");
+    dmUsers = sortBy(dmUsers, "id");
   }
 
   return `/direct/${dmUsers.map(user => user.username).join(",")}`;
+}
+
+export function extractEmails(text) {
+  return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
 }

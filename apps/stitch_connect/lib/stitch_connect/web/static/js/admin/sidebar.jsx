@@ -5,7 +5,7 @@ import { Link, withRouter, matchPath } from "react-router-dom";
 import ListGroup from "react-bootstrap/lib/ListGroup";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 
-import { isAdmin } from "../util/utils";
+import { isAdmin } from "../lib/utils";
 import InviteModal from "../common/modals/invite-modal";
 
 @inject("teamStore", "presenceStore", "userStore")

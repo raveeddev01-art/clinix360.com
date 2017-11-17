@@ -16,7 +16,7 @@ import Users from "./users/";
 import Billing from "./billing/billing";
 import Analytics from "./analytics/index";
 import Switcher from "../common/components/switcher/index";
-import { isAdmin } from "../util/utils";
+import { isAdmin } from "../lib/utils";
 
 @inject("titleStore")
 @observer

@@ -10,7 +10,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../util/constants";
-import { getRoomNavLink } from "../lib/room";
+import { getRoomNavLink } from "../lib/utils";
 
 @inject("presenceStore", "sidemenuStore", "groupsStore", "groupsStore")
 @observer

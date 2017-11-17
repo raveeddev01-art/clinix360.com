@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import { NavLink } from "react-router-dom";
 
-import { getRoomNavLink } from "../../../../lib/room";
+import { getRoomNavLink } from "../../../../lib/utils";
 
 @inject("groupsStore")
 class MessageFooter extends Component {

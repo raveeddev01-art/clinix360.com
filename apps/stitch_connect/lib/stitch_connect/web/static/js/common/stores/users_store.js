@@ -7,7 +7,7 @@
 import { observable, computed, action } from "mobx";
 
 import history from "../../util/history";
-import { getRoomNavLink } from "../../lib/room";
+import { getRoomNavLink } from "../../lib/utils";
 
 class UsersStore {
   @observable users = [];
