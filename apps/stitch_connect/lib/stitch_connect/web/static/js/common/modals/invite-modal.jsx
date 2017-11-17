@@ -77,6 +77,13 @@ class InviteModal extends Component {
     });
   };
 
+  onRemoveInvite = index => () => {
+    const { invites } = this.state;
+    if (invites.length <= 1) return;
+    invites.splice(index, 1);
+    this.setState({ invites });
+  };
+
   onAddEmails = () => {
     const emails = extractEmails(this.state.emails) || [];
 
@@ -115,7 +122,6 @@ class InviteModal extends Component {
     evt.preventDefault();
 
     const { sent } = this.state;
-
     if (sent) {
       this.reset();
     } else {
@@ -171,9 +177,6 @@ class InviteModal extends Component {
         setFocus = true;
       }
     });
-    this.setState({
-      invites
-    });
     return invites.filter(invite => !!invite.email.trim());
   }
 
@@ -187,8 +190,7 @@ class InviteModal extends Component {
     if (!this.isValid()) {
       return;
     }
-    const { invites } = this.state;
-    const filteredEmails = invites.map(invite => invite.email);
+    const filteredEmails = this.prepareInvites().map(invite => invite.email);
     if (filteredEmails.length) {
       post(`/api/v1/invitations`, {
         body: { email_collection: filteredEmails.join(",") }
@@ -273,11 +275,11 @@ class InviteModal extends Component {
                     key={`invite_${index}`}
                     validationState={validationState}
                   >
-                    <Col componentClass={ControlLabel} sm={3}>
+                    <Col componentClass={ControlLabel} xs={12} sm={3}>
                       Email
                     </Col>
 
-                    <Col sm={9}>
+                    <Col xs={10} sm={7}>
                       <FormControl
                         type="email"
                         value={invite.email}
@@ -300,6 +302,13 @@ class InviteModal extends Component {
                           <i className="fa fa-check-circle" /> Invite has been
                           sent
                         </HelpBlock>
+                      )}
+                    </Col>
+                    <Col xs={2}>
+                      {invites.length > 1 && (
+                        <a className="btn" onClick={this.onRemoveInvite(index)}>
+                          <i className="fa fa fa-times-circle-o" />
+                        </a>
                       )}
                     </Col>
                   </FormGroup>
