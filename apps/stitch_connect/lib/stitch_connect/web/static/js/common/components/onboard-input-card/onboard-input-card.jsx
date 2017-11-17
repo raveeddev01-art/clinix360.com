@@ -39,10 +39,11 @@ class OnboardInputCard extends Component {
       helperText,
       placeholder,
       isRequired,
+      children,
       ...otherProps
     } = this.props;
     return (
-      <OnboardCard {...otherProps} onNext={this._onNext}>
+      <OnboardCard {...otherProps} onNext={this._onNext} description={children}>
         <FormGroup bsSize="large">
           <FormControl
             required={isRequired}
@@ -62,10 +63,11 @@ class OnboardInputCard extends Component {
 
 OnboardInputCard.propTypes = {
   onNext: PropTypes.func.isRequired,
-  backUrl: PropTypes.string,
-  restartUrl: PropTypes.string,
   title: PropTypes.string.isRequired,
-  description: PropTypes.node,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
   nextButtonText: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   helperText: PropTypes.string.isRequired,
@@ -78,7 +80,7 @@ OnboardInputCard.propTypes = {
 
 OnboardInputCard.defaultProps = {
   onNext: () => {},
-  description: "",
+  children: "",
   title: "",
   placeholder: "",
   helperText: "",
