@@ -237,7 +237,7 @@ class SidemenuStore {
 
   @action
   onJoinedGroup = joinedGroup => {
-    const group = this.groups.find(g => g.id === joinedGroup.id);
+    const group = this.getGroupById(joinedGroup.id);
 
     if (group) {
       group.joined = true;
@@ -246,7 +246,7 @@ class SidemenuStore {
 
   @action
   onLeftGroup = ({ group_id: groupId }) => {
-    const group = this.groups.find(g => g.id === groupId);
+    const group = this.getGroupById(groupId);
 
     if (group) {
       group.joined = false;
@@ -260,7 +260,7 @@ class SidemenuStore {
       return;
     }
 
-    const group = this.groups.find(g => g.id === newMessage.group_id);
+    const group = this.getGroupById(newMessage.group_id);
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
     if (!group) {
@@ -284,7 +284,7 @@ class SidemenuStore {
     // if it's DM and hidden, show it on sidebar
     if (group.type !== "regular" && group.is_hidden) {
       put(`/api/v1/groups/${group.id}/unhide`).then(() => {
-        const sidebarGroup = this.groups.find(g => g.id === group.id);
+        const sidebarGroup = this.getGroupById(group.id);
         sidebarGroup.is_hidden = false;
       });
     }
@@ -292,9 +292,10 @@ class SidemenuStore {
 
   @action
   updateGroupData = (id, data) => {
-    const index = this.groups.findIndex(group => group.id === id);
-    if (index > -1) {
-      Object.assign(this.groups[index], data);
+    const group = this.getGroupById(id);
+
+    if (group) {
+      Object.assign(group, data);
     }
   };
 
@@ -440,7 +441,7 @@ class SidemenuStore {
     const desktopNotification = notificationStore.getGroupNotificationPreference(
       newMessage.group_id
     );
-    const group = this.groups.find(g => g.id === newMessage.group_id);
+    const group = this.getGroupById(newMessage.group_id);
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
     if (
