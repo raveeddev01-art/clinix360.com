@@ -98,7 +98,7 @@ class ChannelStore {
   }
 
   joinTeamChannel(options = {}) {
-    const { presenceStore, sidemenuStore } = this.rootStore;
+    const { presenceStore, sidemenuStore, usersStore } = this.rootStore;
 
     const joined = this.join(this.teamChannelTopic, options);
 
@@ -108,8 +108,9 @@ class ChannelStore {
     this.teamChannel.on("unlocked", presenceStore.onUnlocked);
 
     this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
-    this.teamChannel.on("user_joined", sidemenuStore.onUserJoined);
-    this.teamChannel.on("user_info", sidemenuStore.onUserInfo);
+
+    this.teamChannel.on("user_joined", usersStore.onUserJoined);
+    this.teamChannel.on("user_info", usersStore.onUserInfo);
 
     return joined;
   }

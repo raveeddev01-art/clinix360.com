@@ -45,10 +45,12 @@
       {
         "ignore": [
           "addonStore",
+          "adminPanelStore",
           "authenticationStore",
+          "exportStore",
           "filesStore",
-          "groupStore",
           "groupPresenceStore",
+          "groupStore",
           "invitationStore",
           "membersStore",
           "mentionsStore",
@@ -56,6 +58,7 @@
           "notificationStore",
           "pinnedMessageStore",
           "presenceStore",
+          "registrationStore",
           "resetPasswordStore",
           "searchStore",
           "sidemenuStore",
@@ -63,15 +66,13 @@
           "teamStore",
           "titleStore",
           "uploadStore",
-          "pinnedMessageStore",
-          "registrationStore",
-          "teamStore",
           "userStore",
-          "exportStore",
-          "adminPanelStore",
+          "usersStore",
+
           "match",
           "location",
           "history",
+
           "stripe"
         ]
       }

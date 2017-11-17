@@ -8,11 +8,11 @@ import SettingPanel from "../components/setting-panel/setting-panel";
 const title = "Deactivated Members";
 const description = "Manage deactivated members and re-enable accounts.";
 
-@inject("sidemenuStore")
+@inject("usersStore")
 @observer
 class DisabledMembersPanel extends Component {
   render() {
-    const { sidemenuStore } = this.props;
+    const { usersStore } = this.props;
 
     return (
       <SettingPanel saveButtonText="" title={title} description={description}>
@@ -28,7 +28,7 @@ class DisabledMembersPanel extends Component {
               </Col>
             </Row>
           </div>
-          {sidemenuStore.deactivatedUsers.map(user => {
+          {usersStore.deactivatedUsers.map(user => {
             return (
               <MemberItem
                 {...this.props}

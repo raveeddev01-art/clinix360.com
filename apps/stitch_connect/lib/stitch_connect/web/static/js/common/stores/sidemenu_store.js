@@ -1,9 +1,13 @@
+/**
+ * Sidemenu store
+ * 
+ * This is a mobx store that keeps track of data related to sidemenu and global state.
+ */
+
 import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
 import orderBy from "lodash/orderBy";
-import history from "../../util/history";
-import { getRoomNavLink } from "../../lib/room";
 
 class SidemenuStore {
   @observable loading = true; // IF True, shows loading page
@@ -13,7 +17,6 @@ class SidemenuStore {
   @observable subdomain = "";
   @observable teamId = "";
   @observable groups = [];
-  @observable users = [];
   @observable groupCursors = {}; // { group_id: message_id }
 
   ROOM_MENU_ITEM_ANCHOR_PREFIX = "sidemenu_room_";
@@ -26,7 +29,6 @@ class SidemenuStore {
     this.teamName = props.teamName;
     this.teamId = props.teamId;
     this.subdomain = props.subdomain;
-    this.users = props.dm_users || [];
 
     this.favicon = new Favico({
       animation: "none",
@@ -123,56 +125,6 @@ class SidemenuStore {
     return room;
   }
 
-  /* User related */
-
-  getUserById = userId => this.users.find(u => u.id === userId);
-
-  @computed
-  get usersByUsername() {
-    const map = {};
-
-    this.users.forEach(user => {
-      map[user.username] = user;
-    });
-
-    return map;
-  }
-
-  @computed
-  get usersById() {
-    const map = {};
-
-    this.users.forEach(user => {
-      map[user.id] = user;
-    });
-
-    return map;
-  }
-
-  @computed
-  get activatedUsers() {
-    return this.users.filter(u => !u.disabled);
-  }
-
-  @computed
-  get deactivatedUsers() {
-    return this.users.filter(u => u.disabled);
-  }
-
-  @computed
-  get onlineUsers() {
-    const { presenceStore } = this.rootStore;
-
-    return this.activatedUsers.filter(u => presenceStore.isOnline(u.id));
-  }
-
-  @computed
-  get offlineUsers() {
-    const { presenceStore } = this.rootStore;
-
-    return this.activatedUsers.filter(u => !presenceStore.isOnline(u.id));
-  }
-
   @computed
   get totalMentionsCount() {
     return this.groups.reduce((count, group) => {
@@ -190,8 +142,12 @@ class SidemenuStore {
 
   @action
   loadApp = async () => {
+    const { usersStore } = this.rootStore;
+
+    this.loading = true;
+
     await this.loadGroups();
-    await this.loadUsers();
+    await usersStore.loadUsers();
 
     this.loading = false;
   };
@@ -201,13 +157,6 @@ class SidemenuStore {
     return get("/api/v1/groups").then(response => {
       this.groups = orderBy(response.data, ["name"]);
       this.updateFavicon();
-    });
-  };
-
-  @action
-  loadUsers = () => {
-    return get("/api/v1/users").then(response => {
-      this.users = response.data;
     });
   };
 
@@ -499,43 +448,6 @@ class SidemenuStore {
       duration
     });
   }
-
-  @action
-  onUserJoined = user => {
-    this.users.push(user);
-  };
-
-  @action
-  onUserInfo = user => {
-    const index = this.users.findIndex(u => u.id === user.id);
-
-    this.users[index] = user;
-
-    if (user.id === currentUser.id) {
-      const { userStore } = this.rootStore;
-
-      userStore.onUserInfo(user);
-    }
-
-    // if username of the user in multi-dm or single-dm current user is on, is changed,
-    // it should redirect
-    const { groupStore } = this.rootStore;
-    if (
-      groupStore.groupType === "single-dm" ||
-      groupStore.groupType === "multi-dm"
-    ) {
-      const changedUser = groupStore.users.find(u => u.id === user.id);
-      if (changedUser.username !== user.username) {
-        changedUser.username = user.username;
-        history.replace(
-          getRoomNavLink({
-            type: groupStore.groupType === "single-dm" ? "dm" : "multi-dm",
-            users: groupStore.users
-          })
-        );
-      }
-    }
-  };
 
   @action
   onTeamRenamed = ({ name }) => {

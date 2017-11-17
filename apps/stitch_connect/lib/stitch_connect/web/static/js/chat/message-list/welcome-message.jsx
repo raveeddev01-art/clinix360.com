@@ -3,7 +3,7 @@ import moment from "moment";
 import cx from "classnames";
 import { inject, observer } from "mobx-react";
 
-@inject("groupStore", "sidemenuStore")
+@inject("groupStore", "usersStore")
 @observer
 class WelcomeMessage extends Component {
   getIcon() {
@@ -25,10 +25,10 @@ class WelcomeMessage extends Component {
   }
 
   getUserFullName(userParam) {
-    const { sidemenuStore } = this.props;
+    const { usersStore } = this.props;
     let user = userParam;
     if (typeof userParam === "number") {
-      user = sidemenuStore.users.find(u => u.id === userParam);
+      user = usersStore.users.find(u => u.id === userParam);
     }
 
     if (!user) return "";
