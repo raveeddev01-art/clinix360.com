@@ -31,7 +31,8 @@ class InviteModal extends Component {
       sent: false,
       alertMessage: "",
       alertStyle: "",
-      alertVisible: false
+      alertVisible: false,
+      results: {}
     };
   }
 
@@ -47,7 +48,8 @@ class InviteModal extends Component {
         ],
         sent: false,
         emails: "",
-        alertVisible: false
+        alertVisible: false,
+        results: {}
       });
     }
   }
@@ -113,7 +115,7 @@ class InviteModal extends Component {
       mode: "default",
       emails: "",
       alertVisible: true,
-      alertMessage: `Found ${invites.length} emails to invite.`,
+      alertMessage: `We found ${invites.length} emails to invite. If this looks correct, click Send.`,
       alertStyle: "success"
     });
   };
@@ -184,8 +186,50 @@ class InviteModal extends Component {
     return this.prepareInvites().every(invite => !invite.error);
   }
 
+  showResultMessage(results) {
+    const totalInvitations = Object.keys(results).length;
+    const successInvitations = Object.values(results).filter(
+      result => result === "ok"
+    ).length;
+
+    this.setState({
+      results
+    });
+
+    if (successInvitations === 0) {
+      this.setState({
+        alertMessage: `Your ${totalInvitations === 1
+          ? "1 invitation"
+          : `${totalInvitations} invitations`} failed to send. Review the errors below.`,
+        alertVisible: true,
+        alertStyle: "danger"
+      });
+    } else if (totalInvitations === successInvitations) {
+      this.setState({
+        alertMessage: `You successfully invited ${successInvitations === 1
+          ? "1 member"
+          : `${successInvitations} members`}.`,
+        alertVisible: true,
+        alertStyle: "success"
+      });
+    } else {
+      this.setState({
+        alertMessage: `You successfully invited ${successInvitations === 1
+          ? `1 member`
+          : `${successInvitations} members`}, but ${totalInvitations -
+          successInvitations ===
+        1
+          ? `1 invitation`
+          : `${totalInvitations -
+              successInvitations} invitations`} failed to send. Review the errors below.`,
+        alertVisible: true,
+        alertStyle: "success"
+      });
+    }
+  }
+
   sendInvites() {
-    this.setState({ alertVisible: false });
+    this.setState({ alertVisible: false, results: {} });
 
     if (!this.isValid()) {
       return;
@@ -195,14 +239,9 @@ class InviteModal extends Component {
       post(`/api/v1/invitations`, {
         body: { email_collection: filteredEmails.join(",") }
       })
-        .then(() => {
+        .then(res => {
           this.setState({ sent: true });
-          this.setState({
-            alertMessage:
-              "You have successfully sent the following invitations.",
-            alertVisible: true,
-            alertStyle: "success"
-          });
+          this.showResultMessage(res.data);
         })
         .catch(err => {
           this.setState({
@@ -221,7 +260,7 @@ class InviteModal extends Component {
   }
 
   render() {
-    const { mode, show, invites, sent, emails } = this.state;
+    const { mode, show, invites, sent, emails, results } = this.state;
     const { alertMessage, alertVisible, alertStyle } = this.state;
     const { toggle } = this.props;
 
@@ -263,11 +302,13 @@ class InviteModal extends Component {
               </FormGroup>
             ) : (
               invites.map((invite, index) => {
-                const inviteError = !!invite.error;
                 const inviteSent = sent && !!invite.email.trim();
-                const validationState = inviteError
-                  ? "error"
-                  : inviteSent ? "success" : null;
+                const inviteError = !!invite.error;
+                const resultOk = results[invite.email] === "ok";
+                const resultError = resultOk ? null : results[invite.email];
+                const validationState = inviteSent
+                  ? resultOk ? "success" : "error"
+                  : inviteError ? "error" : null;
 
                 return (
                   <FormGroup
@@ -290,14 +331,14 @@ class InviteModal extends Component {
                         }}
                       />
 
-                      {inviteError && (
+                      {validationState === "error" && (
                         <HelpBlock>
                           <i className="fa fa-exclamation-circle" />{" "}
-                          {invite.error}
+                          {inviteSent ? resultError : invite.error}
                         </HelpBlock>
                       )}
 
-                      {inviteSent && (
+                      {validationState === "success" && (
                         <HelpBlock>
                           <i className="fa fa-check-circle" /> Invite has been
                           sent
