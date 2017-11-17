@@ -67,35 +67,35 @@ class PasswordValidatorComponent extends Component {
       <HelpBlock className="m-b-20 password-validator">
         Your password must contain:
         <ul className="list-unstyled password-checklist">
-          <li className={cx({ "text-danger": !passwordLengthValid })}>
+          <li className={cx({ "text-muted": !passwordLengthValid })}>
             {passwordLengthValid ? (
               <i className="fa fa-check" />
             ) : (
               <i className="fa fa-close" />
             )}&nbsp; At least 8 characters
           </li>
-          <li className={cx({ "text-danger": !passwordUppercaseValid })}>
+          <li className={cx({ "text-muted": !passwordUppercaseValid })}>
             {passwordUppercaseValid ? (
               <i className="fa fa-check" />
             ) : (
               <i className="fa fa-close" />
             )}&nbsp; An uppercase letter
           </li>
-          <li className={cx({ "text-danger": !passwordLowercaseValid })}>
+          <li className={cx({ "text-muted": !passwordLowercaseValid })}>
             {passwordLowercaseValid ? (
               <i className="fa fa-check" />
             ) : (
               <i className="fa fa-close" />
             )}&nbsp; A lowercase letter
           </li>
-          <li className={cx({ "text-danger": !passwordDigitsValid })}>
+          <li className={cx({ "text-muted": !passwordDigitsValid })}>
             {passwordDigitsValid ? (
               <i className="fa fa-check" />
             ) : (
               <i className="fa fa-close" />
             )}&nbsp; A number
           </li>
-          <li className={cx({ "text-danger": !passwordSymbolsValid })}>
+          <li className={cx({ "text-muted": !passwordSymbolsValid })}>
             {passwordSymbolsValid ? (
               <i className="fa fa-check" />
             ) : (
