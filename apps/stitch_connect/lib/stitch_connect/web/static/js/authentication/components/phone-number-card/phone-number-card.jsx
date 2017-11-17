@@ -4,7 +4,7 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Alert from "react-bootstrap/lib/Alert";
-import OnboardCard from "../onboard-card/onboard-card";
+import { OnboardCard } from "common/components";
 
 class PhoneNumberCard extends Component {
   constructor(...args) {
@@ -23,7 +23,8 @@ class PhoneNumberCard extends Component {
 
   onNext = () => {
     post(`/api/v1/users/validate-phone-number`, {
-      body: { phone_number: this.state.phone }
+      body: { phone_number: this.state.phone },
+      hideNotify: true
     })
       .then(() => {
         this.setState({ hasError: false });
@@ -73,9 +74,7 @@ class PhoneNumberCard extends Component {
 }
 
 PhoneNumberCard.propTypes = {
-  onNext: PropTypes.func.isRequired,
-  backUrl: PropTypes.string.isRequired,
-  restartUrl: PropTypes.string.isRequired
+  onNext: PropTypes.func.isRequired
 };
 
 PhoneNumberCard.defaultProps = {

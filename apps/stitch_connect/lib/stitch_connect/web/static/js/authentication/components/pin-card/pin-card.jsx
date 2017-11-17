@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import OnboardCard from "../onboard-card/onboard-card";
-import PinInput from "../../../common/components/pin-input/index";
+import { OnboardCard, PinInput } from "common/components";
 
 class PinCard extends Component {
   constructor(...args) {
@@ -54,15 +53,11 @@ class PinCard extends Component {
 }
 
 PinCard.propTypes = {
-  onNext: PropTypes.func.isRequired,
-  backUrl: PropTypes.string,
-  restartUrl: PropTypes.string
+  onNext: PropTypes.func.isRequired
 };
 
 PinCard.defaultProps = {
-  onNext: () => {},
-  backUrl: "",
-  restartUrl: ""
+  onNext: () => {}
 };
 
 export default PinCard;

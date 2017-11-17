@@ -1,4 +1,5 @@
 import { observable, action } from "mobx";
+import { isEmail } from "util/validators";
 
 class RegistrationStore {
   @observable userId = "";
@@ -8,21 +9,21 @@ class RegistrationStore {
   @observable username = "";
   @observable password = "";
   @observable pin = "";
+  @observable phone = "";
 
   @observable teamName = "";
-  @observable teamSlug = "";
   @observable teamId = "";
   @observable teamUrl = "";
 
   @observable sendInvites = false;
-  @observable invites = ["", "", ""];
+  @observable invites = [];
 
   @observable saving = false;
 
   @action
   createTeam = () => {
     this.saving = true;
-    post(`/api/v1/teams`, {
+    return post(`/api/v1/teams`, {
       body: {
         name: this.teamName,
         url: this.teamUrl
@@ -35,9 +36,7 @@ class RegistrationStore {
         this.teamUrl = response.data.slug;
 
         if (this.sendInvites) {
-          emails = this.invites
-            .filter(email => /(\w+)@(\w+)\.[a-zA-Z]/g.test(email))
-            .map(email => email.trim());
+          emails = this.invites.filter(isEmail).map(email => email.trim());
         }
         return patch(`/api/v1/users/${this.userId}/complete-onboarding`, {
           body: {
@@ -56,8 +55,9 @@ class RegistrationStore {
         this.saving = false;
         window.location.href = `https://${this.teamUrl}.${applicationHost}`;
       })
-      .catch(() => {
+      .catch(err => {
         this.saving = false;
+        throw err;
       });
   };
 }
