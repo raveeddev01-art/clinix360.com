@@ -44,7 +44,7 @@ defmodule Stitch.MeteorMigration do
   def index_users(users), do: Enum.reduce(users, %{}, & Map.put(&2, &1.username, &1))
 
   def clean_db(%{team_json: team_json}) do
-    raise "Not allowed" unless @allow_retry
+    unless @allow_retry, do: raise "Not allowed"
     {:ok, team} = create_team_unless_exists(parse_json_file(team_json))
 
     group_ids =
@@ -155,6 +155,12 @@ defmodule Stitch.MeteorMigration do
   def log_meteor_data_error(message) do
     Logger.error(message)
     raise MigrationError
+  end
+
+  def parse_meteor_json(file) do
+    room = File.read!("_meteor-data/migrationclinic1/rooms2.json")
+    room = "[" <> room <> "]"
+    room = room |> String.split |> Enum.map_join(& String.trim(&1)) |> String.replace("}{", "},{")
   end
 
   def run do
