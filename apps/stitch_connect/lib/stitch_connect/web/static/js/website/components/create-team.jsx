@@ -25,7 +25,7 @@ class CreateTeam extends Component {
         body: { id: resp.data.id }
       }).then(() => {
         window.location.href = `/signup/confirmation-code?userId=${resp.data
-          .id}`;
+          .id}&email=${encodeURIComponent(this.state.email)}`;
       });
     });
   };
