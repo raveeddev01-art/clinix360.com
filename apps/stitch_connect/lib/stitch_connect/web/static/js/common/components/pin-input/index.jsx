@@ -12,7 +12,10 @@ class PinInput extends Component {
   }
 
   onChangeCode = index => event => {
-    this.replaceCode(index, event.target.value, () => this.moveRight(index));
+    this.replaceCode(index, event.target.value, () => {
+      this.moveRight(index);
+      this.checkAndSubmit();
+    });
   };
 
   onKeyDown = index => event => {
@@ -48,7 +51,7 @@ class PinInput extends Component {
     if (text.length === 4 && !isNaN(text)) {
       this.setState({ digits: text.split("") }, () => {
         this.digitComponents[3].focus();
-        this.submitConfirmationCode();
+        this.checkAndSubmit();
       });
     }
   };
@@ -66,8 +69,6 @@ class PinInput extends Component {
     if (index < 3) {
       this.digitComponents[index + 1].focus();
       this.digitComponents[index + 1].select();
-    } else if (index === 3) {
-      this.submitConfirmationCode();
     }
   };
 
@@ -84,9 +85,11 @@ class PinInput extends Component {
     }
   };
 
-  submitConfirmationCode = () => {
+  checkAndSubmit = () => {
     const code = this.state.digits.join("");
-    this.props.onValid(code);
+    if (code.length === 4) {
+      this.props.onValid(code);
+    }
   };
 
   renderCodeInput = (from, to) => {
