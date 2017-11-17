@@ -152,6 +152,16 @@
         box-shadow: none;
       }
     }
+
+    .has-success {
+      .form-control {
+        border-color: $brand-primary;
+      }
+
+      .help-block {
+        color: $brand-primary;
+      }
+    }
   }
 }
 

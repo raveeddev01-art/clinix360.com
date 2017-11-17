@@ -305,11 +305,15 @@ class InviteModal extends Component {
                       )}
                     </Col>
                     <Col xs={2}>
-                      {invites.length > 1 && (
-                        <a className="btn" onClick={this.onRemoveInvite(index)}>
-                          <i className="fa fa fa-times-circle-o" />
-                        </a>
-                      )}
+                      {!sent &&
+                        invites.length > 1 && (
+                          <a
+                            className="btn"
+                            onClick={this.onRemoveInvite(index)}
+                          >
+                            <i className="fa fa fa-times-circle-o" />
+                          </a>
+                        )}
                     </Col>
                   </FormGroup>
                 );
@@ -318,17 +322,18 @@ class InviteModal extends Component {
           </Form>
 
           <Row className="m-u-20">
-            {mode === "default" && (
-              <Col sm={12}>
-                <a disabled={sent} onClick={this.onAddInvite}>
-                  <strong>Add Single Invitation</strong>
-                </a>{" "}
-                or{" "}
-                <a disabled={sent} onClick={this.switchToBulk}>
-                  <strong>Add Multiple Invitations</strong>
-                </a>
-              </Col>
-            )}
+            {mode === "default" &&
+              !sent && (
+                <Col sm={12}>
+                  <a disabled={sent} onClick={this.onAddInvite}>
+                    <strong>Add Single Invitation</strong>
+                  </a>{" "}
+                  or{" "}
+                  <a disabled={sent} onClick={this.switchToBulk}>
+                    <strong>Add Multiple Invitations</strong>
+                  </a>
+                </Col>
+              )}
           </Row>
         </Modal.Body>
         <Modal.Footer>
