@@ -1,3 +1,9 @@
+/**
+ * Group store
+ * 
+ * This store keeps track of data of of the group that current user is in now.
+ */
+
 import { observable, computed, action } from "mobx";
 import _ from "lodash";
 

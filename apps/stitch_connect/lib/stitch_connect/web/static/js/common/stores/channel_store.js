@@ -1,3 +1,10 @@
+/**
+ * Channel store
+ * 
+ * This store is the central hub for socket channels that are used across the app.
+ * All socket channels used in the app MUST be registered in this store.
+ */
+
 class ChannelStore {
   channels = {};
 
@@ -44,15 +51,16 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
-    const { sidemenuStore } = this.rootStore;
+    const { sidemenuStore, groupsStore } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
-    this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
-    this.eventChannel.on("joined_group", sidemenuStore.onJoinedGroup);
-    this.eventChannel.on("left_group", sidemenuStore.onLeftGroup);
-    this.eventChannel.on("group_renamed", sidemenuStore.onRenameGroup);
-
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
+
+    this.eventChannel.on("new_group", groupsStore.onNewGroup);
+    this.eventChannel.on("joined_group", groupsStore.onJoinedGroup);
+    this.eventChannel.on("left_group", groupsStore.onLeftGroup);
+    this.eventChannel.on("group_renamed", groupsStore.onRenameGroup);
+
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache
     });
@@ -98,7 +106,7 @@ class ChannelStore {
   }
 
   joinTeamChannel(options = {}) {
-    const { presenceStore, sidemenuStore } = this.rootStore;
+    const { presenceStore, sidemenuStore, usersStore } = this.rootStore;
 
     const joined = this.join(this.teamChannelTopic, options);
 
@@ -108,8 +116,9 @@ class ChannelStore {
     this.teamChannel.on("unlocked", presenceStore.onUnlocked);
 
     this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
-    this.teamChannel.on("user_joined", sidemenuStore.onUserJoined);
-    this.teamChannel.on("user_info", sidemenuStore.onUserInfo);
+
+    this.teamChannel.on("user_joined", usersStore.onUserJoined);
+    this.teamChannel.on("user_info", usersStore.onUserInfo);
 
     return joined;
   }

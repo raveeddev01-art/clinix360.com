@@ -15,7 +15,7 @@ import VisibilitySensor from "react-visibility-sensor";
 import { confirm } from "../../common/modals";
 import MessageContent from "../../common/components/messages/message-content/message-content";
 
-@inject("messageStore", "groupStore", "sidemenuStore")
+@inject("messageStore", "groupStore", "usersStore")
 @observer
 class Message extends Component {
   constructor(props) {
@@ -147,9 +147,9 @@ class Message extends Component {
       return null;
     }
 
-    const { sidemenuStore } = this.props;
+    const { usersStore } = this.props;
     const { pinned_at: pinnedAt, pinned_by: { id: pinnedById } } = message;
-    const pinnedBy = sidemenuStore.usersById[pinnedById];
+    const pinnedBy = usersStore.usersById[pinnedById];
     const pinTooltip = (
       <Tooltip id="pin-tooltip">
         <span>
@@ -251,7 +251,7 @@ class Message extends Component {
   }
 
   render() {
-    const { message, messageStore, sidemenuStore } = this.props;
+    const { message, messageStore, usersStore } = this.props;
     const { user: { id: userId }, inserted_at: timestamp } = message;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
     const elementClassName = cx("message", {
@@ -261,7 +261,7 @@ class Message extends Component {
     const containerClassName = cx("message-container", {
       mine: userId === currentUser.id
     });
-    const user = sidemenuStore.usersById[userId];
+    const user = usersStore.usersById[userId];
 
     return (
       <div>

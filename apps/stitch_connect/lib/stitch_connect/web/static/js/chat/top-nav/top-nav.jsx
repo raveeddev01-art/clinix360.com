@@ -19,7 +19,7 @@ import NavItemHide from "./nav-items/nav-item-hide";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 
-@inject("addonStore", "groupStore", "searchStore", "sidemenuStore")
+@inject("addonStore", "groupStore", "groupsStore", "searchStore")
 @observer
 class TopNav extends Component {
   constructor(props) {
@@ -61,10 +61,10 @@ class TopNav extends Component {
   };
 
   handleJoin = () => {
-    const { groupStore, sidemenuStore } = this.props;
+    const { groupStore, groupsStore } = this.props;
 
     groupStore.join();
-    sidemenuStore.loadGroups();
+    groupsStore.loadGroups();
 
     // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
     document.dispatchEvent(new MouseEvent("click"));

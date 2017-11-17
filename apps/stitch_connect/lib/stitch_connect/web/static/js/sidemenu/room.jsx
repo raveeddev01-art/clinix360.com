@@ -9,9 +9,10 @@ import classNames from "classnames";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
+import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../util/constants";
 import { getRoomNavLink } from "../lib/room";
 
-@inject("presenceStore", "sidemenuStore")
+@inject("presenceStore", "sidemenuStore", "groupsStore", "groupsStore")
 @observer
 class Room extends Component {
   onVisibleChange = isVisible => {
@@ -88,10 +89,12 @@ class Room extends Component {
 
   hideDM = event => {
     event.preventDefault();
-    const { sidemenuStore, room, history } = this.props;
-    sidemenuStore.hideGroup(room.id).then(() => {
-      sidemenuStore.loadGroups();
-      history.push(`/rooms/${sidemenuStore.defaultGroup.slug}`); // when room is hidden, should redirect to general
+
+    const { groupsStore, room, history } = this.props;
+
+    groupsStore.hideGroup(room.id).then(() => {
+      groupsStore.loadGroups();
+      history.push(`/rooms/${groupsStore.defaultGroup.slug}`); // when room is hidden, should redirect to general
     });
   };
 
@@ -101,7 +104,7 @@ class Room extends Component {
       "has-unread": room.unread_messages_count > 0
     });
     const badge = this.getBadge();
-    const anchorName = `${sidemenuStore.ROOM_MENU_ITEM_ANCHOR_PREFIX}${room.id}`;
+    const anchorName = `${ROOM_MENU_ITEM_ANCHOR_PREFIX}${room.id}`;
     const roomHidden =
       (room.type === "dm" || room.type === "multi_dm") && room.is_hidden;
 
