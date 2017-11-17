@@ -13,6 +13,7 @@ import Button from "react-bootstrap/lib/Button";
 import _ from "lodash";
 
 import isEmail from "validator/lib/isEmail";
+import { extractEmails } from "../../util/utils";
 
 class InviteModal extends Component {
   constructor(props) {
@@ -77,12 +78,11 @@ class InviteModal extends Component {
   };
 
   onAddEmails = () => {
-    const emails = this.state.emails.split(",");
+    const emails = extractEmails(this.state.emails) || [];
 
     let invites = [];
-    emails.forEach(em => {
-      const email = em.trim();
-      if (email !== "" && isEmail(email)) {
+    emails.forEach(email => {
+      if (isEmail(email)) {
         invites.push({
           email
         });
@@ -140,7 +140,8 @@ class InviteModal extends Component {
 
   switchToSingles = () => {
     this.setState({
-      mode: "default"
+      mode: "default",
+      alertVisible: false
     });
   };
 
