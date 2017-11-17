@@ -6,6 +6,11 @@ defmodule Stitch.MeteorMigration do
   alias Stitch.{Accounts.User, Team, TeamQueries, Group, GroupUser, Message}
   alias Stitch.MeteorMigration
   import Ecto.Query
+  require Logger
+
+  defmodule MigrationError do
+    defexception message: "Meteor migration data couldn't be found."
+  end
 
   def run_migration do
     run_migration("_meteor-data/users.json", "_meteor-data/rooms.json")
@@ -112,7 +117,38 @@ defmodule Stitch.MeteorMigration do
       Repo.update!(Ecto.Changeset.change(team, open_invitations_enabled: true))
     end)
   end
+
+  def get_config do
+    meteor_data_dir = "_meteor-data"
+    team_name = System.get_env("METEOR_TEAM_NAME")
+
+    unless File.exists?(meteor_data_dir), do: log_error "#{meteor_data_dir} doesn't exist."
+    unless team_name, do: log_error "Requires meteor team name. Pass meteor team_name via METEOR_TEAM_NAME env."
+
+    team_directory = Path.join(meteor_data_dir, team_name)
+    team_json = Path.join(team_directory, "team.json")
+    users_json = Path.join(team_directory, "users.json")
+    rooms_json = Path.join(team_directory, "rooms.json")
+
+    unless File.exists?(team_directory), do: log_error "#{team_directory} doesn't exist."
+    unless File.exists?(team_json), do: log_error "#{team_json} doesn't exist."
+    unless File.exists?(users_json), do: log_error "#{users_json} doesn't exist."
+    unless File.exists?(rooms_json), do: log_error "#{rooms_json} doesn't exist."
+
+    %{
+      team_json: team_json,
+      users_json: users_json,
+      rooms_json: rooms_json,
+    }
+  end
+
+  def log_error(message) do
+    Logger.error(message)
+    raise MigrationError
+  end
 end
 
-Stitch.MeteorMigration.clean_db
+IO.inspect Stitch.MeteorMigration.get_config
+# Stitch.MeteorMigration.clean_db
 Stitch.MeteorMigration.run_migration
+
