@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Invitation, MessageQueries}
+  alias Stitch.{Invitation, MessageQueries, TeamAuthorization}
   alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
   plug :fetch_session when action in [:accept]
 
@@ -28,12 +28,26 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   end
 
   def create(conn, %{"email_collection" => email_collection}) do
-    emails = String.split(email_collection, ",")
-    Enum.each(emails, fn(email) ->
-      Invitation.invite_to_team(conn.assigns.current_user.id, email)
-    end)
-    conn
-    |> json(%{message: "Invitations sent to all users."})
+    current_user = conn.assigns.current_user
+    team = conn.assigns.team
+    emails = email_collection |> String.split(",") |> Enum.uniq
+
+    if TeamAuthorization.can_send_invites?(current_user, team) do
+      results = Enum.reduce emails, %{}, fn email, map ->
+        result = case Invitation.invite_to_team(current_user.id, email) do
+          {:ok, _user} -> "ok"
+          {:error, reason} -> reason
+        end
+
+        Map.put(map, email, result)
+      end
+
+      json(conn, results)
+    else
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Unauthorized to send invites."})
+    end
   end
 
   def revoke(conn, %{"id" => id}) do
