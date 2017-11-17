@@ -9,13 +9,11 @@ const title = "Full Members";
 const description =
   "Manage full team members and their roles as owners, admins, or members.";
 
-@inject("membersStore")
+@inject("sidemenuStore")
 @observer
 class FullMembersPanel extends Component {
   render() {
-    const { membersStore } = this.props;
-    const onlineUsers = membersStore.onlineUsers.filter(u => !u.disabled);
-    const offlineUsers = membersStore.offlineUsers.filter(u => !u.disabled);
+    const { sidemenuStore } = this.props;
 
     return (
       <SettingPanel saveButtonText="" title={title} description={description}>
@@ -31,12 +29,12 @@ class FullMembersPanel extends Component {
               </Col>
             </Row>
           </div>
-          {onlineUsers.map(user => {
+          {sidemenuStore.onlineUsers.map(user => {
             return (
               <MemberItem {...this.props} user={user} online key={user.id} />
             );
           })}
-          {offlineUsers.map(user => {
+          {sidemenuStore.offlineUsers.map(user => {
             return (
               <MemberItem
                 {...this.props}

@@ -35,6 +35,19 @@ class SidemenuStore {
     this.notificationAudio = new Audio("/audios/pop.mp3");
   }
 
+  // //////// //
+  // COMPUTED //
+  // //////// //
+
+  /* Group/Room related */
+
+  getGroupById = id => this.groups.find(group => group.id === id);
+
+  @computed
+  get defaultGroup() {
+    return this.groups.find(g => g.is_default);
+  }
+
   @computed
   get favoriteGroups() {
     return this.groups.filter(group => group.favorite);
@@ -110,6 +123,10 @@ class SidemenuStore {
     return room;
   }
 
+  /* User related */
+
+  getUserById = userId => this.users.find(u => u.id === userId);
+
   @computed
   get usersByUsername() {
     const map = {};
@@ -133,6 +150,30 @@ class SidemenuStore {
   }
 
   @computed
+  get activatedUsers() {
+    return this.users.filter(u => !u.disabled);
+  }
+
+  @computed
+  get deactivatedUsers() {
+    return this.users.filter(u => u.disabled);
+  }
+
+  @computed
+  get onlineUsers() {
+    const { presenceStore } = this.rootStore;
+
+    return this.activatedUsers.filter(u => presenceStore.isOnline(u.id));
+  }
+
+  @computed
+  get offlineUsers() {
+    const { presenceStore } = this.rootStore;
+
+    return this.activatedUsers.filter(u => !presenceStore.isOnline(u.id));
+  }
+
+  @computed
   get totalMentionsCount() {
     return this.groups.reduce((count, group) => {
       if (group.type === "regular") {
@@ -143,10 +184,9 @@ class SidemenuStore {
     }, 0);
   }
 
-  @computed
-  get defaultGroup() {
-    return this.groups.find(g => g.is_default);
-  }
+  // //////////
+  // ACTIONS //
+  // /////// //
 
   @action
   loadApp = async () => {
@@ -297,8 +337,6 @@ class SidemenuStore {
   selectRoom = room => {
     this.selectedRoom = room;
   };
-
-  getGroupById = id => this.groups.find(group => group.id === id);
 
   /**
    * Returnns if the user is 'Currently in' the group
