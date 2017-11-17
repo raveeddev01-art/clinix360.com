@@ -8,7 +8,7 @@ defmodule Stitch.MeteorMigration do
   import Ecto.Query
   require Logger
 
-  @allow_retry false
+  @allow_retry System.get_env("METEOR_ALLOW_RETRY") == "true"
   @meteor_data_dir "_meteor-data"
 
   defmodule MigrationError do
@@ -158,9 +158,14 @@ defmodule Stitch.MeteorMigration do
   end
 
   def parse_meteor_json(file) do
-    room = File.read!("_meteor-data/migrationclinic1/rooms2.json")
+    room = File.read!("_my_scripts/rooms2.json")
     room = "[" <> room <> "]"
     room = room |> String.split |> Enum.map_join(& String.trim(&1)) |> String.replace("}{", "},{")
+    room = room |> String.split |> Enum.map_join(fn line ->
+      line = String.replace(line, ~r/NumberInt\(([^)]+)\)/, "\\1")
+      line = String.replace(line, ~r/ISODate\(([^)]+)\)/, "\\1")
+      line
+    end)
   end
 
   def run do
