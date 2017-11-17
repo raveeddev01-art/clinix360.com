@@ -127,18 +127,18 @@ defmodule Stitch.MeteorMigration do
     meteor_data_dir = @meteor_data_dir
     team_name = System.get_env("METEOR_TEAM_NAME")
 
-    unless File.exists?(meteor_data_dir), do: log_error "#{meteor_data_dir} doesn't exist."
-    unless team_name, do: log_error "Requires meteor team name. Pass meteor team_name via METEOR_TEAM_NAME env."
+    unless File.exists?(meteor_data_dir), do: log_meteor_data_error "#{meteor_data_dir} doesn't exist."
+    unless team_name, do: log_meteor_data_error "Requires meteor team name. Pass meteor team_name via METEOR_TEAM_NAME env."
 
     team_directory = Path.join(meteor_data_dir, team_name)
     team_json = Path.join(team_directory, "team.json")
     users_json = Path.join(team_directory, "users.json")
     rooms_json = Path.join(team_directory, "rooms.json")
 
-    unless File.exists?(team_directory), do: log_error "#{team_directory} doesn't exist."
-    unless File.exists?(team_json), do: log_error "#{team_json} doesn't exist."
-    unless File.exists?(users_json), do: log_error "#{users_json} doesn't exist."
-    unless File.exists?(rooms_json), do: log_error "#{rooms_json} doesn't exist."
+    unless File.exists?(team_directory), do: log_meteor_data_error "#{team_directory} doesn't exist."
+    unless File.exists?(team_json), do: log_meteor_data_error "#{team_json} doesn't exist."
+    unless File.exists?(users_json), do: log_meteor_data_error "#{users_json} doesn't exist."
+    unless File.exists?(rooms_json), do: log_meteor_data_error "#{rooms_json} doesn't exist."
 
     %{
       team_json: team_json,
@@ -147,7 +147,7 @@ defmodule Stitch.MeteorMigration do
     }
   end
 
-  def log_error(message) do
+  def log_meteor_data_error(message) do
     Logger.error(message)
     raise MigrationError
   end
