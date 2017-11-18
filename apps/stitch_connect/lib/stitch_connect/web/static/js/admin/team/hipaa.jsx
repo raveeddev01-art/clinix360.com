@@ -39,10 +39,18 @@ export default class TeamHipaa extends Component {
 
         <p>
           For an explanation of our BAA, see{" "}
-          <a href="https://intercom.help/teamstitch/connect/security/business-associate-agreement-baa">
+          <a
+            href="https://intercom.help/teamstitch/connect/security/business-associate-agreement-baa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             here
           </a>. For details on our HIPAA compliance, see{" "}
-          <a href="https://intercom.help/teamstitch/connect/security/hipaa-compliance">
+          <a
+            href="https://intercom.help/teamstitch/connect/security/hipaa-compliance"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             here
           </a>.
         </p>
