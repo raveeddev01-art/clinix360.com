@@ -12,7 +12,8 @@ class TeamUrlCard extends Component {
     this.state = {
       teamUrl: "",
       hasUniquenessError: false,
-      hasPatternError: false
+      hasPatternError: false,
+      loading: false
     };
   }
 
@@ -29,11 +30,14 @@ class TeamUrlCard extends Component {
       return;
     }
 
+    this.setState({ loading: true });
+
     post("/api/v1/teams/url-available", {
       body: { url: this.state.teamUrl },
       hideNotify: true
     })
       .then(response => {
+        this.setState({ loading: false });
         if (response.data.available) {
           this.props.onNext(this.state.teamUrl);
         } else {
@@ -41,7 +45,7 @@ class TeamUrlCard extends Component {
         }
       })
       .catch(() => {
-        this.setState({ hasUniquenessError: true });
+        this.setState({ hasUniquenessError: true, loading: false });
       });
   };
 
@@ -72,7 +76,12 @@ class TeamUrlCard extends Component {
   }
 
   render() {
-    const { teamUrl, hasUniquenessError, hasPatternError } = this.state;
+    const {
+      teamUrl,
+      hasUniquenessError,
+      hasPatternError,
+      loading
+    } = this.state;
 
     return (
       <div>
@@ -99,6 +108,7 @@ class TeamUrlCard extends Component {
             </span>
           }
           onNext={this.onNext}
+          loading={loading}
         >
           <FormGroup bsSize="large">
             <FormControl

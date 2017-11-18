@@ -13,24 +13,31 @@ class EmailCard extends Component {
     super(...args);
     this.state = {
       email: "",
-      formValid: false
+      formValid: false,
+      loading: false
     };
   }
 
   onNext = () => {
+    this.setState({ loading: true });
     post("/api/v1/users", {
       body: { email: this.state.email }
-    }).then(response => {
-      this.props.registrationStore.setCookie(
-        response.data.id,
-        this.state.email
-      );
-      post("/api/v1/users/send-confirmation-code", {
-        body: { id: response.data.id }
-      }).then(() => {
-        this.props.history.push("/signup/confirmation-code");
+    })
+      .then(response => {
+        this.props.registrationStore.setCookie(
+          response.data.id,
+          this.state.email
+        );
+        return post("/api/v1/users/send-confirmation-code", {
+          body: { id: response.data.id }
+        }).then(() => {
+          this.props.history.push("/signup/confirmation-code");
+          this.setState({ loading: false });
+        });
+      })
+      .catch(() => {
+        this.setState({ loading: false });
       });
-    });
   };
 
   onChange = evt => {
@@ -46,17 +53,19 @@ class EmailCard extends Component {
         title="Email"
         description={
           <span>
-            Enter your <strong>work email address</strong>.
+            Enter your <strong>email address</strong>.
           </span>
         }
         onNext={this.onNext}
+        loading
         disableNext={!this.state.formValid}
       >
         <FormGroup bsSize="large">
           <FormControl
-            name="email"
+            name={`email_${new Date().getTime()}`}
             required
             autoFocus
+            autoComplete="off"
             type="email"
             placeholder="Email"
             value={this.state.email}
@@ -65,7 +74,7 @@ class EmailCard extends Component {
         </FormGroup>
         <HelpBlock className="m-b-20">
           We will send you a confirmation code to verify your email. If your
-          team already has an account, ask your admin for an invitation.
+          team already has an account, ask your administrator for an invitation.
         </HelpBlock>
       </OnboardCard>
     );

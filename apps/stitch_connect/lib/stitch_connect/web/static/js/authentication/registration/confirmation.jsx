@@ -145,7 +145,7 @@ class Confirmation extends Component {
     return (
       <div>
         {this.state.error && (
-          <Alert>
+          <Alert bsStyle="danger">
             The confirmation code doesn&#39;t match the one we have on record.
             Please check your email again.
           </Alert>

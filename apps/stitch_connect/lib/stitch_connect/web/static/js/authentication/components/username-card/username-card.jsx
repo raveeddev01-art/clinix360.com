@@ -11,7 +11,8 @@ class UsernameCard extends Component {
     super(...args);
     this.state = {
       username: "",
-      hasError: false
+      hasError: false,
+      loading: false
     };
   }
 
@@ -23,10 +24,12 @@ class UsernameCard extends Component {
 
   onNext = () => {
     const { username } = this.state;
+    this.setState({ loading: true });
     get(`/api/v1/users/validate-username?username=${username}`, {
       hideNotify: true
     })
       .then(resp => {
+        this.setState({ loading: false });
         if (resp.data) {
           this.setState({ hasError: false });
           this.props.onNext(username);
@@ -35,12 +38,13 @@ class UsernameCard extends Component {
         }
       })
       .catch(() => {
-        this.setState({ hasError: true });
+        this.setState({ hasError: true, loading: false });
       });
   };
 
   render() {
-    const { username, placeholder, hasError } = this.state;
+    const { username, hasError, loading } = this.state;
+    const { placeholder } = this.props;
 
     return (
       <div>
@@ -59,6 +63,7 @@ class UsernameCard extends Component {
               Enter a <strong>username</strong>.
             </span>
           }
+          loading={loading}
           onNext={this.onNext}
         >
           <FormGroup bsSize="large">

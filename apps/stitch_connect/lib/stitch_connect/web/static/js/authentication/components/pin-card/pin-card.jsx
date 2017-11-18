@@ -26,9 +26,10 @@ class PinCard extends Component {
   onNext = () => this.props.onNext(this.state.pin);
 
   render() {
+    const { saving, ...otherProps } = this.props;
     return (
       <OnboardCard
-        {...this.props}
+        {...otherProps}
         title="PIN"
         description={
           <span>
@@ -36,6 +37,7 @@ class PinCard extends Component {
           </span>
         }
         onNext={this.onNext}
+        loading={saving}
         disableNext={!this.state.formValid}
       >
         <PinInput
@@ -53,11 +55,13 @@ class PinCard extends Component {
 }
 
 PinCard.propTypes = {
-  onNext: PropTypes.func.isRequired
+  onNext: PropTypes.func.isRequired,
+  saving: PropTypes.func.isRequired
 };
 
 PinCard.defaultProps = {
-  onNext: () => {}
+  onNext: () => {},
+  saving: false
 };
 
 export default PinCard;

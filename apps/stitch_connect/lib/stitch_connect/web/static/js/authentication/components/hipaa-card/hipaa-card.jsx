@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import Form from "react-bootstrap/lib/Form";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import Button from "react-bootstrap/lib/Button";
-import { Card } from "common/components";
+import { Card, LoadingButton } from "common/components";
 
 class HipaaCard extends Component {
   constructor(props) {
@@ -59,16 +58,17 @@ class HipaaCard extends Component {
             </a>.
           </HelpBlock>
 
-          <Button
+          <LoadingButton
             block
             bsSize="lg"
             bsStyle="primary"
-            disabled={!this.state.hipaaAgreed || saving}
+            disabled={!this.state.hipaaAgreed}
             type="submit"
             className="m-b-20"
+            loading={saving}
           >
             Done!
-          </Button>
+          </LoadingButton>
 
           <HelpBlock className="m-b-20">
             By proceeding to use Stitch, you agree to our&nbsp;
