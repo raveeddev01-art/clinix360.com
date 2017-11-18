@@ -294,7 +294,7 @@ $admin-topbar-height-sm: 65px;
         align-items: center;
 
         i.fa {
-          color: #8c5888;
+          color: $brand-primary;
           font-size: 24px;
           margin: 0 15px 0 5px;
 
@@ -308,7 +308,7 @@ $admin-topbar-height-sm: 65px;
         }
 
         strong {
-          color: #8c5888;
+          color: $brand-primary;
 
           &.enabled {
             color: #449d44;
@@ -338,12 +338,8 @@ $admin-topbar-height-sm: 65px;
           line-height: 2;
 
           i.fa {
-            color: #449d44;
-            margin-right: 4px;
-          }
-
-          i.fa-circle {
             color: $brand-primary;
+            margin-right: 4px;
           }
         }
       }

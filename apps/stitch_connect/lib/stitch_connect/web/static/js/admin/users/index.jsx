@@ -85,7 +85,11 @@ class TeamSettings extends Component {
           Manage your users by controlling admin abilities and account status.
           For more information on how account enabling and disabling works, see
           our support article&nbsp;
-          <a href="https://intercom.help/teamstitch/connect/admin/user-management">
+          <a
+            href="https://intercom.help/teamstitch/connect/admin/user-management"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             here
           </a>.
         </p>
