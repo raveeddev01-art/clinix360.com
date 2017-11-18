@@ -1,22 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Button from "react-bootstrap/lib/Button";
 import Form from "react-bootstrap/lib/Form";
 import Card from "../card/card";
+import LoadingButton from "../loading-button";
 
 class OnboardCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isEditing: false,
-      disableNext: props.disableNext
+      isEditing: false
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.disableNext !== this.props.disableNext) {
-      this.setState({ disableNext: nextProps.disableNext });
-    }
   }
 
   _onNext = evt => {
@@ -30,21 +23,29 @@ class OnboardCard extends Component {
   };
 
   render() {
-    const { title, children, nextButtonText, description, header } = this.props;
-    const { disableNext } = this.state;
+    const {
+      title,
+      children,
+      nextButtonText,
+      description,
+      header,
+      loading,
+      disableNext
+    } = this.props;
     return (
       <Card header={header} title={title} description={description}>
         <Form onSubmit={this._onNext}>
           {children}
-          <Button
+          <LoadingButton
             type="submit"
             bsStyle="primary"
             bsSize="lg"
             className="btn-block m-b-40"
             disabled={disableNext}
+            loading={loading}
           >
             {nextButtonText}
-          </Button>
+          </LoadingButton>
         </Form>
       </Card>
     );
@@ -64,7 +65,8 @@ OnboardCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.node,
   nextButtonText: PropTypes.string.isRequired,
-  disableNext: PropTypes.bool.isRequired
+  disableNext: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired
 };
 
 OnboardCard.defaultProps = {
@@ -74,7 +76,8 @@ OnboardCard.defaultProps = {
   description: "",
   title: "",
   nextButtonText: "Next",
-  disableNext: false
+  disableNext: false,
+  loading: false
 };
 
 export default OnboardCard;

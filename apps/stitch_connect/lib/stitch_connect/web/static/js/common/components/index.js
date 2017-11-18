@@ -9,6 +9,7 @@ import SmartDropdown from "./smart-dropdown";
 import Switcher from "./switcher";
 import Toastr from "./toastr/toastr";
 import Toggle from "./toggle/Toggle";
+import LoadingButton from "./loading-button";
 
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
@@ -27,6 +28,7 @@ export {
   Switcher,
   Toastr,
   Toggle,
+  LoadingButton,
   MessageContent,
   MessageFooter,
   MessageHeader,
