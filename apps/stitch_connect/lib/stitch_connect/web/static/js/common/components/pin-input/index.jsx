@@ -11,11 +11,14 @@ class PinInput extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.pin !== nextProps.pin) {
+      this.setDigits(nextProps.pin);
+    }
+  }
+
   onChangeCode = index => event => {
-    this.replaceCode(index, event.target.value, () => {
-      this.moveRight(index);
-      this.checkAndSubmit();
-    });
+    this.replaceCode(index, event.target.value, () => this.moveRight(index));
   };
 
   onKeyDown = index => event => {
@@ -51,24 +54,20 @@ class PinInput extends Component {
     if (text.length === 4 && !isNaN(text)) {
       this.setState({ digits: text.split("") }, () => {
         this.digitComponents[3].focus();
-        this.checkAndSubmit();
+        this.submitConfirmationCode();
       });
     }
   };
 
-  digitComponents = {};
-
-  moveLeft = index => {
-    if (index > 0) {
-      this.digitComponents[index - 1].focus();
-      this.digitComponents[index - 1].select();
-    }
-  };
-
-  moveRight = index => {
-    if (index < 3) {
-      this.digitComponents[index + 1].focus();
-      this.digitComponents[index + 1].select();
+  setDigits = pin => {
+    if (!pin || !pin.length) {
+      this.setState({
+        digits: new Array(4).fill("")
+      });
+    } else {
+      this.setState({
+        digits: pin.split("")
+      });
     }
   };
 
@@ -85,12 +84,29 @@ class PinInput extends Component {
     }
   };
 
-  checkAndSubmit = () => {
+  submitConfirmationCode = () => {
     const code = this.state.digits.join("");
-    if (code.length === 4) {
-      this.props.onValid(code);
+    this.props.onValid(code);
+    this.digitComponents[0].focus();
+  };
+
+  moveLeft = index => {
+    if (index > 0) {
+      this.digitComponents[index - 1].focus();
+      this.digitComponents[index - 1].select();
     }
   };
+
+  moveRight = index => {
+    if (index < 3) {
+      this.digitComponents[index + 1].focus();
+      this.digitComponents[index + 1].select();
+    } else if (index === 3) {
+      this.submitConfirmationCode();
+    }
+  };
+
+  digitComponents = {};
 
   renderCodeInput = (from, to) => {
     const comps = [];
@@ -127,13 +143,15 @@ class PinInput extends Component {
 PinInput.propTypes = {
   onValid: PropTypes.func.isRequired,
   onInvalid: PropTypes.func.isRequired,
-  className: PropTypes.string
+  className: PropTypes.string,
+  pin: PropTypes.string.isRequired
 };
 
 PinInput.defaultProps = {
   onValid: () => {},
   onInvalid: () => {},
-  className: ""
+  className: "",
+  pin: ""
 };
 
 export default PinInput;

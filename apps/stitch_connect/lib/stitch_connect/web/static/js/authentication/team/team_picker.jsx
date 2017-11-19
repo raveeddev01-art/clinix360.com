@@ -9,6 +9,7 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
+import Button from "react-bootstrap/lib/Button";
 import debounce from "lodash/debounce";
 
 @inject("titleStore")
@@ -110,11 +111,15 @@ export default class TeamPicker extends Component {
               <span className="domain">.teamstitch.com</span>
             </FormGroup>
 
-            <input
-              value="Continue"
+            <Button
+              bsStyle="primary"
+              bsSize="lg"
               type="submit"
-              className="btn btn-block btn-lg btn-primary"
-            />
+              className="btn-block"
+              disabled={!teamName}
+            >
+              Continue
+            </Button>
           </form>
 
           <h5>
