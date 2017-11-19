@@ -137,11 +137,6 @@ class GroupStore {
   };
 
   @action
-  toggleAllUsers = () => {
-    this.showAllUsers = !this.showAllUsers;
-  };
-
-  @action
   hide = () => {
     const { groupsStore } = this.rootStore;
 
@@ -191,9 +186,15 @@ class GroupStore {
   };
 
   @action
+  toggleAllUsers = () => {
+    this.showAllUsers = !this.showAllUsers;
+  };
+
+  // TODO: Move notification preferences management to notificationStore
+  @action
   loadNotificationSetting = () => {
     return get(
-      `/api/v1/groups/${this.id}/notification-preference`
+      `/api/v1/groups/${this.group.id}/notification-preference`
     ).then(resp => {
       this.notificationSetting = resp.data.desktop_notification_preference;
       return this.notificationSetting;
@@ -202,7 +203,7 @@ class GroupStore {
 
   @action
   saveNotificationSetting = setting => {
-    return put(`/api/v1/groups/${this.id}/notification-preference`, {
+    return put(`/api/v1/groups/${this.group.id}/notification-preference`, {
       body: {
         desktop_notification_preference: setting
       }

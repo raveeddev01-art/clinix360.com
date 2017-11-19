@@ -74,16 +74,6 @@ class NotificationStore {
       return val;
     });
   };
-
-  getGroupNotificationPreference(groupId) {
-    const groupPreference = this.groupPreferences.find(
-      preference => preference.group_id === groupId
-    );
-
-    return groupPreference
-      ? groupPreference.desktop_notification_preference
-      : this.desktopPreference;
-  }
 }
 
 export default NotificationStore;
