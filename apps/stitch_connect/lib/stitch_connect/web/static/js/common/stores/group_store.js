@@ -151,6 +151,13 @@ class GroupStore {
   };
 
   @action
+  hide = () => {
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.hideGroup(this.group.id);
+  };
+
+  @action
   join = () => {
     const { groupsStore } = this.rootStore;
 
@@ -162,11 +169,6 @@ class GroupStore {
     const { groupsStore } = this.rootStore;
 
     return groupsStore.leaveGroup(this.group.id);
-  };
-
-  @action
-  hide = () => {
-    return put(`/api/v1/groups/${this.id}/hide`);
   };
 
   @action
