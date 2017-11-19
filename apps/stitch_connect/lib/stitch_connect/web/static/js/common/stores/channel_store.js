@@ -56,10 +56,10 @@ class ChannelStore {
 
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
 
-    this.eventChannel.on("new_group", groupsStore.onNewGroup);
+    this.eventChannel.on("created_group", groupsStore.onCreatedGroup);
     this.eventChannel.on("joined_group", groupsStore.onJoinedGroup);
     this.eventChannel.on("left_group", groupsStore.onLeftGroup);
-    this.eventChannel.on("group_renamed", groupsStore.onRenamedGroup);
+    this.eventChannel.on("renamed_group", groupsStore.onRenamedGroup);
 
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache

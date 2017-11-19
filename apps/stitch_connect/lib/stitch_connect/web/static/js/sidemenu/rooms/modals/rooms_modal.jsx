@@ -17,11 +17,12 @@ import RoomItem from "./room_item";
 import Members from "../../../common/components/members/members";
 import Toggle from "../../../common/components/toggle/Toggle";
 
-@inject("groupsStore", "groupStore")
+@inject("groupsStore")
 @observer
 class RoomsModal extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       filter: "",
       members: [],
@@ -93,9 +94,9 @@ class RoomsModal extends Component {
   };
 
   createRoom = () => {
-    const { groupStore, history, closeModal } = this.props;
+    const { groupsStore, history, closeModal } = this.props;
 
-    groupStore
+    groupsStore
       .createGroup({
         name: this.state.name.trim(),
         public: this.state.public,

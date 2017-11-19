@@ -32,16 +32,6 @@ class GroupStore {
   }
 
   @action
-  createGroup = params => {
-    return post("/api/v1/groups", {
-      body: params
-    }).then(resp => {
-      const { data } = resp;
-      return data.slug;
-    });
-  };
-
-  @action
   postJoin = () => {
     const {
       messageStore,

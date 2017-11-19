@@ -91,6 +91,17 @@ class GroupsStore {
   };
 
   @action
+  createGroup = params => {
+    return post("/api/v1/groups", {
+      body: params
+    }).then(resp => {
+      const { data } = resp;
+
+      return data.slug;
+    });
+  };
+
+  @action
   openGroup = slug => {
     const group = this.getGroupBySlug(slug);
 
@@ -133,7 +144,7 @@ class GroupsStore {
   };
 
   @action
-  onNewGroup = newGroup => {
+  onCreatedGroup = newGroup => {
     this.groups.push(newGroup);
   };
 
