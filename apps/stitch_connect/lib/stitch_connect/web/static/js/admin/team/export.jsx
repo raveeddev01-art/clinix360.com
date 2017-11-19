@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import { inject, observer } from "mobx-react";
 
+import SettingPanel from "../components/setting-panel/setting-panel";
 import ExportItem from "./export-item";
+
+const title = "Data Export";
+const description =
+  "Create and download exports of an official record of communications for legal and compliance purposes.";
 
 @inject("exportStore")
 @observer
@@ -15,20 +20,16 @@ export default class TeamExport extends Component {
 
   _renderExports = () => {
     const { exportStore } = this.props;
-    return exportStore.exports.length > 0 ? (
-      exportStore.exports.map(exportItem => {
-        return (
-          <ExportItem
-            key={`export_${exportItem.id}`}
-            insertedAt={exportItem.inserted_at}
-            status={exportItem.status}
-            downloadLink={exportStore.downloadLink(exportItem.id)}
-          />
-        );
-      })
-    ) : (
-      <p>No exports found.</p>
-    );
+    return exportStore.exports.map(exportItem => {
+      return (
+        <ExportItem
+          key={`export_${exportItem.id}`}
+          insertedAt={exportItem.inserted_at}
+          status={exportItem.status}
+          downloadLink={exportStore.downloadLink(exportItem.id)}
+        />
+      );
+    });
   };
 
   _newExport = () => {
@@ -37,9 +38,10 @@ export default class TeamExport extends Component {
   };
 
   render() {
+    const { exportStore } = this.props;
+
     return (
-      <div>
-        <h3 className="text-center">Data Export</h3>
+      <SettingPanel saveButtonText="" title={title} description={description}>
         <p>
           In the event that you need to delete your Stitch account, or require
           electronic discovery for legal purposes, Stitch provides full data
@@ -65,11 +67,16 @@ export default class TeamExport extends Component {
         </ul>
 
         <p className="m-b-40">
-          Message history will be provided in JSON format. You will also receive
-          a special token allowing you to access file uploads at their specified
-          URLs. See our support article{" "}
-          <a href="https://intercom.help/teamstitch">here</a> for more on how to
-          use these files and tokens.
+          Message history will be provided in JSON format. See our support
+          article{" "}
+          <a
+            href="https://intercom.help/teamstitch"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>{" "}
+          for more on how to use exports.
         </p>
 
         <Row className="m-b-20">
@@ -88,19 +95,21 @@ export default class TeamExport extends Component {
           </Col>
         </Row>
 
-        <div className="admin-table m-b-40">
-          <div className="table-head">
-            <Row>
-              <Col sm={6}>Date</Col>
-              <Col sm={4}>Status</Col>
-              <Col sm={2} className="text-center">
-                Download
-              </Col>
-            </Row>
+        {exportStore.exports.length > 0 && (
+          <div className="admin-table m-b-40">
+            <div className="table-head">
+              <Row>
+                <Col sm={6}>Date</Col>
+                <Col sm={4}>Status</Col>
+                <Col sm={2} className="text-center">
+                  Download
+                </Col>
+              </Row>
+            </div>
+            {this._renderExports()}
           </div>
-          {this._renderExports()}
-        </div>
-      </div>
+        )}
+      </SettingPanel>
     );
   }
 }

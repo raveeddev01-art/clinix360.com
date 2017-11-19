@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import { Well } from "react-bootstrap";
+import SettingPanel from "../components/setting-panel/setting-panel";
+
+const title = "HIPAA";
+const description = "Manage your HIPAA compliance and BAA to safely share PHI.";
 
 export default class TeamHipaa extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
-      <div>
-        <h3 className="text-center">HIPAA</h3>
+      <SettingPanel saveButtonText="" title={title} description={description}>
         <Well>
           <i className="fa fa-check-circle" />
           <p className="m-b-0">
@@ -40,14 +39,22 @@ export default class TeamHipaa extends Component {
 
         <p>
           For an explanation of our BAA, see{" "}
-          <a href="https://intercom.help/teamstitch/connect/security/business-associate-agreement-baa">
+          <a
+            href="https://intercom.help/teamstitch/connect/security/business-associate-agreement-baa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             here
           </a>. For details on our HIPAA compliance, see{" "}
-          <a href="https://intercom.help/teamstitch/connect/security/hipaa-compliance">
+          <a
+            href="https://intercom.help/teamstitch/connect/security/hipaa-compliance"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             here
           </a>.
         </p>
-      </div>
+      </SettingPanel>
     );
   }
 }
