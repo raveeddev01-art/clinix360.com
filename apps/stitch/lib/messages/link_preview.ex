@@ -100,7 +100,7 @@ defmodule Stitch.Message.LinkPreview do
           nil
       end
     rescue
-      _ ->
+      e in RuntimeError ->
         nil
     end
   end
