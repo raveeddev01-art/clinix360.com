@@ -105,7 +105,7 @@ class GroupsStore {
   openGroup = slug => {
     const group = this.getGroupBySlug(slug);
 
-    if (group) {
+    if (group && group.id !== this.currentGroupId) {
       this.currentGroupId = group.id;
       this.onOpenedGroup();
     }
@@ -138,14 +138,16 @@ class GroupsStore {
       groupPresenceStore
     } = this.rootStore;
 
+    messageStore.reset();
     messageStore.joinGroupChannel();
+
     pinnedMessageStore.reset();
     groupPresenceStore.subscribeToGroupChannel();
   };
 
   @action
-  onCreatedGroup = newGroup => {
-    this.groups.push(newGroup);
+  onCreatedGroup = group => {
+    this.groups.push(group);
   };
 
   @action
