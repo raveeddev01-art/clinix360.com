@@ -66,7 +66,7 @@ class ChannelStore {
     });
     this.eventChannel.on("logout", ({ session_id: sessionId }) => {
       if (window.sessionId === sessionId) {
-        window.location = "/logout";
+        window.location = "/logged-out";
       }
     });
 
