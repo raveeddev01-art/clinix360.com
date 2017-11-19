@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+import cx from "classnames";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Alert from "react-bootstrap/lib/Alert";
 import Header from "../website/components/header";
@@ -40,9 +41,13 @@ class LockedApp extends Component {
   };
 
   render() {
+    const lockAppWrapperClass = cx("locked-app-wrapper", {
+      "on-electron": window.electronApp
+    });
+
     const { hasError } = this.state;
     return (
-      <div className="locked-app-wrapper">
+      <div className={lockAppWrapperClass}>
         <Header />
         <div className="authentication-wrapper">
           <div>
