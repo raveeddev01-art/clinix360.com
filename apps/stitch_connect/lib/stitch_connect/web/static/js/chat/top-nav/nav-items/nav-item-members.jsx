@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import * as mobx from "mobx";
 import { inject, observer } from "mobx-react";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -11,22 +12,24 @@ import Members from "../../../common/components/members/members";
 export default class NavItemMembers extends Component {
   constructor(props) {
     super(props);
+
+    const { groupStore } = props;
+
     this.state = {
       showModal: false,
-      members: ""
+      members: mobx.toJS(groupStore.group.users)
     };
   }
 
   saveUsers = () => {
-    this.props.groupStore.saveUsers(this.state.members);
+    const { groupStore } = this.props;
+
+    groupStore.saveUsers(this.state.members);
+
     this.setState({ showModal: false });
   };
 
   openModal = () => {
-    this.props.groupStore.loadUsers().then(members => {
-      this.setState({ members });
-    });
-
     this.setState({ showModal: true });
   };
 

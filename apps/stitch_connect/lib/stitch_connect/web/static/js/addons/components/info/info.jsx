@@ -12,10 +12,6 @@ import NotificationPreferences from "./notification-preferences/notification-pre
 @inject("groupStore", "notificationStore")
 @observer
 class Info extends Component {
-  loadUsers = () => {
-    this.props.groupStore.loadUsers();
-  };
-
   loadNotifications = () => {
     this.props.notificationStore.loadPreferences();
   };
@@ -26,7 +22,7 @@ class Info extends Component {
         <AddonCollapse icon="file-text" title="Details">
           <RoomDetails />
         </AddonCollapse>
-        <AddonCollapse icon="group" title="Members" onCollapse={this.loadUsers}>
+        <AddonCollapse icon="group" title="Members">
           <PeopleList />
         </AddonCollapse>
         <AddonCollapse icon="thumb-tack" title="Pinned">

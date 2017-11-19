@@ -149,14 +149,6 @@ class GroupStore {
   };
 
   @action
-  loadUsers = () => {
-    return get(`/api/v1/groups/${this.id}/users`).then(resp => {
-      this.users = resp.data;
-      return resp.data;
-    });
-  };
-
-  @action
   toggleAllUsers = () => {
     this.showAllUsers = !this.showAllUsers;
   };
