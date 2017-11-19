@@ -126,23 +126,23 @@ class GroupsStore {
   };
 
   @action
-  hideGroup = id => {
-    return put(`/api/v1/groups/${id}/hide`);
+  hideGroup = groupId => {
+    return put(`/api/v1/groups/${groupId}/hide`);
   };
 
   @action
-  joinGroup = id => {
-    return post(`/api/v1/groups/${id}/join`).then(() => {
-      this.updateGroupData(id, {
+  joinGroup = groupId => {
+    return post(`/api/v1/groups/${groupId}/join`).then(() => {
+      this.updateGroupData(groupId, {
         joined: true
       });
     });
   };
 
   @action
-  leaveGroup = id => {
-    return post(`/api/v1/groups/${id}/leave`).then(resp => {
-      this.updateGroupData(id, {
+  leaveGroup = groupId => {
+    return post(`/api/v1/groups/${groupId}/leave`).then(resp => {
+      this.updateGroupData(groupId, {
         joined: false
       });
 
@@ -151,9 +151,18 @@ class GroupsStore {
   };
 
   @action
-  renameGroup = (id, name) => {
-    return patch(`/api/v1/groups/${id}/rename`, {
+  renameGroup = (groupId, name) => {
+    return patch(`/api/v1/groups/${groupId}/rename`, {
       body: { name }
+    });
+  };
+
+  @action
+  inviteUsersToGroup = (groupId, userIds) => {
+    return post(`/api/v1/groups/${groupId}/invite`, {
+      body: {
+        user_ids: userIds
+      }
     });
   };
 

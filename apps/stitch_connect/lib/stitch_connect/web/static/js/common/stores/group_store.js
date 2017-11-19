@@ -5,7 +5,6 @@
  */
 
 import { observable, computed, action } from "mobx";
-import _ from "lodash";
 
 class GroupStore {
   @observable notificationSetting = null;
@@ -153,15 +152,6 @@ class GroupStore {
     this.showAllUsers = !this.showAllUsers;
   };
 
-  @action
-  saveUsers = members => {
-    return post(`/api/v1/groups/${this.id}/invite`, {
-      body: {
-        user_ids: _.map(members, "id").join(",")
-      }
-    });
-  };
-
   toggleFavorite = value => {
     return post(`/api/v1/groups/${this.id}/toggle-favorite`, {
       body: { favorite: value }
@@ -195,6 +185,13 @@ class GroupStore {
     const { groupsStore } = this.rootStore;
 
     return groupsStore.renameGroup(this.group.id, name);
+  };
+
+  @action
+  inviteUsers = userIds => {
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.inviteUsersToGroup(this.group.id, userIds);
   };
 
   @action

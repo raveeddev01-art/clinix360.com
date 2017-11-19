@@ -24,7 +24,9 @@ export default class NavItemMembers extends Component {
   saveUsers = () => {
     const { groupStore } = this.props;
 
-    groupStore.saveUsers(this.state.members);
+    groupStore.inviteUsers(
+      this.state.members.map(member => member.id).join(",")
+    );
 
     this.setState({ showModal: false });
   };
