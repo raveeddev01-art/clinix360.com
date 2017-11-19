@@ -23,18 +23,9 @@ class PhoneNumberCard extends Component {
   };
 
   onNext = () => {
-    this.setState({ loading: true });
-    post(`/api/v1/users/validate-phone-number`, {
-      body: { phone_number: this.state.phone },
-      hideNotify: true
-    })
-      .then(() => {
-        this.setState({ hasError: false, loading: false });
-        this.props.onNext(this.state.phone);
-      })
-      .catch(() => {
-        this.setState({ hasError: true, loading: false });
-      });
+    // removed validation temporarily.
+    // TODO add frontend validation
+    this.props.onNext(this.state.phone);
   };
 
   render() {
