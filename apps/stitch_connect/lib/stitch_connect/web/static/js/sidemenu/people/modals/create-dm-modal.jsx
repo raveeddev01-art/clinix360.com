@@ -8,7 +8,7 @@ import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import Select from "react-select";
 
-@inject("usersStore", "presenceStore")
+@inject("usersStore", "presenceStore", "groupsStore")
 @observer
 class CreateDMModal extends Component {
   constructor(props) {
@@ -36,18 +36,20 @@ class CreateDMModal extends Component {
 
   canCreateDM = () => {
     const { members } = this.state;
-    return members && members.length !== 0;
+
+    return members && members.length > 0;
   };
 
-  startDM = () => {
-    const { history, toggle } = this.props;
+  createDM = () => {
+    const { groupsStore, history, toggle } = this.props;
+    const { members } = this.state;
 
-    if (!this.state.members.length) {
-      notify.show(`Choose people to start conversation with`, "error");
-      return;
-    }
+    // TODO: DM group open/create steps
+    // 1. Calculate slug from members selected
+    // 2. Find if dm group already exists
+    //  2.1. If exists, unhide
+    //  2.2. If not, create
 
-    const members = this.state.members;
     const usernames = sortBy(members, "id")
       .map(user => user.username)
       .join(",");
@@ -78,7 +80,7 @@ class CreateDMModal extends Component {
 
   render() {
     const { searchFilter, members } = this.state;
-    const { usersStore } = this.props;
+    const { usersStore, presenceStore } = this.props;
     const users = usersStore.users.filter(u => {
       if (u.id === currentUser.id && members.length > 0) return false;
       return (
@@ -124,11 +126,12 @@ class CreateDMModal extends Component {
 
           <div className="team-list">
             {users.map(user => {
-              const online = this.props.presenceStore.isOnline(user.id);
+              const online = presenceStore.isOnline(user.id);
               const iconClasName = cx("fa", {
                 "fa-circle": online,
                 "fa-circle-o": !online
               });
+
               return (
                 <div
                   role="link"
@@ -154,7 +157,7 @@ class CreateDMModal extends Component {
           <Button
             bsSize="large"
             bsStyle="primary"
-            onClick={this.startDM}
+            onClick={this.createDM}
             disabled={!this.canCreateDM()}
           >
             Start Conversation

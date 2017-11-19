@@ -137,6 +137,9 @@ class GroupsStore {
     });
   };
 
+  @action createSingleDMGroup = () => {};
+  @action createMultiDMGroup = () => {};
+
   @action
   openGroup = slug => {
     const group = this.getGroupBySlug(slug);
@@ -147,12 +150,13 @@ class GroupsStore {
     }
   };
 
+  @action openSingleDMGroup = () => {};
+  @action openMultiDMGroup = () => {};
+
   @action
   hideGroup = groupId => {
     return put(`/api/v1/groups/${groupId}/hide`);
   };
-
-  @action openDMGroup = () => {};
 
   @action
   joinGroup = groupId => {
