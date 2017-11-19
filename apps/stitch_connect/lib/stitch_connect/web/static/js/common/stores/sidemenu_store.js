@@ -9,6 +9,7 @@ import Favico from "favico.js";
 import { scroller } from "react-scroll";
 
 import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../lib/constants";
+import history from "../../lib/history";
 
 class SidemenuStore {
   @observable loading = false; // IF True, shows loading page
@@ -317,23 +318,7 @@ class SidemenuStore {
 
   jumpToMessage(message) {
     const { groupsStore } = this.rootStore;
-    const group = groupsStore.getGroupById(message.group_id);
-    let url;
-
-    if (group.type === "regular") {
-      // If normal group
-      url = `/rooms/${group.slug}`;
-    } else if (group.type === "multi_dm") {
-      // If multi direct messaging
-      const multiMessagingSlug = group.users
-        .map(user => user.username)
-        .join(",");
-      url = `/direct/${multiMessagingSlug}`;
-    } else {
-      // If single direct messaging
-      const recipient = group.users.find(user => user.id !== currentUser.id);
-      url = `/direct/${recipient.username}`;
-    }
+    const url = groupsStore.getGroupUrl(message.group_id);
 
     history.push(url);
   }

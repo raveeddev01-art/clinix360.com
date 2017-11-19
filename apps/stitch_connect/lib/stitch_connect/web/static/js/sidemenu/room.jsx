@@ -10,9 +10,8 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../lib/constants";
-import { getRoomNavLink } from "../lib/utils";
 
-@inject("presenceStore", "sidemenuStore", "groupsStore", "groupsStore")
+@inject("presenceStore", "sidemenuStore", "groupsStore")
 @observer
 class Room extends Component {
   onVisibleChange = isVisible => {
@@ -99,7 +98,8 @@ class Room extends Component {
   };
 
   render() {
-    const { room, sidemenuStore } = this.props;
+    const { room, sidemenuStore, groupsStore } = this.props;
+    const roomUrl = groupsStore.getGroupUrl(room.id);
     const className = classNames("item", {
       "has-unread": room.unread_messages_count > 0
     });
@@ -121,7 +121,7 @@ class Room extends Component {
         >
           <Element name={anchorName}>
             <NavLink
-              to={getRoomNavLink(room)}
+              to={roomUrl}
               className={className}
               activeClassName="active"
             >

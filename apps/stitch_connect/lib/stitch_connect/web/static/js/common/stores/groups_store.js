@@ -24,6 +24,28 @@ class GroupsStore {
 
   getGroupBySlug = slug => this.groups.find(group => group.slug === slug);
 
+  getGroupUrl = id => {
+    const group = this.getGroupById(id);
+
+    if (!group) {
+      return "";
+    }
+
+    if (group.type === "regular") {
+      return `/rooms/${group.slug}`;
+    }
+
+    let users = group.users.filter(user => user.id !== currentUser.id);
+
+    if (group.type === "dm") {
+      users = users.slice(0, 1);
+    } else {
+      users = orderBy(users, ["id"]);
+    }
+
+    return `/direct/${users.map(user => user.username).join(",")}`;
+  };
+
   @computed
   get currentGroup() {
     if (!this.currentGroupId) {
@@ -129,6 +151,8 @@ class GroupsStore {
   hideGroup = groupId => {
     return put(`/api/v1/groups/${groupId}/hide`);
   };
+
+  @action openDMGroup = () => {};
 
   @action
   joinGroup = groupId => {
