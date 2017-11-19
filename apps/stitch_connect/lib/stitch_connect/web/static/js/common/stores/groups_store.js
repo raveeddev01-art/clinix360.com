@@ -22,6 +22,8 @@ class GroupsStore {
 
   getGroupById = id => this.groups.find(group => group.id === id);
 
+  getGroupBySlug = slug => this.groups.find(group => group.slug === slug);
+
   @computed
   get currentGroup() {
     if (!this.currentGroupId) {
@@ -108,12 +110,25 @@ class GroupsStore {
   };
 
   @action
+  onOpenedGroup = () => {
+    const {
+      messageStore,
+      pinnedMessageStore,
+      groupPresenceStore
+    } = this.rootStore;
+
+    messageStore.joinGroupChannel();
+    pinnedMessageStore.reset();
+    groupPresenceStore.subscribeToGroupChannel();
+  };
+
+  @action
   onNewGroup = newGroup => {
     this.groups.push(newGroup);
   };
 
   @action
-  onRenameGroup = params => {
+  onRenamedGroup = params => {
     const data = {
       slug: params.group_slug,
       name: params.group_name
@@ -121,7 +136,7 @@ class GroupsStore {
 
     this.updateGroupData(params.group_id, data);
 
-    if (this.rootStore.groupStore.id === params.group_id) {
+    if (this.rootStore.groupStore.group.id === params.group_id) {
       history.push(`/rooms/${params.group_slug}`);
     }
   };

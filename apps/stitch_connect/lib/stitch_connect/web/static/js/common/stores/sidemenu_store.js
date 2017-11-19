@@ -115,7 +115,7 @@ class SidemenuStore {
     const { groupStore, groupsStore } = this.rootStore;
 
     // If the message is for the current group, ignore
-    if (newMessage.group_id === groupStore.id) {
+    if (newMessage.group_id === groupStore.group.id) {
       return;
     }
 
@@ -193,7 +193,9 @@ class SidemenuStore {
   isCurrentlyInRoom(groupId) {
     const { groupStore } = this.rootStore;
 
-    return groupId === groupStore.id && !this.locked && document.hasFocus();
+    return (
+      groupId === groupStore.group.id && !this.locked && document.hasFocus()
+    );
   }
 
   /**

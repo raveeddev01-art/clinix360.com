@@ -14,7 +14,7 @@ class PinnedMessageStore {
 
   @computed
   get groupId() {
-    return this.rootStore.groupStore.id;
+    return this.rootStore.groupStore.group.id;
   }
 
   @computed

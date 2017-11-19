@@ -28,8 +28,8 @@ class NavItemRename extends Component {
   openModal = () => {
     this.setState({
       showModal: true,
-      groupName: this.props.groupStore.name,
-      groupSlug: `#${this.props.groupStore.slug}`
+      groupName: this.props.groupStore.group.name,
+      groupSlug: `#${this.props.groupStore.group.slug}`
     });
   };
 

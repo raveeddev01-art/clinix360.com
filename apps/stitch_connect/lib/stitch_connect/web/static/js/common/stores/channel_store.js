@@ -59,7 +59,7 @@ class ChannelStore {
     this.eventChannel.on("new_group", groupsStore.onNewGroup);
     this.eventChannel.on("joined_group", groupsStore.onJoinedGroup);
     this.eventChannel.on("left_group", groupsStore.onLeftGroup);
-    this.eventChannel.on("group_renamed", groupsStore.onRenameGroup);
+    this.eventChannel.on("group_renamed", groupsStore.onRenamedGroup);
 
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache
@@ -79,7 +79,7 @@ class ChannelStore {
   get groupChannelTopic() {
     const { groupStore } = this.rootStore;
 
-    return `groups:${groupStore.slug}`;
+    return `groups:${groupStore.group.slug}`;
   }
 
   get groupChannel() {

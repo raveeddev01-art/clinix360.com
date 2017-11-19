@@ -101,7 +101,7 @@ export default class MessagePanel extends Component {
   }
 
   render() {
-    const { groupStore: group, messageStore } = this.props;
+    const { groupStore, messageStore } = this.props;
     const chatContainerClassName = classNames({
       loaded: messageStore.loadedInitial
     });
@@ -115,13 +115,13 @@ export default class MessagePanel extends Component {
 
         <MessageList />
         <div className="flex-footer">
-          {group.joined ? (
+          {groupStore.group.joined ? (
             <MessageForm />
-          ) : !group.loading ? (
+          ) : !groupStore.group.loading ? (
             <div className="room-preview">
               This is a preview of the room{" "}
               <strong>
-                <i className="fa fa-comments" /> {group.name}
+                <i className="fa fa-comments" /> {groupStore.group.name}
               </strong>
               <button
                 className="join btn btn-fancy btn-primary"

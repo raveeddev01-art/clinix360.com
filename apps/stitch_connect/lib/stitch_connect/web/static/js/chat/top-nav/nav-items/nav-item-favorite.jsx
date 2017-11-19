@@ -9,7 +9,7 @@ export default class NavItemMembers extends Component {
     const { groupStore, groupsStore } = this.props;
 
     groupStore.toggleFavorite().then(favorite => {
-      groupsStore.updateGroupData(groupStore.id, { favorite });
+      groupsStore.updateGroupData(groupStore.group.id, { favorite });
     });
 
     // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541

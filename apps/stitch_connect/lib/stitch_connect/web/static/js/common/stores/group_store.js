@@ -8,50 +8,27 @@ import { observable, computed, action } from "mobx";
 import _ from "lodash";
 
 class GroupStore {
-  @observable loading = false;
-  @observable name = "";
-  @observable id = "";
-  @observable slug = "";
-  @observable description = "";
-  @observable public = true;
-  @observable joined = false;
-  @observable users = [];
-  @observable unread_messages_count = 0;
-  @observable last_read_at = null;
-  @observable mentions_count = 0;
-  @observable favorite = false;
   @observable notificationSetting = null;
-  @observable creator_user_id = null;
-  @observable inserted_at = null;
-  @observable type = "regular"; // regular, dm, multi_dm
-
   @observable showAllUsers = true;
-  @observable dmUsers = [];
-  @observable is_default = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
 
   @computed
-  get onlineUsers() {
-    return this.users.filter(user =>
-      this.rootStore.presenceStore.isOnline(`${user.id}`)
-    );
+  get group() {
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.currentGroup || groupsStore.defaultGroup;
   }
 
   @computed
-  get userMap() {
-    const map = {};
-    this.users.forEach(user => {
-      map[user.id] = user;
-    });
-    return map;
-  }
+  get onlineUsers() {
+    const { presenceStore } = this.rootStore;
 
-  @action
-  update(data) {
-    Object.assign(this, data);
+    return this.group.users.filter(user =>
+      presenceStore.isOnline(`${user.id}`)
+    );
   }
 
   @action

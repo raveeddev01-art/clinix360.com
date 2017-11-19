@@ -92,10 +92,10 @@ class TopNav extends Component {
 
   renderRoomControls = () => {
     const { groupStore } = this.props;
-    const isNotDM = groupStore.type === "regular";
-    const isDefault = groupStore.is_default;
+    const isNotDM = groupStore.group.type === "regular";
+    const isDefault = groupStore.group.is_default;
 
-    if (groupStore.joined) {
+    if (groupStore.group.joined) {
       return (
         <div>
           <NavItemFavorite />
@@ -112,7 +112,7 @@ class TopNav extends Component {
     return (
       <div>
         <MenuItem onSelect={this.handleJoin}>
-          Join <strong>#{groupStore.slug}</strong>
+          Join <strong>#{groupStore.group.slug}</strong>
         </MenuItem>
       </div>
     );

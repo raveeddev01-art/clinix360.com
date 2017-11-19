@@ -47,7 +47,7 @@ class MessageStore {
   // ////////////// //
 
   get groupId() {
-    return this.rootStore.groupStore.id;
+    return this.rootStore.groupsStore.currentGroupId;
   }
 
   /**
@@ -170,11 +170,7 @@ class MessageStore {
 
   @action
   updateGroupCursor(cursor) {
-    const { groupsStore, groupStore } = this.rootStore;
-
-    if (groupStore.loading) {
-      return;
-    }
+    const { groupsStore } = this.rootStore;
 
     this.groupCursor = cursor;
     groupsStore.updateGroupCursor(this.groupId, cursor);
@@ -434,7 +430,7 @@ class MessageStore {
 
   @action
   updateUnreadMessagesInfo(data) {
-    const { groupStore, groupsStore } = this.rootStore;
+    const { groupsStore } = this.rootStore;
     const allowedKeys = [
       "unread_messages_count",
       "mentions_count",
@@ -447,9 +443,6 @@ class MessageStore {
 
     // Update message store
     Object.assign(this, camelCasedUpdates);
-
-    // Update group store
-    groupStore.update(camelCasedUpdates);
 
     // Update group info
     groupsStore.updateGroupData(this.groupId, updates);
@@ -491,12 +484,7 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
-    const { groupStore, sidemenuStore } = this.rootStore;
-
-    if (groupStore.loading) {
-      // should not mark as read when in transition to other group
-      return;
-    }
+    const { sidemenuStore } = this.rootStore;
 
     this.groupChannel
       .push("mark_as_read", { group_id: this.groupId })
@@ -825,9 +813,9 @@ class MessageStore {
 
     const { groupStore } = this.rootStore;
 
-    this.unreadMessagesCount = groupStore.unread_messages_count;
-    this.mentionsCount = groupStore.mentions_count;
-    this.lastReadAt = groupStore.last_read_at;
+    this.unreadMessagesCount = groupStore.group.unread_messages_count;
+    this.mentionsCount = groupStore.group.mentions_count;
+    this.lastReadAt = groupStore.group.last_read_at;
 
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };

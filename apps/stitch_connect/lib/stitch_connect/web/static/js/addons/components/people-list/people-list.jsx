@@ -16,7 +16,9 @@ class PeopleList extends Component {
 
   render() {
     const { groupStore, presenceStore, showAllUsers } = this.props;
-    const users = showAllUsers ? groupStore.users : groupStore.onlineUsers;
+    const users = showAllUsers
+      ? groupStore.group.users
+      : groupStore.onlineUsers;
 
     return (
       <div className="collapse-content">
