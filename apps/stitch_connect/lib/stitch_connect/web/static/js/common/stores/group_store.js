@@ -154,13 +154,6 @@ class GroupStore {
   };
 
   @action
-  rename = groupName => {
-    return patch(`/api/v1/groups/${this.id}/rename`, {
-      body: { name: groupName, slug: groupName }
-    }).then(resp => resp.data);
-  };
-
-  @action
   saveUsers = members => {
     return post(`/api/v1/groups/${this.id}/invite`, {
       body: {
@@ -195,6 +188,13 @@ class GroupStore {
   @action
   hide = () => {
     return put(`/api/v1/groups/${this.id}/hide`);
+  };
+
+  @action
+  rename = name => {
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.renameGroup(this.group.id, name);
   };
 
   @action

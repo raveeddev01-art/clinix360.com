@@ -150,6 +150,13 @@ class GroupsStore {
     });
   };
 
+  @action
+  renameGroup = (id, name) => {
+    return patch(`/api/v1/groups/${id}/rename`, {
+      body: { name }
+    });
+  };
+
   /* Event handlers */
 
   @action
