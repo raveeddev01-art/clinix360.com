@@ -15,7 +15,7 @@ defmodule StitchConnect.Application do
     ]
 
     children = if Application.get_env(:stitch_connect, :start_message_link_preview_generator, true) do
-      children ++ [worker(StitchConnect.MessageLinkPreviewGenerator, [])]
+      children #++ [worker(StitchConnect.MessageLinkPreviewGenerator, [])]
     else
       children
     end
