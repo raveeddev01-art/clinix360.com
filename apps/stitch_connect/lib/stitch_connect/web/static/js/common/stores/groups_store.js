@@ -10,6 +10,7 @@ import orderBy from "lodash/orderBy";
 class GroupsStore {
   @observable groups = [];
   @observable groupCursors = {}; // { group_id: message_id }
+  @observable currentGroupId = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -20,6 +21,15 @@ class GroupsStore {
   // //////// //
 
   getGroupById = id => this.groups.find(group => group.id === id);
+
+  @computed
+  get currentGroup() {
+    if (!this.currentGroupId) {
+      return null;
+    }
+
+    return this.getGroupById(this.currentGroupId);
+  }
 
   @computed
   get defaultGroup() {
