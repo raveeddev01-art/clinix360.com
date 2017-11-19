@@ -76,21 +76,6 @@ export default class TeamPicker extends Component {
         )}
 
         <div className="authentication-card text-center team-picker-card">
-          <div className="card-header">
-            <Row>
-              <Col xs={12} className="text-right">
-                <OverlayTrigger
-                  placement="top"
-                  overlay={<Tooltip id="close">Close</Tooltip>}
-                >
-                  <Link to="/getstarted">
-                    <i className="fa fa-times" />
-                  </Link>
-                </OverlayTrigger>
-              </Col>
-            </Row>
-          </div>
-
           <h2>Sign In</h2>
 
           <h5>
