@@ -10,6 +10,7 @@ class TeamNameCard extends Component {
         title="Team Name"
         helperText="This is the name of your team. It will show up in menus and headings."
         placeholder="Ex. Care Clinic"
+        maxLength={80}
       >
         Enter your <strong>team name</strong>.
       </OnboardInputCard>

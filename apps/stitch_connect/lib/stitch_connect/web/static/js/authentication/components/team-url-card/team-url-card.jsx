@@ -19,7 +19,7 @@ class TeamUrlCard extends Component {
 
   onChange = evt => {
     this.setState({
-      teamUrl: evt.target.value
+      teamUrl: evt.target.value.replace(/\s/g, "") // disallowing spaces
     });
   };
 
@@ -58,9 +58,6 @@ class TeamUrlCard extends Component {
       return false;
     } else if (/[^0-9a-z-]/.test(teamUrl)) {
       // has only letter, number, dash
-      this.setState({ hasPatternError: true });
-      return false;
-    } else if (teamUrl.length < 3 || teamUrl.length > 20) {
       this.setState({ hasPatternError: true });
       return false;
     }
@@ -109,8 +106,9 @@ class TeamUrlCard extends Component {
           }
           onNext={this.onNext}
           loading={loading}
+          disableNext={!teamUrl}
         >
-          <FormGroup bsSize="large">
+          <FormGroup bsSize="large" className="team-form">
             <FormControl
               required
               autoFocus
@@ -118,7 +116,9 @@ class TeamUrlCard extends Component {
               value={teamUrl}
               onChange={this.onChange}
               onFocus={this.moveCaretAtEnd}
+              maxLength={80}
             />
+            <span className="domain">.teamstitch.com</span>
           </FormGroup>
           <HelpBlock className="m-b-20">
             This is the URL you will use to access Stitch.

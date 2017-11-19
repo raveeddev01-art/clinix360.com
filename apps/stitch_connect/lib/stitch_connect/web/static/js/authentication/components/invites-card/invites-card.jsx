@@ -64,6 +64,7 @@ class InvitesCard extends Component {
                 type="text"
                 value={email}
                 onChange={this.onChange(index)}
+                placeholder="name@example.com"
               />
             </FormGroup>
           ))}

@@ -12,18 +12,25 @@ class UsernameCard extends Component {
     this.state = {
       username: "",
       hasError: false,
+      hasPatternError: false,
       loading: false
     };
   }
 
   onChange = evt => {
     this.setState({
-      username: evt.target.value.toLowerCase().replace(/[^a-z0-9]/g, "")
+      username: evt.target.value.replace(/\s/g, "")
     });
   };
 
   onNext = () => {
     const { username } = this.state;
+    this.setState({ hasPatternError: false });
+
+    if (!this.patternValidate()) {
+      return;
+    }
+
     this.setState({ loading: true });
     get(`/api/v1/users/validate-username?username=${username}`, {
       hideNotify: true
@@ -42,18 +49,35 @@ class UsernameCard extends Component {
       });
   };
 
+  patternValidate = () => {
+    const { username } = this.state;
+
+    if (!/^[^a-z0-9]/.test(username)) {
+      // starts with letter or number
+      this.setState({ hasPatternError: true });
+      return false;
+    }
+
+    return true;
+  };
+
   render() {
-    const { username, hasError, loading } = this.state;
+    const { username, hasError, hasPatternError, loading } = this.state;
     const { placeholder } = this.props;
 
     return (
       <div>
-        {hasError && (
+        {hasPatternError && (
           <Alert bsStyle="danger">
-            The username needs to be unique, lowercase, and only use
-            alphanumeric characters.
+            The username should be lowercase and only use alphanumeric
+            characters.
           </Alert>
         )}
+
+        {!hasPatternError &&
+          hasError && (
+            <Alert bsStyle="danger">That username is already taken.</Alert>
+          )}
 
         <OnboardCard
           {...this.props}
@@ -63,6 +87,7 @@ class UsernameCard extends Component {
               Enter a <strong>username</strong>.
             </span>
           }
+          disableNext={!username}
           loading={loading}
           onNext={this.onNext}
         >
@@ -78,7 +103,7 @@ class UsernameCard extends Component {
           </FormGroup>
           <HelpBlock className="m-b-20">
             Your username is how others will mention you. It should be unique,
-            lowercase, alphanumeric, and fewer than 20 characters.
+            lowercase, and use only letters and numbers.
           </HelpBlock>
         </OnboardCard>
       </div>

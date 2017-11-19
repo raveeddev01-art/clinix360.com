@@ -13,7 +13,8 @@ class Confirmation extends Component {
     super(...args);
     this.state = {
       error: false,
-      digits: new Array(6).fill("")
+      digits: new Array(6).fill(""),
+      loading: false
     };
   }
 
@@ -25,7 +26,10 @@ class Confirmation extends Component {
   }
 
   onChangeCode = index => event => {
-    this.replaceCode(index, event.target.value, () => this.moveRight(index));
+    this.replaceCode(index, event.target.value, () => {
+      this.moveRight(index);
+      this.checkAndSubmit();
+    });
   };
 
   onKeyDown = index => event => {
@@ -65,7 +69,7 @@ class Confirmation extends Component {
     if (text.length === 6 && !isNaN(text)) {
       this.setState({ digits: text.split("") }, () => {
         this.digitComponents[5].focus();
-        this.submitConfirmationCode();
+        this.checkAndSubmit();
       });
     }
   };
@@ -84,7 +88,7 @@ class Confirmation extends Component {
       this.digitComponents[index + 1].focus();
       this.digitComponents[index + 1].select();
     } else if (index === 5) {
-      this.submitConfirmationCode();
+      this.checkAndSubmit();
     }
   };
 
@@ -98,23 +102,24 @@ class Confirmation extends Component {
     );
   };
 
-  submitConfirmationCode = () => {
+  checkAndSubmit = () => {
     const { registrationStore, history } = this.props;
     const confirmationCode = this.state.digits.join("");
     if (confirmationCode.length === 6) {
+      this.setState({ loading: true });
       post("/api/v1/users/submit-confirmation-code", {
         body: {
           user_id: registrationStore.userId,
           confirmation_code: confirmationCode
-        }
+        },
+        hideNotify: true
       })
         .then(() => {
-          this.setState({ error: false });
           registrationStore.verified = true;
           history.push("/signup/onboarding/teamname");
         })
         .catch(() => {
-          this.setState({ error: true });
+          this.setState({ error: true, loading: false });
         });
     }
   };
@@ -152,12 +157,13 @@ class Confirmation extends Component {
         )}
 
         <OnboardCard
-          title="Check your email!"
+          title="Confirmation Code"
           description={
             <span>
               Enter your <strong>confirmation code</strong>.
             </span>
           }
+          loading={this.state.loading}
           onNext={this.onNext}
         >
           <div className="confirmation-code m-b-20">

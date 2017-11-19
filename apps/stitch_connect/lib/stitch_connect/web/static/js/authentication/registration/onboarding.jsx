@@ -5,8 +5,7 @@ import { withRouter, Redirect } from "react-router-dom";
 
 import TeamName from "../components/team-name-card/team-name-card";
 import TeamUrl from "../components/team-url-card/team-url-card";
-import FirstName from "../components/first-name-card/first-name-card";
-import LastName from "../components/last-name-card/last-name-card";
+import NameInput from "../components/name-card/name-card";
 import PhoneNumber from "../components/phone-number-card/phone-number-card";
 import Username from "../components/username-card/username-card";
 import Password from "../components/password-card/password-card";
@@ -17,8 +16,7 @@ import Hipaa from "../components/hipaa-card/hipaa-card";
 const stepList = [
   { field: "teamname", component: TeamName },
   { field: "teamurl", component: TeamUrl },
-  { field: "firstname", component: FirstName },
-  { field: "lastname", component: LastName },
+  { field: "name", component: NameInput },
   { field: "phone", component: PhoneNumber },
   { field: "username", component: Username },
   { field: "password", component: Password },

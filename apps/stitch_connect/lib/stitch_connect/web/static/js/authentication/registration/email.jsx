@@ -57,7 +57,7 @@ class EmailCard extends Component {
           </span>
         }
         onNext={this.onNext}
-        loading
+        loading={this.state.loading}
         disableNext={!this.state.formValid}
       >
         <FormGroup bsSize="large">

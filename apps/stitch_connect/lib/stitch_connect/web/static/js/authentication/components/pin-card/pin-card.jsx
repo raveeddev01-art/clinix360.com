@@ -56,7 +56,7 @@ class PinCard extends Component {
 
 PinCard.propTypes = {
   onNext: PropTypes.func.isRequired,
-  saving: PropTypes.func.isRequired
+  saving: PropTypes.bool.isRequired
 };
 
 PinCard.defaultProps = {

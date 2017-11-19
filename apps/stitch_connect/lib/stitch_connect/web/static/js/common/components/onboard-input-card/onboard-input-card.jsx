@@ -37,10 +37,17 @@ class OnboardInputCard extends Component {
       placeholder,
       isRequired,
       children,
+      disableNext,
+      maxLength,
       ...otherProps
     } = this.props;
     return (
-      <OnboardCard {...otherProps} onNext={this._onNext} description={children}>
+      <OnboardCard
+        {...otherProps}
+        onNext={this._onNext}
+        description={children}
+        disableNext={disableNext || (isRequired && !value)}
+      >
         <FormGroup bsSize="large">
           <FormControl
             required={isRequired}
@@ -50,6 +57,7 @@ class OnboardInputCard extends Component {
             value={value}
             onChange={this._onChange}
             onFocus={this._onFocus}
+            maxLength={maxLength}
           />
         </FormGroup>
         <HelpBlock className="m-b-20">{helperText}</HelpBlock>
@@ -71,7 +79,8 @@ OnboardInputCard.propTypes = {
   type: PropTypes.string.isRequired,
   value: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
-  isRequired: PropTypes.bool
+  isRequired: PropTypes.bool,
+  maxLength: PropTypes.number
 };
 
 OnboardInputCard.defaultProps = {
@@ -84,7 +93,8 @@ OnboardInputCard.defaultProps = {
   type: "text",
   value: "",
   disableNext: false,
-  isRequired: true
+  isRequired: true,
+  maxLength: undefined
 };
 
 export default OnboardInputCard;
