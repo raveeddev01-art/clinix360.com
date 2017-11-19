@@ -71,7 +71,10 @@ class LockedApp extends Component {
               </form>
 
               <HelpBlock>
-                Can't remember your PIN? <a href="/logout">Sign Out</a>
+                Can't remember your PIN?{" "}
+                <a href="/logout">
+                  <strong>Sign Out</strong>
+                </a>
               </HelpBlock>
             </div>
           </div>
