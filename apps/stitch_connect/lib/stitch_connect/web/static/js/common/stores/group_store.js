@@ -137,17 +137,6 @@ class GroupStore {
   };
 
   @action
-  togglePublic = value => {
-    return post(`/api/v1/groups/${this.id}/toggle-public`, {
-      body: { public: value }
-    }).then(() => {
-      this.public = value;
-
-      return this;
-    });
-  };
-
-  @action
   toggleAllUsers = () => {
     this.showAllUsers = !this.showAllUsers;
   };
@@ -192,6 +181,13 @@ class GroupStore {
     const { groupsStore } = this.rootStore;
 
     return groupsStore.inviteUsersToGroup(this.group.id, userIds);
+  };
+
+  @action
+  setPublic = value => {
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.setPublicOfGroup(this.group.id, value);
   };
 
   @action

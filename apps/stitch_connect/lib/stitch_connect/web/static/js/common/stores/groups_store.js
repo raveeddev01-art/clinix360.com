@@ -166,6 +166,15 @@ class GroupsStore {
     });
   };
 
+  @action
+  setPublicOfGroup = (groupId, value) => {
+    return post(`/api/v1/groups/${groupId}/toggle-public`, {
+      body: { public: value }
+    }).then(() => {
+      this.updateGroupData(groupId, { public: value });
+    });
+  };
+
   /* Event handlers */
 
   @action
