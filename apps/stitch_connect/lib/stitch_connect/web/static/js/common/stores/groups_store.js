@@ -81,6 +81,20 @@ class GroupsStore {
   // /////// //
 
   @action
+  updateGroupData = (id, data) => {
+    const group = this.getGroupById(id);
+
+    if (group) {
+      Object.assign(group, data);
+    }
+  };
+
+  @action
+  updateGroupCursor = (groupId, cursor) => {
+    this.groupCursors[groupId] = cursor;
+  };
+
+  @action
   loadGroups = () => {
     const { sidemenuStore } = this.rootStore;
 
@@ -117,18 +131,26 @@ class GroupsStore {
   };
 
   @action
-  updateGroupData = (id, data) => {
-    const group = this.getGroupById(id);
-
-    if (group) {
-      Object.assign(group, data);
-    }
+  joinGroup = id => {
+    return post(`/api/v1/groups/${id}/join`).then(() => {
+      this.updateGroupData(id, {
+        joined: true
+      });
+    });
   };
 
   @action
-  updateGroupCursor = (groupId, cursor) => {
-    this.groupCursors[groupId] = cursor;
+  leaveGroup = id => {
+    return post(`/api/v1/groups/${id}/leave`).then(resp => {
+      this.updateGroupData(id, {
+        joined: false
+      });
+
+      return resp.data.redirect_to;
+    });
   };
+
+  /* Event handlers */
 
   @action
   onOpenedGroup = () => {

@@ -117,7 +117,7 @@ export default class MessagePanel extends Component {
         <div className="flex-footer">
           {groupStore.group.joined ? (
             <MessageForm />
-          ) : !groupStore.group.loading ? (
+          ) : (
             <div className="room-preview">
               This is a preview of the room{" "}
               <strong>
@@ -130,7 +130,7 @@ export default class MessagePanel extends Component {
                 <i className="fa fa-sign-in" /> Join
               </button>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     );

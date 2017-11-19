@@ -180,17 +180,16 @@ class GroupStore {
 
   @action
   join = () => {
-    return post(`/api/v1/groups/${this.id}/join`).then(() => {
-      this.joined = true;
-    });
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.joinGroup(this.group.id);
   };
 
   @action
   leave = () => {
-    return post(`/api/v1/groups/${this.id}/leave`).then(resp => {
-      this.joined = false;
-      return resp.data.redirect_to;
-    });
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.leaveGroup(this.group.id);
   };
 
   @action
