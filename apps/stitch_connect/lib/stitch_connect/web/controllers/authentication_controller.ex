@@ -45,7 +45,7 @@ defmodule StitchConnect.Web.AuthenticationController do
   def logout(conn, _) do
     session_id = get_session(conn, :session_id)
     conn
-    |> clear_session
+    |> configure_session(drop: true)
     |> broadcast_logout(session_id)
     |> redirect(to: "/")
   end
