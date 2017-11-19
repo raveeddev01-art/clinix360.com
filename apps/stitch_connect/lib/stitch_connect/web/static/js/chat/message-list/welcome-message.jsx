@@ -8,7 +8,7 @@ import { inject, observer } from "mobx-react";
 class WelcomeMessage extends Component {
   getIcon() {
     const { groupStore: group } = this.props;
-    if (group.groupType !== "group") {
+    if (group.groupType !== "regular") {
       return null;
     }
 
@@ -103,7 +103,7 @@ class WelcomeMessage extends Component {
               </span>
             </h3>
           </div>
-          {group.groupType === "group"
+          {group.groupType === "regular"
             ? this.renderForRoom()
             : this.renderForDM()}
         </div>

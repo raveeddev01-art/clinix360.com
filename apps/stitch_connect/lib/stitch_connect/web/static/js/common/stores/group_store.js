@@ -24,7 +24,7 @@ class GroupStore {
   @observable showAllUsers = true;
   @observable createdBy = null;
   @observable createdAt = null;
-  @observable groupType = "group"; // group, single-dm, multi-dm
+  @observable groupType = "regular"; // regular, dm, multi_dm
   @observable dmUsers = [];
   @observable isDefault = false;
 
@@ -98,7 +98,7 @@ class GroupStore {
       this.public = data.public;
       this.favorite = !!data.favorite;
       this.joined = data.joined;
-      this.groupType = "group";
+      this.groupType = "regular";
       this.isDefault = data.is_default;
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
@@ -143,7 +143,7 @@ class GroupStore {
       this.public = data.public;
       this.favorite = !!data.favorite;
       this.joined = data.joined;
-      this.groupType = "single-dm";
+      this.groupType = "dm";
       this.isDefault = false;
       this.users = data.users;
       this.unreadMessagesCount = data.unread_messages_count;
@@ -176,7 +176,7 @@ class GroupStore {
     // Reset message store before join
     this.rootStore.messageStore.reset();
 
-    return post(`/api/v1/groups/multi-dm`, {
+    return post(`/api/v1/groups/multi_dm`, {
       body: { user_ids: userIds }
     }).then(resp => {
       this.loading = false;
@@ -194,7 +194,7 @@ class GroupStore {
       this.public = data.public;
       this.favorite = !!data.favorite;
       this.joined = data.joined;
-      this.groupType = "multi-dm";
+      this.groupType = "multi_dm";
       this.isDefault = false;
       this.unreadMessagesCount = data.unread_messages_count;
       this.mentionsCount = data.mentions_count;

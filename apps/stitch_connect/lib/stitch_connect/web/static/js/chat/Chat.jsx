@@ -58,7 +58,7 @@ class Chat extends Component {
   render() {
     const { groupStore, sidemenuStore } = this.props;
     let title = `${groupStore.name} | Stitch Connect`;
-    if (groupStore.groupType === "group") {
+    if (groupStore.groupType === "regular") {
       title = `${groupStore.name} | ${sidemenuStore.teamName} | Stitch Connect`;
     }
 

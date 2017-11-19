@@ -145,20 +145,17 @@ class UsersStore {
       userStore.onUserInfo(user);
     }
 
-    // if username of the user in multi-dm or single-dm current user is on, is changed,
+    // if username of the user in multi_dm or dm current user is on, is changed,
     // it should redirect
     const { groupStore } = this.rootStore;
 
-    if (
-      groupStore.groupType === "single-dm" ||
-      groupStore.groupType === "multi-dm"
-    ) {
+    if (groupStore.groupType === "dm" || groupStore.groupType === "multi_dm") {
       const changedUser = groupStore.users.find(u => u.id === user.id);
       if (changedUser.username !== user.username) {
         changedUser.username = user.username;
         history.replace(
           getRoomNavLink({
-            type: groupStore.groupType === "single-dm" ? "dm" : "multi-dm",
+            type: groupStore.groupType,
             users: groupStore.users
           })
         );

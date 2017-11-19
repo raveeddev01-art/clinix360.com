@@ -92,7 +92,7 @@ class TopNav extends Component {
 
   renderRoomControls = () => {
     const { groupStore } = this.props;
-    const isNotDM = groupStore.groupType === "group";
+    const isNotDM = groupStore.groupType === "regular";
     const isDefault = groupStore.isDefault;
 
     if (groupStore.joined) {

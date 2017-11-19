@@ -9,14 +9,14 @@ export default class GroupName extends Component {
     const { groupStore, presenceStore } = this.props;
     const { groupType } = groupStore;
     const iconClassName = cx("fa", {
-      "fa-comments": groupType === "group" && groupStore.public,
-      "fa-lock": groupType === "group" && !groupStore.public,
-      "fa-link": groupType === "multi-dm",
+      "fa-comments": groupType === "regular" && groupStore.public,
+      "fa-lock": groupType === "regular" && !groupStore.public,
+      "fa-link": groupType === "multi_dm",
       "fa-circle":
-        groupType === "single-dm" &&
+        groupType === "dm" &&
         presenceStore.isOnline(groupStore.users[0] && groupStore.users[0].id),
       "fa-circle-o":
-        groupType === "single-dm" &&
+        groupType === "dm" &&
         !presenceStore.isOnline(groupStore.users[0] && groupStore.users[0].id)
     });
     return (
