@@ -87,6 +87,11 @@ class Sidebar extends Component {
         <div className="flex-container">
           <h5>You</h5>
           <ListGroup>
+            <ListGroupItem active={this._isSelected("/admin/you/home")}>
+              <Link to="/admin/you/home">
+                <i className="fa fa-home" /> Home
+              </Link>
+            </ListGroupItem>
             <ListGroupItem active={this._isSelected("/admin/you/account")}>
               <Link to="/admin/you/account">
                 <i className="fa fa-cog" /> Account

@@ -8,6 +8,7 @@ import Sidebar from "./sidebar";
 import Topbar from "./topbar";
 import TeamSecurity from "./team/security";
 import TeamSettings from "./team/settings/index";
+import YouHome from "./you/home/index";
 import YouNotifications from "./you/notifications";
 import ProfileSettings from "./you/profile/index";
 import AccountSettings from "./you/account/index";
@@ -113,7 +114,7 @@ class AdminApp extends Component {
               />
               <Route path={`/admin/you/profile`} component={ProfileSettings} />
               <Route path={`/admin/you/account`} component={AccountSettings} />
-
+              <Route path={`/admin/you/home`} component={YouHome} />
               <Redirect to={`/admin/you/account`} />
             </Switch>
           </div>

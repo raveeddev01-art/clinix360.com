@@ -12,7 +12,7 @@ class Switcher extends Component {
       <div className="switcher">
         <div className="switcher__top">
           {/* <div className="switcher__logo" /> */}
-          <NavLink to="/admin/you/account" className="switcher__link">
+          <NavLink to="/admin/you/home" className="switcher__link">
             <OverlayTrigger
               placement="right"
               container={this}
@@ -41,7 +41,11 @@ class Switcher extends Component {
               <i className="fa fa-cog" />
             </OverlayTrigger>
           </NavLink>
-          <a role="link" onClick={this.props.presenceStore.lock} className="switcher__link">
+          <a
+            role="link"
+            onClick={this.props.presenceStore.lock}
+            className="switcher__link"
+          >
             <OverlayTrigger
               placement="right"
               container={this}
