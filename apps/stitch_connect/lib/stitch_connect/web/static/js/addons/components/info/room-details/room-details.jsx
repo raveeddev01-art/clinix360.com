@@ -6,7 +6,7 @@ import { inject, observer } from "mobx-react";
 class RoomDetails extends Component {
   render() {
     const { groupStore } = this.props;
-    const isNotDM = groupStore.groupType === "regular";
+    const isNotDM = groupStore.type === "regular";
 
     return (
       <div className="collapse-content room-details">

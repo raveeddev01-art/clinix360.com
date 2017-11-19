@@ -149,13 +149,13 @@ class UsersStore {
     // it should redirect
     const { groupStore } = this.rootStore;
 
-    if (groupStore.groupType === "dm" || groupStore.groupType === "multi_dm") {
+    if (groupStore.type === "dm" || groupStore.type === "multi_dm") {
       const changedUser = groupStore.users.find(u => u.id === user.id);
       if (changedUser.username !== user.username) {
         changedUser.username = user.username;
         history.replace(
           getRoomNavLink({
-            type: groupStore.groupType,
+            type: groupStore.type,
             users: groupStore.users
           })
         );

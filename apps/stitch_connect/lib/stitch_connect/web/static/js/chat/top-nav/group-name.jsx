@@ -7,16 +7,16 @@ import cx from "classnames";
 export default class GroupName extends Component {
   render() {
     const { groupStore, presenceStore } = this.props;
-    const { groupType } = groupStore;
+    const { type } = groupStore;
     const iconClassName = cx("fa", {
-      "fa-comments": groupType === "regular" && groupStore.public,
-      "fa-lock": groupType === "regular" && !groupStore.public,
-      "fa-link": groupType === "multi_dm",
+      "fa-comments": type === "regular" && groupStore.public,
+      "fa-lock": type === "regular" && !groupStore.public,
+      "fa-link": type === "multi_dm",
       "fa-circle":
-        groupType === "dm" &&
+        type === "dm" &&
         presenceStore.isOnline(groupStore.users[0] && groupStore.users[0].id),
       "fa-circle-o":
-        groupType === "dm" &&
+        type === "dm" &&
         !presenceStore.isOnline(groupStore.users[0] && groupStore.users[0].id)
     });
     return (
