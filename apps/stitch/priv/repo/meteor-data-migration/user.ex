@@ -50,7 +50,9 @@ defmodule Stitch.MeteorMigration.User do
   Throws an error if some of the attributes are not present
   """
   def parse_users_json(users) do
-    users |> Enum.map(&parse_user_json/1)
+    users
+    |> Enum.map(&parse_user_json/1)
+    |> Enum.filter(& &1 != nil)
   end
 
   def parse_user_json(%{
@@ -63,20 +65,27 @@ defmodule Stitch.MeteorMigration.User do
     "username" => username,
     "mobilePhone" => phone_number,
     "pin" => pin,
-    "teamId" => team_id}) when is_list(roles) do
+    "teamId" => team_id} = attributes) when is_list(roles) do
 
-    %{
-      email: email,
-      username: username,
-      first_name: first_name,
-      last_name: last_name,
-      password: password_hash,
-      phone_number: phone_number,
-      pin: pin,
-      roles: map_roles(roles),
-      meteor_id: id,
-      meteor_team_id: team_id,
-    }
+    json =
+      %{
+        email: email,
+        username: username,
+        first_name: first_name,
+        last_name: last_name,
+        password: password_hash,
+        phone_number: phone_number,
+        pin: pin,
+        roles: map_roles(roles),
+        meteor_id: id,
+        meteor_team_id: team_id,
+      }
+
+    if attributes["active"] == false do
+      nil
+    else
+      json
+    end
   end
   def parse_user_json(json) do
     raise ParserError, message: "Invalid format from Meteor app: #{inspect(json)}"

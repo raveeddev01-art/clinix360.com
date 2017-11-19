@@ -8,12 +8,19 @@ defmodule Stitch.MeteorMigration do
   alias Stitch.MeteorMigration
   import Ecto.Query
   require Logger
+  alias ExAws.S3
 
   @allow_retry System.get_env("METEOR_ALLOW_RETRY") == "true"
-  @meteor_data_dir "_meteor-data"
+  # @meteor_data_dir "_meteor-data"
+  @meteor_data_dir "/tmp"
+  @s3 Application.get_env(:stitch, :aws_user_upload)
 
   defmodule MigrationError do
     defexception message: "Meteor migration data couldn't be found."
+  end
+
+  def download(filename, dest) do
+    S3.download_file(@s3.bucket, filename, dest) |> ExAws.request
   end
 
   def run_migration(%{team_json: team_json, users_json: users_json, rooms_json: rooms_json, messages_json: messages_json}) do
@@ -154,6 +161,15 @@ defmodule Stitch.MeteorMigration do
     meteor_data_dir = @meteor_data_dir
     team_name = System.get_env("METEOR_TEAM_NAME")
 
+    Logger.info("Downloading migration files from S3")
+
+    File.rm_rf("/tmp/#{team_name}")
+    File.mkdir_p("/tmp/#{team_name}")
+    {:ok, :done} = download("#{team_name}-team.json", "/tmp/#{team_name}/team.json")
+    {:ok, :done} = download("#{team_name}-users.json", "/tmp/#{team_name}/users.json")
+    {:ok, :done} = download("#{team_name}-rooms.json", "/tmp/#{team_name}/rooms.json")
+    {:ok, :done} = download("#{team_name}-messages.json", "/tmp/#{team_name}/messages.json")
+
     unless File.exists?(meteor_data_dir), do: log_meteor_data_error "#{meteor_data_dir} doesn't exist."
     unless team_name, do: log_meteor_data_error "Requires meteor team name. Pass meteor team_name via METEOR_TEAM_NAME env."
 
@@ -167,7 +183,7 @@ defmodule Stitch.MeteorMigration do
     unless File.exists?(team_json), do: log_meteor_data_error "#{team_json} doesn't exist."
     unless File.exists?(users_json), do: log_meteor_data_error "#{users_json} doesn't exist."
     unless File.exists?(rooms_json), do: log_meteor_data_error "#{rooms_json} doesn't exist."
-    unless File.exists?(rooms_json), do: log_meteor_data_error "#{messages_json} doesn't exist."
+    unless File.exists?(messages_json), do: log_meteor_data_error "#{messages_json} doesn't exist."
 
     %{
       team_json: team_json,

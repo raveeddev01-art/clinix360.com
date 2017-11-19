@@ -14,7 +14,9 @@ defmodule Stitch.MeteorMigration.Room do
   end
 
   def parse_rooms_json(indexed_users, users) do
-    users |> Enum.map(& parse_room_json(indexed_users, &1))
+    users
+    |> Enum.map(& parse_room_json(indexed_users, &1))
+    |> Enum.filter(& &1 != nil)
   end
 
   @doc """
@@ -41,7 +43,8 @@ defmodule Stitch.MeteorMigration.Room do
           users: get_users(users, usernames),
           meteor_id: meteor_id,
         }
-      :error -> raise RelationError
+      :error ->
+        nil
     end
   end
 
@@ -66,7 +69,8 @@ defmodule Stitch.MeteorMigration.Room do
           users: get_users(users, usernames),
           meteor_id: meteor_id,
         }
-      :error -> raise RelationError
+      :error ->
+        nil
     end
   end
 
@@ -91,7 +95,8 @@ defmodule Stitch.MeteorMigration.Room do
           users: get_users(users, usernames),
           meteor_id: meteor_id,
         }
-      :error -> raise RelationError
+      :error ->
+        nil
     end
   end
 
@@ -137,6 +142,10 @@ defmodule Stitch.MeteorMigration.Room do
       end
     end)
     |> Enum.filter(& &1 != nil)
+  end
+
+  def create_group(team_id, %{dm: true, multi: _multi, users: []}) do
+    {:error, "Empty room"}
   end
 
   def create_group(team_id, %{dm: true, multi: true, users: [creator|_] = users}) do
