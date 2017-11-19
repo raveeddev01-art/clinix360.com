@@ -45,7 +45,7 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
     assert message.link_previews == []
   end
 
-  test "message with an invalid link" do
+  test "message with a link that can't be reached" do
     message = insert(:message, text_content: "lorem https://foo.com ipsum")
 
     Stitch.Message.LinkPreview.generate_link_previews(message)
@@ -57,6 +57,16 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
 
   test "message with a link without metadata" do
     message = insert(:message, text_content: "lorem http://home.mcom.com/home/welcome.html ipsum")
+
+    Stitch.Message.LinkPreview.generate_link_previews(message)
+
+    message = Stitch.MessageQueries.get_by_id(message.id)
+    assert message.link_previews_generated
+    assert message.link_previews == []
+  end
+
+  test "message with an invalid link" do
+    message = insert(:message, text_content: "lorem http://%00%00c:/../../../../windows/system32/calc.exe ipsum")
 
     Stitch.Message.LinkPreview.generate_link_previews(message)
 
