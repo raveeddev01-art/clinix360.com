@@ -30,12 +30,8 @@ class HipaaCard extends Component {
 
     return (
       <Card
-        title="Send Invitations"
-        description={
-          <span>
-            Enter <strong>invitations</strong> to email out.
-          </span>
-        }
+        title="HIPAA"
+        description={<strong>Business Associate Agreement</strong>}
       >
         <Form onSubmit={this.onNext}>
           <Checkbox
@@ -48,12 +44,9 @@ class HipaaCard extends Component {
           </Checkbox>
 
           <HelpBlock className="m-b-20">
-            Learn more about BAAs&nbsp;
+            By checking the box above, you represent that your team agrees to
+            the terms of the&nbsp;
             <a href="/baa" target="_blank">
-              here
-            </a>. By checking the box above, you represent that your team agrees
-            to the terms of the&nbsp;
-            <a href="/hipaa" target="_blank">
               HIPAA BAA
             </a>.
           </HelpBlock>

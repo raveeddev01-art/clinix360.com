@@ -52,7 +52,7 @@ class UsernameCard extends Component {
   patternValidate = () => {
     const { username } = this.state;
 
-    if (!/^[^a-z0-9]/.test(username)) {
+    if (/[^a-z0-9]/.test(username)) {
       // starts with letter or number
       this.setState({ hasPatternError: true });
       return false;

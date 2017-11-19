@@ -55,6 +55,7 @@ class PhoneNumberCard extends Component {
             </span>
           }
           loading={loading}
+          disableNext={!phone}
           onNext={this.onNext}
         >
           <FormGroup bsSize="large">
