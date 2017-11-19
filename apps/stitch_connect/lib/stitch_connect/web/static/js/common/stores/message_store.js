@@ -825,9 +825,9 @@ class MessageStore {
 
     const { groupStore } = this.rootStore;
 
-    this.unreadMessagesCount = groupStore.unreadMessagesCount;
-    this.mentionsCount = groupStore.mentionsCount;
-    this.lastReadAt = groupStore.lastReadAt;
+    this.unreadMessagesCount = groupStore.unread_messages_count;
+    this.mentionsCount = groupStore.mentions_count;
+    this.lastReadAt = groupStore.last_read_at;
 
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };

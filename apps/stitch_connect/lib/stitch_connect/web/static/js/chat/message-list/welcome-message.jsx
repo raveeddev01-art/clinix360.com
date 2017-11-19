@@ -50,13 +50,13 @@ class WelcomeMessage extends Component {
           {this.getIcon()}
           {` ${group.name}`}
         </span>
-        {group.createdBy ? " created by" : " created"}
-        {group.createdBy && (
+        {group.creator_user_id ? " created by" : " created"}
+        {group.creator_user_id && (
           <span className="welcome-message__name">
-            {this.getUserFullName(group.createdBy)}
+            {this.getUserFullName(group.creator_user_id)}
           </span>
         )}
-        on {this.getFormattedTime(group.createdAt)}.
+        on {this.getFormattedTime(group.inserted_at)}.
       </div>
     );
   }

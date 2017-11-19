@@ -16,17 +16,18 @@ class GroupStore {
   @observable public = true;
   @observable joined = false;
   @observable users = [];
-  @observable unreadMessagesCount = 0;
-  @observable lastReadAt = null;
-  @observable mentionsCount = 0;
+  @observable unread_messages_count = 0;
+  @observable last_read_at = null;
+  @observable mentions_count = 0;
   @observable favorite = false;
   @observable notificationSetting = null;
-  @observable showAllUsers = true;
-  @observable createdBy = null;
-  @observable createdAt = null;
+  @observable creator_user_id = null;
+  @observable inserted_at = null;
   @observable type = "regular"; // regular, dm, multi_dm
+
+  @observable showAllUsers = true;
   @observable dmUsers = [];
-  @observable isDefault = false;
+  @observable is_default = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -99,13 +100,13 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.type = data.type;
-      this.isDefault = data.is_default;
+      this.is_default = data.is_default;
       this.users = data.users;
-      this.unreadMessagesCount = data.unread_messages_count;
-      this.mentionsCount = data.mentions_count;
-      this.lastReadAt = data.last_read_at;
-      this.createdBy = data.creator_user_id;
-      this.createdAt = data.inserted_at;
+      this.unread_messages_count = data.unread_messages_count;
+      this.mentions_count = data.mentions_count;
+      this.last_read_at = data.last_read_at;
+      this.creator_user_id = data.creator_user_id;
+      this.inserted_at = data.inserted_at;
 
       this.postJoin();
     });
@@ -144,11 +145,11 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.type = data.type;
-      this.isDefault = false;
+      this.is_default = false;
       this.users = data.users;
-      this.unreadMessagesCount = data.unread_messages_count;
-      this.mentionsCount = data.mentions_count;
-      this.lastReadAt = data.last_read_at;
+      this.unread_messages_count = data.unread_messages_count;
+      this.mentions_count = data.mentions_count;
+      this.last_read_at = data.last_read_at;
 
       this.postJoin();
     });
@@ -195,10 +196,10 @@ class GroupStore {
       this.favorite = !!data.favorite;
       this.joined = data.joined;
       this.type = data.type;
-      this.isDefault = false;
-      this.unreadMessagesCount = data.unread_messages_count;
-      this.mentionsCount = data.mentions_count;
-      this.lastReadAt = data.last_read_at;
+      this.is_default = false;
+      this.unread_messages_count = data.unread_messages_count;
+      this.mentions_count = data.mentions_count;
+      this.last_read_at = data.last_read_at;
 
       this.postJoin();
     });
