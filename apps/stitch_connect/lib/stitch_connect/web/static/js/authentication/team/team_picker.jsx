@@ -68,7 +68,7 @@ export default class TeamPicker extends Component {
     return (
       <div>
         {alert === true && (
-          <Alert>
+          <Alert bsStyle="danger">
             We don't have that team URL in our system. If you'd like, we can
             help you <Link to="/find-your-team">find your team</Link>.
           </Alert>

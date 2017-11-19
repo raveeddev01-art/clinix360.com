@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import OnboardCard from "../onboard-card/onboard-card";
-import PinInput from "../../../common/components/pin-input/index";
+import { OnboardCard, PinInput } from "common/components";
 
 class PinCard extends Component {
   constructor(...args) {
@@ -27,9 +26,10 @@ class PinCard extends Component {
   onNext = () => this.props.onNext(this.state.pin);
 
   render() {
+    const { saving, ...otherProps } = this.props;
     return (
       <OnboardCard
-        {...this.props}
+        {...otherProps}
         title="PIN"
         description={
           <span>
@@ -37,6 +37,7 @@ class PinCard extends Component {
           </span>
         }
         onNext={this.onNext}
+        loading={saving}
         disableNext={!this.state.formValid}
       >
         <PinInput
@@ -45,7 +46,7 @@ class PinCard extends Component {
           onInvalid={this.onInvalid}
         />
         <HelpBlock className="m-b-20">
-          You can use this pin when your screen is locked after a period of
+          You can use this PIN when your screen is locked after a period of
           inactivity.
         </HelpBlock>
       </OnboardCard>
@@ -55,14 +56,12 @@ class PinCard extends Component {
 
 PinCard.propTypes = {
   onNext: PropTypes.func.isRequired,
-  backUrl: PropTypes.string,
-  restartUrl: PropTypes.string
+  saving: PropTypes.bool.isRequired
 };
 
 PinCard.defaultProps = {
   onNext: () => {},
-  backUrl: "",
-  restartUrl: ""
+  saving: false
 };
 
 export default PinCard;

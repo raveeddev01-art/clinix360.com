@@ -485,3 +485,10 @@ i.fa {
   color: #fff;
   background: $brand-primary;
 }
+
+i.fa {
+  &.on-right {
+    margin-left: 8px;
+    vertical-align: text-bottom;
+  }
+}

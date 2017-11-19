@@ -4,14 +4,15 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Alert from "react-bootstrap/lib/Alert";
-import OnboardCard from "../onboard-card/onboard-card";
+import { OnboardCard } from "common/components";
 
 class PhoneNumberCard extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
       phone: "",
-      hasError: false
+      hasError: false,
+      loading: false
     };
   }
 
@@ -22,20 +23,13 @@ class PhoneNumberCard extends Component {
   };
 
   onNext = () => {
-    post(`/api/v1/users/validate-phone-number`, {
-      body: { phone_number: this.state.phone }
-    })
-      .then(() => {
-        this.setState({ hasError: false });
-        this.props.onNext(this.state.phone);
-      })
-      .catch(() => {
-        this.setState({ hasError: true });
-      });
+    // removed validation temporarily.
+    // TODO add frontend validation
+    this.props.onNext(this.state.phone);
   };
 
   render() {
-    const { phone, hasError } = this.state;
+    const { phone, hasError, loading } = this.state;
 
     return (
       <div>
@@ -51,6 +45,8 @@ class PhoneNumberCard extends Component {
               Enter your <strong>phone number</strong>.
             </span>
           }
+          loading={loading}
+          disableNext={!phone}
           onNext={this.onNext}
         >
           <FormGroup bsSize="large">
@@ -73,9 +69,7 @@ class PhoneNumberCard extends Component {
 }
 
 PhoneNumberCard.propTypes = {
-  onNext: PropTypes.func.isRequired,
-  backUrl: PropTypes.string.isRequired,
-  restartUrl: PropTypes.string.isRequired
+  onNext: PropTypes.func.isRequired
 };
 
 PhoneNumberCard.defaultProps = {

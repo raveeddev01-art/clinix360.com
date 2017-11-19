@@ -9,8 +9,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import { Link } from "react-router-dom";
-
-import Card from "../components/card/card";
+import { Card } from "common/components";
 
 @inject("resetPasswordStore", "titleStore")
 @observer

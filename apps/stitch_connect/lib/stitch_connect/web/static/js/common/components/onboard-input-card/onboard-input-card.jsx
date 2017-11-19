@@ -16,10 +16,7 @@ class OnboardInputCard extends Component {
   }
 
   _onChange = evt => {
-    let value = evt.target.value;
-    if (this.props.isLowerCase) {
-      value = value.toLowerCase();
-    }
+    const value = evt.target.value;
     this.setState({ value });
   };
 
@@ -39,10 +36,18 @@ class OnboardInputCard extends Component {
       helperText,
       placeholder,
       isRequired,
+      children,
+      disableNext,
+      maxLength,
       ...otherProps
     } = this.props;
     return (
-      <OnboardCard {...otherProps} onNext={this._onNext}>
+      <OnboardCard
+        {...otherProps}
+        onNext={this._onNext}
+        description={children}
+        disableNext={disableNext || (isRequired && !value)}
+      >
         <FormGroup bsSize="large">
           <FormControl
             required={isRequired}
@@ -52,6 +57,7 @@ class OnboardInputCard extends Component {
             value={value}
             onChange={this._onChange}
             onFocus={this._onFocus}
+            maxLength={maxLength}
           />
         </FormGroup>
         <HelpBlock className="m-b-20">{helperText}</HelpBlock>
@@ -62,23 +68,24 @@ class OnboardInputCard extends Component {
 
 OnboardInputCard.propTypes = {
   onNext: PropTypes.func.isRequired,
-  backUrl: PropTypes.string,
-  restartUrl: PropTypes.string,
   title: PropTypes.string.isRequired,
-  description: PropTypes.node,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
   nextButtonText: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   helperText: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   value: PropTypes.string,
   disableNext: PropTypes.bool.isRequired,
-  isLowerCase: PropTypes.bool,
-  isRequired: PropTypes.bool
+  isRequired: PropTypes.bool,
+  maxLength: PropTypes.number
 };
 
 OnboardInputCard.defaultProps = {
   onNext: () => {},
-  description: "",
+  children: "",
   title: "",
   placeholder: "",
   helperText: "",
@@ -86,8 +93,8 @@ OnboardInputCard.defaultProps = {
   type: "text",
   value: "",
   disableNext: false,
-  isLowerCase: false,
-  isRequired: true
+  isRequired: true,
+  maxLength: undefined
 };
 
 export default OnboardInputCard;

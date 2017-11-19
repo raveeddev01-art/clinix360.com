@@ -1,14 +1,27 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
 
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
-import FormControl from "react-bootstrap/lib/FormControl";
-import Card from "../components/card/card";
+
+import { Card } from "common/components";
 
 @inject("invitationStore")
 @observer
 class Welcome extends Component {
+  componentWillMount() {
+    const { invitationStore } = this.props;
+    invitationStore.verifyInvitation().catch(() => {
+      history.replace(`/invitations/error`);
+    });
+  }
+
+  onNext = () => {
+    const { history, invitationStore } = this.props;
+    history.push(`/invitations/accept/${invitationStore.token}/firstname`);
+  };
+
   render() {
     const { invitationStore } = this.props;
     return (
@@ -22,16 +35,14 @@ class Welcome extends Component {
       >
         <p>Your email is:</p>
         <FormGroup bsSize="large">
-          <pre>
-            {invitationStore.email}
-          </pre>
+          <pre>{invitationStore.email}</pre>
         </FormGroup>
         <Button
           bsStyle="primary"
           bsSize="lg"
           className="btn-block m-b-40"
           disabled={!invitationStore.verified}
-          onClick={this.props.onNext}
+          onClick={this.onNext}
         >
           Continue
         </Button>
@@ -40,4 +51,4 @@ class Welcome extends Component {
   }
 }
 
-export default Welcome;
+export default withRouter(Welcome);
