@@ -64,7 +64,12 @@ defmodule Stitch.Message.LinkPreview do
       else
         links
         |> Enum.map(fn link ->
-          generate_link_preview_param(link)
+          case valid_url(link) do
+            {:ok, url} ->
+              generate_link_preview_param(link)
+            _ ->
+              nil
+          end
         end)
         |> Enum.reject(&is_nil/1)
       end
@@ -150,5 +155,13 @@ defmodule Stitch.Message.LinkPreview do
     message
     |> Ecto.Changeset.change(link_previews: link_previews)
     |> Repo.update!
+  end
+
+  defp valid_url(url) do
+    case URI.parse(url) do
+      %URI{scheme: nil} -> {:error, "No scheme"}
+      %URI{host: nil} -> {:error, "No host"}
+      _ -> {:ok, url}
+    end
   end
 end
