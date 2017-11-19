@@ -99,9 +99,8 @@ defmodule Stitch.Message.LinkPreview do
         {:error, _error} ->
           nil
       end
-    rescue
-      e in RuntimeError ->
-        nil
+    rescue ArgumentError ->
+      nil
     end
   end
 
