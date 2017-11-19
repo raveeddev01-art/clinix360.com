@@ -1,6 +1,6 @@
 /**
  * Channel store
- * 
+ *
  * This store is the central hub for socket channels that are used across the app.
  * All socket channels used in the app MUST be registered in this store.
  */
@@ -14,9 +14,9 @@ class ChannelStore {
 
   /**
    * Joins the channel topic
-   * 
-   * @param {string} topic 
-   * @param {Object} options 
+   *
+   * @param {string} topic
+   * @param {Object} options
    */
   join(topic, options = {}) {
     this.leave(topic);
@@ -28,8 +28,8 @@ class ChannelStore {
 
   /**
    * Leaves the channel topic
-   * 
-   * @param {string} topic 
+   *
+   * @param {string} topic
    */
   leave(topic) {
     if (this.channels[topic]) {
@@ -66,7 +66,7 @@ class ChannelStore {
     });
     this.eventChannel.on("logout", ({ session_id: sessionId }) => {
       if (window.sessionId === sessionId) {
-        window.location.reload();
+        window.location = "/logged-out";
       }
     });
 

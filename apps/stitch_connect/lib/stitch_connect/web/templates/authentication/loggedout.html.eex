@@ -1,0 +1,1 @@
+<div data-component="AuthenticationRouter" data-react-props="<%= @loggedout_params %>"></div>
