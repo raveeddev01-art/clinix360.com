@@ -67,6 +67,7 @@ class LockedApp extends Component {
               <form className="m-b-40" onSubmit={this.handleSubmit}>
                 <PinInput
                   className="m-b-20 m-center"
+                  pin={this.state.pin}
                   onValid={this.onValid}
                   onInvalid={this.onInvalid}
                 />

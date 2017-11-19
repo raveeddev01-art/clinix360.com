@@ -18,7 +18,10 @@ class PinInput extends Component {
   }
 
   onChangeCode = index => event => {
-    this.replaceCode(index, event.target.value, () => this.moveRight(index));
+    this.replaceCode(index, event.target.value, () => {
+      this.moveRight(index);
+      this.submitConfirmationCode();
+    });
   };
 
   onKeyDown = index => event => {
@@ -86,8 +89,10 @@ class PinInput extends Component {
 
   submitConfirmationCode = () => {
     const code = this.state.digits.join("");
-    this.props.onValid(code);
-    this.digitComponents[0].focus();
+    if (code.length === 4) {
+      this.props.onValid(code);
+      this.digitComponents[0].focus();
+    }
   };
 
   moveLeft = index => {
