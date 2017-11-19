@@ -91,6 +91,16 @@ class GroupsStore {
   };
 
   @action
+  openGroup = slug => {
+    const group = this.getGroupBySlug(slug);
+
+    if (group) {
+      this.currentGroupId = group.id;
+      this.onOpenedGroup();
+    }
+  };
+
+  @action
   hideGroup = id => {
     return put(`/api/v1/groups/${id}/hide`);
   };

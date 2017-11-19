@@ -36,7 +36,7 @@ class Chat extends Component {
     messageStore.stopTyping();
 
     if (params.slug) {
-      groupStore.joinGroup(params.slug);
+      groupsStore.openGroup(params.slug);
     } else if (params.usernames) {
       const users = usersStore.users;
       const usernames = params.usernames.split(",");

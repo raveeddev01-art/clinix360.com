@@ -55,41 +55,6 @@ class GroupStore {
   };
 
   @action
-  joinGroup = slug => {
-    if (slug === this.slug) {
-      return;
-    }
-
-    this.loading = true;
-    // Reset message store before join
-    this.rootStore.messageStore.reset();
-
-    get(`/api/v1/groups?slug=${slug}`).then(resp => {
-      this.loading = false;
-
-      const { data } = resp;
-
-      this.id = data.id;
-      this.slug = data.slug;
-      this.name = data.name;
-      this.description = data.description;
-      this.public = data.public;
-      this.favorite = !!data.favorite;
-      this.joined = data.joined;
-      this.type = data.type;
-      this.is_default = data.is_default;
-      this.users = data.users;
-      this.unread_messages_count = data.unread_messages_count;
-      this.mentions_count = data.mentions_count;
-      this.last_read_at = data.last_read_at;
-      this.creator_user_id = data.creator_user_id;
-      this.inserted_at = data.inserted_at;
-
-      this.postJoin();
-    });
-  };
-
-  @action
   joinSingleDM = user => {
     const userIds = [currentUser.id, user.id].sort((a, b) => a > b);
     const slug = `__dm:${userIds.join(".")}`;
