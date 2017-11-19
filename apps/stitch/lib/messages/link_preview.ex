@@ -78,24 +78,29 @@ defmodule Stitch.Message.LinkPreview do
   end
 
   defp generate_link_preview_param(link) do
-    case HTTPoison.get(link, [], follow_redirect: true) do
-      {:ok, response} ->
-        html = response.body
-        title = title(html)
+    try do
+      case HTTPoison.get(link, [], follow_redirect: true) do
+        {:ok, response} ->
+          html = response.body
+          title = title(html)
 
-        if title do
-          %{
-            link: link,
-            title: title,
-            description: description(html),
-            favicon_url: favicon_url(html),
-            image_url: image_url(html)
-          }
-        else
+          if title do
+            %{
+              link: link,
+              title: title,
+              description: description(html),
+              favicon_url: favicon_url(html),
+              image_url: image_url(html)
+            }
+          else
+            nil
+          end
+
+        {:error, _error} ->
           nil
-        end
-
-      {:error, _error} ->
+      end
+    rescue
+      _ ->
         nil
     end
   end
