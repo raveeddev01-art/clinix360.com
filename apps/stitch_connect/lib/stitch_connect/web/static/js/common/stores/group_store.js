@@ -67,10 +67,7 @@ class GroupStore {
 
       this.id = data.id;
       this.slug = data.slug;
-      this.name = `${user.first_name} ${user.last_name}${user.id ===
-      currentUser.id
-        ? " (You)"
-        : ""}`;
+      this.name = user.id === currentUser.id ? `${data.name} (You)` : data.name;
       this.description = data.description;
       this.public = data.public;
       this.favorite = !!data.is_favorite;
@@ -118,10 +115,7 @@ class GroupStore {
       this.id = data.id;
       this.slug = data.slug;
       this.users = data.users;
-      this.name = data.users
-        .filter(user => user.id !== currentUser.id)
-        .map(user => `${user.first_name} ${user.last_name}`)
-        .join(", ");
+      this.name = data.name;
       this.description = data.description;
       this.public = data.public;
       this.favorite = !!data.is_favorite;
