@@ -6,10 +6,19 @@ import ListGroup from "react-bootstrap/lib/ListGroup";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 
 import { isAdmin } from "../util/utils";
+import InviteModal from "../common/modals/invite-modal";
 
 @inject("teamStore", "presenceStore")
 @observer
 class Sidebar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showInviteModal: false
+    };
+  }
+
   _isSelected(path) {
     const { location } = this.props;
 
@@ -19,7 +28,7 @@ class Sidebar extends Component {
   _adminTeamsOptions = () => {
     return (
       <div>
-        <h3>Administration</h3>
+        <h5>Administration</h5>
         <ListGroup>
           <ListGroupItem
             active={
@@ -56,6 +65,17 @@ class Sidebar extends Component {
     );
   };
 
+  toggleInviteModal = () => {
+    this.setState({
+      showInviteModal: !this.state.showInviteModal
+    });
+  };
+
+  showInviteModal = evt => {
+    evt.preventDefault();
+    this.toggleInviteModal();
+  };
+
   render() {
     const { onHideSidebar, teamStore } = this.props;
 
@@ -65,7 +85,7 @@ class Sidebar extends Component {
           <h4 className="team-name">{teamStore.name}</h4>
         </div>
         <div className="flex-container">
-          <h3>You</h3>
+          <h5>You</h5>
           <ListGroup>
             <ListGroupItem active={this._isSelected("/admin/you/account")}>
               <Link to="/admin/you/account">
@@ -94,8 +114,11 @@ class Sidebar extends Component {
 
           {isAdmin() && this._adminTeamsOptions()}
 
-          <h3>Stitch</h3>
+          <h5>Stitch</h5>
           <ListGroup>
+            <ListGroupItem href="#" onClick={this.showInviteModal}>
+              <i className="fa fa-envelope-o" /> Invite
+            </ListGroupItem>
             <ListGroupItem href="#" onClick={this.props.presenceStore.lock}>
               <i className="fa fa-lock" /> Lockout
             </ListGroupItem>
@@ -103,6 +126,11 @@ class Sidebar extends Component {
               <i className="fa fa-sign-out" /> Sign Out
             </ListGroupItem>
           </ListGroup>
+
+          <InviteModal
+            show={this.state.showInviteModal}
+            toggle={this.toggleInviteModal}
+          />
         </div>
       </div>
     );

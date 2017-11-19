@@ -6,7 +6,7 @@ import Button from "react-bootstrap/lib/Button";
 import FullMembersPanel from "./full-members-panel";
 import DeactivatedMembersPanel from "./deactivated-members-panel";
 import PendingInvitationsPanel from "./pending-invitations-panel";
-import InviteModal from "./invite-modal";
+import InviteModal from "../../common/modals/invite-modal";
 
 const header = (
   <h1>
@@ -72,8 +72,12 @@ class TeamSettings extends Component {
 
     return (
       <Panel className="admin-panel" header={header}>
-        <div className="pull-right m-u-50">
-          <Button bsStyle="primary" onClick={this.showInviteModal}>
+        <div className="pull-right m-u-58">
+          <Button
+            bsStyle="primary"
+            onClick={this.showInviteModal}
+            className="btn-invite-members"
+          >
             Invite Members
           </Button>
         </div>
