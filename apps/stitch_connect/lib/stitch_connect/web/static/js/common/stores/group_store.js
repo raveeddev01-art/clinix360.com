@@ -73,7 +73,7 @@ class GroupStore {
         : ""}`;
       this.description = data.description;
       this.public = data.public;
-      this.favorite = !!data.favorite;
+      this.favorite = !!data.is_favorite;
       this.joined = data.joined;
       this.type = data.type;
       this.is_default = false;
@@ -124,7 +124,7 @@ class GroupStore {
         .join(", ");
       this.description = data.description;
       this.public = data.public;
-      this.favorite = !!data.favorite;
+      this.favorite = !!data.is_favorite;
       this.joined = data.joined;
       this.type = data.type;
       this.is_default = false;
@@ -139,15 +139,6 @@ class GroupStore {
   @action
   toggleAllUsers = () => {
     this.showAllUsers = !this.showAllUsers;
-  };
-
-  toggleFavorite = value => {
-    return post(`/api/v1/groups/${this.id}/toggle-favorite`, {
-      body: { favorite: value }
-    }).then(() => {
-      this.favorite = !this.favorite;
-      return this.favorite;
-    });
   };
 
   @action
@@ -190,6 +181,13 @@ class GroupStore {
     const { groupsStore } = this.rootStore;
 
     return groupsStore.setPublicOfGroup(this.group.id, value);
+  };
+
+  @action
+  toggleFavorite = () => {
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.toggleFavorite(this.group.id);
   };
 
   @action

@@ -40,13 +40,13 @@ class GroupsStore {
 
   @computed
   get favoriteGroups() {
-    return this.groups.filter(group => group.favorite);
+    return this.groups.filter(group => group.is_favorite);
   }
 
   @computed
   get normalGroups() {
     return this.groups.filter(
-      group => group.type === "regular" && !group.favorite
+      group => group.type === "regular" && !group.is_favorite
     );
   }
 
@@ -172,6 +172,15 @@ class GroupsStore {
       body: { public: value }
     }).then(() => {
       this.updateGroupData(groupId, { public: value });
+    });
+  };
+
+  @action
+  toggleFavorite = groupId => {
+    return post(
+      `/api/v1/groups/${groupId}/toggle-favorite`
+    ).then(({ is_favorite }) => {
+      this.updateGroupData(groupId, { is_favorite });
     });
   };
 
