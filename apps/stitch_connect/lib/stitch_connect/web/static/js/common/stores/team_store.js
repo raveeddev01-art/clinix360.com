@@ -4,7 +4,7 @@ class TeamStore {
   @observable loading = false;
   @observable name = "";
   @observable id = "";
-  @observable subdomain = "";
+  @observable slug = "";
   @observable securityLockoutEnabled = false;
   @observable secondsToLockout = null;
   @observable openInvitationsEnabled = false;
@@ -23,6 +23,7 @@ class TeamStore {
       this.securityLockoutEnabled = data.security_lockout;
       this.openInvitationsEnabled = data.open_invitations_enabled;
       this.secondsToLockout = data.seconds_to_lockout;
+      this.slug = data.slug;
       this.loading = false;
     });
   };

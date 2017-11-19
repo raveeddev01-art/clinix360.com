@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
+import cx from "classnames";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Alert from "react-bootstrap/lib/Alert";
+import Header from "../website/components/header";
+import Footer from "../website/components/footer";
 import PinInput from "../common/components/pin-input/index";
 
-@inject("presenceStore")
+@inject("presenceStore", "teamStore")
 @observer
 class LockedApp extends Component {
   constructor(props) {
@@ -38,27 +41,22 @@ class LockedApp extends Component {
   };
 
   render() {
+    const lockAppWrapperClass = cx("locked-app-wrapper", {
+      "on-electron": window.electronApp
+    });
+
     const { hasError } = this.state;
     return (
-      <div className="locked-app-wrapper">
+      <div className={lockAppWrapperClass}>
+        <Header />
         <div className="authentication-wrapper">
           <div>
             {hasError && <Alert bsStyle="danger">PIN is incorrect.</Alert>}
-
             <div id="lockout" className="authentication-card text-center">
-              <div className="lockout-header">
-                {this.props.presenceStore.unlocking ? (
-                  <span className="unlocking">
-                    <i className="fa fa-circle-o-notch fa-spin" />
-                  </span>
-                ) : (
-                  <a className="logout" href="/logout">
-                    <i className="fa fa-sign-out" />
-                  </a>
-                )}
-              </div>
-
-              <h2>Session Paused</h2>
+              <h2>Session Locked</h2>
+              <h5 className="text-muted url-heading">
+                {this.props.teamStore.slug}.teamstitch.com
+              </h5>
 
               <h5>
                 Enter <strong>PIN</strong> to resume Stitch.
@@ -70,20 +68,18 @@ class LockedApp extends Component {
                   onValid={this.onValid}
                   onInvalid={this.onInvalid}
                 />
-
-                <HelpBlock>
-                  Forgot your PIN? Just enter your password.<br />
-                  Forgot both? Reset your password{" "}
-                  <a href="/reset-password">here</a>.
-                </HelpBlock>
               </form>
 
-              <p className="copyright m-b-0">
-                &copy; 2017 Stitch Technologies, Inc
-              </p>
+              <HelpBlock>
+                Can't remember your PIN?{" "}
+                <a href="/logout">
+                  <strong>Sign Out</strong>
+                </a>
+              </HelpBlock>
             </div>
           </div>
         </div>
+        {!window.electronApp && <Footer />}
       </div>
     );
   }

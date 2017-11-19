@@ -18,9 +18,22 @@
 }
 
 .locked-app-wrapper {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
+
+  #header {
+    padding: 10px 0;
+  }
+
+  &.on-electron {
+    justify-content: flex-start;
+
+    #header {
+      margin-bottom: 40px;
+    }
+  }
 }
 
 .authentication-wrapper {
