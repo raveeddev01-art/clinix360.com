@@ -30,10 +30,6 @@ defmodule Stitch.FindYourTeam do
     |> subject("Find Your Team")
     |> put_param("global_merge_vars", [
       %{
-        "name": "receiverFirstName",
-        "content": "first_name"
-      },
-      %{
         "name": "findYourTeam",
         "content": "#{endpoint_base_url}/find-your-team/#{token.token}"
       },
