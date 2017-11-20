@@ -22,7 +22,7 @@ class PasswordPanel extends Component {
     this.state = {
       oldPassword: "",
       newPassword: "",
-      formValid: false
+      formInvalid: false
     };
   }
 
@@ -30,7 +30,7 @@ class PasswordPanel extends Component {
     this.setState({
       oldPassword: "",
       newPassword: "",
-      formValid: false
+      formInvalid: false
     });
   };
 
@@ -57,19 +57,19 @@ class PasswordPanel extends Component {
     });
   };
 
-  _onChangeValid = formValid => {
-    this.setState({ formValid });
+  _onChangeValid = formInvalid => {
+    this.setState({ formInvalid });
   };
 
   render() {
-    const { oldPassword, newPassword, formValid } = this.state;
+    const { oldPassword, newPassword, formInvalid } = this.state;
     return (
       <SettingPanel
         title={title}
         description={description}
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
-        disableSave={formValid}
+        disableSave={formInvalid || oldPassword === ""}
       >
         <Row>
           <Col sm={6} componentClass={FormGroup}>
