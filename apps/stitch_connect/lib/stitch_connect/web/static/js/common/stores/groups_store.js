@@ -160,12 +160,16 @@ class GroupsStore {
 
   @action
   hideGroup = groupId => {
-    return put(`/api/v1/groups/${groupId}/hide`);
+    return put(`/api/v1/groups/${groupId}/hide`).then(() => {
+      this.onHidGroup({ group_id: groupId, is_hidden: true });
+    });
   };
 
   @action
   unhideGroup = groupId => {
-    return put(`/api/v1/groups/${groupId}/unhide`);
+    return put(`/api/v1/groups/${groupId}/unhide`).then(() => {
+      this.onHidGroup({ group_id: groupId, is_hidden: false });
+    });
   };
 
   @action
@@ -237,6 +241,11 @@ class GroupsStore {
 
     pinnedMessageStore.reset();
     groupPresenceStore.subscribeToGroupChannel();
+  };
+
+  @action
+  onHidGroup = ({ group_id: groupId, is_hidden }) => {
+    this.updateGroupData(groupId, { is_hidden });
   };
 
   @action

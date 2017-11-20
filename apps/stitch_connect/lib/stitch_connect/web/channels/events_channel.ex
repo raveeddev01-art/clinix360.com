@@ -120,7 +120,7 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_group_hidden(%User{} = user, %Group{} = group, is_hidden) do
-    @endpoint.broadcast("events:#{user.id}", "group_hidden", %{group_id: group.id, is_hidden: is_hidden})
+    @endpoint.broadcast("events:#{user.id}", "hid_group", %{group_id: group.id, is_hidden: is_hidden})
   end
 
   def broadcast_group_favorite(%User{} = user, group_id, is_favorite) do
