@@ -2,12 +2,56 @@ import React, { Component } from "react";
 import { inject } from "mobx-react";
 import Panel from "react-bootstrap/lib/Panel";
 import HomeItem from "./home-item";
+import { isAdmin } from "../../../util/utils";
 
 @inject("titleStore", "adminPanelStore", "userStore")
 export default class YouHome extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Home");
     this.props.adminPanelStore.setHeading("Home", "fa-home");
+  }
+
+  renderAdminItems() {
+    return (
+      <div>
+        <h4>Administration</h4>
+        <HomeItem
+          icon="fa-cog"
+          title="Settings"
+          description="Edit your team's settings, brand, and profile."
+          openButtonText="Open"
+          link="/admin/team/settings"
+        />
+        <HomeItem
+          icon="fa-shield"
+          title="Security"
+          description="Access and download your team's HIPAA settings, BAA contract, and compliance exports."
+          openButtonText="Open"
+          link="/admin/team/security"
+        />
+        <HomeItem
+          icon="fa-bar-chart"
+          title="Analytics"
+          description="View your team's statistics and usage across different applications."
+          openButtonText="Open"
+          link="/admin/analytics"
+        />
+        <HomeItem
+          icon="fa-users"
+          title="Members"
+          description="Manage your members's roles, access, and invitations."
+          openButtonText="Open"
+          link="/admin/members"
+        />
+        <HomeItem
+          icon="fa-credit-card"
+          title="Billing"
+          description="Subscribe to Stitch plans across different products, edit your team payment details, and access invoice history."
+          openButtonText="Open"
+          link="/admin/billing"
+        />
+      </div>
+    );
   }
 
   render() {
@@ -47,42 +91,7 @@ export default class YouHome extends Component {
           link="/admin/you/notifications"
         />
 
-        <h4>Administration</h4>
-        <HomeItem
-          icon="fa-cog"
-          title="Settings"
-          description="Edit your team's settings, brand, and profile."
-          openButtonText="Open"
-          link="/admin/team/settings"
-        />
-        <HomeItem
-          icon="fa-shield"
-          title="Security"
-          description="Access and download your team's HIPAA settings, BAA contract, and compliance exports."
-          openButtonText="Open"
-          link="/admin/team/security"
-        />
-        <HomeItem
-          icon="fa-bar-chart"
-          title="Analytics"
-          description="View your team's statistics and usage across different applications."
-          openButtonText="Open"
-          link="/admin/analytics"
-        />
-        <HomeItem
-          icon="fa-users"
-          title="Members"
-          description="Manage your members's roles, access, and invitations."
-          openButtonText="Open"
-          link="/admin/members"
-        />
-        <HomeItem
-          icon="fa-credit-card"
-          title="Billing"
-          description="Subscribe to Stitch plans across different products, edit your team payment details, and access invoice history."
-          openButtonText="Open"
-          link="/admin/billing"
-        />
+        {isAdmin() && this.renderAdminItems()}
       </Panel>
     );
   }
