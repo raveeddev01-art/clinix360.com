@@ -19,7 +19,7 @@ class Welcome extends Component {
 
   onNext = () => {
     const { history, invitationStore } = this.props;
-    history.push(`/invitations/accept/${invitationStore.token}/firstname`);
+    history.push(`/invitations/accept/${invitationStore.token}/name`);
   };
 
   render() {

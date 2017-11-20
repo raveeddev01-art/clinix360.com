@@ -9,6 +9,7 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
+import Button from "react-bootstrap/lib/Button";
 import debounce from "lodash/debounce";
 
 @inject("titleStore")
@@ -75,21 +76,6 @@ export default class TeamPicker extends Component {
         )}
 
         <div className="authentication-card text-center team-picker-card">
-          <div className="card-header">
-            <Row>
-              <Col xs={12} className="text-right">
-                <OverlayTrigger
-                  placement="top"
-                  overlay={<Tooltip id="close">Close</Tooltip>}
-                >
-                  <Link to="/getstarted">
-                    <i className="fa fa-times" />
-                  </Link>
-                </OverlayTrigger>
-              </Col>
-            </Row>
-          </div>
-
           <h2>Sign In</h2>
 
           <h5>
@@ -110,11 +96,15 @@ export default class TeamPicker extends Component {
               <span className="domain">.teamstitch.com</span>
             </FormGroup>
 
-            <input
-              value="Continue"
+            <Button
+              bsStyle="primary"
+              bsSize="lg"
               type="submit"
-              className="btn btn-block btn-lg btn-primary"
-            />
+              className="btn-block"
+              disabled={!teamName}
+            >
+              Continue
+            </Button>
           </form>
 
           <h5>
