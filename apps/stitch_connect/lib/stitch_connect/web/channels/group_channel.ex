@@ -267,12 +267,14 @@ defmodule StitchConnect.Web.GroupChannel do
             assign(socket, :group, group) |> do_new_msg(group, user, params)
 
           _ ->
-            {:reply, {:error, %{message: "Failed to create group."}}, socket}
+            {:reply, {:error, %{message: "Failed to create group.", request_id: params["request_id"]}}, socket}
         end
     end
   end
 
   defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
+    request_id = attrs["request_id"]
+
     if GroupAuthorization.is_member?(group.id, user.id) do
       attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
       acitve_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
@@ -281,19 +283,22 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
-          broadcast! socket, "new_msg", message
+          broadcast! socket, "new_msg", Map.put(message, :request_id, request_id)
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
           PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
           PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
-          json = MessageView.render("show.json", %{message: message})
+          json =
+            "show.json"
+            |> MessageView.render(%{message: message})
+            |> Map.put(:request_id, request_id)
           {:reply, {:ok, json}, socket}
 
         {:error, _changeset} ->
-          {:reply, {:error, %{message: "Failed to create message."}}, socket}
+          {:reply, {:error, %{message: "Failed to create message.", request_id: request_id}}, socket}
       end
     else
-      {:reply, {:error, %{message: "Only members can write messages."}}, socket}
+      {:reply, {:error, %{message: "Only members can write messages.", request_id: request_id}}, socket}
     end
   end
 

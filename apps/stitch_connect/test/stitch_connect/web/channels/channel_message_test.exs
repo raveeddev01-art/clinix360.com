@@ -37,6 +37,25 @@ defmodule StitchConnect.Web.ChannelMessageTest do
     assert data.text_content == "Hello, World!"
   end
 
+  test "new_msg's temporary request_id is included in the reply and broadcast event",
+      %{socket1: socket1, user1: user1, group: group} do
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+
+    @endpoint.subscribe("groups:#{group.slug}")
+
+    ref = push socket1, "new_msg", %{text_content: "Hello, World!", request_id: "some temporary ID"}
+
+    assert_reply ref, :ok, reply
+    assert reply.text_content == "Hello, World!"
+    assert reply.request_id == "some temporary ID"
+
+    assert_broadcast "new_msg", data
+
+    assert data.user_id == user1.id
+    assert data.text_content == "Hello, World!"
+    assert data.request_id == "some temporary ID"
+  end
+
   test "message can be deleted or edited only by author",
       %{socket1: socket1, user2: user2, group: group} do
     {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
