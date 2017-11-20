@@ -51,14 +51,14 @@ defmodule StitchConnect.Web.AuthenticationController do
     |> redirect(to: "/logged-out")
   end
 
-  def loggedout(conn, _) do
-    loggedout_params = Poison.encode!(%{
+  def logged_out(conn, _) do
+    logged_out_params = Poison.encode!(%{
       "teamName" => conn.private[:team_name],
       "teamSlug" => conn.private[:team_slug]
     })
     conn
     |> configure_session(drop: true)
-    |> render("loggedout.html", loggedout_params: loggedout_params)
+    |> render("logged_out.html", logged_out_params: logged_out_params)
   end
 
   def reset_password(conn, _) do
