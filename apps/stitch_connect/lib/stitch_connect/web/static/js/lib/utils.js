@@ -51,5 +51,7 @@ export function getSlugOfDMGroupByUsers(userIds) {
  * @param {array} users 
  */
 export function getGroupUserIdsThatHasCurrentUser(users) {
-  return orderBy(uniq([...users.map(user => user.id), currentUser.id]));
+  const uniqUserIds = uniq(users.map(user => user.id));
+
+  return orderBy([...uniqUserIds, currentUser.id]);
 }

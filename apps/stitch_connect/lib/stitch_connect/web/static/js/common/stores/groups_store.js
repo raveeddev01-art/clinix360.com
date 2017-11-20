@@ -149,9 +149,9 @@ class GroupsStore {
   @action
   openDMGroup = usernames => {
     const { usersStore } = this.rootStore;
-    const users = usernames
-      .filter(username => username !== currentUser.username)
-      .map(username => usersStore.users.find(u => u.username === username));
+    const users = usernames.map(username =>
+      usersStore.users.find(u => u.username === username)
+    );
     const userIds = getGroupUserIdsThatHasCurrentUser(users);
     const slug = getSlugOfDMGroupByUsers(userIds);
 
