@@ -30,7 +30,7 @@ class MessageForm extends Component {
     this.typingTimeoutId = null;
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps() {
     this.textInput.focus();
   }
 
@@ -63,7 +63,12 @@ class MessageForm extends Component {
   };
 
   onEnter = () => {
-    const { messageStore } = this.props;
+    const { messageStore, socketStore } = this.props;
+
+    // if not connected, just no send message at all
+    if (!socketStore.isConnected) {
+      return;
+    }
 
     if (messageStore.messageInEdit) {
       if (!messageStore.textInEdit) {
@@ -80,7 +85,7 @@ class MessageForm extends Component {
         messageStore.finishEdit();
       }
     } else if (this.state.text) {
-      messageStore.sendMessage(this.state.text.trim()).then(() => {
+      messageStore.sendMessage(this.state.text.trim()).finally(() => {
         messageStore.scrollToBottom(
           () => {
             messageStore.updateGroupCursor(null);
@@ -164,7 +169,7 @@ class MessageForm extends Component {
     some(items, item => {
       const file = item.getAsFile();
 
-        // browser only allows reading images. other files will be returned as null
+      // browser only allows reading images. other files will be returned as null
       if (file) {
         const fileName = evt.clipboardData.getData("Text");
         uploadStore.openUploadModal(file, fileName);

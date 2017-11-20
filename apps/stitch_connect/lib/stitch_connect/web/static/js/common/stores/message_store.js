@@ -1,6 +1,6 @@
 /**
  * Message store
- * 
+ *
  * This store keps track of data that are related with messages in the current group
  */
 
@@ -9,6 +9,7 @@ import moment from "moment";
 import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
 import Promise from "bluebird";
+import shortid from "shortid";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
@@ -535,11 +536,52 @@ class MessageStore {
 
   sendMessage = (msg, additionalFields = {}) => {
     return new Promise((resolve, reject) => {
+      // generates unique temporary request ID
+      const temporaryID = shortid.generate();
+      const newMessage = {
+        id: temporaryID,
+        request_id: temporaryID,
+        new_msg: true, // only messages with this flag will have sending/failed/success indicator
+        sending: true,
+        sent: true,
+        user: { ...currentUser },
+        text_content: msg,
+        inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
+        group_id: this.groupId,
+        user_id: currentUser.id
+      };
+      this.onNewMessage(newMessage);
+
       this.groupChannel
-        .push("new_msg", Object.assign({ text_content: msg }, additionalFields))
-        .receive("ok", resolve)
+        .push(
+          "new_msg",
+          Object.assign(
+            { text_content: msg, request_id: temporaryID },
+            additionalFields
+          )
+        )
+        .receive("ok", response => {
+          const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
+          Object.assign(tmpMsg, response, {
+            sent: true,
+            sending: false
+          });
+          resolve(response);
+        })
         .receive("error", err => {
-          notify.show(err.message, "error");
+          const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
+          Object.assign(tmpMsg, {
+            sent: true,
+            sending: false
+          });
+          reject(err);
+        })
+        .receive("timeout", err => {
+          const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
+          Object.assign(tmpMsg, {
+            sent: true,
+            sending: false
+          });
           reject(err);
         });
     });
@@ -697,9 +739,12 @@ class MessageStore {
       return;
     }
 
-    this.messages.unshift(newMessage);
-
     if (newMessage.user_id === currentUser.id) {
+      // if it's my message, we assume it's already added temporarily.
+      if (newMessage.sending) {
+        this.messages.unshift(newMessage);
+      }
+
       if (this.unreadMessagesCount === 0) {
         this.markAsRead(false);
       }
@@ -708,6 +753,8 @@ class MessageStore {
         .add(1, "millisecond")
         .format("YYYY-MM-DDTHH:mm:ss.SSS");
     } else {
+      this.messages.unshift(newMessage);
+
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       // For messages from other users
@@ -812,7 +859,7 @@ class MessageStore {
   @action
   editLastMessage() {
     const message = this.messages.find(m => m.user_id === currentUser.id);
-    if (message) {
+    if (message && message.sent !== false && !message.sending) {
       this.messageInEdit = message;
       this.textInEdit = message.text_content;
     }

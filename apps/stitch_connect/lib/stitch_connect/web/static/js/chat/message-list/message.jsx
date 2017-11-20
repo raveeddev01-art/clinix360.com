@@ -71,7 +71,7 @@ class Message extends Component {
       message:
         "Are you sure you want to delete this message? This cannot be undone.",
       okLabel: "Delete"
-    }).then(result => {
+    }).then(() => {
       const { message, messageStore } = this.props;
 
       messageStore.delete(message.id);
@@ -180,7 +180,13 @@ class Message extends Component {
 
   renderActions(message) {
     const mine = message.user.id === currentUser.id;
+    const unsent = message.sent === false;
     const { dropup } = this.state;
+
+    // disabling context menu
+    if (unsent) {
+      return " ";
+    }
 
     return (
       <Dropdown
@@ -258,8 +264,10 @@ class Message extends Component {
       selected: this.state.selected,
       highlight: highlightId === message.id
     });
+    const mine = userId === currentUser.id;
     const containerClassName = cx("message-container", {
-      mine: userId === currentUser.id
+      mine,
+      "has-status": message.new_msg
     });
     const user = usersStore.usersById[userId];
 
@@ -312,6 +320,12 @@ class Message extends Component {
               </div>
             </Element>
           </VisibilitySensor>
+          {mine &&
+            message.new_msg && (
+              <small className="text-muted msg-status">
+                {message.sending ? "Sending" : message.sent ? "Sent" : "Failed"}
+              </small>
+            )}
         </div>
       </div>
     );
