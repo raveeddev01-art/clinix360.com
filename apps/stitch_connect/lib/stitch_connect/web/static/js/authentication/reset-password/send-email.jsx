@@ -122,8 +122,9 @@ class SendEmail extends Component {
         className="wide"
         description={
           <span>
-            We sent an email to <strong>{email}</strong> with instructions on
-            how to reset your password.
+            We sent an email to <strong>{email}</strong> if we found your
+            account in our system. This email will give you a link to reset your
+            password. how to reset your password.
           </span>
         }
         header={this._renderHeader()}

@@ -118,8 +118,9 @@ export default class FindTeam extends Component {
         className="wide"
         description={
           <span>
-            We sent an email to <strong>{email}</strong> that will link you to a
-            page where you can access all of your Stitch teams.
+            We sent an email to <strong>{email}</strong> if we found your
+            account in our system. This email will link you to a page where you
+            can access all of your Stitch teams.
           </span>
         }
       >
