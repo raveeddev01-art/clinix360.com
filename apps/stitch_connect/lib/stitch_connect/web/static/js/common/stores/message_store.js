@@ -546,10 +546,7 @@ class MessageStore {
         sent: true,
         user: { ...currentUser },
         text_content: msg,
-        inserted_at: moment
-          .utc()
-          .add(1, "millisecond")
-          .format("YYYY-MM-DDTHH:mm:ss.SSS"),
+        inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
         group_id: this.groupId,
         user_id: currentUser.id
       };
