@@ -100,8 +100,8 @@ class GroupsStore {
   };
 
   @action
-  updateGroupCursor = (groupId, cursor) => {
-    this.groupCursors[groupId] = cursor;
+  updateGroupCursor = (id, cursor) => {
+    this.groupCursors[id] = cursor;
   };
 
   @action
@@ -111,6 +111,42 @@ class GroupsStore {
     return get("/api/v1/groups").then(response => {
       this.groups = orderBy(response.data, ["name"]);
       sidemenuStore.updateFavicon();
+    });
+  };
+
+  @action
+  openGroup = slug => {
+    const group = this.getGroupBySlug(slug);
+
+    if (group && group.id !== this.currentGroupId) {
+      this.currentGroupId = group.id;
+      this.onOpenedGroup();
+    }
+  };
+
+  @action
+  openDMGroup = usernames => {
+    const { usersStore } = this.rootStore;
+    const users = usernames.map(username =>
+      usersStore.users.find(u => u.username === username)
+    );
+    const userIds = getGroupUserIdsThatHasCurrentUser(users);
+    const slug = getSlugOfDMGroupByUsers(userIds);
+
+    this.openGroup(slug);
+  };
+
+  @action
+  hideGroup = id => {
+    return put(`/api/v1/groups/${id}/hide`).then(() => {
+      this.updateGroupData(id, { is_hidden: true });
+    });
+  };
+
+  @action
+  unhideGroup = id => {
+    return put(`/api/v1/groups/${id}/unhide`).then(() => {
+      this.updateGroupData(id, { is_hidden: false });
     });
   };
 
@@ -137,71 +173,31 @@ class GroupsStore {
   };
 
   @action
-  openGroup = slug => {
-    const group = this.getGroupBySlug(slug);
-
-    if (group && group.id !== this.currentGroupId) {
-      this.currentGroupId = group.id;
-      this.onOpenedGroup();
-    }
-  };
-
-  @action
-  openDMGroup = usernames => {
-    const { usersStore } = this.rootStore;
-    const users = usernames.map(username =>
-      usersStore.users.find(u => u.username === username)
-    );
-    const userIds = getGroupUserIdsThatHasCurrentUser(users);
-    const slug = getSlugOfDMGroupByUsers(userIds);
-
-    this.openGroup(slug);
-  };
-
-  @action
-  hideGroup = groupId => {
-    return put(`/api/v1/groups/${groupId}/hide`).then(() => {
-      this.onHidGroup({ group_id: groupId, is_hidden: true });
+  joinGroup = id => {
+    return post(`/api/v1/groups/${id}/join`).then(() => {
+      this.updateGroupData(id, { joined: true });
     });
   };
 
   @action
-  unhideGroup = groupId => {
-    return put(`/api/v1/groups/${groupId}/unhide`).then(() => {
-      this.onHidGroup({ group_id: groupId, is_hidden: false });
-    });
-  };
-
-  @action
-  joinGroup = groupId => {
-    return post(`/api/v1/groups/${groupId}/join`).then(() => {
-      this.updateGroupData(groupId, {
-        joined: true
-      });
-    });
-  };
-
-  @action
-  leaveGroup = groupId => {
-    return post(`/api/v1/groups/${groupId}/leave`).then(resp => {
-      this.updateGroupData(groupId, {
-        joined: false
-      });
+  leaveGroup = id => {
+    return post(`/api/v1/groups/${id}/leave`).then(resp => {
+      this.updateGroupData(id, { joined: false });
 
       return resp.data.redirect_to;
     });
   };
 
   @action
-  renameGroup = (groupId, name) => {
-    return patch(`/api/v1/groups/${groupId}/rename`, {
+  renameGroup = (id, name) => {
+    return patch(`/api/v1/groups/${id}/rename`, {
       body: { name }
     });
   };
 
   @action
-  inviteUsersToGroup = (groupId, userIds) => {
-    return post(`/api/v1/groups/${groupId}/invite`, {
+  inviteUsersToGroup = (id, userIds) => {
+    return post(`/api/v1/groups/${id}/invite`, {
       body: {
         user_ids: userIds
       }
@@ -209,20 +205,20 @@ class GroupsStore {
   };
 
   @action
-  setPublicOfGroup = (groupId, value) => {
-    return post(`/api/v1/groups/${groupId}/toggle-public`, {
+  setPublicOfGroup = (id, value) => {
+    return post(`/api/v1/groups/${id}/toggle-public`, {
       body: { public: value }
     }).then(() => {
-      this.updateGroupData(groupId, { public: value });
+      this.updateGroupData(id, { public: value });
     });
   };
 
   @action
-  toggleFavorite = groupId => {
+  toggleFavorite = id => {
     return post(
-      `/api/v1/groups/${groupId}/toggle-favorite`
+      `/api/v1/groups/${id}/toggle-favorite`
     ).then(({ is_favorite }) => {
-      this.updateGroupData(groupId, { is_favorite });
+      this.updateGroupData(id, { is_favorite });
     });
   };
 
@@ -244,8 +240,8 @@ class GroupsStore {
   };
 
   @action
-  onHidGroup = ({ group_id: groupId, is_hidden }) => {
-    this.updateGroupData(groupId, { is_hidden });
+  onHidGroup = ({ group_id: id, is_hidden }) => {
+    this.updateGroupData(id, { is_hidden });
   };
 
   @action
@@ -254,34 +250,21 @@ class GroupsStore {
   };
 
   @action
-  onRenamedGroup = params => {
-    const data = {
-      slug: params.group_slug,
-      name: params.group_name
-    };
-
-    this.updateGroupData(params.group_id, data);
-
-    if (this.rootStore.groupStore.group.id === params.group_id) {
-      history.push(`/rooms/${params.group_slug}`);
-    }
+  onJoinedGroup = ({ group_id: id }) => {
+    this.updateGroupData(id, { joined: true });
   };
 
   @action
-  onJoinedGroup = joinedGroup => {
-    const group = this.getGroupById(joinedGroup.id);
-
-    if (group) {
-      group.joined = true;
-    }
+  onLeftGroup = ({ group_id: id }) => {
+    this.updateGroupData(id, { joined: false });
   };
 
   @action
-  onLeftGroup = ({ group_id: groupId }) => {
-    const group = this.getGroupById(groupId);
+  onRenamedGroup = ({ group_id: id, group_slug: slug, group_name: name }) => {
+    this.updateGroupData(id, { slug, name });
 
-    if (group) {
-      group.joined = false;
+    if (id === this.currentGroupId) {
+      history.push(`/rooms/${slug}`);
     }
   };
 }

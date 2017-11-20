@@ -68,8 +68,7 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_group_join(group, user_id) do
-    json = GroupView.group_json(group, user_id)
-    @endpoint.broadcast("events:#{user_id}", "joined_group", json)
+    @endpoint.broadcast("events:#{user_id}", "joined_group", %{group_id: group.id})
   end
 
   def broadcast_group_creation(group) do
