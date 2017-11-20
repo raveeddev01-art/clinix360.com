@@ -67,7 +67,7 @@ class RegistrationStore {
         this.teamurl = response.data.slug;
 
         if (this.sendInvites) {
-          emails = this.invites.filter(isEmail).map(email => email.trim());
+          emails = this.invites.filter(email => isEmail(email)).map(email => email.trim());
         }
         return patch(`/api/v1/users/${this.userId}/complete-onboarding`, {
           body: {
