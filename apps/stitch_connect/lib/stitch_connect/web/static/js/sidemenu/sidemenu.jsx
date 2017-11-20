@@ -170,9 +170,11 @@ class Sidemenu extends Component {
                 <span>Stitch</span>
               </div>
 
-              <MenuItem eventKey="9" onClick={this.showInviteModal}>
-                Invite
-              </MenuItem>
+              {userStore.canInvite && (
+                <MenuItem eventKey="9" onClick={this.showInviteModal}>
+                  Invite
+                </MenuItem>
+              )}
               <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
                 Lockout
               </MenuItem>
