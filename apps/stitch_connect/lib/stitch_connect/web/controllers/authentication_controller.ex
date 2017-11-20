@@ -44,13 +44,11 @@ defmodule StitchConnect.Web.AuthenticationController do
 
   def logout(conn, _) do
     session_id = get_session(conn, :session_id)
-    with %Stitch.Accounts.User{} = current_user <- get_session(conn, :current_user) do
-      session_id = get_session(conn, :session_id)
-      conn
-      |> clear_session
-      |> broadcast_logout(session_id)
-      |> redirect(to: "/logged-out")
-    end
+
+    conn
+    |> configure_session(drop: true)
+    |> broadcast_logout(session_id)
+    |> redirect(to: "/logged-out")
   end
 
   def loggedout(conn, _) do
@@ -58,7 +56,9 @@ defmodule StitchConnect.Web.AuthenticationController do
       "teamName" => conn.private[:team_name],
       "teamSlug" => conn.private[:team_slug]
     })
-    render conn, "loggedout.html", loggedout_params: loggedout_params
+    conn
+    |> configure_session(drop: true)
+    |> render("loggedout.html", loggedout_params: loggedout_params)
   end
 
   def reset_password(conn, _) do
