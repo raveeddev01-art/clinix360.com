@@ -50,7 +50,6 @@ class WelcomeMessage extends Component {
           {this.getIcon()}
           {` ${group.name}`}
         </span>
-<<<<<<< HEAD
         {group.creator_user_id ? " created by" : " created"}
         {group.creator_user_id && (
           <span className="welcome-message__name">
@@ -58,9 +57,6 @@ class WelcomeMessage extends Component {
           </span>
         )}
         on {this.getFormattedTime(group.inserted_at)}.
-=======
-        on {this.getFormattedTime(groupStore.group.inserted_at)}.
->>>>>>> Fix created date error in welcome message
       </div>
     );
   }
