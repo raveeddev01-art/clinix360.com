@@ -4,12 +4,12 @@ defmodule StitchConnect.Web.UserOnboardingTest do
   import Ecto.Query
   alias StitchConnect.Web.Router.Helpers, as: Routes
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: SubdomainRoutes
-  alias Stitch.{Accounts.User, Invitation, Repo}
+  alias Stitch.{Accounts.User, Invitation, Repo, Group}
 
   describe "PATCH /users/:id/complete-onboarding" do
     setup %{conn: conn} do
       team = insert(:team)
-      _group = insert(:group, team: team, is_default: true)
+      _group = insert(:group, team: team, is_default: true, creator: nil)
 
       {:ok, conn: conn, team: team}
     end
@@ -58,6 +58,11 @@ defmodule StitchConnect.Web.UserOnboardingTest do
       |> Enum.each(fn email ->
         assert_delivered_email email
       end)
+
+      [group] = Repo.all from g in Group,
+        where: g.team_id == ^team.id and g.is_default == ^true
+
+      assert group.creator_user_id == user.id
     end
 
     test "username format is invalid", %{conn: conn, team: team} do
