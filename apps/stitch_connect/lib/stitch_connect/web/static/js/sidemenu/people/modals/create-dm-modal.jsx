@@ -6,10 +6,12 @@ import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import Select from "react-select";
 import cx from "classnames";
-import orderBy from "lodash/orderBy";
-import uniq from "lodash/uniq";
 
-import { getSlugOfDMGroupByUsers } from "lib/utils";
+import {
+  getGroupUserIdsThatHasCurrentUser,
+  getSlugOfDMGroupByUsers,
+  getGroupUrl
+} from "lib/utils";
 
 @inject("usersStore", "presenceStore", "groupsStore")
 @observer
@@ -56,30 +58,27 @@ class CreateDMModal extends Component {
     //  2.2. If not, create
     // 3. Navigate to the dm created
 
-    const userIds = orderBy(
-      uniq([...members.map(member => member.id), currentUser.id])
-    );
+    const userIds = getGroupUserIdsThatHasCurrentUser(members);
     const slug = getSlugOfDMGroupByUsers(userIds);
+    const url = getGroupUrl({ users: members, type: "multi_dm" });
     const group = groupsStore.getGroupBySlug(slug);
 
-    const usernames = orderBy(members, ["id"])
-      .map(member => member.username)
-      .join(",");
-    const url = `/direct/${usernames}`;
+    let promise;
 
-    if (group) {
-      if (group.is_hidden) {
-        // Unhide
-        groupsStore.unhideGroup(group.id).then(() => {
-          history.push(url);
-        });
-      } else {
-        // just navigate
-        history.push(url);
-      }
+    if (!group) {
+      // Create
+      promise = groupsStore.createDMGroup(userIds);
+    } else if (group.is_hidden) {
+      // Unhide
+      promise = groupsStore.unhideGroup(group.id);
     } else {
-      // create
+      // Do nothing
+      promise = Promise.resolve();
     }
+
+    promise.then(() => {
+      history.push(url);
+    });
 
     toggle();
   };

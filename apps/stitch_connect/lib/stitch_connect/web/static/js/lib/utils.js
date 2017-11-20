@@ -1,4 +1,5 @@
 import orderBy from "lodash/orderBy";
+import uniq from "lodash/uniq";
 
 export function isAdmin() {
   return currentUser.roles && currentUser.roles.includes("admin");
@@ -8,6 +9,11 @@ export function extractEmails(text) {
   return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
 }
 
+/**
+ * Return url of group
+ * 
+ * @param {Object} group 
+ */
 export function getGroupUrl(group) {
   if (!group) {
     return "";
@@ -37,4 +43,13 @@ export function getGroupUrl(group) {
 
 export function getSlugOfDMGroupByUsers(userIds) {
   return `__dm:${userIds.join(".")}`;
+}
+
+/**
+ * Return group users that has current user added
+ * 
+ * @param {array} users 
+ */
+export function getGroupUserIdsThatHasCurrentUser(users) {
+  return orderBy(uniq([...users.map(user => user.id), currentUser.id]));
 }

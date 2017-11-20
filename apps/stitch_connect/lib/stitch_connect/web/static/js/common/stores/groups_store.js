@@ -121,8 +121,16 @@ class GroupsStore {
     });
   };
 
-  @action createSingleDMGroup = () => {};
-  @action createMultiDMGroup = () => {};
+  @action
+  createDMGroup = userIds => {
+    const body = { user_ids: userIds };
+
+    return userIds.length > 2
+      ? post(`/api/v1/groups/multi_dm`, {
+          body
+        })
+      : post(`/api/v1/groups/dm`, { body });
+  };
 
   @action
   openGroup = slug => {
@@ -134,8 +142,7 @@ class GroupsStore {
     }
   };
 
-  @action openSingleDMGroup = () => {};
-  @action openMultiDMGroup = () => {};
+  @action openDMGroup = usernames => {};
 
   @action
   hideGroup = groupId => {
