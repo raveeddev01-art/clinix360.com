@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
@@ -9,18 +8,25 @@ import Alert from "react-bootstrap/lib/Alert";
 
 @inject("registrationStore", "titleStore")
 @observer
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      passwordReset: false
     };
   }
 
   componentWillMount() {
     this.props.titleStore.setPageName("Sign In");
+    const { location } = this.props;
+    if (location.state && location.state.passwordReset === true) {
+      this.setState({
+        passwordReset: true
+      });
+    }
   }
 
   handleChange = event => {
@@ -39,7 +45,9 @@ export default class Login extends Component {
         {this.props.invalidLogin && (
           <Alert bsStyle="danger">{this.props.invalidLogin}</Alert>
         )}
-
+        {this.state.passwordReset && (
+          <Alert bsStyle="success">Your password is now reset.</Alert>
+        )}
         <div className="authentication-card text-center m-b-20">
           <h2>{this.props.registrationStore.teamName}</h2>
           <h5 className="text-muted url-heading">
@@ -118,3 +126,5 @@ export default class Login extends Component {
     );
   }
 }
+
+export default withRouter(Login);

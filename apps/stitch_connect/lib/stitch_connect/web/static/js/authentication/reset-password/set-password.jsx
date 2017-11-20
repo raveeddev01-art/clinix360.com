@@ -36,7 +36,7 @@ class SetPassword extends Component {
     this.props.resetPasswordStore
       .resetPassword(this.state.password)
       .then(() => {
-        this.props.history.push("/login");
+        this.props.history.push("/login", { passwordReset: true });
       });
   };
 
