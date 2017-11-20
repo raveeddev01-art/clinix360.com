@@ -51,7 +51,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
   end
 
   def update_security_lockout_time(conn, %{"id" => _, "enabled" => enabled, "seconds_to_lockout" => seconds_to_lockout}) do
-    case Team.Admin.update_security_lockout_time(conn.private[:team_id], enabled, seconds_to_lockout || 10) do
+    case Team.Admin.update_security_lockout_time(conn.private[:team_id], enabled, seconds_to_lockout || 900) do
       {:error, _reason} ->
         conn
         |> put_status(:unprocessable_entity)
