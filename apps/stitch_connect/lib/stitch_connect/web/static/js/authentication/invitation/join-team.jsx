@@ -56,7 +56,7 @@ class JoinTeam extends Component {
     const stepIndex = stepList.findIndex(s => s.field === currentStep);
 
     if (stepIndex === -1) {
-      return <Redirect to={`invitations/accept/${invitationStore.token}`} />;
+      return <Redirect to={`/invitations/accept/${invitationStore.token}`} />;
     }
 
     return React.createElement(stepList[stepIndex].component, {
