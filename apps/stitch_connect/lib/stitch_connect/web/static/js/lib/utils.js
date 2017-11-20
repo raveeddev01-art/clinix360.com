@@ -34,3 +34,7 @@ export function getGroupUrl(group) {
 
   return `/direct/${users.map(user => user.username).join(",")}`;
 }
+
+export function getSlugOfDMGroupByUsers(userIds) {
+  return `__dm:${userIds.join(".")}`;
+}

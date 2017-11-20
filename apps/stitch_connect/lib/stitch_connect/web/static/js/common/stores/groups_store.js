@@ -143,6 +143,11 @@ class GroupsStore {
   };
 
   @action
+  unhideGroup = groupId => {
+    return put(`/api/v1/groups/${groupId}/unhide`);
+  };
+
+  @action
   joinGroup = groupId => {
     return post(`/api/v1/groups/${groupId}/join`).then(() => {
       this.updateGroupData(groupId, {
