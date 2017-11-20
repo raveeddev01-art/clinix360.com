@@ -49,7 +49,7 @@ defmodule StitchConnect.Web.ChannelMessageTest do
     assert reply.text_content == "Hello, World!"
     assert reply.request_id == "some temporary ID"
 
-    assert_broadcast "new_msg", data
+    assert_push "new_msg", data
 
     assert data.user_id == user1.id
     assert data.text_content == "Hello, World!"
