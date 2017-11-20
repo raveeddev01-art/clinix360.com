@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-
+import PropTypes from "prop-types";
 import Navbar from "react-bootstrap/lib/Navbar";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
-export default class Header extends Component {
+class Header extends Component {
   render() {
     const logoLink = !window.electronApp ? `https://${applicationHost}` : "#";
+    const { hideAuthButtons } = this.props;
 
     return (
       <Navbar id="header" inverse collapseOnSelect>
@@ -97,23 +98,37 @@ export default class Header extends Component {
                 </Dropdown>
               </li>
             )}
-            <li role="presentation">
-              <a href="https://teamstitch.com/signin" className="nav-link">
-                Sign In
-              </a>
-            </li>
+            {!hideAuthButtons && (
+              <li role="presentation">
+                <a href="https://teamstitch.com/signin" className="nav-link">
+                  Sign In
+                </a>
+              </li>
+            )}
 
-            <li role="presentation">
-              <a
-                href="https://teamstitch.com/signup/email"
-                className="nav-link btn-outline"
-              >
-                Create Team
-              </a>
-            </li>
+            {!hideAuthButtons && (
+              <li role="presentation">
+                <a
+                  href="https://teamstitch.com/signup/email"
+                  className="nav-link btn-outline"
+                >
+                  Create Team
+                </a>
+              </li>
+            )}
           </ul>
         </Navbar.Collapse>
       </Navbar>
     );
   }
 }
+
+Header.propTypes = {
+  hideAuthButtons: PropTypes.bool.isRequired
+};
+
+Header.defaultProps = {
+  hideAuthButtons: false
+};
+
+export default Header;

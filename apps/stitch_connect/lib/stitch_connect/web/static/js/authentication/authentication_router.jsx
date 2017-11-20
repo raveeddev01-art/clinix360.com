@@ -22,14 +22,25 @@ import Footer from "../website/components/footer";
 @inject("titleStore")
 @observer
 class AuthenticationRouter extends Component {
+  authButtonsHidden() {
+    const { location } = this.props;
+    const hideAuthUrls = ["/find-your-team", "/reset-password"];
+    for (let i = 0; i < hideAuthUrls.length; i += 1) {
+      if (location.pathname.startsWith(hideAuthUrls[i])) return true;
+    }
+    return false;
+  }
+
   render() {
     const { titleStore } = this.props;
     const onboardingWrapperClass = cx("onboarding-wrapper", {
       "on-electron": window.electronApp
     });
+    const hideAuthButtons = this.authButtonsHidden();
+
     return (
       <div className={onboardingWrapperClass}>
-        <Header />
+        <Header hideAuthButtons={hideAuthButtons} />
         <div className="authentication-wrapper">
           <Helmet>
             <title>{titleStore.title}</title>
