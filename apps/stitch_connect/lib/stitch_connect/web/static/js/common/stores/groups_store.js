@@ -7,7 +7,11 @@
 import { observable, computed, action } from "mobx";
 import orderBy from "lodash/orderBy";
 
-import { getGroupUrl } from "lib/utils";
+import {
+  getGroupUserIdsThatHasCurrentUser,
+  getSlugOfDMGroupByUsers,
+  getGroupUrl
+} from "lib/utils";
 
 class GroupsStore {
   @observable groups = [];
@@ -142,7 +146,17 @@ class GroupsStore {
     }
   };
 
-  @action openDMGroup = usernames => {};
+  @action
+  openDMGroup = usernames => {
+    const { usersStore } = this.rootStore;
+    const users = usernames
+      .filter(username => username !== currentUser.username)
+      .map(username => usersStore.users.find(u => u.username === username));
+    const userIds = getGroupUserIdsThatHasCurrentUser(users);
+    const slug = getSlugOfDMGroupByUsers(userIds);
+
+    this.openGroup(slug);
+  };
 
   @action
   hideGroup = groupId => {

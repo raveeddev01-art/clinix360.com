@@ -8,17 +8,11 @@ import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
 
-@inject(
-  "groupStore",
-  "groupsStore",
-  "sidemenuStore",
-  "usersStore",
-  "messageStore"
-)
+@inject("groupsStore", "sidemenuStore", "messageStore")
 @observer
 class Chat extends Component {
   componentWillMount() {
-    this.joinChat(this.props.match.params);
+    this.openGroup(this.props.match.params);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -26,41 +20,28 @@ class Chat extends Component {
       this.props.match.params.slug !== nextProps.match.params.slug ||
       this.props.match.params.usernames !== nextProps.match.params.usernames
     ) {
-      this.joinChat(nextProps.match.params);
+      this.openGroup(nextProps.match.params);
     }
   }
 
-  joinChat(params) {
-    const { groupStore, groupsStore, usersStore, messageStore } = this.props;
+  openGroup(params) {
+    const { groupsStore, messageStore } = this.props;
 
     messageStore.stopTyping();
 
     if (params.slug) {
       groupsStore.openGroup(params.slug);
     } else if (params.usernames) {
-      const users = usersStore.users;
-      const usernames = params.usernames.split(",");
-
-      if (usernames.length > 1) {
-        const dmUsers = usernames
-          .filter(username => username !== currentUser.username)
-          .map(username => users.find(u => u.username === username));
-
-        groupStore.joinMultiDM(dmUsers).then(() => groupsStore.loadGroups());
-      } else {
-        const user = users.find(u => u.username === usernames[0]);
-
-        groupStore.joinSingleDM(user).then(() => groupsStore.loadGroups());
-      }
+      groupsStore.openDMGroup(params.usernames.split(","));
     }
   }
 
   render() {
-    const { groupStore, sidemenuStore } = this.props;
-    let title = `${groupStore.group.name} | Stitch Connect`;
-    if (groupStore.group.type === "regular") {
-      title = `${groupStore.group
-        .name} | ${sidemenuStore.teamName} | Stitch Connect`;
+    const { groupsStore: { currentGroup }, sidemenuStore } = this.props;
+    let title = `${currentGroup.name} | Stitch Connect`;
+
+    if (currentGroup.type === "regular") {
+      title = `${currentGroup.name} | ${sidemenuStore.teamName} | Stitch Connect`;
     }
 
     return (
