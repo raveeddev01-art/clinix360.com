@@ -540,15 +540,20 @@ $admin-topbar-height-sm: 65px;
         background-color: #fff;
         border: 1px solid $border-color;
         border-radius: 4px;
-        padding: 1.5em;
-        margin-bottom: 24px;
+        padding: 1.2em 1.5em;
+        margin-bottom: 10px;
 
         h3 {
           margin-top: 0;
+          i.fa {
+            margin-right: 4px;
+            width: 1em;
+          }
         }
 
         .help-block {
           margin-bottom: 0;
+          margin-right: 150px;
         }
 
         .action-open {

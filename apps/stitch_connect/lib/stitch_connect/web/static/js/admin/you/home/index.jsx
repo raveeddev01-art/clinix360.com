@@ -55,7 +55,7 @@ export default class YouHome extends Component {
   }
 
   render() {
-    const header = <h1>Welcome, {this.props.userStore.firstName} !</h1>;
+    const header = <h1>Welcome, {this.props.userStore.firstName}!</h1>;
 
     return (
       <Panel className="admin-panel home-panel" header={header}>
