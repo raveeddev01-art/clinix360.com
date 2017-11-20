@@ -43,6 +43,7 @@
     "react-textarea-autosize": "^5.1.0",
     "react-toastr": "2.9.5",
     "react-visibility-sensor": "^3.10.1",
+    "shortid": "^2.2.8",
     "slugify": "^1.2.1",
     "validator": "^9.1.1",
     "whatwg-fetch": "^2.0.3"

@@ -812,6 +812,18 @@
         }
       }
     }
+
+    &.has-status {
+      position: relative;
+      padding-bottom: 15px;
+
+      .msg-status {
+        position: absolute;
+        right: 0;
+        bottom: 2px;
+        font-weight: 500;
+      }
+    }
   }
 
   &.addon {
