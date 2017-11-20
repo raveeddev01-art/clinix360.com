@@ -22,8 +22,8 @@ defmodule Stitch.FindYourTeam do
   def email(%Token{} = token, endpoint_base_url) do
     Bamboo.Email.new_email(
       to: token.email,
-      from: "support@teamstitch.com",
-      subject: "Stitch - Find your team",
+      from: {"Stitch", "support@teamstitch.com"},
+      subject: "Find your team",
       html_body: "#{endpoint_base_url}/find-your-team/#{token.token}",
       text_body: "#{endpoint_base_url}/find-your-team/#{token.token}"
     )

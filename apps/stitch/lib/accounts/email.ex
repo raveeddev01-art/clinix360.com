@@ -32,7 +32,7 @@ defmodule Stitch.Accounts.Email do
     |> template("Password Reset (Connect)")
     |> to(user.email)
     |> from({"Stitch", "support@teamstitch.com"})
-    |> subject("Reset Password Requests")
+    |> subject("Reset Your Password")
     |> put_param("global_merge_vars", [
       %{
         "name": "resetPasswordUrl",
