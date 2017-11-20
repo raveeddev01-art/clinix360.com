@@ -135,6 +135,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
       user ->
         group = Stitch.GroupQueries.default_group(user)
         Stitch.Group.add_user(group, user.id)
+        Stitch.Group.assign_creator(group, user.id)
         conn
         |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
