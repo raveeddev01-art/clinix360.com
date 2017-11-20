@@ -41,7 +41,8 @@ class SendEmail extends Component {
       })
       .catch(err => {
         this.setState({
-          error: err.data.message
+          error: err.data.message,
+          sent: true
         });
       });
   };
