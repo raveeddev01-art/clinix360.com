@@ -2,6 +2,9 @@ defmodule Stitch.FindYourTeam do
   alias Stitch.Repo
   alias Stitch.FindYourTeam.Token
 
+  import Bamboo.Email
+  import Bamboo.MandrillHelper
+
   def create_or_get_token!(email) do
     changeset =
       %Token{}
@@ -20,13 +23,21 @@ defmodule Stitch.FindYourTeam do
   end
 
   def email(%Token{} = token, endpoint_base_url) do
-    Bamboo.Email.new_email(
-      to: token.email,
-      from: {"Stitch", "support@teamstitch.com"},
-      subject: "Find your team",
-      html_body: "#{endpoint_base_url}/find-your-team/#{token.token}",
-      text_body: "#{endpoint_base_url}/find-your-team/#{token.token}"
-    )
+    new_email()
+    |> template("Find Your Team")
+    |> to(token.email)
+    |> from({"Stitch", "support@teamstitch.com"})
+    |> subject("Find Your Team")
+    |> put_param("global_merge_vars", [
+      %{
+        "name": "receiverFirstName",
+        "content": "first_name"
+      },
+      %{
+        "name": "findYourTeam",
+        "content": "#{endpoint_base_url}/find-your-team/#{token.token}"
+      },
+    ])
   end
 
   def get_by_token(token) do
