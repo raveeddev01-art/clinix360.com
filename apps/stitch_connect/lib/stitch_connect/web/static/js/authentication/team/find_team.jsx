@@ -18,7 +18,8 @@ export default class FindTeam extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
-      email: ""
+      email: "",
+      sent: false
     };
   }
 
@@ -32,14 +33,12 @@ export default class FindTeam extends Component {
 
   _onSubmit = event => {
     event.preventDefault();
-    window
-      .post("/api/v1/find-your-team", {
-        body: { email: this.state.email }
-      })
-      .then(response => {
-        notify.show(response.data.message);
-        this.setState({ email: "" });
-      });
+    post("/api/v1/find-your-team", {
+      body: { email: this.state.email },
+      hideNotify: true
+    }).then(() => {
+      this.setState({ sent: true });
+    });
   };
 
   _renderHeader = () => {
@@ -73,8 +72,8 @@ export default class FindTeam extends Component {
   };
 
   render() {
-    const { email } = this.state;
-    return (
+    const { email, sent } = this.state;
+    return !sent ? (
       <Card
         title="Find Your Team"
         description={
@@ -105,6 +104,33 @@ export default class FindTeam extends Component {
             Submit
           </Button>
         </Form>
+
+        <h5>
+          Just getting started?{" "}
+          <a href={`https://${applicationHost}/signup/email`}>
+            <strong>Create a new team</strong>
+          </a>
+        </h5>
+      </Card>
+    ) : (
+      <Card
+        title="Check Your Email"
+        className="wide"
+        description={
+          <span>
+            We sent an email to <strong>{email}</strong> if we found your
+            account in our system. This email will link you to a page where you
+            can access all of your Stitch teams.
+          </span>
+        }
+      >
+        <hr />
+        <h5>
+          Just getting started?{" "}
+          <a href={`https://${applicationHost}/signup/email`}>
+            <strong>Create a new team</strong>
+          </a>
+        </h5>
       </Card>
     );
   }

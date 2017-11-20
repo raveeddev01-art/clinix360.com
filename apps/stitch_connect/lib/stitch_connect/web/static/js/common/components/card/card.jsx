@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import cx from "classnames";
 
 class Card extends Component {
   _renderDescription = () => {
@@ -8,9 +9,11 @@ class Card extends Component {
   };
 
   render() {
-    const { children, header, title } = this.props;
+    const { children, header, title, className } = this.props;
+    const cardStyles = cx("authentication-card", "text-center", className);
+
     return (
-      <div className="authentication-card text-center">
+      <div className={cardStyles}>
         {header}
         <h2>{title}</h2>
         {this._renderDescription()}
@@ -30,14 +33,16 @@ Card.propTypes = {
     PropTypes.node
   ]),
   title: PropTypes.string.isRequired,
-  description: PropTypes.node
+  description: PropTypes.node,
+  className: PropTypes.string
 };
 
 Card.defaultProps = {
   children: null,
   header: null,
   description: "",
-  title: ""
+  title: "",
+  className: ""
 };
 
 export default Card;
