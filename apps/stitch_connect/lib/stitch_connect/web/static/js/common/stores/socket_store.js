@@ -6,6 +6,7 @@ class SocketStore {
   ticks = 0;
   interval;
   pingCount = 0;
+  receivedPong = 0;
   pingInterval;
 
   constructor(rootStore) {
@@ -18,20 +19,20 @@ class SocketStore {
   }
 
   startPingPong = () => {
+    this.pingCount = 0;
+    this.receivedPong = 0;
     this.pingInterval = setInterval(() => {
-      this.pingCount += 1;
+      if (this.receivedPong !== this.pingCount) {
+        this.errorSocket();
+      }
 
+      this.pingCount += 1;
       this.eventChannel
         .push("ping", { id: this.pingCount })
         .receive("ok", resp => {
-          console.log(resp);
+          this.receivedPong = resp.id;
         })
-        .receive("error", err => {
-          console.log(err);
-        })
-        .receive("timeout", err => {
-          console.log("timeout", err);
-        });
+        .receive("timeout", this.errorSocket);
     }, 1000);
   };
 
