@@ -23,10 +23,10 @@ class Welcome extends Component {
         title="Invalid Invite"
         description={
           <span>
-            It seems like the invitation you are trying to accept is invalid or
-            has been revoked.
-            <br />
-            Try contacting your team administrator.
+            It seems like the invitation you are trying to accept is invalid,
+            because you joined the team already or your invitation has been
+            revoked. Try contacting your team administrator for more
+            information.
           </span>
         }
       >
