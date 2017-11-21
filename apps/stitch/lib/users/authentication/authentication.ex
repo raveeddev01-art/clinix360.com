@@ -81,7 +81,7 @@ defmodule Stitch.User.Authentication do
 
     query =
       from u in User,
-      where: u.team_id == ^team.id,
+      where: u.team_id == team.id,
       where: u.onboarded == ^true,
       where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
 
