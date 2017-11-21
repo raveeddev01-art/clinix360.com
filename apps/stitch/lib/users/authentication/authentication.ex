@@ -34,7 +34,8 @@ defmodule Stitch.User.Authentication do
         case UserQueries.team_member_with_email(team.id, email) do
           nil -> Comeonin.Bcrypt.dummy_checkpw()
           user ->
-            password = if team.is_legacy, do: Base.encode16(:crypto.hash(:sha256, password), case: :lower), else: password
+            # This is used to hash legacy Meteor passwords.
+            # password = if team.is_legacy, do: Base.encode16(:crypto.hash(:sha256, password), case: :lower), else: password
             case Comeonin.Bcrypt.checkpw(password, user.password_hash) do
               true ->
                 user
