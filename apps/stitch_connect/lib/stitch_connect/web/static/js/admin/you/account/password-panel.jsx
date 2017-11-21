@@ -44,7 +44,8 @@ class PasswordPanel extends Component {
         onSuccess("Your password has been successfully updated.");
       })
       .catch(err => {
-        onError(err.data.message);
+        if (err.data && err.data.message) onError(err.data.message);
+        else onError("Unknown server response");
       });
   };
 
