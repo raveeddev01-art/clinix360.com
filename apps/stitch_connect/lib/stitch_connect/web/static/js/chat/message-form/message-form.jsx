@@ -93,9 +93,9 @@ class MessageForm extends Component {
           0,
           0
         );
-        this.setState({ text: "" });
-        this.typingStopped();
       });
+      this.setState({ text: "" });
+      this.typingStopped();
     }
   };
 
