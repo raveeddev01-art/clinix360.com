@@ -543,7 +543,7 @@ class MessageStore {
         request_id: temporaryID,
         new_msg: true, // only messages with this flag will have sending/failed/success indicator
         sending: true,
-        sent: true,
+        sent: false,
         user: { ...currentUser },
         text_content: msg,
         inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
@@ -571,7 +571,7 @@ class MessageStore {
         .receive("error", err => {
           const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
           Object.assign(tmpMsg, {
-            sent: true,
+            sent: false,
             sending: false
           });
           reject(err);
@@ -579,7 +579,7 @@ class MessageStore {
         .receive("timeout", err => {
           const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
           Object.assign(tmpMsg, {
-            sent: true,
+            sent: false,
             sending: false
           });
           reject(err);
