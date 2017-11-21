@@ -36,12 +36,21 @@ class PasswordPanel extends Component {
 
   _onSave = () => {
     const { hideAlert, onSuccess, onError, userStore } = this.props;
+    const { oldPassword, newPassword } = this.state;
+    if (oldPassword === newPassword) {
+      onError("Old password and new password can not be same.");
+      return Promise.resolve();
+    }
 
     hideAlert();
     return userStore
-      .savePassword(this.state.oldPassword, this.state.newPassword)
+      .savePassword(oldPassword, newPassword)
       .then(() => {
         onSuccess("Your password has been successfully updated.");
+        this.setState({
+          newPassword: "",
+          oldPassword: ""
+        });
       })
       .catch(err => {
         if (err.data && err.data.message) onError(err.data.message);
