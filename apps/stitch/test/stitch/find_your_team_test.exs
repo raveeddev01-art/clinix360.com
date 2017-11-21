@@ -1,5 +1,6 @@
 defmodule Stitch.FindYourTeamTest do
   use Stitch.DataCase, async: true
+  use Bamboo.Test
   alias Stitch.{FindYourTeam, Repo, FindYourTeam.Token}
 
   describe "create_or_get_token!/1" do
@@ -40,14 +41,8 @@ defmodule Stitch.FindYourTeamTest do
 
   test "email/2" do
     token = FindYourTeam.create_or_get_token!("foo@example.com")
-
     email = FindYourTeam.email(token, "http://endpoint.base.url")
-
-    assert email.to == token.email
-    assert email.from == {"Stitch", "support@teamstitch.com"}
-    assert email.subject =~ "Find Your Team"
-    assert email.html_body =~ "http://endpoint.base.url/find-your-team/#{token.token}"
-    assert email.text_body =~ "http://endpoint.base.url/find-your-team/#{token.token}"
+    assert_delivered_email(email)
   end
 
   describe "get_by_token/1" do

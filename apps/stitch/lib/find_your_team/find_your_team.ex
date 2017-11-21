@@ -34,6 +34,7 @@ defmodule Stitch.FindYourTeam do
         "content": "#{endpoint_base_url}/find-your-team/#{token.token}"
       },
     ])
+    |> Stitch.Mailer.deliver_later
   end
 
   def get_by_token(token) do
