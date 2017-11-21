@@ -3,6 +3,8 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   alias Stitch.{Accounts.User, UserQueries}
   alias StitchConnect.Web.TeamChannel
 
+  action_fallback StitchConnect.Web.Api.V1.FallbackController
+
   def index(conn, _) do
     users = UserQueries.users_for_team(conn.assigns.current_user.team_id)
     render conn, "index.json", users: users
@@ -48,15 +50,9 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def update(conn, params) do
-    case Stitch.Accounts.Admin.update_user(conn.assigns.current_user.id, params) do
-      {:ok, user} ->
-        TeamChannel.broadcast_user_info(conn.assigns.team, user)
-        conn
-        |> render("update.json", user: user)
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update #{Enum.join(Map.keys(params), ", ")}"})
+    with {:ok, user} <- Stitch.Accounts.Admin.update_user(conn.assigns.current_user.id, params) do
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      render(conn, "update.json", user: user)
     end
   end
 
