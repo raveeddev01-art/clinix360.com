@@ -34,9 +34,11 @@ class UsernamePanel extends Component {
       .then(() => {
         onSuccess("Your username has been successfully updated.");
       })
-      .catch(() => {
-        onError("The username can not be used, please try another one.");
-        // onError(err.data.message);
+      .catch(err => {
+        const message = err.data.errors.username
+          ? `Username ${err.data.errors.username}.`
+          : "The username can not be used, please try another one.";
+        onError(message);
       });
   };
 
