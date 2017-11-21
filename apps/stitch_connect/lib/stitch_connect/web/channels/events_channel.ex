@@ -142,7 +142,7 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user.id}", "marked_as_unread", json_response)
   end
 
-  def handle_in("ping", %{id: id}, socket) do
+  def handle_in("ping", %{"id" => id}, socket) do
     {:reply, {:ok, %{id: id}}, socket}
   end
 end
