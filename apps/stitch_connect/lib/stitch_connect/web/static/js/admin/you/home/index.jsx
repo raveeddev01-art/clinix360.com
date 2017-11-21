@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject } from "mobx-react";
 import Panel from "react-bootstrap/lib/Panel";
 import HomeItem from "./home-item";
-import { isAdmin } from "../../../util/utils";
+import { isAdmin } from "../../../lib/utils";
 
 @inject("titleStore", "adminPanelStore", "userStore")
 export default class YouHome extends Component {
