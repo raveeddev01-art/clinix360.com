@@ -7,7 +7,6 @@
 import { observable, computed, action } from "mobx";
 
 class GroupStore {
-  @observable notificationSetting = null;
   @observable showAllUsers = true;
 
   constructor(rootStore) {
@@ -82,28 +81,6 @@ class GroupStore {
   @action
   toggleAllUsers = () => {
     this.showAllUsers = !this.showAllUsers;
-  };
-
-  // TODO: Move notification preferences management to notificationStore
-  @action
-  loadNotificationSetting = () => {
-    return get(
-      `/api/v1/groups/${this.group.id}/notification-preference`
-    ).then(resp => {
-      this.notificationSetting = resp.data.desktop_notification_preference;
-      return this.notificationSetting;
-    });
-  };
-
-  @action
-  saveNotificationSetting = setting => {
-    return put(`/api/v1/groups/${this.group.id}/notification-preference`, {
-      body: {
-        desktop_notification_preference: setting
-      }
-    }).then(() => {
-      this.notificationSetting = setting;
-    });
   };
 }
 

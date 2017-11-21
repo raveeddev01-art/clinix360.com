@@ -9,7 +9,7 @@ class NotificationStore {
     this.rootStore = rootStore;
   }
 
-  getGroupPref(groupId) {
+  getGroupPrefById(groupId) {
     const groupPref = this.groupPrefs.find(p => p.group_id === groupId);
 
     return groupPref
@@ -27,6 +27,15 @@ class NotificationStore {
   };
 
   @action
+  updateGroupPrefData = (id, data) => {
+    const pref = this.groupPrefs.find(p => p.group_id === id);
+
+    if (pref) {
+      Object.assign(pref, data);
+    }
+  };
+
+  @action
   updateGroupPrefs = groupPrefs => {
     return put("/api/v1/users/notification-preference", {
       body: {
@@ -34,6 +43,19 @@ class NotificationStore {
       }
     }).then(() => {
       this.groupPrefs.replace(groupPrefs);
+    });
+  };
+
+  @action
+  updateGroupPref = (groupId, groupPref) => {
+    return put(`/api/v1/groups/${groupId}/notification-preference`, {
+      body: {
+        desktop_notification_preference: groupPref
+      }
+    }).then(() => {
+      this.updateGroupPrefData(groupId, {
+        desktop_notification_preference: groupPref
+      });
     });
   };
 
