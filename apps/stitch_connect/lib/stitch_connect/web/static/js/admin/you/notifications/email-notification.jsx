@@ -15,8 +15,9 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 class EmailNotification extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      setting: null
+      pref: ""
     };
   }
 
@@ -25,7 +26,7 @@ class EmailNotification extends Component {
 
     hideAlert();
     return notificationStore
-      .updateEmailPref(this.state.setting)
+      .updateEmailPref(this.state.pref)
       .then(() => {
         onSuccess("Email notification preference has been updated.");
       })
@@ -35,17 +36,20 @@ class EmailNotification extends Component {
   };
 
   onToggleEdit = () => {
+    const { notificationStore } = this.props;
+
     this.setState({
-      setting: this.props.notificationStore.emailPref
+      pref: notificationStore.emailPref
     });
   };
 
   onChange = evt => {
-    this.setState({ setting: evt.target.value });
+    this.setState({ pref: evt.target.value });
   };
 
   render() {
-    const { setting } = this.state;
+    const { pref } = this.state;
+
     return (
       <SettingPanel
         title="Email Notifications"
@@ -67,7 +71,7 @@ class EmailNotification extends Component {
               <FormControl
                 componentClass="select"
                 placeholder="select"
-                value={setting}
+                value={pref}
                 onChange={this.onChange}
               >
                 <option value="never">Never</option>
