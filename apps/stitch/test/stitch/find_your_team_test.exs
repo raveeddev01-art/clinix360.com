@@ -44,9 +44,8 @@ defmodule Stitch.FindYourTeamTest do
     email = FindYourTeam.email(token, "http://endpoint.base.url")
 
     assert email.to == token.email
-    assert email.from =~ "support@teamstitch.com"
-    assert email.subject =~ "Find your team"
-    assert email.subject =~ "Stitch"
+    assert email.from == {"Stitch", "support@teamstitch.com"}
+    assert email.subject =~ "Find Your Team"
     assert email.html_body =~ "http://endpoint.base.url/find-your-team/#{token.token}"
     assert email.text_body =~ "http://endpoint.base.url/find-your-team/#{token.token}"
   end
