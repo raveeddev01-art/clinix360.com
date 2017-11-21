@@ -8,7 +8,7 @@ import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 import { isAdmin } from "../util/utils";
 import InviteModal from "../common/modals/invite-modal";
 
-@inject("teamStore", "presenceStore")
+@inject("teamStore", "presenceStore", "userStore")
 @observer
 class Sidebar extends Component {
   constructor(props) {
@@ -77,7 +77,7 @@ class Sidebar extends Component {
   };
 
   render() {
-    const { onHideSidebar, teamStore } = this.props;
+    const { onHideSidebar, teamStore, userStore } = this.props;
 
     return (
       <div className="sidebar">
@@ -121,9 +121,11 @@ class Sidebar extends Component {
 
           <h5>Stitch</h5>
           <ListGroup>
-            <ListGroupItem href="#" onClick={this.showInviteModal}>
-              <i className="fa fa-envelope-o" /> Invite
-            </ListGroupItem>
+            {userStore.canInvite && (
+              <ListGroupItem href="#" onClick={this.showInviteModal}>
+                <i className="fa fa-envelope-o" /> Invite
+              </ListGroupItem>
+            )}
             <ListGroupItem href="#" onClick={this.props.presenceStore.lock}>
               <i className="fa fa-lock" /> Lockout
             </ListGroupItem>

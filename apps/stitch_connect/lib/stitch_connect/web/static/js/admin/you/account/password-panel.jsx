@@ -22,7 +22,7 @@ class PasswordPanel extends Component {
     this.state = {
       oldPassword: "",
       newPassword: "",
-      formValid: false
+      formInvalid: false
     };
   }
 
@@ -30,21 +30,31 @@ class PasswordPanel extends Component {
     this.setState({
       oldPassword: "",
       newPassword: "",
-      formValid: false
+      formInvalid: false
     });
   };
 
   _onSave = () => {
     const { hideAlert, onSuccess, onError, userStore } = this.props;
+    const { oldPassword, newPassword } = this.state;
+    if (oldPassword === newPassword) {
+      onError("Old password and new password can not be same.");
+      return Promise.resolve();
+    }
 
     hideAlert();
     return userStore
-      .savePassword(this.state.oldPassword, this.state.newPassword)
+      .savePassword(oldPassword, newPassword)
       .then(() => {
         onSuccess("Your password has been successfully updated.");
+        this.setState({
+          newPassword: "",
+          oldPassword: ""
+        });
       })
       .catch(err => {
-        onError(err.data.message);
+        if (err.data && err.data.message) onError(err.data.message);
+        else onError("Unknown server response");
       });
   };
 
@@ -57,19 +67,19 @@ class PasswordPanel extends Component {
     });
   };
 
-  _onChangeValid = formValid => {
-    this.setState({ formValid });
+  _onChangeValid = formInvalid => {
+    this.setState({ formInvalid });
   };
 
   render() {
-    const { oldPassword, newPassword, formValid } = this.state;
+    const { oldPassword, newPassword, formInvalid } = this.state;
     return (
       <SettingPanel
         title={title}
         description={description}
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
-        disableSave={formValid}
+        disableSave={formInvalid || oldPassword === ""}
       >
         <Row>
           <Col sm={6} componentClass={FormGroup}>

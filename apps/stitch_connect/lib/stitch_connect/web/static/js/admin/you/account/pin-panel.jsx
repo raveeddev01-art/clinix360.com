@@ -44,6 +44,9 @@ class PinPanel extends Component {
       .savePIN(this.state.pin)
       .then(() => {
         onSuccess("Your PIN has been successfully updated.");
+        this.setState({
+          pin: ""
+        });
       })
       .catch(err => {
         onError(err.data.message);
@@ -59,7 +62,11 @@ class PinPanel extends Component {
         onEdit={this.onToggleEdit}
         disableSave={!this.state.formValid}
       >
-        <PinInput onValid={this.onValid} onInvalid={this.onInvalid} />
+        <PinInput
+          onValid={this.onValid}
+          onInvalid={this.onInvalid}
+          pin={this.state.pin}
+        />
       </SettingPanel>
     );
   }
