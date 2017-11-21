@@ -525,15 +525,19 @@ $admin-topbar-height-sm: 65px;
     }
 
     &.home-panel {
+      .panel-body {
+        > h4 {
+          &:first-child {
+            margin-top: 0;
+          }
+        }
+      }
+
       h4 {
         color: $brand-primary;
         font-size: 18px;
         font-weight: 800;
         margin-top: 30px;
-
-        &:first-child {
-          margin-top: 0;
-        }
       }
 
       .panel-home-item {
