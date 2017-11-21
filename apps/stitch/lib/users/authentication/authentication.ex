@@ -1,6 +1,6 @@
 defmodule Stitch.User.Authentication do
   import Ecto.Changeset
-  alias Stitch.{Repo, Accounts.User, Team}
+  alias Stitch.{Repo, Accounts.User, UserQueries, Team}
 
   def hash_password(password) do
     Comeonin.Bcrypt.hashpwsalt(password)
@@ -30,7 +30,7 @@ defmodule Stitch.User.Authentication do
       nil ->
         false
       team ->
-        case Repo.get_by(User, %{email: email, team_id: team.id}) do
+        case UserQueries.team_member_with_email(team.id, email) do
           nil -> Comeonin.Bcrypt.dummy_checkpw()
           user ->
             password = if team.is_legacy, do: Base.encode16(:crypto.hash(:sha256, password), case: :lower), else: password
