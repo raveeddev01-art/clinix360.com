@@ -18,7 +18,7 @@ class DesktopNotification extends Component {
 
   onToggleEdit = () => {
     this.setState({
-      setting: this.props.notificationStore.desktopPreference
+      setting: this.props.notificationStore.desktopPref
     });
   };
 
@@ -31,7 +31,7 @@ class DesktopNotification extends Component {
 
     hideAlert();
     return notificationStore
-      .updateDesktopPreference(this.state.setting)
+      .updateDesktopPref(this.state.setting)
       .then(() => {
         onSuccess("Desktop notification preference has been updated.");
       })

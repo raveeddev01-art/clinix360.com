@@ -25,7 +25,7 @@ class EmailNotification extends Component {
 
     hideAlert();
     return notificationStore
-      .updateEmailPreference(this.state.setting)
+      .updateEmailPref(this.state.setting)
       .then(() => {
         onSuccess("Email notification preference has been updated.");
       })
@@ -36,7 +36,7 @@ class EmailNotification extends Component {
 
   onToggleEdit = () => {
     this.setState({
-      setting: this.props.notificationStore.emailPreference
+      setting: this.props.notificationStore.emailPref
     });
   };
 

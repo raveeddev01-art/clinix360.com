@@ -1,65 +1,63 @@
 import { observable, action } from "mobx";
 
 class NotificationStore {
-  @observable groupPreferences = [];
-  @observable desktopPreference = null;
-  @observable emailPreference = null;
+  @observable groupPrefs = [];
+  @observable desktopPref = null;
+  @observable emailPref = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
 
-  getGroupPreference(groupId) {
-    const groupPreference = this.groupPreferences.find(
-      p => p.group_id === groupId
-    );
+  getGroupPref(groupId) {
+    const groupPref = this.groupPrefs.find(p => p.group_id === groupId);
 
-    return groupPreference
-      ? groupPreference.desktop_notification_preference
-      : this.desktopPreference;
+    return groupPref
+      ? groupPref.desktop_notification_preference
+      : this.desktopPref;
   }
 
   @action
   loadPreferences = () => {
     get("/api/v1/users/notification-preference").then(response => {
-      this.groupPreferences = response.data.group_preferences;
-      this.desktopPreference = response.data.desktop_notification_preference;
-      this.emailPreference = response.data.email_notification_preference;
+      this.groupPrefs = response.data.group_preferences;
+      this.desktopPref = response.data.desktop_notification_preference;
+      this.emailPref = response.data.email_notification_preference;
     });
   };
 
   @action
-  updateGroupPreferences = groupPreferences => {
+  updateGroupPrefs = groupPrefs => {
     return put("/api/v1/users/notification-preference", {
       body: {
-        group_preferences: groupPreferences
+        group_preferences: groupPrefs
       }
     }).then(() => {
-      this.groupPreferences.replace(groupPreferences);
+      this.groupPrefs.replace(groupPrefs);
     });
   };
 
   @action
-  updateDesktopPreference = preference => {
+  updateDesktopPref = preference => {
     return put("/api/v1/users/notification-preference", {
       body: {
         desktop_notification_preference: preference
       },
       hideNotify: true
     }).then(() => {
-      this.desktopPreference = preference;
+      this.desktopPref = preference;
     });
   };
 
   @action
-  updateEmailPreference = preference => {
+  updateEmailPref = preference => {
     return put("/api/v1/users/notification-preference", {
       body: {
         email_notification_preference: preference
       },
       hideNotify: true
     }).then(() => {
-      this.emailPreference = preference;
+      this.emailPref = preference;
     });
   };
 }

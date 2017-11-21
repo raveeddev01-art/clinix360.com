@@ -40,7 +40,7 @@ class ChannelNotifications extends Component {
     hideAlert();
 
     return notificationStore
-      .updateGroupPreferences(this.state.groupPrefs)
+      .updateGroupPrefs(this.state.groupPrefs)
       .then(() => {
         onSuccess("Room specific notification settings have been updated.");
       })
@@ -55,7 +55,7 @@ class ChannelNotifications extends Component {
     // When panel is open, load group preferences from the store
     if (val) {
       this.setState({
-        groupPrefs: toJS(notificationStore.groupPreferences)
+        groupPrefs: toJS(notificationStore.groupPrefs)
       });
     }
   };

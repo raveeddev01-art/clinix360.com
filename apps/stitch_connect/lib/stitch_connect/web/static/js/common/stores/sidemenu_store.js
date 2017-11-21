@@ -246,7 +246,7 @@ class SidemenuStore {
     }
 
     const { notificationStore } = this.rootStore;
-    const desktopNotification = notificationStore.getGroupPreference(
+    const desktopNotification = notificationStore.getGroupPref(
       newMessage.group_id
     );
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
@@ -286,7 +286,7 @@ class SidemenuStore {
 
     const { notificationStore, messageStore, groupsStore } = this.rootStore;
     if (messageStore.groupId === newMessage.group_id) return;
-    const desktopNotification = notificationStore.getGroupPreference(
+    const desktopNotification = notificationStore.getGroupPref(
       newMessage.group_id
     );
     const group = groupsStore.getGroupById(newMessage.group_id);
