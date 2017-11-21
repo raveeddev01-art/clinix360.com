@@ -5,11 +5,35 @@ class SocketStore {
   @observable reconnectIn = undefined;
   ticks = 0;
   interval;
+  pingCount = 0;
+  pingInterval;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
     this.trackConnectionState();
   }
+
+  get eventChannel() {
+    return this.rootStore.channelStore.eventChannel;
+  }
+
+  startPingPong = () => {
+    this.pingInterval = setInterval(() => {
+      this.pingCount += 1;
+
+      this.eventChannel
+        .push("ping", { id: this.pingCount })
+        .receive("ok", resp => {
+          console.log(resp);
+        })
+        .receive("error", err => {
+          console.log(err);
+        })
+        .receive("timeout", err => {
+          console.log("timeout", err);
+        });
+    }, 1000);
+  };
 
   @action
   reconnect() {
@@ -32,16 +56,23 @@ class SocketStore {
   openSocket = () => {
     this.isConnected = true;
     clearInterval(this.interval);
+    this.startPingPong();
   };
 
   @action
   errorSocket = () => {
+    if (!this.isConnected) {
+      return;
+    }
+
     this.isConnected = false;
     this.ticks = 0;
     socket.reconnectTimer.scheduleTimeout();
     this.reconnectIn = this.getReconnectIn();
     clearInterval(this.interval);
     this.interval = setInterval(this.tickTimeout, 1000);
+
+    clearInterval(this.pingInterval);
   };
 
   @action
