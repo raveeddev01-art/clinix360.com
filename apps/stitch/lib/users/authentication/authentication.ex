@@ -79,14 +79,19 @@ defmodule Stitch.User.Authentication do
   when byte_size(email) > 0 and byte_size(team_slug) > 0 do
     team = Repo.get_by(Team, slug: team_slug)
 
-    case Repo.get_by(User, email: email, team_id: team.id) do
-        nil ->
-          {:error, "User is not part of the team or Email does not exist"}
+    query =
+      from u in User,
+      where: u.team_id == ^team.id,
+      where: u.onboarded == ^true,
+      where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
 
-        user ->
-          user
-          |> Ecto.Changeset.change(password_reset_token: Stitch.Rand.token(32))
-          |> Repo.update
+    case Repo.one(query) do
+      nil ->
+        {:error, "User is not part of the team or Email does not exist"}
+      user ->
+        user
+        |> Ecto.Changeset.change(password_reset_token: Stitch.Rand.token(32))
+        |> Repo.update
     end
   end
 

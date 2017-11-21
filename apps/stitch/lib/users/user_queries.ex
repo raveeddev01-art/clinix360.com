@@ -72,6 +72,11 @@ defmodule Stitch.UserQueries do
   def get_by_token(_) do {:error, "Token is malformed."} end
 
   def user_with_email_exists?(email) do
-    Repo.one!(from u in User, select: count(u.id), where: u.email == ^email) > 0
+    query =
+      from u in User,
+      select: count(u.id),
+      where: u.onboarded == ^true,
+      where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
+    Repo.one!(query) > 0
   end
 end
