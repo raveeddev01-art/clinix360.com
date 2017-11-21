@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import * as mobx from "mobx";
+import { toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -17,7 +17,7 @@ export default class NavItemMembers extends Component {
 
     this.state = {
       showModal: false,
-      members: mobx.toJS(groupStore.group.users)
+      members: toJS(groupStore.group.users)
     };
   }
 

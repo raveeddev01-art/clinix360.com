@@ -9,7 +9,7 @@ class NotificationStore {
     this.rootStore = rootStore;
   }
 
-  getGroupNotificationPreference(groupId) {
+  getGroupPreference(groupId) {
     const groupPreference = this.groupPreferences.find(
       p => p.group_id === groupId
     );
