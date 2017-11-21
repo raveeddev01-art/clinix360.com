@@ -1,5 +1,6 @@
 defmodule Stitch.User.Authentication do
   import Ecto.Changeset
+  import Ecto.Query
   alias Stitch.{Repo, Accounts.User, UserQueries, Team}
 
   def hash_password(password) do
@@ -81,8 +82,8 @@ defmodule Stitch.User.Authentication do
 
     query =
       from u in User,
-      where: u.team_id == team.id,
-      where: u.onboarded == true,
+      where: u.team_id == ^team.id,
+      where: u.onboarded == ^true,
       where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
 
     case Repo.one(query) do
