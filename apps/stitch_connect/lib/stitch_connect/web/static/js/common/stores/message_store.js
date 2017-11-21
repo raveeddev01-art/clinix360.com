@@ -739,6 +739,8 @@ class MessageStore {
       return;
     }
 
+    const currentNewMessageLineMessage = this.newMessageLineMessage;
+
     if (newMessage.user_id === currentUser.id) {
       // if it's my message, we assume it's already added temporarily.
       if (newMessage.sending) {
@@ -757,11 +759,11 @@ class MessageStore {
 
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
-      // For messages from other users
-      if (!this.isScrollBottom) {
+      // If you're at the bottom and no NML, keep up with the new message
+      if (this.isScrollBottom && currentNewMessageLineMessage == null) {
         this.lastReadAt = moment
           .utc(newMessage.inserted_at)
-          .subtract(1, "millisecond")
+          .add(1, "millisecond")
           .format("YYYY-MM-DDTHH:mm:ss.SSS");
       }
 
