@@ -78,6 +78,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/users/notification-preference", NotificationPreferenceController, :update_global
     get "/users/:id", UserController, :show
     put "/users/:id", UserController, :update
+    put "/users/:id/update_password", UserController, :update_password
     post "/users/search", UserController, :search
 
     get "/invitations", InvitationController, :index
@@ -154,8 +155,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
   # API routes which need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api_auth
-
-    put "/users/:id/update_password", UserController, :update_password
 
     get "/invitations/:token", InvitationController, :show
 

@@ -24,8 +24,11 @@
     color: #fff;
     margin-bottom: 20px;
 
-    &:hover {
+    &:hover,
+    &:focus,
+    &:active {
       color: #fff;
+      outline: none;
     }
   }
 

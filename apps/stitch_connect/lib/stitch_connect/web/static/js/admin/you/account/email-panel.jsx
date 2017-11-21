@@ -50,6 +50,7 @@ class EmailPanel extends Component {
         description={description}
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
+        disableSave
       >
         <FormGroup bsSize="large">
           <ControlLabel>Email</ControlLabel>
@@ -57,6 +58,7 @@ class EmailPanel extends Component {
             type="email"
             value={email}
             onChange={this._onChangeEmail}
+            disabled
           />
         </FormGroup>
       </SettingPanel>

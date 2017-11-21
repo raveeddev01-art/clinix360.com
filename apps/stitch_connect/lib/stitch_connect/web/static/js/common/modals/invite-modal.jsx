@@ -154,9 +154,16 @@ class InviteModal extends Component {
   };
 
   switchToSingles = () => {
+    const { invites } = this.state;
+    if (invites.length === 0) {
+      invites.push({
+        email: ""
+      });
+    }
     this.setState({
       mode: "default",
-      alertVisible: false
+      alertVisible: false,
+      invites
     });
   };
 
