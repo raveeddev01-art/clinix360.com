@@ -69,6 +69,9 @@ class ChannelStore {
         window.location = "/logged-out";
       }
     });
+    this.eventChannel.on("deactivated", () => {
+      window.location = "/logged-out";
+    });
 
     return joined;
   }

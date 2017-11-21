@@ -61,7 +61,7 @@ defmodule Stitch.UserQueries do
   def get_by_id(_) do {:error, "Id isn't an integer."} end
 
   def get_by_token(token) when byte_size(token) == 32 do
-    case Repo.get_by(User, token: token) do
+    case Repo.get_by(User, token: token, disabled: false) do
       nil ->
         {:not_found, "User with token #{token} was not found."}
       user ->

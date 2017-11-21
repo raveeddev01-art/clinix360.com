@@ -134,6 +134,10 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user.id}", "logout", %{session_id: session_id})
   end
 
+  def broadcast_deactivated(user_id) do
+    @endpoint.broadcast("events:#{user_id}", "deactivated", %{})
+  end
+
   def broadcast_marked_as_read(user, json_response) do
     @endpoint.broadcast("events:#{user.id}", "marked_as_read", json_response)
   end

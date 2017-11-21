@@ -14,13 +14,19 @@ defmodule StitchConnect.Plug.Authenticate do
             |> clear_session
             |> Phoenix.Controller.redirect(to: "/login")
             |> halt
-          current_user ->
+          %{disabled: false} = current_user ->
             if current_user.team_id == conn.assigns.team.id do
               conn
               |> assign(:current_user, current_user)
             else
               conn
               |> Phoenix.Controller.redirect(to: "/login")
+              |> halt
+            end
+          %{disabled: true} = current_user ->
+            unless conn.request_path == "/login" or conn.request_path == "/submit_login" do
+              conn
+              |> Phoenix.Controller.redirect(to: "/logged-out")
               |> halt
             end
         end
