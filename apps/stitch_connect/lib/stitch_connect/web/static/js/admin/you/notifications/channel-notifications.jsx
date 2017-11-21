@@ -7,9 +7,8 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import set from "lodash/set";
 
+import { NOTIFICATION_PREFERENCES } from "lib/constants";
 import SettingPanel from "../../components/setting-panel/setting-panel";
-
-const PREF_OPTIONS = ["everything", "mentions", "nothing"];
 
 @inject("notificationStore")
 @observer
@@ -75,12 +74,12 @@ class ChannelNotifications extends Component {
         <Col xs={6}>{groupName}</Col>
         <Col xs={6} className="text-center">
           <Row className="radio-group">
-            {PREF_OPTIONS.map(option => (
-              <Col key={option} sm={4}>
+            {NOTIFICATION_PREFERENCES.map(({ value }) => (
+              <Col key={value} sm={4}>
                 <Radio
                   name={`group_pref_${groupId}`}
-                  checked={pref === option}
-                  onChange={this.onChange(groupIndex, option)}
+                  checked={pref === value}
+                  onChange={this.onChange(groupIndex, value)}
                 />
               </Col>
             ))}
@@ -102,15 +101,11 @@ class ChannelNotifications extends Component {
           <Col xs={6} />
           <Col xs={6}>
             <Row>
-              <Col sm={4}>
-                <b>Everything</b>
-              </Col>
-              <Col sm={4}>
-                <b>Mentions</b>
-              </Col>
-              <Col sm={4}>
-                <b>Nothing</b>
-              </Col>
+              {NOTIFICATION_PREFERENCES.map(({ title }) => (
+                <Col key={title} sm={4}>
+                  <b>{title}</b>
+                </Col>
+              ))}
             </Row>
           </Col>
         </div>
