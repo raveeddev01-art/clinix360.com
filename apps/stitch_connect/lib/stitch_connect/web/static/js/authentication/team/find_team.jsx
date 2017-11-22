@@ -41,36 +41,6 @@ export default class FindTeam extends Component {
     });
   };
 
-  _renderHeader = () => {
-    return (
-      <div className="card-header">
-        <Row>
-          <Col xs={6} className="text-left">
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip id="back">Back</Tooltip>}
-            >
-              <Link to="/signin">
-                <i className="fa fa-arrow-left" />
-              </Link>
-            </OverlayTrigger>
-          </Col>
-
-          <Col xs={6} className="text-right">
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip id="restart">Close</Tooltip>}
-            >
-              <Link to="/getstarted">
-                <i className="fa fa-close" />
-              </Link>
-            </OverlayTrigger>
-          </Col>
-        </Row>
-      </div>
-    );
-  };
-
   render() {
     const { email, sent } = this.state;
     return !sent ? (
@@ -82,7 +52,6 @@ export default class FindTeam extends Component {
             teams.
           </span>
         }
-        header={this._renderHeader()}
       >
         <Form onSubmit={this._onSubmit}>
           <FormGroup bsSize="large">

@@ -47,39 +47,6 @@ class SendEmail extends Component {
       });
   };
 
-  _renderHeader = () => {
-    const { sent } = this.state;
-    return (
-      !sent && (
-        <div className="card-header">
-          <Row>
-            <Col xs={6} className="text-left">
-              <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip id="back">Back</Tooltip>}
-              >
-                <Link to="/login">
-                  <i className="fa fa-arrow-left" />
-                </Link>
-              </OverlayTrigger>
-            </Col>
-
-            <Col xs={6} className="text-right">
-              <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip id="restart">Close</Tooltip>}
-              >
-                <Link to="/login">
-                  <i className="fa fa-close" />
-                </Link>
-              </OverlayTrigger>
-            </Col>
-          </Row>
-        </div>
-      )
-    );
-  };
-
   render() {
     const { email, sent, error } = this.state;
     return !sent ? (
@@ -92,7 +59,6 @@ class SendEmail extends Component {
               Enter your <strong>email address</strong>.
             </span>
           }
-          header={this._renderHeader()}
         >
           <Form onSubmit={this._onSubmit}>
             <FormGroup bsSize="large">
@@ -127,7 +93,6 @@ class SendEmail extends Component {
             password. how to reset your password.
           </span>
         }
-        header={this._renderHeader()}
       >
         <hr />
         <h5>
