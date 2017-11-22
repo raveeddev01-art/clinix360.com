@@ -101,6 +101,7 @@ class CreateDMModal extends Component {
         })
       )
     });
+    this.selectComponent.focus();
   };
 
   render() {
@@ -141,6 +142,7 @@ class CreateDMModal extends Component {
               onInputChange={this.onChangeFilter}
               onChange={this.handleChange}
               placeholder="Search"
+              onBlurResetsInput={false}
               value={this.state.members}
             />
           </div>
