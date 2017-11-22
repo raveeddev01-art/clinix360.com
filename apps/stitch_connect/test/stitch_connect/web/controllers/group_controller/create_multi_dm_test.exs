@@ -68,7 +68,7 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
       "name" => "Joe Schmo, Sam Capra",
       "slug" => ^expected_slug,
       "public" => false,
-      "favorite" => false,
+      "is_favorite" => false,
       "description" => nil,
       "joined" => true,
       "users" => [_, _, _],
@@ -97,7 +97,7 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
       "name" => "Joe Schmo, Sam Capra",
       "slug" => ^expected_slug,
       "public" => false,
-      "favorite" => false,
+      "is_favorite" => false,
       "is_hidden" => false,
       "description" => nil,
       "joined" => true,
@@ -119,8 +119,8 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
       |> post(api_v1_group_path(conn, :create_multi_dm), %{"user_ids" => user_ids})
       |> json_response(200)
 
-    assert_broadcast "new_group", %{id: ^group_id, name: "Bob Hadden, Joe Schmo"}
-    assert_broadcast "new_group", %{id: ^group_id, name: "Bob Hadden, Sam Capra"}
-    assert_broadcast "new_group", %{id: ^group_id, name: "Joe Schmo, Sam Capra"}
+    assert_broadcast "created_group", %{id: ^group_id, name: "Bob Hadden, Joe Schmo"}
+    assert_broadcast "created_group", %{id: ^group_id, name: "Bob Hadden, Sam Capra"}
+    assert_broadcast "created_group", %{id: ^group_id, name: "Joe Schmo, Sam Capra"}
   end
 end

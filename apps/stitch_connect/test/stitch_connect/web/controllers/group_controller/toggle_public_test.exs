@@ -38,7 +38,7 @@ defmodule StitchConnect.Web.GroupController.TogglePublicTest do
     assert json["public"]
     assert %{
       "joined" => _,
-      "favorite" => _,
+      "is_favorite" => _,
       "unread_messages_count" => _,
       "mentions_count" => _,
       "last_read_at" => _,
@@ -57,7 +57,7 @@ defmodule StitchConnect.Web.GroupController.TogglePublicTest do
     refute json["public"]
     assert %{
       "joined" => _,
-      "favorite" => _,
+      "is_favorite" => _,
       "unread_messages_count" => _,
       "mentions_count" => _,
       "last_read_at" => _,
