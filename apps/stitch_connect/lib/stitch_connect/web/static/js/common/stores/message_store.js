@@ -817,6 +817,23 @@ class MessageStore {
   };
 
   @action
+  onPinnedMessage = message => {
+    const { pinnedMessageStore } = this.rootStore;
+
+    this.updateMessageData(message.id, {
+      pinned: message.pinned,
+      pinned_at: message.pinned_at,
+      pinned_by: message.pinned_by
+    });
+
+    if (message.pinned) {
+      pinnedMessageStore.add(message);
+    } else {
+      pinnedMessageStore.remove(message.id);
+    }
+  };
+
+  @action
   onJoinGroupChannel = data => {
     this.messages = data.messages;
 
@@ -937,21 +954,7 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
-        const pinnedMsg = resp.data;
-
-        message.pinned = pinnedMsg.pinned;
-        message.pinned_at = pinnedMsg.pinned_at;
-        message.pinned_by = pinnedMsg.pinned_by;
-
-        if (pinnedMsg.pinned) {
-          this.rootStore.pinnedMessageStore.messages.push(pinnedMsg);
-        } else {
-          this.rootStore.pinnedMessageStore.messages = this.rootStore.pinnedMessageStore.messages.filter(
-            m => m.id !== pinnedMsg.id
-          );
-        }
-      });
+      post(`/api/v1/messages/${id}/toggle-pin`);
     }
   }
 
