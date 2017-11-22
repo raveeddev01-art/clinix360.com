@@ -6,35 +6,42 @@ import Modal from "react-bootstrap/lib/Modal";
 import Radio from "react-bootstrap/lib/Radio";
 import Button from "react-bootstrap/lib/Button";
 
-@inject("groupStore")
+import { NOTIFICATION_PREFERENCES } from "lib/constants";
+
+@inject("notificationStore", "groupsStore")
 @observer
 export default class NavItemNotifications extends Component {
   constructor(...args) {
     super(...args);
+
     this.state = {
       showModal: false,
-      setting: null
+      pref: ""
     };
   }
 
-  onChange = val => () => {
-    this.setState({ setting: val });
+  onChange = pref => () => {
+    this.setState({ pref });
   };
 
   onSave = () => {
-    this.props.groupStore.saveNotificationSetting(this.state.setting);
+    const { notificationStore, groupsStore: { currentGroup } } = this.props;
+
+    notificationStore.updateGroupPref(currentGroup.id, this.state.pref);
+
     this.setState({
       showModal: false
     });
   };
 
   openModal = () => {
-    this.setState({ setting: this.props.groupStore.notificationSetting });
-    this.props.groupStore.loadNotificationSetting().then(setting => {
-      this.setState({ setting });
-    });
+    const { notificationStore, groupsStore: { currentGroup } } = this.props;
+    const pref = notificationStore.getGroupPrefById(currentGroup.id);
 
-    this.setState({ showModal: true });
+    this.setState({
+      showModal: true,
+      pref
+    });
   };
 
   closeModal = () => {
@@ -42,7 +49,9 @@ export default class NavItemNotifications extends Component {
   };
 
   render() {
-    const { setting } = this.state;
+    const { groupsStore: { currentGroup } } = this.props;
+    const { pref } = this.state;
+
     return [
       <MenuItem key="notifications_menuitem" onClick={this.openModal}>
         Notifications
@@ -54,7 +63,7 @@ export default class NavItemNotifications extends Component {
       >
         <Modal.Header>
           <Modal.Title>
-            Notification Preferences: {this.props.groupStore.group.name}
+            Notification Preferences: {currentGroup.name}
           </Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />
@@ -68,45 +77,19 @@ export default class NavItemNotifications extends Component {
           </h5>
 
           <div className="radio-group notifications">
-            <Radio
-              name="radioGroup"
-              checked={setting === "everything"}
-              onChange={this.onChange("everything")}
-            >
-              <span className="radio-span">
-                <h5>Everything</h5>
-                <p className="m-b-0">
-                  You will be notified for every new message.
-                </p>
-              </span>
-            </Radio>
-
-            <Radio
-              name="radioGroup"
-              checked={setting === "mentions"}
-              onChange={this.onChange("mentions")}
-            >
-              <span className="radio-span">
-                <h5>Mentions</h5>
-                <p className="m-b-0">
-                  You will be notified only when a team member mentions you.
-                </p>
-              </span>
-            </Radio>
-
-            <Radio
-              name="radioGroup"
-              checked={setting === "nothing"}
-              onChange={this.onChange("nothing")}
-            >
-              <span className="radio-span">
-                <h5>Nothing</h5>
-                <p className="m-b-0">
-                  You will not receive notifications, but will continue to see a
-                  badge count for unread messages.
-                </p>
-              </span>
-            </Radio>
+            {NOTIFICATION_PREFERENCES.map(p => (
+              <Radio
+                key={p.value}
+                name="desktop-pref"
+                checked={pref === p.value}
+                onChange={this.onChange(p.value)}
+              >
+                <span className="radio-span">
+                  <h5>{p.title}</h5>
+                  <p className="m-b-0">{p.description}</p>
+                </span>
+              </Radio>
+            ))}
           </div>
         </Modal.Body>
 

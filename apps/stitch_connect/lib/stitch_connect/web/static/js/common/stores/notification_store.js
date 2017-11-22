@@ -1,89 +1,87 @@
 import { observable, action } from "mobx";
 
 class NotificationStore {
-  @observable groupPreferences = [];
-  @observable groupPreferenceMap = new Map();
-  @observable desktopPreference = null;
-  @observable emailPreference = null;
+  @observable groupPrefs = [];
+  @observable desktopPref = null;
+  @observable emailPref = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
 
+  getGroupPrefById(groupId) {
+    const groupPref = this.groupPrefs.find(p => p.group_id === groupId);
+
+    return groupPref
+      ? groupPref.desktop_notification_preference
+      : this.desktopPref;
+  }
+
   @action
   loadPreferences = () => {
     get("/api/v1/users/notification-preference").then(response => {
-      this.groupPreferences = response.data.group_preferences;
-      this.desktopPreference = response.data.desktop_notification_preference;
-      this.emailPreference = response.data.email_notification_preference;
+      this.groupPrefs = response.data.group_preferences;
+      this.desktopPref = response.data.desktop_notification_preference;
+      this.emailPref = response.data.email_notification_preference;
     });
   };
 
   @action
-  toggleGroupPreferences = () => {
-    this.groupPreferences.forEach(preference => {
-      this.groupPreferenceMap.set(
-        preference.group_id,
-        preference.desktop_notification_preference
-      );
-    });
+  updateGroupPrefData = (id, data) => {
+    const pref = this.groupPrefs.find(p => p.group_id === id);
+
+    if (pref) {
+      Object.assign(pref, data);
+    }
   };
 
   @action
-  updateGroupPreferences = () => {
+  updateGroupPrefs = groupPrefs => {
     return put("/api/v1/users/notification-preference", {
       body: {
-        group_preferences: this.groupPreferences.map(preference => ({
-          group_id: preference.group_id,
-          desktop_notification_preference: this.groupPreferenceMap.get(
-            preference.group_id
-          )
-        }))
+        group_preferences: groupPrefs
       }
     }).then(() => {
-      this.groupPreferences.forEach(preference => {
-        preference.desktop_notification_preference = this.groupPreferenceMap.get(
-          preference.group_id
-        );
+      this.groupPrefs.replace(groupPrefs);
+    });
+  };
+
+  @action
+  updateGroupPref = (groupId, groupPref) => {
+    return put(`/api/v1/groups/${groupId}/notification-preference`, {
+      body: {
+        desktop_notification_preference: groupPref
+      }
+    }).then(() => {
+      this.updateGroupPrefData(groupId, {
+        desktop_notification_preference: groupPref
       });
     });
   };
 
   @action
-  updateDesktopPreference = val => {
+  updateDesktopPref = preference => {
     return put("/api/v1/users/notification-preference", {
       body: {
-        desktop_notification_preference: val
+        desktop_notification_preference: preference
       },
       hideNotify: true
     }).then(() => {
-      this.desktopPreference = val;
-      return val;
+      this.desktopPref = preference;
     });
   };
 
   @action
-  updateEmailPreference = val => {
+  updateEmailPref = preference => {
     return put("/api/v1/users/notification-preference", {
       body: {
-        email_notification_preference: val
+        email_notification_preference: preference
       },
       hideNotify: true
     }).then(() => {
-      this.emailPreference = val;
-      return val;
+      this.emailPref = preference;
     });
   };
-
-  getGroupNotificationPreference(groupId) {
-    const groupPreference = this.groupPreferences.find(
-      preference => preference.group_id === groupId
-    );
-
-    return groupPreference
-      ? groupPreference.desktop_notification_preference
-      : this.desktopPreference;
-  }
 }
 
 export default NotificationStore;
