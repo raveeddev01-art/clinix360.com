@@ -3,14 +3,9 @@ import { inject } from "mobx-react";
 import { Link } from "react-router-dom";
 
 import Alert from "react-bootstrap/lib/Alert";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
-import debounce from "lodash/debounce";
 
 @inject("titleStore")
 export default class TeamPicker extends Component {
@@ -18,13 +13,8 @@ export default class TeamPicker extends Component {
     super(...args);
     this.state = {
       teamName: "",
-      teamExists: undefined,
-      blacklisted: false,
-      alert: false
+      showAlert: false
     };
-
-    this.checkBlacklist = debounce(this.checkBlacklist, 500);
-    this.checkAvailability = debounce(this.checkAvailability, 500);
   }
 
   componentWillMount() {
@@ -34,41 +24,47 @@ export default class TeamPicker extends Component {
   handleChange = event => {
     const teamName = event.target.value;
     this.setState({ teamName });
-    this.checkBlacklist(teamName);
-    this.checkAvailability(teamName);
   };
 
   checkBlacklist = url => {
-    post("/api/v1/teams/slug-exists", {
+    return post("/api/v1/teams/slug-exists", {
       body: { url }
-    }).then(res => {
-      this.setState({ blacklisted: !res.data.available });
     });
   };
 
   checkAvailability = name => {
-    post("/api/v1/teams/url-available", {
+    return post("/api/v1/teams/url-available", {
       body: { url: name }
-    }).then(response => {
-      this.setState({ teamExists: !response.data.available });
     });
   };
 
   handleSubmit = event => {
+    const { teamName } = this.state;
     event.preventDefault();
-    if (this.state.teamExists === true && this.state.blacklisted === false) {
-      window.location = `https://${this.state.teamName}.${applicationHost}`;
-    } else {
-      this.setState({ alert: true });
-    }
+    Promise.all([
+      this.checkBlacklist(teamName),
+      this.checkAvailability(teamName)
+    ])
+      .then(resp => {
+        if (resp[0].data.available && !resp[1].data.available) {
+          window.location = `https://${teamName}.${applicationHost}`;
+        } else {
+          this.setState({
+            showAlert: true
+          });
+        }
+      })
+      .catch(() => {
+        this.setState({ showAlert: true });
+      });
   };
 
   render() {
-    const { alert, teamName } = this.state;
+    const { showAlert, teamName } = this.state;
 
     return (
       <div>
-        {alert === true && (
+        {showAlert && (
           <Alert bsStyle="danger">
             We don't have that team URL in our system. If you'd like, we can
             help you <Link to="/find-your-team">find your team</Link>.
@@ -89,6 +85,7 @@ export default class TeamPicker extends Component {
                 required
                 autoFocus
                 type="text"
+                autoComplete="off"
                 placeholder="Subdomain"
                 value={teamName}
                 onChange={this.handleChange}
