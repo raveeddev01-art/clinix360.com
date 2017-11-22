@@ -33,3 +33,6 @@ config :stitch, Stitch.Analytics.Sync.RecurringSync,
   enabled: false
 
 config :stitch, async_tasks?: false
+
+config :stitch, Stitch.Analytics.DailyReports.Scheduler,
+  enabled: false

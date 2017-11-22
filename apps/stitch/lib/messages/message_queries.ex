@@ -251,6 +251,6 @@ defmodule Stitch.MessageQueries do
     Repo.one(query)
   end
 
-  defp yesterday(), do: Date.add(Date.utc_today(), -1)
+  defp yesterday, do: Date.add(Date.utc_today(), -1)
 
 end

@@ -19,3 +19,6 @@ config :stitch,
 
 config :stitch, Stitch.Analytics.Sync.RecurringSync,
   enabled: false
+
+config :stitch, Stitch.Analytics.DailyReports.Scheduler,
+  enabled: false
