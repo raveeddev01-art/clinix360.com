@@ -131,7 +131,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
 
     resources "/exports", ExportController, only: [:index, :create]
-    get "/exports/:id/download", ExportController, :download
 
     resources "/reports", ReportController, only: [:create]
   end
@@ -205,5 +204,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/admin/members", AdminController, :index
     get "/admin/billing", AdminController, :index
     get "/admin/analytics", AdminController, :index
+
+    get "/exports/:id/download", ExportController, :download
   end
 end

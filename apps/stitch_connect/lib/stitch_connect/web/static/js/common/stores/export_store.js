@@ -27,7 +27,7 @@ class ExportStore {
 
   @action
   downloadLink = id => {
-    return `/api/v1/exports/${id}/download?authenticationToken=${window.authenticationToken}`;
+    return `/exports/${id}/download`;
   };
 }
 
