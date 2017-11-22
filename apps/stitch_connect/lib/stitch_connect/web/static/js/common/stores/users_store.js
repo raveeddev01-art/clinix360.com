@@ -6,8 +6,7 @@
 
 import { observable, computed, action } from "mobx";
 
-import history from "../../util/history";
-import { getRoomNavLink } from "../../lib/room";
+import history from "../../lib/history";
 
 class UsersStore {
   @observable users = [];
@@ -145,23 +144,18 @@ class UsersStore {
       userStore.onUserInfo(user);
     }
 
-    // if username of the user in multi-dm or single-dm current user is on, is changed,
+    // if username of the user in multi_dm or dm current user is on, is changed,
     // it should redirect
-    const { groupStore } = this.rootStore;
+    const { groupStore, groupsStore } = this.rootStore;
 
     if (
-      groupStore.groupType === "single-dm" ||
-      groupStore.groupType === "multi-dm"
+      groupStore.group.type === "dm" ||
+      groupStore.group.type === "multi_dm"
     ) {
-      const changedUser = groupStore.users.find(u => u.id === user.id);
+      const changedUser = groupStore.group.users.find(u => u.id === user.id);
       if (changedUser.username !== user.username) {
         changedUser.username = user.username;
-        history.replace(
-          getRoomNavLink({
-            type: groupStore.groupType === "single-dm" ? "dm" : "multi-dm",
-            users: groupStore.users
-          })
-        );
+        history.replace(groupsStore.getGroupUrl(groupStore.group.id));
       }
     }
   };

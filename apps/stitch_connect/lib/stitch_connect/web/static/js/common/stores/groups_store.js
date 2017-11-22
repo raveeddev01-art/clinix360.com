@@ -7,9 +7,16 @@
 import { observable, computed, action } from "mobx";
 import orderBy from "lodash/orderBy";
 
+import {
+  getGroupUserIdsThatHasCurrentUser,
+  getSlugOfDMGroupByUsers,
+  getGroupUrl
+} from "lib/utils";
+
 class GroupsStore {
   @observable groups = [];
   @observable groupCursors = {}; // { group_id: message_id }
+  @observable currentGroupId = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -21,6 +28,21 @@ class GroupsStore {
 
   getGroupById = id => this.groups.find(group => group.id === id);
 
+  getGroupBySlug = slug => this.groups.find(group => group.slug === slug);
+
+  getGroupUrl = id => {
+    return getGroupUrl(this.getGroupById(id));
+  };
+
+  @computed
+  get currentGroup() {
+    if (!this.currentGroupId) {
+      return null;
+    }
+
+    return this.getGroupById(this.currentGroupId);
+  }
+
   @computed
   get defaultGroup() {
     return this.groups.find(g => g.is_default);
@@ -28,13 +50,13 @@ class GroupsStore {
 
   @computed
   get favoriteGroups() {
-    return this.groups.filter(group => group.favorite);
+    return this.groups.filter(group => group.is_favorite);
   }
 
   @computed
   get normalGroups() {
     return this.groups.filter(
-      group => group.type === "regular" && !group.favorite
+      group => group.type === "regular" && !group.is_favorite
     );
   }
 
@@ -69,6 +91,20 @@ class GroupsStore {
   // /////// //
 
   @action
+  updateGroupData = (id, data) => {
+    const group = this.getGroupById(id);
+
+    if (group) {
+      Object.assign(group, data);
+    }
+  };
+
+  @action
+  updateGroupCursor = (id, cursor) => {
+    this.groupCursors[id] = cursor;
+  };
+
+  @action
   loadGroups = () => {
     const { sidemenuStore } = this.rootStore;
 
@@ -79,58 +115,156 @@ class GroupsStore {
   };
 
   @action
+  openGroup = slug => {
+    const group = this.getGroupBySlug(slug);
+
+    if (group && group.id !== this.currentGroupId) {
+      this.currentGroupId = group.id;
+      this.onOpenedGroup();
+    }
+  };
+
+  @action
+  openDMGroup = usernames => {
+    const { usersStore } = this.rootStore;
+    const users = usernames.map(username =>
+      usersStore.users.find(u => u.username === username)
+    );
+    const userIds = getGroupUserIdsThatHasCurrentUser(users);
+    const slug = getSlugOfDMGroupByUsers(userIds);
+
+    this.openGroup(slug);
+  };
+
+  @action
   hideGroup = id => {
-    return put(`/api/v1/groups/${id}/hide`);
+    return put(`/api/v1/groups/${id}/hide`).then(() => {
+      this.updateGroupData(id, { is_hidden: true });
+    });
   };
 
   @action
-  updateGroupData = (id, data) => {
-    const group = this.getGroupById(id);
-
-    if (group) {
-      Object.assign(group, data);
-    }
+  unhideGroup = id => {
+    return put(`/api/v1/groups/${id}/unhide`).then(() => {
+      this.updateGroupData(id, { is_hidden: false });
+    });
   };
 
   @action
-  updateGroupCursor = (groupId, cursor) => {
-    this.groupCursors[groupId] = cursor;
+  createGroup = params => {
+    return post("/api/v1/groups", {
+      body: params
+    }).then(resp => {
+      const { data } = resp;
+
+      return data.slug;
+    });
   };
 
   @action
-  onNewGroup = newGroup => {
-    this.groups.push(newGroup);
+  createDMGroup = userIds => {
+    const body = { user_ids: userIds };
+
+    return userIds.length > 2
+      ? post(`/api/v1/groups/multi_dm`, {
+          body
+        })
+      : post(`/api/v1/groups/dm`, { body });
   };
 
   @action
-  onRenameGroup = params => {
-    const data = {
-      slug: params.group_slug,
-      name: params.group_name
-    };
-
-    this.updateGroupData(params.group_id, data);
-
-    if (this.rootStore.groupStore.id === params.group_id) {
-      history.push(`/rooms/${params.group_slug}`);
-    }
+  joinGroup = id => {
+    return post(`/api/v1/groups/${id}/join`).then(() => {
+      this.updateGroupData(id, { joined: true });
+    });
   };
 
   @action
-  onJoinedGroup = joinedGroup => {
-    const group = this.getGroupById(joinedGroup.id);
+  leaveGroup = id => {
+    return post(`/api/v1/groups/${id}/leave`).then(resp => {
+      this.updateGroupData(id, { joined: false });
 
-    if (group) {
-      group.joined = true;
-    }
+      return resp.data.redirect_to;
+    });
   };
 
   @action
-  onLeftGroup = ({ group_id: groupId }) => {
-    const group = this.getGroupById(groupId);
+  renameGroup = (id, name) => {
+    return patch(`/api/v1/groups/${id}/rename`, {
+      body: { name }
+    });
+  };
 
-    if (group) {
-      group.joined = false;
+  @action
+  inviteUsersToGroup = (id, userIds) => {
+    return post(`/api/v1/groups/${id}/invite`, {
+      body: {
+        user_ids: userIds
+      }
+    });
+  };
+
+  @action
+  setPublicOfGroup = (id, value) => {
+    return post(`/api/v1/groups/${id}/toggle-public`, {
+      body: { public: value }
+    }).then(() => {
+      this.updateGroupData(id, { public: value });
+    });
+  };
+
+  @action
+  toggleFavorite = id => {
+    return post(
+      `/api/v1/groups/${id}/toggle-favorite`
+    ).then(({ is_favorite }) => {
+      this.updateGroupData(id, { is_favorite });
+    });
+  };
+
+  /* Event handlers */
+
+  @action
+  onOpenedGroup = () => {
+    const {
+      messageStore,
+      pinnedMessageStore,
+      groupPresenceStore
+    } = this.rootStore;
+
+    messageStore.reset();
+    messageStore.joinGroupChannel();
+
+    pinnedMessageStore.reset();
+    groupPresenceStore.subscribeToGroupChannel();
+  };
+
+  @action
+  onHidGroup = ({ group_id: id, is_hidden }) => {
+    this.updateGroupData(id, { is_hidden });
+  };
+
+  @action
+  onCreatedGroup = group => {
+    this.groups.push(group);
+  };
+
+  @action
+  onJoinedGroup = ({ group_id: id }) => {
+    this.updateGroupData(id, { joined: true });
+  };
+
+  @action
+  onLeftGroup = ({ group_id: id }) => {
+    this.updateGroupData(id, { joined: false });
+  };
+
+  @action
+  onRenamedGroup = ({ group_id: id, group_slug: slug, group_name: name }) => {
+    this.updateGroupData(id, { slug, name });
+
+    if (id === this.currentGroupId) {
+      history.push(`/rooms/${slug}`);
     }
   };
 }

@@ -6,19 +6,19 @@ import { inject, observer } from "mobx-react";
 class RoomDetails extends Component {
   render() {
     const { groupStore } = this.props;
-    const isNotDM = groupStore.groupType === "group";
+    const isNotDM = groupStore.group.type === "regular";
 
     return (
       <div className="collapse-content room-details">
         <h5>Name</h5>
         <p>
-          {groupStore.name}
-          {isNotDM && <code>#{groupStore.slug}</code>}
+          {groupStore.group.name}
+          {isNotDM && <code>#{groupStore.group.slug}</code>}
         </p>
 
         <h5>Type</h5>
         <p>
-          {groupStore.public === true ? (
+          {groupStore.group.public === true ? (
             <span>Public Room</span>
           ) : (
             <span>Private Room</span>

@@ -25,6 +25,7 @@
   },
   "rules": {
     "arrow-body-style": "off",
+    "camelcase": "off",
     "constructor-super": "warn",
     "class-methods-use-this": "off",
     "import/no-extraneous-dependencies": "off",

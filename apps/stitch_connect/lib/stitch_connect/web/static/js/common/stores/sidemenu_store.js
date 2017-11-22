@@ -8,7 +8,8 @@ import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
 
-import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../util/constants";
+import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../lib/constants";
+import history from "../../lib/history";
 
 class SidemenuStore {
   @observable loading = false; // IF True, shows loading page
@@ -115,7 +116,7 @@ class SidemenuStore {
     const { groupStore, groupsStore } = this.rootStore;
 
     // If the message is for the current group, ignore
-    if (newMessage.group_id === groupStore.id) {
+    if (newMessage.group_id === groupStore.group.id) {
       return;
     }
 
@@ -193,7 +194,9 @@ class SidemenuStore {
   isCurrentlyInRoom(groupId) {
     const { groupStore } = this.rootStore;
 
-    return groupId === groupStore.id && !this.locked && document.hasFocus();
+    return (
+      groupId === groupStore.group.id && !this.locked && document.hasFocus()
+    );
   }
 
   /**
@@ -315,23 +318,7 @@ class SidemenuStore {
 
   jumpToMessage(message) {
     const { groupsStore } = this.rootStore;
-    const group = groupsStore.getGroupById(message.group_id);
-    let url;
-
-    if (group.type === "regular") {
-      // If normal group
-      url = `/rooms/${group.slug}`;
-    } else if (group.type === "multi_dm") {
-      // If multi direct messaging
-      const multiMessagingSlug = group.users
-        .map(user => user.username)
-        .join(",");
-      url = `/direct/${multiMessagingSlug}`;
-    } else {
-      // If single direct messaging
-      const recipient = group.users.find(user => user.id !== currentUser.id);
-      url = `/direct/${recipient.username}`;
-    }
+    const url = groupsStore.getGroupUrl(message.group_id);
 
     history.push(url);
   }

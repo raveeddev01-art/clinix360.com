@@ -1,29 +1,31 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import cx from "classnames";
+import classNames from "classnames";
 
 @inject("groupStore", "presenceStore")
 @observer
 export default class GroupName extends Component {
   render() {
     const { groupStore, presenceStore } = this.props;
-    const { groupType } = groupStore;
-    const iconClassName = cx("fa", {
-      "fa-comments": groupType === "group" && groupStore.public,
-      "fa-lock": groupType === "group" && !groupStore.public,
-      "fa-link": groupType === "multi-dm",
-      "fa-circle":
-        groupType === "single-dm" &&
-        presenceStore.isOnline(groupStore.users[0] && groupStore.users[0].id),
-      "fa-circle-o":
-        groupType === "single-dm" &&
-        !presenceStore.isOnline(groupStore.users[0] && groupStore.users[0].id)
-    });
+    const { type, users } = groupStore;
+    let iconName;
+
+    if (type === "regular") {
+      iconName = groupStore.group.public ? "fa-comments" : "fa-locked";
+    } else if (type === "dm") {
+      iconName =
+        users.length > 0 && presenceStore.isOnline(users[0].id)
+          ? "fa-circle"
+          : "fa-circle-o";
+    } else if (type === "multi_dm") {
+      iconName = "fa-link";
+    }
+
     return (
       <h4>
         <span>
-          <i className={iconClassName} />
-          {` ${groupStore.name}`}
+          <i className={classNames("fa", iconName)} />
+          {` ${groupStore.group.name}`}
         </span>
       </h4>
     );

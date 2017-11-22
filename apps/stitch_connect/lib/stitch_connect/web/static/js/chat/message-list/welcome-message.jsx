@@ -7,14 +7,14 @@ import { inject, observer } from "mobx-react";
 @observer
 class WelcomeMessage extends Component {
   getIcon() {
-    const { groupStore: group } = this.props;
-    if (group.groupType !== "group") {
+    const { groupStore } = this.props;
+    if (groupStore.group.type !== "regular") {
       return null;
     }
 
     const className = cx("fa", {
-      "fa-comments": group.public,
-      "fa-lock": !group.public
+      "fa-comments": groupStore.group.public,
+      "fa-lock": !groupStore.group.public
     });
 
     return <i className={className} />;
@@ -41,7 +41,7 @@ class WelcomeMessage extends Component {
   }
 
   renderForRoom() {
-    const { groupStore: group } = this.props;
+    const { groupStore: { group } } = this.props;
 
     return (
       <div className="welcome-message__text">
@@ -50,22 +50,22 @@ class WelcomeMessage extends Component {
           {this.getIcon()}
           {` ${group.name}`}
         </span>
-        {group.createdBy ? " created by" : " created"}
-        {group.createdBy && (
+        {group.creator_user_id ? " created by" : " created"}
+        {group.creator_user_id && (
           <span className="welcome-message__name">
-            {this.getUserFullName(group.createdBy)}
+            {this.getUserFullName(group.creator_user_id)}
           </span>
         )}
-        on {this.getFormattedTime(group.createdAt)}.
+        on {this.getFormattedTime(group.inserted_at)}.
       </div>
     );
   }
 
   renderForDM() {
-    const { groupStore: group } = this.props;
+    const { groupStore } = this.props;
     let userNameText = "";
 
-    if (group.users.length === 1) {
+    if (groupStore.group.users.length === 1) {
       return (
         <div className="welcome-message__text">
           This is a private place for you to work, upload personal files, track
@@ -74,10 +74,11 @@ class WelcomeMessage extends Component {
       );
     }
 
-    group.users.forEach((u, index) => {
+    groupStore.group.users.forEach((u, index) => {
       const name = this.getUserFullName(u);
       if (index === 0) userNameText += name;
-      else if (index === group.users.length - 1) userNameText += ` and ${name}`;
+      else if (index === groupStore.group.users.length - 1)
+        userNameText += ` and ${name}`;
       else userNameText += `, ${name}`;
     });
 
@@ -90,7 +91,7 @@ class WelcomeMessage extends Component {
   }
 
   render() {
-    const { groupStore: group } = this.props;
+    const { groupStore } = this.props;
 
     return (
       <div className="welcome-message">
@@ -99,11 +100,11 @@ class WelcomeMessage extends Component {
             <h3>
               <span>
                 {this.getIcon()}
-                {` ${group.name}`}
+                {` ${groupStore.group.name}`}
               </span>
             </h3>
           </div>
-          {group.groupType === "group"
+          {groupStore.group.type === "regular"
             ? this.renderForRoom()
             : this.renderForDM()}
         </div>

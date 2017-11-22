@@ -156,8 +156,8 @@ defmodule Stitch.GroupQueriesTest do
 
       Group.toggle_favorite(group1.id, user.id)
 
-      assert {:ok, %{favorite: true}} = GroupQueries.find_by_slug("a", user)
-      assert {:ok, %{favorite: false}} = GroupQueries.find_by_slug("b", user)
+      assert {:ok, %{is_favorite: true}} = GroupQueries.find_by_slug("a", user)
+      assert {:ok, %{is_favorite: false}} = GroupQueries.find_by_slug("b", user)
     end
 
     test "has correct unread_messages_count value set" do

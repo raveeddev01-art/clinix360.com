@@ -4,7 +4,7 @@ import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Dropzone from "react-dropzone";
 
 import Sidemenu from "../sidemenu/sidemenu";
-import Chat from "./chat";
+import Chat from "./Chat";
 import BrowserNotificationAlert from "./browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
 import Switcher from "../common/components/switcher/index";
@@ -74,13 +74,9 @@ class ChatApp extends Component {
           <Switch>
             <Route path={`/rooms/:slug`} component={Chat} />
             <Route path={`/direct/:usernames`} component={Chat} />
-            {defaultGroup ? (
-              <Route
-                component={() => (
-                  <Redirect to={`/rooms/${defaultGroup.slug}`} />
-                )}
-              />
-            ) : null}
+            {defaultGroup && (
+              <Redirect from="*" to={`/rooms/${defaultGroup.slug}`} />
+            )}
           </Switch>
         </div>
       </Dropzone>

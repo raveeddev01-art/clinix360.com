@@ -68,8 +68,7 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_group_join(group, user_id) do
-    json = GroupView.group_json(group, user_id)
-    @endpoint.broadcast("events:#{user_id}", "joined_group", json)
+    @endpoint.broadcast("events:#{user_id}", "joined_group", %{group_id: group.id})
   end
 
   def broadcast_group_creation(group) do
@@ -77,7 +76,7 @@ defmodule StitchConnect.Web.EventsChannel do
 
     for id <- ids do
       json = GroupView.group_json(group, id)
-      @endpoint.broadcast("events:#{id}", "new_group", json)
+      @endpoint.broadcast("events:#{id}", "created_group", json)
     end
 
     if group.public do
@@ -88,7 +87,7 @@ defmodule StitchConnect.Web.EventsChannel do
 
       for id <- remaining_user_ids do
         json = group |> Map.put(:joined, false) |> GroupView.group_json(id)
-        @endpoint.broadcast("events:#{id}", "new_group", json)
+        @endpoint.broadcast("events:#{id}", "created_group", json)
       end
     end
   end
@@ -103,7 +102,7 @@ defmodule StitchConnect.Web.EventsChannel do
     }
 
     for id <- ids do
-      @endpoint.broadcast("events:#{id}", "group_renamed", json)
+      @endpoint.broadcast("events:#{id}", "renamed_group", json)
     end
 
     if group.public do
@@ -114,13 +113,13 @@ defmodule StitchConnect.Web.EventsChannel do
         |> Enum.reject(& &1 in ids)
 
       for id <- remaining_user_ids do
-        @endpoint.broadcast("events:#{id}", "group_renamed", json)
+        @endpoint.broadcast("events:#{id}", "renamed_group", json)
       end
     end
   end
 
   def broadcast_group_hidden(%User{} = user, %Group{} = group, is_hidden) do
-    @endpoint.broadcast("events:#{user.id}", "group_hidden", %{group_id: group.id, is_hidden: is_hidden})
+    @endpoint.broadcast("events:#{user.id}", "hid_group", %{group_id: group.id, is_hidden: is_hidden})
   end
 
   def broadcast_group_favorite(%User{} = user, group_id, is_favorite) do

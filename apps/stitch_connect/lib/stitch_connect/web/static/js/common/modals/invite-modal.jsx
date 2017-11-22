@@ -13,7 +13,7 @@ import Button from "react-bootstrap/lib/Button";
 import _ from "lodash";
 
 import isEmail from "validator/lib/isEmail";
-import { extractEmails } from "../../util/utils";
+import { extractEmails } from "../../lib/utils";
 
 class InviteModal extends Component {
   constructor(props) {

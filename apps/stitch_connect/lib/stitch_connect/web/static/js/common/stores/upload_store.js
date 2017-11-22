@@ -28,7 +28,7 @@ class UploadStore {
     this.title = fileName || file.name;
     this.description = "";
     this.isUploadModalVisible = true;
-    this.groupId = this.rootStore.groupStore.id;
+    this.groupId = this.rootStore.groupStore.group.id;
   };
 
   @action

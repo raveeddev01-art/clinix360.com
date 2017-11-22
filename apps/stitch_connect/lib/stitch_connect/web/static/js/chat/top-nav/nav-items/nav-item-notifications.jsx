@@ -54,7 +54,7 @@ export default class NavItemNotifications extends Component {
       >
         <Modal.Header>
           <Modal.Title>
-            Notification Preferences: {this.props.groupStore.name}
+            Notification Preferences: {this.props.groupStore.group.name}
           </Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />

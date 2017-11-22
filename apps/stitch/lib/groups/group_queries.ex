@@ -34,7 +34,7 @@ defmodule Stitch.GroupQueries do
     |> select([g, gu], %{
       group: g,
       joined: not is_nil(gu.id),
-      favorite: not is_nil(gu.id) and gu.is_favorite,
+      is_favorite: not is_nil(gu.id) and gu.is_favorite,
       is_hidden: not is_nil(gu.id) and gu.is_hidden,
       unread_messages_count: gu.unread_messages_count,
       mentions_count: gu.mentions_count,

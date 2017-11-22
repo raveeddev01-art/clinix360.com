@@ -62,7 +62,9 @@ class MenutionMenu extends Component {
   getUsers = () => {
     const { groupStore, usersStore, filter } = this.props;
 
-    const users = groupStore.public ? usersStore.users : groupStore.users;
+    const users = groupStore.group.public
+      ? usersStore.users
+      : groupStore.group.users;
     return users
       .filter(
         user =>

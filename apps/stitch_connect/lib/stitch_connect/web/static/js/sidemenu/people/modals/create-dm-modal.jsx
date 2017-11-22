@@ -1,14 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import cx from "classnames";
-import _ from "lodash";
 import { withRouter } from "react-router-dom";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import Select from "react-select";
+import cx from "classnames";
 
-@inject("usersStore", "presenceStore")
+import {
+  getGroupUserIdsThatHasCurrentUser,
+  getSlugOfDMGroupByUsers,
+  getGroupUrl
+} from "lib/utils";
+
+@inject("usersStore", "presenceStore", "groupsStore")
 @observer
 class CreateDMModal extends Component {
   constructor(props) {
@@ -36,22 +41,45 @@ class CreateDMModal extends Component {
 
   canCreateDM = () => {
     const { members } = this.state;
-    return members && members.length !== 0;
+
+    return members && members.length > 0;
   };
 
-  startDM = () => {
-    const { history, toggle } = this.props;
-    if (!this.state.members.length) {
-      notify.show(`Choose people to start conversation with`, "error");
-      return;
+  createDM = () => {
+    const { groupsStore, history, toggle } = this.props;
+    const { members } = this.state;
+
+    // DM group open/create steps
+    // 1. Calculate slug from members selected
+    // 2. Find if dm group already exists
+    //  2.1. If exists,
+    //   2.1.1. If hidden, unhide
+    //   2.1.2. If not hidden, do nothing
+    //  2.2. If not, create
+    // 3. Navigate to the dm created
+
+    const userIds = getGroupUserIdsThatHasCurrentUser(members);
+    const slug = getSlugOfDMGroupByUsers(userIds);
+    const url = getGroupUrl({ users: members, type: "multi_dm" });
+    const group = groupsStore.getGroupBySlug(slug);
+
+    let promise;
+
+    if (!group) {
+      // Create
+      promise = groupsStore.createDMGroup(userIds);
+    } else if (group.is_hidden) {
+      // Unhide
+      promise = groupsStore.unhideGroup(group.id);
+    } else {
+      // Do nothing
+      promise = Promise.resolve();
     }
 
-    const members = this.state.members;
-    const usernames = _.sortBy(members, "id")
-      .map(user => user.username)
-      .join(",");
+    promise.then(() => {
+      history.push(url);
+    });
 
-    history.push(`/direct/${usernames}`);
     toggle();
   };
 
@@ -77,7 +105,7 @@ class CreateDMModal extends Component {
 
   render() {
     const { searchFilter, members } = this.state;
-    const { usersStore } = this.props;
+    const { usersStore, presenceStore } = this.props;
     const users = usersStore.users.filter(u => {
       if (u.id === currentUser.id && members.length > 0) return false;
       return (
@@ -123,11 +151,12 @@ class CreateDMModal extends Component {
 
           <div className="team-list">
             {users.map(user => {
-              const online = this.props.presenceStore.isOnline(user.id);
+              const online = presenceStore.isOnline(user.id);
               const iconClasName = cx("fa", {
                 "fa-circle": online,
                 "fa-circle-o": !online
               });
+
               return (
                 <div
                   role="link"
@@ -153,7 +182,7 @@ class CreateDMModal extends Component {
           <Button
             bsSize="large"
             bsStyle="primary"
-            onClick={this.startDM}
+            onClick={this.createDM}
             disabled={!this.canCreateDM()}
           >
             Start Conversation

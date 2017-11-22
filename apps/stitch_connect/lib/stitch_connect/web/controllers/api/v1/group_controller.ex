@@ -77,7 +77,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         group = group
         |> Map.put_new(:joined, true)
         |> Map.put_new(:unread_messages_count, 0)
-        |> Map.put_new(:favorite, false)
+        |> Map.put_new(:is_favorite, false)
         |> Map.put_new(:is_hidden, false)
         |> Map.put_new(:last_read_at, nil)
         |> Map.put_new(:mentions_count, 0)
@@ -131,7 +131,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
           group
           |> Map.put_new(:joined, true)
           |> Map.put_new(:unread_messages_count, 0)
-          |> Map.put_new(:favorite, false)
+          |> Map.put_new(:is_favorite, false)
           |> Map.put_new(:is_hidden, false)
           |> Map.put_new(:last_read_at, nil)
           |> Map.put_new(:mentions_count, 0)
@@ -207,7 +207,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       {:ok, %{group_id: group_id, is_favorite: is_favorite}} ->
         EventsChannel.broadcast_group_favorite(conn.assigns.current_user, group_id, is_favorite)
         conn
-        |> json(%{group_id: group_id, favorited: is_favorite})
+        |> json(%{group_id: group_id, is_favorite: is_favorite})
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)
