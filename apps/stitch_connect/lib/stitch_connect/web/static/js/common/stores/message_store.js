@@ -160,6 +160,8 @@ class MessageStore {
     this.textInEdit = "";
   }
 
+  getMessageById = id => this.messages.find(m => m.id === id);
+
   getMessageByIndex(index) {
     if (index < 0 || index > this.messages.length - 1) {
       return null;
@@ -167,6 +169,15 @@ class MessageStore {
 
     return this.messages[index];
   }
+
+  @action
+  updateMessageData = (id, data) => {
+    const message = this.getMessageById(id);
+
+    if (message) {
+      Object.assign(message, data);
+    }
+  };
 
   @action
   updateGroupCursor(cursor) {
