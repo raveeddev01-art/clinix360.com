@@ -22,16 +22,4 @@ defmodule StitchConnect.Web.Api.V1.ExportController do
     end
   end
 
-  def download(conn, %{"id" => id}) do
-    team = conn.assigns.team
-    if export = Exports.get_export([id: id, team_id: team.id]) do
-      presigned_url = Exports.presigned_url(export.zip_url)
-      redirect(conn, external: presigned_url)
-    else
-      conn
-      |> put_status(:not_found)
-      |> render(ErrorView, :"404")
-    end
-  end
-
 end
