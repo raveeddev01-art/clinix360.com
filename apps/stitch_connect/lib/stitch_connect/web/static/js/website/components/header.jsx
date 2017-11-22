@@ -7,7 +7,6 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 class Header extends Component {
   render() {
     const logoLink = !window.electronApp ? `https://${applicationHost}` : "#";
-    const { hideAuthButtons } = this.props;
 
     return (
       <Navbar id="header" inverse collapseOnSelect>
@@ -98,37 +97,25 @@ class Header extends Component {
                 </Dropdown>
               </li>
             )}
-            {!hideAuthButtons && (
-              <li role="presentation">
-                <a href="https://teamstitch.com/signin" className="nav-link">
-                  Sign In
-                </a>
-              </li>
-            )}
+            <li role="presentation">
+              <a href="https://teamstitch.com/signin" className="nav-link">
+                Sign In
+              </a>
+            </li>
 
-            {!hideAuthButtons && (
-              <li role="presentation">
-                <a
-                  href="https://teamstitch.com/signup/email"
-                  className="nav-link btn-outline"
-                >
-                  Create Team
-                </a>
-              </li>
-            )}
+            <li role="presentation">
+              <a
+                href="https://teamstitch.com/signup/email"
+                className="nav-link btn-outline"
+              >
+                Create Team
+              </a>
+            </li>
           </ul>
         </Navbar.Collapse>
       </Navbar>
     );
   }
 }
-
-Header.propTypes = {
-  hideAuthButtons: PropTypes.bool.isRequired
-};
-
-Header.defaultProps = {
-  hideAuthButtons: false
-};
 
 export default Header;
