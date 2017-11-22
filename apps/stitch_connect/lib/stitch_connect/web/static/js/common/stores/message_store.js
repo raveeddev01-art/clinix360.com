@@ -817,6 +817,21 @@ class MessageStore {
   };
 
   @action
+  onStarredMessage = message => {
+    const { globalStarredMessageStore } = this.rootStore;
+
+    this.updateMessageData(message.id, {
+      starred: message.starred
+    });
+
+    if (message.starred) {
+      globalStarredMessageStore.add(message);
+    } else {
+      globalStarredMessageStore.remove(message.id);
+    }
+  };
+
+  @action
   onPinnedMessage = message => {
     const { pinnedMessageStore } = this.rootStore;
 
@@ -931,27 +946,16 @@ class MessageStore {
 
   @action
   toggleStar(id) {
-    const message = this.messages.find(m => m.id === id);
-    const globalStarredMessageStore = this.rootStore.globalStarredMessageStore;
+    const message = this.getMessageById(id);
 
     if (message) {
-      window.post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
-        const update = resp.data;
-
-        message.starred = update.starred;
-
-        if (message.starred) {
-          globalStarredMessageStore.unshiftStarredMessage(message);
-        } else {
-          globalStarredMessageStore.removeStarredMessage(message);
-        }
-      });
+      post(`/api/v1/messages/${id}/toggle-star`);
     }
   }
 
   @action
   togglePin(id) {
-    const message = this.messages.find(m => m.id === id);
+    const message = this.getMessageById(id);
 
     if (message) {
       post(`/api/v1/messages/${id}/toggle-pin`);

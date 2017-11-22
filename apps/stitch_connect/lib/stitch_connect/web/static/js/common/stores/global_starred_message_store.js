@@ -17,15 +17,17 @@ class GlobalStarredMessageStore {
   };
 
   @action
-  unshiftStarredMessage = message => {
+  add = message => {
     this.starredMessages.unshift(message);
   };
 
   @action
-  removeStarredMessage = starredMessage => {
-    this.starredMessages = this.starredMessages.filter(
-      m => m.id !== starredMessage.id
-    );
+  remove = id => {
+    const index = this.starredMessages.findIndex(m => m.id === id);
+
+    if (index > -1) {
+      this.starredMessages.splice(index, 1);
+    }
   };
 }
 
