@@ -1,6 +1,6 @@
 /**
  * Sidemenu store
- * 
+ *
  * This is a mobx store that keeps track of data related to sidemenu and global state.
  */
 
@@ -291,10 +291,11 @@ class SidemenuStore {
     );
     const group = groupsStore.getGroupById(newMessage.group_id);
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+    const isDirect = group.type === "dm" || group.type === "multi_dm";
 
     if (
       desktopNotification === "everything" ||
-      (desktopNotification === "mentions" && isMention)
+      (desktopNotification === "mentions" && (isMention || isDirect))
     ) {
       const message = isMention
         ? "mentioned you"

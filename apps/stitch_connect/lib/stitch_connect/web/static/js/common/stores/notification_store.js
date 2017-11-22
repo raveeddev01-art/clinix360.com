@@ -19,7 +19,7 @@ class NotificationStore {
 
   @action
   loadPreferences = () => {
-    get("/api/v1/users/notification-preference").then(response => {
+    return get("/api/v1/users/notification-preference").then(response => {
       this.groupPrefs = response.data.group_preferences;
       this.desktopPref = response.data.desktop_notification_preference;
       this.emailPref = response.data.email_notification_preference;
