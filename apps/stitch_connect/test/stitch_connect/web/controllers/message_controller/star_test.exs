@@ -16,7 +16,7 @@ defmodule StitchConnect.Web.MessageController.StarTest do
       |> with_api_user(user)
 
     {:ok, _socket} = connect_socket(%{user1: user})
-    @endpoint.subscribe("events:#{user.id}")
+    @endpoint.subscribe("groups:#{group.slug}")
 
     {:ok, conn: conn, team: team, user: user, group: group, message: message}
   end
@@ -29,7 +29,7 @@ defmodule StitchConnect.Web.MessageController.StarTest do
 
     assert json["starred"] == true
 
-    assert_broadcast "message_starred", %{id: message_id, starred: true}
+    assert_broadcast "starred_message", %{id: message_id, starred: true}
     assert message_id == message.id
   end
 
@@ -43,7 +43,7 @@ defmodule StitchConnect.Web.MessageController.StarTest do
 
     assert json["starred"] == false
 
-    assert_broadcast "message_starred", %{id: message_id, starred: false}
+    assert_broadcast "starred_message", %{id: message_id, starred: false}
     assert message_id == message.id
   end
 end
