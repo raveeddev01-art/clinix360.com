@@ -59,13 +59,6 @@ defmodule StitchConnect.Web.EventsChannel do
     end
   end
 
-  def broadcast_msg_starred(message, user) do
-    @endpoint.broadcast("events:#{user.id}", "message_starred", %{
-      id: message.id,
-      starred: message.starred,
-    })
-  end
-
   def broadcast_group_join(group, user_id) do
     @endpoint.broadcast("events:#{user_id}", "joined_group", %{group_id: group.id})
   end

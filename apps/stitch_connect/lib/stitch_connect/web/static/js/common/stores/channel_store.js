@@ -91,7 +91,11 @@ class ChannelStore {
   }
 
   joinGroupChannel(options = {}) {
+    const { messageStore } = this.rootStore;
     const joined = this.join(this.groupChannelTopic, options);
+
+    this.groupChannel.on("starred_message", messageStore.onStarredMessage);
+    this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
 
     return joined;
   }

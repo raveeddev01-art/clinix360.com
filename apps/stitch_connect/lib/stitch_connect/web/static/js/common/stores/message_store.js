@@ -160,6 +160,8 @@ class MessageStore {
     this.textInEdit = "";
   }
 
+  getMessageById = id => this.messages.find(m => m.id === id);
+
   getMessageByIndex(index) {
     if (index < 0 || index > this.messages.length - 1) {
       return null;
@@ -167,6 +169,15 @@ class MessageStore {
 
     return this.messages[index];
   }
+
+  @action
+  updateMessageData = (id, data) => {
+    const message = this.getMessageById(id);
+
+    if (message) {
+      Object.assign(message, data);
+    }
+  };
 
   @action
   updateGroupCursor(cursor) {
@@ -806,6 +817,38 @@ class MessageStore {
   };
 
   @action
+  onStarredMessage = message => {
+    const { globalStarredMessageStore } = this.rootStore;
+
+    this.updateMessageData(message.id, {
+      starred: message.starred
+    });
+
+    if (message.starred) {
+      globalStarredMessageStore.add(message);
+    } else {
+      globalStarredMessageStore.remove(message.id);
+    }
+  };
+
+  @action
+  onPinnedMessage = message => {
+    const { pinnedMessageStore } = this.rootStore;
+
+    this.updateMessageData(message.id, {
+      pinned: message.pinned,
+      pinned_at: message.pinned_at,
+      pinned_by: message.pinned_by
+    });
+
+    if (message.pinned) {
+      pinnedMessageStore.add(message);
+    } else {
+      pinnedMessageStore.remove(message.id);
+    }
+  };
+
+  @action
   onJoinGroupChannel = data => {
     this.messages = data.messages;
 
@@ -903,44 +946,19 @@ class MessageStore {
 
   @action
   toggleStar(id) {
-    const message = this.messages.find(m => m.id === id);
-    const globalStarredMessageStore = this.rootStore.globalStarredMessageStore;
+    const message = this.getMessageById(id);
 
     if (message) {
-      window.post(`/api/v1/messages/${id}/toggle-star`).then(resp => {
-        const update = resp.data;
-
-        message.starred = update.starred;
-
-        if (message.starred) {
-          globalStarredMessageStore.unshiftStarredMessage(message);
-        } else {
-          globalStarredMessageStore.removeStarredMessage(message);
-        }
-      });
+      post(`/api/v1/messages/${id}/toggle-star`);
     }
   }
 
   @action
   togglePin(id) {
-    const message = this.messages.find(m => m.id === id);
+    const message = this.getMessageById(id);
 
     if (message) {
-      post(`/api/v1/messages/${id}/toggle-pin`).then(resp => {
-        const pinnedMsg = resp.data;
-
-        message.pinned = pinnedMsg.pinned;
-        message.pinned_at = pinnedMsg.pinned_at;
-        message.pinned_by = pinnedMsg.pinned_by;
-
-        if (pinnedMsg.pinned) {
-          this.rootStore.pinnedMessageStore.messages.push(pinnedMsg);
-        } else {
-          this.rootStore.pinnedMessageStore.messages = this.rootStore.pinnedMessageStore.messages.filter(
-            m => m.id !== pinnedMsg.id
-          );
-        }
-      });
+      post(`/api/v1/messages/${id}/toggle-pin`);
     }
   }
 

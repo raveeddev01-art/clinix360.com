@@ -55,6 +55,20 @@ class PinnedMessageStore {
       this.skip = meta.skip + meta.limit;
     });
   }
+
+  @action
+  add(message) {
+    this.messages.push(message);
+  }
+
+  @action
+  remove(id) {
+    const index = this.messages.findIndex(m => m.id === id);
+
+    if (index > -1) {
+      this.messages.splice(index, 1);
+    }
+  }
 }
 
 export default PinnedMessageStore;
