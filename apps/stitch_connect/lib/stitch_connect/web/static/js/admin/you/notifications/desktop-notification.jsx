@@ -55,7 +55,6 @@ class DesktopNotification extends Component {
         onSave={this.onSave}
         onEdit={this.onToggleEdit}
       >
-        <HelpBlock className="m-b-20" />
         <div className="radio-group notifications">
           {NOTIFICATION_PREFERENCES.map(p => (
             <Radio
