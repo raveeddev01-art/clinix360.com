@@ -53,9 +53,11 @@ class ChannelNotifications extends Component {
 
     // When panel is open, load group preferences from the store
     if (val) {
-      this.setState({
-        groupPrefs: toJS(notificationStore.groupPrefs)
-      });
+      notificationStore.loadPreferences().then(() =>
+        this.setState({
+          groupPrefs: toJS(notificationStore.groupPrefs)
+        })
+      );
     }
   };
 
