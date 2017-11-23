@@ -7,7 +7,6 @@ defmodule StitchConnect.Web.Api.V1.FindYourTeamController do
       email
       |> FindYourTeam.create_or_get_token!
       |> FindYourTeam.email(StitchConnect.Web.Endpoint.url)
-      |> Stitch.Mailer.deliver_later
     end
 
     conn
