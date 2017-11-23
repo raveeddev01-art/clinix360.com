@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
 import Header from "../website/components/header";
