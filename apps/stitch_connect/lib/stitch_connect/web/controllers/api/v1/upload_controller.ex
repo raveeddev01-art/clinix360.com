@@ -24,6 +24,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
     attrs = %{
       key: filename,
       'Content-Type': mimetype,
+      'Content-Encoding': encoding,
       acl: "private",
       success_action_status: "201",
       action: "https://s3.amazonaws.com/#{System.get_env("S3_BUCKET_NAME")}",
@@ -32,11 +33,11 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
       signature: hmac_sha1(System.get_env("AWS_SECRET_ACCESS_KEY"), policy)
     }
 
-    if encoding do
-      Map.put(attrs, :'Content-Encoding', encoding)
-    else
-      attrs
-    end
+    # if encoding do
+    #   Map.put(attrs, :'Content-Encoding', encoding)
+    # else
+    #   attrs
+    # end
   end
 
   defp now_plus(minutes) do
@@ -63,6 +64,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
         %{acl: "private"},
         # You have to upload the mime type you said you would upload.
         ["starts-with", "$Content-Type", mimetype],
+        ["starts-with", "$Content-Encoding", encoding],
         %{"x-amz-server-side-encryption" => "AES256"},
         # You have to upload the file name you said you would upload.
         ["starts-with", "$key", key],
@@ -71,12 +73,12 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
       ]
     }
 
-    attrs =
-      if encoding do
-        Map.put(attrs, :'Content-Encoding', encoding)
-      else
-        attrs
-      end
+    # attrs =
+    #   if encoding do
+    #     Map.put(attrs, :'Content-Encoding', encoding)
+    #   else
+    #     attrs
+    #   end
 
     attrs
     |> Poison.encode!
