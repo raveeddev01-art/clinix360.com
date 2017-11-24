@@ -10,15 +10,17 @@ defmodule Stitch.Accounts.ProfileImage do
 
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
   def create_thumb(url) do
-    with {:ok, filename} <- get_filename(url),
+    with {:ok, fullname} <- get_fullname(url),
+        dirname = Path.dirname(fullname),
+        {:ok, filename} <- get_filename(url),
         dest = Path.join(System.tmp_dir!, filename),
-        {:ok, :done} <- download(filename, dest),
+        {:ok, :done} <- download(fullname, dest),
         %Mogrify.Image{path: preview_path} = image <- generate_preview(dest),
         %Mogrify.Image{height: preview_height, width: preview_width} <- Mogrify.verbose(image),
         {:ok, %{status_code: 200}} <- upload(preview_path),
         :ok <- File.rm(dest),
         :ok <- File.rm(preview_path) do
-      {:ok, "https://#{@s3.host}/#{@s3.bucket}/#{Path.basename(preview_path)}"}
+      {:ok, "https://#{@s3.host}/#{@s3.bucket}/#{Path.join(dirname, Path.basename(preview_path))}"}
     else error ->
       {:error, error}
     end
@@ -45,6 +47,12 @@ defmodule Stitch.Accounts.ProfileImage do
     |> open
     |> resize_to_limit("#{@thumb.width}x#{@thumb.height}")
     |> save
+  end
+
+  defp get_fullname(url) do
+    with %{path: path} <- URI.parse(url) do
+      {:ok, Path.relative_to(path, "/#{@s3.bucket}")}
+    end
   end
 
   defp get_filename(url) do
