@@ -68,23 +68,23 @@ class AvatarUploader extends Component {
     reader.readAsDataURL(imageFile);
   };
 
-  onUpload = () => {
-    const { size, onUpload } = this.props;
+  onCrop = () => {
+    const { size, onCrop } = this.props;
     const { pixelCrop, imgDataURL } = this.state;
     const img = new Image();
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-
     canvas.width = size;
     canvas.height = size;
 
     img.onload = () => {
+      const min = Math.min(img.width, img.height);
       ctx.drawImage(
         img,
-        pixelCrop.x,
-        pixelCrop.y,
-        pixelCrop.width,
-        pixelCrop.height,
+        pixelCrop.x || 0,
+        pixelCrop.y || 0,
+        pixelCrop.width || min,
+        pixelCrop.height || min,
         0,
         0,
         size,
@@ -93,7 +93,7 @@ class AvatarUploader extends Component {
 
       const canvasURL = canvas.toDataURL();
 
-      onUpload(canvasURL);
+      onCrop(canvasURL);
       this.setState({
         croppedURL: canvasURL,
         isCropping: false,
@@ -144,7 +144,7 @@ class AvatarUploader extends Component {
           />
         </div>
         <div className="avatar-uploader__cropper-actions">
-          <Button bsSize="xsmall" onClick={this.onUpload}>
+          <Button bsSize="xsmall" onClick={this.onCrop}>
             Use Crop
           </Button>
           <Button bsSize="xsmall" onClick={this.onCancelCrop}>
@@ -174,7 +174,7 @@ class AvatarUploader extends Component {
 }
 
 AvatarUploader.propTypes = {
-  onUpload: PropTypes.func.isRequired,
+  onCrop: PropTypes.func.isRequired,
   isUploading: PropTypes.bool.isRequired,
   onError: PropTypes.func.isRequired,
   url: PropTypes.string,
@@ -183,7 +183,7 @@ AvatarUploader.propTypes = {
 };
 
 AvatarUploader.defaultProps = {
-  onUpload: noop,
+  onCrop: noop,
   isUploading: false,
   onError: noop,
   url: "",
