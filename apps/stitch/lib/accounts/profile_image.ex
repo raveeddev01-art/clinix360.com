@@ -10,6 +10,7 @@ defmodule Stitch.Accounts.ProfileImage do
 
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
   def create_thumb(url) do
+    IO.inspect url
     with {:ok, fullname} <- get_fullname(url),
         dirname = Path.dirname(fullname),
         {:ok, filename} <- get_filename(url),
@@ -38,15 +39,18 @@ defmodule Stitch.Accounts.ProfileImage do
 
   @spec download(binary, binary) :: {:ok, :done} | {:error, term}
   def download(filename, dest) do
-    S3.download_file(@s3.bucket, filename, dest) |> ExAws.request
+    IO.inspect ["download", filename, dest]
+    S3.download_file(@s3.bucket, "/#{filename}", dest) |> ExAws.request
   end
 
   @spec generate_preview(binary) :: Mogrify.Image.t
   def generate_preview(origin) do
     origin
+    |> IO.inspect
     |> open
     |> resize_to_limit("#{@thumb.width}x#{@thumb.height}")
     |> save
+    |> IO.inspect
   end
 
   defp get_fullname(url) do
@@ -57,7 +61,7 @@ defmodule Stitch.Accounts.ProfileImage do
 
   defp get_filename(url) do
     with %{path: path} <- URI.parse(url) do
-      {:ok, Path.relative_to(path, "/#{@s3.bucket}")}
+      {:ok, Path.basename(path)}
     end
   end
 end
