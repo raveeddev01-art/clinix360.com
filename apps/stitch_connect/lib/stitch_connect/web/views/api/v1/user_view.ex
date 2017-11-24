@@ -54,6 +54,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       phone: user.phone_number,
       title: user.title,
       avatar: user.profile_image_url,
+      avatar_thumb: user.profile_image_thumb_url,
       onboarded: user.onboarded,
       disabled: user.disabled
     }
