@@ -79,6 +79,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/users/:id", UserController, :show
     put "/users/:id", UserController, :update
     put "/users/:id/update_password", UserController, :update_password
+    put "/users/:id/upload_profile_image", UserController, :upload_profile_image
     post "/users/search", UserController, :search
 
     get "/invitations", InvitationController, :index
