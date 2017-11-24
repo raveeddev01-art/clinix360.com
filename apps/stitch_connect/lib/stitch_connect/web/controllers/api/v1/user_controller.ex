@@ -175,8 +175,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def upload_profile_image(conn, %{"url" => url}) do
     case Stitch.Accounts.update_profile_image(conn.assigns.current_user, url) do
       {:ok, user} ->
-        conn
-        |> json(%{profile_image_url: user.profile_image_url, profile_image_thumb_url: user.profile_image_thumb_url})
+        conn |> render("show.json", user: user)
       {:error, error} ->
         conn
         |> put_status(:unprocessable_entity)
