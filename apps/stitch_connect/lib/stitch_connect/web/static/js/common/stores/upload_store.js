@@ -55,17 +55,13 @@ class UploadStore {
     return post("/api/v1/upload-signature", {
       body: {
         filename: key,
-        mimetype: type,
-        encoding: options.encoding
+        mimetype: type
       }
     }).then(resp => {
       const { data } = resp;
       const formData = new FormData();
       formData.append("AWSAccessKeyId", data.AWSAccessKeyId);
       formData.append("key", data.key);
-      if (data["Content-Encoding"]) {
-        formData.append("Content-Encoding", data["Content-Encoding"]);
-      }
       formData.append("Content-Type", data["Content-Type"]);
       formData.append("acl", data.acl);
       formData.append("success_action_status", data.success_action_status);

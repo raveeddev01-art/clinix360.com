@@ -42,10 +42,10 @@ class ProfileImagePanel extends Component {
     hideAlert();
 
     if (image) {
-      const fileName = `${teamStore.id}/${userStore.id}/${new Date().getTime()}.png`;
+      const fileName = `${teamStore.id}_${userStore.id}_${new Date().getTime()}.png`;
       this.setState({ isUploading: true });
       return uploadStore
-        .uploadAWS(image, "image/png", fileName, { encoding: "base64" })
+        .uploadAWS(image, "image/png", fileName)
         .then(profileImgUrl => {
           return userStore.saveProfileImg(profileImgUrl);
         })

@@ -5,6 +5,7 @@ import Dropzone from "react-dropzone";
 import ReactCrop, { makeAspectCrop } from "react-image-crop";
 import cx from "classnames";
 import Button from "react-bootstrap/lib/Button";
+import { dataURItoBlob } from "lib/utils";
 
 class AvatarUploader extends Component {
   constructor(...args) {
@@ -93,7 +94,7 @@ class AvatarUploader extends Component {
 
       const canvasURL = canvas.toDataURL();
 
-      onCrop(canvasURL);
+      onCrop(dataURItoBlob(canvasURL));
       this.setState({
         croppedURL: canvasURL,
         isCropping: false,
@@ -177,7 +178,7 @@ AvatarUploader.propTypes = {
   onCrop: PropTypes.func.isRequired,
   isUploading: PropTypes.bool.isRequired,
   onError: PropTypes.func.isRequired,
-  url: PropTypes.string,
+  url: PropTypes.any,
   className: PropTypes.string,
   size: PropTypes.number
 };
