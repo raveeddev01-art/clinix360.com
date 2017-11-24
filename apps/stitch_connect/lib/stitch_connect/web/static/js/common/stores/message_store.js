@@ -46,8 +46,50 @@ class MessageStore {
   //    GETTERS     //
   // ////////////// //
 
+  getMessageById = id => this.messages.find(m => m.id === id);
+
+  getMessageByIndex(index) {
+    if (index < 0 || index > this.messages.length - 1) {
+      return null;
+    }
+
+    return this.messages[index];
+  }
+
   get groupId() {
-    return this.rootStore.groupsStore.currentGroupId;
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.currentGroupId;
+  }
+
+  get eventChannel() {
+    const { channelStore } = this.rootStore;
+
+    return channelStore.eventChannel;
+  }
+
+  get groupChannel() {
+    const { channelStore } = this.rootStore;
+
+    return channelStore.groupChannel;
+  }
+
+  @computed
+  get messagesByDate() {
+    return (
+      _.chain(this.messages)
+        .sortBy("inserted_at")
+        // Group messages by dates
+        .groupBy(message =>
+          moment.utc(message.inserted_at).format(`YYYY-MM-DD`)
+        )
+        .value()
+    );
+  }
+
+  @computed
+  get starredMessages() {
+    return this.messages.filter(message => message.starred);
   }
 
   /**
@@ -68,14 +110,6 @@ class MessageStore {
   @computed
   get showJumpedMessageIndicator() {
     return this.jumpMode && !this.loadedAllRecent;
-  }
-
-  get eventChannel() {
-    return this.rootStore.channelStore.eventChannel;
-  }
-
-  get groupChannel() {
-    return this.rootStore.channelStore.groupChannel;
   }
 
   @computed
@@ -126,24 +160,6 @@ class MessageStore {
     return null;
   }
 
-  @computed
-  get messagesByDate() {
-    return (
-      _.chain(this.messages)
-        .sortBy("inserted_at")
-        // Group messages by dates
-        .groupBy(message =>
-          moment.utc(message.inserted_at).format(`YYYY-MM-DD`)
-        )
-        .value()
-    );
-  }
-
-  @computed
-  get starredMessages() {
-    return this.messages.filter(message => message.starred);
-  }
-
   // ////////////// //
   //    METHODS     //
   // ////////////// //
@@ -158,16 +174,6 @@ class MessageStore {
     this.messageElements = {};
     this.messageInEdit = null;
     this.textInEdit = "";
-  }
-
-  getMessageById = id => this.messages.find(m => m.id === id);
-
-  getMessageByIndex(index) {
-    if (index < 0 || index > this.messages.length - 1) {
-      return null;
-    }
-
-    return this.messages[index];
   }
 
   @action
@@ -220,7 +226,7 @@ class MessageStore {
   }
 
   scrollToNewBanner = () => {
-    // if there are unread messages remain, scroll to top,
+    // If unread messages remain, scroll to top,
     // otherwise just scroll to new banner
     if (this.unreadMessagesCount > this.messages.length) {
       this.scrollTo(this.messages[this.messages.length - 1].id, 500);
