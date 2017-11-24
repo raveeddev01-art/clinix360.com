@@ -33,7 +33,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
     }
 
     if encoding do
-      Map.put(attrs, 'Content-Encoding', encoding)
+      Map.put(attrs, :'Content-Encoding', encoding)
     else
       attrs
     end
@@ -73,7 +73,7 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
 
     attrs =
       if encoding do
-        Map.put(attrs, 'Content-Encoding', encoding)
+        Map.put(attrs, :'Content-Encoding', encoding)
       else
         attrs
       end
