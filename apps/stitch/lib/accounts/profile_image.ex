@@ -6,7 +6,7 @@ defmodule Stitch.Accounts.ProfileImage do
   @settings Application.get_env(:stitch, :user_upload_settings)
   @s3 Application.get_env(:stitch, :aws_user_upload)
 
-  @thumb %{height: 36, width: 36}
+  @thumb %{height: 48, width: 48}
 
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
   def create_thumb(url) do
