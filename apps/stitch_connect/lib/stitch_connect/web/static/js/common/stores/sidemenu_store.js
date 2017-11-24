@@ -94,7 +94,7 @@ class SidemenuStore {
   }
 
   // //////////
-  // ACTIONS //
+  // METHODS //
   // /////// //
 
   @action
@@ -108,45 +108,6 @@ class SidemenuStore {
       await groupsStore.loadGroups();
 
       this.loading = false;
-    }
-  };
-
-  @action
-  onNewMessage = newMessage => {
-    const { groupStore, groupsStore } = this.rootStore;
-
-    // If the message is for the current group, ignore
-    if (newMessage.group_id === groupStore.group.id) {
-      return;
-    }
-
-    const group = groupsStore.getGroupById(newMessage.group_id);
-    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
-
-    if (!group) {
-      return;
-    }
-
-    group.unread_messages_count += 1;
-    if (isMention) {
-      group.mentions_count += 1;
-    }
-
-    // Update Favicon
-    this.updateFavicon();
-
-    // Play notification audio
-    this.playNotificationAudioForNewMessage(newMessage);
-
-    // Show notification card
-    this.showNotificationCardForNewMessage(newMessage);
-
-    // if it's DM and hidden, show it on sidebar
-    if (group.type !== "regular" && group.is_hidden) {
-      put(`/api/v1/groups/${group.id}/unhide`).then(() => {
-        const sidebarGroup = groupsStore.getGroupById(group.id);
-        sidebarGroup.is_hidden = false;
-      });
     }
   };
 
@@ -333,6 +294,49 @@ class SidemenuStore {
       duration
     });
   }
+
+  // ////////////// //
+  // EVENT HANDLERS //
+  // ////////////// //
+
+  @action
+  onNewMessage = newMessage => {
+    const { groupStore, groupsStore } = this.rootStore;
+
+    // If the message is for the current group, ignore
+    if (newMessage.group_id === groupStore.group.id) {
+      return;
+    }
+
+    const group = groupsStore.getGroupById(newMessage.group_id);
+    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+
+    if (!group) {
+      return;
+    }
+
+    group.unread_messages_count += 1;
+    if (isMention) {
+      group.mentions_count += 1;
+    }
+
+    // Update Favicon
+    this.updateFavicon();
+
+    // Play notification audio
+    this.playNotificationAudioForNewMessage(newMessage);
+
+    // Show notification card
+    this.showNotificationCardForNewMessage(newMessage);
+
+    // if it's DM and hidden, show it on sidebar
+    if (group.type !== "regular" && group.is_hidden) {
+      put(`/api/v1/groups/${group.id}/unhide`).then(() => {
+        const sidebarGroup = groupsStore.getGroupById(group.id);
+        sidebarGroup.is_hidden = false;
+      });
+    }
+  };
 
   @action
   onTeamRenamed = ({ name }) => {
