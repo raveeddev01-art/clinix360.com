@@ -742,7 +742,7 @@ class MessageStore {
 
     if (newMessage.user_id === currentUser.id) {
       // if it's my message, we assume it's already added temporarily.
-      if (newMessage.sending) {
+      if (newMessage.sending || newMessage.type !== "chat") {
         this.messages.unshift(newMessage);
       }
 
