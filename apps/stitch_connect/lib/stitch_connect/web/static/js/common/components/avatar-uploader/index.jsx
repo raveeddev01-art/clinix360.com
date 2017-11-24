@@ -14,6 +14,7 @@ class AvatarUploader extends Component {
       isLoading: false,
       crop: {},
       pixelCrop: {},
+      croppedURL: "",
       imgDataURL: ""
     };
   }
@@ -54,7 +55,8 @@ class AvatarUploader extends Component {
       this.setState({
         isCropping: true,
         isLoading: false,
-        imgDataURL: reader.result
+        imgDataURL: reader.result,
+        croppedURL: ""
       });
     };
 
@@ -89,7 +91,14 @@ class AvatarUploader extends Component {
         size
       );
 
-      onUpload(canvas.toDataURL());
+      const canvasURL = canvas.toDataURL();
+
+      onUpload(canvasURL);
+      this.setState({
+        croppedURL: canvasURL,
+        isCropping: false,
+        isLoading: false
+      });
     };
     img.src = imgDataURL;
 
@@ -98,6 +107,7 @@ class AvatarUploader extends Component {
 
   renderDropzone() {
     const { url } = this.props;
+    const { croppedURL } = this.state;
     return (
       <Dropzone
         className="avatar-uploader__dropzone"
@@ -105,14 +115,14 @@ class AvatarUploader extends Component {
         accept="image/*"
         onDrop={this.onImageDrop}
       >
-        <p>Click here or drag an image here.</p>
-        {url && (
-          <img
-            alt="avatar"
-            src={url.preview}
-            className="avatar-uploader__image"
-          />
-        )}
+        {!(url || croppedURL) && <p>Click here or drag an image here.</p>}
+        {(url || croppedURL) && (
+            <img
+              alt="avatar"
+              src={croppedURL || url}
+              className="avatar-uploader__image"
+            />
+          )}
       </Dropzone>
     );
   }
@@ -152,7 +162,11 @@ class AvatarUploader extends Component {
 
     return (
       <div className={cx("avatar-uploader", className)}>
-        {disabled && <div className="avatar-uploader__cloak" />}
+        {disabled && (
+          <div className="avatar-uploader__cloak">
+            <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
+          </div>
+        )}
         {isCropping ? this.renderCropper() : this.renderDropzone()}
       </div>
     );

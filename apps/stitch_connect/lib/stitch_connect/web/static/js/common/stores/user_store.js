@@ -1,6 +1,6 @@
 /**
  * User store
- * 
+ *
  * This store keeps track of data of current logged in user
  */
 
@@ -15,7 +15,8 @@ class UserStore {
   @observable email = "";
   @observable firstName = "";
   @observable lastName = "";
-  @observable profileImgUrl = "";
+  @observable avatar = "";
+  @observable avatarThumb = "";
   @observable roles = [];
 
   constructor(rootStore) {
@@ -45,7 +46,8 @@ class UserStore {
       this.email = data.email;
       this.firstName = data.first_name;
       this.lastName = data.last_name;
-      this.profileImgUrl = data.avatar;
+      this.avatar = data.avatar;
+      this.avatarThumb = data.avatar_thumb;
       this.roles = data.roles;
 
       this.loading = false;
@@ -116,8 +118,15 @@ class UserStore {
 
   @action
   saveProfileImg = profileImgUrl => {
-    return this.save({ profile_image_url: profileImgUrl }).then(() => {
-      this.profileImg = profileImgUrl;
+    return put(`/api/v1/users/${this.id}/upload_profile_image`, {
+      body: {
+        url: profileImgUrl
+      },
+      hideNotify: true
+    }).then(resp => {
+      const { data } = resp;
+      this.avatar = data.avatar;
+      this.avatarThumb = data.avatar_thumb;
     });
   };
 

@@ -2,10 +2,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+
+  &__cloak {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 30px;
+    z-index: 1;
+  }
 
   &__dropzone {
-    width: 200px;
-    height: 200px;
+    width: 340px;
+    height: 340px;
     border: 1px dashed #333;
     border-radius: 3px;
     display: flex;

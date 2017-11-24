@@ -8,54 +8,71 @@ const title = "Profile Image";
 const description =
   "Upload a profile image. This will be displayed when users view your information in Stitch.";
 
-// @TODO support cropping modal
-@inject("userStore", "imageStore", "teamStore")
+@inject("userStore", "uploadStore", "teamStore")
 @observer
 class ProfileImagePanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
       profileImgUrl: "",
-      isUploading: false
+      isUploading: false,
+      isUploaded: false
     };
   }
 
   onUpload = image => {
-    const { teamStore, userStore, imageStore, onError, onSuccess } = this.props;
+    const {
+      teamStore,
+      userStore,
+      uploadStore,
+      onError,
+      onSuccess
+    } = this.props;
     if (image) {
-      const fileName = `${teamStore.id}/${userStore.id}/1.jpg`; // @TODO randomize name
+      const fileName = `${teamStore.id}/${userStore.id}/${new Date().getTime()}.jpg`;
       this.setState({ isUploading: true });
-      imageStore
-        .uploadImage(image, fileName)
+      uploadStore
+        .uploadAWS(image, "image/jpeg", fileName)
         .then(profileImgUrl => {
           onSuccess(
             "Image uploaded. Please click on save to update your image."
           );
-          this.setState({ profileImgUrl, isUploading: false });
+          this.setState({
+            profileImgUrl,
+            isUploading: false,
+            isUploaded: true
+          });
         })
-        .catch(err => {
-          onError(err.data.message);
+        .catch(() => {
           this.setState({ isUploading: false });
+          onError("There was problem uploading the image.");
         });
     }
   };
 
   onToggleEdit = () => {
     this.setState({
-      profileImgUrl: ""
+      profileImgUrl: this.props.userStore.avatar,
+      isUploaded: false
     });
   };
 
   onSave = () => {
-    const { profileImgUrl } = this.state;
-    const { onError, hideAlert } = this.props;
+    const { profileImgUrl, isUploaded } = this.state;
+    const { onError, hideAlert, onSuccess, userStore } = this.props;
     hideAlert();
 
-    if (profileImgUrl) {
-      this.props.userStore.saveProfileImg(profileImgUrl);
-    } else {
-      onError("Please upload an image first");
+    if (profileImgUrl && isUploaded) {
+      return userStore
+        .saveProfileImg(profileImgUrl)
+        .then(() => {
+          onSuccess("Your profile image has been updated.");
+        })
+        .catch(() => {
+          onError("There was problem saving the image.");
+        });
     }
+    return Promise.resolve(onError("Please upload an image first"));
   };
 
   render() {
@@ -68,7 +85,6 @@ class ProfileImagePanel extends Component {
         description={description}
         onSave={this.onSave}
         onEdit={this.onToggleEdit}
-        disableSave={!profileImgUrl}
       >
         <AvatarUploader
           className="profile-image-form"
@@ -76,7 +92,7 @@ class ProfileImagePanel extends Component {
           onError={onError}
           isUploading={isUploading}
           url={profileImgUrl}
-          size={200}
+          size={400}
         />
       </SettingPanel>
     );
