@@ -517,22 +517,6 @@ class MessageStore {
       });
   };
 
-  joinGroupChannel = () => {
-    this.rootStore.channelStore
-      .joinGroupChannel()
-      .receive("ok", this.onJoinGroupChannel)
-      .receive("error", err => notify.show(err.message, "error"));
-
-    this.groupChannel.on("new_msg", this.onNewMessage);
-    this.groupChannel.on("edit_msg", this.onEditMessage);
-    this.groupChannel.on("delete_msg", this.onDeleteMessage);
-    this.groupChannel.on(
-      "msg_link_previews_generated",
-      this.onLinkPreviewGenerated
-    );
-    this.groupChannel.on("msg_link_preview_deleted", this.onLinkPreviewDeleted);
-  };
-
   sendMessage = (msg, additionalFields = {}) => {
     return new Promise((resolve, reject) => {
       // generates unique temporary request ID

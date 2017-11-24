@@ -94,8 +94,19 @@ class ChannelStore {
     const { messageStore } = this.rootStore;
     const joined = this.join(this.groupChannelTopic, options);
 
+    this.groupChannel.on("new_msg", messageStore.onNewMessage);
+    this.groupChannel.on("edit_msg", messageStore.onEditMessage);
+    this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
     this.groupChannel.on("starred_message", messageStore.onStarredMessage);
     this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
+    this.groupChannel.on(
+      "msg_link_previews_generated",
+      messageStore.onLinkPreviewGenerated
+    );
+    this.groupChannel.on(
+      "msg_link_preview_deleted",
+      messageStore.onLinkPreviewDeleted
+    );
 
     return joined;
   }
