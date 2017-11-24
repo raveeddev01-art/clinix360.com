@@ -1,0 +1,180 @@
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import noop from "lodash/noop";
+import Dropzone from "react-dropzone";
+import ReactCrop, { makeAspectCrop } from "react-image-crop";
+import cx from "classnames";
+import Button from "react-bootstrap/lib/Button";
+
+class AvatarUploader extends Component {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      isCropping: false,
+      isLoading: false,
+      crop: {},
+      pixelCrop: {},
+      imgDataURL: ""
+    };
+  }
+
+  onChangeCrop = (crop, pixelCrop) => {
+    this.setState({ crop, pixelCrop });
+  };
+
+  onCancelCrop = () => this.setState({ isCropping: false });
+
+  onImageLoaded = image => {
+    const constraint = {};
+    if (image.width < image.height) {
+      constraint.width = 100;
+    } else {
+      constraint.height = 100;
+    }
+    this.setState({
+      crop: makeAspectCrop(
+        {
+          x: 0,
+          y: 0,
+          aspect: 1,
+          ...constraint
+        },
+        image.width / image.height
+      )
+    });
+  };
+
+  onImageDrop = files => {
+    const { onError } = this.props;
+    const reader = new FileReader();
+    const imageFile = files[0];
+
+    this.setState({ isLoading: true });
+    reader.onloadend = () => {
+      this.setState({
+        isCropping: true,
+        isLoading: false,
+        imgDataURL: reader.result
+      });
+    };
+
+    reader.onerror = () => {
+      this.setState({ isLoading: false });
+      onError("There was problem loading the image");
+    };
+
+    reader.readAsDataURL(imageFile);
+  };
+
+  onUpload = () => {
+    const { size, onUpload } = this.props;
+    const { pixelCrop, imgDataURL } = this.state;
+    const img = new Image();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = size;
+    canvas.height = size;
+
+    img.onload = () => {
+      ctx.drawImage(
+        img,
+        pixelCrop.x,
+        pixelCrop.y,
+        pixelCrop.width,
+        pixelCrop.height,
+        0,
+        0,
+        size,
+        size
+      );
+
+      onUpload(canvas.toDataURL());
+    };
+    img.src = imgDataURL;
+
+    this.setState({ isLoading: true });
+  };
+
+  renderDropzone() {
+    const { url } = this.props;
+    return (
+      <Dropzone
+        className="avatar-uploader__dropzone"
+        multiple={false}
+        accept="image/*"
+        onDrop={this.onImageDrop}
+      >
+        <p>Click here or drag an image here.</p>
+        {url && (
+          <img
+            alt="avatar"
+            src={url.preview}
+            className="avatar-uploader__image"
+          />
+        )}
+      </Dropzone>
+    );
+  }
+
+  renderCropper() {
+    const { crop, imgDataURL } = this.state;
+
+    return (
+      <div className="avatar-uploader__cropper">
+        <div className="avatar-uploader__cropper-image">
+          <ReactCrop
+            keepSelection
+            minWidth={20}
+            minHeight={20}
+            crop={crop}
+            src={imgDataURL}
+            onImageLoaded={this.onImageLoaded}
+            onChange={this.onChangeCrop}
+          />
+        </div>
+        <div className="avatar-uploader__cropper-actions">
+          <Button bsSize="xsmall" onClick={this.onUpload}>
+            Upload Crop
+          </Button>
+          <Button bsSize="xsmall" onClick={this.onCancelCrop}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { isCropping, isLoading } = this.state;
+    const { isUploading, className } = this.props;
+    const disabled = isLoading || isUploading;
+
+    return (
+      <div className={cx("avatar-uploader", className)}>
+        {disabled && <div className="avatar-uploader__cloak" />}
+        {isCropping ? this.renderCropper() : this.renderDropzone()}
+      </div>
+    );
+  }
+}
+
+AvatarUploader.propTypes = {
+  onUpload: PropTypes.func.isRequired,
+  isUploading: PropTypes.bool.isRequired,
+  onError: PropTypes.func.isRequired,
+  url: PropTypes.string,
+  className: PropTypes.string,
+  size: PropTypes.number
+};
+
+AvatarUploader.defaultProps = {
+  onUpload: noop,
+  isUploading: false,
+  onError: noop,
+  url: "",
+  className: "",
+  size: 200
+};
+
+export default AvatarUploader;

@@ -1,0 +1,41 @@
+.avatar-uploader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__dropzone {
+    width: 200px;
+    height: 200px;
+    border: 1px dashed #333;
+    border-radius: 3px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__cropper {
+    width: 100%;
+    margin: 20px;
+
+    &-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &-actions {
+      margin-top: 10px;
+      text-align: center;
+
+      button + button {
+        margin-left: 10px;
+      }
+    }
+  }
+}
