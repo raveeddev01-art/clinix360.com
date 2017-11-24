@@ -71,11 +71,12 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
       ]
     }
 
-    if encoding do
-      Map.put(attrs, 'Content-Encoding', encoding)
-    else
-      attrs
-    end
+    attrs =
+      if encoding do
+        Map.put(attrs, 'Content-Encoding', encoding)
+      else
+        attrs
+      end
 
     attrs
     |> Poison.encode!
