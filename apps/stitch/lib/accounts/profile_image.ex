@@ -49,7 +49,7 @@ defmodule Stitch.Accounts.ProfileImage do
 
   defp get_filename(url) do
     with %{path: path} <- URI.parse(url) do
-      {:ok, Path.basename(path)}
+      {:ok, Path.relative_to(path, "/#{@s3.bucket}")}
     end
   end
 end
