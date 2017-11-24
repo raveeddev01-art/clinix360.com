@@ -172,6 +172,17 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
+  def upload_profile_image(conn, %{"url" => url}) do
+    case Stitch.Accounts.update_profile_image(conn.assigns.current_user, url) do
+      {:ok, user} ->
+        conn |> render("show.json", user: user)
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
+  end
+
   def send_invite(_conn, %{"email" => _email}) do
     # TODO
   end
