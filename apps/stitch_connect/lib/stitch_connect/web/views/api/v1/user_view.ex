@@ -60,6 +60,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
     }
   end
 
+  def presigned_url(nil), do: nil
   def presigned_url(url) do
     case Stitch.Upload.presign_url(url) do
       {:ok, presigned_url} -> presigned_url
