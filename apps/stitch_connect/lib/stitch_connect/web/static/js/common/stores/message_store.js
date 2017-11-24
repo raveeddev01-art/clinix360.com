@@ -240,69 +240,6 @@ class MessageStore {
     }
   };
 
-  @action
-  onScrollTopReached() {
-    this.loadPastMessages();
-  }
-
-  @action
-  onScrollBottomReached() {
-    if (this.jumpMode && !this.loadedAllRecent) {
-      this.loadRecentMessages();
-    } else {
-      this.isScrollBottom = true;
-      this.updateGroupCursor(null);
-    }
-  }
-
-  @action
-  onScrollBottomLeft() {
-    this.isScrollBottom = false;
-  }
-
-  onMessageHide(id) {
-    if (this.messageElements[id]) {
-      this.messageElements[id].visible = false;
-    }
-
-    if (!this.loadedInitial || this.isScrollBottom) {
-      return;
-    }
-
-    if (!this.groupCursor || this.groupCursor === id) {
-      const index = this.messages.findIndex(m => m.id === id);
-      if (index > 0) {
-        this.updateGroupCursor(this.messages[index - 1].id);
-      }
-    }
-  }
-
-  onMessageShow(id) {
-    if (this.messageElements[id]) {
-      this.messageElements[id].visible = true;
-    }
-
-    if (
-      !this.markedAsUnread &&
-      this.firstUnreadMessage &&
-      this.firstUnreadMessage.id === id
-    ) {
-      // If first unread message is visible, mark messages as read after 1s delay
-      // but, leave the new message line
-      setTimeout(() => {
-        this.markAsRead(false);
-      }, 1000);
-    }
-
-    if (!this.loadedInitial) {
-      return;
-    }
-
-    if (!this.groupCursor || this.groupCursor > id) {
-      this.updateGroupCursor(id);
-    }
-  }
-
   /**
    * Scroll to a specific message in chat div
    *
@@ -427,22 +364,6 @@ class MessageStore {
    */
   unloadChatDiv() {
     this.chatDiv = null;
-  }
-
-  /**
-   * Registers message div when message component is mounted
-   *
-   * @param {Integer} messageId
-   * @param {DOMElement} messageDiv
-   */
-  onMessageMounted(messageId, messageDiv) {
-    this.messageElements = {
-      ...this.messageElements,
-      [messageId]: {
-        div: messageDiv,
-        visible: false
-      }
-    };
   }
 
   @action
@@ -577,30 +498,6 @@ class MessageStore {
   };
 
   @action
-  onLinkPreviewGenerated = payload => {
-    if (payload.group_id !== this.groupId) {
-      return;
-    }
-
-    const message = this.messages.find(m => m.id === payload.id);
-    if (message) {
-      message.link_previews = payload.link_previews;
-      this.keepScrollAtBottom();
-    }
-  };
-
-  @action
-  onLinkPreviewDeleted = payload => {
-    const message = this.messages.find(m => m.id === payload.message_id);
-    if (message) {
-      message.link_previews = message.link_previews.filter(
-        p => p.link !== payload.link
-      );
-      this.keepScrollAtBottom();
-    }
-  };
-
-  @action
   deleteLinkPreview = (msgId, link) => {
     return new Promise((resolve, reject) => {
       this.groupChannel
@@ -719,6 +616,221 @@ class MessageStore {
         });
     });
   };
+
+  handleInitialLoading = () => {
+    if (this.unreadMessagesCount) {
+      this.scrollToBottom(() => {
+        this.updateGroupCursor(null);
+        this.loadedInitial = true;
+      }, 0);
+    } else {
+      this.scrollToBottom(() => {
+        this.updateGroupCursor(null);
+        this.loadedInitial = true;
+      }, 0);
+    }
+  };
+
+  @action
+  startEdit(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message) {
+      this.messageInEdit = message;
+      this.textInEdit = message.text_content;
+    }
+  }
+
+  @action
+  editLastMessage() {
+    const message = this.messages.find(m => m.user_id === currentUser.id);
+    if (message && message.sent !== false && !message.sending) {
+      this.messageInEdit = message;
+      this.textInEdit = message.text_content;
+    }
+  }
+
+  @action
+  editText(text) {
+    if (!this.messageInEdit) {
+      return;
+    }
+
+    this.textInEdit = text;
+  }
+
+  @action
+  finishEdit() {
+    if (!this.messageInEdit) {
+      return;
+    }
+
+    if (
+      !this.textInEdit ||
+      this.messageInEdit.text_content === this.textInEdit
+    ) {
+      this.cancelEdit();
+      return;
+    }
+
+    this.groupChannel.push("edit_msg", {
+      message_id: this.messageInEdit.id,
+      params: {
+        text_content: this.textInEdit
+      }
+    });
+  }
+
+  @action
+  cancelEdit() {
+    this.messageInEdit = null;
+    this.textInEdit = "";
+  }
+
+  @action
+  delete(id) {
+    const message = this.messages.find(m => m.id === id);
+
+    if (message) {
+      this.groupChannel.push("delete_msg", { message_id: id });
+    }
+  }
+
+  @action
+  toggleStar(id) {
+    const message = this.getMessageById(id);
+
+    if (message) {
+      post(`/api/v1/messages/${id}/toggle-star`);
+    }
+  }
+
+  @action
+  togglePin(id) {
+    const message = this.getMessageById(id);
+
+    if (message) {
+      post(`/api/v1/messages/${id}/toggle-pin`);
+    }
+  }
+
+  stopTyping = () => {
+    if (this.groupChannel) {
+      this.groupChannel.push("typing_stopped");
+    }
+  };
+
+  startTyping = () => {
+    clearTimeout(this.typingTimeoutId);
+    this.groupChannel.push("typing_started");
+    this.typingTimeoutId = setTimeout(this.stopTyping, 2000);
+  };
+
+  keepScrollAtBottom = () => {
+    if (this.isScrollBottom) {
+      this.scrollToBottom();
+    }
+  };
+
+  // ////////////// //
+  // EVENT HANDLERS //
+  // ////////////// //
+
+  @action
+  onJoinGroupChannel = data => {
+    this.messages = data.messages;
+
+    if (data.messages.length < 30) {
+      this.loadedAll = true;
+    }
+
+    const { groupStore } = this.rootStore;
+
+    this.unreadMessagesCount = groupStore.group.unread_messages_count;
+    this.mentionsCount = groupStore.group.mentions_count;
+    this.lastReadAt = groupStore.group.last_read_at;
+
+    when(() => this.mountedAllMessages, this.handleInitialLoading);
+  };
+
+  /**
+   * Registers message div when message component is mounted
+   *
+   * @param {Integer} messageId
+   * @param {DOMElement} messageDiv
+   */
+  onMessageMounted(messageId, messageDiv) {
+    this.messageElements = {
+      ...this.messageElements,
+      [messageId]: {
+        div: messageDiv,
+        visible: false
+      }
+    };
+  }
+
+  @action
+  onScrollTopReached() {
+    this.loadPastMessages();
+  }
+
+  @action
+  onScrollBottomReached() {
+    if (this.jumpMode && !this.loadedAllRecent) {
+      this.loadRecentMessages();
+    } else {
+      this.isScrollBottom = true;
+      this.updateGroupCursor(null);
+    }
+  }
+
+  @action
+  onScrollBottomLeft() {
+    this.isScrollBottom = false;
+  }
+
+  onMessageShow(id) {
+    if (this.messageElements[id]) {
+      this.messageElements[id].visible = true;
+    }
+
+    if (
+      !this.markedAsUnread &&
+      this.firstUnreadMessage &&
+      this.firstUnreadMessage.id === id
+    ) {
+      // If first unread message is visible, mark messages as read after 1s delay
+      // but, leave the new message line
+      setTimeout(() => {
+        this.markAsRead(false);
+      }, 1000);
+    }
+
+    if (!this.loadedInitial) {
+      return;
+    }
+
+    if (!this.groupCursor || this.groupCursor > id) {
+      this.updateGroupCursor(id);
+    }
+  }
+
+  onMessageHide(id) {
+    if (this.messageElements[id]) {
+      this.messageElements[id].visible = false;
+    }
+
+    if (!this.loadedInitial || this.isScrollBottom) {
+      return;
+    }
+
+    if (!this.groupCursor || this.groupCursor === id) {
+      const index = this.messages.findIndex(m => m.id === id);
+      if (index > 0) {
+        this.updateGroupCursor(this.messages[index - 1].id);
+      }
+    }
+  }
 
   @action
   onNewMessage = newMessage => {
@@ -839,134 +951,26 @@ class MessageStore {
   };
 
   @action
-  onJoinGroupChannel = data => {
-    this.messages = data.messages;
-
-    if (data.messages.length < 30) {
-      this.loadedAll = true;
-    }
-
-    const { groupStore } = this.rootStore;
-
-    this.unreadMessagesCount = groupStore.group.unread_messages_count;
-    this.mentionsCount = groupStore.group.mentions_count;
-    this.lastReadAt = groupStore.group.last_read_at;
-
-    when(() => this.mountedAllMessages, this.handleInitialLoading);
-  };
-
-  handleInitialLoading = () => {
-    if (this.unreadMessagesCount) {
-      this.scrollToBottom(() => {
-        this.updateGroupCursor(null);
-        this.loadedInitial = true;
-      }, 0);
-    } else {
-      this.scrollToBottom(() => {
-        this.updateGroupCursor(null);
-        this.loadedInitial = true;
-      }, 0);
-    }
-  };
-
-  @action
-  startEdit(id) {
-    const message = this.messages.find(m => m.id === id);
-
-    if (message) {
-      this.messageInEdit = message;
-      this.textInEdit = message.text_content;
-    }
-  }
-
-  @action
-  editLastMessage() {
-    const message = this.messages.find(m => m.user_id === currentUser.id);
-    if (message && message.sent !== false && !message.sending) {
-      this.messageInEdit = message;
-      this.textInEdit = message.text_content;
-    }
-  }
-
-  @action
-  editText(text) {
-    if (!this.messageInEdit) {
+  onLinkPreviewGenerated = payload => {
+    if (payload.group_id !== this.groupId) {
       return;
     }
 
-    this.textInEdit = text;
-  }
-
-  @action
-  finishEdit() {
-    if (!this.messageInEdit) {
-      return;
-    }
-
-    if (
-      !this.textInEdit ||
-      this.messageInEdit.text_content === this.textInEdit
-    ) {
-      this.cancelEdit();
-      return;
-    }
-
-    this.groupChannel.push("edit_msg", {
-      message_id: this.messageInEdit.id,
-      params: {
-        text_content: this.textInEdit
-      }
-    });
-  }
-
-  @action
-  cancelEdit() {
-    this.messageInEdit = null;
-    this.textInEdit = "";
-  }
-
-  @action
-  delete(id) {
-    const message = this.messages.find(m => m.id === id);
-
+    const message = this.messages.find(m => m.id === payload.id);
     if (message) {
-      this.groupChannel.push("delete_msg", { message_id: id });
-    }
-  }
-
-  @action
-  toggleStar(id) {
-    const message = this.getMessageById(id);
-
-    if (message) {
-      post(`/api/v1/messages/${id}/toggle-star`);
-    }
-  }
-
-  @action
-  togglePin(id) {
-    const message = this.getMessageById(id);
-
-    if (message) {
-      post(`/api/v1/messages/${id}/toggle-pin`);
-    }
-  }
-
-  stopTyping = () => {
-    if (this.groupChannel) {
-      this.groupChannel.push("typing_stopped");
+      message.link_previews = payload.link_previews;
+      this.keepScrollAtBottom();
     }
   };
 
-  startTyping = () => {
-    clearTimeout(this.typingTimeoutId);
-    this.groupChannel.push("typing_started");
-    this.typingTimeoutId = setTimeout(this.stopTyping, 2000);
-  };
-
-  keepScrollAtBottom = () => {
-    if (this.isScrollBottom) {
-      this.scrollToBottom();
+  @action
+  onLinkPreviewDeleted = payload => {
+    const message = this.messages.find(m => m.id === payload.message_id);
+    if (message) {
+      message.link_previews = message.link_previews.filter(
+        p => p.link !== payload.link
+      );
+      this.keepScrollAtBottom();
     }
   };
 }
