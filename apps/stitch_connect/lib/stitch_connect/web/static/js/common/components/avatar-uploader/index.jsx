@@ -145,7 +145,7 @@ class AvatarUploader extends Component {
         </div>
         <div className="avatar-uploader__cropper-actions">
           <Button bsSize="xsmall" onClick={this.onUpload}>
-            Upload Crop
+            Use Crop
           </Button>
           <Button bsSize="xsmall" onClick={this.onCancelCrop}>
             Cancel
