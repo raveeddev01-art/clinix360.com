@@ -1,6 +1,6 @@
 defmodule Stitch.Mobile do
   import Ecto.Query
-  alias Stitch.{Accounts.User, Mobile.Device, Repo}
+  alias Stitch.{Accounts.User, GroupUser, Mobile.Device, Repo}
 
   def list_user_devices(user_id) do
     from(d in Device, where: d.user_id == ^user_id)
@@ -25,18 +25,25 @@ defmodule Stitch.Mobile do
     |> where(user_id: ^user.id)
     |> Stitch.Repo.all
     |> Enum.reduce(0, fn group_user, acc ->
-      notification_preference =
-        if group_user.mobile_notification_preference == "default" do
-          user.mobile_notification_preference
-        else
-          group_user.mobile_notification_preference
-        end
-
-      case notification_preference do
-        "nothing" -> acc
-        "mentions" -> group_user.mentions_count + acc
-        "everything" -> group_user.unread_messages_count + acc
-      end
+      acc + room_notification_count(user, group_user)
     end)
+  end
+
+  def room_notification_count(
+    %User{id: user_id} = user,
+    %GroupUser{user_id: user_id} = group_user
+  ) do
+    notification_preference =
+      if group_user.mobile_notification_preference == "default" do
+        user.mobile_notification_preference
+      else
+        group_user.mobile_notification_preference
+      end
+
+    case notification_preference do
+      "nothing" -> 0
+      "mentions" -> group_user.mentions_count
+      "everything" -> group_user.unread_messages_count
+    end
   end
 end
