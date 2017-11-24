@@ -24,7 +24,6 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
     attrs = %{
       key: filename,
       'Content-Type': mimetype,
-      'Content-Encoding': encoding,
       acl: "private",
       success_action_status: "201",
       action: "https://s3.amazonaws.com/#{System.get_env("S3_BUCKET_NAME")}",
@@ -33,11 +32,11 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
       signature: hmac_sha1(System.get_env("AWS_SECRET_ACCESS_KEY"), policy)
     }
 
-    # if encoding do
-    #   Map.put(attrs, :'Content-Encoding', encoding)
-    # else
-    #   attrs
-    # end
+    if encoding do
+      Map.put(attrs, :'Content-Encoding', encoding)
+    else
+      attrs
+    end
   end
 
   defp now_plus(minutes) do
@@ -54,31 +53,28 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
 
   defp policy(key, mimetype, encoding) do
     expiration_window = 60
+
+    conditions = [
+      # You can only upload to the bucket we specify.
+      %{bucket: System.get_env("S3_BUCKET_NAME")},
+      # The uploaded file must be publicly readable.
+      %{acl: "private"},
+      # You have to upload the mime type you said you would upload.
+      ["starts-with", "$Content-Type", mimetype],
+      %{"x-amz-server-side-encryption" => "AES256"},
+      # You have to upload the file name you said you would upload.
+      ["starts-with", "$key", key],
+      # When things work out ok, AWS should send a 201 response.
+      %{success_action_status: "201"}
+    ]
+
+    conditions = if encoding, do: [["starts-with", "$Content-Encoding", encoding] | conditions], else: conditions
+
     attrs = %{
       # This policy is valid for an hour by default.
       expiration: now_plus(expiration_window),
-      conditions: [
-        # You can only upload to the bucket we specify.
-        %{bucket: System.get_env("S3_BUCKET_NAME")},
-        # The uploaded file must be publicly readable.
-        %{acl: "private"},
-        # You have to upload the mime type you said you would upload.
-        ["starts-with", "$Content-Type", mimetype],
-        ["starts-with", "$Content-Encoding", encoding],
-        %{"x-amz-server-side-encryption" => "AES256"},
-        # You have to upload the file name you said you would upload.
-        ["starts-with", "$key", key],
-        # When things work out ok, AWS should send a 201 response.
-        %{success_action_status: "201"}
-      ]
+      conditions: conditions
     }
-
-    # attrs =
-    #   if encoding do
-    #     Map.put(attrs, :'Content-Encoding', encoding)
-    #   else
-    #     attrs
-    #   end
 
     attrs
     |> Poison.encode!
