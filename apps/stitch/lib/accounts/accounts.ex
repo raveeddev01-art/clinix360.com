@@ -192,7 +192,7 @@ defmodule Stitch.Accounts do
 
   def update_profile_image(%User{} = user, url) do
     Repo.get(User, user.id)
-    |> User.profile_image_changeset(%{profile_image_url: url})
+    |> User.profile_image_changeset(%{"profile_image_url" => url})
     |> Repo.update
   end
 

@@ -158,7 +158,7 @@ defmodule Stitch.Accounts.User do
     |> add_thumb()
   end
 
-  def add_thumb(%{valid?: true, changes: %{url: url}} = changeset) do
+  def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
     case Stitch.Accounts.ProfileImage.create_thumb(url) do
       {:ok, profile_image_thumb_url} ->
         put_change(changeset, :profile_image_thumb_url, profile_image_thumb_url)

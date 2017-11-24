@@ -53,10 +53,17 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       username: user.username,
       phone: user.phone_number,
       title: user.title,
-      avatar: user.profile_image_url,
-      avatar_thumb: user.profile_image_thumb_url,
+      avatar: presigned_url(user.profile_image_url),
+      avatar_thumb: presigned_url(user.profile_image_thumb_url),
       onboarded: user.onboarded,
       disabled: user.disabled
     }
+  end
+
+  def presigned_url(url) do
+    case Stitch.Upload.presign_url(url) do
+      {:ok, presigned_url} -> presigned_url
+      :error -> nil
+    end
   end
 end
