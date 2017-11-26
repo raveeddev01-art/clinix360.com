@@ -54,9 +54,9 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
             MessageLinkPreviewGenerator.queue(message)
             message = message |> MessageQueries.load_info
-            Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
-            EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-            PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+            Endpoint.broadcast("groups:#{group.slug}", "new_message", message)
+            EventsChannel.broadcast_group_new_message(group, message, notify_user_ids.desktop)
+            PushNotifications.push_new_message_notification(group, message, notify_user_ids.mobile)
             PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
             conn

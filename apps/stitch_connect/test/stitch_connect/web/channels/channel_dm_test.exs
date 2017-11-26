@@ -19,7 +19,7 @@ defmodule StitchConnect.Web.ChannelDmTest do
 
     refute Repo.get_by(Group, slug: group_slug)
 
-    ref = push socket1, "new_msg", %{text_content: "Hello, My Friend!"}
+    ref = push socket1, "new_message", %{text_content: "Hello, My Friend!"}
     assert_reply ref, :ok, reply
 
     group = Repo.get_by(Group, slug: group_slug)
@@ -37,10 +37,10 @@ defmodule StitchConnect.Web.ChannelDmTest do
     {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group_slug}")
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group_slug}")
 
-    ref1 = push socket1, "new_msg", %{text_content: "Hello, My Friend!"}
+    ref1 = push socket1, "new_message", %{text_content: "Hello, My Friend!"}
     assert_reply ref1, :ok, reply1
 
-    ref2 = push socket2, "new_msg", %{text_content: "Hello, Hello"}
+    ref2 = push socket2, "new_message", %{text_content: "Hello, Hello"}
     assert_reply ref2, :ok, reply2
 
     assert reply1.group_id == reply2.group_id

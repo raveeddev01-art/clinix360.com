@@ -37,7 +37,7 @@ defmodule StitchConnect.Web.EventsChannel do
     |> Repo.all
   end
 
-  def broadcast_group_new_msg(group, message, notify_user_ids \\ []) do
+  def broadcast_group_new_message(group, message, notify_user_ids \\ []) do
     notify_user_ids_set = MapSet.new(notify_user_ids)
     for group_user <- group_users_for(group.id) do
       json = MessageView.message_json(message)

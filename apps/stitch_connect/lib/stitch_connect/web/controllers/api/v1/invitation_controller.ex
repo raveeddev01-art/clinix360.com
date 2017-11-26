@@ -77,8 +77,8 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
         Stitch.Billing.update_subscriber_count(conn.assigns.team)
         Enum.each(groups, fn {group, system_message} ->
           system_message = system_message |> MessageQueries.load_info
-          Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
-          EventsChannel.broadcast_group_new_msg(group, system_message)
+          Endpoint.broadcast("groups:#{group.slug}", "new_message", system_message)
+          EventsChannel.broadcast_group_new_message(group, system_message)
           TeamChannel.broadcast_user_joined(conn.assigns.team, user)
         end)
         conn
