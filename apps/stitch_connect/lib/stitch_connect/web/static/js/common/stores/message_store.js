@@ -919,7 +919,7 @@ class MessageStore {
   };
 
   @action
-  onStarredMessage = message => {
+  onStarMessage = message => {
     const { globalStarredMessageStore } = this.rootStore;
 
     this.updateMessageData(message.id, {
