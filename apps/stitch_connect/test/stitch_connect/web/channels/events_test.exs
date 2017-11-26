@@ -29,7 +29,7 @@ defmodule StitchConnect.Web.EventsTest do
 
     @endpoint.subscribe("events:#{user2.id}")
 
-    ref = push socket1, "delete_msg", %{message_id: message.id}
+    ref = push socket1, "group.delete_message", %{message_id: message.id}
 
     assert_reply ref, :ok
     assert_broadcast "message_deleted", %{id: message_id, unread_messages_count: unread_messages_count, mentions_count: mentions_count}

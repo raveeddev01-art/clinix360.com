@@ -96,7 +96,7 @@ class ChannelStore {
 
     this.groupChannel.on("group.new_message", messageStore.onNewMessage);
     this.groupChannel.on("group.change_message", messageStore.onChangeMessage);
-    this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
+    this.groupChannel.on("group.delete_message", messageStore.onDeleteMessage);
     this.groupChannel.on("starred_message", messageStore.onStarredMessage);
     this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
     this.groupChannel.on(

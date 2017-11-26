@@ -501,7 +501,7 @@ class MessageStore {
   deleteLinkPreview = (msgId, link) => {
     return new Promise((resolve, reject) => {
       this.groupChannel
-        .push("delete_msg_link_preview", {
+        .push("group.delete_message_link_preview", {
           message_id: msgId,
           link
         })
@@ -692,7 +692,7 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      this.groupChannel.push("delete_msg", { message_id: id });
+      this.groupChannel.push("group.delete_message", { message_id: id });
     }
   }
 
