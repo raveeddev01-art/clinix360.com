@@ -54,7 +54,7 @@ class ChannelStore {
     const { sidemenuStore, groupsStore } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
-    this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
+    this.eventChannel.on("event.new_message", sidemenuStore.onNewMessage);
 
     this.eventChannel.on("created_group", groupsStore.onCreatedGroup);
     this.eventChannel.on("joined_group", groupsStore.onJoinedGroup);

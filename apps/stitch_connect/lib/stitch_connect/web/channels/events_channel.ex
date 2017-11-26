@@ -44,7 +44,7 @@ defmodule StitchConnect.Web.EventsChannel do
       |> Map.put(:notify, MapSet.member?(notify_user_ids_set, group_user.user_id))
       |> Map.put(:unread_messages_count, group_user.unread_messages_count)
       |> Map.put(:mentions_count, group_user.mentions_count)
-      @endpoint.broadcast("events:#{group_user.user_id}", "new_message", json)
+      @endpoint.broadcast("events:#{group_user.user_id}", "event.new_message", json)
     end
   end
 

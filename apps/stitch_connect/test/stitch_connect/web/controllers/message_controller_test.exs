@@ -24,8 +24,8 @@ defmodule StitchConnect.Web.MessageControllerTest do
         }
       })
 
-      assert_broadcast "new_message", msg2_json
       assert_broadcast "group.new_message", msg_json
+      assert_broadcast "event.new_message", msg2_json
       assert msg_json.text_content == "lorem ipsum"
       assert msg2_json.id == msg_json.id
 
