@@ -673,7 +673,7 @@ class MessageStore {
       return;
     }
 
-    this.groupChannel.push("edit_msg", {
+    this.groupChannel.push("group.change_message", {
       message_id: this.messageInEdit.id,
       params: {
         text_content: this.textInEdit
@@ -893,7 +893,7 @@ class MessageStore {
   };
 
   @action
-  onEditMessage = editedMessage => {
+  onChangeMessage = editedMessage => {
     if (editedMessage.group_id !== this.groupId) {
       return;
     }

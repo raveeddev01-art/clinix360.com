@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @endpoint StitchConnect.Web.Endpoint
 
-  intercept ["group.new_message", "edit_msg", "msg_link_previews_generated"]
+  intercept ["group.new_message", "group.change_message", "msg_link_previews_generated"]
 
   def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
@@ -181,7 +181,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("edit_msg", %{"message_id" => message_id, "params" => params}, socket) do
+  def handle_in("group.change_message", %{"message_id" => message_id, "params" => params}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.update(message, params) do
@@ -189,7 +189,7 @@ defmodule StitchConnect.Web.GroupChannel do
         MessageLinkPreviewGenerator.queue(message)
         message = MessageQueries.load_info(message)
 
-        broadcast! socket, "edit_msg", message
+        broadcast! socket, "group.change_message", message
 
         json = MessageView.render("show.json", %{message: message})
         {:reply, {:ok, json}, socket}
@@ -240,7 +240,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def handle_out(event, payload, socket) when event in ["group.new_message", "edit_msg", "msg_link_previews_generated"] do
+  def handle_out(event, payload, socket) when event in ["group.new_message", "group.change_message", "msg_link_previews_generated"] do
     json = MessageView.render("show.json", %{message: payload})
     push socket, event, json
     {:noreply, socket}
