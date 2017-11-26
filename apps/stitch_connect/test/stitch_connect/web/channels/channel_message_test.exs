@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.ChannelMessageTest do
 
     refute Repo.get_by(Message, text_content: uniq_content)
 
-    ref = push socket1, "new_message", %{text_content: uniq_content}
+    ref = push socket1, "group.new_message", %{text_content: uniq_content}
     assert_reply ref, :ok, reply
 
     message = Repo.get_by(Message, text_content: uniq_content)
@@ -28,10 +28,10 @@ defmodule StitchConnect.Web.ChannelMessageTest do
 
     @endpoint.subscribe("groups:#{group.slug}")
 
-    ref = push socket1, "new_message", %{text_content: "Hello, World!"}
+    ref = push socket1, "group.new_message", %{text_content: "Hello, World!"}
     assert_reply ref, :ok
 
-    assert_broadcast "new_message", data
+    assert_broadcast "group.new_message", data
 
     assert data.user_id == user1.id
     assert data.text_content == "Hello, World!"
@@ -43,13 +43,13 @@ defmodule StitchConnect.Web.ChannelMessageTest do
 
     @endpoint.subscribe("groups:#{group.slug}")
 
-    ref = push socket1, "new_message", %{text_content: "Hello, World!", request_id: "some temporary ID"}
+    ref = push socket1, "group.new_message", %{text_content: "Hello, World!", request_id: "some temporary ID"}
 
     assert_reply ref, :ok, reply
     assert reply.text_content == "Hello, World!"
     assert reply.request_id == "some temporary ID"
 
-    assert_push "new_message", data
+    assert_push "group.new_message", data
 
     assert data.user_id == user1.id
     assert data.text_content == "Hello, World!"
@@ -62,7 +62,7 @@ defmodule StitchConnect.Web.ChannelMessageTest do
     {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
-    ref1 = push socket1, "new_message", %{text_content: "Hello, World!"}
+    ref1 = push socket1, "group.new_message", %{text_content: "Hello, World!"}
     assert_reply ref1, :ok, message
 
     ref2 = push socket2, "edit_msg", %{message_id: message.id, params: %{text_content: "New Content"}}
@@ -76,7 +76,7 @@ defmodule StitchConnect.Web.ChannelMessageTest do
       %{socket1: socket1, group: group} do
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
-    ref1 = push socket1, "new_message", %{text_content: "Hello, World!"}
+    ref1 = push socket1, "group.new_message", %{text_content: "Hello, World!"}
     assert_reply ref1, :ok, message
 
     @endpoint.subscribe("groups:#{group.slug}")
@@ -96,7 +96,7 @@ defmodule StitchConnect.Web.ChannelMessageTest do
       %{socket1: socket1, group: group} do
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
-    ref1 = push socket1, "new_message", %{text_content: "Hello, World!"}
+    ref1 = push socket1, "group.new_message", %{text_content: "Hello, World!"}
     assert_reply ref1, :ok, message
 
     @endpoint.subscribe("groups:#{group.slug}")

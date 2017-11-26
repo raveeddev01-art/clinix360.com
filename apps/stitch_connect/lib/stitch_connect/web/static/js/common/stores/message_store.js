@@ -464,7 +464,7 @@ class MessageStore {
 
       this.groupChannel
         .push(
-          "new_message",
+          "group.new_message",
           Object.assign(
             { text_content: msg, request_id: temporaryID },
             additionalFields
