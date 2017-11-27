@@ -187,7 +187,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     case Stitch.Accounts.delete_profile_image(conn.assigns.current_user) do
       {:ok, user} ->
         conn |> render("show.json", user: user)
-      {:error, error} ->
+      {:error, _error} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't delete the profile image"})

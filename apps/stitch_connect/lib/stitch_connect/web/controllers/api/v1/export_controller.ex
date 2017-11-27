@@ -1,7 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.ExportController do
   use StitchConnect.Web, :controller
   alias Stitch.Exports
-  alias StitchConnect.Web.ErrorView
 
   def index(conn, _params) do
     team = conn.assigns.team
