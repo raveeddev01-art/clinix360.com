@@ -619,17 +619,9 @@ class MessageStore {
   };
 
   handleInitialLoading = () => {
-    if (this.unreadMessagesCount) {
-      this.scrollToBottom(() => {
-        this.updateGroupCursor(null);
-        this.loadedInitial = true;
-      }, 0);
-    } else {
-      this.scrollToBottom(() => {
-        this.updateGroupCursor(null);
-        this.loadedInitial = true;
-      }, 0);
-    }
+    this.scrollToBottom(() => {
+      this.loadedInitial = true;
+    });
   };
 
   @action
@@ -775,7 +767,6 @@ class MessageStore {
       this.loadRecentMessages();
     } else {
       this.isScrollBottom = true;
-      this.updateGroupCursor(null);
     }
   }
 
@@ -789,6 +780,10 @@ class MessageStore {
       this.messageElements[id].visible = true;
     }
 
+    if (!this.groupCursor || this.groupCursor > id) {
+      this.updateGroupCursor(id);
+    }
+
     if (
       !this.markedAsUnread &&
       this.firstUnreadMessage &&
@@ -800,23 +795,11 @@ class MessageStore {
         this.markAsRead(false);
       }, 1000);
     }
-
-    if (!this.loadedInitial) {
-      return;
-    }
-
-    if (!this.groupCursor || this.groupCursor > id) {
-      this.updateGroupCursor(id);
-    }
   }
 
   onMessageHide(id) {
     if (this.messageElements[id]) {
       this.messageElements[id].visible = false;
-    }
-
-    if (!this.loadedInitial || this.isScrollBottom) {
-      return;
     }
 
     if (!this.groupCursor || this.groupCursor === id) {
@@ -861,7 +844,7 @@ class MessageStore {
     }
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
-      this.scrollToBottom(() => {}, 0, 0);
+      this.scrollToBottom(null, 0, 0);
     }
 
     // Update favicon
