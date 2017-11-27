@@ -54,7 +54,9 @@ class ProfileImagePanel extends Component {
         .then(() => {
           onSuccess("Your profile image has been updated.");
           this.setState({
-            isUploading: false
+            isUploading: false,
+            profileImgUrl: userStore.avatar,
+            isCropped: false
           });
         })
         .catch(() => {
