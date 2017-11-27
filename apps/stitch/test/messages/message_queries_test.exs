@@ -142,4 +142,345 @@ defmodule Stitch.MessageQueriesTest do
 
     assert message.id == message_bar.id
   end
+
+  describe "count/2" do
+    test "with user and :all_time" do
+      {:ok, user_inserted_at} = NaiveDateTime.new(2016, 12, 25, 0, 0, 0)
+      {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 29, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 25, 0, 0, 0)
+      {:ok, end_at} = Date.new(2017, 1, 30)
+      team = insert(:team)
+      team_2 = insert(:team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+      group_3 = insert(:group, team: team)
+      group_4 = insert(:group, team: team_2)
+      user_1 = insert(:user, team: team, inserted_at: user_inserted_at)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team)
+      user_4 = insert(:user, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not the target user
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not the target user
+      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not the target user
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_1) # not the target user
+
+      opts = %{time_period: :all_time, end_at: end_at}
+      message_count = Stitch.MessageQueries.count(user_1, opts)
+
+      assert message_count == 2
+    end
+
+    test "with user and :last_day" do
+      {:ok, user_inserted_at} = NaiveDateTime.new(2016, 12, 25, 0, 0, 0)
+      {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 29, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 30, 0, 0, 0)
+      {:ok, end_at} = Date.new(2017, 1, 30)
+      team = insert(:team)
+      team_2 = insert(:team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+      group_3 = insert(:group, team: team)
+      group_4 = insert(:group, team: team_2)
+      user_1 = insert(:user, team: team, inserted_at: user_inserted_at)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team)
+      user_4 = insert(:user, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in the 'last day'
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not the target user
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not the target user
+      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not the target user
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_1) # not the targer user
+
+      opts = %{time_period: :last_day, end_at: end_at}
+      message_count = Stitch.MessageQueries.count(user_1, opts)
+
+      assert message_count == 3
+    end
+
+    test "with user and :last_7_days" do
+      {:ok, user_inserted_at} = NaiveDateTime.new(2016, 12, 25, 0, 0, 0)
+      {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 29, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 24, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 30, 0, 0, 0)
+      {:ok, end_at} = Date.new(2017, 1, 30)
+      team = insert(:team)
+      team_2 = insert(:team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+      group_3 = insert(:group, team: team)
+      group_4 = insert(:group, team: team_2)
+      user_1 = insert(:user, team: team, inserted_at: user_inserted_at)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team)
+      user_4 = insert(:user, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in the 'last 7 days'
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_2)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_2)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not the target user
+      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not the target user
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target user
+
+      opts = %{time_period: :last_7_days, end_at: end_at}
+      message_count = Stitch.MessageQueries.count(user_1, opts)
+
+      assert message_count == 4
+    end
+
+    test "with user and :last_30_days" do
+      {:ok, user_inserted_at} = NaiveDateTime.new(2016, 12, 25, 0, 0, 0)
+      {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 31, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 24, 0, 0, 0)
+      {:ok, datetime_4} = NaiveDateTime.new(2017, 1, 30, 0, 0, 0)
+      {:ok, end_at} = Date.new(2017, 1, 30)
+      team = insert(:team)
+      team_2 = insert(:team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+      group_3 = insert(:group, team: team)
+      group_4 = insert(:group, team: team_2)
+      user_1 = insert(:user, team: team, inserted_at: user_inserted_at)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team)
+      user_4 = insert(:user, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in the 'last 30 days'
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_2)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_2)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_4)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_4)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not the target user
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_2) # not the target user
+
+      opts = %{time_period: :last_30_days, end_at: end_at}
+      message_count = Stitch.MessageQueries.count(user_1, opts)
+
+      assert message_count == 5
+    end
+
+    test "with team and :all_time" do
+      {:ok, team_inserted_at} = NaiveDateTime.new(2016, 12, 25, 0, 0, 0)
+      {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 29, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 25, 0, 0, 0)
+      {:ok, end_at} = Date.new(2017, 1, 30)
+      team = insert(:team, inserted_at: team_inserted_at)
+      team_2 = insert(:team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+      group_3 = insert(:group, team: team_2)
+      group_4 = insert(:group, team: team_2)
+      user_1 = insert(:user, team: team)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team_2)
+      user_4 = insert(:user, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_2)
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target team
+
+      opts = %{time_period: :all_time, end_at: end_at}
+      message_count = Stitch.MessageQueries.count(team, opts)
+
+      assert message_count == 5
+    end
+
+    test "with team and :last_day" do
+      {:ok, team_inserted_at} = NaiveDateTime.new(2016, 12, 25, 0, 0, 0)
+      {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 29, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 30, 0, 0, 0)
+      {:ok, end_at} = Date.new(2017, 1, 30)
+      team = insert(:team, inserted_at: team_inserted_at)
+      team_2 = insert(:team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+      group_3 = insert(:group, team: team_2)
+      group_4 = insert(:group, team: team_2)
+      user_1 = insert(:user, team: team)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team_2)
+      user_4 = insert(:user, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in 'last day'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_3)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not in 'last day'
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_2) # not in 'last day'
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not in 'last day'
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target team or in the 'last day'
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target team
+
+      opts = %{time_period: :last_day, end_at: end_at}
+      message_count = Stitch.MessageQueries.count(team, opts)
+
+      assert message_count == 4
+    end
+
+    test "with team and :last_7_days" do
+      {:ok, team_inserted_at} = NaiveDateTime.new(2016, 12, 25, 0, 0, 0)
+      {:ok, datetime_1} = NaiveDateTime.new(2017, 1, 23, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 24, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 30, 0, 0, 0)
+      {:ok, end_at} = Date.new(2017, 1, 30)
+      team = insert(:team, inserted_at: team_inserted_at)
+      team_2 = insert(:team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+      group_3 = insert(:group, team: team_2)
+      group_4 = insert(:group, team: team_2)
+      user_1 = insert(:user, team: team)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team_2)
+      user_4 = insert(:user, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in 'last day'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_3)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not in 'last day'
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_2)
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not in 'last 7 days'
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target team
+
+      opts = %{time_period: :last_7_days, end_at: end_at}
+      message_count = Stitch.MessageQueries.count(team, opts)
+
+      assert message_count == 5
+    end
+
+    test "with team and :last_30_days" do
+      {:ok, team_inserted_at} = NaiveDateTime.new(2016, 12, 25, 0, 0, 0)
+      {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 29, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2016, 1, 30, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 1, 0, 0, 0)
+      {:ok, datetime_4} = NaiveDateTime.new(2017, 1, 12, 0, 0, 0)
+      {:ok, datetime_5} = NaiveDateTime.new(2017, 1, 30, 0, 0, 0)
+      {:ok, end_at} = Date.new(2017, 1, 30)
+      team = insert(:team, inserted_at: team_inserted_at)
+      team_2 = insert(:team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+      group_3 = insert(:group, team: team_2)
+      group_4 = insert(:group, team: team_2)
+      user_1 = insert(:user, team: team)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team_2)
+      user_4 = insert(:user, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in 'last 30 days'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_2) # not in 'last 30 days'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_3)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_4)
+      insert(:message, user: user_1, group: group_2, inserted_at: datetime_5)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not in 'last day'
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_4)
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_5)
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_2) # not in the 'last 30 days'
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not in 'last 30 days
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_4) # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_5) # not the target team
+
+      opts = %{time_period: :last_30_days, end_at: end_at}
+      message_count = Stitch.MessageQueries.count(team, opts)
+
+      assert message_count == 8
+    end
+  end
+
+  describe "last_occurred/1" do
+    test "with user" do
+      {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 29, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 12, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 20, 0, 0, 0)
+      {:ok, datetime_4} = NaiveDateTime.new(2017, 1, 30, 0, 0, 0)
+      {:ok, datetime_5} = NaiveDateTime.new(2017, 2, 5, 0, 0, 0)
+      team = insert(:team)
+      team_2 = insert(:team)
+      user_1 = insert(:user, team: team)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team_2)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_4)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_4)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_5)
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_2)
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_4)
+
+      last_occurred_at = Stitch.MessageQueries.last_occurred_at(user_1)
+
+      assert last_occurred_at.year == datetime_4.year
+      assert last_occurred_at.month == datetime_4.month
+      assert last_occurred_at.day == datetime_4.day
+    end
+
+    test "with team" do
+      {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 29, 0, 0, 0)
+      {:ok, datetime_2} = NaiveDateTime.new(2017, 1, 12, 0, 0, 0)
+      {:ok, datetime_3} = NaiveDateTime.new(2017, 1, 20, 0, 0, 0)
+      {:ok, datetime_4} = NaiveDateTime.new(2017, 1, 30, 0, 0, 0)
+      {:ok, datetime_5} = NaiveDateTime.new(2017, 2, 5, 0, 0, 0)
+      team = insert(:team)
+      team_2 = insert(:team)
+      user_1 = insert(:user, team: team)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team_2)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team_2)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_4)
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_3)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_4)
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_5)
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_2)
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_4)
+
+      last_occurred_at = Stitch.MessageQueries.last_occurred_at(team)
+
+      assert last_occurred_at.year == datetime_5.year
+      assert last_occurred_at.month == datetime_5.month
+      assert last_occurred_at.day == datetime_5.day
+    end
+
+    test "user and team with no messages" do
+      user = insert(:user)
+      team = insert(:team)
+      refute Stitch.MessageQueries.last_occurred_at(user)
+      refute Stitch.MessageQueries.last_occurred_at(team)
+    end
+  end
 end

@@ -3,7 +3,7 @@ defmodule Stitch.MessageQueries do
   Module in charge of all message related queries.
   """
 
-  alias Stitch.{Repo, Accounts.User, Group, GroupUser, Message, MessageAction, Paginator}
+  alias Stitch.{Repo, Accounts.User, Group, GroupUser, Message, MessageAction, Paginator, Team}
   import Ecto.Query
 
   @doc """
@@ -166,4 +166,91 @@ defmodule Stitch.MessageQueries do
 
     Paginator.new(query, limit: limit, skip: offset)
   end
+
+  @doc """
+  Returns the number of messages sent for a user or team in a given period of
+  time.
+
+  ## Supported time periods:
+    * `:last_day`
+    * `:last_7_days`
+    * `:last_30_days`
+    * `:all_time`
+
+  ## Example
+
+      iex> count(%User{...}, %{time_period: :last_7_days})
+      28
+
+  """
+  @spec count(User.t | Team.t, map) :: non_neg_integer
+  def count(target, %{time_period: :all_time} = opts) do
+    start_at = NaiveDateTime.to_date(target.inserted_at)
+    end_at = Map.get(opts, :end_at, yesterday())
+    count(target, %{start_at: start_at, end_at: end_at})
+  end
+  def count(target, %{time_period: time_period} = opts) do
+    time_periods = %{last_30_days: -29, last_7_days: -6, last_day: 0}
+    number_of_days = Map.get(time_periods, time_period)
+    end_at = Map.get(opts, :end_at, yesterday())
+    start_at = Date.add(end_at, number_of_days)
+    count(target, %{start_at: start_at, end_at: end_at})
+  end
+  def count(%User{id: user_id}, %{start_at: start_at, end_at: end_at}) do
+    {:ok, start_at_datetime} = NaiveDateTime.new(start_at, ~T[00:00:00])
+    {:ok, end_at_datetime} = NaiveDateTime.new(end_at, ~T[23:59:59.999999])
+
+    query =
+      from m in Message,
+      where: m.user_id == ^user_id,
+      where: m.inserted_at >= ^start_at_datetime,
+      where: m.inserted_at <= ^end_at_datetime
+    Repo.aggregate(query, :count, :id)
+  end
+  def count(%Team{id: team_id}, %{start_at: start_at, end_at: end_at}) do
+    {:ok, start_at_datetime} = NaiveDateTime.new(start_at, ~T[00:00:00])
+    {:ok, end_at_datetime} = NaiveDateTime.new(end_at, ~T[23:59:59.999999])
+
+    query =
+      from m in Message,
+      join: g in assoc(m, :group),
+      where: g.team_id == ^team_id,
+      where: m.inserted_at >= ^start_at_datetime,
+      where: m.inserted_at <= ^end_at_datetime
+    Repo.aggregate(query, :count, :id)
+  end
+
+  @doc """
+  Returns a NaiveDateTime struct representing the last message sent for a given
+  user or team.
+
+  ## Example
+
+      iex> last_occurred_at(%User{...})
+      %NaiveDateTime{...}
+
+  """
+  @spec last_occurred_at(User.t | Team.t) :: NaiveDateTime.t
+  def last_occurred_at(%User{id: user_id}) do
+    query =
+      from m in Message,
+      where: m.user_id == ^user_id,
+      order_by: [desc: m.inserted_at],
+      select: m.inserted_at,
+      limit: 1
+    Repo.one(query)
+  end
+  def last_occurred_at(%Team{id: team_id}) do
+    query =
+      from m in Message,
+      join: g in assoc(m, :group),
+      where: g.team_id == ^team_id,
+      order_by: [desc: m.inserted_at],
+      select: m.inserted_at,
+      limit: 1
+    Repo.one(query)
+  end
+
+  defp yesterday, do: Date.add(Date.utc_today(), -1)
+
 end

@@ -82,4 +82,13 @@ defmodule Stitch.TeamQueriesTest do
       assert TeamQueries.all_with_user_email("foo@example.com") == []
     end
   end
+
+  test "list_teams/0" do
+    insert(:team)
+    insert(:team)
+    insert(:team)
+    teams = TeamQueries.list_teams()
+    assert length(teams) == 3
+    assert Enum.all?(teams, &(&1.__struct__ == Stitch.Team))
+  end
 end
