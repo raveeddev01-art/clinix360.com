@@ -1,6 +1,6 @@
 /**
  * Groups store
- * 
+ *
  * This store keeps track of groups of the app.
  */
 

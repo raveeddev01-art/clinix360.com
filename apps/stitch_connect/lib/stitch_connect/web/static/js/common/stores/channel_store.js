@@ -7,6 +7,7 @@
 
 class ChannelStore {
   channels = {};
+  lastGroupChannelTopic = "";
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -94,8 +95,14 @@ class ChannelStore {
     const { messageStore } = this.rootStore;
     const joined = this.join(this.groupChannelTopic, options);
 
+    if (this.lastGroupChannelTopic) {
+      this.leave(this.lastGroupChannelTopic);
+    }
+
     this.groupChannel.on("starred_message", messageStore.onStarredMessage);
     this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
+
+    this.lastGroupChannelTopic = this.groupChannelTopic;
 
     return joined;
   }
