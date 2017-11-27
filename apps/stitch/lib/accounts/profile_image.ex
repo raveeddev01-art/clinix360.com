@@ -1,9 +1,7 @@
 defmodule Stitch.Accounts.ProfileImage do
   alias ExAws.S3
-  alias Stitch.{Repo, Message}
   import Mogrify
 
-  @settings Application.get_env(:stitch, :user_upload_settings)
   @s3 Application.get_env(:stitch, :aws_user_upload)
 
   @thumb %{height: 48, width: 48}
@@ -15,8 +13,7 @@ defmodule Stitch.Accounts.ProfileImage do
         {:ok, filename} <- get_filename(url),
         dest = Path.join(System.tmp_dir!, filename),
         {:ok, :done} <- download(fullname, dest),
-        %Mogrify.Image{path: preview_path} = image <- generate_preview(dest),
-        %Mogrify.Image{height: preview_height, width: preview_width} <- Mogrify.verbose(image),
+        %Mogrify.Image{path: preview_path} <- generate_preview(dest),
         {:ok, %{status_code: 200}} <- upload(preview_path),
         :ok <- File.rm(dest),
         :ok <- File.rm(preview_path) do
