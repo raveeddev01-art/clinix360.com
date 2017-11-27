@@ -1,0 +1,85 @@
+$avatarMaxWidth: 340px;
+
+.avatar-uploader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  &__cloak {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 0 auto;
+    background: #003366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 30px;
+    z-index: 1;
+    animation: fadeInFlex 0.3s;
+    width: $avatarMaxWidth;
+  }
+
+  &__dropzone {
+    width: $avatarMaxWidth;
+    height: $avatarMaxWidth;
+    border: 1px dashed #333;
+    border-radius: 3px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    .avatar-uploader__cloak {
+      display: none;
+    }
+
+    &:hover {
+      .avatar-uploader__cloak {
+        display: flex;
+      }
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__cropper {
+    width: 100%;
+    margin: 20px;
+
+    &-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &-actions {
+      margin-top: 10px;
+      text-align: center;
+
+      button + button {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  &__menu-anchor {
+    color: #fff !important;
+    background: transparent !important;
+    font-size: 18px;
+
+    &:hover,
+    &:active,
+    &.active {
+      text-decoration: none;
+    }
+  }
+}

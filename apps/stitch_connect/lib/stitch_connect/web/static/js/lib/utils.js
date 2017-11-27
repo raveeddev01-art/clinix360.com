@@ -9,10 +9,19 @@ export function extractEmails(text) {
   return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
 }
 
+export function dataURItoBlob(dataURI) {
+  const binary = atob(dataURI.split(",")[1]);
+  const array = [];
+  for (let i = 0; i < binary.length; i += 1) {
+    array.push(binary.charCodeAt(i));
+  }
+  return new Blob([new Uint8Array(array)], { type: "image/png" });
+}
+
 /**
  * Return url of group
- * 
- * @param {Object} group 
+ *
+ * @param {Object} group
  */
 export function getGroupUrl(group) {
   if (!group) {
@@ -47,8 +56,8 @@ export function getSlugOfDMGroupByUsers(userIds) {
 
 /**
  * Return group users that has current user added
- * 
- * @param {array} users 
+ *
+ * @param {array} users
  */
 export function getGroupUserIdsThatHasCurrentUser(users) {
   const uniqUserIds = uniq(users.map(user => user.id));

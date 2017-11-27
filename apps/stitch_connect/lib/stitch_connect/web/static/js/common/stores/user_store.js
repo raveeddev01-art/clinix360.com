@@ -1,10 +1,12 @@
 /**
  * User store
- * 
+ *
  * This store keeps track of data of current logged in user
  */
 
 import { observable, action, computed } from "mobx";
+
+const defaultAvatars = ["/images/default-avatar.png"];
 
 class UserStore {
   @observable id = "";
@@ -15,8 +17,10 @@ class UserStore {
   @observable email = "";
   @observable firstName = "";
   @observable lastName = "";
-  @observable profileImgUrl = "";
+  @observable avatar = "";
+  @observable avatarThumb = "";
   @observable roles = [];
+  @observable hasAvatar = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -33,6 +37,13 @@ class UserStore {
   }
 
   @action
+  useDefaultAvatar = () => {
+    this.hasAvatar = false;
+    this.avatar = defaultAvatars[0];
+    this.avatarThumb = defaultAvatars[0];
+  };
+
+  @action
   loadUser = id => {
     this.loading = true;
     this.id = id;
@@ -45,7 +56,14 @@ class UserStore {
       this.email = data.email;
       this.firstName = data.first_name;
       this.lastName = data.last_name;
-      this.profileImgUrl = data.avatar;
+      if (data.avatar) {
+        this.hasAvatar = true;
+        this.avatar = data.avatar;
+        this.avatarThumb = data.avatar_thumb;
+      } else {
+        this.useDefaultAvatar();
+      }
+
       this.roles = data.roles;
 
       this.loading = false;
@@ -116,8 +134,25 @@ class UserStore {
 
   @action
   saveProfileImg = profileImgUrl => {
-    return this.save({ profile_image_url: profileImgUrl }).then(() => {
-      this.profileImg = profileImgUrl;
+    return put(`/api/v1/users/${this.id}/upload_profile_image`, {
+      body: {
+        url: profileImgUrl
+      },
+      hideNotify: true
+    }).then(resp => {
+      const { data } = resp;
+      this.avatar = data.avatar;
+      this.avatarThumb = data.avatar_thumb;
+      this.hasAvatar = true;
+    });
+  };
+
+  @action
+  deleteProfileImg = () => {
+    return remove(`/api/v1/users/${this.id}/delete_profile_image`, {
+      hideNotify: true
+    }).then(() => {
+      this.useDefaultAvatar();
     });
   };
 
