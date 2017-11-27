@@ -56,10 +56,10 @@ class MessageStore {
     return this.messages[index];
   }
 
-  get groupId() {
-    const { groupsStore } = this.rootStore;
+  get groupChannel() {
+    const { channelStore } = this.rootStore;
 
-    return groupsStore.currentGroupId;
+    return channelStore.groupChannel;
   }
 
   get eventChannel() {
@@ -68,10 +68,10 @@ class MessageStore {
     return channelStore.eventChannel;
   }
 
-  get groupChannel() {
-    const { channelStore } = this.rootStore;
+  get group() {
+    const { groupsStore } = this.rootStore;
 
-    return channelStore.groupChannel;
+    return groupsStore.currentGroup;
   }
 
   @computed
@@ -190,7 +190,7 @@ class MessageStore {
     const { groupsStore } = this.rootStore;
 
     this.groupCursor = cursor;
-    groupsStore.updateGroupCursor(this.groupId, cursor);
+    groupsStore.updateGroupCursor(this.group.id, cursor);
   }
 
   // Scroll to the bottom of chat div with animation
@@ -298,7 +298,7 @@ class MessageStore {
 
     // Ensure that joined the group to which target message belongs
     this.joinedTargetGroupDisposer = when(
-      () => targetMessage.group_id === this.groupId && this.loadedInitial,
+      () => targetMessage.group_id === this.group.id && this.loadedInitial,
       () => {
         // Ensure that target message is mounted
         if (this.mountedTargetMessageDisposer) {
@@ -383,7 +383,7 @@ class MessageStore {
     Object.assign(this, camelCasedUpdates);
 
     // Update group info
-    groupsStore.updateGroupData(this.groupId, updates);
+    groupsStore.updateGroupData(this.group.id, updates);
   }
 
   @action
@@ -403,7 +403,10 @@ class MessageStore {
   @action
   markAsUnread = messageId => {
     this.groupChannel
-      .push("mark_as_unread", { group_id: this.groupId, message_id: messageId })
+      .push("mark_as_unread", {
+        group_id: this.group.id,
+        message_id: messageId
+      })
       .receive("ok", response => {
         this.updateUnreadMessagesInfo(response);
         this.updateUnreadMessages(response.messages);
@@ -425,7 +428,7 @@ class MessageStore {
     const { sidemenuStore } = this.rootStore;
 
     this.groupChannel
-      .push("mark_as_read", { group_id: this.groupId })
+      .push("mark_as_read", { group_id: this.group.id })
       .receive("ok", () => {
         this.updateUnreadMessagesInfo({
           unread_messages_count: 0,
@@ -457,7 +460,7 @@ class MessageStore {
         user: { ...currentUser },
         text_content: msg,
         inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
-        group_id: this.groupId,
+        group_id: this.group.id,
         user_id: currentUser.id
       };
       this.onNewMessage(newMessage);
@@ -837,13 +840,14 @@ class MessageStore {
         this.updateGroupCursor(this.messages[index - 1].id);
       }
     }
+    console.log(this.groupCursor);
   }
 
   @action
   onNewMessage = newMessage => {
     const { sidemenuStore } = this.rootStore;
 
-    if (newMessage.group_id !== this.groupId) {
+    if (newMessage.group_id !== this.group.id) {
       return;
     }
 
@@ -901,7 +905,7 @@ class MessageStore {
 
   @action
   onEditMessage = editedMessage => {
-    if (editedMessage.group_id !== this.groupId) {
+    if (editedMessage.group_id !== this.group.id) {
       return;
     }
 
@@ -959,7 +963,7 @@ class MessageStore {
 
   @action
   onLinkPreviewGenerated = payload => {
-    if (payload.group_id !== this.groupId) {
+    if (payload.group_id !== this.group.id) {
       return;
     }
 
