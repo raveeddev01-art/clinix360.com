@@ -97,12 +97,6 @@ class MessageStore {
     return this.group.mentions_count;
   }
 
-  get lastReadAt() {
-    const { groupsStore } = this.rootStore;
-
-    return this.group.last_read_at;
-  }
-
   @computed
   get messagesByDate() {
     return (
@@ -177,15 +171,6 @@ class MessageStore {
 
   @computed
   get newMessageLineMessage() {
-    const lastReadAt = moment.utc(this.lastReadAt);
-    const index = this.messages
-      .slice()
-      .reverse()
-      .findIndex(m => moment.utc(m.inserted_at).diff(lastReadAt) >= 0);
-    if (index > 0) {
-      return this.messages[this.messages.length - index - 1];
-    }
-
     return null;
   }
 
@@ -409,20 +394,6 @@ class MessageStore {
   }
 
   @action
-  updateUnreadMessages(updates) {
-    const countToUpdate = Math.min(updates.length, this.unreadMessagesCount);
-    const processedUpdates = _.orderBy(
-      updates,
-      ["inserted_at"],
-      ["desc"]
-    ).slice(0, countToUpdate);
-
-    processedUpdates.forEach((update, index) => {
-      Object.assign(this.messages[index], { read_status: update.read_status });
-    });
-  }
-
-  @action
   markAsUnread = messageId => {
     this.groupChannel
       .push("mark_as_unread", {
@@ -431,7 +402,6 @@ class MessageStore {
       })
       .receive("ok", response => {
         this.updateUnreadMessagesInfo(response);
-        this.updateUnreadMessages(response.messages);
 
         this.markedAsUnread = true;
       })
@@ -865,8 +835,6 @@ class MessageStore {
       return;
     }
 
-    const currentNewMessageLineMessage = this.newMessageLineMessage;
-
     if (newMessage.user_id === currentUser.id) {
       // if it's my message, we assume it's already added temporarily.
       if (newMessage.sending || newMessage.type !== "chat") {
@@ -882,11 +850,7 @@ class MessageStore {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       // If you're at the bottom and no NML, keep up with the new message
-      if (this.isScrollBottom && currentNewMessageLineMessage == null) {
-        // TODO: Add logic
-      }
-
-      if (this.unreadMessagesCount || !this.isScrollBottom) {
+      if (this.unreadMessagesCount > 0 || !this.isScrollBottom) {
         this.updateUnreadMessagesInfo({
           unread_messages_count: this.unreadMessagesCount + 1,
           mentions_count: this.mentionsCount + (isMention ? 1 : 0)
