@@ -23,7 +23,6 @@ class MessageStore {
   @observable unreadMessagesCount = 0;
   @observable mentionsCount = 0;
   @observable lastReadAt = null;
-  @observable groupCursor = null;
   @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
   @observable isLoadingRecent = false;
   @observable isLoadingPast = false;
@@ -72,6 +71,15 @@ class MessageStore {
     const { groupsStore } = this.rootStore;
 
     return groupsStore.currentGroup;
+  }
+
+  /**
+   * Returns the id of oldest message that is visible in chat pane
+   */
+  get groupCursor() {
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.currentGroupCursor;
   }
 
   @computed
@@ -189,7 +197,6 @@ class MessageStore {
   updateGroupCursor(cursor) {
     const { groupsStore } = this.rootStore;
 
-    this.groupCursor = cursor;
     groupsStore.updateGroupCursor(this.group.id, cursor);
   }
 
@@ -840,7 +847,6 @@ class MessageStore {
         this.updateGroupCursor(this.messages[index - 1].id);
       }
     }
-    console.log(this.groupCursor);
   }
 
   @action

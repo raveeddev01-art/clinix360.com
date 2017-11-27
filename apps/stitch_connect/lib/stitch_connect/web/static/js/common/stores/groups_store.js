@@ -15,7 +15,7 @@ import {
 
 class GroupsStore {
   @observable groups = [];
-  @observable groupCursors = {}; // { group_id: message_id }
+  @observable groupCursors = {}; // { group_id: message_id }, Holds the id of oldest message that is visible in chat pane in group
   @observable currentGroupId = null;
 
   constructor(rootStore) {
@@ -30,9 +30,7 @@ class GroupsStore {
 
   getGroupBySlug = slug => this.groups.find(group => group.slug === slug);
 
-  getGroupUrl = id => {
-    return getGroupUrl(this.getGroupById(id));
-  };
+  getGroupUrl = id => getGroupUrl(this.getGroupById(id));
 
   @computed
   get currentGroup() {
@@ -41,6 +39,15 @@ class GroupsStore {
     }
 
     return this.getGroupById(this.currentGroupId);
+  }
+
+  @computed
+  get currentGroupCursor() {
+    if (!this.currentGroupId) {
+      return null;
+    }
+
+    return this.groupCursors[this.currentGroupId];
   }
 
   @computed
