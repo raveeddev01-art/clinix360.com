@@ -120,9 +120,9 @@ export default class MessagePanel extends Component {
           ) : (
             <div className="room-preview">
               This is a preview of the room{" "}
-              <strong>
+              <b>
                 <i className="fa fa-comments" /> {groupStore.group.name}
-              </strong>
+              </b>
               <button
                 className="join btn btn-fancy btn-primary"
                 onClick={this.handleJoin}

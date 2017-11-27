@@ -15,23 +15,26 @@ class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
   @observable messageElements = {}; // Div elements of messages loaded in the chat div
   @observable messages = []; // messages currently loaded
+
   @observable messageInEdit = null; // Message currently being edited
   @observable textInEdit = ""; // Current text of message in edit
-  @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
-  @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
-  @observable jumpMode = false; // indicates if message list is currently at jumping mode
-  @observable unreadMessagesCount = 0;
-  @observable mentionsCount = 0;
-  @observable lastReadAt = null;
-  @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
-  @observable isLoadingRecent = false;
-  @observable isLoadingPast = false;
-  @observable highlightId = null; // message will be highlighted
-  @observable markedAsUnread = false;
 
-  messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
+  @observable jumpMode = false; // indicates if message list is currently at jumping mode
+
+  // Message loading status
+  @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
   @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
   @observable loadedAllRecent = false; // If TRUE, indicates that there is no more recent messages to load from server
+  @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
+
+  @observable isLoadingRecent = false;
+  @observable isLoadingPast = false;
+  @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
+
+  @observable markedAsUnread = false;
+  @observable highlightId = null; // message will be highlighted
+
+  messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
 
   // mobx when() monitor disposers
   joinedTargetGroupDisposer = null; // Disposer of when() monitor that waits until joined the group to which jumping target message belongs to
@@ -80,6 +83,24 @@ class MessageStore {
     const { groupsStore } = this.rootStore;
 
     return groupsStore.currentGroupCursor;
+  }
+
+  get unreadMessagesCount() {
+    const { groupsStore } = this.rootStore;
+
+    return this.group.unread_messages_count;
+  }
+
+  get mentionsCount() {
+    const { groupsStore } = this.rootStore;
+
+    return this.group.mentions_count;
+  }
+
+  get lastReadAt() {
+    const { groupsStore } = this.rootStore;
+
+    return this.group.last_read_at;
   }
 
   @computed
@@ -382,12 +403,6 @@ class MessageStore {
       "last_read_at"
     ];
     const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
-    const camelCasedUpdates = _.mapKeys(updates, (value, key) =>
-      _.camelCase(key)
-    );
-
-    // Update message store
-    Object.assign(this, camelCasedUpdates);
 
     // Update group info
     groupsStore.updateGroupData(this.group.id, updates);
@@ -443,7 +458,6 @@ class MessageStore {
         });
 
         if (resetNewMessageLine) {
-          this.lastReadAt = moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS");
         }
 
         // Update favicon
@@ -761,12 +775,6 @@ class MessageStore {
       this.loadedAll = true;
     }
 
-    const { groupStore } = this.rootStore;
-
-    this.unreadMessagesCount = groupStore.group.unread_messages_count;
-    this.mentionsCount = groupStore.group.mentions_count;
-    this.lastReadAt = groupStore.group.last_read_at;
-
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };
 
@@ -868,10 +876,6 @@ class MessageStore {
       if (this.unreadMessagesCount === 0) {
         this.markAsRead(false);
       }
-      this.lastReadAt = moment
-        .utc(newMessage.inserted_at)
-        .add(1, "millisecond")
-        .format("YYYY-MM-DDTHH:mm:ss.SSS");
     } else {
       this.messages.unshift(newMessage);
 
@@ -879,10 +883,7 @@ class MessageStore {
 
       // If you're at the bottom and no NML, keep up with the new message
       if (this.isScrollBottom && currentNewMessageLineMessage == null) {
-        this.lastReadAt = moment
-          .utc(newMessage.inserted_at)
-          .add(1, "millisecond")
-          .format("YYYY-MM-DDTHH:mm:ss.SSS");
+        // TODO: Add logic
       }
 
       if (this.unreadMessagesCount || !this.isScrollBottom) {
