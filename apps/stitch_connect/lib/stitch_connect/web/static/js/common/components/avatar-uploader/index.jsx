@@ -6,6 +6,9 @@ import ReactCrop, { makeAspectCrop } from "react-image-crop";
 import cx from "classnames";
 import Button from "react-bootstrap/lib/Button";
 import { dataURItoBlob } from "lib/utils";
+import Dropdown from "react-bootstrap/lib/Dropdown";
+import MenuItem from "react-bootstrap/lib/MenuItem";
+import SmartDropdown from "../smart-dropdown/index";
 
 class AvatarUploader extends Component {
   constructor(...args) {
@@ -106,8 +109,23 @@ class AvatarUploader extends Component {
     this.setState({ isLoading: true });
   };
 
+  // stopping propagation on click cloak to prevent unwanted file dialog
+  onCloakClick = evt => {
+    evt.stopPropagation();
+  };
+
+  onOpenFileDialog = () => {
+    if (this.dropzone) {
+      this.dropzone.open();
+    }
+  };
+
+  onDeletePhoto = () => {
+    this.props.onDelete();
+  };
+
   renderDropzone() {
-    const { url } = this.props;
+    const { url, hasAvatar, isUploading, isCropped } = this.props;
     const { croppedURL } = this.state;
     return (
       <Dropzone
@@ -115,15 +133,37 @@ class AvatarUploader extends Component {
         multiple={false}
         accept="image/*"
         onDrop={this.onImageDrop}
+        ref={node => {
+          this.dropzone = node;
+        }}
       >
-        {!(url || croppedURL) && <p>Click here or drag an image here.</p>}
-        {(url || croppedURL) && (
-            <img
-              alt="avatar"
-              src={croppedURL || url}
-              className="avatar-uploader__image"
-            />
-          )}
+        <img
+          alt="avatar"
+          src={isCropped ? croppedURL : url}
+          className="avatar-uploader__image"
+        />
+        {!isUploading && (
+          <div className="avatar-uploader__cloak" onClick={this.onCloakClick}>
+            <SmartDropdown id="user-mention" className="user-mention-dropdown">
+              <Dropdown.Toggle
+                useAnchor
+                noCaret
+                className="avatar-uploader__menu-anchor"
+              >
+                Change Profile Photo
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <MenuItem onClick={this.onOpenFileDialog}>
+                  Upload Photo
+                </MenuItem>
+
+                {hasAvatar && (
+                  <MenuItem onClick={this.onDeletePhoto}>Delete Photo</MenuItem>
+                )}
+              </Dropdown.Menu>
+            </SmartDropdown>
+          </div>
+        )}
       </Dropzone>
     );
   }
@@ -176,7 +216,10 @@ class AvatarUploader extends Component {
 
 AvatarUploader.propTypes = {
   onCrop: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
   isUploading: PropTypes.bool.isRequired,
+  isCropped: PropTypes.bool.isRequired,
+  hasAvatar: PropTypes.bool.isRequired,
   onError: PropTypes.func.isRequired,
   url: PropTypes.any,
   className: PropTypes.string,
@@ -185,7 +228,10 @@ AvatarUploader.propTypes = {
 
 AvatarUploader.defaultProps = {
   onCrop: noop,
+  onDelete: noop,
   isUploading: false,
+  isCropped: false,
+  hasAvatar: false,
   onError: noop,
   url: "",
   className: "",

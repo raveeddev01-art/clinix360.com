@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { AvatarUploader } from "common/components";
+import { confirm } from "common/modals";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Profile Image";
@@ -15,6 +16,7 @@ class ProfileImagePanel extends Component {
     super(props);
     this.state = {
       profileImgUrl: "",
+      isCropped: false,
       isUploading: false
     };
   }
@@ -25,12 +27,13 @@ class ProfileImagePanel extends Component {
 
   onToggleEdit = () => {
     this.setState({
-      profileImgUrl: this.props.userStore.avatar
+      profileImgUrl: this.props.userStore.avatar,
+      isCropped: true
     });
   };
 
   onSave = () => {
-    const { profileImgUrl: image } = this.state;
+    const { profileImgUrl: image, isCropped } = this.state;
     const {
       onError,
       hideAlert,
@@ -41,7 +44,7 @@ class ProfileImagePanel extends Component {
     } = this.props;
     hideAlert();
 
-    if (image) {
+    if (isCropped) {
       const fileName = `${teamStore.id}_${userStore.id}_${new Date().getTime()}.png`;
       this.setState({ isUploading: true });
       return uploadStore
@@ -64,9 +67,36 @@ class ProfileImagePanel extends Component {
     return Promise.resolve(onError("Please upload an image first"));
   };
 
+  onDelete = () => {
+    const { onError, onSuccess, userStore } = this.props;
+    confirm({
+      title: "Delete Profile Image",
+      message: "Are you sure you want to delete your profile image?",
+      okLabel: "Delete"
+    }).then(() => {
+      this.setState({ isUploading: true });
+      userStore
+        .deleteProfileImg()
+        .then(() => {
+          onSuccess("Your profile image has been deleted.");
+          this.setState({
+            isUploading: false,
+            profileImgUrl: userStore.avatar,
+            isCropped: false
+          });
+        })
+        .catch(() => {
+          onError("There was problem deleting your profile image.");
+          this.setState({
+            isUploading: false
+          });
+        });
+    });
+  };
+
   render() {
-    const { profileImgUrl, isUploading } = this.state;
-    const { onError } = this.props;
+    const { profileImgUrl, isUploading, isCropped } = this.state;
+    const { onError, userStore } = this.props;
 
     return (
       <SettingPanel
@@ -78,7 +108,10 @@ class ProfileImagePanel extends Component {
         <AvatarUploader
           className="profile-image-form"
           onCrop={this.onCrop}
+          onDelete={this.onDelete}
+          hasAvatar={userStore.hasAvatar}
           onError={onError}
+          isCropped={isCropped}
           isUploading={isUploading}
           url={profileImgUrl}
           size={400}
