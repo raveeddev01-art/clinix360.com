@@ -22,13 +22,12 @@ class ProfileImagePanel extends Component {
   }
 
   onCrop = profileImgUrl => {
-    this.setState({ profileImgUrl });
+    this.setState({ profileImgUrl, isCropped: true });
   };
 
   onToggleEdit = () => {
     this.setState({
-      profileImgUrl: this.props.userStore.avatar,
-      isCropped: true
+      profileImgUrl: this.props.userStore.avatar
     });
   };
 
