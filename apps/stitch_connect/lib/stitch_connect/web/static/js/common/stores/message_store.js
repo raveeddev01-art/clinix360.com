@@ -14,6 +14,7 @@ import shortid from "shortid";
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
   @observable messageElements = {}; // Div elements of messages loaded in the chat div
+
   @observable messages = []; // messages currently loaded
 
   @observable messageInEdit = null; // Message currently being edited

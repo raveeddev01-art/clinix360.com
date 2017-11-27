@@ -68,8 +68,7 @@ export default class MessagePanel extends Component {
     });
 
     return (
-      messageStore.unreadMessagesCount > 0 &&
-      messageStore.firstUnreadMessageVisibility !== "visible" && (
+      messageStore.unreadMessagesCount > 0 && (
         <div className={unreadMessagesTooltipClass}>
           <div
             role="button"
@@ -109,7 +108,7 @@ export default class MessagePanel extends Component {
     return (
       <div id="chat-container" className={chatContainerClassName}>
         <div className="container-bars">
-          {!messageStore.markedAsUnread && this.renderUnreadMessagesBar()}
+          {this.renderUnreadMessagesBar()}
           <UploadProgress />
         </div>
 
