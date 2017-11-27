@@ -80,8 +80,10 @@ defmodule StitchConnect.Web.PushNotifications do
       |> Map.put_new("android", [])
 
     badge_value = Mobile.badge_value(user)
+    group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: grp.id)
+    room_notification_count = Mobile.room_notification_count(user, group_user)
     push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices)
-    push_new_msg_notification_to_android_devices(grp, msg, badge_value, android_devices)
+    push_new_msg_notification_to_android_devices(grp, msg, badge_value, room_notification_count, android_devices)
   end
 
   defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
@@ -100,7 +102,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> APNS.push(on_response: &handle_response_ios/1)
   end
 
-  defp push_new_msg_notification_to_android_devices(grp, msg, badge_value, android_devices) do
+  defp push_new_msg_notification_to_android_devices(grp, msg, badge_value, room_notification_count, android_devices) do
     import FCM.Notification
 
     android_devices
@@ -108,6 +110,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> new
     |> put_data(%{
       "badge" => to_string(badge_value),
+      "room_notification_count" => room_notification_count,
       "message" => new_msg_notification_body(grp, msg),
       "ejson" => msg |> new_msg_notification_custom_data |> Poison.encode!
     })
