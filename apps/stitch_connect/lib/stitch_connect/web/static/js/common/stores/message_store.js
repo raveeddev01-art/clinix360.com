@@ -50,14 +50,6 @@ class MessageStore {
 
   getMessageById = id => this.messages.find(m => m.id === id);
 
-  getMessageByIndex(index) {
-    if (index < 0 || index > this.messages.length - 1) {
-      return null;
-    }
-
-    return this.messages[index];
-  }
-
   get groupChannel() {
     const { channelStore } = this.rootStore;
 
@@ -86,15 +78,60 @@ class MessageStore {
   }
 
   get unreadMessagesCount() {
-    const { groupsStore } = this.rootStore;
-
     return this.group.unread_messages_count;
   }
 
   get mentionsCount() {
-    const { groupsStore } = this.rootStore;
-
     return this.group.mentions_count;
+  }
+
+  get lastReadAt() {
+    return this.group.last_read_at;
+  }
+
+  @computed
+  get firstUnreadMessage() {
+    const lastReadMessageIndex = this.messages.findIndex(
+      m => m.inserted_at < this.lastReadAt
+    );
+
+    return lastReadMessageIndex > 0
+      ? this.messages[lastReadMessageIndex - 1]
+      : null;
+  }
+
+  /**
+   * Returns the position of first unread message in chat div
+   *
+   * Possible return values are:
+   *  'hidden-up': message is hidden in up the chat div
+   *  'visible': message is visible
+   *  'hidden-down': message is hidden in down the chat div
+   */
+  @computed
+  get firstUnreadMessageVisibility() {
+    if (!this.firstUnreadMessage || !this.loadedInitial) {
+      return "hidden-up";
+    }
+
+    const lastMessageId = this.groupCursor || this.messages[0].id;
+    const messageElement = this.messageElements[this.firstUnreadMessage.id];
+    if (!messageElement) {
+      return "hidden-up";
+    }
+
+    if (messageElement.visible) {
+      return "visible";
+    }
+
+    return this.firstUnreadMessage.id < lastMessageId
+      ? "hidden-up"
+      : "hidden-down";
+  }
+
+  @computed
+  get newMessageLineMessage() {
+    return this.firstUnreadMessage;
   }
 
   @computed
@@ -133,45 +170,6 @@ class MessageStore {
   @computed
   get showJumpedMessageIndicator() {
     return this.jumpMode && !this.loadedAllRecent;
-  }
-
-  @computed
-  get firstUnreadMessage() {
-    return this.getMessageByIndex(this.unreadMessagesCount - 1);
-  }
-
-  /**
-   * Returns the position of first unread message in chat div
-   *
-   * Possible return values are:
-   *  'hidden-up': message is hidden in up the chat div
-   *  'visible': message is visible
-   *  'hidden-down': message is hidden in down the chat div
-   */
-  @computed
-  get firstUnreadMessageVisibility() {
-    if (!this.firstUnreadMessage || !this.loadedInitial) {
-      return "hidden-up";
-    }
-
-    const lastMessageId = this.groupCursor || this.messages[0].id;
-    const messageElement = this.messageElements[this.firstUnreadMessage.id];
-    if (!messageElement) {
-      return "hidden-up";
-    }
-
-    if (messageElement.visible) {
-      return "visible";
-    }
-
-    return this.firstUnreadMessage.id < lastMessageId
-      ? "hidden-up"
-      : "hidden-down";
-  }
-
-  @computed
-  get newMessageLineMessage() {
-    return null;
   }
 
   // ////////////// //
