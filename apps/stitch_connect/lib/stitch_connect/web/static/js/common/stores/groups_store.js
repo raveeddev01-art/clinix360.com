@@ -42,15 +42,6 @@ class GroupsStore {
   }
 
   @computed
-  get currentGroupCursor() {
-    if (!this.currentGroupId) {
-      return null;
-    }
-
-    return this.groupCursors[this.currentGroupId];
-  }
-
-  @computed
   get defaultGroup() {
     return this.groups.find(g => g.is_default);
   }

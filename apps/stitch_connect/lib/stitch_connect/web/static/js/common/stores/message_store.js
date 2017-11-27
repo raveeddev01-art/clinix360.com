@@ -22,6 +22,8 @@ class MessageStore {
 
   @observable jumpMode = false; // indicates if message list is currently at jumping mode
 
+  @observable groupCursor = null;
+
   // Message loading status
   @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
   @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
@@ -69,15 +71,6 @@ class MessageStore {
     return groupsStore.currentGroup;
   }
 
-  /**
-   * Returns the id of oldest message that is visible in chat pane
-   */
-  get groupCursor() {
-    const { groupsStore } = this.rootStore;
-
-    return groupsStore.currentGroupCursor;
-  }
-
   get unreadMessagesCount() {
     return this.group.unread_messages_count;
   }
@@ -111,11 +104,10 @@ class MessageStore {
    */
   @computed
   get firstUnreadMessageVisibility() {
-    if (!this.firstUnreadMessage || !this.loadedInitial) {
+    if (!this.firstUnreadMessage || !this.loadedInitial || !this.groupCursor) {
       return "hidden-up";
     }
 
-    const lastMessageId = this.groupCursor || this.messages[0].id;
     const messageElement = this.messageElements[this.firstUnreadMessage.id];
     if (!messageElement) {
       return "hidden-up";
@@ -125,7 +117,7 @@ class MessageStore {
       return "visible";
     }
 
-    return this.firstUnreadMessage.id < lastMessageId
+    return this.firstUnreadMessage.id < this.groupCursor
       ? "hidden-up"
       : "hidden-down";
   }
@@ -201,6 +193,8 @@ class MessageStore {
   @action
   updateGroupCursor(cursor) {
     const { groupsStore } = this.rootStore;
+
+    this.groupCursor = cursor;
 
     groupsStore.updateGroupCursor(this.group.id, cursor);
   }
