@@ -196,6 +196,12 @@ defmodule Stitch.Accounts do
     |> Repo.update
   end
 
+  def delete_profile_image(%User{} = user) do
+    Repo.get(User, user.id)
+    |> Ecto.Changeset.  change(profile_image_url: nil, profile_image_thumb_url: nil)
+    |> Repo.update
+  end
+
   def get_by_id(user_id) do
     Repo.get(User, user_id)
   end
