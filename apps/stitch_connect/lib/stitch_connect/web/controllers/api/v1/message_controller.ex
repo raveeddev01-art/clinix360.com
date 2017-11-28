@@ -127,7 +127,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.delete(message) do
           {:ok, _message} ->
-            Endpoint.broadcast("groups:#{message.group.slug}", "group.delete_message", %{id: message.id})
+            Endpoint.broadcast("groups:#{message.group.slug}", "delete_msg", %{id: message.id})
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
             PushNotifications.push_badge_update(message)
             send_resp(conn, :no_content, "")

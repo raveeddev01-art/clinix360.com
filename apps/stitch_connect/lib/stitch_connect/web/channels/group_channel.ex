@@ -202,12 +202,12 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("group.delete_message", %{"message_id" => message_id}, socket) do
+  def handle_in("delete_msg", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.delete(message) do
       {:ok, %{message: message}} ->
-        broadcast! socket, "group.delete_message", %{id: message.id}
+        broadcast! socket, "delete_msg", %{id: message.id}
         EventsChannel.broadcast_group_msg_deleted(group, message)
         PushNotifications.push_badge_update(message)
 
@@ -221,7 +221,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("group.delete_message_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
+  def handle_in("delete_msg_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one
 
