@@ -940,7 +940,7 @@ class MessageStore {
   };
 
   @action
-  onPinMessage = message => {
+  onPinnedMessage = message => {
     const { pinnedMessageStore } = this.rootStore;
 
     this.updateMessageData(message.id, {

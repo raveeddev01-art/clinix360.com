@@ -338,9 +338,9 @@ defmodule StitchConnect.Web.GroupChannel do
     @endpoint.broadcast("groups:#{group.slug}", "group.star_message", message_json)
   end
 
-  def broadcast_pin_message(message) do
+  def broadcast_message_pinned(message) do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message)
-    @endpoint.broadcast("groups:#{group.slug}", "group.pin_message", message_json)
+    @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
   end
 end

@@ -177,7 +177,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         case MessageAction.toggle_pin(message, user) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
-            GroupChannel.broadcast_pin_message(message)
+            GroupChannel.broadcast_message_pinned(message)
             render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
             conn
