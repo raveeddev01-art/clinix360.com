@@ -451,7 +451,7 @@ class MessageStore {
       const newMessage = {
         id: temporaryID,
         request_id: temporaryID,
-        new: true, // only messages with this flag will have sending/failed/success indicator
+        new_msg: true, // only messages with this flag will have sending/failed/success indicator
         sending: true,
         sent: false,
         user: { ...currentUser },
@@ -464,7 +464,7 @@ class MessageStore {
 
       this.groupChannel
         .push(
-          "new_message",
+          "new_msg",
           Object.assign(
             { text_content: msg, request_id: temporaryID },
             additionalFields

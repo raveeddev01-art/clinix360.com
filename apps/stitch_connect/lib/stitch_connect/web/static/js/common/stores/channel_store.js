@@ -94,7 +94,7 @@ class ChannelStore {
     const { messageStore } = this.rootStore;
     const joined = this.join(this.groupChannelTopic, options);
 
-    this.groupChannel.on("new_message", messageStore.onNewMessage);
+    this.groupChannel.on("new_msg", messageStore.onNewMessage);
     this.groupChannel.on("edit_msg", messageStore.onEditMessage);
     this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
     this.groupChannel.on("starred_message", messageStore.onStarredMessage);

@@ -64,7 +64,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       })
       |> json_response(200)
 
-    assert_broadcast "new_message", new_message_1
+    assert_broadcast "new_msg", new_message_1
     assert_broadcast "new_message", new_message_2
     assert new_message_1.text_content == "{user} joined the room at {time}"
     assert new_message_2.text_content == "{user} joined the room at {time}"

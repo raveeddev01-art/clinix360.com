@@ -57,8 +57,8 @@ defmodule StitchConnect.Web.PushNotifications do
     |> FCM.push(on_response: &handle_response_andriod/1)
   end
 
-  def push_new_message_notification(_grp, %Message{type: "system"}, _user_ids), do: nil
-  def push_new_message_notification(%Group{} = grp, %Message{} = msg, user_ids) do
+  def push_new_msg_notification(_grp, %Message{type: "system"}, _user_ids), do: nil
+  def push_new_msg_notification(%Group{} = grp, %Message{} = msg, user_ids) do
     msg = Repo.preload(msg, :user)
 
     users =
@@ -67,11 +67,11 @@ defmodule StitchConnect.Web.PushNotifications do
       |> Repo.all
 
     Enum.each users, fn user ->
-      push_new_message_notification_to_user(grp, msg, user)
+      push_new_msg_notification_to_user(grp, msg, user)
     end
   end
 
-  defp push_new_message_notification_to_user(grp, msg, %User{id: user_id} = user) do
+  defp push_new_msg_notification_to_user(grp, msg, %User{id: user_id} = user) do
     %{"ios" => ios_devices, "android" => android_devices} =
       user_id
       |> Mobile.list_user_devices
@@ -82,27 +82,27 @@ defmodule StitchConnect.Web.PushNotifications do
     badge_value = Mobile.badge_value(user)
     group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: grp.id)
     room_notification_count = Mobile.room_notification_count(user, group_user)
-    push_new_message_notification_to_ios_devices(grp, msg, badge_value, ios_devices)
-    push_new_message_notification_to_android_devices(grp, msg, badge_value, room_notification_count, android_devices)
+    push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices)
+    push_new_msg_notification_to_android_devices(grp, msg, badge_value, room_notification_count, android_devices)
   end
 
-  defp push_new_message_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
+  defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
     import APNS.Notification
     apns_topic = Application.get_env(:stitch_connect, :apns_topic)
 
     ios_devices
     |> Enum.map(fn %{token: token} ->
       grp
-      |> new_message_notification_body(msg)
+      |> new_msg_notification_body(msg)
       |> new(token, apns_topic)
       |> put_badge(badge_value)
       |> put_sound("chime")
-      |> put_custom(%{ejson: new_message_notification_custom_data(msg)})
+      |> put_custom(%{ejson: new_msg_notification_custom_data(msg)})
     end)
     |> APNS.push(on_response: &handle_response_ios/1)
   end
 
-  defp push_new_message_notification_to_android_devices(grp, msg, badge_value, room_notification_count, android_devices) do
+  defp push_new_msg_notification_to_android_devices(grp, msg, badge_value, room_notification_count, android_devices) do
     import FCM.Notification
 
     android_devices
@@ -111,33 +111,33 @@ defmodule StitchConnect.Web.PushNotifications do
     |> put_data(%{
       "badge" => to_string(badge_value),
       "room_notification_count" => room_notification_count,
-      "message" => new_message_notification_body(grp, msg),
-      "ejson" => msg |> new_message_notification_custom_data |> Poison.encode!
+      "message" => new_msg_notification_body(grp, msg),
+      "ejson" => msg |> new_msg_notification_custom_data |> Poison.encode!
     })
     |> FCM.push(on_response: &handle_response_andriod/1)
   end
 
-  defp new_message_notification_body(%{name: "__dm_group__"}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{name: "__dm_group__"}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a 1-on-1 file."
   end
 
-  defp new_message_notification_body(%{name: "__dm_group__"}, %{user: user}) do
+  defp new_msg_notification_body(%{name: "__dm_group__"}, %{user: user}) do
     "#{display_name(user)} sent you a 1-on-1 message."
   end
 
-  defp new_message_notification_body(%{name: "__multi_dm_group__"}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{name: "__multi_dm_group__"}, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a direct file."
   end
 
-  defp new_message_notification_body(%{name: "__multi_dm_group__"}, %{user: user}) do
+  defp new_msg_notification_body(%{name: "__multi_dm_group__"}, %{user: user}) do
     "#{display_name(user)} sent you a direct message."
   end
 
-  defp new_message_notification_body(_grp, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(_grp, %{user: user, type: "upload"}) do
     "#{display_name(user)} uploaded a room file."
   end
 
-  defp new_message_notification_body(_grp, %{user: user}) do
+  defp new_msg_notification_body(_grp, %{user: user}) do
     "#{display_name(user)} sent a room message."
   end
 
@@ -145,7 +145,7 @@ defmodule StitchConnect.Web.PushNotifications do
     "#{first_name} #{last_name}"
   end
 
-  defp new_message_notification_custom_data(msg) do
+  defp new_msg_notification_custom_data(msg) do
     msg
     |> Repo.preload(:user)
     |> StitchConnect.Web.Api.V1.MessageView.message_json
