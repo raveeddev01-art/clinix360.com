@@ -478,6 +478,7 @@ class MessageStore {
 
           this.messages.splice(tempMessageIndex, 1, {
             ...response,
+            new: true,
             sent: true,
             sending: false
           });
