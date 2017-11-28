@@ -227,15 +227,25 @@ class GroupsStore {
   @action
   onOpenedGroup = () => {
     const {
+      channelStore,
       messageStore,
       pinnedMessageStore,
       groupPresenceStore
     } = this.rootStore;
 
-    messageStore.reset();
-    messageStore.joinGroupChannel();
+    // Join group channel
+    channelStore
+      .joinGroupChannel()
+      .receive("ok", messageStore.onJoinGroupChannel)
+      .receive("error", err => notify.show(err.message, "error"));
 
+    // Reset messages
+    messageStore.reset();
+
+    // Reset pinned messages
     pinnedMessageStore.reset();
+
+    // Resubscribe to group presence store
     groupPresenceStore.subscribeToGroupChannel();
   };
 

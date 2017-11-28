@@ -73,8 +73,13 @@ class AvatarUploader extends Component {
   };
 
   onCrop = () => {
-    const { size, onCrop } = this.props;
-    const { pixelCrop, imgDataURL } = this.state;
+    const { size, onCrop, onError } = this.props;
+    const { pixelCrop, imgDataURL, isCropping } = this.state;
+    if (!isCropping) {
+      onError("Please upload image first");
+      return;
+    }
+
     const img = new Image();
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -122,6 +127,13 @@ class AvatarUploader extends Component {
 
   onDeletePhoto = () => {
     this.props.onDelete();
+  };
+
+  renderLoadingIcon = () => {
+    const { isUploading } = this.props;
+    return isUploading ? (
+      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
+    ) : null;
   };
 
   renderDropzone() {
@@ -184,14 +196,6 @@ class AvatarUploader extends Component {
             onChange={this.onChangeCrop}
           />
         </div>
-        <div className="avatar-uploader__cropper-actions">
-          <Button bsSize="xsmall" onClick={this.onCrop}>
-            Use Crop
-          </Button>
-          <Button bsSize="xsmall" onClick={this.onCancelCrop}>
-            Cancel
-          </Button>
-        </div>
       </div>
     );
   }
@@ -203,12 +207,32 @@ class AvatarUploader extends Component {
 
     return (
       <div className={cx("avatar-uploader", className)}>
-        {disabled && (
-          <div className="avatar-uploader__cloak">
-            <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
-          </div>
-        )}
-        {isCropping ? this.renderCropper() : this.renderDropzone()}
+        <div className="avatar-uploader__content">
+          {disabled && (
+            <div className="avatar-uploader__cloak">
+              <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
+            </div>
+          )}
+          {isCropping ? this.renderCropper() : this.renderDropzone()}
+        </div>
+        <div className="avatar-uploader__actions">
+          <Button
+            className="btn-fancy"
+            disabled={isUploading}
+            onClick={this.onCancelCrop}
+          >
+            Cancel
+          </Button>
+          <Button
+            bsStyle="primary"
+            className="btn-fancy"
+            onClick={this.onCrop}
+            disabled={isUploading}
+          >
+            Save Profile Image
+            {this.renderLoadingIcon()}
+          </Button>
+        </div>
       </div>
     );
   }

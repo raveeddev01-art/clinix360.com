@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @endpoint StitchConnect.Web.Endpoint
 
-  intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
+  intercept ["group.new_message", "group.change_message", "msg_link_previews_generated"]
 
   def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
@@ -158,9 +158,9 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("new_msg", params, socket) do
+  def handle_in("group.new_message", params, socket) do
     %{group: group, current_user: user} = socket.assigns
-    do_new_msg(socket, group, user, params)
+    do_new_message(socket, group, user, params)
   end
 
   @decorate channel_action()
@@ -181,7 +181,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("edit_msg", %{"message_id" => message_id, "params" => params}, socket) do
+  def handle_in("group.change_message", %{"message_id" => message_id, "params" => params}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.update(message, params) do
@@ -189,7 +189,7 @@ defmodule StitchConnect.Web.GroupChannel do
         MessageLinkPreviewGenerator.queue(message)
         message = MessageQueries.load_info(message)
 
-        broadcast! socket, "edit_msg", message
+        broadcast! socket, "group.change_message", message
 
         json = MessageView.render("show.json", %{message: message})
         {:reply, {:ok, json}, socket}
@@ -202,12 +202,12 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("delete_msg", %{"message_id" => message_id}, socket) do
+  def handle_in("group.delete_message", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.delete(message) do
       {:ok, %{message: message}} ->
-        broadcast! socket, "delete_msg", %{id: message.id}
+        broadcast! socket, "group.delete_message", %{id: message.id}
         EventsChannel.broadcast_group_msg_deleted(group, message)
         PushNotifications.push_badge_update(message)
 
@@ -221,7 +221,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("delete_msg_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
+  def handle_in("group.delete_message_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one
 
@@ -240,19 +240,13 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def broadcast_message_starred(message) do
-    group = Repo.get(Group, message.group_id)
-    message_json = MessageView.message_json(message)
-    @endpoint.broadcast("groups:#{group.slug}", "starred_message", message_json)
+  def handle_out(event, payload, socket) when event in ["group.new_message", "group.change_message", "msg_link_previews_generated"] do
+    json = MessageView.render("show.json", %{message: payload})
+    push socket, event, json
+    {:noreply, socket}
   end
 
-  def broadcast_message_pinned(message) do
-    group = Repo.get(Group, message.group_id)
-    message_json = MessageView.message_json(message)
-    @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
-  end
-
-  defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
+  defp do_new_message(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
     attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
     result = %Group{} |> Group.changeset(attrs) |> Repo.insert
@@ -264,13 +258,13 @@ defmodule StitchConnect.Web.GroupChannel do
           |> GroupUser.changeset(%{group_id: group.id, user_id: id})
           |> Repo.insert!
         end
-        assign(socket, :group, group) |> do_new_msg(group, user, params)
+        assign(socket, :group, group) |> do_new_message(group, user, params)
 
       {:error, changeset} ->
         case changeset.errors do
           [slug: {"has already been taken", []}] ->
             group = Repo.get_by!(Group, slug: slug)
-            assign(socket, :group, group) |> do_new_msg(group, user, params)
+            assign(socket, :group, group) |> do_new_message(group, user, params)
 
           _ ->
             {:reply, {:error, %{message: "Failed to create group.", request_id: params["request_id"]}}, socket}
@@ -278,7 +272,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
+  defp do_new_message(socket, group, user, %{"text_content" => content} = attrs) do
     request_id = attrs["request_id"]
 
     if GroupAuthorization.is_member?(group.id, user.id) do
@@ -289,9 +283,9 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
-          broadcast! socket, "new_msg", Map.put(message, :request_id, request_id)
-          EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-          PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+          broadcast! socket, "group.new_message", Map.put(message, :request_id, request_id)
+          EventsChannel.broadcast_group_new_message(group, message, notify_user_ids.desktop)
+          PushNotifications.push_new_message_notification(group, message, notify_user_ids.mobile)
           PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
           json =
@@ -338,9 +332,15 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:ok, json}, socket}
   end
 
-  def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg", "msg_link_previews_generated"] do
-    json = MessageView.render("show.json", %{message: payload})
-    push socket, event, json
-    {:noreply, socket}
+  def broadcast_star_message(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.message_json(message)
+    @endpoint.broadcast("groups:#{group.slug}", "group.star_message", message_json)
+  end
+
+  def broadcast_pin_message(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.message_json(message)
+    @endpoint.broadcast("groups:#{group.slug}", "group.pin_message", message_json)
   end
 end

@@ -40,7 +40,7 @@ defmodule StitchConnect.Web.GroupController.CreateTest do
     |> json_response(200)
 
     Enum.each(user_ids, fn user_id ->
-      assert_broadcast "new_message", %{type: "system", fields: %{user: %{id: ^user_id}}}
+      assert_broadcast "event.new_message", %{type: "system", fields: %{user: %{id: ^user_id}}}
     end)
   end
 end
