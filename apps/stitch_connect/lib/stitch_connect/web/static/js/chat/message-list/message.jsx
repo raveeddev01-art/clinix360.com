@@ -267,7 +267,7 @@ class Message extends Component {
     const mine = userId === currentUser.id;
     const containerClassName = cx("message-container", {
       mine,
-      "has-status": message.new_msg
+      "has-status": message.new
     });
     const user = usersStore.usersById[userId];
 
@@ -321,7 +321,7 @@ class Message extends Component {
             </Element>
           </VisibilitySensor>
           {mine &&
-            message.new_msg && (
+            message.new && (
               <small className="text-muted msg-status">
                 {message.sending ? "Sending" : message.sent ? "Sent" : "Failed"}
               </small>

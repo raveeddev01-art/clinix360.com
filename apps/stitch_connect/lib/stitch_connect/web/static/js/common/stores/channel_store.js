@@ -54,7 +54,7 @@ class ChannelStore {
     const { sidemenuStore, groupsStore } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
-    this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
+    this.eventChannel.on("event.new_message", sidemenuStore.onNewMessage);
 
     this.eventChannel.on("created_group", groupsStore.onCreatedGroup);
     this.eventChannel.on("joined_group", groupsStore.onJoinedGroup);
@@ -94,8 +94,19 @@ class ChannelStore {
     const { messageStore } = this.rootStore;
     const joined = this.join(this.groupChannelTopic, options);
 
-    this.groupChannel.on("starred_message", messageStore.onStarredMessage);
-    this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
+    this.groupChannel.on("group.new_message", messageStore.onNewMessage);
+    this.groupChannel.on("group.change_message", messageStore.onChangeMessage);
+    this.groupChannel.on("group.delete_message", messageStore.onDeleteMessage);
+    this.groupChannel.on("group.star_message", messageStore.onStarMessage);
+    this.groupChannel.on("group.pin_message", messageStore.onPinMessage);
+    this.groupChannel.on(
+      "msg_link_previews_generated",
+      messageStore.onLinkPreviewGenerated
+    );
+    this.groupChannel.on(
+      "msg_link_preview_deleted",
+      messageStore.onLinkPreviewDeleted
+    );
 
     return joined;
   }

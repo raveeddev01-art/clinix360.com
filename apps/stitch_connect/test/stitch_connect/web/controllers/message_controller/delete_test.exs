@@ -29,7 +29,7 @@ defmodule StitchConnect.Web.MessageController.DeleteTest do
     |> delete(api_v1_message_path(conn, :delete, message))
     |> response(204)
 
-    assert_broadcast "delete_msg", %{id: message_id_1}
+    assert_broadcast "group.delete_message", %{id: message_id_1}
     assert_broadcast "message_deleted", %{id: message_id_2}
 
     assert message.id == message_id_1
@@ -47,7 +47,7 @@ defmodule StitchConnect.Web.MessageController.DeleteTest do
       |> delete(api_v1_message_path(conn, :delete, message))
       |> json_response(401)
 
-    refute_broadcast "delete_msg", %{}
+    refute_broadcast "group.delete_message", %{}
     refute_broadcast "message_deleted", %{}
 
     assert json["message"] == "You can't delete other users' messages"
