@@ -18,7 +18,7 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
       @endpoint.subscribe("events:#{user2.id}")
       ref = push socket1, "group.new_message", %{text_content: "Mentions @#{user2.username}."}
       assert_reply ref, :ok
-      assert_broadcast "event.new_message", %{group_id: _group_id, text_content: "Mentions @user2.", notify: true}
+      assert_broadcast "new_message", %{group_id: _group_id, text_content: "Mentions @user2.", notify: true}
       assert Stitch.EmailNotification.count([user2.id]) == [%{message_count: 1, user_id: user2.id}]
     end
 
@@ -73,7 +73,7 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
       ref = push socket1, "group.new_message", %{text_content: "Lorem ipsum"}
       assert_reply ref, :ok
 
-      assert_broadcast "event.new_message", %{text_content: "Lorem ipsum", notify: true}
+      assert_broadcast "new_message", %{text_content: "Lorem ipsum", notify: true}
       assert Stitch.EmailNotification.count([user2.id]) == [%{message_count: 1, user_id: user2.id}]
     end
 
@@ -109,7 +109,7 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
       ref = push socket1, "group.new_message", %{text_content: "Lorem ipsum"}
       assert_reply ref, :ok
 
-      assert_broadcast "event.new_message", %{group_id: _dm_group_id, text_content: "Lorem ipsum", notify: true}
+      assert_broadcast "new_message", %{group_id: _dm_group_id, text_content: "Lorem ipsum", notify: true}
       assert Stitch.EmailNotification.count([user2.id]) == [%{message_count: 1, user_id: user2.id}]
     end
 

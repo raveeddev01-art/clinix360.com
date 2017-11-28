@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.EventsTest do
     ref = push socket1, "group.new_message", %{text_content: "Hello, @#{user2.username}"}
 
     assert_reply ref, :ok
-    assert_broadcast "event.new_message", data
+    assert_broadcast "new_message", data
 
     assert data.user_id == user1.id
     assert data.text_content == "Hello, @user2"
