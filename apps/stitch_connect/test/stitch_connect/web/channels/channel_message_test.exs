@@ -65,14 +65,14 @@ defmodule StitchConnect.Web.ChannelMessageTest do
     ref1 = push socket1, "group.new_message", %{text_content: "Hello, World!"}
     assert_reply ref1, :ok, message
 
-    ref2 = push socket2, "group.change_message", %{message_id: message.id, params: %{text_content: "New Content"}}
+    ref2 = push socket2, "edit_msg", %{message_id: message.id, params: %{text_content: "New Content"}}
     assert_reply ref2, :error, %{message: "Message not found."}
 
     ref3 = push socket2, "delete_msg", %{message_id: message.id}
     assert_reply ref3, :error, %{message: "Message not found."}
   end
 
-  test "change_message event changes message content and broadcasts it",
+  test "edit_msg event changes message content and broadcasts it",
       %{socket1: socket1, group: group} do
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
@@ -81,13 +81,13 @@ defmodule StitchConnect.Web.ChannelMessageTest do
 
     @endpoint.subscribe("groups:#{group.slug}")
 
-    ref2 = push socket1, "group.change_message", %{message_id: message.id, params: %{text_content: "New Content"}}
+    ref2 = push socket1, "edit_msg", %{message_id: message.id, params: %{text_content: "New Content"}}
     assert_reply ref2, :ok, edited_message
 
     assert message.id == edited_message.id
     assert Repo.get(Message, message.id).text_content == "New Content"
 
-    assert_broadcast "group.change_message", data
+    assert_broadcast "edit_msg", data
     assert data.id == edited_message.id
     assert data.text_content == edited_message.text_content
   end

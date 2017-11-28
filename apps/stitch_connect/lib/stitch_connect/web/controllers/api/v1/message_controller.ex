@@ -106,7 +106,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, message} ->
             MessageLinkPreviewGenerator.queue(message)
             message = MessageQueries.load_info(message)
-            Endpoint.broadcast("groups:#{message.group.slug}", "group.change_message", message)
+            Endpoint.broadcast("groups:#{message.group.slug}", "edit_msg", message)
             render conn, "show.json", message: message, user_id: user.id
           {:error, :message, changeset, _changeset_so_far} ->
             conn

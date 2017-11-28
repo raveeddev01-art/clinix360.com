@@ -31,7 +31,7 @@ defmodule StitchConnect.Web.MessageController.UpdateTest do
       })
       |> json_response(200)
 
-    assert_broadcast "group.change_message", message
+    assert_broadcast "edit_msg", message
     assert message.text_content == "new message text"
 
     assert json["text_content"] == "new message text"
