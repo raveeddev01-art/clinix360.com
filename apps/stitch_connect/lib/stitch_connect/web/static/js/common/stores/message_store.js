@@ -925,7 +925,7 @@ class MessageStore {
   };
 
   @action
-  onStarMessage = message => {
+  onStarredMessage = message => {
     const { globalStarredMessageStore } = this.rootStore;
 
     this.updateMessageData(message.id, {

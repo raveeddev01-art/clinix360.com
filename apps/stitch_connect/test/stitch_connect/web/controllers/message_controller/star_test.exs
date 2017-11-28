@@ -29,7 +29,7 @@ defmodule StitchConnect.Web.MessageController.StarTest do
 
     assert json["starred"] == true
 
-    assert_broadcast "group.star_message", %{id: message_id, starred: true}
+    assert_broadcast "starred_message", %{id: message_id, starred: true}
     assert message_id == message.id
   end
 
@@ -43,7 +43,7 @@ defmodule StitchConnect.Web.MessageController.StarTest do
 
     assert json["starred"] == false
 
-    assert_broadcast "group.star_message", %{id: message_id, starred: false}
+    assert_broadcast "starred_message", %{id: message_id, starred: false}
     assert message_id == message.id
   end
 end
