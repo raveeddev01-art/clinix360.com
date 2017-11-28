@@ -7,7 +7,6 @@
 
 class ChannelStore {
   channels = {};
-  lastGroupChannelTopic = "";
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -95,11 +94,7 @@ class ChannelStore {
     const { messageStore } = this.rootStore;
     const joined = this.join(this.groupChannelTopic, options);
 
-    if (this.lastGroupChannelTopic) {
-      this.leave(this.lastGroupChannelTopic);
-    }
-
-    this.groupChannel.on("group.new_message", messageStore.onNewMessage);
+    this.groupChannel.on("new_message", messageStore.onNewMessage);
     this.groupChannel.on("edit_msg", messageStore.onEditMessage);
     this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
     this.groupChannel.on("starred_message", messageStore.onStarredMessage);
@@ -112,8 +107,6 @@ class ChannelStore {
       "msg_link_preview_deleted",
       messageStore.onLinkPreviewDeleted
     );
-
-    this.lastGroupChannelTopic = this.groupChannelTopic;
 
     return joined;
   }

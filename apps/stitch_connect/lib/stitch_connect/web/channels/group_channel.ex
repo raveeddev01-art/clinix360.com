@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @endpoint StitchConnect.Web.Endpoint
 
-  intercept ["group.new_message", "edit_msg", "msg_link_previews_generated"]
+  intercept ["new_message", "edit_msg", "msg_link_previews_generated"]
 
   def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
@@ -158,7 +158,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("group.new_message", params, socket) do
+  def handle_in("new_message", params, socket) do
     %{group: group, current_user: user} = socket.assigns
     do_new_message(socket, group, user, params)
   end
@@ -240,10 +240,16 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def handle_out(event, payload, socket) when event in ["group.new_message", "edit_msg", "msg_link_previews_generated"] do
-    json = MessageView.render("show.json", %{message: payload})
-    push socket, event, json
-    {:noreply, socket}
+  def broadcast_message_starred(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.message_json(message)
+    @endpoint.broadcast("groups:#{group.slug}", "starred_message", message_json)
+  end
+
+  def broadcast_message_pinned(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.message_json(message)
+    @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
   end
 
   defp do_new_message(socket, {:create_dm, id_pair, other_user_id}, user, params) do
@@ -283,7 +289,7 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
-          broadcast! socket, "group.new_message", Map.put(message, :request_id, request_id)
+          broadcast! socket, "new_message", Map.put(message, :request_id, request_id)
           EventsChannel.broadcast_group_new_message(group, message, notify_user_ids.desktop)
           PushNotifications.push_new_message_notification(group, message, notify_user_ids.mobile)
           PushNotifications.push_badge_update(message, notify_user_ids.mobile)
@@ -332,15 +338,9 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:ok, json}, socket}
   end
 
-  def broadcast_message_starred(message) do
-    group = Repo.get(Group, message.group_id)
-    message_json = MessageView.message_json(message)
-    @endpoint.broadcast("groups:#{group.slug}", "starred_message", message_json)
-  end
-
-  def broadcast_message_pinned(message) do
-    group = Repo.get(Group, message.group_id)
-    message_json = MessageView.message_json(message)
-    @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
+  def handle_out(event, payload, socket) when event in ["new_message", "edit_msg", "msg_link_previews_generated"] do
+    json = MessageView.render("show.json", %{message: payload})
+    push socket, event, json
+    {:noreply, socket}
   end
 end

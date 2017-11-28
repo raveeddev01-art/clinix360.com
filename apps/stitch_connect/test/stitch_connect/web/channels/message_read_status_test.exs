@@ -75,7 +75,7 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
     assert_reply ref, :ok, %{messages: updated_messages}
     assert length(updated_messages) == 3
 
-    ref = push socket1, "group.new_message", %{text_content: "Message 4"}
+    ref = push socket1, "new_message", %{text_content: "Message 4"}
     assert_reply ref, :ok, %{id: message_id}
     message4 = Repo.get(Message, message_id)
 
@@ -104,7 +104,7 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
     messages = Enum.map(1..3, fn n ->
-      ref = push socket1, "group.new_message", %{text_content: "Message #{n}"}
+      ref = push socket1, "new_message", %{text_content: "Message #{n}"}
       assert_reply ref, :ok, %{id: message_id}
       Repo.get(Message, message_id)
     end)
