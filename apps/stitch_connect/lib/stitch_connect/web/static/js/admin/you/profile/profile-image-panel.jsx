@@ -23,6 +23,7 @@ class ProfileImagePanel extends Component {
 
   onCrop = profileImgUrl => {
     this.setState({ profileImgUrl, isCropped: true });
+    this.onSave();
   };
 
   onToggleEdit = () => {
@@ -103,7 +104,7 @@ class ProfileImagePanel extends Component {
       <SettingPanel
         title={title}
         description={description}
-        onSave={this.onSave}
+        saveButtonText=""
         onEdit={this.onToggleEdit}
       >
         <AvatarUploader
