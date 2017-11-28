@@ -32,7 +32,7 @@ defmodule StitchConnect.Web.ChannelAuthTest do
     test "only members can leave message on public groups", %{socket1: socket1} do
       assert {:ok, _, socket1} = subscribe_and_join(socket1, "groups:general")
 
-      ref = push socket1, "group.new_message", %{text_content: "Hello, I'm not member"}
+      ref = push socket1, "new_msg", %{text_content: "Hello, I'm not member"}
 
       assert_reply ref, :error, reply
       assert reply.message == "Only members can write messages."

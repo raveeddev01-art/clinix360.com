@@ -57,7 +57,7 @@ class SocketStore {
   openSocket = () => {
     this.isConnected = true;
     clearInterval(this.interval);
-    // this.startPingPong();
+    this.startPingPong();
   };
 
   @action

@@ -451,7 +451,7 @@ class MessageStore {
       const newMessage = {
         id: temporaryID,
         request_id: temporaryID,
-        new: true, // only messages with this flag will have sending/failed/success indicator
+        new_msg: true, // only messages with this flag will have sending/failed/success indicator
         sending: true,
         sent: false,
         user: { ...currentUser },
@@ -464,7 +464,7 @@ class MessageStore {
 
       this.groupChannel
         .push(
-          "group.new_message",
+          "new_msg",
           Object.assign(
             { text_content: msg, request_id: temporaryID },
             additionalFields
@@ -507,7 +507,7 @@ class MessageStore {
   deleteLinkPreview = (msgId, link) => {
     return new Promise((resolve, reject) => {
       this.groupChannel
-        .push("group.delete_message_link_preview", {
+        .push("delete_msg_link_preview", {
           message_id: msgId,
           link
         })
@@ -679,7 +679,7 @@ class MessageStore {
       return;
     }
 
-    this.groupChannel.push("group.change_message", {
+    this.groupChannel.push("edit_msg", {
       message_id: this.messageInEdit.id,
       params: {
         text_content: this.textInEdit
@@ -698,7 +698,7 @@ class MessageStore {
     const message = this.messages.find(m => m.id === id);
 
     if (message) {
-      this.groupChannel.push("group.delete_message", { message_id: id });
+      this.groupChannel.push("delete_msg", { message_id: id });
     }
   }
 
@@ -899,7 +899,7 @@ class MessageStore {
   };
 
   @action
-  onChangeMessage = editedMessage => {
+  onEditMessage = editedMessage => {
     if (editedMessage.group_id !== this.groupId) {
       return;
     }
@@ -925,7 +925,7 @@ class MessageStore {
   };
 
   @action
-  onStarMessage = message => {
+  onStarredMessage = message => {
     const { globalStarredMessageStore } = this.rootStore;
 
     this.updateMessageData(message.id, {
@@ -940,7 +940,7 @@ class MessageStore {
   };
 
   @action
-  onPinMessage = message => {
+  onPinnedMessage = message => {
     const { pinnedMessageStore } = this.rootStore;
 
     this.updateMessageData(message.id, {
