@@ -471,11 +471,17 @@ class MessageStore {
           )
         )
         .receive("ok", response => {
-          const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
-          Object.assign(tmpMsg, response, {
+          // Replace temp message with real message
+          const tempMessageIndex = this.messages.findIndex(
+            m => m.request_id === temporaryID
+          );
+
+          this.messages.splice(tempMessageIndex, 1, {
+            ...response,
             sent: true,
             sending: false
           });
+
           resolve(response);
         })
         .receive("error", err => {
