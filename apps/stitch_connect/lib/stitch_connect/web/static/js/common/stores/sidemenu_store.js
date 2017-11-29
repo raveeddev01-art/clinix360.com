@@ -18,6 +18,7 @@ class SidemenuStore {
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
+  @observable isInChat = false;
 
   badge = null;
   favicon = null;
@@ -245,8 +246,11 @@ class SidemenuStore {
       return;
     }
 
-    const { notificationStore, messageStore, groupsStore } = this.rootStore;
-    if (messageStore.groupId === newMessage.group_id) return;
+    if (newMessage.type === "system") {
+      return;
+    }
+
+    const { notificationStore, groupsStore } = this.rootStore;
     const desktopNotification = notificationStore.getGroupPrefById(
       newMessage.group_id
     );
@@ -270,7 +274,7 @@ class SidemenuStore {
         text,
         "new-message",
         5000,
-        event => {
+        () => {
           this.jumpToMessage(newMessage);
           window.dispatchEvent(new CustomEvent("notification-clicked"));
         }
@@ -281,7 +285,7 @@ class SidemenuStore {
   jumpToMessage(message) {
     const { groupsStore } = this.rootStore;
     const url = groupsStore.getGroupUrl(message.group_id);
-
+    window.focus();
     history.push(url);
   }
 
@@ -304,7 +308,7 @@ class SidemenuStore {
     const { groupStore, groupsStore } = this.rootStore;
 
     // If the message is for the current group, ignore
-    if (newMessage.group_id === groupStore.group.id) {
+    if (newMessage.group_id === groupStore.group.id && this.isInChat) {
       return;
     }
 
