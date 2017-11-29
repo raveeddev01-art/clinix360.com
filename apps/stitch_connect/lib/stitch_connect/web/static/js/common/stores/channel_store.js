@@ -7,6 +7,7 @@
 
 class ChannelStore {
   channels = {};
+  lastGroupChannelTopic = "";
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -92,7 +93,10 @@ class ChannelStore {
 
   joinGroupChannel(options = {}) {
     const { messageStore } = this.rootStore;
+
     const joined = this.join(this.groupChannelTopic, options);
+
+    this.leaveLastGroupChannel();
 
     this.groupChannel.on("new_msg", messageStore.onNewMessage);
     this.groupChannel.on("edit_msg", messageStore.onEditMessage);
@@ -107,6 +111,8 @@ class ChannelStore {
       "msg_link_preview_deleted",
       messageStore.onLinkPreviewDeleted
     );
+
+    this.lastGroupChannelTopic = this.groupChannelTopic;
 
     return joined;
   }
@@ -140,6 +146,13 @@ class ChannelStore {
     this.teamChannel.on("user_info", usersStore.onUserInfo);
 
     return joined;
+  }
+
+  leaveLastGroupChannel() {
+    if (this.lastGroupChannelTopic) {
+      this.leave(this.lastGroupChannelTopic);
+      this.lastGroupChannelTopic = "";
+    }
   }
 
   leaveAllChannelsButTeam() {

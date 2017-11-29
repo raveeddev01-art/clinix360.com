@@ -1,6 +1,6 @@
 /**
  * Group store
- * 
+ *
  * This store keeps track of data of of the group that current user is in now.
  */
 

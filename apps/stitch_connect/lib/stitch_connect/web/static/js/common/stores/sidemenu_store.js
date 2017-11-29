@@ -18,6 +18,7 @@ class SidemenuStore {
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
+  @observable isInChat = false;
 
   badge = null;
   favicon = null;
@@ -284,7 +285,7 @@ class SidemenuStore {
   jumpToMessage(message) {
     const { groupsStore } = this.rootStore;
     const url = groupsStore.getGroupUrl(message.group_id);
-
+    window.focus();
     history.push(url);
   }
 
@@ -307,7 +308,7 @@ class SidemenuStore {
     const { groupStore, groupsStore } = this.rootStore;
 
     // If the message is for the current group, ignore
-    if (newMessage.group_id === groupStore.group.id) {
+    if (newMessage.group_id === groupStore.group.id && this.isInChat) {
       return;
     }
 
