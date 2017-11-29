@@ -17,6 +17,7 @@ defmodule Stitch.Accounts.User do
     field :last_name, :string
     field :phone_number, :string
     field :profile_image_url, :string
+    field :profile_image_thumb_url, :string
     field :confirmation_code, :string
     field :title, :string
     field :email_confirmed, :boolean, default: false
@@ -40,10 +41,15 @@ defmodule Stitch.Accounts.User do
   def changeset(%User{} = struct, attrs) do
     struct
     |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :profile_image_url, :username])
-    |> unique_constraint(:username, name: :users_username_team_id_index)
+    |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> validate_required([:first_name, :last_name])
   end
+
+  def validate_username(%Ecto.Changeset{changes: %{username: _}} = changeset, params) do
+    username_changeset(changeset, params)
+  end
+  def validate_username(changeset, _), do: changeset
 
   def preference_changeset(%User{} = struct, params) do
     struct
@@ -101,7 +107,7 @@ defmodule Stitch.Accounts.User do
     confirmation_code = digits
       |> Enum.join
 
-    token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+    token = Stitch.Rand.token(32)
 
     struct
     |> cast(params, [:team_id])
@@ -123,12 +129,10 @@ defmodule Stitch.Accounts.User do
 
   def onboarding_complete_changeset(struct, params) do
     struct
-    |> cast(params, [:first_name, :last_name, :username, :password, :pin, :team_id, :roles])
-    |> validate_length(:username, min: 2, max: 50)
-    |> validate_format(:username, ~r/^[a-z0-9][a-z0-9\.\-\-]+$/)
-    |> unique_constraint(:username, name: :users_username_team_id_index)
+    |> cast(params, [:first_name, :phone_number, :last_name, :password, :pin, :team_id, :roles])
+    |> username_changeset(params)
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
-    |> validate_required([:username, :pin, :team_id, :roles])
+    |> validate_required([:phone_number, :pin, :team_id, :roles])
     |> put_change(:onboarded, true)
   end
 
@@ -137,4 +141,30 @@ defmodule Stitch.Accounts.User do
     |> cast(params, [:password])
     |> validate_required([:password])
   end
+
+  def username_changeset(data, params) do
+    data
+    |> cast(params, [:username, :team_id])
+    |> validate_required(:username)
+    |> validate_length(:username, min: 2, max: 50)
+    |> validate_format(:username, ~r/^[a-z0-9][a-z0-9\.\-_]+$/)
+    |> unsafe_validate_unique([:username, :team_id], Repo)
+    |> unique_constraint(:username, name: :users_username_team_id_index)
+  end
+
+  def profile_image_changeset(struct, params) do
+    struct
+    |> cast(params, [:profile_image_url])
+    |> add_thumb()
+  end
+
+  def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
+    case Stitch.Accounts.ProfileImage.create_thumb(url) do
+      {:ok, profile_image_thumb_url} ->
+        put_change(changeset, :profile_image_thumb_url, profile_image_thumb_url)
+      {:error, _error} ->
+        changeset
+    end
+  end
+  def add_thumb(changeset), do: changeset
 end

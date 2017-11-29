@@ -28,8 +28,8 @@ class NavItemRename extends Component {
   openModal = () => {
     this.setState({
       showModal: true,
-      groupName: this.props.groupStore.name,
-      groupSlug: `#${this.props.groupStore.slug}`
+      groupName: this.props.groupStore.group.name,
+      groupSlug: `#${this.props.groupStore.group.slug}`
     });
   };
 
@@ -59,11 +59,7 @@ class NavItemRename extends Component {
   };
 
   handleSubmit = () => {
-    this.props.groupStore.rename(this.state.groupName.trim()).then(group => {
-      const { history, sidemenuStore } = this.props;
-      sidemenuStore.updateGroupData(group.id, group);
-      history.push(`/rooms/${group.slug}`);
-    });
+    this.props.groupStore.rename(this.state.groupName.trim());
     this.setState({ showModal: false });
   };
 
@@ -72,7 +68,11 @@ class NavItemRename extends Component {
       <MenuItem key="rename_menuitem" onClick={this.openModal}>
         Rename
       </MenuItem>,
-      <Modal key="rename_modal" show={this.state.showModal}>
+      <Modal
+        key="rename_modal"
+        show={this.state.showModal}
+        onHide={this.closeModal}
+      >
         <Modal.Header>
           <Modal.Title>Rename</Modal.Title>
           <a role="link" onClick={this.closeModal}>

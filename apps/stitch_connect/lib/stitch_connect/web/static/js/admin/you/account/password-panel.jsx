@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
@@ -21,7 +22,7 @@ class PasswordPanel extends Component {
     this.state = {
       oldPassword: "",
       newPassword: "",
-      formValid: false
+      formInvalid: false
     };
   }
 
@@ -29,15 +30,32 @@ class PasswordPanel extends Component {
     this.setState({
       oldPassword: "",
       newPassword: "",
-      formValid: false
+      formInvalid: false
     });
   };
 
   _onSave = () => {
-    this.props.userStore.savePassword(
-      this.state.oldPassword,
-      this.state.newPassword
-    );
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
+    const { oldPassword, newPassword } = this.state;
+    if (oldPassword === newPassword) {
+      onError("Old password and new password can not be same.");
+      return Promise.resolve();
+    }
+
+    hideAlert();
+    return userStore
+      .savePassword(oldPassword, newPassword)
+      .then(() => {
+        onSuccess("Your password has been successfully updated.");
+        this.setState({
+          newPassword: "",
+          oldPassword: ""
+        });
+      })
+      .catch(err => {
+        if (err.data && err.data.message) onError(err.data.message);
+        else onError("Unknown server response");
+      });
   };
 
   _onChangeOldPassword = evt =>
@@ -49,19 +67,19 @@ class PasswordPanel extends Component {
     });
   };
 
-  _onChangeValid = formValid => {
-    this.setState({ formValid });
+  _onChangeValid = formInvalid => {
+    this.setState({ formInvalid });
   };
 
   render() {
-    const { oldPassword, newPassword, formValid } = this.state;
+    const { oldPassword, newPassword, formInvalid } = this.state;
     return (
       <SettingPanel
         title={title}
         description={description}
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
-        disableSave={formValid}
+        disableSave={formInvalid || oldPassword === ""}
       >
         <Row>
           <Col sm={6} componentClass={FormGroup}>
@@ -69,7 +87,7 @@ class PasswordPanel extends Component {
             <FormControl
               type="password"
               bsSize="large"
-              placeholder="Enter Old Password"
+              placeholder="Old Password"
               value={oldPassword}
               onChange={this._onChangeOldPassword}
             />
@@ -79,7 +97,7 @@ class PasswordPanel extends Component {
             <FormControl
               type="password"
               bsSize="large"
-              placeholder="Enter New Password"
+              placeholder="New Password"
               value={newPassword}
               onChange={this._onChangeNewPassword}
             />
@@ -93,5 +111,11 @@ class PasswordPanel extends Component {
     );
   }
 }
+
+PasswordPanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default PasswordPanel;

@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Group, GroupQueries, GroupAuthorization, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel}
+  alias Stitch.{Group, GroupQueries, GroupAuthorization, TeamAuthorization, MessageQueries}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
 
   def index(conn, %{"slug" => slug}) do
     user = conn.assigns.current_user
@@ -46,6 +46,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         case Group.rename(group, name) do
           {:ok, group} ->
             group = GroupQueries.load_user_data(group, user)
+            EventsChannel.broadcast_group_rename(group)
             render conn, "show.json", group: group, user_id: user.id
           {:error, reason} ->
             conn
@@ -76,7 +77,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         group = group
         |> Map.put_new(:joined, true)
         |> Map.put_new(:unread_messages_count, 0)
-        |> Map.put_new(:favorite, false)
+        |> Map.put_new(:is_favorite, false)
         |> Map.put_new(:is_hidden, false)
         |> Map.put_new(:last_read_at, nil)
         |> Map.put_new(:mentions_count, 0)
@@ -88,7 +89,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         end)
 
         render conn, "show.json", group: group, user_id: user.id
-      {:error, :already_exists} ->
+      {:error, {:already_exists, _slug}} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Room with given name already exists."})
@@ -130,7 +131,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
           group
           |> Map.put_new(:joined, true)
           |> Map.put_new(:unread_messages_count, 0)
-          |> Map.put_new(:favorite, false)
+          |> Map.put_new(:is_favorite, false)
           |> Map.put_new(:is_hidden, false)
           |> Map.put_new(:last_read_at, nil)
           |> Map.put_new(:mentions_count, 0)
@@ -159,19 +160,26 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def join(conn, %{"id" => group_id}) do
     group = GroupQueries.get_by_id(group_id)
 
-    case Group.add_user(group, conn.assigns.current_user.id) do
-      {:error, _, _, _} ->
+    case TeamAuthorization.user_is_member?(conn.assigns.current_user.team_id, conn.assigns.current_user.id) do
+      true ->
+        case Group.add_user(group, conn.assigns.current_user.id) do
+          {:error, _, _, _} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> json(%{message: "Cannot add user to the room"})
+          {:ok, %{group_user: group_user, system_message: system_message}} ->
+            {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
+            system_message = MessageQueries.load_info(system_message)
+            Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
+            EventsChannel.broadcast_group_join(group, conn.assigns.current_user.id)
+
+            conn
+            |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
+        end
+      false ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Cannot add user to the room"})
-      {:ok, %{group_user: group_user, system_message: system_message}} ->
-        {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
-        system_message = MessageQueries.load_info(system_message)
-        Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
-        EventsChannel.broadcast_group_join(group, conn.assigns.current_user.id)
-
-        conn
-        |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
     end
   end
 
@@ -197,7 +205,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def toggle_favorite(conn, %{"id" => group_id}) do
     case Group.toggle_favorite(group_id, conn.assigns.current_user.id) do
       {:ok, %{group_id: group_id, is_favorite: is_favorite}} ->
-        conn |> json(%{group_id: group_id, favorited: is_favorite})
+        EventsChannel.broadcast_group_favorite(conn.assigns.current_user, group_id, is_favorite)
+        conn
+        |> json(%{group_id: group_id, is_favorite: is_favorite})
       {:error, message} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -216,6 +226,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> json(%{message: "Not authorized to toggle the room's privacy setting."})
       true ->
         {:ok, group} = Group.toggle_public(group, public)
+        TeamChannel.broadcast_group_public_status(conn.assigns.team, group)
         group = GroupQueries.load_user_data(group, user)
         render conn, "show.json", group: group, user_id: user.id
     end
@@ -253,11 +264,33 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
     case Group.hide(group, conn.assigns.current_user.id) do
       {:ok, _} ->
+        EventsChannel.broadcast_group_hidden(conn.assigns.current_user, group, true)
         json(conn, %{message: "Room hidden"})
       {:error, message} ->
         conn
         |> put_status(:forbidden)
         |> json(%{message: message})
+    end
+  end
+
+  def unhide(conn, %{"id" => group_id}) do
+    group = GroupQueries.get_by_id(group_id)
+
+    case Stitch.GroupAuthorization.can_view?(group, conn.assigns.current_user) do
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not authorized to access this room."})
+      true ->
+        case Group.unhide(group, conn.assigns.current_user.id) do
+          {:ok, _} ->
+            EventsChannel.broadcast_group_hidden(conn.assigns.current_user, group, false)
+            json(conn, %{message: "Room unhidden"})
+          {:error, message} ->
+            conn
+            |> put_status(:forbidden)
+            |> json(%{message: message})
+        end
     end
   end
 end

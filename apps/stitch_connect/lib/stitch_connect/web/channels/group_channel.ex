@@ -3,12 +3,16 @@ defmodule StitchConnect.Web.GroupChannel do
   use Appsignal.Instrumentation.Decorators
 
   import Ecto.Query
+  alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
-  alias Stitch.{Repo, Group, GroupUser, GroupAuthorization, Message, MessageQueries}
+  alias Stitch.{Repo, Group, GroupUser, GroupAuthorization,
+    Message, MessageAuthorization, MessageQueries}
   alias StitchConnect.Web.Presence
 
-  intercept ["new_msg", "edit_msg"]
+  @endpoint StitchConnect.Web.Endpoint
+
+  intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
 
   def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
@@ -182,6 +186,7 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.update(message, params) do
       {:ok, message} ->
+        MessageLinkPreviewGenerator.queue(message)
         message = MessageQueries.load_info(message)
 
         broadcast! socket, "edit_msg", message
@@ -215,6 +220,38 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  @decorate channel_action()
+  def handle_in("delete_msg_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
+    %{group: group, current_user: user} = socket.assigns
+    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one
+
+    case {message, message && MessageAuthorization.can_delete?(message, user)} do
+      {nil, _} ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+
+      {_, false} ->
+        reason = "Only the message sender or an admin can delete a message's link preview."
+        {:reply, {:error, %{message: reason}}, socket}
+
+      {message, true} ->
+        %Message{id: message_id} = Message.LinkPreview.delete!(message, link)
+        broadcast! socket, "msg_link_preview_deleted", %{message_id: message_id, link: link}
+        {:reply, :ok, socket}
+    end
+  end
+
+  def broadcast_message_starred(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.message_json(message)
+    @endpoint.broadcast("groups:#{group.slug}", "starred_message", message_json)
+  end
+
+  def broadcast_message_pinned(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.message_json(message)
+    @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
+  end
+
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
     attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
@@ -236,31 +273,38 @@ defmodule StitchConnect.Web.GroupChannel do
             assign(socket, :group, group) |> do_new_msg(group, user, params)
 
           _ ->
-            {:reply, {:error, %{message: "Failed to create group."}}, socket}
+            {:reply, {:error, %{message: "Failed to create group.", request_id: params["request_id"]}}, socket}
         end
     end
   end
 
   defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
+    request_id = attrs["request_id"]
+
     if GroupAuthorization.is_member?(group.id, user.id) do
       attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
       acitve_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
 
       case Message.create(group.id, user, attrs, acitve_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
+          MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
-          broadcast! socket, "new_msg", message
+          broadcast! socket, "new_msg", Map.put(message, :request_id, request_id)
           EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
           PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+          PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
-          json = MessageView.render("show.json", %{message: message})
+          json =
+            "show.json"
+            |> MessageView.render(%{message: message})
+            |> Map.put(:request_id, request_id)
           {:reply, {:ok, json}, socket}
 
         {:error, _changeset} ->
-          {:reply, {:error, %{message: "Failed to create message."}}, socket}
+          {:reply, {:error, %{message: "Failed to create message.", request_id: request_id}}, socket}
       end
     else
-      {:reply, {:error, %{message: "Only members can write messages."}}, socket}
+      {:reply, {:error, %{message: "Only members can write messages.", request_id: request_id}}, socket}
     end
   end
 
@@ -294,7 +338,7 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:ok, json}, socket}
   end
 
-  def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg"] do
+  def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg", "msg_link_previews_generated"] do
     json = MessageView.render("show.json", %{message: payload})
     push socket, event, json
     {:noreply, socket}

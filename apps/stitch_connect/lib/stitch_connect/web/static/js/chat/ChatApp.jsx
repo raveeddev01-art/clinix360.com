@@ -4,13 +4,16 @@ import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Dropzone from "react-dropzone";
 
 import Sidemenu from "../sidemenu/sidemenu";
-import Chat from "./chat";
+import Chat from "./Chat";
 import BrowserNotificationAlert from "./browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
+import Switcher from "../common/components/switcher/index";
 
-@inject("uploadStore", "sidemenuStore")
+@inject("uploadStore", "sidemenuStore", "channelStore", "groupsStore")
 @observer
 class ChatApp extends Component {
+  static requiresAdmin = false;
+
   constructor(props) {
     super(props);
 
@@ -19,10 +22,13 @@ class ChatApp extends Component {
     };
   }
 
-  componentDidMount() {
-    const { sidemenuStore, history } = this.props;
+  componentWillMount() {
+    this.props.sidemenuStore.isInChat = true;
+  }
 
-    sidemenuStore.setHistory(history);
+  componentWillUnmount() {
+    this.props.channelStore.leaveLastGroupChannel();
+    this.props.sidemenuStore.isInChat = false;
   }
 
   onDragEnter = () => {
@@ -52,6 +58,8 @@ class ChatApp extends Component {
   };
 
   render() {
+    const { defaultGroup } = this.props.groupsStore;
+
     return (
       <Dropzone
         id="app"
@@ -69,12 +77,15 @@ class ChatApp extends Component {
         )}
         <UploadModal />
         <BrowserNotificationAlert />
-        <div className="app-container">
+        <div className="appContainer">
+          <Switcher />
           <Sidemenu />
           <Switch>
             <Route path={`/rooms/:slug`} component={Chat} />
             <Route path={`/direct/:usernames`} component={Chat} />
-            <Route component={() => <Redirect to="/rooms/general" />} />
+            {defaultGroup && (
+              <Redirect from="*" to={`/rooms/${defaultGroup.slug}`} />
+            )}
           </Switch>
         </div>
       </Dropzone>

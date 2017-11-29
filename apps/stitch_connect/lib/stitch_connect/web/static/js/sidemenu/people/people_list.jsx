@@ -1,19 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import CreateDMModal from "./modals/create-dm-modal";
-import InvitationModal from "./modals/invitation-modal";
 import Room from "../room";
 
+@inject("userStore")
+@observer
 class PeopleList extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      showTeamModal: false,
-      showInviteModal: false
+      showTeamModal: false
     };
   }
 
@@ -23,24 +24,13 @@ class PeopleList extends Component {
     });
   };
 
-  toggleInviteModal = () => {
-    this.setState({
-      showInviteModal: !this.state.showInviteModal
-    });
-  };
-
   showTeamModal = evt => {
     evt.preventDefault();
     this.toggleTeamModal();
   };
 
-  showInviteModal = evt => {
-    evt.preventDefault();
-    this.toggleInviteModal();
-  };
-
   render() {
-    const { heading, rooms } = this.props;
+    const { heading, rooms, userStore } = this.props;
 
     return (
       <div className="menu-nav people m-b-20">
@@ -72,26 +62,24 @@ class PeopleList extends Component {
 
         {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
-        <OverlayTrigger
-          placement="top"
-          overlay={<Tooltip id="invite-people-modal">Invite People</Tooltip>}
-        >
-          <a
-            role="button"
-            className="invite-link"
-            onClick={this.showInviteModal}
+        {userStore.canInvite && (
+          <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip id="invite-people-modal">Invite Members</Tooltip>}
           >
-            Invite People
-          </a>
-        </OverlayTrigger>
+            <a
+              role="button"
+              className="invite-link"
+              onClick={this.props.showInviteModal}
+            >
+              Invite Members
+            </a>
+          </OverlayTrigger>
+        )}
 
         <CreateDMModal
           show={this.state.showTeamModal}
           toggle={this.toggleTeamModal}
-        />
-        <InvitationModal
-          show={this.state.showInviteModal}
-          toggle={this.toggleInviteModal}
         />
       </div>
     );
@@ -100,7 +88,8 @@ class PeopleList extends Component {
 
 PeopleList.propTypes = {
   heading: PropTypes.string.isRequired,
-  rooms: PropTypes.arrayOf(PropTypes.object).isRequired
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  showInviteModal: PropTypes.func.isRequired
 };
 
 export default PeopleList;

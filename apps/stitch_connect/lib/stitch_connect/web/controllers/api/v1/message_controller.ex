@@ -2,7 +2,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
   alias Stitch.{Repo, Group, GroupAuthorization, GroupQueries,
                 Message, MessageAction, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel, PushNotifications}
+  alias StitchConnect.MessageLinkPreviewGenerator
+  alias StitchConnect.Web.{Endpoint, EventsChannel, GroupChannel, PushNotifications}
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
@@ -51,10 +52,12 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         active_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
         case Message.create(group.id, user, message_params, active_user_ids) do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
+            MessageLinkPreviewGenerator.queue(message)
             message = message |> MessageQueries.load_info
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
             PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+            PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
             conn
             |> put_status(:created)
@@ -76,7 +79,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
     case GroupAuthorization.can_view?(message.group, conn.assigns.current_user) do
       true ->
-        case StitchConnect.Upload.presign(message) do
+        case Stitch.Upload.presign(message) do
           {:ok, presigned_url} ->
             conn
             |> json(%{presigned_url: presigned_url})
@@ -101,6 +104,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.update(message, message_params) do
           {:ok, message} ->
+            MessageLinkPreviewGenerator.queue(message)
             message = MessageQueries.load_info(message)
             Endpoint.broadcast("groups:#{message.group.slug}", "edit_msg", message)
             render conn, "show.json", message: message, user_id: user.id
@@ -150,7 +154,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, result, _changeset} ->
             message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
-            EventsChannel.broadcast_msg_starred(message, user)
+            GroupChannel.broadcast_message_starred(message)
             render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
             conn
@@ -173,6 +177,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         case MessageAction.toggle_pin(message, user) do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
+            GroupChannel.broadcast_message_pinned(message)
             render conn, "show.json", message: message, user_id: user.id
           {:error, changeset} ->
             conn

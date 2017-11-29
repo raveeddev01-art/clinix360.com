@@ -51,7 +51,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
 
+    get "/users/validate-username", UserController, :validate_username
     post "/users/exists", UserController, :exists?
+    post "/users/validate-phone-number", UserController, :validate_phone_number
     post "/invitations/accept/:token", InvitationController, :accept
   end
 
@@ -76,6 +78,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/users/notification-preference", NotificationPreferenceController, :update_global
     get "/users/:id", UserController, :show
     put "/users/:id", UserController, :update
+    put "/users/:id/update_password", UserController, :update_password
+    put "/users/:id/upload_profile_image", UserController, :upload_profile_image
+    delete "/users/:id/delete_profile_image", UserController, :delete_profile_image
     post "/users/search", UserController, :search
 
     get "/invitations", InvitationController, :index
@@ -87,7 +92,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/groups/:id", GroupController, :show
     post "/groups", GroupController, :create
     post "/groups/dm", GroupController, :create_single_dm
-    post "/groups/multi-dm", GroupController, :create_multi_dm
+    post "/groups/multi_dm", GroupController, :create_multi_dm
     post "/groups/search", GroupController, :search
     post "/groups/:id/invite/", GroupController, :invite
     post "/groups/:id/toggle-favorite", GroupController, :toggle_favorite
@@ -97,6 +102,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/groups/:id/users", GroupController, :users
     patch "/groups/:id/rename", GroupController, :rename
     put "/groups/:id/hide", GroupController, :hide
+    put "/groups/:id/unhide", GroupController, :unhide
 
     get "/groups/:group_id/notification-preference", NotificationPreferenceController, :show
     put "/groups/:group_id/notification-preference", NotificationPreferenceController, :update
@@ -127,7 +133,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
 
     resources "/exports", ExportController, only: [:index, :create]
-    get "/exports/:id/download", ExportController, :download
+
+    resources "/reports", ReportController, only: [:create]
   end
 
   # Subscription/Billing routes
@@ -150,15 +157,10 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api_auth
 
-    put "/users/:id/update_password", UserController, :update_password
-    put "/users/:id/avatar", UserController, :update_avatar
-    delete "/users/:id/avatar", UserController, :delete_avatar
-
     get "/invitations/:token", InvitationController, :show
 
     get "/teams/:id", TeamController, :show
     put "/teams/:id", TeamController, :update
-    post "/teams/:id/send-invite", TeamController, :send_invite
 
     post "/login", AuthenticationController, :submit_login
     post "/reset_password", AuthenticationController, :reset_password
@@ -169,10 +171,14 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser
 
     get "/invitations/accept/:token", InvitationController, :accept
+    get "/invitations/accept/:token/:step", InvitationController, :accept
+    get "/invitations/error", InvitationController, :error
 
     get "/login", AuthenticationController, :login
     post "/login", AuthenticationController, :submit_login
-    get "/logout", AuthenticationController, :logout
+
+    get "/logged-out", AuthenticationController, :logged_out
+
     get "/reset-password", AuthenticationController, :reset_password
     get "/reset-password/:token", AuthenticationController, :change_password
   end
@@ -182,6 +188,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser_authenticate
 
     get "/", PageController, :index
+    get "/apps", AuthenticationController, :apps
+
+    get "/logout", AuthenticationController, :logout
 
     get "/rooms/:slug", GroupController, :index
     get "/direct/:username", UserController, :index
@@ -190,12 +199,14 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/admin/team", AdminController, :index
     get "/admin/team/settings", AdminController, :index
     get "/admin/team/security", AdminController, :index
+    get "/admin/you/home", AdminController, :index
     get "/admin/you/profile", AdminController, :index
     get "/admin/you/account", AdminController, :index
     get "/admin/you/notifications", AdminController, :index
-    get "/admin/users/invitations", AdminController, :index
-    get "/admin/users/members", AdminController, :index
-    get "/admin/users/pending", AdminController, :index
+    get "/admin/members", AdminController, :index
     get "/admin/billing", AdminController, :index
+    get "/admin/analytics", AdminController, :index
+
+    get "/exports/:id/download", ExportController, :download
   end
 end

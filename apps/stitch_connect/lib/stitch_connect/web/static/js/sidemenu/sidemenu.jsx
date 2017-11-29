@@ -1,20 +1,28 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
-
+import { LinkContainer } from "react-router-bootstrap";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
-
 import Dropdown from "react-bootstrap/lib/Dropdown";
 
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
+import InviteModal from "../common/modals/invite-modal";
 
-@inject("presenceStore", "sidemenuStore")
+@inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
 @observer
 class Sidemenu extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showInviteModal: false
+    };
+  }
+
   componentDidMount() {
     const { sidemenuStore } = this.props;
 
@@ -33,30 +41,38 @@ class Sidemenu extends Component {
     }
   };
 
+  toggleInviteModal = () => {
+    this.setState({
+      showInviteModal: !this.state.showInviteModal
+    });
+  };
+
+  showInviteModal = evt => {
+    evt.preventDefault();
+    this.toggleInviteModal();
+  };
+
   renderAdminOptions() {
     return (
       <div>
         <div className="separator text-center">
           <span>Admin</span>
         </div>
-        <MenuItem eventKey="4" href="/admin/team/settings" target="_blank">
-          Settings
-        </MenuItem>
-        <MenuItem eventKey="5" href="/admin/team/security" target="_blank">
-          Security
-        </MenuItem>
-        <MenuItem eventKey="6" href="/admin/users/members" target="_blank">
-          Members
-        </MenuItem>
-        <MenuItem eventKey="7" href="/admin/users/invitations" target="_blank">
-          Invitations
-        </MenuItem>
-        <MenuItem eventKey="8" href="/admin/users/pending" target="_blank">
-          Pending
-        </MenuItem>
-        <MenuItem eventKey="9" href="/admin/billing" target="_blank">
-          Billing
-        </MenuItem>
+        <LinkContainer to="/admin/team/settings">
+          <MenuItem eventKey="4">Settings</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/team/security">
+          <MenuItem eventKey="5">Security</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/analytics">
+          <MenuItem eventKey="6">Analytics</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/members">
+          <MenuItem eventKey="7">Members</MenuItem>
+        </LinkContainer>
+        <LinkContainer to="/admin/billing">
+          <MenuItem eventKey="8">Billing</MenuItem>
+        </LinkContainer>
       </div>
     );
   }
@@ -104,7 +120,7 @@ class Sidemenu extends Component {
   }
 
   render() {
-    const { sidemenuStore } = this.props;
+    const { sidemenuStore, userStore, groupsStore } = this.props;
     const filterJoined = rooms => rooms.filter(room => room.joined);
 
     return (
@@ -133,32 +149,32 @@ class Sidemenu extends Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="super-colors">
-              <h5 className="text-center">{`${window.currentUser
-                .firstName} ${window.currentUser.lastName}`}</h5>
+              <h5 className="text-center">{`${currentUser.firstName} ${currentUser.lastName}`}</h5>
 
               <div className="separator text-center">
                 <span>You</span>
               </div>
-              <MenuItem eventKey="1" href="/admin/you/account" target="_blank">
-                Account
-              </MenuItem>
-              <MenuItem eventKey="2" href="/admin/you/profile" target="_blank">
-                Profile
-              </MenuItem>
-              <MenuItem
-                eventKey="3"
-                href="/admin/you/notifications"
-                target="_blank"
-              >
-                Notifications
-              </MenuItem>
+              <LinkContainer to="/admin/you/account">
+                <MenuItem eventKey="1">Account</MenuItem>
+              </LinkContainer>
+              <LinkContainer to="/admin/you/profile">
+                <MenuItem eventKey="2">Profile</MenuItem>
+              </LinkContainer>
+              <LinkContainer to="/admin/you/notifications">
+                <MenuItem eventKey="3">Notifications</MenuItem>
+              </LinkContainer>
 
-              {currentUser.roles.includes("admin") && this.renderAdminOptions()}
+              {userStore.isAdmin && this.renderAdminOptions()}
 
               <div className="separator text-center">
                 <span>Stitch</span>
               </div>
 
+              {userStore.canInvite && (
+                <MenuItem eventKey="9" onClick={this.showInviteModal}>
+                  Invite
+                </MenuItem>
+              )}
               <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
                 Lockout
               </MenuItem>
@@ -177,17 +193,23 @@ class Sidemenu extends Component {
           >
             <FavoritesList
               heading={"Favorites"}
-              rooms={sidemenuStore.favoriteGroups}
+              rooms={groupsStore.favoriteGroups}
             />
 
             <RoomsList
               heading="Rooms"
-              rooms={filterJoined(sidemenuStore.normalGroups)}
+              rooms={filterJoined(groupsStore.normalGroups)}
             />
 
             <PeopleList
               heading="Direct Messages"
-              rooms={filterJoined(sidemenuStore.directGroups)}
+              rooms={filterJoined(groupsStore.directGroups)}
+              showInviteModal={this.showInviteModal}
+            />
+
+            <InviteModal
+              show={this.state.showInviteModal}
+              toggle={this.toggleInviteModal}
             />
           </div>
 

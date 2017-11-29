@@ -21,7 +21,8 @@ class BrowserNotification extends Component {
         if (permission === "granted") {
           this.props.sidemenuStore.showNotificationCard(
             "Success",
-            "Great! Notification are now enabled."
+            "Great! Notification are now enabled.",
+            "notification-enabled"
           );
         }
         this.setState({ browserPermission: permission });
@@ -31,6 +32,7 @@ class BrowserNotification extends Component {
 
   render() {
     const permissionGranted = Notification.permission === "granted";
+    const permissionDefault = Notification.permission === "default";
     let status = "not enabled";
 
     switch (Notification.permission) {
@@ -44,7 +46,7 @@ class BrowserNotification extends Component {
     }
 
     return (
-      <div>
+      <div className="panel-settings">
         <h3 className="m-b-20">Browser Notifications</h3>
 
         <Well>
@@ -75,7 +77,7 @@ class BrowserNotification extends Component {
           browser settings.
         </p>
 
-        {!permissionGranted && (
+        {permissionDefault && (
           <div className="clearfix">
             <Button
               bsStyle="primary"

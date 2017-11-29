@@ -1,5 +1,5 @@
 import { observable, computed, action } from "mobx";
-import queryString from "query-string";
+import { stringify } from "qs";
 
 class MentionsStore {
   @observable mentions = [];
@@ -23,7 +23,7 @@ class MentionsStore {
       return;
     }
 
-    const params = queryString.stringify({
+    const params = stringify({
       skip: this.mentions.length,
       limit: this.limit
     });

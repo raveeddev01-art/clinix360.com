@@ -1,17 +1,24 @@
 defmodule StitchConnect.Web.AuthenticationController do
   use StitchConnect.Web, :controller
+  alias StitchConnect.Web.{EventsChannel}
 
   def index(conn, _params) do
     render conn, "index.html", subdomain: conn.private[:subdomain]
   end
 
   def login(conn, _params) do
-    login_params = Poison.encode!(%{
-      "teamName" => conn.private[:team_name],
-      "teamSlug" => conn.private[:team_slug],
-      "invalidLogin" => get_flash(conn, :invalid_login)
-    })
-    render conn, "login.html", login_params: login_params
+    with current_user_id when is_integer(current_user_id) <- get_session(conn, :current_user_id),
+         %Stitch.Accounts.User{} = current_user <- Stitch.Accounts.get_for_team_id(current_user_id, conn.assigns.team.id) do
+      default_group = Stitch.GroupQueries.default_group(current_user)
+      redirect(conn, to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug))
+    else _error ->
+      login_params = Poison.encode!(%{
+        "teamName" => conn.private[:team_name],
+        "teamSlug" => conn.private[:team_slug],
+        "invalidLogin" => get_flash(conn, :invalid_login)
+      })
+      render conn, "login.html", login_params: login_params
+    end
   end
 
   def submit_login(conn, %{"email" => email, "password" => password}) do
@@ -19,18 +26,14 @@ defmodule StitchConnect.Web.AuthenticationController do
     case Stitch.User.Authentication.validate_email_and_password(email, password, team_slug) do
       false ->
         conn
-        |> put_flash(:invalid_login, "Invalid email or password.")
+        |> put_flash(:invalid_login, "Sorry, you entered an invalid email or password.")
         |> redirect(to: "/login")
       user ->
         case user.disabled do
           false ->
             conn
-            |> put_session(:current_user, user)
-            |> put_session(:authentication_token, user.token)
-            |> put_session(:session_id, random_session_id())
-            |> put_session(:locked, false)
-            |> configure_session(renew: true)
-            |> redirect(to: "/")
+            |> login_user(user)
+            |> redirect(to: "/apps")
           true ->
             conn
             |> put_flash(:invalid_login, "This account is disabled - contact your team admin.")
@@ -40,9 +43,22 @@ defmodule StitchConnect.Web.AuthenticationController do
   end
 
   def logout(conn, _) do
+    session_id = get_session(conn, :session_id)
+
     conn
-    |> clear_session
-    |> redirect(to: "/")
+    |> configure_session(drop: true)
+    |> broadcast_logout(session_id)
+    |> redirect(to: "/logged-out")
+  end
+
+  def logged_out(conn, _) do
+    logged_out_params = Poison.encode!(%{
+      "teamName" => conn.private[:team_name],
+      "teamSlug" => conn.private[:team_slug]
+    })
+    conn
+    |> configure_session(drop: true)
+    |> render("logged_out.html", logged_out_params: logged_out_params)
   end
 
   def reset_password(conn, _) do
@@ -71,7 +87,16 @@ defmodule StitchConnect.Web.AuthenticationController do
     end
   end
 
-  defp random_session_id do
-    :crypto.strong_rand_bytes(8) |> Base.url_encode64
+  defp broadcast_logout(conn, session_id) do
+    EventsChannel.broadcast_logout(conn.assigns.current_user, session_id)
+    conn
+  end
+
+  def apps(conn, _) do
+    apps_page_params = Poison.encode!(%{
+      "teamName" => conn.private[:team_name],
+      "teamSlug" => conn.private[:team_slug]
+    })
+    render(conn, "apps_page.html", apps_page_params: apps_page_params)
   end
 end

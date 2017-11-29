@@ -1,5 +1,18 @@
 defmodule StitchConnect.Web.ControllerHelpers do
   alias StitchConnect.Web.ErrorHelpers
+  import Plug.Conn
+
+  @doc """
+  Logs a user in.
+  """
+  def login_user(conn, user) do
+    conn
+    |> put_session(:current_user_id, user.id)
+    |> put_session(:authentication_token, user.token)
+    |> put_session(:session_id, Stitch.Rand.token(12))
+    |> put_session(:locked, false)
+    |> configure_session(renew: true)
+  end
 
   @doc """
   Takes a changeset with errors and parses it into a string

@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.UserSocket do
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket,
     timeout: 45_000,
-    check_origin: ["//*.teamstitchapp.com", "//*.teamstitch.com", "//*.localhost:4443"]
+    check_origin: ["//*.teamstitchapp.com", "//*.teamstitch.com", "//*.#{Application.fetch_env!(:stitch_connect, :application_host)}"]
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -31,7 +31,7 @@ defmodule StitchConnect.Web.UserSocket do
         |> assign(:current_user, user)
         |> assign(:team_id, user.team_id)
         |> assign(:session_id, params["sessionId"])
-        |> assign(:connection_id, random_string(8))
+        |> assign(:connection_id, Stitch.Rand.token(8))
         |> assign(:application_version, params["applicationVersion"])
         {:ok, socket}
     end
@@ -50,8 +50,4 @@ defmodule StitchConnect.Web.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   def id(socket), do: "users_socket:#{socket.assigns.current_user.id}"
-
-  defp random_string(length) do
-    :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
-  end
 end

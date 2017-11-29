@@ -1,36 +1,33 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import { Link, withRouter, matchPath } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-@inject("teamStore")
+@inject("teamStore", "presenceStore", "adminPanelStore")
 @observer
 class Topbar extends Component {
-
   render() {
-    const { onToggleSidebar, teamStore } = this.props;
+    const { onToggleSidebar, adminPanelStore } = this.props;
+    const { heading, icon } = adminPanelStore;
 
     return (
       <div className="flex-header admin-topbar">
-        <a
-          role="button"
-          className="toggle-menu"
-          onClick={onToggleSidebar}
-        >
-          <i className="fa fa-bars"></i>
-          <i className="fa fa-times"></i>
+        <a role="button" className="toggle-menu" onClick={onToggleSidebar}>
+          <i className="fa fa-bars" />
+          <i className="fa fa-times" />
           <span>Menu</span>
         </a>
-        <span className="separator"></span>
+        <span className="separator" />
         <h4>
-          <i className="fa fa-sliders"></i> Control Panel
+          <i className={`fa ${icon}`} /> {heading}
         </h4>
         <ul className="nav navbar-nav">
           <li>
             <a
-              role="link"
-              href="https://teamstitch.zendesk.com/hc/en-us/categories/201817677-Connect"
+              href="https://intercom.help/teamstitch"
+              rel="noopener noreferrer"
               target="_blank"
             >
               <OverlayTrigger
@@ -38,61 +35,29 @@ class Topbar extends Component {
                 container={this}
                 overlay={<Tooltip id="tooltip-info">Help</Tooltip>}
               >
-                <div>
-                  <i className="fa fa-question-circle" />
-                  <span>Help</span>
-                </div>
+                <i className="fa fa-question-circle" />
               </OverlayTrigger>
             </a>
           </li>
           <li>
-            <a
-              role="link"
-              href="/"
-            >
-              <OverlayTrigger
-                placement="bottom"
-                container={this}
-                overlay={<Tooltip id="tooltip-info">Launch</Tooltip>}
-              >
-                <div>
-                  <i className="fa fa-rocket" />
-                  <span>Launch</span>
-                </div>
-              </OverlayTrigger>
-            </a>
-          </li>
-          <li className="hidden-xss">
-            <a
-              role="link"
-              href="#"
-            >
+            <a role="link" onClick={this.props.presenceStore.lock}>
               <OverlayTrigger
                 placement="bottom"
                 container={this}
                 overlay={<Tooltip id="tooltip-info">Lockout</Tooltip>}
               >
-                <div>
-                  <i className="fa fa-lock" />
-                  <span>Lockout</span>
-                </div>
+                <i className="fa fa-lock" />
               </OverlayTrigger>
             </a>
           </li>
-          <li className="hidden-xss">
-            <a
-              role="link"
-              href="/logout"
-            >
+          <li>
+            <a href="/logout">
               <OverlayTrigger
                 placement="bottom"
                 container={this}
                 overlay={<Tooltip id="tooltip-info">Sign Out</Tooltip>}
               >
-                <div>
-                  <i className="fa fa-sign-out" />
-                  <span>Sign Out</span>
-                </div>
+                <i className="fa fa-sign-out" />
               </OverlayTrigger>
             </a>
           </li>
@@ -101,5 +66,9 @@ class Topbar extends Component {
     );
   }
 }
+
+Topbar.propTypes = {
+  onToggleSidebar: PropTypes.func.isRequired
+};
 
 export default withRouter(Topbar);

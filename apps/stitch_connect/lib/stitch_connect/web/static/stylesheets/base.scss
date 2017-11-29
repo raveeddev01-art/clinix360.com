@@ -18,12 +18,12 @@ html {
 
 body {
   line-height: 1.5;
-  font-family: "lato", sans-serif;
-  font-size: 14px;
-  background: $body-bg;
+  font-family: "Stitch Lato", sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  background: $body-bg;
   // overflow-y: hidden;
   // overflow-x: hidden;
 }
@@ -101,7 +101,6 @@ hr {
 }
 
 .tooltip {
-  font-family: "Lato", sans-serif;
   font-size: 14px;
 }
 .tooltip-inner {
@@ -116,6 +115,11 @@ hr {
   .m-u-#{$i * 10} {
     margin-top: #{$i * 10}px;
   }
+}
+
+.m-center {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 // ::-webkit-scrollbar {
@@ -187,7 +191,7 @@ hr {
 .btn-fancy,
 .sweet-alert .btn-fancy {
   border: none;
-  border-radius: 2px;
+  border-radius: 4px;
   padding: 12px 20px;
   font-size: 16px;
   outline: none;
@@ -417,7 +421,7 @@ i.fa {
 
   .toggle-text {
     flex: 1;
-    padding: 0 5px;
+    padding: 0 12px;
   }
 
   .toggle-handle {
@@ -437,5 +441,54 @@ i.fa {
       background: #fff;
       order: 1;
     }
+  }
+}
+
+.pin-code {
+  width: 250px;
+  margin-bottom: 15px;
+
+  .form-control {
+    width: 25%;
+    height: 60px;
+    font-size: 28px;
+    text-align: center;
+
+    &:nth-child(2) {
+      border-left: 0;
+      border-right: 0;
+    }
+
+    &:nth-child(3) {
+      border-right: 0;
+    }
+  }
+}
+
+.password-validator {
+  ul {
+    color: $brand-primary;
+  }
+}
+
+#loading-screen-wrapper {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: $brand-primary;
+}
+
+i.fa {
+  &.on-right {
+    margin-left: 8px;
+    vertical-align: text-bottom;
   }
 }

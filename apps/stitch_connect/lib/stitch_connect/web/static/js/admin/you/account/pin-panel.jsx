@@ -1,9 +1,8 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import ControlLabel from "react-bootstrap/lib/ControlLabel";
-import FormControl from "react-bootstrap/lib/FormControl";
 import SettingPanel from "../../components/setting-panel/setting-panel";
+import PinInput from "../../../common/components/pin-input/index";
 
 const title = "PIN";
 const description =
@@ -11,47 +10,72 @@ const description =
 
 @inject("userStore")
 @observer
-class UsernamePanel extends Component {
+class PinPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pin: ""
+      pin: "",
+      formValid: false
     };
   }
 
-  _onToggleEdit = () => {
+  onInvalid = () => {
+    this.setState({ formValid: false, pin: "" });
+  };
+
+  onValid = pin => {
+    this.setState({
+      pin,
+      formValid: pin.length === 4
+    });
+  };
+
+  onToggleEdit = () => {
     this.setState({
       pin: ""
     });
   };
-  _onSave = () => {
-    this.props.userStore.savePIN(this.state.pin);
+
+  onSave = () => {
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
+
+    hideAlert();
+    return userStore
+      .savePIN(this.state.pin)
+      .then(() => {
+        onSuccess("Your PIN has been successfully updated.");
+        this.setState({
+          pin: ""
+        });
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
-  _onChangePIN = evt => this.setState({ pin: evt.target.value });
-
   render() {
-    const { pin } = this.state;
     return (
       <SettingPanel
         title={title}
         description={description}
-        onSave={this._onSave}
-        onEdit={this._onToggleEdit}
+        onSave={this.onSave}
+        onEdit={this.onToggleEdit}
+        disableSave={!this.state.formValid}
       >
-        <FormGroup bsSize="large">
-          <ControlLabel>PIN</ControlLabel>
-          <FormControl
-            type="password"
-            placeholder="0000"
-            maxLength={4}
-            value={pin}
-            onChange={this._onChangePIN}
-          />
-        </FormGroup>
+        <PinInput
+          onValid={this.onValid}
+          onInvalid={this.onInvalid}
+          pin={this.state.pin}
+        />
       </SettingPanel>
     );
   }
 }
 
-export default UsernamePanel;
+PinPanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
+
+export default PinPanel;

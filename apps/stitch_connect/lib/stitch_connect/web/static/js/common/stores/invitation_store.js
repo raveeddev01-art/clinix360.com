@@ -21,29 +21,23 @@ class InvitationStore {
 
   @action
   revokeInvitation = id => {
-    patch(`/api/v1/invitations/${id}/revoke`).then(() => {
+    return patch(`/api/v1/invitations/${id}/revoke`, {
+      hideNotify: true
+    }).then(() => {
       const index = this.invitations.findIndex(
         invitation => invitation.id === id
       );
       if (index > -1) {
-        const email = this.invitations[index].email;
         this.invitations.splice(index, 1);
-        notify.show(`Invitation revoked from ${email}`);
       }
     });
   };
 
   @action
   resendInvitation = id => {
-    patch(`/api/v1/invitations/${id}/resend`).then(() => {
-      const index = this.invitations.findIndex(
-        invitation => invitation.id === id
-      );
-      if (index > -1) {
-        const email = this.invitations[index].email;
-        notify.show(`Invitation resent to ${email}`);
-      }
-    });
+    return patch(`/api/v1/invitations/${id}/resend`, {
+      hideNotify: true
+    }).then();
   };
 }
 

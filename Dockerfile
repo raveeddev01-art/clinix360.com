@@ -25,6 +25,9 @@ RUN npm install -g yarn
 RUN mix local.hex --force
 RUN mix local.rebar --force
 
+# Install project app dependencies.
+RUN apt-get install -y imagemagick
+
 # This precompiles your deps before adding your code, which lets you take advantage of Docker
 # caching while you iterate on your app.
 ADD mix.exs mix.exs

@@ -1,20 +1,23 @@
 import React from "react";
 import { Provider } from "mobx-react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { Router } from "react-router-dom";
+import { StripeProvider } from "react-stripe-elements";
 
-import LockableApp from "./LockableApp";
-
+import history from "../lib/history";
 import RootStore from "../common/stores/root_store";
+import LockableApp from "./LockableApp";
 
 const App = props => {
   const rootStore = new RootStore(props);
 
   return (
-    <Router>
-      <Provider {...rootStore}>
-        <LockableApp />
-      </Provider>
-    </Router>
+    <StripeProvider apiKey={stripePublishableKey}>
+      <Router history={history}>
+        <Provider {...rootStore}>
+          <LockableApp />
+        </Provider>
+      </Router>
+    </StripeProvider>
   );
 };
 

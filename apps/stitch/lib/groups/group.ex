@@ -167,6 +167,15 @@ defmodule Stitch.Group do
   end
 
   @doc """
+  Assigns creator for the default group
+  """
+  def assign_creator(%Group{is_default: true, creator_user_id: nil} = group, user_id) do
+    group
+    |> Ecto.Changeset.change(creator_user_id: user_id)
+    |> Repo.update
+  end
+
+  @doc """
   Removes a user from the group
   """
   def remove(%Group{name: name}, _) when name in ["__dm_group__", "__multi_dm_group__"] do

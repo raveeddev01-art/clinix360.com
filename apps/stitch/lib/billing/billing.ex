@@ -9,6 +9,7 @@ defmodule Stitch.Billing do
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
   @trial_duration 14 * 24 * 60 * 60 # 14 days in seconds
+  @analytics Application.get_env(:stitch, :analytics)
 
   @doc """
   Configures a newly created team with a trial.
@@ -16,8 +17,17 @@ defmodule Stitch.Billing do
   @spec setup_new_team(Team.t) :: Subscription.t
   def setup_new_team(%Team{id: team_id, name: team_name}) do
     customer_id = @stripe_client.create_customer(team_id, team_name)
+    end_time = trial_end_datetime()
 
-    %{valid_until: trial_end_datetime(), team_id: team_id, customer_id: customer_id, tier: "TRIAL"}
+    params = %{
+      valid_until: end_time,
+      trial_valid_until: end_time,
+      team_id: team_id,
+      customer_id: customer_id,
+      tier: "TRIAL"
+    }
+
+    params
     |> Subscription.new()
     |> Repo.insert()
     |> case do
@@ -54,12 +64,7 @@ defmodule Stitch.Billing do
   @spec get_subscription(Team.t) :: Subscription.t
   def get_subscription(%Team{} = team) do
     team = Repo.preload(team, :subscription)
-    subscription = team.subscription
-
-    active_user_count = active_user_count(team)
-    estimated_invoice_amount = estimated_invoice_amount(subscription.tier, active_user_count)
-
-    %Subscription{subscription | estimated_invoice_amount: estimated_invoice_amount}
+    team.subscription
   end
 
   @spec get_subscription(String.t, String.t) :: Subscription.t | nil
@@ -72,11 +77,6 @@ defmodule Stitch.Billing do
     |> Stitch.TeamQueries.list_active_users()
     |> length()
   end
-
-  defp estimated_invoice_amount("TRIAL", _active_user_count), do: 0
-  defp estimated_invoice_amount("BASIC", active_user_count), do: 5 * active_user_count
-  defp estimated_invoice_amount("PREMIUM", active_user_count), do: 10 * active_user_count
-  defp estimated_invoice_amount("POWER", active_user_count), do: 15 * active_user_count
 
   @doc """
   Modifies a subscription for a team.
@@ -106,7 +106,7 @@ defmodule Stitch.Billing do
       {:ok, %Subscription{...}}
 
   """
-  @spec modify_subscription(Subscription.t, map) :: {:ok, Subscription.t} | {:error, Ecto.Changeset.t}
+  @spec modify_subscription(Subscription.t, map) :: {:ok, Subscription.t} | {:error, Ecto.Changeset.t | :card_required}
   def modify_subscription(subscription, params \\ %{})
   def modify_subscription(%Subscription{tier: "TRIAL"} = subscription, params) do
     do_modify_subscription(subscription, params, &create_subscription/2)
@@ -117,28 +117,50 @@ defmodule Stitch.Billing do
 
   defp do_modify_subscription(subscription, params, fun) when is_function(fun, 2) do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
+         {:count, count} when count > 0 <- {:count, card_count(subscription.team_id)},
          plan_id = determine_plan_id(changeset.changes),
          {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
-      subscription
-      |> subscription_update_changeset(changeset.changes, stripe_sub_params)
-      |> Repo.update()
+      result =
+        subscription
+        |> subscription_update_changeset(changeset.changes, stripe_sub_params)
+        |> Repo.update()
+      case result, do: ({:ok, _} -> analytics_identify_and_group(subscription.team_id); _ -> :ignore)
+      result
     else
       %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
-    error -> error
+      {:count, _} -> {:error, :card_required}
+      error -> error
     end
+  end
+
+  defp analytics_identify_and_group(team_id) do
+    Task.start(fn ->
+      @analytics.identify_and_group(%{team_id: team_id})
+    end)
   end
 
   defp create_subscription(subscription, plan_id) do
     customer_id = subscription.customer_id
     subscription = Repo.preload(subscription, :team)
     user_count = active_user_count(subscription.team)
-    @stripe_client.create_subscription(customer_id, plan_id, user_count)
+    opts = subscription_opts(subscription)
+
+    @stripe_client.create_subscription(customer_id, plan_id, user_count, opts)
   end
 
   defp update_subscription(subscription, plan_id) do
     customer_id = subscription.customer_id
     subscription_id = subscription.subscription_id
-    @stripe_client.update_subscription_plan(customer_id, subscription_id, plan_id)
+    opts = subscription_opts(subscription)
+
+    @stripe_client.update_subscription_plan(customer_id, subscription_id, plan_id, opts)
+  end
+
+  defp subscription_opts(subscription) do
+    case DateTime.compare(subscription.trial_valid_until, DateTime.utc_now()) do
+      :gt -> [trial_end_date: subscription.trial_valid_until]
+      _ -> []
+    end
   end
 
   @doc """
@@ -201,6 +223,12 @@ defmodule Stitch.Billing do
   @spec subscription_update_changeset(Subscription.t, map, map) :: Ecto.Changeset.t
   defp subscription_update_changeset(%Subscription{} = subscription, user_changes, stripe_changes) do
     update_params = Map.merge(user_changes, stripe_changes)
+    update_params =
+      if update_params.estimated_invoice_amount == nil do
+        Map.delete(update_params, :estimated_invoice_amount)
+      else
+        update_params
+      end
     Subscription.update(subscription, update_params)
   end
 
@@ -211,6 +239,14 @@ defmodule Stitch.Billing do
       |> Subscription.update(params)
       |> Repo.update()
     end
+  end
+
+  defp card_count(team_id) do
+    query =
+      from pm in PaymentMethod,
+      where: pm.team_id == ^team_id,
+      select: count(pm.id)
+    Repo.one(query)
   end
 
   @doc """
@@ -234,12 +270,12 @@ defmodule Stitch.Billing do
   @doc """
   Adds a credit card to the team.
 
-  If the card is the first card to be added, the card will be set as the default card.
+  New cards are set as the default card.
 
   ## Example
 
       iex> add_card(%Team{...}, "tok_1234567")
-      {:ok, %PaymentMethod{...}}
+      {:ok, %PaymentMethod{default: true, ...}}
 
   """
   @spec add_card(Team.t, String.t) :: {:ok, PaymentMethod.t} | {:error, Ecto.Changeset.t | :invalid_token}
@@ -248,8 +284,11 @@ defmodule Stitch.Billing do
     customer_id = team.subscription.customer_id
 
     with %{valid?: true} = changeset <- PaymentMethod.stripe(%{source_token: source_token}),
-         {:ok, card} <- @stripe_client.add_card(customer_id, changeset.changes.source_token) do
-      do_insert_card(team_id, card)
+         {:ok, card} <- @stripe_client.add_card(customer_id, changeset.changes.source_token),
+         :true <- @stripe_client.set_as_default_card(customer_id, card.card_id),
+         {:ok, payment_method} <- do_insert_card(team_id, card) do
+      do_set_as_default(payment_method)
+      {:ok, payment_method}
     else
       %Ecto.Changeset{} = changeset -> {:error, changeset}
       :error -> {:error, :invalid_token}
@@ -257,15 +296,9 @@ defmodule Stitch.Billing do
   end
 
   defp do_insert_card(team_id, card_params) do
-    query =
-      from pm in PaymentMethod,
-      where: pm.team_id == ^team_id,
-      select: count(pm.id)
-    set_as_default? = Repo.one(query) == 0
-
     params =
       card_params
-      |> Map.put(:default, set_as_default?)
+      |> Map.put(:default, true)
       |> Map.put(:team_id, team_id)
 
     params
@@ -309,35 +342,32 @@ defmodule Stitch.Billing do
 
   ## Examples
 
-      iex> set_as_default(%Team{...}, 5) do
+      iex> set_card_as_default(%Team{...}, 5) do
       {:ok, %PaymentMethod{id: 5, ..., default: true}}
 
   """
-  @spec set_as_default(Team.t, pos_integer) :: {:ok, PaymentMethod.t} | {:error, :not_found}
-  def set_as_default(%Team{id: team_id} = team, payment_method_id) do
+  @spec set_card_as_default(Team.t, pos_integer) :: {:ok, PaymentMethod.t} | {:error, :not_found}
+  def set_card_as_default(%Team{id: team_id} = team, payment_method_id) do
     team = Repo.preload(team, :subscription)
 
     with payment_method when not is_nil(payment_method) <- Repo.get_by(PaymentMethod, id: payment_method_id, team_id: team_id),
-         @stripe_client.set_as_default_card(team.subscription.customer_id, payment_method.card_id),
-         {:ok, %{new_default: payment_method}} <- do_set_as_default(payment_method, team_id) do
-      {:ok, payment_method}
+         true <- @stripe_client.set_as_default_card(team.subscription.customer_id, payment_method.card_id) do
+      {:ok, do_set_as_default(payment_method)}
     else
       nil -> {:error, :not_found}
       false -> {:error, :not_found}
     end
   end
 
-  defp do_set_as_default(payment_method, team_id) do
-    clear_previous_default_query =
+  defp do_set_as_default(%PaymentMethod{id: id, team_id: team_id}) do
+    query =
       from pm in PaymentMethod,
       where: pm.team_id == ^team_id,
-      where: pm.id != ^payment_method.id,
-      update: [set: [default: false]]
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:new_default, Ecto.Changeset.change(payment_method, default: true))
-    |> Ecto.Multi.update_all(:clear_old_default, clear_previous_default_query, [])
-    |> Repo.transaction()
+      update: [
+        set: [default: fragment("CASE WHEN id = ? THEN true ELSE false END", ^id)]
+      ]
+    {_update_count, updates} = Repo.update_all(query, [], returning: true)
+    Enum.find(updates, &(&1.id == id))
   end
 
   @doc """
@@ -360,9 +390,12 @@ defmodule Stitch.Billing do
   @spec update_subscriber_count(Team.t) :: :ok | :error | false
   def update_subscriber_count(%Team{} = team) do
     team = Repo.preload(team, :subscription)
+    subscription = team.subscription
+
     with subscription_line_item_id when not is_nil(subscription_line_item_id) <- team.subscription.subscription_line_item_id,
          active_user_count = active_user_count(team),
-         :ok <- @stripe_client.update_subscription_quantity(subscription_line_item_id, active_user_count) do
+         {:ok, stripe_sub_params} <- @stripe_client.update_subscription_quantity(subscription.customer_id, subscription.subscription_id, subscription_line_item_id, active_user_count),
+         {:ok, _} <- Repo.update(subscription_update_changeset(subscription, %{}, stripe_sub_params)) do
       :ok
     else
       :error -> :error

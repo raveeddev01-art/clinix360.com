@@ -22,7 +22,7 @@ defmodule Stitch.InvitationTest do
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       _existing_user = insert(:user, %{team_id: team.id, email: "example@email.com"})
       {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
-      assert reason == "User already exists with this email address."
+      assert reason == "Email has already been registered."
     end
   end
 
@@ -129,15 +129,17 @@ defmodule Stitch.InvitationTest do
       user = insert(:user, team_id: team.id, roles: ["admin"])
       {:ok, invitation} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
 
-      assert {:error, "Could not finish onboarding user."} = Stitch.Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
+      assert {:error, changeset} = Stitch.Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
         "fullname" => "Joe",
         "username" => "Joe",
         "password" => "Password1",
+        "phone_number" => "1231231234",
         "pin" => "0000",
       })
+      assert {"has invalid format", _} = changeset.errors[:username]
     end
 
-    test "accepts invitation, adds user to the default group and creates a system message" do
+    test "accepts invitation, adds user to the default group, creates a system message and creates a self DM" do
       team = insert(:team, open_invitations_enabled: false)
       user = insert(:user, team_id: team.id, roles: ["admin"])
       default_group = insert(:group, team: team, is_default: true)
@@ -147,6 +149,7 @@ defmodule Stitch.InvitationTest do
         "fullname" => "Joe",
         "username" => "joe",
         "password" => "Password1",
+        "phone_number" => "1231231234",
         "pin" => "0000",
       })
 
@@ -156,6 +159,10 @@ defmodule Stitch.InvitationTest do
       assert group.id == default_group.id
       assert system_message.type == "system"
       assert system_message.fields.type == "join_group"
+      assert Stitch.Repo.get_by Stitch.Group, %{
+        name: "__dm_group__",
+        slug: "__dm:#{user.id}.#{user.id}"
+      }
     end
   end
 end

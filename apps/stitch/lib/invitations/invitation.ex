@@ -4,7 +4,7 @@ defmodule Stitch.Invitation do
   """
   use Ecto.Schema
   import Ecto.{Changeset, Query}
-  alias Stitch.{Repo, Accounts.User, Team, Invitation}
+  alias Stitch.{Repo, Accounts.User, Team, Invitation, TeamAuthorization}
 
   schema "invitations" do
     belongs_to :user, User
@@ -16,7 +16,7 @@ defmodule Stitch.Invitation do
   end
 
   def changeset(struct, params) do
-    invite_token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+    invite_token = Stitch.Rand.token(32)
 
     struct
     |> cast(params, [:user_id, :team_id])
@@ -36,7 +36,7 @@ defmodule Stitch.Invitation do
   def invite_to_team(user_id, email) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
-    if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
+    if TeamAuthorization.can_send_invites?(user, team) do
       new_user_changeset = User.team_invite_changeset(
         %User{}, %{
           email: email,
@@ -45,15 +45,41 @@ defmodule Stitch.Invitation do
       )
       case Repo.insert(new_user_changeset) do
         {:error, _changeset} ->
-          {:error, "User already exists with this email address."}
+          invited_user = Repo.get_by(User, email: email, team_id: team.id)
+
+          if invited_user.onboarded do
+            {:error, "Email has already been registered."}
+          else
+            {:error, "Email has already been invited."}
+          end
+
         {:ok, new_user} ->
           invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
           {:ok, invitation} = Repo.insert(invitation_changeset)
+          analytics_track_new_invitation(user, email)
           Invitation.resend_invitation(user_id, invitation.id)
       end
     else
       {:error, "User unauthorized to create a new invitation."}
     end
+  end
+
+  defp analytics_track_new_invitation(user, email) do
+    Stitch.Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      active_users = Stitch.TeamQueries.list_active_users(team)
+      properties = %{
+        "first_name"   => user.first_name,
+        "last_name"    => user.last_name,
+        "email"        => email,
+        "team_id"      => Integer.to_string(team.id),
+        "team_name"    => team.name,
+        "team_slug"    => team.slug,
+        "active_users" => length(active_users)
+      }
+      Stitch.Analytics.track(user.id, "Team Invitation Sent", properties)
+    end)
   end
 
   @doc """
@@ -98,7 +124,7 @@ defmodule Stitch.Invitation do
       where: i.accepted == ^false,
       preload: [:user]
 
-    if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
+    if TeamAuthorization.can_send_invites?(user, team) do
       Repo.all(query)
     else
       {:error, "User unauthorized to see list of invitations."}
@@ -112,7 +138,7 @@ defmodule Stitch.Invitation do
   def resend_invitation(user_id, invitation_id) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
-    if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
+    if TeamAuthorization.can_send_invites?(user, team) do
       query =
         from i in Invitation,
         where: i.id == ^invitation_id,
@@ -124,6 +150,7 @@ defmodule Stitch.Invitation do
           {:error, "This invitation has been accepted already."}
         false ->
           Invitation.Email.team_invitation("#{user.first_name} #{user.last_name}", invitation)
+          |> Stitch.Mailer.deliver_later
           {:ok, invitation}
       end
     else
@@ -138,7 +165,7 @@ defmodule Stitch.Invitation do
   def revoke_invitation(user_id, invitation_id) do
     user = Repo.get(User, user_id)
     team = Repo.get(Team, user.team_id)
-    if team.open_invitations_enabled || Enum.member?(user.roles, "admin") do
+    if TeamAuthorization.can_send_invites?(user, team) do
       query =
         from i in Invitation,
         where: i.id == ^invitation_id,

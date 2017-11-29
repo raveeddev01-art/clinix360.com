@@ -4,7 +4,7 @@ defmodule StitchConnect.Web.GroupController do
   alias Stitch.GroupQueries
 
   def index(conn, %{"slug" => slug}) do
-    current_user = get_session(conn, :current_user)
+    current_user = conn.assigns.current_user
 
     case GroupQueries.find_by_slug(slug, current_user) do
       {:ok, _} ->

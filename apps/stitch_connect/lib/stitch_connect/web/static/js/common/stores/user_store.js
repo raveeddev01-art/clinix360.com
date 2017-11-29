@@ -1,4 +1,12 @@
-import { observable, action } from "mobx";
+/**
+ * User store
+ *
+ * This store keeps track of data of current logged in user
+ */
+
+import { observable, action, computed } from "mobx";
+
+const defaultAvatars = ["/images/default-avatar.png"];
 
 class UserStore {
   @observable id = "";
@@ -9,11 +17,31 @@ class UserStore {
   @observable email = "";
   @observable firstName = "";
   @observable lastName = "";
-  @observable profileImgUrl = "";
+  @observable avatar = "";
+  @observable avatarThumb = "";
+  @observable roles = [];
+  @observable hasAvatar = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
+
+  @computed
+  get isAdmin() {
+    return this.roles.indexOf("admin") > -1;
+  }
+
+  @computed
+  get canInvite() {
+    return this.isAdmin || this.rootStore.teamStore.openInvitationsEnabled;
+  }
+
+  @action
+  useDefaultAvatar = () => {
+    this.hasAvatar = false;
+    this.avatar = defaultAvatars[0];
+    this.avatarThumb = defaultAvatars[0];
+  };
 
   @action
   loadUser = id => {
@@ -28,73 +56,103 @@ class UserStore {
       this.email = data.email;
       this.firstName = data.first_name;
       this.lastName = data.last_name;
-      this.profileImgUrl = data.avatar;
+      if (data.avatar) {
+        this.hasAvatar = true;
+        this.avatar = data.avatar;
+        this.avatarThumb = data.avatar_thumb;
+      } else {
+        this.useDefaultAvatar();
+      }
+
+      this.roles = data.roles;
 
       this.loading = false;
     });
   };
 
   @action
+  onUserInfo = user => {
+    if (user.roles) {
+      window.currentUser.roles = user.roles;
+      this.roles = user.roles;
+    }
+  };
+
+  @action
   save = data => {
     return put(`/api/v1/users/${this.id}`, {
-      body: data
+      body: data,
+      hideNotify: true
     });
   };
 
   @action
   saveUsername = username => {
-    this.save({ username }).then(() => {
+    return this.save({ username }).then(() => {
       this.username = username;
-      notify.show("Username updated");
     });
   };
 
   @action
   saveEmail = email => {
-    this.save({ email }).then(() => {
+    return this.save({ email }).then(() => {
       this.email = email;
-      notify.show("Email updated");
     });
   };
 
   @action
   savePIN = pin => {
-    this.save({ pin }).then(() => {
+    return this.save({ pin }).then(() => {
       this.pin = pin;
-      notify.show("PIN updated");
     });
   };
 
   @action
-  saveName = (first_name, last_name) => {
-    this.save({ first_name, last_name }).then(() => {
-      this.firstName = first_name;
-      this.lastName = last_name;
-      notify.show("Name updated");
+  saveName = (firstName, lastName) => {
+    return this.save({
+      first_name: firstName,
+      last_name: lastName
+    }).then(() => {
+      this.firstName = firstName;
+      this.lastName = lastName;
     });
   };
 
   @action
-  savePhone = phone_number => {
-    this.save({ phone_number }).then(() => {
-      this.phone = phone_number;
-      notify.show("Phone updated");
+  savePhone = phoneNumber => {
+    return this.save({ phone_number: phoneNumber }).then(() => {
+      this.phone = phoneNumber;
     });
   };
 
   @action
   saveTitle = title => {
-    this.save({ title }).then(() => {
+    return this.save({ title }).then(() => {
       this.title = title;
-      notify.show("Title updated");
     });
   };
 
   @action
-  saveProfileImg = profile_image_url => {
-    this.save({ profile_image_url }).then(() => {
-      this.profileImg = profile_image_url;
-      notify.show("Profile Image updated");
+  saveProfileImg = profileImgUrl => {
+    return put(`/api/v1/users/${this.id}/upload_profile_image`, {
+      body: {
+        url: profileImgUrl
+      },
+      hideNotify: true
+    }).then(resp => {
+      const { data } = resp;
+      this.avatar = data.avatar;
+      this.avatarThumb = data.avatar_thumb;
+      this.hasAvatar = true;
+    });
+  };
+
+  @action
+  deleteProfileImg = () => {
+    return remove(`/api/v1/users/${this.id}/delete_profile_image`, {
+      hideNotify: true
+    }).then(() => {
+      this.useDefaultAvatar();
     });
   };
 
@@ -104,9 +162,8 @@ class UserStore {
       body: {
         new_password: newPassword,
         old_password: oldPassword
-      }
-    }).then(() => {
-      notify.show("Your password has been changed");
+      },
+      hideNotify: true
     });
   };
 }

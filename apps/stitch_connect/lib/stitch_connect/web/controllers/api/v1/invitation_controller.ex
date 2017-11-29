@@ -1,7 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Invitation, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel}
+  alias Stitch.{Invitation, MessageQueries, TeamAuthorization}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
+  plug :fetch_session when action in [:accept]
 
   def index(conn, _params) do
     case Invitation.list_pending_team_invitations(conn.assigns.current_user.id) do
@@ -27,12 +28,26 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   end
 
   def create(conn, %{"email_collection" => email_collection}) do
-    emails = String.split(email_collection, ",")
-    Enum.each(emails, fn(email) ->
-      Invitation.invite_to_team(conn.assigns.current_user.id, email)
-    end)
-    conn
-    |> json(%{message: "Invitations sent to all users."})
+    current_user = conn.assigns.current_user
+    team = conn.assigns.team
+    emails = email_collection |> String.split(",") |> Enum.uniq
+
+    if TeamAuthorization.can_send_invites?(current_user, team) do
+      results = Enum.reduce emails, %{}, fn email, map ->
+        result = case Invitation.invite_to_team(current_user.id, email) do
+          {:ok, _user} -> "ok"
+          {:error, reason} -> reason
+        end
+
+        Map.put(map, email, result)
+      end
+
+      json(conn, results)
+    else
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Unauthorized to send invites."})
+    end
   end
 
   def revoke(conn, %{"id" => id}) do
@@ -64,9 +79,16 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
           system_message = system_message |> MessageQueries.load_info
           Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
           EventsChannel.broadcast_group_new_msg(group, system_message)
+          TeamChannel.broadcast_user_joined(conn.assigns.team, user)
         end)
         conn
+        |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
 
       {:error, message} when is_binary(message) ->
         conn
@@ -85,5 +107,4 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     |> put_status(:unprocessable_entity)
     |> json(%{message: "Some parameter missing out of token, first_name, last_name, username, password, pin."})
   end
-
 end

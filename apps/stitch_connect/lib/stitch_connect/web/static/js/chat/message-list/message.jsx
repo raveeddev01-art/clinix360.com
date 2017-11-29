@@ -15,7 +15,7 @@ import VisibilitySensor from "react-visibility-sensor";
 import { confirm } from "../../common/modals";
 import MessageContent from "../../common/components/messages/message-content/message-content";
 
-@inject("messageStore", "groupStore", "sidemenuStore")
+@inject("messageStore", "groupStore", "usersStore")
 @observer
 class Message extends Component {
   constructor(props) {
@@ -39,6 +39,20 @@ class Message extends Component {
     }
   };
 
+  onToggle = isOpen => {
+    const { chatDiv } = this.props.messageStore;
+
+    this.setState({ selected: isOpen });
+
+    if (isOpen) {
+      this.setState({
+        dropup:
+          chatDiv.scrollTop + chatDiv.offsetHeight / 2 <
+          this.messageDiv.offsetTop
+      });
+    }
+  };
+
   markAsUnread = () => {
     const { message, messageStore } = this.props;
 
@@ -57,7 +71,7 @@ class Message extends Component {
       message:
         "Are you sure you want to delete this message? This cannot be undone.",
       okLabel: "Delete"
-    }).then(result => {
+    }).then(() => {
       const { message, messageStore } = this.props;
 
       messageStore.delete(message.id);
@@ -78,20 +92,6 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     messageStore.toggleStar(message.id);
-  };
-
-  onToggle = isOpen => {
-    const { chatDiv } = this.props.messageStore;
-
-    this.setState({ selected: isOpen });
-
-    if (isOpen) {
-      this.setState({
-        dropup:
-          chatDiv.scrollTop + chatDiv.offsetHeight / 2 <
-          this.messageDiv.offsetTop
-      });
-    }
   };
 
   renderEdited(message) {
@@ -138,12 +138,18 @@ class Message extends Component {
   }
 
   renderPin(message) {
-    const { pinned, pinned_by: pinnedBy, pinned_at: pinnedAt } = message;
-
-    if (!pinned || !pinnedAt || !pinnedBy) {
+    if (
+      !message.pinned ||
+      !message.pinned_at ||
+      !message.pinned_by ||
+      !message.pinned_by.id
+    ) {
       return null;
     }
 
+    const { usersStore } = this.props;
+    const { pinned_at: pinnedAt, pinned_by: { id: pinnedById } } = message;
+    const pinnedBy = usersStore.usersById[pinnedById];
     const pinTooltip = (
       <Tooltip id="pin-tooltip">
         <span>
@@ -174,7 +180,13 @@ class Message extends Component {
 
   renderActions(message) {
     const mine = message.user.id === currentUser.id;
+    const unsent = message.sent === false;
     const { dropup } = this.state;
+
+    // disabling context menu
+    if (unsent) {
+      return " ";
+    }
 
     return (
       <Dropdown
@@ -245,16 +257,19 @@ class Message extends Component {
   }
 
   render() {
-    const { message, messageStore } = this.props;
-    const { user, inserted_at: timestamp } = message;
+    const { message, messageStore, usersStore } = this.props;
+    const { user: { id: userId }, inserted_at: timestamp } = message;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
     const elementClassName = cx("message", {
       selected: this.state.selected,
       highlight: highlightId === message.id
     });
+    const mine = userId === currentUser.id;
     const containerClassName = cx("message-container", {
-      mine: user.id === currentUser.id
+      mine,
+      "has-status": message.new_msg
     });
+    const user = usersStore.usersById[userId];
 
     return (
       <div>
@@ -305,6 +320,12 @@ class Message extends Component {
               </div>
             </Element>
           </VisibilitySensor>
+          {mine &&
+            message.new_msg && (
+              <small className="text-muted msg-status">
+                {message.sending ? "Sending" : message.sent ? "Sent" : "Failed"}
+              </small>
+            )}
         </div>
       </div>
     );

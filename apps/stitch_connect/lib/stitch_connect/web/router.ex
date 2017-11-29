@@ -24,7 +24,9 @@ defmodule StitchConnect.Web.Router do
     pipe_through :api
 
     # Onboarding routes for new users.
+    get "/users/validate-username", UserController, :validate_username
     post "/users", UserController, :create
+    post "/users/validate-phone-number", UserController, :validate_phone_number
     post "/users/send-confirmation-code", UserController, :send_confirmation_code
     post "/users/submit-confirmation-code", UserController, :submit_confirmation_code
     post "/users/send-invite", UserController, :send_invite
@@ -32,6 +34,10 @@ defmodule StitchConnect.Web.Router do
 
     post "/teams", TeamController, :create
     post "/teams/url-available", TeamController, :url_available
+    post "/teams/slug-exists", TeamController, :slug_exists
+
+    post "/find-your-team", FindYourTeamController, :create
+    delete "/find-your-team/:token", FindYourTeamController, :delete
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -42,6 +48,8 @@ defmodule StitchConnect.Web.Router do
   end
 
   scope "/stripe", StitchConnect.Web do
+    pipe_through :api
+
     post "/", StripeWebhookController, :event
   end
 
@@ -50,31 +58,38 @@ defmodule StitchConnect.Web.Router do
 
     get "/", HomeController, :index
     get "/connect", HomeController, :index
+    get "/engage", HomeController, :index
+    get "/manage", HomeController, :index
     get "/pricing", HomeController, :index
     get "/downloads", HomeController, :index
     get "/customers", HomeController, :index
+    get "/customers/luminance-recovery", HomeController, :index
     get "/customers/princeton-brain-spine", HomeController, :index
+    get "/customers/dermatology-skin-surgery-institute", HomeController, :index
+    get "/customers/UCSF-citywide", HomeController, :index
+    get "/customers/orchard-medical-associates", HomeController, :index
+    get "/baa", HomeController, :index
+    get "/hipaa", HomeController, :index
     get "/privacy-policy", HomeController, :index
     get "/terms-of-service", HomeController, :index
 
     get "/getstarted", AuthenticationController, :index
     get "/signin", AuthenticationController, :index
+    get "/find-your-team", AuthenticationController, :index
+    get "/find-your-team/:token", AuthenticationController, :index
 
     # get "/login", AuthenticationController, :index
     # get "/reset-password", AuthenticationController, :index
 
     get "/signup/email", AuthenticationController, :index
     get "/signup/confirmation-code", AuthenticationController, :index
-    get "/signup/team-name", AuthenticationController, :index
-    get "/signup/team-url", AuthenticationController, :index
-    get "/signup/full-name", AuthenticationController, :index
-    get "/signup/username", AuthenticationController, :index
-    get "/signup/password", AuthenticationController, :index
-    get "/signup/pin", AuthenticationController, :index
-    get "/signup/hipaa", AuthenticationController, :index
-    get "/signup/invites", AuthenticationController, :index
+    get "/signup/onboarding/:step", AuthenticationController, :index
     get "/signup/app-download", AuthenticationController, :index
 
     # get "/signup/phone-number", AuthenticationController, :index
   end
+
+  # Application download links.
+  get "/download-mac", Redirect, external: "https://fz0pxcjnx9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-mac"
+  get "/download-win", Redirect, external: "https://1lyrransd9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-win"
 end

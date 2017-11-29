@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
@@ -24,8 +25,19 @@ class EmailPanel extends Component {
       email: this.props.userStore.email
     });
   };
+
   _onSave = () => {
-    this.props.userStore.saveEmail(this.state.email);
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
+
+    hideAlert();
+    return userStore
+      .saveEmail(this.state.email)
+      .then(() => {
+        onSuccess("Your email has been successfully updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _onChangeEmail = evt => this.setState({ email: evt.target.value });
@@ -38,6 +50,7 @@ class EmailPanel extends Component {
         description={description}
         onSave={this._onSave}
         onEdit={this._onToggleEdit}
+        disableSave
       >
         <FormGroup bsSize="large">
           <ControlLabel>Email</ControlLabel>
@@ -45,11 +58,18 @@ class EmailPanel extends Component {
             type="email"
             value={email}
             onChange={this._onChangeEmail}
+            disabled
           />
         </FormGroup>
       </SettingPanel>
     );
   }
 }
+
+EmailPanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default EmailPanel;

@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
+import Header from "../components/header";
+import Footer from "../components/footer";
+
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import Row from "react-bootstrap/lib/Row";
@@ -12,6 +15,7 @@ export default class Downloads extends Component {
   render() {
     return (
       <div>
+        <Header />
         <div className="subheader">
           <div className="container">
             <div className="landing-message text-center">
@@ -65,7 +69,7 @@ export default class Downloads extends Component {
                       <Row>
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch-1.0.2.dmg">
+                            <a href="/download-mac">
                               <img
                                 src="/images/mac-icon.png"
                                 alt="Connect for Mac"
@@ -78,7 +82,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
-                              href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch-1.0.2.dmg"
+                              href="/download-mac"
                             >
                               Download
                             </Button>
@@ -87,7 +91,7 @@ export default class Downloads extends Component {
 
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.exe">
+                            <a href="/download-win">
                               <img
                                 src="/images/windows-icon.png"
                                 alt="Connect for Windows"
@@ -95,12 +99,12 @@ export default class Downloads extends Component {
                             </a>
 
                             <h3>Windows</h3>
-                            <div className="m-b-10">macOS 10.8+</div>
+                            <div className="m-b-10">Windows 7+</div>
 
                             <Button
                               bsStyle="primary"
                               bsSize="large"
-                              href="https://s3.amazonaws.com/stitch-desktop/stitch-connect/Stitch+Setup+1.0.2.exe"
+                              href="/download-win"
                             >
                               Download
                             </Button>
@@ -109,7 +113,10 @@ export default class Downloads extends Component {
 
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a disabled>
+                            <a
+                              target="_blank"
+                              href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
+                            >
                               <img
                                 src="/images/connect-app-icon.png"
                                 alt="Connect for iOS"
@@ -119,15 +126,25 @@ export default class Downloads extends Component {
                             <h3>iOS</h3>
                             <div className="m-b-10">iOS 9.0+</div>
 
-                            <Button bsStyle="primary" bsSize="large" disabled>
-                              Coming Soon
-                            </Button>
+                            <a
+                              className="appstore-link"
+                              target="_blank"
+                              href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
+                            >
+                              <img
+                                src="/images/appstore.png"
+                                alt="Connect for iOS"
+                              />
+                            </a>
                           </div>
                         </Col>
 
                         <Col sm={3}>
                           <div className="plan text-center">
-                            <a disabled>
+                            <a
+                              target="_blank"
+                              href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
+                            >
                               <img
                                 src="/images/connect-app-icon.png"
                                 alt="Connect for Android"
@@ -137,9 +154,16 @@ export default class Downloads extends Component {
                             <h3>Android</h3>
                             <div className="m-b-10">Android 4.0+</div>
 
-                            <Button bsStyle="primary" bsSize="large" disabled>
-                              Coming Soon
-                            </Button>
+                            <a
+                              className="playstore-link"
+                              href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
+                              target="_blank"
+                            >
+                              <img
+                                src="/images/playstore.png"
+                                alt="Connect for Android"
+                              />
+                            </a>
                           </div>
                         </Col>
                       </Row>
@@ -179,7 +203,7 @@ export default class Downloads extends Component {
                             </a>
 
                             <h3>Windows</h3>
-                            <div className="m-b-10">macOS 10.8+</div>
+                            <div className="m-b-10">Windows 7+</div>
 
                             <Button
                               bsStyle="primary"
@@ -263,7 +287,7 @@ export default class Downloads extends Component {
                             </a>
 
                             <h3>Windows</h3>
-                            <div className="m-b-10">macOS 10.8+</div>
+                            <div className="m-b-10">Windows 7+</div>
 
                             <Button
                               bsStyle="primary"
@@ -318,6 +342,7 @@ export default class Downloads extends Component {
             </Tab.Container>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }

@@ -5,7 +5,7 @@ export default class GetStarted extends Component {
   render() {
     return (
       <div className="authentication-card text-center">
-        <h2>Healthcare Messaging</h2>
+        <h2>Care Coordination</h2>
 
         <h4>
           Communicate, write notes, <br />track tasks, upload files, and <br />
@@ -21,8 +21,6 @@ export default class GetStarted extends Component {
         >
           Create Team
         </Link>
-
-        <p className="copyright m-b-0">&copy; 2017 Stitch Technologies, Inc</p>
       </div>
     );
   }

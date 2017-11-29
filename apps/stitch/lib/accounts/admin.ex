@@ -8,14 +8,19 @@ defmodule Stitch.Accounts.Admin do
   alias Stitch.Accounts.User
   alias Stitch.Team
 
+  @analytics Application.get_env(:stitch, :analytics)
+
   @doc """
   Sets the disabled boolean flag to false for the provided user.
   """
   def activate(%Team{id: team_id}, user_id) do
     if user = Repo.get_by(User, team_id: team_id, id: user_id) do
-      user
-      |> Ecto.Changeset.change(disabled: false)
-      |> Repo.update
+      result =
+        user
+        |> Ecto.Changeset.change(disabled: false)
+        |> Repo.update
+      case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+      result
     else
       {:error, :not_found}
     end
@@ -26,12 +31,34 @@ defmodule Stitch.Accounts.Admin do
   """
   def deactivate(%Team{id: team_id}, user_id) do
     if user = Repo.get_by(User, team_id: team_id, id: user_id) do
-      user
-      |> Ecto.Changeset.change(disabled: true)
-      |> Repo.update
+      analytics_track_user_disabled(user)
+      result =
+        user
+        |> Ecto.Changeset.change(disabled: true)
+        |> Repo.update
+      case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+      result
     else
       {:error, :not_found}
     end
+  end
+
+  defp analytics_track_user_disabled(user) do
+    Stitch.Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      active_users = Stitch.TeamQueries.list_active_users(team)
+      properties = %{
+        "first_name"   => user.first_name,
+        "last_name"    => user.last_name,
+        "email"        => user.email,
+        "team_id"      => Integer.to_string(team.id),
+        "team_name"    => team.name,
+        "team_slug"    => team.slug,
+        "active_users" => length(active_users)
+      }
+      Stitch.Analytics.track(user.id, "Account Disabled", properties)
+    end)
   end
 
   @doc """
@@ -40,9 +67,13 @@ defmodule Stitch.Accounts.Admin do
 
   def update_user(user_id, params)
   when is_integer(user_id) and is_map(params) do
-     Repo.get(User, user_id)
-     |> User.changeset(params)
-     |> Repo.update
+    result =
+      Repo.get(User, user_id)
+      |> User.changeset(params)
+      |> Repo.update
+
+    case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+    result
   end
   def update_user(_, _), do: {:error, "Invalid User ID or Parameters"}
 
@@ -52,8 +83,11 @@ defmodule Stitch.Accounts.Admin do
     if user.id != promoter.id do
       changeset = Ecto.Changeset.change(user, roles: ["admin"])
       case Repo.update(changeset) do
-        {:error, _changeset} -> {:error, "Failed to promote user."}
-        success -> success
+        {:error, _changeset} ->
+          {:error, "Failed to promote user."}
+        {:ok, updated_user} = success ->
+          analytics_identify(updated_user)
+          success
       end
     else
       {:error, "You cannot promote own account."}
@@ -66,8 +100,11 @@ defmodule Stitch.Accounts.Admin do
     if user.id != revoker.id do
       changeset = Ecto.Changeset.change(user, roles: ["member"])
       case Repo.update(changeset) do
-        {:error, _changeset} -> {:error, "Failed to revoke admin role from user."}
-        success -> success
+        {:error, _changeset} ->
+          {:error, "Failed to revoke admin role from user."}
+        {:ok, updated_user} = success ->
+          analytics_identify(updated_user)
+          success
       end
     else
       {:error, "You cannot revoke admin role from your own account."}
@@ -81,4 +118,9 @@ defmodule Stitch.Accounts.Admin do
   def update_unread_message_notification_interval(_user_id, _notification_interval) do
     # TODO
   end
+
+  defp analytics_identify(user) do
+    Task.start(fn -> @analytics.identify(user) end)
+  end
+
 end

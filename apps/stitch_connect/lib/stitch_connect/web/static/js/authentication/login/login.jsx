@@ -1,25 +1,32 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
+import Alert from "react-bootstrap/lib/Alert";
 
 @inject("registrationStore", "titleStore")
 @observer
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      passwordReset: false
     };
   }
 
   componentWillMount() {
     this.props.titleStore.setPageName("Sign In");
+    const { location } = this.props;
+    if (location.state && location.state.passwordReset === true) {
+      this.setState({
+        passwordReset: true
+      });
+    }
   }
 
   handleChange = event => {
@@ -35,6 +42,12 @@ export default class Login extends Component {
   render() {
     return (
       <div>
+        {this.props.invalidLogin && (
+          <Alert bsStyle="danger">{this.props.invalidLogin}</Alert>
+        )}
+        {this.state.passwordReset && (
+          <Alert bsStyle="success">Your password is now reset.</Alert>
+        )}
         <div className="authentication-card text-center m-b-20">
           <h2>{this.props.registrationStore.teamName}</h2>
           <h5 className="text-muted url-heading">
@@ -72,35 +85,46 @@ export default class Login extends Component {
               />
             </FormGroup>
 
-            {<p>{this.props.invalidLogin}</p>}
-
             <Button
               type="submit"
               bsStyle="primary"
               bsSize="lg"
               className="btn-block"
+              disabled={!this.state.email || !this.state.password}
             >
               Login
             </Button>
-            <Link
-              to="/reset-password"
-              className="btn btn-block btn-lg btn-default m-b-40"
-            >
-              Reset Password
-            </Link>
-          </form>
 
-          <p className="copyright m-b-0">
-            &copy; 2017 Stitch Technologies, Inc
-          </p>
+            <h5>
+              Forgot your password?{" "}
+              <Link to="/reset-password">
+                <strong>Reset Password</strong>
+              </Link>
+            </h5>
+          </form>
         </div>
 
-        <div className="text-center">
-          <a className="cancel-login" href={`https://${applicationHost}`}>
+        <h5>
+          Don't have an account with this team?<br />
+          <strong>Contact the team administrator</strong>.
+        </h5>
+
+        <h5>
+          Wrong team?{" "}
+          <a href={`https://${applicationHost}/signin`}>
             <strong>Sign in to a different team</strong>
           </a>
-        </div>
+        </h5>
+
+        <h5>
+          Just getting started?{" "}
+          <a href={`https://${applicationHost}/signup/email`}>
+            <strong>Create a new team</strong>
+          </a>
+        </h5>
       </div>
     );
   }
 }
+
+export default withRouter(Login);

@@ -13,3 +13,14 @@ config :stitch, Stitch.Mailer,
 
 config :stitch, Stitch.Exports,
   enabled: true
+
+config :stitch,
+  stripe_client: Stitch.Stripe.Client,
+  segment_api: Stitch.Analytics.Segment.HTTPClient,
+  analytics: Stitch.Analytics
+
+config :stitch, Stitch.Analytics.Sync.RecurringSync,
+  enabled: true
+
+config :stitch, Stitch.Analytics.DailyReports.Scheduler,
+  enabled: true

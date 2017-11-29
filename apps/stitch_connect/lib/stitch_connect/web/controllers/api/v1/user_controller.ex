@@ -1,6 +1,9 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Repo, Accounts.User, UserQueries}
+  alias Stitch.{Accounts.User, UserQueries}
+  alias StitchConnect.Web.{TeamChannel, EventsChannel}
+
+  action_fallback StitchConnect.Web.Api.V1.FallbackController
 
   def index(conn, _) do
     users = UserQueries.users_for_team(conn.assigns.current_user.team_id)
@@ -33,6 +36,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
          {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do
       Stitch.Billing.update_subscriber_count(conn.assigns.team)
+      EventsChannel.broadcast_deactivated(String.to_integer(id))
       json(conn, %{message: "Account has been deactivated."})
     else
       {:error, :not_found} ->
@@ -47,20 +51,16 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def update(conn, params) do
-    case Stitch.Accounts.Admin.update_user(conn.assigns.current_user.id, params) do
-      {:ok, user} ->
-        conn
-        |> render("update.json", user: user)
-      {:error, _} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Couldn't update #{Enum.join(Map.keys(params), ", ")}"})
+    with {:ok, user} <- Stitch.Accounts.Admin.update_user(conn.assigns.current_user.id, params) do
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      render(conn, "update.json", user: user)
     end
   end
 
   def promote_admin(conn, %{"id" => user_id}) do
     case Stitch.Accounts.Admin.promote_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
+        TeamChannel.broadcast_user_info(conn.assigns.team, user)
         conn
         |> render("show.json", user: user)
       {:error, message} ->
@@ -73,6 +73,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def revoke_admin(conn, %{"id" => user_id}) do
     case Stitch.Accounts.Admin.revoke_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
+        TeamChannel.broadcast_user_info(conn.assigns.team, user)
         conn
         |> render("show.json", user: user)
       {:error, message} ->
@@ -119,19 +120,21 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def complete_onboarding(conn, %{"id" => id, "first_name" => first_name, "last_name" => last_name, "username" => username, "password" => password, "pin" => pin, "team_id" => team_id}) do
-    case Stitch.Accounts.update_and_complete_user_onboarding(id, %{first_name: first_name, last_name: last_name, username: username, password: password, pin: pin, team_id: team_id, roles: ["admin"]}) do
-      {:error, message} ->
+  def complete_onboarding(conn, params) do
+    {id, params} = Map.pop(params, "id")
+    params = Map.put(params, "roles", ["admin"])
+
+    case Stitch.Accounts.update_and_complete_user_onboarding(id, params) do
+      {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: message})
+        |> json(%{message: changeset_errors_to_string(changeset)})
       user ->
+        group = Stitch.GroupQueries.default_group(user)
+        Stitch.Group.add_user(group, user.id)
+        Stitch.Group.assign_creator(group, user.id)
         conn
-        |> put_session(:current_user, user)
-        |> put_session(:authentication_token, user.token)
-        |> put_session(:session_id, random_session_id())
-        |> put_session(:locked, false)
-        |> configure_session(renew: true)
+        |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
     end
   end
@@ -147,8 +150,8 @@ defmodule StitchConnect.Web.Api.V1.UserController do
      end
   end
 
-  def update_password(conn, %{"id" => id, "new_password" => new_password, "old_password" => old_password}) do
-    case Stitch.Accounts.update_user_password(String.to_integer(id),old_password,new_password) do
+  def update_password(conn, %{"id" => _id, "new_password" => new_password, "old_password" => old_password}) do
+    case Stitch.Accounts.update_user_password(conn.assigns.current_user.id, old_password, new_password) do
       {:ok, user} ->
         conn |> json(%{email: user.email, password: user.password_hash})
       {:error, message} ->
@@ -158,29 +161,36 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def update_avatar(conn, %{"id" => id, "profile_image_url" => profile_image_url}) do
-    changeset = Repo.get(User, id) |> User.changeset(%{profile_image_url: profile_image_url})
-
-    case Repo.update(changeset) do
-      {:ok, user} ->
-        conn |> json(%{profile_image_url: user.profile_image_url})
-      {:error, _} ->
+  def validate_phone_number(conn, %{"phone_number" => phone_number}) do
+    case Stitch.Twilio.lookup(phone_number) do
+      :ok ->
+        conn |> json(%{status: "ok"})
+      :error ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: "Cannot change the user avatar"})
+        |> json(%{message: "Phone number is invalid."})
     end
   end
 
-  def delete_avatar(conn, %{"id" => id}) do
-    changeset = Repo.get(User, id) |> Ecto.Changeset.change(profile_image_url: nil)
-
-    case Repo.update(changeset) do
-      {:ok, _} -> conn |> send_resp(:ok, "")
-
-      {:error, _} ->
+  def upload_profile_image(conn, %{"url" => url}) do
+    case Stitch.Accounts.update_profile_image(conn.assigns.current_user, url) do
+      {:ok, user} ->
+        conn |> render("show.json", user: user)
+      {:error, error} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: "Cannot delete the user avatar"})
+        |> json(%{message: changeset_errors_to_string(error)})
+    end
+  end
+
+  def delete_profile_image(conn, _params) do
+    case Stitch.Accounts.delete_profile_image(conn.assigns.current_user) do
+      {:ok, user} ->
+        conn |> render("show.json", user: user)
+      {:error, _error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Couldn't delete the profile image"})
     end
   end
 
@@ -196,7 +206,14 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  defp random_session_id do
-    :crypto.strong_rand_bytes(8) |> Base.url_encode64
+  def validate_username(conn, %{"username" => username}) do
+    params = %{username: username, team_id: conn.private[:team_id]}
+    json(conn, User.username_changeset(%User{}, params).valid?)
+  end
+
+  def validate_username(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{message: "Requires a username query."})
   end
 end

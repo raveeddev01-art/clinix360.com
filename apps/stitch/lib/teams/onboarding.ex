@@ -22,6 +22,20 @@ defmodule Stitch.Team.Onboarding do
   def slug_available?(_), do: false
 
   @doc """
+  Returns whether a team slug exists in the Stitch platform.
+  """
+  def slug_exists?(slug) when byte_size(slug) > 0 and slug not in @blacklisted_subdomains do
+    slug = Slugger.slugify_downcase(slug)
+    case Repo.get_by(Team, slug: slug) do
+      nil ->
+        false
+      _ ->
+        true
+    end
+  end
+  def slug_exists?(_), do: false
+
+  @doc """
   Creates a team with the given name and slug.
   """
   def create_team(name, slug) when byte_size(name) > 0 and byte_size(slug) > 0 do
@@ -36,4 +50,6 @@ defmodule Stitch.Team.Onboarding do
         {:error, "Team wasn't created"}
     end
   end
+
+  def create_team(_, _), do: {:error, "Team name or slug cannot be empty or nil."}
 end

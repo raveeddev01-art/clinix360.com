@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Col from "react-bootstrap/lib/Col";
@@ -14,30 +15,41 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 class EmailNotification extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      setting: null
+      pref: ""
     };
   }
 
   onSave = () => {
-    const { notificationStore } = this.props;
-    notificationStore.updateEmailPreference(this.state.setting).then(() => {
-      notify.show("Email notification preference updated");
-    });
+    const { hideAlert, onSuccess, onError, notificationStore } = this.props;
+
+    hideAlert();
+    return notificationStore
+      .updateEmailPref(this.state.pref)
+      .then(() => {
+        onSuccess("Email notification preference has been updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   onToggleEdit = () => {
+    const { notificationStore } = this.props;
+
     this.setState({
-      setting: this.props.notificationStore.emailPreference
+      pref: notificationStore.emailPref
     });
   };
 
   onChange = evt => {
-    this.setState({ setting: evt.target.value });
+    this.setState({ pref: evt.target.value });
   };
 
   render() {
-    const { setting } = this.state;
+    const { pref } = this.state;
+
     return (
       <SettingPanel
         title="Email Notifications"
@@ -52,14 +64,14 @@ class EmailNotification extends Component {
         </HelpBlock>
         <Form horizontal>
           <FormGroup controlId="emailNotifications">
-            <Col componentClass={ControlLabel} md={4}>
+            <Col componentClass={ControlLabel} xs={4}>
               Send email about unread messages:
             </Col>
-            <Col sm={4}>
+            <Col xs={4}>
               <FormControl
                 componentClass="select"
                 placeholder="select"
-                value={setting}
+                value={pref}
                 onChange={this.onChange}
               >
                 <option value="never">Never</option>
@@ -74,5 +86,11 @@ class EmailNotification extends Component {
     );
   }
 }
+
+EmailNotification.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default EmailNotification;

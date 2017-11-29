@@ -1,5 +1,10 @@
 @import "~animate.css/animate";
 @import "~emoji-mart/css/emoji-mart.css";
+@import "~react-select/dist/react-select.css";
+@import "~react-image-crop/lib/ReactCrop.scss";
+
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
 
 @import "vendor/bootstrap";
 @import "vendor/toastr";
@@ -9,8 +14,10 @@
 
 @import "admin";
 @import "addons";
+@import "alerts";
 @import "animations";
 @import "authentication";
+@import "billing";
 @import "chat";
 @import "file-upload";
 @import "layout";
@@ -18,3 +25,6 @@
 @import "modals";
 @import "sidemenu";
 @import "website";
+@import "switcher";
+@import "link-preview";
+@import "avatar-uploader";

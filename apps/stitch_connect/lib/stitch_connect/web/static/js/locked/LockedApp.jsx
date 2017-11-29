@@ -1,102 +1,112 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { withRouter } from "react-router-dom";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import FormControl from "react-bootstrap/lib/FormControl";
+import cx from "classnames";
+import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import Header from "../website/components/header";
+import Footer from "../website/components/footer";
+import PinInput from "../common/components/pin-input/index";
 
-@inject("presenceStore")
+@inject("presenceStore", "teamStore")
 @observer
 class LockedApp extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pin: "" };
+    this.state = { pin: "", hasError: false, isSaving: false };
   }
 
-  resetPassword = () => {
-    // const { history } = this.props;
-    // history.push(`/reset-password`);
+  onInvalid = () => {
+    this.setState({ pin: "", hasError: false });
   };
 
-  handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
+  onValid = pin => {
+    this.setState({ pin }, () => {
+      if (pin.length === 4) {
+        this.attemptUnlock();
+      }
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
+    this.attemptUnlock();
+  };
 
-    this.props.presenceStore.unlock(this.state.pin).catch(() => {
-      this.setState({ pin: "" });
-    });
+  attemptUnlock = () => {
+    const { pin } = this.state;
+
+    if (pin.length === 4) {
+      this.setState({ isSaving: true });
+      this.props.presenceStore.unlock(this.state.pin).catch(() => {
+        this.setState({ pin: "", hasError: true, isSaving: false });
+      });
+    } else {
+      this.setState({ hasError: true });
+    }
+  };
+
+  renderLoadingIcon = () => {
+    const { isSaving } = this.state;
+    return isSaving ? (
+      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
+    ) : null;
   };
 
   render() {
+    const lockAppWrapperClass = cx("locked-app-wrapper", {
+      "on-electron": window.electronApp
+    });
+
+    const { hasError, isSaving } = this.state;
     return (
-      <div className="authentication-wrapper">
-        <div id="lockout" className="authentication-card text-center">
-          <div className="lockout-header">
-            {this.props.presenceStore.unlocking ? (
-              <span className="unlocking">
-                <i className="fa fa-circle-o-notch fa-spin" />
-              </span>
-            ) : (
-              <a className="logout" href="/logout">
-                <i className="fa fa-sign-out" />
-              </a>
-            )}
+      <div className={lockAppWrapperClass}>
+        <Header />
+        <div className="authentication-wrapper">
+          <div>
+            {hasError && <Alert bsStyle="danger">PIN is incorrect.</Alert>}
+            <div id="lockout" className="authentication-card text-center">
+              <h2>Session Locked</h2>
+              <h5 className="text-muted url-heading">
+                {this.props.teamStore.slug}.teamstitch.com
+              </h5>
+
+              <h5>
+                Enter <strong>PIN</strong> to resume Stitch.
+              </h5>
+
+              <form className="m-b-40" onSubmit={this.handleSubmit}>
+                <PinInput
+                  className="m-b-20 m-center"
+                  pin={this.state.pin}
+                  onValid={this.onValid}
+                  onInvalid={this.onInvalid}
+                />
+
+                <Button
+                  type="submit"
+                  bsStyle="primary"
+                  bsSize="lg"
+                  className="btn-block m-center"
+                  disabled={isSaving}
+                >
+                  Unlock
+                  {this.renderLoadingIcon()}
+                </Button>
+              </form>
+
+              <h5>
+                Can't remember your PIN?{" "}
+                <a href="/logout">
+                  <strong>Sign Out</strong>
+                </a>
+              </h5>
+            </div>
           </div>
-
-          <h2>Session Paused</h2>
-
-          <h5>
-            Enter <strong>PIN</strong> to resume Stitch.
-          </h5>
-
-          <form className="m-b-40" onSubmit={this.handleSubmit}>
-            <FormGroup bsSize="large">
-              <FormControl
-                name="pin"
-                required
-                autoFocus
-                type="password"
-                value={this.state.pin}
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <Button
-              type="submit"
-              bsStyle="primary"
-              bsSize="lg"
-              className="btn-block"
-            >
-              Enter
-            </Button>
-
-            <HelpBlock>
-              Forgot your PIN? Just enter your password.<br />
-              Forgot both? Reset your password{" "}
-              <a role="link" onClick={this.resetPassword}>
-                here
-              </a>.
-            </HelpBlock>
-          </form>
-
-          <p className="copyright m-b-0">
-            &copy; 2017 Stitch Technologies, Inc
-          </p>
         </div>
+        {!window.electronApp && <Footer />}
       </div>
     );
   }
 }
-
-export default withRouter(LockedApp);
+export default LockedApp;

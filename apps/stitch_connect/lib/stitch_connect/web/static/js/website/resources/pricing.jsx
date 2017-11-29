@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import NavItem from "react-bootstrap/lib/NavItem";
 import Button from "react-bootstrap/lib/Button";
+
+import Header from "../components/header";
+import Footer from "../components/footer";
 
 export default class Pricing extends Component {
   constructor(props) {
@@ -24,6 +25,7 @@ export default class Pricing extends Component {
   render() {
     return (
       <div>
+        <Header />
         <div className="subheader">
           <div className="container">
             <div className="landing-message text-center">
@@ -247,9 +249,9 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                                href="https://intercom.help/teamstitch/engage/stitch-engage-faqs"
                               >
-                                Contact Us
+                                Learn More
                               </Button>
                             </div>
 
@@ -292,9 +294,9 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                                href="https://intercom.help/teamstitch/engage/admin/premium-plan"
                               >
-                                Contact Us
+                                Learn More
                               </Button>
                             </div>
 
@@ -337,9 +339,9 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                                href="https://intercom.help/teamstitch/engage/admin/power-plan"
                               >
-                                Contact Us
+                                Learn More
                               </Button>
                             </div>
 
@@ -386,9 +388,9 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                                href="https://intercom.help/teamstitch/manage/stitch-manage-faqs"
                               >
-                                Contact Us
+                                Learn More
                               </Button>
                             </div>
 
@@ -431,9 +433,9 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                                href="https://intercom.help/teamstitch/manage/admin/premium-plan"
                               >
-                                Contact Us
+                                Learn More
                               </Button>
                             </div>
 
@@ -476,9 +478,9 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://teamstitch.zendesk.com/hc/en-us/requests/new"
+                                href="https://intercom.help/teamstitch/manage/admin/power-plan"
                               >
-                                Contact Us
+                                Learn More
                               </Button>
                             </div>
 
@@ -521,6 +523,8 @@ export default class Pricing extends Component {
             </Tab.Container>
           </div>
         </div>
+
+        <Footer />
       </div>
     );
   }

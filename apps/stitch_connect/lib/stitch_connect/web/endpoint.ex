@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/", from: :stitch_connect, gzip: false,
-    only: ~w(js css fonts images audios favicon.ico robots.txt)
+    only: ~w(js css fonts images audios favicon.ico favicon-192x192.png robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -39,7 +39,8 @@ defmodule StitchConnect.Web.Endpoint do
   plug Plug.Session,
     store: :cookie,
     key: "_stitch_connect_key",
-    signing_salt: "o9McnPJj"
+    signing_salt: "o9McnPJj",
+    domain: ".#{System.get_env("APP_HOST")}"
 
   # Add AppSignal instrumentation
   use Appsignal.Phoenix

@@ -49,7 +49,7 @@ class DotOptions extends React.Component {
           >
             <i className="fa fa-bullhorn" /> Feedback
           </MenuItem>
-          <MenuItem href="https://teamstitch.zendesk.com/hc/en-us">
+          <MenuItem href="https://intercom.help/teamstitch">
             <i className="fa fa-question-circle" /> Help
           </MenuItem>
         </Dropdown.Menu>

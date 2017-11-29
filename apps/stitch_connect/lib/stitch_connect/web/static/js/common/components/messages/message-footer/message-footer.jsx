@@ -3,22 +3,16 @@ import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import { NavLink } from "react-router-dom";
 
-import { getRoomNavLink } from "../../../../lib/room";
-
-@inject("sidemenuStore")
+@inject("groupsStore")
 class MessageFooter extends Component {
-  getGroup() {
-    const { sidemenuStore, message } = this.props;
-
-    return sidemenuStore.getGroupById(message.group_id);
-  }
-
   render() {
-    const group = this.getGroup();
+    const { groupsStore, message } = this.props;
+    const group = groupsStore.getGroupById(message.group_id);
+    const url = groupsStore.getGroupUrl(message.group_id);
 
     return (
       <div className="message-footer">
-        <NavLink to={getRoomNavLink(group)}>
+        <NavLink to={url}>
           <i className="fa fa-tag" /> {group.name}
         </NavLink>
       </div>

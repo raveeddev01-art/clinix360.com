@@ -1,6 +1,7 @@
 defmodule Stitch.User.Authentication do
   import Ecto.Changeset
-  alias Stitch.{Repo, Accounts.User, Team}
+  import Ecto.Query
+  alias Stitch.{Repo, Accounts.User, UserQueries, Team}
 
   def hash_password(password) do
     Comeonin.Bcrypt.hashpwsalt(password)
@@ -30,9 +31,11 @@ defmodule Stitch.User.Authentication do
       nil ->
         false
       team ->
-        case Repo.get_by(User, %{email: email, team_id: team.id}) do
+        case UserQueries.team_member_with_email(team.id, email) do
           nil -> Comeonin.Bcrypt.dummy_checkpw()
           user ->
+            # This is used to hash legacy Meteor passwords.
+            # password = if team.is_legacy, do: Base.encode16(:crypto.hash(:sha256, password), case: :lower), else: password
             case Comeonin.Bcrypt.checkpw(password, user.password_hash) do
               true ->
                 user
@@ -78,14 +81,19 @@ defmodule Stitch.User.Authentication do
   when byte_size(email) > 0 and byte_size(team_slug) > 0 do
     team = Repo.get_by(Team, slug: team_slug)
 
-    case Repo.get_by(User, email: email, team_id: team.id) do
-        nil ->
-          {:error, "User is not part of the team or Email does not exist"}
+    query =
+      from u in User,
+      where: u.team_id == ^team.id,
+      where: u.onboarded == ^true,
+      where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
 
-        user ->
-          user
-          |> Ecto.Changeset.change(password_reset_token: :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32) )
-          |> Repo.update
+    case Repo.one(query) do
+      nil ->
+        {:error, "User is not part of the team or Email does not exist"}
+      user ->
+        user
+        |> Ecto.Changeset.change(password_reset_token: Stitch.Rand.token(32))
+        |> Repo.update
     end
   end
 

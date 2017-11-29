@@ -42,7 +42,9 @@ defmodule Stitch.Mixfile do
       {:timex, "~> 3.1"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:stripity_stripe, "~> 1.6"},
-      {:appsignal, "~> 1.3"}
+      {:appsignal, "~> 1.3"},
+      {:mogrify, "~> 0.5.6"},
+      {:floki, "~> 0.18.1"}
     ]
   end
 

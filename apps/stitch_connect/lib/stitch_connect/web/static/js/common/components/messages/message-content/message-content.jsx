@@ -7,23 +7,25 @@ import Linkify from "react-linkify";
 
 import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
+import LinkPreview from "./link-preview";
 
-@inject("sidemenuStore")
+@inject("usersStore")
 @observer
 class MessageContent extends Component {
   renderMessageLine(line) {
-    const { sidemenuStore } = this.props;
-    const { usernameMap } = sidemenuStore;
+    const { usersStore, message } = this.props;
+    const { usersByUsername } = usersStore;
     const words = line.split(" ");
 
     return words.reduce((prev, word, i) => {
       if (word.indexOf("@") === 0) {
         const username = word.substr(1);
-        if (usernameMap[username]) {
+        if (usersByUsername[username]) {
           return prev.concat(
             <UserMention
               key={`usermention_${i}`}
-              user={usernameMap[username]}
+              isMine={message.user_id === currentUser.id}
+              user={usersByUsername[username]}
             />
           );
         }
@@ -80,6 +82,25 @@ class MessageContent extends Component {
     );
   }
 
+  renderLinkPreviews() {
+    const {
+      message: { link_previews: linkPreviews, id, user_id: userId }
+    } = this.props;
+
+    if (linkPreviews && linkPreviews.length) {
+      return linkPreviews.map((link, index) => (
+        <LinkPreview
+          key={`msg_${id}_link_${index}`}
+          {...link}
+          msgId={id}
+          senderId={userId}
+        />
+      ));
+    }
+
+    return null;
+  }
+
   render() {
     const { message } = this.props;
 
@@ -93,6 +114,7 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content && '"'}
           {this.renderMessageText()}
           {message.type === "upload" && message.text_content && '"'}
+          {this.renderLinkPreviews()}
         </div>
       </Linkify>
     );

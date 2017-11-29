@@ -9,11 +9,20 @@ defmodule Stitch.MessageCreationTest do
       assert {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       assert message.text_content == "Hello, World!"
     end
+
+    test "checks for links", %{group: group, user: user} do
+      {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "lorem"})
+      refute message.has_links
+
+      {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "http://foo.bar"})
+      assert message.has_links
+    end
   end
 
   defp create_user_and_group(_) do
-    user = insert(:user)
-    group = insert(:group)
+    team = insert(:team)
+    user = insert(:user, team: team)
+    group = insert(:group, team: team)
     insert(:group_user, user: user, group: group)
 
     {:ok, user: user, group: group}

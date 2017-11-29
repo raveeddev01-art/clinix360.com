@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Radio from "react-bootstrap/lib/Radio";
 
+import { NOTIFICATION_PREFERENCES } from "lib/constants";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 
 @inject("notificationStore")
@@ -10,30 +12,41 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 class DesktopNotification extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      setting: null
+      pref: ""
     };
   }
 
   onToggleEdit = () => {
+    const { notificationStore } = this.props;
+
     this.setState({
-      setting: this.props.notificationStore.desktopPreference
+      pref: notificationStore.desktopPref
     });
   };
 
-  onChange = val => () => {
-    this.setState({ setting: val });
+  onChange = pref => () => {
+    this.setState({ pref });
   };
 
   onSave = () => {
-    const { notificationStore } = this.props;
-    notificationStore.updateDesktopPreference(this.state.setting).then(() => {
-      notify.show("Desktop notification preference updated");
-    });
+    const { hideAlert, onSuccess, onError, notificationStore } = this.props;
+
+    hideAlert();
+
+    return notificationStore
+      .updateDesktopPref(this.state.pref)
+      .then(() => {
+        onSuccess("Desktop notification preference has been updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   render() {
-    const { setting } = this.state;
+    const { pref } = this.state;
 
     return (
       <SettingPanel
@@ -42,51 +55,30 @@ class DesktopNotification extends Component {
         onSave={this.onSave}
         onEdit={this.onToggleEdit}
       >
-        <HelpBlock className="m-b-20" />
         <div className="radio-group notifications">
-          <Radio
-            name="radioGroup"
-            checked={setting === "everything"}
-            onChange={this.onChange("everything")}
-          >
-            <span className="radio-span">
-              <h5>Everything</h5>
-              <p className="m-b-0">
-                You will be notified for every new message.
-              </p>
-            </span>
-          </Radio>
-
-          <Radio
-            name="radioGroup"
-            checked={setting === "mentions"}
-            onChange={this.onChange("mentions")}
-          >
-            <span className="radio-span">
-              <h5>Mentions</h5>
-              <p className="m-b-0">
-                You will be notified only when a team member mentions you.
-              </p>
-            </span>
-          </Radio>
-
-          <Radio
-            name="radioGroup"
-            checked={setting === "nothing"}
-            onChange={this.onChange("nothing")}
-          >
-            <span className="radio-span">
-              <h5>Nothing</h5>
-              <p className="m-b-0">
-                You will not receive notifications, but will continue to see a
-                badge count for unread messages.
-              </p>
-            </span>
-          </Radio>
+          {NOTIFICATION_PREFERENCES.map(p => (
+            <Radio
+              key={p.value}
+              name="desktop-pref"
+              checked={pref === p.value}
+              onChange={this.onChange(p.value)}
+            >
+              <span className="radio-span">
+                <h5>{p.title}</h5>
+                <p className="m-b-0">{p.description}</p>
+              </span>
+            </Radio>
+          ))}
         </div>
       </SettingPanel>
     );
   }
 }
+
+DesktopNotification.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default DesktopNotification;

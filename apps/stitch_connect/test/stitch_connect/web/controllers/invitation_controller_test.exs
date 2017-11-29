@@ -46,7 +46,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       })
       |> json_response(422)
 
-    assert json == %{"message" => "Could not finish onboarding user."}
+    assert json == %{"message" => "Username has invalid format"}
     assert %{accepted: false} = Stitch.Repo.get(Stitch.Invitation, invite.id)
   end
 
@@ -72,5 +72,49 @@ defmodule StitchConnect.Web.InvitationControllerTest do
     assert json["onboarded"]
     assert %{accepted: true} = Stitch.Repo.get(Stitch.Invitation, invite.id)
     assert [%{type: "system"}] = Stitch.Repo.all(Stitch.Message)
+  end
+
+  test "create/2", %{conn: conn, team: team} do
+    current_user = insert(:user, team: team, roles: ["admin"])
+    existing_user = insert(:user, team: team)
+    deactivated_user = insert(:user, team: team, disabled: true)
+    Stitch.Invitation.invite_to_team(current_user.id, "already@invited.com")
+
+    json =
+      conn
+      |> with_api_user(current_user)
+      |> post(api_v1_invitation_path(conn, :create), %{
+        "email_collection" => [
+          current_user.email,
+          current_user.email,
+          existing_user.email,
+          existing_user.email,
+          deactivated_user.email,
+          deactivated_user.email,
+          "already@invited.com",
+          "already@invited.com",
+          "not@user.com",
+          "not@user.com",
+        ] |> Enum.join(",")
+      })
+      |> json_response(200)
+
+    assert json == %{
+      current_user.email => "Email has already been registered.",
+      existing_user.email => "Email has already been registered.",
+      deactivated_user.email => "Email has already been registered.",
+      "already@invited.com" => "Email has already been invited.",
+      "not@user.com" => "ok",
+    }
+  end
+
+  test "create/2 when current user is Unauthorized to send invites", %{conn: conn, user: user} do
+    json =
+      conn
+      |> with_api_user(user)
+      |> post(api_v1_invitation_path(conn, :create), %{"email_collection" => "not@user.com"})
+      |> json_response(:unauthorized)
+
+    assert json["message"] == "Unauthorized to send invites."
   end
 end

@@ -21,6 +21,9 @@ defmodule Stitch.Message do
     field :pinned_at, :utc_datetime
     field :read_status, :map, default: %{}
     field :mentioned_user_ids, {:array, :integer}, default: []
+    field :has_links, :boolean, default: false
+    field :link_previews_generated, :boolean, default: false
+    embeds_many :link_previews, Message.LinkPreview, on_replace: :delete
 
     timestamps()
   end
@@ -42,6 +45,7 @@ defmodule Stitch.Message do
     struct
     |> cast(params, [:text_content, :mentioned_user_ids])
     |> validate_required([:text_content])
+    |> check_for_links
     |> put_change(:edited_at, DateTime.utc_now())
   end
 
@@ -50,14 +54,37 @@ defmodule Stitch.Message do
     |> cast(params, [:type, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
+    |> check_for_links
   end
+
+  defp check_for_links(%Ecto.Changeset{valid?: true, changes: %{text_content: text_content}} = changeset) do
+    has_links =
+      text_content
+      |> Message.LinkPreview.get_links
+      |> Enum.empty?
+      |> Kernel.not
+
+    put_change(changeset, :has_links, has_links)
+  end
+  defp check_for_links(changeset), do: changeset
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
     |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
+    |> add_preview()
   end
+
+  def add_preview(%{valid?: true, changes: %{fields: fields}} = changeset) do
+    case Stitch.UploadPreview.create_preview(fields) do
+      {:ok, preview_metadata} ->
+        put_change(changeset, :fields, Map.merge(fields, preview_metadata))
+      {:error, _error} ->
+        changeset
+    end
+  end
+  def add_preview(changeset), do: changeset
 
   def system_changeset(%Message{} = struct, params \\ %{}) do
     struct
@@ -72,6 +99,8 @@ defmodule Stitch.Message do
     group = GroupQueries.get_by_id(group_id)
     group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
+
+    analytics_track_message_sent(user, group)
 
     mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"])
     notify_user_ids = Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
@@ -103,6 +132,20 @@ defmodule Stitch.Message do
   def create(_group_id, _user, _attrs, _online_in_group) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
     {:error, :message, changeset, nil}
+  end
+
+  defp analytics_track_message_sent(user, group) do
+    Stitch.Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      properties = %{
+        "room_id"   => Integer.to_string(group.id),
+        "room_slug" => group.slug,
+        "team_id"   => Integer.to_string(team.id),
+        "team_slug" => team.slug
+      }
+      Stitch.Analytics.track(user.id, "Message Sent", properties)
+    end)
   end
 
   def message_changeset(message, %{"type" => "chat"} = attrs) do
@@ -202,12 +245,38 @@ defmodule Stitch.Message do
     |> Repo.update
   end
 
+  def mark_as_unread(user_id, group_id, %Message{user_id: user_id} = message) do
+    message = get_message_to_unread(message)
+    mark_as_unread(user_id, group_id, message)
+  end
+
+  def mark_as_unread(user_id, group_id, %Message{type: "system"} = message) do
+    message = get_message_to_unread(message)
+    mark_as_unread(user_id, group_id, message)
+  end
+
+  def mark_as_unread(user_id, group_id, nil) do
+    group_user = Repo.get_by(GroupUser, user_id: user_id, group_id: group_id)
+    {:ok, %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [group_user]}}}
+  end
+
   def mark_as_unread(user_id, group_id, message) do
     Multi.new
     |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id, message.id), [])
     |> Multi.update_all(:mark_messages_as_unread, mark_messages_as_unread(group_id, user_id, message.id), [], [returning: true])
     |> Multi.update_all(:mark_group_as_unread, mark_group_as_unread(group_id, user_id, message), [], [returning: true])
     |> Repo.transaction
+  end
+
+  def get_message_to_unread(%Message{} = message) do
+    Message
+    |> where([m], m.id < ^message.id)
+    |> where([m], m.type != "system")
+    |> where([m], m.user_id != ^message.user_id)
+    |> where([m], m.group_id == ^message.group_id)
+    |> order_by([m], [desc: m.id])
+    |> limit(1)
+    |> Repo.one
   end
 
   defp mark_messages_as_unread(group_id, user_id, message_id) do
@@ -236,6 +305,8 @@ defmodule Stitch.Message do
     Message
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.id >= ^message_id)
+    |> where([m], m.user_id != ^user_id)
+    |> where([m], m.type != "system")
     |> select([m], %{
       mentions_count: fragment("coalesce(count (*) filter (where ? @> ?), 0)", m.mentioned_user_ids, ^[user_id]),
       unread_messages_count: count(m.id),

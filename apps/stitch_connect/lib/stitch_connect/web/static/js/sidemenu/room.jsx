@@ -5,24 +5,15 @@ import { NavLink, withRouter } from "react-router-dom";
 import { Element } from "react-scroll";
 import VisibilitySensor from "react-visibility-sensor";
 import classNames from "classnames";
-import _ from "lodash";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-import { getRoomNavLink } from "../lib/room";
+import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../lib/constants";
 
-@inject("presenceStore", "sidemenuStore")
+@inject("presenceStore", "sidemenuStore", "groupsStore")
 @observer
 class Room extends Component {
-  hideDM = event => {
-    event.preventDefault();
-    const { sidemenuStore, room } = this.props;
-    sidemenuStore.hideGroup(room.id).then(() => {
-      sidemenuStore.loadGroups();
-    });
-  };
-
   onVisibleChange = isVisible => {
     const { sidemenuStore, room } = this.props;
 
@@ -97,19 +88,23 @@ class Room extends Component {
 
   hideDM = event => {
     event.preventDefault();
-    const { sidemenuStore } = this.props;
-    sidemenuStore.hideGroup(this.props.room.id).then(() => {
-      sidemenuStore.loadGroups();
+
+    const { groupsStore, room, history } = this.props;
+
+    groupsStore.hideGroup(room.id).then(() => {
+      groupsStore.loadGroups();
+      history.push(`/rooms/${groupsStore.defaultGroup.slug}`); // when room is hidden, should redirect to general
     });
   };
 
   render() {
-    const { room, sidemenuStore } = this.props;
+    const { room, sidemenuStore, groupsStore } = this.props;
+    const roomUrl = groupsStore.getGroupUrl(room.id);
     const className = classNames("item", {
       "has-unread": room.unread_messages_count > 0
     });
     const badge = this.getBadge();
-    const anchorName = `${sidemenuStore.ROOM_MENU_ITEM_ANCHOR_PREFIX}${room.id}`;
+    const anchorName = `${ROOM_MENU_ITEM_ANCHOR_PREFIX}${room.id}`;
     const roomHidden =
       (room.type === "dm" || room.type === "multi_dm") && room.is_hidden;
 
@@ -126,7 +121,7 @@ class Room extends Component {
         >
           <Element name={anchorName}>
             <NavLink
-              to={getRoomNavLink(room)}
+              to={roomUrl}
               className={className}
               activeClassName="active"
             >
@@ -136,7 +131,9 @@ class Room extends Component {
               <div className="item-text">{this.getName()}</div>
               {this.getHideDMIcon()}
               {badge > 0 && (
-                <div className="item-badge text-center">{badge}</div>
+                <div className="item-badge text-center">
+                  {badge < 10 ? badge : "9+"}
+                </div>
               )}
             </NavLink>
           </Element>

@@ -17,11 +17,12 @@ import RoomItem from "./room_item";
 import Members from "../../../common/components/members/members";
 import Toggle from "../../../common/components/toggle/Toggle";
 
-@inject("sidemenuStore", "groupStore")
+@inject("groupsStore")
 @observer
 class RoomsModal extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       filter: "",
       members: [],
@@ -56,9 +57,9 @@ class RoomsModal extends Component {
   };
 
   filterRooms() {
-    const { sidemenuStore } = this.props;
+    const { groupsStore } = this.props;
     const { filter } = this.state;
-    const rooms = sidemenuStore.normalGroups.filter(room =>
+    const rooms = groupsStore.normalGroups.filter(room =>
       room.name.toLowerCase().startsWith(filter.toLowerCase())
     );
 
@@ -93,9 +94,9 @@ class RoomsModal extends Component {
   };
 
   createRoom = () => {
-    const { groupStore, history, closeModal } = this.props;
+    const { groupsStore, history, closeModal } = this.props;
 
-    groupStore
+    groupsStore
       .createGroup({
         name: this.state.name.trim(),
         public: this.state.public,
@@ -202,7 +203,7 @@ class RoomsModal extends Component {
           <FormGroup>
             <Col sm={3}>
               <Toggle
-                onClick={this.togglePublic}
+                onToggle={this.togglePublic}
                 on="Public"
                 off="Private"
                 active={this.state.public}
@@ -305,13 +306,14 @@ class RoomsModal extends Component {
   }
 
   render() {
-    const { state } = this.props;
+    const { state, closeModal } = this.props;
 
     return (
       <Modal
         className="rooms-modal"
         show={!!state}
         onEnter={this.onModalEntered}
+        onHide={closeModal}
       >
         {this.renderModalHeader()}
         {state === "list" && this.renderRoomsListModal()}

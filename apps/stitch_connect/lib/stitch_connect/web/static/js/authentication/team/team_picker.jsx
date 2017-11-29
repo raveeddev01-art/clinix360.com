@@ -3,20 +3,17 @@ import { inject } from "mobx-react";
 import { Link } from "react-router-dom";
 
 import Alert from "react-bootstrap/lib/Alert";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
+import Button from "react-bootstrap/lib/Button";
 
 @inject("titleStore")
 export default class TeamPicker extends Component {
   constructor(...args) {
     super(...args);
     this.state = {
-      team_name: "",
-      teamExists: false
+      teamName: "",
+      showAlert: false
     };
   }
 
@@ -25,90 +22,102 @@ export default class TeamPicker extends Component {
   }
 
   handleChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
+    const teamName = event.target.value;
+    this.setState({ teamName });
+  };
 
-    this.setState({
-      [name]: value,
-      teamExists: false
+  checkBlacklist = url => {
+    return post("/api/v1/teams/slug-exists", {
+      body: { url }
     });
-
-    delay(() => {
-      this.checkAvailability(value);
-    }, 300);
   };
 
   checkAvailability = name => {
-    post("/api/v1/teams/url-available", {
+    return post("/api/v1/teams/url-available", {
       body: { url: name }
-    }).then(response => {
-      this.setState({ teamExists: !response.data.available });
     });
   };
 
   handleSubmit = event => {
+    const { teamName } = this.state;
     event.preventDefault();
-    window.location = `https://${this.state.team_name}.${applicationHost}`;
+    Promise.all([
+      this.checkBlacklist(teamName),
+      this.checkAvailability(teamName)
+    ])
+      .then(resp => {
+        if (resp[0].data.available && !resp[1].data.available) {
+          window.location = `https://${teamName}.${applicationHost}`;
+        } else {
+          this.setState({
+            showAlert: true
+          });
+        }
+      })
+      .catch(() => {
+        this.setState({ showAlert: true });
+      });
   };
 
   render() {
+    const { showAlert, teamName } = this.state;
+
     return (
       <div>
-        {this.state.error && <Alert>This team doesn't seem to exist.</Alert>}
+        {showAlert && (
+          <Alert bsStyle="danger">
+            We don't have that team URL in our system. If you'd like, we can
+            help you <Link to="/find-your-team">find your team</Link>.
+          </Alert>
+        )}
 
         <div className="authentication-card text-center team-picker-card">
-          <div className="card-header">
-            <Row>
-              <Col xs={12} className="text-right">
-                <OverlayTrigger
-                  placement="top"
-                  overlay={<Tooltip id="close">Close</Tooltip>}
-                >
-                  <Link to="/getstarted">
-                    <i className="fa fa-times" />
-                  </Link>
-                </OverlayTrigger>
-              </Col>
-            </Row>
-          </div>
-
           <h2>Sign In</h2>
 
           <h5>
             Enter your team's <strong>Stitch URL</strong>.
           </h5>
 
-          <form onSubmit={this.handleSubmit} className="m-b-40">
+          <form onSubmit={this.handleSubmit} noValidate className="m-b-40">
             <FormGroup bsSize="large" className="team-form">
               <FormControl
-                name="team_name"
+                name="teamName"
                 required
                 autoFocus
                 type="text"
-                placeholder="my-team-name"
-                value={this.state.team_name}
+                autoComplete="off"
+                placeholder="Subdomain"
+                value={teamName}
                 onChange={this.handleChange}
-                className="text-right"
               />
               <span className="domain">.teamstitch.com</span>
             </FormGroup>
 
-            <input
-              disabled={!this.state.teamExists}
-              value="Continue"
+            <Button
+              bsStyle="primary"
+              bsSize="lg"
               type="submit"
-              className="btn btn-block btn-lg btn-primary"
-            />
+              className="btn-block"
+              disabled={!teamName}
+            >
+              Continue
+            </Button>
           </form>
 
           <h5>
             Don't know your team's URL?{" "}
-            <Link to="/find-teams">
+            <Link to="/find-your-team">
               <strong>Find your team</strong>
             </Link>
           </h5>
         </div>
+
+        <h5>
+          Just getting started?{" "}
+          <Link to="/signup/email">
+            <strong>Create a new team</strong>
+          </Link>
+        </h5>
       </div>
     );
   }

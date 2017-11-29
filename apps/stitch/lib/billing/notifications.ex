@@ -20,7 +20,7 @@ defmodule Stitch.Billing.Notifications do
     new_email()
     |> template("Payment Monthly Invoice (Connect)", template_vars)
     |> to(email_address)
-    |> from("support@teamstitch.com")
+    |> from({"Stitch", "support@teamstitch.com"})
     |> subject("Stitch Payment Received")
     |> Mailer.deliver_later()
   end
@@ -39,7 +39,7 @@ defmodule Stitch.Billing.Notifications do
     new_email()
     |> template("Payment Subscription Failed (Connect)", template_vars)
     |> to(user.email)
-    |> from("support@teamstitch.com")
+    |> from({"Stitch", "support@teamstitch.com"})
     |> subject("Stitch Payment Failed")
     |> Mailer.deliver_later()
   end

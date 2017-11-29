@@ -1,5 +1,5 @@
 import { observable, computed, action } from "mobx";
-import queryString from "query-string";
+import { stringify } from "qs";
 
 class PinnedMessageStore {
   @observable messages = [];
@@ -14,7 +14,7 @@ class PinnedMessageStore {
 
   @computed
   get groupId() {
-    return this.rootStore.groupStore.id;
+    return this.rootStore.groupStore.group.id;
   }
 
   @computed
@@ -37,7 +37,7 @@ class PinnedMessageStore {
       return;
     }
 
-    const params = queryString.stringify({
+    const params = stringify({
       skip: this.skip,
       limit: this.limit,
       group_id: this.groupId
@@ -54,6 +54,20 @@ class PinnedMessageStore {
       this.hasMore = this.messages.length < meta.count;
       this.skip = meta.skip + meta.limit;
     });
+  }
+
+  @action
+  add(message) {
+    this.messages.push(message);
+  }
+
+  @action
+  remove(id) {
+    const index = this.messages.findIndex(m => m.id === id);
+
+    if (index > -1) {
+      this.messages.splice(index, 1);
+    }
   }
 }
 

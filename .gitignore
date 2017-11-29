@@ -20,4 +20,8 @@ erl_crash.dump
 .idea/
 
 tsconfig.json
+
 doc
+
+# osx
+.DS_Store

@@ -1,0 +1,131 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { Elements } from "react-stripe-elements";
+import capitalize from "lodash/capitalize";
+
+import { getFrequency, getMonthlyPrice } from "../utils";
+import CreditCard from "./CreditCard";
+import CheckoutForm from "./CheckoutForm";
+
+class Checkout extends React.Component {
+  getBillingSummary() {
+    const { plan } = this.props;
+    const frequency = getFrequency(plan.frequency);
+    const monthlyPrice = getMonthlyPrice(plan.tier, plan.frequency);
+    const annualPrice = monthlyPrice * 12;
+    const charge =
+      frequency.unit === "month"
+        ? `$${monthlyPrice} per user per month`
+        : `$${annualPrice} per user per year`;
+
+    return {
+      tier: capitalize(plan.tier),
+      charge,
+      renewal: frequency.unit
+    };
+  }
+
+  render() {
+    const {
+      cards,
+      onUseCreditCard,
+      onSubmitStart,
+      onSubmitSuccess,
+      onSubmitError
+    } = this.props;
+    const billingSummary = this.getBillingSummary();
+
+    return (
+      <div className="checkout">
+        <h4>Step 1: Billing Summary</h4>
+        <div className="step1-billing-summary">
+          <ul>
+            <li>
+              You are subscribing to <b>{billingSummary.tier}</b>
+            </li>
+            <li>
+              You will be charged <b>{billingSummary.charge}</b>
+            </li>
+            <li>
+              Your subscription will renew each <b>{billingSummary.renewal}</b>
+            </li>
+          </ul>
+          <p className="text-muted">
+            We will automatically update your balance when members are added to
+            or removed from your team.
+          </p>
+        </div>
+
+        {/* <h4>Step 2: Add Contact Information</h4>
+        <div className="step2-contact-info">
+          <div className="form-group">
+            <label htmlFor="team-name">Team Name</label>
+            <input
+              type="text"
+              name="team-name"
+              className="form-control"
+              id="team-name"
+              required
+            />
+            <p className="help-block">
+              Your team name and address will be used on all billing invoices on
+              your account.
+            </p>
+          </div>
+          <div className="form-group">
+            <label htmlFor="team-address">Address</label>
+            <textarea
+              name="team-address"
+              className="form-control"
+              id="team-address"
+              rows="5"
+            />
+            <p className="help-block">
+              This field can also be for adding additional invoice information.
+            </p>
+          </div>
+        </div> */}
+
+        <h4>Step 2: Add Payment Method</h4>
+        <div className="step2-payment">
+          <div className="existing-card">
+            <h5>Option A: Use an existing payment method.</h5>
+
+            {cards.length === 0 && <p className="help-block">No saved cards</p>}
+            {cards.length > 0 &&
+              cards.map(card => (
+                <CreditCard key={card.id} card={card} onUse={onUseCreditCard} />
+              ))}
+          </div>
+
+          <div className="add-new-card">
+            <h5>Option B: Add a new card.</h5>
+
+            <Elements>
+              <CheckoutForm
+                onSubmitStart={onSubmitStart}
+                onSubmitError={onSubmitError}
+                onSubmitSuccess={onSubmitSuccess}
+              />
+            </Elements>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+Checkout.defaultProps = {
+  cards: []
+};
+
+Checkout.propTypes = {
+  cards: PropTypes.array,
+  plan: PropTypes.object.isRequired,
+  onUseCreditCard: PropTypes.func.isRequired,
+  onSubmitStart: PropTypes.func.isRequired,
+  onSubmitSuccess: PropTypes.func.isRequired,
+  onSubmitError: PropTypes.func.isRequired
+};
+
+export default Checkout;

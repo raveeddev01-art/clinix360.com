@@ -13,7 +13,8 @@ class Directory extends Component {
       <div className="directory-addon">
         <div className="status">
           <span>
-            {groupStore.onlineUsers.length}/{groupStore.users.length} Members
+            {groupStore.onlineUsers.length}/{groupStore.group.users.length}{" "}
+            Members
           </span>
           <button
             className="btn-fancy btn-default btn-small"

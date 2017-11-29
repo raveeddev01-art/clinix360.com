@@ -5,10 +5,11 @@ import { Provider } from "mobx-react";
 
 import resetPasswordStore from "./stores/reset_password_store";
 import registrationStore from "./stores/registration_store";
+import invitationStore from "./stores/invitation_store";
 import TitleStore from "../common/stores/title_store";
 import AuthenticationRouter from "./authentication_router";
 
-const stores = { resetPasswordStore, registrationStore };
+const stores = { resetPasswordStore, registrationStore, invitationStore };
 // @TODO refactor authentication_store and provide by using provider
 
 class Auth extends Component {
@@ -26,7 +27,7 @@ class Auth extends Component {
     return (
       <Router>
         <Provider {...stores}>
-          <AuthenticationRouter />
+          <AuthenticationRouter {...this.props} />
         </Provider>
       </Router>
     );

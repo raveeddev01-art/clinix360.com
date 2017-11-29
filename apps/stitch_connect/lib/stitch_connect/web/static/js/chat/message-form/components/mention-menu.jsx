@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
 
-@inject("presenceStore", "groupStore", "sidemenuStore")
+@inject("presenceStore", "groupStore", "usersStore")
 @observer
 class MenutionMenu extends Component {
   constructor(...args) {
@@ -60,9 +60,11 @@ class MenutionMenu extends Component {
   };
 
   getUsers = () => {
-    const { groupStore, sidemenuStore, filter } = this.props;
+    const { groupStore, usersStore, filter } = this.props;
 
-    const users = groupStore.public ? sidemenuStore.users : groupStore.users;
+    const users = groupStore.group.public
+      ? usersStore.users
+      : groupStore.group.users;
     return users
       .filter(
         user =>

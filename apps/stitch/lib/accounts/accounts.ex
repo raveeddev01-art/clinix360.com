@@ -6,6 +6,8 @@ defmodule Stitch.Accounts do
   alias Stitch.Repo
   alias Stitch.Accounts.User
 
+  @analytics Application.get_env(:stitch, :analytics)
+
   @doc """
   Create a user with only the email field set. The user is not
   associated with any team.
@@ -27,7 +29,7 @@ defmodule Stitch.Accounts do
     confirmation_code = digits
       |> Enum.join
 
-    token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+    token = Stitch.Rand.token(32)
 
     {:ok, user} =
       %User{}
@@ -73,12 +75,65 @@ defmodule Stitch.Accounts do
 
           case Repo.update(changeset) do
             {:ok, user} ->
+              attrs
+              |> Map.get("invites", [])
+              |> Enum.each(& Stitch.Invitation.invite_to_team(user.id, &1))
+
+              {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
+              analytics_identify_and_group(user)
+              analytics_track_new_team_created(user)
+              analytics_track_joined_team(user)
               user
-            {:error, _} ->
-              {:error, "Could not finish onboarding user."}
+            {:error, changeset} ->
+              {:error, changeset}
           end
         end
     end
+  end
+
+  defp analytics_identify_and_group(user) do
+    Stitch.Task.start(fn ->
+      @analytics.identify_and_group(user)
+    end)
+  end
+
+  defp analytics_track_new_team_created(user) do
+    Stitch.Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      properties = %{
+        "first_name" => user.first_name,
+        "last_name"  => user.last_name,
+        "email"      => user.email,
+        "team_id"    => Integer.to_string(team.id),
+        "team_name"  => team.name,
+        "team_slug"  => team.slug
+      }
+      active_users = Stitch.TeamQueries.list_active_users(team)
+      if Enum.count(active_users) == 1 do
+        Stitch.Analytics.track(user.id, "Team Created", properties)
+      end
+    end)
+  end
+
+  defp analytics_track_joined_team(user) do
+    Stitch.Task.start(fn ->
+      team_id = user.team_id
+      team = Stitch.TeamQueries.get_by_id(team_id)
+      active_users = Stitch.TeamQueries.list_active_users(team)
+      properties = %{
+        "first_name" => user.first_name,
+        "last_name"  => user.last_name,
+        "email"      => user.email,
+        "team_id"    => Integer.to_string(team.id),
+        "team_name"  => team.name,
+        "team_slug"  => team.slug,
+        "active_users" => length(active_users)
+      }
+      if Enum.count(active_users) > 1 do
+        Stitch.Analytics.track(user.id, "Joined Team", properties)
+      end
+    end)
   end
 
   @doc """
@@ -134,6 +189,22 @@ defmodule Stitch.Accounts do
   end
 
   def update_user_password(_,_,_), do: {:error, "Invalid Parameters provided for password update"}
+
+  def update_profile_image(%User{} = user, url) do
+    Repo.get(User, user.id)
+    |> User.profile_image_changeset(%{"profile_image_url" => url})
+    |> Repo.update
+  end
+
+  def delete_profile_image(%User{} = user) do
+    Repo.get(User, user.id)
+    |> Ecto.Changeset.  change(profile_image_url: nil, profile_image_thumb_url: nil)
+    |> Repo.update
+  end
+
+  def get_by_id(user_id) do
+    Repo.get(User, user_id)
+  end
 
   def get_for_team_id(user_id, team_id) do
     Repo.get_by(User, id: user_id, team_id: team_id)

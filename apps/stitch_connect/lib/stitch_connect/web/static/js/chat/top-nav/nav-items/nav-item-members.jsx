@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
@@ -11,22 +12,26 @@ import Members from "../../../common/components/members/members";
 export default class NavItemMembers extends Component {
   constructor(props) {
     super(props);
+
+    const { groupStore } = props;
+
     this.state = {
       showModal: false,
-      members: ""
+      members: toJS(groupStore.group.users)
     };
   }
 
   saveUsers = () => {
-    this.props.groupStore.saveUsers(this.state.members);
+    const { groupStore } = this.props;
+
+    groupStore.inviteUsers(
+      this.state.members.map(member => member.id).join(",")
+    );
+
     this.setState({ showModal: false });
   };
 
   openModal = () => {
-    this.props.groupStore.loadUsers().then(members => {
-      this.setState({ members });
-    });
-
     this.setState({ showModal: true });
   };
 
@@ -43,7 +48,11 @@ export default class NavItemMembers extends Component {
       <MenuItem key="members_menuitem" onClick={this.openModal}>
         Members
       </MenuItem>,
-      <Modal key="members_modal" show={this.state.showModal}>
+      <Modal
+        key="members_modal"
+        show={this.state.showModal}
+        onHide={this.closeModal}
+      >
         <Modal.Header>
           <Modal.Title>Members</Modal.Title>
           <a role="link" onClick={this.closeModal}>

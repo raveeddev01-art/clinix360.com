@@ -3,14 +3,14 @@ import { inject } from "mobx-react";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import { withRouter } from "react-router-dom";
 
-@inject("groupStore", "sidemenuStore")
+@inject("groupStore", "groupsStore")
 class NavItemLeave extends Component {
   handleLeave = () => {
-    const { sidemenuStore } = this.props;
+    const { groupStore, groupsStore, history } = this.props;
 
-    this.props.groupStore.leave().then(redirectTo => {
-      sidemenuStore.loadGroups();
-      this.props.history.push(redirectTo);
+    groupStore.leave().then(redirectTo => {
+      groupsStore.loadGroups();
+      history.push(redirectTo);
     });
 
     // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541

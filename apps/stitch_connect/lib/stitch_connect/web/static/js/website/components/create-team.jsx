@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Form from "react-bootstrap/lib/Form";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
+import Cookies from "js-cookie";
 
 class CreateTeam extends Component {
   constructor(...args) {
@@ -24,8 +25,15 @@ class CreateTeam extends Component {
       return post("/api/v1/users/send-confirmation-code", {
         body: { id: resp.data.id }
       }).then(() => {
-        window.location.href = `/signup/confirmation-code?userId=${resp.data
-          .id}`;
+        Cookies.set(
+          "registration",
+          {
+            userId: resp.data.id,
+            email: this.state.email
+          },
+          { expires: 1 }
+        ); // expires in a day
+        window.location.href = `/signup/confirmation-code`;
       });
     });
   };
@@ -34,7 +42,7 @@ class CreateTeam extends Component {
     const { email } = this.state;
 
     return (
-      <Form className="flex-form" onSubmit={this.onSubmit}>
+      <Form className="form-holder" onSubmit={this.onSubmit}>
         <div className="form-input">
           <FormControl
             required
@@ -46,7 +54,9 @@ class CreateTeam extends Component {
           />
         </div>
 
-        <Button type="submit">Create Team</Button>
+        <Button type="submit" bsStyle="primary" bsSize="large">
+          Create Team
+        </Button>
       </Form>
     );
   }

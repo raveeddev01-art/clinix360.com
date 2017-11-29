@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.UserController do
   import Ecto.Query
 
   def index(conn, %{"username" => username}) do
-    current_user = get_session(conn, :current_user)
+    current_user = conn.assigns.current_user
 
     usernames = String.split(username, ",")
     users = User |> where(team_id: ^current_user.team_id)

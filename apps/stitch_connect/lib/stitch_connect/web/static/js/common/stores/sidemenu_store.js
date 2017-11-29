@@ -1,82 +1,59 @@
+/**
+ * Sidemenu store
+ *
+ * This is a mobx store that keeps track of data related to sidemenu and global state.
+ */
+
 import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
-import orderBy from "lodash/orderBy";
+
+import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../lib/constants";
+import history from "../../lib/history";
 
 class SidemenuStore {
+  @observable loading = false; // IF True, shows loading page
   @observable sidemenuDiv = null; // Div element of sidemenu
   @observable roomMenuItemVisibles = {};
   @observable teamName = "";
   @observable subdomain = "";
   @observable teamId = "";
-  @observable groups = [];
-  @observable users = [];
-  @observable groupCursors = {}; // { group_id: message_id }
+  @observable isInChat = false;
 
-  ROOM_MENU_ITEM_ANCHOR_PREFIX = "sidemenu_room_";
   badge = null;
   favicon = null;
   notificationAudio = null;
-  history = null;
 
   constructor(rootStore, props) {
     this.rootStore = rootStore;
+
     this.teamName = props.teamName;
     this.teamId = props.teamId;
     this.subdomain = props.subdomain;
-    this.users = props.dm_users || [];
 
     this.favicon = new Favico({
       animation: "none",
       position: "up"
     });
     this.notificationAudio = new Audio("/audios/pop.mp3");
-
-    this.loadGroups();
-    this.loadUsers();
   }
 
-  setHistory(history) {
-    this.history = history;
-  }
-
-  @computed
-  get favoriteGroups() {
-    return this.groups.filter(group => group.favorite);
-  }
-
-  @computed
-  get normalGroups() {
-    return this.groups.filter(
-      group => group.type === "regular" && !group.favorite
-    );
-  }
-
-  @computed
-  get directGroups() {
-    return this.groups.filter(group => group.type !== "regular");
-  }
-
-  @computed
-  get multiDMGroups() {
-    return this.groups.filter(group => group.type === "multi_dm");
-  }
-
-  @computed
-  get roomsInShowOrder() {
-    return this.favoriteGroups.concat(this.normalGroups, this.directGroups);
-  }
+  // //////// //
+  // COMPUTED //
+  // //////// //
 
   @computed
   get unreadRoomItemHiddenUp() {
-    if (!Object.keys(this.roomsInShowOrder).length) {
+    const { groupsStore: { roomsInShowOrder } } = this.rootStore;
+
+    if (!Object.keys(roomsInShowOrder).length) {
       return null;
     }
 
     let room = null;
 
-    for (let i = 0; i < this.roomsInShowOrder.length; i += 1) {
-      const r = this.roomsInShowOrder[i];
+    for (let i = 0; i < roomsInShowOrder.length; i += 1) {
+      const r = roomsInShowOrder[i];
 
       if (this.roomMenuItemVisibles[r.id]) {
         break;
@@ -93,14 +70,16 @@ class SidemenuStore {
 
   @computed
   get unreadRoomItemHiddenDown() {
-    if (!Object.keys(this.roomsInShowOrder).length) {
+    const { groupsStore: { roomsInShowOrder } } = this.rootStore;
+
+    if (!Object.keys(roomsInShowOrder).length) {
       return null;
     }
 
     let room = null;
 
-    for (let i = this.roomsInShowOrder.length - 1; i >= 0; i -= 1) {
-      const r = this.roomsInShowOrder[i];
+    for (let i = roomsInShowOrder.length - 1; i >= 0; i -= 1) {
+      const r = roomsInShowOrder[i];
 
       if (this.roomMenuItemVisibles[r.id]) {
         break;
@@ -115,102 +94,22 @@ class SidemenuStore {
     return room;
   }
 
-  @computed
-  get usernameMap() {
-    const map = {};
-    this.users.forEach(user => {
-      map[user.username] = user;
-    });
-    return map;
-  }
-
-  @computed
-  get totalMentionsCount() {
-    return this.groups.reduce((count, group) => {
-      if (group.type === "regular") {
-        return count + group.mentions_count;
-      }
-
-      return count + group.unread_messages_count;
-    }, 0);
-  }
+  // //////////
+  // METHODS //
+  // /////// //
 
   @action
-  loadGroups = () => {
-    get("/api/v1/groups").then(response => {
-      this.groups = orderBy(response.data, ["name"]);
-      this.updateFavicon();
-    });
-  };
+  loadApp = async () => {
+    const { presenceStore, usersStore, groupsStore } = this.rootStore;
 
-  @action
-  onNewGroup = newGroup => {
-    this.groups.push(newGroup);
-  };
+    if (!presenceStore.locked) {
+      this.loading = true;
 
-  @action
-  hideGroup = id => {
-    return put(`/api/v1/groups/${id}/hide`);
-  };
+      await usersStore.loadUsers();
+      await groupsStore.loadGroups();
 
-  @action
-  onJoinedGroup = joinedGroup => {
-    const group = this.groups.find(g => g.id === joinedGroup.id);
-
-    if (group) {
-      group.joined = true;
+      this.loading = false;
     }
-  };
-
-  @action
-  onLeftGroup = ({ group_id: groupId }) => {
-    const group = this.groups.find(g => g.id === groupId);
-
-    if (group) {
-      group.joined = false;
-    }
-  };
-
-  @action
-  onNewMessage = newMessage => {
-    // If the message is for the current group, ignore
-    if (newMessage.group_id === this.rootStore.groupStore.id) {
-      return;
-    }
-
-    const group = this.groups.find(g => g.id === newMessage.group_id);
-    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
-
-    if (!group) {
-      return;
-    }
-
-    group.unread_messages_count += 1;
-    if (isMention) {
-      group.mentions_count += 1;
-    }
-
-    // Update Favicon
-    this.updateFavicon();
-
-    // Play notification audio
-    this.playNotificationAudioForNewMessage(newMessage);
-
-    // Show notification card
-    this.showNotificationCardForNewMessage(newMessage);
-  };
-
-  @action
-  updateGroupData = (id, data) => {
-    const index = this.groups.findIndex(group => group.id === id);
-    if (index > -1) {
-      Object.assign(this.groups[index], data);
-    }
-  };
-
-  @action
-  updateGroupCursor = (groupId, cursor) => {
-    this.groupCursors[groupId] = cursor;
   };
 
   /**
@@ -244,17 +143,9 @@ class SidemenuStore {
     };
   }
 
-  loadUsers = () => {
-    get("/api/v1/users").then(response => {
-      this.users = response.data;
-    });
-  };
-
   selectRoom = room => {
     this.selectedRoom = room;
   };
-
-  getGroupById = id => this.groups.find(group => group.id === id);
 
   /**
    * Returnns if the user is 'Currently in' the group
@@ -263,10 +154,10 @@ class SidemenuStore {
    * @param {*} groupId
    */
   isCurrentlyInRoom(groupId) {
+    const { groupStore } = this.rootStore;
+
     return (
-      groupId === this.rootStore.groupStore.id &&
-      !this.locked &&
-      document.hasFocus()
+      groupId === groupStore.group.id && !this.locked && document.hasFocus()
     );
   }
 
@@ -287,11 +178,13 @@ class SidemenuStore {
   }
 
   updateFavicon() {
+    const { groupsStore: { totalMentionsCount } } = this.rootStore;
     let badge = "";
-    if (this.totalMentionsCount > 9) {
+
+    if (totalMentionsCount > 9) {
       badge = "9+";
-    } else if (this.totalMentionsCount > 0) {
-      badge = `${this.totalMentionsCount}`;
+    } else if (totalMentionsCount > 0) {
+      badge = `${totalMentionsCount}`;
     }
 
     // avoid favicon animation when not changed
@@ -315,7 +208,7 @@ class SidemenuStore {
     }
 
     const { notificationStore } = this.rootStore;
-    const desktopNotification = notificationStore.getGroupNotificationPreference(
+    const desktopNotification = notificationStore.getGroupPrefById(
       newMessage.group_id
     );
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
@@ -328,10 +221,11 @@ class SidemenuStore {
     }
   }
 
-  showNotificationCard(title, body, duration = 5000, cb = null) {
+  showNotificationCard(title, body, tag, duration = 5000, cb = null) {
     const notification = new Notification(title, {
       body,
-      icon: "/favicon.ico",
+      tag,
+      icon: "/favicon-192x192.png",
       silent: true
     });
 
@@ -352,40 +246,35 @@ class SidemenuStore {
       return;
     }
 
-    const { notificationStore } = this.rootStore;
-    const desktopNotification = notificationStore.getGroupNotificationPreference(
+    if (newMessage.type === "system") {
+      return;
+    }
+
+    const { notificationStore, groupsStore } = this.rootStore;
+    const desktopNotification = notificationStore.getGroupPrefById(
       newMessage.group_id
     );
-    const group = this.groups.find(g => g.id === newMessage.group_id);
+    const group = groupsStore.getGroupById(newMessage.group_id);
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+    const isDirect = group.type === "dm" || group.type === "multi_dm";
 
     if (
       desktopNotification === "everything" ||
-      (desktopNotification === "mentions" && isMention)
+      (desktopNotification === "mentions" && (isMention || isDirect))
     ) {
-      const predicatives = {
-        regular: "sent",
-        dm: "sent you",
-        multi_dm: "sent you"
-      };
-      const messageTypes = {
-        regular: "group",
-        dm: "direct",
-        multi_dm: "direct"
-      };
-
-      const author = `${newMessage.user.first_name} ${newMessage.user
-        .last_name}`;
-      const predicative = isMention
-        ? "mentioned you in"
-        : predicatives[group.type];
-      const messageType = messageTypes[group.type];
-
+      const message = isMention
+        ? "mentioned you"
+        : group.type === "regular"
+          ? "sent a room message"
+          : "sent you a message";
+      const text = `${newMessage.user.first_name} ${newMessage.user
+        .last_name} ${message}`;
       this.showNotificationCard(
-        `${group.type === "regular" ? "#" : ""}${group.name}`,
-        `${author} ${predicative} a ${messageType} message`,
+        `${group.name}`,
+        text,
+        "new-message",
         5000,
-        event => {
+        () => {
           this.jumpToMessage(newMessage);
           window.dispatchEvent(new CustomEvent("notification-clicked"));
         }
@@ -394,30 +283,14 @@ class SidemenuStore {
   }
 
   jumpToMessage(message) {
-    const group = this.getGroupById(message.group_id);
-    let url;
-
-    if (group.type === "regular") {
-      // If normal group
-      url = `/rooms/${group.slug}`;
-    } else if (group.type === "multi_dm") {
-      // If multi direct messaging
-      const multiMessagingSlug = group.users
-        .map(user => user.username)
-        .join(",");
-      url = `/direct/${multiMessagingSlug}`;
-    } else {
-      // If single direct messaging
-      const recipient = group.users.find(user => user.id !== currentUser.id);
-      url = `/direct/${recipient.username}`;
-    }
-
-    this.history.push(url);
-    this.rootStore.messageStore.jumpToMessage(message);
+    const { groupsStore } = this.rootStore;
+    const url = groupsStore.getGroupUrl(message.group_id);
+    window.focus();
+    history.push(url);
   }
 
   scrollToRoomItem(roomId, duration = 300) {
-    const anchorName = `${this.ROOM_MENU_ITEM_ANCHOR_PREFIX}${roomId}`;
+    const anchorName = `${ROOM_MENU_ITEM_ANCHOR_PREFIX}${roomId}`;
 
     scroller.scrollTo(anchorName, {
       container: this.sidemenuDiv,
@@ -425,6 +298,57 @@ class SidemenuStore {
       duration
     });
   }
+
+  // ////////////// //
+  // EVENT HANDLERS //
+  // ////////////// //
+
+  @action
+  onNewMessage = newMessage => {
+    const { groupStore, groupsStore } = this.rootStore;
+
+    // If the message is for the current group, ignore
+    if (newMessage.group_id === groupStore.group.id && this.isInChat) {
+      return;
+    }
+
+    const group = groupsStore.getGroupById(newMessage.group_id);
+    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+
+    if (!group) {
+      return;
+    }
+
+    group.unread_messages_count += 1;
+    if (isMention) {
+      group.mentions_count += 1;
+    }
+
+    // Update Favicon
+    this.updateFavicon();
+
+    // Play notification audio
+    this.playNotificationAudioForNewMessage(newMessage);
+
+    // Show notification card
+    this.showNotificationCardForNewMessage(newMessage);
+
+    // if it's DM and hidden, show it on sidebar
+    if (group.type !== "regular" && group.is_hidden) {
+      put(`/api/v1/groups/${group.id}/unhide`).then(() => {
+        const sidebarGroup = groupsStore.getGroupById(group.id);
+        sidebarGroup.is_hidden = false;
+      });
+    }
+  };
+
+  @action
+  onTeamRenamed = ({ name }) => {
+    const { teamStore } = this.rootStore;
+
+    this.teamName = name;
+    teamStore.onRenamed({ name });
+  };
 }
 
 export default SidemenuStore;

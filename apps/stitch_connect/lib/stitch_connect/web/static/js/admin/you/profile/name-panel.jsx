@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
@@ -28,8 +29,20 @@ class NamePanel extends Component {
       lastName: this.props.userStore.lastName
     });
   };
+
   _onSave = () => {
-    this.props.userStore.saveName(this.state.firstName, this.state.lastName);
+    const { firstName, lastName } = this.state;
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
+
+    hideAlert();
+    return userStore
+      .saveName(firstName, lastName)
+      .then(() => {
+        onSuccess("Your name has been successfully updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _onChangeFirstName = evt => this.setState({ firstName: evt.target.value });
@@ -68,5 +81,11 @@ class NamePanel extends Component {
     );
   }
 }
+
+NamePanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default NamePanel;

@@ -12,10 +12,10 @@ defmodule Stitch.Invitation.Email do
   """
   def team_invitation(inviter_name, invitation) do
     new_email()
-    |> template("Sign-up 3: You are Invited (Connect)")
+    |> template("Invitation (Phoenix)")
     |> to(invitation.user.email)
-    |> from("welcome@teamstitch.com")
-    |> subject("Stitch Connect - Team Invite")
+    |> from({"Stitch", "support@teamstitch.com"})
+    |> subject("Join Your Team")
     |> put_param("global_merge_vars", [
       %{
         "name": "inviterName",
@@ -31,9 +31,8 @@ defmodule Stitch.Invitation.Email do
       },
       %{
         "name": "joinTeamUrl",
-        "content": "https://#{invitation.team.slug}.teamstitch.com/invitations/accept/#{invitation.invite_token}"
+        "content": "https://#{invitation.team.slug}.#{System.get_env("APP_HOST")}/invitations/accept/#{invitation.invite_token}"
       },
     ])
-    |> Stitch.Mailer.deliver_later
   end
 end

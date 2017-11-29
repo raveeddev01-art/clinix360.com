@@ -1,15 +1,47 @@
 import React, { Component } from "react";
-import { Well, Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
+import { inject, observer } from "mobx-react";
 
+import SettingPanel from "../components/setting-panel/setting-panel";
+import ExportItem from "./export-item";
+
+const title = "Data Export";
+const description =
+  "Create and download exports of an official record of communications for legal and compliance purposes.";
+
+@inject("exportStore")
+@observer
 export default class TeamExport extends Component {
   constructor(props) {
     super(props);
+
+    this.props.exportStore.loadExports();
   }
 
+  _renderExports = () => {
+    const { exportStore } = this.props;
+    return exportStore.exports.map(exportItem => {
+      return (
+        <ExportItem
+          key={`export_${exportItem.id}`}
+          insertedAt={exportItem.inserted_at}
+          status={exportItem.status}
+          downloadLink={exportStore.downloadLink(exportItem.id)}
+        />
+      );
+    });
+  };
+
+  _newExport = () => {
+    const { exportStore } = this.props;
+    exportStore.createExport();
+  };
+
   render() {
+    const { exportStore } = this.props;
+
     return (
-      <div>
-        <h3 className="text-center">Data Export</h3>
+      <SettingPanel saveButtonText="" title={title} description={description}>
         <p>
           In the event that you need to delete your Stitch account, or require
           electronic discovery for legal purposes, Stitch provides full data
@@ -35,11 +67,16 @@ export default class TeamExport extends Component {
         </ul>
 
         <p className="m-b-40">
-          Message history will be provided in JSON format. You will also receive
-          a special token allowing you to access file uploads at their specified
-          URLs. See our support article{" "}
-          <a href="https://teamstitch.zendesk.com/hc/en-us">here</a> for more on
-          how to use these files and tokens.
+          Message history will be provided in JSON format. See our support
+          article{" "}
+          <a
+            href="https://intercom.help/teamstitch"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>{" "}
+          for more on how to use exports.
         </p>
 
         <Row className="m-b-20">
@@ -47,45 +84,32 @@ export default class TeamExport extends Component {
             <h4 className="export-heading">Export History</h4>
           </Col>
           <Col md={3}>
-            <Button block bsSize="large" bsStyle="primary">
+            <Button
+              block
+              bsSize="large"
+              bsStyle="primary"
+              onClick={this._newExport}
+            >
               New Export
             </Button>
           </Col>
         </Row>
 
-        <div className="admin-table m-b-40">
-          <div className="table-head">
-            <Row>
-              <Col sm={6}>Date</Col>
-              <Col sm={4}>Uploads Token</Col>
-              <Col sm={2} className="text-center">
-                Downloads
-              </Col>
-            </Row>
+        {exportStore.exports.length > 0 && (
+          <div className="admin-table m-b-40">
+            <div className="table-head">
+              <Row>
+                <Col sm={6}>Date</Col>
+                <Col sm={4}>Status</Col>
+                <Col sm={2} className="text-center">
+                  Download
+                </Col>
+              </Row>
+            </div>
+            {this._renderExports()}
           </div>
-
-          <div className="table-item">
-            <Row>
-              <Col sm={6}>Thursday, July 27, 2017 11:34 AM</Col>
-
-              <Col sm={4}>abcdefg123456!@#$%</Col>
-
-              <Col sm={2} className="text-center">
-                <a href="#">
-                  <i className="fa fa-download" />
-                </a>
-              </Col>
-            </Row>
-          </div>
-        </div>
-
-        <p className="text-center">
-          Questions? Learn more with our <br />{" "}
-          <a href="https://teamstitch.zendesk.com/hc/en-us">
-            Frequently Asked Questions
-          </a>
-        </p>
-      </div>
+        )}
+      </SettingPanel>
     );
   }
 }

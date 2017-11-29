@@ -4,8 +4,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Form from "react-bootstrap/lib/Form";
 import Button from "react-bootstrap/lib/Button";
-import Card from "../components/card/card";
-import PasswordValidator from "../../common/components/password-validator/index";
+import { Card, PasswordValidator } from "common/components";
 
 @inject("resetPasswordStore", "titleStore")
 @observer
@@ -37,7 +36,7 @@ class SetPassword extends Component {
     this.props.resetPasswordStore
       .resetPassword(this.state.password)
       .then(() => {
-        this.props.history.push("/login");
+        this.props.history.push("/login", { passwordReset: true });
       });
   };
 

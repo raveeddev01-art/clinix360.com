@@ -36,7 +36,7 @@ defmodule Stitch.UserQueries do
       from u in User,
       where: u.team_id == ^team_id,
       where: u.onboarded == ^true,
-      where: u.email == ^email
+      where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
     Repo.one(query)
   end
   def team_member_with_email(_, _) do
@@ -61,7 +61,7 @@ defmodule Stitch.UserQueries do
   def get_by_id(_) do {:error, "Id isn't an integer."} end
 
   def get_by_token(token) when byte_size(token) == 32 do
-    case Repo.get_by(User, token: token) do
+    case Repo.get_by(User, token: token, disabled: false) do
       nil ->
         {:not_found, "User with token #{token} was not found."}
       user ->
@@ -70,4 +70,13 @@ defmodule Stitch.UserQueries do
   end
 
   def get_by_token(_) do {:error, "Token is malformed."} end
+
+  def user_with_email_exists?(email) do
+    query =
+      from u in User,
+      select: count(u.id),
+      where: u.onboarded == ^true,
+      where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
+    Repo.one!(query) > 0
+  end
 end

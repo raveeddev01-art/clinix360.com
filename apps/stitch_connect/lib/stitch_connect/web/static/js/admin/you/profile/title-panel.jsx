@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
@@ -23,8 +24,19 @@ class TitlePanel extends Component {
       title: this.props.userStore.title
     });
   };
+
   _onSave = () => {
-    this.props.userStore.saveTitle(this.state.title);
+    const { hideAlert, onSuccess, onError, userStore } = this.props;
+
+    hideAlert();
+    return userStore
+      .saveTitle(this.state.title)
+      .then(() => {
+        onSuccess("Your title has been successfully updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   _onChangeTitle = evt => this.setState({ title: evt.target.value });
@@ -50,5 +62,11 @@ class TitlePanel extends Component {
     );
   }
 }
+
+TitlePanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default TitlePanel;

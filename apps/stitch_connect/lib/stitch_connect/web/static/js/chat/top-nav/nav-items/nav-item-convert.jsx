@@ -11,11 +11,12 @@ import Button from "react-bootstrap/lib/Button";
 
 import Toggle from "../../../common/components/toggle/Toggle";
 
-@inject("groupStore", "sidemenuStore")
+@inject("groupStore")
 @observer
 export default class NavItemConvert extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       showModal: false,
       public: true
@@ -23,12 +24,12 @@ export default class NavItemConvert extends Component {
   }
 
   componentWillMount() {
-    this.setState({ public: this.props.groupStore.public });
+    this.setState({ public: this.props.groupStore.group.public });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.groupStore.public !== this.state.public) {
-      this.setState({ public: nextProps.groupStore.public });
+    if (nextProps.groupStore.group.public !== this.state.public) {
+      this.setState({ public: nextProps.groupStore.group.public });
     }
   }
 
@@ -49,12 +50,10 @@ export default class NavItemConvert extends Component {
   };
 
   handleSubmit = () => {
-    if (this.props.groupStore.public !== this.state.public) {
-      this.props.groupStore.togglePublic(this.state.public).then(group => {
-        this.props.sidemenuStore.updateGroupData(group.id, {
-          public: group.public
-        });
-      });
+    const { groupStore } = this.props;
+
+    if (groupStore.group.public !== this.state.public) {
+      groupStore.setPublic(this.state.public);
     }
     this.closeModal();
   };
@@ -80,7 +79,7 @@ export default class NavItemConvert extends Component {
             <FormGroup>
               <Col sm={3}>
                 <Toggle
-                  onClick={this.togglePublic}
+                  onToggle={this.togglePublic}
                   on="Public"
                   off="Private"
                   active={this.state.public}

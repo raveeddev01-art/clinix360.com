@@ -64,23 +64,43 @@ class PasswordValidatorComponent extends Component {
     } = this.state;
 
     return (
-      <HelpBlock className="m-b-20">
+      <HelpBlock className="m-b-20 password-validator">
         Your password must contain:
-        <ul className="list-unstyled text-success">
-          <li className={cx({ "text-danger": !passwordLengthValid })}>
-            At least 8 characters
+        <ul className="list-unstyled password-checklist">
+          <li className={cx({ "text-muted": !passwordLengthValid })}>
+            {passwordLengthValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; At least 8 characters
           </li>
-          <li className={cx({ "text-danger": !passwordUppercaseValid })}>
-            An uppercase letter
+          <li className={cx({ "text-muted": !passwordUppercaseValid })}>
+            {passwordUppercaseValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; An uppercase letter
           </li>
-          <li className={cx({ "text-danger": !passwordLowercaseValid })}>
-            A lowercase letter
+          <li className={cx({ "text-muted": !passwordLowercaseValid })}>
+            {passwordLowercaseValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; A lowercase letter
           </li>
-          <li className={cx({ "text-danger": !passwordDigitsValid })}>
-            A number
+          <li className={cx({ "text-muted": !passwordDigitsValid })}>
+            {passwordDigitsValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; A number
           </li>
-          <li className={cx({ "text-danger": !passwordSymbolsValid })}>
-            A special character (e.g. !$#)
+          <li className={cx({ "text-muted": !passwordSymbolsValid })}>
+            {passwordSymbolsValid ? (
+              <i className="fa fa-check" />
+            ) : (
+              <i className="fa fa-close" />
+            )}&nbsp; A special character (e.g. !$#)
           </li>
         </ul>
       </HelpBlock>

@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 
-import OnboardCard from "../onboard-card/onboard-card";
-import PasswordValidator from "../../../common/components/password-validator/index";
+import { OnboardCard, PasswordValidator } from "common/components";
 
 class PasswordCard extends Component {
   constructor(...args) {
@@ -45,6 +44,8 @@ class PasswordCard extends Component {
           <FormControl
             required
             autoFocus
+            name={`password_${new Date().getTime()}`}
+            autoComplete="off"
             type="password"
             placeholder="Password"
             value={password}
@@ -61,15 +62,11 @@ class PasswordCard extends Component {
 }
 
 PasswordCard.propTypes = {
-  onNext: PropTypes.func.isRequired,
-  backUrl: PropTypes.string,
-  restartUrl: PropTypes.string
+  onNext: PropTypes.func.isRequired
 };
 
 PasswordCard.defaultProps = {
-  onNext: () => {},
-  backUrl: "",
-  restartUrl: ""
+  onNext: () => {}
 };
 
 export default PasswordCard;

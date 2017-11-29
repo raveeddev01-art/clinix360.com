@@ -1,73 +1,166 @@
+/**
+ * Channel store
+ *
+ * This store is the central hub for socket channels that are used across the app.
+ * All socket channels used in the app MUST be registered in this store.
+ */
+
 class ChannelStore {
-  groupChannelTopic = ""; // groupChannelTopic points to current group channel. used to leave the channel before joining a new.
   channels = {};
+  lastGroupChannelTopic = "";
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
 
+  /**
+   * Joins the channel topic
+   *
+   * @param {string} topic
+   * @param {Object} options
+   */
   join(topic, options = {}) {
-    if (this.channels[topic]) {
-      this.channels[topic].leave();
-    }
+    this.leave(topic);
 
     this.channels[topic] = socket.channel(topic, options);
+
     return this.channels[topic].join();
   }
 
-  get eventChannelTopic() {
-    return `events:${currentUser.id}`;
+  /**
+   * Leaves the channel topic
+   *
+   * @param {string} topic
+   */
+  leave(topic) {
+    if (this.channels[topic]) {
+      this.channels[topic].leave();
+
+      delete this.channels[topic];
+    }
   }
 
-  joinEventChannel(options = {}) {
-    const { sidemenuStore } = this.rootStore;
-    const channel = this.join(this.eventChannelTopic, options);
-
-    this.eventChannel.on("new_group", sidemenuStore.onNewGroup);
-    this.eventChannel.on("joined_group", sidemenuStore.onJoinedGroup);
-    this.eventChannel.on("left_group", sidemenuStore.onLeftGroup);
-
-    this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
-    this.eventChannel.on("new_app_version", () => {
-      window.location.reload(true); // force reload without cache
-    });
-
-    return channel;
+  // ///////////// //
+  // Event Channel //
+  // ///////////// //
+  get eventChannelTopic() {
+    return `events:${currentUser.id}`;
   }
 
   get eventChannel() {
     return this.channels[this.eventChannelTopic];
   }
 
-  joinGroupChannel(options = {}) {
-    if (this.groupChannelTopic) {
-      this.channels[this.groupChannelTopic].leave();
-    }
-    this.groupChannelTopic = this.rootStore.groupStore.channelTopic;
-    return this.join(this.rootStore.groupStore.channelTopic, options);
+  joinEventChannel(options = {}) {
+    const { sidemenuStore, groupsStore } = this.rootStore;
+    const joined = this.join(this.eventChannelTopic, options);
+
+    this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
+
+    this.eventChannel.on("created_group", groupsStore.onCreatedGroup);
+    this.eventChannel.on("joined_group", groupsStore.onJoinedGroup);
+    this.eventChannel.on("left_group", groupsStore.onLeftGroup);
+    this.eventChannel.on("renamed_group", groupsStore.onRenamedGroup);
+    this.eventChannel.on("hid_group", groupsStore.onHidGroup);
+
+    this.eventChannel.on("new_app_version", () => {
+      window.location.reload(true); // force reload without cache
+    });
+    this.eventChannel.on("logout", ({ session_id: sessionId }) => {
+      if (window.sessionId === sessionId) {
+        window.location = "/logged-out";
+      }
+    });
+    this.eventChannel.on("deactivated", () => {
+      window.location = "/logged-out";
+    });
+
+    return joined;
+  }
+
+  // ///////////// //
+  // Group Channel //
+  // ///////////// //
+  get groupChannelTopic() {
+    const { groupStore } = this.rootStore;
+
+    return `groups:${groupStore.group.slug}`;
   }
 
   get groupChannel() {
-    return this.channels[this.rootStore.groupStore.channelTopic];
+    return this.channels[this.groupChannelTopic];
   }
 
-  joinTeamLobbyChannel(options = {}) {
-    return this.join(
-      this.rootStore.presenceStore.teamLobbyChannelTopic,
-      options
+  joinGroupChannel(options = {}) {
+    const { messageStore } = this.rootStore;
+
+    const joined = this.join(this.groupChannelTopic, options);
+
+    this.leaveLastGroupChannel();
+
+    this.groupChannel.on("new_msg", messageStore.onNewMessage);
+    this.groupChannel.on("edit_msg", messageStore.onEditMessage);
+    this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
+    this.groupChannel.on("starred_message", messageStore.onStarredMessage);
+    this.groupChannel.on("pinned_message", messageStore.onPinnedMessage);
+    this.groupChannel.on(
+      "msg_link_previews_generated",
+      messageStore.onLinkPreviewGenerated
     );
+    this.groupChannel.on(
+      "msg_link_preview_deleted",
+      messageStore.onLinkPreviewDeleted
+    );
+
+    this.lastGroupChannelTopic = this.groupChannelTopic;
+
+    return joined;
   }
 
-  get teamLobbyChannel() {
-    return this.channels[this.rootStore.presenceStore.teamLobbyChannelTopic];
+  // //////////// //
+  // Team Channel //
+  // //////////// //
+  get teamChannelTopic() {
+    const { presenceStore } = this.rootStore;
+
+    return `team:lobby:${presenceStore.teamId}`;
   }
 
-  leaveAllChannelsButTeamLobby() {
+  get teamChannel() {
+    return this.channels[this.teamChannelTopic];
+  }
+
+  joinTeamChannel(options = {}) {
+    const { presenceStore, sidemenuStore, usersStore } = this.rootStore;
+
+    const joined = this.join(this.teamChannelTopic, options);
+
+    this.teamChannel.on("presence_state", presenceStore.onPresenceState);
+    this.teamChannel.on("presence_diff", presenceStore.onPresenceDiff);
+    this.teamChannel.on("locked", presenceStore.onLocked);
+    this.teamChannel.on("unlocked", presenceStore.onUnlocked);
+
+    this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
+
+    this.teamChannel.on("user_joined", usersStore.onUserJoined);
+    this.teamChannel.on("user_info", usersStore.onUserInfo);
+
+    return joined;
+  }
+
+  leaveLastGroupChannel() {
+    if (this.lastGroupChannelTopic) {
+      this.leave(this.lastGroupChannelTopic);
+      this.lastGroupChannelTopic = "";
+    }
+  }
+
+  leaveAllChannelsButTeam() {
     Object.keys(this.channels)
-      .filter(
-        topic => topic !== this.rootStore.presenceStore.teamLobbyChannelTopic
-      )
-      .forEach(topic => this.channels[topic].leave());
+      .filter(topic => topic !== this.teamChannelTopic)
+      .forEach(topic => {
+        this.leave(topic);
+      });
   }
 }
 

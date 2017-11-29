@@ -109,11 +109,6 @@
 
         &.members-select {
           margin-bottom: 100px;
-
-          .Select-menu-outer {
-            max-height: 160px;
-            overflow-y: auto;
-          }
         }
       }
     }
@@ -142,10 +137,37 @@
     max-height: 280px;
     overflow-x: hidden;
     overflow-y: auto;
-    padding-right: 40px;
 
     .form-group {
       margin-bottom: 10px;
     }
+
+    .btn {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      font-size: 20px;
+      color: $brand-primary;
+      &:active {
+        top: 0;
+        box-shadow: none;
+      }
+    }
+
+    .has-success {
+      .form-control {
+        border-color: $brand-primary;
+      }
+
+      .help-block {
+        color: $brand-primary;
+      }
+    }
+  }
+}
+
+.message-modal {
+  .modal-body {
+    min-height: 70px !important;
+    font-size: 15px;
   }
 }

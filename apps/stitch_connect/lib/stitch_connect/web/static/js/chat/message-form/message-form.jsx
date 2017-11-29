@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
+import some from "lodash/some";
 
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
@@ -27,6 +28,10 @@ class MessageForm extends Component {
     };
 
     this.typingTimeoutId = null;
+  }
+
+  componentWillReceiveProps() {
+    this.textInput.focus();
   }
 
   onTextChange = evt => {
@@ -58,7 +63,12 @@ class MessageForm extends Component {
   };
 
   onEnter = () => {
-    const { messageStore } = this.props;
+    const { messageStore, socketStore } = this.props;
+
+    // if not connected, just no send message at all
+    if (!socketStore.isConnected) {
+      return;
+    }
 
     if (messageStore.messageInEdit) {
       if (!messageStore.textInEdit) {
@@ -75,13 +85,17 @@ class MessageForm extends Component {
         messageStore.finishEdit();
       }
     } else if (this.state.text) {
-      messageStore.sendMessage(this.state.text.trim()).then(() => {
-        messageStore.scrollToBottom(() => {
-          messageStore.updateGroupCursor(null);
-        });
-        this.setState({ text: "" });
-        this.typingStopped();
+      messageStore.sendMessage(this.state.text.trim()).finally(() => {
+        messageStore.scrollToBottom(
+          () => {
+            messageStore.updateGroupCursor(null);
+          },
+          0,
+          0
+        );
       });
+      this.setState({ text: "" });
+      this.typingStopped();
     }
   };
 
@@ -102,6 +116,8 @@ class MessageForm extends Component {
       if (!this.state.text) {
         messageStore.editLastMessage();
       }
+    } else if ([37, 38, 39, 40].indexOf(evt.keyCode) > -1) {
+      // Do nothing for arrow keys
     } else {
       // other keys
       // get the word of current cursor
@@ -147,20 +163,23 @@ class MessageForm extends Component {
   };
 
   onPaste = evt => {
+    const { uploadStore } = this.props;
     const items = evt.clipboardData.items;
-    for (let i = 0; i < items.length; i += 1) {
-      if (items[i].kind === "file") {
-        const file = items[i].getAsFile();
-        // browser only allows reading images. other files will be returned as null
-        if (file) {
-          const fileName = evt.clipboardData.getData("Text");
-          this.props.uploadStore.openUploadModal(file, fileName);
-          // NOTE: for now, we supports pasting only 1 file. Stacking can be done later.
-          evt.preventDefault();
-          break;
-        }
+
+    some(items, item => {
+      const file = item.getAsFile();
+
+      // browser only allows reading images. other files will be returned as null
+      if (file) {
+        const fileName = evt.clipboardData.getData("Text");
+        uploadStore.openUploadModal(file, fileName);
+        // NOTE: for now, we supports pasting only 1 file. Stacking can be done later.
+        evt.preventDefault();
+        return true;
       }
-    }
+
+      return false;
+    });
   };
 
   getText = () => {
@@ -195,11 +214,15 @@ class MessageForm extends Component {
   };
 
   typingStarted = () => {
-    this.props.messageStore.startTyping();
+    const { messageStore } = this.props;
+
+    messageStore.startTyping();
   };
 
   typingStopped = () => {
-    this.props.messageStore.stopTyping();
+    const { messageStore } = this.props;
+
+    messageStore.stopTyping();
   };
 
   insertWord = word => {
@@ -212,7 +235,10 @@ class MessageForm extends Component {
     );
 
     setTimeout(() => {
-      this.textInput.setSelectionRange(cursorPos + 1, cursorPos + 1);
+      this.textInput.setSelectionRange(
+        cursorPos + word.length + 1,
+        cursorPos + word.length + 1
+      );
       this.textInput.focus();
     });
   };

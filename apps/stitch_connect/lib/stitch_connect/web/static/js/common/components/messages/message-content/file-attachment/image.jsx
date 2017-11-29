@@ -15,23 +15,60 @@ class ImageFileAttachment extends Component {
   };
 
   render() {
-    const { filename, url } = this.props;
+    const {
+      filename,
+      url,
+      preview_height: height,
+      preview_width: width,
+      preview_url: previewUrl
+    } = this.props;
     const { showModal } = this.state;
+    let placeholderStyle = null;
+    let holderStyle = null;
+    if (height) {
+      placeholderStyle = {
+        width,
+        paddingTop: `${height / width * 100}%`,
+        backgroundImage: `url(${previewUrl})`
+      };
+      holderStyle = {
+        maxHeight: height // constraint holder size for when paddingTop is bigger than height
+      };
+    }
+
     return (
       <div className="attachment-image-block">
-        <div className="attachment-title">
-          <a target="_blank" href={url}>
-            {filename}
-          </a>
-        </div>
+        {filename && (
+          <div className="attachment-title">
+            <a target="_blank" href={url}>
+              {filename}
+            </a>
+          </div>
+        )}
         <a
-          className="attachment-image"
+          className="attachment-image-holder"
           onClick={this.onToggleModal}
+          style={holderStyle}
           role="link"
         >
-          <img src={url} className="img-responsive" alt={filename} />
+          {placeholderStyle ? (
+            <div
+              className="attachment-preview-placeholder"
+              style={placeholderStyle}
+            />
+          ) : (
+            <img
+              src={previewUrl || url}
+              className="img-responsive"
+              alt={filename}
+            />
+          )}
         </a>
-        <Modal show={showModal} dialogClassName="image-viewer">
+        <Modal
+          show={showModal}
+          dialogClassName="image-viewer"
+          onHide={this.onToggleModal}
+        >
           <Modal.Body onClick={this.onToggleModal}>
             <img src={url} className="modal-attachment-image" alt={filename} />
           </Modal.Body>
@@ -42,7 +79,10 @@ class ImageFileAttachment extends Component {
 }
 
 ImageFileAttachment.propTypes = {
-  filename: PropTypes.string.isRequired,
+  preview_height: PropTypes.number,
+  preview_width: PropTypes.number,
+  preview_url: PropTypes.string,
+  filename: PropTypes.string,
   url: PropTypes.string.isRequired
 };
 

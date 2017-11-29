@@ -3,7 +3,7 @@ defmodule StitchConnect.Pigeon do
   def apns_config do
     Pigeon.APNS.Config.new(
       name: :apns_default,
-      mode: :dev,
+      mode: "APNS_MODE" |> System.get_env |> String.to_atom,
       cert: "APNS_CERT_B64" |> System.get_env |> Base.decode64!,
       key: "APNS_KEY_B64" |> System.get_env |> Base.decode64!,
       reconnect: false,

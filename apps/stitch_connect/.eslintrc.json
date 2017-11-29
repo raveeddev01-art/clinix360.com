@@ -8,6 +8,13 @@
   },
   "extends": ["airbnb", "prettier", "prettier/react"],
   "plugins": ["import", "jsx-a11y", "prettier", "react"],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["lib/stitch_connect/web/static/js"]
+      }
+    }
+  },
   "parserOptions": {
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
@@ -18,14 +25,18 @@
   },
   "rules": {
     "arrow-body-style": "off",
+    "camelcase": "off",
     "constructor-super": "warn",
     "class-methods-use-this": "off",
     "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "warn",
+    "jsx-a11y/label-has-for": "off",
     "jsx-a11y/interactive-supports-focus": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
     "jsx-a11y/no-static-element-interactions": "off",
     "jsx-a11y/no-autofocus": "off",
     "no-const-assign": "warn",
+    "no-nested-ternary": "off",
     "no-param-reassign": ["error", { "props": false }],
     "no-this-before-super": "warn",
     "no-undef": "warn",
@@ -35,31 +46,44 @@
     "react/forbid-prop-types": "off",
     "react/prefer-stateless-function": "off",
     "react/no-array-index-key": "off",
+    "react/no-find-dom-node": "off",
+    "react/no-unescaped-entities": "off",
     "react/prop-types": [
       "error",
       {
         "ignore": [
           "addonStore",
+          "adminPanelStore",
           "authenticationStore",
+          "exportStore",
           "filesStore",
-          "groupStore",
           "groupPresenceStore",
+          "groupStore",
+          "groupsStore",
           "invitationStore",
           "membersStore",
           "mentionsStore",
           "messageStore",
           "notificationStore",
+          "pinnedMessageStore",
           "presenceStore",
+          "registrationStore",
           "resetPasswordStore",
           "searchStore",
           "sidemenuStore",
+          "socketStore",
+          "teamStore",
           "titleStore",
           "uploadStore",
-          "pinnedMessageStore",
           "userStore",
+          "usersStore",
+          "channelStore",
+
           "match",
           "location",
-          "history"
+          "history",
+
+          "stripe"
         ]
       }
     ],
@@ -70,6 +94,7 @@
     "notify": true,
     "currentUser": false,
     "applicationHost": true,
+    "stripePublishableKey": true,
     "socket": true,
     "post": true,
     "get": true,

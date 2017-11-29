@@ -1,18 +1,14 @@
 defmodule Stitch.UserQueriesTest do
-  use ExUnit.Case, async: true
-  import Stitch.Factory
+  use Stitch.DataCase, async: true
+  alias Stitch.{Accounts.User, Rand, UserQueries}
 
-  setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
-  end
-
-  describe "Stitch.UserQueries.search/2" do
+  describe "UserQueries.search/2" do
     test "returns only matching users for the team" do
       team = insert(:team)
       user = insert(:user, %{team: team, email: "example@email.com"})
       team_2 = insert(:team)
       _user_2 = insert(:user, %{team: team_2, email: "example@email.com"})
-      results = Stitch.UserQueries.search(user.id, "exa")
+      results = UserQueries.search(user.id, "exa")
       assert Enum.count(results) == 1
     end
 
@@ -21,7 +17,7 @@ defmodule Stitch.UserQueriesTest do
       insert(:user, %{first_name: "Sergio", email: "foobar@email.com", team: team})
       insert(:user, %{first_name: "Example", team: team})
       user = insert(:user, %{first_name: "fooexapple", team: team})
-      results = Stitch.UserQueries.search(user.id, "Exa")
+      results = UserQueries.search(user.id, "Exa")
       assert Enum.count(results) == 2
     end
 
@@ -30,7 +26,7 @@ defmodule Stitch.UserQueriesTest do
       insert(:user, %{last_name: "Sergio", email: "foobar@email.com", team: team})
       insert(:user, %{last_name: "Example", team: team})
       user = insert(:user, %{last_name: "fooexapple", team: team})
-      results = Stitch.UserQueries.search(user.id, "Exa")
+      results = UserQueries.search(user.id, "Exa")
       assert Enum.count(results) == 2
     end
 
@@ -39,7 +35,7 @@ defmodule Stitch.UserQueriesTest do
       insert(:user, %{username: "sergio", email: "foobar@email.com", team: team})
       insert(:user, %{username: "example", team: team})
       user = insert(:user, %{username: "fooexapple", team: team})
-      results = Stitch.UserQueries.search(user.id, "Exa")
+      results = UserQueries.search(user.id, "Exa")
       assert Enum.count(results) == 2
     end
 
@@ -48,7 +44,7 @@ defmodule Stitch.UserQueriesTest do
       insert(:user, %{first_name: "Sergio", email: "foobar@email.com", team: team})
       insert(:user, %{first_name: "Example", team: team})
       user = insert(:user, %{first_name: "fooexapple", team: team})
-      results = Stitch.UserQueries.search(user.id, "obar")
+      results = UserQueries.search(user.id, "obar")
       assert Enum.count(results) == 1
     end
   end
@@ -58,66 +54,85 @@ defmodule Stitch.UserQueriesTest do
       team = insert(:team, %{name: "Care Clinic"})
       insert(:user, %{first_name: "John", last_name: "Doe", team_id: team.id, onboarded: true})
       insert(:user, %{first_name: "John", last_name: "Doe", team_id: team.id, onboarded: false})
-      users = Stitch.UserQueries.users_for_team(team.id)
+      users = UserQueries.users_for_team(team.id)
       assert Enum.count(users) == 1
     end
 
     test "returns error for non-integer team_id" do
-      {:error, message} = Stitch.UserQueries.users_for_team("asd")
+      {:error, message} = UserQueries.users_for_team("asd")
       assert message == "team_id must be an integer"
     end
   end
 
   test "get_by_id when id is less than one" do
-    {:error, message} = Stitch.UserQueries.get_by_id(0)
+    {:error, message} = UserQueries.get_by_id(0)
     assert message == "Id cannot be less than 1."
   end
 
   test "get_by_id when id is not an integer" do
-    {:error, message} = Stitch.UserQueries.get_by_id("a")
+    {:error, message} = UserQueries.get_by_id("a")
     assert message == "Id isn't an integer."
   end
 
   test "get_by_id when id doesn't exist in the database" do
-    {:not_found, message} = Stitch.UserQueries.get_by_id(1)
+    {:not_found, message} = UserQueries.get_by_id(1)
     assert message == "User with id 1 was not found."
   end
 
   test "get_by_id returns user record for id" do
     user = insert(:user)
-    record = Stitch.UserQueries.get_by_id(user.id)
+    record = UserQueries.get_by_id(user.id)
     assert record.id == user.id
   end
 
-  describe "Stitch.UserQueries.get_by_token/1" do
+  describe "UserQueries.get_by_token/1" do
     test "returns malformed token error for incorrect token" do
-      {:error, message} = Stitch.UserQueries.get_by_token("abc")
+      {:error, message} = UserQueries.get_by_token("abc")
       assert message == "Token is malformed."
     end
 
     test "returns not found message for unknown token" do
-      token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
-      {:not_found, message} = Stitch.UserQueries.get_by_token(token)
+      token = Rand.token(32)
+      {:not_found, message} = UserQueries.get_by_token(token)
       assert message == "User with token #{token} was not found."
     end
 
     test "returns user given an existing token" do
-      token = :crypto.strong_rand_bytes(32) |> Base.url_encode64 |> binary_part(0, 32)
+      token = Rand.token(32)
       insert(:user, %{token: token})
-      user = Stitch.UserQueries.get_by_token(token)
+      user = UserQueries.get_by_token(token)
       assert user.token == token
       assert user.id != nil
     end
   end
 
-  describe "Stitch.UserQueries.team_member_with_email/2" do
+  describe "UserQueries.team_member_with_email/2" do
     test "returns true or false if uesr exists or not" do
       team = insert(:team)
-      email = "example@email.com"
-      insert(:user, %{team: team, email: email})
-      record = Stitch.UserQueries.team_member_with_email(team.id, email)
-      assert record.email == email
-      assert record.email != email <> "Test"
+      insert(:user, team: team, email: "example@email.com")
+
+      assert %User{email: "example@email.com"} =
+        UserQueries.team_member_with_email(team.id, "example@email.com")
+    end
+
+    test "insensitivity to case of email" do
+      team = insert(:team)
+      insert(:user, team: team, email: "Example@email.com")
+
+      assert %User{email: "Example@email.com"} =
+        UserQueries.team_member_with_email(team.id, "example@email.com")
+    end
+  end
+
+  describe "UserQueries.user_with_email_exists?/1" do
+    test "returns true if a user with the given email exists" do
+      insert(:user, email: "foo@example.com")
+      assert UserQueries.user_with_email_exists?("foo@example.com")
+    end
+
+    test "returns false when no user with the given email exists" do
+      insert(:user, email: "bar@example.com")
+      refute UserQueries.user_with_email_exists?("foo@example.com")
     end
   end
 end

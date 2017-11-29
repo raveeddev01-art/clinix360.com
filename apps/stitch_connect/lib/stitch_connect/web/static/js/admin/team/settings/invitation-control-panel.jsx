@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Checkbox from "react-bootstrap/lib/Checkbox";
@@ -33,9 +34,17 @@ class InvitationControlPanel extends Component {
   };
 
   _onSave = () => {
-    this.props.teamStore.updateOpenInvitation(
-      this.state.openInvitationsEnabled
-    );
+    const { hideAlert, onSuccess, onError, teamStore } = this.props;
+
+    hideAlert();
+    return teamStore
+      .updateOpenInvitation(this.state.openInvitationsEnabled)
+      .then(() => {
+        onSuccess("Invitation setting has been updated.");
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
   };
 
   render() {
@@ -58,5 +67,11 @@ class InvitationControlPanel extends Component {
     );
   }
 }
+
+InvitationControlPanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default InvitationControlPanel;
