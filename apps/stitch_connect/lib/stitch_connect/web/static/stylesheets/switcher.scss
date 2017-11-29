@@ -1,4 +1,5 @@
 .switcher {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,6 +31,24 @@
       color: #fff;
       outline: none;
     }
+
+    &-wrapper {
+      position: relative;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 0;
+    right: -5px;
+    border-radius: 50%;
+    background-color: #e33a2f;
+    color: #fff;
+    font-size: 10px;
+    height: 15px;
+    width: 15px;
+    line-height: 15px;
+    text-align: center;
   }
 
   &__top {

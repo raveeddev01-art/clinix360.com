@@ -245,8 +245,11 @@ class SidemenuStore {
       return;
     }
 
-    const { notificationStore, messageStore, groupsStore } = this.rootStore;
-    if (messageStore.groupId === newMessage.group_id) return;
+    if (newMessage.type === "system") {
+      return;
+    }
+
+    const { notificationStore, groupsStore } = this.rootStore;
     const desktopNotification = notificationStore.getGroupPrefById(
       newMessage.group_id
     );
@@ -270,7 +273,7 @@ class SidemenuStore {
         text,
         "new-message",
         5000,
-        event => {
+        () => {
           this.jumpToMessage(newMessage);
           window.dispatchEvent(new CustomEvent("notification-clicked"));
         }

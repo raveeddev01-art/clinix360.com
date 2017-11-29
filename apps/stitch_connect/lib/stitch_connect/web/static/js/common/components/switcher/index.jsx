@@ -4,10 +4,12 @@ import { NavLink, withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
-@inject("presenceStore")
+@inject("presenceStore", "groupsStore")
 @observer
 class Switcher extends Component {
   render() {
+    const { totalMentionsCount: count } = this.props.groupsStore;
+
     return (
       <div className="switcher">
         <div className="switcher__top">
@@ -27,7 +29,14 @@ class Switcher extends Component {
               container={this}
               overlay={<Tooltip id="tooltip-info">Stitch Connect</Tooltip>}
             >
-              <i className="fa fa-comments" />
+              <span className="switcher__link-wrapper">
+                <i className="fa fa-comments" />
+                {count > 0 && (
+                  <span className="switcher__badge">
+                    {count > 9 ? "9+" : count}
+                  </span>
+                )}
+              </span>
             </OverlayTrigger>
           </NavLink>
         </div>
