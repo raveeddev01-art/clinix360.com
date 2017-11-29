@@ -5,7 +5,7 @@ use Mix.Config
 config :stitch_connect, StitchConnect.Web.Endpoint,
   http: [port: 4001],
   url: [host: "localhost.app"],
-  server: false
+  server: true
 
 config :wallaby,
   screenshot_on_failure: true,
