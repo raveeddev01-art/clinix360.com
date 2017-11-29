@@ -1,4 +1,6 @@
 defmodule Stitch.FindYourTeam do
+  import Ecto.Query, only: [where: 2]
+
   alias Stitch.Repo
   alias Stitch.FindYourTeam.Token
 
@@ -15,7 +17,7 @@ defmodule Stitch.FindYourTeam do
       {:ok, token} ->
         token
       {:error, %{errors: [email: {"has already been taken", []}]}} ->
-        Repo.get_by(Token, email: email, type: "login") |> Repo.delete
+        Token |> where(email: ^email) |> where(type: ^"login") |> Repo.delete_all
         Repo.get_by!(Token, email: email, type: "team_list")
     end
   end
