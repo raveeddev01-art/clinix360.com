@@ -21,6 +21,19 @@ defmodule StitchConnect.Web.AuthenticationController do
     end
   end
 
+  def auto_login(conn, %{"token" => token}) do
+    with %Stitch.FindYourTeam.Token{} = token <- Stitch.FindYourTeam.get_login_token(token),
+         %Stitch.Accounts.User{} = user <- Stitch.UserQueries.team_member_with_email(conn.assigns.team.id, token.email) do
+      Stitch.FindYourTeam.delete_token(token)
+      default_group = Stitch.GroupQueries.default_group(user)
+      conn
+      |> login_user(user)
+      |> redirect(to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug))
+    else _error ->
+      render conn, "auto_login_error.html"
+    end
+  end
+
   def submit_login(conn, %{"email" => email, "password" => password}) do
     team_slug = conn.private[:team_slug]
     case Stitch.User.Authentication.validate_email_and_password(email, password, team_slug) do

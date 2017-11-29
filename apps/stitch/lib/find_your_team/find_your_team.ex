@@ -5,17 +5,29 @@ defmodule Stitch.FindYourTeam do
   import Bamboo.Email
   import Bamboo.MandrillHelper
 
+  # TODO: migration to update existing tokens, add type "team_list"
   def create_or_get_token!(email) do
     changeset =
       %Token{}
-      |> Token.changeset(%{email: email, token: Stitch.Rand.token(12)})
+      |> Token.changeset(%{email: email, token: Stitch.Rand.token(12), type: "team_list"})
 
     case Repo.insert(changeset) do
       {:ok, token} ->
         token
       {:error, %{errors: [email: {"has already been taken", []}]}} ->
-        Repo.get_by!(Token, email: email)
+        Repo.get_by(Token, email: email, type: "login") |> Repo.delete
+        Repo.get_by!(Token, email: email, type: "team_list")
     end
+  end
+
+  def get_login_token(token) do
+    Repo.get_by!(Token, token: token, type: "login")
+  end
+
+  def create_login_token(email) do
+    %Token{}
+    |> Token.changeset(%{email: email, token: Stitch.Rand.token(64), type: "login"})
+    |> Repo.insert
   end
 
   def delete_token(%Token{} = token) do

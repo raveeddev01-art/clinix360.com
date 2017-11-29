@@ -21,11 +21,14 @@ defmodule StitchConnect.Web.Api.V1.FindYourTeamController do
         |> json(%{message: "Token not found."})
       token ->
         {:ok, token} = FindYourTeam.delete_token(token)
+        {:ok, login_token} = FindYourTeam.create_login_token(token.email)
 
         teams =
           token.email
           |> TeamQueries.all_with_user_email()
-          |> Enum.map(&Map.take(&1, [:name, :slug]))
+          |> Enum.map(fn team ->
+            %{ name: team.name, slug: team.slug, login_token: login_token.token }
+          end)
 
         json(conn, %{teams: teams})
     end

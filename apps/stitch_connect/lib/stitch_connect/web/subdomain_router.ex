@@ -175,6 +175,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/login", AuthenticationController, :login
     post "/login", AuthenticationController, :submit_login
 
+    get "/find-your-team/:token/login", AuthenticationController, :auto_login
     get "/logged-out", AuthenticationController, :logged_out
 
     get "/reset-password", AuthenticationController, :reset_password
