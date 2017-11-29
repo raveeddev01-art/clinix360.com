@@ -4,7 +4,7 @@ use Mix.Config
 # you can enable the server option below.
 config :stitch_connect, StitchConnect.Web.Endpoint,
   http: [port: 4001],
-  url: [host: "localhost.app"],
+  url: [host: "localhost"],
   server: true
 
 config :wallaby,

@@ -9,7 +9,7 @@ defmodule StitchConnect.SubdomainTest do
       |> with_team_subdomain(team)
       |> get("/")
 
-    assert redirected_to(conn, 302) == "http://localhost.app:4001"
+    assert redirected_to(conn, 302) == "http://localhost:4001"
   end
 
   test "when team exists", %{conn: conn} do
