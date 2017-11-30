@@ -1,7 +1,6 @@
 defmodule StitchConnect.Web.AuthenticationController do
   use StitchConnect.Web, :controller
   alias StitchConnect.Web.{EventsChannel}
-  plug :accepts, ["json"] when action in ["submit_login"]
 
   def index(conn, _params) do
     render conn, "index.html", subdomain: conn.private[:subdomain]

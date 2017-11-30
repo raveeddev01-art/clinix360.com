@@ -163,6 +163,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/teams/:id", TeamController, :update
 
     post "/login", AuthenticationController, :submit_login
+    post "/web_login", AuthenticationController, :submit_login
     post "/reset_password", AuthenticationController, :reset_password
   end
 
@@ -175,7 +176,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/invitations/error", InvitationController, :error
 
     get "/login", AuthenticationController, :login
-    post "/login", AuthenticationController, :submit_login
 
     get "/logged-out", AuthenticationController, :logged_out
 
