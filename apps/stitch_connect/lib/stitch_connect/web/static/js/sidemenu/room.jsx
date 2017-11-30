@@ -105,11 +105,8 @@ class Room extends Component {
     });
     const badge = this.getBadge();
     const anchorName = `${ROOM_MENU_ITEM_ANCHOR_PREFIX}${room.id}`;
-    const roomHidden =
-      (room.type === "dm" || room.type === "multi_dm") && room.is_hidden;
 
     return (
-      !roomHidden && (
         <VisibilitySensor
           active
           onChange={this.onVisibleChange}

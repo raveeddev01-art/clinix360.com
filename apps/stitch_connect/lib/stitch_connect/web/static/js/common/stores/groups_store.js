@@ -47,25 +47,35 @@ class GroupsStore {
   }
 
   @computed
+  get visibleGroups() {
+    return this.groups.filter(g => !g.is_hidden);
+  }
+
+  @computed
+  get hiddenGroups() {
+    return this.groups.filter(g => g.is_hidden);
+  }
+
+  @computed
   get favoriteGroups() {
-    return this.groups.filter(group => group.is_favorite);
+    return this.visibleGroups.filter(group => group.is_favorite);
   }
 
   @computed
   get normalGroups() {
-    return this.groups.filter(
+    return this.visibleGroups.filter(
       group => group.type === "regular" && !group.is_favorite
     );
   }
 
   @computed
   get directGroups() {
-    return this.groups.filter(group => group.type !== "regular");
+    return this.visibleGroups.filter(group => group.type !== "regular");
   }
 
   @computed
   get multiDMGroups() {
-    return this.groups.filter(group => group.type === "multi_dm");
+    return this.visibleGroups.filter(group => group.type === "multi_dm");
   }
 
   @computed
