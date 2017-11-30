@@ -28,7 +28,7 @@ class MessageStore {
   @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
   @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
   @observable loadedAllRecent = false; // If TRUE, indicates that there is no more recent messages to load from server
-  @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
+  @observable loadedAround = new Map(); // { message_id: true } indicates if messages around the jumped message is loaded
 
   @observable isLoadingRecent = false;
   @observable isLoadingPast = false;
@@ -226,8 +226,8 @@ class MessageStore {
   }
 
   // Scroll to specific message in chat div instantly
-  scrollTo(msgId, duration = 1000, cb, offset = -50) {
-    scroller.scrollTo(`msg_${msgId}`, {
+  scrollTo(messageId, duration = 1000, cb, offset = -50) {
+    scroller.scrollTo(`message_${messageId}`, {
       containerId: "chat",
       smooth: true,
       duration,
@@ -450,18 +450,18 @@ class MessageStore {
       });
   };
 
-  sendMessage = (msg, additionalFields = {}) => {
+  sendMessage = (message, additionalFields = {}) => {
     return new Promise((resolve, reject) => {
       // generates unique temporary request ID
       const temporaryID = shortid.generate();
       const newMessage = {
         id: temporaryID,
         request_id: temporaryID,
-        new_msg: true, // only messages with this flag will have sending/failed/success indicator
+        new_message: true, // only messages with this flag will have sending/failed/success indicator
         sending: true,
         sent: false,
         user: { ...currentUser },
-        text_content: msg,
+        text_content: message,
         inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
         group_id: this.group.id,
         user_id: currentUser.id
@@ -472,7 +472,7 @@ class MessageStore {
         .push(
           "new_msg",
           Object.assign(
-            { text_content: msg, request_id: temporaryID },
+            { text_content: message, request_id: temporaryID },
             additionalFields
           )
         )
@@ -511,11 +511,11 @@ class MessageStore {
   };
 
   @action
-  deleteLinkPreview = (msgId, link) => {
+  deleteLinkPreview = (messageId, link) => {
     return new Promise((resolve, reject) => {
       this.groupChannel
         .push("delete_msg_link_preview", {
-          message_id: msgId,
+          message_id: messageId,
           link
         })
         .receive("ok", resolve)

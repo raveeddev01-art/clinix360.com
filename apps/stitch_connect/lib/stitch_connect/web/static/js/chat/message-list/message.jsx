@@ -267,7 +267,7 @@ class Message extends Component {
     const mine = userId === currentUser.id;
     const containerClassName = cx("message-container", {
       mine,
-      "has-status": message.new_msg
+      "has-status": message.new_message
     });
     const user = usersStore.usersById[userId];
 
@@ -294,7 +294,10 @@ class Message extends Component {
             scrollThrottle={100}
             containment={chatDiv}
           >
-            <Element name={`msg_${message.id}`} className={elementClassName}>
+            <Element
+              name={`message_${message.id}`}
+              className={elementClassName}
+            >
               <div className="message-header">
                 <div className="name">
                   {user.first_name} {user.last_name}
@@ -321,8 +324,8 @@ class Message extends Component {
             </Element>
           </VisibilitySensor>
           {mine &&
-            message.new_msg && (
-              <small className="text-muted msg-status">
+            message.new_message && (
+              <small className="text-muted message-status">
                 {message.sending ? "Sending" : message.sent ? "Sent" : "Failed"}
               </small>
             )}
