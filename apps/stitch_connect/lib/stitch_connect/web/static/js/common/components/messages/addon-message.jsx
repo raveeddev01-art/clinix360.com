@@ -61,9 +61,14 @@ class AddonMessage extends Component {
           </OverlayTrigger>
         </div>
         <div className="message">
-          <MessageHeader timestamp={message.inserted_at} user={message.user} />
-          <MessageContent message={message} />
-          <MessageFooter message={message} />
+          <div className="message-content">
+            <MessageHeader
+              timestamp={message.inserted_at}
+              user={message.user}
+            />
+            <MessageContent message={message} />
+            <MessageFooter message={message} />
+          </div>
         </div>
       </div>
     );

@@ -58,9 +58,12 @@ class MessageList extends Component {
             {messagesByDate[date].map(
               message =>
                 message.type === "system" ? (
-                  <SystemMessage key={`msg_${message.id}`} message={message} />
+                  <SystemMessage
+                    key={`message_${message.id}`}
+                    message={message}
+                  />
                 ) : (
-                  <Message key={`msg_${message.id}`} message={message} />
+                  <Message key={`message_${message.id}`} message={message} />
                 )
             )}
           </div>

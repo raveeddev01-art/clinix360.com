@@ -15,7 +15,7 @@ import {
 
 class GroupsStore {
   @observable groups = [];
-  @observable groupCursors = {}; // { group_id: message_id }
+  @observable groupCursors = {}; // { group_id: message_id }, Holds the id of oldest message that is visible in chat pane in group
   @observable currentGroupId = null;
 
   constructor(rootStore) {
@@ -30,9 +30,7 @@ class GroupsStore {
 
   getGroupBySlug = slug => this.groups.find(group => group.slug === slug);
 
-  getGroupUrl = id => {
-    return getGroupUrl(this.getGroupById(id));
-  };
+  getGroupUrl = id => getGroupUrl(this.getGroupById(id));
 
   @computed
   get currentGroup() {
@@ -49,25 +47,35 @@ class GroupsStore {
   }
 
   @computed
+  get visibleGroups() {
+    return this.groups.filter(g => !g.is_hidden);
+  }
+
+  @computed
+  get hiddenGroups() {
+    return this.groups.filter(g => g.is_hidden);
+  }
+
+  @computed
   get favoriteGroups() {
-    return this.groups.filter(group => group.is_favorite);
+    return this.visibleGroups.filter(group => group.is_favorite);
   }
 
   @computed
   get normalGroups() {
-    return this.groups.filter(
+    return this.visibleGroups.filter(
       group => group.type === "regular" && !group.is_favorite
     );
   }
 
   @computed
   get directGroups() {
-    return this.groups.filter(group => group.type !== "regular");
+    return this.visibleGroups.filter(group => group.type !== "regular");
   }
 
   @computed
   get multiDMGroups() {
-    return this.groups.filter(group => group.type === "multi_dm");
+    return this.visibleGroups.filter(group => group.type === "multi_dm");
   }
 
   @computed
