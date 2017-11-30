@@ -7,7 +7,6 @@ defmodule Stitch.FindYourTeam do
   import Bamboo.Email
   import Bamboo.MandrillHelper
 
-  # TODO: migration to update existing tokens, add type "team_list"
   def create_or_get_token!(email) do
     changeset =
       %Token{}
