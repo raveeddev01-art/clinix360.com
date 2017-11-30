@@ -456,6 +456,7 @@ class MessageStore {
     const tempMessage = {
       // Temp attributes
       id: tempId,
+      temp: true,
       status: "sending",
       inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
 
@@ -811,7 +812,6 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    console.log("onNewMessage", newMessage);
     const { sidemenuStore } = this.rootStore;
 
     if (newMessage.group_id !== this.group.id) {
@@ -819,7 +819,10 @@ class MessageStore {
     }
 
     if (newMessage.user_id === currentUser.id) {
-      this.messages.unshift(newMessage);
+      this.messages.unshift({
+        ...newMessage,
+        status: "sent"
+      });
 
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();

@@ -274,7 +274,8 @@ class Message extends Component {
 
     return (
       <div>
-        {newMessageLineMessage &&
+        {!message.temp &&
+          newMessageLineMessage &&
           newMessageLineMessage.id === message.id && (
             <Element name="newMessageBanner" className="new-message-banner">
               <div className="banner-text">New Messages</div>
