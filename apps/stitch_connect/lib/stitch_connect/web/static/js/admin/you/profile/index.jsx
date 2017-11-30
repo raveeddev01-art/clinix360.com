@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { inject } from "mobx-react";
 import Panel from "react-bootstrap/lib/Panel";
 import Alert from "react-bootstrap/lib/Alert";
+import pick from "lodash/pick";
 
 import NamePanel from "./name-panel";
 import PhoneNumberPanel from "./phone-number-panel";
 import TitlePanel from "./title-panel";
-// import ProfileImagePanel from "./profile-image-panel";
+import ProfileImagePanel from "./profile-image-panel";
 
 const header = (
   <h1>
@@ -55,26 +56,15 @@ class ProfileSettings extends Component {
 
   render() {
     const { alertMessage, alertVisible, alertStyle } = this.state;
+    const commonPanelProps = pick(this, "onSuccess", "onError", "hideAlert");
 
     return (
       <Panel className="admin-panel" header={header}>
         {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
-        <NamePanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        <PhoneNumberPanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        <TitlePanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        {/* <ProfileImagePanel /> */}
+        <NamePanel {...commonPanelProps} />
+        <PhoneNumberPanel {...commonPanelProps} />
+        <TitlePanel {...commonPanelProps} />
+        <ProfileImagePanel {...commonPanelProps} />
       </Panel>
     );
   }

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import cx from "classnames";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Alert from "react-bootstrap/lib/Alert";
+import Button from "react-bootstrap/lib/Button";
 import Header from "../website/components/header";
 import Footer from "../website/components/footer";
 import PinInput from "../common/components/pin-input/index";
@@ -13,7 +13,7 @@ class LockedApp extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pin: "", hasError: false };
+    this.state = { pin: "", hasError: false, isSaving: false };
   }
 
   onInvalid = () => {
@@ -30,14 +30,27 @@ class LockedApp extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-
     this.attemptUnlock();
   };
 
   attemptUnlock = () => {
-    this.props.presenceStore.unlock(this.state.pin).catch(() => {
-      this.setState({ pin: "", hasError: true });
-    });
+    const { pin } = this.state;
+
+    if (pin.length === 4) {
+      this.setState({ isSaving: true });
+      this.props.presenceStore.unlock(this.state.pin).catch(() => {
+        this.setState({ pin: "", hasError: true, isSaving: false });
+      });
+    } else {
+      this.setState({ hasError: true });
+    }
+  };
+
+  renderLoadingIcon = () => {
+    const { isSaving } = this.state;
+    return isSaving ? (
+      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
+    ) : null;
   };
 
   render() {
@@ -45,7 +58,7 @@ class LockedApp extends Component {
       "on-electron": window.electronApp
     });
 
-    const { hasError } = this.state;
+    const { hasError, isSaving } = this.state;
     return (
       <div className={lockAppWrapperClass}>
         <Header />
@@ -69,14 +82,25 @@ class LockedApp extends Component {
                   onValid={this.onValid}
                   onInvalid={this.onInvalid}
                 />
+
+                <Button
+                  type="submit"
+                  bsStyle="primary"
+                  bsSize="lg"
+                  className="btn-block m-center"
+                  disabled={isSaving}
+                >
+                  Unlock
+                  {this.renderLoadingIcon()}
+                </Button>
               </form>
 
-              <HelpBlock>
+              <h5>
                 Can't remember your PIN?{" "}
                 <a href="/logout">
                   <strong>Sign Out</strong>
                 </a>
-              </HelpBlock>
+              </h5>
             </div>
           </div>
         </div>

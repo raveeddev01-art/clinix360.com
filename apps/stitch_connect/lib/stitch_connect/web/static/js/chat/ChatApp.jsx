@@ -9,7 +9,7 @@ import BrowserNotificationAlert from "./browser-notification-alert";
 import UploadModal from "../file-upload/upload-modal";
 import Switcher from "../common/components/switcher/index";
 
-@inject("uploadStore", "groupsStore")
+@inject("uploadStore", "sidemenuStore", "channelStore", "groupsStore")
 @observer
 class ChatApp extends Component {
   static requiresAdmin = false;
@@ -20,6 +20,15 @@ class ChatApp extends Component {
     this.state = {
       dropzoneActive: false
     };
+  }
+
+  componentWillMount() {
+    this.props.sidemenuStore.isInChat = true;
+  }
+
+  componentWillUnmount() {
+    this.props.channelStore.leaveLastGroupChannel();
+    this.props.sidemenuStore.isInChat = false;
   }
 
   onDragEnter = () => {

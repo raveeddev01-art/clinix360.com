@@ -46,8 +46,50 @@ class MessageStore {
   //    GETTERS     //
   // ////////////// //
 
+  getMessageById = id => this.messages.find(m => m.id === id);
+
+  getMessageByIndex(index) {
+    if (index < 0 || index > this.messages.length - 1) {
+      return null;
+    }
+
+    return this.messages[index];
+  }
+
   get groupId() {
-    return this.rootStore.groupsStore.currentGroupId;
+    const { groupsStore } = this.rootStore;
+
+    return groupsStore.currentGroupId;
+  }
+
+  get eventChannel() {
+    const { channelStore } = this.rootStore;
+
+    return channelStore.eventChannel;
+  }
+
+  get groupChannel() {
+    const { channelStore } = this.rootStore;
+
+    return channelStore.groupChannel;
+  }
+
+  @computed
+  get messagesByDate() {
+    return (
+      _.chain(this.messages)
+        .sortBy("inserted_at")
+        // Group messages by dates
+        .groupBy(message =>
+          moment.utc(message.inserted_at).format(`YYYY-MM-DD`)
+        )
+        .value()
+    );
+  }
+
+  @computed
+  get starredMessages() {
+    return this.messages.filter(message => message.starred);
   }
 
   /**
@@ -68,14 +110,6 @@ class MessageStore {
   @computed
   get showJumpedMessageIndicator() {
     return this.jumpMode && !this.loadedAllRecent;
-  }
-
-  get eventChannel() {
-    return this.rootStore.channelStore.eventChannel;
-  }
-
-  get groupChannel() {
-    return this.rootStore.channelStore.groupChannel;
   }
 
   @computed
@@ -126,24 +160,6 @@ class MessageStore {
     return null;
   }
 
-  @computed
-  get messagesByDate() {
-    return (
-      _.chain(this.messages)
-        .sortBy("inserted_at")
-        // Group messages by dates
-        .groupBy(message =>
-          moment.utc(message.inserted_at).format(`YYYY-MM-DD`)
-        )
-        .value()
-    );
-  }
-
-  @computed
-  get starredMessages() {
-    return this.messages.filter(message => message.starred);
-  }
-
   // ////////////// //
   //    METHODS     //
   // ////////////// //
@@ -158,16 +174,6 @@ class MessageStore {
     this.messageElements = {};
     this.messageInEdit = null;
     this.textInEdit = "";
-  }
-
-  getMessageById = id => this.messages.find(m => m.id === id);
-
-  getMessageByIndex(index) {
-    if (index < 0 || index > this.messages.length - 1) {
-      return null;
-    }
-
-    return this.messages[index];
   }
 
   @action
@@ -220,7 +226,7 @@ class MessageStore {
   }
 
   scrollToNewBanner = () => {
-    // if there are unread messages remain, scroll to top,
+    // If unread messages remain, scroll to top,
     // otherwise just scroll to new banner
     if (this.unreadMessagesCount > this.messages.length) {
       this.scrollTo(this.messages[this.messages.length - 1].id, 500);
@@ -233,69 +239,6 @@ class MessageStore {
       });
     }
   };
-
-  @action
-  onScrollTopReached() {
-    this.loadPastMessages();
-  }
-
-  @action
-  onScrollBottomReached() {
-    if (this.jumpMode && !this.loadedAllRecent) {
-      this.loadRecentMessages();
-    } else {
-      this.isScrollBottom = true;
-      this.updateGroupCursor(null);
-    }
-  }
-
-  @action
-  onScrollBottomLeft() {
-    this.isScrollBottom = false;
-  }
-
-  onMessageHide(id) {
-    if (this.messageElements[id]) {
-      this.messageElements[id].visible = false;
-    }
-
-    if (!this.loadedInitial || this.isScrollBottom) {
-      return;
-    }
-
-    if (!this.groupCursor || this.groupCursor === id) {
-      const index = this.messages.findIndex(m => m.id === id);
-      if (index > 0) {
-        this.updateGroupCursor(this.messages[index - 1].id);
-      }
-    }
-  }
-
-  onMessageShow(id) {
-    if (this.messageElements[id]) {
-      this.messageElements[id].visible = true;
-    }
-
-    if (
-      !this.markedAsUnread &&
-      this.firstUnreadMessage &&
-      this.firstUnreadMessage.id === id
-    ) {
-      // If first unread message is visible, mark messages as read after 1s delay
-      // but, leave the new message line
-      setTimeout(() => {
-        this.markAsRead(false);
-      }, 1000);
-    }
-
-    if (!this.loadedInitial) {
-      return;
-    }
-
-    if (!this.groupCursor || this.groupCursor > id) {
-      this.updateGroupCursor(id);
-    }
-  }
 
   /**
    * Scroll to a specific message in chat div
@@ -423,22 +366,6 @@ class MessageStore {
     this.chatDiv = null;
   }
 
-  /**
-   * Registers message div when message component is mounted
-   *
-   * @param {Integer} messageId
-   * @param {DOMElement} messageDiv
-   */
-  onMessageMounted(messageId, messageDiv) {
-    this.messageElements = {
-      ...this.messageElements,
-      [messageId]: {
-        div: messageDiv,
-        visible: false
-      }
-    };
-  }
-
   @action
   updateUnreadMessagesInfo(data) {
     const { groupsStore } = this.rootStore;
@@ -517,22 +444,6 @@ class MessageStore {
       });
   };
 
-  joinGroupChannel = () => {
-    this.rootStore.channelStore
-      .joinGroupChannel()
-      .receive("ok", this.onJoinGroupChannel)
-      .receive("error", err => notify.show(err.message, "error"));
-
-    this.groupChannel.on("new_msg", this.onNewMessage);
-    this.groupChannel.on("edit_msg", this.onEditMessage);
-    this.groupChannel.on("delete_msg", this.onDeleteMessage);
-    this.groupChannel.on(
-      "msg_link_previews_generated",
-      this.onLinkPreviewGenerated
-    );
-    this.groupChannel.on("msg_link_preview_deleted", this.onLinkPreviewDeleted);
-  };
-
   sendMessage = (msg, additionalFields = {}) => {
     return new Promise((resolve, reject) => {
       // generates unique temporary request ID
@@ -560,11 +471,18 @@ class MessageStore {
           )
         )
         .receive("ok", response => {
-          const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
-          Object.assign(tmpMsg, response, {
+          // Replace temp message with real message
+          const tempMessageIndex = this.messages.findIndex(
+            m => m.request_id === temporaryID
+          );
+
+          this.messages.splice(tempMessageIndex, 1, {
+            ...response,
+            new: true,
             sent: true,
             sending: false
           });
+
           resolve(response);
         })
         .receive("error", err => {
@@ -584,30 +502,6 @@ class MessageStore {
           reject(err);
         });
     });
-  };
-
-  @action
-  onLinkPreviewGenerated = payload => {
-    if (payload.group_id !== this.groupId) {
-      return;
-    }
-
-    const message = this.messages.find(m => m.id === payload.id);
-    if (message) {
-      message.link_previews = payload.link_previews;
-      this.keepScrollAtBottom();
-    }
-  };
-
-  @action
-  onLinkPreviewDeleted = payload => {
-    const message = this.messages.find(m => m.id === payload.message_id);
-    if (message) {
-      message.link_previews = message.link_previews.filter(
-        p => p.link !== payload.link
-      );
-      this.keepScrollAtBottom();
-    }
   };
 
   @action
@@ -730,141 +624,6 @@ class MessageStore {
     });
   };
 
-  @action
-  onNewMessage = newMessage => {
-    const { sidemenuStore } = this.rootStore;
-
-    if (newMessage.group_id !== this.groupId) {
-      return;
-    }
-
-    const currentNewMessageLineMessage = this.newMessageLineMessage;
-
-    if (newMessage.user_id === currentUser.id) {
-      // if it's my message, we assume it's already added temporarily.
-      if (newMessage.sending) {
-        this.messages.unshift(newMessage);
-      }
-
-      if (this.unreadMessagesCount === 0) {
-        this.markAsRead(false);
-      }
-      this.lastReadAt = moment
-        .utc(newMessage.inserted_at)
-        .add(1, "millisecond")
-        .format("YYYY-MM-DDTHH:mm:ss.SSS");
-    } else {
-      this.messages.unshift(newMessage);
-
-      const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
-
-      // If you're at the bottom and no NML, keep up with the new message
-      if (this.isScrollBottom && currentNewMessageLineMessage == null) {
-        this.lastReadAt = moment
-          .utc(newMessage.inserted_at)
-          .add(1, "millisecond")
-          .format("YYYY-MM-DDTHH:mm:ss.SSS");
-      }
-
-      if (this.unreadMessagesCount || !this.isScrollBottom) {
-        this.updateUnreadMessagesInfo({
-          unread_messages_count: this.unreadMessagesCount + 1,
-          mentions_count: this.mentionsCount + (isMention ? 1 : 0)
-        });
-      } else {
-        this.markAsRead(false);
-      }
-    }
-
-    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
-      this.scrollToBottom(() => {}, 0, 0);
-    }
-
-    // Update favicon
-    sidemenuStore.updateFavicon();
-
-    // Play notification audio
-    sidemenuStore.playNotificationAudioForNewMessage(newMessage);
-
-    // Show notification card
-    sidemenuStore.showNotificationCardForNewMessage(newMessage);
-  };
-
-  @action
-  onEditMessage = editedMessage => {
-    if (editedMessage.group_id !== this.groupId) {
-      return;
-    }
-
-    this.cancelEdit();
-
-    const message = this.messages.find(m => m.id === editedMessage.id);
-
-    message.edited = editedMessage.edited;
-    message.edited_at = editedMessage.edited_at;
-    message.text_content = editedMessage.text_content;
-  };
-
-  @action
-  onDeleteMessage = deletedMessage => {
-    const messageIndex = this.messages.findIndex(
-      m => m.id === deletedMessage.id
-    );
-
-    if (messageIndex > -1) {
-      this.messages.splice(messageIndex, 1);
-    }
-  };
-
-  @action
-  onStarredMessage = message => {
-    const { globalStarredMessageStore } = this.rootStore;
-
-    this.updateMessageData(message.id, {
-      starred: message.starred
-    });
-
-    if (message.starred) {
-      globalStarredMessageStore.add(message);
-    } else {
-      globalStarredMessageStore.remove(message.id);
-    }
-  };
-
-  @action
-  onPinnedMessage = message => {
-    const { pinnedMessageStore } = this.rootStore;
-
-    this.updateMessageData(message.id, {
-      pinned: message.pinned,
-      pinned_at: message.pinned_at,
-      pinned_by: message.pinned_by
-    });
-
-    if (message.pinned) {
-      pinnedMessageStore.add(message);
-    } else {
-      pinnedMessageStore.remove(message.id);
-    }
-  };
-
-  @action
-  onJoinGroupChannel = data => {
-    this.messages = data.messages;
-
-    if (data.messages.length < 30) {
-      this.loadedAll = true;
-    }
-
-    const { groupStore } = this.rootStore;
-
-    this.unreadMessagesCount = groupStore.group.unread_messages_count;
-    this.mentionsCount = groupStore.group.mentions_count;
-    this.lastReadAt = groupStore.group.last_read_at;
-
-    when(() => this.mountedAllMessages, this.handleInitialLoading);
-  };
-
   handleInitialLoading = () => {
     if (this.unreadMessagesCount) {
       this.scrollToBottom(() => {
@@ -977,6 +736,248 @@ class MessageStore {
   keepScrollAtBottom = () => {
     if (this.isScrollBottom) {
       this.scrollToBottom();
+    }
+  };
+
+  // ////////////// //
+  // EVENT HANDLERS //
+  // ////////////// //
+
+  @action
+  onJoinGroupChannel = data => {
+    this.messages = data.messages;
+
+    if (data.messages.length < 30) {
+      this.loadedAll = true;
+    }
+
+    const { groupStore } = this.rootStore;
+
+    this.unreadMessagesCount = groupStore.group.unread_messages_count;
+    this.mentionsCount = groupStore.group.mentions_count;
+    this.lastReadAt = groupStore.group.last_read_at;
+
+    when(() => this.mountedAllMessages, this.handleInitialLoading);
+  };
+
+  /**
+   * Registers message div when message component is mounted
+   *
+   * @param {Integer} messageId
+   * @param {DOMElement} messageDiv
+   */
+  onMessageMounted(messageId, messageDiv) {
+    this.messageElements = {
+      ...this.messageElements,
+      [messageId]: {
+        div: messageDiv,
+        visible: false
+      }
+    };
+  }
+
+  @action
+  onScrollTopReached() {
+    this.loadPastMessages();
+  }
+
+  @action
+  onScrollBottomReached() {
+    if (this.jumpMode && !this.loadedAllRecent) {
+      this.loadRecentMessages();
+    } else {
+      this.isScrollBottom = true;
+      this.updateGroupCursor(null);
+    }
+  }
+
+  @action
+  onScrollBottomLeft() {
+    this.isScrollBottom = false;
+  }
+
+  onMessageShow(id) {
+    if (this.messageElements[id]) {
+      this.messageElements[id].visible = true;
+    }
+
+    if (
+      !this.markedAsUnread &&
+      this.firstUnreadMessage &&
+      this.firstUnreadMessage.id === id
+    ) {
+      // If first unread message is visible, mark messages as read after 1s delay
+      // but, leave the new message line
+      setTimeout(() => {
+        this.markAsRead(false);
+      }, 1000);
+    }
+
+    if (!this.loadedInitial) {
+      return;
+    }
+
+    if (!this.groupCursor || this.groupCursor > id) {
+      this.updateGroupCursor(id);
+    }
+  }
+
+  onMessageHide(id) {
+    if (this.messageElements[id]) {
+      this.messageElements[id].visible = false;
+    }
+
+    if (!this.loadedInitial || this.isScrollBottom) {
+      return;
+    }
+
+    if (!this.groupCursor || this.groupCursor === id) {
+      const index = this.messages.findIndex(m => m.id === id);
+      if (index > 0) {
+        this.updateGroupCursor(this.messages[index - 1].id);
+      }
+    }
+  }
+
+  @action
+  onNewMessage = newMessage => {
+    const { sidemenuStore } = this.rootStore;
+
+    if (newMessage.group_id !== this.groupId) {
+      return;
+    }
+
+    const currentNewMessageLineMessage = this.newMessageLineMessage;
+
+    if (newMessage.user_id === currentUser.id) {
+      // if it's my message, we assume it's already added temporarily.
+      if (newMessage.sending || newMessage.type !== "chat") {
+        this.messages.unshift(newMessage);
+      }
+
+      if (this.unreadMessagesCount === 0) {
+        this.markAsRead(false);
+      }
+      this.lastReadAt = moment
+        .utc(newMessage.inserted_at)
+        .add(1, "millisecond")
+        .format("YYYY-MM-DDTHH:mm:ss.SSS");
+    } else {
+      this.messages.unshift(newMessage);
+
+      const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+
+      // If you're at the bottom and no NML, keep up with the new message
+      if (this.isScrollBottom && currentNewMessageLineMessage == null) {
+        this.lastReadAt = moment
+          .utc(newMessage.inserted_at)
+          .add(1, "millisecond")
+          .format("YYYY-MM-DDTHH:mm:ss.SSS");
+      }
+
+      if (this.unreadMessagesCount || !this.isScrollBottom) {
+        this.updateUnreadMessagesInfo({
+          unread_messages_count: this.unreadMessagesCount + 1,
+          mentions_count: this.mentionsCount + (isMention ? 1 : 0)
+        });
+      } else {
+        this.markAsRead(false);
+      }
+    }
+
+    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
+      this.scrollToBottom(() => {}, 0, 0);
+    }
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
+
+    // Play notification audio
+    sidemenuStore.playNotificationAudioForNewMessage(newMessage);
+
+    // Show notification card
+    sidemenuStore.showNotificationCardForNewMessage(newMessage);
+  };
+
+  @action
+  onEditMessage = editedMessage => {
+    if (editedMessage.group_id !== this.groupId) {
+      return;
+    }
+
+    this.cancelEdit();
+
+    const message = this.messages.find(m => m.id === editedMessage.id);
+
+    message.edited = editedMessage.edited;
+    message.edited_at = editedMessage.edited_at;
+    message.text_content = editedMessage.text_content;
+  };
+
+  @action
+  onDeleteMessage = deletedMessage => {
+    const messageIndex = this.messages.findIndex(
+      m => m.id === deletedMessage.id
+    );
+
+    if (messageIndex > -1) {
+      this.messages.splice(messageIndex, 1);
+    }
+  };
+
+  @action
+  onStarredMessage = message => {
+    const { globalStarredMessageStore } = this.rootStore;
+
+    this.updateMessageData(message.id, {
+      starred: message.starred
+    });
+
+    if (message.starred) {
+      globalStarredMessageStore.add(message);
+    } else {
+      globalStarredMessageStore.remove(message.id);
+    }
+  };
+
+  @action
+  onPinnedMessage = message => {
+    const { pinnedMessageStore } = this.rootStore;
+
+    this.updateMessageData(message.id, {
+      pinned: message.pinned,
+      pinned_at: message.pinned_at,
+      pinned_by: message.pinned_by
+    });
+
+    if (message.pinned) {
+      pinnedMessageStore.add(message);
+    } else {
+      pinnedMessageStore.remove(message.id);
+    }
+  };
+
+  @action
+  onLinkPreviewGenerated = payload => {
+    if (payload.group_id !== this.groupId) {
+      return;
+    }
+
+    const message = this.messages.find(m => m.id === payload.id);
+    if (message) {
+      message.link_previews = payload.link_previews;
+      this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  onLinkPreviewDeleted = payload => {
+    const message = this.messages.find(m => m.id === payload.message_id);
+    if (message) {
+      message.link_previews = message.link_previews.filter(
+        p => p.link !== payload.link
+      );
+      this.keepScrollAtBottom();
     }
   };
 }

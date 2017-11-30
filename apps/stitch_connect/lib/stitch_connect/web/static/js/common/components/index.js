@@ -10,6 +10,7 @@ import Switcher from "./switcher";
 import Toastr from "./toastr/toastr";
 import Toggle from "./toggle/Toggle";
 import LoadingButton from "./loading-button";
+import AvatarUploader from "./avatar-uploader";
 
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
@@ -29,6 +30,7 @@ export {
   Toastr,
   Toggle,
   LoadingButton,
+  AvatarUploader,
   MessageContent,
   MessageFooter,
   MessageHeader,

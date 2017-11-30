@@ -17,6 +17,7 @@ defmodule Stitch.Accounts.User do
     field :last_name, :string
     field :phone_number, :string
     field :profile_image_url, :string
+    field :profile_image_thumb_url, :string
     field :confirmation_code, :string
     field :title, :string
     field :email_confirmed, :boolean, default: false
@@ -150,4 +151,20 @@ defmodule Stitch.Accounts.User do
     |> unsafe_validate_unique([:username, :team_id], Repo)
     |> unique_constraint(:username, name: :users_username_team_id_index)
   end
+
+  def profile_image_changeset(struct, params) do
+    struct
+    |> cast(params, [:profile_image_url])
+    |> add_thumb()
+  end
+
+  def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
+    case Stitch.Accounts.ProfileImage.create_thumb(url) do
+      {:ok, profile_image_thumb_url} ->
+        put_change(changeset, :profile_image_thumb_url, profile_image_thumb_url)
+      {:error, _error} ->
+        changeset
+    end
+  end
+  def add_thumb(changeset), do: changeset
 end

@@ -74,4 +74,16 @@ defmodule Stitch.TeamQueries do
       limit: 1
     Repo.one(query)
   end
+
+  @doc """
+  Returns a list of all teams.
+
+  ## Examples
+
+      iex> list_teams()
+      [%Team{...}, %Team{...}, ...]
+
+  """
+  @spec list_teams :: [Team.t]
+  def list_teams, do: Repo.all(Team)
 end

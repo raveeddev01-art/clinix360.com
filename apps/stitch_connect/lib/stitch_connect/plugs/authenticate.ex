@@ -1,14 +1,17 @@
 defmodule StitchConnect.Plug.Authenticate do
   import Plug.Conn
   alias Stitch.Accounts
-  alias Stitch.Accounts.User
 
   def init(default), do: default
 
   def call(conn, _) do
-    case get_session(conn, :current_user) do
-      %User{id: user_id} ->
-        case Accounts.get_by_id(user_id) do
+    case get_session(conn, :current_user_id) do
+      nil ->
+        conn
+        |> Phoenix.Controller.redirect(to: "/login")
+        |> halt
+      current_user_id ->
+        case Accounts.get_by_id(current_user_id) do
           nil ->
             conn
             |> clear_session
@@ -23,17 +26,13 @@ defmodule StitchConnect.Plug.Authenticate do
               |> Phoenix.Controller.redirect(to: "/login")
               |> halt
             end
-          %{disabled: true} = current_user ->
+          %{disabled: true} ->
             unless conn.request_path == "/login" or conn.request_path == "/submit_login" do
               conn
               |> Phoenix.Controller.redirect(to: "/logged-out")
               |> halt
             end
         end
-      _ ->
-        conn
-        |> Phoenix.Controller.redirect(to: "/login")
-        |> halt
     end
   end
 end

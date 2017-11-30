@@ -1,111 +1,132 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import Dropzone from "react-dropzone";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import ControlLabel from "react-bootstrap/lib/ControlLabel";
-import FormControl from "react-bootstrap/lib/FormControl";
-import Button from "react-bootstrap/lib/Button";
+import PropTypes from "prop-types";
+import { AvatarUploader } from "common/components";
+import { confirm } from "common/modals";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Profile Image";
 const description =
   "Upload a profile image. This will be displayed when users view your information in Stitch.";
 
-// @TODO support cropping modal
-@inject("userStore", "imageStore", "teamStore")
+@inject("userStore", "uploadStore", "teamStore")
 @observer
 class ProfileImagePanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      image: null,
-      preview: null,
-      profileImgUrl: ""
+      profileImgUrl: "",
+      isCropped: false,
+      isUploading: false
     };
   }
 
-  componentWillUnmount() {
-    this._onRemove();
-  }
-
-  _onDrop = files => {
-    this.setState({ image: files[0] });
+  onCrop = profileImgUrl => {
+    this.setState({ profileImgUrl, isCropped: true });
+    this.onSave();
   };
 
-  _onUpload = () => {
-    const { image } = this.state;
-    const { teamStore, userStore, imageStore } = this.props;
-    if (image) {
-      const fileName = `${teamStore.id}/${userStore.id}/${image.name}`;
-      imageStore.uploadImage(image, fileName).then(profileImgUrl => {
-        notify.show(
-          "Image uploaded. Please click on save to update your image."
-        );
-        this.setState({ profileImgUrl });
-      });
-    }
-  };
-
-  _onRemove = () => {
-    // remove preview to avoid memroy leak
-    if (this.state.image) {
-      window.URL.revokeObjectURL(this.state.image.preview);
-    }
-    this.setState({ image: null, profileImgUrl: "" });
-  };
-
-  _onToggleEdit = () => {
+  onToggleEdit = () => {
     this.setState({
-      profileImgUrl: ""
+      profileImgUrl: this.props.userStore.avatar
     });
   };
 
-  _onSave = () => {
-    const { profileImgUrl } = this.state;
-    if (profileImgUrl) {
-      this.props.userStore.saveProfileImg(profileImgUrl);
-    } else {
-      notify.show("Please upload an image first", "error");
+  onSave = () => {
+    const { profileImgUrl: image, isCropped } = this.state;
+    const {
+      onError,
+      hideAlert,
+      onSuccess,
+      userStore,
+      teamStore,
+      uploadStore
+    } = this.props;
+    hideAlert();
+
+    if (isCropped) {
+      const fileName = `${teamStore.id}_${userStore.id}_${new Date().getTime()}.png`;
+      this.setState({ isUploading: true });
+      return uploadStore
+        .uploadAWS(image, "image/png", fileName)
+        .then(profileImgUrl => {
+          return userStore.saveProfileImg(profileImgUrl);
+        })
+        .then(() => {
+          onSuccess("Your profile image has been updated.");
+          this.setState({
+            isUploading: false,
+            profileImgUrl: userStore.avatar,
+            isCropped: false
+          });
+        })
+        .catch(() => {
+          this.setState({ isUploading: false });
+          onError("There was problem uploading the image.");
+        });
     }
+
+    return Promise.resolve(onError("Please upload an image first"));
+  };
+
+  onDelete = () => {
+    const { onError, onSuccess, userStore } = this.props;
+    confirm({
+      title: "Delete Profile Image",
+      message: "Are you sure you want to delete your profile image?",
+      okLabel: "Delete"
+    }).then(() => {
+      this.setState({ isUploading: true });
+      userStore
+        .deleteProfileImg()
+        .then(() => {
+          onSuccess("Your profile image has been deleted.");
+          this.setState({
+            isUploading: false,
+            profileImgUrl: userStore.avatar,
+            isCropped: false
+          });
+        })
+        .catch(() => {
+          onError("There was problem deleting your profile image.");
+          this.setState({
+            isUploading: false
+          });
+        });
+    });
   };
 
   render() {
-    const { image, profileImgUrl } = this.state;
+    const { profileImgUrl, isUploading, isCropped } = this.state;
+    const { onError, userStore } = this.props;
+
     return (
       <SettingPanel
         title={title}
         description={description}
-        onSave={this._onSave}
-        onEdit={this._onToggleEdit}
-        disableSave={!profileImgUrl}
+        saveButtonText=""
+        onEdit={this.onToggleEdit}
       >
-        <div className="profile-image-form">
-          <Dropzone
-            className="profile-dropzone"
-            multiple={false}
-            accept="image/*"
-            onDrop={this._onDrop}
-          >
-            {!image && <p>Click here or drag an image here.</p>}
-            {image &&
-              <img
-                alt="profile logo preview"
-                src={image.preview}
-                className="profile-img-prevew"
-              />}
-          </Dropzone>
-          <div className="profile-image-button-container">
-            <Button bsSize="xsmall" onClick={this._onUpload} disabled={!image}>
-              Upload
-            </Button>
-            <Button bsSize="xsmall" onClick={this._onRemove} disabled={!image}>
-              Remove
-            </Button>
-          </div>
-        </div>
+        <AvatarUploader
+          className="profile-image-form"
+          onCrop={this.onCrop}
+          onDelete={this.onDelete}
+          hasAvatar={userStore.hasAvatar}
+          onError={onError}
+          isCropped={isCropped}
+          isUploading={isUploading}
+          url={profileImgUrl}
+          size={400}
+        />
       </SettingPanel>
     );
   }
 }
+
+ProfileImagePanel.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  hideAlert: PropTypes.func.isRequired
+};
 
 export default ProfileImagePanel;
