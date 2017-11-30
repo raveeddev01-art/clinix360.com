@@ -90,9 +90,9 @@ class MessageContent extends Component {
     if (linkPreviews && linkPreviews.length) {
       return linkPreviews.map((link, index) => (
         <LinkPreview
-          key={`msg_${id}_link_${index}`}
+          key={`message_${id}_link_${index}`}
           {...link}
-          msgId={id}
+          messageId={id}
           senderId={userId}
         />
       ));

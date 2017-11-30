@@ -84,7 +84,7 @@
       flex: 1;
       padding: 20px 15px;
       @include stitch-scroll();
-      overflow-y: hidden;
+      overflow: hidden;
 
       &:hover {
         overflow-y: overlay;

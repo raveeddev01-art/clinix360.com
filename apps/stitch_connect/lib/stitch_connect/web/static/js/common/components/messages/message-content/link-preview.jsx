@@ -14,8 +14,8 @@ class LinkPreview extends Component {
       message: "Are you sure you want to remove the link preview?",
       okLable: "Delete"
     }).then(() => {
-      const { link, msgId, messageStore } = this.props;
-      messageStore.deleteLinkPreview(msgId, link);
+      const { link, messageId, messageStore } = this.props;
+      messageStore.deleteLinkPreview(messageId, link);
     });
   };
 
@@ -70,7 +70,7 @@ LinkPreview.propTypes = {
   title: PropTypes.string,
   favicon_url: PropTypes.string,
   senderId: PropTypes.number.isRequired,
-  msgId: PropTypes.number.isRequired
+  messageId: PropTypes.number.isRequired
 };
 
 LinkPreview.defaultProps = {

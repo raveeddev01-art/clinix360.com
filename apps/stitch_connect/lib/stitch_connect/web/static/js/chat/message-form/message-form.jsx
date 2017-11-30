@@ -85,15 +85,8 @@ class MessageForm extends Component {
         messageStore.finishEdit();
       }
     } else if (this.state.text) {
-      messageStore.sendMessage(this.state.text.trim()).finally(() => {
-        messageStore.scrollToBottom(
-          () => {
-            messageStore.updateGroupCursor(null);
-          },
-          0,
-          0
-        );
-      });
+      messageStore.sendMessage(this.state.text.trim());
+
       this.setState({ text: "" });
       this.typingStopped();
     }
@@ -248,12 +241,12 @@ class MessageForm extends Component {
     const str = this.getText();
     const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
     const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
-    const updatedMsg =
+    const updatedMessage =
       str.substring(0, cursorPos - preWord.length) +
       word +
       str.substring(cursorPos + postWord.length);
 
-    this.updateInputText(updatedMsg);
+    this.updateInputText(updatedMessage);
     this.setState({ openMentionMenu: false }, () => {
       // after replacing, the cursor pos should be persistent
       const newPos = cursorPos - preWord.length + word.length;

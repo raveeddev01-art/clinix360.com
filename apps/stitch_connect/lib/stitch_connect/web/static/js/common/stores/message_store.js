@@ -14,25 +14,32 @@ import shortid from "shortid";
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
   @observable messageElements = {}; // Div elements of messages loaded in the chat div
+
   @observable messages = []; // messages currently loaded
+
   @observable messageInEdit = null; // Message currently being edited
   @observable textInEdit = ""; // Current text of message in edit
-  @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
-  @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
-  @observable jumpMode = false; // indicates if message list is currently at jumping mode
-  @observable unreadMessagesCount = 0;
-  @observable mentionsCount = 0;
-  @observable lastReadAt = null;
-  @observable groupCursor = null;
-  @observable loadedAround = new Map(); // { msg_id: true } indicates if messages around the jumped message is loaded
-  @observable isLoadingRecent = false;
-  @observable isLoadingPast = false;
-  @observable highlightId = null; // message will be highlighted
-  @observable markedAsUnread = false;
 
-  messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
+  @observable jumpMode = false; // indicates if message list is currently at jumping mode
+
+  @observable groupCursor = null;
+
+  // Message loading status
+  @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
   @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
   @observable loadedAllRecent = false; // If TRUE, indicates that there is no more recent messages to load from server
+  @observable loadedAround = new Map(); // { message_id: true } indicates if messages around the jumped message is loaded
+
+  @observable isLoadingRecent = false;
+  @observable isLoadingPast = false;
+  @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
+
+  @observable newMessageLineAt = null; // Timestamp that the new message line should appear at
+
+  @observable markedAsUnread = false;
+  @observable highlightId = null; // message will be highlighted
+
+  messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
 
   // mobx when() monitor disposers
   joinedTargetGroupDisposer = null; // Disposer of when() monitor that waits until joined the group to which jumping target message belongs to
@@ -48,18 +55,21 @@ class MessageStore {
 
   getMessageById = id => this.messages.find(m => m.id === id);
 
-  getMessageByIndex(index) {
-    if (index < 0 || index > this.messages.length - 1) {
-      return null;
-    }
+  // Return the message that is immediately after the timestamp given
+  getMessageAfterTimestamp = timestamp => {
+    const firstPrevMessageIndex = this.messages.findIndex(
+      m => m.inserted_at < timestamp
+    );
 
-    return this.messages[index];
-  }
+    return firstPrevMessageIndex > 0
+      ? this.messages[firstPrevMessageIndex - 1]
+      : null;
+  };
 
-  get groupId() {
-    const { groupsStore } = this.rootStore;
+  get groupChannel() {
+    const { channelStore } = this.rootStore;
 
-    return groupsStore.currentGroupId;
+    return channelStore.groupChannel;
   }
 
   get eventChannel() {
@@ -68,10 +78,62 @@ class MessageStore {
     return channelStore.eventChannel;
   }
 
-  get groupChannel() {
-    const { channelStore } = this.rootStore;
+  get group() {
+    const { groupsStore } = this.rootStore;
 
-    return channelStore.groupChannel;
+    return groupsStore.currentGroup;
+  }
+
+  get unreadMessagesCount() {
+    return this.group.unread_messages_count;
+  }
+
+  get mentionsCount() {
+    return this.group.mentions_count;
+  }
+
+  get lastReadAt() {
+    return this.group.last_read_at;
+  }
+
+  @computed
+  get firstUnreadMessage() {
+    return this.getMessageAfterTimestamp(this.lastReadAt);
+  }
+
+  /**
+   * Returns the position of first unread message in chat div
+   *
+   * Possible return values are:
+   *  'hidden-up': message is hidden in up the chat div
+   *  'visible': message is visible
+   *  'hidden-down': message is hidden in down the chat div
+   */
+  @computed
+  get firstUnreadMessageVisibility() {
+    if (!this.firstUnreadMessage || !this.loadedInitial || !this.groupCursor) {
+      return "hidden-up";
+    }
+
+    const messageElement = this.messageElements[this.firstUnreadMessage.id];
+    if (!messageElement) {
+      return "hidden-up";
+    }
+
+    if (messageElement.visible) {
+      return "visible";
+    }
+
+    return this.firstUnreadMessage.id < this.groupCursor
+      ? "hidden-up"
+      : "hidden-down";
+  }
+
+  @computed
+  get newMessageLineMessage() {
+    const newMessageLineAt = this.newMessageLineAt || this.lastReadAt;
+
+    return this.getMessageAfterTimestamp(newMessageLineAt);
   }
 
   @computed
@@ -112,54 +174,6 @@ class MessageStore {
     return this.jumpMode && !this.loadedAllRecent;
   }
 
-  @computed
-  get firstUnreadMessage() {
-    return this.getMessageByIndex(this.unreadMessagesCount - 1);
-  }
-
-  /**
-   * Returns the position of first unread message in chat div
-   *
-   * Possible return values are:
-   *  'hidden-up': message is hidden in up the chat div
-   *  'visible': message is visible
-   *  'hidden-down': message is hidden in down the chat div
-   */
-  @computed
-  get firstUnreadMessageVisibility() {
-    if (!this.firstUnreadMessage || !this.loadedInitial) {
-      return "hidden-up";
-    }
-
-    const lastMessageId = this.groupCursor || this.messages[0].id;
-    const messageElement = this.messageElements[this.firstUnreadMessage.id];
-    if (!messageElement) {
-      return "hidden-up";
-    }
-
-    if (messageElement.visible) {
-      return "visible";
-    }
-
-    return this.firstUnreadMessage.id < lastMessageId
-      ? "hidden-up"
-      : "hidden-down";
-  }
-
-  @computed
-  get newMessageLineMessage() {
-    const lastReadAt = moment.utc(this.lastReadAt);
-    const index = this.messages
-      .slice()
-      .reverse()
-      .findIndex(m => moment.utc(m.inserted_at).diff(lastReadAt) >= 0);
-    if (index > 0) {
-      return this.messages[this.messages.length - index - 1];
-    }
-
-    return null;
-  }
-
   // ////////////// //
   //    METHODS     //
   // ////////////// //
@@ -174,6 +188,7 @@ class MessageStore {
     this.messageElements = {};
     this.messageInEdit = null;
     this.textInEdit = "";
+    this.newMessageLineAt = null;
   }
 
   @action
@@ -190,7 +205,8 @@ class MessageStore {
     const { groupsStore } = this.rootStore;
 
     this.groupCursor = cursor;
-    groupsStore.updateGroupCursor(this.groupId, cursor);
+
+    groupsStore.updateGroupCursor(this.group.id, cursor);
   }
 
   // Scroll to the bottom of chat div with animation
@@ -210,8 +226,8 @@ class MessageStore {
   }
 
   // Scroll to specific message in chat div instantly
-  scrollTo(msgId, duration = 1000, cb, offset = -50) {
-    scroller.scrollTo(`msg_${msgId}`, {
+  scrollTo(messageId, duration = 1000, cb, offset = -50) {
+    scroller.scrollTo(`message_${messageId}`, {
       containerId: "chat",
       smooth: true,
       duration,
@@ -298,7 +314,7 @@ class MessageStore {
 
     // Ensure that joined the group to which target message belongs
     this.joinedTargetGroupDisposer = when(
-      () => targetMessage.group_id === this.groupId && this.loadedInitial,
+      () => targetMessage.group_id === this.group.id && this.loadedInitial,
       () => {
         // Ensure that target message is mounted
         if (this.mountedTargetMessageDisposer) {
@@ -375,66 +391,25 @@ class MessageStore {
       "last_read_at"
     ];
     const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
-    const camelCasedUpdates = _.mapKeys(updates, (value, key) =>
-      _.camelCase(key)
-    );
-
-    // Update message store
-    Object.assign(this, camelCasedUpdates);
 
     // Update group info
-    groupsStore.updateGroupData(this.groupId, updates);
-  }
-
-  @action
-  updateUnreadMessages(updates) {
-    const countToUpdate = Math.min(updates.length, this.unreadMessagesCount);
-    const processedUpdates = _.orderBy(
-      updates,
-      ["inserted_at"],
-      ["desc"]
-    ).slice(0, countToUpdate);
-
-    processedUpdates.forEach((update, index) => {
-      Object.assign(this.messages[index], { read_status: update.read_status });
-    });
+    groupsStore.updateGroupData(this.group.id, updates);
   }
 
   @action
   markAsUnread = messageId => {
-    this.groupChannel
-      .push("mark_as_unread", { group_id: this.groupId, message_id: messageId })
-      .receive("ok", response => {
-        this.updateUnreadMessagesInfo(response);
-        this.updateUnreadMessages(response.messages);
-
-        this.markedAsUnread = true;
-      })
-      .receive("error", err => {
-        notify.show(err.message, "error");
-      });
-  };
-
-  /**
-   * Mark group messages as read
-   *
-   * @param resetNewMessageLine   IF True, reset lastReadtAt to current timestamp, causing `New Message Line` to disappear
-   */
-  @action
-  markAsRead = (resetNewMessageLine = true) => {
     const { sidemenuStore } = this.rootStore;
 
     this.groupChannel
-      .push("mark_as_read", { group_id: this.groupId })
-      .receive("ok", () => {
-        this.updateUnreadMessagesInfo({
-          unread_messages_count: 0,
-          mentions_count: 0
-        });
+      .push("mark_as_unread", {
+        group_id: this.group.id,
+        message_id: messageId
+      })
+      .receive("ok", response => {
+        this.updateUnreadMessagesInfo(response);
 
-        if (resetNewMessageLine) {
-          this.lastReadAt = moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS");
-        }
+        this.markedAsUnread = true;
+        this.newMessageLineAt = null;
 
         // Update favicon
         sidemenuStore.updateFavicon();
@@ -444,72 +419,91 @@ class MessageStore {
       });
   };
 
-  sendMessage = (msg, additionalFields = {}) => {
-    return new Promise((resolve, reject) => {
-      // generates unique temporary request ID
-      const temporaryID = shortid.generate();
-      const newMessage = {
-        id: temporaryID,
-        request_id: temporaryID,
-        new_msg: true, // only messages with this flag will have sending/failed/success indicator
-        sending: true,
-        sent: false,
-        user: { ...currentUser },
-        text_content: msg,
-        inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
-        group_id: this.groupId,
-        user_id: currentUser.id
-      };
-      this.onNewMessage(newMessage);
+  /**
+   * Mark group messages as read
+   *
+   * @param resetNewMessageLine   IF True, reset newMessageLineAt to null, thus making it depend on lastReadAt,
+   *                              Otherwise, store the current lastReadAt timestamp at as newMessageLineAt
+   */
+  @action
+  markAsRead = (resetNewMessageLine = true) => {
+    const { sidemenuStore } = this.rootStore;
 
-      this.groupChannel
-        .push(
-          "new_msg",
-          Object.assign(
-            { text_content: msg, request_id: temporaryID },
-            additionalFields
-          )
-        )
-        .receive("ok", response => {
-          // Replace temp message with real message
-          const tempMessageIndex = this.messages.findIndex(
-            m => m.request_id === temporaryID
-          );
+    if (resetNewMessageLine) {
+      this.newMessageLineAt = null;
+    } else if (!this.newMessageLineAt) {
+      this.newMessageLineAt = this.lastReadAt;
+    }
 
-          this.messages.splice(tempMessageIndex, 1, {
-            ...response,
-            new: true,
-            sent: true,
-            sending: false
-          });
+    this.groupChannel
+      .push("mark_as_read", { group_id: this.group.id })
+      .receive("ok", response => {
+        this.updateUnreadMessagesInfo(response);
 
-          resolve(response);
-        })
-        .receive("error", err => {
-          const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
-          Object.assign(tmpMsg, {
-            sent: false,
-            sending: false
-          });
-          reject(err);
-        })
-        .receive("timeout", err => {
-          const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
-          Object.assign(tmpMsg, {
-            sent: false,
-            sending: false
-          });
-          reject(err);
+        this.markedAsUnread = false;
+
+        // Update favicon
+        sidemenuStore.updateFavicon();
+      })
+      .receive("error", err => {
+        notify.show(err.message, "error");
+      });
+  };
+
+  sendMessage = (message, additionalFields = {}) => {
+    // generates unique temporary request ID
+    const tempId = shortid.generate();
+    const tempMessage = {
+      // Temp attributes
+      id: tempId,
+      temp: true,
+      status: "sending",
+      inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
+
+      user: currentUser,
+      type: "chat",
+      text_content: message,
+      group_id: this.group.id,
+      user_id: currentUser.id
+    };
+
+    // Add temp message
+    this.messages.unshift(tempMessage);
+    // Scroll to bottom
+    if (this.isScrollBottom) {
+      this.scrollToBottom(null, 0, 0);
+    }
+
+    this.groupChannel
+      .push("new_msg", {
+        text_content: message,
+        request_id: tempId,
+        ...additionalFields
+      })
+      .receive("ok", response => {
+        // Remove the temp message
+        const tempMessageIndex = this.messages.findIndex(m => m.id === tempId);
+
+        this.messages.splice(tempMessageIndex, 1);
+      })
+      .receive("error", err => {
+        this.updateMessageData(tempId, {
+          status: "failed"
         });
-    });
+      })
+      .receive("timeout", err => {
+        this.updateMessageData(tempId, {
+          status: "failed"
+        });
+      });
   };
 
   @action
-  deleteLinkPreview = (msgId, link) => {
+  deleteLinkPreview = (messageId, link) => {
     return new Promise((resolve, reject) => {
       this.groupChannel
         .push("delete_msg_link_preview", {
-          message_id: msgId,
+          message_id: messageId,
           link
         })
         .receive("ok", resolve)
@@ -625,17 +619,9 @@ class MessageStore {
   };
 
   handleInitialLoading = () => {
-    if (this.unreadMessagesCount) {
-      this.scrollToBottom(() => {
-        this.updateGroupCursor(null);
-        this.loadedInitial = true;
-      }, 0);
-    } else {
-      this.scrollToBottom(() => {
-        this.updateGroupCursor(null);
-        this.loadedInitial = true;
-      }, 0);
-    }
+    this.scrollToBottom(() => {
+      this.loadedInitial = true;
+    });
   };
 
   @action
@@ -751,12 +737,6 @@ class MessageStore {
       this.loadedAll = true;
     }
 
-    const { groupStore } = this.rootStore;
-
-    this.unreadMessagesCount = groupStore.group.unread_messages_count;
-    this.mentionsCount = groupStore.group.mentions_count;
-    this.lastReadAt = groupStore.group.last_read_at;
-
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };
 
@@ -787,7 +767,6 @@ class MessageStore {
       this.loadRecentMessages();
     } else {
       this.isScrollBottom = true;
-      this.updateGroupCursor(null);
     }
   }
 
@@ -801,6 +780,10 @@ class MessageStore {
       this.messageElements[id].visible = true;
     }
 
+    if (!this.groupCursor || this.groupCursor > id) {
+      this.updateGroupCursor(id);
+    }
+
     if (
       !this.markedAsUnread &&
       this.firstUnreadMessage &&
@@ -812,23 +795,11 @@ class MessageStore {
         this.markAsRead(false);
       }, 1000);
     }
-
-    if (!this.loadedInitial) {
-      return;
-    }
-
-    if (!this.groupCursor || this.groupCursor > id) {
-      this.updateGroupCursor(id);
-    }
   }
 
   onMessageHide(id) {
     if (this.messageElements[id]) {
       this.messageElements[id].visible = false;
-    }
-
-    if (!this.loadedInitial || this.isScrollBottom) {
-      return;
     }
 
     if (!this.groupCursor || this.groupCursor === id) {
@@ -843,39 +814,26 @@ class MessageStore {
   onNewMessage = newMessage => {
     const { sidemenuStore } = this.rootStore;
 
-    if (newMessage.group_id !== this.groupId) {
+    if (newMessage.group_id !== this.group.id) {
       return;
     }
 
-    const currentNewMessageLineMessage = this.newMessageLineMessage;
-
     if (newMessage.user_id === currentUser.id) {
-      // if it's my message, we assume it's already added temporarily.
-      if (newMessage.sending || newMessage.type !== "chat") {
-        this.messages.unshift(newMessage);
-      }
+      this.messages.unshift({
+        ...newMessage,
+        status: "sent"
+      });
 
       if (this.unreadMessagesCount === 0) {
-        this.markAsRead(false);
+        this.markAsRead();
       }
-      this.lastReadAt = moment
-        .utc(newMessage.inserted_at)
-        .add(1, "millisecond")
-        .format("YYYY-MM-DDTHH:mm:ss.SSS");
     } else {
       this.messages.unshift(newMessage);
 
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       // If you're at the bottom and no NML, keep up with the new message
-      if (this.isScrollBottom && currentNewMessageLineMessage == null) {
-        this.lastReadAt = moment
-          .utc(newMessage.inserted_at)
-          .add(1, "millisecond")
-          .format("YYYY-MM-DDTHH:mm:ss.SSS");
-      }
-
-      if (this.unreadMessagesCount || !this.isScrollBottom) {
+      if (this.unreadMessagesCount > 0 || !this.isScrollBottom) {
         this.updateUnreadMessagesInfo({
           unread_messages_count: this.unreadMessagesCount + 1,
           mentions_count: this.mentionsCount + (isMention ? 1 : 0)
@@ -886,7 +844,7 @@ class MessageStore {
     }
 
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
-      this.scrollToBottom(() => {}, 0, 0);
+      this.scrollToBottom(null, 0, 0);
     }
 
     // Update favicon
@@ -901,7 +859,7 @@ class MessageStore {
 
   @action
   onEditMessage = editedMessage => {
-    if (editedMessage.group_id !== this.groupId) {
+    if (editedMessage.group_id !== this.group.id) {
       return;
     }
 
@@ -959,7 +917,7 @@ class MessageStore {
 
   @action
   onLinkPreviewGenerated = payload => {
-    if (payload.group_id !== this.groupId) {
+    if (payload.group_id !== this.group.id) {
       return;
     }
 

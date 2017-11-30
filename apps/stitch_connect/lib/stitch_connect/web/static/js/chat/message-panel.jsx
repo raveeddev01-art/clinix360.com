@@ -7,7 +7,7 @@ import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
 import UploadProgress from "../file-upload/upload-progress";
 
-@inject("groupStore", "messageStore", "sidemenuStore")
+@inject("groupStore", "messageStore")
 @observer
 export default class MessagePanel extends Component {
   componentWillMount() {
@@ -23,8 +23,7 @@ export default class MessagePanel extends Component {
 
     if (evt.keyCode === 27) {
       // ESC key
-      if (messageStore.unreadMessagesCount > 0) messageStore.markAsRead(false);
-      else messageStore.markAsRead();
+      messageStore.markAsRead();
     }
   };
 
@@ -68,8 +67,7 @@ export default class MessagePanel extends Component {
     });
 
     return (
-      messageStore.unreadMessagesCount > 0 &&
-      messageStore.firstUnreadMessageVisibility !== "visible" && (
+      messageStore.unreadMessagesCount > 0 && (
         <div className={unreadMessagesTooltipClass}>
           <div
             role="button"
@@ -109,7 +107,7 @@ export default class MessagePanel extends Component {
     return (
       <div id="chat-container" className={chatContainerClassName}>
         <div className="container-bars">
-          {!messageStore.markedAsUnread && this.renderUnreadMessagesBar()}
+          {this.renderUnreadMessagesBar()}
           <UploadProgress />
         </div>
 
@@ -120,9 +118,9 @@ export default class MessagePanel extends Component {
           ) : (
             <div className="room-preview">
               This is a preview of the room{" "}
-              <strong>
+              <b>
                 <i className="fa fa-comments" /> {groupStore.group.name}
-              </strong>
+              </b>
               <button
                 className="join btn btn-fancy btn-primary"
                 onClick={this.handleJoin}
