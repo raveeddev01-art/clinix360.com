@@ -12,3 +12,8 @@ config :wallaby,
   driver: Wallaby.Experimental.Chrome
 
 config :stitch_connect, :start_message_link_preview_generator, false
+
+config :stitch_connect, :sql_sandbox, true
+
+config :stitch_connect,
+  application_host: "localhost:4001"
