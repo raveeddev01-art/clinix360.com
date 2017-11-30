@@ -24,6 +24,7 @@ class SocketStore {
     this.pingInterval = setInterval(() => {
       if (this.receivedPong !== this.pingCount) {
         this.errorSocket();
+        return;
       }
 
       this.pingCount += 1;
@@ -62,10 +63,6 @@ class SocketStore {
 
   @action
   errorSocket = () => {
-    if (!this.isConnected) {
-      return;
-    }
-
     this.isConnected = false;
     this.ticks = 0;
     socket.reconnectTimer.scheduleTimeout();
