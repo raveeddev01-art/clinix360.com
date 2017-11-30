@@ -99,6 +99,7 @@ class Room extends Component {
 
   render() {
     const { room, sidemenuStore, groupsStore } = this.props;
+    const { sidemenuDiv } = sidemenuStore;
     const roomUrl = groupsStore.getGroupUrl(room.id);
     const className = classNames("item", {
       "has-unread": room.unread_messages_count > 0
@@ -107,6 +108,7 @@ class Room extends Component {
     const anchorName = `${ROOM_MENU_ITEM_ANCHOR_PREFIX}${room.id}`;
 
     return (
+      sidemenuDiv && (
         <VisibilitySensor
           active
           onChange={this.onVisibleChange}
@@ -114,7 +116,7 @@ class Room extends Component {
           partialVisibility
           intervalCheck={false}
           scrollThrottle={100}
-          containment={sidemenuStore.sidemenuDiv}
+          containment={sidemenuDiv}
         >
           <Element name={anchorName}>
             <NavLink
