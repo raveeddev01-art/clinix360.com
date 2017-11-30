@@ -260,7 +260,7 @@ class Message extends Component {
   render() {
     const { message, messageStore, usersStore } = this.props;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
-    const { user: { id: userId }, inserted_at: insertedAt, status } = message;
+    const { user: { id: userId }, inserted_at: insertedAt } = message;
     const user = usersStore.usersById[userId];
     const mine = userId === currentUser.id;
 
