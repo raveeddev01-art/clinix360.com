@@ -451,63 +451,50 @@ class MessageStore {
   };
 
   sendMessage = (message, additionalFields = {}) => {
-    return new Promise((resolve, reject) => {
-      // generates unique temporary request ID
-      const temporaryID = shortid.generate();
-      const newMessage = {
-        id: temporaryID,
-        request_id: temporaryID,
-        new_message: true, // only messages with this flag will have sending/failed/success indicator
-        sending: true,
-        sent: false,
-        user: { ...currentUser },
+    // generates unique temporary request ID
+    const tempId = shortid.generate();
+    const tempMessage = {
+      // Temp attributes
+      id: tempId,
+      status: "sending",
+      inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
+
+      user: currentUser,
+      type: "chat",
+      text_content: message,
+      group_id: this.group.id,
+      user_id: currentUser.id
+    };
+
+    // Add temp message
+    this.messages.unshift(tempMessage);
+    // Scroll to bottom
+    if (this.isScrollBottom) {
+      this.scrollToBottom(null, 0, 0);
+    }
+
+    this.groupChannel
+      .push("new_msg", {
         text_content: message,
-        inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
-        group_id: this.group.id,
-        user_id: currentUser.id
-      };
-      this.onNewMessage(newMessage);
+        request_id: tempId,
+        ...additionalFields
+      })
+      .receive("ok", response => {
+        // Remove the temp message
+        const tempMessageIndex = this.messages.findIndex(m => m.id === tempId);
 
-      this.groupChannel
-        .push(
-          "new_msg",
-          Object.assign(
-            { text_content: message, request_id: temporaryID },
-            additionalFields
-          )
-        )
-        .receive("ok", response => {
-          // Replace temp message with real message
-          const tempMessageIndex = this.messages.findIndex(
-            m => m.request_id === temporaryID
-          );
-
-          this.messages.splice(tempMessageIndex, 1, {
-            ...response,
-            new: true,
-            sent: true,
-            sending: false
-          });
-
-          resolve(response);
-        })
-        .receive("error", err => {
-          const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
-          Object.assign(tmpMsg, {
-            sent: false,
-            sending: false
-          });
-          reject(err);
-        })
-        .receive("timeout", err => {
-          const tmpMsg = this.messages.find(m => m.request_id === temporaryID);
-          Object.assign(tmpMsg, {
-            sent: false,
-            sending: false
-          });
-          reject(err);
+        this.messages.splice(tempMessageIndex, 1);
+      })
+      .receive("error", err => {
+        this.updateMessageData(tempId, {
+          status: "failed"
         });
-    });
+      })
+      .receive("timeout", err => {
+        this.updateMessageData(tempId, {
+          status: "failed"
+        });
+      });
   };
 
   @action
@@ -824,6 +811,7 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
+    console.log("onNewMessage", newMessage);
     const { sidemenuStore } = this.rootStore;
 
     if (newMessage.group_id !== this.group.id) {
@@ -831,10 +819,7 @@ class MessageStore {
     }
 
     if (newMessage.user_id === currentUser.id) {
-      // if it's my message, we assume it's already added temporarily.
-      if (newMessage.sending || newMessage.type !== "chat") {
-        this.messages.unshift(newMessage);
-      }
+      this.messages.unshift(newMessage);
 
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();

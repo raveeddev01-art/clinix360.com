@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import moment from "moment";
 import { Element } from "react-scroll";
+import capitalize from "lodash/capitalize";
 import cx from "classnames";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
@@ -258,18 +259,19 @@ class Message extends Component {
 
   render() {
     const { message, messageStore, usersStore } = this.props;
-    const { user: { id: userId }, inserted_at: timestamp } = message;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
+    const { user: { id: userId }, inserted_at: insertedAt, status } = message;
+    const user = usersStore.usersById[userId];
+    const mine = userId === currentUser.id;
+
     const elementClassName = cx("message", {
       selected: this.state.selected,
       highlight: highlightId === message.id
     });
-    const mine = userId === currentUser.id;
     const containerClassName = cx("message-container", {
       mine,
-      "has-status": message.new_message
+      "has-status": !!status
     });
-    const user = usersStore.usersById[userId];
 
     return (
       <div>
@@ -300,13 +302,13 @@ class Message extends Component {
             >
               <div className="message-header">
                 <div className="name">
-                  {user.first_name} {user.last_name}
+                  {`${user.first_name} ${user.last_name}`}
                 </div>
 
                 <div
                   className="time"
                   data-time={moment
-                    .utc(timestamp)
+                    .utc(insertedAt)
                     .local()
                     .format("hh:mm A")}
                 >
@@ -323,10 +325,11 @@ class Message extends Component {
               </div>
             </Element>
           </VisibilitySensor>
+
           {mine &&
-            message.new_message && (
+            message.status && (
               <small className="text-muted message-status">
-                {message.sending ? "Sending" : message.sent ? "Sent" : "Failed"}
+                {capitalize(message.status)}
               </small>
             )}
         </div>
