@@ -264,13 +264,12 @@ class Message extends Component {
     const user = usersStore.usersById[userId];
     const mine = userId === currentUser.id;
 
-    const elementClassName = cx("message", {
+    const containerClassName = cx("message-container", {
+      mine
+    });
+    const contentClassName = cx("message-content", {
       selected: this.state.selected,
       highlight: highlightId === message.id
-    });
-    const containerClassName = cx("message-container", {
-      mine,
-      "has-status": !!status
     });
 
     return (
@@ -296,42 +295,36 @@ class Message extends Component {
             scrollThrottle={100}
             containment={chatDiv}
           >
-            <Element
-              name={`message_${message.id}`}
-              className={elementClassName}
-            >
-              <div className="message-header">
-                <div className="name">
-                  {`${user.first_name} ${user.last_name}`}
+            <Element name={`message_${message.id}`} className="message">
+              <div className={contentClassName}>
+                <div className="message-header">
+                  <div className="name">
+                    {`${user.first_name} ${user.last_name}`}
+                  </div>
+
+                  <div
+                    className="time"
+                    data-time={moment
+                      .utc(insertedAt)
+                      .local()
+                      .format("hh:mm A")}
+                  >
+                    {this.renderActions(message)}
+                  </div>
+
+                  {this.renderStar(message)}
+                  {this.renderPin(message)}
                 </div>
 
-                <div
-                  className="time"
-                  data-time={moment
-                    .utc(insertedAt)
-                    .local()
-                    .format("hh:mm A")}
-                >
-                  {this.renderActions(message)}
+                <div className="message-content-wrapper">
+                  <MessageContent message={message} />
+                  {this.renderEdited(message)}
                 </div>
-
-                {this.renderStar(message)}
-                {this.renderPin(message)}
               </div>
 
-              <div className="message-content-wrapper">
-                <MessageContent message={message} />
-                {this.renderEdited(message)}
-              </div>
+              <div className="message-status">{capitalize(message.status)}</div>
             </Element>
           </VisibilitySensor>
-
-          {mine &&
-            message.status && (
-              <small className="text-muted message-status">
-                {capitalize(message.status)}
-              </small>
-            )}
         </div>
       </div>
     );
