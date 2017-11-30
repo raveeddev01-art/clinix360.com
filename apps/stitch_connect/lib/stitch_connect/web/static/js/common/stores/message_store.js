@@ -34,6 +34,8 @@ class MessageStore {
   @observable isLoadingPast = false;
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
 
+  @observable newMessageLineAt = null; // Timestamp that the new message line should appear at
+
   @observable markedAsUnread = false;
   @observable highlightId = null; // message will be highlighted
 
@@ -52,6 +54,17 @@ class MessageStore {
   // ////////////// //
 
   getMessageById = id => this.messages.find(m => m.id === id);
+
+  // Return the message that is immediately after the timestamp given
+  getMessageAfterTimestamp = timestamp => {
+    const firstPrevMessageIndex = this.messages.findIndex(
+      m => m.inserted_at < timestamp
+    );
+
+    return firstPrevMessageIndex > 0
+      ? this.messages[firstPrevMessageIndex - 1]
+      : null;
+  };
 
   get groupChannel() {
     const { channelStore } = this.rootStore;
@@ -85,13 +98,7 @@ class MessageStore {
 
   @computed
   get firstUnreadMessage() {
-    const lastReadMessageIndex = this.messages.findIndex(
-      m => m.inserted_at < this.lastReadAt
-    );
-
-    return lastReadMessageIndex > 0
-      ? this.messages[lastReadMessageIndex - 1]
-      : null;
+    return this.getMessageAfterTimestamp(this.lastReadAt);
   }
 
   /**
@@ -124,7 +131,9 @@ class MessageStore {
 
   @computed
   get newMessageLineMessage() {
-    return this.firstUnreadMessage;
+    const newMessageLineAt = this.newMessageLineAt || this.lastReadAt;
+
+    return this.getMessageAfterTimestamp(newMessageLineAt);
   }
 
   @computed
@@ -179,6 +188,7 @@ class MessageStore {
     this.messageElements = {};
     this.messageInEdit = null;
     this.textInEdit = "";
+    this.newMessageLineAt = null;
   }
 
   @action
@@ -399,6 +409,7 @@ class MessageStore {
         this.updateUnreadMessagesInfo(response);
 
         this.markedAsUnread = true;
+        this.newMessageLineAt = null;
 
         // Update favicon
         sidemenuStore.updateFavicon();
@@ -411,19 +422,25 @@ class MessageStore {
   /**
    * Mark group messages as read
    *
-   * @param resetNewMessageLine   IF True, reset lastReadtAt to current timestamp, causing `New Message Line` to disappear
+   * @param resetNewMessageLine   IF True, reset newMessageLineAt to null, thus making it depend on lastReadAt,
+   *                              Otherwise, store the current lastReadAt timestamp at as newMessageLineAt
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
     const { sidemenuStore } = this.rootStore;
+
+    if (resetNewMessageLine) {
+      this.newMessageLineAt = null;
+    } else if (!this.newMessageLineAt) {
+      this.newMessageLineAt = this.lastReadAt;
+    }
 
     this.groupChannel
       .push("mark_as_read", { group_id: this.group.id })
       .receive("ok", response => {
         this.updateUnreadMessagesInfo(response);
 
-        if (resetNewMessageLine) {
-        }
+        this.markedAsUnread = false;
 
         // Update favicon
         sidemenuStore.updateFavicon();

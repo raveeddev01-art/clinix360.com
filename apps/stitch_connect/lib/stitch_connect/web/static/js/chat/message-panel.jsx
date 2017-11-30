@@ -7,7 +7,7 @@ import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
 import UploadProgress from "../file-upload/upload-progress";
 
-@inject("groupStore", "messageStore", "sidemenuStore")
+@inject("groupStore", "messageStore")
 @observer
 export default class MessagePanel extends Component {
   componentWillMount() {
@@ -23,8 +23,7 @@ export default class MessagePanel extends Component {
 
     if (evt.keyCode === 27) {
       // ESC key
-      if (messageStore.unreadMessagesCount > 0) messageStore.markAsRead(false);
-      else messageStore.markAsRead();
+      messageStore.markAsRead();
     }
   };
 
