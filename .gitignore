@@ -25,3 +25,6 @@ doc
 
 # osx
 .DS_Store
+
+# integration test screenshots
+apps/stitch_connect/screenshots/
