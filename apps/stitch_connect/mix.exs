@@ -42,6 +42,7 @@ defmodule StitchConnect.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.1", only: :dev},
+      {:phoenix_ecto, "~> 3.0"},
       {:gettext, "~> 0.13"},
       {:cowboy, "~> 1.1"},
       {:guardian, "~> 0.14"},
@@ -55,6 +56,7 @@ defmodule StitchConnect.Mixfile do
       {:appsignal, "~> 1.3"},
       {:pigeon, "~> 1.1.0"}, # For mobile push notifications.
       {:kadabra, "~> 0.3.2"}, # Used by Pigeon for push notifications.
+      {:wallaby, "~> 0.19.1"}
     ]
   end
 

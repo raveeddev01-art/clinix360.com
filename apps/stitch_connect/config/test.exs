@@ -4,7 +4,16 @@ use Mix.Config
 # you can enable the server option below.
 config :stitch_connect, StitchConnect.Web.Endpoint,
   http: [port: 4001],
-  url: [host: "localhost.app"],
-  server: false
+  url: [host: "localhost"],
+  server: true
+
+config :wallaby,
+  screenshot_on_failure: true,
+  driver: Wallaby.Experimental.Chrome
 
 config :stitch_connect, :start_message_link_preview_generator, false
+
+config :stitch_connect, :sql_sandbox, true
+
+config :stitch_connect,
+  application_host: "localhost:4001"
