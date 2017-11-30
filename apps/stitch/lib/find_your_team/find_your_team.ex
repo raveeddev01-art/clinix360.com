@@ -23,7 +23,7 @@ defmodule Stitch.FindYourTeam do
   end
 
   def get_login_token(token) do
-    Repo.get_by!(Token, token: token, type: "login")
+    Repo.get_by(Token, token: token, type: "login")
   end
 
   def create_login_token(email) do
