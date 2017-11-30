@@ -32,16 +32,23 @@ defmodule Stitch.Analytics.DailyReports do
   Adds an identify or group request to the 'segment_events' table with daily
   report related traits.
 
+  Users that haven't been on-boarded and teams with no admin/owner will be
+  ignored.
+
   """
-  @spec create(User.t | Team.t) :: {:ok, Event.t} | {:error, Ecto.Changeset.t}
+  @spec create(User.t | Team.t) :: {:ok, Event.t} | {:error, Ecto.Changeset.t | atom}
+  def create(%User{onboarded: false}), do: {:error, :user_not_onboarded}
   def create(%User{id: user_id} = user) do
     traits = daily_report(user)
     Analytics.identify(user_id, traits)
   end
   def create(%Team{id: team_id} = team) do
-    traits = daily_report(team)
-    owner = TeamQueries.get_team_owner(team)
-    Analytics.group(%{user_id: owner.id, team_id: team_id}, traits)
+    if owner = TeamQueries.get_team_owner(team) do
+      traits = daily_report(team)
+      Analytics.group(%{user_id: owner.id, team_id: team_id}, traits)
+    else
+      {:error, :nil_owner}
+    end
   end
 
   defp daily_report(target) do
