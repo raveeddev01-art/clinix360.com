@@ -48,7 +48,7 @@ class Login extends Component {
     const { email, password } = this.state;
 
     this.setState({ saving: true });
-    post("/api/v1/web_login", {
+    post("/api/v1/login", {
       body: { email, password },
       hideNotify: true
     })
