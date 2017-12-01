@@ -6,7 +6,6 @@ import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import Select from "react-select";
 import cx from "classnames";
-import uniq from "lodash/uniq";
 
 import {
   getGroupUserIdsThatHasCurrentUser,
@@ -59,7 +58,7 @@ class CreateDMModal extends Component {
     //  2.2. If not, create
     // 3. Navigate to the dm created
 
-    const userIds = uniq(getGroupUserIdsThatHasCurrentUser(members)); // uniq is for self-dm
+    const userIds = getGroupUserIdsThatHasCurrentUser(members); // uniq is for self-dm
     const slug = getSlugOfDMGroupByUsers(userIds);
     const url = getGroupUrl({ users: members, type: "multi_dm" });
     const group = groupsStore.getGroupBySlug(slug);
