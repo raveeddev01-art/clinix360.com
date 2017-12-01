@@ -60,68 +60,52 @@ class CreateDMModal extends Component {
 
     const userIds = getGroupUserIdsThatHasCurrentUser(members);
     const slug = getSlugOfDMGroupByUsers(userIds);
-    const url = getGroupUrl({ users: members, type: "multi_dm" });
     const group = groupsStore.getGroupBySlug(slug);
 
     let promise;
 
     if (!group) {
       // Create
-      promise = groupsStore.createDMGroup(userIds);
+      promise = groupsStore
+        .createDMGroup(userIds)
+        .then(resposne => resposne.data);
     } else if (group.is_hidden) {
       // Unhide
-      promise = groupsStore.unhideGroup(group.id);
+      promise = groupsStore.unhideGroup(group.id).then(() => group);
     } else {
       // Do nothing
-      promise = Promise.resolve();
+      promise = Promise.resolve(group);
     }
 
-    promise.then(() => {
-      history.push(url);
+    promise.then(group => {
+      history.push(getGroupUrl(group));
     });
 
     toggle();
   };
 
   selectUser = user => () => {
-    const { groupsStore, history, toggle } = this.props;
     if (user.id === currentUser.id) {
-      const userIds = [user.id, user.id];
-      const slug = getSlugOfDMGroupByUsers(userIds);
-      const group = groupsStore.getGroupBySlug(slug);
-
-      let promise;
-
-      if (!group) {
-        // Create
-        promise = groupsStore.createDMGroup(userIds);
-      } else if (group.is_hidden) {
-        // Unhide
-        promise = groupsStore.unhideGroup(group.id);
-      } else {
-        // Do nothing
-        promise = Promise.resolve();
-      }
-
-      promise.then(() => {
-        history.push(`/direct/${user.username}`);
+      this.setState({
+        members: [user]
       });
 
-      toggle();
-      return;
-    }
-
-    this.setState({
-      members: this.state.members.concat(
-        Object.assign({}, user, {
-          label: `${user.first_name} ${user.last_name}${user.id ===
-          currentUser.id
+      // Wait for make component state to be updated for a tick
+      setTimeout(() => {
+        this.createDM();
+      });
+    } else {
+      this.setState({
+        members: this.state.members.concat({
+          ...user,
+          label: `${user.full_name}${user.id === currentUser.id
             ? " (You)"
             : ""}`
         })
-      )
-    });
-    this.selectComponent.focus();
+      });
+
+      this.selectComponent.focus();
+    }
   };
 
   render() {
