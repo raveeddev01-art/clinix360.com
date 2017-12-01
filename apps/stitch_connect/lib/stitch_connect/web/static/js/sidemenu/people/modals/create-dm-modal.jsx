@@ -6,6 +6,7 @@ import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import Select from "react-select";
 import cx from "classnames";
+import uniq from "lodash/uniq";
 
 import {
   getGroupUserIdsThatHasCurrentUser,
@@ -58,7 +59,7 @@ class CreateDMModal extends Component {
     //  2.2. If not, create
     // 3. Navigate to the dm created
 
-    const userIds = getGroupUserIdsThatHasCurrentUser(members);
+    const userIds = uniq(getGroupUserIdsThatHasCurrentUser(members)); // uniq is for self-dm
     const slug = getSlugOfDMGroupByUsers(userIds);
     const url = getGroupUrl({ users: members, type: "multi_dm" });
     const group = groupsStore.getGroupBySlug(slug);
@@ -84,23 +85,21 @@ class CreateDMModal extends Component {
   };
 
   selectUser = user => () => {
-    const { history, toggle } = this.props;
-    if (user.id === currentUser.id) {
-      history.push(`/direct/${user.username}`);
-      toggle();
-      return;
-    }
+    this.setState(
+      {
+        members: this.state.members.concat(
+          Object.assign({}, user, {
+            label: `${user.first_name} ${user.last_name}`
+          })
+        )
+      },
+      () => {
+        if (user.id === currentUser.id) {
+          this.createDM();
+        }
+      }
+    );
 
-    this.setState({
-      members: this.state.members.concat(
-        Object.assign({}, user, {
-          label: `${user.first_name} ${user.last_name}${user.id ===
-          currentUser.id
-            ? " (You)"
-            : ""}`
-        })
-      )
-    });
     this.selectComponent.focus();
   };
 
