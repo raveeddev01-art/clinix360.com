@@ -55,15 +55,22 @@ class MessageStore {
 
   getMessageById = id => this.messages.find(m => m.id === id);
 
-  // Return the message that is immediately after the timestamp given
+  // Return the message that is immediately after the timestamp given, but not temp message
   getMessageAfterTimestamp = timestamp => {
-    const firstPrevMessageIndex = this.messages.findIndex(
-      m => m.inserted_at < timestamp
-    );
+    let index = this.messages.findIndex(m => m.inserted_at < timestamp) - 1;
+    let message = null;
 
-    return firstPrevMessageIndex > 0
-      ? this.messages[firstPrevMessageIndex - 1]
-      : null;
+    while (index >= 0) {
+      // Messages that has status set are the temp ones
+      if (!this.messages[index].status) {
+        message = this.messages[index];
+        break;
+      }
+
+      index -= 1;
+    }
+
+    return message;
   };
 
   get groupChannel() {
@@ -450,49 +457,26 @@ class MessageStore {
       });
   };
 
-  sendMessage = (message, additionalFields = {}) => {
-    // generates unique temporary request ID
-    const tempId = shortid.generate();
-    const tempMessage = {
-      // Temp attributes
-      id: tempId,
-      temp: true,
-      status: "sending",
-      inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
-
-      user: currentUser,
-      type: "chat",
-      text_content: message,
-      group_id: this.group.id,
-      user_id: currentUser.id
-    };
-
+  sendMessage = (text, additionalFields = {}) => {
+    const tempMessage = this.generateTempMessage(text);
     // Add temp message
     this.messages.unshift(tempMessage);
     // Scroll to bottom
-    if (this.isScrollBottom) {
-      this.scrollToBottom(null, 0, 0);
-    }
+    this.scrollToBottom(null, 0, 0);
 
     this.groupChannel
       .push("new_msg", {
-        text_content: message,
-        request_id: tempId,
+        text_content: text,
+        request_id: tempMessage.id,
         ...additionalFields
       })
-      .receive("ok", response => {
-        // Remove the temp message
-        const tempMessageIndex = this.messages.findIndex(m => m.id === tempId);
-
-        this.messages.splice(tempMessageIndex, 1);
-      })
       .receive("error", err => {
-        this.updateMessageData(tempId, {
+        this.updateMessageData(tempMessage.id, {
           status: "failed"
         });
       })
       .receive("timeout", err => {
-        this.updateMessageData(tempId, {
+        this.updateMessageData(tempMessage.id, {
           status: "failed"
         });
       });
@@ -725,6 +709,33 @@ class MessageStore {
     }
   };
 
+  generateTempMessage = text => {
+    // generates unique temporary request ID
+    const tempId = shortid.generate();
+
+    return {
+      // Temp attributes
+      id: tempId,
+      temp: true,
+      status: "sending",
+      inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
+
+      user: currentUser,
+      type: "chat",
+      text_content: text,
+      group_id: this.group.id,
+      user_id: currentUser.id
+    };
+  };
+
+  @action
+  removeTempMessage = tempId => {
+    // Remove the temp message
+    const tempMessageIndex = this.messages.findIndex(m => m.id === tempId);
+
+    this.messages.splice(tempMessageIndex, 1);
+  };
+
   // ////////////// //
   // EVENT HANDLERS //
   // ////////////// //
@@ -818,31 +829,38 @@ class MessageStore {
       return;
     }
 
+    // Update unread messages info of the group
     if (newMessage.user_id === currentUser.id) {
-      this.messages.unshift({
-        ...newMessage,
-        status: "sent"
-      });
-
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();
       }
+
+      newMessage.status = "sent";
     } else {
-      this.messages.unshift(newMessage);
-
-      const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
-
       // If you're at the bottom and no NML, keep up with the new message
-      if (this.unreadMessagesCount > 0 || !this.isScrollBottom) {
+      if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
+        this.markAsRead(false);
+      } else {
+        const isMention = newMessage.mentioned_user_ids.includes(
+          currentUser.id
+        );
+
         this.updateUnreadMessagesInfo({
           unread_messages_count: this.unreadMessagesCount + 1,
           mentions_count: this.mentionsCount + (isMention ? 1 : 0)
         });
-      } else {
-        this.markAsRead(false);
       }
     }
 
+    // Remove temp message
+    if (newMessage.request_id) {
+      this.removeTempMessage(newMessage.request_id);
+    }
+
+    // Add new message
+    this.messages.unshift(newMessage);
+
+    // If my message or at scroll bottom, scroll to bottom
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(null, 0, 0);
     }
