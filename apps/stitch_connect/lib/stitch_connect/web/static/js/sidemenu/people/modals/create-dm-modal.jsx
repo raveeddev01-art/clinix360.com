@@ -77,8 +77,8 @@ class CreateDMModal extends Component {
       promise = Promise.resolve(group);
     }
 
-    promise.then(group => {
-      history.push(getGroupUrl(group));
+    promise.then(groupCreated => {
+      history.push(getGroupUrl(groupCreated));
     });
 
     toggle();
