@@ -56,7 +56,7 @@ defmodule StitchConnect.Mixfile do
       {:appsignal, "~> 1.3"},
       {:pigeon, "~> 1.1.0"}, # For mobile push notifications.
       {:kadabra, "~> 0.3.2"}, # Used by Pigeon for push notifications.
-      {:wallaby, "~> 0.19.1"}
+      {:wallaby, "~> 0.19.1", only: :test}
     ]
   end
 
