@@ -20,6 +20,7 @@ class UsersStore {
   // //////// //
 
   getUserById = userId => this.users.find(u => u.id === userId);
+  getUserByUsername = username => this.users.find(u => u.username === username);
 
   @computed
   get usersByUsername() {
