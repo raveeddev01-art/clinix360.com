@@ -462,9 +462,7 @@ class MessageStore {
     // Add temp message
     this.messages.unshift(tempMessage);
     // Scroll to bottom
-    if (this.isScrollBottom) {
-      this.scrollToBottom(null, 0, 0);
-    }
+    this.scrollToBottom(null, 0, 0);
 
     this.groupChannel
       .push("new_msg", {
@@ -831,6 +829,7 @@ class MessageStore {
       return;
     }
 
+    // Update unread messages info of the group
     if (newMessage.user_id === currentUser.id) {
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();
@@ -838,16 +837,18 @@ class MessageStore {
 
       newMessage.status = "sent";
     } else {
-      const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
-
       // If you're at the bottom and no NML, keep up with the new message
-      if (this.unreadMessagesCount > 0 || !this.isScrollBottom) {
+      if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
+        this.markAsRead(false);
+      } else {
+        const isMention = newMessage.mentioned_user_ids.includes(
+          currentUser.id
+        );
+
         this.updateUnreadMessagesInfo({
           unread_messages_count: this.unreadMessagesCount + 1,
           mentions_count: this.mentionsCount + (isMention ? 1 : 0)
         });
-      } else {
-        this.markAsRead(false);
       }
     }
 
@@ -859,6 +860,7 @@ class MessageStore {
     // Add new message
     this.messages.unshift(newMessage);
 
+    // If my message or at scroll bottom, scroll to bottom
     if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(null, 0, 0);
     }
