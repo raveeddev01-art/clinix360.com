@@ -53,7 +53,11 @@ class Login extends Component {
       hideNotify: true
     })
       .then(() => {
-        history.push("/apps");
+        if (window.electronApp) {
+          window.location.href = "/";
+        } else {
+          history.push("/apps");
+        }
       })
       .catch(err => {
         this.setState({
