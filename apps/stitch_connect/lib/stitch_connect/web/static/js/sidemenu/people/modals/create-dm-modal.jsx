@@ -86,21 +86,19 @@ class CreateDMModal extends Component {
 
   selectUser = user => () => {
     if (user.id === currentUser.id) {
-      this.setState({
-        members: [user]
-      });
-
-      // Wait for make component state to be updated for a tick
-      setTimeout(() => {
-        this.createDM();
-      });
+      this.setState(
+        {
+          members: [user]
+        },
+        () => {
+          this.createDM();
+        }
+      );
     } else {
       this.setState({
         members: this.state.members.concat({
           ...user,
-          label: `${user.full_name}${user.id === currentUser.id
-            ? " (You)"
-            : ""}`
+          label: user.full_name
         })
       });
 
