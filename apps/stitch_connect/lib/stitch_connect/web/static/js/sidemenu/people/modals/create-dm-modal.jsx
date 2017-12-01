@@ -84,9 +84,29 @@ class CreateDMModal extends Component {
   };
 
   selectUser = user => () => {
-    const { history, toggle } = this.props;
+    const { groupsStore, history, toggle } = this.props;
     if (user.id === currentUser.id) {
-      history.push(`/direct/${user.username}`);
+      const userIds = [user.id, user.id];
+      const slug = getSlugOfDMGroupByUsers(userIds);
+      const group = groupsStore.getGroupBySlug(slug);
+
+      let promise;
+
+      if (!group) {
+        // Create
+        promise = groupsStore.createDMGroup(userIds);
+      } else if (group.is_hidden) {
+        // Unhide
+        promise = groupsStore.unhideGroup(group.id);
+      } else {
+        // Do nothing
+        promise = Promise.resolve();
+      }
+
+      promise.then(() => {
+        history.push(`/direct/${user.username}`);
+      });
+
       toggle();
       return;
     }
