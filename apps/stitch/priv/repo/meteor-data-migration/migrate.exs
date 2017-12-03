@@ -44,11 +44,13 @@ defmodule Stitch.MeteorMigration do
         group_ids = Group |> where(team_id: ^team.id) |> select([g], g.id) |> Repo.all
         Message |> where([gu], gu.group_id in ^group_ids) |> Repo.delete_all()
 
-        Logger.info("Migrating messages")
+        # Logger.info("Migrating messages")
 
-        indexed_rooms = index_rooms(rooms)
-        messages = MeteorMigration.Message.parse_messages_json(indexed_rooms, indexed_users, parse_meteor_json(messages_json))
-        messages = MeteorMigration.Message.migrate_messages(messages)
+        # indexed_rooms = index_rooms(rooms)
+        # messages = MeteorMigration.Message.parse_messages_json(indexed_rooms, indexed_users, parse_meteor_json(messages_json))
+        # messages = MeteorMigration.Message.migrate_messages(messages)
+
+        Logger.info("Finished migrating team")
 
       {:error, team} ->
         Logger.warn "Skipping migration for #{team.slug}"
