@@ -34,7 +34,6 @@ class MessageStore {
   @observable isLoadingPast = false;
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
 
-  @observable newMessageLineAt = null; // Timestamp that the new message line should appear at
   @observable highlightId = null; // message will be highlighted
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
@@ -99,6 +98,11 @@ class MessageStore {
 
   get lastReadAt() {
     return this.group.last_read_at;
+  }
+
+  // Timestamp that the new message line should appear at
+  get newMessageLineAt() {
+    return this.group.new_message_line_at || null;
   }
 
   get markedAsUnread() {
@@ -200,10 +204,9 @@ class MessageStore {
     const { groupsStore } = this.rootStore;
 
     groupsStore.updateGroupData(this.group.id, {
-      marked_as_unread: false
+      marked_as_unread: false,
+      new_message_line_at: null
     });
-
-    this.newMessageLineAt = null;
   }
 
   @action
@@ -413,7 +416,7 @@ class MessageStore {
 
   @action
   markAsUnread = messageId => {
-    const { sidemenuStore } = this.rootStore;
+    const { groupsStore, sidemenuStore } = this.rootStore;
 
     this.groupChannel
       .push("mark_as_unread", {
@@ -421,15 +424,12 @@ class MessageStore {
         message_id: messageId
       })
       .receive("ok", response => {
-        const { groupsStore } = this.rootStore;
-
         this.updateUnreadMessagesInfo(response);
 
         groupsStore.updateGroupData(this.group.id, {
-          marked_as_unread: true
+          marked_as_unread: true,
+          new_message_line_at: null
         });
-
-        this.newMessageLineAt = null;
 
         // Update favicon
         sidemenuStore.updateFavicon();
@@ -447,10 +447,16 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
+    const { groupsStore } = this.rootStore;
+
     if (resetNewMessageLine) {
-      this.newMessageLineAt = null;
+      groupsStore.updateGroupData(this.group.id, {
+        new_message_line_at: null
+      });
     } else if (!this.newMessageLineAt) {
-      this.newMessageLineAt = this.lastReadAt;
+      groupsStore.updateGroupData(this.group.id, {
+        new_message_line_at: this.lastReadAt
+      });
     }
 
     this.groupChannel.push("mark_as_read", { group_id: this.group.id });
