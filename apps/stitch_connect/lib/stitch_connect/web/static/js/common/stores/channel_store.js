@@ -63,6 +63,7 @@ class ChannelStore {
     this.eventChannel.on("renamed_group", groupsStore.onRenamedGroup);
     this.eventChannel.on("hid_group", groupsStore.onHidGroup);
     this.eventChannel.on("marked_as_read", groupsStore.onMarkedAsRead);
+    this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);
 
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache

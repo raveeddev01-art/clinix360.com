@@ -416,27 +416,10 @@ class MessageStore {
 
   @action
   markAsUnread = messageId => {
-    const { groupsStore, sidemenuStore } = this.rootStore;
-
-    this.groupChannel
-      .push("mark_as_unread", {
-        group_id: this.group.id,
-        message_id: messageId
-      })
-      .receive("ok", response => {
-        this.updateUnreadMessagesInfo(response);
-
-        groupsStore.updateGroupData(this.group.id, {
-          marked_as_unread: true,
-          new_message_line_at: null
-        });
-
-        // Update favicon
-        sidemenuStore.updateFavicon();
-      })
-      .receive("error", err => {
-        notify.show(err.message, "error");
-      });
+    this.groupChannel.push("mark_as_unread", {
+      group_id: this.group.id,
+      message_id: messageId
+    });
   };
 
   /**
