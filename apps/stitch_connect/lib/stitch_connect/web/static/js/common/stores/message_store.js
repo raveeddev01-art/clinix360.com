@@ -35,8 +35,6 @@ class MessageStore {
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
 
   @observable newMessageLineAt = null; // Timestamp that the new message line should appear at
-
-  @observable markedAsUnread = false;
   @observable highlightId = null; // message will be highlighted
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
@@ -101,6 +99,10 @@ class MessageStore {
 
   get lastReadAt() {
     return this.group.last_read_at;
+  }
+
+  get markedAsUnread() {
+    return this.group.marked_as_unread || false;
   }
 
   @computed
@@ -190,11 +192,17 @@ class MessageStore {
     this.loadedAll = false;
     this.loadedAllRecent = false;
     this.loadedInitial = false;
-    this.markedAsUnread = false;
     this.messages = [];
     this.messageElements = {};
     this.messageInEdit = null;
     this.textInEdit = "";
+
+    const { groupsStore } = this.rootStore;
+
+    groupsStore.updateGroupData(this.group.id, {
+      marked_as_unread: false
+    });
+
     this.newMessageLineAt = null;
   }
 
@@ -413,9 +421,14 @@ class MessageStore {
         message_id: messageId
       })
       .receive("ok", response => {
+        const { groupsStore } = this.rootStore;
+
         this.updateUnreadMessagesInfo(response);
 
-        this.markedAsUnread = true;
+        groupsStore.updateGroupData(this.group.id, {
+          marked_as_unread: true
+        });
+
         this.newMessageLineAt = null;
 
         // Update favicon
@@ -950,12 +963,9 @@ class MessageStore {
     groupsStore.updateGroupData(payload.group_id, {
       unread_messages_count: payload.unread_messages_count,
       mentions_count: payload.mentions_count,
-      last_read_at: payload.last_read_at
+      last_read_at: payload.last_read_at,
+      marked_as_unread: false
     });
-
-    if (payload.group_id === this.group.id) {
-      this.markedAsUnread = false;
-    }
 
     // Update favicon
     sidemenuStore.updateFavicon();
