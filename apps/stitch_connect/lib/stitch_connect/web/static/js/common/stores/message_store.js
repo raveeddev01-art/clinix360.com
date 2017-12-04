@@ -961,21 +961,6 @@ class MessageStore {
       this.keepScrollAtBottom();
     }
   };
-
-  @action
-  onMarkedAsRead = payload => {
-    const { groupsStore, sidemenuStore } = this.rootStore;
-
-    groupsStore.updateGroupData(payload.group_id, {
-      unread_messages_count: payload.unread_messages_count,
-      mentions_count: payload.mentions_count,
-      last_read_at: payload.last_read_at,
-      marked_as_unread: false
-    });
-
-    // Update favicon
-    sidemenuStore.updateFavicon();
-  };
 }
 
 export default MessageStore;
