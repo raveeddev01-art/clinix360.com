@@ -252,9 +252,6 @@ class GroupsStore {
 
     // Reset pinned messages
     pinnedMessageStore.reset();
-
-    // Resubscribe to group presence store
-    groupPresenceStore.subscribeToGroupChannel();
   };
 
   @action
@@ -284,6 +281,37 @@ class GroupsStore {
     if (id === this.currentGroupId) {
       history.push(`/rooms/${slug}`);
     }
+  };
+
+  @action
+  onMarkedAsRead = payload => {
+    const { sidemenuStore } = this.rootStore;
+
+    this.updateGroupData(payload.group_id, {
+      unread_messages_count: payload.unread_messages_count,
+      mentions_count: payload.mentions_count,
+      last_read_at: payload.last_read_at,
+      marked_as_unread: false
+    });
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
+  };
+
+  @action
+  onMarkedAsUnread = payload => {
+    const { sidemenuStore } = this.rootStore;
+
+    this.updateGroupData(payload.group_id, {
+      unread_messages_count: payload.unread_messages_count,
+      mentions_count: payload.mentions_count,
+      last_read_at: payload.last_read_at,
+      marked_as_unread: true,
+      new_message_line_at: null
+    });
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
   };
 }
 

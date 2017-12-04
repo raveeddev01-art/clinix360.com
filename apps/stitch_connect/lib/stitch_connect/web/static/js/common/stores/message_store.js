@@ -34,9 +34,6 @@ class MessageStore {
   @observable isLoadingPast = false;
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
 
-  @observable newMessageLineAt = null; // Timestamp that the new message line should appear at
-
-  @observable markedAsUnread = false;
   @observable highlightId = null; // message will be highlighted
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
@@ -101,6 +98,15 @@ class MessageStore {
 
   get lastReadAt() {
     return this.group.last_read_at;
+  }
+
+  // Timestamp that the new message line should appear at
+  get newMessageLineAt() {
+    return this.group.new_message_line_at || null;
+  }
+
+  get markedAsUnread() {
+    return this.group.marked_as_unread || false;
   }
 
   @computed
@@ -190,12 +196,15 @@ class MessageStore {
     this.loadedAll = false;
     this.loadedAllRecent = false;
     this.loadedInitial = false;
-    this.markedAsUnread = false;
     this.messages = [];
     this.messageElements = {};
     this.messageInEdit = null;
     this.textInEdit = "";
-    this.newMessageLineAt = null;
+
+    this.updateGroupData({
+      marked_as_unread: false,
+      new_message_line_at: null
+    });
   }
 
   @action
@@ -206,6 +215,22 @@ class MessageStore {
       Object.assign(message, data);
     }
   };
+
+  @action
+  updateGroupData(data) {
+    const { groupsStore } = this.rootStore;
+    const allowedKeys = [
+      "unread_messages_count",
+      "mentions_count",
+      "last_read_at",
+      "marked_as_unread",
+      "new_message_line_at"
+    ];
+    const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
+
+    // Update group info
+    groupsStore.updateGroupData(this.group.id, updates);
+  }
 
   @action
   updateGroupCursor(cursor) {
@@ -390,40 +415,11 @@ class MessageStore {
   }
 
   @action
-  updateUnreadMessagesInfo(data) {
-    const { groupsStore } = this.rootStore;
-    const allowedKeys = [
-      "unread_messages_count",
-      "mentions_count",
-      "last_read_at"
-    ];
-    const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
-
-    // Update group info
-    groupsStore.updateGroupData(this.group.id, updates);
-  }
-
-  @action
   markAsUnread = messageId => {
-    const { sidemenuStore } = this.rootStore;
-
-    this.groupChannel
-      .push("mark_as_unread", {
-        group_id: this.group.id,
-        message_id: messageId
-      })
-      .receive("ok", response => {
-        this.updateUnreadMessagesInfo(response);
-
-        this.markedAsUnread = true;
-        this.newMessageLineAt = null;
-
-        // Update favicon
-        sidemenuStore.updateFavicon();
-      })
-      .receive("error", err => {
-        notify.show(err.message, "error");
-      });
+    this.groupChannel.push("mark_as_unread", {
+      group_id: this.group.id,
+      message_id: messageId
+    });
   };
 
   /**
@@ -434,27 +430,13 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
-    const { sidemenuStore } = this.rootStore;
-
     if (resetNewMessageLine) {
-      this.newMessageLineAt = null;
+      this.updateGroupData({ new_message_line_at: null });
     } else if (!this.newMessageLineAt) {
-      this.newMessageLineAt = this.lastReadAt;
+      this.updateGroupData({ new_message_line_at: this.lastReadAt });
     }
 
-    this.groupChannel
-      .push("mark_as_read", { group_id: this.group.id })
-      .receive("ok", response => {
-        this.updateUnreadMessagesInfo(response);
-
-        this.markedAsUnread = false;
-
-        // Update favicon
-        sidemenuStore.updateFavicon();
-      })
-      .receive("error", err => {
-        notify.show(err.message, "error");
-      });
+    this.groupChannel.push("mark_as_read", { group_id: this.group.id });
   };
 
   sendMessage = (text, additionalFields = {}) => {
@@ -845,7 +827,7 @@ class MessageStore {
           currentUser.id
         );
 
-        this.updateUnreadMessagesInfo({
+        this.updateGroupData({
           unread_messages_count: this.unreadMessagesCount + 1,
           mentions_count: this.mentionsCount + (isMention ? 1 : 0)
         });
