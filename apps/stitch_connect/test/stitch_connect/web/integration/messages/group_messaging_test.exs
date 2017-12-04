@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Messages.GroupMessagingTest do
   use StitchConnect.Web.FeatureCase, async: false
 
-  import Wallaby.Query
+  import Wallaby.Query, only: [button: 1, text_field: 1, css: 2]
   import Stitch.Factory
   alias StitchConnect.Web.IntegrationTestHelper, as: Helper
 
