@@ -84,7 +84,7 @@ class RegistrationStore {
       })
       .then(() => {
         this.saving = false;
-        window.location.href = `https://${this.teamurl}.${applicationHost}`;
+        window.location.href = `${applicationScheme}${this.teamurl}.${applicationHost}`;
       })
       .catch(err => {
         this.saving = false;
