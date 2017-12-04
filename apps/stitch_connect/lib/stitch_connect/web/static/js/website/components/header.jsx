@@ -106,17 +106,14 @@ class Header extends Component {
               </li>
             )}
             <li role="presentation">
-              <a
-                href={`https://${applicationHost}/signin`}
-                className="nav-link"
-              >
+              <a href="https://teamstitch.com/signin" className="nav-link">
                 Sign In
               </a>
             </li>
 
             <li role="presentation">
               <a
-                href={`https://${applicationHost}/signup/email`}
+                href="https://teamstitch.com/signup/email"
                 className="nav-link btn-outline"
               >
                 Create Team
