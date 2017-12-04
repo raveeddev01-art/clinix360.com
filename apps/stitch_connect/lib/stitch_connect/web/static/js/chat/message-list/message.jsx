@@ -13,15 +13,15 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
 
-import { confirm } from "../../common/modals";
-import MessageContent from "../../common/components/messages/message-content/message-content";
+import { confirm } from "common/modals";
+import { MessageContent, ReactionPicker } from "common/components";
 
 @inject("messageStore", "groupStore", "usersStore")
 @observer
 class Message extends Component {
   constructor(props) {
     super(props);
-    this.state = { selected: false, dropup: false };
+    this.state = { selected: false, dropup: false, showEmojiPicker: false };
   }
 
   componentDidMount() {
@@ -52,6 +52,34 @@ class Message extends Component {
           this.messageDiv.offsetTop
       });
     }
+  };
+
+  onSelectEmoji = emoji => {
+    this.setState({ showEmojiPicker: false }, () => {
+      console.log(emoji);
+    });
+  };
+
+  getEmojiMartStyle = () => {
+    const martStyles = {};
+    const { message } = this.props;
+    if (!this.messageDiv) {
+      return {};
+    }
+
+    const pos = this.messageDiv.getBoundingClientRect();
+    if (pos.bottom < window.innerHeight / 2) {
+      martStyles.top = "100%";
+    } else {
+      martStyles.bottom = "100%";
+    }
+
+    if (message.user.id === currentUser.id) {
+      martStyles.right = 0;
+    } else {
+      martStyles.left = "100%";
+    }
+    return martStyles;
   };
 
   markAsUnread = () => {
@@ -93,6 +121,10 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     messageStore.toggleStar(message.id);
+  };
+
+  toggleReaction = () => {
+    this.setState({ showEmojiPicker: true });
   };
 
   renderEdited(message) {
@@ -252,6 +284,12 @@ class Message extends Component {
               <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
             </span>
           </MenuItem>
+
+          <MenuItem onClick={this.toggleReaction}>
+            <span>
+              <i className="fa fa-smile-o" />&nbsp;Reactions
+            </span>
+          </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
     );
@@ -311,6 +349,13 @@ class Message extends Component {
                   >
                     {this.renderActions(message)}
                   </div>
+
+                  <ReactionPicker
+                    message={message}
+                    onSelectReaction={this.onSelectEmoji}
+                    show={this.state.showEmojiPicker}
+                    style={this.getEmojiMartStyle()}
+                  />
 
                   {this.renderStar(message)}
                   {this.renderPin(message)}

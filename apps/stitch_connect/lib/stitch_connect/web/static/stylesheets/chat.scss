@@ -657,6 +657,7 @@
         display: flex;
         flex-direction: row;
         align-items: baseline;
+        position: relative;
 
         .name {
           color: #003366;
@@ -879,7 +880,6 @@
       }
     }
   }
-  
 }
 
 .attachment-block {
