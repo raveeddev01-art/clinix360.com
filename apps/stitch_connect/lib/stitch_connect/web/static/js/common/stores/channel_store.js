@@ -94,7 +94,7 @@ class ChannelStore {
   }
 
   joinGroupChannel(options = {}) {
-    const { messageStore } = this.rootStore;
+    const { messageStore, groupPresenceStore } = this.rootStore;
 
     const joined = this.join(this.groupChannelTopic, options);
 
@@ -113,6 +113,8 @@ class ChannelStore {
       "msg_link_preview_deleted",
       messageStore.onLinkPreviewDeleted
     );
+    this.groupChannel.on("presence_state", groupPresenceStore.onPresenceState);
+    this.groupChannel.on("presence_diff", groupPresenceStore.onPresenceDiff);
 
     this.lastGroupChannelTopic = this.groupChannelTopic;
 

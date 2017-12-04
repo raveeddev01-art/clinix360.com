@@ -252,9 +252,6 @@ class GroupsStore {
 
     // Reset pinned messages
     pinnedMessageStore.reset();
-
-    // Resubscribe to group presence store
-    groupPresenceStore.subscribeToGroupChannel();
   };
 
   @action
