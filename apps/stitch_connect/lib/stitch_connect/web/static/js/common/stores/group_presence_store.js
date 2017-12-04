@@ -8,12 +8,6 @@ class GroupPresenceStore {
     this.rootStore = rootStore;
   }
 
-  get groupChannel() {
-    const { channelStore } = this.rootStore;
-
-    return channelStore.groupChannel;
-  }
-
   @computed
   get typingUsers() {
     return Object.keys(this.usersCurrentlyInGroup)
