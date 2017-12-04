@@ -52,7 +52,7 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
-    const { sidemenuStore, groupsStore } = this.rootStore;
+    const { sidemenuStore, groupsStore, messageStore } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
@@ -62,6 +62,7 @@ class ChannelStore {
     this.eventChannel.on("left_group", groupsStore.onLeftGroup);
     this.eventChannel.on("renamed_group", groupsStore.onRenamedGroup);
     this.eventChannel.on("hid_group", groupsStore.onHidGroup);
+    this.eventChannel.on("marked_as_read", messageStore.onMarkedAsRead);
 
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache

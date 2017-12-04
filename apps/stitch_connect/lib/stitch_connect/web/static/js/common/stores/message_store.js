@@ -434,27 +434,13 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
-    const { sidemenuStore } = this.rootStore;
-
     if (resetNewMessageLine) {
       this.newMessageLineAt = null;
     } else if (!this.newMessageLineAt) {
       this.newMessageLineAt = this.lastReadAt;
     }
 
-    this.groupChannel
-      .push("mark_as_read", { group_id: this.group.id })
-      .receive("ok", response => {
-        this.updateUnreadMessagesInfo(response);
-
-        this.markedAsUnread = false;
-
-        // Update favicon
-        sidemenuStore.updateFavicon();
-      })
-      .receive("error", err => {
-        notify.show(err.message, "error");
-      });
+    this.groupChannel.push("mark_as_read", { group_id: this.group.id });
   };
 
   sendMessage = (text, additionalFields = {}) => {
@@ -955,6 +941,24 @@ class MessageStore {
       );
       this.keepScrollAtBottom();
     }
+  };
+
+  @action
+  onMarkedAsRead = payload => {
+    const { groupsStore, sidemenuStore } = this.rootStore;
+
+    groupsStore.updateGroupData(payload.group_id, {
+      unread_messages_count: payload.unread_messages_count,
+      mentions_count: payload.mentions_count,
+      last_read_at: payload.last_read_at
+    });
+
+    if (payload.group_id === this.group.id) {
+      this.markedAsUnread = false;
+    }
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
   };
 }
 
