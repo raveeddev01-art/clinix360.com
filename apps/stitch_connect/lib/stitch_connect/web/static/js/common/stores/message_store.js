@@ -811,7 +811,7 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    const { sidemenuStore } = this.rootStore;
+    const { groupsStore, sidemenuStore } = this.rootStore;
 
     if (newMessage.group_id !== this.group.id) {
       return;
@@ -833,7 +833,7 @@ class MessageStore {
           currentUser.id
         );
 
-        this.updateUnreadMessagesInfo({
+        groupsStore.updateGroupData(this.group.id, {
           unread_messages_count: this.unreadMessagesCount + 1,
           mentions_count: this.mentionsCount + (isMention ? 1 : 0)
         });
