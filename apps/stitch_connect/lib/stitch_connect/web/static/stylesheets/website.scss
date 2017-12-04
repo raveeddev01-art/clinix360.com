@@ -214,21 +214,32 @@
     padding: 15px;
   }
 
-  .navbar-nav .open .dropdown-menu > li > a {
-    color: #fff;
-    font-weight: 600;
-    padding: 8px 15px 8px 25px;
+  .navbar-nav .open .dropdown-menu > li {
+    > a {
+      color: #fff;
+      font-weight: 600;
+      padding: 8px 15px 8px 25px;
 
-    i.fa {
-      margin-right: 5px;
+      i.fa {
+        margin-right: 5px;
+      }
+
+      span {
+        display: block;
+        color: #9e9ea6;
+        font-size: 14px;
+        font-weight: 400;
+        padding-left: 22px;
+      }
     }
 
-    span {
-      display: block;
-      color: #9e9ea6;
-      font-size: 14px;
-      font-weight: 400;
-      padding-left: 22px;
+    &.active {
+      a:not(:hover) {
+        background-color: transparent;
+      }
+      a:hover {
+        background-color: $brand-primary;
+      }
     }
   }
 
