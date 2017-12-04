@@ -201,9 +201,7 @@ class MessageStore {
     this.messageInEdit = null;
     this.textInEdit = "";
 
-    const { groupsStore } = this.rootStore;
-
-    groupsStore.updateGroupData(this.group.id, {
+    this.updateGroupData({
       marked_as_unread: false,
       new_message_line_at: null
     });
@@ -217,6 +215,22 @@ class MessageStore {
       Object.assign(message, data);
     }
   };
+
+  @action
+  updateGroupData(data) {
+    const { groupsStore } = this.rootStore;
+    const allowedKeys = [
+      "unread_messages_count",
+      "mentions_count",
+      "last_read_at",
+      "marked_as_unread",
+      "new_message_line_at"
+    ];
+    const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
+
+    // Update group info
+    groupsStore.updateGroupData(this.group.id, updates);
+  }
 
   @action
   updateGroupCursor(cursor) {
@@ -401,20 +415,6 @@ class MessageStore {
   }
 
   @action
-  updateUnreadMessagesInfo(data) {
-    const { groupsStore } = this.rootStore;
-    const allowedKeys = [
-      "unread_messages_count",
-      "mentions_count",
-      "last_read_at"
-    ];
-    const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
-
-    // Update group info
-    groupsStore.updateGroupData(this.group.id, updates);
-  }
-
-  @action
   markAsUnread = messageId => {
     this.groupChannel.push("mark_as_unread", {
       group_id: this.group.id,
@@ -430,16 +430,10 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
-    const { groupsStore } = this.rootStore;
-
     if (resetNewMessageLine) {
-      groupsStore.updateGroupData(this.group.id, {
-        new_message_line_at: null
-      });
+      this.updateGroupData({ new_message_line_at: null });
     } else if (!this.newMessageLineAt) {
-      groupsStore.updateGroupData(this.group.id, {
-        new_message_line_at: this.lastReadAt
-      });
+      this.updateGroupData({ new_message_line_at: this.lastReadAt });
     }
 
     this.groupChannel.push("mark_as_read", { group_id: this.group.id });
@@ -811,7 +805,7 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    const { groupsStore, sidemenuStore } = this.rootStore;
+    const { sidemenuStore } = this.rootStore;
 
     if (newMessage.group_id !== this.group.id) {
       return;
@@ -833,7 +827,7 @@ class MessageStore {
           currentUser.id
         );
 
-        groupsStore.updateGroupData(this.group.id, {
+        this.updateGroupData({
           unread_messages_count: this.unreadMessagesCount + 1,
           mentions_count: this.mentionsCount + (isMention ? 1 : 0)
         });
