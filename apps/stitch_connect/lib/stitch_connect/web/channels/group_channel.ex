@@ -252,6 +252,11 @@ defmodule StitchConnect.Web.GroupChannel do
     @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
   end
 
+  def broadcast_read_status(group, messages) do
+    read_status_json = Enum.reduce(messages, %{}, & Map.put(&2, &1.id, &1.read_status))
+    @endpoint.broadcast("groups:#{group.slug}", "read_status_update", %{messages: read_status_json})
+  end
+
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
     attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
@@ -319,6 +324,7 @@ defmodule StitchConnect.Web.GroupChannel do
       unread_messages_count: group_user.unread_messages_count,
     }
     EventsChannel.broadcast_marked_as_read(user, json)
+    broadcast_read_status(socket.assigns.group, messages_json)
     PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
   end
@@ -334,6 +340,7 @@ defmodule StitchConnect.Web.GroupChannel do
       unread_messages_count: group_user.unread_messages_count,
     }
     EventsChannel.broadcast_marked_as_unread(user, json)
+    broadcast_read_status(socket.assigns.group, messages_json)
     PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
   end
