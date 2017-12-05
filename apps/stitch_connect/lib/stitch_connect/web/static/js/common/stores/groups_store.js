@@ -127,7 +127,11 @@ class GroupsStore {
     const group = this.getGroupBySlug(slug);
 
     if (group && group.id !== this.currentGroupId) {
+      this.onClosedGroup();
+
+      // Change the group
       this.currentGroupId = group.id;
+
       this.onOpenedGroup();
     }
   };
@@ -232,14 +236,12 @@ class GroupsStore {
 
   /* Event handlers */
 
+  /**
+   * Run the process of when opening the group
+   */
   @action
   onOpenedGroup = () => {
-    const {
-      channelStore,
-      messageStore,
-      pinnedMessageStore,
-      groupPresenceStore
-    } = this.rootStore;
+    const { channelStore, messageStore, pinnedMessageStore } = this.rootStore;
 
     // Join group channel
     channelStore
@@ -252,6 +254,16 @@ class GroupsStore {
 
     // Reset pinned messages
     pinnedMessageStore.reset();
+  };
+
+  /**
+   * Run the process of when closing the group
+   */
+  @action
+  onClosedGroup = () => {
+    const { channelStore } = this.rootStore;
+
+    channelStore.leaveGroupChannel();
   };
 
   @action
