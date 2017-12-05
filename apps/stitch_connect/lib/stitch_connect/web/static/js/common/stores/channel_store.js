@@ -114,6 +114,7 @@ class ChannelStore {
       "msg_link_preview_deleted",
       messageStore.onLinkPreviewDeleted
     );
+    this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
 
     // Group Presence related
     this.groupChannel.on("presence_state", groupPresenceStore.onPresenceState);

@@ -718,12 +718,23 @@ class MessageStore {
     this.messages.splice(tempMessageIndex, 1);
   };
 
+  @action
+  toggleReaction = (messageId, emoji) => {
+    console.log(messageId, emoji);
+    this.groupChannel.push("toggle_reactions", {
+      message_id: messageId,
+      emoji_name: emoji
+    });
+  };
+
   // ////////////// //
   // EVENT HANDLERS //
   // ////////////// //
 
   @action
   onJoinGroupChannel = data => {
+    console.log(data);
+
     this.messages = data.messages;
 
     if (data.messages.length < 30) {
@@ -936,6 +947,15 @@ class MessageStore {
         p => p.link !== payload.link
       );
       this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  onReactionUpdate = payload => {
+    const message = this.messages.find(m => m.id === payload.message_id);
+    console.log(payload);
+    if (message) {
+      message.reactions = payload.reactions;
     }
   };
 }

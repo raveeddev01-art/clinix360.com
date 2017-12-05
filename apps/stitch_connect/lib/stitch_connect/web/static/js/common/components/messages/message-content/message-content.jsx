@@ -8,10 +8,15 @@ import Linkify from "react-linkify";
 import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
+import Reactions from "./reactions";
 
-@inject("usersStore")
+@inject("usersStore", "messageStore")
 @observer
 class MessageContent extends Component {
+  onToggle = emoji => {
+    this.props.messageStore.toggleReaction(this.props.message.id, emoji);
+  };
+
   renderMessageLine(line) {
     const { usersStore, message } = this.props;
     const { usersByUsername } = usersStore;
@@ -115,6 +120,11 @@ class MessageContent extends Component {
           {this.renderMessageText()}
           {message.type === "upload" && message.text_content && '"'}
           {this.renderLinkPreviews()}
+          <Reactions
+            messageId={message.id}
+            reactions={message.reactions}
+            onToggle={this.onToggle}
+          />
         </div>
       </Linkify>
     );

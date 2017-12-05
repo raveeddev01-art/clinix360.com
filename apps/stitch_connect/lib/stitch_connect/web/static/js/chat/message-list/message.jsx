@@ -55,8 +55,11 @@ class Message extends Component {
   };
 
   onSelectEmoji = emoji => {
+    const { messageStore, message } = this.props;
     this.setState({ showEmojiPicker: false }, () => {
-      console.log(emoji);
+      if (emoji) {
+        messageStore.toggleReaction(message.id, emoji.colons);
+      }
     });
   };
 
