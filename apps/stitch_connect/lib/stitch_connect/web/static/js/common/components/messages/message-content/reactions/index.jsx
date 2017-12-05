@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import { observer } from "mobx-react";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/lib/Button";
 import { Emoji } from "emoji-mart";
 import cx from "classnames";
 
+@observer
 class Reactions extends Component {
   toggleReaction = (emoji, active) => () => {
     // active param is not used for now
@@ -12,6 +14,10 @@ class Reactions extends Component {
 
   render() {
     const { reactions, messageId } = this.props;
+    if (!reactions) {
+      return null;
+    }
+
     return (
       <div className="message-reactions">
         {Object.keys(reactions).map(emoji => {
@@ -40,8 +46,8 @@ Reactions.propTypes = {
 };
 
 Reactions.defaultProps = {
-  reactions: {},
-  onToggle: () => {}
+  onToggle: () => {},
+  reactions: null
 };
 
 export default Reactions;

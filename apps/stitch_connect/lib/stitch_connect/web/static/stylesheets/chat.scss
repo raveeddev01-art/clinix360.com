@@ -882,14 +882,36 @@
   }
 
   .message-reactions {
-    margin-top: 5px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+
+    .btn-message-reaction + .btn-message-reaction {
+      margin-left: 5px;
+    }
+
     .btn-message-reaction {
+      margin-top: 5px;
       padding: 2px 5px 2px 2px;
       display: flex;
       align-items: center;
+      border: 1px solid #e7e7e7;
+      background-color: #fcfcfc;
+      padding: 0 4px 0 2px;
+      color: #aaa;
 
       &.active {
-        border: 1px solid rgba(0, 50, 100, 0.5);
+        border-color: #bde1fe;
+        background-color: #f3f9ff;
+        color: #003366;
+      }
+
+      &:hover {
+        border-color: #003366;
+
+        &.active {
+          border-color: #bde1fe;
+        }
       }
     }
   }

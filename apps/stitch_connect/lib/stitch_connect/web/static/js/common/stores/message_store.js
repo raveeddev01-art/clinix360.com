@@ -720,8 +720,7 @@ class MessageStore {
 
   @action
   toggleReaction = (messageId, emoji) => {
-    console.log(messageId, emoji);
-    this.groupChannel.push("toggle_reactions", {
+    this.groupChannel.push("toggle_reaction", {
       message_id: messageId,
       emoji_name: emoji
     });
@@ -733,8 +732,6 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
-    console.log(data);
-
     this.messages = data.messages;
 
     if (data.messages.length < 30) {
@@ -953,7 +950,6 @@ class MessageStore {
   @action
   onReactionUpdate = payload => {
     const message = this.messages.find(m => m.id === payload.message_id);
-    console.log(payload);
     if (message) {
       message.reactions = payload.reactions;
     }
