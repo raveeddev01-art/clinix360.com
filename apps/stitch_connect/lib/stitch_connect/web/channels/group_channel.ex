@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization,
-    Message, MessageAuthorization, MessageQueries}
+    Message, MessageAuthorization, MessageQueries, MessageAction}
   alias StitchConnect.Web.Presence
 
   @endpoint StitchConnect.Web.Endpoint
@@ -238,6 +238,32 @@ defmodule StitchConnect.Web.GroupChannel do
         broadcast! socket, "msg_link_preview_deleted", %{message_id: message_id, link: link}
         {:reply, :ok, socket}
     end
+  end
+
+  @decorate channel_action()
+  def handle_in("toggle_reaction", %{"message_id" => message_id, "emoji_name" => emoji_name}, socket) do
+    %{group: group, current_user: user} = socket.assigns
+    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one
+
+    case {message, message && GroupAuthorization.can_view?(group, user)} do
+      {nil, _} ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+
+      {_, false} ->
+        reason = "Access denied"
+        {:reply, {:error, %{message: reason}}, socket}
+
+      {message, true} ->
+        {:ok, _reaction} = Message.Reaction.toggle_reaction(message, user, emoji_name)
+        broadcast_reactions_updated(group, message)
+        {:reply, :ok, socket}
+    end
+  end
+
+  def broadcast_reactions_updated(group, message) do
+    message = Repo.get(Message, message.id)
+    [message] = Message.Reaction.apply_reactions([message])
+    @endpoint.broadcast("groups:#{group.slug}", "reactions_updated", %{reactions: message.reactions})
   end
 
   def broadcast_message_starred(message) do
