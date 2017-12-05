@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
+import { Link } from "react-router-dom";
 
 export default class Footer extends Component {
   render() {
@@ -13,13 +14,13 @@ export default class Footer extends Component {
               <h5>Products</h5>
               <ul className="list-unstyled">
                 <li>
-                  <a href={`https://${applicationHost}/connect`}>Connect</a>
+                  <Link to="/connect">Connect</Link>
                 </li>
                 <li>
-                  <a href={`https://${applicationHost}/engage`}>Engage</a>
+                  <Link to="/engage">Engage</Link>
                 </li>
                 <li>
-                  <a href={`https://${applicationHost}/manage`}>Manage</a>
+                  <Link to="/manage">Manage</Link>
                 </li>
               </ul>
             </Col>
@@ -28,10 +29,10 @@ export default class Footer extends Component {
               <h5>Resources</h5>
               <ul className="list-unstyled">
                 <li>
-                  <a href={`https://${applicationHost}/pricing`}>Pricing</a>
+                  <Link to="/pricing">Pricing</Link>
                 </li>
                 <li>
-                  <a href={`https://${applicationHost}/downloads`}>Downloads</a>
+                  <Link to="/downloads">Downloads</Link>
                 </li>
                 <li>
                   <a
@@ -58,17 +59,13 @@ export default class Footer extends Component {
               <h5>Company</h5>
               <ul className="list-unstyled">
                 <li>
-                  <a href={`https://${applicationHost}/customers`}>Customers</a>
+                  <Link to="/customers">Customers</Link>
                 </li>
                 <li>
-                  <a href={`https://${applicationHost}/privacy-policy`}>
-                    Privacy Policy
-                  </a>
+                  <Link to="/privacy-policy">Privacy Policy</Link>
                 </li>
                 <li>
-                  <a href={`https://${applicationHost}/terms-of-service`}>
-                    Terms of Service
-                  </a>
+                  <Link to="/terms-of-service">Terms of Service</Link>
                 </li>
               </ul>
             </Col>
