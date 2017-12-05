@@ -732,6 +732,10 @@
               border-bottom-style: solid;
             }
           }
+
+          br:last-child {
+            display: none;
+          }
         }
       }
 
@@ -879,7 +883,6 @@
       }
     }
   }
-  
 }
 
 .attachment-block {
