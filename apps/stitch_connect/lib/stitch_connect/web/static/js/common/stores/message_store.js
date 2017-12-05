@@ -698,7 +698,6 @@ class MessageStore {
     return {
       // Temp attributes
       id: tempId,
-      temp: true,
       status: "sending",
       inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
 
@@ -816,8 +815,6 @@ class MessageStore {
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();
       }
-
-      newMessage.status = "sent";
     } else {
       // If you're at the bottom and no NML, keep up with the new message
       if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
