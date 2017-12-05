@@ -15,13 +15,14 @@ import VisibilitySensor from "react-visibility-sensor";
 
 import { confirm } from "../../common/modals";
 import MessageContent from "../../common/components/messages/message-content/message-content";
+import MessageInfoModal from "./message-info-modal";
 
 @inject("messageStore", "groupStore", "usersStore")
 @observer
 class Message extends Component {
   constructor(props) {
     super(props);
-    this.state = { selected: false, dropup: false };
+    this.state = { selected: false, dropup: false, showInfoModal: false };
   }
 
   componentDidMount() {
@@ -93,6 +94,18 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     messageStore.toggleStar(message.id);
+  };
+
+  showInfoModal = () => {
+    this.setState({
+      showInfoModal: true
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      showInfoModal: false
+    });
   };
 
   renderEdited(message) {
@@ -252,6 +265,18 @@ class Message extends Component {
               <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
             </span>
           </MenuItem>
+
+          <MenuItem onClick={this.showInfoModal}>
+            <span>
+              <i className="fa fa-info-circle" />&nbsp;Info
+            </span>
+          </MenuItem>
+
+          <MessageInfoModal
+            show={this.state.showInfoModal}
+            message={message}
+            closeModal={this.closeModal}
+          />
         </Dropdown.Menu>
       </Dropdown>
     );

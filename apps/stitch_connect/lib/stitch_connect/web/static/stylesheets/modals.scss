@@ -171,3 +171,43 @@
     font-size: 15px;
   }
 }
+
+.message-info-modal {
+  .modal-body {
+    max-height: 90vh;
+    overflow-y: auto;
+
+    h4 {
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .read-status-row {
+      padding: 10px 0;
+      margin-left: 0;
+      margin-right: 0;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid $border-color-secondary;
+      }
+
+      > * {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .name {
+        color: #666;
+      }
+
+      .date {
+        color: #999;
+      }
+
+      .time {
+        color: #333;
+      }
+    }
+  }
+}
