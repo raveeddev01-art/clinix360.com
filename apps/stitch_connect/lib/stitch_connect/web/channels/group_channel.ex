@@ -263,7 +263,10 @@ defmodule StitchConnect.Web.GroupChannel do
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)
     [message] = Message.Reaction.apply_reactions([message])
-    @endpoint.broadcast("groups:#{group.slug}", "reactions_updated", %{reactions: message.reactions})
+    @endpoint.broadcast("groups:#{group.slug}", "reactions_updated", %{
+      message_id: message.id,
+      reactions: message.reactions,
+    })
   end
 
   def broadcast_message_starred(message) do
