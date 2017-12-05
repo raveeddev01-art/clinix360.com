@@ -51,6 +51,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
 
+    get "/stitch-version", VersionController, :index
     get "/users/validate-username", UserController, :validate_username
     post "/users/exists", UserController, :exists?
     post "/users/validate-phone-number", UserController, :validate_phone_number
