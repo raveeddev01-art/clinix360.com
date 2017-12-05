@@ -122,6 +122,10 @@ class ChannelStore {
     return joined;
   }
 
+  leaveGroupChannel() {
+    this.leave(this.groupChannelTopic);
+  }
+
   // //////////// //
   // Team Channel //
   // //////////// //
