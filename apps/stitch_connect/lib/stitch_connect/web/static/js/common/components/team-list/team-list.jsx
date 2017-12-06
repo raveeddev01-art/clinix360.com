@@ -43,10 +43,11 @@ class TeamList extends Component {
   };
 
   render() {
-    const { children, users, isOnline } = this.props;
+    const { children, users, isOnline, hideCurrentUser } = this.props;
     const { members, searchFilter } = this.state;
     const teamList = users.filter(u => {
-      if (u.id === currentUser.id && members.length > 0) return false;
+      if (hideCurrentUser && u.id === currentUser.id && members.length > 0)
+        return false;
       return (
         members.findIndex(member => member.id === u.id) === -1 &&
         u.full_name.toLowerCase().indexOf(searchFilter.toLowerCase()) > -1
@@ -106,6 +107,7 @@ TeamList.propTypes = {
   isOnline: PropTypes.func.isRequired,
   value: PropTypes.string,
   users: PropTypes.array.isRequired,
+  hideCurrentUser: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -117,6 +119,7 @@ TeamList.defaultProps = {
   onChange: () => {},
   isOnline: () => {},
   onSelectUser: () => {},
+  hideCurrentUser: false,
   children: "",
   value: ""
 };

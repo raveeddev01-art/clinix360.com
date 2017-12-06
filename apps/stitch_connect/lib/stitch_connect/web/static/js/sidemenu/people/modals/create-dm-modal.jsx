@@ -120,6 +120,7 @@ class CreateDMModal extends Component {
             isOnline={presenceStore.isOnline}
             value={members}
             users={usersStore.users.slice(0)}
+            hideCurrentUser
           >
             Select members to start conversation with.
           </TeamList>
