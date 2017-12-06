@@ -823,20 +823,16 @@ class MessageStore {
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();
       }
-    } else {
+    } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
       // If you're at the bottom and no NML, keep up with the new message
-      if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
-        this.markAsRead(false);
-      } else {
-        const isMention = newMessage.mentioned_user_ids.includes(
-          currentUser.id
-        );
+      this.markAsRead(false);
+    } else {
+      const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
-        this.updateGroupData({
-          unread_messages_count: this.unreadMessagesCount + 1,
-          mentions_count: this.mentionsCount + (isMention ? 1 : 0)
-        });
-      }
+      this.updateGroupData({
+        unread_messages_count: this.unreadMessagesCount + 1,
+        mentions_count: this.mentionsCount + (isMention ? 1 : 0)
+      });
     }
 
     // Remove temp message
@@ -954,6 +950,19 @@ class MessageStore {
     if (message) {
       message.reactions = payload.reactions;
     }
+  };
+
+  @action
+  onReadStatusUpdate = payload => {
+    if (!payload.messages) return;
+    Object.keys(payload.messages).forEach(message_id => {
+      const message = this.messages.find(
+        m => m.id === parseInt(message_id, 10)
+      );
+      if (message) {
+        message.read_status = payload.messages[message_id];
+      }
+    });
   };
 }
 

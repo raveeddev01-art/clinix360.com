@@ -12,16 +12,22 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
-
 import { confirm } from "common/modals";
 import { MessageContent, ReactionPicker } from "common/components";
+import MessageInfoModal from "./message-info-modal";
 
 @inject("messageStore", "groupStore", "usersStore")
 @observer
 class Message extends Component {
   constructor(props) {
     super(props);
-    this.state = { selected: false, dropup: false, showEmojiPicker: false };
+
+    this.state = {
+      selected: false,
+      dropup: false,
+      showEmojiPicker: false,
+      showInfoModal: false
+    };
   }
 
   componentDidMount() {
@@ -130,25 +136,17 @@ class Message extends Component {
     this.setState({ showEmojiPicker: true });
   };
 
-  renderEdited(message) {
-    const { edited, edited_at: editedAt } = message;
+  showInfoModal = () => {
+    this.setState({
+      showInfoModal: true
+    });
+  };
 
-    if (!edited) {
-      return null;
-    }
-
-    const editedTooltip = (
-      <Tooltip id="edited-tooltip">{moment(editedAt).calendar()}</Tooltip>
-    );
-
-    return (
-      <OverlayTrigger placement="top" overlay={editedTooltip}>
-        <span className="message-icon icon-edited">
-          <i className="fa fa-edit" />
-        </span>
-      </OverlayTrigger>
-    );
-  }
+  closeModal = () => {
+    this.setState({
+      showInfoModal: false
+    });
+  };
 
   renderStar(message) {
     const { starred } = message;
@@ -293,8 +291,33 @@ class Message extends Component {
               <i className="fa fa-smile-o" />&nbsp;Reactions
             </span>
           </MenuItem>
+
+          <MenuItem onClick={this.showInfoModal}>
+            <span>
+              <i className="fa fa-info-circle" />&nbsp;Info
+            </span>
+          </MenuItem>
+
+          <MessageInfoModal
+            show={this.state.showInfoModal}
+            message={message}
+            closeModal={this.closeModal}
+          />
         </Dropdown.Menu>
       </Dropdown>
+    );
+  }
+
+  renderReadStatus(message) {
+    if (!message.read_status) return null;
+
+    const deliveredToUsers = Object.keys(message.read_status).length;
+    const readUsers = Object.values(message.read_status).filter(v => v != null)
+      .length;
+    return (
+      <div className="message-read-status">
+        {readUsers}/{deliveredToUsers} read
+      </div>
     );
   }
 
@@ -366,7 +389,7 @@ class Message extends Component {
 
                 <div className="message-content-wrapper">
                   <MessageContent message={message} />
-                  {this.renderEdited(message)}
+                  {mine && this.renderReadStatus(message)}
                 </div>
               </div>
 
