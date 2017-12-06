@@ -171,7 +171,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
             {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
             system_message = MessageQueries.load_info(system_message)
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
-            EventsChannel.broadcast_members_update(group, [conn.assigns.current_user.id], GroupUser.user_ids(group.id))
+            user_ids = GroupUser.user_ids(group.id)
+            EventsChannel.broadcast_members_update(group, Enum.uniq([conn.assigns.current_user.id | user_ids]), user_ids)
 
             conn
             |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
@@ -195,7 +196,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       {:ok, message, system_message} ->
         default_group = GroupQueries.default_group(current_user)
         GroupChannel.broadcast_system_message(group, MessageQueries.load_info(system_message))
-        EventsChannel.broadcast_members_update(group, [conn.assigns.current_user.id], GroupUser.user_ids(group.id))
+        user_ids = GroupUser.user_ids(group.id)
+        EventsChannel.broadcast_members_update(group, Enum.uniq([conn.assigns.current_user.id | user_ids]), user_ids)
 
         conn
         |> json(%{message: message, redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)})
