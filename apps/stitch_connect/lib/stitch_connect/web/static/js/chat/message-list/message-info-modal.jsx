@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
+import { observer, inject } from "mobx-react";
 import Modal from "react-bootstrap/lib/Modal";
 import moment from "moment";
+import sortBy from "lodash/sortBy";
 
+@inject("usersStore")
+@observer
 class MessageInfoModal extends Component {
   renderModalHeader() {
     const { closeModal } = this.props;
@@ -36,14 +38,15 @@ class MessageInfoModal extends Component {
   }
 
   renderModalBody() {
-    const { message } = this.props;
+    const { message, usersStore } = this.props;
     const recipients = [];
     if (!message.read_status) return null;
 
     Object.keys(message.read_status).forEach(u => {
+      const user = usersStore.usersById[u];
       recipients.push({
         id: u,
-        name: "John Doe",
+        name: `${user.first_name} ${user.last_name}`,
         timestamp: message.read_status[u]
       });
     });
@@ -69,7 +72,9 @@ class MessageInfoModal extends Component {
               </tr>
             </thead>
             <tbody>
-              {recipients.map(recipient => this.renderItem(recipient))}
+              {sortBy(recipients, "name").map(recipient =>
+                this.renderItem(recipient)
+              )}
             </tbody>
           </table>
         </div>
