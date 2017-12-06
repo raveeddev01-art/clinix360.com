@@ -176,37 +176,38 @@
   .modal-body {
     max-height: 90vh;
     overflow-y: auto;
+    @include stitch-scroll();
 
     h4 {
-      text-transform: uppercase;
-      color: #666;
-      margin-bottom: 4px;
+      padding: 8px;
+      border-bottom: 1px solid #f1f1f1;
+      margin-top: 0;
+      margin-bottom: 20px;
     }
 
-    .read-status-row {
-      padding: 10px 0;
-      margin-left: 0;
-      margin-right: 0;
+    table {
+      width: 100%;
 
-      &:not(:last-child) {
-        border-bottom: 1px solid $border-color-secondary;
+      > tbody > tr:nth-of-type(odd) {
+        background-color: #f1f1f1;
       }
 
-      > * {
-        padding-left: 0;
-        padding-right: 0;
+      th {
+        font-size: 15px;
       }
 
-      .name {
-        color: #666;
-      }
+      th,
+      td {
+        padding: 8px 8px;
 
-      .date {
-        color: #999;
-      }
+        &.sent-to {
+          width: 45%;
+          border-radius: 4px 0 0 4px;
+        }
 
-      .time {
-        color: #333;
+        &.read-at {
+          border-radius: 0 4px 4px 0;
+        }
       }
     }
   }

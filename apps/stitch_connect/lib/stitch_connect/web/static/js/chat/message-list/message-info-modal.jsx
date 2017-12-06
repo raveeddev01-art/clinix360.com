@@ -21,55 +21,57 @@ class MessageInfoModal extends Component {
 
   renderItem(item) {
     return (
-      <Row key={`read-status-${item.id}`} className="read-status-row">
-        <Col xs={6} className="name">
-          {item.id}
-        </Col>
-        <Col xs={3} className="date text-center">
-          {moment
-            .utc(item.timestamp)
-            .local()
-            .format("MM/DD/YY")}
-        </Col>
-        <Col xs={3} className="time text-right">
-          {moment
-            .utc(item.timestamp)
-            .local()
-            .format("hh:mm A")}
-        </Col>
-      </Row>
+      <tr key={`read-status-${item.id}`}>
+        <td className="sent-to">{item.name}</td>
+        <td className="read-at">
+          {item.timestamp
+            ? moment
+                .utc(item.timestamp)
+                .local()
+                .format("MMMM Do, YYYY [at] h:mm A")
+            : "Unread"}
+        </td>
+      </tr>
     );
   }
 
   renderModalBody() {
     const { message } = this.props;
-    const notSeenRecipients = [];
-    const seenRecipients = [];
+    const recipients = [];
+    if (!message.read_status) return null;
+
     Object.keys(message.read_status).forEach(u => {
-      if (message.read_status[u] == null) {
-        notSeenRecipients.push({
-          id: u,
-          name: "John Doe",
-          timestamp: message.inserted_at
-        });
-      } else {
-        seenRecipients.push({
-          id: u,
-          name: "John Doe",
-          timestamp: message.read_status[u]
-        });
-      }
+      recipients.push({
+        id: u,
+        name: "John Doe",
+        timestamp: message.read_status[u]
+      });
     });
 
     return (
       <Modal.Body>
         <div>
-          <h4>Seen By</h4>
-          {seenRecipients.map(recipient => this.renderItem(recipient))}
-        </div>
-        <div>
-          <h4 className="m-u-20">Delivered To</h4>
-          {notSeenRecipients.map(recipient => this.renderItem(recipient))}
+          <h4>
+            Sent:{" "}
+            <em>
+              {moment
+                .utc(message.inserted_at)
+                .local()
+                .format("MMMM Do, YYYY [at] h:mm A")}
+            </em>
+          </h4>
+
+          <table className="table-read-status table-striped">
+            <thead>
+              <tr>
+                <th className="sent-to">Sent to:</th>
+                <th className="read-at">Read at:</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recipients.map(recipient => this.renderItem(recipient))}
+            </tbody>
+          </table>
         </div>
       </Modal.Body>
     );

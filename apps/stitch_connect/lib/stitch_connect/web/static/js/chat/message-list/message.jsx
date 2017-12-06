@@ -283,17 +283,16 @@ class Message extends Component {
   }
 
   renderReadStatus(message) {
-    const mine = message.user_id === currentUser.id;
     if (!message.read_status) return null;
 
     const deliveredToUsers = Object.keys(message.read_status).length;
     const readUsers = Object.values(message.read_status).filter(v => v != null)
       .length;
-    return mine ? (
+    return (
       <div className="message-read-status">
         {readUsers}/{deliveredToUsers} read
       </div>
-    ) : null;
+    );
   }
 
   render() {
@@ -358,7 +357,7 @@ class Message extends Component {
                 <div className="message-content-wrapper">
                   <MessageContent message={message} />
                   {this.renderEdited(message)}
-                  {this.renderReadStatus(message)}
+                  {mine && this.renderReadStatus(message)}
                 </div>
               </div>
 

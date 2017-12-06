@@ -935,6 +935,19 @@ class MessageStore {
       this.keepScrollAtBottom();
     }
   };
+
+  @action
+  onReadStatusUpdate = payload => {
+    if (!payload.messages) return;
+    Object.keys(payload.messages).forEach(message_id => {
+      const message = this.messages.find(
+        m => m.id === parseInt(message_id, 10)
+      );
+      if (message) {
+        message.read_status = payload.messages[message_id];
+      }
+    });
+  };
 }
 
 export default MessageStore;
