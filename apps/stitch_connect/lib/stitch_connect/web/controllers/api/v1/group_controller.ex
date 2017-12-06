@@ -171,6 +171,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
             {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
             system_message = MessageQueries.load_info(system_message)
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
+            Endpoint.broadcast("groups:#{group.slug}", "joined_group", %{user_id: conn.assigns.current_user.id})
             EventsChannel.broadcast_group_join(group, conn.assigns.current_user.id)
 
             conn
@@ -195,6 +196,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       {:ok, message, system_message} ->
         default_group = GroupQueries.default_group(current_user)
         Endpoint.broadcast("groups:#{group.slug}", "new_msg", MessageQueries.load_info(system_message))
+        Endpoint.broadcast("groups:#{group.slug}", "left_group", %{user_id: conn.assigns.current_user.id})
         Endpoint.broadcast("events:#{current_user.id}", "left_group", %{group_id: group.id})
         conn
         |> json(%{message: message, redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)})
