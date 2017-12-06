@@ -67,25 +67,19 @@ defmodule Stitch.MeteorMigration.User do
     "pin" => pin,
     "teamId" => team_id} = attributes) when is_list(roles) do
 
-    json =
-      %{
-        email: email,
-        username: username,
-        first_name: first_name,
-        last_name: last_name,
-        password: password_hash,
-        phone_number: phone_number,
-        pin: pin,
-        roles: map_roles(roles),
-        meteor_id: id,
-        meteor_team_id: team_id,
-      }
-
-    if attributes["active"] == false do
-      nil
-    else
-      json
-    end
+    %{
+      email: email,
+      username: username,
+      first_name: first_name,
+      last_name: last_name,
+      password: password_hash,
+      phone_number: phone_number,
+      pin: pin,
+      disabled: attributes["active"] == false,
+      roles: map_roles(roles),
+      meteor_id: id,
+      meteor_team_id: team_id,
+    }
   end
   def parse_user_json(json) do
     raise ParserError, message: "Invalid format from Meteor app: #{inspect(json)}"
@@ -121,6 +115,7 @@ defmodule Stitch.MeteorMigration.User do
     last_name: last_name,
     pin: pin,
     roles: roles,
+    disabled: disabled,
     password: password}) do
 
     %{team_id: team_id,
@@ -130,6 +125,7 @@ defmodule Stitch.MeteorMigration.User do
       last_name: last_name,
       pin: pin,
       roles: roles,
+      disabled: disabled,
       password_hash: password,
       token: token(),
       inserted_at: DateTime.utc_now(),

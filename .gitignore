@@ -13,11 +13,18 @@ erl_crash.dump
 # Ignored compiled assets from stitch-connect app.
 /apps/stitch_connect/priv/static/
 
+# Ignored integration test failures screenshots.
+/apps/stitch_connect/screenshots/
+
 # Ignore Intellij IDEA files.
 .idea/
 
 tsconfig.json
+
 doc
 
 # osx
 .DS_Store
+
+# integration test screenshots
+apps/stitch_connect/screenshots/

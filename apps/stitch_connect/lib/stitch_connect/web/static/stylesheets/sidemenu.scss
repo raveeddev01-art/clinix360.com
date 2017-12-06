@@ -9,6 +9,9 @@
       flex: 1;
       font-size: 20px;
       font-weight: 900;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     .btn {
@@ -84,7 +87,7 @@
       flex: 1;
       padding: 20px 15px;
       @include stitch-scroll();
-      overflow-y: hidden;
+      overflow: hidden;
 
       &:hover {
         overflow-y: overlay;

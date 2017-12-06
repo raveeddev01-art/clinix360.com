@@ -9,7 +9,16 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
         |> put_status(403)
         |> json(%{message: "Email or password is incorrect."})
       user ->
-        render conn, StitchConnect.Web.Api.V1.UserView, "login.json", user: user
+        case user.disabled do
+          false ->
+            conn
+            |> login_user(user)
+            |> render(StitchConnect.Web.Api.V1.UserView, "login.json", user: user)
+          true ->
+            conn
+            |> put_status(403)
+            |> json(%{message: "This account is disabled - contact your team admin."})
+        end
     end
   end
 

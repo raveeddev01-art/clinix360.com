@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.FindYourTeamControllerTest do
   use StitchConnect.Web.ConnCase, async: true
   use Bamboo.Test
-  alias Stitch.{FindYourTeam, Repo}
+  alias Stitch.{FindYourTeam, FindYourTeam.Token, Repo}
 
   describe "POST /find-your-team" do
     test "when a user with the given email exists", %{conn: conn} do
@@ -45,9 +45,10 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
         |> delete(api_v1_find_your_team_path(conn, :delete, token))
         |> json_response(200)
 
+      login_token = Repo.get_by!(Token, email: "foo@example.com", type: "login").token
       assert length(teams) == 2
-      assert %{"name" => team_1.name, "slug" => team_1.slug} in teams
-      assert %{"name" => team_2.name, "slug" => team_2.slug} in teams
+      assert %{"name" => team_1.name, "slug" => team_1.slug, "login_token" => login_token} in teams
+      assert %{"name" => team_2.name, "slug" => team_2.slug, "login_token" => login_token} in teams
 
       refute FindYourTeam.get_by_token(token)
     end

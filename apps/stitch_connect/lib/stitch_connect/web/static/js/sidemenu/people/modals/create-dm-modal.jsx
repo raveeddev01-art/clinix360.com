@@ -60,48 +60,50 @@ class CreateDMModal extends Component {
 
     const userIds = getGroupUserIdsThatHasCurrentUser(members);
     const slug = getSlugOfDMGroupByUsers(userIds);
-    const url = getGroupUrl({ users: members, type: "multi_dm" });
     const group = groupsStore.getGroupBySlug(slug);
 
     let promise;
 
     if (!group) {
       // Create
-      promise = groupsStore.createDMGroup(userIds);
+      promise = groupsStore
+        .createDMGroup(userIds)
+        .then(resposne => resposne.data);
     } else if (group.is_hidden) {
       // Unhide
-      promise = groupsStore.unhideGroup(group.id);
+      promise = groupsStore.unhideGroup(group.id).then(() => group);
     } else {
       // Do nothing
-      promise = Promise.resolve();
+      promise = Promise.resolve(group);
     }
 
-    promise.then(() => {
-      history.push(url);
+    promise.then(groupCreated => {
+      history.push(getGroupUrl(groupCreated));
     });
 
     toggle();
   };
 
   selectUser = user => () => {
-    const { history, toggle } = this.props;
     if (user.id === currentUser.id) {
-      history.push(`/direct/${user.username}`);
-      toggle();
-      return;
-    }
-
-    this.setState({
-      members: this.state.members.concat(
-        Object.assign({}, user, {
-          label: `${user.first_name} ${user.last_name}${user.id ===
-          currentUser.id
-            ? " (You)"
-            : ""}`
+      this.setState(
+        {
+          members: [user]
+        },
+        () => {
+          this.createDM();
+        }
+      );
+    } else {
+      this.setState({
+        members: this.state.members.concat({
+          ...user,
+          label: user.full_name
         })
-      )
-    });
-    this.selectComponent.focus();
+      });
+
+      this.selectComponent.focus();
+    }
   };
 
   render() {

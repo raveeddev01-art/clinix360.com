@@ -3,6 +3,10 @@ defmodule StitchConnect.Web.Endpoint do
 
   socket "/socket", StitchConnect.Web.UserSocket
 
+  if Application.get_env(:stitch_connect, :sql_sandbox) do
+    plug Phoenix.Ecto.SQL.Sandbox
+  end
+
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest

@@ -34,6 +34,13 @@ $admin-topbar-height-sm: 65px;
     .flex-header {
       padding: 0 14px 0 25px;
       border-right: 1px solid #fafafa;
+
+      h4 {
+        max-width: 230px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
 
     .flex-container {

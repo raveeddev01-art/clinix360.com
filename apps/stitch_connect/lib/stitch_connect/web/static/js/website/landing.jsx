@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { LinkContainer } from "react-router-bootstrap";
 import cx from "classnames";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
 
 import CreateTeamForm from "./components/create-team";
 import CUSTOMERS from "./components/customers-logos";
-
-import Button from "react-bootstrap/lib/Button";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 
 export default class Landing extends Component {
   renderCustomers() {

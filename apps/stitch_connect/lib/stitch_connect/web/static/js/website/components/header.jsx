@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import Navbar from "react-bootstrap/lib/Navbar";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
+import { LinkContainer } from "react-router-bootstrap";
+import { Link } from "react-router-dom";
 
 class Header extends Component {
   render() {
@@ -27,27 +28,33 @@ class Header extends Component {
                     Products
                   </Dropdown.Toggle>
                   <Dropdown.Menu className="products-menu">
-                    <MenuItem href={`https://${applicationHost}/connect`}>
-                      <div className="product-icon">
-                        <img src="/images/connect-menu.png" alt="" />
-                      </div>
-                      Connect
-                      <span>Team Messaging</span>
-                    </MenuItem>
-                    <MenuItem href={`https://${applicationHost}/engage`}>
-                      <div className="product-icon">
-                        <img src="/images/engage-menu.png" alt="" />
-                      </div>
-                      Engage
-                      <span>Patient Messaging</span>
-                    </MenuItem>
-                    <MenuItem href={`https://${applicationHost}/manage`}>
-                      <div className="product-icon">
-                        <img src="/images/manage-menu.png" alt="" />
-                      </div>
-                      Manage
-                      <span>Patient Management</span>
-                    </MenuItem>
+                    <LinkContainer to="/connect">
+                      <MenuItem>
+                        <div className="product-icon">
+                          <img src="/images/connect-menu.png" alt="" />
+                        </div>
+                        Connect
+                        <span>Team Messaging</span>
+                      </MenuItem>
+                    </LinkContainer>
+                    <LinkContainer to="/engage">
+                      <MenuItem>
+                        <div className="product-icon">
+                          <img src="/images/engage-menu.png" alt="" />
+                        </div>
+                        Engage
+                        <span>Patient Messaging</span>
+                      </MenuItem>
+                    </LinkContainer>
+                    <LinkContainer to="/manage">
+                      <MenuItem>
+                        <div className="product-icon">
+                          <img src="/images/manage-menu.png" alt="" />
+                        </div>
+                        Manage
+                        <span>Patient Management</span>
+                      </MenuItem>
+                    </LinkContainer>
                   </Dropdown.Menu>
                 </Dropdown>
               </li>
@@ -55,12 +62,9 @@ class Header extends Component {
 
             {!window.electronApp && (
               <li role="presentation">
-                <a
-                  href={`https://${applicationHost}/pricing`}
-                  className="nav-link"
-                >
+                <Link to="/pricing" className="nav-link">
                   Pricing
-                </a>
+                </Link>
               </li>
             )}
 
@@ -72,9 +76,11 @@ class Header extends Component {
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
-                    <MenuItem href={`https://${applicationHost}/downloads`}>
-                      <i className="fa fa-cloud-download" /> Downloads
-                    </MenuItem>
+                    <LinkContainer to="/downloads">
+                      <MenuItem>
+                        <i className="fa fa-cloud-download" /> Downloads
+                      </MenuItem>
+                    </LinkContainer>
 
                     <MenuItem
                       href="https://calendly.com/teamstitch/demo"
@@ -90,9 +96,11 @@ class Header extends Component {
                       <i className="fa fa-life-ring" /> Support
                     </MenuItem>
 
-                    <MenuItem href={`https://${applicationHost}/customers`}>
-                      <i className="fa fa-users" /> Customers
-                    </MenuItem>
+                    <LinkContainer to="/customers">
+                      <MenuItem>
+                        <i className="fa fa-users" /> Customers
+                      </MenuItem>
+                    </LinkContainer>
                   </Dropdown.Menu>
                 </Dropdown>
               </li>

@@ -37,7 +37,7 @@ export default class SelectTeam extends Component {
             return (
               <Button
                 key={team.slug}
-                href={`https://${team.slug}.${applicationHost}/login`}
+                href={`https://${team.slug}.${applicationHost}/find-your-team/${team.login_token}/login`}
                 bsSize="large"
                 block
               >

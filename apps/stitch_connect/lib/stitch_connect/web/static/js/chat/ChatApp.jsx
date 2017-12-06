@@ -27,7 +27,7 @@ class ChatApp extends Component {
   }
 
   componentWillUnmount() {
-    this.props.channelStore.leaveLastGroupChannel();
+    this.props.channelStore.leaveGroupChannel();
     this.props.sidemenuStore.isInChat = false;
   }
 

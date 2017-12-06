@@ -15,7 +15,9 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
-      passwordReset: false
+      loading: false,
+      passwordReset: false,
+      errorMessage: ""
     };
   }
 
@@ -39,11 +41,45 @@ class Login extends Component {
     });
   };
 
+  handleSubmit = evt => {
+    this.setState({ saving: true });
+    evt.preventDefault();
+    const { history } = this.props;
+    const { email, password } = this.state;
+
+    this.setState({ saving: true });
+    post("/api/v1/login", {
+      body: { email, password },
+      hideNotify: true
+    })
+      .then(() => {
+        if (window.electronApp) {
+          window.location.href = "/";
+        } else {
+          history.push("/apps");
+        }
+      })
+      .catch(err => {
+        this.setState({
+          saving: false,
+          passwordReset: false,
+          errorMessage: err.data.message
+        });
+      });
+  };
+
+  _renderLoadingIcon = () => {
+    const { saving } = this.state;
+    return saving ? (
+      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
+    ) : null;
+  };
+
   render() {
     return (
       <div>
-        {this.props.invalidLogin && (
-          <Alert bsStyle="danger">{this.props.invalidLogin}</Alert>
+        {this.state.errorMessage && (
+          <Alert bsStyle="danger">{this.state.errorMessage}</Alert>
         )}
         {this.state.passwordReset && (
           <Alert bsStyle="success">Your password is now reset.</Alert>
@@ -59,7 +95,7 @@ class Login extends Component {
             <strong>password</strong>.
           </h5>
 
-          <form action="/login" method="post">
+          <form action="/login" method="post" onSubmit={this.handleSubmit}>
             <input type="hidden" name="_csrf_token" value={window.csrfToken} />
 
             <FormGroup bsSize="large">
@@ -93,6 +129,7 @@ class Login extends Component {
               disabled={!this.state.email || !this.state.password}
             >
               Login
+              {this._renderLoadingIcon()}
             </Button>
 
             <h5>

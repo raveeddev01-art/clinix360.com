@@ -15,7 +15,7 @@ import {
 
 class GroupsStore {
   @observable groups = [];
-  @observable groupCursors = {}; // { group_id: message_id }
+  @observable groupCursors = {}; // { group_id: message_id }, Holds the id of oldest message that is visible in chat pane in group
   @observable currentGroupId = null;
 
   constructor(rootStore) {
@@ -30,9 +30,7 @@ class GroupsStore {
 
   getGroupBySlug = slug => this.groups.find(group => group.slug === slug);
 
-  getGroupUrl = id => {
-    return getGroupUrl(this.getGroupById(id));
-  };
+  getGroupUrl = id => getGroupUrl(this.getGroupById(id));
 
   @computed
   get currentGroup() {
@@ -49,25 +47,35 @@ class GroupsStore {
   }
 
   @computed
+  get visibleGroups() {
+    return this.groups.filter(g => !g.is_hidden);
+  }
+
+  @computed
+  get hiddenGroups() {
+    return this.groups.filter(g => g.is_hidden);
+  }
+
+  @computed
   get favoriteGroups() {
-    return this.groups.filter(group => group.is_favorite);
+    return this.visibleGroups.filter(group => group.is_favorite);
   }
 
   @computed
   get normalGroups() {
-    return this.groups.filter(
+    return this.visibleGroups.filter(
       group => group.type === "regular" && !group.is_favorite
     );
   }
 
   @computed
   get directGroups() {
-    return this.groups.filter(group => group.type !== "regular");
+    return this.visibleGroups.filter(group => group.type !== "regular");
   }
 
   @computed
   get multiDMGroups() {
-    return this.groups.filter(group => group.type === "multi_dm");
+    return this.visibleGroups.filter(group => group.type === "multi_dm");
   }
 
   @computed
@@ -119,7 +127,11 @@ class GroupsStore {
     const group = this.getGroupBySlug(slug);
 
     if (group && group.id !== this.currentGroupId) {
+      this.onClosedGroup();
+
+      // Change the group
       this.currentGroupId = group.id;
+
       this.onOpenedGroup();
     }
   };
@@ -128,7 +140,7 @@ class GroupsStore {
   openDMGroup = usernames => {
     const { usersStore } = this.rootStore;
     const users = usernames.map(username =>
-      usersStore.users.find(u => u.username === username)
+      usersStore.getUserByUsername(username)
     );
     const userIds = getGroupUserIdsThatHasCurrentUser(users);
     const slug = getSlugOfDMGroupByUsers(userIds);
@@ -224,14 +236,12 @@ class GroupsStore {
 
   /* Event handlers */
 
+  /**
+   * Run the process of when opening the group
+   */
   @action
   onOpenedGroup = () => {
-    const {
-      channelStore,
-      messageStore,
-      pinnedMessageStore,
-      groupPresenceStore
-    } = this.rootStore;
+    const { channelStore, messageStore, pinnedMessageStore } = this.rootStore;
 
     // Join group channel
     channelStore
@@ -244,9 +254,16 @@ class GroupsStore {
 
     // Reset pinned messages
     pinnedMessageStore.reset();
+  };
 
-    // Resubscribe to group presence store
-    groupPresenceStore.subscribeToGroupChannel();
+  /**
+   * Run the process of when closing the group
+   */
+  @action
+  onClosedGroup = () => {
+    const { channelStore } = this.rootStore;
+
+    channelStore.leaveGroupChannel();
   };
 
   @action
@@ -276,6 +293,37 @@ class GroupsStore {
     if (id === this.currentGroupId) {
       history.push(`/rooms/${slug}`);
     }
+  };
+
+  @action
+  onMarkedAsRead = payload => {
+    const { sidemenuStore } = this.rootStore;
+
+    this.updateGroupData(payload.group_id, {
+      unread_messages_count: payload.unread_messages_count,
+      mentions_count: payload.mentions_count,
+      last_read_at: payload.last_read_at,
+      marked_as_unread: false
+    });
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
+  };
+
+  @action
+  onMarkedAsUnread = payload => {
+    const { sidemenuStore } = this.rootStore;
+
+    this.updateGroupData(payload.group_id, {
+      unread_messages_count: payload.unread_messages_count,
+      mentions_count: payload.mentions_count,
+      last_read_at: payload.last_read_at,
+      marked_as_unread: true,
+      new_message_line_at: null
+    });
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
   };
 }
 

@@ -7,6 +7,7 @@ import cx from "classnames";
 import GetStarted from "./get_started";
 import TeamPicker from "./team/team_picker";
 import FindTeam from "./team/find_team";
+import FindTeamError from "./team/find_team_error";
 import SelectTeam from "./team/select_team";
 import Login from "./login/login";
 import Loggedout from "./logged-out/logged-out";
@@ -16,8 +17,8 @@ import SendEmail from "./reset-password/send-email";
 import SetPassword from "./reset-password/set-password";
 import Invitation from "./invitation";
 import InvitationError from "./invitation/error";
-import Header from "../website/components/header";
-import Footer from "../website/components/footer";
+import Header from "./components/header/header";
+import Footer from "./components/footer/footer";
 
 @inject("titleStore")
 @observer
@@ -40,6 +41,11 @@ class AuthenticationRouter extends Component {
             <Route exact path="/signin" component={TeamPicker} />
             <Route exact path="/find-your-team" component={FindTeam} />
             <Route exact path="/find-your-team/:token" component={SelectTeam} />
+            <Route
+              exact
+              path="/find-your-team/:token/login"
+              component={FindTeamError}
+            />
 
             <Route
               exact

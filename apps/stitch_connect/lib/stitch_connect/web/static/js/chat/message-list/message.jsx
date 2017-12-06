@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import moment from "moment";
 import { Element } from "react-scroll";
+import capitalize from "lodash/capitalize";
 import cx from "classnames";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
@@ -258,18 +259,18 @@ class Message extends Component {
 
   render() {
     const { message, messageStore, usersStore } = this.props;
-    const { user: { id: userId }, inserted_at: timestamp } = message;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
-    const elementClassName = cx("message", {
+    const { user: { id: userId }, inserted_at: insertedAt } = message;
+    const user = usersStore.usersById[userId];
+    const mine = userId === currentUser.id;
+
+    const containerClassName = cx("message-container", {
+      mine
+    });
+    const contentClassName = cx("message-content", {
       selected: this.state.selected,
       highlight: highlightId === message.id
     });
-    const mine = userId === currentUser.id;
-    const containerClassName = cx("message-container", {
-      mine,
-      "has-status": message.new_msg
-    });
-    const user = usersStore.usersById[userId];
 
     return (
       <div>
@@ -294,38 +295,36 @@ class Message extends Component {
             scrollThrottle={100}
             containment={chatDiv}
           >
-            <Element name={`msg_${message.id}`} className={elementClassName}>
-              <div className="message-header">
-                <div className="name">
-                  {user.first_name} {user.last_name}
+            <Element name={`message_${message.id}`} className="message">
+              <div className={contentClassName}>
+                <div className="message-header">
+                  <div className="name">
+                    {`${user.first_name} ${user.last_name}`}
+                  </div>
+
+                  <div
+                    className="time"
+                    data-time={moment
+                      .utc(insertedAt)
+                      .local()
+                      .format("hh:mm A")}
+                  >
+                    {this.renderActions(message)}
+                  </div>
+
+                  {this.renderStar(message)}
+                  {this.renderPin(message)}
                 </div>
 
-                <div
-                  className="time"
-                  data-time={moment
-                    .utc(timestamp)
-                    .local()
-                    .format("hh:mm A")}
-                >
-                  {this.renderActions(message)}
+                <div className="message-content-wrapper">
+                  <MessageContent message={message} />
+                  {this.renderEdited(message)}
                 </div>
-
-                {this.renderStar(message)}
-                {this.renderPin(message)}
               </div>
 
-              <div className="message-content-wrapper">
-                <MessageContent message={message} />
-                {this.renderEdited(message)}
-              </div>
+              <div className="message-status">{capitalize(message.status)}</div>
             </Element>
           </VisibilitySensor>
-          {mine &&
-            message.new_msg && (
-              <small className="text-muted msg-status">
-                {message.sending ? "Sending" : message.sent ? "Sent" : "Failed"}
-              </small>
-            )}
         </div>
       </div>
     );
