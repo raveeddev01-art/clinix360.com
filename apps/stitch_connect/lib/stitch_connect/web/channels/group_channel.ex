@@ -281,9 +281,19 @@ defmodule StitchConnect.Web.GroupChannel do
     @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
   end
 
+  def broadcast_members_update(group) do
+    user_ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.id) |> Repo.all
+    @endpoint.broadcast("groups:#{group.slug}", "members_update", %{user_ids: user_ids})
+  end
+
   def broadcast_read_status(group, messages) do
     read_status_json = Enum.reduce(messages, %{}, & Map.put(&2, &1.id, &1.read_status))
     @endpoint.broadcast("groups:#{group.slug}", "read_status_update", %{messages: read_status_json})
+  end
+
+  def broadcast_system_message(group, system_message) do
+    system_message = MessageQueries.load_info(system_message)
+    @endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
   end
 
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do

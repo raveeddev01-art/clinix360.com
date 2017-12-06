@@ -11,6 +11,7 @@ import Toastr from "./toastr/toastr";
 import Toggle from "./toggle/Toggle";
 import LoadingButton from "./loading-button";
 import AvatarUploader from "./avatar-uploader";
+import TeamList from "./team-list/team-list";
 
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
@@ -32,6 +33,7 @@ export {
   Toggle,
   LoadingButton,
   AvatarUploader,
+  TeamList,
   MessageContent,
   MessageFooter,
   MessageHeader,

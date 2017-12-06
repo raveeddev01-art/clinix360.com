@@ -136,4 +136,10 @@ defmodule StitchConnect.Web.EventsChannel do
   def broadcast_marked_as_unread(user, json_response) do
     @endpoint.broadcast("events:#{user.id}", "marked_as_unread", json_response)
   end
+
+  def broadcast_members_update(group, update_user_ids, user_ids) do
+    for id <- update_user_ids do
+      @endpoint.broadcast("events:#{id}", "members_updated", %{group_id: group.id, user_ids: user_ids})
+    end
+  end
 end

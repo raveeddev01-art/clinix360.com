@@ -10,7 +10,8 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import NavItemFavorite from "./nav-items/nav-item-favorite";
-import NavItemMembers from "./nav-items/nav-item-members";
+import NavItemInvite from "./nav-items/nav-item-invite";
+import NavItemRemove from "./nav-items/nav-item-remove";
 import NavItemNotifications from "./nav-items/nav-item-notifications";
 import NavItemRename from "./nav-items/nav-item-rename";
 import NavItemConvert from "./nav-items/nav-item-convert";
@@ -99,7 +100,8 @@ class TopNav extends Component {
       return (
         <div>
           <NavItemFavorite />
-          {isNotDM && !isDefault && <NavItemMembers />}
+          {isNotDM && !isDefault && <NavItemInvite />}
+          {isNotDM && !isDefault && <NavItemRemove />}
           {isNotDM && <NavItemNotifications />}
           {isNotDM && <NavItemRename />}
           {isNotDM && !isDefault && <NavItemConvert />}
