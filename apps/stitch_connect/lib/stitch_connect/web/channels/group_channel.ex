@@ -291,6 +291,10 @@ defmodule StitchConnect.Web.GroupChannel do
     @endpoint.broadcast("groups:#{group.slug}", "read_status_update", %{messages: read_status_json})
   end
 
+  def broadcast_system_message(group, system_message) do
+    @endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
+  end
+
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
     attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}

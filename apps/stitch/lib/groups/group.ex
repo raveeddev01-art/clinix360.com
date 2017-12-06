@@ -308,9 +308,23 @@ defmodule Stitch.Group do
     add_user_ids = user_ids -- [creator_user_id | current_member_ids]
 
     Repo.transaction fn ->
-      remove_user_ids |> Enum.each(&Group.remove(group, &1))
-      add_user_ids |> Enum.each(&Group.add_user(group, &1))
-      %{removed: remove_user_ids, added: add_user_ids}
+      system_messages = []
+
+      system_messages = Enum.reduce(remove_user_ids, system_messages, fn (user_id, acc) ->
+        case Group.remove(group, user_id) do
+          {:ok, %{system_message: system_message}} -> [system_message | acc]
+          _ -> acc
+        end
+      end)
+
+      system_messages = Enum.reduce(add_user_ids, system_messages, fn (user_id, acc) ->
+        case Group.add_user(group, user_id) do
+          {:ok, %{system_message: system_message}} -> [system_message | acc]
+          _ -> acc
+        end
+      end)
+
+      %{removed: remove_user_ids, added: add_user_ids, system_messages: system_messages}
     end
   end
 end
