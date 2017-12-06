@@ -312,7 +312,7 @@ defmodule Stitch.Group do
 
       system_messages = Enum.reduce(remove_user_ids, system_messages, fn (user_id, acc) ->
         case Group.remove(group, user_id) do
-          {:ok, %{system_message: system_message}} -> [system_message | acc]
+          {:ok, _message, system_message} -> [system_message | acc]
           _ -> acc
         end
       end)

@@ -292,6 +292,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   def broadcast_system_message(group, system_message) do
+    system_message = MessageQueries.load_info(system_message)
     @endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
   end
 
