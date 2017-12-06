@@ -12,9 +12,8 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
-
-import { confirm } from "../../common/modals";
-import MessageContent from "../../common/components/messages/message-content/message-content";
+import { confirm } from "common/modals";
+import { MessageContent, ReactionPicker } from "common/components";
 import MessageInfoModal from "./message-info-modal";
 
 @inject("messageStore", "groupStore", "usersStore")
@@ -22,7 +21,13 @@ import MessageInfoModal from "./message-info-modal";
 class Message extends Component {
   constructor(props) {
     super(props);
-    this.state = { selected: false, dropup: false, showInfoModal: false };
+
+    this.state = {
+      selected: false,
+      dropup: false,
+      showEmojiPicker: false,
+      showInfoModal: false
+    };
   }
 
   componentDidMount() {
@@ -53,6 +58,37 @@ class Message extends Component {
           this.messageDiv.offsetTop
       });
     }
+  };
+
+  onSelectEmoji = emoji => {
+    const { messageStore, message } = this.props;
+    this.setState({ showEmojiPicker: false }, () => {
+      if (emoji) {
+        messageStore.toggleReaction(message.id, emoji.colons);
+      }
+    });
+  };
+
+  getEmojiMartStyle = () => {
+    const martStyles = {};
+    const { message } = this.props;
+    if (!this.messageDiv) {
+      return {};
+    }
+
+    const pos = this.messageDiv.getBoundingClientRect();
+    if (pos.bottom < window.innerHeight / 2) {
+      martStyles.top = "100%";
+    } else {
+      martStyles.bottom = "100%";
+    }
+
+    if (message.user.id === currentUser.id) {
+      martStyles.right = 0;
+    } else {
+      martStyles.left = "100%";
+    }
+    return martStyles;
   };
 
   markAsUnread = () => {
@@ -94,6 +130,10 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     messageStore.toggleStar(message.id);
+  };
+
+  toggleReaction = () => {
+    this.setState({ showEmojiPicker: true });
   };
 
   showInfoModal = () => {
@@ -266,6 +306,12 @@ class Message extends Component {
             </span>
           </MenuItem>
 
+          <MenuItem onClick={this.toggleReaction}>
+            <span>
+              <i className="fa fa-smile-o" />&nbsp;Reactions
+            </span>
+          </MenuItem>
+
           <MenuItem onClick={this.showInfoModal}>
             <span>
               <i className="fa fa-info-circle" />&nbsp;Info
@@ -349,6 +395,13 @@ class Message extends Component {
                   >
                     {this.renderActions(message)}
                   </div>
+
+                  <ReactionPicker
+                    message={message}
+                    onSelectReaction={this.onSelectEmoji}
+                    show={this.state.showEmojiPicker}
+                    style={this.getEmojiMartStyle()}
+                  />
 
                   {this.renderStar(message)}
                   {this.renderPin(message)}

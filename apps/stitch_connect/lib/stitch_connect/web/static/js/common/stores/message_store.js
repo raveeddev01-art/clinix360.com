@@ -717,6 +717,14 @@ class MessageStore {
     this.messages.splice(tempMessageIndex, 1);
   };
 
+  @action
+  toggleReaction = (messageId, emoji) => {
+    this.groupChannel.push("toggle_reaction", {
+      message_id: messageId,
+      emoji_name: emoji
+    });
+  };
+
   // ////////////// //
   // EVENT HANDLERS //
   // ////////////// //
@@ -815,20 +823,16 @@ class MessageStore {
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();
       }
-    } else {
+    } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
       // If you're at the bottom and no NML, keep up with the new message
-      if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
-        this.markAsRead(false);
-      } else {
-        const isMention = newMessage.mentioned_user_ids.includes(
-          currentUser.id
-        );
+      this.markAsRead(false);
+    } else {
+      const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
-        this.updateGroupData({
-          unread_messages_count: this.unreadMessagesCount + 1,
-          mentions_count: this.mentionsCount + (isMention ? 1 : 0)
-        });
-      }
+      this.updateGroupData({
+        unread_messages_count: this.unreadMessagesCount + 1,
+        mentions_count: this.mentionsCount + (isMention ? 1 : 0)
+      });
     }
 
     // Remove temp message
@@ -933,6 +937,14 @@ class MessageStore {
         p => p.link !== payload.link
       );
       this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  onReactionUpdate = payload => {
+    const message = this.messages.find(m => m.id === payload.message_id);
+    if (message) {
+      message.reactions = payload.reactions;
     }
   };
 
