@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Group, GroupQueries, GroupAuthorization, TeamAuthorization, MessageQueries}
+  alias Stitch.{Group, GroupQueries, GroupUser, GroupAuthorization, TeamAuthorization, MessageQueries}
   alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
 
   def index(conn, %{"slug" => slug}) do
@@ -254,9 +254,11 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
           |> String.split(",")
           |> Enum.map(&String.to_integer/1)
 
-        {:ok, %{removed: removed, added: added}} = Group.update_members(group, user_ids)
-        user_ids = Enum.uniq(removed ++ added)
-        EventsChannel.broadcast_members_update(group, user_ids)
+        {:ok, %{removed: removed, added: _added}} = Group.update_members(group, user_ids)
+        user_ids = GroupUser.user_ids(group.id)
+        update_user_ids = Enum.uniq(user_ids ++ removed)
+
+        EventsChannel.broadcast_members_update(group, update_user_ids, user_ids)
 
         conn
         |> json(%{message: "Users invited to room."})
