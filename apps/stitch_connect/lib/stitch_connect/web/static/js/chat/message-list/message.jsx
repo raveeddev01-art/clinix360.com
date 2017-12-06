@@ -148,26 +148,6 @@ class Message extends Component {
     });
   };
 
-  renderEdited(message) {
-    const { edited, edited_at: editedAt } = message;
-
-    if (!edited) {
-      return null;
-    }
-
-    const editedTooltip = (
-      <Tooltip id="edited-tooltip">{moment(editedAt).calendar()}</Tooltip>
-    );
-
-    return (
-      <OverlayTrigger placement="top" overlay={editedTooltip}>
-        <span className="message-icon icon-edited">
-          <i className="fa fa-edit" />
-        </span>
-      </OverlayTrigger>
-    );
-  }
-
   renderStar(message) {
     const { starred } = message;
 
@@ -409,7 +389,6 @@ class Message extends Component {
 
                 <div className="message-content-wrapper">
                   <MessageContent message={message} />
-                  {this.renderEdited(message)}
                   {mine && this.renderReadStatus(message)}
                 </div>
               </div>
