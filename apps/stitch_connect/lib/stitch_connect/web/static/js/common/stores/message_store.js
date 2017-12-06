@@ -717,6 +717,14 @@ class MessageStore {
     this.messages.splice(tempMessageIndex, 1);
   };
 
+  @action
+  toggleReaction = (messageId, emoji) => {
+    this.groupChannel.push("toggle_reaction", {
+      message_id: messageId,
+      emoji_name: emoji
+    });
+  };
+
   // ////////////// //
   // EVENT HANDLERS //
   // ////////////// //
@@ -933,6 +941,14 @@ class MessageStore {
         p => p.link !== payload.link
       );
       this.keepScrollAtBottom();
+    }
+  };
+
+  @action
+  onReactionUpdate = payload => {
+    const message = this.messages.find(m => m.id === payload.message_id);
+    if (message) {
+      message.reactions = payload.reactions;
     }
   };
 }

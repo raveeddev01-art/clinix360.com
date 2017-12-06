@@ -66,7 +66,9 @@ class AddonMessage extends Component {
               timestamp={message.inserted_at}
               user={message.user}
             />
-            <MessageContent message={message} />
+            <MessageContent
+              message={Object.assign({}, message, { reactions: null })}
+            />
             <MessageFooter message={message} />
           </div>
         </div>
