@@ -16,6 +16,7 @@ import TeamList from "./team-list/team-list";
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
 import MessageHeader from "./messages/message-header/message-header";
+import ReactionPicker from "./messages/reaction-picker";
 import AddonMessage from "./messages/addon-message";
 
 export {
@@ -36,5 +37,6 @@ export {
   MessageContent,
   MessageFooter,
   MessageHeader,
-  AddonMessage
+  AddonMessage,
+  ReactionPicker
 };
