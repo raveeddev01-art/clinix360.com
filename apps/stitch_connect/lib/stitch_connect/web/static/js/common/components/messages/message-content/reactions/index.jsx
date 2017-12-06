@@ -7,8 +7,8 @@ import cx from "classnames";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 
-@observer
 @inject("usersStore")
+@observer
 class Reactions extends Component {
   getTooltip = (userIds, emoji) => {
     const users = this.props.usersStore.usersById;
