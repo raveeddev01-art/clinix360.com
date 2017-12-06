@@ -21,9 +21,15 @@ defmodule StitchConnect.Web.FeatureCase do
       Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
     end
 
-    metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(Stitch.Repo, self())
-    {:ok, session} = Wallaby.start_session(metadata: metadata)
-    session = Wallaby.Browser.resize_window(session, 1400, 1000)
+    session =
+      if tags[:start_session] do
+        metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(Stitch.Repo, self())
+        {:ok, session} = Wallaby.start_session(metadata: metadata)
+        Wallaby.Browser.resize_window(session, 1400, 1000)
+      else
+        :ignore
+      end
+
     {:ok, session: session}
   end
 end
