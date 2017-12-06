@@ -65,9 +65,9 @@ class PresenceStore {
     return this.everyCurrentUserSession("lockout_timer_expired");
   }
 
-  isOnline(userId) {
-    return !!this.onlineUsersMap[`${userId}`];
-  }
+  isOnline = userId => {
+    return !!this.onlineUsersMap[userId];
+  };
 
   @action
   onPresenceState = state => {
