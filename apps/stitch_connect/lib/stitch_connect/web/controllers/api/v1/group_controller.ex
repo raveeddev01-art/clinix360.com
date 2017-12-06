@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.{Group, GroupQueries, GroupAuthorization, TeamAuthorization, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel, GroupChannel}
 
   def index(conn, %{"slug" => slug}) do
     user = conn.assigns.current_user
@@ -255,6 +255,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
           |> Enum.map(&String.to_integer/1)
 
         Group.update_members(group, user_ids)
+        GroupChannel.broadcast_members_update(group)
 
         conn
         |> json(%{message: "Users invited to room."})
