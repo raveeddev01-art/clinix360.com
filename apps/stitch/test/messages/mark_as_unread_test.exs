@@ -54,7 +54,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
     test "updates group_users.last_read_at, group_users.unread_messages_count, and group_users.mentions_count", %{bob: bob, joe: joe, group: group} do
       {:ok, %{message: _message1}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
-      {:ok, %{message: _message3}} = Message.create(group.id, bob, %{"text_content" => "Mentions <@U#{joe.id}>", "type" => "chat"})
+      {:ok, %{message: _message3}} = Message.create(group.id, bob, %{"text_content" => "Mentions @#{joe.username}", "type" => "chat"})
 
       Message.mark_as_read(joe.id, group.id)
       Message.mark_as_unread(joe.id, group.id, message2)

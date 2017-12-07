@@ -39,7 +39,7 @@ defmodule Stitch.Message.Mention do
       if user.username == author.username do
         acc
       else
-        Map.put(acc, "<@U#{user.id}>", [user.id])
+        Map.put(acc, "@#{user.username}", [user.id])
       end
     end)
     Map.put(mentions, "@all", Enum.map(users, & &1.id) |> List.delete(author.id))
@@ -123,9 +123,9 @@ defmodule Stitch.Message.Mention do
       "/",
       ":",
       ";",
-      # "<",
+      "<",
       "=",
-      # ">",
+      ">",
       "?",
       "[",
       "\\",
