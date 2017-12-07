@@ -33,22 +33,22 @@ class Reactions extends Component {
   };
 
   render() {
-    const { reactions_web, messageId } = this.props;
-    if (!reactions_web) {
+    const { reactions, messageId } = this.props;
+    if (!reactions) {
       return null;
     }
 
     return (
       <div className="message-reactions">
-        {Object.keys(reactions_web).map(emoji => {
-          const active = reactions_web[emoji].indexOf(currentUser.id) > -1;
+        {Object.keys(reactions).map(emoji => {
+          const active = reactions[emoji].indexOf(currentUser.id) > -1;
           return (
             <OverlayTrigger
               placement="top"
               key={`${messageId}_${emoji}`}
               overlay={
                 <Tooltip id={`${messageId}_${emoji}`}>
-                  {this.getTooltip(reactions_web[emoji], emoji)}
+                  {this.getTooltip(reactions[emoji], emoji)}
                 </Tooltip>
               }
             >
@@ -58,7 +58,7 @@ class Reactions extends Component {
                 onClick={this.toggleReaction(emoji, !active)}
               >
                 <Emoji emoji={emoji} size={14} />
-                {reactions_web[emoji].length}
+                {reactions[emoji].length}
               </Button>
             </OverlayTrigger>
           );
@@ -69,14 +69,14 @@ class Reactions extends Component {
 }
 
 Reactions.propTypes = {
-  reactions_web: PropTypes.object,
+  reactions: PropTypes.object,
   messageId: PropTypes.any.isRequired,
   onToggle: PropTypes.func.isRequired
 };
 
 Reactions.defaultProps = {
   onToggle: () => {},
-  reactions_web: null
+  reactions: null
 };
 
 export default Reactions;

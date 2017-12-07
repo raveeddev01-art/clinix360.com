@@ -147,7 +147,7 @@ class MessageContent extends Component {
           {this.renderEdited()}
           <Reactions
             messageId={message.id}
-            reactions_web={message.reactions_web}
+            reactions={message.reactions_web}
             onToggle={this.onToggle}
           />
         </div>
