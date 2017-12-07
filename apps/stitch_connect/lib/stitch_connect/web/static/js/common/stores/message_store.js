@@ -947,7 +947,6 @@ class MessageStore {
     }
   };
 
-<<<<<<< HEAD
   /**
    * Encodes message for backend compatible format
    * - @emil -> <@U123>
