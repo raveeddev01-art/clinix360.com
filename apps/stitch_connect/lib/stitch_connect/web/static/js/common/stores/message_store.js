@@ -106,7 +106,7 @@ class MessageStore {
   }
 
   get markedAsUnread() {
-    return this.group.marked_as_unread || false;
+    return this.group.marked_as_unread;
   }
 
   @computed

@@ -5,8 +5,8 @@
  */
 
 import { observable, computed, action } from "mobx";
-import orderBy from "lodash/orderBy";
 import history from "lib/history";
+import orderBy from "lodash/orderBy";
 
 import {
   getGroupUserIdsThatHasCurrentUser,
@@ -118,7 +118,12 @@ class GroupsStore {
     const { sidemenuStore } = this.rootStore;
 
     return get("/api/v1/groups").then(response => {
-      this.groups = orderBy(response.data, ["name"]);
+      this.groups = orderBy(response.data, ["name"]).map(group => ({
+        ...group,
+        new_message_line_at: null,
+        marked_as_unread: false
+      }));
+
       sidemenuStore.updateFavicon();
     });
   };
@@ -319,8 +324,8 @@ class GroupsStore {
       unread_messages_count: payload.unread_messages_count,
       mentions_count: payload.mentions_count,
       last_read_at: payload.last_read_at,
-      marked_as_unread: true,
-      new_message_line_at: null
+      new_message_line_at: payload.last_read_at,
+      marked_as_unread: true
     });
 
     // Update favicon
