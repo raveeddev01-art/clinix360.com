@@ -34,7 +34,7 @@ defmodule Stitch.MessageReadingTest do
     end
 
     test "updates group_users.last_read_at, group_users.unread_messages_count, and group_users.mentions_count", %{bob: bob, alice: alice, eve: eve, group: group} do
-      {:ok, %{message: message}} = Message.create(group.id, eve, %{"text_content" => "Hi, @bob!", "type" => "chat"})
+      {:ok, %{message: message}} = Message.create(group.id, eve, %{"text_content" => "Hi, <@U#{bob.id}>!", "type" => "chat"})
       assert Map.has_key?(message.read_status, to_string(bob.id))
       assert Map.has_key?(message.read_status, to_string(alice.id))
       assert [nil, nil] == Map.values(message.read_status)
