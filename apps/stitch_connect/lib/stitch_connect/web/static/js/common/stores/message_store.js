@@ -430,6 +430,13 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
+    this.updateGroupData({
+      last_read_at: moment
+        .utc(this.messages[0].inserted_at)
+        .add(1, "minute")
+        .format("YYYY-MM-DDTHH:mm:ss.SSS")
+    });
+
     if (resetNewMessageLine) {
       this.updateGroupData({ new_message_line_at: null });
     } else if (!this.newMessageLineAt) {
@@ -818,6 +825,14 @@ class MessageStore {
       return;
     }
 
+    // Remove temp message
+    if (newMessage.request_id) {
+      this.removeTempMessage(newMessage.request_id);
+    }
+
+    // Add new message
+    this.messages.unshift(newMessage);
+
     // Update unread messages info of the group
     if (newMessage.user_id === currentUser.id) {
       if (this.unreadMessagesCount === 0) {
@@ -834,21 +849,6 @@ class MessageStore {
         mentions_count: this.mentionsCount + (isMention ? 1 : 0)
       });
     }
-
-    // Remove temp message
-    if (newMessage.request_id) {
-      this.removeTempMessage(newMessage.request_id);
-    }
-
-    this.updateGroupData({
-      last_read_at: moment
-        .utc(newMessage.inserted_at)
-        .add(1, "millisecond")
-        .format("YYYY-MM-DDTHH:mm:ss.SSS")
-    });
-
-    // Add new message
-    this.messages.unshift(newMessage);
 
     // If my message or at scroll bottom, scroll to bottom
     if (
