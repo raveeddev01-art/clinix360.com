@@ -15,22 +15,22 @@ class GroupPresenceStore {
       .filter(id => id !== window.currentUser.id.toString());
   }
 
-  subscribeToGroupChannel = () => {
-    this.usersCurrentlyInGroup = {};
+  // ////////////// //
+  // EVENT HANDLERS //
+  // ////////////// //
 
-    this.rootStore.channelStore.groupChannel.on("presence_state", state => {
-      this.usersCurrentlyInGroup = Presence.syncState(
-        this.usersCurrentlyInGroup,
-        state
-      );
-    });
+  onPresenceState = state => {
+    this.usersCurrentlyInGroup = Presence.syncState(
+      this.usersCurrentlyInGroup,
+      state
+    );
+  };
 
-    this.rootStore.channelStore.groupChannel.on("presence_diff", diff => {
-      this.usersCurrentlyInGroup = Presence.syncDiff(
-        this.usersCurrentlyInGroup,
-        diff
-      );
-    });
+  onPresenceDiff = diff => {
+    this.usersCurrentlyInGroup = Presence.syncDiff(
+      this.usersCurrentlyInGroup,
+      diff
+    );
   };
 }
 

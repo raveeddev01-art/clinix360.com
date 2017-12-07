@@ -1,38 +1,38 @@
 import React, { Component } from "react";
-import { toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
-import Members from "../../../common/components/members/members";
+import { TeamList } from "common/components";
 
-@inject("groupStore")
+@inject("groupStore", "presenceStore", "usersStore")
 @observer
-export default class NavItemMembers extends Component {
+export default class NavItemRemoveMembers extends Component {
   constructor(props) {
     super(props);
 
-    const { groupStore } = props;
-
     this.state = {
       showModal: false,
-      members: toJS(groupStore.group.users)
+      members: ""
     };
   }
 
   saveUsers = () => {
     const { groupStore } = this.props;
-
-    groupStore.inviteUsers(
-      this.state.members.map(member => member.id).join(",")
+    const groupUsers = groupStore.group.users;
+    const removeMembers = this.state.members.split(",");
+    this.props.groupStore.inviteUsers(
+      groupUsers
+        .filter(u => removeMembers.indexOf(`${u.id}`) === -1)
+        .map(u => u.id)
+        .join(",")
     );
-
     this.setState({ showModal: false });
   };
 
   openModal = () => {
-    this.setState({ showModal: true });
+    this.setState({ showModal: true, members: "" });
   };
 
   closeModal = () => {
@@ -43,10 +43,23 @@ export default class NavItemMembers extends Component {
     this.setState({ members: value });
   };
 
+  selectUser = user => {
+    this.setState({
+      members: this.state.members
+        ? `${this.state.members},${user.id}`
+        : `${user.id}`
+    });
+  };
+
   render() {
+    const { presenceStore, groupStore, usersStore } = this.props;
+    const users = usersStore.users.filter(u => {
+      return groupStore.group.users.findIndex(gu => gu.id === u.id) > -1;
+    });
+
     return [
       <MenuItem key="members_menuitem" onClick={this.openModal}>
-        Members
+        Remove
       </MenuItem>,
       <Modal
         key="members_modal"
@@ -54,21 +67,28 @@ export default class NavItemMembers extends Component {
         onHide={this.closeModal}
       >
         <Modal.Header>
-          <Modal.Title>Members</Modal.Title>
+          <Modal.Title>Remove</Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />
           </a>
         </Modal.Header>
         <Modal.Body>
-          <h5>Select users to invite to this room.</h5>
-          <Members onChange={this.handleChange} value={this.state.members} />
+          <TeamList
+            onChange={this.handleChange}
+            onSelectUser={this.selectUser}
+            value={this.state.members}
+            isOnline={presenceStore.isOnline}
+            users={users}
+          >
+            Select members to remove from the room.
+          </TeamList>
         </Modal.Body>
         <Modal.Footer>
           <Button bsSize="large" onClick={this.closeModal}>
             Cancel
           </Button>
           <Button bsSize="large" bsStyle="primary" onClick={this.saveUsers}>
-            Done
+            Remove
           </Button>
         </Modal.Footer>
       </Modal>

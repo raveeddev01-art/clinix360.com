@@ -6,6 +6,7 @@
 
 import { observable, computed, action } from "mobx";
 import orderBy from "lodash/orderBy";
+import history from "lib/history";
 
 import {
   getGroupUserIdsThatHasCurrentUser,
@@ -127,7 +128,11 @@ class GroupsStore {
     const group = this.getGroupBySlug(slug);
 
     if (group && group.id !== this.currentGroupId) {
+      this.onClosedGroup();
+
+      // Change the group
       this.currentGroupId = group.id;
+
       this.onOpenedGroup();
     }
   };
@@ -136,7 +141,7 @@ class GroupsStore {
   openDMGroup = usernames => {
     const { usersStore } = this.rootStore;
     const users = usernames.map(username =>
-      usersStore.users.find(u => u.username === username)
+      usersStore.getUserByUsername(username)
     );
     const userIds = getGroupUserIdsThatHasCurrentUser(users);
     const slug = getSlugOfDMGroupByUsers(userIds);
@@ -232,14 +237,12 @@ class GroupsStore {
 
   /* Event handlers */
 
+  /**
+   * Run the process of when opening the group
+   */
   @action
   onOpenedGroup = () => {
-    const {
-      channelStore,
-      messageStore,
-      pinnedMessageStore,
-      groupPresenceStore
-    } = this.rootStore;
+    const { channelStore, messageStore, pinnedMessageStore } = this.rootStore;
 
     // Join group channel
     channelStore
@@ -252,9 +255,16 @@ class GroupsStore {
 
     // Reset pinned messages
     pinnedMessageStore.reset();
+  };
 
-    // Resubscribe to group presence store
-    groupPresenceStore.subscribeToGroupChannel();
+  /**
+   * Run the process of when closing the group
+   */
+  @action
+  onClosedGroup = () => {
+    const { channelStore } = this.rootStore;
+
+    channelStore.leaveGroupChannel();
   };
 
   @action
@@ -284,6 +294,56 @@ class GroupsStore {
     if (id === this.currentGroupId) {
       history.push(`/rooms/${slug}`);
     }
+  };
+
+  @action
+  onMarkedAsRead = payload => {
+    const { sidemenuStore } = this.rootStore;
+
+    this.updateGroupData(payload.group_id, {
+      unread_messages_count: payload.unread_messages_count,
+      mentions_count: payload.mentions_count,
+      last_read_at: payload.last_read_at,
+      marked_as_unread: false
+    });
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
+  };
+
+  @action
+  onMarkedAsUnread = payload => {
+    const { sidemenuStore } = this.rootStore;
+
+    this.updateGroupData(payload.group_id, {
+      unread_messages_count: payload.unread_messages_count,
+      mentions_count: payload.mentions_count,
+      last_read_at: payload.last_read_at,
+      marked_as_unread: true,
+      new_message_line_at: null
+    });
+
+    // Update favicon
+    sidemenuStore.updateFavicon();
+  };
+
+  @action
+  onMembersUpdated = payload => {
+    const allUsers = this.rootStore.usersStore.usersById;
+    const users = payload.user_ids.map(id => allUsers[id]);
+    this.updateGroupData(payload.group_id, {
+      users
+    });
+
+    // redirect to default group if user is removed from current room
+    const meRemoved = payload.user_ids.indexOf(currentUser.id) === -1;
+    if (meRemoved && this.currentGroupId === payload.group_id) {
+      history.push(`/rooms/${this.defaultGroup.slug}`);
+    }
+
+    // @TODO update groups without loading all groups
+    // @NOTE loadGroups is called because private groups aren't existed yet in the list
+    this.loadGroups();
   };
 }
 

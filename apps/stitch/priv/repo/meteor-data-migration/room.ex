@@ -33,7 +33,7 @@ defmodule Stitch.MeteorMigration.Room do
     case Map.fetch(users, meteor_creator_username) do
       {:ok, user} ->
         %{
-          name: Map.get(attributes, "fname", slug),
+          name: parse_room_name(attributes),
           slug: slug,
           dm: false,
           public: true,
@@ -59,7 +59,7 @@ defmodule Stitch.MeteorMigration.Room do
     case Map.fetch(users, meteor_creator_username) do
       {:ok, user} ->
         %{
-          name: Map.get(attributes, "fname", slug),
+          name: parse_room_name(attributes),
           slug: slug,
           dm: false,
           public: true,
@@ -85,7 +85,7 @@ defmodule Stitch.MeteorMigration.Room do
     case Map.fetch(users, meteor_creator_username) do
       {:ok, user} ->
         %{
-          name: Map.get(attributes, "fname", slug),
+          name: parse_room_name(attributes),
           slug: slug,
           dm: false,
           public: false,
@@ -97,6 +97,14 @@ defmodule Stitch.MeteorMigration.Room do
         }
       :error ->
         nil
+    end
+  end
+
+  def parse_room_name(attributes) do
+    case Map.fetch(attributes, "fname") do
+      {:ok, fname} ->
+        String.replace(fname, ~r/[^\w-\s]/, "")
+      :error -> Map.get(attributes, "name")
     end
   end
 

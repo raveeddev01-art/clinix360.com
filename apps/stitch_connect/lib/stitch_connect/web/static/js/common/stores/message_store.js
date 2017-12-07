@@ -36,9 +36,6 @@ class MessageStore {
   @observable isLoadingPast = false;
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
 
-  @observable newMessageLineAt = null; // Timestamp that the new message line should appear at
-
-  @observable markedAsUnread = false;
   @observable highlightId = null; // message will be highlighted
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
@@ -103,6 +100,15 @@ class MessageStore {
 
   get lastReadAt() {
     return this.group.last_read_at;
+  }
+
+  // Timestamp that the new message line should appear at
+  get newMessageLineAt() {
+    return this.group.new_message_line_at || null;
+  }
+
+  get markedAsUnread() {
+    return this.group.marked_as_unread || false;
   }
 
   @computed
@@ -192,12 +198,15 @@ class MessageStore {
     this.loadedAll = false;
     this.loadedAllRecent = false;
     this.loadedInitial = false;
-    this.markedAsUnread = false;
     this.messages = [];
     this.messageElements = {};
     this.messageInEdit = null;
     this.textInEdit = "";
-    this.newMessageLineAt = null;
+
+    this.updateGroupData({
+      marked_as_unread: false,
+      new_message_line_at: null
+    });
   }
 
   @action
@@ -208,6 +217,22 @@ class MessageStore {
       Object.assign(message, data);
     }
   };
+
+  @action
+  updateGroupData(data) {
+    const { groupsStore } = this.rootStore;
+    const allowedKeys = [
+      "unread_messages_count",
+      "mentions_count",
+      "last_read_at",
+      "marked_as_unread",
+      "new_message_line_at"
+    ];
+    const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
+
+    // Update group info
+    groupsStore.updateGroupData(this.group.id, updates);
+  }
 
   @action
   updateGroupCursor(cursor) {
@@ -392,40 +417,11 @@ class MessageStore {
   }
 
   @action
-  updateUnreadMessagesInfo(data) {
-    const { groupsStore } = this.rootStore;
-    const allowedKeys = [
-      "unread_messages_count",
-      "mentions_count",
-      "last_read_at"
-    ];
-    const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
-
-    // Update group info
-    groupsStore.updateGroupData(this.group.id, updates);
-  }
-
-  @action
   markAsUnread = messageId => {
-    const { sidemenuStore } = this.rootStore;
-
-    this.groupChannel
-      .push("mark_as_unread", {
-        group_id: this.group.id,
-        message_id: messageId
-      })
-      .receive("ok", response => {
-        this.updateUnreadMessagesInfo(response);
-
-        this.markedAsUnread = true;
-        this.newMessageLineAt = null;
-
-        // Update favicon
-        sidemenuStore.updateFavicon();
-      })
-      .receive("error", err => {
-        notify.show(err.message, "error");
-      });
+    this.groupChannel.push("mark_as_unread", {
+      group_id: this.group.id,
+      message_id: messageId
+    });
   };
 
   /**
@@ -436,27 +432,13 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
-    const { sidemenuStore } = this.rootStore;
-
     if (resetNewMessageLine) {
-      this.newMessageLineAt = null;
+      this.updateGroupData({ new_message_line_at: null });
     } else if (!this.newMessageLineAt) {
-      this.newMessageLineAt = this.lastReadAt;
+      this.updateGroupData({ new_message_line_at: this.lastReadAt });
     }
 
-    this.groupChannel
-      .push("mark_as_read", { group_id: this.group.id })
-      .receive("ok", response => {
-        this.updateUnreadMessagesInfo(response);
-
-        this.markedAsUnread = false;
-
-        // Update favicon
-        sidemenuStore.updateFavicon();
-      })
-      .receive("error", err => {
-        notify.show(err.message, "error");
-      });
+    this.groupChannel.push("mark_as_read", { group_id: this.group.id });
   };
 
   sendMessage = (text, additionalFields = {}) => {
@@ -719,7 +701,6 @@ class MessageStore {
     return {
       // Temp attributes
       id: tempId,
-      temp: true,
       status: "sending",
       inserted_at: moment.utc().format("YYYY-MM-DDTHH:mm:ss.SSS"),
 
@@ -737,6 +718,14 @@ class MessageStore {
     const tempMessageIndex = this.messages.findIndex(m => m.id === tempId);
 
     this.messages.splice(tempMessageIndex, 1);
+  };
+
+  @action
+  toggleReaction = (messageId, emoji) => {
+    this.groupChannel.push("toggle_reaction", {
+      message_id: messageId,
+      emoji_name: emoji
+    });
   };
 
   // ////////////// //
@@ -837,22 +826,16 @@ class MessageStore {
       if (this.unreadMessagesCount === 0) {
         this.markAsRead();
       }
-
-      newMessage.status = "sent";
-    } else {
+    } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
       // If you're at the bottom and no NML, keep up with the new message
-      if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
-        this.markAsRead(false);
-      } else {
-        const isMention = newMessage.mentioned_user_ids.includes(
-          currentUser.id
-        );
+      this.markAsRead(false);
+    } else {
+      const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
-        this.updateUnreadMessagesInfo({
-          unread_messages_count: this.unreadMessagesCount + 1,
-          mentions_count: this.mentionsCount + (isMention ? 1 : 0)
-        });
-      }
+      this.updateGroupData({
+        unread_messages_count: this.unreadMessagesCount + 1,
+        mentions_count: this.mentionsCount + (isMention ? 1 : 0)
+      });
     }
 
     // Remove temp message
@@ -864,7 +847,11 @@ class MessageStore {
     this.messages.unshift(newMessage);
 
     // If my message or at scroll bottom, scroll to bottom
-    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
+    if (
+      this.isScrollBottom ||
+      newMessage.user_id === currentUser.id ||
+      newMessage.type === "system"
+    ) {
       this.scrollToBottom(null, 0, 0);
     }
 
@@ -960,6 +947,7 @@ class MessageStore {
     }
   };
 
+<<<<<<< HEAD
   /**
    * Encodes message for backend compatible format
    * - @emil -> <@U123>
@@ -1027,6 +1015,27 @@ class MessageStore {
       });
 
     return _.flatten(result);
+  }
+
+  @action
+  onReactionUpdate = payload => {
+    const message = this.messages.find(m => m.id === payload.message_id);
+    if (message) {
+      message.reactions = payload.reactions;
+    }
+  };
+
+  @action
+  onReadStatusUpdate = payload => {
+    if (!payload.messages) return;
+    Object.keys(payload.messages).forEach(message_id => {
+      const message = this.messages.find(
+        m => m.id === parseInt(message_id, 10)
+      );
+      if (message) {
+        message.read_status = payload.messages[message_id];
+      }
+    });
   };
 }
 

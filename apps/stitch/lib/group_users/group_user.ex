@@ -97,4 +97,11 @@ defmodule Stitch.GroupUser do
       {:error, "Not found"}
     end
   end
+
+  def user_ids(group_id) do
+    GroupUser
+    |> where(group_id: ^group_id)
+    |> select([gu], gu.user_id)
+    |> Repo.all
+  end
 end

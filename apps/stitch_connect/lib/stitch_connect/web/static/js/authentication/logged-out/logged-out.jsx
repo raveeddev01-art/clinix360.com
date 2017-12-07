@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
+import { Link } from "react-router-dom";
+
 @inject("registrationStore", "titleStore")
 @observer
 export default class Loggedout extends Component {
@@ -17,9 +19,9 @@ export default class Loggedout extends Component {
             {this.props.registrationStore.teamSlug}.teamstitch.com
           </h5>
 
-          <a href="/login" className="btn btn-block btn-lg btn-primary">
+          <Link to="/login" className="btn btn-block btn-lg btn-primary">
             Sign Back In
-          </a>
+          </Link>
         </div>
       </div>
     );

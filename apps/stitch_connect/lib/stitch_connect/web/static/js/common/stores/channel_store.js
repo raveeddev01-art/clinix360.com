@@ -7,7 +7,6 @@
 
 class ChannelStore {
   channels = {};
-  lastGroupChannelTopic = "";
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -55,14 +54,20 @@ class ChannelStore {
     const { sidemenuStore, groupsStore } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
+    // Message related
     this.eventChannel.on("new_message", sidemenuStore.onNewMessage);
 
+    // Group related
     this.eventChannel.on("created_group", groupsStore.onCreatedGroup);
     this.eventChannel.on("joined_group", groupsStore.onJoinedGroup);
     this.eventChannel.on("left_group", groupsStore.onLeftGroup);
     this.eventChannel.on("renamed_group", groupsStore.onRenamedGroup);
     this.eventChannel.on("hid_group", groupsStore.onHidGroup);
+    this.eventChannel.on("marked_as_read", groupsStore.onMarkedAsRead);
+    this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);
+    this.eventChannel.on("members_updated", groupsStore.onMembersUpdated);
 
+    // App related
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache
     });
@@ -92,12 +97,11 @@ class ChannelStore {
   }
 
   joinGroupChannel(options = {}) {
-    const { messageStore } = this.rootStore;
+    const { messageStore, groupPresenceStore } = this.rootStore;
 
     const joined = this.join(this.groupChannelTopic, options);
 
-    this.leaveLastGroupChannel();
-
+    // Message related
     this.groupChannel.on("new_msg", messageStore.onNewMessage);
     this.groupChannel.on("edit_msg", messageStore.onEditMessage);
     this.groupChannel.on("delete_msg", messageStore.onDeleteMessage);
@@ -111,10 +115,18 @@ class ChannelStore {
       "msg_link_preview_deleted",
       messageStore.onLinkPreviewDeleted
     );
+    this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
+    this.groupChannel.on("read_status_update", messageStore.onReadStatusUpdate);
 
-    this.lastGroupChannelTopic = this.groupChannelTopic;
+    // Group Presence related
+    this.groupChannel.on("presence_state", groupPresenceStore.onPresenceState);
+    this.groupChannel.on("presence_diff", groupPresenceStore.onPresenceDiff);
 
     return joined;
+  }
+
+  leaveGroupChannel() {
+    this.leave(this.groupChannelTopic);
   }
 
   // //////////// //
@@ -146,13 +158,6 @@ class ChannelStore {
     this.teamChannel.on("user_info", usersStore.onUserInfo);
 
     return joined;
-  }
-
-  leaveLastGroupChannel() {
-    if (this.lastGroupChannelTopic) {
-      this.leave(this.lastGroupChannelTopic);
-      this.lastGroupChannelTopic = "";
-    }
   }
 
   leaveAllChannelsButTeam() {
