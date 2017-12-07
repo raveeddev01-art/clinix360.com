@@ -52,7 +52,7 @@ class EmojiPicker extends Component {
             this.pickerEl = node;
           }}
         >
-          <Picker set="apple" autoFocus onClick={onSelectEmoji} />
+          {showPicker && <Picker set="apple" autoFocus onClick={onSelectEmoji} />}
         </div>
         <a
           role="link"
