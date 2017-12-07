@@ -65,6 +65,7 @@ class ChannelStore {
     this.eventChannel.on("hid_group", groupsStore.onHidGroup);
     this.eventChannel.on("marked_as_read", groupsStore.onMarkedAsRead);
     this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);
+    this.eventChannel.on("members_updated", groupsStore.onMembersUpdated);
 
     // App related
     this.eventChannel.on("new_app_version", () => {
@@ -114,6 +115,8 @@ class ChannelStore {
       "msg_link_preview_deleted",
       messageStore.onLinkPreviewDeleted
     );
+    this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
+    this.groupChannel.on("read_status_update", messageStore.onReadStatusUpdate);
 
     // Group Presence related
     this.groupChannel.on("presence_state", groupPresenceStore.onPresenceState);

@@ -296,6 +296,7 @@
         .date-separator {
           display: flex;
           justify-content: center;
+          position: relative;
           border-top: 1px solid $border-color;
           margin: 35px 0;
 
@@ -306,7 +307,7 @@
             line-height: 32px;
             background: $body-bg;
             padding: 0 12px;
-            position: relative;
+            position: absolute;
             top: -18px;
           }
         }
@@ -314,8 +315,9 @@
         .new-message-banner {
           display: flex;
           justify-content: center;
+          position: relative;
           border-top: 1px solid $brand-primary;
-          margin: 10px 0;
+          margin: 30px 0;
 
           .banner-text {
             color: $brand-primary;
@@ -324,7 +326,7 @@
             line-height: 32px;
             background: $body-bg;
             padding: 0 12px;
-            position: relative;
+            position: absolute;
             top: -18px;
           }
         }
@@ -657,6 +659,7 @@
         display: flex;
         flex-direction: row;
         align-items: baseline;
+        position: relative;
 
         .name {
           color: #003366;
@@ -732,7 +735,17 @@
               border-bottom-style: solid;
             }
           }
+
+          br:last-of-type {
+            display: none;
+          }
         }
+      }
+
+      .message-read-status {
+        text-align: right;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
       }
 
       p {
@@ -879,7 +892,41 @@
       }
     }
   }
-  
+
+  .message-reactions {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+
+    .btn-message-reaction + .btn-message-reaction {
+      margin-left: 5px;
+    }
+
+    .btn-message-reaction {
+      margin-top: 5px;
+      padding: 2px 5px 2px 2px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #e7e7e7;
+      background-color: #fcfcfc;
+      padding: 0 4px 0 2px;
+      color: #aaa;
+
+      &.active {
+        border-color: #bde1fe;
+        background-color: #f3f9ff;
+        color: #003366;
+      }
+
+      &:hover {
+        border-color: #003366;
+
+        &.active {
+          border-color: #bde1fe;
+        }
+      }
+    }
+  }
 }
 
 .attachment-block {

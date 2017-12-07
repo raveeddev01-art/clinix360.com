@@ -4,14 +4,22 @@ import { observer, inject } from "mobx-react";
 import { Emoji } from "emoji-mart";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
 import Linkify from "react-linkify";
+import moment from "moment";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
+import Reactions from "./reactions";
 
-@inject("usersStore")
+@inject("usersStore", "messageStore")
 @observer
 class MessageContent extends Component {
+  onToggle = emoji => {
+    this.props.messageStore.toggleReaction(this.props.message.id, emoji);
+  };
+
   renderMessageLine(line) {
     const { usersStore, message } = this.props;
     const { usersByUsername } = usersStore;
@@ -101,6 +109,27 @@ class MessageContent extends Component {
     return null;
   }
 
+  renderEdited() {
+    const { message } = this.props;
+    const { edited, edited_at: editedAt } = message;
+
+    if (!edited) {
+      return null;
+    }
+
+    const editedTooltip = (
+      <Tooltip id="edited-tooltip">{moment(editedAt).calendar()}</Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="top" overlay={editedTooltip}>
+        <span className="message-icon icon-edited">
+          <i className="fa fa-edit" />
+        </span>
+      </OverlayTrigger>
+    );
+  }
+
   render() {
     const { message } = this.props;
 
@@ -115,6 +144,12 @@ class MessageContent extends Component {
           {this.renderMessageText()}
           {message.type === "upload" && message.text_content && '"'}
           {this.renderLinkPreviews()}
+          {this.renderEdited()}
+          <Reactions
+            messageId={message.id}
+            reactions={message.reactions}
+            onToggle={this.onToggle}
+          />
         </div>
       </Linkify>
     );

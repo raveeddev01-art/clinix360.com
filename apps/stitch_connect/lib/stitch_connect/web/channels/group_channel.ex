@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization,
-    Message, MessageAuthorization, MessageQueries}
+    Message, MessageAuthorization, MessageQueries, MessageAction}
   alias StitchConnect.Web.Presence
 
   @endpoint StitchConnect.Web.Endpoint
@@ -240,6 +240,35 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  @decorate channel_action()
+  def handle_in("toggle_reaction", %{"message_id" => message_id, "emoji_name" => emoji_name}, socket) do
+    %{group: group, current_user: user} = socket.assigns
+    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one
+
+    case {message, message && GroupAuthorization.can_view?(group, user)} do
+      {nil, _} ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+
+      {_, false} ->
+        reason = "Access denied"
+        {:reply, {:error, %{message: reason}}, socket}
+
+      {message, true} ->
+        {:ok, _reaction} = Message.Reaction.toggle_reaction(message, user, emoji_name)
+        broadcast_reactions_updated(group, message)
+        {:reply, :ok, socket}
+    end
+  end
+
+  def broadcast_reactions_updated(group, message) do
+    message = Repo.get(Message, message.id)
+    [message] = Message.Reaction.apply_reactions([message])
+    @endpoint.broadcast("groups:#{group.slug}", "reactions_updated", %{
+      message_id: message.id,
+      reactions: message.reactions,
+    })
+  end
+
   def broadcast_message_starred(message) do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message)
@@ -252,9 +281,19 @@ defmodule StitchConnect.Web.GroupChannel do
     @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
   end
 
+  def broadcast_members_update(group) do
+    user_ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.id) |> Repo.all
+    @endpoint.broadcast("groups:#{group.slug}", "members_update", %{user_ids: user_ids})
+  end
+
   def broadcast_read_status(group, messages) do
     read_status_json = Enum.reduce(messages, %{}, & Map.put(&2, &1.id, &1.read_status))
     @endpoint.broadcast("groups:#{group.slug}", "read_status_update", %{messages: read_status_json})
+  end
+
+  def broadcast_system_message(group, system_message) do
+    system_message = MessageQueries.load_info(system_message)
+    @endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
   end
 
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do

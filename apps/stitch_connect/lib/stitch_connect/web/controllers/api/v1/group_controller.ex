@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Group, GroupQueries, GroupAuthorization, TeamAuthorization, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
+  alias Stitch.{Group, GroupQueries, GroupUser, GroupAuthorization, TeamAuthorization, MessageQueries}
+  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel, GroupChannel}
 
   def index(conn, %{"slug" => slug}) do
     user = conn.assigns.current_user
@@ -171,7 +171,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
             {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
             system_message = MessageQueries.load_info(system_message)
             Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
-            EventsChannel.broadcast_group_join(group, conn.assigns.current_user.id)
+            user_ids = GroupUser.user_ids(group.id)
+            EventsChannel.broadcast_members_update(group, user_ids, user_ids)
 
             conn
             |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
@@ -194,8 +195,10 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> json(%{message: message})
       {:ok, message, system_message} ->
         default_group = GroupQueries.default_group(current_user)
-        Endpoint.broadcast("groups:#{group.slug}", "new_msg", MessageQueries.load_info(system_message))
-        Endpoint.broadcast("events:#{current_user.id}", "left_group", %{group_id: group.id})
+        GroupChannel.broadcast_system_message(group, MessageQueries.load_info(system_message))
+        user_ids = GroupUser.user_ids(group.id)
+        EventsChannel.broadcast_members_update(group, [conn.assigns.current_user.id | user_ids], user_ids)
+
         conn
         |> json(%{message: message, redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)})
 
@@ -252,10 +255,14 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
           |> String.split(",")
           |> Enum.map(&String.to_integer/1)
 
-        Group.update_members(group, user_ids)
+        {:ok, %{removed: removed, added: _added, system_messages: system_messages}} = Group.update_members(group, user_ids)
+        user_ids = GroupUser.user_ids(group.id)
+        update_user_ids = Enum.uniq(user_ids ++ removed)
 
-        conn
-        |> json(%{message: "Users invited to room."})
+        Enum.each(system_messages, & GroupChannel.broadcast_system_message(group, &1))
+        EventsChannel.broadcast_members_update(group, update_user_ids, user_ids)
+
+        conn |> json(%{message: "Users invited to room."})
     end
   end
 

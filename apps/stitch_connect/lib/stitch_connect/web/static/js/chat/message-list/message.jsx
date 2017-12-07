@@ -12,16 +12,22 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
-
-import { confirm } from "../../common/modals";
-import MessageContent from "../../common/components/messages/message-content/message-content";
+import { confirm } from "common/modals";
+import { MessageContent, ReactionPicker } from "common/components";
+import MessageInfoModal from "./message-info-modal";
 
 @inject("messageStore", "groupStore", "usersStore")
 @observer
 class Message extends Component {
   constructor(props) {
     super(props);
-    this.state = { selected: false, dropup: false };
+
+    this.state = {
+      selected: false,
+      dropup: false,
+      showEmojiPicker: false,
+      showInfoModal: false
+    };
   }
 
   componentDidMount() {
@@ -52,6 +58,37 @@ class Message extends Component {
           this.messageDiv.offsetTop
       });
     }
+  };
+
+  onSelectEmoji = emoji => {
+    const { messageStore, message } = this.props;
+    this.setState({ showEmojiPicker: false }, () => {
+      if (emoji) {
+        messageStore.toggleReaction(message.id, emoji.colons);
+      }
+    });
+  };
+
+  getEmojiMartStyle = () => {
+    const martStyles = {};
+    const { message } = this.props;
+    if (!this.messageDiv) {
+      return {};
+    }
+
+    const pos = this.messageDiv.getBoundingClientRect();
+    if (pos.bottom < window.innerHeight / 2) {
+      martStyles.top = "100%";
+    } else {
+      martStyles.bottom = "100%";
+    }
+
+    if (message.user.id === currentUser.id) {
+      martStyles.right = 0;
+    } else {
+      martStyles.left = "100%";
+    }
+    return martStyles;
   };
 
   markAsUnread = () => {
@@ -95,25 +132,21 @@ class Message extends Component {
     messageStore.toggleStar(message.id);
   };
 
-  renderEdited(message) {
-    const { edited, edited_at: editedAt } = message;
+  toggleReaction = () => {
+    this.setState({ showEmojiPicker: true });
+  };
 
-    if (!edited) {
-      return null;
-    }
+  showInfoModal = () => {
+    this.setState({
+      showInfoModal: true
+    });
+  };
 
-    const editedTooltip = (
-      <Tooltip id="edited-tooltip">{moment(editedAt).calendar()}</Tooltip>
-    );
-
-    return (
-      <OverlayTrigger placement="top" overlay={editedTooltip}>
-        <span className="message-icon icon-edited">
-          <i className="fa fa-edit" />
-        </span>
-      </OverlayTrigger>
-    );
-  }
+  closeModal = () => {
+    this.setState({
+      showInfoModal: false
+    });
+  };
 
   renderStar(message) {
     const { starred } = message;
@@ -252,8 +285,39 @@ class Message extends Component {
               <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
             </span>
           </MenuItem>
+
+          <MenuItem onClick={this.toggleReaction}>
+            <span>
+              <i className="fa fa-smile-o" />&nbsp;Reactions
+            </span>
+          </MenuItem>
+
+          <MenuItem onClick={this.showInfoModal}>
+            <span>
+              <i className="fa fa-info-circle" />&nbsp;Info
+            </span>
+          </MenuItem>
+
+          <MessageInfoModal
+            show={this.state.showInfoModal}
+            message={message}
+            closeModal={this.closeModal}
+          />
         </Dropdown.Menu>
       </Dropdown>
+    );
+  }
+
+  renderReadStatus(message) {
+    if (!message.read_status) return null;
+
+    const deliveredToUsers = Object.keys(message.read_status).length;
+    const readUsers = Object.values(message.read_status).filter(v => v != null)
+      .length;
+    return (
+      <div className="message-read-status">
+        {readUsers}/{deliveredToUsers} read
+      </div>
     );
   }
 
@@ -312,13 +376,20 @@ class Message extends Component {
                     {this.renderActions(message)}
                   </div>
 
+                  <ReactionPicker
+                    message={message}
+                    onSelectReaction={this.onSelectEmoji}
+                    show={this.state.showEmojiPicker}
+                    style={this.getEmojiMartStyle()}
+                  />
+
                   {this.renderStar(message)}
                   {this.renderPin(message)}
                 </div>
 
                 <div className="message-content-wrapper">
                   <MessageContent message={message} />
-                  {this.renderEdited(message)}
+                  {mine && this.renderReadStatus(message)}
                 </div>
               </div>
 

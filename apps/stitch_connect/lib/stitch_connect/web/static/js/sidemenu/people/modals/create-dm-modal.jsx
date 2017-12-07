@@ -4,8 +4,7 @@ import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
-import Select from "react-select";
-import cx from "classnames";
+import { TeamList } from "common/components";
 
 import {
   getGroupUserIdsThatHasCurrentUser,
@@ -20,20 +19,16 @@ class CreateDMModal extends Component {
     super(props);
     this.state = {
       show: props.show,
-      members: [],
+      members: "",
       searchFilter: ""
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.show !== this.props.show) {
-      this.setState({ show: nextProps.show, members: [], searchFilter: "" });
+      this.setState({ show: nextProps.show, members: "" });
     }
   }
-
-  onChangeFilter = searchFilter => {
-    this.setState({ searchFilter });
-  };
 
   handleChange = value => {
     this.setState({ members: value });
@@ -42,7 +37,7 @@ class CreateDMModal extends Component {
   canCreateDM = () => {
     const { members } = this.state;
 
-    return members && members.length > 0;
+    return members && members.split(",").length > 0;
   };
 
   createDM = () => {
@@ -58,7 +53,9 @@ class CreateDMModal extends Component {
     //  2.2. If not, create
     // 3. Navigate to the dm created
 
-    const userIds = getGroupUserIdsThatHasCurrentUser(members);
+    const userIds = getGroupUserIdsThatHasCurrentUser(
+      members.split(",").map(id => ({ id: id * 1 }))
+    );
     const slug = getSlugOfDMGroupByUsers(userIds);
     const group = groupsStore.getGroupBySlug(slug);
 
@@ -84,11 +81,11 @@ class CreateDMModal extends Component {
     toggle();
   };
 
-  selectUser = user => () => {
+  selectUser = user => {
     if (user.id === currentUser.id) {
       this.setState(
         {
-          members: [user]
+          members: `${user.id}`
         },
         () => {
           this.createDM();
@@ -96,35 +93,19 @@ class CreateDMModal extends Component {
       );
     } else {
       this.setState({
-        members: this.state.members.concat({
-          ...user,
-          label: user.full_name
-        })
+        members: this.state.members
+          ? `${this.state.members},${user.id}`
+          : `${user.id}`
       });
-
-      this.selectComponent.focus();
     }
   };
 
   render() {
-    const { searchFilter, members } = this.state;
+    const { members } = this.state;
     const { usersStore, presenceStore } = this.props;
-    const users = usersStore.users.filter(u => {
-      if (u.id === currentUser.id && members.length > 0) return false;
-      return (
-        members.findIndex(member => member.id === u.id) === -1 &&
-        `${u.first_name} ${u.last_name}`
-          .toLowerCase()
-          .indexOf(searchFilter.toLowerCase()) > -1
-      );
-    });
 
     return (
-      <Modal
-        show={this.state.show}
-        onEntered={() => this.selectComponent.focus()}
-        onHide={this.props.toggle}
-      >
+      <Modal show={this.state.show} onHide={this.props.toggle}>
         <Modal.Header>
           <Modal.Title>Direct Messages</Modal.Title>
           <a role="link" onClick={this.props.toggle}>
@@ -133,51 +114,16 @@ class CreateDMModal extends Component {
         </Modal.Header>
 
         <Modal.Body>
-          <div className="modal-search dm-modal-user-search">
-            <Select
-              ref={node => {
-                this.selectComponent = node;
-              }}
-              multi
-              valueKey="id"
-              className="multi-select-large"
-              onInputChange={this.onChangeFilter}
-              onChange={this.handleChange}
-              placeholder="Search"
-              onBlurResetsInput={false}
-              value={this.state.members}
-            />
-          </div>
-
-          <h5 className="team-heading text-muted">
+          <TeamList
+            onChange={this.handleChange}
+            onSelectUser={this.selectUser}
+            isOnline={presenceStore.isOnline}
+            value={members}
+            users={usersStore.users.slice(0)}
+            hideCurrentUser
+          >
             Select members to start conversation with.
-          </h5>
-
-          <div className="team-list">
-            {users.map(user => {
-              const online = presenceStore.isOnline(user.id);
-              const iconClasName = cx("fa", {
-                "fa-circle": online,
-                "fa-circle-o": !online
-              });
-
-              return (
-                <div
-                  role="link"
-                  key={`team-list-${user.id}`}
-                  className="team-member"
-                  onClick={this.selectUser(user)}
-                >
-                  <i className={iconClasName} />
-                  {` ${user.first_name} ${user.last_name}${user.id ===
-                  currentUser.id
-                    ? " (You)"
-                    : ""}`}
-                  <span className="text-muted">{user.username}</span>
-                </div>
-              );
-            })}
-          </div>
+          </TeamList>
         </Modal.Body>
         <Modal.Footer>
           <Button bsSize="large" onClick={this.props.toggle}>

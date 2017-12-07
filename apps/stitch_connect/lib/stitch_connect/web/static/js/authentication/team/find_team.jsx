@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
@@ -9,6 +9,7 @@ import Button from "react-bootstrap/lib/Button";
 import { Card } from "common/components";
 
 @inject("titleStore")
+@observer
 export default class FindTeam extends Component {
   constructor(...args) {
     super(...args);
