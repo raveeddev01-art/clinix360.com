@@ -281,7 +281,7 @@ class MessageStore {
         containerId: "chat",
         smooth: true,
         duration: 500,
-        offset: -40
+        offset: -50
       });
     }
   };
@@ -599,6 +599,7 @@ class MessageStore {
   handleInitialLoading = () => {
     this.scrollToBottom(() => {
       this.loadedInitial = true;
+      this.updateGroupCursor(null);
     });
   };
 
