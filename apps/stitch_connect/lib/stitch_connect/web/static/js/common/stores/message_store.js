@@ -428,14 +428,20 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
-    // Set the last_read_at in optimistic UI
-    // It assumes the lastest message's timestamp + 1ms
-    // This will be updated with real value when `marked_as_read` event is broadcast
+    // Set the unread messages info in optimistic
+    //
+    // last_read_at: lastest message's timestamp + 1ms
+    // unread_messages_count: 0
+    // mentions_count: 0
+    //
+    // These info will be updated with real value when `marked_as_read` event is broadcast
     this.updateGroupData({
       last_read_at: moment
         .utc(this.messages[0].inserted_at)
         .add(1, "millisecond")
-        .format("YYYY-MM-DDTHH:mm:ss.SSS")
+        .format("YYYY-MM-DDTHH:mm:ss.SSS"),
+      unread_messages_count: 0,
+      mentions_count: 0
     });
 
     if (resetNewMessageLine) {
