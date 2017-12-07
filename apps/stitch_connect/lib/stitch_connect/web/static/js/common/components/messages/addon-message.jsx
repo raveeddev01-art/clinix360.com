@@ -67,7 +67,7 @@ class AddonMessage extends Component {
               user={message.user}
             />
             <MessageContent
-              message={Object.assign({}, message, { reactions: null })}
+              message={Object.assign({}, message, { reactions_web: null })}
             />
             <MessageFooter message={message} />
           </div>

@@ -67,7 +67,7 @@ export default class MessagePanel extends Component {
     });
 
     return (
-      messageStore.unreadMessagesCount > 0 && (
+      messageStore.firstUnreadMessage && (
         <div className={unreadMessagesTooltipClass}>
           <div
             role="button"
