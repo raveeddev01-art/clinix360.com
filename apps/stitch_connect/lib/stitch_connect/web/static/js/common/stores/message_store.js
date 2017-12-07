@@ -10,6 +10,8 @@ import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
 import Promise from "bluebird";
 import shortid from "shortid";
+import REGEX from "lib/regex";
+import { getData as getEmoji } from "emoji-mart/dist/utils";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
@@ -467,7 +469,8 @@ class MessageStore {
   };
 
   sendMessage = (text, additionalFields = {}) => {
-    const tempMessage = this.generateTempMessage(text);
+    const messageText = this.encodeMessage(text);
+    const tempMessage = this.generateTempMessage(messageText);
     // Add temp message
     this.messages.unshift(tempMessage);
     // Scroll to bottom
@@ -670,7 +673,7 @@ class MessageStore {
     this.groupChannel.push("edit_msg", {
       message_id: this.messageInEdit.id,
       params: {
-        text_content: this.textInEdit
+        text_content: this.encodeMessage(this.textInEdit)
       }
     });
   }
@@ -1010,6 +1013,75 @@ class MessageStore {
       this.keepScrollAtBottom();
     }
   };
+
+  /**
+   * Encodes message for backend compatible format
+   * - @emil -> <@U123>
+   * @param {string} messageText
+   * @returns {string} encoded message
+   */
+  encodeMessage = (messageText = "") => {
+    const { usersByUsername } = this.rootStore.usersStore;
+    return messageText.replace(REGEX.MENTION_ENCODE, (match, username) => {
+      const user = usersByUsername[username];
+      if (user) {
+        return `<@U${user.id}>`;
+      }
+
+      return match;
+    });
+  };
+
+  /**
+   * Decodes message to render in message content component
+   * @param {string} messageText
+   * @returns {Array<{type, content}>}
+   */
+  decodeMessage = (messageText = "") => {
+    const { usersById } = this.rootStore.usersStore;
+
+    const result = messageText
+      .split(REGEX.SPLITTER)
+      .filter(p => p)
+      .map(part => {
+        // mention
+        const match = part.match(REGEX.MENTION_DECODE);
+        if (match && match[1] && usersById[match[1]]) {
+          return {
+            type: "mention",
+            content: match[1]
+          };
+        }
+
+        // emoji
+        if (REGEX.EMOJI.test(part)) {
+          const emojiParts = part.split(REGEX.EMOJI);
+          return emojiParts.filter(p => p).map(emojiPart => {
+            const emoji = getEmoji(emojiPart);
+            const hasEmoji = emoji && emoji.name;
+
+            if (hasEmoji) {
+              return {
+                type: "emoji",
+                content: emojiPart
+              };
+            }
+
+            return {
+              type: "text",
+              content: emojiPart
+            };
+          });
+        }
+
+        return {
+          type: "text",
+          content: part
+        };
+      });
+
+    return _.flatten(result);
+  }
 
   @action
   onReactionUpdate = payload => {

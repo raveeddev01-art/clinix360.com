@@ -2,12 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { Emoji } from "emoji-mart";
-import { getData as getEmoji } from "emoji-mart/dist/utils";
 import Linkify from "react-linkify";
 import moment from "moment";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
-
 import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
@@ -21,61 +19,33 @@ class MessageContent extends Component {
   };
 
   renderMessageLine(line) {
-    const { usersStore, message } = this.props;
-    const { usersByUsername } = usersStore;
-    const words = line.split(" ");
+    const { usersStore, messageStore, message } = this.props;
+    const { usersById } = usersStore;
+    const parts = messageStore.decodeMessage(line);
+    const isAllEmojis =
+      parts.filter(p => p.type === "emoji").length === parts.length;
 
-    return words.reduce((prev, word, i) => {
-      if (word.indexOf("@") === 0) {
-        const username = word.substr(1);
-        if (usersByUsername[username]) {
-          return prev.concat(
-            <UserMention
-              key={`usermention_${i}`}
-              isMine={message.user_id === currentUser.id}
-              user={usersByUsername[username]}
-            />
-          );
-        }
-      } else if (word.indexOf(":") === 0) {
-        const COLON_REGEX = /(?::[^:]+:)(?::skin-tone-\d:)?/g;
-        const emojis = word.match(COLON_REGEX);
-        const texts = word.split(COLON_REGEX);
-        const result = [];
-        const size =
-          words.length === 1 && !texts.filter(t => t).length ? 32 : 16;
-
-        texts.forEach((text, index) => {
-          if (index >= 1) {
-            const hasEmoji = !!getEmoji(emojis[index - 1]).name;
-            if (hasEmoji) {
-              result.push(
-                <Emoji
-                  key={`emoji_${i}_${index}`}
-                  emoji={emojis[index - 1]}
-                  size={size}
-                />
-              );
-            } else {
-              result.push(emojis[index - 1]);
-            }
-          }
-
-          if (text) {
-            result.push(text);
-          }
-        });
-
-        return prev.concat(result);
+    return parts.map((part, i) => {
+      if (part.type === "mention") {
+        return (
+          <UserMention
+            key={`usermention_${i}`}
+            isMine={message.user_id === currentUser.id}
+            user={usersById[part.content]}
+          />
+        );
+      } else if (part.type === "emoji") {
+        return (
+          <Emoji
+            key={`emoji_${i}`}
+            emoji={part.content}
+            size={isAllEmojis ? 32 : 16}
+          />
+        );
       }
 
-      if (typeof prev[prev.length - 1] === "string") {
-        prev[prev.length - 1] += ` ${word}`;
-        return prev;
-      }
-
-      return prev.concat(word);
-    }, []);
+      return part.content;
+    });
   }
 
   renderMessageText() {
