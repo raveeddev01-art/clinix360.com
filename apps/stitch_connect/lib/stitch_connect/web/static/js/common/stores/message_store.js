@@ -958,7 +958,7 @@ class MessageStore {
   onReactionUpdate = payload => {
     const message = this.messages.find(m => m.id === payload.message_id);
     if (message) {
-      message.reactions = payload.reactions;
+      message.reactions_web = payload.reactions_web;
     }
   };
 

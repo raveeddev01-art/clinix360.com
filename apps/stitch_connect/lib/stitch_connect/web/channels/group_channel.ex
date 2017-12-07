@@ -265,7 +265,7 @@ defmodule StitchConnect.Web.GroupChannel do
     [message] = Message.Reaction.apply_reactions([message])
     @endpoint.broadcast("groups:#{group.slug}", "reactions_updated", %{
       message_id: message.id,
-      reactions: message.reactions,
+      reactions_web: message.reactions,
     })
   end
 
