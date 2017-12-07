@@ -59,7 +59,10 @@ class MessageStore {
 
     while (index >= 0) {
       // Messages that has status set are the temp ones
-      if (!this.messages[index].status) {
+      if (
+        !this.messages[index].status &&
+        this.messages[index].type !== "system"
+      ) {
         message = this.messages[index];
         break;
       }
@@ -102,11 +105,11 @@ class MessageStore {
 
   // Timestamp that the new message line should appear at
   get newMessageLineAt() {
-    return this.group.new_message_line_at || null;
+    return this.group.new_message_line_at;
   }
 
   get markedAsUnread() {
-    return this.group.marked_as_unread || false;
+    return this.group.marked_as_unread;
   }
 
   @computed
@@ -144,9 +147,7 @@ class MessageStore {
 
   @computed
   get newMessageLineMessage() {
-    const newMessageLineAt = this.newMessageLineAt || this.lastReadAt;
-
-    return this.getMessageAfterTimestamp(newMessageLineAt);
+    return this.getMessageAfterTimestamp(this.newMessageLineAt);
   }
 
   @computed
@@ -203,7 +204,7 @@ class MessageStore {
 
     this.updateGroupData({
       marked_as_unread: false,
-      new_message_line_at: null
+      new_message_line_at: this.lastReadAt
     });
   }
 
@@ -283,7 +284,7 @@ class MessageStore {
         containerId: "chat",
         smooth: true,
         duration: 500,
-        offset: -40
+        offset: -50
       });
     }
   };
@@ -430,19 +431,23 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
-    // Set the last_read_at in optimistic UI
-    // It assumes the lastest message's timestamp + 1s
-    // This will be updated with real value when `marked_as_read` event is broadcast
+    // Set the unread messages info in optimistic
+    //
+    // last_read_at: lastest message's timestamp + 1ms
+    // unread_messages_count: 0
+    // mentions_count: 0
+    //
+    // These info will be updated with real value when `marked_as_read` event is broadcast
     this.updateGroupData({
       last_read_at: moment
         .utc(this.messages[0].inserted_at)
-        .add(1, "second")
-        .format("YYYY-MM-DDTHH:mm:ss.SSS")
+        .add(1, "millisecond")
+        .format("YYYY-MM-DDTHH:mm:ss.SSS"),
+      unread_messages_count: 0,
+      mentions_count: 0
     });
 
     if (resetNewMessageLine) {
-      this.updateGroupData({ new_message_line_at: null });
-    } else if (!this.newMessageLineAt) {
       this.updateGroupData({ new_message_line_at: this.lastReadAt });
     }
 
@@ -597,6 +602,7 @@ class MessageStore {
   handleInitialLoading = () => {
     this.scrollToBottom(() => {
       this.loadedInitial = true;
+      this.updateGroupCursor(null);
     });
   };
 
