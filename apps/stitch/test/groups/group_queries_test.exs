@@ -190,8 +190,8 @@ defmodule Stitch.GroupQueriesTest do
       insert(:group_user, user: alice, group: random)
       insert(:group_user, user: eve, group: random)
 
-      {:ok, _message} = Stitch.Message.create(general.id, eve, %{"text_content" => "Mentions <@U#{alice.id}>, and <@U#{bob.id}>.", "type" => "chat"})
-      {:ok, _message} = Stitch.Message.create(general.id, eve, %{"text_content" => "Mentions <@U#{bob.id}> second time.", "type" => "chat"})
+      {:ok, _message} = Stitch.Message.create(general.id, eve, %{"text_content" => "Mentions @alice, and @bob.", "type" => "chat"})
+      {:ok, _message} = Stitch.Message.create(general.id, eve, %{"text_content" => "Mentions @bob second time.", "type" => "chat"})
 
       bob_groups = available_groups_indexed_by_slug(bob)
       assert bob_groups["general"].mentions_count == 2
