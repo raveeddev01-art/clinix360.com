@@ -245,11 +245,6 @@ defmodule Stitch.Message do
     |> Repo.update
   end
 
-  def mark_as_unread(user_id, group_id, %Message{user_id: user_id} = message) do
-    message = get_message_to_unread(message)
-    mark_as_unread(user_id, group_id, message)
-  end
-
   def mark_as_unread(user_id, group_id, %Message{type: "system"} = message) do
     message = get_message_to_unread(message)
     mark_as_unread(user_id, group_id, message)
@@ -272,7 +267,6 @@ defmodule Stitch.Message do
     Message
     |> where([m], m.id < ^message.id)
     |> where([m], m.type != "system")
-    |> where([m], m.user_id != ^message.user_id)
     |> where([m], m.group_id == ^message.group_id)
     |> order_by([m], [desc: m.id])
     |> limit(1)
@@ -305,7 +299,6 @@ defmodule Stitch.Message do
     Message
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.id >= ^message_id)
-    |> where([m], m.user_id != ^user_id)
     |> where([m], m.type != "system")
     |> select([m], %{
       mentions_count: fragment("coalesce(count (*) filter (where ? @> ?), 0)", m.mentioned_user_ids, ^[user_id]),
@@ -327,7 +320,6 @@ defmodule Stitch.Message do
 
     Message
     |> where([m], m.group_id == ^group_id)
-    |> where([m], m.user_id != ^user_id)
     |> where([m], m.inserted_at >= ^last_read_at)
     |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
     |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => NaiveDateTime.utc_now})])
