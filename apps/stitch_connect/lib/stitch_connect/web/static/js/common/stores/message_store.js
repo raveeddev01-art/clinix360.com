@@ -102,7 +102,7 @@ class MessageStore {
 
   // Timestamp that the new message line should appear at
   get newMessageLineAt() {
-    return this.group.new_message_line_at || null;
+    return this.group.new_message_line_at;
   }
 
   get markedAsUnread() {
@@ -144,9 +144,7 @@ class MessageStore {
 
   @computed
   get newMessageLineMessage() {
-    const newMessageLineAt = this.newMessageLineAt || this.lastReadAt;
-
-    return this.getMessageAfterTimestamp(newMessageLineAt);
+    return this.getMessageAfterTimestamp(this.newMessageLineAt);
   }
 
   @computed
@@ -203,7 +201,7 @@ class MessageStore {
 
     this.updateGroupData({
       marked_as_unread: false,
-      new_message_line_at: null
+      new_message_line_at: this.lastReadAt
     });
   }
 
@@ -436,13 +434,11 @@ class MessageStore {
     this.updateGroupData({
       last_read_at: moment
         .utc(this.messages[0].inserted_at)
-        .add(1, "second")
+        .add(1, "millisecond")
         .format("YYYY-MM-DDTHH:mm:ss.SSS")
     });
 
     if (resetNewMessageLine) {
-      this.updateGroupData({ new_message_line_at: null });
-    } else if (!this.newMessageLineAt) {
       this.updateGroupData({ new_message_line_at: this.lastReadAt });
     }
 
