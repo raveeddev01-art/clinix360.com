@@ -840,6 +840,13 @@ class MessageStore {
       this.removeTempMessage(newMessage.request_id);
     }
 
+    this.updateGroupData({
+      last_read_at: moment
+        .utc(newMessage.inserted_at)
+        .add(1, "millisecond")
+        .format("YYYY-MM-DDTHH:mm:ss.SSS")
+    });
+
     // Add new message
     this.messages.unshift(newMessage);
 
