@@ -429,7 +429,7 @@ class MessageStore {
   @action
   markAsRead = (resetNewMessageLine = true) => {
     // Set the last_read_at in optimistic UI
-    // It assumes the lastest message's timestamp + 1s
+    // It assumes the lastest message's timestamp + 1ms
     // This will be updated with real value when `marked_as_read` event is broadcast
     this.updateGroupData({
       last_read_at: moment
