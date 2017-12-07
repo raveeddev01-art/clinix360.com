@@ -59,7 +59,10 @@ class MessageStore {
 
     while (index >= 0) {
       // Messages that has status set are the temp ones
-      if (!this.messages[index].status) {
+      if (
+        !this.messages[index].status &&
+        this.messages[index].type !== "system"
+      ) {
         message = this.messages[index];
         break;
       }
