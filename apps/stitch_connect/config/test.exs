@@ -9,7 +9,8 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
 
 config :wallaby,
   screenshot_on_failure: true,
-  driver: Wallaby.Experimental.Chrome
+  driver: Wallaby.Experimental.Chrome,
+  js_logger: nil
 
 config :stitch_connect, :start_message_link_preview_generator, false
 
