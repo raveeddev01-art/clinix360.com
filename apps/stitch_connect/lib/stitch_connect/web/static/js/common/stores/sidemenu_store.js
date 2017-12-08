@@ -308,7 +308,10 @@ class SidemenuStore {
     const { groupStore, groupsStore } = this.rootStore;
 
     // If the message is for the current group, ignore
-    if (newMessage.group_id === groupStore.group.id && this.isInChat) {
+    if (
+      (newMessage.group_id === groupStore.group.id && this.isInChat) ||
+      newMessage.type === "system"
+    ) {
       return;
     }
 
