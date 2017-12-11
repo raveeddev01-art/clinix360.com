@@ -121,7 +121,7 @@ defmodule Stitch.MeteorMigration do
     case TeamQueries.get_by_slug(team_slug) do
       nil ->
         team = Team.Onboarding.create_team(team_name, team_slug)
-        Repo.update!(Ecto.Changeset.change(team, open_invitations_enabled: true, is_legacy: true))
+        team = Repo.update!(Ecto.Changeset.change(team, open_invitations_enabled: true, is_legacy: true))
 
         {group_count, groups} =
           Group
