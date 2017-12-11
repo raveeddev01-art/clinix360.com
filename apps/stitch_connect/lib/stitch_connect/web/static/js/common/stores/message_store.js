@@ -849,7 +849,7 @@ class MessageStore {
       }
     } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
       // If you're at the bottom and no NML, keep up with the new message
-      this.markAsRead(false);
+      this.markAsRead();
     } else {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
