@@ -116,7 +116,7 @@ class GroupsStore {
   @action
   getDMGroup = userId => {
     const users =
-      userId > currentUser.id
+      userId < currentUser.id
         ? [userId, currentUser.id]
         : [currentUser.id, userId];
     return this.groups.find(g => g.slug === `__dm:${users.join(".")}`);
@@ -177,6 +177,10 @@ class GroupsStore {
   hideGroup = id => {
     return put(`/api/v1/groups/${id}/hide`).then(() => {
       this.updateGroupData(id, { is_hidden: true });
+    }).then(() => {
+      if (this.currentGroupId === id) {
+        history.push(`/rooms/${this.defaultGroup.slug}`);
+      }
     });
   };
 
