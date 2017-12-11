@@ -70,7 +70,7 @@ class MenutionMenu extends Component {
         user =>
           `${user.first_name} ${user.last_name} ${user.username}`.indexOf(
             filter
-          ) > -1
+          ) > -1 && !user.disabled
       )
       .slice(0, 5);
   };
