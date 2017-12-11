@@ -21,11 +21,12 @@ class TeamList extends Component {
   }
 
   onChangeFilter = searchFilter => {
-    setTimeout(() => this.setState({ searchFilter }), 100);
+    this.setState({ searchFilter });
   };
 
   onSelectUser = user => () => {
     this.props.onSelectUser(user);
+    this.selectComponent.handleInputChange({ target: { value: "" } });
     this.selectComponent.focus();
   };
 
@@ -67,7 +68,7 @@ class TeamList extends Component {
             onInputChange={this.onChangeFilter}
             onChange={this.handleChange}
             placeholder="Search"
-            onBlurResetsInput
+            onBlurResetsInput={false}
             value={members}
           />
         </div>
