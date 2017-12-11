@@ -116,7 +116,7 @@ defmodule Stitch.Message do
     Multi.new
     |> Multi.insert(:message, message_changeset(message_struct, attrs))
     |> Multi.update_all(:mention_users, mention_users(group, mentioned_user_ids, recipients), [])
-    |> Multi.update_all(:increment_unread_counter, increment_unread_counter(group.id, recipients), [])
+    |> Multi.update_all(:increment_unread_counter, increment_unread_counter(group.id, [user.id | recipients]), [])
     |> mark_as_read_on_creation(group.id, user.id, (group_user.last_read_at || group_user.inserted_at), @unread_limit)
     |> Multi.run(:notify_user_ids, fn %{message: message} ->
       Stitch.EmailNotification.create(message.id, notify_user_ids.email)
