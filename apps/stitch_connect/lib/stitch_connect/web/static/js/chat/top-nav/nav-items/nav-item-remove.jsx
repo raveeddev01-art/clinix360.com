@@ -53,7 +53,7 @@ export default class NavItemRemoveMembers extends Component {
 
   render() {
     const { presenceStore, groupStore } = this.props;
-    const users = groupStore.group.users;
+    const users = groupStore.group.users.slice(0);
 
     return [
       <MenuItem key="members_menuitem" onClick={this.openModal}>
