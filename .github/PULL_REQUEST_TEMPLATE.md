@@ -5,7 +5,14 @@
 * [ ] ReadMe updated with any instructions
 * [ ] Manual QA on staging (force push)
 
-## Code Review
+## IC Code Review
+
+* [ ] Code is explicit, straightforward and understandable?
+* [ ] Does the PR have enough comments that you can understand why something is happening?
+* [ ] (Javascript) Has the code been through Prettier?
+* [ ] (Elixir) Has the code been through credo?
+
+## Lead Code Review
 
 * [ ] Code is explicit, straightforward and understandable?
 * [ ] Does the PR have enough comments that you can understand why something is happening?
