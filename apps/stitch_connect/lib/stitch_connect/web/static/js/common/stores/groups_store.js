@@ -114,6 +114,15 @@ class GroupsStore {
   };
 
   @action
+  getDMGroup = userId => {
+    const users =
+      userId > currentUser.id
+        ? [userId, currentUser.id]
+        : [currentUser.id, userId];
+    return this.groups.find(g => g.slug === `__dm:${users.join(".")}`);
+  };
+
+  @action
   updateUserInAllGroups = (userId, userData) => {
     this.groups.forEach(group => {
       const user = group.users.find(u => u.id === userId);

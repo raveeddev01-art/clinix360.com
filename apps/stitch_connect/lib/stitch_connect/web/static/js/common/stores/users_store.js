@@ -176,6 +176,11 @@ class UsersStore {
       groupsStore.updateUserInAllGroups(payload.user_id, {
         disabled: true
       });
+
+      const dm = groupsStore.getDMGroup(payload.user_id);
+      if (dm) {
+        groupsStore.hideGroup(dm.id);
+      }
     }
   };
 
