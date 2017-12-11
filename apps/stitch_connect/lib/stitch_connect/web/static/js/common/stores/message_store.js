@@ -608,7 +608,7 @@ class MessageStore {
 
   @action
   startEdit(id) {
-    const message = this.messages.find(m => m.id === id);
+    const message = this.getMessageById(id);
 
     if (message) {
       this.messageInEdit = message;
@@ -619,6 +619,7 @@ class MessageStore {
   @action
   editLastMessage() {
     const message = this.messages.find(m => m.user_id === currentUser.id);
+
     if (message && message.sent !== false && !message.sending) {
       this.messageInEdit = message;
       this.textInEdit = message.text_content;
@@ -664,7 +665,7 @@ class MessageStore {
 
   @action
   delete(id) {
-    const message = this.messages.find(m => m.id === id);
+    const message = this.getMessageById(id);
 
     if (message) {
       this.groupChannel.push("delete_msg", { message_id: id });
@@ -849,8 +850,8 @@ class MessageStore {
       }
     } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
       // If you're at the bottom and no NML, keep up with the new message
-      this.markAsRead(false);
-    } else {
+      this.markAsRead();
+    } else if (newMessage.type !== "system") {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       this.updateGroupData({
@@ -860,11 +861,7 @@ class MessageStore {
     }
 
     // If my message or at scroll bottom, scroll to bottom
-    if (
-      this.isScrollBottom ||
-      newMessage.user_id === currentUser.id ||
-      newMessage.type === "system"
-    ) {
+    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(null, 0, 0);
     }
 
@@ -886,7 +883,7 @@ class MessageStore {
 
     this.cancelEdit();
 
-    const message = this.messages.find(m => m.id === editedMessage.id);
+    const message = this.getMessageById(editedMessage.id);
 
     message.edited = editedMessage.edited;
     message.edited_at = editedMessage.edited_at;
@@ -942,7 +939,8 @@ class MessageStore {
       return;
     }
 
-    const message = this.messages.find(m => m.id === payload.id);
+    const message = this.getMessageById(payload.id);
+
     if (message) {
       message.link_previews = payload.link_previews;
       this.keepScrollAtBottom();
@@ -951,7 +949,8 @@ class MessageStore {
 
   @action
   onLinkPreviewDeleted = payload => {
-    const message = this.messages.find(m => m.id === payload.message_id);
+    const message = this.getMessageById(payload.message_id);
+
     if (message) {
       message.link_previews = message.link_previews.filter(
         p => p.link !== payload.link

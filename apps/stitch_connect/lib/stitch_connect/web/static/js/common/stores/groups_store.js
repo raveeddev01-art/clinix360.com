@@ -71,7 +71,7 @@ class GroupsStore {
 
   @computed
   get directGroups() {
-    return this.visibleGroups.filter(group => group.type !== "regular");
+    return this.visibleGroups.filter(group => group.type !== "regular" && !group.is_favorite);
   }
 
   @computed
@@ -235,9 +235,7 @@ class GroupsStore {
   toggleFavorite = id => {
     return post(
       `/api/v1/groups/${id}/toggle-favorite`
-    ).then(({ is_favorite }) => {
-      this.updateGroupData(id, { is_favorite });
-    });
+    );
   };
 
   /* Event handlers */
@@ -350,6 +348,13 @@ class GroupsStore {
     // @NOTE loadGroups is called because private groups aren't existed yet in the list
     this.loadGroups();
   };
+
+  @action
+  onFavoriteChanged = payload => {
+    this.updateGroupData(payload.group_id, {
+      is_favorite: payload.is_favorite
+    });
+  }
 }
 
 export default GroupsStore;

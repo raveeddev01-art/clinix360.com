@@ -26,6 +26,7 @@ class TeamList extends Component {
 
   onSelectUser = user => () => {
     this.props.onSelectUser(user);
+    this.selectComponent.handleInputChange({ target: { value: "" } });
     this.selectComponent.focus();
   };
 
