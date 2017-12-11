@@ -114,6 +114,16 @@ class GroupsStore {
   };
 
   @action
+  updateUserInAllGroups = (userId, userData) => {
+    this.groups.forEach(group => {
+      const user = group.users.find(u => u.id === userId);
+      if (user) {
+        Object.assign(user, userData);
+      }
+    });
+  };
+
+  @action
   loadGroups = () => {
     const { sidemenuStore } = this.rootStore;
 
