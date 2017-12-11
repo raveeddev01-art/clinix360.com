@@ -731,7 +731,10 @@ class MessageStore {
     // Remove the temp message
     const tempMessageIndex = this.messages.findIndex(m => m.id === tempId);
 
-    this.messages.splice(tempMessageIndex, 1);
+    if (tempMessageIndex > -1) {
+      // -1 will cause last message to be removed
+      this.messages.splice(tempMessageIndex, 1);
+    }
   };
 
   @action
@@ -836,7 +839,7 @@ class MessageStore {
     }
 
     // Remove temp message
-    if (newMessage.request_id) {
+    if (newMessage.request_id && newMessage.user_id === currentUser.id) {
       this.removeTempMessage(newMessage.request_id);
     }
 
@@ -971,11 +974,10 @@ class MessageStore {
   onReadStatusUpdate = payload => {
     if (!payload.messages) return;
     Object.keys(payload.messages).forEach(message_id => {
-      const message = this.messages.find(
-        m => m.id === parseInt(message_id, 10)
-      );
+      const message = this.getMessageById(parseInt(message_id, 10));
       if (message) {
-        message.read_status = payload.messages[message_id];
+        message.read_status = message.read_status || {};
+        Object.assign(message.read_status, payload.messages[message_id]);
       }
     });
   };
