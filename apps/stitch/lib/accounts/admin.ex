@@ -6,6 +6,7 @@ defmodule Stitch.Accounts.Admin do
 
   alias Stitch.Repo
   alias Stitch.Accounts.User
+  alias Stitch.GroupUser
   alias Stitch.Team
 
   @analytics Application.get_env(:stitch, :analytics)
@@ -20,6 +21,7 @@ defmodule Stitch.Accounts.Admin do
         |> Ecto.Changeset.change(disabled: false)
         |> Repo.update
       case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+      case result, do: ({:ok, updated_user} -> GroupUser.clear_counters(updated_user); _ -> :ignore)
       result
     else
       {:error, :not_found}
