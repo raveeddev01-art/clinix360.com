@@ -262,11 +262,10 @@ class SidemenuStore {
       desktopNotification === "everything" ||
       (desktopNotification === "mentions" && (isMention || isDirect))
     ) {
-      const message = isMention
-        ? "mentioned you"
-        : group.type === "regular"
-          ? "sent a room message"
-          : "sent you a message";
+      const message =
+        group.type === "regular"
+          ? "sent you a room message"
+          : "sent you a direct message";
       const text = `${newMessage.user.first_name} ${newMessage.user
         .last_name} ${message}`;
       this.showNotificationCard(
