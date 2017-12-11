@@ -860,11 +860,7 @@ class MessageStore {
     }
 
     // If my message or at scroll bottom, scroll to bottom
-    if (
-      this.isScrollBottom ||
-      newMessage.user_id === currentUser.id ||
-      newMessage.type === "system"
-    ) {
+    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(null, 0, 0);
     }
 
