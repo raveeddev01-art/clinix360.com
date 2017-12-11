@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.ConnCase do
       import StitchConnect.Web.ChannelsTestHelper
       import StitchConnect.Web.Router.Helpers
       import Stitch.Factory
-      import StitchConnect.Web.ConnCase, only: [with_user_session: 2, with_team_subdomain: 2, with_api_user: 2]
+      import StitchConnect.Web.ConnCase, only: [with_user_session: 2, with_team_subdomain: 2, with_api_user: 2, with_admin_subdomain: 1]
 
       # The default endpoint for testing
       @endpoint StitchConnect.Web.Endpoint
@@ -66,6 +66,13 @@ defmodule StitchConnect.Web.ConnCase do
     %Plug.Conn{conn | host: "#{team_slug}.#{Endpoint.host}"}
   end
 
+  @doc """
+  Mimics a connection being routed to admin subdomain.
+  """
+  @spec with_admin_subdomain(Plug.Conn.t) :: Plug.Conn.t
+  def with_admin_subdomain(conn) do
+    %Plug.Conn{conn | host: "admin.#{Endpoint.host}"}
+  end
 
   @doc """
   Mimics a request being made by a user via the API.

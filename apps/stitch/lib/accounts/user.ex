@@ -30,6 +30,7 @@ defmodule Stitch.Accounts.User do
     field :desktop_notification_preference, :string, default: "everything"
     field :mobile_notification_preference, :string, default: "everything"
     field :email_notification_preference, :string, default: "daily"
+    field :is_staff, :boolean, default: false
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
 
