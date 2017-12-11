@@ -75,7 +75,7 @@ defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
       "user_count" => 2,
       "unread_messages_count" => 0,
       "mentions_count" => 0,
-      "last_read_at" => nil
+      "last_read_at" => _
     } = json
   end
 
