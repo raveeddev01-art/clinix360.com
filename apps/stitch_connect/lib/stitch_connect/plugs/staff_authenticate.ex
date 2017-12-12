@@ -7,8 +7,12 @@ defmodule StitchConnect.Plug.StaffAuthenticate do
 
   def call(conn, _) do
    conn
-   |> get_session(:current_user_id)
+   |> get_user_id()
    |> do_auth(conn)
+  end
+
+  def get_user_id(conn) do
+    get_session(conn, :impersonator_user_id) || get_session(conn, :current_user_id)
   end
 
   defp do_auth(nil, conn), do: unauthorized(conn)
