@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
 
+import { filterUsers } from "lib/utils";
+
 @inject("presenceStore", "usersStore")
 @observer
 class MenutionMenu extends Component {
@@ -62,11 +64,8 @@ class MenutionMenu extends Component {
 
   getUsers = () => {
     const { usersStore: { activatedUsers }, filter } = this.props;
-    const re = new RegExp(filter, "i");
 
-    return activatedUsers.filter(
-      user => re.test(user.full_name) || re.test(user.username)
-    );
+    return filterUsers(activatedUsers, filter);
   };
 
   render() {
