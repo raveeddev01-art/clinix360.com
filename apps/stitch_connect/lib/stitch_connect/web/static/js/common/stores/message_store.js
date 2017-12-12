@@ -59,7 +59,10 @@ class MessageStore {
 
     while (index >= 0) {
       // Messages that has status set are the temp ones
-      if (!this.messages[index].status) {
+      if (
+        !this.messages[index].status &&
+        this.messages[index].type !== "system"
+      ) {
         message = this.messages[index];
         break;
       }
@@ -102,11 +105,11 @@ class MessageStore {
 
   // Timestamp that the new message line should appear at
   get newMessageLineAt() {
-    return this.group.new_message_line_at || null;
+    return this.group.new_message_line_at;
   }
 
   get markedAsUnread() {
-    return this.group.marked_as_unread || false;
+    return this.group.marked_as_unread;
   }
 
   @computed
@@ -144,9 +147,7 @@ class MessageStore {
 
   @computed
   get newMessageLineMessage() {
-    const newMessageLineAt = this.newMessageLineAt || this.lastReadAt;
-
-    return this.getMessageAfterTimestamp(newMessageLineAt);
+    return this.getMessageAfterTimestamp(this.newMessageLineAt);
   }
 
   @computed
@@ -203,7 +204,7 @@ class MessageStore {
 
     this.updateGroupData({
       marked_as_unread: false,
-      new_message_line_at: null
+      new_message_line_at: this.lastReadAt
     });
   }
 
@@ -283,7 +284,7 @@ class MessageStore {
         containerId: "chat",
         smooth: true,
         duration: 500,
-        offset: -40
+        offset: -50
       });
     }
   };
@@ -430,19 +431,23 @@ class MessageStore {
    */
   @action
   markAsRead = (resetNewMessageLine = true) => {
-    // Set the last_read_at in optimistic UI
-    // It assumes the lastest message's timestamp + 1s
-    // This will be updated with real value when `marked_as_read` event is broadcast
+    // Set the unread messages info in optimistic
+    //
+    // last_read_at: lastest message's timestamp + 1ms
+    // unread_messages_count: 0
+    // mentions_count: 0
+    //
+    // These info will be updated with real value when `marked_as_read` event is broadcast
     this.updateGroupData({
       last_read_at: moment
         .utc(this.messages[0].inserted_at)
-        .add(1, "second")
-        .format("YYYY-MM-DDTHH:mm:ss.SSS")
+        .add(1, "millisecond")
+        .format("YYYY-MM-DDTHH:mm:ss.SSS"),
+      unread_messages_count: 0,
+      mentions_count: 0
     });
 
     if (resetNewMessageLine) {
-      this.updateGroupData({ new_message_line_at: null });
-    } else if (!this.newMessageLineAt) {
       this.updateGroupData({ new_message_line_at: this.lastReadAt });
     }
 
@@ -597,12 +602,13 @@ class MessageStore {
   handleInitialLoading = () => {
     this.scrollToBottom(() => {
       this.loadedInitial = true;
+      this.updateGroupCursor(null);
     });
   };
 
   @action
   startEdit(id) {
-    const message = this.messages.find(m => m.id === id);
+    const message = this.getMessageById(id);
 
     if (message) {
       this.messageInEdit = message;
@@ -613,6 +619,7 @@ class MessageStore {
   @action
   editLastMessage() {
     const message = this.messages.find(m => m.user_id === currentUser.id);
+
     if (message && message.sent !== false && !message.sending) {
       this.messageInEdit = message;
       this.textInEdit = message.text_content;
@@ -658,7 +665,7 @@ class MessageStore {
 
   @action
   delete(id) {
-    const message = this.messages.find(m => m.id === id);
+    const message = this.getMessageById(id);
 
     if (message) {
       this.groupChannel.push("delete_msg", { message_id: id });
@@ -843,8 +850,8 @@ class MessageStore {
       }
     } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
       // If you're at the bottom and no NML, keep up with the new message
-      this.markAsRead(false);
-    } else {
+      this.markAsRead();
+    } else if (newMessage.type !== "system") {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       this.updateGroupData({
@@ -854,11 +861,7 @@ class MessageStore {
     }
 
     // If my message or at scroll bottom, scroll to bottom
-    if (
-      this.isScrollBottom ||
-      newMessage.user_id === currentUser.id ||
-      newMessage.type === "system"
-    ) {
+    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(null, 0, 0);
     }
 
@@ -880,7 +883,7 @@ class MessageStore {
 
     this.cancelEdit();
 
-    const message = this.messages.find(m => m.id === editedMessage.id);
+    const message = this.getMessageById(editedMessage.id);
 
     message.edited = editedMessage.edited;
     message.edited_at = editedMessage.edited_at;
@@ -936,7 +939,8 @@ class MessageStore {
       return;
     }
 
-    const message = this.messages.find(m => m.id === payload.id);
+    const message = this.getMessageById(payload.id);
+
     if (message) {
       message.link_previews = payload.link_previews;
       this.keepScrollAtBottom();
@@ -945,7 +949,8 @@ class MessageStore {
 
   @action
   onLinkPreviewDeleted = payload => {
-    const message = this.messages.find(m => m.id === payload.message_id);
+    const message = this.getMessageById(payload.message_id);
+
     if (message) {
       message.link_previews = message.link_previews.filter(
         p => p.link !== payload.link
@@ -958,7 +963,7 @@ class MessageStore {
   onReactionUpdate = payload => {
     const message = this.messages.find(m => m.id === payload.message_id);
     if (message) {
-      message.reactions = payload.reactions;
+      message.reactions_web = payload.reactions_web;
     }
   };
 

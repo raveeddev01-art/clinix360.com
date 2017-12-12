@@ -46,7 +46,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
 
       Message.mark_as_read(bob.id, group.id)
       assert {:ok, response} = Message.mark_as_unread(bob.id, group.id, message2)
-      assert %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [%{unread_messages_count: 0}]}} = response
+      assert %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [%{unread_messages_count: 2}]}} = response
     end
   end
 
@@ -84,7 +84,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
     end
 
     test "doesn't count author messages in unread_messages_count", %{bob: bob, joe: joe, group: group} do
-      {:ok, %{message: message1}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: _message1}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: _message3}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: _message4}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
@@ -95,8 +95,8 @@ defmodule Stitch.Message.MarkAsUnreadTest do
 
       group_user = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user.mentions_count == 0
-      assert group_user.unread_messages_count == 3
-      assert group_user.last_read_at == message1.inserted_at
+      assert group_user.unread_messages_count == 4
+      assert group_user.last_read_at == message2.inserted_at
     end
 
     test "when the target message is a system message", %{bob: bob, joe: joe, group: group, team: team} do
@@ -115,7 +115,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
     end
 
     test "when the target mesage is the author's message", %{bob: bob, joe: joe, group: group} do
-      {:ok, %{message: message1}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
+      {:ok, %{message: _message1}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: _message3}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
@@ -125,7 +125,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
       group_user = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user.mentions_count == 0
       assert group_user.unread_messages_count == 2
-      assert group_user.last_read_at == message1.inserted_at
+      assert group_user.last_read_at == message2.inserted_at
     end
 
     test "when the target message is a system message and the messages before it are system messages or author's messages",
@@ -137,11 +137,11 @@ defmodule Stitch.Message.MarkAsUnreadTest do
 
       Message.mark_as_read(bob.id, group.id)
       assert {:ok, response} = Message.mark_as_unread(bob.id, group.id, system_message2)
-      assert %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [%{unread_messages_count: 0}]}} = response
+      assert %{mark_messages_as_unread: {1, [_unread_message]}, mark_group_as_unread: {1, [%{unread_messages_count: 2}]}} = response
 
       group_user = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user.mentions_count == 0
-      assert group_user.unread_messages_count == 0
+      assert group_user.unread_messages_count == 2
     end
 
     test "when the target message is a system message and there are no messages before it", %{bob: bob, joe: joe, group: group, team: team} do

@@ -5,8 +5,8 @@
  */
 
 import { observable, computed, action } from "mobx";
-import orderBy from "lodash/orderBy";
 import history from "lib/history";
+import orderBy from "lodash/orderBy";
 
 import {
   getGroupUserIdsThatHasCurrentUser,
@@ -71,7 +71,7 @@ class GroupsStore {
 
   @computed
   get directGroups() {
-    return this.visibleGroups.filter(group => group.type !== "regular");
+    return this.visibleGroups.filter(group => group.type !== "regular" && !group.is_favorite);
   }
 
   @computed
@@ -118,7 +118,12 @@ class GroupsStore {
     const { sidemenuStore } = this.rootStore;
 
     return get("/api/v1/groups").then(response => {
-      this.groups = orderBy(response.data, ["name"]);
+      this.groups = orderBy(response.data, ["name"]).map(group => ({
+        ...group,
+        new_message_line_at: null,
+        marked_as_unread: false
+      }));
+
       sidemenuStore.updateFavicon();
     });
   };
@@ -230,9 +235,7 @@ class GroupsStore {
   toggleFavorite = id => {
     return post(
       `/api/v1/groups/${id}/toggle-favorite`
-    ).then(({ is_favorite }) => {
-      this.updateGroupData(id, { is_favorite });
-    });
+    );
   };
 
   /* Event handlers */
@@ -319,8 +322,8 @@ class GroupsStore {
       unread_messages_count: payload.unread_messages_count,
       mentions_count: payload.mentions_count,
       last_read_at: payload.last_read_at,
-      marked_as_unread: true,
-      new_message_line_at: null
+      new_message_line_at: payload.last_read_at,
+      marked_as_unread: true
     });
 
     // Update favicon
@@ -345,6 +348,13 @@ class GroupsStore {
     // @NOTE loadGroups is called because private groups aren't existed yet in the list
     this.loadGroups();
   };
+
+  @action
+  onFavoriteChanged = payload => {
+    this.updateGroupData(payload.group_id, {
+      is_favorite: payload.is_favorite
+    });
+  }
 }
 
 export default GroupsStore;

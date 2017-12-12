@@ -23,9 +23,9 @@ defmodule Stitch.MessageQueries do
     query =
       from m in Message,
       where: m.group_id in ^user_groups_ids,
-      where: fragment("? % ?", m.text_content, ^term),
       where: m.type != ^"system",
-      order_by: fragment("similarity(?, ?) DESC", m.text_content, ^term),
+      where: fragment("? %> ?", m.text_content, ^term),
+      order_by: fragment("? <->> ?", m.text_content, ^term),
       order_by: [desc: :inserted_at],
       limit: ^limit,
       select: m,
