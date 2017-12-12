@@ -467,12 +467,12 @@ class MessageStore {
         request_id: tempMessage.id,
         ...additionalFields
       })
-      .receive("error", err => {
+      .receive("error", () => {
         this.updateMessageData(tempMessage.id, {
           status: "failed"
         });
       })
-      .receive("timeout", err => {
+      .receive("timeout", () => {
         this.updateMessageData(tempMessage.id, {
           status: "failed"
         });
@@ -727,17 +727,6 @@ class MessageStore {
   };
 
   @action
-  removeTempMessage = tempId => {
-    // Remove the temp message
-    const tempMessageIndex = this.messages.findIndex(m => m.id === tempId);
-
-    if (tempMessageIndex > -1) {
-      // -1 will cause last message to be removed
-      this.messages.splice(tempMessageIndex, 1);
-    }
-  };
-
-  @action
   toggleReaction = (messageId, emoji) => {
     this.groupChannel.push("toggle_reaction", {
       message_id: messageId,
@@ -838,13 +827,13 @@ class MessageStore {
       return;
     }
 
-    // Remove temp message
     if (newMessage.request_id && newMessage.user_id === currentUser.id) {
-      this.removeTempMessage(newMessage.request_id);
+      // update message if it's temporary
+      this.updateMessageData(newMessage.request_id, newMessage);
+    } else {
+      // otherwise, add to message list
+      this.messages.unshift(newMessage);
     }
-
-    // Add new message
-    this.messages.unshift(newMessage);
 
     // Update unread messages info of the group
     if (newMessage.user_id === currentUser.id) {
