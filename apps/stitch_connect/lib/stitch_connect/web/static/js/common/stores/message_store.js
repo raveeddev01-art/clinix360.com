@@ -4,7 +4,7 @@
  * This store keps track of data that are related with messages in the current group
  */
 
-import { observable, action, computed, when } from "mobx";
+import { observable, action, computed, when, extendObservable } from "mobx";
 import moment from "moment";
 import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
@@ -211,9 +211,8 @@ class MessageStore {
   @action
   updateMessageData = (id, data) => {
     const message = this.getMessageById(id);
-
     if (message) {
-      Object.assign(message, data);
+      extendObservable(message, data);
     }
   };
 
@@ -829,7 +828,10 @@ class MessageStore {
 
     if (newMessage.request_id && newMessage.user_id === currentUser.id) {
       // update message if it's temporary
-      this.updateMessageData(newMessage.request_id, newMessage);
+      this.updateMessageData(newMessage.request_id, {
+        ...newMessage,
+        status: undefined
+      });
     } else {
       // otherwise, add to message list
       this.messages.unshift(newMessage);
