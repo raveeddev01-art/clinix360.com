@@ -1,43 +1,43 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import CreateTeamForm from "../components/create-team";
-
 import Header from "../components/header";
+import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
+
+import Button from "react-bootstrap/lib/Button";
 
 export default class Connect extends Component {
   render() {
     return (
-      <div>
+      <div className="product-page">
         <Header />
         <div className="subheader">
           <div className="container">
             <div className="landing-message text-center">
               <h1>Connect</h1>
-              <h3>Team Messaging</h3>
+              <h3 className="m-b-30">Team Communication</h3>
 
-              <CreateTeamForm />
-
-              <div className="trial">
-                Get started with an unlimited{" "}
-                <br className="visible-xs-inline" />number of people on our free
-                14-day trial.
+              <div>
+                <Button bsSize="lg">Schedule Demo</Button>{" "}
+                <Button bsSize="lg" bsStyle="primary">
+                  Start Trial
+                </Button>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="product-feature">
+        <div className="feature">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="product-info">
-                  <h2 className="alt-heading">
+                <div className="info">
+                  <h2>
                     Secure all your healthcare communication in one place.
                   </h2>
 
-                  <p className="alt-text">
+                  <p>
                     Stitch Connect offers healthcare teams a HIPAA-compliant,
                     team communication experience across all devices. We
                     complement a great user experience with advanced security
@@ -51,38 +51,32 @@ export default class Connect extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="product-image">
-                  <img
-                    src="/images/connect-feature-1.png"
-                    alt="Stitch Connect"
-                    className="img-responsive"
-                  />
-                </div>
+                <img
+                  src="/images/connect-feature-1.png"
+                  alt="Stitch Connect"
+                  className="img-responsive"
+                />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="product-feature">
+        <div className="feature alt">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="product-image">
-                  <img
-                    src="/images/connect-feature-2.png"
-                    alt="Stitch Connect"
-                    className="img-responsive"
-                  />
-                </div>
+                <img
+                  src="/images/connect-feature-2.png"
+                  alt="Stitch Connect"
+                  className="img-responsive"
+                />
               </div>
 
               <div className="flex-item">
-                <div className="product-info">
-                  <h2 className="alt-heading">
-                    Organize your conversations by groups or 1-on-1.
-                  </h2>
+                <div className="info">
+                  <h2>Organize your conversations by groups or 1-on-1.</h2>
 
-                  <p className="alt-text">
+                  <p>
                     Stitch Connect organizes conversations into groups and
                     private messages. Public and private groups bring healthcare
                     teams together for powerful team dialogue. Discuss patients,
@@ -96,16 +90,16 @@ export default class Connect extends Component {
           </div>
         </div>
 
-        <div className="product-feature">
+        <div className="feature">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="product-info">
-                  <h2 className="alt-heading">
+                <div className="info">
+                  <h2>
                     Upload images, audio, or video into your conversations.
                   </h2>
 
-                  <p className="alt-text">
+                  <p>
                     Use Stitch Connect as a searchable archive of your team’s
                     files. You can upload almost any type — JPEG, PNG, PDF, MP3,
                     Word, Excel, PowerPoint, and more. We employ cutting edge
@@ -118,38 +112,34 @@ export default class Connect extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="product-image">
-                  <img
-                    src="/images/connect-feature-3.png"
-                    alt="Stitch Connect"
-                    className="img-responsive"
-                  />
-                </div>
+                <img
+                  src="/images/connect-feature-3.png"
+                  alt="Stitch Connect"
+                  className="img-responsive"
+                />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="product-feature">
+        <div className="feature alt">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="product-image">
-                  <img
-                    src="/images/connect-feature-4.png"
-                    alt="Stitch Connect"
-                    className="img-responsive"
-                  />
-                </div>
+                <img
+                  src="/images/connect-feature-4.png"
+                  alt="Stitch Connect"
+                  className="img-responsive"
+                />
               </div>
 
               <div className="flex-item">
-                <div className="product-info">
-                  <h2 className="alt-heading">
+                <div className="info">
+                  <h2>
                     Notifications keep you in sync across all your devices.
                   </h2>
 
-                  <p className="alt-text">
+                  <p>
                     Never miss a beat in Stitch Connect. Access your account
                     everywhere you go with our web, desktop, and mobile apps.
                     Receive and customize notifications across all your
@@ -164,6 +154,7 @@ export default class Connect extends Component {
           </div>
         </div>
 
+        <GetStarted />
         <Footer />
       </div>
     );

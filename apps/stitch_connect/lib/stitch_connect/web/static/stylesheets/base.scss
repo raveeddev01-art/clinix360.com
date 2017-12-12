@@ -107,7 +107,7 @@ hr {
   padding: 6px 10px;
 }
 
-@for $i from 0 through 4 {
+@for $i from 0 through 5 {
   .m-b-#{$i * 10} {
     margin-bottom: #{$i * 10}px;
   }

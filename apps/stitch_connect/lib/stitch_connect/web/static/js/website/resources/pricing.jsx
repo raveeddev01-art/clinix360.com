@@ -1,13 +1,15 @@
 import React, { Component } from "react";
+
+import Header from "../components/header";
+import GetStarted from "../components/get-started";
+import Footer from "../components/footer";
+
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import NavItem from "react-bootstrap/lib/NavItem";
 import Button from "react-bootstrap/lib/Button";
-
-import Header from "../components/header";
-import Footer from "../components/footer";
 
 export default class Pricing extends Component {
   constructor(props) {
@@ -35,9 +37,9 @@ export default class Pricing extends Component {
           </div>
         </div>
 
-        <div className="pricing">
+        <div className="pricing-page">
           <div className="container">
-            <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+            <Tab.Container id="pricing-tabs" defaultActiveKey="first">
               <Row className="clearfix">
                 <Col xs={12}>
                   <Nav bsStyle="tabs" justified>
@@ -48,7 +50,9 @@ export default class Pricing extends Component {
                         className="m-b-10"
                       />
                       <h3>Connect</h3>
-                      <h4>Team Messaging</h4>
+                      <p className="m-b-10 hidden-xs hidden-sm">
+                        Team Messaging
+                      </p>
                     </NavItem>
 
                     <NavItem eventKey="second">
@@ -58,7 +62,9 @@ export default class Pricing extends Component {
                         className="m-b-10"
                       />
                       <h3>Engage</h3>
-                      <h4>Patient Messaging</h4>
+                      <p className="m-b-10 hidden-xs hidden-sm">
+                        Patient Messaging
+                      </p>
                     </NavItem>
 
                     <NavItem eventKey="third">
@@ -68,13 +74,15 @@ export default class Pricing extends Component {
                         className="m-b-10"
                       />
                       <h3>Manage</h3>
-                      <h4>Patient Management</h4>
+                      <p className="m-b-10 hidden-xs hidden-sm">
+                        Patient Management
+                      </p>
                     </NavItem>
                   </Nav>
                 </Col>
 
                 <Col xs={12}>
-                  <Tab.Content animation>
+                  <Tab.Content animation={false}>
                     <Tab.Pane eventKey="first">
                       <Row>
                         <Col sm={4}>
@@ -84,7 +92,7 @@ export default class Pricing extends Component {
                               <sup>$</sup>
                               {this.state.pricingToggle ? "6" : "5"}
                             </div>
-                            <div className="price-details">
+                            <div className="price-details m-b-20">
                               per user per month <br /> billed{" "}
                               <span onClick={this.handleClick}>
                                 {this.state.pricingToggle
@@ -93,7 +101,7 @@ export default class Pricing extends Component {
                               </span>
                             </div>
 
-                            <ul className="list-unstyled text-left plan-features">
+                            <ul className="list-unstyled text-left">
                               <li className="text-center m-b-10">
                                 <mark>Features</mark>
                               </li>
@@ -136,7 +144,7 @@ export default class Pricing extends Component {
                               <sup>$</sup>
                               {this.state.pricingToggle ? "12" : "10"}
                             </div>
-                            <div className="price-details">
+                            <div className="price-details m-b-20">
                               per user per month <br /> billed{" "}
                               <span onClick={this.handleClick}>
                                 {this.state.pricingToggle
@@ -190,7 +198,7 @@ export default class Pricing extends Component {
                               <sup>$</sup>
                               {this.state.pricingToggle ? "18" : "15"}
                             </div>
-                            <div className="price-details">
+                            <div className="price-details m-b-20">
                               per user per month <br /> billed{" "}
                               <span onClick={this.handleClick}>
                                 {this.state.pricingToggle
@@ -441,7 +449,7 @@ export default class Pricing extends Component {
 
                             <ul className="list-unstyled text-left plan-features">
                               <li className="text-center m-b-10">
-                                <mark>Features</mark>
+                                <mark>Includes Basic, plus:</mark>
                               </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />Guest
@@ -486,7 +494,7 @@ export default class Pricing extends Component {
 
                             <ul className="list-unstyled text-left plan-features">
                               <li className="text-center m-b-10">
-                                <mark>Features</mark>
+                                <mark>Includes Premium, plus:</mark>
                               </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />Response
@@ -524,6 +532,7 @@ export default class Pricing extends Component {
           </div>
         </div>
 
+        <GetStarted />
         <Footer />
       </div>
     );

@@ -57,11 +57,14 @@ defmodule StitchConnect.Web.Router do
     pipe_through :browser
 
     get "/", HomeController, :index
+    get "/demo", HomeController, :index
     get "/connect", HomeController, :index
     get "/engage", HomeController, :index
     get "/manage", HomeController, :index
     get "/pricing", HomeController, :index
     get "/downloads", HomeController, :index
+    get "/pilot", HomeController, :index
+    get "/jobs", HomeController, :index
     get "/customers", HomeController, :index
     get "/customers/luminance-recovery", HomeController, :index
     get "/customers/princeton-brain-spine", HomeController, :index
