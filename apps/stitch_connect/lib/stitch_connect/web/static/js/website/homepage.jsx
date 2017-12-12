@@ -55,7 +55,7 @@ export default class Homepage extends Component {
               <div className="flex-item">
                 <div className="mbp">
                   <img
-                    src="http://placehold.it/1000x590"
+                    src="/images/homepage-mbp.png"
                     alt=""
                     className="img-responsive"
                   />
@@ -125,7 +125,11 @@ export default class Homepage extends Component {
               <div className="flex-item">
                 <div className="info">
                   <h2>
-                    <img src="/images/engage-icon.png" alt="Connect" /> Engage
+                    <img
+                      src="/images/engage-icon-white.png"
+                      alt="Connect"
+                    />{" "}
+                    Engage
                   </h2>
                   <h3>Patient Engagement</h3>
 
@@ -269,22 +273,6 @@ export default class Homepage extends Component {
                 </div>
               </Carousel.Item>
             </Carousel>
-
-            {/* <h4>
-              "We've got people that made it through because this tool helped
-              communication. <br /> This is one of those success stories of
-              technology that has led to a happy ending."
-            </h4>
-
-            <img
-              src="/images/customer-luminance.png"
-              alt="Luminance"
-              className="m-b-10"
-            />
-
-            <p className="text-uppercase">
-              MICHAEL KRAUSE, CHIEF REVENUE OFFICER
-            </p> */}
           </div>
         </section>
 

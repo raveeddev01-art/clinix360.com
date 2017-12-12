@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 import Header from "../components/header";
+import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-import CreateTeamForm from "../components/create-team";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -427,18 +427,9 @@ export default class CaseLuminance extends Component {
               </p>
             </div>
           </div>
-
-          <div className="sign-up-section">
-            <div className="container">
-              <Row>
-                <Col sm={8} smOffset={2}>
-                  <h3 className="text-center m-b-30">Ready to start?</h3>
-                  <CreateTeamForm />
-                </Col>
-              </Row>
-            </div>
-          </div>
         </div>
+
+        <GetStarted />
         <Footer />
       </div>
     );
