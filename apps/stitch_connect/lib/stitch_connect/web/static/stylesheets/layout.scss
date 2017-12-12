@@ -16,6 +16,7 @@ $sidebar_width: 270px;
   display: flex;
   width: 100%;
   flex: 1;
+  min-height: 0;
 }
 
 #sidemenu,
@@ -86,8 +87,8 @@ $sidebar_width: 270px;
   padding: 0 15px;
   display: flex;
   align-items: center;
-  flex-basis: 65px;
-  flex-shrink: 0;
+  flex: 0 0 65px;
+  min-height: 0;
 
   h4 {
     font-size: 20px;
