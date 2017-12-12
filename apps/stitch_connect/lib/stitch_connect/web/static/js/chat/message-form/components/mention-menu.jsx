@@ -61,10 +61,10 @@ class MenutionMenu extends Component {
   };
 
   getUsers = () => {
-    const { usersStore: { users }, filter } = this.props;
+    const { usersStore: { activatedUsers }, filter } = this.props;
     const re = new RegExp(filter, "i");
 
-    return users.filter(
+    return activatedUsers.filter(
       user => re.test(user.full_name) || re.test(user.username)
     );
   };
