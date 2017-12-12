@@ -49,7 +49,8 @@ defmodule Stitch.Message.LinkPreview do
     |> Repo.all
   end
 
-  def get_links(text) do
+  def get_links(nil), do: []
+  def get_links(text) when is_binary(text) do
     ~r(https?://[^\s]+)
     |> Regex.scan(text)
     |> List.flatten
