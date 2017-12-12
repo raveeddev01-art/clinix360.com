@@ -63,14 +63,12 @@ class MenutionMenu extends Component {
   getUsers = () => {
     const { usersStore: { users }, filter } = this.props;
 
-    return users
-      .filter(
-        user =>
-          `${user.first_name} ${user.last_name} ${user.username}`.indexOf(
-            filter
-          ) > -1
-      )
-      .slice(0, 5);
+    return users.filter(
+      user =>
+        `${user.first_name} ${user.last_name} ${user.username}`.indexOf(
+          filter
+        ) > -1
+    );
   };
 
   render() {
