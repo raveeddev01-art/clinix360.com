@@ -3,8 +3,9 @@ import { observer, inject } from "mobx-react";
 import { Async } from "react-select";
 
 import MemberOption from "./member_option";
+import { filterUsers } from "lib/utils";
 
-@inject("presenceStore")
+@inject("usersStore", "presenceStore")
 @observer
 class Members extends Component {
   constructor(props) {
@@ -21,16 +22,16 @@ class Members extends Component {
     }
   }
 
-  _getMembers = (term, callback) => {
-    const { presenceStore } = this.props;
+  _getMembers = term => {
+    const { usersStore: { activatedUsers }, presenceStore } = this.props;
 
-    return post(`/api/v1/users/search`, { body: { term } }).then(resp => {
-      const onlineUsers = Object.keys(presenceStore.onlineUsersMap);
-      const options = resp.data.map(user => ({
-        ...user,
-        online: onlineUsers.indexOf(`${user.id}`) > -1
-      }));
-      return { options, complete: true };
+    return new Promise(resolve => {
+      resolve({
+        options: filterUsers(activatedUsers, term).map(user => ({
+          ...user,
+          online: presenceStore.isOnline(user.id)
+        }))
+      });
     });
   };
 
