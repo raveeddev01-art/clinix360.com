@@ -62,12 +62,10 @@ class MenutionMenu extends Component {
 
   getUsers = () => {
     const { usersStore: { users }, filter } = this.props;
+    const re = new RegExp(filter, "i");
 
     return users.filter(
-      user =>
-        `${user.first_name} ${user.last_name} ${user.username}`.indexOf(
-          filter
-        ) > -1
+      user => re.test(user.full_name) || re.test(user.username)
     );
   };
 
