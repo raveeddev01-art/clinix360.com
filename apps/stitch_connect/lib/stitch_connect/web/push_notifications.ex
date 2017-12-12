@@ -133,12 +133,12 @@ defmodule StitchConnect.Web.PushNotifications do
     "#{display_name(user)} sent you a direct message."
   end
 
-  defp new_msg_notification_body(_grp, %{user: user, type: "upload"}) do
-    "#{display_name(user)} uploaded a room file."
+  defp new_msg_notification_body(%{name: group_name}, %{user: user, type: "upload"}) do
+    "#{display_name(user)} uploaded a room file (#{group_name})."
   end
 
-  defp new_msg_notification_body(_grp, %{user: user}) do
-    "#{display_name(user)} sent a room message."
+  defp new_msg_notification_body(%{name: group_name}, %{user: user}) do
+    "#{display_name(user)} sent a room message (#{group_name})."
   end
 
   defp display_name(%{first_name: first_name, last_name: last_name}) do
