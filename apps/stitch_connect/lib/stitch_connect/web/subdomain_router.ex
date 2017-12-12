@@ -18,6 +18,11 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug StitchConnect.Plug.Authenticate
   end
 
+  pipeline :admin do
+    plug StitchConnect.Plug.StaffAuthenticate
+    plug :put_layout, {StitchConnect.Web.Admin.AppView, "layout.html"}
+  end  
+
   pipeline :api_auth do
     plug :accepts, ["json"]
     plug :fetch_session
@@ -49,8 +54,9 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
   # admin subdomain routes
   scope "/", StitchConnect.Web.Admin, as: :admin, host: "admin." do
-    pipe_through [:browser, StitchConnect.Plug.StaffAuthenticate]
+    pipe_through [:browser, :admin]
     get "/", IndexController, :index
+    resources "/users", UserController, only: [:index]
   end
 
   # API routes which don't need token.
