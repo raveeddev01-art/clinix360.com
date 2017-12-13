@@ -4,9 +4,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background-color: $brand-primary;
+  background-color: darken($brand-primary, 5%);
   padding: 15px 10px;
-  border-right: 1px solid #fff;
   min-width: 65px;
   z-index: 11;
 
