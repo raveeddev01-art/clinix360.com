@@ -1,5 +1,9 @@
 #sidemenu {
+  background-color: $brand-primary;
+
   .flex-header {
+    color: #ffffff;
+    background-color: $brand-primary;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 1px 0 0 $body-bg;
     z-index: 10;
@@ -104,7 +108,7 @@
           h5 {
             flex-grow: 1;
             flex-shrink: 0;
-            color: $brand-primary;
+            color: #fff;
             font-size: 16px;
             font-weight: bold;
             line-height: 1.5;
@@ -113,6 +117,7 @@
 
             a {
               display: inline-block;
+              color: inherit;
             }
           }
 
@@ -131,7 +136,7 @@
         .item {
           display: flex;
           align-items: center;
-          color: #333;
+          color: rgb(192, 192, 192);
           font-size: 16px;
           text-decoration: none;
           border-radius: 3px;
@@ -148,17 +153,17 @@
             i.fa-circle,
             i.fa-circle-o {
               font-size: 12px;
-              color: $brand-primary;
+              color: #fff;
             }
 
             i.fa-circle-o {
-              color: rgba(20, 20, 20, 0.75);
+              color: rgba(192, 192, 192, 0.75);
             }
           }
 
           .item-text {
             flex-grow: 1;
-            opacity: 0.75;
+            opacity: 0.9;
             font-weight: 600;
             overflow: hidden;
             white-space: nowrap;
@@ -167,11 +172,11 @@
           }
 
           .item-badge {
-            color: #fff;
+            color: $brand-primary;
             font-size: 12px;
             font-weight: 700;
             line-height: 16px;
-            background: $brand-primary;
+            background: #fff;
             border-radius: 2px;
             padding: 0 4px;
             z-index: 9;
@@ -179,14 +184,14 @@
 
           .hide-dm {
             font-size: 20px;
-            color: $brand-primary;
+            color: rgb(192, 192, 192);
             visibility: hidden;
             position: absolute;
             right: 10px;
           }
 
           &:hover {
-            background: darken(#fff, 5%);
+            background: rgba(255, 255, 255, 0.08);
 
             .item-text {
               padding-right: 24px;
@@ -197,8 +202,8 @@
           }
 
           &.active {
-            color: #fff;
-            background: $brand-primary;
+            color: $brand-primary;
+            background: #fff;
 
             .item-text {
               opacity: 1;
@@ -206,17 +211,17 @@
 
             .item-icon,
             .hide-dm {
-              color: #fff;
+              color: $brand-primary;
 
               i.fa-circle,
               i.fa-circle-o {
-                color: #fff;
+                color: $brand-primary;
               }
             }
 
             .item-badge {
-              background-color: #fff;
-              color: $brand-primary;
+              background-color: $brand-primary;
+              color: #fff;
             }
           }
 
@@ -227,7 +232,7 @@
             }
             &:not(.active) {
               .item-text {
-                color: #000;
+                color: #fff;
               }
             }
 
@@ -257,8 +262,8 @@
       height: 30px;
       line-height: 30px;
       text-align: center;
-      background-color: $brand-primary;
-      color: #fff;
+      background-color: #fff;
+      color: $brand-primary;
       font-size: 16px;
 
       &.up {
