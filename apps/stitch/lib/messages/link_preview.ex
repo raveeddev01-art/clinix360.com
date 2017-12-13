@@ -1,4 +1,9 @@
 defmodule Stitch.Message.LinkPreview do
+  @moduledoc """
+  Defines an embedded schema for message link previews
+  and provides functions for generating them.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias Stitch.{Message, Repo}
@@ -25,7 +30,7 @@ defmodule Stitch.Message.LinkPreview do
     changes: %{favicon_url: favicon_url}
   } = changeset) when is_binary(favicon_url) do
     link = Map.get(changeset.changes, :link, changeset.data.link)
-    favicon_url = URI.merge(link, favicon_url) |> URI.to_string
+    favicon_url = link |> URI.merge(favicon_url) |> URI.to_string
     put_change(changeset, :favicon_url, favicon_url)
   end
   defp resolve_relative_favicon_url(changeset), do: changeset
@@ -35,7 +40,7 @@ defmodule Stitch.Message.LinkPreview do
     changes: %{image_url: image_url}
   } = changeset) when is_binary(image_url) do
     link = Map.get(changeset.changes, :link, changeset.data.link)
-    image_url = URI.merge(link, image_url) |> URI.to_string
+    image_url = link |> URI.merge(image_url) |> URI.to_string
     put_change(changeset, :image_url, image_url)
   end
   defp resolve_relative_image_url(changeset), do: changeset
