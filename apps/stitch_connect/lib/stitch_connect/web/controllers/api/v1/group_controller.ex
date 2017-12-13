@@ -252,7 +252,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       true ->
         user_ids =
           user_ids
-          |> String.split(",")
+          |> String.split(",", trim: true)
           |> Enum.map(&String.to_integer/1)
 
         {:ok, %{removed: removed, added: _added, system_messages: system_messages}} = Group.update_members(group, user_ids)
