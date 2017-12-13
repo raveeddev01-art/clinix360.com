@@ -31,5 +31,6 @@ defmodule StitchConnect.Web.Messages.SearchTest do
     # Validate result is there
     user_1_session
     |> assert_has(search_result("The quick brown fox jumps over the lazy dog"))
+    |> refute_has(search_result("Now is the time for all good men to come to the aid of the party."))
   end
 end
