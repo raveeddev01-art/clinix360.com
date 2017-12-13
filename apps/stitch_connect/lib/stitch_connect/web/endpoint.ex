@@ -44,7 +44,13 @@ defmodule StitchConnect.Web.Endpoint do
     store: :cookie,
     key: "_stitch_connect_key",
     signing_salt: "o9McnPJj",
-    domain: ".#{System.get_env("APP_HOST")}"
+    # Setting domain to nil is necessary for integration tests to pass. Maybe
+    # a bug in Wallaby?
+    #
+    # Setting domain to the APP_HOST env variable with a leading dot lets us
+    # share cookies between domain and subdomains for auto-login after
+    # on-boarding.
+    domain: if Application.fetch_env!(:stitch_connect, :env) == :test, do: nil, else: ".#{System.get_env("APP_HOST")}"
 
   # Add AppSignal instrumentation
   use Appsignal.Phoenix

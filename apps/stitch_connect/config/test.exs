@@ -10,7 +10,7 @@ config :stitch_connect, StitchConnect.Web.Endpoint,
 config :wallaby,
   screenshot_on_failure: true,
   driver: Wallaby.Experimental.Chrome,
-  js_logger: nil
+  js_logger: false
 
 config :stitch_connect, :start_message_link_preview_generator, false
 
@@ -18,4 +18,5 @@ config :stitch_connect, :sql_sandbox, true
 
 config :stitch_connect,
   application_host: "localhost:4001",
-  application_scheme: "http://"
+  application_scheme: "http://",
+  websocket_scheme: "ws://"
