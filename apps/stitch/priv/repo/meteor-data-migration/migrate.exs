@@ -33,6 +33,8 @@ defmodule Stitch.MeteorMigration do
         users = MeteorMigration.User.parse_users_json(parse_meteor_json(users_json))
         {_count, users} = MeteorMigration.User.migrate_users(team.id, users)
 
+        identify_on_intercom(users)
+
         Logger.info("Migrating rooms")
 
         indexed_users = index_users(users)
@@ -54,6 +56,12 @@ defmodule Stitch.MeteorMigration do
 
       {:error, team} ->
         Logger.warn "Skipping migration for #{team.slug}"
+    end
+  end
+
+  def identify_on_intercom(users) do
+    for user <- users do
+      Stitch.Analytics.identify_and_group(user)
     end
   end
 
