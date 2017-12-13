@@ -57,6 +57,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through [:browser, :admin]
     get "/", IndexController, :index
     resources "/users", UserController, only: [:index]
+    resources "/teams", TeamController, only: [:index]
   end
 
   # API routes which don't need token.

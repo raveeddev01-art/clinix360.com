@@ -1,0 +1,19 @@
+<h1>Teams</h1>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Slug</th>
+    <th>User Count</th>
+    <th></th>
+  </tr>
+  <%= for {team, count} <- @teams do %>
+    <tr>
+      <td><%= team.name %></td>
+      <td><%= team.slug %></td>
+      <td><%= count %></td>
+      <td></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= render StitchConnect.Web.Admin.AppView, "_page_links.html", @meta %>
