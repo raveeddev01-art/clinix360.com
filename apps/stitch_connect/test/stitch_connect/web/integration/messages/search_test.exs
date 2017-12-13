@@ -10,6 +10,8 @@ defmodule StitchConnect.Web.Messages.SearchTest do
   test "user can search for messages in his team" do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1 = insert(:user, first_name: "John", last_name: "Doe", username: "john", team: team)
+    group = insert(:group, team: team)
+    insert(:message, group: group, text_content: "foobar fox")
 
     {:ok, user_1_session} = Wallaby.start_session()
 
@@ -32,5 +34,6 @@ defmodule StitchConnect.Web.Messages.SearchTest do
     user_1_session
     |> assert_has(search_result("The quick brown fox jumps over the lazy dog"))
     |> refute_has(search_result("Now is the time for all good men to come to the aid of the party."))
+    |> refute_has(search_result("foobar fox"))
   end
 end
