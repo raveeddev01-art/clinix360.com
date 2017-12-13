@@ -15,7 +15,7 @@ defmodule StitchConnect.Web.FeatureCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo, ownership_timeout: 5 * 60 * 1000)
 
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
