@@ -4,8 +4,8 @@ defmodule StitchConnect.Web.Admin.UserController do
   alias Stitch.Paginator
 
   def index(conn, %{"page" => page, "limit" => limit}) do
-    limit = String.to_integer(limit)
-    page = String.to_integer(page)
+    limit = ensure_integer(limit) || 10
+    page = ensure_integer(page) || 1
     skip = (page - 1) * limit
     %{data: users, meta: meta} = Paginator.new(User, skip: skip, limit: limit)
     render(conn, "index.html", users: users, meta: meta)

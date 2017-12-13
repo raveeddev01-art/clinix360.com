@@ -94,13 +94,17 @@ defmodule StitchConnect.Web.ControllerHelpers do
     end
   end
 
-  defp ensure_integer(value) when is_integer(value), do: value
-  defp ensure_integer(value) when is_binary(value) do
+  @doc """
+  Returns an integer or nil.
+  """
+  @spec ensure_integer(any) :: integer | nil
+  def ensure_integer(value) when is_integer(value), do: value
+  def ensure_integer(value) when is_binary(value) do
     try do
       String.to_integer(value)
     rescue
       ArgumentError -> nil
     end
   end
-  defp ensure_integer(_), do: nil
+  def ensure_integer(_), do: nil
 end
