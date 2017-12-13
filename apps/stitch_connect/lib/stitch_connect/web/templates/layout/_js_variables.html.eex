@@ -1,6 +1,7 @@
 <%
 applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
 applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
+websocketScheme = Application.fetch_env!(:stitch_connect, :websocket_scheme)
 authenticationToken = Plug.Conn.get_session(@conn, :authentication_token)
 session_id = Plug.Conn.get_session(@conn, :session_id)
 locked = !!Plug.Conn.get_session(@conn, :locked)
@@ -23,6 +24,7 @@ current_user =
 <script>
   window.applicationHost = "<%= applicationHost %>";
   window.applicationScheme = "<%= applicationScheme %>";
+  window.websocketScheme = "<%= websocketScheme %>";
   window.locked = <%= locked %>;
   window.authenticationToken = "<%= authenticationToken %>";
   window.sessionId = "<%= session_id %>";
