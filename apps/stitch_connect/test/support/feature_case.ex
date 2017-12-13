@@ -15,15 +15,21 @@ defmodule StitchConnect.Web.FeatureCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo, ownership_timeout: 5 * 60 * 1000)
 
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
     end
 
-    metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(Stitch.Repo, self())
-    {:ok, session} = Wallaby.start_session(metadata: metadata)
-    session = Wallaby.Browser.resize_window(session, 1400, 1000)
+    session =
+      if tags[:start_session] do
+        metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(Stitch.Repo, self())
+        {:ok, session} = Wallaby.start_session(metadata: metadata)
+        Wallaby.Browser.resize_window(session, 1400, 1000)
+      else
+        :ignore
+      end
+
     {:ok, session: session}
   end
 end

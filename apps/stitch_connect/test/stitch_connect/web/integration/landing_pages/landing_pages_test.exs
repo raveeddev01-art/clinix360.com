@@ -3,6 +3,7 @@ defmodule StitchConnect.Web.LandingPagesTest do
 
   import Wallaby.Query, only: [css: 2]
 
+  @tag :start_session
   test "home page has welcome message", %{session: session} do
     session
     |> visit("/")
@@ -14,6 +15,7 @@ defmodule StitchConnect.Web.LandingPagesTest do
     )
   end
 
+  @tag :start_session
   test "connect page has Connect product information", %{session: session} do
     session
     |> visit("/connect")
@@ -25,6 +27,7 @@ defmodule StitchConnect.Web.LandingPagesTest do
     )
   end
 
+  @tag :start_session
   test "pricing page has pricing information", %{session: session} do
     session
     |> visit("/pricing")
@@ -36,6 +39,7 @@ defmodule StitchConnect.Web.LandingPagesTest do
     )
   end
 
+  @tag :start_session
   test "downloads page shows clients to download", %{session: session} do
     session
     |> visit("/downloads")
