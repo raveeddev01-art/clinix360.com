@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.Messages.SearchTest do
   import Stitch.Factory
   alias StitchConnect.Web.IntegrationTestHelper, as: Helper
 
-  defp search_result(msg), do: css(".message-search-addon > .message", text: msg)
+  defp search_result(msg), do: css(".message-search-addon .message", text: msg)
 
   test "user can search for messages in his team" do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
@@ -26,6 +26,7 @@ defmodule StitchConnect.Web.Messages.SearchTest do
     # Performn a search
     user_1_session
     |> fill_in(text_field("Search"), with: "fox")
+    |> send_keys([:enter])
 
     # Validate result is there
     user_1_session
