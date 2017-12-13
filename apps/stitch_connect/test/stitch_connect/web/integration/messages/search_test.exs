@@ -17,6 +17,9 @@ defmodule StitchConnect.Web.Messages.SearchTest do
 
     Helper.sign_in(user_1_session, team, user_1)
 
+    default_group = Stitch.GroupQueries.default_group(user_1)
+    insert(:message, group: default_group, type: "system", text_content: "system fox")
+
     # Create two messages in this group with complex sentences.
     user_1_session
     |> click(button("Join"))
@@ -35,5 +38,6 @@ defmodule StitchConnect.Web.Messages.SearchTest do
     |> assert_has(search_result("The quick brown fox jumps over the lazy dog"))
     |> refute_has(search_result("Now is the time for all good men to come to the aid of the party."))
     |> refute_has(search_result("foobar fox"))
+    |> refute_has(search_result("system fox"))
   end
 end
