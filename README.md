@@ -19,8 +19,8 @@ Install external dependencies
 Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 
 ```
-127.0.0.1 localhost
-127.0.0.1 YOURTEAMSUBDOMAIN.localhost
+127.0.0.1 localhost.test
+127.0.0.1 YOURTEAMSUBDOMAIN.localhost.test
 ```
 
 You should be working from the `develop` branch:
@@ -33,7 +33,7 @@ Create an `.env` file in the root project directiry with the following
 contents, and ask the team for the environment values you need to set here:
 
 ```sh
-export APP_HOST=localhost
+export APP_HOST=localhost.test
 
 export MANDRILL_API_KEY=keygoeshere
 
@@ -126,7 +126,7 @@ foreman start -f Procfile.dev
 
 Access the site.
 
-https://localhost:4443/
+https://localhost.test:4443/
 
 ---
 
