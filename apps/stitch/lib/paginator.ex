@@ -5,6 +5,10 @@ defmodule Stitch.Paginator do
 
   defstruct [:data, :meta]
 
+  @type t :: %__MODULE__{data: data, meta: meta}
+  @type meta :: %{skip: non_neg_integer, limit: pos_integer, count: non_neg_integer}
+  @type data :: [any]
+
   @min_limit 0
   @max_limit 50
   @default_limit 10
@@ -65,6 +69,49 @@ defmodule Stitch.Paginator do
     case Integer.parse(s) do
       {i, _} -> i
       :error -> :error
+    end
+  end
+
+  @doc """
+  Generates pagination anchor tags.
+  """
+  @spec page_links(meta) :: :invalid_limit | iodata
+  def page_links(%{skip: _skip, limit: 0, count: _count}),
+    do: :invalid_limit
+  def page_links(%{skip: skip, limit: limit,  count: count}) do
+    page =
+      skip / limit + 1
+      |> round()
+    total = Float.ceil(count/limit)
+    do_page_links(page, total, limit)
+  end
+
+  defp do_page_links(page, total_pages, limit) do
+    page
+    |> generate_page_numbers(total_pages)
+    |> generate_anchor_tags(limit)
+  end
+
+  defp generate_page_numbers(page, total_pages) do
+    for i <- page-4..page+4 do
+      cond do
+        i < 1 -> :remove
+        i > total_pages -> :remove
+        i == page -> {i, :no_anchor}
+        i -> {i, :anchor}
+      end
+    end
+    |> Enum.reject(&(&1==:remove))
+  end
+
+  defp generate_anchor_tags(page_numbers, limit) do
+    for {page, action} <- page_numbers do
+      case action do
+        :anchor ->
+          Phoenix.HTML.Link.link(page, to: "?page=#{page}&limit=#{limit}")
+        :no_anchor ->
+          Phoenix.HTML.raw("<span>#{page}</span>")
+      end
     end
   end
 end

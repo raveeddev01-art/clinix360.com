@@ -1,0 +1,21 @@
+<h1>Users</h1>
+<table>
+  <tr>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Phone Number</th>
+    <th>Email</th>
+    <th>Role</th>
+  </tr>
+  <%= for user <- @users do %>
+    <tr>
+      <td><%= user.first_name %></td>
+      <td><%= user.last_name %></td>
+      <td><%= user.phone_number %></td>
+      <td><%= user.email %></td>
+      <td><%= if roles = user.roles, do: hd(roles), else: "" %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= render StitchConnect.Web.Admin.AppView, "_page_links.html", @meta %>
