@@ -16,12 +16,12 @@ class GroupPresenceStore {
   get typingUsers() {
     const { presenceStore } = this.rootStore;
 
-    return (
-      Object.keys(this.usersCurrentlyInGroup)
-        .filter(userId => userId !== window.currentUser.id.toString())
+    return Object.keys(this.usersCurrentlyInGroup).filter(
+      userId =>
+        userId !== window.currentUser.id.toString() &&
         // Double-check if the user is really online with team presence store
-        .filter(userId => presenceStore.isOnline(userId))
-        .filter(userId => this.isTyping(userId))
+        presenceStore.isOnline(userId) &&
+        this.isTyping(userId)
     );
   }
 

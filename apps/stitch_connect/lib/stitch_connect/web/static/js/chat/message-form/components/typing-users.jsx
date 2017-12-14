@@ -5,11 +5,13 @@ import { inject, observer } from "mobx-react";
 @observer
 class TypingUsers extends Component {
   render() {
-    const { groupPresenceStore: { typingUsers }, usersStore } = this.props;
+    const {
+      groupPresenceStore: { typingUsers },
+      usersStore: { usersById }
+    } = this.props;
     const usernames = typingUsers
-      .map(typingUserId => usersStore.getUserById(parseInt(typingUserId, 10)))
-      .filter(user => !!user)
-      .map(user => user.full_name);
+      .filter(typingUserId => !!usersById[parseInt(typingUserId, 10)])
+      .map(typingUserId => usersById[parseInt(typingUserId, 10)].full_name);
     let content;
 
     switch (usernames.length) {
