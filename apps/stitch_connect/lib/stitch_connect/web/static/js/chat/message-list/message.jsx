@@ -393,7 +393,9 @@ class Message extends Component {
               </div>
 
               <div className="message-status">
-                {mine && (capitalize(message.status) || this.renderReadStatus(message))}
+                {mine &&
+                  (capitalize(message.status) ||
+                    this.renderReadStatus(message))}
               </div>
             </Element>
           </VisibilitySensor>
