@@ -26,27 +26,27 @@ export default class CaseUCSF extends Component {
 
           <div className="overview text-center">
             <div className="container">
-              <Row>
-                <Col sm={3}>
+              <div className="flex-box">
+                <div className="flex-item">
                   <h4 className="text-uppercase">Specialty</h4>
                   <p className="m-b-0">Behavioral Health</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Employees</h4>
                   <p className="m-b-0">10 Staff</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Patients</h4>
                   <p className="m-b-0">400 visits</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Location</h4>
                   <p className="m-b-0">San Francisco</p>
-                </Col>
-              </Row>
+                </div>
+              </div>
             </div>
           </div>
 

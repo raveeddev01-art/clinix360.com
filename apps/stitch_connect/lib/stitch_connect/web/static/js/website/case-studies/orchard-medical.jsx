@@ -4,11 +4,6 @@ import Header from "../components/header";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
 
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
-import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
-import Panel from "react-bootstrap/lib/Panel";
-
 export default class CaseOrchardMedical extends Component {
   render() {
     return (
@@ -26,27 +21,27 @@ export default class CaseOrchardMedical extends Component {
 
           <div className="overview text-center">
             <div className="container">
-              <Row>
-                <Col sm={3}>
+              <div className="flex-box">
+                <div className="flex-item">
                   <h4 className="text-uppercase">Specialty</h4>
                   <p className="m-b-0">Primary Care</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Employees</h4>
                   <p className="m-b-0">11 Staff</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Patients</h4>
                   <p className="m-b-0">17,500 visits</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Location</h4>
                   <p className="m-b-0">MA</p>
-                </Col>
-              </Row>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -322,8 +322,6 @@
 
   //----------------- DEMO -----------------
   .demo-page .demo-form {
-    display: flex;
-    flex-basis: 360px;
     color: #333;
 
     border: 0;
@@ -792,7 +790,7 @@
       border-radius: 4px;
       box-shadow: 0 5px 15px 0 rgba(0,0,0,0.15);
       padding: 11px 20px;
-      margin: 20px auto;
+      margin: 15px auto;
 
       &:hover, &:focus {
         color: #fff;
@@ -909,7 +907,11 @@
 
   .overview {
     background: #fff;
-    padding: 40px 0;
+    padding: 20px 0;
+
+    .flex-item {
+      padding: 10px 15px;
+    }
 
     h4 {
       max-width: 200px;
