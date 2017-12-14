@@ -47,10 +47,10 @@ export default class Customers extends Component {
 
           <section>
             <div className="container">
-              <Panel>
+              <Panel className="luminance-card">
                 <div className="flex-box">
                   <div className="flex-item">
-                    <h2>Luminance Recovery</h2>
+                    <h2 className="m-b-20">Luminance Recovery</h2>
 
                     <p className="m-b-20">
                       Luminance Recovery is a residential drug addiction

@@ -49,7 +49,8 @@ export default class CaseOrchardMedical extends Component {
             <div className="case-study-content">
               <h3 className="text-center">
                 Orchard Medical uses Stitch as a phone system replacement to
-                improve <br />the efficiency of clinical coordination
+                improve <br className="hidden-xs" />the efficiency of clinical
+                coordination
               </h3>
 
               <hr />
