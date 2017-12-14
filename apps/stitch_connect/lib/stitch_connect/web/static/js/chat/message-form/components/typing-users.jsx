@@ -1,32 +1,30 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-@inject("presenceStore", "groupPresenceStore")
+@inject("groupPresenceStore", "usersStore")
 @observer
 class TypingUsers extends Component {
   render() {
-    const { groupPresenceStore: { typingUsers }, presenceStore } = this.props;
+    const { groupPresenceStore: { typingUsers }, usersStore } = this.props;
+    const usernames = typingUsers
+      .map(typingUserId => usersStore.getUserById(parseInt(typingUserId, 10)))
+      .filter(user => !!user)
+      .map(user => user.full_name);
     let content;
-    const username = id => {
-      const u =
-        presenceStore.onlineUsersMap[id] &&
-        presenceStore.onlineUsersMap[id].metas[0];
-      if (u) {
-        return `${u.first_name} ${u.last_name}`;
-      }
-      return "";
-    };
 
-    switch (typingUsers.length) {
+    switch (usernames.length) {
       case 0:
-        content = <span>&nbsp;</span>;
+        content = "";
         break;
+
       case 1:
-        content = `${username(typingUsers[0])} is typing...`;
+        content = `${usernames[0]} is typing...`;
         break;
+
       case 2:
-        content = `${typingUsers.map(username).join(" and ")} are typing...`;
+        content = `${usernames.join(" and ")} are typing...`;
         break;
+
       default:
         content = "Multiple people are typing...";
     }
