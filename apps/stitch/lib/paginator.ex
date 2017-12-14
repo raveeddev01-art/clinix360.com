@@ -57,6 +57,7 @@ defmodule Stitch.Paginator do
   defp count(query) do
     query
     |> exclude(:order_by)
+    |> exclude(:group_by)
     |> exclude(:preload)
     |> exclude(:select)
     |> select([e], count(e.id))

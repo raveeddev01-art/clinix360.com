@@ -91,4 +91,36 @@ defmodule Stitch.TeamQueriesTest do
     assert length(teams) == 3
     assert Enum.all?(teams, &(&1.__struct__ == Stitch.Team))
   end
+
+  test "admin_teams_query/0" do
+    team_1 = insert(:team, name: "team1", slug: "slug1")
+    team_2 = insert(:team, name: "team2", slug: "slug2")
+    team_3 = insert(:team, name: "team3", slug: "slug3")
+    insert(:user, team: team_1, disabled: false)
+    insert(:user, team: team_2, disabled: false)
+    insert(:user, team: team_2, disabled: true)
+    insert(:user, team: team_3, disabled: false)
+    insert(:user, team: team_3, disabled: false)
+    insert(:user, team: team_3, disabled: true)
+
+    teams = Stitch.Repo.all(TeamQueries.admin_teams_query())
+
+    assert length(teams) == 3
+    for {team, i} <- Enum.with_index(teams) do
+      expected_team = Enum.at([team_1, team_2, team_3], i)
+      assert team.name == expected_team.name
+      assert team.slug == expected_team.slug
+      assert team.total_users == i + 1
+    end
+
+    listed_team_1 = Enum.at(teams, 0)
+    listed_team_2 = Enum.at(teams, 1)
+    listed_team_3 = Enum.at(teams, 2)
+    assert listed_team_1.enabled_users == 1
+    assert listed_team_1.disabled_users == 0
+    assert listed_team_2.enabled_users == 1
+    assert listed_team_2.disabled_users == 1
+    assert listed_team_3.enabled_users == 2
+    assert listed_team_3.disabled_users == 1
+  end
 end

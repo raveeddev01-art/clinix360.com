@@ -58,6 +58,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/", IndexController, :index
 
     resources "/users", UserController, only: [:index]
+    resources "/teams", TeamController, only: [:index]
 
     get "/impersonate/stop", ImpersonationController, :stop
     get "/impersonate/:user_id", ImpersonationController, :impersonate
