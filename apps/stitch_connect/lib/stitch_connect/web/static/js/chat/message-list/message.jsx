@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import moment from "moment";
 import { Element } from "react-scroll";
-import capitalize from "lodash/capitalize";
 import cx from "classnames";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
@@ -297,15 +296,16 @@ class Message extends Component {
               <i className="fa fa-info-circle" />&nbsp;Info
             </span>
           </MenuItem>
-
-          <MessageInfoModal
-            show={this.state.showInfoModal}
-            message={message}
-            closeModal={this.closeModal}
-          />
         </Dropdown.Menu>
       </Dropdown>
     );
+  }
+
+  renderStatus(message) {
+    if (message.status) return message.status;
+    if (this.props.groupStore.isSelfDM) return null;
+
+    return this.renderReadStatus(message);
   }
 
   renderReadStatus(message) {
@@ -314,10 +314,16 @@ class Message extends Component {
     const deliveredToUsers = Object.keys(message.read_status).length;
     const readUsers = Object.values(message.read_status).filter(v => v != null)
       .length;
+
     return (
-      <div className="message-read-status">
-        {readUsers}/{deliveredToUsers} read
-      </div>
+      <OverlayTrigger
+        placement="top"
+        overlay={<Tooltip id="message-info">Show Info</Tooltip>}
+      >
+        <div className="message-read-status" onClick={this.showInfoModal}>
+          {readUsers}/{deliveredToUsers} Read
+        </div>
+      </OverlayTrigger>
     );
   }
 
@@ -393,10 +399,14 @@ class Message extends Component {
               </div>
 
               <div className="message-status">
-                {mine &&
-                  (capitalize(message.status) ||
-                    this.renderReadStatus(message))}
+                {mine && this.renderStatus(message)}
               </div>
+
+              <MessageInfoModal
+                show={this.state.showInfoModal}
+                message={message}
+                closeModal={this.closeModal}
+              />
             </Element>
           </VisibilitySensor>
         </div>
