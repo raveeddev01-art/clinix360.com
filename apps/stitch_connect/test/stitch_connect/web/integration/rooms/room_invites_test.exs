@@ -1,29 +1,52 @@
 defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
     use StitchConnect.Web.FeatureCase, async: false
-  
-    import Wallaby.Query, only: [button: 1, text_field: 1, css: 2]
+
+    import Wallaby.Query
     import Stitch.Factory
     alias StitchConnect.Web.IntegrationTestHelper, as: Helper
-  
-    defp message(msg), do: css(".message-container > .message", text: msg)
-  
+
     test "user can invite another user to a room" do
       team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
       user_1 = insert(:user, email: "someuser@somecompany.com", team: team)
-      user_2 = insert(:user, email: "otheruser@somecompany.com", team: team)
-  
+      user_2 = insert(:user, email: "otheruser@somecompany.com", team: team, first_name: "Bob", last_name: "Banks")
+      public_group = insert(:group, team: team, name: "Emergency Room", slug: "emergency-room", creator: user_1)
+      private_group = insert(:group, team: team, name: "Investors", slug: "investors", creator: user_1, public: false)
+      insert(:group_user, group: public_group, user: user_1)
+      insert(:group_user, group: private_group, user: user_1)
+
       {:ok, user_1_session} = Wallaby.start_session()
       {:ok, user_2_session} = Wallaby.start_session()
-  
+
       Helper.sign_in(user_1_session, team, user_1)
       Helper.sign_in(user_2_session, team, user_2)
-  
-      user_1_session
-      |> click(button("Join"))
-      |> fill_in(text_field("Message"), with: "hello\n")
 
-      # TODO: Invite user to this group and verify user_2_session
-      # is now invited to the group.
+      user_2_session
+      |> refute_has(sidemenu_item("Emergency Room"))
+      |> refute_has(sidemenu_item("Investors"))
+
+      user_1_session
+      |> click(sidemenu_item("Emergency Room"))
+      |> click(css("#dropdown-room-controls"))
+      |> click(link("Invite"))
+      |> click(css(".team-member", text: "Bob Banks"))
+      |> click(button("Invite"))
+
+      user_2_session
+      |> click(sidemenu_item("Emergency Room"))
+      |> assert_has(css(".system-message", text: "Bob Banks joined the room at"))
+
+      user_1_session
+      |> click(sidemenu_item("Investors"))
+      |> click(css("#dropdown-room-controls"))
+      |> click(link("Invite"))
+      |> click(css(".team-member", text: "Bob Banks"))
+      |> click(button("Invite"))
+
+      user_2_session
+      |> click(sidemenu_item("Investors"))
+      |> assert_has(css(".system-message", text: "Bob Banks joined the room at"))
     end
+
+    defp sidemenu_item(text), do: css("div.item-text", text: text)
   end
-  
+
