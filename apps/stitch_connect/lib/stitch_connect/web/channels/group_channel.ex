@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization,
-    Message, MessageAuthorization, MessageQueries, MessageAction}
+    Message, MessageAuthorization, MessageQueries}
   alias StitchConnect.Web.Presence
 
   @endpoint StitchConnect.Web.Endpoint
