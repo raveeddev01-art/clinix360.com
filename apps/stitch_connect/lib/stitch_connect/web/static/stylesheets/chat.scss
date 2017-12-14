@@ -1,6 +1,9 @@
 #main {
   .main-header {
+    background-color: #fff;
+    color: rgb(96, 96, 96);
     padding: 0 7px 0 20px;
+    border-bottom: 1px solid $border-color;
 
     .header-content {
       flex-grow: 1;
@@ -10,6 +13,7 @@
         display: flex;
         align-items: center;
         font-weight: 900;
+        color: rgb(48, 48, 48);
 
         > span {
           width: calc(100% - 450px);
@@ -36,7 +40,6 @@
       display: flex;
       align-items: center;
 
-      background: $brand-primary;
       position: absolute;
       right: 7px;
 
@@ -45,7 +48,7 @@
         position: relative;
 
         i.fa {
-          color: $brand-primary;
+          color: rgb(96, 96, 96);
           font-size: 18px;
           line-height: 36px;
           position: absolute;
@@ -66,7 +69,7 @@
           width: 310px;
           background: #fff;
           box-shadow: none;
-          border: 0;
+          border: 1px solid $border-color;
           padding-left: 38px;
           padding-right: 34px;
           @media (max-width: 991px) {
@@ -76,7 +79,7 @@
       }
 
       .btn-default {
-        color: #fff;
+        color: rgb(96, 96, 96);
         font-size: 21px;
         background: transparent;
         border: 0;

@@ -4,7 +4,6 @@
   .flex-header {
     color: #ffffff;
     background-color: $brand-primary;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 1px 0 0 $body-bg;
     z-index: 10;
     padding: 0 14px 0 25px;
@@ -26,7 +25,7 @@
     }
 
     .dropdown-menu {
-      width: 220px;
+      width: 210px;
       padding: 17px 27px;
       margin: -16px -10px 0 0;
 
@@ -163,8 +162,7 @@
 
           .item-text {
             flex-grow: 1;
-            opacity: 0.9;
-            font-weight: 600;
+            font-weight: 400;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -172,11 +170,11 @@
           }
 
           .item-badge {
-            color: $brand-primary;
+            color: #fff;
             font-size: 12px;
             font-weight: 700;
             line-height: 16px;
-            background: #fff;
+            background: #e33a2f;
             border-radius: 2px;
             padding: 0 4px;
             z-index: 9;
@@ -191,7 +189,7 @@
           }
 
           &:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: #001935;
 
             .item-text {
               padding-right: 24px;
@@ -229,6 +227,7 @@
             .item-text {
               font-weight: 900;
               padding-right: 10px;
+              opacity: 1;
             }
             &:not(.active) {
               .item-text {
