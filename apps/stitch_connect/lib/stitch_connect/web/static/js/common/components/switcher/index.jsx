@@ -1,29 +1,50 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { NavLink, withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
+import history from "lib/history";
+import cx from "classnames";
 
 @inject("presenceStore", "groupsStore")
 @observer
 class Switcher extends Component {
+  componentWillMount() {
+    const path = history.location.pathname;
+    let active = "connect";
+    if (path === "/admin/you/account") {
+      active = "settings";
+    } else if (path.startsWith("/admin")) {
+      active = "home";
+    }
+
+    this.setState({ active });
+  }
+
   render() {
     const { totalMentionsCount: count } = this.props.groupsStore;
+    const { active } = this.state;
 
     return (
       <div className="switcher">
         <div className="switcher__top">
           {/* <div className="switcher__logo" /> */}
-          <NavLink to="/admin/you/home" className="switcher__link">
+          <Link
+            to="/admin/you/home"
+            className={cx("switcher__link", { active: active === "home" })}
+          >
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Home</Tooltip>}
+              overlay={<Tooltip id="tactiveooltip-info">Home</Tooltip>}
             >
               <i className="fa fa-home" />
             </OverlayTrigger>
-          </NavLink>
-          <NavLink to="/" className="switcher__link">
+          </Link>
+          <Link
+            to="/rooms/general"
+            className={cx("switcher__link", { active: active === "connect" })}
+          >
             <OverlayTrigger
               placement="right"
               container={this}
@@ -38,18 +59,21 @@ class Switcher extends Component {
                 )}
               </span>
             </OverlayTrigger>
-          </NavLink>
+          </Link>
         </div>
         <div className="switcher__bottom">
-          <NavLink to="/admin/you/account" className="switcher__link">
+          <Link
+            to="/admin/you/account"
+            className={cx("switcher__link", { active: active === "settings" })}
+          >
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Settings</Tooltip>}
+              overlay={<Tooltip id="toactiveoltip-info">Settings</Tooltip>}
             >
               <i className="fa fa-cog" />
             </OverlayTrigger>
-          </NavLink>
+          </Link>
           <a
             role="link"
             onClick={this.props.presenceStore.lock}
