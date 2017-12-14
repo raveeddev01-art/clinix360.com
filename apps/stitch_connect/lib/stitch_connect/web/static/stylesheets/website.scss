@@ -50,54 +50,12 @@
     h3 { font-size: 20px; }
   }
 
-  //----------------- HEADER -----------------
-  .navbar-inverse {
-    background: #003366;
-    border-radius: 0;
-    padding: 10px 0;
-    border: 0;
-    margin: 0;
-
-    .navbar-brand {
-      padding: 12px 15px;
-      img {
-        width: auto;
-        height: 26px;
-      }
-    }
-
-    .navbar-nav {
-      > li > a {
-        color: #fff;
-        font-weight: 600;
-      }
-
-      > .open > a,
-      > .active > a {
-        background: transparent;
-      }
-    }
-  }
-
-  @media (min-width: 768px) {
-    .navbar-inverse {
-      padding: 40px 0;
-
-      .navbar-nav {
-        > li > .dropdown-menu {
-          border-radius: 4px;
-          padding: 8px;
-        }
-      }
-    }
-  }
-
   //----------------- SUBHEADER -----------------
   .subheader {
     color: #fff;
     background: #003366;
     background-position: top center;
-    padding: 60px 0 120px;
+    padding: 120px 0;
     position: relative;
     @media (min-width: 768px) {
       background: #003366 url('/images/bubbles.svg') top center;
@@ -124,7 +82,7 @@
 
   //----------------- HOMEPAGE -----------------
   .homepage .subheader {
-    padding: 40px 0 0;
+    padding: 100px 0 0;
 
     .flex-box {
       flex-direction: column;
@@ -698,35 +656,252 @@
       }
     }
   }
+}
 
-  //----------------- FOOTER -----------------
-  #footer {
-    font-size: 14px;
-    background-color: #fff;
-    box-shadow: 0 -1px 0 #eaeaea;
-    padding: 20px 0;
+//----------------- HEADER -----------------
+.navbar-inverse {
+  background: #003366;
+  border-radius: 0;
+  border: 0;
+  margin: 0;
 
-    h5 {
-      color: #666;
-      font-weight: 700;
+  .navbar-header {
+    padding: 10px 0;
+
+    .navbar-brand {
+      padding: 12px 25px;
+      img {
+        width: auto;
+        height: 26px;
+      }
     }
+  }
 
-    a {
-      display: block;
-      color: #999;
-      text-decoration: none;
+  .navbar-toggle {
+    border: 0;
+    padding: 9px 0px;
+    margin-right: 25px;
 
-      &:hover {
-        color: #666;
+    &:hover, &:focus {
+      background: transparent;
+    }
+  }
+
+  .navbar-collapse {
+    max-height: 100%;
+    background: #fff;
+    border: 0;
+    box-shadow: 0 3px 6px rgba(0,0,0,.25);
+  }
+
+  .navbar-nav {
+    > li > a {
+      color: #036;
+      font-weight: 600;
+      background: transparent;
+      padding: 10px 25px;
+
+      &:hover, &:focus {
+        color: #036;
+      }
+
+      &.dropdown-toggle {
+        .caret {
+          display: none;
+        }
+
+        &:after {
+          content: '\f105';
+          font-size: 24px;
+          font-family: FontAwesome;
+          position: absolute;
+          right: 25px;
+          top: 9px;
+        }
       }
     }
 
-    address {
-      color: #999;
-      line-height: 1.5;
+    > .open > .dropdown-toggle:after {
+      content: '\f107';
+    }
+
+    .open > a,
+    .active > a {
+      color: #036;
+      background: transparent;
+
+      &:hover, &:focus {
+        color: #036;
+        background: transparent;
+      }
+    }
+
+    .dropdown-menu {
+      border-top: 1px solid #EBEDF0;
+      border-bottom: 1px solid #EBEDF0;
+    }
+
+    .open .dropdown-menu > li > a,
+    .open .dropdown-menu > .active > a {
+      color: #036;
+      font-weight: 600;
+      background: transparent;
+
+      .subtext {
+        color: #929BAB;
+        font-weight: normal;
+      }
+
+      &:hover, &:focus {
+        color: #036;
+        background: transparent;
+      }
+    }
+
+    .dropdown .dropdown-menu {
+      min-width: 200px;
+
+      .product-icon {
+        width: 16px;
+        height: 16px;
+        float: left;
+        overflow: hidden;
+        position: relative;
+        margin-right: 5px;
+        margin-top: 4px;
+
+        img {
+          width: 16px;
+          height: 32px;
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+      }
+    }
+
+    .btn-trial a {
+      width: 70%;
+      display: block;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      background: #0667D0;
+      border-radius: 4px;
+      box-shadow: 0 5px 15px 0 rgba(0,0,0,0.15);
+      padding: 11px 20px;
+      margin: 20px auto;
+
+      &:hover, &:focus {
+        color: #fff;
+        background: #0667D0;
+      }
     }
   }
 }
+
+@media (min-width: 768px) {
+  .navbar-inverse {
+    .navbar-collapse {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .navbar-nav {
+      padding: 15px 0;
+
+      > li > a {
+        color: #fff;
+        background: transparent;
+        padding: 10px 15px;
+
+        &:hover, &:focus {
+          color: #fff;
+        }
+
+        &.dropdown-toggle {
+          .caret {
+            display: inline-block;
+          }
+
+          &:after {
+            content: '';
+          }
+        }
+      }
+
+      > .open > .dropdown-toggle:after {
+        content: '';
+      }
+
+      .open > a,
+      .active > a {
+        color: #fff;
+
+        &:hover, &:focus {
+          color: #fff;
+        }
+      }
+
+      .dropdown-menu {
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 4px;
+        padding: 8px;
+      }
+
+      .open .dropdown-menu > li > a,
+      .open .dropdown-menu > .active > a {
+        color: #036;
+
+        &:hover, &:focus {
+          color: #fff;
+          background: #036;
+        }
+      }
+
+      .dropdown .dropdown-menu a:hover .product-icon img {
+        top: -15px;
+      }
+
+      .btn-trial a {
+        width: auto;
+        display: inline-block;
+        margin: 0 0 0 5px;
+      }
+    }
+  }
+}
+
+//----------------- FOOTER -----------------
+#footer {
+  font-size: 14px;
+  background-color: #fff;
+  box-shadow: 0 -1px 0 #eaeaea;
+  padding: 20px 0;
+
+  h5 {
+    color: #666;
+    font-weight: 700;
+  }
+
+  a {
+    display: block;
+    color: #999;
+    text-decoration: none;
+
+    &:hover {
+      color: #666;
+    }
+  }
+
+  address {
+    color: #999;
+    line-height: 1.5;
+  }
+}
+
 
 //----------------- TEMP CSS -----------------
 .case-study {

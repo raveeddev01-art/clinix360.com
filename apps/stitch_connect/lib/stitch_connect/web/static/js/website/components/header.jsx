@@ -8,6 +8,7 @@ import NavItem from "react-bootstrap/lib/NavItem";
 import NavDropdown from "react-bootstrap/lib/NavDropdown";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
+import Button from "react-bootstrap/lib/Button";
 
 class Header extends Component {
   render() {
@@ -127,7 +128,7 @@ class Header extends Component {
       //   </Navbar.Collapse>
       // </Navbar>
 
-      <Navbar id="header" inverse collapseOnSelect>
+      <Navbar id="header" inverse collapseOnSelect fixedTop>
         <Navbar.Header>
           <Navbar.Brand>
             <Link to="/" className="brand">
@@ -139,17 +140,36 @@ class Header extends Component {
 
         <Navbar.Collapse>
           <Nav pullRight>
-            <NavDropdown title="Products" id="basic-nav-dropdown">
+            <LinkContainer to="/demo">
+              <NavItem>Demo</NavItem>
+            </LinkContainer>
+
+            <NavDropdown title="Products" id="products-dropdown">
               <LinkContainer to="/connect">
-                <MenuItem>Connect</MenuItem>
+                <MenuItem>
+                  <div className="product-icon">
+                    <img src="/images/connect-menu.png" alt="" />
+                  </div>
+                  Connect <div className="subtext">Team Communication</div>
+                </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/engage">
-                <MenuItem>Engage</MenuItem>
+                <MenuItem>
+                  <div className="product-icon">
+                    <img src="/images/engage-menu.png" alt="" />
+                  </div>
+                  Engage <div className="subtext">Patient Management</div>
+                </MenuItem>
               </LinkContainer>
 
               <LinkContainer to="/manage">
-                <MenuItem>Manage</MenuItem>
+                <MenuItem>
+                  <div className="product-icon">
+                    <img src="/images/manage-menu.png" alt="" />
+                  </div>
+                  Manage <div className="subtext">Patient Communication</div>
+                </MenuItem>
               </LinkContainer>
             </NavDropdown>
 
@@ -157,42 +177,54 @@ class Header extends Component {
               <NavItem>Pricing</NavItem>
             </LinkContainer>
 
-            <NavDropdown title="Resources" id="basic-nav-dropdown">
+            <NavDropdown title="Resources" id="resources-dropdown">
               <LinkContainer to="/downloads">
                 <MenuItem>
                   <i className="fa fa-cloud-download" /> Downloads
+                  <div className="subtext hidden-sm hidden-lg">
+                    Apps for Mac, Windows, iOS and Android
+                  </div>
                 </MenuItem>
               </LinkContainer>
-
-              <MenuItem href="https://calendly.com/teamstitch/demo">
-                <i className="fa fa-desktop" /> Demo
-              </MenuItem>
 
               <LinkContainer to="/pilot">
                 <MenuItem>
                   <i className="fa fa-hospital-o" /> Pilot
+                  <div className="subtext hidden-sm hidden-lg">
+                    Enterprise grade deployment plans
+                  </div>
                 </MenuItem>
               </LinkContainer>
 
               <MenuItem href="https://intercom.help/teamstitch">
                 <i className="fa fa-life-ring" /> Support
+                <div className="subtext hidden-sm hidden-lg">
+                  Everything you need to be a Stitch power user
+                </div>
               </MenuItem>
 
               <MenuItem href={`https://${applicationHost}/jobs`}>
                 <i className="fa fa-wrench" /> Jobs
+                <div className="subtext hidden-sm hidden-lg">We're hiring!</div>
               </MenuItem>
 
               <LinkContainer to="/customers">
                 <MenuItem>
                   <i className="fa fa-users" /> Customers
+                  <div className="subtext hidden-sm hidden-lg">
+                    Everything you need to be a Stitch power user
+                  </div>
                 </MenuItem>
               </LinkContainer>
             </NavDropdown>
 
-            <NavItem href="#">Sign In</NavItem>
+            <NavItem href="https://teamstitch.com/signin">Sign In</NavItem>
 
-            <NavItem href="#" className="btn-primary">
-              Start Trial
+            <NavItem
+              href="https://teamstitch.com/signup/email"
+              className="btn-trial"
+            >
+              Start a trial
             </NavItem>
           </Nav>
         </Navbar.Collapse>
