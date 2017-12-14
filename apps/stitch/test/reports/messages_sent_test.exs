@@ -93,6 +93,7 @@ defmodule Stitch.Reports.MessagesSentTest do
     end
   end
 
+  # TODO: This test is failing on Elixir-1.6-HEAD
   test "with ':all_time' option" do
     {:ok, team_inserted_at} = NaiveDateTime.new(2016, 12, 25, 0, 0, 0)
     {:ok, datetime_1} = NaiveDateTime.new(2016, 12, 29, 0, 0, 0)

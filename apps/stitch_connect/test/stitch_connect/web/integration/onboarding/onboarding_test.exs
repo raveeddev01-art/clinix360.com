@@ -17,6 +17,7 @@ defmodule StitchConnect.Web.OnboardingTest do
     slug: "someslug",
   }
 
+  @tag :start_session
   test "visitor goes through onboarding process", %{session: session} do
     session
     |> visit("/signup/email")
