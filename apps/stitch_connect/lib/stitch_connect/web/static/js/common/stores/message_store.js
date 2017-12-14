@@ -157,7 +157,10 @@ class MessageStore {
         .sortBy("inserted_at")
         // Group messages by dates
         .groupBy(message =>
-          moment.utc(message.inserted_at).format(`YYYY-MM-DD`)
+          moment
+            .utc(message.inserted_at)
+            .local()
+            .format(`YYYY-MM-DD`)
         )
         .value()
     );
