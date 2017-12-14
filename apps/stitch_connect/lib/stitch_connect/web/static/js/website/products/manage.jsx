@@ -33,7 +33,7 @@ export default class Manage extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>Manage your patient data securely.</h2>
 
                   <p>
@@ -71,7 +71,7 @@ export default class Manage extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>
                     Create a dedicated collaboration space for every patient.
                   </h2>
@@ -96,7 +96,7 @@ export default class Manage extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>Thread conversations for coordinated care.</h2>
 
                   <p>
@@ -135,7 +135,7 @@ export default class Manage extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2 className="alt-heading">
                     Upload images, audio, or video for access anywhere.
                   </h2>

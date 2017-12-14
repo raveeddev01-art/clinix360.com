@@ -44,7 +44,7 @@ export default class Homepage extends Component {
                 </h3>
 
                 <div className="m-b-50">
-                  <Button bsSize="lg">Schedule Demo</Button>{" "}
+                  <Button bsSize="lg">Request Demo</Button>{" "}
                   <Button bsSize="lg" bsStyle="primary">
                     Start Trial
                   </Button>

@@ -19,7 +19,7 @@ export default class Connect extends Component {
               <h3 className="m-b-30">Team Communication</h3>
 
               <div>
-                <Button bsSize="lg">Schedule Demo</Button>{" "}
+                <Button bsSize="lg">Request Demo</Button>{" "}
                 <Button bsSize="lg" bsStyle="primary">
                   Start Trial
                 </Button>
@@ -32,7 +32,7 @@ export default class Connect extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>
                     Secure all your healthcare communication in one place.
                   </h2>
@@ -73,7 +73,7 @@ export default class Connect extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>Organize your conversations by groups or 1-on-1.</h2>
 
                   <p>
@@ -94,7 +94,7 @@ export default class Connect extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>
                     Upload images, audio, or video into your conversations.
                   </h2>
@@ -134,7 +134,7 @@ export default class Connect extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>
                     Notifications keep you in sync across all your devices.
                   </h2>

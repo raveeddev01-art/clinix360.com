@@ -33,7 +33,7 @@ export default class Engage extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>
                     Communicate with patients on a secure and powerful platform.
                   </h2>
@@ -74,7 +74,7 @@ export default class Engage extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>
                     Create patient-centric conversations for coordinated team
                     care.
@@ -100,7 +100,7 @@ export default class Engage extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>
                     Present images, audio and video directly in conversations.
                   </h2>
@@ -142,7 +142,7 @@ export default class Engage extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="info">
+                <div className="info m-b-40">
                   <h2>Powerful premium features when you need them.</h2>
 
                   <p>
