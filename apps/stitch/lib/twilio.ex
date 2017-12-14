@@ -8,6 +8,7 @@ defmodule Stitch.Twilio do
     case do_lookup(phone_number) do
       %{"status" => 404} ->
         :error
+
       _ ->
         :ok
     end
@@ -15,8 +16,9 @@ defmodule Stitch.Twilio do
 
   defp do_lookup(phone_number, query \\ []) do
     query_string = URI.encode_query(query)
+
     "#{@base_url}#{phone_number}?#{query_string}"
-    |> HTTPoison.get!([], [hackney: auth_params()])
+    |> HTTPoison.get!([], hackney: auth_params())
     |> parse()
   end
 

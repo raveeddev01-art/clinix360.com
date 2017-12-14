@@ -66,6 +66,7 @@ class ChannelStore {
     this.eventChannel.on("marked_as_read", groupsStore.onMarkedAsRead);
     this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);
     this.eventChannel.on("members_updated", groupsStore.onMembersUpdated);
+    this.eventChannel.on("group_favorite", groupsStore.onFavoriteChanged);
 
     // App related
     this.eventChannel.on("new_app_version", () => {

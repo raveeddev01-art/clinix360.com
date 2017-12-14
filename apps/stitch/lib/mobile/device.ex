@@ -17,6 +17,7 @@ defmodule Stitch.Mobile.Device do
     |> cast(attrs, [:user_id, :name, :type, :token])
     |> validate_required([:name, :token])
     |> validate_inclusion(:type, ["ios", "android"])
+    |> unsafe_validate_unique([:token, :type], Stitch.Repo)
     |> unique_constraint(:token, name: :mobile_devices_type_token_index)
   end
 end

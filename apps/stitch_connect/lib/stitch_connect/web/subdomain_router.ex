@@ -47,6 +47,12 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug StitchConnect.Plug.TeamAdminOnly
   end
 
+  # admin subdomain routes
+  scope "/", StitchConnect.Web.Admin, as: :admin, host: "admin." do
+    pipe_through [:browser, StitchConnect.Plug.StaffAuthenticate]
+    get "/", IndexController, :index
+  end
+
   # API routes which don't need token.
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api

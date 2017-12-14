@@ -4,8 +4,13 @@ defmodule StitchConnect.Plug.Subdomain do
 
   def init(default), do: default
 
+  def call(%{halted: true} = conn, _), do: conn
   def call(conn, router) do
     case get_subdomain(conn.host) do
+      "admin" ->
+        conn
+        |> router.call(router.init({}))
+        |> halt
       subdomain when byte_size(subdomain) > 0 ->
         case Stitch.TeamQueries.get_by_slug(subdomain) do
           nil ->

@@ -30,7 +30,10 @@ defmodule Stitch.Mobile.RegisterDeviceTest do
       "token" => "foobarbaz"
     })
 
-    assert changeset.errors == [token: {"has already been taken", []}]
+    assert changeset.errors == [token: {
+      "has already been taken",
+      [validation: :unsafe_unique, fields: [:token, :type]]
+    }]
 
     {:ok, _} = Mobile.register_device(bob, %{
       "name" => "Bob's Galaxy Tab",

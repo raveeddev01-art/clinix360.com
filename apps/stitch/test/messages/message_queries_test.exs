@@ -1,5 +1,6 @@
 defmodule Stitch.MessageQueriesTest do
   use Stitch.DataCase, async: true
+  alias Stitch.MessageQueries
 
   describe "Stitch.MessageQueries.search/2" do
     test "returns messages containing that word" do
@@ -7,16 +8,36 @@ defmodule Stitch.MessageQueriesTest do
       user = insert(:user, team: team)
       group = insert(:group, team: team)
       insert(:group_user, group: group, user: user)
+      insert(:message, user: user, group: group, text_content: "x")
 
-      message_bar = insert(:message, user: user, group: group, text_content: "bar")
-      message_baz = insert(:message, user: user, group: group, text_content: "baz")
-      message_qux = insert(:message, user: user, group: group, text_content: "qux")
+      quick_brown_fox =
+        insert(:message, user: user, group: group, text_content:
+               "The quick brown fox jumps over the lazy dog.")
+      all_good_men =
+        insert(:message, user: user, group: group, text_content:
+               "Now is the time for all good men to come to the aid of the party.")
+      lorem_ipsum =
+        insert(:message, user: user, group: group, text_content:
+               "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+      foobar = insert(:message, user: user, group: group, text_content: "foobar")
+      foobaz = insert(:message, user: user, group: group, text_content: "foobaz")
 
-      result = Stitch.MessageQueries.search(user.id, "ba")
-      assert length(result) == 2
-      assert Enum.find(result, &( &1.id == message_baz.id ))
-      assert Enum.find(result, &( &1.id == message_bar.id ))
-      refute Enum.find(result, &( &1.id == message_qux.id ))
+
+      assert ids(MessageQueries.search(user.id, "brown")) == ids([quick_brown_fox])
+      assert ids(MessageQueries.search(user.id, "good")) == ids([all_good_men])
+      assert ids(MessageQueries.search(user.id, "lorem")) == ids([lorem_ipsum])
+      assert ids(MessageQueries.search(user.id, "the")) == ids([all_good_men, quick_brown_fox])
+      assert ids(MessageQueries.search(user.id, "brow")) == ids([quick_brown_fox])
+      assert ids(MessageQueries.search(user.id, "aide")) == ids([all_good_men])
+      assert ids(MessageQueries.search(user.id, "parte")) == ids([all_good_men])
+      assert ids(MessageQueries.search(user.id, "consecetur")) == ids([lorem_ipsum])
+      assert ids(MessageQueries.search(user.id, "brown fox")) == ids([quick_brown_fox])
+      assert ids(MessageQueries.search(user.id, "do")) == ids([lorem_ipsum, quick_brown_fox])
+      assert ids(MessageQueries.search(user.id, "foobar")) == ids([foobar, foobaz])
+    end
+
+    defp ids(messages) do
+      Enum.map(messages, &(&1.id))
     end
 
     test "returns only messages user can see" do

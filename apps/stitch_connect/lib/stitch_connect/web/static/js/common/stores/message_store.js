@@ -4,7 +4,7 @@
  * This store keps track of data that are related with messages in the current group
  */
 
-import { observable, action, computed, when } from "mobx";
+import { observable, action, computed, when, extendObservable } from "mobx";
 import moment from "moment";
 import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
@@ -211,9 +211,8 @@ class MessageStore {
   @action
   updateMessageData = (id, data) => {
     const message = this.getMessageById(id);
-
     if (message) {
-      Object.assign(message, data);
+      extendObservable(message, data);
     }
   };
 
@@ -467,12 +466,12 @@ class MessageStore {
         request_id: tempMessage.id,
         ...additionalFields
       })
-      .receive("error", err => {
+      .receive("error", () => {
         this.updateMessageData(tempMessage.id, {
           status: "failed"
         });
       })
-      .receive("timeout", err => {
+      .receive("timeout", () => {
         this.updateMessageData(tempMessage.id, {
           status: "failed"
         });
@@ -608,7 +607,7 @@ class MessageStore {
 
   @action
   startEdit(id) {
-    const message = this.messages.find(m => m.id === id);
+    const message = this.getMessageById(id);
 
     if (message) {
       this.messageInEdit = message;
@@ -619,6 +618,7 @@ class MessageStore {
   @action
   editLastMessage() {
     const message = this.messages.find(m => m.user_id === currentUser.id);
+
     if (message && message.sent !== false && !message.sending) {
       this.messageInEdit = message;
       this.textInEdit = message.text_content;
@@ -664,7 +664,7 @@ class MessageStore {
 
   @action
   delete(id) {
-    const message = this.messages.find(m => m.id === id);
+    const message = this.getMessageById(id);
 
     if (message) {
       this.groupChannel.push("delete_msg", { message_id: id });
@@ -723,14 +723,6 @@ class MessageStore {
       group_id: this.group.id,
       user_id: currentUser.id
     };
-  };
-
-  @action
-  removeTempMessage = tempId => {
-    // Remove the temp message
-    const tempMessageIndex = this.messages.findIndex(m => m.id === tempId);
-
-    this.messages.splice(tempMessageIndex, 1);
   };
 
   @action
@@ -834,13 +826,16 @@ class MessageStore {
       return;
     }
 
-    // Remove temp message
-    if (newMessage.request_id) {
-      this.removeTempMessage(newMessage.request_id);
+    if (newMessage.request_id && newMessage.user_id === currentUser.id) {
+      // update message if it's temporary
+      this.updateMessageData(newMessage.request_id, {
+        ...newMessage,
+        status: undefined
+      });
+    } else {
+      // otherwise, add to message list
+      this.messages.unshift(newMessage);
     }
-
-    // Add new message
-    this.messages.unshift(newMessage);
 
     // Update unread messages info of the group
     if (newMessage.user_id === currentUser.id) {
@@ -849,8 +844,8 @@ class MessageStore {
       }
     } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
       // If you're at the bottom and no NML, keep up with the new message
-      this.markAsRead(false);
-    } else {
+      this.markAsRead();
+    } else if (newMessage.type !== "system") {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       this.updateGroupData({
@@ -860,11 +855,7 @@ class MessageStore {
     }
 
     // If my message or at scroll bottom, scroll to bottom
-    if (
-      this.isScrollBottom ||
-      newMessage.user_id === currentUser.id ||
-      newMessage.type === "system"
-    ) {
+    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(null, 0, 0);
     }
 
@@ -886,7 +877,7 @@ class MessageStore {
 
     this.cancelEdit();
 
-    const message = this.messages.find(m => m.id === editedMessage.id);
+    const message = this.getMessageById(editedMessage.id);
 
     message.edited = editedMessage.edited;
     message.edited_at = editedMessage.edited_at;
@@ -942,7 +933,8 @@ class MessageStore {
       return;
     }
 
-    const message = this.messages.find(m => m.id === payload.id);
+    const message = this.getMessageById(payload.id);
+
     if (message) {
       message.link_previews = payload.link_previews;
       this.keepScrollAtBottom();
@@ -951,7 +943,8 @@ class MessageStore {
 
   @action
   onLinkPreviewDeleted = payload => {
-    const message = this.messages.find(m => m.id === payload.message_id);
+    const message = this.getMessageById(payload.message_id);
+
     if (message) {
       message.link_previews = message.link_previews.filter(
         p => p.link !== payload.link
@@ -972,11 +965,10 @@ class MessageStore {
   onReadStatusUpdate = payload => {
     if (!payload.messages) return;
     Object.keys(payload.messages).forEach(message_id => {
-      const message = this.messages.find(
-        m => m.id === parseInt(message_id, 10)
-      );
+      const message = this.getMessageById(parseInt(message_id, 10));
       if (message) {
-        message.read_status = payload.messages[message_id];
+        message.read_status = message.read_status || {};
+        Object.assign(message.read_status, payload.messages[message_id]);
       }
     });
   };
