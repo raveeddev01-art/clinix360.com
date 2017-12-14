@@ -42,6 +42,8 @@ class MessageStore {
   joinedTargetGroupDisposer = null; // Disposer of when() monitor that waits until joined the group to which jumping target message belongs to
   mountedTargetMessageDisposer = null; // Disposer of when() monitor that waits until target messages is mounted
 
+  readStatusCache = {}; // cache to store read status for when readstatus broadcast arrives before new_msg
+
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
@@ -201,6 +203,7 @@ class MessageStore {
     this.messageElements = {};
     this.messageInEdit = null;
     this.textInEdit = "";
+    this.readStatusCache = {};
 
     this.updateGroupData({
       marked_as_unread: false,
@@ -830,8 +833,17 @@ class MessageStore {
       // update message if it's temporary
       this.updateMessageData(newMessage.request_id, {
         ...newMessage,
+        read_status: { // set read status with cached status
+          ...newMessage.read_status,
+          ...this.readStatusCache[newMessage.id]
+        },
         status: undefined
       });
+
+      // clear read status cache for new message arrived
+      if (this.readStatusCache[newMessage.id]) {
+        delete this.readStatusCache[newMessage.id];
+      }
     } else {
       // otherwise, add to message list
       this.messages.unshift(newMessage);
@@ -964,11 +976,16 @@ class MessageStore {
   @action
   onReadStatusUpdate = payload => {
     if (!payload.messages) return;
+
     Object.keys(payload.messages).forEach(message_id => {
       const message = this.getMessageById(parseInt(message_id, 10));
       if (message) {
         message.read_status = message.read_status || {};
         Object.assign(message.read_status, payload.messages[message_id]);
+      } else {
+        // cache read status because this event was broadcasted before new_msg due to network slowness
+        this.readStatusCache[message_id] = this.readStatusCache[message_id] || {};
+        Object.assign(this.readStatusCache[message_id], payload.messages[message_id]);
       }
     });
   };
