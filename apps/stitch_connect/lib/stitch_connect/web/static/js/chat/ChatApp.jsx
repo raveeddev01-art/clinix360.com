@@ -6,8 +6,8 @@ import Dropzone from "react-dropzone";
 import Sidemenu from "../sidemenu/sidemenu";
 import Chat from "./Chat";
 import BrowserNotificationAlert from "./browser-notification-alert";
-import UploadModal from "../file-upload/upload-modal";
-import Switcher from "../common/components/switcher/index";
+import UploadModal from "file-upload/upload-modal";
+import Switcher from "common/components/switcher";
 
 @inject("uploadStore", "sidemenuStore", "channelStore", "groupsStore")
 @observer

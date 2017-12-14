@@ -71,7 +71,9 @@ class GroupsStore {
 
   @computed
   get directGroups() {
-    return this.visibleGroups.filter(group => group.type !== "regular" && !group.is_favorite);
+    return this.visibleGroups.filter(
+      group => group.type !== "regular" && !group.is_favorite
+    );
   }
 
   @computed
@@ -86,7 +88,7 @@ class GroupsStore {
 
   @computed
   get totalMentionsCount() {
-    return this.groups.reduce((count, group) => {
+    return this.visibleGroups.reduce((count, group) => {
       if (group.type === "regular") {
         return count + group.mentions_count;
       }
@@ -233,9 +235,7 @@ class GroupsStore {
 
   @action
   toggleFavorite = id => {
-    return post(
-      `/api/v1/groups/${id}/toggle-favorite`
-    );
+    return post(`/api/v1/groups/${id}/toggle-favorite`);
   };
 
   /* Event handlers */
@@ -354,7 +354,7 @@ class GroupsStore {
     this.updateGroupData(payload.group_id, {
       is_favorite: payload.is_favorite
     });
-  }
+  };
 }
 
 export default GroupsStore;
