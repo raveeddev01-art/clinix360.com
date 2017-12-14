@@ -86,7 +86,6 @@ class PresenceStore {
   );
 
   onPresenceState = state => {
-    console.log("onPresenceState", new Date());
     this.onlineUsersMapCache = Presence.syncState(
       this.onlineUsersMapCache,
       state
