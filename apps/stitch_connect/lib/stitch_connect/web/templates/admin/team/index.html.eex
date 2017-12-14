@@ -3,14 +3,18 @@
   <tr>
     <th>Name</th>
     <th>Slug</th>
-    <th>User Count</th>
+    <th>Total Users</th>
+    <th>Enabled Users</th>
+    <th>Disabled Users</th>
     <th></th>
   </tr>
-  <%= for {team, count} <- @teams do %>
+  <%= for team <- @teams do %>
     <tr>
       <td><%= team.name %></td>
       <td><%= team.slug %></td>
-      <td><%= count %></td>
+      <td><%= team.total_users %></td>
+      <td><%= team.enabled_users %></td>
+      <td><%= team.disabled_users %></td>
       <td></td>
     </tr>
   <% end %>
