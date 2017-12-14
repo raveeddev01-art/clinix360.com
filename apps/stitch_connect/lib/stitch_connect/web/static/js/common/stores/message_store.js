@@ -4,7 +4,7 @@
  * This store keps track of data that are related with messages in the current group
  */
 
-import { observable, action, computed, when } from "mobx";
+import { observable, action, computed, when, extendObservable } from "mobx";
 import moment from "moment";
 import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
@@ -157,7 +157,10 @@ class MessageStore {
         .sortBy("inserted_at")
         // Group messages by dates
         .groupBy(message =>
-          moment.utc(message.inserted_at).format(`YYYY-MM-DD`)
+          moment
+            .utc(message.inserted_at)
+            .local()
+            .format(`YYYY-MM-DD`)
         )
         .value()
     );
@@ -211,9 +214,8 @@ class MessageStore {
   @action
   updateMessageData = (id, data) => {
     const message = this.getMessageById(id);
-
     if (message) {
-      Object.assign(message, data);
+      extendObservable(message, data);
     }
   };
 
@@ -467,12 +469,12 @@ class MessageStore {
         request_id: tempMessage.id,
         ...additionalFields
       })
-      .receive("error", err => {
+      .receive("error", () => {
         this.updateMessageData(tempMessage.id, {
           status: "failed"
         });
       })
-      .receive("timeout", err => {
+      .receive("timeout", () => {
         this.updateMessageData(tempMessage.id, {
           status: "failed"
         });
@@ -727,14 +729,6 @@ class MessageStore {
   };
 
   @action
-  removeTempMessage = tempId => {
-    // Remove the temp message
-    const tempMessageIndex = this.messages.findIndex(m => m.id === tempId);
-
-    this.messages.splice(tempMessageIndex, 1);
-  };
-
-  @action
   toggleReaction = (messageId, emoji) => {
     this.groupChannel.push("toggle_reaction", {
       message_id: messageId,
@@ -835,13 +829,16 @@ class MessageStore {
       return;
     }
 
-    // Remove temp message
-    if (newMessage.request_id) {
-      this.removeTempMessage(newMessage.request_id);
+    if (newMessage.request_id && newMessage.user_id === currentUser.id) {
+      // update message if it's temporary
+      this.updateMessageData(newMessage.request_id, {
+        ...newMessage,
+        status: undefined
+      });
+    } else {
+      // otherwise, add to message list
+      this.messages.unshift(newMessage);
     }
-
-    // Add new message
-    this.messages.unshift(newMessage);
 
     // Update unread messages info of the group
     if (newMessage.user_id === currentUser.id) {
@@ -971,11 +968,10 @@ class MessageStore {
   onReadStatusUpdate = payload => {
     if (!payload.messages) return;
     Object.keys(payload.messages).forEach(message_id => {
-      const message = this.messages.find(
-        m => m.id === parseInt(message_id, 10)
-      );
+      const message = this.getMessageById(parseInt(message_id, 10));
       if (message) {
-        message.read_status = payload.messages[message_id];
+        message.read_status = message.read_status || {};
+        Object.assign(message.read_status, payload.messages[message_id]);
       }
     });
   };

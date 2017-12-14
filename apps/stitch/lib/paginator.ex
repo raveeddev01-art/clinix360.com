@@ -51,7 +51,7 @@ defmodule Stitch.Paginator do
     query
     |> limit([q], ^limit)
     |> offset([q], ^skip)
-    |> Repo.all
+    |> Repo.all()
   end
 
   defp count(query) do
@@ -60,10 +60,11 @@ defmodule Stitch.Paginator do
     |> exclude(:preload)
     |> exclude(:select)
     |> select([e], count(e.id))
-    |> Repo.one
+    |> Repo.one()
   end
 
   defp to_int(i) when is_integer(i), do: i
+
   defp to_int(s) when is_binary(s) do
     case Integer.parse(s) do
       {i, _} -> i

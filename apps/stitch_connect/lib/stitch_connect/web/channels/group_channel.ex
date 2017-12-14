@@ -333,10 +333,13 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
-          broadcast! socket, "new_msg", Map.put(message, :request_id, request_id)
-          EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-          PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
-          PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+
+          Stitch.Task.start fn ->
+            broadcast! socket, "new_msg", Map.put(message, :request_id, request_id)
+            EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
+            PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+            PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+          end
 
           json =
             "show.json"
