@@ -50,6 +50,9 @@ class GroupPresenceStore {
       this.onlineUsersMapCache,
       state
     );
+
+    // When loading initially, update without debounce
+    this.updatePresence();
   };
 
   onPresenceDiff = diff => {
@@ -57,6 +60,9 @@ class GroupPresenceStore {
       this.onlineUsersMapCache,
       diff
     );
+
+    // Debounce updating presence
+    this.debouncedUpdatePresence();
   };
 }
 
