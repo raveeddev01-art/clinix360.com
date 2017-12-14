@@ -18,10 +18,16 @@
     }
 
     .btn {
-      color: #fff;
       line-height: 65px;
       padding: 0 10px;
       outline: none;
+      color: #fff;
+      opacity: 0.6;
+
+      &:hover {
+        color: #fff;
+        opacity: 1;
+      }
     }
 
     .dropdown-menu {
@@ -107,7 +113,6 @@
           h5 {
             flex-grow: 1;
             flex-shrink: 0;
-            color: #fff;
             font-size: 16px;
             font-weight: bold;
             line-height: 1.5;
@@ -116,7 +121,13 @@
 
             a {
               display: inline-block;
-              color: inherit;
+              color: #fff;
+              opacity: 0.6;
+
+              &:hover {
+                color: #fff;
+                opacity: 1;
+              }
             }
           }
 
@@ -126,21 +137,28 @@
 
           a {
             display: flex;
-            color: $brand-primary;
             outline: none;
             text-decoration: none;
+            color: #fff;
+            opacity: 0.6;
+
+            &:hover {
+              color: #fff;
+              opacity: 1;
+            }
           }
         }
 
         .item {
           display: flex;
           align-items: center;
-          color: rgb(192, 192, 192);
+          color: #fff;
           font-size: 16px;
           text-decoration: none;
           border-radius: 3px;
-          padding: 7px 10px 7px 7px;
+          padding: 3px 10px 3px 7px;
           position: relative;
+          opacity: 0.6;
 
           .item-icon {
             display: flex;
@@ -156,7 +174,7 @@
             }
 
             i.fa-circle-o {
-              color: rgba(192, 192, 192, 0.75);
+              color: rgba(176, 176, 176, 0.75);
             }
           }
 
@@ -178,11 +196,14 @@
             border-radius: 2px;
             padding: 0 4px;
             z-index: 9;
+            width: 22px;
+            margin-right: -3px;
+            text-align: center;
           }
 
           .hide-dm {
             font-size: 20px;
-            color: rgb(192, 192, 192);
+            color: #fff;
             visibility: hidden;
             position: absolute;
             right: 10px;
@@ -202,10 +223,7 @@
           &.active {
             color: $brand-primary;
             background: #fff;
-
-            .item-text {
-              opacity: 1;
-            }
+            opacity: 1;
 
             .item-icon,
             .hide-dm {
@@ -218,18 +236,25 @@
             }
 
             .item-badge {
-              background-color: $brand-primary;
+              background-color: #e33a2f;
               color: #fff;
             }
           }
 
           &.has-unread {
+            opacity: 1;
+
             .item-text {
               font-weight: 900;
               padding-right: 10px;
-              opacity: 1;
             }
+
             &:not(.active) {
+              .item-icon {
+                opacity: 0.6;
+              }
+
+              .item-icon,
               .item-text {
                 color: #fff;
               }
