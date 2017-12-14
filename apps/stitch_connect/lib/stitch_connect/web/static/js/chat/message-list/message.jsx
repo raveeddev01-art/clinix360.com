@@ -389,11 +389,12 @@ class Message extends Component {
 
                 <div className="message-content-wrapper">
                   <MessageContent message={message} />
-                  {mine && this.renderReadStatus(message)}
                 </div>
               </div>
 
-              <div className="message-status">{capitalize(message.status)}</div>
+              <div className="message-status">
+                {mine && (capitalize(message.status) || this.renderReadStatus(message))}
+              </div>
             </Element>
           </VisibilitySensor>
         </div>
