@@ -718,6 +718,7 @@
 
         .message-body {
           display: inline;
+          word-wrap: break-word;
 
           .message-link,
           .dropdown-toggle {
