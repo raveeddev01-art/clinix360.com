@@ -1,6 +1,5 @@
 defmodule Stitch.TeamQueriesTest do
   use Stitch.DataCase, async: true
-  require Integer
   alias Stitch.TeamQueries
 
   describe "Stitch.TeamQueries.get_by_slug/1" do
