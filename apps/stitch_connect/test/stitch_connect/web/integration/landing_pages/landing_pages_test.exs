@@ -1,11 +1,11 @@
-defmodule StitchConnect.Web.Messages.SearchTest do
+defmodule StitchConnect.Web.Messages.LandingPagesTest do
   use StitchConnect.Web.FeatureCase, async: false
 
   import Wallaby.Query, only: [css: 2]
 
   defp element(selector, text), do: css(selector, text: text)
 
-  test "user can search for messages in his team" do
+  test "landing page has all necessary elements" do
     {:ok, user_1_session} = Wallaby.start_session()
 
     # Create two messages in this group with complex sentences.
