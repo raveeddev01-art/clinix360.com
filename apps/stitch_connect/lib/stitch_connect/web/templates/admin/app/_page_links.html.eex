@@ -1,0 +1,4 @@
+<div>
+  <h4>Pages</h4>
+  <%= Paginator.page_links(assigns) %>
+</div>
