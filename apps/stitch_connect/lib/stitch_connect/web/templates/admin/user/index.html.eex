@@ -6,6 +6,7 @@
     <th>Phone Number</th>
     <th>Email</th>
     <th>Role</th>
+    <th></th>
   </tr>
   <%= for user <- @users do %>
     <tr>
@@ -14,6 +15,7 @@
       <td><%= user.phone_number %></td>
       <td><%= user.email %></td>
       <td><%= if roles = user.roles, do: hd(roles), else: "" %></td>
+      <td><%= link("Impersonate", to: SubdomainRouter.admin_impersonation_path(@conn, :impersonate, user.id)) %></td>
     </tr>
   <% end %>
 </table>
