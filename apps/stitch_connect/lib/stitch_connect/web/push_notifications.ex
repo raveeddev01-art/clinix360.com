@@ -120,28 +120,22 @@ defmodule StitchConnect.Web.PushNotifications do
     |> FCM.push(on_response: &handle_response_andriod/1)
   end
 
-  defp new_msg_notification_body(%{name: "__dm_group__"}, %{user: user, type: "upload"}) do
-    "#{display_name(user)} uploaded a 1-on-1 file."
-  end
-
-  defp new_msg_notification_body(%{name: "__dm_group__"}, %{user: user}) do
-    "#{display_name(user)} sent you a 1-on-1 message."
-  end
-
-  defp new_msg_notification_body(%{name: "__multi_dm_group__"}, %{user: user, type: "upload"}) do
+  defp new_msg_notification_body(%{name: group_name}, %{user: user, type: "upload"})
+       when group_name in ~w[__dm_group__ __multi_dm_group__] do
     "#{display_name(user)} uploaded a direct file."
   end
 
-  defp new_msg_notification_body(%{name: "__multi_dm_group__"}, %{user: user}) do
+  defp new_msg_notification_body(%{name: group_name}, %{user: user})
+       when group_name in ~w[__dm_group__ __multi_dm_group__] do
     "#{display_name(user)} sent you a direct message."
   end
 
-  defp new_msg_notification_body(_grp, %{user: user, type: "upload"}) do
-    "#{display_name(user)} uploaded a room file."
+  defp new_msg_notification_body(%{name: group_name}, %{user: user, type: "upload"}) do
+    "#{display_name(user)} uploaded a room file (#{group_name})."
   end
 
-  defp new_msg_notification_body(_grp, %{user: user}) do
-    "#{display_name(user)} sent a room message."
+  defp new_msg_notification_body(%{name: group_name}, %{user: user}) do
+    "#{display_name(user)} sent a room message (#{group_name})."
   end
 
   defp display_name(%{first_name: first_name, last_name: last_name}) do
