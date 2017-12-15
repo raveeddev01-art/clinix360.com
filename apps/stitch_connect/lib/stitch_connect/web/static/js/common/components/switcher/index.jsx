@@ -4,7 +4,6 @@ import { NavLink, withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import history from "lib/history";
-import cx from "classnames";
 
 @inject("presenceStore", "groupsStore")
 @observer
