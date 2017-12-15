@@ -124,11 +124,7 @@ export default class Homepage extends Component {
               <div className="flex-item">
                 <div className="info">
                   <h2>
-                    <img
-                      src="/images/engage-icon-white.png"
-                      alt="Connect"
-                    />{" "}
-                    Engage
+                    <img src="/images/engage-icon.png" alt="Connect" /> Engage
                   </h2>
                   <h3>Patient Engagement</h3>
 

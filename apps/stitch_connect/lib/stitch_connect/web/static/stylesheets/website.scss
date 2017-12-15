@@ -4,7 +4,7 @@
   min-height: 100vh;
   flex-direction: column;
   font-size: 15px;
-  background: #fafafa;
+  background: #f0f1f3;
   position: relative;
 
   @media (max-width: 768px) {
@@ -47,7 +47,7 @@
 
   .panel {
     border: 0;
-    box-shadow: 0 10px 40px rgba(0,0,0,.15);
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,.1);
   }
 
   h1 { font-size: 28px; }
@@ -155,6 +155,7 @@
   }
 
   .feature {
+    background: #f0f1f3;
     padding: 50px 0;
 
     .flex-box { 
@@ -190,21 +191,15 @@
       }
     }
 
+    &.alt .flex-box {
+      flex-direction: column-reverse;
+    }
+  }
+
+  .homepage .feature {
+    background: #f0f1f3;
     &.alt {
-      color: #fff;
-      background: #036;
-
-      .flex-box {
-        flex-direction: column-reverse;
-      }
-
-      h2 {
-        color: #fff;
-      }
-
-      h3 {
-        color: rgba(255, 255, 255, 0.5);
-      }
+      background: #fff;
     }
   }
 
@@ -395,9 +390,15 @@
   }
 
   //----------------- PRODUCTS -----------------
-  .product-page {
-    .feature .info h2 {
+  .product-page .feature {
+    background: #fff;
+
+    .info h2 {
       margin-bottom: 30px;
+    }
+
+    &.alt {
+      background: #f0f1f3;
     }
   }
 
