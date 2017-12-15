@@ -23,14 +23,20 @@
     font-size: 24px;
     color: #fff;
     margin-bottom: 20px;
-    opacity: 0.6;
 
     &:hover,
     &:focus,
     &:active {
       color: #fff;
       outline: none;
-      opacity: 1;
+
+      i {
+        opacity: 1;
+      }
+    }
+
+    i {
+      opacity: 0.6;
     }
 
     &-wrapper {
@@ -38,7 +44,9 @@
     }
 
     &.active {
-      opacity: 1;
+      i {
+        opacity: 1;
+      }
     }
   }
 

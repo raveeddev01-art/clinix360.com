@@ -50,7 +50,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Stitch Connect</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Stitch&nbsp;Connect</Tooltip>}
             >
               <span className="switcher__link-wrapper">
                 <i className="fa fa-comments" />
@@ -94,7 +94,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Sign Out</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Sign&nbsp;Out</Tooltip>}
             >
               <i className="fa fa-sign-out" />
             </OverlayTrigger>
