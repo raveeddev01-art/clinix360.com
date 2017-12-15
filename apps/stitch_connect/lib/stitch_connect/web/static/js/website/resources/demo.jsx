@@ -15,6 +15,38 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
 export default class Demo extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      fullName: "",
+      email: "",
+      phoneNumber: "",
+      companyName: ""
+    };
+  }
+
+  handleChange = event => {
+    const target = event.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    const { fullName, email, phoneNumber, companyName } = this.state;
+    alert(fullName + " | " + email + " | " + phoneNumber + " | " + companyName);
+
+    // post("/api/v1/request-demo", {
+    //   body: { firstName, lastName, email, phoneNumber, companyName }
+    // }).then(() => {
+    // });
+  };
+
   renderCustomers() {
     return CUSTOMERS.map((c, index) => {
       const className = cx("col-lg-5ths col-md-3 col-xs-4", {
@@ -39,13 +71,13 @@ export default class Demo extends Component {
               <div className="flex-item text-center">
                 <h1>Request a Demo</h1>
                 <h3 className="m-b-40">
-                  Enable your team to seamlessly work together. <br />Learn how
-                  Stitch works today.
+                  Enable your team to seamlessly work together.{" "}
+                  <br className="hidden-xs" />Learn how Stitch works today.
                 </h3>
                 <img
                   src="/images/homepage-mbp.png"
-                  alt=""
-                  className="img-responsive"
+                  alt="Stitch Platform"
+                  className="img-responsive hidden-xs hidden-sm"
                 />
               </div>
 
@@ -56,31 +88,65 @@ export default class Demo extends Component {
                     away.
                   </h4>
 
-                  <form>
+                  <form onSubmit={this.handleSubmit}>
                     <FormGroup bsSize="large">
-                      <ControlLabel>Full Name</ControlLabel>
-                      <FormControl required autoFocus placeholder="Full Name" />
-                    </FormGroup>
-
-                    <FormGroup bsSize="large">
-                      <ControlLabel>Email Address</ControlLabel>
+                      <ControlLabel>
+                        Full Name <span>*</span>
+                      </ControlLabel>
                       <FormControl
+                        name="fullName"
                         required
-                        placeholder="hello@stitchhealth.com"
+                        autoFocus
+                        placeholder="Full Name"
+                        type="text"
+                        value={this.state.fullName}
+                        onChange={this.handleChange}
                       />
                     </FormGroup>
 
                     <FormGroup bsSize="large">
-                      <ControlLabel>Phone Number</ControlLabel>
-                      <FormControl required placeholder="Phone Number" />
+                      <ControlLabel>
+                        Email Address <span>*</span>
+                      </ControlLabel>
+                      <FormControl
+                        name="email"
+                        required
+                        placeholder="hello@stitchhealth.com"
+                        type="email"
+                        value={this.state.email}
+                        onChange={this.handleChange}
+                      />
+                    </FormGroup>
+
+                    <FormGroup bsSize="large">
+                      <ControlLabel>
+                        Phone Number <span>*</span>
+                      </ControlLabel>
+                      <FormControl
+                        name="phoneNumber"
+                        required
+                        placeholder="Phone Number"
+                        type="text"
+                        value={this.state.phoneNumber}
+                        onChange={this.handleChange}
+                      />
                     </FormGroup>
 
                     <FormGroup bsSize="large" className="m-b-30">
-                      <ControlLabel>Company Name</ControlLabel>
-                      <FormControl required placeholder="Company Inc" />
+                      <ControlLabel>
+                        Company Name <span>*</span>
+                      </ControlLabel>
+                      <FormControl
+                        name="companyName"
+                        required
+                        placeholder="Company Inc"
+                        type="text"
+                        value={this.state.companyName}
+                        onChange={this.handleChange}
+                      />
                     </FormGroup>
 
-                    <Button bsSize="lg" bsStyle="primary" block>
+                    <Button type="submit" bsSize="lg" bsStyle="primary" block>
                       Request a demo
                     </Button>
                   </form>

@@ -55,7 +55,7 @@ export default class Homepage extends Component {
                 <div className="mbp">
                   <img
                     src="/images/homepage-mbp.png"
-                    alt=""
+                    alt="Stitch Platform"
                     className="img-responsive"
                   />
                 </div>

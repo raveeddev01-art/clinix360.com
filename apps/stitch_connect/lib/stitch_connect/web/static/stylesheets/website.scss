@@ -323,32 +323,44 @@
   }
 
   //----------------- DEMO -----------------
-  .demo-page .demo-form {
-    color: #333;
+  .demo-page {
+    .demo-form {
+      color: #333;
 
-    border: 0;
-    box-shadow: 0 4px 25px rgba(0,0,0,.20);
+      border: 0;
+      box-shadow: 0 4px 25px rgba(0,0,0,.20);
 
-    .panel-body {
-      padding: 40px;
+      .panel-body {
+        padding: 40px;
 
-      h3 {
-        color: #036;
-        font-weight: 900;
-        margin: 0 0 10px;
+        h4 {
+          color: #036;
+          font-weight: 900;
+          line-height: 1.5;
+        }
+
+        label {
+          font-size: 14px;
+
+          span {
+            color: #ff5252;
+          }
+        }
+
+        .btn {
+          font-size: 14px;
+        }
       }
+    }
 
-      h4 {
-        line-height: 1.5;
-      }
+    .our-customers {
+      color: #8B95A6;
+    }
+  }
 
-      label {
-        font-size: 13px;
-      }
-
-      .btn {
-        font-size: 14px;
-      }
+  @media (max-width: 992px) {
+    .demo-page .subheader .flex-box {
+      flex-direction: column;
     }
   }
 
