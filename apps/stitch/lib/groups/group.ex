@@ -254,6 +254,8 @@ defmodule Stitch.Group do
         group_user
         |> change(%{is_hidden: true})
         |> Repo.update
+
+        GroupUser.clear_counters(group, user_id)
     end
   end
 

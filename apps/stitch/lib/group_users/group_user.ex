@@ -104,4 +104,11 @@ defmodule Stitch.GroupUser do
     |> select([gu], gu.user_id)
     |> Repo.all
   end
+
+  def clear_counters(%Group{} = group, user_id) do
+    GroupUser
+    |> where(user_id: ^user_id)
+    |> where(group_id: ^group.id)
+    |> Repo.update_all(set: [last_read_at: DateTime.utc_now, mentions_count: 0, unread_messages_count: 0])
+  end
 end
