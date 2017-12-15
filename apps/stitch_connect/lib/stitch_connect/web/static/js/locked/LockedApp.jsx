@@ -17,7 +17,7 @@ class LockedApp extends Component {
   }
 
   onInvalid = () => {
-    this.setState({ pin: "", hasError: false });
+    this.setState({ hasError: false });
   };
 
   onValid = pin => {
