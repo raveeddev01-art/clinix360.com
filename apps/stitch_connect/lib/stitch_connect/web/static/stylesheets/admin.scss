@@ -20,6 +20,37 @@ $admin-topbar-height-sm: 65px;
     h4 {
       font-weight: 900;
     }
+
+    .team-user {
+      flex: 1;
+      min-width: 0;
+
+      .team-name {
+        font-size: 17px;
+        line-height: 24px;
+        font-weight: 900;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .user-name {
+        color: #fff;
+        opacity: 0.6;
+        display: flex;
+        align-items: center;
+
+        i {
+          font-size: 9px;
+          margin-right: 6px;
+          line-height: 20px;
+        }
+
+        span {
+          line-height: 20px;
+        }
+      }
+    }
   }
 
   .sidebar {
@@ -47,7 +78,7 @@ $admin-topbar-height-sm: 65px;
       background-color: $brand-primary;
       flex-grow: 1;
       overflow-y: hidden;
-      padding: 20px 1em 1em 1em;
+      padding: 6px 1em 1em 1em;
 
       h5 {
         font-size: 16px;

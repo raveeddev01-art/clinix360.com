@@ -82,7 +82,13 @@ class Sidebar extends Component {
     return (
       <div className="sidebar">
         <div className="flex-header">
-          <h4 className="team-name">{teamStore.name}</h4>
+          <div className="team-user">
+            <h4 className="team-name">{teamStore.name}</h4>
+            <div className="user-name">
+              <i className="fa fa-circle" />{" "}
+              <span>{`${userStore.firstName} ${userStore.lastName}`}</span>
+            </div>
+          </div>
         </div>
         <div className="flex-container">
           <h5>You</h5>
