@@ -17,6 +17,7 @@ import Demo from "./resources/demo";
 import Pilot from "./resources/pilot";
 import Jobs from "./resources/jobs";
 import Customers from "./resources/customers";
+import Blog from "./resources/blog";
 import CaseLuminance from "./case-studies/luminance";
 import CasePBSC from "./case-studies/pbsc";
 import CaseDSSI from "./case-studies/dssi";
@@ -45,6 +46,7 @@ class WebsiteRouter extends Component {
             <Route exact path="/pilot" component={Pilot} />
             <Route exact path="/jobs" component={Jobs} />
             <Route exact path="/customers" component={Customers} />
+            <Route exact path="/blog" component={Blog} />
             <Route
               exact
               path="/customers/luminance-recovery"

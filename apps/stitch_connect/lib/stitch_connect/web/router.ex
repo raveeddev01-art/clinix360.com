@@ -66,6 +66,7 @@ defmodule StitchConnect.Web.Router do
     get "/pilot", HomeController, :index
     get "/jobs", HomeController, :index
     get "/customers", HomeController, :index
+    get "/blog", HomeController, :index
     get "/customers/luminance-recovery", HomeController, :index
     get "/customers/princeton-brain-spine", HomeController, :index
     get "/customers/dermatology-skin-surgery-institute", HomeController, :index
