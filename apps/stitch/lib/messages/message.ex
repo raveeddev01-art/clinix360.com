@@ -105,7 +105,7 @@ defmodule Stitch.Message do
     mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"])
     notify_user_ids = Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
     {read_status, recipients} = users |> Enum.reduce({%{}, []}, fn (recipient, {acc_map, acc_list}) ->
-      acc_map = if recipient.id == user.id, do: acc_map, else: Map.put(acc_map, to_string(recipient.id), nil)
+      acc_map = if recipient.id == user.id or recipient.disabled, do: acc_map, else: Map.put(acc_map, to_string(recipient.id), nil)
       acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
       {acc_map, acc_list}
     end)

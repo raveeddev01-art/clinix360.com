@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { Async } from "react-select";
 
@@ -21,12 +22,12 @@ class Members extends Component {
     }
   }
 
-  _getMembers = (term, callback) => {
+  _getMembers = term => {
     const { presenceStore } = this.props;
 
     return post(`/api/v1/users/search`, { body: { term } }).then(resp => {
       const onlineUsers = Object.keys(presenceStore.onlineUsersMap);
-      const options = resp.data.map(user => ({
+      const options = resp.data.filter(user => !user.disabled).map(user => ({
         ...user,
         online: onlineUsers.indexOf(`${user.id}`) > -1
       }));
@@ -51,5 +52,15 @@ class Members extends Component {
     );
   }
 }
+
+Members.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.array.isRequired
+};
+
+Members.defaultProps = {
+  onChange: () => {},
+  value: ""
+};
 
 export default Members;

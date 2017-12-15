@@ -18,6 +18,12 @@ defmodule Stitch.GroupUser do
     timestamps()
   end
 
+  def clear_counters(%Accounts.User{} = user) do
+    GroupUser
+    |> where(user_id: ^user.id)
+    |> Repo.update_all(set: [last_read_at: DateTime.utc_now, mentions_count: 0, unread_messages_count: 0])
+  end
+
   def changeset(%GroupUser{} = struct, params) do
     struct
     |> cast(params, [:group_id, :user_id])

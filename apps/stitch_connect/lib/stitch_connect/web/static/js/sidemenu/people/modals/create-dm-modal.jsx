@@ -121,6 +121,7 @@ class CreateDMModal extends Component {
             value={members}
             users={usersStore.users.slice(0)}
             hideCurrentUser
+            showDisabledAfter={1}
           >
             Select members to start conversation with.
           </TeamList>

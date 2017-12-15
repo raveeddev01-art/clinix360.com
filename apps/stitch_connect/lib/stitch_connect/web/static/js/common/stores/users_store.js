@@ -1,6 +1,6 @@
 /**
  * Users store
- * 
+ *
  * This store keeps track of users of the app
  */
 
@@ -26,7 +26,7 @@ class UsersStore {
   get usersByUsername() {
     const map = {};
 
-    this.users.forEach(user => {
+    this.activatedUsers.forEach(user => {
       map[user.username] = user;
     });
 
@@ -158,6 +158,42 @@ class UsersStore {
         changedUser.username = user.username;
         history.replace(groupsStore.getGroupUrl(groupStore.group.id));
       }
+    }
+  };
+
+  @action
+  onUserDeactivated = payload => {
+    const user = this.getUserById(payload.user_id);
+    const { groupsStore } = this.rootStore;
+
+    if (payload.user_id === currentUser.id) {
+      window.location.href = "/logged-out";
+      return;
+    }
+
+    if (user) {
+      user.disabled = true;
+      groupsStore.updateUserInAllGroups(payload.user_id, {
+        disabled: true
+      });
+
+      const dm = groupsStore.getDMGroup(payload.user_id);
+      if (dm) {
+        groupsStore.hideGroup(dm.id);
+      }
+    }
+  };
+
+  @action
+  onUserActivated = payload => {
+    const user = this.getUserById(payload.user_id);
+    const { groupsStore } = this.rootStore;
+
+    if (user) {
+      user.disabled = false;
+      groupsStore.updateUserInAllGroups(payload.user_id, {
+        disabled: false
+      });
     }
   };
 }

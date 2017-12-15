@@ -19,6 +19,7 @@ defmodule StitchConnect.Web.PushNotifications do
     users =
       Stitch.Accounts.User
       |> where([u], u.id in ^user_ids)
+      |> where(disabled: ^false)
       |> Repo.all
 
     Enum.each users, fn user ->
@@ -66,6 +67,7 @@ defmodule StitchConnect.Web.PushNotifications do
     users =
       Stitch.Accounts.User
       |> where([u], u.id in ^user_ids)
+      |> where(disabled: ^false)
       |> Repo.all
 
     Enum.each users, fn user ->
