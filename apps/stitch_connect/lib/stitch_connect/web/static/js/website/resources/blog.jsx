@@ -32,7 +32,7 @@ export default class Blog extends Component {
               <h3 className="text-center date">
                 <span>December 18th, 2017</span>
               </h3>
-              <Panel>
+              <Panel className="m-b-50">
                 <h2 className="text-center m-b-40">
                   Introducing Stitch: tools for making healthcare a great
                   customer experience

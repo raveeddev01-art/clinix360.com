@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 
 import Button from "react-bootstrap/lib/Button";
 
@@ -22,10 +22,18 @@ export default class GetStarted extends Component {
             </div>
 
             <div className="flex-item text-right">
-              <Button bsSize="lg" bsStyle="primary" block>
+              <Button
+                bsSize="lg"
+                bsStyle="primary"
+                block
+                href={`https://${applicationHost}/signup/email`}
+              >
                 Start Trial
               </Button>
-              <Button bsSize="lg">Schedule Demo</Button>
+
+              <LinkContainer to="/demo">
+                <Button bsSize="lg">Request Demo</Button>
+              </LinkContainer>
             </div>
           </div>
         </div>

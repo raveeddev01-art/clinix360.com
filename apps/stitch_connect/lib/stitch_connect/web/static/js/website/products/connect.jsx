@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 
 import Header from "../components/header";
 import GetStarted from "../components/get-started";
@@ -19,8 +19,15 @@ export default class Connect extends Component {
               <h3 className="m-b-30">Team Communication</h3>
 
               <div>
-                <Button bsSize="lg">Request Demo</Button>{" "}
-                <Button bsSize="lg" bsStyle="primary">
+                <LinkContainer to="/demo">
+                  <Button bsSize="lg">Request Demo</Button>
+                </LinkContainer>
+
+                <Button
+                  bsSize="lg"
+                  bsStyle="primary"
+                  href={`https://${applicationHost}/signup/email`}
+                >
                   Start Trial
                 </Button>
               </div>

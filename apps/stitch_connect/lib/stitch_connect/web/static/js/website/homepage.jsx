@@ -44,8 +44,15 @@ export default class Homepage extends Component {
                 </h3>
 
                 <div className="m-b-50">
-                  <Button bsSize="lg">Request Demo</Button>{" "}
-                  <Button bsSize="lg" bsStyle="primary">
+                  <LinkContainer to="/demo">
+                    <Button bsSize="lg">Request Demo</Button>
+                  </LinkContainer>
+
+                  <Button
+                    bsSize="lg"
+                    bsStyle="primary"
+                    href={`https://${applicationHost}/signup/email`}
+                  >
                     Start Trial
                   </Button>
                 </div>

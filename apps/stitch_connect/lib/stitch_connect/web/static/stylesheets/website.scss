@@ -7,6 +7,13 @@
   background: #f0f1f3;
   position: relative;
 
+  > div {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    min-height: 100vh;
+  }
+
   @media (max-width: 768px) {
     .container {
       padding-left: 25px;
@@ -525,30 +532,34 @@
   }
 
   //----------------- DOWNLOADS -----------------
-  .downloads-page .tab-content .plan {
-    margin: 20px 0;
+  .downloads-page {
+    flex-grow: 1;
 
-    a {
-      display: inline-block;
+    .tab-content .plan {
+      margin: 20px 0;
 
-      img {
-        width: 70px;
+      a {
+        display: inline-block;
+
+        img {
+          width: 70px;
+        }
+
+        &.appstore-link img {
+          width: 135px;
+        }
+
+        &.playstore-link img {
+          width: 110px;
+        }
       }
 
-      &.appstore-link img {
-        width: 135px;
+      h3 {
+        display: block;
+        border-bottom: 0;
+        margin: 20px 0 10px;
+        padding-bottom: 0;
       }
-
-      &.playstore-link img {
-        width: 110px;
-      }
-    }
-
-    h3 {
-      display: block;
-      border-bottom: 0;
-      margin: 20px 0 10px;
-      padding-bottom: 0;
     }
   }
 
@@ -602,9 +613,7 @@
       }
     }
 
-    .card {
-      background-color: #e8ecef;
-      border-radius: 4px;
+    .panel {
       margin-top: 30px;
       padding: 20px;
 
@@ -625,6 +634,11 @@
     &:nth-child(even) {
       background: #fff;
     }
+  }
+
+  //----------------- JOBS -----------------
+  #grnhse_app {
+    flex-grow: 1;
   }
 
   //----------------- CUSTOMERS -----------------

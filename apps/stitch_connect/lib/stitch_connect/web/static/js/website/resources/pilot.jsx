@@ -7,6 +7,7 @@ import Footer from "../components/footer";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
+import Panel from "react-bootstrap/lib/Panel";
 
 export default class Pilot extends Component {
   render() {
@@ -149,7 +150,7 @@ export default class Pilot extends Component {
 
               <Row>
                 <Col sm={4}>
-                  <div className="card">
+                  <Panel>
                     <h4>Custom Implementation</h4>
                     <hr />
                     <p>
@@ -157,11 +158,11 @@ export default class Pilot extends Component {
                       to succeed when specifically built to match your team’s
                       needs.
                     </p>
-                  </div>
+                  </Panel>
                 </Col>
 
                 <Col sm={4}>
-                  <div className="card">
+                  <Panel>
                     <h4>Streamlined Adoption</h4>
                     <hr />
                     <p>
@@ -169,11 +170,11 @@ export default class Pilot extends Component {
                       strong pilot performance. Our ROI reports will do the work
                       for you.
                     </p>
-                  </div>
+                  </Panel>
                 </Col>
 
                 <Col sm={4}>
-                  <div className="card">
+                  <Panel>
                     <h4>Usage Derisking</h4>
                     <hr />
                     <p>
@@ -181,7 +182,7 @@ export default class Pilot extends Component {
                       confidence by watching Stitch succeed at your own
                       organization.
                     </p>
-                  </div>
+                  </Panel>
                 </Col>
               </Row>
             </div>
