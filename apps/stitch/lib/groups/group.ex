@@ -251,11 +251,14 @@ defmodule Stitch.Group do
       nil ->
         {:error, "User is not part of this room"}
       group_user ->
-        group_user
-        |> change(%{is_hidden: true})
-        |> Repo.update
+        group_user =
+          group_user
+          |> change(%{is_hidden: true})
+          |> Repo.update
 
         GroupUser.clear_counters(group, user_id)
+
+        group_user
     end
   end
 
