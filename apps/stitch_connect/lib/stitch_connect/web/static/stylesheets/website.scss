@@ -931,7 +931,7 @@
       background: #0667D0;
       border-radius: 4px;
       box-shadow: 0 5px 15px 0 rgba(0,0,0,0.15);
-      padding: 11px 20px;
+      padding: 10px 20px;
       margin: 15px auto;
 
       &:hover, &:focus {
@@ -1049,6 +1049,14 @@
 
 
 //----------------- TEMP CSS -----------------
+.terms-of-service,
+.privacy-policy,
+.baa-page,
+.security-page {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
 .case-study {
   color: #036;
 

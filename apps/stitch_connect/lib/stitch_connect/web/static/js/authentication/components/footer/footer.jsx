@@ -34,13 +34,7 @@ export default class Footer extends Component {
                   <a href={`https://${applicationHost}/downloads`}>Downloads</a>
                 </li>
                 <li>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="https://calendly.com/teamstitch/demo"
-                  >
-                    Demo
-                  </a>
+                  <a href={`https://${applicationHost}/demo`}>Demo</a>
                 </li>
                 <li>
                   <a

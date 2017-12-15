@@ -3,8 +3,8 @@ import { observer, inject } from "mobx-react";
 import cx from "classnames";
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
-import Header from "../website/components/header";
-import Footer from "../website/components/footer";
+import Header from "../authentication/components/header/header";
+import Footer from "../authentication/components/footer/footer";
 import PinInput from "../common/components/pin-input/index";
 
 @inject("presenceStore", "teamStore")
