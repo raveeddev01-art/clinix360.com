@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { Async } from "react-select";
 
@@ -52,5 +53,15 @@ class Members extends Component {
     );
   }
 }
+
+Members.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  value: PropTypes.array.isRequired
+};
+
+Members.defaultProps = {
+  onChange: () => {},
+  value: ""
+};
 
 export default Members;

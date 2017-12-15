@@ -746,9 +746,9 @@
       }
 
       .message-read-status {
-        text-align: right;
         color: rgba(255, 255, 255, 0.7);
         font-size: 12px;
+        cursor: pointer;
       }
 
       p {
@@ -793,11 +793,16 @@
     }
 
     .message-status {
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
       color: #999;
       font-size: 12px;
       font-weight: 500;
       text-align: right;
       margin-bottom: 5px;
+      text-transform: capitalize;
     }
   }
 

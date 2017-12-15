@@ -46,14 +46,22 @@ class TeamList extends Component {
   };
 
   render() {
-    const { children, users, isOnline, hideCurrentUser } = this.props;
+    const {
+      children,
+      users,
+      isOnline,
+      hideCurrentUser,
+      showDisabledAfter
+    } = this.props;
     const { members, searchFilter } = this.state;
     const availableUsers = users.filter(
       u =>
         !(hideCurrentUser && u.id === currentUser.id && members.length > 0) &&
-        members.findIndex(member => member.id === u.id) === -1
+        members.findIndex(member => member.id === u.id) === -1 &&
+        (!u.disabled || searchFilter.length >= showDisabledAfter)
     );
-    const teamList = filterUsers(availableUsers, searchFilter);
+    const teamList = filterUsers(availableUsers, searchFilter)
+      .sort(a => a.disabled);
 
     return (
       <div className="team-list__container">
@@ -63,6 +71,7 @@ class TeamList extends Component {
               this.selectComponent = node;
             }}
             multi
+            autoFocus
             valueKey="id"
             className="multi-select-large"
             onInputChange={this.onChangeFilter}
@@ -90,10 +99,12 @@ class TeamList extends Component {
                 onClick={this.onSelectUser(user)}
               >
                 <i className={iconClasName} />
-                {` ${user.full_name}${user.id === currentUser.id
-                  ? " (You)"
-                  : ""}`}
-                <span className="text-muted">{user.username}</span>
+                {` ${user.full_name}`}
+                {`${user.id === currentUser.id ? " (You)" : ""}`}
+                <span className="text-muted">
+                  {user.username}
+                  {`${user.disabled ? " (Deactivated Account)" : ""}`}
+                </span>
               </div>
             );
           })}
@@ -113,7 +124,8 @@ TeamList.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  onSelectUser: PropTypes.func
+  onSelectUser: PropTypes.func,
+  showDisabledAfter: PropTypes.number
 };
 
 TeamList.defaultProps = {
@@ -122,7 +134,8 @@ TeamList.defaultProps = {
   onSelectUser: () => {},
   hideCurrentUser: false,
   children: "",
-  value: ""
+  value: "",
+  showDisabledAfter: 0
 };
 
 export default TeamList;

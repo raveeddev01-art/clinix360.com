@@ -29,6 +29,11 @@ class GroupStore {
     );
   }
 
+  @computed
+  get isSelfDM() {
+    return this.group.type === "dm" && this.group.users.length === 1;
+  }
+
   @action
   hide = () => {
     const { groupsStore } = this.rootStore;

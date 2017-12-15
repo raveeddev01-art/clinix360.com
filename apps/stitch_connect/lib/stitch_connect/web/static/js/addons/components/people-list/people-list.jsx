@@ -22,14 +22,16 @@ class PeopleList extends Component {
 
     return (
       <div className="collapse-content">
-        {users.map(user => (
-          <PeopleListItem
-            online={presenceStore.isOnline(`${user.id}`)}
-            key={`user_${user.id}`}
-            onClick={this._onClickItem(user)}
-            {...user}
-          />
-        ))}
+        {users
+          .filter(user => !user.disabled)
+          .map(user => (
+            <PeopleListItem
+              online={presenceStore.isOnline(`${user.id}`)}
+              key={`user_${user.id}`}
+              onClick={this._onClickItem(user)}
+              {...user}
+            />
+          ))}
       </div>
     );
   }

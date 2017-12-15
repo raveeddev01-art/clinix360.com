@@ -65,7 +65,8 @@ class MenutionMenu extends Component {
   getUsers = () => {
     const { usersStore: { activatedUsers }, filter } = this.props;
 
-    return filterUsers(activatedUsers, filter);
+    return filterUsers(activatedUsers, filter)
+      .filter(user => !user.disabled);
   };
 
   render() {
