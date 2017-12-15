@@ -8,11 +8,21 @@ class GroupPresenceStore {
     this.rootStore = rootStore;
   }
 
+  isTyping = userId => {
+    return this.usersCurrentlyInGroup[userId].metas[0].is_typing;
+  };
+
   @computed
   get typingUsers() {
-    return Object.keys(this.usersCurrentlyInGroup)
-      .filter(id => this.usersCurrentlyInGroup[id].metas[0].is_typing)
-      .filter(id => id !== window.currentUser.id.toString());
+    const { presenceStore } = this.rootStore;
+
+    return Object.keys(this.usersCurrentlyInGroup).filter(
+      userId =>
+        userId !== window.currentUser.id.toString() &&
+        // Double-check if the user is really online with team presence store
+        presenceStore.isOnline(userId) &&
+        this.isTyping(userId)
+    );
   }
 
   // ////////////// //
