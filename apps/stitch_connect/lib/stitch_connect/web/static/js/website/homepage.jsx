@@ -37,7 +37,7 @@ export default class Homepage extends Component {
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <h1>The workspace for healthcare teams</h1>
+                <h1>Collaboration tools for healthcare teams</h1>
                 <h3 className="m-b-30">
                   Communicate, write notes, track tasks, upload files, and<br />
                   collaborate on any device.
