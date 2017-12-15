@@ -3,6 +3,8 @@ defmodule Stitch.Message.LinkPreview.GetLinksTest do
 
   test "returns a list of links" do
     Enum.each %{
+      nil => [],
+      "" => [],
       "foo" => [],
       "http://" => [],
       "https://" => [],

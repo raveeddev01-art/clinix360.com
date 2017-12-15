@@ -57,6 +57,24 @@ defmodule Stitch.TeamQueries do
   end
 
   @doc """
+  Returns a list of teams with user counts
+  """
+  @spec admin_teams_query() :: Ecto.Query.t
+  def admin_teams_query do
+    from t in Team,
+    left_join: u in assoc(t, :users),
+    select: %{
+      name: t.name,
+      slug: t.slug,
+      total_users: count(u.id),
+      enabled_users: fragment("SUM(CASE WHEN ? = ? THEN 1 ELSE 0 END)", u.disabled, false),
+      disabled_users: fragment("SUM(CASE WHEN ? = ? THEN 1 ELSE 0 END)", u.disabled, true)
+    },
+    order_by: t.name,
+    group_by: t.id
+  end
+
+  @doc """
   Returns the team owner who originally created the team.
 
   ## Examples
