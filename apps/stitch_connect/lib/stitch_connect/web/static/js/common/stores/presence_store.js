@@ -1,11 +1,16 @@
 import { Presence } from "phoenix";
 import { action, autorun, computed, observable } from "mobx";
+import debounce from "lodash/debounce";
+
+import { PRESENCE_DEBOUNCE_WAIT } from "lib/constants";
 
 class PresenceStore {
   @observable teamId = "";
   @observable onlineUsersMap = {};
   @observable locked = window.locked;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
+
+  onlineUsersMapCache = {};
 
   // lockout settings
   lockoutSettingLoaded = false;
@@ -70,13 +75,34 @@ class PresenceStore {
   };
 
   @action
-  onPresenceState = state => {
-    this.onlineUsersMap = Presence.syncState(this.onlineUsersMap, state);
+  updatePresence = () => {
+    this.onlineUsersMap = this.onlineUsersMapCache;
   };
 
   @action
+  debouncedUpdatePresence = debounce(
+    this.updatePresence,
+    PRESENCE_DEBOUNCE_WAIT
+  );
+
+  onPresenceState = state => {
+    this.onlineUsersMapCache = Presence.syncState(
+      this.onlineUsersMapCache,
+      state
+    );
+
+    // When loading initially, update without debounce
+    this.updatePresence();
+  };
+
   onPresenceDiff = diff => {
-    this.onlineUsersMap = Presence.syncDiff(this.onlineUsersMap, diff);
+    this.onlineUsersMapCache = Presence.syncDiff(
+      this.onlineUsersMapCache,
+      diff
+    );
+
+    // Debounce updating presence
+    this.debouncedUpdatePresence();
   };
 
   onLocked = ({ sessionId }) => {
