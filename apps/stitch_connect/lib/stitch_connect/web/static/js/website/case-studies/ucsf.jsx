@@ -54,8 +54,7 @@ export default class CaseUCSF extends Component {
             <div className="case-study-content">
               <h3 className="text-center">
                 UCSF Citywide implements Stitch to unite team communication
-                <br className="hidden-xs" /> across the city and improve client
-                care
+                across the city and improve client care
               </h3>
 
               <hr />

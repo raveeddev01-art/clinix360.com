@@ -66,7 +66,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/luminance-recovery">
-                      <Button bsStyle="primary" bsSize="lg">
+                      <Button bsStyle="primary" bsSize="lg" block>
                         Read More
                       </Button>
                     </LinkContainer>
@@ -102,7 +102,7 @@ export default class Customers extends Component {
 
               <div className="flex-box">
                 <div className="flex-item">
-                  <Panel className="m-b-30">
+                  <Panel className="pbs-card m-b-30">
                     <img src="/images/customer-pbsc.png" alt="" />
                     <h4 className="m-b-20">Princeton Brain & Spine</h4>
                     <p className="m-b-30">
@@ -114,7 +114,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/princeton-brain-spine">
-                      <Button bsStyle="primary" bsSize="lg">
+                      <Button bsStyle="primary" bsSize="lg" block>
                         Read More
                       </Button>
                     </LinkContainer>
@@ -136,7 +136,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/dermatology-skin-surgery-institute">
-                      <Button bsStyle="primary" bsSize="lg">
+                      <Button bsStyle="primary" bsSize="lg" block>
                         Read More
                       </Button>
                     </LinkContainer>
@@ -158,7 +158,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/UCSF-citywide">
-                      <Button bsStyle="primary" bsSize="lg">
+                      <Button bsStyle="primary" bsSize="lg" block>
                         Read More
                       </Button>
                     </LinkContainer>
@@ -178,7 +178,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/orchard-medical-associates">
-                      <Button bsStyle="primary" bsSize="lg">
+                      <Button bsStyle="primary" bsSize="lg" block>
                         Read More
                       </Button>
                     </LinkContainer>

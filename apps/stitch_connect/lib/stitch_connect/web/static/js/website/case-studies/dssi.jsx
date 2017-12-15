@@ -48,8 +48,8 @@ export default class CaseDSSI extends Component {
           <div className="container">
             <div className="case-study-content">
               <h3 className="text-center">
-                DSSI uses Stitch to offer a world-class patient experience<br className="hidden-xs" />{" "}
-                and boost clinical efficiency
+                DSSI uses Stitch to offer a world-class patient experience and
+                boost clinical efficiency
               </h3>
 
               <hr />
