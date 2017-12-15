@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Link, withRouter } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import history from "lib/history";
@@ -29,9 +29,10 @@ class Switcher extends Component {
       <div className="switcher">
         <div className="switcher__top">
           {/* <div className="switcher__logo" /> */}
-          <Link
+          <NavLink
             to="/admin/you/home"
-            className={cx("switcher__link", { active: active === "home" })}
+            isActive={() => active === "home"}
+            className="switcher__link"
           >
             <OverlayTrigger
               placement="right"
@@ -40,10 +41,11 @@ class Switcher extends Component {
             >
               <i className="fa fa-home" />
             </OverlayTrigger>
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to="/rooms/general"
-            className={cx("switcher__link", { active: active === "connect" })}
+            isActive={() => active === "connect"}
+            className="switcher__link"
           >
             <OverlayTrigger
               placement="right"
@@ -59,12 +61,13 @@ class Switcher extends Component {
                 )}
               </span>
             </OverlayTrigger>
-          </Link>
+          </NavLink>
         </div>
         <div className="switcher__bottom">
-          <Link
+          <NavLink
             to="/admin/you/account"
-            className={cx("switcher__link", { active: active === "settings" })}
+            isActive={() => active === "settings"}
+            className="switcher__link"
           >
             <OverlayTrigger
               placement="right"
@@ -73,7 +76,7 @@ class Switcher extends Component {
             >
               <i className="fa fa-cog" />
             </OverlayTrigger>
-          </Link>
+          </NavLink>
           <a
             role="link"
             onClick={this.props.presenceStore.lock}
