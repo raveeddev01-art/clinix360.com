@@ -6,6 +6,7 @@ authenticationToken = Plug.Conn.get_session(@conn, :authentication_token)
 session_id = Plug.Conn.get_session(@conn, :session_id)
 locked = !!Plug.Conn.get_session(@conn, :locked)
 user = Map.get(@conn.assigns, :current_user)
+intercom_user_hash = Plug.Conn.get_session(@conn, :intercom_user_hash)
 current_user =
   case user do
     nil ->
@@ -31,4 +32,5 @@ current_user =
   window.currentUser = <%= raw current_user %>;
   window.applicationVersion = "<%= StitchConnect.version() %>";
   window.stripePublishableKey = "<%= Application.get_env(:stitch, :stripe_publishable_key) %>";
+  window.intercomUserHash = "<%= intercom_user_hash %>";
 </script>

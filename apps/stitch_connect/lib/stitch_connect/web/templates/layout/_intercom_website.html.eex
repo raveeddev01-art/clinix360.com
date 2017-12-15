@@ -1,6 +1,6 @@
 <script>
   window.intercomSettings = {
-    app_id: "jig8cj9z",
+    app_id: '<%= System.get_env("INTERCOM_APP_ID") %>',
     hide_default_launcher: false
   };
 </script>
