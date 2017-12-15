@@ -1,17 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import { Async } from "react-select";
+import Select from "react-select";
 
 import MemberOption from "./member_option";
-import { filterUsers } from "lib/utils";
 
 @inject("usersStore", "presenceStore")
 @observer
 class Members extends Component {
   constructor(props) {
     super(props);
-    this.state = { members: props.value || [] };
+    this.state = {
+      members: props.value || []
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -23,31 +24,30 @@ class Members extends Component {
     }
   }
 
-  _getMembers = term => {
+  getOptions = () => {
     const { usersStore: { activatedUsers }, presenceStore } = this.props;
 
-    return new Promise(resolve => {
-      resolve({
-        options: filterUsers(activatedUsers, term).map(user => ({
-          ...user,
-          online: presenceStore.isOnline(user.id)
-        }))
-      });
-    });
+    return activatedUsers.map(user => ({
+      ...user,
+      online: presenceStore.isOnline(user.id)
+    }));
   };
 
   render() {
+    const { onChange } = this.props;
+    const { members } = this.state;
+
     return (
-      <Async
+      <Select
         multi
         className="multi-select-large"
         placeholder="Search by name or username"
-        onChange={this.props.onChange}
-        value={this.state.members}
+        onChange={onChange}
+        value={members}
         valueKey="id"
         labelKey="full_name"
         optionComponent={MemberOption}
-        loadOptions={this._getMembers}
+        options={this.getOptions()}
         promptTextCreator={label => `Add member - ${label}`}
       />
     );
@@ -61,7 +61,7 @@ Members.propTypes = {
 
 Members.defaultProps = {
   onChange: () => {},
-  value: ""
+  value: []
 };
 
 export default Members;
