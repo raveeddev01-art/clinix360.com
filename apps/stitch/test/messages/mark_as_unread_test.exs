@@ -157,4 +157,11 @@ defmodule Stitch.Message.MarkAsUnreadTest do
       assert group_user.unread_messages_count == 0
     end
   end
+
+  test "when the user isn't part of the group", %{team: team, group: group} do
+    sam = insert(:user, team: team)
+
+    {:ok, response} = Message.mark_as_read(sam.id, group.id)
+    assert response == %{mark_group_as_read: {0, []}, mark_messages_as_read: {0, []}}
+  end
 end
