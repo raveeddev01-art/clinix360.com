@@ -126,7 +126,13 @@ class Sidemenu extends Component {
     return (
       <div id="sidemenu">
         <div className="flex-header">
-          <div className="team-name">{sidemenuStore.teamName}</div>
+          <div className="team-user">
+            <div className="team-name">{sidemenuStore.teamName}</div>
+            <div className="user-name">
+              <i className="fa fa-circle" />{" "}
+              <span>{`${userStore.firstName} ${userStore.lastName}`}</span>
+            </div>
+          </div>
 
           <Dropdown
             id="dropdown-preferences-menu"

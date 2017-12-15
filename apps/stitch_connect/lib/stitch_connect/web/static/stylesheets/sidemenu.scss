@@ -7,13 +7,35 @@
     z-index: 10;
     padding: 0 14px 0 25px;
 
-    .team-name {
+    .team-user {
       flex: 1;
-      font-size: 20px;
+      min-width: 0;
+    }
+
+    .team-name {
+      font-size: 17px;
+      line-height: 24px;
       font-weight: 900;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+    }
+
+    .user-name {
+      color: #fff;
+      opacity: 0.6;
+      display: flex;
+      align-items: center;
+
+      i {
+        font-size: 9px;
+        margin-right: 6px;
+        line-height: 20px;
+      }
+
+      span {
+        line-height: 20px;
+      }
     }
 
     .btn {
@@ -93,7 +115,7 @@
     .rooms-menu {
       position: relative;
       flex: 1;
-      padding: 20px 15px;
+      padding: 15px 15px 20px;
       @include stitch-scroll();
       overflow: hidden;
 
@@ -285,18 +307,18 @@
       height: 30px;
       line-height: 30px;
       text-align: center;
-      background-color: #fff;
-      color: $brand-primary;
+      background-color: #e33a2f;
+      color: #fff;
       font-size: 16px;
 
       &.up {
-        top: 1px;
+        top: 0px;
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
       }
 
       &.down {
-        bottom: 1px;
+        bottom: 0px;
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
       }
