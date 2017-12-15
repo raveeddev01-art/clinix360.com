@@ -207,12 +207,22 @@ export default class Blog extends Component {
 
                 <ul className="list-inline text-center m-b-30 share-buttons">
                   <li>
-                    <a href="#" className="btn-facebook">
+                    <a
+                      href={`https://www.facebook.com/sharer/sharer.php?u=${window.location}`}
+                      target="_blank"
+                      className="btn-facebook"
+                    >
                       <i className="fa fa-facebook" />
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="btn-twitter">
+                    <a
+                      href={`https://twitter.com/intent/tweet?hashtags=stitchhealthcare&via=StitchHQ&text=${encodeURI(
+                        document.title
+                      )} ${window.location}`}
+                      target="_blank"
+                      className="btn-twitter"
+                    >
                       <i className="fa fa-twitter" />
                     </a>
                   </li>
