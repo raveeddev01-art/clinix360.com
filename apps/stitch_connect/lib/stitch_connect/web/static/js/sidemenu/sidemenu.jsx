@@ -176,7 +176,7 @@ class Sidemenu extends Component {
                 </MenuItem>
               )}
               <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
-                Lockout
+                Lock Out
               </MenuItem>
               <MenuItem eventKey="11" href="/logout">
                 Sign Out

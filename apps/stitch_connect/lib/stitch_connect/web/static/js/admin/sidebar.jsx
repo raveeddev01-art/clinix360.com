@@ -127,7 +127,7 @@ class Sidebar extends Component {
               </ListGroupItem>
             )}
             <ListGroupItem href="#" onClick={this.props.presenceStore.lock}>
-              <i className="fa fa-lock" /> Lockout
+              <i className="fa fa-lock" /> Lock Out
             </ListGroupItem>
             <ListGroupItem href="/logout">
               <i className="fa fa-sign-out" /> Sign Out

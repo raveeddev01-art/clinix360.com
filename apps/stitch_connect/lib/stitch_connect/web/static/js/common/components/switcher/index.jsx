@@ -85,7 +85,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Lockout</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Lock&nbsp;Out</Tooltip>}
             >
               <i className="fa fa-lock" />
             </OverlayTrigger>
