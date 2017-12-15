@@ -36,7 +36,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tactiveooltip-info">Home</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Home</Tooltip>}
             >
               <i className="fa fa-home" />
             </OverlayTrigger>
@@ -69,7 +69,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="toactiveoltip-info">Settings</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Settings</Tooltip>}
             >
               <i className="fa fa-cog" />
             </OverlayTrigger>
