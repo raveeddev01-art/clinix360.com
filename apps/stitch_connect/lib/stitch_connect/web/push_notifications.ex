@@ -4,6 +4,8 @@ defmodule StitchConnect.Web.PushNotifications do
   import Ecto.Query
   require Logger
 
+  @apns_topic Application.get_env(:stitch_connect, :apns_topic)
+
   def push_badge_update(msg, exclude_user_ids \\ [])
   def push_badge_update(%Message{type: "system"}, _exclude_user_ids), do: nil
   def push_badge_update(%Message{group_id: group_id}, exclude_user_ids) do
@@ -41,7 +43,7 @@ defmodule StitchConnect.Web.PushNotifications do
   defp push_badge_update_to_ios_devices(badge_value, ios_devices) do
     ios_devices
     |> Enum.map(fn %{token: token} ->
-      %APNS.Notification{device_token: token}
+      %APNS.Notification{device_token: token, topic: @apns_topic}
       |> APNS.Notification.put_badge(badge_value)
     end)
     |> APNS.push(on_response: &handle_response_ios/1)
@@ -88,13 +90,12 @@ defmodule StitchConnect.Web.PushNotifications do
 
   defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
     import APNS.Notification
-    apns_topic = Application.get_env(:stitch_connect, :apns_topic)
 
     ios_devices
     |> Enum.map(fn %{token: token} ->
       grp
       |> new_msg_notification_body(msg)
-      |> new(token, apns_topic)
+      |> new(token, @apns_topic)
       |> put_badge(badge_value)
       |> put_sound("chime")
       |> put_custom(%{ejson: new_msg_notification_custom_data(msg)})
