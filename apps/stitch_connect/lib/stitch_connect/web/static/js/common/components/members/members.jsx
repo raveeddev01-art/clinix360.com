@@ -27,10 +27,12 @@ class Members extends Component {
   getOptions = () => {
     const { usersStore: { activatedUsers }, presenceStore } = this.props;
 
-    return activatedUsers.map(user => ({
-      ...user,
-      online: presenceStore.isOnline(user.id)
-    }));
+    return activatedUsers
+      .filter(user => user.id !== currentUser.id)
+      .map(user => ({
+        ...user,
+        online: presenceStore.isOnline(user.id)
+      }));
   };
 
   render() {
