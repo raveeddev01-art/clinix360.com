@@ -52,6 +52,13 @@ defmodule Stitch.MessageReadingTest do
       assert group_user_bob.last_read_at != nil
       assert last_read_at_before != group_user_bob.last_read_at
     end
+
+    test "when the user isn't part of the group", %{team: team, group: group} do
+      sam = insert(:user, team: team)
+
+      {:error, reason} = Message.mark_as_read(sam.id, group.id)
+      assert reason == "User is not part of this room"
+    end
   end
 
   describe "&Message.create/3" do
@@ -76,8 +83,8 @@ defmodule Stitch.MessageReadingTest do
     eve = insert(:user, username: "eve", team: team)
     group = insert(:group, slug: "general", team: team)
     _group_user_bob = insert(:group_user, user: bob, group: group)
-    _group_users_alice = insert(:group_user, user: alice, group: group)
+    _group_user_alice = insert(:group_user, user: alice, group: group)
     _group_user_eve = insert(:group_user, user: eve, group: group)
-    {:ok, bob: bob, alice: alice, eve: eve, group: group}
+    {:ok, team: team, bob: bob, alice: alice, eve: eve, group: group}
   end
 end

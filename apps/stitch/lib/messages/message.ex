@@ -308,10 +308,14 @@ defmodule Stitch.Message do
   end
 
   def mark_as_read(user_id, group_id) do
-    Multi.new
-    |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [], [returning: true])
-    |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [], [returning: true])
-    |> Repo.transaction
+    if GroupQueries.user_is_member?(group_id, user_id) do
+      Multi.new
+      |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [], [returning: true])
+      |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [], [returning: true])
+      |> Repo.transaction
+    else
+      {:error, "User is not part of this room"}
+    end
   end
 
   defp mark_messages_as_read(group_id, user_id) do

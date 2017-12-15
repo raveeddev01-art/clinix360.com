@@ -100,6 +100,16 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
     assert length(updated_messages) == 3
   end
 
+  test "mark_as_read replies with an error when user is not part of the group",
+      %{team: team, socket1: socket1} do
+    group = insert(:group, team: team)
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+
+    ref = push socket1, "mark_as_read", %{"group_id": group.id}
+
+    assert_reply ref, :error, %{message: "User is not part of this room"}
+  end
+
   defp create_messages(%{socket1: socket1, group: group}) do
     {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
