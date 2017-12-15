@@ -8,6 +8,13 @@ import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 
 export default class Jobs extends Component {
+  componentWillMount() {
+    const script = document.createElement("script");
+    script.src = "https://boards.greenhouse.io/embed/job_board/js?for=stitch";
+    script.async = true;
+    document.body.appendChild(script);
+  }
+
   render() {
     return (
       <div>
