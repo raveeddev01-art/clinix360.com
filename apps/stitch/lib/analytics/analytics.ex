@@ -156,6 +156,7 @@ defmodule Stitch.Analytics do
   def track(event, properties) do
     payload = %{
       type: "track",
+      anonymousId: UUID.uuid4(), # segment expects camelCase (anonymousId)
       event: event,
       properties: properties,
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601()
