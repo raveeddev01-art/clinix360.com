@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 import Header from "../components/header";
+import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-import CreateTeamForm from "../components/create-team";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
@@ -26,27 +26,27 @@ export default class CaseUCSF extends Component {
 
           <div className="overview text-center">
             <div className="container">
-              <Row>
-                <Col sm={3}>
+              <div className="flex-box">
+                <div className="flex-item">
                   <h4 className="text-uppercase">Specialty</h4>
                   <p className="m-b-0">Behavioral Health</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Employees</h4>
                   <p className="m-b-0">10 Staff</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Patients</h4>
                   <p className="m-b-0">400 visits</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Location</h4>
                   <p className="m-b-0">San Francisco</p>
-                </Col>
-              </Row>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -54,7 +54,6 @@ export default class CaseUCSF extends Component {
             <div className="case-study-content">
               <h3 className="text-center">
                 UCSF Citywide implements Stitch to unite team communication
-                <br />
                 across the city and improve client care
               </h3>
 
@@ -244,18 +243,9 @@ export default class CaseUCSF extends Component {
               </p>
             </div>
           </div>
-
-          <div className="sign-up-section">
-            <div className="container">
-              <Row>
-                <Col sm={8} smOffset={2}>
-                  <h3 className="text-center m-b-30">Ready to start?</h3>
-                  <CreateTeamForm />
-                </Col>
-              </Row>
-            </div>
-          </div>
         </div>
+
+        <GetStarted />
         <Footer />
       </div>
     );

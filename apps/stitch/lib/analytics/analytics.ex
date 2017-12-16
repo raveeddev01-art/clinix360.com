@@ -150,6 +150,19 @@ defmodule Stitch.Analytics do
     create_event(%{payload: payload})
   end
 
+  @spec track(String.t, map) ::
+  {:ok, Event.t} | {:error, Ecto.Changeset.t}
+  @impl Stitch.Analytics.Behaviour
+  def track(event, properties) do
+    payload = %{
+      type: "track",
+      event: event,
+      properties: properties,
+      timestamp: DateTime.utc_now() |> DateTime.to_iso8601()
+    }
+    create_event(%{payload: payload})
+  end
+
   defp create_event(params) do
     params
     |> Event.new()

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import { Link } from "react-router-dom";
 
 export default class Footer extends Component {
   render() {
@@ -35,13 +35,7 @@ export default class Footer extends Component {
                   <Link to="/downloads">Downloads</Link>
                 </li>
                 <li>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="https://calendly.com/teamstitch/demo"
-                  >
-                    Demo
-                  </a>
+                  <Link to="/demo">Demo</Link>
                 </li>
                 <li>
                   <a
@@ -49,7 +43,7 @@ export default class Footer extends Component {
                     rel="noopener noreferrer"
                     href="https://intercom.help/teamstitch"
                   >
-                    Support
+                    Help Center
                   </a>
                 </li>
               </ul>

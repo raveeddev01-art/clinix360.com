@@ -4,8 +4,11 @@
   flex-direction: column;
   justify-content: space-between;
 
-  #header {
-    padding: 10px 0;
+  #header .btn-trial a {
+    color: #fff;
+    text-transform: capitalize;
+    background: transparent;
+    box-shadow: inset 0 0 0 2px #fff;
   }
 
   &.on-electron {
@@ -23,8 +26,11 @@
   flex-direction: column;
   justify-content: space-between;
 
-  #header {
-    padding: 10px 0;
+  #header .btn-trial a {
+    color: #fff;
+    text-transform: capitalize;
+    background: transparent;
+    box-shadow: inset 0 0 0 2px #fff;
   }
 
   &.on-electron {
@@ -38,10 +44,11 @@
 
 .authentication-wrapper {
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 50px 15px;
+  padding: 120px 15px;
 
   > div {
     max-width: 440px;

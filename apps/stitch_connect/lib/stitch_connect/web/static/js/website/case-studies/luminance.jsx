@@ -1,13 +1,8 @@
 import React, { Component } from "react";
 
 import Header from "../components/header";
+import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-import CreateTeamForm from "../components/create-team";
-
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
-import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
-import Panel from "react-bootstrap/lib/Panel";
 
 export default class CaseLuminance extends Component {
   render() {
@@ -26,27 +21,27 @@ export default class CaseLuminance extends Component {
 
           <div className="overview text-center">
             <div className="container">
-              <Row>
-                <Col sm={3}>
+              <div className="flex-box">
+                <div className="flex-item">
                   <h4 className="text-uppercase">Specialty</h4>
                   <p className="m-b-0">Addiction Treatment</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Employees</h4>
                   <p className="m-b-0">120 Staff</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Patients</h4>
                   <p className="m-b-0">400 Clients</p>
-                </Col>
+                </div>
 
-                <Col sm={3}>
+                <div className="flex-item">
                   <h4 className="text-uppercase">Location</h4>
                   <p className="m-b-0">California</p>
-                </Col>
-              </Row>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -54,7 +49,7 @@ export default class CaseLuminance extends Component {
             <div className="case-study-content">
               <h3 className="text-center">
                 Luminance Recovery uses Stitch to improve critical
-                communications and <br />decrease program drop-out rate by 70%
+                communications and decrease program drop-out rate by 70%
               </h3>
 
               <hr />
@@ -427,18 +422,9 @@ export default class CaseLuminance extends Component {
               </p>
             </div>
           </div>
-
-          <div className="sign-up-section">
-            <div className="container">
-              <Row>
-                <Col sm={8} smOffset={2}>
-                  <h3 className="text-center m-b-30">Ready to start?</h3>
-                  <CreateTeamForm />
-                </Col>
-              </Row>
-            </div>
-          </div>
         </div>
+
+        <GetStarted />
         <Footer />
       </div>
     );
