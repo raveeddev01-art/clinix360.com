@@ -207,9 +207,9 @@ export default class Homepage extends Component {
             >
               <Carousel.Item>
                 <h4 className="quote">
-                  I couldn’t imagine running my operations without Stitch. It
+                  "I couldn’t imagine running my operations without Stitch. It
                   really does save lives, it improves the client experience, and
-                  I think every treatment center should be using the tool.
+                  I think every treatment center should be using the tool."
                 </h4>
 
                 <img
@@ -218,60 +218,64 @@ export default class Homepage extends Component {
                   className="m-b-10"
                 />
 
-                <div className="person text-uppercase">
-                  Michael Krause, Chief Revenue Office
+                <div className="person">
+                  <strong>Michael Krause</strong>
+                  <div>Chief Revenue Office</div>
                 </div>
               </Carousel.Item>
 
               <Carousel.Item>
                 <h4 className="quote">
-                  Being able to provide real-time responses leads to a huge
-                  increase in the quality of patient care.
+                  "Being able to provide real-time responses leads to a huge
+                  increase in the quality of patient care."
                 </h4>
 
                 <img
                   src="/images/customer-pbsc.png"
-                  alt="Luminance"
+                  alt="PBSC"
                   className="m-b-10"
                 />
 
-                <div className="person text-uppercase">
-                  Lyndsey Caliendo, Director of Operations
+                <div className="person">
+                  <strong>Lyndsey Caliendo</strong>
+                  <div>Director of Operations at PBSI</div>
                 </div>
               </Carousel.Item>
 
               <Carousel.Item>
                 <h4 className="quote">
-                  The interface on Stitch is very intuitive. It wasn’t something
-                  that we had to dedicate any training to because people already
-                  knew how to use it out of the box.
+                  "The interface on Stitch is very intuitive. It wasn’t
+                  something that we had to dedicate any training to because
+                  people already knew how to use it out of the box."
                 </h4>
 
                 <img
                   src="/images/customer-dssi.png"
-                  alt="Luminance"
+                  alt="DSSI"
                   className="m-b-10"
                 />
 
-                <div className="person text-uppercase">
-                  Brent Spencer, Owner
+                <div className="person">
+                  <strong>Brent Spencer</strong>
+                  <div>Owner at DSSI</div>
                 </div>
               </Carousel.Item>
 
               <Carousel.Item>
                 <h4 className="quote">
-                  I can get all the information I need immediately, right in
-                  Stitch.
+                  "I can get all the information I need immediately, right in
+                  Stitch."
                 </h4>
 
                 <img
                   src="/images/customer-citywide.png"
-                  alt="Luminance"
+                  alt="Citywide"
                   className="m-b-10"
                 />
 
-                <div className="person text-uppercase">
-                  Tara Collins, UCSF Faculty, Department of Psychiatry
+                <div className="person">
+                  <strong>Tara Collins</strong>
+                  <div>Department of Psychiatry at UCSF Faculty</div>
                 </div>
               </Carousel.Item>
             </Carousel>

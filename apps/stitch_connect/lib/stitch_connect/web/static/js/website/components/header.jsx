@@ -104,14 +104,14 @@ class Header extends Component {
                 </MenuItem>
               </LinkContainer>
 
-              <LinkContainer to="/blog">
+              {/* <LinkContainer to="/blog">
                 <MenuItem>
                   <i className="fa fa-book" /> Blog
                   <div className="subtext hidden-sm hidden-lg">
                     To be changed
                   </div>
                 </MenuItem>
-              </LinkContainer>
+              </LinkContainer> */}
             </NavDropdown>
 
             <NavItem href="https://teamstitch.com/signin">Sign In</NavItem>

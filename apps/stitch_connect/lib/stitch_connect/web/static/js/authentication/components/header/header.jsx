@@ -92,10 +92,10 @@ class Header extends Component {
                 </div>
               </MenuItem>
 
-              <MenuItem href={`https://${applicationHost}/blog`}>
+              {/* <MenuItem href={`https://${applicationHost}/blog`}>
                 <i className="fa fa-book" /> Blog
                 <div className="subtext hidden-sm hidden-lg">To be changed</div>
-              </MenuItem>
+              </MenuItem> */}
             </NavDropdown>
 
             <NavItem href="https://teamstitch.com/signin">Sign In</NavItem>
