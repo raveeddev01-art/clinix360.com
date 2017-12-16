@@ -746,9 +746,10 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
-    if (this.group.id === this.loadedGroupId) {
-      return; // just ignore data coming if it's rejoined on same channel. It happened just for reconnecting socket.
-    }
+    // commenting out below for now until phoenix socket is reviewed by Chris
+    // if (this.group.id === this.loadedGroupId) {
+    //   return; // just ignore data coming if it's rejoined on same channel. It happened just for reconnecting socket.
+    // }
 
     this.messages = data.messages;
 
