@@ -188,7 +188,7 @@ $admin-topbar-height-sm: 65px;
       }
 
       a {
-        color: #606060;
+        color: $brand-primary;
 
         i {
           font-size: 24px;
@@ -215,7 +215,7 @@ $admin-topbar-height-sm: 65px;
       h4 {
         flex-grow: 1;
         margin-left: 14px;
-        color: #303030;
+        color: $brand-primary;
       }
 
       ul.nav {
