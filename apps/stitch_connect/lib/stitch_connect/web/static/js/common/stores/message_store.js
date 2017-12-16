@@ -43,6 +43,7 @@ class MessageStore {
   mountedTargetMessageDisposer = null; // Disposer of when() monitor that waits until target messages is mounted
 
   readStatusCache = {}; // cache to store read status for when readstatus broadcast arrives before new_msg
+  loadedGroupId = null; // indicates joined group id. populated after onJoinedGroup is run. It's to prevent onJoinedGroup happen again by rejoining internally in pheonix_socket.js
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -745,11 +746,17 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
+    if (this.group.id === this.loadedGroupId) {
+      return; // just ignore data coming if it's rejoined on same channel. It happened just for reconnecting socket.
+    }
+
     this.messages = data.messages;
 
     if (data.messages.length < 30) {
       this.loadedAll = true;
     }
+
+    this.loadedGroupId = this.group.id;
 
     when(() => this.mountedAllMessages, this.handleInitialLoading);
   };
@@ -836,7 +843,8 @@ class MessageStore {
       // update message if it's temporary
       this.updateMessageData(newMessage.request_id, {
         ...newMessage,
-        read_status: { // set read status with cached status
+        read_status: {
+          // set read status with cached status
           ...newMessage.read_status,
           ...this.readStatusCache[newMessage.id]
         },
@@ -987,8 +995,12 @@ class MessageStore {
         Object.assign(message.read_status, payload.messages[message_id]);
       } else {
         // cache read status because this event was broadcasted before new_msg due to network slowness
-        this.readStatusCache[message_id] = this.readStatusCache[message_id] || {};
-        Object.assign(this.readStatusCache[message_id], payload.messages[message_id]);
+        this.readStatusCache[message_id] =
+          this.readStatusCache[message_id] || {};
+        Object.assign(
+          this.readStatusCache[message_id],
+          payload.messages[message_id]
+        );
       }
     });
   };
