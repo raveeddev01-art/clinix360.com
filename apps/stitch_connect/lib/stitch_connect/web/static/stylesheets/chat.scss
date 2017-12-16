@@ -13,7 +13,7 @@
         display: flex;
         align-items: center;
         font-weight: 900;
-        color: rgb(48, 48, 48);
+        color: $brand-primary;
 
         > span {
           width: calc(100% - 450px);
@@ -48,7 +48,7 @@
         position: relative;
 
         i.fa {
-          color: rgb(96, 96, 96);
+          color: $brand-primary;
           font-size: 18px;
           line-height: 36px;
           position: absolute;
@@ -69,9 +69,28 @@
           width: 310px;
           background: #fff;
           box-shadow: none;
-          border: 1px solid $border-color;
+          border: 1px solid $brand-primary;
           padding-left: 38px;
           padding-right: 34px;
+          color: $brand-primary;
+
+          &::-webkit-input-placeholder {
+            /* Chrome/Opera/Safari */
+            color: $brand-primary;
+          }
+          &::-moz-placeholder {
+            /* Firefox 19+ */
+            color: $brand-primary;
+          }
+          &:-ms-input-placeholder {
+            /* IE 10+ */
+            color: $brand-primary;
+          }
+          &:-moz-placeholder {
+            /* Firefox 18- */
+            color: $brand-primary;
+          }
+
           @media (max-width: 991px) {
             width: 260px;
           }
@@ -79,7 +98,7 @@
       }
 
       .btn-default {
-        color: rgb(96, 96, 96);
+        color: $brand-primary;
         font-size: 21px;
         background: transparent;
         border: 0;
@@ -107,18 +126,6 @@
               outline: none;
             }
           }
-        }
-
-        &:before {
-          content: "";
-          position: absolute;
-          right: 16px;
-          top: -11px;
-          width: 0;
-          height: 0;
-          border: 11px solid transparent;
-          border-bottom-color: #fff;
-          border-top-width: 0;
         }
       }
 
