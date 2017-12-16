@@ -21,6 +21,7 @@ export default class Engage extends Component {
               <Button
                 bsSize="lg"
                 bsStyle="primary"
+                target="_blank"
                 href="https://teamstitch.typeform.com/to/Ncn8x8"
               >
                 Request Access
@@ -69,7 +70,7 @@ export default class Engage extends Component {
                 <img
                   src="/images/engage-feature-2.png"
                   alt="Stitch Engage"
-                  className="img-responsive"
+                  className="img-responsive engage-feature-image-2"
                 />
               </div>
 

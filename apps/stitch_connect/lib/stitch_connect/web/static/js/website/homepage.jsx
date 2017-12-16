@@ -39,7 +39,8 @@ export default class Homepage extends Component {
               <div className="flex-item">
                 <h1>Collaboration tools for healthcare teams</h1>
                 <h3 className="m-b-30">
-                  Communicate, write notes, track tasks, upload files, and<br />
+                  Communicate, write notes, track tasks, upload files, and{" "}
+                  <br className="hidden-xs" />
                   collaborate on any device.
                 </h3>
 
@@ -220,7 +221,7 @@ export default class Homepage extends Component {
 
                 <div className="person">
                   <strong>Michael Krause</strong>
-                  <div>Chief Revenue Office</div>
+                  <div>Chief Revenue Officer at Luminance Recovery</div>
                 </div>
               </Carousel.Item>
 
@@ -238,7 +239,7 @@ export default class Homepage extends Component {
 
                 <div className="person">
                   <strong>Lyndsey Caliendo</strong>
-                  <div>Director of Operations at PBSI</div>
+                  <div>Director of Operations at Princeton Brain & Spine</div>
                 </div>
               </Carousel.Item>
 
@@ -257,7 +258,7 @@ export default class Homepage extends Component {
 
                 <div className="person">
                   <strong>Brent Spencer</strong>
-                  <div>Owner at DSSI</div>
+                  <div>Owner at Dermatology & Skin Surgery Institute</div>
                 </div>
               </Carousel.Item>
 
@@ -275,7 +276,7 @@ export default class Homepage extends Component {
 
                 <div className="person">
                   <strong>Tara Collins</strong>
-                  <div>Department of Psychiatry at UCSF Faculty</div>
+                  <div>Assistant Professor at UCSF School of Medicine</div>
                 </div>
               </Carousel.Item>
             </Carousel>

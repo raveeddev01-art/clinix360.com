@@ -11,6 +11,14 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import Button from "react-bootstrap/lib/Button";
 
 class Header extends Component {
+  goToSignIn() {
+    window.location.href = "https://teamstitch.com/signin";
+  }
+
+  goToStartTrial() {
+    window.location.href = "https://teamstitch.com/signup/email";
+  }
+
   render() {
     const logoLink = !window.electronApp ? `https://${applicationHost}` : "#";
 
@@ -46,7 +54,7 @@ class Header extends Component {
                   <div className="product-icon">
                     <img src="/images/engage-menu.png" alt="" />
                   </div>
-                  Engage <div className="subtext">Patient Management</div>
+                  Engage <div className="subtext">Patient Engagement</div>
                 </MenuItem>
               </LinkContainer>
 
@@ -55,7 +63,7 @@ class Header extends Component {
                   <div className="product-icon">
                     <img src="/images/manage-menu.png" alt="" />
                   </div>
-                  Manage <div className="subtext">Patient Communication</div>
+                  Manage <div className="subtext">Patient Management</div>
                 </MenuItem>
               </LinkContainer>
             </NavDropdown>
@@ -114,12 +122,9 @@ class Header extends Component {
               </LinkContainer> */}
             </NavDropdown>
 
-            <NavItem href="https://teamstitch.com/signin">Sign In</NavItem>
+            <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
-            <NavItem
-              href="https://teamstitch.com/signup/email"
-              className="btn-trial"
-            >
+            <NavItem onClick={this.goToStartTrial} className="btn-trial">
               Start a trial
             </NavItem>
           </Nav>

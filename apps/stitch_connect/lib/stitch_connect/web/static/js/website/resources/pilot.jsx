@@ -19,7 +19,7 @@ export default class Pilot extends Component {
           <div className="container">
             <div className="landing-message text-center">
               <h1>Pilot Program</h1>
-              <h3>Structured pilot programs for healthcare enterprises</h3>
+              <h3>Structured pilot programs for healthcare enterprises.</h3>
             </div>
           </div>
         </div>

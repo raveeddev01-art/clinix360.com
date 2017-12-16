@@ -21,6 +21,7 @@ export default class Manage extends Component {
               <Button
                 bsSize="lg"
                 bsStyle="primary"
+                target="_blank"
                 href="https://teamstitch.typeform.com/to/Yt22AI"
               >
                 Request Access

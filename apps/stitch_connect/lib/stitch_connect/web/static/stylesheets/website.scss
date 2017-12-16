@@ -74,11 +74,12 @@
     color: #fff;
     background: #003366;
     background-position: top center;
-    padding: 120px 0;
+    padding: 100px 0 80px;
     position: relative;
     @media (min-width: 768px) {
       background: #003366 url('/images/bubbles.svg') top center;
       background-size: cover;
+      padding: 120px 0;
     }
 
     .flex-box {
@@ -95,7 +96,7 @@
     }
 
     .btn {
-      margin-right: 15px;
+      margin: 0 10px;
     }
   }
 
@@ -399,8 +400,12 @@
   }
 
   @media (max-width: 992px) {
-    .demo-page .subheader .flex-box {
-      flex-direction: column;
+    .demo-page .subheader {
+      padding-bottom: 50px;
+
+      .flex-box {
+        flex-direction: column;
+      }
     }
   }
 
@@ -414,6 +419,12 @@
 
     &.alt {
       background: #f0f1f3;
+    }
+  }
+
+  @media (min-width: 992px) {
+    .engage-feature-image-2 {
+      max-height: 326px;
     }
   }
 
@@ -644,6 +655,18 @@
     }
   }
 
+  @media (min-width: 768px) and (max-width: 992px) {
+    .pilot-section .panel {
+      min-height: 321px;
+    }
+  }
+
+  @media (min-width: 992px) and (max-width: 1200px) {
+    .pilot-section .panel {
+      min-height: 259px;
+    }
+  }
+
   //----------------- JOBS -----------------
   #grnhse_app {
     flex-grow: 1;
@@ -669,6 +692,14 @@
 
     .luminance-card .flex-item:nth-child(2) {
       width: 100%;
+    }
+
+    .our-customers {
+      padding: 30px 0;
+
+      .logo-row {
+        margin-bottom: 0;
+      }
     }
 
     .customer-studies .panel-body {
@@ -781,6 +812,7 @@
 
     .btn-default {
       color: #0667D0;
+      background: #fff;
       box-shadow: inset 0 0 0 1px #0667D0;
     }
   }
@@ -799,7 +831,7 @@
     }
   }
 
-  @media (max-width: 457px) {
+  @media (max-width: 476px) {
     .get-started h2 span {
       display: none;
     }
@@ -924,6 +956,20 @@
           position: absolute;
           left: 0;
           top: 0;
+        }
+      }
+    }
+
+    #resources-dropdown + .dropdown-menu {
+      min-width: 160px;
+
+      a {
+        padding: 5px 12px 5px 8px;
+
+        i.fa {
+          width: 16px;
+          text-align: center;
+          margin-right: 4px;
         }
       }
     }
