@@ -39,12 +39,12 @@ export default class Demo extends Component {
   handleSubmit = event => {
     event.preventDefault();
     const { fullName, email, phoneNumber, companyName } = this.state;
-    alert(fullName + " | " + email + " | " + phoneNumber + " | " + companyName);
 
-    // post("/api/v1/request-demo", {
-    //   body: { firstName, lastName, email, phoneNumber, companyName }
-    // }).then(() => {
-    // });
+    post("/api/v1/request-demo", {
+      body: { fullName, email, phoneNumber, companyName }
+    }).then(response => {
+      alert("Your request for a demo has been saved.");
+    });
   };
 
   renderCustomers() {

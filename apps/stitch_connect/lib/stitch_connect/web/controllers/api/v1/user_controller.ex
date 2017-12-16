@@ -172,6 +172,18 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
+  def request_demo(conn, %{"fullName" => full_name, "email" => email, "phoneNumber" => phone_number, "companyName" => company}) do
+    properties = %{
+      "full_name"     => full_name,
+      "email"         => email,
+      "phone_number"  => phone_number,
+      "company"       => company,
+    }
+
+    Stitch.Analytics.track("Requested Demo", properties)
+    json(conn, %{status: "ok"})
+  end
+
   def upload_profile_image(conn, %{"url" => url}) do
     case Stitch.Accounts.update_profile_image(conn.assigns.current_user, url) do
       {:ok, user} ->
