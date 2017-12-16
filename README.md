@@ -52,6 +52,9 @@ export STRIPE_PUBLISHABLE_KEY=
 
 export TWILIO_ACCOUNT_SID=
 export TWILIO_AUTH_TOKEN=
+
+export INTERCOM_IDENTITY_VERIFICATION_SECRET=
+export INTERCOM_APP_ID=
 ```
 
 Source the file to add these environment variables to your current shell

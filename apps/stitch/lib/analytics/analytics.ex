@@ -89,7 +89,14 @@ defmodule Stitch.Analytics do
       type: "identify",
       userId: ensure_binary(user_id), # segment expects camelCase (userId)
       traits: traits,
-      timestamp: DateTime.utc_now() |> DateTime.to_iso8601()
+      timestamp: DateTime.utc_now() |> DateTime.to_iso8601(),
+      integrations: %{
+        # Necessary for identity verification on Intercom.
+        "Intercom" => %{
+          "user_id"    => "#{user_id}",
+          "user_hash"  => Stitch.Intercom.identity_verification_user_hash(user_id)
+        }
+      }
     }
     create_event(%{payload: payload})
   end
