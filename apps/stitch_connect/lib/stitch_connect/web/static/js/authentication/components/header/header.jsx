@@ -74,7 +74,7 @@ class Header extends Component {
               </MenuItem>
 
               <MenuItem href="https://intercom.help/teamstitch">
-                <i className="fa fa-life-ring" /> Support
+                <i className="fa fa-life-ring" /> Help Center
                 <div className="subtext hidden-sm hidden-lg">
                   Everything you need to be a Stitch power user
                 </div>

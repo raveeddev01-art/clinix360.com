@@ -42,7 +42,7 @@ export default class Footer extends Component {
                     rel="noopener noreferrer"
                     href="https://intercom.help/teamstitch"
                   >
-                    Support
+                    Help Center
                   </a>
                 </li>
               </ul>
