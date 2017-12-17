@@ -39,9 +39,8 @@ export default class Homepage extends Component {
               <div className="flex-item">
                 <h1>Collaboration tools for healthcare teams</h1>
                 <h3 className="m-b-30">
-                  Communicate, write notes, track tasks, upload files, and{" "}
-                  <br className="hidden-xs" />
-                  collaborate on any device.
+                  Communicate, write notes, track tasks and upload files on any
+                  device.
                 </h3>
 
                 <div className="m-b-50">
@@ -74,7 +73,7 @@ export default class Homepage extends Component {
 
         <div className="our-customers text-center">
           <div className="container">
-            <h3 className="text-uppercase">Trusted by top healthcare teams</h3>
+            <h4 className="text-uppercase">Trusted by top healthcare teams</h4>
             <div className="customer-logos">
               <div className="row logo-row">{this.renderCustomers()}</div>
             </div>
