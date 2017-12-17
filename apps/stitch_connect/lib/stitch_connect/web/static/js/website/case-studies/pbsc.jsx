@@ -4,6 +4,9 @@ import Header from "../components/header";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
 
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
+
 export default class CasePBSC extends Component {
   render() {
     return (
@@ -21,27 +24,27 @@ export default class CasePBSC extends Component {
 
           <div className="overview text-center">
             <div className="container">
-              <div className="flex-box">
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Specialty</h4>
-                  <p className="m-b-0">Neurosurgical</p>
-                </div>
+              <Row>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Specialty</h5>
+                  <p>Neurosurgical</p>
+                </Col>
 
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Employees</h4>
-                  <p className="m-b-0">60 Staff</p>
-                </div>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Employees</h5>
+                  <p>60 Staff</p>
+                </Col>
 
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Patients</h4>
-                  <p className="m-b-0">5,500 visits</p>
-                </div>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Patients</h5>
+                  <p>5,500 visits</p>
+                </Col>
 
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Location</h4>
-                  <p className="m-b-0">NJ & PA</p>
-                </div>
-              </div>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Location</h5>
+                  <p>NJ & PA</p>
+                </Col>
+              </Row>
             </div>
           </div>
 

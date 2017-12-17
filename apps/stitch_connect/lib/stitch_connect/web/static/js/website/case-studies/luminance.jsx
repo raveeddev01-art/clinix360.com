@@ -4,6 +4,9 @@ import Header from "../components/header";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
 
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
+
 export default class CaseLuminance extends Component {
   render() {
     return (
@@ -21,27 +24,27 @@ export default class CaseLuminance extends Component {
 
           <div className="overview text-center">
             <div className="container">
-              <div className="flex-box">
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Specialty</h4>
-                  <p className="m-b-0">Addiction Treatment</p>
-                </div>
+              <Row>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Specialty</h5>
+                  <p>Addiction Treatment</p>
+                </Col>
 
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Employees</h4>
-                  <p className="m-b-0">120 Staff</p>
-                </div>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Employees</h5>
+                  <p>120 Staff</p>
+                </Col>
 
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Patients</h4>
-                  <p className="m-b-0">400 Clients</p>
-                </div>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Patients</h5>
+                  <p>400 Clients</p>
+                </Col>
 
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Location</h4>
-                  <p className="m-b-0">California</p>
-                </div>
-              </div>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Location</h5>
+                  <p>California</p>
+                </Col>
+              </Row>
             </div>
           </div>
 

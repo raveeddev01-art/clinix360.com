@@ -1116,13 +1116,13 @@
 
   .overview {
     background: #fff;
-    padding: 20px 0;
+    padding: 25px 0 0;
 
     .flex-item {
       padding: 10px 15px;
     }
 
-    h4 {
+    h5 {
       max-width: 200px;
       font-weight: 700;
       background: #e8ecef;
@@ -1133,6 +1133,8 @@
 
     p {
       font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 20px;
     }
   }
 
