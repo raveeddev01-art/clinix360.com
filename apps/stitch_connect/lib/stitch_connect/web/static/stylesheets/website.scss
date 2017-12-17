@@ -365,6 +365,14 @@
 
   //----------------- DEMO -----------------
   .demo-page {
+    flex-grow: 1;
+
+    .subheader {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+    }
+
     .demo-form {
       color: #333;
 

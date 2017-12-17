@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
+import { animateScroll as scroll } from "react-scroll";
 import cx from "classnames";
 
 import Header from "../components/header";
@@ -17,13 +19,19 @@ import Button from "react-bootstrap/lib/Button";
 export default class Demo extends Component {
   constructor(props) {
     super(props);
+    this.scrollToTop = this.scrollToTop.bind(this);
 
     this.state = {
       fullName: "",
       email: "",
       phoneNumber: "",
-      companyName: ""
+      companyName: "",
+      formSubmitted: false
     };
+  }
+
+  scrollToTop() {
+    scroll.scrollToTop();
   }
 
   handleChange = event => {
@@ -43,9 +51,116 @@ export default class Demo extends Component {
     post("/api/v1/request-demo", {
       body: { fullName, email, phoneNumber, companyName }
     }).then(response => {
-      alert("Your request for a demo has been saved.");
+      this.setState({ formSubmitted: true });
+      scroll.scrollToTop();
     });
   };
+
+  demoRequest() {
+    return !this.state.formSubmitted ? (
+      <div className="flex-box">
+        <div className="flex-item text-center">
+          <h1>Request a Demo</h1>
+          <h3 className="m-b-40">
+            Enable your team to seamlessly work together.{" "}
+            <br className="hidden-xs" />Learn how Stitch works today.
+          </h3>
+          <img
+            src="/images/homepage-mbp.png"
+            alt="Stitch Platform"
+            className="img-responsive hidden-xs hidden-sm"
+          />
+        </div>
+
+        <div className="flex-item">
+          <Panel className="demo-form m-b-0">
+            <h4 className="text-center m-b-20">
+              Tell us a little about yourself, and we’ll be in touch right away.
+            </h4>
+
+            <form onSubmit={this.handleSubmit}>
+              <FormGroup bsSize="large">
+                <ControlLabel>
+                  Full Name <span>*</span>
+                </ControlLabel>
+                <FormControl
+                  name="fullName"
+                  required
+                  autoFocus
+                  placeholder="Full Name"
+                  type="text"
+                  value={this.state.fullName}
+                  onChange={this.handleChange}
+                />
+              </FormGroup>
+
+              <FormGroup bsSize="large">
+                <ControlLabel>
+                  Email Address <span>*</span>
+                </ControlLabel>
+                <FormControl
+                  name="email"
+                  required
+                  placeholder="hello@stitchhealth.com"
+                  type="email"
+                  value={this.state.email}
+                  onChange={this.handleChange}
+                />
+              </FormGroup>
+
+              <FormGroup bsSize="large">
+                <ControlLabel>
+                  Phone Number <span>*</span>
+                </ControlLabel>
+                <FormControl
+                  name="phoneNumber"
+                  required
+                  placeholder="Phone Number"
+                  type="text"
+                  value={this.state.phoneNumber}
+                  onChange={this.handleChange}
+                />
+              </FormGroup>
+
+              <FormGroup bsSize="large" className="m-b-30">
+                <ControlLabel>
+                  Company Name <span>*</span>
+                </ControlLabel>
+                <FormControl
+                  name="companyName"
+                  required
+                  placeholder="Company Inc"
+                  type="text"
+                  value={this.state.companyName}
+                  onChange={this.handleChange}
+                />
+              </FormGroup>
+
+              <Button type="submit" bsSize="lg" bsStyle="primary" block>
+                Request a demo
+              </Button>
+            </form>
+          </Panel>
+        </div>
+      </div>
+    ) : (
+      <div className="text-center">
+        <h1>Demo Request Confirmed!</h1>
+        <h3 className="m-b-40">
+          We received your request and will reach out momentarily.{" "}
+          <br className="hidden-xs" />
+          In the meantime, see how our customers are improving patient care on
+          Stitch.
+        </h3>
+
+        <LinkContainer to="/customers">
+          <Button bsSize="lg" bsStyle="primary">
+            View Stories
+          </Button>
+        </LinkContainer>
+      </div>
+    );
+  }
 
   renderCustomers() {
     return CUSTOMERS.map((c, index) => {
@@ -66,94 +181,7 @@ export default class Demo extends Component {
         <Header />
 
         <div className="subheader ">
-          <div className="container">
-            <div className="flex-box">
-              <div className="flex-item text-center">
-                <h1>Request a Demo</h1>
-                <h3 className="m-b-40">
-                  Enable your team to seamlessly work together.{" "}
-                  <br className="hidden-xs" />Learn how Stitch works today.
-                </h3>
-                <img
-                  src="/images/homepage-mbp.png"
-                  alt="Stitch Platform"
-                  className="img-responsive hidden-xs hidden-sm"
-                />
-              </div>
-
-              <div className="flex-item">
-                <Panel className="demo-form m-b-0">
-                  <h4 className="text-center m-b-20">
-                    Tell us a little about yourself, and we’ll be in touch right
-                    away.
-                  </h4>
-
-                  <form onSubmit={this.handleSubmit}>
-                    <FormGroup bsSize="large">
-                      <ControlLabel>
-                        Full Name <span>*</span>
-                      </ControlLabel>
-                      <FormControl
-                        name="fullName"
-                        required
-                        autoFocus
-                        placeholder="Full Name"
-                        type="text"
-                        value={this.state.fullName}
-                        onChange={this.handleChange}
-                      />
-                    </FormGroup>
-
-                    <FormGroup bsSize="large">
-                      <ControlLabel>
-                        Email Address <span>*</span>
-                      </ControlLabel>
-                      <FormControl
-                        name="email"
-                        required
-                        placeholder="hello@stitchhealth.com"
-                        type="email"
-                        value={this.state.email}
-                        onChange={this.handleChange}
-                      />
-                    </FormGroup>
-
-                    <FormGroup bsSize="large">
-                      <ControlLabel>
-                        Phone Number <span>*</span>
-                      </ControlLabel>
-                      <FormControl
-                        name="phoneNumber"
-                        required
-                        placeholder="Phone Number"
-                        type="text"
-                        value={this.state.phoneNumber}
-                        onChange={this.handleChange}
-                      />
-                    </FormGroup>
-
-                    <FormGroup bsSize="large" className="m-b-30">
-                      <ControlLabel>
-                        Company Name <span>*</span>
-                      </ControlLabel>
-                      <FormControl
-                        name="companyName"
-                        required
-                        placeholder="Company Inc"
-                        type="text"
-                        value={this.state.companyName}
-                        onChange={this.handleChange}
-                      />
-                    </FormGroup>
-
-                    <Button type="submit" bsSize="lg" bsStyle="primary" block>
-                      Request a demo
-                    </Button>
-                  </form>
-                </Panel>
-              </div>
-            </div>
-          </div>
+          <div className="container">{this.demoRequest()}</div>
         </div>
 
         <div className="our-customers text-center">
