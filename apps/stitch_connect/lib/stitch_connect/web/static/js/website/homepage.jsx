@@ -35,38 +35,32 @@ export default class Homepage extends Component {
 
         <div className="subheader text-center">
           <div className="container">
-            <div className="flex-box">
-              <div className="flex-item">
-                <h1>Collaboration tools for healthcare teams</h1>
-                <h3 className="m-b-30">
-                  Communicate, write notes, track tasks and upload files on any
-                  device.
-                </h3>
+            <h1>Collaboration tools for healthcare teams</h1>
+            <h3 className="m-b-30">
+              Communicate, write notes, track tasks and upload files on any
+              device.
+            </h3>
 
-                <div className="m-b-50">
-                  <LinkContainer to="/demo">
-                    <Button bsSize="lg">Request Demo</Button>
-                  </LinkContainer>
+            <div className="m-b-50">
+              <LinkContainer to="/demo">
+                <Button bsSize="lg">Request Demo</Button>
+              </LinkContainer>
 
-                  <Button
-                    bsSize="lg"
-                    bsStyle="primary"
-                    href={`https://${applicationHost}/signup/email`}
-                  >
-                    Start Trial
-                  </Button>
-                </div>
-              </div>
+              <Button
+                bsSize="lg"
+                bsStyle="primary"
+                href={`https://${applicationHost}/signup/email`}
+              >
+                Start Trial
+              </Button>
+            </div>
 
-              <div className="flex-item">
-                <div className="mbp">
-                  <img
-                    src="/images/homepage-mbp.png"
-                    alt="Stitch Platform"
-                    className="img-responsive"
-                  />
-                </div>
-              </div>
+            <div className="mbp">
+              <img
+                src="/images/homepage-mbp.png"
+                alt="Stitch Platform"
+                className="img-responsive"
+              />
             </div>
           </div>
         </div>
@@ -80,117 +74,133 @@ export default class Homepage extends Component {
           </div>
         </div>
 
-        <section className="feature">
-          <div className="container">
-            <div className="flex-box">
-              <div className="flex-item">
-                <div className="info">
-                  <h2>
-                    <img src="/images/connect-icon.png" alt="Connect" /> Connect
-                  </h2>
-                  <h3>Team Communication</h3>
+        <div className="features-holder">
+          <div className="feature">
+            <div className="container">
+              <div className="flex-box">
+                <div className="flex-item">
+                  <div className="info">
+                    <h2>
+                      <img src="/images/connect-icon.png" alt="Connect" />{" "}
+                      Connect
+                    </h2>
+                    <h3>Team Communication</h3>
 
-                  <p className="m-b-20">
-                    Stitch Connect provides a powerful team communication
-                    experience across all devices. We complement a modern user
-                    experience with advanced security architecture to deliver
-                    the latest in communication technology to the healthcare
-                    world.
-                  </p>
+                    <p className="m-b-20">
+                      Stitch Connect provides a powerful team communication
+                      experience across all devices. We complement a modern user
+                      experience with advanced security architecture to deliver
+                      the latest in communication technology to the healthcare
+                      world.
+                    </p>
 
-                  <LinkContainer to="/connect">
-                    <Button bsStyle="primary" bsSize="large" className="m-b-40">
-                      Learn More
-                    </Button>
-                  </LinkContainer>
+                    <LinkContainer to="/connect">
+                      <Button
+                        bsStyle="primary"
+                        bsSize="large"
+                        className="m-b-40"
+                      >
+                        Learn More
+                      </Button>
+                    </LinkContainer>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex-item">
-                <img
-                  src="/images/connect-feature-1.png"
-                  alt="Stitch Connect"
-                  className="img-responsive"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="feature alt">
-          <div className="container">
-            <div className="flex-box">
-              <div className="flex-item">
-                <img
-                  src="/images/engage-feature-1.png"
-                  alt="Stitch Engage"
-                  className="img-responsive"
-                />
-              </div>
-
-              <div className="flex-item">
-                <div className="info">
-                  <h2>
-                    <img src="/images/engage-icon.png" alt="Connect" /> Engage
-                  </h2>
-                  <h3>Patient Engagement</h3>
-
-                  <p className="m-b-20">
-                    Stitch Engage offers a complete patient engagement solution.
-                    Send messages, share files and start video calls directly
-                    with patients. Relax knowing your patients can easily access
-                    important communications with our intuitively designed app
-                    on any device.
-                  </p>
-
-                  <LinkContainer to="/engage">
-                    <Button bsStyle="primary" bsSize="large" className="m-b-40">
-                      Learn More
-                    </Button>
-                  </LinkContainer>
+                <div className="flex-item">
+                  <img
+                    src="/images/connect-feature-1.png"
+                    alt="Stitch Connect"
+                    className="img-responsive"
+                  />
                 </div>
               </div>
             </div>
           </div>
-        </section>
 
-        <section className="feature">
-          <div className="container">
-            <div className="flex-box">
-              <div className="flex-item">
-                <div className="info">
-                  <h2>
-                    <img src="/images/manage-icon.png" alt="Manage" /> Manage
-                  </h2>
-                  <h3>Patient Management</h3>
-
-                  <p className="m-b-20">
-                    Stitch Manage is the easiest way to collaborate on patients.
-                    Post clinical notes, status updates and key data points to
-                    keep everyone on the same page. Use Manage to track patient
-                    tasks and keep your workflow organized, wherever you are.
-                  </p>
-
-                  <LinkContainer to="/manage">
-                    <Button bsStyle="primary" bsSize="large" className="m-b-40">
-                      Learn More
-                    </Button>
-                  </LinkContainer>
+          <div className="feature alt">
+            <div className="container">
+              <div className="flex-box">
+                <div className="flex-item">
+                  <img
+                    src="/images/engage-feature-1.png"
+                    alt="Stitch Engage"
+                    className="img-responsive"
+                  />
                 </div>
-              </div>
 
-              <div className="flex-item">
-                <img
-                  src="/images/manage-feature-1.png"
-                  alt="Stitch Manage"
-                  className="img-responsive"
-                />
+                <div className="flex-item">
+                  <div className="info">
+                    <h2>
+                      <img src="/images/engage-icon.png" alt="Connect" /> Engage
+                    </h2>
+                    <h3>Patient Engagement</h3>
+
+                    <p className="m-b-20">
+                      Stitch Engage offers a complete patient engagement
+                      solution. Send messages, share files and start video calls
+                      directly with patients. Relax knowing your patients can
+                      easily access important communications with our
+                      intuitively designed app on any device.
+                    </p>
+
+                    <LinkContainer to="/engage">
+                      <Button
+                        bsStyle="primary"
+                        bsSize="large"
+                        className="m-b-40"
+                      >
+                        Learn More
+                      </Button>
+                    </LinkContainer>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
 
-        <section className="customers text-center">
+          <div className="feature">
+            <div className="container">
+              <div className="flex-box">
+                <div className="flex-item">
+                  <div className="info">
+                    <h2>
+                      <img src="/images/manage-icon.png" alt="Manage" /> Manage
+                    </h2>
+                    <h3>Patient Management</h3>
+
+                    <p className="m-b-20">
+                      Stitch Manage is the easiest way to collaborate on
+                      patients. Post clinical notes, status updates and key data
+                      points to keep everyone on the same page. Use Manage to
+                      track patient tasks and keep your workflow organized,
+                      wherever you are.
+                    </p>
+
+                    <LinkContainer to="/manage">
+                      <Button
+                        bsStyle="primary"
+                        bsSize="large"
+                        className="m-b-40"
+                      >
+                        Learn More
+                      </Button>
+                    </LinkContainer>
+                  </div>
+                </div>
+
+                <div className="flex-item">
+                  <img
+                    src="/images/manage-feature-1.png"
+                    alt="Stitch Manage"
+                    className="img-responsive"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="customers text-center">
           <div className="container">
             <h3 className="m-b-30">Here's what our customers are saying</h3>
 
@@ -280,7 +290,7 @@ export default class Homepage extends Component {
               </Carousel.Item>
             </Carousel>
           </div>
-        </section>
+        </div>
 
         <GetStarted />
         <Footer />

@@ -21,6 +21,12 @@ export default class Footer extends Component {
                 <li>
                   <a href={`https://${applicationHost}/manage`}>Manage</a>
                 </li>
+                <li>
+                  <a href={`https://${applicationHost}/downloads`}>Downloads</a>
+                </li>
+                <li>
+                  <a href={`https://${applicationHost}/customers`}>Customers</a>
+                </li>
               </ul>
             </Col>
 
@@ -29,9 +35,6 @@ export default class Footer extends Component {
               <ul className="list-unstyled">
                 <li>
                   <a href={`https://${applicationHost}/pricing`}>Pricing</a>
-                </li>
-                <li>
-                  <a href={`https://${applicationHost}/downloads`}>Downloads</a>
                 </li>
                 <li>
                   <a href={`https://${applicationHost}/demo`}>Demo</a>
@@ -45,15 +48,15 @@ export default class Footer extends Component {
                     Help Center
                   </a>
                 </li>
+                <li>
+                  <a href={`https://${applicationHost}/hipaa`}>HIPAA</a>
+                </li>
               </ul>
             </Col>
 
             <Col xs={6} md={3}>
               <h5>Company</h5>
               <ul className="list-unstyled">
-                <li>
-                  <a href={`https://${applicationHost}/customers`}>Customers</a>
-                </li>
                 <li>
                   <a href={`https://${applicationHost}/privacy-policy`}>
                     Privacy Policy
@@ -63,6 +66,9 @@ export default class Footer extends Component {
                   <a href={`https://${applicationHost}/terms-of-service`}>
                     Terms of Service
                   </a>
+                </li>
+                <li>
+                  <a href={`https://${applicationHost}/baa`}>BAA</a>
                 </li>
               </ul>
             </Col>

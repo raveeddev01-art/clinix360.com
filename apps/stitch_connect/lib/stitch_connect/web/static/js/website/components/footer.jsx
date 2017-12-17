@@ -11,7 +11,7 @@ export default class Footer extends Component {
         <div className="container">
           <Row>
             <Col xs={6} md={3}>
-              <h5>Products</h5>
+              <h5>Stitch Health</h5>
               <ul className="list-unstyled">
                 <li>
                   <Link to="/connect">Connect</Link>
@@ -22,6 +22,12 @@ export default class Footer extends Component {
                 <li>
                   <Link to="/manage">Manage</Link>
                 </li>
+                <li>
+                  <Link to="/downloads">Downloads</Link>
+                </li>
+                <li>
+                  <Link to="/customers">Customers</Link>
+                </li>
               </ul>
             </Col>
 
@@ -31,9 +37,7 @@ export default class Footer extends Component {
                 <li>
                   <Link to="/pricing">Pricing</Link>
                 </li>
-                <li>
-                  <Link to="/downloads">Downloads</Link>
-                </li>
+
                 <li>
                   <Link to="/demo">Demo</Link>
                 </li>
@@ -46,20 +50,23 @@ export default class Footer extends Component {
                     Help Center
                   </a>
                 </li>
+                <li>
+                  <Link to="/hipaa">HIPAA</Link>
+                </li>
               </ul>
             </Col>
 
             <Col xs={6} md={3}>
-              <h5>Company</h5>
+              <h5>Legal</h5>
               <ul className="list-unstyled">
-                <li>
-                  <Link to="/customers">Customers</Link>
-                </li>
                 <li>
                   <Link to="/privacy-policy">Privacy Policy</Link>
                 </li>
                 <li>
                   <Link to="/terms-of-service">Terms of Service</Link>
+                </li>
+                <li>
+                  <Link to="/baa">BAA</Link>
                 </li>
               </ul>
             </Col>
