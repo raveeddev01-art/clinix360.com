@@ -256,7 +256,7 @@ defmodule Stitch.Group do
           |> change(%{is_hidden: true})
           |> Repo.update
 
-        GroupUser.clear_counters(group, user_id)
+        Message.mark_as_read(user_id, group.id)
 
         group_user
     end
