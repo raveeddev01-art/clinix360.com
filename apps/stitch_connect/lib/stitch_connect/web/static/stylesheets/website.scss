@@ -7,13 +7,6 @@
   background: #f0f1f3;
   position: relative;
 
-  > div {
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
-    min-height: 100vh;
-  }
-
   @media (max-width: 768px) {
     .container {
       padding-left: 25px;
@@ -30,11 +23,13 @@
   .flex-box {
     display: flex;
     flex-direction: column;
+    -ms-flex-direction: column;
     margin-right: -15px;
     margin-left: -15px;
 
     .flex-item {
-      flex: 1;
+      width: 100%;
+      flex: 1 0 auto;
       padding-left: 15px;
       padding-right: 15px;
     }
@@ -68,7 +63,15 @@
   h4 { font-size: 17px; }
 
   @media(min-width: 768px) {
-    .flex-box { flex-direction: row; }
+    .flex-box { 
+      flex-direction: row; 
+      -ms-flex-direction: row;
+
+      .flex-item {
+        width: auto;
+        flex: 1;
+      }
+    }
 
     h1 { font-size: 36px; }
     h3 { font-size: 20px; }
@@ -109,10 +112,6 @@
   .homepage .subheader {
     padding: 100px 0 0;
 
-    .flex-box {
-      flex-direction: column;
-    }
-
     .mbp {
       margin: 0 auto -100px;
       position: relative;
@@ -146,6 +145,7 @@
         max-width: 100%;
         margin: 10px 0;
         filter: grayscale(100%);
+        -ms-filter: grayscale(100%);
         opacity: 0.8;
         transition: 300ms;
         @media (min-width: 576px) {
@@ -154,6 +154,7 @@
 
         &:hover {
           filter: grayscale(0);
+          -ms-filter: grayscale(0);
           opacity: 1;
         }
       }
@@ -169,12 +170,22 @@
     }
   }
 
+  .features-holder {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    -ms-flex-direction: column;
+    min-height: 100%;
+    min-height: 100vh;
+  }
+
   .feature {
     background: #f0f1f3;
     padding: 50px 0;
 
     .flex-box { 
-      align-items: center; 
+      align-items: center;
+      -ms-flex-align: center;
     }
 
     .flex-item > img {
@@ -208,6 +219,7 @@
 
     &.alt .flex-box {
       flex-direction: column-reverse;
+      -ms-flex-direction: column-reverse;
     }
   }
 
@@ -355,10 +367,17 @@
   @media (max-width: 992px) {
     .feature .flex-box {
       flex-direction: column;
+      -ms-flex-direction: column;
+      
+      .flex-item {
+        width: 100%;
+        flex: 1 0 auto;
+      }
     }
 
     .feature.alt .flex-box {
       flex-direction: column-reverse;
+      -ms-flex-direction: column-reverse;
     }
   }
 
@@ -382,6 +401,11 @@
   //----------------- DEMO -----------------
   .demo-page {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    -ms-flex-direction: column;
+    min-height: 100%;
+    min-height: 100vh;
 
     .subheader {
       display: flex;
@@ -428,7 +452,9 @@
       padding-bottom: 50px;
 
       .flex-box {
+        display: block;
         flex-direction: column;
+        -ms-flex-direction: column;
       }
     }
   }
@@ -575,6 +601,11 @@
   //----------------- DOWNLOADS -----------------
   .downloads-page {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    -ms-flex-direction: column;
+    min-height: 100%;
+    min-height: 100vh;
 
     .tab-content .plan {
       margin: 20px 0;
