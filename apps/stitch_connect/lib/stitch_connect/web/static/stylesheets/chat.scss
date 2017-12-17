@@ -644,6 +644,14 @@
   .message {
     max-width: 50%;
     width: fit-content;
+    margin-bottom: 8px;
+
+    .name {
+      color: #003366;
+      flex: 1;
+      font-size: 16px;
+      font-weight: bold;
+    }
 
     .message-content {
       font-size: 15px;
@@ -663,18 +671,10 @@
         align-items: baseline;
         position: relative;
 
-        .name {
-          color: #003366;
-          flex: 1;
-          font-weight: bold;
-          margin-right: 20px;
-        }
-
-        .time {
-          display: flex;
-          align-items: inherit;
-          white-space: nowrap;
-          position: relative;
+        .actions {
+          position: absolute;
+          right: -10px;
+          top: -10px;
 
           .message-actions {
             line-height: 1.15;
@@ -706,6 +706,13 @@
               }
             }
           }
+        }
+
+        .time {
+          display: flex;
+          align-items: inherit;
+          white-space: nowrap;
+          position: relative;
 
           &:before {
             content: attr(data-time);
@@ -803,6 +810,10 @@
       text-align: right;
       margin-bottom: 5px;
       text-transform: capitalize;
+    }
+
+    &.sequential {
+      margin-top: -8px;
     }
   }
 

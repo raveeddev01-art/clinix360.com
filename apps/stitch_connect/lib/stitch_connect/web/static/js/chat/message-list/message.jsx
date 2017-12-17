@@ -227,7 +227,7 @@ class Message extends Component {
         componentClass="div"
         className="message-actions"
         dropup={dropup}
-        pullRight
+        pullRight={mine}
         onToggle={this.onToggle}
       >
         <Dropdown.Toggle useAnchor noCaret>
@@ -301,6 +301,17 @@ class Message extends Component {
     );
   }
 
+  renderName(message) {
+    const { usersStore } = this.props;
+    const userId = message.user.id;
+    const mine = userId === currentUser.id;
+    const user = usersStore.usersById[userId];
+
+    return !mine && !message.is_sequential ? (
+      <div className="name">{`${user.first_name} ${user.last_name}`}</div>
+    ) : null;
+  }
+
   renderStatus(message) {
     if (message.status) return message.status;
     if (this.props.groupStore.isSelfDM) return null;
@@ -328,15 +339,19 @@ class Message extends Component {
   }
 
   render() {
-    const { message, messageStore, usersStore } = this.props;
+    const { message, messageStore } = this.props;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
-    const { user: { id: userId }, inserted_at: insertedAt } = message;
-    const user = usersStore.usersById[userId];
+    const { user: { id: userId } } = message;
     const mine = userId === currentUser.id;
 
     const containerClassName = cx("message-container", {
       mine
     });
+
+    const messageClassName = cx("message", {
+      sequential: message.is_sequential
+    });
+
     const contentClassName = cx("message-content", {
       selected: this.state.selected,
       highlight: highlightId === message.id
@@ -365,22 +380,14 @@ class Message extends Component {
             scrollThrottle={100}
             containment={chatDiv}
           >
-            <Element name={`message_${message.id}`} className="message">
+            <Element
+              name={`message_${message.id}`}
+              className={messageClassName}
+            >
+              {this.renderName(message)}
               <div className={contentClassName}>
                 <div className="message-header">
-                  <div className="name">
-                    {`${user.first_name} ${user.last_name}`}
-                  </div>
-
-                  <div
-                    className="time"
-                    data-time={moment
-                      .utc(insertedAt)
-                      .local()
-                      .format("hh:mm A")}
-                  >
-                    {this.renderActions(message)}
-                  </div>
+                  <div className="actions">{this.renderActions(message)}</div>
 
                   <ReactionPicker
                     message={message}
