@@ -51,7 +51,7 @@ export default class Pricing extends Component {
                       />
                       <h3>Connect</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Team Messaging
+                        Team Communication
                       </p>
                     </NavItem>
 
@@ -63,7 +63,7 @@ export default class Pricing extends Component {
                       />
                       <h3>Engage</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Patient Messaging
+                        Patient Engagement
                       </p>
                     </NavItem>
 
@@ -257,9 +257,10 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://intercom.help/teamstitch/engage/stitch-engage-faqs"
+                                target="_blank"
+                                href="https://teamstitch.typeform.com/to/Ncn8x8"
                               >
-                                Learn More
+                                Request Access
                               </Button>
                             </div>
 
@@ -302,9 +303,10 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://intercom.help/teamstitch/engage/admin/premium-plan"
+                                target="_blank"
+                                href="https://teamstitch.typeform.com/to/Ncn8x8"
                               >
-                                Learn More
+                                Request Access
                               </Button>
                             </div>
 
@@ -347,9 +349,10 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://intercom.help/teamstitch/engage/admin/power-plan"
+                                target="_blank"
+                                href="https://teamstitch.typeform.com/to/Ncn8x8"
                               >
-                                Learn More
+                                Request Access
                               </Button>
                             </div>
 
@@ -396,9 +399,10 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://intercom.help/teamstitch/manage/stitch-manage-faqs"
+                                target="_blank"
+                                href="https://teamstitch.typeform.com/to/Yt22AI"
                               >
-                                Learn More
+                                Request Access
                               </Button>
                             </div>
 
@@ -441,9 +445,10 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://intercom.help/teamstitch/manage/admin/premium-plan"
+                                target="_blank"
+                                href="https://teamstitch.typeform.com/to/Yt22AI"
                               >
-                                Learn More
+                                Request Access
                               </Button>
                             </div>
 
@@ -486,9 +491,10 @@ export default class Pricing extends Component {
                               <Button
                                 bsSize="large"
                                 bsStyle="primary"
-                                href="https://intercom.help/teamstitch/manage/admin/power-plan"
+                                target="_blank"
+                                href="https://teamstitch.typeform.com/to/Yt22AI"
                               >
-                                Learn More
+                                Request Access
                               </Button>
                             </div>
 

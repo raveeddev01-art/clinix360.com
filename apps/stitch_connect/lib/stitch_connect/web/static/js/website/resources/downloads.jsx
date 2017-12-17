@@ -192,6 +192,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -214,6 +215,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -236,6 +238,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -258,6 +261,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -284,6 +288,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -306,6 +311,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -328,6 +334,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -350,6 +357,7 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access

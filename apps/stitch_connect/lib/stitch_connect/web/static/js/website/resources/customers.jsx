@@ -84,10 +84,6 @@ export default class Customers extends Component {
 
           <div className="our-customers text-center">
             <div className="container">
-              <h3 className="text-center m-b-20">
-                Thousands of healthcare providers are improving patient care
-                through Stitch. <br /> Join the movement.
-              </h3>
               <div className="customer-logos">
                 <div className="row logo-row">{this.renderCustomers()}</div>
               </div>

@@ -948,9 +948,10 @@ export default class TermsOfService extends Component {
               <address className="m-b-30">
                 <strong>Stitch Technologies, Inc.</strong>
                 <br />
-                188 King St. PH9<br />
-                San Francisco, CA 94107<br />
+                156 2nd Street #201<br />
+                San Francisco, CA 94105<br />
                 <a href="tel:+16502823388">+1 (650) 282-3388</a>
+                <br />
                 <a href="mailto:support@teamstitch.com">
                   support@teamstitch.com
                 </a>

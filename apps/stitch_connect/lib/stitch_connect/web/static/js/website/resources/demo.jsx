@@ -82,7 +82,7 @@ export default class Demo extends Component {
               </div>
 
               <div className="flex-item">
-                <Panel className="demo-form">
+                <Panel className="demo-form m-b-0">
                   <h4 className="text-center m-b-20">
                     Tell us a little about yourself, and we’ll be in touch right
                     away.
@@ -158,7 +158,9 @@ export default class Demo extends Component {
 
         <div className="our-customers text-center">
           <div className="container">
-            <h3 className="text-uppercase">Trusted by top healthcare teams</h3>
+            <h3 className="text-uppercase m-b-30">
+              Trusted by top healthcare teams
+            </h3>
             <div className="customer-logos">
               <div className="row logo-row">{this.renderCustomers()}</div>
             </div>

@@ -6,8 +6,6 @@ import Footer from "../components/footer";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
-import Panel from "react-bootstrap/lib/Panel";
 
 export default class CaseUCSF extends Component {
   render() {
@@ -26,27 +24,27 @@ export default class CaseUCSF extends Component {
 
           <div className="overview text-center">
             <div className="container">
-              <div className="flex-box">
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Specialty</h4>
-                  <p className="m-b-0">Behavioral Health</p>
-                </div>
+              <Row>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Specialty</h5>
+                  <p>Behavioral Health</p>
+                </Col>
 
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Employees</h4>
-                  <p className="m-b-0">10 Staff</p>
-                </div>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Employees</h5>
+                  <p>10 Staff</p>
+                </Col>
 
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Patients</h4>
-                  <p className="m-b-0">400 visits</p>
-                </div>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Patients</h5>
+                  <p>400 visits</p>
+                </Col>
 
-                <div className="flex-item">
-                  <h4 className="text-uppercase">Location</h4>
-                  <p className="m-b-0">San Francisco</p>
-                </div>
-              </div>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Location</h5>
+                  <p>San Francisco</p>
+                </Col>
+              </Row>
             </div>
           </div>
 
