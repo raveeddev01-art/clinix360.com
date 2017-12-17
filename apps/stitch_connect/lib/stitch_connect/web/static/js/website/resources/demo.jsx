@@ -101,7 +101,7 @@ export default class Demo extends Component {
                 <FormControl
                   name="email"
                   required
-                  placeholder="hello@stitchhealth.com"
+                  placeholder="hello@stitch.health"
                   type="email"
                   value={this.state.email}
                   onChange={this.handleChange}
@@ -115,7 +115,7 @@ export default class Demo extends Component {
                 <FormControl
                   name="phoneNumber"
                   required
-                  placeholder="Phone Number"
+                  placeholder="555-555-5555"
                   type="text"
                   value={this.state.phoneNumber}
                   onChange={this.handleChange}
@@ -129,7 +129,7 @@ export default class Demo extends Component {
                 <FormControl
                   name="companyName"
                   required
-                  placeholder="Company Inc"
+                  placeholder="Stitch Health"
                   type="text"
                   value={this.state.companyName}
                   onChange={this.handleChange}
