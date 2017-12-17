@@ -55,6 +55,11 @@
   .panel {
     border: 0;
     box-shadow: 0 10px 40px -10px rgba(0,0,0,.1);
+
+    h2, h4 {
+      color: #003366;
+      font-weight: 700;
+    }
   }
 
   h1 { font-size: 28px; }
@@ -221,7 +226,8 @@
     }
 
     h3 {
-      color: #162949;
+      color: #003366;
+      font-weight: 900;
     }
 
     .vid {
@@ -595,8 +601,9 @@
     padding: 40px 0 60px;
 
     h3 {
-      font-size: 24px;
-      font-weight: 800;
+      color: #003366;
+      font-size: 20px;
+      font-weight: 900;
     }
 
     i.fa {
@@ -604,6 +611,8 @@
     }
 
     h4 {
+      color: #003366;
+      font-size: 18px;
       font-weight: 700;
     }
 
@@ -647,7 +656,7 @@
       hr {
         width: 30%;
         border-color: #adbdcb;
-      }
+      } 
     }
 
     &:first-child h4 {
@@ -660,6 +669,12 @@
 
     &:nth-child(even) {
       background: #fff;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .pilot-section h3 {
+      font-size: 24px;
     }
   }
 
@@ -710,12 +725,19 @@
       }
     }
 
-    .customer-studies .panel-body {
-      padding: 40px;
+    .customer-studies {
+      h3 {
+        color: #003366;
+        font-weight: 900;
+      }
 
-      img {
-        max-height: 60px;
-        margin: 0 0 10px;
+      .panel-body {
+        padding: 40px;
+
+        img {
+          max-height: 60px;
+          margin: 0 0 10px;
+        }
       }
     }
   }
@@ -810,6 +832,10 @@
     h2 {
       line-height: 1.35;
       margin: 0;
+
+      strong {
+        font-weight: 900;
+      }
     }
 
     .btn {
