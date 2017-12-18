@@ -246,13 +246,26 @@ defmodule Stitch.Message do
   end
 
   def mark_as_unread(user_id, group_id, %Message{user_id: user_id} = message) do
-    message = get_message_to_unread(message)
-    mark_as_unread(user_id, group_id, message)
+    if messages_from_other_users(user_id, group_id, message.id) do
+      do_mark_as_unread(user_id, group_id, message)
+    else
+      {:error, "No messages from other users after the target message"}
+    end
   end
 
-  def mark_as_unread(user_id, group_id, %Message{type: "system"} = message) do
-    message = get_message_to_unread(message)
-    mark_as_unread(user_id, group_id, message)
+  def messages_from_other_users(user_id, group_id, message_id) do
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> where([m], m.user_id != ^user_id)
+    |> where([m], m.type != "system")
+    |> where([m], m.id >= ^message_id)
+    |> limit(1)
+    |> select([m], %{id: m.id})
+    |> Repo.one
+  end
+
+  def mark_as_unread(_user_id, _group_id, %Message{type: "system"} = _message) do
+    {:error, "System message can't be marked as unread"}
   end
 
   def mark_as_unread(user_id, group_id, nil) do
@@ -261,22 +274,15 @@ defmodule Stitch.Message do
   end
 
   def mark_as_unread(user_id, group_id, message) do
+    do_mark_as_unread(user_id, group_id, message)
+  end
+
+  def do_mark_as_unread(user_id, group_id, message) do
     Multi.new
     |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id, message.id), [])
     |> Multi.update_all(:mark_messages_as_unread, mark_messages_as_unread(group_id, user_id, message.id), [], [returning: true])
     |> Multi.update_all(:mark_group_as_unread, mark_group_as_unread(group_id, user_id, message), [], [returning: true])
     |> Repo.transaction
-  end
-
-  def get_message_to_unread(%Message{} = message) do
-    Message
-    |> where([m], m.id < ^message.id)
-    |> where([m], m.type != "system")
-    |> where([m], m.user_id != ^message.user_id)
-    |> where([m], m.group_id == ^message.group_id)
-    |> order_by([m], [desc: m.id])
-    |> limit(1)
-    |> Repo.one
   end
 
   defp mark_messages_as_unread(group_id, user_id, message_id) do
