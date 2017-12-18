@@ -122,6 +122,7 @@ export default class Downloads extends Component {
                           <div className="plan text-center">
                             <a
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
                             >
                               <img
@@ -136,6 +137,7 @@ export default class Downloads extends Component {
                             <a
                               className="appstore-link"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
                             >
                               <img
@@ -150,6 +152,7 @@ export default class Downloads extends Component {
                           <div className="plan text-center">
                             <a
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
                             >
                               <img
@@ -163,6 +166,7 @@ export default class Downloads extends Component {
 
                             <a
                               className="playstore-link"
+                              rel="noopener noreferrer"
                               href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
                               target="_blank"
                             >
@@ -194,6 +198,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -217,6 +222,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -240,6 +246,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -263,6 +270,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -290,6 +298,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -313,6 +322,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -336,6 +346,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -359,6 +370,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
