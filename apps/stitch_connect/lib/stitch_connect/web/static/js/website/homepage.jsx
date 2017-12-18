@@ -35,13 +35,13 @@ export default class Homepage extends Component {
 
         <div className="subheader text-center">
           <div className="container">
-            <h1>Collaboration tools for healthcare teams</h1>
+            <h1>Care Coordination</h1>
             <h3 className="m-b-30">
               Communicate, write notes, track tasks and upload files on any
               device.
             </h3>
 
-            <div className="m-b-50">
+            <div className="m-b-30">
               <LinkContainer to="/demo">
                 <Button bsSize="lg">Request Demo</Button>
               </LinkContainer>
@@ -57,7 +57,7 @@ export default class Homepage extends Component {
 
             <div className="mbp">
               <img
-                src="/images/homepage-mbp.png"
+                src="/images/homepage-platform.png"
                 alt="Stitch Platform"
                 className="img-responsive"
               />
@@ -108,7 +108,7 @@ export default class Homepage extends Component {
 
                 <div className="flex-item">
                   <img
-                    src="/images/connect-feature-1.png"
+                    src="/images/connect-homepage-test.png"
                     alt="Stitch Connect"
                     className="img-responsive"
                   />
@@ -122,7 +122,7 @@ export default class Homepage extends Component {
               <div className="flex-box">
                 <div className="flex-item">
                   <img
-                    src="/images/engage-feature-1.png"
+                    src="/images/engage-homepage.png"
                     alt="Stitch Engage"
                     className="img-responsive"
                   />
@@ -190,7 +190,7 @@ export default class Homepage extends Component {
 
                 <div className="flex-item">
                   <img
-                    src="/images/manage-feature-1.png"
+                    src="/images/manage-homepage.png"
                     alt="Stitch Manage"
                     className="img-responsive"
                   />
