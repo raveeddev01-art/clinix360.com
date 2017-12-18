@@ -81,7 +81,11 @@ class Header extends Component {
                 </div>
               </MenuItem>
 
-              <MenuItem href="https://intercom.help/teamstitch">
+              <MenuItem
+                href="https://intercom.help/teamstitch"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <i className="fa fa-life-ring" /> Help Center
                 <div className="subtext hidden-sm hidden-lg">
                   Everything you need to be a Stitch power user
@@ -100,10 +104,16 @@ class Header extends Component {
                 </div>
               </MenuItem>
 
-              {/* <MenuItem href={`https://${applicationHost}/blog`}>
+              <MenuItem
+                href="https://medium.com/stitch-health"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <i className="fa fa-book" /> Blog
-                <div className="subtext hidden-sm hidden-lg">To be changed</div>
-              </MenuItem> */}
+                <div className="subtext hidden-sm hidden-lg">
+                  Stories and updates from the Stitch Health team
+                </div>
+              </MenuItem>
             </NavDropdown>
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>

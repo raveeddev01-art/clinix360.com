@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import Header from "../components/header";
+import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
 
 import Tab from "react-bootstrap/lib/Tab";
@@ -14,7 +15,7 @@ import Button from "react-bootstrap/lib/Button";
 export default class Downloads extends Component {
   render() {
     return (
-      <div>
+      <div className="downloads-page">
         <Header />
         <div className="subheader">
           <div className="container">
@@ -25,7 +26,7 @@ export default class Downloads extends Component {
           </div>
         </div>
 
-        <div className="downloads-page">
+        <div className="downloads-content">
           <div className="container">
             <Tab.Container id="left-tabs-example" defaultActiveKey="first">
               <Row className="clearfix">
@@ -121,6 +122,7 @@ export default class Downloads extends Component {
                           <div className="plan text-center">
                             <a
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
                             >
                               <img
@@ -135,6 +137,7 @@ export default class Downloads extends Component {
                             <a
                               className="appstore-link"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1299521330&mt=8"
                             >
                               <img
@@ -149,6 +152,7 @@ export default class Downloads extends Component {
                           <div className="plan text-center">
                             <a
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
                             >
                               <img
@@ -162,6 +166,7 @@ export default class Downloads extends Component {
 
                             <a
                               className="playstore-link"
+                              rel="noopener noreferrer"
                               href="https://play.google.com/store/apps/details?id=com.teamstitch.stitch_connect&hl=en"
                               target="_blank"
                             >
@@ -193,6 +198,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -216,6 +222,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -239,6 +246,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -262,6 +270,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
                               Request Access
@@ -289,6 +298,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -312,6 +322,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -335,6 +346,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -358,6 +370,7 @@ export default class Downloads extends Component {
                               bsStyle="primary"
                               bsSize="large"
                               target="_blank"
+                              rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
                               Request Access
@@ -373,6 +386,7 @@ export default class Downloads extends Component {
           </div>
         </div>
 
+        <GetStarted />
         <Footer />
       </div>
     );
