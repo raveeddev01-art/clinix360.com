@@ -251,9 +251,14 @@ defmodule Stitch.Group do
       nil ->
         {:error, "User is not part of this room"}
       group_user ->
+        group_user =
+          group_user
+          |> change(%{is_hidden: true})
+          |> Repo.update
+
+        Message.mark_as_read(user_id, group.id)
+
         group_user
-        |> change(%{is_hidden: true})
-        |> Repo.update
     end
   end
 
