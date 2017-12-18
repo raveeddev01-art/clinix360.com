@@ -316,23 +316,13 @@ defmodule Stitch.Message do
 
   defp mark_messages_as_read(group_id, user_id) do
     group_user = Repo.get_by(GroupUser, group_id: group_id, user_id: user_id)
+    last_read_at = group_user.last_read_at || group_user.inserted_at
 
-    case group_user do
-      nil ->
-        # A no-op, update query, which can be passed to Multi.update_all
-        Message
-        |> where([m], is_nil m.id)
-        |> update([m], set: [id: nil])
-
-      group_user ->
-        last_read_at = group_user.last_read_at || group_user.inserted_at
-
-        Message
-        |> where([m], m.group_id == ^group_id)
-        |> where([m], m.inserted_at >= ^last_read_at)
-        |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
-        |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => NaiveDateTime.utc_now})])
-    end
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> where([m], m.inserted_at >= ^last_read_at)
+    |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
+    |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => NaiveDateTime.utc_now})])
   end
 
   defp mark_messages_as_read(group_id, user_id, message_id) do
