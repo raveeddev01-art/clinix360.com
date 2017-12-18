@@ -120,6 +120,12 @@ class Header extends Component {
                   </div>
                 </MenuItem>
               </LinkContainer> */}
+              <MenuItem href={`https://${applicationHost}/jobs`}>
+                <i className="fa fa-book" /> Blog
+                <div className="subtext hidden-sm hidden-lg">
+                  Stories and updates from the Stitch Health team
+                </div>
+              </MenuItem>
             </NavDropdown>
 
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>

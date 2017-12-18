@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import Header from "../components/header";
+import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
 
 import Tab from "react-bootstrap/lib/Tab";
@@ -14,7 +15,7 @@ import Button from "react-bootstrap/lib/Button";
 export default class Downloads extends Component {
   render() {
     return (
-      <div>
+      <div className="downloads-page">
         <Header />
         <div className="subheader">
           <div className="container">
@@ -25,7 +26,7 @@ export default class Downloads extends Component {
           </div>
         </div>
 
-        <div className="downloads-page">
+        <div className="downloads-content">
           <div className="container">
             <Tab.Container id="left-tabs-example" defaultActiveKey="first">
               <Row className="clearfix">
@@ -373,6 +374,7 @@ export default class Downloads extends Component {
           </div>
         </div>
 
+        <GetStarted />
         <Footer />
       </div>
     );

@@ -166,7 +166,7 @@ export default class Hipaa extends Component {
               <p>
                 Absolutely. Here’s a dedicated risk assessment prepared for our
                 specific technology:{" "}
-                <a href="https://www.dropbox.com/sh/d5yi7f0dyt3g79k/AAD-EeLBOreic3GAqwYhIdESa/PDFs/Stitch%20-%20Risk%20Assessment.pdf?dl=1">
+                <a href="https://www.dropbox.com/s/9oe9qgr1vduvfmc/Stitch%20Risk%20Assessment%20v3.0.pdf?dl=1">
                   Stitch Risk Assessment
                 </a>
               </p>

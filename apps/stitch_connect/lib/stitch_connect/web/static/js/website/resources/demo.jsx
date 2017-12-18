@@ -186,9 +186,7 @@ export default class Demo extends Component {
 
         <div className="our-customers text-center">
           <div className="container">
-            <h3 className="text-uppercase m-b-30">
-              Trusted by top healthcare teams
-            </h3>
+            <h4 className="text-uppercase">Trusted by top healthcare teams</h4>
             <div className="customer-logos">
               <div className="row logo-row">{this.renderCustomers()}</div>
             </div>

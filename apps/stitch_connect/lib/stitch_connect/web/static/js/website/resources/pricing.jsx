@@ -26,7 +26,7 @@ export default class Pricing extends Component {
 
   render() {
     return (
-      <div>
+      <div className="pricing-page">
         <Header />
         <div className="subheader">
           <div className="container">
@@ -37,7 +37,7 @@ export default class Pricing extends Component {
           </div>
         </div>
 
-        <div className="pricing-page">
+        <div className="pricing-content">
           <div className="container">
             <Tab.Container id="pricing-tabs" defaultActiveKey="first">
               <Row className="clearfix">
