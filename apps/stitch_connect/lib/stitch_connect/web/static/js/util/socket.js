@@ -10,7 +10,8 @@ if (window.authenticationToken !== "") {
         applicationVersion: window.applicationVersion
       },
       timeout: 10000,
-      heartbeatIntervalMs: 10000
+      heartbeatIntervalMs: 10000,
+      enableManualRejoin: true
     }
   );
   socket.connect();

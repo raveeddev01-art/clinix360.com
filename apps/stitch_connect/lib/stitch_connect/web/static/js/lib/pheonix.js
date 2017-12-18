@@ -564,11 +564,14 @@ let Serializer = {
  * @param {Object}  opts.params - The optional params to pass when connecting
  *
  *
+ * @param {boolean} opts.enableManualRejoin - On heartbeat timeout, raise socket onClose,
+ *                                              so that user can trigger disconnect -> connect manually
+ *
 */
 export class Socket {
 
   constructor(endPoint, opts = {}){
-    this.stateChangeCallbacks = {open: [], close: [], error: [], message: []}
+    this.stateChangeCallbacks = {open: [], close: [], error: [], message: [], reconnect: []}
     this.channels             = []
     this.sendBuffer           = []
     this.ref                  = 0
@@ -583,6 +586,7 @@ export class Socket {
       this.encode = this.defaultEncoder
       this.decode = this.defaultDecoder
     }
+    this.enableManualRejoin   = opts.enableManualRejoin || false
     this.heartbeatIntervalMs  = opts.heartbeatIntervalMs || 30000
     this.reconnectAfterMs     = opts.reconnectAfterMs || function(tries){
       return [1000, 2000, 5000, 10000][tries - 1] || 10000
@@ -655,6 +659,7 @@ export class Socket {
   onClose    (callback){ this.stateChangeCallbacks.close.push(callback) }
   onError    (callback){ this.stateChangeCallbacks.error.push(callback) }
   onMessage  (callback){ this.stateChangeCallbacks.message.push(callback) }
+  onReconnectScheduled (callback){ this.stateChangeCallbacks.reconnect.push(callback) }
 
   onConnOpen(){
     this.log("transport", `connected to ${this.endPointURL()}`)
@@ -672,6 +677,7 @@ export class Socket {
     this.triggerChanError()
     clearInterval(this.heartbeatTimer)
     this.reconnectTimer.scheduleTimeout()
+    this.stateChangeCallbacks.reconnect.forEach( callback => callback() )
     this.stateChangeCallbacks.close.forEach( callback => callback(event) )
   }
 
@@ -742,8 +748,13 @@ export class Socket {
   sendHeartbeat(){ if(!this.isConnected()){ return }
     if(this.pendingHeartbeatRef){
       this.pendingHeartbeatRef = null
-      this.log("transport", "heartbeat timeout. Attempting to re-establish connection")
-      this.conn.close(WS_CLOSE_NORMAL, "hearbeat timeout")
+      if (enableManualRejoin) {
+        this.log("transport", "heartbeat timeout. Triggering onClose so that user can close connection manually")
+        this.onConnClose();
+      } else {
+        this.log("transport", "heartbeat timeout. Attempting to re-establish connection")
+        this.conn.close(WS_CLOSE_NORMAL, "hearbeat timeout")
+      }
       return
     }
     this.pendingHeartbeatRef = this.makeRef()

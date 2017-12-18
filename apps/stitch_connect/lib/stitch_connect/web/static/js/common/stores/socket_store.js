@@ -11,10 +11,6 @@ class SocketStore {
     this.trackConnectionState();
   }
 
-  get eventChannel() {
-    return this.rootStore.channelStore.eventChannel;
-  }
-
   @action
   reconnect() {
     socket.disconnect(() => socket.connect());
@@ -23,7 +19,7 @@ class SocketStore {
 
   trackConnectionState() {
     socket.onOpen(this.openSocket);
-    socket.onError(this.errorSocket);
+    socket.onReconnectScheduled(this.errorSocket);
   }
 
   @action
@@ -42,7 +38,6 @@ class SocketStore {
   errorSocket = () => {
     this.isConnected = false;
     this.ticks = 0;
-    socket.reconnectTimer.scheduleTimeout();
     this.reconnectIn = this.getReconnectIn();
     clearInterval(this.interval);
     this.interval = setInterval(this.tickTimeout, 1000);
