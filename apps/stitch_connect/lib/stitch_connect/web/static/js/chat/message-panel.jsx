@@ -81,7 +81,10 @@ export default class MessagePanel extends Component {
             <div className="messages-count">
               {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}{" "}
               since{" "}
-              {moment(messageStore.lastReadAt).format("h:mm A on MMMM Do")}
+              {moment
+                .utc(messageStore.lastReadAt)
+                .local()
+                .format("h:mm A on MMMM Do")}
             </div>
           </div>
 
