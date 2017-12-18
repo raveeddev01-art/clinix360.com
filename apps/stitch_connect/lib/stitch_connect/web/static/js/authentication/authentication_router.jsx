@@ -35,6 +35,13 @@ class AuthenticationRouter extends Component {
         <div className="authentication-wrapper">
           <Helmet>
             <title>{titleStore.title}</title>
+
+            <script type="text/javascript">{`
+                window.intercomSettings = {
+                  app_id: "jig8cj9z",
+                  hide_default_launcher: false
+                };
+            `}</script>
           </Helmet>
           <Switch>
             <Route exact path="/getstarted" component={GetStarted} />

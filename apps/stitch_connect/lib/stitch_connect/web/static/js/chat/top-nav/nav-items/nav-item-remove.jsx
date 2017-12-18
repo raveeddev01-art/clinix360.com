@@ -6,7 +6,7 @@ import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import { TeamList } from "common/components";
 
-@inject("groupStore", "presenceStore", "usersStore")
+@inject("groupStore", "presenceStore")
 @observer
 export default class NavItemRemoveMembers extends Component {
   constructor(props) {
@@ -52,10 +52,8 @@ export default class NavItemRemoveMembers extends Component {
   };
 
   render() {
-    const { presenceStore, groupStore, usersStore } = this.props;
-    const users = usersStore.users.filter(u => {
-      return groupStore.group.users.findIndex(gu => gu.id === u.id) > -1;
-    });
+    const { presenceStore, groupStore } = this.props;
+    const users = groupStore.group.users.slice(0);
 
     return [
       <MenuItem key="members_menuitem" onClick={this.openModal}>

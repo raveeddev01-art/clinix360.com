@@ -4,13 +4,15 @@ import { LinkContainer } from "react-router-bootstrap";
 import cx from "classnames";
 
 import Header from "./components/header";
-import Footer from "./components/footer";
-import CreateTeamForm from "./components/create-team";
 import CUSTOMERS from "./components/customers-logos";
+import GetStarted from "./components/get-started";
+import Footer from "./components/footer";
 
 import Button from "react-bootstrap/lib/Button";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
+import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
+import Carousel from "react-bootstrap/lib/Carousel";
 
 export default class Homepage extends Component {
   renderCustomers() {
@@ -28,45 +30,61 @@ export default class Homepage extends Component {
 
   render() {
     return (
-      <div id="homepage">
+      <div className="homepage">
         <Header />
 
-        <div className="subheader">
+        <div className="subheader text-center">
           <div className="container">
-            <div className="landing-message text-center">
-              <h1>Care Coordination</h1>
-              <h3>
-                Communicate, write notes, track tasks, <br />upload files, and
-                collaborate on any device.
-              </h3>
+            <h1>Collaboration tools for healthcare teams</h1>
+            <h3 className="m-b-30">
+              Communicate, write notes, track tasks and upload files on any
+              device.
+            </h3>
 
-              <CreateTeamForm />
+            <div className="m-b-50">
+              <LinkContainer to="/demo">
+                <Button bsSize="lg">Request Demo</Button>
+              </LinkContainer>
 
-              <div className="trial">
-                Get started with an unlimited{" "}
-                <br className="visible-xs-inline" />number of people on our free
-                14-day trial.
-              </div>
+              <Button
+                bsSize="lg"
+                bsStyle="primary"
+                href={`https://${applicationHost}/signup/email`}
+              >
+                Start Trial
+              </Button>
+            </div>
+
+            <div className="mbp">
+              <img
+                src="/images/homepage-mbp.png"
+                alt="Stitch Platform"
+                className="img-responsive"
+              />
             </div>
           </div>
         </div>
 
         <div className="our-customers text-center">
           <div className="container">
+            <h4 className="text-uppercase">Trusted by top healthcare teams</h4>
             <div className="customer-logos">
               <div className="row logo-row">{this.renderCustomers()}</div>
             </div>
           </div>
         </div>
 
-        <section className="stitch-products">
-          <div className="product-feature">
+        <div className="features-holder">
+          <div className="feature">
             <div className="container">
               <div className="flex-box">
                 <div className="flex-item">
-                  <div className="product-info">
-                    <h2>Connect</h2>
-                    <h3>Team Messaging</h3>
+                  <div className="info">
+                    <h2>
+                      <img src="/images/connect-icon.png" alt="Connect" />{" "}
+                      Connect
+                    </h2>
+                    <h3>Team Communication</h3>
 
                     <p className="m-b-20">
                       Stitch Connect provides a powerful team communication
@@ -76,8 +94,12 @@ export default class Homepage extends Component {
                       world.
                     </p>
 
-                    <LinkContainer to="/pricing">
-                      <Button bsStyle="primary" bsSize="large">
+                    <LinkContainer to="/connect">
+                      <Button
+                        bsStyle="primary"
+                        bsSize="large"
+                        className="m-b-40"
+                      >
                         Learn More
                       </Button>
                     </LinkContainer>
@@ -85,35 +107,33 @@ export default class Homepage extends Component {
                 </div>
 
                 <div className="flex-item">
-                  <div className="product-image">
-                    <img
-                      src="/images/connect-feature-1.png"
-                      alt="Stitch Connect"
-                      className="img-responsive"
-                    />
-                  </div>
+                  <img
+                    src="/images/connect-feature-1.png"
+                    alt="Stitch Connect"
+                    className="img-responsive"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="product-feature">
+          <div className="feature alt">
             <div className="container">
               <div className="flex-box">
                 <div className="flex-item">
-                  <div className="product-image">
-                    <img
-                      src="/images/engage-feature-1.png"
-                      alt="Stitch Engage"
-                      className="img-responsive"
-                    />
-                  </div>
+                  <img
+                    src="/images/engage-feature-1.png"
+                    alt="Stitch Engage"
+                    className="img-responsive"
+                  />
                 </div>
 
                 <div className="flex-item">
-                  <div className="product-info">
-                    <h2>Engage</h2>
-                    <h3>Patient Messaging</h3>
+                  <div className="info">
+                    <h2>
+                      <img src="/images/engage-icon.png" alt="Connect" /> Engage
+                    </h2>
+                    <h3>Patient Engagement</h3>
 
                     <p className="m-b-20">
                       Stitch Engage offers a complete patient engagement
@@ -123,25 +143,29 @@ export default class Homepage extends Component {
                       intuitively designed app on any device.
                     </p>
 
-                    <Button
-                      bsStyle="primary"
-                      bsSize="large"
-                      href="https://teamstitch.typeform.com/to/Ncn8x8"
-                    >
-                      Join Beta
-                    </Button>
+                    <LinkContainer to="/engage">
+                      <Button
+                        bsStyle="primary"
+                        bsSize="large"
+                        className="m-b-40"
+                      >
+                        Learn More
+                      </Button>
+                    </LinkContainer>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="product-feature">
+          <div className="feature">
             <div className="container">
               <div className="flex-box">
                 <div className="flex-item">
-                  <div className="product-info">
-                    <h2>Manage</h2>
+                  <div className="info">
+                    <h2>
+                      <img src="/images/manage-icon.png" alt="Manage" /> Manage
+                    </h2>
                     <h3>Patient Management</h3>
 
                     <p className="m-b-20">
@@ -152,30 +176,123 @@ export default class Homepage extends Component {
                       wherever you are.
                     </p>
 
-                    <Button
-                      bsStyle="primary"
-                      bsSize="large"
-                      href="https://teamstitch.typeform.com/to/Ncn8x8"
-                    >
-                      Join Beta
-                    </Button>
+                    <LinkContainer to="/manage">
+                      <Button
+                        bsStyle="primary"
+                        bsSize="large"
+                        className="m-b-40"
+                      >
+                        Learn More
+                      </Button>
+                    </LinkContainer>
                   </div>
                 </div>
 
                 <div className="flex-item">
-                  <div className="product-image">
-                    <img
-                      src="/images/manage-feature-1.png"
-                      alt="Stitch Manage"
-                      className="img-responsive"
-                    />
-                  </div>
+                  <img
+                    src="/images/manage-feature-1.png"
+                    alt="Stitch Manage"
+                    className="img-responsive"
+                  />
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
+        <div className="customers text-center">
+          <div className="container">
+            <h3 className="m-b-30">Here's what our customers are saying</h3>
+
+            <div className="vid">
+              <ResponsiveEmbed a16by9>
+                <embed src="https://www.youtube.com/embed/v1fjEFYMiyA?rel=0" />
+              </ResponsiveEmbed>
+            </div>
+
+            <Carousel
+              interval={null}
+              prevIcon={<i className="fa fa-angle-left" />}
+              nextIcon={<i className="fa fa-angle-right" />}
+            >
+              <Carousel.Item>
+                <h4 className="quote">
+                  "I couldn’t imagine running my operations without Stitch. It
+                  really does save lives, it improves the client experience, and
+                  I think every treatment center should be using the tool."
+                </h4>
+
+                <img
+                  src="/images/customer-luminance.png"
+                  alt="Luminance"
+                  className="m-b-10"
+                />
+
+                <div className="person">
+                  <strong>Michael Krause</strong>
+                  <div>Chief Revenue Officer at Luminance Recovery</div>
+                </div>
+              </Carousel.Item>
+
+              <Carousel.Item>
+                <h4 className="quote">
+                  "Being able to provide real-time responses leads to a huge
+                  increase in the quality of patient care."
+                </h4>
+
+                <img
+                  src="/images/customer-pbsc.png"
+                  alt="PBSC"
+                  className="m-b-10"
+                />
+
+                <div className="person">
+                  <strong>Lyndsey Caliendo</strong>
+                  <div>Director of Operations at Princeton Brain & Spine</div>
+                </div>
+              </Carousel.Item>
+
+              <Carousel.Item>
+                <h4 className="quote">
+                  "The interface on Stitch is very intuitive. It wasn’t
+                  something that we had to dedicate any training to because
+                  people already knew how to use it out of the box."
+                </h4>
+
+                <img
+                  src="/images/customer-dssi.png"
+                  alt="DSSI"
+                  className="m-b-10"
+                />
+
+                <div className="person">
+                  <strong>Brent Spencer</strong>
+                  <div>Owner at Dermatology & Skin Surgery Institute</div>
+                </div>
+              </Carousel.Item>
+
+              <Carousel.Item>
+                <h4 className="quote">
+                  "I can get all the information I need immediately, right in
+                  Stitch."
+                </h4>
+
+                <img
+                  src="/images/customer-citywide.png"
+                  alt="Citywide"
+                  className="m-b-10"
+                />
+
+                <div className="person">
+                  <strong>Tara Collins</strong>
+                  <div>Assistant Professor at UCSF School of Medicine</div>
+                </div>
+              </Carousel.Item>
+            </Carousel>
+          </div>
+        </div>
+
+        <GetStarted />
         <Footer />
       </div>
     );

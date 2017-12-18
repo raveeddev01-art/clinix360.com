@@ -64,9 +64,14 @@ class PinInput extends Component {
 
   setDigits = pin => {
     if (!pin || !pin.length) {
-      this.setState({
-        digits: new Array(4).fill("")
-      });
+      this.setState(
+        {
+          digits: new Array(4).fill("")
+        },
+        () => {
+          this.digitComponents[0].focus();
+        }
+      );
     } else {
       this.setState({
         digits: pin.split("")
@@ -76,6 +81,7 @@ class PinInput extends Component {
 
   replaceCode = (index, value, callback = () => {}) => {
     const { digits } = this.state;
+
     if (!isNaN(value)) {
       this.props.onInvalid();
       this.setState(
@@ -91,7 +97,6 @@ class PinInput extends Component {
     const code = this.state.digits.join("");
     if (code.length === 4) {
       this.props.onValid(code);
-      this.digitComponents[0].focus();
     }
   };
 

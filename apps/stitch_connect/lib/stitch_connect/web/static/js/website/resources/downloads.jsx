@@ -25,7 +25,7 @@ export default class Downloads extends Component {
           </div>
         </div>
 
-        <div className="downloads">
+        <div className="downloads-page">
           <div className="container">
             <Tab.Container id="left-tabs-example" defaultActiveKey="first">
               <Row className="clearfix">
@@ -38,7 +38,9 @@ export default class Downloads extends Component {
                         className="m-b-10"
                       />
                       <h3>Connect</h3>
-                      <h4>Team Messaging</h4>
+                      <p className="m-b-10 hidden-xs hidden-sm">
+                        Team Messaging
+                      </p>
                     </NavItem>
 
                     <NavItem eventKey="second">
@@ -48,7 +50,9 @@ export default class Downloads extends Component {
                         className="m-b-10"
                       />
                       <h3>Engage</h3>
-                      <h4>Patient Messaging</h4>
+                      <p className="m-b-10 hidden-xs hidden-sm">
+                        Patient Messaging
+                      </p>
                     </NavItem>
 
                     <NavItem eventKey="third">
@@ -58,13 +62,15 @@ export default class Downloads extends Component {
                         className="m-b-10"
                       />
                       <h3>Manage</h3>
-                      <h4>Patient Management</h4>
+                      <p className="m-b-10 hidden-xs hidden-sm">
+                        Patient Management
+                      </p>
                     </NavItem>
                   </Nav>
                 </Col>
 
                 <Col xs={12}>
-                  <Tab.Content animation>
+                  <Tab.Content animation={false}>
                     <Tab.Pane eventKey="first">
                       <Row>
                         <Col sm={3}>
@@ -186,9 +192,10 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
-                              Join Beta
+                              Request Access
                             </Button>
                           </div>
                         </Col>
@@ -208,9 +215,10 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
+                              target="_blank"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
                             >
-                              Join Beta
+                              Request Access
                             </Button>
                           </div>
                         </Col>
@@ -227,8 +235,13 @@ export default class Downloads extends Component {
                             <h3>iOS</h3>
                             <div className="m-b-10">iOS 9.0+</div>
 
-                            <Button bsStyle="primary" bsSize="large" disabled>
-                              Coming Soon
+                            <Button
+                              bsStyle="primary"
+                              bsSize="large"
+                              target="_blank"
+                              href="https://teamstitch.typeform.com/to/Ncn8x8"
+                            >
+                              Request Access
                             </Button>
                           </div>
                         </Col>
@@ -245,8 +258,13 @@ export default class Downloads extends Component {
                             <h3>Android</h3>
                             <div className="m-b-10">Android 4.0+</div>
 
-                            <Button bsStyle="primary" bsSize="large" disabled>
-                              Coming Soon
+                            <Button
+                              bsStyle="primary"
+                              bsSize="large"
+                              target="_blank"
+                              href="https://teamstitch.typeform.com/to/Ncn8x8"
+                            >
+                              Request Access
                             </Button>
                           </div>
                         </Col>
@@ -270,9 +288,10 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
-                              href="https://teamstitch.typeform.com/to/Ncn8x8"
+                              target="_blank"
+                              href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
-                              Join Beta
+                              Request Access
                             </Button>
                           </div>
                         </Col>
@@ -292,9 +311,10 @@ export default class Downloads extends Component {
                             <Button
                               bsStyle="primary"
                               bsSize="large"
-                              href="https://teamstitch.typeform.com/to/Ncn8x8"
+                              target="_blank"
+                              href="https://teamstitch.typeform.com/to/Yt22AI"
                             >
-                              Join Beta
+                              Request Access
                             </Button>
                           </div>
                         </Col>
@@ -311,8 +331,13 @@ export default class Downloads extends Component {
                             <h3>iOS</h3>
                             <div className="m-b-10">iOS 9.0+</div>
 
-                            <Button bsStyle="primary" bsSize="large" disabled>
-                              Coming Soon
+                            <Button
+                              bsStyle="primary"
+                              bsSize="large"
+                              target="_blank"
+                              href="https://teamstitch.typeform.com/to/Yt22AI"
+                            >
+                              Request Access
                             </Button>
                           </div>
                         </Col>
@@ -329,8 +354,13 @@ export default class Downloads extends Component {
                             <h3>Manage</h3>
                             <div className="m-b-10">Android 4.0+</div>
 
-                            <Button bsStyle="primary" bsSize="large" disabled>
-                              Coming Soon
+                            <Button
+                              bsStyle="primary"
+                              bsSize="large"
+                              target="_blank"
+                              href="https://teamstitch.typeform.com/to/Yt22AI"
+                            >
+                              Request Access
                             </Button>
                           </div>
                         </Col>
@@ -342,6 +372,7 @@ export default class Downloads extends Component {
             </Tab.Container>
           </div>
         </div>
+
         <Footer />
       </div>
     );

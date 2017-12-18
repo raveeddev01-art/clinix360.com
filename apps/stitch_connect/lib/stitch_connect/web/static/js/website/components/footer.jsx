@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import { Link } from "react-router-dom";
 
 export default class Footer extends Component {
   render() {
@@ -11,7 +11,7 @@ export default class Footer extends Component {
         <div className="container">
           <Row>
             <Col xs={6} md={3}>
-              <h5>Products</h5>
+              <h5>Stitch Health</h5>
               <ul className="list-unstyled">
                 <li>
                   <Link to="/connect">Connect</Link>
@@ -22,6 +22,12 @@ export default class Footer extends Component {
                 <li>
                   <Link to="/manage">Manage</Link>
                 </li>
+                <li>
+                  <Link to="/downloads">Downloads</Link>
+                </li>
+                <li>
+                  <Link to="/customers">Customers</Link>
+                </li>
               </ul>
             </Col>
 
@@ -31,17 +37,9 @@ export default class Footer extends Component {
                 <li>
                   <Link to="/pricing">Pricing</Link>
                 </li>
+
                 <li>
-                  <Link to="/downloads">Downloads</Link>
-                </li>
-                <li>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="https://calendly.com/teamstitch/demo"
-                  >
-                    Demo
-                  </a>
+                  <Link to="/demo">Demo</Link>
                 </li>
                 <li>
                   <a
@@ -49,23 +47,26 @@ export default class Footer extends Component {
                     rel="noopener noreferrer"
                     href="https://intercom.help/teamstitch"
                   >
-                    Support
+                    Help Center
                   </a>
+                </li>
+                <li>
+                  <Link to="/hipaa">HIPAA</Link>
                 </li>
               </ul>
             </Col>
 
             <Col xs={6} md={3}>
-              <h5>Company</h5>
+              <h5>Legal</h5>
               <ul className="list-unstyled">
-                <li>
-                  <Link to="/customers">Customers</Link>
-                </li>
                 <li>
                   <Link to="/privacy-policy">Privacy Policy</Link>
                 </li>
                 <li>
                   <Link to="/terms-of-service">Terms of Service</Link>
+                </li>
+                <li>
+                  <Link to="/baa">BAA</Link>
                 </li>
               </ul>
             </Col>
@@ -75,8 +76,8 @@ export default class Footer extends Component {
               <address>
                 <strong>Stitch Technologies, Inc.</strong>
                 <br />
-                188 King St. PH9<br />
-                San Francisco, CA 94107<br />
+                156 2nd Street #201<br />
+                San Francisco, CA 94105<br />
                 <a href="tel:+16502823388">+1 (650) 282-3388</a>
                 <a href="mailto:support@teamstitch.com">
                   support@teamstitch.com

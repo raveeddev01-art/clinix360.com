@@ -23,6 +23,8 @@ defmodule StitchConnect.Web.Router do
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :api
 
+    post "/request-demo", UserController, :request_demo
+
     # Onboarding routes for new users.
     get "/users/validate-username", UserController, :validate_username
     post "/users", UserController, :create
@@ -57,12 +59,16 @@ defmodule StitchConnect.Web.Router do
     pipe_through :browser
 
     get "/", HomeController, :index
+    get "/demo", HomeController, :index
     get "/connect", HomeController, :index
     get "/engage", HomeController, :index
     get "/manage", HomeController, :index
     get "/pricing", HomeController, :index
     get "/downloads", HomeController, :index
+    get "/pilot", HomeController, :index
+    get "/jobs", HomeController, :index
     get "/customers", HomeController, :index
+    get "/blog", HomeController, :index
     get "/customers/luminance-recovery", HomeController, :index
     get "/customers/princeton-brain-spine", HomeController, :index
     get "/customers/dermatology-skin-surgery-institute", HomeController, :index

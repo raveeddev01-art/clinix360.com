@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 
 import Header from "../components/header";
+import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-import CreateTeamForm from "../components/create-team";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
-import Panel from "react-bootstrap/lib/Panel";
 
 export default class CasePBSC extends Component {
   render() {
@@ -27,24 +25,24 @@ export default class CasePBSC extends Component {
           <div className="overview text-center">
             <div className="container">
               <Row>
-                <Col sm={3}>
-                  <h4 className="text-uppercase">Specialty</h4>
-                  <p className="m-b-0">Neurosurgical</p>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Specialty</h5>
+                  <p>Neurosurgical</p>
                 </Col>
 
-                <Col sm={3}>
-                  <h4 className="text-uppercase">Employees</h4>
-                  <p className="m-b-0">60 Staff</p>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Employees</h5>
+                  <p>60 Staff</p>
                 </Col>
 
-                <Col sm={3}>
-                  <h4 className="text-uppercase">Patients</h4>
-                  <p className="m-b-0">5,500 visits</p>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Patients</h5>
+                  <p>5,500 visits</p>
                 </Col>
 
-                <Col sm={3}>
-                  <h4 className="text-uppercase">Location</h4>
-                  <p className="m-b-0">NJ & PA</p>
+                <Col xs={6} sm={3}>
+                  <h5 className="text-uppercase">Location</h5>
+                  <p>NJ & PA</p>
                 </Col>
               </Row>
             </div>
@@ -224,18 +222,9 @@ export default class CasePBSC extends Component {
               </p>
             </div>
           </div>
-
-          <div className="sign-up-section">
-            <div className="container">
-              <Row>
-                <Col sm={8} smOffset={2}>
-                  <h3 className="text-center m-b-30">Ready to start?</h3>
-                  <CreateTeamForm />
-                </Col>
-              </Row>
-            </div>
-          </div>
         </div>
+
+        <GetStarted />
         <Footer />
       </div>
     );

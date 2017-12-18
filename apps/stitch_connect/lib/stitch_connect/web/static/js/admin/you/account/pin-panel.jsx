@@ -20,7 +20,7 @@ class PinPanel extends Component {
   }
 
   onInvalid = () => {
-    this.setState({ formValid: false, pin: "" });
+    this.setState({ formValid: false });
   };
 
   onValid = pin => {

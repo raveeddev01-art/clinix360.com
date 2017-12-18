@@ -14,7 +14,7 @@ export default class Hipaa extends Component {
         <Header />
         <div className="container security-page">
           <Row>
-            <Col sm={8}>
+            <Col sm={8} smOffset={2}>
               <div className="page-header">
                 <h1>HIPAA</h1>
               </div>
@@ -193,20 +193,6 @@ export default class Hipaa extends Component {
                 complete your HIPAA compliance. If you’re the admin for your
                 team, you’ll be prompted to complete the BAA after creating your
                 account.
-              </p>
-            </Col>
-
-            <Col sm={3} smOffset={1}>
-              <div className="page-header">
-                <h3>Contact Us</h3>
-              </div>
-              <p className="small">
-                Questions? Comments? We love to hear from you and we’re here to
-                help. Contact us directly at{" "}
-                <a href="mailto:support@teamstitch.com">
-                  support@teamstitch.com
-                </a>{" "}
-                and we’ll reply right away.
               </p>
             </Col>
           </Row>

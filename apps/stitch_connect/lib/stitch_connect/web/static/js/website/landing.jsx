@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import cx from "classnames";
+
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
+import Button from "react-bootstrap/lib/Button";
 
 import CreateTeamForm from "./components/create-team";
 import CUSTOMERS from "./components/customers-logos";
@@ -63,7 +65,13 @@ export default class Landing extends Component {
                     collaborate on any device.
                   </h3>
 
-                  <CreateTeamForm />
+                  <Button
+                    bsSize="lg"
+                    bsStyle="primary"
+                    href="https://teamstitch.com/signup/email"
+                  >
+                    Start Trial
+                  </Button>
                 </div>
               </Col>
 

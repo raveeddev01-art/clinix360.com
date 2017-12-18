@@ -49,7 +49,7 @@ export default class NavItemInviteMembers extends Component {
 
   render() {
     const { presenceStore, groupStore, usersStore } = this.props;
-    const users = usersStore.users.filter(u => {
+    const users = usersStore.activatedUsers.filter(u => {
       return groupStore.group.users.findIndex(gu => gu.id === u.id) === -1;
     });
 

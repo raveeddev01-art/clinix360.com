@@ -13,7 +13,11 @@ import Engage from "./products/engage";
 import Manage from "./products/manage";
 import Pricing from "./resources/pricing";
 import Downloads from "./resources/downloads";
+import Demo from "./resources/demo";
+import Pilot from "./resources/pilot";
+import Jobs from "./resources/jobs";
 import Customers from "./resources/customers";
+import Blog from "./resources/blog";
 import CaseLuminance from "./case-studies/luminance";
 import CasePBSC from "./case-studies/pbsc";
 import CaseDSSI from "./case-studies/dssi";
@@ -31,14 +35,18 @@ class WebsiteRouter extends Component {
       <div className="website-wrapper">
         <ScrollToTop>
           <Switch>
-            <Route exact path="/" component={Landing} />
-            {/* <Route exact path="/" component={Homepage} /> */}
+            {/* <Route exact path="/" component={Landing} /> */}
+            <Route exact path="/" component={Homepage} />
+            <Route exact path="/demo" component={Demo} />
             <Route exact path="/connect" component={Connect} />
             <Route exact path="/engage" component={Engage} />
             <Route exact path="/manage" component={Manage} />
             <Route exact path="/pricing" component={Pricing} />
             <Route exact path="/downloads" component={Downloads} />
+            <Route exact path="/pilot" component={Pilot} />
+            <Route exact path="/jobs" component={Jobs} />
             <Route exact path="/customers" component={Customers} />
+            <Route exact path="/blog" component={Blog} />
             <Route
               exact
               path="/customers/luminance-recovery"

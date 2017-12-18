@@ -21,6 +21,12 @@ export default class Footer extends Component {
                 <li>
                   <a href={`https://${applicationHost}/manage`}>Manage</a>
                 </li>
+                <li>
+                  <a href={`https://${applicationHost}/downloads`}>Downloads</a>
+                </li>
+                <li>
+                  <a href={`https://${applicationHost}/customers`}>Customers</a>
+                </li>
               </ul>
             </Col>
 
@@ -31,16 +37,7 @@ export default class Footer extends Component {
                   <a href={`https://${applicationHost}/pricing`}>Pricing</a>
                 </li>
                 <li>
-                  <a href={`https://${applicationHost}/downloads`}>Downloads</a>
-                </li>
-                <li>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="https://calendly.com/teamstitch/demo"
-                  >
-                    Demo
-                  </a>
+                  <a href={`https://${applicationHost}/demo`}>Demo</a>
                 </li>
                 <li>
                   <a
@@ -48,8 +45,11 @@ export default class Footer extends Component {
                     rel="noopener noreferrer"
                     href="https://intercom.help/teamstitch"
                   >
-                    Support
+                    Help Center
                   </a>
+                </li>
+                <li>
+                  <a href={`https://${applicationHost}/hipaa`}>HIPAA</a>
                 </li>
               </ul>
             </Col>
@@ -57,9 +57,6 @@ export default class Footer extends Component {
             <Col xs={6} md={3}>
               <h5>Company</h5>
               <ul className="list-unstyled">
-                <li>
-                  <a href={`https://${applicationHost}/customers`}>Customers</a>
-                </li>
                 <li>
                   <a href={`https://${applicationHost}/privacy-policy`}>
                     Privacy Policy
@@ -69,6 +66,9 @@ export default class Footer extends Component {
                   <a href={`https://${applicationHost}/terms-of-service`}>
                     Terms of Service
                   </a>
+                </li>
+                <li>
+                  <a href={`https://${applicationHost}/baa`}>BAA</a>
                 </li>
               </ul>
             </Col>

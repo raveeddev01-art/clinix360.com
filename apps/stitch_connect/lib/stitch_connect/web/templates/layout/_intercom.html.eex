@@ -1,6 +1,8 @@
 <script>
   window.intercomSettings = {
-    app_id: "jig8cj9z",
+    app_id: '<%= System.get_env("INTERCOM_APP_ID") %>',
+    user_id: window.currentUser.id,
+    user_hash: window.intercomUserHash,
     custom_launcher_selector: '#intercom-link'
   };
 </script>

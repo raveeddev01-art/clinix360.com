@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   alias Stitch.{Accounts.User, UserQueries}
-  alias StitchConnect.Web.{TeamChannel, EventsChannel}
+  alias StitchConnect.Web.{TeamChannel}
 
   action_fallback StitchConnect.Web.Api.V1.FallbackController
 
@@ -19,6 +19,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
          {:ok, _user} <- Stitch.Accounts.Admin.activate(conn.assigns.team, id) do
       Stitch.Billing.update_subscriber_count(conn.assigns.team)
+      TeamChannel.broadcast_activated(conn.assigns.team, String.to_integer(id))
       json(conn, %{message: "Account has been activated."})
     else
       {:error, :not_found} ->
@@ -36,7 +37,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
          {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do
       Stitch.Billing.update_subscriber_count(conn.assigns.team)
-      EventsChannel.broadcast_deactivated(String.to_integer(id))
+      TeamChannel.broadcast_deactivated(conn.assigns.team, String.to_integer(id))
       json(conn, %{message: "Account has been deactivated."})
     else
       {:error, :not_found} ->
@@ -170,6 +171,18 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Phone number is invalid."})
     end
+  end
+
+  def request_demo(conn, %{"fullName" => full_name, "email" => email, "phoneNumber" => phone_number, "companyName" => company}) do
+    properties = %{
+      "full_name"     => full_name,
+      "email"         => email,
+      "phone_number"  => phone_number,
+      "company"       => company,
+    }
+
+    Stitch.Analytics.track("Requested Demo", properties)
+    json(conn, %{status: "ok"})
   end
 
   def upload_profile_image(conn, %{"url" => url}) do

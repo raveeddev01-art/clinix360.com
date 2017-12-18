@@ -2,39 +2,42 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import Header from "../components/header";
+import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
+
+import Button from "react-bootstrap/lib/Button";
 
 export default class Manage extends Component {
   render() {
     return (
-      <div>
+      <div className="product-page">
         <Header />
         <div className="subheader">
           <div className="container">
             <div className="landing-message text-center">
               <h1>Manage</h1>
-              <h3>Patient Management</h3>
+              <h3 className="m-b-30">Patient Management</h3>
 
-              <a
+              <Button
+                bsSize="lg"
+                bsStyle="primary"
+                target="_blank"
                 href="https://teamstitch.typeform.com/to/Yt22AI"
-                className="btn btn-lg btn-default"
               >
-                Join Beta
-              </a>
+                Request Access
+              </Button>
             </div>
           </div>
         </div>
 
-        <div className="product-feature">
+        <div className="feature">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="product-info">
-                  <h2 className="alt-heading">
-                    Manage your patient data securely.
-                  </h2>
+                <div className="info m-b-40">
+                  <h2>Manage your patient data securely.</h2>
 
-                  <p className="alt-text">
+                  <p>
                     Stitch Manage offers healthcare teams a HIPAA-compliant,
                     patient collaboration experience that transforms care
                     coordination. Stitch Manage includes everything you need to
@@ -47,38 +50,34 @@ export default class Manage extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="product-image">
-                  <img
-                    src="/images/manage-feature-1-alt.png"
-                    alt="Stitch Manage"
-                    className="img-responsive"
-                  />
-                </div>
+                <img
+                  src="/images/manage-feature-1-alt.png"
+                  alt="Stitch Manage"
+                  className="img-responsive"
+                />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="product-feature">
+        <div className="feature alt">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="product-image">
-                  <img
-                    src="/images/manage-feature-2.png"
-                    alt="Stitch Manage"
-                    className="img-responsive"
-                  />
-                </div>
+                <img
+                  src="/images/manage-feature-2.png"
+                  alt="Stitch Manage"
+                  className="img-responsive"
+                />
               </div>
 
               <div className="flex-item">
-                <div className="product-info">
-                  <h2 className="alt-heading">
+                <div className="info m-b-40">
+                  <h2>
                     Create a dedicated collaboration space for every patient.
                   </h2>
 
-                  <p className="alt-text">
+                  <p>
                     Stitch Manage creates a patient-centric collaboration space
                     for each patient. Rapidly add in your patient population via
                     individual or batch uploads. Need an MRN? We can
@@ -94,16 +93,14 @@ export default class Manage extends Component {
           </div>
         </div>
 
-        <div className="product-feature">
+        <div className="feature">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="product-info">
-                  <h2 className="alt-heading">
-                    Thread conversations for coordinated care.
-                  </h2>
+                <div className="info m-b-40">
+                  <h2>Thread conversations for coordinated care.</h2>
 
-                  <p className="alt-text">
+                  <p>
                     It's easy for important information to drown in the flow of
                     healthcare conversations. That's why we've built powerful
                     conversation threads into Stitch Manage. Continue the
@@ -117,33 +114,29 @@ export default class Manage extends Component {
               </div>
 
               <div className="flex-item">
-                <div className="product-image">
-                  <img
-                    src="/images/manage-feature-3.png"
-                    alt="Stitch Manage"
-                    className="img-responsive"
-                  />
-                </div>
+                <img
+                  src="/images/manage-feature-3.png"
+                  alt="Stitch Manage"
+                  className="img-responsive"
+                />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="product-feature">
+        <div className="feature alt">
           <div className="container">
             <div className="flex-box">
               <div className="flex-item">
-                <div className="product-image">
-                  <img
-                    src="/images/manage-feature-4.png"
-                    alt="Stitch Manage"
-                    className="img-responsive"
-                  />
-                </div>
+                <img
+                  src="/images/manage-feature-4.png"
+                  alt="Stitch Manage"
+                  className="img-responsive"
+                />
               </div>
 
               <div className="flex-item">
-                <div className="product-info">
+                <div className="info m-b-40">
                   <h2 className="alt-heading">
                     Upload images, audio, or video for access anywhere.
                   </h2>
@@ -164,6 +157,7 @@ export default class Manage extends Component {
           </div>
         </div>
 
+        <GetStarted />
         <Footer />
       </div>
     );

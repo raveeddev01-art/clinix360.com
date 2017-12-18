@@ -1,51 +1,23 @@
-defmodule StitchConnect.Web.LandingPagesTest do
-  use StitchConnect.Web.FeatureCase, async: true
+defmodule StitchConnect.Web.Messages.LandingPagesTest do
+  use StitchConnect.Web.FeatureCase, async: false
 
   import Wallaby.Query, only: [css: 2]
 
-  @tag :start_session
-  test "home page has welcome message", %{session: session} do
-    session
-    |> visit("/")
-    |> assert_has(
-      css(
-        ".landing-message h3",
-        text: "Communicate, write notes, track tasks"
-      )
-    )
-  end
+  defp element(selector, text), do: css(selector, text: text)
 
-  @tag :start_session
-  test "connect page has Connect product information", %{session: session} do
-    session
-    |> visit("/connect")
-    |> assert_has(
-      css(
-        ".product-info h2",
-        text: "Secure all your healthcare communication in one place."
-      )
-    )
-  end
+  test "landing page has all necessary elements" do
+    {:ok, user_1_session} = Wallaby.start_session()
 
-  @tag :start_session
-  test "pricing page has pricing information", %{session: session} do
-    session
-    |> visit("/pricing")
-    |> assert_has(
-      css(
-        ".landing-message h3",
-        text: "Free to start, upgrade when you need."
-      )
-    )
-  end
-
-  @tag :start_session
-  test "downloads page shows clients to download", %{session: session} do
-    session
-    |> visit("/downloads")
-    |> assert_has(css("h3", text: "Mac"))
-    |> assert_has(css("h3", text: "Windows"))
-    |> assert_has(css("h3", text: "iOS"))
-    |> assert_has(css("h3", text: "Android"))
+    # Create two messages in this group with complex sentences.
+    user_1_session
+    |> visit("http://localhost:4001")
+    |> assert_has(element("h1", "The workspace for healthcare teams"))
+    |> assert_has(element(".subheader .btn-default", "REQUEST DEMO"))
+    |> assert_has(element(".subheader .btn-primary", "START TRIAL"))
+    |> assert_has(element(".feature h2", "Connect"))
+    |> assert_has(element(".feature h2", "Engage"))
+    |> assert_has(element(".feature h2", "Manage"))
+    |> assert_has(element(".get-started .btn-primary", "START TRIAL"))
+    |> assert_has(element(".get-started .btn-default", "SCHEDULE DEMO"))
   end
 end
