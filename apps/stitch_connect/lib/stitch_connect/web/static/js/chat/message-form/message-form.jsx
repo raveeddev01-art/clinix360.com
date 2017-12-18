@@ -117,6 +117,7 @@ class MessageForm extends Component {
       const word = this.getCurrentWord();
       const firstLetter = word.substr(0, 1);
       const filter = word.substr(1);
+
       this.setState({
         searchFilter: "",
         openMentionMenu: false,
@@ -310,6 +311,7 @@ class MessageForm extends Component {
 
   render() {
     const { openMentionMenu, searchFilter, openEmojiSearch } = this.state;
+
     return (
       <div className="message-form">
         <JumpingIndicator />
