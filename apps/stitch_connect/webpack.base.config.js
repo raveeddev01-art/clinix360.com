@@ -2,8 +2,9 @@ const path = require("path");
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
-module.exports = [
+const config = [
   {
     entry: {
       index: "./lib/stitch_connect/web/static/js/index.js",
@@ -85,3 +86,11 @@ module.exports = [
     ]
   }
 ];
+
+if (process.env.ANALYZE) {
+  config[0].plugins.push(new BundleAnalyzerPlugin({
+    analyzerMode: "static"
+  }));
+}
+
+module.exports = config;
