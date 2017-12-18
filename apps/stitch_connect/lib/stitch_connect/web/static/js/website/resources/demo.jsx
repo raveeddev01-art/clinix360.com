@@ -66,7 +66,7 @@ export default class Demo extends Component {
             <br className="hidden-xs" />Learn how Stitch works today.
           </h3>
           <img
-            src="/images/homepage-mbp.png"
+            src="/images/homepage-platform.png"
             alt="Stitch Platform"
             className="img-responsive hidden-xs hidden-sm"
           />

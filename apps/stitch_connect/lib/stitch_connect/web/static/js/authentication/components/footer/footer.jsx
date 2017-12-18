@@ -51,6 +51,15 @@ export default class Footer extends Component {
                 <li>
                   <a href={`https://${applicationHost}/hipaa`}>HIPAA</a>
                 </li>
+                <li>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://medium.com/stitch-health"
+                  >
+                    Blog
+                  </a>
+                </li>
               </ul>
             </Col>
 
