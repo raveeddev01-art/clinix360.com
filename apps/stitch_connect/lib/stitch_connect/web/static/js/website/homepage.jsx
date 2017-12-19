@@ -46,7 +46,7 @@ export default class Homepage extends Component {
               <CreateTeam />
 
               <Button
-                href={`https://${applicationHost}/signup/email`}
+                href="https://teamstitch.com/signup/email"
                 className="create-team-mobile"
                 block
               >

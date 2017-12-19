@@ -25,7 +25,7 @@ export default class GetStarted extends Component {
               <Button
                 bsStyle="primary"
                 block
-                href={`https://${applicationHost}/signup/email`}
+                href="https://teamstitch.com/signup/email"
               >
                 Create Team
               </Button>
