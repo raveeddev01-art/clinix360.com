@@ -127,8 +127,8 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
-  def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
-    create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group)
+  def create(group_id, user, %{"text_content" => text_content, "request_id" => request_id}, online_in_group) do
+    create(group_id, user, %{"type" => "chat", "text_content" => text_content, "request_id" => request_id}, online_in_group)
   end
 
   def create(_group_id, _user, _attrs, _online_in_group) do
