@@ -99,6 +99,10 @@
       opacity: 0.8;
     }
 
+    p {
+      font-size: 13px;
+    }
+
     .btn-default {
       color: #036
     }
@@ -130,6 +134,10 @@
   @media (min-width: 458px) {
     .subheader form {
       display: block;
+    }
+
+    .subheader p {
+      font-size: 14px;
     }
 
     .subheader .create-team-mobile {
