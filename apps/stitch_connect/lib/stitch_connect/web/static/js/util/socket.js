@@ -9,8 +9,8 @@ if (window.authenticationToken !== "") {
         sessionId: window.sessionId,
         applicationVersion: window.applicationVersion
       },
-      timeout: 10000,
-      heartbeatIntervalMs: 10000,
+      timeout: 5000,
+      heartbeatIntervalMs: 5000,
       enableManualRejoin: true
     }
   );
