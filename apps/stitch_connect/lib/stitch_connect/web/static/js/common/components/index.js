@@ -19,6 +19,8 @@ import MessageHeader from "./messages/message-header/message-header";
 import ReactionPicker from "./messages/reaction-picker";
 import AddonMessage from "./messages/addon-message";
 
+import SplitLayout from "./split-layout";
+
 export {
   Card,
   Groups,
@@ -38,5 +40,6 @@ export {
   MessageFooter,
   MessageHeader,
   AddonMessage,
-  ReactionPicker
+  ReactionPicker,
+  SplitLayout
 };

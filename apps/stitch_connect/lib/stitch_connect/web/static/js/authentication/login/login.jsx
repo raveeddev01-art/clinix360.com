@@ -6,6 +6,8 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import Alert from "react-bootstrap/lib/Alert";
 
+import { SplitLayout } from "common/components";
+
 @inject("registrationStore", "titleStore")
 @observer
 class Login extends Component {
@@ -77,89 +79,95 @@ class Login extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.errorMessage && (
-          <Alert bsStyle="danger">{this.state.errorMessage}</Alert>
-        )}
-        {this.state.passwordReset && (
-          <Alert bsStyle="success">Your password is now reset.</Alert>
-        )}
-        <div className="authentication-card text-center m-b-20">
-          <h2>{this.props.registrationStore.teamName}</h2>
-          <h5 className="text-muted url-heading">
-            {this.props.registrationStore.teamSlug}.teamstitch.com
+      <SplitLayout>
+        <div className="authentication-wrapper">
+          {this.state.errorMessage && (
+            <Alert bsStyle="danger">{this.state.errorMessage}</Alert>
+          )}
+          {this.state.passwordReset && (
+            <Alert bsStyle="success">Your password is now reset.</Alert>
+          )}
+          <div className="authentication-card text-center m-b-20">
+            <h2>{this.props.registrationStore.teamName}</h2>
+            <h5 className="text-muted url-heading">
+              {this.props.registrationStore.teamSlug}.teamstitch.com
+            </h5>
+
+            <h5>
+              Enter your <strong>email address</strong> and{" "}
+              <strong>password</strong>.
+            </h5>
+
+            <form action="/login" method="post" onSubmit={this.handleSubmit}>
+              <input
+                type="hidden"
+                name="_csrf_token"
+                value={window.csrfToken}
+              />
+
+              <FormGroup bsSize="large">
+                <FormControl
+                  name="email"
+                  required
+                  autoFocus
+                  type="email"
+                  placeholder="Email"
+                  value={this.state.email}
+                  onChange={this.handleChange}
+                />
+              </FormGroup>
+
+              <FormGroup bsSize="large">
+                <FormControl
+                  name="password"
+                  required
+                  type="password"
+                  placeholder="Password"
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                />
+              </FormGroup>
+
+              <Button
+                type="submit"
+                bsStyle="primary"
+                bsSize="lg"
+                className="btn-block"
+                disabled={!this.state.email || !this.state.password}
+              >
+                Login
+                {this._renderLoadingIcon()}
+              </Button>
+
+              <h5>
+                Forgot your password?{" "}
+                <Link to="/reset-password">
+                  <strong>Reset Password</strong>
+                </Link>
+              </h5>
+            </form>
+          </div>
+
+          <h5>
+            Don't have an account with this team?<br />
+            <strong>Contact the team administrator</strong>.
           </h5>
 
           <h5>
-            Enter your <strong>email address</strong> and{" "}
-            <strong>password</strong>.
+            Wrong team?{" "}
+            <a href={`https://${applicationHost}/signin`}>
+              <strong>Sign in to a different team</strong>
+            </a>
           </h5>
 
-          <form action="/login" method="post" onSubmit={this.handleSubmit}>
-            <input type="hidden" name="_csrf_token" value={window.csrfToken} />
-
-            <FormGroup bsSize="large">
-              <FormControl
-                name="email"
-                required
-                autoFocus
-                type="email"
-                placeholder="Email"
-                value={this.state.email}
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <FormGroup bsSize="large">
-              <FormControl
-                name="password"
-                required
-                type="password"
-                placeholder="Password"
-                value={this.state.password}
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <Button
-              type="submit"
-              bsStyle="primary"
-              bsSize="lg"
-              className="btn-block"
-              disabled={!this.state.email || !this.state.password}
-            >
-              Login
-              {this._renderLoadingIcon()}
-            </Button>
-
-            <h5>
-              Forgot your password?{" "}
-              <Link to="/reset-password">
-                <strong>Reset Password</strong>
-              </Link>
-            </h5>
-          </form>
+          <h5>
+            Just getting started?{" "}
+            <a href={`https://${applicationHost}/signup/email`}>
+              <strong>Create a new team</strong>
+            </a>
+          </h5>
         </div>
-
-        <h5>
-          Don't have an account with this team?<br />
-          <strong>Contact the team administrator</strong>.
-        </h5>
-
-        <h5>
-          Wrong team?{" "}
-          <a href={`https://${applicationHost}/signin`}>
-            <strong>Sign in to a different team</strong>
-          </a>
-        </h5>
-
-        <h5>
-          Just getting started?{" "}
-          <a href={`https://${applicationHost}/signup/email`}>
-            <strong>Create a new team</strong>
-          </a>
-        </h5>
-      </div>
+      </SplitLayout>
     );
   }
 }
