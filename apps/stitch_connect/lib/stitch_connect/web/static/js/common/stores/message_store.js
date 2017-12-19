@@ -746,12 +746,14 @@ class MessageStore {
 
   @action
   onJoinGroupChannel = data => {
-    // commenting out below for now until phoenix socket is reviewed by Chris
-    // if (this.group.id === this.loadedGroupId) {
-    //   return; // just ignore data coming if it's rejoined on same channel. It happened just for reconnecting socket.
-    // }
-
-    this.messages = data.messages;
+    if (this.group.id === this.loadedGroupId) {
+      // new message has more precedance by putting it as first param.
+      this.messages = _.unionBy(data.messages, this.messages, msg => {
+        return msg.request_id === msg.id ? msg.request_id : msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
+      });
+    } else {
+      this.messages = data.messages;
+    }
 
     if (data.messages.length < 30) {
       this.loadedAll = true;
