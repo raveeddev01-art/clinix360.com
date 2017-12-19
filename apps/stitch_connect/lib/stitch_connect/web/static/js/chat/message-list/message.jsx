@@ -303,12 +303,21 @@ class Message extends Component {
 
   renderName(message) {
     const { usersStore } = this.props;
-    const userId = message.user.id;
+    const { user: { id: userId }, inserted_at: insertedAt } = message;
     const mine = userId === currentUser.id;
     const user = usersStore.usersById[userId];
 
     return !mine && !message.is_sequential ? (
-      <div className="name">{`${user.first_name} ${user.last_name}`}</div>
+      <div className="name">
+        {`${user.first_name} ${user.last_name}`}
+        <span
+          className="time"
+          data-time={moment
+            .utc(insertedAt)
+            .local()
+            .format("hh:mm A")}
+        />
+      </div>
     ) : null;
   }
 
@@ -405,9 +414,11 @@ class Message extends Component {
                 </div>
               </div>
 
-              <div className="message-status">
-                {mine && this.renderStatus(message)}
-              </div>
+              {mine && (
+                <div className="message-status">
+                  {this.renderStatus(message)}
+                </div>
+              )}
 
               <MessageInfoModal
                 show={this.state.showInfoModal}
