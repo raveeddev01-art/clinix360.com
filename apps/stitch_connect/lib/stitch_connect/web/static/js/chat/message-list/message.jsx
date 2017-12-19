@@ -325,10 +325,19 @@ class Message extends Component {
   }
 
   renderStatus(message) {
-    if (message.status) return message.status;
+    if (message.status) return this.renderTempStatus(message.status);
     if (this.props.groupStore.isSelfDM) return null;
 
     return this.renderReadStatus(message);
+  }
+
+  renderTempStatus(status) {
+    return (
+      <div>
+        {status === "sending" && <i className="fa fa-circle-o" />}
+        {status === "failed" && <i className="fa fa-times-circle-o" />}
+      </div>
+    );
   }
 
   renderReadStatus(message) {
@@ -344,7 +353,13 @@ class Message extends Component {
         overlay={<Tooltip id="message-info">Show Info</Tooltip>}
       >
         <div className="message-read-status" onClick={this.showInfoModal}>
-          {readUsers}/{deliveredToUsers} Read
+          {!deliveredToUsers && <i className="fa fa-circle-o" />}
+          {deliveredToUsers > readUsers && (
+            <i className="fa fa-check-circle-o" />
+          )}
+          {deliveredToUsers === readUsers && (
+            <i className="fa fa-check-circle" />
+          )}
         </div>
       </OverlayTrigger>
     );
@@ -408,31 +423,35 @@ class Message extends Component {
               name={`message_${message.id}`}
               className={messageClassName}
             >
-              {this.renderName(message)}
-              <OverlayTrigger
-                placement={mine ? "left" : "right"}
-                overlay={this.renderTimestampTooltip(message)}
-              >
-                <div className={contentClassName}>
-                  <div className="message-header">
-                    <div className="actions">{this.renderActions(message)}</div>
+              <div className="message-main">
+                {this.renderName(message)}
+                <OverlayTrigger
+                  placement={mine ? "left" : "right"}
+                  overlay={this.renderTimestampTooltip(message)}
+                >
+                  <div className={contentClassName}>
+                    <div className="message-header">
+                      <div className="actions">
+                        {this.renderActions(message)}
+                      </div>
 
-                    <ReactionPicker
-                      message={message}
-                      onSelectReaction={this.onSelectEmoji}
-                      show={this.state.showEmojiPicker}
-                      style={this.getEmojiMartStyle()}
-                    />
+                      <ReactionPicker
+                        message={message}
+                        onSelectReaction={this.onSelectEmoji}
+                        show={this.state.showEmojiPicker}
+                        style={this.getEmojiMartStyle()}
+                      />
 
-                    {this.renderStar(message)}
-                    {this.renderPin(message)}
+                      {this.renderStar(message)}
+                      {this.renderPin(message)}
+                    </div>
+
+                    <div className="message-content-wrapper">
+                      <MessageContent message={message} />
+                    </div>
                   </div>
-
-                  <div className="message-content-wrapper">
-                    <MessageContent message={message} />
-                  </div>
-                </div>
-              </OverlayTrigger>
+                </OverlayTrigger>
+              </div>
 
               {mine && (
                 <div className="message-status">
