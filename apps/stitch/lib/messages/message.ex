@@ -12,6 +12,7 @@ defmodule Stitch.Message do
     belongs_to :user, Stitch.Accounts.User
     belongs_to :group, Stitch.Group
     belongs_to :pinned_by, Stitch.Accounts.User, foreign_key: :pinned_by_id
+    field :request_id, :string
     field :deleted, :boolean, default: false
     field :edited_at, :utc_datetime
     field :text_content, :string
@@ -51,7 +52,7 @@ defmodule Stitch.Message do
 
   def chat_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [:type, :request_id, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
     |> check_for_links
@@ -110,7 +111,7 @@ defmodule Stitch.Message do
       {acc_map, acc_list}
     end)
 
-    message_struct = %Message{group_id: group_id, user_id: user.id}
+    message_struct = %Message{group_id: group_id, user_id: user.id, request_id: attrs["request_id"]}
     attrs = Map.merge(attrs, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
 
     Multi.new
