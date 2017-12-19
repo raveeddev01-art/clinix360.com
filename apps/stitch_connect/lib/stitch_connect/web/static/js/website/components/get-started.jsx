@@ -23,16 +23,15 @@ export default class GetStarted extends Component {
 
             <div className="flex-item text-right">
               <Button
-                bsSize="lg"
                 bsStyle="primary"
                 block
                 href={`https://${applicationHost}/signup/email`}
               >
-                Start Trial
+                Create Team
               </Button>
 
               <LinkContainer to="/demo">
-                <Button bsSize="lg">Request Demo</Button>
+                <Button>Request Demo</Button>
               </LinkContainer>
             </div>
           </div>

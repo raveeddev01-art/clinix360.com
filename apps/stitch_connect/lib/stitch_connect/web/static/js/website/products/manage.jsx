@@ -19,9 +19,8 @@ export default class Manage extends Component {
               <h3 className="m-b-30">Patient Management</h3>
 
               <Button
-                bsSize="lg"
-                bsStyle="primary"
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://teamstitch.typeform.com/to/Yt22AI"
               >
                 Request Access

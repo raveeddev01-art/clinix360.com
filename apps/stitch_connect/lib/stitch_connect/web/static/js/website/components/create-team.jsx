@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Form from "react-bootstrap/lib/Form";
+import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import Cookies from "js-cookie";
@@ -42,8 +43,8 @@ class CreateTeam extends Component {
     const { email } = this.state;
 
     return (
-      <Form className="form-holder" onSubmit={this.onSubmit}>
-        <div className="form-input">
+      <Form inline onSubmit={this.onSubmit}>
+        <FormGroup>
           <FormControl
             required
             id="createTeam"
@@ -52,11 +53,12 @@ class CreateTeam extends Component {
             value={email}
             onChange={this.onChange}
           />
-        </div>
+          <Button type="submit" bsStyle="primary" className="btn-form">
+            Create Team
+          </Button>
+        </FormGroup>
 
-        <Button type="submit" bsStyle="primary" bsSize="large">
-          Create Team
-        </Button>
+        {/* <Button type="submit">Create Team</Button> */}
       </Form>
     );
   }

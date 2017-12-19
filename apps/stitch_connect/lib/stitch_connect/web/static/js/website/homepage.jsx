@@ -4,6 +4,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import cx from "classnames";
 
 import Header from "./components/header";
+import CreateTeam from "./components/create-team";
 import CUSTOMERS from "./components/customers-logos";
 import GetStarted from "./components/get-started";
 import Footer from "./components/footer";
@@ -41,19 +42,22 @@ export default class Homepage extends Component {
               device.
             </h3>
 
-            <div className="m-b-30">
-              <LinkContainer to="/demo">
-                <Button bsSize="lg">Request Demo</Button>
-              </LinkContainer>
+            <div className="m-b-20">
+              <CreateTeam />
 
               <Button
-                bsSize="lg"
-                bsStyle="primary"
                 href={`https://${applicationHost}/signup/email`}
+                className="create-team-mobile"
+                block
               >
-                Start Trial
+                Create Team
               </Button>
             </div>
+
+            <p className="m-b-30">
+              Get started with an unlimited number of people on our free 2-week
+              trial.
+            </p>
 
             <div className="mbp">
               <img
@@ -95,11 +99,7 @@ export default class Homepage extends Component {
                     </p>
 
                     <LinkContainer to="/connect">
-                      <Button
-                        bsStyle="primary"
-                        bsSize="large"
-                        className="m-b-40"
-                      >
+                      <Button bsStyle="primary" className="m-b-40">
                         Learn More
                       </Button>
                     </LinkContainer>
@@ -144,11 +144,7 @@ export default class Homepage extends Component {
                     </p>
 
                     <LinkContainer to="/engage">
-                      <Button
-                        bsStyle="primary"
-                        bsSize="large"
-                        className="m-b-40"
-                      >
+                      <Button bsStyle="primary" className="m-b-40">
                         Learn More
                       </Button>
                     </LinkContainer>
@@ -177,11 +173,7 @@ export default class Homepage extends Component {
                     </p>
 
                     <LinkContainer to="/manage">
-                      <Button
-                        bsStyle="primary"
-                        bsSize="large"
-                        className="m-b-40"
-                      >
+                      <Button bsStyle="primary" className="m-b-40">
                         Learn More
                       </Button>
                     </LinkContainer>
