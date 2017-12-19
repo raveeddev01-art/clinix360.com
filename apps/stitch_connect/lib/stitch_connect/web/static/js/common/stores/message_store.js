@@ -120,6 +120,11 @@ class MessageStore {
     return this.getMessageAfterTimestamp(this.lastReadAt);
   }
 
+  @computed
+  get lastOtherUserMessage() {
+    return this.messages.find(m => m.user_id !== currentUser.id) || {};
+  }
+
   /**
    * Returns the position of first unread message in chat div
    *
