@@ -651,6 +651,7 @@
       flex: 1;
       font-size: 16px;
       font-weight: bold;
+      display: flex;
 
       .time {
         margin-left: 8px;
@@ -663,6 +664,14 @@
           color: #999;
           font-size: 12px;
           font-weight: 400;
+        }
+      }
+
+      &.self {
+        flex-direction: row-reverse;
+        .time {
+          margin-right: 8px;
+          margin-left: 0;
         }
       }
     }

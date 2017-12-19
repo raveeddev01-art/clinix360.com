@@ -305,10 +305,13 @@ class Message extends Component {
     const { usersStore } = this.props;
     const { user: { id: userId }, inserted_at: insertedAt } = message;
     const mine = userId === currentUser.id;
+    const blockClassName = cx("name", {
+      self: mine
+    });
     const user = usersStore.usersById[userId];
 
-    return !mine && !message.is_sequential ? (
-      <div className="name">
+    return !message.is_sequential ? (
+      <div className={blockClassName}>
         {`${user.first_name} ${user.last_name}`}
         <span
           className="time"
