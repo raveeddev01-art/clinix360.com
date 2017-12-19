@@ -748,7 +748,7 @@ export class Socket {
   sendHeartbeat(){ if(!this.isConnected()){ return }
     if(this.pendingHeartbeatRef){
       this.pendingHeartbeatRef = null
-      if (enableManualRejoin) {
+      if (this.enableManualRejoin) {
         this.log("transport", "heartbeat timeout. Triggering onClose so that user can close connection manually")
         this.onConnClose();
       } else {
