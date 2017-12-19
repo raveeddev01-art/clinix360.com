@@ -1,4 +1,4 @@
-import { Socket } from "phoenix";
+import { Socket } from "lib/pheonix";
 
 if (window.authenticationToken !== "") {
   window.socket = new Socket(
