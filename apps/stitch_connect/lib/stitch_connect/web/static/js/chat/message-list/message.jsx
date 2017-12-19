@@ -350,6 +350,18 @@ class Message extends Component {
     );
   }
 
+  renderTimestampTooltip(message) {
+    const { inserted_at: insertedAt } = message;
+    return (
+      <Tooltip id={`timestamp_tooltip_${message.id}`}>
+        {moment
+          .utc(insertedAt)
+          .local()
+          .format("hh:mm A")}
+      </Tooltip>
+    );
+  }
+
   render() {
     const { message, messageStore } = this.props;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
@@ -397,25 +409,30 @@ class Message extends Component {
               className={messageClassName}
             >
               {this.renderName(message)}
-              <div className={contentClassName}>
-                <div className="message-header">
-                  <div className="actions">{this.renderActions(message)}</div>
+              <OverlayTrigger
+                placement={mine ? "left" : "right"}
+                overlay={this.renderTimestampTooltip(message)}
+              >
+                <div className={contentClassName}>
+                  <div className="message-header">
+                    <div className="actions">{this.renderActions(message)}</div>
 
-                  <ReactionPicker
-                    message={message}
-                    onSelectReaction={this.onSelectEmoji}
-                    show={this.state.showEmojiPicker}
-                    style={this.getEmojiMartStyle()}
-                  />
+                    <ReactionPicker
+                      message={message}
+                      onSelectReaction={this.onSelectEmoji}
+                      show={this.state.showEmojiPicker}
+                      style={this.getEmojiMartStyle()}
+                    />
 
-                  {this.renderStar(message)}
-                  {this.renderPin(message)}
+                    {this.renderStar(message)}
+                    {this.renderPin(message)}
+                  </div>
+
+                  <div className="message-content-wrapper">
+                    <MessageContent message={message} />
+                  </div>
                 </div>
-
-                <div className="message-content-wrapper">
-                  <MessageContent message={message} />
-                </div>
-              </div>
+              </OverlayTrigger>
 
               {mine && (
                 <div className="message-status">
