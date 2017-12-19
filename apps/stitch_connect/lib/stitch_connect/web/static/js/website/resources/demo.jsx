@@ -136,8 +136,8 @@ export default class Demo extends Component {
                 />
               </FormGroup>
 
-              <Button type="submit" bsSize="lg" bsStyle="primary" block>
-                Request a demo
+              <Button type="submit" bsStyle="primary" block>
+                Request a Demo
               </Button>
             </form>
           </Panel>

@@ -255,7 +255,6 @@ export default class Pricing extends Component {
 
                             <div className="m-b-20">
                               <Button
-                                bsSize="large"
                                 bsStyle="primary"
                                 target="_blank"
                                 href="https://teamstitch.typeform.com/to/Ncn8x8"
@@ -301,7 +300,6 @@ export default class Pricing extends Component {
                             <h3>Premium</h3>
                             <div className="m-b-20">
                               <Button
-                                bsSize="large"
                                 bsStyle="primary"
                                 target="_blank"
                                 href="https://teamstitch.typeform.com/to/Ncn8x8"
@@ -347,7 +345,6 @@ export default class Pricing extends Component {
                             <h3>Power</h3>
                             <div className="m-b-20">
                               <Button
-                                bsSize="large"
                                 bsStyle="primary"
                                 target="_blank"
                                 href="https://teamstitch.typeform.com/to/Ncn8x8"
@@ -397,7 +394,6 @@ export default class Pricing extends Component {
                             <h3>Basic</h3>
                             <div className="m-b-20">
                               <Button
-                                bsSize="large"
                                 bsStyle="primary"
                                 target="_blank"
                                 href="https://teamstitch.typeform.com/to/Yt22AI"
@@ -443,7 +439,6 @@ export default class Pricing extends Component {
                             <h3>Premium</h3>
                             <div className="m-b-20">
                               <Button
-                                bsSize="large"
                                 bsStyle="primary"
                                 target="_blank"
                                 href="https://teamstitch.typeform.com/to/Yt22AI"
@@ -489,7 +484,6 @@ export default class Pricing extends Component {
                             <h3>Power</h3>
                             <div className="m-b-20">
                               <Button
-                                bsSize="large"
                                 bsStyle="primary"
                                 target="_blank"
                                 href="https://teamstitch.typeform.com/to/Yt22AI"

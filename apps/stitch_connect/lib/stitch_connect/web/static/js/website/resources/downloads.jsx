@@ -40,7 +40,7 @@ export default class Downloads extends Component {
                       />
                       <h3>Connect</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Team Messaging
+                        Team Communication
                       </p>
                     </NavItem>
 
@@ -52,7 +52,7 @@ export default class Downloads extends Component {
                       />
                       <h3>Engage</h3>
                       <p className="m-b-10 hidden-xs hidden-sm">
-                        Patient Messaging
+                        Patient Engagement
                       </p>
                     </NavItem>
 
@@ -86,11 +86,7 @@ export default class Downloads extends Component {
                             <h3>Mac</h3>
                             <div className="m-b-10">macOS 10.8+</div>
 
-                            <Button
-                              bsStyle="primary"
-                              bsSize="large"
-                              href="/download-mac"
-                            >
+                            <Button bsStyle="primary" href="/download-mac">
                               Download
                             </Button>
                           </div>
@@ -108,11 +104,7 @@ export default class Downloads extends Component {
                             <h3>Windows</h3>
                             <div className="m-b-10">Windows 7+</div>
 
-                            <Button
-                              bsStyle="primary"
-                              bsSize="large"
-                              href="/download-win"
-                            >
+                            <Button bsStyle="primary" href="/download-win">
                               Download
                             </Button>
                           </div>
@@ -196,7 +188,6 @@ export default class Downloads extends Component {
 
                             <Button
                               bsStyle="primary"
-                              bsSize="large"
                               target="_blank"
                               rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
@@ -220,7 +211,6 @@ export default class Downloads extends Component {
 
                             <Button
                               bsStyle="primary"
-                              bsSize="large"
                               target="_blank"
                               rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
@@ -244,7 +234,6 @@ export default class Downloads extends Component {
 
                             <Button
                               bsStyle="primary"
-                              bsSize="large"
                               target="_blank"
                               rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
@@ -268,7 +257,6 @@ export default class Downloads extends Component {
 
                             <Button
                               bsStyle="primary"
-                              bsSize="large"
                               target="_blank"
                               rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Ncn8x8"
@@ -296,7 +284,6 @@ export default class Downloads extends Component {
 
                             <Button
                               bsStyle="primary"
-                              bsSize="large"
                               target="_blank"
                               rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
@@ -320,7 +307,6 @@ export default class Downloads extends Component {
 
                             <Button
                               bsStyle="primary"
-                              bsSize="large"
                               target="_blank"
                               rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
@@ -344,7 +330,6 @@ export default class Downloads extends Component {
 
                             <Button
                               bsStyle="primary"
-                              bsSize="large"
                               target="_blank"
                               rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
@@ -368,7 +353,6 @@ export default class Downloads extends Component {
 
                             <Button
                               bsStyle="primary"
-                              bsSize="large"
                               target="_blank"
                               rel="noopener noreferrer"
                               href="https://teamstitch.typeform.com/to/Yt22AI"
