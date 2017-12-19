@@ -111,8 +111,9 @@ defmodule Stitch.Message do
       {acc_map, acc_list}
     end)
 
-    message_struct = %Message{group_id: group_id, user_id: user.id, request_id: attrs["request_id"]}
-    attrs = Map.merge(attrs, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
+    message_struct = %Message{group_id: group_id, user_id: user.id}
+    request_id = attrs["request_id"]
+    attrs = Map.merge(attrs, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status, "request_id" => request_id})
 
     Multi.new
     |> Multi.insert(:message, message_changeset(message_struct, attrs))
