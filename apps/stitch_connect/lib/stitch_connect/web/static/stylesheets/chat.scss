@@ -808,6 +808,7 @@
       }
 
       &:hover,
+      &.emoji-open,
       &.selected {
         .message-actions {
           visibility: visible !important;

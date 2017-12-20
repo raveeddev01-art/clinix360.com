@@ -79,9 +79,11 @@ class Message extends Component {
 
     const pos = this.messageDiv.getBoundingClientRect();
     if (pos.bottom < window.innerHeight / 2) {
-      martStyles.top = "100%";
+      martStyles.top = "0%";
+      martStyles.marginTop = 10;
     } else {
       martStyles.bottom = "100%";
+      martStyles.marginBottom = 18;
     }
 
     if (message.user.id === currentUser.id) {
@@ -447,6 +449,7 @@ class Message extends Component {
 
     const contentClassName = cx("message-content", {
       selected: this.state.selected,
+      "emoji-open": this.state.showEmojiPicker,
       highlight: highlightId === message.id
     });
 
