@@ -290,7 +290,7 @@ class Message extends Component {
       <DropdownButton
         id={`message-actions-${message.id}`}
         dropup={dropup}
-        pullRight={mine}
+        pullRight
         onToggle={this.onToggle}
         bsSize="xsmall"
         title={<i className="fa fa-ellipsis-h" />}
@@ -498,7 +498,7 @@ class Message extends Component {
                     />
                   </div>
                   <OverlayTrigger
-                    placement={mine ? "left" : "right"}
+                    placement="left"
                     overlay={this.renderTimestampTooltip(message)}
                   >
                     <div className="message-content-wrapper">
