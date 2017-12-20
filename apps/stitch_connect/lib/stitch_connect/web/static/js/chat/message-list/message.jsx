@@ -357,17 +357,13 @@ class Message extends Component {
     );
   }
 
-  renderName(message) {
+  renderTitle(message) {
     const { usersStore } = this.props;
     const { user: { id: userId }, inserted_at: insertedAt } = message;
-    const mine = userId === currentUser.id;
-    const blockClassName = cx("name", {
-      self: mine
-    });
     const user = usersStore.usersById[userId];
 
     return !message.is_sequential ? (
-      <div className={blockClassName}>
+      <div className="message-title">
         {`${user.first_name} ${user.last_name}`}
         <span
           className="time"
@@ -481,7 +477,7 @@ class Message extends Component {
               className={messageClassName}
             >
               <div className="message-main">
-                {this.renderName(message)}
+                {this.renderTitle(message)}
                 <div className={contentClassName}>
                   <div className="message-header">
                     {this.renderActions(message)}
