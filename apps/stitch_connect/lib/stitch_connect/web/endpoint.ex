@@ -1,11 +1,16 @@
 defmodule StitchConnect.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :stitch_connect
+  use Plug.Builder
 
   socket "/socket", StitchConnect.Web.UserSocket
 
   if Application.get_env(:stitch_connect, :sql_sandbox) do
     plug Phoenix.Ecto.SQL.Sandbox
   end
+
+  # Overwrite the conn.remote_ip with values taken from
+  # X-Forwarded-For used in Heroku and Aptible.
+  plug RemoteIp
 
   # Serve at "/" the static files from "priv/static" directory.
   #
