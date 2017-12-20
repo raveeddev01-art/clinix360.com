@@ -480,8 +480,12 @@ class Message extends Component {
               name={`message_${message.id}`}
               className={messageClassName}
             >
+              {this.renderTitle(message)}
               <div className="message-main">
-                {this.renderTitle(message)}
+                <div className="message-icons-wrapper">
+                  {this.renderStar(message)}
+                  {this.renderPin(message)}
+                </div>
                 <div className={contentClassName}>
                   <div className="message-header">
                     {this.renderActions(message)}
@@ -493,20 +497,14 @@ class Message extends Component {
                       style={this.getEmojiMartStyle()}
                     />
                   </div>
-                  <div>
-                    <div className="message-icons-wrapper">
-                      {this.renderStar(message)}
-                      {this.renderPin(message)}
+                  <OverlayTrigger
+                    placement={mine ? "left" : "right"}
+                    overlay={this.renderTimestampTooltip(message)}
+                  >
+                    <div className="message-content-wrapper">
+                      <MessageContent message={message} />
                     </div>
-                    <OverlayTrigger
-                      placement={mine ? "left" : "right"}
-                      overlay={this.renderTimestampTooltip(message)}
-                    >
-                      <div className="message-content-wrapper">
-                        <MessageContent message={message} />
-                      </div>
-                    </OverlayTrigger>
-                  </div>
+                  </OverlayTrigger>
 
                   {mine && (
                     <div className="message-status">
@@ -514,12 +512,12 @@ class Message extends Component {
                     </div>
                   )}
                 </div>
-                <Reactions
-                  messageId={message.id}
-                  reactions={message.reactions_web}
-                  onToggle={this.onToggleReaction}
-                />
               </div>
+              <Reactions
+                messageId={message.id}
+                reactions={message.reactions_web}
+                onToggle={this.onToggleReaction}
+              />
 
               <MessageInfoModal
                 show={this.state.showInfoModal}
