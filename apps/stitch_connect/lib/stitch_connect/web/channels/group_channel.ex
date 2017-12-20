@@ -11,10 +11,11 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.Presence
 
   @endpoint StitchConnect.Web.Endpoint
+  @max_latency 5_000
 
   intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
 
-  def join("groups:__dm:" <> id_pair, _params, socket) do
+  def join("groups:__dm:" <> id_pair, params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
 
     # make sure clients sort ids, to make sure they connect to same channel
@@ -36,7 +37,13 @@ defmodule StitchConnect.Web.GroupChannel do
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             send self(), :after_join
-            {:ok, %{messages: json}, assign(socket, :group, group)}
+            socket =
+              socket
+              |> assign(:group, group)
+              |> assign(:server_join_time, :os.system_time(:milli_seconds))
+              |> assign(:client_join_time, params["timestamp"])
+
+            {:ok, %{messages: json}, socket}
         end
       else
         {:error, %{message: "You can't participate on this chat."}}
@@ -46,7 +53,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def join("groups:" <> group_slug, _params, socket) do
+  def join("groups:" <> group_slug, params, socket) do
     %{team_id: team_id, current_user: user} = socket.assigns
 
     case Repo.get_by(Group, slug: group_slug, team_id: team_id) do
@@ -58,7 +65,13 @@ defmodule StitchConnect.Web.GroupChannel do
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             send self(), :after_join
-            {:ok, %{messages: json}, assign(socket, :group, group)}
+            socket =
+              socket
+              |> assign(:group, group)
+              |> assign(:server_join_time, :os.system_time(:milli_seconds))
+              |> assign(:client_join_time, params["timestamp"])
+
+            {:ok, %{messages: json}, socket}
           false ->
             {:error, %{message: "unauthorized"}}
         end
@@ -159,8 +172,25 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @decorate channel_action()
   def handle_in("new_msg", params, socket) do
-    %{group: group, current_user: user} = socket.assigns
-    do_new_msg(socket, group, user, params)
+    if latency_limit_exceeded?(socket, params) do
+      {:reply, {:error, %{message: "timeout error"}}, socket}
+    else
+      %{group: group, current_user: user} = socket.assigns
+      do_new_msg(socket, group, user, params)
+    end
+  end
+
+  # Temporarily return false if timestamps aren't provided so that the mobile apps have time to catch up with the change
+  def latency_limit_exceeded?(socket, params) do
+    server_join_time = socket.assigns[:server_join_time]
+    with client_join_time when not is_nil(client_join_time) <- socket.assigns[:client_join_time],
+         client_push_time when not is_nil(client_push_time) <- params["timestamp"] do
+      server_time = :os.system_time(:milli_seconds)
+      latency = client_push_time - (client_join_time + (server_time - server_join_time))
+      abs(latency) > @max_latency
+    else e ->
+      false
+    end
   end
 
   @decorate channel_action()
