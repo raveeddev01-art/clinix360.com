@@ -604,7 +604,7 @@ export class Socket {
     this.reconnectTimer       = new Timer(() => {
       this.disconnect(() => this.connect())
       if (this.enableManualRejoin) {
-        this.channels.forEach(ch => ch.rejoin())
+        this.channels.forEach(ch => ch.rejoinUntilConnected())
       }
     }, this.reconnectAfterMs)
   }
