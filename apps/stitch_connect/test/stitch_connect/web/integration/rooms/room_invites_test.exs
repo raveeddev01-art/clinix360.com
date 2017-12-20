@@ -1,11 +1,11 @@
 defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
-    use StitchConnect.Web.FeatureCase, async: false
+    use StitchConnect.Web.FeatureCase, async: true
 
     import Wallaby.Query
     import Stitch.Factory
     alias StitchConnect.Web.IntegrationTestHelper, as: Helper
 
-    test "user can invite another user to a room" do
+    test "user can invite another user to a room", %{metadata: metadata, encoded_metadata: encoded_metadata} do
       team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
       user_1 = insert(:user, email: "someuser@somecompany.com", team: team)
       user_2 = insert(:user, email: "otheruser@somecompany.com", team: team, first_name: "Bob", last_name: "Banks")
@@ -14,11 +14,11 @@ defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
       insert(:group_user, group: public_group, user: user_1)
       insert(:group_user, group: private_group, user: user_1)
 
-      {:ok, user_1_session} = Wallaby.start_session()
-      {:ok, user_2_session} = Wallaby.start_session()
+      {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
+      {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-      Helper.sign_in(user_1_session, team, user_1)
-      Helper.sign_in(user_2_session, team, user_2)
+      user_1_session = Helper.sign_in(user_1_session, team, user_1, encoded_metadata)
+      user_2_session = Helper.sign_in(user_2_session, team, user_2, encoded_metadata)
 
       user_2_session
       |> refute_has(sidemenu_item("Emergency Room"))

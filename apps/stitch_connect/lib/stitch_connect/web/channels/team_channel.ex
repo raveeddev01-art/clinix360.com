@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.TeamChannel do
-  use Phoenix.Channel
+  use StitchConnect.Web, :channel
   use Appsignal.Instrumentation.Decorators
   alias StitchConnect.Web.Presence
   alias StitchConnect.Web.Api.V1.UserView

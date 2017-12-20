@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Messages.MultiDirectMessagingTest do
-  use StitchConnect.Web.FeatureCase, async: false
+  use StitchConnect.Web.FeatureCase, async: true
 
   import Wallaby.Query, only: [button: 1, text_field: 1, css: 2]
   import Stitch.Factory
@@ -7,19 +7,23 @@ defmodule StitchConnect.Web.Messages.MultiDirectMessagingTest do
 
   defp message(msg), do: css(".message-container > .message", text: msg)
 
-  test "user can start a direct conversation with multiple users" do
+  test "user can start a direct conversation with multiple users", %{metadata: metadata, encoded_metadata: encoded_metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1 = insert(:user, first_name: "John", last_name: "Doe", username: "john", team: team)
     user_2 = insert(:user, first_name: "Jane", last_name: "Doe", username: "jane", team: team)
     user_3 = insert(:user, first_name: "Jr", last_name: "Doe", username: "jr", team: team)
 
-    {:ok, user_1_session} = Wallaby.start_session()
-    {:ok, user_2_session} = Wallaby.start_session()
-    {:ok, user_3_session} = Wallaby.start_session()
-
-    Helper.sign_in(user_1_session, team, user_1)
-    Helper.sign_in(user_2_session, team, user_2)
-    Helper.sign_in(user_3_session, team, user_3)
+    {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
+    {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
+    {:ok, user_3_session} = Wallaby.start_session(metadata: metadata)
+    on_exit fn ->
+      Wallaby.end_session(user_1_session)
+      Wallaby.end_session(user_2_session)
+      Wallaby.end_session(user_3_session)
+    end
+    Helper.sign_in(user_1_session, team, user_1, encoded_metadata)
+    Helper.sign_in(user_2_session, team, user_2, encoded_metadata)
+    Helper.sign_in(user_3_session, team, user_3, encoded_metadata)
 
     user_1_session
     |> click(css(".rooms-menu a", text: "Direct Messages"))

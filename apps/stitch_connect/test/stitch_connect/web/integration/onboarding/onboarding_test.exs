@@ -18,9 +18,10 @@ defmodule StitchConnect.Web.OnboardingTest do
   }
 
   @tag :start_session
-  test "visitor goes through onboarding process", %{session: session} do
+  test "visitor goes through onboarding process", %{session: session, encoded_metadata: encoded_metadata} do
     session
     |> visit("/signup/email")
+    |> setup_async_session(encoded_metadata)
     |> fill_in(text_field("Email"), with: "somename@emailprovider.com")
     |> click(button("Next"))
     |> assert_has(css(".confirmation-code"))
