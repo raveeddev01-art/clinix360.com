@@ -127,7 +127,7 @@ defmodule Stitch.Message do
   end
 
   def create(group_id, user, %{"text_content" => _} = attrs, online_in_group) do
-    create(group_id, user, Map.put_new(attrs, "type", "chat"), online_in_group)
+    create(group_id, user, Map.put(attrs, "type", "chat"), online_in_group)
   end
 
   def create(_group_id, _user, _attrs, _online_in_group) do
