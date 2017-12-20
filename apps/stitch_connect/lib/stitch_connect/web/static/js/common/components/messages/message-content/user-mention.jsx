@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
+import cx from "classnames";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import SmartDropdown from "../../smart-dropdown/index";
@@ -26,9 +27,12 @@ class UserMention extends Component {
   };
 
   render() {
-    const { user: { username } } = this.props;
+    const { isMine, user: { username } } = this.props;
     return (
-      <SmartDropdown id="user-mention" className="user-mention-dropdown">
+      <SmartDropdown
+        id="user-mention"
+        className={cx("user-mention-dropdown", { mine: isMine })}
+      >
         <Dropdown.Toggle useAnchor noCaret>
           {`@${username}`}
         </Dropdown.Toggle>
