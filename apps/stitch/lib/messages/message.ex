@@ -94,7 +94,7 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, ["system"])
   end
 
-  def create(group_id, user, params, online_in_group \\ [])
+  def create(group_id, user, attrs, online_in_group \\ [])
 
   def create(group_id, user, %{"type" => type} = attrs, online_in_group) when type in ["chat", "upload"] do
     group = GroupQueries.get_by_id(group_id)
@@ -127,8 +127,8 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
-  def create(group_id, user, %{"text_content" => text_content, "request_id" => request_id}, online_in_group) do
-    create(group_id, user, %{"type" => "chat", "text_content" => text_content, "request_id" => request_id}, online_in_group)
+  def create(group_id, user, %{"text_content" => _} = attrs, online_in_group) do
+    create(group_id, user, Map.put_new(attrs, "type", "chat"), online_in_group)
   end
 
   def create(_group_id, _user, _attrs, _online_in_group) do
