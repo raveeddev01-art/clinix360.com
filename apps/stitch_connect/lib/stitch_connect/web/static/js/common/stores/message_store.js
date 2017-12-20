@@ -471,6 +471,7 @@ class MessageStore {
       .push("new_msg", {
         text_content: text,
         request_id: tempMessage.id,
+        timestamp: new Date().getTime(), // sending unix timestamp in milliseconds to calc latency on server
         ...additionalFields
       })
       .receive("error", () => {
