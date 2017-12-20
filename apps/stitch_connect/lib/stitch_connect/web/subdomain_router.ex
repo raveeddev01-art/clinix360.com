@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
   use StitchConnect.Web, :router
 
   pipeline :browser do
+    plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
@@ -10,6 +11,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
   end
 
   pipeline :browser_authenticate do
+    plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
@@ -19,20 +21,24 @@ defmodule StitchConnect.Web.SubdomainRouter do
   end
 
   pipeline :admin do
+    plug StitchConnect.Plug.PlugAttack
     plug StitchConnect.Plug.StaffAuthenticate
     plug :put_layout, {StitchConnect.Web.Admin.AppView, "layout.html"}
-  end  
+  end
 
   pipeline :api_auth do
+    plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
     plug :fetch_session
   end
 
   pipeline :api do
+    plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
   end
 
   pipeline :authenticated_api do
+    plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
     plug :fetch_session
     plug StitchConnect.Plug.ApiAuthenticate
@@ -40,6 +46,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
   end
 
   pipeline :authenticated_locked_api do
+    plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
     plug :fetch_session
     plug StitchConnect.Plug.ApiAuthenticate
@@ -47,6 +54,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
   pipeline :team_admin_api do
     plug :accepts, ["json"]
+    plug StitchConnect.Plug.PlugAttack
     plug :fetch_session
     plug StitchConnect.Plug.ApiAuthenticate
     plug StitchConnect.Plug.TeamAdminOnly

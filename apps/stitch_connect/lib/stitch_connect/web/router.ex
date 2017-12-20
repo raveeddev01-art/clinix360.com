@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.Router do
   use StitchConnect.Web, :router
 
   pipeline :browser do
+    plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
@@ -10,11 +11,13 @@ defmodule StitchConnect.Web.Router do
   end
 
   pipeline :api do
+    plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
     plug :fetch_session
   end
 
   pipeline :authenticated_api do
+    plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
     plug :fetch_session
     plug StitchConnect.Plug.ApiAuthenticate
