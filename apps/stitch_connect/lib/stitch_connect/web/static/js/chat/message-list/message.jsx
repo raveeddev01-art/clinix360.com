@@ -5,7 +5,9 @@ import moment from "moment";
 import { Element } from "react-scroll";
 import cx from "classnames";
 
-import Dropdown from "react-bootstrap/lib/Dropdown";
+import Button from "react-bootstrap/lib/Button";
+import ButtonGroup from "react-bootstrap/lib/ButtonGroup";
+import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -213,6 +215,63 @@ class Message extends Component {
 
   renderActions(message) {
     const mine = message.user.id === currentUser.id;
+
+    return (
+      <ButtonGroup className="message-actions" bsSize="xsmall">
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id={`message-${message.id}-action-react`}>React</Tooltip>
+          }
+        >
+          <Button onClick={this.toggleReaction}>
+            <i className="fa fa-smile-o" />
+          </Button>
+        </OverlayTrigger>
+        {mine && (
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip id={`message-${message.id}-action-edit`}>Edit</Tooltip>
+            }
+          >
+            <Button onClick={this.edit}>
+              <i className="fa fa-pencil" />
+            </Button>
+          </OverlayTrigger>
+        )}
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id={`message-${message.id}-action-copy`}>Copy</Tooltip>
+          }
+        >
+          <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+            <Button>
+              <i className="fa fa-paste" />
+            </Button>
+          </CopyToClipboard>
+        </OverlayTrigger>
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id={`message-${message.id}-action-star`}>Star</Tooltip>
+          }
+        >
+          <Button onClick={this.toggleStar}>
+            {message.starred ? (
+              <i className="fa fa-star" />
+            ) : (
+              <i className="fa fa-star-o" />
+            )}
+          </Button>
+        </OverlayTrigger>
+        {this.renderActionsMenu(message)}
+      </ButtonGroup>
+    );
+  }
+  renderActionsMenu(message) {
+    const mine = message.user.id === currentUser.id;
     const unsent = message.sent === false;
     const { dropup } = this.state;
 
@@ -222,82 +281,77 @@ class Message extends Component {
     }
 
     return (
-      <Dropdown
+      <DropdownButton
         id={`message-actions-${message.id}`}
-        componentClass="div"
-        className="message-actions"
         dropup={dropup}
         pullRight={mine}
         onToggle={this.onToggle}
+        bsSize="xsmall"
+        title={<i className="fa fa-ellipsis-h" />}
+        noCaret
       >
-        <Dropdown.Toggle useAnchor noCaret>
-          <i className="fa fa-angle-down" />
-        </Dropdown.Toggle>
+        <MenuItem onClick={this.markAsUnread}>
+          <span>
+            <i className="fa fa-circle" />&nbsp;Unread
+          </span>
+        </MenuItem>
 
-        <Dropdown.Menu>
-          <MenuItem onClick={this.markAsUnread}>
+        {message.type === "upload" && (
+          <MenuItem target="_blank" href={message.fields.url}>
             <span>
-              <i className="fa fa-circle" />&nbsp;Unread
+              <i className="fa fa-download" />&nbsp;Download
             </span>
           </MenuItem>
+        )}
 
-          {message.type === "upload" && (
-            <MenuItem target="_blank" href={message.fields.url}>
-              <span>
-                <i className="fa fa-download" />&nbsp;Download
-              </span>
-            </MenuItem>
-          )}
-
-          {mine && (
-            <MenuItem onClick={this.edit}>
-              <span>
-                <i className="fa fa-pencil" />&nbsp;Edit
-              </span>
-            </MenuItem>
-          )}
-
-          {mine && (
-            <MenuItem onClick={this.delete}>
-              <span>
-                <i className="fa fa-trash" />&nbsp;Delete
-              </span>
-            </MenuItem>
-          )}
-
-          <CopyToClipboard text={message.text_content} onCopy={this.copy}>
-            <MenuItem>
-              <span>
-                <i className="fa fa-paste" />&nbsp;Copy
-              </span>
-            </MenuItem>
-          </CopyToClipboard>
-
-          <MenuItem onClick={this.toggleStar}>
+        {mine && (
+          <MenuItem onClick={this.edit}>
             <span>
-              <i className="fa fa-star-o" />&nbsp;{message.starred ? "Unstar" : "Star"}
+              <i className="fa fa-pencil" />&nbsp;Edit
             </span>
           </MenuItem>
+        )}
 
-          <MenuItem onClick={this.togglePin}>
+        {mine && (
+          <MenuItem onClick={this.delete}>
             <span>
-              <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
+              <i className="fa fa-trash" />&nbsp;Delete
             </span>
           </MenuItem>
+        )}
 
-          <MenuItem onClick={this.toggleReaction}>
+        <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+          <MenuItem>
             <span>
-              <i className="fa fa-smile-o" />&nbsp;Reactions
+              <i className="fa fa-paste" />&nbsp;Copy
             </span>
           </MenuItem>
+        </CopyToClipboard>
 
-          <MenuItem onClick={this.showInfoModal}>
-            <span>
-              <i className="fa fa-info-circle" />&nbsp;Info
-            </span>
-          </MenuItem>
-        </Dropdown.Menu>
-      </Dropdown>
+        <MenuItem onClick={this.toggleStar}>
+          <span>
+            <i className="fa fa-star-o" />&nbsp;{message.starred ? "Unstar" : "Star"}
+          </span>
+        </MenuItem>
+
+        <MenuItem onClick={this.togglePin}>
+          <span>
+            <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
+          </span>
+        </MenuItem>
+
+        <MenuItem onClick={this.toggleReaction}>
+          <span>
+            <i className="fa fa-smile-o" />&nbsp;React
+          </span>
+        </MenuItem>
+
+        <MenuItem onClick={this.showInfoModal}>
+          <span>
+            <i className="fa fa-info-circle" />&nbsp;Info
+          </span>
+        </MenuItem>
+      </DropdownButton>
     );
   }
 
@@ -425,32 +479,32 @@ class Message extends Component {
             >
               <div className="message-main">
                 {this.renderName(message)}
-                <OverlayTrigger
-                  placement={mine ? "left" : "right"}
-                  overlay={this.renderTimestampTooltip(message)}
-                >
-                  <div className={contentClassName}>
-                    <div className="message-header">
-                      <div className="actions">
-                        {this.renderActions(message)}
-                      </div>
+                <div className={contentClassName}>
+                  <div className="message-header">
+                    {this.renderActions(message)}
 
-                      <ReactionPicker
-                        message={message}
-                        onSelectReaction={this.onSelectEmoji}
-                        show={this.state.showEmojiPicker}
-                        style={this.getEmojiMartStyle()}
-                      />
-
+                    <ReactionPicker
+                      message={message}
+                      onSelectReaction={this.onSelectEmoji}
+                      show={this.state.showEmojiPicker}
+                      style={this.getEmojiMartStyle()}
+                    />
+                  </div>
+                  <div>
+                    <div className="message-icons-wrapper">
                       {this.renderStar(message)}
                       {this.renderPin(message)}
                     </div>
-
-                    <div className="message-content-wrapper">
-                      <MessageContent message={message} />
-                    </div>
+                    <OverlayTrigger
+                      placement={mine ? "left" : "right"}
+                      overlay={this.renderTimestampTooltip(message)}
+                    >
+                      <div className="message-content-wrapper">
+                        <MessageContent message={message} />
+                      </div>
+                    </OverlayTrigger>
                   </div>
-                </OverlayTrigger>
+                </div>
               </div>
 
               {mine && (

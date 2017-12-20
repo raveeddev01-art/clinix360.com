@@ -678,71 +678,86 @@
       }
     }
 
+    .message-main {
+      position: relative;
+      margin-top: 5px;
+    }
+
+    .message-icons-wrapper {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      left: 100%;
+      margin-left: 5px;
+    }
+
+    .message-icon {
+      margin: 0 5px;
+      font-size: 85%;
+      cursor: pointer;
+
+      &.icon-edited {
+        margin-right: 0;
+        color: #333;
+        cursor: default;
+      }
+
+      &.icon-pin {
+        color: #4fb0fc;
+      }
+
+      &.icon-star {
+        color: #fecb2f;
+      }
+    }
+
     .message-content {
       font-size: 15px;
       background: #fff;
       border: 1px solid $border-color-secondary;
       border-radius: 4px;
-      padding: 15px 20px;
-      margin-top: 5px;
+      position: relative;
 
       &.highlight {
         animation: highlightBubble 3s, fadeIn 3s;
       }
 
-      .message-header {
-        display: flex;
-        flex-direction: row;
-        align-items: baseline;
-        position: relative;
+      .message-actions {
+        visibility: hidden;
+        white-space: nowrap;
+        position: absolute;
+        right: 10px;
+        top: -15px;
 
-        .actions {
-          position: absolute;
-          right: -10px;
-          top: -10px;
-
-          .message-actions {
-            line-height: 1.15;
-            position: absolute;
-            right: 0;
-            top: 0;
-            visibility: hidden;
-
-            ul.dropdown-menu {
-              padding: 8px 0;
-              min-width: 120px;
-
-              li {
-                a {
-                  font-size: 15px;
-                  line-height: 25px;
-                  padding: 0 8px;
-                  margin: 0 8px;
-
-                  i.fa {
-                    width: 1em;
-                    margin-right: 2px;
-                  }
-
-                  &:focus {
-                    outline: none;
-                  }
-                }
-              }
-            }
-          }
+        .btn,
+        .btn-group {
+          float: none;
+          display: inline-block;
         }
 
-        .time {
-          display: flex;
-          align-items: inherit;
-          white-space: nowrap;
-          position: relative;
+        ul.dropdown-menu {
+          padding: 8px 0;
+          min-width: 120px;
 
-          &:before {
-            content: attr(data-time);
-            color: #999;
-            font-size: 12px;
+          li {
+            a {
+              font-size: 15px;
+              line-height: 25px;
+              padding: 0 8px;
+              margin: 0 8px;
+
+              i.fa {
+                width: 1em;
+                margin-right: 2px;
+              }
+
+              &:focus {
+                outline: none;
+              }
+            }
           }
         }
       }
@@ -787,26 +802,6 @@
         margin: 0;
       }
 
-      .message-icon {
-        margin-left: 8px;
-        font-size: 85%;
-        cursor: pointer;
-
-        &.icon-edited {
-          margin-right: 0;
-          color: #333;
-          cursor: default;
-        }
-
-        &.icon-pin {
-          color: #4fb0fc;
-        }
-
-        &.icon-star {
-          color: #fecb2f;
-        }
-      }
-
       .emoji-mart-emoji {
         vertical-align: middle;
         margin: 0 3px;
@@ -822,6 +817,10 @@
           visibility: hidden;
         }
       }
+    }
+
+    .message-content-wrapper {
+      padding: 15px 20px;
     }
 
     .message-status {
@@ -872,11 +871,18 @@
           border-color: #fff;
         }
       }
+    }
 
-      .message-icon {
-        &.icon-edited {
-          color: #eee;
-        }
+    .message-icons-wrapper {
+      left: auto;
+      right: 100%;
+      margin-right: 5px;
+      flex-direction: row-reverse;
+    }
+
+    .message-icon {
+      &.icon-edited {
+        color: #eee;
       }
     }
   }
@@ -891,7 +897,6 @@
         background: #fff;
         border: 1px solid $border-color-secondary;
         border-radius: 4px;
-        padding: 15px 20px;
         margin-bottom: 10px;
 
         .message-header {
@@ -908,6 +913,10 @@
         &:hover {
           box-shadow: 0 2px 2px rgba(0, 0, 0, 0.065);
         }
+      }
+
+      .message-content-wrapper {
+        padding: 15px 20px;
       }
     }
 
