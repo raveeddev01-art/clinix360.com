@@ -1,4 +1,5 @@
 defmodule StitchConnect.Web.Endpoint do
+  import StitchConnect.Plug.RateLimit
   use Phoenix.Endpoint, otp_app: :stitch_connect
   use Plug.Builder
 
@@ -11,6 +12,7 @@ defmodule StitchConnect.Web.Endpoint do
   # Overwrite the conn.remote_ip with values taken from
   # X-Forwarded-For used in Heroku and Aptible.
   plug RemoteIp
+  plug :rate_limit_authentication, max_request: 5, interval_seconds: 30
 
   # Serve at "/" the static files from "priv/static" directory.
   #
