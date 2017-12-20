@@ -43,7 +43,7 @@ class CreateTeam extends Component {
     const { email } = this.state;
 
     return (
-      <Form inline onSubmit={this.onSubmit}>
+      <Form inline className="create-team-form" onSubmit={this.onSubmit}>
         <FormGroup>
           <FormControl
             required
