@@ -58,7 +58,7 @@ defmodule StitchConnect.Mixfile do
       {:kadabra, "~> 0.3.2"}, # Used by Pigeon for push notifications.
       {:wallaby, "~> 0.19.1", only: :test},
       {:plug_attack, "~> 0.3.0"},
-      {:ip2country, "~> 1.0.0"}
+      {:ip2country, "~> 1.1"}
     ]
   end
 
