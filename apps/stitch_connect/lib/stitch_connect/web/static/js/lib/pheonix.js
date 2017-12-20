@@ -603,7 +603,9 @@ export class Socket {
     this.pendingHeartbeatRef  = null
     this.reconnectTimer       = new Timer(() => {
       this.disconnect(() => this.connect())
-      this.channels.forEach(ch => ch.rejoin())
+      if (this.enableManualRejoin) {
+        this.channels.forEach(ch => ch.rejoin())
+      }
     }, this.reconnectAfterMs)
   }
 
