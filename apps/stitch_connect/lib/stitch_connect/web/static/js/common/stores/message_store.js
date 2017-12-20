@@ -749,7 +749,7 @@ class MessageStore {
     if (this.group.id === this.loadedGroupId) {
       // new message has more precedance by putting it as first param.
       this.messages = _.unionBy(data.messages, this.messages, msg => {
-        return msg.request_id === msg.id ? msg.request_id : msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
+        return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
       });
     } else {
       this.messages = data.messages;
