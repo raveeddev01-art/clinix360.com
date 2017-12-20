@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 
 import Header from "../components/header";
+import CreateTeam from "../components/create-team";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
 
@@ -18,19 +19,22 @@ export default class Connect extends Component {
               <h1>Connect</h1>
               <h3 className="m-b-30">Team Communication</h3>
 
-              <div>
-                <LinkContainer to="/demo">
-                  <Button bsSize="lg">Request Demo</Button>
-                </LinkContainer>
+              <div className="m-b-20">
+                <CreateTeam />
 
                 <Button
-                  bsSize="lg"
-                  bsStyle="primary"
-                  href={`https://${applicationHost}/signup/email`}
+                  href="https://teamstitch.com/signup/email"
+                  className="create-team-mobile"
+                  block
                 >
-                  Start Trial
+                  Create Team
                 </Button>
               </div>
+
+              <p className="m-b-0">
+                Get started with an unlimited number of people on our free
+                2-week trial.
+              </p>
             </div>
           </div>
         </div>

@@ -4,11 +4,26 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
+    <link href="https://teamstitch.com" rel="canonical">
     <meta name="author" content="">
     <meta name="csrf-token" content="<%= Plug.CSRFProtection.get_csrf_token %>">
 
-    <title>Stitch: Care Coordination</title>
+    <title>Care Coordination | Stitch</title>
+
+    <meta name="description" content="Stitch is a care coordination platform for healthcare teams. Communicate, write notes, track tasks and upload files on any device. HIPAA compliant." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Stitch" />
+    <meta property="og:title" content="Care Coordination" />
+    <meta property="og:description" content="Stitch is a care coordination platform for healthcare teams. Communicate, write notes, track tasks and upload files on any device. HIPAA compliant." />
+    <meta property="og:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@stitchhq" />
+    <meta name="twitter:title" content="Care Coordination" />
+    <meta name="twitter:description" content="Stitch is a care coordination platform for healthcare teams. Communicate, write notes, track tasks and upload files on any device. HIPAA compliant." />
+    <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/676215970696790017/08nKtH21_400x400.png" />
+
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">
     <link rel="stylesheet" href="//d1mghe2gfl8z7g.cloudfront.net/lato300900.css">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">

@@ -19,9 +19,8 @@ export default class Engage extends Component {
               <h3 className="m-b-30">Patient Engagement</h3>
 
               <Button
-                bsSize="lg"
-                bsStyle="primary"
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://teamstitch.typeform.com/to/Ncn8x8"
               >
                 Request Access

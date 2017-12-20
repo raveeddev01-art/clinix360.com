@@ -14,8 +14,7 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
 import RoomItem from "./room_item";
-import Members from "../../../common/components/members/members";
-import Toggle from "../../../common/components/toggle/Toggle";
+import { Members, Toggle } from "common/components";
 
 @inject("groupsStore")
 @observer

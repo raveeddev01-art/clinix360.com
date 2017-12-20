@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import Select from "react-select";
 import cx from "classnames";
 
+import { filterUsers } from "lib/utils";
+
 class TeamList extends Component {
   constructor(props) {
     super(props);
@@ -52,17 +54,13 @@ class TeamList extends Component {
       showDisabledAfter
     } = this.props;
     const { members, searchFilter } = this.state;
-
-    const teamList = users
-      .filter(u => {
-        if (hideCurrentUser && u.id === currentUser.id && members.length > 0)
-          return false;
-        return (
-          members.findIndex(member => member.id === u.id) === -1 &&
-          u.full_name.toLowerCase().indexOf(searchFilter.toLowerCase()) > -1 &&
-          (!u.disabled || searchFilter.length >= showDisabledAfter)
-        );
-      })
+    const availableUsers = users.filter(
+      u =>
+        !(hideCurrentUser && u.id === currentUser.id && members.length > 0) &&
+        members.findIndex(member => member.id === u.id) === -1 &&
+        (!u.disabled || searchFilter.length >= showDisabledAfter)
+    );
+    const teamList = filterUsers(availableUsers, searchFilter)
       .sort(a => a.disabled);
 
     return (

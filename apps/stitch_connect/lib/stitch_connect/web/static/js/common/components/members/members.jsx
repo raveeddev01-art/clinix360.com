@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import { Async } from "react-select";
+import Select from "react-select";
 
 import MemberOption from "./member_option";
 
-@inject("presenceStore")
+@inject("usersStore", "presenceStore")
 @observer
 class Members extends Component {
   constructor(props) {
     super(props);
-    this.state = { members: props.value || [] };
+    this.state = {
+      members: props.value || []
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -22,31 +24,32 @@ class Members extends Component {
     }
   }
 
-  _getMembers = term => {
-    const { presenceStore } = this.props;
+  getOptions = () => {
+    const { usersStore: { activatedUsers }, presenceStore } = this.props;
 
-    return post(`/api/v1/users/search`, { body: { term } }).then(resp => {
-      const onlineUsers = Object.keys(presenceStore.onlineUsersMap);
-      const options = resp.data.filter(user => !user.disabled).map(user => ({
+    return activatedUsers
+      .filter(user => user.id !== currentUser.id)
+      .map(user => ({
         ...user,
-        online: onlineUsers.indexOf(`${user.id}`) > -1
+        online: presenceStore.isOnline(user.id)
       }));
-      return { options, complete: true };
-    });
   };
 
   render() {
+    const { onChange } = this.props;
+    const { members } = this.state;
+
     return (
-      <Async
+      <Select
         multi
         className="multi-select-large"
         placeholder="Search by name or username"
-        onChange={this.props.onChange}
-        value={this.state.members}
+        onChange={onChange}
+        value={members}
         valueKey="id"
         labelKey="full_name"
         optionComponent={MemberOption}
-        loadOptions={this._getMembers}
+        options={this.getOptions()}
         promptTextCreator={label => `Add member - ${label}`}
       />
     );
@@ -60,7 +63,7 @@ Members.propTypes = {
 
 Members.defaultProps = {
   onChange: () => {},
-  value: ""
+  value: []
 };
 
 export default Members;

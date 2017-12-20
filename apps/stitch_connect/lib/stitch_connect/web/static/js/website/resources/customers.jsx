@@ -66,7 +66,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/luminance-recovery">
-                      <Button bsStyle="primary" bsSize="lg" block>
+                      <Button bsStyle="primary" block>
                         Read More
                       </Button>
                     </LinkContainer>
@@ -110,7 +110,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/princeton-brain-spine">
-                      <Button bsStyle="primary" bsSize="lg" block>
+                      <Button bsStyle="primary" block>
                         Read More
                       </Button>
                     </LinkContainer>
@@ -132,7 +132,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/dermatology-skin-surgery-institute">
-                      <Button bsStyle="primary" bsSize="lg" block>
+                      <Button bsStyle="primary" block>
                         Read More
                       </Button>
                     </LinkContainer>
@@ -154,7 +154,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/UCSF-citywide">
-                      <Button bsStyle="primary" bsSize="lg" block>
+                      <Button bsStyle="primary" block>
                         Read More
                       </Button>
                     </LinkContainer>
@@ -174,7 +174,7 @@ export default class Customers extends Component {
                     </p>
 
                     <LinkContainer to="/customers/orchard-medical-associates">
-                      <Button bsStyle="primary" bsSize="lg" block>
+                      <Button bsStyle="primary" block>
                         Read More
                       </Button>
                     </LinkContainer>

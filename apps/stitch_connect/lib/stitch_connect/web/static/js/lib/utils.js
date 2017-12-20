@@ -64,3 +64,17 @@ export function getGroupUserIdsThatHasCurrentUser(users) {
 
   return orderBy([...uniqUserIds, currentUser.id]);
 }
+
+/**
+ * Filter users
+ * 
+ * @param {array} users 
+ * @param {string} filter 
+ */
+export function filterUsers(users, filter) {
+  const re = new RegExp(filter, "i");
+
+  return users.filter(
+    user => re.test(user.full_name) || re.test(user.username)
+  );
+}
