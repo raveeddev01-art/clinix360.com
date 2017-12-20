@@ -354,7 +354,9 @@ export class Channel {
     this.onError( reason => { if(this.isLeaving() || this.isClosed()){ return }
       this.socket.log("channel", `error ${this.topic}`, reason)
       this.state = CHANNEL_STATES.errored
-      this.rejoinTimer.scheduleTimeout()
+      if (!this.socket.enableManualRejoin) {
+        this.rejoinTimer.scheduleTimeout()
+      }
     })
     this.joinPush.receive("timeout", () => { if(!this.isJoining()){ return }
       this.socket.log("channel", `timeout ${this.topic} (${this.joinRef()})`, this.joinPush.timeout)
@@ -362,7 +364,9 @@ export class Channel {
       leavePush.send()
       this.state = CHANNEL_STATES.errored
       this.joinPush.reset()
-      this.rejoinTimer.scheduleTimeout()
+      if (!this.socket.enableManualRejoin) {
+        this.rejoinTimer.scheduleTimeout()
+      }
     })
     this.on(CHANNEL_EVENTS.reply, (payload, ref) => {
       this.trigger(this.replyEventName(ref), payload)
@@ -599,6 +603,7 @@ export class Socket {
     this.pendingHeartbeatRef  = null
     this.reconnectTimer       = new Timer(() => {
       this.disconnect(() => this.connect())
+      this.channels.forEach(ch => ch.rejoin())
     }, this.reconnectAfterMs)
   }
 
@@ -677,7 +682,7 @@ export class Socket {
     this.triggerChanError()
     clearInterval(this.heartbeatTimer)
     this.reconnectTimer.scheduleTimeout()
-    this.stateChangeCallbacks.reconnect.forEach( callback => callback() )
+    this.stateChangeCallbacks.reconnect.forEach( callback => callback(event) )
     this.stateChangeCallbacks.close.forEach( callback => callback(event) )
   }
 
@@ -750,7 +755,7 @@ export class Socket {
       this.pendingHeartbeatRef = null
       if (this.enableManualRejoin) {
         this.log("transport", "heartbeat timeout. Triggering onClose so that user can close connection manually")
-        this.onConnClose();
+        this.disconnect(() => this.onConnClose()); // silently close connection and trigger on close immediately
       } else {
         this.log("transport", "heartbeat timeout. Attempting to re-establish connection")
         this.conn.close(WS_CLOSE_NORMAL, "hearbeat timeout")
