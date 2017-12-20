@@ -26,13 +26,9 @@ class UserMention extends Component {
   };
 
   render() {
-    const { user: { username }, isMine } = this.props;
+    const { user: { username } } = this.props;
     return (
-      <SmartDropdown
-        id="user-mention"
-        className="user-mention-dropdown"
-        pullRight={isMine}
-      >
+      <SmartDropdown id="user-mention" className="user-mention-dropdown">
         <Dropdown.Toggle useAnchor noCaret>
           {`@${username}`}
         </Dropdown.Toggle>
