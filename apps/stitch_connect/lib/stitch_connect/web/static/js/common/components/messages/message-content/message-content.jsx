@@ -145,11 +145,6 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content && '"'}
           {this.renderLinkPreviews()}
           {this.renderEdited()}
-          <Reactions
-            messageId={message.id}
-            reactions={message.reactions_web}
-            onToggle={this.onToggle}
-          />
         </div>
       </Linkify>
     );

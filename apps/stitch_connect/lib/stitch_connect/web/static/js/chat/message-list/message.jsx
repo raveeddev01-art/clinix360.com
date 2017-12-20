@@ -14,7 +14,7 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
 import { confirm } from "common/modals";
-import { MessageContent, ReactionPicker } from "common/components";
+import { MessageContent, ReactionPicker, Reactions } from "common/components";
 import MessageInfoModal from "./message-info-modal";
 
 @inject("messageStore", "groupStore", "usersStore")
@@ -68,6 +68,10 @@ class Message extends Component {
         messageStore.toggleReaction(message.id, emoji.colons);
       }
     });
+  };
+
+  onToggleReaction = emoji => {
+    this.props.messageStore.toggleReaction(this.props.message.id, emoji);
   };
 
   getEmojiMartStyle = () => {
@@ -504,6 +508,11 @@ class Message extends Component {
                     </OverlayTrigger>
                   </div>
                 </div>
+                <Reactions
+                  messageId={message.id}
+                  reactions={message.reactions_web}
+                  onToggle={this.onToggleReaction}
+                />
               </div>
 
               {mine && (

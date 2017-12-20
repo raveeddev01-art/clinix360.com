@@ -944,15 +944,10 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
-    margin-bottom: -24px;
-    margin-right: -20px;
-
-    .btn-message-reaction + .btn-message-reaction {
-      margin-left: 5px;
-    }
+    margin: 0 -3px;
 
     .btn-message-reaction {
-      margin-top: 5px;
+      margin: 5px 3px 0;
       padding: 2px 5px 2px 2px;
       display: flex;
       align-items: center;

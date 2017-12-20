@@ -34,7 +34,7 @@ class Reactions extends Component {
 
   render() {
     const { reactions, messageId } = this.props;
-    if (!reactions) {
+    if (!reactions || !Object.keys(reactions).length) {
       return null;
     }
 
