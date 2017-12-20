@@ -322,11 +322,10 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
+  defp do_new_msg(socket, group, user, attrs) do
     request_id = attrs["request_id"]
 
     if GroupAuthorization.is_member?(group.id, user.id) do
-      attrs = %{ "text_content" => content, "type" => attrs["type"], "request_id" => attrs["request_id"], "fields" => attrs["fields"] }
       acitve_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
 
       case Message.create(group.id, user, attrs, acitve_user_ids) do
