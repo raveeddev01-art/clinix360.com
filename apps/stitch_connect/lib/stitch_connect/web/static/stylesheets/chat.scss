@@ -588,6 +588,29 @@
   z-index: -1;
 }
 
+.message-link,
+.user-mention-dropdown .dropdown-toggle {
+  color: #003366;
+  text-decoration: none;
+  border-bottom: 1px dotted $brand-primary;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+  max-width: 100%;
+
+  &:hover {
+    border-bottom-style: solid;
+  }
+}
+
+.mine.message-link,
+.user-mention-dropdown.mine .dropdown-toggle {
+  color: #fff;
+  border-color: #fff;
+}
+
 .user-mention-menu {
   width: 100%;
 
@@ -731,23 +754,6 @@
         .message-body {
           display: inline;
           word-wrap: break-word;
-
-          .message-link,
-          .dropdown-toggle {
-            color: #003366;
-            text-decoration: none;
-            border-bottom: 1px dotted $brand-primary;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            display: inline-block;
-            vertical-align: top;
-            max-width: 100%;
-
-            &:hover {
-              border-bottom-style: solid;
-            }
-          }
 
           br:last-of-type {
             display: none;
