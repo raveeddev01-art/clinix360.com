@@ -11,7 +11,6 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
-import Reactions from "./reactions";
 
 @inject("usersStore", "messageStore")
 @observer
