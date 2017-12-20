@@ -785,7 +785,6 @@
       }
 
       .message-read-status {
-        color: rgba(255, 255, 255, 0.7);
         font-size: 12px;
         cursor: pointer;
       }
@@ -828,6 +827,9 @@
       margin-left: 5px;
       text-transform: capitalize;
       line-height: 1;
+      position: absolute;
+      bottom: 0;
+      left: 100%;
     }
 
     &.sequential {
@@ -837,6 +839,10 @@
 
   &.mine {
     justify-content: flex-end;
+
+    .message {
+      margin-right: 17px;
+    }
 
     .message .message-content {
       color: #fff;

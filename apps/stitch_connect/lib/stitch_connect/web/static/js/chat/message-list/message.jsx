@@ -507,6 +507,12 @@ class Message extends Component {
                       </div>
                     </OverlayTrigger>
                   </div>
+
+                  {mine && (
+                    <div className="message-status">
+                      {this.renderStatus(message)}
+                    </div>
+                  )}
                 </div>
                 <Reactions
                   messageId={message.id}
@@ -514,12 +520,6 @@ class Message extends Component {
                   onToggle={this.onToggleReaction}
                 />
               </div>
-
-              {mine && (
-                <div className="message-status">
-                  {this.renderStatus(message)}
-                </div>
-              )}
 
               <MessageInfoModal
                 show={this.state.showInfoModal}
