@@ -71,7 +71,7 @@ defmodule Stitch.Message do
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [:fields, :type, :request_id, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
     |> add_preview()
