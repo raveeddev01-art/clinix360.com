@@ -107,7 +107,7 @@
       color: #036
     }
 
-    form {
+    form.create-team-form {
       display: none;
       max-width: 500px;
       margin: 0 auto;
@@ -132,7 +132,7 @@
   }
 
   @media (min-width: 458px) {
-    .subheader form {
+    .subheader form.create-team-form {
       display: block;
     }
 

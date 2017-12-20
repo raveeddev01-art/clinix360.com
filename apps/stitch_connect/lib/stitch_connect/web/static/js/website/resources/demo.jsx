@@ -154,9 +154,7 @@ export default class Demo extends Component {
         </h3>
 
         <LinkContainer to="/customers">
-          <Button bsSize="lg" bsStyle="primary">
-            View Stories
-          </Button>
+          <Button>View Stories</Button>
         </LinkContainer>
       </div>
     );
