@@ -439,6 +439,7 @@
         box-shadow: none;
         padding-right: 70px;
         resize: none;
+        overflow: hidden;
 
         &.editing {
           background-color: #fff7d8;
