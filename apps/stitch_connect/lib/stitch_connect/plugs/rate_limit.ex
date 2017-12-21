@@ -3,9 +3,13 @@ defmodule StitchConnect.Plug.RateLimit do
   import Phoenix.Controller, only: [json: 2]
   
   def rate_limit_authentication(conn, options \\ []) do
-    IO.inspect conn
-    options = Dict.merge(options, [bucket_name: "authorization:" <> conn.params.email])
-    rate_limit(conn, options)
+    case conn.assigns do
+      %{current_user: user} ->
+        options = Dict.merge(options, [bucket_name: "authorization:" <> user.email])
+        rate_limit(conn, options)
+      _ ->
+        rate_limit(conn, options)
+    end
   end
 
   def rate_limit(conn, options \\ []) do

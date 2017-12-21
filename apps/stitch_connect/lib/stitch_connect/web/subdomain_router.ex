@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.SubdomainRouter do
   use StitchConnect.Web, :router
+  import StitchConnect.Plug.RateLimit
 
   pipeline :browser do
     plug StitchConnect.Plug.PlugAttack
@@ -8,6 +9,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :rate_limit_authentication, max_request: 5, interval_seconds: 30
   end
 
   pipeline :browser_authenticate do
@@ -18,23 +20,27 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug StitchConnect.Plug.Authenticate
+    plug :rate_limit_authentication, max_request: 5, interval_seconds: 30
   end
 
   pipeline :admin do
     plug StitchConnect.Plug.PlugAttack
     plug StitchConnect.Plug.StaffAuthenticate
     plug :put_layout, {StitchConnect.Web.Admin.AppView, "layout.html"}
+    plug :rate_limit_authentication, max_request: 5, interval_seconds: 30
   end
 
   pipeline :api_auth do
     plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
     plug :fetch_session
+    plug :rate_limit_authentication, max_request: 5, interval_seconds: 30
   end
 
   pipeline :api do
     plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
+    plug :rate_limit_authentication, max_request: 5, interval_seconds: 30
   end
 
   pipeline :authenticated_api do
@@ -43,6 +49,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug :fetch_session
     plug StitchConnect.Plug.ApiAuthenticate
     plug StitchConnect.Plug.EnsureUnlocked
+    plug :rate_limit_authentication, max_request: 5, interval_seconds: 30
   end
 
   pipeline :authenticated_locked_api do
@@ -50,6 +57,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug :accepts, ["json"]
     plug :fetch_session
     plug StitchConnect.Plug.ApiAuthenticate
+    plug :rate_limit_authentication, max_request: 5, interval_seconds: 30
   end
 
   pipeline :team_admin_api do
@@ -58,6 +66,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug :fetch_session
     plug StitchConnect.Plug.ApiAuthenticate
     plug StitchConnect.Plug.TeamAdminOnly
+    plug :rate_limit_authentication, max_request: 5, interval_seconds: 30
   end
 
   # Stitch Staff Admin subdomain routes
