@@ -76,7 +76,7 @@ class ChatApp extends Component {
           </div>
         )}
         <UploadModal />
-        <BrowserNotificationAlert />
+        {window.Notification && <BrowserNotificationAlert />}
         <div className="appContainer">
           <Switcher />
           <Sidemenu />
