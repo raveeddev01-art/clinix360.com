@@ -1,6 +1,7 @@
 defmodule Stitch.Blacklist do
   def blacklisted_email_domains do
     [
+      "sina.com",
       "0-mail.com",
       "0815.ru",
       "0clickemail.com",
