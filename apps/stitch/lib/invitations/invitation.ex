@@ -49,7 +49,7 @@ defmodule Stitch.Invitation do
 
           case invited_user do
             nil ->
-              {:error, "Email isn't valid"}
+              {:error, "Email isn't valid."}
             invited_user ->
               if invited_user.onboarded do
                 {:error, "Email has already been registered."}

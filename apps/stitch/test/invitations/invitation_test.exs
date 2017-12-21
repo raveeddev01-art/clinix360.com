@@ -17,6 +17,13 @@ defmodule Stitch.InvitationTest do
       assert String.length(invitation.invite_token) == 32
     end
 
+    test "returns error when inviting blacklisted email" do
+      team = insert(:team, %{open_invitations_enabled: true})
+      user = insert(:user, %{team_id: team.id, roles: ["admin"]})
+      {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@qq.com")
+      assert reason == "Email isn't valid."
+    end
+
     test "returns error when account with that email already exists on team" do
       team = insert(:team, %{open_invitations_enabled: true})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
