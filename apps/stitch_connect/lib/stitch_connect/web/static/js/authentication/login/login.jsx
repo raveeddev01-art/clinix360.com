@@ -63,7 +63,7 @@ class Login extends Component {
         this.setState({
           saving: false,
           passwordReset: false,
-          errorMessage: err.data.message
+          errorMessage: err.data ? err.data.message : err.message
         });
       });
   };
