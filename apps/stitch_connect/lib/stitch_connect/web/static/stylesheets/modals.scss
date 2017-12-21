@@ -235,6 +235,24 @@
       text-align: left;
       display: inline-block;
 
+      .message-preview-header {
+        display: flex;
+        margin-bottom: 5px;
+        align-items: baseline;
+      }
+
+      .message-preview-name {
+        flex: 1;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .message-preview-time {
+        font-size: 12px;
+        margin-left: 8px;
+        opacity: 0.8;
+      }
+
       &.mine {
         color: white;
         background-color: $brand-primary;
