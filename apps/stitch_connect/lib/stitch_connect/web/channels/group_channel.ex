@@ -37,13 +37,7 @@ defmodule StitchConnect.Web.GroupChannel do
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             send self(), :after_join
-            socket =
-              socket
-              |> assign(:group, group)
-              |> assign(:server_join_time, :os.system_time(:milli_seconds))
-              |> assign(:client_join_time, params["timestamp"])
-
-            {:ok, %{messages: json}, socket}
+            {:ok, %{messages: json}, assign(socket, :group, group)}
         end
       else
         {:error, %{message: "You can't participate on this chat."}}
@@ -65,17 +59,20 @@ defmodule StitchConnect.Web.GroupChannel do
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             send self(), :after_join
-            socket =
-              socket
-              |> assign(:group, group)
-              |> assign(:server_join_time, :os.system_time(:milli_seconds))
-              |> assign(:client_join_time, params["timestamp"])
-
-            {:ok, %{messages: json}, socket}
+            {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
             {:error, %{message: "unauthorized"}}
         end
     end
+  end
+
+  def handle_in("sync_time", %{"timestamp" => timestamp} = params, socket) do
+    socket =
+      socket
+      |> assign(:server_join_time, :os.system_time(:milli_seconds))
+      |> assign(:client_join_time, timestamp)
+
+    {:reply, {:ok, %{messages: "ok"}}, socket}
   end
 
   def handle_info(:after_join, socket) do
