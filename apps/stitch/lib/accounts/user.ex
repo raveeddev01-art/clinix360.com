@@ -117,6 +117,7 @@ defmodule Stitch.Accounts.User do
     |> put_change(:confirmation_code, confirmation_code)
     |> put_change(:token, token)
     |> email_changeset(params)
+    |> Stitch.Validators.validate_email_domain(:email)
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
   end
 

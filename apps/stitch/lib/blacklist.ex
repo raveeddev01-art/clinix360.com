@@ -1,4 +1,8 @@
 defmodule Stitch.Blacklist do
+  def blacklisted_email_domains do
+    ["qq.com"]
+  end
+
   def blacklisted_subdomains do
     [
       "www",
