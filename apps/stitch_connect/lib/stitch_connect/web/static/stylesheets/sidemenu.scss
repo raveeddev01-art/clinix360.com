@@ -115,13 +115,17 @@
     .rooms-menu {
       position: relative;
       flex: 1;
-      padding: 10px 15px 20px;
+      padding: 10px 0 20px;
       @include stitch-scroll();
       overflow: hidden;
 
       &:hover {
         overflow-y: scroll;
         overflow-y: overlay;
+      }
+
+      &__scroll-wrap {
+        padding: 0 15px;
       }
 
       .menu-nav {
