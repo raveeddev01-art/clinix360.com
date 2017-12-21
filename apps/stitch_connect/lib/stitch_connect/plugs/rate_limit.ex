@@ -15,16 +15,16 @@ defmodule StitchConnect.Plug.RateLimit do
   def rate_limit(conn, options \\ []) do
     case check_rate(conn, options) do
       {:ok, _count}   -> conn # Do nothing, allow execution to continue
-      {:fail, _count} -> render_error(conn)
+      {:error, _count} -> render_error(conn)
     end
   end
 
   defp check_rate(conn, options) do
     interval_milliseconds = options[:interval_seconds] * 1000
-    max_requests = options[:max_requests]
+    max_request = options[:max_request]
     bucket_name = options[:bucket_name] || bucket_name(conn)
-  
-    ExRated.check_rate(bucket_name, interval_milliseconds, max_requests)
+    
+    ExRated.check_rate(bucket_name, interval_milliseconds, max_request)
   end
 
   # Bucket name should be a combination of ip address and request path, like so:
