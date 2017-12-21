@@ -59,7 +59,8 @@ defmodule StitchConnect.Mixfile do
       {:wallaby, "~> 0.19.1", only: :test},
       {:plug_attack, "~> 0.3.0"},
       {:ip2country, "~> 1.1"},
-      {:remote_ip, "~> 0.1.4"}
+      {:remote_ip, "~> 0.1.4"},
+      {:ex_rated, "~> 1.3"}
     ]
   end
 
