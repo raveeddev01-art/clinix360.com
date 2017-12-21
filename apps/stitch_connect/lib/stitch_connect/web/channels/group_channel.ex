@@ -66,15 +66,6 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def handle_in("sync_time", %{"timestamp" => timestamp} = params, socket) do
-    socket =
-      socket
-      |> assign(:server_join_time, :os.system_time(:milli_seconds))
-      |> assign(:client_join_time, timestamp)
-
-    {:reply, {:ok, %{messages: "ok"}}, socket}
-  end
-
   def handle_info(:after_join, socket) do
     push socket, "presence_state", Presence.list(socket)
 
@@ -92,7 +83,7 @@ defmodule StitchConnect.Web.GroupChannel do
       |> assign(:server_join_time, :os.system_time(:milli_seconds))
       |> assign(:client_join_time, timestamp)
 
-    {:reply, {:ok, %{messages: "ok"}}, socket}
+    {:reply, {:ok, %{message: "ok"}}, socket}
   end
 
   @decorate channel_action()
