@@ -275,6 +275,10 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  def handle_in("ping", %{"id" => id}, socket) do
+    {:reply, {:ok, %{id: id}}, socket}
+  end
+
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)
     [message] = Message.Reaction.apply_reactions([message])
