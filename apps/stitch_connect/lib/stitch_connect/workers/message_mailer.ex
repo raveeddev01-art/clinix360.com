@@ -1,7 +1,7 @@
 defmodule StitchConnect.MessageMailer do
   @refactor """
   This module and cron'd tasks should be moved into the
-  stitch applicaiton or into a new `notifications` app within
+  stitch application or into a new `notifications` app within
   the umbrella. Currently, this cron'd work will happen per Phoenix
   node, which will cause duplicate emails and notifications when
   multiple web front-ends are deployed for load-balancing purposes.
