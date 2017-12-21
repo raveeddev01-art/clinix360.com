@@ -30,7 +30,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   def create(conn, %{"email_collection" => email_collection}) do
     current_user = conn.assigns.current_user
     team = conn.assigns.team
-    emails = email_collection |> String.split(",") |> Enum.uniq
+    emails = email_collection |> String.split(",") |> Enum.uniq |> Enum.take(3)
 
     if TeamAuthorization.can_send_invites?(current_user, team) do
       results = Enum.reduce emails, %{}, fn email, map ->
