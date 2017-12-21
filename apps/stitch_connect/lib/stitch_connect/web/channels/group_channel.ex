@@ -15,7 +15,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
 
-  def join("groups:__dm:" <> id_pair, params, socket) do
+  def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
 
     # make sure clients sort ids, to make sure they connect to same channel
@@ -47,7 +47,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def join("groups:" <> group_slug, params, socket) do
+  def join("groups:" <> group_slug, _params, socket) do
     %{team_id: team_id, current_user: user} = socket.assigns
 
     case Repo.get_by(Group, slug: group_slug, team_id: team_id) do
@@ -83,6 +83,16 @@ defmodule StitchConnect.Web.GroupChannel do
     })
 
     {:noreply, socket}
+  end
+
+  @decorate channel_action()
+  def handle_in("sync_time", %{"timestamp" => timestamp}, socket) do
+    socket =
+      socket
+      |> assign(:server_join_time, :os.system_time(:milli_seconds))
+      |> assign(:client_join_time, timestamp)
+
+    {:reply, {:ok, %{messages: "ok"}}, socket}
   end
 
   @decorate channel_action()
@@ -174,19 +184,6 @@ defmodule StitchConnect.Web.GroupChannel do
     else
       %{group: group, current_user: user} = socket.assigns
       do_new_msg(socket, group, user, params)
-    end
-  end
-
-  # Temporarily return false if timestamps aren't provided so that the mobile apps have time to catch up with the change
-  def latency_limit_exceeded?(socket, params) do
-    server_join_time = socket.assigns[:server_join_time]
-    with client_join_time when not is_nil(client_join_time) <- socket.assigns[:client_join_time],
-         client_push_time when not is_nil(client_push_time) <- params["timestamp"] do
-      server_time = :os.system_time(:milli_seconds)
-      latency = client_push_time - (client_join_time + (server_time - server_join_time))
-      abs(latency) > @max_latency
-    else e ->
-      false
     end
   end
 
@@ -412,6 +409,19 @@ defmodule StitchConnect.Web.GroupChannel do
     broadcast_read_status(socket.assigns.group, messages_json)
     PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
+  end
+
+  # Temporarily return false if timestamps aren't provided so that the mobile apps have time to catch up with the change
+  defp latency_limit_exceeded?(socket, params) do
+    server_join_time = socket.assigns[:server_join_time]
+    with client_join_time when not is_nil(client_join_time) <- socket.assigns[:client_join_time],
+          client_push_time when not is_nil(client_push_time) <- params["timestamp"] do
+      server_time = :os.system_time(:milli_seconds)
+      latency = client_push_time - (client_join_time + (server_time - server_join_time))
+      abs(latency) > @max_latency
+    else _e ->
+      false
+    end
   end
 
   def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg", "msg_link_previews_generated"] do
