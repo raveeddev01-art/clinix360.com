@@ -118,6 +118,18 @@ defmodule StitchConnect.Web.TeamChannel do
     {:ok, socket}
   end
 
+  @refactor """
+  Listing all presences to find the "current" one is expensive to update
+  the current socket metadata. A better approach would be to store the
+  metadata on the socket assigns, merge the new updated_meta, then call
+  `Presence.update`, for example:
+
+      new_meta = Map.merge(socket.assigns.meta, updated_meta)
+      Presence.update(socket, user.id, new_meta)
+      ...
+      {:reply, ..., assign(socket, :meta, new_meta)}
+
+  """
   defp update_connection_meta(socket, updated_meta) do
     user = socket.assigns.current_user
 

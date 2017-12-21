@@ -1,6 +1,11 @@
 defmodule StitchConnect.Web.InvitationController do
   use StitchConnect.Web, :controller
 
+  @refactor """
+  Break out each branch below into a well-named private function
+  so the control flow is flattended out. This will allow the
+  code to be more easily refactor and understood at a glance.
+  """
   def accept(conn, %{"token" => invite_token}) do
     with {:ok, invitation} <- Stitch.Invitation.get_by_invite_token(invite_token)
     do

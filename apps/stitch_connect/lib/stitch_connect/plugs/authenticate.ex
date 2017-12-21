@@ -4,6 +4,10 @@ defmodule StitchConnect.Plug.Authenticate do
 
   def init(default), do: default
 
+  @refactor """
+  unwrap nested case and conditionals
+  consider private functions to pipe to to break down branching logic
+  """
   def call(conn, _) do
     case get_session(conn, :current_user_id) do
       nil ->

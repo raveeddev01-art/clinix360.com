@@ -1,4 +1,9 @@
+
 defmodule Redirect do
+  @refactor """
+  Module should be namespaced by StitchConnect
+  """
+
   @moduledoc """
   Redirects the conn to the provided url - both internal
   or external.

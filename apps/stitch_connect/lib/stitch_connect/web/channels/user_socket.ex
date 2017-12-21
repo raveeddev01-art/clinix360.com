@@ -22,6 +22,13 @@ defmodule StitchConnect.Web.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
+  @refactor """
+  Consider only storing the current_user.id in the socket assigns.
+  This will greatly reduce memory usage per client and is likely all you
+  need to store. Information can be later fetched from the ID as needed.
+  It also avoids the issue of holding onto stale data for long-lived
+  connections.
+  """
   def connect(%{"authenticationToken" => token} = params, socket) do
     case Stitch.User.Authentication.user_for_token(token) do
       nil ->

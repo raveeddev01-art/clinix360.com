@@ -21,6 +21,13 @@ defmodule StitchConnect.Web.AuthenticationController do
     end
   end
 
+  @refactor """
+  Consider impelmenting the `Phoenix.Param`` protocol for `%Group{}`.
+  This would allow passing the group directly to the router path/url
+  builders without having to passing the `default_group.slug` directly. It also
+  allows you to customize how URLs are built for each datastructure in the
+  future without hunting down all calls to `group.slug`.
+  """
   def auto_login(conn, %{"token" => token}) do
     with %Stitch.FindYourTeam.Token{} = token <- Stitch.FindYourTeam.get_login_token(token),
          %Stitch.Accounts.User{} = user <- Stitch.UserQueries.team_member_with_email(conn.assigns.team.id, token.email),

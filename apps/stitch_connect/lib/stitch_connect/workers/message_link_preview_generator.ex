@@ -26,6 +26,15 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
     {:noreply, :queue.in(message, queue)}
   end
 
+  @refactor """
+  The queue is blocking itself to process each link preview which
+  makes this server a quick bottleneck in the system.
+  The call to `LinkPreview.generate_link_previews` will
+  be expensive as it must shell out to imagemagick (`Mogrify`) for
+  the image generation. This blocking work should be offloaded to a
+  bounded pool of link preview processes, freeing this server to accept
+  new queue items to schedule for generation.
+  """
   def handle_info(:process_queue, queue) do
     queue =
       case :queue.out(queue) do

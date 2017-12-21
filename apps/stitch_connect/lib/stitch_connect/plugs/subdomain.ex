@@ -4,6 +4,16 @@ defmodule StitchConnect.Plug.Subdomain do
 
   def init(default), do: default
 
+  @refactor """
+  `Plug.Conn.put_private` registrations should be namespaced by the
+  app name so other libs don't clash with private keys, for example:
+
+      put_private(conn, :stitch_subdomain, subdomain)
+  """
+
+  @refactor """
+  Empty tuple passed to `router.init({})`, should be empty list instead (`[]`).
+  """
   def call(%{halted: true} = conn, _), do: conn
   def call(conn, router) do
     case get_subdomain(conn.host) do

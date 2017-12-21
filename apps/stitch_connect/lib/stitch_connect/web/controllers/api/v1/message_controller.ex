@@ -168,6 +168,16 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  @refactor """
+  More granular authorization functions will allow finer grained control
+  and refactoring in the future by using functions that authorize
+  the specific action taking place, instead of having the business logic
+  of who can do what outisde the authorization module. For example:
+
+      GroupAuthorization.authorize(:toggle_pin, message, user)
+
+  Rather than the inline `is_member?` check.
+  """
   def toggle_pin(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user

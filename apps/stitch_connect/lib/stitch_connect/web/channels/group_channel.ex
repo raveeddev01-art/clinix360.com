@@ -65,6 +65,11 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  @refactor """
+  The existing team presence can likely be piggy-backed off of to avoid
+  addtional Presence overhead. By storing a list of group_ids on the team
+  presence metadata, the existing featureset should remain unchanged.
+  """
   def handle_info(:after_join, socket) do
     push socket, "presence_state", Presence.list(socket)
 
@@ -76,6 +81,11 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
+  @refactor """
+  Frequent Presence metadata updates will place a great straing on CPU load
+  and should be avoided. By moving to a normal channel broadcast of typing
+  events, the scalability of the platform will be dramatically increased.
+  """
   def handle_in("typing_started", _params, socket) do
     {:ok, _} = Presence.update(socket, socket.assigns.current_user.id, %{
       is_typing: true,
@@ -296,6 +306,9 @@ defmodule StitchConnect.Web.GroupChannel do
     @endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
   end
 
+  @refactor """
+  Group and group user creation should be inside a transaction. See Ecto.Multi
+  """
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
     attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
@@ -322,6 +335,35 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+
+  @refactor """
+  GroupAuthorization should have a well-named function that authorizes
+  this specific action of creating a new message. Currently the business
+  logic (a user must be a member of the group to publish a message) is
+  included inline in the function. By pushing the logic back into
+  `GroupAuthorization` we can avoid code churn and fragile authorization rules
+  as the apps evolves. Considering introducing the following API:
+
+  Instead of:
+
+    if GroupAuthorization.is_member?(group.id, user.id) do ...
+
+  Favor:
+
+    case GroupAuthorization.authorize(:publish_msg, group, user) do
+      :ok -> ...
+      {:error, :unauthorized} -> ...
+      {:error, :rate_limited} -> ...
+    end
+
+  """
+
+  @refactor """
+  Consider moving Link preview generation and related actions that should always
+  happen when a message is published to inside the `Message.create` function.
+  This way we have an encapsulated function that wraps up all responsibilities
+  of what should happen when a message is posted.
+  """
   defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
     request_id = attrs["request_id"]
 
@@ -387,6 +429,12 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:ok, json}, socket}
   end
 
+  @question """
+  Is there a reason new_msg is intercepted? It is much more expensive
+  than allow it to go thru to all clients. If used for filtering based
+  on different sockets, filtering on the client may be preferable if
+  all payload info is readable by all subscribers.
+  """
   def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg", "msg_link_previews_generated"] do
     json = MessageView.render("show.json", %{message: payload})
     push socket, event, json
