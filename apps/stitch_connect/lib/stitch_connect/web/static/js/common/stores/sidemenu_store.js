@@ -241,7 +241,7 @@ class SidemenuStore {
   showNotificationCardForNewMessage(newMessage) {
     if (
       !this.shouldNotify(newMessage) ||
-      Notification.permission === "denied"
+      (window.Notification && Notification.permission === "denied")
     ) {
       return;
     }

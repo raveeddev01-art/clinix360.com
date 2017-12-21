@@ -58,7 +58,7 @@ export default class YouNotifications extends Component {
     return (
       <Panel className="admin-panel" header={header}>
         {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
-        <BrowserNotification />
+        {window.Notification && <BrowserNotification />}
         <EmailNotification
           onSuccess={this.onSuccess}
           onError={this.onError}
