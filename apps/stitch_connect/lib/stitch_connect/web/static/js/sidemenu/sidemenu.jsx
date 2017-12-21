@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import cx from "classnames";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -86,10 +87,18 @@ class Sidemenu extends Component {
     }
 
     const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+    const className = cx(
+      "edge-badge",
+      {
+        "edge-badge--mentions": roomItem.mentions_count > 0,
+        "edge-badge--unreads": !roomItem.mentions_count
+      },
+      "up"
+    );
 
     return (
       <div
-        className="unreads-badge up"
+        className={className}
         role="link"
         onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
       >
@@ -107,10 +116,18 @@ class Sidemenu extends Component {
     }
 
     const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+    const className = cx(
+      "edge-badge",
+      {
+        "edge-badge--mentions": roomItem.mentions_count > 0,
+        "edge-badge--unreads": !roomItem.mentions_count
+      },
+      "down"
+    );
 
     return (
       <div
-        className="unreads-badge down"
+        className={className}
         role="link"
         onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
       >
