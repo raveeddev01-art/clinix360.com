@@ -741,12 +741,21 @@ class MessageStore {
     });
   };
 
+  syncTime = () => {
+    this.groupChannel.push("sync_time", {
+      timestamp: new Date().getTime()
+    });
+  };
+
   // ////////////// //
   // EVENT HANDLERS //
   // ////////////// //
 
   @action
   onJoinGroupChannel = data => {
+    // sync time as soon as joined to the channel
+    this.syncTime();
+
     if (this.group.id === this.loadedGroupId) {
       // new message has more precedance by putting it as first param.
       this.messages = _.unionBy(data.messages, this.messages, msg => {

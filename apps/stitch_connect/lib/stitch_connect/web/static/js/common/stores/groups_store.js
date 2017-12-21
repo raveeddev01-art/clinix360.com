@@ -272,7 +272,7 @@ class GroupsStore {
 
     // Join group channel
     channelStore
-      .joinGroupChannel({ timestamp: new Date().getTime() })
+      .joinGroupChannel()
       .receive("ok", messageStore.onJoinGroupChannel)
       .receive("error", err => notify.show(err.message, "error"));
 
