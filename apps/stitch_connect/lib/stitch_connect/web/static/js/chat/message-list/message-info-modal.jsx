@@ -52,14 +52,28 @@ class MessageInfoModal extends Component {
     );
   }
 
-  renderMessageText(textContent) {
-    const newline = "\n";
-    const lines = (textContent || "").split(newline);
+  renderMessagePreview() {
+    const { message } = this.props;
+    const { user: sender } = message;
+    const mine = message.user.id === currentUser.id;
 
-    return lines.reduce(
-      (result, line, i) =>
-        result.concat(this.renderMessageLine(line), <br key={`br_${i}`} />),
-      []
+    return (
+      <div className="preview-wrapper">
+        <div className={cx("message-preview", { mine })}>
+          <div className="message-preview-header">
+            <div className="message-preview-name">
+              {sender.first_name} {sender.last_name}
+            </div>
+            <div className="message-preview-time">
+              {moment
+                .utc(message.inserted_at)
+                .local()
+                .format("hh:mm A")}
+            </div>
+          </div>
+          <MessageContent message={message} />
+        </div>
+      </div>
     );
   }
 
@@ -67,8 +81,6 @@ class MessageInfoModal extends Component {
     const { message, usersStore } = this.props;
     const readRecipients = [];
     const unreadRecipients = [];
-    const { user: sender } = message;
-    const mine = message.user.id === currentUser.id;
     if (!message.read_status) return null;
 
     Object.keys(message.read_status).forEach(u => {
@@ -91,22 +103,7 @@ class MessageInfoModal extends Component {
     return (
       <Modal.Body>
         <div>
-          <div className="preview-wrapper">
-            <div className={cx("message-preview", { mine })}>
-              <MessageContent message={message} />
-            </div>
-          </div>
-          <h4>Sent By</h4>
-          <table className="table-read-status table-striped">
-            <tbody>
-              {this.renderItem({
-                id: 1,
-                name: `${sender.first_name} ${sender.last_name}`,
-                timestamp: message.inserted_at
-              })}
-            </tbody>
-          </table>
-          <p />
+          {this.renderMessagePreview()}
 
           {!!readRecipients.length && (
             <div>
