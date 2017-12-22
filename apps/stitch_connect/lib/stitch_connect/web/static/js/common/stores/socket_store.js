@@ -39,11 +39,11 @@ class SocketStore {
   };
 
   @action
-  sendPingWithTimeout = () => {
+  sendPingWithTimeout = (timeout = 1000) => {
     if (this.isConnected) {
       setTimeout(() => {
         this.sendPing();
-      }, 1000);
+      }, timeout);
     }
   };
 
@@ -60,11 +60,11 @@ class SocketStore {
 
         if (pingEnd - this.pingStart < HEALTHY_TIMEOUT) {
           this.isHealthy = true;
+          this.sendPingWithTimeout();
         } else {
           this.isHealthy = false;
+          this.sendPingWithTimeout(0); // if it's not healthy immediately check connection again
         }
-
-        this.sendPingWithTimeout();
       })
       .receive("timeout", () => {
         this.isHealthy = false;
