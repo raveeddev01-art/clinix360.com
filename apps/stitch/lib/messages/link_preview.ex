@@ -107,6 +107,8 @@ defmodule Stitch.Message.LinkPreview do
       end
     catch
       :exit, _ -> nil
+    rescue
+      _ -> nil
     end
   end
 
