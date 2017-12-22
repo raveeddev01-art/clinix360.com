@@ -11,6 +11,7 @@ class SocketStore {
   pingCount = 0;
   pingStart = 0;
   pingRace = null;
+  pingTimeout = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -39,11 +40,12 @@ class SocketStore {
   };
 
   @action
-  sendPingWithTimeout = (timeout = 1000) => {
+  sendPingWithTimeout = (delay = 1000) => {
     if (this.isConnected) {
-      setTimeout(() => {
+      clearTimeout(this.pingTimeout);
+      this.pingTimeout = setTimeout(() => {
         this.sendPing();
-      }, timeout);
+      }, delay);
     }
   };
 
@@ -52,24 +54,18 @@ class SocketStore {
     this.pingCount += 1;
     this.pingStart = new Date().getTime();
 
-    this.groupChannel
-      .push("ping", { id: this.pingCount })
-      .receive("ok", () => {
-        const pingEnd = new Date().getTime();
-        clearTimeout(this.pingRace);
+    this.groupChannel.push("ping", { id: this.pingCount }).receive("ok", () => {
+      const pingEnd = new Date().getTime();
+      clearTimeout(this.pingRace);
 
-        if (pingEnd - this.pingStart < HEALTHY_TIMEOUT) {
-          this.isHealthy = true;
-          this.sendPingWithTimeout();
-        } else {
-          this.isHealthy = false;
-          this.sendPingWithTimeout(0); // if it's not healthy immediately check connection again
-        }
-      })
-      .receive("timeout", () => {
-        this.isHealthy = false;
+      if (pingEnd - this.pingStart < HEALTHY_TIMEOUT) {
+        this.isHealthy = true;
         this.sendPingWithTimeout();
-      });
+      } else {
+        this.isHealthy = false;
+        this.sendPingWithTimeout(0); // if it's not healthy immediately check connection again
+      }
+    });
 
     this.pingRace = setTimeout(() => {
       this.isHealthy = false;
