@@ -51,6 +51,10 @@ class SocketStore {
 
   @action
   sendPing = () => {
+    if (!this.groupChannel) {
+      return;
+    }
+
     this.pingCount += 1;
     this.pingStart = new Date().getTime();
 
