@@ -14,11 +14,10 @@ export default class ReconnectionAlert extends Component {
     return (
       <div className="browser-notification-alert reconnection-alert">
         <span>
-          Waiting for server connection, trying again in{" "}
-          {socketStore.reconnectIn} seconds...{" "}
+          Your computer seems to be offline. We'll keep trying to reconnect, or you can&nbsp;
           <a role="link" onClick={socketStore.reconnect}>
-            Try now
-          </a>
+            try now
+          </a>.
         </span>
       </div>
     );

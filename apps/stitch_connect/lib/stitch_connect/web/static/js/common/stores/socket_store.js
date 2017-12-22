@@ -4,10 +4,7 @@ const HEALTHY_TIMEOUT = 2000; // if pong arrives under 2000ms, it means connecti
 
 class SocketStore {
   @observable isConnected = true;
-  @observable reconnectIn = undefined;
   @observable isHealthy = true;
-  ticks = 0;
-  interval;
   pingCount = 0;
   pingStart = 0;
   pingRace = null;
@@ -32,12 +29,6 @@ class SocketStore {
     socket.onOpen(this.openSocket);
     socket.onReconnectScheduled(this.errorSocket);
   }
-
-  @action
-  tickTimeout = () => {
-    this.ticks += 1;
-    this.reconnectIn = this.getReconnectIn();
-  };
 
   @action
   sendPingWithTimeout = (delay = 1000) => {
@@ -79,26 +70,12 @@ class SocketStore {
   @action
   openSocket = () => {
     this.isConnected = true;
-    clearInterval(this.interval);
     this.sendPingWithTimeout();
   };
 
   @action
   errorSocket = () => {
     this.isConnected = false;
-    this.ticks = 0;
-    this.reconnectIn = this.getReconnectIn();
-    clearInterval(this.interval);
-    this.interval = setInterval(this.tickTimeout, 1000);
-  };
-
-  @action
-  getReconnectIn = () => {
-    const reconnectAfterMs = socket.reconnectAfterMs(
-      socket.reconnectTimer.tries + 1
-    );
-    const reconnectIn = Math.max(0, reconnectAfterMs / 1000 - this.ticks);
-    return reconnectIn;
   };
 }
 
