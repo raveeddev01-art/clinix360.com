@@ -1,14 +1,24 @@
 import { observable, action } from "mobx";
 
+const HEALTHY_TIMEOUT = 1000; // if pong arrives under 1000ms, it means connection is healthy
+
 class SocketStore {
   @observable isConnected = true;
   @observable reconnectIn = undefined;
+  @observable isHealthy = true;
   ticks = 0;
   interval;
+  pingCount = 0;
+  pingStart = 0;
+  pingRace = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
     this.trackConnectionState();
+  }
+
+  get groupChannel() {
+    return this.rootStore.channelStore.groupChannel;
   }
 
   @action
@@ -29,9 +39,48 @@ class SocketStore {
   };
 
   @action
+  sendPingWithTimeout = () => {
+    if (this.isConnected) {
+      setTimeout(() => {
+        this.sendPing();
+      }, 1000);
+    }
+  };
+
+  @action
+  sendPing = () => {
+    this.pingCount += 1;
+    this.pingStart = new Date().getTime();
+
+    this.groupChannel
+      .push("ping", { id: this.pingCount })
+      .receive("ok", () => {
+        const pingEnd = new Date().getTime();
+        clearTimeout(this.pingRace);
+
+        if (pingEnd - this.pingStart < HEALTHY_TIMEOUT) {
+          this.isHealthy = true;
+        } else {
+          this.isHealthy = false;
+        }
+
+        this.sendPingWithTimeout();
+      })
+      .receive("timeout", () => {
+        this.isHealthy = false;
+        this.sendPingWithTimeout();
+      });
+
+    this.pingRace = setTimeout(() => {
+      this.isHealthy = false;
+    }, HEALTHY_TIMEOUT);
+  };
+
+  @action
   openSocket = () => {
     this.isConnected = true;
     clearInterval(this.interval);
+    this.sendPingWithTimeout();
   };
 
   @action

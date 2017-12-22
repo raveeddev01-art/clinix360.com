@@ -66,7 +66,7 @@ class MessageForm extends Component {
     const { messageStore, socketStore } = this.props;
 
     // if not connected, just no send message at all
-    if (!socketStore.isConnected) {
+    if (!socketStore.isConnected || !socketStore.isHealthy) {
       return;
     }
 
@@ -281,7 +281,8 @@ class MessageForm extends Component {
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
-      editing: !!messageInEdit || !socketStore.isConnected
+      editing:
+        !!messageInEdit || !socketStore.isConnected || !socketStore.isHealthy
     });
 
     return (
