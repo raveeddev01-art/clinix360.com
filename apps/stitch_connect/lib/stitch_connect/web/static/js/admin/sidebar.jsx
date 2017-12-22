@@ -85,7 +85,7 @@ class Sidebar extends Component {
           <div className="team-user">
             <h4 className="team-name">{teamStore.name}</h4>
             <div className="user-name">
-              <i className="fa fa-circle" />{" "}
+              <i className="fa fa-circle" />
               <span>{`${userStore.firstName} ${userStore.lastName}`}</span>
             </div>
           </div>
