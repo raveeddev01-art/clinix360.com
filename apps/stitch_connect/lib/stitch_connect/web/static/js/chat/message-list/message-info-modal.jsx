@@ -14,9 +14,9 @@ class MessageInfoModal extends Component {
     lastDay: "[Yesterday]",
     sameDay: "[Today]",
     nextDay: "[Tomorrow]",
-    lastWeek: "[last] dddd",
-    nextWeek: "dddd",
-    sameElse: "L"
+    lastWeek: "l",
+    nextWeek: "l",
+    sameElse: "l"
   };
 
   renderModalHeader() {
@@ -55,7 +55,7 @@ class MessageInfoModal extends Component {
   renderMessagePreview() {
     const { message } = this.props;
     const { user: sender } = message;
-    const mine = message.user.id === currentUser.id;
+    const mine = sender.id === currentUser.id;
 
     return (
       <div className="preview-wrapper">
@@ -77,6 +77,18 @@ class MessageInfoModal extends Component {
     );
   }
 
+  renderRecipientsTable(recipients) {
+    return (
+      <table className="table-read-status table-striped">
+        <tbody>
+          {sortBy(recipients, "name").map(recipient =>
+            this.renderItem(recipient)
+          )}
+        </tbody>
+      </table>
+    );
+  }
+
   renderModalBody() {
     const { message, usersStore } = this.props;
     const readRecipients = [];
@@ -88,13 +100,13 @@ class MessageInfoModal extends Component {
       if (message.read_status[u]) {
         readRecipients.push({
           id: u,
-          name: `${user.first_name} ${user.last_name}`,
+          name: user.full_name,
           timestamp: message.read_status[u]
         });
       } else {
         unreadRecipients.push({
           id: u,
-          name: `${user.first_name} ${user.last_name}`,
+          name: user.full_name,
           timestamp: message.inserted_at
         });
       }
@@ -108,26 +120,14 @@ class MessageInfoModal extends Component {
           {!!readRecipients.length && (
             <div>
               <h4>Seen By</h4>
-              <table className="table-read-status table-striped">
-                <tbody>
-                  {sortBy(readRecipients, "name").map(recipient =>
-                    this.renderItem(recipient)
-                  )}
-                </tbody>
-              </table>
+              {this.renderRecipientsTable(readRecipients)}
             </div>
           )}
 
           {!!unreadRecipients.length && (
             <div>
               <h4>Delivered To</h4>
-              <table className="table-read-status table-striped">
-                <tbody>
-                  {sortBy(unreadRecipients, "name").map(recipient =>
-                    this.renderItem(recipient)
-                  )}
-                </tbody>
-              </table>
+              {this.renderRecipientsTable(unreadRecipients)}
             </div>
           )}
         </div>

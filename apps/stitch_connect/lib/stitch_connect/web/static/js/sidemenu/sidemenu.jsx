@@ -54,6 +54,17 @@ class Sidemenu extends Component {
     this.toggleInviteModal();
   };
 
+  getEdgeBadgeClass(roomItem, direction) {
+    return cx(
+      "edge-badge",
+      {
+        "edge-badge--mentions": roomItem.mentions_count > 0,
+        "edge-badge--unreads": !roomItem.mentions_count
+      },
+      direction
+    );
+  }
+
   renderAdminOptions() {
     return (
       <div>
@@ -88,14 +99,7 @@ class Sidemenu extends Component {
     }
 
     const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
-    const className = cx(
-      "edge-badge",
-      {
-        "edge-badge--mentions": roomItem.mentions_count > 0,
-        "edge-badge--unreads": !roomItem.mentions_count
-      },
-      "up"
-    );
+    const className = this.getEdgeBadgeClass(roomItem, "up");
 
     return (
       <div
@@ -117,14 +121,7 @@ class Sidemenu extends Component {
     }
 
     const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
-    const className = cx(
-      "edge-badge",
-      {
-        "edge-badge--mentions": roomItem.mentions_count > 0,
-        "edge-badge--unreads": !roomItem.mentions_count
-      },
-      "down"
-    );
+    const className = this.getEdgeBadgeClass(roomItem, "down");
 
     return (
       <div
@@ -142,13 +139,7 @@ class Sidemenu extends Component {
   };
 
   renderThumbVertical = ({ style, ...props }) => {
-    const finalStyle = {
-      ...style,
-      cursor: "pointer",
-      borderRadius: "inherit",
-      backgroundColor: "rgba(255,255,255,.5)"
-    };
-    return <div style={finalStyle} {...props} />;
+    return <div {...props} className="sidebar__thumb" />;
   };
 
   render() {
@@ -161,7 +152,7 @@ class Sidemenu extends Component {
           <div className="team-user">
             <div className="team-name">{sidemenuStore.teamName}</div>
             <div className="user-name">
-              <i className="fa fa-circle" />{" "}
+              <i className="fa fa-circle" />
               <span>{`${userStore.firstName} ${userStore.lastName}`}</span>
             </div>
           </div>

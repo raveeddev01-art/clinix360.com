@@ -21,7 +21,7 @@ class Switcher extends Component {
   }
 
   render() {
-    const { totalMentionsCount: count } = this.props.groupsStore;
+    const { totalMentionsCount: count, defaultGroup } = this.props.groupsStore;
     const { active } = this.state;
 
     return (
@@ -42,7 +42,7 @@ class Switcher extends Component {
             </OverlayTrigger>
           </NavLink>
           <NavLink
-            to="/rooms/general"
+            to={`/rooms/${defaultGroup.slug}`}
             isActive={() => active === "connect"}
             className="switcher__link"
           >
