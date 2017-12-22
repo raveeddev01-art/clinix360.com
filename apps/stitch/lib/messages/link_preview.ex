@@ -46,13 +46,12 @@ defmodule Stitch.Message.LinkPreview do
   defp resolve_relative_image_url(changeset), do: changeset
 
   def messages_with_ungenerated_link_previews do
-    []
-    # import Ecto.Query, only: [where: 3]
+    import Ecto.Query, only: [where: 3]
 
-    # Message
-    # |> where([m], m.has_links == true)
-    # |> where([m], m.link_previews_generated == false)
-    # |> Repo.all
+    Message
+    |> where([m], m.has_links == true)
+    |> where([m], m.link_previews_generated == false)
+    |> Repo.all
   end
 
   def get_links(nil), do: []
