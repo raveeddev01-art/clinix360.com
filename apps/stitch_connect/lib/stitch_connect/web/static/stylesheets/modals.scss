@@ -180,13 +180,15 @@
 
     h4 {
       padding: 8px;
-      border-bottom: 1px solid #f1f1f1;
       margin-top: 0;
-      margin-bottom: 20px;
+      margin-bottom: 0;
+      text-transform: uppercase;
     }
 
     table {
       width: 100%;
+      margin-bottom: 20px;
+      table-layout: fixed;
 
       > tbody > tr:nth-of-type(odd) {
         background-color: #f1f1f1;
@@ -201,13 +203,59 @@
         padding: 8px 8px;
 
         &.sent-to {
-          width: 45%;
+          width: 60%;
           border-radius: 4px 0 0 4px;
         }
 
-        &.read-at {
+        &.read-date {
+          width: 20%;
+          text-align: right;
+        }
+        &.read-time {
+          text-align: right;
+          width: 20%;
           border-radius: 0 4px 4px 0;
         }
+      }
+    }
+
+    .preview-wrapper {
+      background-color: $body-bg;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .message-preview {
+      font-size: 15px;
+      background: #fff;
+      border: 1px solid #e4e4e4;
+      border-radius: 4px;
+      padding: 15px 20px;
+      text-align: left;
+      display: inline-block;
+
+      .message-preview-header {
+        display: flex;
+        margin-bottom: 5px;
+        align-items: baseline;
+      }
+
+      .message-preview-name {
+        flex: 1;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .message-preview-time {
+        font-size: 12px;
+        margin-left: 8px;
+        opacity: 0.8;
+      }
+
+      &.mine {
+        color: white;
+        background-color: $brand-primary;
       }
     }
   }

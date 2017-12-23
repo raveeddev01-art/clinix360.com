@@ -7,7 +7,7 @@ import classNames from "classnames";
 export default class GroupName extends Component {
   render() {
     const { groupStore, presenceStore } = this.props;
-    const { type, users } = groupStore;
+    const { type, users } = groupStore.group;
     let iconName;
 
     if (type === "regular") {
