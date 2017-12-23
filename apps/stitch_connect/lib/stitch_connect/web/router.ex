@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.Router do
   use StitchConnect.Web, :router
-  import StitchConnect.Plug.RateLimit
 
   pipeline :browser do
     plug StitchConnect.Plug.PlugAttack
@@ -9,14 +8,12 @@ defmodule StitchConnect.Web.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :rate_limit_authentication, max_request: 50, interval_seconds: 30
   end
 
   pipeline :api do
     plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
     plug :fetch_session
-    plug :rate_limit_authentication, max_request: 50, interval_seconds: 30
   end
 
   pipeline :authenticated_api do
@@ -24,7 +21,6 @@ defmodule StitchConnect.Web.Router do
     plug :accepts, ["json"]
     plug :fetch_session
     plug StitchConnect.Plug.ApiAuthenticate
-    plug :rate_limit_authentication, max_request: 50, interval_seconds: 30
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
