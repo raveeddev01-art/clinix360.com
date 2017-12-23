@@ -74,4 +74,15 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
     assert message.link_previews_generated
     assert message.link_previews == []
   end
+
+  test "message with a link to a pdf" do
+    link = "http://www.mediterraneandeli.com/files/6615/0828/1809/Med_Deli_Menu_w_image_2017_edited_final_fin.pdf"
+    message = insert(:message, text_content: "lorem #{link} ipsum")
+
+    Stitch.Message.LinkPreview.generate_link_previews(message)
+
+    message = Stitch.MessageQueries.get_by_id(message.id)
+    assert message.link_previews_generated
+    assert message.link_previews == []
+  end
 end
