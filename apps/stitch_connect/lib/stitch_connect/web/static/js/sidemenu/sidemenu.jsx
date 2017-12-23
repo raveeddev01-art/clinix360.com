@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import { Scrollbars } from "react-custom-scrollbars";
+import cx from "classnames";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -26,7 +28,7 @@ class Sidemenu extends Component {
   componentDidMount() {
     const { sidemenuStore } = this.props;
 
-    sidemenuStore.loadSidemenuDiv(this.sidemenuDiv);
+    sidemenuStore.loadSidemenuDiv(this.scrollbar.view);
   }
 
   componentWillUnmount() {
@@ -51,6 +53,17 @@ class Sidemenu extends Component {
     evt.preventDefault();
     this.toggleInviteModal();
   };
+
+  getEdgeBadgeClass(roomItem, direction) {
+    return cx(
+      "edge-badge",
+      {
+        "edge-badge--mentions": roomItem.mentions_count > 0,
+        "edge-badge--unreads": !roomItem.mentions_count
+      },
+      direction
+    );
+  }
 
   renderAdminOptions() {
     return (
@@ -86,10 +99,11 @@ class Sidemenu extends Component {
     }
 
     const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+    const className = this.getEdgeBadgeClass(roomItem, "up");
 
     return (
       <div
-        className="unreads-badge up"
+        className={className}
         role="link"
         onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
       >
@@ -107,10 +121,11 @@ class Sidemenu extends Component {
     }
 
     const text = roomItem.mentions_count > 0 ? "More Mentions" : "More Unreads";
+    const className = this.getEdgeBadgeClass(roomItem, "down");
 
     return (
       <div
-        className="unreads-badge down"
+        className={className}
         role="link"
         onClick={() => sidemenuStore.scrollToRoomItem(roomItem.id)}
       >
@@ -119,6 +134,14 @@ class Sidemenu extends Component {
     );
   }
 
+  renderScrollbarView = props => {
+    return <div {...props} className="rooms-menu__scroll-wrap" />;
+  };
+
+  renderThumbVertical = ({ style, ...props }) => {
+    return <div {...props} className="sidebar__thumb" />;
+  };
+
   render() {
     const { sidemenuStore, userStore, groupsStore } = this.props;
     const filterJoined = rooms => rooms.filter(room => room.joined);
@@ -126,7 +149,13 @@ class Sidemenu extends Component {
     return (
       <div id="sidemenu">
         <div className="flex-header">
-          <div className="team-name">{sidemenuStore.teamName}</div>
+          <div className="team-user">
+            <div className="team-name">{sidemenuStore.teamName}</div>
+            <div className="user-name">
+              <i className="fa fa-circle" />
+              <span>{`${userStore.firstName} ${userStore.lastName}`}</span>
+            </div>
+          </div>
 
           <Dropdown
             id="dropdown-preferences-menu"
@@ -176,7 +205,7 @@ class Sidemenu extends Component {
                 </MenuItem>
               )}
               <MenuItem eventKey="10" onClick={this.props.presenceStore.lock}>
-                Lockout
+                Lock Out
               </MenuItem>
               <MenuItem eventKey="11" href="/logout">
                 Sign Out
@@ -185,36 +214,40 @@ class Sidemenu extends Component {
           </Dropdown>
         </div>
         <div className="flex-content">
-          <div
-            className="rooms-menu"
-            ref={div => {
-              this.sidemenuDiv = div;
-            }}
-          >
-            <FavoritesList
-              heading={"Favorites"}
-              rooms={groupsStore.favoriteGroups}
-            />
+          <div className="rooms-menu">
+            <Scrollbars
+              autoHide
+              renderView={this.renderScrollbarView}
+              renderThumbVertical={this.renderThumbVertical}
+              ref={ref => {
+                this.scrollbar = ref;
+              }}
+            >
+              <FavoritesList
+                heading={"Favorites"}
+                rooms={groupsStore.favoriteGroups}
+              />
 
-            <RoomsList
-              heading="Rooms"
-              rooms={filterJoined(groupsStore.normalGroups)}
-            />
+              <RoomsList
+                heading="Rooms"
+                rooms={filterJoined(groupsStore.normalGroups)}
+              />
 
-            <PeopleList
-              heading="Direct Messages"
-              rooms={filterJoined(groupsStore.directGroups)}
-              showInviteModal={this.showInviteModal}
-            />
+              <PeopleList
+                heading="Direct Messages"
+                rooms={filterJoined(groupsStore.directGroups)}
+                showInviteModal={this.showInviteModal}
+              />
 
-            <InviteModal
-              show={this.state.showInviteModal}
-              toggle={this.toggleInviteModal}
-            />
+              <InviteModal
+                show={this.state.showInviteModal}
+                toggle={this.toggleInviteModal}
+              />
+            </Scrollbars>
+
+            {this.renderUnreadBadgesUp()}
+            {this.renderUnreadBadgesDown()}
           </div>
-
-          {this.renderUnreadBadgesUp()}
-          {this.renderUnreadBadgesDown()}
         </div>
       </div>
     );

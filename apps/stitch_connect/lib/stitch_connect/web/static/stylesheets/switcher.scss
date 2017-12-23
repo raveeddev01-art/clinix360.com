@@ -4,9 +4,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background-color: $brand-primary;
+  background-color: darken($brand-primary, 5%);
   padding: 15px 10px;
-  border-right: 1px solid #fff;
   min-width: 65px;
   z-index: 11;
 
@@ -30,24 +29,38 @@
     &:active {
       color: #fff;
       outline: none;
+
+      i {
+        opacity: 1;
+      }
+    }
+
+    i {
+      opacity: 0.6;
     }
 
     &-wrapper {
       position: relative;
+    }
+
+    &.active {
+      i {
+        opacity: 1;
+      }
     }
   }
 
   &__badge {
     position: absolute;
     top: 0;
-    right: -5px;
-    border-radius: 50%;
+    right: -12px;
     background-color: #e33a2f;
     color: #fff;
-    font-size: 10px;
-    height: 15px;
-    width: 15px;
-    line-height: 15px;
+    font-size: 12px;
+    width: 22px;
+    padding: 3px 4px;
+    line-height: 12px;
+    border-radius: 4px;
     text-align: center;
   }
 
