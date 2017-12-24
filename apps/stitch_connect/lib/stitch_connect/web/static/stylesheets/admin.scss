@@ -160,7 +160,7 @@ $admin-topbar-height-sm: 65px;
     .admin-topbar {
       padding-left: 20px;
       padding-right: 20px;
-      background-color: #fff;
+      background-color: $body-bg;
       border-bottom: 1px solid $border-color;
 
       > .toggle-menu {
