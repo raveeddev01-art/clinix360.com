@@ -5,7 +5,7 @@
     color: #ffffff;
     background-color: $brand-primary;
     z-index: 10;
-    padding: 0 14px 0 25px;
+    padding: 0 5px 0 12px;
 
     .team-user {
       flex: 1;
@@ -54,7 +54,7 @@
     .dropdown-menu {
       width: 210px;
       padding: 17px 27px;
-      margin: -16px -10px 0 0;
+      margin: -16px 0 0 0;
 
       h5 {
         color: $brand-primary;
@@ -97,11 +97,11 @@
       &:before {
         content: "";
         position: absolute;
-        right: 16px;
-        top: -11px;
+        right: 7px;
+        top: -10px;
         width: 0;
         height: 0;
-        border: 11px solid transparent;
+        border: 10px solid transparent;
         border-bottom-color: #fff;
         border-top-width: 0;
       }
@@ -124,15 +124,11 @@
         overflow-y: overlay;
       }
 
-      &__scroll-wrap {
-        padding: 0 15px;
-      }
-
       .menu-nav {
         .heading {
           display: flex;
           align-items: center;
-          padding: 0 10px;
+          padding: 0 12px;
           margin: 0 0 5px;
 
           h5 {
@@ -180,8 +176,7 @@
           color: #fff;
           font-size: 16px;
           text-decoration: none;
-          border-radius: 3px;
-          padding: 3px 10px 3px 7px;
+          padding: 3px 10px 3px 10px;
           position: relative;
           opacity: 0.6;
 
@@ -222,7 +217,6 @@
             padding: 3px 4px;
             z-index: 9;
             width: 22px;
-            margin-right: -3px;
             text-align: center;
           }
 
