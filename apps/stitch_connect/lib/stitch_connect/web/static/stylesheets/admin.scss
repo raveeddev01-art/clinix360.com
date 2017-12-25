@@ -41,13 +41,19 @@ $admin-topbar-height-sm: 65px;
         align-items: center;
 
         i {
-          font-size: 9px;
-          margin-right: 6px;
+          font-size: 11px;
           line-height: 20px;
         }
 
         span {
           line-height: 20px;
+        }
+
+        &__status-icon {
+          display: inline-block;
+          text-align: center;
+          width: 17px;
+          margin-right: 4px;
         }
       }
     }
