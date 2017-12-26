@@ -17,8 +17,8 @@ defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
       {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
       {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-      user_1_session = Helper.sign_in(user_1_session, team, user_1)
-      user_2_session = Helper.sign_in(user_2_session, team, user_2)
+      Helper.sign_in(user_1_session, team, user_1)
+      Helper.sign_in(user_2_session, team, user_2)
 
       user_2_session
       |> refute_has(sidemenu_item("Emergency Room"))

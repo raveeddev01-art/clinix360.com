@@ -10,8 +10,8 @@ if (window.authenticationToken !== "") {
         applicationVersion: window.applicationVersion,
         userAgent: navigator.userAgent
       },
-      timeout: 1000,
-      heartbeatIntervalMs: 1000
+      timeout: 10000,
+      heartbeatIntervalMs: 10000
     }
   );
   socket.connect();
