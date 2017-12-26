@@ -39,8 +39,8 @@
       &__status-icon {
         display: inline-block;
         text-align: center;
-        width: 17px;
-        margin-right: 4px;
+        width: 16px;
+        margin-right: 6px;
       }
     }
 
@@ -182,16 +182,16 @@
           color: #fff;
           font-size: 16px;
           text-decoration: none;
-          padding: 3px 12px 3px 10px;
+          padding: 3px 12px;
           position: relative;
           opacity: 0.6;
 
           .item-icon {
             display: flex;
             justify-content: center;
-            flex-basis: 21px;
+            flex-basis: 16px;
             flex-shrink: 0;
-            margin-right: 4px;
+            margin-right: 6px;
 
             i.fa-circle,
             i.fa-circle-o {
