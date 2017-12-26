@@ -253,17 +253,6 @@ defmodule Stitch.Message do
     end
   end
 
-  def messages_from_other_users(user_id, group_id, message_id) do
-    Message
-    |> where([m], m.group_id == ^group_id)
-    |> where([m], m.user_id != ^user_id)
-    |> where([m], m.type != "system")
-    |> where([m], m.id >= ^message_id)
-    |> limit(1)
-    |> select([m], %{id: m.id})
-    |> Repo.one
-  end
-
   def mark_as_unread(_user_id, _group_id, %Message{type: "system"} = _message) do
     {:error, "System message can't be marked as unread"}
   end
@@ -305,6 +294,17 @@ defmodule Stitch.Message do
       mentions_count: ^mentions_count,
       unread_messages_count: ^unread_messages_count,
     ])
+  end
+
+  def messages_from_other_users(user_id, group_id, message_id) do
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> where([m], m.user_id != ^user_id)
+    |> where([m], m.type != "system")
+    |> where([m], m.id >= ^message_id)
+    |> limit(1)
+    |> select([m], %{id: m.id})
+    |> Repo.one
   end
 
   defp count_after(group_id, user_id, message_id) do
