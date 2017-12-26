@@ -1,10 +1,10 @@
 defmodule StitchConnect.Web.Rooms.FavoritesTest do
-  use StitchConnect.Web.FeatureCase, async: false
+  use StitchConnect.Web.FeatureCase, async: true
   import Stitch.Factory
   import Wallaby.Query
   alias StitchConnect.Web.IntegrationTestHelper, as: Helper
 
-  test "favorite/unfavorite rooms and direct messages" do
+  test "favorite/unfavorite rooms and direct messages", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Care Clinic", "care-clinic")
     bob = insert(:user, team: team, username: "bob", first_name: "Bob", last_name: "Lee")
     joe = insert(:user, team: team, username: "joe", first_name: "Joe", last_name: "Cox")
@@ -17,7 +17,7 @@ defmodule StitchConnect.Web.Rooms.FavoritesTest do
     Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
     Stitch.Group.create_multi_dm(bob, [bob.id, sam.id, tim.id])
 
-    {:ok, session} = Wallaby.start_session()
+    {:ok, session} = Wallaby.start_session(metadata: metadata)
     Helper.sign_in(session, team, bob)
 
     assert has_room?(session, "Rooms", "Emergency Room")

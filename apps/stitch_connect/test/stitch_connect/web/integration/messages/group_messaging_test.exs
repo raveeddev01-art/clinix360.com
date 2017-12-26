@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.Messages.GroupMessagingTest do
 
   defp message(msg), do: css(".message-container > .message", text: msg)
 
-  test "users can see each other's messages", %{metadata: metadata, encoded_metadata: encoded_metadata} do
+  test "users can see each other's messages", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1 = insert(:user, email: "someuser@somecompany.com", team: team)
     user_2 = insert(:user, email: "otheruser@somecompany.com", team: team)
@@ -15,8 +15,8 @@ defmodule StitchConnect.Web.Messages.GroupMessagingTest do
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
     {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1, encoded_metadata)
-    Helper.sign_in(user_2_session, team, user_2, encoded_metadata)
+    Helper.sign_in(user_1_session, team, user_1)
+    Helper.sign_in(user_2_session, team, user_2)
 
     user_1_session
     |> click(button("Join"))

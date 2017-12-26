@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
   @rooms_menu_notification xpath("//a[@href='/rooms/vip']", text: "VIP\n1")
   @sidebar_notification css(".switcher .switcher__link .switcher__badge", text: "1")
 
-  test "notification badge is rendered with right number when user is mentioned", %{metadata: metadata, encoded_metadata: encoded_metadata} do
+  test "notification badge is rendered with right number when user is mentioned", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1_attrs = [
       email: "someuser@somecompany.com",
@@ -33,8 +33,8 @@ defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
     {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1, encoded_metadata)
-    Helper.sign_in(user_2_session, team, user_2, encoded_metadata)
+    Helper.sign_in(user_1_session, team, user_1)
+    Helper.sign_in(user_2_session, team, user_2)
 
     user_1_session
     |> click(button("Join"))
@@ -60,7 +60,7 @@ defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
     |> refute_has(@sidebar_notification)
   end
 
-  test "notification badge doesn't render if user is already in the room", %{metadata: metadata, encoded_metadata: encoded_metadata} do
+  test "notification badge doesn't render if user is already in the room", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1_attrs = [
       email: "someuser@somecompany.com",
@@ -87,8 +87,8 @@ defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
     {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1, encoded_metadata)
-    Helper.sign_in(user_2_session, team, user_2, encoded_metadata)
+    Helper.sign_in(user_1_session, team, user_1)
+    Helper.sign_in(user_2_session, team, user_2)
 
     user_1_session
     |> click(button("Join"))

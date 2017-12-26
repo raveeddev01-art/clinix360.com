@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.Messages.MultiDirectMessagingTest do
 
   defp message(msg), do: css(".message-container > .message", text: msg)
 
-  test "user can start a direct conversation with multiple users", %{metadata: metadata, encoded_metadata: encoded_metadata} do
+  test "user can start a direct conversation with multiple users", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1 = insert(:user, first_name: "John", last_name: "Doe", username: "john", team: team)
     user_2 = insert(:user, first_name: "Jane", last_name: "Doe", username: "jane", team: team)
@@ -21,9 +21,9 @@ defmodule StitchConnect.Web.Messages.MultiDirectMessagingTest do
       Wallaby.end_session(user_2_session)
       Wallaby.end_session(user_3_session)
     end
-    Helper.sign_in(user_1_session, team, user_1, encoded_metadata)
-    Helper.sign_in(user_2_session, team, user_2, encoded_metadata)
-    Helper.sign_in(user_3_session, team, user_3, encoded_metadata)
+    Helper.sign_in(user_1_session, team, user_1)
+    Helper.sign_in(user_2_session, team, user_2)
+    Helper.sign_in(user_3_session, team, user_3)
 
     user_1_session
     |> click(css(".rooms-menu a", text: "Direct Messages"))

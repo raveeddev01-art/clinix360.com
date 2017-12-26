@@ -7,7 +7,7 @@ defmodule StitchConnect.Web.Messages.SearchTest do
 
   defp search_result(msg), do: css(".message-search-addon .message", text: msg)
 
-  test "user can search for messages in his team", %{metadata: metadata, encoded_metadata: encoded_metadata} do
+  test "user can search for messages in his team", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1 = insert(:user, first_name: "John", last_name: "Doe", username: "john", team: team)
     group = insert(:group, team: team)
@@ -15,7 +15,7 @@ defmodule StitchConnect.Web.Messages.SearchTest do
 
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1, encoded_metadata)
+    Helper.sign_in(user_1_session, team, user_1)
 
     default_group = Stitch.GroupQueries.default_group(user_1)
     insert(:message, group: default_group, type: "system", text_content: "system fox")

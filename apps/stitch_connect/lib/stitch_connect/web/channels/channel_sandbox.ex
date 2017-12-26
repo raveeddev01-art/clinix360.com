@@ -24,7 +24,7 @@ defmodule StitchConnect.Web.ChannelSandbox do
 
   This function is intended to be called at to top of `join/3`.
   """
-  def enable_channel_sandbox(%{assigns: %{sandbox_owner: %{repo: repo, owner: owner}}} = socket) do
+  def enable_channel_sandbox(%{assigns: %{sandbox_metadata: %{repo: repo, owner: owner}}} = socket) do
     Ecto.Adapters.SQL.Sandbox.allow(repo, owner, self())
     socket
   end
@@ -34,14 +34,11 @@ defmodule StitchConnect.Web.ChannelSandbox do
   Configures a socket to configure sandbox information for channels to consume.
   """
   if Application.get_env(:stitch_connect, :sql_sandbox) do
-    def configure_channel_sandbox(%{"owner" => owner}, socket) do
-      sandbox_owner =
-        owner
-        |> Base.url_decode64!()
-        |> :erlang.binary_to_term()
-      %{repo: repo, owner: owner} = sandbox_owner
+    def configure_channel_sandbox(%{"userAgent" => user_agent}, socket) do
+      sandbox_metadata = Wallaby.Metadata.extract(user_agent)
+      %{repo: repo, owner: owner} = sandbox_metadata
       Ecto.Adapters.SQL.Sandbox.allow(repo, owner, self())
-      Phoenix.Socket.assign(socket, :sandbox_owner, sandbox_owner)
+      Phoenix.Socket.assign(socket, :sandbox_metadata, sandbox_metadata)
     end
   end
   def configure_channel_sandbox(_, socket), do: socket

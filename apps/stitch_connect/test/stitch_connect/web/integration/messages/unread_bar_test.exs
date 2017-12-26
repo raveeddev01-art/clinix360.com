@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.Messages.UnreadBarTest do
   @unread_bar css(".container-bars .unread-messages-tooltip")
   @mark_as_read_button css(".unread-messages-tooltip .mark-as-read-button")
 
-  test "unread bar is rendered and clears after user clicks 'mark as read' button", %{metadata: metadata, encoded_metadata: encoded_metadata} do
+  test "unread bar is rendered and clears after user clicks 'mark as read' button", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1 = insert(:user, email: "someuser@somecompany.com", username: "yoyoma", team: team)
     user_2 = insert(:user, email: "otheruser@somecompany.com", username: "bobby", team: team)
@@ -20,8 +20,8 @@ defmodule StitchConnect.Web.Messages.UnreadBarTest do
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
     {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1, encoded_metadata)
-    Helper.sign_in(user_2_session, team, user_2, encoded_metadata)
+    Helper.sign_in(user_1_session, team, user_1)
+    Helper.sign_in(user_2_session, team, user_2)
 
     user_1_session
     |> click(button("Join")) # to join 'general' room

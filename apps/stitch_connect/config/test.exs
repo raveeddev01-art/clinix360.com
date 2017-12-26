@@ -11,6 +11,7 @@ config :wallaby,
   screenshot_on_failure: true,
   driver: Wallaby.Experimental.Chrome,
   chrome: [headless: true],
+  base_url: "http://localhost:4001",
   pool_size: 6,
   js_logger: false
 
