@@ -7,10 +7,6 @@ export default class ReconnectionAlert extends Component {
   render() {
     const { socketStore } = this.props;
 
-    if (socketStore.isConnected) {
-      return null;
-    }
-
     return (
       <div className="browser-notification-alert reconnection-alert">
         <span>

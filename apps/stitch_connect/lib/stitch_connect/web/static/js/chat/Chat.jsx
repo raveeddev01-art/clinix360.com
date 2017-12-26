@@ -3,7 +3,6 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 import { withRouter } from "react-router";
 
-import ReconnectionAlert from "./reconnection-alert";
 import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
@@ -55,7 +54,6 @@ class Chat extends Component {
         </Helmet>
         <div id="main">
           <TopNav />
-          <ReconnectionAlert />
           <div className="flex-content">
             <MessagePanel />
             <Addons />
