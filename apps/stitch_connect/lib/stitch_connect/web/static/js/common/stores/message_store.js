@@ -777,6 +777,8 @@ class MessageStore {
       this.messages = data.messages;
     }
 
+    this.rootStore.socketStore.sendPingWithTimeout();
+
     if (data.messages.length < 30) {
       this.loadedAll = true;
     }

@@ -33,6 +33,7 @@ class SocketStore {
   @action
   sendPingWithTimeout = (delay = 1000) => {
     if (this.isConnected) {
+      clearTimeout(this.pingRace);
       clearTimeout(this.pingTimeout);
       this.pingTimeout = setTimeout(() => {
         this.sendPing();
