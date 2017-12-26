@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :stitch_connect
-  use Plug.Builder
 
   socket "/socket", StitchConnect.Web.UserSocket
 
