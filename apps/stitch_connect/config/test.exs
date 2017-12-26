@@ -12,7 +12,6 @@ config :wallaby,
   driver: Wallaby.Experimental.Chrome,
   chrome: [headless: true],
   base_url: "http://localhost:4001",
-  pool_size: 6,
   js_logger: false
 
 config :stitch_connect, :start_message_link_preview_generator, false
