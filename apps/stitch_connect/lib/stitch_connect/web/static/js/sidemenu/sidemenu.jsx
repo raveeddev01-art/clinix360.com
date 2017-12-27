@@ -152,7 +152,9 @@ class Sidemenu extends Component {
           <div className="team-user">
             <div className="team-name">{sidemenuStore.teamName}</div>
             <div className="user-name">
-              <i className="fa fa-circle" />
+              <span className="user-name__status-icon">
+                <i className="fa fa-circle" />
+              </span>
               <span>{`${userStore.firstName} ${userStore.lastName}`}</span>
             </div>
           </div>
