@@ -13,8 +13,8 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
-import RoomItem from "./room_item";
 import { Members, Toggle } from "common/components";
+import RoomItem from "./room_item";
 
 @inject("groupsStore")
 @observer
@@ -108,8 +108,8 @@ class RoomsModal extends Component {
   };
 
   canCreateRoom = () => {
-    const { name, members } = this.state;
-    return name.trim() !== "" && members && members.length !== 0;
+    const { name } = this.state;
+    return name.trim() !== "";
   };
 
   renderModalHeader() {
