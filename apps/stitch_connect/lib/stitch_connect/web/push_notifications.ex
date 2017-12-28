@@ -166,7 +166,8 @@ defmodule StitchConnect.Web.PushNotifications do
     notification
   end
 
-  def handle_response_ios(%{response: :bad_device_token, device_token: token}) do
+  def handle_response_ios(%{response: response, device_token: token})
+      when response in [:bad_device_token, :unregistered] do
     Mobile.remove_device("ios", token)
   end
   def handle_response_ios(%{response: :success}), do: nil
