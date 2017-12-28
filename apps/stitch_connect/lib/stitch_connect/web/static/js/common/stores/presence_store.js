@@ -1,8 +1,12 @@
 import { Presence } from "phoenix";
 import { action, autorun, computed, observable } from "mobx";
 import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 
-import { PRESENCE_DEBOUNCE_WAIT } from "lib/constants";
+import {
+  PRESENCE_DEBOUNCE_WAIT,
+  USER_INTERACTION_THROTTLE
+} from "lib/constants";
 
 class PresenceStore {
   @observable teamId = "";
@@ -85,6 +89,12 @@ class PresenceStore {
     PRESENCE_DEBOUNCE_WAIT
   );
 
+  @action
+  throttledUserInteract = throttle(
+    this.onUserInteract,
+    USER_INTERACTION_THROTTLE
+  );
+
   onPresenceState = state => {
     this.onlineUsersMapCache = Presence.syncState(
       this.onlineUsersMapCache,
@@ -149,21 +159,17 @@ class PresenceStore {
       });
   };
 
-  onWindowBlur = () => {
+  onUserInteract = () => {
     if (this.locked) return;
+    window.clearTimeout(this.lockoutTimerID);
+    this.startLockoutTimer();
 
-    this.teamChannel.push("became_inactive");
+    window.clearTimeout(this.awayTimerID);
     this.awayTimerID = window.setTimeout(
       this.onAwayTimerExpired,
       30 * 60 * 1000
     );
-    this.startLockoutTimer();
-  };
 
-  onWindowFocus = () => {
-    if (this.locked) return;
-    window.clearTimeout(this.lockoutTimerID);
-    window.clearTimeout(this.awayTimerID);
     this.teamChannel.push("became_active");
   };
 
