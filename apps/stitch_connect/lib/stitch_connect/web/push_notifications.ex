@@ -57,7 +57,7 @@ defmodule StitchConnect.Web.PushNotifications do
     import FCM.Notification
     Logger.info "Sending Badge Update to Android"
     Logger.info(inspect(badge_value))
-    Logger.info(inspect(ios_devices))
+    Logger.info(inspect(android_devices))
     android_devices
     |> Enum.map(&(&1.token))
     |> new
