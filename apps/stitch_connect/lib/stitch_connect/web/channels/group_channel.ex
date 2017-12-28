@@ -1,7 +1,6 @@
 defmodule StitchConnect.Web.GroupChannel do
-  use Phoenix.Channel
+  use StitchConnect.Web, :channel
   use Appsignal.Instrumentation.Decorators
-
   import Ecto.Query
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView

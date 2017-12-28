@@ -2,12 +2,13 @@ import { Socket } from "lib/pheonix";
 
 if (window.authenticationToken !== "") {
   window.socket = new Socket(
-    `${window.websocketScheme}${window.applicationHost}/socket`,
+    `${websocketScheme}${window.applicationHost}/socket`,
     {
       params: {
         authenticationToken: window.authenticationToken,
         sessionId: window.sessionId,
-        applicationVersion: window.applicationVersion
+        applicationVersion: window.applicationVersion,
+        userAgent: navigator.userAgent
       },
       timeout: 10000,
       heartbeatIntervalMs: 10000,
