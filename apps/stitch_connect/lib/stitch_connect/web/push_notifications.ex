@@ -42,6 +42,9 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   defp push_badge_update_to_ios_devices(badge_value, ios_devices) do
+    Logger.info "Sending Badge Update to iOS"
+    Logger.info(inspect(badge_value))
+    Logger.info(inspect(ios_devices))
     ios_devices
     |> Enum.map(fn %{token: token} ->
       %APNS.Notification{device_token: token, topic: @apns_topic}
@@ -52,7 +55,9 @@ defmodule StitchConnect.Web.PushNotifications do
 
   defp push_badge_update_to_android_devices(badge_value, android_devices) do
     import FCM.Notification
-
+    Logger.info "Sending Badge Update to Android"
+    Logger.info(inspect(badge_value))
+    Logger.info(inspect(ios_devices))
     android_devices
     |> Enum.map(&(&1.token))
     |> new
@@ -93,6 +98,10 @@ defmodule StitchConnect.Web.PushNotifications do
   defp push_new_msg_notification_to_ios_devices(grp, msg, badge_value, ios_devices) do
     import APNS.Notification
 
+    Logger.info "Sending PN to iOS"
+    Logger.info(inspect(badge_value))
+    Logger.info(inspect(ios_devices))
+
     ios_devices
     |> Enum.map(fn %{token: token} ->
       grp
@@ -107,6 +116,10 @@ defmodule StitchConnect.Web.PushNotifications do
 
   defp push_new_msg_notification_to_android_devices(grp, msg, badge_value, room_notification_count, android_devices) do
     import FCM.Notification
+
+    Logger.info "Sending PN to Android"
+    Logger.info(inspect(badge_value))
+    Logger.info(inspect(android_devices))
 
     android_devices
     |> Enum.map(&(&1.token))
