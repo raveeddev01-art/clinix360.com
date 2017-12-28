@@ -11,7 +11,7 @@ export default class GroupName extends Component {
     let iconName;
 
     if (type === "regular") {
-      iconName = groupStore.group.public ? "fa-comments" : "fa-locked";
+      iconName = groupStore.group.public ? "fa-comments" : "fa-lock";
     } else if (type === "dm") {
       iconName =
         users.length > 0 && presenceStore.isOnline(users[0].id)
