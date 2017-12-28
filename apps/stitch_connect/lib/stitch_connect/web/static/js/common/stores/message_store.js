@@ -44,6 +44,7 @@ class MessageStore {
 
   readStatusCache = {}; // cache to store read status for when readstatus broadcast arrives before new_msg
   loadedGroupId = null; // indicates joined group id. populated after onJoinedGroup is run. It's to prevent onJoinedGroup happen again by rejoining internally in pheonix_socket.js
+  @observable syncedTime = false; // sends timestamp only after synced time
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -467,12 +468,18 @@ class MessageStore {
     // Scroll to bottom
     this.scrollToBottom(null, 0, 0);
 
+    const newMsg = {
+      text_content: text,
+      request_id: tempMessage.id,
+      ...additionalFields
+    };
+
+    if (this.syncedTime) {
+      newMsg.timestamp = new Date().getTime(); // sending unix timestamp in milliseconds to calc latency on server
+    }
+
     this.groupChannel
-      .push("new_msg", {
-        text_content: text,
-        request_id: tempMessage.id,
-        ...additionalFields
-      })
+      .push("new_msg", newMsg)
       .receive("error", () => {
         this.updateMessageData(tempMessage.id, {
           status: "failed"
@@ -740,18 +747,37 @@ class MessageStore {
     });
   };
 
+  @action
+  syncTime = () => {
+    this.syncedTime = false;
+    this.groupChannel
+      .push("sync_time", {
+        timestamp: new Date().getTime()
+      })
+      .receive("ok", () => {
+        this.syncedTime = true;
+      });
+  };
+
   // ////////////// //
   // EVENT HANDLERS //
   // ////////////// //
 
   @action
   onJoinGroupChannel = data => {
-    // commenting out below for now until phoenix socket is reviewed by Chris
-    // if (this.group.id === this.loadedGroupId) {
-    //   return; // just ignore data coming if it's rejoined on same channel. It happened just for reconnecting socket.
-    // }
+    // sync time as soon as joined to the channel
+    this.syncTime();
 
-    this.messages = data.messages;
+    if (this.group.id === this.loadedGroupId) {
+      // new message has more precedance by putting it as first param.
+      this.messages = _.unionBy(data.messages, this.messages, msg => {
+        return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
+      });
+    } else {
+      this.messages = data.messages;
+    }
+
+    this.rootStore.socketStore.sendPingWithTimeout();
 
     if (data.messages.length < 30) {
       this.loadedAll = true;
