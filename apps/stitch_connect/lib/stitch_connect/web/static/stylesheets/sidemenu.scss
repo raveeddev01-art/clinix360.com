@@ -23,7 +23,6 @@
 
     .user-name {
       color: #fff;
-      opacity: 0.6;
       display: flex;
       align-items: center;
 
@@ -34,6 +33,10 @@
 
       span {
         line-height: 20px;
+      }
+
+      &__text {
+        opacity: 0.6;
       }
 
       &__status-icon {
@@ -193,7 +196,6 @@
           text-decoration: none;
           padding: 3px 15px;
           position: relative;
-          opacity: 0.6;
           line-height: 1.4;
 
           .item-icon {
@@ -203,6 +205,10 @@
             flex-shrink: 0;
             margin-right: 6px;
 
+            i.fa {
+              opacity: 0.6;
+            }
+
             i.fa-circle,
             i.fa-circle-o {
               font-size: 10.5px;
@@ -211,6 +217,10 @@
 
             i.fa-circle-o {
               color: rgba(176, 176, 176, 0.75);
+            }
+
+            i.fa-circle {
+              opacity: 1;
             }
 
             i.fa-lock {
@@ -232,6 +242,7 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+            opacity: 0.6;
             padding-right: 4px;
           }
 
@@ -272,7 +283,6 @@
           &.active {
             color: $brand-primary;
             background: #fff;
-            opacity: 1;
 
             .item-icon,
             .hide-dm {
@@ -288,21 +298,25 @@
               background-color: #e33a2f;
               color: #fff;
             }
+
+            .item-icon i.fa,
+            .item-text {
+              opacity: 1;
+            }
           }
 
           &.has-unread {
-            opacity: 1;
-
             .item-text {
               font-weight: 900;
               padding-right: 10px;
             }
 
-            &:not(.active) {
-              .item-icon {
-                opacity: 0.6;
-              }
+            .item-icon i.fa,
+            .item-text {
+              opacity: 1;
+            }
 
+            &:not(.active) {
               .item-icon,
               .item-text {
                 color: #fff;
