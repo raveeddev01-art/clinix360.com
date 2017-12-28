@@ -151,15 +151,28 @@ defmodule StitchConnect.Web.PushNotifications do
 
   def handle_response_andriod(notification) do
     notification
+    |> log_fcm_errors()
     |> FCM.Notification.remove?()
     |> Enum.each(& Mobile.remove_device("android", &1))
   end
 
-  def handle_response_ios(%{response: :bad_device_token, device_token: token}) do
+  def log_fcm_errors(notification) do
+    notification.response |> Enum.each(fn
+      {:success, _token} -> nil
+      {response_error, token} ->
+        error = %{response: response_error, device_token: token, platform: "Android"}
+        Logger.info(inspect(error))
+    end)
+    notification
+  end
+
+  def handle_response_ios(%{response: response, device_token: token})
+      when response in [:bad_device_token, :unregistered] do
     Mobile.remove_device("ios", token)
   end
   def handle_response_ios(%{response: :success}), do: nil
   def handle_response_ios(%{response: response_error, device_token: token}) do
-    Logger.info(inspect(%{response: response_error, device_token: token}))
+    error = %{response: response_error, device_token: token, platform: "iOS"}
+    Logger.info(inspect(error))
   end
 end

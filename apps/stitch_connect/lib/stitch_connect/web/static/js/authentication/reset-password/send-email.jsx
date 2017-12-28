@@ -85,7 +85,7 @@ class SendEmail extends Component {
           <span>
             We sent an email to <strong>{email}</strong> if we found your
             account in our system. This email will give you a link to reset your
-            password. how to reset your password.
+            password.
           </span>
         }
       >

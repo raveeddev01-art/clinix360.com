@@ -1,4 +1,4 @@
-import { Socket } from "phoenix";
+import { Socket } from "lib/pheonix";
 
 if (window.authenticationToken !== "") {
   window.socket = new Socket(
@@ -11,7 +11,8 @@ if (window.authenticationToken !== "") {
         userAgent: navigator.userAgent
       },
       timeout: 10000,
-      heartbeatIntervalMs: 10000
+      heartbeatIntervalMs: 10000,
+      enableManualRejoin: true
     }
   );
   socket.connect();

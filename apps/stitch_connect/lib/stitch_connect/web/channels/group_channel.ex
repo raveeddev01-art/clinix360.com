@@ -10,6 +10,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.Presence
 
   @endpoint StitchConnect.Web.Endpoint
+  @max_latency 5_000
 
   intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
 
@@ -72,6 +73,16 @@ defmodule StitchConnect.Web.GroupChannel do
     })
 
     {:noreply, socket}
+  end
+
+  @decorate channel_action()
+  def handle_in("sync_time", %{"timestamp" => timestamp}, socket) do
+    socket =
+      socket
+      |> assign(:server_join_time, :os.system_time(:milli_seconds))
+      |> assign(:client_join_time, timestamp)
+
+    {:reply, {:ok, %{message: "ok"}}, socket}
   end
 
   @decorate channel_action()
@@ -158,8 +169,12 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @decorate channel_action()
   def handle_in("new_msg", params, socket) do
-    %{group: group, current_user: user} = socket.assigns
-    do_new_msg(socket, group, user, params)
+    if latency_limit_exceeded?(socket, params) do
+      {:reply, {:error, %{message: "timeout error"}}, socket}
+    else
+      %{group: group, current_user: user} = socket.assigns
+      do_new_msg(socket, group, user, params)
+    end
   end
 
   @decorate channel_action()
@@ -259,6 +274,10 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  def handle_in("ping", %{"id" => id}, socket) do
+    {:reply, {:ok, %{id: id}}, socket}
+  end
+
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)
     [message] = Message.Reaction.apply_reactions([message])
@@ -321,11 +340,10 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  defp do_new_msg(socket, group, user, %{"text_content" => content} = attrs) do
+  defp do_new_msg(socket, group, user, attrs) do
     request_id = attrs["request_id"]
 
     if GroupAuthorization.is_member?(group.id, user.id) do
-      attrs = %{ "text_content" => content, "type" => attrs["type"], "fields" => attrs["fields"] }
       acitve_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
 
       case Message.create(group.id, user, attrs, acitve_user_ids) do
@@ -334,16 +352,13 @@ defmodule StitchConnect.Web.GroupChannel do
           message = MessageQueries.load_info(message)
 
           Stitch.Task.start fn ->
-            broadcast! socket, "new_msg", Map.put(message, :request_id, request_id)
+            broadcast! socket, "new_msg", message
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
             PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
             PushNotifications.push_badge_update(message, notify_user_ids.mobile)
           end
 
-          json =
-            "show.json"
-            |> MessageView.render(%{message: message})
-            |> Map.put(:request_id, request_id)
+          json = MessageView.render("show.json", %{message: message})
           {:reply, {:ok, json}, socket}
 
         {:error, _changeset} ->
@@ -388,6 +403,19 @@ defmodule StitchConnect.Web.GroupChannel do
     broadcast_read_status(socket.assigns.group, messages_json)
     PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
+  end
+
+  # Temporarily return false if timestamps aren't provided so that the mobile apps have time to catch up with the change
+  defp latency_limit_exceeded?(socket, params) do
+    server_join_time = socket.assigns[:server_join_time]
+    with client_join_time when not is_nil(client_join_time) <- socket.assigns[:client_join_time],
+          client_push_time when not is_nil(client_push_time) <- params["timestamp"] do
+      server_time = :os.system_time(:milli_seconds)
+      latency = client_push_time - (client_join_time + (server_time - server_join_time))
+      abs(latency) > @max_latency
+    else _e ->
+      false
+    end
   end
 
   def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg", "msg_link_previews_generated"] do

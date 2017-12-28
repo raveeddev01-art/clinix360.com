@@ -54,9 +54,9 @@ defmodule StitchConnect.Mixfile do
       {:sweet_xml, "~> 0.6.5"},
       {:stitch, in_umbrella: true},
       {:appsignal, "~> 1.3"},
-      {:pigeon, "~> 1.1.0"}, # For mobile push notifications.
-      {:kadabra, "~> 0.3.2"}, # Used by Pigeon for push notifications.
       {:wallaby, "~> 0.19.2", only: :test},
+      {:pigeon, "~> 1.1.3"}, # For mobile push notifications.
+      {:kadabra, "~> 0.3.6"}, # Used by Pigeon for push notifications.
       {:plug_attack, "~> 0.3.0"},
       {:ip2country, "~> 1.1"},
       {:remote_ip, "~> 0.1.4"}
