@@ -28,7 +28,7 @@
       align-items: center;
 
       i {
-        font-size: 11px;
+        font-size: 10.5px;
         line-height: 20px;
       }
 
@@ -195,12 +195,24 @@
 
             i.fa-circle,
             i.fa-circle-o {
-              font-size: 12px;
+              font-size: 10.5px;
               color: #fff;
             }
 
             i.fa-circle-o {
               color: rgba(176, 176, 176, 0.75);
+            }
+
+            i.fa-lock {
+              font-size: 13.5px;
+            }
+
+            i.fa-link {
+              font-size: 12px;
+            }
+
+            i.fa-comments {
+              font-size: 13px;
             }
           }
 
