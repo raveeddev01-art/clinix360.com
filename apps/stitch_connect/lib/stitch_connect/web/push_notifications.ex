@@ -99,8 +99,10 @@ defmodule StitchConnect.Web.PushNotifications do
     import APNS.Notification
 
     Logger.info "Sending PN to iOS"
+    Logger.info(inspect(new_msg_notification_body(grp, msg)))
     Logger.info(inspect(badge_value))
     Logger.info(inspect(ios_devices))
+    Logger.info("=====")
 
     ios_devices
     |> Enum.map(fn %{token: token} ->
@@ -118,8 +120,10 @@ defmodule StitchConnect.Web.PushNotifications do
     import FCM.Notification
 
     Logger.info "Sending PN to Android"
+    Logger.info(inspect(new_msg_notification_body(grp, msg)))
     Logger.info(inspect(badge_value))
     Logger.info(inspect(android_devices))
+    Logger.info("=====")
 
     android_devices
     |> Enum.map(&(&1.token))
