@@ -143,14 +143,14 @@ class Sidemenu extends Component {
   };
 
   render() {
-    const { userStore, groupsStore } = this.props;
+    const { sidemenuStore, userStore, groupsStore } = this.props;
     const filterJoined = rooms => rooms.filter(room => room.joined);
 
     return (
       <div id="sidemenu">
         <div className="flex-header">
           <div className="team-user">
-            <div className="team-name">Stitch</div>
+            <div className="team-name">{sidemenuStore.teamName}</div>
             <div className="user-name">
               <span className="user-name__status-icon">
                 <i className="fa fa-circle" />
