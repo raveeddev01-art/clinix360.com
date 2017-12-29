@@ -274,18 +274,23 @@ class SidemenuStore {
         "new-message",
         5000,
         () => {
-          this.jumpToMessage(newMessage);
+          this.goToMessageRoom(newMessage);
           window.dispatchEvent(new CustomEvent("notification-clicked"));
         }
       );
     }
   }
 
-  jumpToMessage(message) {
+  goToMessageRoom(message) {
     const { groupsStore } = this.rootStore;
     const url = groupsStore.getGroupUrl(message.group_id);
     window.focus();
     history.push(url);
+  }
+
+  jumpToMessage(message) {
+    this.goToMessageRoom(message);
+    this.rootStore.messageStore.jumpToMessage(message);
   }
 
   scrollToRoomItem(roomId, duration = 300) {
