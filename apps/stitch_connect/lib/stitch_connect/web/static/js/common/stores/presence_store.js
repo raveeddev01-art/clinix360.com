@@ -1,5 +1,7 @@
 import { Presence } from "phoenix";
 import { action, autorun, computed, observable } from "mobx";
+import Cookies from "js-cookie";
+import moment from "moment";
 import debounce from "lodash/debounce";
 import throttle from "lodash/throttle";
 
@@ -147,6 +149,7 @@ class PresenceStore {
   @action
   unlock = pin => {
     this.unlocking = true;
+    Cookies.remove("last_activity");
 
     return post("/api/v1/session-unlock", { hideNotify: true, body: { pin } })
       .then(() => {
@@ -171,6 +174,10 @@ class PresenceStore {
     );
 
     this.teamChannel.push("became_active");
+
+    if (this.lockoutSettingLoaded) {
+      Cookies.set("last_activity", new Date().toString(), { expires: 30 }); // expires in 30 days
+    }
   };
 
   onAwayTimerExpired = () => {
@@ -190,10 +197,20 @@ class PresenceStore {
 
   @action
   onLockoutSettingsLoaded = data => {
+    const lastActivity = Cookies.get("last_activity");
     this.secondsToLockout = data.seconds_to_lockout;
     this.lockoutEnabled = data.security_lockout_enabled;
     this.lockoutSettingLoaded = true;
-    this.startLockoutTimer();
+
+    if (
+      lastActivity &&
+      moment().diff(lastActivity, "seconds") > data.seconds_to_lockout
+    ) {
+      // user came back after lockout limit time
+      this.lock();
+    } else {
+      this.startLockoutTimer();
+    }
   };
 
   startLockoutTimer = () => {
