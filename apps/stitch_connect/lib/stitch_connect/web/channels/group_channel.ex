@@ -1,7 +1,6 @@
 defmodule StitchConnect.Web.GroupChannel do
-  use Phoenix.Channel
+  use StitchConnect.Web, :channel
   use Appsignal.Instrumentation.Decorators
-
   import Ecto.Query
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.Api.V1.MessageView
@@ -388,6 +387,10 @@ defmodule StitchConnect.Web.GroupChannel do
     broadcast_read_status(socket.assigns.group, messages_json)
     PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
+  end
+
+  defp mark_as_unread_response({:error, error_message}, _user, socket) do
+    {:reply, {:error, %{message: error_message}}, socket}
   end
 
   defp mark_as_unread_response({:ok, %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}}, user, socket) do

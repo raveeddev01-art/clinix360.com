@@ -215,6 +215,7 @@ class Message extends Component {
     const mine = message.user.id === currentUser.id;
     const unsent = message.sent === false;
     const { dropup } = this.state;
+    const { messageStore } = this.props;
 
     // disabling context menu
     if (unsent) {
@@ -235,11 +236,13 @@ class Message extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <MenuItem onClick={this.markAsUnread}>
-            <span>
-              <i className="fa fa-circle" />&nbsp;Unread
-            </span>
-          </MenuItem>
+          {(!mine || message.id < messageStore.lastOtherUserMessage.id) && (
+              <MenuItem onClick={this.markAsUnread}>
+                <span>
+                  <i className="fa fa-circle" />&nbsp;Unread
+                </span>
+              </MenuItem>
+            )}
 
           {message.type === "upload" && (
             <MenuItem target="_blank" href={message.fields.url}>

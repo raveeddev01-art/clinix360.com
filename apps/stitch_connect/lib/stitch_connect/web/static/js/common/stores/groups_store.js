@@ -154,7 +154,9 @@ class GroupsStore {
     const group = this.getGroupBySlug(slug);
 
     if (group && group.id !== this.currentGroupId) {
-      this.onClosedGroup();
+      if (this.currentGroupId) {
+        this.onClosedGroup();
+      }
 
       // Change the group
       this.currentGroupId = group.id;
@@ -177,13 +179,15 @@ class GroupsStore {
 
   @action
   hideGroup = id => {
-    return put(`/api/v1/groups/${id}/hide`).then(() => {
-      this.updateGroupData(id, { is_hidden: true });
-    }).then(() => {
-      if (this.currentGroupId === id) {
-        history.push(`/rooms/${this.defaultGroup.slug}`);
-      }
-    });
+    return put(`/api/v1/groups/${id}/hide`)
+      .then(() => {
+        this.updateGroupData(id, { is_hidden: true });
+      })
+      .then(() => {
+        if (this.currentGroupId === id) {
+          history.push(`/rooms/${this.defaultGroup.slug}`);
+        }
+      });
   };
 
   @action
@@ -291,6 +295,7 @@ class GroupsStore {
     const { channelStore } = this.rootStore;
 
     channelStore.leaveGroupChannel();
+    this.currentGroupId = null;
   };
 
   @action

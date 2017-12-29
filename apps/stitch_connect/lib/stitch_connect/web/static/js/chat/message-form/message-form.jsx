@@ -41,15 +41,14 @@ class MessageForm extends Component {
   onKeyDown = evt => {
     const { openMentionMenu, openEmojiSearch } = this.state;
     if (
-      [37, 38, 39, 40, 13].indexOf(evt.keyCode) > -1 &&
-      (openMentionMenu || openEmojiSearch)
+      ([38, 40].indexOf(evt.keyCode) > -1 && openMentionMenu) ||
+      ([37, 38, 39, 40].indexOf(evt.keyCode) > -1 && openEmojiSearch) ||
+      evt.keyCode === 13
     ) {
       evt.preventDefault();
     }
 
     if (evt.keyCode === 13) {
-      evt.preventDefault();
-
       if (
         (evt.altKey && !evt.ctrlKey && !evt.shiftKey) ||
         (!evt.altKey && evt.ctrlKey && !evt.shiftKey) ||
@@ -299,7 +298,9 @@ class MessageForm extends Component {
           autoFocus
           required
           ref={input => {
-            this.textInput = ReactDOM.findDOMNode(input);
+            if (input) {
+              this.textInput = ReactDOM.findDOMNode(input);
+            }
           }}
         />
         <div className="message-form-actions">

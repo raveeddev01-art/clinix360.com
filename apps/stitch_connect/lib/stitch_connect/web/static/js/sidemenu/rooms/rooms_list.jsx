@@ -51,14 +51,16 @@ class RoomsList extends Component {
             </OverlayTrigger>
           </h5>
 
-          <OverlayTrigger
-            placement="top"
-            overlay={<Tooltip id="create-new-group">Create Room</Tooltip>}
-          >
-            <a role="button" onClick={this.showRoomCreateModal}>
-              <i className="fa fa-plus-square-o" />
-            </a>
-          </OverlayTrigger>
+          <div className="heading__action">
+            <OverlayTrigger
+              placement="top"
+              overlay={<Tooltip id="create-new-group">Create Room</Tooltip>}
+            >
+              <a role="button" onClick={this.showRoomCreateModal}>
+                <i className="fa fa-plus-square-o" />
+              </a>
+            </OverlayTrigger>
+          </div>
         </div>
 
         {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}

@@ -121,6 +121,11 @@ class MessageStore {
     return this.getMessageAfterTimestamp(this.lastReadAt);
   }
 
+  @computed
+  get lastOtherUserMessage() {
+    return this.messages.find(m => m.user_id !== currentUser.id) || {};
+  }
+
   /**
    * Returns the position of first unread message in chat div
    *
@@ -866,7 +871,10 @@ class MessageStore {
       return;
     }
 
-    if (newMessage.request_id && newMessage.user_id === currentUser.id) {
+    if (
+      this.getMessageById(newMessage.request_id) && // request_id is now attached to every message, so we should check if temp message exists
+      newMessage.user_id === currentUser.id
+    ) {
       // update message if it's temporary
       this.updateMessageData(newMessage.request_id, {
         ...newMessage,

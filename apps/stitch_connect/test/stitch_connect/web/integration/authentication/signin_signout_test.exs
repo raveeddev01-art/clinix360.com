@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Authentication.SignInSignOutTest do
-  use StitchConnect.Web.FeatureCase, async: false
+  use StitchConnect.Web.FeatureCase, async: true
 
   import Wallaby.Query
   import Stitch.Factory

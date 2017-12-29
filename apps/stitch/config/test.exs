@@ -8,7 +8,9 @@ config :stitch, Stitch.Repo,
   database: "stitch_test",
   hostname: "localhost",
   port: String.to_integer(System.get_env("PSQL_PORT") || "5432"),
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_timeout: :timer.minutes(5),
+  timeout: :timer.minutes(5)
 
 config :stitch, Stitch.Mailer,
   adapter: Bamboo.TestAdapter

@@ -5,15 +5,16 @@
     color: #ffffff;
     background-color: $brand-primary;
     z-index: 10;
-    padding: 0 5px 0 12px;
+    padding: 0 15px;
 
     .team-user {
       flex: 1;
       min-width: 0;
+      padding-top: 20px;
     }
 
     .team-name {
-      font-size: 17px;
+      font-size: 18px;
       line-height: 24px;
       font-weight: 900;
       overflow: hidden;
@@ -23,12 +24,11 @@
 
     .user-name {
       color: #fff;
-      opacity: 0.6;
       display: flex;
       align-items: center;
 
       i {
-        font-size: 11px;
+        font-size: 10.5px;
         line-height: 20px;
       }
 
@@ -36,17 +36,23 @@
         line-height: 20px;
       }
 
+      &__text {
+        opacity: 0.6;
+      }
+
       &__status-icon {
         display: inline-block;
         text-align: center;
-        width: 16px;
         margin-right: 6px;
       }
     }
 
     .btn {
       line-height: 65px;
-      padding: 0 10px;
+      width: 22px;
+      text-align: center;
+      padding: 0;
+      border: none;
       outline: none;
       color: #fff;
       opacity: 0.6;
@@ -60,7 +66,7 @@
     .dropdown-menu {
       width: 210px;
       padding: 17px 27px;
-      margin: -16px 0 0 0;
+      margin: -16px -10px 0 0;
 
       h5 {
         color: $brand-primary;
@@ -103,7 +109,7 @@
       &:before {
         content: "";
         position: absolute;
-        right: 7px;
+        right: 10px;
         top: -10px;
         width: 0;
         height: 0;
@@ -134,14 +140,20 @@
         .heading {
           display: flex;
           align-items: center;
-          padding: 0 12px;
+          padding: 0 15px;
           margin: 0 0 5px;
+
+          &__action {
+            width: 22px;
+            display: flex;
+            justify-content: center;
+          }
 
           h5 {
             flex-grow: 1;
             flex-shrink: 0;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 500;
             line-height: 1.5;
             text-transform: capitalize;
             margin: 0;
@@ -182,9 +194,9 @@
           color: #fff;
           font-size: 16px;
           text-decoration: none;
-          padding: 3px 12px;
+          padding: 3px 15px;
           position: relative;
-          opacity: 0.6;
+          line-height: 1.4;
 
           .item-icon {
             display: flex;
@@ -193,14 +205,34 @@
             flex-shrink: 0;
             margin-right: 6px;
 
+            i.fa {
+              opacity: 0.6;
+            }
+
             i.fa-circle,
             i.fa-circle-o {
-              font-size: 12px;
+              font-size: 10.5px;
               color: #fff;
             }
 
             i.fa-circle-o {
               color: rgba(176, 176, 176, 0.75);
+            }
+
+            i.fa-circle {
+              opacity: 1;
+            }
+
+            i.fa-lock {
+              font-size: 13.5px;
+            }
+
+            i.fa-link {
+              font-size: 12px;
+            }
+
+            i.fa-comments {
+              font-size: 13px;
             }
           }
 
@@ -210,6 +242,7 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+            opacity: 0.6;
             padding-right: 4px;
           }
 
@@ -231,7 +264,9 @@
             color: #fff;
             visibility: hidden;
             position: absolute;
-            right: 10px;
+            right: 15px;
+            width: 22px;
+            text-align: center;
           }
 
           &:hover {
@@ -248,7 +283,6 @@
           &.active {
             color: $brand-primary;
             background: #fff;
-            opacity: 1;
 
             .item-icon,
             .hide-dm {
@@ -264,21 +298,25 @@
               background-color: #e33a2f;
               color: #fff;
             }
+
+            .item-icon i.fa,
+            .item-text {
+              opacity: 1;
+            }
           }
 
           &.has-unread {
-            opacity: 1;
-
             .item-text {
               font-weight: 900;
               padding-right: 10px;
             }
 
-            &:not(.active) {
-              .item-icon {
-                opacity: 0.6;
-              }
+            .item-icon i.fa,
+            .item-text {
+              opacity: 1;
+            }
 
+            &:not(.active) {
               .item-icon,
               .item-text {
                 color: #fff;

@@ -23,6 +23,10 @@ class MenutionMenu extends Component {
     } else if (this.props.isOpen && !nextProps.isOpen) {
       document.removeEventListener("keyup", this.onKeyUp);
     }
+
+    if (this.props.filter !== nextProps.filter) {
+      this.setState({ activeUserIndex: 0 });
+    }
   }
 
   onUserItemHover = index => () => {
@@ -85,7 +89,7 @@ class MenutionMenu extends Component {
           {users.map((user, index) => {
             const online = presenceStore.isOnline(user.id);
             const itemClassName = cx("user-list-item", {
-              active: activeUserIndex % users.length === index
+              active: activeUserIndex === index
             });
 
             return (
