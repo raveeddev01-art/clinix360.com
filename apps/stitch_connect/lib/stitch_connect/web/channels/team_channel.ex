@@ -116,7 +116,7 @@ defmodule StitchConnect.Web.TeamChannel do
 
   def broadcast_security_lockout_update(team) do
     @endpoint.broadcast("team:lobby:#{team.id}", "security_lockout_updated", %{
-      security_lockout: team.security_lockout,
+      security_lockout_enabled: team.security_lockout,
       seconds_to_lockout: team.seconds_to_lockout,
     })
   end

@@ -149,6 +149,10 @@ class ChannelStore {
     this.teamChannel.on("presence_diff", presenceStore.onPresenceDiff);
     this.teamChannel.on("locked", presenceStore.onLocked);
     this.teamChannel.on("unlocked", presenceStore.onUnlocked);
+    this.teamChannel.on(
+      "security_lockout_updated",
+      presenceStore.onLockoutSettingsLoaded
+    );
 
     this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
 

@@ -182,19 +182,23 @@ class PresenceStore {
     this.lock();
   };
 
-  getLockoutSettings = cb => {
-    this.teamChannel.push("get_lockout_settings").receive("ok", data => {
-      this.secondsToLockout = data.seconds_to_lockout;
-      this.lockoutEnabled = data.security_lockout_enabled;
-      this.lockoutSettingLoaded = true;
+  getLockoutSettings = () => {
+    this.teamChannel
+      .push("get_lockout_settings")
+      .receive("ok", this.onLockoutSettingsLoaded);
+  };
 
-      if (typeof cb === "function") cb();
-    });
+  @action
+  onLockoutSettingsLoaded = data => {
+    this.secondsToLockout = data.seconds_to_lockout;
+    this.lockoutEnabled = data.security_lockout_enabled;
+    this.lockoutSettingLoaded = true;
+    this.startLockoutTimer();
   };
 
   startLockoutTimer = () => {
     if (!this.lockoutSettingLoaded) {
-      this.getLockoutSettings(this.startLockoutTimer);
+      this.getLockoutSettings();
     } else if (this.lockoutEnabled) {
       clearTimeout(this.lockoutTimerID);
       this.lockoutTimerID = setTimeout(
