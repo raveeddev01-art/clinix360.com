@@ -57,6 +57,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: "bad"})
       {:ok, team} ->
+        StitchConnect.Web.TeamChannel.broadcast_security_lockout_update(team)
         conn
         |> json(%{
           id: team.id,
