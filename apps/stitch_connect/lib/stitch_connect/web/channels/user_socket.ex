@@ -23,6 +23,9 @@ defmodule StitchConnect.Web.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   def connect(%{"authenticationToken" => token} = params, socket) do
+    # Handle concurrent browser tests
+    socket = StitchConnect.Web.ChannelSandbox.configure_channel_sandbox(params, socket)
+
     case Stitch.User.Authentication.user_for_token(token) do
       nil ->
         :error

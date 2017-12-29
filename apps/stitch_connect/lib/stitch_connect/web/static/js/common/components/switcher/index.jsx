@@ -3,18 +3,36 @@ import { observer, inject } from "mobx-react";
 import { NavLink, withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
+import history from "lib/history";
 
 @inject("presenceStore", "groupsStore")
 @observer
 class Switcher extends Component {
+  componentWillMount() {
+    const path = history.location.pathname;
+    let active = "connect";
+    if (path === "/admin/you/account") {
+      active = "settings";
+    } else if (path.startsWith("/admin")) {
+      active = "home";
+    }
+
+    this.setState({ active });
+  }
+
   render() {
-    const { totalMentionsCount: count } = this.props.groupsStore;
+    const { totalMentionsCount: count, defaultGroup } = this.props.groupsStore;
+    const { active } = this.state;
 
     return (
       <div className="switcher">
         <div className="switcher__top">
           {/* <div className="switcher__logo" /> */}
-          <NavLink to="/admin/you/home" className="switcher__link">
+          <NavLink
+            to="/admin/you/home"
+            isActive={() => active === "home"}
+            className="switcher__link"
+          >
             <OverlayTrigger
               placement="right"
               container={this}
@@ -23,11 +41,15 @@ class Switcher extends Component {
               <i className="fa fa-home" />
             </OverlayTrigger>
           </NavLink>
-          <NavLink to="/" className="switcher__link">
+          <NavLink
+            to={`/rooms/${defaultGroup.slug}`}
+            isActive={() => active === "connect"}
+            className="switcher__link"
+          >
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Stitch Connect</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Stitch&nbsp;Connect</Tooltip>}
             >
               <span className="switcher__link-wrapper">
                 <i className="fa fa-comments" />
@@ -41,7 +63,11 @@ class Switcher extends Component {
           </NavLink>
         </div>
         <div className="switcher__bottom">
-          <NavLink to="/admin/you/account" className="switcher__link">
+          <NavLink
+            to="/admin/you/account"
+            isActive={() => active === "settings"}
+            className="switcher__link"
+          >
             <OverlayTrigger
               placement="right"
               container={this}
@@ -58,7 +84,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Lockout</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Lock&nbsp;Out</Tooltip>}
             >
               <i className="fa fa-lock" />
             </OverlayTrigger>
@@ -67,7 +93,7 @@ class Switcher extends Component {
             <OverlayTrigger
               placement="right"
               container={this}
-              overlay={<Tooltip id="tooltip-info">Sign Out</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">Sign&nbsp;Out</Tooltip>}
             >
               <i className="fa fa-sign-out" />
             </OverlayTrigger>

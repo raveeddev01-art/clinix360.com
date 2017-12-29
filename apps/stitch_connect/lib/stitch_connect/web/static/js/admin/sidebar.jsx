@@ -82,7 +82,15 @@ class Sidebar extends Component {
     return (
       <div className="sidebar">
         <div className="flex-header">
-          <h4 className="team-name">{teamStore.name}</h4>
+          <div className="team-user">
+            <h4 className="team-name">{teamStore.name}</h4>
+            <div className="user-name">
+              <span className="user-name__status-icon">
+                <i className="fa fa-circle" />
+              </span>
+              <span>{`${userStore.firstName} ${userStore.lastName}`}</span>
+            </div>
+          </div>
         </div>
         <div className="flex-container">
           <h5>You</h5>
@@ -127,7 +135,7 @@ class Sidebar extends Component {
               </ListGroupItem>
             )}
             <ListGroupItem href="#" onClick={this.props.presenceStore.lock}>
-              <i className="fa fa-lock" /> Lockout
+              <i className="fa fa-lock" /> Lock Out
             </ListGroupItem>
             <ListGroupItem href="/logout">
               <i className="fa fa-sign-out" /> Sign Out

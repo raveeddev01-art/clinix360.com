@@ -1,28 +1,70 @@
 #sidemenu {
+  background-color: $brand-primary;
+
   .flex-header {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 1px 0 0 $body-bg;
+    color: #ffffff;
+    background-color: $brand-primary;
     z-index: 10;
-    padding: 0 14px 0 25px;
+    padding: 0 15px;
+
+    .team-user {
+      flex: 1;
+      min-width: 0;
+      padding-top: 20px;
+    }
 
     .team-name {
-      flex: 1;
-      font-size: 20px;
+      font-size: 18px;
+      line-height: 24px;
       font-weight: 900;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
 
-    .btn {
+    .user-name {
       color: #fff;
+      display: flex;
+      align-items: center;
+
+      i {
+        font-size: 10.5px;
+        line-height: 20px;
+      }
+
+      span {
+        line-height: 20px;
+      }
+
+      &__text {
+        opacity: 0.6;
+      }
+
+      &__status-icon {
+        display: inline-block;
+        text-align: center;
+        margin-right: 6px;
+      }
+    }
+
+    .btn {
       line-height: 65px;
-      padding: 0 10px;
+      width: 22px;
+      text-align: center;
+      padding: 0;
+      border: none;
       outline: none;
+      color: #fff;
+      opacity: 0.6;
+
+      &:hover {
+        color: #fff;
+        opacity: 1;
+      }
     }
 
     .dropdown-menu {
-      width: 220px;
+      width: 210px;
       padding: 17px 27px;
       margin: -16px -10px 0 0;
 
@@ -67,11 +109,11 @@
       &:before {
         content: "";
         position: absolute;
-        right: 16px;
-        top: -11px;
+        right: 10px;
+        top: -10px;
         width: 0;
         height: 0;
-        border: 11px solid transparent;
+        border: 10px solid transparent;
         border-bottom-color: #fff;
         border-top-width: 0;
       }
@@ -85,7 +127,7 @@
     .rooms-menu {
       position: relative;
       flex: 1;
-      padding: 20px 15px;
+      padding: 10px 0 20px;
       @include stitch-scroll();
       overflow: hidden;
 
@@ -98,21 +140,33 @@
         .heading {
           display: flex;
           align-items: center;
-          padding: 0 10px;
+          padding: 0 15px;
           margin: 0 0 5px;
+
+          &__action {
+            width: 22px;
+            display: flex;
+            justify-content: center;
+          }
 
           h5 {
             flex-grow: 1;
             flex-shrink: 0;
-            color: $brand-primary;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 500;
             line-height: 1.5;
             text-transform: capitalize;
             margin: 0;
 
             a {
               display: inline-block;
+              color: #fff;
+              opacity: 0.6;
+
+              &:hover {
+                color: #fff;
+                opacity: 1;
+              }
             }
           }
 
@@ -122,47 +176,73 @@
 
           a {
             display: flex;
-            color: $brand-primary;
             outline: none;
             text-decoration: none;
+            color: #fff;
+            opacity: 0.6;
+
+            &:hover {
+              color: #fff;
+              opacity: 1;
+            }
           }
         }
 
         .item {
           display: flex;
           align-items: center;
-          color: #333;
+          color: #fff;
           font-size: 16px;
           text-decoration: none;
-          border-radius: 3px;
-          padding: 7px 10px 7px 7px;
+          padding: 3px 15px;
           position: relative;
+          line-height: 1.4;
 
           .item-icon {
             display: flex;
             justify-content: center;
-            flex-basis: 21px;
+            flex-basis: 16px;
             flex-shrink: 0;
-            margin-right: 4px;
+            margin-right: 6px;
+
+            i.fa {
+              opacity: 0.6;
+            }
 
             i.fa-circle,
             i.fa-circle-o {
-              font-size: 12px;
-              color: $brand-primary;
+              font-size: 10.5px;
+              color: #fff;
             }
 
             i.fa-circle-o {
-              color: rgba(20, 20, 20, 0.75);
+              color: rgba(176, 176, 176, 0.75);
+            }
+
+            i.fa-circle {
+              opacity: 1;
+            }
+
+            i.fa-lock {
+              font-size: 13.5px;
+            }
+
+            i.fa-link {
+              font-size: 12px;
+            }
+
+            i.fa-comments {
+              font-size: 13px;
             }
           }
 
           .item-text {
             flex-grow: 1;
-            opacity: 0.75;
-            font-weight: 600;
+            font-weight: 400;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+            opacity: 0.6;
             padding-right: 4px;
           }
 
@@ -170,23 +250,27 @@
             color: #fff;
             font-size: 12px;
             font-weight: 700;
-            line-height: 16px;
-            background: $brand-primary;
-            border-radius: 2px;
-            padding: 0 4px;
+            line-height: 12px;
+            background: #e33a2f;
+            border-radius: 4px;
+            padding: 3px 4px;
             z-index: 9;
+            width: 22px;
+            text-align: center;
           }
 
           .hide-dm {
             font-size: 20px;
-            color: $brand-primary;
+            color: #fff;
             visibility: hidden;
             position: absolute;
-            right: 10px;
+            right: 15px;
+            width: 22px;
+            text-align: center;
           }
 
           &:hover {
-            background: darken(#fff, 5%);
+            background: #001935;
 
             .item-text {
               padding-right: 24px;
@@ -197,26 +281,27 @@
           }
 
           &.active {
-            color: #fff;
-            background: $brand-primary;
-
-            .item-text {
-              opacity: 1;
-            }
+            color: $brand-primary;
+            background: #fff;
 
             .item-icon,
             .hide-dm {
-              color: #fff;
+              color: $brand-primary;
 
               i.fa-circle,
               i.fa-circle-o {
-                color: #fff;
+                color: $brand-primary;
               }
             }
 
             .item-badge {
-              background-color: #fff;
-              color: $brand-primary;
+              background-color: #e33a2f;
+              color: #fff;
+            }
+
+            .item-icon i.fa,
+            .item-text {
+              opacity: 1;
             }
           }
 
@@ -225,9 +310,16 @@
               font-weight: 900;
               padding-right: 10px;
             }
+
+            .item-icon i.fa,
+            .item-text {
+              opacity: 1;
+            }
+
             &:not(.active) {
+              .item-icon,
               .item-text {
-                color: #000;
+                color: #fff;
               }
             }
 
@@ -250,25 +342,33 @@
       }
     }
 
-    .unreads-badge {
+    .edge-badge {
       position: absolute;
       left: 10px;
       right: 10px;
       height: 30px;
       line-height: 30px;
       text-align: center;
-      background-color: $brand-primary;
-      color: #fff;
       font-size: 16px;
+      &,
+      &--mentions {
+        background-color: #e33a2f;
+        color: #fff;
+      }
+
+      &--unreads {
+        background-color: #fff;
+        color: $brand-primary;
+      }
 
       &.up {
-        top: 1px;
+        top: 0px;
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
       }
 
       &.down {
-        bottom: 1px;
+        bottom: 0px;
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
       }
@@ -323,4 +423,14 @@
 .team-list {
   overflow-y: auto;
   height: 300px;
+}
+
+.sidebar__thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  border-radius: inherit;
+  background-color: rgba(255, 255, 255, 0.5);
+  height: 402px;
+  transform: translateY(0px);
 }

@@ -1,18 +1,22 @@
 import { observable, action } from "mobx";
 
+const HEALTHY_TIMEOUT = 2000; // if pong arrives under 2000ms, it means connection is healthy
+
 class SocketStore {
   @observable isConnected = true;
-  @observable reconnectIn = undefined;
-  ticks = 0;
-  interval;
+  @observable isHealthy = true;
+  pingCount = 0;
+  pingStart = 0;
+  pingRace = null;
+  pingTimeout = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
     this.trackConnectionState();
   }
 
-  get eventChannel() {
-    return this.rootStore.channelStore.eventChannel;
+  get groupChannel() {
+    return this.rootStore.channelStore.groupChannel;
   }
 
   @action
@@ -23,38 +27,56 @@ class SocketStore {
 
   trackConnectionState() {
     socket.onOpen(this.openSocket);
-    socket.onError(this.errorSocket);
+    socket.onReconnectScheduled(this.errorSocket);
   }
 
   @action
-  tickTimeout = () => {
-    this.ticks += 1;
-    this.reconnectIn = this.getReconnectIn();
+  sendPingWithTimeout = (delay = 1000) => {
+    if (this.isConnected) {
+      clearTimeout(this.pingRace);
+      clearTimeout(this.pingTimeout);
+      this.pingTimeout = setTimeout(() => {
+        this.sendPing();
+      }, delay);
+    }
+  };
+
+  @action
+  sendPing = () => {
+    if (!this.groupChannel) {
+      return;
+    }
+
+    this.pingCount += 1;
+    this.pingStart = new Date().getTime();
+
+    this.groupChannel.push("ping", { id: this.pingCount }).receive("ok", () => {
+      const pingEnd = new Date().getTime();
+      clearTimeout(this.pingRace);
+
+      if (pingEnd - this.pingStart < HEALTHY_TIMEOUT) {
+        this.isHealthy = true;
+        this.sendPingWithTimeout();
+      } else {
+        this.isHealthy = false;
+        this.sendPingWithTimeout(0); // if it's not healthy immediately check connection again
+      }
+    });
+
+    this.pingRace = setTimeout(() => {
+      this.isHealthy = false;
+    }, HEALTHY_TIMEOUT);
   };
 
   @action
   openSocket = () => {
     this.isConnected = true;
-    clearInterval(this.interval);
+    this.sendPingWithTimeout();
   };
 
   @action
   errorSocket = () => {
     this.isConnected = false;
-    this.ticks = 0;
-    socket.reconnectTimer.scheduleTimeout();
-    this.reconnectIn = this.getReconnectIn();
-    clearInterval(this.interval);
-    this.interval = setInterval(this.tickTimeout, 1000);
-  };
-
-  @action
-  getReconnectIn = () => {
-    const reconnectAfterMs = socket.reconnectAfterMs(
-      socket.reconnectTimer.tries + 1
-    );
-    const reconnectIn = Math.max(0, reconnectAfterMs / 1000 - this.ticks);
-    return reconnectIn;
   };
 }
 

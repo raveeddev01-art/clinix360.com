@@ -55,6 +55,9 @@ defmodule StitchConnect.Web do
     quote do
       use Phoenix.Channel
       import StitchConnect.Web.Gettext
+      if Application.get_env(:stitch_connect, :sql_sandbox) do
+        use StitchConnect.Web.ChannelSandbox
+      end
     end
   end
 

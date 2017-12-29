@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Messages.DirectMessagingTest do
-  use StitchConnect.Web.FeatureCase, async: false
+  use StitchConnect.Web.FeatureCase, async: true
 
   import Wallaby.Query, only: [button: 1, text_field: 1, css: 2]
   import Stitch.Factory
@@ -7,13 +7,13 @@ defmodule StitchConnect.Web.Messages.DirectMessagingTest do
 
   defp message(msg), do: css(".message-container > .message", text: msg)
 
-  test "user can start a direct conversation with another user" do
+  test "user can start a direct conversation with another user", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1 = insert(:user, first_name: "John", last_name: "Doe", username: "john", team: team)
     user_2 = insert(:user, first_name: "Jane", last_name: "Doe", username: "jane", team: team)
 
-    {:ok, user_1_session} = Wallaby.start_session()
-    {:ok, user_2_session} = Wallaby.start_session()
+    {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
+    {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
     Helper.sign_in(user_1_session, team, user_1)
     Helper.sign_in(user_2_session, team, user_2)

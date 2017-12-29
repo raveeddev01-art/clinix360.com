@@ -22,7 +22,7 @@ defmodule StitchConnect.Application do
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: StitchConnect.Supervisor]
+    opts = [strategy: :one_for_one, name: StitchConnect.Supervisor, max_restarts: 1_000, max_seconds: 1]
     Supervisor.start_link(children, opts)
   end
 

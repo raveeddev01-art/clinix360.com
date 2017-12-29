@@ -1,4 +1,4 @@
-$sidebar_width: 270px;
+$sidebar_width: 220px;
 
 #app {
   position: fixed;
@@ -29,7 +29,6 @@ $sidebar_width: 270px;
 }
 
 #sidemenu {
-  box-shadow: 1px 0px $border-color;
   position: relative;
   overflow-x: visible;
   display: flex;

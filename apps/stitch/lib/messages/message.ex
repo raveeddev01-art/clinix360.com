@@ -12,6 +12,7 @@ defmodule Stitch.Message do
     belongs_to :user, Stitch.Accounts.User
     belongs_to :group, Stitch.Group
     belongs_to :pinned_by, Stitch.Accounts.User, foreign_key: :pinned_by_id
+    field :request_id, :string
     field :deleted, :boolean, default: false
     field :edited_at, :utc_datetime
     field :text_content, :string
@@ -51,7 +52,7 @@ defmodule Stitch.Message do
 
   def chat_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [:type, :request_id, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
     |> check_for_links
@@ -70,7 +71,7 @@ defmodule Stitch.Message do
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [:fields, :type, :request_id, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
     |> add_preview()
@@ -93,7 +94,7 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, ["system"])
   end
 
-  def create(group_id, user, params, online_in_group \\ [])
+  def create(group_id, user, attrs, online_in_group \\ [])
 
   def create(group_id, user, %{"type" => type} = attrs, online_in_group) when type in ["chat", "upload"] do
     group = GroupQueries.get_by_id(group_id)
@@ -125,8 +126,8 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
-  def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
-    create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group)
+  def create(group_id, user, %{"text_content" => _} = attrs, online_in_group) do
+    create(group_id, user, Map.put(attrs, "type", "chat"), online_in_group)
   end
 
   def create(_group_id, _user, _attrs, _online_in_group) do
@@ -245,9 +246,16 @@ defmodule Stitch.Message do
     |> Repo.update
   end
 
-  def mark_as_unread(user_id, group_id, %Message{type: "system"} = message) do
-    message = get_message_to_unread(message)
-    mark_as_unread(user_id, group_id, message)
+  def mark_as_unread(user_id, group_id, %Message{user_id: user_id} = message) do
+    if messages_from_other_users(user_id, group_id, message.id) do
+      do_mark_as_unread(user_id, group_id, message)
+    else
+      {:error, "No messages from other users after the target message"}
+    end
+  end
+
+  def mark_as_unread(_user_id, _group_id, %Message{type: "system"} = _message) do
+    {:error, "System message can't be marked as unread"}
   end
 
   def mark_as_unread(user_id, group_id, nil) do
@@ -256,21 +264,15 @@ defmodule Stitch.Message do
   end
 
   def mark_as_unread(user_id, group_id, message) do
+    do_mark_as_unread(user_id, group_id, message)
+  end
+
+  def do_mark_as_unread(user_id, group_id, message) do
     Multi.new
     |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id, message.id), [])
     |> Multi.update_all(:mark_messages_as_unread, mark_messages_as_unread(group_id, user_id, message.id), [], [returning: true])
     |> Multi.update_all(:mark_group_as_unread, mark_group_as_unread(group_id, user_id, message), [], [returning: true])
     |> Repo.transaction
-  end
-
-  def get_message_to_unread(%Message{} = message) do
-    Message
-    |> where([m], m.id < ^message.id)
-    |> where([m], m.type != "system")
-    |> where([m], m.group_id == ^message.group_id)
-    |> order_by([m], [desc: m.id])
-    |> limit(1)
-    |> Repo.one
   end
 
   defp mark_messages_as_unread(group_id, user_id, message_id) do
@@ -295,10 +297,22 @@ defmodule Stitch.Message do
     ])
   end
 
+  def messages_from_other_users(user_id, group_id, message_id) do
+    Message
+    |> where([m], m.group_id == ^group_id)
+    |> where([m], m.user_id != ^user_id)
+    |> where([m], m.type != "system")
+    |> where([m], m.id >= ^message_id)
+    |> limit(1)
+    |> select([m], %{id: m.id})
+    |> Repo.one
+  end
+
   defp count_after(group_id, user_id, message_id) do
     Message
     |> where([m], m.group_id == ^group_id)
     |> where([m], m.id >= ^message_id)
+    |> where([m], m.user_id != ^user_id)
     |> where([m], m.type != "system")
     |> select([m], %{
       mentions_count: fragment("coalesce(count (*) filter (where ? @> ?), 0)", m.mentioned_user_ids, ^[user_id]),
@@ -324,6 +338,7 @@ defmodule Stitch.Message do
 
     Message
     |> where([m], m.group_id == ^group_id)
+    |> where([m], m.user_id != ^user_id)
     |> where([m], m.inserted_at >= ^last_read_at)
     |> where([m], fragment("? @> ?", m.read_status, ^%{to_string(user_id) => nil}))
     |> update([m], set: [read_status: fragment("? || ?", m.read_status, ^%{user_id => NaiveDateTime.utc_now})])

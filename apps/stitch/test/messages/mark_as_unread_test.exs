@@ -45,8 +45,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
       {:ok, %{message: _message3}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
       Message.mark_as_read(bob.id, group.id)
-      assert {:ok, response} = Message.mark_as_unread(bob.id, group.id, message2)
-      assert %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [%{unread_messages_count: 2}]}} = response
+      assert {:error, "No messages from other users after the target message"} = Message.mark_as_unread(bob.id, group.id, message2)
     end
   end
 
@@ -95,7 +94,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
 
       group_user = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user.mentions_count == 0
-      assert group_user.unread_messages_count == 4
+      assert group_user.unread_messages_count == 2
       assert group_user.last_read_at == message2.inserted_at
     end
 
@@ -124,7 +123,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
 
       group_user = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user.mentions_count == 0
-      assert group_user.unread_messages_count == 2
+      assert group_user.unread_messages_count == 1
       assert group_user.last_read_at == message2.inserted_at
     end
 
@@ -136,12 +135,11 @@ defmodule Stitch.Message.MarkAsUnreadTest do
       {:ok, _} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
       Message.mark_as_read(bob.id, group.id)
-      assert {:ok, response} = Message.mark_as_unread(bob.id, group.id, system_message2)
-      assert %{mark_messages_as_unread: {1, [_unread_message]}, mark_group_as_unread: {1, [%{unread_messages_count: 2}]}} = response
+      assert {:error, "System message can't be marked as unread"} = Message.mark_as_unread(bob.id, group.id, system_message2)
 
       group_user = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user.mentions_count == 0
-      assert group_user.unread_messages_count == 2
+      assert group_user.unread_messages_count == 0
     end
 
     test "when the target message is a system message and there are no messages before it", %{bob: bob, joe: joe, group: group, team: team} do
@@ -149,8 +147,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
       {:ok, _} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
       Message.mark_as_read(bob.id, group.id)
-      assert {:ok, response} = Message.mark_as_unread(bob.id, group.id, system_message2)
-      assert %{mark_messages_as_unread: {0, []}, mark_group_as_unread: {1, [%{unread_messages_count: 0}]}} = response
+      assert {:error, "System message can't be marked as unread"} = Message.mark_as_unread(bob.id, group.id, system_message2)
 
       group_user = Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
       assert group_user.mentions_count == 0

@@ -44,7 +44,7 @@ class Topbar extends Component {
               <OverlayTrigger
                 placement="bottom"
                 container={this}
-                overlay={<Tooltip id="tooltip-info">Lockout</Tooltip>}
+                overlay={<Tooltip id="tooltip-info">Lock Out</Tooltip>}
               >
                 <i className="fa fa-lock" />
               </OverlayTrigger>

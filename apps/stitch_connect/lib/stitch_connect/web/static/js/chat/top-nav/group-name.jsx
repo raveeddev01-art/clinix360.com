@@ -7,11 +7,11 @@ import classNames from "classnames";
 export default class GroupName extends Component {
   render() {
     const { groupStore, presenceStore } = this.props;
-    const { type, users } = groupStore;
+    const { type, users } = groupStore.group;
     let iconName;
 
     if (type === "regular") {
-      iconName = groupStore.group.public ? "fa-comments" : "fa-locked";
+      iconName = groupStore.group.public ? "fa-comments" : "fa-lock";
     } else if (type === "dm") {
       iconName =
         users.length > 0 && presenceStore.isOnline(users[0].id)
