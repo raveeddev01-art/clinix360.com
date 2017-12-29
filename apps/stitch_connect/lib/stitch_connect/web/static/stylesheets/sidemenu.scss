@@ -334,13 +334,18 @@
 
         .invite-link {
           display: inline-block;
-          color: $brand-primary;
+          color: #fff;
           font-size: 15px;
           font-weight: bold;
           text-decoration: none;
           border-bottom: 1px dashed #003366;
-          margin: 15px 10px 0;
+          margin: 15px 15px 0;
           padding: 3px 0;
+          opacity: 0.6;
+
+          &:hover {
+            opacity: 1;
+          }
         }
       }
     }
