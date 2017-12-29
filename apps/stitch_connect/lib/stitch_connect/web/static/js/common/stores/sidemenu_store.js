@@ -109,6 +109,8 @@ class SidemenuStore {
       await groupsStore.loadGroups();
 
       this.loading = false;
+    } else {
+      groupsStore.loadGroups();
     }
   };
 
