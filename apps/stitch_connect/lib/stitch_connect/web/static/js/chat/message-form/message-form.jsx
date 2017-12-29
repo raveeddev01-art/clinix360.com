@@ -298,7 +298,9 @@ class MessageForm extends Component {
           autoFocus
           required
           ref={input => {
-            this.textInput = ReactDOM.findDOMNode(input);
+            if (input) {
+              this.textInput = ReactDOM.findDOMNode(input);
+            }
           }}
         />
         <div className="message-form-actions">
