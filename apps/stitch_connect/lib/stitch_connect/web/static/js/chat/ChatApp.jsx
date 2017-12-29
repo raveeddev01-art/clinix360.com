@@ -3,11 +3,10 @@ import { observer, inject } from "mobx-react";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Dropzone from "react-dropzone";
 
-import Sidemenu from "../sidemenu/sidemenu";
-import Chat from "./Chat";
-import BrowserNotificationAlert from "./browser-notification-alert";
 import UploadModal from "file-upload/upload-modal";
-import Switcher from "common/components/switcher";
+import { Switcher, AppAlert } from "common/components";
+import Chat from "./Chat";
+import Sidemenu from "../sidemenu/sidemenu";
 
 @inject("uploadStore", "sidemenuStore", "channelStore", "groupsStore")
 @observer
@@ -76,7 +75,7 @@ class ChatApp extends Component {
           </div>
         )}
         <UploadModal />
-        {window.Notification && <BrowserNotificationAlert />}
+        <AppAlert />
         <div className="appContainer">
           <Switcher />
           <Sidemenu />

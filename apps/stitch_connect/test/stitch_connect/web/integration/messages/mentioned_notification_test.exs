@@ -1,16 +1,18 @@
 defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
-  use StitchConnect.Web.FeatureCase, async: false
+  use StitchConnect.Web.FeatureCase, async: true
 
   import Wallaby.Query, only: [xpath: 1, xpath: 2, button: 1, text_field: 1, css: 1, css: 2]
   import Stitch.Factory
   alias StitchConnect.Web.IntegrationTestHelper, as: Helper
+
+  @moduletag timeout: :timer.minutes(2)
 
   @vip_room xpath("//a[@href='/rooms/vip']")
   @mark_as_read_button css(".unread-messages-tooltip .mark-as-read-button")
   @rooms_menu_notification xpath("//a[@href='/rooms/vip']", text: "VIP\n1")
   @sidebar_notification css(".switcher .switcher__link .switcher__badge", text: "1")
 
-  test "notification badge is rendered with right number when user is mentioned" do
+  test "notification badge is rendered with right number when user is mentioned", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1_attrs = [
       email: "someuser@somecompany.com",
@@ -28,8 +30,8 @@ defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
     insert(:group_user, group: vip_group, user: user_1)
     insert(:group_user, group: vip_group, user: user_2)
 
-    {:ok, user_1_session} = Wallaby.start_session()
-    {:ok, user_2_session} = Wallaby.start_session()
+    {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
+    {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
     Helper.sign_in(user_1_session, team, user_1)
     Helper.sign_in(user_2_session, team, user_2)
@@ -58,7 +60,7 @@ defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
     |> refute_has(@sidebar_notification)
   end
 
-  test "notification badge doesn't render if user is already in the room" do
+  test "notification badge doesn't render if user is already in the room", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1_attrs = [
       email: "someuser@somecompany.com",
@@ -82,8 +84,8 @@ defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
       insert(:message, user: user_2, group: vip_group)
     end
 
-    {:ok, user_1_session} = Wallaby.start_session()
-    {:ok, user_2_session} = Wallaby.start_session()
+    {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
+    {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
     Helper.sign_in(user_1_session, team, user_1)
     Helper.sign_in(user_2_session, team, user_2)

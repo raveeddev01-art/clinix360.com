@@ -12,6 +12,7 @@ defmodule Stitch.Message do
     belongs_to :user, Stitch.Accounts.User
     belongs_to :group, Stitch.Group
     belongs_to :pinned_by, Stitch.Accounts.User, foreign_key: :pinned_by_id
+    field :request_id, :string
     field :deleted, :boolean, default: false
     field :edited_at, :utc_datetime
     field :text_content, :string
@@ -51,7 +52,7 @@ defmodule Stitch.Message do
 
   def chat_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [:type, :request_id, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
     |> check_for_links
@@ -70,7 +71,7 @@ defmodule Stitch.Message do
 
   def upload_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:fields, :type, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [:fields, :type, :request_id, :text_content, :mentioned_user_ids, :read_status])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
     |> add_preview()
@@ -93,7 +94,7 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, ["system"])
   end
 
-  def create(group_id, user, params, online_in_group \\ [])
+  def create(group_id, user, attrs, online_in_group \\ [])
 
   def create(group_id, user, %{"type" => type} = attrs, online_in_group) when type in ["chat", "upload"] do
     group = GroupQueries.get_by_id(group_id)
@@ -125,8 +126,8 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
-  def create(group_id, user, %{"text_content" => text_content}, online_in_group) do
-    create(group_id, user, %{"type" => "chat", "text_content" => text_content}, online_in_group)
+  def create(group_id, user, %{"text_content" => _} = attrs, online_in_group) do
+    create(group_id, user, Map.put(attrs, "type", "chat"), online_in_group)
   end
 
   def create(_group_id, _user, _attrs, _online_in_group) do
