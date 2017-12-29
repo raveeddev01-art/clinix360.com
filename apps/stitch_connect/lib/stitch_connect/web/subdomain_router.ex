@@ -100,7 +100,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/mentions", MentionController, :index
 
     get "/users/", UserController, :index
-    get "/users/notification-preference", NotificationPreferenceController, :show_global
     put "/users/notification-preference", NotificationPreferenceController, :update_global
     get "/users/:id", UserController, :show
     put "/users/:id", UserController, :update
@@ -114,7 +113,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend
 
-    get "/groups", GroupController, :index
     get "/groups/:id", GroupController, :show
     post "/groups", GroupController, :create
     post "/groups/dm", GroupController, :create_single_dm
@@ -144,6 +142,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     post "/session-lock", SessionLockController, :lock
     post "/session-unlock", SessionLockController, :unlock
+    get "/groups", GroupController, :index
+    get "/users/notification-preference", NotificationPreferenceController, :show_global
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
