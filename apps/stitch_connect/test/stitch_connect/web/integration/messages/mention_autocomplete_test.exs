@@ -5,13 +5,13 @@ defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
   import Stitch.Factory
   alias StitchConnect.Web.IntegrationTestHelper, as: Helper
 
-  defp mention_item(username), do: css(".user-mention-menu span", text: username)
+  defp mention_item(username), do: css(".user-mention-menu .item-text span", count: 1, text: username)
 
-  test "user can see auotcomplete menu when he types @ character" do
+  test "user can see auotcomplete menu when he types @ character", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
-    group = insert(:group, team: team)
-    user_1 = insert(:user, first_name: "Anton", last_name: "A", username: "anton", team: team)
-    user_2 = insert(:user, first_name: "Anthony", last_name: "B", username: "anthony", team: team)
+    _group = insert(:group, team: team)
+    _user_1 = insert(:user, first_name: "Anton", last_name: "A", username: "anton", team: team)
+    _user_2 = insert(:user, first_name: "Anthony", last_name: "B", username: "anthony", team: team)
     user_3 = insert(:user, first_name: "John", last_name: "Doe", username: "john", team: team)
 
     # Login as user_3 and verify you can mention Anton and Anthony.
@@ -20,9 +20,26 @@ defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
 
     # Type the @ symbol, is the autocomplete menu there?
     user_3_session
+    |> click(button("Join"))
     |> fill_in(text_field("Message"), with: "@")
+    |> assert_has(css(".user-mention-menu"))
+  end
 
+  test "mentions list gets smaller as the user types more characters", %{metadata: metadata} do
+    team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
+    _group = insert(:group, team: team)
+    _user_1 = insert(:user, first_name: "Anton", last_name: "A", username: "anton", team: team)
+    _user_2 = insert(:user, first_name: "Anthony", last_name: "B", username: "anthony", team: team)
+    user_3 = insert(:user, first_name: "John", last_name: "Doe", username: "john", team: team)
+
+    # Login as user_3 and verify you can mention Anton and Anthony.
+    {:ok, user_3_session} = Wallaby.start_session(metadata: metadata)
+    Helper.sign_in(user_3_session, team, user_3)
+
+    # Type the @ symbol, is the autocomplete menu there?
     user_3_session
+    |> click(button("Join"))
+    |> fill_in(text_field("Message"), with: "@ant")
     |> assert_has(mention_item("Anton A"))
     |> assert_has(mention_item("Anthony B"))
     |> refute_has(mention_item("John Doe"))
