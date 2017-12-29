@@ -18,6 +18,10 @@ class EmojiSearch extends Component {
     } else if (this.props.isOpen && !nextProps.isOpen) {
       document.removeEventListener("keydown", this.onKeyDown);
     }
+
+    if (this.props.filter !== nextProps.filter) {
+      this.setState({ activeIndex: 0 });
+    }
   }
 
   onItemHover = index => () => {
