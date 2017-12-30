@@ -206,9 +206,9 @@ class PresenceStore {
     this.secondsToLockout = data.seconds_to_lockout;
     this.lockoutEnabled = data.security_lockout_enabled;
     this.lockoutSettingLoaded = true;
-    this.onUserInteract();
     this.startLockoutTimer();
     this.checkLockoutTimerExpired();
+    this.onUserInteract();
   };
 
   startLockoutTimer = () => {
