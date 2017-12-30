@@ -165,9 +165,12 @@ class ChannelStore {
     return joined;
   }
 
-  leaveAllChannelsButTeam() {
+  leaveAllChannelsButTeamAndEvent() {
     Object.keys(this.channels)
-      .filter(topic => topic !== this.teamChannelTopic)
+      .filter(
+        topic =>
+          topic !== this.teamChannelTopic && topic !== this.eventChannelTopic
+      )
       .forEach(topic => {
         this.leave(topic);
       });

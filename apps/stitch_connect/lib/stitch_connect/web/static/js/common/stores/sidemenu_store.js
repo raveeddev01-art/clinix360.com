@@ -156,10 +156,10 @@ class SidemenuStore {
    * @param {*} groupId
    */
   isCurrentlyInRoom(groupId) {
-    const { groupStore } = this.rootStore;
+    const { groupStore, presenceStore } = this.rootStore;
 
     return (
-      !this.locked &&
+      !presenceStore.locked &&
       groupStore.group &&
       groupId === groupStore.group.id &&
       document.hasFocus()

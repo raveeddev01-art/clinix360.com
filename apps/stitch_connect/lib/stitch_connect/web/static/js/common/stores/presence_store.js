@@ -7,7 +7,8 @@ import throttle from "lodash/throttle";
 
 import {
   PRESENCE_DEBOUNCE_WAIT,
-  USER_INTERACTION_THROTTLE
+  USER_INTERACTION_THROTTLE,
+  LOCKOUT_CHECK_MS
 } from "lib/constants";
 
 class PresenceStore {
@@ -142,7 +143,7 @@ class PresenceStore {
       this.teamChannel.push("locked");
       this.teamChannel.push("became_inactive");
       this.teamChannel.push("became_away");
-      this.rootStore.channelStore.leaveAllChannelsButTeam();
+      this.rootStore.channelStore.leaveAllChannelsButTeamAndEvent();
     });
   };
 
@@ -164,8 +165,6 @@ class PresenceStore {
 
   onUserInteract = () => {
     if (this.locked) return;
-    window.clearTimeout(this.lockoutTimerID);
-    this.startLockoutTimer();
 
     window.clearTimeout(this.awayTimerID);
     this.awayTimerID = window.setTimeout(
@@ -184,9 +183,16 @@ class PresenceStore {
     this.teamChannel.push("became_away");
   };
 
-  onLockoutTimerExpired = () => {
-    this.teamChannel.push("lockout_timer_expired");
-    this.lock();
+  checkLockoutTimerExpired = () => {
+    const lastActivity = Cookies.get("last_activity");
+    if (
+      lastActivity &&
+      moment().diff(lastActivity, "seconds") > this.secondsToLockout
+    ) {
+      // user came back after lockout limit time
+      this.teamChannel.push("lockout_timer_expired");
+      this.lock();
+    }
   };
 
   getLockoutSettings = () => {
@@ -197,30 +203,20 @@ class PresenceStore {
 
   @action
   onLockoutSettingsLoaded = data => {
-    const lastActivity = Cookies.get("last_activity");
     this.secondsToLockout = data.seconds_to_lockout;
     this.lockoutEnabled = data.security_lockout_enabled;
     this.lockoutSettingLoaded = true;
-
-    if (
-      lastActivity &&
-      moment().diff(lastActivity, "seconds") > data.seconds_to_lockout
-    ) {
-      // user came back after lockout limit time
-      this.lock();
-    } else {
-      this.startLockoutTimer();
-    }
+    this.onUserInteract();
+    this.startLockoutTimer();
+    this.checkLockoutTimerExpired();
   };
 
   startLockoutTimer = () => {
-    if (!this.lockoutSettingLoaded) {
-      this.getLockoutSettings();
-    } else if (this.lockoutEnabled) {
-      clearTimeout(this.lockoutTimerID);
-      this.lockoutTimerID = setTimeout(
-        this.onLockoutTimerExpired,
-        this.secondsToLockout * 1000
+    clearTimeout(this.lockoutTimerID);
+    if (this.lockoutEnabled) {
+      this.lockoutTimerID = setInterval(
+        this.checkLockoutTimerExpired,
+        LOCKOUT_CHECK_MS
       );
     }
   };
