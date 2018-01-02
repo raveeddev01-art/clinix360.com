@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Header from "../components/header";
+import Subheader from "../components/subheader";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
 
@@ -13,14 +14,7 @@ export default class CaseLuminance extends Component {
       <div>
         <Header />
         <div className="case-study">
-          <div className="subheader ">
-            <div className="container">
-              <div className="landing-message text-center">
-                <h1>Customers</h1>
-                <h3>Luminance Recovery</h3>
-              </div>
-            </div>
-          </div>
+          <Subheader title="Customers" subtitle="Luminance Recovery" />
 
           <div className="overview text-center">
             <div className="container">
