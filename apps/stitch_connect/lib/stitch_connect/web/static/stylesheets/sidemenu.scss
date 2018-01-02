@@ -118,13 +118,24 @@
       @include stitch-scroll();
       overflow: hidden;
 
-      &__scroll-wrap {
-        padding: 10px 0 20px;
+      .scrollbar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
       }
 
-      &:hover {
-        overflow-y: scroll;
-        overflow-y: overlay;
+      .simplebar-scrollbar {
+        background-color: #fff;
+      }
+
+      .simplebar-scroll-content {
+        position: relative;
+      }
+
+      &__scroll-wrap {
+        padding: 10px 0 20px;
       }
 
       .menu-nav {
