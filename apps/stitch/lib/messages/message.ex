@@ -94,17 +94,17 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, ["system"])
   end
 
-  def create(group_id, user, attrs, active_user_ids \\ [])
+  def create(group_id, user, attrs, presence_user_ids \\ %{active: [], online: []})
 
-  def create(group_id, user, %{"type" => type} = attrs, active_user_ids) when type in ["chat", "upload"] do
+  def create(group_id, user, %{"type" => type} = attrs, presence_user_ids) when type in ["chat", "upload"] do
     group = GroupQueries.get_by_id(group_id)
     group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
     analytics_track_message_sent(user, group)
 
-    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"], active_user_ids, group)
-    notify_user_ids = Message.Notification.notify_user_ids(group, user, mentioned_user_ids, active_user_ids)
+    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"], presence_user_ids.online, group)
+    notify_user_ids = Message.Notification.notify_user_ids(group, user, mentioned_user_ids, presence_user_ids.active)
     {read_status, recipients} = users |> Enum.reduce({%{}, []}, fn (recipient, {acc_map, acc_list}) ->
       acc_map = if recipient.id == user.id or recipient.disabled, do: acc_map, else: Map.put(acc_map, to_string(recipient.id), nil)
       acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
@@ -126,8 +126,8 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
-  def create(group_id, user, %{"text_content" => _} = attrs, active_user_ids) do
-    create(group_id, user, Map.put(attrs, "type", "chat"), active_user_ids)
+  def create(group_id, user, %{"text_content" => _} = attrs, presence_user_ids) do
+    create(group_id, user, Map.put(attrs, "type", "chat"), presence_user_ids)
   end
 
   def create(_group_id, _user, _attrs, _active_user_ids) do

@@ -3,9 +3,9 @@ defmodule Stitch.Message.Mention do
   Takes a list of users and a mesage and returns which out of those users should be notified
   by this message.
   """
-  def get_mentioned_user_ids(_users, _author, nil, _active_user_ids, _group), do: []
-  def get_mentioned_user_ids(users, author, message, active_user_ids, group) do
-    mention_user_keywords = user_mention_keywords(users, author, active_user_ids, group)
+  def get_mentioned_user_ids(_users, _author, nil, _online_user_ids, _group), do: []
+  def get_mentioned_user_ids(users, author, message, online_user_ids, group) do
+    mention_user_keywords = user_mention_keywords(users, author, online_user_ids, group)
     message_mentions(message, mention_user_keywords)
   end
 
@@ -34,7 +34,7 @@ defmodule Stitch.Message.Mention do
         "@all" => [1, 2]
       }
   """
-  def user_mention_keywords(users, author, active_user_ids, %Stitch.Group{} = group) do
+  def user_mention_keywords(users, author, online_user_ids, %Stitch.Group{} = group) do
     mentions =
       users
       |> Enum.reduce(%{}, fn (user, acc) ->
@@ -50,7 +50,7 @@ defmodule Stitch.Message.Mention do
         mentions
       else
         mentions
-        |> Map.put("<@Ghere>", active_user_ids |> List.delete(author.id))
+        |> Map.put("<@Ghere>", online_user_ids |> List.delete(author.id))
         |> Map.put("<@Groom>", users |> Enum.map(& &1.id) |> List.delete(author.id))
       end
 
