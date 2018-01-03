@@ -87,7 +87,12 @@ class ChannelStore {
   get groupChannelTopic() {
     const { groupStore } = this.rootStore;
 
-    return `groups:${groupStore.group.slug}`;
+    // avoid socket ping error
+    if (groupStore.group) {
+      return `groups:${groupStore.group.slug}`;
+    }
+
+    return "";
   }
 
   get groupChannel() {
