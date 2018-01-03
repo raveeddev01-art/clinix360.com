@@ -612,6 +612,14 @@
   border-color: #fff;
 }
 
+.group-mention {
+  border-bottom: 1px solid #333;
+
+  &.mine {
+    border-bottom-color: #fff;
+  }
+}
+
 .user-mention-menu {
   width: 100%;
 

@@ -27,7 +27,11 @@ class MessageContent extends Component {
 
     return parts.map((part, i) => {
       if (part.type === "group_mention") {
-        return <span key={`group_mention_${i}`}>@{part.content}</span>;
+        return (
+          <span key={`group_mention_${i}`} className="group-mention">
+            @{part.content}
+          </span>
+        );
       } else if (part.type === "mention") {
         return (
           <UserMention
