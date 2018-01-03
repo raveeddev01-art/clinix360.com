@@ -103,7 +103,7 @@ defmodule Stitch.Message do
 
     analytics_track_message_sent(user, group)
 
-    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"], active_user_ids, Enum.map(users, & &1.id), group.is_default)
+    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"], active_user_ids, group)
     notify_user_ids = Message.Notification.notify_user_ids(group, user, mentioned_user_ids, active_user_ids)
     {read_status, recipients} = users |> Enum.reduce({%{}, []}, fn (recipient, {acc_map, acc_list}) ->
       acc_map = if recipient.id == user.id or recipient.disabled, do: acc_map, else: Map.put(acc_map, to_string(recipient.id), nil)
@@ -161,7 +161,7 @@ defmodule Stitch.Message do
     group = GroupQueries.get_by_id(message.group_id)
     author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
-    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"], [], Enum.map(users, & &1.id), group.is_default)
+    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"], [], group)
 
     message
     |> user_edit_changeset(%{text_content: attributes["text_content"], mentioned_user_ids: mentioned_user_ids})

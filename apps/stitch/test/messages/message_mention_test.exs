@@ -9,15 +9,20 @@ defmodule Stitch.Message.MentionTest do
   end
 
   test "Stitch.Mention.user_mention_keywords/1 (excludes author)" do
+    team = insert(:team)
+    group = insert(:group, team: team, is_default: true)
     bob = insert(:user, username: "bob")
     alice = insert(:user, username: "alice")
     eve = insert(:user, username: "eve")
+    _group_bob = insert(:group_user, user: bob, group: group)
+    _group_alice = insert(:group_user, user: alice, group: group)
+    _group_eve = insert(:group_user, user: eve, group: group)
 
-    mention_keywords = Stitch.Message.Mention.user_mention_keywords([bob, alice, eve], eve)
+    mention_keywords = Stitch.Message.Mention.user_mention_keywords([bob, alice, eve], eve, [], group)
 
     assert mention_keywords["<@U#{bob.id}>"] == [bob.id]
     assert mention_keywords["<@U#{alice.id}>"] == [alice.id]
-    assert mention_keywords["@all"] == [bob.id, alice.id]
+    assert mention_keywords["<@Geveryone>"] == [bob.id, alice.id]
   end
 
   describe "Stitch.Message.get_mentions/2" do
@@ -100,17 +105,17 @@ defmodule Stitch.Message.MentionTest do
       assert [%{mentions_count: 1, slug: "general"}] = Stitch.GroupQueries.available_groups(bob)
     end
 
-    test "when @all is mentioned" do
+    test "when @everyone is mentioned in the default room" do
       team = insert(:team)
       bob = insert(:user, username: "bob", team: team)
       alice = insert(:user, username: "alice", team: team)
       eve = insert(:user, username: "eve", team: team)
-      group = insert(:group, slug: "general", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: true)
       group_bob = insert(:group_user, user: bob, group: group)
       group_alice = insert(:group_user, user: alice, group: group)
       group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, @all!", "type" => "chat"})
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, <@Geveryone>!", "type" => "chat"})
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -122,6 +127,31 @@ defmodule Stitch.Message.MentionTest do
 
       assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 1
       assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 1
+      assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
+    end
+
+    test "when @everyone is mentioned in a regular room" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      eve = insert(:user, username: "eve", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: false)
+      group_bob = insert(:group_user, user: bob, group: group)
+      group_alice = insert(:group_user, user: alice, group: group)
+      group_eve = insert(:group_user, user: eve, group: group)
+
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, @everyone!", "type" => "chat"})
+
+      group_bob = Repo.get(GroupUser, group_bob.id)
+      group_alice = Repo.get(GroupUser, group_alice.id)
+      group_eve = Repo.get(GroupUser, group_eve.id)
+
+      assert group_bob.mentions_count == 0
+      assert group_alice.mentions_count == 0
+      assert group_eve.mentions_count == 0
+
+      assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 0
       assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
     end
   end
