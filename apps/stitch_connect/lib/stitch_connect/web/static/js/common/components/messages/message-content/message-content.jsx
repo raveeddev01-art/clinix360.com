@@ -26,7 +26,9 @@ class MessageContent extends Component {
       parts.filter(p => p.type === "emoji").length === parts.length;
 
     return parts.map((part, i) => {
-      if (part.type === "mention") {
+      if (part.type === "group_mention") {
+        return <span key={`group_mention_${i}`}>@{part.content}</span>;
+      } else if (part.type === "mention") {
         return (
           <UserMention
             key={`usermention_${i}`}

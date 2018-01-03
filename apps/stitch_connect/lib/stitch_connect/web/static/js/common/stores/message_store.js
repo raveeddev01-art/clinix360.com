@@ -477,7 +477,7 @@ class MessageStore {
     this.scrollToBottom(null, 0, 0);
 
     const newMsg = {
-      text_content: text,
+      text_content: messageText,
       request_id: tempMessage.id,
       ...additionalFields
     };
@@ -1022,9 +1022,11 @@ class MessageStore {
    */
   encodeMessage = (messageText = "") => {
     const { usersByUsername } = this.rootStore.usersStore;
-    return messageText.replace(REGEX.MENTION_ENCODE, (match, username) => {
+    return messageText.replace(REGEX.USER_MENTION_ENCODE, (match, username) => {
       const user = usersByUsername[username];
-      if (user) {
+      if (["everyone", "room", "here"].indexOf(username) > -1) {
+        return `<@G${username}>`;
+      } else if (user) {
         return `<@U${user.id}>`;
       }
 
@@ -1045,11 +1047,19 @@ class MessageStore {
       .filter(p => p)
       .map(part => {
         // mention
-        const match = part.match(REGEX.MENTION_DECODE);
+        const match = part.match(REGEX.USER_MENTION_DECODE);
         if (match && match[1] && usersById[match[1]]) {
           return {
             type: "mention",
             content: match[1]
+          };
+        }
+
+        const groupMatch = part.match(REGEX.GROUP_MENTION_DECODE);
+        if (groupMatch && groupMatch[1]) {
+          return {
+            type: "group_mention",
+            content: groupMatch[1]
           };
         }
 
@@ -1081,7 +1091,7 @@ class MessageStore {
       });
 
     return _.flatten(result);
-  }
+  };
 
   @action
   onReactionUpdate = payload => {
