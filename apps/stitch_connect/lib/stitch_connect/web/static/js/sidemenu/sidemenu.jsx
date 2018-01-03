@@ -12,7 +12,7 @@ import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
 import InviteModal from "../common/modals/invite-modal";
-import Scrollbar from "../common/components/scrollbar";
+import { Scrollbar } from "../common/components";
 
 @inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
 @observer
