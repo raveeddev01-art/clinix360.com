@@ -34,7 +34,7 @@ defmodule Stitch.Message.Mention do
         "@all" => [1, 2]
       }
   """
-  def user_mention_keywords(users, author, active_user_ids, group_user_ids, is_default \\ false) do
+  def user_mention_keywords(users, author, active_user_ids, %Stitch.Group{} = group) do
     mentions =
       users
       |> Enum.reduce(%{}, fn (user, acc) ->
@@ -44,10 +44,17 @@ defmodule Stitch.Message.Mention do
           Map.put(acc, "<@U#{user.id}>", [user.id])
         end
       end)
-      |> Map.put("<@Ghere>", active_user_ids |> List.delete(author.id))
-      |> Map.put("<@Groom>", group_user_ids |> List.delete(author.id))
 
-    if is_default do
+    mentions =
+      if group.name == "__dm_group__" or group.name == "__multi_dm_group__" do
+        mentions
+      else
+        mentions
+        |> Map.put("<@Ghere>", active_user_ids |> List.delete(author.id))
+        |> Map.put("<@Groom>", users |> Enum.map(& &1.id) |> List.delete(author.id))
+      end
+
+    if group.is_default do
       mentions |> Map.put("<@Geveryone>", group_user_ids |> List.delete(author.id))
     else
       mentions
