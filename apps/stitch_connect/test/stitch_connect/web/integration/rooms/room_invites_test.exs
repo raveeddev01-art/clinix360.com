@@ -1,10 +1,6 @@
 defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
     use StitchConnect.Web.FeatureCase
 
-    import Wallaby.Query
-    import Stitch.Factory
-    alias StitchConnect.Web.IntegrationTestHelper, as: Helper
-
     test "user can invite another user to a room", %{metadata: metadata} do
       team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
       user_1 = insert(:user, email: "someuser@somecompany.com", team: team)
@@ -17,8 +13,8 @@ defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
       {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
       {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-      Helper.sign_in(user_1_session, team, user_1)
-      Helper.sign_in(user_2_session, team, user_2)
+      sign_in(user_1_session, team, user_1)
+      sign_in(user_2_session, team, user_2)
 
       user_2_session
       |> refute_has(sidemenu_item("Emergency Room"))

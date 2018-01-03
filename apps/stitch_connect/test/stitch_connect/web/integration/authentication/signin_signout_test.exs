@@ -1,9 +1,6 @@
 defmodule StitchConnect.Web.Authentication.SignInSignOutTest do
   use StitchConnect.Web.FeatureCase
 
-  import Wallaby.Query
-  import Stitch.Factory
-
   @tag :start_session
   test "sign in with valid credentials and sign out", %{session: session} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")

@@ -1,10 +1,6 @@
 defmodule StitchConnect.Web.Messages.DirectMessagingTest do
   use StitchConnect.Web.FeatureCase
 
-  import Wallaby.Query, only: [button: 1, text_field: 1, css: 2]
-  import Stitch.Factory
-  alias StitchConnect.Web.IntegrationTestHelper, as: Helper
-
   defp message(msg), do: css(".message-container > .message", text: msg)
 
   test "user can start a direct conversation with another user", %{metadata: metadata} do
@@ -15,8 +11,8 @@ defmodule StitchConnect.Web.Messages.DirectMessagingTest do
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
     {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1)
-    Helper.sign_in(user_2_session, team, user_2)
+    sign_in(user_1_session, team, user_1)
+    sign_in(user_2_session, team, user_2)
 
     user_1_session
     |> click(css(".rooms-menu a", text: "Direct Messages"))
