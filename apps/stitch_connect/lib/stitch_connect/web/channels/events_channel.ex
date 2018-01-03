@@ -143,6 +143,6 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_notification_preference_update(user, preference) do
-    @endpoint.broadcast("events:#{user.id}", "notification_preference_update", preference)
+    @endpoint.broadcast("events:#{user.id}", "notification_preference_update", %{data: preference})
   end
 end
