@@ -11,7 +11,7 @@ class Feature extends Component {
               <div className="info m-b-40">
                 <h2>{this.props.heading}</h2>
 
-                <p>{this.props.description}</p>
+                <p>{this.props.children}</p>
               </div>
             </div>
 

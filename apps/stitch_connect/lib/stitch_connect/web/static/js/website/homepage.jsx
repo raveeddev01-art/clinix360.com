@@ -55,7 +55,7 @@ export default class Homepage extends Component {
           </div>
         </div>
 
-        <OurCustomers />
+        <OurCustomers heading="Trusted by top healthcare teams" />
 
         <div className="features-holder">
           <div className="feature">
