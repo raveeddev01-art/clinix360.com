@@ -143,6 +143,7 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_notification_preference_update(user, preference) do
-    @endpoint.broadcast("events:#{user.id}", "notification_preference_update", %{data: preference})
+    json = StitchConnect.Web.Api.V1.NotificationPreferenceView.render("show_global.json", user: user, group_preferences: preference)
+    @endpoint.broadcast("events:#{user.id}", "notification_preference_update", json)
   end
 end
