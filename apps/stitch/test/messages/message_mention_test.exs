@@ -140,7 +140,7 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, @everyone!", "type" => "chat"})
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, <@Geveryone>!", "type" => "chat"})
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -152,6 +152,81 @@ defmodule Stitch.Message.MentionTest do
 
       assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 0
       assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
+    end
+
+    test "when @here is mentioned and the user isn't active" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      eve = insert(:user, username: "eve", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: false)
+      group_bob = insert(:group_user, user: bob, group: group)
+      group_alice = insert(:group_user, user: alice, group: group)
+      group_eve = insert(:group_user, user: eve, group: group)
+
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi <@Ghere>", "type" => "chat"}, [])
+
+      group_bob = Repo.get(GroupUser, group_bob.id)
+      group_alice = Repo.get(GroupUser, group_alice.id)
+      group_eve = Repo.get(GroupUser, group_eve.id)
+
+      assert group_bob.mentions_count == 0
+      assert group_alice.mentions_count == 0
+      assert group_eve.mentions_count == 0
+
+      assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
+    end
+
+    test "when @here is mentioned and the user is active" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      eve = insert(:user, username: "eve", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: false)
+      group_bob = insert(:group_user, user: bob, group: group)
+      group_alice = insert(:group_user, user: alice, group: group)
+      group_eve = insert(:group_user, user: eve, group: group)
+
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi <@Ghere>", "type" => "chat"}, [bob.id])
+
+      group_bob = Repo.get(GroupUser, group_bob.id)
+      group_alice = Repo.get(GroupUser, group_alice.id)
+      group_eve = Repo.get(GroupUser, group_eve.id)
+
+      assert group_bob.mentions_count == 1
+      assert group_alice.mentions_count == 0
+      assert group_eve.mentions_count == 0
+
+      assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 1
+      assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
+    end
+
+    test "when @room is mentioned" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      eve = insert(:user, username: "eve", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: false)
+      group_bob = insert(:group_user, user: bob, group: group)
+      group_alice = insert(:group_user, user: alice, group: group)
+      group_eve = insert(:group_user, user: eve, group: group)
+
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi <@Groom>", "type" => "chat"}, [])
+
+      group_bob = Repo.get(GroupUser, group_bob.id)
+      group_alice = Repo.get(GroupUser, group_alice.id)
+      group_eve = Repo.get(GroupUser, group_eve.id)
+
+      assert group_bob.mentions_count == 1
+      assert group_alice.mentions_count == 1
+      assert group_eve.mentions_count == 0
+
+      assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 1
+      assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 1
       assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
     end
   end
