@@ -16,7 +16,7 @@ defmodule StitchConnect.Web.UserStatusService do
         end
 
       online_user_ids =
-        if Enum.any?(metas, & not &1.away) do
+        if Enum.any?(metas, & not &1.became_away) do
           [String.to_integer(user_id) | acc.online]
         else
           acc.online
