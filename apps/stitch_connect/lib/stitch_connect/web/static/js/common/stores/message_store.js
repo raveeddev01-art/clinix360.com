@@ -452,7 +452,7 @@ class MessageStore {
     // These info will be updated with real value when `marked_as_read` event is broadcast
     this.updateGroupData({
       last_read_at: moment
-        .utc(this.messages[0].inserted_at)
+        .utc(this.messages.length ? this.messages[0].inserted_at : new Date())
         .add(1, "millisecond")
         .format("YYYY-MM-DDTHH:mm:ss.SSS"),
       unread_messages_count: 0,
