@@ -185,10 +185,16 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     json(conn, %{status: "ok"})
   end
 
-  def upload_profile_image(conn, %{"url" => url}) do
-    case Stitch.Accounts.update_profile_image(conn.assigns.current_user, url) do
+  def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
+    {user_id, _} = Integer.parse(user_id)
+    case Stitch.Accounts.update_profile_image(conn.assigns.current_user, user_id, url) do
       {:ok, user} ->
         conn |> render("show.json", user: user)
+      {:error, "Unauthorized"} ->
+        conn
+        |> put_status(:unauthorized)
+        |> Phoenix.Controller.json(%{message: "You are not unauthorized to upload profile image."})
+        |> halt
       {:error, error} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -196,10 +202,16 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def delete_profile_image(conn, _params) do
-    case Stitch.Accounts.delete_profile_image(conn.assigns.current_user) do
+  def delete_profile_image(conn, %{"id" => user_id}) do
+    {user_id, _} = Integer.parse(user_id)
+    case Stitch.Accounts.delete_profile_image(conn.assigns.current_user, user_id) do
       {:ok, user} ->
         conn |> render("show.json", user: user)
+      {:error, "Unauthorized"} ->
+        conn
+        |> put_status(:unauthorized)
+        |> Phoenix.Controller.json(%{message: "You are not unauthorized to delete profile image."})
+        |> halt
       {:error, _error} ->
         conn
         |> put_status(:unprocessable_entity)
