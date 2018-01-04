@@ -68,7 +68,7 @@ defmodule StitchConnect.Web.GroupChannel do
   def join("groups:" <> group_id, _params, socket) do
     %{team_id: team_id, current_user: user} = socket.assigns
 
-    case Repo.get_by(Group, id: group_id, team_id: team_id) do
+    case Repo.get_by(Group, id: String.to_integer(group_id), team_id: team_id) do
       nil ->
         {:error, %{message: "group not found"}}
       group ->
