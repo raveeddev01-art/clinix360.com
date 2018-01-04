@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   alias Stitch.{Repo, Group, GroupAuthorization, GroupQueries,
                 Message, MessageAction, MessageQueries}
   alias StitchConnect.MessageLinkPreviewGenerator
-  alias StitchConnect.Web.{Endpoint, EventsChannel, GroupChannel, PushNotifications}
+  alias StitchConnect.Web.{EventsChannel, GroupChannel, PushNotifications}
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
@@ -54,7 +54,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
             MessageLinkPreviewGenerator.queue(message)
             message = message |> MessageQueries.load_info
-            Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
+            GroupChannel.broadcast_message_created(message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
             PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
             PushNotifications.push_badge_update(message, notify_user_ids.mobile)
@@ -106,7 +106,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, message} ->
             MessageLinkPreviewGenerator.queue(message)
             message = MessageQueries.load_info(message)
-            Endpoint.broadcast("groups:#{message.group.slug}", "edit_msg", message)
+            GroupChannel.broadcast_message_edited(message)
             render conn, "show.json", message: message, user_id: user.id
           {:error, :message, changeset, _changeset_so_far} ->
             conn
@@ -127,7 +127,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.delete(message) do
           {:ok, _message} ->
-            Endpoint.broadcast("groups:#{message.group.slug}", "delete_msg", %{id: message.id})
+            GroupChannel.broadcast_message_deleted(message)
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
             PushNotifications.push_badge_update(message)
             send_resp(conn, :no_content, "")

@@ -89,7 +89,7 @@ class ChannelStore {
 
     // avoid socket ping error
     if (groupStore.group) {
-      return `group_id:${groupStore.group.id}`;
+      return `groups:id:${groupStore.group.id}`;
     }
 
     return "";

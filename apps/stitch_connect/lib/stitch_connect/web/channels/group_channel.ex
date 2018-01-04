@@ -46,10 +46,10 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def join("groups:" <> group_slug, _params, socket) do
+  def join("groups:id:" <> group_id, _params, socket) do
     %{team_id: team_id, current_user: user} = socket.assigns
 
-    case Repo.get_by(Group, slug: group_slug, team_id: team_id) do
+    case Repo.get_by(Group, id: String.to_integer(group_id), team_id: team_id) do
       nil ->
         {:error, %{message: "group not found"}}
       group ->
@@ -65,10 +65,10 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def join("groups:" <> group_id, _params, socket) do
+  def join("groups:" <> group_slug, _params, socket) do
     %{team_id: team_id, current_user: user} = socket.assigns
 
-    case Repo.get_by(Group, id: String.to_integer(group_id), team_id: team_id) do
+    case Repo.get_by(Group, slug: group_slug, team_id: team_id) do
       nil ->
         {:error, %{message: "group not found"}}
       group ->
@@ -301,50 +301,62 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Repo.get(Message, message.id)
     [message] = Message.Reaction.apply_reactions([message])
     @endpoint.broadcast("groups:#{group.slug}", "reactions_updated", %{message_id: message.id, reactions_web: message.reactions})
-    @endpoint.broadcast("groups:#{group.id}", "reactions_updated", %{message_id: message.id, reactions_web: message.reactions})
+    @endpoint.broadcast("groups:id:#{group.id}", "reactions_updated", %{message_id: message.id, reactions_web: message.reactions})
   end
 
   def broadcast_message_starred(message) do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message)
     @endpoint.broadcast("groups:#{group.slug}", "starred_message", message_json)
-    @endpoint.broadcast("groups:#{group.id}", "starred_message", message_json)
+    @endpoint.broadcast("groups:id:#{group.id}", "starred_message", message_json)
   end
 
   def broadcast_message_edited(message) do
     group = Repo.get(Group, message.group_id)
-    @endpoint.broadcast("groups:#{message.group.id}", "edit_msg", message)
-    @endpoint.broadcast("groups:#{message.group.slug}", "edit_msg", message)
+    @endpoint.broadcast("groups:#{group.slug}", "edit_msg", message)
+    @endpoint.broadcast("groups:id:#{group.id}", "edit_msg", message)
+  end
+
+  def broadcast_message_deleted(message) do
+    group = Repo.get(Group, message.group_id)
+    @endpoint.broadcast("groups:#{group.slug}", "delete_msg", %{id: message.id})
+    @endpoint.broadcast("groups:id:#{group.id}", "delete_msg", %{id: message.id})
+  end
+
+  def broadcast_message_created(message) do
+    group = Repo.get(Group, message.group_id)
+    @endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
+    @endpoint.broadcast("groups:id:#{group.id}", "new_msg", message)
   end
 
   def broadcast_message_pinned(message) do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message)
     @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
-    @endpoint.broadcast("groups:#{group.id}", "pinned_message", message_json)
+    @endpoint.broadcast("groups:id:#{group.id}", "pinned_message", message_json)
   end
 
   def broadcast_members_update(group) do
     user_ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.id) |> Repo.all
     @endpoint.broadcast("groups:#{group.slug}", "members_update", %{user_ids: user_ids})
-    @endpoint.broadcast("groups:#{group.id}", "members_update", %{user_ids: user_ids})
+    @endpoint.broadcast("groups:id:#{group.id}", "members_update", %{user_ids: user_ids})
   end
 
   def broadcast_read_status(group, messages) do
     read_status_json = Enum.reduce(messages, %{}, & Map.put(&2, &1.id, &1.read_status))
     @endpoint.broadcast("groups:#{group.slug}", "read_status_update", %{messages: read_status_json})
-    @endpoint.broadcast("groups:#{group.id}", "read_status_update", %{messages: read_status_json})
+    @endpoint.broadcast("groups:id:#{group.id}", "read_status_update", %{messages: read_status_json})
   end
 
   def broadcast_system_message(group, system_message) do
     system_message = MessageQueries.load_info(system_message)
     @endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
-    @endpoint.broadcast("groups:#{group.id}", "new_msg", system_message)
+    @endpoint.broadcast("groups:id:#{group.id}", "new_msg", system_message)
   end
 
   def broadcast_msg_link_previews_generated(group, message) do
     @endpoint.broadcast("groups:#{group.slug}", "msg_link_previews_generated", message)
-    @endpoint.broadcast("groups:#{group.id}", "msg_link_previews_generated", message)
+    @endpoint.broadcast("groups:id:#{group.id}", "msg_link_previews_generated", message)
   end
 
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
