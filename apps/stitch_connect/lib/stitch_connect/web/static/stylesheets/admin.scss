@@ -9,7 +9,6 @@ $admin-topbar-height-sm: 65px;
 
   .flex-header {
     flex-basis: $admin-topbar-height;
-    @include transition(flex-basis 0.2s ease);
 
     h4 {
       font-weight: 900;
@@ -48,6 +47,7 @@ $admin-topbar-height-sm: 65px;
         }
 
         &__status-icon {
+          width: 16px;
           display: inline-block;
           text-align: center;
           margin-right: 6px;
@@ -58,7 +58,6 @@ $admin-topbar-height-sm: 65px;
 
   .sidebar {
     display: block;
-    @include transition(all 0.2s ease);
     flex-basis: $admin-sidebar-width;
     overflow: visible;
     z-index: 1;
@@ -80,8 +79,24 @@ $admin-topbar-height-sm: 65px;
       @include stitch-scroll();
       background-color: $brand-primary;
       flex-grow: 1;
-      overflow-y: hidden;
-      padding: 10px 0 0 0;
+      position: relative;
+      overflow: hidden;
+
+      .scrollbar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .simplebar-scrollbar {
+        background-color: #fff;
+      }
+
+      .simplebar-scroll-content {
+        position: relative;
+      }
 
       h5 {
         font-size: 16px;
@@ -92,6 +107,10 @@ $admin-topbar-height-sm: 65px;
         padding-left: 15px;
         opacity: 0.6;
         margin: 0 0 5px;
+
+        &.you-heading {
+          padding-top: 10px;
+        }
       }
 
       .list-group {
@@ -127,7 +146,7 @@ $admin-topbar-height-sm: 65px;
         opacity: 0.6;
 
         i {
-          width: 1em;
+          width: 16px;
           margin-right: 6px;
           font-size: 13px;
           &.sm {
@@ -153,7 +172,6 @@ $admin-topbar-height-sm: 65px;
   .admin-content {
     box-shadow: none;
     flex: 1;
-    @include transition(all 0.2s ease);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -654,49 +672,4 @@ $admin-topbar-height-sm: 65px;
 
 .btn-invite-members {
   font-weight: 900;
-}
-
-@media (max-width: 991px) {
-  .admin-wrapper {
-    .sidebar {
-      position: absolute;
-      top: 0;
-      left: 65px;
-      bottom: 0;
-      width: $admin-sidebar-width;
-      transform: translateX(-$admin-sidebar-width);
-    }
-
-    .admin-content {
-      .admin-topbar {
-        > .toggle-menu {
-          display: block;
-        }
-      }
-    }
-
-    &.sidebar-opened {
-      .sidebar {
-        transform: translateX(0);
-      }
-
-      .admin-content {
-        transform: translateX($admin-sidebar-width);
-        .admin-topbar {
-          > .toggle-menu {
-            > i {
-              display: block;
-              &.fa-bars {
-                display: none;
-              }
-            }
-          }
-        }
-
-        .admin-content-wrapper:after {
-          content: "";
-        }
-      }
-    }
-  }
 }
