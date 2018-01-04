@@ -321,9 +321,6 @@ class SidemenuStore {
       return;
     }
 
-    const group = groupsStore.getGroupById(newMessage.group_id);
-    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
-
     // Update Favicon
     this.updateFavicon();
 
@@ -333,8 +330,12 @@ class SidemenuStore {
     // Show notification card
     this.showNotificationCardForNewMessage(newMessage);
 
+    const group = groupsStore.getGroupById(newMessage.group_id);
+    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+
     if (group) {
       group.unread_messages_count += 1;
+
       if (isMention) {
         group.mentions_count += 1;
       }
@@ -342,8 +343,9 @@ class SidemenuStore {
       // if it's DM and hidden, show it on sidebar
       if (group.type !== "regular" && group.is_hidden) {
         put(`/api/v1/groups/${group.id}/unhide`).then(() => {
-          const sidebarGroup = groupsStore.getGroupById(group.id);
-          sidebarGroup.is_hidden = false;
+          groupsStore.updateGroupData(group.id, {
+            is_hidden: false
+          });
         });
       }
     }
