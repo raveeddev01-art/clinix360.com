@@ -8,7 +8,7 @@ defmodule StitchConnect.Web.ChannelMessageTest do
   test "new_msg event returns creates message and returns it", %{socket1: socket1, group: group} do
     uniq_content = Ecto.UUID.generate
 
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
 
     refute Repo.get_by(Message, text_content: uniq_content)
 
@@ -24,9 +24,9 @@ defmodule StitchConnect.Web.ChannelMessageTest do
 
   test "new_msg event broadcasts new message to other channel members",
       %{socket1: socket1, user1: user1, group: group} do
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
 
-    @endpoint.subscribe("groups:#{group.slug}")
+    @endpoint.subscribe("groups:id:#{group.id}")
 
     ref = push socket1, "new_msg", %{text_content: "Hello, World!"}
     assert_reply ref, :ok
@@ -39,9 +39,9 @@ defmodule StitchConnect.Web.ChannelMessageTest do
 
   test "new_msg's temporary request_id is included in the reply and broadcast event",
       %{socket1: socket1, user1: user1, group: group} do
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
 
-    @endpoint.subscribe("groups:#{group.slug}")
+    @endpoint.subscribe("groups:id:#{group.id}")
 
     ref = push socket1, "new_msg", %{text_content: "Hello, World!", request_id: "some temporary ID"}
 
@@ -59,8 +59,8 @@ defmodule StitchConnect.Web.ChannelMessageTest do
   test "message can be deleted or edited only by author",
       %{socket1: socket1, user2: user2, group: group} do
     {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-    {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+    {:ok, _, socket2} = subscribe_and_join(socket2, "groups:id:#{group.id}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
 
     ref1 = push socket1, "new_msg", %{text_content: "Hello, World!"}
     assert_reply ref1, :ok, message
@@ -74,12 +74,12 @@ defmodule StitchConnect.Web.ChannelMessageTest do
 
   test "edit_msg event changes message content and broadcasts it",
       %{socket1: socket1, group: group} do
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
 
     ref1 = push socket1, "new_msg", %{text_content: "Hello, World!"}
     assert_reply ref1, :ok, message
 
-    @endpoint.subscribe("groups:#{group.slug}")
+    @endpoint.subscribe("groups:id:#{group.id}")
 
     ref2 = push socket1, "edit_msg", %{message_id: message.id, params: %{text_content: "New Content"}}
     assert_reply ref2, :ok, edited_message
@@ -94,12 +94,12 @@ defmodule StitchConnect.Web.ChannelMessageTest do
 
   test "delete_msg event deletes message and broadcasts it's id",
       %{socket1: socket1, group: group} do
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
 
     ref1 = push socket1, "new_msg", %{text_content: "Hello, World!"}
     assert_reply ref1, :ok, message
 
-    @endpoint.subscribe("groups:#{group.slug}")
+    @endpoint.subscribe("groups:id:#{group.id}")
 
     ref2 = push socket1, "delete_msg", %{message_id: message.id}
     assert_reply ref2, :ok, %{id: message_id}
@@ -117,8 +117,8 @@ defmodule StitchConnect.Web.ChannelMessageTest do
       group: group,
       link_previews: [%{link: "http://foo.bar", title: "Foobar"}]
 
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
-    @endpoint.subscribe("groups:#{group.slug}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
+    @endpoint.subscribe("groups:id:#{group.id}")
 
     ref = push socket1, "delete_msg_link_preview", %{message_id: message.id, link: "http://foo.bar"}
 
@@ -131,8 +131,8 @@ defmodule StitchConnect.Web.ChannelMessageTest do
   test "delete_msg_link_preview event only allows message author or admins to delete link preview",
       %{socket1: socket1, user1: user1, user2: user2, group: group} do
     {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
-    {:ok, _, socket2} = subscribe_and_join(socket2, "groups:#{group.slug}")
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+    {:ok, _, socket2} = subscribe_and_join(socket2, "groups:id:#{group.id}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
 
     message1 = insert :message,
       user: user1,
