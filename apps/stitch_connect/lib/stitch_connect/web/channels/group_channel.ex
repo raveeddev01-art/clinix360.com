@@ -65,6 +65,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  # TODO: Remove this once no one is using older version of mobile app. Also, remove `groups:{group.slug}` broadcasts as well.
   def join("groups:" <> group_slug, _params, socket) do
     %{team_id: team_id, current_user: user} = socket.assigns
 
