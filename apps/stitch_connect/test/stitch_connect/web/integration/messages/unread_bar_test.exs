@@ -1,10 +1,6 @@
 defmodule StitchConnect.Web.Messages.UnreadBarTest do
   use StitchConnect.Web.FeatureCase
 
-  import Wallaby.Query, only: [xpath: 1, button: 1, text_field: 1, css: 1]
-  import Stitch.Factory
-  alias StitchConnect.Web.IntegrationTestHelper, as: Helper
-
   @vip_room xpath("//a[@href='/rooms/vip']")
   @unread_bar css(".container-bars .unread-messages-tooltip")
   @mark_as_read_button css(".unread-messages-tooltip .mark-as-read-button")
@@ -20,8 +16,8 @@ defmodule StitchConnect.Web.Messages.UnreadBarTest do
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
     {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1)
-    Helper.sign_in(user_2_session, team, user_2)
+    sign_in(user_1_session, team, user_1)
+    sign_in(user_2_session, team, user_2)
 
     user_1_session
     |> click(button("Join")) # to join 'general' room

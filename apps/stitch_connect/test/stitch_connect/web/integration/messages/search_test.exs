@@ -1,10 +1,6 @@
 defmodule StitchConnect.Web.Messages.SearchTest do
   use StitchConnect.Web.FeatureCase
 
-  import Wallaby.Query
-  import Stitch.Factory
-  alias StitchConnect.Web.IntegrationTestHelper, as: Helper
-
   defp search_result(msg), do: css(".message-search-addon .message", text: msg)
 
   test "user can search for messages in his team", %{metadata: metadata} do
@@ -15,7 +11,7 @@ defmodule StitchConnect.Web.Messages.SearchTest do
 
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1)
+    sign_in(user_1_session, team, user_1)
 
     default_group = Stitch.GroupQueries.default_group(user_1)
     insert(:message, group: default_group, type: "system", text_content: "system fox")
@@ -49,7 +45,7 @@ defmodule StitchConnect.Web.Messages.SearchTest do
 
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1)
+    sign_in(user_1_session, team, user_1)
 
     default_group = Stitch.GroupQueries.default_group(user_1)
     insert(:message, group: default_group, type: "system", text_content: "system fox")

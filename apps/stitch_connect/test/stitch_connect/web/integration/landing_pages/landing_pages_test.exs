@@ -1,8 +1,6 @@
 defmodule StitchConnect.Web.Messages.LandingPagesTest do
   use StitchConnect.Web.FeatureCase
 
-  import Wallaby.Query, only: [css: 2]
-
   defp element(selector, text), do: css(selector, text: text)
 
   test "landing page has all necessary elements" do
