@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Messages.LandingPagesTest do
-  use StitchConnect.Web.FeatureCase, async: true
+  use StitchConnect.Web.FeatureCase
 
   import Wallaby.Query, only: [css: 2]
 

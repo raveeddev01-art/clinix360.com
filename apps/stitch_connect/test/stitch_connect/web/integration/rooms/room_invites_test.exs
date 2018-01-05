@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
-    use StitchConnect.Web.FeatureCase, async: true
+    use StitchConnect.Web.FeatureCase
 
     import Wallaby.Query
     import Stitch.Factory

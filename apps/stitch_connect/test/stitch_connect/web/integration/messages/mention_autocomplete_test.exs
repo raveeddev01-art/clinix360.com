@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
-  use StitchConnect.Web.FeatureCase, async: true
+  use StitchConnect.Web.FeatureCase
 
   import Wallaby.Query
   import Stitch.Factory
@@ -57,7 +57,7 @@ defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
     {:ok, user_3_session} = Wallaby.start_session(metadata: metadata)
     Helper.sign_in(user_3_session, team, user_3)
 
-    # Can the user use the keyboard to navigate down and 
+    # Can the user use the keyboard to navigate down and
     # autocomplete a mention to the second user in the menu?
     user_3_session
     |> click(button("Join"))
@@ -68,4 +68,3 @@ defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
     |> assert_has(css(".message-text", text: "@anthony"))
   end
 end
-  

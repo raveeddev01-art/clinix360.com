@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Messages.GroupMessagingTest do
-  use StitchConnect.Web.FeatureCase, async: true
+  use StitchConnect.Web.FeatureCase
 
   import Wallaby.Query, only: [button: 1, text_field: 1, css: 2]
   import Stitch.Factory

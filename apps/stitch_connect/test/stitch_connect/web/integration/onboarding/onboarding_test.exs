@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.OnboardingTest do
-  use StitchConnect.Web.FeatureCase, async: true
+  use StitchConnect.Web.FeatureCase
 
   import Wallaby.Query
 

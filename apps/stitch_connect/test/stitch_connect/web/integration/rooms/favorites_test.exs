@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Rooms.FavoritesTest do
-  use StitchConnect.Web.FeatureCase, async: true
+  use StitchConnect.Web.FeatureCase
   import Stitch.Factory
   import Wallaby.Query
   alias StitchConnect.Web.IntegrationTestHelper, as: Helper

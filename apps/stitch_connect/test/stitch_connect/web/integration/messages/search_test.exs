@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Messages.SearchTest do
-  use StitchConnect.Web.FeatureCase, async: false
+  use StitchConnect.Web.FeatureCase
 
   import Wallaby.Query
   import Stitch.Factory
@@ -74,7 +74,7 @@ defmodule StitchConnect.Web.Messages.SearchTest do
     # Click on search result
     user_1_session
     |> click(css(".message-search-addon .message-footer a"))
-    
+
     assert current_url(user_1_session) == "http://someslug.localhost:4001/rooms/general"
   end
 end

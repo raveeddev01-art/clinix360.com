@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
-  use StitchConnect.Web.FeatureCase, async: true
+  use StitchConnect.Web.FeatureCase
 
   import Wallaby.Query, only: [xpath: 1, xpath: 2, button: 1, text_field: 1, css: 1, css: 2]
   import Stitch.Factory
