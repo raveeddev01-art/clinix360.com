@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.EventsTest do
 
   test "group participants receives new_message event",
       %{socket1: socket1, user1: user1, user2: user2, group: group} do
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
     @endpoint.subscribe("events:#{user2.id}")
 
@@ -22,7 +22,7 @@ defmodule StitchConnect.Web.EventsTest do
 
   test "group participants receives message_deleted event",
       %{socket1: socket1, user2: user2, group: group} do
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:id:#{group.id}")
+    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
 
     ref = push socket1, "new_msg", %{text_content: "Hello, @#{user2.username}"}
     assert_reply ref, :ok, message
