@@ -14,6 +14,7 @@ import AvatarUploader from "./avatar-uploader";
 import TeamList from "./team-list/team-list";
 import AppAlert from "./app-alert";
 import Scrollbar from "./scrollbar";
+import MemberType from "./member-type";
 
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
@@ -37,6 +38,7 @@ export {
   AvatarUploader,
   TeamList,
   AppAlert,
+  MemberType,
   MessageContent,
   MessageFooter,
   MessageHeader,
