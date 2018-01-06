@@ -6,10 +6,11 @@
 
 import { observable, computed, action } from "mobx";
 
-import history from "../../lib/history";
+import history from "lib/history";
 
 class UsersStore {
   @observable users = [];
+  @observable editingUserId = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -21,6 +22,11 @@ class UsersStore {
 
   getUserById = userId => this.users.find(u => u.id === userId);
   getUserByUsername = username => this.users.find(u => u.username === username);
+
+  @computed
+  get editingUser() {
+    return this.getUserById(this.editingUserId);
+  }
 
   @computed
   get usersByUsername() {
@@ -124,9 +130,26 @@ class UsersStore {
     });
   };
 
+  @action
+  editUser = data => {
+    return put(`/api/v1/users/${this.editingUserId}/roles`, {
+      body: data
+    });
+  };
+
   // ////////////////////// //
   // Channel Event Handlers //
   // ////////////////////// //
+
+  @action
+  onStartEditing = userId => {
+    this.editingUserId = userId;
+  };
+
+  @action
+  onEndEditing = () => {
+    this.editingUserId = null;
+  };
 
   @action
   onUserJoined = user => {
