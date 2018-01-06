@@ -39,6 +39,53 @@ class InvitationStore {
       hideNotify: true
     }).then();
   };
+
+  @action
+  sendInvites = (emails, groupId, role) => {
+    switch (role) {
+      case "member":
+        return this.inviteFullMembers(emails);
+      case "single-room-guest":
+        return this.inviteSingleRoomGuests(emails, groupId);
+      case "multi-room-guest":
+        return this.inviteMultiRoomGuests(
+          emails,
+          groupId
+            .split(",")
+            .filter(g => g)
+            .map(g => parseInt(g, 10))
+        );
+      default:
+        return Promise.reject("Unrecongized role");
+    }
+  };
+
+  @action
+  inviteFullMembers = emails => {
+    return post(`/api/v1/invitations`, {
+      body: { email_collection: emails.join(",") }
+    });
+  };
+
+  @action
+  inviteSingleRoomGuests = (emails, groupId) => {
+    return post("/api/v1/invitations/single-room-guests", {
+      body: {
+        email: emails,
+        group_id: groupId
+      }
+    });
+  };
+
+  @action
+  inviteMultiRoomGuests = (emails, groupIds) => {
+    return post("/api/v1/invitations/multi-room-guests", {
+      body: {
+        email: emails,
+        group_ids: groupIds
+      }
+    });
+  };
 }
 
 export default InvitationStore;
