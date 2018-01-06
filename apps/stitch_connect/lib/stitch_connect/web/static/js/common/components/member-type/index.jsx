@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import cx from "classnames";
 import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
@@ -38,11 +39,15 @@ class MemberType extends Component {
   }
 
   render() {
-    const { role, onChangeRole } = this.props;
+    const { role, onChangeRole, typeLabel, className } = this.props;
 
     return (
-      <div className="member-type">
-        <MemberTypeDropdown value={role} onChange={onChangeRole} />
+      <div className={cx("member-type", className)}>
+        <MemberTypeDropdown
+          value={role}
+          label={typeLabel}
+          onChange={onChangeRole}
+        />
         {this.renderGroup()}
       </div>
     );
@@ -50,6 +55,8 @@ class MemberType extends Component {
 }
 
 MemberType.propTypes = {
+  typeLabel: PropTypes.string,
+  className: PropTypes.string,
   groupId: PropTypes.any,
   role: PropTypes.string.isRequired,
   onChangeRole: PropTypes.func,
@@ -58,6 +65,8 @@ MemberType.propTypes = {
 
 MemberType.defaultProps = {
   groupId: null,
+  typeLabel: "Type",
+  className: "",
   onChangeRole: () => {},
   onChangeGroup: () => {}
 };
