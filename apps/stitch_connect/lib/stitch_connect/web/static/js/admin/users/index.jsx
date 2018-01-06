@@ -3,10 +3,12 @@ import { inject, observer } from "mobx-react";
 import Panel from "react-bootstrap/lib/Panel";
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
+import InviteModal from "common/modals/invite-modal";
+
 import FullMembersPanel from "./full-members-panel";
 import DeactivatedMembersPanel from "./deactivated-members-panel";
 import PendingInvitationsPanel from "./pending-invitations-panel";
-import InviteModal from "../../common/modals/invite-modal";
+import MemberTypeModal from "./member-type-modal";
 
 const header = (
   <h1>
@@ -24,6 +26,7 @@ class TeamSettings extends Component {
       alertMessage: "",
       alertStyle: "",
       alertVisible: false,
+      showMemberTypeModal: false,
       showInviteModal: false
     };
   }
@@ -61,9 +64,21 @@ class TeamSettings extends Component {
     });
   };
 
+  showMemberTypeModal = () => {
+    this.setState({
+      showMemberTypeModal: true
+    });
+  };
+
   toggleInviteModal = () => {
     this.setState({
       showInviteModal: !this.state.showInviteModal
+    });
+  };
+
+  toggleMemberTypeModal = () => {
+    this.setState({
+      showMemberTypeModal: !this.state.showMemberTypeModal
     });
   };
 
@@ -113,6 +128,7 @@ class TeamSettings extends Component {
           show={this.state.showInviteModal}
           toggle={this.toggleInviteModal}
         />
+        <MemberTypeModal />
       </Panel>
     );
   }
