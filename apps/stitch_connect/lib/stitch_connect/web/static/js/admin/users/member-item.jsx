@@ -115,6 +115,11 @@ class MemberItem extends Component {
                   }).label
               )
               .join(",")}
+            {!!user.groups_as_guest.length && (
+              <div className="status-column__rooms text-muted">
+                ({user.groups_as_guest.length} room{user.groups_as_guest.length > 1 && "s"})
+              </div>
+            )}
           </Col>
 
           <Col xs={3} className="actions-column text-right">

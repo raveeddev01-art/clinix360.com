@@ -5,9 +5,9 @@ import { Row, Col } from "react-bootstrap";
 import MemberItem from "./member-item";
 import SettingPanel from "../components/setting-panel/setting-panel";
 
-const title = "Full Members";
+const title = "Members";
 const description =
-  "Manage full team members and their roles as owners, admins, or members.";
+  "Manage your users by controlling admin abilities and account status. For more information on how account enabling and disabling works, see our support article.";
 
 @inject("usersStore")
 @observer

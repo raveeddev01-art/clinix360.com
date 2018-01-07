@@ -448,6 +448,11 @@ $admin-topbar-height-sm: 65px;
             font-weight: bold;
             padding: 10px 15px;
             text-transform: capitalize;
+
+            &__rooms {
+              font-size: 14px;
+              font-weight: 400;
+            }
           }
 
           .email-column {
