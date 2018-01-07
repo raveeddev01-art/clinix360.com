@@ -293,7 +293,7 @@ class InviteModal extends Component {
     const { toggle } = this.props;
     const inviteDisabled =
       (role === "single-room-guest" && !groupId) ||
-      (role === "multi-room-guest" && !groupId.length);
+      (role === "multi-room-guest" && (!groupId || !groupId.length));
 
     return (
       <Modal className="invite-people-modal" show={show} onHide={toggle}>
