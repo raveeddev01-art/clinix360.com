@@ -11,7 +11,8 @@ import orderBy from "lodash/orderBy";
 import {
   getGroupUserIdsThatHasCurrentUser,
   getSlugOfDMGroupByUsers,
-  getGroupUrl
+  getGroupUrl,
+  isFullMember
 } from "lib/utils";
 
 class GroupsStore {
@@ -44,7 +45,12 @@ class GroupsStore {
 
   @computed
   get defaultGroup() {
-    return this.groups.find(g => g.is_default);
+    if (isFullMember(currentUser)) {
+      return this.groups.find(g => g.is_default);
+    }
+
+    // for guests, just return for group
+    return this.groups[0];
   }
 
   @computed

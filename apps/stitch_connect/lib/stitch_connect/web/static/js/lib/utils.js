@@ -67,9 +67,9 @@ export function getGroupUserIdsThatHasCurrentUser(users) {
 
 /**
  * Filter users
- * 
- * @param {array} users 
- * @param {string} filter 
+ *
+ * @param {array} users
+ * @param {string} filter
  */
 export function filterUsers(users, filter) {
   const re = new RegExp(filter, "i");
@@ -77,4 +77,14 @@ export function filterUsers(users, filter) {
   return users.filter(
     user => re.test(user.full_name) || re.test(user.username)
   );
+}
+
+/**
+ * Returns whether the user has full member permission
+ *
+ * @param {User} user
+ * @returns {bool}
+ */
+export function isFullMember(user) {
+  return user.roles.indexOf("member") > -1 || user.roles.indexOf("admin") > -1;
 }
