@@ -41,7 +41,11 @@ class NamePanel extends Component {
         onSuccess("Your name has been successfully updated.");
       })
       .catch(err => {
-        onError(err.data.message);
+        const message = err.data.message
+          .replace('first_name', 'First name')
+          .replace('first_name', 'Last name');
+
+        onError(message);
       });
   };
 
