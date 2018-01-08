@@ -146,4 +146,10 @@ defmodule StitchConnect.Web.EventsChannel do
     json = StitchConnect.Web.Api.V1.NotificationPreferenceView.render("show_global.json", user: user, group_preferences: preference)
     @endpoint.broadcast("events:#{user.id}", "notification_preference_update", json)
   end
+
+  def broadcast_invitation_sent(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
+    Enum.each(Stitch.Accounts.User.admins(team), fn admin_user ->
+      @endpoint.broadcast("events:#{admin_user.id}", "invitation_sent", %{email: user.email})
+    end)
+  end
 end

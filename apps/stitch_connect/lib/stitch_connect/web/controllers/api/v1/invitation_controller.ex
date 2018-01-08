@@ -35,7 +35,9 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     if TeamAuthorization.can_send_invites?(current_user, team) do
       results = Enum.reduce emails, %{}, fn email, map ->
         result = case Invitation.invite_to_team(current_user.id, email) do
-          {:ok, _user} -> "ok"
+          {:ok, user} ->
+            StitchConnect.Web.EventsChannel.broadcast_invitation_sent(team, user)
+            "ok"
           {:error, reason} -> reason
         end
 
