@@ -48,7 +48,7 @@ class PendingInvitationItem extends Component {
           </Col>
 
           <Col xs={3} className="status-column text-center">
-            {roles && <RoleText roles={roles} groups={groups} />}
+            <RoleText roles={roles} groups={groups} />
           </Col>
 
           <Col xs={4} className="text-center">
