@@ -1,4 +1,4 @@
-# Shipping checklist
+# Shipping Checklist
 
 * [ ] Codeship is green.
 * [ ] Screenshots of new feature pasted into the PR description
@@ -6,8 +6,8 @@
 
 ## UX Code Review
 
-* [ ] Visually fits into Stitch styleguide?
-* [ ] Tested on multiple browsers?
+* [ ] Meets UX specs and requirements
+* [ ] Visually fits into Stitch styleguide
 
 ## IC Code Review
 
@@ -35,10 +35,6 @@
 
 * No notes at this time.
 
-## Code on Staging
-
-* example a - https://zephyr.teamstitch.com/foobar
-
-## Screenshots / Gifs
+## Screenshots / Videos
 
 * An Awesome Feature
