@@ -6,7 +6,7 @@ import Col from "react-bootstrap/lib/Col";
 import Collapse from "react-bootstrap/lib/Collapse";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import Button from "react-bootstrap/lib/Button";
-import RoleText from "./role-text";
+import { RoleText } from "common/components";
 
 @inject("usersStore")
 @observer

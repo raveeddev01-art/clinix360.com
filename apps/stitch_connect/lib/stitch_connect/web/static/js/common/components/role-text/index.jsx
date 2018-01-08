@@ -25,7 +25,11 @@ const RoleText = ({ roles, groups }) => {
 
 RoleText.propTypes = {
   roles: PropTypes.any.isRequired,
-  groups: PropTypes.any.isRequired
+  groups: PropTypes.any
+};
+
+RoleText.defaultProps = {
+  groups: null
 };
 
 export default RoleText;

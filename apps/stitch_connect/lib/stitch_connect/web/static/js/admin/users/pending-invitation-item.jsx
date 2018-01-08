@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Row, Col, Button } from "react-bootstrap";
-import RoleText from "./role-text";
+import { RoleText } from "common/components";
 
 @inject("invitationStore")
 @observer

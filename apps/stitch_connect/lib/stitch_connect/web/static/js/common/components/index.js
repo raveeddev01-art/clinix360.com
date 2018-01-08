@@ -15,6 +15,7 @@ import TeamList from "./team-list/team-list";
 import AppAlert from "./app-alert";
 import Scrollbar from "./scrollbar";
 import MemberType from "./member-type";
+import RoleText from "./role-text";
 
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
@@ -39,6 +40,7 @@ export {
   TeamList,
   AppAlert,
   MemberType,
+  RoleText,
   MessageContent,
   MessageFooter,
   MessageHeader,
