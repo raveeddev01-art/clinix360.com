@@ -326,15 +326,6 @@ class SidemenuStore {
       return;
     }
 
-    // Update Favicon
-    this.updateFavicon();
-
-    // Play notification audio
-    this.playNotificationAudioForNewMessage(newMessage);
-
-    // Show notification card
-    this.showNotificationCardForNewMessage(newMessage);
-
     const group = groupsStore.getGroupById(newMessage.group_id);
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
@@ -354,6 +345,15 @@ class SidemenuStore {
         });
       }
     }
+
+    // Update Favicon
+    this.updateFavicon();
+
+    // Play notification audio
+    this.playNotificationAudioForNewMessage(newMessage);
+
+    // Show notification card
+    this.showNotificationCardForNewMessage(newMessage);
   };
 
   @action
