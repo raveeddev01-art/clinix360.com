@@ -114,6 +114,10 @@ defmodule StitchConnect.Web.TeamChannel do
     @endpoint.broadcast("team:lobby:#{team.id}", "user_activated", %{user_id: user_id})
   end
 
+  def broadcast_team_deleted(%Stitch.Team{} = team) do
+    @endpoint.broadcast("team:lobby:#{team.id}", "team_deleted", %{})
+  end
+
   def terminate(_reason, socket) do
     {:ok, socket}
   end

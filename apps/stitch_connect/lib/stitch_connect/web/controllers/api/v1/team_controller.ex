@@ -90,6 +90,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't destroy the team."})
       {:ok, _} ->
+        StitchConnect.Web.TeamChannel.broadcast_team_deleted(team)
         conn
         |> json(%{message: "Team has been destroyed"})
     end
