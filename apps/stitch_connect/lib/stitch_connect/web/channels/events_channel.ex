@@ -147,9 +147,9 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user.id}", "notification_preference_update", json)
   end
 
-  def broadcast_invitation_sent(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
+  def broadcast_invitation_sent(%Stitch.Team{} = team, email) do
     Enum.each(Stitch.Accounts.User.admins(team), fn admin_user ->
-      @endpoint.broadcast("events:#{admin_user.id}", "invitation_sent", %{email: user.email})
+      @endpoint.broadcast("events:#{admin_user.id}", "invitation_sent", %{email: email})
     end)
   end
 end
