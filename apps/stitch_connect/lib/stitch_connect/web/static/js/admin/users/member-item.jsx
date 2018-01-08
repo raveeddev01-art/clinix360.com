@@ -6,7 +6,7 @@ import Col from "react-bootstrap/lib/Col";
 import Collapse from "react-bootstrap/lib/Collapse";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import Button from "react-bootstrap/lib/Button";
-import { MEMBER_TYPE_OPTIONS } from "lib/constants";
+import RoleText from "./role-text";
 
 @inject("usersStore")
 @observer
@@ -107,19 +107,7 @@ class MemberItem extends Component {
           </Col>
 
           <Col xs={3} className="status-column text-center">
-            {user.roles
-              .map(
-                r =>
-                  (MEMBER_TYPE_OPTIONS.find(opt => opt.value === r) || {
-                    label: r
-                  }).label
-              )
-              .join(",")}
-            {!!user.groups_as_guest.length && (
-              <div className="status-column__rooms text-muted">
-                ({user.groups_as_guest.length} room{user.groups_as_guest.length > 1 && "s"})
-              </div>
-            )}
+            <RoleText roles={user.roles} groups={user.groups_as_guest} />
           </Col>
 
           <Col xs={3} className="actions-column text-right">
