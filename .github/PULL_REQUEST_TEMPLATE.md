@@ -3,7 +3,11 @@
 * [ ] Codeship is green.
 * [ ] Screenshots of new feature pasted into the PR description
 * [ ] ReadMe updated with any instructions
-* [ ] Manual QA on staging (force push)
+
+## UX Code Review
+
+* [ ] Visually fits into Stitch styleguide?
+* [ ] Tested on multiple browsers?
 
 ## IC Code Review
 
