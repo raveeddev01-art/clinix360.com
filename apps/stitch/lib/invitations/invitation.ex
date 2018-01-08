@@ -181,7 +181,7 @@ defmodule Stitch.Invitation do
         false ->
           user_to_delete = Repo.get(User, invitation.user_id)
           Repo.delete user_to_delete
-          {:ok, invitation}
+          {:ok, invitation, user_to_delete}
       end
     else
       {:error, "User unauthorized to revoke invitation."}

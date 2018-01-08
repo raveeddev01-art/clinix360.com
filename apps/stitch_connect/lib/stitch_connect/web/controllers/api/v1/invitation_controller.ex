@@ -56,7 +56,9 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     case Invitation.revoke_invitation(conn.assigns.current_user.id, id) do
       {:error, reason} ->
         conn |> put_status(:unauthorized) |> text(reason)
-      {:ok, _} ->
+      {:ok, _, deleted_user} ->
+        team = conn.assigns.team
+        StitchConnect.Web.EventsChannel.broadcast_invitation_revoked(team, deleted_user.email)
         conn
         |> json(%{message: "Invitation has been revoked."})
     end
