@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
@@ -8,7 +9,7 @@ import { RoleText } from "common/components";
 @observer
 class RoleChangedModal extends Component {
   reload = () => {
-    window.location.reload(true);
+    window.location.href = "/";
   };
 
   render() {
@@ -35,4 +36,4 @@ class RoleChangedModal extends Component {
   }
 }
 
-export default RoleChangedModal;
+export default withRouter(RoleChangedModal);

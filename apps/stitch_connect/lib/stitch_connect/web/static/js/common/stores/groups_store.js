@@ -49,8 +49,8 @@ class GroupsStore {
       return this.groups.find(g => g.is_default);
     }
 
-    // for guests, just return for group
-    return this.groups[0];
+    // for guests, just return first regular group
+    return this.groups.filter(g => g.type === "regular")[0];
   }
 
   @computed
