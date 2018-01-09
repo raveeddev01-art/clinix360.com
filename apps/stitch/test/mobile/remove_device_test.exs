@@ -4,28 +4,23 @@ defmodule Stitch.Mobile.RemoveDeviceTest do
   alias Stitch.Mobile.Device
 
   test "remove device with given token" do
-    bob = insert(:user)
+    device = insert(:mobile_device)
 
-    {:ok, device} = Mobile.register_device(bob, %{
-      "name" => "Bob's iPad",
-      "type" => "ios",
-      "token" => "foobarbaz"
-    })
+    Mobile.remove_device(device.type, device.token)
 
-    assert {1, _} = Mobile.remove_device("ios", "foobarbaz")
     assert Repo.get(Device, device.id) == nil
   end
 
   test "device with given token doesn't exist" do
-    bob = insert(:user)
+    insert(:mobile_device)
+    initial_count = device_count()
 
-    {:ok, device} = Mobile.register_device(bob, %{
-      "name" => "Bob's iPad",
-      "type" => "ios",
-      "token" => "foobarbaz"
-    })
+    Mobile.remove_device("ios", "doesntexist")
 
-    assert {0, _} = Mobile.remove_device("ios", "doesntexist")
-    assert Repo.get(Device, device.id) != nil
+    assert device_count() == initial_count
+  end
+
+  defp device_count do
+    Repo.one! from d in Device, select: count(d.id)
   end
 end

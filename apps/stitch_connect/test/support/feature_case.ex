@@ -21,7 +21,10 @@ defmodule StitchConnect.Web.FeatureCase do
   end
   ```
   """
+
   use ExUnit.CaseTemplate
+  import Wallaby.Browser
+  import Wallaby.Query
 
   @timeout :timer.minutes(5)
   using do
@@ -32,8 +35,11 @@ defmodule StitchConnect.Web.FeatureCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-
+      import Stitch.Factory
+      import StitchConnect.Web.FeatureCase
       import StitchConnect.Web.Router.Helpers
+      import Wallaby.Browser
+      import Wallaby.Query
       @moduletag timeout: unquote(@timeout)
       @moduletag integration: true
     end
@@ -59,5 +65,14 @@ defmodule StitchConnect.Web.FeatureCase do
       end
 
     {:ok, context}
+  end
+
+  def sign_in(session, team, user) do
+    session
+    |> visit("http://#{team.slug}.localhost:4001/login")
+    |> fill_in(text_field("Email"), with: user.email)
+    |> fill_in(text_field("Password"), with: "password")
+    |> click(button("Login"))
+    |> click(xpath("//a[.='Skip & Launch']"))
   end
 end

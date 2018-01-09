@@ -3,8 +3,7 @@ defmodule Stitch.Mobile do
   alias Stitch.{Accounts.User, GroupUser, Mobile.Device, Repo}
 
   def list_user_devices(user_id) do
-    from(d in Device, where: d.user_id == ^user_id)
-    |> Repo.all
+    Repo.all(from d in Device, where: d.user_id == ^user_id)
   end
 
   def register_device(%User{id: user_id}, attrs) do

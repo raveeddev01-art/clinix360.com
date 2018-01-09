@@ -17,7 +17,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       |> with_team_subdomain(team)
       |> with_api_user(user)
 
-    @endpoint.subscribe("groups:#{group.slug}")
+    @endpoint.subscribe("groups:id:#{group.id}")
     @endpoint.subscribe("events:#{user_b.id}")
 
     {:ok, conn: conn, group: group, team: team, user: user}

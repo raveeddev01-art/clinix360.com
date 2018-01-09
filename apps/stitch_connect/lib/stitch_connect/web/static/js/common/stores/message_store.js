@@ -330,7 +330,12 @@ class MessageStore {
       clearTimeout(this.highlightTimeout);
     }
 
-    this.highlightId = id;
+    // required for animation restart
+    this.highlightId = null;
+    setTimeout(() => {
+      this.highlightId = id;
+    }, 0);
+
     this.highlightTimeout = setTimeout(() => {
       this.highlightId = null;
     }, duration);
@@ -353,6 +358,13 @@ class MessageStore {
    */
   @action
   jumpToMessage(targetMessage) {
+    // check if target message is already loaded
+    const msg = this.getMessageById(targetMessage.id);
+    if (msg) {
+      this.centerMessage(msg.id);
+      return;
+    }
+
     if (this.joinedTargetGroupDisposer) {
       this.joinedTargetGroupDisposer();
     }
