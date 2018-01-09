@@ -6,7 +6,7 @@
 
 import { observable, action, computed } from "mobx";
 
-const defaultAvatars = ["/images/default-avatar.png"];
+export const defaultAvatars = ["/images/default-avatar.png"];
 
 class UserStore {
   @observable id = "";

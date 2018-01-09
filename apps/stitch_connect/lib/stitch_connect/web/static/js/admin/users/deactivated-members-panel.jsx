@@ -34,6 +34,7 @@ class DisabledMembersPanel extends Component {
                 {...this.props}
                 user={user}
                 online={false}
+                avatar={false}
                 key={user.id}
               />
             );

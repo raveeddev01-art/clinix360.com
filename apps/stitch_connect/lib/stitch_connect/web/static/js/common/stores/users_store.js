@@ -8,6 +8,8 @@ import { observable, computed, action } from "mobx";
 
 import history from "../../lib/history";
 
+import { defaultAvatars } from "./user_store";
+
 class UsersStore {
   @observable users = [];
 
@@ -121,6 +123,40 @@ class UsersStore {
       hideNotify: true
     }).then(() => {
       this.updateUserData(userId, { roles: ["admin"] });
+    });
+  };
+
+  @action
+  useDefaultAvatar = userId => {
+    const data = {
+      hasAvatar: false,
+      avatar: defaultAvatars[0],
+      avatarThumb: defaultAvatars[0]
+    };
+    this.updateUserData(userId, data);
+    return data.avatar;
+  };
+
+  @action
+  saveProfileImg = (userId, profileImgUrl) => {
+    return put(`/api/v1/users/${userId}/upload_profile_image`, {
+      body: {
+        url: profileImgUrl
+      },
+      hideNotify: true
+    }).then(resp => {
+      const { data } = resp;
+      this.updateUserData(userId, data);
+      return data.avatar;
+    });
+  };
+
+  @action
+  deleteProfileImg = userId => {
+    return remove(`/api/v1/users/${userId}/delete_profile_image`, {
+      hideNotify: true
+    }).then(() => {
+      return this.useDefaultAvatar(userId);
     });
   };
 

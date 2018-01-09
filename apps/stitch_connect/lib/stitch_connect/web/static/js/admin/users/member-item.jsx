@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Row, Col, Collapse, ButtonToolbar, Button } from "react-bootstrap";
+import AvatarEditPanel from "./avatar-edit-panel";
 
 @inject("usersStore")
 @observer
@@ -78,7 +79,8 @@ class MemberItem extends Component {
   };
 
   render() {
-    const { user, online } = this.props;
+    const { user, online, avatar } = this.props;
+    const { hideAlert, onSuccess, onError } = this.props;
 
     return (
       <div className="table-item">
@@ -112,36 +114,48 @@ class MemberItem extends Component {
 
           <div className="clearfix" />
           <Collapse in={this.state.open}>
-            <ButtonToolbar className="actions-toolbar">
-              {/* <Button bsSize="small">Convert to Guest</Button> */}
-              {!user.disabled &&
-                (user.roles.indexOf("admin") > -1 ? (
-                  <Button bsSize="small" onClick={this._revokeAdmin}>
-                    Revoke Admin
+            <div>
+              <ButtonToolbar className="actions-toolbar">
+                {/* <Button bsSize="small">Convert to Guest</Button> */}
+                {!user.disabled &&
+                  (user.roles.indexOf("admin") > -1 ? (
+                    <Button bsSize="small" onClick={this._revokeAdmin}>
+                      Revoke Admin
+                    </Button>
+                  ) : (
+                    <Button bsSize="small" onClick={this._promoteAdmin}>
+                      Promote Admin
+                    </Button>
+                  ))}
+                {user.disabled ? (
+                  <Button
+                    onClick={this._activateUser}
+                    bsSize="small"
+                    className="pull-right"
+                  >
+                    Enable Account
                   </Button>
                 ) : (
-                  <Button bsSize="small" onClick={this._promoteAdmin}>
-                    Promote Admin
+                  <Button
+                    onClick={this._deactivateUser}
+                    bsSize="small"
+                    className="pull-right"
+                  >
+                    Disable Account
                   </Button>
-                ))}
-              {user.disabled ? (
-                <Button
-                  onClick={this._activateUser}
-                  bsSize="small"
-                  className="pull-right"
-                >
-                  Enable Account
-                </Button>
-              ) : (
-                <Button
-                  onClick={this._deactivateUser}
-                  bsSize="small"
-                  className="pull-right"
-                >
-                  Disable Account
-                </Button>
-              )}
-            </ButtonToolbar>
+                )}
+              </ButtonToolbar>
+
+              {avatar &&
+                this.state.open && (
+                  <AvatarEditPanel
+                    user={user}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                    hideAlert={hideAlert}
+                  />
+                )}
+            </div>
           </Collapse>
         </Row>
       </div>
@@ -152,6 +166,7 @@ class MemberItem extends Component {
 MemberItem.propTypes = {
   user: PropTypes.object.isRequired,
   online: PropTypes.bool.isRequired,
+  avatar: PropTypes.bool.isRequired,
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   hideAlert: PropTypes.func.isRequired
