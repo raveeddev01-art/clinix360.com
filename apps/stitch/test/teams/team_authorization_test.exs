@@ -48,6 +48,5 @@ defmodule Stitch.TeamAuthorizationTest do
       result = Stitch.TeamAuthorization.can_set_avatar?(user1, user2.id)
       assert result == true
     end
-   
   end
 end

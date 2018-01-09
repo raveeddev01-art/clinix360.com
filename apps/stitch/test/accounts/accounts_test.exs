@@ -74,12 +74,12 @@ defmodule Stitch.AccountsTest do
     test "pass if admin is trying to update profile image of other user" do
       admin = insert(:user, %{
         roles: ["admin"],
-        email: "sadan2@example.com", 
+        email: "sadan2@example.com",
       })
 
       user = insert(:user, %{
         roles: ["member"],
-        email: "sadan3@example.com", 
+        email: "sadan3@example.com",
         profile_image_url: "https://s3.amazonaws.com/stitch-content/1_2_1515088620100.png"
       })
 
@@ -91,7 +91,7 @@ defmodule Stitch.AccountsTest do
     test "pass if normal is trying to update his own profile image" do
       user = insert(:user, %{
         roles: ["member"],
-        email: "sadan4@example.com", 
+        email: "sadan4@example.com",
         profile_image_url: "https://s3.amazonaws.com/stitch-content/1_2_1515088620100.png"
       })
 
@@ -103,13 +103,13 @@ defmodule Stitch.AccountsTest do
     test "fail if normal is trying to update other user's profile image" do
       user1 = insert(:user, %{
         roles: ["member"],
-        email: "sadan4@example.com", 
+        email: "sadan4@example.com",
         profile_image_url: "https://s3.amazonaws.com/stitch-content/1_2_1515088620101.png"
       })
 
       user2 = insert(:user, %{
         roles: ["member"],
-        email: "sadan4@example.com", 
+        email: "sadan4@example.com",
         profile_image_url: "https://s3.amazonaws.com/stitch-content/1_2_1515088620102.png"
       })
 
@@ -123,12 +123,12 @@ defmodule Stitch.AccountsTest do
     test "pass if admin is trying to update delete image of other user" do
       admin = insert(:user, %{
         roles: ["admin"],
-        email: "sadan2@example.com", 
+        email: "sadan2@example.com",
       })
 
       user = insert(:user, %{
         roles: ["member"],
-        email: "sadan3@example.com", 
+        email: "sadan3@example.com",
         profile_image_url: "https://s3.amazonaws.com/stitch-content/1_2_1515088620100.png"
       })
 
@@ -139,7 +139,7 @@ defmodule Stitch.AccountsTest do
     test "pass if normal is trying to delete his own profile image" do
       user = insert(:user, %{
         roles: ["member"],
-        email: "sadan4@example.com", 
+        email: "sadan4@example.com",
         profile_image_url: "https://s3.amazonaws.com/stitch-content/1_2_1515088620100.png"
       })
 
@@ -150,13 +150,13 @@ defmodule Stitch.AccountsTest do
     test "fail if normal is trying to delete other user's profile image" do
       user1 = insert(:user, %{
         roles: ["member"],
-        email: "sadan4@example.com", 
+        email: "sadan4@example.com",
         profile_image_url: "https://s3.amazonaws.com/stitch-content/1_2_1515088620101.png"
       })
 
       user2 = insert(:user, %{
         roles: ["member"],
-        email: "sadan4@example.com", 
+        email: "sadan4@example.com",
         profile_image_url: "https://s3.amazonaws.com/stitch-content/1_2_1515088620102.png"
       })
 
