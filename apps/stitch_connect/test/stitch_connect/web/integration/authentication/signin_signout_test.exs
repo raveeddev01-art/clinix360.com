@@ -1,8 +1,5 @@
 defmodule StitchConnect.Web.Authentication.SignInSignOutTest do
-  use StitchConnect.Web.FeatureCase, async: true
-
-  import Wallaby.Query
-  import Stitch.Factory
+  use StitchConnect.Web.FeatureCase
 
   @tag :start_session
   test "sign in with valid credentials and sign out", %{session: session} do

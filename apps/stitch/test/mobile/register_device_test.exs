@@ -42,7 +42,7 @@ defmodule Stitch.Mobile.RegisterDeviceTest do
     })
   end
 
-  test "returns an error changeset attrs has no name" do
+  test "returns an error changeset when attrs has no name" do
     bob = insert(:user)
 
     {:error, changeset} = Mobile.register_device(bob, %{
