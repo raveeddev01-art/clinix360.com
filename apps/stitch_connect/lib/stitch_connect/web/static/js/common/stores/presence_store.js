@@ -175,7 +175,7 @@ class PresenceStore {
     this.teamChannel.push("became_active");
 
     if (this.lockoutSettingLoaded) {
-      Cookies.set("last_activity", new Date().toString(), { expires: 30 }); // expires in 30 days
+      Cookies.set("last_activity", moment().format(), { expires: 30 }); // expires in 30 days
     }
   };
 
