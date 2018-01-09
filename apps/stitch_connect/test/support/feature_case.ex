@@ -74,6 +74,7 @@ defmodule StitchConnect.Web.FeatureCase do
     |> fill_in(text_field("Email"), with: user.email)
     |> fill_in(text_field("Password"), with: "password")
     |> click(button("Login"))
+    |> assert_has(css(".authentication-card", text: "Desktop App"))
     |> click(xpath("//a[.='Skip & Launch']"))
     |> assert_has(css(".welcome-message", text: "Welcome to the public room General"))
   end
