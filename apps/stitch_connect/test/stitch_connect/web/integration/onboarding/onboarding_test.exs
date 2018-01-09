@@ -1,7 +1,5 @@
 defmodule StitchConnect.Web.OnboardingTest do
-  use StitchConnect.Web.FeatureCase, async: true
-
-  import Wallaby.Query
+  use StitchConnect.Web.FeatureCase
 
   @user_attrs %{
     first_name: "John",

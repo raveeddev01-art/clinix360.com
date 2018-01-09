@@ -610,13 +610,14 @@
   vertical-align: top;
   max-width: 100%;
 
-  &:hover {
+  &:hover, &:focus {
+    text-decoration: none;
     border-bottom-style: solid;
   }
 }
 
-.mine.message-link,
-.user-mention-dropdown.mine .dropdown-toggle {
+.mine .message-link,
+.mine .user-mention-dropdown .dropdown-toggle {
   color: #fff;
   border-color: #fff;
 }
@@ -855,7 +856,6 @@
       }
 
       .message-body {
-        .message-link,
         .dropdown-toggle {
           color: #fff;
           border-color: #fff;

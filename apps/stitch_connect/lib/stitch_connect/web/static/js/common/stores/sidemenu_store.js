@@ -109,6 +109,8 @@ class SidemenuStore {
       await groupsStore.loadGroups();
 
       this.loading = false;
+    } else {
+      groupsStore.loadGroups();
     }
   };
 
@@ -154,10 +156,13 @@ class SidemenuStore {
    * @param {*} groupId
    */
   isCurrentlyInRoom(groupId) {
-    const { groupStore } = this.rootStore;
+    const { groupStore, presenceStore } = this.rootStore;
 
     return (
-      groupId === groupStore.group.id && !this.locked && document.hasFocus()
+      !presenceStore.locked &&
+      groupStore.group &&
+      groupId === groupStore.group.id &&
+      document.hasFocus()
     );
   }
 
@@ -274,18 +279,23 @@ class SidemenuStore {
         "new-message",
         5000,
         () => {
-          this.jumpToMessage(newMessage);
+          this.goToMessageRoom(newMessage);
           window.dispatchEvent(new CustomEvent("notification-clicked"));
         }
       );
     }
   }
 
-  jumpToMessage(message) {
+  goToMessageRoom(message) {
     const { groupsStore } = this.rootStore;
     const url = groupsStore.getGroupUrl(message.group_id);
     window.focus();
     history.push(url);
+  }
+
+  jumpToMessage(message) {
+    this.goToMessageRoom(message);
+    this.rootStore.messageStore.jumpToMessage(message);
   }
 
   scrollToRoomItem(roomId, duration = 300) {
@@ -309,7 +319,9 @@ class SidemenuStore {
     // If the message is system message or for the current group, ignore
     if (
       newMessage.type === "system" ||
-      (newMessage.group_id === groupStore.group.id && this.isInChat)
+      (groupStore.group &&
+        newMessage.group_id === groupStore.group.id &&
+        this.isInChat)
     ) {
       return;
     }
@@ -317,13 +329,21 @@ class SidemenuStore {
     const group = groupsStore.getGroupById(newMessage.group_id);
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
-    if (!group) {
-      return;
-    }
+    if (group) {
+      group.unread_messages_count += 1;
 
-    group.unread_messages_count += 1;
-    if (isMention) {
-      group.mentions_count += 1;
+      if (isMention) {
+        group.mentions_count += 1;
+      }
+
+      // if it's DM and hidden, show it on sidebar
+      if (group.type !== "regular" && group.is_hidden) {
+        put(`/api/v1/groups/${group.id}/unhide`).then(() => {
+          groupsStore.updateGroupData(group.id, {
+            is_hidden: false
+          });
+        });
+      }
     }
 
     // Update Favicon
@@ -334,14 +354,6 @@ class SidemenuStore {
 
     // Show notification card
     this.showNotificationCardForNewMessage(newMessage);
-
-    // if it's DM and hidden, show it on sidebar
-    if (group.type !== "regular" && group.is_hidden) {
-      put(`/api/v1/groups/${group.id}/unhide`).then(() => {
-        const sidebarGroup = groupsStore.getGroupById(group.id);
-        sidebarGroup.is_hidden = false;
-      });
-    }
   };
 
   @action

@@ -87,7 +87,12 @@ class ChannelStore {
   get groupChannelTopic() {
     const { groupStore } = this.rootStore;
 
-    return `groups:${groupStore.group.slug}`;
+    // avoid socket ping error
+    if (groupStore.group) {
+      return `groups:id:${groupStore.group.id}`;
+    }
+
+    return "";
   }
 
   get groupChannel() {
@@ -149,6 +154,10 @@ class ChannelStore {
     this.teamChannel.on("presence_diff", presenceStore.onPresenceDiff);
     this.teamChannel.on("locked", presenceStore.onLocked);
     this.teamChannel.on("unlocked", presenceStore.onUnlocked);
+    this.teamChannel.on(
+      "security_lockout_updated",
+      presenceStore.onLockoutSettingsLoaded
+    );
 
     this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
 
@@ -161,9 +170,12 @@ class ChannelStore {
     return joined;
   }
 
-  leaveAllChannelsButTeam() {
+  leaveAllChannelsButTeamAndEvent() {
     Object.keys(this.channels)
-      .filter(topic => topic !== this.teamChannelTopic)
+      .filter(
+        topic =>
+          topic !== this.teamChannelTopic && topic !== this.eventChannelTopic
+      )
       .forEach(topic => {
         this.leave(topic);
       });
