@@ -51,7 +51,7 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
-    const { sidemenuStore, groupsStore, notificationStore } = this.rootStore;
+    const { sidemenuStore, groupsStore, notificationStore, presenceStore } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
     // Message related
@@ -76,11 +76,7 @@ class ChannelStore {
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache
     });
-    this.eventChannel.on("logout", ({ session_id: sessionId }) => {
-      if (window.sessionId === sessionId) {
-        window.location = "/logged-out";
-      }
-    });
+    this.eventChannel.on("logout", presenceStore.onLogout);
 
     return joined;
   }
@@ -164,6 +160,7 @@ class ChannelStore {
     );
 
     this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
+    this.teamChannel.on("team_deleted", presenceStore.logout); // just log out immediately if the team is deleted
 
     this.teamChannel.on("user_joined", usersStore.onUserJoined);
     this.teamChannel.on("user_info", usersStore.onUserInfo);

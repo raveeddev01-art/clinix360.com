@@ -126,6 +126,12 @@ class PresenceStore {
     if (sessionId === window.sessionId) window.location.reload();
   };
 
+  onLogout = ({ session_id: sessionId }) => {
+    if (window.sessionId === sessionId) {
+      this.logout();
+    }
+  };
+
   @action
   setTeamId(id) {
     this.teamId = id;
@@ -163,6 +169,10 @@ class PresenceStore {
       });
   };
 
+  logout = () => {
+    window.location = "/logged-out";
+  };
+
   onUserInteract = () => {
     if (this.locked) return;
 
@@ -185,6 +195,7 @@ class PresenceStore {
 
   checkLockoutTimerExpired = () => {
     const lastActivity = Cookies.get("last_activity");
+    console.log(moment().diff(lastActivity, "seconds"), this.secondsToLockout);
     if (
       lastActivity &&
       moment().diff(lastActivity, "seconds") > this.secondsToLockout
