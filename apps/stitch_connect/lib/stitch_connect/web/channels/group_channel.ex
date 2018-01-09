@@ -12,8 +12,6 @@ defmodule StitchConnect.Web.GroupChannel do
   @endpoint StitchConnect.Web.Endpoint
   @max_latency 5_000
 
-  intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
-
   def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
 
@@ -222,9 +220,7 @@ defmodule StitchConnect.Web.GroupChannel do
       {:ok, message} ->
         MessageLinkPreviewGenerator.queue(message)
         message = MessageQueries.load_info(message)
-
-        broadcast! socket, "edit_msg", message
-
+        broadcast_message_edited(message)
         json = MessageView.render("show.json", %{message: message})
         {:reply, {:ok, json}, socket}
 
@@ -241,7 +237,7 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.delete(message) do
       {:ok, %{message: message}} ->
-        broadcast! socket, "delete_msg", %{id: message.id}
+        broadcast_message_deleted(message)
         EventsChannel.broadcast_group_msg_deleted(group, message)
         PushNotifications.push_badge_update(message)
 
@@ -269,7 +265,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
       {message, true} ->
         %Message{id: message_id} = Message.LinkPreview.delete!(message, link)
-        broadcast! socket, "msg_link_preview_deleted", %{message_id: message_id, link: link}
+        broadcast_msg_link_preview_deleted(group, message_id, link)
         {:reply, :ok, socket}
     end
   end
@@ -312,7 +308,8 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_message_edited(message) do
     group = Repo.get(Group, message.group_id)
-    endpoint_broadcast(group, "edit_msg", message)
+    message_json = MessageView.render("show.json", %{message: message})
+    endpoint_broadcast(group, "edit_msg", message_json)
   end
 
   def broadcast_message_deleted(message) do
@@ -322,7 +319,8 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_message_created(message) do
     group = Repo.get(Group, message.group_id)
-    endpoint_broadcast(group, "new_msg", message)
+    message_json = MessageView.render("show.json", %{message: message})
+    endpoint_broadcast(group, "new_msg", message_json)
   end
 
   def broadcast_message_pinned(message) do
@@ -347,7 +345,12 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   def broadcast_msg_link_previews_generated(group, message) do
-    endpoint_broadcast(group, "msg_link_previews_generated", message)
+    message_json = MessageView.render("show.json", %{message: message})
+    endpoint_broadcast(group, "msg_link_previews_generated", message_json)
+  end
+
+  def broadcast_msg_link_preview_deleted(group, message_id, link) do
+    endpoint_broadcast(group, "msg_link_preview_deleted", %{message_id: message_id, link: link})
   end
 
   defp endpoint_broadcast(group, event, payload) do
@@ -394,7 +397,7 @@ defmodule StitchConnect.Web.GroupChannel do
           message = MessageQueries.load_info(message)
 
           Stitch.Task.start fn ->
-            broadcast! socket, "new_msg", message
+            broadcast_message_created(message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
             PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
             PushNotifications.push_badge_update(message, notify_user_ids.mobile)
@@ -462,11 +465,5 @@ defmodule StitchConnect.Web.GroupChannel do
     else _e ->
       false
     end
-  end
-
-  def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg", "msg_link_previews_generated"] do
-    json = MessageView.render("show.json", %{message: payload})
-    push socket, event, json
-    {:noreply, socket}
   end
 end
