@@ -195,7 +195,6 @@ class PresenceStore {
 
   checkLockoutTimerExpired = () => {
     const lastActivity = Cookies.get("last_activity");
-    console.log(moment().diff(lastActivity, "seconds"), this.secondsToLockout);
     if (
       lastActivity &&
       moment().diff(lastActivity, "seconds") > this.secondsToLockout
