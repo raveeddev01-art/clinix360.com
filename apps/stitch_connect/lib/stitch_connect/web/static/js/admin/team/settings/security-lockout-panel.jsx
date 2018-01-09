@@ -7,33 +7,15 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import leftPad from "left-pad";
-import moment from "moment";
+import isInteger from "lodash/isInteger";
+import capitalize from "lodash/capitalize";
+import { LOCKOUT_MINIMUM } from "lib/constants";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Security Lockout";
 const description =
   "Stitch will automatically lockout after a specified period of inactivity. You can unlock it with your PIN or password.";
 
-const lockoutTimes = (function() {
-  const timeArray = [];
-  for (let i = 0; i < 24; i++) {
-    for (let j = 15; j <= 60; j += 15) {
-      if (j === 60) {
-        timeArray.push(`${leftPad(i + 1, 2, 0)}:00`);
-      } else {
-        timeArray.push(`${leftPad(i, 2, 0)}:${j}`);
-      }
-    }
-  }
-
-  return timeArray.map(duration => ({
-    duration,
-    seconds: moment.duration(duration).asSeconds()
-  }));
-})();
-
-// @TODO update select control to select2 after it is added to common components
 @inject("teamStore")
 @observer
 class SecurityLockoutPanel extends Component {
@@ -41,33 +23,57 @@ class SecurityLockoutPanel extends Component {
     super(props);
     this.state = {
       securityLockoutEnabled: false,
-      secondsToLockout: null
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      error: ""
     };
   }
 
-  _onChangeEnabled = evt => {
+  onChangeEnabled = evt => {
     this.setState({
       securityLockoutEnabled: evt.target.checked
     });
   };
 
-  _onChangeLockout = evt => {
+  onChangeNumber = field => evt => {
+    const { onError } = this.props;
+    const value = evt.target.value;
+    if (value < 0) {
+      onError(`${capitalize(field)} should be positive number`);
+      return;
+    }
+    if (!isInteger(value * 1)) {
+      onError(`${capitalize(field)} should be integer`);
+      return;
+    }
+
+    this.setState({ [field]: value * 1 });
+  };
+
+  onToggleEdit = () => {
+    const { secondsToLockout, securityLockoutEnabled } = this.props.teamStore;
+    const hours = Math.floor(secondsToLockout / 3600);
+    const minutes = Math.floor((secondsToLockout % 3600) / 60);
+    const seconds = Math.floor(secondsToLockout % 60);
+
     this.setState({
-      secondsToLockout: evt.target.value
+      securityLockoutEnabled,
+      hours,
+      minutes,
+      seconds
     });
   };
 
-  _onToggleEdit = () => {
-    this.setState({
-      securityLockoutEnabled: this.props.teamStore.securityLockoutEnabled,
-      secondsToLockout:
-        this.props.teamStore.secondsToLockout || lockoutTimes[0].seconds
-    });
-  };
-
-  _onSave = () => {
-    const { securityLockoutEnabled, secondsToLockout } = this.state;
+  onSave = () => {
+    const { securityLockoutEnabled, hours, minutes, seconds } = this.state;
     const { hideAlert, onSuccess, onError, teamStore } = this.props;
+    const secondsToLockout = hours * 3600 + minutes * 60 + seconds;
+
+    if (secondsToLockout < LOCKOUT_MINIMUM) {
+      onError(`Lock out time should not be smaller than ${LOCKOUT_MINIMUM} seconds`);
+      return Promise.resolve();
+    }
 
     hideAlert();
     return teamStore
@@ -84,19 +90,19 @@ class SecurityLockoutPanel extends Component {
   };
 
   render() {
-    const { securityLockoutEnabled, secondsToLockout } = this.state;
+    const { securityLockoutEnabled, hours, minutes, seconds } = this.state;
 
     return (
       <SettingPanel
         title={title}
         description={description}
-        onEdit={this._onToggleEdit}
-        onSave={this._onSave}
+        onEdit={this.onToggleEdit}
+        onSave={this.onSave}
       >
         <FormGroup>
           <Checkbox
             checked={securityLockoutEnabled}
-            onChange={this._onChangeEnabled}
+            onChange={this.onChangeEnabled}
           >
             Enable Lockout
           </Checkbox>
@@ -109,21 +115,34 @@ class SecurityLockoutPanel extends Component {
               lg={4}
             >
               Lockout inactivity interval:
-              <span>hours:minutes</span>
+              <span>hours:minutes:seconds</span>
             </Col>
-            <Col sm={3} md={3} lg={2}>
+            <Col sm={2}>
               <FormControl
-                componentClass="select"
-                value={secondsToLockout}
-                onChange={this._onChangeLockout}
+                type="number"
+                value={hours}
+                onChange={this.onChangeNumber("hours")}
                 disabled={!securityLockoutEnabled}
-              >
-                {lockoutTimes.map(val => (
-                  <option key={val.duration} value={val.seconds}>
-                    {val.duration}
-                  </option>
-                ))}
-              </FormControl>
+              />
+              <ControlLabel>Hours</ControlLabel>
+            </Col>
+            <Col sm={2}>
+              <FormControl
+                type="number"
+                value={minutes}
+                onChange={this.onChangeNumber("minutes")}
+                disabled={!securityLockoutEnabled}
+              />
+              <ControlLabel>Minutes</ControlLabel>
+            </Col>
+            <Col sm={2}>
+              <FormControl
+                type="number"
+                value={seconds}
+                onChange={this.onChangeNumber("seconds")}
+                disabled={!securityLockoutEnabled}
+              />
+              <ControlLabel>Seconds</ControlLabel>
             </Col>
           </Row>
         </FormGroup>
