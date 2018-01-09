@@ -12,15 +12,25 @@ import ChatApp from "../chat/ChatApp";
 class LockableApp extends Component {
   componentDidMount() {
     const {
-      onWindowFocus,
-      onWindowBlur,
+      throttledUserInteract,
       getLockoutSettings
     } = this.props.presenceStore;
 
-    window.addEventListener("focus", onWindowFocus);
-    window.addEventListener("blur", onWindowBlur);
+    document.addEventListener("mousemove", throttledUserInteract);
+    document.addEventListener("touchmove", throttledUserInteract);
+    document.addEventListener("click", throttledUserInteract);
+    document.addEventListener("keypress", throttledUserInteract);
 
     getLockoutSettings();
+  }
+
+  componentWillUnmount() {
+    const { throttledUserInteract } = this.props.presenceStore;
+
+    document.removeEventListener("touchmove", throttledUserInteract);
+    document.removeEventListener("mousemove", throttledUserInteract);
+    document.removeEventListener("click", throttledUserInteract);
+    document.removeEventListener("keypress", throttledUserInteract);
   }
 
   render() {

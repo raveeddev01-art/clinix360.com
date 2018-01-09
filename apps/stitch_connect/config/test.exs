@@ -21,4 +21,5 @@ config :stitch_connect, :sql_sandbox, true
 config :stitch_connect,
   application_host: "localhost:4001",
   application_scheme: "http://",
-  websocket_scheme: "ws://"
+  websocket_scheme: "ws://",
+  apns_topic: "apns-topic"

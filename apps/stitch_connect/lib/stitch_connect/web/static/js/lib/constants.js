@@ -19,4 +19,10 @@ export const NOTIFICATION_PREFERENCES = [
 ];
 
 // Amount of waiting period in milliseconds used in debouncing presence update
-export const PRESENCE_DEBOUNCE_WAIT = 2000;
+export const PRESENCE_DEBOUNCE_WAIT = 2 * 1000;
+
+// sends became_active events maximum at this duration. Used throttle because it should be sent at least once every 1 min
+export const USER_INTERACTION_THROTTLE = 60 * 1000;
+
+// compare last activity time + security_lockout_seconds with current time every 1 min
+export const LOCKOUT_CHECK_MS = 60 * 1000;
