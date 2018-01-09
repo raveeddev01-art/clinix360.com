@@ -93,6 +93,11 @@ defmodule StitchConnect.Web.GroupChannel do
     {:noreply, socket}
   end
 
+  # ignore Pigeon callbacks
+  def handle_info(_msg, socket) do
+    {:noreply, socket}
+  end
+
   @decorate channel_action()
   def handle_in("sync_time", %{"timestamp" => timestamp}, socket) do
     socket =
