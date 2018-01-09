@@ -25,11 +25,11 @@ defmodule Stitch.TeamAuthorizationTest do
     end
   end
 
-  describe "Stitch.Team.Authorization.can_set_avatar?/2" do
+  describe "Stitch.Team.Authorization.can_set_profile?/2" do
     test "return true if user is changing its own avatar" do
       user = insert(:user, %{})
 
-      result = Stitch.TeamAuthorization.can_set_avatar?(user, user.id)
+      result = Stitch.TeamAuthorization.can_set_profile?(user, user.id)
       assert result == true
     end
 
@@ -37,7 +37,7 @@ defmodule Stitch.TeamAuthorizationTest do
       user1 = insert(:user, %{})
       user2 = insert(:user, %{})
 
-      result = Stitch.TeamAuthorization.can_set_avatar?(user1, user2.id)
+      result = Stitch.TeamAuthorization.can_set_profile?(user1, user2.id)
       assert result == false
     end
 
@@ -45,7 +45,7 @@ defmodule Stitch.TeamAuthorizationTest do
       user1 = insert(:user, %{roles: ["admin"]})
       user2 = insert(:user, %{})
 
-      result = Stitch.TeamAuthorization.can_set_avatar?(user1, user2.id)
+      result = Stitch.TeamAuthorization.can_set_profile?(user1, user2.id)
       assert result == true
     end
   end

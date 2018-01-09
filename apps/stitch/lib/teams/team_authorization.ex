@@ -15,7 +15,7 @@ defmodule Stitch.TeamAuthorization do
   def can_send_invites?(_, %Team{open_invitations_enabled: true}), do: true
   def can_send_invites?(%User{roles: roles}, _), do: "admin" in roles
 
-  def can_set_avatar?(%User{id: my_id, roles: roles}, affected_user_id) do
+  def can_set_profile?(%User{id: my_id, roles: roles}, affected_user_id) do
     if "admin" in roles, do: true, else: my_id == affected_user_id
   end
 end
