@@ -70,9 +70,11 @@ defmodule StitchConnect.Web.FeatureCase do
   def sign_in(session, team, user) do
     session
     |> visit("http://#{team.slug}.localhost:4001/login")
+    |> assert_has(css(".authentication-card", text: team.name))
     |> fill_in(text_field("Email"), with: user.email)
     |> fill_in(text_field("Password"), with: "password")
     |> click(button("Login"))
     |> click(xpath("//a[.='Skip & Launch']"))
+    |> assert_has(css(".welcome-message", text: "Welcome to the public room General"))
   end
 end
