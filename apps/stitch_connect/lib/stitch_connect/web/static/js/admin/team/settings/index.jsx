@@ -5,7 +5,7 @@ import Alert from "react-bootstrap/lib/Alert";
 import TeamNamePanel from "./team-name-panel";
 import SecurityLockoutPanel from "./security-lockout-panel";
 import InvitationControlPanel from "./invitation-control-panel";
-// import DeleteTeamPanel from "./delete-team-panel";
+import DeleteTeamPanel from "./delete-team-panel";
 
 const header = (
   <h1>
@@ -73,7 +73,11 @@ class TeamSettings extends Component {
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
-        {/* <DeleteTeamPanel /> */}
+        <DeleteTeamPanel
+          onSuccess={this.onSuccess}
+          onError={this.onError}
+          hideAlert={this.hideAlert}
+        />
       </Panel>
     );
   }
