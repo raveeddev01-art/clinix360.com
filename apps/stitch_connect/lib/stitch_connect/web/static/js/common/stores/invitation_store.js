@@ -86,6 +86,27 @@ class InvitationStore {
       }
     });
   };
+
+  @action
+  onInvitationSent = data => {
+    const invitationIndex = this.invitations.findIndex(
+      inv => inv.id === data.id
+    );
+    if (invitationIndex > -1) {
+      this.invitations.splice(invitationIndex, 1);
+    }
+    this.invitations.push(data);
+  };
+
+  @action
+  onInvitationRevoked = data => {
+    const invitationIndex = this.invitations.findIndex(
+      inv => inv.id === data.id
+    );
+    if (invitationIndex > -1) {
+      this.invitations.splice(invitationIndex, 1);
+    }
+  };
 }
 
 export default InvitationStore;

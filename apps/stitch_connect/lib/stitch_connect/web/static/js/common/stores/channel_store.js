@@ -51,7 +51,7 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
-    const { sidemenuStore, groupsStore } = this.rootStore;
+    const { sidemenuStore, groupsStore, invitationStore } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
     // Message related
@@ -67,6 +67,11 @@ class ChannelStore {
     this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);
     this.eventChannel.on("members_updated", groupsStore.onMembersUpdated);
     this.eventChannel.on("group_favorite", groupsStore.onFavoriteChanged);
+    this.eventChannel.on("invitation_sent", invitationStore.onInvitationSent);
+    this.eventChannel.on(
+      "invitation_revoked",
+      invitationStore.onInvitationRevoked
+    );
 
     // App related
     this.eventChannel.on("new_app_version", () => {
