@@ -97,6 +97,13 @@ class GroupsStore {
     }, 0);
   }
 
+  @computed
+  get totalUnreadMessagesCount() {
+    return this.visibleGroups.reduce((count, group) => {
+      return count + group.unread_messages_count;
+    }, 0);
+  }
+
   // //////////
   // ACTIONS //
   // /////// //
