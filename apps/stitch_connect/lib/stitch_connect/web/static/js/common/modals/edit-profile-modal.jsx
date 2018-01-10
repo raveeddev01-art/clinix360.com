@@ -12,6 +12,9 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
+import { AvatarUploader } from "common/components";
+import { confirm } from "common/modals";
+
 @inject("usersStore", "uploadStore", "teamStore")
 @observer
 class EditProfileModal extends Component {
@@ -19,7 +22,10 @@ class EditProfileModal extends Component {
     super(props);
 
     this.state = {
-      show: props.show
+      show: props.show,
+      profileImgUrl: props.user.avatar,
+      isCropped: false,
+      isUploading: false
     };
   }
 
@@ -31,17 +37,86 @@ class EditProfileModal extends Component {
         first_name: nextProps.user.first_name || "",
         last_name: nextProps.user.last_name || "",
         phone_number: nextProps.user.phone || "",
-        title: nextProps.user.title || ""
+        title: nextProps.user.title || "",
+        alertVisible: false,
+        hasAvatar: !!nextProps.user.avatar
       });
     }
   }
 
+  onCrop = profileImgUrl => {
+    this.setState({ profileImgUrl, isCropped: true });
+    this.onSaveProfileImage();
+  };
+
+  onSaveProfileImage = () => {
+    const { profileImgUrl: image, isCropped } = this.state;
+    const { user: { id: userId } } = this.props;
+
+    const { usersStore, teamStore, uploadStore } = this.props;
+
+    this.hideAlert();
+
+    if (isCropped) {
+      const fileName = `${teamStore.id}_${userId}_${new Date().getTime()}.png`;
+      this.setState({ isUploading: true });
+      return uploadStore
+        .uploadAWS(image, "image/png", fileName)
+        .then(profileImgUrl => {
+          return usersStore.saveProfileImg(userId, profileImgUrl);
+        })
+        .then(avatar => {
+          this.showSuccess("The user's profile image has been updated.");
+          this.setState({
+            isUploading: false,
+            profileImgUrl: avatar,
+            isCropped: false,
+            hasAvatar: true
+          });
+        })
+        .catch(() => {
+          this.setState({ isUploading: false });
+          this.showError("There was problem uploading the image.");
+        });
+    }
+
+    return Promise.resolve(this.showError("Please upload an image first"));
+  };
+
+  onDeleteProfileImage = () => {
+    const { usersStore, user: { id: userId } } = this.props;
+    confirm({
+      title: "Delete Profile Image",
+      message: "Are you sure you want to delete this user's profile image?",
+      okLabel: "Delete"
+    }).then(() => {
+      this.setState({ isUploading: true });
+      usersStore
+        .deleteProfileImg(userId)
+        .then(avatar => {
+          this.showSuccess("The user's profile image has been deleted.");
+          this.setState({
+            isUploading: false,
+            profileImgUrl: avatar,
+            isCropped: false,
+            hasAvatar: false
+          });
+        })
+        .catch(() => {
+          this.showError(
+            "There was problem deleting the user's profile image."
+          );
+          this.setState({
+            isUploading: false
+          });
+        });
+    });
+  };
+
   onSubmit = evt => {
     evt.preventDefault();
 
-    this.setState({
-      alertVisible: false
-    });
+    this.hideAlert();
 
     const userData = pick(
       this.state,
@@ -61,13 +136,32 @@ class EditProfileModal extends Component {
         );
       })
       .catch(() => {
-        this.setState({
-          alertVisible: true,
-          alertStyle: "danger",
-          alertMessage:
-            "Profile update has failed, please enter required fields."
-        });
+        this.showError(
+          "Profile update has failed, please enter required fields."
+        );
       });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      alertVisible: false
+    });
+  };
+
+  showError = error => {
+    this.setState({
+      alertVisible: true,
+      alertStyle: "danger",
+      alertMessage: error
+    });
+  };
+
+  showSuccess = message => {
+    this.setState({
+      alertVisible: true,
+      alertStyle: "success",
+      alertMessage: message
+    });
   };
 
   handleChange = event => {
@@ -81,7 +175,8 @@ class EditProfileModal extends Component {
   render() {
     const { show } = this.state;
     const { alertMessage, alertVisible, alertStyle } = this.state;
-    const { toggle } = this.props;
+    const { toggle, user } = this.props;
+    const { profileImgUrl, isUploading, isCropped, hasAvatar } = this.state;
 
     return (
       <Modal
@@ -100,7 +195,7 @@ class EditProfileModal extends Component {
         <Modal.Body>
           {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
           <Row>
-            <Col sm={7}>
+            <Col sm={6}>
               <Form
                 className="edit-profile-form"
                 onSubmit={this.onSubmit}
@@ -149,10 +244,21 @@ class EditProfileModal extends Component {
                 </FormGroup>
               </Form>
             </Col>
-            <Col sm={5}>
+            <Col sm={6}>
               <h4>
                 <strong>Profile Photo</strong>
               </h4>
+              <AvatarUploader
+                className="profile-image-form"
+                onCrop={this.onCrop}
+                onDelete={this.onDeleteProfileImage}
+                hasAvatar={hasAvatar}
+                onError={this.showError}
+                isCropped={isCropped}
+                isUploading={isUploading}
+                url={profileImgUrl}
+                size={400}
+              />
             </Col>
           </Row>
         </Modal.Body>

@@ -260,3 +260,16 @@
     }
   }
 }
+
+.edit-profile-modal {
+  .avatar-uploader {
+    &__actions {
+      margin-top: 10px;
+
+      button {
+        font-size: inherit;
+        padding: 8px 16px;
+      }
+    }
+  }
+}
