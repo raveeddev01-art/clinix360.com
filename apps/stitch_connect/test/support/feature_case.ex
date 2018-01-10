@@ -78,4 +78,16 @@ defmodule StitchConnect.Web.FeatureCase do
     |> click(link("Skip & Launch"))
     |> assert_has(css(".welcome-message", text: "Welcome to the public room General"))
   end
+
+  def repeat_till(timeout \\ 500, interval \\ 25, fun) do
+    cond do
+      fun.() -> true
+
+      timeout > 0 ->
+        :timer.sleep(interval)
+        repeat_till(timeout - interval, interval, fun)
+
+      true -> false
+    end
+  end
 end
