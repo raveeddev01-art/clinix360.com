@@ -25,7 +25,6 @@ class SecurityLockoutPanel extends Component {
       securityLockoutEnabled: false,
       hours: 0,
       minutes: 0,
-      seconds: 0,
       error: ""
     };
   }
@@ -55,23 +54,21 @@ class SecurityLockoutPanel extends Component {
     const { secondsToLockout, securityLockoutEnabled } = this.props.teamStore;
     const hours = Math.floor(secondsToLockout / 3600);
     const minutes = Math.floor((secondsToLockout % 3600) / 60);
-    const seconds = Math.floor(secondsToLockout % 60);
 
     this.setState({
       securityLockoutEnabled,
       hours,
-      minutes,
-      seconds
+      minutes
     });
   };
 
   onSave = () => {
-    const { securityLockoutEnabled, hours, minutes, seconds } = this.state;
+    const { securityLockoutEnabled, hours, minutes } = this.state;
     const { hideAlert, onSuccess, onError, teamStore } = this.props;
-    const secondsToLockout = hours * 3600 + minutes * 60 + seconds;
+    const minutesToLockout = hours * 60 + minutes;
 
-    if (secondsToLockout < LOCKOUT_MINIMUM) {
-      onError(`Lock out time should not be smaller than ${LOCKOUT_MINIMUM} seconds`);
+    if (minutesToLockout < LOCKOUT_MINIMUM) {
+      onError(`Lock out time should not be smaller than ${LOCKOUT_MINIMUM} minute${LOCKOUT_MINIMUM > 1 ? 's' : ''}`);
       return Promise.resolve();
     }
 
@@ -79,7 +76,7 @@ class SecurityLockoutPanel extends Component {
     return teamStore
       .editSecurityLockout(
         securityLockoutEnabled,
-        securityLockoutEnabled ? secondsToLockout : null
+        securityLockoutEnabled ? minutesToLockout * 60 : null
       )
       .then(() => {
         onSuccess("Security lockout setting has been updated.");
@@ -90,7 +87,7 @@ class SecurityLockoutPanel extends Component {
   };
 
   render() {
-    const { securityLockoutEnabled, hours, minutes, seconds } = this.state;
+    const { securityLockoutEnabled, hours, minutes } = this.state;
 
     return (
       <SettingPanel
@@ -115,7 +112,7 @@ class SecurityLockoutPanel extends Component {
               lg={4}
             >
               Lockout inactivity interval:
-              <span>hours:minutes:seconds</span>
+              <span>hours:minutes</span>
             </Col>
             <Col sm={2}>
               <FormControl
@@ -134,15 +131,6 @@ class SecurityLockoutPanel extends Component {
                 disabled={!securityLockoutEnabled}
               />
               <ControlLabel>Minutes</ControlLabel>
-            </Col>
-            <Col sm={2}>
-              <FormControl
-                type="number"
-                value={seconds}
-                onChange={this.onChangeNumber("seconds")}
-                disabled={!securityLockoutEnabled}
-              />
-              <ControlLabel>Seconds</ControlLabel>
             </Col>
           </Row>
         </FormGroup>

@@ -22,10 +22,10 @@ export const NOTIFICATION_PREFERENCES = [
 export const PRESENCE_DEBOUNCE_WAIT = 2 * 1000;
 
 // sends became_active events maximum at this duration. Used throttle because it should be sent at least once every 1 min
-export const USER_INTERACTION_THROTTLE = 5 * 1000;
+export const USER_INTERACTION_THROTTLE = 10 * 1000;
 
 // compare last activity time + security_lockout_seconds with current time every 1 min
-export const LOCKOUT_CHECK_MS = 5 * 1000;
+export const LOCKOUT_CHECK_MS = 10 * 1000;
 
-// minimum lockout setting allowed in seconds
-export const LOCKOUT_MINIMUM = 10;
+// minimum lockout setting allowed in minutes
+export const LOCKOUT_MINIMUM = 1;
