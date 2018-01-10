@@ -5,6 +5,7 @@
  */
 
 import { observable, computed, action } from "mobx";
+import pick from "lodash/pick";
 
 import history from "../../lib/history";
 
@@ -134,6 +135,7 @@ class UsersStore {
       avatarThumb: defaultAvatars[0]
     };
     this.updateUserData(userId, data);
+    this.rootStore.groupsStore.updateUserInAllGroups(userId, data);
     return data.avatar;
   };
 
@@ -146,7 +148,9 @@ class UsersStore {
       hideNotify: true
     }).then(resp => {
       const { data } = resp;
-      this.updateUserData(userId, data);
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.updateUserData(userId, avatarFields);
+      this.rootStore.groupsStore.updateUserInAllGroups(userId, avatarFields);
       return data.avatar;
     });
   };

@@ -5,6 +5,7 @@
  */
 
 import { observable, action, computed } from "mobx";
+import pick from "lodash/pick";
 
 export const defaultAvatars = ["/images/default-avatar.png"];
 
@@ -147,6 +148,10 @@ class UserStore {
       const { data } = resp;
       this.avatar = data.avatar;
       this.avatarThumb = data.avatar_thumb;
+
+      // Keep usersStore avatar fields updated
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.rootStore.usersStore.updateUserData(this.id, avatarFields);
       this.hasAvatar = true;
     });
   };
