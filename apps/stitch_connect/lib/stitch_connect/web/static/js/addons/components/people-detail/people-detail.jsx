@@ -6,13 +6,9 @@ import moment from "moment";
 class PeopleDetail extends Component {
   render() {
     const { user } = this.props;
-    const avatarUrl = user.avatar || "/images/default-avatar.png";
 
     return (
       <div className="user-view">
-        <div className="user-avatar">
-          <img src={avatarUrl} alt="avatar" />
-        </div>
         <div className="username-and-title">
           <h4 className="display-name">{`${user.first_name} ${user.last_name}`}</h4>
           <div className="user-title text-muted">{user.title}</div>

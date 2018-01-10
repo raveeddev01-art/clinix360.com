@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Row, Col, Collapse, ButtonToolbar, Button } from "react-bootstrap";
-import AvatarEditPanel from "./avatar-edit-panel";
+import EditProfileModal from "common/modals/edit-profile-modal";
 
 @inject("usersStore")
 @observer
@@ -10,12 +10,19 @@ class MemberItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      showEditProfileModal: false
     };
   }
 
   _toggleControls = () => {
     this.setState({ open: !this.state.open });
+  };
+
+  _toggleEditProfileModal = () => {
+    this.setState({
+      showEditProfileModal: !this.state.showEditProfileModal
+    });
   };
 
   _activateUser = () => {
@@ -79,8 +86,7 @@ class MemberItem extends Component {
   };
 
   render() {
-    const { user, online, avatar } = this.props;
-    const { hideAlert, onSuccess, onError } = this.props;
+    const { user, online, onSuccess } = this.props;
 
     return (
       <div className="table-item">
@@ -127,6 +133,11 @@ class MemberItem extends Component {
                       Promote Admin
                     </Button>
                   ))}
+
+                <Button bsSize="small" onClick={this._toggleEditProfileModal}>
+                  Edit Profile
+                </Button>
+
                 {user.disabled ? (
                   <Button
                     onClick={this._activateUser}
@@ -145,18 +156,15 @@ class MemberItem extends Component {
                   </Button>
                 )}
               </ButtonToolbar>
-
-              {avatar &&
-                this.state.open && (
-                  <AvatarEditPanel
-                    user={user}
-                    onSuccess={onSuccess}
-                    onError={onError}
-                    hideAlert={hideAlert}
-                  />
-                )}
             </div>
           </Collapse>
+
+          <EditProfileModal
+            user={user}
+            show={this.state.showEditProfileModal}
+            toggle={this._toggleEditProfileModal}
+            onSuccess={onSuccess}
+          />
         </Row>
       </div>
     );
@@ -166,7 +174,6 @@ class MemberItem extends Component {
 MemberItem.propTypes = {
   user: PropTypes.object.isRequired,
   online: PropTypes.bool.isRequired,
-  avatar: PropTypes.bool.isRequired,
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   hideAlert: PropTypes.func.isRequired

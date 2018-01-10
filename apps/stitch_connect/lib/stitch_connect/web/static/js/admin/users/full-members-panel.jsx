@@ -31,13 +31,7 @@ class FullMembersPanel extends Component {
           </div>
           {usersStore.onlineUsers.map(user => {
             return (
-              <MemberItem
-                {...this.props}
-                user={user}
-                online
-                avatar
-                key={user.id}
-              />
+              <MemberItem {...this.props} user={user} online key={user.id} />
             );
           })}
           {usersStore.offlineUsers.map(user => {
@@ -46,7 +40,6 @@ class FullMembersPanel extends Component {
                 {...this.props}
                 user={user}
                 online={false}
-                avatar
                 key={user.id}
               />
             );

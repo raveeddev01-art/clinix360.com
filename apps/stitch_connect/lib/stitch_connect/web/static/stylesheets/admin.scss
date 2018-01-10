@@ -476,6 +476,10 @@ $admin-topbar-height-sm: 65px;
 
             .btn {
               margin: 0;
+
+              &:not(:last-child) {
+                margin-right: 6px;
+              }
             }
           }
 

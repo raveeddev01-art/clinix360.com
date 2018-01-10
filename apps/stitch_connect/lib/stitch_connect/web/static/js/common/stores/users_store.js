@@ -83,6 +83,16 @@ class UsersStore {
   };
 
   @action
+  saveUserData = (id, data) => {
+    return put(`/api/v1/users/${id}`, {
+      body: data,
+      hideNotify: true
+    }).then(() => {
+      this.updateUserData(id, data);
+    });
+  };
+
+  @action
   updateUserData = (id, data) => {
     const user = this.getUserById(id);
 
