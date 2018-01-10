@@ -95,7 +95,7 @@ class Sidebar extends Component {
                 <i className="fa fa-circle" />
               </span>
               <span className="user-name__text">
-                {` ${userStore.firstName} ${userStore.lastName}`}
+                &nbsp;{userStore.fullName}
               </span>
             </div>
           </div>

@@ -9,8 +9,7 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 @observer
 class Topbar extends Component {
   render() {
-    const { adminPanelStore } = this.props;
-    const { heading, icon } = adminPanelStore;
+    const { adminPanelStore: { heading, icon } } = this.props;
 
     return (
       <div className="flex-header admin-topbar">
