@@ -7,16 +7,18 @@ import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
 import ChatApp from "../chat/ChatApp";
 
-@inject("presenceStore", "sidemenuStore")
+@inject("presenceStore", "sidemenuStore", "messageStore")
 @observer
 class LockableApp extends Component {
   componentDidMount() {
     const {
-      throttledUserInteract,
-      getLockoutSettings,
-      onWindowFocus,
-      onWindowBlur
-    } = this.props.presenceStore;
+      presenceStore: {
+        throttledUserInteract,
+        getLockoutSettings,
+        onWindowFocus,
+        onWindowBlur
+      }
+    } = this.props;
 
     document.addEventListener("mousemove", throttledUserInteract);
     document.addEventListener("touchmove", throttledUserInteract);
@@ -31,10 +33,8 @@ class LockableApp extends Component {
 
   componentWillUnmount() {
     const {
-      throttledUserInteract,
-      onWindowBlur,
-      onWindowFocus
-    } = this.props.presenceStore;
+      presenceStore: { throttledUserInteract, onWindowBlur, onWindowFocus }
+    } = this.props;
 
     document.removeEventListener("touchmove", throttledUserInteract);
     document.removeEventListener("mousemove", throttledUserInteract);
@@ -46,17 +46,23 @@ class LockableApp extends Component {
   }
 
   render() {
-    const { sidemenuStore, presenceStore } = this.props;
+    const { presenceStore, sidemenuStore, messageStore } = this.props;
 
     return presenceStore.locked ? (
       <LockedApp />
-    ) : sidemenuStore.loading ? (
-      <Loading />
     ) : (
-      <Switch>
-        <Route path="/admin" component={AdminApp} />
-        <Route path="/" component={ChatApp} />
-      </Switch>
+      <div>
+        {(!sidemenuStore.loadedApp || !messageStore.loadedInitialMessages) && (
+            <Loading />
+          )}
+
+        {sidemenuStore.loadedApp && (
+          <Switch>
+            <Route path="/admin" component={AdminApp} />
+            <Route path="/" component={ChatApp} />
+          </Switch>
+        )}
+      </div>
     );
   }
 }

@@ -62,7 +62,7 @@ class ChatApp extends Component {
   };
 
   render() {
-    const { defaultGroup } = this.props.groupsStore;
+    const { groupsStore: { defaultGroup } } = this.props;
 
     return (
       <Dropzone
