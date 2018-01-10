@@ -9,7 +9,7 @@ import RoleChangedModal from "common/modals/role-changed-modal";
 import Chat from "./Chat";
 import Sidemenu from "../sidemenu/sidemenu";
 
-@inject("uploadStore", "sidemenuStore", "channelStore", "groupsStore")
+@inject("uploadStore", "sidemenuStore", "groupsStore")
 @observer
 class ChatApp extends Component {
   static requiresAdmin = false;
@@ -23,12 +23,16 @@ class ChatApp extends Component {
   }
 
   componentWillMount() {
-    this.props.sidemenuStore.isInChat = true;
+    const { sidemenuStore } = this.props;
+
+    sidemenuStore.isInChat = true;
   }
 
   componentWillUnmount() {
-    this.props.groupsStore.onClosedGroup();
-    this.props.sidemenuStore.isInChat = false;
+    const { groupsStore, sidemenuStore } = this.props;
+
+    groupsStore.onClosedGroup();
+    sidemenuStore.isInChat = false;
   }
 
   onDragEnter = () => {
