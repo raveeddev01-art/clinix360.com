@@ -93,6 +93,11 @@ defmodule StitchConnect.Web.GroupChannel do
     {:noreply, socket}
   end
 
+  # ignore Pigeon callbacks
+  def handle_info(_msg, socket) do
+    {:noreply, socket}
+  end
+
   @decorate channel_action()
   def handle_in("sync_time", %{"timestamp" => timestamp}, socket) do
     socket =
@@ -341,7 +346,8 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_system_message(group, system_message) do
     system_message = MessageQueries.load_info(system_message)
-    endpoint_broadcast(group, "new_msg", system_message)
+    message_json = MessageView.render("show.json", %{message: system_message})
+    endpoint_broadcast(group, "new_msg", message_json)
   end
 
   def broadcast_msg_link_previews_generated(group, message) do

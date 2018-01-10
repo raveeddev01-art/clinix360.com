@@ -24,7 +24,16 @@ defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
       |> click(sidemenu_item("Emergency Room"))
       |> click(css("#dropdown-room-controls"))
       |> click(link("Invite"))
-      |> click(css(".team-member", text: "Bob Banks"))
+      |> assert_has(css(".team-member", text: "Bob Banks"))
+
+      # adding user fails during modal fade in animation
+      repeat_till(fn ->
+        user_1_session
+        |> click(css(".team-member", text: "Bob Banks"))
+        |> has?(css(".Select--multi.has-value"))
+      end)
+
+      user_1_session
       |> click(button("Invite"))
 
       user_2_session
@@ -35,7 +44,14 @@ defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
       |> click(sidemenu_item("Investors"))
       |> click(css("#dropdown-room-controls"))
       |> click(link("Invite"))
-      |> click(css(".team-member", text: "Bob Banks"))
+
+      repeat_till(fn ->
+        user_1_session
+        |> click(css(".team-member", text: "Bob Banks"))
+        |> has?(css(".Select--multi.has-value"))
+      end)
+
+      user_1_session
       |> click(button("Invite"))
 
       user_2_session
