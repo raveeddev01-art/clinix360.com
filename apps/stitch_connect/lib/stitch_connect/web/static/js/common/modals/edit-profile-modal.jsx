@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
+import cx from "classnames";
 import pick from "lodash/pick";
 import Modal from "react-bootstrap/lib/Modal";
 import Form from "react-bootstrap/lib/Form";
@@ -24,8 +25,9 @@ class EditProfileModal extends Component {
       show: props.show,
       profileImgUrl: props.user.avatar,
       isCropped: false,
+      isCropping: false,
       isUploading: false,
-      profileImgDeletePrompt: false
+      isDeletingImg: false
     };
   }
 
@@ -40,7 +42,7 @@ class EditProfileModal extends Component {
         title: nextProps.user.title || "",
         alertVisible: false,
         hasAvatar: !!nextProps.user.avatar,
-        profileImgDeletePrompt: false
+        isDeletingImg: false
       });
     }
   }
@@ -48,6 +50,13 @@ class EditProfileModal extends Component {
   onCrop = profileImgUrl => {
     this.setState({ profileImgUrl, isCropped: true });
     this.onSaveProfileImage();
+  };
+
+  onCropping = isCropping => {
+    this.setState({
+      isCropping,
+      alertVisible: false
+    });
   };
 
   onSaveProfileImage = () => {
@@ -72,6 +81,7 @@ class EditProfileModal extends Component {
             isUploading: false,
             profileImgUrl: avatar,
             isCropped: false,
+            isCropping: false,
             hasAvatar: true
           });
         })
@@ -86,7 +96,7 @@ class EditProfileModal extends Component {
 
   onDeleteProfileImage = () => {
     this.setState({
-      profileImgDeletePrompt: true
+      isDeletingImg: true
     });
   };
 
@@ -119,9 +129,16 @@ class EditProfileModal extends Component {
       });
   };
 
-  cancelProfileImgDelete = () => {
+  closeModal = () => {
+    if (this.state.isUploading) return;
+    this.props.toggle();
+  };
+
+  cancelDeleteOrCroppingImg = () => {
+    if (this.state.isUploading) return;
     this.setState({
-      profileImgDeletePrompt: false
+      isDeletingImg: false,
+      isCropping: false
     });
   };
 
@@ -137,14 +154,14 @@ class EditProfileModal extends Component {
           profileImgUrl: avatar,
           isCropped: false,
           hasAvatar: false,
-          profileImgDeletePrompt: false
+          isDeletingImg: false
         });
       })
       .catch(() => {
         this.showError("There was problem deleting the user's profile image.");
         this.setState({
           isUploading: false,
-          profileImgDeletePrompt: false
+          isDeletingImg: false
         });
       });
   };
@@ -180,27 +197,43 @@ class EditProfileModal extends Component {
   };
 
   render() {
-    const { show } = this.state;
+    const { toggle } = this.props;
     const {
+      show,
       alertMessage,
       alertVisible,
       alertStyle,
-      profileImgDeletePrompt
+      profileImgUrl,
+      isUploading,
+      isCropped,
+      isCropping,
+      isDeletingImg,
+      hasAvatar
     } = this.state;
 
-    const { toggle } = this.props;
-    const { profileImgUrl, isUploading, isCropped, hasAvatar } = this.state;
+    const titleStyle = cx({ "text-center": isDeletingImg || isCropping });
+
+    const modalTitle = isCropping
+      ? "Crop your photo"
+      : isDeletingImg
+        ? "Remove Profile Photo"
+        : `Edit Profile: ${this.state.full_name}`;
 
     return (
       <Modal
         className="edit-profile-modal"
         show={show}
-        onHide={toggle}
+        onHide={this.closeModal}
         bsSize="large"
       >
         <Modal.Header>
-          <Modal.Title>Edit Profile: {this.state.full_name}</Modal.Title>
-          <a role="link" onClick={toggle}>
+          {(isDeletingImg || isCropping) && (
+              <a role="link" onClick={this.cancelDeleteOrCroppingImg}>
+                <i className="fa fa-arrow-left" />
+              </a>
+            )}
+          <Modal.Title className={titleStyle}>{modalTitle}</Modal.Title>
+          <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />
           </a>
         </Modal.Header>
@@ -208,81 +241,87 @@ class EditProfileModal extends Component {
         <Modal.Body>
           {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
           <Row>
-            <Col sm={6}>
-              <Form
-                className="edit-profile-form"
-                onSubmit={this.onSubmit}
-                noValidate
-              >
-                <FormGroup bsSize="large">
-                  <ControlLabel>First Name</ControlLabel>
-                  <FormControl
-                    name="first_name"
-                    required
-                    autoFocus
-                    type="text"
-                    value={this.state.first_name}
-                    onChange={this.handleChange}
-                  />
-                </FormGroup>
-                <FormGroup bsSize="large">
-                  <ControlLabel>Last Name</ControlLabel>
-                  <FormControl
-                    name="last_name"
-                    required
-                    type="text"
-                    value={this.state.last_name}
-                    onChange={this.handleChange}
-                  />
-                </FormGroup>
+            {!isCropping && (
+              <Col sm={6}>
+                <Form
+                  className="edit-profile-form"
+                  onSubmit={this.onSubmit}
+                  noValidate
+                >
+                  <FormGroup bsSize="large">
+                    <ControlLabel>First Name</ControlLabel>
+                    <FormControl
+                      name="first_name"
+                      required
+                      autoFocus
+                      type="text"
+                      value={this.state.first_name}
+                      onChange={this.handleChange}
+                    />
+                  </FormGroup>
+                  <FormGroup bsSize="large">
+                    <ControlLabel>Last Name</ControlLabel>
+                    <FormControl
+                      name="last_name"
+                      required
+                      type="text"
+                      value={this.state.last_name}
+                      onChange={this.handleChange}
+                    />
+                  </FormGroup>
 
-                <FormGroup bsSize="large">
-                  <ControlLabel>Phone Number</ControlLabel>
-                  <FormControl
-                    name="phone_number"
-                    required
-                    type="text"
-                    value={this.state.phone_number}
-                    onChange={this.handleChange}
-                  />
-                </FormGroup>
-                <FormGroup bsSize="large">
-                  <ControlLabel>Title</ControlLabel>
-                  <FormControl
-                    name="title"
-                    type="text"
-                    value={this.state.title}
-                    onChange={this.handleChange}
-                  />
-                </FormGroup>
-              </Form>
-            </Col>
-            <Col sm={6}>
-              <h4>
-                <strong>Profile Photo</strong>
-              </h4>
+                  <FormGroup bsSize="large">
+                    <ControlLabel>Phone Number</ControlLabel>
+                    <FormControl
+                      name="phone_number"
+                      required
+                      type="text"
+                      value={this.state.phone_number}
+                      onChange={this.handleChange}
+                    />
+                  </FormGroup>
+                  <FormGroup bsSize="large">
+                    <ControlLabel>Title</ControlLabel>
+                    <FormControl
+                      name="title"
+                      type="text"
+                      value={this.state.title}
+                      onChange={this.handleChange}
+                    />
+                  </FormGroup>
+                </Form>
+              </Col>
+            )}
+            <Col sm={6} smOffset={isCropping ? 3 : 0}>
+              {!isCropping && (
+                <h4>
+                  <strong>Profile Photo</strong>
+                </h4>
+              )}
               <AvatarUploader
                 className="profile-image-form"
                 onCrop={this.onCrop}
+                onCropping={this.onCropping}
                 onDelete={this.onDeleteProfileImage}
                 hasAvatar={hasAvatar}
                 onError={this.showError}
                 isCropped={isCropped}
+                isCropping={isCropping}
                 isUploading={isUploading}
                 url={profileImgUrl}
                 size={400}
               />
             </Col>
           </Row>
-          {profileImgDeletePrompt && (
+
+          {isDeletingImg && (
             <div className="profile-img-delete-prompt">
-              <h3>Delete Profile Image</h3>
               <p>Are you sure you want to delete this user's profile image?</p>
               <div className="buttons">
                 <Button
                   bsSize="large"
                   bsStyle="default"
-                  onClick={this.cancelProfileImgDelete}
+                  onClick={this.cancelDeleteOrCroppingImg}
                 >
                   Cancel
                 </Button>
@@ -297,16 +336,18 @@ class EditProfileModal extends Component {
             </div>
           )}
         </Modal.Body>
-        {!profileImgDeletePrompt && (
-          <Modal.Footer className="m-u-50">
-            <Button bsSize="large" bsStyle="default" onClick={toggle}>
-              Cancel
-            </Button>
-            <Button bsSize="large" bsStyle="primary" onClick={this.onSubmit}>
-              Save Settings
-            </Button>
-          </Modal.Footer>
-        )}
+
+        {!isDeletingImg &&
+          !isCropping && (
+            <Modal.Footer className="m-u-50">
+              <Button bsSize="large" bsStyle="default" onClick={toggle}>
+                Cancel
+              </Button>
+              <Button bsSize="large" bsStyle="primary" onClick={this.onSubmit}>
+                Save Settings
+              </Button>
+            </Modal.Footer>
+          )}
       </Modal>
     );
   }

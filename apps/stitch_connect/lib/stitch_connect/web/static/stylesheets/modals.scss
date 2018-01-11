@@ -265,11 +265,6 @@
   .avatar-uploader {
     &__actions {
       margin-top: 10px;
-
-      button {
-        font-size: inherit;
-        padding: 8px 16px;
-      }
     }
   }
 
@@ -296,8 +291,12 @@
     }
 
     .buttons {
-      .btn:first-child {
-        margin-right: 6px;
+      .btn {
+        padding: 8px 20px;
+
+        &:first-child {
+          margin-right: 6px;
+        }
       }
     }
   }
