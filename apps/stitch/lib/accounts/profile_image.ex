@@ -57,4 +57,14 @@ defmodule Stitch.Accounts.ProfileImage do
       {:ok, Path.basename(path)}
     end
   end
+
+  @host Application.get_env(:stitch_connect, :application_host)
+  @default_profile_images [
+    %{
+      image: "https://#{@host}/images/default-avatar.png",
+      thumb: "https://#{@host}/images/default-avatar.png"
+    }
+  ]
+
+  def pick_default_random(), do: Enum.random(@default_profile_images)
 end
