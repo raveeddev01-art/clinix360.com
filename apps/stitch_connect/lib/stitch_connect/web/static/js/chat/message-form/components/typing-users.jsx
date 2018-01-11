@@ -1,16 +1,20 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-@inject("groupPresenceStore", "usersStore")
+@inject("usersStore", "groupStore")
 @observer
 class TypingUsers extends Component {
   render() {
     const {
-      groupPresenceStore: { typingUsers },
+      groupStore: { typingUsers },
       usersStore: { usersById }
     } = this.props;
     const usernames = typingUsers
-      .filter(typingUserId => !!usersById[parseInt(typingUserId, 10)])
+      .filter(
+        typingUserId =>
+          !!usersById[parseInt(typingUserId, 10)] &&
+          typingUserId !== currentUser.id
+      )
       .map(typingUserId => usersById[parseInt(typingUserId, 10)].full_name);
     let content;
 
