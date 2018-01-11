@@ -62,13 +62,9 @@ defmodule StitchConnect.Web.Api.V1.UserView do
 
   def presigned_url(nil), do: nil
   def presigned_url(url) do
-    if(String.contains?(url, "default")) do
-      url
-    else
-      case Stitch.Upload.presign_url(url) do
-        {:ok, presigned_url} -> presigned_url
-        :error -> nil
-      end
+    case Stitch.Upload.presign_url(url) do
+      {:ok, presigned_url} -> presigned_url
+      :error -> nil
     end
   end
 end
