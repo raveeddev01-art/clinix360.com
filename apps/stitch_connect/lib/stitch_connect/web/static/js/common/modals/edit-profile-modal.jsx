@@ -13,7 +13,6 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
 import { AvatarUploader } from "common/components";
-import { confirm } from "common/modals";
 
 @inject("usersStore", "uploadStore", "teamStore")
 @observer
@@ -25,7 +24,8 @@ class EditProfileModal extends Component {
       show: props.show,
       profileImgUrl: props.user.avatar,
       isCropped: false,
-      isUploading: false
+      isUploading: false,
+      profileImgDeletePrompt: false
     };
   }
 
@@ -39,7 +39,8 @@ class EditProfileModal extends Component {
         phone_number: nextProps.user.phone || "",
         title: nextProps.user.title || "",
         alertVisible: false,
-        hasAvatar: !!nextProps.user.avatar
+        hasAvatar: !!nextProps.user.avatar,
+        profileImgDeletePrompt: false
       });
     }
   }
@@ -84,32 +85,8 @@ class EditProfileModal extends Component {
   };
 
   onDeleteProfileImage = () => {
-    const { usersStore, user: { id: userId } } = this.props;
-    confirm({
-      title: "Delete Profile Image",
-      message: "Are you sure you want to delete this user's profile image?",
-      okLabel: "Delete"
-    }).then(() => {
-      this.setState({ isUploading: true });
-      usersStore
-        .deleteProfileImg(userId)
-        .then(avatar => {
-          this.showSuccess("The user's profile image has been deleted.");
-          this.setState({
-            isUploading: false,
-            profileImgUrl: avatar,
-            isCropped: false,
-            hasAvatar: false
-          });
-        })
-        .catch(() => {
-          this.showError(
-            "There was problem deleting the user's profile image."
-          );
-          this.setState({
-            isUploading: false
-          });
-        });
+    this.setState({
+      profileImgDeletePrompt: true
     });
   };
 
@@ -139,6 +116,36 @@ class EditProfileModal extends Component {
         this.showError(
           "Profile update has failed, please enter required fields."
         );
+      });
+  };
+
+  cancelProfileImgDelete = () => {
+    this.setState({
+      profileImgDeletePrompt: false
+    });
+  };
+
+  deleteProfileImg = () => {
+    const { usersStore, user: { id: userId } } = this.props;
+    this.setState({ isUploading: true });
+    usersStore
+      .deleteProfileImg(userId)
+      .then(avatar => {
+        this.showSuccess("The user's profile image has been deleted.");
+        this.setState({
+          isUploading: false,
+          profileImgUrl: avatar,
+          isCropped: false,
+          hasAvatar: false,
+          profileImgDeletePrompt: false
+        });
+      })
+      .catch(() => {
+        this.showError("There was problem deleting the user's profile image.");
+        this.setState({
+          isUploading: false,
+          profileImgDeletePrompt: false
+        });
       });
   };
 
@@ -174,8 +181,14 @@ class EditProfileModal extends Component {
 
   render() {
     const { show } = this.state;
-    const { alertMessage, alertVisible, alertStyle } = this.state;
-    const { toggle, user } = this.props;
+    const {
+      alertMessage,
+      alertVisible,
+      alertStyle,
+      profileImgDeletePrompt
+    } = this.state;
+
+    const { toggle } = this.props;
     const { profileImgUrl, isUploading, isCropped, hasAvatar } = this.state;
 
     return (
@@ -261,15 +274,39 @@ class EditProfileModal extends Component {
               />
             </Col>
           </Row>
+          {profileImgDeletePrompt && (
+            <div className="profile-img-delete-prompt">
+              <h3>Delete Profile Image</h3>
+              <p>Are you sure you want to delete this user's profile image?</p>
+              <div className="buttons">
+                <Button
+                  bsSize="large"
+                  bsStyle="default"
+                  onClick={this.cancelProfileImgDelete}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  bsSize="large"
+                  bsStyle="primary"
+                  onClick={this.deleteProfileImg}
+                >
+                  Yes, remove photo
+                </Button>
+              </div>
+            </div>
+          )}
         </Modal.Body>
-        <Modal.Footer className="m-u-50">
-          <Button bsSize="large" bsStyle="default" onClick={toggle}>
-            Cancel
-          </Button>
-          <Button bsSize="large" bsStyle="primary" onClick={this.onSubmit}>
-            Save Settings
-          </Button>
-        </Modal.Footer>
+        {!profileImgDeletePrompt && (
+          <Modal.Footer className="m-u-50">
+            <Button bsSize="large" bsStyle="default" onClick={toggle}>
+              Cancel
+            </Button>
+            <Button bsSize="large" bsStyle="primary" onClick={this.onSubmit}>
+              Save Settings
+            </Button>
+          </Modal.Footer>
+        )}
       </Modal>
     );
   }
