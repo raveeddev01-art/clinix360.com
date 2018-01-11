@@ -100,7 +100,7 @@ class ChannelStore {
   }
 
   joinGroupChannel(options = {}) {
-    const { messageStore, groupPresenceStore } = this.rootStore;
+    const { messageStore, groupStore } = this.rootStore;
 
     const joined = this.join(this.groupChannelTopic, options);
 
@@ -120,10 +120,7 @@ class ChannelStore {
     );
     this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
     this.groupChannel.on("read_status_update", messageStore.onReadStatusUpdate);
-
-    // Group Presence related
-    this.groupChannel.on("presence_state", groupPresenceStore.onPresenceState);
-    this.groupChannel.on("presence_diff", groupPresenceStore.onPresenceDiff);
+    this.groupChannel.on("typing_started", groupStore.onStartedTyping);
 
     return joined;
   }

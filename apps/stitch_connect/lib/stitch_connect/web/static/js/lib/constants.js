@@ -26,3 +26,9 @@ export const USER_INTERACTION_THROTTLE = 60 * 1000;
 
 // compare last activity time + security_lockout_seconds with current time every 1 min
 export const LOCKOUT_CHECK_MS = 60 * 1000;
+
+// if is_typing is not broadcasted for 3 seconds, we will remove from the user from typinguser list.
+export const TYPING_TIMEOUT_MS = 3 * 1000;
+
+// start typing broadcast is debounced by 1 second
+export const START_TYPING_THROTTLE_MS = 1 * 1000;

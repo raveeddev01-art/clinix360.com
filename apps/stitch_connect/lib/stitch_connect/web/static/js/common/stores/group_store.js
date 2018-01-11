@@ -5,9 +5,12 @@
  */
 
 import { observable, computed, action } from "mobx";
+import { TYPING_TIMEOUT_MS } from "lib/constants";
 
 class GroupStore {
   @observable showAllUsers = true;
+  @observable typingUsers = []; // user id array
+  typingTimeouts = {};
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -33,6 +36,41 @@ class GroupStore {
   get isSelfDM() {
     return this.group.type === "dm" && this.group.users.length === 1;
   }
+
+  // =============
+  // Actions
+  // =============
+
+  @action
+  reset = () => {
+    this.typingUsers = [];
+    Object.keys(this.typingTimeouts).forEach(key => {
+      clearTimeout(this.typingTimeouts[key]);
+    });
+  };
+
+  @action
+  onStartedTyping = ({ user_id: userID }) => {
+    // insert typing user into list if he is not in the list yet
+    if (this.typingUsers.indexOf(userID) === -1) {
+      this.typingUsers.push(userID);
+    }
+
+    // clear timeout and restart
+    if (this.typingTimeouts[userID]) {
+      clearTimeout(this.typingTimeouts[userID]);
+    }
+
+    this.typingTimeouts[userID] = setTimeout(
+      () => this.stoppedTyping(userID),
+      TYPING_TIMEOUT_MS
+    );
+  };
+
+  @action
+  stoppedTyping = userID => {
+    this.typingUsers = this.typingUsers.filter(u => u !== userID);
+  };
 
   @action
   hide = () => {
