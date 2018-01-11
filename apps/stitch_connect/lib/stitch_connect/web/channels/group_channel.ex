@@ -114,6 +114,7 @@ defmodule StitchConnect.Web.GroupChannel do
       is_typing: true,
     })
 
+    broadcast_is_typing(socket.assigns.group, socket.assigns.current_user)
     {:noreply, socket}
   end
 
@@ -357,6 +358,10 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_msg_link_preview_deleted(group, message_id, link) do
     endpoint_broadcast(group, "msg_link_preview_deleted", %{message_id: message_id, link: link})
+  end
+
+  def broadcast_is_typing(group, user) do
+    endpoint_broadcast(group, "typing_started", %{user_id: user.id})
   end
 
   defp endpoint_broadcast(group, event, payload) do
