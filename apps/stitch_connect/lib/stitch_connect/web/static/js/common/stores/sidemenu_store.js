@@ -183,19 +183,28 @@ class SidemenuStore {
   }
 
   updateFavicon() {
-    const { groupsStore: { totalMentionsCount } } = this.rootStore;
+    const {
+      groupsStore: { totalMentionsCount, totalUnreadMessagesCount }
+    } = this.rootStore;
     let badge = "";
+    let updateDesktopOnly = false;
 
     if (totalMentionsCount > 9) {
       badge = "9+";
     } else if (totalMentionsCount > 0) {
       badge = `${totalMentionsCount}`;
+    } else if (totalUnreadMessagesCount > 0) {
+      updateDesktopOnly = true;
+      badge = "•";
     }
 
     // avoid favicon animation when not changed
     if (badge !== this.badge) {
       this.badge = badge;
-      this.favicon.badge(badge);
+      if (!updateDesktopOnly) {
+        this.favicon.badge(badge);
+      }
+
       // to be consumed by electron app
       window.dispatchEvent(
         new CustomEvent("unread-changed", { detail: badge })
