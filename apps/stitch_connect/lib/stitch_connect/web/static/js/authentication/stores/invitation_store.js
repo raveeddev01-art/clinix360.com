@@ -46,7 +46,7 @@ class InvitationStore {
     })
       .then(() => {
         this.saving = false;
-        window.location.href = "/";
+        window.location.href = "/apps";
       })
       .catch(err => {
         this.saving = false;
