@@ -159,8 +159,10 @@ class UsersStore {
   @action
   onUserInfo = user => {
     const index = this.users.findIndex(u => u.id === user.id);
+    const { groupsStore, groupStore } = this.rootStore;
 
     this.users[index] = user;
+    groupsStore.updateUserInAllGroups(user.id, user);
 
     if (user.id === currentUser.id) {
       const { userStore } = this.rootStore;
@@ -170,7 +172,6 @@ class UsersStore {
 
     // if username of the user in multi_dm or dm current user is on, is changed,
     // it should redirect
-    const { groupStore, groupsStore } = this.rootStore;
 
     if (
       groupStore.group.type === "dm" ||
