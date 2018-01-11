@@ -10,6 +10,7 @@ import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
 import Promise from "bluebird";
 import shortid from "shortid";
+import { START_TYPING_THROTTLE_MS } from "lib/constants";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
@@ -726,11 +727,11 @@ class MessageStore {
     }
   };
 
-  startTyping = () => {
+  startTyping = _.throttle(() => {
     clearTimeout(this.typingTimeoutId);
     this.groupChannel.push("typing_started");
-    this.typingTimeoutId = setTimeout(this.stopTyping, 2000);
-  };
+    this.typingTimeoutId = setTimeout(this.stopTyping, 2000); // @TODO this line will be removed after mobile is fully migrated to braodcasts from presence
+  }, START_TYPING_THROTTLE_MS);
 
   keepScrollAtBottom = () => {
     if (this.isScrollBottom) {
