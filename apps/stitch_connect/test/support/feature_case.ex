@@ -89,7 +89,7 @@ defmodule StitchConnect.Web.FeatureCase do
 
       true ->
         raise Wallaby.ExpectationNotMet,
-          "Condition hasn't been meet in #{timeout}ms"
+          "Condition hasn't been meet"
     end
   end
 end
