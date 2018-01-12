@@ -1,5 +1,6 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
 import { Elements } from "react-stripe-elements";
 import capitalize from "lodash/capitalize";
 
@@ -7,7 +8,9 @@ import { getFrequency, getMonthlyPrice } from "lib/billing";
 import CreditCard from "./CreditCard";
 import CheckoutForm from "./CheckoutForm";
 
-class Checkout extends React.Component {
+@inject("billingStore")
+@observer
+class Checkout extends Component {
   getBillingSummary() {
     const { plan } = this.props;
     const frequency = getFrequency(plan.frequency);
@@ -27,7 +30,7 @@ class Checkout extends React.Component {
 
   render() {
     const {
-      cards,
+      billingStore: { cards },
       onUseCreditCard,
       onSubmitStart,
       onSubmitSuccess,
@@ -115,12 +118,7 @@ class Checkout extends React.Component {
   }
 }
 
-Checkout.defaultProps = {
-  cards: []
-};
-
 Checkout.propTypes = {
-  cards: PropTypes.array,
   plan: PropTypes.object.isRequired,
   onUseCreditCard: PropTypes.func.isRequired,
   onSubmitStart: PropTypes.func.isRequired,

@@ -308,12 +308,10 @@ class Subscription extends Component {
   }
 
   renderCheckout() {
-    const { billingStore: { cards } } = this.props;
     const { plan } = this.state;
 
     return (
       <Checkout
-        cards={cards}
         plan={plan}
         onUseCreditCard={this.onUseCreditCard}
         onSubmitStart={this.onCardSubmitStart}
