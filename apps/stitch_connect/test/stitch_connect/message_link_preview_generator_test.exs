@@ -48,6 +48,7 @@ defmodule StitchConnect.MessageLinkPreviewGeneratorTest do
       {:ok, pid} = MessageLinkPreview.Supervisor.start_link(
         generate_pending?: true,
         name: config.test,
+
         subscriber: self())
 
       {:ok, sup: pid}
@@ -72,6 +73,20 @@ defmodule StitchConnect.MessageLinkPreviewGeneratorTest do
       |> Enum.map(fn id ->
         assert_receive {:preview_generated, ^id}
       end)
+
+      await_queued_work()
+    end
+  end
+
+  describe "overload protection" do
+    setup config do
+      {:ok, pid} = MessageLinkPreview.Supervisor.start_link(
+        generate_pending?: true,
+        name: config.test,
+        setup_async_child: fn _, _ -> :timer.sleep(100) end,
+        subscriber: self())
+
+      {:ok, sup: pid}
     end
 
     test "protects from overload with back-presure", config do

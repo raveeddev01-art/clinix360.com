@@ -8,9 +8,15 @@ defmodule StitchConnect.MessageLinkPreview.Supervisor do
 
   On startup, a dedicated generator is started to generate
   previews for all "pending" messages in the database that
-  require preview generation. Dynamic calls for queued
-  generation are sharded to workers automatically.
+  require preview generation. This can be disabled via the
+  following Mix configuration:
 
+      config :stitch_connect, :message_link_previews,
+        ...
+        generate_pending?: false
+
+
+  Dynamic calls for queued generation are sharded to workers automatically.
 
   ## Shard and buffer sizes
 
@@ -38,8 +44,10 @@ defmodule StitchConnect.MessageLinkPreview.Supervisor do
   * `:max_buffer_size` - The maximum queue size per shard before messages
     are dropped. Default #{@max_buffer_size}.
   * `:name` - The registered name of the supervisor. Defaults `#{__MODULE__}`
-  * `:generate_pending` - The Boolean flag to generate pending message
+  * `:generate_pending?` - The Boolean flag to generate pending message
     link previews on startup. Defaults `true`
+  * `:setup_async_child` - The 2-arity anon function to invoke inside newly
+    spawned preview generation task. Defaults noop.
   """
   def start_link(opts \\ []) do
     opts = Keyword.merge([
