@@ -17,57 +17,75 @@ defmodule StitchConnect.Web.Rooms.FavoritesTest do
     {:ok, session} = Wallaby.start_session(metadata: metadata)
     sign_in(session, team, bob)
 
-    assert has_room?(session, "Rooms", "Emergency Room")
-    refute has_room?(session, "Favorites", "Emergency Room")
+    repeat_till(fn ->
+      assert has_room?(session, "Rooms", "Emergency Room")
+      refute has_room?(session, "Favorites", "Emergency Room")
+    end)
 
     favorite(session, "Emergency Room")
 
-    refute has_room?(session, "Rooms", "Emergency Room")
-    assert has_room?(session, "Favorites", "Emergency Room")
+    repeat_till(fn ->
+      refute has_room?(session, "Rooms", "Emergency Room")
+      assert has_room?(session, "Favorites", "Emergency Room")
+    end)
 
     unfavorite(session, "Emergency Room")
 
-    assert has_room?(session, "Rooms", "Emergency Room")
-    refute has_room?(session, "Favorites", "Emergency Room")
+    repeat_till(fn ->
+      assert has_room?(session, "Rooms", "Emergency Room")
+      refute has_room?(session, "Favorites", "Emergency Room")
 
-    assert has_room?(session, "Rooms", "Investors")
-    refute has_room?(session, "Favorites", "Investors")
+      assert has_room?(session, "Rooms", "Investors")
+      refute has_room?(session, "Favorites", "Investors")
+    end)
 
     favorite(session, "Investors")
 
-    refute has_room?(session, "Rooms", "Investors")
-    assert has_room?(session, "Favorites", "Investors")
+    repeat_till(fn ->
+      refute has_room?(session, "Rooms", "Investors")
+      assert has_room?(session, "Favorites", "Investors")
+    end)
 
     unfavorite(session, "Investors")
 
-    assert has_room?(session, "Rooms", "Investors")
-    refute has_room?(session, "Favorites", "Investors")
+    repeat_till(fn ->
+      assert has_room?(session, "Rooms", "Investors")
+      refute has_room?(session, "Favorites", "Investors")
 
-    assert has_room?(session, "Direct Messages", "Joe Cox")
-    refute has_room?(session, "Favorites", "Joe Cox")
+      assert has_room?(session, "Direct Messages", "Joe Cox")
+      refute has_room?(session, "Favorites", "Joe Cox")
+    end)
 
     favorite(session, "Joe Cox")
 
-    refute has_room?(session, "Direct Messages", "Joe Cox")
-    assert has_room?(session, "Favorites", "Joe Cox")
+    repeat_till(fn ->
+      refute has_room?(session, "Direct Messages", "Joe Cox")
+      assert has_room?(session, "Favorites", "Joe Cox")
+    end)
 
     unfavorite(session, "Joe Cox")
 
-    assert has_room?(session, "Direct Messages", "Joe Cox")
-    refute has_room?(session, "Favorites", "Joe Cox")
-
-    assert has_room?(session, "Direct Messages", "Sam Hay, Tim Fox")
-    refute has_room?(session, "Favorites", "Sam Hay, Tim Fox")
+    repeat_till(fn ->
+      assert has_room?(session, "Direct Messages", "Joe Cox")
+      refute has_room?(session, "Favorites", "Joe Cox")
+    
+      assert has_room?(session, "Direct Messages", "Sam Hay, Tim Fox")
+      refute has_room?(session, "Favorites", "Sam Hay, Tim Fox")
+    end)
 
     favorite(session, "Sam Hay, Tim Fox")
 
-    refute has_room?(session, "Direct Messages", "Sam Hay, Tim Fox")
-    assert has_room?(session, "Favorites", "Sam Hay, Tim Fox")
+    repeat_till(fn ->
+      refute has_room?(session, "Direct Messages", "Sam Hay, Tim Fox")
+      assert has_room?(session, "Favorites", "Sam Hay, Tim Fox")
+    end)
 
     unfavorite(session, "Sam Hay, Tim Fox")
 
-    assert has_room?(session, "Direct Messages", "Sam Hay, Tim Fox")
-    refute has_room?(session, "Favorites", "Sam Hay, Tim Fox")
+    repeat_till(fn ->
+      assert has_room?(session, "Direct Messages", "Sam Hay, Tim Fox")
+      refute has_room?(session, "Favorites", "Sam Hay, Tim Fox")
+    end)
   end
 
   defp has_room?(session, room_menu, room) do
