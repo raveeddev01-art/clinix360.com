@@ -873,7 +873,7 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    const { sidemenuStore } = this.rootStore;
+    const { sidemenuStore, groupStore } = this.rootStore;
 
     if (newMessage.group_id !== this.group.id) {
       return;
@@ -934,9 +934,9 @@ class MessageStore {
     // Show notification card
     sidemenuStore.showNotificationCardForNewMessage(newMessage);
 
-    // immediatly remove user from typing list once msg received
+    // Remove the sender of message from typing list immediately after message arrives
     if (newMessage.user_id && newMessage.user_id !== currentUser.id) {
-      this.rootStore.groupStore.stoppedTyping(newMessage.user_id);
+      groupStore.stoppedTyping(newMessage.user_id);
     }
   };
 

@@ -56,7 +56,7 @@ class GroupStore {
     }
 
     // insert typing user into list if he is not in the list yet
-    if (this.typingUsers.indexOf(userID) === -1) {
+    if (!this.typingUsers.includes(userID)) {
       this.typingUsers.push(userID);
     }
 
