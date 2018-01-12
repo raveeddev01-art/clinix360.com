@@ -7,7 +7,7 @@ import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
 import ChatApp from "../chat/ChatApp";
 
-@inject("presenceStore", "sidemenuStore", "messageStore")
+@inject("presenceStore", "sidemenuStore")
 @observer
 class LockableApp extends Component {
   componentDidMount() {
@@ -46,23 +46,17 @@ class LockableApp extends Component {
   }
 
   render() {
-    const { presenceStore, sidemenuStore, messageStore } = this.props;
+    const { presenceStore, sidemenuStore } = this.props;
 
     return presenceStore.locked ? (
       <LockedApp />
+    ) : sidemenuStore.loadedApp ? (
+      <Switch>
+        <Route path="/admin" component={AdminApp} />
+        <Route path="/" component={ChatApp} />
+      </Switch>
     ) : (
-      <div>
-        {(sidemenuStore.loadedApp && messageStore.loadedInitialMessages) || (
-            <Loading />
-          )}
-
-        {sidemenuStore.loadedApp && (
-          <Switch>
-            <Route path="/admin" component={AdminApp} />
-            <Route path="/" component={ChatApp} />
-          </Switch>
-        )}
-      </div>
+      <Loading />
     );
   }
 }
