@@ -674,6 +674,8 @@ class MessageStore {
       return;
     }
 
+    this.startTyping.flush(); // flushing throttle
+
     if (
       !this.textInEdit ||
       this.messageInEdit.text_content === this.textInEdit
@@ -724,7 +726,6 @@ class MessageStore {
   }
 
   startTyping = _.throttle(() => {
-    clearTimeout(this.typingTimeoutId);
     this.groupChannel.push("typing_started");
   }, START_TYPING_THROTTLE_MS);
 
