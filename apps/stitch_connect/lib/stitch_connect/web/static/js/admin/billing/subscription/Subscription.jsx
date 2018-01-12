@@ -24,11 +24,11 @@ class Subscription extends Component {
     this.state = {
       loading: false,
       upgrade: false,
+      checkout: false,
       plan: {
         frequency: 1,
         tier: ""
-      },
-      checkout: false
+      }
     };
   }
 

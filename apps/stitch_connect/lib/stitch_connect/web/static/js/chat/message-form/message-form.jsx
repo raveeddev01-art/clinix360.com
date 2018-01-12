@@ -14,7 +14,7 @@ import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 import { confirm } from "../../common/modals";
 
-@inject("messageStore", "socketStore", "uploadStore")
+@inject("messageStore", "socketStore", "uploadStore", "billingStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -188,21 +188,19 @@ class MessageForm extends Component {
 
   getText = () => {
     const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
-    let { text: str } = this.state;
 
-    if (messageInEdit) {
-      str = messageStore.textInEdit;
-    }
-
-    return str;
+    return messageStore.messageInEdit
+      ? messageStore.textInEdit
+      : this.state.text;
   };
 
   getCurrentWord = () => {
-    const str = this.getText();
+    const text = this.getText();
     const cursorPos = this.textInput.selectionStart;
-    const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
-    const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
+    const preWord = text
+      .substring(0, cursorPos)
+      .match(/[:+\-@A-Za-z0-9_]*$/)[0];
+    const postWord = text.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
   };
 
@@ -225,11 +223,11 @@ class MessageForm extends Component {
 
   insertWord = word => {
     const cursorPos = this.textInput.selectionStart;
-    const str = this.getText();
+    const text = this.getText();
     this.updateInputText(
-      str.substring(0, this.textInput.selectionStart) +
+      text.substring(0, this.textInput.selectionStart) +
         word +
-        str.substring(this.textInput.selectionEnd)
+        text.substring(this.textInput.selectionEnd)
     );
 
     setTimeout(() => {
@@ -243,13 +241,15 @@ class MessageForm extends Component {
 
   replaceCurrentWord = word => {
     const cursorPos = this.textInput.selectionStart;
-    const str = this.getText();
-    const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
-    const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
+    const text = this.getText();
+    const preWord = text
+      .substring(0, cursorPos)
+      .match(/[:+\-@A-Za-z0-9_]*$/)[0];
+    const postWord = text.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     const updatedMessage =
-      str.substring(0, cursorPos - preWord.length) +
+      text.substring(0, cursorPos - preWord.length) +
       word +
-      str.substring(cursorPos + postWord.length);
+      text.substring(cursorPos + postWord.length);
 
     this.updateInputText(updatedMessage);
     this.setState({ openMentionMenu: false }, () => {
@@ -284,8 +284,11 @@ class MessageForm extends Component {
   };
 
   renderInput() {
-    const { messageStore, socketStore } = this.props;
-    const { messageInEdit } = messageStore;
+    const {
+      messageStore: { messageInEdit },
+      socketStore,
+      billingStore: { subscription }
+    } = this.props;
 
     if (messageInEdit) {
       this.textInput.focus();
@@ -296,6 +299,7 @@ class MessageForm extends Component {
       editing:
         !!messageInEdit || !socketStore.isConnected || !socketStore.isHealthy
     });
+    const expired = subscription.remaining_days <= 0;
 
     return (
       <div className="message-input-wrapper">
@@ -310,6 +314,7 @@ class MessageForm extends Component {
           onPaste={this.onPaste}
           autoFocus
           required
+          disabled={expired}
           ref={input => {
             if (input) {
               this.textInput = ReactDOM.findDOMNode(input);
