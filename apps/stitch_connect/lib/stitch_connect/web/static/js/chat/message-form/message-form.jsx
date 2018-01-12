@@ -26,8 +26,6 @@ class MessageForm extends Component {
       searchFilter: "",
       openEmojiSearch: false
     };
-
-    this.typingTimeoutId = null;
   }
 
   componentWillReceiveProps() {
