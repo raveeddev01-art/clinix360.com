@@ -52,7 +52,7 @@ class LockableApp extends Component {
       <LockedApp />
     ) : (
       <div>
-        {(!sidemenuStore.loadedApp || !messageStore.loadedInitialMessages) && (
+        {(sidemenuStore.loadedApp && messageStore.loadedInitialMessages) || (
             <Loading />
           )}
 
