@@ -17,80 +17,33 @@ defmodule StitchConnect.Web.Rooms.FavoritesTest do
     {:ok, session} = Wallaby.start_session(metadata: metadata)
     sign_in(session, team, bob)
 
-    repeat_till(fn ->
-      assert has_room?(session, "Rooms", "Emergency Room")
-      refute has_room?(session, "Favorites", "Emergency Room")
-    end)
-
+    # Favoriting a public room.
     favorite(session, "Emergency Room")
 
-    repeat_till(fn ->
-      refute has_room?(session, "Rooms", "Emergency Room")
-      assert has_room?(session, "Favorites", "Emergency Room")
-    end)
+    session
+    |> assert_has(css(".favorite-rooms .item-text", text: "Emergency Room"))
+    |> refute_has(css(".favorite-rooms .item-text", text: "Investors"))
 
+
+    # Favoriting a private room.
     unfavorite(session, "Emergency Room")
-
-    repeat_till(fn ->
-      assert has_room?(session, "Rooms", "Emergency Room")
-      refute has_room?(session, "Favorites", "Emergency Room")
-
-      assert has_room?(session, "Rooms", "Investors")
-      refute has_room?(session, "Favorites", "Investors")
-    end)
-
     favorite(session, "Investors")
 
-    repeat_till(fn ->
-      refute has_room?(session, "Rooms", "Investors")
-      assert has_room?(session, "Favorites", "Investors")
-    end)
+    session
+    |> assert_has(css(".favorite-rooms .item-text", text: "Investors"))
+    |> refute_has(css(".favorite-rooms .item-text", text: "Emergency Room"))
 
-    unfavorite(session, "Investors")
-
-    repeat_till(fn ->
-      assert has_room?(session, "Rooms", "Investors")
-      refute has_room?(session, "Favorites", "Investors")
-
-      assert has_room?(session, "Direct Messages", "Joe Cox")
-      refute has_room?(session, "Favorites", "Joe Cox")
-    end)
-
+    # Favoriting single DM.
     favorite(session, "Joe Cox")
 
-    repeat_till(fn ->
-      refute has_room?(session, "Direct Messages", "Joe Cox")
-      assert has_room?(session, "Favorites", "Joe Cox")
-    end)
+    session
+    |> assert_has(css(".favorite-rooms .item-text", text: "Joe Cox"))
 
-    unfavorite(session, "Joe Cox")
-
-    repeat_till(fn ->
-      assert has_room?(session, "Direct Messages", "Joe Cox")
-      refute has_room?(session, "Favorites", "Joe Cox")
-    
-      assert has_room?(session, "Direct Messages", "Sam Hay, Tim Fox")
-      refute has_room?(session, "Favorites", "Sam Hay, Tim Fox")
-    end)
-
+    # Favoriting multi DMs.
     favorite(session, "Sam Hay, Tim Fox")
 
-    repeat_till(fn ->
-      refute has_room?(session, "Direct Messages", "Sam Hay, Tim Fox")
-      assert has_room?(session, "Favorites", "Sam Hay, Tim Fox")
-    end)
-
-    unfavorite(session, "Sam Hay, Tim Fox")
-
-    repeat_till(fn ->
-      assert has_room?(session, "Direct Messages", "Sam Hay, Tim Fox")
-      refute has_room?(session, "Favorites", "Sam Hay, Tim Fox")
-    end)
-  end
-
-  defp has_room?(session, room_menu, room) do
-    css = css(".rooms-menu .menu-nav", text: room_menu)
-    has?(session, css) && session |> find(css) |> has_text?(room)
+    session
+    |> assert_has(css(".favorite-rooms .item-text", text: "Sam Hay, Tim Fox"))
   end
 
   defp favorite(session, room) do
