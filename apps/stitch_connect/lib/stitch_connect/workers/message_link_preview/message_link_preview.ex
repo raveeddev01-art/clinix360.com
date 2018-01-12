@@ -22,4 +22,13 @@ defmodule StitchConnect.MessageLinkPreview do
   def queue(name, message) do
     Generator.queue(name, message)
   end
+
+  @doc false
+  def test_setup do
+    StitchConnect.MessageLinkPreview.Supervisor
+    |> Supervisor.which_children()
+    |> Enum.map(fn {_mod, pid, _kind, _args} ->
+      Ecto.Adapters.SQL.Sandbox.allow(Stitch.Repo, self(), pid)
+    end)
+  end
 end

@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.MessageControllerTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use StitchConnect.Web.ConnCase, async: false
   alias Stitch.{MessageQueries}
   import Phoenix.ChannelTest, except: [connect: 2]
 

@@ -6,10 +6,14 @@ defmodule StitchConnect.MessageLinkPreview.Generator do
   alias Stitch.Message.LinkPreview
   alias Stitch.{GroupQueries, MessageQueries}
   alias StitchConnect.Web.GroupChannel
-  alias StitchConnect.MessageLinkPreview.TaskSupervisor
 
-  def start_link(messages_func, name, opts) do
-    GenServer.start_link(__MODULE__, [messages_func, name, opts], name: name)
+  @doc false
+  def repo_allow_async_child(parent, _msg) do
+    Ecto.Adapters.SQL.Sandbox.allow(Stitch.Repo, parent, self())
+  end
+
+  def start_link(messages_func, name, task_sup, opts) do
+    GenServer.start_link(__MODULE__, [messages_func, name, task_sup, opts], name: name)
   end
 
   def queue(message) do
@@ -23,7 +27,7 @@ defmodule StitchConnect.MessageLinkPreview.Generator do
     |> GenServer.call({:queue, message})
   end
 
-  def init([messages_func, name, opts]) when is_function(messages_func) do
+  def init([messages_func, name, task_sup, opts]) when is_function(messages_func) do
     pending_messages = messages_func.()
 
     state = schedule(%{
@@ -31,6 +35,8 @@ defmodule StitchConnect.MessageLinkPreview.Generator do
       ref: nil,
       max_buffer_size: Keyword.fetch!(opts, :max_buffer_size),
       name: name,
+      task_supervisor: task_sup,
+      setup_async_child: opts[:setup_async_child] || fn _parent, _msg -> :ok end,
       subscriber: opts[:subscriber]
     })
 
@@ -66,7 +72,10 @@ defmodule StitchConnect.MessageLinkPreview.Generator do
   end
 
   defp async_generate_previews(message, state) do
-    Task.Supervisor.start_child(TaskSupervisor, fn ->
+    parent = self()
+    Task.Supervisor.start_child(state.task_supervisor, fn ->
+      state.setup_async_child.(parent, message)
+
       message =
         message
         |> LinkPreview.generate_link_previews()

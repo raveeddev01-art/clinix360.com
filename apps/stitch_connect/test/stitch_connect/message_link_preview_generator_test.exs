@@ -28,6 +28,7 @@ defmodule StitchConnect.MessageLinkPreviewGeneratorTest do
       ]
 
       {:ok, pid} = MessageLinkPreview.Supervisor.start_link(
+        generate_pending?: true,
         name: config.test,
         subscriber: self())
 
@@ -43,14 +44,16 @@ defmodule StitchConnect.MessageLinkPreviewGeneratorTest do
   end
 
   describe "on-demand preview generation" do
-    setup do
+    setup config do
       {:ok, pid} = MessageLinkPreview.Supervisor.start_link(
+        generate_pending?: true,
+        name: config.test,
         subscriber: self())
 
       {:ok, sup: pid}
     end
 
-    test "queues messages for generation against sharded pool" do
+    test "queues messages for generation against sharded pool", config do
       1..MessageLinkPreview.Supervisor.max_buffer_size()
       |> Enum.map(fn _ ->
         Task.async(fn ->
@@ -58,7 +61,7 @@ defmodule StitchConnect.MessageLinkPreviewGeneratorTest do
             has_links: true,
             link_previews_generated: false)
 
-          assert :ok = MessageLinkPreview.queue(msg)
+          assert :ok = MessageLinkPreview.queue(config.test, msg)
           msg
         end)
       end)
@@ -71,17 +74,18 @@ defmodule StitchConnect.MessageLinkPreviewGeneratorTest do
       end)
     end
 
-    test "protects from overload with back-presure" do
+    test "protects from overload with back-presure", config do
       msg = insert(:message,
         has_links: true,
         link_previews_generated: false)
 
-      for _ <- 0..MessageLinkPreview.Supervisor.max_buffer_size() do
-        assert :ok = MessageLinkPreview.queue(msg)
+      for _ <- 0..MessageLinkPreview.Supervisor.max_buffer_size(), config do
+        assert :ok = MessageLinkPreview.queue(config.test, msg)
       end
 
       assert capture_log(fn ->
-        assert {:error, :buffer_limit_reached, _} = MessageLinkPreview.queue(msg)
+        assert {:error, :buffer_limit_reached, _} =
+          MessageLinkPreview.queue(config.test, msg)
       end) =~ "exceeded buffer limit"
 
       await_queued_work()

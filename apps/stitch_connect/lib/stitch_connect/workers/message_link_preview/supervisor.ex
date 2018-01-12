@@ -24,8 +24,7 @@ defmodule StitchConnect.MessageLinkPreview.Supervisor do
   """
   import Supervisor.Spec
 
-  alias Stitch.Message.LinkPreview
-  alias StitchConnect.MessageLinkPreview.{TaskSupervisor, Generator}
+  alias StitchConnect.MessageLinkPreview.Generator
 
   @name __MODULE__
 
@@ -39,22 +38,21 @@ defmodule StitchConnect.MessageLinkPreview.Supervisor do
   * `:max_buffer_size` - The maximum queue size per shard before messages
     are dropped. Default #{@max_buffer_size}.
   * `:name` - The registered name of the supervisor. Defaults `#{__MODULE__}`
+  * `:generate_pending` - The Boolean flag to generate pending message
+    link previews on startup. Defaults `true`
   """
   def start_link(opts \\ []) do
     opts = Keyword.merge([
       max_buffer_size: @max_buffer_size,
       name: @name,
+      generate_pending?: true
     ], opts)
 
-    generator_children = for i <- 0..(pool_size() - 1) do
-      shard_name = shard_name(i, opts[:name])
-      worker(Generator, [fn -> [] end, shard_name, opts], id: shard_name)
-    end
+    task_sup = Module.concat(opts[:name], "TaskSupervisor")
 
     Supervisor.start_link([
-      supervisor(Task.Supervisor, [[name: TaskSupervisor]]),
-      worker(Generator, [&pending_messages/0, shard_name(:pending, opts[:name]), opts], id: :pending, restart: :transient),
-    ] ++ generator_children,
+      supervisor(Task.Supervisor, [[name: task_sup]]),
+    ] ++ pending_children(task_sup, opts) ++ generator_children(task_sup, opts),
     strategy: :one_for_one, name: opts[:name])
   end
 
@@ -74,8 +72,21 @@ defmodule StitchConnect.MessageLinkPreview.Supervisor do
     |> shard_name(name)
   end
 
-  defp pending_messages do
-    LinkPreview.messages_with_ungenerated_link_previews()
+  def generator_children(task_sup, opts) do
+    for i <- 0..(pool_size() - 1) do
+      shard_name = shard_name(i, opts[:name])
+      worker(Generator, [fn -> [] end, shard_name, task_sup, opts], id: shard_name)
+    end
+  end
+
+  defp pending_children(task_sup, opts) do
+    if Keyword.fetch!(opts, :generate_pending?) do
+      pending_func = &Stitch.Message.LinkPreview.messages_with_ungenerated_link_previews/0
+      shard = shard_name(:pending, opts[:name])
+      [worker(Generator, [pending_func, shard, task_sup, opts], id: :pending, restart: :transient)]
+    else
+      []
+    end
   end
 
   defp shard_name(count, name), do: Module.concat([name, "Shard#{count}"])

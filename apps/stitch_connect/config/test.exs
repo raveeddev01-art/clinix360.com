@@ -14,7 +14,9 @@ config :wallaby,
   base_url: "http://localhost:4001",
   js_logger: false
 
-config :stitch_connect, :start_message_link_preview_generator, false
+config :stitch_connect, :message_link_previews,
+  generate_pending?: false,
+  setup_async_child: &StitchConnect.MessageLinkPreview.Generator.repo_allow_async_child/2
 
 config :stitch_connect, :sql_sandbox, true
 

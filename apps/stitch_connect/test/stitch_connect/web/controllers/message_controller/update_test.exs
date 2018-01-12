@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.MessageController.UpdateTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use StitchConnect.Web.ConnCase, async: false
   import StitchConnect.Web.SubdomainRouter.Helpers
   import Phoenix.ChannelTest, except: [connect: 2]
 

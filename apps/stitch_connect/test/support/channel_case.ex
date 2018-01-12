@@ -35,7 +35,8 @@ defmodule StitchConnect.Web.ChannelCase do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
     end
-    {:ok, _pid} = StitchConnect.MessageLinkPreview.Supervisor.start_link()
+
+    StitchConnect.MessageLinkPreview.test_setup()
 
     :ok
   end

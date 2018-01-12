@@ -86,10 +86,12 @@ defmodule StitchConnect.Web.ConnCase do
 
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Stitch.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
     end
-    {:ok, _pid} = StitchConnect.MessageLinkPreview.Supervisor.start_link()
+
+    StitchConnect.MessageLinkPreview.test_setup()
 
     {:ok, conn: Phoenix.ConnTest.build_conn(:get, Endpoint.url <> "/", nil)}
   end

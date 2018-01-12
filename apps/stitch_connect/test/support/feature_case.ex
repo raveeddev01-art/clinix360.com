@@ -52,6 +52,8 @@ defmodule StitchConnect.Web.FeatureCase do
       Ecto.Adapters.SQL.Sandbox.mode(Stitch.Repo, {:shared, self()})
     end
 
+    StitchConnect.MessageLinkPreview.test_setup()
+
     metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(Stitch.Repo, self())
     context = %{metadata: metadata}
 

@@ -4,21 +4,18 @@ defmodule StitchConnect.Application do
   def start(_type, _args) do
     import Supervisor.Spec
 
+    message_link_opts = Application.get_env(:stitch_connect, :message_link_previews, [])
+
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
       supervisor(StitchConnect.Web.Endpoint, []),
       supervisor(StitchConnect.Web.Presence, []),
       worker(StitchConnect.MessageMailer, []),
+      supervisor(StitchConnect.MessageLinkPreview.Supervisor, [message_link_opts]),
       # Start your own worker by calling: StitchConnect.Worker.start_link(arg1, arg2, arg3)
       # worker(StitchConnect.Worker, [arg1, arg2, arg3]),
     ]
-
-    children = if Application.get_env(:stitch_connect, :start_message_link_preview_generator, true) do
-      children ++ [supervisor(StitchConnect.MessageLinkPreview.Supervisor, [])]
-    else
-      children
-    end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
