@@ -12,8 +12,6 @@ defmodule StitchConnect.Web.GroupChannel do
   @endpoint StitchConnect.Web.Endpoint
   @max_latency 5_000
 
-  intercept ["new_msg", "edit_msg", "msg_link_previews_generated"]
-
   def join("groups:__dm:" <> id_pair, _params, socket) do
     ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
 
@@ -46,6 +44,26 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
+  def join("groups:id:" <> group_id, _params, socket) do
+    %{team_id: team_id, current_user: user} = socket.assigns
+
+    case Repo.get_by(Group, id: String.to_integer(group_id), team_id: team_id) do
+      nil ->
+        {:error, %{message: "group not found"}}
+      group ->
+        case GroupAuthorization.can_view?(group, user) do
+          true ->
+            messages = MessageQueries.group_latest_messages(group.id, user)
+            json = MessageView.render("index.json", %{messages: messages})
+            send self(), :after_join
+            {:ok, %{messages: json}, assign(socket, :group, group)}
+          false ->
+            {:error, %{message: "unauthorized"}}
+        end
+    end
+  end
+
+  # TODO: Remove this once no one is using older version of mobile app. Also, remove `groups:{group.slug}` broadcasts as well.
   def join("groups:" <> group_slug, _params, socket) do
     %{team_id: team_id, current_user: user} = socket.assigns
 
@@ -72,6 +90,11 @@ defmodule StitchConnect.Web.GroupChannel do
       is_typing: false,
     })
 
+    {:noreply, socket}
+  end
+
+  # ignore Pigeon callbacks
+  def handle_info(_msg, socket) do
     {:noreply, socket}
   end
 
@@ -202,9 +225,7 @@ defmodule StitchConnect.Web.GroupChannel do
       {:ok, message} ->
         MessageLinkPreviewGenerator.queue(message)
         message = MessageQueries.load_info(message)
-
-        broadcast! socket, "edit_msg", message
-
+        broadcast_message_edited(message)
         json = MessageView.render("show.json", %{message: message})
         {:reply, {:ok, json}, socket}
 
@@ -221,7 +242,7 @@ defmodule StitchConnect.Web.GroupChannel do
     message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
     case message && Message.delete(message) do
       {:ok, %{message: message}} ->
-        broadcast! socket, "delete_msg", %{id: message.id}
+        broadcast_message_deleted(message)
         EventsChannel.broadcast_group_msg_deleted(group, message)
         PushNotifications.push_badge_update(message)
 
@@ -249,7 +270,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
       {message, true} ->
         %Message{id: message_id} = Message.LinkPreview.delete!(message, link)
-        broadcast! socket, "msg_link_preview_deleted", %{message_id: message_id, link: link}
+        broadcast_msg_link_preview_deleted(group, message_id, link)
         {:reply, :ok, socket}
     end
   end
@@ -281,37 +302,67 @@ defmodule StitchConnect.Web.GroupChannel do
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)
     [message] = Message.Reaction.apply_reactions([message])
-    @endpoint.broadcast("groups:#{group.slug}", "reactions_updated", %{
-      message_id: message.id,
-      reactions_web: message.reactions,
-    })
+    endpoint_broadcast(group, "reactions_updated", %{message_id: message.id, reactions_web: message.reactions})
   end
 
   def broadcast_message_starred(message) do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message)
-    @endpoint.broadcast("groups:#{group.slug}", "starred_message", message_json)
+    endpoint_broadcast(group, "starred_message", message_json)
+  end
+
+  def broadcast_message_edited(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.render("show.json", %{message: message})
+    endpoint_broadcast(group, "edit_msg", message_json)
+  end
+
+  def broadcast_message_deleted(message) do
+    group = Repo.get(Group, message.group_id)
+    endpoint_broadcast(group, "delete_msg", %{id: message.id})
+  end
+
+  def broadcast_message_created(message) do
+    group = Repo.get(Group, message.group_id)
+    message_json = MessageView.render("show.json", %{message: message})
+    endpoint_broadcast(group, "new_msg", message_json)
   end
 
   def broadcast_message_pinned(message) do
     group = Repo.get(Group, message.group_id)
     message_json = MessageView.message_json(message)
-    @endpoint.broadcast("groups:#{group.slug}", "pinned_message", message_json)
+    endpoint_broadcast(group, "pinned_message", message_json)
   end
 
   def broadcast_members_update(group) do
     user_ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.id) |> Repo.all
-    @endpoint.broadcast("groups:#{group.slug}", "members_update", %{user_ids: user_ids})
+    endpoint_broadcast(group, "members_update", %{user_ids: user_ids})
   end
 
   def broadcast_read_status(group, messages) do
     read_status_json = Enum.reduce(messages, %{}, & Map.put(&2, &1.id, &1.read_status))
-    @endpoint.broadcast("groups:#{group.slug}", "read_status_update", %{messages: read_status_json})
+    endpoint_broadcast(group, "read_status_update", %{messages: read_status_json})
   end
 
   def broadcast_system_message(group, system_message) do
     system_message = MessageQueries.load_info(system_message)
-    @endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
+    message_json = MessageView.render("show.json", %{message: system_message})
+    endpoint_broadcast(group, "new_msg", message_json)
+  end
+
+  def broadcast_msg_link_previews_generated(group, message) do
+    message_json = MessageView.render("show.json", %{message: message})
+    endpoint_broadcast(group, "msg_link_previews_generated", message_json)
+  end
+
+  def broadcast_msg_link_preview_deleted(group, message_id, link) do
+    endpoint_broadcast(group, "msg_link_preview_deleted", %{message_id: message_id, link: link})
+  end
+
+  defp endpoint_broadcast(group, event, payload) do
+    # TODO: Remove this once no one is using older version of mobile app.
+    @endpoint.broadcast("groups:#{group.slug}", event, payload)
+    @endpoint.broadcast("groups:id:#{group.id}", event, payload)
   end
 
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
@@ -352,7 +403,7 @@ defmodule StitchConnect.Web.GroupChannel do
           message = MessageQueries.load_info(message)
 
           Stitch.Task.start fn ->
-            broadcast! socket, "new_msg", message
+            broadcast_message_created(message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
             PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
             PushNotifications.push_badge_update(message, notify_user_ids.mobile)
@@ -420,11 +471,5 @@ defmodule StitchConnect.Web.GroupChannel do
     else _e ->
       false
     end
-  end
-
-  def handle_out(event, payload, socket) when event in ["new_msg", "edit_msg", "msg_link_previews_generated"] do
-    json = MessageView.render("show.json", %{message: payload})
-    push socket, event, json
-    {:noreply, socket}
   end
 end

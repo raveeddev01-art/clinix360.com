@@ -332,7 +332,12 @@ class MessageStore {
       clearTimeout(this.highlightTimeout);
     }
 
-    this.highlightId = id;
+    // required for animation restart
+    this.highlightId = null;
+    setTimeout(() => {
+      this.highlightId = id;
+    }, 0);
+
     this.highlightTimeout = setTimeout(() => {
       this.highlightId = null;
     }, duration);
@@ -355,6 +360,13 @@ class MessageStore {
    */
   @action
   jumpToMessage(targetMessage) {
+    // check if target message is already loaded
+    const msg = this.getMessageById(targetMessage.id);
+    if (msg) {
+      this.centerMessage(msg.id);
+      return;
+    }
+
     if (this.joinedTargetGroupDisposer) {
       this.joinedTargetGroupDisposer();
     }
@@ -454,7 +466,7 @@ class MessageStore {
     // These info will be updated with real value when `marked_as_read` event is broadcast
     this.updateGroupData({
       last_read_at: moment
-        .utc(this.messages[0].inserted_at)
+        .utc(this.messages.length ? this.messages[0].inserted_at : new Date())
         .add(1, "millisecond")
         .format("YYYY-MM-DDTHH:mm:ss.SSS"),
       unread_messages_count: 0,

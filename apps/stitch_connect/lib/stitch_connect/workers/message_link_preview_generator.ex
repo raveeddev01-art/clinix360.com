@@ -2,7 +2,7 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
   use GenServer
   alias Stitch.Message.LinkPreview
   alias Stitch.{GroupQueries, MessageQueries}
-  alias StitchConnect.Web.Endpoint
+  alias StitchConnect.Web.GroupChannel
 
   def start_link do
     GenServer.start_link(
@@ -36,7 +36,7 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
             |> MessageQueries.load_info
 
           group = GroupQueries.get_by_id(message.group_id)
-          Endpoint.broadcast("groups:#{group.slug}", "msg_link_previews_generated", message)
+          GroupChannel.broadcast_msg_link_previews_generated(group, message)
           queue
 
         {:empty, queue} ->

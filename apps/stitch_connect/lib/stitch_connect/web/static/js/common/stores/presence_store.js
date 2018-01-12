@@ -1,8 +1,15 @@
 import { Presence } from "phoenix";
 import { action, autorun, computed, observable } from "mobx";
+import Cookies from "js-cookie";
+import moment from "moment";
 import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 
-import { PRESENCE_DEBOUNCE_WAIT } from "lib/constants";
+import {
+  PRESENCE_DEBOUNCE_WAIT,
+  USER_INTERACTION_THROTTLE,
+  LOCKOUT_CHECK_MS
+} from "lib/constants";
 
 class PresenceStore {
   @observable teamId = "";
@@ -85,6 +92,12 @@ class PresenceStore {
     PRESENCE_DEBOUNCE_WAIT
   );
 
+  @action
+  throttledUserInteract = throttle(
+    this.onUserInteract,
+    USER_INTERACTION_THROTTLE
+  );
+
   onPresenceState = state => {
     this.onlineUsersMapCache = Presence.syncState(
       this.onlineUsersMapCache,
@@ -130,13 +143,14 @@ class PresenceStore {
       this.teamChannel.push("locked");
       this.teamChannel.push("became_inactive");
       this.teamChannel.push("became_away");
-      this.rootStore.channelStore.leaveAllChannelsButTeam();
+      this.rootStore.channelStore.leaveAllChannelsButTeamAndEvent();
     });
   };
 
   @action
   unlock = pin => {
     this.unlocking = true;
+    Cookies.remove("last_activity");
 
     return post("/api/v1/session-unlock", { hideNotify: true, body: { pin } })
       .then(() => {
@@ -149,51 +163,60 @@ class PresenceStore {
       });
   };
 
-  onWindowBlur = () => {
+  onUserInteract = () => {
     if (this.locked) return;
 
-    this.teamChannel.push("became_inactive");
+    window.clearTimeout(this.awayTimerID);
     this.awayTimerID = window.setTimeout(
       this.onAwayTimerExpired,
       30 * 60 * 1000
     );
-    this.startLockoutTimer();
-  };
 
-  onWindowFocus = () => {
-    if (this.locked) return;
-    window.clearTimeout(this.lockoutTimerID);
-    window.clearTimeout(this.awayTimerID);
     this.teamChannel.push("became_active");
+
+    if (this.lockoutSettingLoaded) {
+      Cookies.set("last_activity", new Date().toString(), { expires: 30 }); // expires in 30 days
+    }
   };
 
   onAwayTimerExpired = () => {
     this.teamChannel.push("became_away");
   };
 
-  onLockoutTimerExpired = () => {
-    this.teamChannel.push("lockout_timer_expired");
-    this.lock();
+  checkLockoutTimerExpired = () => {
+    const lastActivity = Cookies.get("last_activity");
+    if (
+      lastActivity &&
+      moment().diff(lastActivity, "seconds") > this.secondsToLockout
+    ) {
+      // user came back after lockout limit time
+      this.teamChannel.push("lockout_timer_expired");
+      this.lock();
+    }
   };
 
-  getLockoutSettings = cb => {
-    this.teamChannel.push("get_lockout_settings").receive("ok", data => {
-      this.secondsToLockout = data.seconds_to_lockout;
-      this.lockoutEnabled = data.security_lockout_enabled;
-      this.lockoutSettingLoaded = true;
+  getLockoutSettings = () => {
+    this.teamChannel
+      .push("get_lockout_settings")
+      .receive("ok", this.onLockoutSettingsLoaded);
+  };
 
-      if (typeof cb === "function") cb();
-    });
+  @action
+  onLockoutSettingsLoaded = data => {
+    this.secondsToLockout = data.seconds_to_lockout;
+    this.lockoutEnabled = data.security_lockout_enabled;
+    this.lockoutSettingLoaded = true;
+    this.startLockoutTimer();
+    this.checkLockoutTimerExpired();
+    this.onUserInteract();
   };
 
   startLockoutTimer = () => {
-    if (!this.lockoutSettingLoaded) {
-      this.getLockoutSettings(this.startLockoutTimer);
-    } else if (this.lockoutEnabled) {
-      clearTimeout(this.lockoutTimerID);
-      this.lockoutTimerID = setTimeout(
-        this.onLockoutTimerExpired,
-        this.secondsToLockout * 1000
+    clearTimeout(this.lockoutTimerID);
+    if (this.lockoutEnabled) {
+      this.lockoutTimerID = setInterval(
+        this.checkLockoutTimerExpired,
+        LOCKOUT_CHECK_MS
       );
     }
   };
