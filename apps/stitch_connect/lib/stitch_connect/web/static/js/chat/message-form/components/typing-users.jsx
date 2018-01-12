@@ -10,11 +10,7 @@ class TypingUsers extends Component {
       usersStore: { usersById }
     } = this.props;
     const usernames = typingUsers
-      .filter(
-        typingUserId =>
-          !!usersById[parseInt(typingUserId, 10)] &&
-          typingUserId !== currentUser.id
-      )
+      .filter(typingUserId => !!usersById[parseInt(typingUserId, 10)])
       .map(typingUserId => usersById[parseInt(typingUserId, 10)].full_name);
     let content;
 

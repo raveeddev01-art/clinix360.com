@@ -508,6 +508,8 @@ class MessageStore {
           status: "failed"
         });
       });
+
+    this.startTyping.flush(); // flushing throttle
   };
 
   @action
@@ -938,6 +940,11 @@ class MessageStore {
 
     // Show notification card
     sidemenuStore.showNotificationCardForNewMessage(newMessage);
+
+    // immediatly remove user from typing list once msg received
+    if (newMessage.user_id && newMessage.user_id !== currentUser.id) {
+      this.rootStore.groupStore.stoppedTyping(newMessage.user_id);
+    }
   };
 
   @action

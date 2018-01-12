@@ -51,6 +51,10 @@ class GroupStore {
 
   @action
   onStartedTyping = ({ user_id: userID }) => {
+    if (userID === currentUser.id) {
+      return;
+    }
+
     // insert typing user into list if he is not in the list yet
     if (this.typingUsers.indexOf(userID) === -1) {
       this.typingUsers.push(userID);

@@ -133,7 +133,9 @@ class MessageForm extends Component {
         default:
       }
 
-      this.typingStarted();
+      if (evt.keyCode !== 13) {
+        this.typingStarted();
+      }
     }
   };
 
