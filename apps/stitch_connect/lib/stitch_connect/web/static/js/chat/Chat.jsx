@@ -7,7 +7,7 @@ import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
 
-@inject("groupsStore", "sidemenuStore", "messageStore")
+@inject("groupsStore", "sidemenuStore")
 @observer
 class Chat extends Component {
   componentWillMount() {
@@ -24,7 +24,7 @@ class Chat extends Component {
   }
 
   openGroup(params) {
-    const { groupsStore, messageStore } = this.props;
+    const { groupsStore } = this.props;
 
     if (params.slug) {
       groupsStore.openGroup(params.slug);
