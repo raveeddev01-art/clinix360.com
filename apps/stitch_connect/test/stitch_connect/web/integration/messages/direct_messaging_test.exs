@@ -38,8 +38,11 @@ defmodule StitchConnect.Web.Messages.DirectMessagingTest do
         |> click(css(".team-member", text: "Jane Doe"))
         |> has?(css(".Select--multi.has-value"))
       end)
-    |> click(button("Start Conversation"))
-    |> assert_has(css(".header-content", text: "Jane Doe"))
+    |> repeat_till(fn session ->
+      session
+      |> click(button("Start Conversation"))
+      |> has?(css(".header-content", text: "Jane Doe"))
+    end)
     |> fill_in(text_field("Message"), with: "hello\n")
 
     user_2_session
