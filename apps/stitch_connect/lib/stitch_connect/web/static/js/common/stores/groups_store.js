@@ -114,6 +114,12 @@ class GroupsStore {
   // ACTIONS //
   // /////// //
 
+  hasAccess = groupId => {
+    return (
+      isFullMember(currentUser) || !!this.groups.find(g => g.id === groupId)
+    );
+  };
+
   @action
   updateGroupData = (id, data) => {
     const group = this.getGroupById(id);
@@ -383,19 +389,29 @@ class GroupsStore {
   onMembersUpdated = payload => {
     const allUsers = this.rootStore.usersStore.usersById;
     const users = payload.user_ids.map(id => allUsers[id]);
-    this.updateGroupData(payload.group_id, {
-      users
-    });
 
-    // redirect to default group if user is removed from current room
-    const meRemoved = payload.user_ids.indexOf(currentUser.id) === -1;
-    if (meRemoved && this.currentGroupId === payload.group_id) {
-      history.push(`/rooms/${this.defaultGroup.slug}`);
+    // only make changes when user is full member or has access to group
+    if (this.hasAccess(payload.group_id)) {
+      this.updateGroupData(payload.group_id, {
+        users
+      });
+
+      const meRemoved = payload.user_ids.indexOf(currentUser.id) === -1;
+
+      // if the user is guest and removed from a channel, do nothing, because he will be presented reload modal
+      if (meRemoved && !isFullMember(currentUser)) {
+        return;
+      }
+
+      // redirect to default group if user is removed from current room
+      if (meRemoved && this.currentGroupId === payload.group_id) {
+        history.push(`/rooms/${this.defaultGroup.slug}`);
+      }
+
+      // @TODO update groups without loading all groups
+      // @NOTE loadGroups is called because private groups aren't existed yet in the list
+      this.loadGroups();
     }
-
-    // @TODO update groups without loading all groups
-    // @NOTE loadGroups is called because private groups aren't existed yet in the list
-    this.loadGroups();
   };
 
   @action
