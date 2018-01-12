@@ -723,16 +723,9 @@ class MessageStore {
     }
   }
 
-  stopTyping = () => {
-    if (this.groupChannel) {
-      this.groupChannel.push("typing_stopped");
-    }
-  };
-
   startTyping = _.throttle(() => {
     clearTimeout(this.typingTimeoutId);
     this.groupChannel.push("typing_started");
-    this.typingTimeoutId = setTimeout(this.stopTyping, 2000); // @TODO this line will be removed after mobile is fully migrated to braodcasts from presence
   }, START_TYPING_THROTTLE_MS);
 
   keepScrollAtBottom = () => {

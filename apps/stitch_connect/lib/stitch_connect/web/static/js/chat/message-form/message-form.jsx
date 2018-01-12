@@ -87,7 +87,6 @@ class MessageForm extends Component {
       messageStore.sendMessage(this.state.text.trim());
 
       this.setState({ text: "" });
-      this.typingStopped();
     }
   };
 
@@ -212,12 +211,6 @@ class MessageForm extends Component {
     const { messageStore } = this.props;
 
     messageStore.startTyping();
-  };
-
-  typingStopped = () => {
-    const { messageStore } = this.props;
-
-    messageStore.stopTyping();
   };
 
   insertWord = word => {

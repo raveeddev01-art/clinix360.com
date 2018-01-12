@@ -26,8 +26,6 @@ class Chat extends Component {
   openGroup(params) {
     const { groupsStore, messageStore } = this.props;
 
-    messageStore.stopTyping();
-
     if (params.slug) {
       groupsStore.openGroup(params.slug);
     } else if (params.usernames) {
