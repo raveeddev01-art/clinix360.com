@@ -55,7 +55,6 @@ defmodule StitchConnect.Web.GroupChannel do
           true ->
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
-            send self(), :after_join
             {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
             {:error, %{message: "unauthorized"}}
@@ -83,16 +82,6 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def handle_info(:after_join, socket) do
-    # TODO: Remove this once mobile apps are using "is typing" w/o presence.
-    push socket, "presence_state", Presence.list(socket)
-    {:ok, _} = Presence.track(socket, socket.assigns.current_user.id, %{
-      is_typing: false,
-    })
-
-    {:noreply, socket}
-  end
-
   # ignore Pigeon callbacks
   def handle_info(_msg, socket) do
     {:noreply, socket}
@@ -110,11 +99,6 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @decorate channel_action()
   def handle_in("typing_started", _params, socket) do
-    # TODO: Remove this once mobile apps are using "is typing" w/o presence.
-    {:ok, _} = Presence.update(socket, socket.assigns.current_user.id, %{
-      is_typing: true,
-    })
-
     broadcast_is_typing(socket.assigns.group, socket.assigns.current_user)
     {:noreply, socket}
   end
@@ -122,10 +106,6 @@ defmodule StitchConnect.Web.GroupChannel do
   # TODO: Remove this once mobile apps are using "is typing" w/o presence.
   @decorate channel_action()
   def handle_in("typing_stopped", _params, socket) do
-    {:ok, _} = Presence.update(socket, socket.assigns.current_user.id, %{
-      is_typing: false,
-    })
-
     {:noreply, socket}
   end
 
