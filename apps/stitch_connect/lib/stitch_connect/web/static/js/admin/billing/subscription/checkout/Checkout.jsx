@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Elements } from "react-stripe-elements";
 import capitalize from "lodash/capitalize";
 
-import { getFrequency, getMonthlyPrice } from "../utils";
+import { getFrequency, getMonthlyPrice } from "lib/billing";
 import CreditCard from "./CreditCard";
 import CheckoutForm from "./CheckoutForm";
 

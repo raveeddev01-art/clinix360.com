@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 
-import { getMonthlyPrice, getFrequencyName } from "../utils";
+import { getMonthlyPrice, getFrequencyName } from "lib/billing";
 
 class Plan extends React.Component {
   onSelectTier = () => {

@@ -2,14 +2,14 @@ import React from "react";
 import { Well } from "react-bootstrap";
 import capitalize from "lodash/capitalize";
 
-import { alert } from "../../../common/modals";
+import { alert } from "common/modals";
 import {
   processSubscriptionData,
   getSelectableTiers,
   getBelowTier,
   getPlanForTier,
   getFrequency
-} from "./utils";
+} from "lib/billing";
 import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
 import Loading from "./loading/Loading";
