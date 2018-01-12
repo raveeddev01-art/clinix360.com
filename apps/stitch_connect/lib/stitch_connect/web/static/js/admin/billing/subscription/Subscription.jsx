@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import { Well } from "react-bootstrap";
 import capitalize from "lodash/capitalize";
 
@@ -14,26 +15,21 @@ import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
 import Loading from "./loading/Loading";
 
-class Subscription extends React.Component {
+@inject("billingStore")
+@observer
+class Subscription extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       loading: false,
-      subscription: null,
       upgrade: false,
       plan: {
         frequency: 1,
         tier: ""
       },
-      checkout: false,
-      cards: []
+      checkout: false
     };
-  }
-
-  componentWillMount() {
-    this.loadSubscription();
-    this.loadCards();
   }
 
   onSelectFrequency = frequency => {
@@ -62,30 +58,18 @@ class Subscription extends React.Component {
   };
 
   onUseCreditCard = card => {
-    // Make the card as default
+    const { billingStore } = this.props;
+
     this.setState({ loading: true });
-    put(`/api/v1/billing/cards/${card.id}`, {
-      body: {
-        default: true
-      }
-    }).then(
-      () => {
-        const { cards } = this.state;
 
-        this.setState({
-          loading: false,
-          cards: cards.map(c => ({
-            ...c,
-            default: c.id === card.id
-          }))
-        });
-
+    billingStore
+      .useCard(card.id)
+      .then(() => {
         this.subscribe();
-      },
-      error => {
+      })
+      .finally(() => {
         this.setState({ loading: false });
-      }
-    );
+      });
   };
 
   onCardSubmitStart = () => {
@@ -105,64 +89,29 @@ class Subscription extends React.Component {
     });
   };
 
-  loadSubscription() {
+  addCard(token) {
+    const { billingStore } = this.props;
+
     this.setState({ loading: true });
 
-    get("/api/v1/billing/subscription").then(response => {
-      const subscription = processSubscriptionData(response.data.data);
-
-      this.setState({ loading: false, subscription });
-    });
-  }
-
-  loadCards() {
-    get("/api/v1/billing/cards").then(response => {
-      const cards = response.data.data;
-
-      this.setState({ cards });
-    });
-  }
-
-  addCard(token) {
-    post("/api/v1/billing/cards", {
-      body: {
-        source_token: token.id
-      }
-    }).then(
-      response => {
-        const { cards } = this.state;
-
-        this.setState({
-          loading: false,
-          cards: [
-            ...cards.map(c => ({ ...c, default: false })),
-            response.data.data
-          ]
-        });
-
+    billingStore
+      .addCard(token.id)
+      .then(() => {
         this.subscribe();
-      },
-      error => {
-        this.setState({
-          loading: false
-        });
-      }
-    );
+      })
+      .finally(() => {
+        this.setState({ loading: false });
+      });
   }
 
   subscribe() {
+    const { billingStore } = this.props;
     const { plan } = this.state;
 
     this.setState({ loading: true });
-    put("/api/v1/billing/subscription", {
-      body: {
-        tier: plan.tier,
-        renewal_frequency: getFrequency(plan.frequency).value
-      }
-    }).then(
-      response => {
-        const subscription = processSubscriptionData(response.data.data);
 
+    billingStore.subscribe(plan).then(
+      subscription => {
         alert({
           title: "Thanks for using Stitch!",
           message: (
@@ -179,8 +128,7 @@ class Subscription extends React.Component {
         this.setState({
           loading: false,
           checkout: false,
-          upgrade: false,
-          subscription
+          upgrade: false
         });
       },
       error => {
@@ -202,7 +150,8 @@ class Subscription extends React.Component {
   }
 
   renderStatus() {
-    const { subscription, upgrade } = this.state;
+    const { billingStore: { subscription } } = this.props;
+    const { upgrade } = this.state;
 
     if (upgrade) {
       return null;
@@ -242,7 +191,7 @@ class Subscription extends React.Component {
   }
 
   renderFooter() {
-    const { subscription } = this.state;
+    const { billingStore: { subscription } } = this.props;
 
     return (
       <p>
@@ -278,7 +227,7 @@ class Subscription extends React.Component {
   }
 
   renderSubscribedPlan() {
-    const { subscription } = this.state;
+    const { billingStore: { subscription } } = this.props;
     const belowTier = capitalize(getBelowTier(subscription.tier));
     const planItems = getPlanForTier(subscription.tier).items;
     const invoiceAmount = (subscription.estimated_invoice_amount / 100).toFixed(
@@ -324,7 +273,8 @@ class Subscription extends React.Component {
   }
 
   renderSelectPlan() {
-    const { plan, subscription } = this.state;
+    const { billingStore: { subscription } } = this.props;
+    const { plan } = this.state;
     const tiers = getSelectableTiers(subscription.tier);
 
     return (
@@ -339,7 +289,8 @@ class Subscription extends React.Component {
   }
 
   renderSubscription() {
-    const { subscription, upgrade } = this.state;
+    const { billingStore: { subscription } } = this.props;
+    const { upgrade } = this.state;
 
     return (
       <div className="subscription">
@@ -357,7 +308,8 @@ class Subscription extends React.Component {
   }
 
   renderCheckout() {
-    const { cards, plan } = this.state;
+    const { billingStore: { cards } } = this.props;
+    const { plan } = this.state;
 
     return (
       <Checkout
@@ -372,7 +324,8 @@ class Subscription extends React.Component {
   }
 
   render() {
-    const { loading, subscription, checkout } = this.state;
+    const { billingStore: { subscription } } = this.props;
+    const { loading, checkout } = this.state;
 
     return (
       <div className="subscription-tab">
