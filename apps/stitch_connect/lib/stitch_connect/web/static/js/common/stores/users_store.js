@@ -9,8 +9,6 @@ import pick from "lodash/pick";
 
 import history from "../../lib/history";
 
-import { defaultAvatars } from "./user_store";
-
 class UsersStore {
   @observable users = [];
 
@@ -138,18 +136,6 @@ class UsersStore {
   };
 
   @action
-  useDefaultAvatar = userId => {
-    const data = {
-      hasAvatar: false,
-      avatar: defaultAvatars[0],
-      avatarThumb: defaultAvatars[0]
-    };
-    this.updateUserData(userId, data);
-    this.rootStore.groupsStore.updateUserInAllGroups(userId, data);
-    return data.avatar;
-  };
-
-  @action
   saveProfileImg = (userId, profileImgUrl) => {
     return put(`/api/v1/users/${userId}/upload_profile_image`, {
       body: {
@@ -160,8 +146,7 @@ class UsersStore {
       const { data } = resp;
       const avatarFields = pick(data, "avatar", "avatar_thumb");
       this.updateUserData(userId, avatarFields);
-      this.rootStore.groupsStore.updateUserInAllGroups(userId, avatarFields);
-      return data.avatar;
+      return avatarFields;
     });
   };
 
@@ -169,8 +154,11 @@ class UsersStore {
   deleteProfileImg = userId => {
     return remove(`/api/v1/users/${userId}/delete_profile_image`, {
       hideNotify: true
-    }).then(() => {
-      return this.useDefaultAvatar(userId);
+    }).then(resp => {
+      const { data } = resp;
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.updateUserData(userId, avatarFields);
+      return avatarFields;
     });
   };
 

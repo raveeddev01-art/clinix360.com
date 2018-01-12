@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import cx from "classnames";
 import pick from "lodash/pick";
 import Modal from "react-bootstrap/lib/Modal";
 import Form from "react-bootstrap/lib/Form";
@@ -33,6 +32,10 @@ class EditProfileModal extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.show !== this.props.show) {
+      const hasAvatar =
+        nextProps.user.avatar &&
+        nextProps.user.avatar.indexOf("stitch-content/default-avatar.png") < 0;
+
       this.setState({
         show: nextProps.show,
         full_name: `${nextProps.user.first_name} ${nextProps.user.last_name}`,
@@ -41,7 +44,7 @@ class EditProfileModal extends Component {
         phone_number: nextProps.user.phone || "",
         title: nextProps.user.title || "",
         alertVisible: false,
-        hasAvatar: !!nextProps.user.avatar,
+        hasAvatar,
         isDeletingImg: false
       });
     }
@@ -79,7 +82,7 @@ class EditProfileModal extends Component {
           this.showSuccess("The user's profile image has been updated.");
           this.setState({
             isUploading: false,
-            profileImgUrl: avatar,
+            profileImgUrl: avatar.avatar,
             isCropped: false,
             isCropping: false,
             hasAvatar: true
@@ -151,7 +154,7 @@ class EditProfileModal extends Component {
         this.showSuccess("The user's profile image has been deleted.");
         this.setState({
           isUploading: false,
-          profileImgUrl: avatar,
+          profileImgUrl: avatar.avatar,
           isCropped: false,
           hasAvatar: false,
           isDeletingImg: false
@@ -211,13 +214,13 @@ class EditProfileModal extends Component {
       hasAvatar
     } = this.state;
 
-    const titleStyle = cx({ "text-center": isDeletingImg || isCropping });
-
-    const modalTitle = isCropping
-      ? "Crop your photo"
-      : isDeletingImg
-        ? "Remove Profile Photo"
-        : `Edit Profile: ${this.state.full_name}`;
+    const modalTitle = isUploading
+      ? "Uploading Photo"
+      : isCropping
+        ? "Crop Photo"
+        : isDeletingImg
+          ? "Remove Profile Photo"
+          : `Edit Profile: ${this.state.full_name}`;
 
     return (
       <Modal
@@ -228,11 +231,15 @@ class EditProfileModal extends Component {
       >
         <Modal.Header>
           {(isDeletingImg || isCropping) && (
-              <a role="link" onClick={this.cancelDeleteOrCroppingImg}>
+              <a
+                role="link"
+                className="btn-back"
+                onClick={this.cancelDeleteOrCroppingImg}
+              >
                 <i className="fa fa-arrow-left" />
               </a>
             )}
-          <Modal.Title className={titleStyle}>{modalTitle}</Modal.Title>
+          <Modal.Title>{modalTitle}</Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />
           </a>
@@ -316,7 +323,8 @@ class EditProfileModal extends Component {
 
           {isDeletingImg && (
             <div className="profile-img-delete-prompt">
-              <p>Are you sure you want to delete this user's profile image?</p>
+              <p>Are you sure you want to delete the profile image?</p>
+              <p>The profile photo will be replaced with a default avatar.</p>
               <div className="buttons">
                 <Button
                   bsSize="large"
