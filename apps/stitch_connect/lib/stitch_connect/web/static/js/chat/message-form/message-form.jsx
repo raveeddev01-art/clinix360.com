@@ -12,7 +12,9 @@ import JumpingIndicator from "./components/jumping-indicator";
 import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
-import { confirm } from "../../common/modals";
+
+import { isAdmin } from "lib/utils";
+import { confirm } from "common/modals";
 
 @inject("messageStore", "socketStore", "uploadStore", "billingStore")
 @observer
@@ -294,12 +296,16 @@ class MessageForm extends Component {
       this.textInput.focus();
     }
 
-    const text = this.getText();
+    const expired = subscription.remaining_days <= 0;
+    const text = !expired
+      ? this.getText()
+      : isAdmin()
+        ? "Your trial has expired. Please subscribe to continue service."
+        : "Your trial has completed. Please contact your admin to subscribe to Stitch.";
     const className = classNames("form-control", "message-text", {
       editing:
         !!messageInEdit || !socketStore.isConnected || !socketStore.isHealthy
     });
-    const expired = subscription.remaining_days <= 0;
 
     return (
       <div className="message-input-wrapper">
