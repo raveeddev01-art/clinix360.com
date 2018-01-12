@@ -1,0 +1,15 @@
+defmodule Stitch.Repo.Migrations.SetProfileImageToHistoricalNull do
+  use Ecto.Migration
+
+  @default_avatar Stitch.Accounts.ProfileImage.pick_default_random()
+
+  def up do
+    execute ~s(UPDATE users SET
+      profile_image_url = '#{@default_avatar.image}',
+      profile_image_thumb_url = '#{@default_avatar.thumb}'
+      WHERE profile_image_url is null)
+  end
+
+  def down do
+  end
+end
