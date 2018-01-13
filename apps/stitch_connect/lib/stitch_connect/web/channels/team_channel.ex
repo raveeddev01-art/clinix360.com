@@ -48,7 +48,11 @@ defmodule StitchConnect.Web.TeamChannel do
 
   @decorate channel_action()
   def handle_in("lockout_timer_expired", _params, socket) do
-    {:noreply, update_connection_meta(socket, %{lockout_timer_expired: true})}
+    {:noreply, update_connection_meta(socket, %{
+      inactive: true,
+      became_away: true,
+      lockout_timer_expired: true
+    })}
   end
 
   @decorate channel_action()

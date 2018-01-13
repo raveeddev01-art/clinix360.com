@@ -102,12 +102,6 @@ defmodule StitchConnect.Web.GroupChannel do
     {:noreply, socket}
   end
 
-  # TODO: Remove this once mobile apps are using "is typing" w/o presence.
-  @decorate channel_action()
-  def handle_in("typing_stopped", _params, socket) do
-    {:noreply, socket}
-  end
-
   @decorate channel_action()
   def handle_in("feed", %{"max_id" => _} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
@@ -279,6 +273,11 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def handle_in("ping", %{"id" => id}, socket) do
     {:reply, {:ok, %{id: id}}, socket}
+  end
+
+  # TODO: Remove this once mobile apps are using "is typing" w/o presence.
+  def handle_in(_supported_event, _params, socket) do
+    {:noreply, socket}
   end
 
   def broadcast_reactions_updated(group, message) do
