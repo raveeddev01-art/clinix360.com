@@ -729,7 +729,7 @@ class MessageStore {
   }
 
   startTyping = _.throttle(() => {
-    this.groupChannel.push("typing_started");
+    this.groupChannel.push("is_typing");
   }, START_TYPING_THROTTLE_MS);
 
   keepScrollAtBottom = () => {

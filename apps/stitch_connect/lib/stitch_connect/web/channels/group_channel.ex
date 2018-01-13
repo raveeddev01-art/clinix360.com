@@ -97,7 +97,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("typing_started", _params, socket) do
+  def handle_in("is_typing", _params, socket) do
     broadcast_is_typing(socket.assigns.group, socket.assigns.current_user)
     {:noreply, socket}
   end
@@ -342,7 +342,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   def broadcast_is_typing(group, user) do
-    endpoint_broadcast(group, "typing_started", %{user_id: user.id})
+    endpoint_broadcast(group, "is_typing", %{user_id: user.id})
   end
 
   defp endpoint_broadcast(group, event, payload) do

@@ -120,7 +120,7 @@ class ChannelStore {
     );
     this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
     this.groupChannel.on("read_status_update", messageStore.onReadStatusUpdate);
-    this.groupChannel.on("typing_started", groupStore.onStartedTyping);
+    this.groupChannel.on("is_typing", groupStore.onStartedTyping);
 
     return joined;
   }
