@@ -24,13 +24,7 @@ defmodule StitchConnect.Web.TeamChannel do
       lockout_timer_expired: false,
       session_id: socket.assigns.session_id,
       connection_id: socket.assigns.connection_id,
-      online_at: inspect(System.system_time(:seconds)),
       id: user.id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      username: user.username,
-      roles: user.roles,
-      disabled: user.disabled
     }
     {:ok, _} = Presence.track(socket, user.id, meta)
     {:noreply, assign(socket, :meta, meta)}
