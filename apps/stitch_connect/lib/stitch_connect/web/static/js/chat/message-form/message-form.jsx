@@ -222,8 +222,8 @@ class MessageForm extends Component {
 
     setTimeout(() => {
       this.textInput.setSelectionRange(
-        cursorPos + word.length + 1,
-        cursorPos + word.length + 1
+        cursorPos + word.length,
+        cursorPos + word.length
       );
       this.textInput.focus();
     });
@@ -263,6 +263,13 @@ class MessageForm extends Component {
     });
   };
 
+  startMention = () => {
+    this.replaceCurrentWord("@");
+    setTimeout(() => {
+      this.setState({ openMentionMenu: true, openEmojiSearch: false });
+    }, 100);
+  };
+
   renderInput() {
     const { messageStore, socketStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -298,6 +305,9 @@ class MessageForm extends Component {
         />
         <div className="message-form-actions">
           <InsertMenu />
+          <a className="message-form-action-item" onClick={this.startMention}>
+            <i className="fa fa-at" />
+          </a>
           <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>

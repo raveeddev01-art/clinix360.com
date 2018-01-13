@@ -79,15 +79,17 @@ defmodule StitchConnect.Web.FeatureCase do
     |> assert_has(css(".welcome-message", text: "Welcome to the public room General"))
   end
 
-  def repeat_till(timeout \\ 500, interval \\ 25, fun) do
+  def repeat_till(session, fun, timeout \\ 500, interval \\ 25) do
     cond do
-      fun.() -> true
+      fun.(session) -> session
 
       timeout > 0 ->
         :timer.sleep(interval)
-        repeat_till(timeout - interval, interval, fun)
+        repeat_till(session, fun, timeout - interval, interval)
 
-      true -> false
+      true ->
+        raise Wallaby.ExpectationNotMet,
+          "Condition hasn't been meet"
     end
   end
 end
