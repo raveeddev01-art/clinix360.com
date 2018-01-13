@@ -192,11 +192,9 @@ class PresenceStore {
 
   onWindowBlur = () => {
     window.clearTimeout(this.inactiveTimerID);
-    this.onBecameInactive();
   };
 
   onWindowFocus = () => {
-    this.onBecameActive();
   };
 
   checkLockoutTimerExpired = () => {
