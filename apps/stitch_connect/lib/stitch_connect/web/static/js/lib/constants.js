@@ -24,6 +24,12 @@ export const PRESENCE_DEBOUNCE_WAIT = 2 * 1000;
 // sends became_active events maximum at this duration. Used throttle because it should be sent at least once every 1 min
 export const USER_INTERACTION_THROTTLE = 10 * 1000;
 
+// after 30 mins of user inactivity, became_away event is sent
+export const BECAME_AWAY_TIMEOUT_MS = 30 * 60 * 1000;
+
+// after 30 mins of user inactivity, became_inactive event is sent
+export const BECAME_INACTIVE_TIMEOUT_MS = 30 * 60 * 1000;
+
 // if is_typing is not broadcasted for 3 seconds, we will remove from the user from typinguser list.
 export const TYPING_TIMEOUT_MS = 3 * 1000;
 

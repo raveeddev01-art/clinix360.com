@@ -8,7 +8,9 @@ import throttle from "lodash/throttle";
 import {
   PRESENCE_DEBOUNCE_WAIT,
   USER_INTERACTION_THROTTLE,
-  LOCKOUT_CHECK_MS
+  LOCKOUT_CHECK_MS,
+  BECAME_AWAY_TIMEOUT_MS,
+  BECAME_INACTIVE_TIMEOUT_MS
 } from "lib/constants";
 
 class PresenceStore {
@@ -86,18 +88,6 @@ class PresenceStore {
     this.onlineUsersMap = this.onlineUsersMapCache;
   };
 
-  @action
-  debouncedUpdatePresence = debounce(
-    this.updatePresence,
-    PRESENCE_DEBOUNCE_WAIT
-  );
-
-  @action
-  throttledUserInteract = throttle(
-    this.onUserInteract,
-    USER_INTERACTION_THROTTLE
-  );
-
   onPresenceState = state => {
     this.onlineUsersMapCache = Presence.syncState(
       this.onlineUsersMapCache,
@@ -138,11 +128,12 @@ class PresenceStore {
     post("/api/v1/session-lock").then(() => {
       window.clearTimeout(this.lockoutTimerID);
       window.clearTimeout(this.awayTimerID);
+      window.clearTimeout(this.inactiveTimerID);
 
       this.locked = true;
       this.teamChannel.push("locked");
-      this.teamChannel.push("became_inactive");
-      this.teamChannel.push("became_away");
+      this.onBecameInactive();
+      this.onBecameAway();
       this.rootStore.channelStore.leaveAllChannelsButTeamAndEvent();
     });
   };
@@ -167,20 +158,45 @@ class PresenceStore {
     if (this.locked) return;
 
     window.clearTimeout(this.awayTimerID);
+    window.clearTimeout(this.inactiveTimerID);
     this.awayTimerID = window.setTimeout(
-      this.onAwayTimerExpired,
-      30 * 60 * 1000
+      this.onBecameAway,
+      BECAME_AWAY_TIMEOUT_MS
+    );
+    this.inactiveTimerID = window.setTimeout(
+      this.onBecameInactive,
+      BECAME_INACTIVE_TIMEOUT_MS
     );
 
-    this.teamChannel.push("became_active");
+    this.onBecameActive();
 
     if (this.lockoutSettingLoaded) {
       Cookies.set("last_activity", moment().format(), { expires: 30 }); // expires in 30 days
     }
   };
 
-  onAwayTimerExpired = () => {
+  onBecameInactive = () => {
+    if (this.locked) return;
+    this.throttledUserInteract.cancel(); // after inactive, user interact shouldn't be fired
+    this.teamChannel.push("became_inactive");
+  };
+
+  onBecameActive = () => {
+    if (this.locked) return;
+    this.teamChannel.push("became_active");
+  };
+
+  onBecameAway = () => {
     this.teamChannel.push("became_away");
+  };
+
+  onWindowBlur = () => {
+    window.clearTimeout(this.inactiveTimerID);
+    this.onBecameInactive();
+  };
+
+  onWindowFocus = () => {
+    this.onBecameActive();
   };
 
   checkLockoutTimerExpired = () => {
@@ -221,6 +237,16 @@ class PresenceStore {
       );
     }
   };
+
+  debouncedUpdatePresence = debounce(
+    this.updatePresence,
+    PRESENCE_DEBOUNCE_WAIT
+  );
+
+  throttledUserInteract = throttle(
+    this.onUserInteract,
+    USER_INTERACTION_THROTTLE
+  );
 }
 
 export default PresenceStore;
