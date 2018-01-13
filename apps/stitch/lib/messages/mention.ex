@@ -4,6 +4,7 @@ defmodule Stitch.Message.Mention do
   by this message.
   """
   def get_mentioned_user_ids(_users, _author, nil, _online_user_ids, _group), do: []
+
   def get_mentioned_user_ids(users, author, message, online_user_ids, group) do
     mention_user_keywords = user_mention_keywords(users, author, online_user_ids, group)
     message_mentions(message, mention_user_keywords)
@@ -37,7 +38,7 @@ defmodule Stitch.Message.Mention do
   def user_mention_keywords(users, author, online_user_ids, %Stitch.Group{} = group) do
     mentions =
       users
-      |> Enum.reduce(%{}, fn (user, acc) ->
+      |> Enum.reduce(%{}, fn user, acc ->
         if user.username == author.username do
           acc
         else
@@ -69,15 +70,20 @@ defmodule Stitch.Message.Mention do
   """
   def message_mentions(message, mention_keywords) do
     word_splitter = cached_word_splitter()
+
     String.split(message, cached_splitter())
-    |> Enum.reduce(%{}, fn (word, acc) ->
+    |> Enum.reduce(%{}, fn word, acc ->
       case Map.fetch(mention_keywords, word) do
-        {:ok, user_ids} -> check_user_ids(user_ids, acc)
+        {:ok, user_ids} ->
+          check_user_ids(user_ids, acc)
+
         :error ->
           case String.split(word, word_splitter) do
-            [_word] -> acc
+            [_word] ->
+              acc
+
             list ->
-              Enum.reduce(list, acc, fn (word, acc) ->
+              Enum.reduce(list, acc, fn word, acc ->
                 case Map.fetch(mention_keywords, word) do
                   {:ok, user_ids} -> check_user_ids(user_ids, acc)
                   :error -> acc
@@ -86,18 +92,20 @@ defmodule Stitch.Message.Mention do
           end
       end
     end)
-    |> Map.keys
+    |> Map.keys()
   end
 
   defp check_user_ids(user_ids, acc) do
-    Enum.reduce(user_ids, acc, fn (user_id, sub_acc) ->
+    Enum.reduce(user_ids, acc, fn user_id, sub_acc ->
       Map.put(sub_acc, user_id, true)
     end)
   end
 
   defp cached_splitter do
     case Application.fetch_env(:stitch, :mention_splitter) do
-      {:ok, splitter} -> splitter
+      {:ok, splitter} ->
+        splitter
+
       :error ->
         pattern = split_pattern()
         :ok = Application.put_env(:stitch, :mention_splitter, pattern)
@@ -107,7 +115,9 @@ defmodule Stitch.Message.Mention do
 
   def cached_word_splitter do
     case Application.fetch_env(:stitch, :word_splitter) do
-      {:ok, splitter} -> splitter
+      {:ok, splitter} ->
+        splitter
+
       :error ->
         word_splitter = :binary.compile_pattern([".", "-"])
         :ok = Application.put_env(:stitch, :word_splitter, word_splitter)
@@ -152,7 +162,7 @@ defmodule Stitch.Message.Mention do
       "{",
       "|",
       "}",
-      "~",
+      "~"
     ])
   end
 end
