@@ -296,8 +296,9 @@ class MessageForm extends Component {
       this.textInput.focus();
     }
 
-    const expired = subscription.remaining_days <= 0;
-    const text = !expired
+    const trialExpired =
+      subscription.tier === "TRIAL" && subscription.remaining_days <= 0;
+    const text = !trialExpired
       ? this.getText()
       : isAdmin()
         ? "Your trial has expired. Please subscribe to continue service."
@@ -320,7 +321,7 @@ class MessageForm extends Component {
           onPaste={this.onPaste}
           autoFocus
           required
-          disabled={expired}
+          disabled={trialExpired}
           ref={input => {
             if (input) {
               this.textInput = ReactDOM.findDOMNode(input);
