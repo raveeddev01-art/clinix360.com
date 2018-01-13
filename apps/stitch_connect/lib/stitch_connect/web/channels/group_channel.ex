@@ -93,6 +93,11 @@ defmodule StitchConnect.Web.GroupChannel do
     {:noreply, socket}
   end
 
+  # ignore Pigeon callbacks
+  def handle_info(_msg, socket) do
+    {:noreply, socket}
+  end
+
   @decorate channel_action()
   def handle_in("sync_time", %{"timestamp" => timestamp}, socket) do
     socket =
@@ -341,7 +346,8 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_system_message(group, system_message) do
     system_message = MessageQueries.load_info(system_message)
-    endpoint_broadcast(group, "new_msg", system_message)
+    message_json = MessageView.render("show.json", %{message: system_message})
+    endpoint_broadcast(group, "new_msg", message_json)
   end
 
   def broadcast_msg_link_previews_generated(group, message) do
@@ -389,9 +395,9 @@ defmodule StitchConnect.Web.GroupChannel do
     request_id = attrs["request_id"]
 
     if GroupAuthorization.is_member?(group.id, user.id) do
-      acitve_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
+      presence_user_ids = StitchConnect.Web.UserStatusService.presence_user_ids(user.team_id)
 
-      case Message.create(group.id, user, attrs, acitve_user_ids) do
+      case Message.create(group.id, user, attrs, presence_user_ids) do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
