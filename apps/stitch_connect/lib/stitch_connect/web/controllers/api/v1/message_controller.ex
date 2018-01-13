@@ -49,8 +49,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     user = conn.assigns.current_user
     case GroupAuthorization.is_member?(group_id, user.id) do
       true ->
-        active_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
-        case Message.create(group.id, user, message_params, active_user_ids) do
+        presence_user_ids = StitchConnect.Web.UserStatusService.presence_user_ids(user.team_id)
+        case Message.create(group.id, user, message_params, presence_user_ids) do
           {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
             MessageLinkPreviewGenerator.queue(message)
             message = message |> MessageQueries.load_info

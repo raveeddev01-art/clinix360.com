@@ -3,9 +3,10 @@ defmodule Stitch.Message.Mention do
   Takes a list of users and a mesage and returns which out of those users should be notified
   by this message.
   """
-  def get_mentioned_user_ids(_users, _author, nil), do: []
-  def get_mentioned_user_ids(users, author, message) do
-    mention_user_keywords = user_mention_keywords(users, author)
+  def get_mentioned_user_ids(_users, _author, nil, _online_user_ids, _group), do: []
+
+  def get_mentioned_user_ids(users, author, message, online_user_ids, group) do
+    mention_user_keywords = user_mention_keywords(users, author, online_user_ids, group)
     message_mentions(message, mention_user_keywords)
   end
 
@@ -34,15 +35,31 @@ defmodule Stitch.Message.Mention do
         "@all" => [1, 2]
       }
   """
-  def user_mention_keywords(users, author) do
-    mentions = Enum.reduce(users, %{}, fn (user, acc) ->
-      if user.username == author.username do
-        acc
+  def user_mention_keywords(users, author, online_user_ids, %Stitch.Group{} = group) do
+    mentions =
+      users
+      |> Enum.reduce(%{}, fn user, acc ->
+        if user.username == author.username do
+          acc
+        else
+          Map.put(acc, "<@U#{user.id}>", [user.id])
+        end
+      end)
+
+    mentions =
+      if group.name == "__dm_group__" or group.name == "__multi_dm_group__" do
+        mentions
       else
-        Map.put(acc, "@#{user.username}", [user.id])
+        mentions
+        |> Map.put("<@Ghere>", online_user_ids |> List.delete(author.id))
+        |> Map.put("<@Groom>", users |> Enum.map(& &1.id) |> List.delete(author.id))
       end
-    end)
-    Map.put(mentions, "@all", Enum.map(users, & &1.id) |> List.delete(author.id))
+
+    if group.is_default do
+      mentions |> Map.put("<@Geveryone>", users |> Enum.map(& &1.id) |> List.delete(author.id))
+    else
+      mentions
+    end
   end
 
   @doc """
@@ -53,15 +70,20 @@ defmodule Stitch.Message.Mention do
   """
   def message_mentions(message, mention_keywords) do
     word_splitter = cached_word_splitter()
+
     String.split(message, cached_splitter())
-    |> Enum.reduce(%{}, fn (word, acc) ->
+    |> Enum.reduce(%{}, fn word, acc ->
       case Map.fetch(mention_keywords, word) do
-        {:ok, user_ids} -> check_user_ids(user_ids, acc)
+        {:ok, user_ids} ->
+          check_user_ids(user_ids, acc)
+
         :error ->
           case String.split(word, word_splitter) do
-            [_word] -> acc
+            [_word] ->
+              acc
+
             list ->
-              Enum.reduce(list, acc, fn (word, acc) ->
+              Enum.reduce(list, acc, fn word, acc ->
                 case Map.fetch(mention_keywords, word) do
                   {:ok, user_ids} -> check_user_ids(user_ids, acc)
                   :error -> acc
@@ -70,18 +92,20 @@ defmodule Stitch.Message.Mention do
           end
       end
     end)
-    |> Map.keys
+    |> Map.keys()
   end
 
   defp check_user_ids(user_ids, acc) do
-    Enum.reduce(user_ids, acc, fn (user_id, sub_acc) ->
+    Enum.reduce(user_ids, acc, fn user_id, sub_acc ->
       Map.put(sub_acc, user_id, true)
     end)
   end
 
   defp cached_splitter do
     case Application.fetch_env(:stitch, :mention_splitter) do
-      {:ok, splitter} -> splitter
+      {:ok, splitter} ->
+        splitter
+
       :error ->
         pattern = split_pattern()
         :ok = Application.put_env(:stitch, :mention_splitter, pattern)
@@ -91,7 +115,9 @@ defmodule Stitch.Message.Mention do
 
   def cached_word_splitter do
     case Application.fetch_env(:stitch, :word_splitter) do
-      {:ok, splitter} -> splitter
+      {:ok, splitter} ->
+        splitter
+
       :error ->
         word_splitter = :binary.compile_pattern([".", "-"])
         :ok = Application.put_env(:stitch, :word_splitter, word_splitter)
@@ -123,9 +149,9 @@ defmodule Stitch.Message.Mention do
       "/",
       ":",
       ";",
-      "<",
+      # "<",
       "=",
-      ">",
+      # ">",
       "?",
       "[",
       "\\",
@@ -136,7 +162,7 @@ defmodule Stitch.Message.Mention do
       "{",
       "|",
       "}",
-      "~",
+      "~"
     ])
   end
 end
