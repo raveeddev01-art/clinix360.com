@@ -125,7 +125,8 @@ defmodule StitchConnect.Web.TeamChannel do
 
   defp update_connection_meta(socket, updated_meta) do
     merged_meta = Map.merge(socket.assigns.meta, updated_meta)
-    Presence.update(socket, socket.assigns.current_user.id, updated_meta)
+    activity_state = Map.take(merged_meta, [:inactive, :became_away])
+    Presence.update(socket, socket.assigns.current_user.id, Map.merge(updated_meta, activity_state))
     assign(socket, :meta, merged_meta)
   end
 end
