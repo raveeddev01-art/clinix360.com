@@ -5,7 +5,6 @@ import { processSubscriptionData, getFrequency } from "lib/billing";
 class BillingStore {
   @observable subscription = {};
   @observable cards = [];
-  @observable loading = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -13,19 +12,13 @@ class BillingStore {
 
   @action
   loadSubscription() {
-    this.loading = true;
-
     get("/api/v1/billing/subscription").then(response => {
-      this.loading = false;
       this.subscription = processSubscriptionData(response.data.data);
     });
   }
 
   loadCards() {
-    this.loading = true;
-
     get("/api/v1/billing/cards").then(response => {
-      this.loading = false;
       this.cards = response.data.data;
     });
   }
