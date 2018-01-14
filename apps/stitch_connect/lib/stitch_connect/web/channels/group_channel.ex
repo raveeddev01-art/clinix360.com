@@ -397,8 +397,9 @@ defmodule StitchConnect.Web.GroupChannel do
           json = MessageView.render("show.json", %{message: message})
           {:reply, {:ok, json}, socket}
 
-        {:error, _changeset} ->
-          {:reply, {:error, %{message: "Failed to create message.", request_id: request_id}}, socket}
+        {:error, :message, changeset, _changeset_so_far} ->
+          error_message = StitchConnect.Web.ControllerHelpers.changeset_errors_to_string(changeset)
+          {:reply, {:error, %{message: error_message, request_id: request_id}}, socket}
       end
     else
       {:reply, {:error, %{message: "Only members can write messages.", request_id: request_id}}, socket}
