@@ -1,5 +1,7 @@
 import orderBy from "lodash/orderBy";
 import uniq from "lodash/uniq";
+import { NOTIFICATION_PREFERENCES } from "lib/constants";
+import { UNICODE_PATTERN } from "./constants";
 
 export function isAdmin() {
   return currentUser.roles && currentUser.roles.includes("admin");
@@ -67,9 +69,9 @@ export function getGroupUserIdsThatHasCurrentUser(users) {
 
 /**
  * Filter users
- * 
- * @param {array} users 
- * @param {string} filter 
+ *
+ * @param {array} users
+ * @param {string} filter
  */
 export function filterUsers(users, filter) {
   const re = new RegExp(filter, "i");
@@ -77,4 +79,14 @@ export function filterUsers(users, filter) {
   return users.filter(
     user => re.test(user.full_name) || re.test(user.username)
   );
+}
+
+/**
+ * Check if string contains only characters ()
+ *
+ * @param {string} text
+ */
+export function isValidUnicodeString(text) {
+  const matched = text.match(UNICODE_PATTERN);
+  return matched && matched.length === 1 && matched[0] === text;
 }
