@@ -412,7 +412,7 @@
         display: flex;
         align-items: center;
         height: 30px;
-        width: 45px;
+        width: 65px;
         justify-content: space-between;
 
         .message-form-action-item {
@@ -601,15 +601,24 @@
   vertical-align: top;
   max-width: 100%;
 
-  &:hover {
+  &:hover, &:focus {
+    text-decoration: none;
     border-bottom-style: solid;
   }
 }
 
-.mine.message-link,
-.user-mention-dropdown.mine .dropdown-toggle {
+.mine .message-link,
+.mine .user-mention-dropdown .dropdown-toggle {
   color: #fff;
   border-color: #fff;
+}
+
+.group-mention {
+  border-bottom: 1px solid #333;
+}
+
+.mine .group-mention {
+  border-bottom-color: #fff;
 }
 
 .user-mention-menu {
@@ -641,7 +650,6 @@
 
       span {
         margin-right: 5px;
-        text-transform: capitalize;
       }
 
       small {
@@ -846,7 +854,6 @@
       }
 
       .message-body {
-        .message-link,
         .dropdown-toggle {
           color: #fff;
           border-color: #fff;

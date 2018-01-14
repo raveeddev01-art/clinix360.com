@@ -10,6 +10,9 @@ import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
 import Promise from "bluebird";
 import shortid from "shortid";
+import { START_TYPING_THROTTLE_MS } from "lib/constants";
+import REGEX from "lib/regex";
+import { getData as getEmoji } from "emoji-mart/dist/utils";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
@@ -330,7 +333,12 @@ class MessageStore {
       clearTimeout(this.highlightTimeout);
     }
 
-    this.highlightId = id;
+    // required for animation restart
+    this.highlightId = null;
+    setTimeout(() => {
+      this.highlightId = id;
+    }, 0);
+
     this.highlightTimeout = setTimeout(() => {
       this.highlightId = null;
     }, duration);
@@ -353,6 +361,13 @@ class MessageStore {
    */
   @action
   jumpToMessage(targetMessage) {
+    // check if target message is already loaded
+    const msg = this.getMessageById(targetMessage.id);
+    if (msg) {
+      this.centerMessage(msg.id);
+      return;
+    }
+
     if (this.joinedTargetGroupDisposer) {
       this.joinedTargetGroupDisposer();
     }
@@ -452,7 +467,7 @@ class MessageStore {
     // These info will be updated with real value when `marked_as_read` event is broadcast
     this.updateGroupData({
       last_read_at: moment
-        .utc(this.messages[0].inserted_at)
+        .utc(this.messages.length ? this.messages[0].inserted_at : new Date())
         .add(1, "millisecond")
         .format("YYYY-MM-DDTHH:mm:ss.SSS"),
       unread_messages_count: 0,
@@ -467,14 +482,15 @@ class MessageStore {
   };
 
   sendMessage = (text, additionalFields = {}) => {
-    const tempMessage = this.generateTempMessage(text);
+    const messageText = this.encodeMessage(text);
+    const tempMessage = this.generateTempMessage(messageText);
     // Add temp message
     this.messages.unshift(tempMessage);
     // Scroll to bottom
     this.scrollToBottom(null, 0, 0);
 
     const newMsg = {
-      text_content: text,
+      text_content: messageText,
       request_id: tempMessage.id,
       ...additionalFields
     };
@@ -495,6 +511,8 @@ class MessageStore {
           status: "failed"
         });
       });
+
+    this.startTyping.flush(); // flushing throttle
   };
 
   @action
@@ -659,6 +677,8 @@ class MessageStore {
       return;
     }
 
+    this.startTyping.flush(); // flushing throttle
+
     if (
       !this.textInEdit ||
       this.messageInEdit.text_content === this.textInEdit
@@ -670,7 +690,7 @@ class MessageStore {
     this.groupChannel.push("edit_msg", {
       message_id: this.messageInEdit.id,
       params: {
-        text_content: this.textInEdit
+        text_content: this.encodeMessage(this.textInEdit)
       }
     });
   }
@@ -708,17 +728,9 @@ class MessageStore {
     }
   }
 
-  stopTyping = () => {
-    if (this.groupChannel) {
-      this.groupChannel.push("typing_stopped");
-    }
-  };
-
-  startTyping = () => {
-    clearTimeout(this.typingTimeoutId);
-    this.groupChannel.push("typing_started");
-    this.typingTimeoutId = setTimeout(this.stopTyping, 2000);
-  };
+  startTyping = _.throttle(() => {
+    this.groupChannel.push("is_typing");
+  }, START_TYPING_THROTTLE_MS);
 
   keepScrollAtBottom = () => {
     if (this.isScrollBottom) {
@@ -865,7 +877,7 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    const { sidemenuStore } = this.rootStore;
+    const { sidemenuStore, groupStore } = this.rootStore;
 
     if (newMessage.group_id !== this.group.id) {
       return;
@@ -925,6 +937,11 @@ class MessageStore {
 
     // Show notification card
     sidemenuStore.showNotificationCardForNewMessage(newMessage);
+
+    // Remove the sender of message from typing list immediately after message arrives
+    if (newMessage.user_id && newMessage.user_id !== currentUser.id) {
+      groupStore.stoppedTyping(newMessage.user_id);
+    }
   };
 
   @action
@@ -1009,6 +1026,85 @@ class MessageStore {
       );
       this.keepScrollAtBottom();
     }
+  };
+
+  /**
+   * Encodes message for backend compatible format
+   * - @emil -> <@U123>
+   * @param {string} messageText
+   * @returns {string} encoded message
+   */
+  encodeMessage = (messageText = "") => {
+    const { usersByUsername } = this.rootStore.usersStore;
+    return messageText.replace(REGEX.USER_MENTION_ENCODE, (match, username) => {
+      const user = usersByUsername[username];
+      if (["everyone", "room", "here"].indexOf(username) > -1) {
+        return `<@G${username}>`;
+      } else if (user) {
+        return `<@U${user.id}>`;
+      }
+
+      return match;
+    });
+  };
+
+  /**
+   * Decodes message to render in message content component
+   * @param {string} messageText
+   * @returns {Array<{type, content}>}
+   */
+  decodeMessage = (messageText = "") => {
+    const { usersById } = this.rootStore.usersStore;
+
+    const result = messageText
+      .split(REGEX.SPLITTER)
+      .filter(p => p)
+      .map(part => {
+        // mention
+        const match = part.match(REGEX.USER_MENTION_DECODE);
+        if (match && match[1] && usersById[match[1]]) {
+          return {
+            type: "mention",
+            content: match[1]
+          };
+        }
+
+        const groupMatch = part.match(REGEX.GROUP_MENTION_DECODE);
+        if (groupMatch && groupMatch[1]) {
+          return {
+            type: "group_mention",
+            content: groupMatch[1]
+          };
+        }
+
+        // emoji
+        if (REGEX.EMOJI.test(part)) {
+          const emojiParts = part.split(REGEX.EMOJI);
+          return emojiParts.filter(p => p).map(emojiPart => {
+            const emoji = getEmoji(emojiPart);
+            const hasEmoji = emoji && emoji.name;
+
+            if (hasEmoji) {
+              return {
+                type: "emoji",
+                content: emojiPart
+              };
+            }
+
+            return {
+              type: "text",
+              content: emojiPart
+            };
+          });
+        }
+
+        return {
+          type: "text",
+          content: part
+        };
+      });
+
+    return _.flatten(result);
   };
 
   @action

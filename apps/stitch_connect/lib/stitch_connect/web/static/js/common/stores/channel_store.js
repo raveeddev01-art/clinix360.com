@@ -89,7 +89,7 @@ class ChannelStore {
 
     // avoid socket ping error
     if (groupStore.group) {
-      return `groups:${groupStore.group.slug}`;
+      return `groups:id:${groupStore.group.id}`;
     }
 
     return "";
@@ -100,7 +100,7 @@ class ChannelStore {
   }
 
   joinGroupChannel(options = {}) {
-    const { messageStore, groupPresenceStore } = this.rootStore;
+    const { messageStore, groupStore } = this.rootStore;
 
     const joined = this.join(this.groupChannelTopic, options);
 
@@ -120,10 +120,7 @@ class ChannelStore {
     );
     this.groupChannel.on("reactions_updated", messageStore.onReactionUpdate);
     this.groupChannel.on("read_status_update", messageStore.onReadStatusUpdate);
-
-    // Group Presence related
-    this.groupChannel.on("presence_state", groupPresenceStore.onPresenceState);
-    this.groupChannel.on("presence_diff", groupPresenceStore.onPresenceDiff);
+    this.groupChannel.on("is_typing", groupStore.onStartedTyping);
 
     return joined;
   }
@@ -154,6 +151,10 @@ class ChannelStore {
     this.teamChannel.on("presence_diff", presenceStore.onPresenceDiff);
     this.teamChannel.on("locked", presenceStore.onLocked);
     this.teamChannel.on("unlocked", presenceStore.onUnlocked);
+    this.teamChannel.on(
+      "security_lockout_updated",
+      presenceStore.onLockoutSettingsLoaded
+    );
 
     this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
 
@@ -166,9 +167,12 @@ class ChannelStore {
     return joined;
   }
 
-  leaveAllChannelsButTeam() {
+  leaveAllChannelsButTeamAndEvent() {
     Object.keys(this.channels)
-      .filter(topic => topic !== this.teamChannelTopic)
+      .filter(
+        topic =>
+          topic !== this.teamChannelTopic && topic !== this.eventChannelTopic
+      )
       .forEach(topic => {
         this.leave(topic);
       });
