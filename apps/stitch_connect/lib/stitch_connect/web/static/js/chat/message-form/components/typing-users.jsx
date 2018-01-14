@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-@inject("groupPresenceStore", "usersStore")
+@inject("usersStore", "groupStore")
 @observer
 class TypingUsers extends Component {
   render() {
     const {
-      groupPresenceStore: { typingUsers },
+      groupStore: { typingUsers },
       usersStore: { usersById }
     } = this.props;
     const usernames = typingUsers

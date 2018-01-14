@@ -7,7 +7,6 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization,
     Message, MessageAuthorization, MessageQueries}
-  alias StitchConnect.Web.Presence
 
   @endpoint StitchConnect.Web.Endpoint
   @max_latency 5_000
@@ -55,7 +54,6 @@ defmodule StitchConnect.Web.GroupChannel do
           true ->
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
-            send self(), :after_join
             {:ok, %{messages: json}, assign(socket, :group, group)}
           false ->
             {:error, %{message: "unauthorized"}}
@@ -83,16 +81,6 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def handle_info(:after_join, socket) do
-    push socket, "presence_state", Presence.list(socket)
-
-    {:ok, _} = Presence.track(socket, socket.assigns.current_user.id, %{
-      is_typing: false,
-    })
-
-    {:noreply, socket}
-  end
-
   # ignore Pigeon callbacks
   def handle_info(_msg, socket) do
     {:noreply, socket}
@@ -109,20 +97,8 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("typing_started", _params, socket) do
-    {:ok, _} = Presence.update(socket, socket.assigns.current_user.id, %{
-      is_typing: true,
-    })
-
-    {:noreply, socket}
-  end
-
-  @decorate channel_action()
-  def handle_in("typing_stopped", _params, socket) do
-    {:ok, _} = Presence.update(socket, socket.assigns.current_user.id, %{
-      is_typing: false,
-    })
-
+  def handle_in("is_typing", _params, socket) do
+    broadcast_is_typing(socket.assigns.group, socket.assigns.current_user)
     {:noreply, socket}
   end
 
@@ -299,6 +275,11 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:ok, %{id: id}}, socket}
   end
 
+  # TODO: Remove this once mobile apps are using "is typing" w/o presence.
+  def handle_in(_supported_event, _params, socket) do
+    {:noreply, socket}
+  end
+
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)
     [message] = Message.Reaction.apply_reactions([message])
@@ -357,6 +338,10 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_msg_link_preview_deleted(group, message_id, link) do
     endpoint_broadcast(group, "msg_link_preview_deleted", %{message_id: message_id, link: link})
+  end
+
+  def broadcast_is_typing(group, user) do
+    endpoint_broadcast(group, "is_typing", %{user_id: user.id})
   end
 
   defp endpoint_broadcast(group, event, payload) do

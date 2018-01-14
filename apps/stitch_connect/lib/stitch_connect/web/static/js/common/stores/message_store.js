@@ -10,6 +10,7 @@ import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
 import Promise from "bluebird";
 import shortid from "shortid";
+import { START_TYPING_THROTTLE_MS } from "lib/constants";
 import REGEX from "lib/regex";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
 
@@ -510,6 +511,8 @@ class MessageStore {
           status: "failed"
         });
       });
+
+    this.startTyping.flush(); // flushing throttle
   };
 
   @action
@@ -674,6 +677,8 @@ class MessageStore {
       return;
     }
 
+    this.startTyping.flush(); // flushing throttle
+
     if (
       !this.textInEdit ||
       this.messageInEdit.text_content === this.textInEdit
@@ -723,17 +728,9 @@ class MessageStore {
     }
   }
 
-  stopTyping = () => {
-    if (this.groupChannel) {
-      this.groupChannel.push("typing_stopped");
-    }
-  };
-
-  startTyping = () => {
-    clearTimeout(this.typingTimeoutId);
-    this.groupChannel.push("typing_started");
-    this.typingTimeoutId = setTimeout(this.stopTyping, 2000);
-  };
+  startTyping = _.throttle(() => {
+    this.groupChannel.push("is_typing");
+  }, START_TYPING_THROTTLE_MS);
 
   keepScrollAtBottom = () => {
     if (this.isScrollBottom) {
@@ -880,7 +877,7 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    const { sidemenuStore } = this.rootStore;
+    const { sidemenuStore, groupStore } = this.rootStore;
 
     if (newMessage.group_id !== this.group.id) {
       return;
@@ -940,6 +937,11 @@ class MessageStore {
 
     // Show notification card
     sidemenuStore.showNotificationCardForNewMessage(newMessage);
+
+    // Remove the sender of message from typing list immediately after message arrives
+    if (newMessage.user_id && newMessage.user_id !== currentUser.id) {
+      groupStore.stoppedTyping(newMessage.user_id);
+    }
   };
 
   @action

@@ -2,7 +2,18 @@ defmodule StitchConnect.Web.UserStatusService do
   alias StitchConnect.Web.Presence
 
   @doc """
-  Returns user ids that has at least one conneciton in active state
+  Returns user status info in the format: {active: [], online: []}.
+
+  A user is considered to be active when
+
+  1) his chat is not in the background
+  2) had recent activity (mouse movement / keyboard presses) which is determined by the client side
+  2) is not locked
+
+  Active users do not receive mobile and email notifications.
+
+  A user is considered to be online when he is not away and not locked.
+  Online users get notified by the `@here` mention.
   """
   def presence_user_ids(team_id) do
     presence_list = Presence.list("team:lobby:#{team_id}")

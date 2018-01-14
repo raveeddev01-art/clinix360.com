@@ -279,7 +279,12 @@ class GroupsStore {
    */
   @action
   onOpenedGroup = () => {
-    const { channelStore, messageStore, pinnedMessageStore } = this.rootStore;
+    const {
+      channelStore,
+      messageStore,
+      pinnedMessageStore,
+      groupStore
+    } = this.rootStore;
 
     // Join group channel
     channelStore
@@ -289,6 +294,9 @@ class GroupsStore {
 
     // Reset messages
     messageStore.reset();
+
+    // reset current group
+    groupStore.reset();
 
     // Reset pinned messages
     pinnedMessageStore.reset();
