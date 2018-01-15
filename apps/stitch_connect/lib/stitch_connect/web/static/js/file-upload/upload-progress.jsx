@@ -14,7 +14,7 @@ class UploadProgress extends Component {
           key={key}
           progress={progress}
           filename={filename}
-          label={`${filename}: ${progress.toFixed(0)}%`}
+          label={`Uploading ${filename}... ${progress.toFixed(0)}%`}
           cancel={() => uploadStore.abortUpload(key)}
         />
       );
@@ -25,7 +25,7 @@ class UploadProgress extends Component {
         key={key}
         progress={100}
         showCancel={false}
-        label={`Processing ${key}...`}
+        label={`Processing uploaded file...`}
       />
     );
   };

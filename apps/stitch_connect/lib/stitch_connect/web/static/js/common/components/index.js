@@ -13,6 +13,7 @@ import LoadingButton from "./loading-button";
 import AvatarUploader from "./avatar-uploader";
 import TeamList from "./team-list/team-list";
 import AppAlert from "./app-alert";
+import Scrollbar from "./scrollbar";
 
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
@@ -40,5 +41,6 @@ export {
   MessageFooter,
   MessageHeader,
   AddonMessage,
-  ReactionPicker
+  ReactionPicker,
+  Scrollbar
 };

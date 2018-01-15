@@ -160,10 +160,19 @@ defmodule Stitch.Group do
     params = %{group_id: group.id, user_id: user_id}
     changeset = GroupUser.changeset(%GroupUser{}, params)
 
-    Ecto.Multi.new
-    |> Ecto.Multi.insert(:group_user, changeset)
-    |> log_system_join_messages(group, user_id)
-    |> Repo.transaction
+    result =
+      Ecto.Multi.new
+      |> Ecto.Multi.insert(:group_user, changeset)
+      |> log_system_join_messages(group, user_id)
+      |> Repo.transaction
+
+    case result do
+      {:error, :group_user, group_user_changeset, _changes_so_far} ->
+        %Ecto.Changeset{errors: [user_id: {message, _}]} = group_user_changeset
+        {:error, message}
+
+      any -> any
+    end
   end
 
   @doc """
