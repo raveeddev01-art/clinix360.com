@@ -1,5 +1,5 @@
 import { observable, action } from "mobx";
-import history from "../../lib/history";
+import history from "lib/history";
 
 class InvitationStore {
   @observable firstname = "";
