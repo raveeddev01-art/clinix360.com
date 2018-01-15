@@ -24,7 +24,7 @@ defmodule StitchConnect.Web.GroupController.JoinTest do
       |> post(api_v1_group_path(conn, :join, group))
       |> json_response(:unprocessable_entity)
 
-    assert %{"message" => "Cannot add user to the room"} = json
+    assert %{"message" => "User is already part of room"} = json
   end
 
   test "returns group_id and user_id", %{conn: conn, group: group, bob: bob} do
