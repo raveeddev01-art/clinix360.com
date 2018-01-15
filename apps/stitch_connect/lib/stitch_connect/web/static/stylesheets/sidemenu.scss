@@ -10,7 +10,7 @@
     .team-user {
       flex: 1;
       min-width: 0;
-      padding-top: 20px;
+      padding-top: 6px;
     }
 
     .team-name {
@@ -28,7 +28,7 @@
       align-items: center;
 
       i {
-        font-size: 10.5px;
+        font-size: 11px;
         line-height: 20px;
       }
 
@@ -41,6 +41,7 @@
       }
 
       &__status-icon {
+        width: 16px;
         display: inline-block;
         text-align: center;
         margin-right: 6px;
@@ -105,18 +106,6 @@
           }
         }
       }
-
-      &:before {
-        content: "";
-        position: absolute;
-        right: 10px;
-        top: -10px;
-        width: 0;
-        height: 0;
-        border: 10px solid transparent;
-        border-bottom-color: #fff;
-        border-top-width: 0;
-      }
     }
   }
 
@@ -127,13 +116,27 @@
     .rooms-menu {
       position: relative;
       flex: 1;
-      padding: 10px 0 20px;
       @include stitch-scroll();
       overflow: hidden;
 
-      &:hover {
-        overflow-y: scroll;
-        overflow-y: overlay;
+      .scrollbar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .simplebar-scrollbar {
+        background-color: #fff;
+      }
+
+      .simplebar-scroll-content {
+        position: relative;
+      }
+
+      &__scroll-wrap {
+        padding: 10px 0 20px;
       }
 
       .menu-nav {
@@ -211,8 +214,9 @@
 
             i.fa-circle,
             i.fa-circle-o {
-              font-size: 10.5px;
               color: #fff;
+              font-size: 11px;
+              margin-top: 1px;
             }
 
             i.fa-circle-o {
@@ -224,11 +228,11 @@
             }
 
             i.fa-lock {
-              font-size: 13.5px;
+              font-size: 14px;
             }
 
             i.fa-link {
-              font-size: 12px;
+              font-size: 13px;
             }
 
             i.fa-comments {
@@ -282,7 +286,7 @@
 
           &.active {
             color: $brand-primary;
-            background: #fff;
+            background: #fafafa;
 
             .item-icon,
             .hide-dm {
@@ -331,13 +335,18 @@
 
         .invite-link {
           display: inline-block;
-          color: $brand-primary;
+          color: #fff;
           font-size: 15px;
-          font-weight: bold;
           text-decoration: none;
-          border-bottom: 1px dashed #003366;
-          margin: 15px 10px 0;
+          border-bottom: 1px dotted #fff;
+          margin: 15px 15px 0;
           padding: 3px 0;
+          opacity: 0.6;
+
+          &:hover {
+            opacity: 1;
+            border-bottom-style: solid;
+          }
         }
       }
     }
