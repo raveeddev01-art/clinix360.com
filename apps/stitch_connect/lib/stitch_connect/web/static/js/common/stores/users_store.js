@@ -164,10 +164,10 @@ class UsersStore {
   @action
   onUserDeactivated = payload => {
     const user = this.getUserById(payload.user_id);
-    const { groupsStore } = this.rootStore;
+    const { groupsStore, presenceStore } = this.rootStore;
 
     if (payload.user_id === currentUser.id) {
-      window.location.href = "/logged-out";
+      presenceStore.logout();
       return;
     }
 
