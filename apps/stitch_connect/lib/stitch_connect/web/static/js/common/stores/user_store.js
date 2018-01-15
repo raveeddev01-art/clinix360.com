@@ -17,6 +17,7 @@ class UserStore {
   @observable email = "";
   @observable firstName = "";
   @observable lastName = "";
+  @observable fullName = "";
   @observable avatar = "";
   @observable avatarThumb = "";
   @observable roles = [];
@@ -49,13 +50,18 @@ class UserStore {
     this.id = id;
 
     get(`/api/v1/users/${id}`).then(resp => {
+      this.loading = false;
+
       const { data } = resp;
+
       this.username = data.username;
       this.phone = data.phone || "";
       this.title = data.title || "";
       this.email = data.email;
       this.firstName = data.first_name;
       this.lastName = data.last_name;
+      this.fullName = data.full_name;
+
       if (data.avatar) {
         this.hasAvatar = true;
         this.avatar = data.avatar;
@@ -65,8 +71,6 @@ class UserStore {
       }
 
       this.roles = data.roles;
-
-      this.loading = false;
     });
   };
 

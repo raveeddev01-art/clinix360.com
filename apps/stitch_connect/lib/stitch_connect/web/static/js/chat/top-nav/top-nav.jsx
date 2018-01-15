@@ -132,7 +132,18 @@ class TopNav extends Component {
     return (
       <div className="flex-header main-header">
         <div className="header-content">
-          <GroupName />
+          <Dropdown
+            id="title-dropdown-room-controls"
+            rootCloseEvent="click"
+            onToggle={this.onToggleSettings}
+          >
+            <Dropdown.Toggle noCaret className="title-dropdown-toggle">
+              <GroupName />
+            </Dropdown.Toggle>
+            <Dropdown.Menu className="room-controls-menu">
+              {this.renderRoomControls()}
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
 
         <div className="header-nav">

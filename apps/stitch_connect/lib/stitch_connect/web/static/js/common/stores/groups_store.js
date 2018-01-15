@@ -97,6 +97,13 @@ class GroupsStore {
     }, 0);
   }
 
+  @computed
+  get totalUnreadMessagesCount() {
+    return this.visibleGroups.reduce((count, group) => {
+      return count + group.unread_messages_count;
+    }, 0);
+  }
+
   // //////////
   // ACTIONS //
   // /////// //
@@ -272,7 +279,12 @@ class GroupsStore {
    */
   @action
   onOpenedGroup = () => {
-    const { channelStore, messageStore, pinnedMessageStore } = this.rootStore;
+    const {
+      channelStore,
+      messageStore,
+      pinnedMessageStore,
+      groupStore
+    } = this.rootStore;
 
     // Join group channel
     channelStore
@@ -282,6 +294,9 @@ class GroupsStore {
 
     // Reset messages
     messageStore.reset();
+
+    // reset current group
+    groupStore.reset();
 
     // Reset pinned messages
     pinnedMessageStore.reset();

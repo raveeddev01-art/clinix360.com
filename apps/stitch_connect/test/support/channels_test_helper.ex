@@ -47,7 +47,7 @@ defmodule StitchConnect.Web.ChannelsTestHelper do
     |> GroupUser.changeset(%{group_id: group.id, user_id: user1.id})
     |> Repo.insert!
 
-    {:ok, group1: group}
+    {:ok, private_group: group}
   end
 
   def create_group(%{team: team, user1: user1, user2: user2}) do

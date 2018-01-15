@@ -21,8 +21,8 @@ defmodule StitchConnect.Web.PushNotificationsTest do
 
       PushNotifications.push_badge_update_to_user(user)
 
-      assert_receive []
-      assert_receive %FCM.Notification{registration_id: []}
+      refute_receive []
+      refute_receive %FCM.Notification{registration_id: []}
       refute_receive _
     end
 
