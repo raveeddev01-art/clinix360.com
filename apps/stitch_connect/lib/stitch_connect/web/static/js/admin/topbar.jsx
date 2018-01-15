@@ -9,17 +9,10 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 @observer
 class Topbar extends Component {
   render() {
-    const { onToggleSidebar, adminPanelStore } = this.props;
-    const { heading, icon } = adminPanelStore;
+    const { adminPanelStore: { heading, icon } } = this.props;
 
     return (
       <div className="flex-header admin-topbar">
-        <a role="button" className="toggle-menu" onClick={onToggleSidebar}>
-          <i className="fa fa-bars" />
-          <i className="fa fa-times" />
-          <span>Menu</span>
-        </a>
-        <span className="separator" />
         <h4>
           <i className={`fa ${icon}`} /> {heading}
         </h4>
@@ -66,9 +59,5 @@ class Topbar extends Component {
     );
   }
 }
-
-Topbar.propTypes = {
-  onToggleSidebar: PropTypes.func.isRequired
-};
 
 export default withRouter(Topbar);

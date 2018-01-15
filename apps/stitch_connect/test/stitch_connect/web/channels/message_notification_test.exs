@@ -16,9 +16,10 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
 
       push socket2, "became_inactive", %{}
       @endpoint.subscribe("events:#{user2.id}")
-      ref = push socket1, "new_msg", %{text_content: "Mentions @#{user2.username}."}
+      text_content = "Mentions <@U#{user2.id}>."
+      ref = push socket1, "new_msg", %{text_content: text_content}
       assert_reply ref, :ok, %{}, 1_000
-      assert_broadcast "new_message", %{group_id: _group_id, text_content: "Mentions @user2.", notify: true}
+      assert_broadcast "new_message", %{group_id: _group_id, text_content: _text_content, notify: true}
       assert Stitch.EmailNotification.count([user2.id]) == [%{message_count: 1, user_id: user2.id}]
     end
 

@@ -51,6 +51,7 @@ defmodule StitchConnect.Web.PushNotifications do
     push_badge_update_to_android_devices(badge_value, android_devices)
   end
 
+  defp push_badge_update_to_ios_devices(_badge_value, []), do: nil
   defp push_badge_update_to_ios_devices(badge_value, ios_devices) do
     Logger.info "Sending Badge Update to iOS"
     Logger.info(inspect(badge_value))
@@ -63,6 +64,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> apns_push(on_response: &handle_response_ios/1)
   end
 
+  defp push_badge_update_to_android_devices(_badge_value, []), do: nil
   defp push_badge_update_to_android_devices(badge_value, android_devices) do
     import FCM.Notification
     Logger.info "Sending Badge Update to Android"

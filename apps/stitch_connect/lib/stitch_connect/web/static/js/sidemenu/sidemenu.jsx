@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
-import { Scrollbars } from "react-custom-scrollbars";
 import cx from "classnames";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -13,6 +12,7 @@ import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
 import InviteModal from "../common/modals/invite-modal";
+import { Scrollbar } from "../common/components";
 
 @inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
 @observer
@@ -28,7 +28,7 @@ class Sidemenu extends Component {
   componentDidMount() {
     const { sidemenuStore } = this.props;
 
-    sidemenuStore.loadSidemenuDiv(this.scrollbar.view);
+    sidemenuStore.loadSidemenuDiv(this.scrollbar);
   }
 
   componentWillUnmount() {
@@ -134,14 +134,6 @@ class Sidemenu extends Component {
     );
   }
 
-  renderScrollbarView = props => {
-    return <div {...props} className="rooms-menu__scroll-wrap" />;
-  };
-
-  renderThumbVertical = ({ style, ...props }) => {
-    return <div {...props} className="sidebar__thumb" />;
-  };
-
   render() {
     const { sidemenuStore, userStore, groupsStore } = this.props;
     const filterJoined = rooms => rooms.filter(room => room.joined);
@@ -155,9 +147,7 @@ class Sidemenu extends Component {
               <span className="user-name__status-icon">
                 <i className="fa fa-circle" />
               </span>
-              <span className="user-name__text">
-                {`${userStore.firstName} ${userStore.lastName}`}
-              </span>
+              <span className="user-name__text">{userStore.fullName}</span>
             </div>
           </div>
 
@@ -219,35 +209,35 @@ class Sidemenu extends Component {
         </div>
         <div className="flex-content">
           <div className="rooms-menu">
-            <Scrollbars
-              autoHide
-              renderView={this.renderScrollbarView}
-              renderThumbVertical={this.renderThumbVertical}
-              ref={ref => {
+            <Scrollbar
+              className="scrollbar"
+              viewRef={ref => {
                 this.scrollbar = ref;
               }}
             >
-              <FavoritesList
-                heading={"Favorites"}
-                rooms={groupsStore.favoriteGroups}
-              />
+              <div className="rooms-menu__scroll-wrap">
+                <FavoritesList
+                  heading={"Favorites"}
+                  rooms={groupsStore.favoriteGroups}
+                />
 
-              <RoomsList
-                heading="Rooms"
-                rooms={filterJoined(groupsStore.normalGroups)}
-              />
+                <RoomsList
+                  heading="Rooms"
+                  rooms={filterJoined(groupsStore.normalGroups)}
+                />
 
-              <PeopleList
-                heading="Direct Messages"
-                rooms={filterJoined(groupsStore.directGroups)}
-                showInviteModal={this.showInviteModal}
-              />
+                <PeopleList
+                  heading="Direct Messages"
+                  rooms={filterJoined(groupsStore.directGroups)}
+                  showInviteModal={this.showInviteModal}
+                />
 
-              <InviteModal
-                show={this.state.showInviteModal}
-                toggle={this.toggleInviteModal}
-              />
-            </Scrollbars>
+                <InviteModal
+                  show={this.state.showInviteModal}
+                  toggle={this.toggleInviteModal}
+                />
+              </div>
+            </Scrollbar>
 
             {this.renderUnreadBadgesUp()}
             {this.renderUnreadBadgesDown()}

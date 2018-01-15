@@ -13,7 +13,9 @@ class LockableApp extends Component {
   componentDidMount() {
     const {
       throttledUserInteract,
-      getLockoutSettings
+      getLockoutSettings,
+      onWindowFocus,
+      onWindowBlur
     } = this.props.presenceStore;
 
     document.addEventListener("mousemove", throttledUserInteract);
@@ -21,16 +23,26 @@ class LockableApp extends Component {
     document.addEventListener("click", throttledUserInteract);
     document.addEventListener("keypress", throttledUserInteract);
 
+    window.addEventListener("focus", onWindowFocus);
+    window.addEventListener("blur", onWindowBlur);
+
     getLockoutSettings();
   }
 
   componentWillUnmount() {
-    const { throttledUserInteract } = this.props.presenceStore;
+    const {
+      throttledUserInteract,
+      onWindowBlur,
+      onWindowFocus
+    } = this.props.presenceStore;
 
     document.removeEventListener("touchmove", throttledUserInteract);
     document.removeEventListener("mousemove", throttledUserInteract);
     document.removeEventListener("click", throttledUserInteract);
     document.removeEventListener("keypress", throttledUserInteract);
+
+    window.removeEventListener("focus", onWindowFocus);
+    window.removeEventListener("blur", onWindowBlur);
   }
 
   render() {

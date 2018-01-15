@@ -23,7 +23,7 @@ defmodule Stitch.Team do
     struct
     |> cast(params, [:name, :slug, :security_lockout, :seconds_to_lockout, :open_invitations_enabled])
     |> validate_required([:name, :slug, :security_lockout, :open_invitations_enabled])
-    |> validate_number(:seconds_to_lockout, greater_than: 0)
+    |> validate_number(:seconds_to_lockout, greater_than: 10)
     |> unique_constraint(:slug)
   end
 end
