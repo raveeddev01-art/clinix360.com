@@ -421,7 +421,7 @@
         display: flex;
         align-items: center;
         height: 30px;
-        width: 45px;
+        width: 65px;
         justify-content: space-between;
 
         .message-form-action-item {
@@ -622,6 +622,14 @@
   border-color: #fff;
 }
 
+.group-mention {
+  border-bottom: 1px solid #333;
+}
+
+.mine .group-mention {
+  border-bottom-color: #fff;
+}
+
 .user-mention-menu {
   width: 100%;
 
@@ -651,7 +659,6 @@
 
       span {
         margin-right: 5px;
-        text-transform: capitalize;
       }
 
       small {

@@ -9,52 +9,55 @@ defmodule Stitch.Message.MentionTest do
   end
 
   test "Stitch.Mention.user_mention_keywords/1 (excludes author)" do
+    team = insert(:team)
+    group = insert(:group, team: team, is_default: true)
     bob = insert(:user, username: "bob")
     alice = insert(:user, username: "alice")
     eve = insert(:user, username: "eve")
+    _group_bob = insert(:group_user, user: bob, group: group)
+    _group_alice = insert(:group_user, user: alice, group: group)
+    _group_eve = insert(:group_user, user: eve, group: group)
 
-    mention_keywords = Stitch.Message.Mention.user_mention_keywords([bob, alice, eve], eve)
+    mention_keywords = Stitch.Message.Mention.user_mention_keywords([bob, alice, eve], eve, [], group)
 
-    assert mention_keywords == %{
-      "@bob" => [bob.id],
-      "@alice" => [alice.id],
-      "@all" => [bob.id, alice.id],
-    }
+    assert mention_keywords["<@U#{bob.id}>"] == [bob.id]
+    assert mention_keywords["<@U#{alice.id}>"] == [alice.id]
+    assert mention_keywords["<@Geveryone>"] == [bob.id, alice.id]
   end
 
   describe "Stitch.Message.get_mentions/2" do
     test "when message contains no mentions" do
-      assert Stitch.Message.Mention.message_mentions("Hello, bob.", %{"@bob" => [1, 2]}) == []
+      assert Stitch.Message.Mention.message_mentions("Hello, bob.", %{"<@U#{123}>" => [1, 2]}) == []
     end
 
     test "when user is mentioned" do
-      mentions = Stitch.Message.Mention.message_mentions("Hello, @bob", %{"@bob" => [1, 2]})
+      mentions = Stitch.Message.Mention.message_mentions("Hello, <@U123>", %{"<@U123>" => [1, 2]})
       assert mentions == [1, 2]
     end
 
     test "when one user out of many is mentioned" do
-      mentions = Stitch.Message.Mention.message_mentions("Hello, @bob", %{"@bob" => [1], "@alice" => [2]})
+      mentions = Stitch.Message.Mention.message_mentions("Hello, <@U123>", %{"<@U123>" => [1], "@alice" => [2]})
       assert mentions == [1]
     end
 
     test "when keyword is followed by a punctuation mark" do
-      assert Stitch.Message.Mention.message_mentions("Hello, @bob!", %{"@bob" => [1]}) == [1]
-      assert Stitch.Message.Mention.message_mentions("Hello, @bob.", %{"@bob" => [1]}) == [1]
-      assert Stitch.Message.Mention.message_mentions("Hello, @bob,", %{"@bob" => [1]}) == [1]
-      assert Stitch.Message.Mention.message_mentions("(Hello, @bob)", %{"@bob" => [1]}) == [1]
-      assert Stitch.Message.Mention.message_mentions("(Hello, @bob:", %{"@bob" => [1]}) == [1]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>!", %{"<@U123>" => [1]}) == [1]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>.", %{"<@U123>" => [1]}) == [1]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>,", %{"<@U123>" => [1]}) == [1]
+      assert Stitch.Message.Mention.message_mentions("(Hello, <@U123>)", %{"<@U123>" => [1]}) == [1]
+      assert Stitch.Message.Mention.message_mentions("(Hello, <@U123>:", %{"<@U123>" => [1]}) == [1]
     end
 
     test "when multiple users are mentioned" do
-      assert Stitch.Message.Mention.message_mentions("Hello, @bob and @alice!", %{"@bob" => [1], "@alice" => [2]}) == [1, 2]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123> and <@U1234>!", %{"<@U123>" => [1], "<@U1234>" => [2]}) == [1, 2]
     end
 
     test "when users' mention keywords overlap" do
-      assert Stitch.Message.Mention.message_mentions("Hello, @bob, @alice, and eve.", %{"@bob" => [1], "@alice" => [2], "eve" => [1, 2, 3]}) == [1, 2, 3]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>, <@U1234>, and eve.", %{"<@U123>" => [1], "<@U1234>" => [2], "eve" => [1, 2, 3]}) == [1, 2, 3]
     end
 
     test "when username contains a punctuation mark" do
-      assert Stitch.Message.Mention.message_mentions("Hello, @bob.a", %{"@bob.a" => [1]}) == [1]
+      assert Stitch.Message.Mention.message_mentions("Hello, <@U123>.a", %{"<@U123>.a" => [1]}) == [1]
     end
 
     test "when @all is mentioned" do
@@ -71,7 +74,7 @@ defmodule Stitch.Message.MentionTest do
       group_bob = insert(:group_user, user: bob, group: group)
       group_alice = insert(:group_user, user: alice, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, bob, %{"text_content" => "Hello, @alice.", "type" => "chat"})
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, bob, %{"text_content" => "Hello, <@U#{alice.id}>.", "type" => "chat"})
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -90,7 +93,7 @@ defmodule Stitch.Message.MentionTest do
       group_alice = insert(:group_user, user: alice, group: group)
       _group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hello, @alice, and @bob.", "type" => "chat"})
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hello, <@U#{alice.id}>, and <@U#{bob.id}>.", "type" => "chat"})
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -102,17 +105,117 @@ defmodule Stitch.Message.MentionTest do
       assert [%{mentions_count: 1, slug: "general"}] = Stitch.GroupQueries.available_groups(bob)
     end
 
-    test "when @all is mentioned" do
+    test "when @everyone is mentioned in the default room" do
       team = insert(:team)
       bob = insert(:user, username: "bob", team: team)
       alice = insert(:user, username: "alice", team: team)
       eve = insert(:user, username: "eve", team: team)
-      group = insert(:group, slug: "general", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: true)
       group_bob = insert(:group_user, user: bob, group: group)
       group_alice = insert(:group_user, user: alice, group: group)
       group_eve = insert(:group_user, user: eve, group: group)
 
-      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, @all!", "type" => "chat"})
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, <@Geveryone>!", "type" => "chat"})
+
+      group_bob = Repo.get(GroupUser, group_bob.id)
+      group_alice = Repo.get(GroupUser, group_alice.id)
+      group_eve = Repo.get(GroupUser, group_eve.id)
+
+      assert group_bob.mentions_count == 1
+      assert group_alice.mentions_count == 1
+      assert group_eve.mentions_count == 0
+
+      assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 1
+      assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 1
+      assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
+    end
+
+    test "when @everyone is mentioned in a regular room" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      eve = insert(:user, username: "eve", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: false)
+      group_bob = insert(:group_user, user: bob, group: group)
+      group_alice = insert(:group_user, user: alice, group: group)
+      group_eve = insert(:group_user, user: eve, group: group)
+
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi, <@Geveryone>!", "type" => "chat"})
+
+      group_bob = Repo.get(GroupUser, group_bob.id)
+      group_alice = Repo.get(GroupUser, group_alice.id)
+      group_eve = Repo.get(GroupUser, group_eve.id)
+
+      assert group_bob.mentions_count == 0
+      assert group_alice.mentions_count == 0
+      assert group_eve.mentions_count == 0
+
+      assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
+    end
+
+    test "when @here is mentioned and the user isn't active" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      eve = insert(:user, username: "eve", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: false)
+      group_bob = insert(:group_user, user: bob, group: group)
+      group_alice = insert(:group_user, user: alice, group: group)
+      group_eve = insert(:group_user, user: eve, group: group)
+
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi <@Ghere>", "type" => "chat"}, %{active: [], online: []})
+
+      group_bob = Repo.get(GroupUser, group_bob.id)
+      group_alice = Repo.get(GroupUser, group_alice.id)
+      group_eve = Repo.get(GroupUser, group_eve.id)
+
+      assert group_bob.mentions_count == 0
+      assert group_alice.mentions_count == 0
+      assert group_eve.mentions_count == 0
+
+      assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
+    end
+
+    test "when @here is mentioned and the user is active" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      eve = insert(:user, username: "eve", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: false)
+      group_bob = insert(:group_user, user: bob, group: group)
+      group_alice = insert(:group_user, user: alice, group: group)
+      group_eve = insert(:group_user, user: eve, group: group)
+
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi <@Ghere>", "type" => "chat"}, %{active: [], online: [bob.id]})
+
+      group_bob = Repo.get(GroupUser, group_bob.id)
+      group_alice = Repo.get(GroupUser, group_alice.id)
+      group_eve = Repo.get(GroupUser, group_eve.id)
+
+      assert group_bob.mentions_count == 1
+      assert group_alice.mentions_count == 0
+      assert group_eve.mentions_count == 0
+
+      assert available_groups_indexed_by_slug(bob)["general"].mentions_count == 1
+      assert available_groups_indexed_by_slug(alice)["general"].mentions_count == 0
+      assert available_groups_indexed_by_slug(eve)["general"].mentions_count == 0
+    end
+
+    test "when @room is mentioned" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team)
+      alice = insert(:user, username: "alice", team: team)
+      eve = insert(:user, username: "eve", team: team)
+      group = insert(:group, slug: "general", team: team, is_default: false)
+      group_bob = insert(:group_user, user: bob, group: group)
+      group_alice = insert(:group_user, user: alice, group: group)
+      group_eve = insert(:group_user, user: eve, group: group)
+
+      {:ok, %{message: _message}} = Stitch.Message.create(group.id, eve, %{"text_content" => "Hi <@Groom>", "type" => "chat"}, %{active: [], online: []})
 
       group_bob = Repo.get(GroupUser, group_bob.id)
       group_alice = Repo.get(GroupUser, group_alice.id)
@@ -137,7 +240,7 @@ defmodule Stitch.Message.MentionTest do
     group_bob = insert(:group_user, user: bob, group: group)
     group_alice = insert(:group_user, user: alice, group: group)
 
-    {:ok, %{message: message}} = Stitch.Message.create(group.id, bob, %{"text_content" => "Hello, @alice.", "type" => "chat"})
+    {:ok, %{message: message}} = Stitch.Message.create(group.id, bob, %{"text_content" => "Hello, <@U#{alice.id}>.", "type" => "chat"})
 
     group_bob = Repo.get(GroupUser, group_bob.id)
     group_alice = Repo.get(GroupUser, group_alice.id)
