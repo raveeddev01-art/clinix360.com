@@ -4,7 +4,7 @@ import Room from "../room";
 
 const FavoritesList = ({ heading, rooms }) =>
   rooms.length > 0 && (
-    <div className="menu-nav m-b-20">
+    <div className="menu-nav m-b-20 favorite-rooms">
       <div className="heading">
         <h5>{heading}</h5>
       </div>

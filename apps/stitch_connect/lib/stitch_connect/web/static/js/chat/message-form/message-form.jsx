@@ -26,8 +26,6 @@ class MessageForm extends Component {
       searchFilter: "",
       openEmojiSearch: false
     };
-
-    this.typingTimeoutId = null;
   }
 
   componentWillReceiveProps() {
@@ -87,7 +85,6 @@ class MessageForm extends Component {
       messageStore.sendMessage(this.state.text.trim());
 
       this.setState({ text: "" });
-      this.typingStopped();
     }
   };
 
@@ -133,7 +130,9 @@ class MessageForm extends Component {
         default:
       }
 
-      this.typingStarted();
+      if (evt.keyCode !== 13) {
+        this.typingStarted();
+      }
     }
   };
 
@@ -212,12 +211,6 @@ class MessageForm extends Component {
     messageStore.startTyping();
   };
 
-  typingStopped = () => {
-    const { messageStore } = this.props;
-
-    messageStore.stopTyping();
-  };
-
   insertWord = word => {
     const cursorPos = this.textInput.selectionStart;
     const str = this.getText();
@@ -229,8 +222,8 @@ class MessageForm extends Component {
 
     setTimeout(() => {
       this.textInput.setSelectionRange(
-        cursorPos + word.length + 1,
-        cursorPos + word.length + 1
+        cursorPos + word.length,
+        cursorPos + word.length
       );
       this.textInput.focus();
     });
@@ -270,6 +263,13 @@ class MessageForm extends Component {
     });
   };
 
+  startMention = () => {
+    this.replaceCurrentWord("@");
+    setTimeout(() => {
+      this.setState({ openMentionMenu: true, openEmojiSearch: false });
+    }, 100);
+  };
+
   renderInput() {
     const { messageStore, socketStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -305,6 +305,9 @@ class MessageForm extends Component {
         />
         <div className="message-form-actions">
           <InsertMenu />
+          <a className="message-form-action-item" onClick={this.startMention}>
+            <i className="fa fa-at" />
+          </a>
           <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>
