@@ -9,8 +9,15 @@
       flex-grow: 1;
       flex-shrink: 0;
 
+      .title-dropdown-toggle {
+        border: none;
+        background: none;
+        padding-left: 0;
+        padding-right: 0;
+        box-shadow: none !important;
+      }
+
       h4 {
-        display: flex;
         align-items: center;
         font-weight: 900;
         color: $brand-primary;
@@ -32,6 +39,8 @@
         i.fa-circle-o,
         i.fa-circle {
           font-size: 14px;
+          position: relative;
+          top: -2px;
         }
       }
     }
@@ -107,28 +116,6 @@
         margin-left: 10px;
       }
 
-      ul.dropdown-menu {
-        padding: 12px 0;
-        margin-top: 4px;
-
-        li {
-          a {
-            font-size: 15px;
-            line-height: 25px;
-            padding: 0 15px;
-            margin: 0 12px;
-
-            i.fa {
-              width: 1em;
-            }
-
-            &:focus {
-              outline: none;
-            }
-          }
-        }
-      }
-
       ul.room-controls-menu {
         padding: 12px 0;
         right: -8px;
@@ -144,18 +131,27 @@
         }
       }
     }
+  }
 
-    .more-menu,
-    .group-controls-menu {
-      margin-top: 17px;
+  ul.dropdown-menu {
+    padding: 12px 0;
+    margin-top: 4px;
 
-      i.fa {
-        margin-right: 2px;
+    li {
+      a {
+        font-size: 15px;
+        line-height: 25px;
+        padding: 0 15px;
+        margin: 0 12px;
+
+        i.fa {
+          width: 1em;
+        }
+
+        &:focus {
+          outline: none;
+        }
       }
-    }
-
-    .more-menu a {
-      padding: 5px 10px;
     }
   }
 
@@ -412,7 +408,7 @@
         display: flex;
         align-items: center;
         height: 30px;
-        width: 45px;
+        width: 65px;
         justify-content: space-between;
 
         .message-form-action-item {
@@ -601,15 +597,25 @@
   vertical-align: top;
   max-width: 100%;
 
-  &:hover {
+  &:hover,
+  &:focus {
+    text-decoration: none;
     border-bottom-style: solid;
   }
 }
 
-.mine.message-link,
-.user-mention-dropdown.mine .dropdown-toggle {
+.mine .message-link,
+.mine .user-mention-dropdown .dropdown-toggle {
   color: #fff;
   border-color: #fff;
+}
+
+.group-mention {
+  border-bottom: 1px solid #333;
+}
+
+.mine .group-mention {
+  border-bottom-color: #fff;
 }
 
 .user-mention-menu {
@@ -641,7 +647,6 @@
 
       span {
         margin-right: 5px;
-        text-transform: capitalize;
       }
 
       small {
@@ -846,7 +851,6 @@
       }
 
       .message-body {
-        .message-link,
         .dropdown-toggle {
           color: #fff;
           border-color: #fff;

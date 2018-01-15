@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.InvitationController do
   use StitchConnect.Web, :controller
   alias Stitch.{Invitation, MessageQueries, TeamAuthorization}
-  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel}
+  alias StitchConnect.Web.{GroupChannel, EventsChannel, TeamChannel}
   plug :fetch_session when action in [:accept]
 
   def index(conn, _params) do
@@ -81,7 +81,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
         Stitch.Billing.update_subscriber_count(conn.assigns.team)
         Enum.each(groups, fn {group, system_message} ->
           system_message = system_message |> MessageQueries.load_info
-          Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
+          GroupChannel.broadcast_message_created(system_message)
           EventsChannel.broadcast_group_new_msg(group, system_message)
           TeamChannel.broadcast_user_joined(conn.assigns.team, user)
         end)
