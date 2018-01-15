@@ -1,4 +1,5 @@
 import { observable, action } from "mobx";
+import history from "../../lib/history";
 
 class InvitationStore {
   @observable firstname = "";
@@ -46,7 +47,7 @@ class InvitationStore {
     })
       .then(() => {
         this.saving = false;
-        window.location.href = "/apps";
+        history.push("/apps");
       })
       .catch(err => {
         this.saving = false;

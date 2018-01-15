@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { BrowserRouter as Router } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { Provider } from "mobx-react";
+import history from "../lib/history";
 
 import resetPasswordStore from "./stores/reset_password_store";
 import registrationStore from "./stores/registration_store";
@@ -25,7 +26,7 @@ class Auth extends Component {
 
   render() {
     return (
-      <Router>
+      <Router history={history}>
         <Provider {...stores}>
           <AuthenticationRouter {...this.props} />
         </Provider>
