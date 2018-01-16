@@ -179,8 +179,8 @@ defmodule Stitch.Invitation do
         true ->
           {:error, "This invitation has been accepted already."}
         false ->
-          user_to_delete = Repo.get(User, invitation.user_id)
-          Repo.delete user_to_delete
+          user_to_delete = invitation.user
+          Repo.delete(invitation.user)
           {:ok, invitation, user_to_delete}
       end
     else

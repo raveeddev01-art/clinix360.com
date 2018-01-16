@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.EventsChannel do
   use StitchConnect.Web, :channel
   import Ecto.Query
   alias Stitch.{Repo, Group, GroupUser, UserQueries, Accounts.User}
-  alias StitchConnect.Web.Api.V1.{MessageView, GroupView}
+  alias StitchConnect.Web.Api.V1.{MessageView, NotificationPreferenceView, GroupView}
 
   @endpoint StitchConnect.Web.Endpoint
 
@@ -143,18 +143,18 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_notification_preference_update(user, preference) do
-    json = StitchConnect.Web.Api.V1.NotificationPreferenceView.render("show_global.json", user: user, group_preferences: preference)
+    json = NotificationPreferenceView.render("show_global.json", user: user, group_preferences: preference)
     @endpoint.broadcast("events:#{user.id}", "notification_preference_update", json)
   end
 
   def broadcast_invitation_sent(%Stitch.Team{} = team, email) do
-    Enum.each(Stitch.Accounts.User.admins(team), fn admin_user ->
+    Enum.each(Stitch.TeamQueries.list_admins(team), fn admin_user ->
       @endpoint.broadcast("events:#{admin_user.id}", "invitation_sent", %{email: email})
     end)
   end
 
   def broadcast_invitation_revoked(%Stitch.Team{} = team, email) do
-    Enum.each(Stitch.Accounts.User.admins(team), fn admin_user ->
+    Enum.each(Stitch.TeamQueries.list_admins(team), fn admin_user ->
       @endpoint.broadcast("events:#{admin_user.id}", "invitation_revoked", %{email: email})
     end)
   end

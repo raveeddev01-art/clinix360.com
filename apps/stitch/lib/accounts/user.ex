@@ -170,14 +170,4 @@ defmodule Stitch.Accounts.User do
     end
   end
   def add_thumb(changeset), do: changeset
-
-  @doc """
-  Returns admin users
-  """
-  def admins(%Stitch.Team{id: team_id}) do
-    User
-    |> where(team_id: ^team_id)
-    |> where([x], fragment("? @> ?", x.roles, ^["admin"]))
-    |> Repo.all
-  end
 end

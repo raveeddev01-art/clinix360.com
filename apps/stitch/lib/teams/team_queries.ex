@@ -57,6 +57,17 @@ defmodule Stitch.TeamQueries do
   end
 
   @doc """
+  Returns admin users
+  """
+  @spec list_teams :: [Team.t]
+  def list_admins(%Stitch.Team{id: team_id}) do
+    User
+    |> where(team_id: ^team_id)
+    |> where([x], fragment("? @> ?", x.roles, ^["admin"]))
+    |> Repo.all
+  end
+
+  @doc """
   Returns a list of teams with user counts
   """
   @spec admin_teams_query() :: Ecto.Query.t

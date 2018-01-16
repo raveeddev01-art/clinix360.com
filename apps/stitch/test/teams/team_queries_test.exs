@@ -50,6 +50,16 @@ defmodule Stitch.TeamQueriesTest do
     end
   end
 
+  describe "list_admins/1" do
+    test "lists admin users" do
+      team = insert(:team)
+      admin = insert(:user, team: team, roles: ["admin"])
+      _regular_user = insert(:user, team: team, roles: ["member"])
+      user_ids = for user <- TeamQueries.list_admins(team), do: user.id
+      assert user_ids == [admin.id]
+    end
+  end
+
   describe "get_team_owner/1" do
     test "returns the owner" do
       team = insert(:team)

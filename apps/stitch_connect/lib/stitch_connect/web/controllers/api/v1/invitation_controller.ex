@@ -36,7 +36,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
       results = Enum.reduce emails, %{}, fn email, map ->
         result = case Invitation.invite_to_team(current_user.id, email) do
           {:ok, _user} ->
-            StitchConnect.Web.EventsChannel.broadcast_invitation_sent(team, email)
+            EventsChannel.broadcast_invitation_sent(team, email)
             "ok"
           {:error, reason} -> reason
         end
@@ -57,8 +57,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
       {:error, reason} ->
         conn |> put_status(:unauthorized) |> text(reason)
       {:ok, _, deleted_user} ->
-        team = conn.assigns.team
-        StitchConnect.Web.EventsChannel.broadcast_invitation_revoked(team, deleted_user.email)
+        EventsChannel.broadcast_invitation_revoked(conn.assigns.team, deleted_user.email)
         conn
         |> json(%{message: "Invitation has been revoked."})
     end
