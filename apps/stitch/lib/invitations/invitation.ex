@@ -48,13 +48,11 @@ defmodule Stitch.Invitation do
           invited_user = Repo.get_by(User, email: email, team_id: team.id)
 
           case invited_user do
-            nil ->
-              {:error, "Email isn't valid."}
+            nil -> {:error, "Email host is not supported."}
             invited_user ->
-              if invited_user.onboarded do
-                {:error, "Email has already been registered."}
-              else
-                {:error, "Email has already been invited."}
+              case invited_user.onboarded do
+                true -> {:error, "Email has already been registered."}
+                false -> {:error, "Email has already been invited."}
               end
           end
         {:ok, new_user} ->

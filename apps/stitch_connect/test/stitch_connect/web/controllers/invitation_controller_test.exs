@@ -95,6 +95,8 @@ defmodule StitchConnect.Web.InvitationControllerTest do
           "already@invited.com",
           "not@user.com",
           "not@user.com",
+          "furqan@sina.com",
+          "furqan@sina.com",
         ] |> Enum.join(",")
       })
       |> json_response(200)
@@ -105,6 +107,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       deactivated_user.email => "Email has already been registered.",
       "already@invited.com" => "Email has already been invited.",
       "not@user.com" => "ok",
+      "furqan@sina.com" => "Email host is not supported.",
     }
   end
 

@@ -17,6 +17,11 @@ defmodule Stitch.AccountsTest do
       {:error, message} = Accounts.create_user_with_email_only("")
       assert message == "Email cannot be blank or nil."
     end
+
+    test "returns error when given email domain is prohibited" do
+      {:error, %Ecto.Changeset{} = changeset} = Accounts.create_user_with_email_only("furqan@sina.com")
+      assert changeset.errors == [email: {"email host is not supported", []}]
+    end
   end
 
   describe "Accounts.update_and_complete_user_onboarding/2" do

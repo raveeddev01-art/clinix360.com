@@ -31,11 +31,12 @@ defmodule Stitch.Accounts do
 
     token = Stitch.Rand.token(32)
 
-    {:ok, user} =
-      %User{}
-      |> User.email_changeset(%{email: email, confirmation_code: confirmation_code, token: token})
-      |> Repo.insert
-    user
+    params = %{email: email, token: token, confirmation_code: confirmation_code}
+
+    case User.email_changeset(%User{}, params) |> Repo.insert() do
+      {:ok, user} -> user
+      any -> any
+    end
   end
   def create_user_with_email_only(_), do: {:error, "Email cannot be blank or nil."}
 
