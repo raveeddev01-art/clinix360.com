@@ -143,26 +143,22 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("feed_surrounding", %{"id" => _} = params, socket) do
+  def handle_in("feed_surrounding", %{"id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
 
-    case group do
-      {:create_dm, _, _} ->
-        {:reply, {:ok, %{messages: []}}, socket}
+    case MessageQueries.get_by_id(message_id) do
+      nil ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+      target_message ->
+        {messages_before, messages_after} = MessageQueries.surrounding(target_message, group, user)
+        messages = messages_before ++ [target_message] ++ messages_after
+        messages_json = MessageView.render("index.json", %{messages: messages})
 
-      group ->
-        opts = params
-        |> Map.take(["limit", "id"])
-        |> Map.update("limit", 30 , &Enum.min([&1, 50]))
-        |> Enum.map(fn {key,value} -> {String.to_atom(key), value} end)
-
-        old_messages = MessageQueries.group_latest_messages(group.id, user, Keyword.put(opts, :max_id, opts[:id]))
-        more_before = Enum.count(old_messages) > 0
-
-        recent_messages = MessageQueries.group_recent_messages(group.id, user, Keyword.put(opts, :min_id, opts[:id]))
-        more_after = Enum.count(recent_messages) > 0
-
-        {:reply, {:ok, %{more_before: more_before, more_after: more_after}}, socket}
+        {:reply, {:ok, %{
+          more_before: Enum.any?(messages_before),
+          more_after: Enum.any?(messages_after),
+          messages: messages_json,
+        }}, socket}
     end
   end
 
