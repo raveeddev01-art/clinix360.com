@@ -22,16 +22,17 @@ class EditProfileModal extends Component {
 
     this.state = {
       show: props.show,
-      profileImgUrl: props.user.avatar,
+      profileImgUrl: props.user && props.user.avatar,
       isCropped: false,
       isCropping: false,
       isUploading: false,
-      isDeletingImg: false
+      isDeletingImg: false,
+      isSaving: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.show !== this.props.show) {
+    if (nextProps.user && nextProps.show !== this.props.show) {
       const hasAvatar =
         nextProps.user.avatar &&
         nextProps.user.avatar.indexOf("stitch-content/default-avatar.png") < 0;
@@ -45,7 +46,11 @@ class EditProfileModal extends Component {
         title: nextProps.user.title || "",
         alertVisible: false,
         hasAvatar,
-        isDeletingImg: false
+        isDeletingImg: false,
+        isCropping: false,
+        isCropped: false,
+        isUploading: false,
+        isSaving: false
       });
     }
   }
@@ -116,8 +121,17 @@ class EditProfileModal extends Component {
       "title"
     );
 
+    if (!userData.first_name) {
+      return this.showError("Please enter the first name.");
+    }
+
+    if (!userData.last_name) {
+      return this.showError("Please enter the last name.");
+    }
+
     const { user, usersStore, onSuccess, toggle } = this.props;
-    usersStore
+    this.setState({ isSaving: true });
+    return usersStore
       .saveUserData(user.id, userData)
       .then(() => {
         toggle();
@@ -125,15 +139,15 @@ class EditProfileModal extends Component {
           `Profile details have been updated for ${userData.first_name} ${userData.last_name}.`
         );
       })
-      .catch(() => {
-        this.showError(
-          "Profile update has failed, please enter required fields."
-        );
+      .catch(err => {
+        this.setState({ isSaving: false });
+        this.showError(err.data.message);
       });
   };
 
   closeModal = () => {
-    if (this.state.isUploading) return;
+    const { isSaving, isUploading } = this.state;
+    if (isUploading || isSaving) return;
     this.props.toggle();
   };
 
@@ -199,6 +213,13 @@ class EditProfileModal extends Component {
     });
   };
 
+  renderLoadingIcon = () => {
+    const { isSaving } = this.state;
+    return isSaving ? (
+      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
+    ) : null;
+  };
+
   render() {
     const { toggle } = this.props;
     const {
@@ -211,7 +232,8 @@ class EditProfileModal extends Component {
       isCropped,
       isCropping,
       isDeletingImg,
-      hasAvatar
+      hasAvatar,
+      isSaving
     } = this.state;
 
     const modalTitle = isUploading
@@ -348,11 +370,22 @@ class EditProfileModal extends Component {
         {!isDeletingImg &&
           !isCropping && (
             <Modal.Footer className="m-u-50">
-              <Button bsSize="large" bsStyle="default" onClick={toggle}>
+              <Button
+                bsSize="large"
+                bsStyle="default"
+                disabled={isSaving}
+                onClick={toggle}
+              >
                 Cancel
               </Button>
-              <Button bsSize="large" bsStyle="primary" onClick={this.onSubmit}>
+              <Button
+                bsSize="large"
+                bsStyle="primary"
+                disabled={isSaving}
+                onClick={this.onSubmit}
+              >
                 Save Settings
+                {this.renderLoadingIcon()}
               </Button>
             </Modal.Footer>
           )}
