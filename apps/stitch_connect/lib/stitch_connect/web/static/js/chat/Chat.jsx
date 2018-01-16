@@ -14,15 +14,6 @@ class Chat extends Component {
     this.openGroup(this.props.match.params);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      this.props.match.params.slug !== nextProps.match.params.slug ||
-      this.props.match.params.usernames !== nextProps.match.params.usernames
-    ) {
-      this.openGroup(nextProps.match.params);
-    }
-  }
-
   openGroup(params) {
     const { groupsStore } = this.props;
 

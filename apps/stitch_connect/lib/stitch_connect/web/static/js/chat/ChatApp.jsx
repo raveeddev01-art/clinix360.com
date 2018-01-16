@@ -80,8 +80,8 @@ class ChatApp extends Component {
           <Switcher />
           <Sidemenu />
           <Switch>
-            <Route path={`/rooms/:slug`} component={Chat} />
-            <Route path={`/direct/:usernames`} component={Chat} />
+            <Route path="/rooms/:slug" component={() => <Chat />} />
+            <Route path="/direct/:usernames" component={() => <Chat />} />
             {defaultGroup && (
               <Redirect from="*" to={`/rooms/${defaultGroup.slug}`} />
             )}
