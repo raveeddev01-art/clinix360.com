@@ -33,9 +33,16 @@ defmodule StitchConnect.Web.Messages.DirectMessagingTest do
 
     user_1_session
     |> click(css(".rooms-menu a", text: "Direct Messages"))
-    |> click(css("div.team-member", text: "#{user_2.first_name} #{user_2.last_name}"))
-    |> click(button("Start Conversation"))
-    |> assert_has(css(".header-content", text: "#{user_2.first_name} #{user_2.last_name}"))
+    |> repeat_till(fn session ->
+        session
+        |> click(css(".team-member", text: "Jane Doe"))
+        |> has?(css(".Select--multi.has-value"))
+      end)
+    |> repeat_till(fn session ->
+      session
+      |> click(button("Start Conversation"))
+      |> has?(css(".header-content", text: "Jane Doe"))
+    end)
     |> fill_in(text_field("Message"), with: "hello\n")
 
     user_2_session
