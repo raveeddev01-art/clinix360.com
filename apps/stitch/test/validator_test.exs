@@ -3,7 +3,7 @@ defmodule Stitch.ValidatorTest do
   alias Stitch.Accounts.User
 
   describe "Stitch.Validators.validate_no_emojis/2" do
-    test "shoult pass for empty field" do
+    test "should pass for empty field" do
       changeset = %User{}
         |> Ecto.Changeset.change()
         |> Stitch.Validators.validate_no_emojis(:first_name)
@@ -11,7 +11,7 @@ defmodule Stitch.ValidatorTest do
       assert changeset.valid? == true
     end
 
-    test "shoult pass for field not having emojis" do
+    test "should pass for field not having emojis" do
       changeset = %User{}
         |> Ecto.Changeset.change(first_name: "It do not have emojis")
         |> Stitch.Validators.validate_no_emojis(:first_name)
@@ -19,7 +19,7 @@ defmodule Stitch.ValidatorTest do
       assert changeset.valid? == true
     end
 
-    test "shoult fail for field having emojis" do
+    test "should fail for field having emojis" do
       changeset = %User{}
         |> Ecto.Changeset.change(first_name: "It do 😎 have emojis")
         |> Stitch.Validators.validate_no_emojis(:first_name)
