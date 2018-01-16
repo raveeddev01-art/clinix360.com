@@ -1,7 +1,6 @@
 import orderBy from "lodash/orderBy";
 import uniq from "lodash/uniq";
-import { NOTIFICATION_PREFERENCES } from "lib/constants";
-import { UNICODE_PATTERN } from "./constants";
+import { UNICODE_PATTERN } from "lib/constants";
 
 export function isAdmin() {
   return currentUser.roles && currentUser.roles.includes("admin");
