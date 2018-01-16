@@ -1,6 +1,6 @@
 import orderBy from "lodash/orderBy";
 import uniq from "lodash/uniq";
-import { UNICODE_PATTERN } from "lib/constants";
+import { NON_UNICODE_PATTERN } from "lib/constants";
 
 export function isAdmin() {
   return currentUser.roles && currentUser.roles.includes("admin");
@@ -86,6 +86,5 @@ export function filterUsers(users, filter) {
  * @param {string} text
  */
 export function isValidUnicodeString(text) {
-  const matched = text.match(UNICODE_PATTERN);
-  return matched && matched.length === 1 && matched[0] === text;
+  return !NON_UNICODE_PATTERN.test(text);
 }
