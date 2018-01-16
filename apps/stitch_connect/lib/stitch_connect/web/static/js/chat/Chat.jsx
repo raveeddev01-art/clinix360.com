@@ -3,12 +3,11 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 import { withRouter } from "react-router";
 
-import ReconnectionAlert from "./reconnection-alert";
 import MessagePanel from "./message-panel";
 import Addons from "../addons/addons";
 import TopNav from "./top-nav/top-nav";
 
-@inject("groupsStore", "sidemenuStore", "messageStore")
+@inject("groupsStore", "sidemenuStore")
 @observer
 class Chat extends Component {
   componentWillMount() {
@@ -16,9 +15,7 @@ class Chat extends Component {
   }
 
   openGroup(params) {
-    const { groupsStore, messageStore } = this.props;
-
-    messageStore.stopTyping();
+    const { groupsStore } = this.props;
 
     if (params.slug) {
       groupsStore.openGroup(params.slug);
@@ -46,7 +43,6 @@ class Chat extends Component {
         </Helmet>
         <div id="main">
           <TopNav />
-          <ReconnectionAlert />
           <div className="flex-content">
             <MessagePanel />
             <Addons />

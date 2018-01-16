@@ -5,7 +5,7 @@ import cx from "classnames";
 
 import { filterUsers } from "lib/utils";
 
-@inject("presenceStore", "usersStore")
+@inject("presenceStore", "usersStore", "groupsStore")
 @observer
 class MenutionMenu extends Component {
   constructor(...args) {
@@ -22,6 +22,10 @@ class MenutionMenu extends Component {
       this.setState({ activeUserIndex: 0 });
     } else if (this.props.isOpen && !nextProps.isOpen) {
       document.removeEventListener("keyup", this.onKeyUp);
+    }
+
+    if (this.props.filter !== nextProps.filter) {
+      this.setState({ activeUserIndex: 0 });
     }
   }
 
@@ -63,9 +67,37 @@ class MenutionMenu extends Component {
   };
 
   getUsers = () => {
-    const { usersStore: { activatedUsers }, filter } = this.props;
+    const {
+      usersStore: { activatedUsers },
+      filter,
+      groupsStore: { currentGroup }
+    } = this.props;
+    const users = [];
 
-    return filterUsers(activatedUsers, filter)
+    if (currentGroup.is_default) {
+      users.push({
+        username: "everyone",
+        description: "Notifies everyone in the team",
+        isGroupMention: true
+      });
+    }
+
+    if (currentGroup.type === "regular") {
+      users.push(
+        {
+          username: "here",
+          description: "Notifies online people in the room",
+          isGroupMention: true
+        },
+        {
+          username: "room",
+          description: "Notifies everyone in the room",
+          isGroupMention: true
+        }
+      );
+    }
+
+    return filterUsers([...users, ...activatedUsers], filter)
       .filter(user => !user.disabled)
       .slice(0, 10);
   };
@@ -85,27 +117,36 @@ class MenutionMenu extends Component {
           {users.map((user, index) => {
             const online = presenceStore.isOnline(user.id);
             const itemClassName = cx("user-list-item", {
-              active: activeUserIndex % users.length === index
+              active: activeUserIndex === index
             });
 
             return (
               <li
-                key={`user_${user.id}`}
+                key={`user_${user.username}`}
                 className={itemClassName}
                 onMouseEnter={this.onUserItemHover(index)}
                 onClick={this.onSelectMention(user.username)}
               >
                 <span className="item-icon">
-                  {online ? (
-                    <i className="fa fa-circle" />
-                  ) : (
-                    <i className="fa fa-circle-o" />
-                  )}
+                  <i
+                    className={cx("fa", {
+                      "fa-bullhorn": user.isGroupMention,
+                      "fa-circle": !user.isGroupMention && online,
+                      "fa-circle-o": !user.isGroupMention && !online
+                    })}
+                  />
                 </span>
-                <span className="item-text">
-                  <span>{`${user.first_name} ${user.last_name}`}</span>
-                  <small>{user.username}</small>
-                </span>
+                {user.isGroupMention ? (
+                  <span className="item-text">
+                    <span>{user.username}</span>
+                    <small>{user.description}</small>
+                  </span>
+                ) : (
+                  <span className="item-text">
+                    <span>{user.full_name}</span>
+                    <small>{user.username}</small>
+                  </span>
+                )}
               </li>
             );
           })}

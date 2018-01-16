@@ -10,6 +10,9 @@ import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
 import Promise from "bluebird";
 import shortid from "shortid";
+import { START_TYPING_THROTTLE_MS } from "lib/constants";
+import REGEX from "lib/regex";
+import { getData as getEmoji } from "emoji-mart/dist/utils";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
@@ -44,6 +47,7 @@ class MessageStore {
 
   readStatusCache = {}; // cache to store read status for when readstatus broadcast arrives before new_msg
   loadedGroupId = null; // indicates joined group id. populated after onJoinedGroup is run. It's to prevent onJoinedGroup happen again by rejoining internally in pheonix_socket.js
+  @observable syncedTime = false; // sends timestamp only after synced time
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -118,6 +122,11 @@ class MessageStore {
   @computed
   get firstUnreadMessage() {
     return this.getMessageAfterTimestamp(this.lastReadAt);
+  }
+
+  @computed
+  get lastOtherUserMessage() {
+    return this.messages.find(m => m.user_id !== currentUser.id) || {};
   }
 
   /**
@@ -324,7 +333,12 @@ class MessageStore {
       clearTimeout(this.highlightTimeout);
     }
 
-    this.highlightId = id;
+    // required for animation restart
+    this.highlightId = null;
+    setTimeout(() => {
+      this.highlightId = id;
+    }, 0);
+
     this.highlightTimeout = setTimeout(() => {
       this.highlightId = null;
     }, duration);
@@ -347,6 +361,13 @@ class MessageStore {
    */
   @action
   jumpToMessage(targetMessage) {
+    // check if target message is already loaded
+    const msg = this.getMessageById(targetMessage.id);
+    if (msg) {
+      this.centerMessage(msg.id);
+      return;
+    }
+
     if (this.joinedTargetGroupDisposer) {
       this.joinedTargetGroupDisposer();
     }
@@ -446,7 +467,7 @@ class MessageStore {
     // These info will be updated with real value when `marked_as_read` event is broadcast
     this.updateGroupData({
       last_read_at: moment
-        .utc(this.messages[0].inserted_at)
+        .utc(this.messages.length ? this.messages[0].inserted_at : new Date())
         .add(1, "millisecond")
         .format("YYYY-MM-DDTHH:mm:ss.SSS"),
       unread_messages_count: 0,
@@ -461,18 +482,25 @@ class MessageStore {
   };
 
   sendMessage = (text, additionalFields = {}) => {
-    const tempMessage = this.generateTempMessage(text);
+    const messageText = this.encodeMessage(text);
+    const tempMessage = this.generateTempMessage(messageText);
     // Add temp message
     this.messages.unshift(tempMessage);
     // Scroll to bottom
     this.scrollToBottom(null, 0, 0);
 
+    const newMsg = {
+      text_content: messageText,
+      request_id: tempMessage.id,
+      ...additionalFields
+    };
+
+    if (this.syncedTime) {
+      newMsg.timestamp = new Date().getTime(); // sending unix timestamp in milliseconds to calc latency on server
+    }
+
     this.groupChannel
-      .push("new_msg", {
-        text_content: text,
-        request_id: tempMessage.id,
-        ...additionalFields
-      })
+      .push("new_msg", newMsg)
       .receive("error", () => {
         this.updateMessageData(tempMessage.id, {
           status: "failed"
@@ -483,6 +511,8 @@ class MessageStore {
           status: "failed"
         });
       });
+
+    this.startTyping.flush(); // flushing throttle
   };
 
   @action
@@ -647,6 +677,8 @@ class MessageStore {
       return;
     }
 
+    this.startTyping.flush(); // flushing throttle
+
     if (
       !this.textInEdit ||
       this.messageInEdit.text_content === this.textInEdit
@@ -658,7 +690,7 @@ class MessageStore {
     this.groupChannel.push("edit_msg", {
       message_id: this.messageInEdit.id,
       params: {
-        text_content: this.textInEdit
+        text_content: this.encodeMessage(this.textInEdit)
       }
     });
   }
@@ -696,17 +728,9 @@ class MessageStore {
     }
   }
 
-  stopTyping = () => {
-    if (this.groupChannel) {
-      this.groupChannel.push("typing_stopped");
-    }
-  };
-
-  startTyping = () => {
-    clearTimeout(this.typingTimeoutId);
-    this.groupChannel.push("typing_started");
-    this.typingTimeoutId = setTimeout(this.stopTyping, 2000);
-  };
+  startTyping = _.throttle(() => {
+    this.groupChannel.push("is_typing");
+  }, START_TYPING_THROTTLE_MS);
 
   keepScrollAtBottom = () => {
     if (this.isScrollBottom) {
@@ -740,18 +764,37 @@ class MessageStore {
     });
   };
 
+  @action
+  syncTime = () => {
+    this.syncedTime = false;
+    this.groupChannel
+      .push("sync_time", {
+        timestamp: new Date().getTime()
+      })
+      .receive("ok", () => {
+        this.syncedTime = true;
+      });
+  };
+
   // ////////////// //
   // EVENT HANDLERS //
   // ////////////// //
 
   @action
   onJoinGroupChannel = data => {
-    // commenting out below for now until phoenix socket is reviewed by Chris
-    // if (this.group.id === this.loadedGroupId) {
-    //   return; // just ignore data coming if it's rejoined on same channel. It happened just for reconnecting socket.
-    // }
+    // sync time as soon as joined to the channel
+    this.syncTime();
 
-    this.messages = data.messages;
+    if (this.group.id === this.loadedGroupId) {
+      // new message has more precedance by putting it as first param.
+      this.messages = _.unionBy(data.messages, this.messages, msg => {
+        return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
+      });
+    } else {
+      this.messages = data.messages;
+    }
+
+    this.rootStore.socketStore.sendPingWithTimeout();
 
     if (data.messages.length < 30) {
       this.loadedAll = true;
@@ -834,13 +877,16 @@ class MessageStore {
 
   @action
   onNewMessage = newMessage => {
-    const { sidemenuStore } = this.rootStore;
+    const { sidemenuStore, groupStore } = this.rootStore;
 
     if (newMessage.group_id !== this.group.id) {
       return;
     }
 
-    if (newMessage.request_id && newMessage.user_id === currentUser.id) {
+    if (
+      this.getMessageById(newMessage.request_id) && // request_id is now attached to every message, so we should check if temp message exists
+      newMessage.user_id === currentUser.id
+    ) {
       // update message if it's temporary
       this.updateMessageData(newMessage.request_id, {
         ...newMessage,
@@ -891,6 +937,11 @@ class MessageStore {
 
     // Show notification card
     sidemenuStore.showNotificationCardForNewMessage(newMessage);
+
+    // Remove the sender of message from typing list immediately after message arrives
+    if (newMessage.user_id && newMessage.user_id !== currentUser.id) {
+      groupStore.stoppedTyping(newMessage.user_id);
+    }
   };
 
   @action
@@ -975,6 +1026,85 @@ class MessageStore {
       );
       this.keepScrollAtBottom();
     }
+  };
+
+  /**
+   * Encodes message for backend compatible format
+   * - @emil -> <@U123>
+   * @param {string} messageText
+   * @returns {string} encoded message
+   */
+  encodeMessage = (messageText = "") => {
+    const { usersByUsername } = this.rootStore.usersStore;
+    return messageText.replace(REGEX.USER_MENTION_ENCODE, (match, username) => {
+      const user = usersByUsername[username];
+      if (["everyone", "room", "here"].indexOf(username) > -1) {
+        return `<@G${username}>`;
+      } else if (user) {
+        return `<@U${user.id}>`;
+      }
+
+      return match;
+    });
+  };
+
+  /**
+   * Decodes message to render in message content component
+   * @param {string} messageText
+   * @returns {Array<{type, content}>}
+   */
+  decodeMessage = (messageText = "") => {
+    const { usersById } = this.rootStore.usersStore;
+
+    const result = messageText
+      .split(REGEX.SPLITTER)
+      .filter(p => p)
+      .map(part => {
+        // mention
+        const match = part.match(REGEX.USER_MENTION_DECODE);
+        if (match && match[1] && usersById[match[1]]) {
+          return {
+            type: "mention",
+            content: match[1]
+          };
+        }
+
+        const groupMatch = part.match(REGEX.GROUP_MENTION_DECODE);
+        if (groupMatch && groupMatch[1]) {
+          return {
+            type: "group_mention",
+            content: groupMatch[1]
+          };
+        }
+
+        // emoji
+        if (REGEX.EMOJI.test(part)) {
+          const emojiParts = part.split(REGEX.EMOJI);
+          return emojiParts.filter(p => p).map(emojiPart => {
+            const emoji = getEmoji(emojiPart);
+            const hasEmoji = emoji && emoji.name;
+
+            if (hasEmoji) {
+              return {
+                type: "emoji",
+                content: emojiPart
+              };
+            }
+
+            return {
+              type: "text",
+              content: emojiPart
+            };
+          });
+        }
+
+        return {
+          type: "text",
+          content: part
+        };
+      });
+
+    return _.flatten(result);
   };
 
   @action

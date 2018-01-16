@@ -11,6 +11,7 @@ config :wallaby,
   screenshot_on_failure: true,
   driver: Wallaby.Experimental.Chrome,
   chrome: [headless: true],
+  base_url: "http://localhost:4001",
   js_logger: false
 
 config :stitch_connect, :start_message_link_preview_generator, false
@@ -20,4 +21,5 @@ config :stitch_connect, :sql_sandbox, true
 config :stitch_connect,
   application_host: "localhost:4001",
   application_scheme: "http://",
-  websocket_scheme: "ws://"
+  websocket_scheme: "ws://",
+  apns_topic: "apns-topic"

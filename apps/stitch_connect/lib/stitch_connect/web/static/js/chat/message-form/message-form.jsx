@@ -26,8 +26,6 @@ class MessageForm extends Component {
       searchFilter: "",
       openEmojiSearch: false
     };
-
-    this.typingTimeoutId = null;
   }
 
   componentWillReceiveProps() {
@@ -41,15 +39,14 @@ class MessageForm extends Component {
   onKeyDown = evt => {
     const { openMentionMenu, openEmojiSearch } = this.state;
     if (
-      [37, 38, 39, 40, 13].indexOf(evt.keyCode) > -1 &&
-      (openMentionMenu || openEmojiSearch)
+      ([38, 40].indexOf(evt.keyCode) > -1 && openMentionMenu) ||
+      ([37, 38, 39, 40].indexOf(evt.keyCode) > -1 && openEmojiSearch) ||
+      evt.keyCode === 13
     ) {
       evt.preventDefault();
     }
 
     if (evt.keyCode === 13) {
-      evt.preventDefault();
-
       if (
         (evt.altKey && !evt.ctrlKey && !evt.shiftKey) ||
         (!evt.altKey && evt.ctrlKey && !evt.shiftKey) ||
@@ -66,7 +63,7 @@ class MessageForm extends Component {
     const { messageStore, socketStore } = this.props;
 
     // if not connected, just no send message at all
-    if (!socketStore.isConnected) {
+    if (!socketStore.isConnected || !socketStore.isHealthy) {
       return;
     }
 
@@ -88,7 +85,6 @@ class MessageForm extends Component {
       messageStore.sendMessage(this.state.text.trim());
 
       this.setState({ text: "" });
-      this.typingStopped();
     }
   };
 
@@ -134,7 +130,9 @@ class MessageForm extends Component {
         default:
       }
 
-      this.typingStarted();
+      if (evt.keyCode !== 13) {
+        this.typingStarted();
+      }
     }
   };
 
@@ -213,12 +211,6 @@ class MessageForm extends Component {
     messageStore.startTyping();
   };
 
-  typingStopped = () => {
-    const { messageStore } = this.props;
-
-    messageStore.stopTyping();
-  };
-
   insertWord = word => {
     const cursorPos = this.textInput.selectionStart;
     const str = this.getText();
@@ -230,8 +222,8 @@ class MessageForm extends Component {
 
     setTimeout(() => {
       this.textInput.setSelectionRange(
-        cursorPos + word.length + 1,
-        cursorPos + word.length + 1
+        cursorPos + word.length,
+        cursorPos + word.length
       );
       this.textInput.focus();
     });
@@ -271,6 +263,13 @@ class MessageForm extends Component {
     });
   };
 
+  startMention = () => {
+    this.replaceCurrentWord("@");
+    setTimeout(() => {
+      this.setState({ openMentionMenu: true, openEmojiSearch: false });
+    }, 100);
+  };
+
   renderInput() {
     const { messageStore, socketStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -281,7 +280,8 @@ class MessageForm extends Component {
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
-      editing: !!messageInEdit || !socketStore.isConnected
+      editing:
+        !!messageInEdit || !socketStore.isConnected || !socketStore.isHealthy
     });
 
     return (
@@ -298,11 +298,16 @@ class MessageForm extends Component {
           autoFocus
           required
           ref={input => {
-            this.textInput = ReactDOM.findDOMNode(input);
+            if (input) {
+              this.textInput = ReactDOM.findDOMNode(input);
+            }
           }}
         />
         <div className="message-form-actions">
           <InsertMenu />
+          <a className="message-form-action-item" onClick={this.startMention}>
+            <i className="fa fa-at" />
+          </a>
           <EmojiPicker onSelectEmoji={this.insertWord} />
         </div>
       </div>

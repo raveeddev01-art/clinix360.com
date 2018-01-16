@@ -215,24 +215,26 @@ class AvatarUploader extends Component {
           )}
           {isCropping ? this.renderCropper() : this.renderDropzone()}
         </div>
-        <div className="avatar-uploader__actions">
-          <Button
-            className="btn-fancy"
-            disabled={isUploading}
-            onClick={this.onCancelCrop}
-          >
-            Cancel
-          </Button>
-          <Button
-            bsStyle="primary"
-            className="btn-fancy"
-            onClick={this.onCrop}
-            disabled={isUploading}
-          >
-            Save Profile Image
-            {this.renderLoadingIcon()}
-          </Button>
-        </div>
+        {isCropping && (
+          <div className="avatar-uploader__actions">
+            <Button
+              className="btn-fancy"
+              disabled={isUploading}
+              onClick={this.onCancelCrop}
+            >
+              Cancel
+            </Button>
+            <Button
+              bsStyle="primary"
+              className="btn-fancy"
+              onClick={this.onCrop}
+              disabled={isUploading}
+            >
+              Save Profile Image
+              {this.renderLoadingIcon()}
+            </Button>
+          </div>
+        )}
       </div>
     );
   }

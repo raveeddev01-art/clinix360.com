@@ -121,8 +121,7 @@ defmodule Stitch.GroupTest do
       user = insert(:user)
       {:ok, _} = Group.add_user(group, user.id)
 
-      {:error, :group_user, changeset, _} = Group.add_user(group, user.id)
-      {message, _} = changeset.errors[:user_id]
+      {:error, message} = Group.add_user(group, user.id)
       assert message == "User is already part of room"
     end
 

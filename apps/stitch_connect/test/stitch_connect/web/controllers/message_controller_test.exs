@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
       insert(:group_user, user: user, group: group)
       insert(:group_user, user: user2, group: group)
 
-      @endpoint.subscribe("groups:#{group.slug}")
+      @endpoint.subscribe("groups:id:#{group.id}")
       @endpoint.subscribe("events:#{user2.id}")
 
       conn = conn

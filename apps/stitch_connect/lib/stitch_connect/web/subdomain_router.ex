@@ -84,6 +84,15 @@ defmodule StitchConnect.Web.SubdomainRouter do
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :authenticated_locked_api
+
+    post "/session-lock", SessionLockController, :lock
+    post "/session-unlock", SessionLockController, :unlock
+    get "/groups", GroupController, :index
+    get "/users/notification-preference", NotificationPreferenceController, :show_global
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :authenticated_api
 
     get "/groups/:group_id/messages", MessageController, :index
@@ -100,7 +109,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/mentions", MentionController, :index
 
     get "/users/", UserController, :index
-    get "/users/notification-preference", NotificationPreferenceController, :show_global
     put "/users/notification-preference", NotificationPreferenceController, :update_global
     get "/users/:id", UserController, :show
     put "/users/:id", UserController, :update
@@ -114,7 +122,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     patch "/invitations/:id/revoke", InvitationController, :revoke
     patch "/invitations/:id/resend", InvitationController, :resend
 
-    get "/groups", GroupController, :index
     get "/groups/:id", GroupController, :show
     post "/groups", GroupController, :create
     post "/groups/dm", GroupController, :create_single_dm
@@ -137,13 +144,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post "/upload-signature", UploadController, :create
 
     resources "/devices", DeviceController, only: [:create]
-  end
-
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through :authenticated_locked_api
-
-    post "/session-lock", SessionLockController, :lock
-    post "/session-unlock", SessionLockController, :unlock
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do

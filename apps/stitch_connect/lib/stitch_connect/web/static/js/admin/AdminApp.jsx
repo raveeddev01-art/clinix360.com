@@ -4,6 +4,9 @@ import cx from "classnames";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
+import { Switcher, AppAlert } from "common/components";
+import { isAdmin } from "lib/utils";
+
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
 import TeamSecurity from "./team/security";
@@ -15,8 +18,6 @@ import AccountSettings from "./you/account/index";
 import Users from "./users/";
 import Billing from "./billing/billing";
 import Analytics from "./analytics/index";
-import Switcher from "../common/components/switcher/index";
-import { isAdmin } from "../lib/utils";
 
 @inject("titleStore")
 @observer
@@ -89,34 +90,43 @@ class AdminApp extends Component {
     const { sidebarOpened } = this.state;
     const { titleStore } = this.props;
 
-    const adminWrapperClass = cx("admin-wrapper", {
+    const adminWrapperClass = cx("admin-wrapper", "appContainer", {
       "sidebar-opened": sidebarOpened
     });
 
     return (
-      <div className={adminWrapperClass}>
-        <Helmet>
-          <title>{titleStore.title}</title>
-        </Helmet>
-        <Switcher />
-        <Sidebar onHideSidebar={this._hideSidebar} />
-        <div className="admin-content">
-          <Topbar onToggleSidebar={this._toggleSidebar} />
-          <div
-            className="admin-content-wrapper"
-            onClick={() => this._hideSidebar()}
-          >
-            <Switch>
-              {isAdmin() && this.renderAdminRoutes()}
-              <Route
-                path={`/admin/you/notifications`}
-                component={YouNotifications}
-              />
-              <Route path={`/admin/you/profile`} component={ProfileSettings} />
-              <Route path={`/admin/you/account`} component={AccountSettings} />
-              <Route path={`/admin/you/home`} component={YouHome} />
-              <Redirect to={`/admin/you/account`} />
-            </Switch>
+      <div id="app">
+        <AppAlert />
+        <div className={adminWrapperClass}>
+          <Helmet>
+            <title>{titleStore.title}</title>
+          </Helmet>
+          <Switcher />
+          <Sidebar onHideSidebar={this._hideSidebar} />
+          <div className="admin-content">
+            <Topbar onToggleSidebar={this._toggleSidebar} />
+            <div
+              className="admin-content-wrapper"
+              onClick={() => this._hideSidebar()}
+            >
+              <Switch>
+                {isAdmin() && this.renderAdminRoutes()}
+                <Route
+                  path={`/admin/you/notifications`}
+                  component={YouNotifications}
+                />
+                <Route
+                  path={`/admin/you/profile`}
+                  component={ProfileSettings}
+                />
+                <Route
+                  path={`/admin/you/account`}
+                  component={AccountSettings}
+                />
+                <Route path={`/admin/you/home`} component={YouHome} />
+                <Redirect to={`/admin/you/account`} />
+              </Switch>
+            </div>
           </div>
         </div>
       </div>

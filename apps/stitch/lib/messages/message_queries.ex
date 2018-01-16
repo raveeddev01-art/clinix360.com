@@ -3,7 +3,7 @@ defmodule Stitch.MessageQueries do
   Module in charge of all message related queries.
   """
 
-  alias Stitch.{Repo, Accounts.User, Group, GroupUser, Message, MessageAction, Paginator, Team}
+  alias Stitch.{Repo, Accounts.User, Group, GroupUser, Message, MessageAction, MessageQueries, Paginator, Team}
   import Ecto.Query
 
   @doc """
@@ -252,6 +252,13 @@ defmodule Stitch.MessageQueries do
       select: m.inserted_at,
       limit: 1
     Repo.one(query)
+  end
+
+  @spec surrounding(Message.t, Group.t, User.t) :: {[Message.t], [Message.t]}
+  def surrounding(%Message{id: message_id}, %Group{id: group_id}, %User{} = user) do
+    messages_before = MessageQueries.group_latest_messages(group_id, user, max_id: message_id) |> Enum.reverse
+    messages_after = MessageQueries.group_recent_messages(group_id, user, min_id: message_id)
+    {messages_before, messages_after}
   end
 
   defp yesterday, do: Date.add(Date.utc_today(), -1)

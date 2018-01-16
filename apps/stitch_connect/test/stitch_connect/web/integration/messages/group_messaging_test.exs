@@ -1,22 +1,18 @@
 defmodule StitchConnect.Web.Messages.GroupMessagingTest do
-  use StitchConnect.Web.FeatureCase, async: false
-
-  import Wallaby.Query, only: [button: 1, text_field: 1, css: 2]
-  import Stitch.Factory
-  alias StitchConnect.Web.IntegrationTestHelper, as: Helper
+  use StitchConnect.Web.FeatureCase
 
   defp message(msg), do: css(".message-container > .message", text: msg)
 
-  test "users can see each other's messages" do
+  test "users can see each other's messages", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")
     user_1 = insert(:user, email: "someuser@somecompany.com", team: team)
     user_2 = insert(:user, email: "otheruser@somecompany.com", team: team)
 
-    {:ok, user_1_session} = Wallaby.start_session()
-    {:ok, user_2_session} = Wallaby.start_session()
+    {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
+    {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1)
-    Helper.sign_in(user_2_session, team, user_2)
+    sign_in(user_1_session, team, user_1)
+    sign_in(user_2_session, team, user_2)
 
     user_1_session
     |> click(button("Join"))
