@@ -176,8 +176,8 @@ defmodule Stitch.Accounts.User do
   def add_default_profile_image(%{valid?: true} = changeset) do
     avatar = Stitch.Accounts.ProfileImage.pick_default_random()
     changeset
-    |> put_change(:profile_image_url, avatar.image)
-    |> put_change(:profile_image_thumb_url, avatar.thumb)
+    |> put_change(:profile_image_url, avatar.image_url)
+    |> put_change(:profile_image_thumb_url, avatar.thumb_url)
   end
   def add_default_profile_image(changeset), do: changeset
 

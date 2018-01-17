@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   alias Stitch.{Accounts.User, UserQueries}
   alias StitchConnect.Web.{TeamChannel}
-  import Stitch.TeamAuthorization, only: [can_set_profile?: 2]
+  import Stitch.TeamAuthorization, only: [can_update_user?: 2]
 
   action_fallback StitchConnect.Web.Api.V1.FallbackController
 
@@ -53,8 +53,8 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def update(conn, %{"id" => user_id} = params) do
-    with {user_id, _} <- Integer.parse(user_id),
-         true <- can_set_profile?(conn.assigns.current_user, user_id),
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Stitch.Accounts.Admin.update_user(user_id, params) do
       TeamChannel.broadcast_user_info(conn.assigns.team, user)
       render(conn, "update.json", user: user)
@@ -200,7 +200,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
     with {user_id, _} <- Integer.parse(user_id),
-         true <- can_set_profile?(conn.assigns.current_user, user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Stitch.Accounts.update_profile_image(user_id, url) do
       conn |> render("show.json", user: user)
     else
@@ -218,7 +218,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def delete_profile_image(conn, %{"id" => user_id}) do
     with {user_id, _} <- Integer.parse(user_id),
-         true <- can_set_profile?(conn.assigns.current_user, user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Stitch.Accounts.delete_profile_image(user_id) do
       conn |> render("show.json", user: user)
     else

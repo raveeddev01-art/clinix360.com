@@ -5,8 +5,8 @@ defmodule Stitch.Repo.Migrations.SetProfileImageToHistoricalNull do
 
   def up do
     execute ~s(UPDATE users SET
-      profile_image_url = '#{@default_avatar.image}',
-      profile_image_thumb_url = '#{@default_avatar.thumb}'
+      profile_image_url = '#{@default_avatar.image_url}',
+      profile_image_thumb_url = '#{@default_avatar.thumb_url}'
       WHERE profile_image_url is null)
   end
 

@@ -197,7 +197,8 @@ defmodule Stitch.Accounts do
   end
 
   def delete_profile_image(user_id) do
-    Repo.get(User, user_id)
+    User
+    |> Repo.get(user_id)
     |> User.default_profile_image_changeset(%{profile_image_url: nil, profile_image_thumb_url: nil})
     |> Repo.update
   end

@@ -235,7 +235,7 @@ defmodule StitchConnect.Web.UserControllerTest do
       assert json["last_name"] == "Aziz"
     end
 
-    test "Normal uesr can set his profile", %{conn: conn} do
+    test "Normal user can set his profile", %{conn: conn} do
       team = insert(:team)
       user = insert(:user, team: team)
 
@@ -252,7 +252,7 @@ defmodule StitchConnect.Web.UserControllerTest do
       assert json["last_name"] == "Aziz1"
     end
 
-    test "Normal uesr cannot set other user's profile", %{conn: conn} do
+    test "Normal user cannot set other user's profile", %{conn: conn} do
       team = insert(:team)
       user = insert(:user, team: team)
       user1 = insert(:user, team: team)
