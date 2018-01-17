@@ -115,9 +115,7 @@ class GroupsStore {
   // /////// //
 
   hasAccess = groupId => {
-    return (
-      isFullMember(currentUser) || !!this.groups.find(g => g.id === groupId)
-    );
+    return !!this.groups.find(g => g.id === groupId);
   };
 
   @action
@@ -155,17 +153,30 @@ class GroupsStore {
 
   @action
   loadGroups = () => {
-    const { sidemenuStore } = this.rootStore;
-
     return get("/api/v1/groups").then(response => {
-      this.groups = orderBy(response.data, ["name"]).map(group => ({
-        ...group,
-        new_message_line_at: null,
-        marked_as_unread: false
-      }));
-
-      sidemenuStore.updateFavicon();
+      this.onLoadedGroups(response.data);
     });
+  };
+
+  @action
+  loadAdditionalGroup = groupId => {
+    return get(`/api/v1/groups/${groupId}`).then(response => {
+      if (!this.getGroupById(groupId)) {
+        this.onLoadedGroups([...this.groups, response.data]);
+      }
+    });
+  };
+
+  @action
+  onLoadedGroups = groups => {
+    const { sidemenuStore } = this.rootStore;
+    this.groups = orderBy(groups, ["name"]).map(group => ({
+      ...group,
+      new_message_line_at: null,
+      marked_as_unread: false
+    }));
+
+    sidemenuStore.updateFavicon();
   };
 
   @action
@@ -390,27 +401,25 @@ class GroupsStore {
     const allUsers = this.rootStore.usersStore.usersById;
     const users = payload.user_ids.map(id => allUsers[id]);
 
-    // only make changes when user is full member or has access to group
-    if (this.hasAccess(payload.group_id)) {
-      this.updateGroupData(payload.group_id, {
-        users
-      });
+    if (isFullMember(currentUser)) {
+      if (this.hasAccess(payload.group_id)) {
+        this.updateGroupData(payload.group_id, {
+          users
+        });
+      } else {
+        // load group
+      }
 
       const meRemoved = payload.user_ids.indexOf(currentUser.id) === -1;
-
-      // if the user is guest and removed from a channel, do nothing, because he will be presented reload modal
-      if (meRemoved && !isFullMember(currentUser)) {
-        return;
-      }
 
       // redirect to default group if user is removed from current room
       if (meRemoved && this.currentGroupId === payload.group_id) {
         history.push(`/rooms/${this.defaultGroup.slug}`);
       }
-
-      // @TODO update groups without loading all groups
-      // @NOTE loadGroups is called because private groups aren't existed yet in the list
-      this.loadGroups();
+    } else if (this.hasAccess(payload.group_id)) {
+      this.updateGroupData(payload.group_id, {
+        users
+      });
     }
   };
 
