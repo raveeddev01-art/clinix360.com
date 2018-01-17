@@ -191,7 +191,8 @@ defmodule Stitch.Accounts do
   def update_user_password(_,_,_), do: {:error, "Invalid Parameters provided for password update"}
 
   def update_profile_image(user_id, url) do
-    Repo.get(User, user_id)
+    User
+    |> Repo.get(user_id)
     |> User.profile_image_changeset(%{"profile_image_url" => url})
     |> Repo.update
   end
