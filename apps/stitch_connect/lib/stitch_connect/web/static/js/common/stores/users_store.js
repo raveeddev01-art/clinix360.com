@@ -23,6 +23,28 @@ class UsersStore {
   getUserById = userId => this.users.find(u => u.id === userId);
   getUserByUsername = username => this.users.find(u => u.username === username);
 
+  // users connected to guest through DM or group
+  @computed
+  get connectedUsers() {
+    const { groups } = this.rootStore.groupsStore;
+    const userIDs = [];
+
+    groups.forEach(g => {
+      g.users.forEach(u => {
+        if (userIDs.indexOf(u.id) === -1) {
+          userIDs.push(u.id);
+        }
+      });
+    });
+
+    return this.users.filter(u => userIDs.indexOf(u.id) > -1);
+  }
+
+  @computed
+  get connectedAndActivatedUsers() {
+    return this.connectedUsers.filter(u => !u.disabled);
+  }
+
   @computed
   get editingUser() {
     return this.getUserById(this.editingUserId);
