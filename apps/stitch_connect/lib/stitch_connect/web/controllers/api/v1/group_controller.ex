@@ -163,10 +163,10 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     case TeamAuthorization.user_is_member?(conn.assigns.current_user.team_id, conn.assigns.current_user.id) do
       true ->
         case Group.add_user(group, conn.assigns.current_user.id) do
-          {:error, _, _, _} ->
+          {:error, error_message} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> json(%{message: "Cannot add user to the room"})
+            |> json(%{message: error_message})
           {:ok, %{group_user: group_user, system_message: system_message}} ->
             {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
             system_message = MessageQueries.load_info(system_message)

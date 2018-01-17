@@ -49,7 +49,11 @@ class DotOptions extends React.Component {
           >
             <i className="fa fa-bullhorn" /> Live Support
           </MenuItem>
-          <MenuItem href="https://intercom.help/teamstitch">
+          <MenuItem
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://intercom.help/teamstitch"
+          >
             <i className="fa fa-question-circle" /> Help Center
           </MenuItem>
         </Dropdown.Menu>
