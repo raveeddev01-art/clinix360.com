@@ -94,6 +94,13 @@ defmodule Stitch.TeamQueriesTest do
       assert team_1 in teams
       assert team_2 in teams
       refute team_3 in teams
+
+      teams = TeamQueries.all_with_user_email("FOO@EXAMPLE.COM")
+
+      assert length(teams) == 2
+      assert team_1 in teams
+      assert team_2 in teams
+      refute team_3 in teams
     end
 
     test "returns an empty list if no team has a user with the given email" do

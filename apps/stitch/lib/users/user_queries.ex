@@ -54,15 +54,7 @@ defmodule Stitch.UserQueries do
   """
   @spec team_member_with_email(integer, binary) :: User.t() | nil
   def team_member_with_email(team_id, email) do
-    query =
-      from(
-        u in User,
-        where: u.team_id == ^team_id,
-        where: u.onboarded == ^true,
-        where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
-      )
-
-    Repo.one(query)
+    Repo.get_by(User, team_id: team_id, onboarded: true, email: email)
   end
 
   @doc """
