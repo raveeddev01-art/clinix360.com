@@ -58,7 +58,6 @@ defmodule Stitch.Accounts.ProfileImage do
     end
   end
 
-  @host Application.get_env(:stitch_connect, :application_host)
   @default_profile_images [
     %{
       image_url: "https://#{@s3.host}/#{@s3.bucket}/default-avatar.png",
