@@ -199,7 +199,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
-    with {user_id, _} <- Integer.parse(user_id),
+    with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Stitch.Accounts.update_profile_image(user_id, url) do
       conn |> render("show.json", user: user)
@@ -217,7 +217,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def delete_profile_image(conn, %{"id" => user_id}) do
-    with {user_id, _} <- Integer.parse(user_id),
+    with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),
          {:ok, user} <- Stitch.Accounts.delete_profile_image(user_id) do
       conn |> render("show.json", user: user)
