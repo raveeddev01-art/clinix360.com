@@ -55,7 +55,7 @@ class UserStore {
 
       if (
         data.avatar &&
-        data.avatar.indexOf("stitch-content/default-avatar.png") < 0
+        data.avatar.indexOf("stitch-content/default-avatar") < 0
       ) {
         this.hasAvatar = true;
       }
