@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
 
-import { filterUsers } from "lib/utils";
+import { filterUsers, isFullMember } from "lib/utils";
 
 @inject("presenceStore", "usersStore", "groupsStore")
 @observer
@@ -68,7 +68,7 @@ class MenutionMenu extends Component {
 
   getUsers = () => {
     const {
-      usersStore: { activatedUsers },
+      usersStore: { activatedUsers, connectedAndActivatedUsers },
       filter,
       groupsStore: { currentGroup }
     } = this.props;
@@ -97,7 +97,15 @@ class MenutionMenu extends Component {
       );
     }
 
-    return filterUsers([...users, ...activatedUsers], filter)
+    return filterUsers(
+      [
+        ...users,
+        ...(isFullMember(currentUser)
+          ? activatedUsers
+          : connectedAndActivatedUsers)
+      ],
+      filter
+    )
       .filter(user => !user.disabled)
       .slice(0, 10);
   };
