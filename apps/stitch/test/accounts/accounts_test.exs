@@ -74,7 +74,7 @@ defmodule Stitch.AccountsTest do
   end
 
   describe "Accounts.delete_profile_image/1" do
-    test "It should set the avatar image to some randome default one" do
+    test "It should set the avatar image to some random default one" do
       image = "https://localhost.test:4443/images/some-avatar.png"
 
       user = insert(:user, %{profile_image_url: image, profile_image_thumb_url: image})
