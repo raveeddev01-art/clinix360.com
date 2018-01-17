@@ -148,14 +148,14 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_invitation_sent(%Stitch.Team{} = team, email) do
-    Enum.each(Stitch.TeamQueries.list_admins(team), fn admin_user ->
-      @endpoint.broadcast("events:#{admin_user.id}", "invitation_sent", %{email: email})
+    Enum.each(Stitch.TeamQueries.list_admins(team), fn admin ->
+      @endpoint.broadcast("events:#{admin.id}", "invitation_sent", %{email: email})
     end)
   end
 
   def broadcast_invitation_revoked(%Stitch.Team{} = team, email) do
-    Enum.each(Stitch.TeamQueries.list_admins(team), fn admin_user ->
-      @endpoint.broadcast("events:#{admin_user.id}", "invitation_revoked", %{email: email})
+    Enum.each(Stitch.TeamQueries.list_admins(team), fn admin ->
+      @endpoint.broadcast("events:#{admin.id}", "invitation_revoked", %{email: email})
     end)
   end
 end

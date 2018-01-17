@@ -59,11 +59,11 @@ defmodule Stitch.TeamQueries do
   @doc """
   Returns admin users
   """
-  @spec list_teams :: [Team.t]
+  @spec list_admins(Team.t) :: [User.t]
   def list_admins(%Stitch.Team{id: team_id}) do
     User
     |> where(team_id: ^team_id)
-    |> where([x], fragment("? @> ?", x.roles, ^["admin"]))
+    |> where([u], fragment("? @> ?", u.roles, ^["admin"]))
     |> Repo.all
   end
 
