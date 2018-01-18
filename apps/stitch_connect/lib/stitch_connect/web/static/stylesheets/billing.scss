@@ -222,12 +222,61 @@
 
   .payment-tab {
     position: relative;
-    
+
     .tab-section {
       margin-bottom: 40px;
 
       h4 {
         font-size: 22px;
+      }
+    }
+  }
+
+  .history-tab {
+    position: relative;
+
+    .table {
+      font-weight: bold;
+
+      thead {
+        th {
+          color: $brand-primary;
+          border-bottom: 2px solid #dce2ea;
+        }
+      }
+
+      tbody {
+        &:before {
+          content: " ";
+          display: block;
+          height: 10px;
+          color: transparent;
+        }
+
+        tr {
+          td {
+            border: none;
+            background: #dce2ea;
+
+            .btn-pdf {
+              color: $brand-primary;
+              background-color: #fff;
+              border-color: $brand-primary;
+              font-weight: bold;
+            }
+          }
+
+          &:nth-child(even) {
+            td {
+              background: #fff;
+            }
+  
+            .btn-pdf {
+              color: #fff;
+              background-color: $brand-primary;
+            }
+          }
+        }
       }
     }
   }

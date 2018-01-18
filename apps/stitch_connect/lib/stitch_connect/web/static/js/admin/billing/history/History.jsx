@@ -13,7 +13,7 @@ class History extends React.Component {
 
     return (
       <div className="history-tab">
-        <Table striped hover>
+        <Table>
           <thead>
             <tr>
               <th>Date</th>
@@ -39,7 +39,7 @@ class History extends React.Component {
                     target="_blank"
                     rel="noopener noreferrer"
                     href={invoice.pdf}
-                    className="btn btn-default btn-sm"
+                    className="btn btn-default btn-sm btn-pdf"
                   >
                     PDF
                   </a>
