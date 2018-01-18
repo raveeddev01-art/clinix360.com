@@ -26,7 +26,7 @@ class MemberTypeModal extends Component {
       this.setState({
         editingUserId: nextProps.usersStore.editingUserId,
         role: user.roles[0],
-        groupId: user.groups_as_guest.join(',')
+        groupId: user.groups_as_guest.join(",")
       });
     }
   }
@@ -55,7 +55,12 @@ class MemberTypeModal extends Component {
       }
     }
 
-    usersStore.editUser(data).then(() => usersStore.onEndEditing());
+    usersStore.editUser(data).then(() => this.onEndEditing());
+  };
+
+  onEndEditing = () => {
+    this.setState({ editingUserId: null });
+    this.props.usersStore.onEndEditing();
   };
 
   render() {
@@ -68,10 +73,10 @@ class MemberTypeModal extends Component {
       (role === "multi-room-guest" && !groupId.length);
 
     return (
-      <Modal show={isEditing} onHide={usersStore.onEndEditing}>
+      <Modal show={isEditing} onHide={this.onEndEditing}>
         <Modal.Header>
           <Modal.Title>Manage Member Type</Modal.Title>
-          <a role="button" onClick={usersStore.onEndEditing}>
+          <a role="button" onClick={this.onEndEditing}>
             <i className="fa fa-close" />
           </a>
         </Modal.Header>
@@ -90,7 +95,7 @@ class MemberTypeModal extends Component {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsSize="large" onClick={usersStore.onEndEditing}>
+          <Button bsSize="large" onClick={this.onEndEditing}>
             Cancel
           </Button>
           <Button
