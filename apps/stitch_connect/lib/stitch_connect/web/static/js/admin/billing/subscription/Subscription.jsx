@@ -58,18 +58,7 @@ class Subscription extends Component {
   };
 
   onUseCreditCard = card => {
-    const { billingStore } = this.props;
-
-    this.setState({ loading: true });
-
-    billingStore
-      .useCard(card.id)
-      .then(() => {
-        this.subscribe();
-      })
-      .finally(() => {
-        this.setState({ loading: false });
-      });
+    this.subscribe();
   };
 
   onCardSubmitStart = () => {

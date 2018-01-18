@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { inject, observer } from "mobx-react";
 import { Elements } from "react-stripe-elements";
 import capitalize from "lodash/capitalize";
 
 import { getFrequency, getMonthlyPrice } from "lib/billing";
-import CreditCard from "./CreditCard";
+import CreditCards from "./CreditCards";
 import CreditCardForm from "../../components/CreditCardForm";
 
-@inject("billingStore")
-@observer
 class Checkout extends Component {
   getBillingSummary() {
     const { plan } = this.props;
@@ -30,7 +27,6 @@ class Checkout extends Component {
 
   render() {
     const {
-      billingStore: { cards },
       onUseCreditCard,
       onSubmitStart,
       onSubmitSuccess,
@@ -94,11 +90,7 @@ class Checkout extends Component {
           <div className="existing-card">
             <h5>Option A: Use an existing payment method.</h5>
 
-            {cards.length === 0 && <p className="help-block">No saved cards</p>}
-            {cards.length > 0 &&
-              cards.map(card => (
-                <CreditCard key={card.id} card={card} onUse={onUseCreditCard} />
-              ))}
+            <CreditCards onUseCreditCard={onUseCreditCard} />
           </div>
 
           <div className="add-new-card">
