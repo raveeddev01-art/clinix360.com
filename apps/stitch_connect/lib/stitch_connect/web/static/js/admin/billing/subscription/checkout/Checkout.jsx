@@ -6,7 +6,7 @@ import capitalize from "lodash/capitalize";
 
 import { getFrequency, getMonthlyPrice } from "lib/billing";
 import CreditCard from "./CreditCard";
-import CheckoutForm from "./CheckoutForm";
+import CreditCardForm from "../../components/CreditCardForm";
 
 @inject("billingStore")
 @observer
@@ -105,7 +105,7 @@ class Checkout extends Component {
             <h5>Option B: Add a new card.</h5>
 
             <Elements>
-              <CheckoutForm
+              <CreditCardForm
                 onSubmitStart={onSubmitStart}
                 onSubmitError={onSubmitError}
                 onSubmitSuccess={onSubmitSuccess}

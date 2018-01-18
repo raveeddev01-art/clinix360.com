@@ -31,7 +31,7 @@ const createOptions = fontSize => {
   };
 };
 
-class CheckoutForm extends React.Component {
+class CreditCardForm extends React.Component {
   constructor(props) {
     super(props);
 
@@ -131,7 +131,7 @@ class CheckoutForm extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.onSubmit} className="card-form">
+      <form onSubmit={this.onSubmit} className="credit-card-form">
         <div className="form-group name-on-card">
           <label htmlFor="name-on-card">
             Name on card{" "}
@@ -203,15 +203,15 @@ class CheckoutForm extends React.Component {
   }
 }
 
-CheckoutForm.defaultProps = {
+CreditCardForm.defaultProps = {
   fontSize: "14px"
 };
 
-CheckoutForm.propTypes = {
+CreditCardForm.propTypes = {
   fontSize: PropTypes.string,
   onSubmitStart: PropTypes.func.isRequired,
   onSubmitSuccess: PropTypes.func.isRequired,
   onSubmitError: PropTypes.func.isRequired
 };
 
-export default injectStripe(CheckoutForm);
+export default injectStripe(CreditCardForm);
