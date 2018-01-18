@@ -17,30 +17,23 @@ class CreditCards extends Component {
   };
 
   render() {
-    const { billingStore: { cards }, canMakeDefault } = this.props;
+    const { billingStore: { cards } } = this.props;
 
     return cards.length === 0 ? (
       <p className="help-block">No saved cards</p>
     ) : (
       cards.map(card => (
-        <CreditCard
-          key={card.id}
-          card={card}
-          canMakeDefault={canMakeDefault}
-          onUse={this.onUse}
-        />
+        <CreditCard key={card.id} card={card} onUse={this.onUse} />
       ))
     );
   }
 }
 
 CreditCards.defaultProps = {
-  canMakeDefault: true,
   onUseCreditCard: noop
 };
 
 CreditCards.propTypes = {
-  canMakeDefault: PropTypes.bool,
   onUseCreditCard: PropTypes.func
 };
 

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 import noop from "lodash/noop";
 
-const CreditCard = ({ card, canMakeDefault, onUse }) => {
+const CreditCard = ({ card, onUse }) => {
   const cardClassName = classNames("credit-card", { selected: card.default });
   const iconClassName = classNames(
     "credit-card-icon",
@@ -26,28 +26,24 @@ const CreditCard = ({ card, canMakeDefault, onUse }) => {
         </div>
       </div>
 
-      {canMakeDefault && (
-        <button
-          className="btn btn-fancy btn-primary btn-md"
-          onClick={() => {
-            onUse(card);
-          }}
-        >
-          Use this Card
-        </button>
-      )}
+      <button
+        className="btn btn-fancy btn-primary btn-md"
+        onClick={() => {
+          onUse(card);
+        }}
+      >
+        Use this Card
+      </button>
     </div>
   );
 };
 
 CreditCard.defaultProps = {
-  canMakeDefault: true,
   onUse: noop
 };
 
 CreditCard.propTypes = {
   card: PropTypes.object.isRequired,
-  canMakeDefault: PropTypes.bool,
   onUse: PropTypes.func
 };
 

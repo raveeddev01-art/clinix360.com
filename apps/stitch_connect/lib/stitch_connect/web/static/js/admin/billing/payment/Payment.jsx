@@ -46,7 +46,7 @@ class Payment extends Component {
 
           <br />
 
-          <CreditCards canMakeDefault={false} />
+          <CreditCards />
         </div>
 
         <div className="tab-section add-card-form">
