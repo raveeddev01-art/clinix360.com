@@ -63,6 +63,7 @@ class InvitationStore {
   @action
   inviteFullMembers = emails => {
     return post(`/api/v1/invitations`, {
+      hideNotify: true,
       body: { email_collection: emails.join(",") }
     });
   };
@@ -70,8 +71,9 @@ class InvitationStore {
   @action
   inviteSingleRoomGuests = (emails, groupId) => {
     return post("/api/v1/invitations/single-room-guests", {
+      hideNotify: true,
       body: {
-        email: emails,
+        emails,
         group_id: groupId
       }
     });
@@ -80,8 +82,9 @@ class InvitationStore {
   @action
   inviteMultiRoomGuests = (emails, groupIds) => {
     return post("/api/v1/invitations/multi-room-guests", {
+      hideNotify: true,
       body: {
-        email: emails,
+        emails,
         group_ids: groupIds
       }
     });
