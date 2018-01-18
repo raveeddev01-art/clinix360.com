@@ -65,6 +65,9 @@ class CreditCardForm extends React.Component {
         return;
       }
 
+      // Reset form after succss from stripe
+      this.resetForm();
+
       this.addCard(payload.token);
     });
   };
@@ -97,7 +100,7 @@ class CreditCardForm extends React.Component {
     });
   };
 
-  onCardCvcChange = change => {
+  onCardCVCChange = change => {
     const { elements } = this.state;
 
     this.setState({
@@ -118,6 +121,17 @@ class CreditCardForm extends React.Component {
       }
     });
   };
+
+  resetForm() {
+    this.setState({
+      nameOnCard: ""
+    });
+
+    this.cardNumberElement.clear();
+    this.cardExpiryElement.clear();
+    this.cardCVCElement.clear();
+    this.postalCodeElement.clear();
+  }
 
   canSubmit() {
     const { nameOnCard, elements } = this.state;
@@ -168,6 +182,9 @@ class CreditCardForm extends React.Component {
           <CardNumberElement
             {...createOptions(fontSize)}
             onChange={this.onCardNumberChange}
+            elementRef={ref => {
+              this.cardNumberElement = ref;
+            }}
           />
         </label>
 
@@ -178,6 +195,9 @@ class CreditCardForm extends React.Component {
               <CardExpiryElement
                 {...createOptions(fontSize)}
                 onChange={this.onCardExpiryChange}
+                elementRef={ref => {
+                  this.cardExpiryElement = ref;
+                }}
               />
             </label>
           </div>
@@ -186,7 +206,10 @@ class CreditCardForm extends React.Component {
               CVC
               <CardCVCElement
                 {...createOptions(fontSize)}
-                onChange={this.onCardCvcChange}
+                onChange={this.onCardCVCChange}
+                elementRef={ref => {
+                  this.cardCVCElement = ref;
+                }}
               />
             </label>
           </div>
@@ -196,6 +219,9 @@ class CreditCardForm extends React.Component {
               <PostalCodeElement
                 {...createOptions(fontSize)}
                 onChange={this.onPostalCodeChange}
+                elementRef={ref => {
+                  this.postalCodeElement = ref;
+                }}
               />
             </label>
           </div>
