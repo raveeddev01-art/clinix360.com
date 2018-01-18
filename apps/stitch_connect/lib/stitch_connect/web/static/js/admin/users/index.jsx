@@ -4,8 +4,9 @@ import Panel from "react-bootstrap/lib/Panel";
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
 import InviteModal from "common/modals/invite-modal";
+import { isFullMember } from "lib/utils";
 
-import FullMembersPanel from "./full-members-panel";
+import MembersPanel from "./members-panel";
 import DeactivatedMembersPanel from "./deactivated-members-panel";
 import PendingInvitationsPanel from "./pending-invitations-panel";
 import MemberTypeModal from "./member-type-modal";
@@ -16,7 +17,7 @@ const header = (
   </h1>
 );
 
-@inject("titleStore", "adminPanelStore")
+@inject("titleStore", "adminPanelStore", "usersStore")
 @observer
 class TeamSettings extends Component {
   constructor(props) {
@@ -84,7 +85,13 @@ class TeamSettings extends Component {
 
   render() {
     const { alertMessage, alertVisible, alertStyle } = this.state;
-
+    const { usersStore } = this.props;
+    const users = [
+      ...usersStore.onlineUsers.map(u => ({ ...u, online: true })),
+      ...usersStore.offlineUsers.map(u => ({ ...u, online: false }))
+    ];
+    const fullMembers = users.filter(u => isFullMember(u));
+    const guests = users.filter(u => !isFullMember(u));
     return (
       <Panel className="admin-panel" header={header}>
         <div className="pull-right m-u-58">
@@ -109,7 +116,18 @@ class TeamSettings extends Component {
           </a>.
         </p>
         {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
-        <FullMembersPanel
+        <MembersPanel
+          title="Members"
+          description="Manage your users by controlling admin abilities and account status. For more information on how account enabling and disabling works, see our support article."
+          users={fullMembers}
+          onSuccess={this.onSuccess}
+          onError={this.onError}
+          hideAlert={this.hideAlert}
+        />
+        <MembersPanel
+          title="Guests"
+          description="Manage guests (single room guests and multi room guests) and their rooms."
+          users={guests}
           onSuccess={this.onSuccess}
           onError={this.onError}
           hideAlert={this.hideAlert}

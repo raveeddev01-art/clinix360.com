@@ -1,19 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { inject, observer } from "mobx-react";
 import { Row, Col } from "react-bootstrap";
 import MemberItem from "./member-item";
 import SettingPanel from "../components/setting-panel/setting-panel";
 
-const title = "Members";
-const description =
-  "Manage your users by controlling admin abilities and account status. For more information on how account enabling and disabling works, see our support article.";
-
-@inject("usersStore")
-@observer
-class FullMembersPanel extends Component {
+class MembersPanel extends Component {
   render() {
-    const { usersStore } = this.props;
+    const {
+      title,
+      description,
+      users,
+      onSuccess,
+      onError,
+      hideAlert
+    } = this.props;
 
     return (
       <SettingPanel saveButtonText="" title={title} description={description}>
@@ -29,17 +29,14 @@ class FullMembersPanel extends Component {
               </Col>
             </Row>
           </div>
-          {usersStore.onlineUsers.map(user => {
-            return (
-              <MemberItem {...this.props} user={user} online key={user.id} />
-            );
-          })}
-          {usersStore.offlineUsers.map(user => {
+          {users.map(user => {
             return (
               <MemberItem
-                {...this.props}
+                onSuccess={onSuccess}
+                onError={onError}
+                hideAlert={hideAlert}
                 user={user}
-                online={false}
+                online={user.online}
                 key={user.id}
               />
             );
@@ -50,10 +47,13 @@ class FullMembersPanel extends Component {
   }
 }
 
-FullMembersPanel.propTypes = {
+MembersPanel.propTypes = {
+  users: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   hideAlert: PropTypes.func.isRequired
 };
 
-export default FullMembersPanel;
+export default MembersPanel;
