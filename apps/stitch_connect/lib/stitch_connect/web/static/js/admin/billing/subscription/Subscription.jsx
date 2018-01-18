@@ -22,7 +22,6 @@ class Subscription extends Component {
     super(props);
 
     this.state = {
-      loading: false,
       upgrade: false,
       checkout: false,
       plan: {
@@ -61,17 +60,11 @@ class Subscription extends Component {
     this.subscribe();
   };
 
-  onCardSubmitStart = () => {
-    this.setState({ loading: true });
-  };
-
   onCardSubmitSuccess = token => {
     this.subscribe();
   };
 
   onCardSubmitError = error => {
-    this.setState({ loading: false });
-
     alert({
       title: "Error in creating a stripe Token",
       message: error.message
@@ -82,35 +75,25 @@ class Subscription extends Component {
     const { billingStore } = this.props;
     const { plan } = this.state;
 
-    this.setState({ loading: true });
+    billingStore.subscribe(plan).then(subscription => {
+      alert({
+        title: "Thanks for using Stitch!",
+        message: (
+          <p>
+            We successfully saved your card info. <br />{" "}
+            <b>
+              We won&rsquo;t begin billing until your trial expires in{" "}
+              {subscription.remaining_days} days.
+            </b>
+          </p>
+        )
+      });
 
-    billingStore.subscribe(plan).then(
-      subscription => {
-        alert({
-          title: "Thanks for using Stitch!",
-          message: (
-            <p>
-              We successfully saved your card info. <br />{" "}
-              <b>
-                We won&rsquo;t begin billing until your trial expires in{" "}
-                {subscription.remaining_days} days.
-              </b>
-            </p>
-          )
-        });
-
-        this.setState({
-          loading: false,
-          checkout: false,
-          upgrade: false
-        });
-      },
-      error => {
-        this.setState({
-          loading: false
-        });
-      }
-    );
+      this.setState({
+        checkout: false,
+        upgrade: false
+      });
+    });
   }
 
   renderHeader() {
@@ -288,7 +271,6 @@ class Subscription extends Component {
       <Checkout
         plan={plan}
         onUseCreditCard={this.onUseCreditCard}
-        onSubmitStart={this.onCardSubmitStart}
         onSubmitSuccess={this.onCardSubmitSuccess}
         onSubmitError={this.onCardSubmitError}
       />
@@ -296,8 +278,8 @@ class Subscription extends Component {
   }
 
   render() {
-    const { billingStore: { subscription } } = this.props;
-    const { loading, checkout } = this.state;
+    const { billingStore: { subscription, loading } } = this.props;
+    const { checkout } = this.state;
 
     return (
       <div className="subscription-tab">

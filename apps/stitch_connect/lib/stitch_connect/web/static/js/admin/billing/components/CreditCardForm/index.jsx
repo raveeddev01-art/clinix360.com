@@ -51,19 +51,24 @@ class CreditCardForm extends React.Component {
   onSubmit = evt => {
     evt.preventDefault();
 
-    const { onSubmitStart, onSubmitError, stripe } = this.props;
+    const { onSubmitError, stripe, billingStore } = this.props;
     const { nameOnCard: name } = this.state;
 
-    onSubmitStart();
+    billingStore.loading = true;
 
-    stripe.createToken({ name }).then(payload => {
-      if (payload.error) {
-        onSubmitError(payload.error);
-        return;
-      }
+    stripe
+      .createToken({ name })
+      .then(payload => {
+        if (payload.error) {
+          onSubmitError(payload.error);
+          return;
+        }
 
-      this.addCard(payload.token);
-    });
+        this.addCard(payload.token);
+      })
+      .finally(() => {
+        billingStore.loading = false;
+      });
   };
 
   onChange = evt => {
@@ -220,7 +225,6 @@ CreditCardForm.defaultProps = {
 CreditCardForm.propTypes = {
   fontSize: PropTypes.string,
   buttonTitle: PropTypes.string,
-  onSubmitStart: PropTypes.func.isRequired,
   onSubmitSuccess: PropTypes.func.isRequired,
   onSubmitError: PropTypes.func.isRequired
 };

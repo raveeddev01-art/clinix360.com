@@ -26,12 +26,7 @@ class Checkout extends Component {
   }
 
   render() {
-    const {
-      onUseCreditCard,
-      onSubmitStart,
-      onSubmitSuccess,
-      onSubmitError
-    } = this.props;
+    const { onUseCreditCard, onSubmitSuccess, onSubmitError } = this.props;
     const billingSummary = this.getBillingSummary();
 
     return (
@@ -99,7 +94,6 @@ class Checkout extends Component {
             <Elements>
               <CreditCardForm
                 buttonTitle="Complete Purchase"
-                onSubmitStart={onSubmitStart}
                 onSubmitError={onSubmitError}
                 onSubmitSuccess={onSubmitSuccess}
               />
@@ -120,7 +114,6 @@ class Checkout extends Component {
 Checkout.propTypes = {
   plan: PropTypes.object.isRequired,
   onUseCreditCard: PropTypes.func.isRequired,
-  onSubmitStart: PropTypes.func.isRequired,
   onSubmitSuccess: PropTypes.func.isRequired,
   onSubmitError: PropTypes.func.isRequired
 };
