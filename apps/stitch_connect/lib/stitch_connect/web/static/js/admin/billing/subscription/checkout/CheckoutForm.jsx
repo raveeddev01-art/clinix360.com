@@ -197,11 +197,6 @@ class CheckoutForm extends React.Component {
           >
             Complete Purchase
           </button>
-          <p className="help-block">
-            Your account will be credited when team members are removed and
-            charged when new team members are added. It is not possible to issue
-            refunds, so please read instructions carefully.
-          </p>
         </div>
       </form>
     );

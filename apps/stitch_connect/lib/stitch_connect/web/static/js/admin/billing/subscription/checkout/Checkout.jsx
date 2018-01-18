@@ -111,6 +111,12 @@ class Checkout extends Component {
                 onSubmitSuccess={onSubmitSuccess}
               />
             </Elements>
+
+            <p className="help-block">
+              Your account will be credited when team members are removed and
+              charged when new team members are added. It is not possible to
+              issue refunds, so please read instructions carefully.
+            </p>
           </div>
         </div>
       </div>
