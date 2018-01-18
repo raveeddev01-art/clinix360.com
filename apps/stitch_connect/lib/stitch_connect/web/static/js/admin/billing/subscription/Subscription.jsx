@@ -13,7 +13,7 @@ import {
 } from "lib/billing";
 import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
-import Loading from "./loading/Loading";
+import Loading from "../components/Loading";
 
 @inject("billingStore")
 @observer
@@ -288,7 +288,7 @@ class Subscription extends Component {
         {subscription &&
           (checkout ? this.renderCheckout() : this.renderSubscription())}
 
-        <Loading show={loading} />
+        {loading && <Loading />}
       </div>
     );
   }
