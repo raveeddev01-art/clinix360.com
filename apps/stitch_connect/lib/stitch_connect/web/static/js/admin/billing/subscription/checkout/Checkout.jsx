@@ -4,7 +4,7 @@ import { Elements } from "react-stripe-elements";
 import capitalize from "lodash/capitalize";
 
 import { getFrequency, getMonthlyPrice } from "lib/billing";
-import CreditCards from "./CreditCards";
+import CreditCards from "../../components/CreditCards";
 import CreditCardForm from "../../components/CreditCardForm";
 
 class Checkout extends Component {

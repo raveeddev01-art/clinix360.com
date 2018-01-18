@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import noop from "lodash/noop";
 
-import CreditCard from "./CreditCard";
+import CreditCard from "../CreditCard";
 
 @inject("billingStore")
 @observer
