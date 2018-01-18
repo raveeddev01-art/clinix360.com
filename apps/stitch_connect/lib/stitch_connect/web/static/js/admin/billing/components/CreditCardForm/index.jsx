@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
+import noop from "lodash/noop";
 
 import {
   CardNumberElement,
@@ -219,14 +220,16 @@ class CreditCardForm extends React.Component {
 
 CreditCardForm.defaultProps = {
   fontSize: "14px",
-  buttonTitle: "Add Card"
+  buttonTitle: "Add Card",
+  onSubmitSuccess: noop,
+  onSubmitError: noop
 };
 
 CreditCardForm.propTypes = {
   fontSize: PropTypes.string,
   buttonTitle: PropTypes.string,
-  onSubmitSuccess: PropTypes.func.isRequired,
-  onSubmitError: PropTypes.func.isRequired
+  onSubmitSuccess: PropTypes.func,
+  onSubmitError: PropTypes.func
 };
 
 export default injectStripe(CreditCardForm);

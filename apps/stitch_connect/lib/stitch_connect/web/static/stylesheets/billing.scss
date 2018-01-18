@@ -1,5 +1,10 @@
 #admin-billing-tabs {
   .credit-card-form {
+    input.form-control {
+      font-size: 14px;
+      border-radius: 3px;
+    }
+    
     .name-on-card {
       label {
         display: block;
@@ -211,11 +216,6 @@
 
       .text-muted {
         color: #666;
-      }
-
-      input.form-control {
-        font-size: 14px;
-        border-radius: 3px;
       }
     }
   }

@@ -6,19 +6,16 @@ import CreditCardForm from "../components/CreditCardForm";
 import { alert } from "common/modals";
 
 class Payment extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
-
-  onCardSubmitSuccess = token => {
-    this.subscribe();
+  onCardSubmitSuccess = () => {
+    alert({
+      title: "Success",
+      message: "Credit card has been successfully added and set as default one!"
+    });
   };
 
   onCardSubmitError = error => {
     alert({
-      title: "Error in creating a stripe Token",
+      title: "Error in adding a card",
       message: error.message
     });
   };

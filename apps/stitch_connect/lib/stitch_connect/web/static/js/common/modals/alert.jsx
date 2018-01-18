@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import { confirmable } from "react-confirm";
+import noop from "lodash/noop";
 
 const Alert = ({
   okLabel,
@@ -35,8 +36,6 @@ const Alert = ({
     </Modal.Footer>
   </Modal>
 );
-
-const noop = () => {};
 
 Alert.defaultProps = {
   proceed: noop,
