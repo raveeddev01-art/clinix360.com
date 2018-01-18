@@ -9,7 +9,7 @@ import Loading from "../components/Loading";
 
 @inject("billingStore")
 @observer
-class Payment extends Component {
+class PaymentMethods extends Component {
   onUseCreditCard = card => {
     alert({
       title: "Success",
@@ -80,4 +80,4 @@ class Payment extends Component {
   }
 }
 
-export default Payment;
+export default PaymentMethods;

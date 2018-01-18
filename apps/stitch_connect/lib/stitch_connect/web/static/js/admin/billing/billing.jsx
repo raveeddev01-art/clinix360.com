@@ -5,7 +5,7 @@ import { Panel, Tabs, Tab } from "react-bootstrap";
 import Subscription from "./subscription/Subscription";
 import Contact from "./contact/Contact";
 import History from "./history/History";
-import Payment from "./payment/Payment";
+import PaymentMethods from "./payment-methods/PaymentMethods";
 
 @inject("titleStore", "adminPanelStore", "billingStore")
 @observer
@@ -31,8 +31,8 @@ class TeamBilling extends Component {
           <Tab eventKey={1} title="Subscription">
             <Subscription />
           </Tab>
-          <Tab eventKey={2} title="Payment">
-            <Payment />
+          <Tab eventKey={2} title="Payment Methods">
+            <PaymentMethods />
           </Tab>
           {invoices.length > 0 && (
             <Tab eventKey={3} title="History">
