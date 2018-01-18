@@ -99,3 +99,12 @@ export function isValidUnicodeString(text) {
 export function isFullMember(user) {
   return user.roles.indexOf("member") > -1 || user.roles.indexOf("admin") > -1;
 }
+
+/**
+ * Format currency
+ * 
+ * @param {number} money 
+ */
+export function formatCurrency(money) {
+  return `$${money.toFixed(2)}`;
+}
