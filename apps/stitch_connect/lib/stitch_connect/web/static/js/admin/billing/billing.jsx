@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { Panel, Tabs, Tab } from "react-bootstrap";
 
 import Subscription from "./subscription/Subscription";
@@ -7,7 +7,8 @@ import Contact from "./contact/Contact";
 import History from "./history/History";
 import Payment from "./payment/Payment";
 
-@inject("titleStore", "adminPanelStore")
+@inject("titleStore", "adminPanelStore", "billingStore")
+@observer
 class TeamBilling extends Component {
   componentWillMount() {
     const { titleStore, adminPanelStore } = this.props;
@@ -17,6 +18,7 @@ class TeamBilling extends Component {
   }
 
   render() {
+    const { billingStore: { invoices } } = this.props;
     const header = (
       <h1>
         <i className="fa fa-credit-card" /> Billing
@@ -32,9 +34,11 @@ class TeamBilling extends Component {
           <Tab eventKey={2} title="Payment">
             <Payment />
           </Tab>
-          <Tab eventKey={3} title="History">
-            <History />
-          </Tab>
+          {invoices.length > 0 && (
+            <Tab eventKey={3} title="History">
+              <History />
+            </Tab>
+          )}
           {/* <Tab eventKey={4} title="Contact">
             <Contact />
           </Tab> */}
