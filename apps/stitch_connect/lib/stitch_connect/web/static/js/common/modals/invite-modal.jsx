@@ -41,7 +41,12 @@ class InviteModal extends Component {
 
     this.state = {
       show: props.show,
-      ...InviteModal.initialState
+      ...InviteModal.initialState,
+      invites: [
+        {
+          email: ""
+        }
+      ]
     };
   }
 
@@ -49,7 +54,12 @@ class InviteModal extends Component {
     if (nextProps.show !== this.props.show) {
       this.setState({
         show: nextProps.show,
-        ...InviteModal.initialState
+        ...InviteModal.initialState,
+        invites: [
+          {
+            email: ""
+          }
+        ]
       });
     }
   }
@@ -375,7 +385,8 @@ class InviteModal extends Component {
                         {validationState === "error" && (
                           <HelpBlock>
                             <i className="fa fa-exclamation-circle" />{" "}
-                            {inviteSent ? resultError : invite.error}
+                            {(inviteSent ? resultError : invite.error) ||
+                              "There was problem sending invitation."}
                           </HelpBlock>
                         )}
 
