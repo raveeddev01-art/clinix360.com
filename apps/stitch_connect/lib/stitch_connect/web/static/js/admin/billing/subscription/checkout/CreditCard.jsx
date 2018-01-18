@@ -2,8 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
+import noop from "lodash/noop";
 
-const CreditCard = ({ card, onUse }) => {
+const CreditCard = ({ card, canMakeDefault, onUse }) => {
   const cardClassName = classNames("credit-card", { selected: card.default });
   const iconClassName = classNames(
     "credit-card-icon",
@@ -25,21 +26,29 @@ const CreditCard = ({ card, onUse }) => {
         </div>
       </div>
 
-      <button
-        className="btn btn-fancy btn-primary btn-md"
-        onClick={() => {
-          onUse(card);
-        }}
-      >
-        Use this Card
-      </button>
+      {canMakeDefault && (
+        <button
+          className="btn btn-fancy btn-primary btn-md"
+          onClick={() => {
+            onUse(card);
+          }}
+        >
+          Use this Card
+        </button>
+      )}
     </div>
   );
 };
 
+CreditCard.defaultProps = {
+  canMakeDefault: true,
+  onUse: noop
+};
+
 CreditCard.propTypes = {
   card: PropTypes.object.isRequired,
-  onUse: PropTypes.func.isRequired
+  canMakeDefault: PropTypes.bool,
+  onUse: PropTypes.func
 };
 
 export default CreditCard;
