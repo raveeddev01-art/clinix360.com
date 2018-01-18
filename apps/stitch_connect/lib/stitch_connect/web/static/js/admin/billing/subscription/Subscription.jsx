@@ -66,7 +66,7 @@ class Subscription extends Component {
   };
 
   onCardSubmitSuccess = token => {
-    this.addCard(token);
+    this.subscribe();
   };
 
   onCardSubmitError = error => {
@@ -77,21 +77,6 @@ class Subscription extends Component {
       message: error.message
     });
   };
-
-  addCard(token) {
-    const { billingStore } = this.props;
-
-    this.setState({ loading: true });
-
-    billingStore
-      .addCard(token.id)
-      .then(() => {
-        this.subscribe();
-      })
-      .finally(() => {
-        this.setState({ loading: false });
-      });
-  }
 
   subscribe() {
     const { billingStore } = this.props;

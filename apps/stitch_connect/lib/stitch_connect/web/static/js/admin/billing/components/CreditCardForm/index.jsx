@@ -1,5 +1,6 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject } from "mobx-react";
 
 import {
   CardNumberElement,
@@ -31,6 +32,7 @@ const createOptions = fontSize => {
   };
 };
 
+@inject("billingStore")
 class CreditCardForm extends React.Component {
   constructor(props) {
     super(props);
@@ -49,21 +51,18 @@ class CreditCardForm extends React.Component {
   onSubmit = evt => {
     evt.preventDefault();
 
-    const {
-      onSubmitStart,
-      onSubmitSuccess,
-      onSubmitError,
-      stripe
-    } = this.props;
+    const { onSubmitStart, onSubmitError, stripe } = this.props;
     const { nameOnCard: name } = this.state;
 
     onSubmitStart();
+
     stripe.createToken({ name }).then(payload => {
       if (payload.error) {
         onSubmitError(payload.error);
         return;
       }
-      onSubmitSuccess(payload.token);
+
+      this.addCard(payload.token);
     });
   };
 
@@ -127,6 +126,14 @@ class CreditCardForm extends React.Component {
       elements.cardCvc &&
       elements.postalCode
     );
+  }
+
+  addCard(token) {
+    const { billingStore, onSubmitSuccess } = this.props;
+
+    billingStore.addCard(token.id).then(() => {
+      onSubmitSuccess(token);
+    });
   }
 
   render() {

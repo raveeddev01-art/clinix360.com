@@ -50,7 +50,7 @@ class BillingStore {
       }
     }).then(response => {
       this.cards = [
-        ...this.cards.map(c => ({ ...card, default: false })),
+        ...this.cards.map(card => ({ ...card, default: false })),
         response.data.data
       ];
     });
