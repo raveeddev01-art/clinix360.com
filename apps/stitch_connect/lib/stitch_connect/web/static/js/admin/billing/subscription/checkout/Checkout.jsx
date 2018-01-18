@@ -94,8 +94,8 @@ class Checkout extends Component {
             <Elements>
               <CreditCardForm
                 buttonTitle="Complete Purchase"
-                onSubmitError={onSubmitError}
                 onSubmitSuccess={onSubmitSuccess}
+                onSubmitError={onSubmitError}
               />
             </Elements>
 

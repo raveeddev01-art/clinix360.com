@@ -133,12 +133,12 @@ class CreditCardForm extends React.Component {
     );
   }
 
-  addCard(token) {
+  async addCard(token) {
     const { billingStore, onSubmitSuccess } = this.props;
 
-    billingStore.addCard(token.id).then(() => {
-      onSubmitSuccess(token);
-    });
+    await billingStore.addCard(token.id);
+
+    onSubmitSuccess(token);
   }
 
   render() {
