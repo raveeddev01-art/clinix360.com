@@ -130,6 +130,8 @@ class CreditCardForm extends React.Component {
   }
 
   render() {
+    const { fontSize, buttonTitle } = this.props;
+
     return (
       <form onSubmit={this.onSubmit} className="credit-card-form">
         <div className="form-group name-on-card">
@@ -154,7 +156,7 @@ class CreditCardForm extends React.Component {
         <label className="stripe-element-container">
           Card Number
           <CardNumberElement
-            {...createOptions(this.props.fontSize)}
+            {...createOptions(fontSize)}
             onChange={this.onCardNumberChange}
           />
         </label>
@@ -164,7 +166,7 @@ class CreditCardForm extends React.Component {
             <label className="stripe-element-container">
               Expiration date
               <CardExpiryElement
-                {...createOptions(this.props.fontSize)}
+                {...createOptions(fontSize)}
                 onChange={this.onCardExpiryChange}
               />
             </label>
@@ -173,7 +175,7 @@ class CreditCardForm extends React.Component {
             <label className="stripe-element-container">
               CVC
               <CardCVCElement
-                {...createOptions(this.props.fontSize)}
+                {...createOptions(fontSize)}
                 onChange={this.onCardCvcChange}
               />
             </label>
@@ -182,7 +184,7 @@ class CreditCardForm extends React.Component {
             <label className="stripe-element-container">
               Postal code
               <PostalCodeElement
-                {...createOptions(this.props.fontSize)}
+                {...createOptions(fontSize)}
                 onChange={this.onPostalCodeChange}
               />
             </label>
@@ -195,7 +197,7 @@ class CreditCardForm extends React.Component {
             className="btn btn-fancy btn-primary btn-block"
             disabled={!this.canSubmit()}
           >
-            Complete Purchase
+            {buttonTitle}
           </button>
         </div>
       </form>
@@ -204,11 +206,13 @@ class CreditCardForm extends React.Component {
 }
 
 CreditCardForm.defaultProps = {
-  fontSize: "14px"
+  fontSize: "14px",
+  buttonTitle: "Add Card"
 };
 
 CreditCardForm.propTypes = {
   fontSize: PropTypes.string,
+  buttonTitle: PropTypes.string,
   onSubmitStart: PropTypes.func.isRequired,
   onSubmitSuccess: PropTypes.func.isRequired,
   onSubmitError: PropTypes.func.isRequired
