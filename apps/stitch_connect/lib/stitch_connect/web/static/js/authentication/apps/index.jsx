@@ -8,7 +8,7 @@ import LinuxDesktop from "./linux-desktop";
 import IOSMobile from "./ios-mobile";
 import AndroidMobile from "./android-mobile";
 
-@inject("registrationStore", "titleStore")
+@inject("registrationStore", "invitationStore", "titleStore")
 @observer
 export default class DownloadApps extends Component {
   constructor(props) {
@@ -90,7 +90,8 @@ export default class DownloadApps extends Component {
             {this.renderHeader()}
 
             <h5 className="text-muted url-heading">
-              {this.props.registrationStore.teamSlug}.teamstitch.com
+              {this.props.registrationStore.teamSlug ||
+                this.props.invitationStore.subdomain}.teamstitch.com
             </h5>
 
             {os === "Windows" && !mobile && <WindowsDesktop />}
