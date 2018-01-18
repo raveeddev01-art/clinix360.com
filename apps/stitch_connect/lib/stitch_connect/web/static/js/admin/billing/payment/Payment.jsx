@@ -10,6 +10,13 @@ import Loading from "../components/Loading";
 @inject("billingStore")
 @observer
 class Payment extends Component {
+  onUseCreditCard = card => {
+    alert({
+      title: "Success",
+      message: "Credit card has been set as default one!"
+    });
+  };
+
   onCardSubmitSuccess = () => {
     alert({
       title: "Success",
@@ -46,7 +53,7 @@ class Payment extends Component {
 
           <br />
 
-          <CreditCards />
+          <CreditCards onUseCreditCard={this.onUseCreditCard} />
         </div>
 
         <div className="tab-section add-card-form">
