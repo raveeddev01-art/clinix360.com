@@ -31,7 +31,7 @@ class UsersStore {
 
     groups.forEach(g => {
       g.users.forEach(u => {
-        if (userIDs.indexOf(u.id) === -1) {
+        if (u && userIDs.indexOf(u.id) === -1) {
           userIDs.push(u.id);
         }
       });

@@ -67,11 +67,7 @@ class MenutionMenu extends Component {
   };
 
   getUsers = () => {
-    const {
-      usersStore: { activatedUsers, connectedAndActivatedUsers },
-      filter,
-      groupsStore: { currentGroup }
-    } = this.props;
+    const { usersStore, filter, groupsStore: { currentGroup } } = this.props;
     const users = [];
 
     if (currentGroup.is_default) {
@@ -101,8 +97,8 @@ class MenutionMenu extends Component {
       [
         ...users,
         ...(isFullMember(currentUser)
-          ? activatedUsers
-          : connectedAndActivatedUsers)
+          ? usersStore.activatedUsers
+          : usersStore.connectedAndActivatedUsers)
       ],
       filter
     )

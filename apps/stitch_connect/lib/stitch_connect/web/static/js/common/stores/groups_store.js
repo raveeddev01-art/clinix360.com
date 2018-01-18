@@ -399,7 +399,8 @@ class GroupsStore {
   @action
   onMembersUpdated = payload => {
     const allUsers = this.rootStore.usersStore.usersById;
-    const users = payload.user_ids.map(id => allUsers[id]);
+    // filter undefined because sometimes this event is broadcasted after user_joined
+    const users = payload.user_ids.map(id => allUsers[id]).filter(u => u);
 
     if (isFullMember(currentUser)) {
       if (this.hasAccess(payload.group_id)) {
