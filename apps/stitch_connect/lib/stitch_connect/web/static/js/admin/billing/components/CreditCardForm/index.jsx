@@ -57,19 +57,16 @@ class CreditCardForm extends React.Component {
 
     billingStore.loading = true;
 
-    stripe
-      .createToken({ name })
-      .then(payload => {
-        if (payload.error) {
-          onSubmitError(payload.error);
-          return;
-        }
-
-        this.addCard(payload.token);
-      })
-      .finally(() => {
+    stripe.createToken({ name }).then(payload => {
+      if (payload.error) {
+        onSubmitError(payload.error);
         billingStore.loading = false;
-      });
+
+        return;
+      }
+
+      this.addCard(payload.token);
+    });
   };
 
   onChange = evt => {

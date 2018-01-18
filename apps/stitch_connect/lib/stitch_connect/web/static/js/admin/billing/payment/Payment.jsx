@@ -1,10 +1,14 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import { Elements } from "react-stripe-elements";
 
+import { alert } from "common/modals";
 import CreditCards from "../components/CreditCards";
 import CreditCardForm from "../components/CreditCardForm";
-import { alert } from "common/modals";
+import Loading from "../components/Loading";
 
+@inject("billingStore")
+@observer
 class Payment extends Component {
   onCardSubmitSuccess = () => {
     alert({
@@ -21,6 +25,8 @@ class Payment extends Component {
   };
 
   render() {
+    const { billingStore: { loading } } = this.props;
+
     return (
       <div className="payment-tab">
         <div className="tab-section saved-cards">
@@ -60,6 +66,8 @@ class Payment extends Component {
             />
           </Elements>
         </div>
+
+        {loading && <Loading />}
       </div>
     );
   }
