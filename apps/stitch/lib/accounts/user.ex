@@ -31,6 +31,7 @@ defmodule Stitch.Accounts.User do
     field :mobile_notification_preference, :string, default: "everything"
     field :email_notification_preference, :string, default: "daily"
     field :is_staff, :boolean, default: false
+    field :groups_as_guest, {:array, :integer}, default: [] # List of groups the user is allowed in if user is a guest
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
 
