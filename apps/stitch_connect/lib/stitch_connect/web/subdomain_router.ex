@@ -146,37 +146,42 @@ defmodule StitchConnect.Web.SubdomainRouter do
     resources "/devices", DeviceController, only: [:create]
   end
 
+  # Routes which needs admin role
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :team_admin_api
 
-    post "/users/:id/activate", UserController, :activate
-    post "/users/:id/deactivate", UserController, :deactivate
-    put "/users/:id/promote-admin", UserController, :promote_admin
-    put "/users/:id/revoke-admin", UserController, :revoke_admin
+    # User Settings admin routes
+    scope "/users/:id" do
+      post "/activate",     UserController, :activate
+      post "/deactivate",   UserController, :deactivate
+      put "/roles",         UserController, :change_role
+      put "/revoke-admin",  UserController, :revoke_admin
+      put "/promote-admin", UserController, :promote_admin
+    end
 
-    delete "/teams/:id/", TeamController, :delete_team
-    put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
-    put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
+    # Team Settings admin routes
+    scope "/teams/:id" do
+      delete "/",                           TeamController, :delete_team
+      put "/update-open-invitation",        TeamController, :update_open_invitation
+      put "/update-security-lockout-time",  TeamController, :update_security_lockout_time
+    end
 
+    # Subscription/Billing routes
+    scope "/billing", Billing, as: :billing do
+      scope "/subscription", Billing do
+        put "/subscription/renew", SubscriptionController, :renew
+        put "/subscription/cancel", SubscriptionController, :cancel
+        resources "/",  SubscriptionController, only: [:show, :update]
+      end
+
+      resources "/cards", CardController, only: [:index, :create, :update, :delete]
+    end
+
+    # Initiate export by admin
     resources "/exports", ExportController, only: [:index, :create]
 
+    # Admin repotes route
     resources "/reports", ReportController, only: [:create]
-  end
-
-  # Subscription/Billing routes
-  scope "/api/v1/billing", StitchConnect.Web.Api.V1.Billing, as: :api_v1_billing do
-    pipe_through :team_admin_api
-
-    get "/cards", CardController, :index
-    post "/cards", CardController, :create
-    put "/cards/:id", CardController, :update
-    delete "/cards/:id", CardController, :delete
-
-    get "/subscription", SubscriptionController, :show
-    put "/subscription", SubscriptionController, :update
-
-    put "/subscription/cancel", SubscriptionController, :cancel
-    put "/subscription/renew", SubscriptionController, :renew
   end
 
   # API routes which need token.
@@ -222,6 +227,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/direct/:username", UserController, :index
     get "/messages/:id/download", MessageController, :download
 
+    # TODO: a wild card route can make all /admin routes to one line
     get "/admin/team", AdminController, :index
     get "/admin/team/settings", AdminController, :index
     get "/admin/team/security", AdminController, :index
