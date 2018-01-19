@@ -188,7 +188,7 @@ defmodule Stitch.MeteorMigration.Room do
           group_inserted
         else
           unless Enum.member?(user_ids, creator.id) do
-            Group.remove(group, creator.id)
+            Group.remove_user(group, creator)
           end
 
           group_inserted

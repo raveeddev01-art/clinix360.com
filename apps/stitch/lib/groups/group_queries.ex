@@ -3,7 +3,7 @@ defmodule Stitch.GroupQueries do
   Module in charge of all group related queries.
   """
 
-  alias Stitch.{Repo, Group, GroupUser}
+  alias Stitch.{Repo, Group, GroupUser, Team}
   alias Stitch.Accounts.User
   import Ecto.Query
 
@@ -66,9 +66,28 @@ defmodule Stitch.GroupQueries do
 
     if group, do: {:ok, group}, else: {:error, "Room with that id not found."}
   end
+  def get_by_id(%Team{id: team_id}, group_id) do
+    Repo.get_by(Group, id: group_id, team_id: team_id)
+  end
   def get_by_id(id, user_id), do: get_by_id(id, Repo.get!(User, user_id))
 
   def get_by_id(id), do: Repo.get(Group, id)
+
+  @doc """
+  Fetches a list of groups by list of group ids
+  ## Examples
+      iex> get_by_ids([1, 2], %User{...})
+      [%Group{id: 1}, %Group{id: 2}]
+  """
+  @spec get_by_ids([pos_integer], %User{}) :: [Group.t]
+  def get_by_ids(ids, %User{team_id: team_id}) when is_list(ids) do
+    query =
+      from g in Group,
+      where: g.team_id == ^team_id,
+      where: g.id in ^ids
+
+    Repo.all(query)
+  end
 
   @doc """
   Returns group with the exist matching slug for the user's team.
@@ -111,10 +130,29 @@ defmodule Stitch.GroupQueries do
   The default group is the first group created for a team and will always exist.
   """
   @spec default_group(User.t) :: Group.t
-  def default_group(%User{team_id: team_id}) do
+  def default_group(%User{team_id: team_id, groups_as_guest: []}) do
     Group
     |> where(team_id: ^team_id)
     |> where(is_default: ^true)
-    |> Repo.one
+    |> Repo.one()
+  end
+
+  def default_group(%User{team_id: team_id, groups_as_guest: groups_as_guest}) do
+    first_group_id = Enum.at(groups_as_guest, 0)
+    Repo.get_by(Group, id: first_group_id, team_id: team_id)
+  end
+
+  @doc """
+  Lists all non-DM groups a user is currently a member of.
+  """
+  @spec non_dm_group_memberships(User.t) :: [GroupUser.t]
+  def non_dm_group_memberships(%User{id: user_id}) do
+    query =
+      from gu in GroupUser,
+      join: g in assoc(gu, :group),
+      where: gu.user_id == ^user_id,
+      where: g.name not in ^["__dm_group__", "__multi_dm_group__"],
+      preload: [group: g]
+    Repo.all(query)
   end
 end

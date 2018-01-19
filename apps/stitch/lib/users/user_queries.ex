@@ -43,6 +43,17 @@ defmodule Stitch.UserQueries do
     {:error, "team_id must be an integer"}
   end
 
+  @doc """
+  Finds a user belonging to a given team.
+  """
+  @spec team_member_by_id(Stitch.Team.t | pos_integer, pos_integer) :: User.t | nil
+  def team_member_by_id(%Team{id: team_id}, user_id) do
+    team_member_by_id(team_id, user_id)
+  end
+  def team_member_by_id(team_id, user_id) when is_integer(team_id) do
+    Repo.get_by(User, id: user_id, team_id: team_id)
+  end
+
   def get_all do
     Repo.all(from User)
   end

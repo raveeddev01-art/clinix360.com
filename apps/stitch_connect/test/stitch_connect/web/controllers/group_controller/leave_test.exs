@@ -42,6 +42,6 @@ defmodule StitchConnect.Web.GroupController.LeaveTest do
       |> post(api_v1_group_path(conn, :leave, group))
       |> json_response(:unprocessable_entity)
 
-    assert %{"message" => "User is not part of this room"} = json
+    assert %{"message" => "User isn't a member of the group."} = json
   end
 end

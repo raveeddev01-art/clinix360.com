@@ -138,38 +138,48 @@ defmodule Stitch.GroupTest do
     end
   end
 
-  describe "Stitch.Group.remove/2" do
+  describe "Stitch.Group.remove_user/2" do
     test "it removes a user from group" do
       group = insert(:group)
       user = insert(:user)
       {:ok, _} = Group.add_user(group, user.id)
-      {:ok, message, _} = Group.remove(group, user.id)
-      assert message == "User has been removed from the room"
+      assert :ok = Group.remove_user(group, user.id)
     end
 
     test "it returns a message if the user is not part of the group" do
       group = insert(:group)
       user = insert(:user)
-      {:error, message} = Group.remove(group, user.id)
-      assert message == "User is not part of this room"
+      assert {:error, :not_member} = Group.remove_user(group, user.id)
     end
 
     test "does not remove a user from a single DM group" do
       group = %Group{name: "__dm_group__"}
-      {:error, message} = Group.remove(group, 42)
-      assert message == "Users can't leave direct messages"
+      assert {:error, :direct_message} = Group.remove_user(group, 42)
     end
 
     test "does not remove a user from a multi DM group" do
       group = %Group{name: "__multi_dm_group__"}
-      {:error, message} = Group.remove(group, 42)
-      assert message == "Users can't leave direct messages"
+      assert {:error, :direct_message} = Group.remove_user(group, 42)
     end
 
-    test "does not remove a user from the default group" do
-      group = %Group{name: "General", is_default: true}
-      {:error, message} = Group.remove(group, group.id)
-      assert message == "Users can't leave the default group"
+    test "does not remove users with admin or member role from the default group" do
+      team = insert(:team)
+      group = insert(:group, team: team, is_default: true)
+      user = insert(:user, team: team)
+      assert {:error, :default_group} = Group.remove_user(group, user)
+    end
+
+    test "allows a guest user to be removed from the default group" do
+      team = insert(:team)
+      default_group = insert(:group, team: team, is_default: true)
+      group = insert(:group, team: team)
+      for role <- ["single-room-guest", "multi-room-guest"] do
+        guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
+        insert(:group_user, group: group, user: guest)
+        insert(:group_user, group: default_group, user: guest)
+
+        assert :ok == Group.remove_user(default_group, guest)
+      end
     end
   end
 
