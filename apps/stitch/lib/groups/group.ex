@@ -322,7 +322,7 @@ defmodule Stitch.Group do
     changeset = update_group_users_changeset(group, attrs)
 
     with {:ok, _} <- Repo.update(changeset) do
-      {:ok, {removed_users, added_users}}
+      {:ok, {added_users, removed_users}}
     end
   end
 
