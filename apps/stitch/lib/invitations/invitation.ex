@@ -203,20 +203,10 @@ defmodule Stitch.Invitation do
     case result do
       {:ok, %{user: user}} ->
         default_group = Stitch.GroupQueries.default_group(user)
-        groups = add_user_to_groups(user, [default_group])
-        {:ok, %{user: user, groups: groups}}
-
+        Stitch.Group.add_user(default_group, user)
+        {:ok, %{user: user, groups: [default_group]}}
       {:error, _, error, _} ->
         {:error, error}
     end
-  end
-
-  defp add_user_to_groups(user, groups) do
-    groups |> Enum.reduce([], fn (group, acc) ->
-      case Stitch.Group.add_user(group, user.id) do
-        {:ok, %{system_message: system_message}} -> [{group, system_message} | acc]
-        _ -> acc
-      end
-    end)
   end
 end

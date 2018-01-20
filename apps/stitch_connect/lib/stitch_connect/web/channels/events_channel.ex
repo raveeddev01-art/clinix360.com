@@ -1,15 +1,16 @@
 defmodule StitchConnect.Web.EventsChannel do
   use StitchConnect.Web, :channel
   import Ecto.Query
-  alias Stitch.{Repo, Group, GroupUser, UserQueries, Accounts.User}
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView}
+  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User}
 
   @endpoint StitchConnect.Web.Endpoint
 
   def join("events:" <> user_id, _params, socket) do
     user_id = String.to_integer(user_id)
+
     if user_id == socket.assigns.current_user.id do
-      send self(), :after_join
+      send(self(), :after_join)
       {:ok, socket}
     else
       {:error, %{message: "Unauthorized"}}
@@ -19,9 +20,11 @@ defmodule StitchConnect.Web.EventsChannel do
   def handle_info(:after_join, socket) do
     current_app_version = StitchConnect.version()
     socket_app_version = socket.assigns.application_version
+
     if current_app_version != socket_app_version do
-      push socket, "new_app_version", %{new_version: current_app_version}
+      push(socket, "new_app_version", %{new_version: current_app_version})
     end
+
     {:noreply, socket}
   end
 
@@ -31,18 +34,21 @@ defmodule StitchConnect.Web.EventsChannel do
     |> select([gu], %{
       user_id: gu.user_id,
       unread_messages_count: gu.unread_messages_count,
-      mentions_count: gu.mentions_count,
+      mentions_count: gu.mentions_count
     })
-    |> Repo.all
+    |> Repo.all()
   end
 
   def broadcast_group_new_msg(group, message, notify_user_ids \\ []) do
     notify_user_ids_set = MapSet.new(notify_user_ids)
+
     for group_user <- group_users_for(group.id) do
-      json = MessageView.message_json(message)
-      |> Map.put(:notify, MapSet.member?(notify_user_ids_set, group_user.user_id))
-      |> Map.put(:unread_messages_count, group_user.unread_messages_count)
-      |> Map.put(:mentions_count, group_user.mentions_count)
+      json =
+        MessageView.message_json(message)
+        |> Map.put(:notify, MapSet.member?(notify_user_ids_set, group_user.user_id))
+        |> Map.put(:unread_messages_count, group_user.unread_messages_count)
+        |> Map.put(:mentions_count, group_user.mentions_count)
+
       @endpoint.broadcast("events:#{group_user.user_id}", "new_message", json)
     end
   end
@@ -52,8 +58,9 @@ defmodule StitchConnect.Web.EventsChannel do
       json = %{
         id: message.id,
         unread_messages_count: group_user.unread_messages_count,
-        mentions_count: group_user.mentions_count,
+        mentions_count: group_user.mentions_count
       }
+
       @endpoint.broadcast("events:#{group_user.user_id}", "message_deleted", json)
     end
   end
@@ -62,61 +69,51 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user_id}", "joined_group", %{group_id: group.id})
   end
 
-  def broadcast_group_creation(group) do
-    ids = Enum.map(group.users, &( &1.id ))
+  def broadcast_group_leave(group, user_id) do
+    @endpoint.broadcast("events:#{user_id}", "left_group", %{group_id: group.id})
+  end
 
-    for id <- ids do
-      json = GroupView.group_json(group, id)
-      @endpoint.broadcast("events:#{id}", "created_group", json)
+  defp get_non_members(%Group{public: true, team_id: team_id}) do
+    TeamQueries.list_non_guest_users(team_id)
+  end
+
+  defp get_non_members(_), do: []
+
+  def broadcast_group_creation(group) do
+    for %User{id: user_id} <- group.users do
+      json = GroupView.group_json(group, user_id)
+      @endpoint.broadcast("events:#{user_id}", "created_group", json)
     end
 
-    if group.public do
-      remaining_user_ids = group.team_id
-      |> UserQueries.users_for_team
-      |> Enum.map(& &1.id )
-      |> Enum.reject(& &1 in ids )
-
-      for id <- remaining_user_ids do
-        json = group |> Map.put(:joined, false) |> GroupView.group_json(id)
-        @endpoint.broadcast("events:#{id}", "created_group", json)
-      end
+    for %User{id: user_id} <- get_non_members(group) do
+      json = group |> Map.put(:joined, false) |> GroupView.group_json(user_id)
+      @endpoint.broadcast("events:#{user_id}", "created_group", json)
     end
   end
 
   def broadcast_group_rename(%Group{} = group) do
-    ids = Enum.map(group.users, &( &1.id ))
-
     json = %{
       group_id: group.id,
       group_name: group.name,
-      group_slug: group.slug,
+      group_slug: group.slug
     }
 
-    for id <- ids do
-      @endpoint.broadcast("events:#{id}", "renamed_group", json)
-    end
-
-    if group.public do
-      remaining_user_ids =
-        group.team_id
-        |> UserQueries.users_for_team
-        |> Enum.map(& &1.id )
-        |> Enum.reject(& &1 in ids)
-
-      for id <- remaining_user_ids do
-        @endpoint.broadcast("events:#{id}", "renamed_group", json)
-      end
+    for %User{id: user_id} <- group.users ++ get_non_members(group) do
+      @endpoint.broadcast("events:#{user_id}", "renamed_group", json)
     end
   end
 
   def broadcast_group_hidden(%User{} = user, %Group{} = group, is_hidden) do
-    @endpoint.broadcast("events:#{user.id}", "hid_group", %{group_id: group.id, is_hidden: is_hidden})
+    @endpoint.broadcast("events:#{user.id}", "hid_group", %{
+      group_id: group.id,
+      is_hidden: is_hidden
+    })
   end
 
   def broadcast_group_favorite(%User{} = user, group_id, is_favorite) do
     @endpoint.broadcast("events:#{user.id}", "group_favorite", %{
       group_id: group_id,
-      is_favorite: is_favorite,
+      is_favorite: is_favorite
     })
   end
 
@@ -136,9 +133,12 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user.id}", "marked_as_unread", json_response)
   end
 
-  def broadcast_members_update(group, update_user_ids, user_ids) do
-    for id <- update_user_ids do
-      @endpoint.broadcast("events:#{id}", "members_updated", %{group_id: group.id, user_ids: user_ids})
+  def broadcast_members_update(group, recipient_ids, member_ids) do
+    for uesr_id <- recipient_ids do
+      @endpoint.broadcast("events:#{uesr_id}", "members_updated", %{
+        group_id: group.id,
+        user_ids: member_ids
+      })
     end
   end
 

@@ -120,7 +120,7 @@ defmodule Stitch.GroupTest do
     test "it adds a user to group" do
       group = insert(:group)
       user = insert(:user)
-      {:ok, %{group_user: group_user}} = Group.add_user(group, user.id)
+      {:ok, group_user} = Group.add_user(group, user.id)
 
       assert group_user.group_id == group.id
       assert group_user.user_id == user.id
@@ -301,13 +301,15 @@ defmodule Stitch.GroupTest do
     end
 
     test "updates group list", %{group: group, bob: bob, joe: joe, sam: sam} do
-      assert {:ok, %{removed: removed, added: added}} = Group.update_members(group, [bob.id, sam.id])
+      assert {:ok, {removed_users, added_users}} = Group.update_members(group, [bob.id, sam.id])
 
-      assert removed == [joe.id]
-      assert added == [sam.id]
-      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) != nil
-      assert Stitch.Repo.get_by(GroupUser, user_id: joe.id, group_id: group.id) == nil
-      assert Stitch.Repo.get_by(GroupUser, user_id: sam.id, group_id: group.id) != nil
+      assert [removed_user] = removed_users
+      assert removed_user.id == joe.id
+      assert [added_user] = added_users
+      assert added_user.id == sam.id
+      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id)
+      refute Stitch.Repo.get_by(GroupUser, user_id: joe.id, group_id: group.id)
+      assert Stitch.Repo.get_by(GroupUser, user_id: sam.id, group_id: group.id)
     end
 
     test "when user_ids is empty", %{group: group, bob: bob} do

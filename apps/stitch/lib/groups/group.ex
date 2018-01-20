@@ -1,12 +1,14 @@
 defmodule Stitch.Group do
   use Ecto.Schema
-  import Ecto.Changeset
   import Ecto.Query
+  import Ecto.Changeset
+  alias Stitch.Accounts.{User, Role}
   alias Stitch.{Repo, Group, GroupUser, Message}
-  alias Stitch.Accounts.User
 
   @type t :: %__MODULE__{}
+  @guest_roles Role.guests()
   @dm_groups ["__dm_group__", "__multi_dm_group__"]
+  @type membership_changes :: {removed_users :: [User.t], added_users :: [User.t]}
 
   schema "groups" do
     belongs_to :creator, User, foreign_key: :creator_user_id
@@ -41,6 +43,12 @@ defmodule Stitch.Group do
     Ecto.Changeset.put_change(changeset, :slug, slug)
   end
   defp slugify_name(%Ecto.Changeset{} = changeset), do: changeset
+
+  defp update_group_users_changeset(%Stitch.Group{} = struct, params) do
+    struct
+    |> change(params)
+    |> cast_assoc(:group_users)
+  end
 
   def create(attrs, %User{team_id: team_id, id: user_id}) do
     attrs = attrs |> Map.put("team_id", team_id) |> Map.put("creator_user_id", user_id)
@@ -171,7 +179,7 @@ defmodule Stitch.Group do
   @doc """
   Add user to the group.
   """
-  @spec add_user(Group.t, User.t | pos_integer) :: {:ok, Ecto.Changeset.t} | {:error, String.t}
+  @spec add_user(Group.t, User.t | pos_integer) :: {:ok, GroupUser.t} | {:error, String.t}
   def add_user(%Group{name: name}, _) when name in @dm_groups do
     {:error, "Users can't join existing direct messages"}
   end
@@ -182,17 +190,8 @@ defmodule Stitch.Group do
     params = %{group_id: group.id, user_id: user_id}
     changeset = GroupUser.changeset(%GroupUser{}, params)
 
-    result =
-      Ecto.Multi.new
-      |> Ecto.Multi.insert(:group_user, changeset)
-      |> log_system_join_messages(group, user_id)
-      |> Repo.transaction
-
-    case result do
-      {:error, :group_user, group_user_changeset, _changes_so_far} ->
-        %Ecto.Changeset{errors: [user_id: {message, _}]} = group_user_changeset
-        {:error, message}
-
+    case Repo.insert(changeset) do
+      {:error, %Ecto.Changeset{errors: [user_id: {message, _}]}} -> {:error, message}
       any -> any
     end
   end
@@ -294,57 +293,55 @@ defmodule Stitch.Group do
   end
 
   @doc """
-  Creates system messages when the user joins a public or private group.
+  Updates a group's user membership.
+  Guests are excluded from being added or removed.
   """
-  def log_system_join_messages(multi, %Group{name: name} = group, user_id) when name not in @dm_groups do
-    multi
-    |> Ecto.Multi.insert(:system_message, Message.join_message_changeset(group, user_id))
-  end
-  def log_system_join_messages(multi, _group, _user_id), do: multi
-
-  @doc """
-  Creates system messages when the user joins a public or private group.
-  """
-  def log_system_leave_messages(%Group{name: name} = group, user_id) when name not in @dm_groups do
-    Repo.insert(Message.leave_message_changeset(group, user_id))
-  end
-  def log_system_leave_messages(_group, _user_id), do: nil
-
+  @spec update_members(Group.t, [user_id :: pos_integer]) :: {:ok, membership_changes} | {:error, Ecto.Changeset.t}
   def update_members(%Group{name: name}, _) when name in @dm_groups do
     {:error, "Can't update members in a direct message room"}
   end
 
-  def update_members(%Group{id: group_id, creator_user_id: creator_user_id, team_id: team_id} = group, user_ids) do
-    user_ids = Enum.filter(user_ids, & !!Stitch.Accounts.get_for_team_id(&1, team_id))
+  def update_members(%Group{creator_user_id: creator_user_id, team_id: team_id} = group, user_ids) do
+    group = Repo.preload(group, [group_users: :user])
+    valid_users_query =
+      from u in User,
+      where: u.team_id == ^team_id,
+      where: u.id in ^[creator_user_id | user_ids],
+      where: u.disabled == false,
+      where: not fragment("? && ?", ^@guest_roles, u.roles),
+      distinct: u.id
+    target_users = Repo.all(valid_users_query)
+    current_members = group.group_users
 
-    current_member_ids =
-      GroupUser
-      |> where(group_id: ^group_id)
-      |> select([gu], gu.user_id)
-      |> Repo.all
+    {removed_users, added_users, final_group_memberships} =
+      current_members
+      |> Enum.reduce({[], target_users, []}, &do_calculate_membership_diff/2)
+      |> do_add_new_group_user_attrs()
 
-    remove_user_ids = current_member_ids -- [creator_user_id | user_ids]
-    add_user_ids = user_ids -- [creator_user_id | current_member_ids]
+    attrs = %{group_users: final_group_memberships}
+    changeset = update_group_users_changeset(group, attrs)
 
-    Repo.transaction fn ->
-      system_messages = []
-
-      system_messages = Enum.reduce(remove_user_ids, system_messages, fn (user_id, acc) ->
-        case Group.remove_user(group, user_id) do
-          {:ok, _message, system_message} -> [system_message | acc]
-          _ -> acc
-        end
-      end)
-
-      system_messages = Enum.reduce(add_user_ids, system_messages, fn (user_id, acc) ->
-        case Group.add_user(group, user_id) do
-          {:ok, %{system_message: system_message}} -> [system_message | acc]
-          _ -> acc
-        end
-      end)
-
-      %{removed: remove_user_ids, added: add_user_ids, system_messages: system_messages}
+    with {:ok, _} <- Repo.update(changeset) do
+      {:ok, {removed_users, added_users}}
     end
+  end
+
+  defp do_calculate_membership_diff(%{user: %{roles: [role]}} = group_user, {remove, add, target})
+    when role in @guest_roles do
+    {remove, add, [group_user | target]}
+  end
+  defp do_calculate_membership_diff(group_user, {remove, add, target}) do
+    if Enum.find(add, &(&1.id == group_user.user_id))do
+      new_add = Enum.reject(add, &(&1.id == group_user.user_id))
+      {remove, new_add, [group_user | target]}
+    else
+      {[group_user.user | remove], add, target}
+    end
+  end
+
+  defp do_add_new_group_user_attrs({remove, add, existing_group_users}) do
+    new_group_users = for %{id: add_id} <- add, do: %{user_id: add_id}
+    {remove, add, existing_group_users ++ new_group_users}
   end
 
   @doc """

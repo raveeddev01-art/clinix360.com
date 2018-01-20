@@ -79,11 +79,9 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     case result do
       {:ok, %{user: user, groups: groups}} ->
         Stitch.Billing.update_subscriber_count(conn.assigns.team)
-        Enum.each(groups, fn {group, system_message} ->
-          system_message = system_message |> MessageQueries.load_info
-          GroupChannel.broadcast_message_created(system_message)
-          EventsChannel.broadcast_group_new_msg(group, system_message)
-          TeamChannel.broadcast_user_joined(conn.assigns.team, user)
+        TeamChannel.broadcast_user_joined(conn.assigns.team, user)
+        Enum.each(groups, fn group ->
+          GroupChannel.broadcast_members_update(group, [user], [])
         end)
         conn
         |> login_user(user)

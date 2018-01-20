@@ -311,9 +311,20 @@ defmodule StitchConnect.Web.GroupChannel do
     endpoint_broadcast(group, "pinned_message", message_json)
   end
 
-  def broadcast_members_update(group) do
-    user_ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.id) |> Repo.all
-    endpoint_broadcast(group, "members_update", %{user_ids: user_ids})
+  def broadcast_members_update(group, added_users, removed_users) do
+    group_user_ids = Stitch.GroupUser.user_ids(group.id)
+    update_recipient_ids = Enum.uniq(group_user_ids ++ Enum.map(removed_users, & &1.id))
+    EventsChannel.broadcast_members_update(group, update_recipient_ids, group_user_ids)
+    for user <- removed_users do
+      system_message = Stitch.SystemMessages.generate_user_left_group(group, user)
+      broadcast_message_created(system_message)
+      EventsChannel.broadcast_group_leave(group, user.id)
+    end
+    for user <- added_users do
+      system_message = Stitch.SystemMessages.generate_user_joined_group(group, user)
+      broadcast_message_created(system_message)
+      EventsChannel.broadcast_group_join(group, user.id)
+    end
   end
 
   def broadcast_read_status(group, messages) do

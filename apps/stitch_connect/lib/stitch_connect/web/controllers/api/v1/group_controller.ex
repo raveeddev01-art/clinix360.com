@@ -1,7 +1,9 @@
 defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
+  alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
+  alias StitchConnect.Web.{EventsChannel, TeamChannel, GroupChannel}
   alias Stitch.{Group, GroupQueries, GroupUser, GroupAuthorization, TeamAuthorization, MessageQueries}
-  alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel, GroupChannel}
+
   action_fallback StitchConnect.Web.Api.FallbackController
 
   def index(conn, %{"slug" => slug}) do
@@ -154,15 +156,13 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def join(conn, %{"id" => group_id}) do
-    user = conn.assigns.current_user
-    team = conn.assigns.team
-
-    with {:authorized?, :true} <- {:authorized?, GroupAuthorization.can_join?(user)},
+    with team = conn.assigns.team,
+         user = conn.assigns.current_user,
+         {:authorized?, :true} <- {:authorized?, GroupAuthorization.can_join?(user)},
          {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, group_id)},
          {:direct_message, false} <- {:direct_message, Group.direct_message?(group)},
          {:ok, _} <- Group.add_user(group, user) do
-      # TODO: Handle broadcast in a separate PR
-      # GroupChannel.broadcast_membership_changes(group, [user], [])
+      GroupChannel.broadcast_members_update(group, [user], [])
       json(conn, %{group_id: group.id, user_id: user.id})
     else
       {:authorized?, false} -> {:error, :not_authorized}
@@ -180,20 +180,18 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def leave(conn, %{"id" => group_id}) do
-    user = conn.assigns.current_user
-    team = conn.assigns.team
-
-    with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_leave?(user)},
+    with team = conn.assigns.team,
+         user = conn.assigns.current_user,
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_leave?(user)},
          {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, group_id)},
          {:member?, true} <- {:member?, GroupQueries.user_is_member?(group_id, user.id)},
+         {:default_group, default_group} = {:default_group, GroupQueries.default_group(user)},
          :ok <- Group.remove_user(group, user.id) do
-      default_group = GroupQueries.default_group(user)
-      # TODO: Handle broadcast in a separate PR
-      # GroupChannel.broadcast_membership_changes(group, [], [user])
+      GroupChannel.broadcast_members_update(group, [], [user])
 
       payload = %{
         message: "User has been removed from the room",
-        redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
+        redirect_to: Routes.group_path(conn, :index, default_group.slug)
       }
       json(conn, payload)
     else
@@ -211,6 +209,10 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Cannot leave a direct message."})
+      {:error, :default_group} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot leave a default group."})
     end
   end
 
@@ -264,12 +266,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
           |> String.split(",", trim: true)
           |> Enum.map(&String.to_integer/1)
 
-        {:ok, %{removed: removed, added: _added, system_messages: system_messages}} = Group.update_members(group, user_ids)
-        user_ids = GroupUser.user_ids(group.id)
-        update_user_ids = Enum.uniq(user_ids ++ removed)
-
-        Enum.each(system_messages, & GroupChannel.broadcast_system_message(group, &1))
-        EventsChannel.broadcast_members_update(group, update_user_ids, user_ids)
+        {:ok, %{removed: removed, added: added}} = Group.update_members(group, user_ids)
+        GroupChannel.broadcast_members_update(group, added, removed)
 
         conn |> json(%{message: "Users invited to room."})
     end
