@@ -188,13 +188,13 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     user = conn.assigns.current_user
     team = conn.assigns.team
 
-    with {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, group_id)},
-         :ok <- Group.remove_user(group, user) do
+    with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_leave?(user)},
+         {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, group_id)},
+         {:member?, true} <- {:member?, GroupQueries.user_is_member?(group_id, user.id)},
+         :ok <- Group.remove_user(group, user.id) do
       default_group = GroupQueries.default_group(user)
-      {:ok, system_message} = Group.log_system_leave_messages(group, user.id)
-      GroupChannel.broadcast_system_message(group, system_message)
-      user_ids = GroupUser.user_ids(group.id)
-      EventsChannel.broadcast_members_update(group, [user.id | user_ids], user_ids)
+      # TODO: Handle broadcast in a separate PR
+      # GroupChannel.broadcast_membership_changes(group, [], [user])
 
       payload = %{
         message: "User has been removed from the room",
@@ -202,7 +202,12 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       }
       json(conn, payload)
     else
+      {:authorized?, false} -> {:error, :not_authorized}
       {:group, nil} -> {:error, :not_found}
+      {:member?, false} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "User isn't a member of the group."})
       {:error, :not_member} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -211,10 +216,6 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Cannot leave a direct message."})
-      {:error, :default_group} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Cannot leave a default group."})
     end
   end
 
