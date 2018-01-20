@@ -12,6 +12,16 @@ defmodule Stitch.GroupTest do
       changeset = Group.changeset(%Group{}, %{name: "General."})
       assert {"has invalid format", [validation: :format]} = changeset.errors[:name]
     end
+
+    test "generates a slug from the name if a slug isn't provided" do
+      changeset = Group.changeset(%Group{}, %{name: "General"})
+      assert changeset.changes.slug == "general"
+    end
+
+    test "requires `name` as a change" do
+      changeset = Group.changeset(%Group{}, %{})
+      assert hd(errors_on(changeset).name) =~ "blank"
+    end
   end
 
   describe "Stitch.Group.rename/2" do
