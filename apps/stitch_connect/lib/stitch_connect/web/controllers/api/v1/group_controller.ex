@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias Stitch.{Group, GroupQueries, GroupUser, GroupAuthorization, TeamAuthorization, MessageQueries}
   alias StitchConnect.Web.{Endpoint, EventsChannel, TeamChannel, GroupChannel}
+  action_fallback StitchConnect.Web.Api.FallbackController
 
   def index(conn, %{"slug" => slug}) do
     user = conn.assigns.current_user
@@ -158,29 +159,28 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def join(conn, %{"id" => group_id}) do
-    group = GroupQueries.get_by_id(group_id)
+    user = conn.assigns.current_user
+    team = conn.assigns.team
 
-    case TeamAuthorization.user_is_member?(conn.assigns.current_user.team_id, conn.assigns.current_user.id) do
-      true ->
-        case Group.add_user(group, conn.assigns.current_user.id) do
-          {:error, error_message} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: error_message})
-          {:ok, %{group_user: group_user, system_message: system_message}} ->
-            {:ok, group} = GroupQueries.get_by_id(group_id, conn.assigns.current_user)
-            system_message = MessageQueries.load_info(system_message)
-            Endpoint.broadcast("groups:#{group.slug}", "new_msg", system_message)
-            user_ids = GroupUser.user_ids(group.id)
-            EventsChannel.broadcast_members_update(group, user_ids, user_ids)
-
-            conn
-            |> json(%{group_id: group_user.group_id, user_id: group_user.user_id})
-        end
-      false ->
+    with {:authorized?, :true} <- {:authorized?, GroupAuthorization.can_join?(user)},
+         {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, group_id)},
+         {:direct_message, false} <- {:direct_message, Group.direct_message?(group)},
+         {:ok, _} <- Group.add_user(group, user) do
+      # TODO: Handle broadcast in a separate PR
+      # GroupChannel.broadcast_membership_changes(group, [user], [])
+      json(conn, %{group_id: group.id, user_id: user.id})
+    else
+      {:authorized?, false} -> {:error, :not_authorized}
+      {:group, nil} -> {:error, :not_found}
+      {:direct_message, true} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot join a direct message."})
+      {:error, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Cannot add user to the room"})
+      error -> error
     end
   end
 

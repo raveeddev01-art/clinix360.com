@@ -41,4 +41,11 @@ defmodule Stitch.GroupAuthorization do
     Enum.member?(user.roles, "admin") || group.creator_user_id == user.id
   end
   def can_toggle_public?(_group, _user), do: false
+
+  @doc """
+  Checks if a user is authorized to join groups based on role.
+  """
+  def can_join?(%User{} = user) do
+    !User.guest?(user)
+  end
 end
