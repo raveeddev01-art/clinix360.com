@@ -163,7 +163,7 @@ defmodule Stitch.Group do
   @doc """
   Add user to the group.
   """
-  @spec add_user(Group.t, User.t | pos_integer) :: :ok | {:error, String.t}
+  @spec add_user(Group.t, User.t | pos_integer) :: {:ok, Ecto.Changeset.t} | {:error, String.t}
   def add_user(%Group{name: name}, _) when name in @dm_groups do
     {:error, "Users can't join existing direct messages"}
   end
