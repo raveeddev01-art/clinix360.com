@@ -1,13 +1,10 @@
 defmodule Stitch.Accounts.Role do
   def admin(), do: ["admin"]
   def member(), do: ["member"]
-  def regular(), do: admin() ++ member()
 
   def multi_room_guest(), do: ["multi-room-guest"]
   def single_room_guest(), do: ["single-room-guest"]
   def guests(), do: multi_room_guest() ++ single_room_guest()
-
-  def all(), do: regular() ++ guests()
 
   def display_name("single-room-guest"), do: "Single Room Guest"
   def display_name("multi-room-guest"), do: "Multi Room Guest"
