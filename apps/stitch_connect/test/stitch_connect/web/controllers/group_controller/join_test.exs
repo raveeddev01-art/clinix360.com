@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.JoinTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use StitchConnect.Web.ConnCase
   import StitchConnect.Web.SubdomainRouter.Helpers
 
   describe "POST /api/v1/groups/:id/join" do
