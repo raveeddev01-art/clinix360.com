@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.IndexTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use StitchConnect.Web.ConnCase
   import StitchConnect.Web.SubdomainRouter.Helpers
 
   describe "GET /api/v1/groups" do
