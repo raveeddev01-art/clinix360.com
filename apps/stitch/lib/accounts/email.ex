@@ -46,6 +46,30 @@ defmodule Stitch.Accounts.Email do
     |> Stitch.Mailer.deliver_later
   end
 
+  @doc """
+  Sends email to user requesting them to reset their temporary password by
+  linking them to the normal reset password page for their subdomain.
+  """
+  @spec temporary_password_reset(Stitch.Accounts.User.t(), binary) :: {:ok}
+  def temporary_password_reset(user, reset_url) do
+    new_email()
+    |> template("Security Password Reset (Phoenix)")
+    |> to(user.email)
+    |> from({"Stitch", "support@teamstitch.com"})
+    |> subject("ACTION REQUIRED: Please reset your Stitch password")
+    |> put_param("global_merge_vars", [
+      %{
+        name: "resetPasswordUrl",
+        content: reset_url
+      },
+      %{
+        name: "receiverFirstName",
+        content: user.first_name
+      }
+    ])
+    |> Stitch.Mailer.deliver_later()
+  end
+
   def unread_messages_email([]), do: nil
   def unread_messages_email(recipients) do
     new_email()
