@@ -185,23 +185,36 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def leave(conn, %{"id" => group_id}) do
-    current_user = conn.assigns.current_user
-    group = GroupQueries.get_by_id(group_id)
+    user = conn.assigns.current_user
+    team = conn.assigns.team
 
-    case Group.remove(group, current_user.id) do
-      {:error, message} ->
+    with {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, group_id)},
+         :ok <- Group.remove_user(group, user) do
+      default_group = GroupQueries.default_group(user)
+      {:ok, system_message} = Group.log_system_leave_messages(group, user.id)
+      GroupChannel.broadcast_system_message(group, system_message)
+      user_ids = GroupUser.user_ids(group.id)
+      EventsChannel.broadcast_members_update(group, [user.id | user_ids], user_ids)
+
+      payload = %{
+        message: "User has been removed from the room",
+        redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)
+      }
+      json(conn, payload)
+    else
+      {:group, nil} -> {:error, :not_found}
+      {:error, :not_member} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{message: message})
-      {:ok, message, system_message} ->
-        default_group = GroupQueries.default_group(current_user)
-        GroupChannel.broadcast_system_message(group, MessageQueries.load_info(system_message))
-        user_ids = GroupUser.user_ids(group.id)
-        EventsChannel.broadcast_members_update(group, [conn.assigns.current_user.id | user_ids], user_ids)
-
+        |> json(%{message: "User isn't a member of the group."})
+      {:error, :direct_message} ->
         conn
-        |> json(%{message: message, redirect_to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug)})
-
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot leave a direct message."})
+      {:error, :default_group} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot leave a default group."})
     end
   end
 

@@ -6,8 +6,10 @@ defmodule Stitch.Accounts.Admin do
 
   alias Stitch.Repo
   alias Stitch.Accounts.User
-  alias Stitch.GroupUser
   alias Stitch.Team
+  alias Stitch.Group
+  alias Stitch.GroupUser
+  alias Stitch.GroupQueries
 
   @analytics Application.get_env(:stitch, :analytics)
 
@@ -125,4 +127,92 @@ defmodule Stitch.Accounts.Admin do
     Task.start(fn -> @analytics.identify(user) end)
   end
 
+  @doc """
+  Changes a user's role.
+  If the user's role is set to `single-room-guest` or `multi-room-guest`, then the
+  passed in groups will be validated.
+  """
+  @spec change_role(User.t, Map.t) :: {:ok, User.t} | {:error, :invalid_group_size | Ecto.Changeset.t}
+  def change_role(%User{} = user, %{role: "member" = role}) do
+    do_change_role(user, role, [])
+  end
+  def change_role(%User{} = user, %{role: "single-room-guest" = role, groups_as_guest: group_ids}) do
+    with {:ok, [_group]} <- fetch_groups_by_ids(group_ids, user) do
+      do_change_role(user, role, group_ids)
+    else
+      {:ok, _} -> {:error, :invalid_group_size}
+      error -> error
+    end
+  end
+  def change_role(%User{} = user, %{role: "multi-room-guest" = role, groups_as_guest: group_ids}) do
+    with {:ok, [_|_]} <- fetch_groups_by_ids(group_ids, user) do
+      do_change_role(user, role, group_ids)
+    else
+      {:ok, _} -> {:error, :invalid_group_size}
+      error -> error
+    end
+  end
+
+  defp do_change_role(%User{} = user, role, group_ids) do
+    params = %{roles: [role], groups_as_guest: group_ids}
+
+    user
+    |> User.role_change_changeset(params)
+    |> Repo.update()
+  end
+
+  defp fetch_groups_by_ids(group_ids, %User{} = user) do
+    groups = GroupQueries.get_by_ids(group_ids, user)
+    if length(groups) != length(group_ids) do
+      {:error, :invalid_group_ids}
+    else
+      {:ok, groups}
+    end
+  end
+
+  @guest_roles ["single-room-guest", "multi-room-guest"]
+
+  @doc """
+  Ensures that a user joins and leaves the proper groups based on their role and group restrictions.
+  """
+  @spec update_user_group_memberships(User.t) :: {removed_groups :: [Group.t], added_groups :: [Group.t]}
+  def update_user_group_memberships(%User{roles: [role]} = user) when role in @guest_roles do
+    user
+    |> GroupQueries.non_dm_group_memberships()
+    |> Enum.reduce({[], user.groups_as_guest}, &do_identify_group_membership_diff/2)
+    |> do_update_user_group_memberships(user)
+  end
+  def update_user_group_memberships(%User{id: user_id, roles: ["member"]} = user) do
+    default_group = GroupQueries.default_group(user)
+    if GroupQueries.user_is_member?(default_group.id, user_id) do
+      {[], []}
+    else
+      Group.add_user(default_group, user)
+      {[], [default_group]}
+    end
+  end
+  def update_user_group_memberships(_), do: {[], []}
+
+  defp do_identify_group_membership_diff(%{group_id: group_id} = group_user, {group_users_to_remove, group_ids_to_add}) do
+    if group_id not in group_ids_to_add do
+      {[group_user | group_users_to_remove], group_ids_to_add}
+    else
+      {group_users_to_remove, List.delete(group_ids_to_add, group_id)}
+    end
+  end
+
+  defp do_update_user_group_memberships({group_users_to_remove, group_ids_to_add}, user) do
+    removed_groups =
+      for gu <- group_users_to_remove do
+        Group.remove_user(gu.group, user)
+        gu.group
+      end
+    added_groups =
+      for group_id <- group_ids_to_add do
+        group = GroupQueries.get_by_id(group_id)
+        Group.add_user(group, user)
+        group
+      end
+    {removed_groups, added_groups}
+  end
 end

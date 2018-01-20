@@ -5,6 +5,9 @@ defmodule Stitch.Group do
   alias Stitch.{Repo, Group, GroupUser, Message}
   alias Stitch.Accounts.User
 
+  @type t :: %__MODULE__{}
+  @dm_groups ["__dm_group__", "__multi_dm_group__"]
+
   schema "groups" do
     belongs_to :creator, User, foreign_key: :creator_user_id
     # __multi_dm_group__ and __dm_group__ are reversed group names for dm groups
@@ -15,7 +18,7 @@ defmodule Stitch.Group do
     field :public, :boolean, default: true
 
     belongs_to :team, Stitch.Team
-    has_many :group_users, GroupUser
+    has_many :group_users, GroupUser, on_replace: :delete
     has_many :users, through: [:group_users, :user]
     has_many :messages, Stitch.Message
 
@@ -54,7 +57,7 @@ defmodule Stitch.Group do
             :error ->
               Repo.rollback("Failed to add room members.")
             system_messages ->
-              if group.name in ["__dm_group__", "__multi_dm_group__"] do
+              if group.name in @dm_groups do
                 %{group | users: users}
               else
                 group = %{group | users: users}
@@ -72,7 +75,7 @@ defmodule Stitch.Group do
     end
   end
 
-  def add_users(%Group{name: name} = group, users) when name in ["__dm_group__", "__multi_dm_group__"] do
+  def add_users(%Group{name: name} = group, users) when name in @dm_groups do
     Enum.reduce_while(users, [], fn (user, group_users) ->
       changeset = GroupUser.changeset(%GroupUser{}, %{group_id: group.id, user_id: user.id})
       case Repo.insert(changeset) do
@@ -130,8 +133,7 @@ defmodule Stitch.Group do
   @doc """
   Rename the group with the provided name.
   """
-  def rename(%Group{name: old_name}, _new_name)
-      when old_name in ["__dm_group__", "__multi_dm_group__"] do
+  def rename(%Group{name: old_name}, _new_name) when old_name in @dm_groups do
     {:error, "Direct messages can't be renamed"}
   end
 
@@ -150,12 +152,24 @@ defmodule Stitch.Group do
   def rename(_, _), do: {:error, "Name cannot be blank or nil"}
 
   @doc """
-  Add user to the group.
+  Assigns creator for the default group
   """
-  def add_user(%Group{name: name}, _) when name in ["__dm_group__", "__multi_dm_group__"] do
-    {:error, "Users can't join existing direct messages"}
+  def assign_creator(%Group{is_default: true, creator_user_id: nil} = group, user_id) do
+    group
+    |> Ecto.Changeset.change(creator_user_id: user_id)
+    |> Repo.update
   end
 
+  @doc """
+  Add user to the group.
+  """
+  @spec add_user(Group.t, User.t | pos_integer) :: :ok | {:error, String.t}
+  def add_user(%Group{name: name}, _) when name in @dm_groups do
+    {:error, "Users can't join existing direct messages"}
+  end
+  def add_user(%Group{} = group, %User{id: user_id}) do
+    add_user(group, user_id)
+  end
   def add_user(%Group{} = group, user_id) do
     params = %{group_id: group.id, user_id: user_id}
     changeset = GroupUser.changeset(%GroupUser{}, params)
@@ -176,44 +190,31 @@ defmodule Stitch.Group do
   end
 
   @doc """
-  Assigns creator for the default group
-  """
-  def assign_creator(%Group{is_default: true, creator_user_id: nil} = group, user_id) do
-    group
-    |> Ecto.Changeset.change(creator_user_id: user_id)
-    |> Repo.update
-  end
-
-  @doc """
   Removes a user from the group
   """
-  def remove(%Group{name: name}, _) when name in ["__dm_group__", "__multi_dm_group__"] do
-    {:error, "Users can't leave direct messages"}
+  @spec remove_user(Group.t, User.t | pos_integer) :: :ok | {:error, :not_member | :direct_message | :default_group}
+  def remove_user(%Group{name: name}, _) when name in @dm_groups do
+    {:error, :direct_message}
   end
-
-  def remove(%Group{is_default: true}, _) do
-    {:error, "Users can't leave the default group"}
+  def remove_user(%Group{} = group, user_id) when is_integer(user_id) do
+    user = Stitch.Accounts.get_by_id(user_id)
+    remove_user(group, user)
   end
+  def remove_user(%Group{is_default: true}, %User{roles: [role]})
+    when role in ["admin", "member"] do
+    {:error, :default_group}
+  end
+  def remove_user(%Group{id: group_id}, %User{id: user_id}) do
+    query =
+      from gu in GroupUser,
+      where: gu.group_id == ^group_id,
+      where: gu.user_id == ^user_id
 
-  def remove(%Group{id: group_id} = group, user_id) do
-    case Repo.get_by(GroupUser, group_id: group_id, user_id: user_id) do
-      nil ->
-        {:error, "User is not part of this room"}
-
-      group_user ->
-        multi =
-          Ecto.Multi.new
-          |> Ecto.Multi.delete(:group_user, group_user)
-          |> log_system_leave_messages(group, user_id)
-
-        case Repo.transaction(multi) do
-          {:ok, %{system_message: system_message}} ->
-            {:ok, "User has been removed from the room", system_message}
-          {:error, _, _, _} ->
-            {:error, "Error leaving the room"}
-        end
+    case Repo.delete_all(query, []) do
+      {1, _} -> :ok
+      _ -> {:error, :not_member}
+      end
     end
-  end
 
   @doc """
   Toggles favorite setting for the user for the specified
@@ -236,8 +237,7 @@ defmodule Stitch.Group do
   Toggles public setting for the user for the specified
   group.
   """
-  def toggle_public(%Group{name: name}, _public)
-      when name in ["__dm_group__", "__multi_dm_group__"] do
+  def toggle_public(%Group{name: name}, _public) when name in @dm_groups do
     {:error, "Direct messages' privacy setting can't be changed"}
   end
 
@@ -250,8 +250,7 @@ defmodule Stitch.Group do
     Repo.update changeset
   end
 
-  def hide(%Group{name: name}, _user_id)
-      when name not in ["__dm_group__", "__multi_dm_group__"] do
+  def hide(%Group{name: name}, _user_id) when name not in @dm_groups do
     {:error, "Only direct messages can be hidden"}
   end
 
@@ -271,8 +270,7 @@ defmodule Stitch.Group do
     end
   end
 
-  def unhide(%Group{name: name}, _user_id)
-      when name not in ["__dm_group__", "__multi_dm_group__"] do
+  def unhide(%Group{name: name}, _user_id) when name not in @dm_groups do
     {:error, "Only direct messages can be hidden"}
   end
 
@@ -290,7 +288,7 @@ defmodule Stitch.Group do
   @doc """
   Creates system messages when the user joins a public or private group.
   """
-  def log_system_join_messages(multi, %Group{name: name} = group, user_id) when name not in ["__dm_group__", "__multi_dm_group__"] do
+  def log_system_join_messages(multi, %Group{name: name} = group, user_id) when name not in @dm_groups do
     multi
     |> Ecto.Multi.insert(:system_message, Message.join_message_changeset(group, user_id))
   end
@@ -299,13 +297,12 @@ defmodule Stitch.Group do
   @doc """
   Creates system messages when the user joins a public or private group.
   """
-  def log_system_leave_messages(multi, %Group{name: name} = group, user_id) when name not in ["__dm_group__", "__multi_dm_group__"] do
-    multi
-    |> Ecto.Multi.insert(:system_message, Message.leave_message_changeset(group, user_id))
+  def log_system_leave_messages(%Group{name: name} = group, user_id) when name not in @dm_groups do
+    Repo.insert(Message.leave_message_changeset(group, user_id))
   end
-  def log_system_leave_messages(multi, _group, _user_id), do: multi
+  def log_system_leave_messages(_group, _user_id), do: nil
 
-  def update_members(%Group{name: name}, _) when name in ["__dm_group__", "__multi_dm_group__"] do
+  def update_members(%Group{name: name}, _) when name in @dm_groups do
     {:error, "Can't update members in a direct message room"}
   end
 
@@ -325,7 +322,7 @@ defmodule Stitch.Group do
       system_messages = []
 
       system_messages = Enum.reduce(remove_user_ids, system_messages, fn (user_id, acc) ->
-        case Group.remove(group, user_id) do
+        case Group.remove_user(group, user_id) do
           {:ok, _message, system_message} -> [system_message | acc]
           _ -> acc
         end

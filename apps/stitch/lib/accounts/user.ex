@@ -9,6 +9,8 @@ defmodule Stitch.Accounts.User do
   alias Stitch.GroupUser
   alias Stitch.Repo
 
+  @type t :: %__MODULE__{}
+
   schema "users" do
     field :email, :string
     field :roles, {:array, :string}
@@ -123,6 +125,11 @@ defmodule Stitch.Accounts.User do
   end
 
   # ====
+
+  def role_change_changeset(struct, params) do
+    struct
+    |> change(params)
+  end
 
   def registration_changeset(struct, params) do
     struct

@@ -215,4 +215,146 @@ defmodule StitchConnect.Web.UserControllerTest do
       assert message == "Requires a username query."
     end
   end
+  describe "PUT /api/v1/users/:id/change-role" do
+    setup %{conn: conn} do
+      subscription = insert(:subscription, tier: "PREMIUM")
+      team = subscription.team
+      default_group = insert(:group, team: team, is_default: true)
+      admin = insert(:user, team: team, roles: ["admin"])
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(admin)
+
+      {:ok, conn: conn, team: team, default_group: default_group}
+    end
+
+    test "ensures a user is in the default group when `member` role is applied", %{conn: conn, team: team, default_group: default_group} do
+      user = insert(:user, team: team)
+      refute Stitch.GroupQueries.user_is_member?(default_group.id, user.id)
+
+      conn = put(conn, Routes.api_v1_user_path(conn, :change_role, user), %{"role" => "member"})
+      assert json_response(conn, 200)
+      assert Stitch.GroupQueries.user_is_member?(default_group.id, user.id)
+      updated_user = Repo.get(User, user.id)
+      assert updated_user.roles == ["member"]
+      assert updated_user.groups_as_guest == []
+    end
+
+    test "converts a guest to a member", %{conn: conn, team: team, default_group: default_group} do
+      group = insert(:group, team: team, is_default: false)
+      for role <- ["single-room-guest", "multi-room-guest"] do
+        guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
+        insert(:group_user, group: group, user: guest)
+        refute Stitch.GroupQueries.user_is_member?(default_group.id, guest.id)
+
+        conn = put(conn, Routes.api_v1_user_path(conn, :change_role, guest), %{"role" => "member"})
+        assert json_response(conn, 200)
+        assert Stitch.GroupQueries.user_is_member?(default_group.id, guest.id)
+        assert Stitch.GroupQueries.user_is_member?(group.id, guest.id)
+        updated_guest = Repo.get(User, guest.id)
+        assert updated_guest.roles == ["member"]
+        assert updated_guest.groups_as_guest == []
+      end
+    end
+
+    test "converts a member to a guest role", %{conn: conn, team: team, default_group: default_group} do
+      restricted_group = insert(:group, team: team)
+      for role <- ["single-room-guest", "multi-room-guest"] do
+        user = insert(:user, team: team, roles: ["member"])
+        insert(:group_user, group: default_group, user: user)
+
+        params = %{
+          "role" => role,
+          "group_ids" => [restricted_group.id]
+        }
+
+        conn = put(conn, Routes.api_v1_user_path(conn, :change_role, user), params)
+        assert json_response(conn, 200)
+        updated_user = Repo.get(User, user.id)
+        assert updated_user.roles == [role]
+        assert updated_user.groups_as_guest == [restricted_group.id]
+        refute Stitch.GroupQueries.user_is_member?(default_group.id, user.id)
+        assert Stitch.GroupQueries.user_is_member?(restricted_group.id, user.id)
+      end
+    end
+
+    test "can modify a guest's group restrictions", %{conn: conn, team: team} do
+      restricted_group = insert(:group, team: team)
+      new_group = insert(:group, team: team)
+      for role <- ["single-room-guest", "multi-room-guest"] do
+        guest = insert(:user, team: team, roles: [role], groups_as_guest: [restricted_group.id])
+        insert(:group_user, group: restricted_group, user: guest)
+
+        params = %{
+          "role" => role,
+          "group_ids" => [new_group.id]
+        }
+
+        conn = put(conn, Routes.api_v1_user_path(conn, :change_role, guest), params)
+        assert json_response(conn, 200)
+        updated_user = Repo.get(User, guest.id)
+        assert updated_user.roles == [role]
+        assert updated_user.groups_as_guest == [new_group.id]
+        assert Stitch.GroupQueries.user_is_member?(new_group.id, guest.id)
+        refute Stitch.GroupQueries.user_is_member?(restricted_group.id, guest.id)
+      end
+    end
+
+    test "gives error when using invalid group ids for guests", %{conn: conn, team: team} do
+      user = insert(:user, team: team)
+
+      for role <- ["single-room-guest", "multi-room-guest"] do
+        params = %{
+          "role" => role,
+          "group_ids" => [-1]
+        }
+        conn = put(conn, Routes.api_v1_user_path(conn, :change_role, user), params)
+        assert response = json_response(conn, :unprocessable_entity)
+        assert response["message"] =~ "group ids is invalid"
+      end
+    end
+
+    test "changing to single-room-guest requires exactly 1 group id", %{conn: base_conn, team: team} do
+      user = insert(:user, team: team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+
+      params = %{"role" => "single-room-guest", "group_ids" => []}
+      conn = put(base_conn, Routes.api_v1_user_path(base_conn, :change_role, user), params)
+      assert response = json_response(conn, :unprocessable_entity)
+      assert response["message"] =~ "exactly 1"
+
+      params = %{"role" => "single-room-guest", "group_ids" => [group_1.id, group_2.id]}
+      conn = put(base_conn, Routes.api_v1_user_path(base_conn, :change_role, user), params)
+      assert response = json_response(conn, :unprocessable_entity)
+      assert response["message"] =~ "exactly 1"
+    end
+
+    test "changing to multi-room-guest requires at least 1 group id", %{conn: base_conn, team: team} do
+      user = insert(:user, team: team)
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+
+      params = %{"role" => "multi-room-guest", "group_ids" => []}
+      conn = put(base_conn, Routes.api_v1_user_path(base_conn, :change_role, user), params)
+      assert response = json_response(conn, :unprocessable_entity)
+      assert response["message"] =~ "at least 1"
+
+      params = %{"role" => "multi-room-guest", "group_ids" => [group_1.id, group_2.id]}
+      conn = put(base_conn, Routes.api_v1_user_path(base_conn, :change_role, user), params)
+      assert json_response(conn, 200)
+    end
+
+    test "requires the admin role to perform", %{conn: conn, team: team} do
+      user = insert(:user, team: team)
+      conn =
+        conn
+        |> with_api_user(user)
+        |> put(Routes.api_v1_user_path(conn, :change_role, 99), %{})
+      assert response = json_response(conn, :unauthorized)
+      assert response["message"] =~ "administrator"
+    end
+  end
 end
