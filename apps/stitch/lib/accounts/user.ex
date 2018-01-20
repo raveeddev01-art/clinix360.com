@@ -178,4 +178,12 @@ defmodule Stitch.Accounts.User do
     end
   end
   def add_thumb(changeset), do: changeset
+
+  @doc """
+  Checks if the user is a guest based on their roles.
+  """
+  @spec guest?(map) :: boolean
+  def guest?(%User{roles: roles}) do
+    "single-room-guest" in roles || "multi-room-guest" in roles
+  end
 end

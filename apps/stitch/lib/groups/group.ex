@@ -338,4 +338,11 @@ defmodule Stitch.Group do
       %{removed: remove_user_ids, added: add_user_ids, system_messages: system_messages}
     end
   end
+
+  @doc """
+  Returns if the given group is a DM group.
+  """
+  @spec direct_message?(Group.t) :: boolean
+  def direct_message?(%Group{name: name}) when name in @dm_groups, do: true
+  def direct_message?(%Group{}), do: false
 end

@@ -18,4 +18,10 @@ defmodule StitchConnect.Web.Api.FallbackController do
     |> put_status(:not_found)
     |> render(ErrorView, :"404")
   end
+
+  def call(conn, {:error, :not_authorized}) do
+    conn
+    |> put_status(:forbidden)
+    |> render(ErrorView, :"403")
+  end
 end
