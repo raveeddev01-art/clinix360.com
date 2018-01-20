@@ -301,7 +301,7 @@ defmodule Stitch.GroupTest do
     end
 
     test "updates group list", %{group: group, bob: bob, joe: joe, sam: sam} do
-      assert {:ok, {removed_users, added_users}} = Group.update_members(group, [bob.id, sam.id])
+      assert {:ok, {added_users, removed_users}} = Group.update_members(group, [bob.id, sam.id])
 
       assert [removed_user] = removed_users
       assert removed_user.id == joe.id

@@ -8,7 +8,7 @@ defmodule Stitch.Group do
   @type t :: %__MODULE__{}
   @guest_roles Role.guests()
   @dm_groups ["__dm_group__", "__multi_dm_group__"]
-  @type membership_changes :: {removed_users :: [User.t], added_users :: [User.t]}
+  @type membership_changes :: {added_users :: [User.t], removed_users :: [User.t]}
 
   schema "groups" do
     belongs_to :creator, User, foreign_key: :creator_user_id
@@ -34,7 +34,7 @@ defmodule Stitch.Group do
     |> validate_required([:name, :slug, :public, :team_id])
     |> validate_length(:name, max: 25)
     |> validate_format(:name, ~r/^[\w-\s]+$/)
-    |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
+    |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index, message: "has already been taken")
   end
 
   defp slugify_name(%Ecto.Changeset{changes: %{slug: _}} = changeset), do: changeset
@@ -44,106 +44,156 @@ defmodule Stitch.Group do
   end
   defp slugify_name(%Ecto.Changeset{} = changeset), do: changeset
 
-  defp update_group_users_changeset(%Stitch.Group{} = struct, params) do
+  defp with_users_changeset(%Stitch.Group{} = struct, params) do
+    struct
+    |> changeset(params)
+    |> cast_assoc(:group_users)
+  end
+
+  defp update_users_changeset(%Stitch.Group{} = struct, params) do
     struct
     |> change(params)
     |> cast_assoc(:group_users)
   end
 
-  def create(attrs, %User{team_id: team_id, id: user_id}) do
-    attrs = attrs |> Map.put("team_id", team_id) |> Map.put("creator_user_id", user_id)
+  @doc """
+  Creates a new group.
+  """
+  @spec create(User.t, map, boolean) :: {:ok, Group.t} | {:error, Ecto.Changeset.t}
+  def create(%User{id: user_id, team_id: team_id}, attrs, direct_message? \\ false) do
+    attrs = add_group_users(attrs, team_id, user_id, direct_message?)
+    group = %Group{team_id: team_id, creator_user_id: user_id}
+    changeset = with_users_changeset(group, attrs)
 
-    attrs = case {attrs["name"], attrs["slug"]} do
-      {nil, _} -> attrs # would error during creation
-      {name, nil} ->
-        slug = Slugger.slugify_downcase(name)
-        Map.put(attrs, "slug", slug)
-      _ -> attrs
-    end
-
-    Repo.transaction fn ->
-      case Repo.insert(Group.changeset(%Group{}, attrs)) do
-        {:ok, group} ->
-          user_ids = Map.get(attrs, "user_ids", []) |> List.insert_at(0, user_id) |> Enum.uniq
-          users = User |> where([u], u.team_id == ^team_id and u.id in ^user_ids) |> Repo.all
-
-          add_users_result = add_users(group, users)
-
-          case add_users_result do
-            :error ->
-              Repo.rollback("Failed to add room members.")
-            system_messages ->
-              if group.name in @dm_groups do
-                %{group | users: users}
-              else
-                group = %{group | users: users}
-                %{group: group, system_messages: system_messages}
-              end
-          end
-
-        {:error, changeset} ->
-          if changeset.errors == [slug: {"has already been taken", []}] do
-            Repo.rollback({:already_exists, changeset.changes.slug})
-          else
-            Repo.rollback("Failed to create room.")
-          end
-      end
+    with {:ok, group} <- Repo.insert(changeset) do
+      {:ok, Repo.preload(group, :users)}
     end
   end
 
-  def add_users(%Group{name: name} = group, users) when name in @dm_groups do
-    Enum.reduce_while(users, [], fn (user, group_users) ->
-      changeset = GroupUser.changeset(%GroupUser{}, %{group_id: group.id, user_id: user.id})
-      case Repo.insert(changeset) do
-        {:ok, _} -> {:cont, group_users ++ [user]}
-        {:error, _} -> {:halt, :error}
-      end
-    end)
+  # Ensure users are part of team and format them for `cast_assoc`
+  defp add_group_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, false) do
+    query =
+      from u in base_group_user_query(user_ids, team_id, creator_id),
+      where: not fragment("? && ?", ^@guest_roles, u.roles)
+    do_add_group_users(query, attrs)
+  end
+  defp add_group_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, true) do
+    query = base_group_user_query(user_ids, team_id, creator_id)
+    do_add_group_users(query, attrs)
+  end
+  # Ensure list is populated
+  defp add_group_users(attrs, team_id, creator_id, direct_message?) do
+    new_attrs = Map.put(attrs, "user_ids", [])
+    add_group_users(new_attrs, team_id, creator_id, direct_message?)
   end
 
-  def add_users(%Group{} = group, users) do
-    Enum.reduce_while(users, [], fn user, acc ->
-      case Group.add_user(group, user.id) do
-        {:ok, %{system_message: system_message}} -> {:cont, [system_message | acc]}
-        _ -> {:halt, :error}
-      end
-    end)
+  defp do_add_group_users(query, attrs) do
+    group_users = Repo.all(query)
+    Map.put(attrs, "group_users", group_users)
   end
 
-  def create_single_dm(_, user_ids) when length(user_ids) != 2 do
+  defp base_group_user_query(user_ids, team_id, creator_id) do
+    group_user_ids = [creator_id | user_ids]
+    base_query =
+      from u in User,
+      where: u.team_id == ^team_id,
+      where: u.id in ^group_user_ids,
+      distinct: u.id,
+      select: %{user_id: u.id}
+    base_query
+  end
+
+  @doc """
+  Creates a user-to-user direct message.
+  The amount of users must be exactly 2.
+  For guest users initiating a DM, all users must belong to at least one
+  of the guest's restricted rooms.
+  """
+  def create_single_dm(%User{}, user_ids) when length(user_ids) != 2 do
     {:error, :user_id_count_is_not_2}
   end
 
-  def create_single_dm(%{id: creator_id}, [user_id_1, user_id_2])
+  def create_single_dm(%User{id: creator_id}, [user_id_1, user_id_2])
       when creator_id != user_id_1 and creator_id != user_id_2 do
     {:error, :creator_id_is_not_in_user_ids}
   end
 
+  # Handle self-DM
+  def create_single_dm(%User{id: id} = creator, [id, id] = user_ids) do
+    dm_params = single_dm_params(user_ids)
+    create_dm(creator, dm_params, 1)
+  end
   def create_single_dm(%User{} = creator, user_ids) do
-    create(%{
+    if User.guest?(creator) do
+      create_single_dm_as_guest(creator, user_ids)
+    else
+      dm_params = single_dm_params(user_ids)
+      create_dm(creator, dm_params, 2)
+    end
+  end
+
+  defp create_single_dm_as_guest(%User{} = user, user_ids) do
+    dm_params = single_dm_params(user_ids)
+    create_dm(user, dm_params, 2)
+  end
+
+  defp single_dm_params(user_ids) do
+    %{
       "name" => "__dm_group__",
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
-    }, creator)
+    }
   end
 
-  def create_multi_dm(_, user_ids) when length(user_ids) < 3 do
+  @doc """
+  Creates a multi-user direct message.
+  The amount of users must be 3 or more.
+  For guest users initiating a DM, all users must belong to at least one
+  of the guest's restricted rooms.
+  """
+  def create_multi_dm(%User{}, user_ids) when length(user_ids) < 3 do
     {:error, :user_id_count_is_not_3_or_more}
   end
 
-  def create_multi_dm(%{id: creator_id}, [user_id_1, user_id_2, user_id_3])
+  def create_multi_dm(%User{id: creator_id}, [user_id_1, user_id_2, user_id_3])
       when creator_id != user_id_1 and creator_id != user_id_2 and creator_id != user_id_3 do
     {:error, :creator_id_is_not_in_user_ids}
   end
 
   def create_multi_dm(%User{} = creator, user_ids) do
-    create(%{
+    if User.guest?(creator) do
+      create_multi_dm_as_guest(creator, user_ids)
+    else
+      dm_params = multi_dm_params(user_ids)
+      create_dm(creator, dm_params, 3)
+    end
+  end
+
+  defp create_multi_dm_as_guest(%User{} = user, user_ids) do
+    dm_params = multi_dm_params(user_ids)
+    create_dm(user, dm_params, 3)
+  end
+
+  defp multi_dm_params(user_ids) do
+    %{
       "name" => "__multi_dm_group__",
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
-    }, creator)
+    }
+  end
+
+  defp create_dm(%User{id: user_id, team_id: team_id}, dm_params, expected_count) do
+    new_dm_params = add_group_users(dm_params, team_id, user_id, true)
+    with true <- length(new_dm_params["group_users"]) == expected_count,
+         changeset = with_users_changeset(%Group{team_id: team_id, creator_user_id: user_id}, new_dm_params),
+         {:ok, group} <- Repo.insert(changeset) do
+      {:ok, Repo.preload(group, :users)}
+    else
+      false -> {:error, :invalid_user_ids}
+      {:error, %Ecto.Changeset{}} = error -> error
+    end
   end
 
   @doc """
@@ -319,7 +369,7 @@ defmodule Stitch.Group do
       |> do_add_new_group_user_attrs()
 
     attrs = %{group_users: final_group_memberships}
-    changeset = update_group_users_changeset(group, attrs)
+    changeset = update_users_changeset(group, attrs)
 
     with {:ok, _} <- Repo.update(changeset) do
       {:ok, {added_users, removed_users}}

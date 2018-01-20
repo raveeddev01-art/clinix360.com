@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
   alias StitchConnect.Web.{EventsChannel, TeamChannel, GroupChannel}
-  alias Stitch.{Group, GroupQueries, GroupUser, GroupAuthorization, TeamAuthorization, MessageQueries}
+  alias Stitch.{Group, GroupQueries, GroupUser, GroupAuthorization, TeamAuthorization, MessageQueries, SystemMessages}
 
   action_fallback StitchConnect.Web.Api.FallbackController
 
@@ -69,10 +69,10 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def create(conn, params) do
-    user = conn.assigns.current_user
-    case Group.create(params, user) do
-      {:ok, %{group: group, system_messages: system_messages}} ->
-        group = group
+    with user = conn.assigns.current_user,
+         {:ok, group} <- Group.create(user, params) do
+      group =
+        group
         |> Map.put_new(:joined, true)
         |> Map.put_new(:unread_messages_count, 0)
         |> Map.put_new(:is_favorite, false)
@@ -80,21 +80,24 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> Map.put_new(:last_read_at, group.inserted_at)
         |> Map.put_new(:mentions_count, 0)
 
-        EventsChannel.broadcast_group_creation(group)
-        Enum.each(system_messages, fn system_message ->
-          system_message = system_message |> MessageQueries.load_info
-          EventsChannel.broadcast_group_new_msg(group, system_message)
-        end)
+      broadcast_new_group_messages(group)
 
-        render conn, "show.json", group: group, user_id: user.id
-      {:error, {:already_exists, _slug}} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: "Room with given name already exists."})
+      render conn, "show.json", group: group, user_id: user.id
+    else
+      {:error, %Ecto.Changeset{}} = error -> error
       {:error, reason} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: reason})
+    end
+  end
+
+  defp broadcast_new_group_messages(%{group_users: group_users} = group) do
+    EventsChannel.broadcast_group_creation(group)
+    for %{user: user} <- group_users do
+      system_message = SystemMessages.generate_user_joined_group(group, user)
+      EventsChannel.broadcast_group_new_msg(group, system_message)
+      EventsChannel.broadcast_group_join(group, user.id)
     end
   end
 
@@ -122,7 +125,6 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   defp respond_to_dm_creation(conn, result) do
     user = conn.assigns.current_user
-
     case result do
       {:ok, group} ->
         group =
@@ -137,17 +139,19 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         EventsChannel.broadcast_group_creation(group)
         render conn, "show.json", group: group, user_id: user.id
 
-      {:error, {:already_exists, slug}} ->
+      {:error, %Ecto.Changeset{errors: [slug: _], changes: %{slug: slug}}} -> # DM already exists
         {:ok, group} = GroupQueries.find_by_slug(slug, user)
-        {:ok, _group_user} = Group.unhide(group, user.id)
+        {:ok, _group_user} = Group.unhide(group.id, user)
         group = GroupQueries.load_user_data(group, user)
         render conn, "show.json", group: group, user_id: user.id
-
       {:error, :creator_id_is_not_in_user_ids} ->
         conn
         |> put_status(:bad_request)
         |> json(%{message: "user_ids param has to contain current user's id"})
-
+      {:error, :invalid_user_ids} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "user_ids has invalid ids"})
       {:error, reason} ->
         conn
         |> put_status(:unprocessable_entity)
