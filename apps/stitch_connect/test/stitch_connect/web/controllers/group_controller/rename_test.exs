@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.RenameTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use StitchConnect.Web.ConnCase
   import StitchConnect.Web.SubdomainRouter.Helpers
 
   describe "PATCH /api/v1/groups/:id/rename" do
