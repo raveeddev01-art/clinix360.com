@@ -28,11 +28,19 @@ defmodule Stitch.Group do
   def changeset(%Stitch.Group{} = struct, params) do
     struct
     |> cast(params, [:name, :slug, :description, :public, :team_id, :creator_user_id])
+    |> slugify_name() # This will generate slug from name if slug is missing
     |> validate_required([:name, :slug, :public, :team_id])
     |> validate_length(:name, max: 25)
     |> validate_format(:name, ~r/^[\w-\s]+$/)
     |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index)
   end
+
+  defp slugify_name(%Ecto.Changeset{changes: %{slug: _}} = changeset), do: changeset
+  defp slugify_name(%Ecto.Changeset{changes: %{name: name}} = changeset) when not is_nil(name) do
+    slug = Slugger.slugify_downcase(name)
+    Ecto.Changeset.put_change(changeset, :slug, slug)
+  end
+  defp slugify_name(%Ecto.Changeset{} = changeset), do: changeset
 
   def create(attrs, %User{team_id: team_id, id: user_id}) do
     attrs = attrs |> Map.put("team_id", team_id) |> Map.put("creator_user_id", user_id)
