@@ -21,8 +21,9 @@ defmodule Stitch.GroupAuthorization do
   @doc """
   Return true/false whether user can rename this group.
   """
+  def can_rename?(%Group{creator_user_id: user_id}, %User{id: user_id}), do: true
   def can_rename?(%Group{team_id: team_id} = group, %User{team_id: team_id} = user) do
-    Enum.member?(user.roles, "admin") || group.public || group.creator_user_id == user.id
+    "admin" in user.roles || (group.public && !User.guest?(user))
   end
   def can_rename?(_group, _user), do: false
 

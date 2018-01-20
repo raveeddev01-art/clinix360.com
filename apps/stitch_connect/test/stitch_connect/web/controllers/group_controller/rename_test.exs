@@ -1,68 +1,78 @@
 defmodule StitchConnect.Web.GroupController.RenameTest do
-  use StitchConnect.Web.ConnCase
-
+  use StitchConnect.Web.ConnCase, async: true
   import StitchConnect.Web.SubdomainRouter.Helpers
 
-  setup %{conn: conn} do
-    team = insert(:team)
-    user = insert(:user, team: team, roles: ["admin"])
-    admin = insert(:user, team: team, username: "admin", roles: ["admin"])
-    group = insert(:group, team: team)
+  describe "PATCH /api/v1/groups/:id/rename" do
+    setup %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team, roles: ["admin"])
+      admin = insert(:user, team: team, username: "admin", roles: ["admin"])
+      group = insert(:group, team: team)
 
-    conn =
-      conn
-      |> with_team_subdomain(team)
-      |> with_user_session(user)
-      |> with_api_user(user)
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
 
-    {:ok, conn: conn, team: team, group: group, admin: admin}
-  end
+      {:ok, conn: conn, team: team, group: group, admin: admin}
+    end
 
-  test "responds with the updated group", %{conn: conn, group: group} do
-    json =
-      conn
-      |> patch(api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
-      |> json_response(200)
+    test "updates a group's name", %{conn: conn, group: group} do
+      json =
+        conn
+        |> patch(api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
+        |> json_response(200)
 
-    assert %{"name" => "Foo", "slug" => "foo"} = json
-  end
+      assert %{"name" => "Foo", "slug" => "foo"} = json
+    end
 
-  test "using an existing name/slug", %{conn: conn, team: team, group: group} do
-    insert(:group, team: team, slug: "foo")
+    test "errors on duplicate names", %{conn: conn, team: team, group: group} do
+      insert(:group, team: team, slug: "foo")
 
-    json =
-      conn
-      |> patch(api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
-      |> json_response(:unprocessable_entity)
+      json =
+        conn
+        |> patch(api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
+        |> json_response(:unprocessable_entity)
 
-    assert %{"message" => "Name has to be unique"} = json
-  end
+      assert %{"message" => "Name has to be unique"} = json
+    end
 
-  test "doesn't allow to rename group from another team", %{conn: conn} do
-    group = insert(:group, public: true)
+    test "doesn't allow to rename group from another team", %{conn: conn} do
+      group = insert(:group, public: true)
 
-    json =
-      conn
-      |> patch(api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
-      |> json_response(401)
+      conn = patch(conn, api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
+      assert response = json_response(conn, :not_found)
+      assert response["errors"] =~ "does not exist"
+    end
 
-    assert %{"message" => "Not authorized to rename this room"} = json
-  end
+    test "doesn't allow admin to rename private group from another team", %{conn: conn, team: team, admin: admin} do
+      group = insert(:group, public: false)
 
-  test "doesn't allow admin to rename private group from another team", %{conn: conn, team: team, admin: admin} do
-    group = insert(:group, public: false)
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(admin)
 
-    conn =
-      conn
-      |> with_team_subdomain(team)
-      |> with_user_session(admin)
-      |> with_api_user(admin)
+      conn = patch(conn, api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
+      assert response = json_response(conn, :not_found)
+      assert response["errors"] =~ "does not exist"
+    end
 
-    json =
-      conn
-      |> patch(api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
-      |> json_response(401)
+    test "doesn't allow guests to rename groups", %{conn: base_conn, team: team, group: group} do
+      other_group = insert(:group, team: team)
+      for role <- ["single-room-guest", "multi-room-guest"] do
+        guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
+        insert(:group_user, group: group, user: guest)
+        base_conn = with_api_user(base_conn, guest)
 
-    assert %{"message" => "Not authorized to rename this room"} = json
+        conn = patch(base_conn, api_v1_group_path(base_conn, :rename, group), %{"name" => "Foo"})
+        assert response = json_response(conn, :forbidden)
+        assert response["message"] =~ "not authorized"
+
+        conn = patch(base_conn, api_v1_group_path(base_conn, :rename, other_group), %{"name" => "Foo"})
+        assert response = json_response(conn, :not_found)
+        assert response["errors"] =~ "does not exist"
+      end
+    end
   end
 end
