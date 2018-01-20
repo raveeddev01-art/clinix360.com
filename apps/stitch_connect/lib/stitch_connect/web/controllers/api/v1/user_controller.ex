@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Accounts.User, UserQueries}
+  alias Stitch.UserQueries
+  alias Stitch.Accounts.{User, Role}
   alias StitchConnect.Web.{TeamChannel}
 
   action_fallback StitchConnect.Web.Api.V1.FallbackController
@@ -204,9 +205,9 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     |> json(%{message: "Requires a username query."})
   end
 
-  @regular_roles ["member"]
-  @guest_roles ["single-room-guest", "multi-room-guest"]
-  def change_role(conn, %{"id" => user_id, "role" => role}) when role in @regular_roles do
+  @member_role Role.member()
+  @guest_roles Role.guests()
+  def change_role(conn, %{"id" => user_id, "role" => role}) when role in @member_role do
     do_change_role(conn, %{user_id: user_id, role: role})
   end
   def change_role(conn, %{"id" => user_id, "role" => role, "group_ids" => group_ids})
@@ -218,12 +219,22 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     with team = conn.assigns.team,
         {:user, user} when not is_nil(user) <- {:user, UserQueries.team_member_by_id(team, user_id)},
         {:ok, updated_user} <- Stitch.Accounts.Admin.change_role(user, params),
+        {:admins, team_admins} = {:admins, Stitch.TeamQueries.list_admins(team)},
         {_removed_groups, _added_groups} = Stitch.Accounts.Admin.update_user_group_memberships(updated_user) do
       Stitch.Billing.update_subscriber_count(team)
+      send_role_changed_email(team_admins, user, updated_user)
 
       json(conn, %{message: "User role updated."})
     else
       error -> handle_change_role_error(conn, error, role)
+    end
+  end
+
+  defp send_role_changed_email(team_admins, user, updated_user) do
+    if user.roles != updated_user.roles do
+      Enum.each(team_admins, fn admin ->
+        Stitch.Accounts.Email.role_changed_email(admin, user.roles, updated_user.roles)
+      end)
     end
   end
 
