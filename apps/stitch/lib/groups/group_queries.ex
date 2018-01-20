@@ -123,10 +123,11 @@ defmodule Stitch.GroupQueries do
   Returns a list of visible groups for the user given
   a search term.
   """
-  def search(term, %User{team_id: team_id, id: user_id}) do
+  def search(term, %User{team_id: team_id, id: user_id} = user) do
     Group
     |> where(team_id: ^team_id)
     |> where([g], ilike(g.name, ^"%#{term}%") or ilike(g.slug, ^"%#{term}%"))
+    |> restrict_groups(user)
     |> load_groups_for_user(user_id)
   end
   def search(slug, user_id), do: search(slug, Repo.get!(User, user_id))
