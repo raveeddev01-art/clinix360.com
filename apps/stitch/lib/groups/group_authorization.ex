@@ -48,4 +48,11 @@ defmodule Stitch.GroupAuthorization do
   def can_join?(%User{} = user) do
     !User.guest?(user)
   end
+
+  @doc """
+  Checks if a user is authorized to join groups based on role.
+  """
+  def can_leave?(%User{} = user) do
+    !User.guest?(user)
+  end
 end
