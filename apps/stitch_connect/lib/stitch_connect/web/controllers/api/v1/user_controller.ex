@@ -1,8 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
-  alias Stitch.UserQueries
   alias Stitch.Accounts.{User, Role}
-  alias StitchConnect.Web.{TeamChannel}
+  alias Stitch.{UserQueries, FeatureGateway}
+  alias StitchConnect.Web.{TeamChannel, GroupChannel}
 
   action_fallback StitchConnect.Web.Api.V1.FallbackController
 
@@ -212,7 +212,11 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
   def change_role(conn, %{"id" => user_id, "role" => role, "group_ids" => group_ids})
     when role in @guest_roles do
-    do_change_role(conn, %{user_id: user_id, role: role, groups_as_guest: group_ids})
+      with :ok <- FeatureGateway.allowed?(:guests, conn.assigns.subscription) do
+        do_change_role(conn, %{user_id: user_id, role: role, groups_as_guest: group_ids})
+      else
+        error -> handle_change_role_error(conn, error, role)
+      end
   end
 
   defp do_change_role(conn, %{user_id: user_id, role: role} = params) do
@@ -240,6 +244,9 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   defp handle_change_role_error(conn, %{user: nil}, _) do
     not_found_error(conn)
+  end
+  defp handle_change_role_error(conn, {:insufficient_tier, _}, _) do
+    unprocessable_entity_error(conn, %{message: "Feature not available for your subscription."})
   end
   defp handle_change_role_error(conn, {:error, :invalid_group_ids}, _) do
     unprocessable_entity_error(conn, %{message: "One or more provided group ids is invalid."})
