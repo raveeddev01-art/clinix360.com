@@ -5,6 +5,8 @@ defmodule Stitch.GroupAuthorization do
 
   alias Stitch.{Repo, Group, Accounts.User}
 
+  @dm_groups ["__dm_group__", "__multi_dm_group__"]
+
   @doc """
   """
   def can_view?(%Group{team_id: team_id} = group, %User{team_id: team_id} = user) do
@@ -21,6 +23,7 @@ defmodule Stitch.GroupAuthorization do
   @doc """
   Return true/false whether user can rename this group.
   """
+  def can_rename?(%Group{name: name}, _user) when name in @dm_groups, do: false
   def can_rename?(%Group{creator_user_id: user_id}, %User{id: user_id}), do: true
   def can_rename?(%Group{team_id: team_id} = group, %User{team_id: team_id} = user) do
     "admin" in user.roles || (group.public && !User.guest?(user))
