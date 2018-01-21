@@ -61,7 +61,7 @@ defmodule Stitch.Group do
   """
   @spec create(User.t, map, boolean) :: {:ok, Group.t} | {:error, Ecto.Changeset.t}
   def create(%User{id: user_id, team_id: team_id}, attrs, direct_message? \\ false) do
-    attrs = add_group_users(attrs, team_id, user_id, direct_message?)
+    attrs = add_users(attrs, team_id, user_id, direct_message?)
     group = %Group{team_id: team_id, creator_user_id: user_id}
     changeset = with_users_changeset(group, attrs)
 
@@ -71,23 +71,23 @@ defmodule Stitch.Group do
   end
 
   # Ensure users are part of team and format them for `cast_assoc`
-  defp add_group_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, false) do
+  defp add_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, false) do
     query =
       from u in base_group_user_query(user_ids, team_id, creator_id),
       where: not fragment("? && ?", ^@guest_roles, u.roles)
-    do_add_group_users(query, attrs)
+    do_add_users(query, attrs)
   end
-  defp add_group_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, true) do
+  defp add_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, true) do
     query = base_group_user_query(user_ids, team_id, creator_id)
-    do_add_group_users(query, attrs)
+    do_add_users(query, attrs)
   end
   # Ensure list is populated
-  defp add_group_users(attrs, team_id, creator_id, direct_message?) do
+  defp add_users(attrs, team_id, creator_id, direct_message?) do
     new_attrs = Map.put(attrs, "user_ids", [])
-    add_group_users(new_attrs, team_id, creator_id, direct_message?)
+    add_users(new_attrs, team_id, creator_id, direct_message?)
   end
 
-  defp do_add_group_users(query, attrs) do
+  defp do_add_users(query, attrs) do
     group_users = Repo.all(query)
     Map.put(attrs, "group_users", group_users)
   end
@@ -167,7 +167,7 @@ defmodule Stitch.Group do
   end
 
   defp create_dm(%User{id: user_id, team_id: team_id}, dm_params, expected_count) do
-    new_dm_params = add_group_users(dm_params, team_id, user_id, true)
+    new_dm_params = add_users(dm_params, team_id, user_id, true)
     with true <- length(new_dm_params["group_users"]) == expected_count,
          changeset = with_users_changeset(%Group{team_id: team_id, creator_user_id: user_id}, new_dm_params),
          {:ok, group} <- Repo.insert(changeset) do
