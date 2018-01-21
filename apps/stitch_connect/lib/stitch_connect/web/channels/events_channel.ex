@@ -73,19 +73,20 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user_id}", "left_group", %{group_id: group.id})
   end
 
-  defp get_non_members(%Group{public: true, team_id: team_id}) do
-    TeamQueries.list_non_guest_users(team_id)
+  defp get_non_members(%Group{public: true, team_id: team_id}, memberIds) do
+    TeamQueries.list_non_guest_users(team_id) |> Enum.reject(& &1.id in memberIds )
   end
 
-  defp get_non_members(_), do: []
+  defp get_non_members(_, _), do: []
 
-  def broadcast_group_creation(group) do
-    for %User{id: user_id} <- group.users do
+  def broadcast_group_creation(%Group{} = group) do
+    memberIds = for %User{id: user_id} <- group.users do
       json = GroupView.group_json(group, user_id)
       @endpoint.broadcast("events:#{user_id}", "created_group", json)
+      user_id
     end
 
-    for %User{id: user_id} <- get_non_members(group) do
+    for %User{id: user_id} <- get_non_members(group, memberIds) do
       json = group |> Map.put(:joined, false) |> GroupView.group_json(user_id)
       @endpoint.broadcast("events:#{user_id}", "created_group", json)
     end
@@ -98,7 +99,9 @@ defmodule StitchConnect.Web.EventsChannel do
       group_slug: group.slug
     }
 
-    for %User{id: user_id} <- group.users ++ get_non_members(group) do
+    memberIds = group.users |> Enum.map(& &1.id)
+
+    for %User{id: user_id} <- group.users ++ get_non_members(group, memberIds) do
       @endpoint.broadcast("events:#{user_id}", "renamed_group", json)
     end
   end

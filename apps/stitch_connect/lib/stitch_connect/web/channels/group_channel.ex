@@ -2,8 +2,9 @@ defmodule StitchConnect.Web.GroupChannel do
   use StitchConnect.Web, :channel
   use Appsignal.Instrumentation.Decorators
   import Ecto.Query
-  alias StitchConnect.MessageLinkPreviewGenerator
+  alias Stitch.Accounts.{User}
   alias StitchConnect.Web.Api.V1.MessageView
+  alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization,
     Message, MessageAuthorization, MessageQueries}
@@ -311,7 +312,16 @@ defmodule StitchConnect.Web.GroupChannel do
     endpoint_broadcast(group, "pinned_message", message_json)
   end
 
-  def broadcast_members_update(group, added_users, removed_users) do
+  def broadcast_members_update(%User{} = user, added_groups, removed_groups) do
+    for group <- added_groups do
+      broadcast_members_update(group, [user], [])
+    end
+    for group <- removed_groups do
+      broadcast_members_update(group, [], [user])
+    end
+  end
+
+  def broadcast_members_update(%Group{} = group, added_users, removed_users) do
     group_user_ids = Stitch.GroupUser.user_ids(group.id)
     update_recipient_ids = Enum.uniq(group_user_ids ++ Enum.map(removed_users, & &1.id))
     EventsChannel.broadcast_members_update(group, update_recipient_ids, group_user_ids)

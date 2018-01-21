@@ -179,7 +179,7 @@ defmodule Stitch.Accounts.Admin do
   def update_user_group_memberships(%User{roles: [role]} = user) when role in @guest_roles do
     user
     |> GroupQueries.non_dm_group_memberships()
-    |> Enum.reduce({[], user.groups_as_guest}, &do_identify_group_membership_diff/2)
+    |> Enum.reduce({user.groups_as_guest, []}, &do_identify_group_membership_diff/2)
     |> do_update_user_group_memberships(user)
   end
   def update_user_group_memberships(%User{id: user_id, roles: ["member"]} = user) do
@@ -193,26 +193,26 @@ defmodule Stitch.Accounts.Admin do
   end
   def update_user_group_memberships(_), do: {[], []}
 
-  defp do_identify_group_membership_diff(%{group_id: group_id} = group_user, {group_users_to_remove, group_ids_to_add}) do
+  defp do_identify_group_membership_diff(%{group_id: group_id} = group_user, {group_ids_to_add, group_users_to_remove}) do
     if group_id not in group_ids_to_add do
-      {[group_user | group_users_to_remove], group_ids_to_add}
+      {group_ids_to_add, [group_user | group_users_to_remove]}
     else
-      {group_users_to_remove, List.delete(group_ids_to_add, group_id)}
+      {List.delete(group_ids_to_add, group_id), group_users_to_remove}
     end
   end
 
-  defp do_update_user_group_memberships({group_users_to_remove, group_ids_to_add}, user) do
-    removed_groups =
-      for gu <- group_users_to_remove do
-        Group.remove_user(gu.group, user)
-        gu.group
-      end
+  defp do_update_user_group_memberships({group_ids_to_add, group_users_to_remove}, user) do
     added_groups =
       for group_id <- group_ids_to_add do
         group = GroupQueries.get_by_id(group_id)
         Group.add_user(group, user)
         group
       end
-    {removed_groups, added_groups}
+    removed_groups =
+      for gu <- group_users_to_remove do
+        Group.remove_user(gu.group, user)
+        gu.group
+      end
+    {added_groups, removed_groups}
   end
 end

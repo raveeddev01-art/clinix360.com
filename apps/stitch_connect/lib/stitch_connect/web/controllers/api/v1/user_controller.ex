@@ -224,24 +224,15 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         {:user, user} when not is_nil(user) <- {:user, UserQueries.team_member_by_id(team, user_id)},
         {:ok, updated_user} <- Stitch.Accounts.Admin.change_role(user, params),
         {:admins, team_admins} = {:admins, Stitch.TeamQueries.list_admins(team)},
-        {removed_groups, added_groups} = Stitch.Accounts.Admin.update_user_group_memberships(updated_user) do
+        {added_groups, removed_groups} = Stitch.Accounts.Admin.update_user_group_memberships(updated_user) do
       Stitch.Billing.update_subscriber_count(team)
       TeamChannel.broadcast_user_info(team, user)
-      broadcast_group_changes(user, added_groups, removed_groups)
+      GroupChannel.broadcast_members_update(user, added_groups, removed_groups)
       send_role_changed_email(team_admins, user, updated_user)
 
       json(conn, %{message: "User role updated."})
     else
       error -> handle_change_role_error(conn, error, role)
-    end
-  end
-
-  defp broadcast_group_changes(user, removed_groups, added_groups) do
-    for group <- removed_groups do
-      GroupChannel.broadcast_members_update(group, [], [user])
-    end
-    for group <- added_groups do
-      GroupChannel.broadcast_members_update(group, [user], [])
     end
   end
 

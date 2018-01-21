@@ -124,17 +124,8 @@ defmodule Stitch.Group do
     create_dm(creator, dm_params, 1)
   end
   def create_single_dm(%User{} = creator, user_ids) do
-    if User.guest?(creator) do
-      create_single_dm_as_guest(creator, user_ids)
-    else
-      dm_params = single_dm_params(user_ids)
-      create_dm(creator, dm_params, 2)
-    end
-  end
-
-  defp create_single_dm_as_guest(%User{} = user, user_ids) do
     dm_params = single_dm_params(user_ids)
-    create_dm(user, dm_params, 2)
+    create_dm(creator, dm_params, 2)
   end
 
   defp single_dm_params(user_ids) do
@@ -156,23 +147,14 @@ defmodule Stitch.Group do
     {:error, :user_id_count_is_not_3_or_more}
   end
 
-  def create_multi_dm(%User{id: creator_id}, [user_id_1, user_id_2, user_id_3])
-      when creator_id != user_id_1 and creator_id != user_id_2 and creator_id != user_id_3 do
-    {:error, :creator_id_is_not_in_user_ids}
-  end
-
-  def create_multi_dm(%User{} = creator, user_ids) do
-    if User.guest?(creator) do
-      create_multi_dm_as_guest(creator, user_ids)
-    else
+  def create_multi_dm(%User{id: creator_id} = creator, user_ids)
+    when is_list(user_ids) do
+    if creator_id in user_ids do
       dm_params = multi_dm_params(user_ids)
       create_dm(creator, dm_params, 3)
+    else
+      {:error, :creator_id_is_not_in_user_ids}
     end
-  end
-
-  defp create_multi_dm_as_guest(%User{} = user, user_ids) do
-    dm_params = multi_dm_params(user_ids)
-    create_dm(user, dm_params, 3)
   end
 
   defp multi_dm_params(user_ids) do

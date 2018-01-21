@@ -232,7 +232,7 @@ defmodule Stitch.Accounts.AdminTest do
 
     test "adds a guest to their restricted group when they aren't a member", %{group: group, team: team} do
       guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
-      assert {[], [added_group]} = Stitch.Accounts.Admin.update_user_group_memberships(guest)
+      assert {[added_group], []} = Stitch.Accounts.Admin.update_user_group_memberships(guest)
       assert added_group.id == group.id
       assert [group_user] = Stitch.GroupQueries.non_dm_group_memberships(guest)
       assert group_user.group.id == group.id
@@ -243,7 +243,7 @@ defmodule Stitch.Accounts.AdminTest do
       guest = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [new_group.id])
       insert(:group_user, group: new_group, user: guest)
       insert(:group_user, group: group, user: guest)
-      assert {[removed_group], []} = Stitch.Accounts.Admin.update_user_group_memberships(guest)
+      assert {[], [removed_group]} = Stitch.Accounts.Admin.update_user_group_memberships(guest)
       assert removed_group.id == group.id
       assert [group_user] = Stitch.GroupQueries.non_dm_group_memberships(guest)
       assert group_user.group.id == new_group.id
