@@ -16,7 +16,13 @@ defmodule Stitch.TeamQueries do
   end
 
   def get_by_slug(slug) when byte_size(slug) > 0 do
-    Repo.get_by(Team, slug: slug)
+    query =
+      from t in Team,
+      left_join: s in assoc(t, :subscription),
+      where: t.slug == ^slug,
+      preload: [subscription: s]
+
+    Repo.one(query)
   end
   def get_by_slug(_), do: nil
 
