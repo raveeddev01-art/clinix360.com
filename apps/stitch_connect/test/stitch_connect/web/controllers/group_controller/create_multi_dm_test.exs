@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
-  use StitchConnect.Web.ConnCase, async: true
+  use StitchConnect.Web.ConnCase
   import Phoenix.ChannelTest
   import StitchConnect.Web.SubdomainRouter.Helpers
 
