@@ -7,6 +7,8 @@ defmodule Stitch.GroupQueries do
   alias Stitch.Accounts.User
   import Ecto.Query
 
+  @dm_groups ["__dm_group__", "__multi_dm_group__"]
+
   @doc """
   Return true or false is user has joined the given group.
   """
@@ -27,20 +29,24 @@ defmodule Stitch.GroupQueries do
   end
 
   defp load_groups_for_user(query, user_id) do
+    query =
+      from g in query,
+      left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user_id,
+      join: u in User, on: u.id == ^user_id,
+      where: g.public or not is_nil(gu.id) or "admin" in u.roles,
+      preload: :users, # TODO: do not preload all team users by default
+      select: %{
+        group: g,
+        joined: not is_nil(gu.id),
+        is_favorite: not is_nil(gu.id) and gu.is_favorite,
+        is_hidden: not is_nil(gu.id) and gu.is_hidden,
+        unread_messages_count: gu.unread_messages_count,
+        mentions_count: gu.mentions_count,
+        last_read_at: type(fragment("COALESCE(?, ?)", gu.last_read_at, gu.inserted_at), :naive_datetime),
+      }
+
     query
-    |> join(:left, [g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
-    |> preload(:users) # TODO: do not preload all team users by default
-    |> where([g, gu], g.public or not is_nil(gu.id))
-    |> select([g, gu], %{
-      group: g,
-      joined: not is_nil(gu.id),
-      is_favorite: not is_nil(gu.id) and gu.is_favorite,
-      is_hidden: not is_nil(gu.id) and gu.is_hidden,
-      unread_messages_count: gu.unread_messages_count,
-      mentions_count: gu.mentions_count,
-      last_read_at: type(fragment("COALESCE(?, ?)", gu.last_read_at, gu.inserted_at), :naive_datetime),
-    })
-    |> Repo.all
+    |> Repo.all()
     |> Enum.map(fn group ->
       {group, group_info} = Map.pop(group, :group)
       Map.merge(group, group_info)
@@ -151,7 +157,7 @@ defmodule Stitch.GroupQueries do
       from gu in GroupUser,
       join: g in assoc(gu, :group),
       where: gu.user_id == ^user_id,
-      where: g.name not in ^["__dm_group__", "__multi_dm_group__"],
+      where: g.name not in ^@dm_groups,
       preload: [group: g]
     Repo.all(query)
   end
