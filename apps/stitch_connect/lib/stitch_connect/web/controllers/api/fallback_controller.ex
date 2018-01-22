@@ -38,7 +38,7 @@ defmodule StitchConnect.Web.Api.FallbackController do
     |> render(ErrorView, :"403", message: message)
   end
 
-  def call(conn, {:insufficient_tier, valid_tiers}) do
+  def call(conn, {:error, {:insufficient_tier, valid_tiers}}) do
     tiers = Enum.join(valid_tiers, " or ")
     message = "This resource requires a higher subscription tier (#{tiers})."
     conn

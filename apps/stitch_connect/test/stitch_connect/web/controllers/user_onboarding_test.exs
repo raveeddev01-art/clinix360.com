@@ -97,7 +97,7 @@ defmodule StitchConnect.Web.UserOnboardingTest do
         conn
         |> with_team_subdomain(team)
 
-      Invitation.invite_to_team(admin, "user@example.com")
+      Invitation.invite_to_team(admin.id, "user@example.com")
       assert [invite] = Repo.all(Invitation)
 
       {:ok, conn: conn, invite: invite}

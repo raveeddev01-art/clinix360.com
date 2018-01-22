@@ -142,9 +142,19 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(params, [:first_name, :phone_number, :last_name, :password, :pin, :team_id, :roles])
     |> username_changeset(params)
+    |> ensure_role()
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:phone_number, :pin, :team_id, :roles])
     |> put_change(:onboarded, true)
+  end
+
+  defp ensure_role(%Ecto.Changeset{} = changeset) do
+    roles = get_field(changeset, :roles) || []
+    if roles == [] do
+      put_change(changeset, :roles, ["member"])
+    else
+      changeset
+    end
   end
 
   def password_update_changeset(struct, params) do

@@ -49,18 +49,21 @@ defmodule Stitch.Invitation do
       iex> invite_as_single_room_guest(%Team{...}, %{email: "test@test.com", group_id: 9000})
       {:ok, %Invitation{...}}
   """
-  @spec invite_as_single_room_guest(User.t, Team.t, map) :: {:ok, map} | {:error, Changeset.t | String.t}
+  @spec invite_as_single_room_guest(User.t, Team.t, map) :: {:ok, map} | {:error, Changeset.t | :group_not_found}
   def invite_as_single_room_guest(%User{} = inviter, %Team{id: team_id} = team, params) do
-    with default_attrs = %{team_id: team_id, roles: ["single-room-guest"]},
-         %Changeset{valid?: true} = invite <- SingleRoomGuestInvite.changeset(params),
+    with %Changeset{valid?: true} = invite <- SingleRoomGuestInvite.changeset(params),
          {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, invite.changes.group_id)},
-         attrs = Map.merge(default_attrs, %{email: invite.changes.email, groups_as_guest: [group.id]}),
-         {:ok ,invitation} <- do_invite(inviter, attrs) do
+         email = invite.changes.email,
+         user_params = %{email: email, groups_as_guest: [group.id], team_id: team_id, roles: ["single-room-guest"]},
+         {:user, {:ok, user}} <- {:user, Repo.insert(User.team_invite_changeset(%User{}, user_params))},
+         {:ok, invitation} = Repo.insert(Invitation.changeset(%Invitation{}, %{user_id: user.id, team_id: team_id})) do
+      analytics_track_new_invitation(user, email)
+      Invitation.resend_invitation(inviter.id, invitation.id)
       {:ok, Repo.preload(invitation, :user)}
     else
       %Changeset{valid?: false} = changeset -> {:error, changeset}
-      {:group, nil} -> {:error, "Invalid group id."}
-      error -> error
+      {:group, nil} -> {:error, :group_not_found}
+      {:user, {:error, _changeset} = error} -> error
     end
   end
 
@@ -83,28 +86,32 @@ defmodule Stitch.Invitation do
       {:ok, %Invitation{...}}
   """
   @spec invite_as_multi_room_guest(User.t, Team.t, map) :: {:ok, map} | {:error, Changeset.t} | {:error, :invalid_groups, [group_id :: integer]}
-  def invite_as_multi_room_guest(%User{} = inviter, %Team{id: team_id}, params) do
-    with default_attrs = %{team_id: team_id, roles: ["multi-room-guest"]},
-         %Changeset{valid?: true} = invite <- MultiRoomGuestInvite.changeset(params),
-         {:group, groups} when is_list(groups) <- {:group, validate_groups(team_id, invite.changes.group_ids)},
-         attrs = Map.merge(default_attrs, %{email: invite.changes.email, groups_as_guest: invite.changes.group_ids}),
-         {:ok ,invitation} <- do_invite(inviter, attrs) do
+  def invite_as_multi_room_guest(%User{} = inviter, %Team{id: team_id} = team, params) do
+    with %Changeset{valid?: true} = invite <- MultiRoomGuestInvite.changeset(params),
+         group_ids = invite.changes.group_ids,
+         {:ok, _groups} <- validate_groups(team, group_ids),
+         email = invite.changes.email,
+         user_params = %{email: email, groups_as_guest: group_ids, team_id: team_id, roles: ["multi-room-guest"]},
+         {:user, {:ok, user}} <- {:user, Repo.insert(User.team_invite_changeset(%User{}, user_params))},
+         {:ok, invitation} = Repo.insert(Invitation.changeset(%Invitation{}, %{user_id: user.id, team_id: team_id})) do
+      analytics_track_new_invitation(user, email)
+      Invitation.resend_invitation(inviter.id, invitation.id)
       {:ok, Repo.preload(invitation, :user)}
     else
       %Changeset{valid?: false} = changeset -> {:error, changeset}
-      {:group, _} -> {:error, "Invalid group ids."}
-      error -> error
+      {:error, :invalid_groups, _} = error -> error
+      {:user, {:error, _changeset} = error} -> error
     end
   end
 
-  defp validate_groups(team_id, group_ids) do
-    groups = GroupQueries.get_by_ids(group_ids, %User{team_id: team_id})
+  defp validate_groups(%Team{} = team, group_ids) do
+    groups = GroupQueries.get_by_ids(group_ids, %User{team_id: team.id})
     valid_group_ids = for group <- groups, do: group.id
     invalid_group_ids = group_ids -- valid_group_ids
     if invalid_group_ids == [] do
-      groups
+      {:ok, groups}
     else
-      :invalid_groups
+      {:error, :invalid_groups, invalid_group_ids}
     end
   end
 
@@ -112,31 +119,33 @@ defmodule Stitch.Invitation do
   Invites user to the team via email address. If pending account
   for team with same email exists it returns error.
   """
-  def invite_to_team(%User{} = user, email) do
-    do_invite(user, %{email: email, team_id: user.team_id})
-  end
+  def invite_to_team(user_id, email) do
+    user = Repo.get(User, user_id)
+    team = Repo.get(Team, user.team_id)
+    if TeamAuthorization.can_send_invites?(user, team) do
+      new_user_changeset = User.team_invite_changeset(%User{}, %{email: email, team_id: team.id})
+      case Repo.insert(new_user_changeset) do
+        {:error, _changeset} ->
+          invited_user = Repo.get_by(User, email: email, team_id: team.id)
 
-  defp do_invite(invitor, %{email: email, team_id: team_id} = params) do
-    new_user_changeset = User.team_invite_changeset(%User{}, params)
-    case Repo.insert(new_user_changeset) do
-      {:error, _changeset} ->
-        invited_user = Repo.get_by(User, email: email, team_id: team_id)
-
-        case invited_user do
-          nil ->
-            {:error, "Email isn't valid."}
-          invited_user ->
-            if invited_user.onboarded do
-              {:error, "Email has already been registered."}
-            else
-              {:error, "Email has already been invited."}
-            end
-        end
-      {:ok, new_user} ->
-        invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team_id})
-        {:ok, invitation} = Repo.insert(invitation_changeset)
-        analytics_track_new_invitation(invitor, email)
-        Invitation.resend_invitation(invitor.id, invitation.id)
+          case invited_user do
+            nil ->
+              {:error, "Email isn't valid."}
+            invited_user ->
+              if invited_user.onboarded do
+                {:error, "Email has already been registered."}
+              else
+                {:error, "Email has already been invited."}
+              end
+          end
+        {:ok, new_user} ->
+          invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
+          {:ok, invitation} = Repo.insert(invitation_changeset)
+          analytics_track_new_invitation(user, email)
+          Invitation.resend_invitation(user_id, invitation.id)
+      end
+    else
+      {:error, "User unauthorized to create a new invitation."}
     end
   end
 
@@ -264,7 +273,7 @@ defmodule Stitch.Invitation do
       |> Ecto.Multi.run(:invite, fn _ -> Invitation.get_by_invite_token(invite_token) end)
       |> Ecto.Multi.run(:accept, fn %{invite: invite} -> Stitch.Invitation.accept(invite) end)
       |> Ecto.Multi.run(:user, fn %{invite: invite} ->
-        params = params |> Map.put("team_id", invite.team_id) |> Map.put("roles", ["member"])
+        params = Map.put(params, "team_id", invite.team_id)
         case Stitch.Accounts.update_and_complete_user_onboarding(invite.user_id, params) do
           %User{} = user -> {:ok, user}
           error -> error
@@ -272,13 +281,19 @@ defmodule Stitch.Invitation do
       end)
       |> Repo.transaction
 
-    case result do
-      {:ok, %{user: user}} ->
-        default_group = Stitch.GroupQueries.default_group(user)
-        Stitch.Group.add_user(default_group, user)
-        {:ok, %{user: user, groups: [default_group]}}
-      {:error, _, error, _} ->
-        {:error, error}
-    end
+      case result do
+        {:ok, %{user: %{groups_as_guest: []} = user}} -> # Regular users
+          default_group = Stitch.GroupQueries.default_group(user)
+          Stitch.Group.add_user(default_group, user)
+          {:ok, %{user: user, groups: [default_group]}}
+        {:ok, %{user: %{team_id: team_id, groups_as_guest: restricted_groups} = user}} -> # Guests
+          groups = Stitch.GroupQueries.get_by_ids(restricted_groups, %User{team_id: team_id})
+          for group <- groups do
+            Stitch.Group.add_user(group, user)
+          end
+          {:ok, %{user: user, groups: groups}}
+        {:error, _, error, _} ->
+          {:error, error}
+      end
   end
 end

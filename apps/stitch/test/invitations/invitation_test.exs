@@ -44,15 +44,14 @@ defmodule Stitch.InvitationTest do
 
     test "gives error for bad group_id", %{team: team, admin: admin} do
       params = %{email: "test@test.com", group_id: -1}
-      assert {:error, errors} = Invitation.invite_as_single_room_guest(admin, team, params)
-      assert errors =~ "Invalid group id"
+      assert {:error, :group_not_found} = Invitation.invite_as_single_room_guest(admin, team, params)
     end
 
     test "gives error for duplicate emails under the same team", %{admin: admin, team: team, group: group} do
       user = insert(:user, team: team)
       params = %{email: user.email, group_id: group.id}
-      assert {:error, errors} = Invitation.invite_as_single_room_guest(admin, team, params)
-      assert errors =~ "Email has already been registered"
+      assert {:error, changeset} = Invitation.invite_as_single_room_guest(admin, team, params)
+      assert hd(errors_on(changeset).email) =~ "taken"
     end
   end
 
@@ -65,8 +64,8 @@ defmodule Stitch.InvitationTest do
         for _ <- 1..3 do
           :group
           |> insert(team: team)
-          # |> clear_assoc(:team)
-          # |> clear_assoc(:creator)
+          |> clear_assoc(:team)
+          |> clear_assoc(:creator)
         end
 
       group_ids = for group <- groups, do: group.id
@@ -107,8 +106,7 @@ defmodule Stitch.InvitationTest do
 
     test "gives error for a bad group_id in group_ids", %{team: team, group_ids: group_ids, admin: admin} do
       params = %{email: "test@test.com", group_ids: group_ids ++ [-1]}
-      assert {:error, reason} = Invitation.invite_as_multi_room_guest(admin, team, params)
-      assert reason =~ "Invalid group ids"
+      assert {:error, :invalid_groups, [-1]} = Invitation.invite_as_multi_room_guest(admin, team, params)
     end
 
     test "requires at least one group id", %{team: team, admin: admin} do
@@ -120,8 +118,8 @@ defmodule Stitch.InvitationTest do
     test "gives error for duplicate emails under the same team", %{admin: admin, team: team, group_ids: group_ids} do
       user = insert(:user, team: team)
       params = %{email: user.email, group_ids: group_ids}
-      assert {:error, reason} = Invitation.invite_as_multi_room_guest(admin, team, params)
-      assert reason =~ "Email has already been registered"
+      assert {:error, changeset} = Invitation.invite_as_multi_room_guest(admin, team, params)
+      assert hd(errors_on(changeset).email) =~ "taken"
     end
   end
 
@@ -129,7 +127,7 @@ defmodule Stitch.InvitationTest do
     test "creates a user and invites to team" do
       team = insert(:team, %{open_invitations_enabled: true})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
-      {:ok, invitation} = Stitch.Invitation.invite_to_team(user, "example@email.com")
+      {:ok, invitation} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
       assert invitation.team_id == team.id
       assert invitation.user_id != nil
       assert invitation.accepted == false
@@ -139,7 +137,7 @@ defmodule Stitch.InvitationTest do
     test "returns error when inviting blacklisted email" do
       team = insert(:team, %{open_invitations_enabled: true})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
-      {:error, reason} = Stitch.Invitation.invite_to_team(user, "example@qq.com")
+      {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@qq.com")
       assert reason == "Email isn't valid."
     end
 
@@ -147,15 +145,14 @@ defmodule Stitch.InvitationTest do
       team = insert(:team, %{open_invitations_enabled: true})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       _existing_user = insert(:user, %{team_id: team.id, email: "example@email.com"})
-      {:error, reason} = Stitch.Invitation.invite_to_team(user, "example@email.com")
+      {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
       assert reason == "Email has already been registered."
     end
   end
 
   describe "Stitch.Invitation.list_pending_team_invitations/1" do
-    test "returns invitation list if team allows anyone to invite" do
+    test "returns invitation list" do
       team = insert(:team, %{open_invitations_enabled: true})
-      _user = insert(:user, %{team_id: team.id, roles: ["member"]})
       user_b = insert(:user, %{team_id: team.id})
       user_c = insert(:user, %{team_id: team.id})
       user_d = insert(:user, %{team_id: team.id})
@@ -231,7 +228,7 @@ defmodule Stitch.InvitationTest do
     test "gives error when username is invalid" do
       team = insert(:team, open_invitations_enabled: false)
       user = insert(:user, team_id: team.id, roles: ["admin"])
-      {:ok, invitation} = Stitch.Invitation.invite_to_team(user, "example@email.com")
+      {:ok, invitation} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
 
       assert {:error, changeset} = Stitch.Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
         "fullname" => "Joe",
@@ -243,13 +240,13 @@ defmodule Stitch.InvitationTest do
       assert {"has invalid format", _} = changeset.errors[:username]
     end
 
-    test "accepts invitation, adds user to the default group, creates a system message and creates a self DM" do
+    test "accepts invitation, adds user to the default group, and creates a self DM" do
       team = insert(:team, open_invitations_enabled: false)
       user = insert(:user, team_id: team.id, roles: ["admin"])
       default_group = insert(:group, team: team, is_default: true)
-      {:ok, invitation} = Stitch.Invitation.invite_to_team(user, "example@email.com")
+      {:ok, invitation} = Invitation.invite_to_team(user.id, "example@email.com")
 
-      assert {:ok, %{user: user, groups: [group]}} = Stitch.Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
+      assert {:ok, %{user: user, groups: [group]}} = Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
         "fullname" => "Joe",
         "username" => "joe",
         "password" => "Password1",
@@ -262,10 +259,50 @@ defmodule Stitch.InvitationTest do
       assert user.onboarded
       assert Stitch.Repo.get_by(Stitch.GroupUser, user_id: user.id, group_id: group.id)
       assert group.id == default_group.id
-      assert Stitch.Repo.get_by Stitch.Group, %{
-        name: "__dm_group__",
-        slug: "__dm:#{user.id}.#{user.id}"
+      assert Stitch.Repo.get_by(Stitch.Group, name: "__dm_group__", slug: "__dm:#{user.id}.#{user.id}")
+    end
+
+    test "guest users are only added to their restricted groups and self-DM" do
+      team = insert(:team)
+      default_group = insert(:group, team: team, is_default: true)
+      admin = insert(:user, team: team, username: "admin", roles: ["admin"])
+      group_1 = insert(:group, team: team, is_default: false)
+      group_2 = insert(:group, team: team, is_default: false)
+
+      onboarding_params = %{
+        "fullname" => "Joe",
+        "password" => "Password1",
+        "phone_number" => "1231231234",
+        "pin" => "0000"
       }
+      srg_params = Map.put(onboarding_params, "username", "test1")
+      mrg_params = Map.put(onboarding_params, "username", "test2")
+
+      # Single room guest
+      {:ok, invitation} = Invitation.invite_as_single_room_guest(admin, team, %{email: "test1@test.com", group_id: group_1.id})
+      assert {:ok, result} = Invitation.accept_and_complete_onboarding(invitation.invite_token, srg_params)
+      %{user: user, groups: groups} = result
+      assert length(groups) == 1
+      assert hd(groups).id == group_1.id
+      assert user.onboarded
+      assert user.roles == ["single-room-guest"]
+      assert Stitch.Repo.get_by(Stitch.GroupUser, user_id: user.id, group_id: group_1.id)
+      refute Stitch.Repo.get_by(Stitch.GroupUser, user_id: user.id, group_id: default_group.id)
+      assert Stitch.Repo.get_by(Stitch.Group, name: "__dm_group__", slug: "__dm:#{user.id}.#{user.id}")
+
+      # Multi room guest
+      {:ok, invitation} = Invitation.invite_as_multi_room_guest(admin, team, %{email: "test2@test.com", group_ids: [group_1.id, group_2.id]})
+      assert {:ok, result} = Invitation.accept_and_complete_onboarding(invitation.invite_token, mrg_params)
+      %{user: user, groups: groups} = result
+      assert length(groups) == 2
+      assert Enum.at(groups, 0).id == group_1.id
+      assert Enum.at(groups, 1).id == group_2.id
+      assert user.onboarded
+      assert user.roles == ["multi-room-guest"]
+      assert Stitch.Repo.get_by(Stitch.GroupUser, user_id: user.id, group_id: group_1.id)
+      assert Stitch.Repo.get_by(Stitch.GroupUser, user_id: user.id, group_id: group_2.id)
+      refute Stitch.Repo.get_by(Stitch.GroupUser, user_id: user.id, group_id: default_group.id)
+      assert Stitch.Repo.get_by(Stitch.Group, name: "__dm_group__", slug: "__dm:#{user.id}.#{user.id}")
     end
   end
 end

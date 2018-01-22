@@ -77,7 +77,7 @@ defmodule Stitch.Accounts do
             {:ok, user} ->
               attrs
               |> Map.get("invites", [])
-              |> Enum.each(& Stitch.Invitation.invite_to_team(user, &1))
+              |> Enum.each(& Stitch.Invitation.invite_to_team(user.id, &1))
 
               {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
               analytics_identify_and_group(user)

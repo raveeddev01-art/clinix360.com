@@ -101,20 +101,21 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       params = %{"email" => "test@test.com", "group_id" => bad_group.id}
       conn = post(conn, api_v1_invitation_path(conn, :invite_single_room_guest), params)
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ ~r"invalid group id"i
+      assert hd(response["errors"]["group_id"]) =~ ~r"invalid group id"i
     end
 
     test "gives error for invalid email format", %{conn: conn, group: group} do
       params = %{"email" => "test", "group_id" => group.id}
       conn = post(conn, api_v1_invitation_path(conn, :invite_single_room_guest), params)
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ ~r"format"
+      assert hd(response["errors"]["email"]) =~ ~r"format"
     end
 
     test "gives error for missing params", %{conn: conn} do
       conn = post(conn, api_v1_invitation_path(conn, :invite_single_room_guest), %{})
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ "blank"
+      assert hd(response["errors"]["email"]) =~ "blank"
+      assert hd(response["errors"]["group_id"]) =~ "blank"
     end
 
     test "gives error when user already exists with same email", %{conn: conn, group: group, team: team} do
@@ -122,7 +123,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       params = %{"email" => user.email, "group_id" => group.id}
       conn = post(conn, api_v1_invitation_path(conn, :invite_single_room_guest), params)
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ "registered"
+      assert hd(response["errors"]["email"]) =~ "taken"
     end
 
     test "requires an admin role", %{conn: conn, group: group, team: team} do
@@ -202,7 +203,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       params = %{"emails" => [user.email, "test@test.com"], "group_id" => group.id}
       conn = post(conn, api_v1_invitation_path(conn, :invite_single_room_guests), params)
       assert response = json_response(conn, 201)
-      assert response[user.email] == "Email has already been registered"
+      assert response[user.email] == "Email has already been taken"
       assert response["test@test.com"] == "ok"
     end
 
@@ -262,28 +263,28 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       params = %{"email" => "test@test.com", "group_ids" => [group.id, bad_group.id]}
       conn = post(conn, api_v1_invitation_path(conn, :invite_multi_room_guest), params)
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ ~r"invalid group ids"i
+      assert hd(response["errors"]["group_ids"]) =~ ~r"invalid group ids"i
     end
 
     test "requires at least 1 valid group id", %{conn: conn} do
       params = %{"email" => "test@test.com", "group_ids" => []}
       conn = post(conn, api_v1_invitation_path(conn, :invite_multi_room_guest), params)
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ ~r"at least 1"i
+      assert hd(response["errors"]["group_ids"]) =~ ~r"at least 1"i
     end
 
     test "gives error for invalid email format", %{conn: conn, group: group} do
       params = %{"email" => "test", "group_ids" => [group.id]}
       conn = post(conn, api_v1_invitation_path(conn, :invite_multi_room_guest), params)
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ ~r"format"
+      assert hd(response["errors"]["email"]) =~ ~r"format"
     end
 
     test "gives error for missing params", %{conn: conn} do
       conn = post(conn, api_v1_invitation_path(conn, :invite_multi_room_guest), %{})
       assert response = json_response(conn, 422)
-      IO.inspect(response)
-      assert response["errors"] =~ "blank"
+      assert hd(response["errors"]["email"]) =~ "blank"
+      assert hd(response["errors"]["group_ids"]) =~ "blank"
     end
 
     test "gives error when user already exists with same email", %{conn: conn, group: group, team: team} do
@@ -291,7 +292,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       params = %{"email" => user.email, "group_ids" => [group.id]}
       conn = post(conn, api_v1_invitation_path(conn, :invite_multi_room_guest), params)
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ "registered"
+      assert hd(response["errors"]["email"]) =~ "taken"
     end
 
     test "requires an admin role", %{conn: conn, group: group, team: team} do
@@ -384,7 +385,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       params = %{"emails" => ["test@test.com", user.email], "group_ids" => [group.id]}
       conn = post(conn, api_v1_invitation_path(conn, :invite_multi_room_guests), params)
       assert response = json_response(conn, 201)
-      assert response[user.email] == "Email has already been registered"
+      assert response[user.email] == "Email has already been taken"
       assert response["test@test.com"] == "ok"
     end
 
@@ -423,7 +424,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       current_user = insert(:user, team: team, roles: ["admin"])
       existing_user = insert(:user, team: team)
       deactivated_user = insert(:user, team: team, disabled: true)
-      Stitch.Invitation.invite_to_team(current_user, "already@invited.com")
+      Stitch.Invitation.invite_to_team(current_user.id, "already@invited.com")
 
       json =
         conn
