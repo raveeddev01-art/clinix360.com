@@ -115,7 +115,7 @@ defmodule Stitch.Accounts.User do
     token = Stitch.Rand.token(32)
 
     struct
-    |> cast(params, [:team_id])
+    |> cast(params, [:team_id, :roles, :groups_as_guest])
     |> validate_required([:team_id])
     |> put_change(:confirmation_code, confirmation_code)
     |> put_change(:token, token)

@@ -3,8 +3,10 @@ defmodule Stitch.Invitation do
   Module in charge of handling team invitation actions.
   """
   use Ecto.Schema
+  alias Ecto.Changeset
   import Ecto.{Changeset, Query}
-  alias Stitch.{Repo, Accounts.User, Team, Invitation, TeamAuthorization}
+  alias Stitch.Invitation.{SingleRoomGuestInvite, MultiRoomGuestInvite}
+  alias Stitch.{Repo, Accounts.User, Team, Invitation, TeamAuthorization, GroupQueries}
 
   schema "invitations" do
     belongs_to :user, User
@@ -30,41 +32,111 @@ defmodule Stitch.Invitation do
   end
 
   @doc """
+  Creates an invitation to be a single-room guest for multiple emails.
+  ## Examples
+      iex> invite_as_single_room_guests(%User{...}, %Team{...}, %{emails: ["test@test.com"], group_id: 9000}})
+      [%{"test@test.com" => {:ok, %Invitation{...}}}
+  """
+  def invite_as_single_room_guests(%User{} = inviter, %Team{} = team, params) do
+    Enum.map(params["emails"], fn email ->
+      invite_as_single_room_guest(inviter, team, %{"email" => email, "group_id" => params["group_id"]})
+    end)
+  end
+
+  @doc """
+  Creates an invitation to be a single-room guest.
+  ## Examples
+      iex> invite_as_single_room_guest(%Team{...}, %{email: "test@test.com", group_id: 9000})
+      {:ok, %Invitation{...}}
+  """
+  @spec invite_as_single_room_guest(User.t, Team.t, map) :: {:ok, map} | {:error, Changeset.t | String.t}
+  def invite_as_single_room_guest(%User{} = inviter, %Team{id: team_id} = team, params) do
+    with default_attrs = %{team_id: team_id, roles: ["single-room-guest"]},
+         %Changeset{valid?: true} = invite <- SingleRoomGuestInvite.changeset(params),
+         {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, invite.changes.group_id)},
+         attrs = Map.merge(default_attrs, %{email: invite.changes.email, groups_as_guest: [group.id]}),
+         {:ok ,invitation} <- do_invite(inviter, attrs) do
+      {:ok, Repo.preload(invitation, :user)}
+    else
+      %Changeset{valid?: false} = changeset -> {:error, changeset}
+      {:group, nil} -> {:error, "Invalid group id."}
+      error -> error
+    end
+  end
+
+  @doc """
+  Creates an invitation to be a multple-room guest for multiple emails.
+  ## Examples
+      iex> invite_as_multi_room_guests(%User{...}, %Team{...}, %{emails: ["test@test.com"], group_ids: [9000]}})
+      %{"test@test.com" => {:ok, %Invitation{...}}}
+  """
+  def invite_as_multi_room_guests(%User{} = inviter, %Team{} = team, params) do
+    Enum.map(params["emails"], fn email ->
+      invite_as_multi_room_guest(inviter, team, %{"email" => email, "group_id" => params["group_ids"]})
+    end)
+  end
+
+  @doc """
+  Creates an invitation to be a multi-room guest.
+  ## Examples
+      iex> invite_as_multi_room_guest(%User{...}, %Team{...}, %{email: "test@test.com", group_ids: [9000, 9001]})
+      {:ok, %Invitation{...}}
+  """
+  @spec invite_as_multi_room_guest(User.t, Team.t, map) :: {:ok, map} | {:error, Changeset.t} | {:error, :invalid_groups, [group_id :: integer]}
+  def invite_as_multi_room_guest(%User{} = inviter, %Team{id: team_id}, params) do
+    with default_attrs = %{team_id: team_id, roles: ["multi-room-guest"]},
+         %Changeset{valid?: true} = invite <- MultiRoomGuestInvite.changeset(params),
+         {:group, groups} when is_list(groups) <- {:group, validate_groups(team_id, invite.changes.group_ids)},
+         attrs = Map.merge(default_attrs, %{email: invite.changes.email, groups_as_guest: invite.changes.group_ids}),
+         {:ok ,invitation} <- do_invite(inviter, attrs) do
+      {:ok, Repo.preload(invitation, :user)}
+    else
+      %Changeset{valid?: false} = changeset -> {:error, changeset}
+      {:group, _} -> {:error, "Invalid group ids."}
+      error -> error
+    end
+  end
+
+  defp validate_groups(team_id, group_ids) do
+    groups = GroupQueries.get_by_ids(group_ids, %User{team_id: team_id})
+    valid_group_ids = for group <- groups, do: group.id
+    invalid_group_ids = group_ids -- valid_group_ids
+    if invalid_group_ids == [] do
+      groups
+    else
+      :invalid_groups
+    end
+  end
+
+  @doc """
   Invites user to the team via email address. If pending account
   for team with same email exists it returns error.
   """
-  def invite_to_team(user_id, email) do
-    user = Repo.get(User, user_id)
-    team = Repo.get(Team, user.team_id)
-    if TeamAuthorization.can_send_invites?(user, team) do
-      new_user_changeset = User.team_invite_changeset(
-        %User{}, %{
-          email: email,
-          team_id: team.id
-        }
-      )
-      case Repo.insert(new_user_changeset) do
-        {:error, _changeset} ->
-          invited_user = Repo.get_by(User, email: email, team_id: team.id)
+  def invite_to_team(%User{} = user, email) do
+    do_invite(user, %{email: email, team_id: user.team_id})
+  end
 
-          case invited_user do
-            nil ->
-              {:error, "Email isn't valid."}
-            invited_user ->
-              if invited_user.onboarded do
-                {:error, "Email has already been registered."}
-              else
-                {:error, "Email has already been invited."}
-              end
-          end
-        {:ok, new_user} ->
-          invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
-          {:ok, invitation} = Repo.insert(invitation_changeset)
-          analytics_track_new_invitation(user, email)
-          Invitation.resend_invitation(user_id, invitation.id)
-      end
-    else
-      {:error, "User unauthorized to create a new invitation."}
+  defp do_invite(invitor, %{email: email, team_id: team_id} = params) do
+    new_user_changeset = User.team_invite_changeset(%User{}, params)
+    case Repo.insert(new_user_changeset) do
+      {:error, _changeset} ->
+        invited_user = Repo.get_by(User, email: email, team_id: team_id)
+
+        case invited_user do
+          nil ->
+            {:error, "Email isn't valid."}
+          invited_user ->
+            if invited_user.onboarded do
+              {:error, "Email has already been registered."}
+            else
+              {:error, "Email has already been invited."}
+            end
+        end
+      {:ok, new_user} ->
+        invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team_id})
+        {:ok, invitation} = Repo.insert(invitation_changeset)
+        analytics_track_new_invitation(invitor, email)
+        Invitation.resend_invitation(invitor.id, invitation.id)
     end
   end
 
