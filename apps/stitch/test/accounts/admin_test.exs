@@ -201,7 +201,7 @@ defmodule Stitch.Accounts.AdminTest do
     end
   end
 
-  describe "update_user_group_memberships/1" do
+  describe "update_user_groups/1" do
     setup do
       team = insert(:team)
       user = insert(:user, team: team)
@@ -213,7 +213,7 @@ defmodule Stitch.Accounts.AdminTest do
     test "does nothing when the user has the `admin`", %{team: team, group: group} do
       user = insert(:user, team: team, roles: ["admin"])
       insert(:group_user, group: group, user: user)
-      assert {[], []} == Stitch.Accounts.Admin.update_user_group_memberships(user)
+      assert {[], []} == Stitch.Accounts.Admin.update_user_groups(user)
       assert [group_user] = Stitch.GroupQueries.non_dm_group_memberships(user)
       assert group_user.group.id == group.id
     end
@@ -222,17 +222,17 @@ defmodule Stitch.Accounts.AdminTest do
       default_group = insert(:group, team: team, is_default: true)
       user = insert(:user, team: team, roles: ["member"])
       assert [] == Stitch.GroupQueries.non_dm_group_memberships(user)
-      assert {[], [group]} = Stitch.Accounts.Admin.update_user_group_memberships(user)
+      assert {[], [group]} = Stitch.Accounts.Admin.update_user_groups(user)
       assert group.id == default_group.id
       assert [group_user] = Stitch.GroupQueries.non_dm_group_memberships(user)
       assert group_user.group.id == default_group.id
-      assert {[], []} == Stitch.Accounts.Admin.update_user_group_memberships(user)
+      assert {[], []} == Stitch.Accounts.Admin.update_user_groups(user)
       assert [^group_user] = Stitch.GroupQueries.non_dm_group_memberships(user)
     end
 
     test "adds a guest to their restricted group when they aren't a member", %{group: group, team: team} do
       guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
-      assert {[], [added_group]} = Stitch.Accounts.Admin.update_user_group_memberships(guest)
+      assert {[], [added_group]} = Stitch.Accounts.Admin.update_user_groups(guest)
       assert added_group.id == group.id
       assert [group_user] = Stitch.GroupQueries.non_dm_group_memberships(guest)
       assert group_user.group.id == group.id
@@ -243,7 +243,7 @@ defmodule Stitch.Accounts.AdminTest do
       guest = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [new_group.id])
       insert(:group_user, group: new_group, user: guest)
       insert(:group_user, group: group, user: guest)
-      assert {[removed_group], []} = Stitch.Accounts.Admin.update_user_group_memberships(guest)
+      assert {[removed_group], []} = Stitch.Accounts.Admin.update_user_groups(guest)
       assert removed_group.id == group.id
       assert [group_user] = Stitch.GroupQueries.non_dm_group_memberships(guest)
       assert group_user.group.id == new_group.id
@@ -252,7 +252,7 @@ defmodule Stitch.Accounts.AdminTest do
     test "skips a restricted group a guest is already a member of", %{team: team, group: group} do
       guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
       insert(:group_user, group: group, user: guest)
-      assert {[], []} == Stitch.Accounts.Admin.update_user_group_memberships(guest)
+      assert {[], []} == Stitch.Accounts.Admin.update_user_groups(guest)
       assert [group_user] = Stitch.GroupQueries.non_dm_group_memberships(guest)
       assert group_user.group.id == group.id
     end

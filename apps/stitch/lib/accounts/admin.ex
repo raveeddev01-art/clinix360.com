@@ -175,14 +175,15 @@ defmodule Stitch.Accounts.Admin do
   @doc """
   Ensures that a user joins and leaves the proper groups based on their role and group restrictions.
   """
-  @spec update_user_group_memberships(User.t) :: {removed_groups :: [Group.t], added_groups :: [Group.t]}
-  def update_user_group_memberships(%User{roles: [role]} = user) when role in @guest_roles do
+  @spec update_user_groups(User.t) :: {removed_groups :: [Group.t], added_groups :: [Group.t]}
+  def update_user_groups(%User{roles: [role]} = user) when role in @guest_roles do
     user
     |> GroupQueries.non_dm_group_memberships()
     |> Enum.reduce({[], user.groups_as_guest}, &do_identify_group_membership_diff/2)
-    |> do_update_user_group_memberships(user)
+    |> preload_groups_as_guest(user)
+    |> do_update_user_groups(user)
   end
-  def update_user_group_memberships(%User{id: user_id, roles: ["member"]} = user) do
+  def update_user_groups(%User{id: user_id, roles: ["member"]} = user) do
     default_group = GroupQueries.default_group(user)
     if GroupQueries.user_is_member?(default_group.id, user_id) do
       {[], []}
@@ -191,7 +192,7 @@ defmodule Stitch.Accounts.Admin do
       {[], [default_group]}
     end
   end
-  def update_user_group_memberships(_), do: {[], []}
+  def update_user_groups(_), do: {[], []}
 
   defp do_identify_group_membership_diff(%{group_id: group_id} = group_user, {group_users_to_remove, group_ids_to_add}) do
     if group_id not in group_ids_to_add do
@@ -201,15 +202,19 @@ defmodule Stitch.Accounts.Admin do
     end
   end
 
-  defp do_update_user_group_memberships({group_users_to_remove, group_ids_to_add}, user) do
+  defp preload_groups_as_guest({group_users_to_remove, group_ids_to_add}, user) do
+    groups_as_guest = GroupQueries.get_by_ids(group_ids_to_add, user)
+    {group_users_to_remove, groups_as_guest}
+  end
+
+  defp do_update_user_groups({group_users_to_remove, groups_to_add}, user) do
     removed_groups =
       for gu <- group_users_to_remove do
         Group.remove_user(gu.group, user)
         gu.group
       end
     added_groups =
-      for group_id <- group_ids_to_add do
-        group = GroupQueries.get_by_id(group_id)
+      for group <- groups_to_add do
         Group.add_user(group, user)
         group
       end

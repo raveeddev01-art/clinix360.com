@@ -101,7 +101,7 @@ defmodule Stitch.InvitationTest do
   end
 
   describe "Stitch.Invitation.accept_and_complete_onboarding/2" do
-    test "token doesn't exist" do
+    test "gives error when token doesn't exist" do
       team = insert(:team, open_invitations_enabled: false)
       user = insert(:user, team_id: team.id, roles: ["admin"])
       _invitation = insert(:invitation, user_id: user.id, team_id: team.id, accepted: true)
@@ -109,7 +109,7 @@ defmodule Stitch.InvitationTest do
       assert {:error, "Invitation does not exist."} = Stitch.Invitation.accept_and_complete_onboarding("42", %{})
     end
 
-    test "username is invalid" do
+    test "gives error when username is invalid" do
       team = insert(:team, open_invitations_enabled: false)
       user = insert(:user, team_id: team.id, roles: ["admin"])
       {:ok, invitation} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
@@ -130,7 +130,7 @@ defmodule Stitch.InvitationTest do
       default_group = insert(:group, team: team, is_default: true)
       {:ok, invitation} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
 
-      assert {:ok, %{user: user, groups: groups}} = Stitch.Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
+      assert {:ok, %{user: user, groups: [group]}} = Stitch.Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
         "fullname" => "Joe",
         "username" => "joe",
         "password" => "Password1",
@@ -139,11 +139,10 @@ defmodule Stitch.InvitationTest do
       })
 
       assert user.email == "example@email.com"
-      [{group, system_message}] = groups
-      assert Stitch.Repo.get_by(Stitch.GroupUser, user_id: user.id, group_id: group.id) != nil
+      assert user.roles == ["member"]
+      assert user.onboarded
+      assert Stitch.Repo.get_by(Stitch.GroupUser, user_id: user.id, group_id: group.id)
       assert group.id == default_group.id
-      assert system_message.type == "system"
-      assert system_message.fields.type == "join_group"
       assert Stitch.Repo.get_by Stitch.Group, %{
         name: "__dm_group__",
         slug: "__dm:#{user.id}.#{user.id}"
