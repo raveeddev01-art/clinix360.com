@@ -51,32 +51,35 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
-    group = Repo.get! Group, group_id
     user = conn.assigns.current_user
-    case GroupAuthorization.is_member?(group_id, user.id) do
-      true ->
-        presence_user_ids = StitchConnect.Web.UserStatusService.presence_user_ids(user.team_id)
-        case Message.create(group.id, user, message_params, presence_user_ids) do
-          {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
-            MessageLinkPreviewGenerator.queue(message)
-            message = message |> MessageQueries.load_info
-            GroupChannel.broadcast_message_created(message)
-            EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-            PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
-            PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
-            conn
-            |> put_status(:created)
-            |> render("show.json", message: message, user_id: user.id)
-          {:error, :message, changeset, _changeset_so_far} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: changeset_errors_to_string(changeset)})
-        end
-      false ->
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.is_member?(group_id, user.id)},
+         presence_user_ids = StitchConnect.Web.UserStatusService.presence_user_ids(user.team_id),
+         {:ok, %{message: message, notify_user_ids: notify_user_ids}} <- Message.create(group.id, user, message_params, presence_user_ids) do
+      MessageLinkPreviewGenerator.queue(message)
+      message = message |> MessageQueries.load_info
+      GroupChannel.broadcast_message_created(message)
+      EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
+      PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+      PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+
+      conn
+      |> put_status(:created)
+      |> render("show.json", message: message, user_id: user.id)
+    else
+      {:group, _} ->
         conn
-        |> put_status(:unauthorized)
+        |> put_status(:not_found)
+        |> json(%{message: "The room you are looking for does not exist."})
+      {:authorized?, false} ->
+        conn
+        |> put_status(:forbidden)
         |> json(%{message: "You can't see the messages for this room."})
+      {:error, :message, changeset, _changeset_so_far} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
     end
   end
 
