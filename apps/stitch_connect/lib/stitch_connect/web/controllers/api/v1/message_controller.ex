@@ -4,6 +4,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
                 Message, MessageAction, MessageQueries}
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, GroupChannel, PushNotifications}
+  action_fallback StitchConnect.Web.Api.FallbackController
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
@@ -76,23 +77,13 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def download(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
-
-    case GroupAuthorization.can_view?(message.group, conn.assigns.current_user) do
-      true ->
-        case Stitch.Upload.presign(message) do
-          {:ok, presigned_url} ->
-            conn
-            |> json(%{presigned_url: presigned_url})
-          :error ->
-            conn
-            |> put_status(:unauthorized)
-            |> json(%{message: "Not found"})
-        end
-
-      false ->
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "Not found"})
+    user = conn.assigns.current_user
+    with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)},
+         {:ok, presigned_url} <- Stitch.Upload.presign(message) do
+      json(conn, %{presigned_url: presigned_url})
+    else
+      {:authorized?, false} -> {:error, :not_found}
+      :error -> {:error, :not_found}
     end
   end
 

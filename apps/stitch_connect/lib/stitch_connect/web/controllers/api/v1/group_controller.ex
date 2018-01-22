@@ -61,7 +61,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
       {:ok, users} = GroupQueries.get_users(group_id)
       render(conn, StitchConnect.Web.Api.V1.UserView, "index.json", users: users)
     else
-      {:error, x} -> {:error, :not_found}
+      {:error, _} -> {:error, :not_found}
       {:authorized?, false} -> {:error, :not_authorized}
     end
   end
