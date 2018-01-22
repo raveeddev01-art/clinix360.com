@@ -213,10 +213,10 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through :browser
 
     scope "/invitations" do
-      post "/error",   InvitationController, :error
+      get "/error",   InvitationController, :error
       scope "/accept" do
-        post "/:token",  InvitationController, :accept
-        post "/:token/:step", InvitationController, :accept
+        get "/:token",  InvitationController, :accept
+        get "/:token/:step", InvitationController, :accept
       end
     end
 
