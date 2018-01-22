@@ -12,7 +12,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def search(conn, %{"term" => term}) do
-    result_users = UserQueries.search(conn.assigns.current_user.id, term)
+    result_users = UserQueries.search(conn.assigns.current_user, term)
     render conn, "index.json", users: result_users
   end
 
@@ -128,10 +128,16 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Stitch.Accounts.get_for_team_id(id, conn.assigns.current_user.team_id) do
-      nil -> conn |> unprocessable_entity_error(%{message: "No user found with ID: #{id}"})
-      user -> render conn, "show.json", user: user
-    end
+    user = conn.assigns.current_user
+
+    with user when not is_nil(user) <- UserQueries.find_user(id, user) do
+      render conn, "show.json", user: user
+    else
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "No user found with ID: #{id}"})
+     end
   end
 
   def update_password(conn, %{"id" => _id, "new_password" => new_password, "old_password" => old_password}) do
