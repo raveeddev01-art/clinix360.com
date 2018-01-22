@@ -14,4 +14,12 @@ defmodule Stitch.Accounts.EmailTest do
       assert_delivered_email(email)
     end
   end
+
+  describe "Stitch.Accounts.Email.role_changed_email/3" do
+    test "sends an email when user roles changes" do
+      admin = insert(:user, %{email: "example@email.com", roles: ["admin"]})
+      email = Stitch.Accounts.Email.role_changed_email(admin, ["member"], ["multi-room-guest"])
+      assert_delivered_email(email)
+    end
+  end
 end
