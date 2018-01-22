@@ -22,7 +22,6 @@ defmodule Stitch.MessageQueriesTest do
       foobar = insert(:message, user: user, group: group, text_content: "foobar")
       foobaz = insert(:message, user: user, group: group, text_content: "foobaz")
 
-
       assert ids(MessageQueries.search(user.id, "brown")) == ids([quick_brown_fox])
       assert ids(MessageQueries.search(user.id, "good")) == ids([all_good_men])
       assert ids(MessageQueries.search(user.id, "lorem")) == ids([lorem_ipsum])
@@ -79,37 +78,54 @@ defmodule Stitch.MessageQueriesTest do
     assert starred_message_ids == [message.id]
   end
 
-  test "returns only uploads user can see with get_uploads_for_user/3" do
-    skip = 0
-    limit = 5
-    team = insert(:team)
-    author = insert(:user, team: team)
+  describe "get_uploads_for_user/3" do
+    test "returns only uploads user can see with get_uploads_for_user/3" do
+      skip = 0
+      limit = 5
+      team = insert(:team)
+      author = insert(:user, team: team)
 
-    public_group = insert(:group, team: team, name: "X", slug: "x", public: true)
-    _public_message = insert(:message, user: author, group: public_group, text_content: "Hello, world!")
-    public_message2 = insert(:message, user: author, group: public_group, text_content: "Hello, world! upload", type: "upload")
+      public_group = insert(:group, team: team, name: "X", slug: "x", public: true)
+      _public_message = insert(:message, user: author, group: public_group, text_content: "Hello, world!")
+      public_message2 = insert(:message, user: author, group: public_group, text_content: "Hello, world! upload", type: "upload")
 
-    private_group = insert(:group, team: team, name: "Y", slug: "y", public: false)
-    _private_message = insert(:message, user: author, group: private_group, text_content: "Hello, world!")
-    private_message2 = insert(:message, user: author, group: private_group, text_content: "Hello, world! upload", type: "upload")
+      private_group = insert(:group, team: team, name: "Y", slug: "y", public: false)
+      _private_message = insert(:message, user: author, group: private_group, text_content: "Hello, world!")
+      private_message2 = insert(:message, user: author, group: private_group, text_content: "Hello, world! upload", type: "upload")
 
-    private_member_group = insert(:group, team: team, name: "Z", slug: "z", public: false)
-    insert(:group_user, user: author, group: private_member_group)
-    _private_member_message = insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
-    private_member_message2 = insert(:message, user: author, group: private_member_group, text_content: "Hello, world! upload", type: "upload")
+      private_member_group = insert(:group, team: team, name: "Z", slug: "z", public: false)
+      insert(:group_user, user: author, group: private_member_group)
+      _private_member_message = insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
+      private_member_message2 = insert(:message, user: author, group: private_member_group, text_content: "Hello, world! upload", type: "upload")
 
-    user = insert(:user, team: team)
-    insert(:group_user, user: user, group: private_member_group)
+      user = insert(:user, team: team)
+      insert(:group_user, user: user, group: private_member_group)
 
-    %Stitch.Paginator{data: data, meta: meta} = Stitch.MessageQueries.get_uploads_for_user(user, skip, limit)
+      %Stitch.Paginator{data: data, meta: meta} = Stitch.MessageQueries.get_uploads_for_user(user, skip, limit)
 
-    assert meta.skip == skip
-    assert meta.limit == limit
-    assert meta.count == 2
+      assert meta.skip == skip
+      assert meta.limit == limit
+      assert meta.count == 2
 
-    assert Enum.find(data, &( &1.id == public_message2.id ))
-    assert Enum.find(data, &( &1.id == private_member_message2.id ))
-    refute Enum.find(data, &( &1.id == private_message2.id ))
+      assert Enum.find(data, &( &1.id == public_message2.id ))
+      assert Enum.find(data, &( &1.id == private_member_message2.id ))
+      refute Enum.find(data, &( &1.id == private_message2.id ))
+    end
+
+    test "restricts guests to their restricted groups" do
+      team = insert(:team)
+      group = insert(:group, team: team)
+      message = insert(:message, group: group, type: "upload")
+      guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
+      insert(:group_user, group: group, user: guest)
+
+      other_group = insert(:group, team: team)
+      insert(:message, group: other_group, type: "upload")
+
+      %Stitch.Paginator{data: result} = Stitch.MessageQueries.get_uploads_for_user(guest, 0, 10)
+      assert length(result) == 1
+      assert hd(result).id == message.id
+    end
   end
 
   test "user_mentioned_in/2" do
