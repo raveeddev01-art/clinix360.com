@@ -141,4 +141,25 @@ defmodule StitchConnect.Web.EventsChannel do
       @endpoint.broadcast("events:#{id}", "members_updated", %{group_id: group.id, user_ids: user_ids})
     end
   end
+
+  def broadcast_invitation_sent(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user, %Stitch.Invitation{} = invitation) do
+    Enum.each(Stitch.TeamQueries.list_admins(team), fn admin ->
+      @endpoint.broadcast("events:#{admin.id}", "invitation_sent", %{
+        id: invitation.id,
+        user_id: user.id,
+        email: user.email,
+        roles: user.roles,
+        groups_as_guest: user.groups_as_guest
+      })
+    end)
+  end
+
+  def broadcast_invitation_revoked(%Stitch.Team{} = team, %Stitch.Invitation{} = invitation, user_id) do
+    Enum.each(Stitch.TeamQueries.list_admins(team), fn admin ->
+      @endpoint.broadcast("events:#{admin.id}", "invitation_revoked", %{
+        id: invitation.id,
+        user_id: user_id,
+      })
+    end)
+  end
 end

@@ -5,14 +5,16 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   plug :fetch_session when action in [:accept]
 
   def index(conn, _params) do
-    case Invitation.list_pending_team_invitations(conn.assigns.current_user.id) do
-      {:error, _} ->
+    with team = conn.assigns.team,
+         user = conn.assigns.current_user,
+         {:authorized, true} <- {:authorized, TeamAuthorization.can_send_invites?(user, team)} do
+      invitations = Invitation.list_pending_team_invitations(team)
+      render conn, "index.json", invitations: invitations
+    else
+      {:authorized, false} ->
         conn
         |> put_status(:unauthorized)
         |> text("Unauthorized to see list of invitations.")
-
-      invitations ->
-        render conn, "index.json", invitations: invitations
     end
   end
 
@@ -35,7 +37,9 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     if TeamAuthorization.can_send_invites?(current_user, team) do
       results = Enum.reduce emails, %{}, fn email, map ->
         result = case Invitation.invite_to_team(current_user.id, email) do
-          {:ok, _user} -> "ok"
+          {:ok, invitation} ->
+            EventsChannel.broadcast_invitation_sent(team, invitation.user, invitation)
+            "ok"
           {:error, reason} -> reason
         end
 
@@ -54,9 +58,9 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     case Invitation.revoke_invitation(conn.assigns.current_user.id, id) do
       {:error, reason} ->
         conn |> put_status(:unauthorized) |> text(reason)
-      {:ok, _} ->
-        conn
-        |> json(%{message: "Invitation has been revoked."})
+      {:ok, invitation} ->
+        EventsChannel.broadcast_invitation_revoked(conn.assigns.team, invitation, invitation.user.id)
+        conn |> json(%{message: "Invitation has been revoked."})
     end
   end
 

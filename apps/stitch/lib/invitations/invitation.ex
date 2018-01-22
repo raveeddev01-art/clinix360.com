@@ -119,20 +119,15 @@ defmodule Stitch.Invitation do
   @doc """
   Returns a list of Invitations associated with the team.
   """
-  def list_pending_team_invitations(user_id) do
-    user = Repo.get(User, user_id)
-    team = Repo.get(Team, user.team_id)
+  def list_pending_team_invitations(%Team{id: team_id}) do
     query =
       from i in Invitation,
-      where: i.team_id == ^user.team_id,
+      join: u in assoc(i, :user),
+      where: i.team_id == ^team_id,
       where: i.accepted == ^false,
-      preload: [:user]
+      preload: [user: u]
 
-    if TeamAuthorization.can_send_invites?(user, team) do
-      Repo.all(query)
-    else
-      {:error, "User unauthorized to see list of invitations."}
-    end
+    Repo.all(query)
   end
 
   @doc """
