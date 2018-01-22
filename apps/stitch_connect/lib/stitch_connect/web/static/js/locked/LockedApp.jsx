@@ -5,7 +5,7 @@ import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
 import Header from "../authentication/components/header/header";
 import Footer from "../authentication/components/footer/footer";
-import PinInput from "../common/components/pin-input/index";
+import PinInput from "../common/components/pin-input";
 
 @inject("presenceStore", "teamStore")
 @observer

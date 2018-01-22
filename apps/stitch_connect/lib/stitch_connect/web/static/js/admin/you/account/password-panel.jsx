@@ -7,7 +7,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import SettingPanel from "../../components/setting-panel/setting-panel";
-import PasswordValidator from "../../../common/components/password-validator/index";
+import PasswordValidator from "../../../common/components/password-validator";
 
 const title = "Password";
 const description =

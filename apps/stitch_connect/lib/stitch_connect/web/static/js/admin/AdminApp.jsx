@@ -11,14 +11,14 @@ import RoleChangedModal from "common/modals/role-changed-modal";
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
 import TeamSecurity from "./team/security";
-import TeamSettings from "./team/settings/index";
-import YouHome from "./you/home/index";
+import TeamSettings from "./team/settings";
+import YouHome from "./you/home";
 import YouNotifications from "./you/notifications";
-import ProfileSettings from "./you/profile/index";
-import AccountSettings from "./you/account/index";
+import ProfileSettings from "./you/profile";
+import AccountSettings from "./you/account";
 import Users from "./users/";
 import Billing from "./billing/billing";
-import Analytics from "./analytics/index";
+import Analytics from "./analytics";
 
 @inject("titleStore")
 @observer

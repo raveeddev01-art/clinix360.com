@@ -8,7 +8,7 @@ import Button from "react-bootstrap/lib/Button";
 import { dataURItoBlob } from "lib/utils";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import SmartDropdown from "../smart-dropdown/index";
+import SmartDropdown from "../smart-dropdown";
 
 class AvatarUploader extends Component {
   constructor(...args) {
