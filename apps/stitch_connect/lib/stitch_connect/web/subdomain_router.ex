@@ -117,10 +117,12 @@ defmodule StitchConnect.Web.SubdomainRouter do
     delete "/users/:id/delete_profile_image", UserController, :delete_profile_image
     post "/users/search", UserController, :search
 
-    get "/invitations", InvitationController, :index
-    post "/invitations", InvitationController, :create
-    patch "/invitations/:id/revoke", InvitationController, :revoke
-    patch "/invitations/:id/resend", InvitationController, :resend
+    scope "/invitations" do
+      get "/", InvitationController, :index
+      post "/", InvitationController, :create
+      patch "/:id/revoke", InvitationController, :revoke
+      patch "/:id/resend", InvitationController, :resend
+    end
 
     get "/groups/:id", GroupController, :show
     post "/groups", GroupController, :create
@@ -178,6 +180,14 @@ defmodule StitchConnect.Web.SubdomainRouter do
       resources "/cards", CardController, only: [:index, :create, :update, :delete]
     end
 
+    # Guest invitation routes
+    scope "/invitations" do
+      post "/single-room-guest",  InvitationController, :invite_single_room_guest
+      post "/single-room-guests", InvitationController, :invite_single_room_guests
+      post "/multi-room-guest",   InvitationController, :invite_multi_room_guest
+      post "/multi-room-guests",  InvitationController, :invite_multi_room_guests
+    end
+
     # Initiate export by admin
     resources "/exports", ExportController, only: [:index, :create]
 
@@ -202,9 +212,13 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/", StitchConnect.Web do
     pipe_through :browser
 
-    get "/invitations/accept/:token", InvitationController, :accept
-    get "/invitations/accept/:token/:step", InvitationController, :accept
-    get "/invitations/error", InvitationController, :error
+    scope "/invitations" do
+      post "/error",   InvitationController, :error
+      scope "/accept" do
+        post "/:token",  InvitationController, :accept
+        post "/:token/:step", InvitationController, :accept
+      end
+    end
 
     get "/login", AuthenticationController, :login
 
