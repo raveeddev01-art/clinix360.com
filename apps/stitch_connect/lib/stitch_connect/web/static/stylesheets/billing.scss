@@ -1,8 +1,9 @@
 #admin-billing-tabs {
   .credit-card-form {
-    input.form-control {
-      font-size: 14px;
+    .form-control {
       border-radius: 3px;
+      font-size: 14px;
+      font-weight: 600;
     }
     
     .name-on-card {
@@ -15,10 +16,6 @@
           right: 0;
           color: #999;
         }
-      }
-
-      .form-control {
-        font-weight: 600;
       }
     }
 
@@ -281,5 +278,25 @@
     }
   }
 
-  .contact-tab {}
+  .contact-tab {
+    .form-control {
+      font-size: 14px;
+    }
+
+    .address-section {
+      display: flex;
+      align-items: flex-end;
+
+      .inputs-section {
+        margin-left: 100px;
+        flex: 1;
+      }
+
+      .button-section {
+        flex: 1;
+        padding-bottom: 15px;
+        text-align: right;
+      }
+    }
+  }
 }
