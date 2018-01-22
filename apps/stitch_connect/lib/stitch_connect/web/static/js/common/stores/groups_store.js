@@ -409,6 +409,7 @@ class GroupsStore {
         });
       } else {
         // load group
+        this.loadAdditionalGroup(payload.group_id);
       }
 
       const meRemoved = payload.user_ids.indexOf(currentUser.id) === -1;
