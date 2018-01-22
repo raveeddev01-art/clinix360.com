@@ -8,7 +8,7 @@ defmodule Stitch.Group do
   @type t :: %__MODULE__{}
   @guest_roles Role.guests()
   @dm_groups ["__dm_group__", "__multi_dm_group__"]
-  @type membership_changes :: {added_users :: [User.t], removed_users :: [User.t]}
+  @type membership_changes :: {removed_users :: [User.t], added_users :: [User.t]}
 
   schema "groups" do
     belongs_to :creator, User, foreign_key: :creator_user_id
@@ -59,22 +59,23 @@ defmodule Stitch.Group do
   @doc """
   Creates a new group.
   """
-  @spec create(User.t, map, boolean) :: {:ok, Group.t} | {:error, Ecto.Changeset.t}
-  def create(%User{id: user_id, team_id: team_id}, attrs, direct_message? \\ false) do
-    attrs = add_users(attrs, team_id, user_id, direct_message?)
-    group = %Group{team_id: team_id, creator_user_id: user_id}
-    changeset = with_users_changeset(group, attrs)
-
-    with {:ok, group} <- Repo.insert(changeset) do
+  @spec create(User.t, map, nil | number) :: {:ok, Group.t} | {:error, Ecto.Changeset.t}
+  def create(%User{id: user_id, team_id: team_id}, params, member_count \\ nil) do
+    with params = add_users(params, team_id, user_id, !!member_count),
+         true <- valid_user_ids(params, member_count),
+         group = %Group{team_id: team_id, creator_user_id: user_id},
+         changeset = with_users_changeset(group, params),
+         {:ok, group} <- Repo.insert(changeset) do
       {:ok, Repo.preload(group, :users)}
+    else
+      false -> {:error, :invalid_user_ids}
+      {:error, %Ecto.Changeset{}} = error -> error
     end
   end
 
   # Ensure users are part of team and format them for `cast_assoc`
   defp add_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, false) do
-    query =
-      from u in base_group_user_query(user_ids, team_id, creator_id),
-      where: not fragment("? && ?", ^@guest_roles, u.roles)
+    query = base_non_guest_group_user_query(user_ids, team_id, creator_id)
     do_add_users(query, attrs)
   end
   defp add_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, true) do
@@ -92,16 +93,36 @@ defmodule Stitch.Group do
     Map.put(attrs, "group_users", group_users)
   end
 
-  defp base_group_user_query(user_ids, team_id, creator_id) do
-    group_user_ids = [creator_id | user_ids]
-    base_query =
-      from u in User,
-      where: u.team_id == ^team_id,
-      where: u.id in ^group_user_ids,
-      distinct: u.id,
-      select: %{user_id: u.id}
-    base_query
+  defp base_non_guest_group_user_query(user_ids, team_id, creator_id) do
+    from u in base_non_guest_users_query(user_ids, team_id, creator_id),
+    select: %{id: u.id, user_id: u.id}
   end
+
+  defp base_group_user_query(user_ids, team_id, creator_id) do
+    from u in base_users_query(user_ids, team_id, creator_id),
+      select: %{id: u.id, user_id: u.id}
+  end
+
+  defp base_non_guest_users_query(user_ids, team_id, creator_id) do
+    from u in base_users_query(user_ids, team_id, creator_id),
+      where: not fragment("? && ?", ^@guest_roles, u.roles)
+  end
+
+  defp base_users_query(user_ids, team_id, creator_id) do
+    user_ids = [creator_id | user_ids]
+
+    from u in User,
+      where: u.team_id == ^team_id,
+      where: u.id in ^user_ids,
+      where: u.disabled == false,
+      distinct: u.id
+  end
+
+  defp valid_user_ids(params, expected_count) when is_number(expected_count) do
+    length(params["group_users"]) == expected_count
+  end
+
+  defp valid_user_ids(_, _), do: true
 
   @doc """
   Creates a user-to-user direct message.
@@ -121,11 +142,11 @@ defmodule Stitch.Group do
   # Handle self-DM
   def create_single_dm(%User{id: id} = creator, [id, id] = user_ids) do
     dm_params = single_dm_params(user_ids)
-    create_dm(creator, dm_params, 1)
+    create(creator, dm_params, 1)
   end
   def create_single_dm(%User{} = creator, user_ids) do
     dm_params = single_dm_params(user_ids)
-    create_dm(creator, dm_params, 2)
+    create(creator, dm_params, 2)
   end
 
   defp single_dm_params(user_ids) do
@@ -151,7 +172,7 @@ defmodule Stitch.Group do
     when is_list(user_ids) do
     if creator_id in user_ids do
       dm_params = multi_dm_params(user_ids)
-      create_dm(creator, dm_params, 3)
+      create(creator, dm_params, length(user_ids))
     else
       {:error, :creator_id_is_not_in_user_ids}
     end
@@ -164,18 +185,6 @@ defmodule Stitch.Group do
       "user_ids" => user_ids,
       "public" => false
     }
-  end
-
-  defp create_dm(%User{id: user_id, team_id: team_id}, dm_params, expected_count) do
-    new_dm_params = add_users(dm_params, team_id, user_id, true)
-    with true <- length(new_dm_params["group_users"]) == expected_count,
-         changeset = with_users_changeset(%Group{team_id: team_id, creator_user_id: user_id}, new_dm_params),
-         {:ok, group} <- Repo.insert(changeset) do
-      {:ok, Repo.preload(group, :users)}
-    else
-      false -> {:error, :invalid_user_ids}
-      {:error, %Ecto.Changeset{}} = error -> error
-    end
   end
 
   @doc """
@@ -328,33 +337,29 @@ defmodule Stitch.Group do
   Updates a group's user membership.
   Guests are excluded from being added or removed.
   """
-  @spec update_members(Group.t, [user_id :: pos_integer]) :: {:ok, membership_changes} | {:error, Ecto.Changeset.t}
-  def update_members(%Group{name: name}, _) when name in @dm_groups do
+  @spec update_users(Group.t, [user_id :: pos_integer]) :: {:ok, membership_changes} | {:error, Ecto.Changeset.t}
+  def update_users(%Group{name: name}, _) when name in @dm_groups do
     {:error, "Can't update members in a direct message room"}
   end
 
-  def update_members(%Group{creator_user_id: creator_user_id, team_id: team_id} = group, user_ids) do
+  def update_users(%Group{creator_user_id: creator_id, team_id: team_id} = group, user_ids) do
     group = Repo.preload(group, [group_users: :user])
-    valid_users_query =
-      from u in User,
-      where: u.team_id == ^team_id,
-      where: u.id in ^[creator_user_id | user_ids],
-      where: u.disabled == false,
-      where: not fragment("? && ?", ^@guest_roles, u.roles),
-      distinct: u.id
-    target_users = Repo.all(valid_users_query)
     current_members = group.group_users
+
+    query = base_non_guest_users_query(user_ids, team_id, creator_id)
+    target_users = Repo.all(query)
 
     {removed_users, added_users, final_group_memberships} =
       current_members
       |> Enum.reduce({[], target_users, []}, &do_calculate_membership_diff/2)
       |> do_add_new_group_user_attrs()
 
-    attrs = %{group_users: final_group_memberships}
-    changeset = update_users_changeset(group, attrs)
-
-    with {:ok, _} <- Repo.update(changeset) do
-      {:ok, {added_users, removed_users}}
+    with attrs = %{group_users: final_group_memberships},
+         changeset = update_users_changeset(group, attrs),
+         {:ok, _} <- Repo.update(changeset) do
+      {:ok, {removed_users, added_users}}
+    else
+      any -> any
     end
   end
 

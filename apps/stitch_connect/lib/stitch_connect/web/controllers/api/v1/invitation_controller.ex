@@ -81,7 +81,7 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
         Stitch.Billing.update_subscriber_count(conn.assigns.team)
         TeamChannel.broadcast_user_joined(conn.assigns.team, user)
         Enum.each(groups, fn group ->
-          GroupChannel.broadcast_members_update(group, [user], [])
+          GroupChannel.broadcast_members_update(group, [], [user])
         end)
         conn
         |> login_user(user)

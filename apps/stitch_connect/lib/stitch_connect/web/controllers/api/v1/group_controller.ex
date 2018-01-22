@@ -166,7 +166,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
          {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(team, group_id)},
          {:direct_message, false} <- {:direct_message, Group.direct_message?(group)},
          {:ok, _} <- Group.add_user(group, user) do
-      GroupChannel.broadcast_members_update(group, [user], [])
+      GroupChannel.broadcast_members_update(group, [], [user])
       json(conn, %{group_id: group.id, user_id: user.id})
     else
       {:authorized?, false} -> {:error, :not_authorized}
@@ -191,7 +191,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
          {:member?, true} <- {:member?, GroupQueries.user_is_member?(group_id, user.id)},
          {:default_group, default_group} = {:default_group, GroupQueries.default_group(user)},
          :ok <- Group.remove_user(group, user.id) do
-      GroupChannel.broadcast_members_update(group, [], [user])
+      GroupChannel.broadcast_members_update(group, [user], [])
 
       payload = %{
         message: "User has been removed from the room",
@@ -270,8 +270,8 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
           |> String.split(",", trim: true)
           |> Enum.map(&String.to_integer/1)
 
-        {:ok, {added_users, removed_users}} = Group.update_members(group, user_ids)
-        GroupChannel.broadcast_members_update(group, added_users, removed_users)
+        {:ok, {removed_users, added_users}} = Group.update_users(group, user_ids)
+        GroupChannel.broadcast_members_update(group, removed_users, added_users)
 
         conn |> json(%{message: "Users invited to room."})
     end

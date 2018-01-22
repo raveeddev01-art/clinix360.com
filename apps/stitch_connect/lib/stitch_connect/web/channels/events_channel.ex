@@ -99,9 +99,12 @@ defmodule StitchConnect.Web.EventsChannel do
       group_slug: group.slug
     }
 
-    memberIds = group.users |> Enum.map(& &1.id)
+    memberIds = for %User{id: user_id} <- group.users do
+      @endpoint.broadcast("events:#{user_id}", "renamed_group", json)
+      user_id
+    end
 
-    for %User{id: user_id} <- group.users ++ get_non_members(group, memberIds) do
+    for %User{id: user_id} <- get_non_members(group, memberIds) do
       @endpoint.broadcast("events:#{user_id}", "renamed_group", json)
     end
   end
