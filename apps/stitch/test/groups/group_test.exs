@@ -1,6 +1,6 @@
 defmodule Stitch.GroupTest do
   use Stitch.DataCase, async: true
-  alias Stitch.{Group, GroupUser}
+  alias Stitch.{Group, GroupUser, GroupQueries}
 
   describe "Stitch.Group.changeset/2" do
     test "allows letters, numbers and dashes in names" do
@@ -338,6 +338,90 @@ defmodule Stitch.GroupTest do
       {:error, message} = Group.update_users(group, [bob.id, sam.id])
 
       assert message == "Can't update members in a direct message room"
+    end
+  end
+
+  describe "create_single_dm/2" do
+    setup do
+      team = insert(:team)
+      user_1 = insert(:user, team: team)
+      user_2 = insert(:user, team: team)
+      {:ok, user_1: user_1, user_2: user_2, team: team}
+    end
+
+    test "creates a DM group", %{user_1: user_1, user_2: user_2} do
+      assert {:ok, group} = Group.create_single_dm(user_1, [user_1.id, user_2.id])
+      assert group.name == "__dm_group__"
+      assert group.slug =~ "__dm:"
+      assert group.creator_user_id == user_1.id
+      assert GroupQueries.user_is_member?(group.id, user_1.id)
+      assert GroupQueries.user_is_member?(group.id, user_2.id)
+    end
+
+    test "requires 2 user ids", %{user_1: user} do
+      assert {:error, :user_id_count_is_not_2} = Group.create_single_dm(user, [])
+    end
+
+    test "requires the creator to be in the user ids list", %{user_1: user_1, user_2: user_2, team: team} do
+      user_3 = insert(:user, team: team)
+      assert {:error, :creator_id_is_not_in_user_ids} = Group.create_single_dm(user_1, [user_2.id, user_3.id])
+    end
+
+    test "allows guests to DM users in mutual groups", %{user_1: user_1, user_2: user_2, team: team} do
+      group = insert(:group, team: team)
+      guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
+      insert(:group_user, user: guest, group: group)
+      insert(:group_user, user: user_1, group: group)
+
+      assert {:ok, _} = Group.create_single_dm(guest, [guest.id, user_1.id])
+      assert {:error, :invalid_user_ids} = Group.create_single_dm(guest, [guest.id, user_2.id])
+    end
+
+    test "allows a self-DM", %{user_1: user} do
+      assert {:ok, _} = Group.create_single_dm(user, [user.id, user.id])
+    end
+  end
+
+  describe "create_multi_dm/2" do
+    setup do
+      team = insert(:team)
+      user_1 = insert(:user, team: team)
+      user_2 = insert(:user, team: team)
+      user_3 = insert(:user, team: team)
+      {:ok, user_1: user_1, user_2: user_2, user_3: user_3, team: team}
+    end
+
+    test "creates a DM group", %{user_1: user_1, user_2: user_2, user_3: user_3} do
+      assert {:ok, group} = Group.create_multi_dm(user_1, [user_1.id, user_2.id, user_3.id])
+      assert group.name == "__multi_dm_group__"
+      assert group.slug =~ "__dm:"
+      assert group.creator_user_id == user_1.id
+      assert GroupQueries.user_is_member?(group.id, user_1.id)
+      assert GroupQueries.user_is_member?(group.id, user_2.id)
+      assert GroupQueries.user_is_member?(group.id, user_3.id)
+    end
+
+    test "requires at least 3 user ids", %{user_1: user} do
+      assert {:error, :user_id_count_is_not_3_or_more} = Group.create_multi_dm(user, [])
+    end
+
+    test "requires the creator to be in the user ids list", %{user_1: user_1, user_2: user_2, user_3: user_3, team: team} do
+      user_4 = insert(:user, team: team)
+      user_ids = [user_2.id, user_3.id, user_4.id]
+      assert {:error, :creator_id_is_not_in_user_ids} = Group.create_multi_dm(user_1, user_ids)
+    end
+
+    test "allows guests to DM users in mutual groups", %{user_1: user_1, user_2: user_2, user_3: user_3, team: team} do
+      group_1 = insert(:group, team: team)
+      group_2 = insert(:group, team: team)
+      guest = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [group_1.id, group_2.id])
+      insert(:group_user, user: guest, group: group_1)
+      insert(:group_user, user: guest, group: group_2)
+      insert(:group_user, user: user_1, group: group_1)
+      insert(:group_user, user: user_2, group: group_2)
+
+      assert {:ok, _} = Group.create_multi_dm(guest, [guest.id, user_1.id, user_2.id])
+      assert {:error, :invalid_user_ids} = Group.create_multi_dm(guest, [guest.id, user_2.id, user_3.id])
     end
   end
 end

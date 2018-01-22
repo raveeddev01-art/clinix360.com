@@ -257,6 +257,32 @@ defmodule Stitch.GroupQueriesTest do
     end
   end
 
+  describe "valid_guest_direct_message?" do
+    test "returns true when params are valid" do
+      team = insert(:team)
+      group = insert(:group, team: team)
+      user = insert(:user, team: team)
+      guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
+      insert(:group_user, user: user, group: group)
+      insert(:group_user, user: guest, group: group)
+
+      assert GroupQueries.valid_guest_direct_message?(guest.groups_as_guest, [user.id, guest.id])
+    end
+
+    test "returns false when params are invalid" do
+      team = insert(:team)
+      group = insert(:group, team: team)
+      other_group = insert(:group, team: team)
+      user = insert(:user, team: team)
+      invalid_user = insert(:user, team: team)
+      guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
+      insert(:group_user, user: user, group: group)
+      insert(:group_user, user: guest, group: group)
+      insert(:group_user, user: invalid_user, group: other_group)
+      refute GroupQueries.valid_guest_direct_message?(guest.groups_as_guest, [user.id, guest.id, invalid_user.id])
+    end
+  end
+
   defp available_groups_indexed_by_slug(user) do
     user
     |> Stitch.GroupQueries.available_groups

@@ -3,7 +3,7 @@ defmodule Stitch.Group do
   import Ecto.Query
   import Ecto.Changeset
   alias Stitch.Accounts.{User, Role}
-  alias Stitch.{Repo, Group, GroupUser, Message}
+  alias Stitch.{Repo, Group, GroupUser, GroupQueries, Message}
 
   @type t :: %__MODULE__{}
   @guest_roles Role.guests()
@@ -145,8 +145,21 @@ defmodule Stitch.Group do
     create(creator, dm_params, 1)
   end
   def create_single_dm(%User{} = creator, user_ids) do
-    dm_params = single_dm_params(user_ids)
-    create(creator, dm_params, 2)
+    if User.guest?(creator) do
+      create_single_dm_as_guest(creator, user_ids)
+    else
+      dm_params = single_dm_params(user_ids)
+      create(creator, dm_params, 2)
+    end
+  end
+
+  defp create_single_dm_as_guest(%User{} = user, user_ids) do
+    if GroupQueries.valid_guest_direct_message?(user.groups_as_guest, user_ids) do
+      dm_params = single_dm_params(user_ids)
+      create(user, dm_params, 2)
+    else
+      {:error, :invalid_user_ids}
+    end
   end
 
   defp single_dm_params(user_ids) do
@@ -171,10 +184,23 @@ defmodule Stitch.Group do
   def create_multi_dm(%User{id: creator_id} = creator, user_ids)
     when is_list(user_ids) do
     if creator_id in user_ids do
-      dm_params = multi_dm_params(user_ids)
+      if User.guest?(creator) do
+        create_multi_dm_as_guest(creator, user_ids)
+      else
+        dm_params = multi_dm_params(user_ids)
       create(creator, dm_params, length(user_ids))
+      end
     else
       {:error, :creator_id_is_not_in_user_ids}
+    end
+  end
+
+  defp create_multi_dm_as_guest(%User{} = user, user_ids) do
+    if GroupQueries.valid_guest_direct_message?(user.groups_as_guest, user_ids) do
+      dm_params = multi_dm_params(user_ids)
+      create(user, dm_params, length(user_ids))
+    else
+      {:error, :invalid_user_ids}
     end
   end
 
