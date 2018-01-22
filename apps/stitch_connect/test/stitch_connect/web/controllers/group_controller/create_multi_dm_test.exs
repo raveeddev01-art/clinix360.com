@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
-  use StitchConnect.Web.ConnCase
+  use StitchConnect.Web.ConnCase, async: true
   import Phoenix.ChannelTest
   import StitchConnect.Web.SubdomainRouter.Helpers
 
@@ -82,7 +82,7 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
 
     test "returns DM when DM already exists", %{conn: conn, bob: bob, joe: joe, sam: sam} do
       {:ok, group} = Stitch.Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
-      {:ok, _} = Stitch.Group.hide(group, bob.id)
+      {:ok, _} = Stitch.Group.hide(group.id, bob)
 
       json =
         conn

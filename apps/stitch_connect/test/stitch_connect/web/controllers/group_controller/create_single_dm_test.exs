@@ -1,5 +1,5 @@
 defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
-  use StitchConnect.Web.ConnCase
+  use StitchConnect.Web.ConnCase, async: true
   import Phoenix.ChannelTest
   import StitchConnect.Web.SubdomainRouter.Helpers
 
@@ -81,7 +81,7 @@ defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
 
     test "returns DM when DM already exists", %{conn: conn, bob: bob, joe: joe} do
       {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
-      {:ok, _group_user} = Stitch.Group.hide(group, bob.id)
+      {:ok, _group_user} = Stitch.Group.hide(group.id, bob)
 
       json =
         conn
