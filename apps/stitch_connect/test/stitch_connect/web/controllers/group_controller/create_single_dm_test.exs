@@ -81,7 +81,7 @@ defmodule StitchConnect.Web.GroupController.CreateSingleDmTest do
 
   test "when DM with the same user IDs exists", %{conn: conn, bob: bob, joe: joe} do
     {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
-    {:ok, _group_user} = Stitch.Group.hide(group, bob.id)
+    {:ok, _group_user} = Stitch.Group.hide(group.id, bob)
 
     json =
       conn

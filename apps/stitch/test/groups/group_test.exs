@@ -197,7 +197,7 @@ defmodule Stitch.GroupTest do
       joe = insert(:user, team: team)
       {:ok, single_dm} = Group.create_single_dm(bob, [bob.id, joe.id])
 
-      {:ok, group_user} = Group.hide(single_dm, bob.id)
+      {:ok, group_user} = Group.hide(single_dm.id, bob)
 
       assert group_user.is_hidden
       assert Repo.get!(GroupUser, group_user.id).is_hidden
@@ -210,30 +210,28 @@ defmodule Stitch.GroupTest do
       sam = insert(:user, team: team)
       {:ok, single_dm} = Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
 
-      {:ok, group_user} = Group.hide(single_dm, bob.id)
+      {:ok, group_user} = Group.hide(single_dm.id, bob)
 
       assert group_user.is_hidden
       assert Repo.get!(GroupUser, group_user.id).is_hidden
     end
 
-    test "when group is not a DM" do
-      group = build(:group)
-
-      {:error, message} = Group.hide(group, 42)
-
-      assert message == "Only direct messages can be hidden"
+    test "gives error for non-DM groups" do
+      team = insert(:team)
+      group = insert(:group, team: team)
+      user = insert(:user, team: team)
+      insert(:group_user, user: user, group: group)
+      assert {:error, :invalid_group} = Group.hide(group.id, user)
     end
 
-    test "when user is not part of the group" do
+    test "gives error when user is not part of the DM group" do
       team = insert(:team)
       bob = insert(:user, team: team)
       joe = insert(:user, team: team)
       sam = insert(:user, team: team)
       {:ok, group} = Group.create_single_dm(bob, [bob.id, joe.id])
 
-      {:error, message} = Group.hide(group, sam.id)
-
-      assert message == "User is not part of this room"
+      assert {:error, :invalid_group} = Group.hide(group.id, sam)
     end
   end
 
@@ -244,7 +242,7 @@ defmodule Stitch.GroupTest do
       joe = insert(:user, team: team)
       {:ok, single_dm} = Group.create_single_dm(bob, [bob.id, joe.id])
 
-      {:ok, group_user} = Group.unhide(single_dm, bob.id)
+      {:ok, group_user} = Group.unhide(single_dm.id, bob)
 
       refute group_user.is_hidden
       refute Repo.get!(GroupUser, group_user.id).is_hidden
@@ -257,18 +255,19 @@ defmodule Stitch.GroupTest do
       sam = insert(:user, team: team)
       {:ok, single_dm} = Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
 
-      {:ok, group_user} = Group.unhide(single_dm, bob.id)
+      {:ok, group_user} = Group.unhide(single_dm.id, bob)
 
       refute group_user.is_hidden
       refute Repo.get!(GroupUser, group_user.id).is_hidden
     end
 
-    test "when group is not a DM" do
-      group = build(:group)
+    test "gives error for non-DM groups" do
+      team = insert(:team)
+      group = insert(:group, team: team)
+      user = insert(:user, team: team)
+      insert(:group_user, user: user, group: group)
 
-      {:error, message} = Group.unhide(group, 42)
-
-      assert message == "Only direct messages can be hidden"
+      assert {:error, :invalid_group} = Group.unhide(group.id, user)
     end
 
     test "when user is not part of the group" do
@@ -278,9 +277,7 @@ defmodule Stitch.GroupTest do
       sam = insert(:user, team: team)
       {:ok, group} = Group.create_single_dm(bob, [bob.id, joe.id])
 
-      {:error, message} = Group.unhide(group, sam.id)
-
-      assert message == "User is not part of this room"
+      assert {:error, :invalid_group} = Group.unhide(group.id, sam)
     end
   end
 

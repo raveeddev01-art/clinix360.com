@@ -297,38 +297,47 @@ defmodule Stitch.Group do
     |> Repo.update()
   end
 
-  def hide(%Group{name: name}, _user_id) when name not in @dm_groups do
-    {:error, "Only direct messages can be hidden"}
-  end
+  @doc """
+  Hides a Direct Messsage Group for a user.
+  """
+  @spec hide(pos_integer, User.t) :: {:ok, GroupUser.t} | {:error, :invalid_group}
+  def hide(group_id, %User{id: user_id}) do
+    query =
+      from gu in GroupUser,
+      join: g in assoc(gu, :group),
+      where: gu.group_id == ^group_id,
+      where: gu.user_id == ^user_id,
+      where: g.name in ["__dm_group__", "__multi_dm_group__"],
+      update: [
+        set: [is_hidden: true]
+      ]
 
-  def hide(%Group{} = group, user_id) do
-    case Repo.get_by(GroupUser, group_id: group.id, user_id: user_id) do
-      nil ->
-        {:error, "User is not part of this room"}
-      group_user ->
-        group_user =
-          group_user
-          |> change(%{is_hidden: true})
-          |> Repo.update
-
-        Message.mark_as_read(user_id, group.id)
-
-        group_user
+    case Repo.update_all(query, [], returning: true) do
+      {1, [group_user]} ->
+        Message.mark_as_read(user_id, group_id)
+        {:ok, Repo.preload(group_user, :group)}
+      _ -> {:error, :invalid_group}
     end
   end
 
-  def unhide(%Group{name: name}, _user_id) when name not in @dm_groups do
-    {:error, "Only direct messages can be hidden"}
-  end
+  @doc """
+  Unhides a Direct Message Group for a user.
+  """
+  @spec unhide(pos_integer, User.t) :: {:ok, GroupUser.t} | {:error, :invalid_group}
+  def unhide(group_id, %User{id: user_id}) do
+    query =
+      from gu in GroupUser,
+      join: g in assoc(gu, :group),
+      where: gu.group_id == ^group_id,
+      where: gu.user_id == ^user_id,
+      where: g.name in ["__dm_group__", "__multi_dm_group__"],
+      update: [
+        set: [is_hidden: false]
+      ]
 
-  def unhide(%Group{} = group, user_id) do
-    case Repo.get_by(GroupUser, group_id: group.id, user_id: user_id) do
-      nil ->
-        {:error, "User is not part of this room"}
-      group_user ->
-        group_user
-        |> change(%{is_hidden: false})
-        |> Repo.update
+    case Repo.update_all(query, [], returning: true) do
+      {1, [group_user]} -> {:ok, Repo.preload(group_user, :group)}
+      _ -> {:error, :invalid_group}
     end
   end
 

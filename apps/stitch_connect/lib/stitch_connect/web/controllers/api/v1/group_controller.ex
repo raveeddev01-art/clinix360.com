@@ -67,7 +67,9 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def create(conn, params) do
-    with user = conn.assigns.current_user,
+    user = conn.assigns.current_user
+
+    with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_create?(user)},
          {:ok, group} <- Group.create(user, params) do
       group =
         group
@@ -82,6 +84,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
       render conn, "show.json", group: group, user_id: user.id
     else
+      {:authorized?, false} -> {:error, :not_authorized}
       {:error, %Ecto.Changeset{}} = error -> error
       {:error, reason} ->
         conn
@@ -139,7 +142,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
       {:error, %Ecto.Changeset{errors: [slug: _], changes: %{slug: slug}}} -> # DM already exists
         {:ok, group} = GroupQueries.find_by_slug(slug, user)
-        {:ok, _group_user} = Group.unhide(group, user.id)
+        {:ok, _group_user} = Group.unhide(group.id, user)
         group = GroupQueries.load_user_data(group, user)
         render conn, "show.json", group: group, user_id: user.id
       {:error, :creator_id_is_not_in_user_ids} ->
@@ -284,37 +287,30 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def hide(conn, %{"id" => group_id}) do
-    group = GroupQueries.get_by_id(group_id)
+    user = conn.assigns.current_user
 
-    case Group.hide(group, conn.assigns.current_user.id) do
-      {:ok, _} ->
-        EventsChannel.broadcast_group_hidden(conn.assigns.current_user, group, true)
+    with {:ok, group_user} <- Group.hide(group_id, user) do
+        EventsChannel.broadcast_group_hidden(user, group_user.group, true)
         json(conn, %{message: "Room hidden"})
-      {:error, message} ->
+    else
+      {:error, :invalid_group} ->
         conn
-        |> put_status(:forbidden)
-        |> json(%{message: message})
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Only your direct messages can be hidden."})
     end
   end
 
   def unhide(conn, %{"id" => group_id}) do
-    group = GroupQueries.get_by_id(group_id)
+    user = conn.assigns.current_user
 
-    case Stitch.GroupAuthorization.can_view?(group, conn.assigns.current_user) do
-      false ->
+    with {:ok, group_user} <- Group.unhide(group_id, user) do
+      EventsChannel.broadcast_group_hidden(user, group_user.group, false)
+      json(conn, %{message: "Room unhidden"})
+    else
+      {:error, :invalid_group} ->
         conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "Not authorized to access this room."})
-      true ->
-        case Group.unhide(group, conn.assigns.current_user.id) do
-          {:ok, _} ->
-            EventsChannel.broadcast_group_hidden(conn.assigns.current_user, group, false)
-            json(conn, %{message: "Room unhidden"})
-          {:error, message} ->
-            conn
-            |> put_status(:forbidden)
-            |> json(%{message: message})
-        end
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Only your direct messages can be unhidden."})
     end
   end
 end

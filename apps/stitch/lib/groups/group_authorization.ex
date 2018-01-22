@@ -53,6 +53,13 @@ defmodule Stitch.GroupAuthorization do
   def can_toggle_public?(_group, _user), do: false
 
   @doc """
+  Checks if a user is authorized to create groups.
+  """
+  def can_create?(%User{} = user) do
+    !User.guest?(user)
+  end
+
+  @doc """
   Checks if a user is authorized to join groups based on role.
   """
   def can_join?(%User{} = user) do

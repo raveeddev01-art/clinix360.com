@@ -82,7 +82,7 @@ defmodule StitchConnect.Web.GroupController.CreateMultiDmTest do
 
   test "when DM with the same user IDs exists", %{conn: conn, bob: bob, joe: joe, sam: sam} do
     {:ok, group} = Stitch.Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
-    {:ok, _group_user} = Stitch.Group.hide(group, bob.id)
+    {:ok, _group_user} = Stitch.Group.hide(group.id, bob)
 
     json =
       conn
