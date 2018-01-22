@@ -55,16 +55,14 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   end
 
   def users(conn, %{"id" => group_id}) do
-    group = GroupQueries.get_by_id(group_id)
-
-    case GroupAuthorization.can_view?(group, conn.assigns.current_user) do
-      false ->
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "Not authorized to view this room."})
-      true ->
-        {:ok, users} = GroupQueries.get_users(group_id)
-        render(conn, StitchConnect.Web.Api.V1.UserView, "index.json", users: users)
+    user = conn.assigns.current_user
+    with {:ok, group} <- GroupQueries.get_by_id(group_id, user),
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
+      {:ok, users} = GroupQueries.get_users(group_id)
+      render(conn, StitchConnect.Web.Api.V1.UserView, "index.json", users: users)
+    else
+      {:error, x} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
     end
   end
 
