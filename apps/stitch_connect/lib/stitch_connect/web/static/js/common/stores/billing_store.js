@@ -7,6 +7,7 @@ class BillingStore {
   @observable subscription = {};
   @observable cards = []; // Credit cards
   @observable invoices = []; // History invoices
+  @observable contact = {}; // Contact info
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -61,6 +62,28 @@ class BillingStore {
     });
   }
 
+  loadContact() {
+    // TODO: Get contact from endpoint
+    const MOCK_CONTACT = {
+      teamName: "Care Clinic",
+      address: {
+        country: "United States",
+        companyName: "Stitch Technologies, Inc.",
+        street: "188 King St.",
+        suite: "Apt. PH9",
+        city: "San Francisco",
+        state: "California",
+        postalCode: "94107-4900"
+      }
+    };
+
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(MOCK_CONTACT);
+      }, 1000);
+    });
+  }
+
   @action
   async loadData() {
     this.loading = true;
@@ -68,6 +91,7 @@ class BillingStore {
     this.subscription = await this.loadSubscription();
     this.cards = await this.loadCards();
     this.invoices = await this.loadInvoices();
+    this.contact = await this.loadContact();
 
     this.loading = false;
   }
