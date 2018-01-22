@@ -57,7 +57,8 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
 
   def invite_single_room_guest(conn, params) do
     with :ok <- FeatureGateway.allowed?(:guests, conn.assigns.subscription),
-         {:ok, _} <- Invitation.invite_as_single_room_guest(conn.assigns.current_user, conn.assigns.team, params) do
+         {:ok, invitation} <- Invitation.invite_as_single_room_guest(conn.assigns.current_user, conn.assigns.team, params) do
+      EventsChannel.broadcast_invitation_sent(conn.assigns.team, invitation.user, invitation)
       conn
       |> put_status(:created)
       |> json(%{message: "Invitation sent."})
@@ -98,7 +99,8 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
 
   def invite_multi_room_guest(conn, params) do
     with :ok <- FeatureGateway.allowed?(:guests, conn.assigns.subscription),
-         {:ok, _} <- Invitation.invite_as_multi_room_guest(conn.assigns.current_user, conn.assigns.team, params) do
+         {:ok, invitation} <- Invitation.invite_as_multi_room_guest(conn.assigns.current_user, conn.assigns.team, params) do
+      EventsChannel.broadcast_invitation_sent(conn.assigns.team, invitation.user, invitation)
       conn
       |> put_status(:created)
       |> json(%{message: "Invitation sent."})
