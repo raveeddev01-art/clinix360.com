@@ -156,6 +156,22 @@ defmodule Stitch.GroupQueries do
   end
 
   @doc """
+  Checks if a guest can initiate a direct message with the given users.
+  A guest user is expected to always be in a member of the restricted groups. The guest is also expected
+  to be in the list of user ids.
+  Each user should be a member in at least one of the restricted group for the DM to be valid.
+  """
+  @spec valid_guest_direct_message?([pos_integer], [pos_integer]) :: boolean
+  def valid_guest_direct_message?(restricted_group_ids, user_ids) do
+    query =
+      from gu in GroupUser,
+      where: gu.group_id in ^restricted_group_ids,
+      where: gu.user_id in ^user_ids,
+      select: count(gu.user_id, :distinct)
+    Repo.one(query) == length(user_ids)
+  end
+
+  @doc """
   Lists all non-DM groups a user is currently a member of.
   """
   @spec non_dm_group_memberships(User.t) :: [GroupUser.t]
