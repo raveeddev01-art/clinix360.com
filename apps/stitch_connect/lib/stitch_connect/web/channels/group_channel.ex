@@ -314,10 +314,10 @@ defmodule StitchConnect.Web.GroupChannel do
 
   def broadcast_members_update(%User{} = user, removed_groups, added_groups) do
     for group <- removed_groups do
-      broadcast_members_update(group, [], [user])
+      broadcast_members_update(group, [user], [])
     end
     for group <- added_groups do
-      broadcast_members_update(group, [user], [])
+      broadcast_members_update(group, [], [user])
     end
   end
 
