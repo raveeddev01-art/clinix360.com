@@ -29,6 +29,15 @@ class Contact extends Component {
     });
   };
 
+  onAddressChange = evt => {
+    this.setState({
+      address: {
+        ...this.state.address,
+        [evt.target.name]: evt.target.value
+      }
+    });
+  };
+
   render() {
     const {
       teamName,
@@ -41,6 +50,7 @@ class Contact extends Component {
         <FormGroup controlId="teamName">
           <FormControl
             type="text"
+            name="teamName"
             value={teamName}
             placeholder="Team name"
             onChange={this.onTeamNameChange}
@@ -58,37 +68,72 @@ class Contact extends Component {
           <div className="inputs-section">
             <FormGroup controlId="country">
               <ControlLabel>Country*</ControlLabel>
-              <FormControl type="text" value={country} />
+              <FormControl
+                type="text"
+                name="country"
+                value={country}
+                onChange={this.onAddressChange}
+              />
             </FormGroup>
 
             <FormGroup controlId="companyName">
               <ControlLabel>Company Name*</ControlLabel>
-              <FormControl type="text" value={companyName} />
+              <FormControl
+                type="text"
+                name="companyName"
+                value={companyName}
+                onChange={this.onAddressChange}
+              />
             </FormGroup>
 
             <FormGroup controlId="street">
               <ControlLabel>Street Address*</ControlLabel>
-              <FormControl type="text" value={street} />
+              <FormControl
+                type="text"
+                name="street"
+                value={street}
+                onChange={this.onAddressChange}
+              />
             </FormGroup>
 
             <FormGroup controlId="suite">
               <ControlLabel>Suite/Unit</ControlLabel>
-              <FormControl type="text" value={suite} />
+              <FormControl
+                type="text"
+                name="suite"
+                value={suite}
+                onChange={this.onAddressChange}
+              />
             </FormGroup>
 
             <FormGroup controlId="city">
               <ControlLabel>City*</ControlLabel>
-              <FormControl type="text" value={city} />
+              <FormControl
+                type="text"
+                name="city"
+                value={city}
+                onChange={this.onAddressChange}
+              />
             </FormGroup>
 
             <FormGroup controlId="state">
               <ControlLabel>State/Province/Region*</ControlLabel>
-              <FormControl type="text" value={state} />
+              <FormControl
+                type="text"
+                name="state"
+                value={state}
+                onChange={this.onAddressChange}
+              />
             </FormGroup>
 
             <FormGroup controlId="postalCode">
               <ControlLabel>Postal Code*</ControlLabel>
-              <FormControl type="text" value={postalCode} />
+              <FormControl
+                type="text"
+                name="postalCode"
+                value={postalCode}
+                onChange={this.onAddressChange}
+              />
             </FormGroup>
           </div>
 
