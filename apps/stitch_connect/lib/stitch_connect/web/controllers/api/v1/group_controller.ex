@@ -36,24 +36,19 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def rename(conn, %{"id" => group_id, "name" => name}) do
     user = conn.assigns.current_user
-    group = GroupQueries.get_by_id(group_id)
 
-    case GroupAuthorization.can_rename?(group, user) do
-      false ->
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_rename?(group, user)},
+         {:ok, group} <- Group.rename(group, name) do
+      group = GroupQueries.load_user_data(group, user)
+      render conn, "show.json", group: group, user_id: user.id
+    else
+      {:group, {:error, _reason}} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
+      {:error, reason} ->
         conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "Not authorized to rename this room"})
-      true ->
-        case Group.rename(group, name) do
-          {:ok, group} ->
-            group = GroupQueries.load_user_data(group, user)
-            EventsChannel.broadcast_group_rename(group)
-            render conn, "show.json", group: group, user_id: user.id
-          {:error, reason} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: reason})
-        end
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: reason})
     end
   end
 

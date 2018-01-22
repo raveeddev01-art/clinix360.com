@@ -64,9 +64,10 @@ defmodule Stitch.GroupQueries do
   @doc """
   Returns group with the exist matching id.
   """
-  def get_by_id(id, %User{team_id: team_id, id: user_id}) do
+  def get_by_id(id, %User{team_id: team_id, id: user_id} = user) do
     group = Group
     |> where(team_id: ^team_id, id: ^id)
+    |> restrict_groups(user)
     |> load_groups_for_user(user_id)
     |> List.first
 
@@ -146,6 +147,12 @@ defmodule Stitch.GroupQueries do
   def default_group(%User{team_id: team_id, groups_as_guest: groups_as_guest}) do
     first_group_id = Enum.at(groups_as_guest, 0)
     Repo.get_by(Group, id: first_group_id, team_id: team_id)
+  end
+
+  defp restrict_groups(query, %User{groups_as_guest: []}), do: query
+  defp restrict_groups(query, %User{groups_as_guest: _groups, id: user_id}) do
+    group_ids = GroupUser |> where(user_id: ^user_id) |> select([gu], gu.group_id) |> Repo.all
+    from g in query, where: g.id in ^group_ids
   end
 
   @doc """
