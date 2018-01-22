@@ -232,7 +232,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         {:admins, team_admins} = {:admins, Stitch.TeamQueries.list_admins(team)},
         {removed_groups, added_groups} = Stitch.Accounts.Admin.update_user_groups(updated_user) do
       Stitch.Billing.update_subscriber_count(team)
-      TeamChannel.broadcast_user_info(team, user)
+      TeamChannel.broadcast_user_info(team, updated_user)
       GroupChannel.broadcast_members_update(user, removed_groups, added_groups)
       send_role_changed_email(team_admins, user, updated_user)
 
