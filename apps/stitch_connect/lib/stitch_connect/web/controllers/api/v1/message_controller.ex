@@ -4,32 +4,37 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
                 Message, MessageAction, MessageQueries}
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, GroupChannel, PushNotifications}
+
   action_fallback StitchConnect.Web.Api.FallbackController
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
-    group = GroupQueries.get_by_id(group_id)
 
-    case GroupAuthorization.can_view?(group, user) do
-      true ->
-        opts =
-          params
-          |> Map.take(["limit", "skip"])
-          |> Enum.map(fn {key, value} ->
-            value = case value do
-              value when is_binary(value) -> String.to_integer(value)
-              value when is_integer(value) -> value
-            end
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
+      opts =
+        params
+        |> Map.take(["limit", "skip"])
+        |> Enum.map(fn {key, value} ->
+        value = case value do
+                  value when is_binary(value) -> String.to_integer(value)
+                  value when is_integer(value) -> value
+                end
 
-            {:"#{key}", value}
-          end)
-          |> Keyword.update(:limit, 30, fn limit -> Enum.min([limit, 30]) end)
+        {:"#{key}", value}
+      end)
+      |> Keyword.update(:limit, 30, fn limit -> Enum.min([limit, 30]) end)
 
-        messages = MessageQueries.group_latest_messages(group_id, user, opts)
-        render conn, "index.json", messages: messages, user_id: user.id
-      false ->
+      messages = MessageQueries.group_latest_messages(group_id, user, opts)
+      render conn, "index.json", messages: messages, user_id: user.id
+    else
+      {:group, _} ->
         conn
-        |> put_status(:unauthorized)
+        |> put_status(:not_found)
+        |> json(%{message: "The room you are looking for does not exist."})
+      {:authorized?, false} ->
+        conn
+        |> put_status(:forbidden)
         |> json(%{message: "You can't see the messages for this room."})
     end
   end
