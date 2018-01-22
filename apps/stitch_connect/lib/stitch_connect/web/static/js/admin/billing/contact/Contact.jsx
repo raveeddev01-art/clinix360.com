@@ -6,6 +6,8 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
+import { alert } from "common/modals";
+
 @inject("billingStore")
 @observer
 class Contact extends Component {
@@ -32,6 +34,17 @@ class Contact extends Component {
         ...this.state.address,
         [evt.target.name]: evt.target.value
       }
+    });
+  };
+
+  onSave = () => {
+    const { billingStore } = this.props;
+
+    billingStore.updateContact(this.state).then(contact => {
+      alert({
+        title: "Contact Updated",
+        message: "Contact information has been updated successfully!"
+      });
     });
   };
 
@@ -135,7 +148,9 @@ class Contact extends Component {
           </div>
 
           <div className="button-section">
-            <Button bsStyle="primary">Save Settings</Button>
+            <Button bsStyle="primary" onClick={this.onSave}>
+              Save Settings
+            </Button>
           </div>
         </div>
       </div>
