@@ -43,10 +43,12 @@ defmodule Stitch.GroupAuthorization do
   def can_invite?(_group, _user), do: false
 
   @doc """
-  Return true/false whether user can change the public setting for this group.
+  Return true/false whether user can change the public setting for groups.
   """
-  def can_toggle_public?(%Group{team_id: team_id} = group, %User{team_id: team_id} = user) do
-    Enum.member?(user.roles, "admin") || group.creator_user_id == user.id
+  def can_toggle_public?(%User{} = user), do: !User.guest?(user)
+  def can_toggle_public?(%Group{creator_user_id: user_id}, %User{id: user_id}), do: true
+  def can_toggle_public?(%Group{team_id: team_id}, %User{team_id: team_id} = user) do
+    "admin" in user.roles
   end
   def can_toggle_public?(_group, _user), do: false
 

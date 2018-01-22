@@ -282,20 +282,19 @@ defmodule Stitch.Group do
   end
 
   @doc """
-  Toggles public setting for the user for the specified
-  group.
+  Toggles public setting for the user for the specified group.
   """
+  @spec toggle_public(map, any) :: {:ok, map} | {:error, :direct_message | :default_group | Ecto.Changeset.t}
   def toggle_public(%Group{name: name}, _public) when name in @dm_groups do
-    {:error, "Direct messages' privacy setting can't be changed"}
+    {:error, :direct_message}
   end
-
   def toggle_public(%Group{is_default: true}, _public) do
-    {:error, "Default group's privacy setting can't be changed"}
+    {:error, :default_group}
   end
-
   def toggle_public(%Group{} = group, public) do
-    changeset = Group.changeset(group, %{public: public})
-    Repo.update changeset
+    group
+    |> Group.changeset(%{public: public})
+    |> Repo.update()
   end
 
   def hide(%Group{name: name}, _user_id) when name not in @dm_groups do

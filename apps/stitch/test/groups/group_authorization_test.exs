@@ -126,5 +126,16 @@ defmodule Stitch.GroupAuthorizationTest do
       result = Stitch.GroupAuthorization.can_toggle_public?(group, user)
       assert result == false
     end
+
+    test "returns false for guests" do
+      team = insert(:team)
+      restricted_group = insert(:group, team: team, public: true)
+      public_group = insert(:group, team: team, public: true)
+      user = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [restricted_group.id])
+      insert(:group_user, user: user, group: restricted_group)
+
+      refute Stitch.GroupAuthorization.can_toggle_public?(restricted_group, user)
+      refute Stitch.GroupAuthorization.can_toggle_public?(public_group, user)
+    end
   end
 end

@@ -233,18 +233,26 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
   def toggle_public(conn, %{"id" => group_id, "public" => public}) do
     user = conn.assigns.current_user
-    group = GroupQueries.get_by_id(group_id)
 
-    case GroupAuthorization.can_toggle_public?(group, user) do
-      false ->
+    with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_toggle_public?(user)},
+         {:group, group} when not is_nil(group) <- {:group, GroupQueries.get_by_id(conn.assigns.team, group_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_toggle_public?(group, user)},
+         {:direct_message, false} <- {:direct_message, Group.direct_message?(group)},
+         {:ok, group} <- Group.toggle_public(group, public) do
+      TeamChannel.broadcast_group_public_status(conn.assigns.team, group)
+      group = GroupQueries.load_user_data(group, user)
+      render conn, "show.json", group: group, user_id: user.id
+    else
+      {:authorized?, false} -> {:error, :not_authorized}
+      {:group, nil} -> {:error, :not_found}
+      {:error, :default_group} ->
         conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "Not authorized to toggle the room's privacy setting."})
-      true ->
-        {:ok, group} = Group.toggle_public(group, public)
-        TeamChannel.broadcast_group_public_status(conn.assigns.team, group)
-        group = GroupQueries.load_user_data(group, user)
-        render conn, "show.json", group: group, user_id: user.id
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot modify the default group's privacy settings."})
+      {:direct_message, true} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "Cannot modify direct message privacy settings."})
     end
   end
 
