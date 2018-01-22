@@ -39,9 +39,9 @@ class TeamBilling extends Component {
               <History />
             </Tab>
           )}
-          {/* <Tab eventKey={4} title="Contact">
+          <Tab eventKey={4} title="Contact">
             <Contact />
-          </Tab> */}
+          </Tab>
         </Tabs>
       </Panel>
     );
