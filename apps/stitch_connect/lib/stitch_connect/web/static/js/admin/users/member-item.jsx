@@ -6,6 +6,7 @@ import Col from "react-bootstrap/lib/Col";
 import Collapse from "react-bootstrap/lib/Collapse";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import Button from "react-bootstrap/lib/Button";
+import { isFullMember } from 'lib/utils';
 import { RoleText } from "common/components";
 
 @inject("usersStore")
@@ -132,7 +133,7 @@ class MemberItem extends Component {
                   Manage Member Type
                 </Button>
               )}
-              {!user.disabled &&
+              {!user.disabled && isFullMember(user) &&
                 (user.roles.indexOf("admin") > -1 ? (
                   <Button bsSize="small" onClick={this._revokeAdmin}>
                     Revoke Admin
