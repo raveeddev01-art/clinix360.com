@@ -1,25 +1,22 @@
 import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
+@inject("billingStore")
+@observer
 class Contact extends Component {
   constructor(props) {
     super(props);
 
+    const { billingStore: { contact: { teamName, address } } } = props;
+
     this.state = {
-      teamName: "Care Clinic",
-      address: {
-        country: "United States",
-        companyName: "Stitch Technologies, Inc.",
-        street: "188 King St.",
-        suite: "Apt. PH9",
-        city: "San Francisco",
-        state: "California",
-        postalCode: "94107-4900"
-      }
+      teamName,
+      address
     };
   }
 

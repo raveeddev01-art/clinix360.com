@@ -27,7 +27,7 @@ class TeamBilling extends Component {
 
     return (
       <Panel className="admin-panel tabs-panel" header={header}>
-        <Tabs defaultActiveKey={1} id="admin-billing-tabs">
+        <Tabs defaultActiveKey={1} id="admin-billing-tabs" unmountOnExit>
           <Tab eventKey={1} title="Subscription">
             <Subscription />
           </Tab>
