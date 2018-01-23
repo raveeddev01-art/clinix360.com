@@ -1378,7 +1378,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.5.1, create-react-class@^15.5.2:
+create-react-class@^15.5.1:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.0.tgz#ab448497c26566e1e29413e883207d57cfe7bed4"
   dependencies:
@@ -3942,11 +3942,10 @@ react-image-crop@^3.0.7:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/react-image-crop/-/react-image-crop-3.0.7.tgz#8f7f1f03031c76c8b6306d11f7d1b8bf3007ab8c"
 
-react-input-autosize@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.0.1.tgz#e92190497b4026c2780ad0f2fd703c835ba03e33"
+react-input-autosize@^2.1.0:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.1.2.tgz#a3dc11a5517c434db25229925541309de3f7a8f5"
   dependencies:
-    create-react-class "^15.5.2"
     prop-types "^15.5.8"
 
 react-linkify@^0.2.1:
@@ -4001,13 +4000,13 @@ react-scroll@^1.5.4:
     object-assign "^4.1.1"
     prop-types "^15.5.8"
 
-react-select@^1.0.0-rc.5:
-  version "1.0.0-rc.10"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-1.0.0-rc.10.tgz#f137346250f9255c979fbfa21860899928772350"
+react-select@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-select/-/react-select-1.1.0.tgz#626a2de839fdea2ade74dd1b143a9bde34be6c82"
   dependencies:
     classnames "^2.2.4"
     prop-types "^15.5.8"
-    react-input-autosize "^2.0.1"
+    react-input-autosize "^2.1.0"
 
 react-side-effect@^1.1.0:
   version "1.1.3"

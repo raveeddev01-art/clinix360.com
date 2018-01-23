@@ -210,7 +210,7 @@ class SidemenuStore {
 
       // to be consumed by electron app
       window.dispatchEvent(
-        new CustomEvent("unread-changed", { detail: badge })
+        new CustomEvent("unread-changed", { detail: desktopBadge })
       );
     }
   }

@@ -5,6 +5,7 @@ import Dropzone from "react-dropzone";
 
 import UploadModal from "file-upload/upload-modal";
 import { Switcher, AppAlert } from "common/components";
+import RoleChangedModal from "common/modals/role-changed-modal";
 import Chat from "./Chat";
 import Sidemenu from "../sidemenu/sidemenu";
 
@@ -86,6 +87,7 @@ class ChatApp extends Component {
               <Redirect from="*" to={`/rooms/${defaultGroup.slug}`} />
             )}
           </Switch>
+          <RoleChangedModal />
         </div>
       </Dropzone>
     );

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import Select from "react-select";
+import { isFullMember } from "lib/utils";
 
 import MemberOption from "./member_option";
 
@@ -28,7 +29,7 @@ class Members extends Component {
     const { usersStore: { activatedUsers }, presenceStore } = this.props;
 
     return activatedUsers
-      .filter(user => user.id !== currentUser.id)
+      .filter(user => user.id !== currentUser.id && isFullMember(user))
       .map(user => ({
         ...user,
         online: presenceStore.isOnline(user.id)
