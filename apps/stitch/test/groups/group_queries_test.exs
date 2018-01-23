@@ -111,6 +111,24 @@ defmodule Stitch.GroupQueriesTest do
       assert Enum.find(groups, &( &1.slug == "c" ))
       refute Enum.find(groups, &( &1.slug == "a" ))
     end
+
+    test "restricts list of groups for guest users" do
+      team = insert(:team)
+      _group_a = insert(:group, %{team: team, name: "A", slug: "a", public: true, is_default: true})
+      group_b = insert(:group, %{team: team, name: "B", slug: "b", public: true})
+      _group_c = insert(:group, %{team: team, name: "C", slug: "c", public: true})
+
+      for role <- ["single-room-guest", "multi-room-guest"] do
+        guest = insert(:user, team: team, roles: [role], groups_as_guest: [group_b.id])
+        insert(:group_user, group: group_b, user: guest)
+        groups = GroupQueries.available_groups(guest.id)
+
+        assert Enum.count(groups) == 1
+        assert Enum.find(groups, &( &1.slug == "b" ))
+        refute Enum.find(groups, &( &1.slug == "c" ))
+        refute Enum.find(groups, &( &1.slug == "a" ))
+      end
+    end
   end
 
   describe "Stitch.GroupQueries.search/2" do
