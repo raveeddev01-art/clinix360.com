@@ -1,7 +1,6 @@
 defmodule Stitch.MeteorMigration.Room do
   alias Stitch.Repo
-  alias Stitch.{Accounts.User, Group}
-  import Ecto.Query
+  alias Stitch.{Group}
   import Ecto.Changeset
   require Logger
 
@@ -28,7 +27,7 @@ defmodule Stitch.MeteorMigration.Room do
     "name" => slug,
     "usernames" => usernames,
     "u" => %{ "username" => meteor_creator_username },
-    "teamId" => meteor_team_id } = attributes) do
+    "teamId" => _meteor_team_id } = attributes) do
 
     case Map.fetch(users, meteor_creator_username) do
       {:ok, user} ->
@@ -54,7 +53,7 @@ defmodule Stitch.MeteorMigration.Room do
     "name" => slug,
     "default" => true,
     "usernames" => [meteor_creator_username | _] = usernames,
-    "teamId" => meteor_team_id } = attributes) do
+    "teamId" => _meteor_team_id } = attributes) do
 
     case Map.fetch(users, meteor_creator_username) do
       {:ok, user} ->
@@ -80,7 +79,7 @@ defmodule Stitch.MeteorMigration.Room do
     "name" => slug,
     "usernames" => usernames,
     "u" => %{ "username" => meteor_creator_username },
-    "teamId" => meteor_team_id } = attributes) do
+    "teamId" => _meteor_team_id } = attributes) do
 
     case Map.fetch(users, meteor_creator_username) do
       {:ok, user} ->
@@ -100,18 +99,10 @@ defmodule Stitch.MeteorMigration.Room do
     end
   end
 
-  def parse_room_name(attributes) do
-    case Map.fetch(attributes, "fname") do
-      {:ok, fname} ->
-        String.replace(fname, ~r/[^\w-\s]/, "")
-      :error -> Map.get(attributes, "name")
-    end
-  end
-
   def parse_room_json(users, %{
     "_id" => meteor_id,
     "usernames" => usernames,
-    "teamId" => meteor_team_id,
+    "teamId" => _meteor_team_id,
     "t" => "direct-ch"} = attributes) do
 
     %{
@@ -120,6 +111,14 @@ defmodule Stitch.MeteorMigration.Room do
       users: get_users(users, usernames),
       meteor_id: meteor_id,
     }
+  end
+
+  def parse_room_name(attributes) do
+    case Map.fetch(attributes, "fname") do
+      {:ok, fname} ->
+        String.replace(fname, ~r/[^\w-\s]/, "")
+      :error -> Map.get(attributes, "name")
+    end
   end
 
   def parse_user_json(json) do
@@ -152,28 +151,29 @@ defmodule Stitch.MeteorMigration.Room do
     |> Enum.filter(& &1 != nil)
   end
 
-  def create_group(team_id, %{dm: true, multi: _multi, users: []}) do
+  def create_group(_team_id, %{dm: true, multi: _multi, users: []}) do
     {:error, "Empty room"}
   end
 
-  def create_group(team_id, %{dm: true, multi: true, users: [creator|_] = users}) do
+  def create_group(_team_id, %{dm: true, multi: true, users: [creator|_] = users}) do
     user_ids = Enum.map(users, & &1.id)
     Group.create_multi_dm(creator, user_ids)
   end
 
-  def create_group(team_id, %{dm: true, multi: false, users: [creator|_] = users}) do
+  def create_group(_team_id, %{dm: true, multi: false, users: [creator|_] = users}) do
     user_ids = Enum.map(users, & &1.id)
     Group.create_single_dm(creator, user_ids)
   end
 
   def create_group(team_id, %{dm: false, users: users, name: name, slug: slug, public: public, creator_user: creator, is_default: is_default}) do
     user_ids = Enum.map(users, & &1.id)
-    group = Group.create(%{
+    group_params = %{
       "name" => name,
       "slug" => slug,
       "user_ids" => user_ids,
       "public" => public,
-    }, creator)
+    }
+    group = Group.create(creator, group_params)
 
     case group do
       {:ok, %{group: group}} = group_inserted ->
@@ -188,7 +188,7 @@ defmodule Stitch.MeteorMigration.Room do
           group_inserted
         else
           unless Enum.member?(user_ids, creator.id) do
-            Group.remove_user(group, creator)
+            Group.remove(group, creator.id)
           end
 
           group_inserted

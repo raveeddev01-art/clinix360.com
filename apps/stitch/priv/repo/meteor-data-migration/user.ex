@@ -1,10 +1,16 @@
 defmodule Stitch.MeteorMigration.User do
   alias Stitch.Repo
   alias Stitch.{Accounts.User}
+  require Logger
+
+  import Ecto.Query
+  import Ecto.Changeset
 
   defmodule ParserError do
     defexception message: "Invalid JSON format"
   end
+
+  @meteor_migration_debug System.get_env("METEOR_MIGRATION_DEBUG")
 
   @doc """
   Minimum expected set of attributes:
@@ -76,13 +82,20 @@ defmodule Stitch.MeteorMigration.User do
       phone_number: phone_number,
       pin: pin,
       disabled: attributes["active"] == false,
-      roles: map_roles(roles),
+      roles: map_roles(roles, attributes["guestMulti"]),
+      meteor_guest_rooms: parse_guest_rooms(attributes["guestRooms"]),
       meteor_id: id,
       meteor_team_id: team_id,
     }
   end
   def parse_user_json(json) do
     raise ParserError, message: "Invalid format from Meteor app: #{inspect(json)}"
+  end
+
+  def parse_guest_rooms(nil), do: nil
+  def parse_guest_rooms(room_ids) do
+    room_ids
+    |> Enum.filter(& &1 != nil)
   end
 
   @doc """
@@ -135,24 +148,85 @@ defmodule Stitch.MeteorMigration.User do
   def user_attributes(json), do: raise ParserError, message: "Invalid format for Phoenix app: #{inspect(json)}"
 
   @doc """
-  Maps roles from Meteor the app to roles in the Phoenix app.
+  Maps roles from the Meteor app to roles in the Phoenix app.
 
     user => member
     admin => admin
     billing-admin => admin
     superAdmin => admin
+    guestuser => "multi-room-guest" or "single-room-guest"
 
   """
-  def map_roles(roles) do
+  def map_roles(roles, is_multi_guest \\ false) do
     roles
     |> Enum.map(fn
       "user" -> "member"
       "admin" -> "admin"
       "billing-admin" -> "admin"
       "superAdmin" -> "admin"
-      role -> raise ParserError, message: "Invalid role format: #{inspect(role)}"
+      "guestuser" -> if is_multi_guest, do: "multi-room-guest", else: "single-room-guest"
+      role ->
+        Logger.error("Invalid role format: #{inspect(role)}")
+        nil
     end)
+    |> Enum.filter(& &1 != nil)
     |> Enum.uniq
+    |> enforce_guest()
+  end
+
+  def enforce_guest(roles) do
+    if "multi-room-guest" in roles || "single-room-guest" in roles do
+      roles -- ["member", "admin"]
+    else
+      roles
+    end
+  end
+
+  def restoring_guest_membership(indexed_meteor_users, indexed_users, _rooms, indexed_meteor_rooms) do
+    Enum.each(indexed_users, fn {username, user_object} ->
+      if Stitch.Accounts.User.guest?(user_object) do
+        meteor_user = indexed_meteor_users[username]
+
+        meteor_room_ids = meteor_user.meteor_guest_rooms
+          |> Enum.map(fn meteor_room_id ->
+            meteor_room = indexed_meteor_rooms[meteor_room_id]
+            if meteor_room, do: meteor_room.id
+          end)
+          |> Enum.filter(& &1 != nil)
+
+        user_group_ids = Stitch.GroupUser |> where(user_id: ^user_object.id) |> select([gu], gu.group_id) |> Repo.all
+
+        if @meteor_migration_debug do
+          Logger.info("Guest username: #{meteor_user.username}")
+          Logger.info(inspect(%{"#{meteor_user.username} meteor_group_ids" => meteor_room_ids}))
+          Logger.info(inspect(%{"#{meteor_user.username} migrated_group_ids" => user_group_ids}))
+        end
+
+        remaining_guest_group_ids = Enum.uniq(meteor_room_ids -- user_group_ids)
+
+        if Enum.any?(remaining_guest_group_ids) do
+          if @meteor_migration_debug do
+            Logger.info("Adding #{meteor_user.username} to #{remaining_guest_group_ids}")
+          end
+
+          remaining_guest_group_ids |> Enum.each(fn group_id ->
+            Stitch.Group.add_user(%Stitch.Group{id: group_id}, user_object)
+          end)
+        end
+
+        user_group_ids = Stitch.GroupUser |> where(user_id: ^user_object.id) |> select([gu], gu.group_id) |> Repo.all
+        updated_role = if Enum.count(user_group_ids) > 1, do: "multi-room-guest", else: "single-room-guest"
+
+        if @meteor_migration_debug do
+          Logger.info(inspect(%{"#{meteor_user.username} group_as_guest" => user_group_ids}))
+          Logger.info(inspect(%{"#{meteor_user.username} role" => updated_role}))
+        end
+
+        user_object
+        |> change(group_as_guest: user_group_ids, role: [updated_role])
+        |> Stitch.Repo.update
+      end
+    end)
   end
 
   def token do
