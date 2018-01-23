@@ -244,7 +244,7 @@ defmodule Stitch.MeteorMigration.User do
         end
 
         user_object
-        |> change(group_as_guest: user_group_ids, role: [updated_role])
+        |> change(groups_as_guest: user_group_ids, role: [updated_role])
         |> Stitch.Repo.update
       end
     end)
