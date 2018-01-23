@@ -63,8 +63,8 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
         |> with_api_user(admin)
         |> get(api_v1_group_path(conn, :users, group))
 
-      assert response = json_response(conn, 200)
-      assert response == []
+      assert response = json_response(conn, 404)
+      assert response["errors"] =~ "does not exist"
     end
 
     test "gives error when user is admin and isn't a member of a public group belonging to another team", %{conn: conn, team: team, admin: admin} do

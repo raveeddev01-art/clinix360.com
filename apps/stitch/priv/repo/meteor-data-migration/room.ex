@@ -178,7 +178,6 @@ defmodule Stitch.MeteorMigration.Room do
     case group do
       {:ok, group} = group_inserted ->
         if is_default == true do
-
           unless Repo.get_by(Group, team_id: team_id, is_default: true) do
             group
             |> change(is_default: true)
