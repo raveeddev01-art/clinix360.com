@@ -26,13 +26,17 @@ class ImageFileAttachment extends Component {
     let placeholderStyle = null;
     let holderStyle = null;
     if (height) {
+      const maxHeight = Math.min(
+        document.getElementById("chat").clientHeight - 120,
+        height
+      );
       placeholderStyle = {
         width,
-        paddingTop: `${height / width * 100}%`,
+        paddingTop: `${maxHeight / width * 100}%`,
         backgroundImage: `url(${previewUrl})`
       };
       holderStyle = {
-        maxHeight: height // constraint holder size for when paddingTop is bigger than height
+        maxHeight // constraint holder size for when paddingTop is bigger than height
       };
     }
 
