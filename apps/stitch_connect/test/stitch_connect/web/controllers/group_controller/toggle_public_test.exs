@@ -58,6 +58,7 @@ defmodule StitchConnect.Web.GroupController.TogglePublicTest do
     test "allows admins to modify privacy settings", %{conn: conn, team: team, bob: user} do
       group = insert(:group, team: team, creator: user, public: false)
       admin = insert(:user, team: team, roles: ["admin"])
+      insert(:group_user, group: group, user: admin)
 
       conn =
         conn

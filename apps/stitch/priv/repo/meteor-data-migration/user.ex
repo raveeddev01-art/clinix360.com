@@ -172,11 +172,20 @@ defmodule Stitch.MeteorMigration.User do
     |> Enum.filter(& &1 != nil)
     |> Enum.uniq
     |> enforce_guest()
+    |> enforce_admin()
   end
 
   def enforce_guest(roles) do
     if "multi-room-guest" in roles || "single-room-guest" in roles do
       roles -- ["member", "admin"]
+    else
+      roles
+    end
+  end
+
+  def enforce_admin(roles) do
+    if "admin" in roles do
+      roles -- ["member", "multi-room-guest", "single-room-guest"]
     else
       roles
     end

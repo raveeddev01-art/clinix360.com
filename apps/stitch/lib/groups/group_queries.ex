@@ -33,7 +33,7 @@ defmodule Stitch.GroupQueries do
       from g in query,
       left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user_id,
       join: u in User, on: u.id == ^user_id,
-      where: g.public or not is_nil(gu.id) or "admin" in u.roles,
+      where: g.public or not is_nil(gu.id),
       preload: :users, # TODO: do not preload all team users by default
       select: %{
         group: g,
