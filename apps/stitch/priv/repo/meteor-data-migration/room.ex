@@ -192,10 +192,6 @@ defmodule Stitch.MeteorMigration.Room do
 
           group_inserted
         end
-
-        unless public do
-          group |> change(public: false) |> Repo.update
-        end
       group -> group
     end
   end
