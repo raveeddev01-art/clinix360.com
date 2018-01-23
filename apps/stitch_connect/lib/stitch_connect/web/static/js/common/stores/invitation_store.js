@@ -39,6 +39,77 @@ class InvitationStore {
       hideNotify: true
     }).then();
   };
+
+  @action
+  sendInvites = (emails, groupId, role) => {
+    switch (role) {
+      case "member":
+        return this.inviteFullMembers(emails);
+      case "single-room-guest":
+        return this.inviteSingleRoomGuests(emails, groupId);
+      case "multi-room-guest":
+        return this.inviteMultiRoomGuests(
+          emails,
+          groupId
+            .split(",")
+            .filter(g => g)
+            .map(g => parseInt(g, 10))
+        );
+      default:
+        return Promise.reject("Unrecongized role");
+    }
+  };
+
+  @action
+  inviteFullMembers = emails => {
+    return post(`/api/v1/invitations`, {
+      hideNotify: true,
+      body: { email_collection: emails.join(",") }
+    });
+  };
+
+  @action
+  inviteSingleRoomGuests = (emails, groupId) => {
+    return post("/api/v1/invitations/single-room-guests", {
+      hideNotify: true,
+      body: {
+        emails,
+        group_id: groupId
+      }
+    });
+  };
+
+  @action
+  inviteMultiRoomGuests = (emails, groupIds) => {
+    return post("/api/v1/invitations/multi-room-guests", {
+      hideNotify: true,
+      body: {
+        emails,
+        group_ids: groupIds
+      }
+    });
+  };
+
+  @action
+  onInvitationSent = data => {
+    const invitationIndex = this.invitations.findIndex(
+      inv => inv.id === data.id
+    );
+    if (invitationIndex > -1) {
+      this.invitations.splice(invitationIndex, 1);
+    }
+    this.invitations.push(data);
+  };
+
+  @action
+  onInvitationRevoked = data => {
+    const invitationIndex = this.invitations.findIndex(
+      inv => inv.id === data.id
+    );
+    if (invitationIndex > -1) {
+      this.invitations.splice(invitationIndex, 1);
+    }
+  };
 }
 
 export default InvitationStore;
