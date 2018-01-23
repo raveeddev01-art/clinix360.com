@@ -176,7 +176,7 @@ defmodule Stitch.MeteorMigration.Room do
     group = Group.create(creator, group_params)
 
     case group do
-      {:ok, %{group: group}} = group_inserted ->
+      {:ok, group} = group_inserted ->
         if is_default == true do
 
           unless Repo.get_by(Group, team_id: team_id, is_default: true) do
@@ -188,7 +188,7 @@ defmodule Stitch.MeteorMigration.Room do
           group_inserted
         else
           unless Enum.member?(user_ids, creator.id) do
-            Group.remove(group, creator.id)
+            Group.remove_user(group, creator.id)
           end
 
           group_inserted

@@ -53,7 +53,9 @@ defmodule Stitch.MeteorMigration do
         Logger.info("Restoring guest membership")
         indexed_meteor_users = index_users(meteor_users)
         indexed_meteor_rooms = index_rooms(rooms)
-        MeteorMigration.User.restoring_guest_membership(indexed_meteor_users, indexed_users, rooms, indexed_meteor_rooms)
+        MeteorMigration.User.restoring_guest_membership(indexed_meteor_users, indexed_users, indexed_meteor_rooms)
+        Logger.info("Restoring default room membership")
+        MeteorMigration.User.enforce_default_group_membership(team.id, users)
 
         Logger.info("Cleaning auto-generated system messages")
 

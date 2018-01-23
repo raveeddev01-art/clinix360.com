@@ -1,5 +1,5 @@
 defmodule Stitch.MeteorMigration.User do
-  alias Stitch.Repo
+  alias Stitch.{Repo, Group}
   alias Stitch.{Accounts.User}
   require Logger
 
@@ -182,7 +182,19 @@ defmodule Stitch.MeteorMigration.User do
     end
   end
 
-  def restoring_guest_membership(indexed_meteor_users, indexed_users, _rooms, indexed_meteor_rooms) do
+  def enforce_default_group_membership(team_id, users) do
+    default_group = Group |> where(team_id: ^team_id) |> where(is_default: ^true) |> Repo.one()
+
+    Enum.each(users, fn user ->
+      unless Stitch.Accounts.User.guest?(user) do
+        unless Stitch.GroupAuthorization.is_member?(default_group.id, user.id) do
+          Stitch.Group.add_user(default_group, user.id)
+        end
+      end
+    end)
+  end
+
+  def restoring_guest_membership(indexed_meteor_users, indexed_users, indexed_meteor_rooms) do
     Enum.each(indexed_users, fn {username, user_object} ->
       if Stitch.Accounts.User.guest?(user_object) do
         meteor_user = indexed_meteor_users[username]
