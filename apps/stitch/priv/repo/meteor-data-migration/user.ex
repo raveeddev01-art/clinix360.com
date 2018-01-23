@@ -236,6 +236,15 @@ defmodule Stitch.MeteorMigration.User do
         end
 
         user_group_ids = Stitch.GroupUser |> where(user_id: ^user_object.id) |> select([gu], gu.group_id) |> Repo.all
+
+        user_dm_ids =
+          Stitch.Group
+          |> where([g], g.name in ^["__dm_group__", "__multi_dm_group__"])
+          |> where([g], g.id in ^user_group_ids)
+          |> select([g], g.id)
+          |> Stitch.Repo.all
+
+        user_group_ids = user_group_ids -- user_dm_ids
         updated_role = if Enum.count(user_group_ids) > 1, do: "multi-room-guest", else: "single-room-guest"
 
         if @meteor_migration_debug do
