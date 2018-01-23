@@ -19,6 +19,9 @@ defmodule Stitch.MeteorMigration.Message do
     nil
   end
 
+  @doc """
+  `rooms` must a map with meteor's room id as a key and pheonix group struct as a value
+  """
   def parse_message_json(rooms, users, %{
     "_id" => _meteor_id,
     "msg" => text_content,
