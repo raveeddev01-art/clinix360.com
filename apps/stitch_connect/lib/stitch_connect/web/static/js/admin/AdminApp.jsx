@@ -23,34 +23,6 @@ import Analytics from "./analytics/index";
 @inject("titleStore")
 @observer
 class AdminApp extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sidebarOpened: false
-    };
-  }
-
-  componentWillMount() {
-    const { history } = this.props;
-    this.unsubscribeFromHistory = history.listen(this.handleLocationChange);
-  }
-
-  componentWillUnmount() {
-    if (this.unsubscribeFromHistory) this.unsubscribeFromHistory();
-  }
-
-  handleLocationChange = () => {
-    this._hideSidebar();
-  };
-
-  _toggleSidebar = () => {
-    this.setState({ sidebarOpened: !this.state.sidebarOpened });
-  };
-
-  _hideSidebar = () => {
-    this.setState({ sidebarOpened: false });
-  };
-
   renderAdminRoutes = () => {
     return [
       <Route
@@ -88,12 +60,9 @@ class AdminApp extends Component {
   };
 
   render() {
-    const { sidebarOpened } = this.state;
     const { titleStore } = this.props;
 
-    const adminWrapperClass = cx("admin-wrapper", "appContainer", {
-      "sidebar-opened": sidebarOpened
-    });
+    const adminWrapperClass = cx("admin-wrapper", "appContainer");
 
     return (
       <div id="app">
@@ -103,9 +72,9 @@ class AdminApp extends Component {
             <title>{titleStore.title}</title>
           </Helmet>
           <Switcher />
-          <Sidebar onHideSidebar={this._hideSidebar} />
+          <Sidebar />
           <div className="admin-content">
-            <Topbar onToggleSidebar={this._toggleSidebar} />
+            <Topbar />
             <div
               className="admin-content-wrapper"
               onClick={() => this._hideSidebar()}

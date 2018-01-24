@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";

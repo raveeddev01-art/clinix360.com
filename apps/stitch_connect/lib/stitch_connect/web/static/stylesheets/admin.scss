@@ -184,30 +184,6 @@ $admin-topbar-height-sm: 65px;
       background-color: $body-bg;
       border-bottom: 1px solid $border-color;
 
-      > .toggle-menu {
-        display: none;
-        float: left;
-        line-height: 20px;
-        padding: 6px 15px 6px 0;
-        border-right: 1px solid #d8d8d8;
-
-        &:hover {
-          text-decoration: none;
-        }
-
-        > i {
-          display: block;
-          &.fa-times {
-            display: none;
-          }
-        }
-
-        > span {
-          margin-top: 4px;
-          display: inline-block;
-        }
-      }
-
       a {
         color: $brand-primary;
 
@@ -678,51 +654,6 @@ $admin-topbar-height-sm: 65px;
 
 .btn-invite-members {
   font-weight: 900;
-}
-
-@media (max-width: 991px) {
-  .admin-wrapper {
-    .sidebar {
-      position: absolute;
-      top: 0;
-      left: 65px;
-      bottom: 0;
-      width: $admin-sidebar-width;
-      transform: translateX(-$admin-sidebar-width);
-    }
-
-    .admin-content {
-      .admin-topbar {
-        > .toggle-menu {
-          display: block;
-        }
-      }
-    }
-
-    &.sidebar-opened {
-      .sidebar {
-        transform: translateX(0);
-      }
-
-      .admin-content {
-        transform: translateX($admin-sidebar-width);
-        .admin-topbar {
-          > .toggle-menu {
-            > i {
-              display: block;
-              &.fa-bars {
-                display: none;
-              }
-            }
-          }
-        }
-
-        .admin-content-wrapper:after {
-          content: "";
-        }
-      }
-    }
-  }
 }
 
 .member-type-modal {
