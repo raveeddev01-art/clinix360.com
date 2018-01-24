@@ -7,6 +7,9 @@ import Modal from "react-bootstrap/lib/Modal";
 import moment from "moment";
 import sortBy from "lodash/sortBy";
 
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
+
 @inject("usersStore")
 @observer
 class MessageInfoModal extends Component {
@@ -53,25 +56,53 @@ class MessageInfoModal extends Component {
   }
 
   renderMessagePreview() {
-    const { message } = this.props;
+    const { message, usersStore } = this.props;
+    const userId = message.user.id;
+    const user = usersStore.usersById[userId];
     const { user: sender } = message;
-    const mine = sender.id === currentUser.id;
 
     return (
-      <div className="preview-wrapper">
-        <div className={cx("message-preview", { mine })}>
-          <div className="message-preview-header">
-            <div className="message-preview-name">
-              {sender.first_name} {sender.last_name}
-            </div>
-            <div className="message-preview-time">
-              {moment
-                .utc(message.inserted_at)
-                .local()
-                .format("hh:mm A")}
-            </div>
+      <div className="message-container addon">
+        <div className="message">
+          <div className="avatar">
+            <img
+              src={
+                user.avatar_thumb
+                  ? user.avatar_thumb
+                  : "/images/default-avatar.png"
+              }
+              alt="Avatar"
+            />
           </div>
-          <MessageContent message={message} />
+
+          <div className="message-content">
+            <div className="message-header">
+              <div className="name">
+                {sender.first_name} {sender.last_name}
+              </div>
+
+              <OverlayTrigger
+                placement="top"
+                delayShow={150}
+                overlay={
+                  <Tooltip id="date-tooltip">
+                    {moment
+                      .utc(message.inserted_at)
+                      .local()
+                      .format("MMM Do [at] hh:mm A")}
+                  </Tooltip>
+                }
+              >
+                <span className="time">
+                  {moment
+                    .utc(message.inserted_at)
+                    .local()
+                    .format("hh:mm A")}
+                </span>
+              </OverlayTrigger>
+            </div>
+            <MessageContent message={message} />
+          </div>
         </div>
       </div>
     );

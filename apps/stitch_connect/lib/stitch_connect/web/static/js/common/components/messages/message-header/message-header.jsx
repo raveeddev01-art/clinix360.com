@@ -15,7 +15,11 @@ class MessageHeader extends Component {
       <div className="message-header">
         <div className="name">{`${user.first_name} ${user.last_name} `}</div>
 
-        <OverlayTrigger placement="top" overlay={timestampTooltip}>
+        <OverlayTrigger
+          placement="top"
+          delayShow={150}
+          overlay={timestampTooltip}
+        >
           <span className="time">
             {moment
               .utc(timestamp)

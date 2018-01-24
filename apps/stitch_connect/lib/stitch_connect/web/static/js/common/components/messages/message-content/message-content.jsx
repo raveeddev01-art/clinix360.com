@@ -116,9 +116,12 @@ class MessageContent extends Component {
       >
         {message.type === "upload" && <FileAttachment {...message.fields} />}
         <div className="message-body">
-          {message.type === "upload" && message.text_content && '"'}
-          {this.renderMessageText()}
-          {message.type === "upload" && message.text_content && '"'}
+          {message.type === "upload" && message.text_content ? (
+            <div className="attachment-comment">{message.text_content}</div>
+          ) : (
+            this.renderMessageText()
+          )}
+
           {this.renderLinkPreviews()}
           {this.renderEdited()}
           <Reactions

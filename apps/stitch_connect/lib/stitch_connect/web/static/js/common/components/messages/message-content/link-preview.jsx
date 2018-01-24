@@ -37,27 +37,36 @@ class LinkPreview extends Component {
               onClick={this.onClose}
               className="link-preview__close"
             >
-              <i className="fa fa-times-circle-o" onClick={this.close} />
+              <i className="fa fa-times" onClick={this.close} />
             </a>
           )}
-        {favicon && (
-          <span className="link-preview__site">
-            <img className="link-preview__favicon" src={favicon} alt={title} />
-            <span>{link.replace(/https?:\/\//g, "")}</span>
-          </span>
-        )}
-        <a
-          href={link}
-          className="link-preview__title"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          {title}
-        </a>
-        {description && (
-          <span className="link-preview__description">{description}</span>
-        )}
-        {imageUrl && <ImageFileAttachment url={imageUrl} />}
+
+        <div className="preview-line" />
+
+        <div className="preview-body">
+          {favicon && (
+            <div className="link-preview__site">
+              <img
+                className="link-preview__favicon"
+                src={favicon}
+                alt={title}
+              />
+              <span>{link.replace(/https?:\/\//g, "")}</span>
+            </div>
+          )}
+          <a
+            href={link}
+            className="link-preview__title"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <strong>{title}</strong>
+          </a>
+          {description && (
+            <div className="link-preview__description">{description}</div>
+          )}
+          {imageUrl && <ImageFileAttachment url={imageUrl} />}
+        </div>
       </div>
     );
   }

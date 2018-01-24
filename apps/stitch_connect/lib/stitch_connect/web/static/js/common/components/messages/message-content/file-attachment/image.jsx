@@ -40,8 +40,9 @@ class ImageFileAttachment extends Component {
       <div className="attachment-image-block">
         {filename && (
           <div className="attachment-title">
+            <span>uploaded this image: </span>
             <a target="_blank" href={url}>
-              {filename}
+              <strong>{filename}</strong>
             </a>
           </div>
         )}

@@ -114,42 +114,56 @@ class MenutionMenu extends Component {
     return (
       <div className="dropup user-mention-menu open">
         <ul className="dropdown-menu">
-          {users.map((user, index) => {
-            const online = presenceStore.isOnline(user.id);
-            const itemClassName = cx("user-list-item", {
-              active: activeUserIndex === index
-            });
+          <div className="menu-header">People</div>
 
-            return (
-              <li
-                key={`user_${user.username}`}
-                className={itemClassName}
-                onMouseEnter={this.onUserItemHover(index)}
-                onClick={this.onSelectMention(user.username)}
-              >
-                <span className="item-icon">
-                  <i
-                    className={cx("fa", {
-                      "fa-bullhorn": user.isGroupMention,
-                      "fa-circle": !user.isGroupMention && online,
-                      "fa-circle-o": !user.isGroupMention && !online
-                    })}
-                  />
-                </span>
-                {user.isGroupMention ? (
-                  <span className="item-text">
-                    <span>{user.username}</span>
-                    <small>{user.description}</small>
+          <div className="menu-content">
+            {users.map((user, index) => {
+              const online = presenceStore.isOnline(user.id);
+              const itemClassName = cx("user-list-item", {
+                active: activeUserIndex === index
+              });
+
+              return (
+                <li
+                  key={`user_${user.username}`}
+                  className={itemClassName}
+                  onMouseEnter={this.onUserItemHover(index)}
+                  onClick={this.onSelectMention(user.username)}
+                >
+                  <span className="item-icon">
+                    <i
+                      className={cx("fa", {
+                        "fa-bullhorn": user.isGroupMention,
+                        "fa-circle": !user.isGroupMention && online,
+                        "fa-circle-o": !user.isGroupMention && !online
+                      })}
+                    />
                   </span>
-                ) : (
-                  <span className="item-text">
-                    <span>{user.full_name}</span>
-                    <small>{user.username}</small>
-                  </span>
-                )}
-              </li>
-            );
-          })}
+                  {user.isGroupMention ? (
+                    <span className="item-text">
+                      <span className="username">{user.username}</span>
+                      <span className="text-muted">{user.description}</span>
+                    </span>
+                  ) : (
+                    <span className="item-text">
+                      <span className="avatar">
+                        <img
+                          src={
+                            user.avatar_thumb
+                              ? user.avatar_thumb
+                              : "/images/default-avatar.png"
+                          }
+                          alt="Avatar"
+                        />
+                      </span>
+                      <span className="username">{user.full_name}</span>
+                      <span className="text-muted">{user.username}</span>
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </div>
         </ul>
       </div>
     );
