@@ -80,8 +80,6 @@ defmodule Stitch.Stripe.Events do
     period = subscription["period"]
     plan = subscription["plan"]
 
-    IO.inspect(subscription)
-
     params = %{
       plan: plan["id"],
       team_id: team.id,

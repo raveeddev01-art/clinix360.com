@@ -24,6 +24,6 @@ defmodule Stitch.Billing.PaymentHistory do
     struct
     |> cast(params, fields)
     |> validate_required(fields)
-    |> unique_constraint([:invoice_id])
+    |> unique_constraint(:invoice_id)
   end
 end

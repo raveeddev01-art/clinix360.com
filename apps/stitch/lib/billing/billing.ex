@@ -421,7 +421,7 @@ defmodule Stitch.Billing do
   @doc """
   Add the payment history on invoice.payment_succeeded
   """
-  @spec create_payment_history(%{}) :: {:ok, %PaymentHistory{}} | {:error, %Ecto.Changeset{}}
+  @spec create_payment_history(%{}) :: %PaymentHistory{} | %Ecto.Changeset{}
   def create_payment_history(params) do
     %PaymentHistory{}
     |> PaymentHistory.changeset(params)

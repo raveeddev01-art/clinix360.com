@@ -1,4 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
+  alias Stitch.Billing
   use StitchConnect.Web.ConnCase, async: true
   import StitchConnect.Web.SubdomainRouter.Helpers
 
@@ -259,6 +260,24 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
 
       assert response = json_response(conn, 401)
       assert response["message"] =~ "administrator"
+    end
+  end
+
+  describe "GET /api/v1/billing/history" do
+    test "returns array of payments for admin", %{conn: conn} do
+      team = insert(:team)
+      history = insert(:payment_history, team: team)
+      user = insert(:user, team: team, roles: ["admin"])
+
+      conn =
+        conn
+        |> with_api_user(user)
+        |> with_team_subdomain(team)
+        |> get(api_v1_billing_history_path(conn, :index))
+
+      assert response = json_response(conn, 200)
+      assert is_list(response["data"])
+      assert 1 = length(response["data"])
     end
   end
 end
