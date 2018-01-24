@@ -19,12 +19,6 @@ defmodule Stitch.GroupAuthorization do
   def can_view?(_group, _user), do: false
 
   @doc """
-  """
-  def is_member?(group_id, user_id) do
-    Repo.get_by(Stitch.GroupUser, group_id: group_id, user_id: user_id) != nil
-  end
-
-  @doc """
   Return true/false whether user can rename this group.
   """
   def can_rename?(%Group{name: name}, _user) when name in @dm_groups, do: false
@@ -60,6 +54,20 @@ defmodule Stitch.GroupAuthorization do
   end
 
   @doc """
+  Checks if a user is authorized to remove the group
+  """
+  @spec can_remove?(Group.t, User.t) :: boolean
+  def can_remove?(%Group{name: name}, _user) when name in @dm_groups, do: false
+  def can_remove?(%Group{team_id: team_id} = group, %User{team_id: team_id, roles: roles} = user) do
+    if User.guest?(user) do
+      false
+    else
+      "admin" in roles || (is_member?(group.id, user.id) && is_creator?(group, user))
+    end
+  end
+  def can_remove?(_group, _user), do: false
+
+  @doc """
   Checks if a user is authorized to join groups based on role.
   """
   def can_join?(%User{} = user) do
@@ -71,5 +79,20 @@ defmodule Stitch.GroupAuthorization do
   """
   def can_leave?(%User{} = user) do
     !User.guest?(user)
+  end
+
+  @doc """
+  Checks if a user is the creator of the room
+  """
+  @spec is_creator?(Group.t, User.t) :: boolean
+  def is_creator?(%Group{creator_user_id: user_id}, %User{id: user_id}), do: true
+  def is_creator?(_group, _user), do: false
+
+  @doc """
+  Checks if a user is the room member
+  """
+  @spec is_member?(pos_integer, pos_integer) :: boolean
+  def is_member?(group_id, user_id) do
+    Repo.get_by(Stitch.GroupUser, group_id: group_id, user_id: user_id) != nil
   end
 end

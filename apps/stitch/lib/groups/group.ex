@@ -287,8 +287,16 @@ defmodule Stitch.Group do
     case Repo.delete_all(query, []) do
       {1, _} -> :ok
       _ -> {:error, :not_member}
-      end
     end
+  end
+
+  @doc """
+  Deletes the group
+  """
+  @spec remove(Group.t) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def remove(%Group{} = group) do
+    Repo.delete(group)
+  end
 
   @doc """
   Toggles favorite setting for the user for the specified
