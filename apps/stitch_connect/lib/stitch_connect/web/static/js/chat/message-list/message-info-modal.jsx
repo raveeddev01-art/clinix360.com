@@ -89,7 +89,7 @@ class MessageInfoModal extends Component {
                     {moment
                       .utc(message.inserted_at)
                       .local()
-                      .format("MMM Do [at] hh:mm A")}
+                      .format("MMM Do [at] h:mm A")}
                   </Tooltip>
                 }
               >
@@ -97,7 +97,7 @@ class MessageInfoModal extends Component {
                   {moment
                     .utc(message.inserted_at)
                     .local()
-                    .format("hh:mm A")}
+                    .format("h:mm A")}
                 </span>
               </OverlayTrigger>
             </div>

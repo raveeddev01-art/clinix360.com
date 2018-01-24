@@ -324,7 +324,7 @@ class Message extends Component {
               {moment
                 .utc(insertedAt)
                 .local()
-                .format("MMM Do [at] hh:mm A")}
+                .format("MMM Do [at] h:mm A")}
             </Tooltip>
           }
         >
@@ -332,7 +332,7 @@ class Message extends Component {
             {moment
               .utc(insertedAt)
               .local()
-              .format("hh:mm")}
+              .format("h:mm A")}
           </span>
         </OverlayTrigger>
 
@@ -358,7 +358,7 @@ class Message extends Component {
               {moment
                 .utc(insertedAt)
                 .local()
-                .format("MMM Do [at] hh:mm A")}
+                .format("MMM Do [at] h:mm A")}
             </Tooltip>
           }
         >
@@ -366,7 +366,7 @@ class Message extends Component {
             {moment
               .utc(insertedAt)
               .local()
-              .format("hh:mm")}
+              .format("h:mm A")}
           </span>
         </OverlayTrigger>
 

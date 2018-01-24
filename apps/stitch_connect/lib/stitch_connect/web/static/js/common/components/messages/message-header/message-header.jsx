@@ -8,7 +8,12 @@ class MessageHeader extends Component {
   render() {
     const { timestamp, user } = this.props;
     const timestampTooltip = (
-      <Tooltip id="date-tooltip">{moment(timestamp).calendar()}</Tooltip>
+      <Tooltip id="date-tooltip">
+        {moment
+          .utc(timestamp)
+          .local()
+          .format("MMM Do [at] h:mm A")}
+      </Tooltip>
     );
 
     return (
@@ -24,7 +29,7 @@ class MessageHeader extends Component {
             {moment
               .utc(timestamp)
               .local()
-              .format("hh:mm A")}
+              .format("h:mm A")}
           </span>
         </OverlayTrigger>
       </div>
