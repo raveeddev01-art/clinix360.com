@@ -420,16 +420,21 @@ defmodule Stitch.Billing do
 
   @doc """
   Add the payment history on invoice.payment_succeeded
-
-  ## Examples
-
-      iex> update_subscriber_count(%Subscription{...})
-      :ok
-
   """
+  @spec create_payment_history(%{}) :: {:ok, %PaymentHistory{}} | {:error, %Ecto.Changeset{}}
   def create_payment_history(params) do
     %PaymentHistory{}
     |> PaymentHistory.changeset(params)
     |> Repo.insert!()
+  end
+
+  @spec list_payment_history(%Team{}) :: [%PaymentHistory{}]
+  def list_payment_history(%Team{id: team_id}) do
+    query =
+    from ph in PaymentHistory,
+    where: ph.team_id == ^team_id,
+    order_by: [asc: ph.inserted_at]
+
+    Repo.all(query)
   end
 end
