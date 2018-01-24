@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 
 import { Switcher, AppAlert } from "common/components";
 import { isAdmin } from "lib/utils";
+import RoleChangedModal from "common/modals/role-changed-modal";
 
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
@@ -128,6 +129,7 @@ class AdminApp extends Component {
               </Switch>
             </div>
           </div>
+          <RoleChangedModal />
         </div>
       </div>
     );

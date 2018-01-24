@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Row, Col, Button } from "react-bootstrap";
+import { RoleText } from "common/components";
 
 @inject("invitationStore")
 @observer
@@ -37,14 +38,20 @@ class PendingInvitationItem extends Component {
   };
 
   render() {
+    const { email, roles, groups } = this.props;
+
     return (
       <div className="table-item">
         <Row>
-          <Col xs={7} lg={8} className="email-column">
-            {this.props.email}
+          <Col xs={5} className="email-column">
+            {email}
           </Col>
 
-          <Col xs={5} lg={4} className="text-center">
+          <Col xs={3} className="status-column text-center">
+            <RoleText roles={roles} groups={groups} />
+          </Col>
+
+          <Col xs={4} className="text-center">
             <Button onClick={this._revoke}>Revoke</Button>
             <Button onClick={this._resend}>Resend</Button>
           </Col>
@@ -56,6 +63,8 @@ class PendingInvitationItem extends Component {
 
 PendingInvitationItem.propTypes = {
   email: PropTypes.string.isRequired,
+  roles: PropTypes.any.isRequired,
+  groups: PropTypes.any.isRequired,
   id: PropTypes.number.isRequired,
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,

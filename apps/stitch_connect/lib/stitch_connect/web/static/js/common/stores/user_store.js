@@ -5,6 +5,7 @@
  */
 
 import { observable, action, computed } from "mobx";
+import difference from "lodash/difference";
 
 const defaultAvatars = ["/images/default-avatar.png"];
 
@@ -22,6 +23,7 @@ class UserStore {
   @observable avatarThumb = "";
   @observable roles = [];
   @observable hasAvatar = false;
+  @observable roleChanged = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -76,9 +78,16 @@ class UserStore {
 
   @action
   onUserInfo = user => {
-    if (user.roles) {
-      window.currentUser.roles = user.roles;
+    // show role change modal if groups assigned as guests or roles has changed
+    if (
+      difference(user.roles || [], this.roles || []).length ||
+      difference(user.groups_as_guest || [], this.groups_as_guest || []).length
+    ) {
       this.roles = user.roles;
+      currentUser.roles = user.roles;
+      this.groups_as_guest = user.groups_as_guest;
+      this.roleChanged = true;
+      this.rootStore.channelStore.leaveAllChannelsButTeamAndEvent();
     }
   };
 

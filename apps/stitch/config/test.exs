@@ -31,6 +31,15 @@ config :stitch, :aws_presigned_urls, %{
   scheme: "https://"
 }
 
+config :stitch, :aws_user_upload, %{
+  access_key_id: "fake-access-key-id",
+  secret_access_key: "fake-secret-access-key",
+  region: "us-east-1",
+  bucket: "some-bucket",
+  scheme: "https://",
+  host: "s3.amazonaws.com"
+}
+
 config :stitch, Stitch.Analytics.Sync.RecurringSync,
   enabled: false
 

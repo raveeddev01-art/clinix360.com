@@ -21,6 +21,8 @@ class PendingInvitationsPanel extends Component {
         <PendingInvitationItem
           {...this.props}
           key={`invitation_${invitation.id}`}
+          roles={invitation.roles || ["member"]}
+          groups={invitation.groups_as_guests}
           email={invitation.email}
           id={invitation.id}
         />
@@ -45,10 +47,11 @@ class PendingInvitationsPanel extends Component {
         <div className="admin-table m-b-20">
           <div className="table-head">
             <Row>
-              <Col xs={7} lg={8}>
-                Email Address
+              <Col xs={5}>Email Address</Col>
+              <Col xs={3} className="text-center">
+                Role
               </Col>
-              <Col xs={5} lg={4} className="text-center">
+              <Col xs={4} className="text-center">
                 Actions
               </Col>
             </Row>

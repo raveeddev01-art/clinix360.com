@@ -11,7 +11,8 @@ import orderBy from "lodash/orderBy";
 import {
   getGroupUserIdsThatHasCurrentUser,
   getSlugOfDMGroupByUsers,
-  getGroupUrl
+  getGroupUrl,
+  isFullMember
 } from "lib/utils";
 
 class GroupsStore {
@@ -44,7 +45,12 @@ class GroupsStore {
 
   @computed
   get defaultGroup() {
-    return this.groups.find(g => g.is_default);
+    if (isFullMember(currentUser)) {
+      return this.groups.find(g => g.is_default);
+    }
+
+    // for guests, just return first regular group
+    return this.groups.filter(g => g.type === "regular")[0];
   }
 
   @computed
@@ -108,6 +114,10 @@ class GroupsStore {
   // ACTIONS //
   // /////// //
 
+  hasAccess = groupId => {
+    return !!this.groups.find(g => g.id === groupId);
+  };
+
   @action
   updateGroupData = (id, data) => {
     const group = this.getGroupById(id);
@@ -143,17 +153,30 @@ class GroupsStore {
 
   @action
   loadGroups = () => {
-    const { sidemenuStore } = this.rootStore;
-
     return get("/api/v1/groups").then(response => {
-      this.groups = orderBy(response.data, ["name"]).map(group => ({
-        ...group,
-        new_message_line_at: null,
-        marked_as_unread: false
-      }));
-
-      sidemenuStore.updateFavicon();
+      this.onLoadedGroups(response.data);
     });
+  };
+
+  @action
+  loadAdditionalGroup = groupId => {
+    return get(`/api/v1/groups/${groupId}`).then(response => {
+      if (!this.getGroupById(groupId)) {
+        this.onLoadedGroups([...this.groups, response.data]);
+      }
+    });
+  };
+
+  @action
+  onLoadedGroups = groups => {
+    const { sidemenuStore } = this.rootStore;
+    this.groups = orderBy(groups, ["name"]).map(group => ({
+      ...group,
+      new_message_line_at: null,
+      marked_as_unread: false
+    }));
+
+    sidemenuStore.updateFavicon();
   };
 
   @action
@@ -376,20 +399,30 @@ class GroupsStore {
   @action
   onMembersUpdated = payload => {
     const allUsers = this.rootStore.usersStore.usersById;
-    const users = payload.user_ids.map(id => allUsers[id]);
-    this.updateGroupData(payload.group_id, {
-      users
-    });
+    // filter undefined because sometimes this event is broadcasted after user_joined
+    const users = payload.user_ids.map(id => allUsers[id]).filter(u => u);
 
-    // redirect to default group if user is removed from current room
-    const meRemoved = payload.user_ids.indexOf(currentUser.id) === -1;
-    if (meRemoved && this.currentGroupId === payload.group_id) {
-      history.push(`/rooms/${this.defaultGroup.slug}`);
+    if (isFullMember(currentUser)) {
+      if (this.hasAccess(payload.group_id)) {
+        this.updateGroupData(payload.group_id, {
+          users
+        });
+      } else {
+        // load group
+        this.loadAdditionalGroup(payload.group_id);
+      }
+
+      const meRemoved = payload.user_ids.indexOf(currentUser.id) === -1;
+
+      // redirect to default group if user is removed from current room
+      if (meRemoved && this.currentGroupId === payload.group_id) {
+        history.push(`/rooms/${this.defaultGroup.slug}`);
+      }
+    } else if (this.hasAccess(payload.group_id)) {
+      this.updateGroupData(payload.group_id, {
+        users
+      });
     }
-
-    // @TODO update groups without loading all groups
-    // @NOTE loadGroups is called because private groups aren't existed yet in the list
-    this.loadGroups();
   };
 
   @action
