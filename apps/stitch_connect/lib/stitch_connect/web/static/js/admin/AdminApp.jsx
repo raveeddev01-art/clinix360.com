@@ -75,10 +75,7 @@ class AdminApp extends Component {
           <Sidebar />
           <div className="admin-content">
             <Topbar />
-            <div
-              className="admin-content-wrapper"
-              onClick={() => this._hideSidebar()}
-            >
+            <div className="admin-content-wrapper">
               <Switch>
                 {isAdmin() && this.renderAdminRoutes()}
                 <Route
