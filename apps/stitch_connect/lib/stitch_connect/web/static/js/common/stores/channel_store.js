@@ -51,7 +51,13 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
-    const { sidemenuStore, groupsStore, notificationStore, presenceStore, invitationStore } = this.rootStore;
+    const {
+      sidemenuStore,
+      groupsStore,
+      notificationStore,
+      presenceStore,
+      invitationStore
+    } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
     // Message related
@@ -62,14 +68,21 @@ class ChannelStore {
     this.eventChannel.on("joined_group", groupsStore.onJoinedGroup);
     this.eventChannel.on("left_group", groupsStore.onLeftGroup);
     this.eventChannel.on("renamed_group", groupsStore.onRenamedGroup);
+    this.eventChannel.on("removed_group", groupsStore.onRemovedGroup);
     this.eventChannel.on("hid_group", groupsStore.onHidGroup);
     this.eventChannel.on("marked_as_read", groupsStore.onMarkedAsRead);
     this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);
     this.eventChannel.on("members_updated", groupsStore.onMembersUpdated);
     this.eventChannel.on("group_favorite", groupsStore.onFavoriteChanged);
-    this.eventChannel.on("notification_preference_update", notificationStore.onPreferencesLoaded);
+    this.eventChannel.on(
+      "notification_preference_update",
+      notificationStore.onPreferencesLoaded
+    );
     this.eventChannel.on("invitation_sent", invitationStore.onInvitationSent);
-    this.eventChannel.on("invitation_revoked", invitationStore.onInvitationRevoked);
+    this.eventChannel.on(
+      "invitation_revoked",
+      invitationStore.onInvitationRevoked
+    );
 
     // App related
     this.eventChannel.on("new_app_version", () => {

@@ -50,7 +50,21 @@ class GroupsStore {
     }
 
     // for guests, just return first regular group
-    return this.groups.filter(g => g.type === "regular")[0];
+    const regularGroups = this.groups.filter(g => g.type === "regular");
+    if (regularGroups.length) {
+      return regularGroups[0];
+    }
+
+    // otherwise self dm
+    const selfDMGroup = this.groups.find(
+      g => g.type === "dm" && g.users.length === 1
+    );
+
+    // unhide it if self dm is hidden
+    if (selfDMGroup.is_hidden) {
+      this.unhideGroup(selfDMGroup.id);
+    }
+    return selfDMGroup;
   }
 
   @computed
@@ -295,6 +309,13 @@ class GroupsStore {
     return post(`/api/v1/groups/${id}/toggle-favorite`);
   };
 
+  @action
+  removeGroup = id => {
+    return remove(`/api/v1/groups/${id}`, {
+      hideNotify: true
+    });
+  };
+
   /* Event handlers */
 
   /**
@@ -339,6 +360,16 @@ class GroupsStore {
   @action
   onHidGroup = ({ group_id: id, is_hidden }) => {
     this.updateGroupData(id, { is_hidden });
+  };
+
+  @action
+  onRemovedGroup = ({ group_id: id }) => {
+    this.groups = this.groups.filter(g => g.id === id);
+
+    // move to default group if current group is removed
+    if (id === this.currentGroupId) {
+      history.push(`/rooms/${this.defaultGroup.slug}`);
+    }
   };
 
   @action
