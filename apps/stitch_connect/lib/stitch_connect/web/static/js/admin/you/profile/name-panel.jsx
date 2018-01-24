@@ -6,6 +6,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
+import { isValidUnicodeString } from "lib/utils";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Name";
@@ -35,13 +36,28 @@ class NamePanel extends Component {
     const { hideAlert, onSuccess, onError, userStore } = this.props;
 
     hideAlert();
+
+    if (!isValidUnicodeString(firstName)) {
+      return Promise.resolve(
+        onError("First name contains invalid characters.")
+      );
+    }
+
+    if (!isValidUnicodeString(lastName)) {
+      return Promise.resolve(onError("Last name contains invalid characters."));
+    }
+
     return userStore
       .saveName(firstName, lastName)
       .then(() => {
         onSuccess("Your name has been successfully updated.");
       })
       .catch(err => {
-        onError(err.data.message);
+        const message = err.data.message
+          .replace("first_name", "First name")
+          .replace("last_name", "Last name");
+
+        onError(message);
       });
   };
 

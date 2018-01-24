@@ -5,6 +5,7 @@
  */
 
 import { observable, action, computed } from "mobx";
+import difference from "lodash/difference";
 
 const defaultAvatars = ["/images/default-avatar.png"];
 
@@ -17,10 +18,12 @@ class UserStore {
   @observable email = "";
   @observable firstName = "";
   @observable lastName = "";
+  @observable fullName = "";
   @observable avatar = "";
   @observable avatarThumb = "";
   @observable roles = [];
   @observable hasAvatar = false;
+  @observable roleChanged = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -49,13 +52,18 @@ class UserStore {
     this.id = id;
 
     get(`/api/v1/users/${id}`).then(resp => {
+      this.loading = false;
+
       const { data } = resp;
+
       this.username = data.username;
       this.phone = data.phone || "";
       this.title = data.title || "";
       this.email = data.email;
       this.firstName = data.first_name;
       this.lastName = data.last_name;
+      this.fullName = data.full_name;
+
       if (data.avatar) {
         this.hasAvatar = true;
         this.avatar = data.avatar;
@@ -65,16 +73,21 @@ class UserStore {
       }
 
       this.roles = data.roles;
-
-      this.loading = false;
     });
   };
 
   @action
   onUserInfo = user => {
-    if (user.roles) {
-      window.currentUser.roles = user.roles;
+    // show role change modal if groups assigned as guests or roles has changed
+    if (
+      difference(user.roles || [], this.roles || []).length ||
+      difference(user.groups_as_guest || [], this.groups_as_guest || []).length
+    ) {
       this.roles = user.roles;
+      currentUser.roles = user.roles;
+      this.groups_as_guest = user.groups_as_guest;
+      this.roleChanged = true;
+      this.rootStore.channelStore.leaveAllChannelsButTeamAndEvent();
     }
   };
 

@@ -54,4 +54,3 @@ defmodule StitchConnect.Web.Rooms.RoomInvitesTest do
 
     defp sidemenu_item(text), do: css("div.item-text", text: text)
   end
-

@@ -93,6 +93,7 @@
     "notify": true,
     "currentUser": false,
     "applicationHost": true,
+    "applicationScheme": true,
     "stripePublishableKey": true,
     "socket": true,
     "post": true,

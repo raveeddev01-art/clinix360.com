@@ -102,6 +102,8 @@ hr {
 
 .tooltip {
   font-size: 14px;
+  font-weight: 700;
+  font-family: "Stitch Lato", sans-serif;
 }
 .tooltip-inner {
   padding: 6px 10px;
@@ -495,4 +497,8 @@ i.fa {
     margin-left: 8px;
     vertical-align: text-bottom;
   }
+}
+
+.modal-dialog .modal-content .modal-body.role-change-modal-body {
+  min-height: 100px;
 }

@@ -10,15 +10,33 @@ defmodule Stitch.TeamQueriesTest do
       assert team.slug == "example"
     end
 
+    test "preloads the team's subscription" do
+      subscription = insert(:subscription)
+
+      team = TeamQueries.get_by_slug(subscription.team.slug)
+      assert team.subscription == clear_assoc(subscription, :team)
+    end
+
     test "returns nil if empty slug is passed" do
       team = TeamQueries.get_by_slug("")
       assert team == nil
     end
   end
 
+  describe "list_admins/1" do
+    test "lists admin users" do
+      team = insert(:team)
+      admin = insert(:user, team: team, roles: ["admin"])
+      _regular_user = insert(:user, team: team, roles: ["member"])
+      user_ids = for user <- TeamQueries.list_admins(team), do: user.id
+      assert user_ids == [admin.id]
+    end
+  end
+
   describe "list_active_users/1" do
     setup do
       team = insert(:team)
+
       active_users =
         for _ <- 1..4 do
           user = insert(:user, team: team, onboarded: true)
@@ -33,8 +51,8 @@ defmodule Stitch.TeamQueriesTest do
       insert(:user, team: team, onboarded: true, disabled: true)
       insert(:user, team: team, onboarded: false, disabled: false)
       users = TeamQueries.list_active_users(team)
-      user_ids = users |> Enum.map(& &1.id) |> Enum.sort
-      assert user_ids == active_users |> Enum.map(& &1.id) |> Enum.sort
+      user_ids = users |> Enum.map(& &1.id) |> Enum.sort()
+      assert user_ids == active_users |> Enum.map(& &1.id) |> Enum.sort()
     end
 
     test "doesn't list disabled users", %{team: team} do
@@ -106,6 +124,7 @@ defmodule Stitch.TeamQueriesTest do
     teams = Stitch.Repo.all(TeamQueries.admin_teams_query())
 
     assert length(teams) == 3
+
     for {team, i} <- Enum.with_index(teams) do
       expected_team = Enum.at([team_1, team_2, team_3], i)
       assert team.name == expected_team.name
