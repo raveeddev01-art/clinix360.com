@@ -164,7 +164,6 @@ class UsersStore {
   };
 
   @action
-<<<<<<< HEAD
   saveProfileImg = (userId, profileImgUrl) => {
     return put(`/api/v1/users/${userId}/upload_profile_image`, {
       body: {
@@ -188,11 +187,12 @@ class UsersStore {
       const avatarFields = pick(data, "avatar", "avatar_thumb");
       this.updateUserData(userId, avatarFields);
       return avatarFields;
-=======
+    });
+  };
+
   editUser = data => {
     return put(`/api/v1/users/${this.editingUserId}/roles`, {
       body: data
->>>>>>> develop
     });
   };
 

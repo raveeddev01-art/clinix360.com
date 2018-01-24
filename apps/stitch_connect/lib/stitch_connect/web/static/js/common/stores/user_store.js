@@ -56,6 +56,7 @@ class UserStore {
       this.email = data.email;
       this.firstName = data.first_name;
       this.lastName = data.last_name;
+      this.fullName = data.full_name;
 
       if (
         data.avatar &&
