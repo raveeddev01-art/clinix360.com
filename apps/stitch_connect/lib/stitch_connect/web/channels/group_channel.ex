@@ -144,20 +144,21 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("feed_surrounding", %{"id" => message_id}, socket) do
+  def handle_in("feed_surrounding", %{"id" => message_id} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
+    limit = Map.get(params, "limit", 30)
 
     case MessageQueries.get_by_id(message_id) do
       nil ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
       target_message ->
-        {messages_before, messages_after} = MessageQueries.surrounding(target_message, group, user, 30)
+        {messages_before, messages_after} = MessageQueries.surrounding(target_message, group, user, limit)
         messages = messages_before ++ [target_message] ++ messages_after
         messages_json = MessageView.render("index.json", %{messages: messages})
 
         {:reply, {:ok, %{
-          more_before: length(messages_before) >= 30,
-          more_after: length(messages_after) >= 30,
+          more_before: length(messages_before) >= limit,
+          more_after: length(messages_after) >= limit,
           messages: messages_json,
         }}, socket}
     end
