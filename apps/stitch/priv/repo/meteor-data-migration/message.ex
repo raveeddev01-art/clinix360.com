@@ -3,10 +3,12 @@ defmodule Stitch.MeteorMigration.Message do
   alias Stitch.Repo
   require Logger
 
-  @chunk_size 200
+  @chunk_size 300
+  @meteor_migration_debug System.get_env("METEOR_MIGRATION_DEBUG") == "true"
 
   def migrate_messages(messages) do
-    Repo.insert_all(Message, messages, returning: false)
+    {n, _} = Repo.insert_all(Message, messages, returning: false)
+    IO.puts "#{n} messages inserted."
   end
 
   def parse_messages_json(rooms, phoenix_users_by_email, meteor_users_by_username, messages) do
@@ -44,11 +46,6 @@ defmodule Stitch.MeteorMigration.Message do
     with {:ok, user} <- fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, meteor_creator_username),
          {:ok, group} <- Map.fetch(rooms, meteor_room_id) do
 
-      # if Stitch.Group.direct_message?(group) do
-      #   IO.puts "DM MESSAGE"
-      #   IO.puts "#{inspect group}"
-      # end
-
       %{
         text_content: parse_mentions(text_content, phoenix_users_by_email, meteor_users_by_username),
         inserted_at: parse_timestamp(timestamp),
@@ -58,10 +55,9 @@ defmodule Stitch.MeteorMigration.Message do
         type: "chat",
       }
     else _error ->
-      IO.puts("Error creating message, message: #{inspect(attributes)}.")
-      IO.puts("user: #{inspect(fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, meteor_creator_username))}")
-      IO.puts("room: #{inspect(Map.fetch(rooms, meteor_room_id))} #{inspect(meteor_room_id)}")
-      IO.puts("room: #{inspect(Map.fetch(rooms, meteor_room_id))} #{inspect(meteor_room_id)}")
+      if @meteor_migration_debug do
+        IO.puts("Error creating message, message: #{inspect(attributes)}.")
+      end
       nil
     end
   end
@@ -83,10 +79,10 @@ defmodule Stitch.MeteorMigration.Message do
 
   def run(rooms, phoenix_users_by_email, meteor_users_by_username, message_json_file) do
     message_file_stream(message_json_file, @chunk_size, fn messages, n ->
+      if @meteor_migration_debug, do: IO.puts "#{n} messages parsed."
+
       parse_messages_json(rooms, phoenix_users_by_email, meteor_users_by_username, messages)
       |> migrate_messages
-
-      IO.puts "#{n} messages migrated."
     end)
   end
 

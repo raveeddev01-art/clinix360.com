@@ -89,7 +89,7 @@ defmodule Stitch.MeteorMigration do
     groups = Group |> where(team_id: ^team.id) |> Repo.all()
     users = User |> where(team_id: ^team.id) |> Repo.all()
 
-    phoenix_users_by_email = Enum.reduce(users, %{}, & Map.put(&2, &1.email, &1)) |> IO.inspect
+    phoenix_users_by_email = Enum.reduce(users, %{}, & Map.put(&2, &1.email, &1))
 
     meteor_rooms =
       MeteorMigration.Room.parse_rooms_json(phoenix_users_by_email, meteor_users_by_username, parse_meteor_json(rooms_json))
@@ -113,7 +113,12 @@ defmodule Stitch.MeteorMigration do
       |> Enum.reduce(%{}, fn (group, acc) ->
         meteor_room = meteor_rooms[group.slug]
         if meteor_room do
-          Map.put(acc, meteor_room.meteor_id, group)
+          if (meteor_room.dm == false && meteor_room.public == false) && meteor_room.creator_user.id != group.creator_user_id do
+            Logger.warn "Skip message history import for room #{group.slug}. Meteor: #{inspect(meteor_room)} Phoenix: #{inspect(group)}"
+            acc
+          else
+            Map.put(acc, meteor_room.meteor_id, group)
+          end
         else
           acc
         end

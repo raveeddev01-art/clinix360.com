@@ -119,6 +119,7 @@ defmodule Stitch.MeteorMigration.Room do
 
     %{
       dm: true,
+      public: false,
       multi: !!attributes["multi"],
       users: get_users(phoenix_users_by_email, meteor_users_by_username, usernames),
       meteor_id: meteor_id,
