@@ -116,6 +116,12 @@ class PresenceStore {
     if (sessionId === window.sessionId) window.location.reload();
   };
 
+  onLogout = ({ session_id: sessionId }) => {
+    if (window.sessionId === sessionId) {
+      this.logout();
+    }
+  };
+
   @action
   setTeamId(id) {
     this.teamId = id;
@@ -152,6 +158,10 @@ class PresenceStore {
         this.unlocking = false;
         return Promise.reject();
       });
+  };
+
+  logout = () => {
+    window.location = "/logged-out";
   };
 
   onUserInteract = () => {

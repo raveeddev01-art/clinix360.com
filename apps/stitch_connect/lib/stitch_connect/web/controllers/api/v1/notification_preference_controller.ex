@@ -3,6 +3,7 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceController do
   alias Stitch.Accounts.User
   alias Stitch.GroupUser
   alias Stitch.Message.Notification
+  alias StitchConnect.Web.EventsChannel
 
   def show_global(conn, _params) do
     render conn, "show_global.json",
@@ -13,9 +14,9 @@ defmodule StitchConnect.Web.Api.V1.NotificationPreferenceController do
   def update_global(conn, %{} = params) do
     case User.update_preference(conn.assigns.current_user, params) do
       {:ok, %{user: user}} ->
-        render conn, "show_global.json",
-          user: user,
-          group_preferences: Notification.for_user(conn.assigns.current_user.id)
+        notification_preference = Notification.for_user(conn.assigns.current_user.id)
+        EventsChannel.broadcast_notification_preference_update(user, notification_preference)
+        render(conn, "show_global.json", user: user, group_preferences: notification_preference)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
