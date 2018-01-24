@@ -128,6 +128,7 @@ defmodule Stitch.Reports.MessagesSentTest do
 
     expected_keys =
       team_inserted_at
+      |> NaiveDateTime.to_date
       |> Date.range(end_at)
       |> Enum.map(&Date.to_iso8601/1)
 

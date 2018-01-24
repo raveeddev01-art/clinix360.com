@@ -18,6 +18,27 @@ export const NOTIFICATION_PREFERENCES = [
   }
 ];
 
+export const MEMBER_TYPE_OPTIONS = [
+  {
+    value: "member",
+    label: "Full Member",
+    description:
+      "have access to all public rooms and can direct message anyone on the team."
+  },
+  {
+    value: "single-room-guest",
+    label: "Single Room Guest",
+    description:
+      "can only access one room, and can only direct message members of that room."
+  },
+  {
+    value: "multi-room-guest",
+    label: "Multi Room Guest",
+    description:
+      "can access more than one room, and can only direct message members of these rooms."
+  }
+];
+
 // Amount of waiting period in milliseconds used in debouncing presence update
 export const PRESENCE_DEBOUNCE_WAIT = 2 * 1000;
 

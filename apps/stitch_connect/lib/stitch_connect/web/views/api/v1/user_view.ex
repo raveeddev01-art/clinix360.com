@@ -56,7 +56,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       avatar: presigned_url(user.profile_image_url),
       avatar_thumb: presigned_url(user.profile_image_thumb_url),
       onboarded: user.onboarded,
-      disabled: user.disabled
+      disabled: user.disabled,
+      groups_as_guest: user.groups_as_guest,
     }
   end
 

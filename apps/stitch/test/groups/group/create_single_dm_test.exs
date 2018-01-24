@@ -30,11 +30,10 @@ defmodule Stitch.Group.CreateSingleDmTest do
     team = insert(:team)
     bob = insert(:user, team: team)
     joe = insert(:user, team: team)
-    {:ok, group} = Group.create_single_dm(bob, [bob.id, joe.id])
+    {:ok, _group} = Group.create_single_dm(bob, [bob.id, joe.id])
+    {:error, changeset} = Group.create_single_dm(bob, [bob.id, joe.id])
 
-    {:error, reason} = Group.create_single_dm(bob, [bob.id, joe.id])
-
-    assert reason == {:already_exists, group.slug}
+    assert hd(errors_on(changeset).slug) =~ "taken"
   end
 
   test "group name is __dm_group__" do

@@ -9,6 +9,8 @@ defmodule Stitch.Accounts.User do
   alias Stitch.GroupUser
   alias Stitch.Repo
 
+  @type t :: %__MODULE__{}
+
   schema "users" do
     field :email, :string
     field :roles, {:array, :string}
@@ -31,6 +33,7 @@ defmodule Stitch.Accounts.User do
     field :mobile_notification_preference, :string, default: "everything"
     field :email_notification_preference, :string, default: "daily"
     field :is_staff, :boolean, default: false
+    field :groups_as_guest, {:array, :integer}, default: [] # List of groups the user is allowed in if user is a guest
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
 
@@ -114,16 +117,21 @@ defmodule Stitch.Accounts.User do
     token = Stitch.Rand.token(32)
 
     struct
-    |> cast(params, [:team_id])
+    |> cast(params, [:team_id, :roles, :groups_as_guest])
     |> validate_required([:team_id])
     |> put_change(:confirmation_code, confirmation_code)
     |> put_change(:token, token)
     |> email_changeset(params)
     |> Stitch.Validators.validate_email_domain(:email)
-    |> unique_constraint(:team_id, name: :users_email_team_id_index)
+    |> unique_constraint(:email, name: :users_email_team_id_index)
   end
 
   # ====
+
+  def role_change_changeset(struct, params) do
+    struct
+    |> change(params)
+  end
 
   def registration_changeset(struct, params) do
     struct
@@ -138,9 +146,19 @@ defmodule Stitch.Accounts.User do
     |> username_changeset(params)
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
+    |> ensure_role()
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:phone_number, :pin, :team_id, :roles])
     |> put_change(:onboarded, true)
+  end
+
+  defp ensure_role(%Ecto.Changeset{} = changeset) do
+    roles = get_field(changeset, :roles) || []
+    if roles == [] do
+      put_change(changeset, :roles, ["member"])
+    else
+      changeset
+    end
   end
 
   def password_update_changeset(struct, params) do
@@ -174,4 +192,12 @@ defmodule Stitch.Accounts.User do
     end
   end
   def add_thumb(changeset), do: changeset
+
+  @doc """
+  Checks if the user is a guest based on their roles.
+  """
+  @spec guest?(map) :: boolean
+  def guest?(%User{roles: roles}) do
+    "single-room-guest" in roles || "multi-room-guest" in roles
+  end
 end

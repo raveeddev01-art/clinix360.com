@@ -88,3 +88,13 @@ export function filterUsers(users, filter) {
 export function isValidUnicodeString(text) {
   return !NON_UNICODE_PATTERN.test(text);
 }
+
+/**
+ * Returns whether the user has full member permission
+ *
+ * @param {User} user
+ * @returns {bool}
+ */
+export function isFullMember(user) {
+  return user.roles.indexOf("member") > -1 || user.roles.indexOf("admin") > -1;
+}
