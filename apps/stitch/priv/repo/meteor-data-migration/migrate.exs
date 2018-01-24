@@ -81,13 +81,18 @@ defmodule Stitch.MeteorMigration do
 
     Logger.info("Fethcing and indexing the team's groups and users")
 
+    meteor_users_by_username =
+      parse_meteor_json(users_json)
+      |> MeteorMigration.User.parse_users_json()
+      |> Enum.reduce(%{}, & Map.put(&2, &1.username, &1))
+
     groups = Group |> where(team_id: ^team.id) |> Repo.all()
     users = User |> where(team_id: ^team.id) |> Repo.all()
 
-    indexed_users = Enum.reduce(users, %{}, & Map.put(&2, &1.email, &1))
+    phoenix_users_by_email = Enum.reduce(users, %{}, & Map.put(&2, &1.email, &1)) |> IO.inspect
 
     meteor_rooms =
-      MeteorMigration.Room.parse_rooms_json(indexed_users, parse_meteor_json(rooms_json))
+      MeteorMigration.Room.parse_rooms_json(phoenix_users_by_email, meteor_users_by_username, parse_meteor_json(rooms_json))
       |> Enum.reduce(%{}, fn (room, acc) ->
         if room.dm do
           if length(room.users) > 1 do
@@ -116,7 +121,7 @@ defmodule Stitch.MeteorMigration do
 
     Logger.info("Migrating messages")
 
-    messages = MeteorMigration.Message.run(indexed_rooms, indexed_users, messages_json)
+    messages = MeteorMigration.Message.run(indexed_rooms, phoenix_users_by_email, meteor_users_by_username, messages_json)
   end
 
   def identify_on_intercom(users) do
