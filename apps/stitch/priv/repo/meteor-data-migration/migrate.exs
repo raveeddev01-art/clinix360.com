@@ -84,7 +84,7 @@ defmodule Stitch.MeteorMigration do
     groups = Group |> where(team_id: ^team.id) |> Repo.all()
     users = User |> where(team_id: ^team.id) |> Repo.all()
 
-    indexed_users = Enum.reduce(users, %{}, & Map.put(&2, &1.username, &1))
+    indexed_users = Enum.reduce(users, %{}, & Map.put(&2, &1.email, &1))
 
     meteor_rooms =
       MeteorMigration.Room.parse_rooms_json(indexed_users, parse_meteor_json(rooms_json))
