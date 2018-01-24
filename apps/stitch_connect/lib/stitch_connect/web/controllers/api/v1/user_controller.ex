@@ -173,6 +173,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def upload_profile_image(conn, %{"url" => url}) do
     case Stitch.Accounts.update_profile_image(conn.assigns.current_user, url) do
       {:ok, user} ->
+        TeamChannel.broadcast_user_info(conn.assigns.team, user)
         conn |> render("show.json", user: user)
       {:error, changeset} ->
         conn |> unprocessable_entity_error(%{changeset: changeset})
@@ -182,6 +183,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   def delete_profile_image(conn, _params) do
     case Stitch.Accounts.delete_profile_image(conn.assigns.current_user) do
       {:ok, user} ->
+        TeamChannel.broadcast_user_info(conn.assigns.team, user)
         conn |> render("show.json", user: user)
       {:error, _error} ->
         conn |> unprocessable_entity_error(%{changeset: "Couldn't delete the profile image"})
