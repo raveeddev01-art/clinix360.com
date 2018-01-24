@@ -1,10 +1,11 @@
 defmodule StitchConnect.Web.Api.V1.TeamController do
   use StitchConnect.Web, :controller
-  alias Stitch.Team
+  alias Stitch.Team.Admin
+  alias Stitch.{Team, TeamQueries}
   alias StitchConnect.Web.{TeamChannel}
 
   def show(conn, %{"id" => _}) do
-    team = Stitch.TeamQueries.get_by_id(conn.private[:team_id])
+    team = TeamQueries.get_by_id(conn.private[:team_id])
     conn
     |> json(%{
       id: team.id,
@@ -48,6 +49,20 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         TeamChannel.broadcast_team_rename(team)
         conn
         |> json(%{id: team.id, name: team.name})
+    end
+  end
+
+  def update_contact_info(conn, %{} = params) do
+    with team = conn.assigns.team,
+         {:ok, team} <- Admin.update_contact_info(team, params) do
+      TeamChannel.broadcast_team_rename(team)
+      render conn, "contact_xxxxinfo.json", team: team
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
+      error -> error
     end
   end
 
