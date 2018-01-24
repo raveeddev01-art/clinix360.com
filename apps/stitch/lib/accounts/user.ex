@@ -48,6 +48,8 @@ defmodule Stitch.Accounts.User do
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> validate_required([:first_name, :last_name])
+    |> Stitch.Validators.validate_no_emojis(:first_name)
+    |> Stitch.Validators.validate_no_emojis(:last_name)
   end
 
   def validate_username(%Ecto.Changeset{changes: %{username: _}} = changeset, params) do
@@ -142,6 +144,8 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(params, [:first_name, :phone_number, :last_name, :password, :pin, :team_id, :roles])
     |> username_changeset(params)
+    |> Stitch.Validators.validate_no_emojis(:first_name)
+    |> Stitch.Validators.validate_no_emojis(:last_name)
     |> ensure_role()
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:phone_number, :pin, :team_id, :roles])

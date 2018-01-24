@@ -326,7 +326,7 @@ defmodule Stitch.Billing.BillingTest do
       insert(:user, team: team, onboarded: true, disabled: true, roles: ["single-room-guest"])
       insert(:user, team: team, onboarded: false, disabled: false, roles: ["single-room-guest"])
 
-      assert Billing.list_billable_users(team) == active_users
+      assert Billing.list_billable_users(team) |> length() == length(active_users)
     end
   end
 end
