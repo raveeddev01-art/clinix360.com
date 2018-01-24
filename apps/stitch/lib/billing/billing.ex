@@ -4,8 +4,8 @@ defmodule Stitch.Billing do
   """
 
   import Ecto.Query
-  alias Stitch.{Repo, Team, TeamQueries, FeatureGateway}
-  alias Stitch.Billing.{Plan, Subscription, PaymentMethod}
+  alias Stitch.{Repo, Team}
+  alias Stitch.Billing.{Plan, Subscription, PaymentMethod, PaymentHistory}
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
   @trial_duration 14 * 24 * 60 * 60 # 14 days in seconds
@@ -416,5 +416,20 @@ defmodule Stitch.Billing do
       :error -> :error
       nil -> false
     end
+  end
+
+  @doc """
+  Add the payment history on invoice.payment_succeeded
+
+  ## Examples
+
+      iex> update_subscriber_count(%Subscription{...})
+      :ok
+
+  """
+  def create_payment_history(params) do
+    %PaymentHistory{}
+    |> PaymentHistory.changeset(params)
+    |> Repo.insert!()
   end
 end

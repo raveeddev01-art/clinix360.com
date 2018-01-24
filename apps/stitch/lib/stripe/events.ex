@@ -16,10 +16,12 @@ defmodule Stitch.Stripe.Events do
       valid_until: DateTime.from_unix!(subscription["period"]["end"])
     }
 
-    with {:ok, subscription} <- Billing.update_subscription(customer_id, subscription_id, sub_params),
+    with {:ok, subscription} <-
+           Billing.update_subscription(customer_id, subscription_id, sub_params),
          team = TeamQueries.get_by_id(subscription.team_id),
          owner = TeamQueries.get_team_owner(team) do
       Notifications.send_successful_payment(owner, team)
+      record_payment_history(team, event)
       :ok
     end
   end
@@ -53,7 +55,8 @@ defmodule Stitch.Stripe.Events do
       estimated_invoice_amount: 0
     }
 
-    with {:ok, _subscription} <- Billing.update_subscription(customer_id, subscription_id, sub_params) do
+    with {:ok, _subscription} <-
+           Billing.update_subscription(customer_id, subscription_id, sub_params) do
       :ok
     end
   end
@@ -61,11 +64,34 @@ defmodule Stitch.Stripe.Events do
   def handle_event(_), do: :ok
 
   defp days_until_retry(nil), do: nil
+
   defp days_until_retry(unix_timestamp) do
     next_attempt = DateTime.from_unix!(unix_timestamp)
     days = Timex.diff(next_attempt, DateTime.utc_now(), :days)
+
     if days > 0 do
       {:ok, days}
     end
+  end
+
+  defp record_payment_history(team, event) do
+    [subscription] = get_in(event, [:data, "object", "lines", "data"])
+    invoice_id = get_in(event, [:data, "object", "id"])
+    period = subscription["period"]
+    plan = subscription["plan"]
+
+    IO.inspect(subscription)
+
+    params = %{
+      plan: plan["id"],
+      team_id: team.id,
+      invoice_id: invoice_id,
+      amount: plan["amount"] / 10,
+      quantity: subscription["quantity"],
+      period_end: DateTime.from_unix!(period["end"]),
+      period_start: DateTime.from_unix!(period["start"]),
+    }
+
+    Billing.create_payment_history(params)
   end
 end
