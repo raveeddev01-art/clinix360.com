@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.GroupController.IndexTest do
   use StitchConnect.Web.ConnCase
   import StitchConnect.Web.SubdomainRouter.Helpers
 
-  describe "name and type" do
+  describe "GET /api/v1/groups" do
     setup %{conn: conn} do
       team = insert(:team)
       bob = insert(:user, team: team, first_name: "Bob")
@@ -11,53 +11,51 @@ defmodule StitchConnect.Web.GroupController.IndexTest do
       conn =
         conn
         |> with_team_subdomain(team)
-        |> with_user_session(bob)
         |> with_api_user(bob)
 
       {:ok, conn: conn, team: team, bob: bob, joe: joe}
     end
 
-    test "for regular groups", %{conn: conn, team: team} do
+    test "lists all available groups", %{conn: conn, team: team, bob: bob} do
+      insert(:group, team: team)
+      insert(:group, team: team)
+      private = insert(:group, team: team, public: false)
+      insert(:group, team: team, public: false)
+      insert(:group_user, user: bob, group: private)
+
+      conn = get(conn, api_v1_group_path(conn, :index))
+      assert response = json_response(conn, 200)
+      assert length(response) == 3
+    end
+
+    test "gets a group by slug", %{conn: base_conn, team: team} do
       group = insert(:group, team: team)
 
-      json =
-        conn
-        |> get(api_v1_group_path(conn, :index), %{slug: group.slug})
-        |> json_response(200)
+      conn = get(base_conn, api_v1_group_path(base_conn, :index), %{slug: group.slug})
+      assert response = json_response(conn, 200)
+      assert response["type"] == "regular"
+      assert response["name"] == group.name
 
-      assert json["type"] == "regular"
-      assert json["name"] == group.name
+      conn = get(base_conn, api_v1_group_path(base_conn, :index), %{slug: "bad"})
+      assert json_response(conn, :not_found)
     end
 
-    test "for single DMs", %{conn: conn, bob: bob, joe: joe} do
-      %{"slug" => slug} =
-        conn
-        |> post(api_v1_group_path(conn, :create_single_dm), %{"user_ids" => [bob.id, joe.id]})
-        |> json_response(200)
+    test "guests only see their restricted groups", %{conn: base_conn, team: team} do
+      group1 = insert(:group, team: team)
+      group2 = insert(:group, team: team)
 
-      json =
-        conn
-        |> get(api_v1_group_path(conn, :index), %{slug: slug})
-        |> json_response(200)
+      guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group1.id])
+      insert(:group_user, group: group1, user: guest)
 
-      assert json["type"] == "dm"
-      assert json["name"] == "Joe Schmo"
-    end
+      base_conn = with_api_user(base_conn, guest)
 
-    test "for multi DMs", %{conn: conn, team: team, bob: bob, joe: joe} do
-      tim = insert(:user, team: team, first_name: "Tim", last_name: "Kilaru")
+      conn = get(base_conn, api_v1_group_path(base_conn, :index))
+      assert response = json_response(conn, 200)
+      assert length(response) == 1
+      assert Enum.at(response, 0)["id"] == group1.id
 
-      %{"slug" => slug} =
-        conn
-        |> post(api_v1_group_path(conn, :create_multi_dm), %{"user_ids" => [bob.id, joe.id, tim.id]})
-        |> json_response(200)
-
-      json =
-        conn
-        |> get(api_v1_group_path(conn, :index), %{slug: slug})
-        |> json_response(200)
-
-      assert json["name"] == "Joe Schmo, Tim Kilaru"
+      conn = get(base_conn, api_v1_group_path(base_conn, :index), %{slug: group2.slug})
+      assert json_response(conn, :not_found)
     end
   end
 

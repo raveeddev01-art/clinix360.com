@@ -111,6 +111,24 @@ defmodule Stitch.GroupQueriesTest do
       assert Enum.find(groups, &( &1.slug == "c" ))
       refute Enum.find(groups, &( &1.slug == "a" ))
     end
+
+    test "restricts list of groups for guest users" do
+      team = insert(:team)
+      _group_a = insert(:group, %{team: team, name: "A", slug: "a", public: true, is_default: true})
+      group_b = insert(:group, %{team: team, name: "B", slug: "b", public: true})
+      _group_c = insert(:group, %{team: team, name: "C", slug: "c", public: true})
+
+      for role <- ["single-room-guest", "multi-room-guest"] do
+        guest = insert(:user, team: team, roles: [role], groups_as_guest: [group_b.id])
+        insert(:group_user, group: group_b, user: guest)
+        groups = GroupQueries.available_groups(guest.id)
+
+        assert Enum.count(groups) == 1
+        assert Enum.find(groups, &( &1.slug == "b" ))
+        refute Enum.find(groups, &( &1.slug == "c" ))
+        refute Enum.find(groups, &( &1.slug == "a" ))
+      end
+    end
   end
 
   describe "Stitch.GroupQueries.search/2" do
@@ -217,6 +235,69 @@ defmodule Stitch.GroupQueriesTest do
 
       found_group = GroupQueries.default_group(user)
       assert default_group.id == found_group.id
+    end
+  end
+
+  test "gives the first restricted group for guests" do
+    team = insert(:team)
+    insert(:group, team: team, is_default: true)
+    group = insert(:group, team: team)
+
+    for role <- ["single-room-guest", "multi-room-guest"] do
+      guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
+      insert(:group_user, group: group, user: guest)
+
+      assert GroupQueries.default_group(guest).id == group.id
+    end
+  end
+
+  describe "non_dm_group_memberships/1" do
+    setup do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      {:ok, user: user, team: team}
+    end
+
+    test "returns the list of memberships", %{user: user, team: team} do
+      group = insert(:group, team: team)
+      group_user = insert(:group_user, group: group, user: user)
+      insert(:group_user, group: group)
+
+      assert [result] = GroupQueries.non_dm_group_memberships(user)
+      assert result.id == group_user.id
+    end
+
+    test "excludes DMs", %{user: user, team: team} do
+      other_user = insert(:user, team: team)
+      Stitch.Group.create_single_dm(user, [user.id, other_user.id])
+      Stitch.Group.create_multi_dm(user, [user.id, other_user.id])
+      assert [] == GroupQueries.non_dm_group_memberships(user)
+    end
+  end
+
+  describe "valid_guest_direct_message?" do
+    test "returns true when params are valid" do
+      team = insert(:team)
+      group = insert(:group, team: team)
+      user = insert(:user, team: team)
+      guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
+      insert(:group_user, user: user, group: group)
+      insert(:group_user, user: guest, group: group)
+
+      assert GroupQueries.valid_guest_direct_message?(guest.groups_as_guest, [user.id, guest.id])
+    end
+
+    test "returns false when params are invalid" do
+      team = insert(:team)
+      group = insert(:group, team: team)
+      other_group = insert(:group, team: team)
+      user = insert(:user, team: team)
+      invalid_user = insert(:user, team: team)
+      guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
+      insert(:group_user, user: user, group: group)
+      insert(:group_user, user: guest, group: group)
+      insert(:group_user, user: invalid_user, group: other_group)
+      refute GroupQueries.valid_guest_direct_message?(guest.groups_as_guest, [user.id, guest.id, invalid_user.id])
     end
   end
 

@@ -8,6 +8,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
+import { isFullMember } from "lib/utils";
 
 import NavItemFavorite from "./nav-items/nav-item-favorite";
 import NavItemInvite from "./nav-items/nav-item-invite";
@@ -95,18 +96,19 @@ class TopNav extends Component {
     const { groupStore } = this.props;
     const isNotDM = groupStore.group.type === "regular";
     const isDefault = groupStore.group.is_default;
+    const fullMember = isFullMember(currentUser);
 
     if (groupStore.group.joined) {
       return (
         <div>
           <NavItemFavorite />
-          {isNotDM && !isDefault && <NavItemInvite />}
-          {isNotDM && !isDefault && <NavItemRemove />}
+          {fullMember && isNotDM && !isDefault && <NavItemInvite />}
+          {fullMember && isNotDM && !isDefault && <NavItemRemove />}
           {isNotDM && <NavItemNotifications />}
-          {isNotDM && <NavItemRename />}
-          {isNotDM && !isDefault && <NavItemConvert />}
-          {isNotDM && !isDefault && <NavItemLeave />}
-          {!isDefault && !isNotDM && <NavItemHide />}
+          {fullMember && isNotDM && <NavItemRename />}
+          {fullMember && isNotDM && !isDefault && <NavItemConvert />}
+          {fullMember && isNotDM && !isDefault && <NavItemLeave />}
+          {fullMember && !isDefault && !isNotDM && <NavItemHide />}
         </div>
       );
     }

@@ -134,9 +134,13 @@
 
   .invite-forms {
     @include stitch-scroll();
-    max-height: 280px;
-    overflow-x: hidden;
-    overflow-y: auto;
+    min-height: 180px;
+
+    .invite-email-list {
+      max-height: 200px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 
     .form-group {
       margin-bottom: 10px;
@@ -233,7 +237,7 @@
       border-radius: 4px;
       padding: 15px 20px;
       text-align: left;
-      display: inline-block;
+      display: block;
 
       .message-preview-header {
         display: flex;

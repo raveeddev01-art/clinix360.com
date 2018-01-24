@@ -15,4 +15,15 @@ defmodule Stitch.Validators do
       end
     end)
   end
+
+  def validate_no_emojis(changeset, field, options \\ []) do
+    validate_change(changeset, field, fn _, value ->
+      emoji_count = Exmoji.Scanner.scan(value) |> length()
+
+      case emoji_count > 0 do
+        true -> [{field, options[:message] || "should not have emojis."}]
+        false -> []
+      end
+    end)
+  end
 end

@@ -2,8 +2,9 @@ defmodule StitchConnect.Web.GroupChannel do
   use StitchConnect.Web, :channel
   use Appsignal.Instrumentation.Decorators
   import Ecto.Query
-  alias StitchConnect.MessageLinkPreviewGenerator
+  alias Stitch.Accounts.{User}
   alias StitchConnect.Web.Api.V1.MessageView
+  alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
   alias Stitch.{Repo, Group, GroupUser, GroupAuthorization,
     Message, MessageAuthorization, MessageQueries}
@@ -143,26 +144,22 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("feed_surrounding", %{"id" => _} = params, socket) do
+  def handle_in("feed_surrounding", %{"id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
 
-    case group do
-      {:create_dm, _, _} ->
-        {:reply, {:ok, %{messages: []}}, socket}
+    case MessageQueries.get_by_id(message_id) do
+      nil ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+      target_message ->
+        {messages_before, messages_after} = MessageQueries.surrounding(target_message, group, user)
+        messages = messages_before ++ [target_message] ++ messages_after
+        messages_json = MessageView.render("index.json", %{messages: messages})
 
-      group ->
-        opts = params
-        |> Map.take(["limit", "id"])
-        |> Map.update("limit", 30 , &Enum.min([&1, 50]))
-        |> Enum.map(fn {key,value} -> {String.to_atom(key), value} end)
-
-        old_messages = MessageQueries.group_latest_messages(group.id, user, Keyword.put(opts, :max_id, opts[:id]))
-        more_before = Enum.count(old_messages) > 0
-
-        recent_messages = MessageQueries.group_recent_messages(group.id, user, Keyword.put(opts, :min_id, opts[:id]))
-        more_after = Enum.count(recent_messages) > 0
-
-        {:reply, {:ok, %{more_before: more_before, more_after: more_after}}, socket}
+        {:reply, {:ok, %{
+          more_before: Enum.any?(messages_before),
+          more_after: Enum.any?(messages_after),
+          messages: messages_json,
+        }}, socket}
     end
   end
 
@@ -315,9 +312,29 @@ defmodule StitchConnect.Web.GroupChannel do
     endpoint_broadcast(group, "pinned_message", message_json)
   end
 
-  def broadcast_members_update(group) do
-    user_ids = GroupUser |> where(group_id: ^group.id) |> select([gu], gu.id) |> Repo.all
-    endpoint_broadcast(group, "members_update", %{user_ids: user_ids})
+  def broadcast_members_update(%User{} = user, removed_groups, added_groups) do
+    for group <- removed_groups do
+      broadcast_members_update(group, [user], [])
+    end
+    for group <- added_groups do
+      broadcast_members_update(group, [], [user])
+    end
+  end
+
+  def broadcast_members_update(%Group{} = group, removed_users, added_users) do
+    group_user_ids = Stitch.GroupUser.user_ids(group.id)
+    update_recipient_ids = Enum.uniq(group_user_ids ++ Enum.map(removed_users, & &1.id))
+    EventsChannel.broadcast_members_update(group, update_recipient_ids, group_user_ids)
+    for user <- removed_users do
+      system_message = Stitch.SystemMessages.generate_user_left_group(group, user)
+      broadcast_message_created(system_message)
+      EventsChannel.broadcast_group_leave(group, user.id)
+    end
+    for user <- added_users do
+      system_message = Stitch.SystemMessages.generate_user_joined_group(group, user)
+      broadcast_message_created(system_message)
+      EventsChannel.broadcast_group_join(group, user.id)
+    end
   end
 
   def broadcast_read_status(group, messages) do
@@ -397,8 +414,9 @@ defmodule StitchConnect.Web.GroupChannel do
           json = MessageView.render("show.json", %{message: message})
           {:reply, {:ok, json}, socket}
 
-        {:error, _changeset} ->
-          {:reply, {:error, %{message: "Failed to create message.", request_id: request_id}}, socket}
+        {:error, :message, changeset, _changeset_so_far} ->
+          error_message = StitchConnect.Web.ControllerHelpers.changeset_errors_to_string(changeset)
+          {:reply, {:error, %{message: error_message, request_id: request_id}}, socket}
       end
     else
       {:reply, {:error, %{message: "Only members can write messages.", request_id: request_id}}, socket}
