@@ -117,6 +117,8 @@ class MenutionMenu extends Component {
 
     return (
       <div className="dropup user-mention-menu open">
+        <div className="dropdown-mask" onClick={this.props.handleMenuMask} />
+
         <ul className="dropdown-menu">
           <div className="menu-header">People</div>
 
