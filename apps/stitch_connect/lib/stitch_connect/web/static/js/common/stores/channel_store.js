@@ -51,7 +51,7 @@ class ChannelStore {
   }
 
   joinEventChannel(options = {}) {
-    const { sidemenuStore, groupsStore } = this.rootStore;
+    const { sidemenuStore, groupsStore, notificationStore, presenceStore, invitationStore } = this.rootStore;
     const joined = this.join(this.eventChannelTopic, options);
 
     // Message related
@@ -67,16 +67,15 @@ class ChannelStore {
     this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);
     this.eventChannel.on("members_updated", groupsStore.onMembersUpdated);
     this.eventChannel.on("group_favorite", groupsStore.onFavoriteChanged);
+    this.eventChannel.on("notification_preference_update", notificationStore.onPreferencesLoaded);
+    this.eventChannel.on("invitation_sent", invitationStore.onInvitationSent);
+    this.eventChannel.on("invitation_revoked", invitationStore.onInvitationRevoked);
 
     // App related
     this.eventChannel.on("new_app_version", () => {
       window.location.reload(true); // force reload without cache
     });
-    this.eventChannel.on("logout", ({ session_id: sessionId }) => {
-      if (window.sessionId === sessionId) {
-        window.location = "/logged-out";
-      }
-    });
+    this.eventChannel.on("logout", presenceStore.onLogout);
 
     return joined;
   }
@@ -157,6 +156,7 @@ class ChannelStore {
     );
 
     this.teamChannel.on("team_renamed", sidemenuStore.onTeamRenamed);
+    this.teamChannel.on("team_deleted", presenceStore.logout); // just log out immediately if the team is deleted
 
     this.teamChannel.on("user_joined", usersStore.onUserJoined);
     this.teamChannel.on("user_info", usersStore.onUserInfo);

@@ -127,7 +127,7 @@ $admin-topbar-height-sm: 65px;
 
         &.active {
           background-color: #fafafa;
-          
+
           a {
             color: $brand-primary;
             opacity: 1;
@@ -461,6 +461,11 @@ $admin-topbar-height-sm: 65px;
             font-weight: bold;
             padding: 10px 15px;
             text-transform: capitalize;
+
+            &__rooms {
+              font-size: 14px;
+              font-weight: 400;
+            }
           }
 
           .email-column {
@@ -690,4 +695,71 @@ $admin-topbar-height-sm: 65px;
 
 .btn-invite-members {
   font-weight: 900;
+}
+
+@media (max-width: 991px) {
+  .admin-wrapper {
+    .sidebar {
+      position: absolute;
+      top: 0;
+      left: 65px;
+      bottom: 0;
+      width: $admin-sidebar-width;
+      transform: translateX(-$admin-sidebar-width);
+    }
+
+    .admin-content {
+      .admin-topbar {
+        > .toggle-menu {
+          display: block;
+        }
+      }
+    }
+
+    &.sidebar-opened {
+      .sidebar {
+        transform: translateX(0);
+      }
+
+      .admin-content {
+        transform: translateX($admin-sidebar-width);
+        .admin-topbar {
+          > .toggle-menu {
+            > i {
+              display: block;
+              &.fa-bars {
+                display: none;
+              }
+            }
+          }
+        }
+
+        .admin-content-wrapper:after {
+          content: "";
+        }
+      }
+    }
+  }
+}
+
+.delete-team-modal {
+  .modal-dialog .modal-content .modal-body {
+    min-height: 150px;
+  }
+}
+
+.member-type-modal {
+  &__name {
+    margin-left: 15px;
+    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+
+    small {
+      margin-left: 10px;
+      font-size: 18px;
+      color: #666;
+    }
+  }
 }
