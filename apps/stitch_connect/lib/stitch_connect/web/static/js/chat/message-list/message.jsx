@@ -332,7 +332,7 @@ class Message extends Component {
             {moment
               .utc(insertedAt)
               .local()
-              .format("h:mm A")}
+              .format("h:mm")}
           </span>
         </OverlayTrigger>
 
