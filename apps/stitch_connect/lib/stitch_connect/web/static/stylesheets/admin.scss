@@ -725,6 +725,12 @@ $admin-topbar-height-sm: 65px;
   }
 }
 
+.delete-team-modal {
+  .modal-dialog .modal-content .modal-body {
+    min-height: 150px;
+  }
+}
+
 .member-type-modal {
   &__name {
     margin-left: 15px;
