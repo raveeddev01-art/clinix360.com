@@ -161,7 +161,7 @@ defmodule Stitch.GroupAuthorizationTest do
       end
     end
 
-    test "returns false for guest that is the room creator" do
+    test "returns false for guest that is the group creator" do
       team = insert(:team)
       for role <- ["single-room-guest", "multi-room-guest"] do
         user = insert(:user, roles: [role], team: team)
@@ -170,13 +170,24 @@ defmodule Stitch.GroupAuthorizationTest do
       end
     end
 
-    test "returns false for DMs" do
+    test "returns false for signle DMs" do
       team = insert(:team)
       bob = insert(:user, team: team)
       joe = insert(:user, team: team)
       {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
       assert Stitch.GroupAuthorization.can_remove?(group, bob) == false
       assert Stitch.GroupAuthorization.can_remove?(group, joe) == false
+    end
+
+    test "returns false for multi DMs" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      sam = insert(:user, team: team)
+      {:ok, group} = Stitch.Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
+      assert Stitch.GroupAuthorization.can_remove?(group, bob) == false
+      assert Stitch.GroupAuthorization.can_remove?(group, joe) == false
+      assert Stitch.GroupAuthorization.can_remove?(group, sam) == false
     end
 
     test "returns false for DMs when user is admin" do
@@ -188,7 +199,7 @@ defmodule Stitch.GroupAuthorizationTest do
       assert Stitch.GroupAuthorization.can_remove?(group, joe) == false
     end
 
-    test "returns true for room creator that is a room member" do
+    test "returns true for group creator that is a group member" do
       team = insert(:team)
       user = insert(:user, team: team, roles: ["member"])
       group = insert(:group, creator: user, team: team)
@@ -196,10 +207,16 @@ defmodule Stitch.GroupAuthorizationTest do
       assert Stitch.GroupAuthorization.can_remove?(group, user) == true
     end
 
-    test "returns false for room creator that is longer a room member" do
+    test "returns false for group creator that is longer a group member" do
       team = insert(:team)
       user = insert(:user, team: team, roles: ["member"])
       group = insert(:group, creator: user, team: team)
+      assert Stitch.GroupAuthorization.can_remove?(group, user) == false
+    end
+
+    test "admin can't remove default group" do
+      user = insert(:user, roles: ["admin"])
+      group = insert(:group, creator: user, team: user.team, is_default: true)
       assert Stitch.GroupAuthorization.can_remove?(group, user) == false
     end
   end

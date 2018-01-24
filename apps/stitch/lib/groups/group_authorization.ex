@@ -3,7 +3,7 @@ defmodule Stitch.GroupAuthorization do
   Module in charge of permission handling for group actions.
   """
 
-  alias Stitch.{Repo, Group, Accounts.User}
+  alias Stitch.{Group, Accounts.User}
 
   @dm_groups ["__dm_group__", "__multi_dm_group__"]
 
@@ -58,6 +58,7 @@ defmodule Stitch.GroupAuthorization do
   """
   @spec can_remove?(Group.t, User.t) :: boolean
   def can_remove?(%Group{name: name}, _user) when name in @dm_groups, do: false
+  def can_remove?(%Group{is_default: true}, _user), do: false
   def can_remove?(%Group{team_id: team_id} = group, %User{team_id: team_id, roles: roles} = user) do
     if User.guest?(user) do
       false
@@ -93,6 +94,6 @@ defmodule Stitch.GroupAuthorization do
   """
   @spec is_member?(pos_integer, pos_integer) :: boolean
   def is_member?(group_id, user_id) do
-    Repo.get_by(Stitch.GroupUser, group_id: group_id, user_id: user_id) != nil
+    Stitch.GroupQueries.user_is_member?(group_id, user_id)
   end
 end

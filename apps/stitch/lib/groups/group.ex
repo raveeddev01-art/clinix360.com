@@ -294,6 +294,8 @@ defmodule Stitch.Group do
   Deletes the group
   """
   @spec remove(Group.t) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def remove(%Group{name: name}) when name in @dm_groups, do: {:error, :direct_message}
+  def remove(%Group{is_default: true}), do: {:error, :default_group}
   def remove(%Group{} = group) do
     Repo.delete(group)
   end

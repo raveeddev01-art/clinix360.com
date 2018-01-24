@@ -12,6 +12,7 @@ defmodule Stitch.GroupQueries do
   @doc """
   Return true or false is user has joined the given group.
   """
+  @spec user_is_member?(pos_integer, pos_integer) :: boolean
   def user_is_member?(group_id, user_id) do
     Repo.get_by(GroupUser, user_id: user_id, group_id: group_id) != nil
   end

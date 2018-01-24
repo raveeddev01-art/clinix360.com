@@ -418,4 +418,43 @@ defmodule Stitch.GroupTest do
       assert {:error, :invalid_user_ids} = Group.create_multi_dm(guest, [guest.id, user_2.id, user_3.id])
     end
   end
+
+  describe "remove/1" do
+    test "gives an error when the group is a single DM" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
+
+      assert {:error, :direct_message} = Group.remove(group)
+    end
+
+    test "gives an error when the group is a multi DM" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      sam = insert(:user, team: team)
+      {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id, sam.id])
+
+      assert {:error, :direct_message} = Group.remove(group)
+    end
+
+    test "given an error for the default group" do
+      group = insert(:group, is_default: true)
+      assert {:error, :default_group} = Group.remove(group)
+    end
+
+    test "remove associated with the group group_user records" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      group = insert(:group)
+      group_user_bob = insert(:group_user, user: bob, group: group)
+      group_user_joe = insert(:group_user, user: joe, group: group)
+      assert {:ok, group} = Group.remove(group)
+      assert group.id == group.id
+      assert Stitch.Repo.get(Stitch.GroupQueries, group_user_bob.id) == nil
+      assert Stitch.Repo.get(Stitch.GroupQueries, group_user_joe.id) == nil
+    end
+  end
 end
