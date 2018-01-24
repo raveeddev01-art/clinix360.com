@@ -151,13 +151,13 @@ defmodule StitchConnect.Web.GroupChannel do
       nil ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
       target_message ->
-        {messages_before, messages_after} = MessageQueries.surrounding(target_message, group, user)
+        {messages_before, messages_after} = MessageQueries.surrounding(target_message, group, user, 30)
         messages = messages_before ++ [target_message] ++ messages_after
         messages_json = MessageView.render("index.json", %{messages: messages})
 
         {:reply, {:ok, %{
-          more_before: Enum.any?(messages_before),
-          more_after: Enum.any?(messages_after),
+          more_before: length(messages_before) >= 30,
+          more_after: length(messages_after) >= 30,
           messages: messages_json,
         }}, socket}
     end

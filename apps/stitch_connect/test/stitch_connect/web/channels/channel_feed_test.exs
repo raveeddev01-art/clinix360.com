@@ -72,7 +72,7 @@ defmodule StitchConnect.Web.ChannelFeedTest do
       {:ok, messages: messages, socket: socket}
     end
 
-    test "when there are messages before and after the target id", %{socket: socket, messages: messages} do
+    test "when there are 30 more messages before and after the target id", %{socket: socket, messages: messages} do
       [mid_message] = Enum.slice(messages, 50..50)
       ref = push socket, "feed_surrounding", %{id: mid_message.id}
 
@@ -81,6 +81,19 @@ defmodule StitchConnect.Web.ChannelFeedTest do
       assert reply.more_before == true
 
       expected_message_ids = messages |> Enum.slice(20..80) |> Enum.map(& &1.id)
+      assert Enum.map(reply.messages, & &1.id) == expected_message_ids
+    end
+
+    test "when there are less than 30 messages before the target id", %{socket: socket, messages: messages} do
+      first_message = messages |> Enum.at(10)
+
+      ref = push socket, "feed_surrounding", %{id: first_message.id}
+
+      assert_reply ref, :ok, reply
+      assert reply.more_after == true
+      assert reply.more_before == false
+      expected_message_ids = messages |> Enum.slice(0..40) |> Enum.map(& &1.id)
+
       assert Enum.map(reply.messages, & &1.id) == expected_message_ids
     end
 
@@ -106,6 +119,19 @@ defmodule StitchConnect.Web.ChannelFeedTest do
       assert reply.more_after == false
       assert reply.more_before == true
       expected_message_ids = messages |> Enum.slice(69..100) |> Enum.map(& &1.id)
+
+      assert Enum.map(reply.messages, & &1.id) == expected_message_ids
+    end
+
+    test "when there are less than 30 messages after the target id", %{socket: socket, messages: messages} do
+      last_message = messages |> Enum.at(90)
+
+      ref = push socket, "feed_surrounding", %{id: last_message.id}
+
+      assert_reply ref, :ok, reply
+      assert reply.more_after == false
+      assert reply.more_before == true
+      expected_message_ids = messages |> Enum.slice(60..100) |> Enum.map(& &1.id)
 
       assert Enum.map(reply.messages, & &1.id) == expected_message_ids
     end

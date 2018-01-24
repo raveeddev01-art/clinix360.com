@@ -316,10 +316,10 @@ defmodule Stitch.MessageQueries do
     Repo.one(query)
   end
 
-  @spec surrounding(Message.t, Group.t, User.t) :: {[Message.t], [Message.t]}
-  def surrounding(%Message{id: message_id}, %Group{id: group_id}, %User{} = user) do
-    messages_before = MessageQueries.group_latest_messages(group_id, user, max_id: message_id) |> Enum.reverse
-    messages_after = MessageQueries.group_recent_messages(group_id, user, min_id: message_id)
+  @spec surrounding(Message.t, Group.t, User.t, pos_integer) :: {[Message.t], [Message.t]}
+  def surrounding(%Message{id: message_id}, %Group{id: group_id}, %User{} = user, limit) do
+    messages_before = MessageQueries.group_latest_messages(group_id, user, max_id: message_id, limit: limit) |> Enum.reverse
+    messages_after = MessageQueries.group_recent_messages(group_id, user, min_id: message_id, limit: limit)
     {messages_before, messages_after}
   end
 
