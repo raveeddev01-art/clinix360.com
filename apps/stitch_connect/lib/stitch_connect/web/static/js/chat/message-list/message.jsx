@@ -363,7 +363,7 @@ class Message extends Component {
           <VisibilitySensor
             active
             onChange={this.onVisibleChange}
-            partialVisibility={"top"}
+            partialVisibility="top"
             minTopValue={1}
             intervalCheck={false}
             scrollCheck
