@@ -76,15 +76,18 @@ class Subscription extends Component {
     const { plan } = this.state;
 
     billingStore.subscribe(plan).then(subscription => {
+      const text =
+        subscription.remaining_days > 0
+          ? `We won't begin billing until your trial expires in ${subscription.remaining_days} days.`
+          : `Your team is now upgraded to ${capitalize(
+              subscription.tier
+            )} tier`;
+
       alert({
         title: "Thanks for using Stitch!",
         message: (
           <p>
-            We successfully saved your card info. <br />{" "}
-            <b>
-              We won&rsquo;t begin billing until your trial expires in{" "}
-              {subscription.remaining_days} days.
-            </b>
+            We successfully saved your card info. <br /> <b>{text}</b>
           </p>
         )
       });
