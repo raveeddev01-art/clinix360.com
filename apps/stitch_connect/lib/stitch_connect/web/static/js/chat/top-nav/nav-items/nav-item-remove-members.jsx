@@ -66,7 +66,7 @@ export default class NavItemRemoveMembers extends Component {
         onHide={this.closeModal}
       >
         <Modal.Header>
-          <Modal.Title>Remove</Modal.Title>
+          <Modal.Title>Remove Members</Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />
           </a>
