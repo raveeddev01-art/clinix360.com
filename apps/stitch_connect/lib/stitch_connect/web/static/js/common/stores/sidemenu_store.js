@@ -12,7 +12,7 @@ import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../lib/constants";
 import history from "../../lib/history";
 
 class SidemenuStore {
-  @observable loading = false; // IF True, shows loading page
+  @observable loadedApp = false; // If TRUE, indicates that loaded necessary data to start the app, that is, users and groups
   @observable sidemenuDiv = null; // Div element of sidemenu
   @observable roomMenuItemVisibles = {};
   @observable teamName = "";
@@ -101,18 +101,12 @@ class SidemenuStore {
 
   @action
   loadApp = async () => {
-    const { presenceStore, usersStore, groupsStore } = this.rootStore;
+    const { usersStore, groupsStore } = this.rootStore;
 
-    if (!presenceStore.locked) {
-      this.loading = true;
+    await usersStore.loadUsers();
+    await groupsStore.loadGroups();
 
-      await usersStore.loadUsers();
-      await groupsStore.loadGroups();
-
-      this.loading = false;
-    } else {
-      groupsStore.loadGroups();
-    }
+    this.loadedApp = true;
   };
 
   /**
