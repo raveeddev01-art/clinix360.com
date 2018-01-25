@@ -162,7 +162,7 @@ defmodule Stitch.Group do
     end
   end
 
-  defp single_dm_params(user_ids) do
+  def single_dm_params(user_ids) do
     %{
       "name" => "__dm_group__",
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
