@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.EventsChannel do
   use StitchConnect.Web, :channel
   import Ecto.Query
-  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User, UserQueries}
+  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User}
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView, NotificationPreferenceView}
 
   @endpoint StitchConnect.Web.Endpoint

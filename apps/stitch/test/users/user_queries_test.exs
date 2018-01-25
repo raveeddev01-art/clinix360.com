@@ -1,6 +1,6 @@
 defmodule Stitch.UserQueriesTest do
   use Stitch.DataCase, async: true
-  alias Stitch.{Accounts.User, Rand, UserQueries}
+  alias Stitch.{Accounts.User, UserQueries}
 
   describe "UserQueries.search/2" do
     test "returns only matching users for the team" do

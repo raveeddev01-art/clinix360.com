@@ -56,7 +56,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
     with team = conn.assigns.team,
          {:ok, team} <- Admin.update_contact_info(team, params) do
       TeamChannel.broadcast_team_rename(team)
-      render conn, "contact_xxxxinfo.json", team: team
+      render conn, "contact_info.json", team: team
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
