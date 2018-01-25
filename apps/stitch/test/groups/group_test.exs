@@ -478,9 +478,10 @@ defmodule Stitch.GroupTest do
       insert(:group_user, user: joe, group: group_a)
       insert(:group_user, user: sam, group: group_a)
       insert(:group_user, user: sam, group: group_b)
-      assert {:ok, _group} = Group.delete(group_a)
+      assert {:ok, %{groups_as_guest: {2, updated_guests}}} = Group.delete(group_a)
       assert Stitch.Repo.get(Stitch.Accounts.User, joe.id).groups_as_guest == []
       assert Stitch.Repo.get(Stitch.Accounts.User, sam.id).groups_as_guest == [group_b.id]
+      assert Enum.sort([joe.id, sam.id]) == updated_guests |> Enum.map(& &1.id) |> Enum.sort
     end
   end
 end

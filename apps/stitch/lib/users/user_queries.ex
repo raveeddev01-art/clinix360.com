@@ -1,6 +1,6 @@
 defmodule Stitch.UserQueries do
   import Ecto.Query
-  alias Stitch.{Repo, Team}
+  alias Stitch.{Repo, Team, GroupUser, Group}
   alias Stitch.Accounts.User
 
   @doc """
@@ -94,5 +94,19 @@ defmodule Stitch.UserQueries do
       where: u.onboarded == ^true,
       where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
     Repo.one!(query) > 0
+  end
+
+  @doc """
+  Returns ids of guest users in the group
+  """
+  @spec guest_user_ids(Group.t) :: [User.t]
+  def guest_user_ids(%Group{} = group) do
+    query =
+      from u in User,
+      join: gu in GroupUser, on: gu.user_id == u.id,
+      where: gu.group_id == ^group.id,
+      where: u.roles == ^["single-room-guest"] or u.roles == ^["multi-room-guest"],
+      select: u.id
+    Repo.all(query)
   end
 end

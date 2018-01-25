@@ -298,13 +298,13 @@ defmodule Stitch.Group do
   def delete(%Group{is_default: true}), do: {:error, :default_group}
   def delete(%Group{} = group) do
     Ecto.Multi.new
-    |> Ecto.Multi.update_all(:groups_as_guest, delete_from_groups_as_guest(group), [])
+    |> Ecto.Multi.update_all(:groups_as_guest, delete_from_groups_as_guest(group), [], [returning: true])
     |> Ecto.Multi.delete(:group, group)
     |> Repo.transaction
   end
 
   def delete_from_groups_as_guest(%Group{} = group) do
-    guest_ids = Stitch.GroupUser.user_ids(group.id)
+    guest_ids = Stitch.UserQueries.guest_user_ids(group)
     User
     |> where([u], u.id in ^guest_ids)
     |> update([u], pull: [groups_as_guest: ^group.id])
