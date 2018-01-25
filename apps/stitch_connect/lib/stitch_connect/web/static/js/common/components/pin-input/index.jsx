@@ -20,7 +20,6 @@ class PinInput extends Component {
   onChangeCode = index => event => {
     this.replaceCode(index, event.target.value, () => {
       this.moveRight(index);
-      this.submitConfirmationCode();
     });
   };
 
