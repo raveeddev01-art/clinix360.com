@@ -5,11 +5,13 @@
  */
 
 import { observable, computed, action } from "mobx";
+import pick from "lodash/pick";
 
-import history from "../../lib/history";
+import history from "lib/history";
 
 class UsersStore {
   @observable users = [];
+  @observable editingUserId = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -21,6 +23,33 @@ class UsersStore {
 
   getUserById = userId => this.users.find(u => u.id === userId);
   getUserByUsername = username => this.users.find(u => u.username === username);
+
+  // users connected to guest through DM or group
+  @computed
+  get connectedUsers() {
+    const { groups } = this.rootStore.groupsStore;
+    const userIDs = [];
+
+    groups.forEach(g => {
+      g.users.forEach(u => {
+        if (u && userIDs.indexOf(u.id) === -1) {
+          userIDs.push(u.id);
+        }
+      });
+    });
+
+    return this.users.filter(u => userIDs.indexOf(u.id) > -1);
+  }
+
+  @computed
+  get connectedAndActivatedUsers() {
+    return this.connectedUsers.filter(u => !u.disabled);
+  }
+
+  @computed
+  get editingUser() {
+    return this.getUserById(this.editingUserId);
+  }
 
   @computed
   get usersByUsername() {
@@ -80,6 +109,16 @@ class UsersStore {
   };
 
   @action
+  saveUserData = (id, data) => {
+    return put(`/api/v1/users/${id}`, {
+      body: data,
+      hideNotify: true
+    }).then(() => {
+      this.updateUserData(id, data);
+    });
+  };
+
+  @action
   updateUserData = (id, data) => {
     const user = this.getUserById(id);
 
@@ -124,9 +163,52 @@ class UsersStore {
     });
   };
 
+  @action
+  saveProfileImg = (userId, profileImgUrl) => {
+    return put(`/api/v1/users/${userId}/upload_profile_image`, {
+      body: {
+        url: profileImgUrl
+      },
+      hideNotify: true
+    }).then(resp => {
+      const { data } = resp;
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.updateUserData(userId, avatarFields);
+      return avatarFields;
+    });
+  };
+
+  @action
+  deleteProfileImg = userId => {
+    return remove(`/api/v1/users/${userId}/delete_profile_image`, {
+      hideNotify: true
+    }).then(resp => {
+      const { data } = resp;
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.updateUserData(userId, avatarFields);
+      return avatarFields;
+    });
+  };
+
+  editUser = data => {
+    return put(`/api/v1/users/${this.editingUserId}/roles`, {
+      body: data
+    });
+  };
+
   // ////////////////////// //
   // Channel Event Handlers //
   // ////////////////////// //
+
+  @action
+  onStartEditing = userId => {
+    this.editingUserId = userId;
+  };
+
+  @action
+  onEndEditing = () => {
+    this.editingUserId = null;
+  };
 
   @action
   onUserJoined = user => {
@@ -136,8 +218,10 @@ class UsersStore {
   @action
   onUserInfo = user => {
     const index = this.users.findIndex(u => u.id === user.id);
+    const { groupsStore, groupStore } = this.rootStore;
 
     this.users[index] = user;
+    groupsStore.updateUserInAllGroups(user.id, user);
 
     if (user.id === currentUser.id) {
       const { userStore } = this.rootStore;
@@ -147,7 +231,6 @@ class UsersStore {
 
     // if username of the user in multi_dm or dm current user is on, is changed,
     // it should redirect
-    const { groupStore, groupsStore } = this.rootStore;
 
     if (
       groupStore.group.type === "dm" ||
@@ -164,10 +247,10 @@ class UsersStore {
   @action
   onUserDeactivated = payload => {
     const user = this.getUserById(payload.user_id);
-    const { groupsStore } = this.rootStore;
+    const { groupsStore, presenceStore } = this.rootStore;
 
     if (payload.user_id === currentUser.id) {
-      window.location.href = "/logged-out";
+      presenceStore.logout();
       return;
     }
 

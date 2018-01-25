@@ -12,7 +12,7 @@ import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../lib/constants";
 import history from "../../lib/history";
 
 class SidemenuStore {
-  @observable loading = false; // IF True, shows loading page
+  @observable loadedApp = false; // If TRUE, indicates that loaded necessary data to start the app, that is, users and groups
   @observable sidemenuDiv = null; // Div element of sidemenu
   @observable roomMenuItemVisibles = {};
   @observable teamName = "";
@@ -21,6 +21,7 @@ class SidemenuStore {
   @observable isInChat = false;
 
   badge = null;
+  desktopBadge = null;
   favicon = null;
   notificationAudio = null;
 
@@ -100,18 +101,12 @@ class SidemenuStore {
 
   @action
   loadApp = async () => {
-    const { presenceStore, usersStore, groupsStore } = this.rootStore;
+    const { usersStore, groupsStore } = this.rootStore;
 
-    if (!presenceStore.locked) {
-      this.loading = true;
+    await usersStore.loadUsers();
+    await groupsStore.loadGroups();
 
-      await usersStore.loadUsers();
-      await groupsStore.loadGroups();
-
-      this.loading = false;
-    } else {
-      groupsStore.loadGroups();
-    }
+    this.loadedApp = true;
   };
 
   /**
@@ -187,27 +182,29 @@ class SidemenuStore {
       groupsStore: { totalMentionsCount, totalUnreadMessagesCount }
     } = this.rootStore;
     let badge = "";
-    let updateDesktopOnly = false;
+    let desktopBadge = "";
 
     if (totalMentionsCount > 9) {
       badge = "9+";
+      desktopBadge = "9+";
     } else if (totalMentionsCount > 0) {
       badge = `${totalMentionsCount}`;
+      desktopBadge = `${totalMentionsCount}`;
     } else if (totalUnreadMessagesCount > 0) {
-      updateDesktopOnly = true;
-      badge = "•";
+      desktopBadge = "•";
     }
 
-    // avoid favicon animation when not changed
     if (badge !== this.badge) {
       this.badge = badge;
-      if (!updateDesktopOnly) {
-        this.favicon.badge(badge);
-      }
+      this.favicon.badge(badge);
+    }
+
+    if (desktopBadge !== this.desktopBadge) {
+      this.desktopBadge = desktopBadge;
 
       // to be consumed by electron app
       window.dispatchEvent(
-        new CustomEvent("unread-changed", { detail: badge })
+        new CustomEvent("unread-changed", { detail: desktopBadge })
       );
     }
   }

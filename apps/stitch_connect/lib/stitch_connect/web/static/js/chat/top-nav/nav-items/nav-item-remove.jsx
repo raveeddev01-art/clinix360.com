@@ -5,6 +5,7 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import { TeamList } from "common/components";
+import { isFullMember } from "lib/utils";
 
 @inject("groupStore", "presenceStore")
 @observer
@@ -53,7 +54,7 @@ export default class NavItemRemoveMembers extends Component {
 
   render() {
     const { presenceStore, groupStore } = this.props;
-    const users = groupStore.group.users.slice(0);
+    const users = groupStore.group.users.filter(u => isFullMember(u));
 
     return [
       <MenuItem key="members_menuitem" onClick={this.openModal}>

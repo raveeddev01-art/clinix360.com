@@ -22,14 +22,20 @@ defmodule Stitch.MessageQueries do
     limit = Keyword.get(opts, :limit, 30)
     query =
       from m in Message,
+      left_join: g in assoc(m, :group),
+      left_join: u in assoc(m, :user),
+      left_join: pb in assoc(m, :pinned_by),
       where: m.group_id in ^user_groups_ids,
       where: m.type != ^"system",
       where: fragment("? %> ?", m.text_content, ^term),
       order_by: fragment("? <->> ?", m.text_content, ^term),
       order_by: [desc: :inserted_at],
       limit: ^limit,
-      select: m,
-      preload: [:user, :group, :pinned_by]
+      preload: [
+        user: u,
+        group: g,
+        pinned_by: pb
+      ]
 
     query =
       case Keyword.fetch(opts, :skip) do
@@ -53,12 +59,19 @@ defmodule Stitch.MessageQueries do
 
     query =
       from m in Message,
+      left_join: g in assoc(m, :group),
+      left_join: u in assoc(m, :user),
+      left_join: pb in assoc(m, :pinned_by),
       where: m.group_id == ^group_id,
       order_by: [desc: :inserted_at],
       limit: ^limit,
       offset: ^offset,
       select: m,
-      preload: [:user, :group, :pinned_by]
+      preload: [
+        user: u,
+        group: g,
+        pinned_by: pb
+      ]
 
     query = case Keyword.fetch(opts, :max_id) do
       {:ok, max_id} -> query |> where([m], m.id < ^max_id)
@@ -76,12 +89,19 @@ defmodule Stitch.MessageQueries do
 
     query =
       from m in Message,
+      left_join: g in assoc(m, :group),
+      left_join: u in assoc(m, :user),
+      left_join: pb in assoc(m, :pinned_by),
       where: m.group_id == ^group_id,
       order_by: [asc: :inserted_at],
       limit: ^limit,
       offset: ^offset,
       select: m,
-      preload: [:user, :group, :pinned_by]
+      preload: [
+        user: u,
+        group: g,
+        pinned_by: pb
+      ]
 
     query = case Keyword.fetch(opts, :min_id) do
       {:ok, min_id} -> query |> where([m], m.id > ^min_id)
@@ -97,14 +117,16 @@ defmodule Stitch.MessageQueries do
     limit = Keyword.get(opts, :limit, 30)
     offset = Keyword.get(opts, :skip, 0)
 
-    query = from m in Message,
+    query =
+      from m in Message,
       join: a in MessageAction, on: a.message_id == m.id,
+      left_join: u in assoc(m, :user),
       where: a.category == "star",
       where: a.user_id == ^user_id,
       order_by: [desc: :inserted_at],
       limit: ^limit,
       offset: ^offset,
-      preload: :user
+      preload: [user: u]
 
     Repo.all(query)
   end
@@ -113,37 +135,76 @@ defmodule Stitch.MessageQueries do
     limit = opts[:limit] || 30
     offset = opts[:skip] || 0
 
-    Message
-    |> where(pinned: ^true)
-    |> where(group_id: ^group_id)
-    |> order_by([m], desc: m.inserted_at)
-    |> preload([m], [:user, :pinned_by])
-    |> select([m], m)
-    |> Paginator.new(skip: offset, limit: limit)
+    query =
+      from m in Message,
+      left_join: u in assoc(m, :user),
+      left_join: pb in assoc(m, :pinned_by),
+      where: m.pinned == true,
+      where: m.group_id == ^group_id,
+      order_by: [desc: m.inserted_at],
+      preload: [
+        user: u,
+        pinned_by: pb
+      ]
+    Paginator.new(query, skip: offset, limit: limit)
   end
 
   def get_by_id(id) do
-    Repo.get(Message, id) |> Repo.preload([:user, :group])
+    query =
+      from m in Message,
+      left_join: u in assoc(m, :user),
+      left_join: g in assoc(m, :group),
+      where: m.id == ^id,
+      preload: [
+        group: g,
+        user: u
+      ]
+    Repo.one(query)
   end
 
   def load_info(message) do
     Repo.preload(message, [:pinned_by, :user])
   end
 
-  def get_uploads_for_user(%User{team_id: team_id, id: user_id}, skip, limit) do
-    Message
-    |> join(:inner, [m], g in Group, m.group_id == g.id)
-    |> join(:left, [m, g], gu in GroupUser, gu.group_id == g.id and gu.user_id == ^user_id)
-    |> where([m, g, gu], m.type == fragment("'upload'"))
-    |> where([m, g, gu], g.public or not is_nil(gu.id))
-    |> where([m, g, gu], g.team_id == ^team_id)
-    |> preload([:user, :group, :pinned_by])
-    |> order_by([desc: :inserted_at])
-    |> select([m], m)
-    |> Paginator.new(skip: skip, limit: limit)
+  def get_uploads_for_user(%User{team_id: team_id, id: user_id, groups_as_guest: []}, skip, limit) do
+    query =
+      from m in Message,
+      join: g in assoc(m, :group),
+      left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user_id,
+      left_join: u in assoc(m, :user),
+      left_join: pb in assoc(m, :pinned_by),
+      where: m.type == fragment("'upload'"),
+      where: g.public or not is_nil(gu.id),
+      where: g.team_id == ^team_id,
+      order_by: [desc: m.inserted_at],
+      preload: [
+        user: u,
+        group: g,
+        pinned_by: pb
+      ]
+
+    Paginator.new(query, skip: skip, limit: limit)
+  end
+  def get_uploads_for_user(%User{team_id: team_id, id: user_id, groups_as_guest: groups}, skip, limit) do
+    query =
+      from m in Message,
+      join: g in assoc(m, :group),
+      join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user_id,
+      left_join: u in assoc(m, :user),
+      left_join: pb in assoc(m, :pinned_by),
+      where: gu.group_id in ^groups,
+      where: m.type == fragment("'upload'"),
+      where: g.team_id == ^team_id,
+      order_by: [desc: m.inserted_at],
+      preload: [
+        user: u,
+        group: g,
+        pinned_by: pb
+      ]
+
+    Paginator.new(query, skip: skip, limit: limit)
   end
   def get_uploads_for_user(user_id, skip, limit), do: get_uploads_for_user(Repo.get!(User, user_id), skip, limit)
-
   @doc """
   Retrieves all messages a given user was recently mentioned in.
 
@@ -163,9 +224,10 @@ defmodule Stitch.MessageQueries do
 
     query =
       from m in Message,
+      left_join: u in assoc(m, :user),
       where: ^user_id in m.mentioned_user_ids,
       order_by: [desc: m.inserted_at],
-      preload: [:user]
+      preload: [user: u]
 
     Paginator.new(query, limit: limit, skip: offset)
   end
@@ -254,10 +316,10 @@ defmodule Stitch.MessageQueries do
     Repo.one(query)
   end
 
-  @spec surrounding(Message.t, Group.t, User.t) :: {[Message.t], [Message.t]}
-  def surrounding(%Message{id: message_id}, %Group{id: group_id}, %User{} = user) do
-    messages_before = MessageQueries.group_latest_messages(group_id, user, max_id: message_id) |> Enum.reverse
-    messages_after = MessageQueries.group_recent_messages(group_id, user, min_id: message_id)
+  @spec surrounding(Message.t, Group.t, User.t, pos_integer) :: {[Message.t], [Message.t]}
+  def surrounding(%Message{id: message_id}, %Group{id: group_id}, %User{} = user, limit) do
+    messages_before = MessageQueries.group_latest_messages(group_id, user, max_id: message_id, limit: limit) |> Enum.reverse
+    messages_after = MessageQueries.group_recent_messages(group_id, user, min_id: message_id, limit: limit)
     {messages_before, messages_after}
   end
 

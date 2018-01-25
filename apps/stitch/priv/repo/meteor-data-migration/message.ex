@@ -3,19 +3,14 @@ defmodule Stitch.MeteorMigration.Message do
   alias Stitch.Repo
   require Logger
 
+  @chunk_size 200
+
   def migrate_messages(messages) do
-    messages
-    |> Enum.chunk_every(5_000)
-    |> Enum.each(fn chunk ->
-      Repo.insert_all(Message, chunk, returning: false)
-    end)
+    Repo.insert_all(Message, messages, returning: false)
   end
 
   def parse_messages_json(rooms, users, messages) do
     messages
-    |> Enum.sort_by(fn message ->
-      message["ts"] |> parse_timestamp
-    end)
     |> Enum.map(& parse_message_json(rooms, users, &1))
     |> Enum.filter(& &1 != nil)
   end
@@ -25,7 +20,7 @@ defmodule Stitch.MeteorMigration.Message do
   end
 
   def parse_message_json(rooms, users, %{
-    "_id" => meteor_id,
+    "_id" => _meteor_id,
     "msg" => text_content,
     "u" => %{"username" => meteor_creator_username},
     "ts" => timestamp,
@@ -35,44 +30,76 @@ defmodule Stitch.MeteorMigration.Message do
          {:ok, group} <- Map.fetch(rooms, meteor_room_id) do
 
       %{
-        text_content: text_content,
+        text_content: parse_mentions(text_content, users),
         inserted_at: parse_timestamp(timestamp),
         updated_at: parse_timestamp(timestamp),
         user_id: user.id,
         group_id: group.id,
         type: "chat",
       }
-    else error ->
+    else _error ->
       Logger.error("Error creating message, message: #{inspect(attributes)}.")
       nil
     end
   end
 
+  def parse_mentions(text_content, users) do
+    Enum.reduce(users, text_content, fn ({username, user}, acc) ->
+      String.replace(acc, "@#{username}", "<@U#{user.id}>")
+    end)
+  end
+
   def parse_timestamp(timestmap) do
     NaiveDateTime.from_iso8601!(timestmap) |> DateTime.from_naive!("Etc/UTC")
   end
+
+  def run(rooms, users, message_json_file) do
+    message_file_stream(message_json_file, @chunk_size, fn messages, n ->
+      parse_messages_json(rooms, users, messages)
+      |> migrate_messages
+
+      IO.puts "#{n} messages migrated."
+    end)
+  end
+
+  def message_file_stream(messages_file, chunk_size, chunk_fn) do
+    stream = messages_file |> File.stream!
+
+    chunk_fun = fn line, %{line: line_acc, objects: objects_acc, counter: counter} ->
+      if line == "}\n" do
+        line_acc = line_acc ++ [line]
+        object = parse_object(line_acc)
+        objects_acc = [object | objects_acc]
+        counter = counter + 1
+
+        if counter >= chunk_size do
+          chunk_fn.(objects_acc, counter)
+          {:cont, %{line: [], objects: [], counter: 0}}
+        else
+          {:cont, %{line: [], objects: objects_acc, counter: counter}}
+        end
+      else
+        {:cont, %{line: line_acc ++ [line], objects: objects_acc, counter: counter}}
+      end
+    end
+
+    after_fun = fn %{line: _line_acc, objects: objects_acc, counter: counter} = acc ->
+      chunk_fn.(objects_acc, counter)
+      {:cont, acc}
+    end
+
+    stream
+    |> Stream.chunk_while(%{line: [], objects: [], counter: 0}, chunk_fun, after_fun)
+    |> Stream.run
+  end
+
+  def parse_object(object) do
+    object = object
+    |> Enum.map_join(fn line ->
+      line = String.replace(line, ~r/NumberInt\(([^)]+)\)/, "\\1")
+      line = String.replace(line, ~r/ISODate\(([^)]+)\)/, "\\1")
+      line
+    end)
+    object |> Poison.decode!
+  end
 end
-
-# {
-#   "_id" : "00QW9fTgHOi2UZqEt",
-#   "msg" : "This feels pretty slow",
-#   "rids" : [
-#       "c_HhXg3vmotoWZRE5z2HhXg3vmotoWZRE5z2",
-#       "c_rNhg5Xa7pHTEZSqhu"
-#   ],
-#   "rid" : "c_HhXg3vmotoWZRE5z2HhXg3vmotoWZRE5z2",
-#   "ts" : ISODate("2016-11-03T15:28:50.154+0000"),
-#   "u" : {
-#       "_id" : "HhXg3vmotoWZRE5z2",
-#       "username" : "ellen",
-#       "displayName" : "Ellen Clark"
-#   },
-#   "mentions" : [
-
-#   ],
-#   "channels" : [
-
-#   ],
-#   "teamId" : "8J2CSuBwCmop7PQmh"
-# }
-# {

@@ -5,6 +5,7 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import { TeamList } from "common/components";
+import { isFullMember } from "lib/utils";
 
 @inject("groupStore", "presenceStore", "usersStore")
 @observer
@@ -50,7 +51,7 @@ export default class NavItemInviteMembers extends Component {
   render() {
     const { presenceStore, groupStore, usersStore } = this.props;
     const users = usersStore.activatedUsers.filter(u => {
-      return groupStore.group.users.findIndex(gu => gu.id === u.id) === -1;
+      return groupStore.group.users.findIndex(gu => gu.id === u.id) === -1 && isFullMember(u);
     });
 
     return [

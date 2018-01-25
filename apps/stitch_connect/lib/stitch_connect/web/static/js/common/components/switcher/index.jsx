@@ -11,6 +11,7 @@ class Switcher extends Component {
   componentWillMount() {
     const path = history.location.pathname;
     let active = "connect";
+
     if (path === "/admin/you/account") {
       active = "settings";
     } else if (path.startsWith("/admin")) {
@@ -41,6 +42,7 @@ class Switcher extends Component {
               <i className="fa fa-home" />
             </OverlayTrigger>
           </NavLink>
+
           <NavLink
             to={`/rooms/${defaultGroup.slug}`}
             isActive={() => active === "connect"}
@@ -62,6 +64,7 @@ class Switcher extends Component {
             </OverlayTrigger>
           </NavLink>
         </div>
+
         <div className="switcher__bottom">
           <NavLink
             to="/admin/you/account"
@@ -76,6 +79,7 @@ class Switcher extends Component {
               <i className="fa fa-cog" />
             </OverlayTrigger>
           </NavLink>
+
           <a
             role="link"
             onClick={this.props.presenceStore.lock}
@@ -89,6 +93,7 @@ class Switcher extends Component {
               <i className="fa fa-lock" />
             </OverlayTrigger>
           </a>
+
           <a href="/logout" className="switcher__link">
             <OverlayTrigger
               placement="right"

@@ -7,6 +7,7 @@ import Button from "react-bootstrap/lib/Button";
 import { TeamList } from "common/components";
 
 import {
+  isFullMember,
   getGroupUserIdsThatHasCurrentUser,
   getSlugOfDMGroupByUsers,
   getGroupUrl
@@ -103,6 +104,9 @@ class CreateDMModal extends Component {
   render() {
     const { members } = this.state;
     const { usersStore, presenceStore } = this.props;
+    const users = isFullMember(currentUser)
+      ? usersStore.users.slice(0)
+      : usersStore.connectedUsers;
 
     return (
       <Modal show={this.state.show} onHide={this.props.toggle}>
@@ -119,7 +123,7 @@ class CreateDMModal extends Component {
             onSelectUser={this.selectUser}
             isOnline={presenceStore.isOnline}
             value={members}
-            users={usersStore.users.slice(0)}
+            users={users}
             hideCurrentUser
             showDisabledAfter={1}
           >

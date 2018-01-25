@@ -27,7 +27,7 @@ defmodule Stitch.GroupUser do
   def changeset(%GroupUser{} = struct, params) do
     struct
     |> cast(params, [:group_id, :user_id])
-    |> validate_required([:group_id, :user_id])
+    |> validate_required([:user_id])
     |> validate_inclusion(:desktop_notification_preference, ["everything", "mentions", "nothing", "default"])
     |> validate_inclusion(:mobile_notification_preference, ["everything", "mentions", "nothing", "default"])
     |> unique_constraint(:user_id, name: :group_users_group_user_id_unique_index, message: "User is already part of room")

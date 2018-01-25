@@ -28,6 +28,7 @@ class MessageStore {
   @observable groupCursor = null;
 
   // Message loading status
+  @observable loadedInitialMessages = false; // If TRUE, indicates whether messages are loaded for the first time
   @observable loadedInitial = false; // If TRUE, indicates joined the chat channel and loaded the latest messages
   @observable loadedAll = false; // If TRUE, indicates that there is no more old messages to load from server
   @observable loadedAllRecent = false; // If TRUE, indicates that there is no more recent messages to load from server
@@ -637,7 +638,9 @@ class MessageStore {
 
   handleInitialLoading = () => {
     this.scrollToBottom(() => {
+      this.loadedInitialMessages = true;
       this.loadedInitial = true;
+
       this.updateGroupCursor(null);
     });
   };

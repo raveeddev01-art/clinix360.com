@@ -9,6 +9,18 @@ defmodule StitchConnect.Web.ErrorView do
     "Internal server error"
   end
 
+  def render("403.json", %{message: message}) do
+    %{message: message}
+  end
+
+  def render("403.json", _assigns) do
+    %{message: "You are not authorized to access this resource."}
+  end
+
+  def render("404.json", %{message: message}) do
+    %{errors: message}
+  end
+
   def render("404.json", _assigns) do
     %{errors: "The resource you are looking for does not exist."}
   end

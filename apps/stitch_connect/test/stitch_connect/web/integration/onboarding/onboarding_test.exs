@@ -60,9 +60,13 @@ defmodule StitchConnect.Web.OnboardingTest do
     # The line below is needed to provide enough time for the onboarding to finish.
     |> refute_has(css(".welcome-message", text: "General"))
 
-    # I'd expect the assertion below to pass instead of the `refute` above but it doesn't.
-    # There seems to be an issuee with wallaby in which cookies are not shared
-    # between domains and subdomains.
+    # Ideally, we'd like to make the changes necessary for the assertion below
+    # to pass, instead of the `refute` above. The reason why it doesn't pass is
+    # because in our test env the browser is not sharig cookies/session
+    # between domain and subdomain. The fix would involve changing the domain
+    # used in test env to one that would allow for sharing cookies with
+    # subdomains. To learn more: https://stackoverflow.com/a/32210291/2475130
+    #
     # |> assert_has(css(".welcome-message", text: "General"))
     #
 

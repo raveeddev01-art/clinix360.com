@@ -9,6 +9,8 @@ defmodule Stitch.Accounts.User do
   alias Stitch.GroupUser
   alias Stitch.Repo
 
+  @type t :: %__MODULE__{}
+
   schema "users" do
     field :email, :string
     field :roles, {:array, :string}
@@ -31,6 +33,7 @@ defmodule Stitch.Accounts.User do
     field :mobile_notification_preference, :string, default: "everything"
     field :email_notification_preference, :string, default: "daily"
     field :is_staff, :boolean, default: false
+    field :groups_as_guest, {:array, :integer}, default: [] # List of groups the user is allowed in if user is a guest
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
 
@@ -41,11 +44,14 @@ defmodule Stitch.Accounts.User do
 
   def changeset(%User{} = struct, attrs) do
     struct
-    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :profile_image_url, :username])
+    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> Stitch.Validators.validate_email_domain(:email)
     |> validate_required([:first_name, :last_name])
+    |> default_profile_image_changeset(attrs)
+    |> Stitch.Validators.validate_no_emojis(:first_name)
+    |> Stitch.Validators.validate_no_emojis(:last_name)
   end
 
   def validate_username(%Ecto.Changeset{changes: %{username: _}} = changeset, params) do
@@ -114,15 +120,21 @@ defmodule Stitch.Accounts.User do
     token = Stitch.Rand.token(32)
 
     struct
-    |> cast(params, [:team_id])
+    |> cast(params, [:team_id, :roles, :groups_as_guest])
     |> validate_required([:team_id])
     |> put_change(:confirmation_code, confirmation_code)
     |> put_change(:token, token)
     |> email_changeset(params)
-    |> unique_constraint(:team_id, name: :users_email_team_id_index)
+    |> Stitch.Validators.validate_email_domain(:email)
+    |> unique_constraint(:email, name: :users_email_team_id_index)
   end
 
   # ====
+
+  def role_change_changeset(struct, params) do
+    struct
+    |> change(params)
+  end
 
   def registration_changeset(struct, params) do
     struct
@@ -135,9 +147,22 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(params, [:first_name, :phone_number, :last_name, :password, :pin, :team_id, :roles])
     |> username_changeset(params)
+    |> Stitch.Validators.validate_no_emojis(:first_name)
+    |> Stitch.Validators.validate_no_emojis(:last_name)
+    |> ensure_role()
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:phone_number, :pin, :team_id, :roles])
+    |> default_profile_image_changeset(params)
     |> put_change(:onboarded, true)
+  end
+
+  defp ensure_role(%Ecto.Changeset{} = changeset) do
+    roles = get_field(changeset, :roles) || []
+    if roles == [] do
+      put_change(changeset, :roles, ["member"])
+    else
+      changeset
+    end
   end
 
   def password_update_changeset(struct, params) do
@@ -162,6 +187,24 @@ defmodule Stitch.Accounts.User do
     |> add_thumb()
   end
 
+  def default_profile_image_changeset(struct, params) do
+    changeset = struct
+    |> cast(params, [:profile_image_url, :profile_image_thumb_url])
+
+    case fetch_field(changeset, :profile_image_url) do
+      {_, nil} -> add_default_profile_image(changeset)
+      _ -> changeset
+    end
+  end
+
+  def add_default_profile_image(%{valid?: true} = changeset) do
+    avatar = Stitch.Accounts.ProfileImage.pick_default_random()
+    changeset
+    |> put_change(:profile_image_url, avatar.image_url)
+    |> put_change(:profile_image_thumb_url, avatar.thumb_url)
+  end
+  def add_default_profile_image(changeset), do: changeset
+
   def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
     case Stitch.Accounts.ProfileImage.create_thumb(url) do
       {:ok, profile_image_thumb_url} ->
@@ -171,4 +214,12 @@ defmodule Stitch.Accounts.User do
     end
   end
   def add_thumb(changeset), do: changeset
+
+  @doc """
+  Checks if the user is a guest based on their roles.
+  """
+  @spec guest?(map) :: boolean
+  def guest?(%User{roles: roles}) do
+    "single-room-guest" in roles || "multi-room-guest" in roles
+  end
 end

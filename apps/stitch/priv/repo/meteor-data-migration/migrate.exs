@@ -10,17 +10,26 @@ defmodule Stitch.MeteorMigration do
   require Logger
   alias ExAws.S3
 
-  @allow_retry System.get_env("METEOR_ALLOW_RETRY") == "true"
-  # @meteor_data_dir "_meteor-data"
+  @team_name System.get_env("METEOR_TEAM_NAME")
   @meteor_data_dir "/tmp"
   @s3 Application.get_env(:stitch, :aws_user_upload)
+
+  @allow_retry System.get_env("METEOR_ALLOW_RETRY") == "true"
+  @use_local_data System.get_env("METEOR_USE_LOCAL_DATA") == "true"
+  @migrate_messages System.get_env("METEOR_MIGRATE_MESSAGES") == "true"
 
   defmodule MigrationError do
     defexception message: "Meteor migration data couldn't be found."
   end
 
   def download(filename, dest) do
-    S3.download_file(@s3.bucket, filename, dest) |> ExAws.request
+    if @use_local_data do
+      file_path = Path.join(["_meteor-data", filename])
+      Logger.debug("Copying #{file_path} to #{dest}")
+      {File.cp(file_path, dest), :done}
+    else
+      S3.download_file(@s3.bucket, filename, dest) |> ExAws.request
+    end
   end
 
   def run_migration(%{team_json: team_json, users_json: users_json, rooms_json: rooms_json, messages_json: messages_json}) do
@@ -30,8 +39,8 @@ defmodule Stitch.MeteorMigration do
       {:ok, team} ->
         Logger.info("Migrating users")
 
-        users = MeteorMigration.User.parse_users_json(parse_meteor_json(users_json))
-        {_count, users} = MeteorMigration.User.migrate_users(team.id, users)
+        meteor_users = MeteorMigration.User.parse_users_json(parse_meteor_json(users_json))
+        {_count, users} = MeteorMigration.User.migrate_users(team.id, meteor_users)
 
         identify_on_intercom(users)
 
@@ -41,12 +50,26 @@ defmodule Stitch.MeteorMigration do
         rooms = MeteorMigration.Room.parse_rooms_json(indexed_users, parse_meteor_json(rooms_json))
         rooms = MeteorMigration.Room.migrate_rooms(team.id, rooms)
 
+        Logger.info("Restoring guest membership")
+        indexed_meteor_users = index_users(meteor_users)
+        indexed_meteor_rooms = index_rooms(rooms)
+        MeteorMigration.User.restoring_guest_membership(indexed_meteor_users, indexed_users, indexed_meteor_rooms)
+        Logger.info("Restoring default room membership")
+        MeteorMigration.User.enforce_default_group_membership(team.id, users)
+
         Logger.info("Cleaning auto-generated system messages")
 
         group_ids = Group |> where(team_id: ^team.id) |> select([g], g.id) |> Repo.all
         Message |> where([gu], gu.group_id in ^group_ids) |> Repo.delete_all()
 
-        # Logger.info("Migrating messages")
+        if @migrate_messages do
+          Logger.info("Migrating messages")
+          indexed_rooms = index_rooms(rooms)
+          messages = MeteorMigration.Message.run(indexed_rooms, indexed_users, messages_json)
+
+          # messages = MeteorMigration.Message.parse_messages_json(indexed_rooms, indexed_users, parse_meteor_json(messages_json))
+          # messages = MeteorMigration.Message.migrate_messages(messages)
+        end
 
         # indexed_rooms = index_rooms(rooms)
         # messages = MeteorMigration.Message.parse_messages_json(indexed_rooms, indexed_users, parse_meteor_json(messages_json))
@@ -93,7 +116,7 @@ defmodule Stitch.MeteorMigration do
       |> where([gu], gu.group_id in ^group_ids)
       |> Repo.delete_all()
 
-    {group_count, groups} =
+    {group_count, _groups} =
       Group
       |> where(team_id: ^team.id)
       |> Repo.delete_all(returning: true)
@@ -125,13 +148,13 @@ defmodule Stitch.MeteorMigration do
     end
   end
 
-  def create_team_unless_exists(%{"name" => team_name, "slug" => team_slug} = team_json) do
+  def create_team_unless_exists(%{"name" => team_name, "slug" => team_slug} = _team_json) do
     case TeamQueries.get_by_slug(team_slug) do
       nil ->
         team = Team.Onboarding.create_team(team_name, team_slug)
         team = Repo.update!(Ecto.Changeset.change(team, open_invitations_enabled: true, is_legacy: true))
 
-        {group_count, groups} =
+        {_group_count, _groups} =
           Group
           |> where(team_id: ^team.id)
           |> where(is_default: true)
@@ -148,42 +171,21 @@ defmodule Stitch.MeteorMigration do
     end
   end
 
-  def parse_team_json(_team) do
-    # TODO:
-  end
-
-  @doc """
-  Expected format
-
-    [%{name: "team name", slug: "team_slug"}, ...]
-
-  """
-  def migrate_teams(teams) do
-    teams |> Enum.each(fn team ->
-      team_name = team["name"]
-      team_slug = team["slug"]
-      team = Team.Onboarding.create_team(team_name, team_slug)
-      Repo.update!(Ecto.Changeset.change(team, open_invitations_enabled: true))
-    end)
-  end
-
   def get_config do
-    meteor_data_dir = @meteor_data_dir
-    team_name = System.get_env("METEOR_TEAM_NAME")
-
     Logger.info("Downloading migration files from S3")
 
-    File.rm_rf("/tmp/#{team_name}")
-    File.mkdir_p("/tmp/#{team_name}")
-    {:ok, :done} = download("#{team_name}-team.json", "/tmp/#{team_name}/team.json")
-    {:ok, :done} = download("#{team_name}-users.json", "/tmp/#{team_name}/users.json")
-    {:ok, :done} = download("#{team_name}-rooms.json", "/tmp/#{team_name}/rooms.json")
-    {:ok, :done} = download("#{team_name}-messages.json", "/tmp/#{team_name}/messages.json")
+    File.rm_rf("/tmp/#{@team_name}")
+    File.mkdir_p("/tmp/#{@team_name}")
 
-    unless File.exists?(meteor_data_dir), do: log_meteor_data_error "#{meteor_data_dir} doesn't exist."
-    unless team_name, do: log_meteor_data_error "Requires meteor team name. Pass meteor team_name via METEOR_TEAM_NAME env."
+    {:ok, :done} = download("#{@team_name}-team.json", "/tmp/#{@team_name}/team.json")
+    {:ok, :done} = download("#{@team_name}-users.json", "/tmp/#{@team_name}/users.json")
+    {:ok, :done} = download("#{@team_name}-rooms.json", "/tmp/#{@team_name}/rooms.json")
+    {:ok, :done} = download("#{@team_name}-messages.json", "/tmp/#{@team_name}/messages.json")
 
-    team_directory = Path.join(meteor_data_dir, team_name)
+    unless File.exists?(@meteor_data_dir), do: log_meteor_data_error "#{@meteor_data_dir} doesn't exist."
+    unless @team_name, do: log_meteor_data_error "Requires meteor team name. Pass meteor team_name via METEOR_TEAM_NAME env."
+
+    team_directory = Path.join(@meteor_data_dir, @team_name)
     team_json = Path.join(team_directory, "team.json")
     users_json = Path.join(team_directory, "users.json")
     rooms_json = Path.join(team_directory, "rooms.json")

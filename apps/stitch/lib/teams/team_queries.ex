@@ -1,23 +1,33 @@
 defmodule Stitch.TeamQueries do
   import Ecto.Query
-  alias Stitch.Accounts.User
   alias Stitch.{Repo, Team}
+  alias Stitch.Accounts.{User, Role}
+
+  @guest_roles Role.guests()
 
   def all_with_user_email(email) do
     Team
     |> join(:inner, [t], u in User, u.team_id == t.id and u.email == ^email)
     |> select([t, u], t)
-    |> Repo.all
+    |> Repo.all()
   end
 
   def get_by_id(id) when is_binary(id), do: get_by_id(String.to_integer(id))
+
   def get_by_id(id) do
     Repo.get(Team, id)
   end
 
   def get_by_slug(slug) when byte_size(slug) > 0 do
-    Repo.get_by(Team, slug: slug)
+    query =
+      from t in Team,
+      left_join: s in assoc(t, :subscription),
+      where: t.slug == ^slug,
+      preload: [subscription: s]
+
+    Repo.one(query)
   end
+
   def get_by_slug(_), do: nil
 
   @doc """
@@ -29,13 +39,16 @@ defmodule Stitch.TeamQueries do
       [%User{...}, %User{...}, ...]
 
   """
-  @spec list_active_users(Team.t) :: [User.t]
+  @spec list_active_users(Team.t()) :: [User.t()]
   def list_active_users(%Team{id: team_id}) do
     query =
-      from u in User,
-      where: u.onboarded == true,
-      where: u.disabled == false,
-      where: u.team_id == ^team_id
+      from(
+        u in User,
+        where: u.onboarded == true,
+        where: u.disabled == false,
+        where: u.team_id == ^team_id
+      )
+
     Repo.all(query)
   end
 
@@ -48,30 +61,57 @@ defmodule Stitch.TeamQueries do
       [%User{...}, %User{...}, ...]
 
   """
-  @spec list_users(Team.t) :: [User.t]
+  @spec list_users(Team.t()) :: [User.t()]
   def list_users(%Team{id: team_id}) do
-    query =
-      from u in User,
-      where: u.team_id == ^team_id
+    query = from(u in User, where: u.team_id == ^team_id)
     Repo.all(query)
+  end
+
+  @doc """
+  Lists all active users in a team that do not have a guest role.
+  """
+  def list_non_guest_users(team_id) do
+    query =
+      from(
+        u in User,
+        where: u.onboarded == true,
+        where: u.disabled == false,
+        where: u.team_id == ^team_id,
+        where: not fragment("? && ?", ^@guest_roles, u.roles)
+      )
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Returns admin users
+  """
+  @spec list_admins(Team.t()) :: [User.t()]
+  def list_admins(%Stitch.Team{id: team_id}) do
+    User
+    |> where(team_id: ^team_id)
+    |> where([u], fragment("? @> ?", u.roles, ^["admin"]))
+    |> Repo.all()
   end
 
   @doc """
   Returns a list of teams with user counts
   """
-  @spec admin_teams_query() :: Ecto.Query.t
+  @spec admin_teams_query() :: Ecto.Query.t()
   def admin_teams_query do
-    from t in Team,
-    left_join: u in assoc(t, :users),
-    select: %{
-      name: t.name,
-      slug: t.slug,
-      total_users: count(u.id),
-      enabled_users: fragment("SUM(CASE WHEN ? = ? THEN 1 ELSE 0 END)", u.disabled, false),
-      disabled_users: fragment("SUM(CASE WHEN ? = ? THEN 1 ELSE 0 END)", u.disabled, true)
-    },
-    order_by: t.name,
-    group_by: t.id
+    from(
+      t in Team,
+      left_join: u in assoc(t, :users),
+      select: %{
+        name: t.name,
+        slug: t.slug,
+        total_users: count(u.id),
+        enabled_users: fragment("SUM(CASE WHEN ? = ? THEN 1 ELSE 0 END)", u.disabled, false),
+        disabled_users: fragment("SUM(CASE WHEN ? = ? THEN 1 ELSE 0 END)", u.disabled, true)
+      },
+      order_by: t.name,
+      group_by: t.id
+    )
   end
 
   @doc """
@@ -85,11 +125,14 @@ defmodule Stitch.TeamQueries do
   """
   def get_team_owner(%Team{id: team_id}) do
     query =
-      from u in User,
-      where: u.team_id == ^team_id,
-      where: "admin" in u.roles,
-      order_by: [asc: :inserted_at],
-      limit: 1
+      from(
+        u in User,
+        where: u.team_id == ^team_id,
+        where: "admin" in u.roles,
+        order_by: [asc: :inserted_at],
+        limit: 1
+      )
+
     Repo.one(query)
   end
 
@@ -102,6 +145,6 @@ defmodule Stitch.TeamQueries do
       [%Team{...}, %Team{...}, ...]
 
   """
-  @spec list_teams :: [Team.t]
+  @spec list_teams :: [Team.t()]
   def list_teams, do: Repo.all(Team)
 end

@@ -4,7 +4,7 @@ defmodule Stitch.Stripe.Events do
   """
   alias Stitch.Billing
   alias Stitch.TeamQueries
-  alias Stitch.Billing.Notifications
+  alias Stitch.Billing.{Plan, Notifications}
 
   # Successful payment
   def handle_event(%{type: "invoice.payment_succeeded"} = event) do
@@ -35,7 +35,7 @@ defmodule Stitch.Stripe.Events do
          subscription <- Billing.get_subscription(customer_id, subscription_id) do
       team = TeamQueries.get_by_id(subscription.team_id)
       owner = TeamQueries.get_team_owner(team)
-      plan_name = Billing.plan_display_name(subscription.tier)
+      plan_name = Plan.display_name(subscription.tier)
       Notifications.send_failed_payment(owner, team, plan_name, days_until_retry)
       :ok
     end
