@@ -4,7 +4,7 @@ defmodule Stitch.Billing do
   """
 
   import Ecto.Query
-  alias Stitch.{Repo, Team}
+  alias Stitch.{Repo, Team, TeamQueries, FeatureGateway}
   alias Stitch.Billing.{Plan, Subscription, PaymentMethod}
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
@@ -131,7 +131,8 @@ defmodule Stitch.Billing do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
          {:count, count} when count > 0 <- {:count, card_count(subscription.team_id)},
          plan_id = Plan.id(changeset.changes),
-         {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
+         {:ok, stripe_sub_params} <- fun.(subscription, plan_id),
+         :ok <- modify_guests_subscription(subscription) do
       result =
         subscription
         |> subscription_update_changeset(changeset.changes, stripe_sub_params)
@@ -172,6 +173,16 @@ defmodule Stitch.Billing do
     case DateTime.compare(subscription.trial_valid_until, DateTime.utc_now()) do
       :gt -> [trial_end_date: subscription.trial_valid_until]
       _ -> []
+    end
+  end
+
+  defp modify_guests_subscription(subscription) do
+    with subscription = Repo.preload(subscription, :team),
+         {:error, _} <- FeatureGateway.allowed?(:guests, subscription),
+         {count, users} when is_number(count) and is_list(users) <- TeamQueries.deactivate_all_guests(subscription.team) do
+      :ok
+    else
+      any -> any
     end
   end
 
