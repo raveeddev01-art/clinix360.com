@@ -45,13 +45,13 @@ defmodule Stitch.Team do
     struct
     |> cast(params, [
       :name,
-      :company_name,
-      :address_line_one,
-      :address_line_two,
       :city,
       :state,
       :country,
-      :zip_code
+      :zip_code,
+      :company_name,
+      :address_line_one,
+      :address_line_two
     ])
     |> validate_required([:company_name, :address_line_one, :city, :state, :country, :zip_code])
     |> Stitch.Validators.validate_country_iso_alpha(:country)
