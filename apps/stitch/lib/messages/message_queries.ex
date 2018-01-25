@@ -175,7 +175,7 @@ defmodule Stitch.MessageQueries do
       left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user_id,
       left_join: u in assoc(m, :user),
       left_join: pb in assoc(m, :pinned_by),
-      where: m.type == fragment("'upload'"),
+      where: m.type == "upload",
       where: g.public or not is_nil(gu.id),
       where: g.team_id == ^team_id,
       order_by: [desc: m.inserted_at],
@@ -194,8 +194,7 @@ defmodule Stitch.MessageQueries do
       join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user_id,
       left_join: u in assoc(m, :user),
       left_join: pb in assoc(m, :pinned_by),
-      where: g.public or not is_nil(gu.id),
-      where: m.type == fragment("'upload'"),
+      where: m.type == "upload",
       where: g.team_id == ^team_id,
       order_by: [desc: m.inserted_at],
       preload: [

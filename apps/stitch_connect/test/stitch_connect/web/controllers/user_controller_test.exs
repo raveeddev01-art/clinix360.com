@@ -76,27 +76,6 @@ defmodule StitchConnect.Web.UserControllerTest do
       assert json = json_response(conn, :not_found)
       assert json["message"] == "No user found with ID: #{other_team_user.id}"
     end
-
-    test "restricts guests to only retrieving guests in their rooms", %{conn: conn, team: team, user: user} do
-      group = insert(:group, team: team)
-      insert(:group_user, group: group, user: user)
-      other_user = insert(:user, team: team)
-
-      for role <- ["single-room-guest", "multi-room-guest"] do
-        guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
-        insert(:group_user, group: group, user: guest)
-
-        base_conn = with_api_user(conn, guest)
-
-        conn = get(base_conn, Routes.api_v1_user_path(base_conn, :show, user))
-        assert response = json_response(conn, 200)
-        assert response["id"] == user.id
-
-        conn = get(base_conn, Routes.api_v1_user_path(base_conn, :show, other_user))
-        assert response = json_response(conn, :not_found)
-        assert response["message"] == "No user found with ID: #{other_user.id}"
-      end
-    end
   end
 
   describe "POST /api/v1/users/search" do
@@ -119,27 +98,6 @@ defmodule StitchConnect.Web.UserControllerTest do
       assert response = json_response(conn, 200)
       assert length(response) == 1
       assert hd(response)["id"] == other_user.id
-    end
-
-    test "restricts guest from only searching users in their groups", %{conn: conn, team: team} do
-      user = insert(:user, team: team, first_name: "TEST")
-      insert(:user, team: team, first_name: "TEST")
-      group = insert(:group, team: team)
-      insert(:group_user, group: group, user: user)
-
-      for role <- ["single-room-guest", "multi-room-guest"] do
-        guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
-        insert(:group_user, group: group, user: guest)
-
-        conn =
-          conn
-          |> with_api_user(guest)
-          |> post(Routes.api_v1_user_path(conn, :search), %{"term" => "TEST"})
-
-        assert response = json_response(conn, 200)
-        assert length(response) == 1
-        assert hd(response)["id"] == user.id
-      end
     end
   end
 

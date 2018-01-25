@@ -119,7 +119,8 @@ defmodule Stitch.MessageQueriesTest do
       guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group.id])
       insert(:group_user, group: group, user: guest)
 
-      other_group = insert(:group, team: team)
+      other_group = insert(:group, team: team, public: true)
+      insert(:message, group: other_group, type: "upload")
       insert(:message, group: other_group, type: "upload")
 
       %Stitch.Paginator{data: result} = Stitch.MessageQueries.get_uploads_for_user(guest, 0, 10)

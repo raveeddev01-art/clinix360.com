@@ -434,7 +434,7 @@ defmodule Stitch.GroupTest do
       bob = insert(:user, team: team)
       joe = insert(:user, team: team)
       sam = insert(:user, team: team)
-      {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id, sam.id])
+      {:ok, group} = Stitch.Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
 
       assert {:error, :direct_message} = Group.delete(group)
     end
@@ -453,8 +453,8 @@ defmodule Stitch.GroupTest do
       group_user_joe = insert(:group_user, user: joe, group: group)
       assert {:ok, group} = Group.delete(group)
       assert group.id == group.id
-      assert Stitch.Repo.get(Stitch.GroupQueries, group_user_bob.id) == nil
-      assert Stitch.Repo.get(Stitch.GroupQueries, group_user_joe.id) == nil
+      assert Stitch.Repo.get(Stitch.GroupUser, group_user_bob.id) == nil
+      assert Stitch.Repo.get(Stitch.GroupUser, group_user_joe.id) == nil
     end
 
     test "removes associated messages" do
@@ -463,7 +463,7 @@ defmodule Stitch.GroupTest do
       group = insert(:group)
       insert(:group_user, user: user, group: group)
       assert {:ok, %{message: message}} = Stitch.Message.create(group.id, user, %{"text_content" => "Hello, World!"})
-      assert {:ok, group} = Group.delete(group)
+      assert {:ok, _group} = Group.delete(group)
       assert Stitch.Repo.get(Stitch.Message, message.id) == nil
     end
   end

@@ -10,6 +10,7 @@ defmodule Stitch.Accounts.User do
   alias Stitch.Repo
 
   @type t :: %__MODULE__{}
+  @guest_roles Stitch.Accounts.Role.guests()
 
   schema "users" do
     field :email, :string
@@ -196,8 +197,9 @@ defmodule Stitch.Accounts.User do
   @doc """
   Checks if the user is a guest based on their roles.
   """
-  @spec guest?(map) :: boolean
-  def guest?(%User{roles: roles}) do
-    "single-room-guest" in roles || "multi-room-guest" in roles
+  @spec guest?(User.t) :: boolean
+  def guest?(%User{roles: [role]}) when role in @guest_roles do
+    true
   end
+  def guest?(%User{}), do: false
 end

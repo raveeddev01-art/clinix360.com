@@ -60,7 +60,6 @@ defmodule StitchConnect.Mixfile do
       {:plug_attack, "~> 0.3.0"},
       {:ip2country, "~> 1.1"},
       {:remote_ip, "~> 0.1.4"},
-      {:exmoji, github: "mroth/exmoji"}
     ]
   end
 

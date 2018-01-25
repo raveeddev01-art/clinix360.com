@@ -44,7 +44,8 @@ defmodule Stitch.Mixfile do
       {:stripity_stripe, "~> 1.6"},
       {:appsignal, "~> 1.3"},
       {:mogrify, "~> 0.5.6"},
-      {:floki, "~> 0.18.1"}
+      {:floki, "~> 0.18.1"},
+      {:exmoji, github: "mroth/exmoji"}
     ]
   end
 
