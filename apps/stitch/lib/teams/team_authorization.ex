@@ -19,7 +19,4 @@ defmodule Stitch.TeamAuthorization do
     "admin" in roles
   end
   def can_send_invites?(_, _), do: false
-
-  def can_update_user?(%User{id: user_id}, user_id), do: true
-  def can_update_user?(%User{roles: roles}, _), do: "admin" in roles
 end

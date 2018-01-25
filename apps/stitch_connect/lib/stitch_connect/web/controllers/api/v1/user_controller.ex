@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   alias Stitch.Accounts.{User, Role}
   alias Stitch.{UserQueries, FeatureGateway}
   alias StitchConnect.Web.{TeamChannel, GroupChannel}
-  import Stitch.TeamAuthorization, only: [can_update_user?: 2]
+  import Stitch.UserAuthorization, only: [can_update_user?: 2]
 
   action_fallback StitchConnect.Web.Api.V1.FallbackController
 
