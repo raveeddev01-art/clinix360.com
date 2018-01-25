@@ -419,14 +419,14 @@ defmodule Stitch.GroupTest do
     end
   end
 
-  describe "remove/1" do
+  describe "delete/1" do
     test "gives an error when the group is a single DM" do
       team = insert(:team)
       bob = insert(:user, team: team)
       joe = insert(:user, team: team)
       {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
 
-      assert {:error, :direct_message} = Group.remove(group)
+      assert {:error, :direct_message} = Group.delete(group)
     end
 
     test "gives an error when the group is a multi DM" do
@@ -436,12 +436,12 @@ defmodule Stitch.GroupTest do
       sam = insert(:user, team: team)
       {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id, sam.id])
 
-      assert {:error, :direct_message} = Group.remove(group)
+      assert {:error, :direct_message} = Group.delete(group)
     end
 
     test "given an error for the default group" do
       group = insert(:group, is_default: true)
-      assert {:error, :default_group} = Group.remove(group)
+      assert {:error, :default_group} = Group.delete(group)
     end
 
     test "removes associated group_user records" do
@@ -451,7 +451,7 @@ defmodule Stitch.GroupTest do
       group = insert(:group)
       group_user_bob = insert(:group_user, user: bob, group: group)
       group_user_joe = insert(:group_user, user: joe, group: group)
-      assert {:ok, group} = Group.remove(group)
+      assert {:ok, group} = Group.delete(group)
       assert group.id == group.id
       assert Stitch.Repo.get(Stitch.GroupQueries, group_user_bob.id) == nil
       assert Stitch.Repo.get(Stitch.GroupQueries, group_user_joe.id) == nil
@@ -463,7 +463,7 @@ defmodule Stitch.GroupTest do
       group = insert(:group)
       insert(:group_user, user: user, group: group)
       assert {:ok, %{message: message}} = Stitch.Message.create(group.id, user, %{"text_content" => "Hello, World!"})
-      assert {:ok, group} = Group.remove(group)
+      assert {:ok, group} = Group.delete(group)
       assert Stitch.Repo.get(Stitch.Message, message.id) == nil
     end
   end

@@ -68,7 +68,7 @@ class ChannelStore {
     this.eventChannel.on("joined_group", groupsStore.onJoinedGroup);
     this.eventChannel.on("left_group", groupsStore.onLeftGroup);
     this.eventChannel.on("renamed_group", groupsStore.onRenamedGroup);
-    this.eventChannel.on("removed_group", groupsStore.onRemovedGroup);
+    this.eventChannel.on("deleted_group", groupsStore.onRemovedGroup);
     this.eventChannel.on("hid_group", groupsStore.onHidGroup);
     this.eventChannel.on("marked_as_read", groupsStore.onMarkedAsRead);
     this.eventChannel.on("marked_as_unread", groupsStore.onMarkedAsUnread);

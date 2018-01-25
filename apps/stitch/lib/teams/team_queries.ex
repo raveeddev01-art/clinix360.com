@@ -68,16 +68,19 @@ defmodule Stitch.TeamQueries do
   end
 
   @doc """
-  Lists all active users in a team that do not have a guest role.
+  Lists all active user ids in a team that do not have a guest role and aren't in the given list of ids.
   """
-  def list_non_guest_users(team_id) do
+  @spec list_non_member_non_guest_ids(pos_integer, [pos_integer]) :: [pos_integer]
+  def list_non_member_non_guest_ids(team_id, member_ids) do
     query =
       from(
         u in User,
         where: u.onboarded == true,
         where: u.disabled == false,
         where: u.team_id == ^team_id,
-        where: not fragment("? && ?", ^@guest_roles, u.roles)
+        where: not fragment("? && ?", ^@guest_roles, u.roles),
+        where: u.id not in ^member_ids,
+        select: u.id
       )
 
     Repo.all(query)

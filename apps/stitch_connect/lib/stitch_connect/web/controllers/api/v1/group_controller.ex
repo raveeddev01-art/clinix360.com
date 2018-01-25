@@ -55,6 +55,21 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     end
   end
 
+  def delete(conn, %{"id" => group_id}) do
+    user = conn.assigns.current_user
+
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_delete?(group, user)},
+         {:ok, _group} <- Group.delete(group) do
+      EventsChannel.broadcast_group_deleted(group)
+      render conn, "show.json", group: group, user_id: user.id
+    else
+      {:group, {:error, _reason}} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
   def users(conn, %{"id" => group_id}) do
     user = conn.assigns.current_user
     with {:ok, group} <- GroupQueries.get_by_id(group_id, user),

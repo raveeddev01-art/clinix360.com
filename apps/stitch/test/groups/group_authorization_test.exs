@@ -139,17 +139,17 @@ defmodule Stitch.GroupAuthorizationTest do
     end
   end
 
-  describe "Stitch.GroupAuthorization.can_remove?/2" do
+  describe "Stitch.GroupAuthorization.can_delete?/2" do
     test "returns true for admin belonging to the same team" do
       group = insert(:group)
       user = insert(:user, roles: ["admin"], team: group.team)
-      assert Stitch.GroupAuthorization.can_remove?(group, user) == true
+      assert Stitch.GroupAuthorization.can_delete?(group, user) == true
     end
 
     test "returns false for admin belonging to another team" do
       group = insert(:group)
       user = insert(:user, roles: ["admin"])
-      assert Stitch.GroupAuthorization.can_remove?(group, user) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, user) == false
     end
 
     test "returns false for guests" do
@@ -157,7 +157,7 @@ defmodule Stitch.GroupAuthorizationTest do
       for role <- ["single-room-guest", "multi-room-guest"] do
         user = insert(:user, roles: [role], team: team)
         group = insert(:group, team: team)
-        assert Stitch.GroupAuthorization.can_remove?(group, user) == false
+        assert Stitch.GroupAuthorization.can_delete?(group, user) == false
       end
     end
 
@@ -166,7 +166,7 @@ defmodule Stitch.GroupAuthorizationTest do
       for role <- ["single-room-guest", "multi-room-guest"] do
         user = insert(:user, roles: [role], team: team)
         group = insert(:group, creator: user, team: team)
-        assert Stitch.GroupAuthorization.can_remove?(group, user) == false
+        assert Stitch.GroupAuthorization.can_delete?(group, user) == false
       end
     end
 
@@ -175,8 +175,8 @@ defmodule Stitch.GroupAuthorizationTest do
       bob = insert(:user, team: team)
       joe = insert(:user, team: team)
       {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
-      assert Stitch.GroupAuthorization.can_remove?(group, bob) == false
-      assert Stitch.GroupAuthorization.can_remove?(group, joe) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, bob) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, joe) == false
     end
 
     test "returns false for multi DMs" do
@@ -185,9 +185,9 @@ defmodule Stitch.GroupAuthorizationTest do
       joe = insert(:user, team: team)
       sam = insert(:user, team: team)
       {:ok, group} = Stitch.Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
-      assert Stitch.GroupAuthorization.can_remove?(group, bob) == false
-      assert Stitch.GroupAuthorization.can_remove?(group, joe) == false
-      assert Stitch.GroupAuthorization.can_remove?(group, sam) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, bob) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, joe) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, sam) == false
     end
 
     test "returns false for DMs when user is admin" do
@@ -195,8 +195,8 @@ defmodule Stitch.GroupAuthorizationTest do
       bob = insert(:user, team: team, roles: ["admin"])
       joe = insert(:user, team: team, roles: ["admin"])
       {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
-      assert Stitch.GroupAuthorization.can_remove?(group, bob) == false
-      assert Stitch.GroupAuthorization.can_remove?(group, joe) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, bob) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, joe) == false
     end
 
     test "returns true for group creator that is a group member" do
@@ -204,20 +204,20 @@ defmodule Stitch.GroupAuthorizationTest do
       user = insert(:user, team: team, roles: ["member"])
       group = insert(:group, creator: user, team: team)
       insert(:group_user, group: group, user: user)
-      assert Stitch.GroupAuthorization.can_remove?(group, user) == true
+      assert Stitch.GroupAuthorization.can_delete?(group, user) == true
     end
 
     test "returns false for group creator that is longer a group member" do
       team = insert(:team)
       user = insert(:user, team: team, roles: ["member"])
       group = insert(:group, creator: user, team: team)
-      assert Stitch.GroupAuthorization.can_remove?(group, user) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, user) == false
     end
 
     test "admin can't remove default group" do
       user = insert(:user, roles: ["admin"])
       group = insert(:group, creator: user, team: user.team, is_default: true)
-      assert Stitch.GroupAuthorization.can_remove?(group, user) == false
+      assert Stitch.GroupAuthorization.can_delete?(group, user) == false
     end
   end
 end

@@ -56,17 +56,17 @@ defmodule Stitch.GroupAuthorization do
   @doc """
   Checks if a user is authorized to remove the group
   """
-  @spec can_remove?(Group.t, User.t) :: boolean
-  def can_remove?(%Group{name: name}, _user) when name in @dm_groups, do: false
-  def can_remove?(%Group{is_default: true}, _user), do: false
-  def can_remove?(%Group{team_id: team_id} = group, %User{team_id: team_id, roles: roles} = user) do
+  @spec can_delete?(Group.t, User.t) :: boolean
+  def can_delete?(%Group{name: name}, _user) when name in @dm_groups, do: false
+  def can_delete?(%Group{is_default: true}, _user), do: false
+  def can_delete?(%Group{team_id: team_id} = group, %User{team_id: team_id, roles: roles} = user) do
     if User.guest?(user) do
       false
     else
       "admin" in roles || (is_member?(group.id, user.id) && is_creator?(group, user))
     end
   end
-  def can_remove?(_group, _user), do: false
+  def can_delete?(_group, _user), do: false
 
   @doc """
   Checks if a user is authorized to join groups based on role.
