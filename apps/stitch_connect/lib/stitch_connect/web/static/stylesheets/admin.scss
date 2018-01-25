@@ -412,6 +412,19 @@ $admin-topbar-height-sm: 65px;
         }
       }
 
+      .avatar-uploader {
+        ul.dropdown-menu {
+          & > li > a {
+            color: #333;
+
+            &:hover {
+              color: #fff;
+              background: #036;
+            }
+          }
+        }
+      }
+
       .admin-table {
         .table-head {
           color: $brand-primary;
@@ -468,6 +481,10 @@ $admin-topbar-height-sm: 65px;
 
             .btn {
               margin: 0;
+
+              &:not(:last-child) {
+                margin-right: 6px;
+              }
             }
           }
 
