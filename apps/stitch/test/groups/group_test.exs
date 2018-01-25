@@ -444,7 +444,7 @@ defmodule Stitch.GroupTest do
       assert {:error, :default_group} = Group.remove(group)
     end
 
-    test "remove associated with the group group_user records" do
+    test "removes associated group_user records" do
       team = insert(:team)
       bob = insert(:user, team: team)
       joe = insert(:user, team: team)
@@ -455,6 +455,16 @@ defmodule Stitch.GroupTest do
       assert group.id == group.id
       assert Stitch.Repo.get(Stitch.GroupQueries, group_user_bob.id) == nil
       assert Stitch.Repo.get(Stitch.GroupQueries, group_user_joe.id) == nil
+    end
+
+    test "removes associated messages" do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group)
+      insert(:group_user, user: user, group: group)
+      assert {:ok, %{message: message}} = Stitch.Message.create(group.id, user, %{"text_content" => "Hello, World!"})
+      assert {:ok, group} = Group.remove(group)
+      assert Stitch.Repo.get(Stitch.Message, message.id) == nil
     end
   end
 end
