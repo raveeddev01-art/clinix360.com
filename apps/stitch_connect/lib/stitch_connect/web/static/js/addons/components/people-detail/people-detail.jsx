@@ -9,6 +9,14 @@ class PeopleDetail extends Component {
 
     return (
       <div className="user-view">
+        <div className="user-avatar m-b-20">
+          <img
+            src={user.avatar ? user.avatar : "/images/default-avatar.png"}
+            alt="Avatar"
+            className="img-responsive"
+          />
+        </div>
+
         <div className="username-and-title">
           <h4 className="display-name">{`${user.first_name} ${user.last_name}`}</h4>
           <div className="user-title text-muted">{user.title}</div>
