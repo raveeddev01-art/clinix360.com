@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.Api.V1.TeamView do
     %{
       id: team.id,
       name: team.name,
-      company_names: team.company_names,
+      company_name: team.company_name,
       address_line_one: team.address_line_one,
       address_line_two: team.address_line_two,
       city: team.city,

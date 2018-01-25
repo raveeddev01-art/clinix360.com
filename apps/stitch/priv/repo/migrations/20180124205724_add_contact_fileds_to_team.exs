@@ -3,7 +3,7 @@ defmodule Stitch.Repo.Migrations.AddContactFiledsToTeam do
 
   def change do
     alter table(:teams) do
-      add(:company_names, :string)
+      add(:company_name, :string)
       add(:address_line_one, :string)
       add(:address_line_two, :string)
       add(:city, :string)
