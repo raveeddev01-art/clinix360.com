@@ -126,6 +126,17 @@ defmodule Stitch.MessageQueriesTest do
       assert length(result) == 1
       assert hd(result).id == message.id
     end
+
+    test "allow guests to get uploads from their DMs" do
+      team = insert(:team)
+      guest = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [])
+      default_group = Stitch.GroupQueries.default_group(guest)
+      message = insert(:message, group: default_group, type: "upload")
+
+      %Stitch.Paginator{data: result} = Stitch.MessageQueries.get_uploads_for_user(guest, 0, 10)
+      assert length(result) == 1
+      assert hd(result).id == message.id
+    end
   end
 
   test "user_mentioned_in/2" do

@@ -6,6 +6,8 @@ defmodule Stitch.MessageQueries do
   alias Stitch.{Repo, Accounts.User, Group, GroupUser, Message, MessageAction, MessageQueries, Paginator, Team}
   import Ecto.Query
 
+  @guest_roles Stitch.Accounts.Role.guests()
+
   @doc """
   Returns messages for the user that matches the search term
   provided.
@@ -166,7 +168,7 @@ defmodule Stitch.MessageQueries do
     Repo.preload(message, [:pinned_by, :user])
   end
 
-  def get_uploads_for_user(%User{team_id: team_id, id: user_id, groups_as_guest: []}, skip, limit) do
+  def get_uploads_for_user(%User{team_id: team_id, id: user_id, roles: [role]}, skip, limit) when not role in @guest_roles do
     query =
       from m in Message,
       join: g in assoc(m, :group),
@@ -185,14 +187,14 @@ defmodule Stitch.MessageQueries do
 
     Paginator.new(query, skip: skip, limit: limit)
   end
-  def get_uploads_for_user(%User{team_id: team_id, id: user_id, groups_as_guest: groups}, skip, limit) do
+  def get_uploads_for_user(%User{team_id: team_id, id: user_id}, skip, limit) do
     query =
       from m in Message,
       join: g in assoc(m, :group),
       join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user_id,
       left_join: u in assoc(m, :user),
       left_join: pb in assoc(m, :pinned_by),
-      where: gu.group_id in ^groups,
+      where: g.public or not is_nil(gu.id),
       where: m.type == fragment("'upload'"),
       where: g.team_id == ^team_id,
       order_by: [desc: m.inserted_at],
