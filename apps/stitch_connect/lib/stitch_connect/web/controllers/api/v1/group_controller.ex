@@ -60,7 +60,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
 
     with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_delete?(group, user)},
-         {:ok, _group} <- Group.delete(group) do
+         {:ok, _result} <- Group.delete(group) do
       EventsChannel.broadcast_group_deleted(group)
       render conn, "show.json", group: group, user_id: user.id
     else

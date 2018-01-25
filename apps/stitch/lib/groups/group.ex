@@ -293,11 +293,21 @@ defmodule Stitch.Group do
   @doc """
   Deletes the group
   """
-  @spec delete(Group.t) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  @spec delete(Group.t) :: {:ok, map} | {:error, any()}
   def delete(%Group{name: name}) when name in @dm_groups, do: {:error, :direct_message}
   def delete(%Group{is_default: true}), do: {:error, :default_group}
   def delete(%Group{} = group) do
-    Repo.delete(group)
+    Ecto.Multi.new
+    |> Ecto.Multi.update_all(:groups_as_guest, delete_from_groups_as_guest(group), [])
+    |> Ecto.Multi.delete(:group, group)
+    |> Repo.transaction
+  end
+
+  def delete_from_groups_as_guest(%Group{} = group) do
+    guest_ids = Stitch.GroupUser.user_ids(group.id)
+    User
+    |> where([u], u.id in ^guest_ids)
+    |> update([u], pull: [groups_as_guest: ^group.id])
   end
 
   @doc """

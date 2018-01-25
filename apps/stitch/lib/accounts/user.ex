@@ -198,8 +198,6 @@ defmodule Stitch.Accounts.User do
   Checks if the user is a guest based on their roles.
   """
   @spec guest?(User.t) :: boolean
-  def guest?(%User{roles: [role]}) when role in @guest_roles do
-    true
-  end
+  def guest?(%User{roles: [role]}) when role in @guest_roles, do: true
   def guest?(%User{}), do: false
 end

@@ -451,7 +451,7 @@ defmodule Stitch.GroupTest do
       group = insert(:group)
       group_user_bob = insert(:group_user, user: bob, group: group)
       group_user_joe = insert(:group_user, user: joe, group: group)
-      assert {:ok, group} = Group.delete(group)
+      assert {:ok, %{group: group}} = Group.delete(group)
       assert group.id == group.id
       assert Stitch.Repo.get(Stitch.GroupUser, group_user_bob.id) == nil
       assert Stitch.Repo.get(Stitch.GroupUser, group_user_joe.id) == nil
@@ -465,6 +465,22 @@ defmodule Stitch.GroupTest do
       assert {:ok, %{message: message}} = Stitch.Message.create(group.id, user, %{"text_content" => "Hello, World!"})
       assert {:ok, _group} = Group.delete(group)
       assert Stitch.Repo.get(Stitch.Message, message.id) == nil
+    end
+
+    test "removes the group id from groups_as_guest field" do
+      team = insert(:team)
+      group_a = insert(:group, team: team)
+      group_b = insert(:group, team: team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group_a.id])
+      sam = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [group_a.id, group_b.id])
+      insert(:group_user, user: bob, group: group_a)
+      insert(:group_user, user: joe, group: group_a)
+      insert(:group_user, user: sam, group: group_a)
+      insert(:group_user, user: sam, group: group_b)
+      assert {:ok, _group} = Group.delete(group_a)
+      assert Stitch.Repo.get(Stitch.Accounts.User, joe.id).groups_as_guest == []
+      assert Stitch.Repo.get(Stitch.Accounts.User, sam.id).groups_as_guest == [group_b.id]
     end
   end
 end
