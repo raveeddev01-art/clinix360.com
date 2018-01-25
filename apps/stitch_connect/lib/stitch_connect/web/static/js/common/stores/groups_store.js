@@ -364,11 +364,15 @@ class GroupsStore {
 
   @action
   onRemovedGroup = ({ group_id: id }) => {
-    this.groups = this.groups.filter(g => g.id === id);
+    this.groups = this.groups.filter(g => g.id !== id);
 
     // move to default group if current group is removed
     if (id === this.currentGroupId) {
-      history.push(`/rooms/${this.defaultGroup.slug}`);
+      if (this.defaultGroup.type === "dm") {
+        history.push(`/direct/${this.defaultGroup.users[0].username}`);
+      } else {
+        history.push(`/rooms/${this.defaultGroup.slug}`);
+      }
     }
   };
 
@@ -444,7 +448,7 @@ class GroupsStore {
       }
 
       // Redirects to default group if user is removed from current room
-      const meRemoved = payload.user_ids.includes(currentUser.id);
+      const meRemoved = !payload.user_ids.includes(currentUser.id);
       if (meRemoved && this.currentGroupId === payload.group_id) {
         history.push(`/rooms/${this.defaultGroup.slug}`);
       }

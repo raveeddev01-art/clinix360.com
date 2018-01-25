@@ -16,7 +16,7 @@ export default class NavItemRemoveRoom extends Component {
       .then(() => {
         const { groupsStore } = this.props;
 
-        groupsStore.removeRoom(groupsStore.currentGroupId);
+        return groupsStore.removeGroup(groupsStore.currentGroupId);
       })
       .catch(() => {
         // do nothing
