@@ -66,11 +66,7 @@ class AddonMessage extends Component {
         <div className="message">
           <div className="avatar">
             <img
-              src={
-                user.avatar_thumb
-                  ? user.avatar_thumb
-                  : "/images/default-avatar.png"
-              }
+              src={user.avatar ? user.avatar : "/images/default-avatar.png"}
               alt="Avatar"
             />
           </div>
