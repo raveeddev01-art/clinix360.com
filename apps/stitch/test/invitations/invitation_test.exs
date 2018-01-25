@@ -138,7 +138,7 @@ defmodule Stitch.InvitationTest do
       team = insert(:team, %{open_invitations_enabled: true})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@qq.com")
-      assert reason == "Email host is not supported."
+      assert reason == "We do not allow emails from qq.com."
     end
 
     test "returns error when account with that email already exists on team" do

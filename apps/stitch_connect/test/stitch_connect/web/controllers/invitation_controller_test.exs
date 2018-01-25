@@ -453,7 +453,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
         existing_user.email => "Email has already been registered.",
         deactivated_user.email => "Email has already been registered.",
         "already@invited.com" => "Email has already been invited.",
-        "furqan@sina.com" => "Email host is not supported.",
+        "furqan@sina.com" => "We do not allow emails from sina.com.",
         "not@user.com" => "ok",
       }
     end

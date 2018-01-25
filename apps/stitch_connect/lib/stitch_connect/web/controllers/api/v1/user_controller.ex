@@ -90,6 +90,10 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def create(conn, %{"email" => email}) do
     case Stitch.Accounts.create_user_with_email_only(email) do
+      {:error, %Ecto.Changeset{errors: [email: {_, [host: host]}]}} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "We do not allow emails from #{host}"})
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)

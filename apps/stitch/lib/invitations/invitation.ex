@@ -129,7 +129,10 @@ defmodule Stitch.Invitation do
           invited_user = Repo.get_by(User, email: email, team_id: team.id)
 
           case invited_user do
-            nil -> {:error, "Email host is not supported."}
+            nil ->
+              [_ | [host]] = String.split(email, "@")
+              {:error, "We do not allow emails from #{host}."}
+
             invited_user ->
               case invited_user.onboarded do
                 true -> {:error, "Email has already been registered."}
