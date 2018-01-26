@@ -47,6 +47,7 @@ defmodule Stitch.Accounts.User do
     |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
+    |> validate_format(:email, ~r/@/)
     |> Stitch.Validators.validate_email_domain(:email)
     |> validate_required([:first_name, :last_name])
     |> default_profile_image_changeset(attrs)
@@ -125,7 +126,6 @@ defmodule Stitch.Accounts.User do
     |> put_change(:confirmation_code, confirmation_code)
     |> put_change(:token, token)
     |> email_changeset(params)
-    |> Stitch.Validators.validate_email_domain(:email)
     |> unique_constraint(:email, name: :users_email_team_id_index)
   end
 

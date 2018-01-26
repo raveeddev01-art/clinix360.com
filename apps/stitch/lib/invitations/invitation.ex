@@ -130,7 +130,7 @@ defmodule Stitch.Invitation do
 
           case invited_user do
             nil ->
-              [_ | [host]] = String.split(email, "@")
+              [_, host] = String.split(email, "@")
               {:error, "We do not allow emails from #{host}."}
 
             invited_user ->

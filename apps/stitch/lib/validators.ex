@@ -4,7 +4,11 @@ defmodule Stitch.Validators do
 
   def validate_email_domain(changeset, field, opts \\ []) do
     validate_change(changeset, field, fn _, email ->
-      [_ | [host]] = String.split(email, "@")
+      host =
+        email
+        |> String.split("@")
+        |> List.last()
+        |> String.downcase()
 
       case host in blacklisted_email_domains() do
         true ->
