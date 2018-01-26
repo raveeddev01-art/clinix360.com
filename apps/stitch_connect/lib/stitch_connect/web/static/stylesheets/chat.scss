@@ -8,6 +8,7 @@
     .header-content {
       flex-grow: 1;
       flex-shrink: 0;
+      width: 100%;
 
       .dropdown.btn-group {
         width: calc(100% - 450px);
