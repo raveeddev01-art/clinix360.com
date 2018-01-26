@@ -22,24 +22,33 @@ class PeopleDetail extends Component {
           <div className="user-title text-muted">{user.title}</div>
         </div>
         <ul className="userinfo">
-          <li className="userinfo__item">
-            <span className="userinfo__label text-muted">Username</span>
-            <span className="userinfo__value">@{user.username}</span>
-          </li>
+          {user.username ? (
+            <li className="userinfo__item">
+              <span className="userinfo__label text-muted">Username</span>
+              <span className="userinfo__value">@{user.username}</span>
+            </li>
+          ) : null}
+
           <li className="userinfo__item">
             <span className="userinfo__label text-muted">Timezone</span>
             <span className="userinfo__value">
               {moment().format("hh:mm A (Z)")}
             </span>
           </li>
-          <li className="userinfo__item">
-            <span className="userinfo__label text-muted">Email Address</span>
-            <span className="userinfo__value">{user.email}</span>
-          </li>
-          <li className="userinfo__item">
-            <span className="userinfo__label text-muted">Phone Number</span>
-            <span className="userinfo__value">{user.phone}</span>
-          </li>
+
+          {user.email ? (
+            <li className="userinfo__item">
+              <span className="userinfo__label text-muted">Email Address</span>
+              <span className="userinfo__value">{user.email}</span>
+            </li>
+          ) : null}
+
+          {user.phone ? (
+            <li className="userinfo__item">
+              <span className="userinfo__label text-muted">Phone Number</span>
+              <span className="userinfo__value">{user.phone}</span>
+            </li>
+          ) : null}
         </ul>
       </div>
     );
