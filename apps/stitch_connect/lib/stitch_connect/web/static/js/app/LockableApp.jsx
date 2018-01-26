@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Switch, withRouter, Route } from "react-router-dom";
 
-import Loading from "../common/components/loading/Loading";
+import { Loading } from "common/components";
 import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
 import ChatApp from "../chat/ChatApp";
@@ -12,11 +12,13 @@ import ChatApp from "../chat/ChatApp";
 class LockableApp extends Component {
   componentDidMount() {
     const {
-      throttledUserInteract,
-      getLockoutSettings,
-      onWindowFocus,
-      onWindowBlur
-    } = this.props.presenceStore;
+      presenceStore: {
+        throttledUserInteract,
+        getLockoutSettings,
+        onWindowFocus,
+        onWindowBlur
+      }
+    } = this.props;
 
     document.addEventListener("mousemove", throttledUserInteract);
     document.addEventListener("touchmove", throttledUserInteract);
@@ -31,10 +33,8 @@ class LockableApp extends Component {
 
   componentWillUnmount() {
     const {
-      throttledUserInteract,
-      onWindowBlur,
-      onWindowFocus
-    } = this.props.presenceStore;
+      presenceStore: { throttledUserInteract, onWindowBlur, onWindowFocus }
+    } = this.props;
 
     document.removeEventListener("touchmove", throttledUserInteract);
     document.removeEventListener("mousemove", throttledUserInteract);
@@ -46,18 +46,22 @@ class LockableApp extends Component {
   }
 
   render() {
-    const { sidemenuStore, presenceStore } = this.props;
+    const { presenceStore, sidemenuStore } = this.props;
 
-    return presenceStore.locked ? (
-      <LockedApp />
-    ) : sidemenuStore.loading ? (
-      <Loading />
-    ) : (
-      <Switch>
-        <Route path="/admin" component={AdminApp} />
-        <Route path="/" component={ChatApp} />
-      </Switch>
-    );
+    if (presenceStore.locked) {
+      return <LockedApp />;
+    }
+
+    if (sidemenuStore.loadedApp) {
+      return (
+        <Switch>
+          <Route path="/admin" component={AdminApp} />
+          <Route path="/" component={ChatApp} />
+        </Switch>
+      );
+    }
+
+    return <Loading />;
   }
 }
 

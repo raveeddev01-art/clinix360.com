@@ -5,6 +5,7 @@
  */
 
 import { observable, computed, action } from "mobx";
+import pick from "lodash/pick";
 
 import history from "lib/history";
 
@@ -108,6 +109,16 @@ class UsersStore {
   };
 
   @action
+  saveUserData = (id, data) => {
+    return put(`/api/v1/users/${id}`, {
+      body: data,
+      hideNotify: true
+    }).then(() => {
+      this.updateUserData(id, data);
+    });
+  };
+
+  @action
   updateUserData = (id, data) => {
     const user = this.getUserById(id);
 
@@ -153,6 +164,32 @@ class UsersStore {
   };
 
   @action
+  saveProfileImg = (userId, profileImgUrl) => {
+    return put(`/api/v1/users/${userId}/upload_profile_image`, {
+      body: {
+        url: profileImgUrl
+      },
+      hideNotify: true
+    }).then(resp => {
+      const { data } = resp;
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.updateUserData(userId, avatarFields);
+      return avatarFields;
+    });
+  };
+
+  @action
+  deleteProfileImg = userId => {
+    return remove(`/api/v1/users/${userId}/delete_profile_image`, {
+      hideNotify: true
+    }).then(resp => {
+      const { data } = resp;
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.updateUserData(userId, avatarFields);
+      return avatarFields;
+    });
+  };
+
   editUser = data => {
     return put(`/api/v1/users/${this.editingUserId}/roles`, {
       body: data
@@ -210,10 +247,10 @@ class UsersStore {
   @action
   onUserDeactivated = payload => {
     const user = this.getUserById(payload.user_id);
-    const { groupsStore } = this.rootStore;
+    const { groupsStore, presenceStore } = this.rootStore;
 
     if (payload.user_id === currentUser.id) {
-      window.location.href = "/logged-out";
+      presenceStore.logout();
       return;
     }
 
