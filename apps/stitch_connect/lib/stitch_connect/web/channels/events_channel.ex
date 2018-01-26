@@ -1,8 +1,8 @@
 defmodule StitchConnect.Web.EventsChannel do
   use StitchConnect.Web, :channel
   import Ecto.Query
-  alias StitchConnect.Web.Api.V1.{MessageView, GroupView}
-  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User}
+  alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User, UserQueries}
+  alias StitchConnect.Web.Api.V1.{MessageView, GroupView, NotificationPreferenceView}
 
   @endpoint StitchConnect.Web.Endpoint
 
@@ -146,6 +146,11 @@ defmodule StitchConnect.Web.EventsChannel do
         user_ids: member_ids
       })
     end
+  end
+
+  def broadcast_notification_preference_update(user, preference) do
+    json = NotificationPreferenceView.render("show_global.json", user: user, group_preferences: preference)
+    @endpoint.broadcast("events:#{user.id}", "notification_preference_update", json)
   end
 
   def broadcast_invitation_sent(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user, %Stitch.Invitation{} = invitation) do

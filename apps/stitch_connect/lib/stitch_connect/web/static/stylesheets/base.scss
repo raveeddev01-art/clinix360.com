@@ -243,6 +243,10 @@ hr {
   justify-content: center;
   margin: auto;
 
+  &.modal-lg {
+    max-width: 750px;
+  }
+
   .modal-content {
     border: 0;
     border-radius: 3px;
@@ -268,6 +272,7 @@ hr {
         font-size: 18px;
         font-weight: bold;
         flex-grow: 1;
+        line-height: 26px;
       }
 
       i.fa {

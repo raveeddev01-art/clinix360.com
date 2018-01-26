@@ -1,7 +1,6 @@
 defmodule Stitch.TeamAuthorization do
   @moduledoc """
-  Onboarding module used to onboard new teams to the Stitch
-  platform.
+  Authorization module for the Team model and related models.
   """
 
   alias Stitch.{Repo, Accounts.User, Team}

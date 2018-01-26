@@ -321,6 +321,58 @@ defmodule StitchConnect.Web.UserControllerTest do
     end
   end
 
+  describe "PUT /api/v1/users/:id" do
+    test "Admin can set other user's profile", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      admin = insert(:user, team: team, roles: ["admin"])
+
+      json =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(admin)
+        |> put("/api/v1/users/#{user.id}", %{"first_name" => "Furqan", "last_name"=> "Aziz", "title" => "Random title"})
+        |> json_response(200)
+
+      assert json["id"] == user.id
+      assert json["title"] == "Random title"
+      assert json["first_name"] == "Furqan"
+      assert json["last_name"] == "Aziz"
+    end
+
+    test "Normal user can set his profile", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+
+      json =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
+        |> put("/api/v1/users/#{user.id}", %{"first_name" => "Furqan1", "last_name"=> "Aziz1", "title" => "Random title1"})
+        |> json_response(200)
+
+      assert json["id"] == user.id
+      assert json["title"] == "Random title1"
+      assert json["first_name"] == "Furqan1"
+      assert json["last_name"] == "Aziz1"
+    end
+
+    test "Normal user cannot set other user's profile", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      user1 = insert(:user, team: team)
+
+      json =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
+        |> put("/api/v1/users/#{user1.id}", %{"first_name" => "Furqan1", "last_name"=> "Aziz1", "title" => "Random title1"})
+        |> json_response(401)
+
+      assert json["message"] == "You are not unauthorized to update user profile."
+    end
+  end
+
   describe "PUT /api/v1/users/:id/change-role" do
     setup %{conn: conn} do
       subscription = insert(:subscription, tier: "PREMIUM")
