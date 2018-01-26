@@ -203,7 +203,7 @@ defmodule Stitch.Message do
     GroupUser
     |> where([gu], gu.group_id == ^group_id)
     |> where([gu], gu.user_id in ^user_ids)
-    |> update([gu], inc: [unread_messages_count: ^1, is_hidden: ^false])
+    |> update([gu], inc: [unread_messages_count: ^1], set: [is_hidden: ^false])
   end
 
   def decrement_unread_counter(message) do
