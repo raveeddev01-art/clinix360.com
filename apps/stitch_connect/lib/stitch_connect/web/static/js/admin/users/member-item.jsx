@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
-import Collapse from "react-bootstrap/lib/Collapse";
-import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
-import Button from "react-bootstrap/lib/Button";
+import { Row, Col, Collapse, ButtonToolbar, Button } from "react-bootstrap";
+import EditProfileModal from "common/modals/edit-profile-modal";
 import { isFullMember } from "lib/utils";
 import { RoleText } from "common/components";
 
@@ -15,12 +12,19 @@ class MemberItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      showEditProfileModal: false
     };
   }
 
   _toggleControls = () => {
     this.setState({ open: !this.state.open });
+  };
+
+  _toggleEditProfileModal = () => {
+    this.setState({
+      showEditProfileModal: !this.state.showEditProfileModal
+    });
   };
 
   _activateUser = () => {
@@ -89,7 +93,7 @@ class MemberItem extends Component {
   };
 
   render() {
-    const { user, online } = this.props;
+    const { user, online, onSuccess } = this.props;
 
     return (
       <div className="table-item">
@@ -123,46 +127,60 @@ class MemberItem extends Component {
 
           <div className="clearfix" />
           <Collapse in={this.state.open}>
-            <ButtonToolbar className="actions-toolbar">
-              {user.roles.indexOf("admin") === -1 && (
-                <Button
-                  bsSize="small"
-                  className="m-r-10"
-                  onClick={this._startEditing}
-                >
-                  Manage Member Type
+            <div>
+              <ButtonToolbar className="actions-toolbar">
+                {user.roles.indexOf("admin") === -1 && (
+                  <Button
+                    bsSize="small"
+                    className="m-r-10"
+                    onClick={this._startEditing}
+                  >
+                    Manage Member Type
+                  </Button>
+                )}
+                {!user.disabled &&
+                  isFullMember(user) &&
+                  (user.roles.indexOf("admin") > -1 ? (
+                    <Button bsSize="small" onClick={this._revokeAdmin}>
+                      Revoke Admin
+                    </Button>
+                  ) : (
+                    <Button bsSize="small" onClick={this._promoteAdmin}>
+                      Promote Admin
+                    </Button>
+                  ))}
+
+                <Button bsSize="small" onClick={this._toggleEditProfileModal}>
+                  Edit Profile
                 </Button>
-              )}
-              {!user.disabled &&
-                isFullMember(user) &&
-                (user.roles.indexOf("admin") > -1 ? (
-                  <Button bsSize="small" onClick={this._revokeAdmin}>
-                    Revoke Admin
+
+                {user.disabled ? (
+                  <Button
+                    onClick={this._activateUser}
+                    bsSize="small"
+                    className="pull-right"
+                  >
+                    Enable Account
                   </Button>
                 ) : (
-                  <Button bsSize="small" onClick={this._promoteAdmin}>
-                    Promote Admin
+                  <Button
+                    onClick={this._deactivateUser}
+                    bsSize="small"
+                    className="pull-right"
+                  >
+                    Disable Account
                   </Button>
-                ))}
-              {user.disabled ? (
-                <Button
-                  onClick={this._activateUser}
-                  bsSize="small"
-                  className="pull-right"
-                >
-                  Enable Account
-                </Button>
-              ) : (
-                <Button
-                  onClick={this._deactivateUser}
-                  bsSize="small"
-                  className="pull-right"
-                >
-                  Disable Account
-                </Button>
-              )}
-            </ButtonToolbar>
+                )}
+              </ButtonToolbar>
+            </div>
           </Collapse>
+
+          <EditProfileModal
+            user={user}
+            show={this.state.showEditProfileModal}
+            toggle={this._toggleEditProfileModal}
+            onSuccess={onSuccess}
+          />
         </Row>
       </div>
     );

@@ -65,7 +65,7 @@ defmodule Stitch.UserQueriesTest do
   end
 
   describe "UserQueries.team_member_with_email/2" do
-    test "returns true or false if uesr exists or not" do
+    test "returns true or false if user exists or not" do
       team = insert(:team)
       insert(:user, team: team, email: "example@email.com")
 

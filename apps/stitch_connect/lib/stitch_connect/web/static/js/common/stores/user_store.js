@@ -5,6 +5,7 @@
  */
 
 import { observable, action, computed } from "mobx";
+import pick from "lodash/pick";
 import difference from "lodash/difference";
 
 const defaultAvatars = ["/images/default-avatar.png"];
@@ -40,13 +41,6 @@ class UserStore {
   }
 
   @action
-  useDefaultAvatar = () => {
-    this.hasAvatar = false;
-    this.avatar = defaultAvatars[0];
-    this.avatarThumb = defaultAvatars[0];
-  };
-
-  @action
   loadUser = id => {
     this.loading = true;
     this.id = id;
@@ -64,13 +58,14 @@ class UserStore {
       this.lastName = data.last_name;
       this.fullName = data.full_name;
 
-      if (data.avatar) {
+      if (
+        data.avatar &&
+        data.avatar.indexOf("stitch-content/default-avatar") < 0
+      ) {
         this.hasAvatar = true;
-        this.avatar = data.avatar;
-        this.avatarThumb = data.avatar_thumb;
-      } else {
-        this.useDefaultAvatar();
       }
+      this.avatar = data.avatar;
+      this.avatarThumb = data.avatar_thumb;
 
       this.roles = data.roles;
     });
@@ -156,6 +151,10 @@ class UserStore {
       const { data } = resp;
       this.avatar = data.avatar;
       this.avatarThumb = data.avatar_thumb;
+
+      // Keep usersStore avatar fields updated
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.rootStore.usersStore.updateUserData(this.id, avatarFields);
       this.hasAvatar = true;
     });
   };
@@ -164,8 +163,15 @@ class UserStore {
   deleteProfileImg = () => {
     return remove(`/api/v1/users/${this.id}/delete_profile_image`, {
       hideNotify: true
-    }).then(() => {
-      this.useDefaultAvatar();
+    }).then(resp => {
+      const { data } = resp;
+      this.avatar = data.avatar;
+      this.avatarThumb = data.avatar_thumb;
+
+      // Keep usersStore avatar fields updated
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.rootStore.usersStore.updateUserData(this.id, avatarFields);
+      this.hasAvatar = false;
     });
   };
 

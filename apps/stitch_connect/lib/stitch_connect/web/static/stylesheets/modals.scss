@@ -264,3 +264,50 @@
     }
   }
 }
+
+.edit-profile-modal {
+  a.btn-back {
+    margin-right: 12px;
+  }
+
+  .avatar-uploader {
+    &__actions {
+      margin-top: 10px;
+    }
+  }
+
+  .profile-img-delete-prompt {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    z-index: 9;
+
+    h3 {
+      margin-top: 0;
+    }
+
+    p {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .buttons {
+      margin-top: 30px;
+
+      .btn {
+        padding: 8px 20px;
+
+        &:first-child {
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+}
