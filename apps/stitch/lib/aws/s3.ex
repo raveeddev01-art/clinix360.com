@@ -17,8 +17,9 @@ defmodule Stitch.AWS.S3 do
     ExAws.S3.download_file(@s3.bucket, filename, dest) |> ExAws.request()
   end
 
-  def fullpath(filepath \\ "", directory \\ "") do
-    "https://#{@s3.host}/#{@s3.bucket}/#{Path.join(directory, Path.basename(filepath))}"
+  def fullpath(file \\ "", dir \\ "") do
+    object = Path.join(dir, Path.basename(file))
+    "#{@s3.scheme}#{@s3.host}/#{@s3.bucket}/#{object}"
   end
 
   @spec basepath(binary) :: {:ok, binary}

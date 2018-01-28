@@ -1,4 +1,4 @@
-defmodule Stitch.Upload do
+defmodule Stitch.Message.Upload do
   alias Stitch.{Message, AWS.S3}
 
   def presign(%Message{type: "upload", fields: %{"url" => url}}) do
