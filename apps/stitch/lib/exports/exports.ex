@@ -8,7 +8,7 @@ defmodule Stitch.Exports do
   alias Stitch.Exports.{Export, TeamHistory}
 
   @exports_enabled Application.get_env(:stitch, Stitch.Exports)[:enabled]
-  @aws_presigned_urls_config Application.get_env(:stitch, :aws_presigned_urls)
+  @aws_presigned_urls_config Application.get_env(:stitch, :aws_user_upload)
   @exports_bucket "stitch-exports"
 
   @doc """
