@@ -31,7 +31,7 @@ defmodule Stitch.Util.SanitizerTest do
     end
 
     test "returns error for non-string value" do
-      {:error, message} = Sanitizer.keep_lower_alphanumeric(123456)
+      {:error, message} = Sanitizer.keep_lower_alphanumeric(123_456)
       assert message == "value must be a string"
     end
 
