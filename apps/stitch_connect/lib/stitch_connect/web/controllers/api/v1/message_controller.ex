@@ -1,9 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Repo, Group, GroupAuthorization, GroupQueries,
-                Message, MessageAction, MessageQueries}
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, GroupChannel, PushNotifications}
+  alias Stitch.{GroupAuthorization, GroupQueries, Message, MessageAction, MessageQueries}
 
   action_fallback StitchConnect.Web.Api.FallbackController
 

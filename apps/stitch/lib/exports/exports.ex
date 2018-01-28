@@ -8,8 +8,6 @@ defmodule Stitch.Exports do
   alias Stitch.Exports.{Export, TeamHistory}
 
   @exports_enabled Application.get_env(:stitch, Stitch.Exports)[:enabled]
-  @aws_presigned_urls_config Application.get_env(:stitch, :aws_user_upload)
-  @exports_bucket "stitch-exports"
 
   @doc """
   Creates an export.
@@ -113,20 +111,6 @@ defmodule Stitch.Exports do
         Logger.error("Failed to complete export for team id #{team.id}: #{error}")
         update_export(export, %{status: "FAILED"})
     end
-  end
-
-  @doc """
-  Generates a pre-signed URL for this object.
-
-  """
-  @spec presigned_url(String.t) :: {:ok, binary} | {:error, binary}
-  def presigned_url(object_url) do
-    config = @aws_presigned_urls_config
-    bucket = @exports_bucket
-    object = Path.basename(object_url)
-    opts = [virtual_host: false, expires_in: 30] # expires in 30 secs
-    {:ok, presigned_url} = ExAws.S3.presigned_url(config, :get, bucket, object, opts)
-    presigned_url
   end
 
   @doc """

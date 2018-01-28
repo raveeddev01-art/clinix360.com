@@ -74,6 +74,31 @@ defmodule Stitch.AWS.S3 do
     end
   end
 
+  def presigned_url(object, opts \\ [expires_in: 60_000])
+
+  def presigned_url(object, opts) when is_binary(object) do
+    case presign(object, opts) do
+      {:ok, presigned_url} -> presigned_url
+      _ -> nil
+    end
+  end
+
+  def presigned_url(_object, _opts), do: nil
+
+  def presign(object, opts \\ [expires_in: 60_000])
+
+  def presign(object, opts) when is_binary(object) do
+    path = Path.basename(object)
+    opts = Keyword.put(opts, :virtual_host, false)
+
+    case ExAws.S3.presigned_url(@s3, :get, @s3.bucket, path, opts) do
+      {:ok, presigned_url} -> {:ok, presigned_url}
+      _ -> :error
+    end
+  end
+
+  def presign(_object, _opts), do: :error
+
   def sign(filename, mimetype) do
     policy = policy(filename, mimetype)
 

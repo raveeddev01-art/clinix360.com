@@ -81,7 +81,7 @@ defmodule Stitch.GroupQueries do
   @doc """
   Returns group with the exist matching id.
   """
-  def get_by_id(id, %User{team_id: team_id, id: user_id} = user) do
+  def get_by_id(id, %User{team_id: team_id, id: _user_id} = user) do
     group = Group
     |> where(team_id: ^team_id, id: ^id)
     |> load_groups_for_user(user)
