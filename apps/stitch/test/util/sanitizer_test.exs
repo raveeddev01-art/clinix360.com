@@ -7,7 +7,8 @@ defmodule Stitch.Util.SanitizerTest do
       values = [
         {"Ash.whipporwill", "ashwhipporwill"},
         {"P.W", "pw"},
-        {"Sergio!-_--.Si", "sergiosi"}
+        {"Sergio!-_--.Si", "sergiosi"},
+        {"S!3", "s3"}
       ]
 
       for {dirty_value, sanitized_value} <- values do
@@ -20,8 +21,7 @@ defmodule Stitch.Util.SanitizerTest do
       values = [
         {"brenda", "brenda"},
         {"ash123", "ash123"},
-        {"0000", "0000"},
-        {"S!3", "s3"}
+        {"0000", "0000"}
       ]
 
       for {dirty_value, sanitized_value} <- values do
