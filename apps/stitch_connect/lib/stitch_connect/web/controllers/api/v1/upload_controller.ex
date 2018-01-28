@@ -16,6 +16,6 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
   def create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
     conn
     |> put_status(:created)
-    |> render("create.json", signature: S3.sign(filename, mimetype))
+    |> render("create.json", signature: S3.signature(filename, mimetype))
   end
 end

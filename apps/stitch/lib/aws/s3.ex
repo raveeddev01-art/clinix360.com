@@ -2,53 +2,6 @@ defmodule Stitch.AWS.S3 do
   alias Timex
   @s3 Application.get_env(:stitch, :aws_user_upload)
 
-  # TODO: Remove comments after adding test cases
-  ########################################################################
-  # /profile_image.ex
-  #
-  # @spec upload(binary) :: {:ok, map} | {:error, term}
-  # def upload(path) do
-  #   object_name = Path.basename(path)
-  #   path
-  #   |> S3.Upload.stream_file()
-  #   |> S3.upload(@s3.bucket, object_name, encryption: "AES256")
-  #   |> ExAws.request()
-  # end
-
-  # @spec download(binary, binary) :: {:ok, :done} | {:error, term}
-  # def download(filename, dest) do
-  #   S3.download_file(@s3.bucket, "/#{filename}", dest) |> ExAws.request
-  # end
-  ########################################################################
-
-  # /upload_preview.ex
-  #
-  # @spec upload(binary) :: {:ok, map} | {:error, term}
-  # def upload(path) do
-  #   object_name = Path.basename(path)
-  #   path
-  #   |> S3.Upload.stream_file()
-  #   |> S3.upload(@s3.bucket, object_name, encryption: "AES256")
-  #   |> ExAws.request()
-  # end
-
-  # @spec download(binary, binary) :: {:ok, :done} | {:error, term}
-  # def download(filename, dest) do
-  #   S3.download_file(@s3.bucket, filename, dest) |> ExAws.request
-  # end
-  ########################################################################
-
-  # /exports.ex
-  #
-  # defp upload_to_S3(zip_path) do
-  #   path_on_s3 = Path.basename(zip_path)
-  #   zip_path
-  #   |> ExAws.S3.Upload.stream_file()
-  #   |> ExAws.S3.upload(@exports_bucket, path_on_s3, encryption: "AES256")
-  #   |> ExAws.request()
-  # end
-  ########################################################################
-
   @spec upload(binary) :: {:ok, map} | {:error, term}
   def upload(path) do
     object_name = Path.basename(path)
@@ -68,6 +21,7 @@ defmodule Stitch.AWS.S3 do
     "https://#{@s3.host}/#{@s3.bucket}/#{Path.join(directory, Path.basename(filepath))}"
   end
 
+  @spec basepath(binary) :: {:ok, binary}
   def basepath(url) do
     with %{path: path} <- URI.parse(url) do
       {:ok, Path.relative_to(path, "/#{@s3.bucket}")}
@@ -99,7 +53,7 @@ defmodule Stitch.AWS.S3 do
 
   def presign(_object, _opts), do: :error
 
-  def sign(filename, mimetype) do
+  def signature(filename, mimetype) do
     policy = policy(filename, mimetype)
 
     %{
