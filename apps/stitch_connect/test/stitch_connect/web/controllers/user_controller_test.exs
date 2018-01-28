@@ -352,7 +352,7 @@ defmodule StitchConnect.Web.UserControllerTest do
         |> post(api_v1_user_path(conn, :validate_emails, params))
         |> json_response(200)
 
-      assert [%{"furqan@sina.com" => "Email sina.com is not supported"}] == result
+      assert [%{"furqan@sina.com" => "We do not allow emails from sina.com"}] == result
     end
 
     test "process multi valid email", %{conn: conn} do
@@ -381,7 +381,7 @@ defmodule StitchConnect.Web.UserControllerTest do
         assert [
           %{"furqan@apple.com" => true},
           %{"furqanmango.com" => "Email has invalid format"},
-          %{"furqan@sina.com" => "Email sina.com is not supported"},
+          %{"furqan@sina.com" => "We do not allow emails from sina.com"},
         ] == result
     end
   end

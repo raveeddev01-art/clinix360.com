@@ -20,7 +20,7 @@ defmodule Stitch.AccountsTest do
 
     test "returns error when given email domain is prohibited" do
       {:error, %Ecto.Changeset{} = changeset} = Accounts.create_user_with_email_only("furqan@sina.com")
-      assert changeset.errors == [email: {"%{host} is not supported", [host: "sina.com"]}]
+      assert changeset.errors == [email: {"host %{host} is not supported", [host: "sina.com"]}]
     end
   end
 
