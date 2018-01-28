@@ -39,5 +39,10 @@ defmodule Stitch.Util.SanitizerTest do
       end_result = Sanitizer.keep_lower_alphanumeric("S!")
       assert end_result == "s0"
     end
+
+    test "adds no padding is min_size is 0" do
+      end_result = Sanitizer.keep_lower_alphanumeric("S!", 0)
+      assert end_result == "s"
+    end
   end
 end
