@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.Billing.HistoryView do
   use StitchConnect.Web, :view
+  alias Stitch.AWS.S3
 
   def render("index.json", %{history: histories}) do
     data = for history <- histories, do: history_json(history)
@@ -14,7 +15,8 @@ defmodule StitchConnect.Web.Api.V1.Billing.HistoryView do
       quantity: history.quantity,
       period_end: history.period_end,
       inserted_at: history.inserted_at,
-      period_start: history.period_start
+      period_start: history.period_start,
+      statement_pdf_url: S3.presigned_url(history.statement_pdf_url)
     }
   end
 end

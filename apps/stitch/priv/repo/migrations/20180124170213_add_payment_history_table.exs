@@ -10,6 +10,7 @@ defmodule Stitch.Repo.Migrations.AddPaymentHistoryTable do
       add(:quantity, :integer)
       add(:period_start, :naive_datetime)
       add(:period_end, :naive_datetime)
+      add(:statement_pdf_url, :string)
 
       # History cannot be updated
       timestamps(updated_at: false)

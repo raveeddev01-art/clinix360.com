@@ -2,9 +2,8 @@ defmodule Stitch.Stripe.Events do
   @moduledoc """
   Handles Stripe webhook events.
   """
-  alias Stitch.Billing
-  alias Stitch.TeamQueries
   alias Stitch.Billing.{Plan, Notifications}
+  alias Stitch.{Billing, TeamQueries, AWS.S3}
 
   # Successful payment
   def handle_event(%{type: "invoice.payment_succeeded"} = event) do
@@ -87,9 +86,24 @@ defmodule Stitch.Stripe.Events do
       amount: plan["amount"] / 10,
       quantity: subscription["quantity"],
       period_end: DateTime.from_unix!(period["end"]),
-      period_start: DateTime.from_unix!(period["start"]),
+      period_start: DateTime.from_unix!(period["start"])
     }
 
-    Billing.create_payment_history(params)
+    statement_pdf_url = generate_statement_pdf(team, params)
+
+    params
+    |> Map.put(:statement_pdf_url, statement_pdf_url)
+    |> Billing.create_payment_history()
+  end
+
+  defp generate_statement_pdf(team, history) do
+    html = "<html><body><p>Hi there!</p></body></html>"
+
+    with {:ok, filename} <- PdfGenerator.generate(html, page_size: "A4"),
+         {:ok, %{status_code: 200}} <- S3.upload(filename) do
+      S3.fullpath(filename)
+    else
+      _ -> nil
+    end
   end
 end
