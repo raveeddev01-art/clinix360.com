@@ -7,12 +7,11 @@ defmodule Stitch.Util.Sanitizer do
   Lowercases a string and removes all non-alphanumeric characters.
   """
   @spec keep_lower_alphanumeric(binary) :: binary
-  def keep_lower_alphanumeric(username) when is_binary(username) do
-    username =
-      username
-      |> String.downcase()
-      |> String.replace(~r/[^a-z0-9]/, "")
-
-    if String.length(username) == 1, do: "#{username}_", else: username
+  def keep_lower_alphanumeric(value, min_size \\ 2) when is_binary(value) do
+    value
+    |> String.downcase()
+    |> String.replace(~r/[^a-z0-9]/, "")
+    |> String.pad_trailing(min_size, "0")
   end
+  def keep_lower_alphanumeric(_value, _min_size), do: {:error, "value must be a string"}
 end
