@@ -48,12 +48,12 @@ class MessageList extends Component {
         if (
           messages[i].user.id === lastMessage.user.id &&
           lastMessage.type !== "system" &&
-          messages[i - 1].type !== "upload" &&
+          lastMessage.type !== "upload" &&
           moment(messages[i].inserted_at).diff(
             moment(lastMessage.inserted_at),
             "seconds"
           ) <
-            15 * 60
+            5 * 60
         ) {
           messages[i].is_sequential = true;
         } else {
