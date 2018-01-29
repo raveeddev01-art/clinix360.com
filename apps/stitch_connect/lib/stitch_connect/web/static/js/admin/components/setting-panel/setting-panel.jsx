@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import noop from "lodash/noop";
 
 class SettingPanel extends Component {
   constructor(props) {
@@ -111,8 +112,8 @@ SettingPanel.propTypes = {
 
 SettingPanel.defaultProps = {
   children: null,
-  onSave: () => {},
-  onEdit: () => {},
+  onSave: noop,
+  onEdit: noop,
   description: "",
   saveButtonText: "Save",
   disableSave: false

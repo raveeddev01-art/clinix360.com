@@ -8,8 +8,14 @@ import { RoleText } from "common/components";
 @observer
 class PendingInvitationItem extends Component {
   _revoke = () => {
-    const { invitationStore, id, email } = this.props;
-    const { hideAlert, onSuccess, onError } = this.props;
+    const {
+      invitationStore,
+      id,
+      email,
+      hideAlert,
+      onSuccess,
+      onError
+    } = this.props;
 
     hideAlert();
     invitationStore
@@ -23,8 +29,14 @@ class PendingInvitationItem extends Component {
   };
 
   _resend = () => {
-    const { invitationStore, id, email } = this.props;
-    const { hideAlert, onSuccess, onError } = this.props;
+    const {
+      invitationStore,
+      id,
+      email,
+      hideAlert,
+      onSuccess,
+      onError
+    } = this.props;
 
     hideAlert();
     invitationStore

@@ -10,63 +10,54 @@ const description = "Review pending accounts to revoke or resend invitations.";
 @inject("invitationStore")
 @observer
 class PendingInvitationsPanel extends Component {
-  onToggleEdit = isEditing => {
-    if (isEditing) this.props.invitationStore.loadInvitations();
-  };
-
-  _renderInvitations = () => {
+  componentWillMount() {
     const { invitationStore } = this.props;
-    return invitationStore.invitations.map(invitation => {
-      return (
-        <PendingInvitationItem
-          {...this.props}
-          key={`invitation_${invitation.id}`}
-          roles={invitation.roles || ["member"]}
-          groups={invitation.groups_as_guests}
-          email={invitation.email}
-          id={invitation.id}
-        />
-      );
-    });
-  };
+
+    invitationStore.loadInvitations();
+  }
 
   render() {
-    return (
-      <SettingPanel
-        saveButtonText=""
-        title={title}
-        description={description}
-        onEdit={this.onToggleEdit}
-      >
-        <p className="m-b-20">
-          View any outstanding invitations to join the team here. Revoking an
-          invite will remove it from this list and deactivate the invite link.
-          To resend an invitation multiple times, you can reload this page.
-        </p>
+    const { invitationStore: { invitations } } = this.props;
 
-        <div className="admin-table m-b-20">
-          <div className="table-head">
-            <Row>
-              <Col xs={5}>Email Address</Col>
-              <Col xs={3} className="text-center">
-                Role
-              </Col>
-              <Col xs={4} className="text-center">
-                Actions
-              </Col>
-            </Row>
+    return (
+      invitations.length > 0 && (
+        <SettingPanel saveButtonText="" title={title} description={description}>
+          <p className="m-b-20">
+            View any outstanding invitations to join the team here. Revoking an
+            invite will remove it from this list and deactivate the invite link.
+            To resend an invitation multiple times, you can reload this page.
+          </p>
+
+          <div className="admin-table m-b-20">
+            <div className="table-head">
+              <Row>
+                <Col xs={5}>Email Address</Col>
+                <Col xs={3} className="text-center">
+                  Role
+                </Col>
+                <Col xs={4} className="text-center">
+                  Actions
+                </Col>
+              </Row>
+            </div>
+
+            {invitations.map(invitation => (
+              <PendingInvitationItem
+                {...this.props}
+                key={`invitation_${invitation.id}`}
+                roles={invitation.roles || ["member"]}
+                groups={invitation.groups_as_guests}
+                email={invitation.email}
+                id={invitation.id}
+              />
+            ))}
           </div>
-          {this._renderInvitations()}
-        </div>
-      </SettingPanel>
+        </SettingPanel>
+      )
     );
   }
 }
 
-// PendingInvitationsPanel.propTypes = {
-//   onSuccess: PropTypes.func.isRequired,
-//   onError: PropTypes.func.isRequired,
-//   hideAlert: PropTypes.func.isRequired
-// };
+PendingInvitationsPanel.propTypes = {};
 
 export default PendingInvitationsPanel;
