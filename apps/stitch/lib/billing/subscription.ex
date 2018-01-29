@@ -34,7 +34,7 @@ defmodule Stitch.Billing.Subscription do
     %__MODULE__{}
     |> cast(params, ~w(tier renewal_frequency renews)a)
     |> validate_required(~w(tier renewal_frequency)a)
-    |> validate_inclusion(:tier, ~w(BASIC PREMIUM POWER), message: "expects BASIC|PREMIUM|POWER")
+    |> validate_inclusion(:tier, ~w(TRIAL BASIC PREMIUM POWER), message: "expects TRIAL|BASIC|PREMIUM|POWER")
     |> validate_inclusion(:renewal_frequency, ~w(MONTHLY YEARLY), message: "expects MONTHLY|YEARLY")
   end
 
