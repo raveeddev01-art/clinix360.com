@@ -6,9 +6,9 @@ defmodule StitchConnect.Web.Api.V1.DeviceController do
 
   def create(conn, params) do
     user = conn.assigns.current_user
-    Mobile.remove_device(params["type"], params["token"])
 
-    with {:ok, %Mobile.Device{}} <- Mobile.register_device(user, params) do
+    with {:ok, %Mobile.Device{}} <- Mobile.register_device(user, params),
+         {_amount, _devices} <- Mobile.remove_device(params["type"], params["token"]) do
       conn
       |> put_status(:created)
       |> json(%{message: "Mobile device registered"})
