@@ -1,9 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
-  alias Stitch.{GroupAuthorization, GroupQueries,
-                Message, MessageAction, MessageQueries}
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, GroupChannel, PushNotifications}
+  alias Stitch.{GroupAuthorization, GroupQueries, Message, MessageAction, MessageQueries, Message.Upload}
 
   action_fallback StitchConnect.Web.Api.FallbackController
 
@@ -87,7 +86,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
     with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)},
-         {:ok, presigned_url} <- Stitch.Upload.presign(message) do
+         {:ok, presigned_url} <- Upload.presign(message) do
       json(conn, %{presigned_url: presigned_url})
     else
       {:authorized?, false} -> {:error, :not_found}
