@@ -13,11 +13,7 @@ class PeopleDetail extends Component {
     return (
       <div className="user-view">
         <div className="user-avatar m-b-20">
-          <img
-            src={avatar || "/images/default-avatar.png"}
-            alt="Avatar"
-            className="img-responsive"
-          />
+          <img src={avatar} alt="Avatar" className="img-responsive" />
         </div>
 
         <div className="username-and-title">
