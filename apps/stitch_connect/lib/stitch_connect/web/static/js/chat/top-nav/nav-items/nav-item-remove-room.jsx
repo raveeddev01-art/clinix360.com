@@ -27,6 +27,6 @@ export default class NavItemRemoveRoom extends Component {
   };
 
   render() {
-    return <MenuItem onClick={this.removeRoom}>Remove Room</MenuItem>;
+    return <MenuItem onClick={this.removeRoom}>Delete Room</MenuItem>;
   }
 }

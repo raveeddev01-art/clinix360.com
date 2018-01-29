@@ -51,12 +51,15 @@ export default class NavItemInviteMembers extends Component {
   render() {
     const { presenceStore, groupStore, usersStore } = this.props;
     const users = usersStore.activatedUsers.filter(u => {
-      return groupStore.group.users.findIndex(gu => gu.id === u.id) === -1 && isFullMember(u);
+      return (
+        groupStore.group.users.findIndex(gu => gu.id === u.id) === -1 &&
+        isFullMember(u)
+      );
     });
 
     return [
       <MenuItem key="members_menuitem" onClick={this.openModal}>
-        Invite
+        Invite Members to Room
       </MenuItem>,
       <Modal
         key="members_modal"
@@ -64,7 +67,7 @@ export default class NavItemInviteMembers extends Component {
         onHide={this.closeModal}
       >
         <Modal.Header>
-          <Modal.Title>Invite</Modal.Title>
+          <Modal.Title>Invite Members to Room</Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />
           </a>

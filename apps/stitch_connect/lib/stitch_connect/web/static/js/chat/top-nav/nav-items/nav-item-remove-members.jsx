@@ -58,7 +58,7 @@ export default class NavItemRemoveMembers extends Component {
 
     return [
       <MenuItem key="members_menuitem" onClick={this.openModal}>
-        Remove
+        Remove Members from Room
       </MenuItem>,
       <Modal
         key="members_modal"
@@ -66,7 +66,7 @@ export default class NavItemRemoveMembers extends Component {
         onHide={this.closeModal}
       >
         <Modal.Header>
-          <Modal.Title>Remove Members</Modal.Title>
+          <Modal.Title>Remove Members from Room</Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />
           </a>
