@@ -128,14 +128,16 @@ class TeamSettings extends Component {
           hideAlert={this.hideAlert}
         />
 
-        <MembersPanel
-          title="Guests"
-          description="Manage guests (single room guests and multi room guests) and their rooms."
-          users={guests}
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
+        {guests.length > 0 && (
+          <MembersPanel
+            title="Guests"
+            description="Manage guests (single room guests and multi room guests) and their rooms."
+            users={guests}
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+        )}
 
         <DeactivatedMembersPanel
           onSuccess={this.onSuccess}
