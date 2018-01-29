@@ -23,14 +23,6 @@ config :stitch,
   segment_api: Stitch.Analytics.Segment.InMemory,
   analytics: Stitch.Analytics.TestClient
 
-config :stitch, :aws_presigned_urls, %{
-  access_key_id: "some-access-key-id",
-  secret_access_key: "some-secret-access-key",
-  region: "us-east-1",
-  host: "s3.amazonaws.com",
-  scheme: "https://"
-}
-
 config :stitch, :aws_user_upload, %{
   access_key_id: "fake-access-key-id",
   secret_access_key: "fake-secret-access-key",
