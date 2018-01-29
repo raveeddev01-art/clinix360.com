@@ -4,6 +4,7 @@ defmodule Stitch.Stripe.Events do
   """
   alias Stitch.Billing.{Plan, Notifications}
   alias Stitch.{Billing, TeamQueries, AWS.S3}
+  alias StitchConnect.Web.Api.V1.Billing.HistoryView
 
   # Successful payment
   def handle_event(%{type: "invoice.payment_succeeded"} = event) do
@@ -75,18 +76,27 @@ defmodule Stitch.Stripe.Events do
 
   defp record_payment_history(team, event) do
     [subscription] = get_in(event, [:data, "object", "lines", "data"])
+    period_start = get_in(event, [:data, "object", "period_start"])
+    period_end = get_in(event, [:data, "object", "period_end"])
+    charge_id = get_in(event, [:data, "object", "charge"])
     invoice_id = get_in(event, [:data, "object", "id"])
-    period = subscription["period"]
+    amount = get_in(event, [:data, "object", "total"])
     plan = subscription["plan"]
+
+    {:ok, transaction} = Stitch.Stripe.Client.get_transaction(charge_id)
+    card = transaction.source
 
     params = %{
       plan: plan["id"],
       team_id: team.id,
+      card_id: card["id"],
       invoice_id: invoice_id,
-      amount: plan["amount"] / 10,
+      amount: amount / 100,
+      card_brand: card["brand"],
+      card_last4: card["last4"],
       quantity: subscription["quantity"],
-      period_end: DateTime.from_unix!(period["end"]),
-      period_start: DateTime.from_unix!(period["start"])
+      period_end: DateTime.from_unix!(period_end),
+      period_start: DateTime.from_unix!(period_start)
     }
 
     statement_pdf_url = generate_statement_pdf(team, params)
@@ -97,9 +107,26 @@ defmodule Stitch.Stripe.Events do
   end
 
   defp generate_statement_pdf(team, history) do
-    html = "<html><body><p>Hi there!</p></body></html>"
+    subscription =
+      history.plan
+      |> String.split("_")
+      |> List.first()
+      |> String.upcase()
+      |> Plan.display_name()
 
-    with {:ok, filename} <- PdfGenerator.generate(html, page_size: "A4"),
+    params = [
+      team_name: team.name,
+      amount: history.amount,
+      quantity: history.quantity,
+      subscription: subscription,
+      card_brand: history.card_brand,
+      card_last4: history.card_last4,
+      today: Timex.format!(Timex.now(), "{Mfull} {D}, {YYYY}")
+    ]
+
+    with html = Phoenix.View.render_to_string(HistoryView, "statement.html", params),
+         shell_params = ["-d", "480", "-L", "0", "-R", "0", "-T", "0", "-B", "0"],
+         {:ok, filename} <- PdfGenerator.generate(html, shell_params: shell_params),
          {:ok, %{status_code: 200}} <- S3.upload(filename) do
       S3.fullpath(filename)
     else
