@@ -94,7 +94,7 @@ defmodule Stitch.Accounts.User do
   def valid_email_changeset(struct, attrs) do
     struct
     |> cast(attrs, [:email])
-    |> validate_format(:email, ~r/@/)
+    |> validate_format(:email, ~r/[\w-]+@([\w-]+\.)+[\w-]+/)
     |> Stitch.Validators.validate_email_domain(:email)
   end
 

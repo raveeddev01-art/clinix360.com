@@ -12,7 +12,7 @@ defmodule Stitch.Validators do
 
       case host in blacklisted_email_domains() do
         true ->
-          message = opts[:message] || "%{host} is not supported"
+          message = opts[:message] || "host %{host} is not supported"
           [{field, {message, [host: host]}}]
 
         false ->

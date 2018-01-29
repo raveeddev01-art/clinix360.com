@@ -257,10 +257,13 @@ defmodule StitchConnect.Web.Api.V1.UserController do
       |> Enum.map(fn email ->
         email = String.trim(email)
         changeset = User.valid_email_changeset(%User{}, %{email: email})
-        if changeset.valid? do
-          %{"#{email}": true}
-        else
-          %{"#{email}": changeset_errors_to_string(changeset)}
+        case changeset.errors do
+          [] ->
+            %{"#{email}": true}
+          [email: {_, [host: host]}] ->
+            %{"#{email}": "We do not allow emails from #{host}"}
+          _ ->
+            %{"#{email}": changeset_errors_to_string(changeset)}
         end
       end)
 
