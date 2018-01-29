@@ -163,10 +163,14 @@ defmodule StitchConnect.Web.SubdomainRouter do
     end
 
     # Team Settings admin routes
-    scope "/teams/:id" do
-      delete "/",                           TeamController, :delete_team
-      put "/update-open-invitation",        TeamController, :update_open_invitation
-      put "/update-security-lockout-time",  TeamController, :update_security_lockout_time
+    scope "/teams" do
+      put "/contact", TeamController, :update_contact_info
+
+      scope "/:id" do
+        delete "/",                           TeamController, :delete_team
+        put "/update-open-invitation",        TeamController, :update_open_invitation
+        put "/update-security-lockout-time",  TeamController, :update_security_lockout_time
+      end
     end
 
     # Subscription/Billing routes

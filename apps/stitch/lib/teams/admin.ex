@@ -21,6 +21,15 @@ defmodule Stitch.Team.Admin do
   end
   def update_name(_, _), do: {:error, "Name cannot be blank or nil"}
 
+  def update_contact_info(%Team{} = team, params) do
+    result = team
+    |> Team.contact_info_changeset(params)
+    |> Repo.update
+
+    case result, do: ({:ok, _} -> analytics_identify_and_group(team); _ -> :ignore)
+    result
+  end
+
   defp analytics_identify_and_group(team) do
     Task.start(fn ->
       @analytics.identify_and_group(team)
@@ -47,7 +56,6 @@ defmodule Stitch.Team.Admin do
     changeset = Team.changeset(team, %{security_lockout: security_lockout})
     Repo.update changeset
   end
-
 
   @spec update_open_invitation(number, boolean) :: {:ok, term} | {:error, term}
   @doc """
