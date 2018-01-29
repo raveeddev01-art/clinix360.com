@@ -148,6 +148,15 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     end
   end
 
+  def resend(conn, %{"id" => id}) do
+    case Invitation.resend_invitation(conn.assigns.current_user.id, id) do
+      {:error, reason} ->
+        conn |> put_status(:unauthorized) |> text(reason)
+      {:ok, invitation} ->
+        render conn, "show.json", invitation: invitation
+    end
+  end
+
   def accept(conn, %{"token" => invite_token} = params) do
     result = Invitation.accept_and_complete_onboarding(invite_token, params)
 

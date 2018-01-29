@@ -1,7 +1,8 @@
 defmodule StitchConnect.Web.Api.V1.MessageView do
   use StitchConnect.Web, :view
-  alias Stitch.{Message}
+  alias Stitch.{Message, AWS.S3}
   import StitchConnect.Web.SubdomainRouter.Helpers
+
   @endpoint StitchConnect.Web.Endpoint
 
   def render("index.json", %{messages: messages}) do
@@ -61,13 +62,13 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   end
 
   def put_preview_presigned_url(%{"preview_url" => url, "mimetype" => "image/" <> _image} = fields) do
-    case Stitch.Upload.presign_url(url) do
+    case S3.presign(url) do
       {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
       :error -> fields
     end
   end
   def put_preview_presigned_url(%{"url" => url, "mimetype" => "image/" <> _image} = fields) do
-    case Stitch.Upload.presign_url(url) do
+    case S3.presign(url) do
       {:ok, presigned_url} -> Map.put(fields, "preview_url", presigned_url)
       :error -> fields
     end
