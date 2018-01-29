@@ -18,7 +18,9 @@ import pluralize from "pluralize";
 import { MemberType } from "common/components";
 import { extractEmails } from "lib/utils";
 
-@inject("invitationStore")
+const DEFAULT_ROLE = "member";
+
+@inject("invitationStore", "billingStore")
 @observer
 class InviteModal extends Component {
   static initialState = {
@@ -34,7 +36,7 @@ class InviteModal extends Component {
     alertStyle: "",
     alertVisible: false,
     results: {},
-    role: "member",
+    role: DEFAULT_ROLE,
     groupId: null
   };
 
@@ -274,7 +276,11 @@ class InviteModal extends Component {
 
     if (filteredEmails.length) {
       this.props.invitationStore
-        .sendInvites(filteredEmails, groupId, role)
+        .sendInvites(
+          filteredEmails,
+          groupId,
+          this.guestInviteEnabled() ? role : DEFAULT_ROLE
+        )
         .then(res => {
           this.setState({ sent: true });
           this.showResultMessage(res.data);
@@ -293,6 +299,20 @@ class InviteModal extends Component {
         alertStyle: "danger"
       });
     }
+  }
+
+  guestInviteEnabled() {
+    const {
+      billingStore: {
+        subscription: { tier, trial_remaining_days: trialRemainingDays }
+      }
+    } = this.props;
+
+    return (
+      (tier === "TRIAL" && trialRemainingDays > 0) ||
+      tier === "PREMIUM" ||
+      tier === "POWER"
+    );
   }
 
   render() {
@@ -352,14 +372,17 @@ class InviteModal extends Component {
                 </Col>
               </FormGroup>
             ) : (
-              <div>
-                <MemberType
-                  typeLabel="Invite Type"
-                  role={role}
-                  groupId={groupId}
-                  onChangeRole={this.onChangeField("role")}
-                  onChangeGroup={this.onChangeField("groupId")}
-                />
+              <div className="default-mode-form">
+                {this.guestInviteEnabled() && (
+                  <MemberType
+                    typeLabel="Invite Type"
+                    role={role}
+                    groupId={groupId}
+                    onChangeRole={this.onChangeField("role")}
+                    onChangeGroup={this.onChangeField("groupId")}
+                  />
+                )}
+
                 <div className="invite-email-list">
                   {invites.map((invite, index) => {
                     const inviteSent = sent && !!invite.email.trim();
