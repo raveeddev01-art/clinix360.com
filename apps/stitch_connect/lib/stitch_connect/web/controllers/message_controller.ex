@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.MessageController do
   use StitchConnect.Web, :controller
-  alias Stitch.{GroupAuthorization, MessageQueries}
+  alias Stitch.{GroupAuthorization, MessageQueries, Message.Upload}
 
   def download(conn, %{"id" => message_id}) do
     current_user = conn.assigns.current_user
@@ -8,15 +8,16 @@ defmodule StitchConnect.Web.MessageController do
 
     case GroupAuthorization.can_view?(message.group, current_user) do
       true ->
-        case Stitch.Upload.presign(message) do
+        case Upload.presign(message) do
           {:ok, presigned_url} ->
-            redirect conn, external: presigned_url
+            redirect(conn, external: presigned_url)
+
           :error ->
-            redirect conn, to: "/login"
+            redirect(conn, to: "/login")
         end
 
       false ->
-        redirect conn, to: "/login"
+        redirect(conn, to: "/login")
     end
   end
 end
