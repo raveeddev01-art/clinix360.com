@@ -12,8 +12,10 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 import uniqBy from "lodash/uniqBy";
-import { MemberType } from "common/components";
 import isEmail from "validator/lib/isEmail";
+import pluralize from "pluralize";
+
+import { MemberType } from "common/components";
 import { extractEmails } from "lib/utils";
 
 @inject("invitationStore")
@@ -131,9 +133,11 @@ class InviteModal extends Component {
       mode: "default",
       emails: "",
       alertVisible: true,
-      alertMessage: `We found ${invites.length === 1
-        ? "1 email"
-        : `${invites.length} emails`} to invite. If this looks correct, click Send.`,
+      alertMessage: `We found ${pluralize(
+        "email",
+        invites.length,
+        true
+      )} to invite. If this looks correct, click Send.`,
       alertStyle: "success"
     });
   };
@@ -228,30 +232,35 @@ class InviteModal extends Component {
 
     if (successInvitations === 0) {
       this.setState({
-        alertMessage: `Your ${totalInvitations === 1
-          ? "1 invitation"
-          : `${totalInvitations} invitations`} failed to send. Review the errors below.`,
+        alertMessage: `Your ${pluralize(
+          "invitation",
+          totalInvitations,
+          true
+        )} failed to send. Review the errors below.`,
         alertVisible: true,
         alertStyle: "danger"
       });
     } else if (totalInvitations === successInvitations) {
       this.setState({
-        alertMessage: `You successfully invited ${successInvitations === 1
-          ? "1 member"
-          : `${successInvitations} members`}.`,
+        alertMessage: `You successfully invited ${pluralize(
+          "member",
+          successInvitations,
+          true
+        )}.`,
         alertVisible: true,
         alertStyle: "success"
       });
     } else {
       this.setState({
-        alertMessage: `You successfully invited ${successInvitations === 1
-          ? `1 member`
-          : `${successInvitations} members`}, but ${totalInvitations -
-          successInvitations ===
-        1
-          ? `1 invitation`
-          : `${totalInvitations -
-              successInvitations} invitations`} failed to send. Review the errors below.`,
+        alertMessage: `You successfully invited ${pluralize(
+          "member",
+          successInvitations,
+          true
+        )}, but ${pluralize(
+          "invitation",
+          totalInvitations - successInvitations,
+          true
+        )} failed to send. Review the errors below.`,
         alertVisible: true,
         alertStyle: "success"
       });

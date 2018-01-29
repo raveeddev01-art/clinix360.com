@@ -22,6 +22,7 @@
     "moment": "^2.18.1",
     "password-validator": "^4.0.0",
     "phoenix": "file:../../deps/phoenix",
+    "pluralize": "^7.0.0",
     "prop-types": "^15.6.0",
     "qs": "^6.5.1",
     "react": "16.0.0",
