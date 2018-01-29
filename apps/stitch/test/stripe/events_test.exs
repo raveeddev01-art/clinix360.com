@@ -18,6 +18,7 @@ defmodule Stitch.Stripe.EventsTest do
       type: "invoice.payment_succeeded",
       data: %{
         "object" => %{
+          "total" => 1200,
           "id" => "inv_afadsfaerasfasef",
           "customer" => subscription.customer_id,
           "lines" => %{
@@ -29,7 +30,6 @@ defmodule Stitch.Stripe.EventsTest do
               },
               "plan" => %{
                 "id" => "basic_yearly",
-                "amount" => 1200,
               },
               "quantity" => 6,
             }]

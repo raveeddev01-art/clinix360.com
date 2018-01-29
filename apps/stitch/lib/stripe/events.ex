@@ -76,15 +76,17 @@ defmodule Stitch.Stripe.Events do
 
   defp record_payment_history(team, event) do
     [subscription] = get_in(event, [:data, "object", "lines", "data"])
-    period_start = get_in(event, [:data, "object", "period_start"])
-    period_end = get_in(event, [:data, "object", "period_end"])
     charge_id = get_in(event, [:data, "object", "charge"])
     invoice_id = get_in(event, [:data, "object", "id"])
     amount = get_in(event, [:data, "object", "total"])
+    period = subscription["period"]
     plan = subscription["plan"]
 
-    {:ok, transaction} = Stitch.Stripe.Client.get_transaction(charge_id)
-    card = transaction.source
+    card =
+      case Stitch.Stripe.Client.get_transaction(charge_id) do
+        {:ok, transaction} -> transaction.source
+        _ -> %{"id" => nil, "brand" => nil, "last4" => nil}
+      end
 
     params = %{
       plan: plan["id"],
@@ -95,8 +97,8 @@ defmodule Stitch.Stripe.Events do
       card_brand: card["brand"],
       card_last4: card["last4"],
       quantity: subscription["quantity"],
-      period_end: DateTime.from_unix!(period_end),
-      period_start: DateTime.from_unix!(period_start)
+      period_end: DateTime.from_unix!(period["end"]),
+      period_start: DateTime.from_unix!(period["start"])
     }
 
     statement_pdf_url = generate_statement_pdf(team, params)
