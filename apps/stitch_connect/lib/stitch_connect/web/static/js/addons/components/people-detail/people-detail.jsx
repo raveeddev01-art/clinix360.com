@@ -5,50 +5,52 @@ import moment from "moment";
 // @TODO load time zone from user
 class PeopleDetail extends Component {
   render() {
-    const { user } = this.props;
+    const {
+      user: { avatar, full_name: fullName, title, username, email, phone }
+    } = this.props;
+    const timezone = moment().format("hh:mm A (Z)");
 
     return (
       <div className="user-view">
         <div className="user-avatar m-b-20">
           <img
-            src={user.avatar ? user.avatar : "/images/default-avatar.png"}
+            src={avatar || "/images/default-avatar.png"}
             alt="Avatar"
             className="img-responsive"
           />
         </div>
 
         <div className="username-and-title">
-          <h4 className="display-name">{`${user.first_name} ${user.last_name}`}</h4>
-          <div className="user-title text-muted">{user.title}</div>
+          <h4 className="display-name">{`${fullName}`}</h4>
+          <div className="user-title text-muted">{title}</div>
         </div>
+
         <ul className="userinfo">
-          {user.username ? (
+          {username && (
             <li className="userinfo__item">
               <span className="userinfo__label text-muted">Username</span>
-              <span className="userinfo__value">@{user.username}</span>
+              <span className="userinfo__value">@{username}</span>
             </li>
-          ) : null}
+          )}
 
           <li className="userinfo__item">
             <span className="userinfo__label text-muted">Timezone</span>
-            <span className="userinfo__value">
-              {moment().format("hh:mm A (Z)")}
-            </span>
+            <span className="userinfo__value">{timezone}</span>
           </li>
 
-          {user.email ? (
+          {email && (
             <li className="userinfo__item">
               <span className="userinfo__label text-muted">Email Address</span>
-              <span className="userinfo__value">{user.email}</span>
+              <span className="userinfo__value">{email}</span>
             </li>
-          ) : null}
+          )}
 
-          {user.phone ? (
+          {phone && (
             <li className="userinfo__item">
               <span className="userinfo__label text-muted">Phone Number</span>
-              <span className="userinfo__value">{user.phone}</span>
+              <span className="userinfo__value">{phone}</span>
             </li>
-          ) : null}
+          )}
         </ul>
       </div>
     );
