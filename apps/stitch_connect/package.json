@@ -14,6 +14,7 @@
     "favico.js": "^0.3.10",
     "font-awesome": "^4.7.0",
     "guid": "^0.0.12",
+    "i18n-iso-countries": "^3.4.0",
     "jquery": "3.2.1",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.4",
