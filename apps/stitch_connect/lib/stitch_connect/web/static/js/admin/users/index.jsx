@@ -11,12 +11,6 @@ import DeactivatedMembersPanel from "./deactivated-members-panel";
 import PendingInvitationsPanel from "./pending-invitations-panel";
 import MemberTypeModal from "./member-type-modal";
 
-const header = (
-  <h1>
-    <i className="fa fa-users" /> Members
-  </h1>
-);
-
 @inject("titleStore", "adminPanelStore", "usersStore")
 @observer
 class TeamSettings extends Component {
@@ -92,6 +86,12 @@ class TeamSettings extends Component {
     ];
     const fullMembers = users.filter(u => isFullMember(u));
     const guests = users.filter(u => !isFullMember(u));
+    const header = (
+      <h1>
+        <i className="fa fa-users" /> Members
+      </h1>
+    );
+
     return (
       <Panel className="admin-panel" header={header}>
         <div className="pull-right m-u-58">
@@ -103,6 +103,7 @@ class TeamSettings extends Component {
             Invite Members
           </Button>
         </div>
+
         <p className="m-b-20">
           Manage your users by controlling admin abilities and account status.
           For more information on how account enabling and disabling works, see
@@ -115,7 +116,9 @@ class TeamSettings extends Component {
             here
           </a>.
         </p>
+
         {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+
         <MembersPanel
           title="Members"
           description="Manage your users by controlling admin abilities and account status. For more information on how account enabling and disabling works, see our support article."
@@ -124,6 +127,7 @@ class TeamSettings extends Component {
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
+
         <MembersPanel
           title="Guests"
           description="Manage guests (single room guests and multi room guests) and their rooms."
@@ -132,20 +136,24 @@ class TeamSettings extends Component {
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
+
         <DeactivatedMembersPanel
           onSuccess={this.onSuccess}
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
+
         <PendingInvitationsPanel
           onSuccess={this.onSuccess}
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
+
         <InviteModal
           show={this.state.showInviteModal}
           toggle={this.toggleInviteModal}
         />
+
         <MemberTypeModal />
       </Panel>
     );

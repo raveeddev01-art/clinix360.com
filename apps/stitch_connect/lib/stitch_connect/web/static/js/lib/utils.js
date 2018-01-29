@@ -97,7 +97,7 @@ export function isValidUnicodeString(text) {
  * @returns {bool}
  */
 export function isFullMember(user) {
-  return user.roles.indexOf("member") > -1 || user.roles.indexOf("admin") > -1;
+  return user.roles.includes("member") || user.roles.includes("admin");
 }
 
 /**
