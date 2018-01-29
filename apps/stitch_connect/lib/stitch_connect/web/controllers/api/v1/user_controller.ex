@@ -250,12 +250,9 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     |> json(%{message: "Requires a username query."})
   end
 
-  def validate_emails(conn, %{"emails" => emails}) do
+  def validate_emails(conn, %{"emails" => emails}) when is_list(emails) do
     result =
-      emails
-      |> String.split(",")
-      |> Enum.map(fn email ->
-        email = String.trim(email)
+      Enum.map(emails, fn email ->
         changeset = User.valid_email_changeset(%User{}, %{email: email})
         case changeset.errors do
           [] ->
@@ -268,6 +265,12 @@ defmodule StitchConnect.Web.Api.V1.UserController do
       end)
 
     json(conn, result)
+  end
+
+  def validate_emails(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{message: "Requires list of emails."})
   end
 
   @member_role Role.member()
