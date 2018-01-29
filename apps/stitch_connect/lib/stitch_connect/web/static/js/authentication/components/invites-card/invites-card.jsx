@@ -31,7 +31,9 @@ class InvitesCard extends Component {
         const validationResults = {};
         response.data.forEach((e, index) => {
           const email = invites[index];
-          if (e[email] !== true) validationResults[email] = e[email];
+          if (e[email] !== true) {
+            validationResults[email] = e[email] || "Unexpected Error";
+          }
         });
         if (isEmpty(validationResults)) {
           this.props.onNext({
