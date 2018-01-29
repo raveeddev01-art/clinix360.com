@@ -69,8 +69,7 @@ class UserMention extends Component {
 }
 
 UserMention.propTypes = {
-  user: PropTypes.any.isRequired,
-  isMine: PropTypes.bool.isRequired
+  user: PropTypes.any.isRequired
 };
 
 export default withRouter(UserMention);

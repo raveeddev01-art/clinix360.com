@@ -36,7 +36,6 @@ class MessageContent extends Component {
         return (
           <UserMention
             key={`usermention_${i}`}
-            isMine={message.user_id === currentUser.id}
             user={usersById[part.content]}
           />
         );

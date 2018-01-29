@@ -291,26 +291,23 @@ class Message extends Component {
 
     return !message.is_sequential || message.type === "upload" ? (
       <div className="message-gutter">
-        {message.pinned ? (
+        {message.pinned && (
           <div className="icon-pin">
             <i className="fa fa-thumb-tack fa-rotate-45" />
           </div>
-        ) : null}
+        )}
 
         <div className="avatar">
-          <img
-            src={user.avatar ? user.avatar : "/images/default-avatar.png"}
-            alt="Avatar"
-          />
+          <img src={user.avatar || "/images/default-avatar.png"} alt="Avatar" />
         </div>
       </div>
     ) : (
       <div className="message-gutter">
-        {message.pinned ? (
+        {message.pinned && (
           <div className="icon-pin">
             <i className="fa fa-thumb-tack fa-rotate-45" />
           </div>
-        ) : null}
+        )}
 
         <OverlayTrigger
           placement="top"
@@ -343,32 +340,34 @@ class Message extends Component {
     const userId = message.user.id;
     const user = usersStore.usersById[userId];
 
-    return !message.is_sequential || message.type === "upload" ? (
-      <div className="message-header">
-        <span className="name">{`${user.first_name} ${user.last_name}`}</span>
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          overlay={
-            <Tooltip id="timestamp-info">
+    return (
+      (!message.is_sequential || message.type === "upload") && (
+        <div className="message-header">
+          <span className="name">{`${user.first_name} ${user.last_name}`}</span>
+          <OverlayTrigger
+            placement="top"
+            delayShow={150}
+            overlay={
+              <Tooltip id="timestamp-info">
+                {moment
+                  .utc(insertedAt)
+                  .local()
+                  .format("MMM Do [at] h:mm A")}
+              </Tooltip>
+            }
+          >
+            <span className="timestamp text-muted">
               {moment
                 .utc(insertedAt)
                 .local()
-                .format("MMM Do [at] h:mm A")}
-            </Tooltip>
-          }
-        >
-          <span className="timestamp text-muted">
-            {moment
-              .utc(insertedAt)
-              .local()
-              .format("h:mm A")}
-          </span>
-        </OverlayTrigger>
+                .format("h:mm A")}
+            </span>
+          </OverlayTrigger>
 
-        {this.renderStar(message)}
-      </div>
-    ) : null;
+          {this.renderStar(message)}
+        </div>
+      )
+    );
   }
 
   renderStatus(message) {
