@@ -18,9 +18,9 @@ defmodule StitchConnect.Web.Api.V1.DeviceController do
   def delete(conn, %{"type" => type, "token" => token}) do
     {amount_deleted, _devices_deleted} = Mobile.remove_device(type, token)
 
-    case amount_deleted do
-      amount_deleted > 0 -> json(conn, %{message: "Mobile device unregistered"})
-      _ -> json(conn, %{message: "Could not unregister this mobile device"})
+    case amount_deleted > 0 do
+      true -> json(conn, %{message: "Mobile device unregistered"})
+      false -> json(conn, %{message: "Could not unregister this mobile device"})
     end
   end
 end
