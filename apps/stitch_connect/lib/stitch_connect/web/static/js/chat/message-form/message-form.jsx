@@ -289,15 +289,16 @@ class MessageForm extends Component {
     const {
       messageStore: { messageInEdit },
       socketStore,
-      billingStore: { subscription }
+      billingStore: {
+        subscription: { tier, trial_remaining_days: trialRemainingDays }
+      }
     } = this.props;
 
     if (messageInEdit) {
       this.textInput.focus();
     }
 
-    const trialExpired =
-      subscription.tier === "TRIAL" && subscription.remaining_days <= 0;
+    const trialExpired = tier === "TRIAL" && trialRemainingDays <= 0;
     const text = !trialExpired
       ? this.getText()
       : isAdmin()

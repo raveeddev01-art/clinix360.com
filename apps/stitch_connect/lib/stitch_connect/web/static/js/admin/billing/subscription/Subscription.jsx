@@ -76,12 +76,11 @@ class Subscription extends Component {
     const { plan } = this.state;
 
     billingStore.subscribe(plan).then(subscription => {
+      const { tier, trial_remaining_days: trialRemainingDays } = subscription;
       const text =
-        subscription.remaining_days > 0
-          ? `We won't begin billing until your trial expires in ${subscription.remaining_days} days.`
-          : `Your team is now upgraded to ${capitalize(
-              subscription.tier
-            )} tier`;
+        trialRemainingDays > 0
+          ? `We won't begin billing until your trial expires in ${trialRemainingDays} days.`
+          : `Your team is now upgraded to ${capitalize(tier)} tier`;
 
       alert({
         title: "Thanks for using Stitch!",
@@ -110,26 +109,30 @@ class Subscription extends Component {
   }
 
   renderStatus() {
-    const { billingStore: { subscription } } = this.props;
+    const {
+      billingStore: {
+        subscription: { tier, trial_remaining_days: trialRemainingDays }
+      }
+    } = this.props;
     const { upgrade } = this.state;
 
     if (upgrade) {
       return null;
     }
 
-    if (subscription.remaining_days > 0) {
+    if (trialRemainingDays > 0) {
       return (
         <Well>
           <i className="fa fa-check-circle" />
 
-          {subscription.tier === "TRIAL" ? (
+          {tier === "TRIAL" ? (
             <p className="m-b-0">
               Your team is currently using a free trial of <b>Stitch Connect</b>{" "}
-              with <b>{subscription.remaining_days} days</b> remaining.
+              with <b>{trialRemainingDays} days</b> remaining.
             </p>
           ) : (
             <p className="m-b-0">
-              Your team is subscribed to <b>{capitalize(subscription.tier)}</b>.
+              Your team is subscribed to <b>{capitalize(tier)}</b>.
             </p>
           )}
         </Well>
@@ -139,7 +142,7 @@ class Subscription extends Component {
     return (
       <Well>
         <i className="fa fa-times-circle" />
-        {subscription.tier === "TRIAL" ? (
+        {tier === "TRIAL" ? (
           <p className="m-b-0">
             Your team&#39;s trial of Stitch Connect has completed.
           </p>
@@ -151,7 +154,15 @@ class Subscription extends Component {
   }
 
   renderFooter() {
-    const { billingStore: { subscription } } = this.props;
+    const {
+      billingStore: {
+        subscription: {
+          tier,
+          trial_remaining_days: trialRemainingDays,
+          valid_remaining_days: validRemainingDays
+        }
+      }
+    } = this.props;
 
     return (
       <p>
@@ -163,8 +174,8 @@ class Subscription extends Component {
         >
           here
         </a>.{" "}
-        {subscription.tier === "TRIAL" &&
-          subscription.remaining_days <= 0 && (
+        {tier === "TRIAL" &&
+          trialRemainingDays <= 0 && (
             <span>
               Request a free trial extension by clicking{" "}
               <a href="mailto:support@teamstitch.com?subject=Trial Extension Request&amp;body=I would like to request an extension to our Stitch Connect trial for the following reasons:">
@@ -172,8 +183,8 @@ class Subscription extends Component {
               </a>.
             </span>
           )}
-        {subscription.tier !== "TRIAL" &&
-          subscription.remaining_days > 0 && (
+        {tier !== "TRIAL" &&
+          validRemainingDays > 0 && (
             <span>
               Click{" "}
               <a href="mailto:support@teamstitch.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Stitch Connect subscription for the following reasons:">
@@ -187,19 +198,24 @@ class Subscription extends Component {
   }
 
   renderSubscribedPlan() {
-    const { billingStore: { subscription } } = this.props;
-    const belowTier = capitalize(getBelowTier(subscription.tier));
-    const planItems = getPlanForTier(subscription.tier).items;
-    const invoiceAmount = (subscription.estimated_invoice_amount / 100).toFixed(
-      2
-    );
+    const {
+      billingStore: {
+        subscription: {
+          tier,
+          valid_until: validUntil,
+          estimated_invoice_amount: estimatedInvoiceAmount
+        }
+      }
+    } = this.props;
+    const belowTier = capitalize(getBelowTier(tier));
+    const planItems = getPlanForTier(tier).items;
+    const invoiceAmount = (estimatedInvoiceAmount / 100).toFixed(2);
 
     return (
       <div className="subscribed">
         <p>
-          Your plan will renew on <b>{subscription.valid_until}</b> for{" "}
-          <b>${invoiceAmount}</b>. <b>{capitalize(subscription.tier)}</b>{" "}
-          includes{belowTier && (
+          Your plan will renew on <b>{validUntil}</b> for{" "}
+          <b>${invoiceAmount}</b>. <b>{capitalize(tier)}</b> includes{belowTier && (
             <span>
               {" "}
               everything in <b>{belowTier}</b>, and
@@ -233,9 +249,9 @@ class Subscription extends Component {
   }
 
   renderSelectPlan() {
-    const { billingStore: { subscription } } = this.props;
+    const { billingStore: { subscription: { tier } } } = this.props;
     const { plan } = this.state;
-    const tiers = getSelectableTiers(subscription.tier);
+    const tiers = getSelectableTiers(tier);
 
     return (
       <Plans
@@ -249,14 +265,14 @@ class Subscription extends Component {
   }
 
   renderSubscription() {
-    const { billingStore: { subscription } } = this.props;
+    const { billingStore: { subscription: { tier } } } = this.props;
     const { upgrade } = this.state;
 
     return (
       <div className="subscription">
         {this.renderStatus()}
 
-        {subscription.tier === "TRIAL" || upgrade
+        {tier === "TRIAL" || upgrade
           ? this.renderSelectPlan()
           : this.renderSubscribedPlan()}
 
