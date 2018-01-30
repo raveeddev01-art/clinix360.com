@@ -854,8 +854,8 @@ class MessageStore {
 
     if (
       !this.markedAsUnread &&
-      this.firstUnreadMessage &&
-      this.firstUnreadMessage.id === id
+      ((this.firstUnreadMessage && this.firstUnreadMessage.id === id) ||
+        !this.firstUnreadMessage)
     ) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
