@@ -24,7 +24,7 @@ class InvitesCard extends Component {
 
     const { invites } = this.state;
     post("/api/v1/users/validate-emails", {
-      body: { emails: this.state.invites.join(",") },
+      body: { emails: this.state.invites },
       hideNotify: true
     })
       .then(response => {
