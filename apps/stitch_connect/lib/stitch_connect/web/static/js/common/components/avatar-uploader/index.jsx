@@ -168,7 +168,10 @@ class AvatarUploader extends Component {
         />
         {!isUploading && (
           <div className="avatar-uploader__cloak" onClick={this.onCloakClick}>
-            <SmartDropdown id="user-mention" className="user-mention-dropdown">
+            <SmartDropdown
+              id="upload-avatar-menu"
+              className="upload-avatar-menu"
+            >
               <Dropdown.Toggle
                 useAnchor
                 noCaret
