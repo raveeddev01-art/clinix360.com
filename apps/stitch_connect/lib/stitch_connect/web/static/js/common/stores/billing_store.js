@@ -67,7 +67,7 @@ class BillingStore {
     const MOCK_CONTACT = {
       teamName: "Care Clinic",
       address: {
-        country: "United States",
+        country: "USA",
         companyName: "Stitch Technologies, Inc.",
         street: "188 King St.",
         suite: "Apt. PH9",

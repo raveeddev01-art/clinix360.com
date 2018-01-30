@@ -7,6 +7,7 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 
 import { alert } from "common/modals";
+import { getCountries } from "lib/billing";
 
 @inject("billingStore")
 @observer
@@ -53,6 +54,7 @@ class Contact extends Component {
       teamName,
       address: { country, companyName, street, suite, city, state, postalCode }
     } = this.state;
+    const countries = getCountries();
 
     return (
       <div className="contact-tab">
@@ -79,11 +81,18 @@ class Contact extends Component {
             <FormGroup controlId="country">
               <ControlLabel>Country*</ControlLabel>
               <FormControl
-                type="text"
                 name="country"
+                componentClass="select"
+                placeholder="select"
                 value={country}
                 onChange={this.onAddressChange}
-              />
+              >
+                {countries.map(({ alpha3, name }) => (
+                  <option value={alpha3} key={alpha3}>
+                    {name}
+                  </option>
+                ))}
+              </FormControl>
             </FormGroup>
 
             <FormGroup controlId="companyName">
