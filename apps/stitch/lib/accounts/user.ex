@@ -174,7 +174,7 @@ defmodule Stitch.Accounts.User do
     |> cast(params, [:username, :team_id])
     |> validate_required(:username)
     |> validate_length(:username, min: 2, max: 50)
-    |> validate_format(:username, ~r/^[a-z0-9][a-z0-9\.\-_]+$/)
+    |> validate_format(:username, ~r/^[a-z0-9]+$/)
     |> unsafe_validate_unique([:username, :team_id], Repo)
     |> unique_constraint(:username, name: :users_username_team_id_index)
   end
