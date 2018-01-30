@@ -44,10 +44,13 @@ defmodule Stitch.Accounts.User do
 
   def changeset(%User{} = struct, attrs) do
     struct
-    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :profile_image_url, :username])
+    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> validate_required([:first_name, :last_name])
+    |> default_profile_image_changeset(attrs)
+    |> Stitch.Validators.validate_no_emojis(:first_name)
+    |> Stitch.Validators.validate_no_emojis(:last_name)
   end
 
   def validate_username(%Ecto.Changeset{changes: %{username: _}} = changeset, params) do
@@ -142,9 +145,12 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(params, [:first_name, :phone_number, :last_name, :password, :pin, :team_id, :roles])
     |> username_changeset(params)
+    |> Stitch.Validators.validate_no_emojis(:first_name)
+    |> Stitch.Validators.validate_no_emojis(:last_name)
     |> ensure_role()
     |> unique_constraint(:team_id, name: :users_email_team_id_index)
     |> validate_required([:phone_number, :pin, :team_id, :roles])
+    |> default_profile_image_changeset(params)
     |> put_change(:onboarded, true)
   end
 
@@ -168,7 +174,7 @@ defmodule Stitch.Accounts.User do
     |> cast(params, [:username, :team_id])
     |> validate_required(:username)
     |> validate_length(:username, min: 2, max: 50)
-    |> validate_format(:username, ~r/^[a-z0-9][a-z0-9\.\-_]+$/)
+    |> validate_format(:username, ~r/^[a-z0-9]+$/)
     |> unsafe_validate_unique([:username, :team_id], Repo)
     |> unique_constraint(:username, name: :users_username_team_id_index)
   end
@@ -178,6 +184,24 @@ defmodule Stitch.Accounts.User do
     |> cast(params, [:profile_image_url])
     |> add_thumb()
   end
+
+  def default_profile_image_changeset(struct, params) do
+    changeset = struct
+    |> cast(params, [:profile_image_url, :profile_image_thumb_url])
+
+    case fetch_field(changeset, :profile_image_url) do
+      {_, nil} -> add_default_profile_image(changeset)
+      _ -> changeset
+    end
+  end
+
+  def add_default_profile_image(%{valid?: true} = changeset) do
+    avatar = Stitch.Accounts.ProfileImage.pick_default_random()
+    changeset
+    |> put_change(:profile_image_url, avatar.image_url)
+    |> put_change(:profile_image_thumb_url, avatar.thumb_url)
+  end
+  def add_default_profile_image(changeset), do: changeset
 
   def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
     case Stitch.Accounts.ProfileImage.create_thumb(url) do

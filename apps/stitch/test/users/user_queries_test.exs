@@ -1,6 +1,6 @@
 defmodule Stitch.UserQueriesTest do
   use Stitch.DataCase, async: true
-  alias Stitch.{Accounts.User, Rand, UserQueries}
+  alias Stitch.{Accounts.User, UserQueries}
 
   describe "UserQueries.search/2" do
     test "returns only matching users for the team" do
@@ -82,7 +82,7 @@ defmodule Stitch.UserQueriesTest do
   end
 
   describe "UserQueries.team_member_with_email/2" do
-    test "returns true or false if uesr exists or not" do
+    test "returns true or false if user exists or not" do
       team = insert(:team)
       insert(:user, team: team, email: "example@email.com")
 

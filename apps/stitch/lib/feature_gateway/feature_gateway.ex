@@ -23,7 +23,7 @@ defmodule Stitch.FeatureGateway do
   @spec allowed?(atom, Subscription.t()) ::
           :ok | {:error, expired_error | insufficient_tier_error}
   # Handle subscriptions that are in a trial
-  def allowed?(_feature, %Subscription{tier: "TRIAL", valid_until: valid_until}) do
+  def allowed?(_feature, %Subscription{tier: "TRIAL", trial_valid_until: valid_until}) do
     if DateTime.compare(valid_until, DateTime.utc_now()) == :gt do
       :ok
     else

@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   use StitchConnect.Web, :controller
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
   alias StitchConnect.Web.{EventsChannel, TeamChannel, GroupChannel}
-  alias Stitch.{Group, GroupQueries, GroupUser, GroupAuthorization, TeamAuthorization, MessageQueries, SystemMessages}
+  alias Stitch.{Group, GroupQueries, GroupAuthorization, SystemMessages}
 
   action_fallback StitchConnect.Web.Api.FallbackController
 
@@ -43,6 +43,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_rename?(group, user)},
          {:ok, group} <- Group.rename(group, name) do
       group = GroupQueries.load_user_data(group, user)
+      EventsChannel.broadcast_group_rename(group)
       render conn, "show.json", group: group, user_id: user.id
     else
       {:group, {:error, _reason}} -> {:error, :not_found}

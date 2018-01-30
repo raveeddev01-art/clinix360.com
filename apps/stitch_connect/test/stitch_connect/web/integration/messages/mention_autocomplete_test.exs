@@ -59,7 +59,10 @@ defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
     |> click(button("Join"))
     |> fill_in(text_field("Message"), with: "@ant")
     |> send_keys([:down_arrow])
-    |> assert_has(selected_mention_item("Anthony B"))
+    |> repeat_till(fn session ->
+      session
+      |> has?(selected_mention_item("Anthony B"))
+    end)
     |> send_keys([:enter])
     |> assert_has(css(".message-text", text: "@anthony"))
   end

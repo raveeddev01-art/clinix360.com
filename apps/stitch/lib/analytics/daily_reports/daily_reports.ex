@@ -24,7 +24,7 @@ defmodule Stitch.Analytics.DailyReports do
     resources = teams ++ users
 
     Analytics.DailyReports.Supervisor
-    |> Task.Supervisor.async_stream_nolink(resources, &(create(&1)))
+    |> Task.Supervisor.async_stream_nolink(resources, &(create(&1)), timeout: :timer.minutes(2))
     |> Enum.to_list()
   end
 

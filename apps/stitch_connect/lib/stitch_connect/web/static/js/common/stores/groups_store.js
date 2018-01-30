@@ -412,9 +412,8 @@ class GroupsStore {
         this.loadAdditionalGroup(payload.group_id);
       }
 
-      const meRemoved = payload.user_ids.indexOf(currentUser.id) === -1;
-
-      // redirect to default group if user is removed from current room
+      // Redirects to default group if user is removed from current room
+      const meRemoved = payload.user_ids.includes(currentUser.id);
       if (meRemoved && this.currentGroupId === payload.group_id) {
         history.push(`/rooms/${this.defaultGroup.slug}`);
       }

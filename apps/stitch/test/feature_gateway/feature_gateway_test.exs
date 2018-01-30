@@ -13,7 +13,7 @@ defmodule Stitch.FeatureGatewayTest do
       |> Kernel.-(100)
       |> DateTime.from_unix!()
 
-    insert(:trial_subscription, valid_until: expires)
+    insert(:trial_subscription, trial_valid_until: expires)
   end
 
   defp expired do
