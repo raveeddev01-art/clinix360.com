@@ -275,8 +275,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
         |> get(api_v1_billing_history_path(conn, :index))
 
       assert response = json_response(conn, 200)
-      assert is_list(response["data"])
-      assert 1 = length(response["data"])
+      assert [_] = response["data"]
     end
   end
 end

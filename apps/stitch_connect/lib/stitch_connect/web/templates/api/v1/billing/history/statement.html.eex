@@ -1,9 +1,13 @@
-<html cmd="wkhtmltopdf -d 470 statement-pdf.html test.pdf">
+<html>
 
   <head>
+    <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:300,400,700,900'" />
     <style>
       body {
-        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        font-weight: 300;
+        font-stretch: 100%;
+        font-family: 'Lato', sans-serif;
       }
 
       a {
@@ -17,16 +21,17 @@
         max-width: 470px;
         margin: 0 auto;
         background: white;
-        padding: 40px;
+        padding: 30px;
       }
 
       .header {
-        padding: 20px 0;
+        color: #036;
+        font-size: 30px;
         border-bottom: solid 2px #DDDDDD;
       }
 
-      .header .logo {
-        background: #036;
+      .header h2 {
+        margin-bottom: 15px;
       }
 
       .container {
@@ -48,10 +53,13 @@
         background: none;
         padding: 0;
         margin: 0;
+        font-size: 16px;
+        font-weight: 400;
       }
 
       table {
-        margin: auto 0;
+        margin: 0 auto;
+        width: 100%;
       }
 
       td {
@@ -60,6 +68,7 @@
 
       .footer {
         font-size: 14px;
+        font-weight: 300;
         margin-top: 70px;
         text-align: center;
       }
@@ -74,7 +83,7 @@
   <body>
     <div class="wrapper">
       <div class="header">
-        <img src="https://teamstitch.com/images/stitch-brand.png" class="logo" />
+        <h2>Stitch</h2>
       </div>
       <div class="container">
         <b><%= @today %></b>
