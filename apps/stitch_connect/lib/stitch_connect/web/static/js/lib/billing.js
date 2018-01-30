@@ -1,4 +1,6 @@
 import moment from "moment";
+import countries from "i18n-iso-countries";
+import _ from "lodash";
 
 const TIERS = ["BASIC", "PREMIUM", "POWER"];
 
@@ -184,6 +186,18 @@ const getMonthlyPrice = (tier, frequencyIndex) => {
   return plan.pricePerMonth[frequencyName];
 };
 
+const getCountries = () => {
+  const alpha2Map = countries.getNames("en");
+
+  return _.chain(alpha2Map)
+    .map((name, alpha2) => ({
+      alpha3: countries.alpha2ToAlpha3(alpha2),
+      name
+    }))
+    .sortBy("name")
+    .value();
+};
+
 export {
   processSubscriptionData,
   getSelectableTiers,
@@ -193,5 +207,6 @@ export {
   getAnnualFrequency,
   getMonthlyFrequency,
   getFrequencyName,
-  getMonthlyPrice
+  getMonthlyPrice,
+  getCountries
 };
