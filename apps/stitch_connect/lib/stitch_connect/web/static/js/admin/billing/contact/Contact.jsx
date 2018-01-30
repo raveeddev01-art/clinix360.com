@@ -15,26 +15,36 @@ class Contact extends Component {
   constructor(props) {
     super(props);
 
-    const { billingStore: { contact: { teamName, address } } } = props;
+    const {
+      billingStore: {
+        contact: {
+          name,
+          city,
+          state,
+          country,
+          zip_code: zipCode,
+          company_name: companyName,
+          address_line_one: addressLineOne,
+          address_line_two: addressLineTwo
+        }
+      }
+    } = props;
 
     this.state = {
-      teamName,
-      address
+      name,
+      city,
+      state,
+      country,
+      zipCode,
+      companyName,
+      addressLineOne,
+      addressLineTwo
     };
   }
 
-  onTeamNameChange = evt => {
+  onInputChange = evt => {
     this.setState({
-      teamName: evt.target.value
-    });
-  };
-
-  onAddressChange = evt => {
-    this.setState({
-      address: {
-        ...this.state.address,
-        [evt.target.name]: evt.target.value
-      }
+      [evt.target.name]: evt.target.value
     });
   };
 
@@ -51,21 +61,27 @@ class Contact extends Component {
 
   render() {
     const {
-      teamName,
-      address: { country, companyName, street, suite, city, state, postalCode }
+      name,
+      city,
+      state,
+      country,
+      zipCode,
+      companyName,
+      addressLineOne,
+      addressLineTwo
     } = this.state;
     const countries = getCountries();
 
     return (
       <div className="contact-tab">
         <h4>Name</h4>
-        <FormGroup controlId="teamName">
+        <FormGroup controlId="name">
           <FormControl
             type="text"
-            name="teamName"
-            value={teamName}
+            name="name"
+            value={name}
             placeholder="Team name"
-            onChange={this.onTeamNameChange}
+            onChange={this.onInputChange}
           />
 
           <HelpBlock>
@@ -85,7 +101,7 @@ class Contact extends Component {
                 componentClass="select"
                 placeholder="select"
                 value={country}
-                onChange={this.onAddressChange}
+                onChange={this.onInputChange}
               >
                 {countries.map(({ alpha3, name }) => (
                   <option value={alpha3} key={alpha3}>
@@ -101,27 +117,27 @@ class Contact extends Component {
                 type="text"
                 name="companyName"
                 value={companyName}
-                onChange={this.onAddressChange}
+                onChange={this.onInputChange}
               />
             </FormGroup>
 
-            <FormGroup controlId="street">
+            <FormGroup controlId="addressLineOne">
               <ControlLabel>Street Address*</ControlLabel>
               <FormControl
                 type="text"
-                name="street"
-                value={street}
-                onChange={this.onAddressChange}
+                name="addressLineOne"
+                value={addressLineOne}
+                onChange={this.onInputChange}
               />
             </FormGroup>
 
-            <FormGroup controlId="suite">
+            <FormGroup controlId="addressLineTwo">
               <ControlLabel>Suite/Unit</ControlLabel>
               <FormControl
                 type="text"
-                name="suite"
-                value={suite}
-                onChange={this.onAddressChange}
+                name="addressLineTwo"
+                value={addressLineTwo}
+                onChange={this.onInputChange}
               />
             </FormGroup>
 
@@ -131,7 +147,7 @@ class Contact extends Component {
                 type="text"
                 name="city"
                 value={city}
-                onChange={this.onAddressChange}
+                onChange={this.onInputChange}
               />
             </FormGroup>
 
@@ -141,17 +157,17 @@ class Contact extends Component {
                 type="text"
                 name="state"
                 value={state}
-                onChange={this.onAddressChange}
+                onChange={this.onInputChange}
               />
             </FormGroup>
 
-            <FormGroup controlId="postalCode">
+            <FormGroup controlId="zipCode">
               <ControlLabel>Postal Code*</ControlLabel>
               <FormControl
                 type="text"
-                name="postalCode"
-                value={postalCode}
-                onChange={this.onAddressChange}
+                name="zipCode"
+                value={zipCode}
+                onChange={this.onInputChange}
               />
             </FormGroup>
           </div>

@@ -65,16 +65,14 @@ class BillingStore {
   loadContact() {
     // TODO: Get contact from endpoint
     const MOCK_CONTACT = {
-      teamName: "Care Clinic",
-      address: {
-        country: "USA",
-        companyName: "Stitch Technologies, Inc.",
-        street: "188 King St.",
-        suite: "Apt. PH9",
-        city: "San Francisco",
-        state: "California",
-        postalCode: "94107-4900"
-      }
+      name: "My Name",
+      city: "My City",
+      state: "CA",
+      country: "USA",
+      zip_code: "55555-3333",
+      company_name: "My Test Company",
+      address_line_one: "Street 123, chapel road",
+      address_line_two: "Optional field"
     };
 
     return new Promise(resolve => {
