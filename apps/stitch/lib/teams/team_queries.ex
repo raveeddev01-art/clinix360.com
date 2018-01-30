@@ -147,4 +147,19 @@ defmodule Stitch.TeamQueries do
   """
   @spec list_teams :: [Team.t()]
   def list_teams, do: Repo.all(Team)
+
+  @doc """
+  Deactivate all geust users
+  """
+  def deactivate_all_guests(%Team{id: team_id})  do
+    query =
+      from u in User,
+      where: u.team_id == ^team_id,
+      where: fragment("? && ?", ^@guest_roles, u.roles),
+      update: [
+        set: [disabled: true]
+      ]
+
+    Repo.update_all(query, [], returning: true)
+  end
 end
