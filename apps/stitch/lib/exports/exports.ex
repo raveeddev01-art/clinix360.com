@@ -2,15 +2,12 @@ defmodule Stitch.Exports do
   @moduledoc """
   This module includes functions for handling data exports.
   """
-  import Ecto.Query
-  alias Stitch.Exports.{Export, TeamHistory}
-  alias Stitch.{Repo, Team}
   require Logger
+  import Ecto.Query
+  alias Stitch.{Repo, Team, AWS.S3}
+  alias Stitch.Exports.{Export, TeamHistory}
 
   @exports_enabled Application.get_env(:stitch, Stitch.Exports)[:enabled]
-  @s3_host Application.get_env(:ex_aws, :s3)[:host]
-  @aws_presigned_urls_config Application.get_env(:stitch, :aws_presigned_urls)
-  @exports_bucket "stitch-exports"
 
   @doc """
   Creates an export.
@@ -105,37 +102,15 @@ defmodule Stitch.Exports do
 
   defp do_start_export(%Team{} = team, %Export{} = export) do
     with {:ok, zip_path} <- TeamHistory.generate_zip(team, 60_000),
-         {:ok, _}        <- upload_to_S3(zip_path),
+         {:ok, _}        <- S3.upload(zip_path),
          :ok             <- File.rm(zip_path) do
-      zip_url = "https://#{@s3_host}/#{@exports_bucket}/#{Path.basename(zip_path)}"
+      zip_url = S3.fullpath(zip_path)
       update_export(export, %{status: "COMPLETE", zip_url: zip_url})
     else
       error ->
         Logger.error("Failed to complete export for team id #{team.id}: #{error}")
         update_export(export, %{status: "FAILED"})
     end
-  end
-
-  defp upload_to_S3(zip_path) do
-    path_on_s3 = Path.basename(zip_path)
-    zip_path
-    |> ExAws.S3.Upload.stream_file()
-    |> ExAws.S3.upload(@exports_bucket, path_on_s3, encryption: "AES256")
-    |> ExAws.request()
-  end
-
-  @doc """
-  Generates a pre-signed URL for this object.
-
-  """
-  @spec presigned_url(String.t) :: {:ok, binary} | {:error, binary}
-  def presigned_url(object_url) do
-    config = @aws_presigned_urls_config
-    bucket = @exports_bucket
-    object = Path.basename(object_url)
-    opts = [virtual_host: false, expires_in: 30] # expires in 30 secs
-    {:ok, presigned_url} = ExAws.S3.presigned_url(config, :get, bucket, object, opts)
-    presigned_url
   end
 
   @doc """
