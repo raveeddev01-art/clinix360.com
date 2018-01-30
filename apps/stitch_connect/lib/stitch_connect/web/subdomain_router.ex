@@ -146,7 +146,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/uploads",           UploadController, :index
     post "/upload-signature", UploadController, :create
 
-    resources "/devices", DeviceController, only: [:create]
+    resources "/devices", DeviceController, only: [:create, :delete]
   end
 
   # Routes which needs admin role
