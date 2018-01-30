@@ -25,6 +25,7 @@
     "phoenix": "file:../../deps/phoenix",
     "pluralize": "^7.0.0",
     "prop-types": "^15.6.0",
+    "provinces": "^1.11.0",
     "qs": "^6.5.1",
     "react": "16.0.0",
     "react-bootstrap": "^0.31.5",
