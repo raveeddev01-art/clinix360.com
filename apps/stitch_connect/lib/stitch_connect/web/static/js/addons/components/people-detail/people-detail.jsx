@@ -17,7 +17,7 @@ class PeopleDetail extends Component {
         </div>
 
         <div className="username-and-title">
-          <h4 className="display-name">{`${fullName}`}</h4>
+          <h4 className="display-name">{fullName}</h4>
           <div className="user-title text-muted">{title}</div>
         </div>
 
