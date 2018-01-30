@@ -43,16 +43,10 @@ class UserMention extends Component {
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <div className="header">
-            <img
-              src={userAvatar ? userAvatar : "/images/default-avatar.png"}
-              alt={`${user.user.first_name} ${user.user.last_name}`}
-              className="img-responsive"
-            />
+            <img src={userAvatar} alt="Avatar" className="img-responsive" />
 
             <div className="content">
-              <div className="name">
-                {`${user.user.first_name} ${user.user.last_name}`}
-              </div>
+              <div className="name">{user.user.full_name}</div>
 
               <div className="username">{username}</div>
             </div>

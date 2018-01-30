@@ -18,7 +18,7 @@ class MessageHeader extends Component {
 
     return (
       <div className="message-header">
-        <div className="name">{`${user.first_name} ${user.last_name} `}</div>
+        <div className="name">{user.full_name}</div>
 
         <OverlayTrigger
           placement="top"

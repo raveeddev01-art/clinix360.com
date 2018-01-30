@@ -298,7 +298,7 @@ class Message extends Component {
         )}
 
         <div className="avatar">
-          <img src={user.avatar || "/images/default-avatar.png"} alt="Avatar" />
+          <img src={user.avatar} alt="Avatar" />
         </div>
       </div>
     ) : (
@@ -343,7 +343,7 @@ class Message extends Component {
     return (
       (!message.is_sequential || message.type === "upload") && (
         <div className="message-header">
-          <span className="name">{`${user.first_name} ${user.last_name}`}</span>
+          <span className="name">{user.full_name}</span>
           <OverlayTrigger
             placement="top"
             delayShow={150}

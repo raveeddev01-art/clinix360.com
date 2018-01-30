@@ -65,17 +65,12 @@ class MessageInfoModal extends Component {
       <div className="message-container addon">
         <div className="message">
           <div className="avatar">
-            <img
-              src={user.avatar ? user.avatar : "/images/default-avatar.png"}
-              alt="Avatar"
-            />
+            <img src={user.avatar} alt="Avatar" />
           </div>
 
           <div className="message-content">
             <div className="message-header">
-              <div className="name">
-                {sender.first_name} {sender.last_name}
-              </div>
+              <div className="name">{user.full_name}</div>
 
               <OverlayTrigger
                 placement="top"
