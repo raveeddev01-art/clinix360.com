@@ -2,7 +2,7 @@ defmodule Stitch.Accounts.ProfileImage do
   alias Stitch.AWS.S3
   import Mogrify
 
-  @thumb %{height: 48, width: 48}
+  @thumb %{height: 72, width: 72}
 
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
   def create_thumb(url) do
