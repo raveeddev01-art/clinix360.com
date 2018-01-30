@@ -1,5 +1,6 @@
 import moment from "moment";
 import countries from "i18n-iso-countries";
+import provinces from "provinces";
 import _ from "lodash";
 
 const TIERS = ["BASIC", "PREMIUM", "POWER"];
@@ -191,11 +192,37 @@ const getCountries = () => {
 
   return _.chain(alpha2Map)
     .map((name, alpha2) => ({
+      alpha2,
       alpha3: countries.alpha2ToAlpha3(alpha2),
       name
     }))
     .sortBy("name")
     .value();
+};
+
+const getProvinces = () => {
+  return (
+    _.chain(provinces)
+      // Change country code to alpha-3
+      .map(province => {
+        const country = countries.alpha2ToAlpha3(province.country);
+        const name = province.english || province.name;
+        const short = province.english
+          ? province.english
+          : province.short || province.name;
+
+        return {
+          country,
+          name,
+          short
+        };
+      })
+      .groupBy("country")
+      .mapValues(countryProvinces =>
+        _.sortBy(countryProvinces, ({ name }) => name.toLowerCase())
+      )
+      .value()
+  );
 };
 
 export {
@@ -208,5 +235,6 @@ export {
   getMonthlyFrequency,
   getFrequencyName,
   getMonthlyPrice,
-  getCountries
+  getCountries,
+  getProvinces
 };

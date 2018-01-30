@@ -5,9 +5,13 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
+import get from "lodash/get";
 
 import { alert } from "common/modals";
-import { getCountries } from "lib/billing";
+import { getCountries, getProvinces } from "lib/billing";
+
+const COUNTRIES = getCountries();
+const PROVINCES = getProvinces();
 
 @inject("billingStore")
 @observer
@@ -46,11 +50,17 @@ class Contact extends Component {
   }
 
   onInputChange = evt => {
+    const { name, value } = evt.target;
+    const { fields } = this.state;
+
+    fields[name] = value;
+
+    if (name === "country") {
+      fields.state = "";
+    }
+
     this.setState({
-      fields: {
-        ...this.state.fields,
-        [evt.target.name]: evt.target.value
-      }
+      fields
     });
   };
 
@@ -110,7 +120,7 @@ class Contact extends Component {
 
   render() {
     const { fields } = this.state;
-    const countries = getCountries();
+    const provinces = get(PROVINCES, fields.country, null);
 
     return (
       <div className="contact-tab">
@@ -150,7 +160,8 @@ class Contact extends Component {
                 value={fields.country}
                 onChange={this.onInputChange}
               >
-                {countries.map(({ alpha3, name }) => (
+                <option value="">Please select country</option>
+                {COUNTRIES.map(({ alpha3, name }) => (
                   <option value={alpha3} key={alpha3}>
                     {name}
                   </option>
@@ -216,12 +227,30 @@ class Contact extends Component {
               validationState={this.getValidationState("state")}
             >
               <ControlLabel>State/Province/Region*</ControlLabel>
-              <FormControl
-                type="text"
-                name="state"
-                value={fields.state}
-                onChange={this.onInputChange}
-              />
+              {provinces ? (
+                <FormControl
+                  name="state"
+                  componentClass="select"
+                  placeholder="select"
+                  value={fields.state}
+                  onChange={this.onInputChange}
+                >
+                  <option value="">Please select state/province/region</option>
+
+                  {provinces.map(({ short, name }) => (
+                    <option value={short} key={short}>
+                      {name}
+                    </option>
+                  ))}
+                </FormControl>
+              ) : (
+                <FormControl
+                  type="text"
+                  name="state"
+                  value={fields.state}
+                  onChange={this.onInputChange}
+                />
+              )}
               <FormControl.Feedback />
             </FormGroup>
 
