@@ -31,25 +31,68 @@ class Contact extends Component {
     } = props;
 
     this.state = {
-      name,
-      city,
-      state,
-      country,
-      zipCode,
-      companyName,
-      addressLineOne,
-      addressLineTwo
+      fields: {
+        name,
+        city,
+        state,
+        country,
+        zipCode,
+        companyName,
+        addressLineOne,
+        addressLineTwo
+      },
+      errors: {}
     };
   }
 
   onInputChange = evt => {
     this.setState({
-      [evt.target.name]: evt.target.value
+      fields: {
+        ...this.state.fields,
+        [evt.target.name]: evt.target.value
+      }
     });
   };
 
+  /**
+   * Validate fields
+   * 
+   * @return boolean TRUE if valid
+   */
+  validate() {
+    const requiredFields = [
+      "name",
+      "city",
+      "state",
+      "country",
+      "zipCode",
+      "companyName",
+      "addressLineOne"
+    ];
+    const { fields } = this.state;
+    const errors = {};
+
+    requiredFields.forEach(field => {
+      const value = fields[field];
+
+      if (!value) {
+        errors[field] = "This field is required";
+      }
+    });
+
+    this.setState({
+      errors
+    });
+
+    return Object.keys(errors).length === 0;
+  }
+
   onSave = () => {
     const { billingStore } = this.props;
+
+    if (!this.validate()) {
+      return;
+    }
 
     billingStore.updateContact(this.state).then(contact => {
       alert({
@@ -59,31 +102,32 @@ class Contact extends Component {
     });
   };
 
+  getValidationState(field) {
+    const { errors } = this.state;
+
+    return errors.hasOwnProperty(field) ? "error" : null;
+  }
+
   render() {
-    const {
-      name,
-      city,
-      state,
-      country,
-      zipCode,
-      companyName,
-      addressLineOne,
-      addressLineTwo
-    } = this.state;
+    const { fields } = this.state;
     const countries = getCountries();
 
     return (
       <div className="contact-tab">
         <h4>Name</h4>
-        <FormGroup controlId="name">
+        <FormGroup
+          controlId="name"
+          validationState={this.getValidationState("name")}
+        >
           <FormControl
             type="text"
             name="name"
-            value={name}
+            value={fields.name}
             placeholder="Team name"
             onChange={this.onInputChange}
           />
 
+          <FormControl.Feedback />
           <HelpBlock>
             Your team's name and address will be used on all billing invoices
             for the account.
@@ -94,13 +138,16 @@ class Contact extends Component {
 
         <div className="address-section">
           <div className="inputs-section">
-            <FormGroup controlId="country">
+            <FormGroup
+              controlId="country"
+              validationState={this.getValidationState("country")}
+            >
               <ControlLabel>Country*</ControlLabel>
               <FormControl
                 name="country"
                 componentClass="select"
                 placeholder="select"
-                value={country}
+                value={fields.country}
                 onChange={this.onInputChange}
               >
                 {countries.map(({ alpha3, name }) => (
@@ -109,26 +156,35 @@ class Contact extends Component {
                   </option>
                 ))}
               </FormControl>
+              <FormControl.Feedback />
             </FormGroup>
 
-            <FormGroup controlId="companyName">
+            <FormGroup
+              controlId="companyName"
+              validationState={this.getValidationState("companyName")}
+            >
               <ControlLabel>Company Name*</ControlLabel>
               <FormControl
                 type="text"
                 name="companyName"
-                value={companyName}
+                value={fields.companyName}
                 onChange={this.onInputChange}
               />
+              <FormControl.Feedback />
             </FormGroup>
 
-            <FormGroup controlId="addressLineOne">
+            <FormGroup
+              controlId="addressLineOne"
+              validationState={this.getValidationState("addressLineOne")}
+            >
               <ControlLabel>Street Address*</ControlLabel>
               <FormControl
                 type="text"
                 name="addressLineOne"
-                value={addressLineOne}
+                value={fields.addressLineOne}
                 onChange={this.onInputChange}
               />
+              <FormControl.Feedback />
             </FormGroup>
 
             <FormGroup controlId="addressLineTwo">
@@ -136,39 +192,51 @@ class Contact extends Component {
               <FormControl
                 type="text"
                 name="addressLineTwo"
-                value={addressLineTwo}
+                value={fields.addressLineTwo}
                 onChange={this.onInputChange}
               />
             </FormGroup>
 
-            <FormGroup controlId="city">
+            <FormGroup
+              controlId="city"
+              validationState={this.getValidationState("city")}
+            >
               <ControlLabel>City*</ControlLabel>
               <FormControl
                 type="text"
                 name="city"
-                value={city}
+                value={fields.city}
                 onChange={this.onInputChange}
               />
+              <FormControl.Feedback />
             </FormGroup>
 
-            <FormGroup controlId="state">
+            <FormGroup
+              controlId="state"
+              validationState={this.getValidationState("state")}
+            >
               <ControlLabel>State/Province/Region*</ControlLabel>
               <FormControl
                 type="text"
                 name="state"
-                value={state}
+                value={fields.state}
                 onChange={this.onInputChange}
               />
+              <FormControl.Feedback />
             </FormGroup>
 
-            <FormGroup controlId="zipCode">
+            <FormGroup
+              controlId="zipCode"
+              validationState={this.getValidationState("zipCode")}
+            >
               <ControlLabel>Postal Code*</ControlLabel>
               <FormControl
                 type="text"
                 name="zipCode"
-                value={zipCode}
+                value={fields.zipCode}
                 onChange={this.onInputChange}
               />
+              <FormControl.Feedback />
             </FormGroup>
           </div>
 
