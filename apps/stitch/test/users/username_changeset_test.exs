@@ -63,7 +63,7 @@ defmodule Stitch.Accounts.User.ChangesetTest do
     assert User.username_changeset(%User{}, %{team_id: nil, username: "foobar"}).valid?
   end
 
-  test "valid characters are lowercase letters, numbers, period, dash and underscore" do
-    assert User.username_changeset(%User{}, %{username: "a1.-_"}).valid?
+  test "valid characters are lowercase letters and numbers" do
+    assert User.username_changeset(%User{}, %{username: "a1"}).valid?
   end
 end
