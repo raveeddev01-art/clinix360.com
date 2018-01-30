@@ -1,5 +1,4 @@
 defmodule StitchConnect.Web.TeamControllerTest do
-  alias Stitch.{Repo, Team}
   use StitchConnect.Web.ConnCase, async: true
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
 

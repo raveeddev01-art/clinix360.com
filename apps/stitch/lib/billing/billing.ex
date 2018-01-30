@@ -4,7 +4,7 @@ defmodule Stitch.Billing do
   """
 
   import Ecto.Query
-  alias Stitch.{Repo, Team}
+  alias Stitch.{Repo, Team, TeamQueries, FeatureGateway}
   alias Stitch.Billing.{Plan, Subscription, PaymentMethod, PaymentHistory}
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
