@@ -174,6 +174,12 @@ class MessageForm extends Component {
     });
   };
 
+  onCloseMentionMenu = () => {
+    this.setState({
+      openMentionMenu: false
+    });
+  };
+
   getText = () => {
     const { messageStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -270,12 +276,6 @@ class MessageForm extends Component {
     }, 100);
   };
 
-  handleMenuMask = () => {
-    this.setState({
-      openMentionMenu: false
-    });
-  };
-
   renderInput() {
     const { messageStore, socketStore } = this.props;
     const { messageInEdit } = messageStore;
@@ -330,7 +330,7 @@ class MessageForm extends Component {
           isOpen={openMentionMenu}
           filter={searchFilter}
           onSelect={this.onSelectMention}
-          handleMenuMask={this.handleMenuMask}
+          onClose={this.onCloseMentionMenu}
         />
         <EmojiSearch
           isOpen={openEmojiSearch}

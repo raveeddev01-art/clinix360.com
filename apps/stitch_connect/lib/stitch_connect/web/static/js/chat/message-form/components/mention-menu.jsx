@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
-
+import { Avatar } from "common/components";
 import { filterUsers, isFullMember } from "lib/utils";
 
 @inject("presenceStore", "usersStore", "groupsStore")
@@ -117,7 +117,7 @@ class MenutionMenu extends Component {
 
     return (
       <div className="dropup user-mention-menu open">
-        <div className="dropdown-mask" onClick={this.props.handleMenuMask} />
+        <div className="dropdown-mask" onClick={this.props.onClose} />
 
         <ul className="dropdown-menu">
           <div className="menu-header">People</div>
@@ -152,16 +152,7 @@ class MenutionMenu extends Component {
                     </span>
                   ) : (
                     <span className="item-text">
-                      <span className="avatar">
-                        <img
-                          src={
-                            user.avatar_thumb
-                              ? user.avatar_thumb
-                              : "/images/default-avatar.png"
-                          }
-                          alt="Avatar"
-                        />
-                      </span>
+                      <Avatar user={user} />
                       <span className="username">{user.full_name}</span>
                       <span className="text-muted">{user.username}</span>
                     </span>
@@ -179,13 +170,15 @@ class MenutionMenu extends Component {
 MenutionMenu.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   filter: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };
 
 MenutionMenu.defaultProps = {
   isOpen: false,
   filter: "",
-  onSelect: () => {}
+  onSelect: () => {},
+  onClose: () => {}
 };
 
 export default MenutionMenu;
