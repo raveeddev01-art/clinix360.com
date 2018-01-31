@@ -3,10 +3,9 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import cx from "classnames";
-
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import SmartDropdown from "../../smart-dropdown/index";
+import { Avatar, SmartDropdown } from "common/components";
 
 @inject("addonStore")
 @observer
@@ -28,27 +27,25 @@ class UserMention extends Component {
   };
 
   render() {
-    const { user: { username } } = this.props;
-    const user = this.props;
-    const userAvatar = user.user.avatar;
+    const { user: mentionedUser } = this.props;
 
     const mentionClassName = cx({
-      me: username === currentUser.username
+      me: mentionedUser.username === currentUser.username
     });
 
     return (
       <SmartDropdown id="user-mention" className="user-mention-dropdown">
         <Dropdown.Toggle className={mentionClassName} useAnchor noCaret>
-          {`@${username}`}
+          {`@${mentionedUser.username}`}
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <div className="header">
-            <img src={userAvatar} alt="Avatar" className="img-responsive" />
+            <Avatar user={mentionedUser} size="lg" />
 
             <div className="content">
-              <div className="name">{user.user.full_name}</div>
+              <div className="name">{mentionedUser.full_name}</div>
 
-              <div className="username">{username}</div>
+              <div className="username">{mentionedUser.username}</div>
             </div>
           </div>
           <MenuItem onClick={this._toggleAddonMenu}>View Profile</MenuItem>

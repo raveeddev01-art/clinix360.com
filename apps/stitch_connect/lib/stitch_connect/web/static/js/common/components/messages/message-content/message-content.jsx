@@ -19,7 +19,7 @@ class MessageContent extends Component {
   };
 
   renderMessageLine(line) {
-    const { usersStore, messageStore, message } = this.props;
+    const { usersStore, messageStore } = this.props;
     const { usersById } = usersStore;
     const parts = messageStore.decodeMessage(line);
     const isAllEmojis =

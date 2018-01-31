@@ -4,6 +4,7 @@ import { inject } from "mobx-react";
 
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import { Avatar } from "common/components";
 
 import MessageHeader from "./message-header/message-header";
 import MessageContent from "./message-content/message-content";
@@ -64,9 +65,7 @@ class AddonMessage extends Component {
         </div>
 
         <div className="message">
-          <div className="avatar">
-            <img src={user.avatar} alt="Avatar" />
-          </div>
+          <Avatar user={user} />
 
           <div className="message-content">
             <MessageHeader timestamp={message.inserted_at} user={user} />
