@@ -278,53 +278,33 @@ class Message extends Component {
     );
   }
 
-  renderPin(message) {
-    return (
-      message.pinned && (
-        <div className="icon-pin">
-          <i className="fa fa-thumb-tack fa-rotate-45" />
-        </div>
-      )
-    );
-  }
-
-  // NOTE Testing message status icon, this needs to be renamed
-  renderMsgStatus(message) {
-    return (
-      message.status === "failed" && (
-        <div className="icon-status">
-          <i className="fa fa-exclamation-triangle" />
-        </div>
-      )
-    );
-  }
-
   renderGutter(message) {
     const { usersStore } = this.props;
     const { inserted_at: insertedAt } = message;
     const userId = message.user.id;
     const user = usersStore.usersById[userId];
 
-    if (!message.is_sequential) {
-      return (
-        <div className="message-gutter">
-          {this.renderPin(message)}
-          {this.renderMsgStatus(message)}
-          <Avatar user={user} />
-        </div>
-      );
-    }
-
     return (
       <div className="message-gutter">
-        {this.renderPin(message)}
-        {this.renderMsgStatus(message)}
-        <TimestampTooltip
-          timestamp={insertedAt}
-          className="timestamp text-muted"
-          format="h:mm"
-        />
-        {this.renderStar(message)}
+        {message.pinned && (
+          <div className="icon-pin">
+            <i className="fa fa-thumb-tack fa-rotate-45" />
+          </div>
+        )}
+        {message.status === "failed" && (
+          <div className="icon-status">
+            <i className="fa fa-exclamation-triangle" />
+          </div>
+        )}
+        {!message.is_sequential && <Avatar user={user} />}
+        {message.is_sequential && (
+          <TimestampTooltip
+            timestamp={insertedAt}
+            className="timestamp text-muted"
+            format="h:mm"
+          />
+        )}
+        {message.is_sequential && this.renderStar(message)}
       </div>
     );
   }
@@ -342,26 +322,6 @@ class Message extends Component {
         </MessageHeader>
       )
     );
-  }
-
-  // NOTE this func is not used right now
-  // TODO apply optimitic-ui failed style by using message.status and remove these two
-  renderStatus(message) {
-    if (message.status) return message.status;
-    if (this.props.groupStore.isSelfDM) return null;
-
-    return this.renderReadStatus(message);
-  }
-
-  // NOTE this func is not used right now
-  renderReadStatus(message) {
-    if (!message.read_status) return null;
-
-    const deliveredToUsers = Object.keys(message.read_status).length;
-    const readUsers = Object.values(message.read_status).filter(v => v != null)
-      .length;
-
-    return `${readUsers}/${deliveredToUsers} Read`;
   }
 
   render() {
