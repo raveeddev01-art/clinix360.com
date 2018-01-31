@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import { MessageContent } from "common/components";
-import cx from "classnames";
+import { Avatar, MessageContent, MessageHeader } from "common/components";
 import Modal from "react-bootstrap/lib/Modal";
 import moment from "moment";
 import sortBy from "lodash/sortBy";
-
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
 
 @inject("usersStore")
 @observer
@@ -59,39 +55,14 @@ class MessageInfoModal extends Component {
     const { message, usersStore } = this.props;
     const userId = message.user.id;
     const user = usersStore.usersById[userId];
-    const { user: sender } = message;
 
     return (
       <div className="message-container addon">
         <div className="message">
-          <div className="avatar">
-            <img src={user.avatar} alt="Avatar" />
-          </div>
+          <Avatar user={user} />
 
           <div className="message-content">
-            <div className="message-header">
-              <div className="name">{user.full_name}</div>
-
-              <OverlayTrigger
-                placement="top"
-                delayShow={150}
-                overlay={
-                  <Tooltip id="date-tooltip">
-                    {moment
-                      .utc(message.inserted_at)
-                      .local()
-                      .format("MMM Do [at] h:mm A")}
-                  </Tooltip>
-                }
-              >
-                <span className="time">
-                  {moment
-                    .utc(message.inserted_at)
-                    .local()
-                    .format("h:mm A")}
-                </span>
-              </OverlayTrigger>
-            </div>
+            <MessageHeader timestamp={message.inserted_at} user={user} />
             <MessageContent message={message} />
           </div>
         </div>

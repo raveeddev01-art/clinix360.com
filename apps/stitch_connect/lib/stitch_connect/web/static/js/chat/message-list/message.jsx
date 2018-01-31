@@ -1,23 +1,29 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import moment from "moment";
 import { Element } from "react-scroll";
 import cx from "classnames";
 
 import ButtonGroup from "react-bootstrap/lib/ButtonGroup";
 import Button from "react-bootstrap/lib/Button";
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
-import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
 import { confirm } from "common/modals";
-import { MessageContent, ReactionPicker } from "common/components";
+import {
+  Avatar,
+  MessageHeader,
+  MessageContent,
+  ReactionPicker,
+  TimestampTooltip
+} from "common/components";
 import MessageInfoModal from "./message-info-modal";
 
+// @TODO stab out renderSomething functions into seperate component (MessageActionGroup, MessagePin, MessageStar, ...)
+// @TODO move message info modal to top level so that it is shared on all messages
 @inject("messageStore", "groupStore", "usersStore")
 @observer
 class Message extends Component {
@@ -74,7 +80,6 @@ class Message extends Component {
 
   getEmojiMartStyle = () => {
     const martStyles = {};
-    const { message } = this.props;
     if (!this.messageDiv) {
       return {};
     }
@@ -148,34 +153,25 @@ class Message extends Component {
   };
 
   renderStar(message) {
+    const starredCX = message.starred ? "" : "-o";
     return (
       <OverlayTrigger
         placement="top"
         delayShow={150}
-        shouldUpdatePosition={true}
+        shouldUpdatePosition
         overlay={
           <Tooltip id="message-star">
             {message.starred ? "Unstar this message" : "Star this message"}
           </Tooltip>
         }
       >
-        {message.starred ? (
-          <span
-            className="message-icon icon-star"
-            role="presentation"
-            onClick={this.toggleStar}
-          >
-            <i className="fa fa-star" />
-          </span>
-        ) : (
-          <span
-            className="message-icon icon-star-o"
-            role="presentation"
-            onClick={this.toggleStar}
-          >
-            <i className="fa fa-star-o" />
-          </span>
-        )}
+        <span
+          className={cx("message-icon", `icon-star${starredCX}`)}
+          role="presentation"
+          onClick={this.toggleStar}
+        >
+          <i className={cx("fa", `fa-star${starredCX}`)} />
+        </span>
       </OverlayTrigger>
     );
   }
@@ -184,7 +180,7 @@ class Message extends Component {
     const mine = message.user.id === currentUser.id;
     const unsent = message.sent === false;
     const { dropup } = this.state;
-    const { messageStore, groupStore } = this.props;
+    const { messageStore } = this.props;
 
     // disabling context menu
     if (unsent) {
@@ -202,7 +198,7 @@ class Message extends Component {
           overlay={<Tooltip id="message-info">Message info</Tooltip>}
         >
           <Button onClick={this.showInfoModal}>
-            {this.renderStatus(message)}
+            <i className="fa fa-info" />
           </Button>
         </OverlayTrigger>
 
@@ -219,10 +215,10 @@ class Message extends Component {
         <OverlayTrigger
           placement="top"
           delayShow={150}
-          shouldUpdatePosition={true}
+          shouldUpdatePosition
           overlay={
             <Tooltip id="message-pin">
-              {message.pinned ? "Un-pin" : "Pin "} message
+              {message.pinned ? "Un-pin" : "Pin"} message
             </Tooltip>
           }
         >
@@ -283,52 +279,39 @@ class Message extends Component {
     );
   }
 
+  renderPin(message) {
+    return (
+      message.pinned && (
+        <div className="icon-pin">
+          <i className="fa fa-thumb-tack fa-rotate-45" />
+        </div>
+      )
+    );
+  }
+
   renderGutter(message) {
     const { usersStore } = this.props;
     const { inserted_at: insertedAt } = message;
     const userId = message.user.id;
     const user = usersStore.usersById[userId];
 
-    return !message.is_sequential || message.type === "upload" ? (
-      <div className="message-gutter">
-        {message.pinned && (
-          <div className="icon-pin">
-            <i className="fa fa-thumb-tack fa-rotate-45" />
-          </div>
-        )}
-
-        <div className="avatar">
-          <img src={user.avatar} alt="Avatar" />
+    if (!message.is_sequential) {
+      return (
+        <div className="message-gutter">
+          {this.renderPin(message)}
+          <Avatar user={user} />
         </div>
-      </div>
-    ) : (
+      );
+    }
+
+    return (
       <div className="message-gutter">
-        {message.pinned && (
-          <div className="icon-pin">
-            <i className="fa fa-thumb-tack fa-rotate-45" />
-          </div>
-        )}
-
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          overlay={
-            <Tooltip id="timestamp-info">
-              {moment
-                .utc(insertedAt)
-                .local()
-                .format("MMM Do [at] h:mm A")}
-            </Tooltip>
-          }
-        >
-          <span className="timestamp text-muted">
-            {moment
-              .utc(insertedAt)
-              .local()
-              .format("h:mm")}
-          </span>
-        </OverlayTrigger>
-
+        {this.renderPin(message)}
+        <TimestampTooltip
+          timestamp={insertedAt}
+          className="timestamp text-muted"
+          format="h:mm"
+        />
         {this.renderStar(message)}
       </div>
     );
@@ -341,35 +324,16 @@ class Message extends Component {
     const user = usersStore.usersById[userId];
 
     return (
-      (!message.is_sequential || message.type === "upload") && (
-        <div className="message-header">
-          <span className="name">{user.full_name}</span>
-          <OverlayTrigger
-            placement="top"
-            delayShow={150}
-            overlay={
-              <Tooltip id="timestamp-info">
-                {moment
-                  .utc(insertedAt)
-                  .local()
-                  .format("MMM Do [at] h:mm A")}
-              </Tooltip>
-            }
-          >
-            <span className="timestamp text-muted">
-              {moment
-                .utc(insertedAt)
-                .local()
-                .format("h:mm A")}
-            </span>
-          </OverlayTrigger>
-
+      !message.is_sequential && (
+        <MessageHeader user={user} timestamp={insertedAt}>
           {this.renderStar(message)}
-        </div>
+        </MessageHeader>
       )
     );
   }
 
+  // NOTE this func is not used right now
+  // TODO apply optimitic-ui failed style by using message.status and remove these two
   renderStatus(message) {
     if (message.status) return message.status;
     if (this.props.groupStore.isSelfDM) return null;
@@ -377,6 +341,7 @@ class Message extends Component {
     return this.renderReadStatus(message);
   }
 
+  // NOTE this func is not used right now
   renderReadStatus(message) {
     if (!message.read_status) return null;
 
@@ -384,14 +349,12 @@ class Message extends Component {
     const readUsers = Object.values(message.read_status).filter(v => v != null)
       .length;
 
-    return <i className="fa fa-info" />;
+    return `${readUsers}/${deliveredToUsers} Read`;
   }
 
   render() {
     const { message, messageStore } = this.props;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
-    const { user: { id: userId } } = message;
-    const mine = userId === currentUser.id;
 
     const messageClassName = cx("message", {
       sequential: message.is_sequential,
@@ -429,14 +392,10 @@ class Message extends Component {
               name={`message_${message.id}`}
               className={messageClassName}
             >
-              {/* {this.renderName(message)} */}
-
               {this.renderGutter(message)}
 
               <div className="message-content">
-                {message.pinned ? (
-                  <div className="pin-label">Pinned</div>
-                ) : null}
+                {message.pinned && <div className="pin-label">Pinned</div>}
 
                 {this.renderHeader(message)}
 
