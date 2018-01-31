@@ -14,7 +14,7 @@ export const NOTIFICATION_PREFERENCES = [
     value: "nothing",
     title: "Nothing",
     description:
-      "You will not receive notifications, but will continue to see a badge count for unread messages."
+      "You will not receive notifications from Stitch. You will continue to see badges within Stitch."
   }
 ];
 

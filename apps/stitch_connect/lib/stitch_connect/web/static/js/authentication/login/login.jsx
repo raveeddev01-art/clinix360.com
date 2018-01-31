@@ -128,7 +128,6 @@ class Login extends Component {
               bsStyle="primary"
               bsSize="lg"
               className="btn-block"
-              disabled={!this.state.email || !this.state.password}
             >
               Login
               {this._renderLoadingIcon()}
