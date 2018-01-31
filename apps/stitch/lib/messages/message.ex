@@ -24,6 +24,7 @@ defmodule Stitch.Message do
     field :mentioned_user_ids, {:array, :integer}, default: []
     field :has_links, :boolean, default: false
     field :link_previews_generated, :boolean, default: false
+    field :meteor_id, :string
     embeds_many :link_previews, Message.LinkPreview, on_replace: :delete
 
     timestamps()

@@ -7,8 +7,30 @@ defmodule Stitch.MeteorMigration.Message do
   @meteor_migration_debug System.get_env("METEOR_MIGRATION_DEBUG") == "true"
 
   def migrate_messages(messages) do
-    {n, _} = Repo.insert_all(Message, messages, returning: false)
-    IO.puts "#{n} messages inserted."
+    inserted_count =
+      messages
+      |> Enum.reduce(0, fn (message, acc) ->
+        if Repo.get_by(Message, meteor_id: message.meteor_id) == nil do
+          attrs = %Message{
+            text_content: message.text_content,
+            inserted_at: message.inserted_at,
+            updated_at: message.updated_at,
+            user_id: message.user_id,
+            group_id: message.group_id,
+            type: "chat",
+            meteor_id: message.meteor_id,
+          }
+
+          case Repo.insert(attrs) do
+            {:ok, _} -> acc + 1
+            _ -> 0
+          end
+        else
+          0
+        end
+      end)
+
+    IO.puts "#{inserted_count} messages inserted."
   end
 
   def parse_messages_json(rooms, phoenix_users_by_email, meteor_users_by_username, messages) do
@@ -37,7 +59,7 @@ defmodule Stitch.MeteorMigration.Message do
   `rooms` must a map with meteor's room id as a key and pheonix group struct as a value
   """
   def parse_message_json(rooms, phoenix_users_by_email, meteor_users_by_username, %{
-    "_id" => _meteor_id,
+    "_id" => meteor_id,
     "msg" => text_content,
     "u" => %{"username" => meteor_creator_username},
     "ts" => timestamp,
@@ -53,6 +75,7 @@ defmodule Stitch.MeteorMigration.Message do
         user_id: user.id,
         group_id: group.id,
         type: "chat",
+        meteor_id: meteor_id,
       }
     else _error ->
       if @meteor_migration_debug do
