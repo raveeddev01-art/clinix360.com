@@ -142,18 +142,18 @@
     ul.dropdown-menu {
       padding: 12px 0;
       margin-top: 4px;
-  
+
       li {
         a {
           font-size: 15px;
           line-height: 25px;
           padding: 0 15px;
           margin: 0 12px;
-  
+
           i.fa {
             width: 1em;
           }
-  
+
           &:focus {
             outline: none;
           }
@@ -649,8 +649,13 @@
         justify-content: flex-end;
         flex-direction: column;
         color: #fff;
-        text-shadow: 0 1px 2px rgba(0,0,0,.15);
-        background: linear-gradient(transparent, transparent 34%, rgba(0, 0, 0, 0.2) 80%, rgba(0, 0, 0, 0.6));
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        background: linear-gradient(
+          transparent,
+          transparent 34%,
+          rgba(0, 0, 0, 0.2) 80%,
+          rgba(0, 0, 0, 0.6)
+        );
         padding: 10px 12px;
         position: absolute;
         bottom: 0;
@@ -675,7 +680,7 @@
   }
 
   &.open:before {
-    content: '';
+    content: "";
     position: fixed;
     left: 0;
     top: 0;
@@ -689,7 +694,7 @@
   width: 100%;
 
   .dropdown-mask {
-    content: '';
+    content: "";
     position: fixed;
     left: 0;
     top: 0;
@@ -796,7 +801,7 @@
       .message-icon.icon-star-o {
         opacity: 1;
       }
-      
+
       .message-actions {
         visibility: visible !important;
       }
@@ -807,7 +812,7 @@
     }
 
     &.pinned {
-      background: rgba(255,245,204,.4);
+      background: rgba(255, 245, 204, 0.4);
     }
 
     .message-gutter {
@@ -850,7 +855,11 @@
           font-weight: bold;
         }
 
-        .timestamp {
+        .time {
+          @extend .text-muted;
+          cursor: default;
+          color: #707070;
+          font-size: 12px;
           margin-left: 5px;
           opacity: 1;
         }
@@ -869,9 +878,9 @@
 
           .attachment-comment {
             position: relative;
-            
+
             &:before {
-              content: '\f10e';
+              content: "\f10e";
               color: #d8d8d8;
               font-family: FontAwesome;
               font-weight: normal;
@@ -909,7 +918,7 @@
     .message-actions {
       line-height: 1.15;
       border-radius: 4px;
-      box-shadow: 0 1px 2px rgba(0,0,0,.15);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
       position: absolute;
       right: 4px;
       top: -10px;
@@ -918,13 +927,13 @@
 
       .btn {
         width: 34px;
-        border-color: rgba(0,0,0,.15);
+        border-color: rgba(0, 0, 0, 0.15);
         padding: 4px 8px;
         z-index: 1;
       }
 
       .open:before {
-        content: '';
+        content: "";
         position: fixed;
         left: 0;
         top: 0;
@@ -958,7 +967,7 @@
       }
 
       &:hover .btn {
-        border-color: rgba(0,0,0,.25);
+        border-color: rgba(0, 0, 0, 0.25);
       }
     }
 
@@ -982,7 +991,7 @@
       &.icon-star-o {
         color: #707070;
         opacity: 0;
-        
+
         &:hover i.fa {
           color: $brand-primary;
         }
@@ -1009,8 +1018,8 @@
       margin-bottom: 15px;
 
       &:hover {
-        border-color: rgba(0,0,0,.15);
-        box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        border-color: rgba(0, 0, 0, 0.15);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       }
 
       .avatar {
@@ -1054,8 +1063,8 @@
       top: -10px;
 
       background: #fff;
-      border: 1px solid rgba(0,0,0,.15);
-      box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       border-radius: 4px;
 
       .addon-message-action-item {
@@ -1151,14 +1160,18 @@
     position: absolute;
     top: 1px;
     right: 1px;
-    background: -webkit-linear-gradient(left,rgba(255,255,255,0) 0,#fff 7.5%);
+    background: -webkit-linear-gradient(
+      left,
+      rgba(255, 255, 255, 0) 0,
+      #fff 7.5%
+    );
     padding: 15px;
     opacity: 0;
   }
 
   &:hover {
-    border: 1px solid rgba(0,0,0,.15);
-    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
     .attachment-actions {
       opacity: 1;
