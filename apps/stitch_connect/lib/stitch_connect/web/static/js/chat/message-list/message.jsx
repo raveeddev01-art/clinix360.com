@@ -288,6 +288,17 @@ class Message extends Component {
     );
   }
 
+  // NOTE Testing message status icon, this needs to be renamed
+  renderMsgStatus(message) {
+    return (
+      message.status === "failed" && (
+        <div className="icon-status">
+          <i className="fa fa-exclamation-triangle" />
+        </div>
+      )
+    );
+  }
+
   renderGutter(message) {
     const { usersStore } = this.props;
     const { inserted_at: insertedAt } = message;
@@ -298,6 +309,7 @@ class Message extends Component {
       return (
         <div className="message-gutter">
           {this.renderPin(message)}
+          {this.renderMsgStatus(message)}
           <Avatar user={user} />
         </div>
       );
@@ -306,6 +318,7 @@ class Message extends Component {
     return (
       <div className="message-gutter">
         {this.renderPin(message)}
+        {this.renderMsgStatus(message)}
         <TimestampTooltip
           timestamp={insertedAt}
           className="timestamp text-muted"
@@ -359,7 +372,8 @@ class Message extends Component {
       sequential: message.is_sequential,
       selected: this.state.selected,
       highlight: highlightId === message.id,
-      pinned: message.pinned
+      pinned: message.pinned,
+      failed: message.status === "failed"
     });
 
     return (
@@ -395,6 +409,11 @@ class Message extends Component {
 
               <div className="message-content">
                 {message.pinned && <div className="pin-label">Pinned</div>}
+                {message.status === "failed" && (
+                  <div className="message-status-label">
+                    Failed to send message
+                  </div>
+                )}
 
                 {this.renderHeader(message)}
 

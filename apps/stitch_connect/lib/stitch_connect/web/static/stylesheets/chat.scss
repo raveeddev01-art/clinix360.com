@@ -815,17 +815,21 @@
       background: rgba(255, 245, 204, 0.4);
     }
 
+    &.failed {
+      background: #fbeaec;
+    }
+
     .message-gutter {
       width: 66px;
       font-size: 12px;
       text-align: right;
       padding-right: 10px;
-      padding-top: 3px;
 
       .avatar img {
         width: 36px;
         height: 36px;
         border-radius: 3px;
+        margin-top: 3px;
       }
 
       .icon-pin {
@@ -833,6 +837,10 @@
         padding-right: 2px;
         position: relative;
         top: -2px;
+      }
+
+      .icon-status {
+        color: #ff4949;
       }
     }
 
@@ -843,6 +851,11 @@
 
       .pin-label {
         color: #707070;
+        font-size: 12px;
+      }
+
+      .message-status-label {
+        color: #ff4949;
         font-size: 12px;
       }
 
