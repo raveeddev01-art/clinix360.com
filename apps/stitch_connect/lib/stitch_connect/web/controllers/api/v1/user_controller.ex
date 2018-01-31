@@ -90,6 +90,14 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def create(conn, %{"email" => email}) do
     case Stitch.Accounts.create_user_with_email_only(email) do
+      {:error, %Ecto.Changeset{errors: [email: {_, [host: host]}]}} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "We do not allow emails from #{host}"})
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
       {:error, message} ->
         conn
         |> unprocessable_entity_error(%{message: message})
@@ -240,6 +248,29 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     conn
     |> put_status(:bad_request)
     |> json(%{message: "Requires a username query."})
+  end
+
+  def validate_emails(conn, %{"emails" => emails}) when is_list(emails) do
+    result =
+      Enum.map(emails, fn email ->
+        changeset = User.valid_email_changeset(%User{}, %{email: email})
+        case changeset.errors do
+          [] ->
+            %{"#{email}": true}
+          [email: {_, [host: host]}] ->
+            %{"#{email}": "We do not allow emails from #{host}"}
+          _ ->
+            %{"#{email}": changeset_errors_to_string(changeset)}
+        end
+      end)
+
+    json(conn, result)
+  end
+
+  def validate_emails(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{message: "Requires list of emails."})
   end
 
   @member_role Role.member()
