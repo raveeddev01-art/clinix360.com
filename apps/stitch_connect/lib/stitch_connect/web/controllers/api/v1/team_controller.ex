@@ -1,9 +1,11 @@
 defmodule StitchConnect.Web.Api.V1.TeamController do
   use StitchConnect.Web, :controller
-  alias Stitch.Team
+  alias Stitch.Team.Admin
+  alias Stitch.{Team, TeamQueries}
+  alias StitchConnect.Web.{TeamChannel}
 
   def show(conn, %{"id" => _}) do
-    team = Stitch.TeamQueries.get_by_id(conn.private[:team_id])
+    team = TeamQueries.get_by_id(conn.private[:team_id])
     conn
     |> json(%{
       id: team.id,
@@ -44,9 +46,28 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update name"})
       {:ok, team} ->
-        StitchConnect.Web.TeamChannel.broadcast_team_rename(team)
+        TeamChannel.broadcast_team_rename(team)
         conn
         |> json(%{id: team.id, name: team.name})
+    end
+  end
+
+  def show_contact_info(conn, %{"id" => _}) do
+    team = conn.assigns.team
+    render conn, "contact_info.json", team: team
+  end
+
+  def update_contact_info(conn, %{"id" => _} = params) do
+    with team = conn.assigns.team,
+         {:ok, team} <- Admin.update_contact_info(team, params) do
+      TeamChannel.broadcast_team_rename(team)
+      render conn, "contact_info.json", team: team
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
+      error -> error
     end
   end
 
@@ -57,7 +78,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         |> put_status(:unprocessable_entity)
         |> json(%{message: "bad"})
       {:ok, team} ->
-        StitchConnect.Web.TeamChannel.broadcast_security_lockout_update(team)
+        TeamChannel.broadcast_security_lockout_update(team)
         conn
         |> json(%{
           id: team.id,
@@ -90,10 +111,10 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't destroy the team."})
-      {:ok, _} ->
+      {:ok, team} ->
+        TeamChannel.broadcast_team_deleted(team)
         conn
         |> json(%{message: "Team has been destroyed"})
     end
   end
-
 end

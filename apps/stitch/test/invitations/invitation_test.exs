@@ -138,7 +138,7 @@ defmodule Stitch.InvitationTest do
       team = insert(:team, %{open_invitations_enabled: true})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       {:error, reason} = Stitch.Invitation.invite_to_team(user.id, "example@qq.com")
-      assert reason == "Email isn't valid."
+      assert reason == "We do not allow emails from qq.com."
     end
 
     test "returns error when account with that email already exists on team" do
@@ -211,7 +211,8 @@ defmodule Stitch.InvitationTest do
       team = insert(:team, %{open_invitations_enabled: false})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       invitation = insert(:invitation, %{user_id: user.id, team_id: team.id, accepted: false})
-      {:ok, deleted_invitation} = Stitch.Invitation.revoke_invitation(user.id, invitation.id)
+      {:ok, deleted_invitation, deleted_user} = Stitch.Invitation.revoke_invitation(user.id, invitation.id)
+      assert deleted_user.id == user.id
       assert deleted_invitation.id == invitation.id
     end
   end

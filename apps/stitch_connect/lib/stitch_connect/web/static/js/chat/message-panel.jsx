@@ -31,9 +31,9 @@ export default class MessagePanel extends Component {
     const { messageStore } = this.props;
 
     if (messageStore.firstUnreadMessage) {
-      // if messages are already loaded
+      // if messages are already loaded, mark it as read, but leave the NML
       if (messageStore.firstUnreadMessageVisibility === "visible") {
-        messageStore.markAsRead();
+        messageStore.markAsRead(false);
       } else {
         messageStore.scrollToNewBanner();
       }

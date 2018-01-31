@@ -30,7 +30,10 @@ class DeleteTeamPanel extends Component {
 
   _onHideModal = () => this.setState({ showModal: false });
 
-  _onShowModal = () => this.setState({ showModal: true, error: "" });
+  _onShowModal = () => {
+    this.setState({ showModal: true, error: "" });
+    return Promise.resolve();
+  };
 
   _onChangeTeamName = evt => {
     this.setState({ teamName: evt.target.value });
@@ -62,10 +65,14 @@ class DeleteTeamPanel extends Component {
           <a href="mailto:support@teamstitch.com">support@teamstitch.com</a>
         </HelpBlock>
 
-        <Modal show={showModal} onHide={this._onHideModal}>
+        <Modal
+          show={showModal}
+          onHide={this._onHideModal}
+          className="delete-team-modal"
+        >
           <Modal.Header>
             <Modal.Title>Delete Team</Modal.Title>
-            <a href="#" onClick={this._onHideModal}>
+            <a onClick={this._onHideModal}>
               <i className="fa fa-close" />
             </a>
           </Modal.Header>
@@ -73,10 +80,7 @@ class DeleteTeamPanel extends Component {
           <Modal.Body>
             <h5>Please enter your team name to confirm your delete action.</h5>
 
-            {error &&
-              <Alert bsStyle="danger">
-                {error}
-              </Alert>}
+            {error && <Alert bsStyle="danger">{error}</Alert>}
 
             <Form horizontal>
               <FormGroup bsSize="large" className="m-b-10">

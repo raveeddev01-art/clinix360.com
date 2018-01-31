@@ -17,6 +17,11 @@ defmodule Stitch.AccountsTest do
       {:error, message} = Accounts.create_user_with_email_only("")
       assert message == "Email cannot be blank or nil."
     end
+
+    test "returns error when given email domain is prohibited" do
+      {:error, %Ecto.Changeset{} = changeset} = Accounts.create_user_with_email_only("furqan@sina.com")
+      assert changeset.errors == [email: {"host %{host} is not supported", [host: "sina.com"]}]
+    end
   end
 
   describe "Accounts.update_and_complete_user_onboarding/2" do
@@ -40,6 +45,9 @@ defmodule Stitch.AccountsTest do
         name: "__dm_group__",
         slug: "__dm:#{user.id}.#{user.id}"
       }
+
+      assert String.contains?(user.profile_image_url, "default")
+      assert String.contains?(user.profile_image_thumb_url, "default")
     end
   end
 
@@ -67,6 +75,17 @@ defmodule Stitch.AccountsTest do
       user = insert(:user, %{email: "sadan@example.com", password_hash: Comeonin.Bcrypt.hashpwsalt("sadan123")})
       {:error, message} = Accounts.update_user_password(user.id, "sadan1234", "stitch123")
       assert message == "Invalid Password for user"
+    end
+  end
+
+  describe "Accounts.delete_profile_image/1" do
+    test "It should set the avatar image to some random default one" do
+      image = "https://localhost.test:4443/images/some-avatar.png"
+
+      user = insert(:user, %{profile_image_url: image, profile_image_thumb_url: image})
+      {:ok, user} = Accounts.delete_profile_image(user.id)
+      assert String.contains?(user.profile_image_url, "default")
+      assert String.contains?(user.profile_image_thumb_url, "default")
     end
   end
 end

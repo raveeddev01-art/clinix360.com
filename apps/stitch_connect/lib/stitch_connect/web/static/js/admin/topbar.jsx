@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -14,7 +13,9 @@ class Topbar extends Component {
     return (
       <div className="flex-header admin-topbar">
         <h4>
-          <i className={`fa ${icon}`} /> {heading}
+          <span>
+            <i className={`fa ${icon}`} /> {heading}
+          </span>
         </h4>
         <ul className="nav navbar-nav">
           <li>

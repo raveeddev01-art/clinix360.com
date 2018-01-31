@@ -77,7 +77,11 @@ defmodule StitchConnect.Web.UserControllerTest do
       assert json["message"] == "No user found with ID: #{other_team_user.id}"
     end
 
-    test "restricts guests to only retrieving guests in their rooms", %{conn: conn, team: team, user: user} do
+    test "restricts guests to only retrieving guests in their rooms", %{
+      conn: conn,
+      team: team,
+      user: user
+    } do
       group = insert(:group, team: team)
       insert(:group_user, group: group, user: user)
       other_user = insert(:user, team: team)
@@ -213,6 +217,7 @@ defmodule StitchConnect.Web.UserControllerTest do
 
     test "requires an admin role", %{conn: conn, team: team, admin: admin} do
       user = insert(:user, team: team)
+
       conn =
         conn
         |> with_api_user(user)
@@ -259,6 +264,7 @@ defmodule StitchConnect.Web.UserControllerTest do
 
     test "requires an admin role", %{conn: conn, team: team, admin: admin} do
       user = insert(:user, team: team)
+
       conn =
         conn
         |> with_api_user(user)
@@ -277,7 +283,7 @@ defmodule StitchConnect.Web.UserControllerTest do
         |> json_response(200)
       end
 
-      assert result.(username: "foobar-_0_-")
+      assert result.(username: "foobar0")
 
       refute result.(username: nil)
       refute result.(username: "!")
@@ -294,7 +300,7 @@ defmodule StitchConnect.Web.UserControllerTest do
         |> json_response(200)
       end
 
-      assert result.(username: "foobar-_0_-")
+      assert result.(username: "foobar0")
 
       refute result.(username: nil)
       refute result.(username: "!")
@@ -321,6 +327,135 @@ defmodule StitchConnect.Web.UserControllerTest do
     end
   end
 
+  describe "GET /api/v1/users/validate-emails" do
+    test "process single valid email", %{conn: conn} do
+      params = %{"emails" => ["furqan@mango.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+      assert [%{"furqan@mango.com" => true}] == result
+    end
+
+    test "process single invalid email format", %{conn: conn} do
+      params = %{"emails" => ["furqanmango.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+      assert [%{"furqanmango.com" => "Email has invalid format"}] == result
+    end
+
+    test "process single blacklisted host email", %{conn: conn} do
+      params = %{"emails" => ["furqan@sina.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+      assert [%{"furqan@sina.com" => "We do not allow emails from sina.com"}] == result
+    end
+
+    test "process multi valid email", %{conn: conn} do
+      params = %{"emails" => ["furqan@mango.com", "furqan@apple.com", "furqan@banana.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+      assert [
+        %{"furqan@mango.com" => true},
+        %{"furqan@apple.com" => true},
+        %{"furqan@banana.com" => true},
+      ] == result
+    end
+
+    test "process multi invalid email format", %{conn: conn} do
+      params = %{"emails" => ["furqan@apple.com", "furqanmango.com", "furqan@sina.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+        assert [
+          %{"furqan@apple.com" => true},
+          %{"furqanmango.com" => "Email has invalid format"},
+          %{"furqan@sina.com" => "We do not allow emails from sina.com"},
+        ] == result
+    end
+  end
+
+  describe "PUT /api/v1/users/:id" do
+    test "Admin can set other user's profile", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      admin = insert(:user, team: team, roles: ["admin"])
+
+      json =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(admin)
+        |> put("/api/v1/users/#{user.id}", %{
+          "first_name" => "Furqan",
+          "last_name" => "Aziz",
+          "title" => "Random title"
+        })
+        |> json_response(200)
+
+      assert json["id"] == user.id
+      assert json["title"] == "Random title"
+      assert json["first_name"] == "Furqan"
+      assert json["last_name"] == "Aziz"
+    end
+
+    test "Normal user can set his profile", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+
+      json =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
+        |> put("/api/v1/users/#{user.id}", %{
+          "first_name" => "Furqan1",
+          "last_name" => "Aziz1",
+          "title" => "Random title1"
+        })
+        |> json_response(200)
+
+      assert json["id"] == user.id
+      assert json["title"] == "Random title1"
+      assert json["first_name"] == "Furqan1"
+      assert json["last_name"] == "Aziz1"
+    end
+
+    test "Normal user cannot set other user's profile", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      user1 = insert(:user, team: team)
+
+      json =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
+        |> put("/api/v1/users/#{user1.id}", %{
+          "first_name" => "Furqan1",
+          "last_name" => "Aziz1",
+          "title" => "Random title1"
+        })
+        |> json_response(401)
+
+      assert json["message"] == "You are not unauthorized to update user profile."
+    end
+  end
+
   describe "PUT /api/v1/users/:id/change-role" do
     setup %{conn: conn} do
       subscription = insert(:subscription, tier: "PREMIUM")
@@ -336,7 +471,11 @@ defmodule StitchConnect.Web.UserControllerTest do
       {:ok, conn: conn, team: team, default_group: default_group}
     end
 
-    test "ensures a user is in the default group when `member` role is applied", %{conn: conn, team: team, default_group: default_group} do
+    test "ensures a user is in the default group when `member` role is applied", %{
+      conn: conn,
+      team: team,
+      default_group: default_group
+    } do
       user = insert(:user, team: team)
       refute Stitch.GroupQueries.user_is_member?(default_group.id, user.id)
 
@@ -350,12 +489,15 @@ defmodule StitchConnect.Web.UserControllerTest do
 
     test "converts a guest to a member", %{conn: conn, team: team, default_group: default_group} do
       group = insert(:group, team: team, is_default: false)
+
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
         insert(:group_user, group: group, user: guest)
         refute Stitch.GroupQueries.user_is_member?(default_group.id, guest.id)
 
-        conn = put(conn, Routes.api_v1_user_path(conn, :change_role, guest), %{"role" => "member"})
+        conn =
+          put(conn, Routes.api_v1_user_path(conn, :change_role, guest), %{"role" => "member"})
+
         assert json_response(conn, 200)
         assert Stitch.GroupQueries.user_is_member?(default_group.id, guest.id)
         assert Stitch.GroupQueries.user_is_member?(group.id, guest.id)
@@ -365,8 +507,13 @@ defmodule StitchConnect.Web.UserControllerTest do
       end
     end
 
-    test "converts a member to a guest role", %{conn: conn, team: team, default_group: default_group} do
+    test "converts a member to a guest role", %{
+      conn: conn,
+      team: team,
+      default_group: default_group
+    } do
       restricted_group = insert(:group, team: team)
+
       for role <- ["single-room-guest", "multi-room-guest"] do
         user = insert(:user, team: team, roles: ["member"])
         insert(:group_user, group: default_group, user: user)
@@ -389,6 +536,7 @@ defmodule StitchConnect.Web.UserControllerTest do
     test "can modify a guest's group restrictions", %{conn: conn, team: team} do
       restricted_group = insert(:group, team: team)
       new_group = insert(:group, team: team)
+
       for role <- ["single-room-guest", "multi-room-guest"] do
         guest = insert(:user, team: team, roles: [role], groups_as_guest: [restricted_group.id])
         insert(:group_user, group: restricted_group, user: guest)
@@ -416,13 +564,17 @@ defmodule StitchConnect.Web.UserControllerTest do
           "role" => role,
           "group_ids" => [-1]
         }
+
         conn = put(conn, Routes.api_v1_user_path(conn, :change_role, user), params)
         assert response = json_response(conn, :unprocessable_entity)
         assert response["message"] =~ "group ids is invalid"
       end
     end
 
-    test "changing to single-room-guest requires exactly 1 group id", %{conn: base_conn, team: team} do
+    test "changing to single-room-guest requires exactly 1 group id", %{
+      conn: base_conn,
+      team: team
+    } do
       user = insert(:user, team: team)
       group_1 = insert(:group, team: team)
       group_2 = insert(:group, team: team)
@@ -438,7 +590,10 @@ defmodule StitchConnect.Web.UserControllerTest do
       assert response["message"] =~ "exactly 1"
     end
 
-    test "changing to multi-room-guest requires at least 1 group id", %{conn: base_conn, team: team} do
+    test "changing to multi-room-guest requires at least 1 group id", %{
+      conn: base_conn,
+      team: team
+    } do
       user = insert(:user, team: team)
       group_1 = insert(:group, team: team)
       group_2 = insert(:group, team: team)
@@ -455,10 +610,12 @@ defmodule StitchConnect.Web.UserControllerTest do
 
     test "requires the admin role to perform", %{conn: conn, team: team} do
       user = insert(:user, team: team)
+
       conn =
         conn
         |> with_api_user(user)
         |> put(Routes.api_v1_user_path(conn, :change_role, 99), %{})
+
       assert response = json_response(conn, :unauthorized)
       assert response["message"] =~ "administrator"
     end

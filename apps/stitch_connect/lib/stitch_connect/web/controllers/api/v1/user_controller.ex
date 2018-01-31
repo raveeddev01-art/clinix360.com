@@ -3,6 +3,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   alias Stitch.Accounts.{User, Role}
   alias Stitch.{UserQueries, FeatureGateway}
   alias StitchConnect.Web.{TeamChannel, GroupChannel}
+  import Stitch.UserAuthorization, only: [can_update_user?: 2]
 
   action_fallback StitchConnect.Web.Api.V1.FallbackController
 
@@ -44,10 +45,22 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def update(conn, params) do
-    with {:ok, user} <- Stitch.Accounts.Admin.update_user(conn.assigns.current_user.id, params) do
+  def update(conn, %{"id" => user_id} = params) do
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, user} <- Stitch.Accounts.Admin.update_user(user_id, params) do
       TeamChannel.broadcast_user_info(conn.assigns.team, user)
       render(conn, "update.json", user: user)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to update user profile."})
+        |> halt
+      {:error, message} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: message})
     end
   end
 
@@ -77,6 +90,14 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def create(conn, %{"email" => email}) do
     case Stitch.Accounts.create_user_with_email_only(email) do
+      {:error, %Ecto.Changeset{errors: [email: {_, [host: host]}]}} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: "We do not allow emails from #{host}"})
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
       {:error, message} ->
         conn
         |> unprocessable_entity_error(%{message: message})
@@ -170,19 +191,37 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     json(conn, %{status: "ok"})
   end
 
-  def upload_profile_image(conn, %{"url" => url}) do
-    case Stitch.Accounts.update_profile_image(conn.assigns.current_user, url) do
-      {:ok, user} ->
-        conn |> render("show.json", user: user)
-      {:error, changeset} ->
-        conn |> unprocessable_entity_error(%{changeset: changeset})
+  def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, user} <- Stitch.Accounts.update_profile_image(user_id, url) do
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      conn |> render("show.json", user: user)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to upload profile image."})
+        |> halt
+      {:error, error} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(error)})
     end
   end
 
-  def delete_profile_image(conn, _params) do
-    case Stitch.Accounts.delete_profile_image(conn.assigns.current_user) do
-      {:ok, user} ->
-        conn |> render("show.json", user: user)
+  def delete_profile_image(conn, %{"id" => user_id}) do
+    with user_id <- String.to_integer(user_id),
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, user} <- Stitch.Accounts.delete_profile_image(user_id) do
+      TeamChannel.broadcast_user_info(conn.assigns.team, user)
+      conn |> render("show.json", user: user)
+    else
+      false ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "You are not unauthorized to delete profile image."})
+        |> halt
       {:error, _error} ->
         conn |> unprocessable_entity_error(%{changeset: "Couldn't delete the profile image"})
     end
@@ -209,6 +248,29 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     conn
     |> put_status(:bad_request)
     |> json(%{message: "Requires a username query."})
+  end
+
+  def validate_emails(conn, %{"emails" => emails}) when is_list(emails) do
+    result =
+      Enum.map(emails, fn email ->
+        changeset = User.valid_email_changeset(%User{}, %{email: email})
+        case changeset.errors do
+          [] ->
+            %{"#{email}": true}
+          [email: {_, [host: host]}] ->
+            %{"#{email}": "We do not allow emails from #{host}"}
+          _ ->
+            %{"#{email}": changeset_errors_to_string(changeset)}
+        end
+      end)
+
+    json(conn, result)
+  end
+
+  def validate_emails(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{message: "Requires list of emails."})
   end
 
   @member_role Role.member()
