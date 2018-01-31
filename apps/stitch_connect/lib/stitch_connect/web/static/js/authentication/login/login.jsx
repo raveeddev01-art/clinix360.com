@@ -103,6 +103,7 @@ class Login extends Component {
             <FormGroup bsSize="large">
               <FormControl
                 name="email"
+                required
                 autoFocus
                 type="email"
                 placeholder="Email"
@@ -114,6 +115,7 @@ class Login extends Component {
             <FormGroup bsSize="large">
               <FormControl
                 name="password"
+                required
                 type="password"
                 placeholder="Password"
                 value={this.state.password}
