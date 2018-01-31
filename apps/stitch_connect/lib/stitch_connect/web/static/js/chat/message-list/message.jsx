@@ -136,8 +136,7 @@ class Message extends Component {
   };
 
   toggleReaction = () => {
-    this.setState({ showEmojiPicker: true });
-    this.setState({ selected: true });
+    this.setState({ showEmojiPicker: true, selected: true });
   };
 
   showInfoModal = () => {
