@@ -78,7 +78,7 @@ export default class TeamPicker extends Component {
             Enter your team's <strong>Stitch URL</strong>.
           </h5>
 
-          <form onSubmit={this.handleSubmit} noValidate className="m-b-40">
+          <form onSubmit={this.handleSubmit} className="m-b-40">
             <FormGroup bsSize="large" className="team-form">
               <FormControl
                 name="teamName"
@@ -98,7 +98,6 @@ export default class TeamPicker extends Component {
               bsSize="lg"
               type="submit"
               className="btn-block"
-              disabled={!teamName}
             >
               Continue
             </Button>
