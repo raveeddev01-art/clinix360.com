@@ -10,7 +10,10 @@ import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
 import Promise from "bluebird";
 import shortid from "shortid";
-import { START_TYPING_THROTTLE_MS } from "lib/constants";
+import {
+  START_TYPING_THROTTLE_MS,
+  SEQUENTIAL_SPLIT_SECONDS
+} from "lib/constants";
 import REGEX from "lib/regex";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
 
@@ -175,6 +178,29 @@ class MessageStore {
             .local()
             .format(`YYYY-MM-DD`)
         )
+        .mapValues(msgGroup => {
+          const [firstMsg, ...messages] = msgGroup;
+          let sequentialStart = firstMsg;
+          return [
+            firstMsg,
+            ...messages.map(msg => {
+              if (
+                msg.user.id === sequentialStart.user.id &&
+                sequentialStart.type !== "system" &&
+                sequentialStart.type !== "upload" &&
+                moment(msg.inserted_at).diff(
+                  moment(sequentialStart.inserted_at),
+                  "seconds"
+                ) < SEQUENTIAL_SPLIT_SECONDS
+              ) {
+                return { ...msg, is_sequential: true };
+              }
+
+              sequentialStart = msg;
+              return msg;
+            })
+          ];
+        })
         .value()
     );
   }
