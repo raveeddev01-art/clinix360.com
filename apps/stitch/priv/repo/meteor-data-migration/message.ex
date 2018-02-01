@@ -79,7 +79,11 @@ defmodule Stitch.MeteorMigration.Message do
       }
     else _error ->
       if @meteor_migration_debug do
+        IO.puts("--------------------------------------------------------")
         IO.puts("Error creating message, message: #{inspect(attributes)}.")
+        IO.puts("Message group: #{inspect(group)}")
+        IO.puts("Message user: #{inspect(user)}")
+        IO.puts("--------------------------------------------------------")
       end
       nil
     end
