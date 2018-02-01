@@ -88,7 +88,7 @@ defmodule Stitch.AWS.S3 do
         # When things work out ok, AWS should send a 201 response.
         %{success_action_status: "201"},
         # For form fields that accept a range, separate the upper and lower limit with a comma.
-        ["content-length-range", 1, @s3.upload_size_cap]
+        ["content-length-range", 0, @s3.upload_size_cap]
       ]
     }
     |> Poison.encode!()
