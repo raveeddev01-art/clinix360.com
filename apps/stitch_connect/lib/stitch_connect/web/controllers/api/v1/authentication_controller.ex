@@ -1,55 +1,46 @@
 defmodule StitchConnect.Web.Api.V1.AuthenticationController do
   use StitchConnect.Web, :controller
+  alias Stitch.User.{Authentication}
+  alias Stitch.Accounts.{Email, User}
+  alias StitchConnect.Web.Api.V1.{AuthenticationView, UserView}
+  action_fallback StitchConnect.Web.Api.FallbackController
 
   def submit_login(conn, %{"email" => email, "password" => password}) do
-    team_slug = conn.private[:team_slug]
+    team = conn.assigns.team
 
-    case Stitch.User.Authentication.validate_email_and_password(email, password, team_slug) do
+    case Authentication.validate_email_and_password(email, password, team.slug) do
       false ->
-        conn
-        |> put_status(403)
-        |> json(%{message: "Email or password is incorrect."})
+        {:error, :not_authorized, "Email or password is incorrect."}
+
+      %User{disabled: false} ->
+        {:error, :not_authorized, "This account is disabled - contact your team admin."}
 
       user ->
-        case user.disabled do
-          false ->
-            conn
-            |> login_user(user)
-            |> render(StitchConnect.Web.Api.V1.UserView, "login.json", user: user)
-
-          true ->
-            conn
-            |> put_status(403)
-            |> json(%{message: "This account is disabled - contact your team admin."})
-        end
+        conn
+        |> login_user(user)
+        |> render(UserView, "login.json", user: user)
     end
   end
 
-  def reset_password(conn, %{"email" => email}) do
-    team_slug = conn.private[:team_slug]
+  def create_reset_password_token(conn, %{"email" => email}) do
+    team = conn.assigns.team
 
-    case Stitch.User.Authentication.create_reset_password_token_for_user(email, team_slug) do
+    case Authentication.create_reset_password_token_for_user(team, email) do
       {:error, message} ->
-        conn
-        |> put_status(403)
-        |> json(%{message: message})
+        {:error, :not_authorized, message}
 
       {:ok, user} ->
-        Stitch.Accounts.Email.reset_password_email(
-          user,
-          StitchConnect.Web.Api.V1.AuthenticationView.reset_password_link(user, conn)
-        )
+        reset_link = AuthenticationView.reset_password_link(user, conn)
+        Email.reset_password_email(user, reset_link)
 
         conn |> json(%{status: "ok"})
     end
   end
 
   def reset_password(conn, %{"token" => token, "password" => password}) do
-    case Stitch.User.Authentication.reset_password_for_user(token, password) do
+    case Authentication.reset_password_for_user(token, password) do
       {:error, message} ->
-        conn
-        |> put_status(403)
-        |> json(%{message: message})
+        {:error, :not_authorized, message}
 
       {:ok, _} ->
         conn |> json(%{message: "Password was successfully changed"})

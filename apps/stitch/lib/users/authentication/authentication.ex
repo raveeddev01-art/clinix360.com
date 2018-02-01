@@ -82,52 +82,36 @@ defmodule Stitch.User.Authentication do
     end
   end
 
+  @spec check_for_valid_reset_token(binary) :: boolean
   def check_for_valid_reset_token(token) do
-    user = Repo.get_by(User, password_reset_token: token)
+    !!UserQueries.get_by_password_reset_token(token)
+  end
 
-    if user != nil do
+  @spec create_reset_password_token_for_user(Team.t, binary) :: {:ok, User.t} | {:error, Changeset.t} | {:error, binary}
+  def create_reset_password_token_for_user(%Team{} = team, email) do
+    with %User{} = user <- Stitch.UserQueries.team_member_with_email(team.id, email) do
       user
-    else
-      false
+      |> change(password_reset_token: Stitch.Rand.token(32))
+      |> Repo.update()
+    else nil ->
+      {:error, "User is not part of the team or Email does not exist"}
     end
   end
 
-  def create_reset_password_token_for_user(email, team_slug)
-      when byte_size(email) > 0 and byte_size(team_slug) > 0 do
-    team = Repo.get_by(Team, slug: team_slug)
-
-    query =
-      from(
-        u in User,
-        where: u.team_id == ^team.id,
-        where: u.onboarded == ^true,
-        where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
-      )
-
-    case Repo.one(query) do
-      nil ->
-        {:error, "User is not part of the team or Email does not exist"}
-
-      user ->
-        user
-        |> Ecto.Changeset.change(password_reset_token: Stitch.Rand.token(32))
-        |> Repo.update()
-    end
-  end
-
-  def reset_password_for_user(token, password)
-      when byte_size(token) > 0 and byte_size(password) > 0 do
-    case Repo.get_by(User, password_reset_token: token) do
-      nil ->
-        {:error, "Token is invalid or already used"}
-
-      user ->
-        user
-        |> Ecto.Changeset.change(
-          password_hash: hash_password(password),
-          password_reset_token: nil
-        )
-        |> Repo.update()
+  @doc """
+  Finds a user by the password reset token, resets their password and updates authentication token.
+  Updating authentication token invalidates all user's sessions.
+  """
+  @spec reset_password_for_user(binary, binary) :: {:ok, User.t} | {:error, Changeset.t}
+  def reset_password_for_user(token, password) do
+    with %User{} = user <- UserQueries.get_by_password_reset_token(token) do
+      user
+      |> change(password_hash: hash_password(password))
+      |> change(password_reset_token: nil)
+      |> change(token: Stitch.Rand.token(32))
+      |> Repo.update
+    else nil ->
+      {:error, "Token is invalid or already used"}
     end
   end
 end
