@@ -108,3 +108,12 @@ export function isFullMember(user) {
 export function formatCurrency(money) {
   return `$${money.toFixed(2)}`;
 }
+
+/**
+ * Check if string provided is valid US zip code
+ * 
+ * @param {string} zipCode 
+ */
+export function isZipCode(zipCode) {
+  return /^\d{5}-\d{4}$/.test(zipCode);
+}

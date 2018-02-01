@@ -9,6 +9,7 @@ import get from "lodash/get";
 
 import { alert } from "common/modals";
 import { getCountries, getProvinces } from "lib/billing";
+import { isZipCode } from "lib/utils";
 
 const COUNTRIES = getCountries();
 const PROVINCES = getProvinces();
@@ -89,6 +90,10 @@ class Contact extends Component {
         errors[field] = "This field is required";
       }
     });
+
+    if (!isZipCode(fields.zip_code)) {
+      errors.zip_code = "Invalid zip code";
+    }
 
     this.setState({
       errors
