@@ -86,6 +86,11 @@ defmodule Stitch.MeteorMigration do
       |> MeteorMigration.User.parse_users_json()
       |> Enum.reduce(%{}, & Map.put(&2, &1.username, &1))
 
+    meteor_users_by_meteor_id =
+      parse_meteor_json(users_json)
+      |> MeteorMigration.User.parse_users_json()
+      |> Enum.reduce(%{}, & Map.put(&2, &1.meteor_id, &1))
+
     groups = Group |> where(team_id: ^team.id) |> Repo.all()
     users = User |> where(team_id: ^team.id) |> Repo.all()
 
@@ -126,7 +131,7 @@ defmodule Stitch.MeteorMigration do
 
     Logger.info("Migrating messages")
 
-    messages = MeteorMigration.Message.run(indexed_rooms, phoenix_users_by_email, meteor_users_by_username, messages_json)
+    messages = MeteorMigration.Message.run(indexed_rooms, phoenix_users_by_email, meteor_users_by_meteor_id, messages_json)
   end
 
   def identify_on_intercom(users) do

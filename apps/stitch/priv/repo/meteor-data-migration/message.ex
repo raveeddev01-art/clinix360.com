@@ -61,15 +61,15 @@ defmodule Stitch.MeteorMigration.Message do
   def parse_message_json(rooms, phoenix_users_by_email, meteor_users_by_username, %{
     "_id" => meteor_id,
     "msg" => text_content,
-    "u" => %{"username" => meteor_creator_username},
+    "u" => %{"_id" => meteor_creator_id},
     "ts" => timestamp,
     "rid" => meteor_room_id } = attributes) do
 
-    with {:ok, user} <- fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, meteor_creator_username),
+    with {:ok, user} <- fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, meteor_creator_id),
          {:ok, group} <- Map.fetch(rooms, meteor_room_id) do
 
       %{
-        text_content: parse_mentions(text_content, phoenix_users_by_email, meteor_users_by_username),
+        text_content: text_content,
         inserted_at: parse_timestamp(timestamp),
         updated_at: parse_timestamp(timestamp),
         user_id: user.id,
@@ -85,16 +85,16 @@ defmodule Stitch.MeteorMigration.Message do
     end
   end
 
-  def parse_mentions(text_content, phoenix_users_by_email, meteor_users_by_username) do
-    Enum.reduce(meteor_users_by_username, text_content, fn ({username, user}, acc) ->
-      case fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, username) do
-        {:ok, user} ->
-          String.replace(acc, "@#{username}", "<@U#{user.id}>")
-        :error ->
-          acc
-      end
-    end)
-  end
+  # def parse_mentions(text_content, phoenix_users_by_email, meteor_users_by_username) do
+  #   Enum.reduce(meteor_users_by_username, text_content, fn ({username, user}, acc) ->
+  #     case fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, username) do
+  #       {:ok, user} ->
+  #         String.replace(acc, "@#{username}", "<@U#{user.id}>")
+  #       :error ->
+  #         acc
+  #     end
+  #   end)
+  # end
 
   def parse_timestamp(timestmap) do
     NaiveDateTime.from_iso8601!(timestmap) |> DateTime.from_naive!("Etc/UTC")
