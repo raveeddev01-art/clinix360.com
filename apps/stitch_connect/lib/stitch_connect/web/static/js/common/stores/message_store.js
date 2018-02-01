@@ -12,7 +12,8 @@ import Promise from "bluebird";
 import shortid from "shortid";
 import {
   START_TYPING_THROTTLE_MS,
-  SEQUENTIAL_SPLIT_SECONDS
+  SEQUENTIAL_SPLIT_SECONDS,
+  MAX_MESSAGE_COUNT_PER_BATCH
 } from "lib/constants";
 import REGEX from "lib/regex";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
@@ -583,7 +584,7 @@ class MessageStore {
             return;
           }
 
-          if (messages.length < 30) {
+          if (messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
             this.loadedAll = true;
           }
 
@@ -634,7 +635,7 @@ class MessageStore {
             return;
           }
 
-          if (messages.length < 30) {
+          if (messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
             this.loadedAllRecent = true;
           }
 
@@ -825,7 +826,7 @@ class MessageStore {
 
     this.rootStore.socketStore.sendPingWithTimeout();
 
-    if (data.messages.length < 30) {
+    if (data.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
       this.loadedAll = true;
     }
 
