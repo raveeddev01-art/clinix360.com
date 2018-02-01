@@ -182,6 +182,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
         put "/cancel",  SubscriptionController, :cancel
       end
 
+      resources "/history", HistoryController, only: [:index]
       resources "/cards", CardController, only: [:index, :create, :update, :delete]
     end
 

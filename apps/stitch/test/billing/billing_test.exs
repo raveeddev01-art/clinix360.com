@@ -465,4 +465,26 @@ defmodule Stitch.Billing.BillingTest do
       assert Billing.list_billable_users(team) |> length() == length(active_users)
     end
   end
+
+  describe "create_payment_history/1, list_payment_history/1" do
+    setup do
+      team = insert(:team)
+      {:ok, team: team}
+    end
+
+    test "create, list", %{team: team} do
+      params = %{
+        plan: "basic_yearly",
+        team_id: team.id,
+        invoice_id: "inv_xxxxxxxxxxxy",
+        amount: 12000,
+        quantity: 5,
+        period_end: NaiveDateTime.utc_now(),
+        period_start: NaiveDateTime.utc_now()
+      }
+
+      assert history = Billing.create_payment_history(params)
+      assert [history] == Billing.list_payment_history(team)
+    end
+  end
 end
