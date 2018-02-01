@@ -2,9 +2,9 @@ defmodule Stitch.Stripe.Events do
   @moduledoc """
   Handles Stripe webhook events.
   """
-  alias Stitch.Billing
-  alias Stitch.TeamQueries
   alias Stitch.Billing.{Plan, Notifications}
+  alias Stitch.{Billing, TeamQueries, AWS.S3}
+  alias StitchConnect.Web.Api.V1.Billing.HistoryView
 
   # Successful payment
   def handle_event(%{type: "invoice.payment_succeeded"} = event) do
@@ -16,10 +16,12 @@ defmodule Stitch.Stripe.Events do
       valid_until: DateTime.from_unix!(subscription["period"]["end"])
     }
 
-    with {:ok, subscription} <- Billing.update_subscription(customer_id, subscription_id, sub_params),
+    with {:ok, subscription} <-
+           Billing.update_subscription(customer_id, subscription_id, sub_params),
          team = TeamQueries.get_by_id(subscription.team_id),
          owner = TeamQueries.get_team_owner(team) do
       Notifications.send_successful_payment(owner, team)
+      record_payment_history(team, event)
       :ok
     end
   end
@@ -53,7 +55,8 @@ defmodule Stitch.Stripe.Events do
       estimated_invoice_amount: 0
     }
 
-    with {:ok, _subscription} <- Billing.update_subscription(customer_id, subscription_id, sub_params) do
+    with {:ok, _subscription} <-
+           Billing.update_subscription(customer_id, subscription_id, sub_params) do
       :ok
     end
   end
@@ -61,11 +64,82 @@ defmodule Stitch.Stripe.Events do
   def handle_event(_), do: :ok
 
   defp days_until_retry(nil), do: nil
+
   defp days_until_retry(unix_timestamp) do
     next_attempt = DateTime.from_unix!(unix_timestamp)
     days = Timex.diff(next_attempt, DateTime.utc_now(), :days)
+
     if days > 0 do
       {:ok, days}
+    end
+  end
+
+  defp record_payment_history(team, event) do
+    [subscription] = get_in(event, [:data, "object", "lines", "data"])
+    charge_id = get_in(event, [:data, "object", "charge"])
+    invoice_id = get_in(event, [:data, "object", "id"])
+    amount = get_in(event, [:data, "object", "total"])
+    period = subscription["period"]
+    plan = subscription["plan"]
+
+    card =
+      case Stitch.Stripe.Client.get_transaction(charge_id) do
+        {:ok, transaction} -> transaction.source
+        _ -> %{"id" => nil, "brand" => nil, "last4" => nil}
+      end
+
+    params = %{
+      plan: plan["id"],
+      team_id: team.id,
+      card_id: card["id"],
+      invoice_id: invoice_id,
+      amount: amount / 100,
+      card_brand: card["brand"],
+      card_last4: card["last4"],
+      quantity: subscription["quantity"],
+      period_end: DateTime.from_unix!(period["end"]),
+      period_start: DateTime.from_unix!(period["start"])
+    }
+
+    statement_pdf_url = generate_statement_pdf(team, params)
+
+    params
+    |> Map.put(:statement_pdf_url, statement_pdf_url)
+    |> Billing.create_payment_history()
+  end
+
+  defp generate_statement_pdf(team, history) do
+    subscription =
+      history.plan
+      |> String.split("_")
+      |> List.first()
+      |> String.upcase()
+      |> Plan.display_name()
+
+    params = [
+      team_name: team.name,
+      amount: history.amount,
+      quantity: history.quantity,
+      subscription: subscription,
+      card_brand: history.card_brand,
+      card_last4: history.card_last4,
+      today: Timex.format!(Timex.now(), "{Mfull} {D}, {YYYY}")
+    ]
+
+    with html = Phoenix.View.render_to_string(HistoryView, "statement.html", params),
+         shell_params = ["-d", "480", "-L", "0", "-R", "0", "-T", "0", "-B", "0"],
+         {:ok, filename} <- PdfGenerator.generate(html, shell_params: shell_params) do
+      try do
+        {:ok, %{status_code: 200}} = S3.upload(filename)
+      rescue
+        _ -> nil
+      catch
+        :exit, _ -> nil
+      end
+
+      S3.fullpath(filename)
+    else
+      _ -> nil
     end
   end
 end

@@ -16,6 +16,8 @@ Install external dependencies
 
 - `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
 
+- `wkhtmltopdf` (https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF)
+
 Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 
 ```
