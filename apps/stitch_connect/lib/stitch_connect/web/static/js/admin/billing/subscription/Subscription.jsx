@@ -159,7 +159,7 @@ class Subscription extends Component {
         subscription: {
           tier,
           trial_remaining_days: trialRemainingDays,
-          valid_remaining_days: validRemainingDays
+          plan_remaining_days: planRemainingDays
         }
       }
     } = this.props;
@@ -184,7 +184,7 @@ class Subscription extends Component {
             </span>
           )}
         {tier !== "TRIAL" &&
-          validRemainingDays > 0 && (
+          planRemainingDays > 0 && (
             <span>
               Click{" "}
               <a href="mailto:support@teamstitch.com?subject=Subscription Cancellation Request&amp;body=I would like to request a cancellation of our Stitch Connect subscription for the following reasons:">

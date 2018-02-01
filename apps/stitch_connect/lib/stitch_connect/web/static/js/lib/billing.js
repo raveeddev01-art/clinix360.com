@@ -138,7 +138,7 @@ const processSubscriptionData = subscription => {
   subscription.valid_until = validUntil.format(dateFormat);
   subscription.trial_valid_until = trialValidUntil.format(dateFormat);
 
-  subscription.valid_remaining_days = validUntil.diff(today, "days");
+  subscription.plan_remaining_days = validUntil.diff(today, "days");
   subscription.trial_remaining_days = trialValidUntil.diff(today, "days");
 
   return subscription;
