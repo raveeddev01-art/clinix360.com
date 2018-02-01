@@ -18,6 +18,7 @@ class PresenceStore {
   @observable onlineUsersMap = {};
   @observable locked = window.locked;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
+  @observable isActive = false; // indicates whether the app has focus
 
   onlineUsersMapCache = {};
 
@@ -123,6 +124,12 @@ class PresenceStore {
   };
 
   @action
+  fetchFocus = () => {
+    this.isActive =
+      typeof document.hasFocus === "function" ? document.hasFocus() : true; // hasFocus not supported in opera
+  };
+
+  @action
   setTeamId(id) {
     this.teamId = id;
   }
@@ -200,11 +207,15 @@ class PresenceStore {
     this.teamChannel.push("became_away");
   };
 
+  @action
   onWindowBlur = () => {
     window.clearTimeout(this.inactiveTimerID);
+    this.isActive = false;
   };
 
+  @action
   onWindowFocus = () => {
+    this.isActive = true;
   };
 
   checkLockoutTimerExpired = () => {

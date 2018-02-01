@@ -16,7 +16,8 @@ class LockableApp extends Component {
         throttledUserInteract,
         getLockoutSettings,
         onWindowFocus,
-        onWindowBlur
+        onWindowBlur,
+        fetchFocus
       }
     } = this.props;
 
@@ -28,6 +29,7 @@ class LockableApp extends Component {
     window.addEventListener("focus", onWindowFocus);
     window.addEventListener("blur", onWindowBlur);
 
+    fetchFocus();
     getLockoutSettings();
   }
 
