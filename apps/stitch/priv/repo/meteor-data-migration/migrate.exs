@@ -32,54 +32,101 @@ defmodule Stitch.MeteorMigration do
     end
   end
 
-  def run_migration(%{team_json: team_json, users_json: users_json, rooms_json: rooms_json, messages_json: messages_json}) do
-    Logger.info("Creating team")
+  def run_migration(%{team_json: team_json, users_json: users_json, rooms_json: rooms_json, messages_json: messages_json} = config) do
+    if @migrate_messages do
+      migrate_message_history(config)
+    else
+      Logger.info("Creating team")
 
-    case create_team_unless_exists(parse_json_file(team_json)) do
-      {:ok, team} ->
-        Logger.info("Migrating users")
+      case create_team_unless_exists(parse_json_file(team_json)) do
+        {:ok, team} ->
+          Logger.info("Migrating users")
 
-        meteor_users = MeteorMigration.User.parse_users_json(parse_meteor_json(users_json))
-        {_count, users} = MeteorMigration.User.migrate_users(team.id, meteor_users)
+          meteor_users = MeteorMigration.User.parse_users_json(parse_meteor_json(users_json))
+          {_count, users} = MeteorMigration.User.migrate_users(team.id, meteor_users)
 
-        identify_on_intercom(users)
+          identify_on_intercom(users)
 
-        Logger.info("Migrating rooms")
+          Logger.info("Migrating rooms")
 
-        indexed_users = index_users(users)
-        rooms = MeteorMigration.Room.parse_rooms_json(indexed_users, parse_meteor_json(rooms_json))
-        rooms = MeteorMigration.Room.migrate_rooms(team.id, rooms)
+          indexed_users = index_users(users)
+          rooms = MeteorMigration.Room.parse_rooms_json(indexed_users, parse_meteor_json(rooms_json))
+          rooms = MeteorMigration.Room.migrate_rooms(team.id, rooms)
 
-        Logger.info("Restoring guest membership")
-        indexed_meteor_users = index_users(meteor_users)
-        indexed_meteor_rooms = index_rooms(rooms)
-        MeteorMigration.User.restoring_guest_membership(indexed_meteor_users, indexed_users, indexed_meteor_rooms)
-        Logger.info("Restoring default room membership")
-        MeteorMigration.User.enforce_default_group_membership(team.id, users)
+          Logger.info("Restoring guest membership")
+          indexed_meteor_users = index_users(meteor_users)
+          indexed_meteor_rooms = index_rooms(rooms)
+          MeteorMigration.User.restoring_guest_membership(indexed_meteor_users, indexed_users, indexed_meteor_rooms)
+          Logger.info("Restoring default room membership")
+          MeteorMigration.User.enforce_default_group_membership(team.id, users)
 
-        Logger.info("Cleaning auto-generated system messages")
+          Logger.info("Cleaning auto-generated system messages")
 
-        group_ids = Group |> where(team_id: ^team.id) |> select([g], g.id) |> Repo.all
-        Message |> where([gu], gu.group_id in ^group_ids) |> Repo.delete_all()
+          group_ids = Group |> where(team_id: ^team.id) |> select([g], g.id) |> Repo.all
+          Message |> where([gu], gu.group_id in ^group_ids) |> Repo.delete_all()
 
-        if @migrate_messages do
-          Logger.info("Migrating messages")
-          indexed_rooms = index_rooms(rooms)
-          messages = MeteorMigration.Message.run(indexed_rooms, indexed_users, messages_json)
+          Logger.info("Finished migrating team")
 
-          # messages = MeteorMigration.Message.parse_messages_json(indexed_rooms, indexed_users, parse_meteor_json(messages_json))
-          # messages = MeteorMigration.Message.migrate_messages(messages)
-        end
-
-        # indexed_rooms = index_rooms(rooms)
-        # messages = MeteorMigration.Message.parse_messages_json(indexed_rooms, indexed_users, parse_meteor_json(messages_json))
-        # messages = MeteorMigration.Message.migrate_messages(messages)
-
-        Logger.info("Finished migrating team")
-
-      {:error, team} ->
-        Logger.warn "Skipping migration for #{team.slug}"
+        {:error, team} ->
+          Logger.warn "Skipping migration for #{team.slug}"
+      end
     end
+  end
+
+  def migrate_message_history(%{team_json: team_json, users_json: users_json, rooms_json: rooms_json, messages_json: messages_json} = config) do
+    %{"name" => team_name, "slug" => team_slug} = parse_json_file(team_json)
+    Logger.info("Migrating message history for #{team_slug}")
+    team = Stitch.TeamQueries.get_by_slug(team_slug)
+    if team == nil, do: log_meteor_data_error("Team #{team_slug} doesn't exist.")
+
+    Logger.info("Fethcing and indexing the team's groups and users")
+
+    meteor_users_by_username =
+      parse_meteor_json(users_json)
+      |> MeteorMigration.User.parse_users_json()
+      |> Enum.reduce(%{}, & Map.put(&2, &1.username, &1))
+
+    groups = Group |> where(team_id: ^team.id) |> Repo.all()
+    users = User |> where(team_id: ^team.id) |> Repo.all()
+
+    phoenix_users_by_email = Enum.reduce(users, %{}, & Map.put(&2, &1.email, &1))
+
+    meteor_rooms =
+      MeteorMigration.Room.parse_rooms_json(phoenix_users_by_email, meteor_users_by_username, parse_meteor_json(rooms_json))
+      |> Enum.reduce(%{}, fn (room, acc) ->
+        if room.dm do
+          if length(room.users) > 1 do
+            dm_slug = "__dm:#{room.users |> Enum.map(& &1.id) |> Enum.sort |> Enum.join(".")}"
+            Map.put(acc, dm_slug, room)
+          else
+            acc
+          end
+        else
+          Map.put(acc, room.slug, room)
+        end
+      end)
+
+    indexed_groups = Enum.reduce(groups, %{}, & Map.put(&2, &1.slug, &1))
+
+    indexed_rooms =
+      groups
+      |> Enum.reduce(%{}, fn (group, acc) ->
+        meteor_room = meteor_rooms[group.slug]
+        if meteor_room do
+          if (meteor_room.dm == false && meteor_room.public == false) && meteor_room.creator_user.id != group.creator_user_id do
+            Logger.warn "Skip message history import for room #{group.slug}. Meteor: #{inspect(meteor_room)} Phoenix: #{inspect(group)}"
+            acc
+          else
+            Map.put(acc, meteor_room.meteor_id, group)
+          end
+        else
+          acc
+        end
+      end)
+
+    Logger.info("Migrating messages")
+
+    messages = MeteorMigration.Message.run(indexed_rooms, phoenix_users_by_email, meteor_users_by_username, messages_json)
   end
 
   def identify_on_intercom(users) do
@@ -225,7 +272,7 @@ defmodule Stitch.MeteorMigration do
   def run do
     config = Stitch.MeteorMigration.get_config
     Logger.info(inspect(config))
-    if @allow_retry, do: Stitch.MeteorMigration.clean_db(config)
+    if (@allow_retry and not @migrate_messages), do: Stitch.MeteorMigration.clean_db(config)
     Stitch.MeteorMigration.run_migration(config)
   end
 end

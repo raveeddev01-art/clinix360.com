@@ -3,49 +3,96 @@ defmodule Stitch.MeteorMigration.Message do
   alias Stitch.Repo
   require Logger
 
-  @chunk_size 200
+  @chunk_size 300
+  @meteor_migration_debug System.get_env("METEOR_MIGRATION_DEBUG") == "true"
 
   def migrate_messages(messages) do
-    Repo.insert_all(Message, messages, returning: false)
+    inserted_count =
+      messages
+      |> Enum.reduce(0, fn (message, acc) ->
+        if Repo.get_by(Message, meteor_id: message.meteor_id) == nil do
+          attrs = %Message{
+            text_content: message.text_content,
+            inserted_at: message.inserted_at,
+            updated_at: message.updated_at,
+            user_id: message.user_id,
+            group_id: message.group_id,
+            type: "chat",
+            meteor_id: message.meteor_id,
+          }
+
+          case Repo.insert(attrs) do
+            {:ok, _} -> acc + 1
+            _ -> 0
+          end
+        else
+          0
+        end
+      end)
+
+    IO.puts "#{inserted_count} messages inserted."
   end
 
-  def parse_messages_json(rooms, users, messages) do
+  def parse_messages_json(rooms, phoenix_users_by_email, meteor_users_by_username, messages) do
     messages
-    |> Enum.map(& parse_message_json(rooms, users, &1))
+    |> Enum.map(& parse_message_json(rooms, phoenix_users_by_email, meteor_users_by_username, &1))
     |> Enum.filter(& &1 != nil)
   end
 
-  def parse_message_json(_rooms, _users, %{"msg"=> ""}) do
+  @doc """
+  Given username in meteor app,
+  - fetch the corresponding meteor user and get his email
+  - fetch phoenix user struct by email
+  """
+  def fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, username) do
+    with {:ok, meteor_user} <- Map.fetch(meteor_users_by_username, username),
+         {:ok, phoenix_user} <- Map.fetch(phoenix_users_by_email, meteor_user.email) do
+      {:ok, phoenix_user}
+    end
+  end
+
+  def parse_message_json(_rooms, _phoenix_users_by_email, _meteor_users_by_username, %{"msg"=> ""}) do
     nil
   end
 
-  def parse_message_json(rooms, users, %{
-    "_id" => _meteor_id,
+  @doc """
+  `rooms` must a map with meteor's room id as a key and pheonix group struct as a value
+  """
+  def parse_message_json(rooms, phoenix_users_by_email, meteor_users_by_username, %{
+    "_id" => meteor_id,
     "msg" => text_content,
     "u" => %{"username" => meteor_creator_username},
     "ts" => timestamp,
     "rid" => meteor_room_id } = attributes) do
 
-    with {:ok, user} <- Map.fetch(users, meteor_creator_username),
+    with {:ok, user} <- fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, meteor_creator_username),
          {:ok, group} <- Map.fetch(rooms, meteor_room_id) do
 
       %{
-        text_content: parse_mentions(text_content, users),
+        text_content: parse_mentions(text_content, phoenix_users_by_email, meteor_users_by_username),
         inserted_at: parse_timestamp(timestamp),
         updated_at: parse_timestamp(timestamp),
         user_id: user.id,
         group_id: group.id,
         type: "chat",
+        meteor_id: meteor_id,
       }
     else _error ->
-      Logger.error("Error creating message, message: #{inspect(attributes)}.")
+      if @meteor_migration_debug do
+        IO.puts("Error creating message, message: #{inspect(attributes)}.")
+      end
       nil
     end
   end
 
-  def parse_mentions(text_content, users) do
-    Enum.reduce(users, text_content, fn ({username, user}, acc) ->
-      String.replace(acc, "@#{username}", "<@U#{user.id}>")
+  def parse_mentions(text_content, phoenix_users_by_email, meteor_users_by_username) do
+    Enum.reduce(meteor_users_by_username, text_content, fn ({username, user}, acc) ->
+      case fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, username) do
+        {:ok, user} ->
+          String.replace(acc, "@#{username}", "<@U#{user.id}>")
+        :error ->
+          acc
+      end
     end)
   end
 
@@ -53,12 +100,12 @@ defmodule Stitch.MeteorMigration.Message do
     NaiveDateTime.from_iso8601!(timestmap) |> DateTime.from_naive!("Etc/UTC")
   end
 
-  def run(rooms, users, message_json_file) do
+  def run(rooms, phoenix_users_by_email, meteor_users_by_username, message_json_file) do
     message_file_stream(message_json_file, @chunk_size, fn messages, n ->
-      parse_messages_json(rooms, users, messages)
-      |> migrate_messages
+      if @meteor_migration_debug, do: IO.puts "#{n} messages parsed."
 
-      IO.puts "#{n} messages migrated."
+      parse_messages_json(rooms, phoenix_users_by_email, meteor_users_by_username, messages)
+      |> migrate_messages
     end)
   end
 
