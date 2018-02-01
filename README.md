@@ -5,8 +5,8 @@ This is the main umbrella application for
 
 It contains two apps:
 
-- Stitch (supporting business rules)
-- StitchConnect (web api and frontend)
+* Stitch (supporting business rules)
+* StitchConnect (web api and frontend)
 
 ---
 
@@ -14,9 +14,9 @@ It contains two apps:
 
 Install external dependencies
 
-- `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
+* `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
 
-- `wkhtmltopdf` (https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF)
+* `wkhtmltopdf` (https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF) Needed to generate PDFs.
 
 Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 
@@ -155,9 +155,7 @@ table and move from there to the `InMemory` process. This allows us to test our
 analytics system in dev env without hitting the Segment API. In prod env
 `Stitch` is configured to use `Stitch.Analytics.Segment.HTTPClient` instead. To
 test/debug in dev env, while hitting the Segment API and the associated destinations
-configured on Segment, edit `config/dev.exs to use the `HTTPClient` module. If
-you do this, remember to use the Segment API keys for the `Staging` source and
-not `Production`.
+configured on Segment, edit `config/dev.exs to use the`HTTPClient`module. If you do this, remember to use the Segment API keys for the`Staging`source and not`Production`.
 
 2. Edit `config/dev.exs` to enable `Stitch.Analytics.Sync.RecurringSync`:
 
