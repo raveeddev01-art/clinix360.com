@@ -344,11 +344,8 @@ class SidemenuStore {
 
       // if it's DM and hidden, show it on sidebar
       if (group.type !== "regular" && group.is_hidden) {
-        put(`/api/v1/groups/${group.id}/unhide`).then(() => {
-          groupsStore.updateGroupData(group.id, {
-            is_hidden: false
-          });
-        });
+        // just make it unhidden by assuming it's already unhidden when new msg is broadcasted over dm
+        groupsStore.updateGroupData(group.id, { is_hidden: false });
       }
     }
 

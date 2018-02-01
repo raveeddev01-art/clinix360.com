@@ -130,12 +130,13 @@ defmodule Stitch.Invitation do
 
           case invited_user do
             nil ->
-              {:error, "Email isn't valid."}
+              [_, host] = String.split(email, "@")
+              {:error, "We do not allow emails from #{host}."}
+
             invited_user ->
-              if invited_user.onboarded do
-                {:error, "Email has already been registered."}
-              else
-                {:error, "Email has already been invited."}
+              case invited_user.onboarded do
+                true -> {:error, "Email has already been registered."}
+                false -> {:error, "Email has already been invited."}
               end
           end
         {:ok, new_user} ->

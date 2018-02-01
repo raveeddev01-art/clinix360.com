@@ -52,7 +52,12 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
     end
   end
 
-  def update_contact_info(conn, %{} = params) do
+  def show_contact_info(conn, %{"id" => _}) do
+    team = conn.assigns.team
+    render conn, "contact_info.json", team: team
+  end
+
+  def update_contact_info(conn, %{"id" => _} = params) do
     with team = conn.assigns.team,
          {:ok, team} <- Admin.update_contact_info(team, params) do
       TeamChannel.broadcast_team_rename(team)

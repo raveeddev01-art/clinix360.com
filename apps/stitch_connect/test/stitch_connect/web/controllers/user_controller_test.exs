@@ -327,6 +327,71 @@ defmodule StitchConnect.Web.UserControllerTest do
     end
   end
 
+  describe "GET /api/v1/users/validate-emails" do
+    test "process single valid email", %{conn: conn} do
+      params = %{"emails" => ["furqan@mango.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+      assert [%{"furqan@mango.com" => true}] == result
+    end
+
+    test "process single invalid email format", %{conn: conn} do
+      params = %{"emails" => ["furqanmango.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+      assert [%{"furqanmango.com" => "Email has invalid format"}] == result
+    end
+
+    test "process single blacklisted host email", %{conn: conn} do
+      params = %{"emails" => ["furqan@sina.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+      assert [%{"furqan@sina.com" => "We do not allow emails from sina.com"}] == result
+    end
+
+    test "process multi valid email", %{conn: conn} do
+      params = %{"emails" => ["furqan@mango.com", "furqan@apple.com", "furqan@banana.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+      assert [
+        %{"furqan@mango.com" => true},
+        %{"furqan@apple.com" => true},
+        %{"furqan@banana.com" => true},
+      ] == result
+    end
+
+    test "process multi invalid email format", %{conn: conn} do
+      params = %{"emails" => ["furqan@apple.com", "furqanmango.com", "furqan@sina.com"]}
+
+      result =
+        conn
+        |> post(api_v1_user_path(conn, :validate_emails, params))
+        |> json_response(200)
+
+        assert [
+          %{"furqan@apple.com" => true},
+          %{"furqanmango.com" => "Email has invalid format"},
+          %{"furqan@sina.com" => "We do not allow emails from sina.com"},
+        ] == result
+    end
+  end
+
   describe "PUT /api/v1/users/:id" do
     test "Admin can set other user's profile", %{conn: conn} do
       team = insert(:team)
