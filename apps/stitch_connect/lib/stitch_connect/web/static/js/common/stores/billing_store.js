@@ -149,20 +149,18 @@ class BillingStore {
 
   @action
   updateContact(contact) {
+    const { teamId } = this.rootStore.appParams;
+
     this.loading = true;
 
-    // TODO: Use api
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(contact);
-      }, 1000);
-    })
-      .then(response => {
-        this.contact = response;
-      })
-      .finally(() => {
-        this.loading = false;
-      });
+    return put(`/api/v1/teams/${teamId}/contact`, {
+      body: contact
+    }).then(response => {
+      this.loading = false;
+      this.contact = response.data;
+
+      return this.contact;
+    });
   }
 }
 

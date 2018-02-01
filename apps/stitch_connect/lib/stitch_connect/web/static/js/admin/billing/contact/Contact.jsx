@@ -26,10 +26,10 @@ class Contact extends Component {
           city,
           state,
           country,
-          zip_code: zipCode,
-          company_name: companyName,
-          address_line_one: addressLineOne,
-          address_line_two: addressLineTwo
+          zip_code,
+          company_name,
+          address_line_one,
+          address_line_two
         }
       }
     } = props;
@@ -40,10 +40,10 @@ class Contact extends Component {
         city,
         state,
         country,
-        zipCode,
-        companyName,
-        addressLineOne,
-        addressLineTwo
+        zip_code,
+        company_name,
+        address_line_one,
+        address_line_two
       },
       errors: {}
     };
@@ -75,9 +75,9 @@ class Contact extends Component {
       "city",
       "state",
       "country",
-      "zipCode",
-      "companyName",
-      "addressLineOne"
+      "zip_code",
+      "company_name",
+      "address_line_one"
     ];
     const { fields } = this.state;
     const errors = {};
@@ -99,17 +99,33 @@ class Contact extends Component {
 
   onSave = () => {
     const { billingStore } = this.props;
+    const { fields: contact } = this.state;
 
     if (!this.validate()) {
       return;
     }
 
-    billingStore.updateContact(this.state).then(contact => {
-      alert({
-        title: "Contact Updated",
-        message: "Contact information has been updated successfully!"
+    billingStore
+      .updateContact(contact)
+      .then(contact => {
+        alert({
+          title: "Contact Updated",
+          message: "Contact information has been updated successfully!"
+        });
+      })
+      .catch(error => {
+        const { message } = error.data;
+
+        alert({
+          title: "Error in updating contact",
+          message: (
+            <p>
+              There was an error in updating contact information. <br />{" "}
+              <b>{message}</b>
+            </p>
+          )
+        });
       });
-    });
   };
 
   getValidationState(field) {
@@ -125,6 +141,7 @@ class Contact extends Component {
     return (
       <div className="contact-tab">
         <h4>Name</h4>
+
         <FormGroup
           controlId="name"
           validationState={this.getValidationState("name")}
@@ -171,39 +188,39 @@ class Contact extends Component {
             </FormGroup>
 
             <FormGroup
-              controlId="companyName"
-              validationState={this.getValidationState("companyName")}
+              controlId="company_name"
+              validationState={this.getValidationState("company_name")}
             >
               <ControlLabel>Company Name*</ControlLabel>
               <FormControl
                 type="text"
-                name="companyName"
-                value={fields.companyName}
+                name="company_name"
+                value={fields.company_name}
                 onChange={this.onInputChange}
               />
               <FormControl.Feedback />
             </FormGroup>
 
             <FormGroup
-              controlId="addressLineOne"
-              validationState={this.getValidationState("addressLineOne")}
+              controlId="address_line_one"
+              validationState={this.getValidationState("address_line_one")}
             >
               <ControlLabel>Street Address*</ControlLabel>
               <FormControl
                 type="text"
-                name="addressLineOne"
-                value={fields.addressLineOne}
+                name="address_line_one"
+                value={fields.address_line_one}
                 onChange={this.onInputChange}
               />
               <FormControl.Feedback />
             </FormGroup>
 
-            <FormGroup controlId="addressLineTwo">
+            <FormGroup controlId="address_line_two">
               <ControlLabel>Suite/Unit</ControlLabel>
               <FormControl
                 type="text"
-                name="addressLineTwo"
-                value={fields.addressLineTwo}
+                name="address_line_two"
+                value={fields.address_line_two}
                 onChange={this.onInputChange}
               />
             </FormGroup>
@@ -255,14 +272,14 @@ class Contact extends Component {
             </FormGroup>
 
             <FormGroup
-              controlId="zipCode"
-              validationState={this.getValidationState("zipCode")}
+              controlId="zip_code"
+              validationState={this.getValidationState("zip_code")}
             >
               <ControlLabel>Postal Code*</ControlLabel>
               <FormControl
                 type="text"
-                name="zipCode"
-                value={fields.zipCode}
+                name="zip_code"
+                value={fields.zip_code}
                 onChange={this.onInputChange}
               />
               <FormControl.Feedback />
@@ -270,7 +287,7 @@ class Contact extends Component {
           </div>
 
           <div className="button-section">
-            <Button bsStyle="primary" onClick={this.onSave}>
+            <Button type="submit" bsStyle="primary" onClick={this.onSave}>
               Save Settings
             </Button>
           </div>
