@@ -79,6 +79,8 @@ defmodule Stitch.MeteorMigration.Message do
       }
     else _error ->
       if @meteor_migration_debug do
+        user = fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, meteor_creator_id)
+        group = Map.fetch(rooms, meteor_room_id)
         IO.puts("--------------------------------------------------------")
         IO.puts("Error creating message, message: #{inspect(attributes)}.")
         IO.puts("Message group: #{inspect(group)}")
