@@ -164,18 +164,49 @@ defmodule Stitch.MeteorMigration.Room do
     |> Enum.filter(& &1 != nil)
   end
 
+  def migrate_dm_rooms(team_id, rooms) do
+    rooms
+    |> Enum.map(fn
+      %{dm: true} = room ->
+        case create_group(team_id, room) do
+          {:ok, %{group: group}} ->
+            Logger.info("Created room #{inspect(room)} #{inspect(group)}")
+            {group, room.meteor_id}
+          {:ok, group} ->
+            Logger.info("Created room #{inspect(room)} #{inspect(group)}")
+            {group, room.meteor_id}
+          error ->
+            Logger.warn("Error creating group #{inspect(room)}")
+            Logger.warn(inspect(error))
+            nil
+        end
+      _ -> nil
+    end)
+    |> Enum.filter(& &1 != nil)
+  end
+
   def create_group(_team_id, %{dm: true, multi: _multi, users: []}) do
     {:error, "Empty room"}
   end
 
-  def create_group(_team_id, %{dm: true, multi: true, users: [creator|_] = users}) do
-    user_ids = Enum.map(users, & &1.id)
-    Group.create_multi_dm(creator, user_ids)
+  def create_group(_team_id, %{dm: true, multi: true, users: users}) do
+    creator = users |> Enum.filter(& &1.roles != ["single-room-guest"] and &1.roles != ["multi-room-guest"]) |> List.first
+    if creator != nil do
+      user_ids = Enum.map(users, & &1.id)
+      Group.create_multi_dm(creator, user_ids)
+    else
+      {:error, "Guest cannot be group creator. Users: #{inspect(users)} Creator: #{creator}"}
+    end
   end
 
-  def create_group(_team_id, %{dm: true, multi: false, users: [creator|_] = users}) do
-    user_ids = Enum.map(users, & &1.id)
-    Group.create_single_dm(creator, user_ids)
+  def create_group(_team_id, %{dm: true, multi: false, users: users}) do
+    creator = users |> Enum.filter(& &1.roles != ["single-room-guest"] and &1.roles != ["multi-room-guest"]) |> List.first
+    if creator != nil do
+      user_ids = Enum.map(users, & &1.id)
+      Group.create_single_dm(creator, user_ids)
+    else
+      {:error, "Guest cannot be group creator. Users: #{inspect(users)} Creator: #{creator}"}
+    end
   end
 
   def create_group(team_id, %{dm: false, users: users, name: name, slug: slug, public: public, creator_user: creator, is_default: is_default}) do

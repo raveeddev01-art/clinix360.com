@@ -79,6 +79,8 @@ defmodule Stitch.MeteorMigration do
     team = Stitch.TeamQueries.get_by_slug(team_slug)
     if team == nil, do: log_meteor_data_error("Team #{team_slug} doesn't exist.")
 
+    Logger.info("Migrate DM rooms")
+
     Logger.info("Fethcing and indexing the team's groups and users")
 
     meteor_users_by_username =
@@ -95,6 +97,11 @@ defmodule Stitch.MeteorMigration do
     users = User |> where(team_id: ^team.id) |> Repo.all()
 
     phoenix_users_by_email = Enum.reduce(users, %{}, & Map.put(&2, &1.email, &1))
+
+    users = User |> where(team_id: ^team.id) |> Repo.all()
+    indexed_users = index_users(users)
+    rooms = MeteorMigration.Room.parse_rooms_json(phoenix_users_by_email, meteor_users_by_username, parse_meteor_json(rooms_json))
+    MeteorMigration.Room.migrate_dm_rooms(team.id, rooms)
 
     meteor_rooms =
       MeteorMigration.Room.parse_rooms_json(phoenix_users_by_email, meteor_users_by_username, parse_meteor_json(rooms_json))
