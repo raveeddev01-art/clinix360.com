@@ -54,7 +54,7 @@ defmodule Stitch.MessageQueries do
   Return the latest 30 messages for a group.
   """
   def group_latest_messages(group_id, user, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 30)
+    limit = Keyword.get(opts, :limit, 60)
     offset = Keyword.get(opts, :skip, 0)
 
     query =
@@ -84,7 +84,7 @@ defmodule Stitch.MessageQueries do
   end
 
   def group_recent_messages(group_id, user, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 30)
+    limit = Keyword.get(opts, :limit, 60)
     offset = Keyword.get(opts, :skip, 0)
 
     query =
