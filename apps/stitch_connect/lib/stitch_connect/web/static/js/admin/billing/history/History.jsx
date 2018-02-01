@@ -26,19 +26,17 @@ class History extends React.Component {
           <tbody>
             {invoices.map(invoice => (
               <tr key={invoice.id}>
-                <td>{moment(invoice.date).format("MMMM D, YYYY")}</td>
-                <td className="text-center">{invoice.users}</td>
+                <td>{moment(invoice.inserted_at).format("MMMM D, YYYY")}</td>
+                <td className="text-center">{invoice.quantity}</td>
+                <td className="text-center">{formatCurrency(0)}</td>
                 <td className="text-center">
-                  {formatCurrency(invoice.credits)}
-                </td>
-                <td className="text-center">
-                  {formatCurrency(invoice.charge)}
+                  {formatCurrency(invoice.amount)}
                 </td>
                 <td className="text-center">
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={invoice.pdf}
+                    href={invoice.statement_pdf_url}
                     className="btn btn-default btn-sm btn-pdf"
                   >
                     PDF

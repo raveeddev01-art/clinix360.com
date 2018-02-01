@@ -24,42 +24,7 @@ class BillingStore {
   }
 
   loadInvoices() {
-    // TODO: Get invoices from endpoint
-    const MOCK_INVOICES = [
-      {
-        id: 1,
-        date: "2017-09-21",
-        users: 6,
-        credits: 0,
-        charge: 36,
-        pdf:
-          "https://d3vv6lp55qjaqc.cloudfront.net/items/3v2o1A0i1x172k020B0j/Image%202017-10-03%20at%205.27.49%20PM.public.png"
-      },
-      {
-        id: 2,
-        date: "2017-08-21",
-        users: 11,
-        credits: 30.98,
-        charge: 66,
-        pdf:
-          "https://d3vv6lp55qjaqc.cloudfront.net/items/3v2o1A0i1x172k020B0j/Image%202017-10-03%20at%205.27.49%20PM.public.png"
-      },
-      {
-        id: 3,
-        date: "2016-10-10",
-        users: 7,
-        credits: 0,
-        charge: 56,
-        pdf:
-          "https://d3vv6lp55qjaqc.cloudfront.net/items/3v2o1A0i1x172k020B0j/Image%202017-10-03%20at%205.27.49%20PM.public.png"
-      }
-    ];
-
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(MOCK_INVOICES);
-      }, 1000);
-    });
+    return get(`/api/v1/billing/history`).then(response => response.data.data);
   }
 
   loadContact() {
