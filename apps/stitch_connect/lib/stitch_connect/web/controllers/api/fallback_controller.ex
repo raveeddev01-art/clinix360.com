@@ -24,6 +24,12 @@ defmodule StitchConnect.Web.Api.FallbackController do
     |> render(ErrorView, :"403")
   end
 
+  def call(conn, {:error, :not_authorized, message}) do
+    conn
+    |> put_status(:forbidden)
+    |> render(ErrorView, :"403", message: message)
+  end
+
   def call(conn, {:error, :trial_expired}) do
     message = "Your trial has expired. Notify your team administrator to upgrade your subscription."
     conn

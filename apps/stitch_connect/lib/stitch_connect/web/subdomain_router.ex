@@ -212,7 +212,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/teams/:id", TeamController, :update
 
     post "/login", AuthenticationController, :submit_login
-    post "/reset_password", AuthenticationController, :reset_password
+    post "/reset_password", AuthenticationController, :create_reset_password_token
   end
 
   # Anonymous routes.

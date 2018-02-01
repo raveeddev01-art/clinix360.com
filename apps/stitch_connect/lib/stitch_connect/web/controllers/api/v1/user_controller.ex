@@ -163,7 +163,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def update_password(conn, %{"id" => _id, "new_password" => new_password, "old_password" => old_password}) do
-    case Stitch.Accounts.update_user_password(conn.assigns.current_user.id, old_password, new_password) do
+    case Stitch.User.Authentication.update_password(conn.assigns.current_user, old_password, new_password) do
       {:ok, user} ->
         conn |> json(%{email: user.email, password: user.password_hash})
       {:error, message} ->
