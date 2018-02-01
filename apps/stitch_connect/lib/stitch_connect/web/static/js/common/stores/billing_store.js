@@ -63,23 +63,11 @@ class BillingStore {
   }
 
   loadContact() {
-    // TODO: Get contact from endpoint
-    const MOCK_CONTACT = {
-      name: "My Name",
-      city: "My City",
-      state: "CA",
-      country: "USA",
-      zip_code: "55555-3333",
-      company_name: "My Test Company",
-      address_line_one: "Street 123, chapel road",
-      address_line_two: "Optional field"
-    };
+    const { teamId } = this.rootStore.appParams;
 
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(MOCK_CONTACT);
-      }, 1000);
-    });
+    return get(`/api/v1/teams/${teamId}/contact`).then(
+      response => response.data
+    );
   }
 
   @action
