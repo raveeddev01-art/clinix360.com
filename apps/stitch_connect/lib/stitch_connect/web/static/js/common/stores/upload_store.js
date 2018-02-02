@@ -115,6 +115,10 @@ class UploadStore {
           ) {
             // We know the error code, show relevant message
             notify.show("Your file is larger than the allowed size.", "error");
+
+            setTimeout(() => {
+              this.removeProgress(key);
+            }, 5000);
           } else {
             // Otherwise, show generic message
             notify.show("There was a problem uploading file", "error");
