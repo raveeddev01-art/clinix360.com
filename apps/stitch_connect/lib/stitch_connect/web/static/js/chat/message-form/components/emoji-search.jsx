@@ -13,17 +13,18 @@ class EmojiSearch extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.isOpen && nextProps.isOpen) {
-      document.addEventListener("keydown", this.onKeyDown);
-      this.setState({ activeIndex: 0 });
-    } else if (this.props.isOpen && !nextProps.isOpen) {
-      document.removeEventListener("keydown", this.onKeyDown);
-    }
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeyDown);
+  }
 
+  componentWillReceiveProps(nextProps) {
     if (this.props.filter !== nextProps.filter) {
       this.setState({ activeIndex: 0 });
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyDown);
   }
 
   onItemHover = index => () => {
@@ -31,7 +32,9 @@ class EmojiSearch extends Component {
   };
 
   onSelectEmoji = emoji => () => {
-    this.props.onSelect(emoji);
+    const { onSelect } = this.props;
+
+    onSelect(emoji);
   };
 
   onKeyDown = evt => {
@@ -103,8 +106,8 @@ class EmojiSearch extends Component {
   searchResult = [];
 
   searchEmoji = () => {
-    const { filter, minCharacters, isOpen } = this.props;
-    if (filter.length < minCharacters || !isOpen) {
+    const { filter, minChars } = this.props;
+    if (filter.length < minChars) {
       return [];
     }
 
@@ -123,7 +126,9 @@ class EmojiSearch extends Component {
 
   renderEmojis = emojis => {
     const { activeIndex } = this.state;
+
     this.emojiPos = Array(emojis.length).fill({});
+
     return emojis.map((emoji, index) => {
       const itemClassName = cx("emoji-list-item", {
         active: activeIndex % emojis.length === index
@@ -153,30 +158,26 @@ class EmojiSearch extends Component {
   };
 
   render() {
-    const { isOpen } = this.props;
     const emojis = this.searchEmoji();
-    if (!isOpen || !emojis.length) {
-      return null;
-    }
 
     return (
-      <div className="dropup emoji-search-menu open">
-        <ul className="dropdown-menu">{this.renderEmojis(emojis)}</ul>
-      </div>
+      emojis.length > 0 && (
+        <div className="dropup emoji-search-menu open">
+          <ul className="dropdown-menu">{this.renderEmojis(emojis)}</ul>
+        </div>
+      )
     );
   }
 }
 
 EmojiSearch.defaultProps = {
-  isOpen: false,
   filter: "",
-  minCharacters: 2,
+  minChars: 2,
   onSelect: noop
 };
 
 EmojiSearch.propTypes = {
-  isOpen: PropTypes.bool,
-  minCharacters: PropTypes.number,
+  minChars: PropTypes.number,
   filter: PropTypes.string,
   onSelect: PropTypes.func
 };

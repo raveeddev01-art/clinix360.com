@@ -325,12 +325,12 @@ class MessageForm extends Component {
           <MentionMenu filter={searchFilter} onSelect={this.onSelectMention} />
         )}
 
-        <EmojiSearch
-          isOpen={openEmojiSearch}
-          filter={searchFilter}
-          onSelect={this.onSelectEmoji}
-        />
+        {openEmojiSearch && (
+          <EmojiSearch filter={searchFilter} onSelect={this.onSelectEmoji} />
+        )}
+
         {this.renderInput()}
+
         <TypingUsers />
         <EditingCommand />
       </div>
