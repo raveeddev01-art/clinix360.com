@@ -39,8 +39,8 @@ class MessageForm extends Component {
   onKeyDown = evt => {
     const { openMentionMenu, openEmojiSearch } = this.state;
     if (
-      ([38, 40].indexOf(evt.keyCode) > -1 && openMentionMenu) ||
-      ([37, 38, 39, 40].indexOf(evt.keyCode) > -1 && openEmojiSearch) ||
+      ([37, 38, 39, 40].indexOf(evt.keyCode) > -1 &&
+        (openMentionMenu || openEmojiSearch)) ||
       evt.keyCode === 13
     ) {
       evt.preventDefault();
@@ -122,12 +122,23 @@ class MessageForm extends Component {
 
       switch (firstLetter) {
         case "@":
-          this.setState({ searchFilter: filter, openMentionMenu: true });
+          this.setState({
+            searchFilter: filter,
+            openMentionMenu: true,
+            openEmojiSearch: false
+          });
           break;
+
         case ":":
-          this.setState({ searchFilter: filter, openEmojiSearch: true });
+          this.setState({
+            searchFilter: filter,
+            openMentionMenu: false,
+            openEmojiSearch: true
+          });
           break;
+
         default:
+          break;
       }
 
       if (evt.keyCode !== 13) {
@@ -265,6 +276,7 @@ class MessageForm extends Component {
 
   startMention = () => {
     this.replaceCurrentWord("@");
+
     setTimeout(() => {
       this.setState({ openMentionMenu: true, openEmojiSearch: false });
     }, 100);
@@ -315,22 +327,22 @@ class MessageForm extends Component {
   }
 
   render() {
-    const { openMentionMenu, searchFilter, openEmojiSearch } = this.state;
+    const { searchFilter, openMentionMenu, openEmojiSearch } = this.state;
 
     return (
       <div className="message-form">
         <JumpingIndicator />
-        <MentionMenu
-          isOpen={openMentionMenu}
-          filter={searchFilter}
-          onSelect={this.onSelectMention}
-        />
-        <EmojiSearch
-          isOpen={openEmojiSearch}
-          filter={searchFilter}
-          onSelect={this.onSelectEmoji}
-        />
+
+        {openMentionMenu && (
+          <MentionMenu filter={searchFilter} onSelect={this.onSelectMention} />
+        )}
+
+        {openEmojiSearch && (
+          <EmojiSearch filter={searchFilter} onSelect={this.onSelectEmoji} />
+        )}
+
         {this.renderInput()}
+
         <TypingUsers />
         <EditingCommand />
       </div>
