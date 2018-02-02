@@ -48,6 +48,7 @@ defmodule Stitch.Accounts.User do
     |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
+    |> valid_email_changeset(attrs)
     |> validate_required([:first_name, :last_name])
     |> default_profile_image_changeset(attrs)
     |> Stitch.Validators.validate_no_emojis(:first_name)
@@ -91,6 +92,13 @@ defmodule Stitch.Accounts.User do
     end
   end
 
+  def valid_email_changeset(struct, attrs) do
+    struct
+    |> cast(attrs, [:email])
+    |> validate_format(:email, ~r/[\w-]+@([\w-]+\.)+[\w-]+/)
+    |> Stitch.Validators.validate_email_domain(:email)
+  end
+
   @doc """
   Applies the attributes: email, confirmation_code and token
   to the Stitch.Accounts.User struct.
@@ -105,7 +113,7 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(attrs, [:email, :confirmation_code, :token])
     |> validate_required([:email, :confirmation_code, :token])
-    |> validate_format(:email, ~r/@/)
+    |> valid_email_changeset(attrs)
   end
 
   @doc """
@@ -124,7 +132,6 @@ defmodule Stitch.Accounts.User do
     |> put_change(:confirmation_code, confirmation_code)
     |> put_change(:token, token)
     |> email_changeset(params)
-    |> Stitch.Validators.validate_email_domain(:email)
     |> unique_constraint(:email, name: :users_email_team_id_index)
   end
 

@@ -20,7 +20,7 @@ defmodule Stitch.Mixfile do
   def application do
     [
       mod: {Stitch.Application, []},
-      extra_applications: [:logger, :runtime_tools, :appsignal]
+      extra_applications: [:logger, :runtime_tools, :appsignal, :pdf_generator]
     ]
   end
 
@@ -46,7 +46,8 @@ defmodule Stitch.Mixfile do
       {:appsignal, "~> 1.3"},
       {:mogrify, "~> 0.5.6"},
       {:floki, "~> 0.18.1"},
-      {:exmoji, github: "mroth/exmoji"}
+      {:exmoji, github: "mroth/exmoji"},
+      {:pdf_generator, ">=0.3.5"},
     ]
   end
 

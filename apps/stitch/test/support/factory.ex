@@ -121,4 +121,16 @@ defmodule Stitch.Factory do
       cardholder_name: "John Doe"
     }
   end
+
+  def payment_history_factory do
+    %Stitch.Billing.PaymentHistory{
+      plan: "basic_yearly",
+      team: build(:team),
+      invoice_id: "inv_xxxxxxxxxxxy",
+      amount: 12000,
+      quantity: 5,
+      period_end: NaiveDateTime.utc_now(),
+      period_start: NaiveDateTime.utc_now()
+    }
+  end
 end

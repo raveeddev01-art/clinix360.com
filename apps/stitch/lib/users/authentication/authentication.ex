@@ -9,42 +9,52 @@ defmodule Stitch.User.Authentication do
 
   def create_account(user_params) do
     changeset = User.registration_changeset(%User{}, user_params)
-    changeset = case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-        put_change(changeset, :password_hash, hash_password(pass))
-      _ ->
-        changeset
-    end
+
+    changeset =
+      case changeset do
+        %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+          put_change(changeset, :password_hash, hash_password(pass))
+
+        _ ->
+          changeset
+      end
 
     case changeset.valid? do
       true ->
         {:ok, user} = Repo.insert(changeset)
         user
+
       false ->
         changeset
     end
   end
 
   def validate_email_and_password(email, password, team_slug)
-  when byte_size(email) > 0 and byte_size(password) > 0 and byte_size(team_slug) > 0 do
+      when byte_size(email) > 0 and byte_size(password) > 0 and byte_size(team_slug) > 0 do
     case Repo.get_by(Team, slug: team_slug) do
       nil ->
         false
+
       team ->
         case UserQueries.team_member_with_email(team.id, email) do
-          nil -> Comeonin.Bcrypt.dummy_checkpw()
+          nil ->
+            Comeonin.Bcrypt.dummy_checkpw()
+
           user ->
             # This is used to hash legacy Meteor passwords.
             # password = if team.is_legacy, do: Base.encode16(:crypto.hash(:sha256, password), case: :lower), else: password
             case Comeonin.Bcrypt.checkpw(password, user.password_hash) do
               true ->
                 user
+
               _ ->
                 false
             end
         end
     end
   end
+
+  def validate_email_and_password(_email, _password, _team_slug), do: false
 
   def user_for_token(token) do
     Repo.get_by(User, token: token)
@@ -53,62 +63,71 @@ defmodule Stitch.User.Authentication do
   def update_password(id, password) do
     user = Repo.get!(User, id)
     changeset = User.password_update_changeset(user, %{password: password})
-    changeset = case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-        put_change(changeset, :password_hash, hash_password(pass))
-      _ ->
-        changeset
-    end
+
+    changeset =
+      case changeset do
+        %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+          put_change(changeset, :password_hash, hash_password(pass))
+
+        _ ->
+          changeset
+      end
 
     case Repo.update(changeset) do
       {:ok, _} ->
         true
+
       {:error, _} ->
         {:error, "The password wasn't updated"}
     end
   end
 
   def check_for_valid_reset_token(token) do
-     user = Repo.get_by(User, password_reset_token: token)
-     if user != nil do
-          user
-     else
-          false
-     end
+    user = Repo.get_by(User, password_reset_token: token)
+
+    if user != nil do
+      user
+    else
+      false
+    end
   end
 
   def create_reset_password_token_for_user(email, team_slug)
-  when byte_size(email) > 0 and byte_size(team_slug) > 0 do
+      when byte_size(email) > 0 and byte_size(team_slug) > 0 do
     team = Repo.get_by(Team, slug: team_slug)
 
     query =
-      from u in User,
-      where: u.team_id == ^team.id,
-      where: u.onboarded == ^true,
-      where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
+      from(
+        u in User,
+        where: u.team_id == ^team.id,
+        where: u.onboarded == ^true,
+        where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
+      )
 
     case Repo.one(query) do
       nil ->
         {:error, "User is not part of the team or Email does not exist"}
+
       user ->
         user
         |> Ecto.Changeset.change(password_reset_token: Stitch.Rand.token(32))
-        |> Repo.update
+        |> Repo.update()
     end
   end
 
   def reset_password_for_user(token, password)
-  when byte_size(token) > 0 and byte_size(password) > 0 do
+      when byte_size(token) > 0 and byte_size(password) > 0 do
+    case Repo.get_by(User, password_reset_token: token) do
+      nil ->
+        {:error, "Token is invalid or already used"}
 
-     case Repo.get_by(User, password_reset_token: token) do
-        nil ->
-            {:error, "Token is invalid or already used"}
-
-        user ->
-            user
-            |> Ecto.Changeset.change(password_hash: hash_password(password), password_reset_token: nil)
-            |> Repo.update
-     end
-   end
-
+      user ->
+        user
+        |> Ecto.Changeset.change(
+          password_hash: hash_password(password),
+          password_reset_token: nil
+        )
+        |> Repo.update()
+    end
+  end
 end

@@ -17,6 +17,16 @@ defmodule Stitch.MessageCreationTest do
       {:ok, %{message: message}} = Message.create(group.id, user, %{"text_content" => "http://foo.bar"})
       assert message.has_links
     end
+
+    test "unhides groups on new message" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
+      Stitch.Group.hide(group.id, bob)
+      {:ok, _} = Message.create(group.id, joe, %{"text_content" => "test"})
+      assert Repo.get_by(Stitch.GroupUser, user_id: bob.id, group_id: group.id).is_hidden == false
+    end
   end
 
   defp create_user_and_group(_) do
