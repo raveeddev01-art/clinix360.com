@@ -1,5 +1,6 @@
 import orderBy from "lodash/orderBy";
 import uniq from "lodash/uniq";
+import escapeRegExp from "lodash/escapeRegExp";
 import { NON_UNICODE_PATTERN } from "lib/constants";
 
 export function isAdmin() {
@@ -73,7 +74,7 @@ export function getGroupUserIdsThatHasCurrentUser(users) {
  * @param {string} filter
  */
 export function filterUsers(users, filter) {
-  const re = new RegExp(filter, "i");
+  const re = new RegExp(escapeRegExp(filter), "i");
 
   return users.filter(
     user => re.test(user.full_name) || re.test(user.username)
