@@ -114,61 +114,62 @@ class MenutionMenu extends Component {
     const { presenceStore } = this.props;
     const { activeUserIndex } = this.state;
     const users = this.getUsers();
+    if (users.length > 0) {
+      return null;
+    }
 
     return (
-      users.length > 0 && (
-        <div className="dropup user-mention-menu open">
-          <ul className="dropdown-menu">
-            {users.map(
-              (
-                {
-                  id,
-                  username,
-                  isGroupMention,
-                  description,
-                  full_name: fullName
-                },
-                index
-              ) => {
-                const online = presenceStore.isOnline(id);
-                const itemClassName = cx("user-list-item", {
-                  active: activeUserIndex === index
-                });
+      <div className="dropup user-mention-menu open">
+        <ul className="dropdown-menu">
+          {users.map(
+            (
+              {
+                id,
+                username,
+                isGroupMention,
+                description,
+                full_name: fullName
+              },
+              index
+            ) => {
+              const online = presenceStore.isOnline(id);
+              const itemClassName = cx("user-list-item", {
+                active: activeUserIndex === index
+              });
 
-                return (
-                  <li
-                    key={`user_${username}`}
-                    className={itemClassName}
-                    onMouseEnter={this.onUserItemHover(index)}
-                    onClick={this.onSelectMention(username)}
-                  >
-                    <span className="item-icon">
-                      <i
-                        className={cx("fa", {
-                          "fa-bullhorn": isGroupMention,
-                          "fa-circle": !isGroupMention && online,
-                          "fa-circle-o": !isGroupMention && !online
-                        })}
-                      />
+              return (
+                <li
+                  key={`user_${username}`}
+                  className={itemClassName}
+                  onMouseEnter={this.onUserItemHover(index)}
+                  onClick={this.onSelectMention(username)}
+                >
+                  <span className="item-icon">
+                    <i
+                      className={cx("fa", {
+                        "fa-bullhorn": isGroupMention,
+                        "fa-circle": !isGroupMention && online,
+                        "fa-circle-o": !isGroupMention && !online
+                      })}
+                    />
+                  </span>
+                  {isGroupMention ? (
+                    <span className="item-text">
+                      <span>{username}</span>
+                      <small>{description}</small>
                     </span>
-                    {isGroupMention ? (
-                      <span className="item-text">
-                        <span>{username}</span>
-                        <small>{description}</small>
-                      </span>
-                    ) : (
-                      <span className="item-text">
-                        <span>{fullName}</span>
-                        <small>{username}</small>
-                      </span>
-                    )}
-                  </li>
-                );
-              }
-            )}
-          </ul>
-        </div>
-      )
+                  ) : (
+                    <span className="item-text">
+                      <span>{fullName}</span>
+                      <small>{username}</small>
+                    </span>
+                  )}
+                </li>
+              );
+            }
+          )}
+        </ul>
+      </div>
     );
   }
 }

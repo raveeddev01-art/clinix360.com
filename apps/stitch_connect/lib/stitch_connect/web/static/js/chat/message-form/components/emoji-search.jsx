@@ -160,12 +160,14 @@ class EmojiSearch extends Component {
   render() {
     const emojis = this.searchEmoji();
 
+    if (emojis.length > 0) {
+      return null;
+    }
+
     return (
-      emojis.length > 0 && (
-        <div className="dropup emoji-search-menu open">
-          <ul className="dropdown-menu">{this.renderEmojis(emojis)}</ul>
-        </div>
-      )
+      <div className="dropup emoji-search-menu open">
+        <ul className="dropdown-menu">{this.renderEmojis(emojis)}</ul>
+      </div>
     );
   }
 }
