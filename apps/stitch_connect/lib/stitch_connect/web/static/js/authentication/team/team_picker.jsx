@@ -112,7 +112,7 @@ export default class TeamPicker extends Component {
         </div>
 
         <h5>
-          Just getting started?{" "}
+          Just getting started? {" "}
           <Link to="/signup/email">
             <strong>Create a new team</strong>
           </Link>
