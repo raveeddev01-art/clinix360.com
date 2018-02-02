@@ -1,0 +1,138 @@
+<html>
+
+  <head>
+    <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:300,400,700,900'" />
+    <style>
+      body {
+        font-size: 16px;
+        font-weight: 300;
+        font-stretch: 100%;
+        font-family: 'Lato', sans-serif;
+      }
+
+      a {
+        text-decoration: none;
+        color: #026aa7;
+      }
+
+      .wrapper {
+        width: 470px;
+        min-width: 470px;
+        max-width: 470px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+      }
+
+      .header {
+        color: #036;
+        font-size: 30px;
+        border-bottom: solid 2px #DDDDDD;
+      }
+
+      .header h2 {
+        margin-bottom: 15px;
+      }
+
+      .container {
+        margin: 20px 0;
+      }
+
+      .table {
+        background: #EEEEEE;
+        border: solid 2px #CCCCCC;
+        padding: 20px 0;
+        margin: 40px 0;
+      }
+
+
+      table,
+      tr,
+      td {
+        border: none;
+        background: none;
+        padding: 0;
+        margin: 0;
+        font-size: 16px;
+        font-weight: 400;
+      }
+
+      table {
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      td {
+        padding: 15px 60px;
+      }
+
+      .footer {
+        font-size: 14px;
+        font-weight: 300;
+        margin-top: 70px;
+        text-align: center;
+      }
+
+      .footer hr {
+        width: 60%;
+        margin: 30px auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="header">
+        <h2>Stitch</h2>
+      </div>
+      <div class="container">
+        <b><%= @today %></b>
+        <p>
+          Thanks for using Stitch! We hope you enjoyed your experience with us this month. Below, please find a summary of charges
+          for
+          <b><%= @team_name %></b>
+        </p>
+
+        <div class="table">
+          <table>
+            <tr>
+              <td>Subscription:</td>
+              <td><%= @subscription %></td>
+            </tr>
+            <tr>
+              <td>Active Users:</td>
+              <td><%= @quantity %></td>
+            </tr>
+            <tr>
+              <td>Credits Applied:</td>
+              <td>$0</td>
+            </tr>
+            <tr>
+              <td>Total Charge:</td>
+              <td>$<%= @amount %></td>
+            </tr>
+            <tr>
+              <td>Payment Card:</td>
+              <td><%= @card_brand %> <%= @card_last4 %></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>Questions about your billing statement?
+          <br/> Email us at
+          <a href="mailto:support@teamstitch.com">support@teamstitch.com</a>
+          or give us a call at
+          <a href="#">+1 (650) 282-3388</a>.
+        </p>
+        <hr/>
+        <p>
+          Stitch Technologies, Inc.
+          <br/> 188 King St. PH9, San Francisco, CA 94107
+        </p>
+      </div>
+    </div>
+  </body>
+
+</html>

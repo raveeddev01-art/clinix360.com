@@ -18,13 +18,20 @@ defmodule Stitch.Stripe.EventsTest do
       type: "invoice.payment_succeeded",
       data: %{
         "object" => %{
+          "total" => 1200,
+          "id" => "inv_afadsfaerasfasef",
           "customer" => subscription.customer_id,
           "lines" => %{
             "data" => [%{
               "id" => subscription.subscription_id,
               "period" => %{
+                "start" => DateTime.to_unix(expected_datetime),
                 "end" => DateTime.to_unix(expected_datetime)
-              }
+              },
+              "plan" => %{
+                "id" => "basic_yearly",
+              },
+              "quantity" => 6,
             }]
           }
         }
@@ -33,6 +40,9 @@ defmodule Stitch.Stripe.EventsTest do
 
     assert :ok == Events.handle_event(event)
     assert DateTime.compare(Billing.get_subscription(team).valid_until, expected_datetime) == :eq
+
+    history = Billing.list_payment_history(team)
+    assert 1 = length(history)
   end
 
   describe "handles the `invoice.payment_failed` event" do
