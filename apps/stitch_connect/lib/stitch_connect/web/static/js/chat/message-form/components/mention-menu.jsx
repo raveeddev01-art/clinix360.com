@@ -59,6 +59,7 @@ class MenutionMenu extends Component {
         });
         break;
       case 13: // return
+      case 9: // tab
         if (users.length) {
           const selectedUser = users[activeUserIndex];
           this.onSelectMention(selectedUser.username)();
