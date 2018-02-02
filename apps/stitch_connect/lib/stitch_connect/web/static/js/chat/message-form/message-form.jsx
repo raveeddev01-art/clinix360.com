@@ -41,7 +41,8 @@ class MessageForm extends Component {
     if (
       ([38, 40].indexOf(evt.keyCode) > -1 && openMentionMenu) ||
       ([37, 38, 39, 40].indexOf(evt.keyCode) > -1 && openEmojiSearch) ||
-      evt.keyCode === 13
+      evt.keyCode === 13 ||
+      evt.keyCode === 9
     ) {
       evt.preventDefault();
     }
