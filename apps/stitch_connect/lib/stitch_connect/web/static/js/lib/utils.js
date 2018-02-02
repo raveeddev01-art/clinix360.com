@@ -106,7 +106,7 @@ export function isFullMember(user) {
  * @param {number} money 
  */
 export function formatCurrency(money) {
-  return `$${money.toFixed(2)}`;
+  return isNaN(money) ? "$0.00" : `$${parseFloat(money).toFixed(2)}`;
 }
 
 /**
