@@ -145,9 +145,7 @@ const processSubscriptionData = subscription => {
 };
 
 const getSelectableTiers = tier => {
-  const index = TIERS.findIndex(t => t === tier);
-
-  return TIERS.slice(index + 1);
+  return TIERS.filter(t => t !== tier);
 };
 
 const getBelowTier = tier => {

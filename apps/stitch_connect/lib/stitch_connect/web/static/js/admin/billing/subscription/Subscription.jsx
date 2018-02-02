@@ -22,7 +22,7 @@ class Subscription extends Component {
     super(props);
 
     this.state = {
-      upgrade: false,
+      changePlan: false,
       checkout: false,
       plan: {
         frequency: 1,
@@ -48,8 +48,8 @@ class Subscription extends Component {
     this.setState({ plan: { ...plan, tier } });
   };
 
-  onUpgradePlan = () => {
-    this.setState({ upgrade: true });
+  onChangePlan = () => {
+    this.setState({ changePlan: true });
   };
 
   onCheckoutPlan = () => {
@@ -80,7 +80,7 @@ class Subscription extends Component {
       const text =
         trialRemainingDays > 0
           ? `We won't begin billing until your trial expires in ${trialRemainingDays} days.`
-          : `Your team is now upgraded to ${capitalize(tier)} tier`;
+          : `Your team is now changed to ${capitalize(tier)} tier`;
 
       alert({
         title: "Thanks for using Stitch!",
@@ -93,17 +93,17 @@ class Subscription extends Component {
 
       this.setState({
         checkout: false,
-        upgrade: false
+        changePlan: false
       });
     });
   }
 
   renderHeader() {
-    const { upgrade } = this.state;
+    const { changePlan } = this.state;
 
     return (
       <h3 className="text-center">
-        {upgrade ? "Upgrade Subscription" : "Subscription"}
+        {changePlan ? "Change Subscription" : "Subscription"}
       </h3>
     );
   }
@@ -114,32 +114,28 @@ class Subscription extends Component {
         subscription: { tier, trial_remaining_days: trialRemainingDays }
       }
     } = this.props;
-    const { upgrade } = this.state;
+    const { changePlan } = this.state;
 
-    if (upgrade) {
+    if (changePlan) {
       return null;
     }
 
-    if (trialRemainingDays > 0) {
-      return (
-        <Well>
-          <i className="fa fa-check-circle" />
+    return trialRemainingDays > 0 ? (
+      <Well>
+        <i className="fa fa-check-circle" />
 
-          {tier === "TRIAL" ? (
-            <p className="m-b-0">
-              Your team is currently using a free trial of <b>Stitch Connect</b>{" "}
-              with <b>{trialRemainingDays} days</b> remaining.
-            </p>
-          ) : (
-            <p className="m-b-0">
-              Your team is subscribed to <b>{capitalize(tier)}</b>.
-            </p>
-          )}
-        </Well>
-      );
-    }
-
-    return (
+        {tier === "TRIAL" ? (
+          <p className="m-b-0">
+            Your team is currently using a free trial of <b>Stitch Connect</b>{" "}
+            with <b>{trialRemainingDays} days</b> remaining.
+          </p>
+        ) : (
+          <p className="m-b-0">
+            Your team is subscribed to <b>{capitalize(tier)}</b>.
+          </p>
+        )}
+      </Well>
+    ) : (
       <Well>
         <i className="fa fa-times-circle" />
         {tier === "TRIAL" ? (
@@ -239,7 +235,7 @@ class Subscription extends Component {
           <button
             type="button"
             className="btn btn-fancy btn-primary pull-right"
-            onClick={this.onUpgradePlan}
+            onClick={this.onChangePlan}
           >
             Change Plan
           </button>
@@ -266,13 +262,13 @@ class Subscription extends Component {
 
   renderSubscription() {
     const { billingStore: { subscription: { tier } } } = this.props;
-    const { upgrade } = this.state;
+    const { changePlan } = this.state;
 
     return (
       <div className="subscription">
         {this.renderStatus()}
 
-        {tier === "TRIAL" || upgrade
+        {tier === "TRIAL" || changePlan
           ? this.renderSelectPlan()
           : this.renderSubscribedPlan()}
 
