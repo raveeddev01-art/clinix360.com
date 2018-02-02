@@ -82,7 +82,7 @@ defmodule Stitch.MeteorMigration.Message do
         user = fetch_user_via_email(phoenix_users_by_email, meteor_users_by_username, meteor_creator_id)
         group = Map.fetch(rooms, meteor_room_id)
         IO.puts("--------------------------------------------------------")
-        IO.puts("Error creating message, message: #{inspect(attributes)}.")
+        IO.puts("Error creating message, message: #{inspect(Map.drop(attributes, ["msg"]))}.")
         IO.puts("Message group: #{inspect(group)}")
         IO.puts("Message user: #{inspect(user)}")
         IO.puts("--------------------------------------------------------")
