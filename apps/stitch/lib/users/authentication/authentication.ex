@@ -57,7 +57,7 @@ defmodule Stitch.User.Authentication do
   def validate_email_and_password(_email, _password, _team_slug), do: false
 
   def user_for_token(token) do
-    Repo.get_by(User, token: token)
+    Repo.get_by(User, token: token, disabled: false)
   end
 
   def update_password(id, password) do
