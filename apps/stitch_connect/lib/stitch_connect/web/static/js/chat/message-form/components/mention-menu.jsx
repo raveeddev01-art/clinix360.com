@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
+import noop from "lodash/noop";
 
 import { filterUsers, isFullMember } from "lib/utils";
 
@@ -118,58 +119,69 @@ class MenutionMenu extends Component {
     return (
       <div className="dropup user-mention-menu open">
         <ul className="dropdown-menu">
-          {users.map((user, index) => {
-            const online = presenceStore.isOnline(user.id);
-            const itemClassName = cx("user-list-item", {
-              active: activeUserIndex === index
-            });
+          {users.map(
+            (
+              {
+                id,
+                username,
+                isGroupMention,
+                description,
+                full_name: fullName
+              },
+              index
+            ) => {
+              const online = presenceStore.isOnline(id);
+              const itemClassName = cx("user-list-item", {
+                active: activeUserIndex === index
+              });
 
-            return (
-              <li
-                key={`user_${user.username}`}
-                className={itemClassName}
-                onMouseEnter={this.onUserItemHover(index)}
-                onClick={this.onSelectMention(user.username)}
-              >
-                <span className="item-icon">
-                  <i
-                    className={cx("fa", {
-                      "fa-bullhorn": user.isGroupMention,
-                      "fa-circle": !user.isGroupMention && online,
-                      "fa-circle-o": !user.isGroupMention && !online
-                    })}
-                  />
-                </span>
-                {user.isGroupMention ? (
-                  <span className="item-text">
-                    <span>{user.username}</span>
-                    <small>{user.description}</small>
+              return (
+                <li
+                  key={`user_${username}`}
+                  className={itemClassName}
+                  onMouseEnter={this.onUserItemHover(index)}
+                  onClick={this.onSelectMention(username)}
+                >
+                  <span className="item-icon">
+                    <i
+                      className={cx("fa", {
+                        "fa-bullhorn": isGroupMention,
+                        "fa-circle": !isGroupMention && online,
+                        "fa-circle-o": !isGroupMention && !online
+                      })}
+                    />
                   </span>
-                ) : (
-                  <span className="item-text">
-                    <span>{user.full_name}</span>
-                    <small>{user.username}</small>
-                  </span>
-                )}
-              </li>
-            );
-          })}
+                  {isGroupMention ? (
+                    <span className="item-text">
+                      <span>{username}</span>
+                      <small>{description}</small>
+                    </span>
+                  ) : (
+                    <span className="item-text">
+                      <span>{fullName}</span>
+                      <small>{username}</small>
+                    </span>
+                  )}
+                </li>
+              );
+            }
+          )}
         </ul>
       </div>
     );
   }
 }
 
-MenutionMenu.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  filter: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired
-};
-
 MenutionMenu.defaultProps = {
   isOpen: false,
   filter: "",
-  onSelect: () => {}
+  onSelect: noop
+};
+
+MenutionMenu.propTypes = {
+  isOpen: PropTypes.bool,
+  filter: PropTypes.string,
+  onSelect: PropTypes.func
 };
 
 export default MenutionMenu;

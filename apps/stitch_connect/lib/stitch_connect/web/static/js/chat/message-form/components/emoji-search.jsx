@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { emojiIndex, Emoji } from "emoji-mart";
 import cx from "classnames";
+import noop from "lodash/noop";
 
 class EmojiSearch extends Component {
   constructor(...args) {
     super(...args);
+
     this.state = {
       activeIndex: 0
     };
@@ -165,18 +167,18 @@ class EmojiSearch extends Component {
   }
 }
 
-EmojiSearch.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  minCharacters: PropTypes.number.isRequired,
-  filter: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired
-};
-
 EmojiSearch.defaultProps = {
   isOpen: false,
   filter: "",
   minCharacters: 2,
-  onSelect: () => {}
+  onSelect: noop
+};
+
+EmojiSearch.propTypes = {
+  isOpen: PropTypes.bool,
+  minCharacters: PropTypes.number,
+  filter: PropTypes.string,
+  onSelect: PropTypes.func
 };
 
 export default EmojiSearch;

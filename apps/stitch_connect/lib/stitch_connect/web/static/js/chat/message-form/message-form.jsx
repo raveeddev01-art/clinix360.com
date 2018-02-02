@@ -315,7 +315,7 @@ class MessageForm extends Component {
   }
 
   render() {
-    const { openMentionMenu, searchFilter, openEmojiSearch } = this.state;
+    const { searchFilter, openMentionMenu, openEmojiSearch } = this.state;
 
     return (
       <div className="message-form">
