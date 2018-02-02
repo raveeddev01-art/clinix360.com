@@ -160,7 +160,7 @@ class EmojiSearch extends Component {
   render() {
     const emojis = this.searchEmoji();
 
-    if (emojis.length > 0) {
+    if (!emojis.length) {
       return null;
     }
 

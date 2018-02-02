@@ -114,7 +114,7 @@ class MenutionMenu extends Component {
     const { presenceStore } = this.props;
     const { activeUserIndex } = this.state;
     const users = this.getUsers();
-    if (users.length > 0) {
+    if (!users.length) {
       return null;
     }
 
