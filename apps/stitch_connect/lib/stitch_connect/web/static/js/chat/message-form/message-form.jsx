@@ -39,8 +39,8 @@ class MessageForm extends Component {
   onKeyDown = evt => {
     const { openMentionMenu, openEmojiSearch } = this.state;
     if (
-      ([38, 40].indexOf(evt.keyCode) > -1 && openMentionMenu) ||
-      ([37, 38, 39, 40].indexOf(evt.keyCode) > -1 && openEmojiSearch) ||
+      ([37, 38, 39, 40].indexOf(evt.keyCode) > -1 &&
+        (openMentionMenu || openEmojiSearch)) ||
       evt.keyCode === 13
     ) {
       evt.preventDefault();
