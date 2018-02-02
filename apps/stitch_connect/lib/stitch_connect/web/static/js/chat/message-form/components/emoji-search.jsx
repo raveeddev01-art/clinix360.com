@@ -90,6 +90,7 @@ class EmojiSearch extends Component {
         }
         break;
       case 13: // return
+      case 9: // tab
         if (emojis.length) {
           const emoji = emojis[activeIndex];
           this.onSelectEmoji(emoji.colons)();
