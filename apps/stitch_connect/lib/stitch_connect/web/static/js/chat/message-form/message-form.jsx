@@ -320,11 +320,11 @@ class MessageForm extends Component {
     return (
       <div className="message-form">
         <JumpingIndicator />
-        <MentionMenu
-          isOpen={openMentionMenu}
-          filter={searchFilter}
-          onSelect={this.onSelectMention}
-        />
+
+        {openMentionMenu && (
+          <MentionMenu filter={searchFilter} onSelect={this.onSelectMention} />
+        )}
+
         <EmojiSearch
           isOpen={openEmojiSearch}
           filter={searchFilter}

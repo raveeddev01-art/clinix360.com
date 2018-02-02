@@ -17,17 +17,18 @@ class MenutionMenu extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.isOpen && nextProps.isOpen) {
-      document.addEventListener("keyup", this.onKeyUp);
-      this.setState({ activeUserIndex: 0 });
-    } else if (this.props.isOpen && !nextProps.isOpen) {
-      document.removeEventListener("keyup", this.onKeyUp);
-    }
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeyDown);
+  }
 
+  componentWillReceiveProps(nextProps) {
     if (this.props.filter !== nextProps.filter) {
       this.setState({ activeUserIndex: 0 });
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyDown);
   }
 
   onUserItemHover = index => () => {
@@ -35,10 +36,12 @@ class MenutionMenu extends Component {
   };
 
   onSelectMention = username => () => {
-    this.props.onSelect(username);
+    const { onSelect } = this.props;
+
+    onSelect(username);
   };
 
-  onKeyUp = evt => {
+  onKeyDown = evt => {
     const { activeUserIndex } = this.state;
     const users = this.getUsers();
 
@@ -108,78 +111,74 @@ class MenutionMenu extends Component {
   };
 
   render() {
-    const { presenceStore, isOpen } = this.props;
+    const { presenceStore } = this.props;
     const { activeUserIndex } = this.state;
     const users = this.getUsers();
 
-    if (!isOpen || !users.length) {
-      return null;
-    }
-
     return (
-      <div className="dropup user-mention-menu open">
-        <ul className="dropdown-menu">
-          {users.map(
-            (
-              {
-                id,
-                username,
-                isGroupMention,
-                description,
-                full_name: fullName
-              },
-              index
-            ) => {
-              const online = presenceStore.isOnline(id);
-              const itemClassName = cx("user-list-item", {
-                active: activeUserIndex === index
-              });
+      users.length > 0 && (
+        <div className="dropup user-mention-menu open">
+          <ul className="dropdown-menu">
+            {users.map(
+              (
+                {
+                  id,
+                  username,
+                  isGroupMention,
+                  description,
+                  full_name: fullName
+                },
+                index
+              ) => {
+                const online = presenceStore.isOnline(id);
+                const itemClassName = cx("user-list-item", {
+                  active: activeUserIndex === index
+                });
 
-              return (
-                <li
-                  key={`user_${username}`}
-                  className={itemClassName}
-                  onMouseEnter={this.onUserItemHover(index)}
-                  onClick={this.onSelectMention(username)}
-                >
-                  <span className="item-icon">
-                    <i
-                      className={cx("fa", {
-                        "fa-bullhorn": isGroupMention,
-                        "fa-circle": !isGroupMention && online,
-                        "fa-circle-o": !isGroupMention && !online
-                      })}
-                    />
-                  </span>
-                  {isGroupMention ? (
-                    <span className="item-text">
-                      <span>{username}</span>
-                      <small>{description}</small>
+                return (
+                  <li
+                    key={`user_${username}`}
+                    className={itemClassName}
+                    onMouseEnter={this.onUserItemHover(index)}
+                    onClick={this.onSelectMention(username)}
+                  >
+                    <span className="item-icon">
+                      <i
+                        className={cx("fa", {
+                          "fa-bullhorn": isGroupMention,
+                          "fa-circle": !isGroupMention && online,
+                          "fa-circle-o": !isGroupMention && !online
+                        })}
+                      />
                     </span>
-                  ) : (
-                    <span className="item-text">
-                      <span>{fullName}</span>
-                      <small>{username}</small>
-                    </span>
-                  )}
-                </li>
-              );
-            }
-          )}
-        </ul>
-      </div>
+                    {isGroupMention ? (
+                      <span className="item-text">
+                        <span>{username}</span>
+                        <small>{description}</small>
+                      </span>
+                    ) : (
+                      <span className="item-text">
+                        <span>{fullName}</span>
+                        <small>{username}</small>
+                      </span>
+                    )}
+                  </li>
+                );
+              }
+            )}
+          </ul>
+        </div>
+      )
     );
   }
 }
 
 MenutionMenu.defaultProps = {
-  isOpen: false,
   filter: "",
   onSelect: noop
 };
 
 MenutionMenu.propTypes = {
-  isOpen: PropTypes.bool,
   filter: PropTypes.string,
   onSelect: PropTypes.func
 };
