@@ -28,7 +28,8 @@ config :stitch, :aws_user_upload, %{
   region: System.get_env("S3_REGION"),
   bucket: System.get_env("S3_BUCKET_NAME"),
   scheme: "https://",
-  host: "s3.amazonaws.com"
+  host: "s3.amazonaws.com",
+  upload_size_cap: 1_000_000_000 # in bytes, 1 GB
 }
 
 config :stitch, :user_upload_settings, %{

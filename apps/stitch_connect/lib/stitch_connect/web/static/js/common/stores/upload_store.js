@@ -101,7 +101,29 @@ class UploadStore {
           if (e === "aborted") {
             throw e;
           }
-          notify.show("There was a problem uploading file", "error");
+          // e is a XML document
+          const errorDoc = new window.DOMParser().parseFromString(
+            e,
+            "text/xml"
+          );
+          const errorCode = errorDoc.documentElement.getElementsByTagName(
+            "Code"
+          );
+          if (
+            errorCode.length === 1 &&
+            errorCode[0].textContent === "EntityTooLarge"
+          ) {
+            // We know the error code, show relevant message
+            notify.show("Your file is larger than the allowed size.", "error");
+
+            setTimeout(() => {
+              this.removeProgress(key);
+            }, 5000);
+          } else {
+            // Otherwise, show generic message
+            notify.show("There was a problem uploading file", "error");
+          }
+
           throw e;
         });
     });
