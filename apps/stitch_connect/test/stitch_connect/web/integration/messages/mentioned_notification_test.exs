@@ -1,9 +1,5 @@
 defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
-  use StitchConnect.Web.FeatureCase, async: true
-
-  import Wallaby.Query, only: [xpath: 1, xpath: 2, button: 1, text_field: 1, css: 1, css: 2]
-  import Stitch.Factory
-  alias StitchConnect.Web.IntegrationTestHelper, as: Helper
+  use StitchConnect.Web.FeatureCase
 
   @moduletag timeout: :timer.minutes(2)
 
@@ -33,8 +29,8 @@ defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
     {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1)
-    Helper.sign_in(user_2_session, team, user_2)
+    sign_in(user_1_session, team, user_1)
+    sign_in(user_2_session, team, user_2)
 
     user_1_session
     |> click(button("Join"))
@@ -87,8 +83,8 @@ defmodule StitchConnect.Web.Messages.MentionedNotificationTest do
     {:ok, user_1_session} = Wallaby.start_session(metadata: metadata)
     {:ok, user_2_session} = Wallaby.start_session(metadata: metadata)
 
-    Helper.sign_in(user_1_session, team, user_1)
-    Helper.sign_in(user_2_session, team, user_2)
+    sign_in(user_1_session, team, user_1)
+    sign_in(user_2_session, team, user_2)
 
     user_1_session
     |> click(button("Join"))

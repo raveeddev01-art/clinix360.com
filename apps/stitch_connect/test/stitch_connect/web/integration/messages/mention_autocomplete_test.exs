@@ -1,9 +1,5 @@
 defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
-  use StitchConnect.Web.FeatureCase, async: true
-
-  import Wallaby.Query
-  import Stitch.Factory
-  alias StitchConnect.Web.IntegrationTestHelper, as: Helper
+  use StitchConnect.Web.FeatureCase
 
   defp mention_item(username), do: css(".user-mention-menu .item-text span", count: 1, text: username)
   defp selected_mention_item(username), do: css(".user-mention-menu .active .item-text span", count: 1, text: username)
@@ -17,7 +13,7 @@ defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
 
     # Login as user_3 and verify you can mention Anton and Anthony.
     {:ok, user_3_session} = Wallaby.start_session(metadata: metadata)
-    Helper.sign_in(user_3_session, team, user_3)
+    sign_in(user_3_session, team, user_3)
 
     # Type the @ symbol, is the autocomplete menu there?
     user_3_session
@@ -35,7 +31,7 @@ defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
 
     # Login as user_3 and verify you can mention Anton and Anthony.
     {:ok, user_3_session} = Wallaby.start_session(metadata: metadata)
-    Helper.sign_in(user_3_session, team, user_3)
+    sign_in(user_3_session, team, user_3)
 
     # Type the @ symbol, is the autocomplete menu there?
     user_3_session
@@ -55,17 +51,19 @@ defmodule StitchConnect.Web.Messages.MentionAutocompleteTest do
 
     # Login as user_3.
     {:ok, user_3_session} = Wallaby.start_session(metadata: metadata)
-    Helper.sign_in(user_3_session, team, user_3)
+    sign_in(user_3_session, team, user_3)
 
-    # Can the user use the keyboard to navigate down and 
+    # Can the user use the keyboard to navigate down and
     # autocomplete a mention to the second user in the menu?
     user_3_session
     |> click(button("Join"))
     |> fill_in(text_field("Message"), with: "@ant")
     |> send_keys([:down_arrow])
-    |> assert_has(selected_mention_item("Anthony B"))
+    |> repeat_till(fn session ->
+      session
+      |> has?(selected_mention_item("Anthony B"))
+    end)
     |> send_keys([:enter])
     |> assert_has(css(".message-text", text: "@anthony"))
   end
 end
-  

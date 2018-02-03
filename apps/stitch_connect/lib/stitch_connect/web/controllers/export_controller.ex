@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.ExportController do
   use StitchConnect.Web, :controller
+  alias Stitch.AWS.S3
   alias Stitch.Exports
   alias Stitch.Exports.Export
 
@@ -10,7 +11,7 @@ defmodule StitchConnect.Web.ExportController do
     current_user = conn.assigns.current_user
 
     with {:ok, export} <- authorize_download(id, team, current_user) do
-      presigned_url = Exports.presigned_url(export.zip_url)
+      presigned_url = S3.presigned_url(export.zip_url)
       redirect(conn, external: presigned_url)
     end
   end

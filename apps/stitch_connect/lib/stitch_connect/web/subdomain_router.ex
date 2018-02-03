@@ -84,6 +84,15 @@ defmodule StitchConnect.Web.SubdomainRouter do
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
+    pipe_through :authenticated_locked_api
+
+    post "/session-lock", SessionLockController, :lock
+    post "/session-unlock", SessionLockController, :unlock
+    get "/groups", GroupController, :index
+    get "/users/notification-preference", NotificationPreferenceController, :show_global
+  end
+
+  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :authenticated_api
 
     get "/groups/:group_id/messages", MessageController, :index
@@ -100,7 +109,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/mentions", MentionController, :index
 
     get "/users/", UserController, :index
-    get "/users/notification-preference", NotificationPreferenceController, :show_global
     put "/users/notification-preference", NotificationPreferenceController, :update_global
     get "/users/:id", UserController, :show
     put "/users/:id", UserController, :update
@@ -109,12 +117,13 @@ defmodule StitchConnect.Web.SubdomainRouter do
     delete "/users/:id/delete_profile_image", UserController, :delete_profile_image
     post "/users/search", UserController, :search
 
-    get "/invitations", InvitationController, :index
-    post "/invitations", InvitationController, :create
-    patch "/invitations/:id/revoke", InvitationController, :revoke
-    patch "/invitations/:id/resend", InvitationController, :resend
+    scope "/invitations" do
+      get "/", InvitationController, :index
+      post "/", InvitationController, :create
+      patch "/:id/revoke", InvitationController, :revoke
+      patch "/:id/resend", InvitationController, :resend
+    end
 
-    get "/groups", GroupController, :index
     get "/groups/:id", GroupController, :show
     post "/groups", GroupController, :create
     post "/groups/dm", GroupController, :create_single_dm
@@ -136,47 +145,60 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/uploads",           UploadController, :index
     post "/upload-signature", UploadController, :create
 
-    resources "/devices", DeviceController, only: [:create]
+    resources "/devices", DeviceController, only: [:create, :delete]
+    post "/devices/unregister", DeviceController, :delete
   end
 
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through :authenticated_locked_api
-
-    post "/session-lock", SessionLockController, :lock
-    post "/session-unlock", SessionLockController, :unlock
-  end
-
+  # Routes which needs admin role
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
     pipe_through :team_admin_api
 
-    post "/users/:id/activate", UserController, :activate
-    post "/users/:id/deactivate", UserController, :deactivate
-    put "/users/:id/promote-admin", UserController, :promote_admin
-    put "/users/:id/revoke-admin", UserController, :revoke_admin
+    # User Settings admin routes
+    scope "/users/:id" do
+      post "/activate",     UserController, :activate
+      post "/deactivate",   UserController, :deactivate
+      put "/roles",         UserController, :change_role
+      put "/revoke-admin",  UserController, :revoke_admin
+      put "/promote-admin", UserController, :promote_admin
+    end
 
-    delete "/teams/:id/", TeamController, :delete_team
-    put "/teams/:id/update-security-lockout-time", TeamController, :update_security_lockout_time
-    put "/teams/:id/update-open-invitation", TeamController, :update_open_invitation
+    # Team Settings admin routes
+    scope "/teams" do
+      scope "/:id" do
+        delete "/",                           TeamController, :delete_team
+        get "/contact",                       TeamController, :show_contact_info
+        put "/contact",                       TeamController, :update_contact_info
+        put "/update-open-invitation",        TeamController, :update_open_invitation
+        put "/update-security-lockout-time",  TeamController, :update_security_lockout_time
+      end
+    end
 
+    # Subscription/Billing routes
+    scope "/billing", Billing, as: :billing do
+      scope "/subscription" do
+        get "/",        SubscriptionController, :show
+        put "/",        SubscriptionController, :update
+        put "/renew",   SubscriptionController, :renew
+        put "/cancel",  SubscriptionController, :cancel
+      end
+
+      resources "/history", HistoryController, only: [:index]
+      resources "/cards", CardController, only: [:index, :create, :update, :delete]
+    end
+
+    # Guest invitation routes
+    scope "/invitations" do
+      post "/single-room-guest",  InvitationController, :invite_single_room_guest
+      post "/single-room-guests", InvitationController, :invite_single_room_guests
+      post "/multi-room-guest",   InvitationController, :invite_multi_room_guest
+      post "/multi-room-guests",  InvitationController, :invite_multi_room_guests
+    end
+
+    # Initiate export by admin
     resources "/exports", ExportController, only: [:index, :create]
 
+    # Admin repotes route
     resources "/reports", ReportController, only: [:create]
-  end
-
-  # Subscription/Billing routes
-  scope "/api/v1/billing", StitchConnect.Web.Api.V1.Billing, as: :api_v1_billing do
-    pipe_through :team_admin_api
-
-    get "/cards", CardController, :index
-    post "/cards", CardController, :create
-    put "/cards/:id", CardController, :update
-    delete "/cards/:id", CardController, :delete
-
-    get "/subscription", SubscriptionController, :show
-    put "/subscription", SubscriptionController, :update
-
-    put "/subscription/cancel", SubscriptionController, :cancel
-    put "/subscription/renew", SubscriptionController, :renew
   end
 
   # API routes which need token.
@@ -196,9 +218,13 @@ defmodule StitchConnect.Web.SubdomainRouter do
   scope "/", StitchConnect.Web do
     pipe_through :browser
 
-    get "/invitations/accept/:token", InvitationController, :accept
-    get "/invitations/accept/:token/:step", InvitationController, :accept
-    get "/invitations/error", InvitationController, :error
+    scope "/invitations" do
+      get "/error",   InvitationController, :error
+      scope "/accept" do
+        get "/:token",  InvitationController, :accept
+        get "/:token/:step", InvitationController, :accept
+      end
+    end
 
     get "/login", AuthenticationController, :login
 
@@ -222,6 +248,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get "/direct/:username", UserController, :index
     get "/messages/:id/download", MessageController, :download
 
+    # TODO: a wild card route can make all /admin routes to one line
     get "/admin/team", AdminController, :index
     get "/admin/team/settings", AdminController, :index
     get "/admin/team/security", AdminController, :index

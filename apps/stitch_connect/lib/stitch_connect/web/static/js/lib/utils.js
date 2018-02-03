@@ -1,5 +1,7 @@
 import orderBy from "lodash/orderBy";
 import uniq from "lodash/uniq";
+import escapeRegExp from "lodash/escapeRegExp";
+import { NON_UNICODE_PATTERN } from "lib/constants";
 
 export function isAdmin() {
   return currentUser.roles && currentUser.roles.includes("admin");
@@ -67,14 +69,33 @@ export function getGroupUserIdsThatHasCurrentUser(users) {
 
 /**
  * Filter users
- * 
- * @param {array} users 
- * @param {string} filter 
+ *
+ * @param {array} users
+ * @param {string} filter
  */
 export function filterUsers(users, filter) {
-  const re = new RegExp(filter, "i");
+  const re = new RegExp(escapeRegExp(filter), "i");
 
   return users.filter(
     user => re.test(user.full_name) || re.test(user.username)
   );
+}
+
+/**
+ * Check if string contains only characters ()
+ *
+ * @param {string} text
+ */
+export function isValidUnicodeString(text) {
+  return !NON_UNICODE_PATTERN.test(text);
+}
+
+/**
+ * Returns whether the user has full member permission
+ *
+ * @param {User} user
+ * @returns {bool}
+ */
+export function isFullMember(user) {
+  return user.roles.indexOf("member") > -1 || user.roles.indexOf("admin") > -1;
 }

@@ -4,12 +4,13 @@ defmodule Stitch.Billing do
   """
 
   import Ecto.Query
-  alias Stitch.{Repo, Team}
-  alias Stitch.Billing.{PaymentMethod, Subscription}
+  alias Stitch.{Repo, Team, TeamQueries, FeatureGateway}
+  alias Stitch.Billing.{Plan, Subscription, PaymentMethod, PaymentHistory}
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
   @trial_duration 14 * 24 * 60 * 60 # 14 days in seconds
   @analytics Application.get_env(:stitch, :analytics)
+  @billable_roles ["admin", "member", "multi-room-guest"]
 
   @doc """
   Configures a newly created team with a trial.
@@ -72,9 +73,20 @@ defmodule Stitch.Billing do
     Repo.get_by(Subscription, customer_id: customer_id, subscription_id: subscription_id)
   end
 
-  defp active_user_count(%Team{} = team) do
+  @doc false
+  def list_billable_users(%Team{id: team_id}) do
+    query =
+      from u in Stitch.Accounts.User,
+      where: u.onboarded == true,
+      where: u.disabled == false,
+      where: u.team_id == ^team_id,
+      where: fragment("? && ?", ^@billable_roles, u.roles)
+    Repo.all(query)
+  end
+
+  defp count_billable_users(%Team{} = team) do
     team
-    |> Stitch.TeamQueries.list_active_users()
+    |> list_billable_users()
     |> length()
   end
 
@@ -118,13 +130,21 @@ defmodule Stitch.Billing do
   defp do_modify_subscription(subscription, params, fun) when is_function(fun, 2) do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
          {:count, count} when count > 0 <- {:count, card_count(subscription.team_id)},
-         plan_id = determine_plan_id(changeset.changes),
+         plan_id = Plan.id(changeset.changes),
          {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
       result =
         subscription
         |> subscription_update_changeset(changeset.changes, stripe_sub_params)
         |> Repo.update()
-      case result, do: ({:ok, _} -> analytics_identify_and_group(subscription.team_id); _ -> :ignore)
+
+      case result do
+        {:ok, subscription} ->
+          modify_guests_subscription(subscription)
+          analytics_identify_and_group(subscription.team_id)
+        _ ->
+          :ignore
+      end
+
       result
     else
       %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
@@ -142,7 +162,7 @@ defmodule Stitch.Billing do
   defp create_subscription(subscription, plan_id) do
     customer_id = subscription.customer_id
     subscription = Repo.preload(subscription, :team)
-    user_count = active_user_count(subscription.team)
+    user_count = count_billable_users(subscription.team)
     opts = subscription_opts(subscription)
 
     @stripe_client.create_subscription(customer_id, plan_id, user_count, opts)
@@ -160,6 +180,16 @@ defmodule Stitch.Billing do
     case DateTime.compare(subscription.trial_valid_until, DateTime.utc_now()) do
       :gt -> [trial_end_date: subscription.trial_valid_until]
       _ -> []
+    end
+  end
+
+  defp modify_guests_subscription(subscription) do
+    with subscription = Repo.preload(subscription, :team),
+         {:error, _} <- FeatureGateway.allowed?(:guests, subscription),
+         {count, users} when is_number(count) and is_list(users) <- TeamQueries.deactivate_all_guests(subscription.team) do
+      :ok
+    else
+      any -> any
     end
   end
 
@@ -198,7 +228,7 @@ defmodule Stitch.Billing do
   @spec renew_subscription(Subscription.t) :: {:ok, Subscription.t} | {:error, Changeset.t | :trial}
   def renew_subscription(%Subscription{tier: "TRIAL"}), do: {:error, :trial}
   def renew_subscription(%Subscription{subscription_id: nil} = subscription) do
-    plan_id = determine_plan_id(subscription)
+    plan_id = Plan.id(subscription)
     with {:ok, stripe_sub_params} <- create_subscription(subscription, plan_id) do
       subscription
       |> Subscription.update(stripe_sub_params)
@@ -212,13 +242,6 @@ defmodule Stitch.Billing do
       |> Repo.update()
     end
   end
-
-  defp determine_plan_id(%{tier: "BASIC", renewal_frequency: "MONTHLY"}),   do: "basic_monthly"
-  defp determine_plan_id(%{tier: "BASIC", renewal_frequency: "YEARLY"}),    do: "basic_yearly"
-  defp determine_plan_id(%{tier: "PREMIUM", renewal_frequency: "MONTHLY"}), do: "premium_monthly"
-  defp determine_plan_id(%{tier: "PREMIUM", renewal_frequency: "YEARLY"}),  do: "premium_yearly"
-  defp determine_plan_id(%{tier: "POWER", renewal_frequency: "MONTHLY"}),   do: "power_monthly"
-  defp determine_plan_id(%{tier: "POWER", renewal_frequency: "YEARLY"}),    do: "power_yearly"
 
   @spec subscription_update_changeset(Subscription.t, map, map) :: Ecto.Changeset.t
   defp subscription_update_changeset(%Subscription{} = subscription, user_changes, stripe_changes) do
@@ -371,14 +394,6 @@ defmodule Stitch.Billing do
   end
 
   @doc """
-  Returns a user-friendly plan name.
-  """
-  def plan_display_name("BASIC"), do: "Basic"
-  def plan_display_name("PREMIUM"), do: "Premium"
-  def plan_display_name("POWER"), do: "Power"
-  def plan_display_name("TRIAL"), do: "Trial"
-
-  @doc """
   Updates the current active user count for the team.
 
   ## Examples
@@ -393,13 +408,33 @@ defmodule Stitch.Billing do
     subscription = team.subscription
 
     with subscription_line_item_id when not is_nil(subscription_line_item_id) <- team.subscription.subscription_line_item_id,
-         active_user_count = active_user_count(team),
-         {:ok, stripe_sub_params} <- @stripe_client.update_subscription_quantity(subscription.customer_id, subscription.subscription_id, subscription_line_item_id, active_user_count),
+         billable_user_count = count_billable_users(team),
+         {:ok, stripe_sub_params} <- @stripe_client.update_subscription_quantity(subscription.customer_id, subscription.subscription_id, subscription_line_item_id, billable_user_count),
          {:ok, _} <- Repo.update(subscription_update_changeset(subscription, %{}, stripe_sub_params)) do
       :ok
     else
       :error -> :error
       nil -> false
     end
+  end
+
+  @doc """
+  Add the payment history on invoice.payment_succeeded
+  """
+  @spec create_payment_history(%{}) :: %PaymentHistory{} | %Ecto.Changeset{}
+  def create_payment_history(params) do
+    %PaymentHistory{}
+    |> PaymentHistory.changeset(params)
+    |> Repo.insert!()
+  end
+
+  @spec list_payment_history(%Team{}) :: [%PaymentHistory{}]
+  def list_payment_history(%Team{id: team_id}) do
+    query =
+    from ph in PaymentHistory,
+    where: ph.team_id == ^team_id,
+    order_by: [asc: ph.inserted_at]
+
+    Repo.all(query)
   end
 end

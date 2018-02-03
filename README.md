@@ -3,10 +3,10 @@
 This is the main umbrella application for
 [Stitch](https://connect.teamstitch.com/).
 
-It contains two apps:
+It contains two Elixir applications:
 
-- Stitch (supporting business rules)
-- StitchConnect (web api and frontend)
+* Stitch (supporting business rules)
+* StitchConnect (web api and frontend)
 
 ---
 
@@ -14,12 +14,15 @@ It contains two apps:
 
 Install external dependencies
 
-- `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
+* `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
 
-Update `/etc/hosts` (`subdomain` should the name of a team)
+* `wkhtmltopdf` (https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF) Needed to generate PDFs.
+
+Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 
 ```
-127.0.0.1 localhost.app YOURTEAMSUBDOMAIN.localhost.app
+127.0.0.1 localhost.test
+127.0.0.1 YOURTEAMSUBDOMAIN.localhost.test
 ```
 
 You should be working from the `develop` branch:
@@ -32,7 +35,7 @@ Create an `.env` file in the root project directiry with the following
 contents, and ask the team for the environment values you need to set here:
 
 ```sh
-export APP_HOST=localhost.app
+export APP_HOST=localhost.test
 
 export MANDRILL_API_KEY=keygoeshere
 
@@ -128,7 +131,7 @@ foreman start -f Procfile.dev
 
 Access the site.
 
-https://localhost.app:4443/
+https://localhost.test:4443/
 
 ---
 
@@ -139,3 +142,28 @@ in the project run the command:
 mix dialyzer
 ```
 
+### Stitch.Analytics Maintenance & Development Recommendations
+
+When working on maintaining or extending `Stitch.Analytics` consider these
+recommendations to more easily test or debug as needed.
+
+1. Edit `config/dev.exs` for `Stitch.Analytics` to push events to `Segment`:
+
+In dev env `Stitch` is configured to use `Stitch.Analytics.Segment.InMemory`.
+This means that analytics events will be created in the `segment_events` DB
+table and move from there to the `InMemory` process. This allows us to test our
+analytics system in dev env without hitting the Segment API. In prod env
+`Stitch` is configured to use `Stitch.Analytics.Segment.HTTPClient` instead. To
+test/debug in dev env, while hitting the Segment API and the associated destinations
+configured on Segment, edit `config/dev.exs to use the`HTTPClient`module. If you do this, remember to use the Segment API keys for the`Staging`source and not`Production`.
+
+2. Edit `config/dev.exs` to enable `Stitch.Analytics.Sync.RecurringSync`:
+
+In dev env `Stitch.Analytics.Sync.RecurringSync` is disabled. This means
+analytics events are created in the `segment_events` DB table but never move
+from there to `Segment` (our remote analytics store). For analytics events to
+move from the Stitch DB to Segment automatically make sure you follow point 1
+(above) and then enable the `RecurringSync` process. If you want to manually
+move events from the DB to Segment, without enabling the `RecurringSync`
+process, you can also call `Stitch.Analytics.Sync.perform()` directly as
+needed.

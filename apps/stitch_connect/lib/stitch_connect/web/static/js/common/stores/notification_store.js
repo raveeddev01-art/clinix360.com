@@ -19,11 +19,16 @@ class NotificationStore {
 
   @action
   loadPreferences = () => {
-    return get("/api/v1/users/notification-preference").then(response => {
-      this.groupPrefs = response.data.group_preferences;
-      this.desktopPref = response.data.desktop_notification_preference;
-      this.emailPref = response.data.email_notification_preference;
-    });
+    return get("/api/v1/users/notification-preference").then(response =>
+      this.onPreferencesLoaded(response.data)
+    );
+  };
+
+  @action
+  onPreferencesLoaded = data => {
+    this.groupPrefs = data.group_preferences;
+    this.desktopPref = data.desktop_notification_preference;
+    this.emailPref = data.email_notification_preference;
   };
 
   @action
@@ -40,7 +45,8 @@ class NotificationStore {
     return put("/api/v1/users/notification-preference", {
       body: {
         group_preferences: groupPrefs
-      }
+      },
+      hideNotify: true
     }).then(() => {
       this.groupPrefs.replace(groupPrefs);
     });
@@ -51,7 +57,8 @@ class NotificationStore {
     return put(`/api/v1/groups/${groupId}/notification-preference`, {
       body: {
         desktop_notification_preference: groupPref
-      }
+      },
+      hideNotify: true
     }).then(() => {
       this.updateGroupPrefData(groupId, {
         desktop_notification_preference: groupPref

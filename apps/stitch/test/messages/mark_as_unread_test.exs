@@ -53,7 +53,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
     test "updates group_users.last_read_at, group_users.unread_messages_count, and group_users.mentions_count", %{bob: bob, joe: joe, group: group} do
       {:ok, %{message: _message1}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
-      {:ok, %{message: _message3}} = Message.create(group.id, bob, %{"text_content" => "Mentions @#{joe.username}", "type" => "chat"})
+      {:ok, %{message: _message3}} = Message.create(group.id, bob, %{"text_content" => "Mentions <@U#{joe.id}>", "type" => "chat"})
 
       Message.mark_as_read(joe.id, group.id)
       Message.mark_as_unread(joe.id, group.id, message2)
@@ -68,8 +68,8 @@ defmodule Stitch.Message.MarkAsUnreadTest do
       sam = insert(:user, team: team)
       tim = insert(:user, team: team)
       {:ok, %{message: message1}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
-      {:ok, %{system_message: _system_message}} = Stitch.Group.add_user(group, sam.id)
-      {:ok, %{system_message: _system_message}} = Stitch.Group.add_user(group, tim.id)
+      Stitch.SystemMessages.generate_user_joined_group(group, sam)
+      Stitch.SystemMessages.generate_user_joined_group(group, tim)
       {:ok, %{message: _message2}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: _message3}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
@@ -101,7 +101,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
     test "when the target message is a system message", %{bob: bob, joe: joe, group: group, team: team} do
       sam = insert(:user, team: team)
       {:ok, %{message: message1}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
-      {:ok, %{system_message: _system_message}} = Stitch.Group.add_user(group, sam.id)
+      Stitch.SystemMessages.generate_user_joined_group(group, sam)
       {:ok, %{message: _message3}} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
       Message.mark_as_read(bob.id, group.id)
@@ -129,9 +129,9 @@ defmodule Stitch.Message.MarkAsUnreadTest do
 
     test "when the target message is a system message and the messages before it are system messages or author's messages",
       %{bob: bob, joe: joe, group: group, team: team} do
-      {:ok, _} = Stitch.Group.add_user(group, insert(:user, team: team).id)
+      Stitch.SystemMessages.generate_user_joined_group(group, insert(:user, team: team))
       {:ok, _} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
-      {:ok, %{system_message: system_message2}} = Stitch.Group.add_user(group, insert(:user, team: team).id)
+      system_message2 = Stitch.SystemMessages.generate_user_joined_group(group, insert(:user, team: team))
       {:ok, _} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
       Message.mark_as_read(bob.id, group.id)
@@ -143,7 +143,7 @@ defmodule Stitch.Message.MarkAsUnreadTest do
     end
 
     test "when the target message is a system message and there are no messages before it", %{bob: bob, joe: joe, group: group, team: team} do
-      {:ok, %{system_message: system_message2}} = Stitch.Group.add_user(group, insert(:user, team: team).id)
+      system_message2 = Stitch.SystemMessages.generate_user_joined_group(group, insert(:user, team: team))
       {:ok, _} = Message.create(group.id, joe, %{"text_content" => "Lorem ipsum", "type" => "chat"})
 
       Message.mark_as_read(bob.id, group.id)

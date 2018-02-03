@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
+import noop from "lodash/noop";
 
-import { filterUsers } from "lib/utils";
+import { filterUsers, isFullMember } from "lib/utils";
 
-@inject("presenceStore", "usersStore")
+@inject("presenceStore", "usersStore", "groupsStore")
 @observer
 class MenutionMenu extends Component {
   constructor(...args) {
@@ -16,17 +17,18 @@ class MenutionMenu extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.isOpen && nextProps.isOpen) {
-      document.addEventListener("keyup", this.onKeyUp);
-      this.setState({ activeUserIndex: 0 });
-    } else if (this.props.isOpen && !nextProps.isOpen) {
-      document.removeEventListener("keyup", this.onKeyUp);
-    }
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeyDown);
+  }
 
+  componentWillReceiveProps(nextProps) {
     if (this.props.filter !== nextProps.filter) {
       this.setState({ activeUserIndex: 0 });
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyDown);
   }
 
   onUserItemHover = index => () => {
@@ -34,10 +36,12 @@ class MenutionMenu extends Component {
   };
 
   onSelectMention = username => () => {
-    this.props.onSelect(username);
+    const { onSelect } = this.props;
+
+    onSelect(username);
   };
 
-  onKeyUp = evt => {
+  onKeyDown = evt => {
     const { activeUserIndex } = this.state;
     const users = this.getUsers();
 
@@ -55,6 +59,7 @@ class MenutionMenu extends Component {
         });
         break;
       case 13: // return
+      case 9: // tab
         if (users.length) {
           const selectedUser = users[activeUserIndex];
           this.onSelectMention(selectedUser.username)();
@@ -67,68 +72,117 @@ class MenutionMenu extends Component {
   };
 
   getUsers = () => {
-    const { usersStore: { activatedUsers }, filter } = this.props;
+    const { usersStore, filter, groupsStore: { currentGroup } } = this.props;
+    const users = [];
 
-    return filterUsers(activatedUsers, filter)
+    if (currentGroup.is_default) {
+      users.push({
+        username: "everyone",
+        description: "Notifies everyone in the team",
+        isGroupMention: true
+      });
+    }
+
+    if (currentGroup.type === "regular") {
+      users.push(
+        {
+          username: "here",
+          description: "Notifies online people in the room",
+          isGroupMention: true
+        },
+        {
+          username: "room",
+          description: "Notifies everyone in the room",
+          isGroupMention: true
+        }
+      );
+    }
+
+    return filterUsers(
+      [
+        ...users,
+        ...(isFullMember(currentUser)
+          ? usersStore.activatedUsers
+          : usersStore.connectedAndActivatedUsers)
+      ],
+      filter
+    )
       .filter(user => !user.disabled)
       .slice(0, 10);
   };
 
   render() {
-    const { presenceStore, isOpen } = this.props;
+    const { presenceStore } = this.props;
     const { activeUserIndex } = this.state;
     const users = this.getUsers();
-
-    if (!isOpen || !users.length) {
+    if (!users.length) {
       return null;
     }
 
     return (
       <div className="dropup user-mention-menu open">
         <ul className="dropdown-menu">
-          {users.map((user, index) => {
-            const online = presenceStore.isOnline(user.id);
-            const itemClassName = cx("user-list-item", {
-              active: activeUserIndex === index
-            });
+          {users.map(
+            (
+              {
+                id,
+                username,
+                isGroupMention,
+                description,
+                full_name: fullName
+              },
+              index
+            ) => {
+              const online = presenceStore.isOnline(id);
+              const itemClassName = cx("user-list-item", {
+                active: activeUserIndex === index
+              });
 
-            return (
-              <li
-                key={`user_${user.id}`}
-                className={itemClassName}
-                onMouseEnter={this.onUserItemHover(index)}
-                onClick={this.onSelectMention(user.username)}
-              >
-                <span className="item-icon">
-                  {online ? (
-                    <i className="fa fa-circle" />
+              return (
+                <li
+                  key={`user_${username}`}
+                  className={itemClassName}
+                  onMouseEnter={this.onUserItemHover(index)}
+                  onClick={this.onSelectMention(username)}
+                >
+                  <span className="item-icon">
+                    <i
+                      className={cx("fa", {
+                        "fa-bullhorn": isGroupMention,
+                        "fa-circle": !isGroupMention && online,
+                        "fa-circle-o": !isGroupMention && !online
+                      })}
+                    />
+                  </span>
+                  {isGroupMention ? (
+                    <span className="item-text">
+                      <span>{username}</span>
+                      <small>{description}</small>
+                    </span>
                   ) : (
-                    <i className="fa fa-circle-o" />
+                    <span className="item-text">
+                      <span>{fullName}</span>
+                      <small>{username}</small>
+                    </span>
                   )}
-                </span>
-                <span className="item-text">
-                  <span>{`${user.first_name} ${user.last_name}`}</span>
-                  <small>{user.username}</small>
-                </span>
-              </li>
-            );
-          })}
+                </li>
+              );
+            }
+          )}
         </ul>
       </div>
     );
   }
 }
 
-MenutionMenu.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  filter: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired
+MenutionMenu.defaultProps = {
+  filter: "",
+  onSelect: noop
 };
 
-MenutionMenu.defaultProps = {
-  isOpen: false,
-  filter: "",
-  onSelect: () => {}
+MenutionMenu.propTypes = {
+  filter: PropTypes.string,
+  onSelect: PropTypes.func
 };
 
 export default MenutionMenu;

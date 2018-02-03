@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.UserView do
   use StitchConnect.Web, :view
+  alias Stitch.AWS.S3
 
   def render("index.json", %{users: users}) do
     Enum.map(users, &user_json/1)
@@ -30,16 +31,16 @@ defmodule StitchConnect.Web.Api.V1.UserView do
 
   def render("update.json", %{user: user}) do
     %{
-       id: user.id,
-       first_name: user.first_name,
-       last_name: user.last_name,
-       phone_number: user.phone_number,
-       title: user.title,
-       profile_image_url: user.profile_image_url,
-       user_name: user.username,
-       email: user.email,
-       pin: user.pin
-      }
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      phone_number: user.phone_number,
+      title: user.title,
+      profile_image_url: user.profile_image_url,
+      user_name: user.username,
+      email: user.email,
+      pin: user.pin
+    }
   end
 
   def user_json(user) do
@@ -53,18 +54,11 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       username: user.username,
       phone: user.phone_number,
       title: user.title,
-      avatar: presigned_url(user.profile_image_url),
-      avatar_thumb: presigned_url(user.profile_image_thumb_url),
+      avatar: S3.presigned_url(user.profile_image_url),
+      avatar_thumb: S3.presigned_url(user.profile_image_thumb_url),
       onboarded: user.onboarded,
-      disabled: user.disabled
+      disabled: user.disabled,
+      groups_as_guest: user.groups_as_guest
     }
-  end
-
-  def presigned_url(nil), do: nil
-  def presigned_url(url) do
-    case Stitch.Upload.presign_url(url) do
-      {:ok, presigned_url} -> presigned_url
-      :error -> nil
-    end
   end
 end

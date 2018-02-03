@@ -102,6 +102,8 @@ hr {
 
 .tooltip {
   font-size: 14px;
+  font-weight: 700;
+  font-family: "Stitch Lato", sans-serif;
 }
 .tooltip-inner {
   padding: 6px 10px;
@@ -241,6 +243,10 @@ hr {
   justify-content: center;
   margin: auto;
 
+  &.modal-lg {
+    max-width: 750px;
+  }
+
   .modal-content {
     border: 0;
     border-radius: 3px;
@@ -266,6 +272,7 @@ hr {
         font-size: 18px;
         font-weight: bold;
         flex-grow: 1;
+        line-height: 26px;
       }
 
       i.fa {
@@ -484,6 +491,10 @@ i.fa {
   justify-content: center;
   color: #fff;
   background: $brand-primary;
+
+  h3 {
+    font-weight: 700;
+  }
 }
 
 i.fa {
@@ -491,4 +502,8 @@ i.fa {
     margin-left: 8px;
     vertical-align: text-bottom;
   }
+}
+
+.modal-dialog .modal-content .modal-body.role-change-modal-body {
+  min-height: 100px;
 }

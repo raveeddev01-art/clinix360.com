@@ -1,34 +1,39 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Repo, Group, GroupAuthorization, GroupQueries,
-                Message, MessageAction, MessageQueries}
   alias StitchConnect.MessageLinkPreviewGenerator
-  alias StitchConnect.Web.{Endpoint, EventsChannel, GroupChannel, PushNotifications}
+  alias StitchConnect.Web.{EventsChannel, GroupChannel, PushNotifications}
+  alias Stitch.{GroupAuthorization, GroupQueries, Message, MessageAction, MessageQueries, Message.Upload}
+
+  action_fallback StitchConnect.Web.Api.FallbackController
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
-    group = GroupQueries.get_by_id(group_id)
 
-    case GroupAuthorization.can_view?(group, user) do
-      true ->
-        opts =
-          params
-          |> Map.take(["limit", "skip"])
-          |> Enum.map(fn {key, value} ->
-            value = case value do
-              value when is_binary(value) -> String.to_integer(value)
-              value when is_integer(value) -> value
-            end
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
+      opts =
+        params
+        |> Map.take(["limit", "skip"])
+        |> Enum.map(fn {key, value} ->
+        value = case value do
+                  value when is_binary(value) -> String.to_integer(value)
+                  value when is_integer(value) -> value
+                end
 
-            {:"#{key}", value}
-          end)
-          |> Keyword.update(:limit, 30, fn limit -> Enum.min([limit, 30]) end)
+        {:"#{key}", value}
+      end)
+      |> Keyword.update(:limit, 30, fn limit -> Enum.min([limit, 30]) end)
 
-        messages = MessageQueries.group_latest_messages(group_id, user, opts)
-        render conn, "index.json", messages: messages, user_id: user.id
-      false ->
+      messages = MessageQueries.group_latest_messages(group_id, user, opts)
+      render conn, "index.json", messages: messages, user_id: user.id
+    else
+      {:group, _} ->
         conn
-        |> put_status(:unauthorized)
+        |> put_status(:not_found)
+        |> json(%{message: "The room you are looking for does not exist."})
+      {:authorized?, false} ->
+        conn
+        |> put_status(:forbidden)
         |> json(%{message: "You can't see the messages for this room."})
     end
   end
@@ -45,54 +50,47 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
-    group = Repo.get! Group, group_id
     user = conn.assigns.current_user
-    case GroupAuthorization.is_member?(group_id, user.id) do
-      true ->
-        active_user_ids = StitchConnect.Web.UserStatusService.active_user_ids(user.team_id)
-        case Message.create(group.id, user, message_params, active_user_ids) do
-          {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
-            MessageLinkPreviewGenerator.queue(message)
-            message = message |> MessageQueries.load_info
-            Endpoint.broadcast("groups:#{group.slug}", "new_msg", message)
-            EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-            PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
-            PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
-            conn
-            |> put_status(:created)
-            |> render("show.json", message: message, user_id: user.id)
-          {:error, :message, changeset, _changeset_so_far} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{message: changeset_errors_to_string(changeset)})
-        end
-      false ->
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.is_member?(group_id, user.id)},
+         presence_user_ids = StitchConnect.Web.UserStatusService.presence_user_ids(user.team_id),
+         {:ok, %{message: message, notify_user_ids: notify_user_ids}} <- Message.create(group.id, user, message_params, presence_user_ids) do
+      MessageLinkPreviewGenerator.queue(message)
+      message = message |> MessageQueries.load_info
+      GroupChannel.broadcast_message_created(message)
+      EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
+      PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+      PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+
+      conn
+      |> put_status(:created)
+      |> render("show.json", message: message, user_id: user.id)
+    else
+      {:group, _} ->
         conn
-        |> put_status(:unauthorized)
+        |> put_status(:not_found)
+        |> json(%{message: "The room you are looking for does not exist."})
+      {:authorized?, false} ->
+        conn
+        |> put_status(:forbidden)
         |> json(%{message: "You can't see the messages for this room."})
+      {:error, :message, changeset, _changeset_so_far} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{message: changeset_errors_to_string(changeset)})
     end
   end
 
   def download(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
-
-    case GroupAuthorization.can_view?(message.group, conn.assigns.current_user) do
-      true ->
-        case Stitch.Upload.presign(message) do
-          {:ok, presigned_url} ->
-            conn
-            |> json(%{presigned_url: presigned_url})
-          :error ->
-            conn
-            |> put_status(:unauthorized)
-            |> json(%{message: "Not found"})
-        end
-
-      false ->
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "Not found"})
+    user = conn.assigns.current_user
+    with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)},
+         {:ok, presigned_url} <- Upload.presign(message) do
+      json(conn, %{presigned_url: presigned_url})
+    else
+      {:authorized?, false} -> {:error, :not_found}
+      :error -> {:error, :not_found}
     end
   end
 
@@ -106,7 +104,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, message} ->
             MessageLinkPreviewGenerator.queue(message)
             message = MessageQueries.load_info(message)
-            Endpoint.broadcast("groups:#{message.group.slug}", "edit_msg", message)
+            GroupChannel.broadcast_message_edited(message)
             render conn, "show.json", message: message, user_id: user.id
           {:error, :message, changeset, _changeset_so_far} ->
             conn
@@ -127,7 +125,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       true ->
         case Message.delete(message) do
           {:ok, _message} ->
-            Endpoint.broadcast("groups:#{message.group.slug}", "delete_msg", %{id: message.id})
+            GroupChannel.broadcast_message_deleted(message)
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
             PushNotifications.push_badge_update(message)
             send_resp(conn, :no_content, "")

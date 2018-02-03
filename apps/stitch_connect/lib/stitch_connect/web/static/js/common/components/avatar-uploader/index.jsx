@@ -23,11 +23,22 @@ class AvatarUploader extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isCropping !== this.props.isCropping) {
+      this.setState({
+        isCropping: nextProps.isCropping
+      });
+    }
+  }
+
   onChangeCrop = (crop, pixelCrop) => {
     this.setState({ crop, pixelCrop });
   };
 
-  onCancelCrop = () => this.setState({ isCropping: false });
+  onCancelCrop = () => {
+    this.setState({ isCropping: false });
+    this.props.onCropping(false);
+  };
 
   onImageLoaded = image => {
     const constraint = {};
@@ -50,7 +61,7 @@ class AvatarUploader extends Component {
   };
 
   onImageDrop = files => {
-    const { onError } = this.props;
+    const { onError, onCropping } = this.props;
     const reader = new FileReader();
     const imageFile = files[0];
 
@@ -62,6 +73,7 @@ class AvatarUploader extends Component {
         imgDataURL: reader.result,
         croppedURL: ""
       });
+      onCropping(true);
     };
 
     reader.onerror = () => {
@@ -215,26 +227,25 @@ class AvatarUploader extends Component {
           )}
           {isCropping ? this.renderCropper() : this.renderDropzone()}
         </div>
-        {isCropping && (
-          <div className="avatar-uploader__actions">
-            <Button
-              className="btn-fancy"
-              disabled={isUploading}
-              onClick={this.onCancelCrop}
-            >
-              Cancel
-            </Button>
-            <Button
-              bsStyle="primary"
-              className="btn-fancy"
-              onClick={this.onCrop}
-              disabled={isUploading}
-            >
-              Save Profile Image
-              {this.renderLoadingIcon()}
-            </Button>
-          </div>
-        )}
+        {(isCropping || isUploading) && (
+            <div className="avatar-uploader__actions">
+              <Button
+                className="btn-fancy"
+                disabled={isUploading}
+                onClick={this.onCancelCrop}
+              >
+                Cancel
+              </Button>
+              <Button
+                bsStyle="primary"
+                className="btn-fancy"
+                onClick={this.onCrop}
+                disabled={isUploading}
+              >
+                Save Profile Image
+              </Button>
+            </div>
+          )}
       </div>
     );
   }
@@ -242,9 +253,11 @@ class AvatarUploader extends Component {
 
 AvatarUploader.propTypes = {
   onCrop: PropTypes.func.isRequired,
+  onCropping: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   isUploading: PropTypes.bool.isRequired,
   isCropped: PropTypes.bool.isRequired,
+  isCropping: PropTypes.bool.isRequired,
   hasAvatar: PropTypes.bool.isRequired,
   onError: PropTypes.func.isRequired,
   url: PropTypes.any,
@@ -254,9 +267,11 @@ AvatarUploader.propTypes = {
 
 AvatarUploader.defaultProps = {
   onCrop: noop,
+  onCropping: noop,
   onDelete: noop,
   isUploading: false,
   isCropped: false,
+  isCropping: false,
   hasAvatar: false,
   onError: noop,
   url: "",

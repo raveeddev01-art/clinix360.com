@@ -20,7 +20,7 @@ defmodule Stitch.Mixfile do
   def application do
     [
       mod: {Stitch.Application, []},
-      extra_applications: [:logger, :runtime_tools, :appsignal]
+      extra_applications: [:logger, :runtime_tools, :appsignal, :pdf_generator]
     ]
   end
 
@@ -33,7 +33,8 @@ defmodule Stitch.Mixfile do
       {:postgrex, "~> 0.13.3"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
-      {:ex_aws, "~> 1.0"},
+      {:ex_aws, "~> 2.0"},
+      {:ex_aws_s3, "~> 2.0"},
       {:sweet_xml, "~> 0.6"},
       {:ex_machina, "~> 2.1", only: :test},
       {:faker, "~> 0.9", only: :test},
@@ -44,7 +45,8 @@ defmodule Stitch.Mixfile do
       {:stripity_stripe, "~> 1.6"},
       {:appsignal, "~> 1.3"},
       {:mogrify, "~> 0.5.6"},
-      {:floki, "~> 0.18.1"}
+      {:floki, "~> 0.18.1"},
+      {:pdf_generator, ">=0.3.5"}
     ]
   end
 

@@ -1,7 +1,7 @@
 defmodule Stitch.Billing.BillingTest do
   use Stitch.DataCase, async: true
   import Stitch.Factory
-  alias Stitch.Billing
+  alias Stitch.{Billing, Accounts.User}
 
   test "setup_new_team/1" do
     team = insert(:team)
@@ -27,7 +27,9 @@ defmodule Stitch.Billing.BillingTest do
     test "returns a subscription" do
       subscription = insert(:subscription)
       insert(:subscription)
-      assert Billing.get_subscription(subscription.customer_id, subscription.subscription_id) == clear_assoc(subscription, :team)
+
+      assert Billing.get_subscription(subscription.customer_id, subscription.subscription_id) ==
+               clear_assoc(subscription, :team)
     end
 
     test "returns nil for bad ids" do
@@ -55,13 +57,18 @@ defmodule Stitch.Billing.BillingTest do
       assert elem(result.errors[:tier], 0) =~ "blank"
       assert elem(result.errors[:renewal_frequency], 0) =~ "blank"
 
-      assert {:error, result} = Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
+      assert {:error, result} =
+               Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
+
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
 
       subscription = insert(:subscription)
       insert(:card, team: subscription.team)
-      assert {:error, result} = Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
+
+      assert {:error, result} =
+               Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
+
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
     end
@@ -69,7 +76,13 @@ defmodule Stitch.Billing.BillingTest do
     test "can change a subscription tier" do
       subscription = insert(:subscription)
       insert(:card, team: subscription.team)
-      assert {:ok, sub} = Billing.modify_subscription(subscription, %{tier: "POWER", renewal_frequency: "MONTHLY"})
+
+      assert {:ok, sub} =
+               Billing.modify_subscription(subscription, %{
+                 tier: "POWER",
+                 renewal_frequency: "MONTHLY"
+               })
+
       assert sub.tier == "POWER"
       assert sub.renewal_frequency == "MONTHLY"
     end
@@ -79,17 +92,157 @@ defmodule Stitch.Billing.BillingTest do
       params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
       assert {:error, :card_required} = Billing.modify_subscription(subscription, params)
     end
+
+    test "guests are not deactivated when downgrading to non-expired TRIAL" do
+      subscription = insert(:trial_subscription)
+      insert(:card, team: subscription.team)
+      team = subscription.team
+
+      insert(:user, team: team, roles: ["single-room-guest"])
+      insert(:user, team: team, roles: ["multi-room-guest"])
+      insert(:user, team: team, roles: ["member"])
+
+      assert {:ok, sub} =
+               Billing.modify_subscription(subscription, %{
+                 tier: "TRIAL",
+                 renewal_frequency: "MONTHLY"
+               })
+
+      assert sub.tier == "TRIAL"
+      assert sub.renewal_frequency == "MONTHLY"
+
+      query = from u in User,
+        where: u.team_id == ^team.id,
+        where: u.disabled == false
+
+      users = Repo.all(query)
+
+      assert length(users) == 3
+    end
+
+    test "guests are deactivated when downgrading to expired TRIAL" do
+      end_date = Timex.shift(DateTime.utc_now(), days: -1)
+      subscription = insert(:trial_subscription, trial_valid_until: end_date)
+      insert(:card, team: subscription.team)
+      team = subscription.team
+
+      insert(:user, team: team, roles: ["single-room-guest"])
+      insert(:user, team: team, roles: ["multi-room-guest"])
+      insert(:user, team: team, roles: ["member"])
+
+      assert {:ok, sub} =
+               Billing.modify_subscription(subscription, %{
+                 tier: "TRIAL",
+                 renewal_frequency: "MONTHLY"
+               })
+
+      assert sub.tier == "TRIAL"
+      assert sub.renewal_frequency == "MONTHLY"
+
+      query = from u in User,
+        where: u.team_id == ^team.id,
+        where: u.disabled == false
+
+      users = Repo.all(query)
+
+      assert length(users) == 1
+    end
+
+    test "guests are deactivated when downgrading to BASIC" do
+      subscription = insert(:subscription)
+      insert(:card, team: subscription.team)
+      team = subscription.team
+
+      insert(:user, team: team, roles: ["single-room-guest"])
+      insert(:user, team: team, roles: ["multi-room-guest"])
+      insert(:user, team: team, roles: ["member"])
+
+      assert {:ok, sub} =
+               Billing.modify_subscription(subscription, %{
+                 tier: "BASIC",
+                 renewal_frequency: "MONTHLY"
+               })
+
+      assert sub.tier == "BASIC"
+      assert sub.renewal_frequency == "MONTHLY"
+
+      query = from u in User,
+        where: u.team_id == ^team.id,
+        where: u.disabled == false
+
+      users = Repo.all(query)
+
+      assert length(users) == 1
+    end
+
+    test "guests are not deactivated when downgrading to PREMIUM" do
+      subscription = insert(:subscription)
+      insert(:card, team: subscription.team)
+      team = subscription.team
+
+      insert(:user, team: team, roles: ["single-room-guest"])
+      insert(:user, team: team, roles: ["multi-room-guest"])
+      insert(:user, team: team, roles: ["member"])
+
+      assert {:ok, sub} =
+               Billing.modify_subscription(subscription, %{
+                 tier: "PREMIUM",
+                 renewal_frequency: "MONTHLY"
+               })
+
+      assert sub.tier == "PREMIUM"
+      assert sub.renewal_frequency == "MONTHLY"
+
+      query = from u in User,
+        where: u.team_id == ^team.id,
+        where: u.disabled == false
+
+      users = Repo.all(query)
+
+      assert length(users) == 3
+    end
+
+    test "guests are not deactivated when downgrading to POWER" do
+      subscription = insert(:subscription)
+      insert(:card, team: subscription.team)
+      team = subscription.team
+
+      insert(:user, team: team, roles: ["single-room-guest"])
+      insert(:user, team: team, roles: ["multi-room-guest"])
+      insert(:user, team: team, roles: ["member"])
+
+      assert {:ok, sub} =
+               Billing.modify_subscription(subscription, %{
+                 tier: "POWER",
+                 renewal_frequency: "MONTHLY"
+               })
+
+      assert sub.tier == "POWER"
+      assert sub.renewal_frequency == "MONTHLY"
+
+      query = from u in User,
+        where: u.team_id == ^team.id,
+        where: u.disabled == false
+
+      users = Repo.all(query)
+
+      assert length(users) == 3
+    end
   end
 
   describe "cancel_subscription/1" do
     test "cancels an active subscription" do
       subscription = insert(:subscription)
-      assert {:ok, %Stitch.Billing.Subscription{renews: false}} = Billing.cancel_subscription(subscription)
+
+      assert {:ok, %Stitch.Billing.Subscription{renews: false}} =
+               Billing.cancel_subscription(subscription)
     end
 
     test "cancels an active/non-renewing subscription" do
       subscription = insert(:subscription, renews: false)
-      assert {:ok, %Stitch.Billing.Subscription{renews: false}} = Billing.cancel_subscription(subscription)
+
+      assert {:ok, %Stitch.Billing.Subscription{renews: false}} =
+               Billing.cancel_subscription(subscription)
     end
 
     test "errors on an expired subscription" do
@@ -107,12 +260,16 @@ defmodule Stitch.Billing.BillingTest do
   describe "renews_subscription/1" do
     test "renews an active/renewing subscription" do
       subscription = insert(:subscription)
-      assert {:ok, %Stitch.Billing.Subscription{renews: true}} = Billing.renew_subscription(subscription)
+
+      assert {:ok, %Stitch.Billing.Subscription{renews: true}} =
+               Billing.renew_subscription(subscription)
     end
 
     test "renews an active/non-renewing subscription" do
       subscription = insert(:subscription, renews: false)
-      assert {:ok, %Stitch.Billing.Subscription{renews: true}} = Billing.renew_subscription(subscription)
+
+      assert {:ok, %Stitch.Billing.Subscription{renews: true}} =
+               Billing.renew_subscription(subscription)
     end
 
     test "renews an expired subscription" do
@@ -138,6 +295,7 @@ defmodule Stitch.Billing.BillingTest do
 
     test "lists all cards for a team", %{team: team} do
       card_count = 5
+
       card_ids =
         for _ <- 1..card_count do
           card = insert(:card, team: team)
@@ -146,6 +304,7 @@ defmodule Stitch.Billing.BillingTest do
 
       cards = Billing.list_cards(team)
       assert length(cards) == card_count
+
       for card <- cards do
         assert card.id in card_ids
       end
@@ -228,7 +387,11 @@ defmodule Stitch.Billing.BillingTest do
       {:ok, team: team, default_card: default_card, other_card: other_card}
     end
 
-    test "sets a card as the default", %{team: team, default_card: default_card, other_card: other_card} do
+    test "sets a card as the default", %{
+      team: team,
+      default_card: default_card,
+      other_card: other_card
+    } do
       assert {:ok, result} = Billing.set_card_as_default(team, other_card.id)
       assert result.default
       assert result.id == other_card.id
@@ -242,17 +405,86 @@ defmodule Stitch.Billing.BillingTest do
 
   describe "update_subscriber_count/1" do
     test "updates a paid subscription's subscriber count" do
-     subscription = insert(:subscription)
-     team = subscription.team
-     insert(:user, team: team)
-     insert(:user, team: team)
+      subscription = insert(:subscription)
+      team = subscription.team
+      insert(:user, team: team)
+      insert(:user, team: team)
 
-     assert :ok == Billing.update_subscriber_count(team)
+      assert :ok == Billing.update_subscriber_count(team)
     end
 
     test "ignores trial/unpaid subscriptions" do
       trial_subscription = insert(:trial_subscription)
       refute Billing.update_subscriber_count(trial_subscription.team)
+    end
+  end
+
+  describe "list_billable_users/1" do
+    setup do
+      team = insert(:team)
+
+      active_users =
+        for role <- ["admin", "member", "multi-room-guest"] do
+          user = insert(:user, team: team, onboarded: true, roles: [role])
+          clear_assoc(user, :team)
+        end
+
+      {:ok, team: team, active_users: active_users}
+    end
+
+    test "lists active users", %{team: team, active_users: active_users} do
+      active_ids = for u <- active_users, do: u.id
+      insert(:user, team: team, onboarded: true, disabled: true)
+      insert(:user, team: team, onboarded: true, disabled: true)
+      insert(:user, team: team, onboarded: false, disabled: false)
+      result = Billing.list_billable_users(team)
+      assert length(result) == 3
+
+      for user <- result do
+        assert user.id in active_ids
+      end
+    end
+
+    test "doesn't list disabled users", %{team: team} do
+      disabled_user = insert(:user, team: team, onboarded: true, disabled: true)
+      users = Billing.list_billable_users(team)
+      refute Enum.any?(users, &(&1.id == disabled_user.id))
+    end
+
+    test "doesn't list users that haven't completed onboarding", %{team: team} do
+      non_onboarded_user = insert(:user, team: team, onboarded: false, disabled: false)
+      users = Billing.list_billable_users(team)
+      refute Enum.any?(users, &(&1.id == non_onboarded_user.id))
+    end
+
+    test "excludes single-room guests", %{team: team, active_users: active_users} do
+      insert(:user, team: team, onboarded: true, disabled: false, roles: ["single-room-guest"])
+      insert(:user, team: team, onboarded: true, disabled: true, roles: ["single-room-guest"])
+      insert(:user, team: team, onboarded: false, disabled: false, roles: ["single-room-guest"])
+
+      assert Billing.list_billable_users(team) |> length() == length(active_users)
+    end
+  end
+
+  describe "create_payment_history/1, list_payment_history/1" do
+    setup do
+      team = insert(:team)
+      {:ok, team: team}
+    end
+
+    test "create, list", %{team: team} do
+      params = %{
+        plan: "basic_yearly",
+        team_id: team.id,
+        invoice_id: "inv_xxxxxxxxxxxy",
+        amount: 12000,
+        quantity: 5,
+        period_end: NaiveDateTime.utc_now(),
+        period_start: NaiveDateTime.utc_now()
+      }
+
+      assert history = Billing.create_payment_history(params)
+      assert [history] == Billing.list_payment_history(team)
     end
   end
 end

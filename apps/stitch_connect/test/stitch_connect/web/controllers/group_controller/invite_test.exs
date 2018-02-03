@@ -17,7 +17,12 @@ defmodule StitchConnect.Web.GroupController.InviteTest do
       {:ok, conn: conn, team: team, bob: bob, joe: joe, sam: sam}
     end
 
-    test "gives error when user is not authorized to invite to the group", %{conn: conn, team: team, joe: joe, sam: sam} do
+    test "gives error when user is not authorized to invite to the group", %{
+      conn: conn,
+      team: team,
+      joe: joe,
+      sam: sam
+    } do
       group = insert(:group, team: team, creator: joe, public: false)
 
       %{"message" => message} =
@@ -28,12 +33,20 @@ defmodule StitchConnect.Web.GroupController.InviteTest do
       assert message == "Not authorized to invite people to this room."
     end
 
-    test "responds with 200 and a success message", %{conn: conn, team: team, bob: bob, joe: joe, sam: sam} do
+    test "responds with 200 and a success message", %{
+      conn: conn,
+      team: team,
+      bob: bob,
+      joe: joe,
+      sam: sam
+    } do
       group = insert(:group, team: team, creator: bob, public: false)
 
       %{"message" => message} =
         conn
-        |> post(api_v1_group_path(conn, :invite, group), %{"user_ids" => Enum.join([joe.id, sam.id], ",")})
+        |> post(api_v1_group_path(conn, :invite, group), %{
+          "user_ids" => Enum.join([joe.id, sam.id], ",")
+        })
         |> json_response(200)
 
       assert message == "Users invited to room."
@@ -61,9 +74,9 @@ defmodule StitchConnect.Web.GroupController.InviteTest do
 
       conn
       |> post(api_v1_group_path(conn, :invite, group_a.id), %{
-            "user_ids" => Enum.join([user_b.id], ",")
-              })
-              |> json_response(200)
+        "user_ids" => Enum.join([user_b.id], ",")
+      })
+      |> json_response(200)
 
       assert Stitch.Repo.get_by(Stitch.GroupUser, user_id: user_b.id, group_id: group_a.id) == nil
     end

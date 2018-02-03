@@ -115,7 +115,7 @@ defmodule StitchConnect.Web.MessageReadStatusTest do
 
     messages = Enum.map(1..3, fn n ->
       ref = push socket1, "new_msg", %{text_content: "Message #{n}"}
-      assert_reply ref, :ok, %{id: message_id}
+      assert_reply ref, :ok, %{id: message_id}, 1_000
       Repo.get(Message, message_id)
     end)
 

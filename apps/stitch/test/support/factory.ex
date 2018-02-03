@@ -58,7 +58,7 @@ defmodule Stitch.Factory do
     %Stitch.Message{
       user: build(:user),
       group: build(:group),
-      text_content: "lorem ipsum",
+      text_content: Faker.Lorem.sentence,
       type: "chat"
     }
   end
@@ -119,6 +119,18 @@ defmodule Stitch.Factory do
       exp_month: Enum.random(1..12),
       exp_year: Enum.random(2020..2025),
       cardholder_name: "John Doe"
+    }
+  end
+
+  def payment_history_factory do
+    %Stitch.Billing.PaymentHistory{
+      plan: "basic_yearly",
+      team: build(:team),
+      invoice_id: "inv_xxxxxxxxxxxy",
+      amount: 12000,
+      quantity: 5,
+      period_end: NaiveDateTime.utc_now(),
+      period_start: NaiveDateTime.utc_now()
     }
   end
 end

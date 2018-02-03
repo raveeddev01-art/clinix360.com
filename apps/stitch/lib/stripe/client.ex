@@ -277,4 +277,11 @@ defmodule Stitch.Stripe.Client do
       _ -> :error
     end
   end
+
+  def get_transaction(txn_id) do
+    case Stripe.Charges.get(txn_id) do
+      {:ok, txn} -> {:ok, txn}
+      _ -> :error
+    end
+  end
 end

@@ -5,6 +5,8 @@
  */
 
 import { observable, action, computed } from "mobx";
+import pick from "lodash/pick";
+import difference from "lodash/difference";
 
 const defaultAvatars = ["/images/default-avatar.png"];
 
@@ -17,10 +19,12 @@ class UserStore {
   @observable email = "";
   @observable firstName = "";
   @observable lastName = "";
+  @observable fullName = "";
   @observable avatar = "";
   @observable avatarThumb = "";
   @observable roles = [];
   @observable hasAvatar = false;
+  @observable roleChanged = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -37,44 +41,48 @@ class UserStore {
   }
 
   @action
-  useDefaultAvatar = () => {
-    this.hasAvatar = false;
-    this.avatar = defaultAvatars[0];
-    this.avatarThumb = defaultAvatars[0];
-  };
-
-  @action
   loadUser = id => {
     this.loading = true;
     this.id = id;
 
     get(`/api/v1/users/${id}`).then(resp => {
+      this.loading = false;
+
       const { data } = resp;
+
       this.username = data.username;
       this.phone = data.phone || "";
       this.title = data.title || "";
       this.email = data.email;
       this.firstName = data.first_name;
       this.lastName = data.last_name;
-      if (data.avatar) {
+      this.fullName = data.full_name;
+
+      if (
+        data.avatar &&
+        data.avatar.indexOf("stitch-content/default-avatar") < 0
+      ) {
         this.hasAvatar = true;
-        this.avatar = data.avatar;
-        this.avatarThumb = data.avatar_thumb;
-      } else {
-        this.useDefaultAvatar();
       }
+      this.avatar = data.avatar;
+      this.avatarThumb = data.avatar_thumb;
 
       this.roles = data.roles;
-
-      this.loading = false;
     });
   };
 
   @action
   onUserInfo = user => {
-    if (user.roles) {
-      window.currentUser.roles = user.roles;
+    // show role change modal if groups assigned as guests or roles has changed
+    if (
+      difference(user.roles || [], this.roles || []).length ||
+      difference(user.groups_as_guest || [], this.groups_as_guest || []).length
+    ) {
       this.roles = user.roles;
+      currentUser.roles = user.roles;
+      this.groups_as_guest = user.groups_as_guest;
+      this.roleChanged = true;
+      this.rootStore.channelStore.leaveAllChannelsButTeamAndEvent();
     }
   };
 
@@ -143,6 +151,10 @@ class UserStore {
       const { data } = resp;
       this.avatar = data.avatar;
       this.avatarThumb = data.avatar_thumb;
+
+      // Keep usersStore avatar fields updated
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.rootStore.usersStore.updateUserData(this.id, avatarFields);
       this.hasAvatar = true;
     });
   };
@@ -151,8 +163,15 @@ class UserStore {
   deleteProfileImg = () => {
     return remove(`/api/v1/users/${this.id}/delete_profile_image`, {
       hideNotify: true
-    }).then(() => {
-      this.useDefaultAvatar();
+    }).then(resp => {
+      const { data } = resp;
+      this.avatar = data.avatar;
+      this.avatarThumb = data.avatar_thumb;
+
+      // Keep usersStore avatar fields updated
+      const avatarFields = pick(data, "avatar", "avatar_thumb");
+      this.rootStore.usersStore.updateUserData(this.id, avatarFields);
+      this.hasAvatar = false;
     });
   };
 

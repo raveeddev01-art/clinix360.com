@@ -9,7 +9,6 @@ $admin-topbar-height-sm: 65px;
 
   .flex-header {
     flex-basis: $admin-topbar-height;
-    @include transition(flex-basis 0.2s ease);
 
     h4 {
       font-weight: 900;
@@ -18,9 +17,10 @@ $admin-topbar-height-sm: 65px;
     .team-user {
       flex: 1;
       min-width: 0;
+      padding-top: 6px;
 
       .team-name {
-        font-size: 17px;
+        font-size: 18px;
         line-height: 24px;
         font-weight: 900;
         overflow: hidden;
@@ -30,12 +30,11 @@ $admin-topbar-height-sm: 65px;
 
       .user-name {
         color: #fff;
-        opacity: 0.6;
         display: flex;
         align-items: center;
 
         i {
-          font-size: 11px;
+          font-size: 10.5px;
           line-height: 20px;
         }
 
@@ -43,10 +42,14 @@ $admin-topbar-height-sm: 65px;
           line-height: 20px;
         }
 
+        &__text {
+          opacity: 0.6;
+        }
+
         &__status-icon {
+          width: 16px;
           display: inline-block;
           text-align: center;
-          width: 16px;
           margin-right: 6px;
         }
       }
@@ -55,7 +58,6 @@ $admin-topbar-height-sm: 65px;
 
   .sidebar {
     display: block;
-    @include transition(all 0.2s ease);
     flex-basis: $admin-sidebar-width;
     overflow: visible;
     z-index: 1;
@@ -63,7 +65,7 @@ $admin-topbar-height-sm: 65px;
     flex-direction: column;
 
     .flex-header {
-      padding: 0 5px 0 12px;
+      padding: 0 15px;
 
       h4 {
         max-width: 230px;
@@ -77,18 +79,38 @@ $admin-topbar-height-sm: 65px;
       @include stitch-scroll();
       background-color: $brand-primary;
       flex-grow: 1;
-      overflow-y: hidden;
-      padding: 6px 0 0 0;
+      position: relative;
+      overflow: hidden;
+
+      .scrollbar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .simplebar-scrollbar {
+        background-color: #fff;
+      }
+
+      .simplebar-scroll-content {
+        position: relative;
+      }
 
       h5 {
         font-size: 16px;
-        line-height: 13px;
-        height: 14px;
+        line-height: 1.5;
         text-transform: capitalize;
         color: #fff;
-        font-weight: bold;
-        padding-left: 12px;
+        font-weight: 500;
+        padding-left: 15px;
         opacity: 0.6;
+        margin: 0 0 5px;
+
+        &.you-heading {
+          padding-top: 10px;
+        }
       }
 
       .list-group {
@@ -104,8 +126,8 @@ $admin-topbar-height-sm: 65px;
         padding: 0;
 
         &.active {
-          background-color: #fff;
-          font-weight: 700;
+          background-color: #fafafa;
+
           a {
             color: $brand-primary;
             opacity: 1;
@@ -119,14 +141,18 @@ $admin-topbar-height-sm: 65px;
 
       a {
         display: block;
-        line-height: 1.5;
-        padding: 3px 12px !important;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 1.4;
+        padding: 3px 15px !important;
         color: #fff;
         opacity: 0.6;
 
         i {
-          width: 1em;
+          width: 16px;
           margin-right: 6px;
+          font-size: 13px;
           &.sm {
             font-size: 12px;
             color: #9e9ea6;
@@ -150,7 +176,6 @@ $admin-topbar-height-sm: 65px;
   .admin-content {
     box-shadow: none;
     flex: 1;
-    @include transition(all 0.2s ease);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -162,27 +187,14 @@ $admin-topbar-height-sm: 65px;
       background-color: $body-bg;
       border-bottom: 1px solid $border-color;
 
-      > .toggle-menu {
-        display: none;
-        float: left;
-        line-height: 20px;
-        padding: 6px 15px 6px 0;
-        border-right: 1px solid #d8d8d8;
-
-        &:hover {
-          text-decoration: none;
-        }
-
-        > i {
-          display: block;
-          &.fa-times {
-            display: none;
-          }
-        }
+      h4 {
+        width: calc(100% - 170px);
 
         > span {
-          margin-top: 4px;
-          display: inline-block;
+          display: block;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
 
@@ -203,11 +215,6 @@ $admin-topbar-height-sm: 65px;
         &:active {
           text-decoration: none;
           background-color: transparent;
-        }
-
-        @media (max-width: 400px) {
-          padding-left: 8px;
-          padding-right: 8px;
         }
       }
 
@@ -390,6 +397,19 @@ $admin-topbar-height-sm: 65px;
         }
       }
 
+      .avatar-uploader {
+        ul.dropdown-menu {
+          & > li > a {
+            color: #333;
+
+            &:hover {
+              color: #fff;
+              background: #036;
+            }
+          }
+        }
+      }
+
       .admin-table {
         .table-head {
           color: $brand-primary;
@@ -426,6 +446,11 @@ $admin-topbar-height-sm: 65px;
             font-weight: bold;
             padding: 10px 15px;
             text-transform: capitalize;
+
+            &__rooms {
+              font-size: 14px;
+              font-weight: 400;
+            }
           }
 
           .email-column {
@@ -441,6 +466,10 @@ $admin-topbar-height-sm: 65px;
 
             .btn {
               margin: 0;
+
+              &:not(:last-child) {
+                margin-right: 6px;
+              }
             }
           }
 
@@ -653,47 +682,24 @@ $admin-topbar-height-sm: 65px;
   font-weight: 900;
 }
 
-@media (max-width: 991px) {
-  .admin-wrapper {
-    .sidebar {
-      position: absolute;
-      top: 0;
-      left: 65px;
-      bottom: 0;
-      width: $admin-sidebar-width;
-      transform: translateX(-$admin-sidebar-width);
-    }
+.delete-team-modal {
+  .modal-dialog .modal-content .modal-body {
+    min-height: 150px;
+  }
+}
 
-    .admin-content {
-      .admin-topbar {
-        > .toggle-menu {
-          display: block;
-        }
-      }
-    }
+.member-type-modal {
+  &__name {
+    margin-left: 15px;
+    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
 
-    &.sidebar-opened {
-      .sidebar {
-        transform: translateX(0);
-      }
-
-      .admin-content {
-        transform: translateX($admin-sidebar-width);
-        .admin-topbar {
-          > .toggle-menu {
-            > i {
-              display: block;
-              &.fa-bars {
-                display: none;
-              }
-            }
-          }
-        }
-
-        .admin-content-wrapper:after {
-          content: "";
-        }
-      }
+    small {
+      margin-left: 10px;
+      font-size: 18px;
+      color: #666;
     }
   }
 }

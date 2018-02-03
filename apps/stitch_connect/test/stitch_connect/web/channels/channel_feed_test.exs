@@ -62,36 +62,84 @@ defmodule StitchConnect.Web.ChannelFeedTest do
     end)
   end
 
-  test "feed_surrounding event returns before and after status of a given id",
-    %{socket1: socket1, group: group, user2: user2}  do
+  describe "feed_surrounding" do
+    setup %{socket1: socket, group: group, user2: user} do
+      messages = 1..100 |> Enum.map(fn n ->
+        insert(:message, user: user, group: group, text_content: "Message ##{n}")
+      end)
 
-    messages = 1..100 |> Enum.map(fn n ->
-      attrs = %{user_id: user2.id, group_id: group.id, text_content: "Message ##{n}"}
-      %Message{} |> Message.changeset(attrs) |> Repo.insert!
-    end)
+      {:ok, _, socket} = subscribe_and_join(socket, "groups:#{group.slug}")
+      {:ok, messages: messages, socket: socket}
+    end
 
-    first_message = List.first(messages)
-    [mid_message] = Enum.slice(messages, 50..50)
-    last_message = List.last(messages)
+    test "when there are 30 more messages before and after the target id", %{socket: socket, messages: messages} do
+      [mid_message] = Enum.slice(messages, 50..50)
+      ref = push socket, "feed_surrounding", %{id: mid_message.id}
 
-    {:ok, _, socket1} = subscribe_and_join(socket1, "groups:#{group.slug}")
+      assert_reply ref, :ok, reply
+      assert reply.more_after == true
+      assert reply.more_before == true
 
-    ref = push socket1, "feed_surrounding", %{id: mid_message.id}
-    assert_reply ref, :ok, reply
+      expected_message_ids = messages |> Enum.slice(20..80) |> Enum.map(& &1.id)
+      assert Enum.map(reply.messages, & &1.id) == expected_message_ids
+    end
 
-    assert reply.more_after == true
-    assert reply.more_before == true
+    test "when there are less than 30 messages before the target id", %{socket: socket, messages: messages} do
+      first_message = messages |> Enum.at(10)
 
-    ref = push socket1, "feed_surrounding", %{id: first_message.id}
-    assert_reply ref, :ok, reply
+      ref = push socket, "feed_surrounding", %{id: first_message.id}
 
-    assert reply.more_after == true
-    assert reply.more_before == false
+      assert_reply ref, :ok, reply
+      assert reply.more_after == true
+      assert reply.more_before == false
+      expected_message_ids = messages |> Enum.slice(0..40) |> Enum.map(& &1.id)
 
-    ref = push socket1, "feed_surrounding", %{id: last_message.id}
-    assert_reply ref, :ok, reply
+      assert Enum.map(reply.messages, & &1.id) == expected_message_ids
+    end
 
-    assert reply.more_after == false
-    assert reply.more_before == true
+    test "when there are no messages before the target id", %{socket: socket, messages: messages} do
+      first_message = messages |> List.first
+
+      ref = push socket, "feed_surrounding", %{id: first_message.id}
+
+      assert_reply ref, :ok, reply
+      assert reply.more_after == true
+      assert reply.more_before == false
+      expected_message_ids = messages |> Enum.slice(0..30) |> Enum.map(& &1.id)
+
+      assert Enum.map(reply.messages, & &1.id) == expected_message_ids
+    end
+
+    test "when there are no messages after the target id", %{socket: socket, messages: messages} do
+      last_message = messages |> List.last
+
+      ref = push socket, "feed_surrounding", %{id: last_message.id}
+
+      assert_reply ref, :ok, reply
+      assert reply.more_after == false
+      assert reply.more_before == true
+      expected_message_ids = messages |> Enum.slice(69..100) |> Enum.map(& &1.id)
+
+      assert Enum.map(reply.messages, & &1.id) == expected_message_ids
+    end
+
+    test "when there are less than 30 messages after the target id", %{socket: socket, messages: messages} do
+      last_message = messages |> Enum.at(90)
+
+      ref = push socket, "feed_surrounding", %{id: last_message.id}
+
+      assert_reply ref, :ok, reply
+      assert reply.more_after == false
+      assert reply.more_before == true
+      expected_message_ids = messages |> Enum.slice(60..100) |> Enum.map(& &1.id)
+
+      assert Enum.map(reply.messages, & &1.id) == expected_message_ids
+    end
+
+    test "when target message doesn't exist", %{socket: socket} do
+      ref = push socket, "feed_surrounding", %{id: 1000042}
+      assert_reply ref, :error, reply
+      assert reply.message == "Message not found."
+    end
   end
 end

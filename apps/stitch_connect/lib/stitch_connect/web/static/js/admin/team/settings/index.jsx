@@ -73,7 +73,11 @@ class TeamSettings extends Component {
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
-        {/* <DeleteTeamPanel /> */}
+        {/* <DeleteTeamPanel
+          onSuccess={this.onSuccess}
+          onError={this.onError}
+          hideAlert={this.hideAlert}
+        /> */}
       </Panel>
     );
   }

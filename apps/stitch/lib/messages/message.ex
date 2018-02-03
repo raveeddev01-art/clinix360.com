@@ -24,6 +24,7 @@ defmodule Stitch.Message do
     field :mentioned_user_ids, {:array, :integer}, default: []
     field :has_links, :boolean, default: false
     field :link_previews_generated, :boolean, default: false
+    field :meteor_id, :string
     embeds_many :link_previews, Message.LinkPreview, on_replace: :delete
 
     timestamps()
@@ -94,17 +95,17 @@ defmodule Stitch.Message do
     |> validate_inclusion(:type, ["system"])
   end
 
-  def create(group_id, user, attrs, online_in_group \\ [])
+  def create(group_id, user, attrs, presence_user_ids \\ %{active: [], online: []})
 
-  def create(group_id, user, %{"type" => type} = attrs, online_in_group) when type in ["chat", "upload"] do
+  def create(group_id, user, %{"type" => type} = attrs, presence_user_ids) when type in ["chat", "upload"] do
     group = GroupQueries.get_by_id(group_id)
     group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
     analytics_track_message_sent(user, group)
 
-    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"])
-    notify_user_ids = Message.Notification.notify_user_ids(group, user, mentioned_user_ids, online_in_group)
+    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, user, attrs["text_content"], presence_user_ids.online, group)
+    notify_user_ids = Message.Notification.notify_user_ids(group, user, mentioned_user_ids, presence_user_ids.active)
     {read_status, recipients} = users |> Enum.reduce({%{}, []}, fn (recipient, {acc_map, acc_list}) ->
       acc_map = if recipient.id == user.id or recipient.disabled, do: acc_map, else: Map.put(acc_map, to_string(recipient.id), nil)
       acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
@@ -126,11 +127,11 @@ defmodule Stitch.Message do
     |> Repo.transaction
   end
 
-  def create(group_id, user, %{"text_content" => _} = attrs, online_in_group) do
-    create(group_id, user, Map.put(attrs, "type", "chat"), online_in_group)
+  def create(group_id, user, %{"text_content" => _} = attrs, presence_user_ids) do
+    create(group_id, user, Map.put(attrs, "type", "chat"), presence_user_ids)
   end
 
-  def create(_group_id, _user, _attrs, _online_in_group) do
+  def create(_group_id, _user, _attrs, _active_user_ids) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
     {:error, :message, changeset, nil}
   end
@@ -161,7 +162,7 @@ defmodule Stitch.Message do
     group = GroupQueries.get_by_id(message.group_id)
     author = Repo.preload(message, :user).user
     users = Repo.preload(group, :users).users
-    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"])
+    mentioned_user_ids = Message.Mention.get_mentioned_user_ids(users, author, attributes["text_content"], [], group)
 
     message
     |> user_edit_changeset(%{text_content: attributes["text_content"], mentioned_user_ids: mentioned_user_ids})
@@ -203,7 +204,7 @@ defmodule Stitch.Message do
     GroupUser
     |> where([gu], gu.group_id == ^group_id)
     |> where([gu], gu.user_id in ^user_ids)
-    |> update([gu], inc: [unread_messages_count: ^1])
+    |> update([gu], inc: [unread_messages_count: ^1], set: [is_hidden: ^false])
   end
 
   def decrement_unread_counter(message) do

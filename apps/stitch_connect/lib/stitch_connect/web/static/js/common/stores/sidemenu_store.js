@@ -12,7 +12,7 @@ import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../lib/constants";
 import history from "../../lib/history";
 
 class SidemenuStore {
-  @observable loading = false; // IF True, shows loading page
+  @observable loadedApp = false; // If TRUE, indicates that loaded necessary data to start the app, that is, users and groups
   @observable sidemenuDiv = null; // Div element of sidemenu
   @observable roomMenuItemVisibles = {};
   @observable teamName = "";
@@ -21,6 +21,7 @@ class SidemenuStore {
   @observable isInChat = false;
 
   badge = null;
+  desktopBadge = null;
   favicon = null;
   notificationAudio = null;
 
@@ -100,16 +101,12 @@ class SidemenuStore {
 
   @action
   loadApp = async () => {
-    const { presenceStore, usersStore, groupsStore } = this.rootStore;
+    const { usersStore, groupsStore } = this.rootStore;
 
-    if (!presenceStore.locked) {
-      this.loading = true;
+    await usersStore.loadUsers();
+    await groupsStore.loadGroups();
 
-      await usersStore.loadUsers();
-      await groupsStore.loadGroups();
-
-      this.loading = false;
-    }
+    this.loadedApp = true;
   };
 
   /**
@@ -154,10 +151,13 @@ class SidemenuStore {
    * @param {*} groupId
    */
   isCurrentlyInRoom(groupId) {
-    const { groupStore } = this.rootStore;
+    const { groupStore, presenceStore } = this.rootStore;
 
     return (
-      groupId === groupStore.group.id && !this.locked && document.hasFocus()
+      !presenceStore.locked &&
+      groupStore.group &&
+      groupId === groupStore.group.id &&
+      document.hasFocus()
     );
   }
 
@@ -178,22 +178,33 @@ class SidemenuStore {
   }
 
   updateFavicon() {
-    const { groupsStore: { totalMentionsCount } } = this.rootStore;
+    const {
+      groupsStore: { totalMentionsCount, totalUnreadMessagesCount }
+    } = this.rootStore;
     let badge = "";
+    let desktopBadge = "";
 
     if (totalMentionsCount > 9) {
       badge = "9+";
+      desktopBadge = "9+";
     } else if (totalMentionsCount > 0) {
       badge = `${totalMentionsCount}`;
+      desktopBadge = `${totalMentionsCount}`;
+    } else if (totalUnreadMessagesCount > 0) {
+      desktopBadge = "•";
     }
 
-    // avoid favicon animation when not changed
     if (badge !== this.badge) {
       this.badge = badge;
       this.favicon.badge(badge);
+    }
+
+    if (desktopBadge !== this.desktopBadge) {
+      this.desktopBadge = desktopBadge;
+
       // to be consumed by electron app
       window.dispatchEvent(
-        new CustomEvent("unread-changed", { detail: badge })
+        new CustomEvent("unread-changed", { detail: desktopBadge })
       );
     }
   }
@@ -314,7 +325,9 @@ class SidemenuStore {
     // If the message is system message or for the current group, ignore
     if (
       newMessage.type === "system" ||
-      (newMessage.group_id === groupStore.group.id && this.isInChat)
+      (groupStore.group &&
+        newMessage.group_id === groupStore.group.id &&
+        this.isInChat)
     ) {
       return;
     }
@@ -322,13 +335,18 @@ class SidemenuStore {
     const group = groupsStore.getGroupById(newMessage.group_id);
     const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
-    if (!group) {
-      return;
-    }
+    if (group) {
+      group.unread_messages_count += 1;
 
-    group.unread_messages_count += 1;
-    if (isMention) {
-      group.mentions_count += 1;
+      if (isMention) {
+        group.mentions_count += 1;
+      }
+
+      // if it's DM and hidden, show it on sidebar
+      if (group.type !== "regular" && group.is_hidden) {
+        // just make it unhidden by assuming it's already unhidden when new msg is broadcasted over dm
+        groupsStore.updateGroupData(group.id, { is_hidden: false });
+      }
     }
 
     // Update Favicon
@@ -339,14 +357,6 @@ class SidemenuStore {
 
     // Show notification card
     this.showNotificationCardForNewMessage(newMessage);
-
-    // if it's DM and hidden, show it on sidebar
-    if (group.type !== "regular" && group.is_hidden) {
-      put(`/api/v1/groups/${group.id}/unhide`).then(() => {
-        const sidebarGroup = groupsStore.getGroupById(group.id);
-        sidebarGroup.is_hidden = false;
-      });
-    }
   };
 
   @action

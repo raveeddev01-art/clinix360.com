@@ -2,6 +2,7 @@
 @import "~emoji-mart/css/emoji-mart.css";
 @import "~react-select/dist/react-select.css";
 @import "~react-image-crop/lib/ReactCrop.scss";
+@import "~simplebar/dist/simplebar.css";
 
 $fa-font-path: "~font-awesome/fonts";
 @import "~font-awesome/scss/font-awesome";
@@ -28,3 +29,4 @@ $fa-font-path: "~font-awesome/fonts";
 @import "switcher";
 @import "link-preview";
 @import "avatar-uploader";
+@import "spacing-helpers";

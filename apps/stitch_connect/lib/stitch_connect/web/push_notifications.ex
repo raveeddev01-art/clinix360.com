@@ -6,6 +6,16 @@ defmodule StitchConnect.Web.PushNotifications do
 
   @apns_topic Application.get_env(:stitch_connect, :apns_topic)
 
+  def apns_push(notification, opts \\ []) do
+    fun = Application.get_env(:stitch_connect, :apns_push, &APNS.push/2)
+    fun.(notification, opts)
+  end
+
+  def fcm_push(notification, opts \\ []) do
+    fun = Application.get_env(:stitch_connect, :fcm_push, &FCM.push/2)
+    fun.(notification, opts)
+  end
+
   def push_badge_update(msg, exclude_user_ids \\ [])
   def push_badge_update(%Message{type: "system"}, _exclude_user_ids), do: nil
   def push_badge_update(%Message{group_id: group_id}, exclude_user_ids) do
@@ -41,6 +51,7 @@ defmodule StitchConnect.Web.PushNotifications do
     push_badge_update_to_android_devices(badge_value, android_devices)
   end
 
+  defp push_badge_update_to_ios_devices(_badge_value, []), do: nil
   defp push_badge_update_to_ios_devices(badge_value, ios_devices) do
     Logger.info "Sending Badge Update to iOS"
     Logger.info(inspect(badge_value))
@@ -50,9 +61,10 @@ defmodule StitchConnect.Web.PushNotifications do
       %APNS.Notification{device_token: token, topic: @apns_topic}
       |> APNS.Notification.put_badge(badge_value)
     end)
-    |> APNS.push(on_response: &handle_response_ios/1)
+    |> apns_push(on_response: &handle_response_ios/1)
   end
 
+  defp push_badge_update_to_android_devices(_badge_value, []), do: nil
   defp push_badge_update_to_android_devices(badge_value, android_devices) do
     import FCM.Notification
     Logger.info "Sending Badge Update to Android"
@@ -62,7 +74,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> Enum.map(&(&1.token))
     |> new
     |> put_data(%{"badge" => to_string(badge_value)})
-    |> FCM.push(on_response: &handle_response_andriod/1)
+    |> fcm_push(on_response: &handle_response_andriod/1)
   end
 
   def push_new_msg_notification(_grp, %Message{type: "system"}, _user_ids), do: nil
@@ -113,7 +125,7 @@ defmodule StitchConnect.Web.PushNotifications do
       |> put_sound("chime")
       |> put_custom(%{ejson: new_msg_notification_custom_data(msg)})
     end)
-    |> APNS.push(on_response: &handle_response_ios/1)
+    |> apns_push(on_response: &handle_response_ios/1)
   end
 
   defp push_new_msg_notification_to_android_devices(grp, msg, badge_value, room_notification_count, android_devices) do
@@ -134,7 +146,7 @@ defmodule StitchConnect.Web.PushNotifications do
       "message" => new_msg_notification_body(grp, msg),
       "ejson" => msg |> new_msg_notification_custom_data |> Poison.encode!
     })
-    |> FCM.push(on_response: &handle_response_andriod/1)
+    |> fcm_push(on_response: &handle_response_andriod/1)
   end
 
   defp new_msg_notification_body(%{name: group_name}, %{user: user, type: "upload"})

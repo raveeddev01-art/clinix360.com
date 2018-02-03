@@ -3,36 +3,37 @@ defmodule Stitch.Mobile do
   alias Stitch.{Accounts.User, GroupUser, Mobile.Device, Repo}
 
   def list_user_devices(user_id) do
-    from(d in Device, where: d.user_id == ^user_id)
-    |> Repo.all
+    Repo.all(from(d in Device, where: d.user_id == ^user_id))
   end
 
   def register_device(%User{id: user_id}, attrs) do
     %Device{user_id: user_id}
     |> Device.changeset(attrs)
-    |> Repo.insert
+    |> Repo.insert()
   end
 
   def remove_device(type, token) when type in ["ios", "android"] do
     Device
     |> where(type: ^type)
     |> where(token: ^token)
-    |> Repo.delete_all
+    |> Repo.delete_all()
   end
+
+  def remove_device(_type, _token), do: {:error, "Unsupport mobile device type."}
 
   def badge_value(%User{} = user) do
     Stitch.GroupUser
     |> where(user_id: ^user.id)
-    |> Stitch.Repo.all
+    |> Stitch.Repo.all()
     |> Enum.reduce(0, fn group_user, acc ->
       acc + room_notification_count(user, group_user)
     end)
   end
 
   def room_notification_count(
-    %User{id: user_id} = user,
-    %GroupUser{user_id: user_id} = group_user
-  ) do
+        %User{id: user_id} = user,
+        %GroupUser{user_id: user_id} = group_user
+      ) do
     notification_preference =
       if group_user.mobile_notification_preference == "default" do
         user.mobile_notification_preference

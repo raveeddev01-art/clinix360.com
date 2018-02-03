@@ -1,7 +1,6 @@
 defmodule Stitch.TeamAuthorization do
   @moduledoc """
-  Onboarding module used to onboard new teams to the Stitch
-  platform.
+  Authorization module for the Team model and related models.
   """
 
   alias Stitch.{Repo, Accounts.User, Team}
@@ -12,6 +11,11 @@ defmodule Stitch.TeamAuthorization do
     team.id == team_id
   end
 
-  def can_send_invites?(_, %Team{open_invitations_enabled: true}), do: true
-  def can_send_invites?(%User{roles: roles}, _), do: "admin" in roles
+  def can_send_invites?(%User{team_id: team_id} = user, %Team{id: team_id, open_invitations_enabled: true}) do
+    !User.guest?(user)
+  end
+  def can_send_invites?(%User{team_id: team_id, roles: roles}, %Team{id: team_id}) do
+    "admin" in roles
+  end
+  def can_send_invites?(_, _), do: false
 end

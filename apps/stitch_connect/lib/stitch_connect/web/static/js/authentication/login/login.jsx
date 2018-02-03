@@ -5,6 +5,7 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import Alert from "react-bootstrap/lib/Alert";
+import Cookies from "js-cookie";
 
 @inject("registrationStore", "titleStore")
 @observer
@@ -53,6 +54,7 @@ class Login extends Component {
       hideNotify: true
     })
       .then(() => {
+        Cookies.remove("last_activity");
         if (window.electronApp) {
           window.location.href = "/";
         } else {
@@ -126,7 +128,6 @@ class Login extends Component {
               bsStyle="primary"
               bsSize="lg"
               className="btn-block"
-              disabled={!this.state.email || !this.state.password}
             >
               Login
               {this._renderLoadingIcon()}
