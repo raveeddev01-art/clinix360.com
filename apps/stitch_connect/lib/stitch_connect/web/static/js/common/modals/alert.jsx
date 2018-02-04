@@ -27,7 +27,7 @@ const Alert = ({
         <i className="fa fa-close" />
       </a>
     </Modal.Header>
-    <Modal.Body>{message}</Modal.Body>
+    <Modal.Body dangerouslySetInnerHTML={{ __html: message }} />
     <Modal.Footer>
       <Button bsSize="large" bsStyle="primary" onClick={proceed}>
         {okLabel}
