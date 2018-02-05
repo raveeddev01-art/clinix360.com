@@ -8,11 +8,12 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
-import { isFullMember } from "lib/utils";
+import { isFullMember, isAdmin } from "lib/utils";
 
 import NavItemFavorite from "./nav-items/nav-item-favorite";
 import NavItemInvite from "./nav-items/nav-item-invite";
-import NavItemRemove from "./nav-items/nav-item-remove";
+import NavItemRemoveMembers from "./nav-items/nav-item-remove-members";
+import NavItemRemoveRoom from "./nav-items/nav-item-remove-room";
 import NavItemNotifications from "./nav-items/nav-item-notifications";
 import NavItemRename from "./nav-items/nav-item-rename";
 import NavItemConvert from "./nav-items/nav-item-convert";
@@ -97,18 +98,23 @@ class TopNav extends Component {
     const isNotDM = groupStore.group.type === "regular";
     const isDefault = groupStore.group.is_default;
     const fullMember = isFullMember(currentUser);
+    const admin = isAdmin();
+    const isRoomCreator = groupStore.group.creator_user_id === currentUser.id;
 
     if (groupStore.group.joined) {
       return (
         <div>
           <NavItemFavorite />
           {fullMember && isNotDM && !isDefault && <NavItemInvite />}
-          {fullMember && isNotDM && !isDefault && <NavItemRemove />}
+          {fullMember && isNotDM && !isDefault && <NavItemRemoveMembers />}
           {isNotDM && <NavItemNotifications />}
           {fullMember && isNotDM && <NavItemRename />}
           {fullMember && isNotDM && !isDefault && <NavItemConvert />}
           {fullMember && isNotDM && !isDefault && <NavItemLeave />}
           {fullMember && !isDefault && !isNotDM && <NavItemHide />}
+          {(admin || isRoomCreator) &&
+            isNotDM &&
+            !isDefault && <NavItemRemoveRoom />}
         </div>
       );
     }

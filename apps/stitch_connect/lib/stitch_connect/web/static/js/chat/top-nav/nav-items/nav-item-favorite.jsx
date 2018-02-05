@@ -16,10 +16,14 @@ export default class NavItemMembers extends Component {
 
   render() {
     const { groupStore } = this.props;
+    const roomType =
+      groupStore.group.type === "regular" ? "Room" : "Conversation";
 
     return (
       <MenuItem onClick={this._toggleFavorite}>
-        {groupStore.group.is_favorite ? "Unfavorite" : "Favorite"}
+        {groupStore.group.is_favorite
+          ? `Unfavorite ${roomType}`
+          : `Favorite ${roomType}`}
       </MenuItem>
     );
   }
