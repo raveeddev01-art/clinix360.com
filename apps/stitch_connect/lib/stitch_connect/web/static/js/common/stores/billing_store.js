@@ -36,15 +36,24 @@ class BillingStore {
   }
 
   @action
-  async loadData() {
+  loadData() {
     this.loading = true;
 
-    this.subscription = await this.loadSubscription();
-    this.cards = await this.loadCards();
-    this.invoices = await this.loadInvoices();
-    this.contact = await this.loadContact();
-
-    this.loading = false;
+    Promise.all([
+      this.loadSubscription(),
+      this.loadCards(),
+      this.loadInvoices(),
+      this.loadContact()
+    ])
+      .then(response => {
+        this.subscription = response[0];
+        this.cards = response[1];
+        this.invoices = response[2];
+        this.contact = response[3];
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 
   @action
