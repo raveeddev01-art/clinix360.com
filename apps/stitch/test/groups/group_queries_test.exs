@@ -236,6 +236,31 @@ defmodule Stitch.GroupQueriesTest do
       found_group = GroupQueries.default_group(user)
       assert default_group.id == found_group.id
     end
+
+    test "when user is a guest and has available rooms" do
+      team = insert(:team)
+      group = insert(:group, team: team)
+      user = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [group.id])
+      found_group = GroupQueries.default_group(user)
+      assert group.id == found_group.id
+    end
+
+    test "creates and returns self dm when user is a guest and has no available rooms" do
+      team = insert(:team)
+      user = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [])
+      found_group = GroupQueries.default_group(user)
+      assert found_group.name == "__dm_group__"
+      assert found_group.slug == "__dm:#{user.id}.#{user.id}"
+    end
+
+    test "returns an existing self dm when user is a guest and has no available rooms" do
+      team = insert(:team)
+      user = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [])
+      _found_group = GroupQueries.default_group(user)
+      found_group = GroupQueries.default_group(user)
+      assert found_group.name == "__dm_group__"
+      assert found_group.slug == "__dm:#{user.id}.#{user.id}"
+    end
   end
 
   test "gives the first restricted group for guests" do

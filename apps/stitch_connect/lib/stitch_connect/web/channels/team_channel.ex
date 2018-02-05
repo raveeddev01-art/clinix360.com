@@ -93,6 +93,10 @@ defmodule StitchConnect.Web.TeamChannel do
     })
   end
 
+  def broadcast_user_info(%Stitch.Team{} = team, users) when is_list(users) do
+    for user <- users, do: broadcast_user_info(team , user)
+  end
+
   def broadcast_user_info(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
     user_json = UserView.user_json(user)
     @endpoint.broadcast("team:lobby:#{team.id}", "user_info", user_json)
@@ -113,7 +117,7 @@ defmodule StitchConnect.Web.TeamChannel do
   def broadcast_team_deleted(%Stitch.Team{} = team) do
     @endpoint.broadcast("team:lobby:#{team.id}", "team_deleted", %{})
   end
-  
+
   def broadcast_security_lockout_update(team) do
     @endpoint.broadcast("team:lobby:#{team.id}", "security_lockout_updated", %{
       security_lockout_enabled: team.security_lockout,

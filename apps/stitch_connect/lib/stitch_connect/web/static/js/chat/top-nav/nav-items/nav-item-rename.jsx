@@ -66,7 +66,7 @@ class NavItemRename extends Component {
   render() {
     return [
       <MenuItem key="rename_menuitem" onClick={this.openModal}>
-        Rename
+        Rename Room
       </MenuItem>,
       <Modal
         key="rename_modal"
@@ -74,7 +74,7 @@ class NavItemRename extends Component {
         onHide={this.closeModal}
       >
         <Modal.Header>
-          <Modal.Title>Rename</Modal.Title>
+          <Modal.Title>Rename Room</Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />
           </a>

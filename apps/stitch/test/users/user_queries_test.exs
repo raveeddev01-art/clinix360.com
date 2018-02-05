@@ -47,23 +47,6 @@ defmodule Stitch.UserQueriesTest do
       results = UserQueries.search(user, "obar")
       assert Enum.count(results) == 1
     end
-
-    test "restricts guests to searching users within their groups" do
-      team = insert(:team)
-      group = insert(:group, team: team)
-      user = insert(:user, team: team, first_name: "TEST")
-      insert(:group_user, group: group, user: user)
-      insert(:user, team: team, last_name: "TEST")
-
-      for role <- ["single-room-guest", "multi-room-guest"] do
-        guest = insert(:user, team: team, roles: [role], groups_as_guest: [group.id])
-        insert(:group_user, group: group, user: guest)
-
-        result = UserQueries.search(guest, "TEST")
-        assert length(result) == 1
-        assert hd(result).id == user.id
-      end
-    end
   end
 
   describe "users_for_team/1" do

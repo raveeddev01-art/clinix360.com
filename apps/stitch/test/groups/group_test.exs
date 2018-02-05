@@ -418,4 +418,70 @@ defmodule Stitch.GroupTest do
       assert {:error, :invalid_user_ids} = Group.create_multi_dm(guest, [guest.id, user_2.id, user_3.id])
     end
   end
+
+  describe "delete/1" do
+    test "gives an error when the group is a single DM" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
+
+      assert {:error, :direct_message} = Group.delete(group)
+    end
+
+    test "gives an error when the group is a multi DM" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      sam = insert(:user, team: team)
+      {:ok, group} = Stitch.Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
+
+      assert {:error, :direct_message} = Group.delete(group)
+    end
+
+    test "given an error for the default group" do
+      group = insert(:group, is_default: true)
+      assert {:error, :default_group} = Group.delete(group)
+    end
+
+    test "removes associated group_user records" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      group = insert(:group)
+      group_user_bob = insert(:group_user, user: bob, group: group)
+      group_user_joe = insert(:group_user, user: joe, group: group)
+      assert {:ok, %{group: group}} = Group.delete(group)
+      assert group.id == group.id
+      assert Stitch.Repo.get(Stitch.GroupUser, group_user_bob.id) == nil
+      assert Stitch.Repo.get(Stitch.GroupUser, group_user_joe.id) == nil
+    end
+
+    test "removes associated messages" do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      group = insert(:group)
+      insert(:group_user, user: user, group: group)
+      assert {:ok, %{message: message}} = Stitch.Message.create(group.id, user, %{"text_content" => "Hello, World!"})
+      assert {:ok, _group} = Group.delete(group)
+      assert Stitch.Repo.get(Stitch.Message, message.id) == nil
+    end
+
+    test "removes the group id from groups_as_guest field" do
+      team = insert(:team)
+      group_a = insert(:group, team: team)
+      group_b = insert(:group, team: team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team, roles: ["single-room-guest"], groups_as_guest: [group_a.id])
+      sam = insert(:user, team: team, roles: ["multi-room-guest"], groups_as_guest: [group_a.id, group_b.id])
+      insert(:group_user, user: bob, group: group_a)
+      insert(:group_user, user: joe, group: group_a)
+      insert(:group_user, user: sam, group: group_a)
+      insert(:group_user, user: sam, group: group_b)
+      assert {:ok, %{groups_as_guest: {2, updated_guests}}} = Group.delete(group_a)
+      assert Stitch.Repo.get(Stitch.Accounts.User, joe.id).groups_as_guest == []
+      assert Stitch.Repo.get(Stitch.Accounts.User, sam.id).groups_as_guest == [group_b.id]
+      assert Enum.sort([joe.id, sam.id]) == updated_guests |> Enum.map(& &1.id) |> Enum.sort
+    end
+  end
 end
