@@ -48,6 +48,7 @@
     "react/no-array-index-key": "off",
     "react/no-find-dom-node": "off",
     "react/no-unescaped-entities": "off",
+    "react/no-danger": "off",
     "react/prop-types": [
       "error",
       {
