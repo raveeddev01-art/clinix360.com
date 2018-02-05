@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
+
+import { PinInput } from "common/components";
 import SettingPanel from "../../components/setting-panel/setting-panel";
-import PinInput from "../../../common/components/pin-input";
 
 const title = "PIN";
 const description =

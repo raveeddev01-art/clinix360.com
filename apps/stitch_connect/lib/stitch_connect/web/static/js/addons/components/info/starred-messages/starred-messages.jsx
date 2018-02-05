@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import AddonMessage from "../../../../common/components/messages/addon-message";
+import { AddonMessage } from "common/components";
 
 @inject("messageStore")
 @observer
@@ -11,9 +11,9 @@ class StarredMessages extends Component {
 
     return (
       <div className="group-starred-messages">
-        {messageStore.starredMessages.map(message =>
+        {messageStore.starredMessages.map(message => (
           <AddonMessage key={message.id} message={message} />
-        )}
+        ))}
       </div>
     );
   }
