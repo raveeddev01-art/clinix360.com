@@ -1,6 +1,7 @@
 import { observable, action } from "mobx";
 
 import { processSubscriptionData, getFrequency } from "lib/billing";
+import { alertModal } from "common/modals";
 
 class BillingStore {
   @observable loading = false; // If TRUE, indicates async operation is in progress
@@ -50,6 +51,12 @@ class BillingStore {
         this.cards = response[1];
         this.invoices = response[2];
         this.contact = response[3];
+      })
+      .catch(() => {
+        alertModal({
+          title: "Error in loading billing related data",
+          message: "There was an error in loading billing related data"
+        });
       })
       .finally(() => {
         this.loading = false;
