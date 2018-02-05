@@ -9,11 +9,7 @@
   "extends": ["airbnb", "prettier", "prettier/react"],
   "plugins": ["import", "jsx-a11y", "prettier", "react"],
   "settings": {
-    "import/resolver": {
-      "node": {
-        "paths": ["lib/stitch_connect/web/static/js"]
-      }
-    }
+    "import/resolver": "webpack"
   },
   "parserOptions": {
     "ecmaFeatures": {
