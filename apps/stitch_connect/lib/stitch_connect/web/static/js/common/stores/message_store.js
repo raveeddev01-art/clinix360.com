@@ -130,6 +130,10 @@ class MessageStore {
     return this.messages.find(m => m.user_id !== currentUser.id) || {};
   }
 
+  get isActive() {
+    return this.rootStore.presenceStore.isActive;
+  }
+
   /**
    * Returns the position of first unread message in chat div
    *
@@ -844,6 +848,11 @@ class MessageStore {
   }
 
   onMessageShow(id) {
+    // just ignore message show if window lost focus
+    if (!this.isActive) {
+      return;
+    }
+
     if (this.messageElements[id]) {
       this.messageElements[id].visible = true;
     }
@@ -909,13 +918,13 @@ class MessageStore {
       this.messages.unshift(newMessage);
     }
 
-    // Update unread messages info of the group
-    if (newMessage.user_id === currentUser.id) {
-      if (this.unreadMessagesCount === 0) {
-        this.markAsRead();
-      }
-    } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
-      // If you're at the bottom and no NML, keep up with the new message
+    // Update unread messages info of the group.
+    // Only mark as read when the app has user's focus
+    if (
+      this.isActive &&
+      this.unreadMessagesCount === 0 &&
+      (newMessage.user_id === currentUser.id || this.isScrollBottom)
+    ) {
       this.markAsRead();
     } else if (newMessage.type !== "system") {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
@@ -926,8 +935,11 @@ class MessageStore {
       });
     }
 
-    // If my message or at scroll bottom, scroll to bottom
-    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
+    // if my message or at scroll bottom and app has focus, scroll to bottom
+    if (
+      this.isActive &&
+      (this.isScrollBottom || newMessage.user_id === currentUser.id)
+    ) {
       this.scrollToBottom(null, 0, 0);
     }
 
@@ -1012,7 +1024,7 @@ class MessageStore {
 
     const message = this.getMessageById(payload.id);
 
-    if (message) {
+    if (message && payload.link_previews && payload.link_previews.length) {
       message.link_previews = payload.link_previews;
       this.keepScrollAtBottom();
     }
