@@ -8,6 +8,8 @@ defmodule Stitch.Invitation do
   alias Stitch.Invitation.{SingleRoomGuestInvite, MultiRoomGuestInvite}
   alias Stitch.{Repo, Accounts.User, Team, Invitation, TeamAuthorization, GroupQueries}
 
+  @guest_roles Stitch.Accounts.Role.guests()
+
   schema "invitations" do
     belongs_to :user, User
     belongs_to :team, Team
@@ -282,7 +284,7 @@ defmodule Stitch.Invitation do
       |> Repo.transaction
 
       case result do
-        {:ok, %{user: %{groups_as_guest: []} = user}} -> # Regular users
+        {:ok, %{user: %{roles: [role]} = user}} when not role in @guest_roles -> # Regular users
           default_group = Stitch.GroupQueries.default_group(user)
           Stitch.Group.add_user(default_group, user)
           {:ok, %{user: user, groups: [default_group]}}

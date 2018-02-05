@@ -18,7 +18,7 @@ class NavItemLeave extends Component {
   };
 
   render() {
-    return <MenuItem onSelect={this.handleLeave}>Leave</MenuItem>;
+    return <MenuItem onSelect={this.handleLeave}>Leave Room</MenuItem>;
   }
 }
 export default withRouter(NavItemLeave);
