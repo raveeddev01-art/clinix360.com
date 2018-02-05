@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   alias Stitch.Accounts.{User, Role}
   alias Stitch.{UserQueries, FeatureGateway}
-  alias StitchConnect.Web.{TeamChannel, GroupChannel}
+  alias StitchConnect.Web.{TeamChannel, GroupChannel, Endpoint}
   import Stitch.UserAuthorization, only: [can_update_user?: 2]
 
   action_fallback StitchConnect.Web.Api.V1.FallbackController
@@ -36,6 +36,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
          {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do
       Stitch.Billing.update_subscriber_count(conn.assigns.team)
       TeamChannel.broadcast_deactivated(conn.assigns.team, String.to_integer(id))
+      Endpoint.broadcast("user_socket:#{id}", "disconnect", %{})
       json(conn, %{message: "Account has been deactivated."})
     else
       {:error, :not_found} ->

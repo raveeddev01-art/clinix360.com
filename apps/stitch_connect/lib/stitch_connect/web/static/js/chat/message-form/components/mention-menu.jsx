@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
 import { Avatar } from "common/components";
+import noop from "lodash/noop";
+
 import { filterUsers, isFullMember } from "lib/utils";
 
 @inject("presenceStore", "usersStore", "groupsStore")
@@ -16,17 +18,18 @@ class MenutionMenu extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.isOpen && nextProps.isOpen) {
-      document.addEventListener("keyup", this.onKeyUp);
-      this.setState({ activeUserIndex: 0 });
-    } else if (this.props.isOpen && !nextProps.isOpen) {
-      document.removeEventListener("keyup", this.onKeyUp);
-    }
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeyDown);
+  }
 
+  componentWillReceiveProps(nextProps) {
     if (this.props.filter !== nextProps.filter) {
       this.setState({ activeUserIndex: 0 });
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyDown);
   }
 
   onUserItemHover = index => () => {
@@ -34,10 +37,12 @@ class MenutionMenu extends Component {
   };
 
   onSelectMention = username => () => {
-    this.props.onSelect(username);
+    const { onSelect } = this.props;
+
+    onSelect(username);
   };
 
-  onKeyUp = evt => {
+  onKeyDown = evt => {
     const { activeUserIndex } = this.state;
     const users = this.getUsers();
 
@@ -55,6 +60,7 @@ class MenutionMenu extends Component {
         });
         break;
       case 13: // return
+      case 9: // tab
         if (users.length) {
           const selectedUser = users[activeUserIndex];
           this.onSelectMention(selectedUser.username)();
@@ -107,11 +113,10 @@ class MenutionMenu extends Component {
   };
 
   render() {
-    const { presenceStore, isOpen } = this.props;
+    const { presenceStore } = this.props;
     const { activeUserIndex } = this.state;
     const users = this.getUsers();
-
-    if (!isOpen || !users.length) {
+    if (!users.length) {
       return null;
     }
 
@@ -125,6 +130,7 @@ class MenutionMenu extends Component {
           <div className="menu-content">
             {users.map((user, index) => {
               const online = presenceStore.isOnline(user.id);
+
               const itemClassName = cx("user-list-item", {
                 active: activeUserIndex === index
               });
@@ -168,17 +174,15 @@ class MenutionMenu extends Component {
 }
 
 MenutionMenu.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
   filter: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired
 };
 
 MenutionMenu.defaultProps = {
-  isOpen: false,
   filter: "",
-  onSelect: () => {},
-  onClose: () => {}
+  onSelect: noop,
+  onClose: noop
 };
 
 export default MenutionMenu;

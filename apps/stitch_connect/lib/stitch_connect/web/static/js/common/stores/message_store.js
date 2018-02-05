@@ -1065,16 +1065,19 @@ class MessageStore {
    */
   encodeMessage = (messageText = "") => {
     const { usersByUsername } = this.rootStore.usersStore;
-    return messageText.replace(REGEX.USER_MENTION_ENCODE, (match, username) => {
-      const user = usersByUsername[username];
-      if (["everyone", "room", "here"].indexOf(username) > -1) {
-        return `<@G${username}>`;
-      } else if (user) {
-        return `<@U${user.id}>`;
-      }
+    return messageText.replace(
+      REGEX.getUserMentionEncode(),
+      (match, username) => {
+        const user = usersByUsername[username];
+        if (["everyone", "room", "here"].indexOf(username) > -1) {
+          return `<@G${username}>`;
+        } else if (user) {
+          return `<@U${user.id}>`;
+        }
 
-      return match;
-    });
+        return match;
+      }
+    );
   };
 
   /**
@@ -1086,11 +1089,11 @@ class MessageStore {
     const { usersById } = this.rootStore.usersStore;
 
     const result = messageText
-      .split(REGEX.SPLITTER)
+      .split(REGEX.getSplitter())
       .filter(p => p)
       .map(part => {
         // mention
-        const match = part.match(REGEX.USER_MENTION_DECODE);
+        const match = part.match(REGEX.getUserMentionDecode());
         if (match && match[1] && usersById[match[1]]) {
           return {
             type: "mention",
@@ -1098,7 +1101,7 @@ class MessageStore {
           };
         }
 
-        const groupMatch = part.match(REGEX.GROUP_MENTION_DECODE);
+        const groupMatch = part.match(REGEX.getGroupMentionDecode());
         if (groupMatch && groupMatch[1]) {
           return {
             type: "group_mention",
@@ -1107,8 +1110,8 @@ class MessageStore {
         }
 
         // emoji
-        if (REGEX.EMOJI.test(part)) {
-          const emojiParts = part.split(REGEX.EMOJI);
+        if (REGEX.getEmoji().test(part)) {
+          const emojiParts = part.split(REGEX.getEmoji());
           return emojiParts.filter(p => p).map(emojiPart => {
             const emoji = getEmoji(emojiPart);
             const hasEmoji = emoji && emoji.name;
