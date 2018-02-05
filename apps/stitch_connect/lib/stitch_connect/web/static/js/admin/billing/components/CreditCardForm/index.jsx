@@ -34,7 +34,7 @@ const createOptions = fontSize => {
 };
 
 @inject("billingStore")
-class CreditCardForm extends React.Component {
+class CreditCardForm extends Component {
   constructor(props) {
     super(props);
 
@@ -146,9 +146,13 @@ class CreditCardForm extends React.Component {
   }
 
   async addCard(token) {
-    const { billingStore, onSubmitSuccess } = this.props;
+    const { billingStore, onSubmitSuccess, onSubmitError } = this.props;
 
-    await billingStore.addCard(token.id);
+    try {
+      await billingStore.addCard(token.id);
+    } catch (e) {
+      onSubmitError(e);
+    }
 
     onSubmitSuccess(token);
   }
