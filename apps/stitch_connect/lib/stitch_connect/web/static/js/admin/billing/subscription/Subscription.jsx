@@ -50,11 +50,17 @@ class Subscription extends Component {
     this.setState({ checkout: true });
   };
 
-  onUseCreditCard = card => {
+  // This handler gets passed card selected when successful.
+  // Please use it if you need it in handler.
+  // onUseCreditCard = card => {
+  onUseCreditCard = () => {
     this.subscribe();
   };
 
-  onCardSubmitSuccess = token => {
+  // This handler gets passed token when successful.
+  // Please use it if you need it in handler.
+  // onCardSubmitSuccess = token => {
+  onCardSubmitSuccess = () => {
     this.subscribe();
   };
 
