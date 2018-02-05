@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { Table } from "react-bootstrap/lib/Table";
+import Table from "react-bootstrap/lib/Table";
 import moment from "moment";
 
 import { formatCurrency } from "lib/utils";
