@@ -1,6 +1,7 @@
 Code.load_file("apps/stitch/priv/repo/meteor-data-migration/user.ex")
 Code.load_file("apps/stitch/priv/repo/meteor-data-migration/room.ex")
 Code.load_file("apps/stitch/priv/repo/meteor-data-migration/message.ex")
+Code.load_file("apps/stitch/priv/repo/meteor-data-migration/db_stat.ex")
 
 defmodule Stitch.MeteorMigration do
   alias Stitch.Repo
@@ -139,6 +140,7 @@ defmodule Stitch.MeteorMigration do
     Logger.info("Migrating messages")
 
     messages = MeteorMigration.Message.run(indexed_rooms, phoenix_users_by_email, meteor_users_by_meteor_id, messages_json)
+    Stitch.MeteorMigration.DBStat.team_stat(team_slug)
   end
 
   def identify_on_intercom(users) do
