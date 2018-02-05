@@ -52,16 +52,17 @@ class Contact extends Component {
 
   onInputChange = evt => {
     const { name, value } = evt.target;
-    const { fields } = this.state;
-
-    fields[name] = value;
+    const newFields = {
+      ...this.state.fields,
+      [name]: value
+    };
 
     if (name === "country") {
-      fields.state = "";
+      newFields.state = "";
     }
 
     this.setState({
-      fields
+      fields: newFields
     });
   };
 
