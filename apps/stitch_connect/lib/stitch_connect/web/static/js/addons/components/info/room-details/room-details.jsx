@@ -10,8 +10,6 @@ class RoomDetails extends Component {
     const group = groupStore.group;
     const isNotDM = group.type === "regular";
 
-    console.log(group);
-
     return (
       <div className="collapse-content room-details">
         <h5>Name</h5>
