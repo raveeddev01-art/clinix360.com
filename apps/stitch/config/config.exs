@@ -37,4 +37,6 @@ config :stitch, :user_upload_settings, %{
   max_preview_height: 720,
 }
 
+config :porcelain, :goon_warn_if_missing, false
+
 import_config "#{Mix.env}.exs"
