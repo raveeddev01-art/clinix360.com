@@ -46,7 +46,8 @@
     "simplebar": "^2.5.1",
     "slugify": "^1.2.1",
     "validator": "^9.1.1",
-    "whatwg-fetch": "^2.0.3"
+    "whatwg-fetch": "^2.0.3",
+    "xss": "^0.3.7"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",

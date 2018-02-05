@@ -1,5 +1,6 @@
 import { observable, action } from "mobx";
 import Guid from "guid";
+import xss from "xss";
 import { alert } from "common/modals";
 import { MAX_FILE_UPLOAD_SIZE } from "lib/constants";
 
@@ -48,7 +49,9 @@ class UploadStore {
   alertLargeFile = file => {
     return alert({
       title: "File upload is too large",
-      message: `Sorry, your file <strong>${file.name}</strong> is too large to upload.<br><br>Try uploading a smaller file instead.`,
+      message: `Sorry, your file <strong>${xss(
+        file.name
+      )}</strong> is too large to upload.<br><br>Try uploading a smaller file instead.`,
       okLabel: "OK"
     });
   };
