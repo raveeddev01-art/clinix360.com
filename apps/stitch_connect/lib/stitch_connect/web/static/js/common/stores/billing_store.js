@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action } from "mobx";
 
 import { processSubscriptionData, getFrequency } from "lib/billing";
 

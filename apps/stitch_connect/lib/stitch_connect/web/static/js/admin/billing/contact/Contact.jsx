@@ -65,6 +65,46 @@ class Contact extends Component {
     });
   };
 
+  onSave = evt => {
+    evt.preventDefault();
+
+    const { billingStore } = this.props;
+    const { fields: contact } = this.state;
+
+    if (!this.validate()) {
+      return;
+    }
+
+    billingStore
+      .updateContact(contact)
+      // .then(updatedContact => {
+      .then(() => {
+        alert({
+          title: "Contact Updated",
+          message: "Contact information has been updated successfully!"
+        });
+      })
+      .catch(error => {
+        const { message } = error.data;
+
+        alert({
+          title: "Error in updating contact",
+          message: (
+            <p>
+              There was an error in updating contact information. <br />{" "}
+              <b>{message}</b>
+            </p>
+          )
+        });
+      });
+  };
+
+  getValidationState(field) {
+    const { errors } = this.state;
+
+    return errors[field] ? "error" : null;
+  }
+
   /**
    * Validate fields
    * 
@@ -100,45 +140,6 @@ class Contact extends Component {
     });
 
     return Object.keys(errors).length === 0;
-  }
-
-  onSave = evt => {
-    evt.preventDefault();
-
-    const { billingStore } = this.props;
-    const { fields: contact } = this.state;
-
-    if (!this.validate()) {
-      return;
-    }
-
-    billingStore
-      .updateContact(contact)
-      .then(contact => {
-        alert({
-          title: "Contact Updated",
-          message: "Contact information has been updated successfully!"
-        });
-      })
-      .catch(error => {
-        const { message } = error.data;
-
-        alert({
-          title: "Error in updating contact",
-          message: (
-            <p>
-              There was an error in updating contact information. <br />{" "}
-              <b>{message}</b>
-            </p>
-          )
-        });
-      });
-  };
-
-  getValidationState(field) {
-    const { errors } = this.state;
-
-    return errors.hasOwnProperty(field) ? "error" : null;
   }
 
   render() {

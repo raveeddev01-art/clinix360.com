@@ -4,13 +4,7 @@ import { Well } from "react-bootstrap";
 import capitalize from "lodash/capitalize";
 
 import { alert } from "common/modals";
-import {
-  processSubscriptionData,
-  getSelectableTiers,
-  getBelowTier,
-  getPlanForTier,
-  getFrequency
-} from "lib/billing";
+import { getSelectableTiers, getBelowTier, getPlanForTier } from "lib/billing";
 import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
 import Loading from "../components/Loading";
