@@ -7,6 +7,8 @@ import Button from "react-bootstrap/lib/Button";
 import Alert from "react-bootstrap/lib/Alert";
 import Cookies from "js-cookie";
 
+import { LoadingIcon } from "common/components";
+
 @inject("registrationStore", "titleStore")
 @observer
 class Login extends Component {
@@ -72,9 +74,8 @@ class Login extends Component {
 
   _renderLoadingIcon = () => {
     const { saving } = this.state;
-    return saving ? (
-      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
-    ) : null;
+
+    return saving && <LoadingIcon className="on-right" />;
   };
 
   render() {

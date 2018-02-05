@@ -5,10 +5,12 @@ import Dropzone from "react-dropzone";
 import ReactCrop, { makeAspectCrop } from "react-image-crop";
 import cx from "classnames";
 import Button from "react-bootstrap/lib/Button";
-import { dataURItoBlob } from "lib/utils";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import SmartDropdown from "../smart-dropdown";
+
+import { dataURItoBlob } from "lib/utils";
+import { LoadingIcon } from "common/components";
 
 class AvatarUploader extends Component {
   constructor(...args) {
@@ -143,9 +145,8 @@ class AvatarUploader extends Component {
 
   renderLoadingIcon = () => {
     const { isUploading } = this.props;
-    return isUploading ? (
-      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
-    ) : null;
+
+    return isUploading && <LoadingIcon className="on-right" />;
   };
 
   renderDropzone() {
@@ -222,7 +223,7 @@ class AvatarUploader extends Component {
         <div className="avatar-uploader__content">
           {disabled && (
             <div className="avatar-uploader__cloak">
-              <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
+              <LoadingIcon className="on-right" />
             </div>
           )}
           {isCropping ? this.renderCropper() : this.renderDropzone()}

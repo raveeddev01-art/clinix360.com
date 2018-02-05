@@ -12,7 +12,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 
-import { AvatarUploader } from "common/components";
+import { AvatarUploader, LoadingIcon } from "common/components";
 
 @inject("usersStore", "uploadStore", "teamStore")
 @observer
@@ -215,9 +215,8 @@ class EditProfileModal extends Component {
 
   renderLoadingIcon = () => {
     const { isSaving } = this.state;
-    return isSaving ? (
-      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
-    ) : null;
+
+    return isSaving && <LoadingIcon className="on-right" />;
   };
 
   render() {
