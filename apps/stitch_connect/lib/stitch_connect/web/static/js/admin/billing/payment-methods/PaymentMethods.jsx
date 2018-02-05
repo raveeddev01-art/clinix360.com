@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Elements } from "react-stripe-elements";
 
-import { alert } from "common/modals";
+import { alertModal } from "common/modals";
 import CreditCards from "../components/CreditCards";
 import CreditCardForm from "../components/CreditCardForm";
 import Loading from "../components/Loading";
@@ -11,21 +11,21 @@ import Loading from "../components/Loading";
 @observer
 class PaymentMethods extends Component {
   onUseCreditCard = card => {
-    alert({
+    alertModal({
       title: "Success",
       message: "Credit card has been set as default one!"
     });
   };
 
   onCardSubmitSuccess = () => {
-    alert({
+    alertModal({
       title: "Success",
       message: "Credit card has been successfully added and set as default one!"
     });
   };
 
   onCardSubmitError = error => {
-    alert({
+    alertModal({
       title: "Error in adding a card",
       message: error.message
     });

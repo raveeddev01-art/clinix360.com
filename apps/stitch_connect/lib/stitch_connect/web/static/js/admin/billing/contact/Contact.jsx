@@ -7,7 +7,7 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 import get from "lodash/get";
 
-import { alert } from "common/modals";
+import { alertModal } from "common/modals";
 import { getCountries, getProvinces } from "lib/billing";
 import { isZipCode } from "lib/utils";
 
@@ -79,7 +79,7 @@ class Contact extends Component {
       .updateContact(contact)
       // .then(updatedContact => {
       .then(() => {
-        alert({
+        alertModal({
           title: "Contact Updated",
           message: "Contact information has been updated successfully!"
         });
@@ -87,7 +87,7 @@ class Contact extends Component {
       .catch(error => {
         const { message } = error.data;
 
-        alert({
+        alertModal({
           title: "Error in updating contact",
           message: (
             <p>

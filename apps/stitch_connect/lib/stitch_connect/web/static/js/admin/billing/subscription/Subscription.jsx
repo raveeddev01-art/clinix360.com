@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { Well } from "react-bootstrap";
 import capitalize from "lodash/capitalize";
 
-import { alert } from "common/modals";
+import { alertModal } from "common/modals";
 import { getSelectableTiers, getBelowTier, getPlanForTier } from "lib/billing";
 import Plans from "./plans/Plans";
 import Checkout from "./checkout/Checkout";
@@ -59,7 +59,7 @@ class Subscription extends Component {
   };
 
   onCardSubmitError = error => {
-    alert({
+    alertModal({
       title: "Error in creating a stripe Token",
       message: error.message
     });
@@ -76,7 +76,7 @@ class Subscription extends Component {
           ? `We won't begin billing until your trial expires in ${trialRemainingDays} days.`
           : `Your team is now changed to ${capitalize(tier)} tier`;
 
-      alert({
+      alertModal({
         title: "Thanks for using Stitch!",
         message: (
           <p>
