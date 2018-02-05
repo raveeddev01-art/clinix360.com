@@ -10,7 +10,10 @@ import Loading from "../components/Loading";
 @inject("billingStore")
 @observer
 class PaymentMethods extends Component {
-  onUseCreditCard = card => {
+  // This handler gets passed card selected when successful.
+  // Please use it if you need it in handler.
+  // onUseCreditCard = card => {
+  onUseCreditCard = () => {
     alertModal({
       title: "Success",
       message: "Credit card has been set as default one!"
