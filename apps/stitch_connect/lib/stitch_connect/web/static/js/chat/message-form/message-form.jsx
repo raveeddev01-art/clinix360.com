@@ -6,7 +6,7 @@ import Textarea from "react-textarea-autosize";
 import some from "lodash/some";
 
 import { isAdmin } from "lib/utils";
-import { confirm } from "common/modals";
+import { confirmModal } from "common/modals";
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
 import TypingUsers from "./components/typing-users";
@@ -72,7 +72,7 @@ class MessageForm extends Component {
 
     if (messageStore.messageInEdit) {
       if (!messageStore.textInEdit) {
-        confirm({
+        confirmModal({
           title: "Delete Message",
           message:
             "Are you sure you want to delete this message? This cannot be undone.",
