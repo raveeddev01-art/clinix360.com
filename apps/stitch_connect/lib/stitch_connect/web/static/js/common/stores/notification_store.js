@@ -56,7 +56,8 @@ class NotificationStore {
   updateGroupPref = (groupId, groupPref) => {
     return put(`/api/v1/groups/${groupId}/notification-preference`, {
       body: {
-        desktop_notification_preference: groupPref
+        desktop_notification_preference: groupPref,
+        mobile_notification_preference: groupPref
       },
       hideNotify: true
     }).then(() => {
