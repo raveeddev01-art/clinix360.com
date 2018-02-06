@@ -9,7 +9,7 @@ defmodule StitchConnect.Web.TeamControllerTest do
         city: "My City",
         state: "CA",
         country: "USA",
-        zip_code: "55555-333",
+        zip_code: "55555-3333",
         company_name: "My Test Company",
         address_line_one: "Street 123, chapel road"
       ]
