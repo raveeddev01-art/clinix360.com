@@ -14,6 +14,30 @@ defmodule Stitch.MeteorMigration.DBStat do
 
     team = Stitch.TeamQueries.get_by_slug(team_slug)
 
+    group_ids =
+      Group
+      |> where([g], g.team_id == ^team.id)
+      |> select([g], g.id)
+      |> Repo.all
+
+
+    single_dms =
+      Group
+      |> where([g], g.team_id == ^team.id)
+      |> where([g], g.name == "__dm_group__")
+      |> select([g], g.id)
+      |> Repo.all
+
+
+    multi_dms =
+      Group
+      |> where([g], g.team_id == ^team.id)
+      |> where([g], g.name == "__multi_dm_group__")
+      |> select([g], g.id)
+      |> Repo.all
+
+    IO.puts "Migrated Messages (total): #{count_migrated_messages(group_ids)}"
+
     IO.puts "Team: #{team.name} #{team.slug}"
 
     roles |> Enum.each(fn role ->
@@ -23,34 +47,11 @@ defmodule Stitch.MeteorMigration.DBStat do
         |> where([u], u.team_id == ^team.id)
         |> select([u], count(u.id))
         |> Repo.one
-
       IO.puts "Users #{role}: #{count}"
     end)
 
-    group_ids =
-      Group
-      |> where([g], g.team_id == ^team.id)
-      |> select([g], g.id)
-      |> Repo.all
-
     IO.puts "Groups: #{length(group_ids)}"
-
-    single_dms =
-      Group
-      |> where([g], g.team_id == ^team.id)
-      |> where([g], g.name == "__dm_group__")
-      |> select([g], g.id)
-      |> Repo.all
-
     IO.puts "Signle DMs: #{length(single_dms)}"
-
-    multi_dms =
-      Group
-      |> where([g], g.team_id == ^team.id)
-      |> where([g], g.name == "__multi_dm_group__")
-      |> select([g], g.id)
-      |> Repo.all
-
     IO.puts "Multi DMs: #{length(multi_dms)}"
 
     IO.puts "Messages: #{count_messages(group_ids)}"

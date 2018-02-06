@@ -31,6 +31,7 @@ defmodule Stitch.MeteorMigration.Message do
       end)
 
     IO.puts "#{inserted_count} messages inserted."
+    inserted_count
   end
 
   def parse_messages_json(rooms, phoenix_users_by_email, meteor_users_by_username, messages) do
@@ -110,7 +111,8 @@ defmodule Stitch.MeteorMigration.Message do
     message_file_stream(message_json_file, @chunk_size, fn messages, n ->
       if @meteor_migration_debug, do: IO.puts "#{n} messages parsed."
 
-      parse_messages_json(rooms, phoenix_users_by_email, meteor_users_by_username, messages)
+      rooms
+      |> parse_messages_json(phoenix_users_by_email, meteor_users_by_username, messages)
       |> migrate_messages
     end)
   end
@@ -118,31 +120,33 @@ defmodule Stitch.MeteorMigration.Message do
   def message_file_stream(messages_file, chunk_size, chunk_fn) do
     stream = messages_file |> File.stream!
 
-    chunk_fun = fn line, %{line: line_acc, objects: objects_acc, counter: counter} ->
+    chunk_fun = fn line, %{line: line_acc, objects: objects_acc, counter: counter, total_parsed: total_parsed} ->
       if line == "}\n" do
         line_acc = line_acc ++ [line]
         object = parse_object(line_acc)
         objects_acc = [object | objects_acc]
         counter = counter + 1
+        total_parsed = total_parsed + 1
 
         if counter >= chunk_size do
           chunk_fn.(objects_acc, counter)
-          {:cont, %{line: [], objects: [], counter: 0}}
+          {:cont, %{line: [], objects: [], counter: 0, total_parsed: total_parsed}}
         else
-          {:cont, %{line: [], objects: objects_acc, counter: counter}}
+          {:cont, %{line: [], objects: objects_acc, counter: counter, total_parsed: total_parsed}}
         end
       else
-        {:cont, %{line: line_acc ++ [line], objects: objects_acc, counter: counter}}
+        {:cont, %{line: line_acc ++ [line], objects: objects_acc, counter: counter, total_parsed: total_parsed}}
       end
     end
 
-    after_fun = fn %{line: _line_acc, objects: objects_acc, counter: counter} = acc ->
+    after_fun = fn %{line: _line_acc, objects: objects_acc, counter: counter, total_parsed: total_parsed} = acc ->
       chunk_fn.(objects_acc, counter)
+      IO.puts "Parsed messages (total): #{total_parsed}"
       {:cont, acc}
     end
 
     stream
-    |> Stream.chunk_while(%{line: [], objects: [], counter: 0}, chunk_fun, after_fun)
+    |> Stream.chunk_while(%{line: [], objects: [], counter: 0, total_parsed: 0, total_inserted: 0}, chunk_fun, after_fun)
     |> Stream.run
   end
 
