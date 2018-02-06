@@ -59,8 +59,7 @@ defmodule StitchConnect.Mixfile do
       {:kadabra, "~> 0.3.6"}, # Used by Pigeon for push notifications.
       {:plug_attack, "~> 0.3.0"},
       {:ip2country, "~> 1.1"},
-      {:remote_ip, "~> 0.1.4"},
-      {:exmoji, github: "mroth/exmoji"}
+      {:remote_ip, "~> 0.1.4"}
     ]
   end
 

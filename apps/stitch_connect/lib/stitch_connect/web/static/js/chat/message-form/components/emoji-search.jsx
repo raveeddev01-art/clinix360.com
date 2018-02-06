@@ -2,26 +2,29 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { emojiIndex, Emoji } from "emoji-mart";
 import cx from "classnames";
+import noop from "lodash/noop";
 
 class EmojiSearch extends Component {
   constructor(...args) {
     super(...args);
+
     this.state = {
       activeIndex: 0
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.isOpen && nextProps.isOpen) {
-      document.addEventListener("keydown", this.onKeyDown);
-      this.setState({ activeIndex: 0 });
-    } else if (this.props.isOpen && !nextProps.isOpen) {
-      document.removeEventListener("keydown", this.onKeyDown);
-    }
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeyDown);
+  }
 
+  componentWillReceiveProps(nextProps) {
     if (this.props.filter !== nextProps.filter) {
       this.setState({ activeIndex: 0 });
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyDown);
   }
 
   onItemHover = index => () => {
@@ -29,7 +32,9 @@ class EmojiSearch extends Component {
   };
 
   onSelectEmoji = emoji => () => {
-    this.props.onSelect(emoji);
+    const { onSelect } = this.props;
+
+    onSelect(emoji);
   };
 
   onKeyDown = evt => {
@@ -85,6 +90,7 @@ class EmojiSearch extends Component {
         }
         break;
       case 13: // return
+      case 9: // tab
         if (emojis.length) {
           const emoji = emojis[activeIndex];
           this.onSelectEmoji(emoji.colons)();
@@ -101,8 +107,8 @@ class EmojiSearch extends Component {
   searchResult = [];
 
   searchEmoji = () => {
-    const { filter, minCharacters, isOpen } = this.props;
-    if (filter.length < minCharacters || !isOpen) {
+    const { filter, minChars } = this.props;
+    if (filter.length < minChars) {
       return [];
     }
 
@@ -121,7 +127,9 @@ class EmojiSearch extends Component {
 
   renderEmojis = emojis => {
     const { activeIndex } = this.state;
+
     this.emojiPos = Array(emojis.length).fill({});
+
     return emojis.map((emoji, index) => {
       const itemClassName = cx("emoji-list-item", {
         active: activeIndex % emojis.length === index
@@ -151,9 +159,9 @@ class EmojiSearch extends Component {
   };
 
   render() {
-    const { isOpen } = this.props;
     const emojis = this.searchEmoji();
-    if (!isOpen || !emojis.length) {
+
+    if (!emojis.length) {
       return null;
     }
 
@@ -165,18 +173,16 @@ class EmojiSearch extends Component {
   }
 }
 
-EmojiSearch.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  minCharacters: PropTypes.number.isRequired,
-  filter: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired
+EmojiSearch.defaultProps = {
+  filter: "",
+  minChars: 2,
+  onSelect: noop
 };
 
-EmojiSearch.defaultProps = {
-  isOpen: false,
-  filter: "",
-  minCharacters: 2,
-  onSelect: () => {}
+EmojiSearch.propTypes = {
+  minChars: PropTypes.number,
+  filter: PropTypes.string,
+  onSelect: PropTypes.func
 };
 
 export default EmojiSearch;

@@ -162,7 +162,7 @@ defmodule Stitch.Group do
     end
   end
 
-  defp single_dm_params(user_ids) do
+  def single_dm_params(user_ids) do
     %{
       "name" => "__dm_group__",
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
@@ -287,8 +287,28 @@ defmodule Stitch.Group do
     case Repo.delete_all(query, []) do
       {1, _} -> :ok
       _ -> {:error, :not_member}
-      end
     end
+  end
+
+  @doc """
+  Deletes the group
+  """
+  @spec delete(Group.t) :: {:ok, map} | {:error, any()}
+  def delete(%Group{name: name}) when name in @dm_groups, do: {:error, :direct_message}
+  def delete(%Group{is_default: true}), do: {:error, :default_group}
+  def delete(%Group{} = group) do
+    Ecto.Multi.new
+    |> Ecto.Multi.update_all(:groups_as_guest, delete_from_groups_as_guest(group), [], [returning: true])
+    |> Ecto.Multi.delete(:group, group)
+    |> Repo.transaction
+  end
+
+  def delete_from_groups_as_guest(%Group{} = group) do
+    guest_ids = Stitch.UserQueries.guest_user_ids(group)
+    User
+    |> where([u], u.id in ^guest_ids)
+    |> update([u], pull: [groups_as_guest: ^group.id])
+  end
 
   @doc """
   Toggles favorite setting for the user for the specified

@@ -23,6 +23,10 @@ config :stitch,
   segment_api: Stitch.Analytics.Segment.InMemory,
   analytics: Stitch.Analytics.TestClient
 
+config :ex_aws,
+  access_key_id: "fake-access-key-id",
+  secret_access_key: "fake-secret-access-key"
+
 config :stitch, :aws_user_upload, %{
   access_key_id: "fake-access-key-id",
   secret_access_key: "fake-secret-access-key",

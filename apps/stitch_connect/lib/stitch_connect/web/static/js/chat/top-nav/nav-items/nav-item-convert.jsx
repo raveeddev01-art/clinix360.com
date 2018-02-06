@@ -59,9 +59,11 @@ export default class NavItemConvert extends Component {
   };
 
   render() {
+    const { groupStore } = this.props;
+
     return [
       <MenuItem key="convert_menuitem" onClick={this.openModal}>
-        Convert
+        Convert Room to {groupStore.group.public ? "Private" : "Public"} Room
       </MenuItem>,
       <Modal
         key="convert_modal"
@@ -69,7 +71,12 @@ export default class NavItemConvert extends Component {
         show={this.state.showModal}
       >
         <Modal.Header>
-          <Modal.Title>Convert</Modal.Title>
+          <Modal.Title>
+            Convert Room to {groupStore.group.public
+              ? "Private"
+              : "Public"}{" "}
+            Room
+          </Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />
           </a>

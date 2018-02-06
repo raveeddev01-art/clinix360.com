@@ -1,5 +1,8 @@
 import { observable, action } from "mobx";
 import Guid from "guid";
+import xss from "xss";
+import { alert } from "common/modals";
+import { MAX_FILE_UPLOAD_SIZE } from "lib/constants";
 
 class UploadStore {
   @observable uploadProgress = new Map();
@@ -43,6 +46,16 @@ class UploadStore {
     }
   };
 
+  alertLargeFile = file => {
+    return alert({
+      title: "File upload is too large",
+      message: `Sorry, your file <strong>${xss(
+        file.name
+      )}</strong> is too large to upload.<br><br>Try uploading a smaller file instead.`,
+      okLabel: "OK"
+    });
+  };
+
   /**
    * @param {File|String} file
    * @param {String} type e.g image/jpeg
@@ -52,6 +65,11 @@ class UploadStore {
    */
   @action
   uploadAWS = (file, type, key, options = {}) => {
+    if (file.size > MAX_FILE_UPLOAD_SIZE) {
+      this.alertLargeFile(file);
+      return Promise.reject();
+    }
+
     return post("/api/v1/upload-signature", {
       body: {
         filename: key,
@@ -101,7 +119,29 @@ class UploadStore {
           if (e === "aborted") {
             throw e;
           }
-          notify.show("There was a problem uploading file", "error");
+          // e is a XML document
+          const errorDoc = new window.DOMParser().parseFromString(
+            e,
+            "text/xml"
+          );
+          const errorCode = errorDoc.documentElement.getElementsByTagName(
+            "Code"
+          );
+          if (
+            errorCode.length === 1 &&
+            errorCode[0].textContent === "EntityTooLarge"
+          ) {
+            // We know the error code, show relevant message
+            this.alertLargeFile(file).then(() => {
+              setTimeout(() => {
+                this.removeProgress(key);
+              }, 1000);
+            });
+          } else {
+            // Otherwise, show generic message
+            notify.show("There was a problem uploading file", "error");
+          }
+
           throw e;
         });
     });

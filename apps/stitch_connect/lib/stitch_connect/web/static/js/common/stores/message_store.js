@@ -130,6 +130,10 @@ class MessageStore {
     return this.messages.find(m => m.user_id !== currentUser.id) || {};
   }
 
+  get isActive() {
+    return this.rootStore.presenceStore.isActive;
+  }
+
   /**
    * Returns the position of first unread message in chat div
    *
@@ -844,6 +848,11 @@ class MessageStore {
   }
 
   onMessageShow(id) {
+    // just ignore message show if window lost focus
+    if (!this.isActive) {
+      return;
+    }
+
     if (this.messageElements[id]) {
       this.messageElements[id].visible = true;
     }
@@ -909,13 +918,13 @@ class MessageStore {
       this.messages.unshift(newMessage);
     }
 
-    // Update unread messages info of the group
-    if (newMessage.user_id === currentUser.id) {
-      if (this.unreadMessagesCount === 0) {
-        this.markAsRead();
-      }
-    } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
-      // If you're at the bottom and no NML, keep up with the new message
+    // Update unread messages info of the group.
+    // Only mark as read when the app has user's focus
+    if (
+      this.isActive &&
+      this.unreadMessagesCount === 0 &&
+      (newMessage.user_id === currentUser.id || this.isScrollBottom)
+    ) {
       this.markAsRead();
     } else if (newMessage.type !== "system") {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
@@ -926,8 +935,11 @@ class MessageStore {
       });
     }
 
-    // If my message or at scroll bottom, scroll to bottom
-    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
+    // if my message or at scroll bottom and app has focus, scroll to bottom
+    if (
+      this.isActive &&
+      (this.isScrollBottom || newMessage.user_id === currentUser.id)
+    ) {
       this.scrollToBottom(null, 0, 0);
     }
 
@@ -1012,7 +1024,7 @@ class MessageStore {
 
     const message = this.getMessageById(payload.id);
 
-    if (message) {
+    if (message && payload.link_previews && payload.link_previews.length) {
       message.link_previews = payload.link_previews;
       this.keepScrollAtBottom();
     }
@@ -1038,16 +1050,19 @@ class MessageStore {
    */
   encodeMessage = (messageText = "") => {
     const { usersByUsername } = this.rootStore.usersStore;
-    return messageText.replace(REGEX.USER_MENTION_ENCODE, (match, username) => {
-      const user = usersByUsername[username];
-      if (["everyone", "room", "here"].indexOf(username) > -1) {
-        return `<@G${username}>`;
-      } else if (user) {
-        return `<@U${user.id}>`;
-      }
+    return messageText.replace(
+      REGEX.getUserMentionEncode(),
+      (match, username) => {
+        const user = usersByUsername[username];
+        if (["everyone", "room", "here"].indexOf(username) > -1) {
+          return `<@G${username}>`;
+        } else if (user) {
+          return `<@U${user.id}>`;
+        }
 
-      return match;
-    });
+        return match;
+      }
+    );
   };
 
   /**
@@ -1059,11 +1074,11 @@ class MessageStore {
     const { usersById } = this.rootStore.usersStore;
 
     const result = messageText
-      .split(REGEX.SPLITTER)
+      .split(REGEX.getSplitter())
       .filter(p => p)
       .map(part => {
         // mention
-        const match = part.match(REGEX.USER_MENTION_DECODE);
+        const match = part.match(REGEX.getUserMentionDecode());
         if (match && match[1] && usersById[match[1]]) {
           return {
             type: "mention",
@@ -1071,7 +1086,7 @@ class MessageStore {
           };
         }
 
-        const groupMatch = part.match(REGEX.GROUP_MENTION_DECODE);
+        const groupMatch = part.match(REGEX.getGroupMentionDecode());
         if (groupMatch && groupMatch[1]) {
           return {
             type: "group_mention",
@@ -1080,8 +1095,8 @@ class MessageStore {
         }
 
         // emoji
-        if (REGEX.EMOJI.test(part)) {
-          const emojiParts = part.split(REGEX.EMOJI);
+        if (REGEX.getEmoji().test(part)) {
+          const emojiParts = part.split(REGEX.getEmoji());
           return emojiParts.filter(p => p).map(emojiPart => {
             const emoji = getEmoji(emojiPart);
             const hasEmoji = emoji && emoji.name;
