@@ -1,20 +1,16 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import Panel from "react-bootstrap/lib/Panel";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import FormControl from "react-bootstrap/lib/FormControl";
+import Button from "react-bootstrap/lib/Button";
 import { animateScroll as scroll } from "react-scroll";
 import cx from "classnames";
 
 import Header from "../components/header";
 import CUSTOMERS from "../components/customers-logos";
 import Footer from "../components/footer";
-
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
-import Panel from "react-bootstrap/lib/Panel";
-import FormGroup from "react-bootstrap/lib/FormGroup";
-import ControlLabel from "react-bootstrap/lib/ControlLabel";
-import FormControl from "react-bootstrap/lib/FormControl";
-import Button from "react-bootstrap/lib/Button";
 
 export default class Demo extends Component {
   constructor(props) {

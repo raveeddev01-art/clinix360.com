@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import { LinkContainer } from "react-router-bootstrap";
+import Button from "react-bootstrap/lib/Button";
 
 import Header from "../components/header";
 import CreateTeam from "../components/create-team";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-
-import Button from "react-bootstrap/lib/Button";
 
 export default class Connect extends Component {
   render() {

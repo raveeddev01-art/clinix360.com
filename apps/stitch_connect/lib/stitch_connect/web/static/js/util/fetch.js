@@ -3,7 +3,7 @@ import "whatwg-fetch";
 import Promise from "bluebird";
 
 window.csrfToken = "";
-var metaElem = document.querySelector("meta[name=csrf-token]");
+const metaElem = document.querySelector("meta[name=csrf-token]");
 if (metaElem) window.csrfToken = metaElem.getAttribute("content");
 
 window.CSRFFetch = function(url, options = {}) {
@@ -37,10 +37,10 @@ window.CSRFFetch = function(url, options = {}) {
 
 window.jCSRFFetch = function(url, params = {}) {
   if (window.authenticationToken) {
-    let modifiedUrl =
-      url +
-      (url.indexOf("?") > -1 ? "&" : "?") +
-      `authenticationToken=${window.authenticationToken}`;
+    const modifiedUrl =
+      `${url +
+      (url.indexOf("?") > -1 ? "&" : "?") 
+      }authenticationToken=${window.authenticationToken}`;
     url = modifiedUrl;
   }
 

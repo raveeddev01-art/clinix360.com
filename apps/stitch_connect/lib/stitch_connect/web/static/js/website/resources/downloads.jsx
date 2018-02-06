@@ -1,16 +1,14 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-
-import Header from "../components/header";
-import GetStarted from "../components/get-started";
-import Footer from "../components/footer";
-
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import NavItem from "react-bootstrap/lib/NavItem";
 import Button from "react-bootstrap/lib/Button";
+
+import Header from "../components/header";
+import GetStarted from "../components/get-started";
+import Footer from "../components/footer";
 
 export default class Downloads extends Component {
   render() {

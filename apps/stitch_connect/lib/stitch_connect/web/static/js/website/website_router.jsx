@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import { observer } from "mobx-react";
 
-import Header from "./components/header";
-import Footer from "./components/footer";
 import ScrollToTop from "./components/scrollToTop";
 
-import Landing from "./landing";
+// import Landing from "./landing";
 import Homepage from "./homepage";
 import Connect from "./products/connect";
 import Engage from "./products/engage";
