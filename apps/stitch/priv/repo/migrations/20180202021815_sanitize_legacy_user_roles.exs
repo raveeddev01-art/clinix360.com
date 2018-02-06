@@ -24,7 +24,7 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
               |> Ecto.Changeset.change(roles: roles)
               |> Repo.update()
 
-            _ ->
+            true ->
               IO.puts("User #{user.email} has no roles. Onboarded: #{user.onboarded}")
           end
         end)
