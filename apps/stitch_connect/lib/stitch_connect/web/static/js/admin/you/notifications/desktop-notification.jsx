@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Radio from "react-bootstrap/lib/Radio";
 
 import { NOTIFICATION_PREFERENCES } from "lib/constants";

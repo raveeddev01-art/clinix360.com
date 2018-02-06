@@ -26,7 +26,7 @@ class ImageFileAttachment extends Component {
     let placeholderStyle = null;
     let holderStyle = null;
 
-    if (height) {
+    if (height && width) {
       placeholderStyle = {
         width,
         paddingTop: `${height / width * 100}%`,
@@ -85,6 +85,13 @@ ImageFileAttachment.propTypes = {
   preview_url: PropTypes.string,
   filename: PropTypes.string,
   url: PropTypes.string.isRequired
+};
+
+ImageFileAttachment.defaultProps = {
+  preview_height: 0,
+  preview_width: 0,
+  preview_url: "",
+  filename: ""
 };
 
 export default ImageFileAttachment;

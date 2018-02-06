@@ -22,7 +22,7 @@ class DateSeparator extends Component {
 }
 
 DateSeparator.propTypes = {
-  timestamp: PropTypes.any
+  timestamp: PropTypes.any.isRequired
 };
 
 export default DateSeparator;
