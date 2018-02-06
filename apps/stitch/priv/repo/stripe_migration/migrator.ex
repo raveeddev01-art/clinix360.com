@@ -1,5 +1,5 @@
 defmodule Stitch.Stripe.Migrator do
-  alias Stitch.{Team, Billing.Subscription}
+  alias Stitch.{Team, Billing, Billing.Plan, Billing.Subscription}
   alias Stitch.Stripe.Migrator.Helper
   import Ecto.{Query, Changeset}
   alias Stitch.Repo
@@ -9,23 +9,125 @@ defmodule Stitch.Stripe.Migrator do
   # Correct for production
   @last_event_id "evt_1BsY3RCjAbiXzvjlDNMHismS"
 
-  def link_customers(), do: Helper.execute_sql_file("link_stripe_customers.sql")
-
-  def link_subscriptions() do
-    query = from(s in Subscription, where: not is_nil(s.subscription_id))
+  def link_v2_customers() do
+    query =
+      from(
+        s in Subscription,
+        join: t in Team,
+        on: t.id == s.team_id,
+        where: not is_nil(s.subscription_id),
+        where: s.tier != "TRIAL",
+        preload: [team: t]
+      )
 
     query
     |> Repo.all()
     |> Enum.map(fn %Subscription{customer_id: customer_id, subscription_id: subscription_id} =
                      subscription ->
+      case Stripe.Subscriptions.get(customer_id, subscription_id) do
+        {:error, error} ->
+          user_count =
+            subscription.team
+            |> Billing.list_billable_users()
+            |> length()
+
+          request_opts = [
+            plan: Plan.id(subscription),
+            quantity: user_count,
+            trial_end: DateTime.to_unix(subscription.valid_until)
+          ]
+
+          {:ok, stripe_sub} = Stripe.Subscriptions.create(customer_id, request_opts)
+          item = List.first(stripe_sub[:items]["data"])
+          subscription_line_item_id = item["id"]
+          subscription_id = stripe_sub[:id]
+
+          subscription
+          |> change(subscription_id: subscription_id)
+          |> change(subscription_line_item_id: subscription_line_item_id)
+          |> Repo.update()
+
+        {:ok, stripe_sub} ->
+          stripe_sub
+      end
+    end)
+  end
+
+  def link_v1_customers(), do: Helper.execute_sql_file("link_stripe_customers.sql")
+
+  def link_subscriptions() do
+    query =
+      from(
+        s in Subscription,
+        join: t in Team,
+        on: t.id == s.team_id,
+        where: not is_nil(s.subscription_id),
+        preload: [team: t]
+      )
+
+    query
+    |> Repo.all()
+    |> Enum.map(fn %Subscription{customer_id: customer_id, subscription_id: subscription_id} =
+                     subscription ->
+      # Fetch subscription details from Stripe
       {:ok, stripe_sub} = Stripe.Subscriptions.get(customer_id, subscription_id)
-
-      {:ok, upcoming_invoice} =
-        Stripe.Invoices.upcoming(customer_id, subscription: subscription_id)
-
       renews = !stripe_sub[:cancel_at_period_end]
       item = List.first(stripe_sub[:items]["data"])
       subscription_line_item_id = item["id"]
+
+      # Map to the V2 plan id
+      old_plans = [
+        "Free",
+        "Basic",
+        "Premium",
+        "Basic-Monthly",
+        "Basic-Yearly",
+        "Premium-Monthly",
+        "Premium-Yearly",
+        "Power-Monthly",
+        "Power-Yearly"
+      ]
+
+      new_plan =
+        if item["plan"]["id"] in old_plans do
+          case item["plan"]["id"] do
+            "Free" -> "basic_monthly"
+            "Basic" -> "basic_monthly"
+            "Basic-Monthly" -> "basic_monthly"
+            "Basic-Yearly" -> "basic_yearly"
+            "Premium" -> "premium_monthly"
+            "Premium-Monthly" -> "premium_monthly"
+            "Premium-Yearly" -> "premium_yearly"
+            "Power-Monthly" -> "power_monthly"
+            "Power-Yearly" -> "power_yearly"
+          end
+        else
+          item["plan"]["id"]
+        end
+
+      # Update Billable user count
+      user_count =
+        subscription.team
+        |> Billing.list_billable_users()
+        |> length()
+
+      request_opts = [
+        prorate: true,
+        items: [
+          "0": [
+            id: subscription_line_item_id,
+            quantity: user_count,
+            plan: new_plan
+          ]
+        ]
+      ]
+
+      Stripe.Subscriptions.change(customer_id, subscription_id, new_plan)
+
+      # Update renews, valid_until, upcoming_invoice, subscription_line_item_id
+      {:ok, upcoming_invoice} =
+        Stripe.Invoices.upcoming(customer_id, subscription: subscription_id)
+
       valid_until = DateTime.from_unix!(upcoming_invoice[:period_end])
 
       subscription
@@ -35,22 +137,8 @@ defmodule Stitch.Stripe.Migrator do
       |> change(estimated_invoice_amount: upcoming_invoice.amount_due)
       |> Repo.update()
 
-      old_plans = ["Basic-Monthly", "Basic-Yearly", "Premium-Monthly", "Premium-Yearly", "Power-Monthly", "Power-Yearly"]
-      if item["plan"]["id"] in old_plans do
-        new_plan = case item["plan"]["id"] do
-          "Basic-Monthly" -> "basic_monthly"
-          "Basic-Yearly"  -> "basic_yearly"
-          "Premium-Monthly" -> "premium_monthly"
-          "Premium-Yearly" -> "premium_yearly"
-          "Power-Monthly" -> "power_monthly"
-          "Power-Yearly" -> "power_yearly"
-        end
-
-        Stripe.Subscriptions.change(customer_id, subscription_id, new_plan)
-
-        if stripe_sub[:cancel_at_period_end] do
-          Stripe.Subscriptions.cancel(customer_id, subscription_id, at_period_end: true)
-        end
+      if stripe_sub[:cancel_at_period_end] do
+        Stripe.Subscriptions.cancel(customer_id, subscription_id, at_period_end: true)
       end
     end)
   end
@@ -94,9 +182,10 @@ defmodule Stitch.Stripe.Migrator do
       end
     end)
 
-    last_event_id = List.last(events)["id"]
-    {:ok, %{data: events}} = Stripe.Events.list(last_event_id, @event_list_limit)
-    do_import_payment_history(teams, events)
+    # Uncomment for production
+    # last_event_id = List.last(events)["id"]
+    # {:ok, %{data: events}} = Stripe.Events.list(last_event_id, @event_list_limit)
+    # do_import_payment_history(teams, events)
   end
 
   def remove_dead_stripe_customers() do
@@ -139,31 +228,32 @@ defmodule Stitch.Stripe.Migrator do
         preload: [team: t]
       )
 
-    # Make easy useable map from fetched customers
     query
     |> Repo.all()
     |> Enum.map(fn subscription ->
-      team = subscription.team
-      customer_id = Stitch.Stripe.Client.create_customer(team.id, team.name)
+      case Stripe.Customers.get(subscription.customer_id) do
+        {:error, error} ->
+          team = subscription.team
+          customer_id = Stitch.Stripe.Client.create_customer(team.id, team.name)
 
-      subscription
-      |> Ecto.Changeset.change(customer_id: customer_id)
-      |> Repo.update()
+          subscription
+          |> Ecto.Changeset.change(customer_id: customer_id)
+          |> Repo.update()
+
+        {:ok, stripe_cust} ->
+          stripe_cust
+      end
     end)
   end
 
-  def migrate_v2_customers_to_v1() do
-    IO.puts("Do migrate V2 Customers to V1 Manually")
-  end
-
   def run() do
-    link_customers()
+    link_v2_customers()
+    link_v1_customers()
     link_subscriptions()
     import_payment_methods()
     import_payment_history()
     remove_dead_stripe_customers()
     create_missing_stripe_customers()
-    migrate_v2_customers_to_v1()
   end
 end
 
