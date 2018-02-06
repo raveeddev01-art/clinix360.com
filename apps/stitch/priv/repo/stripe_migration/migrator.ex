@@ -1,8 +1,8 @@
 defmodule Stitch.Stripe.Migrator do
   alias Stitch.{Team, Billing.Subscription}
   alias Stitch.Stripe.Migrator.Helper
+  import Ecto.{Query, Changeset}
   alias Stitch.Repo
-  import Ecto.Query
   require Logger
 
   @event_list_limit 100
@@ -10,6 +10,50 @@ defmodule Stitch.Stripe.Migrator do
   @last_event_id "evt_1BsY3RCjAbiXzvjlDNMHismS"
 
   def link_customers(), do: Helper.execute_sql_file("link_stripe_customers.sql")
+
+  def link_subscriptions() do
+    query = from(s in Subscription, where: not is_nil(s.subscription_id))
+
+    query
+    |> Repo.all()
+    |> Enum.map(fn %Subscription{customer_id: customer_id, subscription_id: subscription_id} =
+                     subscription ->
+      {:ok, stripe_sub} = Stripe.Subscriptions.get(customer_id, subscription_id)
+
+      {:ok, upcoming_invoice} =
+        Stripe.Invoices.upcoming(customer_id, subscription: subscription_id)
+
+      renews = !stripe_sub[:cancel_at_period_end]
+      item = List.first(stripe_sub[:items]["data"])
+      subscription_line_item_id = item["id"]
+      valid_until = DateTime.from_unix!(upcoming_invoice[:period_end])
+
+      subscription
+      |> change(renews: renews)
+      |> change(valid_until: valid_until)
+      |> change(subscription_line_item_id: subscription_line_item_id)
+      |> change(estimated_invoice_amount: upcoming_invoice.amount_due)
+      |> Repo.update()
+
+      old_plans = ["Basic-Monthly", "Basic-Yearly", "Premium-Monthly", "Premium-Yearly", "Power-Monthly", "Power-Yearly"]
+      if item["plan"]["id"] in old_plans do
+        new_plan = case item["plan"]["id"] do
+          "Basic-Monthly" -> "basic_monthly"
+          "Basic-Yearly"  -> "basic_yearly"
+          "Premium-Monthly" -> "premium_monthly"
+          "Premium-Yearly" -> "premium_yearly"
+          "Power-Monthly" -> "power_monthly"
+          "Power-Yearly" -> "power_yearly"
+        end
+
+        Stripe.Subscriptions.change(customer_id, subscription_id, new_plan)
+
+        if stripe_sub[:cancel_at_period_end] do
+          Stripe.Subscriptions.cancel(customer_id, subscription_id, at_period_end: true)
+        end
+      end
+    end)
+  end
 
   def import_payment_methods(), do: Helper.execute_sql_file("import_payment_methods.sql")
 
@@ -114,6 +158,7 @@ defmodule Stitch.Stripe.Migrator do
 
   def run() do
     link_customers()
+    link_subscriptions()
     import_payment_methods()
     import_payment_history()
     remove_dead_stripe_customers()
