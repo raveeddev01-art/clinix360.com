@@ -14,7 +14,7 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
         |> Repo.stream()
         |> Stream.each(fn user ->
           cond do
-            user.roles != nil && length(user.roles) > 1 ->
+            user.onboarded && user.roles != nil && length(user.roles) > 1 ->
               roles =
                 user.roles
                 |> enforce_guest
