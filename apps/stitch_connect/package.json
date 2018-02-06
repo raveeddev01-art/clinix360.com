@@ -1,7 +1,8 @@
 {
   "scripts": {
     "deploy": "webpack -p",
-    "watch": "webpack --watch-stdin --progress --color"
+    "watch": "webpack --watch-stdin --progress --color",
+    "lint": "eslint --fix --ext .js,.jsx ./lib/stitch_connect/web/static/js"
   },
   "dependencies": {
     "animate.css": "^3.5.2",
