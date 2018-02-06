@@ -25,6 +25,7 @@ class ImageFileAttachment extends Component {
     const { showModal } = this.state;
     let placeholderStyle = null;
     let holderStyle = null;
+
     if (height) {
       placeholderStyle = {
         width,

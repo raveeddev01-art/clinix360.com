@@ -46,7 +46,7 @@ export default class Demo extends Component {
 
     post("/api/v1/request-demo", {
       body: { fullName, email, phoneNumber, companyName }
-    }).then(response => {
+    }).then(() => {
       this.setState({ formSubmitted: true });
       scroll.scrollToTop();
     });

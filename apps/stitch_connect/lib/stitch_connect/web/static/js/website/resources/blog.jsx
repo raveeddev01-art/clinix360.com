@@ -224,7 +224,7 @@ export default class Blog extends Component {
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="btn-linkedin">
+                    <a className="btn-linkedin">
                       <i className="fa fa-linkedin" />
                     </a>
                   </li>

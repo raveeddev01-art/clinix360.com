@@ -43,17 +43,6 @@ class Sidemenu extends Component {
     }
   };
 
-  toggleInviteModal = () => {
-    this.setState({
-      showInviteModal: !this.state.showInviteModal
-    });
-  };
-
-  showInviteModal = evt => {
-    evt.preventDefault();
-    this.toggleInviteModal();
-  };
-
   getEdgeBadgeClass(roomItem, direction) {
     return cx(
       "edge-badge",
@@ -64,6 +53,17 @@ class Sidemenu extends Component {
       direction
     );
   }
+
+  toggleInviteModal = () => {
+    this.setState({
+      showInviteModal: !this.state.showInviteModal
+    });
+  };
+
+  showInviteModal = evt => {
+    evt.preventDefault();
+    this.toggleInviteModal();
+  };
 
   renderAdminOptions() {
     return (

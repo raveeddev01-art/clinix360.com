@@ -7,10 +7,10 @@ import cx from "classnames";
 import Button from "react-bootstrap/lib/Button";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import SmartDropdown from "../smart-dropdown";
 
 import { dataURItoBlob } from "lib/utils";
 import { LoadingIcon } from "common/components";
+import SmartDropdown from "../smart-dropdown";
 
 class AvatarUploader extends Component {
   constructor(...args) {

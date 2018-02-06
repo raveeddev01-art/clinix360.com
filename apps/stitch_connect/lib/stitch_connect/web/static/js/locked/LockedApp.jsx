@@ -4,9 +4,9 @@ import cx from "classnames";
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
 
+import { PinInput, LoadingIcon } from "common/components";
 import Header from "../authentication/components/header/header";
 import Footer from "../authentication/components/footer/footer";
-import { PinInput, LoadingIcon } from "common/components";
 
 @inject("presenceStore", "teamStore")
 @observer

@@ -98,6 +98,7 @@
     "get": true,
     "remove": true,
     "put": true,
-    "patch": true
+    "patch": true,
+    "websocketScheme": true
   }
 }

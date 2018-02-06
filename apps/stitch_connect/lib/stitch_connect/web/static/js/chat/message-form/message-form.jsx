@@ -5,6 +5,8 @@ import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
 import some from "lodash/some";
 
+import { isAdmin } from "lib/utils";
+import { confirm } from "common/modals";
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
 import TypingUsers from "./components/typing-users";
@@ -13,8 +15,6 @@ import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 
-import { isAdmin } from "lib/utils";
-import { confirm } from "common/modals";
 
 @inject("messageStore", "socketStore", "uploadStore", "billingStore")
 @observer
