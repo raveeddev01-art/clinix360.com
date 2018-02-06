@@ -8,23 +8,30 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
   alias Stitch.Accounts.User
 
   def up do
-    Repo.transaction(fn ->
-      User
-      |> Repo.stream()
-      |> Stream.each(fn user ->
-        if length(user.roles) > 1 do
-          roles =
-            user.roles
-            |> enforce_guest
-            |> enforce_admin
+    Repo.transaction(
+      fn ->
+        User
+        |> Repo.stream()
+        |> Stream.each(fn user ->
+          cond do
+            user.roles != nil && length(user.roles) > 1 ->
+              roles =
+                user.roles
+                |> enforce_guest
+                |> enforce_admin
 
-          user
-          |> Ecto.Changeset.change(roles: roles)
-          |> Repo.update
-        end
-      end)
-      |> Stream.run()
-    end, timeout: :infinity)
+              user
+              |> Ecto.Changeset.change(roles: roles)
+              |> Repo.update()
+
+            _ ->
+              IO.puts("User #{user.email} has no roles. Onboarded: #{user.onboarded}")
+          end
+        end)
+        |> Stream.run()
+      end,
+      timeout: :infinity
+    )
   end
 
   def down do
@@ -46,4 +53,3 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
     end
   end
 end
-
