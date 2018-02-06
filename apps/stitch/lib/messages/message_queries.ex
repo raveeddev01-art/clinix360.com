@@ -156,10 +156,12 @@ defmodule Stitch.MessageQueries do
       from m in Message,
       left_join: u in assoc(m, :user),
       left_join: g in assoc(m, :group),
+      left_join: pb in assoc(m, :pinned_by),
       where: m.id == ^id,
       preload: [
         group: g,
-        user: u
+        user: u,
+        pinned_by: pb
       ]
     Repo.one(query)
   end
