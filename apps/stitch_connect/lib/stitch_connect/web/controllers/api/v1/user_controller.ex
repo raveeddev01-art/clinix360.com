@@ -58,10 +58,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unauthorized)
         |> json(%{message: "You are not unauthorized to update user profile."})
         |> halt
-      {:error, message} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: message})
+      {:error, changeset} -> {:error, changeset}
     end
   end
 

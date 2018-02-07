@@ -408,6 +408,23 @@ defmodule StitchConnect.Web.UserControllerTest do
 
       assert json["message"] == "You are not unauthorized to update user profile."
     end
+
+    test "Handles error when usernamae is already taken", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+      insert(:user, team: team, username: "bob")
+
+      json =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
+        |> put("/api/v1/users/#{user.id}", %{
+          "username" => "bob"
+        })
+        |> json_response(422)
+
+      assert json["message"] == "username has already been taken"
+    end
   end
 
   describe "PUT /api/v1/users/:id/change-role" do
