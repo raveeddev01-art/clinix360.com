@@ -127,17 +127,20 @@ defmodule Stitch.Stripe.Migrator do
       ]
     ]
 
-    Stripe.Subscriptions.change(customer_id, subscription_id, request_opts)
+    case Stripe.Subscriptions.change(customer_id, subscription_id, request_opts) do
+      {:ok, _} ->
+        if stripe_sub[:cancel_at_period_end] do
+          Stripe.Subscriptions.cancel(customer_id, subscription_id, at_period_end: true)
+        end
 
-    if stripe_sub[:cancel_at_period_end] do
-      Stripe.Subscriptions.cancel(customer_id, subscription_id, at_period_end: true)
+        [
+          renews: renews,
+          subscription_id: stripe_sub[:id],
+          subscription_line_item_id: subscription_line_item_id
+        ]
+      {:error, _} ->
+        [ renews: false, subscription_id: nil, subscription_line_item_id: nil]
     end
-
-    [
-      renews: renews,
-      subscription_id: stripe_sub[:id],
-      subscription_line_item_id: subscription_line_item_id,
-    ]
   end
 
   defp create_subscription(
@@ -163,15 +166,19 @@ defmodule Stitch.Stripe.Migrator do
       trial_end: DateTime.to_unix(subscription.valid_until)
     ]
 
-    {:ok, stripe_sub} = Stripe.Subscriptions.create(customer_id, request_opts)
-    item = List.first(stripe_sub[:items]["data"])
-    subscription_line_item_id = item["id"]
+    case Stripe.Subscriptions.create(customer_id, request_opts) do
+      {:ok, stripe_sub} ->
+        item = List.first(stripe_sub[:items]["data"])
+        subscription_line_item_id = item["id"]
 
-    [
-      renews: true,
-      subscription_id: stripe_sub[:id],
-      subscription_line_item_id: subscription_line_item_id
-    ]
+        [
+          renews: true,
+          subscription_id: stripe_sub[:id],
+          subscription_line_item_id: subscription_line_item_id
+        ]
+      {:error, _} ->
+        [renews: false, subscription_id: nil, subscription_line_item_id: nil]
+    end
   end
 
   @doc """
