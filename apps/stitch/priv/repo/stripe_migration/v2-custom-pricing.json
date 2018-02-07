@@ -1,0 +1,73 @@
+{
+  "88":  {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "113": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "133": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "174": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "162": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "198": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "208": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "273": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "234": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "259": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "287": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "269": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "271": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "293": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "297": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "323": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "185": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "228": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+
+  "117": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "139": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "144": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "116": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "203": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "236": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "241": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "248": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "250": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "256": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "299": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+  "311": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
+
+  "112": {"tier": "PREMIUM", "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "premium_monthly"},
+  "194": {"tier": "PREMIUM", "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "premium_monthly"},
+  "319": {"tier": "PREMIUM", "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "premium_monthly"},
+  "329": {"tier": "PREMIUM", "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "premium_monthly"},
+
+  "243": {"tier": "PREMIUM", "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "premium_yearly"},
+
+  "170": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "1", "plan_id": "Basic-Monthly-1"},
+
+  "276": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "2.5", "plan_id": "Basic-Monthly-2.5"},
+  "313": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "2.5", "plan_id": "Basic-Monthly-2.5"},
+
+  "327": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "3", "plan_id": "Basic-Monthly-3"},
+
+  "301": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "4", "plan_id": "Basic-Monthly-4"},
+
+  "137": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "138": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "140": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "134": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "183": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "196": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "212": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "283": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "305": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "265": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "291": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+  "295": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
+
+  "278": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "30", "plan_id": "Basic-Yearly-30"},
+  "151": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "36", "plan_id": "Basic-Yearly-36"},
+  "132": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "42", "plan_id": "Basic-Yearly-42"},
+
+  "267": {"tier": "PREMIUM", "frequency": "MONTHLY", "pricePerUser": "8", "plan_id": "Premium-Monthly-8"},
+  "325": {"tier": "PREMIUM", "frequency": "MONTHLY", "pricePerUser": "8", "plan_id": "Premium-Monthly-8"},
+  "314": {"tier": "PREMIUM", "frequency": "MONTHLY", "pricePerUser": "10", "plan_id": "Premium-Monthly-10"},
+  "175": {"tier": "PREMIUM", "frequency": "MONTHLY", "pricePerUser": "10", "plan_id": "Premium-Monthly-10"},
+
+  "92":  {"tier": "POWER",   "frequency": "MONTHLY", "pricePerUser": "15", "plan_id": "Power-Monthly-15"}
+}
