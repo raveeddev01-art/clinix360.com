@@ -10,6 +10,23 @@ defmodule Stitch.Stripe.Migrator do
   @last_event_id "evt_1BsY3RCjAbiXzvjlDNMHismS"
 
   @doc """
+  These are the customers migrated from stitch V1 to stitch V2 but their link for stripe
+  billing were not migrated/maintained. It was a manual effort and I grabbed this by
+  working manually with @bharat. Here is the master document for reference.
+  https://paper.dropbox.com/doc/Stitch-Stripe-Migrations-3lY4DUgcFfQoxHgc83qiK
+  We just linked the migrated customers to their old stripe customer_ids, subscription_ids
+  , and valid_until based on the stitch V1 database. Also we are setting their tier +
+  renewal_frequency based on the document shared by @bharat.
+  """
+  def link_customers(), do: Helper.execute_sql_file("link_stripe_customers.sql")
+
+  @doc """
+  For Stitch V1 we were using many custom pricing plans, we reduced them to have 6
+  main pricing plans and we are trying to map old plans to new ones. Some customers
+  still need a custom pricing and we will leave them as is without touching their
+  subscriptions. Along-with plan correction, we are updating billable user count to
+  strip V1 also because Stripe V1 was disconnected from production and do not have
+  updated data. In short we are syncing subscriptions between Stripe V1 and our database.
   These are the customers migrated from Stripe V2 to V1 and were signed up on V2. We
   Asked stripe to copy their customers from V2 to V1 but subscription cannot be copoied
   between stripe accounts. These customers have already purchased subscription on V2
@@ -21,70 +38,12 @@ defmodule Stitch.Stripe.Migrator do
   subscription_line_item_id in our database for newly created subscription as well as we
   have to update stripe with the billable user count and subscription plan.
   """
-  def link_v2_customers() do
-    query =
-      from(
-        s in Subscription,
-        join: t in Team,
-        on: t.id == s.team_id,
-        where: not is_nil(s.subscription_id),
-        where: s.tier != "TRIAL",
-        preload: [team: t]
-      )
-
-    query
-    |> Repo.all()
-    |> Enum.map(fn %Subscription{customer_id: customer_id, subscription_id: subscription_id} =
-                     subscription ->
-      case Stripe.Subscriptions.get(customer_id, subscription_id) do
-        {:error, _} ->
-          user_count =
-            subscription.team
-            |> Billing.list_billable_users()
-            |> length()
-
-          request_opts = [
-            quantity: user_count,
-            plan: Plan.id(subscription),
-            trial_end: DateTime.to_unix(subscription.valid_until)
-          ]
-
-          {:ok, stripe_sub} = Stripe.Subscriptions.create(customer_id, request_opts)
-          item = List.first(stripe_sub[:items]["data"])
-          subscription_line_item_id = item["id"]
-          subscription_id = stripe_sub[:id]
-
-          subscription
-          |> change(subscription_id: subscription_id)
-          |> change(subscription_line_item_id: subscription_line_item_id)
-          |> Repo.update()
-
-        {:ok, stripe_sub} ->
-          stripe_sub
-      end
-    end)
-  end
-
-  @doc """
-  These are the customers migrated from stitch V1 to stitch V2 but their link for stripe
-  billing were not migrated/maintained. It was a manual effort and I grabbed this by
-  working manually with @bharat. Here is the master document for reference.
-  https://paper.dropbox.com/doc/Stitch-Stripe-Migrations-3lY4DUgcFfQoxHgc83qiK
-  We just linked the migrated customers to their old stripe customer_ids, subscription_ids
-  , and valid_until based on the stitch V1 database. Also we are setting their tier +
-  renewal_frequency based on the document shared by @bharat.
-  """
-  def link_v1_customers(), do: Helper.execute_sql_file("link_stripe_customers.sql")
-
-  @doc """
-  For Stitch V1 we were using many custom pricing plans, we reduced them to have 6
-  main pricing plans and we are trying to map old plans to new ones. Some customers
-  still need a custom pricing and we will leave them as is without touching their
-  subscriptions. Along-with plan correction, we are updating billable user count to
-  strip V1 also because Stripe V1 was disconnected from production and do not have
-  updated data. In short we are syncing subscriptions between Stripe V1 and our database.
-  """
   def link_subscriptions() do
+    custom_plans =
+      "v2-custom-pricing.json"
+      |> Helper.read_file()
+      |> Helper.json_parse()
+
     query =
       from(
         s in Subscription,
@@ -99,77 +58,120 @@ defmodule Stitch.Stripe.Migrator do
     |> Enum.map(fn %Subscription{customer_id: customer_id, subscription_id: subscription_id} =
                      subscription ->
       # Fetch subscription details from Stripe
-      {:ok, stripe_sub} = Stripe.Subscriptions.get(customer_id, subscription_id)
-      renews = !stripe_sub[:cancel_at_period_end]
-      item = List.first(stripe_sub[:items]["data"])
-      subscription_line_item_id = item["id"]
-
-      # Map to the V2 plan id
-      old_plans = [
-        "Free",
-        "Basic",
-        "Premium",
-        "Basic-Monthly",
-        "Basic-Yearly",
-        "Premium-Monthly",
-        "Premium-Yearly",
-        "Power-Monthly",
-        "Power-Yearly"
-      ]
-
-      new_plan =
-        if item["plan"]["id"] in old_plans do
-          case item["plan"]["id"] do
-            "Free" -> "basic_monthly"
-            "Basic" -> "basic_monthly"
-            "Basic-Monthly" -> "basic_monthly"
-            "Basic-Yearly" -> "basic_yearly"
-            "Premium" -> "premium_monthly"
-            "Premium-Monthly" -> "premium_monthly"
-            "Premium-Yearly" -> "premium_yearly"
-            "Power-Monthly" -> "power_monthly"
-            "Power-Yearly" -> "power_yearly"
-          end
-        else
-          item["plan"]["id"]
-        end
-
-      # Update Billable user count
       user_count =
         subscription.team
         |> Billing.list_billable_users()
         |> length()
 
-      request_opts = [
-        prorate: true,
-        items: [
-          "0": [
-            id: subscription_line_item_id,
-            quantity: user_count,
-            plan: new_plan
-          ]
-        ]
-      ]
-
-      Stripe.Subscriptions.change(customer_id, subscription_id, new_plan)
+      params = case Stripe.Subscriptions.get(customer_id, subscription_id) do
+        {:ok, stripe_sub} ->
+          update_subscription(custom_plans, stripe_sub, user_count, subscription)
+        {:error, _} ->
+          # If 404 Remove previous subscriptions and create new one
+          Stripe.Subscriptions.cancel_all(customer_id, [])
+          create_subscription(custom_plans, user_count, subscription)
+      end
 
       # Update renews, valid_until, upcoming_invoice, subscription_line_item_id
-      {:ok, upcoming_invoice} =
-        Stripe.Invoices.upcoming(customer_id, subscription: subscription_id)
-
-      valid_until = DateTime.from_unix!(upcoming_invoice[:period_end])
+      {:ok, upcoming_invoice} = Stripe.Invoices.upcoming(customer_id, subscription: params[:subscription_id])
 
       subscription
-      |> change(renews: renews)
-      |> change(valid_until: valid_until)
-      |> change(subscription_line_item_id: subscription_line_item_id)
+      |> change(params)
       |> change(estimated_invoice_amount: upcoming_invoice.amount_due)
+      |> change(valid_until: DateTime.from_unix!(upcoming_invoice[:period_end]))
       |> Repo.update()
-
-      if stripe_sub[:cancel_at_period_end] do
-        Stripe.Subscriptions.cancel(customer_id, subscription_id, at_period_end: true)
-      end
     end)
+  end
+
+  defp update_subscription(
+         custom_plans,
+         stripe_sub,
+         user_count,
+         %Subscription{
+           team_id: team_id,
+           customer_id: customer_id,
+           subscription_id: subscription_id
+         } = subscription
+       ) do
+    renews = !stripe_sub[:cancel_at_period_end]
+    item = List.first(stripe_sub[:items]["data"])
+    subscription_line_item_id = item["id"]
+
+    # Map to the V2 plan id
+    plan_id =
+      if plan = custom_plans["#{team_id}"] do
+        plan["plan_id"]
+      else
+        case item["plan"]["id"] do
+          "Free" -> "basic_monthly"
+          "Basic" -> "basic_monthly"
+          "Basic-Monthly" -> "basic_monthly"
+          "Basic-Yearly" -> "basic_yearly"
+          "Premium" -> "premium_monthly"
+          "Premium-Monthly" -> "premium_monthly"
+          "Premium-Yearly" -> "premium_yearly"
+          "Power-Monthly" -> "power_monthly"
+          "Power-Yearly" -> "power_yearly"
+          other -> other
+        end
+      end
+
+    request_opts = [
+      prorate: true,
+      items: [
+        "0": [
+          id: subscription_line_item_id,
+          quantity: user_count,
+          plan: plan_id
+        ]
+      ]
+    ]
+
+    Stripe.Subscriptions.change(customer_id, subscription_id, request_opts)
+
+    if stripe_sub[:cancel_at_period_end] do
+      Stripe.Subscriptions.cancel(customer_id, subscription_id, at_period_end: true)
+    end
+
+    [
+      renews: renews,
+      subscription_id: stripe_sub[:id],
+      subscription_line_item_id: subscription_line_item_id,
+    ]
+  end
+
+  defp create_subscription(
+         custom_plans,
+         user_count,
+         %Subscription{
+           team_id: team_id,
+           customer_id: customer_id,
+           subscription_id: subscription_id
+         } = subscription
+       ) do
+    # Map to the V2 plan id
+    plan_id =
+      if plan = custom_plans["#{team_id}"] do
+        plan["plan_id"]
+      else
+        Plan.id(subscription)
+      end
+
+    request_opts = [
+      plan: plan_id,
+      quantity: user_count,
+      trial_end: DateTime.to_unix(subscription.valid_until)
+    ]
+
+    {:ok, stripe_sub} = Stripe.Subscriptions.create(customer_id, request_opts)
+    item = List.first(stripe_sub[:items]["data"])
+    subscription_line_item_id = item["id"]
+
+    [
+      renews: true,
+      subscription_id: stripe_sub[:id],
+      subscription_line_item_id: subscription_line_item_id
+    ]
   end
 
   @doc """
@@ -222,7 +224,7 @@ defmodule Stitch.Stripe.Migrator do
       end
     end)
 
-    if Mix.env == :prod do
+    if Mix.env() == :prod do
       last_event_id = List.last(events)["id"]
       {:ok, %{data: events}} = Stripe.Events.list(last_event_id, @event_list_limit)
       do_import_payment_history(teams, events)
@@ -247,7 +249,7 @@ defmodule Stitch.Stripe.Migrator do
 
     # Fetch all customers from stripe
     {:ok, customers} = Stripe.Customers.all()
-    customers = if Mix.env == :prod, do: customers, else: [List.first(customers)]
+    customers = if Mix.env() == :prod, do: customers, else: [List.first(customers)]
 
     # Loop over each stripe customer and for customers missing in db do
     Enum.map(customers, fn c ->
@@ -301,8 +303,7 @@ defmodule Stitch.Stripe.Migrator do
   iex> Stitch.Stripe.Migrator.run()
   """
   def run() do
-    link_v2_customers()
-    link_v1_customers()
+    link_customers()
     link_subscriptions()
     import_payment_methods()
     remove_dead_stripe_customers()
@@ -326,6 +327,17 @@ defmodule Stitch.Stripe.Migrator.Helper do
 
       {:ok, file} ->
         file
+    end
+  end
+
+  def json_parse(content) do
+    case Poison.decode(content) do
+      {:error, error} ->
+        Logger.error("Error parsing json content #{content}")
+        raise error
+
+      {:ok, json} ->
+        json
     end
   end
 
