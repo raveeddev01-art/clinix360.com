@@ -251,9 +251,10 @@ defmodule Stitch.Stripe.Migrator do
     link_v1_customers()
     link_subscriptions()
     import_payment_methods()
-    import_payment_history()
     remove_dead_stripe_customers()
     create_missing_stripe_customers()
+    # This will take time and is least priority thing
+    import_payment_history()
   end
 end
 
