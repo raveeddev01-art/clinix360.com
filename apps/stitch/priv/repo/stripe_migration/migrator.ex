@@ -7,7 +7,7 @@ defmodule Stitch.Stripe.Migrator do
 
   @event_list_limit 100
   # Correct for production
-  @last_event_id "evt_1BsY3RCjAbiXzvjlDNMHismS"
+  @last_event_id "evt_1BsuQFLLkMgeXizA6IHMrrV4"
 
   @doc """
   These are the customers migrated from stitch V1 to stitch V2 but their link for stripe
