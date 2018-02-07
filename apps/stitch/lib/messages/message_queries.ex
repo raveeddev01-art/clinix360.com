@@ -167,7 +167,7 @@ defmodule Stitch.MessageQueries do
   end
 
   def load_info(message) do
-    Repo.preload(message, [:pinned_by, :user])
+    Repo.preload(message, [:pinned_by, :user], force: true)
   end
 
   def get_uploads_for_user(%User{team_id: team_id, id: user_id, roles: [role]}, skip, limit) when not role in @guest_roles do
