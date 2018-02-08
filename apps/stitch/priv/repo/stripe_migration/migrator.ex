@@ -58,7 +58,9 @@ defmodule Stitch.Stripe.Migrator do
     |> Enum.map(fn %Subscription{customer_id: customer_id, subscription_id: subscription_id} =
                      subscription ->
       # Fetch subscription details from Stripe
-      Logger.info("Processing #{customer_id} with #{subscription_id} for team #{subscription.team.id}.")
+      Logger.info(
+        "Processing #{customer_id} with #{subscription_id} for team #{subscription.team.id}."
+      )
 
       user_count =
         subscription.team
@@ -73,12 +75,8 @@ defmodule Stitch.Stripe.Migrator do
 
           {:error, _} ->
             # If 404 Remove previous subscriptions and create new one
-            case Stripe.Customers.get(customer_id) do
-              {:ok, _} -> Stripe.Subscriptions.cancel_all(customer_id, [])
-              _ -> nil
-            end
-
             Logger.info("Subscription #{subscription_id} do not exists, Creating a new one.")
+            Stripe.Subscriptions.cancel_all(customer_id, [])
             create_subscription(custom_plans, user_count, subscription)
         end
 
@@ -295,15 +293,8 @@ defmodule Stitch.Stripe.Migrator do
       if !teams[String.to_atom(c["id"])] do
         # cancel all suscriptions + remove customers froms stripe
         Logger.info("Removing dead stripe customer #{c["id"]}")
-
-        case Stripe.Customers.get(c["id"]) do
-          {:ok, _} ->
-            Stripe.Subscriptions.cancel_all(c["id"], [])
-            Stripe.Customers.delete(c["id"])
-
-          _ ->
-            nil
-        end
+        Stripe.Subscriptions.cancel_all(c["id"], [])
+        Stripe.Customers.delete(c["id"])
       end
     end)
   end
