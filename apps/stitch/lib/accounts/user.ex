@@ -37,6 +37,7 @@ defmodule Stitch.Accounts.User do
     field :groups_as_guest, {:array, :integer}, default: [] # List of groups the user is allowed in if user is a guest
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
+    has_one :password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all
 
     field :password, :string, virtual: true
 
