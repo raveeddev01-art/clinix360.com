@@ -58,31 +58,44 @@ defmodule Stitch.Stripe.Migrator do
     |> Enum.map(fn %Subscription{customer_id: customer_id, subscription_id: subscription_id} =
                      subscription ->
       # Fetch subscription details from Stripe
+      Logger.info("Processing #{customer_id} with #{subscription_id} for team #{subscription.team.id}.")
+
       user_count =
         subscription.team
         |> Billing.list_billable_users()
         |> length()
 
-      params = case Stripe.Subscriptions.get(customer_id, subscription_id) do
-        {:ok, stripe_sub} ->
-          update_subscription(custom_plans, stripe_sub, user_count, subscription)
-        {:error, _} ->
-          # If 404 Remove previous subscriptions and create new one
-          Stripe.Subscriptions.cancel_all(customer_id, [])
-          create_subscription(custom_plans, user_count, subscription)
-      end
+      params =
+        case Stripe.Subscriptions.get(customer_id, subscription_id) do
+          {:ok, stripe_sub} ->
+            Logger.info("Subscription #{subscription_id} exists, Just updating.")
+            update_subscription(custom_plans, stripe_sub, user_count, subscription)
+
+          {:error, _} ->
+            # If 404 Remove previous subscriptions and create new one
+            case Stripe.Customers.get(customer_id) do
+              {:ok, _} -> Stripe.Subscriptions.cancel_all(customer_id, [])
+              _ -> nil
+            end
+
+            Logger.info("Subscription #{subscription_id} do not exists, Creating a new one.")
+            create_subscription(custom_plans, user_count, subscription)
+        end
 
       # Update renews, valid_until, upcoming_invoice, subscription_line_item_id
       empty_invoice = [amount_due: 0, period_end: DateTime.utc_now() |> DateTime.to_unix()]
 
-      upcoming_invoice = if params[:subscription_id] do
-        case Stripe.Invoices.upcoming(customer_id, subscription: params[:subscription_id]) do
-          {:ok, upcoming_invoice} -> upcoming_invoice
-          {:error, _} -> empty_invoice
+      upcoming_invoice =
+        if params[:subscription_id] do
+          case Stripe.Invoices.upcoming(customer_id, subscription: params[:subscription_id]) do
+            {:ok, upcoming_invoice} -> upcoming_invoice
+            {:error, _} -> empty_invoice
+          end
+        else
+          empty_invoice
         end
-      else
-        empty_invoice
-      end
+
+      Logger.info("Done #{customer_id} with #{subscription_id} for team #{subscription.team.id}.")
 
       subscription
       |> change(params)
@@ -147,8 +160,9 @@ defmodule Stitch.Stripe.Migrator do
           subscription_id: stripe_sub[:id],
           subscription_line_item_id: subscription_line_item_id
         ]
+
       {:error, _} ->
-        [ renews: false, subscription_id: nil, subscription_line_item_id: nil]
+        [renews: false, subscription_id: nil, subscription_line_item_id: nil]
     end
   end
 
@@ -185,6 +199,7 @@ defmodule Stitch.Stripe.Migrator do
           subscription_id: stripe_sub[:id],
           subscription_line_item_id: subscription_line_item_id
         ]
+
       {:error, _} ->
         [renews: false, subscription_id: nil, subscription_line_item_id: nil]
     end
@@ -221,13 +236,17 @@ defmodule Stitch.Stripe.Migrator do
         Map.put(acc, String.to_atom(x.customer_id), x.team)
       end)
 
-    {:ok, %{data: events}} = Stripe.Events.list(@last_event_id, @event_list_limit)
-    do_import_payment_history(teams, events)
+    case Stripe.Events.list(@last_event_id, @event_list_limit) do
+      {:ok, %{data: events}} -> do_import_payment_history(teams, events)
+      _ -> nil
+    end
   end
 
   defp do_import_payment_history(_, []), do: nil
 
   defp do_import_payment_history(teams, events) do
+    Logger.info("Processing payment history batch.")
+
     # Loop over every event and run the following
     Enum.map(events, fn event ->
       if event["type"] == "invoice.payment_succeeded" do
@@ -235,6 +254,7 @@ defmodule Stitch.Stripe.Migrator do
         customer_id = get_in(event, [:data, "object", "customer"])
 
         if team = teams[String.to_atom(customer_id)] do
+          Logger.info("Recording payment history for team #{team.id}")
           Stitch.Stripe.Events.record_payment_history(team, event)
         end
       end
@@ -242,8 +262,11 @@ defmodule Stitch.Stripe.Migrator do
 
     if Mix.env() == :prod do
       last_event_id = List.last(events)["id"]
-      {:ok, %{data: events}} = Stripe.Events.list(last_event_id, @event_list_limit)
-      do_import_payment_history(teams, events)
+
+      case Stripe.Events.list(last_event_id, @event_list_limit) do
+        {:ok, %{data: events}} -> do_import_payment_history(teams, events)
+        _ -> nil
+      end
     end
   end
 
@@ -271,9 +294,16 @@ defmodule Stitch.Stripe.Migrator do
     Enum.map(customers, fn c ->
       if !teams[String.to_atom(c["id"])] do
         # cancel all suscriptions + remove customers froms stripe
-        Logger.info("Removing Stripe Customer #{c["id"]}")
-        Stripe.Subscriptions.cancel_all(c["id"], [])
-        Stripe.Customers.delete(c["id"])
+        Logger.info("Removing dead stripe customer #{c["id"]}")
+
+        case Stripe.Customers.get(c["id"]) do
+          {:ok, _} ->
+            Stripe.Subscriptions.cancel_all(c["id"], [])
+            Stripe.Customers.delete(c["id"])
+
+          _ ->
+            nil
+        end
       end
     end)
   end
@@ -299,6 +329,7 @@ defmodule Stitch.Stripe.Migrator do
       case Stripe.Customers.get(subscription.customer_id) do
         {:error, _} ->
           team = subscription.team
+          Logger.info("Creating new stripe customer for team #{team.id} #{team.name}")
           customer_id = Stitch.Stripe.Client.create_customer(team.id, team.name)
 
           subscription
