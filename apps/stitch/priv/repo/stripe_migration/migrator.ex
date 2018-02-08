@@ -73,11 +73,20 @@ defmodule Stitch.Stripe.Migrator do
       end
 
       # Update renews, valid_until, upcoming_invoice, subscription_line_item_id
-      {:ok, upcoming_invoice} = Stripe.Invoices.upcoming(customer_id, subscription: params[:subscription_id])
+      empty_invoice = [amount_due: 0, period_end: DateTime.utc_now() |> DateTime.to_unix()]
+
+      upcoming_invoice = if params[:subscription_id] do
+        case Stripe.Invoices.upcoming(customer_id, subscription: params[:subscription_id]) do
+          {:ok, upcoming_invoice} -> upcoming_invoice
+          {:error, _} -> empty_invoice
+        end
+      else
+        empty_invoice
+      end
 
       subscription
       |> change(params)
-      |> change(estimated_invoice_amount: upcoming_invoice.amount_due)
+      |> change(estimated_invoice_amount: upcoming_invoice[:amount_due])
       |> change(valid_until: DateTime.from_unix!(upcoming_invoice[:period_end]))
       |> Repo.update()
     end)
