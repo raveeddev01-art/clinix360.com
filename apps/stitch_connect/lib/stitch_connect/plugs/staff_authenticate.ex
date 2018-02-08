@@ -1,23 +1,23 @@
 defmodule StitchConnect.Plug.StaffAuthenticate do
   import Plug.Conn
-  alias Stitch.Accounts
+  alias Stitch.UserQueries
   alias Stitch.Accounts.User
 
   def init(_), do: nil
 
   def call(conn, _) do
    conn
-   |> get_user_id()
+   |> get_user_token()
    |> do_auth(conn)
   end
 
-  def get_user_id(conn) do
-    get_session(conn, :impersonator_user_id) || get_session(conn, :current_user_id)
+  def get_user_token(conn) do
+    get_session(conn, :impersonator_user_token) || get_session(conn, :current_user_token)
   end
 
   defp do_auth(nil, conn), do: unauthorized(conn)
-  defp do_auth(user_id, conn) do
-    case Accounts.get_by_id(user_id) do
+  defp do_auth(user_token, conn) do
+    case UserQueries.get_active_by_token(user_token) do
       nil -> unauthorized(conn)
       %User{is_staff: false} ->
         conn

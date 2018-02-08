@@ -1,17 +1,17 @@
 defmodule StitchConnect.Plug.Authenticate do
   import Plug.Conn
-  alias Stitch.Accounts
+  alias Stitch.UserQueries
 
   def init(default), do: default
 
   def call(conn, _) do
-    case get_session(conn, :current_user_id) do
+    case get_session(conn, :current_user_token) do
       nil ->
         conn
         |> Phoenix.Controller.redirect(to: "/login")
         |> halt
-      current_user_id ->
-        case Accounts.get_by_id(current_user_id) do
+      current_user_token ->
+        case UserQueries.get_by_token(current_user_token) do
           nil ->
             conn
             |> clear_session

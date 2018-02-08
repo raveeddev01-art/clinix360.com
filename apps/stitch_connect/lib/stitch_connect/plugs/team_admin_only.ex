@@ -5,16 +5,11 @@ defmodule StitchConnect.Plug.TeamAdminOnly do
 
   def call(conn, _) do
     conn = fetch_query_params(conn)
-    case Stitch.UserQueries.get_by_token(conn.params["authenticationToken"]) do
-      {:error, message} ->
+    case Stitch.UserQueries.get_active_by_token(conn.params["authenticationToken"]) do
+      nil ->
         conn
-        |> put_status(:unauthorized)
-        |> Phoenix.Controller.json(%{message: message})
-        |> halt
-      {:not_found, message} ->
-        conn
-        |> put_status(:unauthorized)
-        |> Phoenix.Controller.json(%{message: message})
+        |> put_status(:forbidden)
+        |> Phoenix.Controller.json(%{message: "You are not authorized to access this resource."})
         |> halt
       user ->
         case Enum.member?(user.roles, "admin") do

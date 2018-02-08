@@ -5,16 +5,11 @@ defmodule StitchConnect.Plug.ApiAuthenticate do
 
   def call(conn, opts) do
     conn = fetch_query_params(conn)
-    case Stitch.UserQueries.get_by_token(conn.params["authenticationToken"]) do
-      {:error, message} ->
+    case Stitch.UserQueries.get_active_by_token(conn.params["authenticationToken"]) do
+      nil ->
         conn
-        |> put_status(:unauthorized)
-        |> Phoenix.Controller.json(%{message: message})
-        |> halt
-      {:not_found, message} ->
-        conn
-        |> put_status(:unauthorized)
-        |> Phoenix.Controller.json(%{message: message})
+        |> put_status(:forbidden)
+        |> Phoenix.Controller.json(%{message: "You are not authorized to access this resource."})
         |> halt
       user ->
         conn
@@ -38,7 +33,7 @@ defmodule StitchConnect.Plug.ApiAuthenticate do
       |> assign(:current_user, user)
     else
       conn
-      |> put_status(:unauthorized)
+      |> put_status(:forbidden)
       |> Phoenix.Controller.json(%{message: "You are not authorized to access this resource."})
       |> halt
     end
