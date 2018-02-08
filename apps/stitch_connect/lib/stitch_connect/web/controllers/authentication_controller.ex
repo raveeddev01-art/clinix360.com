@@ -8,8 +8,8 @@ defmodule StitchConnect.Web.AuthenticationController do
   end
 
   def login(conn, _params) do
-    with current_user_id when is_integer(current_user_id) <- get_session(conn, :current_user_id),
-         %Stitch.Accounts.User{} = current_user <- Stitch.Accounts.get_for_team_id(current_user_id, conn.assigns.team.id) do
+    with current_user_token when is_binary(current_user_token) <- get_session(conn, :current_user_token),
+         %Stitch.Accounts.User{} = current_user <- Stitch.UserQueries.get_by_token(current_user_token) do
       default_group = Stitch.GroupQueries.default_group(current_user)
       redirect(conn, to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug))
     else _error ->

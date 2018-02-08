@@ -204,12 +204,4 @@ defmodule Stitch.Accounts do
     |> User.default_profile_image_changeset(%{profile_image_url: nil, profile_image_thumb_url: nil})
     |> Repo.update
   end
-
-  def get_by_id(user_id) do
-    Repo.get(User, user_id)
-  end
-
-  def get_for_team_id(user_id, team_id) do
-    Repo.get_by(User, id: user_id, team_id: team_id)
-  end
 end

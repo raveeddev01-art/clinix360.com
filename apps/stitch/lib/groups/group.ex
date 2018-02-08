@@ -3,7 +3,7 @@ defmodule Stitch.Group do
   import Ecto.Query
   import Ecto.Changeset
   alias Stitch.Accounts.{User, Role}
-  alias Stitch.{Repo, Group, GroupUser, GroupQueries, Message}
+  alias Stitch.{Repo, Group, GroupUser, GroupQueries, Message, UserQueries}
 
   @type t :: %__MODULE__{}
   @guest_roles Role.guests()
@@ -271,7 +271,7 @@ defmodule Stitch.Group do
     {:error, :direct_message}
   end
   def remove_user(%Group{} = group, user_id) when is_integer(user_id) do
-    user = Stitch.Accounts.get_by_id(user_id)
+    user = UserQueries.get_by_id(user_id)
     remove_user(group, user)
   end
   def remove_user(%Group{is_default: true}, %User{roles: [role]})

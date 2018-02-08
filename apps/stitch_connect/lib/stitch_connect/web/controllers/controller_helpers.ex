@@ -7,8 +7,7 @@ defmodule StitchConnect.Web.ControllerHelpers do
   """
   def login_user(conn, user) do
     conn
-    |> put_session(:current_user_id, user.id)
-    |> put_session(:authentication_token, user.token)
+    |> put_session(:current_user_token, user.token)
     |> put_session(:session_id, Stitch.Rand.token(12))
     |> put_session(:locked, false)
     |> put_session(:intercom_user_hash, Stitch.Intercom.identity_verification_user_hash(user.id))
