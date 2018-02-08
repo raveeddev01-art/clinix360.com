@@ -31,24 +31,26 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
       mentions_count: group.mentions_count,
       last_read_at: group.last_read_at,
       inserted_at: group.inserted_at,
-      creator_user_id: group.creator_user_id,
+      updated_at: group.updated_at,
+      creator_user_id: group.creator_user_id
     }
   end
 
   defp group_name(%Group{name: "__dm_group__", users: users}, user_id) do
-    user = case users do
-      [me] -> me
-      users -> Enum.find(users, &( &1.id != user_id ))
-    end
+    user =
+      case users do
+        [me] -> me
+        users -> Enum.find(users, &(&1.id != user_id))
+      end
 
     "#{user.first_name} #{user.last_name}"
   end
 
   defp group_name(%Group{name: "__multi_dm_group__", users: users}, user_id) do
     users
-    |> Enum.filter(& &1.id != user_id )
-    |> Enum.sort(& &1.id <= &2.id)
-    |> Enum.map(& "#{&1.first_name} #{&1.last_name}" )
+    |> Enum.filter(&(&1.id != user_id))
+    |> Enum.sort(&(&1.id <= &2.id))
+    |> Enum.map(&"#{&1.first_name} #{&1.last_name}")
     |> Enum.join(", ")
   end
 
