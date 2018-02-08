@@ -46,6 +46,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
   def user_json(user) do
     %{
       id: user.id,
+      updated_at: user.updated_at,
       first_name: user.first_name,
       last_name: user.last_name,
       full_name: "#{user.first_name} #{user.last_name}",
