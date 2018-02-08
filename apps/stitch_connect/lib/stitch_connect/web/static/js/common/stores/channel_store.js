@@ -86,7 +86,7 @@ class ChannelStore {
 
     // App related
     this.eventChannel.on("new_app_version", () => {
-      window.location.reload(true); // force reload without cache
+      socket.disconnect(() => window.location.reload(true));
     });
     this.eventChannel.on("logout", presenceStore.onLogout);
 
