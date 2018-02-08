@@ -9,7 +9,7 @@ import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import Button from "react-bootstrap/lib/Button";
 
-import Toggle from "../../../common/components/toggle/Toggle";
+import { Toggle } from "common/components";
 
 @inject("groupStore")
 @observer

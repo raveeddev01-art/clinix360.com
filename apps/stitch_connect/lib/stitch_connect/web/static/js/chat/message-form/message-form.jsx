@@ -5,6 +5,8 @@ import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
 import some from "lodash/some";
 
+import { isAdmin } from "lib/utils";
+import { confirmModal } from "common/modals";
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
 import TypingUsers from "./components/typing-users";
@@ -12,9 +14,9 @@ import JumpingIndicator from "./components/jumping-indicator";
 import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
-import { confirm } from "../../common/modals";
 
-@inject("messageStore", "socketStore", "uploadStore")
+
+@inject("messageStore", "socketStore", "uploadStore", "billingStore")
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -70,7 +72,7 @@ class MessageForm extends Component {
 
     if (messageStore.messageInEdit) {
       if (!messageStore.textInEdit) {
-        confirm({
+        confirmModal({
           title: "Delete Message",
           message:
             "Are you sure you want to delete this message? This cannot be undone.",
@@ -188,21 +190,19 @@ class MessageForm extends Component {
 
   getText = () => {
     const { messageStore } = this.props;
-    const { messageInEdit } = messageStore;
-    let { text: str } = this.state;
 
-    if (messageInEdit) {
-      str = messageStore.textInEdit;
-    }
-
-    return str;
+    return messageStore.messageInEdit
+      ? messageStore.textInEdit
+      : this.state.text;
   };
 
   getCurrentWord = () => {
-    const str = this.getText();
+    const text = this.getText();
     const cursorPos = this.textInput.selectionStart;
-    const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
-    const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
+    const preWord = text
+      .substring(0, cursorPos)
+      .match(/[:+\-@A-Za-z0-9_]*$/)[0];
+    const postWord = text.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     return `${preWord}${postWord}`;
   };
 
@@ -225,11 +225,11 @@ class MessageForm extends Component {
 
   insertWord = word => {
     const cursorPos = this.textInput.selectionStart;
-    const str = this.getText();
+    const text = this.getText();
     this.updateInputText(
-      str.substring(0, this.textInput.selectionStart) +
+      text.substring(0, this.textInput.selectionStart) +
         word +
-        str.substring(this.textInput.selectionEnd)
+        text.substring(this.textInput.selectionEnd)
     );
 
     setTimeout(() => {
@@ -243,13 +243,15 @@ class MessageForm extends Component {
 
   replaceCurrentWord = word => {
     const cursorPos = this.textInput.selectionStart;
-    const str = this.getText();
-    const preWord = str.substring(0, cursorPos).match(/[:+\-@A-Za-z0-9_]*$/)[0];
-    const postWord = str.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
+    const text = this.getText();
+    const preWord = text
+      .substring(0, cursorPos)
+      .match(/[:+\-@A-Za-z0-9_]*$/)[0];
+    const postWord = text.substring(cursorPos).match(/^[:+\-A-Za-z0-9_]*/)[0];
     const updatedMessage =
-      str.substring(0, cursorPos - preWord.length) +
+      text.substring(0, cursorPos - preWord.length) +
       word +
-      str.substring(cursorPos + postWord.length);
+      text.substring(cursorPos + postWord.length);
 
     this.updateInputText(updatedMessage);
     this.setState({ openMentionMenu: false }, () => {
@@ -284,14 +286,24 @@ class MessageForm extends Component {
   };
 
   renderInput() {
-    const { messageStore, socketStore } = this.props;
-    const { messageInEdit } = messageStore;
+    const {
+      messageStore: { messageInEdit },
+      socketStore,
+      billingStore: {
+        subscription: { tier, trial_remaining_days: trialRemainingDays }
+      }
+    } = this.props;
 
     if (messageInEdit) {
       this.textInput.focus();
     }
 
-    const text = this.getText();
+    const trialExpired = tier === "TRIAL" && trialRemainingDays <= 0;
+    const text = !trialExpired
+      ? this.getText()
+      : isAdmin()
+        ? "Your trial has expired. Please subscribe to continue service."
+        : "Your trial has completed. Please contact your admin to subscribe to Stitch.";
     const className = classNames("form-control", "message-text", {
       editing:
         !!messageInEdit || !socketStore.isConnected || !socketStore.isHealthy
@@ -310,6 +322,7 @@ class MessageForm extends Component {
           onPaste={this.onPaste}
           autoFocus
           required
+          disabled={trialExpired}
           ref={input => {
             if (input) {
               this.textInput = ReactDOM.findDOMNode(input);

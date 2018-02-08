@@ -1,9 +1,11 @@
 import React from "react";
 
+import { LoadingIcon } from "common/components";
+
 const Loading = () => (
   <div id="loading-screen-wrapper">
     <div className="text-center">
-      <i className="fa fa-circle-o-notch fa-spin fa-3x fa-fw m-b-20" />
+      <LoadingIcon className="m-b-20" size={3} />
       <h3>Loading...</h3>
     </div>
   </div>

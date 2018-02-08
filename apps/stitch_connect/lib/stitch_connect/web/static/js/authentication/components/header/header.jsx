@@ -1,14 +1,9 @@
 import React, { Component } from "react";
-import { LinkContainer } from "react-router-bootstrap";
-import { Link } from "react-router-dom";
-
 import Navbar from "react-bootstrap/lib/Navbar";
 import Nav from "react-bootstrap/lib/Nav";
 import NavItem from "react-bootstrap/lib/NavItem";
 import NavDropdown from "react-bootstrap/lib/NavDropdown";
-import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import Button from "react-bootstrap/lib/Button";
 
 class Header extends Component {
   goToSignIn() {
@@ -20,7 +15,7 @@ class Header extends Component {
   }
 
   render() {
-    const logoLink = !window.electronApp ? `https://${applicationHost}` : "#";
+    // const logoLink = !window.electronApp ? `https://${applicationHost}` : "#";
 
     return (
       <Navbar id="header" inverse fixedTop>

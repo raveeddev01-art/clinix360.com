@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { AvatarUploader } from "common/components";
-import { confirm } from "common/modals";
+import { confirmModal } from "common/modals";
 import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Profile Image";
@@ -71,7 +71,7 @@ class ProfileImagePanel extends Component {
 
   onDelete = () => {
     const { onError, onSuccess, userStore } = this.props;
-    confirm({
+    confirmModal({
       title: "Delete Profile Image",
       message: "Are you sure you want to delete your profile image?",
       okLabel: "Delete"

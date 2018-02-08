@@ -8,11 +8,11 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 
+import { Scrollbar } from "common/components";
+import InviteModal from "common/modals/invite-modal";
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
-import InviteModal from "../common/modals/invite-modal";
-import { Scrollbar } from "../common/components";
 
 @inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
 @observer
@@ -43,17 +43,6 @@ class Sidemenu extends Component {
     }
   };
 
-  toggleInviteModal = () => {
-    this.setState({
-      showInviteModal: !this.state.showInviteModal
-    });
-  };
-
-  showInviteModal = evt => {
-    evt.preventDefault();
-    this.toggleInviteModal();
-  };
-
   getEdgeBadgeClass(roomItem, direction) {
     return cx(
       "edge-badge",
@@ -64,6 +53,17 @@ class Sidemenu extends Component {
       direction
     );
   }
+
+  toggleInviteModal = () => {
+    this.setState({
+      showInviteModal: !this.state.showInviteModal
+    });
+  };
+
+  showInviteModal = evt => {
+    evt.preventDefault();
+    this.toggleInviteModal();
+  };
 
   renderAdminOptions() {
     return (

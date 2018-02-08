@@ -3,13 +3,13 @@ import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import ImageFileAttachment from "./file-attachment/image";
 import { isAdmin } from "../../../../lib/utils";
-import { confirm } from "../../../modals";
+import { confirmModal } from "../../../modals";
 
 @inject("messageStore")
 @observer
 class LinkPreview extends Component {
   onClose = () => {
-    confirm({
+    confirmModal({
       title: "Delete Preview",
       message: "Are you sure you want to remove the link preview?",
       okLable: "Delete"

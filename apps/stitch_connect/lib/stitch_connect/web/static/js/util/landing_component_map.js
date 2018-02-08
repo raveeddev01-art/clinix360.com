@@ -1,4 +1,4 @@
-import Website from "../website/index";
+import Website from "../website";
 
 export default {
   Website

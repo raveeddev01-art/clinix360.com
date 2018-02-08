@@ -1,9 +1,9 @@
 import { createConfirmation } from "react-confirm";
 
-import Confirm from "./confirm";
-import Alert from "./alert";
+import ConfirmModal from "./confirm-modal";
+import AlertModal from "./alert-modal";
 
-const confirm = createConfirmation(Confirm);
-const alert = createConfirmation(Alert);
+const confirmModal = createConfirmation(ConfirmModal);
+const alertModal = createConfirmation(AlertModal);
 
-export { confirm, alert };
+export { confirmModal, alertModal };

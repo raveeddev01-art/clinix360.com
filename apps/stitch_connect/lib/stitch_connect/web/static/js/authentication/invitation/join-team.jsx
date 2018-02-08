@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { alert } from "common/modals";
 import { withRouter, Redirect } from "react-router-dom";
 
+import { alertModal } from "common/modals";
 import NameInput from "../components/name-card/name-card";
 import PhoneNumber from "../components/phone-number-card/phone-number-card";
 import Username from "../components/username-card/username-card";
@@ -34,7 +34,7 @@ class JoinTeam extends Component {
   onSave = () => {
     const { invitationStore, history } = this.props;
     invitationStore.completeInvitation().catch(() => {
-      alert({
+      alertModal({
         title: "Error in joining team",
         message:
           "Sorry, we had an issue completing your onboarding. Could you please start over?",

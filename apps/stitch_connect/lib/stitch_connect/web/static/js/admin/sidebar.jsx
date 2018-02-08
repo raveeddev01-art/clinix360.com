@@ -4,9 +4,9 @@ import { Link, withRouter, matchPath } from "react-router-dom";
 import ListGroup from "react-bootstrap/lib/ListGroup";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 
-import { isAdmin } from "../lib/utils";
-import InviteModal from "../common/modals/invite-modal";
-import Scrollbar from "../common/components/scrollbar";
+import { isAdmin } from "lib/utils";
+import InviteModal from "common/modals/invite-modal";
+import Scrollbar from "common/components/scrollbar";
 
 @inject("teamStore", "presenceStore", "userStore")
 @observer

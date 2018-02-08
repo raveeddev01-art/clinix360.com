@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { alert } from "common/modals";
 import { withRouter, Redirect } from "react-router-dom";
 
+import { alertModal } from "common/modals";
 import TeamName from "../components/team-name-card/team-name-card";
 import TeamUrl from "../components/team-url-card/team-url-card";
 import NameInput from "../components/name-card/name-card";
@@ -42,7 +42,7 @@ class Onboarding extends Component {
   onSave = () => {
     const { registrationStore, history } = this.props;
     registrationStore.createTeam().catch(() => {
-      alert({
+      alertModal({
         title: "Error in creating team",
         message:
           "Sorry, we had an issue completing your onboarding. Could you please start over?",

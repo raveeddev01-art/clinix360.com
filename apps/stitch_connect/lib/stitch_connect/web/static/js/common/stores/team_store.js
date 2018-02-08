@@ -16,6 +16,7 @@ class TeamStore {
   @action
   loadTeam = id => {
     this.loading = true;
+
     get(`/api/v1/teams/${id}`).then(resp => {
       const { data } = resp;
       this.id = data.id;
