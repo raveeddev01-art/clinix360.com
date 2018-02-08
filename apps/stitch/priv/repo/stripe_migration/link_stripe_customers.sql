@@ -41,7 +41,7 @@ UPDATE subscriptions set customer_id = 'cus_AQFDQIxl6moiDd', subscription_id = '
 UPDATE subscriptions set customer_id = 'cus_9OABFE9SpiD18A', subscription_id = 'sub_BJcNHrLsHHxLZW', valid_until = '2018-02-28 17:19:00', tier = 'BASIC', renewal_frequency = 'MONTHLY' WHERE team_id = '273';
 UPDATE subscriptions set customer_id = 'cus_9OuhViZI4Aga59', subscription_id = 'sub_BIXexFgecrq6a1', valid_until = '2018-03-01 04:23:00', tier = 'BASIC', renewal_frequency = 'MONTHLY' WHERE team_id = '276';
 UPDATE subscriptions set customer_id = 'cus_9OWn6S0ub2s5iR', subscription_id = 'sub_9OWnkL0w8yZCfZ', valid_until = '2018-08-29 00:46:00', tier = 'BASIC', renewal_frequency = 'YEARLY' WHERE team_id = '278';
-UPDATE subscriptions set customer_id = 'cus_9ecw2iOysTtDXj', subscription_id = 'sub_9ecwpiYM2LLahe', valid_until = '2018-02-07 06:50:00', tier = 'BASIC', renewal_frequency = 'MONTHLY' WHERE team_id = '283';
+UPDATE subscriptions set customer_id = 'cus_9ecw2iOysTtDXj', subscription_id = 'sub_9ecwpiYM2LLahe', valid_until = '2018-03-06 06:50:00', tier = 'BASIC', renewal_frequency = 'MONTHLY' WHERE team_id = '283';
 UPDATE subscriptions set customer_id = 'cus_ACotRSf2Jhfur6', subscription_id = 'sub_ACot696VZJlkml', valid_until = '2018-02-22 06:38:00', tier = 'BASIC', renewal_frequency = 'MONTHLY' WHERE team_id = '287';
 UPDATE subscriptions set customer_id = 'cus_A29EhKxGgMMa8B', subscription_id = 'sub_A29EFpFC1BjAQF', valid_until = '2018-02-28 01:15:00', tier = 'BASIC', renewal_frequency = 'MONTHLY' WHERE team_id = '291';
 UPDATE subscriptions set customer_id = 'cus_AMURGLfVBWV8uw', subscription_id = 'sub_AMURxjlCua6A3C', valid_until = '2018-02-22 06:38:00', tier = 'BASIC', renewal_frequency = 'MONTHLY' WHERE team_id = '293';
