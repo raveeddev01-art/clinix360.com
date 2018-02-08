@@ -156,16 +156,18 @@ defmodule Stitch.MessageQueries do
       from m in Message,
       left_join: u in assoc(m, :user),
       left_join: g in assoc(m, :group),
+      left_join: pb in assoc(m, :pinned_by),
       where: m.id == ^id,
       preload: [
         group: g,
-        user: u
+        user: u,
+        pinned_by: pb
       ]
     Repo.one(query)
   end
 
   def load_info(message) do
-    Repo.preload(message, [:pinned_by, :user])
+    Repo.preload(message, [:pinned_by, :user], force: true)
   end
 
   def get_uploads_for_user(%User{team_id: team_id, id: user_id, roles: [role]}, skip, limit) when not role in @guest_roles do

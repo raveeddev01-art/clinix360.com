@@ -88,6 +88,12 @@ defmodule Stitch.User.AuthenticationTest do
       user = Authentication.user_for_token("abcdef")
       assert user == nil
     end
+
+    test "returns nil for disabled user" do
+      insert(:user, %{token: "abcdef", disabled: true})
+      user = Authentication.user_for_token("abcdef")
+      assert user == nil
+    end
   end
 
   test "it return user if the password reset token is valid" do
