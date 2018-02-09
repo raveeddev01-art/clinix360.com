@@ -12,8 +12,6 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
-<<<<<<< HEAD
-import { confirm } from "common/modals";
 import {
   Avatar,
   MessageHeader,
@@ -21,10 +19,7 @@ import {
   ReactionPicker,
   TimestampTooltip
 } from "common/components";
-=======
 import { confirmModal } from "common/modals";
-import { MessageContent, ReactionPicker } from "common/components";
->>>>>>> develop
 import MessageInfoModal from "./message-info-modal";
 
 // @TODO stab out renderSomething functions into seperate component (MessageActionGroup, MessagePin, MessageStar, ...)
