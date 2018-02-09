@@ -75,7 +75,7 @@ defmodule Stitch.UserQueries do
   @doc """
   Finds an active user by id
   """
-  @spec get_by_id(pos_integer) :: User.t() | nil
+  @spec get_active_by_id(pos_integer) :: User.t() | nil
   def get_active_by_id(user_id) do
     Repo.get_by(User, id: user_id, disabled: false)
   end

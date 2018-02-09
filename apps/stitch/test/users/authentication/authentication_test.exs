@@ -38,28 +38,6 @@ defmodule Stitch.User.AuthenticationTest do
     assert String.length(hashed_password) == 60
   end
 
-  describe "Authentication.create_account/1" do
-    test "creates a user account" do
-      user_struct = %{
-        email: "example@email.com",
-        password: "password123",
-        first_name: "John",
-        last_name: "Doe"
-      }
-      user = Authentication.create_account(user_struct)
-      assert user.first_name == "John"
-      assert user.last_name == "Doe"
-      assert user.email == "example@email.com"
-      assert String.length(user.password_hash) == 60
-    end
-
-    test "rejects an invalid user user account" do
-      user_struct = %{}
-      changeset = Authentication.create_account(user_struct)
-      assert changeset.valid? == false
-    end
-  end
-
   describe "Authentication.check_for_valid_reset_token/1" do
     test "it return user if the password reset token is valid" do
       user = insert(:user, %{password_reset_token: "SomeRandomToken"})

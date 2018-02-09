@@ -18,7 +18,7 @@ defmodule StitchConnect.Web.Admin.ImpersonationController do
       |> put_session(:impersonator_user_token, staff_user.token)
       |> redirect(external: Routes.page_url(uri, :index))
     else
-      {:not_found, _} ->
+      nil ->
         html(conn, "User does not exist.")
       _ ->
         html(conn, "Invalid user id provided.")

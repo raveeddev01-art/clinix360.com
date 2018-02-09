@@ -70,14 +70,6 @@ defmodule Stitch.AccountsTest do
     end
   end
 
-  describe "Accounts.update_user_password/3" do
-    test "it only updates the user password if the old password provided is valid" do
-      user = insert(:user, %{email: "sadan@example.com", password_hash: Comeonin.Bcrypt.hashpwsalt("sadan123")})
-      {:error, message} = Accounts.update_user_password(user.id, "sadan1234", "stitch123")
-      assert message == "Invalid Password for user"
-    end
-  end
-
   describe "Accounts.delete_profile_image/1" do
     test "It should set the avatar image to some random default one" do
       image = "https://localhost.test:4443/images/some-avatar.png"

@@ -7,21 +7,6 @@ defmodule Stitch.User.Authentication do
     Comeonin.Bcrypt.hashpwsalt(password)
   end
 
-  @spec create_account(map) :: User.t | Changeset.t
-  def create_account(user_params) do
-    result =
-      %User{}
-      |> User.registration_changeset(user_params)
-      |> put_new_password()
-      |> Repo.insert
-
-    with {:ok, user} <- result do
-      user
-    else
-      {:error, changeset} -> changeset
-    end
-  end
-
   @spec validate_email_and_password(binary, binary, Team.t) :: User.t | boolean
   def validate_email_and_password(email, password, team) do
     with %User{} = user <- UserQueries.team_member_with_email(team.id, email) do
@@ -74,12 +59,12 @@ defmodule Stitch.User.Authentication do
   """
   @spec update_password(User.t, binary, binary) :: {:ok, User.t} | {:error, binary} | {:error, Changeset.t}
   def update_password(%User{} = user, current_password, new_password) do
-    with {:check_current_password, true} <- Comeonin.Bcrypt.checkpw(current_password, user.password_hash) do
+    with {:authenticated?, true} <- {:authenticated?, Comeonin.Bcrypt.checkpw(current_password, user.password_hash)} do
       user
       |> password_update_changeset(%{password: new_password})
       |> Repo.update
     else
-      {:check_current_password, false} -> {:error, "Invalid password for user"}
+      {:authenticated?, false} -> {:error, "Invalid password for user"}
     end
   end
 
