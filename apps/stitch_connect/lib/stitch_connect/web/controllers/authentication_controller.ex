@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.AuthenticationController do
   use StitchConnect.Web, :controller
   alias StitchConnect.Web.{EventsChannel}
+  alias Stitch.Accounts.{PasswordResetToken}
 
   def index(conn, _params) do
     render conn, "index.html", subdomain: conn.private[:subdomain]
@@ -83,20 +84,22 @@ defmodule StitchConnect.Web.AuthenticationController do
   end
 
   def change_password(conn, %{"token" => token}) do
-    case Stitch.User.Authentication.check_for_valid_reset_token(token) do
-      false ->
-        conn
-        |> put_flash(:invalid_login, "Invalid Token.")
-        |> redirect(to: "/login")
+    team = conn.assigns.team
 
-      user ->
-        change_password_params = Poison.encode!(%{
-          "teamName" => conn.private[:team_name],
-          "teamSlug" => conn.private[:team_slug],
-          "user_id"  => user.id,
-          "token"    => token
-        })
-        render(conn, "change_password.html", change_password_params: change_password_params)
+    with %PasswordResetToken{} = password_reset_token <- PasswordResetToken.get_valid_token(token),
+         true <- password_reset_token.user.team_id == team.id do
+      PasswordResetToken.activate(password_reset_token)
+      change_password_params = Poison.encode!(%{
+        "teamName" => conn.private[:team_name],
+        "teamSlug" => conn.private[:team_slug],
+        "user_id"  => password_reset_token.user.id,
+        "token"    => password_reset_token.token
+      })
+      render(conn, "change_password.html", change_password_params: change_password_params)
+    else _e ->
+      conn
+      |> put_flash(:invalid_login, "Invalid Token.")
+      |> redirect(to: "/login")
     end
   end
 

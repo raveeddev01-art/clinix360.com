@@ -69,7 +69,7 @@ defmodule Stitch.Factory do
     }
   end
 
-  def password_reset_token do
+  def password_reset_token_factory do
     %Stitch.Accounts.PasswordResetToken{
       token: Stitch.Rand.token(32),
       valid: true,
