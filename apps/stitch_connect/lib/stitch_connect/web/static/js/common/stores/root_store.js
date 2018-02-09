@@ -62,7 +62,9 @@ class RootStore {
     this.notificationStore.loadPreferences();
     this.teamStore.loadTeam(this.appParams.teamId);
     this.userStore.loadUser(currentUser.id);
-    this.billingStore.loadData();
+    if (currentUser.roles.includes("admin")) {
+      this.billingStore.loadData();
+    }
   }
 
   joinChannels() {
