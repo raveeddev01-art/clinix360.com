@@ -1,4 +1,7 @@
 import moment from "moment";
+import countries from "i18n-iso-countries";
+import provinces from "provinces";
+import _ from "lodash";
 
 const TIERS = ["BASIC", "PREMIUM", "POWER"];
 
@@ -133,16 +136,16 @@ const processSubscriptionData = subscription => {
   const trialValidUntil = moment.utc(subscription.trial_valid_until);
 
   subscription.valid_until = validUntil.format(dateFormat);
-  subscription.remaining_days = trialValidUntil.diff(today, "days");
   subscription.trial_valid_until = trialValidUntil.format(dateFormat);
+
+  subscription.plan_remaining_days = validUntil.diff(today, "days");
+  subscription.trial_remaining_days = trialValidUntil.diff(today, "days");
 
   return subscription;
 };
 
 const getSelectableTiers = tier => {
-  const index = TIERS.findIndex(t => t === tier);
-
-  return TIERS.slice(index + 1);
+  return TIERS.filter(t => t !== tier);
 };
 
 const getBelowTier = tier => {
@@ -182,6 +185,44 @@ const getMonthlyPrice = (tier, frequencyIndex) => {
   return plan.pricePerMonth[frequencyName];
 };
 
+const getCountries = () => {
+  const alpha2Map = countries.getNames("en");
+
+  return _.chain(alpha2Map)
+    .map((name, alpha2) => ({
+      alpha2,
+      alpha3: countries.alpha2ToAlpha3(alpha2),
+      name
+    }))
+    .sortBy("name")
+    .value();
+};
+
+const getProvinces = () => {
+  return (
+    _.chain(provinces)
+      // Change country code to alpha-3
+      .map(province => {
+        const country = countries.alpha2ToAlpha3(province.country);
+        const name = province.english || province.name;
+        const short = province.english
+          ? province.english
+          : province.short || province.name;
+
+        return {
+          country,
+          name,
+          short
+        };
+      })
+      .groupBy("country")
+      .mapValues(countryProvinces =>
+        _.sortBy(countryProvinces, ({ name }) => name.toLowerCase())
+      )
+      .value()
+  );
+};
+
 export {
   processSubscriptionData,
   getSelectableTiers,
@@ -191,5 +232,7 @@ export {
   getAnnualFrequency,
   getMonthlyFrequency,
   getFrequencyName,
-  getMonthlyPrice
+  getMonthlyPrice,
+  getCountries,
+  getProvinces
 };

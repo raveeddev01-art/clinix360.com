@@ -3,10 +3,10 @@ import "whatwg-fetch";
 import Promise from "bluebird";
 
 window.csrfToken = "";
-var metaElem = document.querySelector("meta[name=csrf-token]");
+const metaElem = document.querySelector("meta[name=csrf-token]");
 if (metaElem) window.csrfToken = metaElem.getAttribute("content");
 
-window.CSRFFetch = function(url, options = {}) {
+window.CSRFFetch = function CSRFFetch(url, options = {}) {
   if (!(options.body instanceof FormData)) {
     if (window.authenticationToken) {
       options.body = merge(options.body, {
@@ -35,20 +35,20 @@ window.CSRFFetch = function(url, options = {}) {
   );
 };
 
-window.jCSRFFetch = function(url, params = {}) {
+window.jCSRFFetch = function jCSRFFetch(url, params = {}) {
+  let modifiedUrl = url;
   if (window.authenticationToken) {
-    let modifiedUrl =
-      url +
-      (url.indexOf("?") > -1 ? "&" : "?") +
-      `authenticationToken=${window.authenticationToken}`;
-    url = modifiedUrl;
+    modifiedUrl = `${url +
+      (url.indexOf("?") > -1
+        ? "&"
+        : "?")}authenticationToken=${window.authenticationToken}`;
   }
 
   const { hideNotify, ...options } = params;
 
   return window
     .CSRFFetch(
-      url,
+      modifiedUrl,
       merge(
         {
           headers: merge(
@@ -90,18 +90,22 @@ window.jCSRFFetch = function(url, params = {}) {
     });
 };
 
-window.get = function(url, options = {}) {
+window.get = function get(url, options = {}) {
   return window.jCSRFFetch(url, merge(options, { method: "GET" }));
 };
-window.post = function(url, options = {}) {
+
+window.post = function post(url, options = {}) {
   return window.jCSRFFetch(url, merge(options, { method: "POST" }));
 };
-window.put = function(url, options = {}) {
+
+window.put = function put(url, options = {}) {
   return window.jCSRFFetch(url, merge(options, { method: "PUT" }));
 };
-window.patch = function(url, options = {}) {
+
+window.patch = function patch(url, options = {}) {
   return window.jCSRFFetch(url, merge(options, { method: "PATCH" }));
 };
-window.remove = function(url, options = {}) {
+
+window.remove = function remove(url, options = {}) {
   return window.jCSRFFetch(url, merge(options, { method: "DELETE" }));
 };

@@ -29,18 +29,16 @@ class MembersPanel extends Component {
               </Col>
             </Row>
           </div>
-          {users.map(user => {
-            return (
-              <MemberItem
-                onSuccess={onSuccess}
-                onError={onError}
-                hideAlert={hideAlert}
-                user={user}
-                online={user.online}
-                key={user.id}
-              />
-            );
-          })}
+          {users.map(user => (
+            <MemberItem
+              onSuccess={onSuccess}
+              onError={onError}
+              hideAlert={hideAlert}
+              user={user}
+              online={user.online}
+              key={user.id}
+            />
+          ))}
         </div>
       </SettingPanel>
     );

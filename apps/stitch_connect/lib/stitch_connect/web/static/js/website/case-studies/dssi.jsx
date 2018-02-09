@@ -1,11 +1,10 @@
 import React, { Component } from "react";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
 
 import Header from "../components/header";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 
 export default class CaseDSSI extends Component {
   render() {

@@ -5,6 +5,7 @@ import Card from "./card/card";
 import Groups from "./groups/groups";
 import Loading from "./loading";
 import LoadingButton from "./loading-button";
+import LoadingIcon from "./loading-icon";
 import Members from "./members/members";
 import MemberType from "./member-type";
 import OnboardCard from "./onboard-card/onboard-card";
@@ -34,6 +35,7 @@ export {
   Groups,
   Loading,
   LoadingButton,
+  LoadingIcon,
   Members,
   MemberType,
   OnboardCard,

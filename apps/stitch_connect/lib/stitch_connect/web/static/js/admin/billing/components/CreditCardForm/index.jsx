@@ -1,5 +1,7 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject } from "mobx-react";
+import noop from "lodash/noop";
 
 import {
   CardNumberElement,
@@ -31,7 +33,8 @@ const createOptions = fontSize => {
   };
 };
 
-class CheckoutForm extends React.Component {
+@inject("billingStore")
+class CreditCardForm extends Component {
   constructor(props) {
     super(props);
 
@@ -49,21 +52,23 @@ class CheckoutForm extends React.Component {
   onSubmit = evt => {
     evt.preventDefault();
 
-    const {
-      onSubmitStart,
-      onSubmitSuccess,
-      onSubmitError,
-      stripe
-    } = this.props;
+    const { onSubmitError, stripe, billingStore } = this.props;
     const { nameOnCard: name } = this.state;
 
-    onSubmitStart();
+    billingStore.loading = true;
+
     stripe.createToken({ name }).then(payload => {
       if (payload.error) {
         onSubmitError(payload.error);
+        billingStore.loading = false;
+
         return;
       }
-      onSubmitSuccess(payload.token);
+
+      // Reset form after succss from stripe
+      this.resetForm();
+
+      this.addCard(payload.token);
     });
   };
 
@@ -95,7 +100,7 @@ class CheckoutForm extends React.Component {
     });
   };
 
-  onCardCvcChange = change => {
+  onCardCVCChange = change => {
     const { elements } = this.state;
 
     this.setState({
@@ -117,6 +122,17 @@ class CheckoutForm extends React.Component {
     });
   };
 
+  resetForm() {
+    this.setState({
+      nameOnCard: ""
+    });
+
+    this.cardNumberElement.clear();
+    this.cardExpiryElement.clear();
+    this.cardCVCElement.clear();
+    this.postalCodeElement.clear();
+  }
+
   canSubmit() {
     const { nameOnCard, elements } = this.state;
 
@@ -129,9 +145,23 @@ class CheckoutForm extends React.Component {
     );
   }
 
+  async addCard(token) {
+    const { billingStore, onSubmitSuccess, onSubmitError } = this.props;
+
+    try {
+      await billingStore.addCard(token.id);
+    } catch (e) {
+      onSubmitError(e);
+    }
+
+    onSubmitSuccess(token);
+  }
+
   render() {
+    const { fontSize, buttonTitle } = this.props;
+
     return (
-      <form onSubmit={this.onSubmit} className="card-form">
+      <form onSubmit={this.onSubmit} className="credit-card-form">
         <div className="form-group name-on-card">
           <label htmlFor="name-on-card">
             Name on card{" "}
@@ -154,8 +184,11 @@ class CheckoutForm extends React.Component {
         <label className="stripe-element-container">
           Card Number
           <CardNumberElement
-            {...createOptions(this.props.fontSize)}
+            {...createOptions(fontSize)}
             onChange={this.onCardNumberChange}
+            elementRef={ref => {
+              this.cardNumberElement = ref;
+            }}
           />
         </label>
 
@@ -164,8 +197,11 @@ class CheckoutForm extends React.Component {
             <label className="stripe-element-container">
               Expiration date
               <CardExpiryElement
-                {...createOptions(this.props.fontSize)}
+                {...createOptions(fontSize)}
                 onChange={this.onCardExpiryChange}
+                elementRef={ref => {
+                  this.cardExpiryElement = ref;
+                }}
               />
             </label>
           </div>
@@ -173,8 +209,11 @@ class CheckoutForm extends React.Component {
             <label className="stripe-element-container">
               CVC
               <CardCVCElement
-                {...createOptions(this.props.fontSize)}
-                onChange={this.onCardCvcChange}
+                {...createOptions(fontSize)}
+                onChange={this.onCardCVCChange}
+                elementRef={ref => {
+                  this.cardCVCElement = ref;
+                }}
               />
             </label>
           </div>
@@ -182,8 +221,11 @@ class CheckoutForm extends React.Component {
             <label className="stripe-element-container">
               Postal code
               <PostalCodeElement
-                {...createOptions(this.props.fontSize)}
+                {...createOptions(fontSize)}
                 onChange={this.onPostalCodeChange}
+                elementRef={ref => {
+                  this.postalCodeElement = ref;
+                }}
               />
             </label>
           </div>
@@ -195,28 +237,26 @@ class CheckoutForm extends React.Component {
             className="btn btn-fancy btn-primary btn-block"
             disabled={!this.canSubmit()}
           >
-            Complete Purchase
+            {buttonTitle}
           </button>
-          <p className="help-block">
-            Your account will be credited when team members are removed and
-            charged when new team members are added. It is not possible to issue
-            refunds, so please read instructions carefully.
-          </p>
         </div>
       </form>
     );
   }
 }
 
-CheckoutForm.defaultProps = {
-  fontSize: "14px"
+CreditCardForm.defaultProps = {
+  fontSize: "14px",
+  buttonTitle: "Add Card",
+  onSubmitSuccess: noop,
+  onSubmitError: noop
 };
 
-CheckoutForm.propTypes = {
+CreditCardForm.propTypes = {
   fontSize: PropTypes.string,
-  onSubmitStart: PropTypes.func.isRequired,
-  onSubmitSuccess: PropTypes.func.isRequired,
-  onSubmitError: PropTypes.func.isRequired
+  buttonTitle: PropTypes.string,
+  onSubmitSuccess: PropTypes.func,
+  onSubmitError: PropTypes.func
 };
 
-export default injectStripe(CheckoutForm);
+export default injectStripe(CreditCardForm);

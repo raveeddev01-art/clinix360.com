@@ -28,10 +28,10 @@ class MemberItem extends Component {
   };
 
   _activateUser = () => {
-    const { usersStore, user } = this.props;
-    const { hideAlert, onSuccess, onError } = this.props;
+    const { usersStore, user, hideAlert, onSuccess, onError } = this.props;
 
     hideAlert();
+
     usersStore
       .activateUser(user.id)
       .then(() => {
@@ -43,10 +43,10 @@ class MemberItem extends Component {
   };
 
   _deactivateUser = () => {
-    const { usersStore, user } = this.props;
-    const { hideAlert, onSuccess, onError } = this.props;
+    const { usersStore, user, hideAlert, onSuccess, onError } = this.props;
 
     hideAlert();
+
     usersStore
       .deactivateUser(user.id)
       .then(() => {
@@ -58,10 +58,10 @@ class MemberItem extends Component {
   };
 
   _promoteAdmin = () => {
-    const { usersStore, user } = this.props;
-    const { hideAlert, onSuccess, onError } = this.props;
+    const { usersStore, user, hideAlert, onSuccess, onError } = this.props;
 
     hideAlert();
+
     usersStore
       .promoteAdmin(user.id)
       .then(() => {
@@ -73,10 +73,10 @@ class MemberItem extends Component {
   };
 
   _revokeAdmin = () => {
-    const { usersStore, user } = this.props;
-    const { hideAlert, onSuccess, onError } = this.props;
+    const { usersStore, user, hideAlert, onSuccess, onError } = this.props;
 
     hideAlert();
+
     usersStore
       .revokeAdmin(user.id)
       .then(() => {

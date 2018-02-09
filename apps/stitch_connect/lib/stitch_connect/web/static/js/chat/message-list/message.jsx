@@ -12,6 +12,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
+<<<<<<< HEAD
 import { confirm } from "common/modals";
 import {
   Avatar,
@@ -20,6 +21,10 @@ import {
   ReactionPicker,
   TimestampTooltip
 } from "common/components";
+=======
+import { confirmModal } from "common/modals";
+import { MessageContent, ReactionPicker } from "common/components";
+>>>>>>> develop
 import MessageInfoModal from "./message-info-modal";
 
 // @TODO stab out renderSomething functions into seperate component (MessageActionGroup, MessagePin, MessageStar, ...)
@@ -107,7 +112,7 @@ class Message extends Component {
   };
 
   delete = () => {
-    confirm({
+    confirmModal({
       title: "Delete Message",
       message:
         "Are you sure you want to delete this message? This cannot be undone.",

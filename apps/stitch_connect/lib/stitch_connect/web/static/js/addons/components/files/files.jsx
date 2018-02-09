@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import AddonMessage from "../../../common/components/messages/addon-message";
+import { AddonMessage } from "common/components";
 
 @inject("filesStore")
 @observer
@@ -14,7 +14,7 @@ class Files extends Component {
     }
   }
 
-  loadMore = event => {
+  loadMore = () => {
     const { filesStore } = this.props;
 
     filesStore.loadMore();
