@@ -216,6 +216,7 @@ class PresenceStore {
   @action
   onWindowFocus = () => {
     this.isActive = true;
+    document.trigger("window.focused");
   };
 
   checkLockoutTimerExpired = () => {

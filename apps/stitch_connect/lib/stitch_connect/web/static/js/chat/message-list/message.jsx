@@ -33,6 +33,13 @@ class Message extends Component {
     const { message, messageStore } = this.props;
 
     messageStore.onMessageMounted(message.id, this.messageDiv);
+    document.addEventListener("window.focused", function(e) {
+      this.onVisibleChange(true);
+    });
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("window.focused");
   }
 
   onVisibleChange = isVisible => {
@@ -44,13 +51,13 @@ class Message extends Component {
       messageStore.onMessageHide(message.id);
     }
 
-    window.addEventListener("focus", () => {
-      if (isVisible) {
-        messageStore.onMessageShow(message.id);
-      } else {
-        messageStore.onMessageHide(message.id);
-      }
-    });
+    // window.addEventListener("focus", () => {
+    //   if (isVisible) {
+    //     messageStore.onMessageShow(message.id);
+    //   } else {
+    //     messageStore.onMessageHide(message.id);
+    //   }
+    // });
   };
 
   onToggle = isOpen => {
