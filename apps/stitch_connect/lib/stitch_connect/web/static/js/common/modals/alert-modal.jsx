@@ -28,7 +28,13 @@ const AlertModal = ({
         <i className="fa fa-close" />
       </a>
     </Modal.Header>
-    <Modal.Body dangerouslySetInnerHTML={{ __html: message }} />
+
+    {typeof message === "string" ? (
+      <Modal.Body dangerouslySetInnerHTML={{ __html: message }} />
+    ) : (
+      <Modal.Body>{message}</Modal.Body>
+    )}
+
     <Modal.Footer>
       <Button bsSize="large" bsStyle="primary" onClick={proceed}>
         {okLabel}
