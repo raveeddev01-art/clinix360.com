@@ -8,7 +8,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
   def submit_login(conn, %{"email" => email, "password" => password}) do
     team = conn.assigns.team
 
-    case Authentication.validate_email_and_password(email, password, team.slug) do
+    case Authentication.validate_email_and_password(email, password, team) do
       false ->
         {:error, :not_authorized, "Email or password is incorrect."}
 
@@ -25,7 +25,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
   def create_reset_password_token(conn, %{"email" => email}) do
     team = conn.assigns.team
 
-    case Authentication.create_reset_password_token_for_user(team, email) do
+    case Authentication.create_reset_password_token(team, email) do
       {:error, message} ->
         {:error, :not_authorized, message}
 
@@ -38,7 +38,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
   end
 
   def reset_password(conn, %{"token" => token, "password" => password}) do
-    case Authentication.reset_password_for_user(token, password) do
+    case Authentication.reset_password(token, password) do
       {:error, message} ->
         {:error, :not_authorized, message}
 
