@@ -43,6 +43,14 @@ class Message extends Component {
     } else {
       messageStore.onMessageHide(message.id);
     }
+
+    window.addEventListener("focus", () => {
+      if (isVisible) {
+        messageStore.onMessageShow(message.id);
+      } else {
+        messageStore.onMessageHide(message.id);
+      }
+    });
   };
 
   onToggle = isOpen => {
