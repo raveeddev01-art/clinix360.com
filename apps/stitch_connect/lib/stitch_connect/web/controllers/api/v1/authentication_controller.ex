@@ -3,6 +3,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
   alias Stitch.User.{Authentication}
   alias Stitch.Accounts.{Email, User}
   alias StitchConnect.Web.Api.V1.{AuthenticationView, UserView}
+  alias StitchConnect.Web.{EventsChannel}
   action_fallback StitchConnect.Web.Api.FallbackController
 
   def submit_login(conn, %{"email" => email, "password" => password}) do
@@ -12,7 +13,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
       false ->
         {:error, :not_authorized, "Email or password is incorrect."}
 
-      %User{disabled: false} ->
+      %User{disabled: true} ->
         {:error, :not_authorized, "This account is disabled - contact your team admin."}
 
       user ->
@@ -22,7 +23,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
     end
   end
 
-  def create_reset_password_token(conn, %{"email" => email}) do
+  def reset_password(conn, %{"email" => email}) do
     team = conn.assigns.team
 
     case Authentication.create_reset_password_token(team, email) do
@@ -42,8 +43,10 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
       {:error, message} ->
         {:error, :not_authorized, message}
 
-      {:ok, _} ->
-        conn |> json(%{message: "Password was successfully changed"})
+      {:ok, user} ->
+        EventsChannel.broadcast_logout_all_sessions(user)
+        conn
+        |> json(%{message: "Password was successfully changed"})
     end
   end
 end

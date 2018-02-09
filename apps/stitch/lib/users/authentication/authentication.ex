@@ -16,7 +16,7 @@ defmodule Stitch.User.Authentication do
     end
   end
 
-  @spec check_for_valid_reset_token(binary) :: boolean
+  @spec check_for_valid_reset_token(binary) :: User.t | boolean
   def check_for_valid_reset_token(token) do
     UserQueries.get_by_password_reset_token(token) || false
   end
