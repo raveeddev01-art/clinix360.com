@@ -649,14 +649,14 @@ class MessageStore {
     });
   };
 
-  decodeMentions(text) {
+  decodeMentions(text = "") {
     const { usersById } = this.rootStore.usersStore;
-    const messageToFilter = (text || "").split(" ");
+    const messageToFilter = text.split(" ");
 
     const filteredMessage = messageToFilter.map(part => {
       // Replace userMentionId with UserMention
       const match = part.match(REGEX.getUserMentionDecode());
-      if (part.match(REGEX.getUserMentionDecode())) {
+      if (match) {
         return part.replace(
           REGEX.getUserMentionDecode(),
           `@${usersById[match[1]].username}`
@@ -665,7 +665,7 @@ class MessageStore {
 
       // Replace groupMentionId with GroupMention
       const groupMatch = part.match(REGEX.getGroupMentionDecode());
-      if (part.match(REGEX.getGroupMentionDecode())) {
+      if (groupMatch) {
         return part.replace(
           REGEX.getGroupMentionDecode(),
           `@${[groupMatch[1]]}`
