@@ -15,7 +15,7 @@ defmodule StitchConnect.Web.Api.FallbackController do
   def call(conn, {:error, :unprocessable_entity, message}) do
     conn
     |> put_status(:unprocessable_entity)
-    |> render(ErrorView, "422.json", message)
+    |> render(ErrorView, "422.json", %{message: message})
   end
 
   def call(conn, {:error, :not_found}) do
@@ -27,7 +27,7 @@ defmodule StitchConnect.Web.Api.FallbackController do
   def call(conn, {:error, :not_found, message}) do
     conn
     |> put_status(:not_found)
-    |> render(ErrorView, "404.json", message)
+    |> render(ErrorView, "404.json", %{message: message})
   end
 
   def call(conn, {:error, :not_authorized}) do

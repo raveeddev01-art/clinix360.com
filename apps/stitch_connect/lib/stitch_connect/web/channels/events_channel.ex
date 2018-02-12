@@ -141,7 +141,13 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user.id}", "logout", %{session_id: session_id})
   end
 
-  def broadcast_logout_all_sessions(%User{} = user, current_session_id \\ nil) do
+  @spec broadcast_logout_from_all_sessions(User.t) :: :ok | {:error, term}
+  def broadcast_logout_from_all_sessions(%User{} = user) do
+    @endpoint.broadcast("events:#{user.id}", "logout", %{logout_from_all_sessions: true})
+  end
+
+  @spec broadcast_logout_from_all_sessions(User.t, binary) :: :ok | {:error, term}
+  def broadcast_logout_from_all_sessions(%User{} = user, current_session_id) do
     @endpoint.broadcast("events:#{user.id}", "logout", %{logout_from_all_sessions: true, current_session_id: current_session_id})
   end
 

@@ -69,6 +69,13 @@ defmodule Stitch.Factory do
     }
   end
 
+  def password_reset_token_factory do
+    %Stitch.Accounts.PasswordResetToken{
+      token: Stitch.Rand.token(32),
+      valid: true,
+    }
+  end
+
   def mobile_device_factory do
     %Stitch.Mobile.Device{
       user: build(:user),

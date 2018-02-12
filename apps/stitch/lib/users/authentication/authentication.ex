@@ -1,7 +1,8 @@
 defmodule Stitch.User.Authentication do
   import Ecto.Changeset
   alias Ecto.Changeset
-  alias Stitch.{Repo, Accounts.User, UserQueries, Team}
+  alias Ecto.Multi
+  alias Stitch.{Repo, Accounts.User, Accounts.PasswordResetToken, UserQueries, Team}
 
   def hash_password(password) do
     Comeonin.Bcrypt.hashpwsalt(password)
@@ -16,29 +17,12 @@ defmodule Stitch.User.Authentication do
     end
   end
 
-  @spec check_for_valid_reset_token(binary) :: User.t | boolean
-  def check_for_valid_reset_token(token) do
-    UserQueries.get_by_password_reset_token(token) || false
-  end
-
-  @spec create_reset_password_token(Team.t, binary) :: {:ok, User.t} | {:error, Changeset.t} | {:error, binary}
-  def create_reset_password_token(%Team{} = team, email) do
-    with %User{} = user <- Stitch.UserQueries.team_member_with_email(team.id, email) do
-      user
-      |> change(password_reset_token: Stitch.Rand.token(32))
-      |> Repo.update()
-    else nil ->
-      {:error, "User is not part of the team or Email does not exist"}
-    end
-  end
-
   @spec password_update_changeset(User.t, map) :: Changeset.t
   def password_update_changeset(%User{} = user, params) do
     user
     |> cast(params, [:password])
     |> validate_required([:password])
     |> put_new_password()
-    |> put_change(:password_reset_token, nil)
     |> put_change(:token, Stitch.Rand.token(32))
   end
 
@@ -64,22 +48,21 @@ defmodule Stitch.User.Authentication do
       |> password_update_changeset(%{password: new_password})
       |> Repo.update
     else
-      {:authenticated?, false} -> {:error, "Invalid password for user"}
+      {:authenticated?, false} -> {:error, "Invalid password"}
     end
   end
 
   @doc """
-  Finds a user by the password reset token, resets their password and updates authentication token.
-  Updating authentication token invalidates all user's sessions.
+  Removes existing password reset tokens, updates the password and authentication token.
+  Updated authentication token, in effect, invalidates all user's sessions.
   """
-  @spec reset_password(binary, binary) :: {:ok, User.t} | {:error, Changeset.t}
-  def reset_password(token, password) do
-    with %User{} = user <- UserQueries.get_by_password_reset_token(token) do
-      user
-      |> password_update_changeset(%{password: password})
-      |> Repo.update
-    else nil ->
-      {:error, "Token is invalid or already used"}
-    end
+  @spec reset_password(User.t, binary) :: {:ok, %{tokens: any, user: User.t}} |
+                                          {:error, any} |
+                                          {:error, atom, any, %{optional(atom) => any}}
+  def reset_password(%User{} = user, password) do
+    Multi.new
+    |> Multi.delete_all(:tokens, PasswordResetToken.user_tokens(user))
+    |> Multi.update(:user, password_update_changeset(user, %{password: password}))
+    |> Repo.transaction
   end
 end
