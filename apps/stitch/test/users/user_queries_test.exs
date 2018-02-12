@@ -92,5 +92,11 @@ defmodule Stitch.UserQueriesTest do
       insert(:user, email: "bar@example.com")
       refute UserQueries.user_with_email_exists?("foo@example.com")
     end
+
+    test "returns true when there is more than one users with the given email" do
+      insert(:user, email: "bar@example.com")
+      insert(:user, email: "bar@example.com")
+      assert UserQueries.user_with_email_exists?("bar@example.com")
+    end
   end
 end
