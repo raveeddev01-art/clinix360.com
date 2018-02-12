@@ -20,7 +20,7 @@ defmodule StitchConnect.Web.Router do
     plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["json"]
     plug :fetch_session
-    plug StitchConnect.Plug.ApiAuthenticate
+    plug StitchConnect.Plug.ApiAuthenticate, without_team_subdomain: true
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -44,13 +44,6 @@ defmodule StitchConnect.Web.Router do
 
     post "/find-your-team", FindYourTeamController, :create
     delete "/find-your-team/:token", FindYourTeamController, :delete
-  end
-
-  scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
-    pipe_through :authenticated_api
-
-    get "/users/notification-preference", NotificationPreferenceController, :show_global
-    put "/users/notification-preference", NotificationPreferenceController, :update_global
   end
 
   scope "/stripe", StitchConnect.Web do
