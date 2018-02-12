@@ -847,12 +847,16 @@ class MessageStore {
     this.isScrollBottom = false;
   }
 
-  onMessageShow(id) {
-    // just ignore message show if window lost focus
-    if (!this.isActive) {
-      return;
+  @action
+  onWindowFocus() {
+    // triggers onmessageshow once more to check if last message is read.
+    if (this.group) {
+      this.onMessageShow();
     }
+  }
 
+  onMessageShow(id) {
+    // set visible of the element even if window has no focus so that we can immediately set it read with focus
     if (this.messageElements[id]) {
       this.messageElements[id].visible = true;
     }
@@ -861,9 +865,14 @@ class MessageStore {
       this.updateGroupCursor(id);
     }
 
+    // just ignore message show if window lost focus
+    if (!this.isActive) {
+      return;
+    }
+
     if (
       !this.markedAsUnread &&
-      (!this.firstUnreadMessage || this.firstUnreadMessage.id === id)
+      (!this.firstUnreadMessage || this.firstUnreadMessage.id === id || !id)
     ) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
