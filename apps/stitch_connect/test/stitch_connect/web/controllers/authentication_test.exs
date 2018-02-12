@@ -42,7 +42,7 @@ defmodule StitchConnect.Web.AuthenticationTest do
     end
 
     test "logs the user in", %{conn: conn, user: user, team: team} do
-      token = FindYourTeam.create_or_get_token!(user.email)
+      {:ok, token} = FindYourTeam.create_team_list_token(user.email)
 
       teams =
         conn
@@ -57,10 +57,11 @@ defmodule StitchConnect.Web.AuthenticationTest do
         |> get(Routes.authentication_path(conn, :auto_login, login_token))
 
       assert redirected_to(conn, 302) =~ "/rooms/default_room"
+      assert [] = Stitch.Repo.all(FindYourTeam.Token)
     end
 
     test "auto-login token is incorrect", %{conn: conn, user: user, team: team} do
-      token = FindYourTeam.create_or_get_token!(user.email)
+      {:ok, token} = FindYourTeam.create_team_list_token(user.email)
 
       teams =
         conn

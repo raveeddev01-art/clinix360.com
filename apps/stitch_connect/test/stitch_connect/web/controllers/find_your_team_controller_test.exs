@@ -16,7 +16,7 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
 
       assert token
       assert json["message"] == "Email has been sent to #{user.email}. Please check your inbox."
-      assert_delivered_email FindYourTeam.email(token, @endpoint.url)
+      assert_delivered_email FindYourTeam.Email.email(token, @endpoint.url)
     end
 
     test "when no user with the given email exists", %{conn: conn} do
@@ -26,6 +26,22 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
         |> json_response(200)
 
         assert json["message"] == "Email has been sent to nonexistentuer@example.com. Please check your inbox."
+    end
+
+    test "when token has already been created", %{conn: conn} do
+      user = insert(:user, email: "foo@example.com")
+      {:ok, _token} = FindYourTeam.create_team_list_token("foo@example.com")
+
+      json =
+        conn
+        |> post(api_v1_find_your_team_path(conn, :create), %{"email" => user.email})
+        |> json_response(200)
+
+      token = Repo.one(FindYourTeam.Token, email: user.email)
+
+      assert token
+      assert json["message"] == "Email has been sent to #{user.email}. Please check your inbox."
+      assert_delivered_email FindYourTeam.Email.email(token, @endpoint.url)
     end
   end
 
@@ -38,11 +54,11 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
       insert(:user, team: team_2, email: "foo@example.com")
       insert(:user, team: team_3, email: "bar@example.com")
 
-      %{token: token} = FindYourTeam.create_or_get_token!("foo@example.com")
+      {:ok, token} = FindYourTeam.create_team_list_token("foo@example.com")
 
       %{"teams" => teams} =
         conn
-        |> delete(api_v1_find_your_team_path(conn, :delete, token))
+        |> delete(api_v1_find_your_team_path(conn, :delete, token.token))
         |> json_response(200)
 
       login_token = Repo.get_by!(Token, email: "foo@example.com", type: "login").token
@@ -50,7 +66,7 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
       assert %{"name" => team_1.name, "slug" => team_1.slug, "login_token" => login_token} in teams
       assert %{"name" => team_2.name, "slug" => team_2.slug, "login_token" => login_token} in teams
 
-      refute FindYourTeam.get_by_token(token)
+      assert Repo.get_by(Token, email: "foo@example.com", type: "team_list") == nil
     end
 
     test "when the token doesn't exist", %{conn: conn} do
@@ -59,7 +75,7 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
         |> delete(api_v1_find_your_team_path(conn, :delete, "DoesntExist"))
         |> json_response(:not_found)
 
-      assert json["message"] == "Token not found."
+      assert json["errors"] == "The resource you are looking for does not exist."
     end
   end
 end
