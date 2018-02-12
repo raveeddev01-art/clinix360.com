@@ -133,4 +133,12 @@ defmodule Stitch.Factory do
       period_start: NaiveDateTime.utc_now()
     }
   end
+
+  def find_your_team_token_factory do
+    %Stitch.FindYourTeam.Token{
+      type: "login",
+      token: Stitch.Rand.token(32),
+      email: sequence(:email, &"email-#{&1}@example.com"),
+    }
+  end
 end

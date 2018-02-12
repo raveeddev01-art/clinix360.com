@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.AuthenticationController do
   use StitchConnect.Web, :controller
   alias StitchConnect.Web.{EventsChannel}
+  alias Stitch.FindYourTeam
 
   def index(conn, _params) do
     render conn, "index.html", subdomain: conn.private[:subdomain]
@@ -22,9 +23,7 @@ defmodule StitchConnect.Web.AuthenticationController do
   end
 
   def auto_login(conn, %{"token" => token}) do
-    with %Stitch.FindYourTeam.Token{} = token <- Stitch.FindYourTeam.get_login_token(token),
-         %Stitch.Accounts.User{} = user <- Stitch.UserQueries.team_member_with_email(conn.assigns.team.id, token.email),
-         {:ok, _token} <- Stitch.FindYourTeam.delete_token(token) do
+    with {:ok, user} <- FindYourTeam.activate_login_token(conn.assigns.team, token) do
       default_group = Stitch.GroupQueries.default_group(user)
       conn
       |> login_user(user)
