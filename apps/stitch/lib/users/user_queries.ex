@@ -42,14 +42,6 @@ defmodule Stitch.UserQueries do
   end
 
   @doc """
-  Finds a user by id based on a user team.
-  """
-  @spec find_user(pos_integer, User.t) :: User.t | nil
-  def find_user(user_id, %User{team_id: team_id}) do
-    Repo.get_by(User, id: user_id, team_id: team_id)
-  end
-
-  @doc """
   Finds a user belonging to a given team.
   """
   @spec team_member_by_id(Stitch.Team.t | pos_integer, pos_integer) :: User.t | nil
