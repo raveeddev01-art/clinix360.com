@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.PasswordResetTest do
   use StitchConnect.Web.ConnCase, async: false
+  import Phoenix.ChannelTest
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.Accounts.PasswordResetToken
   alias Stitch.Repo
@@ -59,6 +60,7 @@ defmodule StitchConnect.Web.PasswordResetTest do
       team = insert(:team)
       user = insert(:user, team: team)
       password_reset_token = insert(:password_reset_token, user: user)
+      @endpoint.subscribe("events:#{user.id}")
 
       conn =
         conn
@@ -66,16 +68,36 @@ defmodule StitchConnect.Web.PasswordResetTest do
 
       json =
         conn
-        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: , password: "Password..123"})
+        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: password_reset_token.token, password: "Password..123"})
         |> json_response(200)
 
-      assert %{"status" => "ok"} = json
+      assert %{"message" => "Password was successfully changed"} = json
+      assert [] = Repo.all(PasswordResetToken)
+      assert_broadcast "logout", %{logout_from_all_sessions: true}
+    end
+
+    test "when new password is same as old", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team, password_hash: Stitch.User.Authentication.hash_password("Password!1"))
+      password_reset_token = insert(:password_reset_token, user: user)
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+
+      json =
+        conn
+        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: password_reset_token.token, password: "Password!1"})
+        |> json_response(422)
+
+      assert json["errors"]["password"] == ["The new password must be different from the old one"]
       assert [_] = Repo.all(PasswordResetToken)
     end
 
-    test "when new password is the same as old one", %{conn: conn} do
+    test "when the token is used seconds time", %{conn: conn} do
       team = insert(:team)
-      user = insert(:user, team: team, password_hash: Stitch.User.Authentication.hash_password("Password!1"))
+      user = insert(:user, team: team)
+      password_reset_token = insert(:password_reset_token, user: user)
 
       conn =
         conn
@@ -83,11 +105,17 @@ defmodule StitchConnect.Web.PasswordResetTest do
 
       json =
         conn
-        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: , password: "Password!1"})
+        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: password_reset_token.token, password: "Password..123"})
         |> json_response(200)
 
-      assert %{"status" => "ok"} = json
-      assert [_] = Repo.all(PasswordResetToken)
+      assert %{"message" => "Password was successfully changed"} = json
+
+      json =
+        conn
+        |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: password_reset_token.token, password: "Password..123"})
+        |> json_response(404)
+
+      assert %{"errors" => "Token is invalid or already used"} = json
     end
   end
 

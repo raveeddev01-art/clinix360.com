@@ -154,20 +154,22 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
     with %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
       render conn, "show.json", user: user
-    else
-      nil -> {:error, :not_found, "No user found with ID: #{user_id}"}
+    else _ ->
+      conn
+      |> put_status(:not_found)
+      |> json(%{message: "No user found with ID: #{user_id}"})
     end
   end
 
   def update_password(conn, %{"id" => _id, "new_password" => new_password, "old_password" => old_password}) do
     case Stitch.User.Authentication.update_password(conn.assigns.current_user, old_password, new_password) do
       {:ok, user} ->
-        EventsChannel.broadcast_logout_all_sessions(user, get_session(conn, :session_id))
+        EventsChannel.broadcast_logout_from_all_sessions(user, get_session(conn, :session_id))
         conn
         |> update_session(user)
         |> render("show.json", user: user)
-      {:error, message} ->
-        {:error, :unprocessable_entity, message}
+      {:error, message} when is_binary(message) -> {:error, :unprocessable_entity, message}
+      {:error, message} -> {:error, message}
     end
   end
 

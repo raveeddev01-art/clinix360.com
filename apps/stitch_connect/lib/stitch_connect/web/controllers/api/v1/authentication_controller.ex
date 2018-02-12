@@ -43,12 +43,13 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
 
     with {:token, %PasswordResetToken{} = token} <- {:token, PasswordResetToken.get_valid_token(token)},
          {:team_member?, true} <- {:team_member?, token.user.team_id == team.id},
-         {:ok, _result} <- Authentication.reset_password(token.user, password) do
+         {:ok, %{user: user}} <- Authentication.reset_password(token.user, password) do
+      EventsChannel.broadcast_logout_from_all_sessions(user)
       json(conn, %{message: "Password was successfully changed"})
     else
       {:token, nil} -> {:error, :not_found, "Token is invalid or already used"}
       {:team_member?, false} -> {:error, :not_found, "Token is invalid or already used"}
-      {:error, %{user: user_changeset}} -> {:error, user_changeset}
+      {:error, :user, user_changeset, _} -> {:error, user_changeset}
       _ -> {:error, :not_found}
     end
   end
