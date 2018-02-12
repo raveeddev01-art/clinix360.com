@@ -5,6 +5,14 @@ import classNames from "classnames";
 @inject("groupStore", "presenceStore")
 @observer
 export default class GroupName extends Component {
+  getUserId(users) {
+    if (users[0].id === currentUser.id) {
+      return users[1].id;
+    }
+
+    return users[0].id;
+  }
+
   render() {
     const { groupStore, presenceStore } = this.props;
     const { type, users } = groupStore.group;
@@ -12,11 +20,12 @@ export default class GroupName extends Component {
 
     if (type === "regular") {
       iconName = groupStore.group.public ? "fa-comments" : "fa-lock";
-    } else if (type === "dm") {
-      iconName =
-        users.length > 0 && presenceStore.isOnline(users[0].id)
-          ? "fa-circle"
-          : "fa-circle-o";
+    } else if (type === "dm" && users.length === 1) {
+      iconName = "fa-circle";
+    } else if (type === "dm" && users.length === 2) {
+      iconName = presenceStore.isOnline(this.getUserId(users))
+        ? "fa-circle"
+        : "fa-circle-o";
     } else if (type === "multi_dm") {
       iconName = "fa-link";
     }
