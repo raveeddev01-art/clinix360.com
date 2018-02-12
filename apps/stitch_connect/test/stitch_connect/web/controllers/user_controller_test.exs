@@ -589,8 +589,9 @@ defmodule StitchConnect.Web.UserControllerTest do
         |> put(Routes.api_v1_user_path(conn, :update_password, user.id), %{old_password: "Password!1", new_password: "Password!2"})
         |> json_response(200)
 
-      assert %{"id" => user_id} = json
-      assert user_id == user.id
+      user = Stitch.UserQueries.get_by_id(user.id)
+      assert %{"token" => token} = json
+      assert token == user.token
       assert_broadcast "logout", %{logout_from_all_sessions: true, current_session_id: _current_session_id}
     end
 

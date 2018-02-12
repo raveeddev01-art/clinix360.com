@@ -1,6 +1,8 @@
 defmodule StitchConnect.Web.PasswordResetTest do
   use StitchConnect.Web.ConnCase, async: false
   import Phoenix.ChannelTest
+  use Bamboo.Test
+  alias StitchConnect.Web.Api.V1.{AuthenticationView}
   alias StitchConnect.Web.SubdomainRouter.Helpers, as: Routes
   alias Stitch.Accounts.PasswordResetToken
   alias Stitch.Repo
@@ -20,7 +22,9 @@ defmodule StitchConnect.Web.PasswordResetTest do
         |> json_response(200)
 
       assert %{"status" => "ok"} = json
-      assert [_] = Repo.all(PasswordResetToken)
+      assert [password_reset_token] = Repo.all(PasswordResetToken)
+      reset_link = AuthenticationView.reset_password_link(password_reset_token, conn)
+      assert_delivered_email Stitch.Accounts.Email.reset_password_email(user, reset_link)
     end
 
     test "when email doesn't exist", %{conn: conn} do

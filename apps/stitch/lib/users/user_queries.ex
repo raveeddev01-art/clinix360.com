@@ -88,14 +88,6 @@ defmodule Stitch.UserQueries do
     Repo.get_by(User, token: token, disabled: false)
   end
 
-  @doc """
-  Find a user by password reset token.
-  """
-  @spec get_by_password_reset_token(binary) :: User.t() | nil
-  def get_by_password_reset_token(token) do
-    Repo.get_by(User, password_reset_token: token)
-  end
-
   def user_with_email_exists?(email) do
     query =
       from u in User,

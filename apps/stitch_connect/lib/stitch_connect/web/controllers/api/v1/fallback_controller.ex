@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.FallbackController do
   Controller fallback for handling common domain errors.
   """
   use Phoenix.Controller
-  alias StitchConnect.Web.{ErrorView, ControllerHelpers}
+  alias StitchConnect.Web.{ErrorView}
 
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
