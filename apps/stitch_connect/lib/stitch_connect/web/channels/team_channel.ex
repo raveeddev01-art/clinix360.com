@@ -32,11 +32,13 @@ defmodule StitchConnect.Web.TeamChannel do
 
   @decorate channel_action()
   def handle_in("became_inactive", _params, socket) do
+    push socket, "presence_state", Presence.list(socket)
     {:noreply, update_connection_meta(socket, %{inactive: true})}
   end
 
   @decorate channel_action()
   def handle_in("became_away", _params, socket) do
+    push socket, "presence_state", Presence.list(socket)
     {:noreply, update_connection_meta(socket, %{became_away: true})}
   end
 
