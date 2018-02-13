@@ -17,6 +17,7 @@ import { getData as getEmoji } from "emoji-mart/dist/utils";
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
   @observable messageElements = {}; // Div elements of messages loaded in the chat div
+  @observable messageVisibility = {}; // current visibility status of messages
 
   @observable messages = []; // messages currently loaded
 
@@ -153,7 +154,7 @@ class MessageStore {
       return "hidden-up";
     }
 
-    if (messageElement.visible) {
+    if (this.messageVisibility[this.firstUnreadMessage.id]) {
       return "visible";
     }
 
@@ -222,6 +223,7 @@ class MessageStore {
     this.messageInEdit = null;
     this.textInEdit = "";
     this.readStatusCache = {};
+    this.messageVisibility = {};
 
     this.updateGroupData({
       marked_as_unread: false,
@@ -822,8 +824,7 @@ class MessageStore {
     this.messageElements = {
       ...this.messageElements,
       [messageId]: {
-        div: messageDiv,
-        visible: false
+        div: messageDiv
       }
     };
   }
@@ -847,23 +848,38 @@ class MessageStore {
     this.isScrollBottom = false;
   }
 
-  onMessageShow(id) {
-    // just ignore message show if window lost focus
-    if (!this.isActive) {
-      return;
+  @action
+  onWindowFocus() {
+    // if last message is visible, mark as unread
+    if (this.group && this.messages.length && this.messageVisibility[this.messages[0].id]) {
+      setTimeout(() => {
+        this.markAsRead(false);
+      }, 1000);
     }
+  }
 
-    if (this.messageElements[id]) {
-      this.messageElements[id].visible = true;
-    }
+  onMessageShow(id) {
+    this.messageVisibility[id] = true;
 
     if (!this.groupCursor || this.groupCursor > id) {
       this.updateGroupCursor(id);
     }
 
+    // just ignore message show if window lost focus
+    if (!this.isActive) {
+      return;
+    }
+
     if (
       !this.markedAsUnread &&
-      (!this.firstUnreadMessage || this.firstUnreadMessage.id === id)
+      (
+        !this.firstUnreadMessage ||
+        this.firstUnreadMessage.id === id ||
+        (
+          id === this.messages[0].id &&
+          this.messageVisibility[this.firstUnreadMessage.id]
+        ) // first unreadmessage is visible, and you reached to the last message
+      )
     ) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
@@ -875,7 +891,7 @@ class MessageStore {
 
   onMessageHide(id) {
     if (this.messageElements[id]) {
-      this.messageElements[id].visible = false;
+      this.messageVisibility[id] = false;
     }
 
     if (!this.groupCursor || this.groupCursor === id) {
