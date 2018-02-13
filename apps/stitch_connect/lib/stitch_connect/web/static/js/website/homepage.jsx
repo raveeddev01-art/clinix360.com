@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { LinkContainer } from "react-router-bootstrap";
+
 import Button from "react-bootstrap/lib/Button";
 import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
 import Carousel from "react-bootstrap/lib/Carousel";
@@ -7,24 +8,11 @@ import cx from "classnames";
 
 import Header from "./components/header";
 import CreateTeam from "./components/create-team";
-import CUSTOMERS from "./components/customers-logos";
+import OurCustomers from "./components/our-customers";
 import GetStarted from "./components/get-started";
 import Footer from "./components/footer";
 
 export default class Homepage extends Component {
-  renderCustomers() {
-    return CUSTOMERS.map((c, index) => {
-      const className = cx("col-lg-5ths col-md-3 col-xs-4", {
-        "visible-lg": index % 5 === 4
-      });
-      return (
-        <div className={className} key={`customer_${index}`}>
-          <img src={c.img} alt={c.title} />
-        </div>
-      );
-    });
-  }
-
   render() {
     return (
       <div className="homepage">
@@ -65,14 +53,7 @@ export default class Homepage extends Component {
           </div>
         </div>
 
-        <div className="our-customers text-center">
-          <div className="container">
-            <h4 className="text-uppercase">Trusted by top healthcare teams</h4>
-            <div className="customer-logos">
-              <div className="row logo-row">{this.renderCustomers()}</div>
-            </div>
-          </div>
-        </div>
+        <OurCustomers heading="Trusted by top healthcare teams" />
 
         <div className="features-holder">
           <div className="feature">
@@ -117,14 +98,6 @@ export default class Homepage extends Component {
             <div className="container">
               <div className="flex-box">
                 <div className="flex-item">
-                  <img
-                    src="/images/engage-homepage.png"
-                    alt="Stitch Engage"
-                    className="img-responsive"
-                  />
-                </div>
-
-                <div className="flex-item">
                   <div className="info">
                     <h2>
                       <img src="/images/engage-icon.png" alt="Connect" /> Engage
@@ -145,6 +118,14 @@ export default class Homepage extends Component {
                       </Button>
                     </LinkContainer>
                   </div>
+                </div>
+
+                <div className="flex-item">
+                  <img
+                    src="/images/engage-homepage.png"
+                    alt="Stitch Engage"
+                    className="img-responsive"
+                  />
                 </div>
               </div>
             </div>

@@ -1,4 +1,11 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
+
+import Header from "../components/header";
+import Subheader from "../components/subheader";
+import GetStarted from "../components/get-started";
+import Footer from "../components/footer";
+
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import Row from "react-bootstrap/lib/Row";
@@ -6,23 +13,16 @@ import Col from "react-bootstrap/lib/Col";
 import NavItem from "react-bootstrap/lib/NavItem";
 import Button from "react-bootstrap/lib/Button";
 
-import Header from "../components/header";
-import GetStarted from "../components/get-started";
-import Footer from "../components/footer";
-
 export default class Downloads extends Component {
   render() {
     return (
       <div className="downloads-page">
         <Header />
-        <div className="subheader">
-          <div className="container">
-            <div className="landing-message text-center">
-              <h1>Downloads</h1>
-              <h3>Download apps for every desktop and mobile platform.</h3>
-            </div>
-          </div>
-        </div>
+
+        <Subheader
+          title="Downloads"
+          subtitle="Download apps for every desktop and mobile platform."
+        />
 
         <div className="downloads-content">
           <div className="container">

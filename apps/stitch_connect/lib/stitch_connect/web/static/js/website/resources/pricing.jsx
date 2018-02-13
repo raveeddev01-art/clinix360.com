@@ -1,14 +1,16 @@
 import React, { Component } from "react";
+
+import Header from "../components/header";
+import Subheader from "../components/subheader";
+import GetStarted from "../components/get-started";
+import Footer from "../components/footer";
+
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import NavItem from "react-bootstrap/lib/NavItem";
 import Button from "react-bootstrap/lib/Button";
-
-import Header from "../components/header";
-import GetStarted from "../components/get-started";
-import Footer from "../components/footer";
 
 export default class Pricing extends Component {
   constructor(props) {
@@ -27,14 +29,11 @@ export default class Pricing extends Component {
     return (
       <div className="pricing-page">
         <Header />
-        <div className="subheader">
-          <div className="container">
-            <div className="landing-message text-center">
-              <h1>Pricing</h1>
-              <h3>Free to start, upgrade when you need.</h3>
-            </div>
-          </div>
-        </div>
+
+        <Subheader
+          title="Pricing"
+          subtitle="Free to start, upgrade when you need."
+        />
 
         <div className="pricing-content">
           <div className="container">

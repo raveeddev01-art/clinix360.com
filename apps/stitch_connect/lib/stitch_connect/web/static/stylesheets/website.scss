@@ -390,7 +390,7 @@
       }
 
       &.alt .flex-box {
-        flex-direction: row;
+        flex-direction: row-reverse;
       }
     }
 
@@ -419,8 +419,8 @@
     }
 
     .feature.alt .flex-box {
-      flex-direction: column-reverse;
-      -ms-flex-direction: column-reverse;
+      flex-direction: column;
+      -ms-flex-direction: column;
     }
   }
 
@@ -796,6 +796,10 @@
     .our-customers {
       padding: 30px 0;
 
+      h4 {
+        display: none;
+      }
+
       .logo-row {
         margin-bottom: 0;
       }
@@ -842,59 +846,6 @@
       width: auto;
       display: inline-block;
       margin: 0 auto;
-    }
-  }
-
-  //----------------- BLOG -----------------
-  .blog-page {
-    .date {
-      color: #8B95A6;
-      font-weight: 700;
-      margin: 50px auto;
-      position: relative;
-
-      span {
-        background: #f0f1f3;
-        padding: 0 20px;
-        position: relative;
-      }
-
-      &:before {
-        content: "";
-        border-top: 1px solid #ccc;
-        position: absolute;
-        top: 12px;
-        right: 0;
-        left: 0;
-      }
-    }
-
-    .panel-body {
-      padding: 40px;
-
-      h2, h3 {
-        font-weight: 700;
-      }
-
-      .share-buttons a {
-        display: block;
-        width: 50px;
-        color: #fff;
-        font-size: 24px;
-        line-height: 50px;
-        border-radius: 50%;
-        margin: 0 10px;
-
-        &.btn-facebook {
-          background: #3b5998;
-        }
-        &.btn-twitter {
-          background: #1da1f2;
-        }
-        &.btn-linkedin {
-          background: #0077b5;
-        }
-      }
     }
   }
 
@@ -945,6 +896,112 @@
     .get-started h2 span {
       display: none;
     }
+  }
+}
+
+//----------------- MISC PAGES -----------------
+.terms-of-service,
+.privacy-policy,
+.baa-page,
+.security-page {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+.case-study {
+  color: #036;
+
+  .overview {
+    background: #fff;
+    padding: 25px 0 0;
+
+    .flex-item {
+      padding: 10px 15px;
+    }
+
+    h5 {
+      max-width: 200px;
+      font-size: 13px;
+      font-weight: 700;
+      background: #e8ecef;
+      border-radius: 4px;
+      padding: 8px 20px;
+      margin: 0 auto 10px;
+      @media (min-width: 768px) {
+        font-size: 14px;
+      }
+    }
+
+    p {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 20px;
+    }
+  }
+
+  .case-study-content {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 0;
+
+    h3 {
+      width: 80%;
+      font-weight: 700;
+      margin: 0 auto;
+    }
+
+    hr {
+      width: 30%;
+      margin: 50px auto;
+    }
+
+    h4 {
+      font-weight: 700;
+    }
+
+    p {
+      line-height: 1.75;
+    }
+
+    .quote {
+      max-width: 545px;
+      margin: 40px auto 50px;
+
+      h5 {
+        font-size: 20px;
+        font-weight: normal;
+        font-style: italic;
+        line-height: 1.5;
+      }
+
+      &.dssi-quote {
+        max-width: 690px;
+      }
+    }
+
+    .infographic {
+      max-width: 450px;
+      margin: 60px auto;
+
+      h5 {
+        font-size: 20px;
+
+        span {
+          font-weight: 800;
+        }
+      }
+
+      &.dssi-infographic {
+        max-width: 832px;
+      }
+    }
+  }
+}
+
+@media (min-width: 538px) and (max-width: 768px) {
+  .case-study .overview .row {
+    width: 85%;
+    margin: 0 auto;
   }
 }
 
@@ -1183,135 +1240,34 @@
 
 //----------------- FOOTER -----------------
 #footer {
-  font-size: 14px;
   background-color: #fff;
   box-shadow: 0 -1px 0 #eaeaea;
   padding: 20px 0;
 
+  .stitch-brand {
+    width: 80px;
+    margin: 10px 0 20px;
+  }
+
   h5 {
-    color: #666;
+    color: #036;
+    font-size: 15px;
     font-weight: 700;
   }
 
   a {
-    display: block;
-    color: #999;
+    display: inline-block;
+    color: #333;
     text-decoration: none;
-
-    &:hover {
-      color: #666;
-    }
   }
 
   address {
-    color: #999;
     line-height: 1.5;
   }
-}
 
-
-//----------------- TEMP CSS -----------------
-.terms-of-service,
-.privacy-policy,
-.baa-page,
-.security-page {
-  padding-top: 70px;
-  padding-bottom: 70px;
-}
-
-.case-study {
-  color: #036;
-
-  .overview {
-    background: #fff;
-    padding: 25px 0 0;
-
-    .flex-item {
-      padding: 10px 15px;
-    }
-
-    h5 {
-      max-width: 200px;
-      font-size: 13px;
-      font-weight: 700;
-      background: #e8ecef;
-      border-radius: 4px;
-      padding: 8px 20px;
-      margin: 0 auto 10px;
-      @media (min-width: 768px) {
-        font-size: 14px;
-      }
-    }
-
-    p {
-      font-size: 16px;
-      font-weight: 700;
-      margin: 0 0 20px;
-    }
-  }
-
-  .case-study-content {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 40px 0;
-
-    h3 {
-      width: 80%;
-      font-weight: 700;
-      margin: 0 auto;
-    }
-
-    hr {
-      width: 30%;
-      margin: 50px auto;
-    }
-
-    h4 {
-      font-weight: 700;
-    }
-
-    p {
-      line-height: 1.75;
-    }
-
-    .quote {
-      max-width: 545px;
-      margin: 40px auto 50px;
-
-      h5 {
-        font-size: 20px;
-        font-weight: normal;
-        font-style: italic;
-        line-height: 1.5;
-      }
-
-      &.dssi-quote {
-        max-width: 690px;
-      }
-    }
-
-    .infographic {
-      max-width: 450px;
-      margin: 60px auto;
-
-      h5 {
-        font-size: 20px;
-
-        span {
-          font-weight: 800;
-        }
-      }
-
-      &.dssi-infographic {
-        max-width: 832px;
-      }
-    }
-  }
-}
-
-@media (min-width: 538px) and (max-width: 768px) {
-  .case-study .overview .row {
-    width: 85%;
-    margin: 0 auto;
+  i.fa {
+    color: #999;
+    font-size: 20px;
+    margin-right: 10px;
   }
 }
