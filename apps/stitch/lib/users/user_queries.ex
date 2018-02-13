@@ -28,24 +28,17 @@ defmodule Stitch.UserQueries do
     {:error, "team_id must be an integer"}
   end
 
-  def team_member_with_email(team_id, email) when is_integer(team_id) do
+  @doc """
+  Finds a team member by email
+  """
+  @spec team_member_with_email(integer, binary) :: User.t | nil
+  def team_member_with_email(team_id, email) do
     query =
       from u in User,
       where: u.team_id == ^team_id,
       where: u.onboarded == ^true,
       where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
     Repo.one(query)
-  end
-  def team_member_with_email(_, _) do
-    {:error, "team_id must be an integer"}
-  end
-
-  @doc """
-  Finds a user by id based on a user team.
-  """
-  @spec find_user(pos_integer, User.t) :: User.t | nil
-  def find_user(user_id, %User{team_id: team_id}) do
-    Repo.get_by(User, id: user_id, team_id: team_id)
   end
 
   @doc """

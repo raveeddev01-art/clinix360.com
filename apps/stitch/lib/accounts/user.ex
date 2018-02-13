@@ -29,7 +29,6 @@ defmodule Stitch.Accounts.User do
     field :pin, :string
     field :token, :string
     field :disabled, :boolean, default: false
-    field :password_reset_token, :string
     field :desktop_notification_preference, :string, default: "everything"
     field :mobile_notification_preference, :string, default: "everything"
     field :email_notification_preference, :string, default: "daily"
@@ -37,6 +36,7 @@ defmodule Stitch.Accounts.User do
     field :groups_as_guest, {:array, :integer}, default: [] # List of groups the user is allowed in if user is a guest
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
+    has_many :password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all
 
     field :password, :string, virtual: true
 

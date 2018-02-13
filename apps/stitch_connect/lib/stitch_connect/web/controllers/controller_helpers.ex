@@ -14,6 +14,12 @@ defmodule StitchConnect.Web.ControllerHelpers do
     |> configure_session(renew: true)
   end
 
+  def update_session(conn, user) do
+    conn
+    |> put_session(:current_user_token, user.token)
+    |> configure_session(renew: true)
+  end
+
   @doc """
   Takes a changeset with errors and parses it into a string
 
