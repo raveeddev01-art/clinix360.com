@@ -55,7 +55,7 @@ defmodule StitchConnect.Web.ConnCase do
   """
   @spec with_user_session(Plug.Conn.t, Stitch.Accounts.User.t) :: Plug.Conn.t
   def with_user_session(conn, %Stitch.Accounts.User{} = user) do
-    Plug.Test.init_test_session(conn, %{current_user_id: user.id})
+    Plug.Test.init_test_session(conn, %{current_user_token: user.token})
   end
 
   @doc """

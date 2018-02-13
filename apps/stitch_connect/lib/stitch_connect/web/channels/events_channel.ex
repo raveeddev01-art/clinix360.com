@@ -141,6 +141,10 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user.id}", "logout", %{session_id: session_id})
   end
 
+  def broadcast_logout_all_sessions(%User{} = user) do
+    @endpoint.broadcast("events:#{user.id}", "logout", %{logout_from_all_sessions: true})
+  end
+
   def broadcast_deactivated(user_id) do
     @endpoint.broadcast("events:#{user_id}", "deactivated", %{})
   end
