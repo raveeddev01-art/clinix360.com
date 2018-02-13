@@ -651,13 +651,42 @@ class MessageStore {
     });
   };
 
+  decodeMentions(text = "") {
+    const { usersById } = this.rootStore.usersStore;
+    const messageToFilter = text.split(" ");
+
+    const filteredMessage = messageToFilter.map(part => {
+      // Replace userMentionId with UserMention
+      const match = part.match(REGEX.getUserMentionDecode());
+      if (match) {
+        return part.replace(
+          REGEX.getUserMentionDecode(),
+          `@${usersById[match[1]].username}`
+        );
+      }
+
+      // Replace groupMentionId with GroupMention
+      const groupMatch = part.match(REGEX.getGroupMentionDecode());
+      if (groupMatch) {
+        return part.replace(
+          REGEX.getGroupMentionDecode(),
+          `@${[groupMatch[1]]}`
+        );
+      }
+
+      return part;
+    });
+
+    return filteredMessage.join(" ");
+  }
+
   @action
   startEdit(id) {
     const message = this.getMessageById(id);
 
     if (message) {
       this.messageInEdit = message;
-      this.textInEdit = message.text_content;
+      this.textInEdit = this.decodeMentions(message.text_content);
     }
   }
 
@@ -667,7 +696,7 @@ class MessageStore {
 
     if (message && message.sent !== false && !message.sending) {
       this.messageInEdit = message;
-      this.textInEdit = message.text_content;
+      this.textInEdit = this.decodeMentions(message.text_content);
     }
   }
 
