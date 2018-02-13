@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Header from "../components/header";
+import Subheader from "../components/subheader";
 import Footer from "../components/footer";
 
 export default class Jobs extends Component {
@@ -16,17 +17,11 @@ export default class Jobs extends Component {
       <div>
         <Header />
 
-        <div className="subheader ">
-          <div className="container">
-            <div className="landing-message text-center">
-              <h1>Join Us</h1>
-              <h3>
-                We hire talented, driven people passionate about healthcare and
-                technology.
-              </h3>
-            </div>
-          </div>
-        </div>
+        <Subheader
+          title="Join Us"
+          subtitle="We hire talented, driven people passionate about healthcare and
+          technology."
+        />
 
         <div id="grnhse_app" />
 
