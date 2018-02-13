@@ -25,7 +25,7 @@ defmodule StitchConnect.Web.Admin.ImpersonationControllerTest do
 
     test "gives error for a user that doesn't exist", %{conn: conn} do
       conn = get(conn, admin_impersonation_path(conn, :impersonate, 9_999_999))
-      assert html_response(conn, 200) =~ "does not exist"
+      assert html_response(conn, 200) =~ "Invalid user id provided."
     end
 
     test "gives error for using an invalid id", %{conn: conn} do
@@ -35,10 +35,12 @@ defmodule StitchConnect.Web.Admin.ImpersonationControllerTest do
 
     test "only allows staff users", %{conn: conn} do
       user = insert(:user, is_staff: false)
+
       conn =
         conn
         |> with_user_session(user)
         |> get(admin_impersonation_path(conn, :impersonate, 9_999_999))
+
       assert response(conn, 403) == "Forbidden"
     end
   end
@@ -66,7 +68,10 @@ defmodule StitchConnect.Web.Admin.ImpersonationControllerTest do
       refute get_session(conn, :impersonator_user_token)
     end
 
-    test "redirects even when there isn't a current impersonation session", %{conn: conn, staff_user: staff_user} do
+    test "redirects even when there isn't a current impersonation session", %{
+      conn: conn,
+      staff_user: staff_user
+    } do
       conn = get(conn, admin_impersonation_path(conn, :stop))
       assert redirected_to(conn) =~ "admin.localhost:4001"
       assert get_session(conn, :current_user_token) == staff_user.token
@@ -75,10 +80,12 @@ defmodule StitchConnect.Web.Admin.ImpersonationControllerTest do
 
     test "only allows staff users", %{conn: conn} do
       user = insert(:user, is_staff: false)
+
       conn =
         conn
         |> with_user_session(user)
         |> get(admin_impersonation_path(conn, :stop))
+
       assert response(conn, 403) == "Forbidden"
     end
   end
