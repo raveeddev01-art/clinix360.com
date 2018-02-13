@@ -25,7 +25,7 @@ defmodule StitchConnect.Web.Admin.ImpersonationControllerTest do
 
     test "gives error for a user that doesn't exist", %{conn: conn} do
       conn = get(conn, admin_impersonation_path(conn, :impersonate, 9_999_999))
-      assert html_response(conn, 200) =~ "Invalid user id provided."
+      assert html_response(conn, 200) =~ "User does not exist."
     end
 
     test "gives error for using an invalid id", %{conn: conn} do
