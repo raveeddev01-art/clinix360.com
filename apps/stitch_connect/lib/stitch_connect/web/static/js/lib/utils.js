@@ -97,5 +97,23 @@ export function isValidUnicodeString(text) {
  * @returns {bool}
  */
 export function isFullMember(user) {
-  return user.roles.indexOf("member") > -1 || user.roles.indexOf("admin") > -1;
+  return user.roles.includes("member") || user.roles.includes("admin");
+}
+
+/**
+ * Format currency
+ * 
+ * @param {number} money 
+ */
+export function formatCurrency(money) {
+  return isNaN(money) ? "$0.00" : `$${parseFloat(money).toFixed(2)}`;
+}
+
+/**
+ * Check if string provided is valid US zip code
+ * 
+ * @param {string} zipCode 
+ */
+export function isZipCode(zipCode) {
+  return /^\d{5}-\d{4}$/.test(zipCode);
 }

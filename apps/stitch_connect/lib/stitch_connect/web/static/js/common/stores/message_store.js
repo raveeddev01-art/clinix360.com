@@ -17,6 +17,7 @@ import { getData as getEmoji } from "emoji-mart/dist/utils";
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
   @observable messageElements = {}; // Div elements of messages loaded in the chat div
+  @observable messageVisibility = {}; // current visibility status of messages
 
   @observable messages = []; // messages currently loaded
 
@@ -130,6 +131,10 @@ class MessageStore {
     return this.messages.find(m => m.user_id !== currentUser.id) || {};
   }
 
+  get isActive() {
+    return this.rootStore.presenceStore.isActive;
+  }
+
   /**
    * Returns the position of first unread message in chat div
    *
@@ -149,7 +154,7 @@ class MessageStore {
       return "hidden-up";
     }
 
-    if (messageElement.visible) {
+    if (this.messageVisibility[this.firstUnreadMessage.id]) {
       return "visible";
     }
 
@@ -218,6 +223,7 @@ class MessageStore {
     this.messageInEdit = null;
     this.textInEdit = "";
     this.readStatusCache = {};
+    this.messageVisibility = {};
 
     this.updateGroupData({
       marked_as_unread: false,
@@ -645,13 +651,42 @@ class MessageStore {
     });
   };
 
+  decodeMentions(text = "") {
+    const { usersById } = this.rootStore.usersStore;
+    const messageToFilter = text.split(" ");
+
+    const filteredMessage = messageToFilter.map(part => {
+      // Replace userMentionId with UserMention
+      const match = part.match(REGEX.getUserMentionDecode());
+      if (match) {
+        return part.replace(
+          REGEX.getUserMentionDecode(),
+          `@${usersById[match[1]].username}`
+        );
+      }
+
+      // Replace groupMentionId with GroupMention
+      const groupMatch = part.match(REGEX.getGroupMentionDecode());
+      if (groupMatch) {
+        return part.replace(
+          REGEX.getGroupMentionDecode(),
+          `@${[groupMatch[1]]}`
+        );
+      }
+
+      return part;
+    });
+
+    return filteredMessage.join(" ");
+  }
+
   @action
   startEdit(id) {
     const message = this.getMessageById(id);
 
     if (message) {
       this.messageInEdit = message;
-      this.textInEdit = message.text_content;
+      this.textInEdit = this.decodeMentions(message.text_content);
     }
   }
 
@@ -661,7 +696,7 @@ class MessageStore {
 
     if (message && message.sent !== false && !message.sending) {
       this.messageInEdit = message;
-      this.textInEdit = message.text_content;
+      this.textInEdit = this.decodeMentions(message.text_content);
     }
   }
 
@@ -818,8 +853,7 @@ class MessageStore {
     this.messageElements = {
       ...this.messageElements,
       [messageId]: {
-        div: messageDiv,
-        visible: false
+        div: messageDiv
       }
     };
   }
@@ -843,18 +877,38 @@ class MessageStore {
     this.isScrollBottom = false;
   }
 
-  onMessageShow(id) {
-    if (this.messageElements[id]) {
-      this.messageElements[id].visible = true;
+  @action
+  onWindowFocus() {
+    // if last message is visible, mark as unread
+    if (this.group && this.messages.length && this.messageVisibility[this.messages[0].id]) {
+      setTimeout(() => {
+        this.markAsRead(false);
+      }, 1000);
     }
+  }
+
+  onMessageShow(id) {
+    this.messageVisibility[id] = true;
 
     if (!this.groupCursor || this.groupCursor > id) {
       this.updateGroupCursor(id);
     }
 
+    // just ignore message show if window lost focus
+    if (!this.isActive) {
+      return;
+    }
+
     if (
       !this.markedAsUnread &&
-      (!this.firstUnreadMessage || this.firstUnreadMessage.id === id)
+      (
+        !this.firstUnreadMessage ||
+        this.firstUnreadMessage.id === id ||
+        (
+          id === this.messages[0].id &&
+          this.messageVisibility[this.firstUnreadMessage.id]
+        ) // first unreadmessage is visible, and you reached to the last message
+      )
     ) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
@@ -866,7 +920,7 @@ class MessageStore {
 
   onMessageHide(id) {
     if (this.messageElements[id]) {
-      this.messageElements[id].visible = false;
+      this.messageVisibility[id] = false;
     }
 
     if (!this.groupCursor || this.groupCursor === id) {
@@ -909,13 +963,13 @@ class MessageStore {
       this.messages.unshift(newMessage);
     }
 
-    // Update unread messages info of the group
-    if (newMessage.user_id === currentUser.id) {
-      if (this.unreadMessagesCount === 0) {
-        this.markAsRead();
-      }
-    } else if (this.unreadMessagesCount === 0 && this.isScrollBottom) {
-      // If you're at the bottom and no NML, keep up with the new message
+    // Update unread messages info of the group.
+    // Only mark as read when the app has user's focus
+    if (
+      this.isActive &&
+      this.unreadMessagesCount === 0 &&
+      (newMessage.user_id === currentUser.id || this.isScrollBottom)
+    ) {
       this.markAsRead();
     } else if (newMessage.type !== "system") {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
@@ -926,8 +980,11 @@ class MessageStore {
       });
     }
 
-    // If my message or at scroll bottom, scroll to bottom
-    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
+    // if my message or at scroll bottom and app has focus, scroll to bottom
+    if (
+      this.isActive &&
+      (this.isScrollBottom || newMessage.user_id === currentUser.id)
+    ) {
       this.scrollToBottom(null, 0, 0);
     }
 
@@ -1012,7 +1069,7 @@ class MessageStore {
 
     const message = this.getMessageById(payload.id);
 
-    if (message) {
+    if (message && payload.link_previews && payload.link_previews.length) {
       message.link_previews = payload.link_previews;
       this.keepScrollAtBottom();
     }

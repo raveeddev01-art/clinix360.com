@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
+import Panel from "react-bootstrap/lib/Panel";
+import Button from "react-bootstrap/lib/Button";
 import cx from "classnames";
 
 import Header from "../components/header";
@@ -8,12 +10,6 @@ import Subheader from "../components/subheader";
 import OurCustomers from "../components/our-customers";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
-import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
-import Panel from "react-bootstrap/lib/Panel";
-import Button from "react-bootstrap/lib/Button";
 
 export default class Customers extends Component {
   renderCustomers() {

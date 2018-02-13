@@ -1,5 +1,6 @@
 import AddonStore from "./addon_store";
 import AdminPanelStore from "./admin_panel_store";
+import BillingStore from "./billing_store";
 import ChannelStore from "./channel_store";
 import ExportStore from "./export_store";
 import FilesStore from "./files_store";
@@ -33,6 +34,7 @@ class RootStore {
   createStores() {
     this.addonStore = new AddonStore(this);
     this.adminPanelStore = new AdminPanelStore(this);
+    this.billingStore = new BillingStore(this);
     this.channelStore = new ChannelStore(this);
     this.exportStore = new ExportStore(this);
     this.filesStore = new FilesStore(this);
@@ -60,6 +62,9 @@ class RootStore {
     this.notificationStore.loadPreferences();
     this.teamStore.loadTeam(this.appParams.teamId);
     this.userStore.loadUser(currentUser.id);
+    if (currentUser.roles.includes("admin")) {
+      this.billingStore.loadData();
+    }
   }
 
   joinChannels() {

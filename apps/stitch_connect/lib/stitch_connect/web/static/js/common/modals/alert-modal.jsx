@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import { confirmable } from "react-confirm";
+import noop from "lodash/noop";
 
-const Alert = ({
+const AlertModal = ({
   okLabel,
   title,
   message,
@@ -27,7 +28,13 @@ const Alert = ({
         <i className="fa fa-close" />
       </a>
     </Modal.Header>
-    <Modal.Body>{message}</Modal.Body>
+
+    {typeof message === "string" ? (
+      <Modal.Body dangerouslySetInnerHTML={{ __html: message }} />
+    ) : (
+      <Modal.Body>{message}</Modal.Body>
+    )}
+
     <Modal.Footer>
       <Button bsSize="large" bsStyle="primary" onClick={proceed}>
         {okLabel}
@@ -36,9 +43,7 @@ const Alert = ({
   </Modal>
 );
 
-const noop = () => {};
-
-Alert.defaultProps = {
+AlertModal.defaultProps = {
   proceed: noop,
   dismiss: noop,
   okLabel: "OK",
@@ -46,7 +51,7 @@ Alert.defaultProps = {
   enableEscape: true
 };
 
-Alert.propTypes = {
+AlertModal.propTypes = {
   proceed: PropTypes.func, // called when ok button is clicked.
   dismiss: PropTypes.func, // called when backdrop is clicked or escaped.
 
@@ -58,4 +63,4 @@ Alert.propTypes = {
   enableEscape: PropTypes.bool
 };
 
-export default confirmable(Alert);
+export default confirmable(AlertModal);

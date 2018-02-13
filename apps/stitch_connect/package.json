@@ -1,7 +1,8 @@
 {
   "scripts": {
     "deploy": "webpack -p",
-    "watch": "webpack --watch-stdin --progress --color"
+    "watch": "webpack --watch-stdin --progress --color",
+    "lint": "eslint --fix --ext .js,.jsx ./lib/stitch_connect/web/static/js"
   },
   "dependencies": {
     "animate.css": "^3.5.2",
@@ -14,6 +15,7 @@
     "favico.js": "^0.3.10",
     "font-awesome": "^4.7.0",
     "guid": "^0.0.12",
+    "i18n-iso-countries": "^3.4.0",
     "jquery": "3.2.1",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.4",
@@ -22,7 +24,9 @@
     "moment": "^2.18.1",
     "password-validator": "^4.0.0",
     "phoenix": "file:../../deps/phoenix",
+    "pluralize": "^7.0.0",
     "prop-types": "^15.6.0",
+    "provinces": "^1.11.0",
     "qs": "^6.5.1",
     "react": "16.0.0",
     "react-bootstrap": "^0.31.5",
@@ -46,11 +50,12 @@
     "simplebar": "^2.5.1",
     "slugify": "^1.2.1",
     "validator": "^9.1.1",
-    "whatwg-fetch": "^2.0.3"
+    "whatwg-fetch": "^2.0.3",
+    "xss": "^0.3.7"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-env": "^1.5.2",
@@ -58,9 +63,10 @@
     "babel-preset-stage-2": "^6.24.1",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.4",
-    "eslint": "^4.3.0",
+    "eslint": "^4.17.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-prettier": "^2.3.0",
+    "eslint-import-resolver-webpack": "^0.8.4",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-prettier": "^2.1.2",
@@ -69,6 +75,7 @@
     "file-loader": "^1.1.5",
     "node-sass": "^4.5.3",
     "prettier": "1.7.0",
+    "prettier-eslint": "^8.8.1",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0",
     "url-loader": "^0.6.2",

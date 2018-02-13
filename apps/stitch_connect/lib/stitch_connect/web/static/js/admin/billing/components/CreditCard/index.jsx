@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
+import noop from "lodash/noop";
 
 const CreditCard = ({ card, onUse }) => {
   const cardClassName = classNames("credit-card", { selected: card.default });
@@ -37,9 +38,13 @@ const CreditCard = ({ card, onUse }) => {
   );
 };
 
+CreditCard.defaultProps = {
+  onUse: noop
+};
+
 CreditCard.propTypes = {
   card: PropTypes.object.isRequired,
-  onUse: PropTypes.func.isRequired
+  onUse: PropTypes.func
 };
 
 export default CreditCard;

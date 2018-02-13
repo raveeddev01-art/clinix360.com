@@ -8,14 +8,21 @@ class DateSeparator extends Component {
 
     return (
       <div className="date-separator">
-        <span className="date">{moment(timestamp).format("dddd, MMMM D")}</span>
+        <span className="date">
+          {moment(timestamp).calendar(null, {
+            sameDay: "[Today]",
+            lastDay: "[Yesterday]",
+            lastWeek: "dddd, MMMM D",
+            sameElse: "dddd, MMMM D"
+          })}
+        </span>
       </div>
     );
   }
 }
 
 DateSeparator.propTypes = {
-  timestamp: PropTypes.any
+  timestamp: PropTypes.any.isRequired
 };
 
 export default DateSeparator;

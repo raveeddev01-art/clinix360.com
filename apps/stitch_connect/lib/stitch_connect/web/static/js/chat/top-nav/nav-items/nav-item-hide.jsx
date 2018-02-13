@@ -17,7 +17,7 @@ class NavItemHide extends Component {
   };
 
   render() {
-    return <MenuItem onSelect={this.handleHide}>Close</MenuItem>;
+    return <MenuItem onSelect={this.handleHide}>Close Conversation</MenuItem>;
   }
 }
 export default withRouter(NavItemHide);

@@ -73,20 +73,20 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user_id}", "left_group", %{group_id: group.id})
   end
 
-  defp get_non_members(%Group{public: true, team_id: team_id}, memberIds) do
-    TeamQueries.list_non_guest_users(team_id) |> Enum.reject(& &1.id in memberIds )
+  defp get_non_member_ids(%Group{public: true, team_id: team_id}, member_ids) do
+    TeamQueries.list_non_member_non_guest_ids(team_id, member_ids)
   end
 
-  defp get_non_members(_, _), do: []
+  defp get_non_member_ids(_, _), do: []
 
   def broadcast_group_creation(%Group{} = group) do
-    memberIds = for %User{id: user_id} <- group.users do
+    member_ids = for %User{id: user_id} <- group.users do
       json = GroupView.group_json(group, user_id)
       @endpoint.broadcast("events:#{user_id}", "created_group", json)
       user_id
     end
 
-    for %User{id: user_id} <- get_non_members(group, memberIds) do
+    for user_id <- get_non_member_ids(group, member_ids) do
       json = group |> Map.put(:joined, false) |> GroupView.group_json(user_id)
       @endpoint.broadcast("events:#{user_id}", "created_group", json)
     end
@@ -99,13 +99,27 @@ defmodule StitchConnect.Web.EventsChannel do
       group_slug: group.slug
     }
 
-    memberIds = for %User{id: user_id} <- group.users do
+    member_ids = for %User{id: user_id} <- group.users do
       @endpoint.broadcast("events:#{user_id}", "renamed_group", json)
       user_id
     end
 
-    for %User{id: user_id} <- get_non_members(group, memberIds) do
+    for user_id <- get_non_member_ids(group, member_ids) do
       @endpoint.broadcast("events:#{user_id}", "renamed_group", json)
+    end
+  end
+
+  def broadcast_group_deleted(%Group{} = group) do
+    json = %{group_id: group.id}
+
+    member_ids =
+      for %User{id: user_id} <- group.users do
+        @endpoint.broadcast("events:#{user_id}", "deleted_group", json)
+        user_id
+      end
+
+    for user_id <- get_non_member_ids(group, member_ids) do
+      @endpoint.broadcast("events:#{user_id}", "deleted_group", json)
     end
   end
 
@@ -125,6 +139,16 @@ defmodule StitchConnect.Web.EventsChannel do
 
   def broadcast_logout(%User{} = user, session_id) do
     @endpoint.broadcast("events:#{user.id}", "logout", %{session_id: session_id})
+  end
+
+  @spec broadcast_logout_from_all_sessions(User.t) :: :ok | {:error, term}
+  def broadcast_logout_from_all_sessions(%User{} = user) do
+    @endpoint.broadcast("events:#{user.id}", "logout", %{logout_from_all_sessions: true})
+  end
+
+  @spec broadcast_logout_from_all_sessions(User.t, binary) :: :ok | {:error, term}
+  def broadcast_logout_from_all_sessions(%User{} = user, current_session_id) do
+    @endpoint.broadcast("events:#{user.id}", "logout", %{logout_from_all_sessions: true, current_session_id: current_session_id})
   end
 
   def broadcast_deactivated(user_id) do

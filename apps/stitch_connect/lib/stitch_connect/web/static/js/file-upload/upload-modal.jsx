@@ -10,7 +10,8 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
-import Groups from "../common/components/groups/groups";
+
+import { Groups } from "common/components";
 
 @inject("uploadStore")
 @observer

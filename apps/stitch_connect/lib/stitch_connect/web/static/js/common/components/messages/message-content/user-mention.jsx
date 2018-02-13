@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import SmartDropdown from "../../smart-dropdown/index";
+import SmartDropdown from "../../smart-dropdown";
 
 @inject("addonStore")
 @observer

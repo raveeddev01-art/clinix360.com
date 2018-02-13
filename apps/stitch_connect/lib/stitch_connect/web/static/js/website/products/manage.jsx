@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import Button from "react-bootstrap/lib/Button";
 
 import Header from "../components/header";
 import Feature from "../components/feature";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-
-import Button from "react-bootstrap/lib/Button";
 
 export default class Manage extends Component {
   render() {

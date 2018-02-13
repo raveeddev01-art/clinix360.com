@@ -10,9 +10,9 @@ defmodule StitchConnect.Mixfile do
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.5",
-      elixirc_paths: elixirc_paths(Mix.env),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-      start_permanent: Mix.env == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
       dialyzer: [plt_add_deps: :transitive]
@@ -31,7 +31,7 @@ defmodule StitchConnect.Mixfile do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
   #
@@ -55,12 +55,13 @@ defmodule StitchConnect.Mixfile do
       {:stitch, in_umbrella: true},
       {:appsignal, "~> 1.3"},
       {:wallaby, "~> 0.19.2", only: :test},
-      {:pigeon, "~> 1.1.3"}, # For mobile push notifications.
-      {:kadabra, "~> 0.3.6"}, # Used by Pigeon for push notifications.
+      # For mobile push notifications.
+      {:pigeon, "~> 1.1.3"},
+      # Used by Pigeon for push notifications.
+      {:kadabra, "~> 0.3.6"},
       {:plug_attack, "~> 0.3.0"},
       {:ip2country, "~> 1.1"},
-      {:remote_ip, "~> 0.1.4"},
-      {:exmoji, github: "mroth/exmoji"}
+      {:remote_ip, "~> 0.1.4"}
     ]
   end
 
@@ -69,6 +70,6 @@ defmodule StitchConnect.Mixfile do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    ["test": ["ecto.create --quiet", "ecto.migrate", "test"]]
+    [test: ["ecto.create --quiet", "ecto.migrate", "test"]]
   end
 end

@@ -24,10 +24,10 @@ class PeopleListItem extends Component {
 }
 
 PeopleListItem.propTypes = {
-  username: PropTypes.string,
-  first_name: PropTypes.string,
-  last_name: PropTypes.string,
-  online: PropTypes.bool,
+  username: PropTypes.string.isRequired,
+  first_name: PropTypes.string.isRequired,
+  last_name: PropTypes.string.isRequired,
+  online: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired
 };
 

@@ -74,7 +74,7 @@ defmodule Stitch.Stripe.Events do
     end
   end
 
-  defp record_payment_history(team, event) do
+  def record_payment_history(team, event) do
     [subscription] = get_in(event, [:data, "object", "lines", "data"])
     charge_id = get_in(event, [:data, "object", "charge"])
     invoice_id = get_in(event, [:data, "object", "id"])
@@ -123,12 +123,15 @@ defmodule Stitch.Stripe.Events do
       subscription: subscription,
       card_brand: history.card_brand,
       card_last4: history.card_last4,
-      today: Timex.format!(Timex.now(), "{Mfull} {D}, {YYYY}")
+      today: Timex.format!(history.period_start, "{Mfull} {D}, {YYYY}")
     ]
+
+    unix_time_stamp = DateTime.utc_now() |> DateTime.to_unix()
+    filename = "#{team.id}-#{unix_time_stamp}-#{:rand.uniform(1000)}"
 
     with html = Phoenix.View.render_to_string(HistoryView, "statement.html", params),
          shell_params = ["-d", "480", "-L", "0", "-R", "0", "-T", "0", "-B", "0"],
-         {:ok, filename} <- PdfGenerator.generate(html, shell_params: shell_params) do
+         {:ok, filename} <- PdfGenerator.generate(html, filename: filename, shell_params: shell_params) do
       try do
         {:ok, %{status_code: 200}} = S3.upload(filename)
       rescue

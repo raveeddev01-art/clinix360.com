@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
 
 import Header from "../components/header";
 import Footer from "../components/footer";
-
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 
 export default class Baa extends Component {
   render() {

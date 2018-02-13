@@ -1,14 +1,12 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
+import Panel from "react-bootstrap/lib/Panel";
 
 import Header from "../components/header";
 import Subheader from "../components/subheader";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
-import Panel from "react-bootstrap/lib/Panel";
 
 export default class Pilot extends Component {
   render() {
@@ -53,6 +51,7 @@ export default class Pilot extends Component {
                     <a
                       href="https://intercom.help/teamstitch/manage/security/hipaa-compliance"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       here
                     </a>.

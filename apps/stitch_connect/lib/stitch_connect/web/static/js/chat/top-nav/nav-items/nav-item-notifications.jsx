@@ -54,7 +54,7 @@ export default class NavItemNotifications extends Component {
 
     return [
       <MenuItem key="notifications_menuitem" onClick={this.openModal}>
-        Notifications
+        Room Notification Preferences
       </MenuItem>,
       <Modal
         key="notifications_modal"

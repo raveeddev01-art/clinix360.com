@@ -10,9 +10,9 @@ const description = "Manage deactivated members and re-enable accounts.";
 
 @inject("usersStore")
 @observer
-class DisabledMembersPanel extends Component {
+class DeactivatedMembersPanel extends Component {
   render() {
-    const { usersStore } = this.props;
+    const { usersStore: { deactivatedUsers: users } } = this.props;
 
     return (
       <SettingPanel saveButtonText="" title={title} description={description}>
@@ -28,26 +28,20 @@ class DisabledMembersPanel extends Component {
               </Col>
             </Row>
           </div>
-          {usersStore.deactivatedUsers.map(user => {
-            return (
-              <MemberItem
-                {...this.props}
-                user={user}
-                online={false}
-                key={user.id}
-              />
-            );
-          })}
+
+          {users.map(user => (
+            <MemberItem {...this.props} user={user} key={user.id} />
+          ))}
         </div>
       </SettingPanel>
     );
   }
 }
 
-DisabledMembersPanel.propTypes = {
+DeactivatedMembersPanel.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   hideAlert: PropTypes.func.isRequired
 };
 
-export default DisabledMembersPanel;
+export default DeactivatedMembersPanel;

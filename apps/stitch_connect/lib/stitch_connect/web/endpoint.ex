@@ -48,6 +48,7 @@ defmodule StitchConnect.Web.Endpoint do
     store: :cookie,
     key: "_stitch_connect_key",
     signing_salt: "o9McnPJj",
+    max_age: 2592000, # 30 days
     # Setting domain to nil is necessary for integration tests to pass. Maybe
     # a bug in Wallaby?
     #

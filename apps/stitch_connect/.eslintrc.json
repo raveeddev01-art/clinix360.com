@@ -9,11 +9,7 @@
   "extends": ["airbnb", "prettier", "prettier/react"],
   "plugins": ["import", "jsx-a11y", "prettier", "react"],
   "settings": {
-    "import/resolver": {
-      "node": {
-        "paths": ["lib/stitch_connect/web/static/js"]
-      }
-    }
+    "import/resolver": "webpack"
   },
   "parserOptions": {
     "ecmaFeatures": {
@@ -48,6 +44,7 @@
     "react/no-array-index-key": "off",
     "react/no-find-dom-node": "off",
     "react/no-unescaped-entities": "off",
+    "react/no-danger": "off",
     "react/prop-types": [
       "error",
       {
@@ -55,8 +52,11 @@
           "addonStore",
           "adminPanelStore",
           "authenticationStore",
+          "billingStore",
+          "channelStore",
           "exportStore",
           "filesStore",
+          "globalStarredMessageStore",
           "groupStore",
           "groupsStore",
           "invitationStore",
@@ -76,7 +76,6 @@
           "uploadStore",
           "userStore",
           "usersStore",
-          "channelStore",
 
           "match",
           "location",
@@ -100,6 +99,7 @@
     "get": true,
     "remove": true,
     "put": true,
-    "patch": true
+    "patch": true,
+    "websocketScheme": true
   }
 }

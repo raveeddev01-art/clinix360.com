@@ -57,6 +57,7 @@ defmodule Stitch.Accounts do
       Stitch.Accounts.update_and_complete_user_onboarding(1, attrs)
 
   """
+  @spec update_and_complete_user_onboarding(pos_integer, map) :: User.t | {:error, Ecto.Changeset.t} | {:error, binary}
   def update_and_complete_user_onboarding(user_id, attrs) do
     case Repo.get(User, user_id) do
       nil ->
@@ -65,14 +66,10 @@ defmodule Stitch.Accounts do
         if user.onboarded do
           {:error, "Cannot update a user who has already been onboarded."}
         else
-          changeset = User.onboarding_complete_changeset(user, attrs)
           changeset =
-            case changeset do
-              %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-                Ecto.Changeset.put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(pass))
-              _ ->
-                changeset
-            end
+            user
+            |> User.onboarding_complete_changeset(attrs)
+            |> Stitch.User.Authentication.put_new_password()
 
           case Repo.update(changeset) do
             {:ok, user} ->
@@ -163,34 +160,6 @@ defmodule Stitch.Accounts do
     end
   end
 
-  @doc """
-      Updates the user password by taking in old password and the new password.
-      If the old password provided is not valid than the password is not changed and error is returned
-
-  ## Examples
-      {:ok, user} = Stitch.Accounts.update_user_password(2,"CorrectOldPassword","NewValidPassword")
-      {:error, message} = Stitch.Accounts.update_user_password(2,"IncorrectOldPassword","ValidNewPassword")
-  """
-  def update_user_password(user_id,old_password,new_password)
-  when is_integer(user_id) and byte_size(old_password) > 0 and byte_size(new_password) > 0 do
-     case Repo.get(User,user_id) do
-        nil -> {:error, "User doesn't exist"}
-
-        user ->  case Comeonin.Bcrypt.checkpw(old_password, user.password_hash) do
-                    true ->  changeset = Ecto.Changeset.change(user, password_hash: Comeonin.Bcrypt.hashpwsalt(new_password))
-
-                              case Repo.update(changeset) do
-                                {:ok,user} -> {:ok,user}
-                                {:error, _} -> {:error, "Cannot change the password of user"}
-                              end
-
-                    false -> {:error, "Invalid Password for user"}
-                 end
-     end
-  end
-
-  def update_user_password(_,_,_), do: {:error, "Invalid Parameters provided for password update"}
-
   def update_profile_image(user_id, url) do
     User
     |> Repo.get(user_id)
@@ -203,13 +172,5 @@ defmodule Stitch.Accounts do
     |> Repo.get(user_id)
     |> User.default_profile_image_changeset(%{profile_image_url: nil, profile_image_thumb_url: nil})
     |> Repo.update
-  end
-
-  def get_by_id(user_id) do
-    Repo.get(User, user_id)
-  end
-
-  def get_for_team_id(user_id, team_id) do
-    Repo.get_by(User, id: user_id, team_id: team_id)
   end
 end

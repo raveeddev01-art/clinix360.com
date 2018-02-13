@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import { confirmable } from "react-confirm";
+import noop from "lodash/noop";
 
-const Confirm = ({
+const ConfirmModal = ({
   okLabel,
   cancelLabel,
   title,
@@ -41,9 +42,7 @@ const Confirm = ({
   </Modal>
 );
 
-const noop = () => {};
-
-Confirm.defaultProps = {
+ConfirmModal.defaultProps = {
   proceed: noop,
   cancel: noop,
   dismiss: noop,
@@ -53,7 +52,7 @@ Confirm.defaultProps = {
   enableEscape: true
 };
 
-Confirm.propTypes = {
+ConfirmModal.propTypes = {
   proceed: PropTypes.func, // called when ok button is clicked.
   cancel: PropTypes.func, // called when cancel button is clicked.
   dismiss: PropTypes.func, // called when backdrop is clicked or escaped.
@@ -67,4 +66,4 @@ Confirm.propTypes = {
   enableEscape: PropTypes.bool
 };
 
-export default confirmable(Confirm);
+export default confirmable(ConfirmModal);

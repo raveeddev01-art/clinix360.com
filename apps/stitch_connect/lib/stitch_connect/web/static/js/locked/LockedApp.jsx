@@ -3,9 +3,10 @@ import { observer, inject } from "mobx-react";
 import cx from "classnames";
 import Alert from "react-bootstrap/lib/Alert";
 import Button from "react-bootstrap/lib/Button";
+
+import { PinInput, LoadingIcon } from "common/components";
 import Header from "../authentication/components/header/header";
 import Footer from "../authentication/components/footer/footer";
-import PinInput from "../common/components/pin-input/index";
 
 @inject("presenceStore", "teamStore")
 @observer
@@ -48,17 +49,16 @@ class LockedApp extends Component {
 
   renderLoadingIcon = () => {
     const { isSaving } = this.state;
-    return isSaving ? (
-      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
-    ) : null;
+
+    return isSaving && <LoadingIcon className="on-right" />;
   };
 
   render() {
     const lockAppWrapperClass = cx("locked-app-wrapper", {
       "on-electron": window.electronApp
     });
-
     const { hasError, isSaving } = this.state;
+
     return (
       <div className={lockAppWrapperClass}>
         <Header />
@@ -109,4 +109,5 @@ class LockedApp extends Component {
     );
   }
 }
+
 export default LockedApp;

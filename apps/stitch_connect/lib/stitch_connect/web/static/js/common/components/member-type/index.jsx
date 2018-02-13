@@ -5,13 +5,14 @@ import Col from "react-bootstrap/lib/Col";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import noop from "lodash/noop";
 
 import MemberTypeDropdown from "./member-type-dropdown";
 import Groups from "../groups/groups";
 
 class MemberType extends Component {
   renderGroup() {
-    const { role, groupId } = this.props;
+    const { role, groupId, onChangeGroup } = this.props;
     const isMulti = role === "multi-room-guest";
 
     if (role === "member") {
@@ -26,7 +27,7 @@ class MemberType extends Component {
         <Col sm={9}>
           <Groups
             value={groupId}
-            onChange={this.props.onChangeGroup}
+            onChange={onChangeGroup}
             multi={isMulti}
             type="regular"
           />
@@ -67,8 +68,8 @@ MemberType.defaultProps = {
   groupId: null,
   typeLabel: "Type",
   className: "",
-  onChangeRole: () => {},
-  onChangeGroup: () => {}
+  onChangeRole: noop,
+  onChangeGroup: noop
 };
 
 export default MemberType;

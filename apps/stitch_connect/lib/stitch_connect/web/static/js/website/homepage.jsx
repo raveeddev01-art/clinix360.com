@@ -1,18 +1,16 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+
+import Button from "react-bootstrap/lib/Button";
+import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
+import Carousel from "react-bootstrap/lib/Carousel";
+import cx from "classnames";
 
 import Header from "./components/header";
 import CreateTeam from "./components/create-team";
 import OurCustomers from "./components/our-customers";
 import GetStarted from "./components/get-started";
 import Footer from "./components/footer";
-
-import Button from "react-bootstrap/lib/Button";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
-import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
-import Carousel from "react-bootstrap/lib/Carousel";
 
 export default class Homepage extends Component {
   render() {

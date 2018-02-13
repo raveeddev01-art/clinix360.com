@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/lib/Button";
 
+import LoadingIcon from "../loading-icon";
+
 class LoadingButton extends Component {
   _renderLoadingIcon = () => {
     const { loading } = this.props;
-    return loading ? (
-      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
-    ) : null;
+
+    return loading && <LoadingIcon className="on-right" />;
   };
 
   render() {

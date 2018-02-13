@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import capitalize from "lodash/capitalize";
 
-import { getAnnualFrequency, getMonthlyFrequency } from "../utils";
-import Toggle from "../../../../common/components/toggle/Toggle";
+import { getAnnualFrequency, getMonthlyFrequency } from "lib/billing";
+import { Toggle } from "common/components";
 
 const FrequencyToggle = ({ frequency, onToggle }) => {
   const annualFrequency = capitalize(getAnnualFrequency().title);

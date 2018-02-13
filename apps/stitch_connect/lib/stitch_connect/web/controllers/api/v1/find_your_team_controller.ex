@@ -1,36 +1,22 @@
 defmodule StitchConnect.Web.Api.V1.FindYourTeamController do
   use StitchConnect.Web, :controller
-  alias Stitch.{FindYourTeam, TeamQueries, UserQueries}
+  alias Stitch.{FindYourTeam, TeamQueries}
+  action_fallback StitchConnect.Web.Api.FallbackController
 
   def create(conn, %{"email" => email}) do
-    if UserQueries.user_with_email_exists?(email) do
-      email
-      |> FindYourTeam.create_or_get_token!
-      |> FindYourTeam.email(StitchConnect.Web.Endpoint.url)
+    case FindYourTeam.create_team_list_token(email) do
+      {:ok, token} -> FindYourTeam.Email.email(token, StitchConnect.Web.Endpoint.url)
+      _ -> nil
     end
-
-    conn
-    |> json(%{message: "Email has been sent to #{email}. Please check your inbox."})
+    json(conn, %{message: "Email has been sent to #{email}. Please check your inbox."})
   end
 
   def delete(conn, %{"token" => token}) do
-    case FindYourTeam.get_by_token(token) do
-      nil ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{message: "Token not found."})
-      token ->
-        {:ok, token} = FindYourTeam.delete_token(token)
-        {:ok, login_token} = FindYourTeam.create_login_token(token.email)
-
-        teams =
-          token.email
-          |> TeamQueries.all_with_user_email()
-          |> Enum.map(fn team ->
-            %{ name: team.name, slug: team.slug, login_token: login_token.token }
-          end)
-
-        json(conn, %{teams: teams})
+    with {:ok, %{login_token: login_token}} <- FindYourTeam.create_login_token(token) do
+      teams = TeamQueries.all_with_user_email(login_token.email)
+      render conn, "teams.json", teams: teams, login_token: login_token
+    else _error ->
+      {:error, :not_found}
     end
   end
 end

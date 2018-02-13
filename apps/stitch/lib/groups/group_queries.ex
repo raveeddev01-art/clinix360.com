@@ -8,10 +8,12 @@ defmodule Stitch.GroupQueries do
   import Ecto.Query
 
   @dm_groups ["__dm_group__", "__multi_dm_group__"]
+  @guest_roles Stitch.Accounts.Role.guests()
 
   @doc """
   Return true or false is user has joined the given group.
   """
+  @spec user_is_member?(pos_integer, pos_integer) :: boolean
   def user_is_member?(group_id, user_id) do
     Repo.get_by(GroupUser, user_id: user_id, group_id: group_id) != nil
   end
@@ -153,16 +155,28 @@ defmodule Stitch.GroupQueries do
   The default group is the first group created for a team and will always exist.
   """
   @spec default_group(User.t) :: Group.t
-  def default_group(%User{team_id: team_id, groups_as_guest: []}) do
+  def default_group(%User{roles: [role]} = user) when role in @guest_roles do
+    case user.groups_as_guest do
+      [] ->
+        {:ok, group} = create_self_dm_if_doest_exists(user)
+        group
+      [first_group_id | _] -> Repo.get_by(Group, id: first_group_id, team_id: user.team_id)
+    end
+  end
+
+  def default_group(%User{team_id: team_id}) do
     Group
     |> where(team_id: ^team_id)
     |> where(is_default: ^true)
     |> Repo.one()
   end
 
-  def default_group(%User{team_id: team_id, groups_as_guest: groups_as_guest}) do
-    first_group_id = Enum.at(groups_as_guest, 0)
-    Repo.get_by(Group, id: first_group_id, team_id: team_id)
+  defp create_self_dm_if_doest_exists(%User{} = user) do
+    self_dm_params = Group.single_dm_params([user.id, user.id])
+    case Repo.get_by(Group, slug: self_dm_params["slug"]) do
+      nil -> Group.create_single_dm(user, [user.id, user.id])
+      self_dm -> {:ok, self_dm}
+    end
   end
 
   @doc """

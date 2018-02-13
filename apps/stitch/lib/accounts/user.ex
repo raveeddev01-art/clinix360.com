@@ -10,6 +10,7 @@ defmodule Stitch.Accounts.User do
   alias Stitch.Repo
 
   @type t :: %__MODULE__{}
+  @guest_roles Stitch.Accounts.Role.guests()
 
   schema "users" do
     field :email, :string
@@ -28,7 +29,6 @@ defmodule Stitch.Accounts.User do
     field :pin, :string
     field :token, :string
     field :disabled, :boolean, default: false
-    field :password_reset_token, :string
     field :desktop_notification_preference, :string, default: "everything"
     field :mobile_notification_preference, :string, default: "everything"
     field :email_notification_preference, :string, default: "daily"
@@ -36,6 +36,7 @@ defmodule Stitch.Accounts.User do
     field :groups_as_guest, {:array, :integer}, default: [] # List of groups the user is allowed in if user is a guest
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
+    has_many :password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all
 
     field :password, :string, virtual: true
 
@@ -223,8 +224,7 @@ defmodule Stitch.Accounts.User do
   @doc """
   Checks if the user is a guest based on their roles.
   """
-  @spec guest?(map) :: boolean
-  def guest?(%User{roles: roles}) do
-    "single-room-guest" in roles || "multi-room-guest" in roles
-  end
+  @spec guest?(User.t) :: boolean
+  def guest?(%User{roles: [role]}) when role in @guest_roles, do: true
+  def guest?(%User{}), do: false
 end

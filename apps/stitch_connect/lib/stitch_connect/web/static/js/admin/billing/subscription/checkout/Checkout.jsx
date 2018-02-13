@@ -1,13 +1,13 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Elements } from "react-stripe-elements";
 import capitalize from "lodash/capitalize";
 
-import { getFrequency, getMonthlyPrice } from "../utils";
-import CreditCard from "./CreditCard";
-import CheckoutForm from "./CheckoutForm";
+import { getFrequency, getMonthlyPrice } from "lib/billing";
+import CreditCards from "../../components/CreditCards";
+import CreditCardForm from "../../components/CreditCardForm";
 
-class Checkout extends React.Component {
+class Checkout extends Component {
   getBillingSummary() {
     const { plan } = this.props;
     const frequency = getFrequency(plan.frequency);
@@ -26,13 +26,7 @@ class Checkout extends React.Component {
   }
 
   render() {
-    const {
-      cards,
-      onUseCreditCard,
-      onSubmitStart,
-      onSubmitSuccess,
-      onSubmitError
-    } = this.props;
+    const { onUseCreditCard, onSubmitSuccess, onSubmitError } = this.props;
     const billingSummary = this.getBillingSummary();
 
     return (
@@ -91,23 +85,25 @@ class Checkout extends React.Component {
           <div className="existing-card">
             <h5>Option A: Use an existing payment method.</h5>
 
-            {cards.length === 0 && <p className="help-block">No saved cards</p>}
-            {cards.length > 0 &&
-              cards.map(card => (
-                <CreditCard key={card.id} card={card} onUse={onUseCreditCard} />
-              ))}
+            <CreditCards onUseCreditCard={onUseCreditCard} />
           </div>
 
           <div className="add-new-card">
             <h5>Option B: Add a new card.</h5>
 
             <Elements>
-              <CheckoutForm
-                onSubmitStart={onSubmitStart}
-                onSubmitError={onSubmitError}
+              <CreditCardForm
+                buttonTitle="Complete Purchase"
                 onSubmitSuccess={onSubmitSuccess}
+                onSubmitError={onSubmitError}
               />
             </Elements>
+
+            <p className="help-block">
+              Your account will be credited when team members are removed and
+              charged when new team members are added. It is not possible to
+              issue refunds, so please read instructions carefully.
+            </p>
           </div>
         </div>
       </div>
@@ -115,15 +111,9 @@ class Checkout extends React.Component {
   }
 }
 
-Checkout.defaultProps = {
-  cards: []
-};
-
 Checkout.propTypes = {
-  cards: PropTypes.array,
   plan: PropTypes.object.isRequired,
   onUseCreditCard: PropTypes.func.isRequired,
-  onSubmitStart: PropTypes.func.isRequired,
   onSubmitSuccess: PropTypes.func.isRequired,
   onSubmitError: PropTypes.func.isRequired
 };
