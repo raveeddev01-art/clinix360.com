@@ -17,6 +17,7 @@
   "323": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
   "185": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
   "228": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
+  "140": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "FULL", "plan_id": "basic_monthly"},
 
   "117": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
   "139": {"tier": "BASIC",   "frequency": "YEARLY",  "pricePerUser": "FULL", "plan_id": "basic_yearly"},
@@ -49,7 +50,6 @@
 
   "137": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
   "138": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
-  "140": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
   "134": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
   "183": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
   "196": {"tier": "BASIC",   "frequency": "MONTHLY", "pricePerUser": "5", "plan_id": "Basic-Monthly-5"},
