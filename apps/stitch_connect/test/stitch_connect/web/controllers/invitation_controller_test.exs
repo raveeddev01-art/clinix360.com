@@ -418,6 +418,24 @@ defmodule StitchConnect.Web.InvitationControllerTest do
     end
   end
 
+  describe "PATCH /api/v1/invitations/:id/revoke" do
+    test "revokes an invitaiton", %{conn: conn} do
+      subscription = insert(:subscription, tier: "BASIC")
+      team = subscription.team
+      user = insert(:user, team: team, roles: ["admin"])
+      {:ok, invitation} = Stitch.Invitation.invite_to_team(user.id, "example@email.com")
+
+      conn =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
+        |> patch(api_v1_invitation_path(conn, :revoke, invitation), %{})
+
+      assert response = json_response(conn, 200)
+      assert response["message"] =~ "Invitation has been revoked."
+    end
+  end
+
   describe "POST /api/v1/invitations" do
     test "creates an invitation", %{conn: conn} do
       team = insert(:team)

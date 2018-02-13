@@ -5,6 +5,7 @@ defmodule Stitch.TeamQueries do
 
   @guest_roles Role.guests()
 
+  @spec all_with_user_email(binary) :: [Team.t]
   def all_with_user_email(email) do
     Team
     |> join(:inner, [t], u in User, u.team_id == t.id and u.email == ^email)

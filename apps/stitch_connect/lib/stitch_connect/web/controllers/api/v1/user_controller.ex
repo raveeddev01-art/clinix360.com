@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   use StitchConnect.Web, :controller
   alias Stitch.Accounts.{User, Role}
   alias Stitch.{UserQueries, FeatureGateway}
-  alias StitchConnect.Web.{TeamChannel, GroupChannel, Endpoint}
+  alias StitchConnect.Web.{TeamChannel, EventsChannel, GroupChannel, Endpoint}
   import Stitch.UserAuthorization, only: [can_update_user?: 2]
 
   action_fallback StitchConnect.Web.Api.V1.FallbackController
@@ -58,10 +58,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unauthorized)
         |> json(%{message: "You are not unauthorized to update user profile."})
         |> halt
-      {:error, message} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: message})
+      {:error, changeset} -> {:error, changeset}
     end
   end
 
@@ -149,25 +146,27 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    user = conn.assigns.current_user
+  def show(conn, %{"id" => user_id}) do
+    team = conn.assigns.team
 
-    with user when not is_nil(user) <- UserQueries.find_user(id, user) do
+    with %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
       render conn, "show.json", user: user
-    else
-      nil ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{message: "No user found with ID: #{id}"})
-     end
+    else _ ->
+      conn
+      |> put_status(:not_found)
+      |> json(%{message: "No user found with ID: #{user_id}"})
+    end
   end
 
   def update_password(conn, %{"id" => _id, "new_password" => new_password, "old_password" => old_password}) do
-    case Stitch.Accounts.update_user_password(conn.assigns.current_user.id, old_password, new_password) do
+    case Stitch.User.Authentication.update_password(conn.assigns.current_user, old_password, new_password) do
       {:ok, user} ->
-        conn |> json(%{email: user.email, password: user.password_hash})
-      {:error, message} ->
-        conn |> unprocessable_entity_error(%{message: message})
+        EventsChannel.broadcast_logout_from_all_sessions(user, get_session(conn, :session_id))
+        conn
+        |> update_session(user)
+        |> json(%{token: user.token})
+      {:error, message} when is_binary(message) -> {:error, :unprocessable_entity, message}
+      {:error, message} -> {:error, message}
     end
   end
 
@@ -176,7 +175,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
       :ok ->
         conn |> json(%{status: "ok"})
       :error ->
-        conn |> unprocessable_entity_error(%{message: "Phone number is invalid."})
+        {:error, :unprocessable_entity, "Phone number is invalid."}
     end
   end
 

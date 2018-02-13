@@ -69,8 +69,7 @@ defmodule Stitch.Accounts.Admin do
   Updates the user information
   """
 
-  def update_user(user_id, params)
-  when is_integer(user_id) and is_map(params) do
+  def update_user(user_id, params) do
     result =
       Repo.get(User, user_id)
       |> User.changeset(params)
@@ -79,7 +78,6 @@ defmodule Stitch.Accounts.Admin do
     case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
     result
   end
-  def update_user(_, _), do: {:error, "Invalid User ID or Parameters"}
 
   def promote_admin(promoter, target_id) do
     user = Repo.get_by!(User, id: target_id, team_id: promoter.team_id)

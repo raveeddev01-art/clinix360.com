@@ -259,7 +259,7 @@ defmodule Stitch.Invitation do
           {:error, "This invitation has been accepted already."}
         false ->
           Repo.delete(invitation.user)
-          {:ok, invitation, invitation.user}
+          {:ok, invitation}
       end
     else
       {:error, "User unauthorized to revoke invitation."}

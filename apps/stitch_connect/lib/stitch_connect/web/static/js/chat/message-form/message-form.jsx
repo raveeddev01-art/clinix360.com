@@ -15,7 +15,6 @@ import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 
-
 @inject("messageStore", "socketStore", "uploadStore", "billingStore")
 @observer
 class MessageForm extends Component {

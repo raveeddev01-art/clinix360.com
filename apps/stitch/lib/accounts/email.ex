@@ -31,6 +31,7 @@ defmodule Stitch.Accounts.Email do
   @doc """
   Sends the password reset request
   """
+  @spec reset_password_email(User.t, binary) :: Bamboo.Email.t
   def reset_password_email(user, reset_url) do
     new_email()
     |> template("Password Reset (Connect)")

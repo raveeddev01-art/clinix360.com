@@ -28,24 +28,17 @@ defmodule Stitch.UserQueries do
     {:error, "team_id must be an integer"}
   end
 
-  def team_member_with_email(team_id, email) when is_integer(team_id) do
+  @doc """
+  Finds a team member by email
+  """
+  @spec team_member_with_email(integer, binary) :: User.t | nil
+  def team_member_with_email(team_id, email) do
     query =
       from u in User,
       where: u.team_id == ^team_id,
       where: u.onboarded == ^true,
       where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
     Repo.one(query)
-  end
-  def team_member_with_email(_, _) do
-    {:error, "team_id must be an integer"}
-  end
-
-  @doc """
-  Finds a user by id based on a user team.
-  """
-  @spec find_user(pos_integer, User.t) :: User.t | nil
-  def find_user(user_id, %User{team_id: team_id}) do
-    Repo.get_by(User, id: user_id, team_id: team_id)
   end
 
   @doc """
@@ -63,37 +56,47 @@ defmodule Stitch.UserQueries do
     Repo.all(from User)
   end
 
-  def get_by_id(id) when is_integer(id) and id < 1 do
-    {:error, "Id cannot be less than 1."}
+  @doc """
+  Finds a user by id
+  """
+  @spec get_by_id(pos_integer) :: User.t() | nil
+  def get_by_id(user_id) do
+    Repo.get(User, user_id)
   end
 
-  def get_by_id(id) when is_integer(id) do
-    case Repo.get(User, id) do
-      nil -> {:not_found, "User with id #{id} was not found."}
-      record -> record
-    end
+  @doc """
+  Finds an active user by id
+  """
+  @spec get_active_by_id(pos_integer) :: User.t() | nil
+  def get_active_by_id(user_id) do
+    Repo.get_by(User, id: user_id, disabled: false)
   end
 
-  def get_by_id(_) do {:error, "Id isn't an integer."} end
-
-  def get_by_token(token) when byte_size(token) == 32 do
-    case Repo.get_by(User, token: token, disabled: false) do
-      nil ->
-        {:not_found, "User with token #{token} was not found."}
-      user ->
-        user
-    end
+  @doc """
+  Find a user by authentication token.
+  """
+  @spec get_by_token(binary) :: User.t() | nil
+  def get_by_token(token) do
+    Repo.get_by(User, token: token)
   end
 
-  def get_by_token(_) do {:error, "Token is malformed."} end
+  @doc """
+  Find an active user by authentication token
+  """
+  @spec get_active_by_token(binary) :: User.t() | nil
+  def get_active_by_token(token) do
+    Repo.get_by(User, token: token, disabled: false)
+  end
 
+  @spec user_with_email_exists?(binary) :: boolean
   def user_with_email_exists?(email) do
     query =
       from u in User,
-      select: count(u.id),
       where: u.onboarded == ^true,
-      where: fragment("LOWER(?) = LOWER(?)", u.email, ^email)
-    Repo.one!(query) > 0
+      where: fragment("LOWER(?) = LOWER(?)", u.email, ^email),
+      select: u.id,
+      limit: 1
+    !!Repo.one(query)
   end
 
   @doc """
