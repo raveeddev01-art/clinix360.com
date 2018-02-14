@@ -351,9 +351,13 @@ class GroupsStore {
    */
   @action
   onClosedGroup = () => {
-    const { channelStore } = this.rootStore;
+    const { channelStore, messageStore } = this.rootStore;
 
     channelStore.leaveGroupChannel();
+
+    // Reset messages
+    messageStore.reset();
+
     this.currentGroupId = null;
   };
 
