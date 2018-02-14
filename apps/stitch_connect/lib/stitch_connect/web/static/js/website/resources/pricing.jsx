@@ -25,6 +25,10 @@ export default class Pricing extends Component {
     }));
   }
 
+  componentDidMount() {
+    analytics.track("Pricing Page Visited");
+  }
+
   render() {
     return (
       <div className="pricing-page">

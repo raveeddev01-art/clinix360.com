@@ -39,4 +39,11 @@ defmodule Stitch.Accounts.UserTest do
       assert changeset.errors == [last_name: {"should not have emojis.", []}]
     end
   end
+
+  describe "Stitch.Accounts.User.changeset/2 should trim whitespaces in email" do
+    test "trims whitespaces" do
+      changeset = User.changeset(%User{}, %{email: " foo@example.com   "})
+      assert changeset.changes.email == "foo@example.com"
+    end
+  end
 end
