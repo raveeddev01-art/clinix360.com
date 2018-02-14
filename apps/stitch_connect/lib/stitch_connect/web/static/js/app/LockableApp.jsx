@@ -63,7 +63,7 @@ class LockableApp extends Component {
       );
     }
 
-    return <Loading />;
+    return null;
   }
 }
 

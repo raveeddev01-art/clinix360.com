@@ -106,6 +106,9 @@ class SidemenuStore {
     await usersStore.loadUsers();
     await groupsStore.loadGroups();
 
+    // Hide the HTML loading elements.
+    $('.html-loading-element').remove();
+
     this.loadedApp = true;
   };
 

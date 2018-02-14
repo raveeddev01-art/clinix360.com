@@ -1,3 +1,10 @@
+<div id="loading-screen-wrapper" class="html-loading-element">
+  <div class="text-center">
+    <i class="m-b-20 fa fa-circle-o-notch fa-spin fa-fw fa-3x"></i>
+    <h3>Loading...</h3>
+  </div>
+</div>
+
 <div id="root"
      data-component="App"
      data-react-props="<%= @app_params %>">
