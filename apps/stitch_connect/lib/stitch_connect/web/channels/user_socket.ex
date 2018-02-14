@@ -29,7 +29,7 @@ defmodule StitchConnect.Web.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(%{"authenticationToken" => token, "mobile" => is_mobile} = params, socket) do
+  def connect(%{"authenticationToken" => token} = params, socket) do
     # Handle concurrent browser tests
     socket = StitchConnect.Web.ChannelSandbox.configure_channel_sandbox(params, socket)
 
@@ -43,7 +43,7 @@ defmodule StitchConnect.Web.UserSocket do
           |> assign(:current_user, user)
           |> assign(:team_id, user.team_id)
           |> assign(:session_id, params["sessionId"])
-          |> assign(:is_mobile, is_mobile)
+          |> assign(:is_mobile, Map.get(params, "mobile", false))
           |> assign(:connection_id, Stitch.Rand.token(8))
           |> assign(:application_version, params["applicationVersion"])
 
