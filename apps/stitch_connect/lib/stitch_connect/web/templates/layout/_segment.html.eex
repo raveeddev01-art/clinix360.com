@@ -5,8 +5,6 @@
   }}();
 
   if (Object.keys(currentUser).length > 0 && currentUser.constructor === Object) {
-    console.log("Identifying")
-    console.log(currentUser);
     analytics.identify(currentUser.id, {
       name: `${currentUser.firstName} ${currentUser.lastName}`,
       email: currentUser.email
