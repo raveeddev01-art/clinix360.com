@@ -8,7 +8,11 @@ class Avatar extends Component {
     if (size === "sm") {
       return (
         <div className="avatar">
-          <img src={user.avatar_thumb} alt={user.username} />
+          <img
+            src={user.avatar_thumb}
+            alt={user.username}
+            className="img-circle"
+          />
         </div>
       );
     }

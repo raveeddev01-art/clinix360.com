@@ -151,35 +151,12 @@ class Message extends Component {
     });
   };
 
-  renderStar(message) {
-    const starredCX = message.starred ? "" : "-o";
-    return (
-      <OverlayTrigger
-        placement="top"
-        delayShow={150}
-        shouldUpdatePosition
-        overlay={
-          <Tooltip id="message-star">
-            {message.starred ? "Unstar this message" : "Star this message"}
-          </Tooltip>
-        }
-      >
-        <span
-          className={cx("message-icon", `icon-star${starredCX}`)}
-          role="presentation"
-          onClick={this.toggleStar}
-        >
-          <i className={cx("fa", `fa-star${starredCX}`)} />
-        </span>
-      </OverlayTrigger>
-    );
-  }
-
   renderActions(message) {
     const mine = message.user.id === currentUser.id;
     const unsent = message.sent === false;
     const { dropup } = this.state;
     const { messageStore } = this.props;
+    const starredCX = message.starred ? "" : "-o";
 
     // disabling context menu
     if (unsent) {
@@ -216,8 +193,23 @@ class Message extends Component {
           delayShow={150}
           shouldUpdatePosition
           overlay={
+            <Tooltip id="message-star">
+              {message.starred ? "Unstar" : "Star"} message
+            </Tooltip>
+          }
+        >
+          <Button onClick={this.toggleStar}>
+            <i className={cx("fa", `fa-star${starredCX}`)} />
+          </Button>
+        </OverlayTrigger>
+
+        <OverlayTrigger
+          placement="top"
+          delayShow={150}
+          shouldUpdatePosition
+          overlay={
             <Tooltip id="message-pin">
-              {message.pinned ? "Un-pin" : "Pin"} message
+              {message.pinned ? "Unpin" : "Pin"} message
             </Tooltip>
           }
         >
@@ -286,11 +278,17 @@ class Message extends Component {
 
     return (
       <div className="message-gutter">
-        {message.pinned && (
-          <div className="icon-pin">
-            <i className="fa fa-thumb-tack fa-rotate-45" />
-          </div>
-        )}
+        {(message.pinned || (message.pinned && message.starred)) && (
+            <div className="icon-pin">
+              <i className="fa fa-thumb-tack fa-rotate-45" />
+            </div>
+          )}
+        {message.starred &&
+          !message.pinned && (
+            <div className="icon-star">
+              <i className="fa fa-star" />
+            </div>
+          )}
         {message.status === "failed" && (
           <div className="icon-status">
             <i className="fa fa-exclamation-triangle" />
@@ -301,10 +299,8 @@ class Message extends Component {
           <TimestampTooltip
             timestamp={insertedAt}
             className="timestamp text-muted"
-            format="h:mm"
           />
         )}
-        {message.is_sequential && this.renderStar(message)}
       </div>
     );
   }
@@ -317,9 +313,7 @@ class Message extends Component {
 
     return (
       !message.is_sequential && (
-        <MessageHeader user={user} timestamp={insertedAt}>
-          {this.renderStar(message)}
-        </MessageHeader>
+        <MessageHeader user={user} timestamp={insertedAt} />
       )
     );
   }
@@ -332,7 +326,7 @@ class Message extends Component {
       sequential: message.is_sequential,
       selected: this.state.selected,
       highlight: highlightId === message.id,
-      pinned: message.pinned,
+      pinned: message.pinned || message.starred,
       failed: message.status === "failed"
     });
 
@@ -369,6 +363,8 @@ class Message extends Component {
 
               <div className="message-content">
                 {message.pinned && <div className="pin-label">Pinned</div>}
+                {message.starred &&
+                  !message.pinned && <div className="pin-label">Starred</div>}
                 {message.status === "failed" && (
                   <div className="message-status-label">
                     Failed to send message
