@@ -183,6 +183,8 @@ class UserStore {
         old_password: oldPassword
       },
       hideNotify: true
+    }).then(resp => {
+      window.authenticationToken = resp.data.token;
     });
   };
 }
