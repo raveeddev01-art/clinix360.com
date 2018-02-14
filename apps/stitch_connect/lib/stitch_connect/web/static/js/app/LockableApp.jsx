@@ -55,6 +55,8 @@ class LockableApp extends Component {
     }
 
     if (sidemenuStore.loadedApp) {
+      // Hide the HTML loading elements.
+      $('.html-loading-element').remove();
       return (
         <Switch>
           <Route path="/admin" component={AdminApp} />
