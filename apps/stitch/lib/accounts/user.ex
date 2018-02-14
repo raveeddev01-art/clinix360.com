@@ -113,6 +113,7 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(attrs, [:email, :confirmation_code, :token])
     |> validate_required([:email, :confirmation_code, :token])
+    |> update_change(:email, &String.trim/1)
     |> valid_email_changeset(attrs)
   end
 
@@ -140,13 +141,6 @@ defmodule Stitch.Accounts.User do
   def role_change_changeset(struct, params) do
     struct
     |> change(params)
-  end
-
-  def registration_changeset(struct, params) do
-    struct
-    |> changeset(params)
-    |> cast(params, [:email, :password])
-    |> validate_length(:password, min: 8)
   end
 
   def onboarding_complete_changeset(struct, params) do
