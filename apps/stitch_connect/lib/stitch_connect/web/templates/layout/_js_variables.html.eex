@@ -18,6 +18,7 @@ current_user =
         "lastName" => user.last_name,
         "roles" => user.roles,
         "username" => user.username,
+        "email" => user.email
       })
   end
 %>
