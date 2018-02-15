@@ -2,14 +2,21 @@ defmodule StitchConnect.Web.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "groups:*", StitchConnect.Web.GroupChannel
-  channel "team:lobby:*", StitchConnect.Web.TeamChannel
-  channel "events:*", StitchConnect.Web.EventsChannel
+  channel("groups:*", StitchConnect.Web.GroupChannel)
+  channel("team:lobby:*", StitchConnect.Web.TeamChannel)
+  channel("events:*", StitchConnect.Web.EventsChannel)
 
   ## Transports
-  transport :websocket, Phoenix.Transports.WebSocket,
+  transport(
+    :websocket,
+    Phoenix.Transports.WebSocket,
     timeout: 45_000,
-    check_origin: ["//*.teamstitchapp.com", "//*.teamstitch.com", "//*.#{Application.fetch_env!(:stitch_connect, :application_host)}"]
+    check_origin: [
+      "//*.teamstitchapp.com",
+      "//*.teamstitch.com",
+      "//*.#{Application.fetch_env!(:stitch_connect, :application_host)}"
+    ]
+  )
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -29,13 +36,17 @@ defmodule StitchConnect.Web.UserSocket do
     case Stitch.UserQueries.get_active_by_token(token) do
       nil ->
         :error
+
       user ->
-        socket = socket
-        |> assign(:current_user, user)
-        |> assign(:team_id, user.team_id)
-        |> assign(:session_id, params["sessionId"])
-        |> assign(:connection_id, Stitch.Rand.token(8))
-        |> assign(:application_version, params["applicationVersion"])
+        socket =
+          socket
+          |> assign(:current_user, user)
+          |> assign(:team_id, user.team_id)
+          |> assign(:session_id, params["sessionId"])
+          |> assign(:is_mobile, Map.get(params, "mobile", false))
+          |> assign(:connection_id, Stitch.Rand.token(8))
+          |> assign(:application_version, params["applicationVersion"])
+
         {:ok, socket}
     end
   end
