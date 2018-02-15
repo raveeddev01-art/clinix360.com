@@ -21,7 +21,7 @@ defmodule StitchConnect.Web.EventsChannel do
     current_app_version = StitchConnect.version()
     socket_app_version = socket.assigns.application_version
 
-    if current_app_version != socket_app_version do
+    if current_app_version != socket_app_version && !socket.assigns.is_mobile do
       push(socket, "new_app_version", %{new_version: current_app_version})
     end
 
@@ -80,11 +80,12 @@ defmodule StitchConnect.Web.EventsChannel do
   defp get_non_member_ids(_, _), do: []
 
   def broadcast_group_creation(%Group{} = group) do
-    member_ids = for %User{id: user_id} <- group.users do
-      json = GroupView.group_json(group, user_id)
-      @endpoint.broadcast("events:#{user_id}", "created_group", json)
-      user_id
-    end
+    member_ids =
+      for %User{id: user_id} <- group.users do
+        json = GroupView.group_json(group, user_id)
+        @endpoint.broadcast("events:#{user_id}", "created_group", json)
+        user_id
+      end
 
     for user_id <- get_non_member_ids(group, member_ids) do
       json = group |> Map.put(:joined, false) |> GroupView.group_json(user_id)
@@ -99,10 +100,11 @@ defmodule StitchConnect.Web.EventsChannel do
       group_slug: group.slug
     }
 
-    member_ids = for %User{id: user_id} <- group.users do
-      @endpoint.broadcast("events:#{user_id}", "renamed_group", json)
-      user_id
-    end
+    member_ids =
+      for %User{id: user_id} <- group.users do
+        @endpoint.broadcast("events:#{user_id}", "renamed_group", json)
+        user_id
+      end
 
     for user_id <- get_non_member_ids(group, member_ids) do
       @endpoint.broadcast("events:#{user_id}", "renamed_group", json)
@@ -141,14 +143,17 @@ defmodule StitchConnect.Web.EventsChannel do
     @endpoint.broadcast("events:#{user.id}", "logout", %{session_id: session_id})
   end
 
-  @spec broadcast_logout_from_all_sessions(User.t) :: :ok | {:error, term}
+  @spec broadcast_logout_from_all_sessions(User.t()) :: :ok | {:error, term}
   def broadcast_logout_from_all_sessions(%User{} = user) do
     @endpoint.broadcast("events:#{user.id}", "logout", %{logout_from_all_sessions: true})
   end
 
-  @spec broadcast_logout_from_all_sessions(User.t, binary) :: :ok | {:error, term}
+  @spec broadcast_logout_from_all_sessions(User.t(), binary) :: :ok | {:error, term}
   def broadcast_logout_from_all_sessions(%User{} = user, current_session_id) do
-    @endpoint.broadcast("events:#{user.id}", "logout", %{logout_from_all_sessions: true, current_session_id: current_session_id})
+    @endpoint.broadcast("events:#{user.id}", "logout", %{
+      logout_from_all_sessions: true,
+      current_session_id: current_session_id
+    })
   end
 
   def broadcast_deactivated(user_id) do
@@ -173,11 +178,21 @@ defmodule StitchConnect.Web.EventsChannel do
   end
 
   def broadcast_notification_preference_update(user, preference) do
-    json = NotificationPreferenceView.render("show_global.json", user: user, group_preferences: preference)
+    json =
+      NotificationPreferenceView.render(
+        "show_global.json",
+        user: user,
+        group_preferences: preference
+      )
+
     @endpoint.broadcast("events:#{user.id}", "notification_preference_update", json)
   end
 
-  def broadcast_invitation_sent(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user, %Stitch.Invitation{} = invitation) do
+  def broadcast_invitation_sent(
+        %Stitch.Team{} = team,
+        %Stitch.Accounts.User{} = user,
+        %Stitch.Invitation{} = invitation
+      ) do
     Enum.each(Stitch.TeamQueries.list_admins(team), fn admin ->
       @endpoint.broadcast("events:#{admin.id}", "invitation_sent", %{
         id: invitation.id,
@@ -189,11 +204,15 @@ defmodule StitchConnect.Web.EventsChannel do
     end)
   end
 
-  def broadcast_invitation_revoked(%Stitch.Team{} = team, %Stitch.Invitation{} = invitation, user_id) do
+  def broadcast_invitation_revoked(
+        %Stitch.Team{} = team,
+        %Stitch.Invitation{} = invitation,
+        user_id
+      ) do
     Enum.each(Stitch.TeamQueries.list_admins(team), fn admin ->
       @endpoint.broadcast("events:#{admin.id}", "invitation_revoked", %{
         id: invitation.id,
-        user_id: user_id,
+        user_id: user_id
       })
     end)
   end
