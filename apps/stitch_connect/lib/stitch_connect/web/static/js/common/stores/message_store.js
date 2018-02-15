@@ -13,6 +13,7 @@ import shortid from "shortid";
 import { START_TYPING_THROTTLE_MS } from "lib/constants";
 import REGEX from "lib/regex";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
+import TimeoutManager from "lib/TimeoutManager";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
@@ -53,6 +54,7 @@ class MessageStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    this.timeoutManager = new TimeoutManager();
   }
 
   // ////////////// //
@@ -224,6 +226,7 @@ class MessageStore {
     this.textInEdit = "";
     this.readStatusCache = {};
     this.messageVisibility = {};
+    this.timeoutManager.reset();
 
     this.updateGroupData({
       marked_as_unread: false,
@@ -266,13 +269,13 @@ class MessageStore {
 
   // Scroll to the bottom of chat div with animation
   scrollToBottom(cb = null, duration = 0, delay = 100) {
-    setTimeout(() => {
+    this.timeoutManager.setTimeout(() => {
       animateScroll.scrollToBottom({
         containerId: "chat",
         duration
       });
 
-      setTimeout(() => {
+      this.timeoutManager.setTimeout(() => {
         if (typeof cb === "function") {
           cb();
         }
@@ -289,7 +292,7 @@ class MessageStore {
       offset
     });
 
-    setTimeout(() => {
+    this.timeoutManager.setTimeout(() => {
       if (typeof cb === "function") {
         cb();
       }
@@ -337,16 +340,16 @@ class MessageStore {
   @action
   highlightMessage = (id, duration = 3000) => {
     if (this.highlightTimeout) {
-      clearTimeout(this.highlightTimeout);
+      this.timeoutManager.clearTimeout(this.highlightTimeout);
     }
 
     // required for animation restart
     this.highlightId = null;
-    setTimeout(() => {
+    this.timeoutManager.setTimeout(() => {
       this.highlightId = id;
     }, 0);
 
-    this.highlightTimeout = setTimeout(() => {
+    this.highlightTimeout = this.timeoutManager.setTimeout(() => {
       this.highlightId = null;
     }, duration);
   };
@@ -573,7 +576,7 @@ class MessageStore {
             when(
               () => !this.isLoadingPast,
               () => {
-                setTimeout(() => {
+                this.timeoutManager.setTimeout(() => {
                   this.scrollTo(messages[0].id, 0, () => {
                     resolve();
                   });
@@ -880,8 +883,12 @@ class MessageStore {
   @action
   onWindowFocus() {
     // if last message is visible, mark as unread
-    if (this.group && this.messages.length && this.messageVisibility[this.messages[0].id]) {
-      setTimeout(() => {
+    if (
+      this.group &&
+      this.messages.length &&
+      this.messageVisibility[this.messages[0].id]
+    ) {
+      this.timeoutManager.setTimeout(() => {
         this.markAsRead(false);
       }, 1000);
     }
@@ -901,18 +908,14 @@ class MessageStore {
 
     if (
       !this.markedAsUnread &&
-      (
-        !this.firstUnreadMessage ||
+      (!this.firstUnreadMessage ||
         this.firstUnreadMessage.id === id ||
-        (
-          id === this.messages[0].id &&
-          this.messageVisibility[this.firstUnreadMessage.id]
-        ) // first unreadmessage is visible, and you reached to the last message
-      )
+        (id === this.messages[0].id &&
+          this.messageVisibility[this.firstUnreadMessage.id])) // first unreadmessage is visible, and you reached to the last message
     ) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
-      setTimeout(() => {
+      this.timeoutManager.setTimeout(() => {
         this.markAsRead(false);
       }, 1000);
     }
