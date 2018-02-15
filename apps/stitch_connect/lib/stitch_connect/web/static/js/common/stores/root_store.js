@@ -61,7 +61,12 @@ class RootStore {
     this.sidemenuStore.loadApp();
     this.notificationStore.loadPreferences();
     this.teamStore.loadTeam(this.appParams.teamId);
-    this.userStore.loadUser(currentUser.id);
+
+    if (!this.presenceStore.locked) {
+      this.userStore.loadUser(currentUser.id);
+      this.globalStarredMessageStore.loadStarredMessages();
+    }
+
     if (currentUser.roles.includes("admin")) {
       this.billingStore.loadData();
     }

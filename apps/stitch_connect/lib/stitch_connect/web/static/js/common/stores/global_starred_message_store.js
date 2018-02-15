@@ -5,8 +5,6 @@ class GlobalStarredMessageStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-
-    this.loadStarredMessages();
   }
 
   @action
