@@ -880,7 +880,13 @@ class MessageStore {
   @action
   onWindowFocus() {
     // if last message is visible, mark as unread
-    if (this.group && this.messages.length && this.messageVisibility[this.messages[0].id]) {
+    if (
+      this.group &&
+      (this.messages.length && this.messageVisibility[this.messages[0].id]) &&
+      (!this.firstUnreadMessage ||
+        (this.firstUnreadMessage &&
+          this.messageVisibility[this.firstUnreadMessage.id]))
+    ) {
       setTimeout(() => {
         this.markAsRead(false);
       }, 1000);
@@ -901,14 +907,10 @@ class MessageStore {
 
     if (
       !this.markedAsUnread &&
-      (
-        !this.firstUnreadMessage ||
+      (!this.firstUnreadMessage ||
         this.firstUnreadMessage.id === id ||
-        (
-          id === this.messages[0].id &&
-          this.messageVisibility[this.firstUnreadMessage.id]
-        ) // first unreadmessage is visible, and you reached to the last message
-      )
+        (id === this.messages[0].id &&
+          this.messageVisibility[this.firstUnreadMessage.id])) // first unreadmessage is visible, and you reached to the last message
     ) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
@@ -980,11 +982,8 @@ class MessageStore {
       });
     }
 
-    // if my message or at scroll bottom and app has focus, scroll to bottom
-    if (
-      this.isActive &&
-      (this.isScrollBottom || newMessage.user_id === currentUser.id)
-    ) {
+    // if the user is scrolled to the bottom, keep scrolling down when receiving new message
+    if (this.isScrollBottom) {
       this.scrollToBottom(null, 0, 0);
     }
 
