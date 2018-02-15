@@ -65,5 +65,6 @@
     <%= render "_js_variables.html", conn: @conn %>
     <script src="<%= static_path(@conn, "/js/landing_app.js") %>"></script>
     <%= render "_intercom_website.html", conn: @conn %>
+    <%= render "_segment.html", conn: @conn %>
   </body>
 </html>

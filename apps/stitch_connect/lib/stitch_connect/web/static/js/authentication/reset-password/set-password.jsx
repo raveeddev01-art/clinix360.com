@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import Alert from "react-bootstrap/lib/Alert";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Form from "react-bootstrap/lib/Form";
@@ -13,6 +14,7 @@ class SetPassword extends Component {
     super(props);
     this.state = {
       password: "",
+      error: false,
       formValid: false
     };
   }
@@ -33,50 +35,62 @@ class SetPassword extends Component {
 
   _onSubmit = evt => {
     evt.preventDefault();
+    this.setState({ error: false });
     this.props.resetPasswordStore
       .resetPassword(this.state.password)
       .then(() => {
         this.props.history.push("/login", { passwordReset: true });
+      })
+      .catch(err => {
+        this.setState({
+          error:
+            err.data && err.data.errors && err.data.errors.password
+              ? err.data.errors.password[0]
+              : "Unknown server error"
+        });
       });
   };
 
   render() {
-    const { password } = this.state;
+    const { password, error } = this.state;
     return (
-      <Card
-        title="Reset Password"
-        description={
-          <span>
-            Enter a <strong>password</strong>.
-          </span>
-        }
-      >
-        <Form onSubmit={this._onSubmit}>
-          <FormGroup bsSize="large">
-            <FormControl
-              required
-              autoFocus
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={this.onChange}
+      <div>
+        {this.state.error && <Alert bsStyle="danger">{error}</Alert>}
+        <Card
+          title="Reset Password"
+          description={
+            <span>
+              Enter a <strong>password</strong>.
+            </span>
+          }
+        >
+          <Form onSubmit={this._onSubmit}>
+            <FormGroup bsSize="large">
+              <FormControl
+                required
+                autoFocus
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={this.onChange}
+              />
+            </FormGroup>
+            <PasswordValidator
+              password={password}
+              onChangeValid={this.onChangeValid}
             />
-          </FormGroup>
-          <PasswordValidator
-            password={password}
-            onChangeValid={this.onChangeValid}
-          />
-          <Button
-            type="submit"
-            bsStyle="primary"
-            bsSize="lg"
-            className="btn-block m-b-40"
-            disabled={this.state.formValid}
-          >
-            Submit
-          </Button>
-        </Form>
-      </Card>
+            <Button
+              type="submit"
+              bsStyle="primary"
+              bsSize="lg"
+              className="btn-block m-b-40"
+              disabled={this.state.formValid}
+            >
+              Submit
+            </Button>
+          </Form>
+        </Card>
+      </div>
     );
   }
 }
