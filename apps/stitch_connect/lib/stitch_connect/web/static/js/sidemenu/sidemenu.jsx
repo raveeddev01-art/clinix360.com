@@ -44,14 +44,7 @@ class Sidemenu extends Component {
   };
 
   getEdgeBadgeClass(roomItem, direction) {
-    return cx(
-      "edge-badge",
-      {
-        "edge-badge--mentions": roomItem.mentions_count > 0,
-        "edge-badge--unreads": !roomItem.mentions_count
-      },
-      direction
-    );
+    return cx("edge-badge", direction);
   }
 
   toggleInviteModal = () => {
