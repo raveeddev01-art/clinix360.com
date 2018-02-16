@@ -55,13 +55,28 @@
     top: 0;
     right: -12px;
     background-color: #e33a2f;
-    color: #fff;
-    font-size: 12px;
-    width: 22px;
-    padding: 3px 4px;
-    line-height: 12px;
-    border-radius: 4px;
     text-align: center;
+
+    &.mentions {
+      color: #fff;
+      font-size: 12px;
+      width: 22px;
+      padding: 3px 4px;
+      line-height: 12px;
+      border-radius: 4px;
+    }
+
+    &.unreads {
+      color: #fff;
+      font-size: 6px;
+      width: 18px;
+      line-height: 18px;
+      border-radius: 50%;
+      
+      i {
+        opacity: 1;
+      }
+    }
   }
 
   &__top {

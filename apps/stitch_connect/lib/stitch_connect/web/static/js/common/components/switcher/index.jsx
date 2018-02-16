@@ -22,7 +22,11 @@ class Switcher extends Component {
   }
 
   render() {
-    const { totalMentionsCount: count, defaultGroup } = this.props.groupsStore;
+    const {
+      totalUnreadMessagesCount: unreadsCount,
+      totalMentionsCount: mentionsCount,
+      defaultGroup
+    } = this.props.groupsStore;
     const { active } = this.state;
 
     return (
@@ -55,11 +59,18 @@ class Switcher extends Component {
             >
               <span className="switcher__link-wrapper">
                 <i className="fa fa-comments" />
-                {count > 0 && (
-                  <span className="switcher__badge">
-                    {count > 9 ? "9+" : count}
+                {mentionsCount > 0 && (
+                  <span className="switcher__badge mentions">
+                    {mentionsCount > 9 ? "9+" : mentionsCount}
                   </span>
                 )}
+
+                {unreadsCount > 0 &&
+                  !mentionsCount && (
+                    <span className="switcher__badge unreads">
+                      <i className="fa fa-circle" />
+                    </span>
+                  )}
               </span>
             </OverlayTrigger>
           </NavLink>
