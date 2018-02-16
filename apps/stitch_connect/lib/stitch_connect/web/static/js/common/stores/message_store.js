@@ -885,10 +885,8 @@ class MessageStore {
     // if last message is visible, mark as unread
     if (
       this.group &&
-      (this.messages.length && this.messageVisibility[this.messages[0].id]) &&
       (!this.firstUnreadMessage ||
-        (this.firstUnreadMessage &&
-          this.messageVisibility[this.firstUnreadMessage.id]))
+        this.messageVisibility[this.firstUnreadMessage.id])
     ) {
       this.timeoutManager.setTimeout(() => {
         this.markAsRead(false);
@@ -986,7 +984,7 @@ class MessageStore {
     }
 
     // if the user is scrolled to the bottom, keep scrolling down when receiving new message
-    if (this.isScrollBottom) {
+    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(null, 0, 0);
     }
 
