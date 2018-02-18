@@ -1,18 +1,15 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
-import cx from "classnames";
-
-import Header from "../components/header";
-import CUSTOMERS from "../components/customers-logos";
-import GetStarted from "../components/get-started";
-import Footer from "../components/footer";
-
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
 import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
+import cx from "classnames";
+
+import Header from "../components/header";
+import Subheader from "../components/subheader";
+import OurCustomers from "../components/our-customers";
+import GetStarted from "../components/get-started";
+import Footer from "../components/footer";
 
 export default class Customers extends Component {
   renderCustomers() {
@@ -33,17 +30,11 @@ export default class Customers extends Component {
       <div>
         <Header />
         <div className="customers-page">
-          <div className="subheader ">
-            <div className="container">
-              <div className="landing-message text-center">
-                <h1>Customers</h1>
-                <h3>
-                  See how customers have improved care coordination on our
-                  platform.
-                </h3>
-              </div>
-            </div>
-          </div>
+          <Subheader
+            title="Customers"
+            subtitle="See how customers have improved care coordination on our
+            platform."
+          />
 
           <section>
             <div className="container">
@@ -82,13 +73,7 @@ export default class Customers extends Component {
             </div>
           </section>
 
-          <div className="our-customers text-center">
-            <div className="container">
-              <div className="customer-logos">
-                <div className="row logo-row">{this.renderCustomers()}</div>
-              </div>
-            </div>
-          </div>
+          <OurCustomers />
 
           <section className="customer-studies text-center">
             <div className="container">

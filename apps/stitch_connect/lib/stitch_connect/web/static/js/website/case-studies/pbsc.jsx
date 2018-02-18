@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-
-import Header from "../components/header";
-import GetStarted from "../components/get-started";
-import Footer from "../components/footer";
-
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
+
+import Header from "../components/header";
+import Subheader from "../components/subheader";
+import GetStarted from "../components/get-started";
+import Footer from "../components/footer";
 
 export default class CasePBSC extends Component {
   render() {
@@ -13,14 +13,7 @@ export default class CasePBSC extends Component {
       <div>
         <Header />
         <div className="case-study">
-          <div className="subheader ">
-            <div className="container">
-              <div className="landing-message text-center">
-                <h1>Customers</h1>
-                <h3>Princeton Brain & Spine</h3>
-              </div>
-            </div>
-          </div>
+          <Subheader title="Customers" subtitle="Princeton Brain & Spine" />
 
           <div className="overview text-center">
             <div className="container">

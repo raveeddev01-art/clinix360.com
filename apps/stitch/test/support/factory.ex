@@ -69,6 +69,13 @@ defmodule Stitch.Factory do
     }
   end
 
+  def password_reset_token_factory do
+    %Stitch.Accounts.PasswordResetToken{
+      token: Stitch.Rand.token(32),
+      valid: true,
+    }
+  end
+
   def mobile_device_factory do
     %Stitch.Mobile.Device{
       user: build(:user),
@@ -131,6 +138,14 @@ defmodule Stitch.Factory do
       quantity: 5,
       period_end: NaiveDateTime.utc_now(),
       period_start: NaiveDateTime.utc_now()
+    }
+  end
+
+  def find_your_team_token_factory do
+    %Stitch.FindYourTeam.Token{
+      type: "login",
+      token: Stitch.Rand.token(32),
+      email: sequence(:email, &"email-#{&1}@example.com"),
     }
   end
 end

@@ -4,14 +4,17 @@ import PropTypes from "prop-types";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import { confirmable } from "react-confirm";
+import noop from "lodash/noop";
 
-const Alert = ({
+const ConfirmModal = ({
   okLabel,
+  cancelLabel,
   title,
   message,
   show,
   proceed,
   dismiss,
+  cancel,
   enableEscape
 }) => (
   <Modal
@@ -27,8 +30,11 @@ const Alert = ({
         <i className="fa fa-close" />
       </a>
     </Modal.Header>
-    <Modal.Body dangerouslySetInnerHTML={{ __html: message }} />
+    <Modal.Body>{message}</Modal.Body>
     <Modal.Footer>
+      <Button bsSize="large" onClick={cancel}>
+        {cancelLabel}
+      </Button>
       <Button bsSize="large" bsStyle="primary" onClick={proceed}>
         {okLabel}
       </Button>
@@ -36,21 +42,23 @@ const Alert = ({
   </Modal>
 );
 
-const noop = () => {};
-
-Alert.defaultProps = {
+ConfirmModal.defaultProps = {
   proceed: noop,
+  cancel: noop,
   dismiss: noop,
   okLabel: "OK",
+  cancelLabel: "Cancel",
   show: false,
   enableEscape: true
 };
 
-Alert.propTypes = {
+ConfirmModal.propTypes = {
   proceed: PropTypes.func, // called when ok button is clicked.
+  cancel: PropTypes.func, // called when cancel button is clicked.
   dismiss: PropTypes.func, // called when backdrop is clicked or escaped.
 
   okLabel: PropTypes.string,
+  cancelLabel: PropTypes.string,
   title: PropTypes.string.isRequired,
   message: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
     .isRequired,
@@ -58,4 +66,4 @@ Alert.propTypes = {
   enableEscape: PropTypes.bool
 };
 
-export default confirmable(Alert);
+export default confirmable(ConfirmModal);

@@ -211,8 +211,8 @@ defmodule Stitch.InvitationTest do
       team = insert(:team, %{open_invitations_enabled: false})
       user = insert(:user, %{team_id: team.id, roles: ["admin"]})
       invitation = insert(:invitation, %{user_id: user.id, team_id: team.id, accepted: false})
-      {:ok, deleted_invitation, deleted_user} = Stitch.Invitation.revoke_invitation(user.id, invitation.id)
-      assert deleted_user.id == user.id
+      {:ok, deleted_invitation} = Stitch.Invitation.revoke_invitation(user.id, invitation.id)
+      assert deleted_invitation.user.id == user.id
       assert deleted_invitation.id == invitation.id
     end
   end

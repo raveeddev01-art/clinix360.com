@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
+import noop from "lodash/noop";
+
+import { LoadingIcon } from "common/components";
 
 class SettingPanel extends Component {
   constructor(props) {
@@ -60,6 +63,7 @@ class SettingPanel extends Component {
   _renderDescription = () => {
     const { description } = this.props;
     const items = Array.isArray(description) ? description : [description];
+
     return items.map((item, index) => (
       <HelpBlock key={`desc_${index}`}>{item}</HelpBlock>
     ));
@@ -67,9 +71,8 @@ class SettingPanel extends Component {
 
   _renderLoadingIcon = () => {
     const { isSaving } = this.state;
-    return isSaving ? (
-      <i className="fa fa-circle-o-notch fa-spin fa-fw on-right" />
-    ) : null;
+
+    return isSaving && <LoadingIcon className="on-right" />;
   };
 
   render() {
@@ -111,8 +114,8 @@ SettingPanel.propTypes = {
 
 SettingPanel.defaultProps = {
   children: null,
-  onSave: () => {},
-  onEdit: () => {},
+  onSave: noop,
+  onEdit: noop,
   description: "",
   saveButtonText: "Save",
   disableSave: false

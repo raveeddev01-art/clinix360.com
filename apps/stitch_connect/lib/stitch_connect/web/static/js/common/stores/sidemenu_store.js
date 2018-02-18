@@ -101,12 +101,24 @@ class SidemenuStore {
 
   @action
   loadApp = async () => {
-    const { usersStore, groupsStore } = this.rootStore;
+    const { usersStore, groupsStore, presenceStore } = this.rootStore;
 
-    await usersStore.loadUsers();
-    await groupsStore.loadGroups();
+    try {
+      if (!presenceStore.locked) {
+        // load users only if not locked because it's guarded
+        await usersStore.loadUsers();
+      }
 
-    this.loadedApp = true;
+      await groupsStore.loadGroups();
+      this.loadedApp = true;
+    } catch (e) {
+      // TODO if error occurs here, redirect to error page
+
+      console.error(e); // eslint-disable-line
+    }
+
+    // Hide the HTML loading elements.
+    $(".html-loading-element").remove();
   };
 
   /**

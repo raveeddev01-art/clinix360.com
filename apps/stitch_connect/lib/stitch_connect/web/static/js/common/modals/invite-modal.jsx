@@ -11,12 +11,16 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
-import uniqBy from "lodash/uniqBy";
-import { MemberType } from "common/components";
+import uniq from "lodash/uniq";
 import isEmail from "validator/lib/isEmail";
+import pluralize from "pluralize";
+
+import { MemberType } from "common/components";
 import { extractEmails } from "lib/utils";
 
-@inject("invitationStore")
+const DEFAULT_ROLE = "member";
+
+@inject("invitationStore", "billingStore")
 @observer
 class InviteModal extends Component {
   static initialState = {
@@ -32,7 +36,7 @@ class InviteModal extends Component {
     alertStyle: "",
     alertVisible: false,
     results: {},
-    role: "member",
+    role: DEFAULT_ROLE,
     groupId: null
   };
 
@@ -97,25 +101,20 @@ class InviteModal extends Component {
 
   onRemoveInvite = index => () => {
     const { invites } = this.state;
-    if (invites.length <= 1) return;
+
+    if (invites.length <= 1) {
+      return;
+    }
+
     invites.splice(index, 1);
     this.setState({ invites });
   };
 
   onAddEmails = () => {
     const emails = extractEmails(this.state.emails) || [];
-
-    let invites = [];
-    emails.forEach(email => {
-      if (isEmail(email)) {
-        invites.push({
-          email
-        });
-      }
-    });
-    invites = uniqBy(invites, invite => {
-      return invite.email;
-    });
+    const invites = uniq(emails.filter(email => isEmail(email))).map(email => ({
+      email
+    }));
 
     if (invites.length === 0) {
       this.setState({
@@ -131,9 +130,11 @@ class InviteModal extends Component {
       mode: "default",
       emails: "",
       alertVisible: true,
-      alertMessage: `We found ${invites.length === 1
-        ? "1 email"
-        : `${invites.length} emails`} to invite. If this looks correct, click Send.`,
+      alertMessage: `We found ${pluralize(
+        "email",
+        invites.length,
+        true
+      )} to invite. If this looks correct, click Send.`,
       alertStyle: "success"
     });
   };
@@ -155,10 +156,8 @@ class InviteModal extends Component {
 
   switchToBulk = () => {
     const invites = this.cleanBlanks(this.state.invites);
-    const emails = uniqBy(invites, invite => {
-      return invite.email;
-    })
-      .map(invite => `<${invite.email}>`)
+    const emails = uniq(invites.map(invite => invite.email))
+      .map(email => `<${email}>`)
       .join(", ");
 
     this.setState({
@@ -204,11 +203,13 @@ class InviteModal extends Component {
       invite.email = invite.email.trim();
       invite.error =
         !invite.email || isEmail(invite.email) ? "" : "Invalid email";
+
       if (invite.error && !setFocus) {
         this[`invite_${id}`].focus();
         setFocus = true;
       }
     });
+
     return this.cleanBlanks(invites);
   }
 
@@ -228,30 +229,35 @@ class InviteModal extends Component {
 
     if (successInvitations === 0) {
       this.setState({
-        alertMessage: `Your ${totalInvitations === 1
-          ? "1 invitation"
-          : `${totalInvitations} invitations`} failed to send. Review the errors below.`,
+        alertMessage: `Your ${pluralize(
+          "invitation",
+          totalInvitations,
+          true
+        )} failed to send. Review the errors below.`,
         alertVisible: true,
         alertStyle: "danger"
       });
     } else if (totalInvitations === successInvitations) {
       this.setState({
-        alertMessage: `You successfully invited ${successInvitations === 1
-          ? "1 member"
-          : `${successInvitations} members`}.`,
+        alertMessage: `You successfully invited ${pluralize(
+          "member",
+          successInvitations,
+          true
+        )}.`,
         alertVisible: true,
         alertStyle: "success"
       });
     } else {
       this.setState({
-        alertMessage: `You successfully invited ${successInvitations === 1
-          ? `1 member`
-          : `${successInvitations} members`}, but ${totalInvitations -
-          successInvitations ===
-        1
-          ? `1 invitation`
-          : `${totalInvitations -
-              successInvitations} invitations`} failed to send. Review the errors below.`,
+        alertMessage: `You successfully invited ${pluralize(
+          "member",
+          successInvitations,
+          true
+        )}, but ${pluralize(
+          "invitation",
+          totalInvitations - successInvitations,
+          true
+        )} failed to send. Review the errors below.`,
         alertVisible: true,
         alertStyle: "success"
       });
@@ -270,7 +276,11 @@ class InviteModal extends Component {
 
     if (filteredEmails.length) {
       this.props.invitationStore
-        .sendInvites(filteredEmails, groupId, role)
+        .sendInvites(
+          filteredEmails,
+          groupId,
+          this.guestInviteEnabled() ? role : DEFAULT_ROLE
+        )
         .then(res => {
           this.setState({ sent: true });
           this.showResultMessage(res.data);
@@ -291,9 +301,28 @@ class InviteModal extends Component {
     }
   }
 
-  render() {
-    const { mode, show, invites, sent, emails, results } = this.state;
+  guestInviteEnabled() {
     const {
+      billingStore: {
+        subscription: { tier, trial_remaining_days: trialRemainingDays }
+      }
+    } = this.props;
+
+    return (
+      (tier === "TRIAL" && trialRemainingDays > 0) ||
+      tier === "PREMIUM" ||
+      tier === "POWER"
+    );
+  }
+
+  render() {
+    const {
+      mode,
+      show,
+      invites,
+      sent,
+      emails,
+      results,
       alertMessage,
       alertVisible,
       alertStyle,
@@ -323,96 +352,100 @@ class InviteModal extends Component {
               Enter <strong>invitations</strong> to email out.
             </h5>
           )}
+
           <Form
             horizontal
-            className="invite-forms"
+            className="invite-form"
             onSubmit={this.onSubmit}
             noValidate
           >
-            {mode !== "bulk" && (
-              <MemberType
-                typeLabel="Invite Type"
-                role={role}
-                groupId={groupId}
-                onChangeRole={this.onChangeField("role")}
-                onChangeGroup={this.onChangeField("groupId")}
-              />
-            )}
-            <div className="invite-email-list">
-              {mode === "bulk" ? (
-                <FormGroup controlId="formControlsTextarea">
-                  <Col md={12}>
-                    <FormControl
-                      componentClass="textarea"
-                      rows="6"
-                      value={emails}
-                      disabled={sent}
-                      onChange={this.onChangeEmails}
-                    />
-                  </Col>
-                </FormGroup>
-              ) : (
-                invites.map((invite, index) => {
-                  const inviteSent = sent && !!invite.email.trim();
-                  const inviteError = !!invite.error;
-                  const resultOk = results[invite.email] === "ok";
-                  const resultError = resultOk ? null : results[invite.email];
-                  const validationState = inviteSent
-                    ? resultOk ? "success" : "error"
-                    : inviteError ? "error" : null;
+            {mode === "bulk" ? (
+              <FormGroup controlId="formControlsTextarea">
+                <Col md={12}>
+                  <FormControl
+                    componentClass="textarea"
+                    rows="6"
+                    value={emails}
+                    disabled={sent}
+                    onChange={this.onChangeEmails}
+                  />
+                </Col>
+              </FormGroup>
+            ) : (
+              <div className="default-mode-form">
+                {this.guestInviteEnabled() && (
+                  <MemberType
+                    typeLabel="Invite Type"
+                    role={role}
+                    groupId={groupId}
+                    onChangeRole={this.onChangeField("role")}
+                    onChangeGroup={this.onChangeField("groupId")}
+                  />
+                )}
 
-                  return (
-                    <FormGroup
-                      bsSize="large"
-                      key={`invite_${index}`}
-                      validationState={validationState}
-                    >
-                      <Col componentClass={ControlLabel} xs={12} sm={3}>
-                        Email
-                      </Col>
+                <div className="invite-email-list">
+                  {invites.map((invite, index) => {
+                    const inviteSent = sent && !!invite.email.trim();
+                    const inviteError = !!invite.error;
+                    const resultOk = results[invite.email] === "ok";
+                    const resultError = resultOk ? null : results[invite.email];
+                    const validationState = inviteSent
+                      ? resultOk ? "success" : "error"
+                      : inviteError ? "error" : null;
 
-                      <Col xs={10} sm={7}>
-                        <FormControl
-                          type="email"
-                          value={invite.email}
-                          disabled={sent}
-                          onChange={this.onChange(index)}
-                          inputRef={node => {
-                            this[`invite_${index}`] = node;
-                          }}
-                        />
+                    return (
+                      <FormGroup
+                        bsSize="large"
+                        key={`invite_${index}`}
+                        validationState={validationState}
+                      >
+                        <Col componentClass={ControlLabel} xs={12} sm={3}>
+                          Email
+                        </Col>
 
-                        {validationState === "error" && (
-                          <HelpBlock>
-                            <i className="fa fa-exclamation-circle" />{" "}
-                            {(inviteSent ? resultError : invite.error) ||
-                              "There was problem sending invitation."}
-                          </HelpBlock>
-                        )}
+                        <Col xs={10} sm={7}>
+                          <FormControl
+                            type="email"
+                            value={invite.email}
+                            disabled={sent}
+                            onChange={this.onChange(index)}
+                            inputRef={node => {
+                              this[`invite_${index}`] = node;
+                            }}
+                          />
 
-                        {validationState === "success" && (
-                          <HelpBlock>
-                            <i className="fa fa-check-circle" /> Invite has been
-                            sent
-                          </HelpBlock>
-                        )}
-                      </Col>
-                      <Col xs={2}>
-                        {!sent &&
-                          invites.length > 1 && (
-                            <a
-                              className="btn"
-                              onClick={this.onRemoveInvite(index)}
-                            >
-                              <i className="fa fa fa-times-circle-o" />
-                            </a>
+                          {validationState === "error" && (
+                            <HelpBlock>
+                              <i className="fa fa-exclamation-circle" />{" "}
+                              {(inviteSent ? resultError : invite.error) ||
+                                "There was problem sending invitation."}
+                            </HelpBlock>
                           )}
-                      </Col>
-                    </FormGroup>
-                  );
-                })
-              )}
-            </div>
+
+                          {validationState === "success" && (
+                            <HelpBlock>
+                              <i className="fa fa-check-circle" /> Invite has
+                              been sent
+                            </HelpBlock>
+                          )}
+                        </Col>
+                        <Col xs={2}>
+                          {!sent &&
+                            invites.length > 1 && (
+                              <a
+                                className="btn"
+                                onClick={this.onRemoveInvite(index)}
+                              >
+                                <i className="fa fa fa-times-circle-o" />
+                              </a>
+                            )}
+                        </Col>
+                      </FormGroup>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </Form>
 
           <Row className="m-u-20">

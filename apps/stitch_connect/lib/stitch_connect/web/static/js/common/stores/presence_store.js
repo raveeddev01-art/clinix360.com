@@ -117,8 +117,16 @@ class PresenceStore {
     if (sessionId === window.sessionId) window.location.reload();
   };
 
-  onLogout = ({ session_id: sessionId }) => {
-    if (window.sessionId === sessionId) {
+  onLogout = (data) => {
+    if (data.logout_from_all_sessions) {
+      // when logout_from_all_sessions is set, log out on
+      // - session_id is not present
+      // - session_id !== mine
+      if (!data.current_session_id || data.current_session_id !== window.sessionId) {
+        this.logout();
+      }
+    } else if (window.sessionId === data.session_id) {
+      // when logout_from_all_sessions is not set, log out if it's pointed to specific session
       this.logout();
     }
   };
@@ -216,6 +224,7 @@ class PresenceStore {
   @action
   onWindowFocus = () => {
     this.isActive = true;
+    this.rootStore.messageStore.onWindowFocus();
   };
 
   checkLockoutTimerExpired = () => {

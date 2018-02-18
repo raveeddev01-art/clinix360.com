@@ -32,7 +32,7 @@ defmodule Stitch.Team.AdminTest do
         "city" => "My City",
         "state" => "CA",
         "country" => "USA",
-        "zip_code" => "55555-333",
+        "zip_code" => "55555-3333",
         "company_name" => "My Test Company",
         "address_line_one" => "Street 123, chapel road"
       }
@@ -77,7 +77,7 @@ defmodule Stitch.Team.AdminTest do
         "city" => "My City",
         "state" => "CA",
         "country" => "XYZ",
-        "zip_code" => "XXXXX-YYY",
+        "zip_code" => "XXXXX-YYYY",
         "company_name" => "My Test Company",
         "address_line_one" => "Street 123, chapel road"
       }

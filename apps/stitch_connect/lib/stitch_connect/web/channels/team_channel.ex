@@ -32,12 +32,30 @@ defmodule StitchConnect.Web.TeamChannel do
 
   @decorate channel_action()
   def handle_in("became_inactive", _params, socket) do
-    {:noreply, update_connection_meta(socket, %{inactive: true})}
+    socket =
+      if socket.assigns.meta.inactive == true do
+        socket
+      else
+        socket = update_connection_meta(socket, %{inactive: true})
+        push socket, "presence_state", Presence.list(socket)
+        socket
+      end
+
+    {:noreply, socket}
   end
 
   @decorate channel_action()
   def handle_in("became_away", _params, socket) do
-    {:noreply, update_connection_meta(socket, %{became_away: true})}
+    socket =
+      if socket.assigns.meta.became_away == true do
+        socket
+      else
+        socket = update_connection_meta(socket, %{became_away: true})
+        push socket, "presence_state", Presence.list(socket)
+        socket
+      end
+
+    {:noreply, socket}
   end
 
   @decorate channel_action()
@@ -51,11 +69,17 @@ defmodule StitchConnect.Web.TeamChannel do
 
   @decorate channel_action()
   def handle_in("became_active", _params, socket) do
-    socket = update_connection_meta(socket, %{
-      inactive: false,
-      became_away: false,
-      lockout_timer_expired: false,
-    })
+    new_meta = %{inactive: false, became_away: false, lockout_timer_expired: false}
+    current_meta = Map.take(socket.assigns.meta, [:inactive, :became_away, :lockout_timer_expired])
+    socket =
+      if new_meta == current_meta do
+        socket
+      else
+        socket = update_connection_meta(socket, new_meta)
+        push socket, "presence_state", Presence.list(socket)
+        socket
+      end
+
     {:noreply, socket}
   end
 

@@ -9,11 +9,7 @@ export default class WindowsDesktop extends Component {
           experience using Stitch.
         </h5>
 
-        <a
-          href="#"
-          disabled
-          className="btn btn-primary btn-lg btn-block m-b-40"
-        >
+        <a disabled className="btn btn-primary btn-lg btn-block m-b-40">
           Coming Soon
         </a>
       </div>

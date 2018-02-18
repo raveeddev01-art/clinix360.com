@@ -8,17 +8,17 @@ defmodule StitchConnect.Web.Admin.ImpersonationController do
     staff_user = conn.assigns.current_user
 
     with {user_id, _} <- Integer.parse(id),
-         %Stitch.Accounts.User{} = user <- Stitch.UserQueries.get_by_id(user_id) do
+         %Stitch.Accounts.User{} = user <- UserQueries.get_active_by_id(user_id) do
       team = TeamQueries.get_by_id(user.team_id)
 
       uri = subdomain_uri(team.slug)
 
       conn
       |> login_user(user)
-      |> put_session(:impersonator_user_id, staff_user.id)
+      |> put_session(:impersonator_user_token, staff_user.token)
       |> redirect(external: Routes.page_url(uri, :index))
     else
-      {:not_found, _} ->
+      nil ->
         html(conn, "User does not exist.")
       _ ->
         html(conn, "Invalid user id provided.")
@@ -32,12 +32,12 @@ defmodule StitchConnect.Web.Admin.ImpersonationController do
 
   def stop(conn, _) do
     conn =
-      if staff_user_id = get_session(conn, :impersonator_user_id) do
-        staff_user = UserQueries.get_by_id(staff_user_id)
+      if staff_user_token = get_session(conn, :impersonator_user_token) do
+        staff_user = UserQueries.get_by_token(staff_user_token)
 
         conn
         |> login_user(staff_user)
-        |> delete_session(:impersonator_user_id)
+        |> delete_session(:impersonator_user_token)
       else
         conn
       end

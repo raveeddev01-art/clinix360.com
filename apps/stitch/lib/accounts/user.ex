@@ -29,7 +29,6 @@ defmodule Stitch.Accounts.User do
     field :pin, :string
     field :token, :string
     field :disabled, :boolean, default: false
-    field :password_reset_token, :string
     field :desktop_notification_preference, :string, default: "everything"
     field :mobile_notification_preference, :string, default: "everything"
     field :email_notification_preference, :string, default: "daily"
@@ -37,6 +36,7 @@ defmodule Stitch.Accounts.User do
     field :groups_as_guest, {:array, :integer}, default: [] # List of groups the user is allowed in if user is a guest
     belongs_to :team, Stitch.Team
     has_one :invitation, Stitch.Invitation, on_delete: :delete_all
+    has_many :password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all
 
     field :password, :string, virtual: true
 
@@ -113,6 +113,7 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(attrs, [:email, :confirmation_code, :token])
     |> validate_required([:email, :confirmation_code, :token])
+    |> update_change(:email, &String.trim/1)
     |> valid_email_changeset(attrs)
   end
 
@@ -140,13 +141,6 @@ defmodule Stitch.Accounts.User do
   def role_change_changeset(struct, params) do
     struct
     |> change(params)
-  end
-
-  def registration_changeset(struct, params) do
-    struct
-    |> changeset(params)
-    |> cast(params, [:email, :password])
-    |> validate_length(:password, min: 8)
   end
 
   def onboarding_complete_changeset(struct, params) do

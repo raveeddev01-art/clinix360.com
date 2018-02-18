@@ -8,7 +8,7 @@ import { observable, action, computed } from "mobx";
 import pick from "lodash/pick";
 import difference from "lodash/difference";
 
-const defaultAvatars = ["/images/default-avatar.png"];
+// const defaultAvatars = ["/images/default-avatar.png"];
 
 class UserStore {
   @observable id = "";
@@ -183,6 +183,8 @@ class UserStore {
         old_password: oldPassword
       },
       hideNotify: true
+    }).then(resp => {
+      window.authenticationToken = resp.data.token;
     });
   };
 }

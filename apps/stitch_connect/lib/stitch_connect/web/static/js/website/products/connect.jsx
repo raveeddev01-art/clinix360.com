@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { LinkContainer } from "react-router-bootstrap";
+import Button from "react-bootstrap/lib/Button";
 
 import Header from "../components/header";
 import CreateTeam from "../components/create-team";
+import Feature from "../components/feature";
 import GetStarted from "../components/get-started";
 import Footer from "../components/footer";
-
-import Button from "react-bootstrap/lib/Button";
 
 export default class Connect extends Component {
   render() {
@@ -39,131 +38,55 @@ export default class Connect extends Component {
           </div>
         </div>
 
-        <div className="feature">
-          <div className="container">
-            <div className="flex-box">
-              <div className="flex-item">
-                <div className="info m-b-40">
-                  <h2>
-                    Secure all your healthcare communication in one place.
-                  </h2>
+        <Feature
+          heading="Secure all your healthcare communication in one place."
+          image="/images/connect-feature-1.png"
+        >
+          Stitch Connect offers healthcare teams a HIPAA-compliant, team
+          communication experience across all devices. We complement a great
+          user experience with advanced security architecture to bring the
+          latest in communication technology to the healthcare world. We use AWS
+          to provide necessary physical safeguards and Aptible to provide
+          technical safeguards, then carefully layer in administrative controls
+          for complete HIPAA compliance.
+        </Feature>
 
-                  <p>
-                    Stitch Connect offers healthcare teams a HIPAA-compliant,
-                    team communication experience across all devices. We
-                    complement a great user experience with advanced security
-                    architecture to bring the latest in communication technology
-                    to the healthcare world. We use AWS to provide necessary
-                    physical safeguards and Aptible to provide technical
-                    safeguards, then carefully layer in administrative controls
-                    for complete HIPAA compliance.
-                  </p>
-                </div>
-              </div>
+        <Feature
+          featureClassName="alt"
+          heading="Organize your conversations by groups or 1-on-1."
+          image="/images/connect-feature-2.png"
+        >
+          Stitch Connect organizes conversations into groups and private
+          messages. Public and private groups bring healthcare teams together
+          for powerful team dialogue. Discuss patients, events, tasks and more.
+          Private messages enable instant 1-to-1 communication. No more pagers,
+          fax machines or phone calls.
+        </Feature>
 
-              <div className="flex-item">
-                <img
-                  src="/images/connect-feature-1.png"
-                  alt="Stitch Connect"
-                  className="img-responsive"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        <Feature
+          heading="Upload images, audio, or video into your conversations."
+          image="/images/connect-feature-3.png"
+        >
+          Use Stitch Connect as a searchable archive of your team’s files. You
+          can upload almost any type — JPEG, PNG, PDF, MP3, Word, Excel,
+          PowerPoint, and more. We employ cutting edge security tools, including
+          isolated database containers, data transmission security measures and
+          advanced authentication technology to HIPAA-compliantly store your
+          uploads in the cloud. You can relax knowing you’re safe with us.
+        </Feature>
 
-        <div className="feature alt">
-          <div className="container">
-            <div className="flex-box">
-              <div className="flex-item">
-                <img
-                  src="/images/connect-feature-2.png"
-                  alt="Stitch Connect"
-                  className="img-responsive"
-                />
-              </div>
-
-              <div className="flex-item">
-                <div className="info m-b-40">
-                  <h2>Organize your conversations by groups or 1-on-1.</h2>
-
-                  <p>
-                    Stitch Connect organizes conversations into groups and
-                    private messages. Public and private groups bring healthcare
-                    teams together for powerful team dialogue. Discuss patients,
-                    events, tasks and more. Private messages enable instant
-                    1-to-1 communication. No more pagers, fax machines or phone
-                    calls.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="feature">
-          <div className="container">
-            <div className="flex-box">
-              <div className="flex-item">
-                <div className="info m-b-40">
-                  <h2>
-                    Upload images, audio, or video into your conversations.
-                  </h2>
-
-                  <p>
-                    Use Stitch Connect as a searchable archive of your team’s
-                    files. You can upload almost any type — JPEG, PNG, PDF, MP3,
-                    Word, Excel, PowerPoint, and more. We employ cutting edge
-                    security tools, including isolated database containers, data
-                    transmission security measures and advanced authentication
-                    technology to HIPAA-compliantly store your uploads in the
-                    cloud. You can relax knowing you’re safe with us.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex-item">
-                <img
-                  src="/images/connect-feature-3.png"
-                  alt="Stitch Connect"
-                  className="img-responsive"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="feature alt">
-          <div className="container">
-            <div className="flex-box">
-              <div className="flex-item">
-                <img
-                  src="/images/connect-feature-4.png"
-                  alt="Stitch Connect"
-                  className="img-responsive"
-                />
-              </div>
-
-              <div className="flex-item">
-                <div className="info m-b-40">
-                  <h2>
-                    Notifications keep you in sync across all your devices.
-                  </h2>
-
-                  <p>
-                    Never miss a beat in Stitch Connect. Access your account
-                    everywhere you go with our web, desktop, and mobile apps.
-                    Receive and customize notifications across all your
-                    platforms so you stay in the conversation any way you like.
-                    Need more reliability? We’ve got you covered with message
-                    read receipts and escalating offline email and SMS
-                    notifications.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Feature
+          featureClassName="alt"
+          heading="Notifications keep you in sync across all your devices."
+          image="/images/connect-feature-4.png"
+        >
+          Never miss a beat in Stitch Connect. Access your account everywhere
+          you go with our web, desktop, and mobile apps. Receive and customize
+          notifications across all your platforms so you stay in the
+          conversation any way you like. Need more reliability? We’ve got you
+          covered with message read receipts and escalating offline email and
+          SMS notifications.
+        </Feature>
 
         <GetStarted />
         <Footer />

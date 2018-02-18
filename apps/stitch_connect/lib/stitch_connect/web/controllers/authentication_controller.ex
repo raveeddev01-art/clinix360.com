@@ -1,14 +1,16 @@
 defmodule StitchConnect.Web.AuthenticationController do
   use StitchConnect.Web, :controller
   alias StitchConnect.Web.{EventsChannel}
+  alias Stitch.FindYourTeam
+  alias Stitch.Accounts.{PasswordResetToken}
 
   def index(conn, _params) do
     render conn, "index.html", subdomain: conn.private[:subdomain]
   end
 
   def login(conn, _params) do
-    with current_user_id when is_integer(current_user_id) <- get_session(conn, :current_user_id),
-         %Stitch.Accounts.User{} = current_user <- Stitch.Accounts.get_for_team_id(current_user_id, conn.assigns.team.id) do
+    with current_user_token when is_binary(current_user_token) <- get_session(conn, :current_user_token),
+         %Stitch.Accounts.User{} = current_user <- Stitch.UserQueries.get_by_token(current_user_token) do
       default_group = Stitch.GroupQueries.default_group(current_user)
       redirect(conn, to: StitchConnect.Web.SubdomainRouter.Helpers.group_path(conn, :index, default_group.slug))
     else _error ->
@@ -22,9 +24,7 @@ defmodule StitchConnect.Web.AuthenticationController do
   end
 
   def auto_login(conn, %{"token" => token}) do
-    with %Stitch.FindYourTeam.Token{} = token <- Stitch.FindYourTeam.get_login_token(token),
-         %Stitch.Accounts.User{} = user <- Stitch.UserQueries.team_member_with_email(conn.assigns.team.id, token.email),
-         {:ok, _token} <- Stitch.FindYourTeam.delete_token(token) do
+    with {:ok, user} <- FindYourTeam.activate_login_token(conn.assigns.team, token) do
       default_group = Stitch.GroupQueries.default_group(user)
       conn
       |> login_user(user)
@@ -83,20 +83,22 @@ defmodule StitchConnect.Web.AuthenticationController do
   end
 
   def change_password(conn, %{"token" => token}) do
-    case Stitch.User.Authentication.check_for_valid_reset_token(token) do
-      false ->
-        conn
-        |> put_flash(:invalid_login, "Invalid Token.")
-        |> redirect(to: "/login")
+    team = conn.assigns.team
 
-      user ->
-        change_password_params = Poison.encode!(%{
-          "teamName" => conn.private[:team_name],
-          "teamSlug" => conn.private[:team_slug],
-          "user_id"  => user.id,
-          "token"    => token
-        })
-        render(conn, "change_password.html", change_password_params: change_password_params)
+    with %PasswordResetToken{} = password_reset_token <- PasswordResetToken.get_valid_token(token),
+         true <- password_reset_token.user.team_id == team.id do
+      PasswordResetToken.activate(password_reset_token)
+      change_password_params = Poison.encode!(%{
+        "teamName" => conn.private[:team_name],
+        "teamSlug" => conn.private[:team_slug],
+        "user_id"  => password_reset_token.user.id,
+        "token"    => password_reset_token.token
+      })
+      render(conn, "change_password.html", change_password_params: change_password_params)
+    else _e ->
+      conn
+      |> put_flash(:invalid_login, "Invalid Token.")
+      |> redirect(to: "/login")
     end
   end
 

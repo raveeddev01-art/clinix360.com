@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import Dropdown from "react-bootstrap/lib/Dropdown";
-import MenuItem from "react-bootstrap/lib/MenuItem";
+// import Dropdown from "react-bootstrap/lib/Dropdown";
+// import MenuItem from "react-bootstrap/lib/MenuItem";
 
 @inject("uploadStore")
 @observer

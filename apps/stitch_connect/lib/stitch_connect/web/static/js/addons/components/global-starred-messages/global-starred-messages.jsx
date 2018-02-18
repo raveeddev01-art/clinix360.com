@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-import AddonMessage from "../../../common/components/messages/addon-message";
+import { AddonMessage } from "common/components";
 
 @inject("globalStarredMessageStore")
 @observer

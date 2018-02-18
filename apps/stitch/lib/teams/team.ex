@@ -55,6 +55,6 @@ defmodule Stitch.Team do
     ])
     |> validate_required([:company_name, :address_line_one, :city, :state, :country, :zip_code])
     |> Stitch.Validators.validate_country_iso_alpha(:country)
-    |> validate_format(:zip_code, ~r(\d{5,5}\-\d{3,3}$))
+    |> validate_format(:zip_code, ~r(\d{5}\-\d{4}$))
   end
 end

@@ -1,20 +1,15 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
-import { animateScroll as scroll } from "react-scroll";
-import cx from "classnames";
-
-import Header from "../components/header";
-import CUSTOMERS from "../components/customers-logos";
-import Footer from "../components/footer";
-
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
 import Panel from "react-bootstrap/lib/Panel";
 import FormGroup from "react-bootstrap/lib/FormGroup";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
+import { animateScroll as scroll } from "react-scroll";
+
+import Header from "../components/header";
+import OurCustomers from "../components/our-customers";
+import Footer from "../components/footer";
 
 export default class Demo extends Component {
   constructor(props) {
@@ -50,7 +45,7 @@ export default class Demo extends Component {
 
     post("/api/v1/request-demo", {
       body: { fullName, email, phoneNumber, companyName }
-    }).then(response => {
+    }).then(() => {
       this.setState({ formSubmitted: true });
       scroll.scrollToTop();
     });
@@ -160,19 +155,6 @@ export default class Demo extends Component {
     );
   }
 
-  renderCustomers() {
-    return CUSTOMERS.map((c, index) => {
-      const className = cx("col-lg-5ths col-md-3 col-xs-4", {
-        "visible-lg": index % 5 === 4
-      });
-      return (
-        <div className={className} key={`customer_${index}`}>
-          <img src={c.img} alt={c.title} />
-        </div>
-      );
-    });
-  }
-
   render() {
     return (
       <div className="demo-page">
@@ -182,14 +164,7 @@ export default class Demo extends Component {
           <div className="container">{this.demoRequest()}</div>
         </div>
 
-        <div className="our-customers text-center">
-          <div className="container">
-            <h4 className="text-uppercase">Trusted by top healthcare teams</h4>
-            <div className="customer-logos">
-              <div className="row logo-row">{this.renderCustomers()}</div>
-            </div>
-          </div>
-        </div>
+        <OurCustomers />
 
         <Footer />
       </div>
