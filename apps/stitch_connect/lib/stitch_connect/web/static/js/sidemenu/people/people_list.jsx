@@ -29,8 +29,26 @@ class PeopleList extends Component {
     this.toggleTeamModal();
   };
 
+  getYou = rooms =>
+    rooms.filter(room => {
+      return (
+        room.type === "dm" &&
+        room.users.length === 1 &&
+        room.users[0].id === currentUser.id
+      );
+    });
+
+  getRooms = rooms =>
+    rooms.filter(room => {
+      return room.user_count !== 1;
+    });
+
   render() {
     const { heading, rooms, userStore } = this.props;
+    let sortedRooms = [];
+    const myRoom = this.getYou(rooms);
+    const otherRooms = this.getRooms(rooms);
+    sortedRooms = myRoom.concat(otherRooms);
 
     return (
       <div className="menu-nav people m-b-20">
@@ -62,7 +80,7 @@ class PeopleList extends Component {
           </div>
         </div>
 
-        {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
+        {sortedRooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
         {userStore.canInvite && (
           <a
