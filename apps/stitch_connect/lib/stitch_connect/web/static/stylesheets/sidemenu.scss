@@ -360,8 +360,16 @@
       line-height: 30px;
       text-align: center;
       font-size: 16px;
-      background-color: #e33a2f;
-      color: #fff;
+      &,
+      &--mentions {
+        background-color: #e33a2f;
+        color: #fff;
+      }
+
+      &--unreads {
+        background-color: #fff;
+        color: $brand-primary;
+      }
 
       &.up {
         top: 0px;
