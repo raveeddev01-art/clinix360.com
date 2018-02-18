@@ -47,8 +47,11 @@ class Sidemenu extends Component {
     return cx(
       "edge-badge",
       {
-        "edge-badge--mentions": roomItem.mentions_count > 0,
-        "edge-badge--unreads": !roomItem.mentions_count
+        "edge-badge--mentions":
+          (roomItem.type === "dm" || roomItem.type === "multi_dm") &&
+          (roomItem.unread_messages_count || roomItem.mentions_count),
+        "edge-badge--unreads":
+          roomItem.type === "regular" && !roomItem.mentions_count
       },
       direction
     );
