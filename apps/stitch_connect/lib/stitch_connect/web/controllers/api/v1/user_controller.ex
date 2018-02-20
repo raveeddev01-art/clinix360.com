@@ -273,6 +273,12 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     |> json(%{message: "Requires list of emails."})
   end
 
+  def access(conn, _params) do
+    conn
+    |> create_access_log_record(conn.assigns.current_user)
+    |> json(%{message: "ok"})
+  end
+
   @member_role Role.member()
   @guest_roles Role.guests()
   def change_role(conn, %{"id" => user_id, "role" => role}) when role in @member_role do

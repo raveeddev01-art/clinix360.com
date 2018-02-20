@@ -2,6 +2,7 @@ defmodule StitchConnect.Plug.Authenticate do
   import Plug.Conn
   alias Stitch.UserQueries
   alias Stitch.Accounts.User
+  alias StitchConnect.Web.ControllerHelpers
 
   def init(default), do: default
 
@@ -9,7 +10,9 @@ defmodule StitchConnect.Plug.Authenticate do
     with {:token, token} when is_binary(token) <- {:token, get_session(conn, :current_user_token)},
          {:user, %User{disabled: false} = user} <- {:user, UserQueries.get_by_token(token)},
          {:team_member?, true} <- {:team_member?, user.team_id == conn.assigns.team.id} do
-      assign(conn, :current_user, user)
+      conn
+      |> assign(:current_user, user)
+      |> ControllerHelpers.create_access_log_record(user)
     else
       {:token, nil} -> force_login(conn)
       {:user, nil} -> force_login(conn)

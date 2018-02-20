@@ -116,6 +116,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     put "/users/:id/upload_profile_image", UserController, :upload_profile_image
     delete "/users/:id/delete_profile_image", UserController, :delete_profile_image
     post "/users/search", UserController, :search
+    post "/users/access", UserController, :access
 
     scope "/invitations" do
       get "/", InvitationController, :index

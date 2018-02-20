@@ -7,6 +7,7 @@ defmodule StitchConnect.Web.ControllerHelpers do
   """
   def login_user(conn, user) do
     conn
+    |> create_access_log_record(user)
     |> put_session(:current_user_token, user.token)
     |> put_session(:session_id, Stitch.Rand.token(12))
     |> put_session(:locked, false)
@@ -18,6 +19,34 @@ defmodule StitchConnect.Web.ControllerHelpers do
     conn
     |> put_session(:current_user_token, user.token)
     |> configure_session(renew: true)
+  end
+
+  def create_access_log_record(conn, user) do
+    ip_address = fetch_user_ip(conn)
+    user_agent = fetch_user_agent(conn)
+    app_version = fetch_app_version(conn)
+    Stitch.Accounts.AccessLog.async_create_or_update(user, ip_address, user_agent, app_version)
+    conn
+  end
+
+  defp fetch_user_ip(conn) do
+    conn.remote_ip
+    |> :inet_parse.ntoa
+    |> to_string
+  end
+
+  defp fetch_app_version(conn) do
+    case get_req_header(conn, "stitch-app-version") do
+      [] -> "undefined"
+      [app_versoin] -> app_versoin
+    end
+  end
+
+  defp fetch_user_agent(conn) do
+    case get_req_header(conn, "user-agent") do
+      [] -> "undefined"
+      [user_agent] -> user_agent
+    end
   end
 
   @doc """
