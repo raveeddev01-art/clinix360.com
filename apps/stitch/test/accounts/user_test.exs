@@ -4,12 +4,16 @@ defmodule Stitch.Accounts.UserTest do
 
   describe "Stitch.Accounts.User.changeset/2 username should contain only lowercased alphanumeric characters" do
     test "should pass for username with lowercased alphanumeric characters" do
-      changeset = User.changeset(%User{first_name: "First", last_name: "Last"}, %{username: "bob"})
+      changeset =
+        User.changeset(%User{first_name: "First", last_name: "Last"}, %{username: "bob"})
+
       assert changeset.valid? == true
     end
 
     test "should not pass for username with non alphanumeric characters" do
-      changeset = User.changeset(%User{first_name: "First", last_name: "Last"}, %{username: "bob."})
+      changeset =
+        User.changeset(%User{first_name: "First", last_name: "Last"}, %{username: "bob."})
+
       assert changeset.valid? == false
       assert changeset.errors == [username: {"has invalid format", [validation: :format]}]
     end
@@ -17,14 +21,16 @@ defmodule Stitch.Accounts.UserTest do
 
   describe "Stitch.Accounts.User.changeset/2 first_name and last_name should not have emojis" do
     test "should pass for fields not having emojis" do
-      changeset = %User{}
+      changeset =
+        %User{}
         |> User.changeset(%{first_name: "First", last_name: "Last"})
 
       assert changeset.valid? == true
     end
 
     test "should pass for first_name having emojis" do
-      changeset = %User{}
+      changeset =
+        %User{}
         |> User.changeset(%{first_name: "First 💫", last_name: "Last"})
 
       assert changeset.valid? == false
@@ -32,7 +38,8 @@ defmodule Stitch.Accounts.UserTest do
     end
 
     test "should pass for last_name having emojis" do
-      changeset = %User{}
+      changeset =
+        %User{}
         |> User.changeset(%{first_name: "First", last_name: "Last 🙌"})
 
       assert changeset.valid? == false
