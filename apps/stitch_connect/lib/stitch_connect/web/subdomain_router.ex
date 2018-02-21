@@ -171,6 +171,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
       put "/contact",                       TeamController, :update_contact_info
       put "/update-open-invitation",        TeamController, :update_open_invitation
       put "/update-security-lockout-time",  TeamController, :update_security_lockout_time
+      get "/access_log",                    TeamController, :access_log
     end
 
     # Subscription/Billing routes

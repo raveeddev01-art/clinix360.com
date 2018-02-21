@@ -6,7 +6,7 @@ defmodule Stitch.Accounts.AccessLog do
   import Ecto.Query
   import Ecto.Changeset
   alias Stitch.Accounts.{User, AccessLog}
-  alias Stitch.{Repo}
+  alias Stitch.{Repo, Team}
 
   @type t :: %__MODULE__{}
 
@@ -49,6 +49,20 @@ defmodule Stitch.Accounts.AccessLog do
     Stitch.Task.start(fn ->
       create_or_update(user, ip_address, user_agent, app_version)
     end)
+  end
+
+  @spec list(Team.t, list | nil) :: Stitch.Paginator.t
+  def list(%Team{} = team, opts \\ []) do
+    limit = opts[:limit] || 30
+    offset = opts[:skip] || 0
+
+    query =
+      AccessLog
+      |> join(:inner, [a], u in assoc(a, :user))
+      |> where([a, u], u.team_id == ^team.id)
+      |> order_by([a, u], desc: a.last_access_at)
+
+    Stitch.Paginator.new(query, skip: offset, limit: limit)
   end
 
   defp naive_date(%NaiveDateTime{} = naive_datetime) do

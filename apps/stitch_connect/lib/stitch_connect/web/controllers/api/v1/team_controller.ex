@@ -117,4 +117,11 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         |> json(%{message: "Team has been destroyed"})
     end
   end
+
+  def access_log(conn, %{"id" => _} = params) do
+    pagination_opts = parse_pagination_params(params, [:limit, :skip])
+    team = conn.assigns.team
+    paginated_result = Stitch.Accounts.AccessLog.list(team, pagination_opts)
+    render(conn, "access_log.json", access_log: paginated_result)
+  end
 end
