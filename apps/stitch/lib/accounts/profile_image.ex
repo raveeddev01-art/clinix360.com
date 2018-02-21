@@ -57,8 +57,8 @@ defmodule Stitch.Accounts.ProfileImage do
     size = 512
     resolution = 72
     sampling_factor = 3
-    background_color = "#E0E0E0"
-    text_color = "#6D6D6D"
+    background_color = "#003366"
+    text_color = "#FFFFFF"
     initials = "#{String.at(first_name, 0)}#{String.at(last_name, 0)}"
     image_path = System.tmp_dir!() |> Path.join("#{initials}.png") |> IO.inspect()
 
