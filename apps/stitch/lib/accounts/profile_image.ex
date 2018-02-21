@@ -53,13 +53,14 @@ defmodule Stitch.Accounts.ProfileImage do
   """
   @spec create_from_initials(binary, binary) :: binary
   def create_from_initials(first_name, last_name)
-      when is_binary(first_name) and is_binary(last_name) do
+      when byte_size(first_name) > 0 and byte_size(last_name) > 0 do
     size = 512
     resolution = 72
     sampling_factor = 3
     background_color = "#E0E0E0"
     text_color = "#6D6D6D"
-    save_path = "/dev/null"
+    initials = "#{String.at(first_name, 0)}#{String.at(last_name, 0)}"
+    image_path = System.tmp_dir!() |> Path.join("#{initials}.png") |> IO.inspect()
 
     System.cmd("convert", [
       # sample up
@@ -85,14 +86,14 @@ defmodule Stitch.Accounts.ProfileImage do
       # render text, move down a bit
       "-annotate",
       "+0+#{25 * sampling_factor}",
-      "#{String.at(first_name, 0)}#{String.at(last_name, 0)}",
+      "#{initials}",
       # sample down to reduce aliasing
       "-resample",
       "#{resolution}",
-      save_path
+      image_path
     ])
 
-    "saved"
+    {:ok, image_path}
   end
 
   def create_from_initials(_first_name, _last_name) do
