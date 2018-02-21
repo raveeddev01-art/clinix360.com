@@ -50,6 +50,7 @@ defmodule Stitch.Accounts.ProfileImage do
   Given a user returns an S3 url pointing to a default avatar
   url that can be set for the user.
   """
+  @spec pick_default_random(User.t()) :: {:ok, binary}
   def pick_default_random(%User{first_name: first_name, last_name: last_name} = _user) do
     with {:ok, image_path} <- create_from_initials(first_name, last_name),
          {:ok, %{status_code: 200}} <- S3.upload(image_path),
