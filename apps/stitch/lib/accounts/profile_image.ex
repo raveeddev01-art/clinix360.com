@@ -1,6 +1,7 @@
 defmodule Stitch.Accounts.ProfileImage do
   alias Stitch.AWS.S3
   import Mogrify
+  alias Stitch.Accounts.User
 
   @thumb %{height: 72, width: 72}
 
@@ -45,13 +46,27 @@ defmodule Stitch.Accounts.ProfileImage do
     }
   ]
 
-  def pick_default_random(), do: Enum.random(@default_profile_images)
+  @doc """
+  Given a user returns an S3 url pointing to a default avatar
+  url that can be set for the user.
+  """
+  @spec pick_default_random(User.t()) :: {:ok, binary}
+  def pick_default_random(%User{first_name: first_name, last_name: last_name} = _user) do
+    with {:ok, image_path} <- create_from_initials(first_name, last_name),
+         {:ok, %{status_code: 200}} <- S3.upload(image_path),
+         :ok <- File.rm(image_path) do
+      {:ok, S3.fullpath(image_path)}
+    else
+      error ->
+        {:error, error}
+    end
+  end
 
   @doc """
   Generates an image using first name and last name of a user using
   imagemagick's convert command line tool.
   """
-  @spec create_from_initials(binary, binary) :: binary
+  @spec create_from_initials(binary, binary) :: {:ok, binary}
   def create_from_initials(first_name, last_name)
       when byte_size(first_name) > 0 and byte_size(last_name) > 0 do
     size = 512
@@ -60,7 +75,7 @@ defmodule Stitch.Accounts.ProfileImage do
     background_color = "#003366"
     text_color = "#FFFFFF"
     initials = "#{String.at(first_name, 0)}#{String.at(last_name, 0)}"
-    image_path = System.tmp_dir!() |> Path.join("#{initials}.png") |> IO.inspect()
+    image_path = System.tmp_dir!() |> Path.join("#{initials}.png")
 
     System.cmd("convert", [
       # sample up
