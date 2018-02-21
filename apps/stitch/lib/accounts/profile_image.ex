@@ -76,7 +76,7 @@ defmodule Stitch.Accounts.ProfileImage do
       text_color,
       # font location
       "-font",
-      "/Library/Fonts/Roboto-Bold.ttf",
+      Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Regular.otf"),
       # font size
       "-pointsize",
       "300",
@@ -85,7 +85,7 @@ defmodule Stitch.Accounts.ProfileImage do
       "center",
       # render text, move down a bit
       "-annotate",
-      "+0+#{25 * sampling_factor}",
+      "+0+0",
       "#{initials}",
       # sample down to reduce aliasing
       "-resample",
