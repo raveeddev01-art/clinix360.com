@@ -1,9 +1,12 @@
-defmodule :"Elixir.Stitch.Repo.Migrations.Migrate-users-to-initials-based-avatars" do
+defmodule Stitch.Repo.Scripts.MigrateUsersToInitialsAvatar do
+  # mix run apps/stitch/priv/repo/migrate_users_to_initials_avatar.ex
   use Ecto.Migration
   import Ecto.Query
   require Logger
 
-  def change do
+  @disable_ddl_transaction true
+
+  def run do
     users =
       from(
         u in Stitch.Accounts.User,
@@ -21,7 +24,7 @@ defmodule :"Elixir.Stitch.Repo.Migrations.Migrate-users-to-initials-based-avatar
     Enum.each(users, fn user ->
       with {:ok, avatar} <- Stitch.Accounts.ProfileImage.pick_default_random(user),
            {:ok, avatar_thumb} <- Stitch.Accounts.ProfileImage.create_thumb(avatar) do
-        Repo.update(
+        Stitch.Repo.update(
           Ecto.Changeset.change(
             user,
             profile_image_url: avatar,
@@ -41,3 +44,5 @@ defmodule :"Elixir.Stitch.Repo.Migrations.Migrate-users-to-initials-based-avatar
     end)
   end
 end
+
+Stitch.Repo.Scripts.MigrateUsersToInitialsAvatar.run()
