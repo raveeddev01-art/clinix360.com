@@ -46,4 +46,56 @@ defmodule Stitch.Accounts.ProfileImage do
   ]
 
   def pick_default_random(), do: Enum.random(@default_profile_images)
+
+  @doc """
+  Generates an image using first name and last name of a user using
+  imagemagick's convert command line tool.
+  """
+  @spec create_from_initials(binary, binary) :: binary
+  def create_from_initials(first_name, last_name)
+      when is_binary(first_name) and is_binary(last_name) do
+    size = 512
+    resolution = 72
+    sampling_factor = 3
+    background_color = "#E0E0E0"
+    text_color = "#6D6D6D"
+    save_path = "/dev/null"
+
+    System.cmd("convert", [
+      # sample up
+      "-density",
+      "#{resolution * sampling_factor}",
+      # corrected size
+      "-size",
+      "#{size * sampling_factor}x#{size * sampling_factor}",
+      # background color
+      "canvas:#{background_color}",
+      # text color
+      "-fill",
+      text_color,
+      # font location
+      "-font",
+      "/Library/Fonts/Roboto-Bold.ttf",
+      # font size
+      "-pointsize",
+      "300",
+      # center text
+      "-gravity",
+      "center",
+      # render text, move down a bit
+      "-annotate",
+      "+0+#{25 * sampling_factor}",
+      "#{first_name}#{last_name}",
+      # sample down to reduce aliasing
+      "-resample",
+      "#{resolution}",
+      save_path
+    ])
+
+    "saved"
+  end
+
+  def create_from_initials(_first_name, _last_name) do
+    {:error, "First name and last name must be sent"}
+  end
 end
