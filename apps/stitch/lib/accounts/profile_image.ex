@@ -85,7 +85,7 @@ defmodule Stitch.Accounts.ProfileImage do
       # render text, move down a bit
       "-annotate",
       "+0+#{25 * sampling_factor}",
-      "#{first_name}#{last_name}",
+      "#{String.at(first_name, 0)}#{String.at(last_name, 0)}",
       # sample down to reduce aliasing
       "-resample",
       "#{resolution}",
