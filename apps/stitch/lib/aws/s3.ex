@@ -1,10 +1,14 @@
 defmodule Stitch.AWS.S3 do
   alias Timex
   @s3 Application.get_env(:stitch, :aws_user_upload)
+  require Logger
 
   @spec upload(binary) :: {:ok, map} | {:error, term}
   def upload(path) do
     object_name = Path.basename(path)
+    Logger.info(@s3.bucket)
+    Logger.info(object_name)
+    Logger.info(path)
 
     path
     |> ExAws.S3.Upload.stream_file()
