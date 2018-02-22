@@ -8,7 +8,7 @@ class MessageHeader extends Component {
   render() {
     const { timestamp, user } = this.props;
     const timestampTooltip = (
-      <Tooltip id="date-tooltip">{moment(timestamp).calendar()}</Tooltip>
+      <Tooltip id="date-tooltip">{moment.utc(timestamp).local().calendar()}</Tooltip>
     );
 
     return (
