@@ -128,7 +128,7 @@ defmodule StitchConnect.Web.GroupChannel do
         opts =
           params
           |> Map.take(["limit", "max_id"])
-          |> Map.update("limit", 30, &Enum.min([&1, 50]))
+          |> Map.update("limit", 60, &Enum.min([&1, 60]))
           |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
         messages = MessageQueries.group_latest_messages(group.id, user, opts)
@@ -149,7 +149,7 @@ defmodule StitchConnect.Web.GroupChannel do
         opts =
           params
           |> Map.take(["limit", "min_id"])
-          |> Map.update("limit", 30, &Enum.min([&1, 50]))
+          |> Map.update("limit", 60, &Enum.min([&1, 60]))
           |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
         messages = MessageQueries.group_recent_messages(group.id, user, opts)
@@ -161,7 +161,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("feed_surrounding", %{"id" => message_id} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
-    limit = Map.get(params, "limit", 30)
+    limit = Map.get(params, "limit", 60)
 
     case MessageQueries.get_by_id(message_id) do
       nil ->

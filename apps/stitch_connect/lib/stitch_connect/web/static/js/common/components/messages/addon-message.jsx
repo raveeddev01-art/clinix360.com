@@ -4,12 +4,13 @@ import { inject } from "mobx-react";
 
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import { Avatar } from "common/components";
 
 import MessageHeader from "./message-header/message-header";
 import MessageContent from "./message-content/message-content";
 import MessageFooter from "./message-footer/message-footer";
 
-@inject("sidemenuStore", "messageStore")
+@inject("sidemenuStore", "messageStore", "usersStore")
 class AddonMessage extends Component {
   onJump = () => {
     const { sidemenuStore, message } = this.props;
@@ -18,7 +19,9 @@ class AddonMessage extends Component {
   };
 
   render() {
-    const { message } = this.props;
+    const { message, usersStore } = this.props;
+    const userId = message.user.id;
+    const user = usersStore.usersById[userId];
 
     return (
       <div className="message-container addon">
@@ -60,12 +63,12 @@ class AddonMessage extends Component {
             </a>
           </OverlayTrigger>
         </div>
+
         <div className="message">
+          <Avatar user={user} />
+
           <div className="message-content">
-            <MessageHeader
-              timestamp={message.inserted_at}
-              user={message.user}
-            />
+            <MessageHeader timestamp={message.inserted_at} user={user} />
             <MessageContent
               message={Object.assign({}, message, { reactions_web: null })}
             />

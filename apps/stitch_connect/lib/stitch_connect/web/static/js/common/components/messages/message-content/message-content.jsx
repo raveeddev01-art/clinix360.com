@@ -19,7 +19,7 @@ class MessageContent extends Component {
   };
 
   renderMessageLine(line) {
-    const { usersStore, messageStore, message } = this.props;
+    const { usersStore, messageStore } = this.props;
     const { usersById } = usersStore;
     const parts = messageStore.decodeMessage(line);
     const isAllEmojis =
@@ -36,7 +36,6 @@ class MessageContent extends Component {
         return (
           <UserMention
             key={`usermention_${i}`}
-            isMine={message.user_id === currentUser.id}
             user={usersById[part.content]}
           />
         );
@@ -45,7 +44,7 @@ class MessageContent extends Component {
           <Emoji
             key={`emoji_${i}`}
             emoji={part.content}
-            size={isAllEmojis ? 32 : 16}
+            size={isAllEmojis ? 32 : 18}
           />
         );
       }
@@ -116,9 +115,12 @@ class MessageContent extends Component {
       >
         {message.type === "upload" && <FileAttachment {...message.fields} />}
         <div className="message-body">
-          {message.type === "upload" && message.text_content && '"'}
-          {this.renderMessageText()}
-          {message.type === "upload" && message.text_content && '"'}
+          {message.type === "upload" && message.text_content ? (
+            <div className="attachment-comment">{message.text_content}</div>
+          ) : (
+            this.renderMessageText()
+          )}
+
           {this.renderLinkPreviews()}
           {this.renderEdited()}
           <Reactions

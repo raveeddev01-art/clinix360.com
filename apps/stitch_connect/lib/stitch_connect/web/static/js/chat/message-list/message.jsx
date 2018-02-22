@@ -1,20 +1,29 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import moment from "moment";
 import { Element } from "react-scroll";
 import cx from "classnames";
 
-import Dropdown from "react-bootstrap/lib/Dropdown";
+import ButtonGroup from "react-bootstrap/lib/ButtonGroup";
+import Button from "react-bootstrap/lib/Button";
+import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
+import {
+  Avatar,
+  MessageHeader,
+  MessageContent,
+  ReactionPicker,
+  TimestampTooltip
+} from "common/components";
 import { confirmModal } from "common/modals";
-import { MessageContent, ReactionPicker } from "common/components";
 import MessageInfoModal from "./message-info-modal";
 
+// @TODO stab out renderSomething functions into seperate component (MessageActionGroup, MessagePin, MessageStar, ...)
+// @TODO move message info modal to top level so that it is shared on all messages
 @inject("messageStore", "groupStore", "usersStore")
 @observer
 class Message extends Component {
@@ -66,27 +75,22 @@ class Message extends Component {
         messageStore.toggleReaction(message.id, emoji.colons);
       }
     });
+    this.setState({ selected: false });
   };
 
   getEmojiMartStyle = () => {
     const martStyles = {};
-    const { message } = this.props;
     if (!this.messageDiv) {
       return {};
     }
 
     const pos = this.messageDiv.getBoundingClientRect();
     if (pos.bottom < window.innerHeight / 2) {
-      martStyles.top = "100%";
+      martStyles.top = "24px";
     } else {
-      martStyles.bottom = "100%";
+      martStyles.bottom = "calc(100% + 14px)";
     }
 
-    if (message.user.id === currentUser.id) {
-      martStyles.right = 0;
-    } else {
-      martStyles.left = "100%";
-    }
     return martStyles;
   };
 
@@ -132,7 +136,7 @@ class Message extends Component {
   };
 
   toggleReaction = () => {
-    this.setState({ showEmojiPicker: true });
+    this.setState({ showEmojiPicker: true, selected: true });
   };
 
   showInfoModal = () => {
@@ -147,75 +151,12 @@ class Message extends Component {
     });
   };
 
-  renderStar(message) {
-    const { starred } = message;
-
-    if (!starred) {
-      return null;
-    }
-    const starTooltip = (
-      <Tooltip id="star-tooltip">Unstar this message</Tooltip>
-    );
-
-    return (
-      <OverlayTrigger placement="top" overlay={starTooltip}>
-        <span
-          className="message-icon icon-star"
-          role="presentation"
-          onClick={this.toggleStar}
-        >
-          <i className="fa fa-star" />
-        </span>
-      </OverlayTrigger>
-    );
-  }
-
-  renderPin(message) {
-    if (
-      !message.pinned ||
-      !message.pinned_at ||
-      !message.pinned_by ||
-      !message.pinned_by.id
-    ) {
-      return null;
-    }
-
-    const { usersStore } = this.props;
-    const { pinned_at: pinnedAt, pinned_by: { id: pinnedById } } = message;
-    const pinnedBy = usersStore.usersById[pinnedById];
-    const pinTooltip = (
-      <Tooltip id="pin-tooltip">
-        <span>
-          Pinned by{" "}
-          {pinnedBy.id === currentUser.id
-            ? "You"
-            : `${pinnedBy.first_name} ${pinnedBy.last_name}`}
-        </span>
-        <br />
-        <span className="text-muted">
-          {pinnedAt && moment(pinnedAt).calendar()}
-        </span>
-      </Tooltip>
-    );
-
-    return (
-      <OverlayTrigger placement="top" overlay={pinTooltip}>
-        <span
-          className="message-icon icon-pin"
-          role="presentation"
-          onClick={this.togglePin}
-        >
-          <i className="fa fa-thumb-tack fa-rotate-45" />
-        </span>
-      </OverlayTrigger>
-    );
-  }
-
   renderActions(message) {
     const mine = message.user.id === currentUser.id;
     const unsent = message.sent === false;
     const { dropup } = this.state;
     const { messageStore } = this.props;
+    const starredCX = message.starred ? "" : "-o";
 
     // disabling context menu
     if (unsent) {
@@ -223,126 +164,170 @@ class Message extends Component {
     }
 
     return (
-      <Dropdown
+      <ButtonGroup
         id={`message-actions-${message.id}`}
-        componentClass="div"
         className="message-actions"
-        dropup={dropup}
-        pullRight
-        onToggle={this.onToggle}
       >
-        <Dropdown.Toggle useAnchor noCaret>
-          <i className="fa fa-angle-down" />
-        </Dropdown.Toggle>
+        <OverlayTrigger
+          placement="top"
+          delayShow={150}
+          overlay={<Tooltip id="message-info">Message info</Tooltip>}
+        >
+          <Button onClick={this.showInfoModal}>
+            <i className="fa fa-info" />
+          </Button>
+        </OverlayTrigger>
 
-        <Dropdown.Menu>
-          {(!mine || message.id < messageStore.lastOtherUserMessage.id) && (
-              <MenuItem onClick={this.markAsUnread}>
+        <OverlayTrigger
+          placement="top"
+          delayShow={150}
+          overlay={<Tooltip id="message-react">Add reaction</Tooltip>}
+        >
+          <Button onClick={this.toggleReaction}>
+            <i className="fa fa-smile-o" />
+          </Button>
+        </OverlayTrigger>
+
+        <OverlayTrigger
+          placement="top"
+          delayShow={150}
+          shouldUpdatePosition
+          overlay={
+            <Tooltip id="message-star">
+              {message.starred ? "Unstar" : "Star"} message
+            </Tooltip>
+          }
+        >
+          <Button onClick={this.toggleStar}>
+            <i className={cx("fa", `fa-star${starredCX}`)} />
+          </Button>
+        </OverlayTrigger>
+
+        <OverlayTrigger
+          placement="top"
+          delayShow={150}
+          shouldUpdatePosition
+          overlay={
+            <Tooltip id="message-pin">
+              {message.pinned ? "Unpin" : "Pin"} message
+            </Tooltip>
+          }
+        >
+          <Button onClick={this.togglePin}>
+            <i className="fa fa-thumb-tack fa-rotate-45" />
+          </Button>
+        </OverlayTrigger>
+
+        <OverlayTrigger
+          placement="top"
+          delayShow={150}
+          overlay={<Tooltip id="message-actions">More</Tooltip>}
+        >
+          <DropdownButton
+            dropup={dropup}
+            pullRight
+            noCaret
+            title={<i className="fa fa-ellipsis-h" />}
+            id="actions-dropdown"
+            onToggle={this.onToggle}
+          >
+            {(!mine || message.id < messageStore.lastOtherUserMessage.id) && (
+                <MenuItem onClick={this.markAsUnread}>
+                  <span>
+                    <i className="fa fa-circle" />&nbsp;Mark as unread
+                  </span>
+                </MenuItem>
+              )}
+
+            <CopyToClipboard text={message.text_content} onCopy={this.copy}>
+              <MenuItem>
                 <span>
-                  <i className="fa fa-circle" />&nbsp;Unread
+                  <i className="fa fa-paste" />&nbsp;Copy message
+                </span>
+              </MenuItem>
+            </CopyToClipboard>
+
+            {mine && <MenuItem divider />}
+
+            {mine && (
+              <MenuItem onClick={this.edit}>
+                <span>
+                  <i className="fa fa-pencil" />&nbsp;Edit message
                 </span>
               </MenuItem>
             )}
 
-          {message.type === "upload" && (
-            <MenuItem target="_blank" href={message.fields.url}>
-              <span>
-                <i className="fa fa-download" />&nbsp;Download
-              </span>
-            </MenuItem>
-          )}
-
-          {mine && (
-            <MenuItem onClick={this.edit}>
-              <span>
-                <i className="fa fa-pencil" />&nbsp;Edit
-              </span>
-            </MenuItem>
-          )}
-
-          {mine && (
-            <MenuItem onClick={this.delete}>
-              <span>
-                <i className="fa fa-trash" />&nbsp;Delete
-              </span>
-            </MenuItem>
-          )}
-
-          <CopyToClipboard text={message.text_content} onCopy={this.copy}>
-            <MenuItem>
-              <span>
-                <i className="fa fa-paste" />&nbsp;Copy
-              </span>
-            </MenuItem>
-          </CopyToClipboard>
-
-          <MenuItem onClick={this.toggleStar}>
-            <span>
-              <i className="fa fa-star-o" />&nbsp;{message.starred ? "Unstar" : "Star"}
-            </span>
-          </MenuItem>
-
-          <MenuItem onClick={this.togglePin}>
-            <span>
-              <i className="fa fa-thumb-tack fa-rotate-45" />&nbsp;{message.pinned ? "Un-pin" : "Pin"}
-            </span>
-          </MenuItem>
-
-          <MenuItem onClick={this.toggleReaction}>
-            <span>
-              <i className="fa fa-smile-o" />&nbsp;Reactions
-            </span>
-          </MenuItem>
-
-          <MenuItem onClick={this.showInfoModal}>
-            <span>
-              <i className="fa fa-info-circle" />&nbsp;Info
-            </span>
-          </MenuItem>
-        </Dropdown.Menu>
-      </Dropdown>
+            {mine && (
+              <MenuItem onClick={this.delete}>
+                <span>
+                  <i className="fa fa-trash" />&nbsp;Delete message
+                </span>
+              </MenuItem>
+            )}
+          </DropdownButton>
+        </OverlayTrigger>
+      </ButtonGroup>
     );
   }
 
-  renderStatus(message) {
-    if (message.status) return message.status;
-    if (this.props.groupStore.isSelfDM) return null;
-
-    return this.renderReadStatus(message);
-  }
-
-  renderReadStatus(message) {
-    if (!message.read_status) return null;
-
-    const deliveredToUsers = Object.keys(message.read_status).length;
-    const readUsers = Object.values(message.read_status).filter(v => v != null)
-      .length;
+  renderGutter(message) {
+    const { usersStore } = this.props;
+    const { inserted_at: insertedAt } = message;
+    const userId = message.user.id;
+    const user = usersStore.usersById[userId];
 
     return (
-      <OverlayTrigger
-        placement="top"
-        overlay={<Tooltip id="message-info">Show Info</Tooltip>}
-      >
-        <div className="message-read-status" onClick={this.showInfoModal}>
-          {readUsers}/{deliveredToUsers} Read
-        </div>
-      </OverlayTrigger>
+      <div className="message-gutter">
+        {(message.pinned || (message.pinned && message.starred)) && (
+            <div className="icon-pin">
+              <i className="fa fa-thumb-tack fa-rotate-45" />
+            </div>
+          )}
+        {message.starred &&
+          !message.pinned && (
+            <div className="icon-star">
+              <i className="fa fa-star" />
+            </div>
+          )}
+        {message.status === "failed" && (
+          <div className="icon-status">
+            <i className="fa fa-exclamation-triangle" />
+          </div>
+        )}
+        {!message.is_sequential && <Avatar user={user} />}
+        {message.is_sequential && (
+          <TimestampTooltip
+            timestamp={insertedAt}
+            className="timestamp text-muted"
+          />
+        )}
+      </div>
+    );
+  }
+
+  renderHeader(message) {
+    const { usersStore } = this.props;
+    const { inserted_at: insertedAt } = message;
+    const userId = message.user.id;
+    const user = usersStore.usersById[userId];
+
+    return (
+      !message.is_sequential && (
+        <MessageHeader user={user} timestamp={insertedAt} />
+      )
     );
   }
 
   render() {
-    const { message, messageStore, usersStore } = this.props;
+    const { message, messageStore } = this.props;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
-    const { user: { id: userId }, inserted_at: insertedAt } = message;
-    const user = usersStore.usersById[userId];
-    const mine = userId === currentUser.id;
 
-    const containerClassName = cx("message-container", {
-      mine
-    });
-    const contentClassName = cx("message-content", {
+    const messageClassName = cx("message", {
+      sequential: message.is_sequential,
       selected: this.state.selected,
-      highlight: highlightId === message.id
+      highlight: highlightId === message.id,
+      pinned: message.pinned || message.starred,
+      failed: message.status === "failed"
     });
 
     return (
@@ -350,12 +335,14 @@ class Message extends Component {
         {newMessageLineMessage &&
           newMessageLineMessage.id === message.id && (
             <Element name="newMessageBanner" className="new-message-banner">
-              <div className="banner-text">New Messages</div>
+              <div className="blue-line">
+                <div className="banner-text">New Messages</div>
+              </div>
             </Element>
           )}
 
         <div
-          className={containerClassName}
+          className="message-container"
           ref={div => {
             this.messageDiv = div;
           }}
@@ -370,42 +357,37 @@ class Message extends Component {
             scrollThrottle={100}
             containment={chatDiv}
           >
-            <Element name={`message_${message.id}`} className="message">
-              <div className={contentClassName}>
-                <div className="message-header">
-                  <div className="name">
-                    {`${user.first_name} ${user.last_name}`}
+            <Element
+              name={`message_${message.id}`}
+              className={messageClassName}
+            >
+              {this.renderGutter(message)}
+
+              <div className="message-content">
+                {message.pinned && <div className="pin-label">Pinned</div>}
+                {message.starred &&
+                  !message.pinned && <div className="pin-label">Starred</div>}
+                {message.status === "failed" && (
+                  <div className="message-status-label">
+                    Failed to send message
                   </div>
+                )}
 
-                  <div
-                    className="time"
-                    data-time={moment
-                      .utc(insertedAt)
-                      .local()
-                      .format("hh:mm A")}
-                  >
-                    {this.renderActions(message)}
-                  </div>
+                {this.renderHeader(message)}
 
-                  <ReactionPicker
-                    message={message}
-                    onSelectReaction={this.onSelectEmoji}
-                    show={this.state.showEmojiPicker}
-                    style={this.getEmojiMartStyle()}
-                  />
-
-                  {this.renderStar(message)}
-                  {this.renderPin(message)}
-                </div>
+                <ReactionPicker
+                  message={message}
+                  onSelectReaction={this.onSelectEmoji}
+                  show={this.state.showEmojiPicker}
+                  style={this.getEmojiMartStyle()}
+                />
 
                 <div className="message-content-wrapper">
                   <MessageContent message={message} />
                 </div>
               </div>
 
-              <div className="message-status">
-                {mine && this.renderStatus(message)}
-              </div>
+              {this.renderActions(message)}
 
               <MessageInfoModal
                 show={this.state.showInfoModal}
