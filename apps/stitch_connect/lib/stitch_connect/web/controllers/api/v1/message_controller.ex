@@ -71,7 +71,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       message = message |> MessageQueries.load_info()
       GroupChannel.broadcast_message_created(message)
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-      PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+      PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
       conn
