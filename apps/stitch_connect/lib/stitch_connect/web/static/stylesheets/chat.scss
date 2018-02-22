@@ -327,21 +327,27 @@
         }
 
         .new-message-banner {
-          display: flex;
-          justify-content: center;
-          position: relative;
-          border-top: 1px solid $brand-primary;
-          margin: 25px 0;
+          position: absolute;
+          width: 100%;
+          height: 1px;
+          z-index: 100;
+
+          .blue-line {
+            border-bottom: 1px solid #036;
+          }
 
           .banner-text {
+            width: 120px;
             color: $brand-primary;
             font-size: 15px;
             font-weight: 700;
             line-height: 24px;
             background: #fff;
+            text-align: center;
             padding: 0 12px;
             position: absolute;
             top: -14px;
+            left: calc(50% - 60px);
           }
         }
       }
