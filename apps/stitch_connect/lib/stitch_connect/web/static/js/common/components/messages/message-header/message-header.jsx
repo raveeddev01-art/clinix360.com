@@ -5,10 +5,11 @@ import { TimestampTooltip } from "common/components";
 class MessageHeader extends Component {
   render() {
     const { timestamp, user, children } = this.props;
+        
     return (
       <div className="message-header">
         <div className="name">{user.full_name}</div>
-        <TimestampTooltip timestamp={timestamp} className="time" />
+        <Tooltip id="date-tooltip">{moment.utc(timestamp).local().calendar()}</Tooltip>
         {children}
       </div>
     );
