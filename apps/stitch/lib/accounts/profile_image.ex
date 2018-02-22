@@ -62,6 +62,8 @@ defmodule Stitch.Accounts.ProfileImage do
     end
   end
 
+  def pick_default_random(), do: Enum.random(@default_profile_images)
+
   @doc """
   Generates an image using first name and last name of a user using
   imagemagick's convert command line tool.
