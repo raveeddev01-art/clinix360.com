@@ -316,7 +316,7 @@
 
           .date {
             color: $brand-primary;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
             line-height: 24px;
             background: #fff;
@@ -439,7 +439,7 @@
 
       .message-text {
         height: 40px;
-        font-size: 15px;
+        font-size: 16px;
         border-width: 2px;
         box-shadow: none;
         padding-right: 90px;
@@ -848,7 +848,7 @@
 
     .message-content {
       flex: 1;
-      font-size: 15px;
+      font-size: 16px;
       min-width: 0;
 
       .pin-label {
@@ -1319,13 +1319,13 @@ i.file-data-separator {
 }
 
 .system-message {
-  font-size: 15px;
+  font-size: 16px;
   text-align: center;
   padding: 6px 0;
 
   &__user {
     color: $brand-primary;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
   }
 }
