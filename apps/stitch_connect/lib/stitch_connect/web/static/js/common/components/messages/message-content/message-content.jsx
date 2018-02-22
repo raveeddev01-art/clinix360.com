@@ -44,7 +44,7 @@ class MessageContent extends Component {
           <Emoji
             key={`emoji_${i}`}
             emoji={part.content}
-            size={isAllEmojis ? 32 : 16}
+            size={isAllEmojis ? 32 : 18}
           />
         );
       }
