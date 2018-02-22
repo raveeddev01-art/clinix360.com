@@ -46,6 +46,13 @@ defmodule Stitch.Accounts.ProfileImage do
     }
   ]
 
+  @default_profile_images [
+    %{
+      image_url: S3.fullpath("default-avatar.png"),
+      thumb_url: S3.fullpath("default-avatar-thumb.png")
+    }
+  ]
+
   @doc """
   Given a user returns an S3 url pointing to a default avatar
   url that can be set for the user.
@@ -61,6 +68,8 @@ defmodule Stitch.Accounts.ProfileImage do
         {:error, error}
     end
   end
+
+  def pick_default_random(), do: Enum.random(@default_profile_images)
 
   @doc """
   Generates an image using first name and last name of a user using
