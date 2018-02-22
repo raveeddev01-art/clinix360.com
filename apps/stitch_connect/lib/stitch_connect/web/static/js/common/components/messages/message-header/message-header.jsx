@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { TimestampTooltip } from "common/components";
+import { TimestampTooltip, UserProfileMenu } from "common/components";
 
 class MessageHeader extends Component {
   render() {
     const { timestamp, user, children } = this.props;
     return (
       <div className="message-header">
-        <div className="name">{user.full_name}</div>
+        <UserProfileMenu user={user} className="name">
+          {user.full_name}
+        </UserProfileMenu>
         <TimestampTooltip timestamp={timestamp} className="time" />
         {children}
       </div>

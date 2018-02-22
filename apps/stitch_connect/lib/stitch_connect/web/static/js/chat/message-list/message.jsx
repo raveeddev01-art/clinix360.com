@@ -17,7 +17,8 @@ import {
   MessageHeader,
   MessageContent,
   ReactionPicker,
-  TimestampTooltip
+  TimestampTooltip,
+  UserProfileMenu
 } from "common/components";
 import { confirmModal } from "common/modals";
 import MessageInfoModal from "./message-info-modal";
@@ -294,7 +295,7 @@ class Message extends Component {
             <i className="fa fa-exclamation-triangle" />
           </div>
         )}
-        {!message.is_sequential && <Avatar user={user} />}
+        {!message.is_sequential && <UserProfileMenu user={user}><Avatar user={user} /></UserProfileMenu>}
         {message.is_sequential && (
           <TimestampTooltip
             timestamp={insertedAt}

@@ -20,6 +20,7 @@ import TeamList from "./team-list/team-list";
 import TimestampTooltip from "./timestamp-tooltip";
 import Toastr from "./toastr/toastr";
 import Toggle from "./toggle/Toggle";
+import UserProfileMenu from "./user-profile-menu";
 
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
@@ -50,6 +51,7 @@ export {
   TimestampTooltip,
   Toastr,
   Toggle,
+  UserProfileMenu,
   MessageContent,
   MessageFooter,
   MessageHeader,

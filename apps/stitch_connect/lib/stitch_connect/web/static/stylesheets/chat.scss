@@ -601,7 +601,7 @@
 }
 
 .message-link,
-.user-mention-dropdown .dropdown-toggle,
+.user-mention-dropdown .user-mention,
 .group-mention {
   color: $brand-primary;
   text-decoration: none;
@@ -622,12 +622,16 @@
   }
 }
 
-.user-mention-dropdown .dropdown-toggle,
+.user-mention-dropdown .user-mention,
 .group-mention {
   background: #ddd;
   border: 0;
   border-radius: 3px;
   padding: 0 3px;
+}
+
+.user-mention-dropdown.open .dropdown-toggle {
+  box-shadow: none;
 }
 
 .group-mention,
@@ -670,7 +674,7 @@
         left: 0;
         top: 0;
 
-        .name {
+        .full-name {
           font-size: 16px;
           font-weight: 700;
         }
