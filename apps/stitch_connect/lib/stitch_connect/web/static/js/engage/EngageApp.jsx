@@ -12,6 +12,11 @@ import EngagePreview from "./EngagePreview";
 @inject("titleStore", "teamStore")
 @observer
 class EngageApp extends Component {
+  componentWillMount() {
+    const { titleStore } = this.props;
+    titleStore.setPageName("Engage");
+  }
+
   render() {
     const { titleStore, teamStore } = this.props;
 
@@ -26,7 +31,7 @@ class EngageApp extends Component {
           <Sidebar />
           <div className="engage-content">
             <Switch>
-              <Route path={`/engage`} component={EngagePreview} />
+              <Route path="/engage" component={EngagePreview} />
               <Redirect to={`/`} />
             </Switch>
           </div>

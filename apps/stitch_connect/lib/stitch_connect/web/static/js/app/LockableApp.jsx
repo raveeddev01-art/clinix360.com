@@ -58,7 +58,7 @@ class LockableApp extends Component {
       return (
         <Switch>
           <Route path="/admin" component={AdminApp} />
-          <Route path="/engage" component={EngageApp} />
+          <Route exact path="/engage" component={EngageApp} />
           <Route path="/" component={ChatApp} />
         </Switch>
       );

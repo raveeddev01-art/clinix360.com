@@ -1,16 +1,11 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Link, withRouter, matchPath } from "react-router-dom";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import Button from "react-bootstrap/lib/Button";
 
 class EngagePreview extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div className="preview">
@@ -47,4 +42,4 @@ class EngagePreview extends Component {
   }
 }
 
-export default withRouter(EngagePreview);
+export default EngagePreview;
