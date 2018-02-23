@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
-import cx from "classnames";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
