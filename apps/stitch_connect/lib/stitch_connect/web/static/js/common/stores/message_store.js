@@ -255,10 +255,12 @@ class MessageStore {
     this.messageVisibility = {};
     this.timeoutManager.reset();
 
-    this.updateGroupData({
-      marked_as_unread: false,
-      new_message_line_at: this.lastReadAt
-    });
+    if (this.group) {
+      this.updateGroupData({
+        marked_as_unread: false,
+        new_message_line_at: this.lastReadAt
+      });
+    }
   }
 
   @action

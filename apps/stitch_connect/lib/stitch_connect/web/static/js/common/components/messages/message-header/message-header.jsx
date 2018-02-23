@@ -5,6 +5,7 @@ import { TimestampTooltip, UserProfileMenu } from "common/components";
 class MessageHeader extends Component {
   render() {
     const { timestamp, user, children } = this.props;
+
     return (
       <div className="message-header">
         <UserProfileMenu user={user} className="name">
