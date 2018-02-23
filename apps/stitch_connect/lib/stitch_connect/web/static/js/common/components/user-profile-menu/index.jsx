@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
-import { Avatar, SmartDropdown } from "common/components";
+import { Avatar, SmartDropdown, PortalDropdownMenu } from "common/components";
 
 @inject("addonStore")
 @observer
@@ -29,17 +29,19 @@ class UserProfileMenu extends Component {
     const { user, className, children } = this.props;
 
     return (
-      <SmartDropdown id="user-profile-menu" className="user-mention-dropdown">
+      <SmartDropdown id="user-profile-menu" className="user-profile-menu">
         <Dropdown.Toggle className={className} useAnchor noCaret>
           {children}
         </Dropdown.Toggle>
-        <Dropdown.Menu>
+        <PortalDropdownMenu
+          bsRole="menu"
+          className="user-profile-menu-dropdown"
+        >
           <div className="header">
             <Avatar user={user} size="lg" />
 
             <div className="content">
               <div className="full-name">{user.full_name}</div>
-
               <div className="username">{user.username}</div>
             </div>
           </div>
@@ -48,7 +50,7 @@ class UserProfileMenu extends Component {
           <MenuItem onClick={this.goToDirectMessaging}>
             Direct Messages
           </MenuItem>
-        </Dropdown.Menu>
+        </PortalDropdownMenu>
       </SmartDropdown>
     );
   }
@@ -61,7 +63,7 @@ UserProfileMenu.propTypes = {
 };
 
 UserProfileMenu.defaultProps = {
-  className: '',
+  className: ""
 };
 
 export default withRouter(UserProfileMenu);

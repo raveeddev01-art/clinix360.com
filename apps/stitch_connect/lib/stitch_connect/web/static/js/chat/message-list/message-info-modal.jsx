@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import { Avatar, MessageContent, MessageHeader } from "common/components";
+import {
+  Avatar,
+  MessageContent,
+  MessageHeader,
+  UserProfileMenu
+} from "common/components";
 import Modal from "react-bootstrap/lib/Modal";
 import moment from "moment";
 import sortBy from "lodash/sortBy";
@@ -59,7 +64,9 @@ class MessageInfoModal extends Component {
     return (
       <div className="message-container addon">
         <div className="message">
-          <Avatar user={user} />
+          <UserProfileMenu user={user}>
+            <Avatar user={user} />
+          </UserProfileMenu>
 
           <div className="message-content">
             <MessageHeader timestamp={message.inserted_at} user={user} />
