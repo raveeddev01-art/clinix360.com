@@ -1,0 +1,64 @@
+.user-profile-menu {
+  &.open:before {
+    content: "";
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+}
+
+.user-profile-menu.open .dropdown-toggle {
+  box-shadow: none;
+}
+
+.user-profile-menu-dropdown.dropdown-menu {
+  width: 300px;
+  padding: 0 0 12px;
+
+  .header {
+    width: 100%;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    border-radius: 3px 3px 0 0;
+    position: relative;
+    overflow: hidden;
+    margin: 0 0 12px;
+
+    .content {
+      display: flex;
+      justify-content: flex-end;
+      flex-direction: column;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+      background: linear-gradient(
+        transparent,
+        transparent 34%,
+        rgba(0, 0, 0, 0.2) 80%,
+        rgba(0, 0, 0, 0.6)
+      );
+      padding: 10px 12px;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      top: 0;
+
+      .full-name {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .username {
+        line-height: 1.3;
+      }
+    }
+  }
+
+  a {
+    margin: 0 12px;
+  }
+}
