@@ -9,7 +9,7 @@ class MessageHeader extends Component {
     return (
       <div className="message-header">
         <div className="name">{user.full_name}</div>
-        <Tooltip id="date-tooltip">{moment.utc(timestamp).local().calendar()}</Tooltip>
+        <TimestampTooltip id="date-tooltip">{moment.utc(timestamp).local().calendar()}</Tooltip>
         {children}
       </div>
     );
