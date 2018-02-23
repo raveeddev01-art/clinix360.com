@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { observer, inject } from "mobx-react";
 
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";

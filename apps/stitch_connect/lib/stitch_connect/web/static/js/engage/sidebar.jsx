@@ -1,14 +1,9 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
-import { Link, withRouter, matchPath } from "react-router-dom";
 
 @inject("teamStore", "userStore")
 @observer
 class Sidebar extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { teamStore, userStore } = this.props;
 
@@ -67,4 +62,4 @@ class Sidebar extends Component {
   }
 }
 
-export default withRouter(Sidebar);
+export default Sidebar;

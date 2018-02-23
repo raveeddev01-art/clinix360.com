@@ -9,7 +9,7 @@ import Sidebar from "./sidebar";
 
 import EngagePreview from "./EngagePreview";
 
-@inject("titleStore", "teamStore")
+@inject("titleStore")
 @observer
 class EngageApp extends Component {
   componentWillMount() {
@@ -18,7 +18,7 @@ class EngageApp extends Component {
   }
 
   render() {
-    const { titleStore, teamStore } = this.props;
+    const { titleStore } = this.props;
 
     return (
       <div id="app">
@@ -32,7 +32,7 @@ class EngageApp extends Component {
           <div className="engage-content">
             <Switch>
               <Route path="/engage" component={EngagePreview} />
-              <Redirect to={`/`} />
+              <Redirect to="/" />
             </Switch>
           </div>
         </div>
