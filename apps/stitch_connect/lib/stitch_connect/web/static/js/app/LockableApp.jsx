@@ -4,6 +4,7 @@ import { Switch, withRouter, Route } from "react-router-dom";
 
 import LockedApp from "../locked/LockedApp";
 import AdminApp from "../admin/AdminApp";
+import EngageApp from "../engage/EngageApp";
 import ChatApp from "../chat/ChatApp";
 
 @inject("presenceStore", "sidemenuStore")
@@ -57,6 +58,7 @@ class LockableApp extends Component {
       return (
         <Switch>
           <Route path="/admin" component={AdminApp} />
+          <Route exact path="/engage" component={EngageApp} />
           <Route path="/" component={ChatApp} />
         </Switch>
       );
