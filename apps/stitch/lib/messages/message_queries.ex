@@ -42,8 +42,6 @@ defmodule Stitch.MessageQueries do
         left_join: pb in assoc(m, :pinned_by),
         where: m.group_id in ^user_groups_ids,
         where: m.type != ^"system",
-        where: fragment("? %> ?", m.text_content, ^term),
-        order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)],
         limit: ^limit,
         preload: [
           user: u,
@@ -51,6 +49,26 @@ defmodule Stitch.MessageQueries do
           pinned_by: pb
         ]
       )
+
+    query =
+      if String.starts_with?(term, "\"") && String.ends_with?(term, "\"") do
+        term =
+          term
+          |> String.replace_prefix("\"", "")
+          |> String.replace_suffix("\"", "")
+
+        from(
+          m in query,
+          where: like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%"),
+          order_by: [desc: :inserted_at]
+        )
+      else
+        from(
+          m in query,
+          where: fragment("? %> ?", m.text_content, ^term),
+          order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)]
+        )
+      end
 
     query =
       case Keyword.fetch(opts, :skip) do
@@ -200,7 +218,7 @@ defmodule Stitch.MessageQueries do
   end
 
   def get_uploads_for_user(%User{team_id: team_id, id: user_id, roles: [role]}, skip, limit)
-      when not (role in @guest_roles) do
+      when role not in @guest_roles do
     query =
       from(
         m in Message,
