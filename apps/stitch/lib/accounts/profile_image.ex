@@ -3,7 +3,7 @@ defmodule Stitch.Accounts.ProfileImage do
   import Mogrify
   alias Stitch.Accounts.User
 
-  @thumb %{height: 48, width: 48}
+  @thumb %{height: 72, width: 72}
 
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
   def create_thumb(url) do
@@ -38,6 +38,13 @@ defmodule Stitch.Accounts.ProfileImage do
       {:ok, Path.basename(path)}
     end
   end
+
+  @default_profile_images [
+    %{
+      image_url: S3.fullpath("default-avatar.png"),
+      thumb_url: S3.fullpath("default-avatar-thumb.png")
+    }
+  ]
 
   @default_profile_images [
     %{

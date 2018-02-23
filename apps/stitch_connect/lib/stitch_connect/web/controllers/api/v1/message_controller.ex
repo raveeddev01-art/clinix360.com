@@ -31,7 +31,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
           {:"#{key}", value}
         end)
-        |> Keyword.update(:limit, 30, fn limit -> Enum.min([limit, 30]) end)
+        |> Keyword.update(:limit, 60, fn limit -> Enum.min([limit, 60]) end)
 
       messages = MessageQueries.group_latest_messages(group_id, user, opts)
       render(conn, "index.json", messages: messages, user_id: user.id)
@@ -50,7 +50,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def search(conn, %{"term" => term} = params) do
     opts = [
-      limit: Enum.min([Map.get(params, "limit", 30), 1_000]),
+      limit: Enum.min([Map.get(params, "limit", 60), 1_000]),
       skip: Map.get(params, "skip", 0)
     ]
 
@@ -71,7 +71,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       message = message |> MessageQueries.load_info()
       GroupChannel.broadcast_message_created(message)
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-      PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+      PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
       conn

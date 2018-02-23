@@ -397,16 +397,19 @@ $admin-topbar-height-sm: 65px;
         }
       }
 
-      .avatar-uploader {
-        ul.dropdown-menu {
-          & > li > a {
-            color: #333;
-
-            &:hover {
-              color: #fff;
-              background: #036;
-            }
-          }
+      .avatar-uploader .upload-avatar-menu {
+        a.dropdown-toggle {
+          text-decoration: none;
+        }
+        
+        &.open:before {
+          content: '';
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 2;
         }
       }
 

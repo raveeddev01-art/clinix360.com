@@ -6,8 +6,16 @@ defmodule StitchConnect.Web.GroupChannel do
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
-  alias Stitch.{Repo, Group, GroupUser, GroupAuthorization,
-    Message, MessageAuthorization, MessageQueries}
+
+  alias Stitch.{
+    Repo,
+    Group,
+    GroupUser,
+    GroupAuthorization,
+    Message,
+    MessageAuthorization,
+    MessageQueries
+  }
 
   @endpoint StitchConnect.Web.Endpoint
   @max_latency 5_000
@@ -22,9 +30,10 @@ defmodule StitchConnect.Web.GroupChannel do
       if user.id in ids_pair do
         case Repo.get_by(Group, slug: "__dm:#{id_pair}", team_id: team_id) do
           nil ->
-            if length(ids_pair) == 2 do # if single user dm, create group on first message
+            # if single user dm, create group on first message
+            if length(ids_pair) == 2 do
               [other_user_id] = List.delete(ids_pair, user.id)
-              send self(), :after_join
+              send(self(), :after_join)
               {:ok, %{messages: []}, assign(socket, :group, {:create_dm, id_pair, other_user_id})}
             else
               {:error, %{message: "group not found"}}
@@ -33,7 +42,7 @@ defmodule StitchConnect.Web.GroupChannel do
           group ->
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
-            send self(), :after_join
+            send(self(), :after_join)
             {:ok, %{messages: json}, assign(socket, :group, group)}
         end
       else
@@ -50,12 +59,14 @@ defmodule StitchConnect.Web.GroupChannel do
     case Repo.get_by(Group, id: String.to_integer(group_id), team_id: team_id) do
       nil ->
         {:error, %{message: "group not found"}}
+
       group ->
         case GroupAuthorization.can_view?(group, user) do
           true ->
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
             {:ok, %{messages: json}, assign(socket, :group, group)}
+
           false ->
             {:error, %{message: "unauthorized"}}
         end
@@ -69,13 +80,15 @@ defmodule StitchConnect.Web.GroupChannel do
     case Repo.get_by(Group, slug: group_slug, team_id: team_id) do
       nil ->
         {:error, %{message: "group not found"}}
+
       group ->
         case GroupAuthorization.can_view?(group, user) do
           true ->
             messages = MessageQueries.group_latest_messages(group.id, user)
             json = MessageView.render("index.json", %{messages: messages})
-            send self(), :after_join
+            send(self(), :after_join)
             {:ok, %{messages: json}, assign(socket, :group, group)}
+
           false ->
             {:error, %{message: "unauthorized"}}
         end
@@ -112,10 +125,11 @@ defmodule StitchConnect.Web.GroupChannel do
         {:reply, {:ok, %{messages: []}}, socket}
 
       group ->
-        opts = params
-        |> Map.take(["limit", "max_id"])
-        |> Map.update("limit", 30, &Enum.min([&1, 50]))
-        |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
+        opts =
+          params
+          |> Map.take(["limit", "max_id"])
+          |> Map.update("limit", 60, &Enum.min([&1, 60]))
+          |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
         messages = MessageQueries.group_latest_messages(group.id, user, opts)
         json = MessageView.render("index.json", %{messages: messages})
@@ -132,10 +146,11 @@ defmodule StitchConnect.Web.GroupChannel do
         {:reply, {:ok, %{messages: []}}, socket}
 
       group ->
-        opts = params
-        |> Map.take(["limit", "min_id"])
-        |> Map.update("limit", 30, &Enum.min([&1, 50]))
-        |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
+        opts =
+          params
+          |> Map.take(["limit", "min_id"])
+          |> Map.update("limit", 60, &Enum.min([&1, 60]))
+          |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
         messages = MessageQueries.group_recent_messages(group.id, user, opts)
         json = MessageView.render("index.json", %{messages: messages})
@@ -146,21 +161,26 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("feed_surrounding", %{"id" => message_id} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
-    limit = Map.get(params, "limit", 30)
+    limit = Map.get(params, "limit", 60)
 
     case MessageQueries.get_by_id(message_id) do
       nil ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
+
       target_message ->
-        {messages_before, messages_after} = MessageQueries.surrounding(target_message, group, user, limit)
+        {messages_before, messages_after} =
+          MessageQueries.surrounding(target_message, group, user, limit)
+
         messages = messages_before ++ [target_message] ++ messages_after
         messages_json = MessageView.render("index.json", %{messages: messages})
 
-        {:reply, {:ok, %{
-          more_before: length(messages_before) >= limit,
-          more_after: length(messages_after) >= limit,
-          messages: messages_json,
-        }}, socket}
+        {:reply,
+         {:ok,
+          %{
+            more_before: length(messages_before) >= limit,
+            more_after: length(messages_after) >= limit,
+            messages: messages_json
+          }}, socket}
     end
   end
 
@@ -194,7 +214,10 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("edit_msg", %{"message_id" => message_id, "params" => params}, socket) do
     %{group: group, current_user: user} = socket.assigns
-    message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
+
+    message =
+      Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one()
+
     case message && Message.update(message, params) do
       {:ok, message} ->
         MessageLinkPreviewGenerator.queue(message)
@@ -205,6 +228,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
       nil ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
+
       {:error, _changeset} ->
         {:reply, {:error, %{message: "Failed to edit message."}}, socket}
     end
@@ -213,7 +237,10 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("delete_msg", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
-    message = Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one
+
+    message =
+      Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one()
+
     case message && Message.delete(message) do
       {:ok, %{message: message}} ->
         broadcast_message_deleted(message)
@@ -224,6 +251,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
       nil ->
         {:reply, {:error, %{message: "Message not found."}}, socket}
+
       {:error, _changeset} ->
         {:reply, {:error, %{message: "Failed to delete message."}}, socket}
     end
@@ -232,7 +260,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("delete_msg_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
     %{group: group, current_user: user} = socket.assigns
-    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one
+    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
 
     case {message, message && MessageAuthorization.can_delete?(message, user)} do
       {nil, _} ->
@@ -250,9 +278,13 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("toggle_reaction", %{"message_id" => message_id, "emoji_name" => emoji_name}, socket) do
+  def handle_in(
+        "toggle_reaction",
+        %{"message_id" => message_id, "emoji_name" => emoji_name},
+        socket
+      ) do
     %{group: group, current_user: user} = socket.assigns
-    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one
+    message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
 
     case {message, message && GroupAuthorization.can_view?(group, user)} do
       {nil, _} ->
@@ -281,7 +313,11 @@ defmodule StitchConnect.Web.GroupChannel do
   def broadcast_reactions_updated(group, message) do
     message = Repo.get(Message, message.id)
     [message] = Message.Reaction.apply_reactions([message])
-    endpoint_broadcast(group, "reactions_updated", %{message_id: message.id, reactions_web: message.reactions})
+
+    endpoint_broadcast(group, "reactions_updated", %{
+      message_id: message.id,
+      reactions_web: message.reactions
+    })
   end
 
   def broadcast_message_starred(message) do
@@ -317,6 +353,7 @@ defmodule StitchConnect.Web.GroupChannel do
     for group <- removed_groups do
       broadcast_members_update(group, [user], [])
     end
+
     for group <- added_groups do
       broadcast_members_update(group, [], [user])
     end
@@ -326,11 +363,13 @@ defmodule StitchConnect.Web.GroupChannel do
     group_user_ids = Stitch.GroupUser.user_ids(group.id)
     update_recipient_ids = Enum.uniq(group_user_ids ++ Enum.map(removed_users, & &1.id))
     EventsChannel.broadcast_members_update(group, update_recipient_ids, group_user_ids)
+
     for user <- removed_users do
       system_message = Stitch.SystemMessages.generate_user_left_group(group, user)
       broadcast_message_created(system_message)
       EventsChannel.broadcast_group_leave(group, user.id)
     end
+
     for user <- added_users do
       system_message = Stitch.SystemMessages.generate_user_joined_group(group, user)
       broadcast_message_created(system_message)
@@ -339,7 +378,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   def broadcast_read_status(group, messages) do
-    read_status_json = Enum.reduce(messages, %{}, & Map.put(&2, &1.id, &1.read_status))
+    read_status_json = Enum.reduce(messages, %{}, &Map.put(&2, &1.id, &1.read_status))
     endpoint_broadcast(group, "read_status_update", %{messages: read_status_json})
   end
 
@@ -371,15 +410,16 @@ defmodule StitchConnect.Web.GroupChannel do
   defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
     slug = "__dm:#{id_pair}"
     attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
-    result = %Group{} |> Group.changeset(attrs) |> Repo.insert
+    result = %Group{} |> Group.changeset(attrs) |> Repo.insert()
 
     case result do
       {:ok, group} ->
         for id <- Enum.uniq([user.id, other_user_id]) do
           %GroupUser{}
           |> GroupUser.changeset(%{group_id: group.id, user_id: id})
-          |> Repo.insert!
+          |> Repo.insert!()
         end
+
         assign(socket, :group, group) |> do_new_msg(group, user, params)
 
       {:error, changeset} ->
@@ -389,7 +429,9 @@ defmodule StitchConnect.Web.GroupChannel do
             assign(socket, :group, group) |> do_new_msg(group, user, params)
 
           _ ->
-            {:reply, {:error, %{message: "Failed to create group.", request_id: params["request_id"]}}, socket}
+            {:reply,
+             {:error, %{message: "Failed to create group.", request_id: params["request_id"]}},
+             socket}
         end
     end
   end
@@ -405,22 +447,25 @@ defmodule StitchConnect.Web.GroupChannel do
           MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
 
-          Stitch.Task.start fn ->
+          Stitch.Task.start(fn ->
             broadcast_message_created(message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-            PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+            PushNotifications.notify_users(group, message, notify_user_ids.mobile)
             PushNotifications.push_badge_update(message, notify_user_ids.mobile)
-          end
+          end)
 
           json = MessageView.render("show.json", %{message: message})
           {:reply, {:ok, json}, socket}
 
         {:error, :message, changeset, _changeset_so_far} ->
-          error_message = StitchConnect.Web.ControllerHelpers.changeset_errors_to_string(changeset)
+          error_message =
+            StitchConnect.Web.ControllerHelpers.changeset_errors_to_string(changeset)
+
           {:reply, {:error, %{message: error_message, request_id: request_id}}, socket}
       end
     else
-      {:reply, {:error, %{message: "Only members can write messages.", request_id: request_id}}, socket}
+      {:reply, {:error, %{message: "Only members can write messages.", request_id: request_id}},
+       socket}
     end
   end
 
@@ -428,16 +473,22 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:error, %{message: reason}}, socket}
   end
 
-  defp mark_as_read_response({:ok, %{mark_messages_as_read: {_, messages}, mark_group_as_read: {1, [group_user]}}}, user, socket) do
+  defp mark_as_read_response(
+         {:ok, %{mark_messages_as_read: {_, messages}, mark_group_as_read: {1, [group_user]}}},
+         user,
+         socket
+       ) do
     messages = MessageQueries.load_info(messages)
     messages_json = MessageView.render("index.json", %{messages: messages})
+
     json = %{
       messages: messages_json,
       group_id: group_user.group_id,
       last_read_at: group_user.last_read_at,
       mentions_count: group_user.mentions_count,
-      unread_messages_count: group_user.unread_messages_count,
+      unread_messages_count: group_user.unread_messages_count
     }
+
     EventsChannel.broadcast_marked_as_read(user, json)
     broadcast_read_status(socket.assigns.group, messages_json)
     PushNotifications.push_badge_update_to_user(user)
@@ -448,16 +499,22 @@ defmodule StitchConnect.Web.GroupChannel do
     {:reply, {:error, %{message: error_message}}, socket}
   end
 
-  defp mark_as_unread_response({:ok, %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}}, user, socket) do
+  defp mark_as_unread_response(
+         {:ok, %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}},
+         user,
+         socket
+       ) do
     messages = MessageQueries.load_info(messages)
     messages_json = MessageView.render("index.json", %{messages: messages})
+
     json = %{
       messages: messages_json,
       group_id: group_user.group_id,
       last_read_at: group_user.last_read_at,
       mentions_count: group_user.mentions_count,
-      unread_messages_count: group_user.unread_messages_count,
+      unread_messages_count: group_user.unread_messages_count
     }
+
     EventsChannel.broadcast_marked_as_unread(user, json)
     broadcast_read_status(socket.assigns.group, messages_json)
     PushNotifications.push_badge_update_to_user(user)
@@ -467,13 +524,15 @@ defmodule StitchConnect.Web.GroupChannel do
   # Temporarily return false if timestamps aren't provided so that the mobile apps have time to catch up with the change
   defp latency_limit_exceeded?(socket, params) do
     server_join_time = socket.assigns[:server_join_time]
+
     with client_join_time when not is_nil(client_join_time) <- socket.assigns[:client_join_time],
-          client_push_time when not is_nil(client_push_time) <- params["timestamp"] do
+         client_push_time when not is_nil(client_push_time) <- params["timestamp"] do
       server_time = :os.system_time(:milli_seconds)
       latency = client_push_time - (client_join_time + (server_time - server_join_time))
       abs(latency) > @max_latency
-    else _e ->
-      false
+    else
+      _e ->
+        false
     end
   end
 end

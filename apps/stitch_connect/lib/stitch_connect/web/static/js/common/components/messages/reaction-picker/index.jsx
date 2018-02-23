@@ -59,7 +59,8 @@ class ReactionPicker extends Component {
         style={Object.assign(
           {
             position: "absolute",
-            zIndex: 1
+            right: 4,
+            zIndex: 2
           },
           style
         )}
