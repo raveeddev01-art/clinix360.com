@@ -10,7 +10,11 @@ import _ from "lodash";
 import { animateScroll, scroller } from "react-scroll";
 import Promise from "bluebird";
 import shortid from "shortid";
-import { START_TYPING_THROTTLE_MS } from "lib/constants";
+import {
+  START_TYPING_THROTTLE_MS,
+  SEQUENTIAL_SPLIT_SECONDS,
+  MAX_MESSAGE_COUNT_PER_BATCH
+} from "lib/constants";
 import REGEX from "lib/regex";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
 import TimeoutManager from "lib/TimeoutManager";
@@ -182,6 +186,29 @@ class MessageStore {
             .local()
             .format(`YYYY-MM-DD`)
         )
+        .mapValues(msgGroup => {
+          const [firstMsg, ...messages] = msgGroup;
+          let sequentialStart = firstMsg;
+          return [
+            firstMsg,
+            ...messages.map(msg => {
+              if (
+                msg.user.id === sequentialStart.user.id &&
+                sequentialStart.type !== "system" &&
+                sequentialStart.type !== "upload" &&
+                moment(msg.inserted_at).diff(
+                  moment(sequentialStart.inserted_at),
+                  "seconds"
+                ) < SEQUENTIAL_SPLIT_SECONDS
+              ) {
+                return { ...msg, is_sequential: true };
+              }
+
+              sequentialStart = msg;
+              return msg;
+            })
+          ];
+        })
         .value()
     );
   }
@@ -228,10 +255,12 @@ class MessageStore {
     this.messageVisibility = {};
     this.timeoutManager.reset();
 
-    this.updateGroupData({
-      marked_as_unread: false,
-      new_message_line_at: this.lastReadAt
-    });
+    if (this.group) {
+      this.updateGroupData({
+        marked_as_unread: false,
+        new_message_line_at: this.lastReadAt
+      });
+    }
   }
 
   @action
@@ -566,7 +595,7 @@ class MessageStore {
             return;
           }
 
-          if (messages.length < 30) {
+          if (messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
             this.loadedAll = true;
           }
 
@@ -617,7 +646,7 @@ class MessageStore {
             return;
           }
 
-          if (messages.length < 30) {
+          if (messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
             this.loadedAllRecent = true;
           }
 
@@ -837,7 +866,7 @@ class MessageStore {
 
     this.rootStore.socketStore.sendPingWithTimeout();
 
-    if (data.messages.length < 30) {
+    if (data.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
       this.loadedAll = true;
     }
 
@@ -885,8 +914,8 @@ class MessageStore {
     // if last message is visible, mark as unread
     if (
       this.group &&
-      this.messages.length &&
-      this.messageVisibility[this.messages[0].id]
+      (!this.firstUnreadMessage ||
+        this.messageVisibility[this.firstUnreadMessage.id])
     ) {
       this.timeoutManager.setTimeout(() => {
         this.markAsRead(false);
@@ -983,11 +1012,8 @@ class MessageStore {
       });
     }
 
-    // if my message or at scroll bottom and app has focus, scroll to bottom
-    if (
-      this.isActive &&
-      (this.isScrollBottom || newMessage.user_id === currentUser.id)
-    ) {
+    // if the user is scrolled to the bottom, keep scrolling down when receiving new message
+    if (this.isScrollBottom || newMessage.user_id === currentUser.id) {
       this.scrollToBottom(null, 0, 0);
     }
 

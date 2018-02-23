@@ -91,9 +91,11 @@ class GroupsStore {
 
   @computed
   get directGroups() {
-    return this.visibleGroups.filter(
-      group => group.type !== "regular" && !group.is_favorite
-    );
+    return this.visibleGroups
+      .filter(group => group.type !== "regular" && !group.is_favorite)
+      .sort(
+        (group1, group2) => group2.user_count === 1 || group1.name > group2.name
+      );
   }
 
   @computed

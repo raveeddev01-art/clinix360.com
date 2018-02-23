@@ -1,56 +1,24 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router-dom";
-import Dropdown from "react-bootstrap/lib/Dropdown";
-import MenuItem from "react-bootstrap/lib/MenuItem";
-import SmartDropdown from "../../smart-dropdown";
+import cx from "classnames";
+import { UserProfileMenu } from "common/components";
 
-@inject("addonStore")
-@observer
-class UserMention extends Component {
-  goToDirectMessaging = () => {
-    const { history, user } = this.props;
-    const { username } = user;
-
-    history.push(`/direct/${username}`);
-  };
-
-  _toggleAddonMenu = () => {
-    const { addonStore, user } = this.props;
-
-    addonStore.setAddonPanel("directory");
-    addonStore.toggleAddons(true);
-    addonStore.toggleAddonDetail(true);
-    addonStore.setAddonDetailPanel("people", user);
-  };
-
+export default class UserMention extends Component {
   render() {
-    const { user: { username }, isMine } = this.props;
-    return (
-      <SmartDropdown
-        id="user-mention"
-        className="user-mention-dropdown"
-        pullRight={isMine}
-      >
-        <Dropdown.Toggle useAnchor noCaret>
-          {`@${username}`}
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          <MenuItem onClick={this._toggleAddonMenu}>Profile</MenuItem>
+    const { user: mentionedUser } = this.props;
 
-          <MenuItem onClick={this.goToDirectMessaging}>
-            Direct Messaging
-          </MenuItem>
-        </Dropdown.Menu>
-      </SmartDropdown>
+    const mentionClassName = cx('user-mention', {
+      me: mentionedUser.username === currentUser.username
+    });
+
+    return (
+      <UserProfileMenu user={mentionedUser} className={mentionClassName}>
+        {`@${mentionedUser.username}`}
+      </UserProfileMenu>
     );
   }
 }
 
 UserMention.propTypes = {
-  user: PropTypes.any.isRequired,
-  isMine: PropTypes.bool.isRequired
+  user: PropTypes.any.isRequired
 };
-
-export default withRouter(UserMention);

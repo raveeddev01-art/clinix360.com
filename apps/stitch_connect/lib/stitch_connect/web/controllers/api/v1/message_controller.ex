@@ -2,9 +2,17 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, GroupChannel, PushNotifications}
-  alias Stitch.{GroupAuthorization, GroupQueries, Message, MessageAction, MessageQueries, Message.Upload}
 
-  action_fallback StitchConnect.Web.Api.FallbackController
+  alias Stitch.{
+    GroupAuthorization,
+    GroupQueries,
+    Message,
+    MessageAction,
+    MessageQueries,
+    Message.Upload
+  }
+
+  action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
@@ -15,22 +23,24 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         params
         |> Map.take(["limit", "skip"])
         |> Enum.map(fn {key, value} ->
-        value = case value do
-                  value when is_binary(value) -> String.to_integer(value)
-                  value when is_integer(value) -> value
-                end
+          value =
+            case value do
+              value when is_binary(value) -> String.to_integer(value)
+              value when is_integer(value) -> value
+            end
 
-        {:"#{key}", value}
-      end)
-      |> Keyword.update(:limit, 30, fn limit -> Enum.min([limit, 30]) end)
+          {:"#{key}", value}
+        end)
+        |> Keyword.update(:limit, 60, fn limit -> Enum.min([limit, 60]) end)
 
       messages = MessageQueries.group_latest_messages(group_id, user, opts)
-      render conn, "index.json", messages: messages, user_id: user.id
+      render(conn, "index.json", messages: messages, user_id: user.id)
     else
       {:group, _} ->
         conn
         |> put_status(:not_found)
         |> json(%{message: "The room you are looking for does not exist."})
+
       {:authorized?, false} ->
         conn
         |> put_status(:forbidden)
@@ -40,13 +50,13 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def search(conn, %{"term" => term} = params) do
     opts = [
-      limit: Enum.min([Map.get(params, "limit", 30), 1_000]),
-      skip: Map.get(params, "skip", 0),
+      limit: Enum.min([Map.get(params, "limit", 60), 1_000]),
+      skip: Map.get(params, "skip", 0)
     ]
 
     user = conn.assigns.current_user
     messages = MessageQueries.search(conn.assigns.current_user.id, term, opts)
-    render conn, "index.json", messages: messages, user_id: user.id
+    render(conn, "index.json", messages: messages, user_id: user.id)
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
@@ -55,12 +65,13 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
          {:authorized?, true} <- {:authorized?, GroupAuthorization.is_member?(group_id, user.id)},
          presence_user_ids = StitchConnect.Web.UserStatusService.presence_user_ids(user.team_id),
-         {:ok, %{message: message, notify_user_ids: notify_user_ids}} <- Message.create(group.id, user, message_params, presence_user_ids) do
+         {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
+           Message.create(group.id, user, message_params, presence_user_ids) do
       MessageLinkPreviewGenerator.queue(message)
-      message = message |> MessageQueries.load_info
+      message = message |> MessageQueries.load_info()
       GroupChannel.broadcast_message_created(message)
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
-      PushNotifications.push_new_msg_notification(group, message, notify_user_ids.mobile)
+      PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
 
       conn
@@ -71,10 +82,12 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         conn
         |> put_status(:not_found)
         |> json(%{message: "The room you are looking for does not exist."})
+
       {:authorized?, false} ->
         conn
         |> put_status(:forbidden)
         |> json(%{message: "You can't see the messages for this room."})
+
       {:error, :message, changeset, _changeset_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -85,6 +98,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   def download(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
+
     with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)},
          {:ok, presigned_url} <- Upload.presign(message) do
       json(conn, %{presigned_url: presigned_url})
@@ -105,12 +119,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
             MessageLinkPreviewGenerator.queue(message)
             message = MessageQueries.load_info(message)
             GroupChannel.broadcast_message_edited(message)
-            render conn, "show.json", message: message, user_id: user.id
+            render(conn, "show.json", message: message, user_id: user.id)
+
           {:error, :message, changeset, _changeset_so_far} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: changeset_errors_to_string(changeset)})
         end
+
       false ->
         conn
         |> put_status(:unauthorized)
@@ -129,11 +145,13 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
             EventsChannel.broadcast_group_msg_deleted(message.group, message)
             PushNotifications.push_badge_update(message)
             send_resp(conn, :no_content, "")
+
           {:error, _failed_operation, _failed_value, _changeset} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: "Failed to delete message"})
         end
+
       false ->
         conn
         |> put_status(:unauthorized)
@@ -153,12 +171,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
             message = MessageQueries.load_info(message)
             message = Map.put(message, :starred, result)
             GroupChannel.broadcast_message_starred(message)
-            render conn, "show.json", message: message, user_id: user.id
+            render(conn, "show.json", message: message, user_id: user.id)
+
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: changeset_errors_to_string(changeset)})
         end
+
       false ->
         conn
         |> put_status(:unauthorized)
@@ -176,12 +196,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:ok, message} ->
             message = MessageQueries.load_info(message)
             GroupChannel.broadcast_message_pinned(message)
-            render conn, "show.json", message: message, user_id: user.id
+            render(conn, "show.json", message: message, user_id: user.id)
+
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
             |> json(%{message: changeset_errors_to_string(changeset)})
         end
+
       false ->
         conn
         |> put_status(:unauthorized)
