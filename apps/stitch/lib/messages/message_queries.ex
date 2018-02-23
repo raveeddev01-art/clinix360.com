@@ -51,10 +51,15 @@ defmodule Stitch.MessageQueries do
       )
 
     query =
-      if String.first(term) == "\"" && String.last(term) == "\"" do
+      if String.starts_with?(term, "\"") && String.ends_with?(term, "\"") do
+        term =
+          term
+          |> String.replace_prefix("\"", "")
+          |> String.replace_suffix("\"", "")
+
         from(
           m in query,
-          where([m], like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")),
+          where: like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%"),
           order_by: [desc: :inserted_at]
         )
       else
