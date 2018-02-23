@@ -42,8 +42,6 @@ defmodule Stitch.MessageQueries do
         left_join: pb in assoc(m, :pinned_by),
         where: m.group_id in ^user_groups_ids,
         where: m.type != ^"system",
-        where: fragment("? %> ?", m.text_content, ^term),
-        order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)],
         limit: ^limit,
         preload: [
           user: u,
@@ -51,6 +49,7 @@ defmodule Stitch.MessageQueries do
           pinned_by: pb
         ]
       )
+      |> apply_term_query(term)
 
     query =
       case Keyword.fetch(opts, :skip) do
@@ -64,6 +63,22 @@ defmodule Stitch.MessageQueries do
     messages = Repo.all(query)
     messages = MessageAction.apply_user_message_actions(user, messages)
     Message.Reaction.apply_reactions(messages)
+  end
+
+  defp apply_term_query(query, "\"" <> term <> "\"") do
+    from(
+      m in query,
+      where([m], like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")),
+      order_by: [desc: :inserted_at]
+    )
+  end
+
+  defp apply_term_query(query, term) do
+    from(
+      m in query,
+      where: fragment("? %> ?", m.text_content, ^term),
+      order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)]
+    )
   end
 
   @doc """
@@ -200,7 +215,7 @@ defmodule Stitch.MessageQueries do
   end
 
   def get_uploads_for_user(%User{team_id: team_id, id: user_id, roles: [role]}, skip, limit)
-      when not (role in @guest_roles) do
+      when role not in @guest_roles do
     query =
       from(
         m in Message,
