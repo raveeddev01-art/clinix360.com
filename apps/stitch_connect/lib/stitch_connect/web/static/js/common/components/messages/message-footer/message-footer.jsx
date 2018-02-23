@@ -13,7 +13,7 @@ class MessageFooter extends Component {
     return (
       <div className="message-footer">
         <NavLink to={url}>
-          <i className="fa fa-tag" /> {group.name}
+          <i className="fa fa-comments" /> {group.name}
         </NavLink>
       </div>
     );

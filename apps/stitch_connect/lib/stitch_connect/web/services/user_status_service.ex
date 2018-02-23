@@ -20,7 +20,7 @@ defmodule StitchConnect.Web.UserStatusService do
     Enum.reduce(presence_list, %{active: [], online: []}, fn ({user_id, %{metas: metas}}, acc) ->
 
       active_user_ids =
-        if Enum.any?(metas, & not &1.inactive) do
+        if Enum.any?(metas, & not (&1.inactive || &1.became_away)) do
           [String.to_integer(user_id) | acc.active]
         else
           acc.active

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import { MessageContent } from "common/components";
-import cx from "classnames";
+import { Avatar, MessageContent, MessageHeader } from "common/components";
 import Modal from "react-bootstrap/lib/Modal";
 import moment from "moment";
 import sortBy from "lodash/sortBy";
@@ -53,25 +52,19 @@ class MessageInfoModal extends Component {
   }
 
   renderMessagePreview() {
-    const { message } = this.props;
-    const { user: sender } = message;
-    const mine = sender.id === currentUser.id;
+    const { message, usersStore } = this.props;
+    const userId = message.user.id;
+    const user = usersStore.usersById[userId];
 
     return (
-      <div className="preview-wrapper">
-        <div className={cx("message-preview", { mine })}>
-          <div className="message-preview-header">
-            <div className="message-preview-name">
-              {sender.first_name} {sender.last_name}
-            </div>
-            <div className="message-preview-time">
-              {moment
-                .utc(message.inserted_at)
-                .local()
-                .format("hh:mm A")}
-            </div>
+      <div className="message-container addon">
+        <div className="message">
+          <Avatar user={user} />
+
+          <div className="message-content">
+            <MessageHeader timestamp={message.inserted_at} user={user} />
+            <MessageContent message={message} />
           </div>
-          <MessageContent message={message} />
         </div>
       </div>
     );

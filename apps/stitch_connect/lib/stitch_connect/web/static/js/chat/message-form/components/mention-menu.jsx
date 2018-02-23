@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import cx from "classnames";
+import { Avatar } from "common/components";
 import noop from "lodash/noop";
 
 import { filterUsers, isFullMember } from "lib/utils";
@@ -121,68 +122,67 @@ class MenutionMenu extends Component {
 
     return (
       <div className="dropup user-mention-menu open">
+        <div className="dropdown-mask" onClick={this.props.onClose} />
+
         <ul className="dropdown-menu">
-          {users.map(
-            (
-              {
-                id,
-                username,
-                isGroupMention,
-                description,
-                full_name: fullName
-              },
-              index
-            ) => {
-              const online = presenceStore.isOnline(id);
+          <div className="menu-header">People</div>
+
+          <div className="menu-content">
+            {users.map((user, index) => {
+              const online = presenceStore.isOnline(user.id);
+
               const itemClassName = cx("user-list-item", {
                 active: activeUserIndex === index
               });
 
               return (
                 <li
-                  key={`user_${username}`}
+                  key={`user_${user.username}`}
                   className={itemClassName}
                   onMouseEnter={this.onUserItemHover(index)}
-                  onClick={this.onSelectMention(username)}
+                  onClick={this.onSelectMention(user.username)}
                 >
                   <span className="item-icon">
                     <i
                       className={cx("fa", {
-                        "fa-bullhorn": isGroupMention,
-                        "fa-circle": !isGroupMention && online,
-                        "fa-circle-o": !isGroupMention && !online
+                        "fa-bullhorn": user.isGroupMention,
+                        "fa-circle": !user.isGroupMention && online,
+                        "fa-circle-o": !user.isGroupMention && !online
                       })}
                     />
                   </span>
-                  {isGroupMention ? (
+                  {user.isGroupMention ? (
                     <span className="item-text">
-                      <span>{username}</span>
-                      <small>{description}</small>
+                      <span className="username">{user.username}</span>
+                      <span className="text-muted">{user.description}</span>
                     </span>
                   ) : (
                     <span className="item-text">
-                      <span>{fullName}</span>
-                      <small>{username}</small>
+                      <Avatar user={user} />
+                      <span className="username">{user.full_name}</span>
+                      <span className="text-muted">{user.username}</span>
                     </span>
                   )}
                 </li>
               );
-            }
-          )}
+            })}
+          </div>
         </ul>
       </div>
     );
   }
 }
 
-MenutionMenu.defaultProps = {
-  filter: "",
-  onSelect: noop
+MenutionMenu.propTypes = {
+  filter: PropTypes.string.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };
 
-MenutionMenu.propTypes = {
-  filter: PropTypes.string,
-  onSelect: PropTypes.func
+MenutionMenu.defaultProps = {
+  filter: "",
+  onSelect: noop,
+  onClose: noop
 };
 
 export default MenutionMenu;

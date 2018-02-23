@@ -131,7 +131,8 @@ defmodule Stitch.Stripe.Events do
 
     with html = Phoenix.View.render_to_string(HistoryView, "statement.html", params),
          shell_params = ["-d", "480", "-L", "0", "-R", "0", "-T", "0", "-B", "0"],
-         {:ok, filename} <- PdfGenerator.generate(html, filename: filename, shell_params: shell_params) do
+         {:ok, filename} <-
+           PdfGenerator.generate(html, filename: filename, shell_params: shell_params) do
       try do
         {:ok, %{status_code: 200}} = S3.upload(filename)
       rescue

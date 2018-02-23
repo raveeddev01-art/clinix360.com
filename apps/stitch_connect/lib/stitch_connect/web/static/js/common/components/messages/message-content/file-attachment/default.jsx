@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import getFileType from "../file-types";
 
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
+import Button from "react-bootstrap/lib/Button";
+
 class DefaultFileAttachment extends Component {
   getFileSize = size => {
     if (size < 1024) {
@@ -19,20 +23,33 @@ class DefaultFileAttachment extends Component {
     const filetype = getFileType(mimetype);
 
     return (
-      <div className="attachment-block">
-        <div className="attachment-icon">
-          <i className={filetype.icon} />
-        </div>
-        <div className="attachment-description">
-          <div className="attachment-title">
-            <a target="_blank" href={url}>
-              {filename}
-            </a>
+      <div>
+        <span className="text-muted">uploaded this file: </span>
+        <div className="attachment-block">
+          <div className="attachment-icon">
+            <i className={filetype.icon} />
           </div>
-          <div className="attachment-detail">
-            {filetype.title}
-            <i className="file-data-separator fa fa-circle" />
-            {this.getFileSize(size)}
+          <div className="attachment-description">
+            <div className="attachment-title">
+              <a target="_blank" href={url}>
+                <strong>{filename}</strong>
+              </a>
+            </div>
+            <div className="attachment-detail">
+              {this.getFileSize(size)} {filetype.title}
+            </div>
+          </div>
+
+          <div className="attachment-actions">
+            <OverlayTrigger
+              placement="top"
+              delayShow={150}
+              overlay={<Tooltip id="download-file">Download</Tooltip>}
+            >
+              <Button target="_blank" href={url}>
+                <i className="fa fa-download" />
+              </Button>
+            </OverlayTrigger>
           </div>
         </div>
       </div>
