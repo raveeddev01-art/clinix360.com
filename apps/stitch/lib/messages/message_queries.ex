@@ -49,7 +49,21 @@ defmodule Stitch.MessageQueries do
           pinned_by: pb
         ]
       )
-      |> apply_term_query(term)
+
+    query =
+      if String.first(term) == "\"" && String.last(term) == "\"" do
+        from(
+          m in query,
+          where([m], like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")),
+          order_by: [desc: :inserted_at]
+        )
+      else
+        from(
+          m in query,
+          where: fragment("? %> ?", m.text_content, ^term),
+          order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)]
+        )
+      end
 
     query =
       case Keyword.fetch(opts, :skip) do
@@ -65,21 +79,21 @@ defmodule Stitch.MessageQueries do
     Message.Reaction.apply_reactions(messages)
   end
 
-  defp apply_term_query(query, "\"" <> term <> "\"") do
-    from(
-      m in query,
-      where([m], like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")),
-      order_by: [desc: :inserted_at]
-    )
-  end
+  # defp apply_term_query(query, "\"" <> term <> "\"") do
+  #   from(
+  #     m in query,
+  #     where([m], like(m.text_content, ^"%#{String.replace(term, "%", "\\%")}%")),
+  #     order_by: [desc: :inserted_at]
+  #   )
+  # end
 
-  defp apply_term_query(query, term) do
-    from(
-      m in query,
-      where: fragment("? %> ?", m.text_content, ^term),
-      order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)]
-    )
-  end
+  # defp apply_term_query(query, term) do
+  #   from(
+  #     m in query,
+  #     where: fragment("? %> ?", m.text_content, ^term),
+  #     order_by: [desc: :inserted_at, asc: fragment("? <->> ?", m.text_content, ^term)]
+  #   )
+  # end
 
   @doc """
   Return the latest 30 messages for a group.
