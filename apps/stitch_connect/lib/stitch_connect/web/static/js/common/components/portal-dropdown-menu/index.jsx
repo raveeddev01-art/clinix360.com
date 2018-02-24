@@ -14,7 +14,7 @@ class PortalDropdownMenu extends Component {
 
   componentWillMount() {
     // close dropdown if scroll or resize
-    window.addEventListener("resize", this.closeDropdown);
+    window.addEventListener("resize", this.debouncedCalcPosition);
     window.addEventListener("scroll", this.closeDropdown);
     window.addEventListener("mousewheel", this.closeDropdown);
   }
@@ -31,7 +31,7 @@ class PortalDropdownMenu extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.closeDropdown);
+    window.removeEventListener("resize", this.debouncedCalcPosition);
     window.removeEventListener("scroll", this.closeDropdown);
     window.removeEventListener("mousewheel", this.closeDropdown);
   }
