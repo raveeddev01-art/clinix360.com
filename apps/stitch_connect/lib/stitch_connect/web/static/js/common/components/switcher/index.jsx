@@ -106,7 +106,7 @@ class Switcher extends Component {
               overlay={<Tooltip id="tooltip-info">Stitch&nbsp;Manage</Tooltip>}
             >
               <span className="switcher__link-wrapper">
-                <i className="fa fa-link" />
+                <i className="fa fa-tasks" />
               </span>
             </OverlayTrigger>
           </NavLink>
