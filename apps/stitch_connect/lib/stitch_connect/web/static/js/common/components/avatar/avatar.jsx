@@ -9,7 +9,7 @@ class Avatar extends Component {
       return (
         <div className="avatar">
           <img
-            src={user.avatar_thumb || user.avatarThumb}
+            src={user.avatar_thumb}
             alt={user.username}
             className="img-circle"
           />

@@ -176,7 +176,13 @@ class Sidemenu extends Component {
 
             <Dropdown.Menu className="super-colors">
               <div className="user-header m-b-20">
-                <Avatar user={userStore} size="sm" />
+                <Avatar
+                  user={{
+                    avatar_thumb: userStore.avatarThumb,
+                    username: userStore.username
+                  }}
+                  size="sm"
+                />
 
                 <div className="content">
                   <div className="full-name">{userStore.fullName}</div>
