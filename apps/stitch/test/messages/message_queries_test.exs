@@ -35,20 +35,41 @@ defmodule Stitch.MessageQueriesTest do
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         )
 
+      exact_quoted_sentence =
+        insert(
+          :message,
+          user: user,
+          group: group,
+          text_content: "Now is the time for all good lorem ipsum dolor sit amet ayy lmao"
+        )
+
       foobar = insert(:message, user: user, group: group, text_content: "foobar")
       foobaz = insert(:message, user: user, group: group, text_content: "foobaz")
 
       assert ids(MessageQueries.search(user.id, "brown")) == ids([quick_brown_fox])
-      assert ids(MessageQueries.search(user.id, "good")) == ids([all_good_men])
-      assert ids(MessageQueries.search(user.id, "lorem")) == ids([lorem_ipsum])
-      assert ids(MessageQueries.search(user.id, "the")) == ids([all_good_men, quick_brown_fox])
+
+      assert ids(MessageQueries.search(user.id, "good")) ==
+               ids([exact_quoted_sentence, all_good_men])
+
+      assert ids(MessageQueries.search(user.id, "lorem")) ==
+               ids([exact_quoted_sentence, lorem_ipsum])
+
+      assert ids(MessageQueries.search(user.id, "the")) ==
+               ids([exact_quoted_sentence, all_good_men, quick_brown_fox])
+
       assert ids(MessageQueries.search(user.id, "brow")) == ids([quick_brown_fox])
       assert ids(MessageQueries.search(user.id, "aide")) == ids([all_good_men])
       assert ids(MessageQueries.search(user.id, "parte")) == ids([all_good_men])
       assert ids(MessageQueries.search(user.id, "consecetur")) == ids([lorem_ipsum])
       assert ids(MessageQueries.search(user.id, "brown fox")) == ids([quick_brown_fox])
-      assert ids(MessageQueries.search(user.id, "do")) == ids([lorem_ipsum, quick_brown_fox])
+
+      assert ids(MessageQueries.search(user.id, "do")) ==
+               ids([exact_quoted_sentence, lorem_ipsum, quick_brown_fox])
+
       assert ids(MessageQueries.search(user.id, "foobar")) == ids([foobaz, foobar])
+
+      assert ids(MessageQueries.search(user.id, "\"time for all good lorem\"")) ==
+               ids([exact_quoted_sentence])
     end
 
     defp ids(messages) do

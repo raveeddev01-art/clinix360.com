@@ -3,6 +3,10 @@
 
   .pin-code {
     margin-bottom: 20px;
+
+    input::-webkit-caps-lock-indicator {
+      content: none;
+    }
   }
 
   button[type="submit"] {
