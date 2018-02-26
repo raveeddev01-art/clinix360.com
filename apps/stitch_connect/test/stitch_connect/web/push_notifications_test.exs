@@ -353,6 +353,32 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       assert_receive []
       refute_receive _
     end
+
+    test "when the receiver is mentioned in a room messasge" do
+      team = insert(:team)
+      group = insert(:group, team: team, name: "RoomName")
+      user = insert(:user, team: team)
+      insert(:group_user, group: group, user: user)
+      insert(:mobile_device, user: user, type: "android", token: "android-token")
+      message = insert(:message, group: group, mentioned_user_ids: [user.id])
+
+      PushNotifications.notify_users(group, message, [user.id])
+
+      assert_receive %FCM.Notification{
+        registration_id: ["android-token"],
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => "Sergio Tapia mentioned you in RoomName.",
+            "ejson" => _
+          }
+        }
+      }
+
+      assert_receive []
+      refute_receive _
+    end
   end
 
   test "handle_fcm_push/1" do
