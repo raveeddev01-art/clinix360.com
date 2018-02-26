@@ -31,7 +31,7 @@ class ManagePreview extends Component {
           </div>
 
           <div className="preview-image">
-            <img src="/images/manage-icon.png" alt="Stitch Connect" />
+            <img src="/images/manage-logo.png" alt="Stitch Connect" />
           </div>
         </div>
       </div>

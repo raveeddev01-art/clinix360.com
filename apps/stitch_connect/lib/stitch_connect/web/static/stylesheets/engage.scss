@@ -128,6 +128,7 @@ $admin-topbar-height: 65px;
     flex: 1;
     align-items: center;
     justify-content: center;
+    background: #fff;
 
     .preview {
       margin: 0 50px;
@@ -163,6 +164,7 @@ $admin-topbar-height: 65px;
       }
 
       img {
+        max-width: 160px;
         display: block;
         @media (min-width: 992px) {
           margin-left: 100px;
