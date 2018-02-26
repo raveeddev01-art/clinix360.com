@@ -38,11 +38,11 @@ class UserProfileMenu extends Component {
           className="user-profile-menu-dropdown"
         >
           <div className="header">
-            <Avatar user={user} size="lg" />
+            <Avatar user={user} size="sm" />
 
             <div className="content">
               <div className="full-name">{user.full_name}</div>
-              <div className="username">{user.username}</div>
+              <div className="username text-muted">{user.username}</div>
             </div>
           </div>
           <MenuItem onClick={this._toggleAddonMenu}>View Profile</MenuItem>

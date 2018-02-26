@@ -3,7 +3,19 @@ import PropTypes from "prop-types";
 
 class Avatar extends Component {
   render() {
-    const { user, size } = this.props;
+    const { user, size, sidemenuAvatar } = this.props;
+
+    if (sidemenuAvatar) {
+      return (
+        <div className="avatar">
+          <img
+            src={user.avatarThumb}
+            alt={user.username}
+            className="img-circle"
+          />
+        </div>
+      );
+    }
 
     if (size === "sm") {
       return (
@@ -29,7 +41,8 @@ Avatar.propTypes = {
     avatar_thumb: PropTypes.string,
     username: PropTypes.string
   }),
-  size: PropTypes.string
+  size: PropTypes.string,
+  sidemenuAvatar: PropTypes.bool
 };
 
 Avatar.defaultProps = {
@@ -38,7 +51,8 @@ Avatar.defaultProps = {
     avatar_thumb: "",
     username: ""
   },
-  size: "sm"
+  size: "sm",
+  sidemenuAvatar: false
 };
 
 export default Avatar;
