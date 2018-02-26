@@ -18,6 +18,8 @@ class Switcher extends Component {
       active = "home";
     } else if (path === "/engage") {
       active = "engage";
+    } else if (path === "/manage") {
+      active = "manage";
     }
 
     this.setState({ active });
@@ -89,6 +91,22 @@ class Switcher extends Component {
             >
               <span className="switcher__link-wrapper">
                 <i className="fa fa-bullhorn" />
+              </span>
+            </OverlayTrigger>
+          </NavLink>
+
+          <NavLink
+            to={`/manage`}
+            isActive={() => active === "manage"}
+            className="switcher__link"
+          >
+            <OverlayTrigger
+              placement="right"
+              container={this}
+              overlay={<Tooltip id="tooltip-info">Stitch&nbsp;Manage</Tooltip>}
+            >
+              <span className="switcher__link-wrapper">
+                <i className="fa fa-link" />
               </span>
             </OverlayTrigger>
           </NavLink>
