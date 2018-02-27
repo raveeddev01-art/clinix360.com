@@ -54,6 +54,7 @@
           "authenticationStore",
           "billingStore",
           "channelStore",
+          "desktopStore",
           "exportStore",
           "filesStore",
           "globalStarredMessageStore",

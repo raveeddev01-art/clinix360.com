@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import Modal from "react-bootstrap/lib/Modal";
 
+@inject("desktopStore")
 class ImageFileAttachment extends Component {
   constructor(props) {
     super(props);
@@ -9,6 +11,11 @@ class ImageFileAttachment extends Component {
       showModal: false
     };
   }
+
+  onFileDownload = () => {
+    const { desktopStore, api_url, filename } = this.props;
+    desktopStore.sendDownloadRequest(api_url, filename);
+  };
 
   onToggleModal = () => {
     this.setState({ showModal: !this.state.showModal });
@@ -42,7 +49,7 @@ class ImageFileAttachment extends Component {
         {filename && (
           <div className="attachment-title">
             <span>uploaded this image: </span>
-            <a target="_blank" href={url}>
+            <a target="_blank" href={url} onClick={this.onFileDownload}>
               <strong>{filename}</strong>
             </a>
           </div>
@@ -85,7 +92,8 @@ ImageFileAttachment.propTypes = {
   preview_width: PropTypes.number,
   preview_url: PropTypes.string,
   filename: PropTypes.string,
-  url: PropTypes.string.isRequired
+  url: PropTypes.string.isRequired,
+  api_url: PropTypes.string.isRequired
 };
 
 ImageFileAttachment.defaultProps = {
