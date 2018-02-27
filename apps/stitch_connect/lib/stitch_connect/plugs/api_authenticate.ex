@@ -1,19 +1,22 @@
 defmodule StitchConnect.Plug.ApiAuthenticate do
   import Plug.Conn
+  alias Stitch.UserQueries
+  alias Stitch.Accounts.User
 
   def init(default), do: default
 
   def call(conn, opts) do
     conn = fetch_query_params(conn)
-    case Stitch.UserQueries.get_active_by_token(conn.params["authenticationToken"]) do
-      nil ->
-        conn
-        |> put_status(:forbidden)
-        |> Phoenix.Controller.json(%{message: "You are not authorized to access this resource."})
-        |> halt
-      user ->
-        conn
-        |> authenticate_user(user, opts)
+
+    with token when is_binary(token) <- conn.params["authenticationToken"],
+         %User{} = user <- UserQueries.get_active_by_token(token) do
+      conn
+      |> authenticate_user(user, opts)
+    else nil ->
+      conn
+      |> put_status(:forbidden)
+      |> Phoenix.Controller.json(%{message: "You are not authorized to access this resource."})
+      |> halt
     end
   end
 

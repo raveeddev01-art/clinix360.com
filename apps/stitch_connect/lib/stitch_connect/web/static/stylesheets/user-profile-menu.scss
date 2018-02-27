@@ -1,0 +1,53 @@
+.user-profile-menu.open .dropdown-toggle {
+  box-shadow: none;
+}
+
+.portal-dropdown-inner:before {
+  content: "";
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.user-profile-menu-dropdown.dropdown-menu {
+  width: 260px;
+  padding: 0 0 12px;
+
+  .header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid $border-color;
+    padding: 0 12px 12px;
+    margin: 12px;
+
+    .avatar {
+      margin-right: 10px;
+
+      img {
+        width: 36px;
+      }
+    }
+
+    .content {
+      flex: 1;
+
+      .full-name {
+        color: $brand-primary;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .username {
+        line-height: 1.2;
+      }
+    }
+  }
+
+  a {
+    margin: 0 12px;
+  }
+}

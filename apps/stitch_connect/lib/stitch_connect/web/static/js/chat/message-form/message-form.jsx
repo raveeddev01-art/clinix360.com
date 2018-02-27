@@ -187,6 +187,12 @@ class MessageForm extends Component {
     });
   };
 
+  onCloseMentionMenu = () => {
+    this.setState({
+      openMentionMenu: false
+    });
+  };
+
   getText = () => {
     const { messageStore } = this.props;
 
@@ -347,7 +353,11 @@ class MessageForm extends Component {
         <JumpingIndicator />
 
         {openMentionMenu && (
-          <MentionMenu filter={searchFilter} onSelect={this.onSelectMention} />
+          <MentionMenu
+            filter={searchFilter}
+            onSelect={this.onSelectMention}
+            onClose={this.onCloseMentionMenu}
+          />
         )}
 
         {openEmojiSearch && (

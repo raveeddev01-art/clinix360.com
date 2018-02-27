@@ -11,32 +11,69 @@ defmodule Stitch.MessageQueriesTest do
       insert(:message, user: user, group: group, text_content: "x")
 
       quick_brown_fox =
-        insert(:message, user: user, group: group, text_content:
-               "The quick brown fox jumps over the lazy dog.")
+        insert(
+          :message,
+          user: user,
+          group: group,
+          text_content: "The quick brown fox jumps over the lazy dog."
+        )
+
       all_good_men =
-        insert(:message, user: user, group: group, text_content:
-               "Now is the time for all good men to come to the aid of the party.")
+        insert(
+          :message,
+          user: user,
+          group: group,
+          text_content: "Now is the time for all good men to come to the aid of the party."
+        )
+
       lorem_ipsum =
-        insert(:message, user: user, group: group, text_content:
-               "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        insert(
+          :message,
+          user: user,
+          group: group,
+          text_content:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        )
+
+      exact_quoted_sentence =
+        insert(
+          :message,
+          user: user,
+          group: group,
+          text_content: "Now is the time for all good lorem ipsum dolor sit amet ayy lmao"
+        )
+
       foobar = insert(:message, user: user, group: group, text_content: "foobar")
       foobaz = insert(:message, user: user, group: group, text_content: "foobaz")
 
       assert ids(MessageQueries.search(user.id, "brown")) == ids([quick_brown_fox])
-      assert ids(MessageQueries.search(user.id, "good")) == ids([all_good_men])
-      assert ids(MessageQueries.search(user.id, "lorem")) == ids([lorem_ipsum])
-      assert ids(MessageQueries.search(user.id, "the")) == ids([all_good_men, quick_brown_fox])
+
+      assert ids(MessageQueries.search(user.id, "good")) ==
+               ids([exact_quoted_sentence, all_good_men])
+
+      assert ids(MessageQueries.search(user.id, "lorem")) ==
+               ids([exact_quoted_sentence, lorem_ipsum])
+
+      assert ids(MessageQueries.search(user.id, "the")) ==
+               ids([exact_quoted_sentence, all_good_men, quick_brown_fox])
+
       assert ids(MessageQueries.search(user.id, "brow")) == ids([quick_brown_fox])
       assert ids(MessageQueries.search(user.id, "aide")) == ids([all_good_men])
       assert ids(MessageQueries.search(user.id, "parte")) == ids([all_good_men])
       assert ids(MessageQueries.search(user.id, "consecetur")) == ids([lorem_ipsum])
       assert ids(MessageQueries.search(user.id, "brown fox")) == ids([quick_brown_fox])
-      assert ids(MessageQueries.search(user.id, "do")) == ids([lorem_ipsum, quick_brown_fox])
-      assert ids(MessageQueries.search(user.id, "foobar")) == ids([foobar, foobaz])
+
+      assert ids(MessageQueries.search(user.id, "do")) ==
+               ids([exact_quoted_sentence, lorem_ipsum, quick_brown_fox])
+
+      assert ids(MessageQueries.search(user.id, "foobar")) == ids([foobaz, foobar])
+
+      assert ids(MessageQueries.search(user.id, "\"time for all good lorem\"")) ==
+               ids([exact_quoted_sentence])
     end
 
     defp ids(messages) do
-      Enum.map(messages, &(&1.id))
+      Enum.map(messages, & &1.id)
     end
 
     test "returns only messages user can see" do
@@ -44,14 +81,20 @@ defmodule Stitch.MessageQueriesTest do
       author = insert(:user, team: team)
 
       public_group = insert(:group, team: team, name: "A", slug: "a", public: true)
-      public_message = insert(:message, user: author, group: public_group, text_content: "Hello, world!")
+
+      public_message =
+        insert(:message, user: author, group: public_group, text_content: "Hello, world!")
 
       private_group = insert(:group, team: team, name: "B", slug: "b", public: false)
-      private_message = insert(:message, user: author, group: private_group, text_content: "Hello, world!")
+
+      private_message =
+        insert(:message, user: author, group: private_group, text_content: "Hello, world!")
 
       private_member_group = insert(:group, team: team, name: "C", slug: "c", public: false)
       insert(:group_user, user: author, group: private_member_group)
-      private_member_message = insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
+
+      private_member_message =
+        insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
 
       user = insert(:user, team: team)
       insert(:group_user, user: user, group: public_group)
@@ -59,9 +102,9 @@ defmodule Stitch.MessageQueriesTest do
 
       result = Stitch.MessageQueries.search(user.id, "hello")
       assert length(result) == 2
-      assert Enum.find(result, &( &1.id == public_message.id ))
-      assert Enum.find(result, &( &1.id == private_member_message.id ))
-      refute Enum.find(result, &( &1.id == private_message.id ))
+      assert Enum.find(result, &(&1.id == public_message.id))
+      assert Enum.find(result, &(&1.id == private_member_message.id))
+      refute Enum.find(result, &(&1.id == private_message.id))
     end
   end
 
@@ -86,30 +129,61 @@ defmodule Stitch.MessageQueriesTest do
       author = insert(:user, team: team)
 
       public_group = insert(:group, team: team, name: "X", slug: "x", public: true)
-      _public_message = insert(:message, user: author, group: public_group, text_content: "Hello, world!")
-      public_message2 = insert(:message, user: author, group: public_group, text_content: "Hello, world! upload", type: "upload")
+
+      _public_message =
+        insert(:message, user: author, group: public_group, text_content: "Hello, world!")
+
+      public_message2 =
+        insert(
+          :message,
+          user: author,
+          group: public_group,
+          text_content: "Hello, world! upload",
+          type: "upload"
+        )
 
       private_group = insert(:group, team: team, name: "Y", slug: "y", public: false)
-      _private_message = insert(:message, user: author, group: private_group, text_content: "Hello, world!")
-      private_message2 = insert(:message, user: author, group: private_group, text_content: "Hello, world! upload", type: "upload")
+
+      _private_message =
+        insert(:message, user: author, group: private_group, text_content: "Hello, world!")
+
+      private_message2 =
+        insert(
+          :message,
+          user: author,
+          group: private_group,
+          text_content: "Hello, world! upload",
+          type: "upload"
+        )
 
       private_member_group = insert(:group, team: team, name: "Z", slug: "z", public: false)
       insert(:group_user, user: author, group: private_member_group)
-      _private_member_message = insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
-      private_member_message2 = insert(:message, user: author, group: private_member_group, text_content: "Hello, world! upload", type: "upload")
+
+      _private_member_message =
+        insert(:message, user: author, group: private_member_group, text_content: "Hello, world!")
+
+      private_member_message2 =
+        insert(
+          :message,
+          user: author,
+          group: private_member_group,
+          text_content: "Hello, world! upload",
+          type: "upload"
+        )
 
       user = insert(:user, team: team)
       insert(:group_user, user: user, group: private_member_group)
 
-      %Stitch.Paginator{data: data, meta: meta} = Stitch.MessageQueries.get_uploads_for_user(user, skip, limit)
+      %Stitch.Paginator{data: data, meta: meta} =
+        Stitch.MessageQueries.get_uploads_for_user(user, skip, limit)
 
       assert meta.skip == skip
       assert meta.limit == limit
       assert meta.count == 2
 
-      assert Enum.find(data, &( &1.id == public_message2.id ))
-      assert Enum.find(data, &( &1.id == private_member_message2.id ))
-      refute Enum.find(data, &( &1.id == private_message2.id ))
+      assert Enum.find(data, &(&1.id == public_message2.id))
+      assert Enum.find(data, &(&1.id == private_member_message2.id))
+      refute Enum.find(data, &(&1.id == private_message2.id))
     end
 
     test "restricts guests to their restricted groups" do
@@ -150,12 +224,20 @@ defmodule Stitch.MessageQueriesTest do
     max_messages = 50
 
     for i <- 1..max_messages do
-      insert(:message, user: user, group: group, text_content: "@#{mentioned_user.username} #{i}", mentioned_user_ids: mentioned_user_ids)
+      insert(
+        :message,
+        user: user,
+        group: group,
+        text_content: "@#{mentioned_user.username} #{i}",
+        mentioned_user_ids: mentioned_user_ids
+      )
+
       insert(:message, user: mentioned_user, group: group, text_content: "#{i}")
     end
 
     result = Stitch.MessageQueries.user_mentioned_in(mentioned_user)
     assert length(result.data) == 30
+
     for message <- result.data do
       assert %Stitch.Accounts.User{} = message.user
       assert mentioned_user.id in message.mentioned_user_ids
@@ -186,7 +268,9 @@ defmodule Stitch.MessageQueriesTest do
     assert {:ok, message_bar} = Stitch.MessageAction.toggle_pin(message_bar, user_a)
     assert {:ok, _message_baz} = Stitch.MessageAction.toggle_pin(message_baz, user_b)
 
-    assert %{data: [message], meta: meta} = Stitch.MessageQueries.pinned_messages(group, limit: 1, skip: 1)
+    assert %{data: [message], meta: meta} =
+             Stitch.MessageQueries.pinned_messages(group, limit: 1, skip: 1)
+
     assert %{limit: 1, skip: 1, count: 2} = meta
 
     assert message.id == message_bar.id
@@ -211,12 +295,18 @@ defmodule Stitch.MessageQueriesTest do
       user_4 = insert(:user, team: team_2)
       insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
-      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not the target user
-      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not the target user
-      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not the target user
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_1) # not the target user
+      # not the target user
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
+      # not the target user
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
+      # not the target user
+      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3)
+      # not the target user
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_1)
 
       opts = %{time_period: :all_time, end_at: end_at}
       message_count = Stitch.MessageQueries.count(user_1, opts)
@@ -240,16 +330,23 @@ defmodule Stitch.MessageQueriesTest do
       user_2 = insert(:user, team: team)
       user_3 = insert(:user, team: team)
       user_4 = insert(:user, team: team_2)
-      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in the 'last day'
+      # not in the 'last day'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
-      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not the target user
-      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not the target user
-      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not the target user
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_1) # not the targer user
+      # not the target user
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
+      # not the target user
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
+      # not the target user
+      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3)
+      # not the targer user
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_1)
 
       opts = %{time_period: :last_day, end_at: end_at}
       message_count = Stitch.MessageQueries.count(user_1, opts)
@@ -273,17 +370,24 @@ defmodule Stitch.MessageQueriesTest do
       user_2 = insert(:user, team: team)
       user_3 = insert(:user, team: team)
       user_4 = insert(:user, team: team_2)
-      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in the 'last 7 days'
+      # not in the 'last 7 days'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_2)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_2)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
-      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not the target user
-      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not the target user
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not the target user
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target user
+      # not the target user
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
+      # not the target user
+      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
+      # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3)
+      # not the target user
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3)
 
       opts = %{time_period: :last_7_days, end_at: end_at}
       message_count = Stitch.MessageQueries.count(user_1, opts)
@@ -308,18 +412,25 @@ defmodule Stitch.MessageQueriesTest do
       user_2 = insert(:user, team: team)
       user_3 = insert(:user, team: team)
       user_4 = insert(:user, team: team_2)
-      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in the 'last 30 days'
+      # not in the 'last 30 days'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_2)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_2)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_4)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_4)
-      insert(:message, user: user_2, group: group_1, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_3, group: group_2, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target user
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3) # not the target user
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_2) # not the target user
+      # not the target user
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_2, group: group_3, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
+      # not the target user
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_3)
+      # not the target user
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_2)
 
       opts = %{time_period: :last_30_days, end_at: end_at}
       message_count = Stitch.MessageQueries.count(user_1, opts)
@@ -348,8 +459,10 @@ defmodule Stitch.MessageQueriesTest do
       insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
       insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
       insert(:message, user: user_2, group: group_2, inserted_at: datetime_2)
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target team
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target team
+      # not the target team
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
+      # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3)
 
       opts = %{time_period: :all_time, end_at: end_at}
       message_count = Stitch.MessageQueries.count(team, opts)
@@ -373,16 +486,22 @@ defmodule Stitch.MessageQueriesTest do
       user_2 = insert(:user, team: team)
       user_3 = insert(:user, team: team_2)
       user_4 = insert(:user, team: team_2)
-      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in 'last day'
+      # not in 'last day'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
       insert(:message, user: user_1, group: group_1, inserted_at: datetime_3)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
-      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not in 'last day'
-      insert(:message, user: user_2, group: group_2, inserted_at: datetime_2) # not in 'last day'
+      # not in 'last day'
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
+      # not in 'last day'
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_2)
       insert(:message, user: user_2, group: group_1, inserted_at: datetime_3)
       insert(:message, user: user_2, group: group_2, inserted_at: datetime_3)
-      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not in 'last day'
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target team or in the 'last day'
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target team
+      # not in 'last day'
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
+      # not the target team or in the 'last day'
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
+      # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3)
 
       opts = %{time_period: :last_day, end_at: end_at}
       message_count = Stitch.MessageQueries.count(team, opts)
@@ -406,16 +525,21 @@ defmodule Stitch.MessageQueriesTest do
       user_2 = insert(:user, team: team)
       user_3 = insert(:user, team: team_2)
       user_4 = insert(:user, team: team_2)
-      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in 'last day'
+      # not in 'last day'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
       insert(:message, user: user_1, group: group_1, inserted_at: datetime_3)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
-      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not in 'last day'
+      # not in 'last day'
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
       insert(:message, user: user_2, group: group_1, inserted_at: datetime_3)
       insert(:message, user: user_2, group: group_2, inserted_at: datetime_3)
       insert(:message, user: user_2, group: group_2, inserted_at: datetime_2)
-      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not in 'last 7 days'
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target team
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target team
+      # not in 'last 7 days'
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
+      # not the target team
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
+      # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3)
 
       opts = %{time_period: :last_7_days, end_at: end_at}
       message_count = Stitch.MessageQueries.count(team, opts)
@@ -441,23 +565,32 @@ defmodule Stitch.MessageQueriesTest do
       user_2 = insert(:user, team: team)
       user_3 = insert(:user, team: team_2)
       user_4 = insert(:user, team: team_2)
-      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1) # not in 'last 30 days'
-      insert(:message, user: user_1, group: group_1, inserted_at: datetime_2) # not in 'last 30 days'
+      # not in 'last 30 days'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_1)
+      # not in 'last 30 days'
+      insert(:message, user: user_1, group: group_1, inserted_at: datetime_2)
       insert(:message, user: user_1, group: group_1, inserted_at: datetime_3)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_3)
       insert(:message, user: user_1, group: group_1, inserted_at: datetime_4)
       insert(:message, user: user_1, group: group_2, inserted_at: datetime_5)
-      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1) # not in 'last day'
+      # not in 'last day'
+      insert(:message, user: user_2, group: group_1, inserted_at: datetime_1)
       insert(:message, user: user_2, group: group_1, inserted_at: datetime_3)
       insert(:message, user: user_2, group: group_2, inserted_at: datetime_3)
       insert(:message, user: user_2, group: group_1, inserted_at: datetime_4)
       insert(:message, user: user_2, group: group_2, inserted_at: datetime_5)
-      insert(:message, user: user_2, group: group_2, inserted_at: datetime_2) # not in the 'last 30 days'
-      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1) # not in 'last 30 days
-      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2) # not the target team
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3) # not the target team
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_4) # not the target team
-      insert(:message, user: user_4, group: group_4, inserted_at: datetime_5) # not the target team
+      # not in the 'last 30 days'
+      insert(:message, user: user_2, group: group_2, inserted_at: datetime_2)
+      # not in 'last 30 days
+      insert(:message, user: user_3, group: group_2, inserted_at: datetime_1)
+      # not the target team
+      insert(:message, user: user_3, group: group_3, inserted_at: datetime_2)
+      # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_3)
+      # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_4)
+      # not the target team
+      insert(:message, user: user_4, group: group_4, inserted_at: datetime_5)
 
       opts = %{time_period: :last_30_days, end_at: end_at}
       message_count = Stitch.MessageQueries.count(team, opts)

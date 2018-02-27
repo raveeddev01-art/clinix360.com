@@ -177,6 +177,10 @@
 }
 
 .message-info-modal {
+  .modal-dialog {
+    max-width: 610px;
+  }
+  
   .modal-body {
     max-height: 90vh;
     overflow-y: auto;

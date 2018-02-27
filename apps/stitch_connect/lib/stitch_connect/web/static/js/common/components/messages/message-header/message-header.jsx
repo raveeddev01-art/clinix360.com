@@ -1,28 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
+import { TimestampTooltip, UserProfileMenu } from "common/components";
 
 class MessageHeader extends Component {
   render() {
-    const { timestamp, user } = this.props;
-    const timestampTooltip = (
-      <Tooltip id="date-tooltip">{moment(timestamp).calendar()}</Tooltip>
-    );
+    const { timestamp, user, children } = this.props;
 
     return (
       <div className="message-header">
-        <div className="name">{`${user.first_name} ${user.last_name} `}</div>
-
-        <OverlayTrigger placement="top" overlay={timestampTooltip}>
-          <span className="time">
-            {moment
-              .utc(timestamp)
-              .local()
-              .format("hh:mm A")}
-          </span>
-        </OverlayTrigger>
+        <UserProfileMenu user={user} className="name">
+          {user.full_name}
+        </UserProfileMenu>
+        <TimestampTooltip timestamp={timestamp} className="time" />
+        {children}
       </div>
     );
   }
@@ -30,7 +20,15 @@ class MessageHeader extends Component {
 
 MessageHeader.propTypes = {
   timestamp: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
+
+MessageHeader.defaultProps = {
+  children: null
 };
 
 export default MessageHeader;

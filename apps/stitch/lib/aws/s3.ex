@@ -1,6 +1,7 @@
 defmodule Stitch.AWS.S3 do
   alias Timex
   @s3 Application.get_env(:stitch, :aws_user_upload)
+  require Logger
 
   @spec upload(binary) :: {:ok, map} | {:error, term}
   def upload(path) do
