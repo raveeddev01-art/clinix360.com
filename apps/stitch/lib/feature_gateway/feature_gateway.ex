@@ -23,10 +23,10 @@ defmodule Stitch.FeatureGateway do
     team = Repo.preload(team, :subscription)
 
     []
-    |> add_team_tier(team.subscription)
     |> Connect.add_team_features(team)
     |> Engage.add_team_features(team)
     |> Manage.add_team_features(team)
+    |> add_team_tier(team.subscription)
   end
 
   defp add_team_tier(features, subscription) do

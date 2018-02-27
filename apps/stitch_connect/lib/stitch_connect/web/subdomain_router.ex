@@ -124,6 +124,10 @@ defmodule StitchConnect.Web.SubdomainRouter do
       patch("/:id/resend", InvitationController, :resend)
     end
 
+    scope "/teams" do
+      get("/features", TeamController, :features)
+    end
+
     get("/groups/:id", GroupController, :show)
     post("/groups", GroupController, :create)
     post("/groups/dm", GroupController, :create_single_dm)
