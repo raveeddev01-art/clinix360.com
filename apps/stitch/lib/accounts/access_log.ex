@@ -3,6 +3,7 @@ defmodule Stitch.Accounts.AccessLog do
   The AccessLog schema module.
   """
   use Ecto.Schema
+  import Ecto.Query
   import Ecto.Changeset
   alias Stitch.Accounts.{User, AccessLog}
   alias Stitch.{Repo, Team}
@@ -51,7 +52,7 @@ defmodule Stitch.Accounts.AccessLog do
     end)
   end
 
-  @spec list(Team.t, list | nil) :: Stitch.Paginator.t
+  @spec list(Team.t(), list | nil) :: Stitch.Paginator.t()
   def list(%Team{} = team, opts \\ []) do
     limit = opts[:limit] || 30
     offset = opts[:skip] || 0
