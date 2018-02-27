@@ -640,4 +640,22 @@ defmodule StitchConnect.Web.UserControllerTest do
       assert json["errors"] == "Invalid password"
     end
   end
+
+  describe "POST /api/v1/users/access" do
+    test "logs access data", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team)
+
+      conn
+      |> with_team_subdomain(team)
+      |> with_api_user(user)
+      |> put_req_header("user-agent", "test-user-agent")
+      |> put_req_header("stitch-app-version", "0.2")
+      |> post(Routes.api_v1_user_path(conn, :access), %{})
+
+      assert [access_log] = Stitch.Repo.all(Stitch.Accounts.AccessLog)
+      assert access_log.app_version == "0.2"
+      assert access_log.user_agent == "test-user-agent"
+    end
+  end
 end
