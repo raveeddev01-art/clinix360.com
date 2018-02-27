@@ -9,17 +9,14 @@ import SettingPanel from "../../components/setting-panel/setting-panel";
 
 const title = "Deactivate Panel";
 
-@inject("userStore")
-@inject("teamStore")
+@inject("userStore", "teamStore")
 @observer
 class DeactivatePanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
       confirmation: "",
-      formValid: false,
-      description: `If you no longer need your account on the ${this.props
-        .teamStore.name} team, you can deactivate it here.`
+      formValid: false
     };
   }
 
@@ -32,22 +29,26 @@ class DeactivatePanel extends Component {
   onSave = () => {
     const { onError, userStore } = this.props;
 
-    userStore.deactivateAccount(this.state.confirmation).catch(err => {
+    userStore.deactivateAccount().catch(err => {
       onError(err.data.message);
     });
   };
 
   _onChangeConfirmation = e => {
-    this.setState({ confirmation: e.target.value }, () => {
-      this.setState({ formValid: this.state.confirmation === "CONFIRM" });
+    this.setState({
+      confirmation: e.target.value,
+      formValid: e.target.value === "CONFIRM"
     });
   };
 
   render() {
+    const description = `If you no longer need your account on the ${this.props
+      .teamStore.name} team, you can deactivate it here.`;
+
     return (
       <SettingPanel
         title={title}
-        description={this.state.description}
+        description={description}
         onSave={this.onSave}
         onEdit={this.onToggleEdit}
         disableSave={!this.state.formValid}

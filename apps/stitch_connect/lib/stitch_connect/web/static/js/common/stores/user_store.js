@@ -189,10 +189,13 @@ class UserStore {
   };
 
   @action
-  deactivateAccount = confirmation => {
-    if (confirmation === "CONFIRM") {
-      console.log("Hit deactivation endpoint.");
-    }
+  deactivateAccount = () => {
+    return post(`/api/v1/users/deactivate-my-account`, {
+      body: {},
+      hideNotify: true
+    }).then(resp => {
+      alert("Deactivated account");
+    });
   };
 }
 
