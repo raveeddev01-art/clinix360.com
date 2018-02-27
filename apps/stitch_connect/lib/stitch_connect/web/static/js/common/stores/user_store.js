@@ -187,6 +187,13 @@ class UserStore {
       window.authenticationToken = resp.data.token;
     });
   };
+
+  @action
+  deactivateAccount = confirmation => {
+    if (confirmation === "CONFIRM") {
+      console.log("Hit deactivation endpoint.");
+    }
+  };
 }
 
 export default UserStore;

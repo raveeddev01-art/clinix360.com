@@ -1,0 +1,77 @@
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
+import FormGroup from "react-bootstrap/lib/FormGroup";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
+import FormControl from "react-bootstrap/lib/FormControl";
+
+import SettingPanel from "../../components/setting-panel/setting-panel";
+
+const title = "Deactivate Panel";
+
+@inject("userStore")
+@inject("teamStore")
+@observer
+class DeactivatePanel extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      confirmation: "",
+      formValid: false,
+      description: `If you no longer need your account on the ${this.props
+        .teamStore.name} team, you can deactivate it here.`
+    };
+  }
+
+  onToggleEdit = () => {
+    this.setState({
+      confirmation: ""
+    });
+  };
+
+  onSave = () => {
+    const { onError, userStore } = this.props;
+
+    userStore
+      .deactivateAccount(this.state.confirmation)
+      .then(() => {
+        // Logout, redirect to homepage.
+      })
+      .catch(err => {
+        onError(err.data.message);
+      });
+  };
+
+  handleChange = e => {
+    this.setState({ confirmation: e.target.value }, () => {
+      this.setState({ formValid: this.state.confirmation === "CONFIRM" });
+    });
+  };
+
+  render() {
+    return (
+      <SettingPanel
+        title={title}
+        description={this.state.description}
+        onSave={this.onSave}
+        onEdit={this.onToggleEdit}
+        disableSave={!this.state.formValid}
+        saveButtonText="Deactivate my account"
+      >
+        <FormGroup bsSize="large">
+          <ControlLabel>Confirm</ControlLabel>
+          <FormControl
+            type="text"
+            value={this.state.confirmation}
+            placeholder="Type in CONFIRM before deleting."
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+      </SettingPanel>
+    );
+  }
+}
+
+DeactivatePanel.propTypes = { onError: PropTypes.func.isRequired };
+
+export default DeactivatePanel;

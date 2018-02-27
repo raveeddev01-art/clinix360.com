@@ -6,6 +6,7 @@ import UsernamePanel from "./username-panel";
 import EmailPanel from "./email-panel";
 import PasswordPanel from "./password-panel";
 import PINPanel from "./pin-panel";
+import DeactivatePanel from "./deactivate-panel";
 
 const header = (
   <h1>
@@ -78,6 +79,7 @@ class AccountSettings extends Component {
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
+        <DeactivatePanel onError={this.onError} />
       </Panel>
     );
   }
