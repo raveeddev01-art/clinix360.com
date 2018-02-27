@@ -111,9 +111,12 @@ defmodule Stitch.Billing.BillingTest do
       assert sub.tier == "TRIAL"
       assert sub.renewal_frequency == "MONTHLY"
 
-      query = from u in User,
-        where: u.team_id == ^team.id,
-        where: u.disabled == false
+      query =
+        from(
+          u in User,
+          where: u.team_id == ^team.id,
+          where: u.disabled == false
+        )
 
       users = Repo.all(query)
 
@@ -139,9 +142,12 @@ defmodule Stitch.Billing.BillingTest do
       assert sub.tier == "TRIAL"
       assert sub.renewal_frequency == "MONTHLY"
 
-      query = from u in User,
-        where: u.team_id == ^team.id,
-        where: u.disabled == false
+      query =
+        from(
+          u in User,
+          where: u.team_id == ^team.id,
+          where: u.disabled == false
+        )
 
       users = Repo.all(query)
 
@@ -166,9 +172,12 @@ defmodule Stitch.Billing.BillingTest do
       assert sub.tier == "BASIC"
       assert sub.renewal_frequency == "MONTHLY"
 
-      query = from u in User,
-        where: u.team_id == ^team.id,
-        where: u.disabled == false
+      query =
+        from(
+          u in User,
+          where: u.team_id == ^team.id,
+          where: u.disabled == false
+        )
 
       users = Repo.all(query)
 
@@ -193,9 +202,12 @@ defmodule Stitch.Billing.BillingTest do
       assert sub.tier == "PREMIUM"
       assert sub.renewal_frequency == "MONTHLY"
 
-      query = from u in User,
-        where: u.team_id == ^team.id,
-        where: u.disabled == false
+      query =
+        from(
+          u in User,
+          where: u.team_id == ^team.id,
+          where: u.disabled == false
+        )
 
       users = Repo.all(query)
 
@@ -220,9 +232,12 @@ defmodule Stitch.Billing.BillingTest do
       assert sub.tier == "POWER"
       assert sub.renewal_frequency == "MONTHLY"
 
-      query = from u in User,
-        where: u.team_id == ^team.id,
-        where: u.disabled == false
+      query =
+        from(
+          u in User,
+          where: u.team_id == ^team.id,
+          where: u.disabled == false
+        )
 
       users = Repo.all(query)
 
