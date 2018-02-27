@@ -4,7 +4,17 @@ defmodule Stitch.FeatureGateway.Connect do
   alias Stitch.FeatureGateway
 
   def allowed?(:guests, team) do
-    "connect.guests" in FeatureGateway.available_features(team)
+    team = Repo.preload(team, :subscription)
+
+    if "connect.guests" in FeatureGateway.available_features(team) do
+      true
+    else
+      if team.subscription.tier == "BASIC" do
+        {:error, {:insufficient_tier, ["PREMIUM", "POWER"]}}
+      else
+        {:error, :subscription_expired}
+      end
+    end
   end
 
   @doc """
