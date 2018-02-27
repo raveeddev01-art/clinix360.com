@@ -6,6 +6,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
 
   def show(conn, %{"id" => _}) do
     team = TeamQueries.get_by_id(conn.private[:team_id])
+
     conn
     |> json(%{
       id: team.id,
@@ -23,10 +24,20 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: message})
+
       team ->
         conn
         |> json(%{id: team.id, name: team.name, slug: team.slug})
     end
+  end
+
+  def features(conn, _params) do
+    features =
+      TeamQueries.get_by_id(conn.private[:team_id])
+      |> Stitch.FeatureGateway.available_features()
+
+    conn
+    |> json(features)
   end
 
   def url_available(conn, %{"url" => url}) do
@@ -45,8 +56,10 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update name"})
+
       {:ok, team} ->
         TeamChannel.broadcast_team_rename(team)
+
         conn
         |> json(%{id: team.id, name: team.name})
     end
@@ -54,31 +67,42 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
 
   def show_contact_info(conn, %{"id" => _}) do
     team = conn.assigns.team
-    render conn, "contact_info.json", team: team
+    render(conn, "contact_info.json", team: team)
   end
 
   def update_contact_info(conn, %{"id" => _} = params) do
-    with team = conn.assigns.team,
-         {:ok, team} <- Admin.update_contact_info(team, params) do
+    with team = conn.assigns.team, {:ok, team} <- Admin.update_contact_info(team, params) do
       TeamChannel.broadcast_team_rename(team)
-      render conn, "contact_info.json", team: team
+      render(conn, "contact_info.json", team: team)
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: changeset_errors_to_string(changeset)})
-      error -> error
+
+      error ->
+        error
     end
   end
 
-  def update_security_lockout_time(conn, %{"id" => _, "enabled" => enabled, "seconds_to_lockout" => seconds_to_lockout}) do
-    case Team.Admin.update_security_lockout_time(conn.private[:team_id], enabled, seconds_to_lockout || 900) do
+  def update_security_lockout_time(conn, %{
+        "id" => _,
+        "enabled" => enabled,
+        "seconds_to_lockout" => seconds_to_lockout
+      }) do
+    case Team.Admin.update_security_lockout_time(
+           conn.private[:team_id],
+           enabled,
+           seconds_to_lockout || 900
+         ) do
       {:error, _reason} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "bad"})
+
       {:ok, team} ->
         TeamChannel.broadcast_security_lockout_update(team)
+
         conn
         |> json(%{
           id: team.id,
@@ -95,6 +119,7 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't update the open invitation setting."})
+
       {:ok, team} ->
         conn
         |> json(%{
@@ -111,8 +136,10 @@ defmodule StitchConnect.Web.Api.V1.TeamController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "Couldn't destroy the team."})
+
       {:ok, team} ->
         TeamChannel.broadcast_team_deleted(team)
+
         conn
         |> json(%{message: "Team has been destroyed"})
     end

@@ -61,6 +61,7 @@ defmodule Stitch.Message.LinkPreview do
     |> List.flatten
   end
 
+  @spec generate_link_previews(Message.t) :: Message.t | no_return
   def generate_link_previews(%Message{text_content: text_content} = message) do
     links = get_links(text_content)
 

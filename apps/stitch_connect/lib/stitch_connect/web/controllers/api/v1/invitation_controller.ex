@@ -3,15 +3,15 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   alias Stitch.{Invitation, FeatureGateway, TeamAuthorization}
   alias StitchConnect.Web.{GroupChannel, EventsChannel, TeamChannel}
 
-  plug :fetch_session when action in [:accept]
-  action_fallback StitchConnect.Web.Api.FallbackController
+  plug(:fetch_session when action in [:accept])
+  action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def index(conn, _params) do
     with team = conn.assigns.team,
          user = conn.assigns.current_user,
          {:authorized, true} <- {:authorized, TeamAuthorization.can_send_invites?(user, team)} do
       invitations = Invitation.list_pending_team_invitations(team)
-      render conn, "index.json", invitations: invitations
+      render(conn, "index.json", invitations: invitations)
     else
       {:authorized, false} ->
         conn
@@ -21,9 +21,8 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   end
 
   def show(conn, %{"token" => invite_token}) do
-    with {:ok, invitation} <- Invitation.get_by_invite_token(invite_token)
-    do
-      render conn, "show.json", invitation: invitation
+    with {:ok, invitation} <- Invitation.get_by_invite_token(invite_token) do
+      render(conn, "show.json", invitation: invitation)
     else
       {:error, _} ->
         conn
@@ -32,33 +31,54 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   end
 
   def invite_single_room_guests(conn, params) do
-    case FeatureGateway.allowed?(:guests, conn.assigns.subscription) do
-      :ok ->
+    case FeatureGateway.Connect.allowed?(:guests, conn.assigns.team) do
+      true ->
         response =
-          Enum.reduce(Map.get(params, "emails", []), %{}, fn (email, acc) ->
-            case Invitation.invite_as_single_room_guest(conn.assigns.current_user, conn.assigns.team, %{"email" => email, "group_id" => params["group_id"]}) do
+          Enum.reduce(Map.get(params, "emails", []), %{}, fn email, acc ->
+            case Invitation.invite_as_single_room_guest(
+                   conn.assigns.current_user,
+                   conn.assigns.team,
+                   %{"email" => email, "group_id" => params["group_id"]}
+                 ) do
               {:ok, invitation} ->
-                EventsChannel.broadcast_invitation_sent(conn.assigns.team, invitation.user, invitation)
+                EventsChannel.broadcast_invitation_sent(
+                  conn.assigns.team,
+                  invitation.user,
+                  invitation
+                )
+
                 Map.put(acc, email, "ok")
+
               {:error, :group_not_found} ->
                 Map.put(acc, email, "Invalid group id.")
+
               {:error, changeset} ->
                 Map.put(acc, email, changeset_errors_to_string(changeset))
-              _ -> acc
+
+              _ ->
+                acc
             end
           end)
 
         conn
         |> put_status(:created)
         |> json(response)
-      error -> error
+
+      error ->
+        error
     end
   end
 
   def invite_single_room_guest(conn, params) do
-    with :ok <- FeatureGateway.allowed?(:guests, conn.assigns.subscription),
-         {:ok, invitation} <- Invitation.invite_as_single_room_guest(conn.assigns.current_user, conn.assigns.team, params) do
+    with true <- FeatureGateway.Connect.allowed?(:guests, conn.assigns.team),
+         {:ok, invitation} <-
+           Invitation.invite_as_single_room_guest(
+             conn.assigns.current_user,
+             conn.assigns.team,
+             params
+           ) do
       EventsChannel.broadcast_invitation_sent(conn.assigns.team, invitation.user, invitation)
+
       conn
       |> put_status(:created)
       |> json(%{message: "Invitation sent."})
@@ -67,40 +87,58 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{errors: %{group_id: ["Invalid group id."]}})
-      error -> error
+
+      error ->
+        error
     end
   end
 
   def invite_multi_room_guests(conn, params) do
     current_user = conn.assigns.current_user
     team = conn.assigns.team
-    case FeatureGateway.allowed?(:guests, conn.assigns.subscription) do
-      :ok ->
+
+    case FeatureGateway.Connect.allowed?(:guests, conn.assigns.team) do
+      true ->
         response =
-          Enum.reduce(Map.get(params, "emails", []), %{}, fn (email, acc) ->
-            case Invitation.invite_as_multi_room_guest(current_user, team, %{"email" => email, "group_ids" => params["group_ids"]}) do
+          Enum.reduce(Map.get(params, "emails", []), %{}, fn email, acc ->
+            case Invitation.invite_as_multi_room_guest(current_user, team, %{
+                   "email" => email,
+                   "group_ids" => params["group_ids"]
+                 }) do
               {:ok, invitation} ->
                 EventsChannel.broadcast_invitation_sent(team, invitation.user, invitation)
                 Map.put(acc, email, "ok")
+
               {:error, :invalid_groups, _group_ids} ->
                 Map.put(acc, email, "Invalid group ids")
+
               {:error, changeset} ->
                 Map.put(acc, email, changeset_errors_to_string(changeset))
-              _ -> acc
+
+              _ ->
+                acc
             end
           end)
 
         conn
         |> put_status(:created)
         |> json(response)
-      error -> error
+
+      error ->
+        error
     end
   end
 
   def invite_multi_room_guest(conn, params) do
-    with :ok <- FeatureGateway.allowed?(:guests, conn.assigns.subscription),
-         {:ok, invitation} <- Invitation.invite_as_multi_room_guest(conn.assigns.current_user, conn.assigns.team, params) do
+    with true <- FeatureGateway.Connect.allowed?(:guests, conn.assigns.team),
+         {:ok, invitation} <-
+           Invitation.invite_as_multi_room_guest(
+             conn.assigns.current_user,
+             conn.assigns.team,
+             params
+           ) do
       EventsChannel.broadcast_invitation_sent(conn.assigns.team, invitation.user, invitation)
+
       conn
       |> put_status(:created)
       |> json(%{message: "Invitation sent."})
@@ -109,32 +147,38 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{errors: %{group_ids: ["Invalid group ids (#{Enum.join(group_ids, ",")})."]}})
-      error -> error
+
+      error ->
+        error
     end
   end
 
   def create(conn, %{"email_collection" => email_collection}) do
     current_user = conn.assigns.current_user
     team = conn.assigns.team
-    emails = email_collection |> String.split(",") |> Enum.uniq
+    emails = email_collection |> String.split(",") |> Enum.uniq()
 
     if TeamAuthorization.can_send_invites?(current_user, team) do
-      results = Enum.reduce emails, %{}, fn email, map ->
-        result = case Invitation.invite_to_team(current_user.id, email) do
-          {:ok, invitation} ->
-            EventsChannel.broadcast_invitation_sent(team, invitation.user, invitation)
-            "ok"
-          {:error, reason} -> reason
-        end
+      results =
+        Enum.reduce(emails, %{}, fn email, map ->
+          result =
+            case Invitation.invite_to_team(current_user.id, email) do
+              {:ok, invitation} ->
+                EventsChannel.broadcast_invitation_sent(team, invitation.user, invitation)
+                "ok"
 
-        Map.put(map, email, result)
-      end
+              {:error, reason} ->
+                reason
+            end
+
+          Map.put(map, email, result)
+        end)
 
       json(conn, results)
     else
-        conn
-        |> put_status(:unauthorized)
-        |> json(%{message: "Unauthorized to send invites."})
+      conn
+      |> put_status(:unauthorized)
+      |> json(%{message: "Unauthorized to send invites."})
     end
   end
 
@@ -142,8 +186,14 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     case Invitation.revoke_invitation(conn.assigns.current_user.id, id) do
       {:error, reason} ->
         conn |> put_status(:unauthorized) |> text(reason)
+
       {:ok, invitation} ->
-        EventsChannel.broadcast_invitation_revoked(conn.assigns.team, invitation, invitation.user.id)
+        EventsChannel.broadcast_invitation_revoked(
+          conn.assigns.team,
+          invitation,
+          invitation.user.id
+        )
+
         conn |> json(%{message: "Invitation has been revoked."})
     end
   end
@@ -152,8 +202,9 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
     case Invitation.resend_invitation(conn.assigns.current_user.id, id) do
       {:error, reason} ->
         conn |> put_status(:unauthorized) |> text(reason)
+
       {:ok, invitation} ->
-        render conn, "show.json", invitation: invitation
+        render(conn, "show.json", invitation: invitation)
     end
   end
 
@@ -164,9 +215,11 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
       {:ok, %{user: user, groups: groups}} ->
         Stitch.Billing.update_subscriber_count(conn.assigns.team)
         TeamChannel.broadcast_user_joined(conn.assigns.team, user)
+
         Enum.each(groups, fn group ->
           GroupChannel.broadcast_members_update(group, [], [user])
         end)
+
         conn
         |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
@@ -191,6 +244,9 @@ defmodule StitchConnect.Web.Api.V1.InvitationController do
   def accept(conn, _) do
     conn
     |> put_status(:unprocessable_entity)
-    |> json(%{message: "Some parameter missing out of token, first_name, last_name, username, password, pin."})
+    |> json(%{
+      message:
+        "Some parameter missing out of token, first_name, last_name, username, password, pin."
+    })
   end
 end

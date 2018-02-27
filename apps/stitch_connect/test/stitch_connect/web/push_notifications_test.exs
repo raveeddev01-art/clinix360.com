@@ -143,7 +143,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
     end
   end
 
-  describe "push_new_msg_notification/3" do
+  describe "notify_users/3" do
     test "when message is a system message" do
       team = insert(:team)
       group = insert(:group, team: team)
@@ -152,7 +152,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       insert(:mobile_device, user: user)
       message = insert(:message, group: group, type: "system")
 
-      PushNotifications.push_new_msg_notification(group, message, [user.id])
+      PushNotifications.notify_users(group, message, [user.id])
 
       refute_receive _
     end
@@ -185,7 +185,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       message = insert(:message, group: group)
       user_ids = [user.id, other_user.id, disabled_user.id]
 
-      PushNotifications.push_new_msg_notification(group, message, user_ids)
+      PushNotifications.notify_users(group, message, user_ids)
 
       assert_receive [
         %APNS.Notification{
@@ -218,12 +218,14 @@ defmodule StitchConnect.Web.PushNotificationsTest do
 
       assert_receive %FCM.Notification{
         registration_id: ["android-token", "android-token-2"],
-        payload: %{"data" => %{
-          "badge" => "0",
-          "room_notification_count" => 0,
-          "message" => "Sergio Tapia sent a room message (Foogroup).",
-          "ejson" => ^encoded_ejson
-        }}
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => "Sergio Tapia sent a room message (Foogroup).",
+            "ejson" => ^encoded_ejson
+          }
+        }
       }
 
       assert_receive [
@@ -257,12 +259,14 @@ defmodule StitchConnect.Web.PushNotificationsTest do
 
       assert_receive %FCM.Notification{
         registration_id: ["other-android-token", "other-android-token-2"],
-        payload: %{"data" => %{
-          "badge" => "0",
-          "room_notification_count" => 0,
-          "message" => "Sergio Tapia sent a room message (Foogroup).",
-          "ejson" => ^encoded_ejson
-        }}
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => "Sergio Tapia sent a room message (Foogroup).",
+            "ejson" => ^encoded_ejson
+          }
+        }
       }
 
       refute_receive _
@@ -280,16 +284,18 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       insert(:mobile_device, user: user, type: "android", token: "android-token")
       message = insert(:message, group: group, type: "upload")
 
-      PushNotifications.push_new_msg_notification(group, message, [user.id])
+      PushNotifications.notify_users(group, message, [user.id])
 
       assert_receive %FCM.Notification{
         registration_id: ["android-token"],
-        payload: %{"data" => %{
-          "badge" => "0",
-          "room_notification_count" => 0,
-          "message" => "Sergio Tapia uploaded a room file (Foogroup).",
-          "ejson" => _
-        }}
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => "Sergio Tapia uploaded a room file (Foogroup).",
+            "ejson" => _
+          }
+        }
       }
 
       assert_receive []
@@ -304,16 +310,18 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       insert(:mobile_device, user: user, type: "android", token: "android-token")
       message = insert(:message, group: group)
 
-      PushNotifications.push_new_msg_notification(group, message, [user.id])
+      PushNotifications.notify_users(group, message, [user.id])
 
       assert_receive %FCM.Notification{
         registration_id: ["android-token"],
-        payload: %{"data" => %{
-          "badge" => "0",
-          "room_notification_count" => 0,
-          "message" => "Sergio Tapia sent you a direct message.",
-          "ejson" => _
-        }}
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => "Sergio Tapia sent you a direct message.",
+            "ejson" => _
+          }
+        }
       }
 
       assert_receive []
@@ -328,16 +336,44 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       insert(:mobile_device, user: user, type: "android", token: "android-token")
       message = insert(:message, group: group, type: "upload")
 
-      PushNotifications.push_new_msg_notification(group, message, [user.id])
+      PushNotifications.notify_users(group, message, [user.id])
 
       assert_receive %FCM.Notification{
         registration_id: ["android-token"],
-        payload: %{"data" => %{
-          "badge" => "0",
-          "room_notification_count" => 0,
-          "message" => "Sergio Tapia uploaded a direct file.",
-          "ejson" => _
-        }}
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => "Sergio Tapia uploaded a direct file.",
+            "ejson" => _
+          }
+        }
+      }
+
+      assert_receive []
+      refute_receive _
+    end
+
+    test "when the receiver is mentioned in a room messasge" do
+      team = insert(:team)
+      group = insert(:group, team: team, name: "RoomName")
+      user = insert(:user, team: team)
+      insert(:group_user, group: group, user: user)
+      insert(:mobile_device, user: user, type: "android", token: "android-token")
+      message = insert(:message, group: group, mentioned_user_ids: [user.id])
+
+      PushNotifications.notify_users(group, message, [user.id])
+
+      assert_receive %FCM.Notification{
+        registration_id: ["android-token"],
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => "Sergio Tapia mentioned you in RoomName.",
+            "ejson" => _
+          }
+        }
       }
 
       assert_receive []
@@ -345,30 +381,32 @@ defmodule StitchConnect.Web.PushNotificationsTest do
     end
   end
 
-  test "handle_response_andriod/1" do
+  test "handle_fcm_push/1" do
     device = insert(:mobile_device, type: "android")
     device_with_invalid_token = insert(:mobile_device, type: "android")
     device_with_unregisted_token = insert(:mobile_device, type: "android")
 
-    notification = %FCM.Notification{response: [
-      {:success, device.token},
-      {:invalid_registration, device_with_invalid_token.token},
-      {:not_registered, device_with_unregisted_token.token},
-    ]}
+    notification = %FCM.Notification{
+      response: [
+        {:success, device.token},
+        {:invalid_registration, device_with_invalid_token.token},
+        {:not_registered, device_with_unregisted_token.token}
+      ]
+    }
 
-    PushNotifications.handle_response_andriod(notification)
+    PushNotifications.handle_fcm_push(notification)
 
     assert Repo.get(Device, device.id)
     refute Repo.get(Device, device_with_invalid_token.id)
     refute Repo.get(Device, device_with_unregisted_token.id)
   end
 
-  describe "handle_response_ios/1" do
+  describe "handle_apns_push/1" do
     test "when response is :bad_device_token" do
       device = insert(:mobile_device, type: "ios")
 
       notification = %APNS.Notification{response: :bad_device_token, device_token: device.token}
-      PushNotifications.handle_response_ios(notification)
+      PushNotifications.handle_apns_push(notification)
 
       refute Repo.get(Device, device.id)
     end
@@ -377,7 +415,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       device = insert(:mobile_device, type: "ios")
 
       notification = %APNS.Notification{response: :unregistered, device_token: device.token}
-      PushNotifications.handle_response_ios(notification)
+      PushNotifications.handle_apns_push(notification)
 
       refute Repo.get(Device, device.id)
     end
@@ -386,7 +424,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       device = insert(:mobile_device, type: "ios")
 
       notification = %APNS.Notification{response: :success, device_token: device.token}
-      PushNotifications.handle_response_ios(notification)
+      PushNotifications.handle_apns_push(notification)
 
       assert Repo.get(Device, device.id)
     end

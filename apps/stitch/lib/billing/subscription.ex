@@ -6,17 +6,20 @@ defmodule Stitch.Billing.Subscription do
   import Ecto.Changeset
 
   schema "subscriptions" do
-    field :valid_until, :utc_datetime
-    field :trial_valid_until, :utc_datetime
-    field :tier, :string
-    field :customer_id, :string                 # Stripe customer id
-    field :subscription_id, :string             # Stripe subscription id
-    field :subscription_line_item_id, :string   # Stripe subscription line item with plan and quantity
-    field :renewal_frequency, :string
-    field :renews, :boolean, default: false
-    field :estimated_invoice_amount, :integer
+    field(:valid_until, :utc_datetime)
+    field(:trial_valid_until, :utc_datetime)
+    field(:tier, :string)
+    # Stripe customer id
+    field(:customer_id, :string)
+    # Stripe subscription id
+    field(:subscription_id, :string)
+    # Stripe subscription line item with plan and quantity
+    field(:subscription_line_item_id, :string)
+    field(:renewal_frequency, :string)
+    field(:renews, :boolean, default: false)
+    field(:estimated_invoice_amount, :integer)
 
-    belongs_to :team, Stitch.Team
+    belongs_to(:team, Stitch.Team)
 
     timestamps()
   end
@@ -34,12 +37,24 @@ defmodule Stitch.Billing.Subscription do
     %__MODULE__{}
     |> cast(params, ~w(tier renewal_frequency renews)a)
     |> validate_required(~w(tier renewal_frequency)a)
-    |> validate_inclusion(:tier, ~w(TRIAL BASIC PREMIUM POWER), message: "expects TRIAL|BASIC|PREMIUM|POWER")
-    |> validate_inclusion(:renewal_frequency, ~w(MONTHLY YEARLY), message: "expects MONTHLY|YEARLY")
+    |> validate_inclusion(
+      :tier,
+      ~w(TRIAL BASIC PREMIUM POWER),
+      message: "expects TRIAL|BASIC|PREMIUM|POWER"
+    )
+    |> validate_inclusion(
+      :renewal_frequency,
+      ~w(MONTHLY YEARLY),
+      message: "expects MONTHLY|YEARLY"
+    )
   end
 
   @doc false
   def update(struct, params \\ %{}) do
-    cast(struct, params, ~w(tier renewal_frequency subscription_id subscription_line_item_id valid_until trial_valid_until renews estimated_invoice_amount)a)
+    cast(
+      struct,
+      params,
+      ~w(tier renewal_frequency subscription_id subscription_line_item_id valid_until trial_valid_until renews estimated_invoice_amount)a
+    )
   end
 end

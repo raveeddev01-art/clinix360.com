@@ -22,17 +22,19 @@ defmodule Stitch.Stripe.EventsTest do
           "id" => "inv_afadsfaerasfasef",
           "customer" => subscription.customer_id,
           "lines" => %{
-            "data" => [%{
-              "id" => subscription.subscription_id,
-              "period" => %{
-                "start" => DateTime.to_unix(expected_datetime),
-                "end" => DateTime.to_unix(expected_datetime)
-              },
-              "plan" => %{
-                "id" => "basic_yearly",
-              },
-              "quantity" => 6,
-            }]
+            "data" => [
+              %{
+                "id" => subscription.subscription_id,
+                "period" => %{
+                  "start" => DateTime.to_unix(expected_datetime),
+                  "end" => DateTime.to_unix(expected_datetime)
+                },
+                "plan" => %{
+                  "id" => "basic_yearly"
+                },
+                "quantity" => 6
+              }
+            ]
           }
         }
       }
@@ -49,20 +51,24 @@ defmodule Stitch.Stripe.EventsTest do
     setup do
       subscription = insert(:subscription)
       insert(:user, team: subscription.team, roles: ["admin"])
+
       event = %{
         type: "invoice.payment_failed",
         data: %{
           "object" => %{
             "customer" => subscription.customer_id,
             "lines" => %{
-              "data" => [%{
-                "id" => subscription.subscription_id,
-              }]
+              "data" => [
+                %{
+                  "id" => subscription.subscription_id
+                }
+              ]
             },
-           "next_payment_attempt" => ""
+            "next_payment_attempt" => ""
           }
         }
       }
+
       {:ok, event: event}
     end
 
@@ -71,6 +77,7 @@ defmodule Stitch.Stripe.EventsTest do
         DateTime.utc_now()
         |> DateTime.to_unix()
         |> Kernel.+(7 * 24 * 60 * 60)
+
       event = put_in(event, [:data, "object", "next_payment_attempt"], future_time)
       assert :ok == Events.handle_event(event)
     end
@@ -79,6 +86,7 @@ defmodule Stitch.Stripe.EventsTest do
       future_time =
         DateTime.utc_now()
         |> DateTime.to_unix()
+
       event = put_in(event, [:data, "object", "next_payment_attempt"], future_time)
       refute :ok == Events.handle_event(event)
     end
@@ -86,6 +94,7 @@ defmodule Stitch.Stripe.EventsTest do
 
   test "handles the `customer.subscription.deleted` event" do
     subscription = insert(:subscription)
+
     event = %{
       type: "customer.subscription.deleted",
       data: %{
@@ -95,7 +104,14 @@ defmodule Stitch.Stripe.EventsTest do
         }
       }
     }
+
     assert :ok == Events.handle_event(event)
-    assert %{subscription_id: nil, subscription_line_item_id: nil, estimated_invoice_amount: 0, renews: false} = Billing.get_subscription(subscription.team)
+
+    assert %{
+             subscription_id: nil,
+             subscription_line_item_id: nil,
+             estimated_invoice_amount: 0,
+             renews: false
+           } = Billing.get_subscription(subscription.team)
   end
 end

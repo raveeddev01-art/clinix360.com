@@ -1,4 +1,5 @@
 import AppAlert from "./app-alert";
+import Avatar from "./avatar/avatar";
 import AvatarUploader from "./avatar-uploader";
 import Card from "./card/card";
 import Groups from "./groups/groups";
@@ -16,8 +17,11 @@ import Scrollbar from "./scrollbar";
 import SmartDropdown from "./smart-dropdown";
 import Switcher from "./switcher";
 import TeamList from "./team-list/team-list";
+import TimestampTooltip from "./timestamp-tooltip";
 import Toastr from "./toastr/toastr";
 import Toggle from "./toggle/Toggle";
+import UserProfileMenu from "./user-profile-menu";
+import PortalDropdownMenu from "./portal-dropdown-menu";
 
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
@@ -26,6 +30,7 @@ import ReactionPicker from "./messages/reaction-picker";
 import AddonMessage from "./messages/addon-message";
 
 export {
+  Avatar,
   AppAlert,
   AvatarUploader,
   Card,
@@ -44,8 +49,11 @@ export {
   SmartDropdown,
   Switcher,
   TeamList,
+  TimestampTooltip,
   Toastr,
   Toggle,
+  UserProfileMenu,
+  PortalDropdownMenu,
   MessageContent,
   MessageFooter,
   MessageHeader,
