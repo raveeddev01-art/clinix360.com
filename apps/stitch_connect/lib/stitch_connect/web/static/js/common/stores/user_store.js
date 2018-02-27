@@ -193,8 +193,6 @@ class UserStore {
     return post(`/api/v1/users/deactivate-my-account`, {
       body: {},
       hideNotify: true
-    }).then(resp => {
-      alert("Deactivated account");
     });
   };
 }
