@@ -14,7 +14,7 @@ const header = (
   </h1>
 );
 
-@inject("titleStore", "adminPanelStore")
+@inject("userStore", "titleStore", "adminPanelStore")
 class AccountSettings extends Component {
   constructor(props) {
     super(props);
@@ -53,6 +53,10 @@ class AccountSettings extends Component {
     });
   };
 
+  _nonAdminsOnly = () => {
+    return !this.props.userStore.roles.includes("admin");
+  };
+
   render() {
     const { alertMessage, alertVisible, alertStyle } = this.state;
 
@@ -79,7 +83,7 @@ class AccountSettings extends Component {
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
-        <DeactivatePanel onError={this.onError} />
+        {this._nonAdminsOnly() && <DeactivatePanel onError={this.onError} />}
       </Panel>
     );
   }
