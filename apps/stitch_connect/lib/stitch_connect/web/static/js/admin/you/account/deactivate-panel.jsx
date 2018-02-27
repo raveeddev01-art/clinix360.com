@@ -32,17 +32,12 @@ class DeactivatePanel extends Component {
   onSave = () => {
     const { onError, userStore } = this.props;
 
-    userStore
-      .deactivateAccount(this.state.confirmation)
-      .then(() => {
-        // Logout, redirect to homepage.
-      })
-      .catch(err => {
-        onError(err.data.message);
-      });
+    userStore.deactivateAccount(this.state.confirmation).catch(err => {
+      onError(err.data.message);
+    });
   };
 
-  handleChange = e => {
+  _onChangeConfirmation = e => {
     this.setState({ confirmation: e.target.value }, () => {
       this.setState({ formValid: this.state.confirmation === "CONFIRM" });
     });
@@ -64,7 +59,7 @@ class DeactivatePanel extends Component {
             type="text"
             value={this.state.confirmation}
             placeholder="Type in CONFIRM before deleting."
-            onChange={this.handleChange}
+            onChange={this._onChangeConfirmation}
           />
         </FormGroup>
       </SettingPanel>
