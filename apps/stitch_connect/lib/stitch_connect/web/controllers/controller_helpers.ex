@@ -31,14 +31,14 @@ defmodule StitchConnect.Web.ControllerHelpers do
 
   defp fetch_user_ip(conn) do
     conn.remote_ip
-    |> :inet_parse.ntoa
+    |> :inet_parse.ntoa()
     |> to_string
   end
 
   defp fetch_app_version(conn) do
     case get_req_header(conn, "stitch-app-version") do
       [] -> "undefined"
-      [app_versoin] -> app_versoin
+      [app_version] -> app_version
     end
   end
 
@@ -63,7 +63,8 @@ defmodule StitchConnect.Web.ControllerHelpers do
   def changeset_errors_to_string(changeset) do
     Enum.map(changeset.errors, fn {field, detail} ->
       "#{Phoenix.Naming.humanize(field)} #{ErrorHelpers.translate_error(detail)}"
-    end) |> Enum.join(". ")
+    end)
+    |> Enum.join(". ")
   end
 
   @doc """
@@ -86,7 +87,7 @@ defmodule StitchConnect.Web.ControllerHelpers do
       }
   """
   def changeset_errors_to_map(changeset) do
-    Enum.reduce(changeset.errors, %{}, fn ({field, detail}, acc) ->
+    Enum.reduce(changeset.errors, %{}, fn {field, detail}, acc ->
       field_errors = Map.get(acc, field, [])
       field_errors = [ErrorHelpers.translate_error(detail) | field_errors]
       Map.put(acc, field, field_errors)
@@ -123,6 +124,7 @@ defmodule StitchConnect.Web.ControllerHelpers do
 
   defp do_parse_pagination_param(key, params) when key in [:limit, :skip] do
     param_key = Atom.to_string(key)
+
     case ensure_integer(params[param_key]) do
       nil -> []
       value -> [{key, value}]
@@ -134,6 +136,7 @@ defmodule StitchConnect.Web.ControllerHelpers do
   """
   @spec ensure_integer(any) :: integer | nil
   def ensure_integer(value) when is_integer(value), do: value
+
   def ensure_integer(value) when is_binary(value) do
     try do
       String.to_integer(value)
@@ -141,5 +144,6 @@ defmodule StitchConnect.Web.ControllerHelpers do
       ArgumentError -> nil
     end
   end
+
   def ensure_integer(_), do: nil
 end
