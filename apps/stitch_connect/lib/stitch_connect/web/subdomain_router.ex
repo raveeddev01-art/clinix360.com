@@ -263,5 +263,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/exports/:id/download", ExportController, :download)
 
     get("/engage", EngageController, :index)
+    get("/manage", ManageController, :index)
   end
 end
