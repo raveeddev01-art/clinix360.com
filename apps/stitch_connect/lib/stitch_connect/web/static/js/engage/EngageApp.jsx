@@ -20,7 +20,7 @@ class EngageApp extends Component {
     const { titleStore } = this.props;
 
     return (
-      <div id="app">
+      <div id="app" className="preview-app">
         <AppAlert />
         <div className="engage-wrapper appContainer">
           <Helmet>

@@ -31,7 +31,7 @@ class EngagePreview extends Component {
           </div>
 
           <div className="preview-image">
-            <img src="/images/engage-icon.png" alt="Stitch Connect" />
+            <img src="/images/engage-logo.png" alt="Stitch Connect" />
           </div>
         </div>
       </div>
