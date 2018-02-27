@@ -21,6 +21,7 @@ import TimestampTooltip from "./timestamp-tooltip";
 import Toastr from "./toastr/toastr";
 import Toggle from "./toggle/Toggle";
 import UserProfileMenu from "./user-profile-menu";
+import PortalDropdownMenu from "./portal-dropdown-menu";
 
 import MessageContent from "./messages/message-content/message-content";
 import MessageFooter from "./messages/message-footer/message-footer";
@@ -52,6 +53,7 @@ export {
   Toastr,
   Toggle,
   UserProfileMenu,
+  PortalDropdownMenu,
   MessageContent,
   MessageFooter,
   MessageHeader,

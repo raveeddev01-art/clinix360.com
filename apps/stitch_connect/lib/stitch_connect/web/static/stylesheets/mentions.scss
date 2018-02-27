@@ -1,0 +1,36 @@
+// mentions, links
+.message-link,
+.user-profile-menu .user-mention,
+.group-mention {
+  color: $brand-primary;
+  text-decoration: none;
+  border-bottom: 1px dotted $brand-primary;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+  max-width: 100%;
+
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: none;
+    border-bottom-style: solid;
+    box-shadow: none;
+  }
+}
+
+.user-profile-menu .user-mention,
+.group-mention {
+  background: #ddd;
+  border: 0;
+  border-radius: 3px;
+  padding: 0 3px;
+}
+
+.group-mention,
+.user-profile-menu .me {
+  color: #fff;
+  background: $brand-primary;
+}
