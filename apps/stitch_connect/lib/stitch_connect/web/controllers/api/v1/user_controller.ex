@@ -32,6 +32,22 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
+  def deactivate_my_account(conn, params) do
+    id = conn.assigns.current_user.id
+    with false <- Enum.member?(conn.assigns.current_user.roles, "admin"),
+         {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do
+      Stitch.Billing.update_subscriber_count(conn.assigns.team)
+      TeamChannel.broadcast_deactivated(conn.assigns.team, id)
+      Endpoint.broadcast("user_socket:#{id}", "disconnect", %{})
+      json(conn, %{message: "Account has been deactivated."})
+    else
+      {:error, :not_found} ->
+        not_found_error(conn)
+      true ->
+        unprocessable_entity_error(conn, %{message: "Only non-admins can deactivate their account."})
+    end
+  end
+
   def deactivate(conn, %{"id" => id}) do
     with {:self, false} <- {:self, conn.assigns.current_user.id == String.to_integer(id)},
          {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do

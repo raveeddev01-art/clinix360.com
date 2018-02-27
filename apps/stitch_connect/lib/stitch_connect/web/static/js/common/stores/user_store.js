@@ -187,6 +187,14 @@ class UserStore {
       window.authenticationToken = resp.data.token;
     });
   };
+
+  @action
+  deactivateAccount = () => {
+    return post(`/api/v1/users/deactivate-my-account`, {
+      body: {},
+      hideNotify: true
+    });
+  };
 }
 
 export default UserStore;

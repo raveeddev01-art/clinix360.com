@@ -6,6 +6,7 @@ import UsernamePanel from "./username-panel";
 import EmailPanel from "./email-panel";
 import PasswordPanel from "./password-panel";
 import PINPanel from "./pin-panel";
+import DeactivatePanel from "./deactivate-panel";
 
 const header = (
   <h1>
@@ -13,7 +14,7 @@ const header = (
   </h1>
 );
 
-@inject("titleStore", "adminPanelStore")
+@inject("userStore", "titleStore", "adminPanelStore")
 class AccountSettings extends Component {
   constructor(props) {
     super(props);
@@ -52,6 +53,10 @@ class AccountSettings extends Component {
     });
   };
 
+  _nonAdminsOnly = () => {
+    return !this.props.userStore.roles.includes("admin");
+  };
+
   render() {
     const { alertMessage, alertVisible, alertStyle } = this.state;
 
@@ -78,6 +83,7 @@ class AccountSettings extends Component {
           onError={this.onError}
           hideAlert={this.hideAlert}
         />
+        {this._nonAdminsOnly() && <DeactivatePanel onError={this.onError} />}
       </Panel>
     );
   }

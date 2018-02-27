@@ -110,6 +110,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get("/users/", UserController, :index)
     put("/users/notification-preference", NotificationPreferenceController, :update_global)
+    post("/users/deactivate-my-account", UserController, :deactivate_my_account)
     get("/users/:id", UserController, :show)
     put("/users/:id", UserController, :update)
     put("/users/:id/update_password", UserController, :update_password)
