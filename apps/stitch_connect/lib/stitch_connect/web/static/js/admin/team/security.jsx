@@ -3,6 +3,7 @@ import { inject } from "mobx-react";
 import { Panel } from "react-bootstrap";
 import TeamExport from "./export";
 import TeamHipaa from "./hipaa";
+import AccessLogsPanel from "./security/access-logs/access-logs-panel";
 
 const header = (
   <h1>
@@ -21,6 +22,7 @@ class TeamSecurity extends Component {
     return (
       <Panel className="admin-panel" header={header}>
         <TeamHipaa />
+        <AccessLogsPanel />
         <TeamExport />
       </Panel>
     );
