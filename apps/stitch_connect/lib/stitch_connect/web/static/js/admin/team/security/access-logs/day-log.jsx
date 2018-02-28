@@ -19,7 +19,7 @@ class DayLog extends Component {
 }
 
 DayLog.propTypes = {
-  date: PropTypes.object,
+  date: PropTypes.string,
   accessLogs: PropTypes.arrayOf(Object)
 };
 
