@@ -104,7 +104,7 @@ class MessageForm extends Component {
       }
     } else if (evt.keyCode === 38) {
       // Up arrow
-      if (!this.state.text) {
+      if (!this.state.text && !messageInEdit) {
         messageStore.editLastMessage();
       }
     } else if ([37, 38, 39, 40].indexOf(evt.keyCode) > -1) {
