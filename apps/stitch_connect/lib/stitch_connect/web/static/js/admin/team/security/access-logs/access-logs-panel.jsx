@@ -26,7 +26,10 @@ class AccessLogsPanel extends Component {
             groupedLogs,
             date
           ) {
-            <DayLog date={date} accessLogs={groupedLogs} />;
+            console.log(date);
+            console.log(groupedLogs);
+            console.log("=====");
+            return <DayLog date={date} accessLogs={groupedLogs} />;
           })}
       </SettingPanel>
     );
