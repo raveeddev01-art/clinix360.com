@@ -22,8 +22,8 @@ class TeamSecurity extends Component {
     return (
       <Panel className="admin-panel" header={header}>
         <TeamHipaa />
-        <AccessLogsPanel />
         <TeamExport />
+        <AccessLogsPanel />
       </Panel>
     );
   }

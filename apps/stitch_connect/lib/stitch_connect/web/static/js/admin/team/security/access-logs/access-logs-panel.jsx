@@ -22,15 +22,13 @@ class AccessLogsPanel extends Component {
     return (
       <SettingPanel title={title} description={description} saveButtonText="">
         {!this.props.accessLogsStore.loading &&
-          _.forOwn(this.props.accessLogsStore.accessLogs, function(
-            groupedLogs,
-            date
-          ) {
-            console.log(date);
-            console.log(groupedLogs);
-            console.log("=====");
-            return <DayLog date={date} accessLogs={groupedLogs} />;
-          })}
+          Object.keys(this.props.accessLogsStore.accessLogs).map(date => (
+            <DayLog
+              key={date}
+              date={date}
+              accessLogs={this.props.accessLogsStore.accessLogs[date]}
+            />
+          ))}
       </SettingPanel>
     );
   }
