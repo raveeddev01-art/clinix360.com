@@ -11,10 +11,10 @@
       width: 100%;
 
       .dropdown.btn-group {
-        width: calc(100% - 450px);
+        max-width: calc(100% - 450px);
 
         @media (max-width: 991px) {
-          width: calc(100% - 400px);
+          max-width: calc(100% - 400px);
         }
 
         .title-dropdown-toggle {
