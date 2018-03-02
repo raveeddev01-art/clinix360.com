@@ -6,14 +6,14 @@ class Pagination extends Component {
   _renderPages = () => {
     let pageAmount = Math.ceil(this.props.total / this.props.perPage);
     let pages = [];
-    _.times(pageAmount, i => {
-      pages.push(
-        <RbPagination.Item active={this.props.activePage === i + 1}>
-          {i + 1}
-        </RbPagination.Item>
-      );
-    });
-    return pages;
+    return _.times(pageAmount).map(i => (
+      <RbPagination.Item
+        key={`page_item_${i}`}
+        active={this.props.activePage === i + 1}
+      >
+        {i + 1}
+      </RbPagination.Item>
+    ));
   };
 
   render() {
