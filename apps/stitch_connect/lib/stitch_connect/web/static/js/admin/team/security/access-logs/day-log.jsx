@@ -19,7 +19,6 @@ class DayLog extends Component {
   };
 
   _application = userAgent => {
-    console.log(userAgent);
     if (userAgent.includes("Electron")) {
       return {
         name: "Desktop",
