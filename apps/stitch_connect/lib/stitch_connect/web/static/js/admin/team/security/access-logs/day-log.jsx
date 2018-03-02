@@ -28,7 +28,7 @@ class DayLog extends Component {
     } else if (userAgent.includes("iOS")) {
       return {
         name: "iOS",
-        icon: "fa fa-ios"
+        icon: "fa fa-apple"
       };
     } else if (userAgent.includes("Android")) {
       return {
