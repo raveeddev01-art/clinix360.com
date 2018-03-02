@@ -17,12 +17,9 @@ class Pagination extends Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <div>
-        <RbPagination bsSize="medium">
-          <RbPagination.Item>{1}</RbPagination.Item>
-        </RbPagination>
+        <RbPagination bsSize="medium">{this._renderPages()}</RbPagination>
       </div>
     );
   }
