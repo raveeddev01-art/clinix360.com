@@ -44,8 +44,8 @@ class DayLog extends Component {
 
   render() {
     return (
-      <div>
-        <h2>{this.props.date}</h2>
+      <div className="access-log__day-log">
+        <h2 className="access-log__day-log__date">{this.props.date}</h2>
         {this.props.accessLogs.map((accessLog, i) => {
           return (
             <LogItem
