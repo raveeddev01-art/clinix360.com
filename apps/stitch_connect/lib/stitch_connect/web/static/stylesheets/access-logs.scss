@@ -6,7 +6,6 @@
     font-weight: bold;
     font-size: 18px;
     margin: 0;
-    margin-right: 220px;
   }
 }
 .access-log__day-log:last-child {
@@ -15,6 +14,7 @@
 
 .access-log-item {
   overflow: hidden;
+  margin-left: 340px;
 
   &__avatar {
     width: 25px;
