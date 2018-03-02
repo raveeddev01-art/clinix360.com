@@ -7,6 +7,7 @@ defmodule Stitch.Accounts.AccessLog do
   import Ecto.Changeset
   alias Stitch.Accounts.{User, AccessLog}
   alias Stitch.{Repo, Team}
+  require Logger
 
   @type t :: %__MODULE__{}
 
@@ -37,7 +38,7 @@ defmodule Stitch.Accounts.AccessLog do
   @spec create_or_update(User.t(), binary, binary, binary | nil) ::
           {:ok, AccessLog.t()} | {:error, Changeset.t()}
   def create_or_update(%User{} = user, ip_address, user_agent, app_version \\ "undefined") do
-    Logger.info("[access-log] #{user.id} - #{user.id}: #{ip_address} #{user_agent} #{app_version}")
+    Logger.info("[access-log] #{user.id} - #{user.email}: #{ip_address} #{user_agent} #{app_version}")
     %AccessLog{user_id: user.id}
     |> new(%{ip_address: ip_address, user_agent: user_agent, app_version: app_version})
     |> Repo.insert(
