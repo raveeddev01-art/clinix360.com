@@ -56,7 +56,7 @@ class DayLog extends Component {
                 .utc(accessLog.last_access_at)
                 .local()
                 .format("h:mm:ss a")}
-              application={this._application(accessLog.app_version)}
+              application={this._application(accessLog.user_agent)}
               ipAddress={accessLog.ip_address}
               key={i}
             />
