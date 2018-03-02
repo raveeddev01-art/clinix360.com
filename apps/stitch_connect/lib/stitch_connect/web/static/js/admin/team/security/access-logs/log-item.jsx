@@ -7,9 +7,7 @@ class LogItem extends Component {
       <div className="access-log-item">
         <img
           className="access-log-item__avatar"
-          src={
-            "http://static2.businessinsider.com/image/5899ffcf6e09a897008b5c04-1200/.jpg"
-          }
+          src={this.props.avatar}
           alt="avatar"
         />
         <div className="access-log-item__user">
