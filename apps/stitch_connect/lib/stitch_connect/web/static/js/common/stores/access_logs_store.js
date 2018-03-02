@@ -1,12 +1,29 @@
-import { observable, action } from "mobx";
+import { observable, action, computed } from "mobx";
 import moment from "moment";
 
 class AccessLogsStore {
   @observable loading = false;
   @observable accessLogs = null;
+  @observable perPage = 50;
+  @observable totalLogs = 0;
+  @observable skippedLogs = 0;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+  }
+
+  @computed
+  get activePage() {
+    if (this.skippedLogs === 0) {
+      return 1;
+    }
+
+    let ceiling = Math.ceil(this.skippedLogs / this.perPage);
+    if (ceiling === 0) {
+      return 1;
+    }
+
+    return ceiling;
   }
 
   @action
@@ -14,6 +31,9 @@ class AccessLogsStore {
     this.loading = true;
 
     get(`/api/v1/teams/${team_id}/access_log`).then(resp => {
+      this.totalLogs = resp.data.meta.count;
+      this.skippedLogs = resp.data.meta.skip;
+
       let groupedData = _.groupBy(resp.data.data, access_log =>
         moment
           .utc(access_log.last_access_at)
