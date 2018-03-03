@@ -9,12 +9,6 @@ import PhoneNumberPanel from "./phone-number-panel";
 import TitlePanel from "./title-panel";
 import ProfileImagePanel from "./profile-image-panel";
 
-const header = (
-  <h1>
-    <i className="fa fa-user" /> Profile
-  </h1>
-);
-
 @inject("titleStore", "adminPanelStore")
 class ProfileSettings extends Component {
   constructor(props) {
@@ -59,12 +53,20 @@ class ProfileSettings extends Component {
     const commonPanelProps = pick(this, "onSuccess", "onError", "hideAlert");
 
     return (
-      <Panel className="admin-panel" header={header}>
-        {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
-        <NamePanel {...commonPanelProps} />
-        <PhoneNumberPanel {...commonPanelProps} />
-        <TitlePanel {...commonPanelProps} />
-        <ProfileImagePanel {...commonPanelProps} />
+      <Panel className="admin-panel">
+        <Panel.Heading>
+          <h1>
+            <i className="fa fa-user" /> Profile
+          </h1>
+        </Panel.Heading>
+
+        <Panel.Body>
+          {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+          <NamePanel {...commonPanelProps} />
+          <PhoneNumberPanel {...commonPanelProps} />
+          <TitlePanel {...commonPanelProps} />
+          <ProfileImagePanel {...commonPanelProps} />
+        </Panel.Body>
       </Panel>
     );
   }

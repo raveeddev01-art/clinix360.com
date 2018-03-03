@@ -5,12 +5,6 @@ import TeamExport from "./export";
 import TeamHipaa from "./hipaa";
 import AccessLogsPanel from "./security/access-logs/access-logs-panel";
 
-const header = (
-  <h1>
-    <i className="fa fa-shield" /> Security
-  </h1>
-);
-
 @inject("titleStore", "adminPanelStore")
 class TeamSecurity extends Component {
   componentWillMount() {
@@ -20,10 +14,18 @@ class TeamSecurity extends Component {
 
   render() {
     return (
-      <Panel className="admin-panel" header={header}>
-        <TeamHipaa />
-        <TeamExport />
-        <AccessLogsPanel />
+      <Panel className="admin-panel">
+        <Panel.Heading>
+          <h1>
+            <i className="fa fa-shield" /> Security
+          </h1>
+        </Panel.Heading>
+
+        <Panel.Body>
+          <TeamHipaa />
+          <TeamExport />
+          <AccessLogsPanel />
+        </Panel.Body>
       </Panel>
     );
   }

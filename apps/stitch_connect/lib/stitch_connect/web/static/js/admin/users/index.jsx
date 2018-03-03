@@ -86,77 +86,80 @@ class TeamSettings extends Component {
     ];
     const fullMembers = users.filter(u => isFullMember(u));
     const guests = users.filter(u => !isFullMember(u));
-    const header = (
-      <h1>
-        <i className="fa fa-users" /> Members
-      </h1>
-    );
 
     return (
-      <Panel className="admin-panel" header={header}>
-        <div className="pull-right m-u-58">
-          <Button
-            bsStyle="primary"
-            onClick={this.showInviteModal}
-            className="btn-invite-members"
-          >
-            Invite Members
-          </Button>
-        </div>
+      <Panel className="admin-panel">
+        <Panel.Heading>
+          <h1>
+            <i className="fa fa-users" /> Members
+          </h1>
+        </Panel.Heading>
 
-        <p className="m-b-20">
-          Manage your users by controlling admin abilities and account status.
-          For more information on how account enabling and disabling works, see
-          our support article&nbsp;
-          <a
-            href="https://intercom.help/teamstitch/connect/admin/user-management"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>.
-        </p>
+        <Panel.Body>
+          <div className="pull-right m-u-58">
+            <Button
+              bsStyle="primary"
+              onClick={this.showInviteModal}
+              className="btn-invite-members"
+            >
+              Invite Members
+            </Button>
+          </div>
 
-        {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+          <p className="m-b-20">
+            Manage your users by controlling admin abilities and account status.
+            For more information on how account enabling and disabling works,
+            see our support article&nbsp;
+            <a
+              href="https://intercom.help/teamstitch/connect/admin/user-management"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </a>.
+          </p>
 
-        <MembersPanel
-          title="Members"
-          description="Manage your users by controlling admin abilities and account status. For more information on how account enabling and disabling works, see our support article."
-          users={fullMembers}
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
+          {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
 
-        {guests.length > 0 && (
           <MembersPanel
-            title="Guests"
-            description="Manage guests (single room guests and multi room guests) and their rooms."
-            users={guests}
+            title="Members"
+            description="Manage your users by controlling admin abilities and account status. For more information on how account enabling and disabling works, see our support article."
+            users={fullMembers}
             onSuccess={this.onSuccess}
             onError={this.onError}
             hideAlert={this.hideAlert}
           />
-        )}
 
-        <DeactivatedMembersPanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
+          {guests.length > 0 && (
+            <MembersPanel
+              title="Guests"
+              description="Manage guests (single room guests and multi room guests) and their rooms."
+              users={guests}
+              onSuccess={this.onSuccess}
+              onError={this.onError}
+              hideAlert={this.hideAlert}
+            />
+          )}
 
-        <PendingInvitationsPanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
+          <DeactivatedMembersPanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
 
-        <InviteModal
-          show={this.state.showInviteModal}
-          toggle={this.toggleInviteModal}
-        />
+          <PendingInvitationsPanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
 
-        <MemberTypeModal />
+          <InviteModal
+            show={this.state.showInviteModal}
+            toggle={this.toggleInviteModal}
+          />
+
+          <MemberTypeModal />
+        </Panel.Body>
       </Panel>
     );
   }

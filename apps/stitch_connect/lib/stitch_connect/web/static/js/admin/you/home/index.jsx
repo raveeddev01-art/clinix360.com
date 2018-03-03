@@ -55,43 +55,47 @@ export default class YouHome extends Component {
   }
 
   render() {
-    const header = <h1>Welcome, {this.props.userStore.firstName}!</h1>;
-
     return (
-      <Panel className="admin-panel home-panel" header={header}>
-        <h4>Products</h4>
-        <HomeItem
-          icon="fa-comments"
-          title="Connect"
-          description="Team Communication: Send messages, write notes, upload files, and track tasks on any device."
-          openButtonText="Launch"
-          link="/"
-        />
+      <Panel className="admin-panel home-panel">
+        <Panel.Heading>
+          <h1>Welcome, {this.props.userStore.firstName}!</h1>
+        </Panel.Heading>
 
-        <h4>You</h4>
-        <HomeItem
-          icon="fa-cog"
-          title="Account"
-          description="Edit your account settings, including email, username, password, and PIN settings."
-          openButtonText="Open"
-          link="/admin/you/account"
-        />
-        <HomeItem
-          icon="fa-user"
-          title="Profile"
-          openButtonText="Open"
-          description="Set your personal profile details, including name, phone number, and title."
-          link="/admin/you/profile"
-        />
-        <HomeItem
-          icon="fa-bell"
-          title="Notifications"
-          description="Adjust notification settings across browser, desktop, mobile. Manage email and room specific notifications as well."
-          openButtonText="Open"
-          link="/admin/you/notifications"
-        />
+        <Panel.Body>
+          <h4>Products</h4>
+          <HomeItem
+            icon="fa-comments"
+            title="Connect"
+            description="Team Communication: Send messages, write notes, upload files, and track tasks on any device."
+            openButtonText="Launch"
+            link="/"
+          />
 
-        {isAdmin() && this.renderAdminItems()}
+          <h4>You</h4>
+          <HomeItem
+            icon="fa-cog"
+            title="Account"
+            description="Edit your account settings, including email, username, password, and PIN settings."
+            openButtonText="Open"
+            link="/admin/you/account"
+          />
+          <HomeItem
+            icon="fa-user"
+            title="Profile"
+            openButtonText="Open"
+            description="Set your personal profile details, including name, phone number, and title."
+            link="/admin/you/profile"
+          />
+          <HomeItem
+            icon="fa-bell"
+            title="Notifications"
+            description="Adjust notification settings across browser, desktop, mobile. Manage email and room specific notifications as well."
+            openButtonText="Open"
+            link="/admin/you/notifications"
+          />
+
+          {isAdmin() && this.renderAdminItems()}
+        </Panel.Body>
       </Panel>
     );
   }
