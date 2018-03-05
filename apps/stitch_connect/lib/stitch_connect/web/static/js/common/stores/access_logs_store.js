@@ -27,10 +27,14 @@ class AccessLogsStore {
   }
 
   @action
-  loadTeamAccessLogs = team_id => {
+  loadTeamAccessLogs = (team_id, page) => {
     this.loading = true;
+    page = page - 1;
 
-    get(`/api/v1/teams/${team_id}/access_log`).then(resp => {
+    get(
+      `/api/v1/teams/${team_id}/access_log?skip=${page *
+        this.perPage}&limit=${this.perPage}`
+    ).then(resp => {
       this.totalLogs = resp.data.meta.count;
       this.skippedLogs = resp.data.meta.skip;
 

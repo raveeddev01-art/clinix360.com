@@ -13,12 +13,11 @@ const title = "Access Logs";
 class AccessLogsPanel extends Component {
   constructor(props) {
     super(props);
-    props.accessLogsStore.loadTeamAccessLogs(props.teamStore.id);
+    props.accessLogsStore.loadTeamAccessLogs(props.teamStore.id, 1);
   }
 
-  _test = i => {
-    console.log("PAGE CLICK");
-    console.log(i);
+  _loadPage = i => {
+    this.props.accessLogsStore.loadTeamAccessLogs(this.props.teamStore.id, i);
   };
 
   render() {
@@ -39,7 +38,7 @@ class AccessLogsPanel extends Component {
           activePage={this.props.accessLogsStore.activePage}
           perPage={this.props.accessLogsStore.perPage}
           total={this.props.accessLogsStore.totalLogs}
-          onPageClick={this._test}
+          onPageClick={this._loadPage}
         />
       </SettingPanel>
     );

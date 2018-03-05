@@ -10,7 +10,9 @@ class Pagination extends Component {
       <RbPagination.Item
         key={`page_item_${i}`}
         active={this.props.activePage === i + 1}
-        onClick={this.props.onPageClick(i)}
+        onClick={() => {
+          this.props.onPageClick(i + 1);
+        }}
       >
         {i + 1}
       </RbPagination.Item>

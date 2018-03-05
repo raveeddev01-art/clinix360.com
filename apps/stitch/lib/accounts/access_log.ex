@@ -56,7 +56,7 @@ defmodule Stitch.Accounts.AccessLog do
 
   @spec list(Team.t(), list | nil) :: Stitch.Paginator.t()
   def list(%Team{} = team, opts \\ []) do
-    limit = opts[:limit] || 200
+    limit = opts[:limit] || 50
     offset = opts[:skip] || 0
 
     query =
