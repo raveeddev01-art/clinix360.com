@@ -52,7 +52,7 @@ class ImageFileAttachment extends Component {
             </a>
           </div>
         )}
-        <a
+        <div
           className="attachment-image-holder"
           onClick={this.onToggleModal}
           style={holderStyle}
@@ -75,7 +75,7 @@ class ImageFileAttachment extends Component {
               </Button>
             </OverlayTrigger>
           </div>
-        </a>
+        </div>
 
         <Modal
           show={showModal}
