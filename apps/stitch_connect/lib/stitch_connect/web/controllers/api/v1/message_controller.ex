@@ -16,6 +16,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
 
   def index(conn, %{"group_id" => group_id} = params) do
     user = conn.assigns.current_user
+    fetch_users = get_fetch_users_param(params)
 
     with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
@@ -32,6 +33,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
           {:"#{key}", value}
         end)
         |> Keyword.update(:limit, 60, fn limit -> Enum.min([limit, 60]) end)
+        |> Keyword.put(:fetch_users, fetch_users)
 
       messages = MessageQueries.group_latest_messages(group_id, user, opts)
       render(conn, "index.json", messages: messages, user_id: user.id)
@@ -210,4 +212,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         |> json(%{message: "You can't pin messages belonging to this room."})
     end
   end
+
+  # Note: remove once all clients are updated and don't rely on embedded users.
+  defp get_fetch_users_param(%{"fetchUsers" => "false"}), do: false
+  defp get_fetch_users_param(_params), do: true
 end
