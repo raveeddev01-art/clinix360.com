@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Pagination as RbPagination } from "react-bootstrap";
+import _ from "lodash";
 
 class Pagination extends Component {
   _renderPages = () => {
-    let pageAmount = Math.ceil(this.props.total / this.props.perPage);
-    let pages = [];
+    const pageAmount = Math.ceil(this.props.total / this.props.perPage);
     return _.times(pageAmount).map(i => (
       <RbPagination.Item
         key={`page_item_${i}`}
@@ -21,7 +21,7 @@ class Pagination extends Component {
 
   render() {
     return (
-      <div>
+      <div className="text-right">
         <RbPagination>{this._renderPages()}</RbPagination>
       </div>
     );
