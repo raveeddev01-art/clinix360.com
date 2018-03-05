@@ -82,13 +82,15 @@ defmodule StitchConnect.Web.EventsChannel do
   def broadcast_group_creation(%Group{} = group) do
     member_ids =
       for %User{id: user_id} <- group.users do
-        json = GroupView.group_json(group, user_id)
+        json = GroupView.render("show.json", %{group: group, user_id: user_id})
         @endpoint.broadcast("events:#{user_id}", "created_group", json)
         user_id
       end
 
     for user_id <- get_non_member_ids(group, member_ids) do
-      json = group |> Map.put(:joined, false) |> GroupView.group_json(user_id)
+      json =
+        GroupView.render("show.json", %{group: group, user_id: user_id})
+        |> Map.put(:joined, false)
       @endpoint.broadcast("events:#{user_id}", "created_group", json)
     end
   end
