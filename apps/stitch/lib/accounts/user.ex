@@ -209,9 +209,11 @@ defmodule Stitch.Accounts.User do
       struct
       |> cast(params, [:profile_image_url, :profile_image_thumb_url])
 
-    case fetch_field(changeset, :profile_image_url) do
-      {_, nil} -> add_default_profile_image(changeset)
-      _ -> changeset
+    cond do
+      Stitch.Accounts.ProfileImage.needs_avatar_regen(changeset) ->
+        add_default_profile_image(changeset)
+      true ->
+        changeset
     end
   end
 

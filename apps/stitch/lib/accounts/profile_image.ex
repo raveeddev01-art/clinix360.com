@@ -5,6 +5,37 @@ defmodule Stitch.Accounts.ProfileImage do
 
   @thumb %{height: 72, width: 72}
 
+  @spec needs_avatar_regen(any) :: boolean
+  def needs_avatar_regen(changeset) do
+    first_name_changed =
+      case Ecto.Changeset.fetch_change(changeset, :first_name) do
+        {:ok, first_name} ->
+          true
+      _ ->
+        false
+      end
+
+    last_name_changed =
+      case Ecto.Changeset.fetch_change(changeset, :last_name) do
+        {:ok, last_name} ->
+          true
+      _ ->
+        false
+      end
+
+    # TODO: Database field boolean to track if user uploads a custom avatar?
+    # Right now we're just checking if the length matches the two letter filename
+    # we use for generate initials based avatar.
+    profile_image_url_length =
+      if changeset.data.profile_image_url do
+        String.length(changeset.data.profile_image_url)
+      else
+        46
+      end
+
+    profile_image_url_length == 46 && (first_name_changed || last_name_changed)
+  end
+
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
   def create_thumb(url) do
     with {:ok, fullname} <- S3.basepath(url),
