@@ -109,8 +109,7 @@ defmodule Stitch.MessageQueries do
       end
 
     query =
-      from(
-        m in query,
+      from(m in query,
         where: m.group_id == ^group_id,
         order_by: [desc: :inserted_at],
         limit: ^limit,

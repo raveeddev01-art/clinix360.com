@@ -50,6 +50,42 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def feed_recent(conn, %{"group_id" => group_id} = params) do
+    user = conn.assigns.current_user
+    fetch_users = get_fetch_users_param(params)
+
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
+      opts =
+        params
+        |> Map.take(["limit", "skip"])
+        |> Enum.map(fn {key, value} ->
+          value =
+            case value do
+              value when is_binary(value) -> String.to_integer(value)
+              value when is_integer(value) -> value
+            end
+
+          {:"#{key}", value}
+        end)
+        |> Keyword.update(:limit, 60, fn limit -> Enum.min([limit, 60]) end)
+        |> Keyword.put(:fetch_users, fetch_users)
+
+      messages = MessageQueries.group_recent_messages(group_id, user, opts)
+      render(conn, "index.json", messages: messages, user_id: user.id)
+    else
+      {:group, _} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "The room you are looking for does not exist."})
+
+      {:authorized?, false} ->
+        conn
+        |> put_status(:forbidden)
+        |> json(%{message: "You can't see the messages for this room."})
+    end
+  end
+
   def search(conn, %{"term" => term} = params) do
     opts = [
       limit: Enum.min([Map.get(params, "limit", 60), 1_000]),
