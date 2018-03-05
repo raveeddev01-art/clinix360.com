@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import debounce from "lodash/debounce";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import Form from "react-bootstrap/lib/Form";
@@ -31,10 +30,6 @@ class TopNav extends Component {
     this.state = {
       query: ""
     };
-
-    this.debouncedSearch = debounce(query => {
-      props.searchStore.setQuery(query);
-    }, 500);
   }
 
   onSearch = event => {
@@ -42,13 +37,13 @@ class TopNav extends Component {
 
     const { addonStore } = this.props;
 
+    this.props.searchStore.setQuery(this.state.query);
     addonStore.setAddonPanel("Search Results");
     addonStore.toggleAddons(true);
   };
 
   onSearchQueryChange = event => {
     this.setState({ query: event.target.value });
-    this.debouncedSearch(event.target.value);
   };
 
   onToggleSettings = isOpen => {
