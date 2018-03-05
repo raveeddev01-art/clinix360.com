@@ -19,30 +19,33 @@ class TeamBilling extends Component {
 
   render() {
     const { billingStore: { invoices } } = this.props;
-    const header = (
-      <h1>
-        <i className="fa fa-credit-card" /> Billing
-      </h1>
-    );
 
     return (
-      <Panel className="admin-panel tabs-panel" header={header}>
-        <Tabs defaultActiveKey={1} id="admin-billing-tabs" unmountOnExit>
-          <Tab eventKey={1} title="Subscription">
-            <Subscription />
-          </Tab>
-          <Tab eventKey={2} title="Payment Methods">
-            <PaymentMethods />
-          </Tab>
-          {invoices.length > 0 && (
-            <Tab eventKey={3} title="History">
-              <History />
+      <Panel className="admin-panel tabs-panel">
+        <Panel.Heading>
+          <h1>
+            <i className="fa fa-credit-card" /> Billing
+          </h1>
+        </Panel.Heading>
+
+        <Panel.Body>
+          <Tabs defaultActiveKey={1} id="admin-billing-tabs" unmountOnExit>
+            <Tab eventKey={1} title="Subscription">
+              <Subscription />
             </Tab>
-          )}
-          <Tab eventKey={4} title="Contact">
-            <Contact />
-          </Tab>
-        </Tabs>
+            <Tab eventKey={2} title="Payment Methods">
+              <PaymentMethods />
+            </Tab>
+            {invoices.length > 0 && (
+              <Tab eventKey={3} title="History">
+                <History />
+              </Tab>
+            )}
+            <Tab eventKey={4} title="Contact">
+              <Contact />
+            </Tab>
+          </Tabs>
+        </Panel.Body>
       </Panel>
     );
   }
