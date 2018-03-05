@@ -217,10 +217,8 @@ defmodule Stitch.Accounts.User do
     end
   end
 
-  def add_default_profile_image(
-        %{valid?: true, changes: %{first_name: first_name, last_name: last_name}} = changeset
-      ) do
-    user = %User{first_name: first_name, last_name: last_name}
+  def add_default_profile_image(%{valid?: true} = changeset) do
+    user = %User{first_name: changeset.data.first_name, last_name: changeset.data.last_name}
     with {:ok, avatar} <- Stitch.Accounts.ProfileImage.pick_default_random(user),
          {:ok, avatar_thumb} <- Stitch.Accounts.ProfileImage.create_thumb(avatar) do
       changeset
