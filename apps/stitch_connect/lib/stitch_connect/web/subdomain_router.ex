@@ -113,6 +113,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post("/users/deactivate-my-account", UserController, :deactivate_my_account)
     get("/users/:id", UserController, :show)
     put("/users/:id", UserController, :update)
+    get("/users/:id/avatar", UserController, :profile_image)
     put("/users/:id/update_password", UserController, :update_password)
     put("/users/:id/upload_profile_image", UserController, :upload_profile_image)
     delete("/users/:id/delete_profile_image", UserController, :delete_profile_image)
