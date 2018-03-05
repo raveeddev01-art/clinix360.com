@@ -19,22 +19,6 @@ class Pagination extends Component {
     ));
   };
 
-  // <RbPagination.First />
-  // <RbPagination.Prev />
-  // <RbPagination.Item>{1}</RbPagination.Item>
-  // <RbPagination.Ellipsis />
-
-  // <RbPagination.Item>{10}</RbPagination.Item>
-  // <RbPagination.Item>{11}</RbPagination.Item>
-  // <RbPagination.Item active>{12}</RbPagination.Item>
-  // <RbPagination.Item>{13}</RbPagination.Item>
-  // <RbPagination.Item disabled>{14}</RbPagination.Item>
-
-  // <RbPagination.Ellipsis />
-  // <RbPagination.Item>{20}</RbPagination.Item>
-  // <RbPagination.Next />
-  // <RbPagination.Last />
-
   render() {
     return (
       <div>
