@@ -23,6 +23,14 @@ defmodule Stitch.Accounts.ProfileImage do
         false
       end
 
+    emptied_profile_image? =
+      case Ecto.Changeset.fetch_change(changeset, :profile_image_url) do
+        {:ok, profile_image_url} ->
+          profile_image_url == nil
+      _ ->
+        false
+      end
+
     # TODO: Database field boolean to track if user uploads a custom avatar?
     # Right now we're just checking if the length matches the two letter filename
     # we use for generate initials based avatar.
@@ -33,7 +41,8 @@ defmodule Stitch.Accounts.ProfileImage do
         46
       end
 
-    profile_image_url_length == 46 && (first_name_changed || last_name_changed)
+    # Regen if user has the default image and changed his name; or if he's deleted his existing profile image.
+    emptied_profile_image? || (profile_image_url_length == 46 && (first_name_changed || last_name_changed))
   end
 
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
