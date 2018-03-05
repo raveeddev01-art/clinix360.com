@@ -27,7 +27,7 @@ class MessageSearch extends Component {
     if (searchStore.loading) {
       return (
         <div className="text-center">
-          <LoadingIcon />
+          <LoadingIcon size="2" />
         </div>
       );
     }
