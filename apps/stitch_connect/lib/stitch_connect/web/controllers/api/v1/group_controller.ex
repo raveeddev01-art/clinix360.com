@@ -332,10 +332,4 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> json(%{message: "Only your direct messages can be unhidden."})
     end
   end
-
-  # TODO: remove once the Android app is updated and doesn't require embedded user data:
-  # Specifically: it shouldn't require group.users, group.user_count, and it should render
-  # user names for the DM and Multi-DM groups instead of relying on `group.name`.
-  defp get_fetch_users_param(%{"fetchUsers" => "false"}), do: false
-  defp get_fetch_users_param(_params), do: true
 end

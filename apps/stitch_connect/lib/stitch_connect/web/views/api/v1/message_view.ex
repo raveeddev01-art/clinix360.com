@@ -26,6 +26,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
       inserted_at: message.inserted_at,
       updated_at: message.updated_at,
       starred: Map.get(message, :starred, false),
+      pinned_by_id: message.pinned_by_id,
       pinned: message.pinned,
       pinned_by: pinned_by_info(message),
       pinned_at: message.pinned_at,
@@ -46,6 +47,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
 
   def pinned_by_info(%{pinned_by_id: nil}), do: nil
 
+  def pinned_by_info(%{pinned_by: %Ecto.Association.NotLoaded{}}), do: nil
   def pinned_by_info(%{pinned_by: pinned_by}) do
     %{id: pinned_by.id, first_name: pinned_by.first_name, last_name: pinned_by.last_name}
   end

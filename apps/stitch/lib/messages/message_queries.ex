@@ -25,6 +25,7 @@ defmodule Stitch.MessageQueries do
   """
   def search(user_id, term, opts \\ []) do
     user = Repo.get!(User, user_id)
+    fetch_users = Keyword.get(opts, :fetch_users, true)
 
     user_groups_ids =
       GroupUser
@@ -35,20 +36,25 @@ defmodule Stitch.MessageQueries do
     limit = Keyword.get(opts, :limit, 30)
 
     query =
-      from(
-        m in Message,
-        left_join: g in assoc(m, :group),
-        left_join: u in assoc(m, :user),
-        left_join: pb in assoc(m, :pinned_by),
+      if fetch_users do
+        from(m in Message,
+          left_join: g in assoc(m, :group),
+          left_join: u in assoc(m, :user),
+          left_join: pb in assoc(m, :pinned_by),
+          preload: [
+            user: u,
+            group: g,
+            pinned_by: pb
+          ])
+      else
+        Message
+      end
+
+    query =
+      from(m in query,
         where: m.group_id in ^user_groups_ids,
         where: m.type != ^"system",
-        limit: ^limit,
-        preload: [
-          user: u,
-          group: g,
-          pinned_by: pb
-        ]
-      )
+        limit: ^limit)
 
     query =
       if String.starts_with?(term, "\"") && String.ends_with?(term, "\"") do
@@ -131,24 +137,30 @@ defmodule Stitch.MessageQueries do
   def group_recent_messages(group_id, user, opts \\ []) do
     limit = Keyword.get(opts, :limit, 60)
     offset = Keyword.get(opts, :skip, 0)
+    fetch_users = Keyword.get(opts, :fetch_users, true)
 
     query =
-      from(
-        m in Message,
-        left_join: g in assoc(m, :group),
-        left_join: u in assoc(m, :user),
-        left_join: pb in assoc(m, :pinned_by),
+      if fetch_users do
+        from(m in Message,
+          left_join: g in assoc(m, :group),
+          left_join: u in assoc(m, :user),
+          left_join: pb in assoc(m, :pinned_by),
+          preload: [
+            user: u,
+            group: g,
+            pinned_by: pb
+          ])
+      else
+        Message
+      end
+
+    query =
+      from(m in query,
         where: m.group_id == ^group_id,
         order_by: [asc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
-        select: m,
-        preload: [
-          user: u,
-          group: g,
-          pinned_by: pb
-        ]
-      )
+        select: m)
 
     query =
       case Keyword.fetch(opts, :min_id) do
@@ -183,21 +195,28 @@ defmodule Stitch.MessageQueries do
   end
 
   def pinned_messages(%Group{id: group_id}, opts \\ []) do
-    limit = opts[:limit] || 30
-    offset = opts[:skip] || 0
+    limit = Keyword.get(opts, :limit, 30)
+    offset = Keyword.get(opts, :skip, 0)
+    fetch_users = Keyword.get(opts, :fetch_users, true)
 
     query =
-      from(
-        m in Message,
-        left_join: u in assoc(m, :user),
-        left_join: pb in assoc(m, :pinned_by),
+      if fetch_users do
+        from(m in Message,
+          left_join: u in assoc(m, :user),
+          left_join: pb in assoc(m, :pinned_by),
+          preload: [
+            user: u,
+            pinned_by: pb
+          ])
+      else
+        Message
+      end
+
+    query =
+      from(m in query,
         where: m.pinned == true,
         where: m.group_id == ^group_id,
         order_by: [desc: m.inserted_at],
-        preload: [
-          user: u,
-          pinned_by: pb
-        ]
       )
 
     Paginator.new(query, skip: offset, limit: limit)

@@ -22,7 +22,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
       opts =
         params
-        |> Map.take(["limit", "skip"])
+        |> Map.take(["limit", "skip", "max_id"])
         |> Enum.map(fn {key, value} ->
           value =
             case value do
@@ -58,7 +58,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
       opts =
         params
-        |> Map.take(["limit", "skip"])
+        |> Map.take(["limit", "skip", "min_id"])
         |> Enum.map(fn {key, value} ->
           value =
             case value do
@@ -87,9 +87,11 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   def search(conn, %{"term" => term} = params) do
+    fetch_users = get_fetch_users_param(params)
     opts = [
       limit: Enum.min([Map.get(params, "limit", 60), 1_000]),
-      skip: Map.get(params, "skip", 0)
+      skip: Map.get(params, "skip", 0),
+      fetch_users: fetch_users,
     ]
 
     user = conn.assigns.current_user
@@ -248,8 +250,4 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         |> json(%{message: "You can't pin messages belonging to this room."})
     end
   end
-
-  # Note: remove once all clients are updated and don't rely on embedded users.
-  defp get_fetch_users_param(%{"fetchUsers" => "false"}), do: false
-  defp get_fetch_users_param(_params), do: true
 end
