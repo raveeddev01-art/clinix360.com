@@ -97,6 +97,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get("/groups/:group_id/messages", MessageController, :index)
     get("/groups/:group_id/feed_recent", MessageController, :feed_recent)
+    get("/groups/:group_id/feed_surrounding", MessageController, :feed_surrounding)
     post("/groups/:group_id/messages", MessageController, :create)
     put("/messages/:id", MessageController, :update)
     delete("/messages/:id", MessageController, :delete)

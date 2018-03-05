@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
   alias StitchConnect.MessageLinkPreviewGenerator
+  alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.Web.{EventsChannel, GroupChannel, PushNotifications}
 
   alias Stitch.{
@@ -97,6 +98,55 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     user = conn.assigns.current_user
     messages = MessageQueries.search(conn.assigns.current_user.id, term, opts)
     render(conn, "index.json", messages: messages, user_id: user.id)
+  end
+
+  def feed_surrounding(conn, %{"group_id" => group_id, "message_id" => target_message_id} = params) do
+    user = conn.assigns.current_user
+    fetch_users = false
+
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)},
+         {:message, %Message{} = target_message} <- {:message, MessageQueries.get_by_id(target_message_id, fetch_users)} do
+      opts =
+        params
+        |> Map.take(["limit"])
+        |> Enum.map(fn {key, value} ->
+          value =
+            case value do
+              value when is_binary(value) -> String.to_integer(value)
+              value when is_integer(value) -> value
+            end
+
+          {:"#{key}", value}
+        end)
+        |> Keyword.update(:limit, 60, fn limit -> Enum.min([limit, 60]) end)
+        |> Keyword.put(:fetch_users, fetch_users)
+
+      limit = opts[:limit]
+      {messages_before, messages_after} =
+        MessageQueries.surrounding(target_message, group, user, limit, fetch_users)
+
+      messages = messages_before ++ [target_message] ++ messages_after
+      messages_json = MessageView.render("index.json", %{messages: messages})
+      json = %{
+        more_before: length(messages_before) >= limit,
+        more_after: length(messages_after) >= limit,
+        messages: messages_json
+      }
+      json(conn, json)
+    else
+      {:group, _} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "The room you are looking for does not exist."})
+
+      {:authorized?, false} ->
+        conn
+        |> put_status(:forbidden)
+        |> json(%{message: "You can't see the messages for this room."})
+      {:message, _} ->
+        {:error, :not_found}
+    end
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do

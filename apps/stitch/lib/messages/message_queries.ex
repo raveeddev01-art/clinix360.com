@@ -239,6 +239,9 @@ defmodule Stitch.MessageQueries do
 
     Repo.one(query)
   end
+  def get_by_id(id, false) do
+    Repo.get(Message, id)
+  end
 
   def load_info(message) do
     Repo.preload(message, [:pinned_by, :user], force: true)
@@ -422,15 +425,15 @@ defmodule Stitch.MessageQueries do
     Repo.one(query)
   end
 
-  @spec surrounding(Message.t(), Group.t(), User.t(), pos_integer) ::
+  @spec surrounding(Message.t(), Group.t(), User.t(), pos_integer, boolean) ::
           {[Message.t()], [Message.t()]}
-  def surrounding(%Message{id: message_id}, %Group{id: group_id}, %User{} = user, limit) do
+  def surrounding(%Message{id: message_id}, %Group{id: group_id}, %User{} = user, limit, fetch_users \\ true) do
     messages_before =
-      MessageQueries.group_latest_messages(group_id, user, max_id: message_id, limit: limit)
+      MessageQueries.group_latest_messages(group_id, user, max_id: message_id, limit: limit, fetch_users: fetch_users)
       |> Enum.reverse()
 
     messages_after =
-      MessageQueries.group_recent_messages(group_id, user, min_id: message_id, limit: limit)
+      MessageQueries.group_recent_messages(group_id, user, min_id: message_id, limit: limit, fetch_users: fetch_users)
 
     {messages_before, messages_after}
   end
