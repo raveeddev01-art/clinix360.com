@@ -52,16 +52,12 @@ class ImageFileAttachment extends Component {
             </a>
           </div>
         )}
-        <div
-          className="attachment-image-holder"
-          onClick={this.onToggleModal}
-          style={holderStyle}
-          role="link"
-        >
+        <div className="attachment-image-holder" style={holderStyle}>
           <img
             src={previewUrl || url}
             className="img-responsive"
             alt={filename}
+            onClick={this.onToggleModal}
           />
 
           <div className="attachment-actions">
