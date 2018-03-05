@@ -98,6 +98,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("feed", %{"max_id" => _} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
+    fetch_users = get_fetch_users_param(params)
 
     case group do
       {:create_dm, _, _} ->
@@ -109,6 +110,7 @@ defmodule StitchConnect.Web.GroupChannel do
           |> Map.take(["limit", "max_id"])
           |> Map.update("limit", 60, &Enum.min([&1, 60]))
           |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
+          |> Keyword.put(:fetch_users, fetch_users)
 
         messages = MessageQueries.group_latest_messages(group.id, user, opts)
         json = MessageView.render("index.json", %{messages: messages})
@@ -119,6 +121,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("feed_recent", %{"min_id" => _} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
+    fetch_users = get_fetch_users_param(params)
 
     case group do
       {:create_dm, _, _} ->
@@ -130,6 +133,7 @@ defmodule StitchConnect.Web.GroupChannel do
           |> Map.take(["limit", "min_id"])
           |> Map.update("limit", 60, &Enum.min([&1, 60]))
           |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
+          |> Keyword.put(:fetch_users, fetch_users)
 
         messages = MessageQueries.group_recent_messages(group.id, user, opts)
         json = MessageView.render("index.json", %{messages: messages})
@@ -515,4 +519,8 @@ defmodule StitchConnect.Web.GroupChannel do
   # TODO: remove once web and mobile apps don't rely on messages in channel feed.
   defp get_fetch_messages_param(%{"fetchMessages" => "false"}), do: false
   defp get_fetch_messages_param(_params), do: true
+
+  # Note: remove once all clients are updated and don't rely on embedded users.
+  defp get_fetch_users_param(%{"fetchUsers" => "false"}), do: false
+  defp get_fetch_users_param(_params), do: true
 end
