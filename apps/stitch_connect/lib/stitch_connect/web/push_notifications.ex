@@ -68,6 +68,7 @@ defmodule StitchConnect.Web.PushNotifications do
     )
   end
 
+  defp notify_user_ios_devices(_user, _group, _message, _badge_value, []), do: nil
   defp notify_user_ios_devices(user, group, message, badge_value, ios_devices) do
     import APNS.Notification
 
@@ -85,6 +86,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> apns_push(on_response: &handle_apns_push/1)
   end
 
+  defp notify_user_android_devices(_user, _group, _message, _badge_value, _room_notification_count, []), do: nil
   defp notify_user_android_devices(
          user,
          group,
