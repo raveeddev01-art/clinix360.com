@@ -23,7 +23,7 @@ class AccessLogsStore {
       return 1;
     }
 
-    return ceiling;
+    return ceiling + 1;
   }
 
   @action
