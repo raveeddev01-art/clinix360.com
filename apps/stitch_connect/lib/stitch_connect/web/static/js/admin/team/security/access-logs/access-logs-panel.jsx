@@ -16,8 +16,9 @@ class AccessLogsPanel extends Component {
     props.accessLogsStore.loadTeamAccessLogs(props.teamStore.id);
   }
 
-  _test = () => {
+  _test = i => {
     console.log("PAGE CLICK");
+    console.log(i);
   };
 
   render() {
