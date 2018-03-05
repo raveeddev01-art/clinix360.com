@@ -11,11 +11,15 @@ import PeopleDetail from "./components/people-detail/people-detail";
 import Mentions from "./components/mentions/mentions";
 import Files from "./components/files/files";
 
-@inject("addonStore")
+@inject("addonStore", "searchStore")
 @observer
 class Addons extends Component {
   toggleAddons = () => {
     this.props.addonStore.toggleAddons();
+
+    if (this.props.addonStore.addonPanelType === "Search Results") {
+      this.props.searchStore.reset();
+    }
   };
 
   toggleAddonDetail = () => {
