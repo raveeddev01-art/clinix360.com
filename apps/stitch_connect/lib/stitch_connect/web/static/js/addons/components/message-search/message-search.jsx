@@ -24,7 +24,15 @@ class MessageSearch extends Component {
   renderSearchResults() {
     const { searchStore } = this.props;
 
-    if (searchStore.messages.length > 0 && !searchStore.loading) {
+    if (searchStore.loading) {
+      return (
+        <div className="text-center">
+          <LoadingIcon />
+        </div>
+      );
+    }
+
+    if (searchStore.messages.length > 0) {
       return (
         <div>
           {searchStore.messages.map(message => (
@@ -32,15 +40,9 @@ class MessageSearch extends Component {
           ))}
         </div>
       );
-    } else if (!searchStore.messages.length && !searchStore.loading) {
-      return <div className="text-muted text-center">No messages found.</div>;
     }
 
-    return (
-      <div className="text-center">
-        <LoadingIcon />
-      </div>
-    );
+    return <div className="text-muted text-center">No messages found.</div>;
   }
 
   render() {
