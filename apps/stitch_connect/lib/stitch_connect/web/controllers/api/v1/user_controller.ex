@@ -245,6 +245,19 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     json(conn, %{status: "ok"})
   end
 
+  def profile_image(conn, %{"id" => user_id}) do
+    team = conn.assigns.team
+
+    with {:user, %User{} = user} <- {:user, Stitch.UserQueries.team_member_by_id(team, user_id)},
+         {:ok, presigned_avatar} <- Stitch.AWS.S3.presign(user.profile_image_url),
+         {:ok, presigned_avatar_thumb} <- Stitch.AWS.S3.presign(user.profile_image_thumb_url) do
+      conn
+      |> json(%{ avatar: presigned_avatar, avatar_thumb: presigned_avatar_thumb })
+    else
+      _error -> {:error, :not_found}
+    end
+  end
+
   def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
     with user_id <- String.to_integer(user_id),
          true <- can_update_user?(conn.assigns.current_user, user_id),

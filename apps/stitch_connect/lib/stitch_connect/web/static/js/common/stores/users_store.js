@@ -12,6 +12,7 @@ import history from "lib/history";
 class UsersStore {
   @observable users = [];
   @observable editingUserId = null;
+  avatarStatus = {}; // { [id]: 'loading', 'failed', null } failed means failure on loading fallback
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -105,6 +106,19 @@ class UsersStore {
   loadUsers = () => {
     return get("/api/v1/users").then(response => {
       this.users = response.data;
+    });
+  };
+
+  @action
+  loadAvatar = id => {
+    if (this.avatarStatus[id] === "loading") {
+      return Promise.resolve();
+    }
+
+    this.avatarStatus[id] = "loading";
+    return get(`/api/v1/users/${id}/avatar`).then(response => {
+      this.updateUserData(id, response.data);
+      this.avatarStatus[id] = null;
     });
   };
 

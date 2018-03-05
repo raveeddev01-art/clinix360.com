@@ -11,10 +11,10 @@
       width: 100%;
 
       .dropdown.btn-group {
-        width: calc(100% - 450px);
+        max-width: calc(100% - 450px);
 
         @media (max-width: 991px) {
-          width: calc(100% - 400px);
+          max-width: calc(100% - 400px);
         }
 
         .title-dropdown-toggle {
@@ -642,8 +642,10 @@
     cursor: pointer;
 
     .item-icon {
-      margin-right: 5px;
+      font-size: 14px;
       color: $brand-primary;
+      margin-right: 8px;
+      margin-top: 1px;
     }
 
     .item-text {
@@ -655,12 +657,12 @@
         width: 20px;
         height: 20px;
         display: block;
-        border-radius: 3px;
+        margin-right: 5px;
       }
 
       span {
         display: inline-block;
-        margin-left: 5px;
+        margin-right: 5px;
 
         &.username {
           font-weight: 700;
@@ -1103,17 +1105,39 @@
 }
 
 .attachment-image-block {
-  max-width: 360px;
-
   .attachment-title span {
     color: #777;
   }
 
   .attachment-image-holder {
+    max-width: 360px;
     cursor: zoom-in;
-    display: block;
+    display: inline-block;
     overflow-y: hidden;
     margin: 5px 0;
+    position: relative;
+
+    img {
+      max-height: 360px;
+    }
+
+    .attachment-actions {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 15px;
+      opacity: 0;
+
+      .btn {
+        border: 0;
+      }
+    }
+
+    &:hover {
+      .attachment-actions {
+        opacity: 1;
+      }
+    }
   }
 
   .attachment-preview-placeholder {
@@ -1126,12 +1150,22 @@
 
 .image-viewer.modal-dialog {
   max-width: 80%;
+
+  .modal-content {
+    width: auto;
+    padding: 0 25px;
+  }
+
+  .modal-body {
+    max-height: 80vh;
+    padding: 0;
+  }
 }
 
 .modal-attachment-image {
-  max-width: 100%;
+  max-height: inherit;
   display: block;
-  margin: 0 auto;
+  margin: 25px auto;
   cursor: zoom-out;
 }
 

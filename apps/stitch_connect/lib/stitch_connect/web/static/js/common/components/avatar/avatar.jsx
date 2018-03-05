@@ -1,7 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject } from "mobx-react";
 
+@inject("usersStore")
 class Avatar extends Component {
+  onError = () => {
+    const { user, usersStore } = this.props;
+
+    if (user.id) {
+      usersStore.loadAvatar(user.id);
+    }
+  };
+
   render() {
     const { user, size } = this.props;
 
@@ -11,6 +21,7 @@ class Avatar extends Component {
           <img
             src={user.avatar_thumb}
             alt={user.username}
+            onError={this.onError}
             className="img-circle"
           />
         </div>
