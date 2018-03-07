@@ -6,7 +6,7 @@
 
   if (Object.keys(currentUser).length > 0 && currentUser.constructor === Object) {
     analytics.identify(currentUser.id, {
-      name: `${currentUser.firstName} ${currentUser.lastName}`,
+      name: currentUser.firstName + " " + currentUser.lastName,
       email: currentUser.email
     });
   }
