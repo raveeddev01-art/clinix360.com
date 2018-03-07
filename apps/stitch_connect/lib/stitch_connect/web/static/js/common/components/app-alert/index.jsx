@@ -13,6 +13,6 @@ export default class AppAlert extends Component {
       return <ReconnectionAlert />;
     }
 
-    return window.Notification && <BrowserNotificationAlert />;
+    return window.Notification ? <BrowserNotificationAlert /> : null;
   }
 }
