@@ -123,6 +123,33 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end)
   end
 
+  def mark_as_unread(conn, %{"group_id" => group_id, "message_id" => message_id}) do
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:ok, response} <- Message.mark_as_unread(current_user.id, group.id, message) do
+      %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}} = response
+      messages_json = MessageView.render("index.json", %{messages: messages})
+      mark_as_read_json = MessageView.render("mark_as_read.json", %{
+        messages_json: messages_json,
+        group_user: group_user
+      })
+      mark_as_unread_events(group, current_user, messages_json, mark_as_read_json)
+      json(conn, %{status: "ok"})
+    else
+      {:group, nil} -> {:error, :not_found}
+      {:error, message} -> {:error, :not_authorized, message}
+    end
+  end
+
+  def mark_as_unread_events(group, current_user, messages_json, json) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_marked_as_unread(current_user, json)
+      GroupChannel.broadcast_read_status(group, messages_json)
+      PushNotifications.push_badge_update_to_user(current_user)
+    end)
+  end
+
   def download(conn, %{"id" => message_id}) do
     message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
