@@ -5,7 +5,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     EventsChannel,
     GroupChannel,
     PushNotifications,
-    UserStatusService
+    UserStatusService,
+    Api.V1.MessageView,
   }
 
   alias Stitch.{
@@ -93,6 +94,32 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+    end)
+  end
+
+  def mark_as_read(conn, %{"group_id" => group_id}) do
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:ok, response} <- Message.mark_as_read(current_user.id, group.id) do
+      %{mark_messages_as_read: {_, messages}, mark_group_as_read: {1, [group_user]}} = response
+      messages_json = MessageView.render("index.json", %{messages: messages})
+      mark_as_read_json = MessageView.render("mark_as_read.json", %{
+        messages_json: messages_json,
+        group_user: group_user
+      })
+      mark_as_read_events(group, current_user, messages_json, mark_as_read_json)
+      json(conn, %{status: "ok"})
+    else
+      {:group, nil} -> {:error, :not_found}
+      {:error, message} -> {:error, :not_authorized, message}
+    end
+  end
+
+  def mark_as_read_events(group, current_user, messages_json, json) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_marked_as_read(current_user, json)
+      GroupChannel.broadcast_read_status(group, messages_json)
+      PushNotifications.push_badge_update_to_user(current_user)
     end)
   end
 
