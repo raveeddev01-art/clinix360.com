@@ -163,9 +163,9 @@ defmodule StitchConnect.Web.MessageController.IndexTest do
       json =
         conn
         |> get(api_v1_message_path(conn, :index, group_b))
-        |> json_response(:not_found)
+        |> json_response(:forbidden)
 
-      assert %{"message" => "The room you are looking for does not exist."} = json
+      assert %{"message" => "You can't see the messages for this room."} = json
     end
 
     test "doesn't allow guests to search groups they aren't members of", %{
@@ -185,7 +185,7 @@ defmodule StitchConnect.Web.MessageController.IndexTest do
         assert json_response(conn, 200)
 
         conn = get(base_conn, api_v1_message_path(base_conn, :index, group))
-        assert json_response(conn, :not_found)
+        assert json_response(conn, :forbidden)
       end
     end
   end

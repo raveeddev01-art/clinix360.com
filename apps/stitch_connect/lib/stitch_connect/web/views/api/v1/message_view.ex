@@ -13,6 +13,14 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     message_json(message)
   end
 
+  def render("feed_surrounding.json", %{more_before: more_before, more_after: more_after, messages: messages}) do
+    %{
+      more_before: more_before,
+      more_after: more_after,
+      messages: render("index.json", %{messages: messages}),
+    }
+  end
+
   def message_json(message) do
     %{
       id: message.id,

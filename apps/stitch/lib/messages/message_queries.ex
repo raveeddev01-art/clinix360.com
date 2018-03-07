@@ -33,7 +33,7 @@ defmodule Stitch.MessageQueries do
       |> select([gu], gu.group_id)
       |> Repo.all()
 
-    limit = Keyword.get(opts, :limit, 30)
+    limit = Enum.min([Keyword.get(opts, :limit, 30), 1000])
 
     query =
       if fetch_users do
@@ -94,7 +94,7 @@ defmodule Stitch.MessageQueries do
   Return the latest 30 messages for a group.
   """
   def group_latest_messages(group_id, user, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 60)
+    limit = Enum.min([Keyword.get(opts, :limit), 60])
     offset = Keyword.get(opts, :skip, 0)
     fetch_users = Keyword.get(opts, :fetch_users, true)
 
@@ -135,7 +135,7 @@ defmodule Stitch.MessageQueries do
   end
 
   def group_recent_messages(group_id, user, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 60)
+    limit = Enum.min([Keyword.get(opts, :limit), 60])
     offset = Keyword.get(opts, :skip, 0)
     fetch_users = Keyword.get(opts, :fetch_users, true)
 
@@ -239,9 +239,9 @@ defmodule Stitch.MessageQueries do
 
     Repo.one(query)
   end
-  def get_by_id(id, false) do
-    Repo.get(Message, id)
-  end
+
+  def get_by_id(id, false), do: Repo.get(Message, id)
+  def get_by_id(id, true), do: get_by_id(id)
 
   def load_info(message) do
     Repo.preload(message, [:pinned_by, :user], force: true)
@@ -425,17 +425,19 @@ defmodule Stitch.MessageQueries do
     Repo.one(query)
   end
 
-  @spec surrounding(Message.t(), Group.t(), User.t(), pos_integer, boolean) ::
-          {[Message.t()], [Message.t()]}
-  def surrounding(%Message{id: message_id}, %Group{id: group_id}, %User{} = user, limit, fetch_users \\ true) do
-    messages_before =
-      MessageQueries.group_latest_messages(group_id, user, max_id: message_id, limit: limit, fetch_users: fetch_users)
-      |> Enum.reverse()
-
-    messages_after =
-      MessageQueries.group_recent_messages(group_id, user, min_id: message_id, limit: limit, fetch_users: fetch_users)
-
-    {messages_before, messages_after}
+  @spec surrounding(Message.t(), Group.t(), User.t(), [{pos_integer, integer | boolean}]) :: map
+  def surrounding(%Message{} = message, %Group{} = group, %User{} = user, opts) do
+    limit = Enum.min([Keyword.get(opts, :limit), 60])
+    fetch_users = Keyword.get(opts, :fetch_users, false)
+    query_opts = [min_id: message.id, max_id: message.id, limit: limit, fetch_users: fetch_users]
+    messages_before = MessageQueries.group_latest_messages(group.id, user, query_opts) |> Enum.reverse()
+    messages_after = MessageQueries.group_recent_messages(group.id, user, query_opts)
+    messages = messages_before ++ [message] ++ messages_after
+    %{
+      more_before: length(messages_before) >= limit,
+      more_after: length(messages_after) >= limit,
+      messages: messages,
+    }
   end
 
   defp yesterday, do: Date.add(Date.utc_today(), -1)
