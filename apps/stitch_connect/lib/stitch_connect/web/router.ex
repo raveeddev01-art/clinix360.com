@@ -81,7 +81,6 @@ defmodule StitchConnect.Web.Router do
     get "/find-your-team", AuthenticationController, :index
     get "/find-your-team/:token", AuthenticationController, :index
 
-    # get "/login", AuthenticationController, :index
     # get "/reset-password", AuthenticationController, :index
 
     get "/signup/email", AuthenticationController, :index
@@ -91,6 +90,9 @@ defmodule StitchConnect.Web.Router do
 
     # get "/signup/phone-number", AuthenticationController, :index
   end
+
+  # Redirect for common URL misspellings
+  get "/login", Redirect, to: "/signin"
 
   # Application download links.
   get "/download-mac", Redirect, external: "https://fz0pxcjnx9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-mac"
