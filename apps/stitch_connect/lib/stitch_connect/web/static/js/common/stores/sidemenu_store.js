@@ -339,7 +339,8 @@ class SidemenuStore {
       newMessage.type === "system" ||
       (groupStore.group &&
         newMessage.group_id === groupStore.group.id &&
-        this.isInChat)
+        this.isInChat) ||
+      (groupStore.group && newMessage.user_id === currentUser.id)
     ) {
       return;
     }
