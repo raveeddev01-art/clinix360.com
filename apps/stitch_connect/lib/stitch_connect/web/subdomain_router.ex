@@ -197,6 +197,12 @@ defmodule StitchConnect.Web.SubdomainRouter do
       post("/multi-room-guests", InvitationController, :invite_multi_room_guests)
     end
 
+    scope "/bots" do
+      get("/", BotsController, :index)
+      post("/", BotsController, :create)
+      put("/:id", BotsController, :update)
+    end
+
     # Initiate export by admin
     resources("/exports", ExportController, only: [:index, :create])
 
