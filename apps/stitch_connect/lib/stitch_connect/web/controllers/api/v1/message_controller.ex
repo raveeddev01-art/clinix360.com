@@ -281,6 +281,21 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
+  def toggle_reaction(conn, %{"id" => message_id, "emoji_name" => emoji_name}) do
+    current_user = conn.assigns.current_user
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(message.group_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)} do
+      {:ok, _reaction} = Message.Reaction.toggle_reaction(message, current_user, emoji_name)
+      GroupChannel.broadcast_reactions_updated(group, message)
+      json(conn, %{status: "ok"})
+    else
+      {:message, _} -> {:error, :not_found}
+      {:group, _} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
+    end
+  end
+
   def parse_query_params(conn, _opts) do
     types = %{skip: :integer, limit: :integer, min_id: :integer, max_id: :integer}
     changeset = Ecto.Changeset.cast({%{}, types}, conn.params, Map.keys(types))
