@@ -33,7 +33,7 @@ defmodule Stitch.Accounts.User do
     field(:mobile_notification_preference, :string, default: "everything")
     field(:email_notification_preference, :string, default: "daily")
     field(:is_staff, :boolean, default: false)
-    # List of groups the user is allowed in if user is a guest
+    field(:is_bot, :boolean, default: false)
     field(:groups_as_guest, {:array, :integer}, default: [])
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
@@ -212,6 +212,7 @@ defmodule Stitch.Accounts.User do
     cond do
       Stitch.Accounts.ProfileImage.needs_avatar_regen(changeset) ->
         add_default_profile_image(changeset)
+
       true ->
         changeset
     end
@@ -219,6 +220,7 @@ defmodule Stitch.Accounts.User do
 
   def add_default_profile_image(%{valid?: true} = changeset) do
     user = %User{first_name: get_first_name(changeset), last_name: get_last_name(changeset)}
+
     with {:ok, avatar} <- Stitch.Accounts.ProfileImage.pick_default_random(user),
          {:ok, avatar_thumb} <- Stitch.Accounts.ProfileImage.create_thumb(avatar) do
       changeset
@@ -236,8 +238,9 @@ defmodule Stitch.Accounts.User do
     case Ecto.Changeset.fetch_change(changeset, :first_name) do
       {:ok, first_name} ->
         first_name
-    _ ->
-      changeset.data.first_name
+
+      _ ->
+        changeset.data.first_name
     end
   end
 
@@ -245,8 +248,9 @@ defmodule Stitch.Accounts.User do
     case Ecto.Changeset.fetch_change(changeset, :last_name) do
       {:ok, last_name} ->
         last_name
-    _ ->
-      changeset.data.last_name
+
+      _ ->
+        changeset.data.last_name
     end
   end
 

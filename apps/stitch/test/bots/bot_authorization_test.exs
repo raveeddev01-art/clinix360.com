@@ -68,25 +68,4 @@ defmodule Stitch.BotAuthorizationTest do
       assert result == false
     end
   end
-
-  describe "Stitch.BotAuthorization.can_delete_bot?/2" do
-    test "returns true for admins" do
-      team = insert(:team)
-      user = insert(:user, team_id: team.id, roles: ["admin"])
-      result = Stitch.BotAuthorization.can_delete_bot?(user.team_id, user.id)
-      assert result == true
-    end
-
-    test "returns false for members" do
-      team = insert(:team)
-      user = insert(:user, team_id: team.id, roles: ["member"])
-      result = Stitch.BotAuthorization.can_delete_bot?(user.team_id, user.id)
-      assert result == false
-    end
-
-    test "returns false for bad parameters" do
-      result = Stitch.BotAuthorization.can_delete_bot?(nil, "")
-      assert result == false
-    end
-  end
 end

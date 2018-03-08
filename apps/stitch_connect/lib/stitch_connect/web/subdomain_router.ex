@@ -201,7 +201,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
       get("/", BotsController, :index)
       post("/", BotsController, :create)
       put("/:id", BotsController, :update)
-      delete("/:id", BotsController, :delete)
     end
 
     # Initiate export by admin
