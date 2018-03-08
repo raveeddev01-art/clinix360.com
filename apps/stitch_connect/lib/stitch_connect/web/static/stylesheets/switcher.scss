@@ -23,6 +23,7 @@
     font-size: 24px;
     color: #fff;
     margin-bottom: 20px;
+    position: relative;
 
     &:hover,
     &:focus,
@@ -39,13 +40,20 @@
       opacity: 0.6;
     }
 
-    &-wrapper {
-      position: relative;
-    }
-
     &.active {
       i {
         opacity: 1;
+      }
+
+      &:after {
+        content: "";
+        width: 5px;
+        background: #fff;
+        border-radius: 0 5px 5px 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -20px;
       }
     }
   }

@@ -3,20 +3,34 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
   alias StitchConnect.Web.Api.V1.UserView
   alias Stitch.Group
 
-  def render("index.json", %{groups: groups, user_id: user_id}) do
+  def render("index.json", %{groups: groups, user_id: user_id} = attrs) do
+    fetch_users = Map.get(attrs, :fetch_users, true)
     Enum.map(groups, fn group ->
-      group_json(group, user_id)
+      json = group_json(group, user_id, fetch_users)
+      if fetch_users do
+        Map.merge(json, %{
+          users: Enum.map(group.users, &UserView.user_json/1),
+          user_count: Enum.count(group.users),
+        })
+      else
+        json
+      end
     end)
   end
 
   def render("show.json", %{group: group, user_id: user_id}) do
-    group_json(group, user_id)
+    json = group_json(group, user_id)
+    Map.merge(json, %{
+      users: Enum.map(group.users, &UserView.user_json/1),
+      user_count: Enum.count(group.users),
+    })
   end
 
-  def group_json(group, user_id) do
+  def group_json(group, user_id, fetch_users \\ true) do
+    name = if fetch_users, do: group_name(group, user_id), else: group.name
     %{
       id: group.id,
-      name: group_name(group, user_id),
+      name: name,
       slug: group.slug,
       public: group.public,
       description: group.description,
@@ -24,9 +38,7 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
       is_hidden: group.is_hidden,
       is_favorite: group.is_favorite,
       joined: group.joined,
-      users: Enum.map(group.users, &UserView.user_json/1),
       type: type(group),
-      user_count: Enum.count(group.users),
       unread_messages_count: group.unread_messages_count,
       mentions_count: group.mentions_count,
       last_read_at: group.last_read_at,
@@ -42,7 +54,6 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
         [me] -> me
         users -> Enum.find(users, &(&1.id != user_id))
       end
-
     "#{user.first_name} #{user.last_name}"
   end
 

@@ -7,12 +7,6 @@ import SecurityLockoutPanel from "./security-lockout-panel";
 import InvitationControlPanel from "./invitation-control-panel";
 // import DeleteTeamPanel from "./delete-team-panel";
 
-const header = (
-  <h1>
-    <i className="fa fa-cogs" /> Settings
-  </h1>
-);
-
 @inject("titleStore", "adminPanelStore")
 class TeamSettings extends Component {
   constructor(props) {
@@ -56,28 +50,36 @@ class TeamSettings extends Component {
     const { alertMessage, alertVisible, alertStyle } = this.state;
 
     return (
-      <Panel className="admin-panel" header={header}>
-        {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
-        <TeamNamePanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        <SecurityLockoutPanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        <InvitationControlPanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        {/* <DeleteTeamPanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        /> */}
+      <Panel className="admin-panel">
+        <Panel.Heading>
+          <h1>
+            <i className="fa fa-cogs" /> Settings
+          </h1>
+        </Panel.Heading>
+
+        <Panel.Body>
+          {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+          <TeamNamePanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          <SecurityLockoutPanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          <InvitationControlPanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          {/* <DeleteTeamPanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          /> */}
+        </Panel.Body>
       </Panel>
     );
   }

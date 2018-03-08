@@ -17,14 +17,15 @@ class MemberTypeModal extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     if (
-      this.state.editingUserId !== nextProps.usersStore.editingUserId &&
-      nextProps.usersStore.editingUserId
+      this.state.editingUserId !== prevProps.usersStore.editingUserId &&
+      prevProps.usersStore.editingUserId
     ) {
-      const user = nextProps.usersStore.editingUser;
+      const user = prevProps.usersStore.editingUser;
+      // eslint-disable-next-line
       this.setState({
-        editingUserId: nextProps.usersStore.editingUserId,
+        editingUserId: prevProps.usersStore.editingUserId,
         role: user.roles[0],
         groupId: user.groups_as_guest.join(",")
       });
@@ -69,8 +70,7 @@ class MemberTypeModal extends Component {
     const isEditing = !!usersStore.editingUserId;
     const user = usersStore.editingUser || {};
     const saveDisabled =
-      (role === "single-room-guest" && !groupId) ||
-      (role === "multi-room-guest" && !groupId.length);
+      (role === "single-room-guest" || role === "multi-room-guest") && !groupId;
 
     return (
       <Modal show={isEditing} onHide={this.onEndEditing}>

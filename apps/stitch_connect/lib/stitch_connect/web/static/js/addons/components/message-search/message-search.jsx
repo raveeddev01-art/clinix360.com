@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import { AddonMessage } from "common/components";
+import LoadingIcon from "common/components/loading-icon";
 
 @inject("searchStore")
 @observer
@@ -20,20 +21,36 @@ class MessageSearch extends Component {
     searchStore.loadMore();
   };
 
+  renderSearchResults() {
+    const { searchStore } = this.props;
+
+    if (searchStore.loading) {
+      return (
+        <div className="text-center">
+          <LoadingIcon size={2} />
+        </div>
+      );
+    }
+
+    if (searchStore.messages.length > 0) {
+      return (
+        <div>
+          {searchStore.messages.map(message => (
+            <AddonMessage key={message.id} message={message} />
+          ))}
+        </div>
+      );
+    }
+
+    return <div className="text-muted text-center">No messages found.</div>;
+  }
+
   render() {
     const { searchStore } = this.props;
 
     return (
       <div className="message-search-addon">
-        {searchStore.messages.length > 0 ? (
-          <div>
-            {searchStore.messages.map(message => (
-              <AddonMessage key={message.id} message={message} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-muted text-center">No messages found.</div>
-        )}
+        {this.renderSearchResults()}
 
         <div className="footer">
           {searchStore.hasMore && searchStore.messages.length ? (

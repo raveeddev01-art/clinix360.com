@@ -111,4 +111,22 @@ defmodule StitchConnect.Web.TeamControllerTest do
       assert message =~ "Zip code has invalid format"
     end
   end
+
+  describe "GET /api/v1/teams/1/access_log" do
+    test "returns access for the current team", %{conn: conn} do
+      team = insert(:team)
+      user = insert(:user, team: team, roles: ["admin"])
+
+      {:ok, _access_log} = Stitch.Accounts.AccessLog.create_or_update(user, "127.0.0.1", "user-agent-1")
+
+      json =
+        conn
+        |> with_team_subdomain(team)
+        |> with_api_user(user)
+        |> get(Routes.api_v1_team_path(conn, :access_log, team.id))
+        |> json_response(200)
+
+      assert [%{"access_count" => 1}] = json["data"]
+    end
+  end
 end

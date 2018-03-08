@@ -7,7 +7,7 @@ export const NOTIFICATION_PREFERENCES = [
   },
   {
     value: "mentions",
-    title: "Direct Messages + Mentions",
+    title: "Mentions",
     description: "You will be notified only when a team member mentions you."
   },
   {

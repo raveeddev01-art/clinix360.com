@@ -6,14 +6,9 @@ import UsernamePanel from "./username-panel";
 import EmailPanel from "./email-panel";
 import PasswordPanel from "./password-panel";
 import PINPanel from "./pin-panel";
+import DeactivatePanel from "./deactivate-panel";
 
-const header = (
-  <h1>
-    <i className="fa fa-cog" /> Account
-  </h1>
-);
-
-@inject("titleStore", "adminPanelStore")
+@inject("userStore", "titleStore", "adminPanelStore")
 class AccountSettings extends Component {
   constructor(props) {
     super(props);
@@ -52,32 +47,45 @@ class AccountSettings extends Component {
     });
   };
 
+  _nonAdminsOnly = () => {
+    return !this.props.userStore.roles.includes("admin");
+  };
+
   render() {
     const { alertMessage, alertVisible, alertStyle } = this.state;
 
     return (
-      <Panel className="admin-panel" header={header}>
-        {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
-        <UsernamePanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        <EmailPanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        <PasswordPanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        <PINPanel
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
+      <Panel className="admin-panel">
+        <Panel.Heading>
+          <h1>
+            <i className="fa fa-cog" /> Account
+          </h1>
+        </Panel.Heading>
+
+        <Panel.Body>
+          {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+          <UsernamePanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          <EmailPanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          <PasswordPanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          <PINPanel
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          {this._nonAdminsOnly() && <DeactivatePanel onError={this.onError} />}
+        </Panel.Body>
       </Panel>
     );
   }

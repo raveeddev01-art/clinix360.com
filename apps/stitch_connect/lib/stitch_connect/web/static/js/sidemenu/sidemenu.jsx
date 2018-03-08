@@ -8,7 +8,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 
-import { Scrollbar } from "common/components";
+import { Scrollbar, Avatar } from "common/components";
 import InviteModal from "common/modals/invite-modal";
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
@@ -175,7 +175,22 @@ class Sidemenu extends Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="super-colors">
-              <h5 className="text-center">{`${currentUser.firstName} ${currentUser.lastName}`}</h5>
+              <div className="user-header m-b-20">
+                <Avatar
+                  user={{
+                    avatar_thumb: userStore.avatarThumb,
+                    username: userStore.username
+                  }}
+                  size="sm"
+                />
+
+                <div className="content">
+                  <div className="full-name">{userStore.fullName}</div>
+                  <div className="username text-muted">
+                    {userStore.username}
+                  </div>
+                </div>
+              </div>
 
               <div className="separator text-center">
                 <span>You</span>

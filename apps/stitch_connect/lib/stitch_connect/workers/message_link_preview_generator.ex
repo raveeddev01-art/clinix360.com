@@ -35,8 +35,11 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
             |> LinkPreview.generate_link_previews
             |> MessageQueries.load_info
 
-          group = GroupQueries.get_by_id(message.group_id)
-          GroupChannel.broadcast_msg_link_previews_generated(group, message)
+          if message.has_links do
+            group = GroupQueries.get_by_id(message.group_id)
+            GroupChannel.broadcast_msg_link_previews_generated(group, message)
+          end
+
           queue
 
         {:empty, queue} ->

@@ -5,16 +5,16 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   alias StitchConnect.Web.{TeamChannel, EventsChannel, GroupChannel, Endpoint}
   import Stitch.UserAuthorization, only: [can_update_user?: 2]
 
-  action_fallback StitchConnect.Web.Api.V1.FallbackController
+  action_fallback(StitchConnect.Web.Api.V1.FallbackController)
 
   def index(conn, _) do
     users = UserQueries.users_for_team(conn.assigns.current_user.team_id)
-    render conn, "index.json", users: users
+    render(conn, "index.json", users: users)
   end
 
   def search(conn, %{"term" => term}) do
     result_users = UserQueries.search(conn.assigns.current_user, term)
-    render conn, "index.json", users: result_users
+    render(conn, "index.json", users: result_users)
   end
 
   def activate(conn, %{"id" => id}) do
@@ -26,8 +26,25 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     else
       {:error, :not_found} ->
         not_found_error(conn)
-      {:self, :true} ->
+
+      {:self, true} ->
         unprocessable_entity_error(conn, %{message: "You cannot activate your own account."})
+    end
+  end
+
+  def deactivate_my_account(conn, params) do
+    id = conn.assigns.current_user.id
+    with false <- Enum.member?(conn.assigns.current_user.roles, "admin"),
+         {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do
+      Stitch.Billing.update_subscriber_count(conn.assigns.team)
+      TeamChannel.broadcast_deactivated(conn.assigns.team, id)
+      Endpoint.broadcast("user_socket:#{id}", "disconnect", %{})
+      json(conn, %{message: "Account has been deactivated."})
+    else
+      {:error, :not_found} ->
+        not_found_error(conn)
+      true ->
+        unprocessable_entity_error(conn, %{message: "Only non-admins can deactivate their account."})
     end
   end
 
@@ -41,7 +58,8 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     else
       {:error, :not_found} ->
         not_found_error(conn)
-      {:self, :true} ->
+
+      {:self, true} ->
         unprocessable_entity_error(conn, %{message: "You cannot deactivate your own account."})
     end
   end
@@ -58,7 +76,9 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unauthorized)
         |> json(%{message: "You are not unauthorized to update user profile."})
         |> halt
-      {:error, changeset} -> {:error, changeset}
+
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 
@@ -66,8 +86,10 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     case Stitch.Accounts.Admin.promote_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
         TeamChannel.broadcast_user_info(conn.assigns.team, user)
+
         conn
         |> render("show.json", user: user)
+
       {:error, message} ->
         conn
         |> unprocessable_entity_error(%{message: message})
@@ -78,8 +100,10 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     case Stitch.Accounts.Admin.revoke_admin(conn.assigns.current_user, user_id) do
       {:ok, user} ->
         TeamChannel.broadcast_user_info(conn.assigns.team, user)
+
         conn
         |> render("show.json", user: user)
+
       {:error, message} ->
         conn
         |> unprocessable_entity_error(%{message: message})
@@ -92,13 +116,16 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: "We do not allow emails from #{host}"})
+
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> json(%{message: changeset_errors_to_string(changeset)})
+
       {:error, message} ->
         conn
         |> unprocessable_entity_error(%{message: message})
+
       user ->
         conn
         |> put_session(:user_id, user.id)
@@ -111,17 +138,22 @@ defmodule StitchConnect.Web.Api.V1.UserController do
       {:error, message} ->
         conn
         |> unprocessable_entity_error(%{message: message})
+
       _ ->
         conn
         |> json(%{message: "Confirmation code sent."})
     end
   end
 
-  def submit_confirmation_code(conn, %{"user_id" => user_id, "confirmation_code" => confirmation_code}) do
+  def submit_confirmation_code(conn, %{
+        "user_id" => user_id,
+        "confirmation_code" => confirmation_code
+      }) do
     case Stitch.User.Onboarding.verify_confirmation_code(user_id, confirmation_code) do
       true ->
         conn
         |> json(%{message: "Confirmation code accepted."})
+
       false ->
         conn
         |> unprocessable_entity_error(%{message: "The confirmation code is incorrect."})
@@ -136,10 +168,12 @@ defmodule StitchConnect.Web.Api.V1.UserController do
       {:error, changeset} ->
         conn
         |> unprocessable_entity_error(%{changeset: changeset})
+
       user ->
         group = Stitch.GroupQueries.default_group(user)
         Stitch.Group.add_user(group, user.id)
         Stitch.Group.assign_creator(group, user.id)
+
         conn
         |> login_user(user)
         |> json(%{id: user.id, email: user.email, onboarded: user.onboarded})
@@ -150,23 +184,37 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     team = conn.assigns.team
 
     with %User{} = user <- UserQueries.team_member_by_id(team, user_id) do
-      render conn, "show.json", user: user
-    else _ ->
-      conn
-      |> put_status(:not_found)
-      |> json(%{message: "No user found with ID: #{user_id}"})
+      render(conn, "show.json", user: user)
+    else
+      _ ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{message: "No user found with ID: #{user_id}"})
     end
   end
 
-  def update_password(conn, %{"id" => _id, "new_password" => new_password, "old_password" => old_password}) do
-    case Stitch.User.Authentication.update_password(conn.assigns.current_user, old_password, new_password) do
+  def update_password(conn, %{
+        "id" => _id,
+        "new_password" => new_password,
+        "old_password" => old_password
+      }) do
+    case Stitch.User.Authentication.update_password(
+           conn.assigns.current_user,
+           old_password,
+           new_password
+         ) do
       {:ok, user} ->
         EventsChannel.broadcast_logout_from_all_sessions(user, get_session(conn, :session_id))
+
         conn
         |> update_session(user)
         |> json(%{token: user.token})
-      {:error, message} when is_binary(message) -> {:error, :unprocessable_entity, message}
-      {:error, message} -> {:error, message}
+
+      {:error, message} when is_binary(message) ->
+        {:error, :unprocessable_entity, message}
+
+      {:error, message} ->
+        {:error, message}
     end
   end
 
@@ -174,21 +222,40 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     case Stitch.Twilio.lookup(phone_number) do
       :ok ->
         conn |> json(%{status: "ok"})
+
       :error ->
         {:error, :unprocessable_entity, "Phone number is invalid."}
     end
   end
 
-  def request_demo(conn, %{"fullName" => full_name, "email" => email, "phoneNumber" => phone_number, "companyName" => company}) do
+  def request_demo(conn, %{
+        "fullName" => full_name,
+        "email" => email,
+        "phoneNumber" => phone_number,
+        "companyName" => company
+      }) do
     properties = %{
-      "full_name"     => full_name,
-      "email"         => email,
-      "phone_number"  => phone_number,
-      "company"       => company,
+      "full_name" => full_name,
+      "email" => email,
+      "phone_number" => phone_number,
+      "company" => company
     }
 
     Stitch.Analytics.track("Requested Demo", properties)
     json(conn, %{status: "ok"})
+  end
+
+  def profile_image(conn, %{"id" => user_id}) do
+    team = conn.assigns.team
+
+    with {:user, %User{} = user} <- {:user, Stitch.UserQueries.team_member_by_id(team, user_id)},
+         {:ok, presigned_avatar} <- Stitch.AWS.S3.presign(user.profile_image_url),
+         {:ok, presigned_avatar_thumb} <- Stitch.AWS.S3.presign(user.profile_image_thumb_url) do
+      conn
+      |> json(%{ avatar: presigned_avatar, avatar_thumb: presigned_avatar_thumb })
+    else
+      _error -> {:error, :not_found}
+    end
   end
 
   def upload_profile_image(conn, %{"url" => url, "id" => user_id}) do
@@ -203,6 +270,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unauthorized)
         |> json(%{message: "You are not unauthorized to upload profile image."})
         |> halt
+
       {:error, error} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -222,6 +290,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
         |> put_status(:unauthorized)
         |> json(%{message: "You are not unauthorized to delete profile image."})
         |> halt
+
       {:error, _error} ->
         conn |> unprocessable_entity_error(%{changeset: "Couldn't delete the profile image"})
     end
@@ -233,6 +302,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
   def exists?(conn, %{"email" => email}) do
     team_id = conn.private[:team_id]
+
     case Stitch.UserQueries.team_member_with_email(team_id, email) do
       %User{} -> json(conn, %{exists: true})
       _ -> json(conn, %{exists: false})
@@ -254,11 +324,14 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     result =
       Enum.map(emails, fn email ->
         changeset = User.valid_email_changeset(%User{}, %{email: email})
+
         case changeset.errors do
           [] ->
             %{"#{email}": true}
+
           [email: {_, [host: host]}] ->
             %{"#{email}": "We do not allow emails from #{host}"}
+
           _ ->
             %{"#{email}": changeset_errors_to_string(changeset)}
         end
@@ -273,26 +346,34 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     |> json(%{message: "Requires list of emails."})
   end
 
+  def access(conn, _params) do
+    conn
+    |> create_access_log_record(conn.assigns.current_user)
+    |> json(%{message: "ok"})
+  end
+
   @member_role Role.member()
   @guest_roles Role.guests()
   def change_role(conn, %{"id" => user_id, "role" => role}) when role in @member_role do
     do_change_role(conn, %{user_id: user_id, role: role})
   end
+
   def change_role(conn, %{"id" => user_id, "role" => role, "group_ids" => group_ids})
-    when role in @guest_roles do
-      with :ok <- FeatureGateway.allowed?(:guests, conn.assigns.subscription) do
-        do_change_role(conn, %{user_id: user_id, role: role, groups_as_guest: group_ids})
-      else
-        error -> handle_change_role_error(conn, error, role)
-      end
+      when role in @guest_roles do
+    with true <- FeatureGateway.Connect.allowed?(:guests, conn.assigns.team) do
+      do_change_role(conn, %{user_id: user_id, role: role, groups_as_guest: group_ids})
+    else
+      error -> handle_change_role_error(conn, error, role)
+    end
   end
 
   defp do_change_role(conn, %{user_id: user_id, role: role} = params) do
     with team = conn.assigns.team,
-        {:user, user} when not is_nil(user) <- {:user, UserQueries.team_member_by_id(team, user_id)},
-        {:ok, updated_user} <- Stitch.Accounts.Admin.change_role(user, params),
-        {:admins, team_admins} = {:admins, Stitch.TeamQueries.list_admins(team)},
-        {removed_groups, added_groups} = Stitch.Accounts.Admin.update_user_groups(updated_user) do
+         {:user, user} when not is_nil(user) <-
+           {:user, UserQueries.team_member_by_id(team, user_id)},
+         {:ok, updated_user} <- Stitch.Accounts.Admin.change_role(user, params),
+         {:admins, team_admins} = {:admins, Stitch.TeamQueries.list_admins(team)},
+         {removed_groups, added_groups} = Stitch.Accounts.Admin.update_user_groups(updated_user) do
       Stitch.Billing.update_subscriber_count(team)
       TeamChannel.broadcast_user_info(team, updated_user)
       GroupChannel.broadcast_members_update(user, removed_groups, added_groups)
@@ -315,23 +396,32 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   defp handle_change_role_error(conn, {:user, nil}, _) do
     not_found_error(conn)
   end
+
   defp handle_change_role_error(conn, {:insufficient_tier, _}, _) do
     unprocessable_entity_error(conn, %{message: "Feature not available for your subscription."})
   end
+
   defp handle_change_role_error(conn, {:error, :invalid_group_ids}, _) do
     unprocessable_entity_error(conn, %{message: "One or more provided group ids is invalid."})
   end
+
   defp handle_change_role_error(conn, {:error, :invalid_group_size}, "single-room-guest") do
-    unprocessable_entity_error(conn, %{message:  ~s(Expected exactly 1 group id in "group_ids" list.)})
+    unprocessable_entity_error(conn, %{
+      message: ~s(Expected exactly 1 group id in "group_ids" list.)
+    })
   end
+
   defp handle_change_role_error(conn, {:error, :invalid_group_size}, "multi-room-guest") do
-    unprocessable_entity_error(conn, %{message: ~s(Expected at least 1 group ids in "group_ids" list.)})
+    unprocessable_entity_error(conn, %{
+      message: ~s(Expected at least 1 group ids in "group_ids" list.)
+    })
   end
 
   # TODO: Can be moved to some common helper later
   defp not_found_error(conn) do
     not_found_error(conn, "User does not exist.")
   end
+
   defp not_found_error(conn, %{message: message}) do
     conn
     |> put_status(:not_found)
@@ -342,6 +432,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     message = changeset_errors_to_string(changeset)
     unprocessable_entity_error(conn, %{message: message})
   end
+
   defp unprocessable_entity_error(conn, %{message: message}) do
     conn
     |> put_status(:unprocessable_entity)

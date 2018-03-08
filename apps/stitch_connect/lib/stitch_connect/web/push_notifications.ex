@@ -76,7 +76,7 @@ defmodule StitchConnect.Web.PushNotifications do
     ios_devices
     |> Enum.map(fn %{token: token} ->
       group
-      |> notification_text_body(message)
+      |> notification_text_body(message, user)
       |> new(token, @apns_topic)
       |> put_badge(badge_value)
       |> put_sound("chime")
@@ -103,7 +103,7 @@ defmodule StitchConnect.Web.PushNotifications do
     |> put_data(%{
       "badge" => to_string(badge_value),
       "room_notification_count" => room_notification_count,
-      "message" => notification_text_body(group, message),
+      "message" => notification_text_body(group, message, user),
       "ejson" => message |> sanitize_notification_payload |> Poison.encode!()
     })
     |> fcm_push(on_response: &handle_fcm_push/1)
@@ -116,22 +116,26 @@ defmodule StitchConnect.Web.PushNotifications do
     |> Map.drop([:text_content, :fields])
   end
 
-  defp notification_text_body(%{name: group_name}, %{user: user, type: "upload"})
+  defp notification_text_body(%{name: group_name}, %{user: user, type: "upload"}, _receiver)
        when group_name in ~w[__dm_group__ __multi_dm_group__] do
     "#{user.first_name} #{user.last_name} uploaded a direct file."
   end
 
-  defp notification_text_body(%{name: group_name}, %{user: user})
-       when group_name in ~w[__dm_group__ __multi_dm_group__] do
+  defp notification_text_body(%{name: group_name}, %{user: user}, _receiver)
+      when group_name in ~w[__dm_group__ __multi_dm_group__] do
     "#{user.first_name} #{user.last_name} sent you a direct message."
   end
 
-  defp notification_text_body(%{name: group_name}, %{user: user, type: "upload"}) do
+  defp notification_text_body(%{name: group_name}, %{user: user, type: "upload"}, _receiver) do
     "#{user.first_name} #{user.last_name} uploaded a room file (#{group_name})."
   end
 
-  defp notification_text_body(%{name: group_name}, %{user: user}) do
-    "#{user.first_name} #{user.last_name} sent a room message (#{group_name})."
+  defp notification_text_body(%{name: group_name}, %{user: author} = message, receiver) do
+    if receiver.id in message.mentioned_user_ids do
+      "#{author.first_name} #{author.last_name} mentioned you in #{group_name}."
+    else
+      "#{author.first_name} #{author.last_name} sent a room message (#{group_name})."
+    end
   end
 
   # Badge number updates.

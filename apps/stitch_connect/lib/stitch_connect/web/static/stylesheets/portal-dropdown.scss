@@ -1,0 +1,19 @@
+#portal-dropdown-root {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999999;
+}
+
+.portal-dropdown-wrapper {
+  position: relative;
+}
+
+.portal-dropdown-inner {
+  position: absolute;
+  z-index: 999999;
+
+  .dropdown-menu {
+    display: block !important;
+  }
+}

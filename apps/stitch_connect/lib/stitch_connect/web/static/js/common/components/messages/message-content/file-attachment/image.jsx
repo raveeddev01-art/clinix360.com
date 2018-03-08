@@ -1,7 +1,13 @@
 import React, { Component } from "react";
+import { inject } from "mobx-react";
 import PropTypes from "prop-types";
+
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
+import Tooltip from "react-bootstrap/lib/Tooltip";
+import Button from "react-bootstrap/lib/Button";
 import Modal from "react-bootstrap/lib/Modal";
 
+@inject("desktopStore")
 class ImageFileAttachment extends Component {
   constructor(props) {
     super(props);
@@ -9,6 +15,11 @@ class ImageFileAttachment extends Component {
       showModal: false
     };
   }
+
+  onFileDownload = () => {
+    const { desktopStore, api_url, filename } = this.props;
+    desktopStore.sendDownloadRequest(api_url, filename);
+  };
 
   onToggleModal = () => {
     this.setState({ showModal: !this.state.showModal });
@@ -23,17 +34,11 @@ class ImageFileAttachment extends Component {
       preview_url: previewUrl
     } = this.props;
     const { showModal } = this.state;
-    let placeholderStyle = null;
     let holderStyle = null;
 
     if (height && width) {
-      placeholderStyle = {
-        width,
-        paddingTop: `${height / width * 100}%`,
-        backgroundImage: `url(${previewUrl})`
-      };
       holderStyle = {
-        maxHeight: height // constraint holder size for when paddingTop is bigger than height
+        maxHeight: 360 // Set to 360px to avoid having tall images take too much viewport space
       };
     }
 
@@ -42,30 +47,32 @@ class ImageFileAttachment extends Component {
         {filename && (
           <div className="attachment-title">
             <span>uploaded this image: </span>
-            <a target="_blank" href={url}>
+            <a target="_blank" href={url} onClick={this.onFileDownload}>
               <strong>{filename}</strong>
             </a>
           </div>
         )}
-        <a
-          className="attachment-image-holder"
-          onClick={this.onToggleModal}
-          style={holderStyle}
-          role="link"
-        >
-          {placeholderStyle ? (
-            <div
-              className="attachment-preview-placeholder"
-              style={placeholderStyle}
-            />
-          ) : (
-            <img
-              src={previewUrl || url}
-              className="img-responsive"
-              alt={filename}
-            />
-          )}
-        </a>
+        <div className="attachment-image-holder" style={holderStyle}>
+          <img
+            src={previewUrl || url}
+            className="img-responsive"
+            alt={filename}
+            onClick={this.onToggleModal}
+          />
+
+          <div className="attachment-actions">
+            <OverlayTrigger
+              placement="top"
+              delayShow={150}
+              overlay={<Tooltip id="download-file">Download</Tooltip>}
+            >
+              <Button target="_blank" href={url} onClick={this.onFileDownload}>
+                <i className="fa fa-download" />
+              </Button>
+            </OverlayTrigger>
+          </div>
+        </div>
+
         <Modal
           show={showModal}
           dialogClassName="image-viewer"
@@ -85,7 +92,8 @@ ImageFileAttachment.propTypes = {
   preview_width: PropTypes.number,
   preview_url: PropTypes.string,
   filename: PropTypes.string,
-  url: PropTypes.string.isRequired
+  url: PropTypes.string.isRequired,
+  api_url: PropTypes.string.isRequired
 };
 
 ImageFileAttachment.defaultProps = {

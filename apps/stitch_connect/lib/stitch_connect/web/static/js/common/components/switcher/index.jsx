@@ -12,10 +12,14 @@ class Switcher extends Component {
     const path = history.location.pathname;
     let active = "connect";
 
-    if (path === "/admin/you/account") {
-      active = "settings";
-    } else if (path.startsWith("/admin")) {
+    if (path === "/admin/you/home") {
       active = "home";
+    } else if (path.startsWith("/admin")) {
+      active = "settings";
+    } else if (path === "/engage") {
+      active = "engage";
+    } else if (path === "/manage") {
+      active = "manage";
     }
 
     this.setState({ active });
@@ -71,6 +75,38 @@ class Switcher extends Component {
                       <i className="fa fa-circle" />
                     </span>
                   )}
+              </span>
+            </OverlayTrigger>
+          </NavLink>
+
+          <NavLink
+            to={`/engage`}
+            isActive={() => active === "engage"}
+            className="switcher__link"
+          >
+            <OverlayTrigger
+              placement="right"
+              container={this}
+              overlay={<Tooltip id="tooltip-info">Stitch&nbsp;Engage</Tooltip>}
+            >
+              <span className="switcher__link-wrapper">
+                <i className="fa fa-bullhorn" />
+              </span>
+            </OverlayTrigger>
+          </NavLink>
+
+          <NavLink
+            to={`/manage`}
+            isActive={() => active === "manage"}
+            className="switcher__link"
+          >
+            <OverlayTrigger
+              placement="right"
+              container={this}
+              overlay={<Tooltip id="tooltip-info">Stitch&nbsp;Manage</Tooltip>}
+            >
+              <span className="switcher__link-wrapper">
+                <i className="fa fa-tasks" />
               </span>
             </OverlayTrigger>
           </NavLink>

@@ -30,40 +30,38 @@ defmodule Stitch.GroupQueries do
     {:ok, Repo.all(query)}
   end
 
-  defp load_groups_for_user(query, %User{} = user) do
-    # TODO: refactor
+  defp load_groups_for_user(query, %User{} = user, fetch_users \\ true) do
+    query =
+      from g in query,
+      left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id
+
+    query =
+      if fetch_users do
+        from g in query,
+        join: u in User, on: u.id == ^user.id,
+        preload: :users
+      else
+        query
+      end
+
     query =
       if User.guest?(user) do
-        from g in query,
-        left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id,
-        join: u in User, on: u.id == ^user.id,
-        where: not is_nil(gu.id),
-        preload: :users, # TODO: do not preload all team users by default
-        select: %{
-          group: g,
-          joined: not is_nil(gu.id),
-          is_favorite: not is_nil(gu.id) and gu.is_favorite,
-          is_hidden: not is_nil(gu.id) and gu.is_hidden,
-          unread_messages_count: gu.unread_messages_count,
-          mentions_count: gu.mentions_count,
-          last_read_at: type(fragment("COALESCE(?, ?)", gu.last_read_at, gu.inserted_at), :naive_datetime),
-        }
+        from [_g, gu] in query, where: not is_nil(gu.id)
       else
-        from g in query,
-        left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id,
-        join: u in User, on: u.id == ^user.id,
-        where: g.public or not is_nil(gu.id),
-        preload: :users, # TODO: do not preload all team users by default
-        select: %{
-          group: g,
-          joined: not is_nil(gu.id),
-          is_favorite: not is_nil(gu.id) and gu.is_favorite,
-          is_hidden: not is_nil(gu.id) and gu.is_hidden,
-          unread_messages_count: gu.unread_messages_count,
-          mentions_count: gu.mentions_count,
-          last_read_at: type(fragment("COALESCE(?, ?)", gu.last_read_at, gu.inserted_at), :naive_datetime),
-        }
+        from [g, gu] in query, where: g.public or not is_nil(gu.id)
       end
+
+    query =
+      from [g, gu] in query,
+      select: %{
+        group: g,
+        joined: not is_nil(gu.id),
+        is_favorite: not is_nil(gu.id) and gu.is_favorite,
+        is_hidden: not is_nil(gu.id) and gu.is_hidden,
+        unread_messages_count: gu.unread_messages_count,
+        mentions_count: gu.mentions_count,
+        last_read_at: type(fragment("COALESCE(?, ?)", gu.last_read_at, gu.inserted_at), :naive_datetime),
+      }
 
     query
     |> Repo.all()
@@ -94,8 +92,6 @@ defmodule Stitch.GroupQueries do
   def get_by_id(%Team{id: team_id}, group_id) do
     Repo.get_by(Group, id: group_id, team_id: team_id)
   end
-  def get_by_id(id, user_id), do: get_by_id(id, Repo.get!(User, user_id))
-
   def get_by_id(id), do: Repo.get(Group, id)
 
   @doc """
@@ -130,12 +126,13 @@ defmodule Stitch.GroupQueries do
   Returns a list of public groups for the user's team, and
   also teams he's been invited to participate in.
   """
-  def available_groups(%User{team_id: team_id} = user) do
+  def available_groups(user, fetch_users \\ true)
+  def available_groups(%User{team_id: team_id} = user, fetch_users) do
     Group
     |> where(team_id: ^team_id)
-    |> load_groups_for_user(user)
+    |> load_groups_for_user(user, fetch_users)
   end
-  def available_groups(user_id), do: available_groups(Repo.get!(User, user_id))
+  def available_groups(user_id, fetch_users), do: available_groups(Repo.get!(User, user_id), fetch_users)
 
   @doc """
   Returns a list of visible groups for the user given

@@ -73,6 +73,9 @@ class UserStore {
 
   @action
   onUserInfo = user => {
+    this.avatar = user.avatar;
+    this.avatarThumb = user.avatar_thumb;
+
     // show role change modal if groups assigned as guests or roles has changed
     if (
       difference(user.roles || [], this.roles || []).length ||
@@ -185,6 +188,14 @@ class UserStore {
       hideNotify: true
     }).then(resp => {
       window.authenticationToken = resp.data.token;
+    });
+  };
+
+  @action
+  deactivateAccount = () => {
+    return post(`/api/v1/users/deactivate-my-account`, {
+      body: {},
+      hideNotify: true
     });
   };
 }

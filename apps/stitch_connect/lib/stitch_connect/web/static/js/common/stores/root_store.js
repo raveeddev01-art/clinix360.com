@@ -21,6 +21,8 @@ import TitleStore from "./title_store";
 import UploadStore from "./upload_store";
 import UserStore from "./user_store";
 import UsersStore from "./users_store";
+import DesktopStore from "./desktop_store";
+import AccessLogsStore from "./access_logs_store";
 
 class RootStore {
   constructor(props) {
@@ -55,6 +57,8 @@ class RootStore {
     this.uploadStore = new UploadStore(this);
     this.userStore = new UserStore(this);
     this.usersStore = new UsersStore(this);
+    this.desktopStore = new DesktopStore(this);
+    this.accessLogsStore = new AccessLogsStore(this);
   }
 
   onStoreInit() {

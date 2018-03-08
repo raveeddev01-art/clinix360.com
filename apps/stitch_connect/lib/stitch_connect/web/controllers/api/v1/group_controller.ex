@@ -18,10 +18,11 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     end
   end
 
-  def index(conn, _params) do
+  def index(conn, params) do
     user = conn.assigns.current_user
-    groups = GroupQueries.available_groups(user)
-    render conn, "index.json", groups: groups, user_id: user.id
+    fetch_users = get_fetch_users_param(params)
+    groups = GroupQueries.available_groups(user, fetch_users)
+    render conn, "index.json", groups: groups, user_id: user.id, fetch_users: fetch_users
   end
 
   def show(conn, %{"id" => group_id}) do
@@ -331,4 +332,10 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         |> json(%{message: "Only your direct messages can be unhidden."})
     end
   end
+
+  # TODO: remove once the Android app is updated and doesn't require embedded user data:
+  # Specifically: it shouldn't require group.users, group.user_count, and it should render
+  # user names for the DM and Multi-DM groups instead of relying on `group.name`.
+  defp get_fetch_users_param(%{"fetchUsers" => "false"}), do: false
+  defp get_fetch_users_param(_params), do: true
 end
