@@ -25,15 +25,14 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
     render conn, "index.json", groups: groups, user_id: user.id, fetch_users: fetch_users
   end
 
-  def show(conn, %{"id" => group_id}) do
+  def show(conn, %{"id" => group_id} = params) do
     user = conn.assigns.current_user
-    case GroupQueries.get_by_id(group_id, user) do
-      {:ok, group} ->
-        render conn, "show.json", group: group, user_id: user.id
-      {:error, reason} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{message: reason})
+    fetch_users = get_fetch_users_param(params)
+    with {:group, %Group{} = group} <- {:group, get_group(group_id, user, fetch_users)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
+      render conn, "show.json", group: group, user_id: user.id, fetch_users: fetch_users
+    else
+      _ -> {:error, :not_found}
     end
   end
 
@@ -338,4 +337,21 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   # user names for the DM and Multi-DM groups instead of relying on `group.name`.
   defp get_fetch_users_param(%{"fetchUsers" => "false"}), do: false
   defp get_fetch_users_param(_params), do: true
+
+  defp get_group(group_id, user, fetch_users) do
+    if fetch_users do
+      with {:ok, group} <- GroupQueries.get_by_id(group_id, user) do
+        group
+      else
+        _ -> nil
+      end
+    else
+      with %Group{} = group = GroupQueries.get_by_id(group_id) do
+        user_ids = Stitch.GroupUser.user_ids(group.id)
+        Map.put(group, :user_ids, user_ids)
+      else
+        nil -> nil
+      end
+    end
+  end
 end
