@@ -637,7 +637,7 @@ defmodule StitchConnect.Web.UserControllerTest do
         |> put(Routes.api_v1_user_path(conn, :update_password, user.id), %{old_password: "Password!2", new_password: "Password!1"})
         |> json_response(422)
 
-      assert json["errors"] == "Invalid password"
+      assert json["message"] == "Invalid password"
     end
   end
 

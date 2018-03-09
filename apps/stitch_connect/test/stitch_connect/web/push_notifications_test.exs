@@ -298,7 +298,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
         }
       }
 
-      assert_receive []
+      refute_receive []
       refute_receive _
     end
 
@@ -324,7 +324,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
         }
       }
 
-      assert_receive []
+      refute_receive []
       refute_receive _
     end
 
@@ -350,7 +350,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
         }
       }
 
-      assert_receive []
+      refute_receive []
       refute_receive _
     end
 
@@ -376,7 +376,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
         }
       }
 
-      assert_receive []
+      refute_receive []
       refute_receive _
     end
   end

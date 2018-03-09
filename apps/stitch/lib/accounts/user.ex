@@ -127,8 +127,9 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(attrs, [:email, :confirmation_code, :token])
     |> validate_required([:email, :confirmation_code, :token])
-    |> update_change(:email, &String.trim/1)
     |> valid_email_changeset(attrs)
+    |> update_change(:email, &String.trim/1)
+    |> update_change(:email, &String.downcase/1)
   end
 
   @doc """

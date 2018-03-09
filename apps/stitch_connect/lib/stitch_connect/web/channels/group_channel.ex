@@ -10,7 +10,7 @@ defmodule StitchConnect.Web.GroupChannel do
   alias Stitch.{
     Repo,
     Group,
-    GroupUser,
+    GroupQueries,
     GroupAuthorization,
     Message,
     MessageAuthorization,
@@ -20,79 +20,58 @@ defmodule StitchConnect.Web.GroupChannel do
   @endpoint StitchConnect.Web.Endpoint
   @max_latency 5_000
 
-  def join("groups:__dm:" <> id_pair, _params, socket) do
-    ids_pair = id_pair |> String.split(".") |> Enum.map(&String.to_integer/1)
+  def join("groups:__dm:" <> id_pair_string, params, socket) do
+    id_pair = id_pair_string |> String.split(".") |> Enum.map(&String.to_integer/1)
+    %{team_id: team_id, current_user: user} = socket.assigns
+    fetch_messages = get_fetch_messages_param(params)
 
-    # make sure clients sort ids, to make sure they connect to same channel
-    if Enum.sort(ids_pair) == ids_pair do
-      %{team_id: team_id, current_user: user} = socket.assigns
-
-      if user.id in ids_pair do
-        case Repo.get_by(Group, slug: "__dm:#{id_pair}", team_id: team_id) do
-          nil ->
-            # if single user dm, create group on first message
-            if length(ids_pair) == 2 do
-              [other_user_id] = List.delete(ids_pair, user.id)
-              send(self(), :after_join)
-              {:ok, %{messages: []}, assign(socket, :group, {:create_dm, id_pair, other_user_id})}
-            else
-              {:error, %{message: "group not found"}}
-            end
-
-          group ->
-            messages = MessageQueries.group_latest_messages(group.id, user)
-            json = MessageView.render("index.json", %{messages: messages})
-            send(self(), :after_join)
-            {:ok, %{messages: json}, assign(socket, :group, group)}
-        end
-      else
-        {:error, %{message: "You can't participate on this chat."}}
-      end
+    with {:sorted, true} <- {:sorted, Enum.sort(id_pair) == id_pair},
+         {:member, true} <- {:member, user.id in id_pair},
+         {:group, %Group{} = group} <- {:group, GroupQueries.find_dm(id_pair, team_id)},
+         {:fetch_messages, false, group} <- {:fetch_messages, fetch_messages, group} do
+      {:ok, %{}, assign(socket, :group, group)}
     else
-      {:error, %{message: "User ids should be sorted."}}
+      {:sorted, false} -> {:error, %{message: "User ids should be sorted."}}
+      {:member, false} -> {:error, %{message: "You can't participate on this chat."}}
+      {:group, nil} -> create_dm_on_join(id_pair, user, socket)
+      {:fetch_messages, true, group} -> render_messages(group, user, socket)
     end
   end
 
-  def join("groups:id:" <> group_id, _params, socket) do
-    %{team_id: team_id, current_user: user} = socket.assigns
+  def join("groups:id:" <> group_id, params, socket) do
+    user = socket.assigns.current_user
+    fetch_messages = get_fetch_messages_param(params)
+    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)},
+         {:fetch_messages, false, group} <- {:fetch_messages, fetch_messages, group} do
 
-    case Repo.get_by(Group, id: String.to_integer(group_id), team_id: team_id) do
-      nil ->
-        {:error, %{message: "group not found"}}
-
-      group ->
-        case GroupAuthorization.can_view?(group, user) do
-          true ->
-            messages = MessageQueries.group_latest_messages(group.id, user)
-            json = MessageView.render("index.json", %{messages: messages})
-            {:ok, %{messages: json}, assign(socket, :group, group)}
-
-          false ->
-            {:error, %{message: "unauthorized"}}
-        end
+      {:ok, %{}, assign(socket, :group, group)}
+    else
+      {:group, {:error, _}} -> {:error, %{message: "group not found"}}
+      {:authorized?, false} -> {:error, %{message: "unauthorized"}}
+      {:fetch_messages, true, group} -> render_messages(group, user, socket)
     end
   end
 
   # TODO: Remove this once no one is using older version of mobile app. Also, remove `groups:{group.slug}` broadcasts as well.
-  def join("groups:" <> group_slug, _params, socket) do
+  def join("groups:" <> group_slug, params, socket) do
     %{team_id: team_id, current_user: user} = socket.assigns
-
-    case Repo.get_by(Group, slug: group_slug, team_id: team_id) do
-      nil ->
-        {:error, %{message: "group not found"}}
-
-      group ->
-        case GroupAuthorization.can_view?(group, user) do
-          true ->
-            messages = MessageQueries.group_latest_messages(group.id, user)
-            json = MessageView.render("index.json", %{messages: messages})
-            send(self(), :after_join)
-            {:ok, %{messages: json}, assign(socket, :group, group)}
-
-          false ->
-            {:error, %{message: "unauthorized"}}
-        end
+    fetch_messages = get_fetch_messages_param(params)
+    with {:group, %Group{} = group} <- {:group, Repo.get_by(Group, slug: group_slug, team_id: team_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)},
+         {:fetch_messages, false, group} <- {:fetch_messages, fetch_messages, group} do
+      {:ok, %{}, assign(socket, :group, group)}
+    else
+      {:group, nil} -> {:error, %{message: "group not found"}}
+      {:authorized?, false} -> {:error, %{message: "unauthorized"}}
+      {:fetch_messages, true, group} -> render_messages(group, user, socket)
     end
+  end
+
+  defp render_messages(group, user, socket) do
+    messages = MessageQueries.group_latest_messages(group.id, user)
+    json = MessageView.render("index.json", %{messages: messages})
+    {:ok, %{messages: json}, assign(socket, :group, group)}
   end
 
   # ignore Pigeon callbacks
@@ -407,32 +386,29 @@ defmodule StitchConnect.Web.GroupChannel do
     @endpoint.broadcast("groups:id:#{group.id}", event, payload)
   end
 
-  defp do_new_msg(socket, {:create_dm, id_pair, other_user_id}, user, params) do
-    slug = "__dm:#{id_pair}"
-    attrs = %{team_id: socket.assigns.team_id, name: "__dm_group__", slug: slug, public: false}
-    result = %Group{} |> Group.changeset(attrs) |> Repo.insert()
+  defp create_dm_on_join(id_pair, user, socket) do
+    with {:dm, true} <- {:dm, length(id_pair) == 2},
+          [other_user_id] <- List.delete(id_pair, user.id) do
+      socket = assign(socket, :group, {:create_dm, other_user_id})
+      {:ok, %{messages: []}, socket}
+    else
+      _error -> {:error, %{message: "group not found"}}
+    end
+  end
 
-    case result do
-      {:ok, group} ->
-        for id <- Enum.uniq([user.id, other_user_id]) do
-          %GroupUser{}
-          |> GroupUser.changeset(%{group_id: group.id, user_id: id})
-          |> Repo.insert!()
-        end
-
-        assign(socket, :group, group) |> do_new_msg(group, user, params)
-
-      {:error, changeset} ->
-        case changeset.errors do
-          [slug: {"has already been taken", []}] ->
-            group = Repo.get_by!(Group, slug: slug)
-            assign(socket, :group, group) |> do_new_msg(group, user, params)
-
-          _ ->
-            {:reply,
-             {:error, %{message: "Failed to create group.", request_id: params["request_id"]}},
-             socket}
-        end
+  defp do_new_msg(socket, {:create_dm, other_user_id}, user, params) do
+    with {:ok, group} <- Group.create_single_dm(user, [user.id, other_user_id]) do
+      socket
+      |> assign(:group, group)
+      |> do_new_msg(group, user, params)
+    else
+      {:error, %{errors: [slug: {"has already been taken", []}]} = changeset} ->
+        {:ok, group} = GroupQueries.find_by_slug(changeset.changes.slug, user)
+        socket
+        |> assign(:group, group)
+        |> do_new_msg(group, user, params)
+      _error ->
+        {:reply, {:error, %{message: "Failed to create group.", request_id: params["request_id"]}}, socket}
     end
   end
 
@@ -535,4 +511,8 @@ defmodule StitchConnect.Web.GroupChannel do
         false
     end
   end
+
+  # TODO: remove once web and mobile apps don't rely on messages in channel feed.
+  defp get_fetch_messages_param(%{"fetchMessages" => "false"}), do: false
+  defp get_fetch_messages_param(_params), do: true
 end
