@@ -34,7 +34,8 @@ defmodule StitchConnect.Web.EventsChannel do
     |> select([gu], %{
       user_id: gu.user_id,
       unread_messages_count: gu.unread_messages_count,
-      mentions_count: gu.mentions_count
+      mentions_count: gu.mentions_count,
+      last_read_at: gu.last_read_at,
     })
     |> Repo.all()
   end
