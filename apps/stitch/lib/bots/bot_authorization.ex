@@ -1,14 +1,24 @@
 defmodule Stitch.BotAuthorization do
+  import Ecto.Query
   alias Stitch.Repo
   alias Stitch.{Team, Accounts.User}
 
   @spec can_list_bots?(number, number) :: boolean
   def can_list_bots?(team_id, user_id) when is_number(team_id) and is_number(user_id) do
-    with team when not is_nil(team) <- Repo.get(Team, team_id),
-         user when not is_nil(user) <- Repo.get_by(User, id: user_id, team_id: team_id) do
-      "admin" in user.roles
-    else
-      _ -> false
+    query =
+      from(
+        u in User,
+        where: u.team_id == ^team_id,
+        where: u.id == ^user_id,
+        where: "admin" == fragment("ANY (?)", u.roles)
+      )
+
+    case Repo.one(query) do
+      nil ->
+        false
+
+      _ ->
+        true
     end
   end
 
@@ -16,11 +26,20 @@ defmodule Stitch.BotAuthorization do
 
   @spec can_create_bot?(number, number) :: boolean
   def can_create_bot?(team_id, user_id) when is_number(team_id) and is_number(user_id) do
-    with team when not is_nil(team) <- Repo.get(Team, team_id),
-         user when not is_nil(user) <- Repo.get_by(User, id: user_id, team_id: team_id) do
-      "admin" in user.roles
-    else
-      _ -> false
+    query =
+      from(
+        u in User,
+        where: u.team_id == ^team_id,
+        where: u.id == ^user_id,
+        where: "admin" == fragment("ANY (?)", u.roles)
+      )
+
+    case Repo.one(query) do
+      nil ->
+        false
+
+      _ ->
+        true
     end
   end
 
@@ -28,11 +47,20 @@ defmodule Stitch.BotAuthorization do
 
   @spec can_edit_bot?(number, number) :: boolean
   def can_edit_bot?(team_id, user_id) when is_number(team_id) and is_number(user_id) do
-    with team when not is_nil(team) <- Repo.get(Team, team_id),
-         user when not is_nil(user) <- Repo.get_by(User, id: user_id, team_id: team_id) do
-      "admin" in user.roles
-    else
-      _ -> false
+    query =
+      from(
+        u in User,
+        where: u.team_id == ^team_id,
+        where: u.id == ^user_id,
+        where: "admin" == fragment("ANY (?)", u.roles)
+      )
+
+    case Repo.one(query) do
+      nil ->
+        false
+
+      _ ->
+        true
     end
   end
 
