@@ -129,6 +129,11 @@ class MessageStore {
 
   @computed
   get firstUnreadMessage() {
+    // handles when messages are sent on the very first room. In that case first message could be system message and has problem scrolling to.
+    if (this.loadedAll) {
+      return _.findLast(this.messages, m => m.type !== "system");
+    }
+
     return this.getMessageAfterTimestamp(this.lastReadAt);
   }
 
@@ -172,6 +177,12 @@ class MessageStore {
   @computed
   get newMessageLineMessage() {
     return this.getMessageAfterTimestamp(this.newMessageLineAt);
+  }
+
+  // check if the room is just created without any msgs
+  @computed
+  get justCreated() {
+    return this.messages.every(m => m.type === "system");
   }
 
   @computed
@@ -328,6 +339,7 @@ class MessageStore {
     }, duration + 1);
   }
 
+  @action
   scrollToNewBanner = () => {
     // If unread messages remain, scroll to top,
     // otherwise just scroll to new banner
@@ -675,12 +687,18 @@ class MessageStore {
   };
 
   handleInitialLoading = () => {
-    this.scrollToBottom(() => {
+    const cb = () => {
       this.loadedInitialMessages = true;
       this.loadedInitial = true;
 
       this.updateGroupCursor(null);
-    });
+    };
+
+    if (this.firstUnreadMessage) {
+      this.scrollTo(this.firstUnreadMessage.id, 0, cb);
+    } else {
+      this.scrollToBottom(cb);
+    }
   };
 
   decodeMentions(text = "") {
@@ -914,8 +932,9 @@ class MessageStore {
     // if last message is visible, mark as unread
     if (
       this.group &&
-      (!this.firstUnreadMessage ||
-        this.messageVisibility[this.firstUnreadMessage.id])
+      (this.justCreated ||
+        (this.firstUnreadMessage &&
+          this.messageVisibility[this.firstUnreadMessage.id]))
     ) {
       this.timeoutManager.setTimeout(() => {
         this.markAsRead(false);
@@ -935,13 +954,13 @@ class MessageStore {
       return;
     }
 
-    if (
-      !this.markedAsUnread &&
-      (!this.firstUnreadMessage ||
-        this.firstUnreadMessage.id === id ||
+    const isFirstMsgVisible =
+      this.firstUnreadMessage &&
+      (this.firstUnreadMessage.id === id ||
         (id === this.messages[0].id &&
-          this.messageVisibility[this.firstUnreadMessage.id])) // first unreadmessage is visible, and you reached to the last message
-    ) {
+          this.messageVisibility[this.firstUnreadMessage.id]));
+
+    if (!this.markedAsUnread && (this.justCreated || isFirstMsgVisible)) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
       this.timeoutManager.setTimeout(() => {
