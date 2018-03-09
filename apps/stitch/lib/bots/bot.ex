@@ -61,8 +61,9 @@ defmodule Stitch.Bot do
   @doc """
   Creates a bot using the given bot parameters for a team.
   """
-  @spec create(map) :: {:ok, User.t()} | {:error, map}
-  def create(bot_params) do
+  @spec create(number, map) :: {:ok, User.t()} | {:error, map}
+  def create(team_id, bot_params) do
+    bot_params = Map.put(bot_params, :team_id, team_id)
     changeset = changeset(%User{}, bot_params)
     Repo.insert(changeset)
   end

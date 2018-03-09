@@ -20,7 +20,7 @@ defmodule StitchConnect.Web.Api.V1.BotsController do
   def create(conn, params) do
     with true <-
            BotAuthorization.can_create_bot?(conn.assigns.team.id, conn.assigns.current_user.id),
-         {:ok, bot} <- Bot.create(params) do
+         {:ok, bot} <- Bot.create(conn.assigns.team.id, params) do
       render(conn, "show.json", bot: bot)
     else
       {:error, changeset} ->
