@@ -343,15 +343,15 @@ class MessageStore {
   scrollToNewBanner = () => {
     // If unread messages remain, scroll to top,
     // otherwise just scroll to new banner
-    if (this.unreadMessagesCount > this.messages.length) {
-      this.scrollTo(this.messages[this.messages.length - 1].id, 500);
-    } else if (this.firstUnreadMessage) {
+    if (this.firstUnreadMessage) {
       scroller.scrollTo("newMessageBanner", {
         containerId: "chat",
         smooth: true,
         duration: 500,
         offset: -50
       });
+    } else {
+      this.scrollTo(this.messages[this.messages.length - 1].id, 500);
     }
   };
 
@@ -945,9 +945,7 @@ class MessageStore {
   onMessageShow(id) {
     this.messageVisibility[id] = true;
 
-    if (!this.groupCursor || this.groupCursor > id) {
-      this.updateGroupCursor(id);
-    }
+    this.updateGroupCursor(id);
 
     // just ignore message show if window lost focus
     if (!this.isActive) {
@@ -956,6 +954,7 @@ class MessageStore {
 
     const isFirstMsgVisible =
       this.firstUnreadMessage &&
+      this.mountedAllMessages &&
       (this.firstUnreadMessage.id === id ||
         (id === this.messages[0].id &&
           this.messageVisibility[this.firstUnreadMessage.id]));
