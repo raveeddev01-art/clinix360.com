@@ -102,6 +102,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post("/groups/:group_id/mark_as_unread", MessageController, :mark_as_unread)
     post("/groups/:group_id/messages", MessageController, :create)
     put("/messages/:id", MessageController, :update)
+    put("/messages/:id/delete_link_preview", MessageController, :delete_message_link_preview)
+    put("/messages/:id/toggle_reaction", MessageController, :toggle_reaction)
     delete("/messages/:id", MessageController, :delete)
     get("/messages/:id/download", MessageController, :download)
     post("/messages/:id/toggle-star", MessageController, :toggle_star)

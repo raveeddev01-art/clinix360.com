@@ -14,6 +14,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     GroupQueries,
     Group,
     Message,
+    MessageAuthorization,
     MessageAction,
     MessageQueries,
     Message.Upload
@@ -263,6 +264,35 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "You can't pin messages belonging to this room."})
+    end
+  end
+
+  def delete_message_link_preview(conn, %{"id" => message_id, "link" => link} = params) do
+    current_user = conn.assigns.current_user
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:authorized?, true} <- {:authorized?, MessageAuthorization.can_delete?(message, current_user)} do
+      message = Message.LinkPreview.delete!(message, link)
+      group = GroupQueries.get_by_id(message.group_id)
+      GroupChannel.broadcast_msg_link_preview_deleted(group, message.id, link)
+      json(conn, %{status: "ok"})
+    else
+      {:message, _} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
+    end
+  end
+
+  def toggle_reaction(conn, %{"id" => message_id, "emoji_name" => emoji_name}) do
+    current_user = conn.assigns.current_user
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(message.group_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)} do
+      {:ok, _reaction} = Message.Reaction.toggle_reaction(message, current_user, emoji_name)
+      GroupChannel.broadcast_reactions_updated(group, message)
+      json(conn, %{status: "ok"})
+    else
+      {:message, _} -> {:error, :not_found}
+      {:group, _} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
     end
   end
 
