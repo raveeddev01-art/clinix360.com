@@ -109,7 +109,7 @@ defmodule StitchConnect.Web.MessageControllerTest do
         assert json_response(conn, 201)
 
         conn = post(base_conn, api_v1_message_path(base_conn, :create, group), payload)
-        assert json_response(conn, :not_found)
+        assert json_response(conn, :forbidden)
       end
     end
   end

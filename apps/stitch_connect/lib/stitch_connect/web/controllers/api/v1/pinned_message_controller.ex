@@ -4,6 +4,8 @@ defmodule StitchConnect.Web.Api.V1.PinnedMessageController do
 
   def index(conn, %{"group_id" => group_id} = params) do
     pagination_opts = parse_pagination_params(params, [:limit, :skip])
+    fetch_users = get_fetch_users_param(params)
+    pagination_opts = Keyword.put(pagination_opts, :fetch_users, fetch_users)
     group = Repo.get! Group, group_id
 
     case GroupAuthorization.can_view?(group, conn.assigns.current_user) do

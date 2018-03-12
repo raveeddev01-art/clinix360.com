@@ -146,4 +146,8 @@ defmodule StitchConnect.Web.ControllerHelpers do
   end
 
   def ensure_integer(_), do: nil
+
+  # Note: remove once all clients are updated and don't rely on embedded users.
+  def get_fetch_users_param(%{"fetchUsers" => "false"}), do: false
+  def get_fetch_users_param(_params), do: true
 end

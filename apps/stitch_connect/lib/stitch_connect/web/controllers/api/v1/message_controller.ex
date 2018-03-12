@@ -1,98 +1,154 @@
 defmodule StitchConnect.Web.Api.V1.MessageController do
   use StitchConnect.Web, :controller
   alias StitchConnect.MessageLinkPreviewGenerator
-  alias StitchConnect.Web.{EventsChannel, GroupChannel, PushNotifications}
+  alias StitchConnect.Web.{
+    EventsChannel,
+    GroupChannel,
+    PushNotifications,
+    UserStatusService,
+    Api.V1.MessageView,
+  }
 
   alias Stitch.{
     GroupAuthorization,
     GroupQueries,
+    Group,
     Message,
+    MessageAuthorization,
     MessageAction,
     MessageQueries,
     Message.Upload
   }
 
-  action_fallback(StitchConnect.Web.Api.FallbackController)
+  action_fallback(StitchConnect.Web.Api.V1.FallbackController)
 
-  def index(conn, %{"group_id" => group_id} = params) do
-    user = conn.assigns.current_user
+  plug :parse_query_params when action in [:index, :feed_recent, :search, :feed_surrounding]
 
-    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
-         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)} do
-      opts =
-        params
-        |> Map.take(["limit", "skip"])
-        |> Enum.map(fn {key, value} ->
-          value =
-            case value do
-              value when is_binary(value) -> String.to_integer(value)
-              value when is_integer(value) -> value
-            end
-
-          {:"#{key}", value}
-        end)
-        |> Keyword.update(:limit, 60, fn limit -> Enum.min([limit, 60]) end)
-
-      messages = MessageQueries.group_latest_messages(group_id, user, opts)
-      render(conn, "index.json", messages: messages, user_id: user.id)
+  def index(conn, %{"group_id" => group_id}) do
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)} do
+      messages = MessageQueries.group_latest_messages(group_id, current_user, conn.assigns.query_opts)
+      render(conn, "index.json", messages: messages, user_id: current_user.id)
     else
-      {:group, _} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{message: "The room you are looking for does not exist."})
-
-      {:authorized?, false} ->
-        conn
-        |> put_status(:forbidden)
-        |> json(%{message: "You can't see the messages for this room."})
+      {:group, _} -> {:error, :not_found, "The room you are looking for does not exist."}
+      {:authorized?, false} -> {:error, :not_authorized, "You can't see the messages for this room."}
     end
   end
 
-  def search(conn, %{"term" => term} = params) do
-    opts = [
-      limit: Enum.min([Map.get(params, "limit", 60), 1_000]),
-      skip: Map.get(params, "skip", 0)
-    ]
+  def feed_recent(conn, %{"group_id" => group_id}) do
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)} do
+      messages = MessageQueries.group_recent_messages(group_id, current_user, conn.assigns.query_opts)
+      render(conn, "index.json", messages: messages, user_id: current_user.id)
+    else
+      {:group, _} -> {:error, :not_found, "The room you are looking for does not exist."}
+      {:authorized?, false} -> {:error, :not_authorized, "You can't see the messages for this room."}
+    end
+  end
 
-    user = conn.assigns.current_user
-    messages = MessageQueries.search(conn.assigns.current_user.id, term, opts)
-    render(conn, "index.json", messages: messages, user_id: user.id)
+  def search(conn, %{"term" => term}) do
+    current_user = conn.assigns.current_user
+    messages = MessageQueries.search(current_user.id, term, conn.assigns.query_opts)
+    render(conn, "index.json", messages: messages, user_id: current_user.id)
+  end
+
+  def feed_surrounding(conn, %{"group_id" => group_id, "message_id" => message_id}) do
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)},
+         {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)} do
+      feed_surrounding = MessageQueries.surrounding(message, group, current_user, conn.assigns.query_opts)
+      render(conn, "feed_surrounding.json", feed_surrounding)
+    else
+      {:group, _} -> {:error, :not_found, "The room you are looking for does not exist."}
+      {:authorized?, false} -> {:error, :not_authorized, "You can't see the messages for this room."}
+      {:message, _} -> {:error, :not_found}
+    end
   end
 
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
-    user = conn.assigns.current_user
-
-    with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
-         {:authorized?, true} <- {:authorized?, GroupAuthorization.is_member?(group_id, user.id)},
-         presence_user_ids = StitchConnect.Web.UserStatusService.presence_user_ids(user.team_id),
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.is_member?(group_id, current_user.id)},
+         presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id),
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(group.id, user, message_params, presence_user_ids) do
+           Message.create(group.id, current_user, message_params, presence_user_ids) do
+      message = %{message | user: current_user}
+      message_events(message, group, notify_user_ids)
+      conn
+      |> put_status(:created)
+      |> render("show.json", message: message)
+    else
+      {:group, _} -> {:error, :not_found, "The room you are looking for does not exist."}
+      {:authorized?, false} -> {:error, :not_authorized, "You can't see the messages for this room."}
+      {:error, :message, changeset, _changeset_so_far} ->
+        {:error, :unprocessable_entity, changeset_errors_to_string(changeset)}
+    end
+  end
+
+  defp message_events(message, group, notify_user_ids) do
+    Stitch.Task.start(fn ->
       MessageLinkPreviewGenerator.queue(message)
-      message = message |> MessageQueries.load_info()
       GroupChannel.broadcast_message_created(message)
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+    end)
+  end
 
-      conn
-      |> put_status(:created)
-      |> render("show.json", message: message, user_id: user.id)
+  def mark_as_read(conn, %{"group_id" => group_id}) do
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:ok, response} <- Message.mark_as_read(current_user.id, group.id) do
+      %{mark_messages_as_read: {_, messages}, mark_group_as_read: {1, [group_user]}} = response
+      messages_json = MessageView.render("index.json", %{messages: messages})
+      mark_as_read_json = MessageView.render("mark_as_read.json", %{
+        messages_json: messages_json,
+        group_user: group_user
+      })
+      mark_as_read_events(group, current_user, messages_json, mark_as_read_json)
+      json(conn, %{status: "ok"})
     else
-      {:group, _} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{message: "The room you are looking for does not exist."})
-
-      {:authorized?, false} ->
-        conn
-        |> put_status(:forbidden)
-        |> json(%{message: "You can't see the messages for this room."})
-
-      {:error, :message, changeset, _changeset_so_far} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{message: changeset_errors_to_string(changeset)})
+      {:group, nil} -> {:error, :not_found}
+      {:error, message} -> {:error, :not_authorized, message}
     end
+  end
+
+  def mark_as_read_events(group, current_user, messages_json, json) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_marked_as_read(current_user, json)
+      GroupChannel.broadcast_read_status(group, messages_json)
+      PushNotifications.push_badge_update_to_user(current_user)
+    end)
+  end
+
+  def mark_as_unread(conn, %{"group_id" => group_id, "message_id" => message_id}) do
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:ok, response} <- Message.mark_as_unread(current_user.id, group.id, message) do
+      %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}} = response
+      messages_json = MessageView.render("index.json", %{messages: messages})
+      mark_as_read_json = MessageView.render("mark_as_read.json", %{
+        messages_json: messages_json,
+        group_user: group_user
+      })
+      mark_as_unread_events(group, current_user, messages_json, mark_as_read_json)
+      json(conn, %{status: "ok"})
+    else
+      {:group, nil} -> {:error, :not_found}
+      {:error, message} -> {:error, :not_authorized, message}
+    end
+  end
+
+  def mark_as_unread_events(group, current_user, messages_json, json) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_marked_as_unread(current_user, json)
+      GroupChannel.broadcast_read_status(group, messages_json)
+      PushNotifications.push_badge_update_to_user(current_user)
+    end)
   end
 
   def download(conn, %{"id" => message_id}) do
@@ -209,5 +265,42 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         |> put_status(:unauthorized)
         |> json(%{message: "You can't pin messages belonging to this room."})
     end
+  end
+
+  def delete_message_link_preview(conn, %{"id" => message_id, "link" => link} = params) do
+    current_user = conn.assigns.current_user
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:authorized?, true} <- {:authorized?, MessageAuthorization.can_delete?(message, current_user)} do
+      message = Message.LinkPreview.delete!(message, link)
+      group = GroupQueries.get_by_id(message.group_id)
+      GroupChannel.broadcast_msg_link_preview_deleted(group, message.id, link)
+      json(conn, %{status: "ok"})
+    else
+      {:message, _} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
+    end
+  end
+
+  def toggle_reaction(conn, %{"id" => message_id, "emoji_name" => emoji_name}) do
+    current_user = conn.assigns.current_user
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(message.group_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)} do
+      {:ok, _reaction} = Message.Reaction.toggle_reaction(message, current_user, emoji_name)
+      GroupChannel.broadcast_reactions_updated(group, message)
+      json(conn, %{status: "ok"})
+    else
+      {:message, _} -> {:error, :not_found}
+      {:group, _} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
+    end
+  end
+
+  def parse_query_params(conn, _opts) do
+    types = %{skip: :integer, limit: :integer, min_id: :integer, max_id: :integer}
+    changeset = Ecto.Changeset.cast({%{}, types}, conn.params, Map.keys(types))
+    query_opts = Enum.into(changeset.changes, [])
+    query_opts = Keyword.put(query_opts, :fetch_users, get_fetch_users_param(conn.params))
+    assign(conn, :query_opts, query_opts)
   end
 end
