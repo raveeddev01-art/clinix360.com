@@ -340,7 +340,7 @@ class SidemenuStore {
       (groupStore.group &&
         newMessage.group_id === groupStore.group.id &&
         this.isInChat) ||
-      (groupStore.group && newMessage.user_id === currentUser.id)
+      newMessage.user_id === currentUser.id
     ) {
       return;
     }
