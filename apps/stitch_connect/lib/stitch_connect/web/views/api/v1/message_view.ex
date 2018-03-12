@@ -21,6 +21,16 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     }
   end
 
+  def render("mark_as_read.json", %{messages_json: messages_json, group_user: group_user}) do
+    %{
+      messages: messages_json,
+      group_id: group_user.group_id,
+      last_read_at: group_user.last_read_at,
+      mentions_count: group_user.mentions_count,
+      unread_messages_count: group_user.unread_messages_count
+    }
+  end
+
   def message_json(message) do
     %{
       id: message.id,

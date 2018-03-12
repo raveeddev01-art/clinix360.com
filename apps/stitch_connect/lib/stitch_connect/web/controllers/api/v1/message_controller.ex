@@ -5,7 +5,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     EventsChannel,
     GroupChannel,
     PushNotifications,
-    UserStatusService
+    UserStatusService,
+    Api.V1.MessageView,
   }
 
   alias Stitch.{
@@ -13,6 +14,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     GroupQueries,
     Group,
     Message,
+    MessageAuthorization,
     MessageAction,
     MessageQueries,
     Message.Upload
@@ -93,6 +95,59 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+    end)
+  end
+
+  def mark_as_read(conn, %{"group_id" => group_id}) do
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:ok, response} <- Message.mark_as_read(current_user.id, group.id) do
+      %{mark_messages_as_read: {_, messages}, mark_group_as_read: {1, [group_user]}} = response
+      messages_json = MessageView.render("index.json", %{messages: messages})
+      mark_as_read_json = MessageView.render("mark_as_read.json", %{
+        messages_json: messages_json,
+        group_user: group_user
+      })
+      mark_as_read_events(group, current_user, messages_json, mark_as_read_json)
+      json(conn, %{status: "ok"})
+    else
+      {:group, nil} -> {:error, :not_found}
+      {:error, message} -> {:error, :not_authorized, message}
+    end
+  end
+
+  def mark_as_read_events(group, current_user, messages_json, json) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_marked_as_read(current_user, json)
+      GroupChannel.broadcast_read_status(group, messages_json)
+      PushNotifications.push_badge_update_to_user(current_user)
+    end)
+  end
+
+  def mark_as_unread(conn, %{"group_id" => group_id, "message_id" => message_id}) do
+    current_user = conn.assigns.current_user
+    with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
+         {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:ok, response} <- Message.mark_as_unread(current_user.id, group.id, message) do
+      %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}} = response
+      messages_json = MessageView.render("index.json", %{messages: messages})
+      mark_as_read_json = MessageView.render("mark_as_read.json", %{
+        messages_json: messages_json,
+        group_user: group_user
+      })
+      mark_as_unread_events(group, current_user, messages_json, mark_as_read_json)
+      json(conn, %{status: "ok"})
+    else
+      {:group, nil} -> {:error, :not_found}
+      {:error, message} -> {:error, :not_authorized, message}
+    end
+  end
+
+  def mark_as_unread_events(group, current_user, messages_json, json) do
+    Stitch.Task.start(fn ->
+      EventsChannel.broadcast_marked_as_unread(current_user, json)
+      GroupChannel.broadcast_read_status(group, messages_json)
+      PushNotifications.push_badge_update_to_user(current_user)
     end)
   end
 
@@ -209,6 +264,35 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         conn
         |> put_status(:unauthorized)
         |> json(%{message: "You can't pin messages belonging to this room."})
+    end
+  end
+
+  def delete_message_link_preview(conn, %{"id" => message_id, "link" => link} = params) do
+    current_user = conn.assigns.current_user
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:authorized?, true} <- {:authorized?, MessageAuthorization.can_delete?(message, current_user)} do
+      message = Message.LinkPreview.delete!(message, link)
+      group = GroupQueries.get_by_id(message.group_id)
+      GroupChannel.broadcast_msg_link_preview_deleted(group, message.id, link)
+      json(conn, %{status: "ok"})
+    else
+      {:message, _} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
+    end
+  end
+
+  def toggle_reaction(conn, %{"id" => message_id, "emoji_name" => emoji_name}) do
+    current_user = conn.assigns.current_user
+    with {:message, %Message{} = message} <- {:message, MessageQueries.get_by_id(message_id, false)},
+         {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(message.group_id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)} do
+      {:ok, _reaction} = Message.Reaction.toggle_reaction(message, current_user, emoji_name)
+      GroupChannel.broadcast_reactions_updated(group, message)
+      json(conn, %{status: "ok"})
+    else
+      {:message, _} -> {:error, :not_found}
+      {:group, _} -> {:error, :not_found}
+      {:authorized?, false} -> {:error, :not_authorized}
     end
   end
 
