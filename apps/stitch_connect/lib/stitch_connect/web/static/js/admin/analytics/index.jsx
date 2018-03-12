@@ -7,12 +7,6 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import Files from "./files";
 import Messages from "./messages";
 
-const header = (
-  <h1>
-    <i className="fa fa-bar-chart" /> Analytics
-  </h1>
-);
-
 const datePeriodNames = {
   week: "Last 7 days",
   month: "Last 30 days",
@@ -77,22 +71,30 @@ export default class Analytics extends Component {
     const { timePeriod, messagesData, filesData } = this.state;
 
     return (
-      <Panel className="admin-panel analytics-panel" header={header}>
-        <div className="pull-right m-u-58">
-          <DropdownButton
-            id="dropdown-analytics-timespan"
-            pullRight
-            title={datePeriodNames[timePeriod]}
-            className="dropdown-timespan"
-            onSelect={this._handleSelect}
-          >
-            <MenuItem eventKey="week">Last 1 week</MenuItem>
-            <MenuItem eventKey="month">Last 30 days</MenuItem>
-            <MenuItem eventKey="allTime">All time</MenuItem>
-          </DropdownButton>
-        </div>
-        <Messages reportsData={messagesData} />
-        <Files reportsData={filesData} />
+      <Panel className="admin-panel analytics-panel">
+        <Panel.Heading>
+          <h1>
+            <i className="fa fa-bar-chart" /> Analytics
+          </h1>
+        </Panel.Heading>
+
+        <Panel.Body>
+          <div className="pull-right m-u-58">
+            <DropdownButton
+              id="dropdown-analytics-timespan"
+              pullRight
+              title={datePeriodNames[timePeriod]}
+              className="dropdown-timespan"
+              onSelect={this._handleSelect}
+            >
+              <MenuItem eventKey="week">Last 1 week</MenuItem>
+              <MenuItem eventKey="month">Last 30 days</MenuItem>
+              <MenuItem eventKey="allTime">All time</MenuItem>
+            </DropdownButton>
+          </div>
+          <Messages reportsData={messagesData} />
+          <Files reportsData={filesData} />
+        </Panel.Body>
       </Panel>
     );
   }

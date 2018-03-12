@@ -47,9 +47,9 @@ defmodule Stitch.Accounts.UserTest do
     end
   end
 
-  describe "Stitch.Accounts.User.changeset/2 should trim whitespaces in email" do
-    test "trims whitespaces" do
-      changeset = User.changeset(%User{}, %{email: " foo@example.com   "})
+  describe "Stitch.Accounts.User.email_changeset/2 should trim whitespaces in email" do
+    test "trims and downcases email" do
+      changeset = User.email_changeset(%User{}, %{email: " FOO@example.com   "})
       assert changeset.changes.email == "foo@example.com"
     end
   end

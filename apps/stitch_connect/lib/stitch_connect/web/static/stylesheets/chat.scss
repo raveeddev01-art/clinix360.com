@@ -1111,7 +1111,6 @@
 
   .attachment-image-holder {
     max-width: 360px;
-    cursor: zoom-in;
     display: inline-block;
     overflow-y: hidden;
     margin: 5px 0;
@@ -1119,13 +1118,13 @@
 
     img {
       max-height: 360px;
+      cursor: zoom-in;
     }
 
     .attachment-actions {
       position: absolute;
-      top: 0;
-      right: 0;
-      padding: 15px;
+      top: 15px;
+      right: 15px;
       opacity: 0;
 
       .btn {

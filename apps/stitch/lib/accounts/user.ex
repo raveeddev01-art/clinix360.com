@@ -33,7 +33,7 @@ defmodule Stitch.Accounts.User do
     field(:mobile_notification_preference, :string, default: "everything")
     field(:email_notification_preference, :string, default: "daily")
     field(:is_staff, :boolean, default: false)
-    # List of groups the user is allowed in if user is a guest
+    field(:is_bot, :boolean, default: false)
     field(:groups_as_guest, {:array, :integer}, default: [])
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
@@ -127,8 +127,9 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(attrs, [:email, :confirmation_code, :token])
     |> validate_required([:email, :confirmation_code, :token])
-    |> update_change(:email, &String.trim/1)
     |> valid_email_changeset(attrs)
+    |> update_change(:email, &String.trim/1)
+    |> update_change(:email, &String.downcase/1)
   end
 
   @doc """
@@ -209,16 +210,18 @@ defmodule Stitch.Accounts.User do
       struct
       |> cast(params, [:profile_image_url, :profile_image_thumb_url])
 
-    case fetch_field(changeset, :profile_image_url) do
-      {_, nil} -> add_default_profile_image(changeset)
-      _ -> changeset
+    cond do
+      Stitch.Accounts.ProfileImage.needs_avatar_regen(changeset) ->
+        add_default_profile_image(changeset)
+
+      true ->
+        changeset
     end
   end
 
-  def add_default_profile_image(
-        %{valid?: true, changes: %{first_name: first_name, last_name: last_name}} = changeset
-      ) do
-    user = %User{first_name: first_name, last_name: last_name}
+  def add_default_profile_image(%{valid?: true} = changeset) do
+    user = %User{first_name: get_first_name(changeset), last_name: get_last_name(changeset)}
+
     with {:ok, avatar} <- Stitch.Accounts.ProfileImage.pick_default_random(user),
          {:ok, avatar_thumb} <- Stitch.Accounts.ProfileImage.create_thumb(avatar) do
       changeset
@@ -231,6 +234,26 @@ defmodule Stitch.Accounts.User do
   end
 
   def add_default_profile_image(changeset), do: changeset
+
+  defp get_first_name(changeset) do
+    case Ecto.Changeset.fetch_change(changeset, :first_name) do
+      {:ok, first_name} ->
+        first_name
+
+      _ ->
+        changeset.data.first_name
+    end
+  end
+
+  defp get_last_name(changeset) do
+    case Ecto.Changeset.fetch_change(changeset, :last_name) do
+      {:ok, last_name} ->
+        last_name
+
+      _ ->
+        changeset.data.last_name
+    end
+  end
 
   def add_thumb(%{valid?: true, changes: %{profile_image_url: url}} = changeset) do
     case Stitch.Accounts.ProfileImage.create_thumb(url) do

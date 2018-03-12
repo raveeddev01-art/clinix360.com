@@ -1,0 +1,60 @@
+.access-log__day-log {
+  margin-bottom: 40px;
+
+  &__date {
+    float: left;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 0;
+  }
+}
+.access-log__day-log:last-child {
+  margin-bottom: 0;
+}
+
+.access-log-item {
+  overflow: hidden;
+  margin-left: 340px;
+
+  &__avatar {
+    width: 25px;
+    height: 25px;
+    float: left;
+    display: block;
+    margin-right: 10px;
+    margin-top: 5px;
+    border-radius: 20px;
+  }
+
+  &__user {
+    float: left;
+
+    &__name {
+      margin: 0;
+      font-weight: bold;
+    }
+
+    &__time {
+      margin: 0;
+    }
+
+    &__app {
+      margin: 0;
+      margin-left: 10px;
+
+      i {
+        margin-right: 3px;
+      }
+    }
+
+    &__ip {
+      margin: 0;
+      color: #999;
+    }
+  }
+}
+
+.pagination > .active > span {
+  background: $brand-primary;
+  border-color: $brand-primary;
+}

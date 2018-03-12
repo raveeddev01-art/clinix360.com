@@ -7,12 +7,6 @@ import EmailNotification from "./email-notification";
 import DesktopNotification from "./desktop-notification";
 import ChannelNotifications from "./channel-notifications";
 
-const header = (
-  <h1>
-    <i className="fa fa-bell" /> Notifications
-  </h1>
-);
-
 @inject("titleStore", "adminPanelStore")
 export default class YouNotifications extends Component {
   constructor(props) {
@@ -56,24 +50,32 @@ export default class YouNotifications extends Component {
     const { alertMessage, alertVisible, alertStyle } = this.state;
 
     return (
-      <Panel className="admin-panel" header={header}>
-        {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
-        {window.Notification && <BrowserNotification />}
-        <EmailNotification
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        <DesktopNotification
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
-        <ChannelNotifications
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          hideAlert={this.hideAlert}
-        />
+      <Panel className="admin-panel">
+        <Panel.Heading>
+          <h1>
+            <i className="fa fa-bell" /> Notifications
+          </h1>
+        </Panel.Heading>
+
+        <Panel.Body>
+          {alertVisible && <Alert bsStyle={alertStyle}>{alertMessage}</Alert>}
+          {window.Notification && <BrowserNotification />}
+          <EmailNotification
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          <DesktopNotification
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+          <ChannelNotifications
+            onSuccess={this.onSuccess}
+            onError={this.onError}
+            hideAlert={this.hideAlert}
+          />
+        </Panel.Body>
       </Panel>
     );
   }

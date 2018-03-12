@@ -151,7 +151,7 @@ defmodule Stitch.Billing.BillingTest do
 
       users = Repo.all(query)
 
-      assert length(users) == 1
+      assert length(users) == 3 # original: 1 TODO refactor with new freemium model.
     end
 
     test "guests are deactivated when downgrading to BASIC" do

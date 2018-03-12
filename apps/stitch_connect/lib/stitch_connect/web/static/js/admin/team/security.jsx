@@ -3,12 +3,7 @@ import { inject } from "mobx-react";
 import { Panel } from "react-bootstrap";
 import TeamExport from "./export";
 import TeamHipaa from "./hipaa";
-
-const header = (
-  <h1>
-    <i className="fa fa-shield" /> Security
-  </h1>
-);
+import AccessLogsPanel from "./security/access-logs/access-logs-panel";
 
 @inject("titleStore", "adminPanelStore")
 class TeamSecurity extends Component {
@@ -19,9 +14,18 @@ class TeamSecurity extends Component {
 
   render() {
     return (
-      <Panel className="admin-panel" header={header}>
-        <TeamHipaa />
-        <TeamExport />
+      <Panel className="admin-panel">
+        <Panel.Heading>
+          <h1>
+            <i className="fa fa-shield" /> Security
+          </h1>
+        </Panel.Heading>
+
+        <Panel.Body>
+          <TeamHipaa />
+          <TeamExport />
+          <AccessLogsPanel />
+        </Panel.Body>
       </Panel>
     );
   }
