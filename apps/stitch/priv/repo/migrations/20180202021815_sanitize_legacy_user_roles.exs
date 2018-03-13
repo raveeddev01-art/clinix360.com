@@ -10,8 +10,7 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
   def up do
     Repo.transaction(
       fn ->
-        User
-        |> select([:id, :email, :onboarded, :roles])
+        from (u in "users", select: %{id: u.id, email: u.email, onboarded: u.onboarded, roles: u.roles})
         |> Repo.stream()
         |> Stream.each(fn user ->
           cond do
