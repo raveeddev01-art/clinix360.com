@@ -5,7 +5,6 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
 
   import Ecto.Query
   alias Stitch.Repo
-  alias Stitch.Accounts.User
 
   def up do
     query =
