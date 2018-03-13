@@ -8,9 +8,15 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
   alias Stitch.Accounts.User
 
   def up do
+    query =
+      from(
+        u in "users",
+        select: %{id: u.id, email: u.email, onboarded: u.onboarded, roles: u.roles}
+      )
+
     Repo.transaction(
       fn ->
-        from (u in "users", select: %{id: u.id, email: u.email, onboarded: u.onboarded, roles: u.roles})
+        query
         |> Repo.stream()
         |> Stream.each(fn user ->
           cond do
