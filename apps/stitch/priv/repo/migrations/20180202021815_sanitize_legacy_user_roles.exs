@@ -11,6 +11,7 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
     Repo.transaction(
       fn ->
         User
+        |> select([:id, :email, :onboarded, :roles])
         |> Repo.stream()
         |> Stream.each(fn user ->
           cond do
