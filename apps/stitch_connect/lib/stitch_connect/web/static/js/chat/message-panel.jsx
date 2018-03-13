@@ -38,7 +38,6 @@ export default class MessagePanel extends Component {
         messageStore.scrollToNewBanner();
       }
     } else {
-      // if unread messages are not loaded yet, just load next batch
       messageStore.scrollToNewBanner();
     }
   };
