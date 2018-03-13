@@ -18,6 +18,8 @@ Install external dependencies
 
 * `wkhtmltopdf` (https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF) Needed to generate PDFs.
 
+* `redis` (`brew install redis`)
+
 Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 
 ```
@@ -58,6 +60,8 @@ export TWILIO_AUTH_TOKEN=
 
 export INTERCOM_IDENTITY_VERIFICATION_SECRET=
 export INTERCOM_APP_ID=
+
+export REDIS_URL= # optional
 ```
 
 Source the file to add these environment variables to your current shell

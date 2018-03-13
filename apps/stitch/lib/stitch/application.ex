@@ -9,7 +9,8 @@ defmodule Stitch.Application do
     children = [
       supervisor(Stitch.Repo, []),
       supervisor(Task.Supervisor, [[name: Stitch.Exports.Supervisor]]),
-      supervisor(Stitch.Analytics.Supervisor, [])
+      supervisor(Stitch.Analytics.Supervisor, []),
+      supervisor(Stitch.Redix.Supervisor, []),
     ]
 
     opts = [strategy: :one_for_one, name: Stitch.Supervisor]
