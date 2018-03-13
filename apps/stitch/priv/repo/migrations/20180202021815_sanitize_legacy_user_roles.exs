@@ -26,8 +26,7 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
                 |> enforce_admin
 
               user
-              |> Ecto.Changeset.change(roles: roles)
-              |> Repo.update()
+              |> Repo.update_all(set: [roles: roles])
 
             true ->
               IO.puts("User #{user.email} has no roles. Onboarded: #{user.onboarded}")
