@@ -81,7 +81,14 @@ class PresenceStore {
   }
 
   isOnline = userId => {
-    return !!this.onlineUsersMap[userId];
+    if (
+      !this.onlineUsersMap[userId] ||
+      !this.onlineUsersMap[userId].metas.length
+    ) {
+      return false;
+    }
+
+    return this.onlineUsersMap[userId].metas.some(meta => !meta.became_away);
   };
 
   @action
@@ -117,12 +124,15 @@ class PresenceStore {
     if (sessionId === window.sessionId) window.location.reload();
   };
 
-  onLogout = (data) => {
+  onLogout = data => {
     if (data.logout_from_all_sessions) {
       // when logout_from_all_sessions is set, log out on
       // - session_id is not present
       // - session_id !== mine
-      if (!data.current_session_id || data.current_session_id !== window.sessionId) {
+      if (
+        !data.current_session_id ||
+        data.current_session_id !== window.sessionId
+      ) {
         this.logout();
       }
     } else if (window.sessionId === data.session_id) {
