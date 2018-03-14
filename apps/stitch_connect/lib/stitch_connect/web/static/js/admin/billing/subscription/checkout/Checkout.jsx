@@ -85,7 +85,7 @@ class Checkout extends Component {
           <div className="existing-card">
             <h5>Option A: Use an existing payment method.</h5>
 
-            <CreditCards onUseCreditCard={onUseCreditCard} />
+            <CreditCards checkingOut onUseCreditCard={onUseCreditCard} />
           </div>
 
           <div className="add-new-card">
