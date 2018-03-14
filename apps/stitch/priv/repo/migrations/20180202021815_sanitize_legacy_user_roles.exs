@@ -6,6 +6,16 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
   import Ecto.Query
   alias Stitch.Repo
 
+  defmodule User do
+    use Ecto.Schema
+
+    schema "users" do
+      field(:email, :string)
+      field(:onboarded, :boolean, default: false)
+      field(:roles, {:array, :string})
+    end
+  end
+
   def up do
     query =
       from(
