@@ -45,6 +45,7 @@ class MessageStore {
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
 
   @observable highlightId = null; // message will be highlighted
+  @observable infoModalMessageId = null; // info modal will be displayed for this id
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
 
@@ -125,6 +126,11 @@ class MessageStore {
 
   get markedAsUnread() {
     return this.group.marked_as_unread;
+  }
+
+  @computed
+  get infoMessage() {
+    return this.getMessageById(this.infoModalMessageId);
   }
 
   @computed
@@ -261,6 +267,7 @@ class MessageStore {
     this.messages = [];
     this.messageElements = {};
     this.messageInEdit = null;
+    this.infoModalMessageId = null;
     this.textInEdit = "";
     this.readStatusCache = {};
     this.messageVisibility = {};

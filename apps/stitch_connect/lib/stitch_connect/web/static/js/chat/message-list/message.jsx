@@ -21,7 +21,6 @@ import {
   UserProfileMenu
 } from "common/components";
 import { confirmModal } from "common/modals";
-import MessageInfoModal from "./message-info-modal";
 
 // @TODO stab out renderSomething functions into seperate component (MessageActionGroup, MessagePin, MessageStar, ...)
 // @TODO move message info modal to top level so that it is shared on all messages
@@ -34,8 +33,7 @@ class Message extends Component {
     this.state = {
       selected: false,
       dropup: false,
-      showEmojiPicker: false,
-      showInfoModal: false
+      showEmojiPicker: false
     };
   }
 
@@ -95,6 +93,11 @@ class Message extends Component {
     return martStyles;
   };
 
+  showInfoModal = () => {
+    const { message, messageStore } = this.props;
+    messageStore.infoModalMessageId = message.id;
+  };
+
   markAsUnread = () => {
     const { message, messageStore } = this.props;
 
@@ -138,18 +141,6 @@ class Message extends Component {
 
   toggleReaction = () => {
     this.setState({ showEmojiPicker: true, selected: true });
-  };
-
-  showInfoModal = () => {
-    this.setState({
-      showInfoModal: true
-    });
-  };
-
-  closeModal = () => {
-    this.setState({
-      showInfoModal: false
-    });
   };
 
   renderActions(message) {
@@ -295,7 +286,11 @@ class Message extends Component {
             <i className="fa fa-exclamation-triangle" />
           </div>
         )}
-        {!message.is_sequential && <UserProfileMenu user={user}><Avatar user={user} /></UserProfileMenu>}
+        {!message.is_sequential && (
+          <UserProfileMenu user={user}>
+            <Avatar user={user} />
+          </UserProfileMenu>
+        )}
         {message.is_sequential && (
           <TimestampTooltip
             timestamp={insertedAt}
@@ -389,12 +384,6 @@ class Message extends Component {
               </div>
 
               {this.renderActions(message)}
-
-              <MessageInfoModal
-                show={this.state.showInfoModal}
-                message={message}
-                closeModal={this.closeModal}
-              />
             </Element>
           </VisibilitySensor>
         </div>
