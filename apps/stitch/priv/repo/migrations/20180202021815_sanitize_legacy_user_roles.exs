@@ -5,12 +5,17 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
 
   import Ecto.Query
   alias Stitch.Repo
-  alias Stitch.Accounts.User
 
   def up do
+    query =
+      from(
+        u in "users",
+        select: %{id: u.id, email: u.email, onboarded: u.onboarded, roles: u.roles}
+      )
+
     Repo.transaction(
       fn ->
-        User
+        query
         |> Repo.stream()
         |> Stream.each(fn user ->
           cond do
@@ -21,8 +26,7 @@ defmodule Stitch.Repo.Migrations.SanitizeLegacyUserRoles do
                 |> enforce_admin
 
               user
-              |> Ecto.Changeset.change(roles: roles)
-              |> Repo.update()
+              |> Repo.update_all(set: [roles: roles])
 
             true ->
               IO.puts("User #{user.email} has no roles. Onboarded: #{user.onboarded}")

@@ -96,8 +96,14 @@ defmodule StitchConnect.Web.SubdomainRouter do
     pipe_through(:authenticated_api)
 
     get("/groups/:group_id/messages", MessageController, :index)
+    get("/groups/:group_id/feed_recent", MessageController, :feed_recent)
+    get("/groups/:group_id/feed_surrounding", MessageController, :feed_surrounding)
+    post("/groups/:group_id/mark_as_read", MessageController, :mark_as_read)
+    post("/groups/:group_id/mark_as_unread", MessageController, :mark_as_unread)
     post("/groups/:group_id/messages", MessageController, :create)
     put("/messages/:id", MessageController, :update)
+    put("/messages/:id/delete_link_preview", MessageController, :delete_message_link_preview)
+    put("/messages/:id/toggle_reaction", MessageController, :toggle_reaction)
     delete("/messages/:id", MessageController, :delete)
     get("/messages/:id/download", MessageController, :download)
     post("/messages/:id/toggle-star", MessageController, :toggle_star)
@@ -195,6 +201,12 @@ defmodule StitchConnect.Web.SubdomainRouter do
       post("/single-room-guests", InvitationController, :invite_single_room_guests)
       post("/multi-room-guest", InvitationController, :invite_multi_room_guest)
       post("/multi-room-guests", InvitationController, :invite_multi_room_guests)
+    end
+
+    scope "/bots" do
+      get("/", BotsController, :index)
+      post("/", BotsController, :create)
+      put("/:id", BotsController, :update)
     end
 
     # Initiate export by admin

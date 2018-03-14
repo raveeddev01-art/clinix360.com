@@ -25,6 +25,7 @@ defmodule Stitch.MessageQueries do
   """
   def search(user_id, term, opts \\ []) do
     user = Repo.get!(User, user_id)
+    fetch_users = Keyword.get(opts, :fetch_users, true)
 
     user_groups_ids =
       GroupUser
@@ -32,23 +33,28 @@ defmodule Stitch.MessageQueries do
       |> select([gu], gu.group_id)
       |> Repo.all()
 
-    limit = Keyword.get(opts, :limit, 30)
+    limit = Enum.min([Keyword.get(opts, :limit, 30), 1000])
 
     query =
-      from(
-        m in Message,
-        left_join: g in assoc(m, :group),
-        left_join: u in assoc(m, :user),
-        left_join: pb in assoc(m, :pinned_by),
+      if fetch_users do
+        from(m in Message,
+          left_join: g in assoc(m, :group),
+          left_join: u in assoc(m, :user),
+          left_join: pb in assoc(m, :pinned_by),
+          preload: [
+            user: u,
+            group: g,
+            pinned_by: pb
+          ])
+      else
+        Message
+      end
+
+    query =
+      from(m in query,
         where: m.group_id in ^user_groups_ids,
         where: m.type != ^"system",
-        limit: ^limit,
-        preload: [
-          user: u,
-          group: g,
-          pinned_by: pb
-        ]
-      )
+        limit: ^limit)
 
     query =
       if String.starts_with?(term, "\"") && String.ends_with?(term, "\"") do
@@ -88,25 +94,33 @@ defmodule Stitch.MessageQueries do
   Return the latest 30 messages for a group.
   """
   def group_latest_messages(group_id, user, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 60)
+    limit = Enum.min([Keyword.get(opts, :limit), 60])
     offset = Keyword.get(opts, :skip, 0)
+    fetch_users = Keyword.get(opts, :fetch_users, true)
 
     query =
-      from(
-        m in Message,
-        left_join: g in assoc(m, :group),
-        left_join: u in assoc(m, :user),
-        left_join: pb in assoc(m, :pinned_by),
+      if fetch_users do
+        from(m in Message,
+          left_join: g in assoc(m, :group),
+          left_join: u in assoc(m, :user),
+          left_join: pb in assoc(m, :pinned_by),
+          preload: [
+            user: u,
+            group: g,
+            pinned_by: pb
+          ]
+        )
+      else
+        Message
+      end
+
+    query =
+      from(m in query,
         where: m.group_id == ^group_id,
         order_by: [desc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
         select: m,
-        preload: [
-          user: u,
-          group: g,
-          pinned_by: pb
-        ]
       )
 
     query =
@@ -121,26 +135,32 @@ defmodule Stitch.MessageQueries do
   end
 
   def group_recent_messages(group_id, user, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 60)
+    limit = Enum.min([Keyword.get(opts, :limit), 60])
     offset = Keyword.get(opts, :skip, 0)
+    fetch_users = Keyword.get(opts, :fetch_users, true)
 
     query =
-      from(
-        m in Message,
-        left_join: g in assoc(m, :group),
-        left_join: u in assoc(m, :user),
-        left_join: pb in assoc(m, :pinned_by),
+      if fetch_users do
+        from(m in Message,
+          left_join: g in assoc(m, :group),
+          left_join: u in assoc(m, :user),
+          left_join: pb in assoc(m, :pinned_by),
+          preload: [
+            user: u,
+            group: g,
+            pinned_by: pb
+          ])
+      else
+        Message
+      end
+
+    query =
+      from(m in query,
         where: m.group_id == ^group_id,
         order_by: [asc: :inserted_at],
         limit: ^limit,
         offset: ^offset,
-        select: m,
-        preload: [
-          user: u,
-          group: g,
-          pinned_by: pb
-        ]
-      )
+        select: m)
 
     query =
       case Keyword.fetch(opts, :min_id) do
@@ -175,21 +195,28 @@ defmodule Stitch.MessageQueries do
   end
 
   def pinned_messages(%Group{id: group_id}, opts \\ []) do
-    limit = opts[:limit] || 30
-    offset = opts[:skip] || 0
+    limit = Keyword.get(opts, :limit, 30)
+    offset = Keyword.get(opts, :skip, 0)
+    fetch_users = Keyword.get(opts, :fetch_users, true)
 
     query =
-      from(
-        m in Message,
-        left_join: u in assoc(m, :user),
-        left_join: pb in assoc(m, :pinned_by),
+      if fetch_users do
+        from(m in Message,
+          left_join: u in assoc(m, :user),
+          left_join: pb in assoc(m, :pinned_by),
+          preload: [
+            user: u,
+            pinned_by: pb
+          ])
+      else
+        Message
+      end
+
+    query =
+      from(m in query,
         where: m.pinned == true,
         where: m.group_id == ^group_id,
         order_by: [desc: m.inserted_at],
-        preload: [
-          user: u,
-          pinned_by: pb
-        ]
       )
 
     Paginator.new(query, skip: offset, limit: limit)
@@ -212,6 +239,9 @@ defmodule Stitch.MessageQueries do
 
     Repo.one(query)
   end
+
+  def get_by_id(id, false), do: Repo.get(Message, id)
+  def get_by_id(id, true), do: get_by_id(id)
 
   def load_info(message) do
     Repo.preload(message, [:pinned_by, :user], force: true)
@@ -395,17 +425,19 @@ defmodule Stitch.MessageQueries do
     Repo.one(query)
   end
 
-  @spec surrounding(Message.t(), Group.t(), User.t(), pos_integer) ::
-          {[Message.t()], [Message.t()]}
-  def surrounding(%Message{id: message_id}, %Group{id: group_id}, %User{} = user, limit) do
-    messages_before =
-      MessageQueries.group_latest_messages(group_id, user, max_id: message_id, limit: limit)
-      |> Enum.reverse()
-
-    messages_after =
-      MessageQueries.group_recent_messages(group_id, user, min_id: message_id, limit: limit)
-
-    {messages_before, messages_after}
+  @spec surrounding(Message.t(), Group.t(), User.t(), [{pos_integer, integer | boolean}]) :: map
+  def surrounding(%Message{} = message, %Group{} = group, %User{} = user, opts) do
+    limit = Enum.min([Keyword.get(opts, :limit), 60])
+    fetch_users = Keyword.get(opts, :fetch_users, false)
+    query_opts = [min_id: message.id, max_id: message.id, limit: limit, fetch_users: fetch_users]
+    messages_before = MessageQueries.group_latest_messages(group.id, user, query_opts) |> Enum.reverse()
+    messages_after = MessageQueries.group_recent_messages(group.id, user, query_opts)
+    messages = messages_before ++ [message] ++ messages_after
+    %{
+      more_before: length(messages_before) >= limit,
+      more_after: length(messages_after) >= limit,
+      messages: messages,
+    }
   end
 
   defp yesterday, do: Date.add(Date.utc_today(), -1)

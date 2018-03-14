@@ -69,72 +69,75 @@ export default class Demo extends Component {
 
         <div className="flex-item">
           <Panel className="demo-form m-b-0">
-            <h4 className="text-center m-b-20">
-              Tell us a little about yourself, and we’ll be in touch right away.
-            </h4>
+            <Panel.Body>
+              <h4 className="text-center m-b-20">
+                Tell us a little about yourself, and we’ll be in touch right
+                away.
+              </h4>
 
-            <form onSubmit={this.handleSubmit}>
-              <FormGroup bsSize="large">
-                <ControlLabel>
-                  Full Name <span>*</span>
-                </ControlLabel>
-                <FormControl
-                  name="fullName"
-                  required
-                  autoFocus
-                  placeholder="Full Name"
-                  type="text"
-                  value={this.state.fullName}
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
+              <form onSubmit={this.handleSubmit}>
+                <FormGroup bsSize="large">
+                  <ControlLabel>
+                    Full Name <span>*</span>
+                  </ControlLabel>
+                  <FormControl
+                    name="fullName"
+                    required
+                    autoFocus
+                    placeholder="Full Name"
+                    type="text"
+                    value={this.state.fullName}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
 
-              <FormGroup bsSize="large">
-                <ControlLabel>
-                  Email Address <span>*</span>
-                </ControlLabel>
-                <FormControl
-                  name="email"
-                  required
-                  placeholder="hello@stitch.health"
-                  type="email"
-                  value={this.state.email}
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
+                <FormGroup bsSize="large">
+                  <ControlLabel>
+                    Email Address <span>*</span>
+                  </ControlLabel>
+                  <FormControl
+                    name="email"
+                    required
+                    placeholder="hello@stitch.health"
+                    type="email"
+                    value={this.state.email}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
 
-              <FormGroup bsSize="large">
-                <ControlLabel>
-                  Phone Number <span>*</span>
-                </ControlLabel>
-                <FormControl
-                  name="phoneNumber"
-                  required
-                  placeholder="555-555-5555"
-                  type="text"
-                  value={this.state.phoneNumber}
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
+                <FormGroup bsSize="large">
+                  <ControlLabel>
+                    Phone Number <span>*</span>
+                  </ControlLabel>
+                  <FormControl
+                    name="phoneNumber"
+                    required
+                    placeholder="555-555-5555"
+                    type="text"
+                    value={this.state.phoneNumber}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
 
-              <FormGroup bsSize="large" className="m-b-30">
-                <ControlLabel>
-                  Company Name <span>*</span>
-                </ControlLabel>
-                <FormControl
-                  name="companyName"
-                  required
-                  placeholder="Stitch Health"
-                  type="text"
-                  value={this.state.companyName}
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
+                <FormGroup bsSize="large" className="m-b-30">
+                  <ControlLabel>
+                    Company Name <span>*</span>
+                  </ControlLabel>
+                  <FormControl
+                    name="companyName"
+                    required
+                    placeholder="Stitch Health"
+                    type="text"
+                    value={this.state.companyName}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
 
-              <Button type="submit" bsStyle="primary" block>
-                Request a Demo
-              </Button>
-            </form>
+                <Button type="submit" bsStyle="primary" block>
+                  Request a Demo
+                </Button>
+              </form>
+            </Panel.Body>
           </Panel>
         </div>
       </div>

@@ -123,6 +123,15 @@ defmodule Stitch.GroupQueries do
   end
 
   @doc """
+  Returns a DM group for the given id pair.
+  """
+  @spec find_dm([pos_integer], pos_integer) :: Group.t | nil
+  def find_dm(id_pair, team_id) do
+    id_pair = Enum.join(id_pair, ".")
+    Repo.get_by(Group, slug: "__dm:#{id_pair}", team_id: team_id)
+  end
+
+  @doc """
   Returns a list of public groups for the user's team, and
   also teams he's been invited to participate in.
   """
