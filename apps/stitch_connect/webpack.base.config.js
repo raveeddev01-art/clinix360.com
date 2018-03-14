@@ -66,13 +66,9 @@ module.exports = [
       new ExtractTextPlugin("app.css"),
       new CopyWebpackPlugin([
         {
-          from: "./lib/stitch_connect/web/static/favicon.ico",
+          from: "./lib/stitch_connect/web/static/[favicon.ico|robots.txt|favicon-192x192.png]",
           to: path.resolve(__dirname, "priv/static")
-        },
-        {
-          from: "./lib/stitch_connect/web/static/favicon-192x192.png",
-          to: path.resolve(__dirname, "priv/static")
-        },
+        },        
         {
           from: "./lib/stitch_connect/web/static/audios/pop.mp3",
           to: path.resolve(__dirname, "priv/static/audios")
