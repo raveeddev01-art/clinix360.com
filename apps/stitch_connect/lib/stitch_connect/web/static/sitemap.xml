@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+   xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+   xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://teamstitch.com/</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+
+    <image:image>
+      <image:loc>https://teamstitch.com/images/homepage-platform.png</image:loc>
+      <image:caption>Stitch Platform</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://teamstitch.com/images/connect-homepage-test.png</image:loc>
+      <image:caption>Stitch Connect</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://teamstitch.com/images/connect-homepage-test.png</image:loc>
+      <image:caption>Stitch Engage</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://teamstitch.com/images/manage-homepage.png</image:loc>
+      <image:caption>Stitch Manage</image:caption>
+    </image:image>
+
+    <video:video>
+      <video:title>Stitch - Luminance Recovery</video:title>
+      <video:description>How Luminance Recovery uses Stitch Health.</video:description>
+      <video:player_loc>https://www.youtube.com/embed/v1fjEFYMiyA?rel=0</video:player_loc>
+      <video:duration>2</video:duration>
+      <video:category>Healthcare</video:category>
+      <video:tag>chat</video:tag>
+      <video:tag>communication</video:tag>
+      <video:tag>healtcare</video:tag>
+      <video:tag>health</video:tag>
+      <video:tag>hipaa</video:tag>
+      <video:tag>hospital</video:tag>
+      <video:tag>messages</video:tag>
+      <video:tag>messaging</video:tag>
+      <video:live>no</video:live>
+    </video:video>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/connect</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/engage</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/manage</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/downloads</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+
+  <url>
+    <loc>https://teamstitch.com/pricing</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/demo</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/hipaa</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/privacy-policy</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/terms-of-service</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/baa</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/jobs</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/signup/email</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/customers</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/customers/dermatology-skin-surgery-institute</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/customers/princeton-brain-spine</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/customers/UCSF-citywide</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://teamstitch.com/customers/orchard-medical-associates</loc>
+    <lastmod>2018-03-15T05:01:27+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>

@@ -74,6 +74,14 @@ module.exports = [
           to: path.resolve(__dirname, "priv/static")
         },
         {
+          from: "./lib/stitch_connect/web/static/robots.txt",
+          to: path.resolve(__dirname, "priv/static")
+        },
+        {
+          from: "./lib/stitch_connect/web/static/sitemap.xml",
+          to: path.resolve(__dirname, "priv/static")
+        },
+        {
           from: "./lib/stitch_connect/web/static/audios/pop.mp3",
           to: path.resolve(__dirname, "priv/static/audios")
         },
