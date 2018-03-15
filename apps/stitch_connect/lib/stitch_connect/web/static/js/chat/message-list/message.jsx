@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import { observer, inject } from "mobx-react";
+import { inject } from "mobx-react";
 import { Element } from "react-scroll";
 import cx from "classnames";
 import VisibilitySensor from "react-visibility-sensor";
@@ -13,9 +13,8 @@ import {
 } from "common/components";
 import MessageActions from "./message-actions";
 
-@inject("messageStore", "groupStore", "usersStore")
-@observer
-class Message extends Component {
+@inject("messageStore", "usersStore")
+class Message extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -61,13 +60,13 @@ class Message extends Component {
 
     return (
       <div className="message-gutter">
-        {(message.pinned || (message.pinned && message.starred)) && (
-            <div className="icon-pin">
-              <i className="fa fa-thumb-tack fa-rotate-45" />
-            </div>
-          )}
-        {message.starred &&
-          !message.pinned && (
+        {message.pinned && (
+          <div className="icon-pin">
+            <i className="fa fa-thumb-tack fa-rotate-45" />
+          </div>
+        )}
+        {!message.pinned &&
+          message.starred && (
             <div className="icon-star">
               <i className="fa fa-star" />
             </div>
@@ -107,27 +106,26 @@ class Message extends Component {
 
   render() {
     const { isActionsVisible, isSelected } = this.state;
-    const { message, messageStore } = this.props;
-    const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
+    const { message, messageStore, hasNML, isHighlighted } = this.props;
+    const { chatDiv } = messageStore;
 
     const messageClassName = cx("message", {
       sequential: message.is_sequential,
-      selected: this.state.selected,
-      highlight: highlightId === message.id,
+      selected: isSelected,
+      highlight: isHighlighted,
       pinned: message.pinned || message.starred,
       failed: message.status === "failed"
     });
 
     return (
       <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-        {newMessageLineMessage &&
-          newMessageLineMessage.id === message.id && (
-            <Element name="newMessageBanner" className="new-message-banner">
-              <div className="blue-line">
-                <div className="banner-text">New Messages</div>
-              </div>
-            </Element>
-          )}
+        {hasNML && (
+          <Element name="newMessageBanner" className="new-message-banner">
+            <div className="blue-line">
+              <div className="banner-text">New Messages</div>
+            </div>
+          </Element>
+        )}
 
         <div
           className="message-container"
@@ -183,7 +181,14 @@ class Message extends Component {
 }
 
 Message.propTypes = {
+  hasNML: PropTypes.bool,
+  isHighlighted: PropTypes.bool,
   message: PropTypes.object.isRequired
+};
+
+Message.defaultProps = {
+  hasNML: false,
+  isHighlighted: false
 };
 
 export default Message;

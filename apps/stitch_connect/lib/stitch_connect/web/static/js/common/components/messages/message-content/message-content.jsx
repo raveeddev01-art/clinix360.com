@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { observer, inject } from "mobx-react";
+import { inject } from "mobx-react";
 import { Emoji } from "emoji-mart";
 import Linkify from "react-linkify";
 import moment from "moment";
@@ -12,7 +12,6 @@ import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
 
 @inject("usersStore", "messageStore")
-@observer
 class MessageContent extends Component {
   onToggle = emoji => {
     this.props.messageStore.toggleReaction(this.props.message.id, emoji);

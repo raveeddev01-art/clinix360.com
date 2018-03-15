@@ -21,9 +21,10 @@ import TimeoutManager from "lib/TimeoutManager";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
-  @observable messageElements = {}; // Div elements of messages loaded in the chat div
+  messageElements = {}; // Div elements of messages loaded in the chat div
   @observable messageVisibility = {}; // current visibility status of messages
 
+  @observable mountedMessages = [];
   @observable messages = []; // messages currently loaded
 
   @observable messageInEdit = null; // Message currently being edited
@@ -243,7 +244,7 @@ class MessageStore {
     return (
       this.messages.length === 0 ||
       (this.messages.length > 0 &&
-        Object.keys(this.messageElements).length === this.messages.length)
+        this.mountedMessages.length === this.messages.length)
     );
   }
 
@@ -271,6 +272,7 @@ class MessageStore {
     this.textInEdit = "";
     this.readStatusCache = {};
     this.messageVisibility = {};
+    this.mountedMessages = [];
     this.timeoutManager.reset();
 
     if (this.group) {
@@ -906,13 +908,13 @@ class MessageStore {
    * @param {Integer} messageId
    * @param {DOMElement} messageDiv
    */
+  @action
   onMessageMounted(messageId, messageDiv) {
-    this.messageElements = {
-      ...this.messageElements,
-      [messageId]: {
-        div: messageDiv
-      }
-    };
+    if (this.mountedMessages.indexOf(messageId)) {
+      this.mountedMessages.push(messageId);
+    }
+
+    this.messageElements[messageId] = { div: messageDiv };
   }
 
   @action

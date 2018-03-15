@@ -44,7 +44,7 @@ class MessageList extends Component {
 
   render() {
     const { messageStore } = this.props;
-    const { messagesByDate } = messageStore;
+    const { messagesByDate, newMessageLineMessage, highlightId } = messageStore;
 
     return (
       <div
@@ -69,7 +69,15 @@ class MessageList extends Component {
                     message={message}
                   />
                 ) : (
-                  <Message key={`message_${message.id}`} message={message} />
+                  <Message
+                    key={`message_${message.id}`}
+                    message={message}
+                    hasNML={
+                      newMessageLineMessage &&
+                      newMessageLineMessage.id === message.id
+                    }
+                    isHighlighted={highlightId === message.id}
+                  />
                 )
             )}
           </div>
