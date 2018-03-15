@@ -1030,7 +1030,10 @@ class MessageStore {
       (newMessage.user_id === currentUser.id || this.isScrollBottom)
     ) {
       this.markAsRead();
-    } else if (newMessage.type !== "system") {
+    } else if (
+      newMessage.type !== "system" &&
+      newMessage.user_id !== currentUser.id
+    ) {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       this.updateGroupData({
