@@ -26,7 +26,9 @@ Install external dependencies
 
 * `chromedriver` (https://sites.google.com/a/chromium.org/chromedriver/) Needed to run automated tests. (`brew install chromedriver`)
 
-Add to `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team).
+* `redis` (`brew install redis`)
+
+Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 
 ```
 127.0.0.1 localhost.app YOURTEAMSUBDOMAIN.localhost.app
@@ -67,6 +69,8 @@ export TWILIO_AUTH_TOKEN=
 
 export INTERCOM_IDENTITY_VERIFICATION_SECRET=
 export INTERCOM_APP_ID=
+
+export REDIS_URL= # optional
 ```
 
 Source the file to add these environment variables to your current shell

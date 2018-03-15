@@ -39,4 +39,9 @@ config :stitch, :user_upload_settings, %{
 
 config :porcelain, :goon_warn_if_missing, false
 
+config :stitch, :redix, %{
+  pool_size: 5,
+  url: System.get_env("REDIS_URL"),
+}
+
 import_config "#{Mix.env}.exs"
