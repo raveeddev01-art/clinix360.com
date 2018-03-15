@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Row, Col } from "react-bootstrap";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
 import MemberItem from "./member-item";
 import SettingPanel from "../components/setting-panel/setting-panel";
 

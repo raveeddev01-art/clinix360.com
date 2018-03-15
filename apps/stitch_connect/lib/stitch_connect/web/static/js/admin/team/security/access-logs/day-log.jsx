@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import _ from "lodash";
+import filter from "lodash/filter";
 import moment from "moment";
 
 import LogItem from "./log-item";
@@ -10,7 +10,7 @@ import LogItem from "./log-item";
 @observer
 class DayLog extends Component {
   _avatarForUser = user_id => {
-    const user = _.filter(
+    const user = filter(
       this.props.usersStore.users,
       u => u.id === user_id
     )[0];
@@ -18,7 +18,7 @@ class DayLog extends Component {
   };
 
   _fullNameForUser = user_id => {
-    const user = _.filter(
+    const user = filter(
       this.props.usersStore.users,
       u => u.id === user_id
     )[0];
