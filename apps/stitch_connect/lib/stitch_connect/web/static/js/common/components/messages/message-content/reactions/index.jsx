@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { observer, inject } from "mobx-react";
+import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/lib/Button";
 import { Emoji } from "emoji-mart";
@@ -8,7 +8,6 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 
 @inject("usersStore")
-@observer
 class Reactions extends Component {
   getTooltip = (userIds, emoji) => {
     const users = this.props.usersStore.usersById;

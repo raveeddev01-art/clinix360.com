@@ -21,9 +21,10 @@ import TimeoutManager from "lib/TimeoutManager";
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
-  @observable messageElements = {}; // Div elements of messages loaded in the chat div
+  messageElements = {}; // Div elements of messages loaded in the chat div
   @observable messageVisibility = {}; // current visibility status of messages
 
+  @observable mountedMessages = [];
   @observable messages = []; // messages currently loaded
 
   @observable messageInEdit = null; // Message currently being edited
@@ -45,6 +46,7 @@ class MessageStore {
   @observable isScrollBottom = false; // TRUE if reached to the bottom scroll of chat div, otherwise FALSE
 
   @observable highlightId = null; // message will be highlighted
+  @observable infoModalMessageId = null; // info modal will be displayed for this id
 
   messageTemp = null; // when switching to jumpm mode, stores current messages here so that we can restore them when use his `recent messages`
 
@@ -125,6 +127,11 @@ class MessageStore {
 
   get markedAsUnread() {
     return this.group.marked_as_unread;
+  }
+
+  @computed
+  get infoMessage() {
+    return this.getMessageById(this.infoModalMessageId);
   }
 
   @computed
@@ -237,7 +244,7 @@ class MessageStore {
     return (
       this.messages.length === 0 ||
       (this.messages.length > 0 &&
-        Object.keys(this.messageElements).length === this.messages.length)
+        this.mountedMessages.length === this.messages.length)
     );
   }
 
@@ -261,9 +268,11 @@ class MessageStore {
     this.messages = [];
     this.messageElements = {};
     this.messageInEdit = null;
+    this.infoModalMessageId = null;
     this.textInEdit = "";
     this.readStatusCache = {};
     this.messageVisibility = {};
+    this.mountedMessages = [];
     this.timeoutManager.reset();
 
     if (this.group) {
@@ -899,13 +908,13 @@ class MessageStore {
    * @param {Integer} messageId
    * @param {DOMElement} messageDiv
    */
+  @action
   onMessageMounted(messageId, messageDiv) {
-    this.messageElements = {
-      ...this.messageElements,
-      [messageId]: {
-        div: messageDiv
-      }
-    };
+    if (this.mountedMessages.indexOf(messageId)) {
+      this.mountedMessages.push(messageId);
+    }
+
+    this.messageElements[messageId] = { div: messageDiv };
   }
 
   @action
@@ -1021,7 +1030,10 @@ class MessageStore {
       (newMessage.user_id === currentUser.id || this.isScrollBottom)
     ) {
       this.markAsRead();
-    } else if (newMessage.type !== "system") {
+    } else if (
+      newMessage.type !== "system" &&
+      newMessage.user_id !== currentUser.id
+    ) {
       const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
 
       this.updateGroupData({

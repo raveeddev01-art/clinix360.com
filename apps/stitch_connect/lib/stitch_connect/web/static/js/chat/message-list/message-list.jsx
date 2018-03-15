@@ -6,6 +6,7 @@ import WelcomeMessage from "./welcome-message";
 import Message from "./message";
 import SystemMessage from "./system-message";
 import DateSeparator from "./date-separator";
+import MessageInfoModal from "./message-info-modal";
 
 @inject("messageStore")
 @observer
@@ -36,9 +37,14 @@ class MessageList extends Component {
     this.props.messageStore.onScrollBottomLeft();
   };
 
+  onShowInfoModal = id => {
+    const { messageStore } = this.props;
+    messageStore.infoModalMessageId = id;
+  };
+
   render() {
     const { messageStore } = this.props;
-    const { messagesByDate } = messageStore;
+    const { messagesByDate, newMessageLineMessage, highlightId } = messageStore;
 
     return (
       <div
@@ -63,7 +69,15 @@ class MessageList extends Component {
                     message={message}
                   />
                 ) : (
-                  <Message key={`message_${message.id}`} message={message} />
+                  <Message
+                    key={`message_${message.id}`}
+                    message={message}
+                    hasNML={
+                      newMessageLineMessage &&
+                      newMessageLineMessage.id === message.id
+                    }
+                    isHighlighted={highlightId === message.id}
+                  />
                 )
             )}
           </div>
@@ -93,6 +107,7 @@ class MessageList extends Component {
           onSetInactive={this.onLoseTopScroll}
           isDynamic
         />
+        <MessageInfoModal />
       </div>
     );
   }

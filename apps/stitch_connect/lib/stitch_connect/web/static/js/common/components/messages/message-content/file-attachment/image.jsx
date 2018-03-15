@@ -93,14 +93,15 @@ ImageFileAttachment.propTypes = {
   preview_url: PropTypes.string,
   filename: PropTypes.string,
   url: PropTypes.string.isRequired,
-  api_url: PropTypes.string.isRequired
+  api_url: PropTypes.string
 };
 
 ImageFileAttachment.defaultProps = {
   preview_height: 0,
   preview_width: 0,
   preview_url: "",
-  filename: ""
+  filename: "",
+  api_url: ""
 };
 
 export default ImageFileAttachment;
