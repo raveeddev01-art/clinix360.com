@@ -24,11 +24,11 @@ class MessageActions extends PureComponent {
   }
 
   onToggleContextualMenu = isOpen => {
-    const { messageStore, message, toggleSelected } = this.props;
+    const { messageStore, message, setSelected } = this.props;
     const { chatDiv } = messageStore;
     const messageDiv = messageStore.messageElements[message.id].div;
 
-    toggleSelected(isOpen);
+    setSelected(isOpen);
 
     if (isOpen) {
       this.setState({
@@ -39,8 +39,8 @@ class MessageActions extends PureComponent {
   };
 
   onSelectEmoji = emoji => {
-    const { messageStore, message, toggleSelected } = this.props;
-    toggleSelected(false);
+    const { messageStore, message, setSelected } = this.props;
+    setSelected(false);
     this.setState({ isEmojiPickerOpen: false }, () => {
       if (emoji) {
         messageStore.toggleReaction(message.id, emoji.colons);
@@ -89,7 +89,7 @@ class MessageActions extends PureComponent {
   };
 
   toggleReaction = () => {
-    this.props.toggleSelected(true);
+    this.props.setSelected(true);
     this.setState({ isEmojiPickerOpen: true });
   };
 
@@ -248,7 +248,7 @@ class MessageActions extends PureComponent {
 }
 
 MessageActions.propTypes = {
-  toggleSelected: PropTypes.func.isRequired,
+  setSelected: PropTypes.func.isRequired,
   message: PropTypes.object.isRequired
 };
 

@@ -48,7 +48,7 @@ class Message extends PureComponent {
     this.setState({ isActionsVisible: false });
   };
 
-  toggleSelected = isSelected => {
+  setSelected = isSelected => {
     this.setState({ isSelected });
   };
 
@@ -169,7 +169,7 @@ class Message extends PureComponent {
               {(isActionsVisible || isSelected) && (
                   <MessageActions
                     message={message}
-                    toggleSelected={this.toggleSelected}
+                    setSelected={this.setSelected}
                   />
                 )}
             </Element>
