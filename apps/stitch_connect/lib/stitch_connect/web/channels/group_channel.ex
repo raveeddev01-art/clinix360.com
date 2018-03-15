@@ -414,7 +414,7 @@ defmodule StitchConnect.Web.GroupChannel do
         {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
           MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
-
+          Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
           Stitch.Task.start(fn ->
             broadcast_message_created(message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)

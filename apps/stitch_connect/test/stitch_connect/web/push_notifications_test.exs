@@ -217,16 +217,30 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       encoded_ejson = Poison.encode!(ejson)
 
       assert_receive %FCM.Notification{
-        registration_id: ["android-token", "android-token-2"],
-        payload: %{
-          "data" => %{
-            "badge" => "0",
-            "room_notification_count" => 0,
-            "message" => "Sergio Tapia sent a room message (Foogroup).",
-            "ejson" => ^encoded_ejson
+          registration_id: ["android-token"],
+          payload: %{
+            "data" => %{
+              "badge" => "0",
+              "room_notification_count" => 0,
+              "message" => "Sergio Tapia sent a room message (Foogroup).",
+              "ejson" => ^encoded_ejson,
+              "message_id" => _,
+              "user_id" => _,
+            }
           }
         }
-      }
+
+      assert_receive %FCM.Notification{
+          registration_id: ["android-token-2"],
+          payload: %{
+            "data" => %{
+              "badge" => "0",
+              "room_notification_count" => 0,
+              "message" => "Sergio Tapia sent a room message (Foogroup).",
+              "ejson" => ^encoded_ejson
+            }
+          }
+        }
 
       assert_receive [
         %APNS.Notification{
@@ -258,7 +272,19 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       encoded_ejson = Poison.encode!(ejson)
 
       assert_receive %FCM.Notification{
-        registration_id: ["other-android-token", "other-android-token-2"],
+        registration_id: ["other-android-token"],
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => "Sergio Tapia sent a room message (Foogroup).",
+            "ejson" => ^encoded_ejson
+          }
+        }
+      }
+
+      assert_receive %FCM.Notification{
+        registration_id: ["other-android-token-2"],
         payload: %{
           "data" => %{
             "badge" => "0",
@@ -319,7 +345,10 @@ defmodule StitchConnect.Web.PushNotificationsTest do
             "badge" => "0",
             "room_notification_count" => 0,
             "message" => "Sergio Tapia sent you a direct message.",
-            "ejson" => _
+            "ejson" => _,
+            "message_id" => _,
+            "user_id" => _,
+            "device_id" => _,
           }
         }
       }
@@ -345,7 +374,9 @@ defmodule StitchConnect.Web.PushNotificationsTest do
             "badge" => "0",
             "room_notification_count" => 0,
             "message" => "Sergio Tapia uploaded a direct file.",
-            "ejson" => _
+            "ejson" => _,
+            "message_id" => _,
+            "user_id" => _,
           }
         }
       }
