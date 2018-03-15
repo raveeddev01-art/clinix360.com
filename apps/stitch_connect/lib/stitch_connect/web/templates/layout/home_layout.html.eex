@@ -28,6 +28,7 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     <%= render "_google_analytics.html", conn: @conn %>
+    <%= render "_structured_data.html", conn: @conn %>
     <!--[if lt IE 9]>
     <script>
       (function(){
