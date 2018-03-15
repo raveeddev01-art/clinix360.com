@@ -910,11 +910,16 @@ class MessageStore {
    */
   @action
   onMessageMounted(messageId, messageDiv) {
-    if (this.mountedMessages.indexOf(messageId)) {
+    if (this.mountedMessages.indexOf(messageId) === -1) {
       this.mountedMessages.push(messageId);
     }
 
     this.messageElements[messageId] = { div: messageDiv };
+  }
+
+  @action
+  onMessageUnmounted(messageId) {
+    this.mountedMessages = this.mountedMessages.filter(id => id !== messageId);
   }
 
   @action
@@ -1014,6 +1019,8 @@ class MessageStore {
         },
         status: undefined
       });
+
+      this.onMessageUnmounted(newMessage.request_id);
 
       // clear read status cache for new message arrived
       if (this.readStatusCache[newMessage.id]) {

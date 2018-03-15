@@ -30,6 +30,12 @@ class Message extends PureComponent {
     messageStore.onMessageMounted(message.id, this.messageDiv);
   }
 
+  componentWillUnmount() {
+    const { message, messageStore } = this.props;
+
+    messageStore.onMessageUnmounted(message.id);
+  }
+
   onVisibleChange = isVisible => {
     const { message, messageStore } = this.props;
 
