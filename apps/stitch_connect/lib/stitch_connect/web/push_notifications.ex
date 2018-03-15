@@ -75,13 +75,20 @@ defmodule StitchConnect.Web.PushNotifications do
     Logger.info("[notifications] - #{user.id} - #{user.email}: Going to notify iOS devices.")
 
     ios_devices
-    |> Enum.map(fn %{token: token} ->
+    |> Enum.map(fn %{token: token} = device ->
+      Stitch.Mobile.NotificationLogger.send(message, user, device, "ios")
+
       group
       |> notification_text_body(message, user)
       |> new(token, @apns_topic)
       |> put_badge(badge_value)
       |> put_sound("chime")
-      |> put_custom(%{ejson: sanitize_notification_payload(message)})
+      |> put_custom(%{
+        ejson: sanitize_notification_payload(message),
+        device_id: device.id,
+        user_id: user.id,
+        message_id: message.id,
+      })
     end)
     |> apns_push(on_response: &handle_apns_push/1)
   end
@@ -99,16 +106,25 @@ defmodule StitchConnect.Web.PushNotifications do
 
     Logger.info("[notifications] - #{user.id} - #{user.email}: Going to notify Android devices.")
 
+    content =
+      %{
+        "badge" => to_string(badge_value),
+        "room_notification_count" => room_notification_count,
+        "message" => notification_text_body(group, message, user),
+        "ejson" => message |> sanitize_notification_payload |> Poison.encode!(),
+        "message_id" => message.id,
+        "user_id" => user.id,
+      }
+
     android_devices
-    |> Enum.map(& &1.token)
-    |> new
-    |> put_data(%{
-      "badge" => to_string(badge_value),
-      "room_notification_count" => room_notification_count,
-      "message" => notification_text_body(group, message, user),
-      "ejson" => message |> sanitize_notification_payload |> Poison.encode!()
-    })
-    |> fcm_push(on_response: &handle_fcm_push/1)
+    |> Enum.map(fn device ->
+      Stitch.Mobile.NotificationLogger.send(message, user, device, "android")
+
+      [device.token]
+      |> new()
+      |> put_data(Map.put(content, "device_id", device.id))
+      |> fcm_push(on_response: &handle_fcm_push/1)
+    end)
   end
 
   defp sanitize_notification_payload(message) do
@@ -226,29 +242,34 @@ defmodule StitchConnect.Web.PushNotifications do
     |> Enum.each(fn
       {:success, token} ->
         Logger.info("Android PN was successful. #{inspect(token)}")
+        Stitch.Mobile.NotificationLogger.response(notification)
 
       {response_error, token} ->
         error = %{response: response_error, device_token: token, platform: "Android"}
         Logger.info(inspect(error))
+        Stitch.Mobile.NotificationLogger.response(notification)
     end)
 
     notification
   end
 
   # apns push response handlers.
-  def handle_apns_push(%{response: :success}) do
+  def handle_apns_push(%{response: :success} = notification) do
     Logger.info("iOS PN was successful.")
+    Stitch.Mobile.NotificationLogger.response(notification)
   end
 
-  def handle_apns_push(%{response: response, device_token: token})
+  def handle_apns_push(%{response: response, device_token: token} = notification)
       when response in [:bad_device_token, :unregistered] do
     error = %{response: response, device_token: token, platform: "iOS"}
     Logger.info(inspect(error))
+    Stitch.Mobile.NotificationLogger.response(notification)
     Mobile.remove_device("ios", token)
   end
 
-  def handle_apns_push(%{response: response_error, device_token: token}) do
+  def handle_apns_push(%{response: response_error, device_token: token} = notification) do
     error = %{response: response_error, device_token: token, platform: "iOS"}
     Logger.info(inspect(error))
+    Stitch.Mobile.NotificationLogger.response(notification)
   end
 end

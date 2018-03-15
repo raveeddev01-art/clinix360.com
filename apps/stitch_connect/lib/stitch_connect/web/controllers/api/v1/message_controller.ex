@@ -89,6 +89,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   defp message_events(message, group, notify_user_ids) do
+    Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
     Stitch.Task.start(fn ->
       MessageLinkPreviewGenerator.queue(message)
       GroupChannel.broadcast_message_created(message)
