@@ -954,7 +954,9 @@ class MessageStore {
   onMessageShow(id) {
     this.messageVisibility[id] = true;
 
-    this.updateGroupCursor(id);
+    if (!this.groupCursor || this.groupCursor > id) {
+      this.updateGroupCursor(id);
+    }
 
     // just ignore message show if window lost focus
     if (!this.isActive) {
