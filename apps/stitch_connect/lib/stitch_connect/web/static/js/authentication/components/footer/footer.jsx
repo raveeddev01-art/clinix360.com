@@ -87,8 +87,8 @@ export default class Footer extends Component {
               <address>
                 <strong>Stitch Technologies, Inc.</strong>
                 <br />
-                188 King St. PH9<br />
-                San Francisco, CA 94107<br />
+                156 2nd St<br />
+                San Francisco, CA 94105<br />
                 <a href="tel:+16502823388">+1 (650) 282-3388</a>
                 <a href="mailto:support@teamstitch.com">
                   support@teamstitch.com
