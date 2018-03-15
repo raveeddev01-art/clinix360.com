@@ -13,9 +13,9 @@ defmodule Stitch.Redix.Supervisor do
     redix_workers =
       for i <- 0..(pool_size - 1) do
         args = [redis_url, [name: :"redix_#{i}"]]
-        worker(Redix, args, id: {Redix, i})
+        Supervisor.child_spec({Redix, args}, id: {Redix, i})
       end
 
-    supervise(redix_workers, strategy: :one_for_one)
+    Supervisor.init(redix_workers, strategy: :one_for_one)
   end
 end
