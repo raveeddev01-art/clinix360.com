@@ -12,19 +12,26 @@ It contains two Elixir applications:
 
 ## Getting started (work in progress)
 
+Set up elixir and erlang. Confirm you have properly set this up by running `iex` in a terminal window.
+
+Set up node. Install yarn globally with `npm install -g yarn` if you have not yet done so.
+
+Set up and launch postgres if you have not yet done so.
+
 Install external dependencies
 
 * `imagemagick` (https://www.imagemagick.org/script/index.php) (`brew install imagemagick` or `sudo apt install imagemagick`)
 
 * `wkhtmltopdf` (https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF) Needed to generate PDFs.
 
+* `chromedriver` (https://sites.google.com/a/chromium.org/chromedriver/) Needed to run automated tests. (`brew install chromedriver`)
+
 * `redis` (`brew install redis`)
 
 Update `/etc/hosts` (`YOURTEAMSUBDOMAIN` should the name of a team)
 
 ```
-127.0.0.1 localhost.test
-127.0.0.1 YOURTEAMSUBDOMAIN.localhost.test
+127.0.0.1 localhost.app YOURTEAMSUBDOMAIN.localhost.app
 ```
 
 You should be working from the `develop` branch:
@@ -34,10 +41,12 @@ git checkout develop
 ```
 
 Create an `.env` file in the root project directiry with the following
-contents, and ask the team for the environment values you need to set here:
+variables.
+
+Ask the team for the environment values you need to set here:
 
 ```sh
-export APP_HOST=localhost.test
+export APP_HOST=localhost.app
 
 export MANDRILL_API_KEY=keygoeshere
 
@@ -135,7 +144,9 @@ foreman start -f Procfile.dev
 
 Access the site.
 
-https://localhost.test:4443/
+https://localhost.app:4443/
+
+Note: depending on your browser, you may have to add an SSL certificate exception to access the site.
 
 ---
 

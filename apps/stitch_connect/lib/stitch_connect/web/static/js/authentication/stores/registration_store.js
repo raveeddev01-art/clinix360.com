@@ -67,7 +67,9 @@ class RegistrationStore {
         this.teamurl = response.data.slug;
 
         if (this.sendInvites) {
-          emails = this.invites.filter(email => isEmail(email)).map(email => email.trim());
+          emails = this.invites
+            .filter(email => isEmail(email))
+            .map(email => email.trim());
         }
         return patch(`/api/v1/users/${this.userId}/complete-onboarding`, {
           body: {
@@ -84,7 +86,13 @@ class RegistrationStore {
       })
       .then(() => {
         this.saving = false;
-        window.location.href = `${applicationScheme}${this.teamurl}.${applicationHost}`;
+        if (window.electronApp) {
+          window.location.href = `${applicationScheme}${this
+            .teamurl}.${applicationHost}`;
+        } else {
+          window.location.href = `${applicationScheme}${this
+            .teamurl}.${applicationHost}/apps`;
+        }
       })
       .catch(err => {
         this.saving = false;

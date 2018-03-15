@@ -351,10 +351,6 @@ $admin-topbar-height-sm: 65px;
           font-size: 24px;
           margin: 0 15px 0 5px;
 
-          &.enabled {
-            color: #449d44;
-          }
-
           &.disabled {
             color: #ea182d;
           }
@@ -362,10 +358,6 @@ $admin-topbar-height-sm: 65px;
 
         strong {
           color: $brand-primary;
-
-          &.enabled {
-            color: #449d44;
-          }
 
           &.disabled {
             color: #ea182d;

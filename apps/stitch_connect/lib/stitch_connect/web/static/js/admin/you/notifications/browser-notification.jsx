@@ -54,7 +54,6 @@ class BrowserNotification extends Component {
             className={cx("fa", {
               "fa-bell": permissionGranted,
               "fa-bell-slash": !permissionGranted,
-              enabled: status === "enabled",
               disabled: status === "disabled"
             })}
           />
@@ -62,7 +61,6 @@ class BrowserNotification extends Component {
             Desktop notifications are currently&nbsp;
             <strong
               className={cx({
-                enabled: status === "enabled",
                 disabled: status === "disabled"
               })}
             >

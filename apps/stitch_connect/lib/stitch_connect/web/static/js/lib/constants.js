@@ -48,8 +48,8 @@ export const USER_INTERACTION_THROTTLE = 10 * 1000;
 // after 30 mins of user inactivity, became_away event is sent
 export const BECAME_AWAY_TIMEOUT_MS = 30 * 60 * 1000;
 
-// after 30 mins of user inactivity, became_inactive event is sent
-export const BECAME_INACTIVE_TIMEOUT_MS = 30 * 60 * 1000;
+// after 2 mins of user inactivity, became_inactive event is sent
+export const BECAME_INACTIVE_TIMEOUT_MS = 2 * 60 * 1000;
 
 // if is_typing is not broadcasted for 3 seconds, we will remove from the user from typinguser list.
 export const TYPING_TIMEOUT_MS = 3 * 1000;
