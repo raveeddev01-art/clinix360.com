@@ -3,27 +3,16 @@ import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import { Element } from "react-scroll";
 import cx from "classnames";
-
-import ButtonGroup from "react-bootstrap/lib/ButtonGroup";
-import Button from "react-bootstrap/lib/Button";
-import DropdownButton from "react-bootstrap/lib/DropdownButton";
-import MenuItem from "react-bootstrap/lib/MenuItem";
-import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
-import Tooltip from "react-bootstrap/lib/Tooltip";
-import CopyToClipboard from "react-copy-to-clipboard";
 import VisibilitySensor from "react-visibility-sensor";
 import {
   Avatar,
   MessageHeader,
   MessageContent,
-  ReactionPicker,
   TimestampTooltip,
   UserProfileMenu
 } from "common/components";
-import { confirmModal } from "common/modals";
+import MessageActions from "./message-actions";
 
-// @TODO stab out renderSomething functions into seperate component (MessageActionGroup, MessagePin, MessageStar, ...)
-// @TODO move message info modal to top level so that it is shared on all messages
 @inject("messageStore", "groupStore", "usersStore")
 @observer
 class Message extends Component {
@@ -31,9 +20,8 @@ class Message extends Component {
     super(props);
 
     this.state = {
-      selected: false,
-      dropup: false,
-      showEmojiPicker: false
+      isActionsVisible: false,
+      isSelected: false
     };
   }
 
@@ -53,214 +41,17 @@ class Message extends Component {
     }
   };
 
-  onToggle = isOpen => {
-    const { chatDiv } = this.props.messageStore;
-
-    this.setState({ selected: isOpen });
-
-    if (isOpen) {
-      this.setState({
-        dropup:
-          chatDiv.scrollTop + chatDiv.offsetHeight / 2 <
-          this.messageDiv.offsetTop
-      });
-    }
+  onMouseEnter = () => {
+    this.setState({ isActionsVisible: true });
   };
 
-  onSelectEmoji = emoji => {
-    const { messageStore, message } = this.props;
-    this.setState({ showEmojiPicker: false }, () => {
-      if (emoji) {
-        messageStore.toggleReaction(message.id, emoji.colons);
-      }
-    });
-    this.setState({ selected: false });
+  onMouseLeave = () => {
+    this.setState({ isActionsVisible: false });
   };
 
-  getEmojiMartStyle = () => {
-    const martStyles = {};
-    if (!this.messageDiv) {
-      return {};
-    }
-
-    const pos = this.messageDiv.getBoundingClientRect();
-    if (pos.bottom < window.innerHeight / 2) {
-      martStyles.top = "24px";
-    } else {
-      martStyles.bottom = "calc(100% + 14px)";
-    }
-
-    return martStyles;
+  toggleSelected = isSelected => {
+    this.setState({ isSelected });
   };
-
-  showInfoModal = () => {
-    const { message, messageStore } = this.props;
-    messageStore.infoModalMessageId = message.id;
-  };
-
-  markAsUnread = () => {
-    const { message, messageStore } = this.props;
-
-    messageStore.markAsUnread(message.id);
-  };
-
-  edit = () => {
-    const { message, messageStore } = this.props;
-
-    messageStore.startEdit(message.id);
-  };
-
-  delete = () => {
-    confirmModal({
-      title: "Delete Message",
-      message:
-        "Are you sure you want to delete this message? This cannot be undone.",
-      okLabel: "Delete"
-    }).then(() => {
-      const { message, messageStore } = this.props;
-
-      messageStore.delete(message.id);
-    });
-  };
-
-  copy = () => {
-    // Callback to run when message is copied
-  };
-
-  togglePin = () => {
-    const { message, messageStore } = this.props;
-
-    messageStore.togglePin(message.id);
-  };
-
-  toggleStar = () => {
-    const { message, messageStore } = this.props;
-
-    messageStore.toggleStar(message.id);
-  };
-
-  toggleReaction = () => {
-    this.setState({ showEmojiPicker: true, selected: true });
-  };
-
-  renderActions(message) {
-    const mine = message.user.id === currentUser.id;
-    const unsent = message.sent === false;
-    const { dropup } = this.state;
-    const { messageStore } = this.props;
-    const starredCX = message.starred ? "" : "-o";
-
-    // disabling context menu
-    if (unsent) {
-      return " ";
-    }
-
-    return (
-      <ButtonGroup
-        id={`message-actions-${message.id}`}
-        className="message-actions"
-      >
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          overlay={<Tooltip id="message-info">Message info</Tooltip>}
-        >
-          <Button onClick={this.showInfoModal}>
-            <i className="fa fa-info" />
-          </Button>
-        </OverlayTrigger>
-
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          overlay={<Tooltip id="message-react">Add reaction</Tooltip>}
-        >
-          <Button onClick={this.toggleReaction}>
-            <i className="fa fa-smile-o" />
-          </Button>
-        </OverlayTrigger>
-
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          shouldUpdatePosition
-          overlay={
-            <Tooltip id="message-star">
-              {message.starred ? "Unstar" : "Star"} message
-            </Tooltip>
-          }
-        >
-          <Button onClick={this.toggleStar}>
-            <i className={cx("fa", `fa-star${starredCX}`)} />
-          </Button>
-        </OverlayTrigger>
-
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          shouldUpdatePosition
-          overlay={
-            <Tooltip id="message-pin">
-              {message.pinned ? "Unpin" : "Pin"} message
-            </Tooltip>
-          }
-        >
-          <Button onClick={this.togglePin}>
-            <i className="fa fa-thumb-tack fa-rotate-45" />
-          </Button>
-        </OverlayTrigger>
-
-        <OverlayTrigger
-          placement="top"
-          delayShow={150}
-          overlay={<Tooltip id="message-actions">More</Tooltip>}
-        >
-          <DropdownButton
-            dropup={dropup}
-            pullRight
-            noCaret
-            title={<i className="fa fa-ellipsis-h" />}
-            id="actions-dropdown"
-            onToggle={this.onToggle}
-          >
-            {(!mine || message.id < messageStore.lastOtherUserMessage.id) && (
-                <MenuItem onClick={this.markAsUnread}>
-                  <span>
-                    <i className="fa fa-circle" />&nbsp;Mark as unread
-                  </span>
-                </MenuItem>
-              )}
-
-            <CopyToClipboard text={message.text_content} onCopy={this.copy}>
-              <MenuItem>
-                <span>
-                  <i className="fa fa-paste" />&nbsp;Copy message
-                </span>
-              </MenuItem>
-            </CopyToClipboard>
-
-            {mine && <MenuItem divider />}
-
-            {mine && (
-              <MenuItem onClick={this.edit}>
-                <span>
-                  <i className="fa fa-pencil" />&nbsp;Edit message
-                </span>
-              </MenuItem>
-            )}
-
-            {mine && (
-              <MenuItem onClick={this.delete}>
-                <span>
-                  <i className="fa fa-trash" />&nbsp;Delete message
-                </span>
-              </MenuItem>
-            )}
-          </DropdownButton>
-        </OverlayTrigger>
-      </ButtonGroup>
-    );
-  }
 
   renderGutter(message) {
     const { usersStore } = this.props;
@@ -315,6 +106,7 @@ class Message extends Component {
   }
 
   render() {
+    const { isActionsVisible, isSelected } = this.state;
     const { message, messageStore } = this.props;
     const { chatDiv, newMessageLineMessage, highlightId } = messageStore;
 
@@ -327,7 +119,7 @@ class Message extends Component {
     });
 
     return (
-      <div>
+      <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         {newMessageLineMessage &&
           newMessageLineMessage.id === message.id && (
             <Element name="newMessageBanner" className="new-message-banner">
@@ -371,19 +163,17 @@ class Message extends Component {
 
                 {this.renderHeader(message)}
 
-                <ReactionPicker
-                  message={message}
-                  onSelectReaction={this.onSelectEmoji}
-                  show={this.state.showEmojiPicker}
-                  style={this.getEmojiMartStyle()}
-                />
-
                 <div className="message-content-wrapper">
                   <MessageContent message={message} />
                 </div>
               </div>
 
-              {this.renderActions(message)}
+              {(isActionsVisible || isSelected) && (
+                  <MessageActions
+                    message={message}
+                    toggleSelected={this.toggleSelected}
+                  />
+                )}
             </Element>
           </VisibilitySensor>
         </div>

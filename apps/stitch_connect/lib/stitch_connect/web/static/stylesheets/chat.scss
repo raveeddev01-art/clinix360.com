@@ -711,10 +711,6 @@
       .message-icon.icon-star-o {
         opacity: 1;
       }
-
-      .message-actions {
-        visibility: visible !important;
-      }
     }
 
     &.highlight {
@@ -848,7 +844,6 @@
       right: 11px;
       top: -10px;
       z-index: 11;
-      visibility: hidden;
 
       .btn {
         width: 34px;
