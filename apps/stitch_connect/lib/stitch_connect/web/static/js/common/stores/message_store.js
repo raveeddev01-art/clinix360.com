@@ -971,9 +971,7 @@ class MessageStore {
     const isFirstMsgVisible =
       this.firstUnreadMessage &&
       this.mountedAllMessages &&
-      (this.firstUnreadMessage.id === id ||
-        (id === this.messages[0].id &&
-          this.messageVisibility[this.firstUnreadMessage.id]));
+      this.messageVisibility[this.firstUnreadMessage.id];
 
     if (!this.markedAsUnread && (this.justCreated || isFirstMsgVisible)) {
       // If first unread message is visible, mark messages as read after 1s delay
