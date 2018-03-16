@@ -2,11 +2,13 @@ defmodule StitchConnect.Web.ErrorView do
   use StitchConnect.Web, :view
 
   def render("404.html", _assigns) do
+    # This should not get called (see router), but leaving
+    # in case of future sub-routers & for sane fallback
     "Page not found"
   end
 
-  def render("500.html", _assigns) do
-    "Internal server error"
+  def render("500.html", assigns) do
+    render("error.html", assigns)
   end
 
   def render("403.json", %{message: message}) do

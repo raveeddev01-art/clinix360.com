@@ -1,0 +1,24 @@
+.not-found-wrapper {
+  min-height: 200px;
+  margin: 60px 0px;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.not-found-wrapper {
+  color: $brand-primary
+}
+
+.not-found-header {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.not-found-text {
+  font-size: 20px;
+}

@@ -1,0 +1,74 @@
+// 500 error styling taken from the electron
+// repo. Any major updates to design should
+// be reflected across repos
+
+$error-font-size: 20px;
+$base-error-margin: 20px;
+
+.system_error {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #fff;
+  font-size: $error-font-size;
+  color: $brand-primary;
+
+  position: absolute;
+  z-index: 99999;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+
+  &__inner {
+    margin: 10% auto 0;
+    max-width: 80%;
+  }
+
+  &__icon {
+    font-size: 1.2em;
+    margin-right: $base-error-margin * 1.5;
+  }
+
+  &__button {
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: $error-font-size;
+    color: #FFF;
+    border-color: $brand-primary;
+    background-color: $brand-primary;
+    font-weight: 500;
+    padding: 12px 32px;
+
+    &:hover {
+      background: darken($brand-primary, 5%);
+      border-color: darken($brand-primary, 5%);
+    }
+
+    &-container {
+      padding-right: 20px;
+      text-align: right;
+    }
+  }
+
+  &__block {
+    margin-bottom: $base-error-margin * 1.5;
+  }
+
+  a, a:hover, a:visited, a:active {
+    color: $brand-primary;
+  }
+
+  h2 {
+    font-weight: bold;
+    font-size: 2em;
+    margin-bottom: $base-error-margin * 2;
+  }
+
+  p {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: $base-error-margin * 2;
+    line-height: 1.42;
+  }
+}

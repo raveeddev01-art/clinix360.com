@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Stitch | Error</title>
+    <link rel="shortcut icon" type="image/png" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+  </head>
+
+  <body>
+    <div class="system_error">
+      <div class="system_error__inner">
+        <h2>
+          <i class="fa fa-exclamation-triangle system_error__icon"></i>
+          Stitch failed to load correctly
+        </h2>
+        <p>
+          Looks like Stitch ran into an issue. Please reload by clicking below.
+          If you continue to experience issues, please email us at
+          <a href="mailto:support@teamstitch.com">support@teamstitch.com</a>
+          and our support team will help you get back on track right away.
+        </p>
+
+        <div class="system_error__button-container">
+          <button
+            id="reload"
+            class="system_error__button"
+            onClick="window.location.reload()"
+          >
+            Reload
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
