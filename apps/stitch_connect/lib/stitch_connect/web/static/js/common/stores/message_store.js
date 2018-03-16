@@ -136,8 +136,7 @@ class MessageStore {
 
   @computed
   get firstUnreadMessage() {
-    // handles when messages are sent on the very first room. In that case first message could be system message and has problem scrolling to.
-    if (this.loadedAll) {
+    if (this.lastReadAt === this.group.inserted_at) {
       return _.findLast(this.messages, m => m.type !== "system");
     }
 
@@ -183,6 +182,10 @@ class MessageStore {
 
   @computed
   get newMessageLineMessage() {
+    if (this.newMessageLineAt === this.group.inserted_at) {
+      return _.findLast(this.messages, m => m.type !== "system");
+    }
+
     return this.getMessageAfterTimestamp(this.newMessageLineAt);
   }
 
@@ -1036,7 +1039,7 @@ class MessageStore {
       this.unreadMessagesCount === 0 &&
       (newMessage.user_id === currentUser.id || this.isScrollBottom)
     ) {
-      this.markAsRead();
+      this.markAsRead(newMessage.user_id === currentUser.id); // retain NML if msg is from other
     } else if (
       newMessage.type !== "system" &&
       newMessage.user_id !== currentUser.id
@@ -1252,7 +1255,11 @@ class MessageStore {
       const message = this.getMessageById(parseInt(message_id, 10));
       if (message) {
         this.updateMessageData(parseInt(message_id, 10), {
-          read_status: Object.assign({}, message.read_status || {}, payload.messages[message_id])
+          read_status: Object.assign(
+            {},
+            message.read_status || {},
+            payload.messages[message_id]
+          )
         });
       } else {
         // cache read status because this event was broadcasted before new_msg due to network slowness
