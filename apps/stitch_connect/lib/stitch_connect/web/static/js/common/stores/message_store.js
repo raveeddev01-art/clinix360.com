@@ -21,7 +21,7 @@ import mapValues from "lodash/fp/mapValues";
 import sortBy from "lodash/fp/sortBy";
 
 import { animateScroll, scroller } from "react-scroll";
-import Promise from "bluebird";
+import { Promise } from "es6-promise";
 import shortid from "shortid";
 import {
   START_TYPING_THROTTLE_MS,
