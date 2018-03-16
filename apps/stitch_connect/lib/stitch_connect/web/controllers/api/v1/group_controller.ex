@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
   def index(conn, params) do
     user = conn.assigns.current_user
     fetch_users = get_fetch_users_param(params)
-    groups = GroupQueries.available_groups(user, fetch_users)
+    groups = GroupQueries.available_groups(user)
     render(conn, "index.json", groups: groups, user_id: user.id, fetch_users: fetch_users)
   end
 
