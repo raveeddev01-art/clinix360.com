@@ -110,7 +110,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         group_user: group_user
       })
       mark_as_read_events(group, current_user, messages_json, mark_as_read_json)
-      json(conn, %{status: "ok"})
+      json(conn, mark_as_read_json)
     else
       {:group, nil} -> {:error, :not_found}
       {:error, message} -> {:error, :not_authorized, message}
@@ -137,7 +137,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         group_user: group_user
       })
       mark_as_unread_events(group, current_user, messages_json, mark_as_read_json)
-      json(conn, %{status: "ok"})
+      json(conn, mark_as_read_json)
     else
       {:group, nil} -> {:error, :not_found}
       {:error, message} -> {:error, :not_authorized, message}
