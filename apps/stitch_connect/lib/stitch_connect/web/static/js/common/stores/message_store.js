@@ -1077,11 +1077,11 @@ class MessageStore {
 
     this.cancelEdit();
 
-    const message = this.getMessageById(editedMessage.id);
-
-    message.edited = editedMessage.edited;
-    message.edited_at = editedMessage.edited_at;
-    message.text_content = editedMessage.text_content;
+    this.updateMessageData(editedMessage.id, {
+      edited: editedMessage.edited,
+      edited_at: editedMessage.edited_at,
+      text_content: editedMessage.text_content
+    });
   };
 
   @action
@@ -1133,10 +1133,10 @@ class MessageStore {
       return;
     }
 
-    const message = this.getMessageById(payload.id);
-
-    if (message && payload.link_previews && payload.link_previews.length) {
-      message.link_previews = payload.link_previews;
+    if (payload.link_previews && payload.link_previews.length) {
+      this.updateMessageData(payload.id, {
+        link_previews: payload.link_previews
+      });
       this.keepScrollAtBottom();
     }
   };
@@ -1146,9 +1146,11 @@ class MessageStore {
     const message = this.getMessageById(payload.message_id);
 
     if (message) {
-      message.link_previews = message.link_previews.filter(
-        p => p.link !== payload.link
-      );
+      this.updateMessageData(payload.message_id, {
+        link_previews: message.link_previews.filter(
+          p => p.link !== payload.link
+        )
+      });
       this.keepScrollAtBottom();
     }
   };
@@ -1237,10 +1239,9 @@ class MessageStore {
 
   @action
   onReactionUpdate = payload => {
-    const message = this.messages.find(m => m.id === payload.message_id);
-    if (message) {
-      message.reactions_web = payload.reactions_web;
-    }
+    this.updateMessageData(payload.message_id, {
+      reactions_web: payload.reactions_web
+    });
   };
 
   @action
@@ -1250,8 +1251,9 @@ class MessageStore {
     Object.keys(payload.messages).forEach(message_id => {
       const message = this.getMessageById(parseInt(message_id, 10));
       if (message) {
-        message.read_status = message.read_status || {};
-        Object.assign(message.read_status, payload.messages[message_id]);
+        this.updateMessageData(parseInt(message_id, 10), {
+          read_status: Object.assign({}, message.read_status || {}, payload.messages[message_id])
+        });
       } else {
         // cache read status because this event was broadcasted before new_msg due to network slowness
         this.readStatusCache[message_id] =
