@@ -13,7 +13,9 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
           user_count: Enum.count(group.users),
         })
       else
-        json
+        Map.merge(json, %{
+          user_ids: Enum.map(group.users, & &1.id)
+        })
       end
     end)
   end

@@ -33,16 +33,9 @@ defmodule Stitch.GroupQueries do
   defp load_groups_for_user(query, %User{} = user, fetch_users \\ true) do
     query =
       from g in query,
-      left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id
-
-    query =
-      if fetch_users do
-        from g in query,
-        join: u in User, on: u.id == ^user.id,
-        preload: :users
-      else
-        query
-      end
+      left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id,
+      join: u in User, on: u.id == ^user.id,
+      preload: :users
 
     query =
       if User.guest?(user) do
