@@ -70,6 +70,15 @@ class MessageList extends Component {
                   />
                 ) : (
                   <Message
+                    // start of dummy prop so that message list react to message prop change
+                    edited_at={message.edited_at}
+                    pinned={message.pinned}
+                    starred={message.starred}
+                    status={message.status}
+                    is_sequential={message.is_sequential}
+                    reactions_web={message.reactions_web}
+                    link_previews={message.link_previews}
+                    // end of dummy prop
                     key={`message_${message.id}`}
                     message={message}
                     hasNML={
