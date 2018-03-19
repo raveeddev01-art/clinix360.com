@@ -5,6 +5,7 @@ import Button from "react-bootstrap/lib/Button";
 import ResponsiveEmbed from "react-bootstrap/lib/ResponsiveEmbed";
 import Carousel from "react-bootstrap/lib/Carousel";
 import cx from "classnames";
+import ProgressiveImage from "react-progressive-image";
 
 import Header from "./components/header";
 import CreateTeam from "./components/create-team";
@@ -44,11 +45,9 @@ export default class Homepage extends Component {
             </p>
 
             <div className="mbp">
-              <img
-                src="/images/homepage-platform.png"
-                alt="Stitch Platform"
-                className="img-responsive"
-              />
+              <ProgressiveImage src="/images/homepage-platform.png" placeholder="/images/homepage-platform-lowres.png">
+                {(src) => <img src={src} alt='Stitch Platform' className="img-responsive"/>}
+              </ProgressiveImage>
             </div>
           </div>
         </div>
@@ -84,11 +83,9 @@ export default class Homepage extends Component {
                 </div>
 
                 <div className="flex-item">
-                  <img
-                    src="/images/connect-homepage-test.png"
-                    alt="Stitch Connect"
-                    className="img-responsive"
-                  />
+                  <ProgressiveImage src="/images/connect-homepage-test.png" placeholder="images/connect-homepage-test-lowres.png">
+                    {(src) => <img src={src} alt='Stitch Connect' className="img-responsive"/>}
+                  </ProgressiveImage>
                 </div>
               </div>
             </div>
@@ -121,11 +118,9 @@ export default class Homepage extends Component {
                 </div>
 
                 <div className="flex-item">
-                  <img
-                    src="/images/engage-homepage.png"
-                    alt="Stitch Engage"
-                    className="img-responsive"
-                  />
+                  <ProgressiveImage src="/images/engage-homepage.png" placeholder="images/engage-homepage-lowres.png">
+                    {(src) => <img src={src} alt='Stitch Engage' className="img-responsive"/>}
+                  </ProgressiveImage>
                 </div>
               </div>
             </div>
@@ -158,11 +153,9 @@ export default class Homepage extends Component {
                 </div>
 
                 <div className="flex-item">
-                  <img
-                    src="/images/manage-homepage.png"
-                    alt="Stitch Manage"
-                    className="img-responsive"
-                  />
+                  <ProgressiveImage src="/images/manage-homepage.png" placeholder="images/manage-homepage-lowres.png">
+                    {(src) => <img src={src} alt='Stitch Manage' className="img-responsive"/>}
+                  </ProgressiveImage>
                 </div>
               </div>
             </div>

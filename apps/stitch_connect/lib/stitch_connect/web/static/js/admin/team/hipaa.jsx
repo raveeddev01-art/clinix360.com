@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Well } from "react-bootstrap";
+import Well from "react-bootstrap/lib/Well";
 import SettingPanel from "../components/setting-panel/setting-panel";
 
 const title = "HIPAA";
