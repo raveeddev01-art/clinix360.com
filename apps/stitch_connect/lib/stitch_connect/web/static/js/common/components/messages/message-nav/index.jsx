@@ -5,14 +5,14 @@ import { inject } from "mobx-react";
 import { NavLink } from "react-router-dom";
 
 @inject("groupsStore")
-class MessageFooter extends Component {
+class MessageNav extends Component {
   render() {
     const { groupsStore, message } = this.props;
     const group = groupsStore.getGroupById(message.group_id);
     const url = groupsStore.getGroupUrl(message.group_id);
 
     return (
-      <div className="message-footer m-b-5">
+      <div className="message-nav m-b-5">
         <NavLink to={url}>
           <i
             className={`fa ${group.public ? "fa-comments" : "fa-lock"}`}
@@ -31,8 +31,8 @@ class MessageFooter extends Component {
   }
 }
 
-MessageFooter.propTypes = {
+MessageNav.propTypes = {
   message: PropTypes.object.isRequired
 };
 
-export default MessageFooter;
+export default MessageNav;

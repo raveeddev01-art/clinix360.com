@@ -24,7 +24,7 @@ import UserProfileMenu from "./user-profile-menu";
 import PortalDropdownMenu from "./portal-dropdown-menu";
 
 import MessageContent from "./messages/message-content/message-content";
-import MessageFooter from "./messages/message-footer/message-footer";
+import MessageNav from "./messages/message-nav";
 import MessageHeader from "./messages/message-header/message-header";
 import ReactionPicker from "./messages/reaction-picker";
 import AddonMessage from "./messages/addon-message";
@@ -55,7 +55,7 @@ export {
   UserProfileMenu,
   PortalDropdownMenu,
   MessageContent,
-  MessageFooter,
+  MessageNav,
   MessageHeader,
   AddonMessage,
   ReactionPicker

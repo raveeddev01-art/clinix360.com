@@ -8,7 +8,7 @@ import { Avatar, UserProfileMenu } from "common/components";
 
 import MessageHeader from "./message-header/message-header";
 import MessageContent from "./message-content/message-content";
-import MessageFooter from "./message-footer/message-footer";
+import MessageNav from "./message-nav";
 
 @inject("sidemenuStore", "messageStore", "usersStore")
 class AddonMessage extends Component {
@@ -65,7 +65,7 @@ class AddonMessage extends Component {
         </div>
 
         <div className="message">
-          <MessageFooter message={message} />
+          <MessageNav message={message} />
 
           <div className="message-wrapper">
             <UserProfileMenu user={user}>
