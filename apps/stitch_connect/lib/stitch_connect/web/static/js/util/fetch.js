@@ -1,6 +1,6 @@
 import merge from "deepmerge";
 import "whatwg-fetch";
-import Promise from "bluebird";
+import { Promise } from "es6-promise";
 
 window.csrfToken = "";
 const metaElem = document.querySelector("meta[name=csrf-token]");

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
-import { observer } from "mobx-react";
 
 import ScrollToTop from "./components/scrollToTop";
 
@@ -26,7 +25,6 @@ import Hipaa from "./resources/hipaa";
 import PrivacyPolicy from "./resources/privacy-policy";
 import TermsOfService from "./resources/terms-of-service";
 
-@observer
 class WebsiteRouter extends Component {
   render() {
     return (

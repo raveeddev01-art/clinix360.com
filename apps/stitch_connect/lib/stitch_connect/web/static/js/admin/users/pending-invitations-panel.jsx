@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Row, Col } from "react-bootstrap";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
 import SettingPanel from "../components/setting-panel/setting-panel";
 import PendingInvitationItem from "./pending-invitation-item";
 
