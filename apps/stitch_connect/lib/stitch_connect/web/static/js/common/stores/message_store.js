@@ -135,12 +135,22 @@ class MessageStore {
   }
 
   @computed
+  get normalMessages() {
+    return this.messages.filter(m => m.type !== "system");
+  }
+
+  @computed
   get firstUnreadMessage() {
-    if (this.lastReadAt === this.group.inserted_at) {
-      return _.findLast(this.messages, m => m.type !== "system");
+    const result = this.getMessageAfterTimestamp(this.lastReadAt);
+    const messageBeforeLast = this.messages.findIndex(
+      m => m.inserted_at < this.lastReadAt
+    );
+
+    if (!result && messageBeforeLast && this.loadedAll) {
+      return _.last(this.normalMessages);
     }
 
-    return this.getMessageAfterTimestamp(this.lastReadAt);
+    return result;
   }
 
   @computed
@@ -182,17 +192,17 @@ class MessageStore {
 
   @computed
   get newMessageLineMessage() {
-    if (this.newMessageLineAt === this.group.inserted_at) {
-      return _.findLast(this.messages, m => m.type !== "system");
+    const result = this.getMessageAfterTimestamp(this.newMessageLineAt);
+
+    const messageBeforeLast = this.messages.findIndex(
+      m => m.inserted_at < this.newMessageLineAt
+    );
+
+    if (!result && messageBeforeLast && this.loadedAll) {
+      return _.last(this.normalMessages);
     }
 
-    return this.getMessageAfterTimestamp(this.newMessageLineAt);
-  }
-
-  // check if the room is just created without any msgs
-  @computed
-  get justCreated() {
-    return this.messages.every(m => m.type === "system");
+    return result;
   }
 
   @computed
@@ -245,9 +255,9 @@ class MessageStore {
   @computed
   get mountedAllMessages() {
     return (
-      this.messages.length === 0 ||
-      (this.messages.length > 0 &&
-        this.mountedMessages.length === this.messages.length)
+      this.normalMessages.length === 0 ||
+      (this.normalMessages.length > 0 &&
+        this.mountedMessages.length === this.normalMessages.length)
     );
   }
 
@@ -918,6 +928,7 @@ class MessageStore {
     }
 
     this.messageElements[messageId] = { div: messageDiv };
+    this.onMessageShow(messageId);
   }
 
   @action
@@ -949,9 +960,8 @@ class MessageStore {
     // if last message is visible, mark as unread
     if (
       this.group &&
-      (this.justCreated ||
-        (this.firstUnreadMessage &&
-          this.messageVisibility[this.firstUnreadMessage.id]))
+      this.firstUnreadMessage &&
+      this.messageVisibility[this.firstUnreadMessage.id]
     ) {
       this.timeoutManager.setTimeout(() => {
         this.markAsRead(false);
@@ -976,7 +986,7 @@ class MessageStore {
       this.mountedAllMessages &&
       this.messageVisibility[this.firstUnreadMessage.id];
 
-    if (!this.markedAsUnread && (this.justCreated || isFirstMsgVisible)) {
+    if (!this.markedAsUnread && isFirstMsgVisible) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
       this.timeoutManager.setTimeout(() => {
