@@ -232,4 +232,21 @@
   i.fa-circle-o-notch {
     color: $brand-primary;
   }
+
+  .message-container.addon .message {
+    flex-direction: column;
+
+    .message-footer {
+      font-weight: 600;
+
+      a {
+        text-decoration: none;
+      }
+    }
+
+    .message-wrapper {
+      display: flex;
+      flex-direction: row;
+    }
+  }
 }

@@ -65,16 +65,19 @@ class AddonMessage extends Component {
         </div>
 
         <div className="message">
-          <UserProfileMenu user={user}>
-            <Avatar user={user} />
-          </UserProfileMenu>
+          <MessageFooter message={message} />
 
-          <div className="message-content">
-            <MessageHeader timestamp={message.inserted_at} user={user} />
-            <MessageContent
-              message={Object.assign({}, message, { reactions_web: null })}
-            />
-            <MessageFooter message={message} />
+          <div className="message-wrapper">
+            <UserProfileMenu user={user}>
+              <Avatar user={user} />
+            </UserProfileMenu>
+
+            <div className="message-content">
+              <MessageHeader timestamp={message.inserted_at} user={user} />
+              <MessageContent
+                message={Object.assign({}, message, { reactions_web: null })}
+              />
+            </div>
           </div>
         </div>
       </div>
