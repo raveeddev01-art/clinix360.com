@@ -8,7 +8,7 @@ import { observable, action, computed, when, extendObservable } from "mobx";
 import moment from "moment";
 
 import flow from "lodash/flow";
-import findLast from "lodash/findLast";
+import last from "lodash/last";
 import flatten from "lodash/flatten";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
@@ -16,7 +16,6 @@ import unionBy from "lodash/unionBy";
 
 // lodash-fp imports only used for flow
 import groupBy from "lodash/fp/groupBy";
-import map from "lodash/fp/map";
 import mapValues from "lodash/fp/mapValues";
 import sortBy from "lodash/fp/sortBy";
 
@@ -36,7 +35,7 @@ function sortableDateFromMessage(message) {
   return moment
     .utc(message.inserted_at)
     .local()
-    .format(`YYYY-MM-DD`)
+    .format(`YYYY-MM-DD`);
 }
 
 class MessageStore {
@@ -155,13 +154,22 @@ class MessageStore {
   }
 
   @computed
+  get normalMessages() {
+    return this.messages.filter(m => m.type !== "system");
+  }
+
+  @computed
   get firstUnreadMessage() {
-    // handles when messages are sent on the very first room. In that case first message could be system message and has problem scrolling to.
-    if (this.loadedAll) {
-      return findLast(this.messages, m => m.type !== "system");
+    const result = this.getMessageAfterTimestamp(this.lastReadAt);
+    const messageBeforeLast = this.messages.findIndex(
+      m => m.inserted_at < this.lastReadAt
+    );
+
+    if (!result && messageBeforeLast && this.loadedAll) {
+      return last(this.normalMessages);
     }
 
-    return this.getMessageAfterTimestamp(this.lastReadAt);
+    return result;
   }
 
   @computed
@@ -203,13 +211,17 @@ class MessageStore {
 
   @computed
   get newMessageLineMessage() {
-    return this.getMessageAfterTimestamp(this.newMessageLineAt);
-  }
+    const result = this.getMessageAfterTimestamp(this.newMessageLineAt);
 
-  // check if the room is just created without any msgs
-  @computed
-  get justCreated() {
-    return this.messages.every(m => m.type === "system");
+    const messageBeforeLast = this.messages.findIndex(
+      m => m.inserted_at < this.newMessageLineAt
+    );
+
+    if (!result && messageBeforeLast && this.loadedAll) {
+      return last(this.normalMessages);
+    }
+
+    return result;
   }
 
   @computed
@@ -254,9 +266,9 @@ class MessageStore {
   @computed
   get mountedAllMessages() {
     return (
-      this.messages.length === 0 ||
-      (this.messages.length > 0 &&
-        this.mountedMessages.length === this.messages.length)
+      this.normalMessages.length === 0 ||
+      (this.normalMessages.length > 0 &&
+        this.mountedMessages.length === this.normalMessages.length)
     );
   }
 
@@ -922,11 +934,17 @@ class MessageStore {
    */
   @action
   onMessageMounted(messageId, messageDiv) {
-    if (this.mountedMessages.indexOf(messageId)) {
+    if (this.mountedMessages.indexOf(messageId) === -1) {
       this.mountedMessages.push(messageId);
     }
 
     this.messageElements[messageId] = { div: messageDiv };
+    this.onMessageShow(messageId);
+  }
+
+  @action
+  onMessageUnmounted(messageId) {
+    this.mountedMessages = this.mountedMessages.filter(id => id !== messageId);
   }
 
   @action
@@ -953,9 +971,8 @@ class MessageStore {
     // if last message is visible, mark as unread
     if (
       this.group &&
-      (this.justCreated ||
-        (this.firstUnreadMessage &&
-          this.messageVisibility[this.firstUnreadMessage.id]))
+      this.firstUnreadMessage &&
+      this.messageVisibility[this.firstUnreadMessage.id]
     ) {
       this.timeoutManager.setTimeout(() => {
         this.markAsRead(false);
@@ -966,7 +983,9 @@ class MessageStore {
   onMessageShow(id) {
     this.messageVisibility[id] = true;
 
-    this.updateGroupCursor(id);
+    if (!this.groupCursor || this.groupCursor > id) {
+      this.updateGroupCursor(id);
+    }
 
     // just ignore message show if window lost focus
     if (!this.isActive) {
@@ -976,11 +995,9 @@ class MessageStore {
     const isFirstMsgVisible =
       this.firstUnreadMessage &&
       this.mountedAllMessages &&
-      (this.firstUnreadMessage.id === id ||
-        (id === this.messages[0].id &&
-          this.messageVisibility[this.firstUnreadMessage.id]));
+      this.messageVisibility[this.firstUnreadMessage.id];
 
-    if (!this.markedAsUnread && (this.justCreated || isFirstMsgVisible)) {
+    if (!this.markedAsUnread && isFirstMsgVisible) {
       // If first unread message is visible, mark messages as read after 1s delay
       // but, leave the new message line
       this.timeoutManager.setTimeout(() => {
@@ -1025,6 +1042,8 @@ class MessageStore {
         status: undefined
       });
 
+      this.onMessageUnmounted(newMessage.request_id);
+
       // clear read status cache for new message arrived
       if (this.readStatusCache[newMessage.id]) {
         delete this.readStatusCache[newMessage.id];
@@ -1041,7 +1060,7 @@ class MessageStore {
       this.unreadMessagesCount === 0 &&
       (newMessage.user_id === currentUser.id || this.isScrollBottom)
     ) {
-      this.markAsRead();
+      this.markAsRead(newMessage.user_id === currentUser.id); // retain NML if msg is from other
     } else if (
       newMessage.type !== "system" &&
       newMessage.user_id !== currentUser.id
@@ -1082,11 +1101,11 @@ class MessageStore {
 
     this.cancelEdit();
 
-    const message = this.getMessageById(editedMessage.id);
-
-    message.edited = editedMessage.edited;
-    message.edited_at = editedMessage.edited_at;
-    message.text_content = editedMessage.text_content;
+    this.updateMessageData(editedMessage.id, {
+      edited: editedMessage.edited,
+      edited_at: editedMessage.edited_at,
+      text_content: editedMessage.text_content
+    });
   };
 
   @action
@@ -1138,10 +1157,10 @@ class MessageStore {
       return;
     }
 
-    const message = this.getMessageById(payload.id);
-
-    if (message && payload.link_previews && payload.link_previews.length) {
-      message.link_previews = payload.link_previews;
+    if (payload.link_previews && payload.link_previews.length) {
+      this.updateMessageData(payload.id, {
+        link_previews: payload.link_previews
+      });
       this.keepScrollAtBottom();
     }
   };
@@ -1151,9 +1170,11 @@ class MessageStore {
     const message = this.getMessageById(payload.message_id);
 
     if (message) {
-      message.link_previews = message.link_previews.filter(
-        p => p.link !== payload.link
-      );
+      this.updateMessageData(payload.message_id, {
+        link_previews: message.link_previews.filter(
+          p => p.link !== payload.link
+        )
+      });
       this.keepScrollAtBottom();
     }
   };
@@ -1242,10 +1263,9 @@ class MessageStore {
 
   @action
   onReactionUpdate = payload => {
-    const message = this.messages.find(m => m.id === payload.message_id);
-    if (message) {
-      message.reactions_web = payload.reactions_web;
-    }
+    this.updateMessageData(payload.message_id, {
+      reactions_web: payload.reactions_web
+    });
   };
 
   @action
@@ -1255,8 +1275,13 @@ class MessageStore {
     Object.keys(payload.messages).forEach(message_id => {
       const message = this.getMessageById(parseInt(message_id, 10));
       if (message) {
-        message.read_status = message.read_status || {};
-        Object.assign(message.read_status, payload.messages[message_id]);
+        this.updateMessageData(parseInt(message_id, 10), {
+          read_status: Object.assign(
+            {},
+            message.read_status || {},
+            payload.messages[message_id]
+          )
+        });
       } else {
         // cache read status because this event was broadcasted before new_msg due to network slowness
         this.readStatusCache[message_id] =
