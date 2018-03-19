@@ -220,4 +220,34 @@ defmodule Stitch.GroupAuthorizationTest do
       assert Stitch.GroupAuthorization.can_delete?(group, user) == false
     end
   end
+
+  describe "Stitch.GroupAuthorization.can_message?/2" do
+    test "can't DM a disable user" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
+      Stitch.Accounts.Admin.deactivate(team, joe.id)
+      assert Stitch.GroupAuthorization.can_message?(group, bob.id) == false
+    end
+
+    test "can DM a non-disabled user" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      {:ok, group} = Stitch.Group.create_single_dm(bob, [bob.id, joe.id])
+      Stitch.Accounts.Admin.deactivate(team, joe.id)
+      assert Stitch.GroupAuthorization.can_message?(group, joe.id) == true
+    end
+
+    test "can create message in a multi-DM group" do
+      team = insert(:team)
+      bob = insert(:user, team: team)
+      joe = insert(:user, team: team)
+      sam = insert(:user, team: team)
+      {:ok, group} = Stitch.Group.create_multi_dm(bob, [bob.id, joe.id, sam.id])
+      Stitch.Accounts.Admin.deactivate(team, joe.id)
+      assert Stitch.GroupAuthorization.can_message?(group, bob.id) == true
+    end
+  end
 end
