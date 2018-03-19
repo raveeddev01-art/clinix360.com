@@ -28,7 +28,7 @@ class MessageActions extends PureComponent {
     const { chatDiv } = messageStore;
     const messageDiv = messageStore.messageElements[message.id].div;
 
-    setSelected(isOpen);
+    setSelected({ isSelected: isOpen });
 
     if (isOpen) {
       this.setState({
@@ -40,11 +40,11 @@ class MessageActions extends PureComponent {
 
   onSelectEmoji = emoji => {
     const { messageStore, message, setSelected } = this.props;
-    setSelected(false);
     this.setState({ isEmojiPickerOpen: false }, () => {
       if (emoji) {
         messageStore.toggleReaction(message.id, emoji.colons);
       }
+      setSelected({ isSelected: false, isActionsVisible: false });
     });
   };
 
@@ -89,7 +89,7 @@ class MessageActions extends PureComponent {
   };
 
   toggleReaction = () => {
-    this.props.setSelected(true);
+    this.props.setSelected({ isSelected: true });
     this.setState({ isEmojiPickerOpen: true });
   };
 

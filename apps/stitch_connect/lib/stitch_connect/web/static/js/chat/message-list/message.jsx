@@ -54,8 +54,8 @@ class Message extends PureComponent {
     this.setState({ isActionsVisible: false });
   };
 
-  setSelected = isSelected => {
-    this.setState({ isSelected });
+  setSelected = newState => {
+    this.setState(newState);
   };
 
   renderGutter(message) {
