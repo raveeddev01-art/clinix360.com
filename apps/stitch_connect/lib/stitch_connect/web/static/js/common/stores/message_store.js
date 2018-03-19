@@ -31,6 +31,7 @@ class MessageStore {
   @observable textInEdit = ""; // Current text of message in edit
 
   @observable jumpMode = false; // indicates if message list is currently at jumping mode
+  @observable isJumpLoaded = false; // indicates if surrounded messages are loaded
 
   @observable groupCursor = null;
 
@@ -275,6 +276,7 @@ class MessageStore {
 
   reset() {
     this.jumpMode = false;
+    this.isJumpLoaded = false;
     this.loadedAll = false;
     this.loadedAllRecent = false;
     this.loadedInitial = false;
@@ -480,6 +482,7 @@ class MessageStore {
     this.loadedAll = false;
     this.loadedAllRecent = false;
     this.jumpMode = true;
+    this.isJumpLoaded = false;
     this.messageInEdit = null;
     this.textInEdit = "";
 
@@ -488,6 +491,7 @@ class MessageStore {
       this.loadPastMessages(false),
       this.loadRecentMessages(false)
     ]).then(() => {
+      this.isJumpLoaded = true;
       this.loadedAround.set(targetMessage.id, true);
     });
   }

@@ -53,38 +53,41 @@ class MessageList extends Component {
           this.chatDiv = div;
         }}
       >
-        {messageStore.loadedAll && <WelcomeMessage />}
-        {messageStore.isLoadingPast && (
-          <div className="loading-message">Loading messages...</div>
-        )}
+        {!messageStore.jumpMode && messageStore.loadedAll && <WelcomeMessage />}
+        {!messageStore.jumpMode &&
+          messageStore.isLoadingPast && (
+            <div className="loading-message">Loading messages...</div>
+          )}
 
-        {Object.keys(messagesByDate).map(date => (
-          <div key={`${date}`}>
-            <DateSeparator timestamp={date} />
-            {messagesByDate[date].map(
-              message =>
-                message.type === "system" ? (
-                  <SystemMessage
-                    key={`message_${message.id}`}
-                    message={message}
-                  />
-                ) : (
-                  <Message
-                    key={`message_${message.id}`}
-                    message={message}
-                    hasNML={
-                      newMessageLineMessage &&
-                      newMessageLineMessage.id === message.id
-                    }
-                    isHighlighted={highlightId === message.id}
-                  />
-                )
-            )}
-          </div>
-        ))}
-        {messageStore.isLoadingRecent && (
-          <div className="loading-message">Loading recent messages...</div>
-        )}
+        {(!messageStore.jumpMode || messageStore.isJumpLoaded) &&
+          Object.keys(messagesByDate).map(date => (
+            <div key={`${date}`}>
+              <DateSeparator timestamp={date} />
+              {messagesByDate[date].map(
+                message =>
+                  message.type === "system" ? (
+                    <SystemMessage
+                      key={`message_${message.id}`}
+                      message={message}
+                    />
+                  ) : (
+                    <Message
+                      key={`message_${message.id}`}
+                      message={message}
+                      hasNML={
+                        newMessageLineMessage &&
+                        newMessageLineMessage.id === message.id
+                      }
+                      isHighlighted={highlightId === message.id}
+                    />
+                  )
+              )}
+            </div>
+          ))}
+        {!messageStore.jumpMode &&
+          messageStore.isLoadingRecent && (
+            <div className="loading-message">Loading recent messages...</div>
+          )}
         <Element name="topPosition" className="topPosition" />
         <div className="bottomPositionWrapper">
           {/* react-scroll only checks for top position, so, to check bottom pos, it should take 100vh */}
