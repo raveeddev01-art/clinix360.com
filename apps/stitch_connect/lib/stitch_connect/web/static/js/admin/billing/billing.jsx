@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Panel, Tabs, Tab } from "react-bootstrap";
+
+import Panel from "react-bootstrap/lib/Panel";
+import Tab from "react-bootstrap/lib/Tab";
+import Tabs from "react-bootstrap/lib/Tabs";
 
 import Subscription from "./subscription/Subscription";
 import Contact from "./contact/Contact";

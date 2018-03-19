@@ -17,6 +17,12 @@ erl_crash.dump
 # Ignored integration test failures screenshots.
 /apps/stitch_connect/screenshots/
 
+# Ignored webpack bundle statistics
+/apps/stitch_connect/stats.json
+
+# Ignored yarn logs
+/apps/stitch_connect/yarn-error.log
+
 # Ignore Intellij IDEA files.
 .idea/
 

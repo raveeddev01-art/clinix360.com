@@ -1,7 +1,13 @@
 import moment from "moment";
 import countries from "i18n-iso-countries";
 import provinces from "provinces";
-import _ from "lodash";
+
+import flow from "lodash/flow";
+// lodash-fp imports only used for flow
+import groupBy from "lodash/fp/groupBy";
+import map from "lodash/fp/map";
+import mapValues from "lodash/fp/mapValues";
+import sortBy from "lodash/fp/sortBy";
 
 const TIERS = ["BASIC", "PREMIUM", "POWER"];
 
@@ -188,21 +194,20 @@ const getMonthlyPrice = (tier, frequencyIndex) => {
 const getCountries = () => {
   const alpha2Map = countries.getNames("en");
 
-  return _.chain(alpha2Map)
-    .map((name, alpha2) => ({
+  return flow(
+    map((name, alpha2) => ({
       alpha2,
       alpha3: countries.alpha2ToAlpha3(alpha2),
       name
-    }))
-    .sortBy("name")
-    .value();
+    })),
+    sortBy("name")
+  )(alpha2Map);
 };
 
 const getProvinces = () => {
-  return (
-    _.chain(provinces)
-      // Change country code to alpha-3
-      .map(province => {
+  return flow(
+    map(
+      (province) => {
         const country = countries.alpha2ToAlpha3(province.country);
         const name = province.english || province.name;
         const short = province.english
@@ -214,13 +219,13 @@ const getProvinces = () => {
           name,
           short
         };
-      })
-      .groupBy("country")
-      .mapValues(countryProvinces =>
-        _.sortBy(countryProvinces, ({ name }) => name.toLowerCase())
-      )
-      .value()
-  );
+      }
+    ),
+    groupBy("country"),
+    mapValues(
+      sortBy(({ name }) => name.toLowerCase())
+    )
+  )(provinces);
 };
 
 export {

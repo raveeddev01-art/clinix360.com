@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { inject } from "mobx-react";
-import { Panel } from "react-bootstrap";
+import Panel from "react-bootstrap/lib/Panel";
 import TeamExport from "./export";
 import TeamHipaa from "./hipaa";
 import AccessLogsPanel from "./security/access-logs/access-logs-panel";

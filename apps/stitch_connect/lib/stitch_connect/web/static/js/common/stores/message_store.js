@@ -6,9 +6,22 @@
 
 import { observable, action, computed, when, extendObservable } from "mobx";
 import moment from "moment";
-import _ from "lodash";
+
+import flow from "lodash/flow";
+import findLast from "lodash/findLast";
+import flatten from "lodash/flatten";
+import pickBy from "lodash/pickBy";
+import throttle from "lodash/throttle";
+import unionBy from "lodash/unionBy";
+
+// lodash-fp imports only used for flow
+import groupBy from "lodash/fp/groupBy";
+import map from "lodash/fp/map";
+import mapValues from "lodash/fp/mapValues";
+import sortBy from "lodash/fp/sortBy";
+
 import { animateScroll, scroller } from "react-scroll";
-import Promise from "bluebird";
+import { Promise } from "es6-promise";
 import shortid from "shortid";
 import {
   START_TYPING_THROTTLE_MS,
@@ -18,6 +31,13 @@ import {
 import REGEX from "lib/regex";
 import { getData as getEmoji } from "emoji-mart/dist/utils";
 import TimeoutManager from "lib/TimeoutManager";
+
+function sortableDateFromMessage(message) {
+  return moment
+    .utc(message.inserted_at)
+    .local()
+    .format(`YYYY-MM-DD`)
+}
 
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
@@ -138,7 +158,7 @@ class MessageStore {
   get firstUnreadMessage() {
     // handles when messages are sent on the very first room. In that case first message could be system message and has problem scrolling to.
     if (this.loadedAll) {
-      return _.findLast(this.messages, m => m.type !== "system");
+      return findLast(this.messages, m => m.type !== "system");
     }
 
     return this.getMessageAfterTimestamp(this.lastReadAt);
@@ -194,41 +214,33 @@ class MessageStore {
 
   @computed
   get messagesByDate() {
-    return (
-      _.chain(this.messages)
-        .sortBy("inserted_at")
-        // Group messages by dates
-        .groupBy(message =>
-          moment
-            .utc(message.inserted_at)
-            .local()
-            .format(`YYYY-MM-DD`)
-        )
-        .mapValues(msgGroup => {
-          const [firstMsg, ...messages] = msgGroup;
-          let sequentialStart = firstMsg;
-          return [
-            firstMsg,
-            ...messages.map(msg => {
-              if (
-                msg.user.id === sequentialStart.user.id &&
-                sequentialStart.type !== "system" &&
-                sequentialStart.type !== "upload" &&
-                moment(msg.inserted_at).diff(
-                  moment(sequentialStart.inserted_at),
-                  "seconds"
-                ) < SEQUENTIAL_SPLIT_SECONDS
-              ) {
-                return { ...msg, is_sequential: true };
-              }
+    return flow(
+      sortBy("inserted_at"),
+      groupBy(sortableDateFromMessage),
+      mapValues(msgGroup => {
+        const [firstMsg, ...messages] = msgGroup;
+        let sequentialStart = firstMsg;
+        return [
+          firstMsg,
+          ...messages.map(msg => {
+            if (
+              msg.user.id === sequentialStart.user.id &&
+              sequentialStart.type !== "system" &&
+              sequentialStart.type !== "upload" &&
+              moment(msg.inserted_at).diff(
+                moment(sequentialStart.inserted_at),
+                "seconds"
+              ) < SEQUENTIAL_SPLIT_SECONDS
+            ) {
+              return { ...msg, is_sequential: true };
+            }
 
-              sequentialStart = msg;
-              return msg;
-            })
-          ];
-        })
-        .value()
-    );
+            sequentialStart = msg;
+            return msg;
+          })
+        ];
+      })
+    )(this.messages);
   }
 
   @computed
@@ -301,7 +313,7 @@ class MessageStore {
       "marked_as_unread",
       "new_message_line_at"
     ];
-    const updates = _.pickBy(data, (value, key) => allowedKeys.includes(key));
+    const updates = pickBy(data, (value, key) => allowedKeys.includes(key));
 
     // Update group info
     groupsStore.updateGroupData(this.group.id, updates);
@@ -825,7 +837,7 @@ class MessageStore {
     }
   }
 
-  startTyping = _.throttle(() => {
+  startTyping = throttle(() => {
     this.groupChannel.push("is_typing");
   }, START_TYPING_THROTTLE_MS);
 
@@ -884,7 +896,7 @@ class MessageStore {
 
     if (this.group.id === this.loadedGroupId) {
       // new message has more precedance by putting it as first param.
-      this.messages = _.unionBy(data.messages, this.messages, msg => {
+      this.messages = unionBy(data.messages, this.messages, msg => {
         return msg.request_id || msg.id; // if temporary message, merge by request_id. Otherwise, merge by msg id
       });
     } else {
@@ -1225,7 +1237,7 @@ class MessageStore {
         };
       });
 
-    return _.flatten(result);
+    return flatten(result);
   };
 
   @action

@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import { Row, Col, Collapse, ButtonToolbar, Button } from "react-bootstrap";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
+import Collapse from "react-bootstrap/lib/Collapse";
+import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
+import Button from "react-bootstrap/lib/Button";
 import EditProfileModal from "common/modals/edit-profile-modal";
 import { isFullMember } from "lib/utils";
 import { RoleText } from "common/components";
