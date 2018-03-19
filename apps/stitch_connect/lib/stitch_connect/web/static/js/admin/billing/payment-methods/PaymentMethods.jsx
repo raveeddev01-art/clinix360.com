@@ -12,14 +12,6 @@ import Loading from "../components/Loading";
 class PaymentMethods extends Component {
   // This handler gets passed card selected when successful.
   // Please use it if you need it in handler.
-  // onUseCreditCard = card => {
-  onUseCreditCard = () => {
-    alertModal({
-      title: "Success",
-      message: "Credit card has been set as default one!"
-    });
-  };
-
   onCardSubmitSuccess = () => {
     alertModal({
       title: "Success",
@@ -56,7 +48,7 @@ class PaymentMethods extends Component {
 
           <br />
 
-          <CreditCards onUseCreditCard={this.onUseCreditCard} />
+          <CreditCards />
         </div>
 
         <div className="tab-section add-card-form">
