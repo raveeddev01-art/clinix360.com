@@ -181,6 +181,10 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   def push_badge_update_to_user(user) do
+    StitchConnect.MobileBadgeUpdater.push_badge_update(user)
+  end
+
+  def do_push_badge_update_to_user(user) do
     badge_value = Mobile.badge_value(user)
 
     %{"ios" => ios_devices, "android" => android_devices} =

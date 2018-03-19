@@ -17,23 +17,33 @@ class CreditCards extends Component {
   };
 
   render() {
-    const { billingStore: { cards } } = this.props;
+    const { billingStore: { cards }, checkingOut } = this.props;
+
+    const sortByDefault = card => !card.default;
+    const cardsWithDefaultFirst = cards.sort(sortByDefault);
 
     return cards.length === 0 ? (
       <p className="help-block">No saved cards</p>
     ) : (
-      cards.map(card => (
-        <CreditCard key={card.id} card={card} onUse={this.onUse} />
+      cardsWithDefaultFirst.map(card => (
+        <CreditCard
+          key={card.id}
+          checkingOut={checkingOut}
+          card={card}
+          onUse={this.onUse}
+        />
       ))
     );
   }
 }
 
 CreditCards.defaultProps = {
+  checkingOut: false,
   onUseCreditCard: noop
 };
 
 CreditCards.propTypes = {
+  checkingOut: PropTypes.bool,
   onUseCreditCard: PropTypes.func
 };
 

@@ -27,6 +27,10 @@ class ReactionPicker extends Component {
     }
   }
 
+  componentWillUnmount() {
+    document.removeEventListener("click", this.listenClick);
+  }
+
   listenClick = e => {
     let { target } = e;
 

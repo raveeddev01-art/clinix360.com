@@ -1,0 +1,6 @@
+// this file's contents are loaded on the landing
+// page after the initial render takes place
+
+// move any css that is not critical to the experience here
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
