@@ -33,7 +33,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       insert(:mobile_device, user: user, type: "android", token: "android-token")
       insert(:mobile_device, user: user, type: "android", token: "android-token-2")
 
-      PushNotifications.push_badge_update_to_user(user)
+      PushNotifications.do_push_badge_update_to_user(user)
 
       assert_receive [
         %APNS.Notification{
@@ -99,9 +99,10 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       insert(:mobile_device, user: excluded_user)
       insert(:mobile_device, user: disabled_user)
 
-      message = insert(:message, group: group)
+      _message = insert(:message, group: group)
 
-      PushNotifications.push_badge_update(message, [excluded_user.id])
+      PushNotifications.do_push_badge_update_to_user(user)
+      PushNotifications.do_push_badge_update_to_user(other_user)
 
       assert_receive [
         %APNS.Notification{
