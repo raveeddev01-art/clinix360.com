@@ -67,5 +67,6 @@
     <script src="<%= static_path(@conn, "/js/landing_app.js") %>"></script>
     <%= render "_intercom_website.html", conn: @conn %>
     <%= render "_segment.html", conn: @conn %>
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/landing-non-critical.css") %>">
   </body>
 </html>

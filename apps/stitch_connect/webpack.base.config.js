@@ -41,6 +41,7 @@ module.exports = [
     entry: {
       app: "./lib/stitch_connect/web/static/stylesheets/app.scss",
       landing: "./lib/stitch_connect/web/static/stylesheets/landing.scss",
+      "landing-non-critical": "./lib/stitch_connect/web/static/stylesheets/landing-non-critical.scss"
     },
     output: {
       path: path.resolve(__dirname, "priv/static/css"),
