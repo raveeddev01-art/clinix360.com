@@ -281,12 +281,4 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/engage", EngageController, :index)
     get("/manage", ManageController, :index)
   end
-
-  # Phoenix normally uses ErrorView by convention, but we
-  # manually pass to ErrorController so we can set a layout
-  # and reuse our frontend router for not found pages
-  scope "/", StitchConnect.Web do
-    pipe_through :browser
-    get "/*unmatched", ErrorController, :not_found
-  end
 end

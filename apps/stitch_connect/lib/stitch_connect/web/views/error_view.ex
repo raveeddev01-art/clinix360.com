@@ -1,10 +1,27 @@
 defmodule StitchConnect.Web.ErrorView do
   use StitchConnect.Web, :view
+  alias StitchConnect.Web.{HomeView, LayoutView}
 
-  def render("404.html", _assigns) do
-    # This should not get called (see router), but leaving
-    # in case of future sub-routers & for sane fallback
-    "Page not found"
+  def render("404.html", assigns) do
+    render_options = Dict.merge(
+      assigns,
+      layout: {LayoutView, "home_layout.html"},
+      conn: browser_pipeline_equivalent(assigns.conn)
+    )
+
+    render(HomeView, "index.html", render_options)
+  end
+
+  defp browser_pipeline_equivalent (conn) do
+    # conn needs session & flash values in order to render properly
+    # but ErrorView logic bypasses router by Phoenix conventions, so
+    # adding the equivalent of the browser pipeline here
+    conn
+    |> Phoenix.Controller.accepts(["html"])
+    |> Plug.Conn.fetch_session()
+    |> Phoenix.Controller.fetch_flash()
+    |> Phoenix.Controller.protect_from_forgery()
+    |> Phoenix.Controller.put_secure_browser_headers()
   end
 
   def render("500.html", assigns) do

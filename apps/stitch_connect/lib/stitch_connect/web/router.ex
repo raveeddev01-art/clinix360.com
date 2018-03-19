@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.Router do
   use StitchConnect.Web, :router
 
   pipeline :browser do
+    # reflect any changes in ErrorView.browser_pipeline_equivalent/1
     plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["html"]
     plug :fetch_session
@@ -97,12 +98,4 @@ defmodule StitchConnect.Web.Router do
   # Application download links.
   get "/download-mac", Redirect, external: "https://fz0pxcjnx9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-mac"
   get "/download-win", Redirect, external: "https://1lyrransd9.execute-api.us-east-1.amazonaws.com/prod/latest-desktop-win"
-
-  # Phoenix normally uses ErrorView by convention, but we
-  # manually pass to ErrorController so we can set a layout
-  # and reuse our frontend router for not found pages
-  scope "/", StitchConnect.Web do
-    pipe_through :browser
-    get "/*unmatched", ErrorController, :not_found
-  end
 end
