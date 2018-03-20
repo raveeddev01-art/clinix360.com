@@ -1,25 +1,37 @@
 defmodule StitchConnect.Web.ErrorViewTest do
   use StitchConnect.Web.ConnCase, async: true
-
-  # Bring render/3 and render_to_string/3 for testing custom views
+  # Bring render_to_string/3 for testing custom views
   import Phoenix.View
 
-  test "renders 404.html" do
-    assert render_to_string(StitchConnect.Web.ErrorView, "404.html", []) ==
-           "Page not found"
+  describe "Not Found" do
+    setup %{conn: conn} do
+      {:ok, conn: with_session(conn)}
+    end
+
+    test "raises a 404 correctly", %{conn: conn} do
+      assert_raise Phoenix.Router.NoRouteError, fn ->
+        get(conn, "/unknown_page")
+      end
+    end
   end
 
-  test "render 500.html" do
-    assert render_to_string(StitchConnect.Web.ErrorView, "500.html", []) ==
-           "Internal server error"
-  end
+  describe "System Errors" do
+    setup %{conn: conn} do
+      new_conn = conn
+        |> with_session()
+        |> get("/")
 
-  test "render any other" do
-    assert render_to_string(StitchConnect.Web.ErrorView, "505.html", []) ==
-           "Internal server error"
-  end
+      {:ok, conn: new_conn}
+    end
 
-  test "dummy test" do
-    assert true == true
+    test "500 renders system error page", %{conn: conn} do
+      error_res = render_to_string(StitchConnect.Web.ErrorView, "500.html", [conn: conn])
+      assert error_res =~ "Stitch failed to load correctly"
+    end
+
+    test "5** renders system error page", %{conn: conn} do
+      error_res = render_to_string(StitchConnect.Web.ErrorView, "505.html", [conn: conn])
+      assert error_res =~ "Stitch failed to load correctly"
+    end
   end
 end

@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.ConnCase do
       import StitchConnect.Web.ChannelsTestHelper
       import StitchConnect.Web.Router.Helpers
       import Stitch.Factory
-      import StitchConnect.Web.ConnCase, only: [with_user_session: 2, with_team_subdomain: 2, with_api_user: 2, with_admin_subdomain: 1]
+      import StitchConnect.Web.ConnCase, only: [with_session: 1, with_user_session: 2, with_team_subdomain: 2, with_api_user: 2, with_admin_subdomain: 1]
 
       # The default endpoint for testing
       @endpoint StitchConnect.Web.Endpoint
@@ -48,6 +48,14 @@ defmodule StitchConnect.Web.ConnCase do
         delete(conn, "#{url}?authenticationToken=#{user.token}", params)
       end
     end
+  end
+
+  @doc """
+  Adds a session with no user
+  """
+  @spec with_session(Plug.Conn.t) :: Plug.Conn.t
+  def with_session(conn) do
+    Plug.Test.init_test_session(conn, %{})
   end
 
   @doc """
