@@ -4,6 +4,10 @@ defmodule StitchConnect.Web.PushNotifications do
   import Ecto.Query
   require Logger
 
+  @single_dm_name "__dm_group__"
+  @multi_dm_name "__multi_dm_group__"
+  @dm_groups [@single_dm_name, @multi_dm_name]
+
   @apns_topic Application.get_env(:stitch_connect, :apns_topic)
 
   def apns_push(notification, opts \\ []) do
@@ -77,10 +81,14 @@ defmodule StitchConnect.Web.PushNotifications do
     ios_devices
     |> Enum.map(fn %{token: token} = device ->
       Stitch.Mobile.NotificationLogger.send(message, user, device, "ios")
+      message_body = notification_text_body(group, message, user)
 
-      group
-      |> notification_text_body(message, user)
+      message_body
       |> new(token, @apns_topic)
+      |> put_alert(%{
+        "title" => notification_title(group, message, user),
+        "body" => message_body
+      })
       |> put_badge(badge_value)
       |> put_sound("chime")
       |> put_custom(%{
@@ -111,6 +119,7 @@ defmodule StitchConnect.Web.PushNotifications do
         "badge" => to_string(badge_value),
         "room_notification_count" => room_notification_count,
         "message" => notification_text_body(group, message, user),
+        "title" => notification_title(group, message, user),
         "ejson" => message |> sanitize_notification_payload |> Poison.encode!(),
         "message_id" => message.id,
         "user_id" => user.id,
@@ -134,26 +143,63 @@ defmodule StitchConnect.Web.PushNotifications do
     |> Map.drop([:text_content, :fields])
   end
 
-  defp notification_text_body(%{name: group_name}, %{user: user, type: "upload"}, _receiver)
-       when group_name in ~w[__dm_group__ __multi_dm_group__] do
-    "#{user.first_name} #{user.last_name} uploaded a direct file."
+  # Notification Text Bodies
+
+  # File Upload - Room or DM
+  defp notification_text_body(_group, %{user: uploader, type: "upload"}, _receiver) do
+    name_for_notification(uploader) <> " uploaded a file."
   end
 
-  defp notification_text_body(%{name: group_name}, %{user: user}, _receiver)
-      when group_name in ~w[__dm_group__ __multi_dm_group__] do
-    "#{user.first_name} #{user.last_name} sent you a direct message."
+  # Message - Single DM
+  defp notification_text_body(%{name: group_name}, %{user: author}, _receiver) when group_name == @single_dm_name do
+    name_for_notification(author) <> " sent you a direct message."
   end
 
-  defp notification_text_body(%{name: group_name}, %{user: user, type: "upload"}, _receiver) do
-    "#{user.first_name} #{user.last_name} uploaded a room file (#{group_name})."
-  end
+  # Message - Multi DM
+  defp notification_text_body(%{name: group_name}, %{user: author} = message, receiver)
+    when group_name == @multi_dm_name do
 
-  defp notification_text_body(%{name: group_name}, %{user: author} = message, receiver) do
-    if receiver.id in message.mentioned_user_ids do
-      "#{author.first_name} #{author.last_name} mentioned you in #{group_name}."
+    if user_was_mentioned(receiver, message) do
+      name_for_notification(author) <> " mentioned you in a direct message."
     else
-      "#{author.first_name} #{author.last_name} sent a room message (#{group_name})."
+      name_for_notification(author) <> " sent a direct message."
     end
+  end
+
+  # Message - Room (non-DM)
+  defp notification_text_body(_group, %{user: author} = message, receiver) do
+    if user_was_mentioned(receiver, message) do
+      name_for_notification(author) <> " mentioned you in a room message."
+    else
+      name_for_notification(author) <> " sent a new room message."
+    end
+  end
+
+  # Notification Titles
+
+  #  Single or Multi DM
+  defp notification_title(%{name: group_name, users: users}, _message, receiver) when group_name in @dm_groups do
+    is_receiver = &(&1.id == receiver.id)
+
+    users
+    |> Enum.reject(is_receiver)
+    |> Enum.map(&name_for_notification/1)
+    |> Enum.join(", ")
+  end
+
+  #  Message in Room (non-DM)
+  defp notification_title(%{name: group_name}, _message, _receiver) do
+    group_name
+  end
+
+  # Notification Helper Functions
+
+  defp user_was_mentioned(user, message) do
+    user.id in message.mentioned_user_ids
+  end
+
+  defp name_for_notification(%{first_name: first, last_name: last}) do
+    "#{first} #{last}"
   end
 
   # Badge number updates.

@@ -3,7 +3,7 @@ defmodule Stitch.GroupAuthorization do
   Module in charge of permission handling for group actions.
   """
 
-  alias Stitch.{Group, Accounts.User}
+  alias Stitch.{Group, Accounts.User, GroupUser}
 
   @dm_groups ["__dm_group__", "__multi_dm_group__"]
 
@@ -95,5 +95,21 @@ defmodule Stitch.GroupAuthorization do
   @spec is_member?(pos_integer, pos_integer) :: boolean
   def is_member?(group_id, user_id) do
     Stitch.GroupQueries.user_is_member?(group_id, user_id)
+  end
+
+  @spec can_message?(Group.t(), pos_integer) :: boolean
+  def can_message?(%Group{} = group, user_id) do
+    if is_member?(group.id, user_id) do
+      if group.name == "__dm_group__" do
+        member_ids = GroupUser.user_ids(group.id)
+        [other_user_id] = List.delete(member_ids, user_id)
+        other_user = Stitch.UserQueries.get_by_id(other_user_id)
+        not other_user.disabled
+      else
+        true
+      end
+    else
+      false
+    end
   end
 end
