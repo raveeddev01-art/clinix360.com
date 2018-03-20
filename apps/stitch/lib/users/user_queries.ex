@@ -118,11 +118,13 @@ defmodule Stitch.UserQueries do
   """
   @spec any_enabled?(nonempty_list(pos_integer)) :: boolean
   def any_enabled?(user_ids) do
-    User
-    |> where([u], u.id in ^user_ids)
-    |> where([u], u.disabled == false)
-    |> select([u], u.id)
-    |> Repo.all()
-    |> Enum.any?()
+    user = User
+      |> where([u], u.id in ^user_ids)
+      |> where([u], u.disabled == false)
+      |> select([u], u.id)
+      |> limit(1)
+      |> Repo.one() # can be either `nil` or `user`
+    
+    !!user
   end
 end
