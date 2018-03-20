@@ -25,6 +25,7 @@ import Pilot from "./resources/pilot";
 import Pricing from "./resources/pricing";
 import PrivacyPolicy from "./resources/privacy-policy";
 import TermsOfService from "./resources/terms-of-service";
+import Industry from "./industries/industry";
 
 class WebsiteRouter extends Component {
   render() {
@@ -32,7 +33,6 @@ class WebsiteRouter extends Component {
       <div className="website-wrapper">
         <ScrollToTop>
           <Switch>
-            {/* <Route exact path="/" component={Landing} /> */}
             <Route exact path="/" component={Homepage} />
             <Route exact path="/demo" component={Demo} />
             <Route exact path="/connect" component={Connect} />
@@ -69,6 +69,8 @@ class WebsiteRouter extends Component {
             <Route exact path="/hipaa" component={Hipaa} />
             <Route exact path="/privacy-policy" component={PrivacyPolicy} />
             <Route exact path="/terms-of-service" component={TermsOfService} />
+
+            <Route exact path="/industries/*" component={Industry} />
 
             <Route path="*" component={NotFound}/>
           </Switch>
