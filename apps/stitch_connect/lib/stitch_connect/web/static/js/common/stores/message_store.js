@@ -162,11 +162,11 @@ class MessageStore {
   @computed
   get firstUnreadMessage() {
     const result = this.getMessageAfterTimestamp(this.lastReadAt);
-    const messageBeforeLast = this.messages.findIndex(
+    const messageBeforeLast = this.messages.find(
       m => m.inserted_at < this.lastReadAt
     );
 
-    if (!result && messageBeforeLast && this.loadedAll) {
+    if (!result && !messageBeforeLast && this.loadedAll) {
       return last(this.normalMessages);
     }
 
@@ -214,11 +214,11 @@ class MessageStore {
   get newMessageLineMessage() {
     const result = this.getMessageAfterTimestamp(this.newMessageLineAt);
 
-    const messageBeforeLast = this.messages.findIndex(
+    const messageBeforeLast = this.messages.find(
       m => m.inserted_at < this.newMessageLineAt
     );
 
-    if (!result && messageBeforeLast && this.loadedAll) {
+    if (!result && !messageBeforeLast && this.loadedAll) {
       return last(this.normalMessages);
     }
 
