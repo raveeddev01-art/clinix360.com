@@ -10,6 +10,7 @@ class MessageNav extends Component {
     const { groupsStore, message } = this.props;
     const group = groupsStore.getGroupById(message.group_id);
     const url = groupsStore.getGroupUrl(message.group_id);
+    const now = moment();
 
     return (
       <div className="message-nav m-b-5">
@@ -20,11 +21,22 @@ class MessageNav extends Component {
           {group.name}
         </NavLink>
 
-        <span className="pull-right text-muted">
+        <span className="m-l-10">
           {moment
             .utc(message.inserted_at)
             .local()
-            .format("MMM Do")}
+            .calendar(null, {
+              sameDay: "[Today]",
+              lastDay: "[Yesterday]",
+              lastWeek: "dddd, MMMM D",
+              sameElse: function() {
+                if (this.year() === now.year()) {
+                  return "MMM Do";
+                } else {
+                  return "MMM Do, YYYY";
+                }
+              }
+            })}
         </span>
       </div>
     );
