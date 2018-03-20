@@ -102,14 +102,21 @@ defmodule Stitch.GroupAuthorization do
     if is_member?(group.id, user_id) do
       if group.name == "__dm_group__" do
         member_ids = GroupUser.user_ids(group.id)
-        [other_user_id] = List.delete(member_ids, user_id)
-        other_user = Stitch.UserQueries.get_by_id(other_user_id)
-        not other_user.disabled
+        other_user_disabled?(member_ids, user_id)
       else
         true
       end
     else
       false
+    end
+  end
+
+  defp other_user_disabled?(member_ids, user_id) do
+    case List.delete(member_ids, user_id) do
+      [] -> true # this is a self-DM
+      [other_user_id] ->
+        other_user = Stitch.UserQueries.get_by_id(other_user_id)
+        not other_user.disabled
     end
   end
 end
