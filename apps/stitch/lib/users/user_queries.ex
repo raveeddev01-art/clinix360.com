@@ -112,4 +112,17 @@ defmodule Stitch.UserQueries do
       select: u.id
     Repo.all(query)
   end
+
+  @doc """
+  Returns true if any user with id is enabled
+  """
+  @spec any_enabled?(nonempty_list(pos_integer)) :: boolean
+  def any_enabled?(user_ids) do
+    User
+    |> where([u], u.id in ^user_ids)
+    |> where([u], u.disabled == false)
+    |> select([u], u.id)
+    |> Repo.all()
+    |> Enum.any?()
+  end
 end

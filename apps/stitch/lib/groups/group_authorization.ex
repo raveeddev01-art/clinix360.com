@@ -108,9 +108,9 @@ defmodule Stitch.GroupAuthorization do
   @spec can_message?(Group.t(), pos_integer) :: boolean
   def can_message?(%Group{} = group, user_id) do
     if is_member?(group.id, user_id) do
-      if group.name == "__dm_group__" do
+      if Group.direct_message?(group) do
         member_ids = GroupUser.user_ids(group.id)
-        !other_user_disabled?(member_ids, user_id) || personal_dm?(member_ids, user_id)
+        personal_dm?(member_ids, user_id) || any_member_enabled?(member_ids, user_id)
       else
         true
       end
@@ -119,13 +119,13 @@ defmodule Stitch.GroupAuthorization do
     end
   end
 
-  defp other_user_disabled?(member_ids, user_id) do
-    [other_user_id] = List.delete(member_ids, user_id)
-    other_user = Stitch.UserQueries.get_by_id(other_user_id)
-    other_user.disabled
-  end
-
   def personal_dm?(member_ids, user_id) do
     member_ids == [user_id]
+  end
+
+  defp any_member_enabled?(member_ids, user_id) do
+    member_ids
+    |> List.delete(user_id)
+    |> Stitch.UserQueries.any_enabled?()
   end
 end
