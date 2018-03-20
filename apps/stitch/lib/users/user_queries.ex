@@ -137,7 +137,6 @@ defmodule Stitch.UserQueries do
   """
   @spec any_enabled?(nonempty_list(pos_integer)) :: boolean
   def any_enabled?(user_ids) do
-    # can be either `nil` or `user`
     enabled_users_count =
       User
       |> where([u], u.id in ^user_ids)
