@@ -953,6 +953,11 @@ class MessageStore {
 
   @action
   onScrollTopReached() {
+    // no loading of past message if jumping surrounded msgs are not loaded yet
+    if (this.jumpMode && !this.isJumpLoaded) {
+      return;
+    }
+
     this.loadPastMessages();
   }
 
