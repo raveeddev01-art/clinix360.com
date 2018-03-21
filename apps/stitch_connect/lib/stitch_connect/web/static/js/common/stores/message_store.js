@@ -160,6 +160,11 @@ class MessageStore {
   }
 
   @computed
+  get otherUserMessages() {
+    return this.messages.filter(m => m.user_id !== currentUser.id);
+  }
+
+  @computed
   get firstUnreadMessage() {
     const result = this.getMessageAfterTimestamp(this.lastReadAt);
     const messageBeforeLast = this.messages.find(
@@ -167,7 +172,7 @@ class MessageStore {
     );
 
     if (!result && !messageBeforeLast && this.loadedAll) {
-      return last(this.normalMessages);
+      return last(this.otherUserMessages);
     }
 
     return result;
@@ -219,7 +224,7 @@ class MessageStore {
     );
 
     if (!result && !messageBeforeLast && this.loadedAll) {
-      return last(this.normalMessages);
+      return last(this.otherUserMessages);
     }
 
     return result;
