@@ -114,12 +114,15 @@ defmodule StitchConnect.Web.PushNotifications do
 
     Logger.info("[notifications] - #{user.id} - #{user.email}: Going to notify Android devices.")
 
+    message_body = notification_text_body(group, message, user)
+    message_title = notification_title(group, message, user)
+
     content =
       %{
         "badge" => to_string(badge_value),
         "room_notification_count" => room_notification_count,
-        "message" => notification_text_body(group, message, user),
-        "title" => notification_title(group, message, user),
+        "message" => message_body,
+        "title" => message_title,
         "ejson" => message |> sanitize_notification_payload |> Poison.encode!(),
         "message_id" => message.id,
         "user_id" => user.id,
@@ -130,7 +133,7 @@ defmodule StitchConnect.Web.PushNotifications do
       Stitch.Mobile.NotificationLogger.send(message, user, device, "android")
 
       [device.token]
-      |> new()
+      |> new(%{"body" => message_body, "title" => message_title})
       |> put_data(Map.put(content, "device_id", device.id))
       |> fcm_push(on_response: &handle_fcm_push/1)
     end)
