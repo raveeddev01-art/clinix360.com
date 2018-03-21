@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { Row, Col, Button } from "react-bootstrap";
+import Row from "react-bootstrap/lib/Row";
+import Col from "react-bootstrap/lib/Col";
+import Button from "react-bootstrap/lib/Button";
 import { inject, observer } from "mobx-react";
 
 import SettingPanel from "../components/setting-panel/setting-panel";

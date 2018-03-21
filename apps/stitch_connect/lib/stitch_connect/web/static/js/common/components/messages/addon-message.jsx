@@ -8,7 +8,7 @@ import { Avatar, UserProfileMenu } from "common/components";
 
 import MessageHeader from "./message-header/message-header";
 import MessageContent from "./message-content/message-content";
-import MessageFooter from "./message-footer/message-footer";
+import MessageNav from "./message-nav";
 
 @inject("sidemenuStore", "messageStore", "usersStore")
 class AddonMessage extends Component {
@@ -65,16 +65,19 @@ class AddonMessage extends Component {
         </div>
 
         <div className="message">
-          <UserProfileMenu user={user}>
-            <Avatar user={user} />
-          </UserProfileMenu>
+          <MessageNav message={message} />
 
-          <div className="message-content">
-            <MessageHeader timestamp={message.inserted_at} user={user} />
-            <MessageContent
-              message={Object.assign({}, message, { reactions_web: null })}
-            />
-            <MessageFooter message={message} />
+          <div className="message-wrapper">
+            <UserProfileMenu user={user}>
+              <Avatar user={user} />
+            </UserProfileMenu>
+
+            <div className="message-content">
+              <MessageHeader timestamp={message.inserted_at} user={user} />
+              <MessageContent
+                message={Object.assign({}, message, { reactions_web: null })}
+              />
+            </div>
           </div>
         </div>
       </div>

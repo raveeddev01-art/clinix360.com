@@ -74,6 +74,7 @@ defmodule Stitch.Accounts.Email do
     |> Stitch.Mailer.deliver_later
   end
 
+  defp role_change_subject(old_role, new_role) when old_role in @guest_roles and new_role in @guest_roles, do: "Guest Status Changed"
   defp role_change_subject(old_role, _new_role) when old_role in @guest_roles, do: "Guest Removed"
   defp role_change_subject(_old_role, new_role) when new_role in @guest_roles, do: "New Guest Added"
 

@@ -38,10 +38,14 @@ module.exports = [
     ]
   },
   {
-    entry: "./lib/stitch_connect/web/static/stylesheets/app.scss",
+    entry: {
+      app: "./lib/stitch_connect/web/static/stylesheets/app.scss",
+      landing: "./lib/stitch_connect/web/static/stylesheets/landing.scss",
+      "landing-non-critical": "./lib/stitch_connect/web/static/stylesheets/landing-non-critical.scss"
+    },
     output: {
       path: path.resolve(__dirname, "priv/static/css"),
-      filename: "app.css"
+      filename: "[name].css"
     },
     resolve: {
       modules: ["node_modules"]
@@ -63,7 +67,7 @@ module.exports = [
       ]
     },
     plugins: [
-      new ExtractTextPlugin("app.css"),
+      new ExtractTextPlugin('[name].css'),
       new CopyWebpackPlugin([
         {
           from: "./lib/stitch_connect/web/static/favicon.ico",
@@ -71,6 +75,14 @@ module.exports = [
         },
         {
           from: "./lib/stitch_connect/web/static/favicon-192x192.png",
+          to: path.resolve(__dirname, "priv/static")
+        },
+        {
+          from: "./lib/stitch_connect/web/static/robots.txt",
+          to: path.resolve(__dirname, "priv/static")
+        },
+        {
+          from: "./lib/stitch_connect/web/static/sitemap.xml",
           to: path.resolve(__dirname, "priv/static")
         },
         {

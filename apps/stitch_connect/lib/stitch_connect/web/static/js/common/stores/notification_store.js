@@ -71,7 +71,8 @@ class NotificationStore {
   updateDesktopPref = preference => {
     return put("/api/v1/users/notification-preference", {
       body: {
-        desktop_notification_preference: preference
+        desktop_notification_preference: preference,
+        mobile_notification_preference: preference
       },
       hideNotify: true
     }).then(() => {

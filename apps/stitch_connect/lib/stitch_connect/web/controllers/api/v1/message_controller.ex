@@ -71,7 +71,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     current_user = conn.assigns.current_user
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
-         {:authorized?, true} <- {:authorized?, GroupAuthorization.is_member?(group_id, current_user.id)},
+         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
          presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id),
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
            Message.create(group.id, current_user, message_params, presence_user_ids) do
@@ -89,6 +89,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   end
 
   defp message_events(message, group, notify_user_ids) do
+    Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
     Stitch.Task.start(fn ->
       MessageLinkPreviewGenerator.queue(message)
       GroupChannel.broadcast_message_created(message)
@@ -109,7 +110,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         group_user: group_user
       })
       mark_as_read_events(group, current_user, messages_json, mark_as_read_json)
-      json(conn, %{status: "ok"})
+      json(conn, mark_as_read_json)
     else
       {:group, nil} -> {:error, :not_found}
       {:error, message} -> {:error, :not_authorized, message}
@@ -136,7 +137,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
         group_user: group_user
       })
       mark_as_unread_events(group, current_user, messages_json, mark_as_read_json)
-      json(conn, %{status: "ok"})
+      json(conn, mark_as_read_json)
     else
       {:group, nil} -> {:error, :not_found}
       {:error, message} -> {:error, :not_authorized, message}

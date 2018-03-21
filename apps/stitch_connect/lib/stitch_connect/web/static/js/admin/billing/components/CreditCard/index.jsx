@@ -4,12 +4,17 @@ import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 import noop from "lodash/noop";
 
-const CreditCard = ({ card, onUse }) => {
+const CreditCard = ({ card, checkingOut, onUse }) => {
   const cardClassName = classNames("credit-card", { selected: card.default });
   const iconClassName = classNames(
     "credit-card-icon",
     card.brand.toLowerCase()
   );
+
+  const buttonDisabled = card.default && !checkingOut;
+  const buttonText = checkingOut
+    ? "Pay With This Card"
+    : card.default ? "Default Card" : "Set As Default";
 
   return (
     <div className={cardClassName}>
@@ -27,22 +32,25 @@ const CreditCard = ({ card, onUse }) => {
       </div>
 
       <button
+        disabled={buttonDisabled}
         className="btn btn-fancy btn-primary btn-md"
         onClick={() => {
           onUse(card);
         }}
       >
-        Use this Card
+        {buttonText}
       </button>
     </div>
   );
 };
 
 CreditCard.defaultProps = {
-  onUse: noop
+  checkingOut: false,
+  onUse: noop,
 };
 
 CreditCard.propTypes = {
+  checkingOut: PropTypes.bool,
   card: PropTypes.object.isRequired,
   onUse: PropTypes.func
 };

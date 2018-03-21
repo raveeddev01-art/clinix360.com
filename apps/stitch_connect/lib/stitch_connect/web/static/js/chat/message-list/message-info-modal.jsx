@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
 import {
   Avatar,
@@ -11,7 +10,7 @@ import Modal from "react-bootstrap/lib/Modal";
 import moment from "moment";
 import sortBy from "lodash/sortBy";
 
-@inject("usersStore")
+@inject("usersStore", "messageStore")
 @observer
 class MessageInfoModal extends Component {
   dayLocale = {
@@ -23,13 +22,15 @@ class MessageInfoModal extends Component {
     sameElse: "l"
   };
 
-  renderModalHeader() {
-    const { closeModal } = this.props;
+  closeModal = () => {
+    this.props.messageStore.infoModalMessageId = null;
+  };
 
+  renderModalHeader() {
     return (
       <Modal.Header>
         <Modal.Title>Message Info</Modal.Title>
-        <a role="link" onClick={closeModal}>
+        <a role="link" onClick={this.closeModal}>
           <i className="fa fa-close" />
         </a>
       </Modal.Header>
@@ -57,7 +58,8 @@ class MessageInfoModal extends Component {
   }
 
   renderMessagePreview() {
-    const { message, usersStore } = this.props;
+    const { messageStore, usersStore } = this.props;
+    const message = messageStore.infoMessage;
     const userId = message.user.id;
     const user = usersStore.usersById[userId];
 
@@ -90,7 +92,8 @@ class MessageInfoModal extends Component {
   }
 
   renderModalBody() {
-    const { message, usersStore } = this.props;
+    const { messageStore, usersStore } = this.props;
+    const message = messageStore.infoMessage;
     const readRecipients = [];
     const unreadRecipients = [];
     if (!message.read_status) return null;
@@ -136,21 +139,19 @@ class MessageInfoModal extends Component {
   }
 
   render() {
-    const { show, closeModal } = this.props;
+    const { messageStore } = this.props;
+    const show = !!messageStore.infoModalMessageId;
+
+    if (!show) {
+      return null;
+    }
 
     return (
-      <Modal className="message-info-modal" show={show} onHide={closeModal}>
+      <Modal className="message-info-modal" show onHide={this.closeModal}>
         {this.renderModalHeader()}
         {this.renderModalBody()}
       </Modal>
     );
   }
 }
-
-MessageInfoModal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  message: PropTypes.object.isRequired,
-  closeModal: PropTypes.func.isRequired
-};
-
 export default MessageInfoModal;

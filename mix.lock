@@ -62,6 +62,7 @@
   "postgrex": {:hex, :postgrex, "0.13.3", "c277cfb2a9c5034d445a722494c13359e361d344ef6f25d604c2353185682bfc", [:mix], [{:connection, "~> 1.0", [hex: :connection, optional: false]}, {:db_connection, "~> 1.1", [hex: :db_connection, optional: false]}, {:decimal, "~> 1.0", [hex: :decimal, optional: false]}]},
   "quantum": {:hex, :quantum, "2.1.1", "df1089cf340a998b769380ebe79887e1a5ca51d247eaf9e81da8ff9a29f8b81b", [:mix], [{:calendar, "~> 0.17", [hex: :calendar, optional: true]}, {:crontab, "~> 1.1", [hex: :crontab, optional: false]}, {:gen_stage, "~> 0.12.2", [hex: :gen_stage, optional: false]}, {:timex, "~> 3.1.13", [hex: :timex, optional: true]}]},
   "ranch": {:hex, :ranch, "1.3.2", "e4965a144dc9fbe70e5c077c65e73c57165416a901bd02ea899cfd95aa890986", [:rebar3], []},
+  "redix": {:hex, :redix, "0.7.0", "14a22cba1137600ccf8d64baf1b291689add779488f9a193d7d83dcc3e03a7a4", [:mix], [{:connection, "~> 1.0", [hex: :connection, optional: false]}]},
   "remote_ip": {:hex, :remote_ip, "0.1.4", "c34e79cdf6058ccff824f6d6ed7ac5282b953c6aa0cf62f949cfe1c3b6119f35", [:mix], [{:combine, "~> 0.10", [hex: :combine, optional: false]}, {:inet_cidr, "~> 1.0", [hex: :inet_cidr, optional: false]}, {:plug, "~> 1.2", [hex: :plug, optional: false]}]},
   "slugger": {:hex, :slugger, "0.2.0", "7c609e6eee6dbb44e7b0db07982932356cab476f00fc8d73320cdc50d7efa18e", [:mix], []},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.1", "28a4d65b7f59893bc2c7de786dec1e1555bd742d336043fe644ae956c3497fbe", [:make, :rebar], []},

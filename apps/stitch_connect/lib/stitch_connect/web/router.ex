@@ -2,6 +2,7 @@ defmodule StitchConnect.Web.Router do
   use StitchConnect.Web, :router
 
   pipeline :browser do
+    # reflect any changes in ErrorView.browser_pipeline_equivalent/1
     plug StitchConnect.Plug.PlugAttack
     plug :accepts, ["html"]
     plug :fetch_session

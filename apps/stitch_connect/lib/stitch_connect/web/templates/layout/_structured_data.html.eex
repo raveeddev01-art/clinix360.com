@@ -1,0 +1,36 @@
+<!-- Structured Data for search engines -->
+<!-- use https://search.google.com/structured-data/testing-tool to test changes -->
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "url": "https://teamstitch.com/",
+    "logo": "https://teamstitch.com/images/rounded-logo.png",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "San Francisco, CA",
+      "postalCode": "94105",
+      "streetAddress": "156 2nd St"
+    },
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "telephone": "+1-650-282-3388",
+        "contactType": "customer service"
+      },
+      {
+        "@type": "ContactPoint",
+        "telephone": "+1-650-282-3388",
+        "contactType": "sales"
+      }
+    ],
+    "sameAs": [
+      "https://twitter.com/stitchhq",
+      "https://www.linkedin.com/company/stitchhealth"
+    ],
+    "name": "Stitch Health",
+    "telephone": "+1-650-282-3388",
+    "email": "support@teamstitch.com"
+  }
+</script>

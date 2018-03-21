@@ -31,6 +31,7 @@ defmodule Stitch.Mixfile do
     [
       {:ecto, "~> 2.2"},
       {:postgrex, "~> 0.13.3"},
+      {:redix, "~> 0.7.0"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:ex_aws, "~> 2.0"},

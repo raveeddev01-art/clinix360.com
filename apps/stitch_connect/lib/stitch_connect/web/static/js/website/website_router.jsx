@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
-import { observer } from "mobx-react";
 
 import ScrollToTop from "./components/scrollToTop";
 
@@ -9,24 +8,24 @@ import Homepage from "./homepage";
 import Connect from "./products/connect";
 import Engage from "./products/engage";
 import Manage from "./products/manage";
-import Pricing from "./resources/pricing";
-import Downloads from "./resources/downloads";
-import Demo from "./resources/demo";
-import Pilot from "./resources/pilot";
-import Jobs from "./resources/jobs";
-import Customers from "./resources/customers";
-import Blog from "./resources/blog";
-import CaseLuminance from "./case-studies/luminance";
-import CasePBSC from "./case-studies/pbsc";
 import CaseDSSI from "./case-studies/dssi";
-import CaseUCSF from "./case-studies/ucsf";
+import CaseLuminance from "./case-studies/luminance";
 import CaseOrchardMedical from "./case-studies/orchard-medical";
+import CasePBSC from "./case-studies/pbsc";
+import CaseUCSF from "./case-studies/ucsf";
 import Baa from "./resources/baa";
+import Blog from "./resources/blog";
+import Customers from "./resources/customers";
+import Demo from "./resources/demo";
+import Downloads from "./resources/downloads";
 import Hipaa from "./resources/hipaa";
+import Jobs from "./resources/jobs";
+import NotFound from "./resources/not-found";
+import Pilot from "./resources/pilot";
+import Pricing from "./resources/pricing";
 import PrivacyPolicy from "./resources/privacy-policy";
 import TermsOfService from "./resources/terms-of-service";
 
-@observer
 class WebsiteRouter extends Component {
   render() {
     return (
@@ -71,7 +70,7 @@ class WebsiteRouter extends Component {
             <Route exact path="/privacy-policy" component={PrivacyPolicy} />
             <Route exact path="/terms-of-service" component={TermsOfService} />
 
-            <Route component={() => <Redirect to="/" />} />
+            <Route path="*" component={NotFound}/>
           </Switch>
         </ScrollToTop>
       </div>

@@ -287,8 +287,8 @@ class SidemenuStore {
     ) {
       const message =
         group.type === "regular"
-          ? "sent you a room message"
-          : "sent you a direct message";
+          ? "sent a room message"
+          : "sent a direct message";
       const text = `${newMessage.user.first_name} ${newMessage.user
         .last_name} ${message}`;
       this.showNotificationCard(

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Well } from "react-bootstrap";
+import Well from "react-bootstrap/lib/Well";
 import capitalize from "lodash/capitalize";
 
 import { alertModal } from "common/modals";

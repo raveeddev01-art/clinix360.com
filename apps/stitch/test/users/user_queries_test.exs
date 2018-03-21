@@ -70,7 +70,7 @@ defmodule Stitch.UserQueriesTest do
       insert(:user, team: team, email: "example@email.com")
 
       assert %User{email: "example@email.com"} =
-        UserQueries.team_member_with_email(team.id, "example@email.com")
+               UserQueries.team_member_with_email(team.id, "example@email.com")
     end
 
     test "insensitivity to case of email" do
@@ -78,7 +78,7 @@ defmodule Stitch.UserQueriesTest do
       insert(:user, team: team, email: "Example@email.com")
 
       assert %User{email: "Example@email.com"} =
-        UserQueries.team_member_with_email(team.id, "example@email.com")
+               UserQueries.team_member_with_email(team.id, "example@email.com")
     end
   end
 

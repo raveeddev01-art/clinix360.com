@@ -33,7 +33,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       insert(:mobile_device, user: user, type: "android", token: "android-token")
       insert(:mobile_device, user: user, type: "android", token: "android-token-2")
 
-      PushNotifications.push_badge_update_to_user(user)
+      PushNotifications.do_push_badge_update_to_user(user)
 
       assert_receive [
         %APNS.Notification{
@@ -99,9 +99,10 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       insert(:mobile_device, user: excluded_user)
       insert(:mobile_device, user: disabled_user)
 
-      message = insert(:message, group: group)
+      _message = insert(:message, group: group)
 
-      PushNotifications.push_badge_update(message, [excluded_user.id])
+      PushNotifications.do_push_badge_update_to_user(user)
+      PushNotifications.do_push_badge_update_to_user(other_user)
 
       assert_receive [
         %APNS.Notification{
@@ -187,13 +188,16 @@ defmodule StitchConnect.Web.PushNotificationsTest do
 
       PushNotifications.notify_users(group, message, user_ids)
 
+      expected_body = "Sergio Tapia sent a new room message."
+      expected_title = "Foogroup"
+
       assert_receive [
         %APNS.Notification{
           topic: "apns-topic",
           device_token: "ios-token",
           payload: %{
             "aps" => %{
-              "alert" => "Sergio Tapia sent a room message (Foogroup).",
+              "alert" => expected_body,
               "badge" => 0,
               "sound" => "chime"
             },
@@ -205,7 +209,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           payload: %{
             :ejson => ejson,
             "aps" => %{
-              "alert" => "Sergio Tapia sent a room message (Foogroup).",
+              "alert" => expected_body,
               "badge" => 0,
               "sound" => "chime"
             }
@@ -217,16 +221,32 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       encoded_ejson = Poison.encode!(ejson)
 
       assert_receive %FCM.Notification{
-        registration_id: ["android-token", "android-token-2"],
-        payload: %{
-          "data" => %{
-            "badge" => "0",
-            "room_notification_count" => 0,
-            "message" => "Sergio Tapia sent a room message (Foogroup).",
-            "ejson" => ^encoded_ejson
+          registration_id: ["android-token"],
+          payload: %{
+            "data" => %{
+              "badge" => "0",
+              "room_notification_count" => 0,
+              "message" => expected_body,
+              "title" => expected_title,
+              "ejson" => ^encoded_ejson,
+              "message_id" => _,
+              "user_id" => _,
+            }
           }
         }
-      }
+
+      assert_receive %FCM.Notification{
+          registration_id: ["android-token-2"],
+          payload: %{
+            "data" => %{
+              "badge" => "0",
+              "room_notification_count" => 0,
+              "message" => expected_body,
+              "title" => expected_title,
+              "ejson" => ^encoded_ejson
+            }
+          }
+        }
 
       assert_receive [
         %APNS.Notification{
@@ -234,7 +254,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           device_token: "other-ios-token",
           payload: %{
             "aps" => %{
-              "alert" => "Sergio Tapia sent a room message (Foogroup).",
+              "alert" => expected_body,
               "badge" => 0,
               "sound" => "chime"
             },
@@ -246,7 +266,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           payload: %{
             :ejson => ejson,
             "aps" => %{
-              "alert" => "Sergio Tapia sent a room message (Foogroup).",
+              "alert" => expected_body,
               "badge" => 0,
               "sound" => "chime"
             }
@@ -258,12 +278,26 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       encoded_ejson = Poison.encode!(ejson)
 
       assert_receive %FCM.Notification{
-        registration_id: ["other-android-token", "other-android-token-2"],
+        registration_id: ["other-android-token"],
         payload: %{
           "data" => %{
             "badge" => "0",
             "room_notification_count" => 0,
-            "message" => "Sergio Tapia sent a room message (Foogroup).",
+            "message" => expected_body,
+            "title" => expected_title,
+            "ejson" => ^encoded_ejson
+          }
+        }
+      }
+
+      assert_receive %FCM.Notification{
+        registration_id: ["other-android-token-2"],
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => expected_body,
+            "title" => expected_title,
             "ejson" => ^encoded_ejson
           }
         }
@@ -292,7 +326,8 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           "data" => %{
             "badge" => "0",
             "room_notification_count" => 0,
-            "message" => "Sergio Tapia uploaded a room file (Foogroup).",
+            "message" => "Sergio Tapia uploaded a file.",
+            "title" => "Foogroup",
             "ejson" => _
           }
         }
@@ -306,11 +341,14 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       team = insert(:team)
       group = insert(:group, team: team, name: "__dm_group__")
       user = insert(:user, team: team)
+      user_two = insert(:user, team: team)
       insert(:group_user, group: group, user: user)
       insert(:mobile_device, user: user, type: "android", token: "android-token")
+
       message = insert(:message, group: group)
 
-      PushNotifications.notify_users(group, message, [user.id])
+      with_fake_users = group |> Map.merge(%{users: [user, user_two]})
+      PushNotifications.notify_users(with_fake_users, message, [user.id])
 
       assert_receive %FCM.Notification{
         registration_id: ["android-token"],
@@ -319,7 +357,10 @@ defmodule StitchConnect.Web.PushNotificationsTest do
             "badge" => "0",
             "room_notification_count" => 0,
             "message" => "Sergio Tapia sent you a direct message.",
-            "ejson" => _
+            "ejson" => _,
+            "message_id" => _,
+            "user_id" => _,
+            "device_id" => _,
           }
         }
       }
@@ -332,11 +373,13 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       team = insert(:team)
       group = insert(:group, team: team, name: "__dm_group__")
       user = insert(:user, team: team)
+      user_two = insert(:user, team: team)
       insert(:group_user, group: group, user: user)
       insert(:mobile_device, user: user, type: "android", token: "android-token")
       message = insert(:message, group: group, type: "upload")
 
-      PushNotifications.notify_users(group, message, [user.id])
+      with_fake_users = group |> Map.merge(%{users: [user, user_two]})
+      PushNotifications.notify_users(with_fake_users, message, [user.id])
 
       assert_receive %FCM.Notification{
         registration_id: ["android-token"],
@@ -344,7 +387,39 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           "data" => %{
             "badge" => "0",
             "room_notification_count" => 0,
-            "message" => "Sergio Tapia uploaded a direct file.",
+            "message" => "Sergio Tapia uploaded a file.",
+            "title" => "Sergio Tapia",
+            "ejson" => _,
+            "message_id" => _,
+            "user_id" => _,
+          }
+        }
+      }
+
+      refute_receive []
+      refute_receive _
+    end
+
+    test "when the receiver is mentioned in a direct message" do
+      team = insert(:team)
+      group = insert(:group, team: team, name: "__dm_group__")
+      user = insert(:user, team: team)
+      user_two = insert(:user, team: team)
+      insert(:group_user, group: group, user: user)
+      insert(:mobile_device, user: user, type: "android", token: "android-token")
+      message = insert(:message, group: group, mentioned_user_ids: [user.id])
+
+      with_fake_users = group |> Map.merge(%{users: [user, user_two]})
+      PushNotifications.notify_users(with_fake_users, message, [user.id])
+
+      assert_receive %FCM.Notification{
+        registration_id: ["android-token"],
+        payload: %{
+          "data" => %{
+            "badge" => "0",
+            "room_notification_count" => 0,
+            "message" => "Sergio Tapia sent you a direct message.",
+            "title" => "Sergio Tapia",
             "ejson" => _
           }
         }
@@ -370,7 +445,8 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           "data" => %{
             "badge" => "0",
             "room_notification_count" => 0,
-            "message" => "Sergio Tapia mentioned you in RoomName.",
+            "message" => "Sergio Tapia mentioned you in a room message.",
+            "title" => "RoomName",
             "ejson" => _
           }
         }
