@@ -28,6 +28,7 @@ defmodule StitchConnect.Web.PushNotifications do
 
   def notify_users(%Group{} = group, %Message{} = message, user_ids) do
     message = Repo.preload(message, :user)
+    group = Repo.preload(group, :users)
 
     users =
       User
