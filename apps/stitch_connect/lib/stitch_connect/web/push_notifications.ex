@@ -122,7 +122,6 @@ defmodule StitchConnect.Web.PushNotifications do
         "badge" => to_string(badge_value),
         "room_notification_count" => room_notification_count,
         "message" => message_body,
-        "title" => message_title,
         "ejson" => message |> sanitize_notification_payload |> Poison.encode!(),
         "message_id" => message.id,
         "user_id" => user.id,
