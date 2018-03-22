@@ -1,5 +1,13 @@
 import { observable, action, computed } from "mobx";
+import groupBy from "lodash/groupBy";
 import moment from "moment";
+
+function getSortableLastAccessedAt(accessLog) {
+  return moment
+    .utc(accessLog.last_access_at)
+    .local()
+    .format("YYYY-MM-DD");
+}
 
 class AccessLogsStore {
   @observable loading = false;
@@ -18,7 +26,7 @@ class AccessLogsStore {
       return 1;
     }
 
-    let ceiling = Math.ceil(this.skippedLogs / this.perPage);
+    const ceiling = Math.ceil(this.skippedLogs / this.perPage);
     if (ceiling === 0) {
       return 1;
     }
@@ -27,25 +35,15 @@ class AccessLogsStore {
   }
 
   @action
-  loadTeamAccessLogs = (team_id, page) => {
+  loadTeamAccessLogs = (teamId, page) => {
     this.loading = true;
-    page = page - 1;
+    const skipCount = (page - 1) * this.perPage;
+    const logUrl = `/api/v1/teams/${teamId}/access_log?skip=${skipCount}&limit=${this.perPage}`;
 
-    get(
-      `/api/v1/teams/${team_id}/access_log?skip=${page *
-        this.perPage}&limit=${this.perPage}`
-    ).then(resp => {
+    get(logUrl).then(resp => {
       this.totalLogs = resp.data.meta.count;
       this.skippedLogs = resp.data.meta.skip;
-
-      let groupedData = _.groupBy(resp.data.data, access_log =>
-        moment
-          .utc(access_log.last_access_at)
-          .local()
-          .format("YYYY-MM-DD")
-      );
-
-      this.accessLogs = groupedData;
+      this.accessLogs = groupBy(resp.data.data, getSortableLastAccessedAt);
       this.loading = false;
     });
   };
