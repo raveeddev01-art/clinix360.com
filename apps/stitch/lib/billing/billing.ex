@@ -4,13 +4,13 @@ defmodule Stitch.Billing do
   """
 
   import Ecto.Query
+  alias Stitch.Analytics.Billing, as: BillingAnalytics
   alias Stitch.{Repo, Team, TeamQueries, FeatureGateway}
   alias Stitch.Billing.{Plan, Subscription, PaymentMethod, PaymentHistory}
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
   # 14 days in seconds
   @trial_duration 14 * 24 * 60 * 60
-  @analytics Application.get_env(:stitch, :analytics)
   @billable_roles ["admin", "member", "multi-room-guest"]
 
   @doc """
@@ -34,6 +34,7 @@ defmodule Stitch.Billing do
     |> Repo.insert()
     |> case do
       {:ok, subscription} ->
+        BillingAnalytics.subscription_create(subscription)
         {:ok, subscription}
 
       {:error, changeset} ->
@@ -136,7 +137,7 @@ defmodule Stitch.Billing do
     do_modify_subscription(subscription, params, &update_subscription/2)
   end
 
-  defp do_modify_subscription(subscription, params, fun) when is_function(fun, 2) do
+  defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, params, fun) when is_function(fun, 2) do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
          {:count, count} when count > 0 <- {:count, card_count(subscription.team_id)},
          plan_id = Plan.id(changeset.changes),
@@ -149,7 +150,7 @@ defmodule Stitch.Billing do
       case result do
         {:ok, subscription} ->
           modify_guests_subscription(subscription)
-          analytics_identify_and_group(subscription.team_id)
+          BillingAnalytics.subscription_update(subscription, original_tier)
 
         _ ->
           :ignore
@@ -161,12 +162,6 @@ defmodule Stitch.Billing do
       {:count, _} -> {:error, :card_required}
       error -> error
     end
-  end
-
-  defp analytics_identify_and_group(team_id) do
-    Task.start(fn ->
-      @analytics.identify_and_group(%{team_id: team_id})
-    end)
   end
 
   defp create_subscription(subscription, plan_id) do
@@ -223,10 +218,21 @@ defmodule Stitch.Billing do
       ) do
     with {:ok, stripe_sub_params} <-
            @stripe_client.cancel_subscription(customer_id, subscription_id) do
-      subscription
-      |> Subscription.update(stripe_sub_params)
-      |> Repo.update()
+      case update_stripe_params(subscription, stripe_sub_params) do
+        {:ok, new_subscription} ->
+          BillingAnalytics.subscription_cancel(new_subscription)
+          {:ok, new_subscription}
+
+        res ->
+          res
+      end
     end
+  end
+
+  defp update_stripe_params(subscription, stripe_sub_params) do
+    subscription
+    |> Subscription.update(stripe_sub_params)
+    |> Repo.update()
   end
 
   @doc """
