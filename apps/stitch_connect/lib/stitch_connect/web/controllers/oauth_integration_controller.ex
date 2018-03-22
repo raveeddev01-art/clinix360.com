@@ -1,17 +1,15 @@
 defmodule StitchConnect.Web.OAuthIntegrationController do
   use StitchConnect.Web, :controller
-  alias StitchEHR.DrChrono
+  alias StitchIntegrations.DrChrono
+  alias StitchIntegrations.DrChrono.Bot
   alias Stitch.{Accounts.User, Team}
 
   def provider_response(conn, %{"provider" => "drchrono", "code" => code}) do
-    with token when not is_nil(token) <- get_session(conn, :current_user_token),
-         %User{} = user <- Stitch.UserQueries.get_by_token(token),
-         %Team{} = team <- Stitch.TeamQueries.get_by_id(user.team_id) do
-      # TODO. After getting a response from DrChrono, init bot user for
-      # this team, and generate access_token and refresh_token.
-      # {:ok, bot_user} = DrChrono.init_bot_for_team(user.team_id)
-      # {:ok, token} = DrChrono.get_access_token(user.team_id, code)
-
+    with user_token when not is_nil(user_token) <- get_session(conn, :current_user_token),
+         %User{} = user <- Stitch.UserQueries.get_by_token(user_token),
+         %Team{} = team <- Stitch.TeamQueries.get_by_id(user.team_id),
+         :ok = DrChrono.init_integration(user.team_id, code),
+         {:ok, bot_user} = Bot.init_or_enable_bot(user.team_id) do
       subdomain_struct = StitchConnect.Web.PageService.subdomain_url_struct(team.slug)
 
       url =
