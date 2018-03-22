@@ -65,6 +65,12 @@ class Sidebar extends Component {
               <span>Billing</span>
             </Link>
           </ListGroupItem>
+          <ListGroupItem active={this._isSelected("/admin/integrations")}>
+            <Link to="/admin/integrations">
+              <i className="fa fa-database" />
+              <span>Integrations</span>
+            </Link>
+          </ListGroupItem>
         </ListGroup>
       </div>
     );
