@@ -77,8 +77,6 @@ defmodule StitchConnect.Web.Router do
     get "/privacy-policy", HomeController, :index
     get "/terms-of-service", HomeController, :index
 
-    get "/industries/*_industry_name", HomeController, :index
-
     get "/getstarted", AuthenticationController, :index
     get "/signin", AuthenticationController, :index
     get "/find-your-team", AuthenticationController, :index
