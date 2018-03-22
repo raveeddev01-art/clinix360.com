@@ -4,6 +4,7 @@ defmodule Stitch.Message do
   import Ecto.Query
   alias Ecto.Multi
   alias Stitch.{Repo, Message, Group, GroupUser, GroupQueries, Accounts.User}
+  alias Stitch.Analytics.Message, as: MessageAnalytics
 
   @valid_types ["chat", "system", "upload"]
   @unread_limit 30
@@ -126,7 +127,7 @@ defmodule Stitch.Message do
     group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
-    analytics_track_message_sent(user, group)
+    MessageAnalytics.track_message_sent(user, group)
 
     mentioned_user_ids =
       Message.Mention.get_mentioned_user_ids(
@@ -190,24 +191,6 @@ defmodule Stitch.Message do
   def create(_group_id, _user, _attrs, _active_user_ids) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
     {:error, :message, changeset, nil}
-  end
-
-  defp analytics_track_message_sent(user, group) do
-    Stitch.Task.start(fn ->
-      team_id = user.team_id
-      team = Stitch.TeamQueries.get_by_id(team_id)
-
-      properties = %{
-        "room_id" => Integer.to_string(group.id),
-        "room_slug" => group.slug,
-        "team_created_at" => team.inserted_at,
-        "team_id" => Integer.to_string(team.id),
-        "team_slug" => team.slug,
-        "user_created_at" => user.created_at
-      }
-
-      Stitch.Analytics.track(user.id, "Message Sent", properties)
-    end)
   end
 
   def message_changeset(message, %{"type" => "chat"} = attrs) do
