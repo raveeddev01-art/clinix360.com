@@ -200,8 +200,10 @@ defmodule Stitch.Message do
       properties = %{
         "room_id" => Integer.to_string(group.id),
         "room_slug" => group.slug,
+        "team_created_at" => team.inserted_at,
         "team_id" => Integer.to_string(team.id),
-        "team_slug" => team.slug
+        "team_slug" => team.slug,
+        "user_created_at" => user.created_at
       }
 
       Stitch.Analytics.track(user.id, "Message Sent", properties)

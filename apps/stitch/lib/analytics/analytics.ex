@@ -175,26 +175,33 @@ defmodule Stitch.Analytics do
 
   defp identify_traits(user, team, subscription) do
     status = if user.disabled, do: "disabled", else: "enabled"
-    %{"email"      => user.email,
-      "name"       => "#{user.first_name} #{user.last_name}",
+    %{
+      "created_at" => user.inserted_at,
+      "email"      => user.email,
       "first_name" => user.first_name,
       "last_name"  => user.last_name,
-      "status"     => status,
-      "role"       => List.to_string(user.roles),
+      "name"       => "#{user.first_name} #{user.last_name}",
       "phone"      => user.phone_number,
+      "plan"       => subscription.tier,
+      "role"       => List.to_string(user.roles),
+      "status"     => status,
+      "team_created_at" => team.inserted_at,
+      "team_id"    => Integer.to_string(team.id),
       "team_name"  => team.name,
       "team_slug"  => team.slug,
-      "team_id"    => Integer.to_string(team.id),
-      "plan"       => subscription.tier,
-      "created_at" => user.inserted_at}
+      "user_created_at" => user.inserted_at # duping created_at for consistency
+    }
   end
 
   defp group_traits(team, subscription) do
-    %{"name"       => team.name,
-      "slug"       => team.slug,
-      "team_id"    => Integer.to_string(team.id),
+    %{
+      "created_at" => team.inserted_at,
+      "name"       => team.name,
       "plan"       => subscription.tier,
-      "created_at" => team.inserted_at}
+      "slug"       => team.slug,
+      "team_created_at" => team.inserted_at, # duping created_at for consistency
+      "team_id"    => Integer.to_string(team.id),
+    }
   end
 
   @doc false

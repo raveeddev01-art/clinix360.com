@@ -105,7 +105,8 @@ defmodule Stitch.Accounts do
         "email"      => user.email,
         "team_id"    => Integer.to_string(team.id),
         "team_name"  => team.name,
-        "team_slug"  => team.slug
+        "team_slug"  => team.slug,
+        "team_created_at" => team.inserted_at
       }
       active_users = Stitch.TeamQueries.list_active_users(team)
       if Enum.count(active_users) == 1 do
@@ -120,13 +121,14 @@ defmodule Stitch.Accounts do
       team = Stitch.TeamQueries.get_by_id(team_id)
       active_users = Stitch.TeamQueries.list_active_users(team)
       properties = %{
+        "active_users" => length(active_users),
+        "email"      => user.email,
         "first_name" => user.first_name,
         "last_name"  => user.last_name,
-        "email"      => user.email,
+        "team_created_at" => team.inserted_at,
         "team_id"    => Integer.to_string(team.id),
         "team_name"  => team.name,
-        "team_slug"  => team.slug,
-        "active_users" => length(active_users)
+        "team_slug"  => team.slug
       }
       if Enum.count(active_users) > 1 do
         Stitch.Analytics.track(user.id, "Joined Team", properties)
