@@ -5,8 +5,7 @@ defmodule Stitch.Accounts do
 
   alias Stitch.Repo
   alias Stitch.Accounts.User
-
-  @analytics Application.get_env(:stitch, :analytics)
+  alias Stitch.Analytics.Accounts, as: AccountsAnalytics
 
   @doc """
   Create a user with only the email field set. The user is not
@@ -78,62 +77,14 @@ defmodule Stitch.Accounts do
               |> Enum.each(& Stitch.Invitation.invite_to_team(user.id, &1))
 
               {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
-              analytics_identify_and_group(user)
-              analytics_track_new_team_created(user)
-              analytics_track_joined_team(user)
+
+              AccountsAnalytics.track_signup(user)
               user
             {:error, changeset} ->
               {:error, changeset}
           end
         end
     end
-  end
-
-  defp analytics_identify_and_group(user) do
-    Stitch.Task.start(fn ->
-      @analytics.identify_and_group(user)
-    end)
-  end
-
-  defp analytics_track_new_team_created(user) do
-    Stitch.Task.start(fn ->
-      team_id = user.team_id
-      team = Stitch.TeamQueries.get_by_id(team_id)
-      properties = %{
-        "first_name" => user.first_name,
-        "last_name"  => user.last_name,
-        "email"      => user.email,
-        "team_id"    => Integer.to_string(team.id),
-        "team_name"  => team.name,
-        "team_slug"  => team.slug,
-        "team_created_at" => team.inserted_at
-      }
-      active_users = Stitch.TeamQueries.list_active_users(team)
-      if Enum.count(active_users) == 1 do
-        Stitch.Analytics.track(user.id, "Team Created", properties)
-      end
-    end)
-  end
-
-  defp analytics_track_joined_team(user) do
-    Stitch.Task.start(fn ->
-      team_id = user.team_id
-      team = Stitch.TeamQueries.get_by_id(team_id)
-      active_users = Stitch.TeamQueries.list_active_users(team)
-      properties = %{
-        "active_users" => length(active_users),
-        "email"      => user.email,
-        "first_name" => user.first_name,
-        "last_name"  => user.last_name,
-        "team_created_at" => team.inserted_at,
-        "team_id"    => Integer.to_string(team.id),
-        "team_name"  => team.name,
-        "team_slug"  => team.slug
-      }
-      if Enum.count(active_users) > 1 do
-        Stitch.Analytics.track(user.id, "Joined Team", properties)
-      end
-    end)
   end
 
   @doc """
