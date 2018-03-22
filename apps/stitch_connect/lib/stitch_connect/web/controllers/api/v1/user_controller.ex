@@ -3,6 +3,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   alias Stitch.Accounts.{User, Role}
   alias Stitch.{UserQueries, FeatureGateway}
   alias StitchConnect.Web.{TeamChannel, EventsChannel, GroupChannel, Endpoint}
+  alias Stitch.Analytics.User, as: UserAnalytics
   import Stitch.UserAuthorization, only: [can_update_user?: 2]
 
   action_fallback(StitchConnect.Web.Api.V1.FallbackController)
@@ -228,20 +229,8 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def request_demo(conn, %{
-        "fullName" => full_name,
-        "email" => email,
-        "phoneNumber" => phone_number,
-        "companyName" => company
-      }) do
-    properties = %{
-      "full_name" => full_name,
-      "email" => email,
-      "phone_number" => phone_number,
-      "company" => company
-    }
-
-    Stitch.Analytics.track("Requested Demo", properties)
+  def request_demo(conn, user_properties) do
+    UserAnalytics.track_demo_requested(user_properties)
     json(conn, %{status: "ok"})
   end
 
