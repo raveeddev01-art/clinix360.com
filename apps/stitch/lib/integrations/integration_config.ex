@@ -4,8 +4,7 @@ defmodule Stitch.IntegrationConfig do
   """
 
   use Ecto.Schema
-  import Ecto.Query
-  import Ecto.Changeset
+  import Ecto.{Query, Changeset}
   alias Stitch.{Integration, Group}
   alias Stitch.Repo
 
