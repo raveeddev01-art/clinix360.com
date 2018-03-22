@@ -1095,9 +1095,6 @@ class MessageStore {
     // Update favicon
     sidemenuStore.updateFavicon();
 
-    // Play notification audio
-    sidemenuStore.playNotificationAudioForNewMessage(newMessage);
-
     // Show notification card
     sidemenuStore.showNotificationCardForNewMessage(newMessage);
 
