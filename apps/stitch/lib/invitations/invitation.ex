@@ -7,6 +7,7 @@ defmodule Stitch.Invitation do
   import Ecto.{Changeset, Query}
   alias Stitch.Invitation.{SingleRoomGuestInvite, MultiRoomGuestInvite}
   alias Stitch.{Repo, Accounts.User, Team, Invitation, TeamAuthorization, GroupQueries}
+  alias Stitch.Analytics.Invitation, as: InvitationAnalytics
 
   @guest_roles Stitch.Accounts.Role.guests()
 
@@ -59,7 +60,7 @@ defmodule Stitch.Invitation do
          user_params = %{email: email, groups_as_guest: [group.id], team_id: team_id, roles: ["single-room-guest"]},
          {:user, {:ok, user}} <- {:user, Repo.insert(User.team_invite_changeset(%User{}, user_params))},
          {:ok, invitation} = Repo.insert(Invitation.changeset(%Invitation{}, %{user_id: user.id, team_id: team_id})) do
-      analytics_track_new_invitation(user, email)
+      InvitationAnalytics.track_new_invitation(user, email)
       Invitation.resend_invitation(inviter.id, invitation.id)
       {:ok, Repo.preload(invitation, :user)}
     else
@@ -96,7 +97,7 @@ defmodule Stitch.Invitation do
          user_params = %{email: email, groups_as_guest: group_ids, team_id: team_id, roles: ["multi-room-guest"]},
          {:user, {:ok, user}} <- {:user, Repo.insert(User.team_invite_changeset(%User{}, user_params))},
          {:ok, invitation} = Repo.insert(Invitation.changeset(%Invitation{}, %{user_id: user.id, team_id: team_id})) do
-      analytics_track_new_invitation(user, email)
+      InvitationAnalytics.track_new_invitation(user, email)
       Invitation.resend_invitation(inviter.id, invitation.id)
       {:ok, Repo.preload(invitation, :user)}
     else
@@ -144,32 +145,12 @@ defmodule Stitch.Invitation do
         {:ok, new_user} ->
           invitation_changeset = Invitation.changeset(%Invitation{}, %{user_id: new_user.id, team_id: team.id})
           {:ok, invitation} = Repo.insert(invitation_changeset)
-          analytics_track_new_invitation(user, email)
+          InvitationAnalytics.track_new_invitation(user, email)
           Invitation.resend_invitation(user_id, invitation.id)
       end
     else
       {:error, "User unauthorized to create a new invitation."}
     end
-  end
-
-  defp analytics_track_new_invitation(user, email) do
-    Stitch.Task.start(fn ->
-      team_id = user.team_id
-      team = Stitch.TeamQueries.get_by_id(team_id)
-      active_users = Stitch.TeamQueries.list_active_users(team)
-      properties = %{
-        "active_users" => length(active_users),
-        "first_name"   => user.first_name,
-        "last_name"    => user.last_name,
-        "email"        => email,
-        "team_id"      => Integer.to_string(team.id),
-        "team_name"    => team.name,
-        "team_slug"    => team.slug,
-        "team_created_at" => team.inserted_at,
-        "user_created_at"    => user.created_at
-      }
-      Stitch.Analytics.track(user.id, "Team Invitation Sent", properties)
-    end)
   end
 
   @doc """
