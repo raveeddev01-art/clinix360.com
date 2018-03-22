@@ -1,25 +1,22 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import Button from "react-bootstrap/lib/Button";
 
+import Header from "../components/header";
 import CreateTeam from "../components/create-team";
 import Feature from "../components/feature";
-import Footer from "../components/footer";
 import GetStarted from "../components/get-started";
-import Header from "../components/header";
+import Footer from "../components/footer";
 
 export default class Connect extends Component {
   render() {
-    const { header, flipped, subHeader, industryBodyText } = this.props;
-
     return (
       <div className="product-page">
         <Header />
         <div className="subheader">
           <div className="container">
             <div className="landing-message text-center">
-              <h1>{header}</h1>
-              <h3 className="m-b-30">{subHeader}</h3>
+              <h1>Connect</h1>
+              <h3 className="m-b-30">Team Communication</h3>
 
               <div className="m-b-20">
                 <CreateTeam />
@@ -42,11 +39,10 @@ export default class Connect extends Component {
         </div>
 
         <Feature
-          featureClassName={flipped ? "alt" : ""}
           heading="Secure all your healthcare communication in one place."
           image="/images/connect-feature-1.png"
         >
-          Stitch Connect offers {industryBodyText} teams a HIPAA-compliant, team
+          Stitch Connect offers healthcare teams a HIPAA-compliant, team
           communication experience across all devices. We complement a great
           user experience with advanced security architecture to bring the
           latest in communication technology to the healthcare world. We use AWS
@@ -56,7 +52,7 @@ export default class Connect extends Component {
         </Feature>
 
         <Feature
-          featureClassName={flipped ? "" : "alt"}
+          featureClassName="alt"
           heading="Organize your conversations by groups or 1-on-1."
           image="/images/connect-feature-2.png"
         >
@@ -68,7 +64,6 @@ export default class Connect extends Component {
         </Feature>
 
         <Feature
-          featureClassName={flipped ? "alt" : ""}
           heading="Upload images, audio, or video into your conversations."
           image="/images/connect-feature-3.png"
         >
@@ -81,7 +76,7 @@ export default class Connect extends Component {
         </Feature>
 
         <Feature
-          featureClassName={flipped ? "" : "alt"}
+          featureClassName="alt"
           heading="Notifications keep you in sync across all your devices."
           image="/images/connect-feature-4.png"
         >
@@ -99,17 +94,3 @@ export default class Connect extends Component {
     );
   }
 }
-
-Connect.propTypes = {
-  flipped: PropTypes.bool,
-  header: PropTypes.string,
-  industryBodyText: PropTypes.string,
-  subHeader: PropTypes.string
-};
-
-Connect.defaultProps = {
-  flipped: false,
-  header: "Connect",
-  industryBodyText: "healthcare",
-  subHeader: "Team Communication"
-};

@@ -126,18 +126,6 @@ class Header extends Component {
               </MenuItem>
             </NavDropdown>
 
-            <NavDropdown title="Industries" id="industries-dropdown">
-              <LinkContainer to="/industries/dentistry">
-                <MenuItem>Dentistry</MenuItem>
-              </LinkContainer>
-              <LinkContainer to="/industries/optometry">
-                <MenuItem>Optometry</MenuItem>
-              </LinkContainer>
-              <LinkContainer to="/industries/primary-care">
-                <MenuItem>Primary Care</MenuItem>
-              </LinkContainer>
-            </NavDropdown>
-
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
             <NavItem onClick={this.goToStartTrial} className="btn-trial">
