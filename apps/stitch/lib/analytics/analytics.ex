@@ -183,7 +183,7 @@ defmodule Stitch.Analytics do
       "name"       => "#{user.first_name} #{user.last_name}",
       "phone"      => user.phone_number,
       "plan"       => subscription.tier,
-      "role"       => List.to_string(user.roles),
+      "role"       => user.roles && List.to_string(user.roles),
       "status"     => status,
       "team_created_at" => team.inserted_at,
       "team_id"    => Integer.to_string(team.id),
