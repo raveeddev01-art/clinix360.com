@@ -38,7 +38,7 @@ class ImageFileAttachment extends Component {
     let placeholderStyle = null;
 
     if (height && width) {
-      let ratio = 1;
+      let ratio = 1; // ratio between original size to rendered size. Rendered max width & height is restricted by 360px
       if (height > 360) {
         ratio = height / 360;
       }
