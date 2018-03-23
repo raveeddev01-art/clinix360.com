@@ -2,12 +2,15 @@ defmodule StitchIntegrations.DrChrono.Token do
   require Logger
 
   def get_access_token(code) do
+    applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
+    applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
+
     # https://bkkilaru.drchrono.com/api-docs/v2016_06/documentation#otoken
     data =
       [
         "code=#{code}",
         "grant_type=authorization_code",
-        "redirect_uri=https://localhost.app:4443/_oauth/drchrono",
+        "redirect_uri=#{applicationScheme}#{applicationHost}/_oauth/drchrono",
         "client_id=#{System.get_env("DRCHRONO_CLIENT_ID")}",
         "client_secret=#{System.get_env("DRCHRONO_SECRET")}"
       ]
@@ -41,11 +44,14 @@ defmodule StitchIntegrations.DrChrono.Token do
   end
 
   def refresh_token(refresh_token) do
+    applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
+    applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
+
     data =
       [
         "refresh_token=#{refresh_token}",
         "grant_type=refresh_token",
-        "redirect_uri=https://localhost.app:4443/_oauth/drchrono",
+        "redirect_uri=#{applicationScheme}#{applicationHost}/_oauth/drchrono",
         "client_id=#{System.get_env("DRCHRONO_CLIENT_ID")}",
         "client_secret=#{System.get_env("DRCHRONO_SECRET")}"
       ]

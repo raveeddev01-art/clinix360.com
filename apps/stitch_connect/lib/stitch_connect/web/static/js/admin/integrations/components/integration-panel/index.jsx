@@ -19,7 +19,7 @@ class IntegrationPanel extends Component {
 
   render() {
     const { title, description } = this.props;
-    const redirect_uri = "https://localhost.app:4443/_oauth/drchrono";
+    const redirect_uri = `${applicationScheme}${applicationHost}/_oauth/drchrono`;
 
     return (
       <div className="panel-settings integrations-panel">
