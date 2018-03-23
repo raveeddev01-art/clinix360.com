@@ -19,6 +19,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
       Stitch.Bot.create(team_id, %{
         team_id: team_id,
         name: "Dr Chrono",
+        username: "drchrono",
         disabled: false,
         profile_image_url: "a"
       })
