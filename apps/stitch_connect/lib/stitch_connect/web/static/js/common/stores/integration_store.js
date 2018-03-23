@@ -16,7 +16,6 @@ class IntegrationStore {
   @action
   loadIntegrations = () => {
     return get(`/api/v1/integrations`).then(response => {
-      console.log(response.data);
       this.integrations = response.data;
     });
   };
