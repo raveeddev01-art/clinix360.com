@@ -3,10 +3,18 @@ defmodule StitchIntegrations.DrChrono do
   alias Stitch.Repo
   import Ecto.Query
   alias StitchIntegrations.DrChrono.Token
+  require Logger
 
   def init_integration(team_id, code) do
+    Logger.info("[dr-chrono] [team-#{team_id}] Initialize integration.")
+
     {:ok, response_values} = Token.get_access_token(code)
+    Logger.info("[dr-chrono] [team-#{team_id}] Got access token from API.")
+
     {:ok, integration} = insert_or_update_integration(team_id, response_values)
+
+    Logger.info("[dr-chrono] [team-#{team_id}] Created Integration settings in DB.")
+
     :ok
   end
 

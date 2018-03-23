@@ -1,4 +1,6 @@
 defmodule StitchIntegrations.DrChrono.Token do
+  require Logger
+
   def get_access_token(code) do
     # https://bkkilaru.drchrono.com/api-docs/v2016_06/documentation#otoken
     data =

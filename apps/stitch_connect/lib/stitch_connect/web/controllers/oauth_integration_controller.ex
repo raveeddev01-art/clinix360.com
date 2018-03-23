@@ -26,6 +26,7 @@ defmodule StitchConnect.Web.OAuthIntegrationController do
   end
 
   def provider_response(conn, _params) do
+    IO.puts("WE IN HERE")
     redirect(conn, to: "/")
   end
 end
