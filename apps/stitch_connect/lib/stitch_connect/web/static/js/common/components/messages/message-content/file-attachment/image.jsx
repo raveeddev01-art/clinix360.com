@@ -35,10 +35,21 @@ class ImageFileAttachment extends Component {
     } = this.props;
     const { showModal } = this.state;
     let holderStyle = null;
+    let placeholderStyle = null;
 
     if (height && width) {
+      let ratio = 1;
+      if (height > 360) {
+        ratio = height / 360;
+      }
+
+      placeholderStyle = {
+        width: width / ratio,
+        paddingTop: `${height / width * 100}%`,
+        backgroundImage: `url(${previewUrl})`
+      };
       holderStyle = {
-        maxHeight: 360 // Set to 360px to avoid having tall images take too much viewport space
+        maxHeight: Math.min(height, 360) // constraint holder size for when paddingTop is bigger than height
       };
     }
 
@@ -53,12 +64,20 @@ class ImageFileAttachment extends Component {
           </div>
         )}
         <div className="attachment-image-holder" style={holderStyle}>
-          <img
-            src={previewUrl || url}
-            className="img-responsive"
-            alt={filename}
-            onClick={this.onToggleModal}
-          />
+          {placeholderStyle ? (
+            <div
+              className="attachment-preview-placeholder"
+              style={placeholderStyle}
+              onClick={this.onToggleModal}
+            />
+          ) : (
+            <img
+              src={previewUrl || url}
+              className="img-responsive"
+              alt={filename}
+              onClick={this.onToggleModal}
+            />
+          )}
 
           <div className="attachment-actions">
             <OverlayTrigger
