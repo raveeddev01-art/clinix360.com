@@ -26,4 +26,15 @@ defmodule Stitch.Integration do
     |> cast(attrs, [:team_id, :name, :settings, :enabled])
     |> validate_required([:team_id, :name, :settings])
   end
+
+  def get_by_team_id(team_id) do
+    query =
+      from(
+        i in Stitch.Integration,
+        where: i.team_id == ^team_id,
+        select: i
+      )
+
+    Repo.all(query)
+  end
 end
