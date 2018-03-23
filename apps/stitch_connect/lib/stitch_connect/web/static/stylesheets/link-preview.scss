@@ -1,5 +1,4 @@
 .link-preview {
-  max-width: 600px;
   display: flex;
   flex-direction: row;
   position: relative;
@@ -7,15 +6,34 @@
   margin-left: -22px;
   padding-left: 22px;
 
-  .preview-line {
+  &__line {
     flex-shrink: 0;
     width: 4px;
-    background: rgba(0,0,0,.12);
+    background: rgba(0, 0, 0, 0.12);
     border-radius: 6px;
   }
 
-  .preview-body {
+  &__body {
     padding: 4px 0 4px 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__text {
+    flex: 1;
+    max-width: 600px;
+  }
+
+  &__image-container {
+    margin-left: 30px;
+    width: 150px;
+    padding: 1px;
+  }
+
+  &__image {
+    max-width: 60px;
+    max-height: 60px;
   }
 
   &__close {
