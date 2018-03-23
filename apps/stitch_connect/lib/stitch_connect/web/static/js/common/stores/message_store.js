@@ -161,7 +161,7 @@ class MessageStore {
 
   @computed
   get otherUserMessages() {
-    return this.messages.filter(m => m.user_id !== currentUser.id);
+    return this.messages.filter(m => m.user_id !== currentUser.id && m.type !== "system");
   }
 
   @computed
@@ -1074,7 +1074,7 @@ class MessageStore {
       this.unreadMessagesCount === 0 &&
       (newMessage.user_id === currentUser.id || this.isScrollBottom)
     ) {
-      this.markAsRead(newMessage.user_id === currentUser.id); // retain NML if msg is from other
+      this.markAsRead(true);
     } else if (
       newMessage.type !== "system" &&
       newMessage.user_id !== currentUser.id
