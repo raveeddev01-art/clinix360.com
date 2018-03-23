@@ -10,7 +10,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
         where: u.team_id == ^team_id,
         where: u.is_bot == true,
         where: u.first_name == "Dr",
-        where: u.first_name == "Chrono",
+        where: u.last_name == "Chrono",
         select: u
       )
       |> Repo.one()

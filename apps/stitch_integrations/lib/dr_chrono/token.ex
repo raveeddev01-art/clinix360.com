@@ -6,7 +6,7 @@ defmodule StitchIntegrations.DrChrono.Token do
     applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
 
     # https://bkkilaru.drchrono.com/api-docs/v2016_06/documentation#otoken
-    data =
+    params =
       [
         "code=#{code}",
         "grant_type=authorization_code",
@@ -17,7 +17,7 @@ defmodule StitchIntegrations.DrChrono.Token do
       |> Enum.join("&")
 
     response =
-      HTTPoison.post("https://drchrono.com/o/token/", data, [
+      HTTPoison.post("https://drchrono.com/o/token/", params, [
         {"Content-Type", "application/x-www-form-urlencoded"}
       ])
 
@@ -47,7 +47,7 @@ defmodule StitchIntegrations.DrChrono.Token do
     applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
     applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
 
-    data =
+    params =
       [
         "refresh_token=#{refresh_token}",
         "grant_type=refresh_token",
@@ -58,7 +58,7 @@ defmodule StitchIntegrations.DrChrono.Token do
       |> Enum.join("&")
 
     response =
-      HTTPoison.post("https://drchrono.com/o/token/", data, [
+      HTTPoison.post("https://drchrono.com/o/token/", params, [
         {"Content-Type", "application/x-www-form-urlencoded"}
       ])
 
