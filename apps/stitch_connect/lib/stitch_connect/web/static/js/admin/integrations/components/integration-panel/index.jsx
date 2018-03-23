@@ -19,6 +19,7 @@ class IntegrationPanel extends Component {
 
   render() {
     const { title, description } = this.props;
+    const redirect_uri = `${applicationScheme}${applicationHost}/_oauth/drchrono`;
 
     return (
       <div className="panel-settings integrations-panel">
@@ -32,13 +33,13 @@ class IntegrationPanel extends Component {
             </Button>
           </LinkContainer>
         ) : (
-          <Button
+          <a
+            href={`https://drchrono.com/o/authorize?redirect_uri=${redirect_uri}&client_id=${window.dr_chrono_client_id}&response_type=code`}
             bsStyle="primary"
             className="action-edit btn-fancy pull-right"
-            onClick={this._enableIntegration}
           >
             Connect
-          </Button>
+          </a>
         )}
 
         <h3>{title}</h3>
