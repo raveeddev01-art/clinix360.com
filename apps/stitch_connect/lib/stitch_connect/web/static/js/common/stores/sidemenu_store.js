@@ -225,25 +225,6 @@ class SidemenuStore {
     this.notificationAudio.play();
   }
 
-  playNotificationAudioForNewMessage(newMessage) {
-    if (!this.shouldNotify(newMessage)) {
-      return;
-    }
-
-    const { notificationStore } = this.rootStore;
-    const desktopNotification = notificationStore.getGroupPrefById(
-      newMessage.group_id
-    );
-    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
-
-    if (
-      desktopNotification === "everything" ||
-      (desktopNotification === "mentions" && isMention)
-    ) {
-      this.playNotificationAudio();
-    }
-  }
-
   showNotificationCard(title, body, tag, duration = 5000, cb = null) {
     const notification = new Notification(title, {
       body,
@@ -255,6 +236,8 @@ class SidemenuStore {
     if (cb) {
       notification.onclick = cb;
     }
+
+    this.playNotificationAudio();
 
     setTimeout(() => {
       notification.close();
@@ -364,9 +347,6 @@ class SidemenuStore {
 
     // Update Favicon
     this.updateFavicon();
-
-    // Play notification audio
-    this.playNotificationAudioForNewMessage(newMessage);
 
     // Show notification card
     this.showNotificationCardForNewMessage(newMessage);
