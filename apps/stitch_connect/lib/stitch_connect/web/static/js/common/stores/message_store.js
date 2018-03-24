@@ -537,10 +537,14 @@ class MessageStore {
 
   @action
   markAsUnread = messageId => {
-    this.groupChannel.push("mark_as_unread", {
-      group_id: this.group.id,
-      message_id: messageId
-    });
+    post(
+      `/api/v1/groups/${this.group.id}/mark_as_unread`,
+      {
+        body: {
+          message_id: messageId
+        }
+      }
+    );
   };
 
   /**
@@ -571,7 +575,7 @@ class MessageStore {
       this.updateGroupData({ new_message_line_at: this.lastReadAt });
     }
 
-    this.groupChannel.push("mark_as_read", { group_id: this.group.id });
+    post(`/api/v1/groups/${this.group.id}/mark_as_read`);
   };
 
   sendMessage = (text, additionalFields = {}) => {
