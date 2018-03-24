@@ -18,6 +18,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(StitchConnect.Plug.Authenticate)
+    plug(StitchConnect.Plug.ActivityTracker)
   end
 
   pipeline :admin do
@@ -43,6 +44,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug(:fetch_session)
     plug(StitchConnect.Plug.ApiAuthenticate)
     plug(StitchConnect.Plug.EnsureUnlocked)
+    plug(StitchConnect.Plug.ActivityTracker)
   end
 
   pipeline :authenticated_locked_api do
@@ -58,6 +60,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug(:fetch_session)
     plug(StitchConnect.Plug.ApiAuthenticate)
     plug(StitchConnect.Plug.TeamAdminOnly)
+    plug(StitchConnect.Plug.ActivityTracker)
   end
 
   # Stitch Staff Admin subdomain routes

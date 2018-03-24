@@ -152,6 +152,13 @@ defmodule Stitch.TeamQueries do
   @spec list_teams :: [Team.t()]
   def list_teams, do: Repo.all(Team)
 
+  @spec team_ids :: [pos_integer]
+  def team_ids do
+    Team
+    |> select([t], t.id)
+    |> Repo.all
+  end
+
   @doc """
   Deactivate all geust users
   """

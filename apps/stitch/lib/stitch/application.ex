@@ -11,6 +11,7 @@ defmodule Stitch.Application do
       supervisor(Task.Supervisor, [[name: Stitch.Exports.Supervisor]]),
       supervisor(Stitch.Analytics.Supervisor, []),
       supervisor(Stitch.Redix.Supervisor, []),
+      worker(Stitch.ActivityTrackerWorker, []),
     ]
 
     opts = [strategy: :one_for_one, name: Stitch.Supervisor]
