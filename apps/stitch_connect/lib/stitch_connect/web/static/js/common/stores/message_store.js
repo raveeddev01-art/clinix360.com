@@ -13,6 +13,7 @@ import flatten from "lodash/flatten";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 import unionBy from "lodash/unionBy";
+import memoize from "lodash/memoize";
 
 // lodash-fp imports only used for flow
 import groupBy from "lodash/fp/groupBy";
@@ -145,7 +146,7 @@ class MessageStore {
     return this.group.new_message_line_at;
   }
 
-  get markedAsUnread() {
+  get groupMarkedAsUnread() {
     return this.group.marked_as_unread;
   }
 
@@ -577,6 +578,15 @@ class MessageStore {
 
     post(`/api/v1/groups/${this.group.id}/mark_as_read`);
   };
+
+  // returns the same throttledMarkAsRead if the
+  // same arguments are passed in. If different args
+  // are passed in, a new throttledMarkAsRead comes out
+  // (so you can throttle marking for one group, but
+  // it does not affect any others)
+  getThrottledMarkAsRead = memoize(() => {
+    return throttle(this.markAsRead, 500);
+  })
 
   sendMessage = (text, additionalFields = {}) => {
     const messageText = this.encodeMessage(text);
@@ -1015,11 +1025,16 @@ class MessageStore {
       this.mountedAllMessages &&
       this.messageVisibility[this.firstUnreadMessage.id];
 
-    if (!this.markedAsUnread && isFirstMsgVisible) {
-      // If first unread message is visible, mark messages as read after 1s delay
-      // but, leave the new message line
+    // If first unread message is visible, mark messages as read after 1s delay
+    // but, leave the new message line
+    if (!this.groupMarkedAsUnread && isFirstMsgVisible) {
+      // for each group.id return a new throttled markAsRead
+      // so that you dont accidentally throttle setting a different
+      // group to unread (switching active group and re-scrolling quickly)
+      const throttledMarkAsRead = this.getThrottledMarkAsRead(this.group.id);
+
       this.timeoutManager.setTimeout(() => {
-        this.markAsRead(false);
+        throttledMarkAsRead(false);
       }, 1000);
     }
   }
