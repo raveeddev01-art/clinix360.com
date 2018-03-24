@@ -126,6 +126,24 @@ class GroupsStore {
     }, 0);
   }
 
+  @computed
+  get isCurrentGroupDeactivated() {
+    if (!this.currentGroup) {
+      return false;
+    }
+
+    if (this.currentGroup.type === "regular") {
+      return false;
+    }
+
+    const { usersStore } = this.rootStore;
+
+    return this.currentGroup.users.every(u => {
+      const user = usersStore.users.find(s => s.id === u.id && s.disabled);
+      return u.id === currentUser.id || !!user;
+    });
+  }
+
   // //////////
   // ACTIONS //
   // /////// //
