@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
 import { LinkContainer } from "react-router-bootstrap";
 import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
+@inject("integrationStore")
+@observer
 class IntegrationPanel extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      authenticated: false
-    };
   }
 
   _enableIntegration = () => {
@@ -23,7 +22,7 @@ class IntegrationPanel extends Component {
 
     return (
       <div className="panel-settings integrations-panel">
-        {this.state.authenticated ? (
+        {this.props.integrationStore.drChronoEnabled ? (
           <LinkContainer to="/admin/integrations/drchrono">
             <Button
               bsStyle="primary"

@@ -114,6 +114,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/pinned_messages", PinnedMessageController, :index)
     get("/mentions", MentionController, :index)
 
+    get("/integrations", IntegrationController, :index)
+
     get("/users/", UserController, :index)
     put("/users/notification-preference", NotificationPreferenceController, :update_global)
     post("/users/deactivate-my-account", UserController, :deactivate_my_account)

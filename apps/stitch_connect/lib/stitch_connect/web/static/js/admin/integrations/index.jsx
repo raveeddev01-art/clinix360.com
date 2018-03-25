@@ -5,11 +5,16 @@ import Alert from "react-bootstrap/lib/Alert";
 
 import IntegrationPanel from "./components/integration-panel";
 
-@inject("userStore", "titleStore", "adminPanelStore")
+@inject("userStore", "titleStore", "adminPanelStore", "integrationStore")
 class Integrations extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
+    this.props.integrationStore.loadIntegrations();
   }
 
   onSuccess = message => {
