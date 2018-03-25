@@ -4,7 +4,6 @@ import { inject, observer } from "mobx-react";
 import { LinkContainer } from "react-router-bootstrap";
 import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
-import find from "lodash/find";
 
 @inject("integrationStore")
 @observer
@@ -23,10 +22,7 @@ class IntegrationPanel extends Component {
 
     return (
       <div className="panel-settings integrations-panel">
-        {find(this.props.integrationStore.integrations, {
-          name: "drchrono",
-          enabled: true
-        }) !== undefined ? (
+        {this.props.integrationStore.drChronoEnabled ? (
           <LinkContainer to="/admin/integrations/drchrono">
             <Button
               bsStyle="primary"

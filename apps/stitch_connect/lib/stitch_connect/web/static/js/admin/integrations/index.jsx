@@ -9,13 +9,12 @@ import IntegrationPanel from "./components/integration-panel";
 class Integrations extends Component {
   constructor(props) {
     super(props);
-
-    this.props.integrationStore.loadIntegrations();
   }
 
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
+    this.props.integrationStore.loadIntegrations();
   }
 
   onSuccess = message => {
