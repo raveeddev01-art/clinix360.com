@@ -1,0 +1,10 @@
+<script src="https://cdn.ravenjs.com/3.24.0/raven.min.js" crossorigin="anonymous"></script>
+<script>
+  var SENTRY_PUBLIC_DSN = '<%= System.get_env("SENTRY_PUBLIC_DSN") %>';
+  if (SENTRY_PUBLIC_DSN) {
+    Raven.config(SENTRY_PUBLIC_DSN).install();
+    if (window.currentUser) {
+      Raven.setUserContext(currentUser);
+    }
+  }
+</script>
