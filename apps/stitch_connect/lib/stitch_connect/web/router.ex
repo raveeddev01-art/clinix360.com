@@ -94,6 +94,9 @@ defmodule StitchConnect.Web.Router do
     # oAuth Integration routes.
     get("/_oauth/:provider", OAuthIntegrationController, :provider_response)
 
+    # Webhook routes.
+    get("/webhooks/drchrono", WebhookController, :drchrono)
+
     # get "/signup/phone-number", AuthenticationController, :index
   end
 
