@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import omit from "lodash/omit";
+import history from "lib/history";
 
 import FormControl from "react-bootstrap/lib/FormControl";
 import Form from "react-bootstrap/lib/Form";
@@ -56,7 +57,9 @@ class DrChronoForm extends Component {
       settings: omit(this.state, "groupId")
     };
 
-    this.props.integrationStore.createNewIntegration(params);
+    this.props.integrationStore.createNewIntegration(params).then(() => {
+      history.push(`/admin/integrations/drchrono`);
+    });
   };
 
   render() {

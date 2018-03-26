@@ -9,6 +9,7 @@ import find from "lodash/find";
 
 class IntegrationStore {
   @observable integrations = [];
+  @observable integrationConfigs = [];
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -23,9 +24,22 @@ class IntegrationStore {
 
   @action
   createNewIntegration = params => {
-    console.log("Creating new integration");
-    console.log(params);
-    // START HERE SERGIO.
+    return post(
+      `/api/v1/integrations/${params.integrationId}/integration-config`,
+      {
+        body: {
+          group_id: params.groupId,
+          settings: params.settings
+        }
+      }
+    )
+      .then(response => {
+        this.integrationConfigs.push(response.data);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
   };
 
   @computed

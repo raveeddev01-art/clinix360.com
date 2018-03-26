@@ -116,6 +116,12 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get("/integrations", IntegrationController, :index)
 
+    post(
+      "/integrations/:integration_id/integration-config",
+      IntegrationConfigController,
+      :create
+    )
+
     get("/users/", UserController, :index)
     put("/users/notification-preference", NotificationPreferenceController, :update_global)
     post("/users/deactivate-my-account", UserController, :deactivate_my_account)
