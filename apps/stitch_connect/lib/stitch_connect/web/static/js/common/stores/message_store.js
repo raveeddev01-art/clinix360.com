@@ -163,7 +163,9 @@ class MessageStore {
 
   @computed
   get otherUserMessages() {
-    return this.messages.filter(m => m.user_id !== currentUser.id && m.type !== "system");
+    return this.messages.filter(
+      m => m.user_id !== currentUser.id && m.type !== "system"
+    );
   }
 
   @computed
@@ -539,14 +541,11 @@ class MessageStore {
 
   @action
   markAsUnread = messageId => {
-    post(
-      `/api/v1/groups/${this.group.id}/mark_as_unread`,
-      {
-        body: {
-          message_id: messageId
-        }
+    post(`/api/v1/groups/${this.group.id}/mark_as_unread`, {
+      body: {
+        message_id: messageId
       }
-    );
+    });
   };
 
   /**
@@ -587,10 +586,10 @@ class MessageStore {
   // it does not affect any others)
   getDebouncedMarkAsRead = memoize(() => {
     return debounce(this.markAsRead, 250, {
-      'maxWait': 500,
-      'leading': true
+      maxWait: 500,
+      leading: true
     });
-  })
+  });
 
   sendMessage = (text, additionalFields = {}) => {
     const messageText = this.encodeMessage(text);
