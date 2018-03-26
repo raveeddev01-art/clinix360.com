@@ -34,6 +34,10 @@ module.exports = [
       new webpack.ProvidePlugin({
         jQuery: "jquery",
         $: "jquery"
+      }),
+      new webpack.DefinePlugin({
+        // @TODO use this key when implementing error page with react 16 error boundary
+        'process.env.SENTRY_PUBLIC_DSN': JSON.stringify(process.env.SENTRY_PUBLIC_DSN)
       })
     ]
   },

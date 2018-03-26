@@ -69,6 +69,7 @@ export TWILIO_AUTH_TOKEN=
 
 export INTERCOM_IDENTITY_VERIFICATION_SECRET=
 export INTERCOM_APP_ID=
+export SENTRY_PUBLIC_DSN=
 
 export REDIS_URL= # optional
 ```
