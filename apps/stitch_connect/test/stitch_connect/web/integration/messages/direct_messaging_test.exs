@@ -1,7 +1,7 @@
 defmodule StitchConnect.Web.Messages.DirectMessagingTest do
   use StitchConnect.Web.FeatureCase
 
-  defp message(msg), do: css(".message-container > .message", text: msg)
+  # defp message(msg), do: css(".message-container > .message", text: msg)
 
   test "setting last read to now, in a brand new DM doesn't cause an error", %{metadata: metadata} do
     team = Stitch.Team.Onboarding.create_team("Some Team Name", "someslug")

@@ -10,8 +10,8 @@ defmodule Stitch.BotTest do
   describe "Stitch.Bot.team_bots?/2" do
     test "returns list of bots for a team" do
       team = insert(:team)
-      {:ok, bot} = Bot.create(team.id, %{name: "Athena Health", profile_image_url: "a"})
-      {:ok, bot} = Bot.create(team.id, %{name: "Doctor Chrono", profile_image_url: "a"})
+      {:ok, _bot} = Bot.create(team.id, %{name: "Athena Health", profile_image_url: "a"})
+      {:ok, _bot} = Bot.create(team.id, %{name: "Doctor Chrono", profile_image_url: "a"})
       insert(:user, %{is_bot: true, team_id: team.id, disabled: true})
       bots = Bot.team_bots(team.id)
       assert length(bots) == 3
@@ -19,7 +19,7 @@ defmodule Stitch.BotTest do
 
     test "it also returns disabled bots" do
       team = insert(:team)
-      {:ok, bot} = Bot.create(team.id, %{name: "Athena Health", profile_image_url: "a"})
+      {:ok, _bot} = Bot.create(team.id, %{name: "Athena Health", profile_image_url: "a"})
       insert(:user, %{is_bot: true, team_id: team.id, disabled: true})
       bots = Bot.team_bots(team.id)
       assert length(bots) == 2
