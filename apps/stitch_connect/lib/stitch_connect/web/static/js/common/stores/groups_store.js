@@ -147,6 +147,10 @@ class GroupsStore {
 
     const { usersStore } = this.rootStore;
 
+    if (this.currentGroup.users.length === 1) { // self-dm
+      return false;
+    }
+
     return this.currentGroup.users.every(u => {
       const user = usersStore.users.find(s => s.id === u.id && s.disabled);
       return u.id === currentUser.id || !!user;
