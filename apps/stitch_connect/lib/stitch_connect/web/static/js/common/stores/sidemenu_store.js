@@ -8,7 +8,10 @@ import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
 
-import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../lib/constants";
+import {
+  NOTIFICATION_CARD_DURATION,
+  ROOM_MENU_ITEM_ANCHOR_PREFIX
+} from "../../lib/constants";
 import history from "../../lib/history";
 
 class SidemenuStore {
@@ -223,7 +226,9 @@ class SidemenuStore {
 
     this.playNotificationAudio();
 
-    setTimeout(notification.close, 5000);
+    setTimeout(() => {
+      notification.close()
+    }, NOTIFICATION_CARD_DURATION);
   }
 
   showNotificationCardForNewMessage(message) {
@@ -251,7 +256,7 @@ class SidemenuStore {
     const isDirect = this.isSingleDM(group) || this.isMultiDM(group);
 
     const notifyOnMessageType =
-      notifyOnAll || (notifyOnMention && isMention) || isDirect;
+      notifyOnAll || (notifyOnMention && (isMention || isDirect));
 
     // SHORT CIRCUIT UNLESS CORRECT TYPE
     if (!notifyOnMessageType) {
