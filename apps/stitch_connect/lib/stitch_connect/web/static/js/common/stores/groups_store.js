@@ -94,6 +94,7 @@ class GroupsStore {
     return this.visibleGroups
       .filter(group => group.type !== "regular" && !group.is_favorite)
       .sort((group1, group2) => {
+        // Comparing and sorting if it's a self-DM ("You") goes first
         if (
           (group1.type === "dm" && group1.user_count === 1) >
           (group2.type === "dm" && group2.user_count === 1)
@@ -104,6 +105,8 @@ class GroupsStore {
           (group2.type === "dm" && group2.user_count === 1)
         )
           return 1;
+
+        // Then sorting by DM name
         if (group1.name < group2.name) return -1;
         if (group1.name > group2.name) return 1;
         return 0;
