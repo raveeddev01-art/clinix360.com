@@ -9,8 +9,8 @@ defmodule Stitch.FeatureGateway.Connect do
     if "connect.guests" in FeatureGateway.available_features(team) do
       true
     else
-      if team.subscription.tier == "BASIC" do
-        {:error, {:insufficient_tier, ["PREMIUM", "POWER"]}}
+      if team.subscription.tier == "FREE" do
+        {:error, {:insufficient_tier, ["STANDARD", "PREMIUM"]}}
       else
         {:error, :subscription_expired}
       end
@@ -31,7 +31,7 @@ defmodule Stitch.FeatureGateway.Connect do
   end
 
   defp guests(features, team) do
-    if team.subscription.tier in ["TRIAL", "PREMIUM", "POWER"] do
+    if team.subscription.tier in ["STANDARD", "PREMIUM"] do
       ["connect.guests" | features]
     else
       features
@@ -39,7 +39,7 @@ defmodule Stitch.FeatureGateway.Connect do
   end
 
   defp private_rooms(features, team) do
-    if team.subscription.tier in ["TRIAL", "BASIC", "PREMIUM", "POWER"] do
+    if team.subscription.tier in ["FREE", "STANDARD", "PREMIUM"] do
       ["connect.private_rooms" | features]
     else
       features

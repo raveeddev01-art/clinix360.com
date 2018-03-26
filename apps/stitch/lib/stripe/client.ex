@@ -149,7 +149,8 @@ defmodule Stitch.Stripe.Client do
       subscription_line_item_id: subscription_line_item_id,
       estimated_invoice_amount: nil,
       status: subscription.status,
-      valid_until: DateTime.from_unix!(subscription.current_period_end),
+      # TODO: ensure this is fine
+      valid_until: Ssubscription.current_period_end && DateTime.from_unix!(subscription.current_period_end),
       renews: !subscription.cancel_at_period_end
     }
   end
@@ -168,10 +169,10 @@ defmodule Stitch.Stripe.Client do
 
   ## Examples
 
-      iex> update_subscription_plan("cus_1234567", "sub_1234567", "power_monthly")
+      iex> update_subscription_plan("cus_1234567", "sub_1234567", "premium_monthly")
       {:ok, %{subscription_id: "sub_1234567", subscription_line_item_id: "si_1234567", status: "active", valid_until: %DateTime{...}, renews: true}}
 
-      iex> update_subscription_plan("cus_1234567", "sub_1234567", "power_monthly", trial_end_date: %DateTime{...})
+      iex> update_subscription_plan("cus_1234567", "sub_1234567", "premium_monthly", trial_end_date: %DateTime{...})
       {:ok, %{subscription_id: "sub_1234567", subscription_line_item_id: "si_1234567", status: "trialing", valid_until: %DateTime{...}, renews: true}}
 
   """

@@ -7,9 +7,8 @@ defmodule Stitch.Billing.BillingTest do
     team = insert(:team)
     result = Billing.setup_new_team(team)
     assert {:ok, subscription} = result
-    assert DateTime.compare(subscription.valid_until, DateTime.utc_now()) == :gt
-    assert DateTime.compare(subscription.valid_until, subscription.trial_valid_until) == :eq
-    assert subscription.tier == "TRIAL"
+    assert subscription.valid_until == nil
+    assert subscription.tier == "FREE"
     refute subscription.renews
   end
 
@@ -39,26 +38,26 @@ defmodule Stitch.Billing.BillingTest do
   end
 
   describe "modify_subscription/2" do
-    test "creates a stripe subscription when on a trial" do
-      subscription = insert(:trial_subscription)
+    test "creates a stripe subscription when on a free" do
+      subscription = insert(:free_subscription)
       insert(:card, team: subscription.team)
-      params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
+      params = %{tier: "FREE", renewal_frequency: "MONTHLY"}
       assert {:ok, result} = Billing.modify_subscription(subscription, params)
       assert result.subscription_id
-      assert result.tier == "BASIC"
-      assert result.renewal_frequency == "MONTHLY"
-      assert DateTime.compare(result.valid_until, subscription.valid_until) == :gt
+      assert result.tier == "FREE"
     end
 
     test "gives errors when expected params are missing/invalid" do
-      subscription = insert(:trial_subscription)
+      subscription = insert(:free_subscription)
       insert(:card, team: subscription.team)
       assert {:error, result} = Billing.modify_subscription(subscription)
       assert elem(result.errors[:tier], 0) =~ "blank"
       assert elem(result.errors[:renewal_frequency], 0) =~ "blank"
 
-      assert {:error, result} =
-               Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
+      assert {:error, result} = Billing.modify_subscription(
+        subscription,
+        %{tier: "bad", renewal_frequency: "bad"}
+      )
 
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
@@ -66,8 +65,10 @@ defmodule Stitch.Billing.BillingTest do
       subscription = insert(:subscription)
       insert(:card, team: subscription.team)
 
-      assert {:error, result} =
-               Billing.modify_subscription(subscription, %{tier: "bad", renewal_frequency: "bad"})
+      assert {:error, result} = Billing.modify_subscription(
+        subscription,
+        %{tier: "bad", renewal_frequency: "bad"}
+      )
 
       assert elem(result.errors[:tier], 0) =~ "expects"
       assert elem(result.errors[:renewal_frequency], 0) =~ "expects"
@@ -79,82 +80,21 @@ defmodule Stitch.Billing.BillingTest do
 
       assert {:ok, sub} =
                Billing.modify_subscription(subscription, %{
-                 tier: "POWER",
+                 tier: "PREMIUM",
                  renewal_frequency: "MONTHLY"
                })
 
-      assert sub.tier == "POWER"
+      assert sub.tier == "PREMIUM"
       assert sub.renewal_frequency == "MONTHLY"
     end
 
     test "requires a card on file" do
-      subscription = insert(:trial_subscription)
-      params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
+      subscription = insert(:free_subscription)
+      params = %{tier: "STANDARD", renewal_frequency: "MONTHLY"}
       assert {:error, :card_required} = Billing.modify_subscription(subscription, params)
     end
 
-    test "guests are not deactivated when downgrading to non-expired TRIAL" do
-      subscription = insert(:trial_subscription)
-      insert(:card, team: subscription.team)
-      team = subscription.team
-
-      insert(:user, team: team, roles: ["single-room-guest"])
-      insert(:user, team: team, roles: ["multi-room-guest"])
-      insert(:user, team: team, roles: ["member"])
-
-      assert {:ok, sub} =
-               Billing.modify_subscription(subscription, %{
-                 tier: "TRIAL",
-                 renewal_frequency: "MONTHLY"
-               })
-
-      assert sub.tier == "TRIAL"
-      assert sub.renewal_frequency == "MONTHLY"
-
-      query =
-        from(
-          u in User,
-          where: u.team_id == ^team.id,
-          where: u.disabled == false
-        )
-
-      users = Repo.all(query)
-
-      assert length(users) == 3
-    end
-
-    test "guests are deactivated when downgrading to expired TRIAL" do
-      end_date = Timex.shift(DateTime.utc_now(), days: -1)
-      subscription = insert(:trial_subscription, trial_valid_until: end_date)
-      insert(:card, team: subscription.team)
-      team = subscription.team
-
-      insert(:user, team: team, roles: ["single-room-guest"])
-      insert(:user, team: team, roles: ["multi-room-guest"])
-      insert(:user, team: team, roles: ["member"])
-
-      assert {:ok, sub} =
-               Billing.modify_subscription(subscription, %{
-                 tier: "TRIAL",
-                 renewal_frequency: "MONTHLY"
-               })
-
-      assert sub.tier == "TRIAL"
-      assert sub.renewal_frequency == "MONTHLY"
-
-      query =
-        from(
-          u in User,
-          where: u.team_id == ^team.id,
-          where: u.disabled == false
-        )
-
-      users = Repo.all(query)
-
-      assert length(users) == 3 # original: 1 TODO refactor with new freemium model.
-    end
-
-    test "guests are deactivated when downgrading to BASIC" do
+    test "guests are deactivated when downgrading to FREE" do
       subscription = insert(:subscription)
       insert(:card, team: subscription.team)
       team = subscription.team
@@ -165,12 +105,11 @@ defmodule Stitch.Billing.BillingTest do
 
       assert {:ok, sub} =
                Billing.modify_subscription(subscription, %{
-                 tier: "BASIC",
+                 tier: "FREE",
                  renewal_frequency: "MONTHLY"
                })
 
-      assert sub.tier == "BASIC"
-      assert sub.renewal_frequency == "MONTHLY"
+      assert sub.tier == "FREE"
 
       query =
         from(
@@ -182,66 +121,6 @@ defmodule Stitch.Billing.BillingTest do
       users = Repo.all(query)
 
       assert length(users) == 1
-    end
-
-    test "guests are not deactivated when downgrading to PREMIUM" do
-      subscription = insert(:subscription)
-      insert(:card, team: subscription.team)
-      team = subscription.team
-
-      insert(:user, team: team, roles: ["single-room-guest"])
-      insert(:user, team: team, roles: ["multi-room-guest"])
-      insert(:user, team: team, roles: ["member"])
-
-      assert {:ok, sub} =
-               Billing.modify_subscription(subscription, %{
-                 tier: "PREMIUM",
-                 renewal_frequency: "MONTHLY"
-               })
-
-      assert sub.tier == "PREMIUM"
-      assert sub.renewal_frequency == "MONTHLY"
-
-      query =
-        from(
-          u in User,
-          where: u.team_id == ^team.id,
-          where: u.disabled == false
-        )
-
-      users = Repo.all(query)
-
-      assert length(users) == 3
-    end
-
-    test "guests are not deactivated when downgrading to POWER" do
-      subscription = insert(:subscription)
-      insert(:card, team: subscription.team)
-      team = subscription.team
-
-      insert(:user, team: team, roles: ["single-room-guest"])
-      insert(:user, team: team, roles: ["multi-room-guest"])
-      insert(:user, team: team, roles: ["member"])
-
-      assert {:ok, sub} =
-               Billing.modify_subscription(subscription, %{
-                 tier: "POWER",
-                 renewal_frequency: "MONTHLY"
-               })
-
-      assert sub.tier == "POWER"
-      assert sub.renewal_frequency == "MONTHLY"
-
-      query =
-        from(
-          u in User,
-          where: u.team_id == ^team.id,
-          where: u.disabled == false
-        )
-
-      users = Repo.all(query)
-
-      assert length(users) == 3
     end
   end
 
@@ -266,9 +145,9 @@ defmodule Stitch.Billing.BillingTest do
       assert {:error, :expired} = Billing.cancel_subscription(subscription)
     end
 
-    test "errors when the subscription is a trial" do
-      subscription = insert(:trial_subscription)
-      assert {:error, :trial} = Billing.cancel_subscription(subscription)
+    test "errors when the subscription is a free" do
+      subscription = insert(:free_subscription)
+      assert {:error, :free} = Billing.cancel_subscription(subscription)
     end
   end
 
@@ -296,9 +175,9 @@ defmodule Stitch.Billing.BillingTest do
       assert DateTime.compare(result.valid_until, subscription.valid_until) == :gt
     end
 
-    test "errors when the subscription is a trial" do
-      subscription = insert(:trial_subscription)
-      assert {:error, :trial} = Billing.renew_subscription(subscription)
+    test "errors when the subscription is a free" do
+      subscription = insert(:free_subscription)
+      assert {:error, :free} = Billing.renew_subscription(subscription)
     end
   end
 
@@ -428,9 +307,9 @@ defmodule Stitch.Billing.BillingTest do
       assert :ok == Billing.update_subscriber_count(team)
     end
 
-    test "ignores trial/unpaid subscriptions" do
-      trial_subscription = insert(:trial_subscription)
-      refute Billing.update_subscriber_count(trial_subscription.team)
+    test "ignores unpaid subscriptions" do
+      free_subscription = insert(:free_subscription)
+      refute Billing.update_subscriber_count(free_subscription.team)
     end
   end
 
@@ -489,7 +368,7 @@ defmodule Stitch.Billing.BillingTest do
 
     test "create, list", %{team: team} do
       params = %{
-        plan: "basic_yearly",
+        plan: "standard_yearly",
         team_id: team.id,
         invoice_id: "inv_xxxxxxxxxxxy",
         amount: 12000,

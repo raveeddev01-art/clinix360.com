@@ -9,24 +9,19 @@ defmodule Stitch.Billing do
   alias Stitch.Billing.{Plan, Subscription, PaymentMethod, PaymentHistory}
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
-  # 5 years in seconds
-  @trial_duration 5 * 365 * 24 * 60 * 60
   @billable_roles ["admin", "member", "multi-room-guest"]
 
   @doc """
-  Configures a newly created team with a trial.
+  Configures a newly created team with a free account.
   """
   @spec setup_new_team(Team.t()) :: Subscription.t()
   def setup_new_team(%Team{id: team_id, name: team_name}) do
     customer_id = @stripe_client.create_customer(team_id, team_name)
-    end_time = trial_end_datetime()
 
     params = %{
-      valid_until: end_time,
-      trial_valid_until: end_time,
       team_id: team_id,
       customer_id: customer_id,
-      tier: "TRIAL"
+      tier: "FREE"
     }
 
     params
@@ -42,13 +37,6 @@ defmodule Stitch.Billing do
         @stripe_client.delete_customer(customer_id)
         {:error, changeset}
     end
-  end
-
-  defp trial_end_datetime do
-    DateTime.utc_now()
-    |> DateTime.to_unix()
-    |> Kernel.+(@trial_duration)
-    |> DateTime.from_unix!()
   end
 
   @doc """
@@ -100,13 +88,13 @@ defmodule Stitch.Billing do
   @doc """
   Modifies a subscription for a team.
 
-  ## Upgrading From a Trial
+  ## Upgrading From a Free
 
-  If a subscription is in a trial, the subscription will be upgraded to a paid subscription.
+  If a subscription is freemmium, the subscription will be upgraded to a paid subscription.
   A map with `:tier` and `:renewal_frequency` is expected.
 
       %{
-        tier: "BASIC" | "PREMIUM" | "POWER",
+        tier: "STANDARD" | "PREMIUM",
         renewal_frequency: "MONTHLY" | "YEARLY"
       }
 
@@ -115,13 +103,13 @@ defmodule Stitch.Billing do
   A subscription can change tiers. A map with `:tier` and `:renewal_frequency` is expected.
 
       %{
-        tier: "BASIC" | "PREMIUM" | "POWER",
+        tier: "STANDARD" | "PREMIUM",
         renewal_frequency: "MONTHLY" | "YEARLY"
       }
 
   ## Examples
 
-      iex> modify_subscription(%Subscription{...}, %{tier: "POWER", renewal_frequency: "MONTHLY"})
+      iex> modify_subscription(%Subscription{...}, %{tier: "PREMIUM", renewal_frequency: "MONTHLY"})
       {:ok, %Subscription{...}}
 
   """
@@ -129,7 +117,8 @@ defmodule Stitch.Billing do
           {:ok, Subscription.t()} | {:error, Ecto.Changeset.t() | :card_required}
   def modify_subscription(subscription, params \\ %{})
 
-  def modify_subscription(%Subscription{tier: "TRIAL"} = subscription, params) do
+  def modify_subscription(%Subscription{tier: "FREE"} = subscription, params) do
+    # TODO: make sure downgrading to free works with this fn
     do_modify_subscription(subscription, params, &create_subscription/2)
   end
 
@@ -140,8 +129,10 @@ defmodule Stitch.Billing do
   defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, params, fun) when is_function(fun, 2) do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
          {:count, count} when count > 0 <- {:count, card_count(subscription.team_id)},
-         plan_id = Plan.id(changeset.changes),
+         plan_id <- Plan.id(changeset.changes),
          {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
+
+
       result =
         subscription
         |> subscription_update_changeset(changeset.changes, stripe_sub_params)
@@ -168,24 +159,15 @@ defmodule Stitch.Billing do
     customer_id = subscription.customer_id
     subscription = Repo.preload(subscription, :team)
     user_count = count_billable_users(subscription.team)
-    opts = subscription_opts(subscription)
 
-    @stripe_client.create_subscription(customer_id, plan_id, user_count, opts)
+    @stripe_client.create_subscription(customer_id, plan_id, user_count)
   end
 
   defp update_subscription(subscription, plan_id) do
     customer_id = subscription.customer_id
     subscription_id = subscription.subscription_id
-    opts = subscription_opts(subscription)
 
-    @stripe_client.update_subscription_plan(customer_id, subscription_id, plan_id, opts)
-  end
-
-  defp subscription_opts(subscription) do
-    case DateTime.compare(subscription.trial_valid_until, DateTime.utc_now()) do
-      :gt -> [trial_end_date: subscription.trial_valid_until]
-      _ -> []
-    end
+    @stripe_client.update_subscription_plan(customer_id, subscription_id, plan_id)
   end
 
   defp modify_guests_subscription(subscription) do
@@ -209,8 +191,8 @@ defmodule Stitch.Billing do
 
   """
   @spec cancel_subscription(Subscription.t()) ::
-          {:ok, Subscription.t()} | {:error, Changeset.t() | :expired | :trial}
-  def cancel_subscription(%Subscription{tier: "TRIAL"}), do: {:error, :trial}
+          {:ok, Subscription.t()} | {:error, Changeset.t() | :expired | :free}
+  def cancel_subscription(%Subscription{tier: "FREE"}), do: {:error, :free}
   def cancel_subscription(%Subscription{subscription_id: nil}), do: {:error, :expired}
 
   def cancel_subscription(
@@ -248,8 +230,8 @@ defmodule Stitch.Billing do
 
   """
   @spec renew_subscription(Subscription.t()) ::
-          {:ok, Subscription.t()} | {:error, Changeset.t() | :trial}
-  def renew_subscription(%Subscription{tier: "TRIAL"}), do: {:error, :trial}
+          {:ok, Subscription.t()} | {:error, Changeset.t() | :free}
+  def renew_subscription(%Subscription{tier: "FREE"}), do: {:error, :free}
 
   def renew_subscription(%Subscription{subscription_id: nil} = subscription) do
     plan_id = Plan.id(subscription)
