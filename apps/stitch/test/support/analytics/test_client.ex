@@ -14,4 +14,6 @@ defmodule Stitch.Analytics.TestClient do
   @impl Stitch.Analytics.Behaviour
   def track(_user_id, event, _properties), do: {:ok, event}
 
+  @impl Stitch.Analytics.Behaviour
+  def track(event, _properties), do: {:ok, event}
 end
