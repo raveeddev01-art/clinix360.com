@@ -3,6 +3,7 @@ defmodule StitchConnect.Web.TeamChannel do
   use Appsignal.Instrumentation.Decorators
   alias StitchConnect.Web.Presence
   alias StitchConnect.Web.Api.V1.UserView
+  alias Stitch.Accounts.ActivityTracker
   @endpoint StitchConnect.Web.Endpoint
 
   def join("team:lobby:" <> team_id, _, socket) do
@@ -75,6 +76,7 @@ defmodule StitchConnect.Web.TeamChannel do
       if new_meta == current_meta do
         socket
       else
+        ActivityTracker.async_update_activity(socket.assigns.current_user)
         socket = update_connection_meta(socket, new_meta)
         push socket, "presence_state", Presence.list(socket)
         socket
@@ -91,6 +93,7 @@ defmodule StitchConnect.Web.TeamChannel do
 
   @decorate channel_action()
   def handle_in("unlocked", _params, socket) do
+    ActivityTracker.async_update_activity(socket.assigns.current_user)
     broadcast_from(socket, "unlocked", %{sessionId: socket.assigns.session_id})
     {:noreply, socket}
   end

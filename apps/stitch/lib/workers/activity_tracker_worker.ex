@@ -25,7 +25,7 @@ defmodule Stitch.ActivityTrackerWorker do
     {:noreply, state}
   end
 
-  defp schedule_work do
+  defp schedule_cleanup do
     Process.send_after(self(), :clean, @clean_interval * 1000)
   end
 end
