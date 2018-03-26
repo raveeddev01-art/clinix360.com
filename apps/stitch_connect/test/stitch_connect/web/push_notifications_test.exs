@@ -186,10 +186,10 @@ defmodule StitchConnect.Web.PushNotificationsTest do
       message = insert(:message, group: group)
       user_ids = [user.id, other_user.id, disabled_user.id]
 
-      PushNotifications.notify_users(group, message, user_ids)
-
       expected_body = "Sergio Tapia sent a new room message."
       expected_title = "Foogroup"
+
+      PushNotifications.notify_users(group, message, user_ids)
 
       assert_receive [
         %APNS.Notification{
@@ -197,7 +197,10 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           device_token: "ios-token",
           payload: %{
             "aps" => %{
-              "alert" => expected_body,
+              "alert" => %{
+                "body" => ^expected_body,
+                "title" => ^expected_title
+              },
               "badge" => 0,
               "sound" => "chime"
             },
@@ -209,7 +212,10 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           payload: %{
             :ejson => ejson,
             "aps" => %{
-              "alert" => expected_body,
+              "alert" => %{
+                "body" => ^expected_body,
+                "title" => ^expected_title
+              },
               "badge" => 0,
               "sound" => "chime"
             }
@@ -226,8 +232,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
             "data" => %{
               "badge" => "0",
               "room_notification_count" => 0,
-              "message" => expected_body,
-              "title" => expected_title,
+              "message" => ^expected_body,
               "ejson" => ^encoded_ejson,
               "message_id" => _,
               "user_id" => _,
@@ -241,8 +246,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
             "data" => %{
               "badge" => "0",
               "room_notification_count" => 0,
-              "message" => expected_body,
-              "title" => expected_title,
+              "message" => ^expected_body,
               "ejson" => ^encoded_ejson
             }
           }
@@ -254,7 +258,10 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           device_token: "other-ios-token",
           payload: %{
             "aps" => %{
-              "alert" => expected_body,
+              "alert" => %{
+                "body" => ^expected_body,
+                "title" => "Foogroup"
+              },
               "badge" => 0,
               "sound" => "chime"
             },
@@ -266,7 +273,10 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           payload: %{
             :ejson => ejson,
             "aps" => %{
-              "alert" => expected_body,
+              "alert" => %{
+                "body" => ^expected_body,
+                "title" => "Foogroup"
+              },
               "badge" => 0,
               "sound" => "chime"
             }
@@ -283,8 +293,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           "data" => %{
             "badge" => "0",
             "room_notification_count" => 0,
-            "message" => expected_body,
-            "title" => expected_title,
+            "message" => ^expected_body,
             "ejson" => ^encoded_ejson
           }
         }
@@ -296,8 +305,7 @@ defmodule StitchConnect.Web.PushNotificationsTest do
           "data" => %{
             "badge" => "0",
             "room_notification_count" => 0,
-            "message" => expected_body,
-            "title" => expected_title,
+            "message" => ^expected_body,
             "ejson" => ^encoded_ejson
           }
         }
@@ -327,7 +335,6 @@ defmodule StitchConnect.Web.PushNotificationsTest do
             "badge" => "0",
             "room_notification_count" => 0,
             "message" => "Sergio Tapia uploaded a file.",
-            "title" => "Foogroup",
             "ejson" => _
           }
         }
@@ -388,7 +395,6 @@ defmodule StitchConnect.Web.PushNotificationsTest do
             "badge" => "0",
             "room_notification_count" => 0,
             "message" => "Sergio Tapia uploaded a file.",
-            "title" => "Sergio Tapia",
             "ejson" => _,
             "message_id" => _,
             "user_id" => _,
@@ -419,7 +425,6 @@ defmodule StitchConnect.Web.PushNotificationsTest do
             "badge" => "0",
             "room_notification_count" => 0,
             "message" => "Sergio Tapia sent you a direct message.",
-            "title" => "Sergio Tapia",
             "ejson" => _
           }
         }
@@ -446,7 +451,6 @@ defmodule StitchConnect.Web.PushNotificationsTest do
             "badge" => "0",
             "room_notification_count" => 0,
             "message" => "Sergio Tapia mentioned you in a room message.",
-            "title" => "RoomName",
             "ejson" => _
           }
         }
