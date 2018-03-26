@@ -91,11 +91,20 @@ class GroupsStore {
 
   @computed
   get directGroups() {
+    const isSelfDM = group => group.type === "dm" && group.users.length === 1;
+
     return this.visibleGroups
       .filter(group => group.type !== "regular" && !group.is_favorite)
-      .sort(
-        (group1, group2) => group2.user_count === 1 || group1.name > group2.name
-      );
+      .sort((group1, group2) => {
+        // Sorting and comparing if it's a self-DM, "You" goes first
+        if (isSelfDM(group1) > isSelfDM(group2)) return -1;
+        if (isSelfDM(group1) < isSelfDM(group2)) return 1;
+
+        // Then sorts DMs in alphabetical order
+        if (group1.name < group2.name) return -1;
+        if (group1.name > group2.name) return 1;
+        return 0;
+      });
   }
 
   @computed
