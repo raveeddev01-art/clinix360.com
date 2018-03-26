@@ -8,7 +8,6 @@ defmodule StitchConnect.Plug.ActivityTracker do
   """
 
   alias Stitch.Accounts.ActivityTracker
-  require Logger
 
   def init(default), do: default
 

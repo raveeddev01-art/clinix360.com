@@ -4,7 +4,6 @@ defmodule Stitch.ActivityTrackerWorker do
   """
 
   use GenServer
-  require Logger
 
   alias Stitch.Accounts.ActivityTracker
 
@@ -16,12 +15,12 @@ defmodule Stitch.ActivityTrackerWorker do
   end
 
   def init(state) do
-    schedule_work()
+    schedule_cleanup()
     {:ok, state}
   end
 
   def handle_info(:clean, state) do
-    schedule_work()
+    schedule_cleanup()
     ActivityTracker.clean_stale()
     {:noreply, state}
   end

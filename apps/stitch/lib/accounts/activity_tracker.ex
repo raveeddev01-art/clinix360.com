@@ -30,6 +30,8 @@ defmodule Stitch.Accounts.ActivityTracker do
   def update_activity(%User{} = user) do
     active_until = :erlang.system_time(:seconds) + @activity_timeout
 
+    # Creates or update the user_id in the team's sorted set with the specified score
+    # The score is the timestamp until the user is considered active.
     result =
       Redix.command([
         "ZADD",
@@ -52,6 +54,11 @@ defmodule Stitch.Accounts.ActivityTracker do
   def clean_stale() do
     current_timestamp = :erlang.system_time(:seconds)
 
+    # For each team's sorted set, remove out-dated records using ZREMRANGEBYSCORE.
+    # A record is outdated if its score is lower than the current timestamp.
+    #
+    # "ZREMRANGEBYSCORE Removes all elements in the sorted set stored at key with
+    # a score between min and max" — Redis doc.
     commands =
       TeamQueries.team_ids()
       |> Enum.map(fn team_id ->
@@ -79,6 +86,12 @@ defmodule Stitch.Accounts.ActivityTracker do
   @spec active_user_ids(pos_integer) :: list
   def active_user_ids(team_id) do
     current_timestamap = to_string(:erlang.system_time(:seconds))
+
+    # Selects active users using the score as an index.
+    # A user is active if their score in the set is higher than the current timestamp.
+    #
+    # "ZRANGEBYSCORE Returns all the elements in the sorted set at key with a score between
+    # min and max" — Redis doc.
     result =
       Redix.command([
         "ZRANGEBYSCORE",
