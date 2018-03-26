@@ -965,7 +965,6 @@ class MessageStore {
     }
 
     this.messageElements[messageId] = { div: messageDiv };
-    this.onMessageShow(messageId);
   }
 
   @action
