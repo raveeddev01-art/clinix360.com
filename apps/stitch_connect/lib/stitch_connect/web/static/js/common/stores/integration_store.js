@@ -21,6 +21,12 @@ class IntegrationStore {
     });
   };
 
+  @action
+  createNewIntegration = params => {
+    console.log("Creating new integration");
+    console.log(params);
+  };
+
   @computed
   get drChronoEnabled() {
     return (

@@ -9,7 +9,7 @@ import Col from "react-bootstrap/lib/Col";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import Button from "react-bootstrap/lib/Button";
 
-@inject("titleStore", "adminPanelStore", "groupsStore")
+@inject("titleStore", "adminPanelStore", "groupsStore", "integrationStore")
 class DrChronoForm extends Component {
   constructor(props) {
     super(props);
@@ -26,14 +26,14 @@ class DrChronoForm extends Component {
       patientMedicationCreate: false,
       patientMedicationModify: false,
       clinicalNoteLock: false,
-      clinicalNoteUnlock: false
+      clinicalNoteUnlock: false,
+      groupId: undefined
     };
   }
 
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
-    console.log(this.props.groupsStore.normalGroups);
   }
 
   onChange = event => {
@@ -46,17 +46,21 @@ class DrChronoForm extends Component {
     });
   };
 
+  _handleFormSubmit = event => {
+    event.preventDefault();
+    const params = this.state;
+    this.props.integrationStore.createNewIntegration(params);
+  };
+
   render() {
     return (
-      <Form horizontal>
+      <Form horizontal onSubmit={this._handleFormSubmit}>
         <FormGroup>
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Authentication</h4>
           </Col>
           <Col sm={7}>
-            <span className="integrations-panel__status">
-              Authenticated to drchrono as: <strong>username</strong>
-            </span>
+            <span className="integrations-panel__status">Authenticated</span>
           </Col>
         </FormGroup>
 
@@ -191,7 +195,11 @@ class DrChronoForm extends Component {
             <p>Notification that come in from drchrono will be posted here.</p>
           </Col>
           <Col sm={7}>
-            <FormControl componentClass="select">
+            <FormControl
+              name="groupId"
+              onChange={this.onChange}
+              componentClass="select"
+            >
               {this.props.groupsStore.normalGroups.map(group => (
                 <option key={`option-group-${group.id}`} value={group.id}>
                   {group.name}
@@ -201,7 +209,12 @@ class DrChronoForm extends Component {
           </Col>
         </FormGroup>
 
-        <Button bsStyle="primary" bsSize="lg" className="pull-right">
+        <Button
+          type="submit"
+          bsStyle="primary"
+          bsSize="lg"
+          className="pull-right"
+        >
           Save Integration
         </Button>
       </Form>
