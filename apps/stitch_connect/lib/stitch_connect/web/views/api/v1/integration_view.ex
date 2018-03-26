@@ -8,6 +8,7 @@ defmodule StitchConnect.Web.Api.V1.IntegrationView do
 
   def integration_json(integration) do
     %{
+      id: integration.id,
       name: integration.name,
       enabled: integration.enabled
     }

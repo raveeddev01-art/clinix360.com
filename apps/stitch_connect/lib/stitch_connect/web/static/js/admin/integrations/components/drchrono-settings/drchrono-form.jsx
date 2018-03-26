@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
+import omit from "lodash/omit";
 
 import FormControl from "react-bootstrap/lib/FormControl";
 import Form from "react-bootstrap/lib/Form";
@@ -34,6 +35,7 @@ class DrChronoForm extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
+    this.props.integrationStore.loadIntegrations();
   }
 
   onChange = event => {
@@ -48,7 +50,12 @@ class DrChronoForm extends Component {
 
   _handleFormSubmit = event => {
     event.preventDefault();
-    const params = this.state;
+    const params = {
+      groupId: this.state.groupId,
+      integrationId: this.props.integrationStore.drChronoIntegration.id,
+      settings: omit(this.state, "groupId")
+    };
+
     this.props.integrationStore.createNewIntegration(params);
   };
 

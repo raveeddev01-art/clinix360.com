@@ -25,6 +25,7 @@ class IntegrationStore {
   createNewIntegration = params => {
     console.log("Creating new integration");
     console.log(params);
+    // START HERE SERGIO.
   };
 
   @computed
@@ -35,6 +36,13 @@ class IntegrationStore {
         enabled: true
       }) !== undefined
     );
+  }
+
+  @computed
+  get drChronoIntegration() {
+    return find(this.integrations, {
+      name: "drchrono"
+    });
   }
 }
 
