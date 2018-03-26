@@ -279,6 +279,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/admin/analytics", AdminController, :index)
 
     get("/admin/integrations", AdminController, :index, as: :admin_integrations)
+    get("/admin/integrations/:integration/new", AdminController, :index)
     get("/admin/integrations/:slug", AdminController, :index)
     get("/admin/integrations/:slug/edit", AdminController, :index)
 
