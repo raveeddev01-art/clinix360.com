@@ -91,14 +91,23 @@ class GroupsStore {
 
   @computed
   get directGroups() {
-    const groups = this.visibleGroups.filter(
-      group => group.type !== "regular" && !group.is_favorite
-    );
-
-    const getYou = groups.filter(group => group.user_count === 1);
-    const getRooms = groups.filter(group => group.user_count !== 1);
-
-    return getYou.concat(getRooms);
+    return this.visibleGroups
+      .filter(group => group.type !== "regular" && !group.is_favorite)
+      .sort((group1, group2) => {
+        if (
+          (group1.type === "dm" && group1.user_count === 1) >
+          (group2.type === "dm" && group2.user_count === 1)
+        )
+          return -1;
+        if (
+          (group1.type === "dm" && group1.user_count === 1) <
+          (group2.type === "dm" && group2.user_count === 1)
+        )
+          return 1;
+        if (group1.name < group2.name) return -1;
+        if (group1.name > group2.name) return 1;
+        return 0;
+      });
   }
 
   @computed
