@@ -41,6 +41,6 @@ defmodule Stitch.Accounts.PasswordResetTokenTest do
   end
 
   defp day_ago, do: Timex.shift(NaiveDateTime.utc_now, days: -1)
-  defp half_an_hour_ago, do: Timex.shift(NaiveDateTime.utc_now, minutes: -30)
+  # defp half_an_hour_ago, do: Timex.shift(NaiveDateTime.utc_now, minutes: -30)
   defp minute_ago, do: Timex.shift(NaiveDateTime.utc_now, minutes: -1)
 end
