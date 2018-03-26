@@ -7,13 +7,14 @@
 import { observable, action, computed, when, extendObservable } from "mobx";
 import moment from "moment";
 
+import debounce from "lodash/debounce";
+import flatten from "lodash/flatten";
 import flow from "lodash/flow";
 import last from "lodash/last";
-import flatten from "lodash/flatten";
+import memoize from "lodash/memoize";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 import unionBy from "lodash/unionBy";
-import memoize from "lodash/memoize";
 
 // lodash-fp imports only used for flow
 import groupBy from "lodash/fp/groupBy";
@@ -579,13 +580,16 @@ class MessageStore {
     post(`/api/v1/groups/${this.group.id}/mark_as_read`);
   };
 
-  // returns the same throttledMarkAsRead if the
+  // returns the same debouncedMarkAsRead if the
   // same arguments are passed in. If different args
-  // are passed in, a new throttledMarkAsRead comes out
-  // (so you can throttle marking for one group, but
+  // are passed in, a new debouncedMarkAsRead comes out
+  // (so you can debounce marking for one group, but
   // it does not affect any others)
-  getThrottledMarkAsRead = memoize(() => {
-    return throttle(this.markAsRead, 500);
+  getDebouncedMarkAsRead = memoize(() => {
+    return debounce(this.markAsRead, 250, {
+      'maxWait': 500,
+      'leading': true
+    });
   })
 
   sendMessage = (text, additionalFields = {}) => {
@@ -1028,13 +1032,13 @@ class MessageStore {
     // If first unread message is visible, mark messages as read after 1s delay
     // but, leave the new message line
     if (!this.groupMarkedAsUnread && isFirstMsgVisible) {
-      // for each group.id return a new throttled markAsRead
-      // so that you dont accidentally throttle setting a different
+      // for each group.id return a new debounced markAsRead
+      // so that you dont accidentally debounce setting a different
       // group to unread (switching active group and re-scrolling quickly)
-      const throttledMarkAsRead = this.getThrottledMarkAsRead(this.group.id);
+      const debouncedMarkAsRead = this.getDebouncedMarkAsRead(this.group.id);
 
       this.timeoutManager.setTimeout(() => {
-        throttledMarkAsRead(false);
+        debouncedMarkAsRead(false);
       }, 1000);
     }
   }
