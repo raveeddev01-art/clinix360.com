@@ -116,6 +116,12 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get("/integrations", IntegrationController, :index)
 
+    post(
+      "/integrations/:integration_id/integration-config",
+      IntegrationConfigController,
+      :create
+    )
+
     get("/users/", UserController, :index)
     put("/users/notification-preference", NotificationPreferenceController, :update_global)
     post("/users/deactivate-my-account", UserController, :deactivate_my_account)
@@ -279,6 +285,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/admin/analytics", AdminController, :index)
 
     get("/admin/integrations", AdminController, :index, as: :admin_integrations)
+    get("/admin/integrations/:integration/new", AdminController, :index)
     get("/admin/integrations/:slug", AdminController, :index)
     get("/admin/integrations/:slug/edit", AdminController, :index)
 

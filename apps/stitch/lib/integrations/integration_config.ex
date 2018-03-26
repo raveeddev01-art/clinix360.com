@@ -5,7 +5,7 @@ defmodule Stitch.IntegrationConfig do
 
   use Ecto.Schema
   import Ecto.{Query, Changeset}
-  alias Stitch.{Integration, Group}
+  alias Stitch.{Integration, IntegrationConfig, Group}
   alias Stitch.Repo
 
   @type t :: %__MODULE__{}
@@ -22,5 +22,11 @@ defmodule Stitch.IntegrationConfig do
     struct
     |> cast(attrs, [:integration_id, :group_id, :settings])
     |> validate_required([:integration_id, :group_id, :settings])
+  end
+
+  def insert_integration_config(attrs) do
+    %IntegrationConfig{}
+    |> changeset(attrs)
+    |> Repo.insert()
   end
 end

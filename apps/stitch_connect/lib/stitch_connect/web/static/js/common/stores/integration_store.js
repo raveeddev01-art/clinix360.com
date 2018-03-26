@@ -9,6 +9,7 @@ import find from "lodash/find";
 
 class IntegrationStore {
   @observable integrations = [];
+  @observable integrationConfigs = [];
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -21,6 +22,26 @@ class IntegrationStore {
     });
   };
 
+  @action
+  createNewIntegration = params => {
+    return post(
+      `/api/v1/integrations/${params.integrationId}/integration-config`,
+      {
+        body: {
+          group_id: params.groupId,
+          settings: params.settings
+        }
+      }
+    )
+      .then(response => {
+        this.integrationConfigs.push(response.data);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
+  };
+
   @computed
   get drChronoEnabled() {
     return (
@@ -29,6 +50,13 @@ class IntegrationStore {
         enabled: true
       }) !== undefined
     );
+  }
+
+  @computed
+  get drChronoIntegration() {
+    return find(this.integrations, {
+      name: "drchrono"
+    });
   }
 }
 
