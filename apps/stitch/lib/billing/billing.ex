@@ -9,8 +9,8 @@ defmodule Stitch.Billing do
   alias Stitch.Billing.{Plan, Subscription, PaymentMethod, PaymentHistory}
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
-  # 14 days in seconds
-  @trial_duration 14 * 24 * 60 * 60
+  # 5 years in seconds
+  @trial_duration 5 * 365 * 24 * 60 * 60
   @billable_roles ["admin", "member", "multi-room-guest"]
 
   @doc """
