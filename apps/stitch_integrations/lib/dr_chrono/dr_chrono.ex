@@ -18,7 +18,11 @@ defmodule StitchIntegrations.DrChrono do
         reason
       }\nDuration: #{duration}\nNotes: #{notes}"
 
+    IO.inspect(params)
     new_message(message)
+    # Enum.each(groups, fn group ->
+    #   new_message(group, message)
+    # end)
   end
 
   def handle_webhook("APPOINTMENT_DELETE", params) do
