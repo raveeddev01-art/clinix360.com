@@ -1,4 +1,4 @@
-defmodule StitchConnect.Web.Api.V1.WebhookController do
+defmodule StitchConnect.Web.WebhookController do
   use StitchConnect.Web, :controller
 
   action_fallback(StitchConnect.Web.Api.FallbackController)
