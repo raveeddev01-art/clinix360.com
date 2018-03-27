@@ -5,9 +5,84 @@ defmodule StitchIntegrations.DrChrono do
   alias StitchIntegrations.DrChrono.Token
   require Logger
 
-  def handle_webhook(event_type, params) do
+  def handle_webhook("APPOINTMENT_DELETE", params) do
     IO.inspect(event_type)
     IO.inspect(params)
+  end
+
+  def handle_webhook("APPOINTMENT_MODIFY", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    scheduled_time = payload["scheduled_time"]
+    reason = payload["reason"]
+    duration = payload["duration"]
+    notes = payload["notes"]
+
+    message =
+      "Event: Appointment modified\nPatient: #{patient}\nScheduled: #{scheduled_time} minutes\nReason: #{
+        reason
+      }\nDuration: #{duration}\nNotes: #{notes}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("CLINICAL_NOTE_LOCK", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook("CLINICAL_NOTE_UNLOCK", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook("PATIENT_ALLERGY_CREATE", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook("PATIENT_ALLERGY_MODIFY", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook("PATIENT_CREATE", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook("PATIENT_MODIFY", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook("PATIENT_PROBLEM_MODIFY", params) do
+    IO.inspect(event_type)
+    IO.inspect(params)
+  end
+
+  def handle_webhook(_event_type, _params) do
+    Logger.info("[dr-chrono] [webhook] Unidentified event_type, can't handle this webhook.")
+  end
+
+  def new_message(message) do
+    IO.puts("Creating new bot message")
+    IO.inspect(message)
   end
 
   def init_integration(team_id, code) do
