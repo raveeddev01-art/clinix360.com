@@ -35,18 +35,27 @@ export default class Homepage extends Component {
                 className="create-team-mobile"
                 block
               >
-                Create Team
+                Get Started
               </Button>
             </div>
 
             <p className="m-b-30">
-              Get started with an unlimited number of people on our free 2-week
-              trial.
+              Stitch is free to use for as long as you want and with an
+              unlimited number of people.
             </p>
 
             <div className="mbp">
-              <ProgressiveImage src="/images/homepage-platform.png" placeholder="/images/homepage-platform-lowres.png">
-                {(src) => <img src={src} alt='Stitch Platform' className="img-responsive"/>}
+              <ProgressiveImage
+                src="/images/homepage-platform.png"
+                placeholder="/images/homepage-platform-lowres.png"
+              >
+                {src => (
+                  <img
+                    src={src}
+                    alt="Stitch Platform"
+                    className="img-responsive"
+                  />
+                )}
               </ProgressiveImage>
             </div>
           </div>
@@ -83,8 +92,17 @@ export default class Homepage extends Component {
                 </div>
 
                 <div className="flex-item">
-                  <ProgressiveImage src="/images/connect-homepage-test.png" placeholder="images/connect-homepage-test-lowres.png">
-                    {(src) => <img src={src} alt='Stitch Connect' className="img-responsive"/>}
+                  <ProgressiveImage
+                    src="/images/connect-homepage-test.png"
+                    placeholder="images/connect-homepage-test-lowres.png"
+                  >
+                    {src => (
+                      <img
+                        src={src}
+                        alt="Stitch Connect"
+                        className="img-responsive"
+                      />
+                    )}
                   </ProgressiveImage>
                 </div>
               </div>
@@ -118,8 +136,17 @@ export default class Homepage extends Component {
                 </div>
 
                 <div className="flex-item">
-                  <ProgressiveImage src="/images/engage-homepage.png" placeholder="images/engage-homepage-lowres.png">
-                    {(src) => <img src={src} alt='Stitch Engage' className="img-responsive"/>}
+                  <ProgressiveImage
+                    src="/images/engage-homepage.png"
+                    placeholder="images/engage-homepage-lowres.png"
+                  >
+                    {src => (
+                      <img
+                        src={src}
+                        alt="Stitch Engage"
+                        className="img-responsive"
+                      />
+                    )}
                   </ProgressiveImage>
                 </div>
               </div>
@@ -153,8 +180,17 @@ export default class Homepage extends Component {
                 </div>
 
                 <div className="flex-item">
-                  <ProgressiveImage src="/images/manage-homepage.png" placeholder="images/manage-homepage-lowres.png">
-                    {(src) => <img src={src} alt='Stitch Manage' className="img-responsive"/>}
+                  <ProgressiveImage
+                    src="/images/manage-homepage.png"
+                    placeholder="images/manage-homepage-lowres.png"
+                  >
+                    {src => (
+                      <img
+                        src={src}
+                        alt="Stitch Manage"
+                        className="img-responsive"
+                      />
+                    )}
                   </ProgressiveImage>
                 </div>
               </div>

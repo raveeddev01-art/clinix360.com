@@ -29,13 +29,13 @@ export default class Connect extends Component {
                   className="create-team-mobile"
                   block
                 >
-                  Create Team
+                  Get Started
                 </Button>
               </div>
 
               <p className="m-b-0">
-                Get started with an unlimited number of people on our free
-                2-week trial.
+                Stitch is free to use for as long as you want and with an
+                unlimited number of people.
               </p>
             </div>
           </div>

@@ -141,7 +141,7 @@ class Header extends Component {
             <NavItem onClick={this.goToSignIn}>Sign In</NavItem>
 
             <NavItem onClick={this.goToStartTrial} className="btn-trial">
-              Create Team
+              Get Started
             </NavItem>
           </Nav>
         </Navbar.Collapse>

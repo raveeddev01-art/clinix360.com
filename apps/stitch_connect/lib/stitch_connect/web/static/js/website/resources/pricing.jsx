@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 
-import Header from "../components/header";
-import Subheader from "../components/subheader";
-import GetStarted from "../components/get-started";
-import Footer from "../components/footer";
-
 import Tab from "react-bootstrap/lib/Tab";
 import Nav from "react-bootstrap/lib/Nav";
 import Row from "react-bootstrap/lib/Row";
 import Col from "react-bootstrap/lib/Col";
 import NavItem from "react-bootstrap/lib/NavItem";
 import Button from "react-bootstrap/lib/Button";
+import Header from "../components/header";
+import Subheader from "../components/subheader";
+import GetStarted from "../components/get-started";
+import Footer from "../components/footer";
 
 export default class Pricing extends Component {
   constructor(props) {
@@ -89,10 +88,10 @@ export default class Pricing extends Component {
                       <Row>
                         <Col sm={4}>
                           <div className="plan text-center">
-                            <h3>Basic</h3>
+                            <h3>Free</h3>
                             <div className="price">
                               <sup>$</sup>
-                              {this.state.pricingToggle ? "6" : "5"}
+                              {this.state.pricingToggle ? "0" : "0"}
                             </div>
                             <div className="price-details m-b-20">
                               per user per month <br /> billed{" "}
@@ -112,19 +111,19 @@ export default class Pricing extends Component {
                                 Compliant
                               </li>
                               <li>
+                                <i className="fa fa-check-circle-o" />Public &
+                                Private Rooms
+                              </li>
+                              <li>
                                 <i className="fa fa-check-circle-o" />Group &
                                 Direct Messaging
                               </li>
                               <li>
-                                <i className="fa fa-check-circle-o" />Healthcare
-                                Workflows
+                                <i className="fa fa-check-circle-o" />1K Message
+                                Access
                               </li>
                               <li>
-                                <i className="fa fa-check-circle-o" />Searchable
-                                Archives
-                              </li>
-                              <li>
-                                <i className="fa fa-check-circle-o" />File
+                                <i className="fa fa-check-circle-o" />1GB File
                                 Storage
                               </li>
                               <li>
@@ -134,6 +133,60 @@ export default class Pricing extends Component {
                               <li>
                                 <i className="fa fa-check-circle-o" />iOS &
                                 Android Apps
+                              </li>
+                            </ul>
+                          </div>
+                        </Col>
+
+                        <Col sm={4}>
+                          <div className="plan text-center">
+                            <h3>Standard</h3>
+                            <div className="price">
+                              <sup>$</sup>
+                              {this.state.pricingToggle ? "6" : "5"}
+                            </div>
+                            <div className="price-details m-b-20">
+                              per user per month <br /> billed{" "}
+                              <span onClick={this.handleClick}>
+                                {this.state.pricingToggle
+                                  ? "monthly"
+                                  : "annually"}
+                              </span>
+                            </div>
+
+                            <ul className="list-unstyled text-left plan-features">
+                              <li className="text-center m-b-10">
+                                <mark>Features</mark>
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />
+                                <em>
+                                  All features from <strong>Free</strong>
+                                </em>
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Advanced
+                                Security Controls
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Guest
+                                Access
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Unlimited
+                                Message Access
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Unlimited
+                                File Storage
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Custom
+                                Profiles
+                              </li>
+                              <li>
+                                <i className="fa fa-check-circle-o" />Priority
+                                Support
                               </li>
                             </ul>
                           </div>
@@ -162,61 +215,7 @@ export default class Pricing extends Component {
                               <li>
                                 <i className="fa fa-check-circle-o" />
                                 <em>
-                                  All features from <strong>Basic</strong>
-                                </em>
-                              </li>
-                              <li>
-                                <i className="fa fa-check-circle-o" />Task
-                                Management
-                              </li>
-                              <li>
-                                <i className="fa fa-check-circle-o" />Guest
-                                Access
-                              </li>
-                              <li>
-                                <i className="fa fa-check-circle-o" />Custom
-                                User Groups
-                              </li>
-                              <li>
-                                <i className="fa fa-check-circle-o" />Custom
-                                Data Retention
-                              </li>
-                              <li>
-                                <i className="fa fa-check-circle-o" />Custom
-                                Profiles
-                              </li>
-                              <li>
-                                <i className="fa fa-check-circle-o" />Priority
-                                Support
-                              </li>
-                            </ul>
-                          </div>
-                        </Col>
-
-                        <Col sm={4}>
-                          <div className="plan text-center">
-                            <h3>Power</h3>
-                            <div className="price">
-                              <sup>$</sup>
-                              {this.state.pricingToggle ? "18" : "15"}
-                            </div>
-                            <div className="price-details m-b-20">
-                              per user per month <br /> billed{" "}
-                              <span onClick={this.handleClick}>
-                                {this.state.pricingToggle
-                                  ? "monthly"
-                                  : "annually"}
-                              </span>
-                            </div>
-
-                            <ul className="list-unstyled text-left plan-features">
-                              <li className="text-center m-b-10">
-                                <mark>Features</mark>
-                              </li>
-                              <li>
-                                <i className="fa fa-check-circle-o" />
-                                <em>
-                                  All features from <strong>Premium</strong>
+                                  All features from <strong>Standard</strong>
                                 </em>
                               </li>
                               <li>
@@ -232,8 +231,8 @@ export default class Pricing extends Component {
                                 Integrations
                               </li>
                               <li>
-                                <i className="fa fa-check-circle-o" />Advanced
-                                Security Controls
+                                <i className="fa fa-check-circle-o" />Custom
+                                Data Retention
                               </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />On-Site
@@ -253,7 +252,7 @@ export default class Pricing extends Component {
                       <Row>
                         <Col sm={4}>
                           <div className="plan text-center">
-                            <h3>Basic</h3>
+                            <h3>Free</h3>
 
                             <div className="m-b-20">
                               <Button
@@ -299,7 +298,7 @@ export default class Pricing extends Component {
 
                         <Col sm={4}>
                           <div className="plan text-center">
-                            <h3>Premium</h3>
+                            <h3>Standard</h3>
                             <div className="m-b-20">
                               <Button
                                 bsStyle="primary"
@@ -312,7 +311,7 @@ export default class Pricing extends Component {
 
                             <ul className="list-unstyled text-left plan-features">
                               <li className="text-center m-b-10">
-                                <mark>Includes Basic, plus:</mark>
+                                <mark>Includes Free, plus:</mark>
                               </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />Internal
@@ -344,7 +343,7 @@ export default class Pricing extends Component {
 
                         <Col sm={4}>
                           <div className="plan text-center">
-                            <h3>Power</h3>
+                            <h3>Premium</h3>
                             <div className="m-b-20">
                               <Button
                                 bsStyle="primary"
@@ -357,7 +356,7 @@ export default class Pricing extends Component {
 
                             <ul className="list-unstyled text-left plan-features">
                               <li className="text-center m-b-10">
-                                <mark>Includes Premium, plus:</mark>
+                                <mark>Includes Standard, plus:</mark>
                               </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />Voice and
@@ -393,7 +392,7 @@ export default class Pricing extends Component {
                       <Row>
                         <Col sm={4}>
                           <div className="plan text-center">
-                            <h3>Basic</h3>
+                            <h3>Free</h3>
                             <div className="m-b-20">
                               <Button
                                 bsStyle="primary"
@@ -438,7 +437,7 @@ export default class Pricing extends Component {
 
                         <Col sm={4}>
                           <div className="plan text-center">
-                            <h3>Premium</h3>
+                            <h3>Standard</h3>
                             <div className="m-b-20">
                               <Button
                                 bsStyle="primary"
@@ -451,7 +450,7 @@ export default class Pricing extends Component {
 
                             <ul className="list-unstyled text-left plan-features">
                               <li className="text-center m-b-10">
-                                <mark>Includes Basic, plus:</mark>
+                                <mark>Includes Free, plus:</mark>
                               </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />Guest
@@ -483,7 +482,7 @@ export default class Pricing extends Component {
 
                         <Col sm={4}>
                           <div className="plan text-center">
-                            <h3>Power</h3>
+                            <h3>Premium</h3>
                             <div className="m-b-20">
                               <Button
                                 bsStyle="primary"
@@ -496,7 +495,7 @@ export default class Pricing extends Component {
 
                             <ul className="list-unstyled text-left plan-features">
                               <li className="text-center m-b-10">
-                                <mark>Includes Premium, plus:</mark>
+                                <mark>Includes Standard, plus:</mark>
                               </li>
                               <li>
                                 <i className="fa fa-check-circle-o" />Response
