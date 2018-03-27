@@ -9,11 +9,4 @@ defmodule StitchConnect.Web.WebhookController do
     DrChrono.handle_webhook(event_type, params)
     json(conn, %{secret_token: "stitch"})
   end
-
-  def drchrono_ping(conn, params) do
-    IO.puts("PING received")
-    IO.inspect(params)
-    IO.puts("Webhook DONE")
-    json(conn, %{secret_token: "stitch"})
-  end
 end
