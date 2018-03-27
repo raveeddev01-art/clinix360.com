@@ -6,7 +6,7 @@ import Button from "react-bootstrap/lib/Button";
 
 class IntegrationConfiguration extends Component {
   render() {
-    const { integrationName, roomName } = this.props;
+    const { integrationName, roomName, insertedAt } = this.props;
 
     return (
       <div className="configurations-panel__item">
@@ -23,9 +23,7 @@ class IntegrationConfiguration extends Component {
             Posted changes from <strong>{integrationName}</strong> to{" "}
             <strong>{roomName}</strong>
           </h4>
-          <div className="text-muted">
-            <a href="#">John Appleseed</a> on Aug 27, 2018
-          </div>
+          <div className="text-muted">{insertedAt}</div>
         </div>
 
         <div className="integrations__room-panel-button">

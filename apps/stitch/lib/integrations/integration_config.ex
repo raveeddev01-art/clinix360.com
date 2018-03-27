@@ -29,4 +29,19 @@ defmodule Stitch.IntegrationConfig do
     |> changeset(attrs)
     |> Repo.insert()
   end
+
+  def all_for_team(team_id) do
+    query =
+      from(
+        c in IntegrationConfig,
+        left_join: i in assoc(c, :integration),
+        where: i.team_id == ^team_id,
+        order_by: [asc: c.inserted_at],
+        preload: [:integration, :group],
+        select: c
+      )
+
+    query
+    |> Repo.all()
+  end
 end

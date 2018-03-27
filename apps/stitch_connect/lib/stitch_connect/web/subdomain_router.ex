@@ -115,6 +115,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/mentions", MentionController, :index)
 
     get("/integrations", IntegrationController, :index)
+    get("/integration-configs", IntegrationConfigController, :index)
 
     post(
       "/integrations/:integration_id/integration-config",
