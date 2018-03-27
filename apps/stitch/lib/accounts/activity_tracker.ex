@@ -50,6 +50,26 @@ defmodule Stitch.Accounts.ActivityTracker do
     end
   end
 
+  @spec remove_activity(User.t()) :: :ok | {:error, any}
+  def remove_activity(%User{} = user) do
+    # Remove the user from the set.
+    result =
+      Redix.command([
+        "ZREM",
+        "activity_tracker:#{user.team_id}",
+        to_string(user.id)
+      ])
+
+    case result do
+      {:ok, _} ->
+        :ok
+
+      {:error, error} ->
+        Logger.error("[#{__MODULE__}] #{inspect(error)}")
+        {:error, error}
+    end
+  end
+
   @spec clean_stale() :: :ok | {:error, any}
   def clean_stale() do
     current_timestamp = :erlang.system_time(:seconds)
