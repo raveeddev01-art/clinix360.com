@@ -7,7 +7,7 @@ defmodule StitchIntegrations.DrChrono do
 
   def handle_webhook(event_type, params) do
     IO.inspect(event_type)
-    IO.inpsect(params)
+    IO.inspect(params)
   end
 
   def init_integration(team_id, code) do
