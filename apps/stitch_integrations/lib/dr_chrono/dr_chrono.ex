@@ -5,16 +5,34 @@ defmodule StitchIntegrations.DrChrono do
   alias StitchIntegrations.DrChrono.Token
   require Logger
 
-  def handle_webhook("APPOINTMENT_DELETE", params) do
-    IO.inspect(params)
-    # payload = params["object"]
-    # patient = payload["patient"]
-    # scheduled_time = payload["scheduled_time"]
-    # reason = payload["reason"]
-    # duration = payload["duration"]
-    # notes = payload["notes"]
+  def handle_webhook("APPOINTMENT_CREATE", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    scheduled_time = payload["scheduled_time"]
+    reason = payload["reason"]
+    duration = payload["duration"]
+    notes = payload["notes"]
 
-    message = "Appointment deleted"
+    message =
+      "Event: Appointment created\nPatient: #{patient}\nScheduled: #{scheduled_time} minutes\nReason: #{
+        reason
+      }\nDuration: #{duration}\nNotes: #{notes}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("APPOINTMENT_DELETE", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    scheduled_time = payload["scheduled_time"]
+    reason = payload["reason"]
+    duration = payload["duration"]
+    notes = payload["notes"]
+
+    message =
+      "Event: Appointment deleted\nPatient: #{patient}\nScheduled: #{scheduled_time} minutes\nReason: #{
+        reason
+      }\nDuration: #{duration}\nNotes: #{notes}"
 
     new_message(message)
   end
@@ -35,13 +53,48 @@ defmodule StitchIntegrations.DrChrono do
     new_message(message)
   end
 
-  def handle_webhook("CLINICAL_NOTE_LOCK", params) do
-    IO.inspect(params)
+  def handle_webhook("PATIENT_CREATE", params) do
+    payload = params["object"]
+    patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
+    patient_id = payload["id"]
+    dob = payload["date_of_birth"]
+    phone = payload["home_phone"] || payload["cell_phone"]
+    address = payload["address"]
+    doctor = payload["doctor"]
+
+    message =
+      "Event: Patient created\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
+        phone
+      }\nAddress: #{address}\nDoctor: #{doctor}"
+
+    new_message(message)
   end
 
-  def handle_webhook("CLINICAL_NOTE_UNLOCK", params) do
-    IO.inspect(params)
+  def handle_webhook("PATIENT_MODIFY", params) do
+    payload = params["object"]
+    patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
+    patient_id = payload["id"]
+    dob = payload["date_of_birth"]
+    phone = payload["home_phone"] || payload["cell_phone"]
+    address = payload["address"]
+    doctor = payload["doctor"]
+
+    message =
+      "Event: Patient created\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
+        phone
+      }\nAddress: #{address}\nDoctor: #{doctor}"
+
+    new_message(message)
   end
+
+  # We haven't implemented these two webhooks.
+  # def handle_webhook("CLINICAL_NOTE_LOCK", params) do
+  #   IO.inspect(params)
+  # end
+
+  # def handle_webhook("CLINICAL_NOTE_UNLOCK", params) do
+  #   IO.inspect(params)
+  # end
 
   def handle_webhook("PATIENT_ALLERGY_CREATE", params) do
     IO.inspect(params)
@@ -51,19 +104,11 @@ defmodule StitchIntegrations.DrChrono do
     IO.inspect(params)
   end
 
-  def handle_webhook("PATIENT_CREATE", params) do
-    IO.inspect(params)
-  end
-
   def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
     IO.inspect(params)
   end
 
   def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
-    IO.inspect(params)
-  end
-
-  def handle_webhook("PATIENT_MODIFY", params) do
     IO.inspect(params)
   end
 
