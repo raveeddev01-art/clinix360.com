@@ -3,7 +3,7 @@ defmodule StitchConnect.Web.Api.V1.WebhookController do
 
   action_fallback(StitchConnect.Web.Api.FallbackController)
 
-  def index(conn, params) do
+  def drchrono(conn, params) do
     IO.puts("Webhook received")
     IO.inspect(params)
     IO.puts("Webhook DONE")
