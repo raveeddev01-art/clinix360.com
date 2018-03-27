@@ -80,9 +80,39 @@ defmodule StitchIntegrations.DrChrono do
     doctor = payload["doctor"]
 
     message =
-      "Event: Patient created\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
+      "Event: Patient modified\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
         phone
       }\nAddress: #{address}\nDoctor: #{doctor}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
+    payload = params["object"]
+    description = payload["description"]
+    doctor = payload["doctor"]
+    icd = "#{payload["icd_code"]} | version #{payload["icd_version"]}"
+    patient = payload["patient"]
+
+    message =
+      "Event: Patient problem created\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+        doctor
+      }\nICD: #{icd}\nDescription: #{description}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_PROBLEM_MODIFY", params) do
+    payload = params["object"]
+    description = payload["description"]
+    doctor = payload["doctor"]
+    icd = "#{payload["icd_code"]} | version #{payload["icd_version"]}"
+    patient = payload["patient"]
+
+    message =
+      "Event: Patient problem created\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+        doctor
+      }\nICD: #{icd}\nDescription: #{description}"
 
     new_message(message)
   end
@@ -109,14 +139,6 @@ defmodule StitchIntegrations.DrChrono do
   end
 
   def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
-    IO.inspect(params)
-  end
-
-  def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
-    IO.inspect(params)
-  end
-
-  def handle_webhook("PATIENT_PROBLEM_MODIFY", params) do
     IO.inspect(params)
   end
 
