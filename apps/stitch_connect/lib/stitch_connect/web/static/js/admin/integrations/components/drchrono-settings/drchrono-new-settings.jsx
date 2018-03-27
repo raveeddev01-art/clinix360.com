@@ -45,9 +45,9 @@ class DrChronoNewSettings extends Component {
             </div>
             <h1 className="title">drchrono</h1>
 
-            <div className="actions">
+            {/* <div className="actions">
               <a href="#">Remove</a>
-            </div>
+            </div> */}
           </div>
           <h4 className="m-b-30">
             drchrono was the first EHR to build a native app for iPad and

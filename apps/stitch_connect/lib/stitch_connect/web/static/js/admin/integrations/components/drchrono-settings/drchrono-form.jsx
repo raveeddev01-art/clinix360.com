@@ -27,8 +27,6 @@ class DrChronoForm extends Component {
       patientAllergyModify: false,
       patientMedicationCreate: false,
       patientMedicationModify: false,
-      clinicalNoteLock: false,
-      clinicalNoteUnlock: false,
       groupId: undefined
     };
   }
@@ -173,23 +171,6 @@ class DrChronoForm extends Component {
             <Checkbox
               name="patientMedicationModify"
               checked={this.state.patientMedicationModify}
-              onChange={this.onChange}
-            >
-              Patient medication modified
-            </Checkbox>
-
-            <h5 className="integrations-panel__subheading">Clinical Notes</h5>
-            <Checkbox
-              name="clinicalNoteLock"
-              checked={this.state.clinicalNoteLock}
-              onChange={this.onChange}
-            >
-              Patient medication created
-            </Checkbox>
-
-            <Checkbox
-              name="clinicalNoteUnlock"
-              checked={this.state.clinicalNoteUnlock}
               onChange={this.onChange}
             >
               Patient medication modified

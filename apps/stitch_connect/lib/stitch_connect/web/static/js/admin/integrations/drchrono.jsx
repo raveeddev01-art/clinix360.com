@@ -1,16 +1,19 @@
 import React, { Component } from "react";
-import { inject } from "mobx-react";
+import { observer, inject } from "mobx-react";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 import Panel from "react-bootstrap/lib/Panel";
 
 import IntegrationConfiguration from "./components/integration-configuration";
 
-@inject("titleStore", "adminPanelStore")
+@inject("titleStore", "adminPanelStore", "integrationStore")
+@observer
 class DrChronoPage extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
+    this.props.integrationStore.loadIntegrations();
   }
 
   render() {
@@ -34,22 +37,16 @@ class DrChronoPage extends Component {
             </Panel.Heading>
 
             <Panel.Body className="configurations-panel__body">
-              <IntegrationConfiguration
-                integrationName="drChrono"
-                roomName="Emergency"
-              />
-              <IntegrationConfiguration
-                integrationName="drChrono"
-                roomName="General"
-              />
-              <IntegrationConfiguration
-                integrationName="drChrono"
-                roomName="ICU"
-              />
-              <IntegrationConfiguration
-                integrationName="drChrono"
-                roomName="Radiology"
-              />
+              {this.props.integrationStore.integrationConfigs.map(config => (
+                <IntegrationConfiguration
+                  integrationName={config.integration_name}
+                  roomName={config.group_name}
+                  insertedAt={moment
+                    .utc(config.inserted_at)
+                    .local()
+                    .format("LL")}
+                />
+              ))}
             </Panel.Body>
           </Panel>
         </Panel.Body>

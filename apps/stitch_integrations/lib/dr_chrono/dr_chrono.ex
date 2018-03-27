@@ -5,6 +5,211 @@ defmodule StitchIntegrations.DrChrono do
   alias StitchIntegrations.DrChrono.Token
   require Logger
 
+  def handle_webhook("APPOINTMENT_CREATE", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    scheduled_time = payload["scheduled_time"]
+    reason = payload["reason"]
+    duration = payload["duration"]
+    notes = payload["notes"]
+
+    message =
+      "Event: Appointment created\nPatient: #{patient}\nScheduled: #{scheduled_time} minutes\nReason: #{
+        reason
+      }\nDuration: #{duration}\nNotes: #{notes}"
+
+    new_message(message)
+    # Enum.each(groups, fn group ->
+    #   new_message(group, message)
+    # end)
+  end
+
+  def handle_webhook("APPOINTMENT_DELETE", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    scheduled_time = payload["scheduled_time"]
+    reason = payload["reason"]
+    duration = payload["duration"]
+    notes = payload["notes"]
+
+    message =
+      "Event: Appointment deleted\nPatient: #{patient}\nScheduled: #{scheduled_time} minutes\nReason: #{
+        reason
+      }\nDuration: #{duration}\nNotes: #{notes}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("APPOINTMENT_MODIFY", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    scheduled_time = payload["scheduled_time"]
+    reason = payload["reason"]
+    duration = payload["duration"]
+    notes = payload["notes"]
+
+    message =
+      "Event: Appointment modified\nPatient: #{patient}\nScheduled: #{scheduled_time} minutes\nReason: #{
+        reason
+      }\nDuration: #{duration}\nNotes: #{notes}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_CREATE", params) do
+    payload = params["object"]
+    patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
+    patient_id = payload["id"]
+    dob = payload["date_of_birth"]
+    phone = payload["home_phone"] || payload["cell_phone"]
+    address = payload["address"]
+    doctor = payload["doctor"]
+
+    message =
+      "Event: Patient created\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
+        phone
+      }\nAddress: #{address}\nDoctor: #{doctor}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_MODIFY", params) do
+    payload = params["object"]
+    patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
+    patient_id = payload["id"]
+    dob = payload["date_of_birth"]
+    phone = payload["home_phone"] || payload["cell_phone"]
+    address = payload["address"]
+    doctor = payload["doctor"]
+
+    message =
+      "Event: Patient modified\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
+        phone
+      }\nAddress: #{address}\nDoctor: #{doctor}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
+    payload = params["object"]
+    description = payload["description"]
+    doctor = payload["doctor"]
+    icd = "#{payload["icd_code"]} | version #{payload["icd_version"]}"
+    patient = payload["patient"]
+
+    message =
+      "Event: Patient problem created\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+        doctor
+      }\nICD: #{icd}\nDescription: #{description}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_PROBLEM_MODIFY", params) do
+    payload = params["object"]
+    description = payload["description"]
+    doctor = payload["doctor"]
+    icd = "#{payload["icd_code"]} | version #{payload["icd_version"]}"
+    patient = payload["patient"]
+
+    message =
+      "Event: Patient problem modified\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+        doctor
+      }\nICD: #{icd}\nDescription: #{description}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_ALLERGY_CREATE", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    patient_id = payload["patient"]
+    doctor = payload["doctor"]
+    reaction = payload["reaction"]
+    rxnorm = payload["rxnorm"]
+    snomed_reaction = payload["snomed_reaction"]
+    notes = payload["notes"]
+
+    message =
+      "Event: Patient allergy created\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+        doctor
+      }\nReaction: #{reaction}\nRxnorm: #{rxnorm}\nSnomed Reaction:#{snomed_reaction}\nNotes:#{
+        notes
+      }"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_ALLERGY_MODIFY", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    patient_id = payload["patient"]
+    doctor = payload["doctor"]
+    reaction = payload["reaction"]
+    rxnorm = payload["rxnorm"]
+    snomed_reaction = payload["snomed_reaction"]
+    notes = payload["notes"]
+
+    message =
+      "Event: Patient allergy modified\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+        doctor
+      }\nReaction: #{reaction}\nRxnorm: #{rxnorm}\nSnomed Reaction:#{snomed_reaction}\nNotes:#{
+        notes
+      }"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    patient_id = payload["patient"]
+    doctor = payload["doctor"]
+    name = payload["name"]
+    notes = payload["notes"]
+
+    message =
+      "Event: Patient medication created\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+        doctor
+      }\nName: #{name}\nNotes: #{notes}"
+
+    new_message(message)
+  end
+
+  def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
+    payload = params["object"]
+    patient = payload["patient"]
+    patient_id = payload["patient"]
+    doctor = payload["doctor"]
+    name = payload["name"]
+    notes = payload["notes"]
+
+    message =
+      "Event: Patient medication modified\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+        doctor
+      }\nName: #{name}\nNotes: #{notes}"
+
+    new_message(message)
+  end
+
+  # We haven't implemented these two webhooks.
+  # def handle_webhook("CLINICAL_NOTE_LOCK", params) do
+  #   IO.inspect(params)
+  # end
+
+  # def handle_webhook("CLINICAL_NOTE_UNLOCK", params) do
+  #   IO.inspect(params)
+  # end
+
+  def handle_webhook(_event_type, _params) do
+    Logger.info("[dr-chrono] [webhook] Unidentified event_type, can't handle this webhook.")
+  end
+
+  def new_message(message) do
+    IO.puts("Creating new bot message")
+    IO.inspect(message)
+  end
+
   def init_integration(team_id, code) do
     Logger.info("[dr-chrono] [team-#{team_id}] Initialize integration.")
 
