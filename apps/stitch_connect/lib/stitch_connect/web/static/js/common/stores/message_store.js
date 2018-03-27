@@ -395,7 +395,12 @@ class MessageStore {
         offset: -50
       });
     } else {
-      this.scrollTo(this.messages[this.messages.length - 1].id, 500);
+      scroller.scrollTo("topPosition", {
+        containerId: "chat",
+        smooth: true,
+        duration: 500,
+        offset: -50
+      });
     }
   };
 
