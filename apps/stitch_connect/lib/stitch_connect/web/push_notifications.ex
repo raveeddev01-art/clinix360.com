@@ -20,6 +20,17 @@ defmodule StitchConnect.Web.PushNotifications do
     fun.(notification, opts)
   end
 
+  def notify_user(user, message_ids) do
+    Enum.each(message_ids, fn message_id ->
+      with %Message{} = message <- Stitch.MessageQueries.get_by_id(message_id),
+           %Group{} = group <- Stitch.GroupQueries.get_by_id(message.group_id) do
+        notify_user(group, message, user)
+      else
+        _ -> nil
+      end
+    end)
+  end
+
   @doc """
   Trigger a new message notification for users.
   """
