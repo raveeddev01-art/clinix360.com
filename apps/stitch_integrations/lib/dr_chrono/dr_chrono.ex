@@ -6,7 +6,6 @@ defmodule StitchIntegrations.DrChrono do
   require Logger
 
   def handle_webhook("APPOINTMENT_DELETE", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
@@ -27,52 +26,42 @@ defmodule StitchIntegrations.DrChrono do
   end
 
   def handle_webhook("CLINICAL_NOTE_LOCK", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
   def handle_webhook("CLINICAL_NOTE_UNLOCK", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
   def handle_webhook("PATIENT_ALLERGY_CREATE", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
   def handle_webhook("PATIENT_ALLERGY_MODIFY", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
   def handle_webhook("PATIENT_CREATE", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
   def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
   def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
   def handle_webhook("PATIENT_MODIFY", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
   def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
   def handle_webhook("PATIENT_PROBLEM_MODIFY", params) do
-    IO.inspect(event_type)
     IO.inspect(params)
   end
 
