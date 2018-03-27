@@ -590,8 +590,8 @@ class MessageStore {
   // (so you can debounce marking for one group, but
   // it does not affect any others)
   getDebouncedMarkAsRead = memoize(() => {
-    return debounce(this.markAsRead, 250, {
-      maxWait: 500,
+    return debounce(this.markAsRead, 500, {
+      maxWait: 1200, // above the timeout for the initial mark as read
       leading: true
     });
   });
