@@ -13,7 +13,6 @@ const Plans = ({
 }) => {
   return (
     <div className="plans">
-      <p>Please select a plan to continue service:</p>
       <FrequencyToggle
         frequency={!!plan.frequency}
         onToggle={() => {

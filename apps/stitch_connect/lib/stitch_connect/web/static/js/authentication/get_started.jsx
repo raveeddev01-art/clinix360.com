@@ -19,7 +19,7 @@ export default class GetStarted extends Component {
           to="/signup/email"
           className="btn btn-block btn-lg btn-default m-b-40"
         >
-          Create Team
+          Get Started
         </Link>
       </div>
     );
