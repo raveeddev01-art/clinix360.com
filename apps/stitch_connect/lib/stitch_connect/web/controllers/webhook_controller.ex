@@ -5,6 +5,7 @@ defmodule StitchConnect.Web.WebhookController do
   action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def drchrono(conn, params) do
+    IO.inspect(conn.req_headers)
     [event_type] = get_req_header(conn, "X-drchrono-event")
     DrChrono.handle_webhook(event_type, params)
     json(conn, %{secret_token: "stitch"})
