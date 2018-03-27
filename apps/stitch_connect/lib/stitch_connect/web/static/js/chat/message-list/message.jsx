@@ -144,7 +144,9 @@ class Message extends PureComponent {
             onChange={this.onVisibleChange}
             partialVisibility="top"
             minTopValue={1}
-            intervalCheck={false}
+            intervalCheck
+            intervalDelay={1000}
+            delayedCall
             scrollCheck
             scrollThrottle={100}
             containment={chatDiv}
