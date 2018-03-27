@@ -37,6 +37,7 @@ defmodule StitchConnect.Web.TeamChannel do
       if socket.assigns.meta.inactive == true do
         socket
       else
+        ActivityTracker.remove_activity(socket.assigns.current_user)
         socket = update_connection_meta(socket, %{inactive: true})
         push socket, "presence_state", Presence.list(socket)
         socket
@@ -51,6 +52,7 @@ defmodule StitchConnect.Web.TeamChannel do
       if socket.assigns.meta.became_away == true do
         socket
       else
+        ActivityTracker.remove_activity(socket.assigns.current_user)
         socket = update_connection_meta(socket, %{became_away: true})
         push socket, "presence_state", Presence.list(socket)
         socket
