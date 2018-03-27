@@ -42,6 +42,7 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
     test "user is active", %{socket1: socket1, group: group, user2: user2} do
       socket1 = subscribe_and_join!(socket1, "groups:#{group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
+      Stitch.Accounts.ActivityTracker.update_activity(user2)
 
       socket2 =
         socket2
@@ -81,6 +82,7 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
     test "user is active", %{socket1: socket1, user2: user2, dm_group: dm_group} do
       socket1 = subscribe_and_join!(socket1, "groups:#{dm_group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
+      Stitch.Accounts.ActivityTracker.update_activity(user2)
 
       socket2
       |> subscribe_and_join!("groups:#{dm_group.slug}")
@@ -117,6 +119,7 @@ defmodule StitchConnect.Web.ChannelNotificationTest do
     test "user is active", %{socket1: socket1, user2: user2, dm_group: dm_group} do
       socket1 = subscribe_and_join!(socket1, "groups:#{dm_group.slug}")
       {:ok, socket2} = connect(UserSocket, %{"authenticationToken" => user2.token})
+      Stitch.Accounts.ActivityTracker.update_activity(user2)
 
       socket2
       |> subscribe_and_join!("groups:#{dm_group.slug}")

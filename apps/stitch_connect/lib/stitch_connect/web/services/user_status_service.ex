@@ -1,33 +1,39 @@
 defmodule StitchConnect.Web.UserStatusService do
-  alias StitchConnect.Web.Presence
-
-  @doc """
+  @moduledoc """
   Returns user status info in the format: {active: [], online: []}.
 
   A user is considered to be active when
 
-  1) his chat is not in the background
-  2) had recent activity (mouse movement / keyboard presses) which is determined by the client side
-  2) is not locked
+  1) the user has open websocket connection
+  2) the user has recent activity
 
   Active users do not receive mobile and email notifications.
 
   A user is considered to be online when he is not away and not locked.
   Online users get notified by the `@here` mention.
   """
-  def presence_user_ids(team_id) do
-    presence_list = Presence.list("team:lobby:#{team_id}")
-    Enum.reduce(presence_list, %{active: [], online: []}, fn ({user_id, %{metas: metas}}, acc) ->
 
+  alias Stitch.Accounts.ActivityTracker
+  alias StitchConnect.Web.Presence
+
+  def presence_user_ids(team_id) do
+    active_user_ids_set =
+      team_id
+      |> ActivityTracker.active_user_ids()
+      |> MapSet.new()
+
+    presence_list = Presence.list("team:lobby:#{team_id}")
+
+    Enum.reduce(presence_list, %{active: [], online: []}, fn {user_id, %{metas: metas}}, acc ->
       active_user_ids =
-        if Enum.any?(metas, & not (&1.inactive || &1.became_away)) do
+        if MapSet.member?(active_user_ids_set, user_id) do
           [String.to_integer(user_id) | acc.active]
         else
           acc.active
         end
 
       online_user_ids =
-        if Enum.any?(metas, & not &1.became_away) do
+        if Enum.any?(metas, &(not &1.became_away)) do
           [String.to_integer(user_id) | acc.online]
         else
           acc.online
