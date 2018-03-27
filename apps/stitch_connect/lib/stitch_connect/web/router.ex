@@ -11,6 +11,15 @@ defmodule StitchConnect.Web.Router do
     plug(:put_secure_browser_headers)
   end
 
+  pipeline :no_csrf_browser do
+    # reflect any changes in ErrorView.browser_pipeline_equivalent/1
+    plug(StitchConnect.Plug.PlugAttack)
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_flash)
+    plug(:put_secure_browser_headers)
+  end
+
   pipeline :api do
     plug(StitchConnect.Plug.PlugAttack)
     plug(:accepts, ["json"])
@@ -54,6 +63,14 @@ defmodule StitchConnect.Web.Router do
   end
 
   scope "/", StitchConnect.Web do
+    pipe_through(:no_csrf_browser)
+
+    # Webhook routes.
+    get("/webhooks/drchrono", WebhookController, :drchrono)
+    post("/webhooks/drchrono", WebhookController, :drchrono_ping)
+  end
+
+  scope "/", StitchConnect.Web do
     pipe_through(:browser)
 
     get("/", HomeController, :index)
@@ -93,10 +110,6 @@ defmodule StitchConnect.Web.Router do
 
     # oAuth Integration routes.
     get("/_oauth/:provider", OAuthIntegrationController, :provider_response)
-
-    # Webhook routes.
-    get("/webhooks/drchrono", WebhookController, :drchrono)
-    post("/webhooks/drchrono", WebhookController, :drchrono_ping)
 
     # get "/signup/phone-number", AuthenticationController, :index
   end
