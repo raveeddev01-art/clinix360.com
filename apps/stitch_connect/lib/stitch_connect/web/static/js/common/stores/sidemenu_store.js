@@ -234,7 +234,7 @@ class SidemenuStore {
   showNotificationCardForNewMessage(message) {
     if (
       this.isOwnMessage(message) ||
-      this.notificationsDenied() ||
+      this.notificationNotAllowed() ||
       this.isCurrentlyInRoom(message.group_id) ||
       this.isSystemMessage(message)
     ) {
@@ -309,8 +309,8 @@ class SidemenuStore {
     window.dispatchEvent(new CustomEvent("notification-clicked"));
   };
 
-  notificationsDenied() {
-    return window.Notification && Notification.permission === "denied";
+  notificationNotAllowed() {
+    return window.Notification && Notification.permission !== "granted";
   }
 
   isOwnMessage(message) {

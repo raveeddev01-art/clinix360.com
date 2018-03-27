@@ -3,7 +3,6 @@ import { inject } from "mobx-react";
 import { Link } from "react-router-dom";
 
 import Panel from "react-bootstrap/lib/Panel";
-import Button from "react-bootstrap/lib/Button";
 
 import IntegrationConfiguration from "./components/integration-configuration";
 
@@ -26,7 +25,10 @@ class DrChronoPage extends Component {
             <Panel.Heading className="configurations-panel__heading">
               <h3>Configurations</h3>
 
-              <Link to="/admin/integrations/drchrono/new" bsStyle="primary">
+              <Link
+                to="/admin/integrations/drchrono/new"
+                className="btn btn-primary"
+              >
                 Add Configuration
               </Link>
             </Panel.Heading>

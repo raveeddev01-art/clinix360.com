@@ -34,8 +34,8 @@ class IntegrationPanel extends Component {
         ) : (
           <a
             href={`https://drchrono.com/o/authorize?redirect_uri=${redirect_uri}&client_id=${window.dr_chrono_client_id}&response_type=code`}
-            bsStyle="primary"
-            className="action-edit btn-fancy pull-right"
+            target="_blank"
+            className="action-edit btn-primary btn-fancy pull-right"
           >
             Connect
           </a>
