@@ -9,4 +9,11 @@ defmodule StitchConnect.Web.Api.V1.WebhookController do
     IO.puts("Webhook DONE")
     text(conn, "Webhook received")
   end
+
+  def drchrono_ping(conn, params) do
+    IO.puts("PING received")
+    IO.inspect(params)
+    IO.puts("Webhook DONE")
+    text(conn, "Webhook received")
+  end
 end

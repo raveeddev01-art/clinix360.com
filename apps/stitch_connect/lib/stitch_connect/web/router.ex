@@ -96,6 +96,7 @@ defmodule StitchConnect.Web.Router do
 
     # Webhook routes.
     get("/webhooks/drchrono", WebhookController, :drchrono)
+    post("/webhooks/drchrono", WebhookController, :drchrono_ping)
 
     # get "/signup/phone-number", AuthenticationController, :index
   end
