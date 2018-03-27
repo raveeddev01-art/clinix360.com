@@ -5,6 +5,11 @@ defmodule StitchIntegrations.DrChrono do
   alias StitchIntegrations.DrChrono.Token
   require Logger
 
+  def handle_webhook(event_type, params) do
+    IO.inspect(event_type)
+    IO.inpsect(params)
+  end
+
   def init_integration(team_id, code) do
     Logger.info("[dr-chrono] [team-#{team_id}] Initialize integration.")
 

@@ -1,12 +1,12 @@
 defmodule StitchConnect.Web.WebhookController do
   use StitchConnect.Web, :controller
+  alias StitchIntegrations.DrChrono
 
   action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def drchrono(conn, params) do
-    IO.puts("Webhook received")
-    IO.inspect(params)
-    IO.puts("Webhook DONE")
+    [event_type] = get_req_header(conn, "X-drchrono-event")
+    DrChrono.handle_webhook(event_type, params)
     json(conn, %{secret_token: "stitch"})
   end
 
