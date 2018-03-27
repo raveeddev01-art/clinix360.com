@@ -110,7 +110,7 @@ defmodule StitchIntegrations.DrChrono do
     patient = payload["patient"]
 
     message =
-      "Event: Patient problem created\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+      "Event: Patient problem modified\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
         doctor
       }\nICD: #{icd}\nDescription: #{description}"
 
