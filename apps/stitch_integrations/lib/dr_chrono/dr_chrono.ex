@@ -7,6 +7,16 @@ defmodule StitchIntegrations.DrChrono do
 
   def handle_webhook("APPOINTMENT_DELETE", params) do
     IO.inspect(params)
+    # payload = params["object"]
+    # patient = payload["patient"]
+    # scheduled_time = payload["scheduled_time"]
+    # reason = payload["reason"]
+    # duration = payload["duration"]
+    # notes = payload["notes"]
+
+    message = "Appointment deleted"
+
+    new_message(message)
   end
 
   def handle_webhook("APPOINTMENT_MODIFY", params) do
