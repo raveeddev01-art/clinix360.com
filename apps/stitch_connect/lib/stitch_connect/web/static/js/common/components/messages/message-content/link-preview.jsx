@@ -36,7 +36,7 @@ class LinkPreview extends Component {
       favicon_url: favicon,
       link,
       senderId,
-      siteName
+      site_name: siteName
     } = this.props;
     const { imageLoadError } = this.state;
 
