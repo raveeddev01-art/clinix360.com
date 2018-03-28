@@ -5,6 +5,7 @@
   margin: 10px 0 2px;
   margin-left: -22px;
   padding-left: 22px;
+  max-width: 600px;
 
   &__line {
     flex-shrink: 0;
@@ -14,7 +15,6 @@
   }
 
   &__body {
-    padding: 4px 0 4px 15px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -22,12 +22,11 @@
 
   &__text {
     flex: 1;
-    max-width: 600px;
+    padding: 0 15px;
   }
 
   &__image-container {
-    margin-left: 30px;
-    width: 150px;
+    max-width: 150px;
     padding: 1px;
   }
 
@@ -62,10 +61,6 @@
 
   &__title {
     margin-bottom: 5px;
-  }
-
-  &__description {
-    margin-bottom: 10px;
   }
 
   &:hover .link-preview__close {
