@@ -7,6 +7,7 @@ defmodule StitchConnect.Plug.ActivityTracker do
   it requires `current_user` to be present in `assigns`.
   """
 
+  import Plug.Conn
   alias Stitch.Accounts.ActivityTracker
 
   def init(default), do: default
