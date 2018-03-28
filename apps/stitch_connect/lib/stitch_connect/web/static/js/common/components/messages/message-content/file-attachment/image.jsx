@@ -98,7 +98,11 @@ class ImageFileAttachment extends Component {
           onHide={this.onToggleModal}
         >
           <Modal.Body onClick={this.onToggleModal}>
-            <img src={url} className="modal-attachment-image" alt={filename} />
+            <img
+              src={url}
+              className="modal-attachment-image img-responsive"
+              alt={filename}
+            />
           </Modal.Body>
         </Modal>
       </div>
