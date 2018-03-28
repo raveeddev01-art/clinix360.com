@@ -46,14 +46,7 @@ defmodule Stitch.IntegrationConfig do
   end
 
   def get_by_id(id) do
-    query =
-      from(
-        c in IntegrationConfig,
-        where: c.id == ^id,
-        select: c
-      )
-
-    Repo.one(query)
+    Repo.get(IntegrationConfig, id)
   end
 
   def delete(config) do
