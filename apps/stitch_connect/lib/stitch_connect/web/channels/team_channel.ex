@@ -72,13 +72,13 @@ defmodule StitchConnect.Web.TeamChannel do
 
   @decorate channel_action()
   def handle_in("became_active", _params, socket) do
+    ActivityTracker.async_update_activity(socket.assigns.current_user)
     new_meta = %{inactive: false, became_away: false, lockout_timer_expired: false}
     current_meta = Map.take(socket.assigns.meta, [:inactive, :became_away, :lockout_timer_expired])
     socket =
       if new_meta == current_meta do
         socket
       else
-        ActivityTracker.async_update_activity(socket.assigns.current_user)
         socket = update_connection_meta(socket, new_meta)
         push socket, "presence_state", Presence.list(socket)
         socket
