@@ -124,16 +124,9 @@ class Subscription extends Component {
       <Well>
         <i className="fa fa-check-circle" />
 
-        {tier === "TRIAL" ? (
-          <p className="m-b-0">
-            Your team is currently using a free trial of <b>Stitch Connect</b>{" "}
-            with <b>{trialRemainingDays} days</b> remaining.
-          </p>
-        ) : (
-          <p className="m-b-0">
-            Your team is subscribed to <b>{capitalize(tier)}</b>.
-          </p>
-        )}
+        <p className="m-b-0">
+          Your team is subscribed to <b>{capitalize(tier)}</b>.
+        </p>
       </Well>
     ) : (
       <Well>
