@@ -13,7 +13,12 @@ defmodule StitchConnect.Plug.ActivityTracker do
 
   def call(conn, _opts) do
     current_user = conn.assigns.current_user
-    ActivityTracker.async_update_activity(current_user)
+    # Update activity only for mobile apps (that don't use HTTP session) and
+    # skip the activity update for request coming from the web/electron apps.
+    # (Web/electron apps send "became_active" via WebSocket as a single source of truth of user activity).
+    unless get_session(conn, :current_user_token) do
+      ActivityTracker.async_update_activity(current_user)
+    end
     conn
   end
 end
