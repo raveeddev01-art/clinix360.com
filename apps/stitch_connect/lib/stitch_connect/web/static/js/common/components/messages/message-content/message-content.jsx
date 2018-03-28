@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import { Emoji } from "emoji-mart";
-import Linkify from "react-linkify";
+import * as linkify from "linkifyjs";
+import linkifyStr from "linkifyjs/string";
 import moment from "moment";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -48,7 +49,9 @@ class MessageContent extends Component {
         );
       }
 
-      return part.content;
+      return (
+        <span dangerouslySetInnerHTML={{ __html: linkifyStr(part.content) }} />
+      );
     });
   }
 
@@ -108,7 +111,7 @@ class MessageContent extends Component {
     const { message } = this.props;
 
     return (
-      <Linkify
+      <div
         properties={{ target: "_blank", className: "message-link" }}
         className="message-body-wrapper"
       >
@@ -128,7 +131,7 @@ class MessageContent extends Component {
             onToggle={this.onToggle}
           />
         </div>
-      </Linkify>
+      </div>
     );
   }
 }
