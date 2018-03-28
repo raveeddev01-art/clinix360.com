@@ -5,6 +5,7 @@ import { inject } from "mobx-react";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import { Avatar, UserProfileMenu } from "common/components";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 import MessageHeader from "./message-header/message-header";
 import MessageContent from "./message-content/message-content";
@@ -40,27 +41,16 @@ class AddonMessage extends Component {
           </OverlayTrigger>
           <OverlayTrigger
             placement="top"
-            overlay={<Tooltip id="permalink-message">Permalink</Tooltip>}
-          >
-            <a
-              role="link"
-              className="addon-message-action-item"
-              onClick={() => {}}
-            >
-              <i className="fa fa-link" />
-            </a>
-          </OverlayTrigger>
-          <OverlayTrigger
-            placement="top"
             overlay={<Tooltip id="copy-message">Copy</Tooltip>}
           >
-            <a
-              role="link"
-              className="addon-message-action-item"
-              onClick={() => {}}
-            >
-              <i className="fa fa-clipboard" />
-            </a>
+            <CopyToClipboard text={message.text_content}>
+              <a
+                role="link"
+                className="addon-message-action-item"
+              >
+                <i className="fa fa-clipboard" />
+              </a>
+            </CopyToClipboard>
           </OverlayTrigger>
         </div>
 
