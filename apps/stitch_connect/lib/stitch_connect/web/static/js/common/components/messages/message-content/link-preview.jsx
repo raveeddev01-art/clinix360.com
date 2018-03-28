@@ -35,7 +35,8 @@ class LinkPreview extends Component {
       image_url: imageUrl,
       favicon_url: favicon,
       link,
-      senderId
+      senderId,
+      siteName
     } = this.props;
     const { imageLoadError } = this.state;
 
@@ -62,7 +63,7 @@ class LinkPreview extends Component {
                   src={favicon}
                   alt={title}
                 />
-                <span>{link.replace(/https?:\/\//g, "")}</span>
+                <span>{siteName}</span>
               </div>
             )}
             <a
