@@ -63,7 +63,7 @@ class LinkPreview extends Component {
                   src={favicon}
                   alt={title}
                 />
-                <span>{siteName}</span>
+                <span>{siteName || title}</span>
               </div>
             )}
             <a
@@ -99,6 +99,7 @@ LinkPreview.propTypes = {
   link: PropTypes.string,
   title: PropTypes.string,
   favicon_url: PropTypes.string,
+  site_name: PropTypes.string,
   senderId: PropTypes.number.isRequired,
   messageId: PropTypes.number.isRequired
 };
@@ -108,7 +109,8 @@ LinkPreview.defaultProps = {
   image_url: "",
   link: "",
   title: "",
-  favicon_url: ""
+  favicon_url: "",
+  site_name: ""
 };
 
 export default LinkPreview;
