@@ -1,9 +1,9 @@
 defmodule Stitch.IntegrationAuthorization do
   alias Stitch.Repo
 
-  def can_delete?(config, current_user) do
+  def can_delete?(config, user) do
     config = Repo.preload(config, :group)
 
-    config.group.team_id == current_user.team_id && Enum.member?(current_user.roles, "admin")
+    config.group.team_id == user.team_id && Enum.member?(user.roles, "admin")
   end
 end
