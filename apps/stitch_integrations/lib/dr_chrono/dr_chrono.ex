@@ -205,6 +205,34 @@ defmodule StitchIntegrations.DrChrono do
     Logger.info("[dr-chrono] [webhook] Unidentified event_type, can't handle this webhook.")
   end
 
+  def get_patient_info(team_id, patient_id) do
+    {:ok, token} = Token.token(team_id)
+    api_url = "https://drchrono.com/api/patients/#{patient_id}"
+    headers = [Authorization: "Bearer #{token}"]
+
+    case HTTPoison.get(api_url, headers) do
+      {:ok, response} ->
+        Poison.decode(response.body)
+
+      {:error, error} ->
+        {:error, error}
+    end
+  end
+
+  def get_doctor_info(team_id, doctor_id) do
+    {:ok, token} = Token.token(team_id)
+    api_url = "https://drchrono.com/api/doctors/#{doctor_id}"
+    headers = [Authorization: "Bearer #{token}"]
+
+    case HTTPoison.get(api_url, headers) do
+      {:ok, response} ->
+        Poison.decode(response.body)
+
+      {:error, error} ->
+        {:error, error}
+    end
+  end
+
   def new_message(message) do
     IO.puts("Creating new bot message")
     IO.inspect(message)
@@ -223,7 +251,7 @@ defmodule StitchIntegrations.DrChrono do
     :ok
   end
 
-  defp insert_or_update_integration(team_id, settings) do
+  def insert_or_update_integration(team_id, settings) do
     result =
       case Repo.get_by(Integration, team_id: team_id, name: "drchrono") do
         nil -> %Integration{}
