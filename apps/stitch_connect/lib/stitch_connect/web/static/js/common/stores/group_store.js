@@ -8,7 +8,6 @@ import { observable, computed, action } from "mobx";
 import { TYPING_TIMEOUT_MS } from "lib/constants";
 
 class GroupStore {
-  // @observable showAllUsers = true;
   @observable typingUsers = []; // user id array
   typingTimeouts = {};
 
@@ -124,11 +123,6 @@ class GroupStore {
 
     return groupsStore.toggleFavorite(this.group.id);
   };
-
-  // @action
-  // toggleAllUsers = () => {
-  //   this.showAllUsers = !this.showAllUsers;
-  // };
 }
 
 export default GroupStore;
