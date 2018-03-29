@@ -1,5 +1,43 @@
 defmodule StitchIntegrations.DrChrono.Token do
   require Logger
+  import Ecto.Query
+  alias Stitch.Repo
+  alias Stitch.Integration
+  alias StitchIntegrations.DrChrono
+
+  def for_team(team_id) do
+    query =
+      from(
+        i in Integration,
+        where: i.team_id == ^team_id,
+        where: i.name == "drchrono",
+        select: i
+      )
+
+    integration = Repo.one(query)
+
+    unix_now = DateTime.utc_now() |> DateTime.to_unix()
+
+    if integration.settings["expiration_in_unix"] <= unix_now do
+      # Token has expired, we need to refresh it, and update it in
+      # the database.
+      {:ok, response_values} = refresh_token(integration.settings["refresh_token"])
+
+      new_settings =
+        integration.settings
+        |> Map.put("access_token", response_values[:access_token])
+        |> Map.put("expiration_in_unix", response_values[:expiration_in_unix])
+        |> Map.put("refresh_token", response_values[:refresh_token])
+
+      # Save the settings for this team's DrChrono integration.
+      DrChrono.insert_or_update_integration(team_id, new_settings)
+
+      {:ok, response_values[:access_token]}
+    else
+      # Token is still valid, let's just use it.
+      {:ok, integration.settings["access_token"]}
+    end
+  end
 
   def get_access_token(code) do
     applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
