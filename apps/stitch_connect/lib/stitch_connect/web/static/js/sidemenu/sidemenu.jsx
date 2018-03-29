@@ -241,7 +241,7 @@ class Sidemenu extends Component {
 
                 <RoomsList
                   heading="Rooms"
-                  rooms={filterJoined(groupsStore.normalGroups)}
+                  rooms={filterJoined(groupsStore.nonFavoritedRegularGroups)}
                 />
 
                 <PeopleList
