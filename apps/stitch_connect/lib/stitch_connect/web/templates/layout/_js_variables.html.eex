@@ -7,6 +7,7 @@ session_id = Plug.Conn.get_session(@conn, :session_id)
 locked = !!Plug.Conn.get_session(@conn, :locked)
 user = Map.get(@conn.assigns, :current_user)
 intercom_user_hash = Plug.Conn.get_session(@conn, :intercom_user_hash)
+public_bucket_name = System.get_env("S3_BUCKET_NAME") <> "-public"
 current_user =
   case user do
     nil ->
@@ -34,5 +35,6 @@ current_user =
   window.applicationVersion = "<%= StitchConnect.version() %>";
   window.stripePublishableKey = "<%= Application.get_env(:stitch, :stripe_publishable_key) %>";
   window.intercomUserHash = "<%= intercom_user_hash %>";
-  window.dr_chrono_client_id = "<%= System.get_env("DRCHRONO_CLIENT_ID") %>"
+  window.dr_chrono_client_id = "<%= System.get_env("DRCHRONO_CLIENT_ID") %>";
+  window.publicBucket = "https://s3-us-west-2.amazonaws.com/<%=public_bucket_name%>";
 </script>
