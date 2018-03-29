@@ -35,7 +35,7 @@ defmodule Stitch.Bot do
         attrs
         |> Map.put(:first_name, name)
         |> Map.put(:last_name, "Bot")
-        |> Map.put(:username, "#{username}bot")
+        |> Map.put(:username, username)
 
       :error ->
         attrs
