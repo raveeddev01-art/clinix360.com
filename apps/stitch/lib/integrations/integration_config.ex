@@ -27,10 +27,14 @@ defmodule Stitch.IntegrationConfig do
 
   def insert_integration_config(attrs) do
     # Create group user for this bot and this group.
+    IO.inspect(attrs)
     group = Stitch.GroupQueries.get_by_id(attrs["group_id"])
+    IO.inspect(group)
     bot_user = StitchIntegrations.DrChrono.Bot.get_bot(group.team_id)
+    IO.inspect(bot_user)
 
     changeset = GroupUser.changeset(%GroupUser{}, %{group_id: group.id, user_id: bot_user.id})
+    IO.inspect(changeset)
 
     case Repo.insert(changeset) do
       {:error, _} ->
