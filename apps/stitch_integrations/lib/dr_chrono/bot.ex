@@ -26,6 +26,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
             username: "drchrono",
             is_bot: true,
             onboarded: true,
+            roles: ["member", "bot"],
             disabled: false,
             profile_image_url: "a"
           })
