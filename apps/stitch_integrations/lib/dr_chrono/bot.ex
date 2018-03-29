@@ -48,12 +48,12 @@ defmodule StitchIntegrations.DrChrono.Bot do
     |> Repo.one()
   end
 
-  def post_message(team_id, group_id, message) do
+  def post_message(team_id, group_id, text_content) do
     bot_user = get_bot(team_id)
     group = Stitch.GroupQueries.get_by_id(group_id)
 
     message_params = %{
-      "text_content" => message,
+      "text_content" => text_content,
       "type" => "chat"
     }
 
@@ -61,10 +61,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
 
     case Message.create(group_id, bot_user, message_params, presence_user_ids) do
       {:ok, %{message: message, notify_user_ids: _notify_user_ids}} ->
-        message_json =
-          StitchConnect.Web.Api.V1.MessageView.render("show.json", %{message: message})
-
-        StitchConnect.Web.Endpoint.broadcast("groups:#{group.slug}", "new_msg", message_json)
+        StitchConnect.Web.EventsChannel.broadcast_group_new_msg(group, message, [])
 
       {:error, _} ->
         Logger.error("Couldn't post DrChrono bot message.")
