@@ -11,6 +11,7 @@ defmodule StitchConnect.Web.Api.V1.IntegrationConfigController do
 
   def create(conn, params) do
     with {:ok, integration_config} <- IntegrationConfig.insert_integration_config(params) do
+      IO.puts("Created integration config.")
       render(conn, "show.json", integration_config: integration_config)
     else
       _ ->
