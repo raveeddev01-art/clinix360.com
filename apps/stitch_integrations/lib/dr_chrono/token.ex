@@ -5,7 +5,7 @@ defmodule StitchIntegrations.DrChrono.Token do
   alias Stitch.Integration
   alias StitchIntegrations.DrChrono
 
-  def token(team_id) do
+  def for_team(team_id) do
     query =
       from(
         i in Integration,

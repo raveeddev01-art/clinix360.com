@@ -206,24 +206,23 @@ defmodule StitchIntegrations.DrChrono do
   end
 
   def get_patient_info(team_id, patient_id) do
-    {:ok, token} = Token.token(team_id)
     api_url = "https://drchrono.com/api/patients/#{patient_id}"
-    headers = [Authorization: "Bearer #{token}"]
-
-    case HTTPoison.get(api_url, headers) do
-      {:ok, response} ->
-        Poison.decode(response.body)
-
-      {:error, error} ->
-        {:error, error}
-    end
+    api_headers = headers(team_id)
+    http_get(api_url, api_headers)
   end
 
   def get_doctor_info(team_id, doctor_id) do
-    {:ok, token} = Token.token(team_id)
     api_url = "https://drchrono.com/api/doctors/#{doctor_id}"
-    headers = [Authorization: "Bearer #{token}"]
+    api_headers = headers(team_id)
+    http_get(api_url, api_headers)
+  end
 
+  def headers(team_id) do
+    {:ok, token} = Token.for_team(team_id)
+    [Authorization: "Bearer #{token}"]
+  end
+
+  def http_get(api_url, headers) do
     case HTTPoison.get(api_url, headers) do
       {:ok, response} ->
         Poison.decode(response.body)
