@@ -1,10 +1,31 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { LinkContainer } from "react-router-bootstrap";
-
+import { inject } from "mobx-react";
 import Button from "react-bootstrap/lib/Button";
 
+import { confirmModal } from "common/modals";
+
+@inject("integrationStore")
 class IntegrationConfiguration extends Component {
+  removeIntegrationConfig = () => {
+    confirmModal({
+      title: "Remove Integration Configuration",
+      message:
+        "Are you sure you want to delete this integration configuration? This cannot be undone.",
+      okLabel: "Remove"
+    })
+      .then(() => {
+        return this.props.integrationStore.removeConfig(this.props.id);
+      })
+      .catch(() => {
+        // do nothing
+      });
+
+    // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
+    document.dispatchEvent(new MouseEvent("click"));
+  };
+
   render() {
     const { integrationName, roomName, insertedAt } = this.props;
 
@@ -27,6 +48,9 @@ class IntegrationConfiguration extends Component {
         </div>
 
         <div className="integrations__room-panel-button">
+          <Button onClick={this.removeIntegrationConfig}>
+            <i className="fa fa-trash" />
+          </Button>
           <LinkContainer to="/admin/integrations/drchrono/edit">
             <Button>
               <i className="fa fa-pencil" />

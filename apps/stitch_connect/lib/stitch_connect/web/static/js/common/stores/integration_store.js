@@ -26,6 +26,17 @@ class IntegrationStore {
   };
 
   @action
+  removeConfig = id => {
+    return remove(`/api/v1/integration-configs/${id}`).then(response => {
+      const index = this.integrationConfigs.findIndex(c => c.id === id);
+
+      if (index > -1) {
+        this.integrationConfigs.splice(index, 1);
+      }
+    });
+  };
+
+  @action
   createNewIntegration = params => {
     return post(
       `/api/v1/integrations/${params.integrationId}/integration-config`,

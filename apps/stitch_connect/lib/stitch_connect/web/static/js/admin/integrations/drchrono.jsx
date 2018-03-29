@@ -39,6 +39,7 @@ class DrChronoPage extends Component {
             <Panel.Body className="configurations-panel__body">
               {this.props.integrationStore.integrationConfigs.map(config => (
                 <IntegrationConfiguration
+                  id={config.id}
                   integrationName={config.integration_name}
                   roomName={config.group_name}
                   insertedAt={moment

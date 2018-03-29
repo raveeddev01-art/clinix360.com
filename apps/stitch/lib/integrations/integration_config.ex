@@ -44,4 +44,12 @@ defmodule Stitch.IntegrationConfig do
     query
     |> Repo.all()
   end
+
+  def get_by_id(id) do
+    Repo.get(IntegrationConfig, id)
+  end
+
+  def delete(config) do
+    Repo.delete(config)
+  end
 end
