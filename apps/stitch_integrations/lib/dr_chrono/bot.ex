@@ -1,7 +1,8 @@
 defmodule StitchIntegrations.DrChrono.Bot do
   import Ecto.Query
-  alias Stitch.Accounts.User
+  alias Stitch.{Accounts.User, Message}
   alias Stitch.Repo
+  alias StitchConnect.Web.UserStatusService
 
   def init_or_enable_bot(team_id) do
     bot_user =
@@ -9,8 +10,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
         u in User,
         where: u.team_id == ^team_id,
         where: u.is_bot == true,
-        where: u.first_name == "Dr",
-        where: u.last_name == "Chrono",
+        where: u.username == "drchrono",
         select: u
       )
       |> Repo.one()
@@ -20,11 +20,37 @@ defmodule StitchIntegrations.DrChrono.Bot do
         team_id: team_id,
         name: "Dr Chrono",
         username: "drchrono",
+        is_bot: true,
         disabled: false,
         profile_image_url: "a"
       })
     end
 
     {:ok, bot_user}
+  end
+
+  def get_bot(team_id) do
+    from(
+      u in User,
+      where: u.team_id == ^team_id,
+      where: u.username == "drchrono",
+      where: u.is_bot == true,
+      where: u.disabled == false,
+      select: u
+    )
+    |> Repo.one()
+  end
+
+  def post_message(team_id, group_id, message) do
+    bot_user = get_bot(team_id)
+
+    message_params = %{
+      text_content: message,
+      type: "chat"
+    }
+
+    presence_user_ids = UserStatusService.presence_user_ids(team_id)
+
+    Message.create(group_id, bot_user, message_params, presence_user_ids)
   end
 end
