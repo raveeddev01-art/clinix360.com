@@ -61,7 +61,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
 
     case Message.create(group_id, bot_user, message_params, presence_user_ids) do
       {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
-        IO.puts("Broadcasting message:")
+        message = Stitch.Repo.preload(message, :user)
         StitchConnect.Web.EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
 
       {:error, _} ->
