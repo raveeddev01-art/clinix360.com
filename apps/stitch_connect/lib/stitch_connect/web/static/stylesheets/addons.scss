@@ -211,9 +211,14 @@
 
 .files-addon,
 .directory-addon,
-.global-starred-messages-addon {
+.global-starred-messages-addon,
+.search-results-addon {
   padding: 0 15px;
   margin-bottom: 20px;
+
+  i.fa-circle-o-notch {
+    color: $brand-primary;
+  }
 
   .status {
     display: flex;

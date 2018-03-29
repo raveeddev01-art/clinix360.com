@@ -64,7 +64,7 @@ class MessageInfoModal extends Component {
     const user = usersStore.usersById[userId];
 
     return (
-      <div className="message-container addon">
+      <div className="message-container addon message-info">
         <div className="message">
           <UserProfileMenu user={user}>
             <Avatar user={user} />

@@ -28,7 +28,7 @@ class MessageNav extends Component {
             .calendar(null, {
               sameDay: "[Today]",
               lastDay: "[Yesterday]",
-              lastWeek: "dddd, MMMM D",
+              lastWeek: "MMM Do",
               sameElse: function() {
                 if (this.year() === now.year()) {
                   return "MMM Do";
