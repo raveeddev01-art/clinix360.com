@@ -45,8 +45,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
     bot_user = get_bot(team_id)
 
     message_params = %{
-      text_content: message,
-      type: "chat"
+      text_content: message
     }
 
     IO.puts("Posting DrChrono message:")
