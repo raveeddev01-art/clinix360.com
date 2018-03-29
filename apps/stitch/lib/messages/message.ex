@@ -188,10 +188,7 @@ defmodule Stitch.Message do
     create(group_id, user, Map.put(attrs, "type", "chat"), presence_user_ids)
   end
 
-  def create(_group_id, _user, attrs, _active_user_ids) do
-    IO.puts("In here!")
-    IO.inspect(attrs)
-    IO.puts("======")
+  def create(_group_id, _user, _attrs, _active_user_ids) do
     changeset = %Message{} |> change() |> add_error(:type, "is not supported")
     {:error, :message, changeset, nil}
   end

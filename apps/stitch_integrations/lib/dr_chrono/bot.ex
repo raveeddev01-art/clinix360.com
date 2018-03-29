@@ -3,6 +3,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
   alias Stitch.{Accounts.User, Message}
   alias Stitch.Repo
   alias StitchConnect.Web.UserStatusService
+  require Logger
 
   def init_or_enable_bot(team_id) do
     bot_user =
@@ -10,6 +11,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
         u in User,
         where: u.team_id == ^team_id,
         where: u.is_bot == true,
+        where: u.onboarded == true,
         where: u.username == "drchrono",
         select: u
       )
@@ -21,6 +23,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
         name: "Dr Chrono",
         username: "drchrono",
         is_bot: true,
+        onboarded: true,
         disabled: false,
         profile_image_url: "a"
       })
@@ -43,17 +46,24 @@ defmodule StitchIntegrations.DrChrono.Bot do
 
   def post_message(team_id, group_id, message) do
     bot_user = get_bot(team_id)
+    group = Stitch.GroupQueries.get_by_id(group_id)
 
     message_params = %{
-      text_content: message
+      "text_content" => message,
+      "type" => "chat"
     }
-
-    IO.puts("Posting DrChrono message:")
-    IO.inspect(message_params)
 
     presence_user_ids = UserStatusService.presence_user_ids(team_id)
 
-    Message.create(group_id, bot_user, message_params, presence_user_ids)
-    |> IO.inspect()
+    case Message.create(group_id, bot_user, message_params, presence_user_ids) do
+      {:ok, %{message: message, notify_user_ids: _notify_user_ids}} ->
+        message_json =
+          StitchConnect.Web.Api.V1.MessageView.render("show.json", %{message: message})
+
+        StitchConnect.Web.Endpoint.broadcast("groups:#{group.slug}", "new_msg", message_json)
+
+      {:error, _} ->
+        Logger.error("Couldn't post DrChrono bot message.")
+    end
   end
 end
