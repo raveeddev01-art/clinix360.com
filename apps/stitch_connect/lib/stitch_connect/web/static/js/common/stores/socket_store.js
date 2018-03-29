@@ -1,6 +1,6 @@
 import { observable, action } from "mobx";
 
-const HEALTHY_TIMEOUT = 2000; // if pong arrives under 2000ms, it means connection is healthy
+const HEALTHY_TIMEOUT = 5000; // if pong arrives under 5000ms, it means connection is healthy
 
 class SocketStore {
   @observable isConnected = true;
@@ -57,7 +57,7 @@ class SocketStore {
 
       if (pingEnd - this.pingStart < HEALTHY_TIMEOUT) {
         this.isHealthy = true;
-        this.sendPingWithTimeout();
+        this.sendPingWithTimeout(HEALTHY_TIMEOUT - 1000);
       } else {
         this.isHealthy = false;
         this.sendPingWithTimeout(0); // if it's not healthy immediately check connection again
