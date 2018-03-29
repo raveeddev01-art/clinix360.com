@@ -20,6 +20,7 @@ defmodule Stitch.Bot do
     |> update_change(:last_name, &String.trim/1)
     |> update_change(:username, &String.trim/1)
     |> put_change(:is_bot, true)
+    |> put_change(:onboarded, true)
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
   end
