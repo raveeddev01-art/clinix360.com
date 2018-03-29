@@ -64,6 +64,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
       {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
         message = Stitch.Repo.preload(message, :user)
         StitchConnect.Web.EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
+        StitchConnect.Web.GroupChannel.broadcast_message_created(message)
 
       {:error, _} ->
         Logger.error("Couldn't post DrChrono bot message.")
