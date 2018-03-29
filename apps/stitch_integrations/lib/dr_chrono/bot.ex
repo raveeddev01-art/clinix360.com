@@ -49,7 +49,11 @@ defmodule StitchIntegrations.DrChrono.Bot do
       type: "chat"
     }
 
+    IO.puts("Posting DrChrono message:")
+    IO.inspect(message_params)
+
     presence_user_ids = UserStatusService.presence_user_ids(team_id)
+    IO.inspect(presence_user_ids)
 
     Message.create(group_id, bot_user, message_params, presence_user_ids)
   end
