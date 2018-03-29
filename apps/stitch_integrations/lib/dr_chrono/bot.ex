@@ -60,8 +60,9 @@ defmodule StitchIntegrations.DrChrono.Bot do
     presence_user_ids = UserStatusService.presence_user_ids(team_id)
 
     case Message.create(group_id, bot_user, message_params, presence_user_ids) do
-      {:ok, %{message: message, notify_user_ids: _notify_user_ids}} ->
-        StitchConnect.Web.EventsChannel.broadcast_group_new_msg(group, message, [])
+      {:ok, %{message: message, notify_user_ids: notify_user_ids}} ->
+        IO.puts("Broadcasting message:")
+        StitchConnect.Web.EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids)
 
       {:error, _} ->
         Logger.error("Couldn't post DrChrono bot message.")
