@@ -18,6 +18,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(StitchConnect.Plug.Authenticate)
+    plug(StitchConnect.Plug.ActivityTracker)
   end
 
   pipeline :admin do
@@ -43,6 +44,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug(:fetch_session)
     plug(StitchConnect.Plug.ApiAuthenticate)
     plug(StitchConnect.Plug.EnsureUnlocked)
+    plug(StitchConnect.Plug.ActivityTracker)
   end
 
   pipeline :authenticated_locked_api do
@@ -58,6 +60,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     plug(:fetch_session)
     plug(StitchConnect.Plug.ApiAuthenticate)
     plug(StitchConnect.Plug.TeamAdminOnly)
+    plug(StitchConnect.Plug.ActivityTracker)
   end
 
   # Stitch Staff Admin subdomain routes
@@ -113,6 +116,15 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/starred_messages", StarredMessageController, :index)
     get("/pinned_messages", PinnedMessageController, :index)
     get("/mentions", MentionController, :index)
+
+    get("/integrations", IntegrationController, :index)
+    get("/integration-configs", IntegrationConfigController, :index)
+
+    post(
+      "/integrations/:integration_id/integration-config",
+      IntegrationConfigController,
+      :create
+    )
 
     get("/users/", UserController, :index)
     put("/users/notification-preference", NotificationPreferenceController, :update_global)
@@ -275,6 +287,11 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/admin/members", AdminController, :index)
     get("/admin/billing", AdminController, :index)
     get("/admin/analytics", AdminController, :index)
+
+    get("/admin/integrations", AdminController, :index, as: :admin_integrations)
+    get("/admin/integrations/:integration/new", AdminController, :index)
+    get("/admin/integrations/:slug", AdminController, :index)
+    get("/admin/integrations/:slug/edit", AdminController, :index)
 
     get("/exports/:id/download", ExportController, :download)
 

@@ -91,11 +91,20 @@ class GroupsStore {
 
   @computed
   get directGroups() {
+    const isSelfDM = group => group.type === "dm" && group.users.length === 1;
+
     return this.visibleGroups
       .filter(group => group.type !== "regular" && !group.is_favorite)
-      .sort(
-        (group1, group2) => group2.user_count === 1 || group1.name > group2.name
-      );
+      .sort((group1, group2) => {
+        // Sorting and comparing if it's a self-DM, "You" goes first
+        if (isSelfDM(group1) > isSelfDM(group2)) return -1;
+        if (isSelfDM(group1) < isSelfDM(group2)) return 1;
+
+        // Then sorts DMs in alphabetical order
+        if (group1.name < group2.name) return -1;
+        if (group1.name > group2.name) return 1;
+        return 0;
+      });
   }
 
   @computed
@@ -124,6 +133,28 @@ class GroupsStore {
     return this.visibleGroups.reduce((count, group) => {
       return count + group.unread_messages_count;
     }, 0);
+  }
+
+  @computed
+  get isCurrentGroupDeactivated() {
+    if (!this.currentGroup) {
+      return false;
+    }
+
+    if (this.currentGroup.type === "regular") {
+      return false;
+    }
+
+    const { usersStore } = this.rootStore;
+
+    if (this.currentGroup.users.length === 1) { // self-dm
+      return false;
+    }
+
+    return this.currentGroup.users.every(u => {
+      const user = usersStore.users.find(s => s.id === u.id && s.disabled);
+      return u.id === currentUser.id || !!user;
+    });
   }
 
   // //////////

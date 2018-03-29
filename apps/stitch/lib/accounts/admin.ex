@@ -53,13 +53,15 @@ defmodule Stitch.Accounts.Admin do
       team = Stitch.TeamQueries.get_by_id(team_id)
       active_users = Stitch.TeamQueries.list_active_users(team)
       properties = %{
+        "active_users" => length(active_users),
+        "email"        => user.email,
         "first_name"   => user.first_name,
         "last_name"    => user.last_name,
-        "email"        => user.email,
+        "team_created_at" => team.inserted_at,
         "team_id"      => Integer.to_string(team.id),
         "team_name"    => team.name,
         "team_slug"    => team.slug,
-        "active_users" => length(active_users)
+        "user_created_at" => user.inserted_at
       }
       Stitch.Analytics.track(user.id, "Account Disabled", properties)
     end)

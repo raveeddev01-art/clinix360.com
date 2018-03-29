@@ -7,9 +7,11 @@
 import { observable, action, computed, when, extendObservable } from "mobx";
 import moment from "moment";
 
+import debounce from "lodash/debounce";
+import flatten from "lodash/flatten";
 import flow from "lodash/flow";
 import last from "lodash/last";
-import flatten from "lodash/flatten";
+import memoize from "lodash/memoize";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 import unionBy from "lodash/unionBy";
@@ -145,7 +147,7 @@ class MessageStore {
     return this.group.new_message_line_at;
   }
 
-  get markedAsUnread() {
+  get groupMarkedAsUnread() {
     return this.group.marked_as_unread;
   }
 
@@ -161,7 +163,9 @@ class MessageStore {
 
   @computed
   get otherUserMessages() {
-    return this.messages.filter(m => m.user_id !== currentUser.id);
+    return this.messages.filter(
+      m => m.user_id !== currentUser.id && m.type !== "system"
+    );
   }
 
   @computed
@@ -391,7 +395,12 @@ class MessageStore {
         offset: -50
       });
     } else {
-      this.scrollTo(this.messages[this.messages.length - 1].id, 500);
+      scroller.scrollTo("topPosition", {
+        containerId: "chat",
+        smooth: true,
+        duration: 500,
+        offset: -50
+      });
     }
   };
 
@@ -537,9 +546,10 @@ class MessageStore {
 
   @action
   markAsUnread = messageId => {
-    this.groupChannel.push("mark_as_unread", {
-      group_id: this.group.id,
-      message_id: messageId
+    post(`/api/v1/groups/${this.group.id}/mark_as_unread`, {
+      body: {
+        message_id: messageId
+      }
     });
   };
 
@@ -571,8 +581,20 @@ class MessageStore {
       this.updateGroupData({ new_message_line_at: this.lastReadAt });
     }
 
-    this.groupChannel.push("mark_as_read", { group_id: this.group.id });
+    post(`/api/v1/groups/${this.group.id}/mark_as_read`);
   };
+
+  // returns the same debouncedMarkAsRead if the
+  // same arguments are passed in. If different args
+  // are passed in, a new debouncedMarkAsRead comes out
+  // (so you can debounce marking for one group, but
+  // it does not affect any others)
+  getDebouncedMarkAsRead = memoize(() => {
+    return debounce(this.markAsRead, 500, {
+      maxWait: 1200, // above the timeout for the initial mark as read
+      leading: true
+    });
+  });
 
   sendMessage = (text, additionalFields = {}) => {
     const messageText = this.encodeMessage(text);
@@ -948,7 +970,6 @@ class MessageStore {
     }
 
     this.messageElements[messageId] = { div: messageDiv };
-    this.onMessageShow(messageId);
   }
 
   @action
@@ -1011,11 +1032,16 @@ class MessageStore {
       this.mountedAllMessages &&
       this.messageVisibility[this.firstUnreadMessage.id];
 
-    if (!this.markedAsUnread && isFirstMsgVisible) {
-      // If first unread message is visible, mark messages as read after 1s delay
-      // but, leave the new message line
+    // If first unread message is visible, mark messages as read after 1s delay
+    // but, leave the new message line
+    if (!this.groupMarkedAsUnread && isFirstMsgVisible) {
+      // for each group.id return a new debounced markAsRead
+      // so that you dont accidentally debounce setting a different
+      // group to unread (switching active group and re-scrolling quickly)
+      const debouncedMarkAsRead = this.getDebouncedMarkAsRead(this.group.id);
+
       this.timeoutManager.setTimeout(() => {
-        this.markAsRead(false);
+        debouncedMarkAsRead(false);
       }, 1000);
     }
   }
@@ -1074,7 +1100,7 @@ class MessageStore {
       this.unreadMessagesCount === 0 &&
       (newMessage.user_id === currentUser.id || this.isScrollBottom)
     ) {
-      this.markAsRead(newMessage.user_id === currentUser.id); // retain NML if msg is from other
+      this.markAsRead(true);
     } else if (
       newMessage.type !== "system" &&
       newMessage.user_id !== currentUser.id
@@ -1094,9 +1120,6 @@ class MessageStore {
 
     // Update favicon
     sidemenuStore.updateFavicon();
-
-    // Play notification audio
-    sidemenuStore.playNotificationAudioForNewMessage(newMessage);
 
     // Show notification card
     sidemenuStore.showNotificationCardForNewMessage(newMessage);

@@ -2,7 +2,7 @@ defmodule StitchConnect.Web.GroupChannel do
   use StitchConnect.Web, :channel
   use Appsignal.Instrumentation.Decorators
   import Ecto.Query
-  alias Stitch.Accounts.{User}
+  alias Stitch.Accounts.{User, ActivityTracker}
   alias StitchConnect.Web.Api.V1.MessageView
   alias StitchConnect.MessageLinkPreviewGenerator
   alias StitchConnect.Web.{EventsChannel, PushNotifications}
@@ -98,6 +98,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("feed", %{"max_id" => _} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
+    ActivityTracker.async_update_activity(user)
     fetch_users = get_fetch_users_param(params)
 
     case group do
@@ -121,6 +122,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("feed_recent", %{"min_id" => _} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
+    ActivityTracker.async_update_activity(user)
     fetch_users = get_fetch_users_param(params)
 
     case group do
@@ -144,6 +146,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("feed_surrounding", %{"id" => message_id} = params, socket) do
     %{group: group, current_user: user} = socket.assigns
+    ActivityTracker.async_update_activity(user)
     limit = Map.get(params, "limit", 60)
     fetch_users = get_fetch_users_param(params)
     case MessageQueries.get_by_id(message_id, fetch_users) do
@@ -161,6 +164,7 @@ defmodule StitchConnect.Web.GroupChannel do
       {:reply, {:error, %{message: "timeout error"}}, socket}
     else
       %{group: group, current_user: user} = socket.assigns
+      ActivityTracker.async_update_activity(user)
       do_new_msg(socket, group, user, params)
     end
   end
@@ -169,6 +173,7 @@ defmodule StitchConnect.Web.GroupChannel do
   def handle_in("mark_as_unread", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
     message = Repo.get!(Message, message_id)
+    ActivityTracker.async_update_activity(user)
 
     Message.mark_as_unread(user.id, group.id, message)
     |> mark_as_unread_response(user, socket)
@@ -177,6 +182,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("mark_as_read", _params, socket) do
     %{group: group, current_user: user} = socket.assigns
+    ActivityTracker.async_update_activity(user)
 
     Message.mark_as_read(user.id, group.id)
     |> mark_as_read_response(user, socket)
@@ -185,6 +191,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("edit_msg", %{"message_id" => message_id, "params" => params}, socket) do
     %{group: group, current_user: user} = socket.assigns
+    ActivityTracker.async_update_activity(user)
 
     message =
       Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one()
@@ -208,6 +215,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("delete_msg", %{"message_id" => message_id}, socket) do
     %{group: group, current_user: user} = socket.assigns
+    ActivityTracker.async_update_activity(user)
 
     message =
       Message |> where(id: ^message_id, user_id: ^user.id, group_id: ^group.id) |> Repo.one()
@@ -231,6 +239,7 @@ defmodule StitchConnect.Web.GroupChannel do
   @decorate channel_action()
   def handle_in("delete_msg_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
     %{group: group, current_user: user} = socket.assigns
+    ActivityTracker.async_update_activity(user)
     message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
 
     case {message, message && MessageAuthorization.can_delete?(message, user)} do
@@ -255,6 +264,7 @@ defmodule StitchConnect.Web.GroupChannel do
         socket
       ) do
     %{group: group, current_user: user} = socket.assigns
+    ActivityTracker.async_update_activity(user)
     message = Message |> where(id: ^message_id, group_id: ^group.id) |> Repo.one()
 
     case {message, message && GroupAuthorization.can_view?(group, user)} do

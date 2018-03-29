@@ -5,6 +5,7 @@ const HEALTHY_TIMEOUT = 2000; // if pong arrives under 2000ms, it means connecti
 class SocketStore {
   @observable isConnected = true;
   @observable isHealthy = true;
+  isFirstConnect = true;
   pingCount = 0;
   pingStart = 0;
   pingRace = null;
@@ -72,11 +73,48 @@ class SocketStore {
   openSocket = () => {
     this.isConnected = true;
     this.sendPingWithTimeout();
+
+    // upon reconnect, load users, groups, and last batch of messages of current group again
+    if (!this.isFirstConnect) {
+      this.loadAfterReconnect();
+    }
+
+    this.isFirstConnect = false;
   };
 
   @action
   errorSocket = () => {
     this.isConnected = false;
+  };
+
+  @action
+  loadAfterReconnect = () => {
+    const { usersStore, groupsStore } = this.rootStore;
+    if (!groupsStore.currentGroup) {
+      return;
+    }
+
+    const prevUnreadAt = groupsStore.currentGroup.last_read_at;
+    const prevUnreadCount = groupsStore.currentGroup.unread_messages_count;
+
+    usersStore
+      .loadUsers()
+      .then(() => groupsStore.loadGroups())
+      .then(() => {
+        if (!this.groupChannel || !groupsStore.currentGroup) {
+          return;
+        }
+
+        const newUnreadAt = groupsStore.currentGroup.last_read_at;
+        const newUnreadCount = groupsStore.currentGroup.unread_messages_count;
+
+        if (
+          prevUnreadAt !== newUnreadAt ||
+          prevUnreadCount !== newUnreadCount
+        ) {
+          groupsStore.onOpenedGroup();
+        }
+      });
   };
 }
 

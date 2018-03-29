@@ -54,11 +54,11 @@ class CreateTeam extends Component {
             onChange={this.onChange}
           />
           <Button type="submit" bsStyle="primary" className="btn-form">
-            Create Team
+            Get Started
           </Button>
         </FormGroup>
 
-        {/* <Button type="submit">Create Team</Button> */}
+        {/* <Button type="submit">Get Started</Button> */}
       </Form>
     );
   }

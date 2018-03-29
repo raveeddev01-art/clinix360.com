@@ -1,21 +1,38 @@
 .link-preview {
-  max-width: 600px;
   display: flex;
   flex-direction: row;
   position: relative;
   margin: 10px 0 2px;
   margin-left: -22px;
   padding-left: 22px;
+  max-width: 600px;
 
-  .preview-line {
+  &__line {
     flex-shrink: 0;
     width: 4px;
-    background: rgba(0,0,0,.12);
+    background: rgba(0, 0, 0, 0.12);
     border-radius: 6px;
   }
 
-  .preview-body {
-    padding: 4px 0 4px 15px;
+  &__body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__text {
+    flex: 1;
+    padding: 0 15px;
+  }
+
+  &__image-container {
+    max-width: 150px;
+    padding: 1px;
+  }
+
+  &__image {
+    max-width: 60px;
+    max-height: 60px;
   }
 
   &__close {
@@ -44,10 +61,6 @@
 
   &__title {
     margin-bottom: 5px;
-  }
-
-  &__description {
-    margin-bottom: 10px;
   }
 
   &:hover .link-preview__close {

@@ -1,0 +1,30 @@
+defmodule StitchIntegrations.DrChrono.Bot do
+  import Ecto.Query
+  alias Stitch.Accounts.User
+  alias Stitch.Repo
+
+  def init_or_enable_bot(team_id) do
+    bot_user =
+      from(
+        u in User,
+        where: u.team_id == ^team_id,
+        where: u.is_bot == true,
+        where: u.first_name == "Dr",
+        where: u.last_name == "Chrono",
+        select: u
+      )
+      |> Repo.one()
+
+    if bot_user == nil do
+      Stitch.Bot.create(team_id, %{
+        team_id: team_id,
+        name: "Dr Chrono",
+        username: "drchrono",
+        disabled: false,
+        profile_image_url: "a"
+      })
+    end
+
+    {:ok, bot_user}
+  end
+end

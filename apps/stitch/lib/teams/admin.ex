@@ -5,8 +5,7 @@ defmodule Stitch.Team.Admin do
 
   alias Stitch.Repo
   alias Stitch.Team
-
-  @analytics Application.get_env(:stitch, :analytics)
+  alias Stitch.Analytics.Team, as: TeamAnalytics
 
   @spec update_name(number, String.t) :: {:ok, term} | {:error, term}
   @doc """
@@ -16,7 +15,7 @@ defmodule Stitch.Team.Admin do
     team = Repo.get(Team, team_id)
     changeset = Team.changeset(team, %{name: name})
     result = Repo.update changeset
-    case result, do: ({:ok, _} -> analytics_identify_and_group(team); _ -> :ignore)
+    case result, do: ({:ok, _} -> TeamAnalytics.identify_and_group(team); _ -> :ignore)
     result
   end
   def update_name(_, _), do: {:error, "Name cannot be blank or nil"}
@@ -26,14 +25,8 @@ defmodule Stitch.Team.Admin do
     |> Team.contact_info_changeset(params)
     |> Repo.update
 
-    case result, do: ({:ok, _} -> analytics_identify_and_group(team); _ -> :ignore)
+    case result, do: ({:ok, _} -> TeamAnalytics.identify_and_group(team); _ -> :ignore)
     result
-  end
-
-  defp analytics_identify_and_group(team) do
-    Task.start(fn ->
-      @analytics.identify_and_group(team)
-    end)
   end
 
   @spec update_security_lockout_time(number, boolean, number) :: {:ok, term()} | {:error, term()}

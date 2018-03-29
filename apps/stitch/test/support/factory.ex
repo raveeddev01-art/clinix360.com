@@ -12,12 +12,17 @@ defmodule Stitch.Factory do
       roles: ["member"],
       onboarded: true,
       password_hash: @password_hash,
-      token: sequence(:token, &"ezkLsxjGxnyU_mgcHepbliFeX1#{&1 |> Integer.to_string |> String.pad_leading(5, "0")}-")
+      token:
+        sequence(
+          :token,
+          &"ezkLsxjGxnyU_mgcHepbliFeX1#{&1 |> Integer.to_string() |> String.pad_leading(5, "0")}-"
+        )
     }
   end
 
   def team_factory do
     random_id = sequence("team")
+
     %Stitch.Team{
       name: "Starbucks-#{random_id}",
       slug: "starbucks-#{random_id}",
@@ -28,12 +33,12 @@ defmodule Stitch.Factory do
   end
 
   def group_factory do
-    name = Faker.Commerce.department
+    name = Faker.Commerce.department()
 
     %Stitch.Group{
       name: name,
       slug: sequence(:group_slug, &"#{Slugger.slugify_downcase(name)}-#{&1}"),
-      description: Faker.Company.bs,
+      description: Faker.Company.bs(),
       public: true,
       team: build(:team),
       creator: build(:user)
@@ -54,39 +59,57 @@ defmodule Stitch.Factory do
     }
   end
 
+  def integration_factory do
+    %Stitch.Integration{
+      team: build(:team),
+      name: "drchrono",
+      enabled: true,
+      settings: %{}
+    }
+  end
+
+  def integration_config_factory do
+    %Stitch.IntegrationConfig{
+      integration: build(:integration),
+      group: build(:group),
+      settings: %{}
+    }
+  end
+
   def message_factory do
     %Stitch.Message{
       user: build(:user),
       group: build(:group),
-      text_content: Faker.Lorem.sentence,
+      text_content: Faker.Lorem.sentence(),
       type: "chat"
     }
   end
 
   def export_factory do
     %Stitch.Exports.Export{
-      team: build(:team),
+      team: build(:team)
     }
   end
 
   def password_reset_token_factory do
     %Stitch.Accounts.PasswordResetToken{
       token: Stitch.Rand.token(32),
-      valid: true,
+      valid: true
     }
   end
 
   def mobile_device_factory do
     %Stitch.Mobile.Device{
       user: build(:user),
-      name: Faker.Lorem.words |> Enum.join(" "),
+      name: Faker.Lorem.words() |> Enum.join(" "),
       type: Enum.random(["ios", "android"]),
-      token: Faker.String.base64
+      token: Faker.String.base64()
     }
   end
 
   def subscription_factory do
     end_date = Timex.shift(DateTime.utc_now(), days: 30)
+
     %Stitch.Billing.Subscription{
       team: build(:team),
       customer_id: sequence(:customer_id, &"cus_#{&1}"),
@@ -103,6 +126,7 @@ defmodule Stitch.Factory do
 
   def trial_subscription_factory do
     end_date = Timex.shift(DateTime.utc_now(), days: 14)
+
     %Stitch.Billing.Subscription{
       team: build(:team),
       customer_id: sequence(:customer_id, &"cus_#{&1}"),
@@ -118,6 +142,7 @@ defmodule Stitch.Factory do
 
   def card_factory do
     timestamp = DateTime.utc_now() |> DateTime.to_unix()
+
     %Stitch.Billing.PaymentMethod{
       team: build(:team),
       card_id: "card_#{timestamp}",
@@ -145,7 +170,7 @@ defmodule Stitch.Factory do
     %Stitch.FindYourTeam.Token{
       type: "login",
       token: Stitch.Rand.token(32),
-      email: sequence(:email, &"email-#{&1}@example.com"),
+      email: sequence(:email, &"email-#{&1}@example.com")
     }
   end
 end

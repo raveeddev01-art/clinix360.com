@@ -43,7 +43,7 @@ export default class Landing extends Component {
 
                   <li>
                     <a href="/signup/email" className="nav-link btn-outline">
-                      Create Team
+                      Get Started
                     </a>
                   </li>
                 </ul>
@@ -68,7 +68,7 @@ export default class Landing extends Component {
                     bsStyle="primary"
                     href="https://teamstitch.com/signup/email"
                   >
-                    Start Trial
+                    Get Started
                   </Button>
                 </div>
               </Col>

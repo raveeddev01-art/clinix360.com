@@ -213,11 +213,13 @@ class PresenceStore {
   onBecameInactive = () => {
     if (this.locked) return;
     this.throttledUserInteract.cancel(); // after inactive, user interact shouldn't be fired
+    this.isActive = false;
     this.teamChannel.push("became_inactive");
   };
 
   onBecameActive = () => {
     if (this.locked) return;
+    this.isActive = true;
     this.teamChannel.push("became_active");
   };
 

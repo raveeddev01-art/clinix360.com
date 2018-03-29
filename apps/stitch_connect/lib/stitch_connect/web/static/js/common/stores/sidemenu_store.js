@@ -8,7 +8,10 @@ import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
 
-import { ROOM_MENU_ITEM_ANCHOR_PREFIX } from "../../lib/constants";
+import {
+  NOTIFICATION_CARD_DURATION,
+  ROOM_MENU_ITEM_ANCHOR_PREFIX
+} from "../../lib/constants";
 import history from "../../lib/history";
 
 class SidemenuStore {
@@ -173,22 +176,6 @@ class SidemenuStore {
     );
   }
 
-  /**
-   * Check if notification should be made for the message
-   *
-   *  Should notify ONLY when
-   *    - message is from others AND
-   *    - user is not 'Currently in' the room
-   *
-   * @param {*} newMessage
-   */
-  shouldNotify(newMessage) {
-    return (
-      newMessage.user_id !== currentUser.id &&
-      !this.isCurrentlyInRoom(newMessage.group_id)
-    );
-  }
-
   updateFavicon() {
     const {
       groupsStore: { totalMentionsCount, totalUnreadMessagesCount }
@@ -225,26 +212,7 @@ class SidemenuStore {
     this.notificationAudio.play();
   }
 
-  playNotificationAudioForNewMessage(newMessage) {
-    if (!this.shouldNotify(newMessage)) {
-      return;
-    }
-
-    const { notificationStore } = this.rootStore;
-    const desktopNotification = notificationStore.getGroupPrefById(
-      newMessage.group_id
-    );
-    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
-
-    if (
-      desktopNotification === "everything" ||
-      (desktopNotification === "mentions" && isMention)
-    ) {
-      this.playNotificationAudio();
-    }
-  }
-
-  showNotificationCard(title, body, tag, duration = 5000, cb = null) {
+  showNotificationCard(title, body, tag, onClick = null) {
     const notification = new Notification(title, {
       body,
       tag,
@@ -252,56 +220,117 @@ class SidemenuStore {
       silent: true
     });
 
-    if (cb) {
-      notification.onclick = cb;
+    if (onClick) {
+      notification.onclick = onClick;
     }
+
+    this.playNotificationAudio();
 
     setTimeout(() => {
-      notification.close();
-    }, duration);
+      notification.close()
+    }, NOTIFICATION_CARD_DURATION);
   }
 
-  showNotificationCardForNewMessage(newMessage) {
+  showNotificationCardForNewMessage(message) {
     if (
-      !this.shouldNotify(newMessage) ||
-      (window.Notification && Notification.permission === "denied")
+      this.isOwnMessage(message) ||
+      this.notificationNotAllowed() ||
+      this.isCurrentlyInRoom(message.group_id) ||
+      this.isSystemMessage(message)
     ) {
-      return;
-    }
-
-    if (newMessage.type === "system") {
       return;
     }
 
     const { notificationStore, groupsStore } = this.rootStore;
-    const desktopNotification = notificationStore.getGroupPrefById(
-      newMessage.group_id
-    );
-    const group = groupsStore.getGroupById(newMessage.group_id);
-    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
-    const isDirect = group.type === "dm" || group.type === "multi_dm";
 
-    if (
-      desktopNotification === "everything" ||
-      (desktopNotification === "mentions" && (isMention || isDirect))
-    ) {
-      const message =
-        group.type === "regular"
-          ? "sent a room message"
-          : "sent a direct message";
-      const text = `${newMessage.user.first_name} ${newMessage.user
-        .last_name} ${message}`;
-      this.showNotificationCard(
-        `${group.name}`,
-        text,
-        "new-message",
-        5000,
-        () => {
-          this.goToMessageRoom(newMessage);
-          window.dispatchEvent(new CustomEvent("notification-clicked"));
-        }
-      );
+    // GET GROUP PREFERENCE
+    const groupPreference = notificationStore.getGroupPrefById(
+      message.group_id
+    );
+    const notifyOnAll = groupPreference === "everything";
+    const notifyOnMention = groupPreference === "mentions";
+
+    // GET MSG TYPE
+    const group = groupsStore.getGroupById(message.group_id);
+    const isMention = message.mentioned_user_ids.includes(currentUser.id);
+    const isDirect = this.isSingleDM(group) || this.isMultiDM(group);
+
+    const notifyOnMessageType =
+      notifyOnAll || (notifyOnMention && (isMention || isDirect));
+
+    // SHORT CIRCUIT UNLESS CORRECT TYPE
+    if (!notifyOnMessageType) {
+      return;
     }
+
+    // SENDING THE MESSAGE
+    this.showNotificationCard(
+      this.getNotificationTitle(group),
+      this.getNotificationText(message, group, isMention),
+      "new-message", // notification tag
+      this.getOnNotificationClick(message)
+    );
+  }
+
+  getNotificationTitle(group) {
+    return `${group.name}`;
+  }
+
+  getNotificationText(message, group, isMention) {
+    const senderName = `${message.user.first_name} ${message.user.last_name}`;
+    const messageBody = this.getMessageBody(message, group, isMention);
+
+    return `${senderName} ${messageBody}`;
+  }
+
+  getMessageBody(message, group, isMention) {
+    if (this.isUpload(message)) {
+      return "uploaded a file.";
+    }
+
+    if (this.isSingleDM(group)) {
+      return "sent you a direct message.";
+    }
+
+    if (this.isMultiDM(group)) {
+      return isMention
+        ? "mentioned you in a direct message."
+        : "sent a direct message.";
+    }
+
+    // Room Messages
+    return isMention
+      ? "mentioned you in a room message."
+      : "sent a new room message.";
+  }
+
+  getOnNotificationClick = message => () => {
+    this.goToMessageRoom(message);
+    window.dispatchEvent(new CustomEvent("notification-clicked"));
+  };
+
+  notificationNotAllowed() {
+    return window.Notification && Notification.permission !== "granted";
+  }
+
+  isOwnMessage(message) {
+    return message.user_id === currentUser.id;
+  }
+
+  isSystemMessage(message) {
+    return message.type === "system";
+  }
+
+  isSingleDM(group) {
+    return group.type === "dm";
+  }
+
+  isMultiDM(group) {
+    return group.type === "multi_dm";
+  }
+
+  isUpload(message) {
+    return message.type === "upload";
   }
 
   goToMessageRoom(message) {
@@ -331,22 +360,22 @@ class SidemenuStore {
   // ////////////// //
 
   @action
-  onNewMessage = newMessage => {
+  onNewMessage = message => {
     const { groupStore, groupsStore } = this.rootStore;
 
     // If the message is system message or for the current group, ignore
     if (
-      newMessage.type === "system" ||
+      message.type === "system" ||
       (groupStore.group &&
-        newMessage.group_id === groupStore.group.id &&
+        message.group_id === groupStore.group.id &&
         this.isInChat) ||
-      newMessage.user_id === currentUser.id
+      message.user_id === currentUser.id
     ) {
       return;
     }
 
-    const group = groupsStore.getGroupById(newMessage.group_id);
-    const isMention = newMessage.mentioned_user_ids.includes(currentUser.id);
+    const group = groupsStore.getGroupById(message.group_id);
+    const isMention = message.mentioned_user_ids.includes(currentUser.id);
 
     if (group) {
       group.unread_messages_count += 1;
@@ -365,11 +394,8 @@ class SidemenuStore {
     // Update Favicon
     this.updateFavicon();
 
-    // Play notification audio
-    this.playNotificationAudioForNewMessage(newMessage);
-
     // Show notification card
-    this.showNotificationCardForNewMessage(newMessage);
+    this.showNotificationCardForNewMessage(message);
   };
 
   @action

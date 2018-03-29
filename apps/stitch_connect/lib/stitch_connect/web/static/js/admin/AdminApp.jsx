@@ -19,6 +19,9 @@ import AccountSettings from "./you/account";
 import Users from "./users";
 import Billing from "./billing/billing";
 import Analytics from "./analytics";
+// import Integrations from "./integrations";
+// import DrChronoPage from "./integrations/drchrono";
+// import DrChronoNewSettings from "./integrations/components/drchrono-settings/drchrono-new-settings";
 
 @inject("titleStore")
 @observer
@@ -56,6 +59,24 @@ class AdminApp extends Component {
         path={`/admin/billing`}
         component={Billing}
       />
+      // <Route
+      //   exact
+      //   key="route_admin_integrations"
+      //   path={`/admin/integrations`}
+      //   component={Integrations}
+      // />,
+      // <Route
+      //   exact
+      //   key="route_admin_integrations_drchrono"
+      //   path={`/admin/integrations/drchrono`}
+      //   component={DrChronoPage}
+      // />,
+      // <Route
+      //   exact
+      //   key="route_admin_integrations_drchrono_edit"
+      //   path={`/admin/integrations/drchrono/new`}
+      //   component={DrChronoNewSettings}
+      // />
     ];
   };
 

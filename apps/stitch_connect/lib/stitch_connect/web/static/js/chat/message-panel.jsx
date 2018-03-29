@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import classNames from "classnames";
 import moment from "moment";
+import history from "lib/history";
 
 import MessageList from "./message-list/message-list";
 import MessageForm from "./message-form/message-form";
 import UploadProgress from "../file-upload/upload-progress";
 
-@inject("groupStore", "messageStore")
+@inject("groupStore", "messageStore", "groupsStore")
 @observer
 export default class MessagePanel extends Component {
   componentWillMount() {
@@ -52,6 +53,10 @@ export default class MessagePanel extends Component {
     const { groupStore } = this.props;
 
     groupStore.join();
+  };
+
+  handleClose = () => {
+    history.push(`/rooms/${this.props.groupsStore.defaultGroup.slug}`);
   };
 
   renderUnreadMessagesBar() {
@@ -100,8 +105,57 @@ export default class MessagePanel extends Component {
     );
   }
 
+  renderFooter() {
+    const { groupStore, groupsStore } = this.props;
+
+    if (groupsStore.isCurrentGroupDeactivated) {
+      const text =
+        groupsStore.currentGroup.type === "dm"
+          ? "You are viewing the message history of a deactivated account."
+          : "You are viewing the message history of deactivated accounts.";
+      return (
+        <div className="flex-footer">
+          <div className="room-preview">
+            {text}
+            <button
+              className="join btn btn-fancy btn-default"
+              onClick={this.handleClose}
+            >
+              <i className="fa fa-sign-in" /> Close
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (!groupStore.group.joined) {
+      return (
+        <div className="flex-footer">
+          <div className="room-preview">
+            This is a preview of the room{" "}
+            <b>
+              <i className="fa fa-comments" /> {groupStore.group.name}
+            </b>
+            <button
+              className="join btn btn-fancy btn-primary"
+              onClick={this.handleJoin}
+            >
+              <i className="fa fa-sign-in" /> Join
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex-footer">
+        <MessageForm />
+      </div>
+    );
+  }
+
   render() {
-    const { groupStore, messageStore } = this.props;
+    const { messageStore } = this.props;
     const chatContainerClassName = classNames({
       loaded: messageStore.loadedInitial
     });
@@ -114,24 +168,7 @@ export default class MessagePanel extends Component {
         </div>
 
         <MessageList />
-        <div className="flex-footer">
-          {groupStore.group.joined ? (
-            <MessageForm />
-          ) : (
-            <div className="room-preview">
-              This is a preview of the room{" "}
-              <b>
-                <i className="fa fa-comments" /> {groupStore.group.name}
-              </b>
-              <button
-                className="join btn btn-fancy btn-primary"
-                onClick={this.handleJoin}
-              >
-                <i className="fa fa-sign-in" /> Join
-              </button>
-            </div>
-          )}
-        </div>
+        {this.renderFooter()}
       </div>
     );
   }

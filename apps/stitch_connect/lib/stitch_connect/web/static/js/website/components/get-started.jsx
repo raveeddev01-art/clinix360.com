@@ -17,7 +17,7 @@ export default class GetStarted extends Component {
                 <strong className="hidden-xs hidden-sm">
                   Ready to bring Stitch to your team?
                 </strong>
-                <br /> <span>Start a free trial today, or book a demo.</span>
+                <br /> <span>Get started for free today, or book a demo.</span>
               </h2>
             </div>
 
@@ -27,7 +27,7 @@ export default class GetStarted extends Component {
                 block
                 href="https://teamstitch.com/signup/email"
               >
-                Create Team
+                Get Started
               </Button>
 
               <LinkContainer to="/demo">
