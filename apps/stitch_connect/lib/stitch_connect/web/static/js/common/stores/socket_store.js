@@ -45,6 +45,8 @@ class SocketStore {
   @action
   sendPing = () => {
     if (!this.groupChannel) {
+      // if channel is not open yet, try again after 1s
+      this.sendPingWithTimeout();
       return;
     }
 
