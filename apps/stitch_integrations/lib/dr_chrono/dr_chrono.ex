@@ -1,8 +1,8 @@
 defmodule StitchIntegrations.DrChrono do
-  alias Stitch.{Accounts.User, Bot, Integration, Message}
+  alias Stitch.{Accounts.User, Integration, Message}
+  alias StitchIntegrations.DrChrono.{Bot, Token}
   alias Stitch.Repo
   import Ecto.Query
-  alias StitchIntegrations.DrChrono.Token
   require Logger
 
   def handle_webhook("APPOINTMENT_CREATE", params) do
