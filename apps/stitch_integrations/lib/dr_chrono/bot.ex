@@ -17,17 +17,21 @@ defmodule StitchIntegrations.DrChrono.Bot do
       )
       |> Repo.one()
 
-    if bot_user == nil do
-      Stitch.Bot.create(team_id, %{
-        team_id: team_id,
-        name: "Dr Chrono",
-        username: "drchrono",
-        is_bot: true,
-        onboarded: true,
-        disabled: false,
-        profile_image_url: "a"
-      })
-    end
+    bot_user =
+      if bot_user == nil do
+        {:ok, bot_user} =
+          Stitch.Bot.create(team_id, %{
+            team_id: team_id,
+            name: "Dr Chrono",
+            username: "drchrono",
+            is_bot: true,
+            onboarded: true,
+            disabled: false,
+            profile_image_url: "a"
+          })
+
+        bot_user
+      end
 
     {:ok, bot_user}
   end
