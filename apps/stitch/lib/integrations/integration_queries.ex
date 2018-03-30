@@ -8,8 +8,6 @@ defmodule Stitch.IntegrationQueries do
   import Ecto.Query
 
   def find_by_id(id) do
-    {id, _} = Integer.parse(id)
-    IO.puts("Finding integration: #{id}")
     Repo.get(Integration, id)
   end
 end
