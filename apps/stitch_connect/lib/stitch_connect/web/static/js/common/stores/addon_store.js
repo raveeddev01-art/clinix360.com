@@ -19,6 +19,11 @@ class AddonStore {
     } else {
       this.showAddons = !this.showAddons;
     }
+
+    // when addon panel is closed, collapse pin msgs
+    if (!this.showAddons) {
+      this.rootStore.pinnedMessageStore.onCollapse(false);
+    }
   }
 
   @action
