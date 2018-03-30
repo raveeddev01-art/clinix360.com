@@ -8,6 +8,10 @@ defmodule Stitch.Billing do
   alias Stitch.{Repo, Team, TeamQueries, FeatureGateway}
   alias Stitch.Billing.{Plan, Subscription, PaymentMethod, PaymentHistory}
 
+  # Remove Trial once conversion is done
+  @unpaid_tiers ["TRIAL", "FREE"]
+  @paid_tiers ["PREMIUM", "STANDARD"]
+
   @stripe_client Application.get_env(:stitch, :stripe_client)
   @billable_roles ["admin", "member", "multi-room-guest"]
 
@@ -115,10 +119,8 @@ defmodule Stitch.Billing do
   """
   @spec modify_subscription(Subscription.t(), map) ::
           {:ok, Subscription.t()} | {:error, Ecto.Changeset.t() | :card_required}
-  def modify_subscription(subscription, params \\ %{})
-
-  def modify_subscription(%Subscription{tier: "FREE"} = subscription, params) do
-    # TODO: make sure downgrading to free works with this fn
+  # Remove once all trials have been converted
+  def modify_subscription(%Subscription{tier: old_tier} = subscription, params) when old_tier in @unpaid_tiers do
     do_modify_subscription(subscription, params, &create_subscription/2)
   end
 
@@ -126,12 +128,38 @@ defmodule Stitch.Billing do
     do_modify_subscription(subscription, params, &update_subscription/2)
   end
 
-  defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, params, fun) when is_function(fun, 2) do
+  defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, %{tier: new_tier} = params, fun) when new_tier in @paid_tiers  do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
          {:count, count} when count > 0 <- {:count, card_count(subscription.team_id)},
          plan_id <- Plan.id(changeset.changes),
          {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
 
+      result =
+        subscription
+        |> subscription_update_changeset(changeset.changes, stripe_sub_params)
+        |> Repo.update()
+
+      case result do
+        {:ok, subscription} ->
+          modify_guests_subscription(subscription)
+          BillingAnalytics.subscription_update(subscription, original_tier)
+
+        _ ->
+          :ignore
+      end
+
+      result
+    else
+      %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
+      {:count, _} -> {:error, :card_required}
+      error -> error
+    end
+  end
+
+  defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, %{tier: new_tier} = params, fun) do
+    with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
+         plan_id <- Plan.id(changeset.changes),
+         {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
 
       result =
         subscription
@@ -163,11 +191,18 @@ defmodule Stitch.Billing do
     @stripe_client.create_subscription(customer_id, plan_id, user_count)
   end
 
+  # TODO: do I need this conditional? (I think so?)
   defp update_subscription(subscription, plan_id) do
     customer_id = subscription.customer_id
     subscription_id = subscription.subscription_id
 
-    @stripe_client.update_subscription_plan(customer_id, subscription_id, plan_id)
+    if subscription_id do
+      @stripe_client.update_subscription_plan(customer_id, subscription_id, plan_id)
+    else
+      subscription = Repo.preload(subscription, :team)
+      user_count = count_billable_users(subscription.team)
+      @stripe_client.create_subscription(customer_id, plan_id, user_count)
+    end
   end
 
   defp modify_guests_subscription(subscription) do
