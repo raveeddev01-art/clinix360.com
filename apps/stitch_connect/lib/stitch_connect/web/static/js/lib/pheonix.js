@@ -374,7 +374,6 @@ export class Channel {
   }
 
   rejoinUntilConnected(){
-    this.rejoinTimer.scheduleTimeout()
     if(this.socket.isConnected()){
       this.rejoin()
     }
@@ -604,7 +603,7 @@ export class Socket {
     this.reconnectTimer       = new Timer(() => {
       this.disconnect(() => this.connect())
       if (this.enableManualRejoin) {
-        this.channels.forEach(ch => ch.rejoinUntilConnected())
+        this.channels.forEach(ch => ch.rejoinTimer.scheduleTimeout())
       }
     }, this.reconnectAfterMs)
   }
