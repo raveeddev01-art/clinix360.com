@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Link } from "react-router-dom";
 import moment from "moment";
-
 import Panel from "react-bootstrap/lib/Panel";
+import Button from "react-bootstrap/lib/Button";
 
+import { confirmModal } from "common/modals";
 import IntegrationConfiguration from "./components/integration-configuration";
 
 @inject("titleStore", "adminPanelStore", "integrationStore")
@@ -16,11 +17,64 @@ class DrChronoPage extends Component {
     this.props.integrationStore.loadIntegrations();
   }
 
+  _disableDrChrono = () => {
+    confirmModal({
+      title: "Disable drchrono integration for your team?",
+      message:
+        "Are you sure you want to disable your drchrono integration? You can always enable it later.",
+      okLabel: "Disable"
+    })
+      .then(() => {
+        const drchrono = this.props.integrationStore.integrations.find(
+          i => i.name === "drchrono"
+        );
+
+        this.props.integrationStore.disable(drchrono.id);
+      })
+      .catch(() => {
+        // do nothing
+      });
+
+    // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
+    document.dispatchEvent(new MouseEvent("click"));
+  };
+
+  _enableDrChrono = () => {
+    const drchrono = this.props.integrationStore.integrations.find(
+      i => i.name === "drchrono"
+    );
+
+    this.props.integrationStore.enable(drchrono.id);
+  };
+
+  _renderEnableButton = enabled => {
+    if (enabled) {
+      return (
+        <Button onClick={this._disableDrChrono} bsStyle="danger" to="#">
+          Disable
+        </Button>
+      );
+    }
+
+    return (
+      <Button onClick={this._enableDrChrono} bsStyle="success" to="#">
+        Enable
+      </Button>
+    );
+  };
+
   render() {
+    if (this.props.integrationStore.loaded === false) {
+      return null;
+    }
+    const drchrono = this.props.integrationStore.integrations.find(
+      i => i.name === "drchrono"
+    );
+
     return (
       <Panel className="admin-panel">
         <Panel.Heading>
-          <h1>drChrono</h1>
+          <h1>drchrono</h1>
         </Panel.Heading>
 
         <Panel.Body>
@@ -34,6 +88,7 @@ class DrChronoPage extends Component {
               >
                 Add Configuration
               </Link>
+              {this._renderEnableButton(drchrono.enabled)}
             </Panel.Heading>
 
             <Panel.Body className="configurations-panel__body">
