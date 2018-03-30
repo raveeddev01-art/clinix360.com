@@ -12,6 +12,7 @@ import history from "lib/history";
 class UsersStore {
   @observable users = [];
   @observable editingUserId = null;
+  @observable showAllUsers = true;
   avatarStatus = {}; // { [id]: 'loading', 'failed', null } failed means failure on loading fallback
 
   constructor(rootStore) {
@@ -292,6 +293,11 @@ class UsersStore {
         disabled: false
       });
     }
+  };
+
+  @action
+  toggleAllUsers = () => {
+    this.showAllUsers = !this.showAllUsers;
   };
 }
 
