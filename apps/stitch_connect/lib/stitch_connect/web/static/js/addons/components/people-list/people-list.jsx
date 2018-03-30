@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 
 import PeopleListItem from "./people-list-item/people-list-item";
 
-@inject("addonStore", "groupStore", "presenceStore")
+@inject("addonStore", "groupStore", "presenceStore", "usersStore")
 @observer
 class PeopleList extends Component {
   _onClickItem = user => () => {
@@ -15,10 +15,21 @@ class PeopleList extends Component {
   };
 
   render() {
-    const { groupStore, presenceStore, showAllUsers } = this.props;
-    const users = showAllUsers
-      ? groupStore.group.users
-      : groupStore.onlineUsers;
+    const {
+      groupStore,
+      usersStore,
+      presenceStore,
+      showAllUsers,
+      teamDirectory
+    } = this.props;
+
+    const groupMembers = groupStore.group.users;
+
+    const teamMembers = showAllUsers
+      ? usersStore.users
+      : usersStore.onlineUsers;
+
+    const users = teamDirectory ? teamMembers : groupMembers;
 
     return (
       <div className="collapse-content">
@@ -38,11 +49,13 @@ class PeopleList extends Component {
 }
 
 PeopleList.defaultProps = {
-  showAllUsers: true
+  showAllUsers: true,
+  teamDirectory: false
 };
 
 PeopleList.propTypes = {
-  showAllUsers: PropTypes.bool
+  showAllUsers: PropTypes.bool,
+  teamDirectory: PropTypes.bool
 };
 
 export default PeopleList;

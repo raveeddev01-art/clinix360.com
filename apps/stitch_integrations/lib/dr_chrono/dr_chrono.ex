@@ -1,8 +1,8 @@
 defmodule StitchIntegrations.DrChrono do
-  alias Stitch.{Accounts.User, Bot, Integration}
+  alias Stitch.{Accounts.User, Integration, Message}
+  alias StitchIntegrations.DrChrono.{Bot, Token}
   alias Stitch.Repo
   import Ecto.Query
-  alias StitchIntegrations.DrChrono.Token
   require Logger
 
   def handle_webhook("APPOINTMENT_CREATE", params) do
@@ -18,10 +18,9 @@ defmodule StitchIntegrations.DrChrono do
         reason
       }\nDuration: #{duration}\nNotes: #{notes}"
 
-    new_message(message)
-    # Enum.each(groups, fn group ->
-    #   new_message(group, message)
-    # end)
+    # 15 is team Zephyr
+    # 4 is group General.
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("APPOINTMENT_DELETE", params) do
@@ -37,7 +36,7 @@ defmodule StitchIntegrations.DrChrono do
         reason
       }\nDuration: #{duration}\nNotes: #{notes}"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("APPOINTMENT_MODIFY", params) do
@@ -53,7 +52,7 @@ defmodule StitchIntegrations.DrChrono do
         reason
       }\nDuration: #{duration}\nNotes: #{notes}"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("PATIENT_CREATE", params) do
@@ -70,7 +69,7 @@ defmodule StitchIntegrations.DrChrono do
         phone
       }\nAddress: #{address}\nDoctor: #{doctor}"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("PATIENT_MODIFY", params) do
@@ -87,7 +86,7 @@ defmodule StitchIntegrations.DrChrono do
         phone
       }\nAddress: #{address}\nDoctor: #{doctor}"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
@@ -102,7 +101,7 @@ defmodule StitchIntegrations.DrChrono do
         doctor
       }\nICD: #{icd}\nDescription: #{description}"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("PATIENT_PROBLEM_MODIFY", params) do
@@ -117,7 +116,7 @@ defmodule StitchIntegrations.DrChrono do
         doctor
       }\nICD: #{icd}\nDescription: #{description}"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("PATIENT_ALLERGY_CREATE", params) do
@@ -137,7 +136,7 @@ defmodule StitchIntegrations.DrChrono do
         notes
       }"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("PATIENT_ALLERGY_MODIFY", params) do
@@ -157,7 +156,7 @@ defmodule StitchIntegrations.DrChrono do
         notes
       }"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
@@ -173,7 +172,7 @@ defmodule StitchIntegrations.DrChrono do
         doctor
       }\nName: #{name}\nNotes: #{notes}"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
@@ -189,7 +188,7 @@ defmodule StitchIntegrations.DrChrono do
         doctor
       }\nName: #{name}\nNotes: #{notes}"
 
-    new_message(message)
+    Bot.post_message(15, 4, message)
   end
 
   # We haven't implemented these two webhooks.
@@ -230,11 +229,6 @@ defmodule StitchIntegrations.DrChrono do
       {:error, error} ->
         {:error, error}
     end
-  end
-
-  def new_message(message) do
-    IO.puts("Creating new bot message")
-    IO.inspect(message)
   end
 
   def init_integration(team_id, code) do

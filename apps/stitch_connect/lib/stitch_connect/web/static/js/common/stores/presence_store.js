@@ -18,7 +18,8 @@ class PresenceStore {
   @observable onlineUsersMap = {};
   @observable locked = window.locked;
   @observable unlocking = false; // Flag that indicates if unlocking request is being made
-  @observable isActive = false; // indicates whether the app has focus
+  @observable isActive = false; // indicates whether user was active recently
+  @observable hasFocus = false; // indicates whether the app has focus
 
   onlineUsersMapCache = {};
 
@@ -143,7 +144,7 @@ class PresenceStore {
 
   @action
   fetchFocus = () => {
-    this.isActive =
+    this.hasFocus =
       typeof document.hasFocus === "function" ? document.hasFocus() : true; // hasFocus not supported in opera
   };
 
@@ -230,12 +231,12 @@ class PresenceStore {
   @action
   onWindowBlur = () => {
     window.clearTimeout(this.inactiveTimerID);
-    this.isActive = false;
+    this.hasFocus = false;
   };
 
   @action
   onWindowFocus = () => {
-    this.isActive = true;
+    this.hasFocus = true;
     this.rootStore.messageStore.onWindowFocus();
   };
 

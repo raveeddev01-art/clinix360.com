@@ -13,11 +13,15 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     message_json(message)
   end
 
-  def render("feed_surrounding.json", %{more_before: more_before, more_after: more_after, messages: messages}) do
+  def render("feed_surrounding.json", %{
+        more_before: more_before,
+        more_after: more_after,
+        messages: messages
+      }) do
     %{
       more_before: more_before,
       more_after: more_after,
-      messages: render("index.json", %{messages: messages}),
+      messages: render("index.json", %{messages: messages})
     }
   end
 
@@ -59,6 +63,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   end
 
   def user_info(%{user: %Ecto.Association.NotLoaded{}}), do: nil
+
   def user_info(%{user: user}) do
     %{id: user.id, first_name: user.first_name, last_name: user.last_name}
   end
@@ -66,6 +71,7 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
   def pinned_by_info(%{pinned_by_id: nil}), do: nil
 
   def pinned_by_info(%{pinned_by: %Ecto.Association.NotLoaded{}}), do: nil
+
   def pinned_by_info(%{pinned_by: pinned_by}) do
     %{id: pinned_by.id, first_name: pinned_by.first_name, last_name: pinned_by.last_name}
   end

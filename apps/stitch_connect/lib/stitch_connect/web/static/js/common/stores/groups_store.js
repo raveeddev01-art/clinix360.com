@@ -83,10 +83,13 @@ class GroupsStore {
   }
 
   @computed
-  get normalGroups() {
-    return this.visibleGroups.filter(
-      group => group.type === "regular" && !group.is_favorite
-    );
+  get regularGroups() {
+    return this.visibleGroups.filter(group => group.type === "regular");
+  }
+
+  @computed
+  get nonFavoritedRegularGroups() {
+    return this.regularGroups.filter(group => !group.is_favorite);
   }
 
   @computed
@@ -114,7 +117,10 @@ class GroupsStore {
 
   @computed
   get roomsInShowOrder() {
-    return this.favoriteGroups.concat(this.normalGroups, this.directGroups);
+    return this.favoriteGroups.concat(
+      this.nonFavoritedRegularGroups,
+      this.directGroups
+    );
   }
 
   @computed
@@ -147,7 +153,8 @@ class GroupsStore {
 
     const { usersStore } = this.rootStore;
 
-    if (this.currentGroup.users.length === 1) { // self-dm
+    if (this.currentGroup.users.length === 1) {
+      // self-dm
       return false;
     }
 

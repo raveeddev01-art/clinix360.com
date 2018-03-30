@@ -5,8 +5,9 @@ defmodule Stitch.IntegrationConfig do
 
   use Ecto.Schema
   import Ecto.{Query, Changeset}
-  alias Stitch.{Integration, IntegrationConfig, Group}
+  alias Stitch.{Integration, IntegrationConfig, Group, GroupUser}
   alias Stitch.Repo
+  require Logger
 
   @type t :: %__MODULE__{}
 
@@ -25,6 +26,21 @@ defmodule Stitch.IntegrationConfig do
   end
 
   def insert_integration_config(attrs) do
+    # Create group user for this bot and this group.
+    group = Stitch.GroupQueries.get_by_id(attrs["group_id"])
+    bot_user = StitchIntegrations.DrChrono.Bot.get_bot(group.team_id)
+
+    changeset = GroupUser.changeset(%GroupUser{}, %{group_id: group.id, user_id: bot_user.id})
+
+    case Repo.insert(changeset) do
+      {:error, _} ->
+        Logger.info("Group user exists for this bot and group. Skipping")
+
+      _ ->
+        Logger.info("Created group user for this bot: #{bot_user.id}")
+    end
+
+    # Save the integration config as well.
     %IntegrationConfig{}
     |> changeset(attrs)
     |> Repo.insert()
