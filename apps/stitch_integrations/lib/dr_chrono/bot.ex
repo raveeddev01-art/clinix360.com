@@ -5,6 +5,7 @@ defmodule StitchIntegrations.DrChrono.Bot do
   alias StitchConnect.Web.UserStatusService
   require Logger
 
+  @spec init_or_enable_bot(number) :: {:ok, User.t()} | {:error, term}
   def init_or_enable_bot(team_id) do
     bot_user =
       from(
@@ -17,24 +18,20 @@ defmodule StitchIntegrations.DrChrono.Bot do
       )
       |> Repo.one()
 
-    bot_user =
-      if bot_user == nil do
-        {:ok, bot_user} =
-          Stitch.Bot.create(team_id, %{
-            team_id: team_id,
-            name: "Dr Chrono",
-            username: "drchrono",
-            is_bot: true,
-            onboarded: true,
-            roles: ["member", "bot"],
-            disabled: false,
-            profile_image_url: "a"
-          })
-
-        bot_user
-      end
-
-    {:ok, bot_user}
+    if bot_user == nil do
+      Stitch.Bot.create(team_id, %{
+        team_id: team_id,
+        name: "Dr Chrono",
+        username: "drchrono",
+        is_bot: true,
+        onboarded: true,
+        roles: ["member", "bot"],
+        disabled: false,
+        profile_image_url: "a"
+      })
+    else
+      {:ok, bot_user}
+    end
   end
 
   def get_bot(team_id) do
