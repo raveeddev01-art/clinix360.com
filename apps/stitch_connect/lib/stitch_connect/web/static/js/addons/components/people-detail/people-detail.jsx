@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import { inject } from "mobx-react";
 
 // @TODO load time zone from user
+@inject("presenceStore")
 class PeopleDetail extends Component {
   render() {
     const {
@@ -10,14 +12,29 @@ class PeopleDetail extends Component {
     } = this.props;
     const timezone = moment().format("hh:mm A (Z)");
 
+    const online = this.props.presenceStore.isOnline(`${this.props.user.id}`);
+
     return (
       <div className="user-view">
         <div className="user-avatar m-b-20">
-          <img src={avatar} alt="Avatar" className="img-responsive" />
+          <img
+            src={avatar}
+            alt="Avatar"
+            className="img-responsive img-circle"
+          />
         </div>
 
         <div className="username-and-title">
-          <h4 className="display-name">{fullName}</h4>
+          <h4 className="display-name">
+            <span className="m-r-5">
+              {online ? (
+                <i className="fa fa-circle" />
+              ) : (
+                <i className="fa fa-circle-o" />
+              )}
+            </span>
+            {fullName}
+          </h4>
           <div className="user-title text-muted">{title}</div>
         </div>
 
