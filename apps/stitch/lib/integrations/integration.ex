@@ -37,4 +37,16 @@ defmodule Stitch.Integration do
 
     Repo.all(query)
   end
+
+  def enable(integration) do
+    integration
+    |> changeset(%{enabled: true})
+    |> Repo.update()
+  end
+
+  def disable(integration) do
+    integration
+    |> changeset(%{enabled: false})
+    |> Repo.update()
+  end
 end
