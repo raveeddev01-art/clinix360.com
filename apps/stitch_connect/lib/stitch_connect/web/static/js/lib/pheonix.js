@@ -374,6 +374,7 @@ export class Channel {
   }
 
   rejoinUntilConnected(){
+    this.socket.log("channel", "rejoining; connection status: " + this.socket.isConnected()))
     if(this.socket.isConnected()){
       this.rejoin()
     }
