@@ -5,8 +5,8 @@ import moment from "moment";
 import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
 
-import IntegrationConfiguration from "./components/integration-configuration";
 import { confirmModal } from "common/modals";
+import IntegrationConfiguration from "./components/integration-configuration";
 
 @inject("titleStore", "adminPanelStore", "integrationStore")
 @observer
@@ -67,7 +67,7 @@ class DrChronoPage extends Component {
     if (this.props.integrationStore.loaded === false) {
       return null;
     }
-    let drchrono = this.props.integrationStore.integrations.find(
+    const drchrono = this.props.integrationStore.integrations.find(
       i => i.name === "drchrono"
     );
 
