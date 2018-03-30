@@ -1,10 +1,13 @@
 import { observable, action } from "mobx";
 
-const HEALTHY_TIMEOUT = 5000; // if pong arrives under 5000ms, it means connection is healthy
+// if pong arrives under timeout, it means connection is healthy
+const HEALTHY_CONNECTED_TIMEOUT = 5000; // used while connected
+const HEALTHY_DISCONNECTED_TIMEOUT = 1000; // used while disconnected
 
 class SocketStore {
   @observable isConnected = true;
   @observable isHealthy = true;
+  healthyTimeoutMs = HEALTHY_DISCONNECTED_TIMEOUT;
   isFirstConnect = true;
   pingCount = 0;
   pingStart = 0;
@@ -59,28 +62,32 @@ class SocketStore {
       const pingEnd = new Date().getTime();
       clearTimeout(this.pingRace);
 
-      if (pingEnd - this.pingStart < HEALTHY_TIMEOUT) {
+      if (pingEnd - this.pingStart < this.healthyTimeoutMs) {
         socket.log("stitch", `HEALTHY! Took ${pingEnd - this.pingStart}ms`);
         this.isHealthy = true;
-        this.sendPingWithTimeout(HEALTHY_TIMEOUT - 1000);
+        this.healthyTimeoutMs = HEALTHY_CONNECTED_TIMEOUT;
+        this.sendPingWithTimeout(this.healthyTimeoutMs - 1000);
       } else {
         socket.log("stitch", `UNHEALTHY! Took ${pingEnd - this.pingStart}ms`);
         this.isHealthy = false;
+        this.healthyTimeoutMs = HEALTHY_DISCONNECTED_TIMEOUT;
         this.sendPingWithTimeout(0); // if it's not healthy immediately check connection again
       }
     });
 
     this.pingRace = setTimeout(() => {
-      socket.log("stitch", `PING RACE timeout after ${HEALTHY_TIMEOUT}ms, try healthy check again`);
+      socket.log("stitch", `PING RACE timeout after ${this.healthyTimeoutMs}ms, try healthy check again`);
       this.isHealthy = false;
+      this.healthyTimeoutMs = HEALTHY_DISCONNECTED_TIMEOUT;
       // if it is unhealthy try healthy check immediately
       this.sendPingWithTimeout(0);
-    }, HEALTHY_TIMEOUT);
+    }, this.healthyTimeoutMs);
   };
 
   @action
   openSocket = () => {
     this.isConnected = true;
+    this.healthyTimeoutMs = HEALTHY_DISCONNECTED_TIMEOUT;
     this.sendPingWithTimeout();
 
     // upon reconnect, load users, groups, and last batch of messages of current group again
@@ -95,6 +102,8 @@ class SocketStore {
   @action
   errorSocket = () => {
     this.isConnected = false;
+    clearTimeout(this.pingRace);
+    clearTimeout(this.pingTimeout);
   };
 
   @action
