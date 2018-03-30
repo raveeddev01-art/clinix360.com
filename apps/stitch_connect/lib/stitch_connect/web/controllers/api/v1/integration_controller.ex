@@ -23,7 +23,7 @@ defmodule StitchConnect.Web.Api.V1.IntegrationController do
         {:error, :not_found}
 
       {:authorized?, false} ->
-        {:error, :not_authorized, "You can't disable this configuration"}
+        {:error, :not_authorized, "You can't enable this integration"}
 
       {:enabled?, {:error, _changeset}} ->
         {:error, :unprocessable_entity, "Couldn't enable this integration"}
@@ -46,7 +46,7 @@ defmodule StitchConnect.Web.Api.V1.IntegrationController do
         {:error, :not_found}
 
       {:authorized?, false} ->
-        {:error, :not_authorized, "You can't disable this configuration"}
+        {:error, :not_authorized, "You can't disable this integration"}
 
       {:disabled?, {:error, _changeset}} ->
         {:error, :unprocessable_entity, "Couldn't disable this integration"}
