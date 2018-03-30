@@ -42,6 +42,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
 
   describe "PUT /api/v1/billing/subscription" do
     test "can convert from a free tier to a paid tier", %{conn: conn} do
+
       subscription = insert(:free_subscription)
       team = subscription.team
       insert(:card, team: team)
@@ -93,7 +94,6 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
       conn = put(base_conn, api_v1_billing_subscription_path(base_conn, :update))
       assert response = json_response(conn, 422)
       assert hd(response["errors"]["tier"]) =~ "blank"
-      assert hd(response["errors"]["renewal_frequency"]) =~ "blank"
 
       params = %{tier: "bad", renewal_frequency: "bad"}
       conn = put(base_conn, api_v1_billing_subscription_path(base_conn, :update), params)

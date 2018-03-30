@@ -131,13 +131,26 @@ const FREQUENCIES = [
   }
 ];
 
+// SHIM: remove once conversions to new
+// subscription types have happened
+const oldTierConversionShim = oldTier => {
+  return (
+    {
+      TRIAL: "FREE",
+      BASIC: "STANDARD",
+      PREMIUM: "PREMIUM",
+      POWER: "PREMIUM"
+    }[oldTier] || oldTier
+  );
+};
+
 const processSubscriptionData = subscription => {
   const dateFormat = "dddd, MMMM Do YYYY";
   const today = moment.utc();
   const validUntil =
     subscription.valid_until && moment.utc(subscription.valid_until);
 
-  subscription.tier = subscription.tier;
+  subscription.tier = oldTierConversionShim(subscription.tier);
   subscription.valid_until = validUntil && validUntil.format(dateFormat);
   subscription.plan_remaining_days =
     validUntil && validUntil.diff(today, "days");

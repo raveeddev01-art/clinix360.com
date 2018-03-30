@@ -149,7 +149,6 @@ defmodule Stitch.Stripe.Client do
       subscription_line_item_id: subscription_line_item_id,
       estimated_invoice_amount: nil,
       status: subscription.status,
-      # TODO: ensure this is fine
       valid_until: subscription.current_period_end && DateTime.from_unix!(subscription.current_period_end),
       renews: !subscription.cancel_at_period_end
     }

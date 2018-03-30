@@ -12,8 +12,9 @@ defmodule Stitch.Analytics.Billing do
   @event_payment_started "Payment Started"
   @event_payment_modified "Payment Modification"
 
-  @unpaid_tiers ["FREE"]
-  @paid_tiers ["STANDARD", "PREMIUM"]
+  # SHIM: remove old tiers once conversions are done
+  @unpaid_tiers ["FREE", "TRIAL"]
+  @paid_tiers ["STANDARD", "PREMIUM", "POWER", "BASIC"]
 
   @doc """
   Logs events for new subscriptions.
@@ -102,7 +103,6 @@ defmodule Stitch.Analytics.Billing do
     started_payment = !was_paid && now_paid
     stopped_payment = was_paid && !now_paid
 
-    # ugly nested if
     if started_payment do
       @event_payment_started
     else

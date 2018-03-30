@@ -5,7 +5,7 @@ defmodule Stitch.Repo.Scripts.MigrateSubscriptionsToNewPlans do
   alias Stitch.Repo
   alias Stitch.Billing.Subscription
 
-  def convert_subscriptions do
+  def run do
     tier_names = ["TRIAL","BASIC","PREMIUM", "POWER"]
     [trials, basics, premiums, powers] = Enum.map(tier_names, &get_all_in_tier/1)
 

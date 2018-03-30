@@ -36,10 +36,11 @@ defmodule Stitch.Billing.Subscription do
     %__MODULE__{}
     |> cast(params, ~w(tier renewal_frequency renews)a)
     |> validate_required(~w(tier)a)
+    # SHIM: remove old subscription types once conversion is done
     |> validate_inclusion(
       :tier,
-      ~w(TRIAL FREE STANDARD PREMIUM),
-      message: "expects TRIAL|FREE|STANDARD|PREMIUM"
+      ~w(TRIAL BASIC POWER FREE STANDARD PREMIUM),
+      message: "expects TRIAL|BASIC|POWER|FREE|STANDARD|PREMIUM"
     )
     |> validate_inclusion(
       :renewal_frequency,
