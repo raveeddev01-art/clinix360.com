@@ -71,6 +71,20 @@ defmodule Stitch.Accounts.Admin do
   Updates the user information
   """
 
+  def update_user(user_id, params, false) do
+    result =
+      Repo.get(User, user_id)
+      |> User.changeset_without_email(params)
+      |> Repo.update
+
+    case result, do: ({:ok, updated_user} -> analytics_identify(updated_user); _ -> :ignore)
+    result
+  end
+
+  def update_user(user_id, params, true) do
+    update_user(user_id, params)
+  end
+
   def update_user(user_id, params) do
     result =
       Repo.get(User, user_id)
