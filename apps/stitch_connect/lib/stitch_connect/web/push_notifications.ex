@@ -3,6 +3,7 @@ defmodule StitchConnect.Web.PushNotifications do
   alias Pigeon.{APNS, FCM}
   import Ecto.Query
   require Logger
+  use Appsignal.Instrumentation.Decorators
 
   @single_dm_name "__dm_group__"
   @multi_dm_name "__multi_dm_group__"
@@ -37,6 +38,7 @@ defmodule StitchConnect.Web.PushNotifications do
   @spec notify_users(Group.t(), Message.t(), list(number)) :: {:ok, binary}
   def notify_users(_group, %Message{type: "system"}, _user_ids), do: nil
 
+  @decorate transaction(:background_job)
   def notify_users(%Group{} = group, %Message{} = message, user_ids) do
     message = Repo.preload(message, :user)
     group = Repo.preload(group, :users)
