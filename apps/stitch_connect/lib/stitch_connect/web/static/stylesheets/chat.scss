@@ -199,10 +199,6 @@
               padding: 0 10px;
               font-size: 90%;
               visibility: hidden;
-
-              .jump-hover {
-                visibility: hidden;
-              }
             }
 
             .messages-count {
@@ -226,10 +222,6 @@
 
           &.should-jump {
             filter: none;
-
-            &:hover .messages-count-info .jump-button .jump-hover {
-              visibility: visible;
-            }
 
             .messages-count-info {
               &:hover {
