@@ -25,7 +25,7 @@ class Info extends Component {
           <PinnedMessages />
         </AddonCollapse>
         <AddonCollapse icon="folder-open" title="Files">
-          <Files />
+          <Files roomFiles />
         </AddonCollapse>
         <AddonCollapse icon="bell" title="Notifications">
           <NotificationPreferences />

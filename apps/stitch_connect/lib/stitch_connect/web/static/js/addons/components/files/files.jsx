@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import PropTypes from "prop-types";
 
 import { AddonMessage } from "common/components";
 import LoadingIcon from "common/components/loading-icon";
 
-@inject("filesStore")
+@inject("filesStore", "groupStore")
 @observer
 class Files extends Component {
   componentWillMount() {
@@ -22,7 +23,13 @@ class Files extends Component {
   };
 
   renderFilesResults() {
-    const { filesStore } = this.props;
+    const { filesStore, groupStore, roomFiles } = this.props;
+
+    const filteredFiles = filesStore.files.filter(
+      file => file.group_id === groupStore.group.id
+    );
+    const allFiles = filesStore.files;
+    const files = roomFiles ? filteredFiles : allFiles;
 
     if (filesStore.loading) {
       return (
@@ -32,12 +39,10 @@ class Files extends Component {
       );
     }
 
-    if (filesStore.files.length > 0) {
+    if (files.length > 0) {
       return (
         <div>
-          {filesStore.files.map(file => (
-            <AddonMessage key={file.id} message={file} />
-          ))}
+          {files.map(file => <AddonMessage key={file.id} message={file} />)}
         </div>
       );
     }
@@ -68,5 +73,13 @@ class Files extends Component {
     );
   }
 }
+
+Files.defaultProps = {
+  roomFiles: false
+};
+
+Files.propTypes = {
+  roomFiles: PropTypes.bool
+};
 
 export default Files;
