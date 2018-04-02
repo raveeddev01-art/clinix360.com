@@ -13,6 +13,7 @@ defmodule Stitch.Integration do
   schema "integrations" do
     belongs_to(:team, Team)
     field(:name, :string)
+    field(:webhook_token, :string)
     field(:settings, :map)
     field(:enabled, :boolean, default: false)
 
@@ -23,8 +24,8 @@ defmodule Stitch.Integration do
 
   def changeset(struct, attrs) do
     struct
-    |> cast(attrs, [:team_id, :name, :settings, :enabled])
-    |> validate_required([:team_id, :name, :settings])
+    |> cast(attrs, [:team_id, :name, :webhook_token, :settings, :enabled])
+    |> validate_required([:team_id, :name, :webhook_token, :settings])
   end
 
   def get_by_team_id(team_id) do
@@ -32,6 +33,17 @@ defmodule Stitch.Integration do
       from(
         i in Stitch.Integration,
         where: i.team_id == ^team_id,
+        select: i
+      )
+
+    Repo.all(query)
+  end
+
+  def get_by_webhook_token(webhook_token) do
+    query =
+      from(
+        i in Stitch.Integration,
+        where: i.webhook_token == ^webhook_token,
         select: i
       )
 
