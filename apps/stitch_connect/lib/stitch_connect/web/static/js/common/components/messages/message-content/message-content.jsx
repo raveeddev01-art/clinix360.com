@@ -48,7 +48,7 @@ class MessageContent extends Component {
         );
       }
 
-      return <Linkify key={i}>{part.content}</Linkify>;
+      return <Linkify key={`link_${i}`}>{part.content}</Linkify>;
     });
   }
 
