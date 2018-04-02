@@ -8,7 +8,7 @@ defmodule StitchConnect.PresignedUrlCache do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  @spec fetch(binary | nil) :: binary
+  @spec fetch(binary | nil) :: binary | nil
   def fetch(nil), do: nil
   def fetch(object_name) do
     case get(object_name) do
@@ -35,8 +35,9 @@ defmodule StitchConnect.PresignedUrlCache do
 
   @spec set(binary) :: {pos_integer, binary}
   def set(object_name) do
+    expires_at = expires_at()
     {:ok, presigned_url} = Stitch.AWS.S3.presign(object_name)
-    value = {expires_at(), presigned_url}
+    value = {expires_at, presigned_url}
     true = :ets.insert(@tab, {object_name, value})
     value
   end
