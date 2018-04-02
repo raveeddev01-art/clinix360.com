@@ -1024,6 +1024,10 @@
         display: block;
       }
     }
+
+    .attachment-image-holder {
+      width: 100%;
+    }
   }
 
   .message-reactions {
@@ -1129,7 +1133,6 @@
   }
 
   .attachment-image-holder {
-    width: 100%;
     max-width: 360px;
     display: inline-block;
     overflow-y: hidden;
