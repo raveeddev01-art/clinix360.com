@@ -7,7 +7,7 @@ session_id = Plug.Conn.get_session(@conn, :session_id)
 locked = !!Plug.Conn.get_session(@conn, :locked)
 user = Map.get(@conn.assigns, :current_user)
 intercom_user_hash = Plug.Conn.get_session(@conn, :intercom_user_hash)
-public_bucket_name = System.get_env("S3_BUCKET_NAME") <> "-public"
+public_bucket_name = System.get_env("S3_PUBLIC_BUCKET_NAME")
 current_user =
   case user do
     nil ->
