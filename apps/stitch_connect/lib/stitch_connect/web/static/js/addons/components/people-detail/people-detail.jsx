@@ -1,19 +1,24 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import AvatarImage from "../../../common/components/avatar/avatar-image";
 
 // @TODO load time zone from user
 class PeopleDetail extends Component {
   render() {
-    const {
-      user: { avatar, full_name: fullName, title, username, email, phone }
-    } = this.props;
     const timezone = moment().format("hh:mm A (Z)");
+    const { user } = this.props;
+    const { avatar, full_name: fullName, title, username, email, phone } = user;
 
     return (
       <div className="user-view">
         <div className="user-avatar m-b-20">
-          <img src={avatar} alt="Avatar" className="img-responsive" />
+          <AvatarImage
+            alt="Avatar"
+            className="img-responsive"
+            src={avatar}
+            user={user}
+          />
         </div>
 
         <div className="username-and-title">
