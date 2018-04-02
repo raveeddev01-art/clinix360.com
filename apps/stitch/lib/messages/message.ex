@@ -150,7 +150,7 @@ defmodule Stitch.Message do
       users
       |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
         acc_map =
-          if recipient.id == user.id or recipient.disabled,
+          if recipient.id == user.id or recipient.disabled or recipient.is_bot,
             do: acc_map,
             else: Map.put(acc_map, to_string(recipient.id), nil)
 
@@ -166,7 +166,11 @@ defmodule Stitch.Message do
     result =
       Multi.new()
       |> Multi.insert(:message, message_changeset(message_struct, attrs))
-      |> Multi.update_all(:mention_users, mention_users(group, mentioned_user_ids, recipients), [])
+      |> Multi.update_all(
+        :mention_users,
+        mention_users(group, mentioned_user_ids, recipients),
+        []
+      )
       |> Multi.update_all(
         :increment_unread_counter,
         increment_unread_counter(group.id, recipients),
@@ -186,8 +190,13 @@ defmodule Stitch.Message do
 
     case result do
       {:ok, %{message: message}} ->
-        Stitch.Mobile.NotificationQueue.async_enqueue_for_users(presence_user_ids.active -- [user.id], message.id)
+        Stitch.Mobile.NotificationQueue.async_enqueue_for_users(
+          presence_user_ids.active -- [user.id],
+          message.id
+        )
+
         result
+
       {:error, _} ->
         result
     end
