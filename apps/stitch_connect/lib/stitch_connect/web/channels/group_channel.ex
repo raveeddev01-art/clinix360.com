@@ -18,7 +18,7 @@ defmodule StitchConnect.Web.GroupChannel do
   }
 
   @endpoint StitchConnect.Web.Endpoint
-  @max_latency 5_000
+  @max_latency 10_000
 
   def join("groups:__dm:" <> id_pair_string, params, socket) do
     id_pair = id_pair_string |> String.split(".") |> Enum.map(&String.to_integer/1)
