@@ -100,6 +100,7 @@ class MessageInfoModal extends Component {
 
     Object.keys(message.read_status).forEach(u => {
       const user = usersStore.usersById[u];
+      if (!user) return;
       if (message.read_status[u]) {
         readRecipients.push({
           id: u,
