@@ -6,6 +6,7 @@ $admin-topbar-height-sm: 65px;
   display: flex;
   height: auto;
   min-width: 840px;
+  background: #fff;
 
   .flex-header {
     flex-basis: $admin-topbar-height;
@@ -126,7 +127,7 @@ $admin-topbar-height-sm: 65px;
         padding: 0;
 
         &.active {
-          background-color: #fafafa;
+          background-color: #fff;
 
           a {
             color: $brand-primary;
@@ -184,7 +185,7 @@ $admin-topbar-height-sm: 65px;
     .admin-topbar {
       padding-left: 20px;
       padding-right: 20px;
-      background-color: $body-bg;
+      background-color: #fff;
       border-bottom: 1px solid $border-color;
 
       h4 {
@@ -262,7 +263,7 @@ $admin-topbar-height-sm: 65px;
 
   .admin-panel {
     border: none;
-    background-color: $body-bg;
+    background-color: #fff;
     flex-grow: 1;
     max-width: 1000px;
     margin: 0 auto;
