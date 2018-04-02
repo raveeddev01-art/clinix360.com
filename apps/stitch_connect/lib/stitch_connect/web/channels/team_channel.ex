@@ -6,6 +6,7 @@ defmodule StitchConnect.Web.TeamChannel do
   alias Stitch.Accounts.ActivityTracker
   @endpoint StitchConnect.Web.Endpoint
 
+  @decorate channel_action()
   def join("team:lobby:" <> team_id, _, socket) do
     team_id = String.to_integer(team_id)
     if team_id == socket.assigns.team_id do

@@ -3,9 +3,11 @@ defmodule StitchConnect.Web.EventsChannel do
   import Ecto.Query
   alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User}
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView, NotificationPreferenceView}
+  use Appsignal.Instrumentation.Decorators
 
   @endpoint StitchConnect.Web.Endpoint
 
+  @decorate channel_action()
   def join("events:" <> user_id, _params, socket) do
     user_id = String.to_integer(user_id)
 

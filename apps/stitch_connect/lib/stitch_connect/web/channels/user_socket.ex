@@ -1,5 +1,6 @@
 defmodule StitchConnect.Web.UserSocket do
   use Phoenix.Socket
+  import Appsignal.Phoenix.Channel, only: [channel_action: 4]
 
   ## Channels
   channel("groups:*", StitchConnect.Web.GroupChannel)
@@ -30,25 +31,27 @@ defmodule StitchConnect.Web.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   def connect(%{"authenticationToken" => token} = params, socket) do
-    # Handle concurrent browser tests
-    socket = StitchConnect.Web.ChannelSandbox.configure_channel_sandbox(params, socket)
+    channel_action(__MODULE__, :connect, socket, fn ->
+      # Handle concurrent browser tests
+      socket = StitchConnect.Web.ChannelSandbox.configure_channel_sandbox(params, socket)
 
-    case Stitch.UserQueries.get_active_by_token(token) do
-      nil ->
-        :error
+      case Stitch.UserQueries.get_active_by_token(token) do
+        nil ->
+          :error
 
-      user ->
-        socket =
-          socket
-          |> assign(:current_user, user)
-          |> assign(:team_id, user.team_id)
-          |> assign(:session_id, params["sessionId"])
-          |> assign(:is_mobile, Map.get(params, "mobile", false))
-          |> assign(:connection_id, Stitch.Rand.token(8))
-          |> assign(:application_version, params["applicationVersion"])
+        user ->
+          socket =
+            socket
+            |> assign(:current_user, user)
+            |> assign(:team_id, user.team_id)
+            |> assign(:session_id, params["sessionId"])
+            |> assign(:is_mobile, Map.get(params, "mobile", false))
+            |> assign(:connection_id, Stitch.Rand.token(8))
+            |> assign(:application_version, params["applicationVersion"])
 
-        {:ok, socket}
-    end
+          {:ok, socket}
+      end
+    end)
   end
 
   def connect(_params, _socket), do: :error
