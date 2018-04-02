@@ -128,37 +128,9 @@ defmodule Stitch.Billing do
     do_modify_subscription(subscription, params, &update_subscription/2)
   end
 
-  defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, %{"tier" => new_tier} = params, fun) when new_tier in @paid_tiers  do
+  defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, %{"tier" => new_tier} = params, fun) do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
-         {:count, count} when count > 0 <- {:count, card_count(subscription.team_id)},
-         plan_id <- Plan.id(changeset.changes),
-         {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
-
-      result =
-        subscription
-        |> subscription_update_changeset(changeset.changes, stripe_sub_params)
-        |> Repo.update()
-
-      case result do
-        {:ok, subscription} ->
-          modify_guests_subscription(subscription)
-          BillingAnalytics.subscription_update(subscription, original_tier)
-
-        _ ->
-          :ignore
-      end
-
-      result
-    else
-      %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
-      {:count, _} -> {:error, :card_required}
-      error -> error
-    end
-  end
-
-  # TODO: clean up the logic with above
-  defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, params, fun) do
-    with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
+         {:count, card_message} when card_message != :card_required <- {:count, check_card_count(subscription.team_id, new_tier)},
          plan_id <- Plan.id(changeset.changes),
          {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
 
@@ -304,6 +276,17 @@ defmodule Stitch.Billing do
       subscription
       |> Subscription.update(params)
       |> Repo.update()
+    end
+  end
+
+  defp check_card_count(team_id, new_tier) do
+    if Enum.member?(@paid_tiers, new_tier) do
+      case card_count(team_id) do
+        0 -> :card_required
+        count -> count
+      end
+    else
+      :card_not_required
     end
   end
 
