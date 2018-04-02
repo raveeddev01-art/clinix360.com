@@ -49,7 +49,7 @@ class MessageSearch extends Component {
     const { searchStore } = this.props;
 
     return (
-      <div className="message-search-addon">
+      <div className="search-results-addon">
         {this.renderSearchResults()}
 
         <div className="footer">

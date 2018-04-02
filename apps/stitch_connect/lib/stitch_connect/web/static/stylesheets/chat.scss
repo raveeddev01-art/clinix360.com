@@ -948,12 +948,36 @@
       background: #fff;
       border: 1px solid $border-color-secondary;
       border-radius: 4px;
-      padding: 15px;
       margin-bottom: 15px;
+      flex-direction: column;
+      padding: 12px 15px 15px;
 
       &:hover {
         border-color: rgba(0, 0, 0, 0.15);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+
+      .message-nav {
+        display: flex;
+  
+        a {
+          flex: 1;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          text-decoration: none;
+          font-weight: 700;
+        }
+  
+        span {
+          flex-shrink: 0;
+          color: #777;
+        }
+      }
+
+      .message-wrapper {
+        display: flex;
+        flex-direction: row;
       }
 
       .avatar {
@@ -1012,6 +1036,10 @@
       .addon-message-actions {
         display: block;
       }
+    }
+
+    .attachment-image-holder {
+      width: 100%;
     }
   }
 
