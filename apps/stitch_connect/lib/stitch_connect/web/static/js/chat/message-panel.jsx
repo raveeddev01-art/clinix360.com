@@ -80,7 +80,7 @@ export default class MessagePanel extends Component {
           >
             <div className="jump-button">
               <i className={jumpArrowClass} />
-              <span className="jump-hover">Jump</span>
+              <span>Jump</span>
             </div>
             <div className="messages-count">
               {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}{" "}

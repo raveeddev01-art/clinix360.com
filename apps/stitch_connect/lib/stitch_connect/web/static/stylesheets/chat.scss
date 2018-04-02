@@ -200,10 +200,6 @@
               padding: 0 10px;
               font-size: 90%;
               visibility: hidden;
-
-              .jump-hover {
-                visibility: hidden;
-              }
             }
 
             .messages-count {
@@ -227,10 +223,6 @@
 
           &.should-jump {
             filter: none;
-
-            &:hover .messages-count-info .jump-button .jump-hover {
-              visibility: visible;
-            }
 
             .messages-count-info {
               &:hover {
@@ -850,6 +842,7 @@
 
       .btn {
         width: 34px;
+        color: $brand-primary;
         border-color: rgba(0, 0, 0, 0.15);
         padding: 4px 8px;
         z-index: 1;
