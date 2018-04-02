@@ -238,9 +238,14 @@
 
 .files-addon,
 .directory-addon,
-.global-starred-messages-addon {
+.global-starred-messages-addon,
+.message-search-addon {
   padding: 0 15px;
   margin-bottom: 20px;
+  
+  i.fa-circle-o-notch {
+    color: $brand-primary;
+  }
 
   .status {
     display: flex;
@@ -255,10 +260,6 @@
 
 .message-search-addon {
   padding: 10px 15px;
-
-  i.fa-circle-o-notch {
-    color: $brand-primary;
-  }
 
   .message-container.addon .message {
     flex-direction: column;
