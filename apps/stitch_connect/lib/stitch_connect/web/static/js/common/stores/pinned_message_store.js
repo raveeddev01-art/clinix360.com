@@ -40,7 +40,8 @@ class PinnedMessageStore {
     const params = stringify({
       skip: this.skip,
       limit: this.limit,
-      group_id: this.groupId
+      group_id: this.groupId,
+      fetchUsers: false
     });
 
     this.loading = true;
@@ -50,7 +51,13 @@ class PinnedMessageStore {
 
       const { data, meta } = response.data;
 
-      this.messages = this.messages.concat(data);
+      const users = this.rootStore.usersStore.users.toJS();
+      const messages = data.map(msg => ({
+        ...msg,
+        user: users.find(u => u.id === msg.user_id)
+      }));
+
+      this.messages = this.messages.concat(messages);
       this.hasMore = this.messages.length < meta.count;
       this.skip = meta.skip + meta.limit;
     });
