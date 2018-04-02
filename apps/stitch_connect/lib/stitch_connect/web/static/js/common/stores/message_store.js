@@ -188,7 +188,10 @@ class MessageStore {
   }
 
   get isActive() {
-    return this.rootStore.presenceStore.isActive;
+    return (
+      this.rootStore.presenceStore.isActive &&
+      this.rootStore.presenceStore.hasFocus
+    );
   }
 
   /**

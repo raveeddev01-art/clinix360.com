@@ -374,7 +374,7 @@ export class Channel {
   }
 
   rejoinUntilConnected(){
-    this.rejoinTimer.scheduleTimeout()
+    this.socket.log("channel", "rejoining; connection status: " + this.socket.isConnected())
     if(this.socket.isConnected()){
       this.rejoin()
     }
@@ -603,9 +603,6 @@ export class Socket {
     this.pendingHeartbeatRef  = null
     this.reconnectTimer       = new Timer(() => {
       this.disconnect(() => this.connect())
-      if (this.enableManualRejoin) {
-        this.channels.forEach(ch => ch.rejoinUntilConnected())
-      }
     }, this.reconnectAfterMs)
   }
 
@@ -677,6 +674,14 @@ export class Socket {
       this.heartbeatTimer = setInterval(() => this.sendHeartbeat(), this.heartbeatIntervalMs)
     }
     this.stateChangeCallbacks.open.forEach( callback => callback() )
+
+    // as soon as connection is open try reconnection
+    if (this.enableManualRejoin) {
+      this.channels.forEach(ch => {
+        ch.rejoinTimer.reset()
+        ch.rejoinTimer.scheduleTimeout()
+      })
+    }
   }
 
   onConnClose(event){

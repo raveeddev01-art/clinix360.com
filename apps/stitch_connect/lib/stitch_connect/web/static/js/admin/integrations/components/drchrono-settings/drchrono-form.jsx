@@ -191,7 +191,7 @@ class DrChronoForm extends Component {
               onChange={this.onChange}
               componentClass="select"
             >
-              {this.props.groupsStore.normalGroups.map(group => (
+              {this.props.groupsStore.regularGroups.map(group => (
                 <option key={`option-group-${group.id}`} value={group.id}>
                   {group.name}
                 </option>

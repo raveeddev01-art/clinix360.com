@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 import noop from "lodash/noop";
 
+import { Avatar } from "common/components";
+
 class MemberOption extends Component {
   handleMouseDown = event => {
     event.preventDefault();
@@ -45,6 +47,7 @@ class MemberOption extends Component {
         ) : (
           <i className="fa fa-circle-o" />
         )}
+        <Avatar user={option} />
         <span>{`${option.first_name} ${option.last_name}`}</span>
         <small>{option.username}</small>
       </div>

@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 
 import PeopleListItem from "./people-list-item/people-list-item";
 
-@inject("addonStore", "groupStore", "presenceStore")
+@inject("addonStore", "groupStore", "presenceStore", "usersStore")
 @observer
 class PeopleList extends Component {
   _onClickItem = user => () => {
@@ -15,21 +15,38 @@ class PeopleList extends Component {
   };
 
   render() {
-    const { groupStore, presenceStore, showAllUsers } = this.props;
-    const users = showAllUsers
-      ? groupStore.group.users
-      : groupStore.onlineUsers;
+    const {
+      groupStore,
+      usersStore,
+      presenceStore,
+      showAllUsers,
+      teamDirectory
+    } = this.props;
+
+    const groupMembers = groupStore.group.users;
+
+    const teamMembers = showAllUsers
+      ? usersStore.users
+      : usersStore.onlineUsers;
+
+    const users = teamDirectory ? teamMembers : groupMembers;
 
     return (
       <div className="collapse-content">
         {users
           .filter(user => !user.disabled)
+          .sort((user1, user2) => {
+            // Sort users alphabetically
+            if (user1.first_name < user2.first_name) return -1;
+            if (user1.first_name > user2.first_name) return 1;
+            return 0;
+          })
           .map(user => (
             <PeopleListItem
               online={presenceStore.isOnline(`${user.id}`)}
               key={`user_${user.id}`}
               onClick={this._onClickItem(user)}
-              {...user}
+              user={user}
             />
           ))}
       </div>
@@ -38,11 +55,13 @@ class PeopleList extends Component {
 }
 
 PeopleList.defaultProps = {
-  showAllUsers: true
+  showAllUsers: true,
+  teamDirectory: false
 };
 
 PeopleList.propTypes = {
-  showAllUsers: PropTypes.bool
+  showAllUsers: PropTypes.bool,
+  teamDirectory: PropTypes.bool
 };
 
 export default PeopleList;

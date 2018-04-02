@@ -2,24 +2,39 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
 import { AddonMessage } from "common/components";
+import LoadingIcon from "common/components/loading-icon";
 
 @inject("globalStarredMessageStore")
 @observer
 class GlobalStarredMessages extends Component {
-  render() {
+  renderStarredResults() {
     const { globalStarredMessageStore } = this.props;
 
+    if (globalStarredMessageStore.loading) {
+      return (
+        <div className="text-center">
+          <LoadingIcon size={2} />
+        </div>
+      );
+    }
+
+    if (globalStarredMessageStore.starredMessages.length > 0) {
+      return (
+        <div>
+          {globalStarredMessageStore.starredMessages.map(message => (
+            <AddonMessage key={message.id} message={message} />
+          ))}
+        </div>
+      );
+    }
+
+    return <div className="text-muted text-center">Nothing starred yet.</div>;
+  }
+
+  render() {
     return (
       <div className="global-starred-messages-addon">
-        {globalStarredMessageStore.starredMessages.length > 0 ? (
-          <div>
-            {globalStarredMessageStore.starredMessages.map(message => (
-              <AddonMessage key={message.id} message={message} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-muted text-center">Nothing starred yet.</div>
-        )}
+        {this.renderStarredResults()}
       </div>
     );
   }

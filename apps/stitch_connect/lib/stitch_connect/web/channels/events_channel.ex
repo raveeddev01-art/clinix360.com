@@ -35,7 +35,7 @@ defmodule StitchConnect.Web.EventsChannel do
       user_id: gu.user_id,
       unread_messages_count: gu.unread_messages_count,
       mentions_count: gu.mentions_count,
-      last_read_at: gu.last_read_at,
+      last_read_at: gu.last_read_at
     })
     |> Repo.all()
   end
@@ -93,6 +93,7 @@ defmodule StitchConnect.Web.EventsChannel do
       json =
         GroupView.render("show.json", %{group: group, user_id: user_id})
         |> Map.put(:joined, false)
+
       @endpoint.broadcast("events:#{user_id}", "created_group", json)
     end
   end

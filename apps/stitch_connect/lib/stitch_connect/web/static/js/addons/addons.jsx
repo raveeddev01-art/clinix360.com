@@ -52,7 +52,7 @@ class Addons extends Component {
               <i className="fa fa-chevron-left" />
             </a>
           )}
-          <h4 className="text-uppercase">{addonPanelTitle}</h4>
+          <h4 className="text-capitalize">{addonPanelTitle}</h4>
           <a role="button" onClick={this.toggleAddons}>
             <i className="fa fa-close" />
           </a>

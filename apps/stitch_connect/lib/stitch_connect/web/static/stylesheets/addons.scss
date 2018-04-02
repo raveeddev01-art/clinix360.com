@@ -12,7 +12,7 @@
       flex-grow: 1;
       flex-direction: row;
       color: $brand-primary;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
       margin: 0;
     }
@@ -150,6 +150,18 @@
   .item-text {
     flex-grow: 1;
 
+    .avatar {
+      width: auto;
+      display: inline-block;
+      margin-right: 5px;
+
+      img {
+        max-width: 20px;
+        position: relative;
+        top: -1px;
+      }
+    }
+
     span {
       margin-right: 5px;
       text-transform: capitalize;
@@ -168,7 +180,8 @@
   padding: 18px 15px;
 
   .user-avatar img {
-    border-radius: 4px;
+    max-width: 250px;
+    margin: 0 auto;
   }
 
   .username-and-title {
@@ -178,6 +191,20 @@
     .display-name {
       font-weight: bold;
       margin: 0 0 8px;
+
+      span {
+        position: relative;
+        top: -1px;
+
+        i.fa {
+          color: rgba(20, 20, 20, 0.7);
+          font-size: 13px;
+
+          &.fa-circle {
+            color: $brand-primary;
+          }
+        }
+      }
     }
   }
 
@@ -216,8 +243,9 @@
 .files-addon,
 .directory-addon,
 .global-starred-messages-addon,
-.search-results-addon {
-  padding: 15px;
+.message-search-addon {
+  padding: 0 15px;
+  margin-bottom: 20px;
 
   i.fa-circle-o-notch {
     color: $brand-primary;
@@ -231,5 +259,37 @@
 
   .footer {
     text-align: center;
+  }
+}
+
+.message-search-addon {
+  padding: 10px 15px;
+
+  .message-container.addon .message {
+    flex-direction: column;
+    padding-top: 12px;
+
+    .message-nav {
+      display: flex;
+
+      a {
+        flex: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      span {
+        flex-shrink: 0;
+        color: #777;
+      }
+    }
+
+    .message-wrapper {
+      display: flex;
+      flex-direction: row;
+    }
   }
 }
