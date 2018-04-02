@@ -69,7 +69,7 @@ defmodule Stitch.Repo.Scripts.MigrateSubscriptionsToNewPlans do
 
   defp update_standard_subscription(subscription, new_tier) do
     Logger.info "Updating tier on standard plan, for team #{subscription.team_id}"
-    Logger.info "From tier: #{subscription.tier} - To tier: #{tier}."
+    Logger.info "From tier: #{subscription.tier} - To tier: #{new_tier}."
 
     Billing.modify_subscription(
       subscription,
