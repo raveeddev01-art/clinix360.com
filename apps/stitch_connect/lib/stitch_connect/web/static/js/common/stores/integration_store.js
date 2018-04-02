@@ -10,6 +10,7 @@ import find from "lodash/find";
 class IntegrationStore {
   @observable integrations = [];
   @observable integrationConfigs = [];
+  @observable loaded = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -21,6 +22,7 @@ class IntegrationStore {
       this.integrations = response.data;
       get("/api/v1/integration-configs").then(configs_response => {
         this.integrationConfigs = configs_response.data;
+        this.loaded = true;
       });
     });
   };
@@ -33,6 +35,22 @@ class IntegrationStore {
       if (index > -1) {
         this.integrationConfigs.splice(index, 1);
       }
+    });
+  };
+
+  @action
+  disable = id => {
+    return post(`/api/v1/integrations/${id}/disable`).then(response => {
+      const index = this.integrations.findIndex(c => c.id === id);
+      this.integrations[index].enabled = false;
+    });
+  };
+
+  @action
+  enable = id => {
+    return post(`/api/v1/integrations/${id}/enable`).then(response => {
+      const index = this.integrations.findIndex(c => c.id === id);
+      this.integrations[index].enabled = true;
     });
   };
 
