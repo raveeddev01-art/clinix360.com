@@ -26,7 +26,7 @@ const Info = () => (
           <p>placeholder</p>
         </AddonCollapse> */}
     <AddonCollapse icon="folder-open" title="Files">
-      <Files />
+      <Files roomFiles />
     </AddonCollapse>
     {/* <AddonCollapse icon="flask" title="Labs">
           <p className="text-muted">Add the first lab!</p>
