@@ -35,12 +35,18 @@ class PeopleList extends Component {
       <div className="collapse-content">
         {users
           .filter(user => !user.disabled)
+          .sort((user1, user2) => {
+            // Sort users alphabetically
+            if (user1.first_name < user2.first_name) return -1;
+            if (user1.first_name > user2.first_name) return 1;
+            return 0;
+          })
           .map(user => (
             <PeopleListItem
               online={presenceStore.isOnline(`${user.id}`)}
               key={`user_${user.id}`}
               onClick={this._onClickItem(user)}
-              {...user}
+              user={user}
             />
           ))}
       </div>

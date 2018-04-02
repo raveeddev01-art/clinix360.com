@@ -3,6 +3,7 @@ defmodule StitchConnect.Web.PushNotifications do
   alias Pigeon.{APNS, FCM}
   import Ecto.Query
   require Logger
+  use Appsignal.Instrumentation.Decorators
 
   @single_dm_name "__dm_group__"
   @multi_dm_name "__multi_dm_group__"
@@ -20,12 +21,24 @@ defmodule StitchConnect.Web.PushNotifications do
     fun.(notification, opts)
   end
 
+  def notify_user(user, message_ids) do
+    Enum.each(message_ids, fn message_id ->
+      with %Message{} = message <- Stitch.MessageQueries.get_by_id(message_id),
+           %Group{} = group <- Stitch.GroupQueries.get_by_id(message.group_id) do
+        notify_user(group, message, user)
+      else
+        _ -> nil
+      end
+    end)
+  end
+
   @doc """
   Trigger a new message notification for users.
   """
   @spec notify_users(Group.t(), Message.t(), list(number)) :: {:ok, binary}
   def notify_users(_group, %Message{type: "system"}, _user_ids), do: nil
 
+  @decorate transaction(:background_job)
   def notify_users(%Group{} = group, %Message{} = message, user_ids) do
     message = Repo.preload(message, :user)
     group = Repo.preload(group, :users)

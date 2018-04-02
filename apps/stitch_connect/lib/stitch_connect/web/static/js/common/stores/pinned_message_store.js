@@ -28,8 +28,19 @@ class PinnedMessageStore {
     this.loading = false;
     this.hasMore = true;
     this.messages = [];
-    this.loadMore();
+
+    if (this.collapsed) {
+      this.loadMore();
+    }
   }
+
+  @action
+  onCollapse = collapsed => {
+    this.collapsed = collapsed;
+    if (collapsed && this.messages.length === 0 && this.hasMore) {
+      this.loadMore();
+    }
+  };
 
   @action
   loadMore() {
