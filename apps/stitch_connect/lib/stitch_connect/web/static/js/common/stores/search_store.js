@@ -40,7 +40,7 @@ class SearchStore {
 
     this.loading = true;
 
-    post(`/api/v1/messages/search`, {
+    post(`/api/v1/messages/search?fetchUsers=true`, {
       body: {
         term: this.query,
         skip: this.messages.length,
@@ -50,8 +50,13 @@ class SearchStore {
       this.loading = false;
 
       const { data } = response;
+      const users = this.rootStore.usersStore.users.toJS();
+      const messages = data.map(msg => ({
+        ...msg,
+        user: users.find(u => u.id === msg.user_id)
+      }));
 
-      this.messages = this.messages.concat(data);
+      this.messages = this.messages.concat(messages);
       this.hasMore = data.length === this.limit;
     });
   }
