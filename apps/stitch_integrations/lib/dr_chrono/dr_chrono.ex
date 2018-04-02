@@ -73,8 +73,11 @@ defmodule StitchIntegrations.DrChrono do
   end
 
   def handle_webhook("PATIENT_MODIFY", params) do
-    team = Integration.get_team_by_webhook_token(params["webhook-token"])
-
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+    IO.puts("=========")
+    IO.puts("Payload is for this team:")
+    IO.inspect(team)
+    IO.puts("=========")
     payload = params["object"]
     patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
     patient_id = payload["id"]

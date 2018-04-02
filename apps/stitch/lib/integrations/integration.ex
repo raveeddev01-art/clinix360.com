@@ -50,6 +50,19 @@ defmodule Stitch.Integration do
     Repo.all(query)
   end
 
+  def get_team_by_webhook_token(webhook_token) do
+    query =
+      from(
+        i in Stitch.Integration,
+        where: i.webhook_token == ^webhook_token,
+        preload: [:team],
+        select: i
+      )
+
+    integration = Repo.one(query)
+    integration.team
+  end
+
   def enable(integration) do
     integration
     |> changeset(%{enabled: true})
