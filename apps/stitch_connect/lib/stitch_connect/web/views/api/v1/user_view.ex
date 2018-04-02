@@ -55,8 +55,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       username: user.username,
       phone: user.phone_number,
       title: user.title,
-      avatar: S3.presigned_url(user.profile_image_url),
-      avatar_thumb: S3.presigned_url(user.profile_image_thumb_url),
+      avatar: StitchConnect.PresignedUrlCache.fetch(user.profile_image_url),
+      avatar_thumb: StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url),
       onboarded: user.onboarded,
       disabled: user.disabled,
       groups_as_guest: user.groups_as_guest
