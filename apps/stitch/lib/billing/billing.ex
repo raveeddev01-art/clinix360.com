@@ -283,7 +283,7 @@ defmodule Stitch.Billing do
   end
 
   defp check_card_count(_, nil), do: :card_not_required
-  defp check_card_count(_, new_tier) when new_tier in @paid_tiers, do: :card_not_required
+  defp check_card_count(_, new_tier) when not new_tier in @paid_tiers, do: :card_not_required
   defp check_card_count(team_id, _new_tier) do
     case card_count(team_id) do
       0 -> :card_required
