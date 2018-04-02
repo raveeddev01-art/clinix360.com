@@ -28,8 +28,8 @@ defmodule StitchConnect.PresignedUrlCache do
   @spec get(binary) :: {:not_found} | {:found, {pos_integer, binary}}
   def get(object_name) do
     case :ets.lookup(@tab, object_name) do
-      [] -> {:not_found}
       [{_k, result}] -> {:found, result}
+      _ -> {:not_found}
     end
   end
 
