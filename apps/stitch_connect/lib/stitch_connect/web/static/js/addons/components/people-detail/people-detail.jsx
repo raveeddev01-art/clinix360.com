@@ -1,28 +1,43 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import { inject } from "mobx-react";
+
 import AvatarImage from "../../../common/components/avatar/avatar-image";
 
+
 // @TODO load time zone from user
+@inject("presenceStore")
 class PeopleDetail extends Component {
   render() {
     const timezone = moment().format("hh:mm A (Z)");
     const { user } = this.props;
     const { avatar, full_name: fullName, title, username, email, phone } = user;
 
+    const online = this.props.presenceStore.isOnline(`${this.props.user.id}`);
+
     return (
       <div className="user-view">
         <div className="user-avatar m-b-20">
           <AvatarImage
             alt="Avatar"
-            className="img-responsive"
+            className="img-responsive img-circle"
             src={avatar}
             user={user}
           />
         </div>
 
         <div className="username-and-title">
-          <h4 className="display-name">{fullName}</h4>
+          <h4 className="display-name">
+            <span className="m-r-5">
+              {online ? (
+                <i className="fa fa-circle" />
+              ) : (
+                <i className="fa fa-circle-o" />
+              )}
+            </span>
+            {fullName}
+          </h4>
           <div className="user-title text-muted">{title}</div>
         </div>
 
