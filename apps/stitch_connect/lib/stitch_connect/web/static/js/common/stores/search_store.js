@@ -40,7 +40,7 @@ class SearchStore {
 
     this.loading = true;
 
-    post(`/api/v1/messages/search?fetchUsers=true`, {
+    post(`/api/v1/messages/search?fetchUsers=false`, {
       body: {
         term: this.query,
         skip: this.messages.length,
