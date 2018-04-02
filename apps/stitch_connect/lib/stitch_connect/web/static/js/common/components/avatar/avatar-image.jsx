@@ -12,7 +12,7 @@ class AvatarImage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userFallback: false,
+      useFallback: false,
       reloadAttempts: 0
     };
   }
@@ -27,7 +27,7 @@ class AvatarImage extends Component {
       const newAttemptCount = this.state.reloadAttempts + 1;
       this.setState({ reloadAttempts: newAttemptCount });
     } else {
-      this.setState({ userFallback: true });
+      this.setState({ useFallback: true });
     }
   };
 
@@ -37,7 +37,7 @@ class AvatarImage extends Component {
 
   render() {
     const { src, alt, className } = this.props;
-    const avatarUrl = this.state.userFallback ? fallbackUserAvatar : src;
+    const avatarUrl = this.state.useFallback ? fallbackUserAvatar : src;
 
     return (
       <img
