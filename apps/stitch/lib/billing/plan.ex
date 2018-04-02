@@ -5,8 +5,8 @@ defmodule Stitch.Billing.Plan do
   def id(%{tier: "FREE"}), do: "free"
   def id(%{tier: "STANDARD", renewal_frequency: "MONTHLY"}), do: "standard_monthly"
   def id(%{tier: "STANDARD", renewal_frequency: "YEARLY"}), do: "standard_yearly"
-  def id(%{tier: "PREMIUM", renewal_frequency: "MONTHLY"}), do: "premium_monthly_v2"
-  def id(%{tier: "PREMIUM", renewal_frequency: "YEARLY"}), do: "premium_yearly_v2"
+  def id(%{tier: "PREMIUM", renewal_frequency: "MONTHLY"}), do: "premium_monthly"
+  def id(%{tier: "PREMIUM", renewal_frequency: "YEARLY"}), do: "premium_yearly"
   def id(%{tier: tier, renewal_frequency: duration}), do: "#{tier}_#{duration}"
 
   # SHIM: Remove once subscription conversion is done
