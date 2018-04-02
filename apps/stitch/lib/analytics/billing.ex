@@ -13,7 +13,6 @@ defmodule Stitch.Analytics.Billing do
   @event_payment_modified "Payment Modification"
 
   # SHIM: remove old tiers once conversions are done
-  @unpaid_tiers ["FREE", "TRIAL"]
   @paid_tiers ["STANDARD", "PREMIUM", "POWER", "BASIC"]
 
   @doc """

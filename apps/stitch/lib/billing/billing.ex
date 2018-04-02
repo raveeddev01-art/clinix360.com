@@ -9,7 +9,6 @@ defmodule Stitch.Billing do
   alias Stitch.Billing.{Plan, Subscription, PaymentMethod, PaymentHistory}
 
   # SHIM: remove old tiers once conversions are done
-  @unpaid_tiers ["FREE", "TRIAL"]
   @paid_tiers ["STANDARD", "PREMIUM", "POWER", "BASIC"]
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
@@ -120,6 +119,10 @@ defmodule Stitch.Billing do
   @spec modify_subscription(Subscription.t(), map) ::
           {:ok, Subscription.t()} | {:error, Ecto.Changeset.t() | :card_required}
   # SHIM: Remove once all trials have been converted
+  def modify_subscription(%Subscription{tier: "TRIAL"} = subscription, params) do
+    do_modify_subscription(subscription, params, &create_subscription/2)
+  end
+
   def modify_subscription(%Subscription{tier: "FREE"} = subscription, params) do
     do_modify_subscription(subscription, params, &create_subscription/2)
   end
@@ -128,9 +131,9 @@ defmodule Stitch.Billing do
     do_modify_subscription(subscription, params, &update_subscription/2)
   end
 
-  defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, %{"tier" => new_tier} = params, fun) do
+  defp do_modify_subscription(%Subscription{tier: original_tier} = subscription, params, fun) do
     with %Ecto.Changeset{valid?: true} = changeset <- Subscription.modify_by_user(params),
-         {:count, card_message} when card_message != :card_required <- {:count, check_card_count(subscription.team_id, new_tier)},
+         {:count, card_message} when card_message != :card_required <- {:count, check_card_count(subscription.team_id, params["tier"])},
          plan_id <- Plan.id(changeset.changes),
          {:ok, stripe_sub_params} <- fun.(subscription, plan_id) do
 
@@ -279,14 +282,12 @@ defmodule Stitch.Billing do
     end
   end
 
-  defp check_card_count(team_id, new_tier) do
-    if Enum.member?(@paid_tiers, new_tier) do
-      case card_count(team_id) do
-        0 -> :card_required
-        count -> count
-      end
-    else
-      :card_not_required
+  defp check_card_count(_, nil), do: :card_not_required
+  defp check_card_count(_, new_tier) when new_tier in @paid_tiers, do: :card_not_required
+  defp check_card_count(team_id, _new_tier) do
+    case card_count(team_id) do
+      0 -> :card_required
+      count -> count
     end
   end
 
