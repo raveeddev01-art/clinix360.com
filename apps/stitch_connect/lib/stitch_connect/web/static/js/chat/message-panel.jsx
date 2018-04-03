@@ -56,7 +56,12 @@ export default class MessagePanel extends Component {
   };
 
   handleClose = () => {
-    history.push(`/rooms/${this.props.groupsStore.defaultGroup.slug}`);
+    const { groupsStore, groupStore } = this.props;
+
+    groupsStore.hideGroup(groupStore.group.id).then(() => {
+      groupsStore.loadGroups();
+      history.push(`/rooms/${groupsStore.defaultGroup.slug}`);
+    });
   };
 
   renderUnreadMessagesBar() {
