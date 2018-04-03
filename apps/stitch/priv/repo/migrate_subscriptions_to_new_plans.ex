@@ -21,14 +21,10 @@ defmodule Stitch.Repo.Scripts.MigrateSubscriptionsToNewPlans do
 
     Logger.info "Converting old subscription tiers to new."
 
-    # this isn't a true transaction since it changes things
-    # on stripe, but this safety is better than nothing
-    Repo.transaction(fn ->
-      convert_subscriptions_to(trials, "FREE", custom_plans)
-      convert_subscriptions_to(basics, "STANDARD", custom_plans)
-      convert_subscriptions_to(premiums, "PREMIUM", custom_plans)
-      convert_subscriptions_to(powers, "PREMIUM", custom_plans)
-    end)
+    convert_subscriptions_to(trials, "FREE", custom_plans)
+    convert_subscriptions_to(basics, "STANDARD", custom_plans)
+    convert_subscriptions_to(premiums, "PREMIUM", custom_plans)
+    convert_subscriptions_to(powers, "PREMIUM", custom_plans)
   end
 
   defp get_all_in_tier(tier_name) do
