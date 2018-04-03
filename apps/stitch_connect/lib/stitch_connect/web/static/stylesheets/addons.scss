@@ -243,9 +243,8 @@
 .files-addon,
 .directory-addon,
 .global-starred-messages-addon,
-.message-search-addon {
-  padding: 0 15px;
-  margin-bottom: 20px;
+.search-results-addon {
+  padding: 15px;
 
   i.fa-circle-o-notch {
     color: $brand-primary;
@@ -259,37 +258,5 @@
 
   .footer {
     text-align: center;
-  }
-}
-
-.message-search-addon {
-  padding: 10px 15px;
-
-  .message-container.addon .message {
-    flex-direction: column;
-    padding-top: 12px;
-
-    .message-nav {
-      display: flex;
-
-      a {
-        flex: 1;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        text-decoration: none;
-        font-weight: 700;
-      }
-
-      span {
-        flex-shrink: 0;
-        color: #777;
-      }
-    }
-
-    .message-wrapper {
-      display: flex;
-      flex-direction: row;
-    }
   }
 }

@@ -51,7 +51,7 @@ class Mentions extends Component {
     const { mentionsStore } = this.props;
 
     return (
-      <div className="message-search-addon">
+      <div className="search-results-addon">
         {this.renderMentionsResults()}
 
         <div className="footer">
