@@ -37,6 +37,25 @@ class PeopleList extends Component {
         user.roles.indexOf("multi-room-guest") > -1
     );
 
+    const renderUserList = test =>
+      test
+        .sort((user1, user2) => {
+          // Sort users alphabetically
+          if (user1.first_name.toLowerCase() < user2.first_name.toLowerCase())
+            return -1;
+          if (user1.first_name.toLowerCase() > user2.first_name.toLowerCase())
+            return 1;
+          return 0;
+        })
+        .map(user => (
+          <PeopleListItem
+            online={presenceStore.isOnline(`${user.id}`)}
+            key={`user_${user.id}`}
+            onClick={this._onClickItem(user)}
+            user={user}
+          />
+        ));
+
     return (
       <div className="collapse-content">
         {filteredAdmins.length > 0 && (
@@ -44,21 +63,7 @@ class PeopleList extends Component {
             <h5 className="user-list-heading">
               Admins <span>({filteredAdmins.length})</span>
             </h5>
-            {filteredAdmins
-              .sort((user1, user2) => {
-                // Sort users alphabetically
-                if (user1.first_name < user2.first_name) return -1;
-                if (user1.first_name > user2.first_name) return 1;
-                return 0;
-              })
-              .map(user => (
-                <PeopleListItem
-                  online={presenceStore.isOnline(`${user.id}`)}
-                  key={`user_${user.id}`}
-                  onClick={this._onClickItem(user)}
-                  user={user}
-                />
-              ))}
+            {renderUserList(filteredAdmins)}
           </div>
         )}
 
@@ -67,21 +72,7 @@ class PeopleList extends Component {
             <h5 className="user-list-heading">
               Members <span>({filteredMembers.length})</span>
             </h5>
-            {filteredMembers
-              .sort((user1, user2) => {
-                // Sort users alphabetically
-                if (user1.first_name < user2.first_name) return -1;
-                if (user1.first_name > user2.first_name) return 1;
-                return 0;
-              })
-              .map(user => (
-                <PeopleListItem
-                  online={presenceStore.isOnline(`${user.id}`)}
-                  key={`user_${user.id}`}
-                  onClick={this._onClickItem(user)}
-                  user={user}
-                />
-              ))}
+            {renderUserList(filteredMembers)}
           </div>
         )}
 
@@ -90,21 +81,7 @@ class PeopleList extends Component {
             <h5 className="user-list-heading">
               Guests <span>({filteredGuests.length})</span>
             </h5>
-            {filteredGuests
-              .sort((user1, user2) => {
-                // Sort users alphabetically
-                if (user1.first_name < user2.first_name) return -1;
-                if (user1.first_name > user2.first_name) return 1;
-                return 0;
-              })
-              .map(user => (
-                <PeopleListItem
-                  online={presenceStore.isOnline(`${user.id}`)}
-                  key={`user_${user.id}`}
-                  onClick={this._onClickItem(user)}
-                  user={user}
-                />
-              ))}
+            {renderUserList(filteredGuests)}
           </div>
         )}
       </div>
