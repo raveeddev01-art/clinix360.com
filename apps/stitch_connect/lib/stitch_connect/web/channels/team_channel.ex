@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.TeamChannel do
   use StitchConnect.Web, :channel
-  use Appsignal.Instrumentation.Decorators
   alias Stitch.Accounts.User
   alias StitchConnect.Web.Presence
   alias StitchConnect.Web.Api.V1.UserView

@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.GroupChannel do
   use StitchConnect.Web, :channel
-  use Appsignal.Instrumentation.Decorators
   import Ecto.Query
   alias Stitch.Accounts.{User, ActivityTracker}
   alias StitchConnect.Web.Api.V1.MessageView

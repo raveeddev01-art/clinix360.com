@@ -3,7 +3,6 @@ defmodule StitchConnect.Web.EventsChannel do
   import Ecto.Query
   alias Stitch.{Repo, Group, GroupUser, TeamQueries, Accounts.User}
   alias StitchConnect.Web.Api.V1.{MessageView, GroupView, NotificationPreferenceView}
-  use Appsignal.Instrumentation.Decorators
 
   @endpoint StitchConnect.Web.Endpoint
 
