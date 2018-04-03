@@ -198,7 +198,8 @@ defmodule StitchConnect.Web.PushNotifications do
   # Notification Titles
 
   #  Single or Multi DM
-  defp notification_title(%{name: group_name, users: users}, _message, receiver) when group_name in @dm_groups do
+  defp notification_title(%{name: group_name} = group, _message, receiver) when group_name in @dm_groups do
+    users = Repo.preload(group, :users).users
     is_receiver = &(&1.id == receiver.id)
 
     users
