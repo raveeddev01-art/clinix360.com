@@ -59,7 +59,7 @@ class TeamList extends Component {
       u =>
         !(hideCurrentUser && u.id === currentUser.id && members.length > 0) &&
         members.findIndex(member => member.id === u.id) === -1 &&
-        (!u.disabled || searchFilter.length >= showDisabledAfter)
+        (!u.disabled || !u.is_bot || searchFilter.length >= showDisabledAfter)
     );
     const teamList = filterUsers(availableUsers, searchFilter).sort(
       a => a.disabled
