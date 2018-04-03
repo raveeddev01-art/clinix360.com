@@ -169,6 +169,8 @@ defmodule StitchIntegrations.DrChrono do
     {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
     {:ok, patient} = get_patient_info(team.id, payload["patient"])
 
+    patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
+    doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
     notes = payload["notes"]
     reaction = payload["reaction"]
 
@@ -191,6 +193,8 @@ defmodule StitchIntegrations.DrChrono do
     {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
     {:ok, patient} = get_patient_info(team.id, payload["patient"])
 
+    patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
+    doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
     notes = payload["notes"]
     reaction = payload["reaction"]
 
