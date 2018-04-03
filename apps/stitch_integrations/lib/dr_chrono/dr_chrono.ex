@@ -6,11 +6,12 @@ defmodule StitchIntegrations.DrChrono do
   require Logger
 
   def handle_webhook("APPOINTMENT_CREATE", params) do
+    payload = params["object"]
+
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
     {:ok, patient} = get_patient_info(team.id, payload["patient"])
     {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
-    payload = params["object"]
     scheduled_time = payload["scheduled_time"]
     reason = payload["reason"]
     duration = payload["duration"]
@@ -28,11 +29,12 @@ defmodule StitchIntegrations.DrChrono do
   end
 
   def handle_webhook("APPOINTMENT_DELETE", params) do
+    payload = params["object"]
+
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
     {:ok, patient} = get_patient_info(team.id, payload["patient"])
     {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
-    payload = params["object"]
     scheduled_time = payload["scheduled_time"]
     reason = payload["reason"]
     duration = payload["duration"]
@@ -50,11 +52,12 @@ defmodule StitchIntegrations.DrChrono do
   end
 
   def handle_webhook("APPOINTMENT_MODIFY", params) do
+    payload = params["object"]
+
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
     {:ok, patient} = get_patient_info(team.id, payload["patient"])
     {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
-    payload = params["object"]
     scheduled_time = payload["scheduled_time"]
     reason = payload["reason"]
     duration = payload["duration"]
