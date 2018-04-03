@@ -47,7 +47,11 @@ class Subscription extends Component {
   };
 
   onCheckoutPlan = () => {
-    this.setState({ checkout: true });
+    if (this.state.plan.tier === "FREE") {
+      this.subscribe();
+    } else {
+      this.setState({ checkout: true });
+    }
   };
 
   // This handler gets passed card selected when successful.
