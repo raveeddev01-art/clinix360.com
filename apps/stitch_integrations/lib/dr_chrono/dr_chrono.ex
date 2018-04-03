@@ -151,7 +151,7 @@ defmodule StitchIntegrations.DrChrono do
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
 
     message = """
-    Event: Patient problem created
+    Event: Patient problem modified
     Patient: #{patient_name}
     Doctor: #{doctor_name}
     Name: #{payload["name"]}
@@ -163,51 +163,55 @@ defmodule StitchIntegrations.DrChrono do
   end
 
   def handle_webhook("PATIENT_ALLERGY_CREATE", params) do
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-
-    payload = params["object"]
-    patient = payload["patient"]
-    patient_id = payload["patient"]
-    doctor = payload["doctor"]
-    reaction = payload["reaction"]
-    rxnorm = payload["rxnorm"]
-    snomed_reaction = payload["snomed_reaction"]
-    notes = payload["notes"]
-
-    message =
-      "Event: Patient allergy created\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
-        doctor
-      }\nReaction: #{reaction}\nRxnorm: #{rxnorm}\nSnomed Reaction:#{snomed_reaction}\nNotes:#{
-        notes
-      }"
-
+    IO.puts("PATIENT_ALLERGY_CREATE")
     IO.inspect(params)
-    IO.inspect(message)
-    Bot.post_message(team.id, 4, message)
+    # team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
+    # payload = params["object"]
+    # patient = payload["patient"]
+    # patient_id = payload["patient"]
+    # doctor = payload["doctor"]
+    # reaction = payload["reaction"]
+    # rxnorm = payload["rxnorm"]
+    # snomed_reaction = payload["snomed_reaction"]
+    # notes = payload["notes"]
+
+    # message =
+    #   "Event: Patient allergy created\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+    #     doctor
+    #   }\nReaction: #{reaction}\nRxnorm: #{rxnorm}\nSnomed Reaction:#{snomed_reaction}\nNotes:#{
+    #     notes
+    #   }"
+
+    # IO.inspect(params)
+    # IO.inspect(message)
+    # Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_ALLERGY_MODIFY", params) do
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-
-    payload = params["object"]
-    patient = payload["patient"]
-    patient_id = payload["patient"]
-    doctor = payload["doctor"]
-    reaction = payload["reaction"]
-    rxnorm = payload["rxnorm"]
-    snomed_reaction = payload["snomed_reaction"]
-    notes = payload["notes"]
-
-    message =
-      "Event: Patient allergy modified\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
-        doctor
-      }\nReaction: #{reaction}\nRxnorm: #{rxnorm}\nSnomed Reaction:#{snomed_reaction}\nNotes:#{
-        notes
-      }"
-
+    IO.puts("PATIENT_ALLERGY_MODIFY")
     IO.inspect(params)
-    IO.inspect(message)
-    Bot.post_message(team.id, 4, message)
+    # team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
+    # payload = params["object"]
+    # patient = payload["patient"]
+    # patient_id = payload["patient"]
+    # doctor = payload["doctor"]
+    # reaction = payload["reaction"]
+    # rxnorm = payload["rxnorm"]
+    # snomed_reaction = payload["snomed_reaction"]
+    # notes = payload["notes"]
+
+    # message =
+    #   "Event: Patient allergy modified\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
+    #     doctor
+    #   }\nReaction: #{reaction}\nRxnorm: #{rxnorm}\nSnomed Reaction:#{snomed_reaction}\nNotes:#{
+    #     notes
+    #   }"
+
+    # IO.inspect(params)
+    # IO.inspect(message)
+    # Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
