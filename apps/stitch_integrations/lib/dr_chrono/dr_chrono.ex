@@ -129,7 +129,7 @@ defmodule StitchIntegrations.DrChrono do
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
 
-    messages = """
+    message = """
     Event: Patient problem created
     Patient: #{patient_name}
     Doctor: #{doctor_name}
@@ -150,7 +150,7 @@ defmodule StitchIntegrations.DrChrono do
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
 
-    messages = """
+    message = """
     Event: Patient problem created
     Patient: #{patient_name}
     Doctor: #{doctor_name}
