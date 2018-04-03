@@ -6,6 +6,8 @@ defmodule StitchIntegrations.DrChrono do
   require Logger
 
   def handle_webhook("APPOINTMENT_CREATE", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     patient = payload["patient"]
     scheduled_time = payload["scheduled_time"]
@@ -18,12 +20,14 @@ defmodule StitchIntegrations.DrChrono do
         reason
       }\nDuration: #{duration}\nNotes: #{notes}"
 
-    # 15 is team Zephyr
-    # 4 is group General.
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("APPOINTMENT_DELETE", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     patient = payload["patient"]
     scheduled_time = payload["scheduled_time"]
@@ -36,10 +40,14 @@ defmodule StitchIntegrations.DrChrono do
         reason
       }\nDuration: #{duration}\nNotes: #{notes}"
 
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("APPOINTMENT_MODIFY", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     patient = payload["patient"]
     scheduled_time = payload["scheduled_time"]
@@ -52,10 +60,14 @@ defmodule StitchIntegrations.DrChrono do
         reason
       }\nDuration: #{duration}\nNotes: #{notes}"
 
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_CREATE", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
     patient_id = payload["id"]
@@ -69,15 +81,14 @@ defmodule StitchIntegrations.DrChrono do
         phone
       }\nAddress: #{address}\nDoctor: #{doctor}"
 
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_MODIFY", params) do
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    IO.puts("=========")
-    IO.puts("Payload is for this team:")
-    IO.inspect(team)
-    IO.puts("=========")
+
     payload = params["object"]
     patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
     patient_id = payload["id"]
@@ -91,10 +102,14 @@ defmodule StitchIntegrations.DrChrono do
         phone
       }\nAddress: #{address}\nDoctor: #{doctor}"
 
+    IO.inspect(params)
+    IO.inspect(message)
     Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     description = payload["description"]
     doctor = payload["doctor"]
@@ -106,10 +121,14 @@ defmodule StitchIntegrations.DrChrono do
         doctor
       }\nICD: #{icd}\nDescription: #{description}"
 
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_PROBLEM_MODIFY", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     description = payload["description"]
     doctor = payload["doctor"]
@@ -121,10 +140,14 @@ defmodule StitchIntegrations.DrChrono do
         doctor
       }\nICD: #{icd}\nDescription: #{description}"
 
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_ALLERGY_CREATE", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     patient = payload["patient"]
     patient_id = payload["patient"]
@@ -141,10 +164,14 @@ defmodule StitchIntegrations.DrChrono do
         notes
       }"
 
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_ALLERGY_MODIFY", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     patient = payload["patient"]
     patient_id = payload["patient"]
@@ -161,10 +188,14 @@ defmodule StitchIntegrations.DrChrono do
         notes
       }"
 
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     patient = payload["patient"]
     patient_id = payload["patient"]
@@ -177,10 +208,14 @@ defmodule StitchIntegrations.DrChrono do
         doctor
       }\nName: #{name}\nNotes: #{notes}"
 
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+
     payload = params["object"]
     patient = payload["patient"]
     patient_id = payload["patient"]
@@ -193,7 +228,9 @@ defmodule StitchIntegrations.DrChrono do
         doctor
       }\nName: #{name}\nNotes: #{notes}"
 
-    Bot.post_message(15, 4, message)
+    IO.inspect(params)
+    IO.inspect(message)
+    Bot.post_message(team.id, 4, message)
   end
 
   # We haven't implemented these two webhooks.
