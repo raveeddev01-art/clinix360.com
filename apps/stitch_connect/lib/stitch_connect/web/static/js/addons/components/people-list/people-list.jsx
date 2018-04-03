@@ -41,9 +41,9 @@ class PeopleList extends Component {
       test
         .sort((user1, user2) => {
           // Sort users alphabetically
-          if (user1.first_name.toLowerCase() < user2.first_name.toLowerCase())
+          if (user1.full_name.toLowerCase() < user2.full_name.toLowerCase())
             return -1;
-          if (user1.first_name.toLowerCase() > user2.first_name.toLowerCase())
+          if (user1.full_name.toLowerCase() > user2.full_name.toLowerCase())
             return 1;
           return 0;
         })
