@@ -193,7 +193,7 @@ class DrChronoForm extends Component {
             >
               {this.props.groupsStore.regularGroups.map(group => (
                 <option key={`option-group-${group.id}`} value={group.id}>
-                  {group.name}
+                  {this.props.groupsStore.getGroupName(group)}
                 </option>
               ))}
             </FormControl>

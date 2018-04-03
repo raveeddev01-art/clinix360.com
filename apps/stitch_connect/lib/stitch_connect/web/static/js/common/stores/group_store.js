@@ -36,6 +36,12 @@ class GroupStore {
     return this.group.type === "dm" && this.group.users.length === 1;
   }
 
+  @computed
+  get groupName() {
+    const { groupsStore } = this.rootStore;
+    return groupsStore.getGroupName(this.group);
+  }
+
   // =============
   // Actions
   // =============
