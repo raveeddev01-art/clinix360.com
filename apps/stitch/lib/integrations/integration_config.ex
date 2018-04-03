@@ -30,9 +30,9 @@ defmodule Stitch.IntegrationConfig do
     group = Stitch.GroupQueries.get_by_id(attrs["group_id"])
     bot_user = StitchIntegrations.DrChrono.Bot.get_bot(group.team_id)
 
-    Stitch.Group.add_user(group, bot_user)
+    result = Stitch.Group.add_user(group, bot_user)
 
-    case Repo.insert(changeset) do
+    case result do
       {:error, _} ->
         Logger.info("Group user exists for this bot and group. Skipping")
 
