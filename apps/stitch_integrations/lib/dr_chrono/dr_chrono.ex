@@ -55,23 +55,21 @@ defmodule StitchIntegrations.DrChrono do
     IO.inspect(params)
     payload = params["object"]
 
-    # team = Integration.get_team_by_webhook_token(params["webhook_token"])
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
     # {:ok, patient} = get_patient_info(team.id, payload["patient"])
     # {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
-    # scheduled_time = payload["scheduled_time"]
-    # reason = payload["reason"]
-    # duration = payload["duration"]
-    # notes = payload["notes"]
+    scheduled_time = payload["scheduled_time"]
+    reason = payload["reason"]
+    duration = payload["duration"]
+    notes = payload["notes"]
 
-    # message =
-    #   "Event: Appointment deleted\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
-    #     patient["first_name"]
-    #   } #{patient["last_name"]}\nScheduled: #{scheduled_time} minutes\nReason: #{reason}\nDuration: #{
-    #     duration
-    #   }\nNotes: #{notes}"
+    message =
+      "Event: Appointment deleted\nScheduled: #{scheduled_time} minutes\nReason: #{reason}\nDuration: #{
+        duration
+      }\nNotes: #{notes}"
 
-    # IO.inspect(message)
+    IO.inspect(message)
     # Bot.post_message(team.id, 4, message)
   end
 
