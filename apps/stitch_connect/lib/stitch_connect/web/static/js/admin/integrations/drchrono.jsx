@@ -92,6 +92,21 @@ class DrChronoPage extends Component {
             </Panel.Heading>
 
             <Panel.Body className="configurations-panel__body">
+              <h4>Setup: Paste this into your drchrono api management page.</h4>
+              <ul>
+                <li>
+                  Callback URL:{" "}
+                  <strong
+                  >{`${window.applicationScheme}${window.applicationHost}/webhooks/drchrono/${drchrono.webhook_token}`}</strong>
+                </li>
+                <li>
+                  Secret Token: <strong>stitch</strong>
+                </li>
+                <li>
+                  Active: <strong>checked</strong>
+                </li>
+              </ul>
+
               {this.props.integrationStore.integrationConfigs.map(config => (
                 <IntegrationConfiguration
                   id={config.id}

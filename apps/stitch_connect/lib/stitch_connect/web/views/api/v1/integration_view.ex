@@ -14,7 +14,8 @@ defmodule StitchConnect.Web.Api.V1.IntegrationView do
     %{
       id: integration.id,
       name: integration.name,
-      enabled: integration.enabled
+      enabled: integration.enabled,
+      webhook_token: integration.webhook_token
     }
   end
 end
