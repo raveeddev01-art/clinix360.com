@@ -104,8 +104,9 @@ class CreateDMModal extends Component {
   render() {
     const { members } = this.state;
     const { usersStore, presenceStore } = this.props;
+
     const users = isFullMember(currentUser)
-      ? usersStore.users.slice(0)
+      ? usersStore.nonBotUsers
       : usersStore.connectedUsers;
 
     return (

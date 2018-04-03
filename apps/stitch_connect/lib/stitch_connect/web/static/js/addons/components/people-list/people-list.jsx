@@ -26,7 +26,7 @@ class PeopleList extends Component {
     const groupMembers = groupStore.group.users;
 
     const teamMembers = showAllUsers
-      ? usersStore.users
+      ? usersStore.nonBotUsers
       : usersStore.onlineUsers;
 
     const users = teamDirectory ? teamMembers : groupMembers;
@@ -34,7 +34,7 @@ class PeopleList extends Component {
     return (
       <div className="collapse-content">
         {users
-          .filter(user => !user.disabled)
+          .filter(user => !user.disabled || !user.is_bot)
           .sort((user1, user2) => {
             // Sort users alphabetically
             if (user1.first_name < user2.first_name) return -1;
