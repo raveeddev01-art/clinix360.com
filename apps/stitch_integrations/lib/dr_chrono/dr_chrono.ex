@@ -76,6 +76,7 @@ defmodule StitchIntegrations.DrChrono do
   def handle_webhook("PATIENT_CREATE", params) do
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
 
+    IO.puts("PATIENT_CREATE")
     IO.inspect(params)
     # payload = params["object"]
     # patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
@@ -98,6 +99,7 @@ defmodule StitchIntegrations.DrChrono do
   def handle_webhook("PATIENT_MODIFY", params) do
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
 
+    IO.puts("PATIENT_MODIFY")
     IO.inspect(params)
     # payload = params["object"]
     # patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
