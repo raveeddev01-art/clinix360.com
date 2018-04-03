@@ -7,63 +7,68 @@ defmodule StitchIntegrations.DrChrono do
 
   def handle_webhook("APPOINTMENT_CREATE", params) do
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
+    {:ok, patient} = get_patient_info(team.id, payload["patient"])
+    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
     payload = params["object"]
-    patient = get_patient_info(team.id, payload["patient"]) |> IO.inspect()
-    doctor = get_doctor_info(team.id, payload["doctor"]) |> IO.inspect()
     scheduled_time = payload["scheduled_time"]
     reason = payload["reason"]
     duration = payload["duration"]
     notes = payload["notes"]
 
     message =
-      "Event: Appointment created\nDoctor: #{1}\nPatient: #{1}\nScheduled: #{scheduled_time} minutes\nReason: #{
-        reason
-      }\nDuration: #{duration}\nNotes: #{notes}"
+      "Event: Appointment created\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
+        patient["first_name"]
+      } #{patient["last_name"]}\nScheduled: #{scheduled_time} minutes\nReason: #{reason}\nDuration: #{
+        duration
+      }\nNotes: #{notes}"
 
-    IO.inspect(params)
     IO.inspect(message)
-    Bot.post_message(team.id, 4, message)
+    # Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("APPOINTMENT_DELETE", params) do
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
+    {:ok, patient} = get_patient_info(team.id, payload["patient"])
+    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
     payload = params["object"]
-    patient = payload["patient"]
     scheduled_time = payload["scheduled_time"]
     reason = payload["reason"]
     duration = payload["duration"]
     notes = payload["notes"]
 
     message =
-      "Event: Appointment deleted\nPatient: #{patient}\nScheduled: #{scheduled_time} minutes\nReason: #{
-        reason
-      }\nDuration: #{duration}\nNotes: #{notes}"
+      "Event: Appointment created\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
+        patient["first_name"]
+      } #{patient["last_name"]}\nScheduled: #{scheduled_time} minutes\nReason: #{reason}\nDuration: #{
+        duration
+      }\nNotes: #{notes}"
 
-    IO.inspect(params)
     IO.inspect(message)
-    Bot.post_message(team.id, 4, message)
+    # Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("APPOINTMENT_MODIFY", params) do
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
+    {:ok, patient} = get_patient_info(team.id, payload["patient"])
+    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
     payload = params["object"]
-    patient = payload["patient"]
     scheduled_time = payload["scheduled_time"]
     reason = payload["reason"]
     duration = payload["duration"]
     notes = payload["notes"]
 
     message =
-      "Event: Appointment modified\nPatient: #{patient}\nScheduled: #{scheduled_time} minutes\nReason: #{
-        reason
-      }\nDuration: #{duration}\nNotes: #{notes}"
+      "Event: Appointment created\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
+        patient["first_name"]
+      } #{patient["last_name"]}\nScheduled: #{scheduled_time} minutes\nReason: #{reason}\nDuration: #{
+        duration
+      }\nNotes: #{notes}"
 
-    IO.inspect(params)
     IO.inspect(message)
-    Bot.post_message(team.id, 4, message)
+    # Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_CREATE", params) do
