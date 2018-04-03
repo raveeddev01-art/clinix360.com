@@ -191,7 +191,7 @@ defmodule Stitch.Message do
     case result do
       {:ok, %{message: message}} ->
         Stitch.Mobile.NotificationQueue.async_enqueue_for_users(
-          presence_user_ids.active -- [user.id],
+          Enum.uniq(presence_user_ids.active ++ recipients),
           message.id
         )
 
