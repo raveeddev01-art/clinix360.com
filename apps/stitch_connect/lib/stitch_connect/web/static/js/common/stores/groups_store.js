@@ -4,7 +4,7 @@
  * This store keeps track of groups of the app.
  */
 
-import { observable, computed, action } from "mobx";
+import { observable, computed, action, extendObservable } from "mobx";
 import history from "lib/history";
 import orderBy from "lodash/orderBy";
 
@@ -104,8 +104,8 @@ class GroupsStore {
         if (isSelfDM(group1) < isSelfDM(group2)) return 1;
 
         // Then sorts DMs in alphabetical order
-        if (group1.name < group2.name) return -1;
-        if (group1.name > group2.name) return 1;
+        if (this.getGroupName(group1).toLowerCase() < this.getGroupName(group2).toLowerCase()) return -1;
+        if (this.getGroupName(group1).toLowerCase() > this.getGroupName(group2).toLowerCase()) return 1;
         return 0;
       });
   }
@@ -219,7 +219,7 @@ class GroupsStore {
     this.groups.forEach(group => {
       const user = group.users.find(u => u.id === userId);
       if (user) {
-        Object.assign(user, userData);
+        extendObservable(user, userData);
       }
     });
   };
