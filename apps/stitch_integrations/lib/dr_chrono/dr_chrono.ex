@@ -5,6 +5,26 @@ defmodule StitchIntegrations.DrChrono do
   import Ecto.Query
   require Logger
 
+  def enabled_groups(team_id, event_name) do
+    team = Stitch.Repo.get(Stitch.Team, team_id)
+
+    query =
+      from(
+        i in Integration,
+        where: i.team_id == ^team_id,
+        where: i.name == "drchrono",
+        where: i.enabled == true,
+        preload: [integration_configs: :group]
+      )
+
+    integration = Stitch.Repo.one(query)
+
+    Enum.filter(integration.integration_configs, fn config ->
+      config.settings[event_name] == true
+    end)
+    |> Enum.map(& &1.group)
+  end
+
   def handle_webhook("APPOINTMENT_CREATE", params) do
     payload = params["object"]
 
@@ -24,8 +44,11 @@ defmodule StitchIntegrations.DrChrono do
         duration
       }\nNotes: #{notes}"
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "appointmentCreate")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("APPOINTMENT_MODIFY", params) do
@@ -47,8 +70,11 @@ defmodule StitchIntegrations.DrChrono do
         duration
       }\nNotes: #{notes}"
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "appointmentModify")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("APPOINTMENT_DELETE", params) do
@@ -68,8 +94,11 @@ defmodule StitchIntegrations.DrChrono do
         duration
       }\nNotes: #{notes}"
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "appointmentDelete")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("PATIENT_CREATE", params) do
@@ -92,8 +121,11 @@ defmodule StitchIntegrations.DrChrono do
     Cell phone: #{cell_phone}
     """
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "patientCreate")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("PATIENT_MODIFY", params) do
@@ -116,8 +148,11 @@ defmodule StitchIntegrations.DrChrono do
     Cell phone: #{cell_phone}
     """
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "patientModify")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
@@ -137,8 +172,11 @@ defmodule StitchIntegrations.DrChrono do
     Notes: #{payload["notes"]}
     """
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "patientProblemCreate")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("PATIENT_PROBLEM_MODIFY", params) do
@@ -158,8 +196,11 @@ defmodule StitchIntegrations.DrChrono do
     Notes: #{payload["notes"]}
     """
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "patientProblemModify")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("PATIENT_ALLERGY_CREATE", params) do
@@ -182,8 +223,11 @@ defmodule StitchIntegrations.DrChrono do
     Notes: #{notes}
     """
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "patientAllergyCreate")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("PATIENT_ALLERGY_MODIFY", params) do
@@ -206,8 +250,11 @@ defmodule StitchIntegrations.DrChrono do
     Notes: #{notes}
     """
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "patientAllergyModify")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
@@ -230,8 +277,11 @@ defmodule StitchIntegrations.DrChrono do
     Indication: #{indication}
     """
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "patientMedicationCreate")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
@@ -254,8 +304,11 @@ defmodule StitchIntegrations.DrChrono do
     Indication: #{indication}
     """
 
-    IO.inspect(message)
-    # Bot.post_message(team.id, 4, message)
+    groups = enabled_groups(team.id, "patientMedicationModify")
+
+    Enum.each(groups, fn group ->
+      Bot.post_message(team.id, group.id, message)
+    end)
   end
 
   # We haven't implemented these two webhooks.
