@@ -6,7 +6,6 @@
 
 import { observable, computed, action } from "mobx";
 import pick from "lodash/pick";
-import reject from "lodash/reject";
 
 import history from "lib/history";
 
