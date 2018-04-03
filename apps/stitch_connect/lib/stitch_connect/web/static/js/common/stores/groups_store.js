@@ -172,6 +172,25 @@ class GroupsStore {
     return !!this.groups.find(g => g.id === groupId);
   };
 
+  getGroupName = group => {
+    if (!group) {
+      return "";
+    }
+
+    if (group.type === "regular") {
+      return group.name;
+    }
+
+    if (group.type === "dm" && group.users.length === 1) {
+      return `${group.users[0].full_name} (You)`;
+    }
+
+    return group.users
+      .filter(u => u.id !== currentUser.id)
+      .map(u => u.full_name)
+      .join(", ");
+  };
+
   @action
   updateGroupData = (id, data) => {
     const group = this.getGroupById(id);

@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import classNames from "classnames";
 
+@inject("groupsStore")
 class RoomItem extends Component {
   handleClick = () => {
     const { room, closeModal, history } = this.props;
@@ -12,13 +14,13 @@ class RoomItem extends Component {
   };
 
   render() {
-    const { room } = this.props;
+    const { room, groupsStore } = this.props;
 
     return (
       <div className="room-item" role="link" onClick={this.handleClick}>
         <div className="content">
           <div className="name">
-            <i className="fa fa-comments" /> {room.name}
+            <i className="fa fa-comments" /> {groupsStore.getGroupName(room)}
             <span className="text-muted">#{room.slug}</span>
           </div>
 

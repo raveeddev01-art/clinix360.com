@@ -14,7 +14,7 @@ class RoomDetails extends Component {
       <div className="collapse-content room-details">
         <h5>Name</h5>
         <p>
-          {group.name}
+          {groupStore.groupName}
           {isNotDM && <code>#{group.slug}</code>}
         </p>
 
