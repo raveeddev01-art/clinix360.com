@@ -57,15 +57,14 @@ class TeamList extends Component {
     const { members, searchFilter } = this.state;
     const availableUsers = users.filter(
       u =>
+        !u.is_bot &&
         !(hideCurrentUser && u.id === currentUser.id && members.length > 0) &&
         members.findIndex(member => member.id === u.id) === -1 &&
-        (!u.disabled || !u.is_bot || searchFilter.length >= showDisabledAfter)
+        (!u.disabled || searchFilter.length >= showDisabledAfter)
     );
     const teamList = filterUsers(availableUsers, searchFilter).sort(
       a => a.disabled
     );
-
-    // const isOnline = user => this.props.presenceStore.isOnline(`${user.id}`);
 
     return (
       <div className="team-list__container">
