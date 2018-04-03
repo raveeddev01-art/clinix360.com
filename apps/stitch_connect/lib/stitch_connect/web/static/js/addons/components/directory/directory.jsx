@@ -14,7 +14,7 @@ class Directory extends Component {
         <div className="status">
           <span>
             {usersStore.showAllUsers
-              ? usersStore.users.length
+              ? usersStore.nonBotUsers.length
               : usersStore.onlineUsers.length}{" "}
             Members
           </span>

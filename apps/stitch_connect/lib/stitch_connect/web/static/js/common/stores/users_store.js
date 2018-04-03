@@ -44,6 +44,11 @@ class UsersStore {
   }
 
   @computed
+  get nonBotUsers() {
+    return this.users.filter(u => !u.is_bot);
+  }
+
+  @computed
   get connectedAndActivatedUsers() {
     return this.connectedUsers.filter(u => !u.disabled);
   }

@@ -84,7 +84,7 @@ class TeamSettings extends Component {
       ...usersStore.onlineUsers.map(u => ({ ...u, online: true })),
       ...usersStore.offlineUsers.map(u => ({ ...u, online: false }))
     ];
-    const fullMembers = users.filter(u => isFullMember(u));
+    const fullMembers = users.filter(u => !u.is_bot && isFullMember(u));
     const guests = users.filter(u => !isFullMember(u));
 
     return (
