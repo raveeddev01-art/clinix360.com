@@ -76,43 +76,45 @@ defmodule StitchIntegrations.DrChrono do
   def handle_webhook("PATIENT_CREATE", params) do
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
 
-    payload = params["object"]
-    patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
-    patient_id = payload["id"]
-    dob = payload["date_of_birth"]
-    phone = payload["home_phone"] || payload["cell_phone"]
-    address = payload["address"]
-    doctor = payload["doctor"]
-
-    message =
-      "Event: Patient created\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
-        phone
-      }\nAddress: #{address}\nDoctor: #{doctor}"
-
     IO.inspect(params)
-    IO.inspect(message)
-    Bot.post_message(team.id, 4, message)
+    # payload = params["object"]
+    # patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
+    # patient_id = payload["id"]
+    # dob = payload["date_of_birth"]
+    # phone = payload["home_phone"] || payload["cell_phone"]
+    # address = payload["address"]
+    # doctor = payload["doctor"]
+
+    # message =
+    #   "Event: Patient created\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
+    #     phone
+    #   }\nAddress: #{address}\nDoctor: #{doctor}"
+
+    # IO.inspect(params)
+    # IO.inspect(message)
+    # Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_MODIFY", params) do
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
 
-    payload = params["object"]
-    patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
-    patient_id = payload["id"]
-    dob = payload["date_of_birth"]
-    phone = payload["home_phone"] || payload["cell_phone"]
-    address = payload["address"]
-    doctor = payload["doctor"]
-
-    message =
-      "Event: Patient modified\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
-        phone
-      }\nAddress: #{address}\nDoctor: #{doctor}"
-
     IO.inspect(params)
-    IO.inspect(message)
-    Bot.post_message(team.id, 4, message)
+    # payload = params["object"]
+    # patient_name = "#{payload["first_name"]} #{payload["middle_name"]} #{payload["last_name"]}"
+    # patient_id = payload["id"]
+    # dob = payload["date_of_birth"]
+    # phone = payload["home_phone"] || payload["cell_phone"]
+    # address = payload["address"]
+    # doctor = payload["doctor"]
+
+    # message =
+    #   "Event: Patient modified\nPatient: #{patient_name}\nPatient ID: #{patient_id}\nDOB: #{dob}\nPhone: #{
+    #     phone
+    #   }\nAddress: #{address}\nDoctor: #{doctor}"
+
+    # IO.inspect(params)
+    # IO.inspect(message)
+    # Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
