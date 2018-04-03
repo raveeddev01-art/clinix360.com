@@ -26,7 +26,7 @@ class PeopleList extends Component {
     const groupMembers = groupStore.group.users;
 
     const teamMembers = showAllUsers
-      ? usersStore.users
+      ? usersStore.nonBotUsers
       : usersStore.onlineUsers;
 
     const users = teamDirectory ? teamMembers : groupMembers;

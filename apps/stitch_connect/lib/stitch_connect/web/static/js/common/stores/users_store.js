@@ -6,6 +6,7 @@
 
 import { observable, computed, action } from "mobx";
 import pick from "lodash/pick";
+import reject from "lodash/reject";
 
 import history from "lib/history";
 
@@ -41,6 +42,10 @@ class UsersStore {
     });
 
     return this.users.filter(u => userIDs.indexOf(u.id) > -1);
+  }
+
+  get nonBotUsers() {
+    return reject(this.users, { is_bot: true });
   }
 
   @computed

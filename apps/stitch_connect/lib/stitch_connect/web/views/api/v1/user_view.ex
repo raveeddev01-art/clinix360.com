@@ -55,6 +55,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       username: user.username,
       phone: user.phone_number,
       title: user.title,
+      is_bot: user.is_bot,
       avatar: StitchConnect.PresignedUrlCache.fetch(user.profile_image_url),
       avatar_thumb: StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url),
       onboarded: user.onboarded,
