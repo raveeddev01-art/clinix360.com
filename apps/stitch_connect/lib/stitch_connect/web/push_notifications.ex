@@ -26,6 +26,7 @@ defmodule StitchConnect.Web.PushNotifications do
     Enum.each(message_ids, fn message_id ->
       with %Message{} = message <- Stitch.MessageQueries.get_by_id(message_id),
            %Group{} = group <- Stitch.GroupQueries.get_by_id(message.group_id) do
+        group = Repo.preload(group, :users)
         notify_user(group, message, user)
       else
         _ -> nil
