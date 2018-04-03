@@ -18,7 +18,7 @@ class MessageNav extends Component {
           <i
             className={`fa ${group.public ? "fa-comments" : "fa-lock"}`}
           />{" "}
-          {group.name}
+          {groupsStore.getGroupName(group)}
         </NavLink>
 
         <span className="m-l-10">
