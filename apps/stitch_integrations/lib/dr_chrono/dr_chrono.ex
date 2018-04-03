@@ -9,14 +9,15 @@ defmodule StitchIntegrations.DrChrono do
     team = Integration.get_team_by_webhook_token(params["webhook_token"])
 
     payload = params["object"]
-    patient = payload["patient"]
+    patient = get_patient_info(team.id, payload["patient"]) |> IO.inspect()
+    doctor = get_doctor_info(team.id, payload["doctor"]) |> IO.inspect()
     scheduled_time = payload["scheduled_time"]
     reason = payload["reason"]
     duration = payload["duration"]
     notes = payload["notes"]
 
     message =
-      "Event: Appointment created\nPatient: #{patient}\nScheduled: #{scheduled_time} minutes\nReason: #{
+      "Event: Appointment created\nDoctor: #{1}\nPatient: #{1}\nScheduled: #{scheduled_time} minutes\nReason: #{
         reason
       }\nDuration: #{duration}\nNotes: #{notes}"
 
