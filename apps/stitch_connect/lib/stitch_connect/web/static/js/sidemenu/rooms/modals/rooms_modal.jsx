@@ -59,7 +59,10 @@ class RoomsModal extends Component {
     const { groupsStore } = this.props;
     const { filter } = this.state;
     const rooms = groupsStore.regularGroups.filter(room =>
-      room.name.toLowerCase().startsWith(filter.toLowerCase())
+      groupsStore
+        .getGroupName(room)
+        .toLowerCase()
+        .startsWith(filter.toLowerCase())
     );
 
     return {
