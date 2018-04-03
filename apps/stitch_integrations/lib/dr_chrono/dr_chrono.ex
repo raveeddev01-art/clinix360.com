@@ -211,46 +211,50 @@ defmodule StitchIntegrations.DrChrono do
   end
 
   def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
-    IO.puts("PATIENT_MEDICATION_CREATED")
-    IO.inspect(params)
-    # team = Integration.get_team_by_webhook_token(params["webhook_token"])
+    payload = params["object"]
 
-    # payload = params["object"]
-    # patient = payload["patient"]
-    # patient_id = payload["patient"]
-    # doctor = payload["doctor"]
-    # name = payload["name"]
-    # notes = payload["notes"]
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
+    {:ok, patient} = get_patient_info(team.id, payload["patient"])
 
-    # message =
-    #   "Event: Patient medication created\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
-    #     doctor
-    #   }\nName: #{name}\nNotes: #{notes}"
+    patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
+    doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
+    medication_name = payload["name"]
+    indication = payload["indication"]
 
-    # IO.inspect(params)
-    # IO.inspect(message)
+    message = """
+    Event: Patient medication created
+    Patient: #{patient_name}
+    Doctor: #{doctor_name}
+    Medication: #{medication_name}
+    Indication: #{indication}
+    """
+
+    IO.inspect(message)
     # Bot.post_message(team.id, 4, message)
   end
 
   def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
-    IO.puts("PATIENT_MEDICATION_MODIFY")
-    IO.inspect(params)
-    # team = Integration.get_team_by_webhook_token(params["webhook_token"])
+    payload = params["object"]
 
-    # payload = params["object"]
-    # patient = payload["patient"]
-    # patient_id = payload["patient"]
-    # doctor = payload["doctor"]
-    # name = payload["name"]
-    # notes = payload["notes"]
+    team = Integration.get_team_by_webhook_token(params["webhook_token"])
+    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
+    {:ok, patient} = get_patient_info(team.id, payload["patient"])
 
-    # message =
-    #   "Event: Patient medication modified\nPatient: #{patient}\nPatient ID: #{patient}\nDoctor: #{
-    #     doctor
-    #   }\nName: #{name}\nNotes: #{notes}"
+    patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
+    doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
+    medication_name = payload["name"]
+    indication = payload["indication"]
 
-    # IO.inspect(params)
-    # IO.inspect(message)
+    message = """
+    Event: Patient medication modified
+    Patient: #{patient_name}
+    Doctor: #{doctor_name}
+    Medication: #{medication_name}
+    Indication: #{indication}
+    """
+
+    IO.inspect(message)
     # Bot.post_message(team.id, 4, message)
   end
 
