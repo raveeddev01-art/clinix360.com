@@ -7,10 +7,13 @@ defmodule Stitch.Analytics.Billing do
 
   # === EVENT NAMES ===
 
-  @event_trial_start "Trial Started"
+  @event_subscription_start "Subscription Started"
   @event_payment_cancelled "Payment Cancelled"
   @event_payment_started "Payment Started"
   @event_payment_modified "Payment Modification"
+
+  # SHIM: remove old tiers once conversions are done
+  @paid_tiers ["STANDARD", "PREMIUM", "POWER", "BASIC"]
 
   @doc """
   Logs events for new subscriptions.
@@ -22,7 +25,7 @@ defmodule Stitch.Analytics.Billing do
   end
 
   @doc """
-  Logs events for updated subscriptions (trials or paid).
+  Logs events for updated subscriptions (free or paid).
   """
   def subscription_update(subscription, original_tier) do
     # This saves specific events to the db, but I'm not sure
@@ -58,7 +61,7 @@ defmodule Stitch.Analytics.Billing do
 
   defp do_subscription_create(subscription) do
     properties = billing_event_properties(subscription)
-    @analytics.track(@event_trial_start, properties)
+    @analytics.track(@event_subscription_start, properties)
   end
 
   # === CANCEL ===
@@ -93,10 +96,22 @@ defmodule Stitch.Analytics.Billing do
     }
   end
 
-  # Unless upgrade from trial, treat as modification
-  defp billing_change_event_name(%{tier: "TRIAL"}, "TRIAL"), do: @event_payment_modified
-  defp billing_change_event_name(%{tier: _new_tier}, "TRIAL"), do: @event_payment_started
-  defp billing_change_event_name(%{tier: _new_tier}, _old_tier), do: @event_payment_modified
+  defp billing_change_event_name(%{tier: new_tier}, old_tier) do
+    now_paid = Enum.member?(@paid_tiers, new_tier)
+    was_paid = Enum.member?(@paid_tiers, old_tier)
+    started_payment = !was_paid && now_paid
+    stopped_payment = was_paid && !now_paid
+
+    if started_payment do
+      @event_payment_started
+    else
+      if stopped_payment do
+        @event_payment_cancelled
+      else
+        @event_payment_modified
+      end
+    end
+  end
 
   defp team_from_subscription(subscription) do
     Stitch.TeamQueries.get_by_id(subscription.team_id)

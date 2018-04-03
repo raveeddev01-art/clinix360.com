@@ -30,7 +30,7 @@ defmodule Stitch.Stripe.EventsTest do
                   "end" => DateTime.to_unix(expected_datetime)
                 },
                 "plan" => %{
-                  "id" => "basic_yearly"
+                  "id" => "standard_yearly"
                 },
                 "quantity" => 6
               }
