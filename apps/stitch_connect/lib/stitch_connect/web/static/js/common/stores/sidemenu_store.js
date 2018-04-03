@@ -273,7 +273,7 @@ class SidemenuStore {
   }
 
   getNotificationTitle(group) {
-    return `${this.getGroupName(group)}`;
+    return `${this.rootStore.groupsStore.getGroupName(group)}`;
   }
 
   getNotificationText(message, group, isMention) {
