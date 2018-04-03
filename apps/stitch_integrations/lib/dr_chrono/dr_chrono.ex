@@ -109,7 +109,7 @@ defmodule StitchIntegrations.DrChrono do
     cell_phone = payload["cell_phone"]
 
     message = """
-    Event: Patient created
+    Event: Patient modified
     Patient: #{patient_name}
     Doctor: #{doctor_name}
     Home phone: #{home_phone}
