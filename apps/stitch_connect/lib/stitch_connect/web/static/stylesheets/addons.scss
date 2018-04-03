@@ -3,7 +3,7 @@
 
   .flex-header {
     color: inherit;
-    background: #f5f5f5;
+    background: #fafafa;
     border-bottom: 1px solid $border-color;
     padding: 15px 15px;
     flex-basis: auto;
@@ -32,6 +32,24 @@
     flex-direction: column;
     overflow: hidden;
     overflow-y: auto;
+
+    .user-list-heading,
+    .collapse-content h5 {
+      color: $brand-primary;
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.5;
+      padding: 3px 0;
+      margin-bottom: 0;
+
+      span {
+        font-weight: normal;
+      }
+
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
 
     .addon-collapse {
       border-bottom: 1px solid $border-color;
@@ -70,25 +88,12 @@
       }
 
       .collapse-content {
+        font-size: 16px;
         padding: 0 15px;
         margin-bottom: 20px;
 
-        h5 {
-          color: $brand-primary;
-          font-weight: bold;
-          line-height: 1.5;
-          padding: 3px 0;
-          margin: 0;
-        }
-
-        &.room-details {
-          p {
-            margin-bottom: 8px;
-
-            code {
-              margin-left: 5px;
-            }
-          }
+        &.room-details p {
+          margin-bottom: 8px;
         }
       }
 
@@ -132,7 +137,7 @@
 .people-list-item {
   display: flex;
   align-items: center;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.4;
   padding: 5px 0;
   cursor: pointer;
@@ -168,7 +173,7 @@
     }
 
     small {
-      font-size: 0.9em;
+      font-size: 15px;
       color: #999;
     }
   }
@@ -214,6 +219,7 @@
     padding: 20px 0;
 
     .userinfo__item {
+      font-size: 15px;
       margin-bottom: 10px;
       display: flex;
       flex-direction: row;
