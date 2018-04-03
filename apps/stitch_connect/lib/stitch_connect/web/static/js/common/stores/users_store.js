@@ -44,8 +44,9 @@ class UsersStore {
     return this.users.filter(u => userIDs.indexOf(u.id) > -1);
   }
 
+  @computed1
   get nonBotUsers() {
-    return reject(this.users, { is_bot: true });
+    return this.users.filter(u => !u.is_bot);
   }
 
   @computed
