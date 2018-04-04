@@ -33,8 +33,8 @@ class IntegrationConfiguration extends Component {
       <div className="configurations-panel__item">
         <div className="configurations-panel__item-logo m-r-10">
           <img
-            src="https://3on3f11f1a042q4pv95221y1-wpengine.netdna-ssl.com/wp-content/uploads/2017/03/drchrono_icon.png"
-            className="img-responsive"
+            src="/images/drchrono-logo.png"
+            className="img-responsive img-rounded"
             alt="Logo"
           />
         </div>
