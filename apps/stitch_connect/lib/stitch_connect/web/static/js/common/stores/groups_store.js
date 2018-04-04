@@ -104,8 +104,16 @@ class GroupsStore {
         if (isSelfDM(group1) < isSelfDM(group2)) return 1;
 
         // Then sorts DMs in alphabetical order
-        if (this.getGroupName(group1).toLowerCase() < this.getGroupName(group2).toLowerCase()) return -1;
-        if (this.getGroupName(group1).toLowerCase() > this.getGroupName(group2).toLowerCase()) return 1;
+        if (
+          this.getGroupName(group1).toLowerCase() <
+          this.getGroupName(group2).toLowerCase()
+        )
+          return -1;
+        if (
+          this.getGroupName(group1).toLowerCase() >
+          this.getGroupName(group2).toLowerCase()
+        )
+          return 1;
         return 0;
       });
   }
@@ -446,8 +454,12 @@ class GroupsStore {
   };
 
   @action
-  onCreatedGroup = group => {
-    this.groups.push(group);
+  onCreatedGroup = newGroup => {
+    const alreadyAdded = !!this.groups.find(g => g.id === newGroup.id);
+
+    if (!alreadyAdded) {
+      this.groups.push(newGroup);
+    }
   };
 
   @action
