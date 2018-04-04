@@ -49,9 +49,7 @@ class DrChronoEditSettings extends Component {
             </Panel.Heading>
 
             <Panel.Body>
-              <DrChronoForm
-                config={this.props.integrationStore.selectedConfig}
-              />
+              <DrChronoForm />
             </Panel.Body>
           </Panel>
         </Panel.Body>

@@ -35,10 +35,10 @@ class DrChronoForm extends Component {
         groupId: undefined
       };
     } else {
-      const settings = this.props.config.settings;
+      const settings = this.props.integrationStore.selectedConfig;
       this.state = {
-        id: this.props.config.id,
-        groupId: this.props.config.group_id,
+        id: settings.id,
+        groupId: settings.group_id,
         appointmentCreate: settings.appointmentCreate,
         appointmentModify: settings.appointmentModify,
         appointmentDelete: settings.appointmentDelete,
