@@ -69,7 +69,7 @@ class Sidebar extends Component {
           {window.electronApp ? (
             <ListGroupItem href="/admin/integrations" target="_blank">
               <i className="fa fa-database" />
-              <span>Integrations</span> <i className="fa fa-external-link sm" />
+              Integrations <i className="fa fa-external-link sm" />
             </ListGroupItem>
           ) : (
             <ListGroupItem active={this._isSelected("/admin/integrations")}>

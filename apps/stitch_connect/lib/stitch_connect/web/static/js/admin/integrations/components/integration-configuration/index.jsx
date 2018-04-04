@@ -42,7 +42,7 @@ class IntegrationConfiguration extends Component {
 
         <div className="configurations-panel__item-description">
           <h4>
-            Posted changes from <strong>{integrationName}</strong> to{" "}
+            Post changes from <strong>{integrationName}</strong> to{" "}
             <strong>{roomName}</strong>
           </h4>
           <div className="text-muted">{insertedAt}</div>
