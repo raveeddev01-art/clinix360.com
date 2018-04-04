@@ -63,10 +63,16 @@ class CreateDMModal extends Component {
     let promise;
 
     if (!group) {
+      const parseResponseAndAddGroup = response => {
+        const groupFromApi = response.data;
+        groupsStore.onCreatedGroup(groupFromApi);
+        return groupFromApi;
+      };
+
       // Create
       promise = groupsStore
         .createDMGroup(userIds)
-        .then(resposne => resposne.data);
+        .then(parseResponseAndAddGroup);
     } else if (group.is_hidden) {
       // Unhide
       promise = groupsStore.unhideGroup(group.id).then(() => group);
