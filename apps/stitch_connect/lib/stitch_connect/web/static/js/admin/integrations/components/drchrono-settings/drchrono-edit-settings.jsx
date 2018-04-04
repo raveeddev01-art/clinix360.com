@@ -7,10 +7,6 @@ import DrChronoForm from "./drchrono-form";
 
 @inject("titleStore", "adminPanelStore", "integrationStore")
 class DrChronoEditSettings extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
@@ -27,8 +23,8 @@ class DrChronoEditSettings extends Component {
           <div className="heading m-b-20">
             <div className="logo m-r-10">
               <img
-                src="https://3on3f11f1a042q4pv95221y1-wpengine.netdna-ssl.com/wp-content/uploads/2017/03/drchrono_icon.png"
-                className="img-responsive"
+                src="/images/drchrono-logo.png"
+                className="img-responsive img-rounded"
                 alt="Logo"
               />
             </div>
