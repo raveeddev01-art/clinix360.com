@@ -95,7 +95,7 @@ class IntegrationStore {
 
   @action
   setCurrentIntegrationConfig = id => {
-    this.selectedConfig = this.integrationConfigs.filter(c => c.id === id)[0];
+    this.selectedConfig = this.integrationConfigs.find(c => c.id === id);
   };
 
   @computed
