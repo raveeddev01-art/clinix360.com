@@ -737,6 +737,11 @@
       background: #fbeaec;
     }
 
+    .message-gutter.quoted {
+      border-right: 2px solid #003365;
+      margin-right: 10px;
+    }
+
     .message-gutter {
       width: 72px;
       font-size: 12px;
@@ -960,7 +965,7 @@
 
       .message-nav {
         display: flex;
-  
+
         a {
           flex: 1;
           overflow: hidden;
@@ -969,7 +974,7 @@
           text-decoration: none;
           font-weight: 700;
         }
-  
+
         span {
           flex-shrink: 0;
           color: #777;

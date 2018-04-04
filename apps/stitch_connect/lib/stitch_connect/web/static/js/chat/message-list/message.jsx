@@ -64,8 +64,13 @@ class Message extends PureComponent {
     const userId = message.user.id;
     const user = usersStore.usersById[userId];
 
+    const gutterClassName = cx("message", {
+      "message-gutter": true,
+      quoted: user.is_bot
+    });
+
     return (
-      <div className="message-gutter">
+      <div className={gutterClassName}>
         {message.pinned && (
           <div className="icon-pin">
             <i className="fa fa-thumb-tack fa-rotate-45" />
