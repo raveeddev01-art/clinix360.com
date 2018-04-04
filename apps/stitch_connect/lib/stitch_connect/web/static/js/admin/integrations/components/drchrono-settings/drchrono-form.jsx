@@ -35,21 +35,21 @@ class DrChronoForm extends Component {
         groupId: undefined
       };
     } else {
-      const settings = this.props.integrationStore.selectedConfig;
+      const config = this.props.integrationStore.selectedConfig;
       this.state = {
-        id: settings.id,
-        groupId: settings.group_id,
-        appointmentCreate: settings.appointmentCreate,
-        appointmentModify: settings.appointmentModify,
-        appointmentDelete: settings.appointmentDelete,
-        patientCreate: settings.patientCreate,
-        patientModify: settings.patientModify,
-        patientProblemCreate: settings.patientProblemCreate,
-        patientProblemModify: settings.patientProblemModify,
-        patientAllergyCreate: settings.patientAllergyCreate,
-        patientAllergyModify: settings.patientAllergyModify,
-        patientMedicationCreate: settings.patientMedicationCreate,
-        patientMedicationModify: settings.patientMedicationModify
+        id: config.id,
+        groupId: config.group_id,
+        appointmentCreate: config.settings.appointmentCreate,
+        appointmentModify: config.settings.appointmentModify,
+        appointmentDelete: config.settings.appointmentDelete,
+        patientCreate: config.settings.patientCreate,
+        patientModify: config.settings.patientModify,
+        patientProblemCreate: config.settings.patientProblemCreate,
+        patientProblemModify: config.settings.patientProblemModify,
+        patientAllergyCreate: config.settings.patientAllergyCreate,
+        patientAllergyModify: config.settings.patientAllergyModify,
+        patientMedicationCreate: config.settings.patientMedicationCreate,
+        patientMedicationModify: config.settings.patientMedicationModify
       };
     }
   }
