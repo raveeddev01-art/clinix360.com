@@ -380,6 +380,7 @@ $admin-topbar-height-sm: 65px;
 
         li {
           line-height: 2;
+          word-wrap: break-word;
 
           i.fa {
             color: $brand-primary;
@@ -392,7 +393,7 @@ $admin-topbar-height-sm: 65px;
         a.dropdown-toggle {
           text-decoration: none;
         }
-        
+
         &.open:before {
           content: '';
           position: fixed;
