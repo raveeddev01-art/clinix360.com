@@ -112,8 +112,17 @@ class Message extends PureComponent {
 
   render() {
     const { isActionsVisible, isSelected } = this.state;
-    const { message, messageStore, hasNML, isHighlighted } = this.props;
+    const {
+      message,
+      messageStore,
+      usersStore,
+      hasNML,
+      isHighlighted
+    } = this.props;
     const { chatDiv } = messageStore;
+
+    const userId = message.user.id;
+    const user = usersStore.usersById[userId];
 
     const messageClassName = cx("message", {
       sequential: message.is_sequential,
@@ -121,7 +130,7 @@ class Message extends PureComponent {
       highlight: isHighlighted,
       pinned: message.pinned || message.starred,
       failed: message.status === "failed",
-      bot_message: message.user.is_bot
+      bot_message: user.is_bot
     });
 
     return (
