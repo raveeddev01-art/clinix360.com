@@ -737,6 +737,13 @@
       background: #fbeaec;
     }
 
+    &.bot_message {
+      .message-body {
+        padding-left: 15px;
+        border-left: 4px solid #40a428;
+      }
+    }
+
     .message-gutter {
       width: 72px;
       font-size: 12px;
@@ -960,7 +967,7 @@
 
       .message-nav {
         display: flex;
-  
+
         a {
           flex: 1;
           overflow: hidden;
@@ -969,7 +976,7 @@
           text-decoration: none;
           font-weight: 700;
         }
-  
+
         span {
           flex-shrink: 0;
           color: #777;
