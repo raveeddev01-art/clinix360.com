@@ -8,14 +8,6 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 @inject("integrationStore")
 @observer
 class IntegrationPanel extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  _enableIntegration = () => {
-    this.setState({ authenticated: true });
-  };
-
   render() {
     const { title, description } = this.props;
     const redirect_uri = `${applicationScheme}${applicationHost}/_oauth/drchrono`;
