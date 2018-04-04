@@ -2,10 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import { LinkContainer } from "react-router-bootstrap";
+import history from "lib/history";
 
 import Panel from "react-bootstrap/lib/Panel";
 import Breadcrumb from "react-bootstrap/lib/Breadcrumb";
+import Button from "react-bootstrap/lib/Button";
+
 import DrChronoForm from "./drchrono-form";
+import { confirmModal } from "common/modals";
 
 @inject("titleStore", "adminPanelStore", "integrationStore")
 class DrChronoEditSettings extends Component {
@@ -17,6 +21,25 @@ class DrChronoEditSettings extends Component {
       parseInt(this.props.match.params.id, 10)
     );
   }
+
+  removeIntegrationConfig = () => {
+    confirmModal({
+      title: "Remove Integration Configuration",
+      message:
+        "Are you sure you want to delete this integration configuration? This cannot be undone.",
+      okLabel: "Remove"
+    })
+      .then(() => {
+        this.props.integrationStore.removeConfig(this.props.match.params.id);
+        history.push(`/admin/integrations/drchrono`);
+      })
+      .catch(() => {
+        // do nothing
+      });
+
+    // ISSUE: https://github.com/react-bootstrap/react-bootstrap/issues/541
+    document.dispatchEvent(new MouseEvent("click"));
+  };
 
   render() {
     return (
@@ -44,7 +67,7 @@ class DrChronoEditSettings extends Component {
             <h1 className="title">drchrono</h1>
 
             <div className="actions">
-              <a href="#">Remove</a>
+              <button onClick={this.removeIntegrationConfig}>Remove</button>
             </div>
           </div>
           <h4 className="m-b-30">
