@@ -17,27 +17,26 @@ class PeopleList extends Component {
   render() {
     const { groupStore, usersStore, presenceStore, teamDirectory } = this.props;
 
-    const groupMembers = groupStore.group.users;
+    const groupMembers = groupStore.group.users.filter(
+      u => !u.disabled && !u.is_bot
+    );
 
-    const teamMembers = usersStore.nonBotUsers;
+    const teamMembers = usersStore.nonBotUsers.filter(u => !u.disabled);
 
     const users = teamDirectory ? teamMembers : groupMembers;
 
     const filteredAdmins = users.filter(
-      user => user.roles.indexOf("admin") > -1 && !user.disabled && !user.is_bot
+      user => user.roles.indexOf("admin") > -1
     );
 
     const filteredMembers = users.filter(
-      user =>
-        user.roles.indexOf("member") > -1 && !user.disabled && !user.is_bot
+      user => user.roles.indexOf("member") > -1
     );
 
     const filteredGuests = users.filter(
       user =>
         user.roles.indexOf("single-room-guest") > -1 ||
-        (user.roles.indexOf("multi-room-guest") > -1 &&
-          !user.disabled &&
-          !user.is_bot)
+        user.roles.indexOf("multi-room-guest") > -1
     );
 
     const renderUserList = test =>
