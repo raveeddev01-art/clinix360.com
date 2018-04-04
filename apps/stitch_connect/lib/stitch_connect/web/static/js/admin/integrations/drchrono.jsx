@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 import moment from "moment";
 import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
+import Breadcrumb from "react-bootstrap/lib/Breadcrumb";
 
 import { confirmModal } from "common/modals";
 import IntegrationConfiguration from "./components/integration-configuration";
@@ -75,6 +77,13 @@ class DrChronoPage extends Component {
     return (
       <Panel className="admin-panel">
         <Panel.Heading>
+          <Breadcrumb>
+            <LinkContainer to="/admin/integrations">
+              <Breadcrumb.Item>Integrations</Breadcrumb.Item>
+            </LinkContainer>
+
+            <Breadcrumb.Item active>drchrono</Breadcrumb.Item>
+          </Breadcrumb>
           <h1>drchrono</h1>
         </Panel.Heading>
 
@@ -83,13 +92,6 @@ class DrChronoPage extends Component {
             <Panel.Heading className="configurations-panel__heading">
               <h3>Configurations</h3>
               <ButtonToolbar>
-                <Link
-                  to="/admin/integrations"
-                  type="button"
-                  className="btn btn-default"
-                >
-                  Go Back
-                </Link>
                 <Link
                   to="/admin/integrations/drchrono/new"
                   className="btn btn-primary"

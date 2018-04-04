@@ -4,7 +4,6 @@ import { LinkContainer } from "react-router-bootstrap";
 import { inject } from "mobx-react";
 import Button from "react-bootstrap/lib/Button";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
-import { Link } from "react-router-dom";
 
 import { confirmModal } from "common/modals";
 
