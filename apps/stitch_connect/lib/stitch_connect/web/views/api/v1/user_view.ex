@@ -56,11 +56,27 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       phone: user.phone_number,
       title: user.title,
       is_bot: user.is_bot,
-      avatar: StitchConnect.PresignedUrlCache.fetch(user.profile_image_url),
-      avatar_thumb: StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url),
+      avatar: avatar(user),
+      avatar_thumb: avatar_thumb(user),
       onboarded: user.onboarded,
       disabled: user.disabled,
       groups_as_guest: user.groups_as_guest
     }
+  end
+
+  defp avatar(user) do
+    if user.is_bot do
+      user.profile_image_url
+    else
+      StitchConnect.PresignedUrlCache.fetch(user.profile_image_url)
+    end
+  end
+
+  defp avatar_thumb(user) do
+    if user.is_bot do
+      user.profile_image_thumb_url
+    else
+      StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url)
+    end
   end
 end
