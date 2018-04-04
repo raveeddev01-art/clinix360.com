@@ -27,7 +27,9 @@ defmodule StitchIntegrations.DrChrono.Bot do
         onboarded: true,
         roles: ["member", "bot"],
         disabled: false,
-        profile_image_url: "a"
+        profile_image_url: "https://s3.amazonaws.com/stitch-content-public/drchrono-logo.png",
+        profile_image_thumb_url:
+          "https://s3.amazonaws.com/stitch-content-public/drchrono-logo.png"
       })
     else
       {:ok, bot_user}
