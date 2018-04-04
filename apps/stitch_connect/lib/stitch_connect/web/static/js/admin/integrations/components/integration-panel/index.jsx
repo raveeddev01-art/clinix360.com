@@ -22,12 +22,20 @@ class IntegrationPanel extends Component {
 
     return (
       <div className="panel-settings integrations-panel">
+        <img
+          src="/images/drchrono-logo.png"
+          className="img-responsive img-rounded m-r-15"
+          alt="Logo"
+        />
+
+        <div className="integrations-panel__content">
+          <h3 className="m-b-0">{title}</h3>
+          <HelpBlock>{description}</HelpBlock>
+        </div>
+
         {this.props.integrationStore.drChronoEnabled ? (
           <LinkContainer to="/admin/integrations/drchrono">
-            <Button
-              bsStyle="primary"
-              className="action-edit btn-fancy pull-right"
-            >
+            <Button bsStyle="primary" className="action-edit btn-fancy">
               Manage
             </Button>
           </LinkContainer>
@@ -35,14 +43,11 @@ class IntegrationPanel extends Component {
           <a
             href={`https://drchrono.com/o/authorize?redirect_uri=${redirect_uri}&client_id=${window.dr_chrono_client_id}&response_type=code`}
             target="_blank"
-            className="action-edit btn-primary btn-fancy pull-right"
+            className="action-edit btn-primary btn-fancy"
           >
             Connect
           </a>
         )}
-
-        <h3>{title}</h3>
-        <HelpBlock>{description}</HelpBlock>
       </div>
     );
   }
