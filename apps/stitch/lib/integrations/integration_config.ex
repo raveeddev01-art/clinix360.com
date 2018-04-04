@@ -68,4 +68,8 @@ defmodule Stitch.IntegrationConfig do
   def delete(config) do
     Repo.delete(config)
   end
+
+  def update(config, params) do
+    # TODO: Update integration config here.
+  end
 end

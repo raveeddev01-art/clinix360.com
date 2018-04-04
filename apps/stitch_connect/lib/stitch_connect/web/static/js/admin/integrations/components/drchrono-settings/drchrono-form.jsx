@@ -15,26 +15,46 @@ import Button from "react-bootstrap/lib/Button";
 class DrChronoForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      appointmentCreate: false,
-      appointmentModify: false,
-      appointmentDelete: false,
-      patientCreate: false,
-      patientModify: false,
-      patientProblemCreate: false,
-      patientProblemModify: false,
-      patientAllergyCreate: false,
-      patientAllergyModify: false,
-      patientMedicationCreate: false,
-      patientMedicationModify: false,
-      groupId: undefined
-    };
+
+    // This is a new empty integration config.
+    if (this.props.new === true) {
+      this.state = {
+        appointmentCreate: false,
+        appointmentModify: false,
+        appointmentDelete: false,
+        patientCreate: false,
+        patientModify: false,
+        patientProblemCreate: false,
+        patientProblemModify: false,
+        patientAllergyCreate: false,
+        patientAllergyModify: false,
+        patientMedicationCreate: false,
+        patientMedicationModify: false,
+        groupId: undefined
+      };
+    } else {
+      const settings = this.props.config.settings;
+      this.state = {
+        id: this.props.config.id,
+        groupId: this.props.config.group_id,
+        appointmentCreate: settings.appointmentCreate,
+        appointmentModify: settings.appointmentModify,
+        appointmentDelete: settings.appointmentDelete,
+        patientCreate: settings.patientCreate,
+        patientModify: settings.patientModify,
+        patientProblemCreate: settings.patientProblemCreate,
+        patientProblemModify: settings.patientProblemModify,
+        patientAllergyCreate: settings.patientAllergyCreate,
+        patientAllergyModify: settings.patientAllergyModify,
+        patientMedicationCreate: settings.patientMedicationCreate,
+        patientMedicationModify: settings.patientMedicationModify
+      };
+    }
   }
 
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
-    this.props.integrationStore.loadIntegrations();
   }
 
   onChange = event => {
@@ -47,8 +67,7 @@ class DrChronoForm extends Component {
     });
   };
 
-  _handleFormSubmit = event => {
-    event.preventDefault();
+  _createNewConfig = () => {
     const params = {
       groupId: this.state.groupId,
       integrationId: this.props.integrationStore.drChronoIntegration.id,
@@ -58,6 +77,29 @@ class DrChronoForm extends Component {
     this.props.integrationStore.createNewIntegration(params).then(() => {
       history.push(`/admin/integrations/drchrono`);
     });
+  };
+
+  _updateConfig = () => {
+    const params = {
+      id: this.state.id,
+      groupId: this.state.groupId,
+      integrationId: this.props.integrationStore.drChronoIntegration.id,
+      settings: omit(this.state, ["groupId", "id"])
+    };
+
+    this.props.integrationStore.updateIntegration(params).then(() => {
+      history.push(`/admin/integrations/drchrono`);
+    });
+  };
+
+  _handleFormSubmit = event => {
+    event.preventDefault();
+
+    if (this.props.new === true) {
+      this._createNewConfig();
+    } else {
+      this._updateConfig();
+    }
   };
 
   render() {
@@ -190,6 +232,7 @@ class DrChronoForm extends Component {
               name="groupId"
               onChange={this.onChange}
               componentClass="select"
+              defaultValue={this.state.groupId}
             >
               {this.props.groupsStore.regularGroups.map(group => (
                 <option key={`option-group-${group.id}`} value={group.id}>

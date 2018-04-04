@@ -9,21 +9,6 @@ import DrChronoForm from "./drchrono-form";
 class DrChronoNewSettings extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      appointmentCreate: false,
-      appointmentModify: false,
-      appointmentDelete: false,
-      patientCreate: false,
-      patientModify: false,
-      patientProblemCreate: false,
-      patientProblemModify: false,
-      patientAllergyCreate: false,
-      patientAllergyModify: false,
-      patientMedicationCreate: false,
-      patientMedicationModify: false,
-      clinicalNoteLock: false,
-      clinicalNoteUnlock: false
-    };
   }
 
   componentWillMount() {
@@ -68,7 +53,7 @@ class DrChronoNewSettings extends Component {
             </Panel.Heading>
 
             <Panel.Body>
-              <DrChronoForm integrationSettings={{}} />
+              <DrChronoForm new />
             </Panel.Body>
           </Panel>
         </Panel.Body>

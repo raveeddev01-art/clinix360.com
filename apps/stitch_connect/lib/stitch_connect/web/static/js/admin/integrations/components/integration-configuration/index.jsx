@@ -27,7 +27,7 @@ class IntegrationConfiguration extends Component {
   };
 
   render() {
-    const { integrationName, roomName, insertedAt } = this.props;
+    const { id, integrationName, roomName, insertedAt } = this.props;
 
     return (
       <div className="configurations-panel__item">
@@ -51,7 +51,7 @@ class IntegrationConfiguration extends Component {
           <Button onClick={this.removeIntegrationConfig}>
             <i className="fa fa-trash" />
           </Button>
-          <LinkContainer to="/admin/integrations/drchrono/edit">
+          <LinkContainer to={`/admin/integrations/drchrono/${id}/edit`}>
             <Button>
               <i className="fa fa-pencil" />
             </Button>
