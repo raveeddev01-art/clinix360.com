@@ -25,6 +25,16 @@ defmodule StitchIntegrations.DrChrono do
     |> Enum.map(& &1.group)
   end
 
+  defp value_or_na(nil), do: "N/A"
+
+  defp value_or_na(value) do
+    if value == "" do
+      "N/A"
+    else
+      value
+    end
+  end
+
   def handle_webhook("APPOINTMENT_CREATE", params) do
     payload = params["object"]
 
@@ -32,10 +42,10 @@ defmodule StitchIntegrations.DrChrono do
     {:ok, patient} = get_patient_info(team.id, payload["patient"])
     {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
-    scheduled_time = payload["scheduled_time"]
-    reason = payload["reason"]
-    duration = payload["duration"]
-    notes = payload["notes"]
+    scheduled_time = value_or_na(payload["scheduled_time"])
+    reason = value_or_na(payload["reason"])
+    duration = value_or_na(payload["duration"])
+    notes = value_or_na(payload["notes"])
 
     message =
       "Event: Appointment created\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
@@ -58,10 +68,10 @@ defmodule StitchIntegrations.DrChrono do
     {:ok, patient} = get_patient_info(team.id, payload["patient"])
     {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
-    scheduled_time = payload["scheduled_time"]
-    reason = payload["reason"]
-    duration = payload["duration"]
-    notes = payload["notes"]
+    scheduled_time = value_or_na(payload["scheduled_time"])
+    reason = value_or_na(payload["reason"])
+    duration = value_or_na(payload["duration"])
+    notes = value_or_na(payload["notes"])
 
     message =
       "Event: Appointment modified\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
@@ -84,10 +94,10 @@ defmodule StitchIntegrations.DrChrono do
     # {:ok, patient} = get_patient_info(team.id, payload["patient"])
     # {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
-    scheduled_time = payload["scheduled_time"]
-    reason = payload["reason"]
-    duration = payload["duration"]
-    notes = payload["notes"]
+    scheduled_time = value_or_na(payload["scheduled_time"])
+    reason = value_or_na(payload["reason"])
+    duration = value_or_na(payload["duration"])
+    notes = value_or_na(payload["notes"])
 
     message =
       "Event: Appointment deleted\nScheduled: #{scheduled_time} minutes\nReason: #{reason}\nDuration: #{
@@ -110,8 +120,8 @@ defmodule StitchIntegrations.DrChrono do
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
-    home_phone = payload["home_phone"]
-    cell_phone = payload["cell_phone"]
+    home_phone = value_or_na(payload["home_phone"])
+    cell_phone = value_or_na(payload["cell_phone"])
 
     message = """
     Event: Patient created
@@ -137,8 +147,8 @@ defmodule StitchIntegrations.DrChrono do
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
-    home_phone = payload["home_phone"]
-    cell_phone = payload["cell_phone"]
+    home_phone = value_or_na(payload["home_phone"])
+    cell_phone = value_or_na(payload["cell_phone"])
 
     message = """
     Event: Patient modified
@@ -168,8 +178,8 @@ defmodule StitchIntegrations.DrChrono do
     Event: Patient problem created
     Patient: #{patient_name}
     Doctor: #{doctor_name}
-    Name: #{payload["name"]}
-    Notes: #{payload["notes"]}
+    Name: #{value_or_na(payload["name"])}
+    Notes: #{value_or_na(payload["notes"])}
     """
 
     groups = enabled_groups(team.id, "patientProblemCreate")
@@ -192,8 +202,8 @@ defmodule StitchIntegrations.DrChrono do
     Event: Patient problem modified
     Patient: #{patient_name}
     Doctor: #{doctor_name}
-    Name: #{payload["name"]}
-    Notes: #{payload["notes"]}
+    Name: #{value_or_na(payload["name"])}
+    Notes: #{value_or_na(payload["notes"])}
     """
 
     groups = enabled_groups(team.id, "patientProblemModify")
@@ -212,8 +222,8 @@ defmodule StitchIntegrations.DrChrono do
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
-    notes = payload["notes"]
-    reaction = payload["reaction"]
+    notes = value_or_na(payload["notes"])
+    reaction = value_or_na(payload["reaction"])
 
     message = """
     Event: Patient allergy created
@@ -239,8 +249,8 @@ defmodule StitchIntegrations.DrChrono do
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
-    notes = payload["notes"]
-    reaction = payload["reaction"]
+    notes = value_or_na(payload["notes"])
+    reaction = value_or_na(payload["reaction"])
 
     message = """
     Event: Patient allergy modified
@@ -266,8 +276,8 @@ defmodule StitchIntegrations.DrChrono do
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
-    medication_name = payload["name"]
-    indication = payload["indication"]
+    medication_name = value_or_na(payload["name"])
+    indication = value_or_na(payload["indication"])
 
     message = """
     Event: Patient medication created
@@ -293,8 +303,8 @@ defmodule StitchIntegrations.DrChrono do
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
-    medication_name = payload["name"]
-    indication = payload["indication"]
+    medication_name = value_or_na(payload["name"])
+    indication = value_or_na(payload["indication"])
 
     message = """
     Event: Patient medication modified
