@@ -67,7 +67,12 @@ class DrChronoEditSettings extends Component {
             <h1 className="title">drchrono</h1>
 
             <div className="actions">
-              <button onClick={this.removeIntegrationConfig}>Remove</button>
+              <button
+                className="btn-link"
+                onClick={this.removeIntegrationConfig}
+              >
+                Remove
+              </button>
             </div>
           </div>
           <h4 className="m-b-30">
