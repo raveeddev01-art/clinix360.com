@@ -70,6 +70,7 @@ defmodule Stitch.IntegrationConfig do
   end
 
   def update(config, params) do
-    # TODO: Update integration config here.
+    changeset = changeset(config, %{group_id: params["group_id"], settings: params["settings"]})
+    Repo.update(changeset)
   end
 end
