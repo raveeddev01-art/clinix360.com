@@ -64,12 +64,8 @@ class Message extends PureComponent {
     const userId = message.user.id;
     const user = usersStore.usersById[userId];
 
-    const gutterClassName = cx("message-gutter", {
-      quoted: user.is_bot
-    });
-
     return (
-      <div className={gutterClassName}>
+      <div className="message-gutter">
         {message.pinned && (
           <div className="icon-pin">
             <i className="fa fa-thumb-tack fa-rotate-45" />
@@ -124,7 +120,8 @@ class Message extends PureComponent {
       selected: isSelected,
       highlight: isHighlighted,
       pinned: message.pinned || message.starred,
-      failed: message.status === "failed"
+      failed: message.status === "failed",
+      bot_message: message.user.is_bot
     });
 
     return (
