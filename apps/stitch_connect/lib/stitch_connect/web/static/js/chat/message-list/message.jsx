@@ -64,8 +64,7 @@ class Message extends PureComponent {
     const userId = message.user.id;
     const user = usersStore.usersById[userId];
 
-    const gutterClassName = cx("message", {
-      "message-gutter": true,
+    const gutterClassName = cx("message-gutter", {
       quoted: user.is_bot
     });
 
