@@ -24,17 +24,20 @@ class PeopleList extends Component {
     const users = teamDirectory ? teamMembers : groupMembers;
 
     const filteredAdmins = users.filter(
-      user => user.roles.indexOf("admin") > -1
+      user => user.roles.indexOf("admin") > -1 && !user.disabled && !user.is_bot
     );
 
     const filteredMembers = users.filter(
-      user => user.roles.indexOf("member") > -1
+      user =>
+        user.roles.indexOf("member") > -1 && !user.disabled && !user.is_bot
     );
 
     const filteredGuests = users.filter(
       user =>
         user.roles.indexOf("single-room-guest") > -1 ||
-        user.roles.indexOf("multi-room-guest") > -1
+        (user.roles.indexOf("multi-room-guest") > -1 &&
+          !user.disabled &&
+          !user.is_bot)
     );
 
     const renderUserList = test =>
