@@ -8,7 +8,12 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 class HomeItem extends Component {
   onOpen = () => {
     const { link, history } = this.props;
-    history.push(link);
+
+    if (window.electronApp) {
+      window.open(link);
+    } else {
+      history.push(link);
+    }
   };
 
   render() {
