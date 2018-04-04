@@ -23,8 +23,6 @@ class PeopleList extends Component {
 
     const users = teamDirectory ? teamMembers : groupMembers;
 
-    console.log(users);
-
     const filteredAdmins = users.filter(
       user => user.roles.indexOf("admin") > -1 && !user.disabled && !user.is_bot
     );
