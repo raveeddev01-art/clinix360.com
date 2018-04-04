@@ -56,6 +56,7 @@ export default class YouHome extends Component {
           description="Install applications that send notifications and events into Stitch rooms."
           openButtonText="Open"
           link="/admin/integrations"
+          openExternal
         />
       </div>
     );
