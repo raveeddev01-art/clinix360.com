@@ -91,14 +91,12 @@ class Sidemenu extends Component {
         </LinkContainer>
 
         {window.electronApp ? (
-          <LinkContainer to="/admin/integrations" target="_blank">
-            <MenuItem eventKey="9">
-              Integrations
-              <small className="text-muted m-l-5">
-                <i className="fa fa-external-link sm" />
-              </small>
-            </MenuItem>
-          </LinkContainer>
+          <MenuItem eventKey="9" href="/admin/integrations" target="_blank">
+            Integrations
+            <small className="text-muted m-l-5">
+              <i className="fa fa-external-link sm" />
+            </small>
+          </MenuItem>
         ) : (
           <LinkContainer to="/admin/integrations">
             <MenuItem eventKey="9">Integrations</MenuItem>

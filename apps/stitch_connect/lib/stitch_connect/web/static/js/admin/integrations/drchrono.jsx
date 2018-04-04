@@ -75,8 +75,8 @@ class DrChronoPage extends Component {
     );
 
     return (
-      <Panel className="admin-panel">
-        <Panel.Heading>
+      <Panel className="admin-panel integrations-settings">
+        <Panel.Heading className="integrations-settings__overview">
           <Breadcrumb>
             <LinkContainer to="/admin/integrations">
               <Breadcrumb.Item>Integrations</Breadcrumb.Item>
@@ -84,22 +84,33 @@ class DrChronoPage extends Component {
 
             <Breadcrumb.Item active>drchrono</Breadcrumb.Item>
           </Breadcrumb>
-          <h1>drchrono</h1>
+
+          <div className="heading m-b-20">
+            <div className="logo m-r-10">
+              <img
+                src="/images/drchrono-logo.png"
+                className="img-responsive img-rounded"
+                alt="Logo"
+              />
+            </div>
+            <h1 className="title">drchrono</h1>
+
+            <ButtonToolbar>
+              <Link
+                to="/admin/integrations/drchrono/new"
+                className="btn btn-primary"
+              >
+                Add Configuration
+              </Link>
+              {this._renderEnableButton(drchrono.enabled)}
+            </ButtonToolbar>
+          </div>
         </Panel.Heading>
 
         <Panel.Body>
           <Panel>
             <Panel.Heading className="configurations-panel__heading">
               <h3>Configurations</h3>
-              <ButtonToolbar>
-                <Link
-                  to="/admin/integrations/drchrono/new"
-                  className="btn btn-primary"
-                >
-                  Add Configuration
-                </Link>
-                {this._renderEnableButton(drchrono.enabled)}
-              </ButtonToolbar>
             </Panel.Heading>
 
             <Panel.Body className="configurations-panel__body">
