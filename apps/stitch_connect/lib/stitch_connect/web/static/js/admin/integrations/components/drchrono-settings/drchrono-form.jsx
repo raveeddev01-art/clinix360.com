@@ -10,6 +10,8 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import Col from "react-bootstrap/lib/Col";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import Button from "react-bootstrap/lib/Button";
+import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
+import { Link } from "react-router-dom";
 
 @inject("titleStore", "adminPanelStore", "groupsStore", "integrationStore")
 class DrChronoForm extends Component {
@@ -243,14 +245,24 @@ class DrChronoForm extends Component {
           </Col>
         </FormGroup>
 
-        <Button
-          type="submit"
-          bsStyle="primary"
-          bsSize="lg"
-          className="pull-right"
-        >
-          Save Integration
-        </Button>
+        <ButtonToolbar>
+          <Button
+            type="submit"
+            bsStyle="primary"
+            bsSize="lg"
+            className="pull-right"
+          >
+            Save Integration
+          </Button>
+
+          <Link
+            to="/admin/integrations/drchrono"
+            type="button"
+            className="pull-right btn btn-lg btn-default"
+          >
+            Go Back
+          </Link>
+        </ButtonToolbar>
       </Form>
     );
   }
