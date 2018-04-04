@@ -13,7 +13,15 @@ defmodule Stitch.Bot do
     attrs = set_name_from_bot_name(attrs)
 
     struct
-    |> cast(attrs, [:first_name, :last_name, :roles, :username, :team_id, :profile_image_url])
+    |> cast(attrs, [
+      :first_name,
+      :last_name,
+      :roles,
+      :username,
+      :team_id,
+      :profile_image_url,
+      :profile_image_thumb_url
+    ])
     |> User.username_changeset(attrs)
     |> validate_required([:first_name, :last_name, :username, :profile_image_url])
     |> update_change(:first_name, &String.trim/1)
