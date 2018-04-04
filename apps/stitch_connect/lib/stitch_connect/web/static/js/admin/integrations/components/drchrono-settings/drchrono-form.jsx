@@ -260,7 +260,7 @@ class DrChronoForm extends Component {
             type="button"
             className="pull-right btn btn-lg btn-default"
           >
-            Go Back
+            Cancel
           </Link>
         </ButtonToolbar>
       </Form>

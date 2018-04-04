@@ -69,6 +69,10 @@
 
     &__body {
       padding: 15px;
+
+      ul {
+        margin-bottom: 0 !important;
+      }
     }
 
     &__item {

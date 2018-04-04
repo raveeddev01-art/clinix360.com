@@ -110,9 +110,8 @@ class DrChronoPage extends Component {
         <Panel.Body>
           <Panel>
             <Panel.Heading className="configurations-panel__heading">
-              <h3>Configurations</h3>
+              <h3>Setup</h3>
             </Panel.Heading>
-
             <Panel.Body className="configurations-panel__body">
               <h4>Setup: Paste this into your drchrono api management page.</h4>
               <ul>
@@ -128,18 +127,30 @@ class DrChronoPage extends Component {
                   Active: <strong>checked</strong>
                 </li>
               </ul>
+            </Panel.Body>
+          </Panel>
 
-              {this.props.integrationStore.integrationConfigs.map(config => (
-                <IntegrationConfiguration
-                  id={config.id}
-                  integrationName={config.integration_name}
-                  roomName={config.group_name}
-                  insertedAt={moment
-                    .utc(config.inserted_at)
-                    .local()
-                    .format("LL")}
-                />
-              ))}
+          <Panel>
+            <Panel.Heading className="configurations-panel__heading">
+              <h3>Configurations</h3>
+            </Panel.Heading>
+
+            <Panel.Body className="configurations-panel__body">
+              {this.props.integrationStore.integrationConfigs.length > 0 ? (
+                this.props.integrationStore.integrationConfigs.map(config => (
+                  <IntegrationConfiguration
+                    id={config.id}
+                    integrationName={config.integration_name}
+                    roomName={config.group_name}
+                    insertedAt={moment
+                      .utc(config.inserted_at)
+                      .local()
+                      .format("LL")}
+                  />
+                ))
+              ) : (
+                <h4 className="text-muted text-center">No integrations yet!</h4>
+              )}
             </Panel.Body>
           </Panel>
         </Panel.Body>
