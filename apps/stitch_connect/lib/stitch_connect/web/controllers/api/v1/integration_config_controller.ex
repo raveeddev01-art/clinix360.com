@@ -26,7 +26,7 @@ defmodule StitchConnect.Web.Api.V1.IntegrationConfigController do
            {:authorized?, IntegrationAuthorization.can_edit?(config, conn.assigns.current_user)},
          {:updated?, {:ok, _config}} <- {:updated?, IntegrationConfig.update(config, params)} do
       conn
-      |> json(%{message: "Configuration removed"})
+      |> json(%{message: "Configuration updated"})
     else
       {:config, _} ->
         {:error, :not_found, "The integration config you are looking for does not exist."}
