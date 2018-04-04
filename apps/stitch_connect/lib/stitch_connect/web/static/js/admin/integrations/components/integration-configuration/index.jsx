@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { LinkContainer } from "react-router-bootstrap";
 import { inject } from "mobx-react";
 import Button from "react-bootstrap/lib/Button";
+import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
+import { Link } from "react-router-dom";
 
 import { confirmModal } from "common/modals";
 
@@ -48,14 +50,16 @@ class IntegrationConfiguration extends Component {
         </div>
 
         <div className="integrations__room-panel-button">
-          <Button onClick={this.removeIntegrationConfig}>
-            <i className="fa fa-trash" />
-          </Button>
-          <LinkContainer to={`/admin/integrations/drchrono/${id}/edit`}>
-            <Button>
-              <i className="fa fa-pencil" />
+          <ButtonToolbar>
+            <Button onClick={this.removeIntegrationConfig}>
+              <i className="fa fa-trash" />
             </Button>
-          </LinkContainer>
+            <LinkContainer to={`/admin/integrations/drchrono/${id}/edit`}>
+              <Button>
+                <i className="fa fa-pencil" />
+              </Button>
+            </LinkContainer>
+          </ButtonToolbar>
         </div>
       </div>
     );

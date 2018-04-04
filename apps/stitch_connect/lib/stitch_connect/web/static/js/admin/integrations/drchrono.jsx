@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
+import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 
 import { confirmModal } from "common/modals";
 import IntegrationConfiguration from "./components/integration-configuration";
@@ -81,14 +82,22 @@ class DrChronoPage extends Component {
           <Panel>
             <Panel.Heading className="configurations-panel__heading">
               <h3>Configurations</h3>
-
-              <Link
-                to="/admin/integrations/drchrono/new"
-                className="btn btn-primary"
-              >
-                Add Configuration
-              </Link>
-              {this._renderEnableButton(drchrono.enabled)}
+              <ButtonToolbar>
+                <Link
+                  to="/admin/integrations"
+                  type="button"
+                  className="btn btn-default"
+                >
+                  Go Back
+                </Link>
+                <Link
+                  to="/admin/integrations/drchrono/new"
+                  className="btn btn-primary"
+                >
+                  Add Configuration
+                </Link>
+                {this._renderEnableButton(drchrono.enabled)}
+              </ButtonToolbar>
             </Panel.Heading>
 
             <Panel.Body className="configurations-panel__body">
