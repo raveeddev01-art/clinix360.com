@@ -21,7 +21,13 @@ import NavItemHide from "./nav-items/nav-item-hide";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 
-@inject("addonStore", "groupStore", "groupsStore", "searchStore", "filesStore")
+@inject(
+  "addonStore",
+  "groupStore",
+  "groupsStore",
+  "searchStore",
+  "globalFilesStore"
+)
 @observer
 class TopNav extends Component {
   constructor(props) {
@@ -69,7 +75,7 @@ class TopNav extends Component {
   };
 
   _toggleAddonMenu = (menuName, resetFiles) => () => {
-    const { addonStore, filesStore } = this.props;
+    const { addonStore, globalFilesStore } = this.props;
 
     if (addonStore.addonPanelType === menuName && addonStore.showAddons) {
       addonStore.toggleAddons(false);
@@ -79,8 +85,7 @@ class TopNav extends Component {
     }
 
     if (resetFiles) {
-      filesStore.reset();
-      filesStore.showTeamFiles = true;
+      globalFilesStore.loadMore();
     }
   };
 
