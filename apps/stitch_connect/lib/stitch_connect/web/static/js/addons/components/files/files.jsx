@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { AddonMessage } from "common/components";
 import LoadingIcon from "common/components/loading-icon";
 
-@inject("filesStore", "groupStore")
+@inject("filesStore")
 @observer
 class Files extends Component {
   componentWillMount() {
@@ -23,13 +23,7 @@ class Files extends Component {
   };
 
   renderFilesResults() {
-    const { filesStore, groupStore, roomFiles } = this.props;
-
-    const filteredFiles = filesStore.files.filter(
-      file => file.group_id === groupStore.group.id
-    );
-    const allFiles = filesStore.files;
-    const files = roomFiles ? filteredFiles : allFiles;
+    const { filesStore } = this.props;
 
     if (filesStore.loading) {
       return (
@@ -39,10 +33,12 @@ class Files extends Component {
       );
     }
 
-    if (files.length > 0) {
+    if (filesStore.files.length > 0) {
       return (
         <div>
-          {files.map(file => <AddonMessage key={file.id} message={file} />)}
+          {filesStore.files.map(file => (
+            <AddonMessage key={file.id} message={file} />
+          ))}
         </div>
       );
     }

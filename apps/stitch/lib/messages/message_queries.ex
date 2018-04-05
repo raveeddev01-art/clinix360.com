@@ -260,7 +260,7 @@ defmodule Stitch.MessageQueries do
     Repo.preload(message, [:pinned_by, :user], force: true)
   end
 
-  def get_uploads_for_user(%User{team_id: team_id, id: user_id, roles: [role]}, skip, limit)
+  def get_uploads_for_user(%Group{id: group_id}, %User{team_id: team_id, id: user_id, roles: [role]}, skip, limit)
       when role not in @guest_roles do
     query =
       from(
@@ -273,6 +273,7 @@ defmodule Stitch.MessageQueries do
         where: m.type == "upload",
         where: g.public or not is_nil(gu.id),
         where: g.team_id == ^team_id,
+        where: m.group_id == ^group_id,
         order_by: [desc: m.inserted_at],
         preload: [
           user: u,
@@ -284,7 +285,7 @@ defmodule Stitch.MessageQueries do
     Paginator.new(query, skip: skip, limit: limit)
   end
 
-  def get_uploads_for_user(%User{team_id: team_id, id: user_id}, skip, limit) do
+  def get_uploads_for_user(%Group{id: group_id}, %User{team_id: team_id, id: user_id}, skip, limit) do
     query =
       from(
         m in Message,
@@ -295,6 +296,7 @@ defmodule Stitch.MessageQueries do
         left_join: pb in assoc(m, :pinned_by),
         where: m.type == "upload",
         where: g.team_id == ^team_id,
+        where: m.group_id == ^group_id,
         order_by: [desc: m.inserted_at],
         preload: [
           user: u,
@@ -306,8 +308,8 @@ defmodule Stitch.MessageQueries do
     Paginator.new(query, skip: skip, limit: limit)
   end
 
-  def get_uploads_for_user(user_id, skip, limit),
-    do: get_uploads_for_user(Repo.get!(User, user_id), skip, limit)
+  def get_uploads_for_user(%Group{id: group_id}, user_id, skip, limit),
+    do: get_uploads_for_user(Repo.get!(Group, group_id), Repo.get!(User, user_id), skip, limit)
 
   @doc """
   Retrieves all messages a given user was recently mentioned in.
