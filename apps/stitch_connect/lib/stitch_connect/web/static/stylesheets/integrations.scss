@@ -21,12 +21,12 @@
       height: 50px;
     }
 
+    .action-edit {
+      width: auto !important;
+    }
+
     &__content {
       flex-grow: 1;
-
-      .action-edit {
-        width: auto !important;
-      }
 
       h3 {
         font-weight: 700;
