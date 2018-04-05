@@ -14,6 +14,17 @@ defmodule StitchConnect.Web.Api.V1.UploadController do
     |> render("index.json", %{uploads: uploads, user_id: current_user.id})
   end
 
+  def index(conn, params) do
+    skip = Map.get(params, "skip", 0)
+    limit = Map.get(params, "limit", 10)
+    current_user = conn.assigns.current_user
+
+    uploads = MessageQueries.get_uploads_for_user(current_user, skip, limit)
+
+    conn
+    |> render("index.json", %{uploads: uploads, user_id: current_user.id})
+  end
+
   def create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
     conn
     |> put_status(:created)
