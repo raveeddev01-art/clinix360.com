@@ -5,31 +5,29 @@ import PropTypes from "prop-types";
 import { AddonMessage } from "common/components";
 import LoadingIcon from "common/components/loading-icon";
 
-@inject("filesStore")
+@inject("filesStore", "globalFilesStore")
 @observer
 class Files extends Component {
   componentWillMount() {
-    const { filesStore, roomFiles } = this.props;
+    const { globalFilesStore, roomFiles } = this.props;
 
-    if (filesStore.isEmpty && !roomFiles) {
-      filesStore.loadMore(true);
+    if (globalFilesStore.isEmpty && !roomFiles) {
+      globalFilesStore.loadMore();
     }
   }
 
   loadMore = () => {
-    const { filesStore, roomFiles } = this.props;
+    const { filesStore, globalFilesStore, roomFiles } = this.props;
+    const files = roomFiles ? filesStore : globalFilesStore;
 
-    if (roomFiles) {
-      filesStore.loadMore();
-    } else {
-      filesStore.loadMore(true);
-    }
+    files.loadMore();
   };
 
   renderFilesResults() {
-    const { filesStore } = this.props;
+    const { filesStore, globalFilesStore, roomFiles } = this.props;
+    const files = roomFiles ? filesStore : globalFilesStore;
 
-    if (filesStore.loading) {
+    if (files.loading) {
       return (
         <div className="text-center">
           <LoadingIcon size={2} />
@@ -37,10 +35,10 @@ class Files extends Component {
       );
     }
 
-    if (filesStore.files.length > 0) {
+    if (files.files.length > 0) {
       return (
         <div>
-          {filesStore.files.map(file => (
+          {files.files.map(file => (
             <AddonMessage key={file.id} message={file} />
           ))}
         </div>
@@ -51,18 +49,19 @@ class Files extends Component {
   }
 
   render() {
-    const { filesStore } = this.props;
+    const { filesStore, globalFilesStore, roomFiles } = this.props;
+    const files = roomFiles ? filesStore : globalFilesStore;
 
     return (
       <div className="files-addon">
         {this.renderFilesResults()}
 
         <div className="footer">
-          {filesStore.hasMore &&
-            !filesStore.loading && (
+          {files.hasMore &&
+            !files.loading && (
               <button
                 className="btn btn-default btn-sm"
-                disabled={filesStore.loading}
+                disabled={files.loading}
                 onClick={this.loadMore}
               >
                 Load more…

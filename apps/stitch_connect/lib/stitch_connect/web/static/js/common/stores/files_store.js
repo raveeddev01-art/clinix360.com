@@ -21,11 +21,7 @@ class FilesStore {
     this.files = [];
 
     if (this.collapsed) {
-      if (this.showTeamFiles) {
-        this.loadMore(true);
-      } else {
-        this.loadMore();
-      }
+      this.loadMore();
     }
   }
 
@@ -48,23 +44,15 @@ class FilesStore {
   }
 
   @action
-  loadMore(showTeamFiles) {
+  loadMore() {
     if (this.loading || !this.hasMore) {
       return;
     }
-
-    const teamParams = stringify({
-      skip: this.files.length,
-      limit: this.limit
-    });
-
-    const groupParams = stringify({
+    const params = stringify({
       skip: this.files.length,
       limit: this.limit,
       group_id: this.groupId
     });
-
-    const params = showTeamFiles ? teamParams : groupParams;
 
     this.loading = true;
 

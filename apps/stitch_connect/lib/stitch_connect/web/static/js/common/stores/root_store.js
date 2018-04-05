@@ -5,6 +5,7 @@ import ChannelStore from "./channel_store";
 import ExportStore from "./export_store";
 import FilesStore from "./files_store";
 import GlobalStarredMessageStore from "./global_starred_message_store";
+import GlobalFilesStore from "./global_files_store";
 import GroupStore from "./group_store";
 import GroupsStore from "./groups_store";
 import InvitationStore from "./invitation_store";
@@ -42,6 +43,7 @@ class RootStore {
     this.exportStore = new ExportStore(this);
     this.filesStore = new FilesStore(this);
     this.globalStarredMessageStore = new GlobalStarredMessageStore(this);
+    this.globalFilesStore = new GlobalFilesStore(this);
     this.groupStore = new GroupStore(this);
     this.groupsStore = new GroupsStore(this);
     this.invitationStore = new InvitationStore(this);
