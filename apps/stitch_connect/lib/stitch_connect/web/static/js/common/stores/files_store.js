@@ -43,20 +43,28 @@ class FilesStore {
   }
 
   @action
-  loadMore() {
+  loadMore(allfiles) {
     if (this.loading || !this.hasMore) {
       return;
     }
 
-    const params = stringify({
+    const teamparams = stringify({
       skip: this.files.length,
       limit: this.limit,
       group_id: this.groupId
     });
 
+    const roomparams = stringify({
+      skip: this.files.length,
+      limit: this.limit,
+      group_id: this.groupId
+    });
+
+    const test = allfiles ? teamparams : roomparams;
+
     this.loading = true;
 
-    get(`/api/v1/uploads?${params}`).then(response => {
+    get(`/api/v1/uploads?${test}`).then(response => {
       this.loading = false;
 
       const { data, meta } = response.data;

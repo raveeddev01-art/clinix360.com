@@ -12,7 +12,7 @@ class Files extends Component {
     const { filesStore, roomFiles } = this.props;
 
     if (filesStore.isEmpty && !roomFiles) {
-      filesStore.loadMore();
+      filesStore.loadMore("allfiles");
     }
   }
 
