@@ -17,9 +17,13 @@ class Files extends Component {
   }
 
   loadMore = () => {
-    const { filesStore } = this.props;
+    const { filesStore, roomFiles } = this.props;
 
-    filesStore.loadMore();
+    if (roomFiles) {
+      filesStore.loadMore();
+    } else {
+      filesStore.loadMore(true);
+    }
   };
 
   renderFilesResults() {
