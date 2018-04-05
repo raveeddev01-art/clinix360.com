@@ -9,17 +9,17 @@ import map from "lodash/fp/map";
 import mapValues from "lodash/fp/mapValues";
 import sortBy from "lodash/fp/sortBy";
 
-const TIERS = ["BASIC", "PREMIUM", "POWER"];
+const TIERS = ["FREE", "STANDARD", "PREMIUM"];
 
 const PLANS = {
-  BASIC: {
+  FREE: {
     pricePerMonth: {
-      monthly: 6,
-      annual: 5
+      monthly: 0,
+      annual: 0
     },
     items: [
       {
-        content: "HIPAA Compliant",
+        content: "HIPAA Compliance",
         beta: false
       },
       {
@@ -27,19 +27,15 @@ const PLANS = {
         beta: false
       },
       {
-        content: "Direct Messaging",
+        content: "Group & Direct Messaging",
         beta: false
       },
       {
-        content: "Healthcare Workflows",
+        content: "1K Message Access",
         beta: false
       },
       {
-        content: "Searchable Archives",
-        beta: false
-      },
-      {
-        content: "File Storage",
+        content: "1GB File Storage",
         beta: false
       },
       {
@@ -52,14 +48,14 @@ const PLANS = {
       }
     ]
   },
-  PREMIUM: {
+  STANDARD: {
     pricePerMonth: {
-      monthly: 12,
-      annual: 10
+      monthly: 6,
+      annual: 5
     },
     items: [
       {
-        content: "Task Management",
+        content: "Advanced Security Controls",
         beta: false
       },
       {
@@ -67,11 +63,11 @@ const PLANS = {
         beta: false
       },
       {
-        content: "Custom User Groups",
+        content: "Unlimited Message Access",
         beta: true
       },
       {
-        content: "Custom Data Retention",
+        content: "Unlimited File Storage",
         beta: true
       },
       {
@@ -84,10 +80,10 @@ const PLANS = {
       }
     ]
   },
-  POWER: {
+  PREMIUM: {
     pricePerMonth: {
-      monthly: 18,
-      annual: 15
+      monthly: 12,
+      annual: 10
     },
     items: [
       {
@@ -103,7 +99,7 @@ const PLANS = {
         beta: true
       },
       {
-        content: "Advanced Security Controls",
+        content: "Custom Data Retention",
         beta: false
       },
       {
@@ -135,17 +131,29 @@ const FREQUENCIES = [
   }
 ];
 
+// SHIM: remove once conversions to new
+// subscription types have happened
+const oldTierConversionShim = oldTier => {
+  return (
+    {
+      TRIAL: "FREE",
+      BASIC: "STANDARD",
+      PREMIUM: "PREMIUM",
+      POWER: "PREMIUM"
+    }[oldTier] || oldTier
+  );
+};
+
 const processSubscriptionData = subscription => {
   const dateFormat = "dddd, MMMM Do YYYY";
   const today = moment.utc();
-  const validUntil = moment.utc(subscription.valid_until);
-  const trialValidUntil = moment.utc(subscription.trial_valid_until);
+  const validUntil =
+    subscription.valid_until && moment.utc(subscription.valid_until);
 
-  subscription.valid_until = validUntil.format(dateFormat);
-  subscription.trial_valid_until = trialValidUntil.format(dateFormat);
-
-  subscription.plan_remaining_days = validUntil.diff(today, "days");
-  subscription.trial_remaining_days = trialValidUntil.diff(today, "days");
+  subscription.tier = oldTierConversionShim(subscription.tier);
+  subscription.valid_until = validUntil && validUntil.format(dateFormat);
+  subscription.plan_remaining_days =
+    validUntil && validUntil.diff(today, "days");
 
   return subscription;
 };
@@ -206,25 +214,21 @@ const getCountries = () => {
 
 const getProvinces = () => {
   return flow(
-    map(
-      (province) => {
-        const country = countries.alpha2ToAlpha3(province.country);
-        const name = province.english || province.name;
-        const short = province.english
-          ? province.english
-          : province.short || province.name;
+    map(province => {
+      const country = countries.alpha2ToAlpha3(province.country);
+      const name = province.english || province.name;
+      const short = province.english
+        ? province.english
+        : province.short || province.name;
 
-        return {
-          country,
-          name,
-          short
-        };
-      }
-    ),
+      return {
+        country,
+        name,
+        short
+      };
+    }),
     groupBy("country"),
-    mapValues(
-      sortBy(({ name }) => name.toLowerCase())
-    )
+    mapValues(sortBy(({ name }) => name.toLowerCase()))
   )(provinces);
 };
 

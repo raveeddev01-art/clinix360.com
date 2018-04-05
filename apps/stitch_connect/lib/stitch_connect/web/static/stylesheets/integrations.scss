@@ -12,6 +12,27 @@
   }
 
   .integrations-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
+    img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .action-edit {
+      width: auto !important;
+    }
+
+    &__content {
+      flex-grow: 1;
+
+      h3 {
+        font-weight: 700;
+      }
+    }
+
     &__heading {
       font-weight: 700;
     }
@@ -19,14 +40,6 @@
     &__subheading {
       font-weight: 700;
       margin: 15px 0 0;
-    }
-
-    &__status {
-      display: inline-block;
-      color: #fff;
-      background: $brand-primary;
-      border-radius: 12px;
-      padding: 2px 15px;
     }
 
     &__form-control {
@@ -51,6 +64,10 @@
 
     &__body {
       padding: 15px;
+
+      ul {
+        margin-bottom: 0 !important;
+      }
     }
 
     &__item {
@@ -111,9 +128,10 @@
             margin: 0 10px;
           }
 
-          a {
+          button {
             color: #666;
             font-weight: 700;
+            text-decoration: none;
           }
         }
       }

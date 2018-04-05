@@ -52,6 +52,7 @@ export default class NavItemInviteMembers extends Component {
     const { presenceStore, groupStore, usersStore } = this.props;
     const users = usersStore.activatedUsers.filter(u => {
       return (
+        !u.is_bot &&
         groupStore.group.users.findIndex(gu => gu.id === u.id) === -1 &&
         isFullMember(u)
       );

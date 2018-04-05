@@ -3,7 +3,7 @@
 
   .flex-header {
     color: inherit;
-    background: #f5f5f5;
+    background: #fafafa;
     border-bottom: 1px solid $border-color;
     padding: 15px 15px;
     flex-basis: auto;
@@ -12,9 +12,11 @@
       flex-grow: 1;
       flex-direction: row;
       color: $brand-primary;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
       margin: 0;
+      position: relative;
+      top: -1px;
     }
 
     a {
@@ -24,6 +26,11 @@
 
     .open-left {
       margin-right: 8px;
+
+      i.fa {
+        position: relative;
+        top: 1px;
+      }
     }
   }
 
@@ -32,6 +39,24 @@
     flex-direction: column;
     overflow: hidden;
     overflow-y: auto;
+
+    .user-list-heading,
+    .collapse-content h5 {
+      color: $brand-primary;
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.5;
+      padding: 3px 0;
+      margin-bottom: 0;
+
+      span {
+        font-weight: normal;
+      }
+
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
 
     .addon-collapse {
       border-bottom: 1px solid $border-color;
@@ -70,40 +95,22 @@
       }
 
       .collapse-content {
+        font-size: 16px;
         padding: 0 15px;
         margin-bottom: 20px;
 
-        h5 {
-          color: $brand-primary;
-          font-weight: bold;
-          line-height: 1.5;
-          padding: 3px 0;
-          margin: 0;
-        }
-
-        &.room-details {
-          p {
-            margin-bottom: 8px;
-
-            code {
-              margin-left: 5px;
-            }
-          }
+        &.room-details p {
+          margin-bottom: 8px;
         }
       }
 
       .files-addon .text-muted {
         text-align: left;
       }
-
-      &:first-of-type .subheading {
-        padding-top: 0;
-      }
     }
   }
 
   .addon-left-panel {
-    padding-top: 15px;
     transform: translateX(-100%);
     transition: -webkit-transform 0.45s cubic-bezier(0.5, 0, 0, 1),
       transform 0.45s cubic-bezier(0.5, 0, 0, 1), opacity 0.125s ease-out 0.1s;
@@ -121,7 +128,6 @@
   }
 
   .addon-right-panel {
-    padding: 18px 15px 0;
     transform: translateX(100%);
     transition: -webkit-transform 0.45s cubic-bezier(0.5, 0, 0, 1),
       transform 0.45s cubic-bezier(0.5, 0, 0, 1), opacity 0.125s ease-out 0.1s;
@@ -138,7 +144,7 @@
 .people-list-item {
   display: flex;
   align-items: center;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.4;
   padding: 5px 0;
   cursor: pointer;
@@ -156,21 +162,38 @@
   .item-text {
     flex-grow: 1;
 
+    .avatar {
+      width: auto;
+      display: inline-block;
+      margin-right: 5px;
+
+      img {
+        max-width: 20px;
+        position: relative;
+        top: -1px;
+      }
+    }
+
     span {
       margin-right: 5px;
       text-transform: capitalize;
     }
 
     small {
-      font-size: 0.9em;
+      font-size: 15px;
       color: #999;
     }
   }
 }
 
 .user-view {
+  min-height: 100%;
+  background: #fff;
+  padding: 18px 15px;
+
   .user-avatar img {
-    border-radius: 4px;
+    max-width: 250px;
+    margin: 0 auto;
   }
 
   .username-and-title {
@@ -180,6 +203,20 @@
     .display-name {
       font-weight: bold;
       margin: 0 0 8px;
+
+      span {
+        position: relative;
+        top: -1px;
+
+        i.fa {
+          color: rgba(20, 20, 20, 0.7);
+          font-size: 13px;
+
+          &.fa-circle {
+            color: $brand-primary;
+          }
+        }
+      }
     }
   }
 
@@ -189,6 +226,7 @@
     padding: 20px 0;
 
     .userinfo__item {
+      font-size: 15px;
       margin-bottom: 10px;
       display: flex;
       flex-direction: row;
@@ -209,11 +247,21 @@
   }
 }
 
+.info-addon,
+.directory-addon {
+  min-height: 100%;
+  background: #fff;
+}
+
 .files-addon,
 .directory-addon,
-.global-starred-messages-addon {
-  padding: 0 15px;
-  margin-bottom: 20px;
+.global-starred-messages-addon,
+.search-results-addon {
+  padding: 15px;
+
+  i.fa-circle-o-notch {
+    color: $brand-primary;
+  }
 
   .status {
     display: flex;
@@ -223,41 +271,5 @@
 
   .footer {
     text-align: center;
-  }
-}
-
-.message-search-addon {
-  padding: 10px 15px;
-
-  i.fa-circle-o-notch {
-    color: $brand-primary;
-  }
-
-  .message-container.addon .message {
-    flex-direction: column;
-    padding-top: 12px;
-
-    .message-nav {
-      display: flex;
-
-      a {
-        flex: 1;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        text-decoration: none;
-        font-weight: 700;
-      }
-
-      span {
-        flex-shrink: 0;
-        color: #777;
-      }
-    }
-
-    .message-wrapper {
-      display: flex;
-      flex-direction: row;
-    }
   }
 }

@@ -29,7 +29,19 @@ class Members extends Component {
     const { usersStore: { activatedUsers }, presenceStore } = this.props;
 
     return activatedUsers
-      .filter(user => user.id !== currentUser.id && isFullMember(user))
+      .filter(
+        user => !user.is_bot && user.id !== currentUser.id && isFullMember(user)
+      )
+      .sort((user1, user2) => {
+        // Sort alphabetically by online users first
+        if (presenceStore.isOnline(user1.id) > presenceStore.isOnline(user2.id))
+          return -1;
+        if (presenceStore.isOnline(user1.id) < presenceStore.isOnline(user2.id))
+          return 1;
+        if (user1.first_name < user2.first_name) return -1;
+        if (user1.first_name > user2.first_name) return 1;
+        return 0;
+      })
       .map(user => ({
         ...user,
         online: presenceStore.isOnline(user.id)

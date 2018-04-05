@@ -11,7 +11,6 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionView do
     %{
       tier: subscription.tier,
       valid_until: subscription.valid_until,
-      trial_valid_until: subscription.trial_valid_until,
       renewal_frequency: subscription.renewal_frequency,
       renews: subscription.renews,
       estimated_invoice_amount: subscription.estimated_invoice_amount,

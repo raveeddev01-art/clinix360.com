@@ -150,7 +150,7 @@ defmodule Stitch.Message do
       users
       |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
         acc_map =
-          if recipient.id == user.id or recipient.disabled,
+          if recipient.id == user.id or recipient.disabled or recipient.is_bot,
             do: acc_map,
             else: Map.put(acc_map, to_string(recipient.id), nil)
 
@@ -163,25 +163,43 @@ defmodule Stitch.Message do
     attrs =
       Map.merge(attrs, %{"mentioned_user_ids" => mentioned_user_ids, "read_status" => read_status})
 
-    Multi.new()
-    |> Multi.insert(:message, message_changeset(message_struct, attrs))
-    |> Multi.update_all(:mention_users, mention_users(group, mentioned_user_ids, recipients), [])
-    |> Multi.update_all(
-      :increment_unread_counter,
-      increment_unread_counter(group.id, recipients),
-      []
-    )
-    |> mark_as_read_on_creation(
-      group.id,
-      user.id,
-      group_user.last_read_at || group_user.inserted_at,
-      @unread_limit
-    )
-    |> Multi.run(:notify_user_ids, fn %{message: message} ->
-      Stitch.EmailNotification.create(message.id, notify_user_ids.email)
-      {:ok, notify_user_ids}
-    end)
-    |> Repo.transaction()
+    result =
+      Multi.new()
+      |> Multi.insert(:message, message_changeset(message_struct, attrs))
+      |> Multi.update_all(
+        :mention_users,
+        mention_users(group, mentioned_user_ids, recipients),
+        []
+      )
+      |> Multi.update_all(
+        :increment_unread_counter,
+        increment_unread_counter(group.id, recipients),
+        []
+      )
+      |> mark_as_read_on_creation(
+        group.id,
+        user.id,
+        group_user.last_read_at || group_user.inserted_at,
+        @unread_limit
+      )
+      |> Multi.run(:notify_user_ids, fn %{message: message} ->
+        Stitch.EmailNotification.create(message.id, notify_user_ids.email)
+        {:ok, notify_user_ids}
+      end)
+      |> Repo.transaction()
+
+    case result do
+      {:ok, %{message: message}} ->
+        Stitch.Mobile.NotificationQueue.async_enqueue_for_users(
+          Enum.uniq(presence_user_ids.active ++ recipients),
+          message.id
+        )
+
+        result
+
+      {:error, _} ->
+        result
+    end
   end
 
   def create(group_id, user, %{"text_content" => _} = attrs, presence_user_ids) do
@@ -403,20 +421,31 @@ defmodule Stitch.Message do
 
   def mark_as_read(user_id, group_id) do
     if GroupQueries.user_is_member?(group_id, user_id) do
-      Multi.new()
-      |> Multi.update_all(
-        :mark_messages_as_read,
-        mark_messages_as_read(group_id, user_id),
-        [],
-        returning: true
-      )
-      |> Multi.update_all(
-        :mark_group_as_read,
-        mark_group_as_read(group_id, user_id),
-        [],
-        returning: true
-      )
-      |> Repo.transaction()
+      result =
+        Multi.new()
+        |> Multi.update_all(
+          :mark_messages_as_read,
+          mark_messages_as_read(group_id, user_id),
+          [],
+          returning: true
+        )
+        |> Multi.update_all(
+          :mark_group_as_read,
+          mark_group_as_read(group_id, user_id),
+          [],
+          returning: true
+        )
+        |> Repo.transaction()
+
+      case result do
+        {:ok, %{mark_messages_as_read: {_, messages}}} ->
+          message_ids = Enum.map(messages, & &1.id)
+          Stitch.Mobile.NotificationQueue.remove_message_ids(user_id, message_ids)
+          result
+
+        error ->
+          error
+      end
     else
       {:error, "User is not part of this room"}
     end
