@@ -9,9 +9,9 @@ import LoadingIcon from "common/components/loading-icon";
 @observer
 class Files extends Component {
   componentWillMount() {
-    const { filesStore } = this.props;
+    const { filesStore, roomFiles } = this.props;
 
-    if (filesStore.isEmpty) {
+    if (filesStore.isEmpty && !roomFiles) {
       filesStore.loadMore();
     }
   }
