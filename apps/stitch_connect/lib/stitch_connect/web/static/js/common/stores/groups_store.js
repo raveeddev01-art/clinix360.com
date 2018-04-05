@@ -320,7 +320,7 @@ class GroupsStore {
       body: params
     }).then(resp => {
       const { data } = resp;
-
+      this.onCreatedGroup(data);
       return data.slug;
     });
   };
