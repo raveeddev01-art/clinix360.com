@@ -50,14 +50,6 @@ export default class YouHome extends Component {
           openButtonText="Open"
           link="/admin/billing"
         />
-        <HomeItem
-          icon="fa-database"
-          title="Integrations"
-          description="Install applications that send notifications and events into Stitch rooms."
-          openButtonText="Open"
-          link="/admin/integrations"
-          openExternal
-        />
       </div>
     );
   }

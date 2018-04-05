@@ -28,19 +28,8 @@ class PinnedMessageStore {
     this.loading = false;
     this.hasMore = true;
     this.messages = [];
-
-    if (this.collapsed) {
-      this.loadMore();
-    }
+    this.loadMore();
   }
-
-  @action
-  onCollapse = collapsed => {
-    this.collapsed = collapsed;
-    if (collapsed && this.messages.length === 0 && this.hasMore) {
-      this.loadMore();
-    }
-  };
 
   @action
   loadMore() {
@@ -51,8 +40,7 @@ class PinnedMessageStore {
     const params = stringify({
       skip: this.skip,
       limit: this.limit,
-      group_id: this.groupId,
-      fetchUsers: false
+      group_id: this.groupId
     });
 
     this.loading = true;
@@ -62,13 +50,7 @@ class PinnedMessageStore {
 
       const { data, meta } = response.data;
 
-      const users = this.rootStore.usersStore.users.toJS();
-      const messages = data.map(msg => ({
-        ...msg,
-        user: users.find(u => u.id === msg.user_id)
-      }));
-
-      this.messages = this.messages.concat(messages);
+      this.messages = this.messages.concat(data);
       this.hasMore = this.messages.length < meta.count;
       this.skip = meta.skip + meta.limit;
     });

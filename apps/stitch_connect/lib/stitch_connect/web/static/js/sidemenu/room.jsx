@@ -45,6 +45,20 @@ class Room extends Component {
     return classNames("fa", iconClass);
   }
 
+  getName() {
+    const { room } = this.props;
+
+    if (
+      room.type === "dm" &&
+      room.users.length === 1 &&
+      room.users[0].id === currentUser.id
+    ) {
+      return `${room.name} (You)`;
+    }
+
+    return room.name;
+  }
+
   getBadge() {
     const {
       type,
@@ -113,7 +127,7 @@ class Room extends Component {
               <div className="item-icon">
                 <i className={this.getIconClass()} />
               </div>
-              <div className="item-text">{groupsStore.getGroupName(room)}</div>
+              <div className="item-text">{this.getName()}</div>
               {this.getHideDMIcon()}
               {badge > 0 && (
                 <div className="item-badge text-center">

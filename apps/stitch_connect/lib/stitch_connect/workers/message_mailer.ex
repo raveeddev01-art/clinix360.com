@@ -1,8 +1,6 @@
 defmodule StitchConnect.MessageMailer do
   use Quantum.Scheduler, otp_app: :stitch_connect
-  use Appsignal.Instrumentation.Decorators
 
-  @decorate transaction(:background_job)
   def deliver(notification_preference) do
     Stitch.Accounts.User.with_email_notification_preference(notification_preference)
     |> Stitch.ChunkStream.chunk(50)

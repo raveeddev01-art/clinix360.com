@@ -3,7 +3,6 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
   alias Stitch.Message.LinkPreview
   alias Stitch.{GroupQueries, MessageQueries}
   alias StitchConnect.Web.GroupChannel
-  use Appsignal.Instrumentation.Decorators
 
   def start_link do
     GenServer.start_link(
@@ -28,30 +27,27 @@ defmodule StitchConnect.MessageLinkPreviewGenerator do
   end
 
   def handle_info(:process_queue, queue) do
-    queue = process_queue(queue)
+    queue =
+      case :queue.out(queue) do
+        {{:value, message}, queue} ->
+          message =
+            message
+            |> LinkPreview.generate_link_previews
+            |> MessageQueries.load_info
+
+          if message.has_links do
+            group = GroupQueries.get_by_id(message.group_id)
+            GroupChannel.broadcast_msg_link_previews_generated(group, message)
+          end
+
+          queue
+
+        {:empty, queue} ->
+          queue
+      end
+
     schedule_queue_processing()
     {:noreply, queue}
-  end
-
-  @decorate transaction(:background_job)
-  def process_queue(queue) do
-    case :queue.out(queue) do
-      {{:value, message}, queue} ->
-        message =
-          message
-          |> LinkPreview.generate_link_previews
-          |> MessageQueries.load_info
-
-        if message.has_links do
-          group = GroupQueries.get_by_id(message.group_id)
-          GroupChannel.broadcast_msg_link_previews_generated(group, message)
-        end
-
-        queue
-
-      {:empty, queue} ->
-        queue
-    end
   end
 
   defp schedule_queue_processing do

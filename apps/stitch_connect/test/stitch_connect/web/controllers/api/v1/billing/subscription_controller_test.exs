@@ -41,14 +41,13 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
   end
 
   describe "PUT /api/v1/billing/subscription" do
-    test "can convert from a free tier to a paid tier", %{conn: conn} do
-
-      subscription = insert(:free_subscription)
+    test "can convert from a trial to a paid tier", %{conn: conn} do
+      subscription = insert(:trial_subscription)
       team = subscription.team
       insert(:card, team: team)
       user = insert(:user, team: team, roles: ["admin"])
 
-      params = %{tier: "STANDARD", renewal_frequency: "MONTHLY"}
+      params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
       conn =
         conn
         |> with_team_subdomain(team)
@@ -57,7 +56,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
 
       assert response = json_response(conn, 200)
       assert response["data"]["renewal_frequency"] == "MONTHLY"
-      assert response["data"]["tier"] == "STANDARD"
+      assert response["data"]["tier"] == "BASIC"
       assert response["data"]["estimated_invoice_amount"]
     end
 
@@ -67,7 +66,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
       insert(:card, team: team)
       user = insert(:user, team: team, roles: ["admin"])
 
-      params = %{tier: "PREMIUM", renewal_frequency: "MONTHLY"}
+      params = %{tier: "POWER", renewal_frequency: "MONTHLY"}
       conn =
         conn
         |> with_team_subdomain(team)
@@ -76,7 +75,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
 
       assert response = json_response(conn, 200)
       assert response["data"]["renewal_frequency"] == "MONTHLY"
-      assert response["data"]["tier"] == "PREMIUM"
+      assert response["data"]["tier"] == "POWER"
       assert response["data"]["estimated_invoice_amount"]
     end
 
@@ -94,6 +93,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
       conn = put(base_conn, api_v1_billing_subscription_path(base_conn, :update))
       assert response = json_response(conn, 422)
       assert hd(response["errors"]["tier"]) =~ "blank"
+      assert hd(response["errors"]["renewal_frequency"]) =~ "blank"
 
       params = %{tier: "bad", renewal_frequency: "bad"}
       conn = put(base_conn, api_v1_billing_subscription_path(base_conn, :update), params)
@@ -108,7 +108,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
       insert(:card, team: team)
       user = insert(:user, team: team, roles: ["member"])
 
-      params = %{tier: "STANDARD", renewal_frequency: "MONTHLY"}
+      params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
       conn =
         conn
         |> with_team_subdomain(team)
@@ -120,11 +120,11 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
     end
 
     test "requires at least 1 card on file", %{conn: conn} do
-      subscription = insert(:free_subscription)
+      subscription = insert(:trial_subscription)
       team = subscription.team
       user = insert(:user, team: team, roles: ["admin"])
 
-      params = %{tier: "STANDARD", renewal_frequency: "MONTHLY"}
+      params = %{tier: "BASIC", renewal_frequency: "MONTHLY"}
       conn =
         conn
         |> with_team_subdomain(team)
@@ -176,13 +176,13 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
       assert response["errors"] =~ ~r"already expired"i
     end
 
-    test "errors when canceling a free", %{conn: conn, team: team} do
-      insert(:free_subscription, team: team)
+    test "errors when canceling a trial", %{conn: conn, team: team} do
+      insert(:trial_subscription, team: team)
 
       conn = put(conn, api_v1_billing_subscription_path(conn, :cancel))
 
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ ~r"cannot cancel a free subscription"i
+      assert response["errors"] =~ ~r"cannot cancel a trial"i
     end
 
     test "requires an admin role", %{conn: conn, team: team} do
@@ -237,6 +237,15 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionControllerTest do
 
       assert response = json_response(conn, 200)
       assert response["data"]["renews"]
+    end
+
+    test "errors when renewing a trial", %{conn: conn, team: team} do
+      insert(:trial_subscription, team: team)
+
+      conn = put(conn, api_v1_billing_subscription_path(conn, :renew))
+
+      assert response = json_response(conn, 422)
+      assert response["errors"] =~ ~r"cannot renew a trial"i
     end
 
     test "requires an admin role", %{conn: conn, team: team} do

@@ -7,6 +7,19 @@ import cx from "classnames";
 @inject("groupsStore", "presenceStore")
 @observer
 class Groups extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      options: props.groupsStore.groups
+        .filter(g => props.type === "all" || props.type === g.type)
+        .map(g => ({
+          label: g.name,
+          value: g.id,
+          room: g
+        }))
+    };
+  }
+
   onChange = newValue => {
     const { onChange } = this.props;
     if (typeof onChange === "function") {
@@ -35,24 +48,6 @@ class Groups extends Component {
     return cx("fa", iconClass);
   }
 
-  get groupOptions() {
-    return this.props.groupsStore.groups
-      .filter(this.matchesType)
-      .map(this.groupToSelectVal);
-  }
-
-  matchesType = group => {
-    return this.props.type === "all" || this.props.type === group.type;
-  };
-
-  groupToSelectVal = group => {
-    return {
-      label: this.props.groupsStore.getGroupName(group),
-      value: group.id,
-      room: group
-    };
-  };
-
   renderOption = option => {
     return (
       <span>
@@ -63,11 +58,12 @@ class Groups extends Component {
 
   render() {
     const { value, multi } = this.props;
+    const { options } = this.state;
 
     return (
       <Select
         className="multi-select-large"
-        options={this.groupOptions}
+        options={options}
         optionRenderer={this.renderOption}
         simpleValue
         multi={multi}

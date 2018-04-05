@@ -54,7 +54,6 @@ defmodule StitchConnect.Web do
   def channel do
     quote do
       use Phoenix.Channel
-      use Appsignal.Instrumentation.Decorators
       import StitchConnect.Web.Gettext
       if Application.get_env(:stitch_connect, :sql_sandbox) do
         use StitchConnect.Web.ChannelSandbox

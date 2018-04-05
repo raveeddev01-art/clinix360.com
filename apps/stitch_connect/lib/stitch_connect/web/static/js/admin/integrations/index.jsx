@@ -50,7 +50,7 @@ class Integrations extends Component {
 
         <Panel.Body>
           <IntegrationPanel
-            title="drchrono"
+            title="drChrono"
             description="All-in-one practice management, electronic health records and billing solutions."
           />
         </Panel.Body>

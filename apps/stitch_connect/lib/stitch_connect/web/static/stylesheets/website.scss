@@ -374,7 +374,9 @@
         display: none;
       }
     }
+  }
 
+  @media (min-width: 768px) {
     .homepage .subheader .mbp {
       margin: 0 auto -200px;
     }
@@ -1178,7 +1180,7 @@
 
     .navbar-nav {
       padding: 15px 0;
-      margin-right: 20px;
+      margin-right: 0;
 
       > li > a {
         color: #fff;

@@ -18,7 +18,7 @@ class MessageNav extends Component {
           <i
             className={`fa ${group.public ? "fa-comments" : "fa-lock"}`}
           />{" "}
-          {groupsStore.getGroupName(group)}
+          {group.name}
         </NavLink>
 
         <span className="m-l-10">
@@ -28,7 +28,7 @@ class MessageNav extends Component {
             .calendar(null, {
               sameDay: "[Today]",
               lastDay: "[Yesterday]",
-              lastWeek: "MMM Do",
+              lastWeek: "dddd, MMMM D",
               sameElse: function() {
                 if (this.year() === now.year()) {
                   return "MMM Do";

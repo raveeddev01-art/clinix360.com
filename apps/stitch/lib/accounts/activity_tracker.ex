@@ -12,12 +12,9 @@ defmodule Stitch.Accounts.ActivityTracker do
     Task,
     Accounts.User,
     TeamQueries,
-    Mobile.NotificationQueue
   }
 
   require Logger
-
-  @prefix "activity_tracker"
 
   # 2 minutes
   @activity_timeout 2 * 60
@@ -38,7 +35,7 @@ defmodule Stitch.Accounts.ActivityTracker do
     result =
       Redix.command([
         "ZADD",
-        "#{@prefix}:#{user.team_id}",
+        "activity_tracker:#{user.team_id}",
         to_string(active_until),
         to_string(user.id)
       ])
@@ -48,87 +45,59 @@ defmodule Stitch.Accounts.ActivityTracker do
         :ok
 
       {:error, error} ->
-        log_error(error)
+        Logger.error("[#{__MODULE__}] #{inspect(error)}")
         {:error, error}
     end
   end
 
-  @spec remove_activity(User.t()) :: {:ok, [binary]} | {:error, any}
+  @spec remove_activity(User.t()) :: :ok | {:error, any}
   def remove_activity(%User{} = user) do
-    # Mark user as inactive first. That means they start getting PNs directly, bypassing the queue.
-    # Only after that we start sending PNs that were queued during their activity period.
-    with {:ok, _} <- Redix.command(["ZREM", "#{@prefix}:#{user.team_id}", to_string(user.id)]),
-         {:ok, message_ids} <- NotificationQueue.remove_user_id(user.id) do
-      {:ok, message_ids}
-    else
+    # Remove the user from the set.
+    result =
+      Redix.command([
+        "ZREM",
+        "activity_tracker:#{user.team_id}",
+        to_string(user.id)
+      ])
+
+    case result do
+      {:ok, _} ->
+        :ok
+
       {:error, error} ->
-        log_error(error)
+        Logger.error("[#{__MODULE__}] #{inspect(error)}")
         {:error, error}
     end
   end
 
-  @spec clean_stale((binary, list -> any)) :: :ok | {:error, any}
-  def clean_stale(fun) do
+  @spec clean_stale() :: :ok | {:error, any}
+  def clean_stale() do
     current_timestamp = :erlang.system_time(:seconds)
 
     # For each team's sorted set, remove out-dated records using ZREMRANGEBYSCORE.
     # A record is outdated if its score is lower than the current timestamp.
     #
-    # The out-dated records are the users that are being transitioned from "active" state to "inactive".
-    # After marking them as "inactive", we want to send PNs to those users about unread messages
-    # that have been accamulated in the PN queue while the users were "active".
-    #
-    # Note, this is done as an atomic operation (selecting and then removing) because
-    # ZREMRANGEBYSCORE doesn't return removed records, which we need later for PNs.
-    # Since we want to avoid data races, we wrap both commands in a transaction with MULTI/EXEC and
-    # call ZRANGEBYSCORE before ZREMRANGEBYSCORE.
-    #
     # "ZREMRANGEBYSCORE Removes all elements in the sorted set stored at key with
     # a score between min and max" — Redis doc.
-
-    TeamQueries.team_ids()
-    |> Task.async_stream(fn team_id ->
-      commands =
+    commands =
+      TeamQueries.team_ids()
+      |> Enum.map(fn team_id ->
         [
-          ["MULTI"],
-          [
-            "ZRANGEBYSCORE",
-            "#{@prefix}:#{team_id}",
-            "-inf",
-            to_string(current_timestamp - 1),
-          ],
-          [
-            "ZREMRANGEBYSCORE",
-            "#{@prefix}:#{team_id}",
-            "-inf",
-            to_string(current_timestamp - 1)
-          ],
-          ["EXEC"],
+          "ZREMRANGEBYSCORE",
+          "activity_tracker:#{team_id}",
+          "-inf",
+          to_string(current_timestamp - 1)
         ]
+      end)
 
-      case Redix.pipeline(commands) do
-        {:ok, ["OK", _, _, [[], 0]]} ->
-          :ok
+    case Redix.pipeline(commands) do
+      {:ok, _} ->
+        :ok
 
-        {:ok, ["OK", _, _, [user_ids, _]]} ->
-          Enum.each(user_ids, fn user_id ->
-            with {:ok, message_ids} <- NotificationQueue.remove_user_id(user_id) do
-              fun.(user_id, message_ids)
-            else
-              error -> error
-            end
-          end)
-
-        {:ok, command_error} ->
-          log_error(command_error)
-          {:error, command_error}
-
-        {:error, error} ->
-          log_error(error)
-          {:error, error}
-      end
-    end, max_concurrency: 10, timeout: 60_000)
-    |> Stream.run()
+      {:error, error} ->
+        Logger.error("[#{__MODULE__}] #{inspect(error)}")
+        {:error, error}
+    end
   end
 
   @doc """
@@ -146,7 +115,7 @@ defmodule Stitch.Accounts.ActivityTracker do
     result =
       Redix.command([
         "ZRANGEBYSCORE",
-        "#{@prefix}:#{team_id}",
+        "activity_tracker:#{team_id}",
         current_timestamap,
         "+inf",
       ])
@@ -156,12 +125,8 @@ defmodule Stitch.Accounts.ActivityTracker do
         result
 
       {:error, error} ->
-        log_error(error)
+        Logger.error("[#{__MODULE__}] #{inspect(error)}")
         []
     end
-  end
-
-  defp log_error(error) do
-    Logger.error("[#{__MODULE__}] #{inspect(error)}")
   end
 end

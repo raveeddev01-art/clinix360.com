@@ -57,17 +57,6 @@ defmodule Stitch.Accounts.User do
     |> Stitch.Validators.validate_no_emojis(:last_name)
   end
 
-  def changeset_without_email(%User{} = struct, attrs) do
-    struct
-    |> cast(attrs, [:first_name, :last_name, :pin, :phone_number, :title, :username])
-    |> validate_username(attrs)
-    |> unique_constraint(:email, name: :users_email_team_id_index)
-    |> validate_required([:first_name, :last_name])
-    |> default_profile_image_changeset(attrs)
-    |> Stitch.Validators.validate_no_emojis(:first_name)
-    |> Stitch.Validators.validate_no_emojis(:last_name)
-  end
-
   def validate_username(%Ecto.Changeset{changes: %{username: _}} = changeset, params) do
     username_changeset(changeset, params)
   end
@@ -175,7 +164,6 @@ defmodule Stitch.Accounts.User do
     struct
     |> cast(params, [:first_name, :phone_number, :last_name, :password, :pin, :team_id, :roles])
     |> username_changeset(params)
-    |> validate_required([:first_name, :last_name])
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
     |> ensure_role()

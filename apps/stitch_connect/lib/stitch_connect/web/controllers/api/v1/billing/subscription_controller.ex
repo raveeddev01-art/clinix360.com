@@ -35,11 +35,10 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(ErrorView, :"422", errors: "Subscription has already expired.")
-
-      {:error, :free} ->
+      {:error, :trial} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(ErrorView, :"422", errors: "Cannot cancel a free subscription.")
+        |> render(ErrorView, :"422", errors: "Cannot cancel a trial subscription.")
       error -> error
     end
   end
@@ -50,10 +49,10 @@ defmodule StitchConnect.Web.Api.V1.Billing.SubscriptionController do
     with {:ok, subscription} <- Billing.renew_subscription(subscription) do
       render(conn, "show.json", subscription: subscription)
     else
-      {:error, :free} ->
+      {:error, :trial} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(ErrorView, :"422", errors: "Cannot renew a free subscription.")
+        |> render(ErrorView, :"422", errors: "Cannot renew a trial subscription.")
       error -> error
     end
   end

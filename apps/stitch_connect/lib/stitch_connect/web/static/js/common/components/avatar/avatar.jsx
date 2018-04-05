@@ -1,22 +1,35 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import AvatarImage from "./avatar-image";
+import { inject } from "mobx-react";
 
+@inject("usersStore")
 class Avatar extends Component {
+  onError = () => {
+    const { user, usersStore } = this.props;
+
+    if (user.id) {
+      usersStore.loadAvatar(user.id);
+    }
+  };
+
   render() {
     const { user, size } = this.props;
-    const wrapperClass = size === "sm" ? "avatar" : "";
-    const avatarClass = size === "sm" ? "img-circle" : "img-responsive";
+
+    if (size === "sm") {
+      return (
+        <div className="avatar">
+          <img
+            src={user.avatar_thumb}
+            alt={user.username}
+            onError={this.onError}
+            className="img-circle"
+          />
+        </div>
+      );
+    }
 
     return (
-      <div className={wrapperClass}>
-        <AvatarImage
-          alt={user.username}
-          className={avatarClass}
-          src={user.avatar_thumb}
-          user={user}
-        />
-      </div>
+      <img src={user.avatar} alt={user.username} className="img-responsive" />
     );
   }
 }

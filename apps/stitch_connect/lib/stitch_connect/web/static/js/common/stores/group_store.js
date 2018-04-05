@@ -8,6 +8,7 @@ import { observable, computed, action } from "mobx";
 import { TYPING_TIMEOUT_MS } from "lib/constants";
 
 class GroupStore {
+  @observable showAllUsers = true;
   @observable typingUsers = []; // user id array
   typingTimeouts = {};
 
@@ -34,12 +35,6 @@ class GroupStore {
   @computed
   get isSelfDM() {
     return this.group.type === "dm" && this.group.users.length === 1;
-  }
-
-  @computed
-  get groupName() {
-    const { groupsStore } = this.rootStore;
-    return groupsStore.getGroupName(this.group);
   }
 
   // =============
@@ -128,6 +123,11 @@ class GroupStore {
     const { groupsStore } = this.rootStore;
 
     return groupsStore.toggleFavorite(this.group.id);
+  };
+
+  @action
+  toggleAllUsers = () => {
+    this.showAllUsers = !this.showAllUsers;
   };
 }
 

@@ -116,14 +116,15 @@ defmodule Stitch.Factory do
       subscription_id: sequence(:subscription_id, &"sub_#{&1}"),
       subscription_line_item_id: sequence(:subscription_line_item_id, &"si_#{&1}"),
       estimated_invoice_amount: 12_345,
-      tier: "STANDARD",
+      tier: "BASIC",
       renewal_frequency: "MONTHLY",
       renews: true,
-      valid_until: end_date
+      valid_until: end_date,
+      trial_valid_until: DateTime.utc_now()
     }
   end
 
-  def free_subscription_factory do
+  def trial_subscription_factory do
     end_date = Timex.shift(DateTime.utc_now(), days: 14)
 
     %Stitch.Billing.Subscription{
@@ -132,9 +133,10 @@ defmodule Stitch.Factory do
       subscription_id: nil,
       subscription_line_item_id: nil,
       estimated_invoice_amount: 0,
-      tier: "FREE",
+      tier: "TRIAL",
       renewal_frequency: nil,
-      valid_until: end_date
+      valid_until: end_date,
+      trial_valid_until: end_date
     }
   end
 
@@ -154,7 +156,7 @@ defmodule Stitch.Factory do
 
   def payment_history_factory do
     %Stitch.Billing.PaymentHistory{
-      plan: "standard_yearly",
+      plan: "basic_yearly",
       team: build(:team),
       invoice_id: "inv_xxxxxxxxxxxy",
       amount: 12000,

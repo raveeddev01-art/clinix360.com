@@ -49,8 +49,7 @@ export default class NavItemNotifications extends Component {
   };
 
   render() {
-    const { groupsStore } = this.props;
-    const { currentGroup } = groupsStore;
+    const { groupsStore: { currentGroup } } = this.props;
     const { pref } = this.state;
 
     return [
@@ -64,7 +63,7 @@ export default class NavItemNotifications extends Component {
       >
         <Modal.Header>
           <Modal.Title>
-            Notification Preferences: {groupsStore.getGroupName(currentGroup)}
+            Notification Preferences: {currentGroup.name}
           </Modal.Title>
           <a role="link" onClick={this.closeModal}>
             <i className="fa fa-close" />

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import {
   Avatar,
-  MessageNav,
   MessageContent,
   MessageHeader,
   UserProfileMenu
@@ -67,17 +66,13 @@ class MessageInfoModal extends Component {
     return (
       <div className="message-container addon">
         <div className="message">
-          <MessageNav message={message} />
+          <UserProfileMenu user={user}>
+            <Avatar user={user} />
+          </UserProfileMenu>
 
-          <div className="message-wrapper">
-            <UserProfileMenu user={user}>
-              <Avatar user={user} />
-            </UserProfileMenu>
-
-            <div className="message-content">
-              <MessageHeader timestamp={message.inserted_at} user={user} />
-              <MessageContent message={message} />
-            </div>
+          <div className="message-content">
+            <MessageHeader timestamp={message.inserted_at} user={user} />
+            <MessageContent message={message} />
           </div>
         </div>
       </div>
@@ -105,7 +100,6 @@ class MessageInfoModal extends Component {
 
     Object.keys(message.read_status).forEach(u => {
       const user = usersStore.usersById[u];
-      if (!user) return;
       if (message.read_status[u]) {
         readRecipients.push({
           id: u,

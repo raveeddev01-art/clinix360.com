@@ -19,16 +19,15 @@ class Plan extends React.Component {
     const frequencyName = getFrequencyName(frequency);
     const monthlyPrice = getMonthlyPrice(tier, frequency);
     const className = classNames("plan-container", { selected });
-    const freqString = tier === "FREE" ? "" : capitalize(frequencyName);
 
     return (
       <div className={className} onClick={this.onSelectTier}>
         <div className="plan-content">
           <div className="plan-title">
             <h4>
-              {capitalize(tier)} {freqString} Plan
+              {capitalize(tier)} {capitalize(frequencyName)} Plan
             </h4>
-            <span>${monthlyPrice} per month for each user</span>
+            <span>${monthlyPrice} per month for 1 user</span>
           </div>
 
           <div className="plan-price">

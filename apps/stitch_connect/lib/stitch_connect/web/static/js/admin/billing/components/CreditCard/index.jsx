@@ -46,7 +46,7 @@ const CreditCard = ({ card, checkingOut, onUse }) => {
 
 CreditCard.defaultProps = {
   checkingOut: false,
-  onUse: noop
+  onUse: noop,
 };
 
 CreditCard.propTypes = {

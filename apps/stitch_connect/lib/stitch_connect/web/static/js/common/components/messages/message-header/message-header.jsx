@@ -3,21 +3,13 @@ import PropTypes from "prop-types";
 import { TimestampTooltip, UserProfileMenu } from "common/components";
 
 class MessageHeader extends Component {
-  _renderName = user => {
-    if (user.is_bot) {
-      return user.username;
-    }
-
-    return user.full_name;
-  };
-
   render() {
     const { timestamp, user, children } = this.props;
 
     return (
       <div className="message-header">
         <UserProfileMenu user={user} className="name">
-          {this._renderName(user)}
+          {user.full_name}
         </UserProfileMenu>
         <TimestampTooltip timestamp={timestamp} className="time" />
         {children}

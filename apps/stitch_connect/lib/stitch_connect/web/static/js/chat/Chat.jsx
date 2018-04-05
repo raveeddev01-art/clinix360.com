@@ -34,18 +34,14 @@ class Chat extends Component {
   }
 
   render() {
-    const { groupsStore, sidemenuStore } = this.props;
-    const { currentGroup } = groupsStore;
-
+    const { groupsStore: { currentGroup }, sidemenuStore } = this.props;
     let title = "Stitch Connect";
 
     if (currentGroup) {
-      title = `${groupsStore.getGroupName(currentGroup)} | Stitch Connect`;
+      title = `${currentGroup.name} | Stitch Connect`;
 
       if (currentGroup.type === "regular") {
-        title = `${groupsStore.getGroupName(
-          currentGroup
-        )} | ${sidemenuStore.teamName} | Stitch Connect`;
+        title = `${currentGroup.name} | ${sidemenuStore.teamName} | Stitch Connect`;
       }
     }
 

@@ -1,14 +1,31 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
-import { LinkContainer } from "react-router-bootstrap";
 
 import Panel from "react-bootstrap/lib/Panel";
-import Breadcrumb from "react-bootstrap/lib/Breadcrumb";
 import DrChronoForm from "./drchrono-form";
 
 @inject("titleStore", "adminPanelStore")
 class DrChronoNewSettings extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      appointmentCreate: false,
+      appointmentModify: false,
+      appointmentDelete: false,
+      patientCreate: false,
+      patientModify: false,
+      patientProblemCreate: false,
+      patientProblemModify: false,
+      patientAllergyCreate: false,
+      patientAllergyModify: false,
+      patientMedicationCreate: false,
+      patientMedicationModify: false,
+      clinicalNoteLock: false,
+      clinicalNoteUnlock: false
+    };
+  }
+
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
@@ -18,26 +35,19 @@ class DrChronoNewSettings extends Component {
     return (
       <Panel className="admin-panel integrations-settings">
         <Panel.Heading className="integrations-settings__overview">
-          <Breadcrumb>
-            <LinkContainer to="/admin/integrations">
-              <Breadcrumb.Item>Integrations</Breadcrumb.Item>
-            </LinkContainer>
-
-            <LinkContainer to="/admin/integrations/drchrono">
-              <Breadcrumb.Item>drchrono</Breadcrumb.Item>
-            </LinkContainer>
-
-            <Breadcrumb.Item active>New configuration</Breadcrumb.Item>
-          </Breadcrumb>
           <div className="heading m-b-20">
             <div className="logo m-r-10">
               <img
-                src="/images/drchrono-logo.png"
-                className="img-responsive img-rounded"
+                src="https://3on3f11f1a042q4pv95221y1-wpengine.netdna-ssl.com/wp-content/uploads/2017/03/drchrono_icon.png"
+                className="img-responsive"
                 alt="Logo"
               />
             </div>
             <h1 className="title">drchrono</h1>
+
+            {/* <div className="actions">
+              <a href="#">Remove</a>
+            </div> */}
           </div>
           <h4 className="m-b-30">
             drchrono was the first EHR to build a native app for iPad and
@@ -58,7 +68,7 @@ class DrChronoNewSettings extends Component {
             </Panel.Heading>
 
             <Panel.Body>
-              <DrChronoForm new />
+              <DrChronoForm integrationSettings={{}} />
             </Panel.Body>
           </Panel>
         </Panel.Body>

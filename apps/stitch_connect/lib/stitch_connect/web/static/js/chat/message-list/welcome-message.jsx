@@ -41,15 +41,14 @@ class WelcomeMessage extends Component {
   }
 
   renderForRoom() {
-    const { groupStore } = this.props;
-    const { group } = groupStore;
+    const { groupStore: { group } } = this.props;
 
     return (
       <div className="welcome-message__text">
         Welcome to the {group.public ? "public" : "private"} room
         <span className="welcome-message__name">
           {this.getIcon()}
-          {` ${groupStore.groupName}`}
+          {` ${group.name}`}
         </span>
         {group.creator_user_id ? " created by" : " created"}
         {group.creator_user_id && (
@@ -93,7 +92,6 @@ class WelcomeMessage extends Component {
 
   render() {
     const { groupStore } = this.props;
-    const { group } = groupStore;
 
     return (
       <div className="welcome-message">
@@ -102,11 +100,13 @@ class WelcomeMessage extends Component {
             <h3>
               <span>
                 {this.getIcon()}
-                {` ${groupStore.groupName}`}
+                {` ${groupStore.group.name}`}
               </span>
             </h3>
           </div>
-          {group.type === "regular" ? this.renderForRoom() : this.renderForDM()}
+          {groupStore.group.type === "regular"
+            ? this.renderForRoom()
+            : this.renderForDM()}
         </div>
       </div>
     );

@@ -294,14 +294,21 @@ class MessageForm extends Component {
     const {
       messageStore: { messageInEdit },
       socketStore,
-      billingStore: { subscription: { tier } }
+      billingStore: {
+        subscription: { tier, trial_remaining_days: trialRemainingDays }
+      }
     } = this.props;
 
     if (messageInEdit) {
       this.textInput.focus();
     }
 
-    const text = this.getText();
+    const trialExpired = tier === "TRIAL" && trialRemainingDays <= 0;
+    const text = !trialExpired
+      ? this.getText()
+      : isAdmin()
+        ? "Your trial has expired. Please subscribe to continue service."
+        : "Your trial has completed. Please contact your admin to subscribe to Stitch.";
     const className = classNames("form-control", "message-text", {
       editing:
         !!messageInEdit || !socketStore.isConnected || !socketStore.isHealthy
@@ -320,6 +327,7 @@ class MessageForm extends Component {
           onPaste={this.onPaste}
           autoFocus
           required
+          disabled={trialExpired}
           ref={input => {
             if (input) {
               this.textInput = ReactDOM.findDOMNode(input);

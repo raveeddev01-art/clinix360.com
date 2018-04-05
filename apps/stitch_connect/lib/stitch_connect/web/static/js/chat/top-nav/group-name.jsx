@@ -34,7 +34,7 @@ export default class GroupName extends Component {
       <h4>
         <span>
           <i className={classNames("fa", iconName)} />
-          {` ${groupStore.groupName}`}
+          {` ${groupStore.group.name}`}
         </span>
       </h4>
     );

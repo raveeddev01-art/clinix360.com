@@ -4,13 +4,10 @@ defmodule Stitch.Group do
   import Ecto.Changeset
   alias Stitch.Accounts.{User, Role}
   alias Stitch.{Repo, Group, GroupUser, GroupQueries, Message, UserQueries}
-  alias Stitch.Analytics.Group, as: GroupAnalytics
 
   @type t :: %__MODULE__{}
   @guest_roles Role.guests()
-  @single_dm_name "__dm_group__"
-  @multi_dm_name "__multi_dm_group__"
-  @dm_groups [@single_dm_name, @multi_dm_name]
+  @dm_groups ["__dm_group__", "__multi_dm_group__"]
   @type membership_changes :: {removed_users :: [User.t], added_users :: [User.t]}
 
   schema "groups" do
@@ -63,13 +60,12 @@ defmodule Stitch.Group do
   Creates a new group.
   """
   @spec create(User.t, map, nil | number) :: {:ok, Group.t} | {:error, Ecto.Changeset.t}
-  def create(%User{id: user_id, team_id: team_id} = creator, params, member_count \\ nil) do
+  def create(%User{id: user_id, team_id: team_id}, params, member_count \\ nil) do
     with params = add_users(params, team_id, user_id, !!member_count),
          true <- valid_user_ids(params, member_count),
          group = %Group{team_id: team_id, creator_user_id: user_id},
          changeset = with_users_changeset(group, params),
-         {:ok, group} <- Repo.insert(changeset),
-         _ = GroupAnalytics.track_creation(group, creator) do
+         {:ok, group} <- Repo.insert(changeset) do
       {:ok, Repo.preload(group, :users)}
     else
       false -> {:error, :invalid_user_ids}
@@ -168,7 +164,7 @@ defmodule Stitch.Group do
 
   def single_dm_params(user_ids) do
     %{
-      "name" => @single_dm_name,
+      "name" => "__dm_group__",
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
@@ -210,7 +206,7 @@ defmodule Stitch.Group do
 
   defp multi_dm_params(user_ids) do
     %{
-      "name" => @multi_dm_name,
+      "name" => "__multi_dm_group__",
       "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
@@ -357,7 +353,7 @@ defmodule Stitch.Group do
       join: g in assoc(gu, :group),
       where: gu.group_id == ^group_id,
       where: gu.user_id == ^user_id,
-      where: g.name in [@single_dm_name, @multi_dm_name],
+      where: g.name in ["__dm_group__", "__multi_dm_group__"],
       update: [
         set: [is_hidden: true]
       ]
@@ -380,7 +376,7 @@ defmodule Stitch.Group do
       join: g in assoc(gu, :group),
       where: gu.group_id == ^group_id,
       where: gu.user_id == ^user_id,
-      where: g.name in [@single_dm_name, @multi_dm_name],
+      where: g.name in ["__dm_group__", "__multi_dm_group__"],
       update: [
         set: [is_hidden: false]
       ]
@@ -445,12 +441,4 @@ defmodule Stitch.Group do
   @spec direct_message?(Group.t) :: boolean
   def direct_message?(%Group{name: name}) when name in @dm_groups, do: true
   def direct_message?(%Group{}), do: false
-
-  @doc """
-  Returns string depending on type of group.
-  """
-  @spec type(Group.t) :: String.t()
-  def type(%Group{name: name}) when name == @single_dm_name , do: "single-dm"
-  def type(%Group{name: name}) when name == @multi_dm_name, do: "multi-dm"
-  def type(%Group{}), do: "room"
 end

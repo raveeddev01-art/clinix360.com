@@ -43,10 +43,10 @@ defmodule Stitch.Team.OnboardingTest do
       assert message == "Team name or slug cannot be empty or nil."
     end
 
-    test "configures the team with a free subscription" do
+    test "configures the team with a trial subscription" do
       team = Onboarding.create_team("Care Clinic", "care-clinic-12")
       assert subscription = Repo.get_by(Stitch.Billing.Subscription, team_id: team.id)
-      assert subscription.tier == "FREE"
+      assert subscription.tier == "TRIAL"
     end
   end
 end

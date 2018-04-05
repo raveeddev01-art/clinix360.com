@@ -23,48 +23,38 @@ defmodule Stitch.GroupQueries do
   """
   def get_users(group_id) do
     query =
-      from(
-        u in User,
-        join: gu in GroupUser,
-        where: gu.group_id == ^group_id,
-        where: gu.user_id == u.id
-      )
-
+      from u in User,
+      join: gu in GroupUser,
+      where: gu.group_id == ^group_id,
+      where: gu.user_id == u.id
     {:ok, Repo.all(query)}
   end
 
   defp load_groups_for_user(query, %User{} = user) do
     query =
-      from(
-        g in query,
-        left_join: gu in GroupUser,
-        on: gu.group_id == g.id and gu.user_id == ^user.id,
-        join: u in User,
-        on: u.id == ^user.id,
-        preload: :users
-      )
+      from g in query,
+      left_join: gu in GroupUser, on: gu.group_id == g.id and gu.user_id == ^user.id,
+      join: u in User, on: u.id == ^user.id,
+      preload: :users
 
     query =
       if User.guest?(user) do
-        from([_g, gu] in query, where: not is_nil(gu.id))
+        from [_g, gu] in query, where: not is_nil(gu.id)
       else
-        from([g, gu] in query, where: g.public or not is_nil(gu.id))
+        from [g, gu] in query, where: g.public or not is_nil(gu.id)
       end
 
     query =
-      from(
-        [g, gu] in query,
-        select: %{
-          group: g,
-          joined: not is_nil(gu.id),
-          is_favorite: not is_nil(gu.id) and gu.is_favorite,
-          is_hidden: not is_nil(gu.id) and gu.is_hidden,
-          unread_messages_count: gu.unread_messages_count,
-          mentions_count: gu.mentions_count,
-          last_read_at:
-            type(fragment("COALESCE(?, ?)", gu.last_read_at, gu.inserted_at), :naive_datetime)
-        }
-      )
+      from [g, gu] in query,
+      select: %{
+        group: g,
+        joined: not is_nil(gu.id),
+        is_favorite: not is_nil(gu.id) and gu.is_favorite,
+        is_hidden: not is_nil(gu.id) and gu.is_hidden,
+        unread_messages_count: gu.unread_messages_count,
+        mentions_count: gu.mentions_count,
+        last_read_at: type(fragment("COALESCE(?, ?)", gu.last_read_at, gu.inserted_at), :naive_datetime),
+      }
 
     query
     |> Repo.all()
@@ -78,29 +68,24 @@ defmodule Stitch.GroupQueries do
     Group
     |> where(id: ^group_id)
     |> load_groups_for_user(user)
-    |> List.first()
+    |> List.first
   end
 
   @doc """
   Returns group with the exist matching id.
   """
   def get_by_id(id, %User{team_id: team_id, id: _user_id} = user) do
-    group =
-      Group
-      |> where(team_id: ^team_id, id: ^id)
-      |> load_groups_for_user(user)
-      |> List.first()
+    group = Group
+    |> where(team_id: ^team_id, id: ^id)
+    |> load_groups_for_user(user)
+    |> List.first
 
     if group, do: {:ok, group}, else: {:error, "Room with that id not found."}
   end
-
   def get_by_id(%Team{id: team_id}, group_id) do
     Repo.get_by(Group, id: group_id, team_id: team_id)
   end
-
-  def get_by_id(id) do
-    Repo.get(Group, id)
-  end
+  def get_by_id(id), do: Repo.get(Group, id)
 
   @doc """
   Fetches a list of groups by list of group ids
@@ -108,14 +93,12 @@ defmodule Stitch.GroupQueries do
       iex> get_by_ids([1, 2], %User{...})
       [%Group{id: 1}, %Group{id: 2}]
   """
-  @spec get_by_ids([pos_integer], %User{}) :: [Group.t()]
+  @spec get_by_ids([pos_integer], %User{}) :: [Group.t]
   def get_by_ids(ids, %User{team_id: team_id}) when is_list(ids) do
     query =
-      from(
-        g in Group,
-        where: g.team_id == ^team_id,
-        where: g.id in ^ids
-      )
+      from g in Group,
+      where: g.team_id == ^team_id,
+      where: g.id in ^ids
 
     Repo.all(query)
   end
@@ -124,11 +107,10 @@ defmodule Stitch.GroupQueries do
   Returns group with the exist matching slug for the user's team.
   """
   def find_by_slug(slug, %User{team_id: team_id} = user) do
-    group =
-      Group
-      |> where(team_id: ^team_id, slug: ^slug)
-      |> load_groups_for_user(user)
-      |> List.first()
+    group = Group
+    |> where(team_id: ^team_id, slug: ^slug)
+    |> load_groups_for_user(user)
+    |> List.first
 
     if group, do: {:ok, group}, else: {:error, "Room with that slug not found."}
   end
@@ -136,7 +118,7 @@ defmodule Stitch.GroupQueries do
   @doc """
   Returns a DM group for the given id pair.
   """
-  @spec find_dm([pos_integer], pos_integer) :: Group.t() | nil
+  @spec find_dm([pos_integer], pos_integer) :: Group.t | nil
   def find_dm(id_pair, team_id) do
     id_pair = Enum.join(id_pair, ".")
     Repo.get_by(Group, slug: "__dm:#{id_pair}", team_id: team_id)
@@ -151,7 +133,6 @@ defmodule Stitch.GroupQueries do
     |> where(team_id: ^team_id)
     |> load_groups_for_user(user)
   end
-
   def available_groups(user_id), do: available_groups(Repo.get!(User, user_id))
 
   @doc """
@@ -164,7 +145,6 @@ defmodule Stitch.GroupQueries do
     |> where([g], ilike(g.name, ^"%#{term}%") or ilike(g.slug, ^"%#{term}%"))
     |> load_groups_for_user(user)
   end
-
   def search(slug, user_id), do: search(slug, Repo.get!(User, user_id))
 
   @doc """
@@ -172,15 +152,13 @@ defmodule Stitch.GroupQueries do
 
   The default group is the first group created for a team and will always exist.
   """
-  @spec default_group(User.t()) :: Group.t()
+  @spec default_group(User.t) :: Group.t
   def default_group(%User{roles: [role]} = user) when role in @guest_roles do
     case user.groups_as_guest do
       [] ->
         {:ok, group} = create_self_dm_if_doest_exists(user)
         group
-
-      [first_group_id | _] ->
-        Repo.get_by(Group, id: first_group_id, team_id: user.team_id)
+      [first_group_id | _] -> Repo.get_by(Group, id: first_group_id, team_id: user.team_id)
     end
   end
 
@@ -193,7 +171,6 @@ defmodule Stitch.GroupQueries do
 
   defp create_self_dm_if_doest_exists(%User{} = user) do
     self_dm_params = Group.single_dm_params([user.id, user.id])
-
     case Repo.get_by(Group, slug: self_dm_params["slug"]) do
       nil -> Group.create_single_dm(user, [user.id, user.id])
       self_dm -> {:ok, self_dm}
@@ -209,30 +186,24 @@ defmodule Stitch.GroupQueries do
   @spec valid_guest_direct_message?([pos_integer], [pos_integer]) :: boolean
   def valid_guest_direct_message?(restricted_group_ids, user_ids) do
     query =
-      from(
-        gu in GroupUser,
-        where: gu.group_id in ^restricted_group_ids,
-        where: gu.user_id in ^user_ids,
-        select: count(gu.user_id, :distinct)
-      )
-
+      from gu in GroupUser,
+      where: gu.group_id in ^restricted_group_ids,
+      where: gu.user_id in ^user_ids,
+      select: count(gu.user_id, :distinct)
     Repo.one(query) == length(user_ids)
   end
 
   @doc """
   Lists all non-DM groups a user is currently a member of.
   """
-  @spec non_dm_group_memberships(User.t()) :: [GroupUser.t()]
+  @spec non_dm_group_memberships(User.t) :: [GroupUser.t]
   def non_dm_group_memberships(%User{id: user_id}) do
     query =
-      from(
-        gu in GroupUser,
-        join: g in assoc(gu, :group),
-        where: gu.user_id == ^user_id,
-        where: g.name not in ^@dm_groups,
-        preload: [group: g]
-      )
-
+      from gu in GroupUser,
+      join: g in assoc(gu, :group),
+      where: gu.user_id == ^user_id,
+      where: g.name not in ^@dm_groups,
+      preload: [group: g]
     Repo.all(query)
   end
 end

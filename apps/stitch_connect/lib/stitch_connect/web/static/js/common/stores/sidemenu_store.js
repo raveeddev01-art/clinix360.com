@@ -227,7 +227,7 @@ class SidemenuStore {
     this.playNotificationAudio();
 
     setTimeout(() => {
-      notification.close();
+      notification.close()
     }, NOTIFICATION_CARD_DURATION);
   }
 
@@ -273,7 +273,7 @@ class SidemenuStore {
   }
 
   getNotificationTitle(group) {
-    return `${this.rootStore.groupsStore.getGroupName(group)}`;
+    return `${group.name}`;
   }
 
   getNotificationText(message, group, isMention) {

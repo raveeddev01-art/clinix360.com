@@ -188,10 +188,7 @@ class MessageStore {
   }
 
   get isActive() {
-    return (
-      this.rootStore.presenceStore.isActive &&
-      this.rootStore.presenceStore.hasFocus
-    );
+    return this.rootStore.presenceStore.isActive;
   }
 
   /**
@@ -662,16 +659,10 @@ class MessageStore {
         return;
       }
       this.isLoadingPast = true;
-      get(
-        `/api/v1/groups/${this.group.id}/messages?fetchUsers=false&max_id=${this
-          .messages[this.messages.length - 1].id}`
-      )
-        .then(response => {
-          const users = this.rootStore.usersStore.users.toJS();
-          const messages = response.data.map(msg => ({
-            ...msg,
-            user: users.find(u => u.id === msg.user_id)
-          }));
+      this.groupChannel
+        .push("feed", { max_id: this.messages[this.messages.length - 1].id })
+        .receive("ok", data => {
+          const { messages } = data;
           this.isLoadingPast = false;
 
           if (!messages.length) {
@@ -701,7 +692,7 @@ class MessageStore {
             resolve();
           }
         })
-        .catch(err => {
+        .receive("error", err => {
           this.isLoadingPast = false;
           reject(err);
           notify.show(err.message, "error");
@@ -719,16 +710,10 @@ class MessageStore {
 
       this.isLoadingRecent = true;
 
-      get(
-        `/api/v1/groups/${this.group
-          .id}/feed_recent?fetchUsers=false&min_id=${this.messages[0].id}`
-      )
-        .then(response => {
-          const users = this.rootStore.usersStore.users.toJS();
-          const messages = response.data.map(msg => ({
-            ...msg,
-            user: users.find(u => u.id === msg.user_id)
-          }));
+      this.groupChannel
+        .push("feed_recent", { min_id: this.messages[0].id })
+        .receive("ok", data => {
+          const { messages } = data;
           this.isLoadingRecent = false;
           if (!messages.length) {
             this.jumpMode = false;
@@ -757,7 +742,7 @@ class MessageStore {
             resolve();
           }
         })
-        .catch(err => {
+        .receive("error", err => {
           this.isLoadingRecent = false;
           reject(err);
           notify.show(err.message, "error");

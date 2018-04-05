@@ -9,10 +9,10 @@ class NotificationPreferences extends Component {
 
     return (
       <div className="collapse-content room-details">
-        <h5>Desktop and Mobile Notifications</h5>
+        <h5>Desktop notifications</h5>
         <p className="text-capitalize">{notificationStore.desktopPref}</p>
 
-        <h5>Email Notifications</h5>
+        <h5>Email notifications</h5>
         <p className="text-capitalize">{notificationStore.emailPref}</p>
       </div>
     );

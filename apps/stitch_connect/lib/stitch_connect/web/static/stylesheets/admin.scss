@@ -6,7 +6,6 @@ $admin-topbar-height-sm: 65px;
   display: flex;
   height: auto;
   min-width: 840px;
-  background: #fff;
 
   .flex-header {
     flex-basis: $admin-topbar-height;
@@ -127,7 +126,7 @@ $admin-topbar-height-sm: 65px;
         padding: 0;
 
         &.active {
-          background-color: #fff;
+          background-color: #fafafa;
 
           a {
             color: $brand-primary;
@@ -157,7 +156,7 @@ $admin-topbar-height-sm: 65px;
           &.sm {
             font-size: 12px;
             color: #9e9ea6;
-            vertical-align: baseline;
+            vertical-align: text-bottom;
           }
         }
 
@@ -185,7 +184,7 @@ $admin-topbar-height-sm: 65px;
     .admin-topbar {
       padding-left: 20px;
       padding-right: 20px;
-      background-color: #fff;
+      background-color: $body-bg;
       border-bottom: 1px solid $border-color;
 
       h4 {
@@ -261,28 +260,9 @@ $admin-topbar-height-sm: 65px;
     }
   }
 
-  .breadcrumb {
-    font-size: 16px;
-    background: transparent;
-    padding: 0;
-
-    > li + li:before {
-      color: #999;
-      font-family: FontAwesome;
-      content: "\f054";
-      font-size: 10px;
-      padding: 0 10px;
-    }
-
-    a {
-      color: $brand-primary;
-      font-weight: 700;
-    }
-  }
-
   .admin-panel {
     border: none;
-    background-color: #fff;
+    background-color: $body-bg;
     flex-grow: 1;
     max-width: 1000px;
     margin: 0 auto;
@@ -294,12 +274,14 @@ $admin-topbar-height-sm: 65px;
       padding: 0;
 
       h1 {
-        color: $brand-primary;
         font-size: 30px;
         line-height: 30px;
         font-weight: bold;
         margin: 0 0 24px;
         text-align: left;
+        i.fa {
+          color: $brand-primary;
+        }
       }
     }
 
@@ -399,7 +381,6 @@ $admin-topbar-height-sm: 65px;
 
         li {
           line-height: 2;
-          word-wrap: break-word;
 
           i.fa {
             color: $brand-primary;
@@ -412,7 +393,7 @@ $admin-topbar-height-sm: 65px;
         a.dropdown-toggle {
           text-decoration: none;
         }
-
+        
         &.open:before {
           content: '';
           position: fixed;

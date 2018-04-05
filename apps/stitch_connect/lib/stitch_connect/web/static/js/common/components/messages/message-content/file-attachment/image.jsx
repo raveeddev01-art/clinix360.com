@@ -69,23 +69,7 @@ class ImageFileAttachment extends Component {
               className="attachment-preview-placeholder"
               style={placeholderStyle}
               onClick={this.onToggleModal}
-            >
-              <div className="attachment-actions">
-                <OverlayTrigger
-                  placement="top"
-                  delayShow={150}
-                  overlay={<Tooltip id="download-file">Download</Tooltip>}
-                >
-                  <Button
-                    target="_blank"
-                    href={url}
-                    onClick={this.onFileDownload}
-                  >
-                    <i className="fa fa-download" />
-                  </Button>
-                </OverlayTrigger>
-              </div>
-            </div>
+            />
           ) : (
             <img
               src={previewUrl || url}
@@ -94,6 +78,18 @@ class ImageFileAttachment extends Component {
               onClick={this.onToggleModal}
             />
           )}
+
+          <div className="attachment-actions">
+            <OverlayTrigger
+              placement="top"
+              delayShow={150}
+              overlay={<Tooltip id="download-file">Download</Tooltip>}
+            >
+              <Button target="_blank" href={url} onClick={this.onFileDownload}>
+                <i className="fa fa-download" />
+              </Button>
+            </OverlayTrigger>
+          </div>
         </div>
 
         <Modal

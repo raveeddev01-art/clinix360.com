@@ -76,7 +76,4 @@ export const NON_UNICODE_PATTERN = /[^\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00
 export const MAX_FILE_UPLOAD_SIZE = 1 * 1000 * 1000 * 1000;
 
 // show desktop badges for 5 seconds
-export const NOTIFICATION_CARD_DURATION = 5000;
-
-// path to default avatar on s3
-export const DEFAULT_AVATAR_PATH = "default-avatar.png";
+export const NOTIFICATION_CARD_DURATION = 5000

@@ -66,10 +66,9 @@ defmodule StitchConnect.Web.Api.V1.UserController do
   end
 
   def update(conn, %{"id" => user_id} = params) do
-    current_user = conn.assigns.current_user
     with user_id <- String.to_integer(user_id),
-         true <- can_update_user?(current_user, user_id),
-         {:ok, user} <- Stitch.Accounts.Admin.update_user(user_id, params, user_id == current_user.id) do
+         true <- can_update_user?(conn.assigns.current_user, user_id),
+         {:ok, user} <- Stitch.Accounts.Admin.update_user(user_id, params) do
       TeamChannel.broadcast_user_info(conn.assigns.team, user)
       render(conn, "update.json", user: user)
     else

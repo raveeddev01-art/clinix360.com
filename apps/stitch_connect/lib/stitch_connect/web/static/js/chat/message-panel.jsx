@@ -56,12 +56,7 @@ export default class MessagePanel extends Component {
   };
 
   handleClose = () => {
-    const { groupsStore, groupStore } = this.props;
-
-    groupsStore.hideGroup(groupStore.group.id).then(() => {
-      groupsStore.loadGroups();
-      history.push(`/rooms/${groupsStore.defaultGroup.slug}`);
-    });
+    history.push(`/rooms/${this.props.groupsStore.defaultGroup.slug}`);
   };
 
   renderUnreadMessagesBar() {
@@ -85,7 +80,7 @@ export default class MessagePanel extends Component {
           >
             <div className="jump-button">
               <i className={jumpArrowClass} />
-              <span>Jump</span>
+              <span className="jump-hover">Jump</span>
             </div>
             <div className="messages-count">
               {messageStore.unreadMessagesCount} new message{messageStore.unreadMessagesCount > 1 && "s"}{" "}
@@ -139,7 +134,7 @@ export default class MessagePanel extends Component {
           <div className="room-preview">
             This is a preview of the room{" "}
             <b>
-              <i className="fa fa-comments" /> {groupStore.groupName}
+              <i className="fa fa-comments" /> {groupStore.group.name}
             </b>
             <button
               className="join btn btn-fancy btn-primary"

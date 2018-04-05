@@ -47,11 +47,7 @@ class Subscription extends Component {
   };
 
   onCheckoutPlan = () => {
-    if (this.state.plan.tier === "FREE") {
-      this.subscribe();
-    } else {
-      this.setState({ checkout: true });
-    }
+    this.setState({ checkout: true });
   };
 
   // This handler gets passed card selected when successful.
@@ -80,9 +76,11 @@ class Subscription extends Component {
     const { plan } = this.state;
 
     billingStore.subscribe(plan).then(subscription => {
-      const text = `Your team is now changed to ${capitalize(
-        subscription.tier
-      )} tier`;
+      const { tier, trial_remaining_days: trialRemainingDays } = subscription;
+      const text =
+        trialRemainingDays > 0
+          ? `We won't begin billing until your trial expires in ${trialRemainingDays} days.`
+          : `Your team is now changed to ${capitalize(tier)} tier`;
 
       alertModal({
         title: "Thanks for using Stitch!",
@@ -111,14 +109,18 @@ class Subscription extends Component {
   }
 
   renderStatus() {
-    const { billingStore: { subscription: { tier } } } = this.props;
+    const {
+      billingStore: {
+        subscription: { tier, trial_remaining_days: trialRemainingDays }
+      }
+    } = this.props;
     const { changePlan } = this.state;
 
     if (changePlan) {
       return null;
     }
 
-    return (
+    return trialRemainingDays > 0 ? (
       <Well>
         <i className="fa fa-check-circle" />
 
@@ -126,13 +128,28 @@ class Subscription extends Component {
           Your team is subscribed to <b>{capitalize(tier)}</b>.
         </p>
       </Well>
+    ) : (
+      <Well>
+        <i className="fa fa-times-circle" />
+        {tier === "TRIAL" ? (
+          <p className="m-b-0">
+            Your team&#39;s trial of Stitch Connect has completed.
+          </p>
+        ) : (
+          <p className="m-b-0">Your team&#39;s subscription has completed.</p>
+        )}
+      </Well>
     );
   }
 
   renderFooter() {
     const {
       billingStore: {
-        subscription: { tier, plan_remaining_days: planRemainingDays }
+        subscription: {
+          tier,
+          trial_remaining_days: trialRemainingDays,
+          plan_remaining_days: planRemainingDays
+        }
       }
     } = this.props;
 
@@ -146,7 +163,16 @@ class Subscription extends Component {
         >
           here
         </a>.{" "}
-        {tier !== "FREE" &&
+        {tier === "TRIAL" &&
+          trialRemainingDays <= 0 && (
+            <span>
+              Request a free trial extension by clicking{" "}
+              <a href="mailto:support@teamstitch.com?subject=Trial Extension Request&amp;body=I would like to request an extension to our Stitch Connect trial for the following reasons:">
+                here
+              </a>.
+            </span>
+          )}
+        {tier !== "TRIAL" &&
           planRemainingDays > 0 && (
             <span>
               Click{" "}
@@ -160,39 +186,25 @@ class Subscription extends Component {
     );
   }
 
-  renderRenewInfo() {
+  renderSubscribedPlan() {
     const {
       billingStore: {
         subscription: {
+          tier,
           valid_until: validUntil,
           estimated_invoice_amount: estimatedInvoiceAmount
         }
       }
     } = this.props;
-
-    if (!estimatedInvoiceAmount || !validUntil) {
-      // needed for linting
-      return <span />;
-    }
-
-    const invoiceAmount = (estimatedInvoiceAmount / 100).toFixed(2);
-    return (
-      <span>
-        Your plan will renew on <b>{validUntil}</b> for <b>${invoiceAmount}</b>.
-      </span>
-    );
-  }
-
-  renderSubscribedPlan() {
-    const { billingStore: { subscription: { tier } } } = this.props;
     const belowTier = capitalize(getBelowTier(tier));
     const planItems = getPlanForTier(tier).items;
+    const invoiceAmount = (estimatedInvoiceAmount / 100).toFixed(2);
 
     return (
       <div className="subscribed">
         <p>
-          {this.renderRenewInfo()}
-          <b>{capitalize(tier)}</b> includes{belowTier && (
+          Your plan will renew on <b>{validUntil}</b> for{" "}
+          <b>${invoiceAmount}</b>. <b>{capitalize(tier)}</b> includes{belowTier && (
             <span>
               {" "}
               everything in <b>{belowTier}</b>, and
@@ -249,7 +261,9 @@ class Subscription extends Component {
       <div className="subscription">
         {this.renderStatus()}
 
-        {changePlan ? this.renderSelectPlan() : this.renderSubscribedPlan()}
+        {tier === "TRIAL" || changePlan
+          ? this.renderSelectPlan()
+          : this.renderSubscribedPlan()}
 
         <br />
 
@@ -272,13 +286,16 @@ class Subscription extends Component {
   }
 
   render() {
-    const { billingStore: { loading } } = this.props;
+    const { billingStore: { subscription, loading } } = this.props;
     const { checkout } = this.state;
 
     return (
       <div className="subscription-tab">
         {this.renderHeader()}
-        {checkout ? this.renderCheckout() : this.renderSubscription()}
+
+        {subscription &&
+          (checkout ? this.renderCheckout() : this.renderSubscription())}
+
         {loading && <Loading />}
       </div>
     );

@@ -3,7 +3,6 @@ defmodule StitchConnect.Web.PushNotifications do
   alias Pigeon.{APNS, FCM}
   import Ecto.Query
   require Logger
-  use Appsignal.Instrumentation.Decorators
 
   @single_dm_name "__dm_group__"
   @multi_dm_name "__multi_dm_group__"
@@ -21,26 +20,12 @@ defmodule StitchConnect.Web.PushNotifications do
     fun.(notification, opts)
   end
 
-  @decorate transaction(:background_job)
-  def notify_user(user, message_ids) do
-    Enum.each(message_ids, fn message_id ->
-      with %Message{} = message <- Stitch.MessageQueries.get_by_id(message_id),
-           %Group{} = group <- Stitch.GroupQueries.get_by_id(message.group_id) do
-        group = Repo.preload(group, :users)
-        notify_user(group, message, user)
-      else
-        _ -> nil
-      end
-    end)
-  end
-
   @doc """
   Trigger a new message notification for users.
   """
   @spec notify_users(Group.t(), Message.t(), list(number)) :: {:ok, binary}
   def notify_users(_group, %Message{type: "system"}, _user_ids), do: nil
 
-  @decorate transaction(:background_job)
   def notify_users(%Group{} = group, %Message{} = message, user_ids) do
     message = Repo.preload(message, :user)
     group = Repo.preload(group, :users)
@@ -63,32 +48,29 @@ defmodule StitchConnect.Web.PushNotifications do
   end
 
   defp notify_user(group, message, user) do
-    with %GroupUser{} = group_user <- Repo.get_by(GroupUser, user_id: user.id, group_id: group.id) do
-      %{"ios" => ios_devices, "android" => android_devices} =
-        user.id
-        |> Mobile.list_user_devices()
-        |> Enum.group_by(fn device -> device.type end)
-        |> Map.put_new("ios", [])
-        |> Map.put_new("android", [])
+    %{"ios" => ios_devices, "android" => android_devices} =
+      user.id
+      |> Mobile.list_user_devices()
+      |> Enum.group_by(fn device -> device.type end)
+      |> Map.put_new("ios", [])
+      |> Map.put_new("android", [])
 
-      badge_value = Mobile.badge_value(user)
-      room_notification_count = Mobile.room_notification_count(user, group_user)
+    badge_value = Mobile.badge_value(user)
+    group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
+    room_notification_count = Mobile.room_notification_count(user, group_user)
 
-      # Notify the user on any iOS devices.
-      notify_user_ios_devices(user, group, message, badge_value, ios_devices)
+    # Notify the user on any iOS devices.
+    notify_user_ios_devices(user, group, message, badge_value, ios_devices)
 
-      # Notify the user on any Android devices.
-      notify_user_android_devices(
-        user,
-        group,
-        message,
-        badge_value,
-        room_notification_count,
-        android_devices
-      )
-    else
-      _ -> nil
-    end
+    # Notify the user on any Android devices.
+    notify_user_android_devices(
+      user,
+      group,
+      message,
+      badge_value,
+      room_notification_count,
+      android_devices
+    )
   end
 
   defp notify_user_ios_devices(_user, _group, _message, _badge_value, []), do: nil
@@ -199,8 +181,7 @@ defmodule StitchConnect.Web.PushNotifications do
   # Notification Titles
 
   #  Single or Multi DM
-  defp notification_title(%{name: group_name} = group, _message, receiver) when group_name in @dm_groups do
-    users = Repo.preload(group, :users).users
+  defp notification_title(%{name: group_name, users: users}, _message, receiver) when group_name in @dm_groups do
     is_receiver = &(&1.id == receiver.id)
 
     users

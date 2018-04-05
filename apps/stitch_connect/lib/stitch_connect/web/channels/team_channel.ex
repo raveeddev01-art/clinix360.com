@@ -1,14 +1,11 @@
 defmodule StitchConnect.Web.TeamChannel do
   use StitchConnect.Web, :channel
-  alias Stitch.Accounts.User
+  use Appsignal.Instrumentation.Decorators
   alias StitchConnect.Web.Presence
   alias StitchConnect.Web.Api.V1.UserView
   alias Stitch.Accounts.ActivityTracker
-  alias StitchConnect.Web.PushNotifications
-
   @endpoint StitchConnect.Web.Endpoint
 
-  @decorate channel_action()
   def join("team:lobby:" <> team_id, _, socket) do
     team_id = String.to_integer(team_id)
     if team_id == socket.assigns.team_id do
@@ -40,7 +37,7 @@ defmodule StitchConnect.Web.TeamChannel do
       if socket.assigns.meta.inactive == true do
         socket
       else
-        remove_activity(socket.assigns.current_user)
+        ActivityTracker.remove_activity(socket.assigns.current_user)
         socket = update_connection_meta(socket, %{inactive: true})
         push socket, "presence_state", Presence.list(socket)
         socket
@@ -55,7 +52,7 @@ defmodule StitchConnect.Web.TeamChannel do
       if socket.assigns.meta.became_away == true do
         socket
       else
-        remove_activity(socket.assigns.current_user)
+        ActivityTracker.remove_activity(socket.assigns.current_user)
         socket = update_connection_meta(socket, %{became_away: true})
         push socket, "presence_state", Presence.list(socket)
         socket
@@ -113,17 +110,6 @@ defmodule StitchConnect.Web.TeamChannel do
     }}, socket}
   end
 
-  @spec remove_activity(User.t()) :: {:ok, pid} | nil
-  def remove_activity(%User{} = user) do
-    with {:ok, message_ids} <- ActivityTracker.remove_activity(user) do
-      Stitch.Task.start fn ->
-        PushNotifications.notify_user(user, message_ids)
-      end
-    else
-      {:error, _} -> nil
-    end
-  end
-
   def broadcast_user_joined(%Stitch.Team{} = team, %Stitch.Accounts.User{} = user) do
     user_json = UserView.user_json(user)
     @endpoint.broadcast("team:lobby:#{team.id}", "user_joined", user_json)
@@ -169,7 +155,6 @@ defmodule StitchConnect.Web.TeamChannel do
   end
 
   def terminate(_reason, socket) do
-    remove_activity(socket.assigns.current_user)
     {:ok, socket}
   end
 

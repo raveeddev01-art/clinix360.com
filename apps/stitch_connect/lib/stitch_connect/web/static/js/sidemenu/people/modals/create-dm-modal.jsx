@@ -63,16 +63,10 @@ class CreateDMModal extends Component {
     let promise;
 
     if (!group) {
-      const parseResponseAndAddGroup = response => {
-        const groupFromApi = response.data;
-        groupsStore.onCreatedGroup(groupFromApi);
-        return groupFromApi;
-      };
-
       // Create
       promise = groupsStore
         .createDMGroup(userIds)
-        .then(parseResponseAndAddGroup);
+        .then(resposne => resposne.data);
     } else if (group.is_hidden) {
       // Unhide
       promise = groupsStore.unhideGroup(group.id).then(() => group);
@@ -110,9 +104,8 @@ class CreateDMModal extends Component {
   render() {
     const { members } = this.state;
     const { usersStore, presenceStore } = this.props;
-
     const users = isFullMember(currentUser)
-      ? usersStore.nonBotUsers
+      ? usersStore.users.slice(0)
       : usersStore.connectedUsers;
 
     return (

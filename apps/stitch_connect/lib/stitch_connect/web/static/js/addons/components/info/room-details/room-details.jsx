@@ -13,16 +13,10 @@ class RoomDetails extends Component {
     return (
       <div className="collapse-content room-details">
         <h5>Name</h5>
-        <p>{groupStore.groupName}</p>
-
-        {isNotDM && (
-          <div>
-            <h5>Reference</h5>
-            <p>
-              <code>#{group.slug}</code>
-            </p>
-          </div>
-        )}
+        <p>
+          {group.name}
+          {isNotDM && <code>#{group.slug}</code>}
+        </p>
 
         <h5>Type</h5>
         <p>
