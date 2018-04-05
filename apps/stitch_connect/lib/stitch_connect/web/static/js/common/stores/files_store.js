@@ -43,7 +43,7 @@ class FilesStore {
   }
 
   @action
-  loadMore() {
+  loadMore(allFiles) {
     if (this.loading || !this.hasMore) {
       return;
     }

@@ -1,13 +1,14 @@
 defmodule StitchConnect.Web.Api.V1.UploadController do
   use StitchConnect.Web, :controller
-  alias Stitch.AWS.S3
+  alias Stitch.{Repo, AWS.S3}
 
-  def index(conn, params) do
+  def index(conn, %{"group_id" => group_id} = params) do
     skip = Map.get(params, "skip", 0)
     limit = Map.get(params, "limit", 10)
     current_user = conn.assigns.current_user
+    group = Repo.get!(Stitch.Group, group_id)
 
-    uploads = Stitch.MessageQueries.get_uploads_for_user(current_user, skip, limit)
+    uploads = Stitch.MessageQueries.get_uploads_for_user(group, current_user, skip, limit)
 
     conn
     |> render("index.json", %{uploads: uploads, user_id: current_user.id})
