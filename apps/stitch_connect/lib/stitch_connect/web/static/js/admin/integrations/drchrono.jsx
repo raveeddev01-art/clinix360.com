@@ -7,6 +7,7 @@ import Panel from "react-bootstrap/lib/Panel";
 import Button from "react-bootstrap/lib/Button";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import Breadcrumb from "react-bootstrap/lib/Breadcrumb";
+import history from "lib/history";
 
 import { confirmModal } from "common/modals";
 import IntegrationConfiguration from "./components/integration-configuration";
@@ -33,6 +34,7 @@ class DrChronoPage extends Component {
         );
 
         this.props.integrationStore.disable(drchrono.id);
+        history.push("/admin/integrations");
       })
       .catch(() => {
         // do nothing
