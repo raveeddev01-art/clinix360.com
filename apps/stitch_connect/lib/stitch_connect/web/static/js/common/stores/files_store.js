@@ -5,6 +5,7 @@ class FilesStore {
   @observable files = [];
   @observable loading = false;
   @observable hasMore = true;
+  @observable showTeamFiles = false;
   skip = 0;
   limit = 10;
 
@@ -20,7 +21,11 @@ class FilesStore {
     this.files = [];
 
     if (this.collapsed) {
-      this.loadMore();
+      if (this.showTeamFiles) {
+        this.loadMore(true);
+      } else {
+        this.loadMore();
+      }
     }
   }
 
