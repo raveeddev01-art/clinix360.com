@@ -5,11 +5,36 @@ class FilesStore {
   @observable files = [];
   @observable loading = false;
   @observable hasMore = true;
+  skip = 0;
+  limit = 10;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+  }
 
-    this.limit = 10;
+  @action
+  reset() {
+    this.skip = 0;
+    this.loading = false;
+    this.hasMore = true;
+    this.files = [];
+
+    if (this.collapsed) {
+      this.loadMore();
+    }
+  }
+
+  @action
+  onCollapse = collapsed => {
+    this.collapsed = collapsed;
+    if (collapsed && this.files.length === 0 && this.hasMore) {
+      this.loadMore();
+    }
+  };
+
+  @computed
+  get groupId() {
+    return this.rootStore.groupStore.group.id;
   }
 
   @computed
@@ -25,7 +50,8 @@ class FilesStore {
 
     const params = stringify({
       skip: this.files.length,
-      limit: this.limit
+      limit: this.limit,
+      group_id: this.groupId
     });
 
     this.loading = true;
