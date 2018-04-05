@@ -10,10 +10,12 @@ import find from "lodash/find";
 class IntegrationStore {
   @observable integrations = [];
   @observable integrationConfigs = [];
+  @observable selectedConfig = undefined;
   @observable loaded = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    this.loadIntegrations();
   }
 
   @action
@@ -72,6 +74,28 @@ class IntegrationStore {
         console.log(err);
         throw err;
       });
+  };
+
+  @action
+  updateIntegration = params => {
+    return post(`/api/v1/integration-configs/${params.id}`, {
+      body: {
+        group_id: params.groupId,
+        settings: params.settings
+      }
+    })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
+  };
+
+  @action
+  setCurrentIntegrationConfig = id => {
+    this.selectedConfig = this.integrationConfigs.find(c => c.id === id);
   };
 
   @computed

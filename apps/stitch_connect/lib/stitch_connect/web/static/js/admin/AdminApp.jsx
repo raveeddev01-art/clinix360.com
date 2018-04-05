@@ -22,6 +22,7 @@ import Analytics from "./analytics";
 import Integrations from "./integrations";
 import DrChronoPage from "./integrations/drchrono";
 import DrChronoNewSettings from "./integrations/components/drchrono-settings/drchrono-new-settings";
+import DrChronoEditSettings from "./integrations/components/drchrono-settings/drchrono-edit-settings";
 
 @inject("titleStore")
 @observer
@@ -73,9 +74,15 @@ class AdminApp extends Component {
       />,
       <Route
         exact
-        key="route_admin_integrations_drchrono_edit"
+        key="route_admin_integrations_drchrono_new"
         path={`/admin/integrations/drchrono/new`}
         component={DrChronoNewSettings}
+      />,
+      <Route
+        exact
+        key="route_admin_integrations_drchrono_edit"
+        path={`/admin/integrations/drchrono/:id/edit`}
+        component={DrChronoEditSettings}
       />
     ];
   };

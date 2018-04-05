@@ -20,6 +20,28 @@ defmodule StitchConnect.Web.Api.V1.IntegrationConfigController do
     end
   end
 
+  def update(conn, %{"id" => id} = params) do
+    with {:config, %IntegrationConfig{} = config} <- {:config, IntegrationConfig.get_by_id(id)},
+         {:authorized?, true} <-
+           {:authorized?, IntegrationAuthorization.can_edit?(config, conn.assigns.current_user)},
+         {:updated?, {:ok, _config}} <- {:updated?, IntegrationConfig.update(config, params)} do
+      conn
+      |> json(%{message: "Configuration updated"})
+    else
+      {:config, _} ->
+        {:error, :not_found, "The integration config you are looking for does not exist."}
+
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You can't update this configuration."}
+
+      {:updated?, {:error, _changeset}} ->
+        {:error, :unprocessable_entity, "Couldn't update this configuration"}
+
+      _ ->
+        {:error, :not_found}
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     with {:config, %IntegrationConfig{} = config} <- {:config, IntegrationConfig.get_by_id(id)},
          {:authorized?, true} <-

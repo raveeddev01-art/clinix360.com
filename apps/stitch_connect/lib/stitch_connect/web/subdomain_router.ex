@@ -121,6 +121,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post("/integrations/:id/enable", IntegrationController, :enable)
     post("/integrations/:id/disable", IntegrationController, :disable)
     get("/integration-configs", IntegrationConfigController, :index)
+    post("/integration-configs/:id", IntegrationConfigController, :update)
     delete("/integration-configs/:id", IntegrationConfigController, :delete)
 
     post(
@@ -293,6 +294,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get("/admin/integrations", AdminController, :index, as: :admin_integrations)
     get("/admin/integrations/:integration/new", AdminController, :index)
+    get("/admin/integrations/drchrono/:integration_config_id/edit", AdminController, :index)
+
     get("/admin/integrations/:slug", AdminController, :index)
     get("/admin/integrations/:slug/edit", AdminController, :index)
 
