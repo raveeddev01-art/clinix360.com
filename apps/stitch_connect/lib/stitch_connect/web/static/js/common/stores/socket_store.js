@@ -1,7 +1,7 @@
 import { observable, action } from "mobx";
 
 // if pong arrives under timeout, it means connection is healthy
-const HEALTHY_CONNECTED_TIMEOUT = 5000; // used while connected
+const HEALTHY_CONNECTED_TIMEOUT = 10000; // used while connected
 const HEALTHY_DISCONNECTED_TIMEOUT = 1000; // used while disconnected
 
 class SocketStore {
