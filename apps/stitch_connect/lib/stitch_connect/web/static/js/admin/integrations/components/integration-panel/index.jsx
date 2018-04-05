@@ -37,7 +37,7 @@ class IntegrationPanel extends Component {
             target="_blank"
             className="action-edit btn-primary btn-fancy"
           >
-            Connect
+            Authenticate
           </a>
         )}
       </div>

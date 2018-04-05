@@ -55,8 +55,8 @@ class DrChronoPage extends Component {
   _renderEnableButton = enabled => {
     if (enabled) {
       return (
-        <Button onClick={this._disableDrChrono} bsStyle="danger" to="#">
-          Disable
+        <Button onClick={this._disableDrChrono} to="#">
+          Disable Integration
         </Button>
       );
     }
@@ -115,7 +115,7 @@ class DrChronoPage extends Component {
               <h3>Setup</h3>
             </Panel.Heading>
             <Panel.Body className="configurations-panel__body">
-              <h4>Setup: Paste this into your drchrono api management page.</h4>
+              <h4>Paste this into your drchrono api management page.</h4>
               <ul>
                 <li>
                   Callback URL:{" "}

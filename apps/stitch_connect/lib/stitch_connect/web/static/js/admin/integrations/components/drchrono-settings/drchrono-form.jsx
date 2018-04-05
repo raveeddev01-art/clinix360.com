@@ -109,17 +109,6 @@ class DrChronoForm extends Component {
       <Form horizontal onSubmit={this._handleFormSubmit}>
         <FormGroup>
           <Col sm={5}>
-            <h4 className="integrations-panel__heading">Authentication</h4>
-          </Col>
-          <Col sm={7}>
-            <span className="integrations-panel__status">Authenticated</span>
-          </Col>
-        </FormGroup>
-
-        <hr />
-
-        <FormGroup>
-          <Col sm={5}>
             <h4 className="integrations-panel__heading">Notifications</h4>
             <p>
               Which drchrono notification would you like to appear in Stitch?
