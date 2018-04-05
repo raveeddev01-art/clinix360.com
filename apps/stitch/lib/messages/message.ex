@@ -191,7 +191,7 @@ defmodule Stitch.Message do
     case result do
       {:ok, %{message: message}} ->
         Stitch.Mobile.NotificationQueue.async_enqueue_for_users(
-          Enum.uniq(presence_user_ids.active ++ recipients),
+          intersect(presence_user_ids.active, recipients),
           message.id
         )
 
@@ -519,4 +519,6 @@ defmodule Stitch.Message do
   def leave_message_changeset(%Group{} = group, user_id) do
     leave_message_changeset(group, Repo.get(User, user_id))
   end
+
+  defp intersect(a, b), do: a -- (a -- b)
 end
