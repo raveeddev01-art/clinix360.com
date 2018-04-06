@@ -5,7 +5,6 @@ class FilesStore {
   @observable files = [];
   @observable loading = false;
   @observable hasMore = true;
-  @observable showTeamFiles = false;
   skip = 0;
   limit = 10;
 

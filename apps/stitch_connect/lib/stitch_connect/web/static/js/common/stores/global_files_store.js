@@ -12,22 +12,6 @@ class GlobalFilesStore {
     this.rootStore = rootStore;
   }
 
-  @action
-  reset() {
-    this.skip = 0;
-    this.loading = false;
-    this.hasMore = true;
-    this.files = [];
-  }
-
-  @action
-  onCollapse = collapsed => {
-    this.collapsed = collapsed;
-    if (collapsed && this.files.length === 0 && this.hasMore) {
-      this.loadMore();
-    }
-  };
-
   @computed
   get isEmpty() {
     return this.files.length === 0;

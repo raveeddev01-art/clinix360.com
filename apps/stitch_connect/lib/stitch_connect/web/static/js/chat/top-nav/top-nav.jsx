@@ -26,7 +26,8 @@ import DotOptions from "./dot-options";
   "groupStore",
   "groupsStore",
   "searchStore",
-  "globalFilesStore"
+  "globalFilesStore",
+  "filesStore"
 )
 @observer
 class TopNav extends Component {
@@ -75,7 +76,7 @@ class TopNav extends Component {
   };
 
   _toggleAddonMenu = (menuName, resetFiles) => () => {
-    const { addonStore, globalFilesStore } = this.props;
+    const { addonStore, globalFilesStore, filesStore } = this.props;
 
     if (addonStore.addonPanelType === menuName && addonStore.showAddons) {
       addonStore.toggleAddons(false);
@@ -86,6 +87,7 @@ class TopNav extends Component {
 
     if (resetFiles) {
       globalFilesStore.loadMore();
+      filesStore.onCollapse();
     }
   };
 
