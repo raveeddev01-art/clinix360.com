@@ -15,8 +15,7 @@ defmodule Stitch.Mobile.NotificationQueue do
     end)
   end
 
-  def enqueue_for_users([], message_id), do: :ok
-
+  def enqueue_for_users([], _message_id), do: :ok
   def enqueue_for_users(user_ids, message_id) do
     commands =
       Enum.map(user_ids, fn user_id ->
@@ -63,11 +62,8 @@ defmodule Stitch.Mobile.NotificationQueue do
   The user has just read these messages and so we won't be sending PNs with them.
   """
   @spec remove_message_ids(pos_integer, [pos_integer]) :: :ok | {:error, any}
-  def remove_message_ids(user_id, []), do: :ok
-
+  def remove_message_ids(_user_id, []), do: :ok
   def remove_message_ids(user_id, message_ids) do
-    # Logger.info("Remove message ids: #{message_ids}")
-
     result =
       Redix.command(
         [
