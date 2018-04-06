@@ -8,14 +8,6 @@ import LoadingIcon from "common/components/loading-icon";
 @inject("filesStore", "globalFilesStore")
 @observer
 class Files extends Component {
-  componentWillMount() {
-    const { globalFilesStore, roomFiles } = this.props;
-
-    if (globalFilesStore.isEmpty && !roomFiles) {
-      globalFilesStore.loadMore();
-    }
-  }
-
   loadMore = () => {
     const { filesStore, globalFilesStore, roomFiles } = this.props;
     const files = roomFiles ? filesStore : globalFilesStore;
