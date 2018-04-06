@@ -267,8 +267,8 @@
     }
 
     &.alt .flex-box {
-      flex-direction: column-reverse;
-      -ms-flex-direction: column-reverse;
+      flex-direction: row-reverse;
+      -ms-flex-direction: row-reverse;
     }
   }
 
