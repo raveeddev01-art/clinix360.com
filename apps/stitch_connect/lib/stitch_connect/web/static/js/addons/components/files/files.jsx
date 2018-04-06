@@ -37,7 +37,7 @@ class Files extends Component {
       );
     }
 
-    return <div className="text-muted text-center">Nothing uploaded yet.</div>;
+    return <div className="text-muted empty-files">Upload the first file!</div>;
   }
 
   render() {
