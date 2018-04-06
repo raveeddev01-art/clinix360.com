@@ -143,8 +143,8 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       assert response["message"] =~ "administrators"
     end
 
-    test "requires at least a Premium subscription", %{conn: conn} do
-      subscription = insert(:subscription, tier: "BASIC")
+    test "requires at least a Standard subscription", %{conn: conn} do
+      subscription = insert(:subscription, tier: "FREE")
       team = subscription.team
       user = insert(:user, team: team, roles: ["admin"])
       group = insert(:group, team: team)
@@ -163,7 +163,7 @@ defmodule StitchConnect.Web.InvitationControllerTest do
 
   describe "POST /api/v1/invitations/single-room-guests" do
     setup %{conn: conn} do
-      subscription = insert(:subscription, tier: "PREMIUM")
+      subscription = insert(:subscription, tier: "STANDARD")
       team = subscription.team
       user = insert(:user, team: team, roles: ["admin"])
       group = insert(:group, team: team)
@@ -232,8 +232,8 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       assert response["message"] =~ "administrators"
     end
 
-    test "requires at least a Premium subscription", %{conn: conn} do
-      subscription = insert(:subscription, tier: "BASIC")
+    test "requires at least a Standard subscription", %{conn: conn} do
+      subscription = insert(:subscription, tier: "FREE")
       team = subscription.team
       user = insert(:user, team: team, roles: ["admin"])
       group = insert(:group, team: team)
@@ -326,8 +326,8 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       assert response["message"] =~ "administrators"
     end
 
-    test "requires at least a Premium subscription", %{conn: conn} do
-      subscription = insert(:subscription, tier: "BASIC")
+    test "requires at least a Standard subscription", %{conn: conn} do
+      subscription = insert(:subscription, tier: "FREE")
       team = subscription.team
       user = insert(:user, team: team, roles: ["admin"])
       group = insert(:group, team: team)
@@ -435,8 +435,8 @@ defmodule StitchConnect.Web.InvitationControllerTest do
       assert response["message"] =~ "administrators"
     end
 
-    test "requires at least a Premium subscription", %{conn: conn} do
-      subscription = insert(:subscription, tier: "BASIC")
+    test "requires at least a Standard subscription", %{conn: conn} do
+      subscription = insert(:subscription, tier: "FREE")
       team = subscription.team
       user = insert(:user, team: team, roles: ["admin"])
       group = insert(:group, team: team)

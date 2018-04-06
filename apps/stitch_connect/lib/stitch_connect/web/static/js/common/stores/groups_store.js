@@ -4,7 +4,7 @@
  * This store keeps track of groups of the app.
  */
 
-import { observable, computed, action } from "mobx";
+import { observable, computed, action, extendObservable } from "mobx";
 import history from "lib/history";
 import orderBy from "lodash/orderBy";
 
@@ -83,10 +83,13 @@ class GroupsStore {
   }
 
   @computed
-  get normalGroups() {
-    return this.visibleGroups.filter(
-      group => group.type === "regular" && !group.is_favorite
-    );
+  get regularGroups() {
+    return this.visibleGroups.filter(group => group.type === "regular");
+  }
+
+  @computed
+  get nonFavoritedRegularGroups() {
+    return this.regularGroups.filter(group => !group.is_favorite);
   }
 
   @computed
@@ -101,8 +104,16 @@ class GroupsStore {
         if (isSelfDM(group1) < isSelfDM(group2)) return 1;
 
         // Then sorts DMs in alphabetical order
-        if (group1.name < group2.name) return -1;
-        if (group1.name > group2.name) return 1;
+        if (
+          this.getGroupName(group1).toLowerCase() <
+          this.getGroupName(group2).toLowerCase()
+        )
+          return -1;
+        if (
+          this.getGroupName(group1).toLowerCase() >
+          this.getGroupName(group2).toLowerCase()
+        )
+          return 1;
         return 0;
       });
   }
@@ -114,7 +125,10 @@ class GroupsStore {
 
   @computed
   get roomsInShowOrder() {
-    return this.favoriteGroups.concat(this.normalGroups, this.directGroups);
+    return this.favoriteGroups.concat(
+      this.nonFavoritedRegularGroups,
+      this.directGroups
+    );
   }
 
   @computed
@@ -147,7 +161,8 @@ class GroupsStore {
 
     const { usersStore } = this.rootStore;
 
-    if (this.currentGroup.users.length === 1) { // self-dm
+    if (this.currentGroup.users.length === 1) {
+      // self-dm
       return false;
     }
 
@@ -163,6 +178,25 @@ class GroupsStore {
 
   hasAccess = groupId => {
     return !!this.groups.find(g => g.id === groupId);
+  };
+
+  getGroupName = group => {
+    if (!group) {
+      return "";
+    }
+
+    if (group.type === "regular") {
+      return group.name;
+    }
+
+    if (group.type === "dm" && group.users.length === 1) {
+      return `${group.users[0].full_name} (You)`;
+    }
+
+    return group.users
+      .filter(u => u.id !== currentUser.id)
+      .map(u => u.full_name)
+      .join(", ");
   };
 
   @action
@@ -193,15 +227,21 @@ class GroupsStore {
     this.groups.forEach(group => {
       const user = group.users.find(u => u.id === userId);
       if (user) {
-        Object.assign(user, userData);
+        extendObservable(user, userData);
       }
     });
   };
 
   @action
   loadGroups = () => {
-    return get("/api/v1/groups").then(response => {
-      this.onLoadedGroups(response.data);
+    return get("/api/v1/groups?fetchUsers=false").then(response => {
+      const users = this.rootStore.usersStore.users.toJS();
+      const groups = response.data.map(group => ({
+        ...group,
+        users: group.user_ids.map(id => users.find(u => u.id === id))
+      }));
+
+      this.onLoadedGroups(groups);
     });
   };
 
@@ -280,7 +320,7 @@ class GroupsStore {
       body: params
     }).then(resp => {
       const { data } = resp;
-
+      this.onCreatedGroup(data);
       return data.slug;
     });
   };
@@ -414,8 +454,12 @@ class GroupsStore {
   };
 
   @action
-  onCreatedGroup = group => {
-    this.groups.push(group);
+  onCreatedGroup = newGroup => {
+    const alreadyAdded = !!this.groups.find(g => g.id === newGroup.id);
+
+    if (!alreadyAdded) {
+      this.groups.push(newGroup);
+    }
   };
 
   @action

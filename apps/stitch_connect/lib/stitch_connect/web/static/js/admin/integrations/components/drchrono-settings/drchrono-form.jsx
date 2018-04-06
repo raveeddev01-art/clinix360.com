@@ -10,31 +10,53 @@ import FormGroup from "react-bootstrap/lib/FormGroup";
 import Col from "react-bootstrap/lib/Col";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import Button from "react-bootstrap/lib/Button";
+import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
+import { Link } from "react-router-dom";
 
 @inject("titleStore", "adminPanelStore", "groupsStore", "integrationStore")
 class DrChronoForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      appointmentCreate: false,
-      appointmentModify: false,
-      appointmentDelete: false,
-      patientCreate: false,
-      patientModify: false,
-      patientProblemCreate: false,
-      patientProblemModify: false,
-      patientAllergyCreate: false,
-      patientAllergyModify: false,
-      patientMedicationCreate: false,
-      patientMedicationModify: false,
-      groupId: undefined
-    };
+
+    // This is a new empty integration config.
+    if (this.props.new === true) {
+      this.state = {
+        appointmentCreate: false,
+        appointmentModify: false,
+        appointmentDelete: false,
+        patientCreate: false,
+        patientModify: false,
+        patientProblemCreate: false,
+        patientProblemModify: false,
+        patientAllergyCreate: false,
+        patientAllergyModify: false,
+        patientMedicationCreate: false,
+        patientMedicationModify: false,
+        groupId: undefined
+      };
+    } else {
+      const config = this.props.integrationStore.selectedConfig;
+      this.state = {
+        id: config.id,
+        groupId: config.group_id,
+        appointmentCreate: config.settings.appointmentCreate,
+        appointmentModify: config.settings.appointmentModify,
+        appointmentDelete: config.settings.appointmentDelete,
+        patientCreate: config.settings.patientCreate,
+        patientModify: config.settings.patientModify,
+        patientProblemCreate: config.settings.patientProblemCreate,
+        patientProblemModify: config.settings.patientProblemModify,
+        patientAllergyCreate: config.settings.patientAllergyCreate,
+        patientAllergyModify: config.settings.patientAllergyModify,
+        patientMedicationCreate: config.settings.patientMedicationCreate,
+        patientMedicationModify: config.settings.patientMedicationModify
+      };
+    }
   }
 
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
-    this.props.integrationStore.loadIntegrations();
   }
 
   onChange = event => {
@@ -47,8 +69,7 @@ class DrChronoForm extends Component {
     });
   };
 
-  _handleFormSubmit = event => {
-    event.preventDefault();
+  _createNewConfig = () => {
     const params = {
       groupId: this.state.groupId,
       integrationId: this.props.integrationStore.drChronoIntegration.id,
@@ -60,20 +81,32 @@ class DrChronoForm extends Component {
     });
   };
 
+  _updateConfig = () => {
+    const params = {
+      id: this.state.id,
+      groupId: this.state.groupId,
+      integrationId: this.props.integrationStore.drChronoIntegration.id,
+      settings: omit(this.state, ["groupId", "id"])
+    };
+
+    this.props.integrationStore.updateIntegration(params).then(() => {
+      history.push(`/admin/integrations/drchrono`);
+    });
+  };
+
+  _handleFormSubmit = event => {
+    event.preventDefault();
+
+    if (this.props.new === true) {
+      this._createNewConfig();
+    } else {
+      this._updateConfig();
+    }
+  };
+
   render() {
     return (
       <Form horizontal onSubmit={this._handleFormSubmit}>
-        <FormGroup>
-          <Col sm={5}>
-            <h4 className="integrations-panel__heading">Authentication</h4>
-          </Col>
-          <Col sm={7}>
-            <span className="integrations-panel__status">Authenticated</span>
-          </Col>
-        </FormGroup>
-
-        <hr />
-
         <FormGroup>
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Notifications</h4>
@@ -190,24 +223,35 @@ class DrChronoForm extends Component {
               name="groupId"
               onChange={this.onChange}
               componentClass="select"
+              defaultValue={this.state.groupId}
             >
-              {this.props.groupsStore.normalGroups.map(group => (
+              {this.props.groupsStore.regularGroups.map(group => (
                 <option key={`option-group-${group.id}`} value={group.id}>
-                  {group.name}
+                  {this.props.groupsStore.getGroupName(group)}
                 </option>
               ))}
             </FormControl>
           </Col>
         </FormGroup>
 
-        <Button
-          type="submit"
-          bsStyle="primary"
-          bsSize="lg"
-          className="pull-right"
-        >
-          Save Integration
-        </Button>
+        <ButtonToolbar>
+          <Button
+            type="submit"
+            bsStyle="primary"
+            bsSize="lg"
+            className="pull-right"
+          >
+            Save Integration
+          </Button>
+
+          <Link
+            to="/admin/integrations/drchrono"
+            type="button"
+            className="pull-right btn btn-lg btn-default"
+          >
+            Cancel
+          </Link>
+        </ButtonToolbar>
       </Form>
     );
   }

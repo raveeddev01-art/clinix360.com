@@ -4,6 +4,7 @@ import Select from "react-select";
 import cx from "classnames";
 
 import { filterUsers } from "lib/utils";
+import { Avatar } from "common/components";
 
 class TeamList extends Component {
   constructor(props) {
@@ -56,12 +57,14 @@ class TeamList extends Component {
     const { members, searchFilter } = this.state;
     const availableUsers = users.filter(
       u =>
+        !u.is_bot &&
         !(hideCurrentUser && u.id === currentUser.id && members.length > 0) &&
         members.findIndex(member => member.id === u.id) === -1 &&
         (!u.disabled || searchFilter.length >= showDisabledAfter)
     );
-    const teamList = filterUsers(availableUsers, searchFilter)
-      .sort(a => a.disabled);
+    const teamList = filterUsers(availableUsers, searchFilter).sort(
+      a => a.disabled
+    );
 
     return (
       <div className="team-list__container">
@@ -85,29 +88,39 @@ class TeamList extends Component {
         <h5 className="team-heading text-muted">{children}</h5>
 
         <div className="team-list">
-          {teamList.map(user => {
-            const online = isOnline(user.id);
-            const iconClasName = cx("fa", {
-              "fa-circle": online,
-              "fa-circle-o": !online
-            });
+          {teamList
+            .sort((user1, user2) => {
+              // Sort alphabetically by online users first
+              if (isOnline(user1.id) > isOnline(user2.id)) return -1;
+              if (isOnline(user1.id) < isOnline(user2.id)) return 1;
+              if (user1.first_name < user2.first_name) return -1;
+              if (user1.first_name > user2.first_name) return 1;
+              return 0;
+            })
+            .map(user => {
+              const online = isOnline(user.id);
+              const iconClasName = cx("fa", {
+                "fa-circle": online,
+                "fa-circle-o": !online
+              });
 
-            return (
-              <div
-                key={`team-list-${user.id}`}
-                className="team-member"
-                onClick={this.onSelectUser(user)}
-              >
-                <i className={iconClasName} />
-                {` ${user.full_name}`}
-                {`${user.id === currentUser.id ? " (You)" : ""}`}
-                <span className="text-muted">
-                  {user.username}
-                  {`${user.disabled ? " (Deactivated Account)" : ""}`}
-                </span>
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={`team-list-${user.id}`}
+                  className="team-member"
+                  onClick={this.onSelectUser(user)}
+                >
+                  <i className={iconClasName} />
+                  <Avatar user={user} />
+                  {`${user.full_name}`}
+                  {`${user.id === currentUser.id ? " (You)" : ""}`}
+                  <span className="text-muted">
+                    {user.username}
+                    {`${user.disabled ? " (Deactivated Account)" : ""}`}
+                  </span>
+                </div>
+              );
+            })}
         </div>
       </div>
     );

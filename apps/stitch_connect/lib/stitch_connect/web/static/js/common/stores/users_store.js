@@ -12,6 +12,7 @@ import history from "lib/history";
 class UsersStore {
   @observable users = [];
   @observable editingUserId = null;
+  @observable showAllUsers = true;
   avatarStatus = {}; // { [id]: 'loading', 'failed', null } failed means failure on loading fallback
 
   constructor(rootStore) {
@@ -40,6 +41,11 @@ class UsersStore {
     });
 
     return this.users.filter(u => userIDs.indexOf(u.id) > -1);
+  }
+
+  @computed
+  get nonBotUsers() {
+    return this.users.filter(u => !u.is_bot);
   }
 
   @computed
@@ -292,6 +298,11 @@ class UsersStore {
         disabled: false
       });
     }
+  };
+
+  @action
+  toggleAllUsers = () => {
+    this.showAllUsers = !this.showAllUsers;
   };
 }
 
