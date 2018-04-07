@@ -17,7 +17,6 @@ defmodule StitchConnect.Web.GroupChannel do
   }
 
   @endpoint StitchConnect.Web.Endpoint
-  @max_latency 10_000
 
   @decorate channel_action()
   def join("groups:__dm:" <> id_pair_string, params, socket) do
@@ -78,16 +77,6 @@ defmodule StitchConnect.Web.GroupChannel do
   # ignore Pigeon callbacks
   def handle_info(_msg, socket) do
     {:noreply, socket}
-  end
-
-  @decorate channel_action()
-  def handle_in("sync_time", %{"timestamp" => timestamp}, socket) do
-    socket =
-      socket
-      |> assign(:server_join_time, :os.system_time(:milli_seconds))
-      |> assign(:client_join_time, timestamp)
-
-    {:reply, {:ok, %{message: "ok"}}, socket}
   end
 
   @decorate channel_action()
@@ -161,13 +150,9 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @decorate channel_action()
   def handle_in("new_msg", params, socket) do
-    if latency_limit_exceeded?(socket, params) do
-      {:reply, {:error, %{message: "timeout error"}}, socket}
-    else
-      %{group: group, current_user: user} = socket.assigns
-      ActivityTracker.async_update_activity(user)
-      do_new_msg(socket, group, user, params)
-    end
+    %{group: group, current_user: user} = socket.assigns
+    ActivityTracker.async_update_activity(user)
+    do_new_msg(socket, group, user, params)
   end
 
   @decorate channel_action()
@@ -498,21 +483,6 @@ defmodule StitchConnect.Web.GroupChannel do
     broadcast_read_status(socket.assigns.group, messages_json)
     PushNotifications.push_badge_update_to_user(user)
     {:reply, {:ok, json}, socket}
-  end
-
-  # Temporarily return false if timestamps aren't provided so that the mobile apps have time to catch up with the change
-  defp latency_limit_exceeded?(socket, params) do
-    server_join_time = socket.assigns[:server_join_time]
-
-    with client_join_time when not is_nil(client_join_time) <- socket.assigns[:client_join_time],
-         client_push_time when not is_nil(client_push_time) <- params["timestamp"] do
-      server_time = :os.system_time(:milli_seconds)
-      latency = client_push_time - (client_join_time + (server_time - server_join_time))
-      abs(latency) > @max_latency
-    else
-      _e ->
-        false
-    end
   end
 
   # TODO: remove once web and mobile apps don't rely on messages in channel feed.
