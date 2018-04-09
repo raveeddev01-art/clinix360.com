@@ -147,7 +147,7 @@ defmodule Stitch.Accounts.ProfileImage do
       text_color,
       # font location
       "-font",
-      Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Regular.otf"),
+      Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Bold.otf"),
       # font size
       "-pointsize",
       "250",
@@ -200,7 +200,7 @@ defmodule Stitch.Accounts.ProfileImage do
       text_color,
       # font location
       "-font",
-      Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Regular.otf"),
+      Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Bold.otf"),
       # font size
       "-pointsize",
       "250",
