@@ -5,35 +5,33 @@ import { DEFAULT_AVATAR_PATH } from "lib/constants";
 
 // Constants
 const fallbackUserAvatar = `${window.publicBucket}/${DEFAULT_AVATAR_PATH}`;
-const imageReloadMaximum = 2;
-
 @inject("usersStore")
 class AvatarImage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      useFallback: false,
-      reloadAttempts: 0
+      useFallback: false
     };
   }
 
-  onImageError = () => {
-    const { src, user, usersStore } = this.props;
+  componentWillReceiveProps(nextProps) {
+    // if the src is new (i.e. a newly signed url),
+    // don't use the fallback
+    if (this.props.src !== nextProps.src) {
+      this.setState({ useFallback: false });
+    }
+  }
 
-    // don't rerequest if we have the thumb but its a bad url
-    // or we've tried too many times
-    if (!src && !this.hasHitReloadMax) {
+  onImageError = () => {
+    const { user, usersStore } = this.props;
+
+    // don't rerequest if we're already using the fallback
+    if (!this.state.useFallback) {
+      // get a newly-signed URL (assuming it has expired)
       usersStore.loadAvatar(user.id);
-      const newAttemptCount = this.state.reloadAttempts + 1;
-      this.setState({ reloadAttempts: newAttemptCount });
-    } else {
       this.setState({ useFallback: true });
     }
   };
-
-  get hasHitReloadMax() {
-    return this.state.reloadAttempts >= imageReloadMaximum;
-  }
 
   render() {
     const { src, alt, className } = this.props;
