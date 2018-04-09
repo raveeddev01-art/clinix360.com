@@ -83,8 +83,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
 
   defp grey_avatar(user) do
     if has_default_image(user) do
-      IO.inspect(user)
       filepath = String.split(user.profile_image_url, "/") |> List.last()
+
       # EX.png
       name = String.split(filepath, ".") |> List.first()
 
