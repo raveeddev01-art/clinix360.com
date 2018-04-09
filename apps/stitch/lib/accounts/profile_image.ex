@@ -150,7 +150,7 @@ defmodule Stitch.Accounts.ProfileImage do
       Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Regular.otf"),
       # font size
       "-pointsize",
-      "300",
+      "250",
       # center text
       "-gravity",
       "center",
@@ -181,7 +181,7 @@ defmodule Stitch.Accounts.ProfileImage do
     size = 512
     resolution = 72
     sampling_factor = 3
-    background_color = "#f0f0f0"
+    background_color = "#fafafa"
     text_color = "#003366"
     initials = "#{String.at(first_name, 0)}#{String.at(last_name, 0)}"
     image_path = System.tmp_dir!() |> Path.join("#{initials}-grey.png")
@@ -203,7 +203,7 @@ defmodule Stitch.Accounts.ProfileImage do
       Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Regular.otf"),
       # font size
       "-pointsize",
-      "300",
+      "250",
       # center text
       "-gravity",
       "center",
