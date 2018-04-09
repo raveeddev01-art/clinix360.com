@@ -12,38 +12,49 @@ class AvatarImage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      useFallback: false,
-      reloadAttempts: 0
+      reloadsForCurrentSrc: 0
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    // if the src is new (i.e. a newly signed url), restart the count
+    if (this.props.src !== nextProps.src) {
+      this.setState({
+        reloadsForCurrentSrc: 0
+      });
+    }
+  }
+
   onImageError = () => {
-    const { src, user, usersStore } = this.props;
+    const { user, usersStore } = this.props;
 
     // don't rerequest if we have the thumb but its a bad url
     // or we've tried too many times
-    if (!src && !this.hasHitReloadMax) {
+    if (!this.hasHitReloadMax) {
+      // get a newly-signed URL (assuming it has expired)
       usersStore.loadAvatar(user.id);
-      const newAttemptCount = this.state.reloadAttempts + 1;
-      this.setState({ reloadAttempts: newAttemptCount });
-    } else {
-      this.setState({ useFallback: true });
+      const newAttemptCount = this.state.reloadsForCurrentSrc + 1;
+      this.setState({ reloadsForCurrentSrc: newAttemptCount });
     }
   };
 
   get hasHitReloadMax() {
-    return this.state.reloadAttempts >= imageReloadMaximum;
+    return this.state.reloadsForCurrentSrc >= imageReloadMaximum;
   }
 
   render() {
     const { src, alt, className } = this.props;
-    const avatarUrl = this.state.useFallback ? fallbackUserAvatar : src;
+    const avatarUrl = this.hasHitReloadMax ? fallbackUserAvatar : src;
 
     return (
       <img
+        // key forces the DOM to try to reload the image
+        // even if the url coming in is the same
+        key={this.state.reloadsForCurrentSrc}
         alt={alt}
         className={className}
         onError={this.onImageError}
+        onLoad={this.onImageLoad}
         src={avatarUrl}
       />
     );
