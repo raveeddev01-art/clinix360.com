@@ -600,6 +600,10 @@ class MessageStore {
   });
 
   sendMessage = (text, additionalFields = {}) => {
+    if (this.jumpMode) {
+      this.switchFromJumpMode();
+    }
+
     const messageText = this.encodeMessage(text);
     const tempMessage = this.generateTempMessage(messageText);
     // Add temp message
