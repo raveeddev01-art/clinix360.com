@@ -1,12 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import cx from "classnames";
+
 import AvatarImage from "./avatar-image";
 
 class Avatar extends Component {
   render() {
     const { user, size } = this.props;
     const wrapperClass = size === "sm" ? "avatar" : "";
-    const avatarClass = size === "sm" ? "img-circle" : "img-responsive";
+    const avatarClass = cx({
+      "img-circle": size === "sm",
+      "img-responsive": size !== "sm",
+      "bordered-grey": user.grey_avatar && user.id !== currentUser.id
+    });
     let avatarThumb = user.avatar_thumb;
 
     if (user.grey_avatar && user.id !== currentUser.id) {
