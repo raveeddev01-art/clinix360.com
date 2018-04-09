@@ -7,6 +7,8 @@ class SocketStore {
   constructor(rootStore) {
     this.rootStore = rootStore;
     socket.onOpen(this.openSocket);
+    socket.onClose(this.errorSocket);
+    socket.onError(this.errorSocket);
     window.addEventListener("online", this.onNetworkOnline);
     window.addEventListener("offline", this.onNetworkOffline);
   }
@@ -17,7 +19,7 @@ class SocketStore {
 
   @action
   onNetworkOnline = () => {
-    socket.disconnect(() => socket.connect());
+    socket.onConnClose();
   };
 
   @action
