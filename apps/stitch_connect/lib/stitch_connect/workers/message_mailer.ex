@@ -26,17 +26,19 @@ defmodule StitchConnect.MessageMailer do
   end
 
   def deliver_for_users(users, team) do
-    users_map = Enum.reduce(users, %{}, & Map.put(&2, &1.id, &1))
-    recipients = prepare_recipients(users, users_map, team)
+    recipients = prepare_recipients(users, team)
     Stitch.Accounts.Email.unread_messages_email(recipients, team)
-    Stitch.EmailNotification.clean_delivered(Enum.map(recipients, & &1.id))
+    Stitch.EmailNotification.clean_delivered(Enum.map(users, & &1.id))
   end
 
-  def prepare_recipients(users, users_map, team) do
+  def prepare_recipients(users, team) do
     users
-    |> Enum.map(& &1.id)
-    |> Stitch.EmailNotification.count
-    |> Enum.map(& recipient(users_map[&1.user_id], &1.message_count, team))
+    |> Enum.reduce([], fn user, acc ->
+      case Stitch.Mobile.badge_value(user) do
+        0 -> acc
+        message_count -> [recipient(user, message_count, team) | acc]
+      end
+    end)
   end
 
   defp recipient(user, message_count, team) do
