@@ -135,7 +135,7 @@ defmodule Stitch.Message.NotificationTest do
       insert(:user, username: "b")
       insert(:user, username: "c")
 
-      usernames = Stitch.Accounts.User.with_email_notification_preference("daily")
+      usernames = Stitch.UserQueries.with_email_notification_preference("daily")
       |> Stitch.ChunkStream.chunk(2)
       |> Stream.map(fn l -> Enum.map(l, & &1.username) end) |> Enum.to_list
 
