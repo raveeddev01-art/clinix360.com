@@ -1,19 +1,27 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import AvatarImage from "./avatar-image";
+import { getGroupUserIdsThatHasCurrentUser } from "../../../lib/utils";
 
 class Avatar extends Component {
   render() {
     const { user, size } = this.props;
     const wrapperClass = size === "sm" ? "avatar" : "";
     const avatarClass = size === "sm" ? "img-circle" : "img-responsive";
+    let avatarThumb = user.avatar_thumb;
+
+    if (user.grey_avatar && user.id !== currentUser.id) {
+      console.log("Settin grey avatar");
+      console.log(user.grey_avatar);
+      avatarThumb = user.grey_avatar;
+    }
 
     return (
       <div className={wrapperClass}>
         <AvatarImage
           alt={user.username}
           className={avatarClass}
-          src={user.avatar_thumb}
+          src={avatarThumb}
           user={user}
         />
       </div>
