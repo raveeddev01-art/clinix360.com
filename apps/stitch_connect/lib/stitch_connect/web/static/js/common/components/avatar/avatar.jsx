@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import AvatarImage from "./avatar-image";
-import { getGroupUserIdsThatHasCurrentUser } from "../../../lib/utils";
 
 class Avatar extends Component {
   render() {
@@ -11,8 +10,6 @@ class Avatar extends Component {
     let avatarThumb = user.avatar_thumb;
 
     if (user.grey_avatar && user.id !== currentUser.id) {
-      console.log("Settin grey avatar");
-      console.log(user.grey_avatar);
       avatarThumb = user.grey_avatar;
     }
 
