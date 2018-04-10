@@ -20,6 +20,23 @@ class Topbar extends Component {
         <ul className="nav navbar-nav">
           <li>
             <a
+              id="intercom-link"
+              href="jig8cj9z@inbound.intercom-mail.com"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <OverlayTrigger
+                placement="bottom"
+                container={this}
+                overlay={<Tooltip id="tooltip-info">Live Support</Tooltip>}
+              >
+                <i className="fa fa-bullhorn m-r-5" />
+              </OverlayTrigger>
+            </a>
+          </li>
+
+          <li>
+            <a
               href="https://intercom.help/teamstitch"
               rel="noopener noreferrer"
               target="_blank"
