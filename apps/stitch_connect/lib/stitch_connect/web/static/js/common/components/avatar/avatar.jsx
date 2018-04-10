@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import cx from "classnames";
 
 import AvatarImage from "./avatar-image";
 
@@ -8,25 +7,11 @@ class Avatar extends Component {
   render() {
     const { user, size } = this.props;
     const wrapperClass = size === "sm" ? "avatar" : "";
-    const avatarClass = cx({
-      "img-circle": size === "sm",
-      "img-responsive": size !== "sm",
-      "bordered-grey": user.grey_avatar && user.id !== currentUser.id
-    });
-    let avatarThumb = user.avatar_thumb;
-
-    if (user.grey_avatar && user.id !== currentUser.id) {
-      avatarThumb = user.grey_avatar;
-    }
+    const avatarClass = size === "sm" ? "img-circle" : "img-responsive";
 
     return (
       <div className={wrapperClass}>
-        <AvatarImage
-          alt={user.username}
-          className={avatarClass}
-          src={avatarThumb}
-          user={user}
-        />
+        <AvatarImage useThumb className={avatarClass} user={user} />
       </div>
     );
   }
