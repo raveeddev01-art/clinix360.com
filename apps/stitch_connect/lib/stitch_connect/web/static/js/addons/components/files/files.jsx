@@ -9,8 +9,8 @@ import LoadingIcon from "common/components/loading-icon";
 @observer
 class Files extends Component {
   loadMore = () => {
-    const files = this.activeFileStore();
-    files.loadMore();
+    const fileStore = this.activeFileStore();
+    fileStore.loadMore();
   };
 
   activeFileStore = () => {
@@ -19,9 +19,9 @@ class Files extends Component {
   };
 
   renderFilesResults() {
-    const files = this.activeFileStore();
+    const fileStore = this.activeFileStore();
 
-    if (files.loading) {
+    if (fileStore.loading) {
       return (
         <div className="text-center">
           <LoadingIcon size={2} />
@@ -29,10 +29,10 @@ class Files extends Component {
       );
     }
 
-    if (files.files.length > 0) {
+    if (fileStore.files.length > 0) {
       return (
         <div>
-          {files.files.map(file => (
+          {fileStore.files.map(file => (
             <AddonMessage key={file.id} message={file} />
           ))}
         </div>
@@ -43,18 +43,18 @@ class Files extends Component {
   }
 
   render() {
-    const files = this.activeFileStore();
+    const fileStore = this.activeFileStore();
 
     return (
       <div className="files-addon">
         {this.renderFilesResults()}
 
         <div className="footer">
-          {files.hasMore &&
-            !files.loading && (
+          {fileStore.hasMore &&
+            !fileStore.loading && (
               <button
                 className="btn btn-default btn-sm"
-                disabled={files.loading}
+                disabled={fileStore.loading}
                 onClick={this.loadMore}
               >
                 Load more…
