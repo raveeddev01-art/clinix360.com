@@ -21,7 +21,10 @@ class AvatarImage extends Component {
   componentWillReceiveProps(nextProps) {
     // if the src is new (i.e. a newly signed url),
     // don't use the fallback
-    if (this.props.src !== nextProps.src) {
+    const currentImg = this.userAvatar(this.props);
+    const nextImg = this.userAvatar(nextProps);
+
+    if (currentImg !== nextImg) {
       this.setState({ useFallback: false });
     }
   }
@@ -36,15 +39,6 @@ class AvatarImage extends Component {
       this.setState({ useFallback: true });
     }
   };
-
-  get userAvatar() {
-    const { useThumb, user } = this.props;
-    if (!this.isCurrentUser) {
-      return user.grey_avatar;
-    }
-
-    return useThumb ? user.avatar_thumb : user.avatar;
-  }
 
   get fallbackAvatar() {
     return this.isCurrentUser ? fallbackBlueAvatar : fallbackGreyAvatar;
@@ -62,11 +56,20 @@ class AvatarImage extends Component {
     return this.props.user.id === currentUser.id;
   }
 
+  userAvatar(props) {
+    const { useThumb, user } = props;
+    if (!this.isCurrentUser) {
+      return user.grey_avatar;
+    }
+
+    return useThumb ? user.avatar_thumb : user.avatar;
+  }
+
   render() {
     const { user: { username } } = this.props;
     const avatarUrl = this.state.useFallback
       ? this.fallbackAvatar
-      : this.userAvatar;
+      : this.userAvatar(this.props);
 
     return (
       <img
