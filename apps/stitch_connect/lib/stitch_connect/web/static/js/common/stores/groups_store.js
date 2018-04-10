@@ -400,6 +400,7 @@ class GroupsStore {
       channelStore,
       messageStore,
       pinnedMessageStore,
+      filesStore,
       groupStore
     } = this.rootStore;
 
@@ -415,8 +416,9 @@ class GroupsStore {
     // reset current group
     groupStore.reset();
 
-    // Reset pinned messages
+    // Reset pinned messages and files
     pinnedMessageStore.reset();
+    filesStore.reset();
   };
 
   /**

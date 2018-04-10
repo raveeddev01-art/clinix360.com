@@ -25,16 +25,17 @@ class PinnedMessages extends Component {
           <div className="text-muted">Pin the first message!</div>
         )}
 
-        <div className="footer">
-          {pinnedMessageStore.hasMore && (
-            <button
-              className="btn btn-default btn-sm"
-              disabled={pinnedMessageStore.loading}
-              onClick={this.loadMore}
-            >
-              Load more…
-            </button>
-          )}
+        <div className="footer text-center">
+          {pinnedMessageStore.hasMore &&
+            !pinnedMessageStore.loading && (
+              <button
+                className="btn btn-default btn-sm"
+                disabled={pinnedMessageStore.loading}
+                onClick={this.loadMore}
+              >
+                Load more…
+              </button>
+            )}
         </div>
       </div>
     );
