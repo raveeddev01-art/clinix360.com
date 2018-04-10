@@ -312,8 +312,8 @@ class MessageForm extends Component {
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
-      editing:
-        !!messageInEdit || !socketStore.isConnected || !socketStore.isHealthy
+      disconnected: !socketStore.isConnected || !socketStore.isHealthy,
+      editing: !!messageInEdit
     });
 
     const inputWrapperClass = classNames("message-input-wrapper", {

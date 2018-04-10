@@ -480,6 +480,9 @@
         &.editing {
           background-color: rgba($brand-primary, 0.1);
         }
+        &.disconnected {
+          background-color: #fff7d8;
+        }
       }
 
       .users-typing {
