@@ -97,6 +97,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
   end
 
   defp has_default_image(user) do
+    # Default images look like this: https://s3.amazonaws.com/stitch-content/ST.png
+    # We check if the image name length ST.png is equal to 6.
     String.split(user.profile_image_url, "/") |> List.last() |> String.length() == 6
   end
 end
