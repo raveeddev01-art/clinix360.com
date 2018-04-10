@@ -201,17 +201,13 @@ class MessageActions extends PureComponent {
           >
             {(!mine || message.id < messageStore.lastOtherUserMessage.id) && (
                 <MenuItem onClick={this.markAsUnread}>
-                  <span>
-                    <i className="fa fa-circle" />&nbsp;Mark as unread
-                  </span>
+                  <span>Mark as unread</span>
                 </MenuItem>
               )}
 
             <CopyToClipboard text={message.text_content} onCopy={this.copy}>
               <MenuItem>
-                <span>
-                  <i className="fa fa-paste" />&nbsp;Copy message
-                </span>
+                <span>Copy message</span>
               </MenuItem>
             </CopyToClipboard>
 
@@ -219,17 +215,13 @@ class MessageActions extends PureComponent {
 
             {mine && (
               <MenuItem onClick={this.edit}>
-                <span>
-                  <i className="fa fa-pencil" />&nbsp;Edit message
-                </span>
+                <span>Edit message</span>
               </MenuItem>
             )}
 
             {mine && (
               <MenuItem onClick={this.delete}>
-                <span>
-                  <i className="fa fa-trash" />&nbsp;Delete message
-                </span>
+                <span>Delete message</span>
               </MenuItem>
             )}
           </DropdownButton>
