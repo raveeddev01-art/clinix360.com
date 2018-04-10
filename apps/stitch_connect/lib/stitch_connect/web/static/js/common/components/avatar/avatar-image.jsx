@@ -48,7 +48,8 @@ class AvatarImage extends Component {
     const { className, user } = this.props;
 
     return cx(className, {
-      "bordered-grey": user.grey_avatar && !this.isCurrentUser
+      "bordered-grey":
+        !this.isCurrentUser && (user.grey_avatar || this.useFallback)
     });
   }
 
@@ -56,9 +57,13 @@ class AvatarImage extends Component {
     return this.props.user.id === currentUser.id;
   }
 
+  get useFallback() {
+    return this.state.useFallback || !this.userAvatar(this.props);
+  }
+
   userAvatar(props) {
     const { useThumb, user } = props;
-    if (!this.isCurrentUser) {
+    if (!this.isCurrentUser && user.grey_avatar) {
       return user.grey_avatar;
     }
 
@@ -67,9 +72,8 @@ class AvatarImage extends Component {
 
   render() {
     const { user: { username } } = this.props;
-    const avatarUrl = this.state.useFallback
-      ? this.fallbackAvatar
-      : this.userAvatar(this.props);
+    const userAvatar = this.userAvatar(this.props);
+    const avatarUrl = this.useFallback ? this.fallbackAvatar : userAvatar;
 
     return (
       <img
