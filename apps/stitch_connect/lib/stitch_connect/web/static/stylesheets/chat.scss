@@ -64,7 +64,7 @@
         position: relative;
 
         i.fa {
-          color: #777;
+          color: #666;
           font-size: 18px;
           line-height: 36px;
           position: absolute;
@@ -99,7 +99,7 @@
       }
 
       .btn-default {
-        color: #777;
+        color: #666;
         font-size: 21px;
         background: transparent;
         border: 0;
@@ -174,6 +174,7 @@
           display: flex;
           cursor: pointer;
           height: 25px;
+          font-weight: 700;
           line-height: 25px;
           color: #fff;
           overflow: hidden !important;
@@ -404,7 +405,7 @@
         &.isFocused {
           .message-form-upload,
           .message-text {
-            border-color: #777;
+            border-color: #666;
           }
         }
       }
@@ -477,7 +478,7 @@
         // overflow: hidden;
 
         &.editing {
-          background-color: #fff7d8;
+          background-color: rgba($brand-primary, 0.1);
         }
       }
 
@@ -894,11 +895,15 @@
 
       .btn {
         width: 34px;
-        color: $brand-primary;
+        color: #666;
         background: #fff;
         border-color: rgba(0, 0, 0, 0.15);
         padding: 4px 8px;
         z-index: 1;
+
+        &:hover {
+          color: $brand-primary;
+        }
       }
 
       .open:before {
@@ -923,6 +928,11 @@
             text-transform: capitalize;
             padding: 0 8px;
             margin: 0 8px;
+
+            i.fa {	
+              width: 1em;	
+              margin-right: 2px;	
+            }
 
             &:focus {
               outline: none;

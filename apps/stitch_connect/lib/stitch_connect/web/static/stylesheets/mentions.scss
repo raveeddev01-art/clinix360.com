@@ -23,8 +23,8 @@
 
 .user-profile-menu .user-mention,
 .group-mention {
-  background: #ddd;
-  border: 0;
+  background: #fafafa;
+  border: 1px solid $border-color;
   border-radius: 3px;
   padding: 0 3px;
 }
@@ -33,4 +33,10 @@
 .user-profile-menu .me {
   color: #fff;
   background: $brand-primary;
+  border-color: $brand-primary;
+}
+
+.message-body .user-profile-menu {
+  position: relative;
+  top: -1px;
 }
