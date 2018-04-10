@@ -6,19 +6,19 @@ defmodule Stitch.Repo.Scripts.MigrateUsersToGreyAvatar do
 
   @disable_ddl_transaction true
 
-  "https://s3.amazonaws.com/stitch-content/ST.png"
-
   def run do
-    users =
+    query =
       from(
         u in Stitch.Accounts.User,
-        where: fragment("char_length(?)", u.profile_image_url) == 46,
-        select: u
+        where: fragment("char_length(?)", u.profile_image_url) == 46
       )
-      |> Stitch.Repo.all()
 
-    Logger.info("Total Users: #{length(users)}")
+    Stitch.ChunkStream.chunk(query, 50)
+    |> Stream.each(&update_image_for_users/1)
+    |> Stream.run()
+  end
 
+  defp update_image_for_users(users) do
     Enum.each(users, fn user ->
       Logger.info("Updating image: #{user.email}")
 
