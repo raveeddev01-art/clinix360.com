@@ -6,9 +6,9 @@ class SocketStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-    socket.onOpen(this.openSocket);
-    socket.onClose(this.errorSocket);
-    socket.onError(this.errorSocket);
+    socket.onOpen(this.onSocketOpen);
+    socket.onClose(this.onSocketError);
+    socket.onError(this.onSocketError);
     window.addEventListener("online", this.onNetworkOnline);
     window.addEventListener("offline", this.onNetworkOffline);
   }
@@ -30,7 +30,7 @@ class SocketStore {
   };
 
   @action
-  openSocket = () => {
+  onSocketOpen = () => {
     this.isConnected = true;
 
     // upon reconnect, load users, groups, and last batch of messages of current group again
@@ -43,7 +43,7 @@ class SocketStore {
   };
 
   @action
-  errorSocket = () => {
+  onSocketError = () => {
     this.isConnected = false;
   };
 
