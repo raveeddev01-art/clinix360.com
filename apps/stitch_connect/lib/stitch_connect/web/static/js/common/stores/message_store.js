@@ -621,18 +621,15 @@ class MessageStore {
       newMsg.timestamp = new Date().getTime(); // sending unix timestamp in milliseconds to calc latency on server
     }
 
-    this.groupChannel
-      .push("new_msg", newMsg)
-      .receive("error", () => {
-        this.updateMessageData(tempMessage.id, {
-          status: "failed"
-        });
-      })
-      .receive("timeout", () => {
-        this.updateMessageData(tempMessage.id, {
-          status: "failed"
-        });
+    post(`/api/v1/groups/${this.group.id}/messages`, {
+      body: {
+        message: newMsg
+      }
+    }).catch(() => {
+      this.updateMessageData(tempMessage.id, {
+        status: "failed"
       });
+    });
 
     this.startTyping.flush(); // flushing throttle
   };
@@ -964,8 +961,6 @@ class MessageStore {
     } else {
       this.messages = data.messages;
     }
-
-    this.rootStore.socketStore.sendPingWithTimeout();
 
     if (data.messages.length < MAX_MESSAGE_COUNT_PER_BATCH) {
       this.loadedAll = true;
