@@ -130,7 +130,9 @@ defmodule Stitch.Accounts.ProfileImage do
     sampling_factor = 3
     background_color = "#003366"
     text_color = "#FFFFFF"
-    initials = "#{String.at(first_name, 0)}#{String.at(last_name, 0)}"
+    first_initial = String.at(first_name, 0) |> String.upcase()
+    last_initial = String.at(last_name, 0) |> String.upcase()
+    initials = "#{first_initial}#{last_initial}"
     image_path = System.tmp_dir!() |> Path.join("#{initials}.png")
 
     System.cmd("convert", [
@@ -181,9 +183,11 @@ defmodule Stitch.Accounts.ProfileImage do
     size = 512
     resolution = 72
     sampling_factor = 3
-    background_color = "#fafafa"
+    background_color = "#f0f0f0"
     text_color = "#003366"
-    initials = "#{String.at(first_name, 0)}#{String.at(last_name, 0)}"
+    first_initial = String.at(first_name, 0) |> String.upcase()
+    last_initial = String.at(last_name, 0) |> String.upcase()
+    initials = "#{first_initial}#{last_initial}"
     image_path = System.tmp_dir!() |> Path.join("#{initials}-grey.png")
 
     System.cmd("convert", [
