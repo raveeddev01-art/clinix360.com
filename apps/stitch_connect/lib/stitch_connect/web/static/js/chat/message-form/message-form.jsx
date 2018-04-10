@@ -24,7 +24,8 @@ class MessageForm extends Component {
       text: "",
       openMentionMenu: false,
       searchFilter: "",
-      openEmojiSearch: false
+      openEmojiSearch: false,
+      isFocus: true
     };
   }
 
@@ -186,6 +187,14 @@ class MessageForm extends Component {
     });
   };
 
+  onFocus = () => {
+    this.setState({ isFocus: true });
+  };
+
+  onBlur = () => {
+    this.setState({ isFocus: false });
+  };
+
   onCloseMentionMenu = () => {
     this.setState({
       openMentionMenu: false
@@ -305,17 +314,28 @@ class MessageForm extends Component {
         !!messageInEdit || !socketStore.isConnected
     });
 
+    const inputWrapperClass = classNames("message-input-wrapper", {
+      isFocused: this.state.isFocus
+    });
+
     return (
-      <div className="message-input-wrapper">
+      <div className={inputWrapperClass}>
+        <div className="message-form-upload">
+          <InsertMenu />
+        </div>
+
         <Textarea
           className={className}
           placeholder="Message"
-          maxRows={6}
+          maxRows={30}
+          maxlength="4000"
           value={text}
           onChange={this.onTextChange}
           onKeyUp={this.onKeyUp}
           onKeyDown={this.onKeyDown}
           onPaste={this.onPaste}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
           autoFocus
           required
           ref={input => {
@@ -325,7 +345,6 @@ class MessageForm extends Component {
           }}
         />
         <div className="message-form-actions">
-          <InsertMenu />
           <a className="message-form-action-item" onClick={this.startMention}>
             <i className="fa fa-at" />
           </a>

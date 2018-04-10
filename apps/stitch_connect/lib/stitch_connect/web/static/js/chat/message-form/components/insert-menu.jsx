@@ -19,7 +19,7 @@ class InsertMenu extends Component {
         className="message-form-action-item"
         onClick={this.uploadFile}
       >
-        <i className="fa fa-plus-square-o" />
+        <i className="fa fa-paperclip" />
       </a>
     );
     // return (

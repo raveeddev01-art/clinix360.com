@@ -200,7 +200,7 @@ $admin-topbar-height-sm: 65px;
       }
 
       a {
-        color: $brand-primary;
+        color: #777;
 
         i {
           font-size: 24px;
@@ -214,6 +214,7 @@ $admin-topbar-height-sm: 65px;
 
         &:hover,
         &:active {
+          color: $brand-primary;
           text-decoration: none;
           background-color: transparent;
         }
