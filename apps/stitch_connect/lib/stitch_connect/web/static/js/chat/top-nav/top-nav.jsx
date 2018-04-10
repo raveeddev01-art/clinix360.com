@@ -87,7 +87,7 @@ class TopNav extends Component {
 
     if (resetFiles) {
       globalFilesStore.loadMore();
-      filesStore.onCollapse();
+      filesStore.onCollapseChange();
     }
   };
 

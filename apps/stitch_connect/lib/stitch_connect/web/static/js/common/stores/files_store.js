@@ -5,11 +5,11 @@ class FilesStore {
   @observable files = [];
   @observable loading = false;
   @observable hasMore = true;
-  skip = 0;
   limit = 10;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    this.skip = 0;
   }
 
   @action
@@ -25,7 +25,7 @@ class FilesStore {
   }
 
   @action
-  onCollapse = collapsed => {
+  onCollapseChange = collapsed => {
     this.collapsed = collapsed;
     if (collapsed && this.files.length === 0 && this.hasMore) {
       this.loadMore();
