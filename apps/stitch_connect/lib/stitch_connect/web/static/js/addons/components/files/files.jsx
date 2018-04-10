@@ -9,15 +9,17 @@ import LoadingIcon from "common/components/loading-icon";
 @observer
 class Files extends Component {
   loadMore = () => {
-    const { filesStore, globalFilesStore, roomFiles } = this.props;
-    const files = roomFiles ? filesStore : globalFilesStore;
-
+    const files = this.activeFileStore();
     files.loadMore();
   };
 
-  renderFilesResults() {
+  activeFileStore = () => {
     const { filesStore, globalFilesStore, roomFiles } = this.props;
-    const files = roomFiles ? filesStore : globalFilesStore;
+    return roomFiles ? filesStore : globalFilesStore;
+  };
+
+  renderFilesResults() {
+    const files = this.activeFileStore();
 
     if (files.loading) {
       return (
@@ -41,8 +43,7 @@ class Files extends Component {
   }
 
   render() {
-    const { filesStore, globalFilesStore, roomFiles } = this.props;
-    const files = roomFiles ? filesStore : globalFilesStore;
+    const files = this.activeFileStore();
 
     return (
       <div className="files-addon">
