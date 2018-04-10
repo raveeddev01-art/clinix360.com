@@ -22,18 +22,24 @@ defmodule Stitch.UserQueries do
   end
 
   def users_for_team(team_id) when is_integer(team_id) do
-    query =
-      from(
-        u in User,
-        where: u.team_id == ^team_id,
-        where: u.onboarded == ^true
-      )
-
-    Repo.all(query)
+    team_id
+    |> for_team_query()
+    |> Repo.all()
   end
 
   def users_for_team(_) do
     {:error, "team_id must be an integer"}
+  end
+
+  @doc """
+  Returns an unexecuted query for onboarded users within a specific team
+  """
+  def for_team_query(initial_query \\ User, team_id) when is_integer(team_id) do
+    from(
+      u in initial_query,
+      where: u.team_id == ^team_id,
+      where: u.onboarded == ^true
+    )
   end
 
   @doc """
@@ -50,6 +56,16 @@ defmodule Stitch.UserQueries do
       )
 
     Repo.one(query)
+  end
+
+  @doc """
+  Returns an unexecuted query for users with specific email preferences
+  """
+  def with_email_notification_preference(initial_query \\ User, preference)
+      when preference in ["daily", "hourly", "15min", "never"] do
+    initial_query
+    |> where(email_notification_preference: ^preference)
+    |> where(disabled: false)
   end
 
   @doc """

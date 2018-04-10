@@ -91,13 +91,6 @@ defmodule Stitch.Accounts.User do
     |> validate_inclusion(:email_notification_preference, ["daily", "hourly", "15min", "never"])
   end
 
-  def with_email_notification_preference(preference)
-      when preference in ["daily", "hourly", "15min", "never"] do
-    User
-    |> where(email_notification_preference: ^preference)
-    |> where(disabled: false)
-  end
-
   def update_preference(%User{} = user, params) do
     Repo.transaction(fn ->
       user_update =
