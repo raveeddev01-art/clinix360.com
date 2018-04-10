@@ -16,11 +16,15 @@ defmodule Stitch.Message.Notification do
 
   def notify_user_ids(%{slug: "__dm:" <> _} = group, author, _mentioned_user_ids, active_user_ids) do
     %{desktop: desktop, mobile: mobile, email: email} = dm_notify_categories(group.id)
+
     notify_desktop_user_ids = desktop -- [author.id | active_user_ids]
     notify_mobile_user_ids = mobile -- [author.id | active_user_ids]
+    notify_mobile_active_user_ids = intersect(mobile, active_user_ids) -- [author.id]
     notify_email_user_ids = email -- [author.id | active_user_ids]
+
     %{desktop: notify_desktop_user_ids,
       mobile: notify_mobile_user_ids,
+      mobile_active: notify_mobile_active_user_ids,
       email: notify_email_user_ids}
   end
 
@@ -30,10 +34,22 @@ defmodule Stitch.Message.Notification do
       mobile_everything: with_mobile_enabled,
       mobile_nothing: with_mobile_disabled,
       email_never: email_never} = notify_categories(group.id)
-    %{desktop: Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- ([author.id | with_desktop_disabled] ++ active_user_ids),
-      mobile: Enum.uniq(mentioned_user_ids ++ with_mobile_enabled) -- ([author.id | with_mobile_disabled ] ++ active_user_ids),
-      email: mentioned_user_ids -- ([author.id | email_never] ++ active_user_ids)}
+
+    notify_desktop_user_ids = Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- ([author.id | with_desktop_disabled] ++ active_user_ids)
+
+    mobile_mentioned_enabled = Enum.uniq(mentioned_user_ids ++ with_mobile_enabled)
+    notify_mobile_user_ids = mobile_mentioned_enabled -- ([author.id | with_mobile_disabled] ++ active_user_ids)
+    notify_mobile_active_user_ids = intersect(mobile_mentioned_enabled, active_user_ids) -- ([author.id | with_mobile_disabled])
+
+    notify_email_user_ids = mentioned_user_ids -- ([author.id | email_never] ++ active_user_ids)
+
+    %{desktop: notify_desktop_user_ids,
+      mobile: notify_mobile_user_ids,
+      mobile_active: notify_mobile_active_user_ids,
+      email: notify_email_user_ids}
   end
+
+  defp intersect(a, b), do: a -- (a -- b)
 
   @doc """
   Takes id of a group and returns a map that splits group users into different notificatin categories
