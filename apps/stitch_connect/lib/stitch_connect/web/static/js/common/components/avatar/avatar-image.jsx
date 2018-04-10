@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
-import { DEFAULT_AVATAR_PATH } from "lib/constants";
+import cx from "classnames";
+
+import { DEFAULT_AVATAR_PATH, DEFAULT_GREY_AVATAR_PATH } from "lib/constants";
 
 // Constants
-const fallbackUserAvatar = `${window.publicBucket}/${DEFAULT_AVATAR_PATH}`;
+const fallbackBlueAvatar = `${window.publicBucket}/${DEFAULT_AVATAR_PATH}`;
+const fallbackGreyAvatar = `${window.publicBucket}/${DEFAULT_GREY_AVATAR_PATH}`;
+
 @inject("usersStore")
 class AvatarImage extends Component {
   constructor(props) {
@@ -33,14 +37,41 @@ class AvatarImage extends Component {
     }
   };
 
+  get userAvatar() {
+    const { useThumb, user } = this.props;
+    if (!this.isCurrentUser) {
+      return user.grey_avatar;
+    }
+
+    return useThumb ? user.avatar_thumb : user.avatar;
+  }
+
+  get fallbackAvatar() {
+    return this.isCurrentUser ? fallbackBlueAvatar : fallbackGreyAvatar;
+  }
+
+  get imageClass() {
+    const { className, user } = this.props;
+
+    return cx(className, {
+      "bordered-grey": user.grey_avatar && !this.isCurrentUser
+    });
+  }
+
+  get isCurrentUser() {
+    return this.props.user.id === currentUser.id;
+  }
+
   render() {
-    const { src, alt, className } = this.props;
-    const avatarUrl = this.state.useFallback ? fallbackUserAvatar : src;
+    const { user: { username } } = this.props;
+    const avatarUrl = this.state.useFallback
+      ? this.fallbackAvatar
+      : this.userAvatar;
 
     return (
       <img
-        alt={alt}
-        className={className}
+        alt={username}
+        className={this.imageClass}
         onError={this.onImageError}
         src={avatarUrl}
       />
@@ -49,14 +80,14 @@ class AvatarImage extends Component {
 }
 
 AvatarImage.propTypes = {
+  className: PropTypes.string.isRequired,
   user: PropTypes.shape({
-    avatar: PropTypes.string,
     avatar_thumb: PropTypes.string,
+    avatar: PropTypes.string,
+    id: PropTypes.number,
     username: PropTypes.string
   }).isRequired,
-  src: PropTypes.string.isRequired,
-  className: PropTypes.string.isRequired,
-  alt: PropTypes.string.isRequired
+  useThumb: PropTypes.bool.isRequired
 };
 
 export default AvatarImage;

@@ -5,14 +5,13 @@ import { inject } from "mobx-react";
 
 import AvatarImage from "../../../common/components/avatar/avatar-image";
 
-
 // @TODO load time zone from user
 @inject("presenceStore")
 class PeopleDetail extends Component {
   render() {
     const timezone = moment().format("hh:mm A (Z)");
     const { user } = this.props;
-    const { avatar, full_name: fullName, title, username, email, phone } = user;
+    const { full_name: fullName, title, username, email, phone } = user;
 
     const online = this.props.presenceStore.isOnline(`${this.props.user.id}`);
 
@@ -20,9 +19,8 @@ class PeopleDetail extends Component {
       <div className="user-view">
         <div className="user-avatar m-b-20">
           <AvatarImage
-            alt="Avatar"
+            useThumb={false}
             className="img-responsive img-circle"
-            src={avatar}
             user={user}
           />
         </div>
