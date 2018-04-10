@@ -12,7 +12,7 @@ import NotificationPreferences from "./notification-preferences/notification-pre
 class Info extends Component {
   render() {
     const onPinnedCollapse = this.props.pinnedMessageStore.onCollapse;
-    const onFilesCollapse = this.props.filesStore.onCollapse;
+    const onFilesCollapse = this.props.filesStore.onCollapseChange;
 
     return (
       <div className="info-addon">

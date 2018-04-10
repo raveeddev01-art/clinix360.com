@@ -5,11 +5,11 @@ class GlobalFilesStore {
   @observable files = [];
   @observable loading = false;
   @observable hasMore = true;
-  skip = 0;
   limit = 10;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+    this.skip = 0;
   }
 
   @computed
