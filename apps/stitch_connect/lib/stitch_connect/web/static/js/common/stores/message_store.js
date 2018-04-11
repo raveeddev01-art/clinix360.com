@@ -1174,6 +1174,11 @@ class MessageStore {
   onStarredMessage = message => {
     const { globalStarredMessageStore } = this.rootStore;
 
+    // Only process star events for the current user.
+    if (message.starred_by_user_id !== currentUser.id) {
+      return;
+    }
+
     this.updateMessageData(message.id, {
       starred: message.starred
     });
