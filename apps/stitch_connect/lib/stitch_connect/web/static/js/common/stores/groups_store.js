@@ -317,7 +317,8 @@ class GroupsStore {
   @action
   createGroup = params => {
     return post("/api/v1/groups", {
-      body: params
+      body: params,
+      hideNotify: true
     }).then(resp => {
       const { data } = resp;
       this.onCreatedGroup(data);
