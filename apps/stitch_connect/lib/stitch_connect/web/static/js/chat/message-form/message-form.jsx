@@ -5,7 +5,6 @@ import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
 import some from "lodash/some";
 
-import { isAdmin } from "lib/utils";
 import { confirmModal } from "common/modals";
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
@@ -66,7 +65,7 @@ class MessageForm extends Component {
     const { messageStore, socketStore } = this.props;
 
     // if not connected, just no send message at all
-    if (!socketStore.isConnected || !socketStore.isHealthy) {
+    if (!socketStore.isConnected) {
       return;
     }
 
@@ -303,7 +302,6 @@ class MessageForm extends Component {
     const {
       messageStore: { messageInEdit },
       socketStore,
-      billingStore: { subscription: { tier } }
     } = this.props;
 
     if (messageInEdit) {
@@ -312,7 +310,7 @@ class MessageForm extends Component {
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
-      disconnected: !socketStore.isConnected || !socketStore.isHealthy,
+      disconnected: !socketStore.isConnected,
       editing: !!messageInEdit
     });
 

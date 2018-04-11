@@ -80,3 +80,4 @@ export const NOTIFICATION_CARD_DURATION = 5000;
 
 // path to default avatar on s3
 export const DEFAULT_AVATAR_PATH = "default-avatar.png";
+export const DEFAULT_GREY_AVATAR_PATH = "default-avatar-grey.png";

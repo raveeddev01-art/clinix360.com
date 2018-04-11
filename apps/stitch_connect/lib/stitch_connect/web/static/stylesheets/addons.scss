@@ -105,7 +105,7 @@
       }
 
       .files-addon .text-muted {
-        text-align: left;
+        font-size: 16px;
       }
     }
   }
@@ -251,6 +251,10 @@
 .directory-addon {
   min-height: 100%;
   background: #fff;
+
+  .files-addon {
+    padding-top: 0;
+  }
 }
 
 .files-addon,

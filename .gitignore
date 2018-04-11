@@ -35,3 +35,5 @@ doc
 
 # integration test screenshots
 apps/stitch_connect/screenshots/
+
+dump.rdb
