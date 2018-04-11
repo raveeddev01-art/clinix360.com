@@ -199,7 +199,7 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   @decorate channel_action()
-  def handle_in("delete_msg", %{"message_id" => message_id}, socket) do
+  def handle_in("delete_msg", %{"message_id" => message_id}, socket) when is_number(message_id) do
     %{group: group, current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
 
@@ -218,8 +218,16 @@ defmodule StitchConnect.Web.GroupChannel do
         {:reply, {:error, %{message: "Message not found."}}, socket}
 
       {:error, _changeset} ->
-        {:reply, {:error, %{message: "Failed to delete message."}}, socket}
+        message_delete_failure_reply(socket)
     end
+  end
+
+  def handle_in("delete_msg", _ , socket) do
+    message_delete_failure_reply(socket)
+  end
+
+  defp message_delete_failure_reply(socket) do
+    {:reply, {:error, %{message: "Failed to delete message"}}, socket}
   end
 
   @decorate channel_action()
