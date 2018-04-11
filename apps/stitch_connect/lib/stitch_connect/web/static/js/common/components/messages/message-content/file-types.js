@@ -2,9 +2,14 @@ export const FILE_TYPES = [
   // tiff (aka tif) imgs don't work in many browsers
   // so treat them as standard files
   {
+    title: "File",
+    icon: "fa fa-file-o",
+    types: /tiff?$/
+  },
+  {
     title: "Image",
     icon: "fa fa-file-image-o",
-    types: /^image\/.+(?<!tiff?)$/
+    types: /^image\/.+/
   },
   {
     title: "Audio File",
