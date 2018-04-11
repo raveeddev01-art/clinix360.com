@@ -3,10 +3,12 @@ defmodule StitchConnect.Web.ErrorView do
   alias StitchConnect.Web.{HomeView, LayoutView}
 
   def render("404.html", assigns) do
-    render_options = %{
-      layout: {LayoutView, "home_layout.html"},
-      conn: browser_pipeline_equivalent(assigns.conn)
-    } |> Enum.into(assigns)
+    render_options =
+      %{
+        layout: {LayoutView, "home_layout.html"},
+        conn: browser_pipeline_equivalent(assigns.conn)
+      }
+      |> Enum.into(assigns)
 
     render(HomeView, "index.html", render_options)
   end
@@ -24,15 +26,15 @@ defmodule StitchConnect.Web.ErrorView do
   end
 
   def render("404.json", %{message: message}) do
-    %{errors: message}
+    %{message: message}
   end
 
   def render("404.json", _assigns) do
-    %{errors: "The resource you are looking for does not exist."}
+    %{message: "The resource you are looking for does not exist."}
   end
 
   def render("422.json", %{errors: errors}) do
-    %{errors: errors}
+    %{message: "Errors prevented this entity from being processed.", errors: errors}
   end
 
   def render("422.json", %{message: message}) do
@@ -45,7 +47,7 @@ defmodule StitchConnect.Web.ErrorView do
     render("500.html", assigns)
   end
 
-  defp browser_pipeline_equivalent (conn) do
+  defp browser_pipeline_equivalent(conn) do
     # conn needs session & flash values in order to render properly
     # but ErrorView logic bypasses router by Phoenix conventions, so
     # adding the equivalent of the browser pipeline here
