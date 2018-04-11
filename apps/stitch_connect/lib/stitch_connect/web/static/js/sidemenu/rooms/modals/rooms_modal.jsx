@@ -35,7 +35,7 @@ class RoomsModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.state !== this.props.state && !!nextProps.state) {
       // members should be set manualy set empty when modal is open
-      this.setState({ members: [], filter: "" });
+      this.setState({ members: [], filter: "", error: null });
     }
   }
 
