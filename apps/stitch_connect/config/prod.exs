@@ -15,7 +15,10 @@ use Mix.Config
 # which you typically run after static files are built.
 config :stitch_connect, StitchConnect.Web.Endpoint,
   load_from_system_env: true,
-  http: [port: {:system, "PORT"}],
+  http: [
+    port: {:system, "PORT"},
+    compress: true
+  ],
   url: [scheme: "https", host: System.get_env("APP_HOST"), port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   secret_key_base: System.get_env("SECRET_KEY_BASE")
