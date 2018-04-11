@@ -7,17 +7,8 @@ import LoadingIcon from "common/components/loading-icon";
 @inject("mentionsStore")
 @observer
 class Mentions extends Component {
-  componentWillMount() {
-    const { mentionsStore } = this.props;
-
-    if (mentionsStore.isEmpty) {
-      mentionsStore.loadMore();
-    }
-  }
-
   loadMore = () => {
     const { mentionsStore } = this.props;
-
     mentionsStore.loadMore();
   };
 
