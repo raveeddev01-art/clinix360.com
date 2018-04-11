@@ -28,7 +28,6 @@ class RoomsModal extends Component {
       members: [],
       public: true,
       name: "",
-      withError: false,
       error: ""
     };
   }
@@ -109,14 +108,13 @@ class RoomsModal extends Component {
       })
       .then(slug => {
         this.setState({
-          withError: false
+          error: null
         });
         history.push(`/rooms/${slug}`);
         closeModal();
       })
       .catch(response => {
         this.setState({
-          withError: true,
           error: "A group with this name already exists."
         });
       });
@@ -214,7 +212,7 @@ class RoomsModal extends Component {
     return (
       <Modal.Body>
         <Form horizontal>
-          {this.state.withError && (
+          {!!this.state.error && (
             <Alert bsStyle="danger">{this.state.error}</Alert>
           )}
 
