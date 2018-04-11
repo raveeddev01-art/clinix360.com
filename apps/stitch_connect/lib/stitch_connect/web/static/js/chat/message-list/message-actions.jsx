@@ -121,7 +121,7 @@ class MessageActions extends PureComponent {
   render() {
     const { messageStore, message } = this.props;
     const mine = message.user.id === currentUser.id;
-    const unsent = message.sent === false;
+    const unsent = message.status === "sending" || message.status === "failed";
     const { dropup, isEmojiPickerOpen } = this.state;
     const starredCX = message.starred ? "" : "-o";
 
