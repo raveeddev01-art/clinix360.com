@@ -30,12 +30,15 @@ class AvatarImage extends Component {
   }
 
   onImageError = () => {
-    const { user, usersStore } = this.props;
+    const { user: { id }, usersStore } = this.props;
 
     // don't rerequest if we're already using the fallback
     if (!this.state.useFallback) {
-      // get a newly-signed URL (assuming it has expired)
-      usersStore.loadAvatar(user.id);
+      if (id) {
+        // get a newly-signed URL (assuming it has expired)
+        usersStore.loadAvatar(id);
+      }
+
       this.setState({ useFallback: true });
     }
   };
