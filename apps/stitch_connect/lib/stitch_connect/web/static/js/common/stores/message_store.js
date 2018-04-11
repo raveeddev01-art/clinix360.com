@@ -40,6 +40,12 @@ function sortableDateFromMessage(message) {
     .format(`YYYY-MM-DD`);
 }
 
+function isSentMessage(message) {
+  return (
+    message && message.status !== "sending" && message.status !== "failure"
+  );
+}
+
 class MessageStore {
   @observable chatDiv = null; // Div element of chat pane
   messageElements = {}; // Div elements of messages loaded in the chat div
@@ -89,7 +95,11 @@ class MessageStore {
   //    GETTERS     //
   // ////////////// //
 
-  getMessageById = id => this.messages.find(m => m.id === id);
+  getMessageById = (id, enforceSent = false) => {
+    const matchCondition = m =>
+      m.id === id && (!enforceSent || isSentMessage(m));
+    return this.messages.find(matchCondition);
+  };
 
   // Return the message that is immediately after the timestamp given, but not temp message
   getMessageAfterTimestamp = timestamp => {
@@ -824,7 +834,7 @@ class MessageStore {
   editLastMessage() {
     const message = this.messages.find(m => m.user_id === currentUser.id);
 
-    if (message && message.sent !== false && !message.sending) {
+    if (isSentMessage(message)) {
       this.messageInEdit = message;
       this.textInEdit = this.decodeMentions(message.text_content);
     }
@@ -871,7 +881,7 @@ class MessageStore {
 
   @action
   delete(id) {
-    const message = this.getMessageById(id);
+    const message = this.getMessageById(id, true);
 
     if (message) {
       this.groupChannel.push("delete_msg", { message_id: id });
@@ -880,7 +890,7 @@ class MessageStore {
 
   @action
   toggleStar(id) {
-    const message = this.getMessageById(id);
+    const message = this.getMessageById(id, true);
 
     if (message) {
       post(`/api/v1/messages/${id}/toggle-star`);
@@ -889,7 +899,7 @@ class MessageStore {
 
   @action
   togglePin(id) {
-    const message = this.getMessageById(id);
+    const message = this.getMessageById(id, true);
 
     if (message) {
       post(`/api/v1/messages/${id}/toggle-pin`);
