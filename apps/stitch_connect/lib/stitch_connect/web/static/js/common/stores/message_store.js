@@ -847,9 +847,11 @@ class MessageStore {
 
     this.startTyping.flush(); // flushing throttle
 
+    const trimmedEditText = this.textInEdit.trim();
+
     if (
-      !this.textInEdit ||
-      this.messageInEdit.text_content === this.textInEdit
+      !trimmedEditText ||
+      this.messageInEdit.text_content === trimmedEditText
     ) {
       this.cancelEdit();
       return;
@@ -858,7 +860,7 @@ class MessageStore {
     this.groupChannel.push("edit_msg", {
       message_id: this.messageInEdit.id,
       params: {
-        text_content: this.encodeMessage(this.textInEdit)
+        text_content: this.encodeMessage(trimmedEditText)
       }
     });
   }
