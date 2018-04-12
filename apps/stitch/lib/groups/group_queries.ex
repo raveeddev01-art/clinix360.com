@@ -33,16 +33,20 @@ defmodule Stitch.GroupQueries do
     {:ok, Repo.all(query)}
   end
 
-  defp load_groups_for_user(query, %User{} = user) do
+  defp load_groups_for_user(query, %User{} = user, include_user_ids? \\ true) do
     query =
       from(
         g in query,
         left_join: gu in GroupUser,
         on: gu.group_id == g.id and gu.user_id == ^user.id,
         join: u in User,
-        on: u.id == ^user.id,
-        preload: :users
+        on: u.id == ^user.id
       )
+
+    query =
+      if include_user_ids?,
+        do: from(g in query, preload: :users),
+        else: query
 
     query =
       if User.guest?(user) do
@@ -146,13 +150,17 @@ defmodule Stitch.GroupQueries do
   Returns a list of public groups for the user's team, and
   also teams he's been invited to participate in.
   """
-  def available_groups(%User{team_id: team_id} = user) do
+  def available_groups(user_id, include_user_ids? \\ true)
+
+  def available_groups(%User{team_id: team_id} = user, include_user_ids?) do
     Group
     |> where(team_id: ^team_id)
-    |> load_groups_for_user(user)
+    |> load_groups_for_user(user, include_user_ids?)
   end
 
-  def available_groups(user_id), do: available_groups(Repo.get!(User, user_id))
+  def available_groups(user_id, include_user_ids?) do
+    available_groups(Repo.get!(User, user_id), include_user_ids?)
+  end
 
   @doc """
   Returns a list of visible groups for the user given
