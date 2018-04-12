@@ -69,6 +69,8 @@ class MessageForm extends Component {
       return;
     }
 
+    const trimmedText = this.state.text.trim();
+
     if (messageStore.messageInEdit) {
       if (!messageStore.textInEdit) {
         confirmModal({
@@ -83,8 +85,8 @@ class MessageForm extends Component {
       } else {
         messageStore.finishEdit();
       }
-    } else if (this.state.text) {
-      messageStore.sendMessage(this.state.text.trim());
+    } else if (trimmedText) {
+      messageStore.sendMessage(trimmedText);
 
       this.setState({ text: "" });
     }
