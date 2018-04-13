@@ -26,6 +26,8 @@ defmodule Stitch.UploadPreview do
   def add_preview(_upload), do: {:error, "Unsupported type"}
 
   @spec create_preview(map) :: {:ok, map} | {:error, term}
+  def create_preview(%{"mimetype" => "image/tiff"}), do: {:error, "Unsupported type"}
+
   def create_preview(%{"url" => url, "mimetype" => "image/" <> _image}) do
     with {:ok, filename} <- get_filename(url),
          dest = Path.join(System.tmp_dir!(), filename),
