@@ -213,6 +213,8 @@ class SidemenuStore {
   }
 
   showNotificationCard(title, body, tag, onClick = null) {
+    this.playNotificationAudio();
+
     if (!Notification) {
       // in case browser does not support
       return;
@@ -228,8 +230,6 @@ class SidemenuStore {
     if (onClick) {
       notification.onclick = onClick;
     }
-
-    this.playNotificationAudio();
 
     setTimeout(() => {
       notification.close();
