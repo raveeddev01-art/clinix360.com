@@ -18,6 +18,8 @@ class TeamBilling extends Component {
 
     titleStore.setPageName("Billing");
     adminPanelStore.setHeading("Billing", "fa-credit-card");
+
+    this.props.billingStore.loadData();
   }
 
   render() {
