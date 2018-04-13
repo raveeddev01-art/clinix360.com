@@ -257,7 +257,7 @@ class UsersStore {
       groupStore.group.type === "multi_dm"
     ) {
       const changedUser = groupStore.group.users.find(u => u.id === user.id);
-      if (changedUser.username !== user.username) {
+      if (changedUser && changedUser.username !== user.username) {
         changedUser.username = user.username;
         history.replace(groupsStore.getGroupUrl(groupStore.group.id));
       }
