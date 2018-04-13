@@ -108,11 +108,10 @@ class SidemenuStore {
 
     try {
       if (!presenceStore.locked) {
-        // load users only if not locked because it's guarded
-        await usersStore.loadUsers();
+        // Only fetch users and groups when the app is NOT locked, to keep info secure
+        await Promise.all([usersStore.loadUsers(), groupsStore.loadGroups()]);
       }
 
-      await groupsStore.loadGroups();
       this.loadedApp = true;
     } catch (e) {
       // TODO if error occurs here, redirect to error page
