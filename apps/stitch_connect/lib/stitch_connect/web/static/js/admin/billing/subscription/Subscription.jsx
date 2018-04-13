@@ -275,13 +275,13 @@ class Subscription extends Component {
     const { billingStore: { loading } } = this.props;
     const { checkout } = this.state;
 
-    return (
+    return this.props.billingStore.dataLoaded ? (
       <div className="subscription-tab">
         {this.renderHeader()}
         {checkout ? this.renderCheckout() : this.renderSubscription()}
         {loading && <Loading />}
       </div>
-    );
+    ) : null;
   }
 }
 
