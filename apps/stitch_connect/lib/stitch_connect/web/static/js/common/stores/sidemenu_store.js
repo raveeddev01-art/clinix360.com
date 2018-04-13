@@ -213,6 +213,11 @@ class SidemenuStore {
   }
 
   showNotificationCard(title, body, tag, onClick = null) {
+    if (!Notification) {
+      // in case browser does not support
+      return;
+    }
+
     const notification = new Notification(title, {
       body,
       tag,
