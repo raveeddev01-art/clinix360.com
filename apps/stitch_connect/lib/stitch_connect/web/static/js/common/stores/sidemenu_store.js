@@ -112,7 +112,7 @@ class SidemenuStore {
         await Promise.all([usersStore.loadUsers(), groupsStore.loadGroups()]);
       } else {
         // When app is locked, only fetch groups to keep triggering notifications sounds from new messages
-        groupsStore.loadGroups();
+        await groupsStore.loadGroups();
       }
 
       this.loadedApp = true;
