@@ -5,6 +5,8 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
 
   def render("index.json", %{groups: groups, user_id: user_id} = attrs) do
     fetch_users = Map.get(attrs, :fetch_users, true)
+    include_user_ids = Map.get(attrs, :include_user_ids, true)
+
     Enum.map(groups, fn group ->
       json = group_json(group, user_id, fetch_users)
       if fetch_users do
@@ -13,15 +15,18 @@ defmodule StitchConnect.Web.Api.V1.GroupView do
           user_count: Enum.count(group.users),
         })
       else
-        Map.merge(json, %{
-          user_ids: Enum.map(group.users, & &1.id)
-        })
+        if include_user_ids do
+          Map.merge(json, %{ user_ids: Enum.map(group.users, & &1.id) })
+        else
+          json
+        end
       end
     end)
   end
 
   def render("show.json", %{group: group, user_id: user_id} = attrs) do
     fetch_users = Map.get(attrs, :fetch_users, true)
+
     if fetch_users do
       json = group_json(group, user_id)
       Map.merge(json, %{

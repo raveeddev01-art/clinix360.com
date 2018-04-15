@@ -9,6 +9,7 @@ class BillingStore {
   @observable cards = []; // Credit cards
   @observable invoices = []; // History invoices
   @observable contact = {}; // Contact info
+  @observable dataLoaded = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -51,6 +52,7 @@ class BillingStore {
         this.cards = response[1];
         this.invoices = response[2];
         this.contact = response[3];
+        this.dataLoaded = true;
       })
       .catch(() => {
         alertModal({

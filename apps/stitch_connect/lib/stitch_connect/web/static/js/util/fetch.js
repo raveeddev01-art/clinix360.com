@@ -71,13 +71,13 @@ window.jCSRFFetch = function jCSRFFetch(url, params = {}) {
     .then(({ json, response }) => {
       if (!response.ok) {
         if (!hideNotify) {
-          if (json.errors) {
+          if (json && json.errors) {
             const message = Object.keys(json.errors)
               .map(field => `${field} ${json.errors[field][0]}`)
               .join(", ");
 
             notify.show(message, "error");
-          } else if (json.message) {
+          } else if (json && json.message) {
             notify.show(json.message, "error");
           } else {
             notify.show("There was a problem serving your request", "error");

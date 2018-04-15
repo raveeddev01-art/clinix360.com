@@ -12,6 +12,7 @@ import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import FormControl from "react-bootstrap/lib/FormControl";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 import Button from "react-bootstrap/lib/Button";
+import Alert from "react-bootstrap/lib/Alert";
 
 import { Members, Toggle } from "common/components";
 import RoomItem from "./room_item";
@@ -26,14 +27,15 @@ class RoomsModal extends Component {
       filter: "",
       members: [],
       public: true,
-      name: ""
+      name: "",
+      error: ""
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.state !== this.props.state && !!nextProps.state) {
       // members should be set manualy set empty when modal is open
-      this.setState({ members: [], filter: "" });
+      this.setState({ members: [], filter: "", error: null });
     }
   }
 
@@ -105,8 +107,16 @@ class RoomsModal extends Component {
         user_ids: this.state.members.map(user => user.id)
       })
       .then(slug => {
+        this.setState({
+          error: null
+        });
         history.push(`/rooms/${slug}`);
         closeModal();
+      })
+      .catch(response => {
+        this.setState({
+          error: "A group with this name already exists."
+        });
       });
   };
 
@@ -202,6 +212,10 @@ class RoomsModal extends Component {
     return (
       <Modal.Body>
         <Form horizontal>
+          {!!this.state.error && (
+            <Alert bsStyle="danger">{this.state.error}</Alert>
+          )}
+
           <FormGroup>
             <Col sm={3}>
               <Toggle

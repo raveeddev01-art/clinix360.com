@@ -72,11 +72,6 @@ class RootStore {
 
     if (!this.presenceStore.locked) {
       this.userStore.loadUser(currentUser.id);
-      this.globalStarredMessageStore.loadStarredMessages();
-    }
-
-    if (currentUser.roles.includes("admin")) {
-      this.billingStore.loadData();
     }
   }
 
