@@ -158,6 +158,7 @@ defmodule StitchConnect.Web.PushNotifications do
         })
       |> put_data(Map.put(content, "device_id", device.id))
       |> Map.update(:payload, %{}, &(Map.put(&1, "to", device.token)))
+      |> Map.update(:payload, %{}, &(Map.delete(&1, "notification")))
       |> fcm_push(on_response: &handle_fcm_push/1)
     end)
   end
