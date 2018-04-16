@@ -478,6 +478,10 @@
         @include stitch-scroll();
         // overflow: hidden;
 
+        &::-webkit-scrollbar {
+          width: 0;
+        }
+
         &.editing {
           background-color: rgba($brand-primary, 0.1);
         }
