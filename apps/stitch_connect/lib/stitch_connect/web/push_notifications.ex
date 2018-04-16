@@ -152,13 +152,9 @@ defmodule StitchConnect.Web.PushNotifications do
     |> Enum.map(fn device ->
       Stitch.Mobile.NotificationLogger.send(message, user, device, "android")
       [device.token]
-      |> new(%{
-        "body" => message_body,
-        "title" => message_title
-        })
+      |> new()
       |> put_data(Map.put(content, "device_id", device.id))
       |> Map.update(:payload, %{}, &(Map.put(&1, "to", device.token)))
-      |> Map.update(:payload, %{}, &(Map.delete(&1, "notification")))
       |> fcm_push(on_response: &handle_fcm_push/1)
     end)
   end
