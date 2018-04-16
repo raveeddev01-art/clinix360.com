@@ -7,10 +7,19 @@ import AdminApp from "../admin/AdminApp";
 import EngageApp from "../engage/EngageApp";
 import ManageApp from "../manage/ManageApp";
 import ChatApp from "../chat/ChatApp";
+import SystemError from "../common/components/error/system-error";
 
 @inject("presenceStore", "sidemenuStore")
 @observer
 class LockableApp extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showError: false
+    };
+  }
+
   componentDidMount() {
     const {
       presenceStore: {
@@ -48,8 +57,19 @@ class LockableApp extends Component {
     window.removeEventListener("blur", onWindowBlur);
   }
 
+  componentDidCatch(error) {
+    this.setState({ hasError: true });
+    if (Raven) {
+      Raven.captureException(error);
+    }
+  }
+
   render() {
     const { presenceStore, sidemenuStore } = this.props;
+
+    if (this.state.hasError) {
+      return <SystemError />;
+    }
 
     if (presenceStore.locked) {
       return <LockedApp />;
