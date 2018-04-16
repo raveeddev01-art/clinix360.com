@@ -25,7 +25,7 @@ class MessageForm extends Component {
       openMentionMenu: false,
       searchFilter: "",
       openEmojiSearch: false,
-      isFocus: true
+      isFocused: true
     };
   }
 
@@ -190,11 +190,11 @@ class MessageForm extends Component {
   };
 
   onFocus = () => {
-    this.setState({ isFocus: true });
+    this.setState({ isFocused: true });
   };
 
   onBlur = () => {
-    this.setState({ isFocus: false });
+    this.setState({ isFocused: false });
   };
 
   onCloseMentionMenu = () => {
@@ -314,7 +314,7 @@ class MessageForm extends Component {
     });
 
     const inputWrapperClass = classNames("message-input-wrapper", {
-      isFocused: this.state.isFocus
+      isFocused: this.state.isFocused
     });
 
     return (
