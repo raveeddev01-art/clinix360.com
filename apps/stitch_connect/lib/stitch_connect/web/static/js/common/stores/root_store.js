@@ -74,7 +74,7 @@ class RootStore {
       this.userStore.loadUser(currentUser.id);
     }
 
-    this.billingStore.loadSubscription();
+    this.billingStore.initialBillingLoad();
   }
 
   joinChannels() {
