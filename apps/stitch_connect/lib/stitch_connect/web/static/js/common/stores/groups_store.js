@@ -246,6 +246,13 @@ class GroupsStore {
   };
 
   @action
+  loadGroupsWithUsers = () => {
+    return get("/api/v1/groups").then(response => {
+      this.onLoadedGroups(response.data);
+    });
+  };
+
+  @action
   loadAdditionalGroup = groupId => {
     return get(`/api/v1/groups/${groupId}`).then(response => {
       if (!this.getGroupById(groupId)) {
