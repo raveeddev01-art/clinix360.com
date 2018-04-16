@@ -109,7 +109,10 @@ class SidemenuStore {
     try {
       if (!presenceStore.locked) {
         // When app is unlocked, fetch users and groups in parallel
-        await Promise.all([usersStore.loadUsers(), groupsStore.loadGroups()]);
+        await Promise.all([
+          usersStore.loadUsers(),
+          groupsStore.loadGroupsWithUsers()
+        ]);
       } else {
         // When app is locked, only fetch groups to keep triggering notifications sounds from new messages
         await groupsStore.loadGroups();
