@@ -28,7 +28,7 @@ class PeopleList extends Component {
     );
 
     const filteredMembers = users.filter(
-      user => user.roles.indexOf("member") > -1
+      user => user.roles.indexOf("member") > -1 && !user.is_bot
     );
 
     const filteredGuests = users.filter(
