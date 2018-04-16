@@ -17,11 +17,9 @@ class PeopleList extends Component {
   render() {
     const { groupStore, usersStore, presenceStore, teamDirectory } = this.props;
 
-    const groupMembers = groupStore.group.users.filter(
-      u => !u.disabled && !u.is_bot
-    );
+    const groupMembers = groupStore.group.users.filter(u => !u.disabled);
 
-    const teamMembers = usersStore.nonBotUsers.filter(u => !u.disabled);
+    const teamMembers = usersStore.activatedUsers.filter(u => !u.disabled);
 
     const users = teamDirectory ? teamMembers : groupMembers;
 
@@ -39,8 +37,10 @@ class PeopleList extends Component {
         user.roles.indexOf("multi-room-guest") > -1
     );
 
-    const renderUserList = test =>
-      test
+    const filteredBots = users.filter(user => user.is_bot);
+
+    const renderUserList = members =>
+      members
         .sort((user1, user2) => {
           // Sort users alphabetically
           if (user1.full_name.toLowerCase() < user2.full_name.toLowerCase())
@@ -84,6 +84,15 @@ class PeopleList extends Component {
               Guests <span>({filteredGuests.length})</span>
             </h5>
             {renderUserList(filteredGuests)}
+          </div>
+        )}
+
+        {filteredBots.length > 0 && (
+          <div>
+            <h5 className="user-list-heading">
+              Apps <span>({filteredBots.length})</span>
+            </h5>
+            {renderUserList(filteredBots)}
           </div>
         )}
       </div>
