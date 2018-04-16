@@ -74,9 +74,7 @@ class RootStore {
       this.userStore.loadUser(currentUser.id);
     }
 
-    if (currentUser.roles.includes("admin")) {
-      this.billingStore.loadSubscription();
-    }
+    this.billingStore.loadSubscription();
   }
 
   joinChannels() {
