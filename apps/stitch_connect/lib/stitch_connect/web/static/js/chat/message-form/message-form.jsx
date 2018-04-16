@@ -327,7 +327,7 @@ class MessageForm extends Component {
           className={className}
           placeholder="Message"
           maxRows={30}
-          maxlength="4000"
+          maxLength="4000"
           value={text}
           onChange={this.onTextChange}
           onKeyUp={this.onKeyUp}

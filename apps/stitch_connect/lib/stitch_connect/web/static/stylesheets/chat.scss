@@ -64,7 +64,7 @@
         position: relative;
 
         i.fa {
-          color: #666;
+          color: $brand-primary;
           font-size: 18px;
           line-height: 36px;
           position: absolute;
@@ -84,7 +84,7 @@
           height: 36px;
           width: 310px;
           box-shadow: none;
-          border: 2px solid #ccc;
+          border: 2px solid $border-color;
           padding-left: 38px;
           padding-right: 34px;
 
@@ -141,6 +141,7 @@
 
           i.fa {
             width: 1em;
+            color: $brand-primary;
           }
 
           &:focus {
@@ -419,7 +420,7 @@
           display: block;
           width: 30px;
           height: 40px;
-          color: #777;
+          color: $brand-primary;
           font-size: 20px;
           line-height: 40px;
           text-align: center;
@@ -434,7 +435,6 @@
           }
           
           &:hover i.fa {
-            color: $brand-primary;
             -webkit-transform: scale(1.25);
             -moz-transform: scale(1.25);
             -ms-transform: scale(1.25);
@@ -444,7 +444,7 @@
       }
 
       .message-form-upload {
-        border-right: 2px solid #ccc;
+        border-right: 2px solid $border-color;
         right: auto;
         left: 2px;
         top: 0px;
@@ -462,11 +462,13 @@
 
       .message-text {
         display: block;
+        color: #333;
         min-height: 42px;
         max-height: 50vh;
         font-size: 16px;
         border-width: 2px;
         box-shadow: none;
+        border-color: $border-color;
         padding: 8px 72px 8px 43px;
         resize: none;
         @include stitch-scroll();
@@ -893,15 +895,11 @@
 
       .btn {
         width: 34px;
-        color: #666;
+        color: $brand-primary;
         background: #fff;
         border-color: rgba(0, 0, 0, 0.15);
         padding: 4px 8px;
         z-index: 1;
-
-        &:hover {
-          color: $brand-primary;
-        }
       }
 
       .open:before {
@@ -929,6 +927,7 @@
 
             i.fa {	
               width: 1em;	
+              color: $brand-primary;
               margin-right: 5px;	
             }
 
