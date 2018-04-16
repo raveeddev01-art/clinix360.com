@@ -167,8 +167,9 @@ defmodule Stitch.TeamQueries do
       from u in User,
       where: u.team_id == ^team_id,
       where: fragment("? && ?", ^@guest_roles, u.roles),
+      where: u.disabled == ^false,
       update: [
-        set: [disabled: true]
+        set: [disabled: true, updated_at: ^NaiveDateTime.utc_now]
       ]
 
     Repo.update_all(query, [], returning: true)

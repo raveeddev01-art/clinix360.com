@@ -1,8 +1,9 @@
 defmodule StitchConnect.Web.TeamChannel do
   use StitchConnect.Web, :channel
   alias Stitch.Accounts.User
+  alias Stitch.{UserQueries, GroupQueries}
   alias StitchConnect.Web.Presence
-  alias StitchConnect.Web.Api.V1.UserView
+  alias StitchConnect.Web.Api.V1.{UserView, GroupView}
   alias Stitch.Accounts.ActivityTracker
   alias StitchConnect.Web.PushNotifications
 
@@ -10,6 +11,7 @@ defmodule StitchConnect.Web.TeamChannel do
 
   @decorate channel_action()
   def join("team:lobby:" <> team_id, params, socket) do
+    sync_timestamp = get_sync_users(params)
     fetch_users_and_groups? = get_fetch_users_and_groups(params)
     include_user_ids? = get_include_user_ids(params)
 
@@ -17,7 +19,7 @@ defmodule StitchConnect.Web.TeamChannel do
     if team_id == socket.assigns.team_id do
       send self(), :after_join
       if fetch_users_and_groups? do
-        view = render_users_and_groups(socket.assigns, include_user_ids?)
+        view = render_users_and_groups(socket.assigns, include_user_ids?, sync_timestamp)
         {:ok, view, assign(socket, :meta, %{})}
       else
         {:ok, assign(socket, :meta, %{})}
@@ -27,18 +29,27 @@ defmodule StitchConnect.Web.TeamChannel do
     end
   end
 
+  defp get_sync_users(%{"syncUsersTimestamp" => timestamp}), do: timestamp
+  defp get_sync_users(_params), do: nil
+
   defp get_fetch_users_and_groups(%{"fetchUsersAndGroups" => true}), do: true
   defp get_fetch_users_and_groups(_params), do: false
 
   defp get_include_user_ids(%{"includeUserIds" => false}), do: false
   defp get_include_user_ids(_params), do: true
 
-  defp render_users_and_groups(assigns, include_user_ids?) do
-    users = Stitch.UserQueries.users_for_team(assigns.current_user.team_id)
-    users_json = StitchConnect.Web.Api.V1.UserView.render("index.json", users: users)
+  defp render_users_and_groups(assigns, include_user_ids?, sync_users_timestamp) do
+    users =
+      if sync_users_timestamp do
+        UserQueries.users_for_team_after(assigns.current_user.team_id, sync_users_timestamp)
+      else
+        UserQueries.users_for_team(assigns.current_user.team_id)
+      end
 
-    groups = Stitch.GroupQueries.available_groups(assigns.current_user, include_user_ids?)
-    groups_json = StitchConnect.Web.Api.V1.GroupView.render("index.json", [
+    users_json = UserView.render("index.json", users: users)
+
+    groups = GroupQueries.available_groups(assigns.current_user, include_user_ids?)
+    groups_json = GroupView.render("index.json", [
       groups: groups,
       user_id: assigns.current_user.id,
       fetch_users: false,
