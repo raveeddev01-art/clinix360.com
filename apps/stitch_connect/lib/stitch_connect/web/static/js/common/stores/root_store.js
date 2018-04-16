@@ -73,6 +73,10 @@ class RootStore {
     if (!this.presenceStore.locked) {
       this.userStore.loadUser(currentUser.id);
     }
+
+    if (currentUser.roles.includes("admin")) {
+      this.billingStore.loadSubscription();
+    }
   }
 
   joinChannels() {
