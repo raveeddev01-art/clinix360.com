@@ -15,6 +15,12 @@ class BillingStore {
     this.rootStore = rootStore;
   }
 
+  initialBillingLoad() {
+    return get("/api/v1/billing/subscription").then(response => {
+      this.subscription = processSubscriptionData(response.data.data);
+    });
+  }
+
   loadSubscription() {
     return get("/api/v1/billing/subscription").then(response =>
       processSubscriptionData(response.data.data)
