@@ -102,13 +102,13 @@ defmodule Stitch.Accounts.Email do
     |> Stitch.Mailer.deliver_later()
   end
 
-  def unread_messages_email([]), do: nil
-  def unread_messages_email(recipients) do
+  def unread_messages_email([], _team), do: nil
+  def unread_messages_email(recipients, %Stitch.Team{name: team_name}) do
     new_email()
     |> template("Message Waiting - Offline Email (Connect)")
     |> to(Enum.map(recipients, & &1.email))
     |> from(@from_address)
-    |> subject("[Stitch Connect] Notifications for #{format_datetime_subject(DateTime.utc_now)}")
+    |> subject("[Stitch Connect] Notifications from #{team_name}")
     |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
     |> Stitch.Mailer.deliver_later
   end
@@ -123,10 +123,5 @@ defmodule Stitch.Accounts.Email do
       %{"name": "loginUrl", "content": login_url}
     ]
     %{ rcpt: email, vars: vars }
-  end
-
-  defp format_datetime_subject(datetime) do
-    # September 13, 2017 at 08:03 PM"
-    Timex.format!(datetime, "{Mfull} {D}, {YYYY} at {0h12}:{m} {AM}")
   end
 end

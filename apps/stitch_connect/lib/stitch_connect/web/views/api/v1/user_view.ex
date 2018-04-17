@@ -1,6 +1,7 @@
 defmodule StitchConnect.Web.Api.V1.UserView do
   use StitchConnect.Web, :view
   alias Stitch.AWS.S3
+  alias Stitch.Accounts.User
 
   def render("index.json", %{users: users}) do
     Enum.map(users, &user_json/1)
@@ -58,6 +59,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       is_bot: user.is_bot,
       avatar: avatar(user),
       avatar_thumb: avatar_thumb(user),
+      grey_avatar: User.grey_avatar(user),
       onboarded: user.onboarded,
       disabled: user.disabled,
       groups_as_guest: user.groups_as_guest

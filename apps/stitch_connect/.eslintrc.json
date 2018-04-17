@@ -90,17 +90,18 @@
   },
   "globals": {
     "$": true,
-    "notify": true,
-    "currentUser": false,
     "applicationHost": true,
     "applicationScheme": true,
-    "stripePublishableKey": true,
-    "socket": true,
-    "post": true,
+    "currentUser": false,
     "get": true,
-    "remove": true,
-    "put": true,
+    "notify": true,
     "patch": true,
+    "post": true,
+    "put": true,
+    "Raven": true,
+    "remove": true,
+    "socket": true,
+    "stripePublishableKey": true,
     "websocketScheme": true
   }
 }

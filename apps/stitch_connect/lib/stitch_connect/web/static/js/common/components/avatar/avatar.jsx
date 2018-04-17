@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+
 import AvatarImage from "./avatar-image";
 
 class Avatar extends Component {
@@ -10,12 +11,7 @@ class Avatar extends Component {
 
     return (
       <div className={wrapperClass}>
-        <AvatarImage
-          alt={user.username}
-          className={avatarClass}
-          src={user.avatar_thumb}
-          user={user}
-        />
+        <AvatarImage useThumb className={avatarClass} user={user} />
       </div>
     );
   }

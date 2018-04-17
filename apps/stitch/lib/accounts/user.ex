@@ -91,13 +91,6 @@ defmodule Stitch.Accounts.User do
     |> validate_inclusion(:email_notification_preference, ["daily", "hourly", "15min", "never"])
   end
 
-  def with_email_notification_preference(preference)
-      when preference in ["daily", "hourly", "15min", "never"] do
-    User
-    |> where(email_notification_preference: ^preference)
-    |> where(disabled: false)
-  end
-
   def update_preference(%User{} = user, params) do
     Repo.transaction(fn ->
       user_update =
@@ -285,4 +278,29 @@ defmodule Stitch.Accounts.User do
   @spec guest?(User.t()) :: boolean
   def guest?(%User{roles: [role]}) when role in @guest_roles, do: true
   def guest?(%User{}), do: false
+
+  @doc """
+  If the user has not uploaded an avatar, get a cached or new presigned URL for the user.
+  """
+  @spec grey_avatar(User.t()) :: binary | nil
+  def grey_avatar(user) do
+    if has_default_image(user) do
+      filepath = String.split(user.profile_image_url, "/") |> List.last()
+
+      # EX.png
+      name = String.split(filepath, ".") |> List.first()
+
+      # Turn to EX-grey.png
+      grey_avatar_url = String.replace(user.profile_image_url, filepath, "#{name}-grey.png")
+
+      # Fetch a presigned URL for this grey image.
+      StitchConnect.PresignedUrlCache.fetch(grey_avatar_url)
+    end
+  end
+
+  defp has_default_image(user) do
+    # Default images look like this: https://s3.amazonaws.com/stitch-content/ST.png
+    # We check if the image name length ST.png is equal to 6.
+    String.split(user.profile_image_url, "/") |> List.last() |> String.length() == 6
+  end
 end

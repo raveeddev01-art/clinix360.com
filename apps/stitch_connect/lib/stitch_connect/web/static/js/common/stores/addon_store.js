@@ -23,6 +23,7 @@ class AddonStore {
     // when addon panel is closed, collapse pin msgs
     if (!this.showAddons) {
       this.rootStore.pinnedMessageStore.onCollapse(false);
+      this.rootStore.filesStore.onCollapseChange(false);
     }
   }
 
@@ -31,6 +32,23 @@ class AddonStore {
     if (panelType || panelData) {
       this.addonPanelType = panelType;
       this.addonPanelData = panelData;
+    }
+
+    switch (this.addonPanelType) {
+      case "starred":
+        this.rootStore.globalStarredMessageStore.loadStarredMessages();
+        break;
+
+      case "mentions":
+        this.rootStore.mentionsStore.loadMore();
+        break;
+
+      case "files":
+        this.rootStore.globalFilesStore.loadMore();
+        this.rootStore.filesStore.onCollapseChange();
+        break;
+
+      default:
     }
   }
 

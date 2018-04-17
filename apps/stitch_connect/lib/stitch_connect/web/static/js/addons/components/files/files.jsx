@@ -5,33 +5,23 @@ import PropTypes from "prop-types";
 import { AddonMessage } from "common/components";
 import LoadingIcon from "common/components/loading-icon";
 
-@inject("filesStore", "groupStore")
+@inject("filesStore", "globalFilesStore")
 @observer
 class Files extends Component {
-  componentWillMount() {
-    const { filesStore } = this.props;
-
-    if (filesStore.isEmpty) {
-      filesStore.loadMore();
-    }
-  }
-
   loadMore = () => {
-    const { filesStore } = this.props;
+    const fileStore = this.activeFileStore();
+    fileStore.loadMore();
+  };
 
-    filesStore.loadMore();
+  activeFileStore = () => {
+    const { filesStore, globalFilesStore, roomFiles } = this.props;
+    return roomFiles ? filesStore : globalFilesStore;
   };
 
   renderFilesResults() {
-    const { filesStore, groupStore, roomFiles } = this.props;
+    const fileStore = this.activeFileStore();
 
-    const filteredFiles = filesStore.files.filter(
-      file => file.group_id === groupStore.group.id
-    );
-    const allFiles = filesStore.files;
-    const files = roomFiles ? filteredFiles : allFiles;
-
-    if (filesStore.loading) {
+    if (fileStore.loading) {
       return (
         <div className="text-center">
           <LoadingIcon size={2} />
@@ -39,30 +29,32 @@ class Files extends Component {
       );
     }
 
-    if (files.length > 0) {
+    if (fileStore.files.length > 0) {
       return (
         <div>
-          {files.map(file => <AddonMessage key={file.id} message={file} />)}
+          {fileStore.files.map(file => (
+            <AddonMessage key={file.id} message={file} />
+          ))}
         </div>
       );
     }
 
-    return <div className="text-muted text-center">Nothing uploaded yet.</div>;
+    return <div className="text-muted empty-files">Upload the first file!</div>;
   }
 
   render() {
-    const { filesStore } = this.props;
+    const fileStore = this.activeFileStore();
 
     return (
       <div className="files-addon">
         {this.renderFilesResults()}
 
         <div className="footer">
-          {filesStore.hasMore &&
-            !filesStore.loading && (
+          {fileStore.hasMore &&
+            !fileStore.loading && (
               <button
                 className="btn btn-default btn-sm"
-                disabled={filesStore.loading}
+                disabled={fileStore.loading}
                 onClick={this.loadMore}
               >
                 Load more…

@@ -72,7 +72,7 @@ class LinkPreview extends Component {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <strong>{title}</strong>
+              {title}
             </a>
             <div className="link-preview__description">{description}</div>
           </div>

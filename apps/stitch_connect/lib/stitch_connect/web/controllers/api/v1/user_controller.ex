@@ -240,9 +240,14 @@ defmodule StitchConnect.Web.Api.V1.UserController do
 
     with {:user, %User{} = user} <- {:user, Stitch.UserQueries.team_member_by_id(team, user_id)},
          {:ok, presigned_avatar} <- Stitch.AWS.S3.presign(user.profile_image_url),
-         {:ok, presigned_avatar_thumb} <- Stitch.AWS.S3.presign(user.profile_image_thumb_url) do
+         {:ok, presigned_avatar_thumb} <- Stitch.AWS.S3.presign(user.profile_image_thumb_url),
+         presigned_grey_avatar <- User.grey_avatar(user) do
       conn
-      |> json(%{ avatar: presigned_avatar, avatar_thumb: presigned_avatar_thumb })
+      |> json(%{
+        avatar: presigned_avatar,
+        avatar_thumb: presigned_avatar_thumb,
+        grey_avatar: presigned_grey_avatar
+      })
     else
       _error -> {:error, :not_found}
     end

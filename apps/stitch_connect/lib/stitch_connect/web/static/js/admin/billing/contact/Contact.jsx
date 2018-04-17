@@ -188,8 +188,8 @@ class Contact extends Component {
                   onChange={this.onInputChange}
                 >
                   <option value="">Please select country</option>
-                  {COUNTRIES.map(({ alpha3, name }) => (
-                    <option value={alpha3} key={alpha3}>
+                  {COUNTRIES.map(({ alpha3, name }, index) => (
+                    <option value={alpha3} key={`${name}_${index}`}>
                       {name}
                     </option>
                   ))}
@@ -266,8 +266,8 @@ class Contact extends Component {
                       Please select state/province/region
                     </option>
 
-                    {provinces.map(({ short, name }) => (
-                      <option value={short} key={short}>
+                    {provinces.map(({ short, name }, index) => (
+                      <option value={short} key={`${name}_${index}`}>
                         {name}
                       </option>
                     ))}

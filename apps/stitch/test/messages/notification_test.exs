@@ -127,6 +127,22 @@ defmodule Stitch.Message.NotificationTest do
       assert %{desktop: [bob_id], mobile: [bob_id]} = Stitch.Message.Notification.notify_user_ids(general, alice, [])
       assert bob_id == bob.id
     end
+
+    test "excludes active users from core notifications and adds then to mobile_active" do
+      team = insert(:team)
+      bob = insert(:user, username: "bob", team: team, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
+      alice = insert(:user, username: "alice", team: team, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
+      eve = insert(:user, username: "eve", team: team, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
+      general = insert(:group, slug: "general", team: team)
+      _general_bob = insert(:group_user, user: bob, group: general, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
+      _general_alice = insert(:group_user, user: alice, group: general, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
+      _general_eve = insert(:group_user, user: eve, group: general, desktop_notification_preference: "everything", mobile_notification_preference: "everything")
+
+      active_users = [eve.id]
+      assert %{desktop: [bob_id], mobile: [bob_id], mobile_active: [eve_id]} = Stitch.Message.Notification.notify_user_ids(general, alice, [], active_users)
+      assert bob_id == bob.id
+      assert eve_id == eve.id
+    end
   end
 
   describe "Email notifications" do
@@ -135,7 +151,7 @@ defmodule Stitch.Message.NotificationTest do
       insert(:user, username: "b")
       insert(:user, username: "c")
 
-      usernames = Stitch.Accounts.User.with_email_notification_preference("daily")
+      usernames = Stitch.UserQueries.with_email_notification_preference("daily")
       |> Stitch.ChunkStream.chunk(2)
       |> Stream.map(fn l -> Enum.map(l, & &1.username) end) |> Enum.to_list
 

@@ -5,7 +5,6 @@ import classNames from "classnames";
 import Textarea from "react-textarea-autosize";
 import some from "lodash/some";
 
-import { isAdmin } from "lib/utils";
 import { confirmModal } from "common/modals";
 import InsertMenu from "./components/insert-menu";
 import EmojiPicker from "./components/emoji-picker";
@@ -25,7 +24,8 @@ class MessageForm extends Component {
       text: "",
       openMentionMenu: false,
       searchFilter: "",
-      openEmojiSearch: false
+      openEmojiSearch: false,
+      isFocused: true
     };
   }
 
@@ -65,9 +65,11 @@ class MessageForm extends Component {
     const { messageStore, socketStore } = this.props;
 
     // if not connected, just no send message at all
-    if (!socketStore.isConnected || !socketStore.isHealthy) {
+    if (!socketStore.isConnected) {
       return;
     }
+
+    const trimmedText = this.state.text.trim();
 
     if (messageStore.messageInEdit) {
       if (!messageStore.textInEdit) {
@@ -83,8 +85,8 @@ class MessageForm extends Component {
       } else {
         messageStore.finishEdit();
       }
-    } else if (this.state.text) {
-      messageStore.sendMessage(this.state.text.trim());
+    } else if (trimmedText) {
+      messageStore.sendMessage(trimmedText);
 
       this.setState({ text: "" });
     }
@@ -185,6 +187,14 @@ class MessageForm extends Component {
 
       return false;
     });
+  };
+
+  onFocus = () => {
+    this.setState({ isFocused: true });
+  };
+
+  onBlur = () => {
+    this.setState({ isFocused: false });
   };
 
   onCloseMentionMenu = () => {
@@ -291,11 +301,7 @@ class MessageForm extends Component {
   };
 
   renderInput() {
-    const {
-      messageStore: { messageInEdit },
-      socketStore,
-      billingStore: { subscription: { tier } }
-    } = this.props;
+    const { messageStore: { messageInEdit }, socketStore } = this.props;
 
     if (messageInEdit) {
       this.textInput.focus();
@@ -303,21 +309,32 @@ class MessageForm extends Component {
 
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
-      editing:
-        !!messageInEdit || !socketStore.isConnected || !socketStore.isHealthy
+      disconnected: !socketStore.isConnected,
+      editing: !!messageInEdit
+    });
+
+    const inputWrapperClass = classNames("message-input-wrapper", {
+      isFocused: this.state.isFocused
     });
 
     return (
-      <div className="message-input-wrapper">
+      <div className={inputWrapperClass}>
+        <div className="message-form-upload">
+          <InsertMenu />
+        </div>
+
         <Textarea
           className={className}
           placeholder="Message"
-          maxRows={6}
+          maxRows={30}
+          maxLength="4000"
           value={text}
           onChange={this.onTextChange}
           onKeyUp={this.onKeyUp}
           onKeyDown={this.onKeyDown}
           onPaste={this.onPaste}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
           autoFocus
           required
           ref={input => {
@@ -327,7 +344,6 @@ class MessageForm extends Component {
           }}
         />
         <div className="message-form-actions">
-          <InsertMenu />
           <a className="message-form-action-item" onClick={this.startMention}>
             <i className="fa fa-at" />
           </a>

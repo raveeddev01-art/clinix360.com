@@ -1,36 +1,52 @@
 defmodule StitchConnect.MessageMailer do
   use Quantum.Scheduler, otp_app: :stitch_connect
   use Appsignal.Instrumentation.Decorators
+  import Ecto.Query
+  alias Stitch.{Team, UserQueries}
 
   @decorate transaction(:background_job)
   def deliver(notification_preference) do
-    Stitch.Accounts.User.with_email_notification_preference(notification_preference)
-    |> Stitch.ChunkStream.chunk(50)
-    |> Stream.each(&deliver_for_users/1)
+    Team
+    |> select([:id, :name])
+    |> Stitch.ChunkStream.chunk(25)
+    |> Stream.each(& deliver_for_teams(&1, notification_preference))
     |> Stream.run
   end
 
-  def deliver_for_users(users) do
-    users = users |> Stitch.Repo.preload(:team)
-    users_map = Enum.reduce(users, %{}, & Map.put(&2, &1.id, &1))
-    recipients = prepare_recipients(users, users_map)
-    Stitch.Accounts.Email.unread_messages_email(recipients)
-    Stitch.EmailNotification.clean_delivered(Enum.map(recipients, & &1.id))
+  def deliver_for_teams(teams, notification_preference) do
+    Enum.each(teams, &(deliver_for_team(&1, notification_preference)))
   end
 
-  def prepare_recipients(users, users_map) do
+  def deliver_for_team(team, notification_preference) do
+    UserQueries.with_email_notification_preference(notification_preference)
+    |> UserQueries.for_team_query(team.id)
+    |> Stitch.ChunkStream.chunk(50)
+    |> Stream.each(& deliver_for_users(&1, team))
+    |> Stream.run
+  end
+
+  def deliver_for_users(users, team) do
+    recipients = prepare_recipients(users, team)
+    Stitch.Accounts.Email.unread_messages_email(recipients, team)
+    Stitch.EmailNotification.clean_delivered(Enum.map(users, & &1.id))
+  end
+
+  def prepare_recipients(users, team) do
     users
-    |> Enum.map(& &1.id)
-    |> Stitch.EmailNotification.count
-    |> Enum.map(& recipient(users_map[&1.user_id], &1.message_count))
+    |> Enum.reduce([], fn user, acc ->
+      case Stitch.Mobile.badge_value(user) do
+        0 -> acc
+        message_count -> [recipient(user, message_count, team) | acc]
+      end
+    end)
   end
 
-  defp recipient(user, message_count) do
+  defp recipient(user, message_count, team) do
     %{first_name: user.first_name,
       email: user.email,
       id: user.id,
       message_count: message_count,
-      login_url: login_url(user.team) }
+      login_url: login_url(team) }
   end
 
   defp subdomain_url(subdomain) do

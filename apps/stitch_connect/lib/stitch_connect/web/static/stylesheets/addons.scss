@@ -3,7 +3,7 @@
 
   .flex-header {
     color: inherit;
-    background: #fafafa;
+    background: #f5f5f5;
     border-bottom: 1px solid $border-color;
     padding: 15px 15px;
     flex-basis: auto;
@@ -105,7 +105,7 @@
       }
 
       .files-addon .text-muted {
-        text-align: left;
+        font-size: 16px;
       }
     }
   }
@@ -251,6 +251,10 @@
 .directory-addon {
   min-height: 100%;
   background: #fff;
+
+  .files-addon {
+    padding-top: 0;
+  }
 }
 
 .files-addon,

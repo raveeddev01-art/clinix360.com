@@ -26,11 +26,14 @@ defmodule Stitch.UploadPreview do
   def add_preview(_upload), do: {:error, "Unsupported type"}
 
   @spec create_preview(map) :: {:ok, map} | {:error, term}
+  def create_preview(%{"mimetype" => "image/tiff"}), do: {:error, "Unsupported type"}
+
   def create_preview(%{"url" => url, "mimetype" => "image/" <> _image}) do
     with {:ok, filename} <- get_filename(url),
          dest = Path.join(System.tmp_dir!(), filename),
          {:ok, :done} <- S3.download(filename, dest),
-         %Mogrify.Image{path: preview_path} = image <- generate_preview(dest),
+         image <- generate_preview(dest),
+         %Mogrify.Image{path: preview_path} <- image,
          %Mogrify.Image{height: preview_height, width: preview_width} <- Mogrify.verbose(image),
          {:ok, %{status_code: 200}} <- S3.upload(preview_path),
          :ok <- File.rm(dest),

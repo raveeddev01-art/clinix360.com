@@ -5,27 +5,74 @@ defmodule Stitch.Analytics.DailyReports do
 
   """
 
-  alias Stitch.Analytics
-  alias Stitch.Analytics.Event
+  use Appsignal.Instrumentation.Decorators
+  import Ecto.Query
+  alias Stitch.{Analytics, ChunkStream, MessageQueries, Team, TeamQueries}
   alias Stitch.Accounts.User
-  alias Stitch.Team
-  alias Stitch.MessageQueries
-  alias Stitch.TeamQueries
-  alias Stitch.UserQueries
+  alias Stitch.Analytics.Event
 
   @doc """
   Creates a daily report for each team and user in the database.
-
   """
   @spec create :: any
+  @decorate transaction(:background_job)
   def create do
-    teams = TeamQueries.list_teams()
-    users = UserQueries.get_all()
-    resources = teams ++ users
+    Enum.each(
+      [user_query(), team_query()],
+      &create_for_query/1
+    )
+  end
 
+  defp create_for_query(query) do
+    query
+    |> ChunkStream.chunk(50)
+    |> Stream.each(&start_resources_stream/1)
+    |> Stream.run()
+  end
+
+  defp start_resources_stream(resources) do
     Analytics.DailyReports.Supervisor
-    |> Task.Supervisor.async_stream_nolink(resources, &(create(&1)), timeout: :timer.minutes(2))
+    |> Task.Supervisor.async_stream_nolink(
+      resources_to_struct(resources),
+      &(create(&1)),
+      timeout: :timer.minutes(3),
+      max_concurrency: 8
+    )
     |> Enum.to_list()
+  end
+
+  defp user_query do
+    User
+    |> select([u], %{
+      id: u.id,
+      inserted_at: u.inserted_at,
+      onboarded: u.onboarded,
+      is_user: true
+    })
+  end
+
+  defp team_query do
+    Team
+    |> select([t], %{
+      id: t.id,
+      inserted_at: t.inserted_at,
+      is_team: true
+    })
+  end
+
+  # The queries return lists of plain maps, we want
+  # to match on %Team{} & %User{} in MessageQueries &
+  # TeamQueries, so convert them here
+  defp resources_to_struct(resources) do
+    Enum.map(resources, &resource_to_struct/1)
+  end
+
+  defp resource_to_struct(resource) do
+    if (resource[:is_user]) do
+      struct(User, resource)
+    else
+      struct(Team, resource)
+    end
   end
 
   @doc """
@@ -61,3 +108,4 @@ defmodule Stitch.Analytics.DailyReports do
     }
   end
 end
+

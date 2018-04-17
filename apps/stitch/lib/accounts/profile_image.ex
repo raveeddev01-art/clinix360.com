@@ -11,24 +11,27 @@ defmodule Stitch.Accounts.ProfileImage do
       case Ecto.Changeset.fetch_change(changeset, :first_name) do
         {:ok, first_name} ->
           true
-      _ ->
-        false
+
+        _ ->
+          false
       end
 
     last_name_changed =
       case Ecto.Changeset.fetch_change(changeset, :last_name) do
         {:ok, last_name} ->
           true
-      _ ->
-        false
+
+        _ ->
+          false
       end
 
     emptied_profile_image? =
       case Ecto.Changeset.fetch_change(changeset, :profile_image_url) do
         {:ok, profile_image_url} ->
           profile_image_url == nil
-      _ ->
-        false
+
+        _ ->
+          false
       end
 
     # TODO: Database field boolean to track if user uploads a custom avatar?
@@ -42,7 +45,8 @@ defmodule Stitch.Accounts.ProfileImage do
       end
 
     # Regen if user has the default image and changed his name; or if he's deleted his existing profile image.
-    emptied_profile_image? || (profile_image_url_length == 46 && (first_name_changed || last_name_changed))
+    emptied_profile_image? ||
+      (profile_image_url_length == 46 && (first_name_changed || last_name_changed))
   end
 
   @spec create_thumb(binary) :: {:ok, binary} | {:error, term}
@@ -101,7 +105,10 @@ defmodule Stitch.Accounts.ProfileImage do
   def pick_default_random(%User{first_name: first_name, last_name: last_name} = _user) do
     with {:ok, image_path} <- create_from_initials(first_name, last_name),
          {:ok, %{status_code: 200}} <- S3.upload(image_path),
-         :ok <- File.rm(image_path) do
+         {:ok, grey_image_path} <- create_from_initials_grey(first_name, last_name),
+         {:ok, %{status_code: 200}} <- S3.upload(grey_image_path),
+         :ok <- File.rm(image_path),
+         :ok <- File.rm(grey_image_path) do
       {:ok, S3.fullpath(image_path)}
     else
       error ->
@@ -123,7 +130,9 @@ defmodule Stitch.Accounts.ProfileImage do
     sampling_factor = 3
     background_color = "#003366"
     text_color = "#FFFFFF"
-    initials = "#{String.at(first_name, 0)}#{String.at(last_name, 0)}"
+    first_initial = String.at(first_name, 0) |> String.upcase()
+    last_initial = String.at(last_name, 0) |> String.upcase()
+    initials = "#{first_initial}#{last_initial}"
     image_path = System.tmp_dir!() |> Path.join("#{initials}.png")
 
     System.cmd("convert", [
@@ -140,10 +149,10 @@ defmodule Stitch.Accounts.ProfileImage do
       text_color,
       # font location
       "-font",
-      Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Regular.otf"),
+      Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Bold.otf"),
       # font size
       "-pointsize",
-      "300",
+      "250",
       # center text
       "-gravity",
       "center",
@@ -162,5 +171,56 @@ defmodule Stitch.Accounts.ProfileImage do
 
   def create_from_initials(_first_name, _last_name) do
     {:error, "First name and last name must be sent"}
+  end
+
+  @doc """
+  Generates an image using first name and last name of a user using
+  imagemagick's convert command line tool.
+  """
+  @spec create_from_initials_grey(binary, binary) :: {:ok, binary}
+  def create_from_initials_grey(first_name, last_name)
+      when byte_size(first_name) > 0 and byte_size(last_name) > 0 do
+    size = 512
+    resolution = 72
+    sampling_factor = 3
+    background_color = "#f0f0f0"
+    text_color = "#003366"
+    first_initial = String.at(first_name, 0) |> String.upcase()
+    last_initial = String.at(last_name, 0) |> String.upcase()
+    initials = "#{first_initial}#{last_initial}"
+    image_path = System.tmp_dir!() |> Path.join("#{initials}-grey.png")
+
+    System.cmd("convert", [
+      # sample up
+      "-density",
+      "#{resolution * sampling_factor}",
+      # corrected size
+      "-size",
+      "#{size * sampling_factor}x#{size * sampling_factor}",
+      # background color
+      "canvas:#{background_color}",
+      # text color
+      "-fill",
+      text_color,
+      # font location
+      "-font",
+      Application.app_dir(:stitch, "priv/fonts/SourceSansPro-Bold.otf"),
+      # font size
+      "-pointsize",
+      "250",
+      # center text
+      "-gravity",
+      "center",
+      # render text, move down a bit
+      "-annotate",
+      "+0+0",
+      "#{initials}",
+      # sample down to reduce aliasing
+      "-resample",
+      "#{resolution}",
+      image_path
+    ])
+
+    {:ok, image_path}
   end
 end

@@ -246,6 +246,13 @@ class GroupsStore {
   };
 
   @action
+  loadGroupsWithUsers = () => {
+    return get("/api/v1/groups").then(response => {
+      this.onLoadedGroups(response.data);
+    });
+  };
+
+  @action
   loadAdditionalGroup = groupId => {
     return get(`/api/v1/groups/${groupId}`).then(response => {
       if (!this.getGroupById(groupId)) {
@@ -317,7 +324,8 @@ class GroupsStore {
   @action
   createGroup = params => {
     return post("/api/v1/groups", {
-      body: params
+      body: params,
+      hideNotify: true
     }).then(resp => {
       const { data } = resp;
       this.onCreatedGroup(data);
@@ -400,6 +408,7 @@ class GroupsStore {
       channelStore,
       messageStore,
       pinnedMessageStore,
+      filesStore,
       groupStore
     } = this.rootStore;
 
@@ -415,8 +424,9 @@ class GroupsStore {
     // reset current group
     groupStore.reset();
 
-    // Reset pinned messages
+    // Reset pinned messages and files
     pinnedMessageStore.reset();
+    filesStore.reset();
   };
 
   /**

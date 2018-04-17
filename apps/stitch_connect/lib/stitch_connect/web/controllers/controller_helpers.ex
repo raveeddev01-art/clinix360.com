@@ -150,4 +150,7 @@ defmodule StitchConnect.Web.ControllerHelpers do
   # Note: remove once all clients are updated and don't rely on embedded users.
   def get_fetch_users_param(%{"fetchUsers" => "false"}), do: false
   def get_fetch_users_param(_params), do: true
+
+  def get_include_user_ids(%{"includeUserIds" => "false"}), do: false
+  def get_include_user_ids(_params), do: true
 end

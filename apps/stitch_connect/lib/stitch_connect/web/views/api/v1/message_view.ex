@@ -9,6 +9,11 @@ defmodule StitchConnect.Web.Api.V1.MessageView do
     Enum.map(messages, &message_json/1)
   end
 
+  def render("starred.json", %{message: message, user_id: user_id}) do
+    message_json(message)
+    |> Map.put(:starred_by_user_id, user_id)
+  end
+
   def render("show.json", %{message: message}) do
     message_json(message)
   end

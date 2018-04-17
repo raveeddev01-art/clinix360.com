@@ -16,24 +16,75 @@ defmodule Stitch.Message.Notification do
 
   def notify_user_ids(%{slug: "__dm:" <> _} = group, author, _mentioned_user_ids, active_user_ids) do
     %{desktop: desktop, mobile: mobile, email: email} = dm_notify_categories(group.id)
-    notify_desktop_user_ids = desktop -- [author.id | active_user_ids]
-    notify_mobile_user_ids = mobile -- [author.id | active_user_ids]
-    notify_email_user_ids = email -- [author.id | active_user_ids]
-    %{desktop: notify_desktop_user_ids,
-      mobile: notify_mobile_user_ids,
-      email: notify_email_user_ids}
+
+    without_active = & &1 -- active_user_ids
+    without_author = & &1 -- [author.id]
+    without_author_or_active = & &1 |> without_active.() |> without_author.()
+
+    desktop_user_ids_to_notify = desktop
+      |> without_author_or_active.()
+
+    email_user_ids_to_notify = email
+      |> without_author_or_active.()
+
+    mobile_user_ids_to_notify = mobile
+      |> without_author_or_active.()
+
+    mobile_active_user_ids_to_notify = mobile
+      |> intersect(active_user_ids)
+      |> without_author.()
+
+    %{
+      desktop: desktop_user_ids_to_notify,
+      email: email_user_ids_to_notify,
+      mobile: mobile_user_ids_to_notify,
+      mobile_active: mobile_active_user_ids_to_notify,
+    }
   end
 
   def notify_user_ids(group, author, mentioned_user_ids, active_user_ids) do
-    %{desktop_everything: with_desktop_enabled,
-      desktop_nothing: with_desktop_disabled,
-      mobile_everything: with_mobile_enabled,
-      mobile_nothing: with_mobile_disabled,
-      email_never: email_never} = notify_categories(group.id)
-    %{desktop: Enum.uniq(mentioned_user_ids ++ with_desktop_enabled) -- ([author.id | with_desktop_disabled] ++ active_user_ids),
-      mobile: Enum.uniq(mentioned_user_ids ++ with_mobile_enabled) -- ([author.id | with_mobile_disabled ] ++ active_user_ids),
-      email: mentioned_user_ids -- ([author.id | email_never] ++ active_user_ids)}
+    %{desktop_everything: desktop_enabled,
+      desktop_nothing: desktop_disabled,
+      mobile_everything: mobile_enabled,
+      mobile_nothing: mobile_disabled,
+      email_never: email_disabled} = notify_categories(group.id)
+
+    # helper lambdas
+    with_mentioned = & Enum.uniq(&1 ++ mentioned_user_ids)
+    without_active = & &1 -- active_user_ids
+    without_author = & &1 -- [author.id]
+    without_author_or_active = & &1 |> without_active.() |> without_author.()
+    without_desktop_disabled = & &1 -- desktop_disabled
+    without_mobile_disabled = & &1 -- mobile_disabled
+    without_email_disabled = & &1 -- email_disabled
+
+    desktop_user_ids_to_notify = desktop_enabled
+      |> with_mentioned.()
+      |> without_author_or_active.()
+      |> without_desktop_disabled.()
+
+    mobile_user_ids_to_notify = mobile_enabled
+      |> with_mentioned.()
+      |> without_author_or_active.()
+      |> without_mobile_disabled.()
+
+    email_user_ids_to_notify = mentioned_user_ids
+      |> without_author_or_active.()
+      |> without_email_disabled.()
+
+    mobile_active_user_ids_to_notify = mobile_enabled
+      |> with_mentioned.()
+      |> intersect(active_user_ids)
+      |> without_author.()
+      |> without_mobile_disabled.()
+
+    %{desktop: desktop_user_ids_to_notify,
+      mobile: mobile_user_ids_to_notify,
+      mobile_active: mobile_active_user_ids_to_notify,
+      email: email_user_ids_to_notify}
   end
+
+  defp intersect(a, b), do: a -- (a -- b)
 
   @doc """
   Takes id of a group and returns a map that splits group users into different notificatin categories
@@ -47,7 +98,7 @@ defmodule Stitch.Message.Notification do
         mobile_nothing: [],     // users that disabled mobile notification for this group
       }
   """
-  def notify_categories(group_id) do
+  defp notify_categories(group_id) do
     GroupUser
     |> join(:inner, [gu], u in User, gu.user_id == u.id)
     |> where([gu, u], gu.group_id == ^group_id)
@@ -68,7 +119,7 @@ defmodule Stitch.Message.Notification do
   @doc """
   For dm and multi-dm, we want to notify all users whose global notification settings aren't set to "nothing".
   """
-  def dm_notify_categories(group_id) do
+  defp dm_notify_categories(group_id) do
     GroupUser
     |> join(:inner, [gu], u in User, gu.user_id == u.id)
     |> where([gu, u], gu.group_id == ^group_id)
