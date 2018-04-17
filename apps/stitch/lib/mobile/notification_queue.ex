@@ -63,16 +63,9 @@ defmodule Stitch.Mobile.NotificationQueue do
   The user has just read these messages and so we won't be sending PNs with them.
   """
   @spec remove_message_ids(pos_integer, [pos_integer]) :: :ok | {:error, any}
-<<<<<<< HEAD
   def remove_message_ids(_user_id, []), do: :ok
-  def remove_message_ids(user_id, message_ids) do
-=======
-  def remove_message_ids(user_id, []), do: :ok
 
   def remove_message_ids(user_id, message_ids) do
-    # Logger.info("Remove message ids: #{message_ids}")
-
->>>>>>> master
     result =
       Redix.command(
         [
