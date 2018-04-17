@@ -8,6 +8,7 @@ import EngageApp from "../engage/EngageApp";
 import ManageApp from "../manage/ManageApp";
 import ChatApp from "../chat/ChatApp";
 import SystemError from "../common/components/error/system-error";
+import browserDetails from "../lib/browser_details";
 
 @inject("presenceStore", "sidemenuStore")
 @observer
@@ -15,9 +16,14 @@ class LockableApp extends Component {
   constructor(props) {
     super(props);
 
+    const shouldRedirect = browserDetails.mobile;
+
     this.state = {
-      showError: false
+      showError: false,
+      shouldRedirect
     };
+
+    if (shouldRedirect) window.location.href = "/apps";
   }
 
   componentDidMount() {
@@ -66,6 +72,7 @@ class LockableApp extends Component {
 
   render() {
     const { presenceStore, sidemenuStore } = this.props;
+    const { shouldRedirect } = this.state;
 
     if (this.state.hasError) {
       return <SystemError />;
@@ -77,12 +84,14 @@ class LockableApp extends Component {
 
     if (sidemenuStore.loadedApp) {
       return (
-        <Switch>
-          <Route path="/admin" component={AdminApp} />
-          <Route exact path="/engage" component={EngageApp} />
-          <Route exact path="/manage" component={ManageApp} />
-          <Route path="/" component={ChatApp} />
-        </Switch>
+        !shouldRedirect && (
+          <Switch>
+            <Route path="/admin" component={AdminApp} />
+            <Route exact path="/engage" component={EngageApp} />
+            <Route exact path="/manage" component={ManageApp} />
+            <Route path="/" component={ChatApp} />
+          </Switch>
+        )
       );
     }
 
