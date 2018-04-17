@@ -1,6 +1,5 @@
 defmodule StitchConnect.Web.Api.V1.IntegrationConfigView do
   use StitchConnect.Web, :view
-  alias StitchConnect.Web.Api.V1.UserView
 
   def render("index.json", %{integration_configs: configs}) do
     Enum.map(configs, fn config ->
@@ -16,7 +15,7 @@ defmodule StitchConnect.Web.Api.V1.IntegrationConfigView do
     end)
   end
 
-  def render("show.json", %{integration_config: integration_config} = attrs) do
+  def render("show.json", %{integration_config: integration_config}) do
     %{
       id: integration_config.id,
       integration_id: integration_config.integration_id,

@@ -239,10 +239,6 @@ defmodule StitchConnect.Web.GroupChannel do
     message_delete_failure_reply(socket)
   end
 
-  defp message_delete_failure_reply(socket) do
-    {:reply, {:error, %{message: "Failed to delete message"}}, socket}
-  end
-
   @decorate channel_action()
   def handle_in("delete_msg_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
     %{group: group, current_user: user} = socket.assigns
@@ -460,6 +456,10 @@ defmodule StitchConnect.Web.GroupChannel do
       {:reply, {:error, %{message: "Only members can write messages.", request_id: request_id}},
        socket}
     end
+  end
+
+  defp message_delete_failure_reply(socket) do
+    {:reply, {:error, %{message: "Failed to delete message"}}, socket}
   end
 
   defp mark_as_read_response({:error, reason}, _user, socket) do
