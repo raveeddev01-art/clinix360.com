@@ -12,8 +12,7 @@ defmodule Stitch.Analytics.Billing do
   @event_payment_started "Payment Started"
   @event_payment_modified "Payment Modification"
 
-  # SHIM: remove old tiers once conversions are done
-  @paid_tiers ["STANDARD", "PREMIUM", "POWER", "BASIC"]
+  @paid_tiers ["STANDARD", "PREMIUM"]
 
   @doc """
   Logs events for new subscriptions.

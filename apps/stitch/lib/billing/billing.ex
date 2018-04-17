@@ -8,8 +8,7 @@ defmodule Stitch.Billing do
   alias Stitch.{Repo, Team, TeamQueries, FeatureGateway}
   alias Stitch.Billing.{Plan, Subscription, PaymentMethod, PaymentHistory}
 
-  # SHIM: remove old tiers once conversions are done
-  @paid_tiers ["STANDARD", "PREMIUM", "POWER", "BASIC"]
+  @paid_tiers ["STANDARD", "PREMIUM"]
 
   @stripe_client Application.get_env(:stitch, :stripe_client)
   @billable_roles ["admin", "member", "multi-room-guest"]
@@ -118,10 +117,6 @@ defmodule Stitch.Billing do
   """
   @spec modify_subscription(Subscription.t(), map) ::
           {:ok, Subscription.t()} | {:error, Ecto.Changeset.t() | :card_required}
-  # SHIM: Remove once all trials have been converted
-  def modify_subscription(%Subscription{tier: "TRIAL"} = subscription, params) do
-    do_modify_subscription(subscription, params, &create_subscription/2)
-  end
 
   def modify_subscription(%Subscription{tier: "FREE"} = subscription, params) do
     do_modify_subscription(subscription, params, &create_subscription/2)
