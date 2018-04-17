@@ -31,8 +31,7 @@ defmodule Stitch.FeatureGateway.Connect do
   end
 
   defp guests(features, team) do
-    # SHIM: remove old subscription types once conversion is done
-    if team.subscription.tier in ["STANDARD", "PREMIUM", "POWER"] do
+    if team.subscription.tier in ["STANDARD", "PREMIUM"] do
       ["connect.guests" | features]
     else
       features
@@ -40,8 +39,7 @@ defmodule Stitch.FeatureGateway.Connect do
   end
 
   defp private_rooms(features, team) do
-    # SHIM: remove old subscription types once conversion is done
-    if team.subscription.tier in ["FREE", "STANDARD", "PREMIUM", "POWER", "TRIAL"] do
+    if team.subscription.tier in ["FREE", "STANDARD", "PREMIUM"] do
       ["connect.private_rooms" | features]
     else
       features
