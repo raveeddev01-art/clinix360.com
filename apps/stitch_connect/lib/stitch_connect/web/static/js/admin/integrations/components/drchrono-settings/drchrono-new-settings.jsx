@@ -6,6 +6,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import Panel from "react-bootstrap/lib/Panel";
 import Breadcrumb from "react-bootstrap/lib/Breadcrumb";
 import DrChronoForm from "./drchrono-form";
+import DrChronoSetupInstructions from "./drchrono-setup-instructions";
+import IntegrationRoomPicker from "../integration-room-picker";
 
 @inject("titleStore", "adminPanelStore")
 class DrChronoNewSettings extends Component {
@@ -50,6 +52,30 @@ class DrChronoNewSettings extends Component {
             patients under the care of the platform.
           </h4>
         </Panel.Heading>
+
+        <Panel.Body>
+          <Panel className="integrations-settings__panel">
+            <Panel.Heading>
+              <h3>Post to room</h3>
+            </Panel.Heading>
+
+            <Panel.Body>
+              <IntegrationRoomPicker name="drchrono" appId={1} />
+            </Panel.Body>
+          </Panel>
+        </Panel.Body>
+
+        <Panel.Body>
+          <Panel className="integrations-settings__panel">
+            <Panel.Heading>
+              <h3>Setup Instructions</h3>
+            </Panel.Heading>
+
+            <Panel.Body>
+              <DrChronoSetupInstructions />
+            </Panel.Body>
+          </Panel>
+        </Panel.Body>
 
         <Panel.Body>
           <Panel className="integrations-settings__panel">

@@ -84,6 +84,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post("/users/exists", UserController, :exists?)
     post("/users/validate-phone-number", UserController, :validate_phone_number)
     post("/invitations/accept/:token", InvitationController, :accept)
+    get("/apps", AppController, :index)
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -120,15 +121,6 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/integrations", IntegrationController, :index)
     post("/integrations/:id/enable", IntegrationController, :enable)
     post("/integrations/:id/disable", IntegrationController, :disable)
-    get("/integration-configs", IntegrationConfigController, :index)
-    post("/integration-configs/:id", IntegrationConfigController, :update)
-    delete("/integration-configs/:id", IntegrationConfigController, :delete)
-
-    post(
-      "/integrations/:integration_id/integration-config",
-      IntegrationConfigController,
-      :create
-    )
 
     get("/users/", UserController, :index)
     put("/users/notification-preference", NotificationPreferenceController, :update_global)

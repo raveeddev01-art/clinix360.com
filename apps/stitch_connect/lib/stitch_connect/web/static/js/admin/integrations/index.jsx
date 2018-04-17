@@ -14,7 +14,6 @@ class Integrations extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
-    this.props.integrationStore.loadIntegrations();
   }
 
   onSuccess = message => {
@@ -49,10 +48,15 @@ class Integrations extends Component {
         </Panel.Heading>
 
         <Panel.Body>
-          <IntegrationPanel
-            title="drchrono"
-            description="All-in-one practice management, electronic health records and billing solutions."
-          />
+          {this.props.integrationStore.apps.map(app => (
+            <IntegrationPanel
+              key={`app-${app.slug}`}
+              title={app.name}
+              slug={app.slug}
+              description={app.description}
+              icon={app.icon_url}
+            />
+          ))}
         </Panel.Body>
       </Panel>
     );

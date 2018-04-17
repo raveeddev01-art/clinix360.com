@@ -12,14 +12,15 @@ defmodule Stitch.Integration do
 
   schema "integrations" do
     belongs_to(:team, Team)
+
     field(:name, :string)
     field(:webhook_token, :string)
     field(:settings, :map)
     field(:enabled, :boolean, default: false)
+    field(:authenticated, :boolean, default: false)
+    field(:credentials, :map)
 
     timestamps()
-
-    has_many(:integration_configs, Stitch.IntegrationConfig, on_delete: :delete_all)
   end
 
   def changeset(struct, attrs) do
