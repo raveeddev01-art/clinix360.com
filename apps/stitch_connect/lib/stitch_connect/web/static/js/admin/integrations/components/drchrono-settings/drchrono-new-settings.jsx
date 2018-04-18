@@ -5,15 +5,25 @@ import { LinkContainer } from "react-router-bootstrap";
 
 import Panel from "react-bootstrap/lib/Panel";
 import Breadcrumb from "react-bootstrap/lib/Breadcrumb";
-import DrChronoForm from "./drchrono-form";
-import DrChronoSetupInstructions from "./drchrono-setup-instructions";
 import IntegrationRoomPicker from "../integration-room-picker";
 
-@inject("titleStore", "adminPanelStore")
+@inject("titleStore", "adminPanelStore", "integrationStore")
 class DrChronoNewSettings extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      appId: null
+    };
+  }
+
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
+    const appId = this.props.integrationStore.apps.find(
+      app => app.name === "drchrono"
+    ).id;
+
+    this.setState({ appId: appId });
   }
 
   render() {
@@ -60,31 +70,7 @@ class DrChronoNewSettings extends Component {
             </Panel.Heading>
 
             <Panel.Body>
-              <IntegrationRoomPicker name="drchrono" appId={1} />
-            </Panel.Body>
-          </Panel>
-        </Panel.Body>
-
-        <Panel.Body>
-          <Panel className="integrations-settings__panel">
-            <Panel.Heading>
-              <h3>Setup Instructions</h3>
-            </Panel.Heading>
-
-            <Panel.Body>
-              <DrChronoSetupInstructions />
-            </Panel.Body>
-          </Panel>
-        </Panel.Body>
-
-        <Panel.Body>
-          <Panel className="integrations-settings__panel">
-            <Panel.Heading>
-              <h3>Integration Settings</h3>
-            </Panel.Heading>
-
-            <Panel.Body>
-              <DrChronoForm new />
+              <IntegrationRoomPicker name="drchrono" appId={this.state.appId} />
             </Panel.Body>
           </Panel>
         </Panel.Body>

@@ -19,7 +19,7 @@ class IntegrationRoomPicker extends Component {
     super(props);
 
     this.state = {
-      groupId: undefined
+      groupId: null
     };
   }
 
@@ -27,9 +27,8 @@ class IntegrationRoomPicker extends Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-
     this.setState({
-      [name]: value
+      [name]: parseInt(value, 10)
     });
   };
 
@@ -41,9 +40,9 @@ class IntegrationRoomPicker extends Component {
       groupId: this.state.groupId
     };
 
-    // this.props.integrationStore.createNewIntegration(params).then(() => {
-    //   history.push(`/admin/integrations/drchrono`);
-    // });
+    this.props.integrationStore.createNewIntegration(params).then(() => {
+      history.push(`/admin/integrations/drchrono`);
+    });
   };
 
   render() {
@@ -86,5 +85,10 @@ class IntegrationRoomPicker extends Component {
     );
   }
 }
+
+IntegrationRoomPicker.propTypes = {
+  name: PropTypes.string.isRequired,
+  appId: PropTypes.number.isRequired
+};
 
 export default IntegrationRoomPicker;

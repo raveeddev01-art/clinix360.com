@@ -9,6 +9,7 @@ import Breadcrumb from "react-bootstrap/lib/Breadcrumb";
 import Button from "react-bootstrap/lib/Button";
 
 import DrChronoForm from "./drchrono-form";
+import DrChronoSetupInstructions from "./drchrono-setup-instructions";
 import { confirmModal } from "common/modals";
 
 @inject("titleStore", "adminPanelStore", "integrationStore")
@@ -92,6 +93,30 @@ class DrChronoEditSettings extends Component {
             <Panel.Heading>
               <h3>Integration Settings</h3>
             </Panel.Heading>
+
+            <Panel.Body>
+              <Panel className="integrations-settings__panel">
+                <Panel.Heading>
+                  <h3>Setup Instructions</h3>
+                </Panel.Heading>
+
+                <Panel.Body>
+                  <DrChronoSetupInstructions />
+                </Panel.Body>
+              </Panel>
+            </Panel.Body>
+
+            <Panel.Body>
+              <Panel className="integrations-settings__panel">
+                <Panel.Heading>
+                  <h3>Integration Settings</h3>
+                </Panel.Heading>
+
+                <Panel.Body>
+                  <DrChronoForm new />
+                </Panel.Body>
+              </Panel>
+            </Panel.Body>
 
             <Panel.Body>
               <DrChronoForm />

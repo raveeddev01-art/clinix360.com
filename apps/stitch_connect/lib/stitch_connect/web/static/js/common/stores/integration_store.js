@@ -20,6 +20,11 @@ class IntegrationStore {
   }
 
   @action
+  createNewIntegration = params => {
+    console.log("Creating with params:", params);
+  };
+
+  @action
   loadAppCatalog = () => {
     return get(`/api/v1/apps`).then(response => {
       this.apps = response.data;
