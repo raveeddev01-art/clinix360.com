@@ -28,6 +28,9 @@ defmodule Stitch.Message do
     field(:has_links, :boolean, default: false)
     field(:link_previews_generated, :boolean, default: false)
     field(:meteor_id, :string)
+    field(:client_device, :string, default: "unknown")
+    field(:client_os, :string, default: "unknown")
+    field(:client_type, :string, default: "unknown")
     embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
     timestamps()
