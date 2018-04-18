@@ -11,6 +11,7 @@ defmodule Stitch.Analytics.DailyReports.Scheduler do
 
   use GenServer
   alias Stitch.Analytics.DailyReports
+  alias Stitch.Analytics.TeamSnapshot
 
   @name {:global, __MODULE__}
 
@@ -18,11 +19,15 @@ defmodule Stitch.Analytics.DailyReports.Scheduler do
 
   def start_link do
     case GenServer.start_link(__MODULE__, nil, name: @name) do
-      {:ok, pid} -> {:ok, pid}
+      {:ok, pid} ->
+        {:ok, pid}
+
       {:error, {:already_started, pid}} ->
         Process.link(pid)
         {:ok, pid}
-      :ignore -> :ignore
+
+      :ignore ->
+        :ignore
     end
   end
 
@@ -39,8 +44,10 @@ defmodule Stitch.Analytics.DailyReports.Scheduler do
 
   def handle_info(:create, state) do
     today = Date.utc_today()
+
     if state != today do
-      DailyReports.create()
+      Stitch.Task.start(&DailyReports.create/0)
+      Stitch.Task.start(&TeamSnapshot.create/0)
       schedule_next()
       {:noreply, today}
     else
@@ -50,7 +57,8 @@ defmodule Stitch.Analytics.DailyReports.Scheduler do
   end
 
   defp schedule_next do
-    Process.send_after(self(), :create, 300_000) # In 5 minutes
+    # In 5 minutes
+    Process.send_after(self(), :create, 300_000)
   end
 
   defp enabled? do
