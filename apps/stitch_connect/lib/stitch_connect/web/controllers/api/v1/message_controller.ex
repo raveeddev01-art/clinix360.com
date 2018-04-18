@@ -309,7 +309,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     end
   end
 
-  def delete_message_link_preview(conn, %{"id" => message_id, "link" => link} = params) do
+  def delete_message_link_preview(conn, %{"id" => message_id, "link" => link} = _params) do
     current_user = conn.assigns.current_user
 
     with {:message, %Message{} = message} <-

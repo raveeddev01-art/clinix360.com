@@ -10,7 +10,7 @@ export default class WindowsDesktop extends Component {
         </h5>
 
         <a
-          href="https://teamstitchapp.com/download-win"
+          href="https://teamstitch.com/download-win"
           className="btn btn-primary btn-lg btn-block m-b-40"
         >
           Download

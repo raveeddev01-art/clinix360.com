@@ -9,21 +9,10 @@ defmodule Stitch.Billing.Plan do
   def id(%{tier: "PREMIUM", renewal_frequency: "YEARLY"}), do: "premium_yearly"
   def id(%{tier: tier, renewal_frequency: duration}), do: "#{tier}_#{duration}"
 
-  # SHIM: Remove once subscription conversion is done
-  def id(%{tier: "BASIC", renewal_frequency: "MONTHLY"}), do: "basic_monthly"
-  def id(%{tier: "BASIC", renewal_frequency: "YEARLY"}), do: "basic_yearly"
-  def id(%{tier: "POWER", renewal_frequency: "MONTHLY"}), do: "power_monthly"
-  def id(%{tier: "POWER", renewal_frequency: "YEARLY"}), do: "power_yearly"
-
   @doc """
   Returns a user-friendly plan name.
   """
   def display_name("FREE"), do: "Free"
   def display_name("STANDARD"), do: "Standard"
   def display_name("PREMIUM"), do: "Premium"
-
-  # SHIM: Remove once subscription conversion is done
-  def display_name("TRIAL"), do: "Trial"
-  def display_name("BASIC"), do: "Basic"
-  def display_name("POWER"), do: "Power"
 end

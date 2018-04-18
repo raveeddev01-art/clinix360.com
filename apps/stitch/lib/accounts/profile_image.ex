@@ -9,7 +9,7 @@ defmodule Stitch.Accounts.ProfileImage do
   def needs_avatar_regen(changeset) do
     first_name_changed =
       case Ecto.Changeset.fetch_change(changeset, :first_name) do
-        {:ok, first_name} ->
+        {:ok, _first_name} ->
           true
 
         _ ->
@@ -18,7 +18,7 @@ defmodule Stitch.Accounts.ProfileImage do
 
     last_name_changed =
       case Ecto.Changeset.fetch_change(changeset, :last_name) do
-        {:ok, last_name} ->
+        {:ok, _last_name} ->
           true
 
         _ ->
