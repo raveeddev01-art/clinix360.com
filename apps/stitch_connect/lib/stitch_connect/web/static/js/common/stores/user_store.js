@@ -41,34 +41,27 @@ class UserStore {
   }
 
   @action
-  loadUser = id => {
-    this.loading = true;
-    this.id = id;
+  setCurrentUser = response => {
+    const data = response.find(u => u.id === currentUser.id);
 
-    get(`/api/v1/users/${id}`).then(resp => {
-      this.loading = false;
+    this.username = data.dataname;
+    this.phone = data.phone || "";
+    this.title = data.title || "";
+    this.email = data.email;
+    this.firstName = data.first_name;
+    this.lastName = data.last_name;
+    this.fullName = data.full_name;
 
-      const { data } = resp;
+    if (
+      data.avatar &&
+      data.avatar.indexOf("stitch-content/default-avatar") < 0
+    ) {
+      this.hasAvatar = true;
+    }
+    this.avatar = data.avatar;
+    this.avatarThumb = data.avatar_thumb;
 
-      this.username = data.username;
-      this.phone = data.phone || "";
-      this.title = data.title || "";
-      this.email = data.email;
-      this.firstName = data.first_name;
-      this.lastName = data.last_name;
-      this.fullName = data.full_name;
-
-      if (
-        data.avatar &&
-        data.avatar.indexOf("stitch-content/default-avatar") < 0
-      ) {
-        this.hasAvatar = true;
-      }
-      this.avatar = data.avatar;
-      this.avatarThumb = data.avatar_thumb;
-
-      this.roles = data.roles;
-    });
+    this.roles = data.roles;
   };
 
   @action
