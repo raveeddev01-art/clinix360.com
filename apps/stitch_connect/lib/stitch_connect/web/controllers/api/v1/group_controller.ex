@@ -394,7 +394,7 @@ defmodule StitchConnect.Web.Api.V1.GroupController do
         _ -> nil
       end
     else
-      with %Group{} = group = GroupQueries.get_by_id(group_id) do
+      with %Group{} = group <- GroupQueries.get_by_id(group_id) do
         user_ids = Stitch.GroupUser.user_ids(group.id)
         Map.put(group, :user_ids, user_ids)
       else

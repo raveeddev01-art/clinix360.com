@@ -33,7 +33,7 @@ defmodule StitchConnect.Web.Api.V1.UserController do
     end
   end
 
-  def deactivate_my_account(conn, params) do
+  def deactivate_my_account(conn, _params) do
     id = conn.assigns.current_user.id
     with false <- Enum.member?(conn.assigns.current_user.roles, "admin"),
          {:ok, _user} <- Stitch.Accounts.Admin.deactivate(conn.assigns.team, id) do

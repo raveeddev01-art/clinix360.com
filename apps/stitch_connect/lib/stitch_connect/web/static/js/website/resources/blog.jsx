@@ -199,7 +199,7 @@ export default class Blog extends Component {
                   The mission of Stitch is to empower healthcare teams to build
                   high-quality customer experiences for their patients. If
                   you’re passionate about this movement, join us! We’re{" "}
-                  <a href="https://teamstitchapp.com/jobs">hiring</a>.
+                  <a href="https://teamstitch.com/jobs">hiring</a>.
                 </p>
 
                 <ul className="list-inline text-center m-b-30 share-buttons">

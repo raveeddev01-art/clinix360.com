@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.Api.V1.IntegrationConfigController do
   use StitchConnect.Web, :controller
-  alias Stitch.{Integration, IntegrationConfig, IntegrationAuthorization}
+  alias Stitch.{IntegrationConfig, IntegrationAuthorization}
 
   action_fallback(StitchConnect.Web.Api.FallbackController)
 

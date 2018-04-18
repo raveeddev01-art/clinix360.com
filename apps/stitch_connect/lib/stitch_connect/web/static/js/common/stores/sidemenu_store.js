@@ -277,7 +277,7 @@ class SidemenuStore {
     this.showNotificationCard(
       this.getNotificationTitle(group),
       this.getNotificationText(message, group, isMention),
-      "new-message", // notification tag
+      `message-${message.id}`,
       this.getOnNotificationClick(message)
     );
   }
