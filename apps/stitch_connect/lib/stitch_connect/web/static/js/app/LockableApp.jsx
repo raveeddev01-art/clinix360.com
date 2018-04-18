@@ -19,7 +19,7 @@ class LockableApp extends Component {
     const shouldRedirect = browserDetails.mobile;
 
     this.state = {
-      showError: false,
+      hasError: false,
       shouldRedirect
     };
 
@@ -82,16 +82,14 @@ class LockableApp extends Component {
       return <LockedApp />;
     }
 
-    if (sidemenuStore.loadedApp) {
+    if (sidemenuStore.loadedApp && !shouldRedirect) {
       return (
-        !shouldRedirect && (
-          <Switch>
-            <Route path="/admin" component={AdminApp} />
-            <Route exact path="/engage" component={EngageApp} />
-            <Route exact path="/manage" component={ManageApp} />
-            <Route path="/" component={ChatApp} />
-          </Switch>
-        )
+        <Switch>
+          <Route path="/admin" component={AdminApp} />
+          <Route exact path="/engage" component={EngageApp} />
+          <Route exact path="/manage" component={ManageApp} />
+          <Route path="/" component={ChatApp} />
+        </Switch>
       );
     }
 
