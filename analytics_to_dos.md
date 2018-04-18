@@ -27,11 +27,11 @@ Note: Active means Sent any messages or Session (now)
 
 # Team Analytics To Dos:
 
-* Find or Build a user device function(s)
+* Find or Build a user device function(s) - DONE
 
-  * Mobile vs Desktop vs Web
-  * iOS vs Android vs Other
-  * Windows vs Mac vs Other
+  * Mobile vs Desktop vs Web - DONE
+  * iOS vs Android vs Other - DONE
+  * Windows vs Mac vs Other - DONE
 
 * Add info to the message table
 
