@@ -35,7 +35,7 @@ Note: Active means Sent any messages or Session (now)
 * Parse things better and code cleanup - DONE
 * Handle socket user agent info - DONE
 
-* Query Work
+* Query Work - START HERE
 
   * Add device filtering to the backend
   * Add device filtering to the frontend
@@ -45,11 +45,11 @@ Note: Active means Sent any messages or Session (now)
 
 * Some daily TeamSnapshot Report
 
-  * DailyReport Worker kicks off new event
+  * DailyReport Worker kicks off new event - DONE(ish)
   * Event snapshots a couple easy fields
     * Messages
     * Files uploaded
-  * Add new table for TeamSnapshots
+  * Add new table for TeamSnapshot
   * Worker writes to the table
   * Add few more interesting queries
     * DAU, WAU, MAU
