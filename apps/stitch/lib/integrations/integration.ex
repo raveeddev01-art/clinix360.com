@@ -54,10 +54,11 @@ defmodule Stitch.Integration do
   """
   @spec create(number, number, number) :: Integration.t() | {:error, term}
   def create(app_id, group_id, team_id) do
+    Stitch.DrChrono.Bot.init_or_enable_bot(team_id)
+
     %Integration{}
     |> create_changeset(%{app_id: app_id, group_id: group_id, team_id: team_id})
     |> Repo.insert()
-    |> IO.inspect()
   end
 
   def get_by_team_id(team_id) do
