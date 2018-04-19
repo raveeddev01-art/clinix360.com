@@ -4,9 +4,10 @@ import Panel from "react-bootstrap/lib/Panel";
 import DropdownButton from "react-bootstrap/lib/DropdownButton";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 
+import ActiveUsers from "./active-users";
 import Files from "./files";
 import Messages from "./messages";
-import ActiveUsers from "./active-users";
+import MessagesByPlatform from "./messages-by-platform";
 
 const datePeriodNames = {
   week: "Last 7 days",
@@ -78,10 +79,28 @@ export default class Analytics extends Component {
         activeUsersData: data
       });
     });
+
+    post("/api/v1/reports", {
+      body: {
+        type: "messages_by_platform",
+        time_period: timePeriod
+      }
+    }).then(resp => {
+      const { data } = resp.data;
+      this.setState({
+        messagesByPlatform: data
+      });
+    });
   };
 
   render() {
-    const { activeUsersData, timePeriod, messagesData, filesData } = this.state;
+    const {
+      activeUsersData,
+      filesData,
+      messagesByPlatform,
+      messagesData,
+      timePeriod
+    } = this.state;
 
     return (
       <Panel className="admin-panel analytics-panel">
@@ -105,6 +124,7 @@ export default class Analytics extends Component {
               <MenuItem eventKey="allTime">All time</MenuItem>
             </DropdownButton>
           </div>
+          <MessagesByPlatform reportsData={messagesByPlatform} />
           <ActiveUsers reportsData={activeUsersData} />
           <Messages reportsData={messagesData} />
           <Files reportsData={filesData} />

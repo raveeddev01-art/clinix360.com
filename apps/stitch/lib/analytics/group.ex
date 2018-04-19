@@ -15,11 +15,11 @@ defmodule Stitch.Analytics.Group do
   @doc """
   Logs group creation events. Normal, Private, Single-DM, Multi-DM
   """
-  @spec track_creation(User.t, Group.t) :: {:ok, pid()}
+  @spec track_creation(User.t(), Group.t()) :: {:ok, pid()}
   def track_creation(group, group_creator) do
-    Stitch.Task.start fn ->
+    Stitch.Task.start(fn ->
       do_track_creation(group, group_creator)
-    end
+    end)
   end
 
   # ============
@@ -38,14 +38,14 @@ defmodule Stitch.Analytics.Group do
   defp group_event_properties(group, creator) do
     %{
       "group_created_at" => group.inserted_at,
-      "group_id"         => Integer.to_string(group.id),
-      "group_is_public"  => group.public,
-      "group_type"       => Group.type(group),
-      "team_created_at"  => group.team.inserted_at,
-      "team_id"          => Integer.to_string(group.team.id),
-      "team_name"        => group.team.name,
-      "team_slug"        => group.team.slug,
-      "user_created_at"  => creator.inserted_at
+      "group_id" => Integer.to_string(group.id),
+      "group_is_public" => group.public,
+      "group_type" => Group.type(group),
+      "team_created_at" => group.team.inserted_at,
+      "team_id" => Integer.to_string(group.team.id),
+      "team_name" => group.team.name,
+      "team_slug" => group.team.slug,
+      "user_created_at" => creator.inserted_at
     }
   end
 end

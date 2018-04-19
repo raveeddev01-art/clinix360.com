@@ -6,8 +6,9 @@ defmodule Stitch.Reports do
   """
 
   alias Stitch.{Reports, Team}
-  alias Stitch.Reports.MessagesSent
   alias Stitch.Reports.ActiveUsers
+  alias Stitch.Reports.MessagesSent
+  alias Stitch.Reports.MessagesSentByPlatform
 
   @typedoc "Supported report types"
   @type report_type :: :messages_sent | :files_uploaded | :active_users
@@ -72,5 +73,10 @@ defmodule Stitch.Reports do
   # @spec active_users(Team.t(), [time_period]) :: map
   def active_users(%Team{} = team, opts) do
     ActiveUsers.build(team, opts)
+  end
+
+  @spec messages_by_platform(Team.t(), [time_period]) :: map
+  def messages_by_platform(%Team{} = team, opts) do
+    MessagesSentByPlatform.build(team, opts)
   end
 end

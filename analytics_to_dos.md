@@ -38,8 +38,8 @@ Note: Active means Sent any messages or Session (now)
 * Query Work
 
   * Add a daily active users request on the analytics page - DONE
-  * Add device filtering to the backend
-  * Add device filtering to the frontend
+  * Add device filtering to the backend - DONE (first pass)
+  * Add device filtering to the frontend - DONE (first pass)
   * Add a monthly active users request on the analytics page
   * Add a weekly active users request on the analytics page
 

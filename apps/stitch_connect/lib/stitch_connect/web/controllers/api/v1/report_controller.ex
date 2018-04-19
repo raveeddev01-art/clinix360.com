@@ -29,7 +29,9 @@ defmodule StitchConnect.Web.Api.V1.ReportController do
   end
 
   defp validate_type(type) do
-    if type in ["Messages Sent", "Files Uploaded", "active_users"], do: :ok, else: :error
+    if type in ["Messages Sent", "Files Uploaded", "active_users", "messages_by_platform"],
+      do: :ok,
+      else: :error
   end
 
   defp validate_time_period(time_period) do

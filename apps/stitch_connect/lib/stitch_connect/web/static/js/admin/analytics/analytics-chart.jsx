@@ -4,44 +4,61 @@ import { Line as LineChart } from "react-chartjs-2";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 const primaryColor = "rgba(0, 51, 102, 1)";
-const backgroundColor = "rgba(75,192,192,0.4)";
+const secondaryColor = "rgba(139, 0, 0, 1)";
+const ternaryColor = "rgba(0, 0, 40, 1)";
+const fallbackColor = "rgba(20, 20, 20, 1)";
 
-const defaultChartOptions = {
-  maintainAspectRatio: true,
-  legend: {
-    display: false
-  }
+const indexToColor = index => {
+  return (
+    {
+      0: primaryColor,
+      1: secondaryColor,
+      2: ternaryColor
+    }[index] || fallbackColor
+  );
 };
 
-const defaultDataset = props => ({
-  label: props.title,
-  fill: false,
-  lineTension: 0,
-  backgroundColor,
-  borderColor: primaryColor,
-  borderCapStyle: "butt",
-  borderDash: [],
-  borderWidth: 2,
-  borderDashOffset: 0.0,
-  borderJoinStyle: "miter",
-  pointBorderColor: primaryColor,
-  pointBackgroundColor: primaryColor,
-  pointBorderWidth: 1,
-  pointHoverRadius: 5,
-  pointHoverBackgroundColor: primaryColor,
-  pointHoverBorderColor: primaryColor,
-  pointHoverBorderWidth: 2,
-  pointRadius: 3,
-  pointHitRadius: 10,
-  data: []
+const makeChartOptions = props => ({
+  maintainAspectRatio: true,
+  legend: {
+    display: props.multiLine
+  }
 });
+
+const makeDataset = (props, index = 0) => {
+  const label = props.multiLine ? props.labelForIndex(index) : props.title;
+  const color = props.multiLine ? indexToColor(index) : primaryColor;
+
+  return {
+    label,
+    fill: false,
+    lineTension: 0,
+    backgroundColor: color,
+    borderColor: color,
+    borderCapStyle: "butt",
+    borderDash: [],
+    borderWidth: 2,
+    borderDashOffset: 0.0,
+    borderJoinStyle: "miter",
+    pointBorderColor: color,
+    pointBackgroundColor: color,
+    pointBorderWidth: 1,
+    pointHoverRadius: 5,
+    pointHoverBackgroundColor: color,
+    pointHoverBorderColor: color,
+    pointHoverBorderWidth: 2,
+    pointRadius: 3,
+    pointHitRadius: 10,
+    data: []
+  };
+};
 
 const makeDefaultState = props => ({
   chartData: {
     labels: [],
-    datasets: [defaultDataset(props)]
+    datasets: [makeDataset(props)]
   },
-  chartOptions: defaultChartOptions,
+  chartOptions: makeChartOptions(props),
   total: 0
 });
 
@@ -59,20 +76,27 @@ export default class AnalyticsChart extends Component {
       return;
 
     const { reportsData } = nextProps;
-    const dataPoints = this.processData(reportsData.body);
-
-    const { chartData } = this.state;
-    // Mutating the state here, no need to call setState
-    chartData.labels = dataPoints.dates;
-    chartData.datasets[0].data = dataPoints.points;
-
-    this.setState({
-      // chartData,
-      total: dataPoints.total
-    });
+    this.processBody(nextProps, reportsData.body);
   }
 
-  processData(reportsData) {
+  processBody(props, dataset) {
+    let total = 0;
+
+    if (props.multiLine) {
+      let index = 0;
+      total = dataset.reduce((t, ds) => {
+        const newT = t + this.processData(ds, index, true);
+        index++;
+        return newT;
+      }, total);
+    } else {
+      total = this.processData(dataset);
+    }
+
+    this.setState({ total });
+  }
+
+  processData(reportsData, index = 0) {
     const dates = Object.keys(reportsData).sort(); // To make sure to get the dates sorted
     const points = [];
     let total = 0;
@@ -80,7 +104,19 @@ export default class AnalyticsChart extends Component {
       points.push(reportsData[d]);
       total += reportsData[d];
     });
-    return { dates, points, total };
+
+    const dataPoints = { dates, points, total };
+
+    const { chartData } = this.state;
+    // Mutating the state here, no need to call setState
+    chartData.labels = dataPoints.dates;
+    if (!chartData.datasets[index]) {
+      chartData.datasets[index] = makeDataset(this.props, index);
+    }
+
+    chartData.datasets[index].data = dataPoints.points;
+
+    return dataPoints.total;
   }
 
   render() {
