@@ -6,6 +6,7 @@ defmodule Stitch.Repo.Migrations.AddAnalyticsFielsToMessages do
       add(:client_device, :string, default: "unknown", null: false)
       add(:client_os, :string, default: "unknown", null: false)
       add(:client_type, :string, default: "unknown", null: false)
+      add(:client_is_mobile, :boolean)
     end
   end
 end

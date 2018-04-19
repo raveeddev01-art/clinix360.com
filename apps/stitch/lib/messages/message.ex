@@ -29,6 +29,7 @@ defmodule Stitch.Message do
     field(:client_device, :string, default: "unknown")
     field(:client_os, :string, default: "unknown")
     field(:client_type, :string, default: "unknown")
+    field(:client_is_mobile, :boolean, default: false)
     embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
     timestamps()
@@ -46,7 +47,11 @@ defmodule Stitch.Message do
       :pinned,
       :pinned_by_id,
       :pinned_at,
-      :mentioned_user_ids
+      :mentioned_user_ids,
+      :client_device,
+      :client_os,
+      :client_type,
+      :client_is_mobile
     ])
     |> validate_required([:user_id, :group_id, :deleted, :text_content])
     |> validate_inclusion(:type, @valid_types)
@@ -68,7 +73,17 @@ defmodule Stitch.Message do
 
   def chat_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :request_id, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [
+      :type,
+      :request_id,
+      :text_content,
+      :mentioned_user_ids,
+      :read_status,
+      :client_device,
+      :client_os,
+      :client_type,
+      :client_is_mobile
+    ])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
     |> check_for_links
@@ -96,7 +111,11 @@ defmodule Stitch.Message do
       :request_id,
       :text_content,
       :mentioned_user_ids,
-      :read_status
+      :read_status,
+      :client_device,
+      :client_os,
+      :client_type,
+      :client_is_mobile
     ])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])

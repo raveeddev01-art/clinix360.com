@@ -52,10 +52,8 @@ defmodule StitchIntegrations.DrChrono.Bot do
     bot_user = get_bot(team_id)
     group = Stitch.GroupQueries.get_by_id(group_id)
 
-    message_params = %{
-      "text_content" => text_content,
-      "type" => "chat"
-    }
+    base_params = %{"text_content" => text_content, "type" => "chat"}
+    message_params = Message.Params.with_client_attrs("bot", base_params)
 
     presence_user_ids = UserStatusService.presence_user_ids(team_id)
 

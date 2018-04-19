@@ -12,6 +12,7 @@ defmodule StitchConnect.Web.EventsChannel do
 
     if user_id == socket.assigns.current_user.id do
       send(self(), :after_join)
+
       {:ok, socket}
     else
       {:error, %{message: "Unauthorized"}}

@@ -28,18 +28,20 @@ Note: Active means Sent any messages or Session (now)
 # Team Analytics To Dos:
 
 * Find or Build a user device function(s) - DONE
-
   * Mobile vs Desktop vs Web - DONE
   * iOS vs Android vs Other - DONE
   * Windows vs Mac vs Other - DONE
+* Add info to the message table - DONE
+* Parse things better and code cleanup - DONE
+* Handle socket user agent info - DONE
 
-* Add info to the message table
+* Query Work
 
-  * What device sent it
-
-* Add a monthly active users request on the analytics page
-* Add device filtering to the backend
-* Add device filtering to the frontend
+  * Add device filtering to the backend
+  * Add device filtering to the frontend
+  * Add a daily active users request on the analytics page
+  * Add a monthly active users request on the analytics page
+  * Add a weekly active users request on the analytics page
 
 * Some daily TeamSnapshot Report
 

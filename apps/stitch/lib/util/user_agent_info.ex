@@ -55,7 +55,8 @@ defmodule UserAgentInfo do
   """
   def device_type(ua) do
     case parse(ua).device do
-      :unknown -> nil
+      :unknown -> "unknown"
+      nil -> "unknown"
       device -> device.type
     end
   end
