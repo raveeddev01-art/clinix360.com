@@ -57,13 +57,13 @@ class DrChronoSetupInstructions extends Component {
               will appear. Set a name for your webhook, and update the callback
               url using the value we generated for you below. (scroll down).
             </p>
-            <p>
-              Set your webhook secret token to <pre>stitch</pre>
-            </p>
+            <p>Set your webhook secret token to:</p>
+            <pre>stitch</pre>
             <p>
               Save your changes, and click Verify webhook. After a few moments
-              it should switch to <pre>This webhook is verified</pre>
+              it should switch to:
             </p>
+            <pre>This webhook is verified</pre>
             <img src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-3.png" />
           </div>
         </div>

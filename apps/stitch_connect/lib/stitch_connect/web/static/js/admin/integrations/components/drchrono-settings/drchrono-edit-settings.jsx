@@ -18,7 +18,7 @@ class DrChronoEditSettings extends Component {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
 
-    this.props.integrationStore.setCurrentIntegrationConfig(
+    this.props.integrationStore.setCurrentIntegration(
       parseInt(this.props.match.params.id, 10)
     );
   }
@@ -91,35 +91,14 @@ class DrChronoEditSettings extends Component {
         <Panel.Body>
           <Panel className="integrations-settings__panel">
             <Panel.Heading>
-              <h3>Integration Settings</h3>
+              <h3>Setup Instructions</h3>
             </Panel.Heading>
 
             <Panel.Body>
-              <Panel className="integrations-settings__panel">
-                <Panel.Heading>
-                  <h3>Setup Instructions</h3>
-                </Panel.Heading>
-
-                <Panel.Body>
-                  <DrChronoSetupInstructions />
-                </Panel.Body>
-              </Panel>
-            </Panel.Body>
-
-            <Panel.Body>
-              <Panel className="integrations-settings__panel">
-                <Panel.Heading>
-                  <h3>Integration Settings</h3>
-                </Panel.Heading>
-
-                <Panel.Body>
-                  <DrChronoForm new />
-                </Panel.Body>
-              </Panel>
-            </Panel.Body>
-
-            <Panel.Body>
-              <DrChronoForm />
+              <DrChronoSetupInstructions />
+              <DrChronoForm
+                integration={this.props.integrationStore.selectedIntegration}
+              />
             </Panel.Body>
           </Panel>
         </Panel.Body>

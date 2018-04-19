@@ -35,6 +35,14 @@ defmodule Stitch.Integration do
     |> put_change(:enabled, true)
   end
 
+  # Changeset used when updating an existing integration.
+  def update_changeset(struct, attrs) do
+    struct
+    |> cast(attrs, [:group_id, :settings, :enabled, :credentials])
+    |> validate_required([:group_id])
+  end
+
+  # Deprecated. Do NOT use.
   def changeset(struct, attrs) do
     struct
     |> cast(attrs, [:team_id, :name, :webhook_token, :settings, :enabled])
@@ -89,6 +97,11 @@ defmodule Stitch.Integration do
 
   def delete(integration) do
     Repo.delete(integration)
+  end
+
+  def update(integration, params) do
+    update_changeset(integration, params)
+    |> Repo.update()
   end
 
   def enable(integration) do

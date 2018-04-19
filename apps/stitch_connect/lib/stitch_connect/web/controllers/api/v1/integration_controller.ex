@@ -45,6 +45,30 @@ defmodule StitchConnect.Web.Api.V1.IntegrationController do
     end
   end
 
+  def update(conn, %{"id" => id} = params) do
+    user = conn.assigns.current_user
+
+    with {:exists?, %Integration{} = integration} <- {:exists?, IntegrationQueries.find_by_id(id)},
+         {:authorized?, true} <-
+           {:authorized?, IntegrationAuthorization.can_edit?(user, integration)},
+         {:updated?, {:ok, updated_integration}} <-
+           {:updated?, Integration.update(integration, params)} do
+      render(conn, "show.json", integration: updated_integration)
+    else
+      {:exists?, nil} ->
+        {:error, :not_found, "The integration config you are looking for does not exist."}
+
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You can't update this integration"}
+
+      {:updated?, {:error, _changeset}} ->
+        {:error, :unprocessable_entity, "Couldn't update this integration"}
+
+      _ ->
+        {:error, :not_found}
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     user = conn.assigns.current_user
 

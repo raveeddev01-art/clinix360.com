@@ -9,7 +9,7 @@ import find from "lodash/find";
 
 class IntegrationStore {
   @observable loaded = false;
-
+  @observable selectedIntegration = undefined;
   // Catalog of all the app we support at Stitch.
   @observable apps = [];
   @observable integrations = [];
@@ -19,6 +19,11 @@ class IntegrationStore {
     this.loadAppCatalog();
     this.loadIntegrations();
   }
+
+  @action
+  setCurrentIntegration = id => {
+    this.selectedIntegration = this.integrations.find(i => i.id === id);
+  };
 
   @action
   removeConfig = id => {
@@ -42,6 +47,25 @@ class IntegrationStore {
     })
       .then(response => {
         this.integrations.push(response.data);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
+  };
+
+  @action
+  updateIntegration = params => {
+    return post(`/api/v1/integrations/${params.id}`, {
+      body: {
+        group_id: params.groupId,
+        settings: params.settings,
+        credentials: params.credentials
+      }
+    })
+      .then(response => {
+        const index = this.integrations.findIndex(c => c.id === params.id);
+        this.integrations[index] = response.data;
       })
       .catch(err => {
         console.log(err);

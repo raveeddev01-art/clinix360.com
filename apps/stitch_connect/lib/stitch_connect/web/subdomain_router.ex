@@ -120,6 +120,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get("/integrations", IntegrationController, :index)
     post("/integrations", IntegrationController, :create)
+    post("/integrations/:id", IntegrationController, :update)
     delete("/integrations/:id", IntegrationController, :delete)
     post("/integrations/:id/enable", IntegrationController, :enable)
     post("/integrations/:id/disable", IntegrationController, :disable)

@@ -14,6 +14,8 @@ defmodule StitchConnect.Web.Api.V1.IntegrationView do
     %{
       id: integration.id,
       inserted_at: integration.inserted_at,
+      settings: integration.settings || %{},
+      credentials: integration.credentials || %{},
       enabled: integration.enabled,
       webhook_token: integration.webhook_token,
       app_id: integration.app_id,
