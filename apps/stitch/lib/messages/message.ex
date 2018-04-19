@@ -28,9 +28,9 @@ defmodule Stitch.Message do
     field(:has_links, :boolean, default: false)
     field(:link_previews_generated, :boolean, default: false)
     field(:meteor_id, :string)
-    field(:client_device, :string, default: "unknown")
+    field(:client_device_type, :string, default: "unknown")
     field(:client_os, :string, default: "unknown")
-    field(:client_type, :string, default: "unknown")
+    field(:client_name, :string, default: "unknown")
     embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
     timestamps()
@@ -48,7 +48,10 @@ defmodule Stitch.Message do
       :pinned,
       :pinned_by_id,
       :pinned_at,
-      :mentioned_user_ids
+      :mentioned_user_ids,
+      :client_device_type,
+      :client_os,
+      :client_name
     ])
     |> validate_required([:user_id, :group_id, :deleted, :text_content])
     |> validate_inclusion(:type, @valid_types)
@@ -71,7 +74,16 @@ defmodule Stitch.Message do
 
   def chat_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :request_id, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [
+      :type,
+      :request_id,
+      :text_content,
+      :mentioned_user_ids,
+      :read_status,
+      :client_device_type,
+      :client_os,
+      :client_name
+    ])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
     |> put_meta()
@@ -105,7 +117,10 @@ defmodule Stitch.Message do
       :request_id,
       :text_content,
       :mentioned_user_ids,
-      :read_status
+      :read_status,
+      :client_device_type,
+      :client_os,
+      :client_name
     ])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
