@@ -6,6 +6,7 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 
 import Files from "./files";
 import Messages from "./messages";
+import ActiveUsers from "./active-users";
 
 const datePeriodNames = {
   week: "Last 7 days",
@@ -65,10 +66,22 @@ export default class Analytics extends Component {
         filesData: data
       });
     });
+
+    post("/api/v1/reports", {
+      body: {
+        type: "active_users",
+        time_period: timePeriod
+      }
+    }).then(resp => {
+      const { data } = resp.data;
+      this.setState({
+        activeUsersData: data
+      });
+    });
   };
 
   render() {
-    const { timePeriod, messagesData, filesData } = this.state;
+    const { activeUsersData, timePeriod, messagesData, filesData } = this.state;
 
     return (
       <Panel className="admin-panel analytics-panel">
@@ -92,6 +105,7 @@ export default class Analytics extends Component {
               <MenuItem eventKey="allTime">All time</MenuItem>
             </DropdownButton>
           </div>
+          <ActiveUsers reportsData={activeUsersData} />
           <Messages reportsData={messagesData} />
           <Files reportsData={filesData} />
         </Panel.Body>

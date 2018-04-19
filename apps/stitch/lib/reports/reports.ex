@@ -7,9 +7,10 @@ defmodule Stitch.Reports do
 
   alias Stitch.{Reports, Team}
   alias Stitch.Reports.MessagesSent
+  alias Stitch.Reports.ActiveUsers
 
   @typedoc "Supported report types"
-  @type report_type :: :messages_sent | :files_uploaded
+  @type report_type :: :messages_sent | :files_uploaded | :active_users
 
   @typedoc "Supported time periods"
   @type time_period :: :last_7_days | :last_30_days | :all_time
@@ -46,7 +47,6 @@ defmodule Stitch.Reports do
   """
   @spec messages_sent(Team.t(), [time_period]) :: map
   def messages_sent(%Team{} = team, opts) do
-    # TODO: here
     MessagesSent.build(team, opts)
   end
 
@@ -64,5 +64,13 @@ defmodule Stitch.Reports do
   def files_uploaded(%Team{} = team, opts) do
     opts_with_upload_type = Keyword.merge(opts, type: :upload)
     MessagesSent.build(team, opts_with_upload_type)
+  end
+
+  @doc """
+  TODO: Fill Me In!
+  """
+  # @spec active_users(Team.t(), [time_period]) :: map
+  def active_users(%Team{} = team, opts) do
+    ActiveUsers.build(team, opts)
   end
 end

@@ -35,11 +35,11 @@ Note: Active means Sent any messages or Session (now)
 * Parse things better and code cleanup - DONE
 * Handle socket user agent info - DONE
 
-* Query Work - START HERE
+* Query Work
 
+  * Add a daily active users request on the analytics page - DONE
   * Add device filtering to the backend
   * Add device filtering to the frontend
-  * Add a daily active users request on the analytics page
   * Add a monthly active users request on the analytics page
   * Add a weekly active users request on the analytics page
 

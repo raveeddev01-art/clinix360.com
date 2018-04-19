@@ -71,7 +71,6 @@ defmodule Stitch.Reports.MessagesSent do
     Map.get(%{last_30_days: -29, last_7_days: -6}, time_period, -29)
   end
 
-  # TODO: here
   defp messages_sent_grouped_by_date(team, type, start_at, end_at) do
     {:ok, start_at_datetime} = NaiveDateTime.new(start_at, ~T[00:00:00])
     {:ok, end_at_datetime} = NaiveDateTime.new(end_at, ~T[23:59:59.999999])
