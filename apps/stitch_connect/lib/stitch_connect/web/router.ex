@@ -109,7 +109,7 @@ defmodule StitchConnect.Web.Router do
     get("/signup/app-download", AuthenticationController, :index)
 
     # oAuth Integration routes.
-    get("/_oauth/:provider", OAuthIntegrationController, :provider_response)
+    get("/_oauth/:provider/:webhook_token", OAuthIntegrationController, :provider_response)
 
     # get "/signup/phone-number", AuthenticationController, :index
   end

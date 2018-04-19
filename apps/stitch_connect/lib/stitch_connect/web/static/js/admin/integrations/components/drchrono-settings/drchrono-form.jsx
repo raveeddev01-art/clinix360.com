@@ -22,6 +22,8 @@ class DrChronoForm extends Component {
     const integration = this.props.integration;
     this.state = {
       id: integration.id,
+      enabled: integration.enabled,
+      authenticated: integration.authenticated,
       groupId: integration.group_id,
       webhookToken: integration.webhook_token,
       appointmentCreate: integration.settings.appointmentCreate || false,
@@ -84,6 +86,28 @@ class DrChronoForm extends Component {
     history.push("/admin/integrations/drchrono");
   };
 
+  _redirectUri = () => {
+    return `${applicationScheme}${applicationHost}/_oauth/drchrono/${this.state
+      .webhookToken}`;
+  };
+
+  _renderAuthenticateButton = () => {
+    if (this.state.authenticated) {
+      return <p>Authenticated</p>;
+    }
+
+    return (
+      <Button
+        style={{ marginTop: "20px" }}
+        bsStyle="success"
+        href={`https://drchrono.com/o/authorize?redirect_uri=${this._redirectUri()}&client_id=${this
+          .state.clientId}&response_type=code`}
+      >
+        Authenticate
+      </Button>
+    );
+  };
+
   render() {
     return (
       <Form horizontal onSubmit={this._handleFormSubmit}>
@@ -111,13 +135,27 @@ class DrChronoForm extends Component {
               defaultValue={this.state.clientSecret}
             />
 
+            {this._renderAuthenticateButton()}
+
+            <hr />
+
+            <ControlLabel>Redirect URI</ControlLabel>
+            <FormControl
+              disabled
+              name="redirectUri"
+              id="redirectUri"
+              type="text"
+              value={this._redirectUri()}
+            />
+
             <ControlLabel>Webhook URL</ControlLabel>
             <FormControl
               disabled
               name="webhookToken"
               id="webhookToken"
               type="text"
-              value={this.state.webhookToken}
+              value={`https://teamstitch.com/webhook/${this.state
+                .webhookToken}`}
             />
           </Col>
         </FormGroup>

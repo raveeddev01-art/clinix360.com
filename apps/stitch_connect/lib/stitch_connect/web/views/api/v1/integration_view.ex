@@ -1,12 +1,11 @@
 defmodule StitchConnect.Web.Api.V1.IntegrationView do
   use StitchConnect.Web, :view
-  alias StitchConnect.Web.Api.V1.UserView
 
-  def render("index.json", %{integrations: integrations} = attrs) do
+  def render("index.json", %{integrations: integrations} = _attrs) do
     Enum.map(integrations, &integration_json/1)
   end
 
-  def render("show.json", %{integration: integration} = attrs) do
+  def render("show.json", %{integration: integration} = _attrs) do
     integration_json(integration)
   end
 
@@ -17,7 +16,8 @@ defmodule StitchConnect.Web.Api.V1.IntegrationView do
       settings: integration.settings || %{},
       credentials: integration.credentials || %{},
       enabled: integration.enabled,
-      webhook_token: "https://teamstitch.com/webhooks/#{integration.webhook_token}",
+      authenticated: integration.authenticated,
+      webhook_token: integration.webhook_token,
       app_id: integration.app_id,
       group_id: integration.group_id
     }

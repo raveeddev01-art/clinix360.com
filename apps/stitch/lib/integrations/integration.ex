@@ -15,9 +15,9 @@ defmodule Stitch.Integration do
     field(:name, :string)
     field(:webhook_token, :string)
     field(:settings, :map)
+    field(:credentials, :map)
     field(:enabled, :boolean, default: false)
     field(:authenticated, :boolean, default: false)
-    field(:credentials, :map)
 
     belongs_to(:team, Team)
     belongs_to(:group, Stitch.Group)
@@ -38,7 +38,7 @@ defmodule Stitch.Integration do
   # Changeset used when updating an existing integration.
   def update_changeset(struct, attrs) do
     struct
-    |> cast(attrs, [:group_id, :settings, :enabled, :credentials])
+    |> cast(attrs, [:group_id, :settings, :authenticated, :enabled, :credentials])
     |> validate_required([:group_id])
   end
 

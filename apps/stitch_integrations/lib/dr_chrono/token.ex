@@ -39,7 +39,7 @@ defmodule StitchIntegrations.DrChrono.Token do
     end
   end
 
-  def get_access_token(code) do
+  def create_access_token(integration, code) do
     applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
     applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
 
@@ -48,9 +48,11 @@ defmodule StitchIntegrations.DrChrono.Token do
       [
         "code=#{code}",
         "grant_type=authorization_code",
-        "redirect_uri=#{applicationScheme}#{applicationHost}/_oauth/drchrono",
-        "client_id=#{System.get_env("DRCHRONO_CLIENT_ID")}",
-        "client_secret=#{System.get_env("DRCHRONO_SECRET")}"
+        "redirect_uri=#{applicationScheme}#{applicationHost}/_oauth/drchrono/#{
+          integration.webhook_token
+        }",
+        "client_id=#{integration.credentials["clientId"]}",
+        "client_secret=#{integration.credentials["clientSecret"]}"
       ]
       |> Enum.join("&")
 
@@ -74,7 +76,12 @@ defmodule StitchIntegrations.DrChrono.Token do
           expiration_in_unix: expiration_in_unix
         }
 
-        {:ok, response_values}
+        new_credentials = Map.merge(integration.credentials, response_values)
+
+        {:ok, _integration} =
+          Integration.update(integration, %{authenticated: true, credentials: new_credentials})
+
+        {:ok, new_credentials}
 
       {:error, error} ->
         {:error, error}

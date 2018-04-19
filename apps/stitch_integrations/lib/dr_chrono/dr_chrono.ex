@@ -361,15 +361,11 @@ defmodule StitchIntegrations.DrChrono do
     end
   end
 
-  def init_integration(team_id, code) do
-    Logger.info("[dr-chrono] [team-#{team_id}] Initialize integration.")
+  def init_integration(integration, code) do
+    Logger.info("[dr-chrono] [integration-#{integration.id}] Authenticating with drchrono.")
 
-    {:ok, response_values} = Token.get_access_token(code)
-    Logger.info("[dr-chrono] [team-#{team_id}] Got access token from API.")
-
-    {:ok, integration} = insert_or_update_integration(team_id, response_values)
-
-    Logger.info("[dr-chrono] [team-#{team_id}] Created Integration settings in DB.")
+    {:ok, _credentials} = Token.create_access_token(integration, code)
+    Logger.info("[dr-chrono] [integration-#{integration.id}] Authenticated successfully.")
 
     :ok
   end
