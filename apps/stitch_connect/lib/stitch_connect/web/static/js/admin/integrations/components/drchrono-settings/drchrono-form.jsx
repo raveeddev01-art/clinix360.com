@@ -65,13 +65,14 @@ class DrChronoForm extends Component {
   };
 
   _updateConfig = () => {
+    let credentials = this.props.integration.credentials;
+    credentials.clientId = this.state.clientId;
+    credentials.clientSecret = this.state.clientSecret;
+
     const params = {
       id: this.props.integration.id,
       groupId: parseInt(this.state.groupId, 10),
-      credentials: {
-        clientId: this.state.clientId,
-        clientSecret: this.state.clientSecret
-      },
+      credentials: credentials,
       settings: omit(this.state, ["groupId", "id", "clientId", "clientSecret"])
     };
 
