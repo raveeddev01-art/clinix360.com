@@ -19,7 +19,11 @@ current_user =
         "lastName" => user.last_name,
         "roles" => user.roles,
         "username" => user.username,
-        "email" => user.email
+        "email" => user.email,
+        "title" => user.title,
+        "phone" => user.phone_number,
+        "avatar" => StitchConnect.PresignedUrlCache.fetch(user.profile_image_url),
+        "avatar_thumb" => StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url)
       })
   end
 %>

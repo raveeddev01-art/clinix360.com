@@ -41,27 +41,26 @@ class UserStore {
   }
 
   @action
-  setCurrentUser = response => {
-    const data = response.find(u => u.id === currentUser.id);
-
-    this.username = data.dataname;
-    this.phone = data.phone || "";
-    this.title = data.title || "";
-    this.email = data.email;
-    this.firstName = data.first_name;
-    this.lastName = data.last_name;
-    this.fullName = data.full_name;
+  setCurrentUser = user => {
+    this.id = user.id;
+    this.username = user.username;
+    this.phone = user.phone || "";
+    this.title = user.title || "";
+    this.email = user.email;
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
+    this.fullName = `${this.firstName} ${this.lastName}`;
 
     if (
-      data.avatar &&
-      data.avatar.indexOf("stitch-content/default-avatar") < 0
+      user.avatar &&
+      user.avatar.indexOf("stitch-content/default-avatar") < 0
     ) {
       this.hasAvatar = true;
     }
-    this.avatar = data.avatar;
-    this.avatarThumb = data.avatar_thumb;
+    this.avatar = user.avatar;
+    this.avatarThumb = user.avatar_thumb;
 
-    this.roles = data.roles;
+    this.roles = user.roles;
   };
 
   @action
@@ -119,6 +118,7 @@ class UserStore {
     }).then(() => {
       this.firstName = firstName;
       this.lastName = lastName;
+      this.fullName = `${firstName} ${lastName}`;
     });
   };
 

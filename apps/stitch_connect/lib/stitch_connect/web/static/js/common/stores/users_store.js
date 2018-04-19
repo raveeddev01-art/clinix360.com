@@ -112,7 +112,6 @@ class UsersStore {
   loadUsers = () => {
     return get("/api/v1/users").then(response => {
       this.users = response.data;
-      this.rootStore.userStore.setCurrentUser(response.data);
     });
   };
 
