@@ -15,7 +15,7 @@ defmodule Stitch.Reports do
   @type time_period :: :last_7_days | :last_30_days | :all_time
 
   @typedoc "Supported options"
-  @type option ::  {:type, report_type} | {:time_period, time_period}
+  @type option :: {:type, report_type} | {:time_period, time_period}
 
   @doc """
   Creates a report for a given team and options.
@@ -28,7 +28,7 @@ defmodule Stitch.Reports do
         body: %{"2017-01-01" => 3, "2017-01-02" => 0, ...}
 
   """
-  @spec create(Team.t, [option]) :: map
+  @spec create(Team.t(), [option]) :: map
   def create(%Team{} = team, opts) do
     body = apply(Reports, opts.type, [team, [time_period: opts.time_period]])
     %{type: opts.type, time_period: opts.time_period, body: body}
@@ -44,8 +44,9 @@ defmodule Stitch.Reports do
       %{"2017-01-01" => 3, "2017-01-02" => 0, ...}
 
   """
-  @spec messages_sent(Team.t, [time_period]) :: map
+  @spec messages_sent(Team.t(), [time_period]) :: map
   def messages_sent(%Team{} = team, opts) do
+    # TODO: here
     MessagesSent.build(team, opts)
   end
 
@@ -59,9 +60,9 @@ defmodule Stitch.Reports do
       %{"2017-01-01" => 3, "2017-01-02" => 0, ...}
 
   """
-  @spec files_uploaded(Team.t, [time_period]) :: map
+  @spec files_uploaded(Team.t(), [time_period]) :: map
   def files_uploaded(%Team{} = team, opts) do
-    opts_with_upload_type = Keyword.merge(opts, [type: :upload])
+    opts_with_upload_type = Keyword.merge(opts, type: :upload)
     MessagesSent.build(team, opts_with_upload_type)
   end
 end

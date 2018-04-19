@@ -2,13 +2,15 @@ defmodule StitchConnect.Web.Api.V1.ReportController do
   use StitchConnect.Web, :controller
   alias Stitch.Reports
 
-  action_fallback StitchConnect.Web.Api.FallbackController
+  action_fallback(StitchConnect.Web.Api.FallbackController)
 
+  # TODO: here
   def create(conn, %{"type" => type, "time_period" => time_period}) do
     team = conn.assigns.team
-    with :ok    <- validate_type(type),
-         :ok    <- validate_time_period(time_period),
-         opts   <- prepare_opts(type, time_period),
+
+    with :ok <- validate_type(type),
+         :ok <- validate_time_period(time_period),
+         opts <- prepare_opts(type, time_period),
          report <- Reports.create(team, opts) do
       conn
       |> put_status(:created)
