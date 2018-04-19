@@ -12,7 +12,7 @@ import history from "lib/history";
 import { confirmModal } from "common/modals";
 import IntegrationConfiguration from "./components/integration-configuration";
 
-@inject("titleStore", "adminPanelStore", "integrationStore")
+@inject("titleStore", "adminPanelStore", "groupsStore", "integrationStore")
 @observer
 class DrChronoPage extends Component {
   componentWillMount() {
@@ -60,7 +60,22 @@ class DrChronoPage extends Component {
             </Panel.Heading>
 
             <Panel.Body className="configurations-panel__body">
-              <p>Show configurations here</p>
+              {this.props.integrationStore
+                .forApp("drchrono")
+                .map(integration => (
+                  <IntegrationConfiguration
+                    id={integration.id}
+                    integrationName="drchrono"
+                    roomName={
+                      this.props.groupsStore.getGroupById(integration.group_id)
+                        .name
+                    }
+                    insertedAt={moment
+                      .utc(integration.inserted_at)
+                      .local()
+                      .format("LL")}
+                  />
+                ))}
             </Panel.Body>
           </Panel>
         </Panel.Body>

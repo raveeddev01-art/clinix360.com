@@ -13,9 +13,11 @@ defmodule StitchConnect.Web.Api.V1.IntegrationView do
   def integration_json(integration) do
     %{
       id: integration.id,
-      name: integration.name,
+      inserted_at: integration.inserted_at,
       enabled: integration.enabled,
-      webhook_token: integration.webhook_token
+      webhook_token: integration.webhook_token,
+      app_id: integration.app_id,
+      group_id: integration.group_id
     }
   end
 end
