@@ -87,6 +87,10 @@ defmodule Stitch.Integration do
     integration.team
   end
 
+  def delete(integration) do
+    Repo.delete(integration)
+  end
+
   def enable(integration) do
     integration
     |> changeset(%{enabled: true})

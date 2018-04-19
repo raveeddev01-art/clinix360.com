@@ -64,6 +64,7 @@ class DrChronoPage extends Component {
                 .forApp("drchrono")
                 .map(integration => (
                   <IntegrationConfiguration
+                    key={`integration-${integration.id}`}
                     id={integration.id}
                     integrationName="drchrono"
                     roomName={

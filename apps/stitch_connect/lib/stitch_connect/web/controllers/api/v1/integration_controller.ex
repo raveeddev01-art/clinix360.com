@@ -37,12 +37,31 @@ defmodule StitchConnect.Web.Api.V1.IntegrationController do
       {:authorized?, false} ->
         {:error, :not_authorized, "You can't create integrations"}
 
-      {:error, changeset} ->
-        IO.inspect(changeset)
+      {:error, _changeset} ->
         {:error, :unprocessable_entity, "Couldn't create this integration"}
 
       _ ->
         {:error, :unprocessable_entity, "Couldn't create this integration"}
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    user = conn.assigns.current_user
+
+    with {:exists?, %Integration{} = integration} <- {:exists?, IntegrationQueries.find_by_id(id)},
+         {:authorized?, true} <-
+           {:authorized?, IntegrationAuthorization.can_delete?(user, integration)},
+         {:deleted?, {:ok, _integration}} <- {:deleted?, Integration.delete(integration)} do
+      json(conn, %{message: "Integration removed"})
+    else
+      {:exists?, nil} ->
+        {:error, :not_found}
+
+      {:authorized?, false} ->
+        {:error, :not_authorized, "You can't delete this integration"}
+
+      _ ->
+        {:error, :unprocessable_entity, "Could not delete this integration for some reason"}
     end
   end
 
