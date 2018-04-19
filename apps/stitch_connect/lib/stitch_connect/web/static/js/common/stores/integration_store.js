@@ -76,11 +76,9 @@ class IntegrationStore {
       return [];
     }
 
-    const x = this.integrations.filter(
+    return this.integrations.filter(
       integration => integration.app_id === app.id
     );
-    console.log(x);
-    return x;
   };
 }
 
