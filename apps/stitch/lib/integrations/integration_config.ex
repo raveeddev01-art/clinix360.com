@@ -5,7 +5,7 @@ defmodule Stitch.IntegrationConfig do
 
   use Ecto.Schema
   import Ecto.{Query, Changeset}
-  alias Stitch.{Integration, IntegrationConfig, Group, GroupUser}
+  alias Stitch.{Integration, IntegrationConfig, Group}
   alias Stitch.Repo
   require Logger
 

@@ -3,9 +3,7 @@ defmodule Stitch.IntegrationQueries do
   Module in charge of all integration related queries.
   """
 
-  alias Stitch.{Repo, Integration, IntegrationConfig}
-  alias Stitch.Accounts.User
-  import Ecto.Query
+  alias Stitch.{Repo, Integration}
 
   def find_by_id(id) do
     Repo.get(Integration, id)
