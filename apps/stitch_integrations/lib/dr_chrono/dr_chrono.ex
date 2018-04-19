@@ -303,7 +303,10 @@ defmodule StitchIntegrations.DrChrono do
   def get_patient_info(integration, patient_id) do
     api_url = "https://drchrono.com/api/patients/#{patient_id}"
     api_headers = headers(integration)
+    IO.inspect(api_headers)
+
     http_get(api_url, api_headers)
+    |> IO.inspect()
   end
 
   def get_doctor_info(integration, doctor_id) do
