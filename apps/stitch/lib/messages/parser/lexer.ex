@@ -72,6 +72,27 @@ defmodule Stitch.Message.Parser.Lexer do
     read_code(input)
   end
 
+  def next(%{input: "+" <> input_stream} = input) do
+    token = %{type: :everyone_mention, start: input.position, end: input.position + 12}
+    input = %{input | input: input_stream,
+                      position: input.position + 12,
+                      new_line: false,
+                      tokens: [token | input.tokens]}
+    next(input)
+  end
+
+  def next(%{input: "<@Ghere>" <> input_stream} = input) do
+    read_group_mention(:here_mention, input_stream, input, 8)
+  end
+
+  def next(%{input: "<@Groom>" <> input_stream} = input) do
+    read_group_mention(:room_mention, input_stream, input, 8)
+  end
+
+  def next(%{input: "<@Geveryone>" <> input_stream} = input) do
+    read_group_mention(:everyone_mention, input_stream, input, 12)
+  end
+
   def next(%{input: "<@U" <> input_stream} = input) do
     token = %{ type: :mention, start: input.position, end: nil}
     input = %{input | input: input_stream,
@@ -84,24 +105,6 @@ defmodule Stitch.Message.Parser.Lexer do
   def next(%{input: "\n" <> rest} = input), do: read_newline(input, rest)
   def next(%{input: "\r\n" <> rest} = input), do: read_newline(input, rest)
 
-  def read_newline(input, rest) do
-    input = close_blockquote(input, rest)
-    next(input)
-  end
-
-  def close_blockquote(input, rest) do
-    if token = input.open_tokens[:blockquote] do
-      token = %{ token | end: input.position + 1 }
-      input = %{ input | input: rest,
-                         position: input.position + 1,
-                         new_line: true,
-                         tokens: [token | input.tokens],
-                         open_tokens: Map.delete(input.open_tokens, :blockquote) }
-    else
-      input = %{ input | input: rest, position: input.position + 1, new_line: true }
-    end
-  end
-
   def next(%{input: ""} = input) do
     close_blockquote(input, "")
   end
@@ -110,6 +113,33 @@ defmodule Stitch.Message.Parser.Lexer do
     {_codepoint, rest} = String.next_codepoint(input_stream)
     input = %{ input | input: rest, position: input.position + 1, new_line: false }
     next(input)
+  end
+
+  def read_newline(input, rest) do
+    input = close_blockquote(input, rest)
+    next(input)
+  end
+
+  def read_group_mention(mention, input_stream, input, size) do
+    token = %{type: mention, start: input.position, end: input.position + size}
+    input = %{input | input: input_stream,
+                      position: input.position + size,
+                      new_line: false,
+                      tokens: [token | input.tokens]}
+    next(input)
+  end
+
+  def close_blockquote(input, rest) do
+    if token = input.open_tokens[:blockquote] do
+      token = %{ token | end: input.position + 1 }
+      %{ input | input: rest,
+                 position: input.position + 1,
+                 new_line: true,
+                 tokens: [token | input.tokens],
+                 open_tokens: Map.delete(input.open_tokens, :blockquote) }
+    else
+      %{ input | input: rest, position: input.position + 1, new_line: true }
+    end
   end
 
   def read_code(%{input: input_stream} = input) do
