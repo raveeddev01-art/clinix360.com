@@ -5,10 +5,8 @@ defmodule Stitch.Message.Parser.Lexer do
 
   def try(input) do
     res = new(input) |> next
-    IO.inspect ["input: ", input]
-    IO.inspect res
     for t <- res.tokens do
-      IO.inspect [t.type, String.slice(input, t.pos_start, t.pos_end - t.pos_start)]
+      IO.inspect [t, String.slice(input, t.start, t.end - t.start)]
     end
   end
 
@@ -18,14 +16,14 @@ defmodule Stitch.Message.Parser.Lexer do
 
   def parse_token(token_name, size, input_stream, input) do
     if token = input.open_tokens[token_name] do
-      token = %{ token | pos_end: input.position + size }
+      token = %{ token | end: input.position + size }
       input = %{ input | input: input_stream,
                           position: input.position + size,
                           tokens: [token | input.tokens],
                           open_tokens: Map.delete(input.open_tokens, token_name) }
       next(input)
     else
-      token = %{ type: token_name, pos_start: input.position, pos_end: nil }
+      token = %{ type: token_name, start: input.position, end: nil }
       input = %{ input | input: input_stream,
                           position: input.position + size,
                           open_tokens: Map.put(input.open_tokens, token_name, token) }
@@ -46,16 +44,26 @@ defmodule Stitch.Message.Parser.Lexer do
   end
 
   def next(%{input: "```" <> input_stream} = input) do
-    parse_token("code_multi", 1, input_stream, input)
+    token = %{ type: "code_block", start: input.position, end: nil}
+    input = %{ input | input: input_stream,
+                       position: input.position + 3,
+                       open_tokens: Map.put(input.open_tokens, "code_block", token) }
+    read_code_block(input)
   end
 
   def next(%{input: "`" <> input_stream} = input) do
-    parse_token("code", 1, input_stream, input)
+    token = %{ type: "code", start: input.position, end: nil}
+    input = %{ input | input: input_stream,
+                       position: input.position + 1,
+                       open_tokens: Map.put(input.open_tokens, "code", token) }
+    read_code(input)
   end
 
   def next(%{input: "<@U" <> input_stream} = input) do
-    token = %{ type: "mention", pos_start: input.position, pos_end: nil}
-    input = %{input | input: input_stream, position: input.position + 3, open_tokens: Map.put(input.open_tokens, "mention", token)}
+    token = %{ type: "mention", start: input.position, end: nil}
+    input = %{input | input: input_stream,
+                      position: input.position + 3, open_tokens:
+                      Map.put(input.open_tokens, "mention", token)}
     read_mention(input)
   end
 
@@ -65,19 +73,47 @@ defmodule Stitch.Message.Parser.Lexer do
 
   def next(%{input: input_stream} = input) do
     {_codepoint, rest} = String.next_codepoint(input_stream)
-    # SKIP 1
     input = %{ input | input: rest, position: input.position + 1 }
     next(input)
   end
 
-  # ---
+  def read_code(%{input: input_stream} = input) do
+    case Regex.run(~r/\`/, input_stream, return: :index) do
+      nil ->
+        input = %{input | open_tokens: Map.delete(input.open_tokens, "code") }
+        next(input)
+      [{index, _length}] ->
+        token = input.open_tokens["code"]
+        token = %{ token | end: input.position + index + 1 }
+        input = %{ input | input: String.slice(input_stream, index + 1..-1),
+                           position: input.position + index + 1,
+                           tokens: [token | input.tokens],
+                           open_tokens: Map.delete(input.open_tokens, "code") }
+        next(input)
+    end
+  end
 
+  def read_code_block(%{input: input_stream} = input) do
+    case Regex.run(~r/\`\`\`/, input_stream, return: :index) do
+      nil ->
+        input = %{input | open_tokens: Map.delete(input.open_tokens, "code_block") }
+        next(input)
+      [{index, _length}] ->
+        token = input.open_tokens["code_block"]
+        token = %{ token | end: input.position + index + 3 }
+        input = %{ input | input: String.slice(input_stream, index + 3..-1),
+                           position: input.position + index + 3,
+                           tokens: [token | input.tokens],
+                           open_tokens: Map.delete(input.open_tokens, "code_block") }
+        next(input)
+    end
+  end
 
   def read_mention(%{input: input_stream} = input) do
     case read_user_id(input_stream, {input.position, ""}) do
-      {:end, rest, pos, _acc} ->
+      {:end, rest, pos, acc} ->
         token = input.open_tokens["mention"]
-        token = %{ token | pos_end: pos }
+        token = Map.merge(token, %{end: pos, id: String.to_integer(acc)})
         input = %{ input | input: rest,
                             position: pos,
                             tokens: [token | input.tokens],
@@ -88,8 +124,6 @@ defmodule Stitch.Message.Parser.Lexer do
         next(input)
     end
   end
-
-
 
   def read_user_id(">" <> rest, {pos, acc}), do: {:end, rest, pos + 1, acc}
 
