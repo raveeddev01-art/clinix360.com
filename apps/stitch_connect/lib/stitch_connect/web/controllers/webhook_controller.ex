@@ -13,13 +13,6 @@ defmodule StitchConnect.Web.WebhookController do
     with {:exists?, %Integration{} = integration} <-
            {:exists?, IntegrationQueries.find_by_webhook_token(webhook_token)} do
       [event_type] = get_req_header(conn, "x-drchrono-event")
-      IO.puts("=====")
-      IO.inspect(integration)
-      IO.puts("=====")
-      IO.inspect(event_type)
-      IO.puts("=====")
-      IO.inspect(params)
-      IO.puts("=====")
       DrChrono.handle_webhook(integration, event_type, params)
       json(conn, %{secret_token: "stitch"})
     else

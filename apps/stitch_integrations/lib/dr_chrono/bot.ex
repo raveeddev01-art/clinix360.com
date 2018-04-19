@@ -51,6 +51,9 @@ defmodule StitchIntegrations.DrChrono.Bot do
   def post_message(team_id, group_id, text_content) do
     bot_user = get_bot(team_id)
     group = Stitch.GroupQueries.get_by_id(group_id)
+    # Attempt to create a GroupUser for the bot, this is on
+    # the fly because sometimes people change the room for the integration.
+    Stitch.Group.add_user(group, bot_user)
 
     message_params = %{
       "text_content" => text_content,
