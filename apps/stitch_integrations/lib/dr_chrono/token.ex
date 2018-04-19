@@ -9,6 +9,7 @@ defmodule StitchIntegrations.DrChrono.Token do
     unix_now = DateTime.utc_now() |> DateTime.to_unix()
 
     if integration.credentials["expiration_in_unix"] <= unix_now do
+      IO.puts("Token's expired, refreshing it.")
       # Token has expired, we need to refresh it, and update it in
       # the database.
       {:ok, response_values} = refresh_token(integration.credentials["refresh_token"])
@@ -18,8 +19,10 @@ defmodule StitchIntegrations.DrChrono.Token do
 
       {:ok, new_credentials[:access_token]}
     else
+      IO.puts("Token is still valid, return existing.")
       # Token is still valid, let's just use it.
-      {:ok, integration.credentials["access_token"]}
+      token = integration.credentials["access_token"]
+      {:ok, token}
     end
   end
 
