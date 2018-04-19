@@ -154,8 +154,8 @@ class DrChronoForm extends Component {
               name="webhookToken"
               id="webhookToken"
               type="text"
-              value={`https://teamstitch.com/webhook/${this.state
-                .webhookToken}`}
+              value={`${applicationScheme}${applicationHost}/webhook/drchrono/${this
+                .state.webhookToken}`}
             />
           </Col>
         </FormGroup>

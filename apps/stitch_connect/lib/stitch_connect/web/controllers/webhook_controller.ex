@@ -5,7 +5,6 @@ defmodule StitchConnect.Web.WebhookController do
   action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def drchrono_get(conn, params) do
-    IO.inspect(params)
     json(conn, %{secret_token: "stitch"})
   end
 
