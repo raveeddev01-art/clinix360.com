@@ -3,11 +3,10 @@ defmodule Stitch.Message.Parser.Lexer do
 
   defstruct position: 0, input: "", tokens: [], open_tokens: %{}, new_line: true
 
-  def try(input) do
-    res = new(input) |> next |> IO.inspect
-    for t <- res.tokens do
-      IO.inspect [t, String.slice(input, t.start, t.end - t.start)]
-    end
+  def run(string) do
+    string
+    |> new()
+    |> next()
   end
 
   def new(input) do
@@ -72,14 +71,14 @@ defmodule Stitch.Message.Parser.Lexer do
     read_code(input)
   end
 
-  def next(%{input: "+" <> input_stream} = input) do
-    token = %{type: :everyone_mention, start: input.position, end: input.position + 12}
-    input = %{input | input: input_stream,
-                      position: input.position + 12,
-                      new_line: false,
-                      tokens: [token | input.tokens]}
-    next(input)
-  end
+  # def next(%{input: "+" <> input_stream} = input) do
+  #   token = %{type: :everyone_mention, start: input.position, end: input.position + 12}
+  #   input = %{input | input: input_stream,
+  #                     position: input.position + 12,
+  #                     new_line: false,
+  #                     tokens: [token | input.tokens]}
+  #   next(input)
+  # end
 
   def next(%{input: "<@Ghere>" <> input_stream} = input) do
     read_group_mention(:here_mention, input_stream, input, 8)
@@ -105,6 +104,9 @@ defmodule Stitch.Message.Parser.Lexer do
   def next(%{input: "\n" <> rest} = input), do: read_newline(input, rest)
   def next(%{input: "\r\n" <> rest} = input), do: read_newline(input, rest)
 
+  def next(%{input: "https://" <> rest} = input), do: read_link(input, rest, 8)
+  def next(%{input: "http://" <> rest} = input), do: read_link(input, rest, 7)
+
   def next(%{input: ""} = input) do
     close_blockquote(input, "")
   end
@@ -127,6 +129,21 @@ defmodule Stitch.Message.Parser.Lexer do
                       new_line: false,
                       tokens: [token | input.tokens]}
     next(input)
+  end
+
+  def read_link(input, rest, padding) do
+    case Regex.run(~r/^[^\s]+/, rest, return: :index) do
+      nil ->
+        input = %{ input | input: rest }
+        next(input)
+      [{_index, length}] ->
+        token = %{ start: input.position, end: input.position + padding + length, type: :link }
+        input = %{ input | input: String.slice(rest, length..-1),
+                           position: input.position + padding + length,
+                           tokens: [token | input.tokens],
+                           new_line: false }
+        next(input)
+    end
   end
 
   def close_blockquote(input, rest) do

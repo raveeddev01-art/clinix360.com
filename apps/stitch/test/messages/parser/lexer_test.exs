@@ -67,6 +67,40 @@ defmodule Stitch.Message.ParserTest do
     assert {:everyone_mention, "<@Geveryone>"} = get_tag(input, res.tokens, 1)
   end
 
+  test "link" do
+    input = "Test https://google.com?query=q http://github.com `test`"
+    res = Lexer.new(input) |> Lexer.next
+    assert {:code, "`test`"} = get_tag(input, res.tokens, 0)
+    assert {:link, "http://github.com"} = get_tag(input, res.tokens, 1)
+    assert {:link, "https://google.com?query=q"} = get_tag(input, res.tokens, 2)
+  end
+
+  test "code takes precedence over other tags" do
+    input = "`*Test* https://google.com?query=q`"
+    res = Lexer.new(input) |> Lexer.next
+    assert {:code, "`*Test* https://google.com?query=q`"} = get_tag(input, res.tokens, 0)
+  end
+
+  test "code block takes precedence over code" do
+    input = """
+    ```
+    `*Test* https://google.com?query=q`
+    ```
+    """
+    res = Lexer.new(input) |> Lexer.next
+    assert {:code_block, "```\n`*Test* https://google.com?query=q`\n```"} = get_tag(input, res.tokens, 0)
+  end
+
+  test "blockquote can contain other tags" do
+    input = """
+    Test blockquote
+    > `*Test* https://google.com?query=q`
+    """
+
+    res = Lexer.new(input) |> Lexer.next
+    assert {:blockquote, "> `*Test* https://google.com?query=q`\n"} = get_tag(input, res.tokens, 0)
+  end
+
   defp get_tag(input, tokens, index) do
     token = Enum.at(tokens, index)
     {token.type, String.slice(input, token.start, token.end - token.start)}
