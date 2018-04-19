@@ -23,6 +23,7 @@ class DrChronoForm extends Component {
     this.state = {
       id: integration.id,
       groupId: integration.group_id,
+      webhookToken: integration.webhook_token,
       appointmentCreate: integration.settings.appointmentCreate || false,
       appointmentModify: integration.settings.appointmentModify || false,
       appointmentDelete: integration.settings.appointmentDelete || false,
@@ -108,6 +109,15 @@ class DrChronoForm extends Component {
               onChange={this.onChange}
               type="text"
               defaultValue={this.state.clientSecret}
+            />
+
+            <ControlLabel>Webhook URL</ControlLabel>
+            <FormControl
+              disabled
+              name="webhookToken"
+              id="webhookToken"
+              type="text"
+              value={this.state.webhookToken}
             />
           </Col>
         </FormGroup>

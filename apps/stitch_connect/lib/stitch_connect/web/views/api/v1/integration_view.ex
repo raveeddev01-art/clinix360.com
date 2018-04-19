@@ -17,7 +17,7 @@ defmodule StitchConnect.Web.Api.V1.IntegrationView do
       settings: integration.settings || %{},
       credentials: integration.credentials || %{},
       enabled: integration.enabled,
-      webhook_token: integration.webhook_token,
+      webhook_token: "https://teamstitch.com/webhooks/#{integration.webhook_token}",
       app_id: integration.app_id,
       group_id: integration.group_id
     }
