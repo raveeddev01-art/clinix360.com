@@ -303,10 +303,6 @@ class MessageForm extends Component {
   renderInput() {
     const { messageStore: { messageInEdit }, socketStore } = this.props;
 
-    if (messageInEdit) {
-      this.textInput.focus();
-    }
-
     const text = this.getText();
     const className = classNames("form-control", "message-text", {
       disconnected: !socketStore.isConnected,
@@ -314,7 +310,7 @@ class MessageForm extends Component {
     });
 
     const inputWrapperClass = classNames("message-input-wrapper", {
-      isFocused: this.state.isFocused
+      isFocused: this.state.isFocused || messageInEdit
     });
 
     return (
