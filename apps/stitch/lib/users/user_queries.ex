@@ -112,7 +112,8 @@ defmodule Stitch.UserQueries do
   """
   @spec get_by_token(binary) :: User.t() | nil
   def get_by_token(token) do
-    Repo.get_by(User, token: token)
+    user = Repo.get_by(User, token: token)
+    Repo.preload(user, :team)
   end
 
   @doc """
