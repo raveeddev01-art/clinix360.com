@@ -194,7 +194,10 @@ class MessageForm extends Component {
   };
 
   onBlur = () => {
-    this.setState({ isFocused: false });
+    const { messageStore: { messageInEdit } } = this.props;
+    if (!messageInEdit) {
+      return this.setState({ isFocused: false });
+    }
   };
 
   onCloseMentionMenu = () => {
