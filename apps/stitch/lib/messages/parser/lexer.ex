@@ -71,15 +71,6 @@ defmodule Stitch.Message.Parser.Lexer do
     read_code(input)
   end
 
-  # def next(%{input: "+" <> input_stream} = input) do
-  #   token = %{type: :everyone_mention, start: input.position, end: input.position + 12}
-  #   input = %{input | input: input_stream,
-  #                     position: input.position + 12,
-  #                     new_line: false,
-  #                     tokens: [token | input.tokens]}
-  #   next(input)
-  # end
-
   def next(%{input: "<@Ghere>" <> input_stream} = input) do
     read_group_mention(:here_mention, input_stream, input, 8)
   end

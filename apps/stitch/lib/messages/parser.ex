@@ -1,14 +1,16 @@
 defmodule Stitch.Message.Parser do
   alias Stitch.Message.Parser.Lexer
+  use Appsignal.Instrumentation.Decorators
+  require Logger
 
+  @decorate transaction_event(:background_job)
   def get_meta(string) do
-    input = Lexer.run(string)
-  end
-
-  def test(input) do
-    res = Lexer.run(input)
-    for t <- res.tokens do
-      IO.inspect [t, String.slice(input, t.start, t.end - t.start)]
+    try do
+      Lexer.run(string).tokens
+    rescue
+      error ->
+        Logger.error("[#{__MODULE__}] #{inspect(error)}")
+        []
     end
   end
 end
