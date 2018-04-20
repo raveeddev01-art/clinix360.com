@@ -51,29 +51,6 @@ class UserStore {
   }
 
   @action
-  setCurrentUser = user => {
-    this.id = user.id;
-    this.username = user.username;
-    this.phone = user.phone || "";
-    this.title = user.title || "";
-    this.email = user.email;
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
-    this.fullName = `${this.firstName} ${this.lastName}`;
-
-    if (
-      user.avatar &&
-      user.avatar.indexOf("stitch-content/default-avatar") < 0
-    ) {
-      this.hasAvatar = true;
-    }
-    this.avatar = user.avatar;
-    this.avatarThumb = user.avatar_thumb;
-
-    this.roles = user.roles;
-  };
-
-  @action
   onUserInfo = user => {
     this.avatar = user.avatar;
     this.avatarThumb = user.avatar_thumb;
