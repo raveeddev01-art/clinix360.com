@@ -11,23 +11,33 @@ import difference from "lodash/difference";
 // const defaultAvatars = ["/images/default-avatar.png"];
 
 class UserStore {
-  @observable id = "";
+  @observable id = currentUser.id;
   @observable loading = false;
-  @observable username = "";
-  @observable phone = "";
-  @observable title = "";
-  @observable email = "";
-  @observable firstName = "";
-  @observable lastName = "";
-  @observable fullName = "";
-  @observable avatar = "";
-  @observable avatarThumb = "";
-  @observable roles = [];
-  @observable hasAvatar = false;
+  @observable username = currentUser.username;
+  @observable phone = currentUser.phone || "";
+  @observable title = currentUser.title || "";
+  @observable email = currentUser.email;
+  @observable firstName = currentUser.firstName;
+  @observable lastName = currentUser.lastName;
+  @observable fullName = `${this.firstName} ${this.lastName}`;
+  @observable avatar = currentUser.avatar;
+  @observable avatarThumb = currentUser.avatar_thumb;
+  @observable roles = currentUser.roles;
+  @observable hasAvatar = this.userHasAvatar();
   @observable roleChanged = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+  }
+
+  userHasAvatar() {
+    if (
+      currentUser.avatar &&
+      currentUser.avatar.indexOf("stitch-content/default-avatar") < 0
+    ) {
+      return true;
+    }
+    return false;
   }
 
   @computed

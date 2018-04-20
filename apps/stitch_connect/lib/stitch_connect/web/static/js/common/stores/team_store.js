@@ -2,26 +2,16 @@ import { observable, action } from "mobx";
 
 class TeamStore {
   @observable loading = false;
-  @observable name = "";
-  @observable id = "";
-  @observable slug = "";
-  @observable securityLockoutEnabled = false;
-  @observable secondsToLockout = null;
-  @observable openInvitationsEnabled = false;
+  @observable name = currentUser.team.name;
+  @observable id = currentUser.team.id;
+  @observable slug = currentUser.team.slug;
+  @observable securityLockoutEnabled = currentUser.team.securityLockoutEnabled;
+  @observable secondsToLockout = currentUser.team.secondsToLockout;
+  @observable openInvitationsEnabled = currentUser.team.openInvitationsEnabled;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
   }
-
-  @action
-  loadTeam = team => {
-    this.id = team.id;
-    this.name = team.name;
-    this.slug = team.slug;
-    this.securityLockoutEnabled = team.securityLockoutEnabled;
-    this.openInvitationsEnabled = team.openInvitationsEnabled;
-    this.secondsToLockout = team.secondsToLockout;
-  };
 
   @action
   editTeamName = name => {
