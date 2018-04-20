@@ -6,26 +6,28 @@ defmodule Stitch.Repo.Migrations.AddMetaToExistingMessages do
   @disable_ddl_transaction true
 
   def up do
-    Message
-    |> Repo.stream()
-    |> Stream.each(fn
-      %{text_content: text_content} = message when not is_nil(text_content) ->
-        meta = Message.Parser.get_meta(text_content)
+    Repo.transaction(fn ->
+      Message
+      |> Repo.stream()
+      |> Stream.each(fn
+        %{text_content: text_content} = message when not is_nil(text_content) ->
+          meta = Message.Parser.get_meta(text_content)
 
-        result =
-          message
-          |> Ecto.Changeset.change(text_content_meta: meta)
-          |> Repo.update
+          result =
+            message
+            |> Ecto.Changeset.change(text_content_meta: meta)
+            |> Repo.update
 
-        case result do
-          {:ok, updated_message} ->
-            nil
-          {:error, changeset} ->
-            IO.inspect(changeset)
-        end
-      _message -> nil
-    end)
-    |> Stream.run()
+          case result do
+            {:ok, _updated_message} ->
+              nil
+            {:error, changeset} ->
+              IO.inspect(changeset)
+          end
+        _message -> nil
+      end)
+      |> Stream.run()
+    end, timeout: :infinity)
   end
 
   def down do
