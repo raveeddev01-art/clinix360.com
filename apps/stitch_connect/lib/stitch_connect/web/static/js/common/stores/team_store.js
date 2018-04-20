@@ -14,19 +14,13 @@ class TeamStore {
   }
 
   @action
-  loadTeam = id => {
-    this.loading = true;
-
-    get(`/api/v1/teams/${id}`).then(resp => {
-      const { data } = resp;
-      this.id = data.id;
-      this.name = data.name;
-      this.securityLockoutEnabled = data.security_lockout;
-      this.openInvitationsEnabled = data.open_invitations_enabled;
-      this.secondsToLockout = data.seconds_to_lockout;
-      this.slug = data.slug;
-      this.loading = false;
-    });
+  loadTeam = team => {
+    this.id = team.id;
+    this.name = team.name;
+    this.slug = team.slug;
+    this.securityLockoutEnabled = team.securityLockoutEnabled;
+    this.openInvitationsEnabled = team.openInvitationsEnabled;
+    this.secondsToLockout = team.secondsToLockout;
   };
 
   @action

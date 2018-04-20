@@ -68,7 +68,7 @@ class RootStore {
   onStoreInit() {
     this.sidemenuStore.loadApp();
     this.notificationStore.loadPreferences();
-    this.teamStore.loadTeam(this.appParams.teamId);
+    this.teamStore.loadTeam(currentUser.team);
 
     if (!this.presenceStore.locked) {
       this.userStore.setCurrentUser(currentUser);

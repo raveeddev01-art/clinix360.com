@@ -27,7 +27,10 @@ current_user =
         "team" => %{
           "securityLockoutEnabled" => user.team.security_lockout,
           "secondsToLockout" => user.team.seconds_to_lockout,
-          "openInvitationsEnabled" => user.team.open_invitations_enabled
+          "openInvitationsEnabled" => user.team.open_invitations_enabled,
+          "name" => user.team.name,
+          "slug" => user.team.slug,
+          "id" => user.team.id
         }
       })
   end
