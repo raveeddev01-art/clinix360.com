@@ -125,7 +125,7 @@ defmodule Stitch.Message.Parser.Lexer do
   def read_link(input, rest, padding) do
     case Regex.run(~r/^[^\s]+/, rest, return: :index) do
       nil ->
-        input = %{ input | input: rest }
+        input = %{ input | input: rest, position: input.position + padding }
         next(input)
       [{_index, length}] ->
         token = %{ start: input.position, end: input.position + padding + length, type: :link }
