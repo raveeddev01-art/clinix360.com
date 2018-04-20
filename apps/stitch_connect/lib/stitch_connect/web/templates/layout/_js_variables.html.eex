@@ -19,7 +19,19 @@ current_user =
         "lastName" => user.last_name,
         "roles" => user.roles,
         "username" => user.username,
-        "email" => user.email
+        "email" => user.email,
+        "title" => user.title,
+        "phone" => user.phone_number,
+        "avatar" => StitchConnect.PresignedUrlCache.fetch(user.profile_image_url),
+        "avatar_thumb" => StitchConnect.PresignedUrlCache.fetch(user.profile_image_thumb_url),
+        "team" => %{
+          "securityLockoutEnabled" => user.team.security_lockout,
+          "secondsToLockout" => user.team.seconds_to_lockout,
+          "openInvitationsEnabled" => user.team.open_invitations_enabled,
+          "name" => user.team.name,
+          "slug" => user.team.slug,
+          "id" => user.team.id
+        }
       })
   end
 %>
