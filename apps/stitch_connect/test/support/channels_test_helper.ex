@@ -1,32 +1,15 @@
 defmodule StitchConnect.Web.ChannelsTestHelper do
   use Phoenix.ChannelTest
   alias StitchConnect.Web.UserSocket
-  alias Stitch.{Repo, Group, GroupUser, Accounts}
+  alias Stitch.{Repo, Group, GroupUser}
+  import Stitch.Factory
 
   @endpoint StitchConnect.Web.Endpoint
 
   def create_users(_) do
-    team = Stitch.Team.Onboarding.create_team("Clinic", "clinic")
-
-    user1 = Accounts.create_user_with_email_only("user1@mail.com")
-    user2 = Accounts.create_user_with_email_only("user2@mail.com")
-
-    attrs = %{
-      fullname: "Sergio Tapia", username: "user1",
-      password: "Password123!", pin: "0000",
-      phone_number: "1231231234",
-      roles: ["admin"], team_id: team.id
-    }
-
-    member_attrs = %{
-      fullname: "Daniel Tapia", username: "user2",
-      password: "Password123!", pin: "0000",
-      phone_number: "1231231234",
-      roles: ["member"], team_id: team.id
-    }
-
-    user1 = Accounts.update_and_complete_user_onboarding(user1.id, attrs)
-    user2 = Accounts.update_and_complete_user_onboarding(user2.id, member_attrs)
+    team = insert(:team)
+    user1 = insert(:user, team: team)
+    user2 = insert(:user, team: team)
 
     {:ok, team: team, user1: user1, user2: user2}
   end
