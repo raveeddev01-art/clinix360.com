@@ -93,6 +93,7 @@ defmodule Stitch.Message do
   def put_meta(%{valid?: true, changes: %{text_content: text_content}} = changeset) do
     put_change(changeset, :text_content_meta, Message.Parser.get_meta(text_content))
   end
+
   def put_meta(changeset), do: changeset
 
   defp check_for_links(
@@ -155,8 +156,6 @@ defmodule Stitch.Message do
     group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
-    MessageAnalytics.track_message_sent(user, group)
-
     mentioned_user_ids =
       Message.Mention.get_mentioned_user_ids(
         users,
@@ -167,7 +166,7 @@ defmodule Stitch.Message do
       )
 
     notify_user_ids =
-      instrument("get_notify_user_ids", "Message creation", fn() ->
+      instrument("get_notify_user_ids", "Message creation", fn ->
         Message.Notification.notify_user_ids(
           group,
           user,
@@ -177,7 +176,7 @@ defmodule Stitch.Message do
       end)
 
     {read_status, recipients} =
-      instrument("get_recipients", "Message creation", fn() ->
+      instrument("get_recipients", "Message creation", fn ->
         users
         |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
           acc_map =
@@ -217,6 +216,8 @@ defmodule Stitch.Message do
 
     case result do
       {:ok, %{message: message} = result_map} ->
+        MessageAnalytics.track_message_sent(message, user, group)
+
         Stitch.Mobile.NotificationQueue.async_enqueue_for_users(
           notify_user_ids.mobile_active,
           message.id
