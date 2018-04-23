@@ -65,7 +65,7 @@ class DrChronoForm extends Component {
   };
 
   _updateConfig = () => {
-    let credentials = this.props.integration.credentials;
+    const credentials = this.props.integration.credentials;
     credentials.clientId = this.state.clientId;
     credentials.clientSecret = this.state.clientSecret;
 
@@ -76,9 +76,7 @@ class DrChronoForm extends Component {
       settings: omit(this.state, ["groupId", "id", "clientId", "clientSecret"])
     };
 
-    this.props.integrationStore.updateIntegration(params).then(() => {
-      console.log("Updated on the fly properly");
-    });
+    this.props.integrationStore.updateIntegration(params);
   };
 
   _handleFormSubmit = event => {

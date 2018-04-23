@@ -11,12 +11,10 @@ defmodule Stitch.Integration do
   @type t :: %__MODULE__{}
 
   schema "integrations" do
-    # REMOVE name
-    field(:name, :string)
     field(:webhook_token, :string)
     field(:settings, :map)
     field(:credentials, :map)
-    field(:enabled, :boolean, default: false)
+    field(:enabled, :boolean, default: true)
     field(:authenticated, :boolean, default: false)
 
     belongs_to(:team, Team)
@@ -42,11 +40,11 @@ defmodule Stitch.Integration do
     |> validate_required([:group_id])
   end
 
-  # Deprecated. Do NOT use.
+  @deprecated "Use create_changeset/2 instead"
   def changeset(struct, attrs) do
     struct
-    |> cast(attrs, [:team_id, :name, :webhook_token, :settings, :enabled])
-    |> validate_required([:team_id, :name, :webhook_token, :settings])
+    |> cast(attrs, [:team_id, :webhook_token, :settings, :enabled])
+    |> validate_required([:team_id, :webhook_token, :settings])
   end
 
   @doc """

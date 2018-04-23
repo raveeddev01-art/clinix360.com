@@ -14,10 +14,6 @@ import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import { Link } from "react-router-dom";
 
 class DrChronoSetupInstructions extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div className="integration-instructions">
