@@ -9,6 +9,7 @@ defmodule Stitch.Repo.Scripts.CreateDrchronoApp do
         description:
           "All-in-one practice management, electronic health records and billing solutions."
       })
+  end
 end
 
 Stitch.Repo.Scripts.CreateDrchronoApp.run()
