@@ -32,7 +32,7 @@ defmodule Stitch.Mobile do
     end)
   end
 
-  def badge_value(%User{} = user, only_mentions) do
+  def badge_value(%User{} = user, true) do
     Stitch.GroupUser
     |> where(user_id: ^user.id)
     |> select([gu], count(gu.mentions_count))
