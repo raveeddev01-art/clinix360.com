@@ -9,7 +9,6 @@ defmodule StitchConnect.Web.TeamChannel do
 
   @endpoint StitchConnect.Web.Endpoint
 
-  @decorate channel_action()
   def join("team:lobby:" <> team_id, params, socket) do
     sync_timestamp = get_sync_users(params)
     fetch_users_and_groups? = get_fetch_users_and_groups(params)

@@ -6,8 +6,9 @@ defmodule Stitch.Message do
   alias Stitch.{Repo, Message, Group, GroupUser, GroupQueries, Accounts.User}
   alias Stitch.Analytics.Message, as: MessageAnalytics
 
+  import Appsignal.Instrumentation.Helpers, only: [instrument: 3]
+
   @valid_types ["chat", "system", "upload"]
-  @unread_limit 30
 
   schema "messages" do
     belongs_to(:user, Stitch.Accounts.User)
@@ -139,23 +140,27 @@ defmodule Stitch.Message do
       )
 
     notify_user_ids =
-      Message.Notification.notify_user_ids(
-        group,
-        user,
-        mentioned_user_ids,
-        presence_user_ids.active
-      )
+      instrument("get_notify_user_ids", "Message creation", fn() ->
+        Message.Notification.notify_user_ids(
+          group,
+          user,
+          mentioned_user_ids,
+          presence_user_ids.active
+        )
+      end)
 
     {read_status, recipients} =
-      users
-      |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
-        acc_map =
-          if recipient.id == user.id or recipient.disabled or recipient.is_bot,
-            do: acc_map,
-            else: Map.put(acc_map, to_string(recipient.id), nil)
+      instrument("get_recipients", "Message creation", fn() ->
+        users
+        |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
+          acc_map =
+            if recipient.id == user.id or recipient.disabled or recipient.is_bot,
+              do: acc_map,
+              else: Map.put(acc_map, to_string(recipient.id), nil)
 
-        acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
-        {acc_map, acc_list}
+          acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
+          {acc_map, acc_list}
+        end)
       end)
 
     message_struct = %Message{group_id: group_id, user_id: user.id}
@@ -179,23 +184,18 @@ defmodule Stitch.Message do
       |> mark_as_read_on_creation(
         group.id,
         user.id,
-        group_user.last_read_at || group_user.inserted_at,
-        @unread_limit
+        group_user.last_read_at || group_user.inserted_at
       )
-      |> Multi.run(:notify_user_ids, fn %{message: message} ->
-        Stitch.EmailNotification.create(message.id, notify_user_ids.email)
-        {:ok, notify_user_ids}
-      end)
       |> Repo.transaction()
 
     case result do
-      {:ok, %{message: message}} ->
+      {:ok, %{message: message} = result_map} ->
         Stitch.Mobile.NotificationQueue.async_enqueue_for_users(
           notify_user_ids.mobile_active,
           message.id
         )
 
-        result
+        {:ok, Map.put(result_map, :notify_user_ids, notify_user_ids)}
 
       {:error, _} ->
         result
@@ -243,27 +243,10 @@ defmodule Stitch.Message do
     |> Repo.transaction()
   end
 
-  def mark_as_read_on_creation(multi, group_id, user_id, last_read_at, unread_limit) do
-    if below_unread_limit?(group_id, last_read_at, unread_limit) do
-      multi
-      |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [])
-      |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [])
-    else
-      multi
-    end
-  end
-
-  def below_unread_limit?(group_id, timestamp, unread_limit) do
-    count =
-      Message
-      |> where([m], m.group_id == ^group_id)
-      |> where([m], m.inserted_at >= ^timestamp)
-      |> limit(^unread_limit)
-      |> subquery
-      |> select([q], count(q.id))
-      |> Repo.one()
-
-    count < unread_limit
+  def mark_as_read_on_creation(multi, group_id, user_id, last_read_at) do
+    multi
+    |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [])
+    |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [])
   end
 
   def increment_unread_counter(group_id, user_ids) do
