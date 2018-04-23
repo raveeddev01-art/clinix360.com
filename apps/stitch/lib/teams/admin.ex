@@ -7,25 +7,40 @@ defmodule Stitch.Team.Admin do
   alias Stitch.Team
   alias Stitch.Analytics.Team, as: TeamAnalytics
 
-  @spec update_name(number, String.t) :: {:ok, term} | {:error, term}
+  @spec update_name(number, String.t()) :: {:ok, term} | {:error, term}
   @doc """
   Updates the team name field.
   """
   def update_name(team_id, name) when byte_size(name) > 0 do
     team = Repo.get(Team, team_id)
     changeset = Team.changeset(team, %{name: name})
-    result = Repo.update changeset
-    case result, do: ({:ok, _} -> TeamAnalytics.identify_and_group(team); _ -> :ignore)
+    result = Repo.update(changeset)
+
+    case result,
+      do:
+        (
+          {:ok, _} -> TeamAnalytics.identify_and_group(team)
+          _ -> :ignore
+        )
+
     result
   end
+
   def update_name(_, _), do: {:error, "Name cannot be blank or nil"}
 
   def update_contact_info(%Team{} = team, params) do
-    result = team
-    |> Team.contact_info_changeset(params)
-    |> Repo.update
+    result =
+      team
+      |> Team.contact_info_changeset(params)
+      |> Repo.update()
 
-    case result, do: ({:ok, _} -> TeamAnalytics.identify_and_group(team); _ -> :ignore)
+    case result,
+      do:
+        (
+          {:ok, _} -> TeamAnalytics.identify_and_group(team)
+          _ -> :ignore
+        )
+
     result
   end
 
@@ -35,19 +50,26 @@ defmodule Stitch.Team.Admin do
   entirely.
   """
   def update_security_lockout_time(team_id, security_lockout, seconds_to_lockout)
-  when is_number(team_id) and is_boolean(security_lockout) and is_number(seconds_to_lockout) do
+      when is_number(team_id) and is_boolean(security_lockout) and is_number(seconds_to_lockout) do
     team = Repo.get(Team, team_id)
-    changeset = Team.changeset(team, %{security_lockout: security_lockout, seconds_to_lockout: seconds_to_lockout})
-    Repo.update changeset
+
+    changeset =
+      Team.changeset(team, %{
+        security_lockout: security_lockout,
+        seconds_to_lockout: seconds_to_lockout
+      })
+
+    Repo.update(changeset)
   end
 
-  def update_security_lockout_time(_, _, _), do: {:error, "Security_lockout must be a boolean, and seconds_to_lockout must be an integer."}
+  def update_security_lockout_time(_, _, _),
+    do: {:error, "Security_lockout must be a boolean, and seconds_to_lockout must be an integer."}
 
   def update_security_lockout_time(team_id, security_lockout)
-  when is_number(team_id) and is_boolean(security_lockout) do
+      when is_number(team_id) and is_boolean(security_lockout) do
     team = Repo.get(Team, team_id)
     changeset = Team.changeset(team, %{security_lockout: security_lockout})
-    Repo.update changeset
+    Repo.update(changeset)
   end
 
   @spec update_open_invitation(number, boolean) :: {:ok, term} | {:error, term}
@@ -55,10 +77,10 @@ defmodule Stitch.Team.Admin do
   Updates the team open_invitations_enabled field.
   """
   def update_open_invitation(team_id, open_invitations_enabled)
-  when is_number(team_id) and is_boolean(open_invitations_enabled) do
+      when is_number(team_id) and is_boolean(open_invitations_enabled) do
     team = Repo.get(Team, team_id)
     changeset = Team.changeset(team, %{open_invitations_enabled: open_invitations_enabled})
-    Repo.update changeset
+    Repo.update(changeset)
   end
 
   @spec delete_team(number) :: boolean
@@ -68,7 +90,7 @@ defmodule Stitch.Team.Admin do
   """
   def delete_team(team_id) do
     team = Repo.get(Team, team_id)
-    Repo.delete team
+    Repo.delete(team)
   end
 
   @spec export_history(number) :: boolean | {:error, term}

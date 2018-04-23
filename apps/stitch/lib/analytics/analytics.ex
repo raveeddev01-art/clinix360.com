@@ -28,13 +28,13 @@ defmodule Stitch.Analytics do
       :ok
 
   """
-  @spec identify_and_group(User.t | Team.t) :: :ok | :error
+  @spec identify_and_group(User.t() | Team.t()) :: :ok | :error
   @impl Stitch.Analytics.Behaviour
   def identify_and_group(%User{} = user) do
-    team            = Stitch.TeamQueries.get_by_id(user.team_id)
-    subscription    = Stitch.Billing.get_subscription(team)
+    team = Stitch.TeamQueries.get_by_id(user.team_id)
+    subscription = Stitch.Billing.get_subscription(team)
     identify_traits = identify_traits(user, team, subscription)
-    group_traits    = group_traits(team, subscription)
+    group_traits = group_traits(team, subscription)
 
     with {:ok, _} <- identify(user.id, identify_traits),
          {:ok, _} <- group(%{user_id: user.id, team_id: team.id}, group_traits) do
@@ -43,13 +43,16 @@ defmodule Stitch.Analytics do
       _ -> :error
     end
   end
+
   def identify_and_group(%Team{} = team) do
     results =
       for user <- Stitch.TeamQueries.list_users(team) do
         Stitch.Analytics.identify_and_group(user)
       end
+
     if Enum.all?(results, &(&1 == :ok)), do: :ok, else: :error
   end
+
   def identify_and_group(%{team_id: team_id}) do
     team_id
     |> Stitch.TeamQueries.get_by_id()
@@ -65,12 +68,12 @@ defmodule Stitch.Analytics do
       {:ok, %Event{...}}
 
   """
-  @spec identify(User.t) :: {:ok, Event.t} | {:error, Ecto.Changeset.t}
+  @spec identify(User.t()) :: {:ok, Event.t()} | {:error, Ecto.Changeset.t()}
   @impl Stitch.Analytics.Behaviour
   def identify(%User{} = user) do
-    team         = Stitch.TeamQueries.get_by_id(user.team_id)
+    team = Stitch.TeamQueries.get_by_id(user.team_id)
     subscription = Stitch.Billing.get_subscription(team)
-    traits       = identify_traits(user, team, subscription)
+    traits = identify_traits(user, team, subscription)
     identify(user.id, traits)
   end
 
@@ -83,21 +86,23 @@ defmodule Stitch.Analytics do
       {:ok, %Event{...}}
 
   """
-  @spec identify(pos_integer, map) :: {:ok, Event.t} | {:error, Ecto.Changeset.t}
+  @spec identify(pos_integer, map) :: {:ok, Event.t()} | {:error, Ecto.Changeset.t()}
   def identify(user_id, traits) do
     payload = %{
       type: "identify",
-      userId: ensure_binary(user_id), # segment expects camelCase (userId)
+      # segment expects camelCase (userId)
+      userId: ensure_binary(user_id),
       traits: traits,
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601(),
       integrations: %{
         # Necessary for identity verification on Intercom.
         "Intercom" => %{
-          "user_id"    => "#{user_id}",
-          "user_hash"  => Stitch.Intercom.identity_verification_user_hash(user_id)
+          "user_id" => "#{user_id}",
+          "user_hash" => Stitch.Intercom.identity_verification_user_hash(user_id)
         }
       }
     }
+
     create_event(%{payload: payload})
   end
 
@@ -115,15 +120,18 @@ defmodule Stitch.Analytics do
 
   """
   @spec group(%{user_id: pos_integer, team_id: pos_integer}, map) ::
-  {:ok, Event.t} | {:error, Ecto.Changeset.t}
+          {:ok, Event.t()} | {:error, Ecto.Changeset.t()}
   def group(%{user_id: user_id, team_id: team_id}, traits) do
     payload = %{
       type: "group",
-      userId: ensure_binary(user_id), # segment expects camelCase (userId)
-      groupId: ensure_binary(team_id), # segment expects camelCase (groupId)
+      # segment expects camelCase (userId)
+      userId: ensure_binary(user_id),
+      # segment expects camelCase (groupId)
+      groupId: ensure_binary(team_id),
       traits: traits,
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601()
     }
+
     create_event(%{payload: payload})
   end
 
@@ -136,31 +144,33 @@ defmodule Stitch.Analytics do
       {:ok, %Event{...}}
 
   """
-  @spec track(pos_integer, String.t, map) ::
-  {:ok, Event.t} | {:error, Ecto.Changeset.t}
+  @spec track(pos_integer, String.t(), map) :: {:ok, Event.t()} | {:error, Ecto.Changeset.t()}
   @impl Stitch.Analytics.Behaviour
   def track(user_id, event, properties) do
     payload = %{
       type: "track",
-      userId: ensure_binary(user_id), # segment expects camelCase (userId)
+      # segment expects camelCase (userId)
+      userId: ensure_binary(user_id),
       event: event,
       properties: properties,
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601()
     }
+
     create_event(%{payload: payload})
   end
 
-  @spec track(String.t, map) ::
-  {:ok, Event.t} | {:error, Ecto.Changeset.t}
+  @spec track(String.t(), map) :: {:ok, Event.t()} | {:error, Ecto.Changeset.t()}
   @impl Stitch.Analytics.Behaviour
   def track(event, properties) do
     payload = %{
       type: "track",
-      anonymousId: UUID.uuid4(), # segment expects camelCase (anonymousId)
+      # segment expects camelCase (anonymousId)
+      anonymousId: UUID.uuid4(),
       event: event,
       properties: properties,
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601()
     }
+
     create_event(%{payload: payload})
   end
 
@@ -175,32 +185,41 @@ defmodule Stitch.Analytics do
 
   defp identify_traits(user, team, subscription) do
     status = if user.disabled, do: "disabled", else: "enabled"
+
     %{
       "created_at" => user.inserted_at,
-      "email"      => user.email,
+      "email" => user.email,
       "first_name" => user.first_name,
-      "last_name"  => user.last_name,
-      "name"       => "#{user.first_name} #{user.last_name}",
-      "phone"      => user.phone_number,
-      "plan"       => subscription.tier,
-      "role"       => user.roles && List.to_string(user.roles),
-      "status"     => status,
+      "last_name" => user.last_name,
+      "name" => "#{user.first_name} #{user.last_name}",
+      "phone" => user.phone_number,
+      "plan" => subscription.tier,
+      "role" => user.roles && List.to_string(user.roles),
+      "status" => status,
       "team_created_at" => team.inserted_at,
-      "team_id"    => Integer.to_string(team.id),
-      "team_name"  => team.name,
-      "team_slug"  => team.slug,
-      "user_created_at" => user.inserted_at # duping created_at for consistency
+      "team_id" => Integer.to_string(team.id),
+      "team_name" => team.name,
+      "team_slug" => team.slug,
+      "team_size" => team.size,
+      "team_industry" => team.industry,
+      "team_ehr" => team.ehr,
+      # duping created_at for consistency
+      "user_created_at" => user.inserted_at
     }
   end
 
   defp group_traits(team, subscription) do
     %{
       "created_at" => team.inserted_at,
-      "name"       => team.name,
-      "plan"       => subscription.tier,
-      "slug"       => team.slug,
-      "team_created_at" => team.inserted_at, # duping created_at for consistency
-      "team_id"    => Integer.to_string(team.id),
+      "name" => team.name,
+      "plan" => subscription.tier,
+      "slug" => team.slug,
+      "team_size" => team.size,
+      "team_industry" => team.industry,
+      "team_ehr" => team.ehr,
+      # duping created_at for consistency
+      "team_created_at" => team.inserted_at,
+      "team_id" => Integer.to_string(team.id)
     }
   end
 
@@ -210,20 +229,15 @@ defmodule Stitch.Analytics do
   end
 
   @doc false
-  def list_events([limit: limit]) do
-    query =
-      from e in Event,
-      limit: ^limit
+  def list_events(limit: limit) do
+    query = from(e in Event, limit: ^limit)
     Repo.all(query)
   end
 
   @doc false
   def delete_events(events) do
-    ids = Enum.map(events, &(&1.id))
-    query =
-      from e in Event,
-      where: e.id in ^ids
+    ids = Enum.map(events, & &1.id)
+    query = from(e in Event, where: e.id in ^ids)
     Repo.delete_all(query)
   end
-
 end

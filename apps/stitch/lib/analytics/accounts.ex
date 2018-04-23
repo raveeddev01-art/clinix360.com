@@ -17,7 +17,7 @@ defmodule Stitch.Analytics.Accounts do
     - Team Created (if new)
   """
   def track_signup(user) do
-    Stitch.Task.start fn ->
+    Stitch.Task.start(fn ->
       identify_and_group(user)
 
       team = Stitch.TeamQueries.get_by_id(user.team_id)
@@ -28,7 +28,7 @@ defmodule Stitch.Analytics.Accounts do
       if Enum.count(active_users) == 1 do
         track_new_team(user, team)
       end
-    end
+    end)
   end
 
   # ============
@@ -36,14 +36,15 @@ defmodule Stitch.Analytics.Accounts do
   # ============
 
   defp identify_and_group(user) do
-    Stitch.Task.start fn ->
+    Stitch.Task.start(fn ->
       @analytics.identify_and_group(user)
-    end
+    end)
   end
 
   defp track_joined_team(user, team, active_users) do
-    Stitch.Task.start fn ->
-      properties = accounts_event_properties(user, team)
+    Stitch.Task.start(fn ->
+      properties =
+        accounts_event_properties(user, team)
         |> Map.merge(%{"active_users" => length(active_users)})
 
       @analytics.track(
@@ -51,30 +52,33 @@ defmodule Stitch.Analytics.Accounts do
         @event_team_joined,
         properties
       )
-    end
+    end)
   end
 
   defp track_new_team(user, team) do
-    Stitch.Task.start fn ->
+    Stitch.Task.start(fn ->
       @analytics.track(
         user.id,
         @event_team_created,
         accounts_event_properties(user, team)
       )
-    end
+    end)
   end
 
   # === HELPERS ===
 
   defp accounts_event_properties(user, team) do
     %{
-      "email"           => user.email,
-      "first_name"      => user.first_name,
-      "last_name"       => user.last_name,
+      "email" => user.email,
+      "first_name" => user.first_name,
+      "last_name" => user.last_name,
       "team_created_at" => team.inserted_at,
-      "team_id"         => Integer.to_string(team.id),
-      "team_name"       => team.name,
-      "team_slug"       => team.slug
+      "team_id" => Integer.to_string(team.id),
+      "team_name" => team.name,
+      "team_slug" => team.slug,
+      "team_size" => team.size,
+      "team_ehr" => team.ehr,
+      "team_industry" => team.industry
     }
   end
 end
