@@ -7,7 +7,7 @@ defmodule StitchConnect.MessageMailer do
   @decorate transaction(:background_job)
   def deliver(notification_preference) do
     Team
-    |> select([:id, :name])
+    |> select([:id, :name, :slug])
     |> Stitch.ChunkStream.chunk(25)
     |> Stream.each(& deliver_for_teams(&1, notification_preference))
     |> Stream.run
@@ -34,7 +34,7 @@ defmodule StitchConnect.MessageMailer do
   def prepare_recipients(users, team) do
     users
     |> Enum.reduce([], fn user, acc ->
-      case Stitch.Mobile.badge_value(user) do
+      case Stitch.Mobile.badge_value(user, true) do
         0 -> acc
         message_count -> [recipient(user, message_count, team) | acc]
       end
@@ -54,8 +54,8 @@ defmodule StitchConnect.MessageMailer do
     %{ struct_url | host: "#{subdomain}.#{struct_url.host}" }
   end
 
-  defp login_url(team) do
-    struct_url = subdomain_url(team.slug)
+  defp login_url(%Team{slug: slug}) do
+    struct_url = subdomain_url(slug)
     StitchConnect.Web.SubdomainRouter.Helpers.group_url(struct_url, :index, "general")
   end
 end
