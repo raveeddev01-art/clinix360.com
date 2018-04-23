@@ -21,12 +21,23 @@ defmodule Stitch.Mobile do
 
   def remove_device(_type, _token), do: {:error, "Unsupport mobile device type."}
 
-  def badge_value(%User{} = user) do
+  def badge_value(user, only_mentions \\ false)
+
+  def badge_value(%User{} = user, false) do
     Stitch.GroupUser
     |> where(user_id: ^user.id)
     |> Stitch.Repo.all()
     |> Enum.reduce(0, fn group_user, acc ->
       acc + room_notification_count(user, group_user)
+    end)
+  end
+
+  def badge_value(%User{} = user, only_mentions) do
+    Stitch.GroupUser
+    |> where(user_id: ^user.id)
+    |> Stitch.Repo.all()
+    |> Enum.reduce(0, fn group_user, acc ->
+      acc + group_user.mentions_count
     end)
   end
 
