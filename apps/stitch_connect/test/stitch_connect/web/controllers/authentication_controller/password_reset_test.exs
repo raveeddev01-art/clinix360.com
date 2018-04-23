@@ -119,7 +119,7 @@ defmodule StitchConnect.Web.PasswordResetTest do
         |> post(Routes.api_v1_authentication_path(conn, :reset_password), %{token: password_reset_token.token, password: "Password..123"})
         |> json_response(404)
 
-      assert %{"errors" => "Token is invalid or already used"} = json
+      assert %{"message" => "Token is invalid or already used"} = json
     end
   end
 

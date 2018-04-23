@@ -248,7 +248,8 @@ defmodule Stitch.InvitationTest do
       {:ok, invitation} = Invitation.invite_to_team(user.id, "example@email.com")
 
       assert {:ok, %{user: user, groups: [group]}} = Invitation.accept_and_complete_onboarding(invitation.invite_token, %{
-        "fullname" => "Joe",
+        "first_name" => "Joe",
+        "last_name" => "Doe",
         "username" => "joe",
         "password" => "Password1",
         "phone_number" => "1231231234",
@@ -271,7 +272,8 @@ defmodule Stitch.InvitationTest do
       group_2 = insert(:group, team: team, is_default: false)
 
       onboarding_params = %{
-        "fullname" => "Joe",
+        "first_name" => "Joe",
+        "last_name" => "Doe",
         "password" => "Password1",
         "phone_number" => "1231231234",
         "pin" => "0000"

@@ -17,8 +17,10 @@ defmodule UserAgentInfo do
   Parses a plug conn and returns a user agent
   """
   def parse_conn(conn) do
-    [user_agent] = Plug.Conn.get_req_header(conn, "user-agent")
-    user_agent
+    case Plug.Conn.get_req_header(conn, "user-agent") do
+      [] -> "undefined"
+      [user_agent] -> user_agent
+    end
   end
 
   @doc """

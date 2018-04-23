@@ -40,7 +40,7 @@ defmodule StitchConnect.Web.MessageController.DownloadTest do
 
         conn = get(base_conn, api_v1_message_path(base_conn, :download, other_message))
         assert response = json_response(conn, :not_found)
-        assert response["errors"] =~ "does not exist"
+        assert response["message"] =~ "does not exist"
       end
     end
   end

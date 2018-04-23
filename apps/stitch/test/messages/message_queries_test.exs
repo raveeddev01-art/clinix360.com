@@ -129,16 +129,16 @@ defmodule Stitch.MessageQueriesTest do
       author = insert(:user, team: team)
 
       public_group = insert(:group, team: team, name: "X", slug: "x", public: true)
+      insert(:group_user, user: author, group: public_group)
 
       _public_message =
         insert(:message, user: author, group: public_group, text_content: "Hello, world!")
 
-      public_message2 =
-        insert(
+      _public_message2 = insert(
           :message,
           user: author,
           group: public_group,
-          text_content: "Hello, world! upload",
+          text_content: "public",
           type: "upload"
         )
 
@@ -152,7 +152,7 @@ defmodule Stitch.MessageQueriesTest do
           :message,
           user: author,
           group: private_group,
-          text_content: "Hello, world! upload",
+          text_content: "private",
           type: "upload"
         )
 
@@ -167,7 +167,7 @@ defmodule Stitch.MessageQueriesTest do
           :message,
           user: author,
           group: private_member_group,
-          text_content: "Hello, world! upload",
+          text_content: "private member",
           type: "upload"
         )
 
@@ -179,9 +179,8 @@ defmodule Stitch.MessageQueriesTest do
 
       assert meta.skip == skip
       assert meta.limit == limit
-      assert meta.count == 2
+      assert meta.count == 1
 
-      assert Enum.find(data, &(&1.id == public_message2.id))
       assert Enum.find(data, &(&1.id == private_member_message2.id))
       refute Enum.find(data, &(&1.id == private_message2.id))
     end

@@ -8,8 +8,8 @@ defmodule StitchConnect.Web.ChannelsTestHelper do
 
   def create_users(_) do
     team = insert(:team)
-    user1 = insert(:user, team: team)
-    user2 = insert(:user, team: team)
+    user1 = insert(:user, team: team, username: "u1")
+    user2 = insert(:user, team: team, username: "u2")
 
     {:ok, team: team, user1: user1, user2: user2}
   end

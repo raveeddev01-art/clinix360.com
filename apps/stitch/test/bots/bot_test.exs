@@ -33,7 +33,7 @@ defmodule Stitch.BotTest do
       {:ok, bot} =
         Bot.create(team.id, %{team_id: 34343, name: "Athena Health", profile_image_url: "a"})
 
-      assert bot.username == "athenahealthbot"
+      assert bot.username == "athenahealth"
       assert bot.first_name == "Athena Health"
       assert bot.last_name == "Bot"
       assert bot.team_id == team.id
@@ -57,7 +57,7 @@ defmodule Stitch.BotTest do
       {:ok, bot} = Bot.update(bot.id, %{name: "New Name", profile_image_url: "abc"})
       assert bot.first_name == "New Name"
       assert bot.last_name == "Bot"
-      assert bot.username == "newnamebot"
+      assert bot.username == "newname"
     end
 
     test "returns error for invalid properties" do

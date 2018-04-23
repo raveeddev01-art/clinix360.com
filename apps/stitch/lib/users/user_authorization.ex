@@ -13,4 +13,5 @@ defmodule Stitch.UserAuthorization do
       _ -> false
     end
   end
+  def can_update_user?(_user, _user_id), do: false
 end

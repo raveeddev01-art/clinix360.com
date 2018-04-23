@@ -131,7 +131,7 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardControllerTest do
       conn = put(conn, Routes.api_v1_billing_card_path(conn, :update, -1), params)
 
       assert response = json_response(conn, 404)
-      assert response["errors"] =~ "does not exist"
+      assert response["message"] =~ "does not exist"
     end
 
     test "requires an admin role", %{conn: conn, team: team, card: card} do
@@ -173,13 +173,13 @@ defmodule StitchConnect.Web.Api.V1.Billing.CardControllerTest do
     test "gives a 404 for a card that doesn't exist", %{conn: conn} do
       conn = delete(conn, Routes.api_v1_billing_card_path(conn, :delete, -1))
       assert response = json_response(conn, 404)
-      assert response["errors"] =~ "does not exist"
+      assert response["message"] =~ "does not exist"
     end
 
     test "doesn't allow the default card to be deleted", %{conn: conn, card: card} do
       conn = delete(conn, Routes.api_v1_billing_card_path(conn, :delete, card))
       assert response = json_response(conn, 422)
-      assert response["errors"] =~ "default card"
+      assert response["message"] =~ "Errors prevented this entity from being processed."
     end
 
     test "requires an admin role", %{conn: conn, team: team, card: card} do

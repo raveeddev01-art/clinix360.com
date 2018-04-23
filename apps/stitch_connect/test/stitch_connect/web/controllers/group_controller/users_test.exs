@@ -22,7 +22,7 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
 
       conn = get(conn, api_v1_group_path(conn, :users, group))
       assert response = json_response(conn, :not_found)
-      assert response["errors"] =~ "does not exist"
+      assert response["message"] =~ "does not exist"
     end
 
     test "lists users when user isn't a member of a public group", %{conn: conn, team: team, joe: joe} do
@@ -64,7 +64,7 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
         |> get(api_v1_group_path(conn, :users, group))
 
       assert response = json_response(conn, 404)
-      assert response["errors"] =~ "does not exist"
+      assert response["message"] =~ "does not exist"
     end
 
     test "gives error when user is admin and isn't a member of a public group belonging to another team", %{conn: conn, team: team, admin: admin} do
@@ -77,7 +77,7 @@ defmodule StitchConnect.Web.GroupController.UsersTest do
 
       conn = get(conn, api_v1_group_path(conn, :users, group))
       assert response = json_response(conn, :not_found)
-      assert response["errors"] =~ "does not exist"
+      assert response["message"] =~ "does not exist"
     end
 
     test "restricts guests to only their restricted groups", %{conn: base_conn, team: team} do
