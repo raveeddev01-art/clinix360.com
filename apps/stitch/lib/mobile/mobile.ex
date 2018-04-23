@@ -35,10 +35,8 @@ defmodule Stitch.Mobile do
   def badge_value(%User{} = user, only_mentions) do
     Stitch.GroupUser
     |> where(user_id: ^user.id)
-    |> Stitch.Repo.all()
-    |> Enum.reduce(0, fn group_user, acc ->
-      acc + group_user.mentions_count
-    end)
+    |> select([gu], count(gu.mentions_count))
+    |> Stitch.Repo.one()
   end
 
   def room_notification_count(
