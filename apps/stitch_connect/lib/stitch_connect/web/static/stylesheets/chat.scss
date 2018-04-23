@@ -291,10 +291,19 @@
       #chat {
         @include stitch-scroll();
         position: relative;
-        padding: 20px 0;
+        padding-bottom: 15px;
         display: flex;
         flex-direction: column;
         visibility: hidden;
+
+        // > div:nth-last-of-type(3) {
+        //   > div:last-of-type {
+        //     .message-container {
+        //       padding-bottom: 15px;
+        //       position: relative;
+        //     }
+        //   }
+        // }
 
         .date-separator {
           display: flex;
