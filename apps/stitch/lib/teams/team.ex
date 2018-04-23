@@ -1,6 +1,7 @@
 defmodule Stitch.Team do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Stitch.Repo
 
   schema "teams" do
     field(:name, :string)
@@ -16,6 +17,9 @@ defmodule Stitch.Team do
     field(:state, :string)
     field(:country, :string)
     field(:zip_code, :string)
+    field(:ehr, :string)
+    field(:industry, :string)
+    field(:size, :string)
 
     has_many(:users, Stitch.Accounts.User, on_delete: :delete_all)
     has_many(:groups, Stitch.Group, on_delete: :delete_all)
@@ -34,7 +38,10 @@ defmodule Stitch.Team do
       :slug,
       :security_lockout,
       :seconds_to_lockout,
-      :open_invitations_enabled
+      :open_invitations_enabled,
+      :ehr,
+      :industry,
+      :size
     ])
     |> validate_required([:name, :slug, :security_lockout, :open_invitations_enabled])
     |> validate_number(:seconds_to_lockout, greater_than: 10)
@@ -56,5 +63,26 @@ defmodule Stitch.Team do
     |> validate_required([:company_name, :address_line_one, :city, :state, :country, :zip_code])
     |> Stitch.Validators.validate_country_iso_alpha(:country)
     |> validate_format(:zip_code, ~r(\d{5}\-\d{4}$))
+  end
+
+  def complete_onboarding(params) do
+    team = Repo.get(Stitch.Team, params["team_id"])
+
+    attrs_to_update = %{
+      ehr: params["team_ehr"],
+      industry: params["team_industry"],
+      size: params["team_size"]
+    }
+
+    cs = changeset(team, attrs_to_update)
+
+    case Repo.update(cs) do
+      {:ok, team} ->
+        Stitch.Analytics.Team.identify_and_group(team)
+        {:ok, team}
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 end

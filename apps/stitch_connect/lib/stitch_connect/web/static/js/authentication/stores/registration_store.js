@@ -18,6 +18,10 @@ class RegistrationStore {
   @observable teamId = "";
   @observable teamurl = "";
 
+  @observable teamEhr = "";
+  @observable teamSize = "";
+  @observable teamIndustry = "";
+
   @observable sendInvites = false;
   @observable invites = [];
 
@@ -80,7 +84,10 @@ class RegistrationStore {
             password: this.password,
             pin: this.pin,
             team_id: response.data.id,
-            invites: emails
+            invites: emails,
+            team_ehr: this.teamEhr,
+            team_size: this.teamSize,
+            team_industry: this.teamIndustry
           }
         });
       })
