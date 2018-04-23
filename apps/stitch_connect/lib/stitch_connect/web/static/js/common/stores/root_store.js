@@ -68,14 +68,9 @@ class RootStore {
   onStoreInit() {
     this.sidemenuStore.loadApp();
     this.notificationStore.loadPreferences();
-    this.teamStore.loadTeam(this.appParams.teamId);
-
-    if (!this.presenceStore.locked) {
-      this.userStore.loadUser(currentUser.id);
-    }
 
     if (currentUser.roles.includes("admin")) {
-      this.billingStore.loadData();
+      this.billingStore.initialBillingLoad();
     }
   }
 

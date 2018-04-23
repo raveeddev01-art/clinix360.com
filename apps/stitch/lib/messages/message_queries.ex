@@ -24,6 +24,17 @@ defmodule Stitch.MessageQueries do
   provided.
   """
   def search(user_id, term, opts \\ []) do
+    do_search(
+      user_id,
+      String.trim(term),
+      opts
+    )
+  end
+
+  # don't query with an empty string
+  defp do_search(_user_id, "", _opts), do: []
+
+  defp do_search(user_id, term, opts) do
     user = Repo.get!(User, user_id)
     fetch_users = Keyword.get(opts, :fetch_users, true)
 
@@ -291,33 +302,6 @@ defmodule Stitch.MessageQueries do
     Paginator.new(query, skip: skip, limit: limit)
   end
 
-  # For all uploads the user has access to.
-  def get_uploads_for_user(
-        %User{team_id: team_id, id: user_id},
-        skip,
-        limit
-      ) do
-    query =
-      from(
-        m in Message,
-        join: g in assoc(m, :group),
-        join: gu in GroupUser,
-        on: gu.group_id == g.id and gu.user_id == ^user_id,
-        left_join: u in assoc(m, :user),
-        left_join: pb in assoc(m, :pinned_by),
-        where: m.type == "upload",
-        where: g.team_id == ^team_id,
-        order_by: [desc: m.inserted_at],
-        preload: [
-          user: u,
-          group: g,
-          pinned_by: pb
-        ]
-      )
-
-    Paginator.new(query, skip: skip, limit: limit)
-  end
-
   def get_uploads_for_user(
         %Group{id: group_id},
         %User{team_id: team_id, id: user_id, roles: [role]},
@@ -337,6 +321,33 @@ defmodule Stitch.MessageQueries do
         where: g.public or not is_nil(gu.id),
         where: g.team_id == ^team_id,
         where: m.group_id == ^group_id,
+        order_by: [desc: m.inserted_at],
+        preload: [
+          user: u,
+          group: g,
+          pinned_by: pb
+        ]
+      )
+
+    Paginator.new(query, skip: skip, limit: limit)
+  end
+
+  # For all uploads the user has access to.
+  def get_uploads_for_user(
+        %User{team_id: team_id, id: user_id},
+        skip,
+        limit
+      ) do
+    query =
+      from(
+        m in Message,
+        join: g in assoc(m, :group),
+        join: gu in GroupUser,
+        on: gu.group_id == g.id and gu.user_id == ^user_id,
+        left_join: u in assoc(m, :user),
+        left_join: pb in assoc(m, :pinned_by),
+        where: m.type == "upload",
+        where: g.team_id == ^team_id,
         order_by: [desc: m.inserted_at],
         preload: [
           user: u,

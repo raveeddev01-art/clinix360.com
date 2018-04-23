@@ -10,19 +10,20 @@ defmodule Stitch.Mobile.NotificationQueue do
 
   @spec async_enqueue_for_users([pos_integer], [binary]) :: {:ok, pid}
   def async_enqueue_for_users(user_ids, message_id) do
-    Task.start fn ->
+    Task.start(fn ->
       enqueue_for_users(user_ids, message_id)
-    end
+    end)
   end
 
   def enqueue_for_users([], _message_id), do: :ok
+
   def enqueue_for_users(user_ids, message_id) do
     commands =
       Enum.map(user_ids, fn user_id ->
         [
           "SADD",
           "#{@prefix}:#{user_id}",
-          to_string(message_id),
+          to_string(message_id)
         ]
       end)
 
@@ -36,18 +37,19 @@ defmodule Stitch.Mobile.NotificationQueue do
     end
   end
 
-  @spec enqueue(pos_integer, pos_integer) :: :ok | {:error, any }
+  @spec enqueue(pos_integer, pos_integer) :: :ok | {:error, any}
   def enqueue(user_id, message_id) do
     result =
       Redix.command([
         "SADD",
         "#{@prefix}:#{user_id}",
-        to_string(message_id),
+        to_string(message_id)
       ])
 
     case result do
       {:ok, _} ->
         :ok
+
       {:error, error} ->
         Logger.error("[#{__MODULE__}] #{inspect(error)}")
         {:error, error}
@@ -62,16 +64,20 @@ defmodule Stitch.Mobile.NotificationQueue do
   """
   @spec remove_message_ids(pos_integer, [pos_integer]) :: :ok | {:error, any}
   def remove_message_ids(_user_id, []), do: :ok
+
   def remove_message_ids(user_id, message_ids) do
     result =
-      Redix.command([
-        "SREM",
-        "#{@prefix}:#{user_id}"
-      ] ++ message_ids)
+      Redix.command(
+        [
+          "SREM",
+          "#{@prefix}:#{user_id}"
+        ] ++ message_ids
+      )
 
     case result do
       {:ok, _} ->
         :ok
+
       {:error, error} ->
         Logger.error("[#{__MODULE__}] #{inspect(error)}")
         {:error, error}
@@ -90,12 +96,13 @@ defmodule Stitch.Mobile.NotificationQueue do
     result =
       Redix.pipeline([
         ["SMEMBERS", "#{@prefix}:#{user_id}"],
-        ["DEL", "#{@prefix}:#{user_id}"],
+        ["DEL", "#{@prefix}:#{user_id}"]
       ])
 
     case result do
       {:ok, [message_ids, _]} ->
         {:ok, message_ids}
+
       {:error, error} ->
         Logger.error("[#{__MODULE__}] #{inspect(error)}")
         {:error, error}

@@ -1,11 +1,11 @@
 defmodule StitchConnect.Web.Api.V1.IntegrationView do
   use StitchConnect.Web, :view
 
-  def render("index.json", %{integrations: integrations} = _attrs) do
+  def render("index.json", %{integrations: integrations}) do
     Enum.map(integrations, &integration_json/1)
   end
 
-  def render("show.json", %{integration: integration} = _attrs) do
+  def render("show.json", %{integration: integration}) do
     integration_json(integration)
   end
 

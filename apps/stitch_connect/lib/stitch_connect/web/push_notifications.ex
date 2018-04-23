@@ -139,20 +139,22 @@ defmodule StitchConnect.Web.PushNotifications do
     content =
       %{
         "badge" => to_string(badge_value),
-        "room_notification_count" => room_notification_count,
-        "message" => message_body,
+        "body" => message_body,
         "ejson" => message |> sanitize_notification_payload |> Poison.encode!(),
         "message_id" => message.id,
-        "user_id" => user.id,
+        "message" => message_body,
+        "room_notification_count" => room_notification_count,
+        "title" => message_title,
+        "user_id" => user.id
       }
 
     android_devices
     |> Enum.map(fn device ->
       Stitch.Mobile.NotificationLogger.send(message, user, device, "android")
-
       [device.token]
-      |> new(%{"body" => message_body, "title" => message_title})
+      |> new()
       |> put_data(Map.put(content, "device_id", device.id))
+      |> Map.update(:payload, %{}, &(Map.put(&1, "to", device.token)))
       |> fcm_push(on_response: &handle_fcm_push/1)
     end)
   end

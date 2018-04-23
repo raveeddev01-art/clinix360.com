@@ -13,6 +13,11 @@ class SearchStore {
   }
 
   @computed
+  get queryIsBlank() {
+    return !this.query.trim();
+  }
+
+  @computed
   get isEmpty() {
     return this.messages.length === 0;
   }
@@ -34,7 +39,7 @@ class SearchStore {
 
   @action
   loadMore() {
-    if (this.loading || !this.hasMore) {
+    if (this.loading || !this.hasMore || this.queryIsBlank) {
       return;
     }
 

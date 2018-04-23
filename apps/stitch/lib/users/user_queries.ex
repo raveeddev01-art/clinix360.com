@@ -31,6 +31,13 @@ defmodule Stitch.UserQueries do
     {:error, "team_id must be an integer"}
   end
 
+  def users_for_team_after(team_id, timestamp) do
+    team_id
+    |> for_team_query()
+    |> where([u], u.updated_at >= ^timestamp)
+    |> Repo.all()
+  end
+
   @doc """
   Returns an unexecuted query for onboarded users within a specific team
   """
@@ -105,7 +112,8 @@ defmodule Stitch.UserQueries do
   """
   @spec get_by_token(binary) :: User.t() | nil
   def get_by_token(token) do
-    Repo.get_by(User, token: token)
+    user = Repo.get_by(User, token: token)
+    Repo.preload(user, :team)
   end
 
   @doc """

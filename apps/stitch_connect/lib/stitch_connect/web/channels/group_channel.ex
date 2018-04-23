@@ -41,10 +41,10 @@ defmodule StitchConnect.Web.GroupChannel do
   def join("groups:id:" <> group_id, params, socket) do
     user = socket.assigns.current_user
     fetch_messages = get_fetch_messages_param(params)
+
     with {:group, {:ok, group}} <- {:group, GroupQueries.get_by_id(group_id, user)},
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)},
          {:fetch_messages, false, group} <- {:fetch_messages, fetch_messages, group} do
-
       {:ok, %{}, assign(socket, :group, group)}
     else
       {:group, {:error, _}} -> {:error, %{message: "group not found"}}
@@ -57,7 +57,9 @@ defmodule StitchConnect.Web.GroupChannel do
   def join("groups:" <> group_slug, params, socket) do
     %{team_id: team_id, current_user: user} = socket.assigns
     fetch_messages = get_fetch_messages_param(params)
-    with {:group, %Group{} = group} <- {:group, Repo.get_by(Group, slug: group_slug, team_id: team_id)},
+
+    with {:group, %Group{} = group} <-
+           {:group, Repo.get_by(Group, slug: group_slug, team_id: team_id)},
          {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, user)},
          {:fetch_messages, false, group} <- {:fetch_messages, fetch_messages, group} do
       {:ok, %{}, assign(socket, :group, group)}
@@ -139,10 +141,21 @@ defmodule StitchConnect.Web.GroupChannel do
     ActivityTracker.async_update_activity(user)
     limit = Map.get(params, "limit", 60)
     fetch_users = get_fetch_users_param(params)
+
     case MessageQueries.get_by_id(message_id, fetch_users) do
-      nil -> {:reply, {:error, %{message: "Message not found."}}, socket}
+      nil ->
+        {:reply, {:error, %{message: "Message not found."}}, socket}
+
       target_message ->
-        feed_surrounding = MessageQueries.surrounding(target_message, group, user, [limit: limit, fetch_users: fetch_users])
+        feed_surrounding =
+          MessageQueries.surrounding(
+            target_message,
+            group,
+            user,
+            limit: limit,
+            fetch_users: fetch_users
+          )
+
         json = MessageView.render("feed_surrounding.json", feed_surrounding)
         {:reply, {:ok, json}, socket}
     end
@@ -226,10 +239,6 @@ defmodule StitchConnect.Web.GroupChannel do
     message_delete_failure_reply(socket)
   end
 
-  defp message_delete_failure_reply(socket) do
-    {:reply, {:error, %{message: "Failed to delete message"}}, socket}
-  end
-
   @decorate channel_action()
   def handle_in("delete_msg_link_preview", %{"message_id" => message_id, "link" => link}, socket) do
     %{group: group, current_user: user} = socket.assigns
@@ -295,9 +304,12 @@ defmodule StitchConnect.Web.GroupChannel do
     })
   end
 
-  def broadcast_message_starred(message) do
+  def broadcast_message_starred(message, starred_by_user_id) do
     group = Repo.get(Group, message.group_id)
-    message_json = MessageView.message_json(message)
+
+    message_json =
+      MessageView.render("starred.json", %{message: message, user_id: starred_by_user_id})
+
     endpoint_broadcast(group, "starred_message", message_json)
   end
 
@@ -384,7 +396,7 @@ defmodule StitchConnect.Web.GroupChannel do
 
   defp create_dm_on_join(id_pair, user, socket) do
     with {:dm, true} <- {:dm, length(id_pair) == 2},
-          [other_user_id] <- List.delete(id_pair, user.id) do
+         [other_user_id] <- List.delete(id_pair, user.id) do
       socket = assign(socket, :group, {:create_dm, other_user_id})
       {:ok, %{messages: []}, socket}
     else
@@ -400,11 +412,15 @@ defmodule StitchConnect.Web.GroupChannel do
     else
       {:error, %{errors: [slug: {"has already been taken", []}]} = changeset} ->
         {:ok, group} = GroupQueries.find_by_slug(changeset.changes.slug, user)
+
         socket
         |> assign(:group, group)
         |> do_new_msg(group, user, params)
+
       _error ->
-        {:reply, {:error, %{message: "Failed to create group.", request_id: params["request_id"]}}, socket}
+        {:reply,
+         {:error, %{message: "Failed to create group.", request_id: params["request_id"]}},
+         socket}
     end
   end
 
@@ -419,6 +435,7 @@ defmodule StitchConnect.Web.GroupChannel do
           MessageLinkPreviewGenerator.queue(message)
           message = MessageQueries.load_info(message)
           Stitch.Mobile.NotificationLogger.start(message, notify_user_ids.mobile)
+
           Stitch.Task.start(fn ->
             broadcast_message_created(message)
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
@@ -439,6 +456,10 @@ defmodule StitchConnect.Web.GroupChannel do
       {:reply, {:error, %{message: "Only members can write messages.", request_id: request_id}},
        socket}
     end
+  end
+
+  defp message_delete_failure_reply(socket) do
+    {:reply, {:error, %{message: "Failed to delete message"}}, socket}
   end
 
   defp mark_as_read_response({:error, reason}, _user, socket) do

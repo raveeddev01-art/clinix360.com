@@ -108,11 +108,16 @@ class SidemenuStore {
 
     try {
       if (!presenceStore.locked) {
-        // load users only if not locked because it's guarded
-        await usersStore.loadUsers();
+        // When app is unlocked, fetch users and groups in parallel
+        await Promise.all([
+          usersStore.loadUsers(),
+          groupsStore.loadGroupsWithUsers()
+        ]);
+      } else {
+        // When app is locked, only fetch groups to keep triggering notifications sounds from new messages
+        await groupsStore.loadGroups();
       }
 
-      await groupsStore.loadGroups();
       this.loadedApp = true;
     } catch (e) {
       // TODO if error occurs here, redirect to error page
@@ -213,6 +218,13 @@ class SidemenuStore {
   }
 
   showNotificationCard(title, body, tag, onClick = null) {
+    this.playNotificationAudio();
+
+    if (!Notification) {
+      // in case browser does not support
+      return;
+    }
+
     const notification = new Notification(title, {
       body,
       tag,
@@ -223,8 +235,6 @@ class SidemenuStore {
     if (onClick) {
       notification.onclick = onClick;
     }
-
-    this.playNotificationAudio();
 
     setTimeout(() => {
       notification.close();
@@ -267,7 +277,7 @@ class SidemenuStore {
     this.showNotificationCard(
       this.getNotificationTitle(group),
       this.getNotificationText(message, group, isMention),
-      "new-message", // notification tag
+      `message-${message.id}`,
       this.getOnNotificationClick(message)
     );
   }

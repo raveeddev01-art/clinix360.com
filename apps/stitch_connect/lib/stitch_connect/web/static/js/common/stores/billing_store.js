@@ -9,9 +9,16 @@ class BillingStore {
   @observable cards = []; // Credit cards
   @observable invoices = []; // History invoices
   @observable contact = {}; // Contact info
+  @observable dataLoaded = false;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
+  }
+
+  initialBillingLoad() {
+    return get("/api/v1/billing/subscription").then(response => {
+      this.subscription = processSubscriptionData(response.data.data);
+    });
   }
 
   loadSubscription() {
@@ -51,6 +58,7 @@ class BillingStore {
         this.cards = response[1];
         this.invoices = response[2];
         this.contact = response[3];
+        this.dataLoaded = true;
       })
       .catch(() => {
         alertModal({
