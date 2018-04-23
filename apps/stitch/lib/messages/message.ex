@@ -271,7 +271,7 @@ defmodule Stitch.Message do
     |> Repo.transaction()
   end
 
-  def mark_as_read_on_creation(multi, group_id, user_id, last_read_at) do
+  def mark_as_read_on_creation(multi, group_id, user_id, _last_read_at) do
     multi
     |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [])
     |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [])
