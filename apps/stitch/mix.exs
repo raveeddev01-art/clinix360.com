@@ -9,9 +9,9 @@ defmodule Stitch.Mixfile do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.6",
-      elixirc_paths: elixirc_paths(Mix.env),
-      start_permanent: Mix.env == :prod,
+      elixir: "~> 1.5",
+      elixirc_paths: elixirc_paths(Mix.env()),
+      start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
     ]
@@ -20,12 +20,12 @@ defmodule Stitch.Mixfile do
   def application do
     [
       mod: {Stitch.Application, []},
-      extra_applications: [:logger, :runtime_tools, :appsignal, :pdf_generator]
+      extra_applications: [:logger, :runtime_tools, :appsignal, :pdf_generator, :ua_inspector]
     ]
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp deps do
     [
@@ -49,6 +49,7 @@ defmodule Stitch.Mixfile do
       {:floki, "~> 0.18.1"},
       {:exmoji, github: "mroth/exmoji"},
       {:pdf_generator, ">=0.3.5"},
+      {:ua_inspector, "~> 0.17"}
     ]
   end
 
@@ -56,7 +57,7 @@ defmodule Stitch.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

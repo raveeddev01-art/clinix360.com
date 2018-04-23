@@ -55,10 +55,8 @@ defmodule StitchIntegrations.DrChrono.Bot do
     # the fly because sometimes people change the room for the integration.
     Stitch.Group.add_user(group, bot_user)
 
-    message_params = %{
-      "text_content" => text_content,
-      "type" => "chat"
-    }
+    base_params = %{"text_content" => text_content, "type" => "chat"}
+    message_params = Message.Params.with_client_attrs("bot", base_params)
 
     presence_user_ids = UserStatusService.presence_user_ids(team_id)
 

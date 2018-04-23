@@ -28,6 +28,9 @@ defmodule Stitch.Message do
     field(:has_links, :boolean, default: false)
     field(:link_previews_generated, :boolean, default: false)
     field(:meteor_id, :string)
+    field(:client_device_type, :string, default: "unknown")
+    field(:client_os, :string, default: "unknown")
+    field(:client_name, :string, default: "unknown")
     embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
     timestamps()
@@ -45,7 +48,10 @@ defmodule Stitch.Message do
       :pinned,
       :pinned_by_id,
       :pinned_at,
-      :mentioned_user_ids
+      :mentioned_user_ids,
+      :client_device_type,
+      :client_os,
+      :client_name
     ])
     |> validate_required([:user_id, :group_id, :deleted, :text_content])
     |> validate_inclusion(:type, @valid_types)
@@ -68,7 +74,16 @@ defmodule Stitch.Message do
 
   def chat_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :request_id, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [
+      :type,
+      :request_id,
+      :text_content,
+      :mentioned_user_ids,
+      :read_status,
+      :client_device_type,
+      :client_os,
+      :client_name
+    ])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
     |> put_meta()
@@ -78,6 +93,7 @@ defmodule Stitch.Message do
   def put_meta(%{valid?: true, changes: %{text_content: text_content}} = changeset) do
     put_change(changeset, :text_content_meta, Message.Parser.get_meta(text_content))
   end
+
   def put_meta(changeset), do: changeset
 
   defp check_for_links(
@@ -102,7 +118,10 @@ defmodule Stitch.Message do
       :request_id,
       :text_content,
       :mentioned_user_ids,
-      :read_status
+      :read_status,
+      :client_device_type,
+      :client_os,
+      :client_name
     ])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
@@ -137,8 +156,6 @@ defmodule Stitch.Message do
     group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
-    MessageAnalytics.track_message_sent(user, group)
-
     mentioned_user_ids =
       Message.Mention.get_mentioned_user_ids(
         users,
@@ -149,7 +166,7 @@ defmodule Stitch.Message do
       )
 
     notify_user_ids =
-      instrument("get_notify_user_ids", "Message creation", fn() ->
+      instrument("get_notify_user_ids", "Message creation", fn ->
         Message.Notification.notify_user_ids(
           group,
           user,
@@ -159,7 +176,7 @@ defmodule Stitch.Message do
       end)
 
     {read_status, recipients} =
-      instrument("get_recipients", "Message creation", fn() ->
+      instrument("get_recipients", "Message creation", fn ->
         users
         |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
           acc_map =
@@ -199,6 +216,8 @@ defmodule Stitch.Message do
 
     case result do
       {:ok, %{message: message} = result_map} ->
+        MessageAnalytics.track_message_sent(message, user, group)
+
         Stitch.Mobile.NotificationQueue.async_enqueue_for_users(
           notify_user_ids.mobile_active,
           message.id

@@ -2,8 +2,7 @@ use Mix.Config
 
 config :stitch, ecto_repos: [Stitch.Repo]
 
-config :stripity_stripe,
-  secret_key: System.get_env("STRIPE_SECRET_KEY")
+config :stripity_stripe, secret_key: System.get_env("STRIPE_SECRET_KEY")
 
 config :stitch,
   stripe_client: Stitch.Stripe.Client,
@@ -11,7 +10,7 @@ config :stitch,
 
 config :stitch, :twilio, %{
   account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
-  auth_token: System.get_env("TWILIO_AUTH_TOKEN"),
+  auth_token: System.get_env("TWILIO_AUTH_TOKEN")
 }
 
 config :ex_aws,
@@ -29,19 +28,22 @@ config :stitch, :aws_user_upload, %{
   bucket: System.get_env("S3_BUCKET_NAME"),
   scheme: "https://",
   host: "s3.amazonaws.com",
-  upload_size_cap: 1_000_000_000 # in bytes, 1 GB
+  # in bytes, 1 GB
+  upload_size_cap: 1_000_000_000
 }
 
 config :stitch, :user_upload_settings, %{
   max_preview_width: 720,
-  max_preview_height: 720,
+  max_preview_height: 720
 }
 
 config :porcelain, :goon_warn_if_missing, false
 
 config :stitch, :redix, %{
   pool_size: 5,
-  url: System.get_env("REDIS_URL"),
+  url: System.get_env("REDIS_URL")
 }
 
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"
+
+config :ua_inspector, database_path: "./apps/stitch/priv/ua_inspector"
