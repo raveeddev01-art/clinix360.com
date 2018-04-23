@@ -35,7 +35,7 @@ defmodule Stitch.Mobile do
   def badge_value(%User{} = user, true) do
     Stitch.GroupUser
     |> where(user_id: ^user.id)
-    |> select([gu], count(gu.mentions_count))
+    |> select([gu], sum(gu.mentions_count))
     |> Stitch.Repo.one()
   end
 
