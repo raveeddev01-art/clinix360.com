@@ -84,6 +84,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post("/users/exists", UserController, :exists?)
     post("/users/validate-phone-number", UserController, :validate_phone_number)
     post("/invitations/accept/:token", InvitationController, :accept)
+    get("/apps", AppController, :index)
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -118,17 +119,11 @@ defmodule StitchConnect.Web.SubdomainRouter do
     get("/mentions", MentionController, :index)
 
     get("/integrations", IntegrationController, :index)
+    post("/integrations", IntegrationController, :create)
+    post("/integrations/:id", IntegrationController, :update)
+    delete("/integrations/:id", IntegrationController, :delete)
     post("/integrations/:id/enable", IntegrationController, :enable)
     post("/integrations/:id/disable", IntegrationController, :disable)
-    get("/integration-configs", IntegrationConfigController, :index)
-    post("/integration-configs/:id", IntegrationConfigController, :update)
-    delete("/integration-configs/:id", IntegrationConfigController, :delete)
-
-    post(
-      "/integrations/:integration_id/integration-config",
-      IntegrationConfigController,
-      :create
-    )
 
     get("/users/", UserController, :index)
     put("/users/notification-preference", NotificationPreferenceController, :update_global)
@@ -294,7 +289,13 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     get("/admin/integrations", AdminController, :index, as: :admin_integrations)
     get("/admin/integrations/:integration/new", AdminController, :index)
-    get("/admin/integrations/drchrono/:integration_config_id/edit", AdminController, :index)
+
+    get(
+      "/admin/integrations/drchrono/:integration_config_id/edit",
+      AdminController,
+      :index,
+      as: :admin_integration_edit
+    )
 
     get("/admin/integrations/:slug", AdminController, :index)
     get("/admin/integrations/:slug/edit", AdminController, :index)
