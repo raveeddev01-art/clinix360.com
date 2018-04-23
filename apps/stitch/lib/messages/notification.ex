@@ -96,7 +96,7 @@ defmodule Stitch.Message.Notification do
     }
   end
 
-  defp intersect(a, b), do: a -- a -- b
+  defp intersect(a, b), do: a -- (a -- b)
 
   @doc """
   Takes id of a group and returns a map that splits group users into different notificatin categories
