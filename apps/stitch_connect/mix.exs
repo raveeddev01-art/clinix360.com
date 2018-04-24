@@ -53,7 +53,7 @@ defmodule StitchConnect.Mixfile do
       {:quantum, ">= 2.1.0"},
       {:sweet_xml, "~> 0.6.5"},
       {:stitch, in_umbrella: true},
-      {:appsignal, "~> 1.3"},
+      {:appsignal, "~> 1.5"},
       {:wallaby, "~> 0.19.2", only: :test},
       # For mobile push notifications.
       {:pigeon, "~> 1.1.6"},
