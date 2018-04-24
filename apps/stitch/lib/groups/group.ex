@@ -11,21 +11,21 @@ defmodule Stitch.Group do
   @single_dm_name "__dm_group__"
   @multi_dm_name "__multi_dm_group__"
   @dm_groups [@single_dm_name, @multi_dm_name]
-  @type membership_changes :: {removed_users :: [User.t], added_users :: [User.t]}
+  @type membership_changes :: {removed_users :: [User.t()], added_users :: [User.t()]}
 
   schema "groups" do
-    belongs_to :creator, User, foreign_key: :creator_user_id
+    belongs_to(:creator, User, foreign_key: :creator_user_id)
     # __multi_dm_group__ and __dm_group__ are reversed group names for dm groups
-    field :name, :string
-    field :slug, :string
-    field :description, :string
-    field :is_default, :boolean, default: false
-    field :public, :boolean, default: true
+    field(:name, :string)
+    field(:slug, :string)
+    field(:description, :string)
+    field(:is_default, :boolean, default: false)
+    field(:public, :boolean, default: true)
 
-    belongs_to :team, Stitch.Team
-    has_many :group_users, GroupUser, on_replace: :delete
-    has_many :users, through: [:group_users, :user]
-    has_many :messages, Stitch.Message
+    belongs_to(:team, Stitch.Team)
+    has_many(:group_users, GroupUser, on_replace: :delete)
+    has_many(:users, through: [:group_users, :user])
+    has_many(:messages, Stitch.Message)
 
     timestamps()
   end
@@ -33,18 +33,25 @@ defmodule Stitch.Group do
   def changeset(%Stitch.Group{} = struct, params) do
     struct
     |> cast(params, [:name, :slug, :description, :public, :team_id, :creator_user_id])
-    |> slugify_name() # This will generate slug from name if slug is missing
+    # This will generate slug from name if slug is missing
+    |> slugify_name()
     |> validate_required([:name, :slug, :public, :team_id])
     |> validate_length(:name, max: 25)
     |> validate_format(:name, ~r/^[\w-\s]+$/)
-    |> unique_constraint(:slug, name: :groups_slug_team_id_unique_index, message: "has already been taken")
+    |> unique_constraint(
+      :slug,
+      name: :groups_slug_team_id_unique_index,
+      message: "has already been taken"
+    )
   end
 
   defp slugify_name(%Ecto.Changeset{changes: %{slug: _}} = changeset), do: changeset
+
   defp slugify_name(%Ecto.Changeset{changes: %{name: name}} = changeset) when not is_nil(name) do
     slug = Slugger.slugify_downcase(name)
     Ecto.Changeset.put_change(changeset, :slug, slug)
   end
+
   defp slugify_name(%Ecto.Changeset{} = changeset), do: changeset
 
   defp with_users_changeset(%Stitch.Group{} = struct, params) do
@@ -62,7 +69,7 @@ defmodule Stitch.Group do
   @doc """
   Creates a new group.
   """
-  @spec create(User.t, map, nil | number) :: {:ok, Group.t} | {:error, Ecto.Changeset.t}
+  @spec create(User.t(), map, nil | number) :: {:ok, Group.t()} | {:error, Ecto.Changeset.t()}
   def create(%User{id: user_id, team_id: team_id} = creator, params, member_count \\ nil) do
     with params = add_users(params, team_id, user_id, !!member_count),
          true <- valid_user_ids(params, member_count),
@@ -82,10 +89,12 @@ defmodule Stitch.Group do
     query = base_non_guest_group_user_query(user_ids, team_id, creator_id)
     do_add_users(query, attrs)
   end
+
   defp add_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, true) do
     query = base_group_user_query(user_ids, team_id, creator_id)
     do_add_users(query, attrs)
   end
+
   # Ensure list is populated
   defp add_users(attrs, team_id, creator_id, direct_message?) do
     new_attrs = Map.put(attrs, "user_ids", [])
@@ -98,28 +107,33 @@ defmodule Stitch.Group do
   end
 
   defp base_non_guest_group_user_query(user_ids, team_id, creator_id) do
-    from u in base_non_guest_users_query(user_ids, team_id, creator_id),
-    select: %{id: u.id, user_id: u.id}
+    from(
+      u in base_non_guest_users_query(user_ids, team_id, creator_id),
+      select: %{id: u.id, user_id: u.id}
+    )
   end
 
   defp base_group_user_query(user_ids, team_id, creator_id) do
-    from u in base_users_query(user_ids, team_id, creator_id),
-      select: %{id: u.id, user_id: u.id}
+    from(u in base_users_query(user_ids, team_id, creator_id), select: %{id: u.id, user_id: u.id})
   end
 
   defp base_non_guest_users_query(user_ids, team_id, creator_id) do
-    from u in base_users_query(user_ids, team_id, creator_id),
+    from(
+      u in base_users_query(user_ids, team_id, creator_id),
       where: not fragment("? && ?", ^@guest_roles, u.roles)
+    )
   end
 
   defp base_users_query(user_ids, team_id, creator_id) do
     user_ids = [creator_id | user_ids]
 
-    from u in User,
+    from(
+      u in User,
       where: u.team_id == ^team_id,
       where: u.id in ^user_ids,
       where: u.disabled == false,
       distinct: u.id
+    )
   end
 
   defp valid_user_ids(params, expected_count) when is_number(expected_count) do
@@ -148,6 +162,7 @@ defmodule Stitch.Group do
     dm_params = single_dm_params(user_ids)
     create(creator, dm_params, 1)
   end
+
   def create_single_dm(%User{} = creator, user_ids) do
     if User.guest?(creator) do
       create_single_dm_as_guest(creator, user_ids)
@@ -169,7 +184,7 @@ defmodule Stitch.Group do
   def single_dm_params(user_ids) do
     %{
       "name" => @single_dm_name,
-      "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
+      "slug" => "__dm:#{user_ids |> Enum.sort() |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
     }
@@ -186,13 +201,13 @@ defmodule Stitch.Group do
   end
 
   def create_multi_dm(%User{id: creator_id} = creator, user_ids)
-    when is_list(user_ids) do
+      when is_list(user_ids) do
     if creator_id in user_ids do
       if User.guest?(creator) do
         create_multi_dm_as_guest(creator, user_ids)
       else
         dm_params = multi_dm_params(user_ids)
-      create(creator, dm_params, length(user_ids))
+        create(creator, dm_params, length(user_ids))
       end
     else
       {:error, :creator_id_is_not_in_user_ids}
@@ -211,7 +226,7 @@ defmodule Stitch.Group do
   defp multi_dm_params(user_ids) do
     %{
       "name" => @multi_dm_name,
-      "slug" => "__dm:#{user_ids |> Enum.sort |> Enum.join(".")}",
+      "slug" => "__dm:#{user_ids |> Enum.sort() |> Enum.join(".")}",
       "user_ids" => user_ids,
       "public" => false
     }
@@ -232,10 +247,12 @@ defmodule Stitch.Group do
       {:ok, group} ->
         group = Repo.preload(group, :users)
         {:ok, group}
+
       {:error, _changeset} ->
         {:error, "Name has to be unique"}
     end
   end
+
   def rename(_, _), do: {:error, "Name cannot be blank or nil"}
 
   @doc """
@@ -244,19 +261,21 @@ defmodule Stitch.Group do
   def assign_creator(%Group{is_default: true, creator_user_id: nil} = group, user_id) do
     group
     |> Ecto.Changeset.change(creator_user_id: user_id)
-    |> Repo.update
+    |> Repo.update()
   end
 
   @doc """
   Add user to the group.
   """
-  @spec add_user(Group.t, User.t | pos_integer) :: {:ok, GroupUser.t} | {:error, String.t}
+  @spec add_user(Group.t(), User.t() | pos_integer) :: {:ok, GroupUser.t()} | {:error, String.t()}
   def add_user(%Group{name: name}, _) when name in @dm_groups do
     {:error, "Users can't join existing direct messages"}
   end
+
   def add_user(%Group{} = group, %User{id: user_id}) do
     add_user(group, user_id)
   end
+
   def add_user(%Group{} = group, user_id) do
     params = %{group_id: group.id, user_id: user_id}
     changeset = GroupUser.changeset(%GroupUser{}, params)
@@ -270,23 +289,29 @@ defmodule Stitch.Group do
   @doc """
   Removes a user from the group
   """
-  @spec remove_user(Group.t, User.t | pos_integer) :: :ok | {:error, :not_member | :direct_message | :default_group}
+  @spec remove_user(Group.t(), User.t() | pos_integer) ::
+          :ok | {:error, :not_member | :direct_message | :default_group}
   def remove_user(%Group{name: name}, _) when name in @dm_groups do
     {:error, :direct_message}
   end
+
   def remove_user(%Group{} = group, user_id) when is_integer(user_id) do
     user = UserQueries.get_by_id(user_id)
     remove_user(group, user)
   end
+
   def remove_user(%Group{is_default: true}, %User{roles: [role]})
-    when role in ["admin", "member"] do
+      when role in ["admin", "member"] do
     {:error, :default_group}
   end
+
   def remove_user(%Group{id: group_id}, %User{id: user_id}) do
     query =
-      from gu in GroupUser,
-      where: gu.group_id == ^group_id,
-      where: gu.user_id == ^user_id
+      from(
+        gu in GroupUser,
+        where: gu.group_id == ^group_id,
+        where: gu.user_id == ^user_id
+      )
 
     case Repo.delete_all(query, []) do
       {1, _} -> :ok
@@ -297,18 +322,25 @@ defmodule Stitch.Group do
   @doc """
   Deletes the group
   """
-  @spec delete(Group.t) :: {:ok, map} | {:error, any()}
+  @spec delete(Group.t()) :: {:ok, map} | {:error, any()}
   def delete(%Group{name: name}) when name in @dm_groups, do: {:error, :direct_message}
   def delete(%Group{is_default: true}), do: {:error, :default_group}
+
   def delete(%Group{} = group) do
-    Ecto.Multi.new
-    |> Ecto.Multi.update_all(:groups_as_guest, delete_from_groups_as_guest(group), [], [returning: true])
+    Ecto.Multi.new()
+    |> Ecto.Multi.update_all(
+      :groups_as_guest,
+      delete_from_groups_as_guest(group),
+      [],
+      returning: true
+    )
     |> Ecto.Multi.delete(:group, group)
-    |> Repo.transaction
+    |> Repo.transaction()
   end
 
   def delete_from_groups_as_guest(%Group{} = group) do
     guest_ids = Stitch.UserQueries.guest_user_ids(group)
+
     User
     |> where([u], u.id in ^guest_ids)
     |> update([u], pull: [groups_as_guest: ^group.id])
@@ -320,10 +352,12 @@ defmodule Stitch.Group do
   """
   def toggle_favorite(group_id, user_id) do
     result =
-      from(gu in GroupUser,
-      where: gu.group_id == ^group_id and gu.user_id == ^user_id,
-      update: [set: [is_favorite: not gu.is_favorite]])
-    |> Repo.update_all([], returning: true)
+      from(
+        gu in GroupUser,
+        where: gu.group_id == ^group_id and gu.user_id == ^user_id,
+        update: [set: [is_favorite: not gu.is_favorite]]
+      )
+      |> Repo.update_all([], returning: true)
 
     case result do
       {0, []} -> {:error, "User has to be member of room to favorite it."}
@@ -334,13 +368,16 @@ defmodule Stitch.Group do
   @doc """
   Toggles public setting for the user for the specified group.
   """
-  @spec toggle_public(map, any) :: {:ok, map} | {:error, :direct_message | :default_group | Ecto.Changeset.t}
+  @spec toggle_public(map, any) ::
+          {:ok, map} | {:error, :direct_message | :default_group | Ecto.Changeset.t()}
   def toggle_public(%Group{name: name}, _public) when name in @dm_groups do
     {:error, :direct_message}
   end
+
   def toggle_public(%Group{is_default: true}, _public) do
     {:error, :default_group}
   end
+
   def toggle_public(%Group{} = group, public) do
     group
     |> Group.changeset(%{public: public})
@@ -350,40 +387,46 @@ defmodule Stitch.Group do
   @doc """
   Hides a Direct Messsage Group for a user.
   """
-  @spec hide(pos_integer, User.t) :: {:ok, GroupUser.t} | {:error, :invalid_group}
+  @spec hide(pos_integer, User.t()) :: {:ok, GroupUser.t()} | {:error, :invalid_group}
   def hide(group_id, %User{id: user_id}) do
     query =
-      from gu in GroupUser,
-      join: g in assoc(gu, :group),
-      where: gu.group_id == ^group_id,
-      where: gu.user_id == ^user_id,
-      where: g.name in [@single_dm_name, @multi_dm_name],
-      update: [
-        set: [is_hidden: true]
-      ]
+      from(
+        gu in GroupUser,
+        join: g in assoc(gu, :group),
+        where: gu.group_id == ^group_id,
+        where: gu.user_id == ^user_id,
+        where: g.name in [@single_dm_name, @multi_dm_name],
+        update: [
+          set: [is_hidden: true]
+        ]
+      )
 
     case Repo.update_all(query, [], returning: true) do
       {1, [group_user]} ->
         Message.mark_as_read(user_id, group_id)
         {:ok, Repo.preload(group_user, :group)}
-      _ -> {:error, :invalid_group}
+
+      _ ->
+        {:error, :invalid_group}
     end
   end
 
   @doc """
   Unhides a Direct Message Group for a user.
   """
-  @spec unhide(pos_integer, User.t) :: {:ok, GroupUser.t} | {:error, :invalid_group}
+  @spec unhide(pos_integer, User.t()) :: {:ok, GroupUser.t()} | {:error, :invalid_group}
   def unhide(group_id, %User{id: user_id}) do
     query =
-      from gu in GroupUser,
-      join: g in assoc(gu, :group),
-      where: gu.group_id == ^group_id,
-      where: gu.user_id == ^user_id,
-      where: g.name in [@single_dm_name, @multi_dm_name],
-      update: [
-        set: [is_hidden: false]
-      ]
+      from(
+        gu in GroupUser,
+        join: g in assoc(gu, :group),
+        where: gu.group_id == ^group_id,
+        where: gu.user_id == ^user_id,
+        where: g.name in [@single_dm_name, @multi_dm_name],
+        update: [
+          set: [is_hidden: false]
+        ]
+      )
 
     case Repo.update_all(query, [], returning: true) do
       {1, [group_user]} -> {:ok, Repo.preload(group_user, :group)}
@@ -395,13 +438,14 @@ defmodule Stitch.Group do
   Updates a group's user membership.
   Guests are excluded from being added or removed.
   """
-  @spec update_users(Group.t, [user_id :: pos_integer]) :: {:ok, membership_changes} | {:error, Ecto.Changeset.t}
+  @spec update_users(Group.t(), [user_id :: pos_integer]) ::
+          {:ok, membership_changes} | {:error, Ecto.Changeset.t()}
   def update_users(%Group{name: name}, _) when name in @dm_groups do
     {:error, "Can't update members in a direct message room"}
   end
 
   def update_users(%Group{creator_user_id: creator_id, team_id: team_id} = group, user_ids) do
-    group = Repo.preload(group, [group_users: :user])
+    group = Repo.preload(group, group_users: :user)
     current_members = group.group_users
 
     query = base_non_guest_users_query(user_ids, team_id, creator_id)
@@ -422,11 +466,12 @@ defmodule Stitch.Group do
   end
 
   defp do_calculate_membership_diff(%{user: %{roles: [role]}} = group_user, {remove, add, target})
-    when role in @guest_roles do
+       when role in @guest_roles do
     {remove, add, [group_user | target]}
   end
+
   defp do_calculate_membership_diff(group_user, {remove, add, target}) do
-    if Enum.find(add, &(&1.id == group_user.user_id))do
+    if Enum.find(add, &(&1.id == group_user.user_id)) do
       new_add = Enum.reject(add, &(&1.id == group_user.user_id))
       {remove, new_add, [group_user | target]}
     else
@@ -442,15 +487,15 @@ defmodule Stitch.Group do
   @doc """
   Returns if the given group is a DM group.
   """
-  @spec direct_message?(Group.t) :: boolean
+  @spec direct_message?(Group.t()) :: boolean
   def direct_message?(%Group{name: name}) when name in @dm_groups, do: true
   def direct_message?(%Group{}), do: false
 
   @doc """
   Returns string depending on type of group.
   """
-  @spec type(Group.t) :: String.t()
-  def type(%Group{name: name}) when name == @single_dm_name , do: "single-dm"
+  @spec type(Group.t()) :: String.t()
+  def type(%Group{name: name}) when name == @single_dm_name, do: "single-dm"
   def type(%Group{name: name}) when name == @multi_dm_name, do: "multi-dm"
   def type(%Group{}), do: "room"
 end

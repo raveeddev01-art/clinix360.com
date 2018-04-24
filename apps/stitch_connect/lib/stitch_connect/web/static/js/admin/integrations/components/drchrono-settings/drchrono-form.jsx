@@ -7,6 +7,7 @@ import history from "lib/history";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
+import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import Col from "react-bootstrap/lib/Col";
 import Checkbox from "react-bootstrap/lib/Checkbox";
 import Button from "react-bootstrap/lib/Button";
@@ -18,40 +19,29 @@ class DrChronoForm extends Component {
   constructor(props) {
     super(props);
 
-    // This is a new empty integration config.
-    if (this.props.new === true) {
-      this.state = {
-        appointmentCreate: false,
-        appointmentModify: false,
-        appointmentDelete: false,
-        patientCreate: false,
-        patientModify: false,
-        patientProblemCreate: false,
-        patientProblemModify: false,
-        patientAllergyCreate: false,
-        patientAllergyModify: false,
-        patientMedicationCreate: false,
-        patientMedicationModify: false,
-        groupId: undefined
-      };
-    } else {
-      const config = this.props.integrationStore.selectedConfig;
-      this.state = {
-        id: config.id,
-        groupId: config.group_id,
-        appointmentCreate: config.settings.appointmentCreate,
-        appointmentModify: config.settings.appointmentModify,
-        appointmentDelete: config.settings.appointmentDelete,
-        patientCreate: config.settings.patientCreate,
-        patientModify: config.settings.patientModify,
-        patientProblemCreate: config.settings.patientProblemCreate,
-        patientProblemModify: config.settings.patientProblemModify,
-        patientAllergyCreate: config.settings.patientAllergyCreate,
-        patientAllergyModify: config.settings.patientAllergyModify,
-        patientMedicationCreate: config.settings.patientMedicationCreate,
-        patientMedicationModify: config.settings.patientMedicationModify
-      };
-    }
+    const integration = this.props.integration;
+    this.state = {
+      id: integration.id,
+      enabled: integration.enabled,
+      authenticated: integration.authenticated,
+      groupId: integration.group_id,
+      webhookToken: integration.webhook_token,
+      appointmentCreate: integration.settings.appointmentCreate || false,
+      appointmentModify: integration.settings.appointmentModify || false,
+      appointmentDelete: integration.settings.appointmentDelete || false,
+      patientCreate: integration.settings.patientCreate || false,
+      patientModify: integration.settings.patientModify || false,
+      patientProblemCreate: integration.settings.patientProblemCreate || false,
+      patientProblemModify: integration.settings.patientProblemModify || false,
+      patientAllergyCreate: integration.settings.patientAllergyCreate || false,
+      patientAllergyModify: integration.settings.patientAllergyModify || false,
+      patientMedicationCreate:
+        integration.settings.patientMedicationCreate || false,
+      patientMedicationModify:
+        integration.settings.patientMedicationModify || false,
+      clientId: integration.credentials.clientId,
+      clientSecret: integration.credentials.clientSecret
+    };
   }
 
   componentWillMount() {
@@ -64,49 +54,113 @@ class DrChronoForm extends Component {
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
-    this.setState({
-      [name]: value
-    });
-  };
-
-  _createNewConfig = () => {
-    const params = {
-      groupId: this.state.groupId,
-      integrationId: this.props.integrationStore.drChronoIntegration.id,
-      settings: omit(this.state, "groupId")
-    };
-
-    this.props.integrationStore.createNewIntegration(params).then(() => {
-      history.push(`/admin/integrations/drchrono`);
-    });
+    this.setState(
+      {
+        [name]: value
+      },
+      () => {
+        this._updateConfig();
+      }
+    );
   };
 
   _updateConfig = () => {
+    const credentials = this.props.integration.credentials;
+    credentials.clientId = this.state.clientId;
+    credentials.clientSecret = this.state.clientSecret;
+
     const params = {
-      id: this.state.id,
-      groupId: this.state.groupId,
-      integrationId: this.props.integrationStore.drChronoIntegration.id,
-      settings: omit(this.state, ["groupId", "id"])
+      id: this.props.integration.id,
+      groupId: parseInt(this.state.groupId, 10),
+      credentials: credentials,
+      settings: omit(this.state, ["groupId", "id", "clientId", "clientSecret"])
     };
 
-    this.props.integrationStore.updateIntegration(params).then(() => {
-      history.push(`/admin/integrations/drchrono`);
-    });
+    this.props.integrationStore.updateIntegration(params);
   };
 
   _handleFormSubmit = event => {
     event.preventDefault();
+    this._updateConfig();
+    history.push("/admin/integrations/drchrono");
+  };
 
-    if (this.props.new === true) {
-      this._createNewConfig();
-    } else {
-      this._updateConfig();
+  _redirectUri = () => {
+    return `${applicationScheme}${applicationHost}/_oauth/drchrono/${this.state
+      .webhookToken}`;
+  };
+
+  _renderAuthenticateButton = () => {
+    if (this.state.authenticated) {
+      return <p>Authenticated</p>;
     }
+
+    return (
+      <Button
+        style={{ marginTop: "20px" }}
+        bsStyle="success"
+        href={`https://drchrono.com/o/authorize?redirect_uri=${this._redirectUri()}&client_id=${this
+          .state.clientId}&response_type=code`}
+      >
+        Authenticate
+      </Button>
+    );
   };
 
   render() {
     return (
       <Form horizontal onSubmit={this._handleFormSubmit}>
+        <FormGroup>
+          <Col sm={5}>
+            <h4 className="integrations-panel__heading">Credentials</h4>
+            <p>Set your drchrono credentials here.</p>
+          </Col>
+          <Col sm={7}>
+            <ControlLabel htmlFor="clientId">Client ID</ControlLabel>
+            <FormControl
+              name="clientId"
+              id="clientId"
+              onChange={this.onChange}
+              type="text"
+              defaultValue={this.state.clientId}
+            />
+
+            <ControlLabel htmlFor="clientSecret">Client Secret</ControlLabel>
+            <FormControl
+              name="clientSecret"
+              id="clientSecret"
+              onChange={this.onChange}
+              type="text"
+              defaultValue={this.state.clientSecret}
+            />
+
+            {this._renderAuthenticateButton()}
+
+            <hr />
+
+            <ControlLabel>Redirect URI</ControlLabel>
+            <FormControl
+              disabled
+              name="redirectUri"
+              id="redirectUri"
+              type="text"
+              value={this._redirectUri()}
+            />
+
+            <ControlLabel>Webhook URL</ControlLabel>
+            <FormControl
+              disabled
+              name="webhookToken"
+              id="webhookToken"
+              type="text"
+              value={`${applicationScheme}${applicationHost}/webhook/drchrono/${this
+                .state.webhookToken}`}
+            />
+          </Col>
+        </FormGroup>
+
+        <hr />
+
         <FormGroup>
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Notifications</h4>

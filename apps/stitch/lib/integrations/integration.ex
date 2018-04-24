@@ -5,27 +5,58 @@ defmodule Stitch.Integration do
 
   use Ecto.Schema
   import Ecto.{Query, Changeset}
-  alias Stitch.{Team}
+  alias Stitch.{Team, Integration}
   alias Stitch.Repo
 
   @type t :: %__MODULE__{}
 
   schema "integrations" do
-    belongs_to(:team, Team)
-    field(:name, :string)
     field(:webhook_token, :string)
     field(:settings, :map)
-    field(:enabled, :boolean, default: false)
+    field(:credentials, :map)
+    field(:enabled, :boolean, default: true)
+    field(:authenticated, :boolean, default: false)
+
+    belongs_to(:team, Team)
+    belongs_to(:group, Stitch.Group)
+    belongs_to(:app, Stitch.App)
 
     timestamps()
-
-    has_many(:integration_configs, Stitch.IntegrationConfig, on_delete: :delete_all)
   end
 
+  # Changeset used when creating a brand new integration for a group.
+  def create_changeset(struct, attrs) do
+    struct
+    |> cast(attrs, [:app_id, :group_id, :team_id])
+    |> validate_required([:app_id, :group_id, :team_id])
+    |> put_change(:webhook_token, Stitch.Util.Security.websafe_string())
+    |> put_change(:enabled, true)
+  end
+
+  # Changeset used when updating an existing integration.
+  def update_changeset(struct, attrs) do
+    struct
+    |> cast(attrs, [:group_id, :settings, :authenticated, :enabled, :credentials])
+    |> validate_required([:group_id])
+  end
+
+  @deprecated "Use create_changeset/2 instead"
   def changeset(struct, attrs) do
     struct
-    |> cast(attrs, [:team_id, :name, :webhook_token, :settings, :enabled])
-    |> validate_required([:team_id, :name, :webhook_token, :settings])
+    |> cast(attrs, [:team_id, :webhook_token, :settings, :enabled])
+    |> validate_required([:team_id, :webhook_token, :settings])
+  end
+
+  @doc """
+  Creates an integration for the app_id, given the group_id.
+  """
+  @spec create(number, number, number) :: Integration.t() | {:error, term}
+  def create(app_id, group_id, team_id) do
+    StitchIntegrations.DrChrono.Bot.init_or_enable_bot(team_id)
+
+    %Integration{}
+    |> create_changeset(%{app_id: app_id, group_id: group_id, team_id: team_id})
+    |> Repo.insert()
   end
 
   def get_by_team_id(team_id) do
@@ -61,6 +92,15 @@ defmodule Stitch.Integration do
 
     integration = Repo.one(query)
     integration.team
+  end
+
+  def delete(integration) do
+    Repo.delete(integration)
+  end
+
+  def update(integration, params) do
+    update_changeset(integration, params)
+    |> Repo.update()
   end
 
   def enable(integration) do

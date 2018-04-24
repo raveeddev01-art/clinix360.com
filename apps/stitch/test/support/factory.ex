@@ -62,16 +62,7 @@ defmodule Stitch.Factory do
   def integration_factory do
     %Stitch.Integration{
       team: build(:team),
-      name: "drchrono",
       enabled: true,
-      settings: %{}
-    }
-  end
-
-  def integration_config_factory do
-    %Stitch.IntegrationConfig{
-      integration: build(:integration),
-      group: build(:group),
       settings: %{}
     }
   end

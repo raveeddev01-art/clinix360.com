@@ -9,6 +9,7 @@ import Breadcrumb from "react-bootstrap/lib/Breadcrumb";
 import Button from "react-bootstrap/lib/Button";
 
 import DrChronoForm from "./drchrono-form";
+import DrChronoSetupInstructions from "./drchrono-setup-instructions";
 import { confirmModal } from "common/modals";
 
 @inject("titleStore", "adminPanelStore", "integrationStore")
@@ -17,7 +18,7 @@ class DrChronoEditSettings extends Component {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
 
-    this.props.integrationStore.setCurrentIntegrationConfig(
+    this.props.integrationStore.setCurrentIntegration(
       parseInt(this.props.match.params.id, 10)
     );
   }
@@ -90,11 +91,14 @@ class DrChronoEditSettings extends Component {
         <Panel.Body>
           <Panel className="integrations-settings__panel">
             <Panel.Heading>
-              <h3>Integration Settings</h3>
+              <h3>Setup Instructions</h3>
             </Panel.Heading>
 
             <Panel.Body>
-              <DrChronoForm />
+              <DrChronoSetupInstructions />
+              <DrChronoForm
+                integration={this.props.integrationStore.selectedIntegration}
+              />
             </Panel.Body>
           </Panel>
         </Panel.Body>

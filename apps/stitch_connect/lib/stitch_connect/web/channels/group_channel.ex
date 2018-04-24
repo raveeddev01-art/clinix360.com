@@ -18,7 +18,6 @@ defmodule StitchConnect.Web.GroupChannel do
 
   @endpoint StitchConnect.Web.Endpoint
 
-  @decorate channel_action()
   def join("groups:__dm:" <> id_pair_string, params, socket) do
     id_pair = id_pair_string |> String.split(".") |> Enum.map(&String.to_integer/1)
     %{team_id: team_id, current_user: user} = socket.assigns
@@ -37,7 +36,6 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  @decorate channel_action()
   def join("groups:id:" <> group_id, params, socket) do
     user = socket.assigns.current_user
     fetch_messages = get_fetch_messages_param(params)
@@ -165,7 +163,9 @@ defmodule StitchConnect.Web.GroupChannel do
   def handle_in("new_msg", params, socket) do
     %{group: group, current_user: user} = socket.assigns
     ActivityTracker.async_update_activity(user)
-    do_new_msg(socket, group, user, params)
+
+    message_params_with_client = Message.Params.with_client_attrs("channel", params)
+    do_new_msg(socket, group, user, message_params_with_client)
   end
 
   @decorate channel_action()
@@ -235,7 +235,7 @@ defmodule StitchConnect.Web.GroupChannel do
     end
   end
 
-  def handle_in("delete_msg", _ , socket) do
+  def handle_in("delete_msg", _, socket) do
     message_delete_failure_reply(socket)
   end
 
@@ -441,6 +441,7 @@ defmodule StitchConnect.Web.GroupChannel do
             EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
             PushNotifications.notify_users(group, message, notify_user_ids.mobile)
             PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+            Stitch.EmailNotification.create(message.id, notify_user_ids.email)
           end)
 
           json = MessageView.render("show.json", %{message: message})
@@ -493,7 +494,8 @@ defmodule StitchConnect.Web.GroupChannel do
   end
 
   defp mark_as_unread_response(
-         {:ok, %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}},
+         {:ok,
+          %{mark_messages_as_unread: {_, messages}, mark_group_as_unread: {1, [group_user]}}},
          user,
          socket
        ) do

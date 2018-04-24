@@ -71,7 +71,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     current_user = conn.assigns.current_user
 
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
-         {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(group, current_user)},
+         {:authorized?, true} <-
+           {:authorized?, GroupAuthorization.can_view?(group, current_user)},
          {:message, %Message{} = message} <-
            {:message, MessageQueries.get_by_id(message_id, false)} do
       feed_surrounding =
@@ -93,12 +94,14 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
   def create(conn, %{"group_id" => group_id, "message" => message_params}) do
     current_user = conn.assigns.current_user
 
+    message_params_with_client = Message.Params.with_client_attrs(conn, message_params)
+
     with {:group, %Group{} = group} <- {:group, GroupQueries.get_by_id(group_id)},
          {:authorized?, true} <-
            {:authorized?, GroupAuthorization.can_message?(group, current_user.id)},
          presence_user_ids = UserStatusService.presence_user_ids(current_user.team_id),
          {:ok, %{message: message, notify_user_ids: notify_user_ids}} <-
-           Message.create(group.id, current_user, message_params, presence_user_ids) do
+           Message.create(group.id, current_user, message_params_with_client, presence_user_ids) do
       message = %{message | user: current_user}
       message_events(message, group, notify_user_ids)
 
@@ -126,6 +129,7 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
       EventsChannel.broadcast_group_new_msg(group, message, notify_user_ids.desktop)
       PushNotifications.notify_users(group, message, notify_user_ids.mobile)
       PushNotifications.push_badge_update(message, notify_user_ids.mobile)
+      Stitch.EmailNotification.create(message.id, notify_user_ids.email)
     end)
   end
 
@@ -197,7 +201,8 @@ defmodule StitchConnect.Web.Api.V1.MessageController do
     message = MessageQueries.get_by_id(message_id)
     user = conn.assigns.current_user
 
-    with {:authorized?, true} <- {:authorized?, GroupAuthorization.can_view?(message.group, user)},
+    with {:authorized?, true} <-
+           {:authorized?, GroupAuthorization.can_view?(message.group, user)},
          {:ok, presigned_url} <- Upload.presign(message) do
       json(conn, %{presigned_url: presigned_url})
     else

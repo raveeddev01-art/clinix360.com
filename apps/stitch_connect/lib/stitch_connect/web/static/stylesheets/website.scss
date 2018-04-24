@@ -154,6 +154,7 @@
       margin: 0 auto -100px;
       position: relative;
       max-width: 100%;
+      z-index: 15;
 
       img {
         height: 100%;
@@ -164,13 +165,16 @@
 
     &:after {
       width: 100%;
-      padding-bottom: 6%;
+      padding-bottom: 5%;
       content: "";
       display: block;
       background: url('/images/wave.svg') center top no-repeat;
       background-size: cover;
       margin-bottom: -.625rem !important;
       box-shadow: 0 1px 0 white;
+      position: absolute;
+      bottom: 0;
+      z-index: 10;
     }
   }
 
@@ -225,7 +229,6 @@
     flex-direction: column;
     -ms-flex-direction: column;
     min-height: 100%;
-    min-height: 100vh;
   }
 
   .feature {
@@ -366,7 +369,7 @@
 
   @media (max-width: 768px) {
     .carousel-inner .item {
-      height: 272px;
+      height: 372px;
     }
 
     .carousel-control {
@@ -380,7 +383,7 @@
     }
 
     .homepage .our-customers {
-      padding: 200px 0 20px;
+      padding: 220px 0 20px;
     }
 
     .feature {
@@ -436,7 +439,7 @@
 
   @media (min-width: 1200px) {
     .homepage .our-customers {
-      padding-top: 180px;
+      padding-top: 120px;
     }
 
     .our-customers .logo-row .col-lg-5ths {

@@ -11,6 +11,7 @@ import Username from "../components/username-card/username-card";
 import Password from "../components/password-card/password-card";
 import Pin from "../components/pin-card/pin-card";
 import Invites from "../components/invites-card/invites-card";
+import TeamInfo from "../components/team-info-card/team-info-card";
 import Hipaa from "../components/hipaa-card/hipaa-card";
 
 const stepList = [
@@ -22,6 +23,7 @@ const stepList = [
   { field: "password", component: Password },
   { field: "pin", component: Pin },
   { field: "invites", component: Invites },
+  { field: "teaminfo", component: TeamInfo },
   { field: "hipaa", component: Hipaa }
 ];
 

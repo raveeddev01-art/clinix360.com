@@ -37,6 +37,12 @@ class TopNav extends Component {
 
     const { addonStore } = this.props;
 
+    // Treat an empty query as a non-event
+    // Do not open panel or search
+    if (!this.state.query.trim()) {
+      return;
+    }
+
     this.props.searchStore.setQuery(this.state.query);
     addonStore.setAddonPanel("Search Results");
     addonStore.toggleAddons(true);

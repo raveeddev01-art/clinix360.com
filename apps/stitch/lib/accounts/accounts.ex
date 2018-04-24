@@ -25,8 +25,10 @@ defmodule Stitch.Accounts do
   """
   def create_user_with_email_only(email) when byte_size(email) > 0 do
     digits = for _ <- 1..6, do: :rand.uniform(9)
-    confirmation_code = digits
-      |> Enum.join
+
+    confirmation_code =
+      digits
+      |> Enum.join()
 
     token = Stitch.Rand.token(32)
 
@@ -37,6 +39,7 @@ defmodule Stitch.Accounts do
       any -> any
     end
   end
+
   def create_user_with_email_only(_), do: {:error, "Email cannot be blank or nil."}
 
   @doc """
@@ -56,11 +59,13 @@ defmodule Stitch.Accounts do
       Stitch.Accounts.update_and_complete_user_onboarding(1, attrs)
 
   """
-  @spec update_and_complete_user_onboarding(pos_integer, map) :: User.t | {:error, Ecto.Changeset.t} | {:error, binary}
+  @spec update_and_complete_user_onboarding(pos_integer, map) ::
+          User.t() | {:error, Ecto.Changeset.t()} | {:error, binary}
   def update_and_complete_user_onboarding(user_id, attrs) do
     case Repo.get(User, user_id) do
       nil ->
         {:error, "User doesn't exist."}
+
       user ->
         if user.onboarded do
           {:error, "Cannot update a user who has already been onboarded."}
@@ -74,12 +79,14 @@ defmodule Stitch.Accounts do
             {:ok, user} ->
               attrs
               |> Map.get("invites", [])
-              |> Enum.each(& Stitch.Invitation.invite_to_team(user.id, &1))
+              |> Enum.each(&Stitch.Invitation.invite_to_team(user.id, &1))
 
-              {:ok, _} = Stitch.Group.create_single_dm(user, [user.id, user.id])
+              Stitch.Team.complete_onboarding(attrs)
+              {:ok, _group} = Stitch.Group.create_single_dm(user, [user.id, user.id])
 
               AccountsAnalytics.track_signup(user)
               user
+
             {:error, changeset} ->
               {:error, changeset}
           end
@@ -107,6 +114,7 @@ defmodule Stitch.Accounts do
   """
   def create_and_complete_user_onboarding(attrs) do
     {email, attrs} = Map.pop(attrs, :email)
+
     case create_user_with_email_only(email) do
       %User{} = user -> update_and_complete_user_onboarding(user.id, attrs)
       {:error, reason} -> {:error, reason}
@@ -117,13 +125,16 @@ defmodule Stitch.Accounts do
     User
     |> Repo.get(user_id)
     |> User.profile_image_changeset(%{"profile_image_url" => url})
-    |> Repo.update
+    |> Repo.update()
   end
 
   def delete_profile_image(user_id) do
     User
     |> Repo.get(user_id)
-    |> User.default_profile_image_changeset(%{profile_image_url: nil, profile_image_thumb_url: nil})
-    |> Repo.update
+    |> User.default_profile_image_changeset(%{
+      profile_image_url: nil,
+      profile_image_thumb_url: nil
+    })
+    |> Repo.update()
   end
 end

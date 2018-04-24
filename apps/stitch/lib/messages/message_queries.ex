@@ -24,6 +24,17 @@ defmodule Stitch.MessageQueries do
   provided.
   """
   def search(user_id, term, opts \\ []) do
+    do_search(
+      user_id,
+      String.trim(term),
+      opts
+    )
+  end
+
+  # don't query with an empty string
+  defp do_search(_user_id, "", _opts), do: []
+
+  defp do_search(user_id, term, opts) do
     user = Repo.get!(User, user_id)
     fetch_users = Keyword.get(opts, :fetch_users, true)
 
@@ -321,7 +332,7 @@ defmodule Stitch.MessageQueries do
     Paginator.new(query, skip: skip, limit: limit)
   end
 
-    # For all uploads the user has access to.
+  # For all uploads the user has access to.
   def get_uploads_for_user(
         %User{team_id: team_id, id: user_id},
         skip,

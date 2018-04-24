@@ -30,6 +30,8 @@ defmodule Stitch.AccountsTest do
       user = insert(:user, %{email: "sergio@email.com", onboarded: false})
       attrs = %{
         fullname: "Sergio Tapia",
+        first_name: "Sergio",
+        last_name: "Tapia",
         username: "sergiotapia",
         password: "Password123!",
         phone_number: "1231231234",
@@ -54,6 +56,8 @@ defmodule Stitch.AccountsTest do
       attrs = %{
         email: "sergio@gmail.com",
         fullname: "Sergio Tapia",
+        first_name: "Sergio",
+        last_name: "Tapia",
         username: "sergiotapia3",
         password: "Password123!",
         phone_number: "1231231234",

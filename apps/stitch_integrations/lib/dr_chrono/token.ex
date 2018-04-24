@@ -5,41 +5,28 @@ defmodule StitchIntegrations.DrChrono.Token do
   alias Stitch.Integration
   alias StitchIntegrations.DrChrono
 
-  def for_team(team_id) do
-    query =
-      from(
-        i in Integration,
-        where: i.team_id == ^team_id,
-        where: i.name == "drchrono",
-        select: i
-      )
-
-    integration = Repo.one(query)
-
+  def for_integration(integration) do
     unix_now = DateTime.utc_now() |> DateTime.to_unix()
 
-    if integration.settings["expiration_in_unix"] <= unix_now do
+    if integration.credentials["expiration_in_unix"] <= unix_now do
+      Logger.info("Token's expired, refreshing it.")
       # Token has expired, we need to refresh it, and update it in
       # the database.
-      {:ok, response_values} = refresh_token(integration.settings["refresh_token"])
+      {:ok, response_values} = refresh_token(integration.credentials["refresh_token"])
 
-      new_settings =
-        integration.settings
-        |> Map.put("access_token", response_values[:access_token])
-        |> Map.put("expiration_in_unix", response_values[:expiration_in_unix])
-        |> Map.put("refresh_token", response_values[:refresh_token])
+      new_credentials = Map.merge(integration.credentials, response_values)
+      Integration.update(integration, %{credentials: new_credentials})
 
-      # Save the settings for this team's DrChrono integration.
-      DrChrono.insert_or_update_integration(team_id, new_settings)
-
-      {:ok, response_values[:access_token]}
+      {:ok, new_credentials[:access_token]}
     else
+      Logger.info("Token is still valid, return existing.")
       # Token is still valid, let's just use it.
-      {:ok, integration.settings["access_token"]}
+      token = integration.credentials["access_token"]
+      {:ok, token}
     end
   end
 
-  def get_access_token(code) do
+  def create_access_token(integration, code) do
     applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
     applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
 
@@ -48,9 +35,11 @@ defmodule StitchIntegrations.DrChrono.Token do
       [
         "code=#{code}",
         "grant_type=authorization_code",
-        "redirect_uri=#{applicationScheme}#{applicationHost}/_oauth/drchrono",
-        "client_id=#{System.get_env("DRCHRONO_CLIENT_ID")}",
-        "client_secret=#{System.get_env("DRCHRONO_SECRET")}"
+        "redirect_uri=#{applicationScheme}#{applicationHost}/_oauth/drchrono/#{
+          integration.webhook_token
+        }",
+        "client_id=#{integration.credentials["clientId"]}",
+        "client_secret=#{integration.credentials["clientSecret"]}"
       ]
       |> Enum.join("&")
 
@@ -74,24 +63,31 @@ defmodule StitchIntegrations.DrChrono.Token do
           expiration_in_unix: expiration_in_unix
         }
 
-        {:ok, response_values}
+        new_credentials = Map.merge(integration.credentials, response_values)
+
+        {:ok, _integration} =
+          Integration.update(integration, %{authenticated: true, credentials: new_credentials})
+
+        {:ok, new_credentials}
 
       {:error, error} ->
         {:error, error}
     end
   end
 
-  def refresh_token(refresh_token) do
+  def refresh_token(integration) do
     applicationHost = Application.fetch_env!(:stitch_connect, :application_host)
     applicationScheme = Application.fetch_env!(:stitch_connect, :application_scheme)
 
     params =
       [
-        "refresh_token=#{refresh_token}",
+        "refresh_token=#{integration.credentials["refreshToken"]}",
         "grant_type=refresh_token",
-        "redirect_uri=#{applicationScheme}#{applicationHost}/_oauth/drchrono",
-        "client_id=#{System.get_env("DRCHRONO_CLIENT_ID")}",
-        "client_secret=#{System.get_env("DRCHRONO_SECRET")}"
+        "redirect_uri=#{applicationScheme}#{applicationHost}/_oauth/drchrono/#{
+          integration.webhook_token
+        }",
+        "client_id=#{integration.credentials["clientId"]}",
+        "client_secret=#{integration.credentials["clientSecret"]}"
       ]
       |> Enum.join("&")
 

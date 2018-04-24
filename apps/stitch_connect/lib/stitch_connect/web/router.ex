@@ -66,8 +66,8 @@ defmodule StitchConnect.Web.Router do
     pipe_through(:no_csrf_browser)
 
     # Webhook routes.
-    get("/webhooks/drchrono/:webhook_token", WebhookController, :drchrono_get)
-    post("/webhooks/drchrono/:webhook_token", WebhookController, :drchrono)
+    get("/webhook/drchrono/:webhook_token", WebhookController, :drchrono_get)
+    post("/webhook/drchrono/:webhook_token", WebhookController, :drchrono)
   end
 
   scope "/", StitchConnect.Web do
@@ -109,7 +109,7 @@ defmodule StitchConnect.Web.Router do
     get("/signup/app-download", AuthenticationController, :index)
 
     # oAuth Integration routes.
-    get("/_oauth/:provider", OAuthIntegrationController, :provider_response)
+    get("/_oauth/:provider/:webhook_token", OAuthIntegrationController, :provider_response)
 
     # get "/signup/phone-number", AuthenticationController, :index
   end

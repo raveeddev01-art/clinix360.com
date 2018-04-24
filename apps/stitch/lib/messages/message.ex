@@ -6,8 +6,9 @@ defmodule Stitch.Message do
   alias Stitch.{Repo, Message, Group, GroupUser, GroupQueries, Accounts.User}
   alias Stitch.Analytics.Message, as: MessageAnalytics
 
+  import Appsignal.Instrumentation.Helpers, only: [instrument: 3]
+
   @valid_types ["chat", "system", "upload"]
-  @unread_limit 30
 
   schema "messages" do
     belongs_to(:user, Stitch.Accounts.User)
@@ -17,6 +18,7 @@ defmodule Stitch.Message do
     field(:deleted, :boolean, default: false)
     field(:edited_at, :utc_datetime)
     field(:text_content, :string)
+    field(:text_content_meta, {:array, :map}, default: [])
     field(:type, :string)
     field(:fields, :map)
     field(:pinned, :boolean)
@@ -26,6 +28,9 @@ defmodule Stitch.Message do
     field(:has_links, :boolean, default: false)
     field(:link_previews_generated, :boolean, default: false)
     field(:meteor_id, :string)
+    field(:client_device_type, :string, default: "unknown")
+    field(:client_os, :string, default: "unknown")
+    field(:client_name, :string, default: "unknown")
     embeds_many(:link_previews, Message.LinkPreview, on_replace: :delete)
 
     timestamps()
@@ -43,7 +48,10 @@ defmodule Stitch.Message do
       :pinned,
       :pinned_by_id,
       :pinned_at,
-      :mentioned_user_ids
+      :mentioned_user_ids,
+      :client_device_type,
+      :client_os,
+      :client_name
     ])
     |> validate_required([:user_id, :group_id, :deleted, :text_content])
     |> validate_inclusion(:type, @valid_types)
@@ -60,16 +68,33 @@ defmodule Stitch.Message do
     |> cast(params, [:text_content, :mentioned_user_ids])
     |> validate_required([:text_content])
     |> check_for_links
+    |> put_meta()
     |> put_change(:edited_at, DateTime.utc_now())
   end
 
   def chat_changeset(%Message{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :request_id, :text_content, :mentioned_user_ids, :read_status])
+    |> cast(params, [
+      :type,
+      :request_id,
+      :text_content,
+      :mentioned_user_ids,
+      :read_status,
+      :client_device_type,
+      :client_os,
+      :client_name
+    ])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
+    |> put_meta()
     |> check_for_links
   end
+
+  def put_meta(%{valid?: true, changes: %{text_content: text_content}} = changeset) do
+    put_change(changeset, :text_content_meta, Message.Parser.get_meta(text_content))
+  end
+
+  def put_meta(changeset), do: changeset
 
   defp check_for_links(
          %Ecto.Changeset{valid?: true, changes: %{text_content: text_content}} = changeset
@@ -93,10 +118,14 @@ defmodule Stitch.Message do
       :request_id,
       :text_content,
       :mentioned_user_ids,
-      :read_status
+      :read_status,
+      :client_device_type,
+      :client_os,
+      :client_name
     ])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
+    |> put_meta()
     |> add_preview()
   end
 
@@ -127,8 +156,6 @@ defmodule Stitch.Message do
     group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
-    MessageAnalytics.track_message_sent(user, group)
-
     mentioned_user_ids =
       Message.Mention.get_mentioned_user_ids(
         users,
@@ -139,23 +166,27 @@ defmodule Stitch.Message do
       )
 
     notify_user_ids =
-      Message.Notification.notify_user_ids(
-        group,
-        user,
-        mentioned_user_ids,
-        presence_user_ids.active
-      )
+      instrument("get_notify_user_ids", "Message creation", fn ->
+        Message.Notification.notify_user_ids(
+          group,
+          user,
+          mentioned_user_ids,
+          presence_user_ids.active
+        )
+      end)
 
     {read_status, recipients} =
-      users
-      |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
-        acc_map =
-          if recipient.id == user.id or recipient.disabled or recipient.is_bot,
-            do: acc_map,
-            else: Map.put(acc_map, to_string(recipient.id), nil)
+      instrument("get_recipients", "Message creation", fn ->
+        users
+        |> Enum.reduce({%{}, []}, fn recipient, {acc_map, acc_list} ->
+          acc_map =
+            if recipient.id == user.id or recipient.disabled or recipient.is_bot,
+              do: acc_map,
+              else: Map.put(acc_map, to_string(recipient.id), nil)
 
-        acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
-        {acc_map, acc_list}
+          acc_list = if recipient.id == user.id, do: acc_list, else: [recipient.id | acc_list]
+          {acc_map, acc_list}
+        end)
       end)
 
     message_struct = %Message{group_id: group_id, user_id: user.id}
@@ -179,23 +210,20 @@ defmodule Stitch.Message do
       |> mark_as_read_on_creation(
         group.id,
         user.id,
-        group_user.last_read_at || group_user.inserted_at,
-        @unread_limit
+        group_user.last_read_at || group_user.inserted_at
       )
-      |> Multi.run(:notify_user_ids, fn %{message: message} ->
-        Stitch.EmailNotification.create(message.id, notify_user_ids.email)
-        {:ok, notify_user_ids}
-      end)
       |> Repo.transaction()
 
     case result do
-      {:ok, %{message: message}} ->
+      {:ok, %{message: message} = result_map} ->
+        MessageAnalytics.track_message_sent(message, user, group)
+
         Stitch.Mobile.NotificationQueue.async_enqueue_for_users(
           notify_user_ids.mobile_active,
           message.id
         )
 
-        result
+        {:ok, Map.put(result_map, :notify_user_ids, notify_user_ids)}
 
       {:error, _} ->
         result
@@ -243,27 +271,10 @@ defmodule Stitch.Message do
     |> Repo.transaction()
   end
 
-  def mark_as_read_on_creation(multi, group_id, user_id, last_read_at, unread_limit) do
-    if below_unread_limit?(group_id, last_read_at, unread_limit) do
-      multi
-      |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [])
-      |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [])
-    else
-      multi
-    end
-  end
-
-  def below_unread_limit?(group_id, timestamp, unread_limit) do
-    count =
-      Message
-      |> where([m], m.group_id == ^group_id)
-      |> where([m], m.inserted_at >= ^timestamp)
-      |> limit(^unread_limit)
-      |> subquery
-      |> select([q], count(q.id))
-      |> Repo.one()
-
-    count < unread_limit
+  def mark_as_read_on_creation(multi, group_id, user_id, last_read_at) do
+    multi
+    |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [])
+    |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [])
   end
 
   def increment_unread_counter(group_id, user_ids) do

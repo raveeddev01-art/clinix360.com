@@ -47,7 +47,7 @@
     }
   }
 
-  
+
   .configurations-panel {
     &__heading {
       display: flex;
@@ -148,6 +148,31 @@
       }
       .panel-body {
         padding: 0 25px 25px;
+      }
+    }
+  }
+}
+
+.integration-instructions {
+  &__step {
+    display: flex;
+    align-content: center;
+    margin-bottom: 50px;
+
+    &__header {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    &__content {
+      p {
+        margin: 0;
+        margin-bottom: 20px;
+      }
+
+      img {
+        width: 100%;
+        display: block;
       }
     }
   }

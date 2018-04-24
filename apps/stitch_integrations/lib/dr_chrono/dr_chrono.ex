@@ -35,12 +35,11 @@ defmodule StitchIntegrations.DrChrono do
     end
   end
 
-  def handle_webhook("APPOINTMENT_CREATE", params) do
+  def handle_webhook(integration, "APPOINTMENT_CREATE", params) do
     payload = params["object"]
 
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, patient} = get_patient_info(team.id, payload["patient"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
+    {:ok, patient} = get_patient_info(integration, payload["patient"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     scheduled_time = value_or_na(payload["scheduled_time"])
     reason = value_or_na(payload["reason"])
@@ -54,19 +53,16 @@ defmodule StitchIntegrations.DrChrono do
         duration
       }\nNotes: #{notes}"
 
-    groups = enabled_groups(team.id, "appointmentCreate")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["appointmentCreate"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("APPOINTMENT_MODIFY", params) do
+  def handle_webhook(integration, "APPOINTMENT_MODIFY", params) do
     payload = params["object"]
 
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, patient} = get_patient_info(team.id, payload["patient"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
+    {:ok, patient} = get_patient_info(integration, payload["patient"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     scheduled_time = value_or_na(payload["scheduled_time"])
     reason = value_or_na(payload["reason"])
@@ -80,19 +76,13 @@ defmodule StitchIntegrations.DrChrono do
         duration
       }\nNotes: #{notes}"
 
-    groups = enabled_groups(team.id, "appointmentModify")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["appointmentModify"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("APPOINTMENT_DELETE", params) do
+  def handle_webhook(integration, "APPOINTMENT_DELETE", params) do
     payload = params["object"]
-
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    # {:ok, patient} = get_patient_info(team.id, payload["patient"])
-    # {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
 
     scheduled_time = value_or_na(payload["scheduled_time"])
     reason = value_or_na(payload["reason"])
@@ -104,19 +94,16 @@ defmodule StitchIntegrations.DrChrono do
         duration
       }\nNotes: #{notes}"
 
-    groups = enabled_groups(team.id, "appointmentDelete")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["appointmentDelete"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("PATIENT_CREATE", params) do
+  def handle_webhook(integration, "PATIENT_CREATE", params) do
     payload = params["object"]
 
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
-    {:ok, patient} = get_patient_info(team.id, payload["id"])
+    {:ok, patient} = get_patient_info(integration, payload["id"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
@@ -131,19 +118,16 @@ defmodule StitchIntegrations.DrChrono do
     Cell phone: #{cell_phone}
     """
 
-    groups = enabled_groups(team.id, "patientCreate")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["patientCreate"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("PATIENT_MODIFY", params) do
+  def handle_webhook(integration, "PATIENT_MODIFY", params) do
     payload = params["object"]
 
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
-    {:ok, patient} = get_patient_info(team.id, payload["id"])
+    {:ok, patient} = get_patient_info(integration, payload["id"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
@@ -158,18 +142,16 @@ defmodule StitchIntegrations.DrChrono do
     Cell phone: #{cell_phone}
     """
 
-    groups = enabled_groups(team.id, "patientModify")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["patientModify"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("PATIENT_PROBLEM_CREATE", params) do
+  def handle_webhook(integration, "PATIENT_PROBLEM_CREATE", params) do
     payload = params["object"]
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
-    {:ok, patient} = get_patient_info(team.id, payload["patient"])
+
+    {:ok, patient} = get_patient_info(integration, payload["patient"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
@@ -182,18 +164,16 @@ defmodule StitchIntegrations.DrChrono do
     Notes: #{value_or_na(payload["notes"])}
     """
 
-    groups = enabled_groups(team.id, "patientProblemCreate")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["patientProblemCreate"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("PATIENT_PROBLEM_MODIFY", params) do
+  def handle_webhook(integration, "PATIENT_PROBLEM_MODIFY", params) do
     payload = params["object"]
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
-    {:ok, patient} = get_patient_info(team.id, payload["patient"])
+
+    {:ok, patient} = get_patient_info(integration, payload["patient"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
@@ -206,19 +186,16 @@ defmodule StitchIntegrations.DrChrono do
     Notes: #{value_or_na(payload["notes"])}
     """
 
-    groups = enabled_groups(team.id, "patientProblemModify")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["patientProblemModify"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("PATIENT_ALLERGY_CREATE", params) do
+  def handle_webhook(integration, "PATIENT_ALLERGY_CREATE", params) do
     payload = params["object"]
 
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
-    {:ok, patient} = get_patient_info(team.id, payload["patient"])
+    {:ok, patient} = get_patient_info(integration, payload["patient"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
@@ -233,19 +210,16 @@ defmodule StitchIntegrations.DrChrono do
     Notes: #{notes}
     """
 
-    groups = enabled_groups(team.id, "patientAllergyCreate")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["patientAllergyCreate"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("PATIENT_ALLERGY_MODIFY", params) do
+  def handle_webhook(integration, "PATIENT_ALLERGY_MODIFY", params) do
     payload = params["object"]
 
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
-    {:ok, patient} = get_patient_info(team.id, payload["patient"])
+    {:ok, patient} = get_patient_info(integration, payload["patient"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
@@ -260,19 +234,16 @@ defmodule StitchIntegrations.DrChrono do
     Notes: #{notes}
     """
 
-    groups = enabled_groups(team.id, "patientAllergyModify")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["patientAllergyModify"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("PATIENT_MEDICATION_CREATE", params) do
+  def handle_webhook(integration, "PATIENT_MEDICATION_CREATE", params) do
     payload = params["object"]
 
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
-    {:ok, patient} = get_patient_info(team.id, payload["patient"])
+    {:ok, patient} = get_patient_info(integration, payload["patient"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
@@ -287,19 +258,16 @@ defmodule StitchIntegrations.DrChrono do
     Indication: #{indication}
     """
 
-    groups = enabled_groups(team.id, "patientMedicationCreate")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["patientMedicationCreate"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
-  def handle_webhook("PATIENT_MEDICATION_MODIFY", params) do
+  def handle_webhook(integration, "PATIENT_MEDICATION_MODIFY", params) do
     payload = params["object"]
 
-    team = Integration.get_team_by_webhook_token(params["webhook_token"])
-    {:ok, doctor} = get_doctor_info(team.id, payload["doctor"])
-    {:ok, patient} = get_patient_info(team.id, payload["patient"])
+    {:ok, patient} = get_patient_info(integration, payload["patient"])
+    {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
     patient_name = "#{patient["first_name"]} #{patient["last_name"]}"
     doctor_name = "#{doctor["first_name"]} #{doctor["last_name"]}"
@@ -314,11 +282,9 @@ defmodule StitchIntegrations.DrChrono do
     Indication: #{indication}
     """
 
-    groups = enabled_groups(team.id, "patientMedicationModify")
-
-    Enum.each(groups, fn group ->
-      Bot.post_message(team.id, group.id, message)
-    end)
+    if integration.settings["patientMedicationModify"] do
+      Bot.post_message(integration.team_id, integration.group_id, message)
+    end
   end
 
   # We haven't implemented these two webhooks.
@@ -334,20 +300,23 @@ defmodule StitchIntegrations.DrChrono do
     Logger.info("[dr-chrono] [webhook] Unidentified event_type, can't handle this webhook.")
   end
 
-  def get_patient_info(team_id, patient_id) do
+  def get_patient_info(integration, patient_id) do
     api_url = "https://drchrono.com/api/patients/#{patient_id}"
-    api_headers = headers(team_id)
+    api_headers = headers(integration)
+    IO.inspect(api_headers)
+
     http_get(api_url, api_headers)
+    |> IO.inspect()
   end
 
-  def get_doctor_info(team_id, doctor_id) do
+  def get_doctor_info(integration, doctor_id) do
     api_url = "https://drchrono.com/api/doctors/#{doctor_id}"
-    api_headers = headers(team_id)
+    api_headers = headers(integration)
     http_get(api_url, api_headers)
   end
 
-  def headers(team_id) do
-    {:ok, token} = Token.for_team(team_id)
+  def headers(integration) do
+    {:ok, token} = Token.for_integration(integration)
     [Authorization: "Bearer #{token}"]
   end
 
@@ -361,15 +330,11 @@ defmodule StitchIntegrations.DrChrono do
     end
   end
 
-  def init_integration(team_id, code) do
-    Logger.info("[dr-chrono] [team-#{team_id}] Initialize integration.")
+  def init_integration(integration, code) do
+    Logger.info("[dr-chrono] [integration-#{integration.id}] Authenticating with drchrono.")
 
-    {:ok, response_values} = Token.get_access_token(code)
-    Logger.info("[dr-chrono] [team-#{team_id}] Got access token from API.")
-
-    {:ok, integration} = insert_or_update_integration(team_id, response_values)
-
-    Logger.info("[dr-chrono] [team-#{team_id}] Created Integration settings in DB.")
+    {:ok, _credentials} = Token.create_access_token(integration, code)
+    Logger.info("[dr-chrono] [integration-#{integration.id}] Authenticated successfully.")
 
     :ok
   end
