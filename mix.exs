@@ -4,7 +4,7 @@ defmodule StitchUmbrella.Mixfile do
   def project do
     [
       apps_path: "apps",
-      start_permanent: Mix.env == :prod,
+      start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
   end
@@ -24,7 +24,7 @@ defmodule StitchUmbrella.Mixfile do
   defp deps do
     [
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-      {:appsignal, "~> 1.3"}
+      {:appsignal, "~> 1.5"}
     ]
   end
 end
