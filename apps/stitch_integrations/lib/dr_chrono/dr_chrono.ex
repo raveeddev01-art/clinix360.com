@@ -318,41 +318,4 @@ defmodule StitchIntegrations.DrChrono do
 
     :ok
   end
-
-  def insert_or_update_integration(team_id, settings) do
-    result =
-      case Repo.get_by(Integration, team_id: team_id, name: "drchrono") do
-        nil ->
-          webhook_token =
-            :crypto.strong_rand_bytes(36) |> Base.url_encode64() |> binary_part(0, 36)
-
-          %Integration{}
-          |> Integration.changeset(%{
-            team_id: team_id,
-            name: "drchrono",
-            settings: settings,
-            enabled: true,
-            webhook_token: webhook_token
-          })
-          |> Repo.insert_or_update()
-
-        integration ->
-          integration
-          |> Integration.changeset(%{
-            team_id: team_id,
-            name: "drchrono",
-            settings: settings,
-            enabled: true
-          })
-          |> Repo.insert_or_update()
-      end
-
-    case result do
-      {:ok, integration} ->
-        {:ok, integration}
-
-      {:error, changeset} ->
-        {:error, "Couldn't update integration settings"}
-    end
-  end
 end
