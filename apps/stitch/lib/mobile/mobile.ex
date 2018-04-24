@@ -37,6 +37,7 @@ defmodule Stitch.Mobile do
     |> where(user_id: ^user.id)
     |> select([gu], sum(gu.mentions_count))
     |> Stitch.Repo.one()
+    |> Kernel.||(0)
   end
 
   def room_notification_count(
