@@ -5,26 +5,6 @@ defmodule StitchIntegrations.DrChrono do
   import Ecto.Query
   require Logger
 
-  def enabled_groups(team_id, event_name) do
-    team = Stitch.Repo.get(Stitch.Team, team_id)
-
-    query =
-      from(
-        i in Integration,
-        where: i.team_id == ^team_id,
-        where: i.name == "drchrono",
-        where: i.enabled == true,
-        preload: [integration_configs: :group]
-      )
-
-    integration = Stitch.Repo.one(query)
-
-    Enum.filter(integration.integration_configs, fn config ->
-      config.settings[event_name] == true
-    end)
-    |> Enum.map(& &1.group)
-  end
-
   defp value_or_na(nil), do: "N/A"
 
   defp value_or_na(value) do
