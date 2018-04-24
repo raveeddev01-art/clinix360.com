@@ -8,6 +8,10 @@ defmodule Stitch.Task do
   end
 
   def async_stream(coll, fun, opts \\ []) do
-    Task.async_stream(coll, fun, opts)
+    if Application.get_env(:stitch, :async_tasks?, true) do
+      Task.start(fun)
+    else
+      Enum.map(coll, fun)
+    end
   end
 end
