@@ -7,7 +7,7 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import CreateDMModal from "./modals/create-dm-modal";
 import Room from "../room";
 
-@inject("userStore")
+@inject("userStore", "sidemenuStore")
 @observer
 class PeopleList extends Component {
   constructor(props) {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
 
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
@@ -8,35 +9,24 @@ import { isFullMember } from "lib/utils";
 import Room from "../room";
 import RoomsModal from "./modals/rooms_modal";
 
+@inject("sidemenuStore")
+@observer
 class RoomsList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      modal: ""
-    };
-  }
-
   showRoomsListModal = () => {
-    this.setState({
-      modal: "list"
-    });
+    this.props.sidemenuStore.setModal("search");
   };
 
   showRoomCreateModal = () => {
-    this.setState({
-      modal: "create"
-    });
+    this.props.sidemenuStore.setModal("create");
   };
 
   closeModal = () => {
-    this.setState({
-      modal: ""
-    });
+    this.props.sidemenuStore.closeModal();
   };
 
   render() {
     const { heading, rooms } = this.props;
+    window.wat = this.showRoomsListModal;
 
     return (
       <div className="menu-nav m-b-20">
@@ -73,7 +63,7 @@ class RoomsList extends Component {
         {rooms.map(room => <Room key={`room-${room.id}`} room={room} />)}
 
         <RoomsModal
-          state={this.state.modal}
+          state={this.props.sidemenuStore.currentModal}
           showRoomsListModal={this.showRoomsListModal}
           showRoomCreateModal={this.showRoomCreateModal}
           closeModal={this.closeModal}

@@ -57,6 +57,18 @@ class RoomsModal extends Component {
     });
   };
 
+  allRooms() {
+    const { groupsStore } = this.props;
+    const { filter } = this.state;
+
+    return groupsStore.groups.filter(room =>
+      groupsStore
+        .getGroupName(room)
+        .toLowerCase()
+        .startsWith(filter.toLowerCase())
+    );
+  }
+
   filterRooms() {
     const { groupsStore } = this.props;
     const { filter } = this.state;
@@ -136,6 +148,7 @@ class RoomsModal extends Component {
     return (
       <Modal.Header>
         <Modal.Title>
+          {state === "search" && "Go To Rooms"}
           {state === "list" && "Browse Rooms"}
           {state === "create" && "Create Room"}
         </Modal.Title>
@@ -201,6 +214,39 @@ class RoomsModal extends Component {
                 </Button>
               </div>
             )}
+        </div>
+      </Modal.Body>
+    );
+  }
+
+  renderGoToModal() {
+    const { closeModal } = this.props;
+    const allRooms = this.allRooms();
+
+    console.log("allRooms", allRooms);
+
+    return (
+      <Modal.Body>
+        <div className="rooms-filter">
+          <input
+            type="text"
+            className="form-control input-lg"
+            placeholder="Go To Room"
+            onChange={this.handleChange}
+          />
+        </div>
+
+        <div className="rooms-filter-result">
+          {allRooms[0] && (
+            <div className="rooms-list">
+              <h5 className="rooms-list-heading">Jump to Room:</h5>
+              <div className="rooms-list-content">
+                {allRooms.map(room => (
+                  <RoomItem key={room.id} room={room} closeModal={closeModal} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </Modal.Body>
     );
@@ -333,6 +379,7 @@ class RoomsModal extends Component {
       >
         {this.renderModalHeader()}
         {state === "list" && this.renderRoomsListModal()}
+        {state === "search" && this.renderGoToModal()}
         {state === "create" && this.renderRoomCreateModal()}
         {state === "create" && this.renderModalFooter()}
       </Modal>
