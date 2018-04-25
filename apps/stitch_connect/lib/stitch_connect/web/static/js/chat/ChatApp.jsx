@@ -28,8 +28,14 @@ class ChatApp extends Component {
     sidemenuStore.isInChat = true;
   }
 
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyboardShortcuts);
+  }
+
   componentWillUnmount() {
     const { groupsStore, sidemenuStore } = this.props;
+
+    document.removeEventListener("keydown", this.handleKeyboardShortcuts);
 
     groupsStore.onClosedGroup();
     sidemenuStore.isInChat = false;
@@ -63,6 +69,14 @@ class ChatApp extends Component {
     const { uploadStore } = this.props;
 
     uploadStore.dropzoneRef = ref;
+  };
+
+  handleKeyboardShortcuts = ({ charCode, keyCode, metaKey }) => {
+    const code = charCode || keyCode;
+    const hitK = code === 75;
+    if (hitK && metaKey) {
+      this.props.sidemenuStore.setModal("search");
+    }
   };
 
   render() {

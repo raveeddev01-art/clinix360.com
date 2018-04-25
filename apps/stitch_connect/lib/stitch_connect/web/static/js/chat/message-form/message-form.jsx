@@ -15,7 +15,13 @@ import EditingCommand from "./components/editing-command";
 import MentionMenu from "./components/mention-menu";
 import EmojiSearch from "./components/emoji-search";
 
-@inject("messageStore", "socketStore", "uploadStore", "billingStore")
+@inject(
+  "messageStore",
+  "socketStore",
+  "uploadStore",
+  "billingStore",
+  "sidemenuStore"
+)
 @observer
 class MessageForm extends Component {
   constructor(props) {
@@ -31,7 +37,10 @@ class MessageForm extends Component {
   }
 
   componentWillReceiveProps() {
-    this.textInput.focus();
+    // if a modal is open, don't steal focus from it
+    if (!this.props.sidemenuStore.currentModal) {
+      this.textInput.focus();
+    }
   }
 
   onTextChange = evt => {
