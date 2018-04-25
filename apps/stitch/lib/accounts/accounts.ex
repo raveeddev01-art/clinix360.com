@@ -94,33 +94,6 @@ defmodule Stitch.Accounts do
     end
   end
 
-  @doc """
-  Create a new user with the onboarding attributes
-  and sets the user's onboarded attribute to true.
-
-  ## Examples
-
-      attrs = %{
-        email: "sergio@gmail.com",
-        fullname: "Sergio Tapia",
-        username: "sergiotapia",
-        password: "Password123!",
-        pin: "0000",
-        roles: ["admin"],
-        team_id: 1
-      }
-      Stitch.Accounts.create_and_complete_user_onboarding(attrs)
-
-  """
-  def create_and_complete_user_onboarding(attrs) do
-    {email, attrs} = Map.pop(attrs, :email)
-
-    case create_user_with_email_only(email) do
-      %User{} = user -> update_and_complete_user_onboarding(user.id, attrs)
-      {:error, reason} -> {:error, reason}
-    end
-  end
-
   def update_profile_image(user_id, url) do
     User
     |> Repo.get(user_id)
