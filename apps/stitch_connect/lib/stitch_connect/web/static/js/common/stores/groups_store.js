@@ -273,6 +273,43 @@ class GroupsStore {
     sidemenuStore.updateFavicon();
   };
 
+  // DM group open/create steps
+  // 1. Calculate slug from members selected
+  // 2. Find if dm group already exists
+  //  2.1. If exists,
+  //   2.1.1. If hidden, unhide
+  //   2.1.2. If not hidden, do nothing
+  //  2.2. If not, create
+  // 3. Navigate to the dm created
+  @action
+  goToDM = userIds => {
+    const slug = getSlugOfDMGroupByUsers(userIds);
+    const group = this.getGroupBySlug(slug);
+
+    let promise;
+
+    if (!group) {
+      const parseResponseAndAddGroup = response => {
+        const groupFromApi = response.data;
+        this.onCreatedGroup(groupFromApi);
+        return groupFromApi;
+      };
+
+      // Create
+      promise = this.createDMGroup(userIds).then(parseResponseAndAddGroup);
+    } else if (group.is_hidden) {
+      // Unhide
+      promise = this.unhideGroup(group.id).then(() => group);
+    } else {
+      // Do nothing
+      promise = Promise.resolve(group);
+    }
+
+    promise.then(groupCreated => {
+      history.push(getGroupUrl(groupCreated));
+    });
+  };
+
   @action
   openGroup = slug => {
     const group = this.getGroupBySlug(slug);
