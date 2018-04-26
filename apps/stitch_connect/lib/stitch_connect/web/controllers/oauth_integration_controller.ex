@@ -1,6 +1,6 @@
 defmodule StitchConnect.Web.OAuthIntegrationController do
   use StitchConnect.Web, :controller
-  alias StitchIntegrations.DrChrono
+  alias Stitch.Drchrono
   alias Stitch.{Accounts.User, Team, Integration, IntegrationQueries}
 
   def provider_response(conn, %{
@@ -13,7 +13,7 @@ defmodule StitchConnect.Web.OAuthIntegrationController do
          %Team{} = team <- Stitch.TeamQueries.get_by_id(user.team_id),
          {:exists?, %Integration{} = integration} <-
            {:exists?, IntegrationQueries.find_by_webhook_token(webhook_token)},
-         {:initialized?, :ok} <- {:initialized?, DrChrono.init_integration(integration, code)} do
+         {:initialized?, :ok} <- {:initialized?, Drchrono.init_integration(integration, code)} do
       subdomain_struct = StitchConnect.Web.PageService.subdomain_url_struct(team.slug)
 
       url =
