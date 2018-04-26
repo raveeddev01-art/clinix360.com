@@ -179,6 +179,23 @@ defmodule Stitch.Accounts.User do
     |> put_change(:onboarded, true)
   end
 
+  def timezone_changeset(struct, params) do
+    struct
+    |> cast(params, [:timezone])
+    |> validate_timezone()
+  end
+
+  def validate_timezone(%{valid?: true, changes: %{timezone: timezone}} = changeset) do
+    case timezone do
+      %{"tz" => tz, "tz_label" => tz_label, "tz_offset" => tz_offset}
+        when is_binary(tz) and is_binary(tz_label) and is_integer(tz_offset) ->
+          changeset
+      _ ->
+        add_error(changeset, :timezone, "Invalid timezone format")
+    end
+  end
+  def validate_timezone(changeset), do: changeset
+
   defp ensure_role(%Ecto.Changeset{} = changeset) do
     roles = get_field(changeset, :roles) || []
 
@@ -279,6 +296,19 @@ defmodule Stitch.Accounts.User do
   @spec guest?(User.t()) :: boolean
   def guest?(%User{roles: [role]}) when role in @guest_roles, do: true
   def guest?(%User{}), do: false
+
+  @doc """
+  Updates user's timezone. The timezone should have the following format:
+    %{ "tz" : "America/Los_Angeles"
+       "tz_label" : "Pacific Daylight Time"
+       "tz_offset" : -25200 } # offset in seconds
+  """
+  @spec update_timezone(User.t(), map) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def update_timezone(%User{} = user, timezone) do
+    user
+    |> timezone_changeset(%{"timezone" => timezone})
+    |> Repo.update
+  end
 
   @doc """
   If the user has not uploaded an avatar, get a cached or new presigned URL for the user.

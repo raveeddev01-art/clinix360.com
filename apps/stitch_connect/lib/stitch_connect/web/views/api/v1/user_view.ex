@@ -61,7 +61,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       grey_avatar: User.grey_avatar(user),
       onboarded: user.onboarded,
       disabled: user.disabled,
-      groups_as_guest: user.groups_as_guest
+      groups_as_guest: user.groups_as_guest,
+      timezone: user.timezone
     }
   end
 
