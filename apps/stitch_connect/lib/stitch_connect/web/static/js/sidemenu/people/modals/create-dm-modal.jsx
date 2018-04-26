@@ -1,17 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { observer, inject } from "mobx-react";
-import { withRouter } from "react-router-dom";
 import Modal from "react-bootstrap/lib/Modal";
 import Button from "react-bootstrap/lib/Button";
 import { TeamList } from "common/components";
 
-import {
-  isFullMember,
-  getGroupUserIdsThatHasCurrentUser,
-  getSlugOfDMGroupByUsers,
-  getGroupUrl
-} from "lib/utils";
+import { isFullMember, getGroupUserIdsThatHasCurrentUser } from "lib/utils";
 
 @inject("usersStore", "presenceStore", "groupsStore")
 @observer
@@ -42,48 +36,14 @@ class CreateDMModal extends Component {
   };
 
   createDM = () => {
-    const { groupsStore, history, toggle } = this.props;
+    const { groupsStore, toggle } = this.props;
     const { members } = this.state;
-
-    // DM group open/create steps
-    // 1. Calculate slug from members selected
-    // 2. Find if dm group already exists
-    //  2.1. If exists,
-    //   2.1.1. If hidden, unhide
-    //   2.1.2. If not hidden, do nothing
-    //  2.2. If not, create
-    // 3. Navigate to the dm created
 
     const userIds = getGroupUserIdsThatHasCurrentUser(
       members.split(",").map(id => ({ id: id * 1 }))
     );
-    const slug = getSlugOfDMGroupByUsers(userIds);
-    const group = groupsStore.getGroupBySlug(slug);
 
-    let promise;
-
-    if (!group) {
-      const parseResponseAndAddGroup = response => {
-        const groupFromApi = response.data;
-        groupsStore.onCreatedGroup(groupFromApi);
-        return groupFromApi;
-      };
-
-      // Create
-      promise = groupsStore
-        .createDMGroup(userIds)
-        .then(parseResponseAndAddGroup);
-    } else if (group.is_hidden) {
-      // Unhide
-      promise = groupsStore.unhideGroup(group.id).then(() => group);
-    } else {
-      // Do nothing
-      promise = Promise.resolve(group);
-    }
-
-    promise.then(groupCreated => {
-      history.push(getGroupUrl(groupCreated));
-    });
+    groupsStore.goToDM(userIds);
 
     toggle();
   };
@@ -157,8 +117,7 @@ class CreateDMModal extends Component {
 
 CreateDMModal.propTypes = {
   show: PropTypes.bool.isRequired,
-  toggle: PropTypes.func.isRequired,
-  history: PropTypes.any.isRequired
+  toggle: PropTypes.func.isRequired
 };
 
 CreateDMModal.defaultProp = {
@@ -166,4 +125,4 @@ CreateDMModal.defaultProp = {
   toggle: () => {}
 };
 
-export default withRouter(CreateDMModal);
+export default CreateDMModal;

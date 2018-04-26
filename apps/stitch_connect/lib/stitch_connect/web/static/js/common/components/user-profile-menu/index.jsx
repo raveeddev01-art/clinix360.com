@@ -1,19 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router-dom";
 import Dropdown from "react-bootstrap/lib/Dropdown";
 import MenuItem from "react-bootstrap/lib/MenuItem";
 import { Avatar, SmartDropdown, PortalDropdownMenu } from "common/components";
 
-@inject("addonStore")
+@inject("addonStore", "groupsStore")
 @observer
 class UserProfileMenu extends Component {
   goToDirectMessaging = () => {
-    const { history, user } = this.props;
-    const { username } = user;
+    const { groupsStore, user } = this.props;
+    const { id } = user;
 
-    history.push(`/direct/${username}`);
+    const dmUserIds = [id, currentUser.id];
+    groupsStore.goToDM(dmUserIds);
   };
 
   _toggleAddonMenu = () => {
@@ -68,4 +68,4 @@ UserProfileMenu.defaultProps = {
   className: ""
 };
 
-export default withRouter(UserProfileMenu);
+export default UserProfileMenu;
