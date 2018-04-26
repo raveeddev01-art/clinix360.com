@@ -89,6 +89,7 @@ class TeamInfoCard extends Component {
   }
 
   onNext = () => {
+    event.preventDefault();
     return this.props.onNext({
       teamEhr: this.state.teamEhr,
       teamSize: this.state.teamSize,
