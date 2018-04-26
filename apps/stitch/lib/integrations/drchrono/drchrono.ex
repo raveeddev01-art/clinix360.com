@@ -1,6 +1,6 @@
-defmodule StitchIntegrations.DrChrono do
+defmodule Stitch.Drchrono do
   alias Stitch.{Accounts.User, Integration, Message}
-  alias StitchIntegrations.DrChrono.{Bot, Token}
+  alias Stitch.Drchrono.{Bot, Token}
   alias Stitch.Repo
   import Ecto.Query
   require Logger

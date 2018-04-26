@@ -1,4 +1,4 @@
-defmodule StitchIntegrations.DrChrono.Bot do
+defmodule Stitch.Drchrono.Bot do
   import Ecto.Query
   alias Stitch.{Accounts.User, Message}
   alias Stitch.Repo
