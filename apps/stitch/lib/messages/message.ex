@@ -153,7 +153,6 @@ defmodule Stitch.Message do
   def create(group_id, user, %{"type" => type} = attrs, presence_user_ids)
       when type in ["chat", "upload"] do
     group = GroupQueries.get_by_id(group_id)
-    group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
     mentioned_user_ids =
@@ -207,11 +206,7 @@ defmodule Stitch.Message do
         increment_unread_counter(group.id, recipients),
         []
       )
-      |> mark_as_read_on_creation(
-        group.id,
-        user.id,
-        group_user.last_read_at || group_user.inserted_at
-      )
+      |> mark_as_read_on_creation(group.id, user.id)
       |> Repo.transaction()
 
     case result do
@@ -225,8 +220,7 @@ defmodule Stitch.Message do
 
         {:ok, Map.put(result_map, :notify_user_ids, notify_user_ids)}
 
-      {:error, _} ->
-        result
+      error -> error
     end
   end
 
@@ -271,7 +265,7 @@ defmodule Stitch.Message do
     |> Repo.transaction()
   end
 
-  def mark_as_read_on_creation(multi, group_id, user_id, last_read_at) do
+  def mark_as_read_on_creation(multi, group_id, user_id) do
     multi
     |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [])
     |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [])

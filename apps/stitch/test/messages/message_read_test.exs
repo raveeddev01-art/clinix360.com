@@ -62,17 +62,10 @@ defmodule Stitch.MessageReadingTest do
   end
 
   describe "&Message.create/3" do
-    test "marks existing messages in the group as read when within the unread limit", %{bob: bob, alice: alice, group: group} do
+    test "marks existing messages in the group as read on message creation", %{bob: bob, alice: alice, group: group} do
       {:ok, %{message: message1}} = Message.create(group.id, alice, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       {:ok, %{message: _message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
       refute Repo.get(Message, message1.id).read_status[to_string(bob.id)] == nil
-    end
-
-    test "doesn't mark existing messages in the group as read if the unread limit is excedeed", %{bob: bob, alice: alice, group: group} do
-      messages = 1..30 |> Enum.map(fn _ -> [user_id: alice.id, group_id: group.id, text_content: "Lorem ipsum", type: "chat", read_status: %{bob.id => nil}, inserted_at: NaiveDateTime.utc_now, updated_at: NaiveDateTime.utc_now] end)
-      {30, [message1|_]} = Repo.insert_all(Message, messages, returning: true)
-      {:ok, %{message: _message2}} = Message.create(group.id, bob, %{"text_content" => "Lorem ipsum", "type" => "chat"})
-      assert Repo.get(Message, message1.id).read_status[to_string(bob.id)] == nil
     end
   end
 

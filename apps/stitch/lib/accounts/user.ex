@@ -299,8 +299,12 @@ defmodule Stitch.Accounts.User do
   end
 
   defp has_default_image(user) do
-    # Default images look like this: https://s3.amazonaws.com/stitch-content/ST.png
-    # We check if the image name length ST.png is equal to 6.
-    String.split(user.profile_image_url, "/") |> List.last() |> String.length() == 6
+    if user.profile_image_url do
+      # Default images look like this: https://s3.amazonaws.com/stitch-content/ST.png
+      # We check if the image name length ST.png is equal to 6.
+      String.split(user.profile_image_url, "/") |> List.last() |> String.length() == 6
+    else
+      false
+    end
   end
 end

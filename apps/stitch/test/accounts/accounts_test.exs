@@ -29,15 +29,15 @@ defmodule Stitch.AccountsTest do
       team = insert(:team)
       user = insert(:user, %{email: "sergio@email.com", onboarded: false})
       attrs = %{
-        fullname: "Sergio Tapia",
-        first_name: "Sergio",
-        last_name: "Tapia",
-        username: "sergiotapia",
-        password: "Password123!",
-        phone_number: "1231231234",
-        pin: "0000",
-        roles: ["admin"],
-        team_id: team.id
+        "fullname" => "Sergio Tapia",
+        "first_name" => "Sergio",
+        "last_name" => "Tapia",
+        "username" => "sergiotapia",
+        "password" => "Password123!",
+        "phone_number" => "1231231234",
+        "pin" => "0000",
+        "roles" => ["admin"],
+        "team_id" => team.id
       }
 
       user = Accounts.update_and_complete_user_onboarding(user.id, attrs)
@@ -47,27 +47,6 @@ defmodule Stitch.AccountsTest do
         name: "__dm_group__",
         slug: "__dm:#{user.id}.#{user.id}"
       }
-    end
-  end
-
-  describe "Accounts.create_and_complete_user_onboarding/1" do
-    test "it onboards the user and sets the admin role for his new team" do
-      team = insert(:team)
-      attrs = %{
-        email: "sergio@gmail.com",
-        fullname: "Sergio Tapia",
-        first_name: "Sergio",
-        last_name: "Tapia",
-        username: "sergiotapia3",
-        password: "Password123!",
-        phone_number: "1231231234",
-        pin: "0000",
-        roles: ["admin"],
-        team_id: team.id
-      }
-      user = Accounts.create_and_complete_user_onboarding(attrs)
-      assert user.team_id == team.id
-      assert user.roles == ["admin"]
     end
   end
 

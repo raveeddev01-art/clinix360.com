@@ -83,7 +83,7 @@ defmodule StitchConnect.Web.GroupController.TogglePublicTest do
     test "gives error for non-existent rooms", %{conn: conn} do
       conn = post(conn, api_v1_group_path(conn, :toggle_public, -1), %{"public" => false})
       assert response = json_response(conn, :not_found)
-      assert response["errors"] =~ "does not exist"
+      assert response["message"] =~ "does not exist"
     end
 
     test "restricts guests from modifying privacy settings", %{conn: base_conn, team: team} do
