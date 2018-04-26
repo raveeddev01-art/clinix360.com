@@ -35,6 +35,7 @@ ADD mix.lock mix.lock
 ADD apps/stitch_connect/mix.exs apps/stitch_connect/mix.exs
 ADD apps/stitch/mix.exs apps/stitch/mix.exs
 RUN mix deps.get
+RUN rm -rf _build/prod
 RUN mix compile
 
 ADD apps/stitch_connect/package.json apps/stitch_connect/package.json
