@@ -47,24 +47,26 @@ defmodule Stitch.Accounts.User do
 
   def changeset(%User{} = struct, attrs) do
     struct
-    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username])
+    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username, :timezone])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> valid_email_changeset(attrs)
     |> validate_required([:first_name, :last_name])
     |> default_profile_image_changeset(attrs)
     |> update_change(:email, &String.trim/1)
+    |> validate_timezone()
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
   end
 
   def changeset_without_email(%User{} = struct, attrs) do
     struct
-    |> cast(attrs, [:first_name, :last_name, :pin, :phone_number, :title, :username])
+    |> cast(attrs, [:first_name, :last_name, :pin, :phone_number, :title, :username, :timezone])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> validate_required([:first_name, :last_name])
     |> default_profile_image_changeset(attrs)
+    |> validate_timezone()
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
   end
