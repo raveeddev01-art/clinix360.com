@@ -1,84 +1,81 @@
 defmodule Stitch.Message.ParserTest do
   use ExUnit.Case, async: true
-  alias Stitch.Message.Parser.Lexer
+  alias Stitch.Message.Parser
 
   test "mention" do
     input = "Hi, <@U1234567>."
-    res = Lexer.new(input) |> Lexer.next
-    assert ["<@U1234567>"] == read_meta(input, res)
-  end
-
-  def read_meta(input, res) do
-    for t <- res.tokens, do: String.slice(input, t.start, t.end - t.start)
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [%{token: "<@U1234567>", text: "1234567"}]
   end
 
   test "mention inside emphasis" do
     input = "Hi, *<@U1234567>*."
-    res = Lexer.new(input) |> Lexer.next
-    assert ["*<@U1234567>*", "<@U1234567>"] == read_meta(input, res)
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [
+      %{text: "<@U1234567>", token: "*<@U1234567>*"},
+      %{text: "1234567", token: "<@U1234567>"}
+    ]
   end
 
   test "emphasis, italic, strikethrough" do
     input = "*emphasis*, _italic_, ~strikethrough~"
-
-    res = Lexer.new(input) |> Lexer.next
-
-    map =
-      for t <- res.tokens, into: %{} do
-        {t.type, String.slice(input, t.start, t.end - t.start)}
-      end
-
-    assert map[:emphasis] == "*emphasis*"
-    assert map[:italic] == "_italic_"
-    assert map[:strikethrough] == "~strikethrough~"
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [
+      %{text: "strikethrough", token: "~strikethrough~"},
+      %{text: "italic", token: "_italic_"},
+      %{text: "emphasis", token: "*emphasis*"}
+    ]
   end
 
   test "code" do
     input = "`code`"
-
-    res = Lexer.new(input) |> Lexer.next
-
-    map =
-      for t <- res.tokens, into: %{} do
-        {t.type, String.slice(input, t.start, t.end - t.start)}
-      end
-
-    assert map[:code] == "`code`"
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [%{text: "code", token: "`code`"}]
   end
 
   test "here mention" do
     input = "Test <@Ghere> *mention*"
-    res = Lexer.new(input) |> Lexer.next
-    assert {:emphasis, "*mention*"} = get_tag(input, res.tokens, 0)
-    assert {:here_mention, "<@Ghere>"} = get_tag(input, res.tokens, 1)
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [
+      %{text: "mention", token: "*mention*"},
+      %{text: "here", token: "<@Ghere>"}
+    ]
   end
 
   test "room mention" do
     input = "Test <@Groom> *mention*"
-    res = Lexer.new(input) |> Lexer.next
-    assert {:emphasis, "*mention*"} = get_tag(input, res.tokens, 0)
-    assert {:room_mention, "<@Groom>"} = get_tag(input, res.tokens, 1)
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [
+      %{text: "mention", token: "*mention*"},
+      %{text: "room", token: "<@Groom>"}
+    ]
   end
 
   test "everyone mention" do
     input = "Test <@Geveryone> *mention*"
-    res = Lexer.new(input) |> Lexer.next
-    assert {:emphasis, "*mention*"} = get_tag(input, res.tokens, 0)
-    assert {:everyone_mention, "<@Geveryone>"} = get_tag(input, res.tokens, 1)
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [
+      %{text: "mention", token: "*mention*"},
+      %{text: "everyone", token: "<@Geveryone>"}
+    ]
   end
 
   test "link" do
     input = "Test https://google.com?query=q http://github.com `test`"
-    res = Lexer.new(input) |> Lexer.next
-    assert {:code, "`test`"} = get_tag(input, res.tokens, 0)
-    assert {:link, "http://github.com"} = get_tag(input, res.tokens, 1)
-    assert {:link, "https://google.com?query=q"} = get_tag(input, res.tokens, 2)
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [
+      %{text: "test", token: "`test`"},
+      %{text: "http://github.com", token: "http://github.com"},
+      %{text: "https://google.com?query=q", token: "https://google.com?query=q"}
+    ]
   end
 
   test "code takes precedence over other tags" do
     input = "`*Test* https://google.com?query=q`"
-    res = Lexer.new(input) |> Lexer.next
-    assert {:code, "`*Test* https://google.com?query=q`"} = get_tag(input, res.tokens, 0)
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [
+      %{text: "*Test* https://google.com?query=q", token: "`*Test* https://google.com?query=q`"}
+    ]
   end
 
   test "code block takes precedence over code" do
@@ -87,8 +84,11 @@ defmodule Stitch.Message.ParserTest do
     `*Test* https://google.com?query=q`
     ```
     """
-    res = Lexer.new(input) |> Lexer.next
-    assert {:code_block, "```\n`*Test* https://google.com?query=q`\n```"} = get_tag(input, res.tokens, 0)
+
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [
+      %{text: "\n`*Test* https://google.com?query=q`\n", token: "```\n`*Test* https://google.com?query=q`\n```"}
+    ]
   end
 
   test "blockquote can contain other tags" do
@@ -97,12 +97,19 @@ defmodule Stitch.Message.ParserTest do
     > `*Test* https://google.com?query=q`
     """
 
-    res = Lexer.new(input) |> Lexer.next
-    assert {:blockquote, "> `*Test* https://google.com?query=q`\n"} = get_tag(input, res.tokens, 0)
+    meta = Parser.get_meta(input)
+    assert read_meta(input, meta) == [
+      %{text: "`*Test* https://google.com?query=q`\n", token: "> `*Test* https://google.com?query=q`\n"},
+      %{text: "*Test* https://google.com?query=q", token: "`*Test* https://google.com?query=q`"}
+    ]
   end
 
-  defp get_tag(input, tokens, index) do
-    token = Enum.at(tokens, index)
-    {token.type, String.slice(input, token.start, token.end - token.start)}
+  defp read_meta(input, tokens) do
+    for %{token: [token_start, token_end], text: [text_start, text_end]} <- tokens do
+      %{
+        token: String.slice(input, token_start, token_end - token_start),
+        text: String.slice(input, text_start, text_end - text_start),
+      }
+    end
   end
 end

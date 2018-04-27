@@ -7,7 +7,27 @@ defmodule Stitch.Message.Parser.Lexer do
     string
     |> new()
     |> next()
+    |> format_tokens()
   end
+
+  def format_tokens(%{tokens: tokens}) do
+    Enum.map(tokens, fn token ->
+      %{
+        type: token.type,
+        token: [token.start, token.end],
+        text: text_coords(token)
+      }
+    end)
+  end
+
+  def text_coords(%{type: :code_block} = token), do: [token.start + 3, token.end - 3]
+  def text_coords(%{type: :mention} = token), do: [token.start + 3, token.end - 1]
+  def text_coords(%{type: :room_mention} = token), do: [token.start + 3, token.end - 1]
+  def text_coords(%{type: :here_mention} = token), do: [token.start + 3, token.end - 1]
+  def text_coords(%{type: :everyone_mention} = token), do: [token.start + 3, token.end - 1]
+  def text_coords(%{type: :blockquote} = token), do: [token.start + 2, token.end]
+  def text_coords(%{type: :link} = token), do: [token.start, token.end]
+  def text_coords(token), do: [token.start + 1, token.end - 1]
 
   def new(input) do
     %Lexer{input: input}

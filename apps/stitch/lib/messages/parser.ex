@@ -6,7 +6,7 @@ defmodule Stitch.Message.Parser do
   @decorate transaction_event(:background_job)
   def get_meta(string) do
     try do
-      Lexer.run(string).tokens
+      Lexer.run(string)
     rescue
       error ->
         Logger.error("[#{__MODULE__}] #{inspect(error)}")
