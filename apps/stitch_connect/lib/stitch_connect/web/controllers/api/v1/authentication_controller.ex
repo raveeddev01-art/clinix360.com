@@ -5,7 +5,7 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
   alias Stitch.Accounts.{Email, User, PasswordResetToken}
   alias StitchConnect.Web.Api.V1.{AuthenticationView, UserView}
   alias StitchConnect.Web.{EventsChannel}
-  action_fallback StitchConnect.Web.Api.FallbackController
+  action_fallback(StitchConnect.Web.Api.FallbackController)
 
   def submit_login(conn, %{"email" => email, "password" => password}) do
     team = conn.assigns.team
@@ -18,9 +18,11 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
         {:error, :not_authorized, "This account is disabled - contact your team admin."}
 
       user ->
+        path = get_session(conn, :redirect_url) || "/apps"
+
         conn
         |> login_user(user)
-        |> render(UserView, "login.json", user: user)
+        |> render(UserView, "login.json", %{user: user, redirect_url: path})
     end
   end
 
@@ -33,15 +35,19 @@ defmodule StitchConnect.Web.Api.V1.AuthenticationController do
       Email.reset_password_email(user, reset_link)
       conn |> json(%{status: "ok"})
     else
-      {:user, nil} -> {:error, :not_authorized, "User is not part of the team or email does not exist"}
-      {:error, changeset} -> {:error, changeset}
+      {:user, nil} ->
+        {:error, :not_authorized, "User is not part of the team or email does not exist"}
+
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 
   def reset_password(conn, %{"token" => token, "password" => password}) do
     team = conn.assigns.team
 
-    with {:token, %PasswordResetToken{} = token} <- {:token, PasswordResetToken.get_valid_token(token)},
+    with {:token, %PasswordResetToken{} = token} <-
+           {:token, PasswordResetToken.get_valid_token(token)},
          {:team_member?, true} <- {:team_member?, token.user.team_id == team.id},
          {:ok, %{user: user}} <- Authentication.reset_password(token.user, password) do
       EventsChannel.broadcast_logout_from_all_sessions(user)
