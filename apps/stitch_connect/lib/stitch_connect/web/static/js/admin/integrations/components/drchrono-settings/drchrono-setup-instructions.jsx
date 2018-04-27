@@ -35,6 +35,18 @@ class DrChronoSetupInstructions extends Component {
           </h3>
           <div className="integration-instructions__step__content col-md-10">
             <p>
+              Click New Integration, and set your redirect URL. Then hit save.
+            </p>
+            <img src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-2a.png" />
+          </div>
+        </div>
+
+        <div className="integration-instructions__step row">
+          <h3 className="integration-instructions__step__header col-md-2">
+            Step 3
+          </h3>
+          <div className="integration-instructions__step__content col-md-10">
+            <p>
               Set a name for your application and copy your Client ID and Client
               Secret values into Stitch (scroll down). Make sure your oauth
               redirect URI is set properly. Click on Save Changes.
@@ -45,7 +57,7 @@ class DrChronoSetupInstructions extends Component {
 
         <div className="integration-instructions__step row">
           <h3 className="integration-instructions__step__header col-md-2">
-            Step 3
+            Step 4
           </h3>
           <div className="integration-instructions__step__content col-md-10">
             <p>
@@ -66,7 +78,7 @@ class DrChronoSetupInstructions extends Component {
 
         <div className="integration-instructions__step row">
           <h3 className="integration-instructions__step__header col-md-2">
-            Step 4
+            Step 5
           </h3>
           <div className="integration-instructions__step__content col-md-10">
             <p>
