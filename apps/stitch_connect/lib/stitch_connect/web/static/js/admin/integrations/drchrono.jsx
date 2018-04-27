@@ -56,6 +56,25 @@ class DrChronoPage extends Component {
         <Panel.Body>
           <Panel>
             <Panel.Heading className="configurations-panel__heading">
+              <h3>Information</h3>
+            </Panel.Heading>
+
+            <Panel.Body className="configurations-panel__body">
+              <p>
+                drchrono EHR is an all-in-one EHR that seamlessly integrates
+                patient scheduling, clinical workflow and medical billing. With
+                our state-of-the art EHR system, you enter patient information
+                only once and data gets automatically passed to clinical
+                charting, e-prescription, lab orders, and medical billing
+                minimizing multiple data entries and data entry errors.
+              </p>
+            </Panel.Body>
+          </Panel>
+        </Panel.Body>
+
+        <Panel.Body>
+          <Panel>
+            <Panel.Heading className="configurations-panel__heading">
               <h3>Configurations</h3>
             </Panel.Heading>
 
