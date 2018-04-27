@@ -19,10 +19,10 @@ class Sidebar extends Component {
     };
   }
 
-  _isSelected(path) {
+  _isSelected(path, exact = true) {
     const { location } = this.props;
 
-    return matchPath(location.pathname, { path, exact: true }) != null;
+    return matchPath(location.pathname, { path, exact }) != null;
   }
 
   _adminTeamsOptions = () => {
@@ -72,7 +72,9 @@ class Sidebar extends Component {
               Integrations <i className="fa fa-external-link sm" />
             </ListGroupItem>
           ) : (
-            <ListGroupItem active={this._isSelected("/admin/integrations")}>
+            <ListGroupItem
+              active={this._isSelected("/admin/integrations", false)}
+            >
               <Link to="/admin/integrations">
                 <i className="fa fa-database" />
                 <span>Integrations</span>
