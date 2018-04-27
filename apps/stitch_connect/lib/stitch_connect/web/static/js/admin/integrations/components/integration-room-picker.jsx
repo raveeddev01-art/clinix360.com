@@ -19,7 +19,7 @@ class IntegrationRoomPicker extends Component {
     super(props);
 
     this.state = {
-      groupId: null
+      groupId: this.props.groupsStore.regularGroups[0].id
     };
   }
 
