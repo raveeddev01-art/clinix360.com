@@ -74,33 +74,36 @@ class DrChronoPage extends Component {
           </Panel>
         </Panel.Body>
 
-        <Panel.Body>
-          <Panel>
-            <Panel.Heading className="configurations-panel__heading">
-              <h3>Configurations</h3>
-            </Panel.Heading>
+        {this.props.integrationStore.forApp("drchrono").length > 0 && (
+          <Panel.Body>
+            <Panel>
+              <Panel.Heading className="configurations-panel__heading">
+                <h3>Configurations</h3>
+              </Panel.Heading>
 
-            <Panel.Body className="configurations-panel__body">
-              {this.props.integrationStore
-                .forApp("drchrono")
-                .map(integration => (
-                  <IntegrationConfiguration
-                    key={`integration-${integration.id}`}
-                    id={integration.id}
-                    integrationName="drchrono"
-                    roomName={
-                      this.props.groupsStore.getGroupById(integration.group_id)
-                        .name
-                    }
-                    insertedAt={moment
-                      .utc(integration.inserted_at)
-                      .local()
-                      .format("LL")}
-                  />
-                ))}
-            </Panel.Body>
-          </Panel>
-        </Panel.Body>
+              <Panel.Body className="configurations-panel__body">
+                {this.props.integrationStore
+                  .forApp("drchrono")
+                  .map(integration => (
+                    <IntegrationConfiguration
+                      key={`integration-${integration.id}`}
+                      id={integration.id}
+                      integrationName="drchrono"
+                      roomName={
+                        this.props.groupsStore.getGroupById(
+                          integration.group_id
+                        ).name
+                      }
+                      insertedAt={moment
+                        .utc(integration.inserted_at)
+                        .local()
+                        .format("LL")}
+                    />
+                  ))}
+              </Panel.Body>
+            </Panel>
+          </Panel.Body>
+        )}
       </Panel>
     );
   }

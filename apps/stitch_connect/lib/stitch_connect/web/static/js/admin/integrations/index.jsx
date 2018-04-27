@@ -8,7 +8,7 @@ import IntegrationPanel from "./components/integration-panel";
 const placeholderApps = [
   {
     slug: "athenahealth",
-    name: "Athena Health",
+    name: "athenahealth",
     description: "Athena Health app",
     icon_url:
       "https://s3.amazonaws.com/stitch-content-public/ehr-logos/athenahealth.jpeg"
