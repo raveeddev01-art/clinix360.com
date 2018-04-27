@@ -40,8 +40,8 @@ class IntegrationRoomPicker extends Component {
       groupId: this.state.groupId
     };
 
-    this.props.integrationStore.createNewIntegration(params).then(() => {
-      history.push(`/admin/integrations/drchrono`);
+    this.props.integrationStore.createNewIntegration(params).then(data => {
+      history.push(`/admin/integrations/drchrono/${data.id}/edit`);
     });
   };
 

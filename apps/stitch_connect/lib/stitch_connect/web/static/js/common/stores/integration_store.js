@@ -45,6 +45,7 @@ class IntegrationStore {
     })
       .then(response => {
         this.integrations.push(response.data);
+        return response.data;
       })
       .catch(err => {
         console.log(err);
