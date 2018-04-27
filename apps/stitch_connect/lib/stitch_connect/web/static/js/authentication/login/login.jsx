@@ -59,6 +59,7 @@ class Login extends Component {
         Cookies.remove("last_activity");
         if (window.electronApp) {
           window.location.href = "/";
+          return;
         }
 
         if (response.data.redirect_url === "/apps") {
