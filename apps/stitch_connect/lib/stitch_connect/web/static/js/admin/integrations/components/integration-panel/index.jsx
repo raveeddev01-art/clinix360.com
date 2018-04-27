@@ -12,7 +12,7 @@ class IntegrationPanel extends Component {
     if (this.props.requestAccess) {
       return (
         <Button
-          href="https://google.com"
+          href="https://teamstitch.typeform.com/to/J3Wa2P"
           bsStyle="primary"
           className="action-edit btn-fancy"
         >
