@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import omit from "lodash/omit";
 import history from "lib/history";
@@ -98,7 +97,7 @@ class DrChronoForm extends Component {
     return (
       <Button
         style={{ marginTop: "20px" }}
-        bsStyle="success"
+        bsStyle="primary"
         href={`https://drchrono.com/o/authorize?redirect_uri=${this._redirectUri()}&client_id=${this
           .state.clientId}&response_type=code`}
       >
