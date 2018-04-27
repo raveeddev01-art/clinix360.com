@@ -21,8 +21,10 @@ class DrChronoPage extends Component {
   }
 
   render() {
+    const key = this.props.integrationStore.integrations.length;
+
     return (
-      <Panel className="admin-panel integrations-settings">
+      <Panel key={key} className="admin-panel integrations-settings">
         <Panel.Heading className="integrations-settings__overview">
           <Breadcrumb>
             <LinkContainer to="/admin/integrations">
