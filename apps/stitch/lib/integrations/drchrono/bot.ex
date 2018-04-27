@@ -21,7 +21,7 @@ defmodule Stitch.Drchrono.Bot do
     if bot_user == nil do
       Stitch.Bot.create(team_id, %{
         team_id: team_id,
-        name: "Dr Chrono",
+        name: "drchrono",
         username: "drchrono",
         is_bot: true,
         onboarded: true,
@@ -67,7 +67,7 @@ defmodule Stitch.Drchrono.Bot do
         StitchConnect.Web.GroupChannel.broadcast_message_created(message)
 
       {:error, _} ->
-        Logger.error("Couldn't post DrChrono bot message.")
+        Logger.error("Couldn't post drchrono bot message.")
     end
   end
 end
