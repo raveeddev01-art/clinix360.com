@@ -10,7 +10,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
     user_json(user)
   end
 
-  def render("login.json", %{user: user}) do
+  def render("login.json", %{user: user, redirect_url: redirect_url}) do
     %{
       id: user.id,
       first_name: user.first_name,
@@ -25,7 +25,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       disabled: user.disabled,
       token: user.token,
       pin: user.pin,
-      team_id: user.team_id
+      team_id: user.team_id,
+      redirect_url: redirect_url
     }
   end
 
