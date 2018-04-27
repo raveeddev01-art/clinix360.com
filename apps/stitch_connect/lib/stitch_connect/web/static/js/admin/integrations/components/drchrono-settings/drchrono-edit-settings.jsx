@@ -31,7 +31,9 @@ class DrChronoEditSettings extends Component {
       okLabel: "Remove"
     })
       .then(() => {
-        this.props.integrationStore.removeConfig(this.props.match.params.id);
+        this.props.integrationStore.removeConfig(
+          parseInt(this.props.match.params.id)
+        );
         history.push(`/admin/integrations/drchrono`);
       })
       .catch(() => {
