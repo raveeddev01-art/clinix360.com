@@ -5,6 +5,45 @@ import Alert from "react-bootstrap/lib/Alert";
 
 import IntegrationPanel from "./components/integration-panel";
 
+const placeholderApps = [
+  {
+    slug: "athenahealth",
+    name: "Athena Health",
+    description: "Athena Health app",
+    icon: "https://placehold.it/50x50"
+  },
+  {
+    slug: "epic",
+    name: "epic",
+    description: "Epic app",
+    icon: "https://placehold.it/50x50"
+  },
+  {
+    slug: "Care Cloud",
+    name: "carecloud",
+    description: "Care Cloud app",
+    icon: "https://placehold.it/50x50"
+  },
+  {
+    slug: "Cerner",
+    name: "cerner",
+    description: "Cerner app",
+    icon: "https://placehold.it/50x50"
+  },
+  {
+    slug: "Kareo",
+    name: "kareo",
+    description: "Kareo app",
+    icon: "https://placehold.it/50x50"
+  },
+  {
+    slug: "greenwayhealth",
+    name: "Greenway Health",
+    description: "Greenway Health app",
+    icon: "https://placehold.it/50x50"
+  }
+];
+
 @inject("userStore", "titleStore", "adminPanelStore", "integrationStore")
 class Integrations extends Component {
   constructor(props) {
@@ -55,6 +94,17 @@ class Integrations extends Component {
               slug={app.slug}
               description={app.description}
               icon={app.icon_url}
+            />
+          ))}
+
+          {placeholderApps.map(app => (
+            <IntegrationPanel
+              key={`app-${app.slug}`}
+              title={app.name}
+              slug={app.slug}
+              description={app.description}
+              icon={app.icon_url}
+              requestAccess
             />
           ))}
         </Panel.Body>
