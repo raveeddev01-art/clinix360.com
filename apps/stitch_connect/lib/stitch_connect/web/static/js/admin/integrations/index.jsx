@@ -15,26 +15,26 @@ const placeholderApps = [
   },
   {
     slug: "epic",
-    name: "epic",
+    name: "Epic",
     description: "Epic app",
     icon: "https://s3.amazonaws.com/stitch-content-public/ehr-logos/Epic.png"
   },
   {
     slug: "Care Cloud",
-    name: "carecloud",
+    name: "CareCloud",
     description: "Care Cloud app",
     icon:
       "https://s3.amazonaws.com/stitch-content-public/ehr-logos/CareCloud.png"
   },
   {
-    slug: "Cerner",
-    name: "cerner",
+    slug: "cerner",
+    name: "Cerner",
     description: "Cerner app",
     icon: "https://placehold.it/50x50"
   },
   {
-    slug: "Kareo",
-    name: "kareo",
+    slug: "kareo",
+    name: "Kareo",
     description: "Kareo app",
     icon: "https://s3.amazonaws.com/stitch-content-public/ehr-logos/Kareo.png"
   },
