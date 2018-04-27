@@ -31,7 +31,8 @@ const placeholderApps = [
     slug: "cerner",
     name: "Cerner",
     description: "Cerner app",
-    icon_url: "https://placehold.it/50x50"
+    icon_url:
+      "https://s3.amazonaws.com/stitch-content-public/ehr-logos/Cerner.jpg"
   },
   {
     slug: "kareo",
