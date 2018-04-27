@@ -78,7 +78,7 @@ class IntegrationRoomPicker extends Component {
             bsSize="lg"
             className="pull-right"
           >
-            Add {this.props.name} app
+            Add Integration
           </Button>
         </ButtonToolbar>
       </Form>
