@@ -35,6 +35,7 @@ defmodule Stitch.Accounts.User do
     field(:is_staff, :boolean, default: false)
     field(:is_bot, :boolean, default: false)
     field(:groups_as_guest, {:array, :integer}, default: [])
+    field(:timezone, :map, default: %{})
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
     has_many(:password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all)
@@ -46,24 +47,26 @@ defmodule Stitch.Accounts.User do
 
   def changeset(%User{} = struct, attrs) do
     struct
-    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username])
+    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username, :timezone])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> valid_email_changeset(attrs)
     |> validate_required([:first_name, :last_name])
     |> default_profile_image_changeset(attrs)
     |> update_change(:email, &String.trim/1)
+    |> validate_timezone()
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
   end
 
   def changeset_without_email(%User{} = struct, attrs) do
     struct
-    |> cast(attrs, [:first_name, :last_name, :pin, :phone_number, :title, :username])
+    |> cast(attrs, [:first_name, :last_name, :pin, :phone_number, :title, :username, :timezone])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> validate_required([:first_name, :last_name])
     |> default_profile_image_changeset(attrs)
+    |> validate_timezone()
     |> Stitch.Validators.validate_no_emojis(:first_name)
     |> Stitch.Validators.validate_no_emojis(:last_name)
   end
@@ -178,6 +181,23 @@ defmodule Stitch.Accounts.User do
     |> put_change(:onboarded, true)
   end
 
+  def timezone_changeset(struct, params) do
+    struct
+    |> cast(params, [:timezone])
+    |> validate_timezone()
+  end
+
+  def validate_timezone(%{valid?: true, changes: %{timezone: timezone}} = changeset) do
+    case timezone do
+      %{"tz" => tz, "tz_label" => tz_label, "tz_offset" => tz_offset}
+        when is_binary(tz) and is_binary(tz_label) and is_integer(tz_offset) ->
+          changeset
+      _ ->
+        add_error(changeset, :timezone, "Invalid timezone format")
+    end
+  end
+  def validate_timezone(changeset), do: changeset
+
   defp ensure_role(%Ecto.Changeset{} = changeset) do
     roles = get_field(changeset, :roles) || []
 
@@ -278,6 +298,19 @@ defmodule Stitch.Accounts.User do
   @spec guest?(User.t()) :: boolean
   def guest?(%User{roles: [role]}) when role in @guest_roles, do: true
   def guest?(%User{}), do: false
+
+  @doc """
+  Updates user's timezone. The timezone should have the following format:
+    %{ "tz" : "America/Los_Angeles"
+       "tz_label" : "Pacific Daylight Time"
+       "tz_offset" : -25200 } # offset in seconds
+  """
+  @spec update_timezone(User.t(), map) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def update_timezone(%User{} = user, timezone) do
+    user
+    |> timezone_changeset(%{"timezone" => timezone})
+    |> Repo.update
+  end
 
   @doc """
   If the user has not uploaded an avatar, get a cached or new presigned URL for the user.

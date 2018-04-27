@@ -17,6 +17,7 @@ defmodule StitchConnect.Web.TeamChannel do
     team_id = String.to_integer(team_id)
     if team_id == socket.assigns.team_id do
       send self(), :after_join
+      update_timezone(socket.assigns.current_user, params)
       if fetch_users_and_groups? do
         view = render_users_and_groups(socket.assigns, include_user_ids?, sync_timestamp)
         {:ok, view, assign(socket, :meta, %{})}
@@ -36,6 +37,11 @@ defmodule StitchConnect.Web.TeamChannel do
 
   defp get_include_user_ids(%{"includeUserIds" => false}), do: false
   defp get_include_user_ids(_params), do: true
+
+  defp update_timezone(user, %{"timezone" => timezone}) do
+    User.update_timezone(user, timezone)
+  end
+  defp update_timezone(_user, _timezone), do: nil
 
   defp render_users_and_groups(assigns, include_user_ids?, sync_users_timestamp) do
     users =

@@ -22,4 +22,18 @@ defmodule StitchConnect.Web.TeamChannelTest do
 
     assert_reply ref, :ok, %{security_lockout_enabled: true, seconds_to_lockout: 42}
   end
+
+  test "updates user's time zone", %{user1: user1, socket1: socket1} do
+    timezone = %{
+      "tz" => "America/Los_Angeles",
+      "tz_label" => "Pacific Daylight Time",
+      "tz_offset" => -25200
+    }
+
+    assert {:ok, %{}, %Phoenix.Socket{}} = join(socket1, "team:lobby:#{user1.team_id}", %{
+      "timezone" =>  timezone
+    })
+
+    assert Stitch.Repo.get(Stitch.Accounts.User, user1.id).timezone == timezone
+  end
 end
