@@ -10,39 +10,41 @@ const placeholderApps = [
     slug: "athenahealth",
     name: "Athena Health",
     description: "Athena Health app",
-    icon:
+    icon_url:
       "https://s3.amazonaws.com/stitch-content-public/ehr-logos/athenahealth.jpeg"
   },
   {
     slug: "epic",
     name: "Epic",
     description: "Epic app",
-    icon: "https://s3.amazonaws.com/stitch-content-public/ehr-logos/Epic.png"
+    icon_url:
+      "https://s3.amazonaws.com/stitch-content-public/ehr-logos/Epic.png"
   },
   {
     slug: "Care Cloud",
     name: "CareCloud",
     description: "Care Cloud app",
-    icon:
+    icon_url:
       "https://s3.amazonaws.com/stitch-content-public/ehr-logos/CareCloud.png"
   },
   {
     slug: "cerner",
     name: "Cerner",
     description: "Cerner app",
-    icon: "https://placehold.it/50x50"
+    icon_url: "https://placehold.it/50x50"
   },
   {
     slug: "kareo",
     name: "Kareo",
     description: "Kareo app",
-    icon: "https://s3.amazonaws.com/stitch-content-public/ehr-logos/Kareo.png"
+    icon_url:
+      "https://s3.amazonaws.com/stitch-content-public/ehr-logos/Kareo.png"
   },
   {
     slug: "greenwayhealth",
     name: "Greenway Health",
     description: "Greenway Health app",
-    icon:
+    icon_url:
       "https://s3.amazonaws.com/stitch-content-public/ehr-logos/Greenway+Health.jpg"
   }
 ];
