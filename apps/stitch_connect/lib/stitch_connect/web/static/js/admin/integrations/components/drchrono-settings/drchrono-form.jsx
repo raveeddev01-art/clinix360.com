@@ -13,6 +13,9 @@ import Button from "react-bootstrap/lib/Button";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import { Link } from "react-router-dom";
 
+import DrChronoRedirectUri from "./drchrono-redirect-uri";
+import DrChronoWebhookUrl from "./drchrono-webhook-url";
+
 @inject("titleStore", "adminPanelStore", "groupsStore", "integrationStore")
 class DrChronoForm extends Component {
   constructor(props) {
@@ -136,25 +139,9 @@ class DrChronoForm extends Component {
             {this._renderAuthenticateButton()}
 
             <hr />
-
-            <ControlLabel>Redirect URI</ControlLabel>
-            <FormControl
-              disabled
-              name="redirectUri"
-              id="redirectUri"
-              type="text"
-              value={this._redirectUri()}
-            />
-
-            <ControlLabel>Webhook URL</ControlLabel>
-            <FormControl
-              disabled
-              name="webhookToken"
-              id="webhookToken"
-              type="text"
-              value={`${applicationScheme}${applicationHost}/webhook/drchrono/${this
-                .state.webhookToken}`}
-            />
+            <DrChronoRedirectUri />
+            <br />
+            <DrChronoWebhookUrl />
           </Col>
         </FormGroup>
 

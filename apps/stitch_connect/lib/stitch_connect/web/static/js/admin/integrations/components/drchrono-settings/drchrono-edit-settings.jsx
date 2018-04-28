@@ -17,7 +17,7 @@ class DrChronoEditSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInstructions: false
+      showInstructions: true
     };
   }
 
@@ -121,7 +121,7 @@ class DrChronoEditSettings extends Component {
               </Button>
               <h3>Setup Instructions</h3>
               <HelpBlock>
-                Here are the necessary steps to add the drchrono integration.
+                Follow these steps to set up your integration.
               </HelpBlock>
             </Panel.Heading>
 

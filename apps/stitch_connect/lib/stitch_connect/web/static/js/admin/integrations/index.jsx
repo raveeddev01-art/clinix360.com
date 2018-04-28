@@ -9,7 +9,7 @@ const placeholderApps = [
   {
     slug: "athenahealth",
     name: "athenahealth",
-    description: "Athena Health app",
+    description: "athenahealth app",
     icon_url:
       "https://s3.amazonaws.com/stitch-content-public/ehr-logos/athenahealth.jpeg"
   },
@@ -23,7 +23,7 @@ const placeholderApps = [
   {
     slug: "Care Cloud",
     name: "CareCloud",
-    description: "Care Cloud app",
+    description: "CareCloud app",
     icon_url:
       "https://s3.amazonaws.com/stitch-content-public/ehr-logos/CareCloud.png"
   },
@@ -52,10 +52,6 @@ const placeholderApps = [
 
 @inject("userStore", "titleStore", "adminPanelStore", "integrationStore")
 class Integrations extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
