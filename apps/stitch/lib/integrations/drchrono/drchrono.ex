@@ -1,8 +1,5 @@
 defmodule Stitch.Drchrono do
-  alias Stitch.{Accounts.User, Integration, Message}
   alias Stitch.Drchrono.{Bot, Token}
-  alias Stitch.Repo
-  import Ecto.Query
   require Logger
 
   defp value_or_na(nil), do: "N/A"
@@ -29,9 +26,9 @@ defmodule Stitch.Drchrono do
     message =
       "Event: Appointment created\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
         patient["first_name"]
-      } #{patient["last_name"]}\nScheduled: #{scheduled_time} minutes\nReason: #{reason}\nDuration: #{
+      } #{patient["last_name"]}\nScheduled: #{scheduled_time}\nReason: #{reason}\nDuration: #{
         duration
-      }\nNotes: #{notes}"
+      } minutes\nNotes: #{notes}"
 
     if integration.settings["appointmentCreate"] do
       Bot.post_message(integration.team_id, integration.group_id, message)
@@ -52,9 +49,9 @@ defmodule Stitch.Drchrono do
     message =
       "Event: Appointment modified\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
         patient["first_name"]
-      } #{patient["last_name"]}\nScheduled: #{scheduled_time} minutes\nReason: #{reason}\nDuration: #{
+      } #{patient["last_name"]}\nScheduled: #{scheduled_time}\nReason: #{reason}\nDuration: #{
         duration
-      }\nNotes: #{notes}"
+      } minutes\nNotes: #{notes}"
 
     if integration.settings["appointmentModify"] do
       Bot.post_message(integration.team_id, integration.group_id, message)
@@ -70,9 +67,9 @@ defmodule Stitch.Drchrono do
     notes = value_or_na(payload["notes"])
 
     message =
-      "Event: Appointment deleted\nScheduled: #{scheduled_time} minutes\nReason: #{reason}\nDuration: #{
+      "Event: Appointment deleted\nScheduled: #{scheduled_time}\nReason: #{reason}\nDuration: #{
         duration
-      }\nNotes: #{notes}"
+      }minutes \nNotes: #{notes}"
 
     if integration.settings["appointmentDelete"] do
       Bot.post_message(integration.team_id, integration.group_id, message)
