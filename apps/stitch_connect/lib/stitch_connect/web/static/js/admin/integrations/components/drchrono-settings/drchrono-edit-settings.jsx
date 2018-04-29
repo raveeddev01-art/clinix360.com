@@ -31,7 +31,7 @@ class DrChronoEditSettings extends Component {
   }
 
   get toggleExpansionText() {
-    return this.state.showInstructions ? "Close" : "Open";
+    return this.state.showInstructions ? "Hide" : "Show";
   }
 
   toggleInstructions = () => {

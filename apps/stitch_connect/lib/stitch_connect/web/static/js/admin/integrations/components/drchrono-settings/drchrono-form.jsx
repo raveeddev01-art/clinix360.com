@@ -3,6 +3,7 @@ import { inject } from "mobx-react";
 import omit from "lodash/omit";
 import history from "lib/history";
 
+import Alert from "react-bootstrap/lib/Alert";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
@@ -74,7 +75,7 @@ class DrChronoForm extends Component {
     const params = {
       id: this.props.integration.id,
       groupId: parseInt(this.state.groupId, 10),
-      credentials: credentials,
+      credentials,
       settings: omit(this.state, ["groupId", "id", "clientId", "clientSecret"])
     };
 
@@ -93,8 +94,13 @@ class DrChronoForm extends Component {
   };
 
   _renderAuthenticateButton = () => {
-    if (this.state.authenticated || true) {
-      return <p>Authenticated</p>;
+    if (this.state.authenticated) {
+      return (
+        <div>
+          <br />
+          <Alert bsStyle="success">Authenticated</Alert>
+        </div>
+      );
     }
 
     return (
