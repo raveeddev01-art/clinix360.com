@@ -1,6 +1,4 @@
 defmodule Stitch.IntegrationAuthorization do
-  alias Stitch.Repo
-
   def can_create?(user, group) do
     user.team_id == group.team_id && Enum.member?(user.roles, "admin")
   end
