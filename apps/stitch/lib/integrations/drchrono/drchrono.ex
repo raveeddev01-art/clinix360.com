@@ -12,13 +12,27 @@ defmodule Stitch.Drchrono do
     end
   end
 
+  defp format_scheduled_time(scheduled_time, format) do
+    with {:ok, datetime} <- Timex.parse(scheduled_time, "{ISO:Extended}"),
+         {:ok, time_string} <- Timex.format(datetime, format) do
+      time_string
+    else
+      _ -> ""
+    end
+  end
+
   def handle_webhook(integration, "APPOINTMENT_CREATE", params) do
     payload = params["object"]
 
     {:ok, patient} = get_patient_info(integration, payload["patient"])
     {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
-    scheduled_time = value_or_na(payload["scheduled_time"])
+    scheduled_date =
+      value_or_na(format_scheduled_time(payload["scheduled_time"], "{0M}-{D}-{YYYY}"))
+
+    scheduled_time =
+      value_or_na(format_scheduled_time(payload["scheduled_time"], "{h24}:{m} {AM}"))
+
     reason = value_or_na(payload["reason"])
     duration = value_or_na(payload["duration"])
     notes = value_or_na(payload["notes"])
@@ -26,9 +40,9 @@ defmodule Stitch.Drchrono do
     message =
       "Event: Appointment created\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
         patient["first_name"]
-      } #{patient["last_name"]}\nScheduled: #{scheduled_time}\nReason: #{reason}\nDuration: #{
-        duration
-      } minutes\nNotes: #{notes}"
+      } #{patient["last_name"]}\nScheduled: #{scheduled_date}\nTime: #{scheduled_time}Reason: #{
+        reason
+      }\nDuration: #{duration} minutes\nNotes: #{notes}"
 
     if integration.settings["appointmentCreate"] do
       Bot.post_message(integration.team_id, integration.group_id, message)
@@ -41,7 +55,12 @@ defmodule Stitch.Drchrono do
     {:ok, patient} = get_patient_info(integration, payload["patient"])
     {:ok, doctor} = get_doctor_info(integration, payload["doctor"])
 
-    scheduled_time = value_or_na(payload["scheduled_time"])
+    scheduled_date =
+      value_or_na(format_scheduled_time(payload["scheduled_time"], "{0M}-{D}-{YYYY}"))
+
+    scheduled_time =
+      value_or_na(format_scheduled_time(payload["scheduled_time"], "{h24}:{m} {AM}"))
+
     reason = value_or_na(payload["reason"])
     duration = value_or_na(payload["duration"])
     notes = value_or_na(payload["notes"])
@@ -49,9 +68,9 @@ defmodule Stitch.Drchrono do
     message =
       "Event: Appointment modified\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
         patient["first_name"]
-      } #{patient["last_name"]}\nScheduled: #{scheduled_time}\nReason: #{reason}\nDuration: #{
-        duration
-      } minutes\nNotes: #{notes}"
+      } #{patient["last_name"]}\nScheduled: #{scheduled_date}\nTime: #{scheduled_time}\nReason: #{
+        reason
+      }\nDuration: #{duration} minutes\nNotes: #{notes}"
 
     if integration.settings["appointmentModify"] do
       Bot.post_message(integration.team_id, integration.group_id, message)
@@ -61,15 +80,20 @@ defmodule Stitch.Drchrono do
   def handle_webhook(integration, "APPOINTMENT_DELETE", params) do
     payload = params["object"]
 
-    scheduled_time = value_or_na(payload["scheduled_time"])
+    scheduled_date =
+      value_or_na(format_scheduled_time(payload["scheduled_time"], "{0M}-{D}-{YYYY}"))
+
+    scheduled_time =
+      value_or_na(format_scheduled_time(payload["scheduled_time"], "{h24}:{m} {AM}"))
+
     reason = value_or_na(payload["reason"])
     duration = value_or_na(payload["duration"])
     notes = value_or_na(payload["notes"])
 
     message =
-      "Event: Appointment deleted\nScheduled: #{scheduled_time}\nReason: #{reason}\nDuration: #{
-        duration
-      }minutes \nNotes: #{notes}"
+      "Event: Appointment deleted\nScheduled: #{scheduled_date}\nTime: #{scheduled_time}\nReason: #{
+        reason
+      }\nDuration: #{duration}minutes \nNotes: #{notes}"
 
     if integration.settings["appointmentDelete"] do
       Bot.post_message(integration.team_id, integration.group_id, message)
