@@ -53,7 +53,7 @@ class DrChronoSetupInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 2"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-2a.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-2.png"
               />
               <DrChronoRedirectUri />
             </div>
@@ -75,7 +75,7 @@ class DrChronoSetupInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 3"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-2.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-3.png"
               />
             </div>
           </Col>
@@ -99,7 +99,7 @@ class DrChronoSetupInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 4"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-3.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-4.png"
               />
             </div>
             <DrChronoWebhookUrl />
@@ -122,7 +122,7 @@ class DrChronoSetupInstructions extends Component {
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 5"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-4.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-5.png"
               />
             </div>
           </Col>
@@ -140,6 +140,14 @@ class DrChronoSetupInstructions extends Component {
               Finally, select which notifications you want to display and
               confirm your room. Then click 'Save Integration' to complete.
             </p>
+          </Col>
+          <Col sm={7}>
+            <div className="integration-instructions__step__content">
+              <img
+                alt="drchrono setup step 6"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-6.png"
+              />
+            </div>
           </Col>
         </div>
       </div>

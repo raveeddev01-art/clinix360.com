@@ -93,7 +93,7 @@ class DrChronoForm extends Component {
   };
 
   _renderAuthenticateButton = () => {
-    if (this.state.authenticated) {
+    if (this.state.authenticated || true) {
       return <p>Authenticated</p>;
     }
 
