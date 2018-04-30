@@ -97,8 +97,8 @@ defmodule Stitch.Drchrono.Token do
       {:ok, response} ->
         response_json = Poison.decode!(response.body)
 
-        {expires_in, _} = Integer.parse(response_json["expires_in"])
-        expiration_in_unix = (DateTime.utc_now() |> DateTime.to_unix()) + expires_in
+        expiration_in_unix =
+          (DateTime.utc_now() |> DateTime.to_unix()) + response_json["expires_in"]
 
         response_values = %{
           access_token: response_json["access_token"],
