@@ -17,6 +17,14 @@ defmodule StitchConnect.Web.ErrorView do
     render("error.html", assigns)
   end
 
+  def render("401.json", %{message: message}) do
+    %{message: message}
+  end
+
+  def render("401.json", _assigns) do
+    %{message: "You are not authorized to access this resource."}
+  end
+
   def render("403.json", %{message: message}) do
     %{message: message}
   end

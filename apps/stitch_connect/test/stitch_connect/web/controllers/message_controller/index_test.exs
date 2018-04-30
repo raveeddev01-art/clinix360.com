@@ -163,7 +163,7 @@ defmodule StitchConnect.Web.MessageController.IndexTest do
       json =
         conn
         |> get(api_v1_message_path(conn, :index, group_b))
-        |> json_response(:forbidden)
+        |> json_response(:unauthorized)
 
       assert %{"message" => "You can't see the messages for this room."} = json
     end
@@ -185,7 +185,7 @@ defmodule StitchConnect.Web.MessageController.IndexTest do
         assert json_response(conn, 200)
 
         conn = get(base_conn, api_v1_message_path(base_conn, :index, group))
-        assert json_response(conn, :forbidden)
+        assert json_response(conn, :unauthorized)
       end
     end
   end

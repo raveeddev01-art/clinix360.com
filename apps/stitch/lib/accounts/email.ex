@@ -21,17 +21,21 @@ defmodule Stitch.Accounts.Email do
     |> subject("Confirm your email")
     |> put_param("global_merge_vars", [
       %{
-        "name": "confirmationCode",
-        "content": String.to_charlist(user.confirmation_code) |> List.insert_at(3, " - ") |> List.to_string # code looks like "123 - 456" in email only
+        name: "confirmationCode",
+        # code looks like "123 - 456" in email only
+        content:
+          String.to_charlist(user.confirmation_code)
+          |> List.insert_at(3, " - ")
+          |> List.to_string()
       }
     ])
-    |> Stitch.Mailer.deliver_later
+    |> Stitch.Mailer.deliver_later()
   end
 
   @doc """
   Sends the password reset request
   """
-  @spec reset_password_email(User.t, binary) :: Bamboo.Email.t
+  @spec reset_password_email(User.t(), binary) :: Bamboo.Email.t()
   def reset_password_email(user, reset_url) do
     new_email()
     |> template("Password Reset (Connect)")
@@ -40,15 +44,15 @@ defmodule Stitch.Accounts.Email do
     |> subject("Reset Your Password")
     |> put_param("global_merge_vars", [
       %{
-        "name": "resetPasswordUrl",
-         "content": reset_url
+        name: "resetPasswordUrl",
+        content: reset_url
       },
       %{
-         "name": "receiverFirstName",
-         "content": user.first_name
+        name: "receiverFirstName",
+        content: user.first_name
       }
     ])
-    |> Stitch.Mailer.deliver_later
+    |> Stitch.Mailer.deliver_later()
   end
 
   def role_changed_email(%User{email: to_address, first_name: first_name}, [old_role], [new_role]) do
@@ -59,24 +63,29 @@ defmodule Stitch.Accounts.Email do
     |> subject(role_change_subject(old_role, new_role))
     |> put_param("global_merge_vars", [
       %{
-        "name": "receiverFirstName",
-        "content": first_name,
+        name: "receiverFirstName",
+        content: first_name
       },
       %{
-        "name": "previousRole",
-        "content": Role.display_name(old_role)
+        name: "previousRole",
+        content: Role.display_name(old_role)
       },
       %{
-        "name": "newRole",
-        "content": Role.display_name(new_role),
-      },
+        name: "newRole",
+        content: Role.display_name(new_role)
+      }
     ])
-    |> Stitch.Mailer.deliver_later
+    |> Stitch.Mailer.deliver_later()
   end
 
-  defp role_change_subject(old_role, new_role) when old_role in @guest_roles and new_role in @guest_roles, do: "Guest Status Changed"
+  defp role_change_subject(old_role, new_role)
+       when old_role in @guest_roles and new_role in @guest_roles,
+       do: "Guest Status Changed"
+
   defp role_change_subject(old_role, _new_role) when old_role in @guest_roles, do: "Guest Removed"
-  defp role_change_subject(_old_role, new_role) when new_role in @guest_roles, do: "New Guest Added"
+
+  defp role_change_subject(_old_role, new_role) when new_role in @guest_roles,
+    do: "New Guest Added"
 
   @doc """
   Sends email to user requesting them to reset their temporary password by
@@ -103,25 +112,46 @@ defmodule Stitch.Accounts.Email do
   end
 
   def unread_messages_email([], _team), do: nil
+
   def unread_messages_email(recipients, %Stitch.Team{name: team_name}) do
     new_email()
     |> template("Message Waiting - Offline Email (Connect)")
     |> to(Enum.map(recipients, & &1.email))
     |> from(@from_address)
-    |> subject("[Stitch Connect] Notifications from #{team_name}")
+    |> subject("[Stitch Connect] Notifications from #{team_name} *|userTime|*")
     |> put_param("merge_vars", Enum.map(recipients, &unread_messages_for_recipient/1))
-    |> Stitch.Mailer.deliver_later
+    |> Stitch.Mailer.deliver_later()
   end
 
-  defp unread_messages_for_recipient(%{email: email, first_name: first_name, message_count: message_count, login_url: login_url}) do
+  defp unread_messages_for_recipient(%{
+         timezone: timezone,
+         email: email,
+         first_name: first_name,
+         message_count: message_count,
+         login_url: login_url
+       }) do
     inflected_message = if message_count == 1, do: "message", else: "messages"
+
     vars = [
-      %{"name": "receiverFirstName", "content": first_name},
-      %{"name": "unreadTotal", "content": "#{message_count}"},
-      %{"name": "singularMessage", "content": inflected_message},
-      %{"name": "receiverEmail", "content": email},
-      %{"name": "loginUrl", "content": login_url}
+      %{name: "receiverFirstName", content: first_name},
+      %{name: "unreadTotal", content: "#{message_count}"},
+      %{name: "singularMessage", content: inflected_message},
+      %{name: "receiverEmail", content: email},
+      %{name: "loginUrl", content: login_url},
+      %{name: "userTime", content: format_datetime_subject(timezone)}
     ]
-    %{ rcpt: email, vars: vars }
+
+    %{rcpt: email, vars: vars}
+  end
+
+  defp format_datetime_subject(timezone) do
+    if timezone && Timex.Timezone.exists?(timezone) do
+      datetime = Timex.Timezone.convert(DateTime.utc_now(), timezone)
+      # September 13, 2017 at 08:03 PM"
+      time = Timex.format!(datetime, "{Mfull} {D}, {YYYY} at {0h12}:{m} {AM}")
+      "for #{time}"
+    else
+      ""
+    end
   end
 end

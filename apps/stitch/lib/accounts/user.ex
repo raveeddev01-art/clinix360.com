@@ -197,11 +197,21 @@ defmodule Stitch.Accounts.User do
     |> validate_timezone()
   end
 
+  def timezone_changeset(struct, params) do
+    struct
+    |> cast(params, [:timezone])
+    |> validate_timezone()
+  end
+
   def validate_timezone(%{valid?: true, changes: %{timezone: timezone}} = changeset) do
     case timezone do
       %{"tz" => tz, "tz_label" => tz_label, "tz_offset" => tz_offset}
       when is_binary(tz) and is_binary(tz_label) and is_integer(tz_offset) ->
-        changeset
+        if Timex.Timezone.exists?(tz) do
+          changeset
+        else
+          add_error(changeset, :timezone, "Invalid timezone format #{tz}")
+        end
 
       _ ->
         add_error(changeset, :timezone, "Invalid timezone format")

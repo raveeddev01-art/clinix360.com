@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import omit from "lodash/omit";
 import history from "lib/history";
 
+import Alert from "react-bootstrap/lib/Alert";
 import FormControl from "react-bootstrap/lib/FormControl";
 import Form from "react-bootstrap/lib/Form";
 import FormGroup from "react-bootstrap/lib/FormGroup";
@@ -13,6 +13,9 @@ import Checkbox from "react-bootstrap/lib/Checkbox";
 import Button from "react-bootstrap/lib/Button";
 import ButtonToolbar from "react-bootstrap/lib/ButtonToolbar";
 import { Link } from "react-router-dom";
+
+import DrChronoRedirectUri from "./drchrono-redirect-uri";
+import DrChronoWebhookUrl from "./drchrono-webhook-url";
 
 @inject("titleStore", "adminPanelStore", "groupsStore", "integrationStore")
 class DrChronoForm extends Component {
@@ -72,7 +75,7 @@ class DrChronoForm extends Component {
     const params = {
       id: this.props.integration.id,
       groupId: parseInt(this.state.groupId, 10),
-      credentials: credentials,
+      credentials,
       settings: omit(this.state, ["groupId", "id", "clientId", "clientSecret"])
     };
 
@@ -92,13 +95,18 @@ class DrChronoForm extends Component {
 
   _renderAuthenticateButton = () => {
     if (this.state.authenticated) {
-      return <p>Authenticated</p>;
+      return (
+        <div>
+          <br />
+          <Alert bsStyle="success">Authenticated</Alert>
+        </div>
+      );
     }
 
     return (
       <Button
         style={{ marginTop: "20px" }}
-        bsStyle="success"
+        bsStyle="primary"
         href={`https://drchrono.com/o/authorize?redirect_uri=${this._redirectUri()}&client_id=${this
           .state.clientId}&response_type=code`}
       >
@@ -137,25 +145,9 @@ class DrChronoForm extends Component {
             {this._renderAuthenticateButton()}
 
             <hr />
-
-            <ControlLabel>Redirect URI</ControlLabel>
-            <FormControl
-              disabled
-              name="redirectUri"
-              id="redirectUri"
-              type="text"
-              value={this._redirectUri()}
-            />
-
-            <ControlLabel>Webhook URL</ControlLabel>
-            <FormControl
-              disabled
-              name="webhookToken"
-              id="webhookToken"
-              type="text"
-              value={`${applicationScheme}${applicationHost}/webhook/drchrono/${this
-                .state.webhookToken}`}
-            />
+            <DrChronoRedirectUri />
+            <br />
+            <DrChronoWebhookUrl />
           </Col>
         </FormGroup>
 
