@@ -20,6 +20,11 @@ class DrChronoPage extends Component {
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
   }
 
+  getGroupName = integration => {
+    const group = this.props.groupsStore.getGroupById(integration.group_id);
+    return group ? group.name : "Unknown Group";
+  };
+
   render() {
     const key = this.props.integrationStore.integrations.length;
 
@@ -89,11 +94,7 @@ class DrChronoPage extends Component {
                       key={`integration-${integration.id}`}
                       id={integration.id}
                       integrationName="drchrono"
-                      roomName={
-                        this.props.groupsStore.getGroupById(
-                          integration.group_id
-                        ).name
-                      }
+                      roomName={this.getGroupName(integration)}
                       insertedAt={moment
                         .utc(integration.inserted_at)
                         .local()
