@@ -11,7 +11,8 @@ class PeopleDetail extends Component {
   render() {
     const timezone = moment().format("hh:mm A (Z)");
     const { user } = this.props;
-    const { full_name: fullName, title, username, email, phone } = user;
+    const { full_name, title, username, email, phone, is_bot } = user;
+    const displayName = is_bot ? username : full_name;
 
     const online = this.props.presenceStore.isOnline(`${this.props.user.id}`);
 
@@ -34,7 +35,7 @@ class PeopleDetail extends Component {
                 <i className="fa fa-circle-o" />
               )}
             </span>
-            {fullName}
+            {displayName}
           </h4>
           <div className="user-title text-muted">{title}</div>
         </div>

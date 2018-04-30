@@ -1,19 +1,26 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import { LinkContainer } from "react-router-bootstrap";
 import history from "lib/history";
 
+import { confirmModal } from "common/modals";
 import Panel from "react-bootstrap/lib/Panel";
 import Breadcrumb from "react-bootstrap/lib/Breadcrumb";
 import Button from "react-bootstrap/lib/Button";
+import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 import DrChronoForm from "./drchrono-form";
 import DrChronoSetupInstructions from "./drchrono-setup-instructions";
-import { confirmModal } from "common/modals";
 
 @inject("titleStore", "adminPanelStore", "integrationStore")
 class DrChronoEditSettings extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showInstructions: true
+    };
+  }
+
   componentWillMount() {
     this.props.titleStore.setPageName("Integrations");
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
@@ -23,6 +30,16 @@ class DrChronoEditSettings extends Component {
     );
   }
 
+  get toggleExpansionText() {
+    return this.state.showInstructions ? "Hide" : "Show";
+  }
+
+  toggleInstructions = () => {
+    this.setState({
+      showInstructions: !this.state.showInstructions
+    });
+  };
+
   removeIntegrationConfig = () => {
     confirmModal({
       title: "Remove Integration Configuration",
@@ -31,7 +48,9 @@ class DrChronoEditSettings extends Component {
       okLabel: "Remove"
     })
       .then(() => {
-        this.props.integrationStore.removeConfig(this.props.match.params.id);
+        this.props.integrationStore.removeConfig(
+          parseInt(this.props.match.params.id)
+        );
         history.push(`/admin/integrations/drchrono`);
       })
       .catch(() => {
@@ -67,14 +86,13 @@ class DrChronoEditSettings extends Component {
             </div>
             <h1 className="title">drchrono</h1>
 
-            <div className="actions">
-              <button
-                className="btn-link"
-                onClick={this.removeIntegrationConfig}
-              >
-                Remove
-              </button>
-            </div>
+            <Button
+              bsStyle="default"
+              className="action-edit btn btn-default btn-fancy pull-right"
+              onClick={this.removeIntegrationConfig}
+            >
+              Remove
+            </Button>
           </div>
           <h4 className="m-b-30">
             drchrono was the first EHR to build a native app for iPad and
@@ -89,13 +107,35 @@ class DrChronoEditSettings extends Component {
         </Panel.Heading>
 
         <Panel.Body>
-          <Panel className="integrations-settings__panel">
+          <Panel
+            className="integrations-settings__panel"
+            expanded={this.state.showInstructions}
+          >
             <Panel.Heading>
+              <Button
+                bsStyle="default"
+                className="action-edit btn btn-fancy pull-right"
+                onClick={this.toggleInstructions}
+              >
+                {this.toggleExpansionText}
+              </Button>
               <h3>Setup Instructions</h3>
+              <HelpBlock>
+                Follow these steps to set up your integration.
+              </HelpBlock>
             </Panel.Heading>
 
+            <Panel.Collapse>
+              <Panel.Body>
+                <DrChronoSetupInstructions />
+              </Panel.Body>
+            </Panel.Collapse>
+          </Panel>
+          <Panel className="integrations-settings__panel">
+            <Panel.Heading>
+              <h3>Integration Settings</h3>
+            </Panel.Heading>
             <Panel.Body>
-              <DrChronoSetupInstructions />
               <DrChronoForm
                 integration={this.props.integrationStore.selectedIntegration}
               />

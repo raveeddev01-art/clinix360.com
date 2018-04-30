@@ -7,7 +7,7 @@ defmodule Stitch.Repo.Scripts.CreateDrchronoApp do
         name: "drchrono",
         icon_url: "https://zephyr.teamstitchapp.com/images/drchrono-logo.png",
         description:
-          "All-in-one practice management, electronic health records and billing solutions."
+          "drchrono EHR is a fully integrated electronic medical records, medical billing, RCM and practice management platform. Our mobile electronic health record app was voted #1 by doctors four years in a row."
       })
   end
 end
