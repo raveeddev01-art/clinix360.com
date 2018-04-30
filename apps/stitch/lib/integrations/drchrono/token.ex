@@ -1,6 +1,8 @@
 defmodule Stitch.Drchrono.Token do
   require Logger
-  alias Stitch.Integration
+  import Ecto.Query
+  alias Stitch.Repo
+  alias Stitch.{Integration, Drchrono}
 
   def for_integration(integration) do
     unix_now = DateTime.utc_now() |> DateTime.to_unix()
