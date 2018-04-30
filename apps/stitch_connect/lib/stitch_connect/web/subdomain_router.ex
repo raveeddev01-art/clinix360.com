@@ -169,6 +169,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     resources("/devices", DeviceController, only: [:create, :delete])
     post("/devices/unregister", DeviceController, :delete)
+
+    post("/news/mark-as-read", NewsController, :mark_as_read)
   end
 
   # Routes which needs admin role

@@ -10,7 +10,7 @@ import GlobalStarredMessages from "./components/global-starred-messages/global-s
 import PeopleDetail from "./components/people-detail/people-detail";
 import Mentions from "./components/mentions/mentions";
 import Files from "./components/files/files";
-import WhatsNew from "./components/whats-new/whats-new";
+import Updates from "./components/updates/updates";
 
 @inject("addonStore", "searchStore")
 @observer
@@ -74,7 +74,7 @@ class Addons extends Component {
               <GlobalStarredMessages />
             )}
             {addonStore.addonPanelType === "files" && <Files />}
-            {addonStore.addonPanelType === "Whats New" && <WhatsNew />}
+            {addonStore.addonPanelType === "Updates" && <Updates />}
           </div>
 
           <div className={rightPanelClass}>

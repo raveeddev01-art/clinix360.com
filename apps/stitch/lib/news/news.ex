@@ -33,4 +33,13 @@ defmodule Stitch.News do
     changeset = changeset(news, news_params)
     Repo.insert(changeset)
   end
+
+  @doc """
+  Updates the whats_new_last_seen_at field for the user to
+  the current unix time.
+  """
+  def mark_user_as_read(user) do
+    Ecto.Changeset.change(user, %{whats_new_last_seen_at: DateTime.utc_now()})
+    |> Repo.update()
+  end
 end

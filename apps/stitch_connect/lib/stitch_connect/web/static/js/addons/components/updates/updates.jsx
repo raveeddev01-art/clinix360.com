@@ -4,7 +4,7 @@ import moment from "moment";
 
 @inject("newsStore")
 @observer
-class WhatsNew extends Component {
+class Updates extends Component {
   render() {
     return (
       <div className="files-addon">
@@ -32,4 +32,4 @@ class WhatsNew extends Component {
   }
 }
 
-export default WhatsNew;
+export default Updates;

@@ -77,7 +77,7 @@ class TopNav extends Component {
   _toggleAddonMenu = menuName => () => {
     const { addonStore } = this.props;
 
-    if (menuName === "Whats New") {
+    if (menuName === "Updates") {
       this.props.newsStore.markAsRead();
     }
 

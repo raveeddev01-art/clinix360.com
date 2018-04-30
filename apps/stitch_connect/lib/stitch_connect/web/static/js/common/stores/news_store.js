@@ -9,39 +9,40 @@ import find from "lodash/find";
 
 class NewsStore {
   @observable news = [];
-  @observable latestNewsDate = undefined;
+  @observable whatsNewLastSeenAt = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
     this.loadNewsStories();
+    this.whatsNewLastSeenAt = currentUser.whatsNewLastSeenAt;
   }
 
   @action
   loadNewsStories = () => {
     return get(`/api/v1/news`).then(response => {
       this.news = response.data;
-      this.latestNewsDate = this.news[0].inserted_at;
     });
   };
 
-  @action
-  unreadNewsCount = () => {
-    if (currentUser.whatsNewLastSeenAt === null) {
+  @computed
+  get unreadNewsCount() {
+    if (this.whatsNewLastSeenAt === null) {
       return this.news.length;
     }
 
-    return 0;
-  };
+    const newStories = this.news.filter(
+      news => news.inserted_at > this.whatsNewLastSeenAt
+    );
+    return newStories.length;
+  }
 
   @action
   markAsRead = () => {
-    console.log("Mark as read");
-    // return post("/api/v1/users/send-confirmation-code", {
-    //   body: { id: response.data.id }
-    // }).then(() => {
-    //   this.props.history.push("/signup/confirmation-code");
-    //   this.setState({ loading: false });
-    // });
+    return post("/api/v1/news/mark-as-read", {
+      body: {}
+    }).then(response => {
+      this.whatsNewLastSeenAt = response.data.whats_new_last_seen_at;
+    });
   };
 }
 
