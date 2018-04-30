@@ -43,6 +43,9 @@ class DotOptions extends React.Component {
           <MenuItem onSelect={toggleAddonMenu("starred")}>
             <i className="fa fa-star m-r-5" /> Starred
           </MenuItem>
+          <MenuItem onSelect={toggleAddonMenu("Whats New")}>
+            <i className="fa fa-gift m-r-5" /> Whats New
+          </MenuItem>
           <MenuItem
             id="intercom-link"
             href="jig8cj9z@inbound.intercom-mail.com"
