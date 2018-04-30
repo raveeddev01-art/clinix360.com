@@ -12,13 +12,16 @@ class DrChronoSetupInstructions extends Component {
         <div className="integration-instructions__step row">
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 1</h4>
-            <p>From your drchrono dashboard, click on Account then API.’</p>
+            <p>
+              From your drchrono dashboard, click on 'Account'. Then click
+              'API'.
+            </p>
           </Col>
           <Col sm={7}>
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 1"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-1.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-1-new.png"
               />
             </div>
           </Col>
@@ -30,18 +33,15 @@ class DrChronoSetupInstructions extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 2</h4>
             <p>
-              Click New Application. Set a name for your application. We
-              recommend ‘Stitch’. Then, copy and paste the redirect URI below.
-              Then click on Save Changes.
+              Click 'New Application' at the bottom of the page in drchrono.
             </p>
           </Col>
           <Col sm={7}>
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 2"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-2.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-2-new.png"
               />
-              <DrChronoRedirectUri />
             </div>
           </Col>
         </div>
@@ -52,17 +52,18 @@ class DrChronoSetupInstructions extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 3</h4>
             <p>
-              Copy your Client ID and Client Secret values into Stitch (scroll
-              down). Make sure your oauth redirect URI is set properly. Click on
-              Save Changes.
+              Set a name for your application. We recommend ‘Stitch’. Then, copy
+              and paste the redirect URI (on the right). Then click on 'Save
+              Changes' in drchrono.
             </p>
           </Col>
           <Col sm={7}>
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 3"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-3.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-3-new.png"
               />
+              <DrChronoRedirectUri />
             </div>
           </Col>
         </div>
@@ -75,17 +76,15 @@ class DrChronoSetupInstructions extends Component {
             <p>
               Once your save your drchrono application, a section called Webhook
               will appear. Set a name for your webhook. We recommend 'Stitch'.
-              Then, copy and paste the Webhook URL below. Set your webhook
-              secret token to ‘stitch’. Then click on Save Changes. Then click
-              'Verify'. After a few moments it should switch to 'This webhook is
-              verified'. If it does not, refresh the page.
+              Then, copy and paste 'Your Callback URL' (on the right) into
+              drchrono. Set your webhook secret token to ‘stitch’.
             </p>
           </Col>
           <Col sm={7}>
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 4"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-4.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-4-new.png"
               />
             </div>
             <DrChronoWebhookUrl />
@@ -98,17 +97,19 @@ class DrChronoSetupInstructions extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 5</h4>
             <p>
-              Check the box next to Active that says 'We will deliver event
-              detail when this hook is triggered.'' Then select 'Send me
-              everything' under the Events dropdown menu. Then click on Save
-              Changes.
+              Check the box next to 'Active' that says 'We will deliver event
+              detail when this hook is triggered.' Then select 'Send me
+              everything' under the Events dropdown menu. Then click on 'Save
+              Changes' in drchrono. Then click 'Verify'. After a few moments it
+              should switch to 'This webhook is verified'. If it does not,
+              refresh the drchrono page.
             </p>
           </Col>
           <Col sm={7}>
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 5"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-5.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-5-new.png"
               />
             </div>
           </Col>
@@ -120,18 +121,19 @@ class DrChronoSetupInstructions extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 6</h4>
             <p>
-              Click 'Show' next to Client ID and Client Secret. Copy the values
-              and paste credentials below under 'Integration Settings'. Then
-              click 'Authenticate' and authenticate your drchrono account.
-              Finally, select which notifications you want to display and
-              confirm your room. Then click 'Save Integration' to complete.
+              In drchrono, click 'Show' next to Client ID and Client Secret.
+              Copy these values and paste them into Stitch below (under
+              'Integration Settings'). Then click 'Authenticate' and follow the
+              steps in drchrono to authenticate your integration. Finally, in
+              Stitch, select which notifications you want to display and confirm
+              your room. Then click 'Save Integration' in Stitch to complete.
             </p>
           </Col>
           <Col sm={7}>
             <div className="integration-instructions__step__content">
               <img
                 alt="drchrono setup step 6"
-                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-6.png"
+                src="https://s3.amazonaws.com/stitch-content-public/integration-instructions/drchrono/step-6-new.png"
               />
             </div>
           </Col>

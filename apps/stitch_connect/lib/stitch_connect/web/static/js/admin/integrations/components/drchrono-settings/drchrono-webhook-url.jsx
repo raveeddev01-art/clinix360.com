@@ -18,7 +18,7 @@ export default class DrChronoWebhookUrl extends Component {
   render() {
     return (
       <div>
-        <ControlLabel>Your Webhook URL:</ControlLabel>
+        <ControlLabel>Your Callback URL:</ControlLabel>
         <FormControl
           disabled
           name="webhookToken"
