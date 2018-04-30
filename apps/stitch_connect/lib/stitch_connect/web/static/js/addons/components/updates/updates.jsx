@@ -10,8 +10,10 @@ class Updates extends Component {
       <div className="files-addon">
         {this.props.newsStore.news.map(news => (
           <div key={`news-${news.id}`} className="news-story">
-            <h2>{moment(news.inserted_at).format("MMM Do, YYYY")}</h2>
-            <h2>{news.title}</h2>
+            <h2 className="news-story__date">
+              {moment(news.inserted_at).format("MMM Do, YYYY")}
+            </h2>
+            <h2 className="news-story__title">{news.title}</h2>
             <div
               className="news-story__body"
               dangerouslySetInnerHTML={{ __html: news.html_body }}
