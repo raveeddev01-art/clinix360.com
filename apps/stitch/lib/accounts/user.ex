@@ -36,6 +36,7 @@ defmodule Stitch.Accounts.User do
     field(:is_bot, :boolean, default: false)
     field(:groups_as_guest, {:array, :integer}, default: [])
     field(:timezone, :map, default: %{})
+    field(:whats_new_last_seen_at, :utc_datetime)
     belongs_to(:team, Stitch.Team)
     has_one(:invitation, Stitch.Invitation, on_delete: :delete_all)
     has_many(:password_reset_token, Stitch.Accounts.PasswordResetToken, on_delete: :delete_all)
@@ -47,7 +48,16 @@ defmodule Stitch.Accounts.User do
 
   def changeset(%User{} = struct, attrs) do
     struct
-    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username, :timezone])
+    |> cast(attrs, [
+      :first_name,
+      :last_name,
+      :email,
+      :pin,
+      :phone_number,
+      :title,
+      :username,
+      :timezone
+    ])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> valid_email_changeset(attrs)
@@ -187,19 +197,27 @@ defmodule Stitch.Accounts.User do
     |> validate_timezone()
   end
 
+  def timezone_changeset(struct, params) do
+    struct
+    |> cast(params, [:timezone])
+    |> validate_timezone()
+  end
+
   def validate_timezone(%{valid?: true, changes: %{timezone: timezone}} = changeset) do
     case timezone do
       %{"tz" => tz, "tz_label" => tz_label, "tz_offset" => tz_offset}
-        when is_binary(tz) and is_binary(tz_label) and is_integer(tz_offset) ->
-          if Timex.Timezone.exists?(tz) do
-            changeset
-          else
-            add_error(changeset, :timezone, "Invalid timezone format #{tz}")
-          end
+      when is_binary(tz) and is_binary(tz_label) and is_integer(tz_offset) ->
+        if Timex.Timezone.exists?(tz) do
+          changeset
+        else
+          add_error(changeset, :timezone, "Invalid timezone format #{tz}")
+        end
+
       _ ->
         add_error(changeset, :timezone, "Invalid timezone format")
     end
   end
+
   def validate_timezone(changeset), do: changeset
 
   defp ensure_role(%Ecto.Changeset{} = changeset) do
@@ -313,7 +331,7 @@ defmodule Stitch.Accounts.User do
   def update_timezone(%User{} = user, timezone) do
     user
     |> timezone_changeset(%{"timezone" => timezone})
-    |> Repo.update
+    |> Repo.update()
   end
 
   @doc """

@@ -25,6 +25,7 @@ import UsersStore from "./users_store";
 import DesktopStore from "./desktop_store";
 import AccessLogsStore from "./access_logs_store";
 import IntegrationStore from "./integration_store";
+import NewsStore from "./news_store";
 
 class RootStore {
   constructor(props) {
@@ -63,11 +64,13 @@ class RootStore {
     this.desktopStore = new DesktopStore(this);
     this.accessLogsStore = new AccessLogsStore(this);
     this.integrationStore = new IntegrationStore(this);
+    this.newsStore = new NewsStore(this);
   }
 
   onStoreInit() {
     this.sidemenuStore.loadApp();
     this.notificationStore.loadPreferences();
+    this.newsStore.loadNewsStories();
 
     if (currentUser.roles.includes("admin")) {
       this.billingStore.initialBillingLoad();

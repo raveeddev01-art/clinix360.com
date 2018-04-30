@@ -26,6 +26,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       token: user.token,
       pin: user.pin,
       team_id: user.team_id,
+      whats_new_last_seen_at: user.whats_new_last_seen_at,
       redirect_url: redirect_url
     }
   end
@@ -63,7 +64,8 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       onboarded: user.onboarded,
       disabled: user.disabled,
       groups_as_guest: user.groups_as_guest,
-      timezone: user.timezone
+      timezone: user.timezone,
+      whats_new_last_seen_at: user.whats_new_last_seen_at
     }
   end
 

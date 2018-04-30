@@ -85,6 +85,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post("/users/validate-phone-number", UserController, :validate_phone_number)
     post("/invitations/accept/:token", InvitationController, :accept)
     get("/apps", AppController, :index)
+    get("/news", NewsController, :index)
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do
@@ -168,6 +169,8 @@ defmodule StitchConnect.Web.SubdomainRouter do
 
     resources("/devices", DeviceController, only: [:create, :delete])
     post("/devices/unregister", DeviceController, :delete)
+
+    post("/news/mark-as-read", NewsController, :mark_as_read)
   end
 
   # Routes which needs admin role
