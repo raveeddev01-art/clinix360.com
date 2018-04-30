@@ -6,20 +6,6 @@ import DrChronoWebhookUrl from "./drchrono-webhook-url";
 
 @inject("titleStore", "adminPanelStore", "groupsStore", "integrationStore")
 class DrChronoSetupInstructions extends Component {
-  get selectedIntegration() {
-    return this.props.integrationStore.selectedIntegration;
-  }
-
-  get redirectUri() {
-    const token = this.selectedIntegration.webhook_token;
-    return `${applicationScheme}${applicationHost}/_oauth/drchrono/${token}`;
-  }
-
-  get webhookUrl() {
-    const token = this.selectedIntegration.webhook_token;
-    return `${applicationScheme}${applicationHost}/webhook/drchrono/${token}`;
-  }
-
   render() {
     return (
       <div className="integration-instructions">

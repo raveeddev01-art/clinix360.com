@@ -12,7 +12,7 @@ export default class DrChronoWebhookUrl extends Component {
 
   get webhookUrl() {
     const token = this.selectedIntegration.webhook_token;
-    return `${applicationScheme}${applicationHost}/_oauth/drchrono/${token}`;
+    return `${applicationScheme}${applicationHost}/webhook/drchrono/${token}`;
   }
 
   render() {
