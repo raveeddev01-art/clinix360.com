@@ -85,6 +85,7 @@ defmodule StitchConnect.Web.SubdomainRouter do
     post("/users/validate-phone-number", UserController, :validate_phone_number)
     post("/invitations/accept/:token", InvitationController, :accept)
     get("/apps", AppController, :index)
+    get("/news", NewsController, :index)
   end
 
   scope "/api/v1", StitchConnect.Web.Api.V1, as: :api_v1 do

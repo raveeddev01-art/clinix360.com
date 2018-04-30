@@ -21,7 +21,7 @@ import NavItemHide from "./nav-items/nav-item-hide";
 import GroupName from "./group-name";
 import DotOptions from "./dot-options";
 
-@inject("addonStore", "groupStore", "groupsStore", "searchStore")
+@inject("addonStore", "groupStore", "groupsStore", "searchStore", "newsStore")
 @observer
 class TopNav extends Component {
   constructor(props) {
@@ -76,6 +76,10 @@ class TopNav extends Component {
 
   _toggleAddonMenu = menuName => () => {
     const { addonStore } = this.props;
+
+    if (menuName === "Whats New") {
+      this.props.newsStore.markAsRead();
+    }
 
     if (addonStore.addonPanelType === menuName && addonStore.showAddons) {
       addonStore.toggleAddons(false);

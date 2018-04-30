@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
@@ -6,6 +7,8 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
+@inject("newsStore")
+@observer
 class DotOptions extends React.Component {
   onToggle = isOpen => {
     if (isOpen) {
@@ -44,7 +47,12 @@ class DotOptions extends React.Component {
             <i className="fa fa-star m-r-5" /> Starred
           </MenuItem>
           <MenuItem onSelect={toggleAddonMenu("Whats New")}>
-            <i className="fa fa-gift m-r-5" /> Whats New
+            <i className="fa fa-gift m-r-5" /> Whats New{" "}
+            {this.props.newsStore.unreadNewsCount() > 0 && (
+              <span className="badge">
+                {this.props.newsStore.unreadNewsCount()}
+              </span>
+            )}
           </MenuItem>
           <MenuItem
             id="intercom-link"
