@@ -47,7 +47,16 @@ defmodule Stitch.Accounts.User do
 
   def changeset(%User{} = struct, attrs) do
     struct
-    |> cast(attrs, [:first_name, :last_name, :email, :pin, :phone_number, :title, :username, :timezone])
+    |> cast(attrs, [
+      :first_name,
+      :last_name,
+      :email,
+      :pin,
+      :phone_number,
+      :title,
+      :username,
+      :timezone
+    ])
     |> validate_username(attrs)
     |> unique_constraint(:email, name: :users_email_team_id_index)
     |> valid_email_changeset(attrs)
@@ -190,12 +199,14 @@ defmodule Stitch.Accounts.User do
   def validate_timezone(%{valid?: true, changes: %{timezone: timezone}} = changeset) do
     case timezone do
       %{"tz" => tz, "tz_label" => tz_label, "tz_offset" => tz_offset}
-        when is_binary(tz) and is_binary(tz_label) and is_integer(tz_offset) ->
-          changeset
+      when is_binary(tz) and is_binary(tz_label) and is_integer(tz_offset) ->
+        changeset
+
       _ ->
         add_error(changeset, :timezone, "Invalid timezone format")
     end
   end
+
   def validate_timezone(changeset), do: changeset
 
   defp ensure_role(%Ecto.Changeset{} = changeset) do
@@ -309,7 +320,7 @@ defmodule Stitch.Accounts.User do
   def update_timezone(%User{} = user, timezone) do
     user
     |> timezone_changeset(%{"timezone" => timezone})
-    |> Repo.update
+    |> Repo.update()
   end
 
   @doc """

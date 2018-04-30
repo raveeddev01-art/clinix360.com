@@ -3,7 +3,7 @@ defmodule Stitch.Repo.Migrations.AddTimezoneInfoToUsers do
 
   def change do
     alter table(:users) do
-      add :timezone, :map, default: "{}"
+      add(:timezone, :map, default: "{}")
     end
   end
 end
