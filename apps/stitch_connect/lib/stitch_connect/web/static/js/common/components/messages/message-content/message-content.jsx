@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import { Emoji } from "emoji-mart";
+import Markdown from "react-remarkable";
 import Linkify from "linkifyjs/react";
 import moment from "moment";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
@@ -48,7 +49,8 @@ class MessageContent extends Component {
         );
       }
 
-      return <Linkify key={`link_${i}`}>{part.content}</Linkify>;
+      // return part.content;
+      return <Markdown source={part.content} />;
     });
   }
 
@@ -56,6 +58,17 @@ class MessageContent extends Component {
     const { message } = this.props;
     const newline = "\n";
     const lines = (message.text_content || "").split(newline);
+
+    // const md = new Remarkable();
+    // return { __html: md.render(message.text_content) };
+
+    console.log(
+      lines.reduce(
+        (result, line, i) =>
+          result.concat(this.renderMessageLine(line), <br key={`br_${i}`} />),
+        []
+      )
+    );
 
     return lines.reduce(
       (result, line, i) =>
@@ -117,7 +130,7 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{message.text_content}</div>
           ) : (
-            this.renderMessageText()
+            <Linkify>{this.renderMessageText()}</Linkify>
           )}
 
           {this.renderLinkPreviews()}
