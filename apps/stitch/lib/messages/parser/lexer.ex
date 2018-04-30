@@ -12,11 +12,11 @@ defmodule Stitch.Message.Parser.Lexer do
 
   def format_tokens(%{tokens: tokens}) do
     Enum.map(tokens, fn token ->
-      %{
-        type: token.type,
-        token: [token.start, token.end],
-        text: text_coords(token)
-      }
+      new_token =
+        %{ type: token.type,
+          token: [token.start, token.end],
+          text: text_coords(token) }
+      if token.type == :mention, do: Map.put(new_token, :id, token.id), else: new_token
     end)
   end
 

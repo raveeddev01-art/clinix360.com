@@ -6,6 +6,7 @@ defmodule Stitch.Message.ParserTest do
     input = "Hi, <@U1234567>."
     meta = Parser.get_meta(input)
     assert read_meta(input, meta) == [%{token: "<@U1234567>", text: "1234567"}]
+    assert [%{id: 1234567, text: [7, 14], token: [4, 15], type: :mention}] = meta
   end
 
   test "mention inside emphasis" do
