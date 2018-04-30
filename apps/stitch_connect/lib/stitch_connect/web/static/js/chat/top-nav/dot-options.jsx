@@ -36,13 +36,13 @@ class DotOptions extends React.Component {
                   className="badge"
                   style={{
                     position: "absolute",
-                    top: "-13px",
-                    left: "10px",
+                    top: "-14px",
+                    left: "4px",
                     backgroundColor: "#e43a2f",
                     borderRadius: "4px"
                   }}
                 >
-                  {this.props.newsStore.unreadNewsCount}
+                  {this.props.newsStore.unreadNewsLabel}
                 </span>
               )}
             </span>
@@ -74,7 +74,7 @@ class DotOptions extends React.Component {
                   marginTop: "-3px"
                 }}
               >
-                {this.props.newsStore.unreadNewsCount}
+                {this.props.newsStore.unreadNewsLabel}
               </span>
             )}
           </MenuItem>

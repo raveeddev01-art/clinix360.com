@@ -35,6 +35,15 @@ class NewsStore {
     return newStories.length;
   }
 
+  @computed
+  get unreadNewsLabel() {
+    if (this.unreadNewsCount > 9) {
+      return "9+";
+    }
+
+    return this.unreadNewsCount;
+  }
+
   @action
   markAsRead = () => {
     return post("/api/v1/news/mark-as-read", {
