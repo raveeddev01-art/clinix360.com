@@ -1,68 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { inject } from "mobx-react";
-import { Emoji } from "emoji-mart";
-import Linkify from "linkifyjs/react";
+import { inject, observer } from "mobx-react";
 import moment from "moment";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
-import UserMention from "./user-mention";
 import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
+import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
 @inject("usersStore", "messageStore")
+@observer
 class MessageContent extends Component {
   onToggle = emoji => {
     this.props.messageStore.toggleReaction(this.props.message.id, emoji);
   };
-
-  renderMessageLine(line) {
-    const { usersStore, messageStore } = this.props;
-    const { usersById } = usersStore;
-    const parts = messageStore.decodeMessage(line);
-    const isAllEmojis =
-      parts.filter(p => p.type === "emoji").length === parts.length;
-
-    return parts.map((part, i) => {
-      if (part.type === "group_mention") {
-        return (
-          <span key={`group_mention_${i}`} className="group-mention">
-            @{part.content}
-          </span>
-        );
-      } else if (part.type === "mention") {
-        return (
-          <UserMention
-            key={`usermention_${i}`}
-            user={usersById[part.content]}
-          />
-        );
-      } else if (part.type === "emoji") {
-        return (
-          <Emoji
-            key={`emoji_${i}`}
-            emoji={part.content}
-            size={isAllEmojis ? 32 : 18}
-          />
-        );
-      }
-
-      return <Linkify key={`link_${i}`}>{part.content}</Linkify>;
-    });
-  }
-
-  renderMessageText() {
-    const { message } = this.props;
-    const newline = "\n";
-    const lines = (message.text_content || "").split(newline);
-
-    return lines.reduce(
-      (result, line, i) =>
-        result.concat(this.renderMessageLine(line), <br key={`br_${i}`} />),
-      []
-    );
-  }
 
   renderLinkPreviews() {
     const {
@@ -117,7 +69,7 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{message.text_content}</div>
           ) : (
-            this.renderMessageText()
+            messageTextToComponents(message.text_content || "")
           )}
 
           {this.renderLinkPreviews()}

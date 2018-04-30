@@ -781,6 +781,19 @@
     position: relative;
     padding: 2px 40px 3px 0;
 
+    code {
+      color: $brand-primary;
+      background-color: lightblue;
+    }
+
+    pre {
+      background-color: #eee;
+      code {
+        color: $brand-primary;
+        background-color: #eee;
+      }
+    }
+
     &:hover,
     &.selected {
       background: #f5f5f5;
@@ -895,10 +908,6 @@
               left: -24px;
               top: 2px;
             }
-          }
-
-          br:last-of-type {
-            display: none;
           }
         }
       }
