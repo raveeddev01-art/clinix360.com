@@ -46,7 +46,7 @@ class DrChronoSetupInstructions extends Component {
             <p>
               Click New Application. Set a name for your application. We
               recommend ‘Stitch’. Then, copy and paste the redirect URI below.
-              Then click on Save Changes.’
+              Then click on Save Changes.
             </p>
           </Col>
           <Col sm={7}>
@@ -66,9 +66,9 @@ class DrChronoSetupInstructions extends Component {
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Step 3</h4>
             <p>
-              Set a name for your application and copy your Client ID and Client
-              Secret values into Stitch (scroll down). Make sure your oauth
-              redirect URI is set properly. Click on Save Changes.
+              Copy your Client ID and Client Secret values into Stitch (scroll
+              down). Make sure your oauth redirect URI is set properly. Click on
+              Save Changes.
             </p>
           </Col>
           <Col sm={7}>
