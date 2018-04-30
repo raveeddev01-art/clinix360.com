@@ -29,7 +29,17 @@ class DotOptions extends React.Component {
               this.overlayTrigger = ref;
             }}
           >
-            <i className="fa fa-ellipsis-v" />
+            <span>
+              <i className="fa fa-ellipsis-v" />
+              {this.props.newsStore.unreadNewsCount > 0 && (
+                <span
+                  className="badge"
+                  style={{ position: "absolute", top: "-5px", left: "5px" }}
+                >
+                  {this.props.newsStore.unreadNewsCount}
+                </span>
+              )}
+            </span>
           </OverlayTrigger>
         </Dropdown.Toggle>
 

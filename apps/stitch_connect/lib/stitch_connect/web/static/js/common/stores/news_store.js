@@ -5,7 +5,6 @@
  */
 
 import { observable, action, computed } from "mobx";
-import find from "lodash/find";
 
 class NewsStore {
   @observable news = [];
