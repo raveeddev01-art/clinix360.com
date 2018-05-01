@@ -24,7 +24,8 @@ defmodule StitchConnect.Web.Api.V1.IntegrationController do
 
     with {:group_exists?, %Group{} = group} <- {:group_exists?, GroupQueries.get_by_id(group_id)},
          {:app_exists?, %App{} = _app} <- {:app_exists?, AppQueries.get_by_id(app_id)},
-         {:authorized?, true} <- {:authorized?, IntegrationAuthorization.can_create?(user, group)},
+         {:authorized?, true} <-
+           {:authorized?, IntegrationAuthorization.can_create?(user, group)},
          {:ok, %Integration{} = integration} <- Integration.create(app_id, group_id, user.team_id) do
       render(conn, "show.json", integration: integration)
     else
@@ -48,7 +49,8 @@ defmodule StitchConnect.Web.Api.V1.IntegrationController do
   def update(conn, %{"id" => id} = params) do
     user = conn.assigns.current_user
 
-    with {:exists?, %Integration{} = integration} <- {:exists?, IntegrationQueries.find_by_id(id)},
+    with {:exists?, %Integration{} = integration} <-
+           {:exists?, IntegrationQueries.find_by_id(id)},
          {:authorized?, true} <-
            {:authorized?, IntegrationAuthorization.can_edit?(user, integration)},
          {:updated?, {:ok, updated_integration}} <-
@@ -72,7 +74,8 @@ defmodule StitchConnect.Web.Api.V1.IntegrationController do
   def delete(conn, %{"id" => id}) do
     user = conn.assigns.current_user
 
-    with {:exists?, %Integration{} = integration} <- {:exists?, IntegrationQueries.find_by_id(id)},
+    with {:exists?, %Integration{} = integration} <-
+           {:exists?, IntegrationQueries.find_by_id(id)},
          {:authorized?, true} <-
            {:authorized?, IntegrationAuthorization.can_delete?(user, integration)},
          {:deleted?, {:ok, _integration}} <- {:deleted?, Integration.delete(integration)} do
