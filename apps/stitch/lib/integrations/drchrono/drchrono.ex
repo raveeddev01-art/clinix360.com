@@ -40,7 +40,7 @@ defmodule Stitch.Drchrono do
     message =
       "Event: Appointment created\nDoctor: #{doctor["first_name"]} #{doctor["last_name"]}\nPatient: #{
         patient["first_name"]
-      } #{patient["last_name"]}\nScheduled: #{scheduled_date}\nTime: #{scheduled_time}Reason: #{
+      } #{patient["last_name"]}\nScheduled: #{scheduled_date}\nTime: #{scheduled_time}\nReason: #{
         reason
       }\nDuration: #{duration} minutes\nNotes: #{notes}"
 

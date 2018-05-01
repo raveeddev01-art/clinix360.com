@@ -130,7 +130,7 @@ class Message extends PureComponent {
       highlight: isHighlighted,
       pinned: message.pinned || message.starred,
       failed: message.status === "failed",
-      bot_message: user.is_bot
+      bot_message: user && user.is_bot
     });
 
     return (
