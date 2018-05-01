@@ -55,12 +55,17 @@ class Login extends Component {
       body: { email, password },
       hideNotify: true
     })
-      .then(() => {
+      .then(response => {
         Cookies.remove("last_activity");
         if (window.electronApp) {
           window.location.href = "/";
+          return;
+        }
+
+        if (response.data.redirect_url === "/apps") {
+          history.push(response.data.redirect_url);
         } else {
-          history.push("/apps");
+          window.location = response.data.redirect_url;
         }
       })
       .catch(err => {

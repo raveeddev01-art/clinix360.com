@@ -26,7 +26,7 @@ defmodule StitchConnect.Web.GroupController.DeleteTest do
         |> delete(api_v1_group_path(conn, :delete, another_group))
         |> json_response(404)
 
-      assert %{"errors" => "The resource you are looking for does not exist."} = json
+      assert %{"message" => "The resource you are looking for does not exist."} = json
     end
 
     test "doesn't allow guest to remove group", %{conn: conn, team: team} do

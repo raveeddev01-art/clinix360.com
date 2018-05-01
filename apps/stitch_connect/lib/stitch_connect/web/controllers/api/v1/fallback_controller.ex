@@ -31,14 +31,14 @@ defmodule StitchConnect.Web.Api.V1.FallbackController do
 
   def call(conn, {:error, :not_authorized}) do
     conn
-    |> put_status(:forbidden)
-    |> render(ErrorView, :"403")
+    |> put_status(:unauthorized)
+    |> render(ErrorView, :"401")
   end
 
   def call(conn, {:error, :not_authorized, message}) do
     conn
-    |> put_status(:forbidden)
-    |> render(ErrorView, :"403", message: message)
+    |> put_status(:unauthorized)
+    |> render(ErrorView, :"401", message: message)
   end
 
   def call(conn, {:error, :subscription_expired}) do

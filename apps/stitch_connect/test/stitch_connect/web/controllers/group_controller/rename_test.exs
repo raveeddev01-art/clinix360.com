@@ -42,7 +42,7 @@ defmodule StitchConnect.Web.GroupController.RenameTest do
 
       conn = patch(conn, api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
       assert response = json_response(conn, :not_found)
-      assert response["errors"] =~ "does not exist"
+      assert response["message"] =~ "does not exist"
     end
 
     test "doesn't allow admin to rename private group from another team", %{conn: conn, team: team, admin: admin} do
@@ -55,7 +55,7 @@ defmodule StitchConnect.Web.GroupController.RenameTest do
 
       conn = patch(conn, api_v1_group_path(conn, :rename, group), %{"name" => "Foo"})
       assert response = json_response(conn, :not_found)
-      assert response["errors"] =~ "does not exist"
+      assert response["message"] =~ "does not exist"
     end
 
     test "doesn't allow guests to rename groups", %{conn: base_conn, team: team, group: group} do
@@ -71,7 +71,7 @@ defmodule StitchConnect.Web.GroupController.RenameTest do
 
         conn = patch(base_conn, api_v1_group_path(base_conn, :rename, other_group), %{"name" => "Foo"})
         assert response = json_response(conn, :not_found)
-        assert response["errors"] =~ "does not exist"
+        assert response["message"] =~ "does not exist"
       end
     end
   end

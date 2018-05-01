@@ -15,16 +15,18 @@ defmodule Stitch.UserAuthorizationTest do
     end
 
     test "return false if user is trying to change someone else's avatar" do
-      user1 = insert(:user, %{})
-      user2 = insert(:user, %{})
+      team = insert(:team)
+      user1 = insert(:user, team: team)
+      user2 = insert(:user, team: team)
 
       result = Stitch.UserAuthorization.can_update_user?(user1, user2.id)
       assert result == false
     end
 
     test "return true if user is admin and trying to change someone else's avatar" do
-      user1 = insert(:user, %{roles: ["admin"]})
-      user2 = insert(:user, %{})
+      team = insert(:team)
+      user1 = insert(:user, roles: ["admin"], team: team)
+      user2 = insert(:user, team: team)
 
       result = Stitch.UserAuthorization.can_update_user?(user1, user2.id)
       assert result == true

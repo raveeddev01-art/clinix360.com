@@ -10,12 +10,20 @@ defmodule StitchConnect.Application do
       supervisor(StitchConnect.Web.Endpoint, []),
       supervisor(StitchConnect.Web.Presence, []),
       worker(StitchConnect.MessageMailer, []),
-      worker(StitchConnect.MobileBadgeUpdater, []),
       worker(StitchConnect.PresignedUrlCache, []),
       worker(StitchConnect.ActivityTrackerWorker, []),
       # Start your own worker by calling: StitchConnect.Worker.start_link(arg1, arg2, arg3)
       # worker(StitchConnect.Worker, [arg1, arg2, arg3]),
     ]
+
+    children =
+      if Application.get_env(:stitch_connect, :env) == :test do
+        children
+      else
+        children ++ [
+          worker(StitchConnect.MobileBadgeUpdater, [])
+        ]
+      end
 
     children = if Application.get_env(:stitch_connect, :start_message_link_preview_generator, true) do
       children ++ [worker(StitchConnect.MessageLinkPreviewGenerator, [])]

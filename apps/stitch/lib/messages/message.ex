@@ -18,7 +18,6 @@ defmodule Stitch.Message do
     field(:deleted, :boolean, default: false)
     field(:edited_at, :utc_datetime)
     field(:text_content, :string)
-    field(:text_content_meta, {:array, :map}, default: [])
     field(:type, :string)
     field(:fields, :map)
     field(:pinned, :boolean)
@@ -68,7 +67,6 @@ defmodule Stitch.Message do
     |> cast(params, [:text_content, :mentioned_user_ids])
     |> validate_required([:text_content])
     |> check_for_links
-    |> put_meta()
     |> put_change(:edited_at, DateTime.utc_now())
   end
 
@@ -86,15 +84,8 @@ defmodule Stitch.Message do
     ])
     |> validate_required([:type, :text_content])
     |> validate_inclusion(:type, ["chat"])
-    |> put_meta()
     |> check_for_links
   end
-
-  def put_meta(%{valid?: true, changes: %{text_content: text_content}} = changeset) do
-    put_change(changeset, :text_content_meta, Message.Parser.get_meta(text_content))
-  end
-
-  def put_meta(changeset), do: changeset
 
   defp check_for_links(
          %Ecto.Changeset{valid?: true, changes: %{text_content: text_content}} = changeset
@@ -125,7 +116,6 @@ defmodule Stitch.Message do
     ])
     |> validate_required([:fields, :type])
     |> validate_inclusion(:type, ["upload"])
-    |> put_meta()
     |> add_preview()
   end
 
@@ -153,7 +143,6 @@ defmodule Stitch.Message do
   def create(group_id, user, %{"type" => type} = attrs, presence_user_ids)
       when type in ["chat", "upload"] do
     group = GroupQueries.get_by_id(group_id)
-    group_user = Repo.get_by(GroupUser, user_id: user.id, group_id: group.id)
     users = Repo.preload(group, :users).users
 
     mentioned_user_ids =
@@ -207,11 +196,7 @@ defmodule Stitch.Message do
         increment_unread_counter(group.id, recipients),
         []
       )
-      |> mark_as_read_on_creation(
-        group.id,
-        user.id,
-        group_user.last_read_at || group_user.inserted_at
-      )
+      |> mark_as_read_on_creation(group.id, user.id)
       |> Repo.transaction()
 
     case result do
@@ -225,8 +210,8 @@ defmodule Stitch.Message do
 
         {:ok, Map.put(result_map, :notify_user_ids, notify_user_ids)}
 
-      {:error, _} ->
-        result
+      error ->
+        error
     end
   end
 
@@ -271,7 +256,7 @@ defmodule Stitch.Message do
     |> Repo.transaction()
   end
 
-  def mark_as_read_on_creation(multi, group_id, user_id, last_read_at) do
+  def mark_as_read_on_creation(multi, group_id, user_id) do
     multi
     |> Multi.update_all(:mark_messages_as_read, mark_messages_as_read(group_id, user_id), [])
     |> Multi.update_all(:mark_group_as_read, mark_group_as_read(group_id, user_id), [])

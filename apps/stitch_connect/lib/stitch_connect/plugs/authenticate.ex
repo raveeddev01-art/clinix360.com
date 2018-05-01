@@ -24,6 +24,7 @@ defmodule StitchConnect.Plug.Authenticate do
   def force_login(conn) do
     conn
     |> clear_session
+    |> Plug.Conn.put_session(:redirect_url, conn.request_path)
     |> Phoenix.Controller.redirect(to: "/login")
     |> halt
   end

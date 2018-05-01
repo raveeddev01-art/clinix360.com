@@ -8,8 +8,30 @@ import HelpBlock from "react-bootstrap/lib/HelpBlock";
 @inject("integrationStore")
 @observer
 class IntegrationPanel extends Component {
+  _renderButton = () => {
+    if (this.props.requestAccess) {
+      return (
+        <Button
+          href="https://teamstitch.typeform.com/to/J3Wa2P"
+          bsStyle="primary"
+          className="action-edit btn-fancy"
+        >
+          Request Access
+        </Button>
+      );
+    }
+
+    return (
+      <LinkContainer to={`/admin/integrations/${this.props.slug}`}>
+        <Button bsStyle="primary" className="action-edit btn-fancy">
+          Manage
+        </Button>
+      </LinkContainer>
+    );
+  };
+
   render() {
-    const { title, description, icon, slug } = this.props;
+    const { title, description, icon } = this.props;
 
     return (
       <div className="panel-settings integrations-panel">
@@ -22,11 +44,7 @@ class IntegrationPanel extends Component {
           <h3 className="m-b-0">{title}</h3>
           <HelpBlock>{description}</HelpBlock>
         </div>
-        <LinkContainer to={`/admin/integrations/${slug}`}>
-          <Button bsStyle="primary" className="action-edit btn-fancy">
-            Manage
-          </Button>
-        </LinkContainer>
+        {this._renderButton()}
       </div>
     );
   }
@@ -36,14 +54,16 @@ IntegrationPanel.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   slug: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired
+  icon: PropTypes.string.isRequired,
+  requestAccess: PropTypes.boolean
 };
 
 IntegrationPanel.defaultProps = {
   title: "",
   description: "",
   slug: "",
-  icon: ""
+  icon: "",
+  requestAccess: false
 };
 
 export default IntegrationPanel;

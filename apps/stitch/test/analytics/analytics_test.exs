@@ -33,7 +33,10 @@ defmodule Stitch.AnalyticsTest do
         "plan"       => subscription.tier,
         "created_at" => NaiveDateTime.to_iso8601(user.inserted_at),
         "user_created_at" => NaiveDateTime.to_iso8601(user.inserted_at),
-        "team_created_at" => NaiveDateTime.to_iso8601(team.inserted_at)
+        "team_created_at" => NaiveDateTime.to_iso8601(team.inserted_at),
+        "team_ehr" => nil,
+        "team_industry" => nil,
+        "team_size" => nil
       }
 
       assert identify_payload["type"] == "identify"
@@ -47,7 +50,10 @@ defmodule Stitch.AnalyticsTest do
         "team_id"   => Integer.to_string(team.id),
         "plan"      => subscription.tier,
         "created_at" => NaiveDateTime.to_iso8601(team.inserted_at),
-        "team_created_at" => NaiveDateTime.to_iso8601(team.inserted_at)
+        "team_created_at" => NaiveDateTime.to_iso8601(team.inserted_at),
+        "team_ehr" => nil,
+        "team_industry" => nil,
+        "team_size" => nil
       }
 
       assert group_payload["type"] == "group"
@@ -118,7 +124,10 @@ defmodule Stitch.AnalyticsTest do
       "plan"       => subscription.tier,
       "created_at" => NaiveDateTime.to_iso8601(user.inserted_at),
       "user_created_at" => NaiveDateTime.to_iso8601(user.inserted_at),
-      "team_created_at" => NaiveDateTime.to_iso8601(team.inserted_at)
+      "team_created_at" => NaiveDateTime.to_iso8601(team.inserted_at),
+      "team_ehr" => nil,
+      "team_industry" => nil,
+      "team_size" => nil
     }
 
     assert payload["type"] == "identify"

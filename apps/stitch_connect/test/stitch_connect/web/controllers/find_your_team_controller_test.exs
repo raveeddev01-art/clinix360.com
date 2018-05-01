@@ -75,7 +75,7 @@ defmodule StitchConnect.Web.FindYourTeamControllerTest do
         |> delete(api_v1_find_your_team_path(conn, :delete, "DoesntExist"))
         |> json_response(:not_found)
 
-      assert json["errors"] == "The resource you are looking for does not exist."
+      assert json["message"] == "The resource you are looking for does not exist."
     end
   end
 end

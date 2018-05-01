@@ -10,7 +10,7 @@ defmodule StitchConnect.Web.Api.V1.UserView do
     user_json(user)
   end
 
-  def render("login.json", %{user: user}) do
+  def render("login.json", %{user: user, redirect_url: redirect_url}) do
     %{
       id: user.id,
       first_name: user.first_name,
@@ -25,7 +25,9 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       disabled: user.disabled,
       token: user.token,
       pin: user.pin,
-      team_id: user.team_id
+      team_id: user.team_id,
+      whats_new_last_seen_at: user.whats_new_last_seen_at,
+      redirect_url: redirect_url
     }
   end
 
@@ -61,7 +63,9 @@ defmodule StitchConnect.Web.Api.V1.UserView do
       grey_avatar: User.grey_avatar(user),
       onboarded: user.onboarded,
       disabled: user.disabled,
-      groups_as_guest: user.groups_as_guest
+      groups_as_guest: user.groups_as_guest,
+      timezone: user.timezone,
+      whats_new_last_seen_at: user.whats_new_last_seen_at
     }
   end
 

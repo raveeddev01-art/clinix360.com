@@ -106,6 +106,8 @@ defmodule StitchConnect.Web.UserOnboardingTest do
     test "accepts invitation", %{conn: conn, invite: invite} do
       conn = post(conn, SubdomainRoutes.api_v1_invitation_path(conn, :accept, invite.invite_token), %{
         username: "username",
+        first_name: "Admin",
+        last_name: "Admin",
         phone_number: "1231231234",
         pin: "0000",
       })
@@ -117,6 +119,8 @@ defmodule StitchConnect.Web.UserOnboardingTest do
     test "username is already taken", %{conn: conn, invite: invite} do
       conn = post(conn, SubdomainRoutes.api_v1_invitation_path(conn, :accept, invite.invite_token), %{
         username: "admin",
+        first_name: "Admin",
+        last_name: "Admin",
         phone_number: "1231231234",
         pin: "0000",
       })

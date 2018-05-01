@@ -29,6 +29,7 @@ class IntegrationStore {
   removeConfig = id => {
     return remove(`/api/v1/integrations/${id}`).then(response => {
       const index = this.integrations.findIndex(c => c.id === id);
+
       if (index > -1) {
         this.integrations.splice(index, 1);
       }
@@ -45,6 +46,7 @@ class IntegrationStore {
     })
       .then(response => {
         this.integrations.push(response.data);
+        return response.data;
       })
       .catch(err => {
         console.log(err);

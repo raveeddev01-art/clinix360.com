@@ -1,9 +1,6 @@
-defmodule StitchIntegrations.DrChrono.Token do
+defmodule Stitch.Drchrono.Token do
   require Logger
-  import Ecto.Query
-  alias Stitch.Repo
   alias Stitch.Integration
-  alias StitchIntegrations.DrChrono
 
   def for_integration(integration) do
     unix_now = DateTime.utc_now() |> DateTime.to_unix()
@@ -12,7 +9,7 @@ defmodule StitchIntegrations.DrChrono.Token do
       Logger.info("Token's expired, refreshing it.")
       # Token has expired, we need to refresh it, and update it in
       # the database.
-      {:ok, response_values} = refresh_token(integration.credentials["refresh_token"])
+      {:ok, response_values} = refresh_token(integration)
 
       new_credentials = Map.merge(integration.credentials, response_values)
       Integration.update(integration, %{credentials: new_credentials})

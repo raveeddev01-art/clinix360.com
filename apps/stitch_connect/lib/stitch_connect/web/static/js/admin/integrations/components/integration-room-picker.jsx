@@ -19,7 +19,7 @@ class IntegrationRoomPicker extends Component {
     super(props);
 
     this.state = {
-      groupId: null
+      groupId: this.props.groupsStore.regularGroups[0].id
     };
   }
 
@@ -40,8 +40,8 @@ class IntegrationRoomPicker extends Component {
       groupId: this.state.groupId
     };
 
-    this.props.integrationStore.createNewIntegration(params).then(() => {
-      history.push(`/admin/integrations/drchrono`);
+    this.props.integrationStore.createNewIntegration(params).then(data => {
+      history.push(`/admin/integrations/drchrono/${data.id}/edit`);
     });
   };
 
@@ -78,7 +78,7 @@ class IntegrationRoomPicker extends Component {
             bsSize="lg"
             className="pull-right"
           >
-            Add {this.props.name} app
+            Add Integration
           </Button>
         </ButtonToolbar>
       </Form>

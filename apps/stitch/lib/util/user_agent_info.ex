@@ -3,53 +3,24 @@ defmodule UserAgentInfo do
   Helper functions around user agent parsing. Light wrapper around UAInspector.
   """
 
-  # Some of these are quite unlikely but fine to keep
-  @mobile_device_types [
-    "phone",
-    "tablet",
-    "smartphone",
-    "mobile",
-    "smart display",
-    "feature phone"
-  ]
-
   @doc """
   Parses a plug conn and returns a user agent
   """
   def parse_conn(conn) do
-    [user_agent] = Plug.Conn.get_req_header(conn, "user-agent")
-    user_agent
-  end
-
-  @doc """
-  Checks if user agent is mobile
-  """
-  def is_mobile(user_agent) do
-    type = device_type(user_agent)
-    Enum.member?(@mobile_device_types, type)
-  end
-
-  @doc """
-  Checks if user agent is iOS
-  """
-  def is_ios(user_agent) do
-    os(user_agent) == "iOS"
-  end
-
-  @doc """
-  Checks if user agent is Android
-  """
-  def is_android(user_agent) do
-    os(user_agent) == "Android"
+    case Plug.Conn.get_req_header(conn, "user-agent") do
+      [] -> "undefined"
+      [user_agent] -> user_agent
+    end
   end
 
   @doc """
   Gets device type from user agent.
-  Return values like: [ 'tablet', 'smarphone', 'browser']
+  Return values like: [ 'tablet', 'smartphone', 'browser', 'mobile']
   """
   def device_type(user_agent) do
     case get_device_attr(user_agent, :type) do
       "unknown" -> client_type(user_agent)
+      "library" -> client_type(user_agent)
       type -> type
     end
   end
@@ -57,8 +28,23 @@ defmodule UserAgentInfo do
   @doc """
   Gets client name from user agent.
   Return values like: [ 'Microsoft Edge', 'Firefox', 'Safari']
+
+  # Since this module is being used only by singed in users
+  # in the main webapp, we know that if the os is iOS or Android
+  # they are using the app.
   """
-  def client_name(user_agent), do: get_client_attr(user_agent, :name)
+  def client_name(user_agent) do
+    case os(user_agent) do
+      "iOS" ->
+        "iOS App"
+
+      "Android" ->
+        "Android App"
+
+      _ ->
+        get_client_attr(user_agent, :name)
+    end
+  end
 
   @doc """
   Gets device type from user agent.

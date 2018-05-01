@@ -83,6 +83,6 @@ defmodule Stitch.Message.LinkPreview.GenerateLinkPreviewsTest do
 
     message = Stitch.MessageQueries.get_by_id(message.id)
     assert message.link_previews_generated
-    assert message.link_previews == []
+    assert [%Stitch.Message.LinkPreview{}] = message.link_previews
   end
 end

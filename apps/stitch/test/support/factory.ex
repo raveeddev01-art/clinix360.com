@@ -12,6 +12,7 @@ defmodule Stitch.Factory do
       roles: ["member"],
       onboarded: true,
       password_hash: @password_hash,
+      profile_image_url: "https://s3.amazonaws.com/bucket/image.png",
       token:
         sequence(
           :token,

@@ -137,7 +137,7 @@
           font-size: 15px;
           line-height: 25px;
           padding: 0 15px;
-          margin: 0 12px;
+          border-radius: 0px;
 
           i.fa {
             width: 1em;
@@ -437,7 +437,7 @@
             -moz-transition: all 50ms ease-out 0s;
             transition: all 50ms ease-out 0s;
           }
-          
+
           &:hover i.fa {
             -webkit-transform: scale(1.25);
             -moz-transform: scale(1.25);
@@ -932,10 +932,10 @@
             padding: 0 8px;
             margin: 0 8px;
 
-            i.fa {	
-              width: 1em;	
+            i.fa {
+              width: 1em;
               color: $brand-primary;
-              margin-right: 5px;	
+              margin-right: 5px;
             }
 
             &:hover i.fa {

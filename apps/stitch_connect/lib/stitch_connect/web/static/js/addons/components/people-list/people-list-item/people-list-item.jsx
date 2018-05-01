@@ -5,6 +5,7 @@ import { Avatar } from "common/components";
 class PeopleListItem extends Component {
   render() {
     const { user, onClick, online } = this.props;
+    const displayName = user.is_bot ? user.username : user.full_name;
 
     return (
       <div className="people-list-item" onClick={onClick}>
@@ -17,7 +18,7 @@ class PeopleListItem extends Component {
         </div>
         <div className="item-text">
           <Avatar user={user} />
-          <span>{`${user.first_name} ${user.last_name}`}</span>
+          <span>{displayName}</span>
           <small>{user.username}</small>
         </div>
       </div>

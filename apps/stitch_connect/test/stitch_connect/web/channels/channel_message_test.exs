@@ -154,6 +154,6 @@ defmodule StitchConnect.Web.ChannelMessageTest do
     assert_reply ref, :ok
 
     ref = push socket1, "delete_msg_link_preview", %{message_id: message2.id, link: "http://bar.com"}
-    assert_reply ref, :ok
+    refute_reply ref, :ok
   end
 end
