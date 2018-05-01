@@ -47,11 +47,12 @@ class UserProfileMenu extends Component {
           </div>
           <MenuItem onClick={this._toggleAddonMenu}>View Profile</MenuItem>
 
-          {!user.is_bot && (
-            <MenuItem onClick={this.goToDirectMessaging}>
-              Direct Messages
-            </MenuItem>
-          )}
+          {user &&
+            !user.is_bot && (
+              <MenuItem onClick={this.goToDirectMessaging}>
+                Direct Messages
+              </MenuItem>
+            )}
         </PortalDropdownMenu>
       </SmartDropdown>
     );
