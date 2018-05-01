@@ -189,6 +189,7 @@ defmodule Stitch.Accounts.User do
     |> validate_required([:phone_number, :pin, :team_id, :roles])
     |> default_profile_image_changeset(params)
     |> put_change(:onboarded, true)
+    |> put_change(:whats_new_last_seen_at, DateTime.utc_now())
   end
 
   def timezone_changeset(struct, params) do
