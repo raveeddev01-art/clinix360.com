@@ -2,13 +2,26 @@ import React, { Component } from "react";
 import { inject } from "mobx-react";
 import Panel from "react-bootstrap/lib/Panel";
 import HomeItem from "./home-item";
-import { isAdmin } from "../../../lib/utils";
+import { isAdmin, isMemberOrAdmin } from "../../../lib/utils";
 
 @inject("titleStore", "adminPanelStore", "userStore")
 export default class YouHome extends Component {
   componentWillMount() {
     this.props.titleStore.setPageName("Home");
     this.props.adminPanelStore.setHeading("Home", "fa-home");
+  }
+
+  renderIntegrationLink() {
+    return (
+      <HomeItem
+        icon="fa-database"
+        title="Integrations"
+        description="Install applications that send notifications and events into Stitch rooms."
+        openButtonText="Open"
+        link="/admin/integrations"
+        openExternal
+      />
+    );
   }
 
   renderAdminItems() {
@@ -49,14 +62,6 @@ export default class YouHome extends Component {
           description="Subscribe to Stitch plans across different products, edit your team payment details, and access invoice history."
           openButtonText="Open"
           link="/admin/billing"
-        />
-        <HomeItem
-          icon="fa-database"
-          title="Integrations"
-          description="Install applications that send notifications and events into Stitch rooms."
-          openButtonText="Open"
-          link="/admin/integrations"
-          openExternal
         />
       </div>
     );
@@ -101,6 +106,8 @@ export default class YouHome extends Component {
             openButtonText="Open"
             link="/admin/you/notifications"
           />
+
+          {isMemberOrAdmin() && this.renderIntegrationLink()}
 
           {isAdmin() && this.renderAdminItems()}
         </Panel.Body>

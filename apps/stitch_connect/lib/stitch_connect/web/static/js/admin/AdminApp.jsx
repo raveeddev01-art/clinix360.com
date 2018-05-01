@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
 import { Switcher, AppAlert } from "common/components";
-import { isAdmin } from "lib/utils";
+import { isAdmin, isMemberOrAdmin } from "lib/utils";
 import RoleChangedModal from "common/modals/role-changed-modal";
 
 import Sidebar from "./sidebar";
@@ -59,7 +59,12 @@ class AdminApp extends Component {
         key="route_admin_billing"
         path={`/admin/billing`}
         component={Billing}
-      />,
+      />
+    ];
+  };
+
+  renderIntegrationRoutes = () => {
+    return [
       <Route
         exact
         key="route_admin_integrations"
@@ -106,6 +111,7 @@ class AdminApp extends Component {
             <div className="admin-content-wrapper">
               <Switch>
                 {isAdmin() && this.renderAdminRoutes()}
+                {isMemberOrAdmin() && this.renderIntegrationRoutes()}
                 <Route
                   path={`/admin/you/notifications`}
                   component={YouNotifications}
