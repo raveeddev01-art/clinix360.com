@@ -2,7 +2,7 @@ defmodule Stitch.Drchrono.Bot do
   import Ecto.Query
   alias Stitch.{Accounts.User, Message}
   alias Stitch.Repo
-  alias StitchConnect.Web.UserStatusService
+  alias StitchConnect.Web.{TeamChannel, UserStatusService}
   require Logger
 
   @spec init_or_enable_bot(number) :: {:ok, User.t()} | {:error, term}
@@ -19,20 +19,32 @@ defmodule Stitch.Drchrono.Bot do
       |> Repo.one()
 
     if bot_user == nil do
-      Stitch.Bot.create(team_id, %{
-        team_id: team_id,
-        name: "drchrono",
-        username: "drchrono",
-        is_bot: true,
-        onboarded: true,
-        roles: ["member", "bot"],
-        disabled: false,
-        profile_image_url: "https://s3.amazonaws.com/stitch-content-public/drchrono-logo.png",
-        profile_image_thumb_url:
-          "https://s3.amazonaws.com/stitch-content-public/drchrono-logo.png"
-      })
+      create_and_broadcast(team_id)
     else
       {:ok, bot_user}
+    end
+  end
+
+  defp create_and_broadcast(team_id) do
+    bot_params = %{
+      team_id: team_id,
+      name: "drchrono",
+      username: "drchrono",
+      is_bot: true,
+      onboarded: true,
+      roles: ["member", "bot"],
+      disabled: false,
+      profile_image_url: "https://s3.amazonaws.com/stitch-content-public/drchrono-logo.png",
+      profile_image_thumb_url: "https://s3.amazonaws.com/stitch-content-public/drchrono-logo.png"
+    }
+
+    case Stitch.Bot.create(team_id, bot_params) do
+      {:ok, bot_user} ->
+        TeamChannel.broadcast_user_joined(team_id, bot_user)
+        {:ok, bot_user}
+
+      error ->
+        error
     end
   end
 
