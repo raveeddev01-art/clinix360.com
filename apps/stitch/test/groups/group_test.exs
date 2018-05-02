@@ -302,12 +302,13 @@ defmodule Stitch.GroupTest do
       assert removed_user.id == joe.id
     end
 
-    test "does not remove group creators", %{group: group, bob: bob, joe: joe} do
+    test "can remove group creators", %{group: group, bob: bob, joe: joe} do
       assert {:ok, {removed_users, []}} = Group.remove_users_by_id(group, [joe.id, bob.id])
 
       # db logic tested by update_users
-      assert [removed_user] = removed_users
-      assert removed_user.id == joe.id
+      assert [removed_user_1, remmoved_user_2] = removed_users
+      assert removed_user_1.id == joe.id
+      assert remmoved_user_2.id == bob.id
     end
 
     test "handles empty list", %{group: group} do
@@ -343,13 +344,13 @@ defmodule Stitch.GroupTest do
     test "when user_ids is empty", %{group: group, bob: bob} do
       assert {:ok, _} = Group.update_users(group, [])
 
-      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) != nil
+      assert Stitch.Repo.get_by(GroupUser, group_id: group.id) == nil
     end
 
-    test "doesn't remove creator", %{group: group, bob: bob, sam: sam} do
+    test "can remove creator", %{group: group, bob: bob, sam: sam} do
       assert {:ok, _} = Group.update_users(group, [sam.id])
 
-      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) != nil
+      assert Stitch.Repo.get_by(GroupUser, user_id: bob.id, group_id: group.id) == nil
     end
 
     test "doesn't add user from another team", %{group: group, bob: bob} do

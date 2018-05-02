@@ -75,8 +75,8 @@ defmodule Stitch.Group do
          true <- valid_user_ids(params, member_count),
          group = %Group{team_id: team_id, creator_user_id: user_id},
          changeset = with_users_changeset(group, params),
-         {:ok, group} <- Repo.insert(changeset) do
-      GroupAnalytics.track_creation(group, creator)
+         {:ok, group} <- Repo.insert(changeset),
+         _ <- GroupAnalytics.track_creation(group, creator) do
       {:ok, Repo.preload(group, :users)}
     else
       false -> {:error, :invalid_user_ids}
@@ -86,12 +86,14 @@ defmodule Stitch.Group do
 
   # Ensure users are part of team and format them for `cast_assoc`
   defp add_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, false) do
-    query = base_non_guest_group_user_query(user_ids, team_id, creator_id)
+    user_ids = [creator_id | user_ids]
+    query = base_non_guest_group_user_query(user_ids, team_id)
     do_add_users(query, attrs)
   end
 
   defp add_users(%{"user_ids" => user_ids} = attrs, team_id, creator_id, true) do
-    query = base_group_user_query(user_ids, team_id, creator_id)
+    user_ids = [creator_id | user_ids]
+    query = base_group_user_query(user_ids, team_id)
     do_add_users(query, attrs)
   end
 
@@ -106,27 +108,25 @@ defmodule Stitch.Group do
     Map.put(attrs, "group_users", group_users)
   end
 
-  defp base_non_guest_group_user_query(user_ids, team_id, creator_id) do
+  defp base_non_guest_group_user_query(user_ids, team_id) do
     from(
-      u in base_non_guest_users_query(user_ids, team_id, creator_id),
+      u in base_non_guest_users_query(user_ids, team_id),
       select: %{id: u.id, user_id: u.id}
     )
   end
 
-  defp base_group_user_query(user_ids, team_id, creator_id) do
-    from(u in base_users_query(user_ids, team_id, creator_id), select: %{id: u.id, user_id: u.id})
+  defp base_group_user_query(user_ids, team_id) do
+    from(u in base_users_query(user_ids, team_id), select: %{id: u.id, user_id: u.id})
   end
 
-  defp base_non_guest_users_query(user_ids, team_id, creator_id) do
+  defp base_non_guest_users_query(user_ids, team_id) do
     from(
-      u in base_users_query(user_ids, team_id, creator_id),
+      u in base_users_query(user_ids, team_id),
       where: not fragment("? && ?", ^@guest_roles, u.roles)
     )
   end
 
-  defp base_users_query(user_ids, team_id, creator_id) do
-    user_ids = [creator_id | user_ids]
-
+  defp base_users_query(user_ids, team_id) do
     from(
       u in User,
       where: u.team_id == ^team_id,
@@ -444,11 +444,11 @@ defmodule Stitch.Group do
     {:error, "Can't update members in a direct message room"}
   end
 
-  def update_users(%Group{creator_user_id: creator_id, team_id: team_id} = group, user_ids) do
+  def update_users(%Group{team_id: team_id} = group, user_ids) do
     group = Repo.preload(group, group_users: :user)
     current_members = group.group_users
 
-    query = base_non_guest_users_query(user_ids, team_id, creator_id)
+    query = base_non_guest_users_query(user_ids, team_id)
     target_users = Repo.all(query)
 
     {removed_users, added_users, final_group_memberships} =
