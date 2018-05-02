@@ -76,7 +76,7 @@ defmodule Stitch.Group do
          group = %Group{team_id: team_id, creator_user_id: user_id},
          changeset = with_users_changeset(group, params),
          {:ok, group} <- Repo.insert(changeset),
-         _ <- GroupAnalytics.track_creation(group, creator) do
+         _ = GroupAnalytics.track_creation(group, creator) do
       {:ok, Repo.preload(group, :users)}
     else
       false -> {:error, :invalid_user_ids}
