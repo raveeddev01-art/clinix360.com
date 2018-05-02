@@ -75,8 +75,8 @@ defmodule Stitch.Group do
          true <- valid_user_ids(params, member_count),
          group = %Group{team_id: team_id, creator_user_id: user_id},
          changeset = with_users_changeset(group, params),
-         {:ok, group} <- Repo.insert(changeset),
-         _ = GroupAnalytics.track_creation(group, creator) do
+         {:ok, group} <- Repo.insert(changeset) do
+      GroupAnalytics.track_creation(group, creator)
       {:ok, Repo.preload(group, :users)}
     else
       false -> {:error, :invalid_user_ids}
@@ -463,6 +463,22 @@ defmodule Stitch.Group do
     else
       any -> any
     end
+  end
+
+  @doc """
+  Removes users from group given a list of ids.
+  Guests and room creator are excluded from removal.
+  """
+  @spec remove_users_by_id(Group.t(), [user_id :: pos_integer]) ::
+          {:ok, membership_changes} | {:error, Ecto.Changeset.t()}
+  def remove_users_by_id(%Group{} = group, user_ids_to_remove) do
+    # don't need the users info yet, but will call this in update_users
+    # so just call here, to not make another db call
+    group = Repo.preload(group, group_users: :user)
+    current_group_user_ids = Enum.map(group.group_users, & &1.user_id)
+    new_group_user_ids = current_group_user_ids -- user_ids_to_remove
+
+    update_users(group, new_group_user_ids)
   end
 
   defp do_calculate_membership_diff(%{user: %{roles: [role]}} = group_user, {remove, add, target})
