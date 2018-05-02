@@ -11,6 +11,7 @@ import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactionPicker } from "common/components";
+import { isAdmin } from "../../lib/utils";
 
 @inject("messageStore")
 class MessageActions extends PureComponent {
@@ -225,13 +226,13 @@ class MessageActions extends PureComponent {
               </MenuItem>
             )}
 
-            {mine && (
-              <MenuItem onClick={this.delete}>
-                <span>
-                  <i className="fa fa-trash" />&nbsp;Delete message
-                </span>
-              </MenuItem>
-            )}
+            {(mine || isAdmin()) && (
+                <MenuItem onClick={this.delete}>
+                  <span>
+                    <i className="fa fa-trash" />&nbsp;Delete message
+                  </span>
+                </MenuItem>
+              )}
           </DropdownButton>
         </OverlayTrigger>
       </ButtonGroup>,
