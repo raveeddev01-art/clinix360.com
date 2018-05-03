@@ -66,7 +66,7 @@ class DrChronoNewSettings extends Component {
         <Panel.Body>
           <Panel className="integrations-settings__panel">
             <Panel.Heading>
-              <h3>Post to room</h3>
+              <h3>Select Room</h3>
             </Panel.Heading>
 
             <Panel.Body>

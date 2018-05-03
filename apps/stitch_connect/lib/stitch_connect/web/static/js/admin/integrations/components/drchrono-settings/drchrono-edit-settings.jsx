@@ -10,6 +10,7 @@ import Button from "react-bootstrap/lib/Button";
 import HelpBlock from "react-bootstrap/lib/HelpBlock";
 
 import DrChronoForm from "./drchrono-form";
+import DrChronoCredentialsInstructions from "./drchrono-credentials-instructions";
 import DrChronoSetupInstructions from "./drchrono-setup-instructions";
 
 @inject("titleStore", "adminPanelStore", "integrationStore")
@@ -61,7 +62,92 @@ class DrChronoEditSettings extends Component {
     document.dispatchEvent(new MouseEvent("click"));
   };
 
+  _renderIntegrationConfig = () => {
+    return (
+      <Panel.Body>
+        <Panel
+          className="integrations-settings__panel"
+          expanded={this.state.showInstructions}
+        >
+          <Panel.Heading>
+            <Button
+              bsStyle="default"
+              className="action-edit btn btn-fancy pull-right"
+              onClick={this.toggleInstructions}
+            >
+              {this.toggleExpansionText}
+            </Button>
+            <h3>Setup Instructions</h3>
+            <HelpBlock>
+              Follow these steps to set up your integration.
+            </HelpBlock>
+          </Panel.Heading>
+
+          <Panel.Collapse>
+            <Panel.Body>
+              <DrChronoSetupInstructions />
+            </Panel.Body>
+          </Panel.Collapse>
+        </Panel>
+        <Panel className="integrations-settings__panel">
+          <Panel.Heading>
+            <h3>Integration Settings</h3>
+          </Panel.Heading>
+          <Panel.Body>
+            <DrChronoForm
+              integration={this.props.integrationStore.selectedIntegration}
+            />
+          </Panel.Body>
+        </Panel>
+      </Panel.Body>
+    );
+  };
+
+  _renderCredentialForm = () => {
+    return (
+      <Panel.Body>
+        <Panel
+          className="integrations-settings__panel"
+          expanded={this.state.showInstructions}
+        >
+          <Panel.Heading>
+            <Button
+              bsStyle="default"
+              className="action-edit btn btn-fancy pull-right"
+              onClick={this.toggleInstructions}
+            >
+              {this.toggleExpansionText}
+            </Button>
+            <h3>Setup Instructions</h3>
+            <HelpBlock>
+              Follow these steps to set up your integration.
+            </HelpBlock>
+          </Panel.Heading>
+
+          <Panel.Collapse>
+            <Panel.Body>
+              <DrChronoCredentialsInstructions />
+            </Panel.Body>
+          </Panel.Collapse>
+        </Panel>
+        <Panel className="integrations-settings__panel">
+          <Panel.Heading>
+            <h3>Integration Settings</h3>
+          </Panel.Heading>
+          <Panel.Body>
+            <DrChronoForm
+              credentialsOnly
+              integration={this.props.integrationStore.selectedIntegration}
+            />
+          </Panel.Body>
+        </Panel>
+      </Panel.Body>
+    );
+  };
+
   render() {
+    console.log(this.props.integrationStore.selectedIntegration);
+
     return (
       <Panel className="admin-panel integrations-settings">
         <Panel.Heading className="integrations-settings__overview">
@@ -106,42 +192,9 @@ class DrChronoEditSettings extends Component {
           </h4>
         </Panel.Heading>
 
-        <Panel.Body>
-          <Panel
-            className="integrations-settings__panel"
-            expanded={this.state.showInstructions}
-          >
-            <Panel.Heading>
-              <Button
-                bsStyle="default"
-                className="action-edit btn btn-fancy pull-right"
-                onClick={this.toggleInstructions}
-              >
-                {this.toggleExpansionText}
-              </Button>
-              <h3>Setup Instructions</h3>
-              <HelpBlock>
-                Follow these steps to set up your integration.
-              </HelpBlock>
-            </Panel.Heading>
-
-            <Panel.Collapse>
-              <Panel.Body>
-                <DrChronoSetupInstructions />
-              </Panel.Body>
-            </Panel.Collapse>
-          </Panel>
-          <Panel className="integrations-settings__panel">
-            <Panel.Heading>
-              <h3>Integration Settings</h3>
-            </Panel.Heading>
-            <Panel.Body>
-              <DrChronoForm
-                integration={this.props.integrationStore.selectedIntegration}
-              />
-            </Panel.Body>
-          </Panel>
-        </Panel.Body>
+        {this.props.integrationStore.selectedIntegration.authenticated
+          ? this._renderIntegrationConfig()
+          : this._renderCredentialForm()}
       </Panel>
     );
   }
