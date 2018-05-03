@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { inject } from "mobx-react";
 import { Emoji } from "emoji-mart";
 import Remarkable from "remarkable";
+// import ReactDOMServer from "react-dom/server";
 // import ReactMarkdown from "react-markdown";
 // import Markdown from "react-remarkable";
 // import Linkify from "linkifyjs/react";
@@ -19,6 +20,29 @@ class MessageContent extends Component {
   onToggle = emoji => {
     this.props.messageStore.toggleReaction(this.props.message.id, emoji);
   };
+
+  // this isn't actually used D:
+  // toMarkup(stringOrComponent) {
+  //   if (typeof stringOrComponent === "string") {
+  //     return stringOrComponent;
+  //   }
+
+  //   return ReactDOMServer.renderToString(stringOrComponent);
+  // }
+
+  nodeList() {
+    const { message } = this.props;
+
+    // HRM...
+    // const newline = /?:^|<\/pre>)[^]*?(?:<pre>|$)/g;
+
+    const newline = "\n";
+    const lines = (message.text_content || "").split(newline);
+
+    return lines.map(line => {
+      return this.renderMessageLine(line);
+    });
+  }
 
   renderMessageLine(line) {
     const { usersStore, messageStore } = this.props;
@@ -51,37 +75,21 @@ class MessageContent extends Component {
         );
       }
 
-      return part.content;
+      return this.renderMarkdownNode(part.content);
     });
   }
 
-  renderMessageText() {
-    const { message } = this.props;
-
-    // const newline = /?:^|<\/pre>)[^]*?(?:<pre>|$)/g;
-
+  renderMarkdownNode(content) {
     const md = new Remarkable({ linkify: true });
-    const parsed = md.render(message.text_content);
-
-    return parsed;
-
-    // const newline = "\n";
-    // const lines = (message.text_content || "").split(newline);
-
-    // const md = new Remarkable();
-    // return { __html: md.render(message.text_content) };
-
-    // return lines.reduce(
-    //   (result, line, i) =>
-    //     result.concat(this.renderMessageLine(line), <br key={`br_${i}`} />),
-    //   []
-    // );
+    return <div dangerouslySetInnerHTML={{ __html: md.render(content) }} />;
   }
 
   renderLinkPreviews() {
     const {
       message: { link_previews: linkPreviews, id, user_id: userId }
     } = this.props;
+
+    // wat
 
     if (linkPreviews && linkPreviews.length) {
       return linkPreviews.map((link, index) => (
@@ -131,9 +139,7 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{message.text_content}</div>
           ) : (
-            <div
-              dangerouslySetInnerHTML={{ __html: this.renderMessageText() }}
-            />
+            this.nodeList()
           )}
 
           {this.renderLinkPreviews()}
