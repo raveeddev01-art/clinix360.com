@@ -229,7 +229,7 @@ class SidemenuStore {
     const notification = new Notification(title, {
       body,
       tag,
-      icon: "/favicon-192x192.png",
+      icon: window.electronApp ? undefined : "/favicon-192x192.png",
       silent: true
     });
 
@@ -237,7 +237,7 @@ class SidemenuStore {
       notification.onclick = onClick;
     }
 
-    if (!window.electronApp || browserDetails.os !== "Mac OS X") {
+    if (!window.electronApp) {
       setTimeout(() => {
         notification.close();
       }, NOTIFICATION_CARD_DURATION);
