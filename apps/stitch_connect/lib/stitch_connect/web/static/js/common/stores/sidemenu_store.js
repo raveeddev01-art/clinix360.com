@@ -7,6 +7,7 @@
 import { observable, computed, action } from "mobx";
 import Favico from "favico.js";
 import { scroller } from "react-scroll";
+import browserDetails from "lib/browser_details";
 
 import {
   NOTIFICATION_CARD_DURATION,
@@ -236,9 +237,11 @@ class SidemenuStore {
       notification.onclick = onClick;
     }
 
-    setTimeout(() => {
-      notification.close();
-    }, NOTIFICATION_CARD_DURATION);
+    if (window.electronApp && !browserDetails.os !== "Mac OS X") {
+      setTimeout(() => {
+        notification.close();
+      }, NOTIFICATION_CARD_DURATION);
+    }
   }
 
   showNotificationCardForNewMessage(message) {
