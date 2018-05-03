@@ -115,7 +115,7 @@ class DrChronoForm extends Component {
     );
   };
 
-  render() {
+  _renderCredentialsForm = () => {
     return (
       <Form horizontal onSubmit={this._handleFormSubmit}>
         <FormGroup>
@@ -124,6 +124,10 @@ class DrChronoForm extends Component {
             <p>Set your drchrono credentials here.</p>
           </Col>
           <Col sm={7}>
+            <DrChronoRedirectUri />
+
+            <hr />
+
             <ControlLabel htmlFor="clientId">Client ID</ControlLabel>
             <FormControl
               name="clientId"
@@ -143,16 +147,15 @@ class DrChronoForm extends Component {
             />
 
             {this._renderAuthenticateButton()}
-
-            <hr />
-            <DrChronoRedirectUri />
-            <br />
-            <DrChronoWebhookUrl />
           </Col>
         </FormGroup>
+      </Form>
+    );
+  };
 
-        <hr />
-
+  _renderFullForm = () => {
+    return (
+      <Form horizontal onSubmit={this._handleFormSubmit}>
         <FormGroup>
           <Col sm={5}>
             <h4 className="integrations-panel__heading">Notifications</h4>
@@ -300,6 +303,12 @@ class DrChronoForm extends Component {
         </ButtonToolbar>
       </Form>
     );
+  };
+
+  render() {
+    return this.props.credentialsOnly
+      ? this._renderCredentialsForm()
+      : this._renderFullForm();
   }
 }
 
