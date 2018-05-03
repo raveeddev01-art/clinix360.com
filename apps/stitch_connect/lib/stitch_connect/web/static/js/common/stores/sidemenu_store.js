@@ -237,7 +237,7 @@ class SidemenuStore {
       notification.onclick = onClick;
     }
 
-    if (window.electronApp && !browserDetails.os !== "Mac OS X") {
+    if (!window.electronApp || browserDetails.os !== "Mac OS X") {
       setTimeout(() => {
         notification.close();
       }, NOTIFICATION_CARD_DURATION);
