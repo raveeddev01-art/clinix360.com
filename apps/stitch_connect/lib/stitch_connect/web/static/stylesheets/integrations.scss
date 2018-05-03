@@ -145,6 +145,10 @@
     &__panel {
       .panel-heading {
         padding: 0 25px 10px;
+
+        button {
+          margin: 10px 0px
+        }
       }
       .panel-body {
         padding: 0 25px 25px;
@@ -160,7 +164,6 @@
     margin-bottom: 50px;
 
     &__header {
-      font-size: 24px;
       margin: 0;
     }
 
@@ -171,7 +174,7 @@
       }
 
       img {
-        width: 100%;
+        width: 90%;
         display: block;
       }
     }

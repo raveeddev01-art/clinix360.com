@@ -4,7 +4,7 @@ import { Link, withRouter, matchPath } from "react-router-dom";
 import ListGroup from "react-bootstrap/lib/ListGroup";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
 
-import { isAdmin } from "lib/utils";
+import { isAdmin, isMemberOrAdmin } from "lib/utils";
 import InviteModal from "common/modals/invite-modal";
 import Scrollbar from "common/components/scrollbar";
 
@@ -19,10 +19,10 @@ class Sidebar extends Component {
     };
   }
 
-  _isSelected(path) {
+  _isSelected(path, exact = true) {
     const { location } = this.props;
 
-    return matchPath(location.pathname, { path, exact: true }) != null;
+    return matchPath(location.pathname, { path, exact }) != null;
   }
 
   _adminTeamsOptions = () => {
@@ -65,22 +65,28 @@ class Sidebar extends Component {
               <span>Billing</span>
             </Link>
           </ListGroupItem>
-
-          {window.electronApp ? (
-            <ListGroupItem href="/admin/integrations" target="_blank">
-              <i className="fa fa-database" />
-              Integrations <i className="fa fa-external-link sm" />
-            </ListGroupItem>
-          ) : (
-            <ListGroupItem active={this._isSelected("/admin/integrations")}>
-              <Link to="/admin/integrations">
-                <i className="fa fa-database" />
-                <span>Integrations</span>
-              </Link>
-            </ListGroupItem>
-          )}
         </ListGroup>
       </div>
+    );
+  };
+
+  _nonGuestOptions = () => {
+    if (window.electronApp) {
+      return (
+        <ListGroupItem href="/admin/integrations" target="_blank">
+          <i className="fa fa-database" />
+          Integrations <i className="fa fa-external-link sm" />
+        </ListGroupItem>
+      );
+    }
+
+    return (
+      <ListGroupItem active={this._isSelected("/admin/integrations", false)}>
+        <Link to="/admin/integrations">
+          <i className="fa fa-database" />
+          <span>Integrations</span>
+        </Link>
+      </ListGroupItem>
     );
   };
 
@@ -146,6 +152,9 @@ class Sidebar extends Component {
                   <span>Notifications</span>
                 </Link>
               </ListGroupItem>
+
+              {isMemberOrAdmin() && this._nonGuestOptions()}
+
               <ListGroupItem>
                 <Link to="https://intercom.help/teamstitch" target="_blank">
                   <i className="fa fa-question-circle" />Help{" "}

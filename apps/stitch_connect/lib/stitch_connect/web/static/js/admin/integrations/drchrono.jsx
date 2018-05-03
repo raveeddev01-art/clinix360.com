@@ -20,9 +20,16 @@ class DrChronoPage extends Component {
     this.props.adminPanelStore.setHeading("Integrations", "fa-database");
   }
 
+  getGroupName = integration => {
+    const group = this.props.groupsStore.getGroupById(integration.group_id);
+    return group ? group.name : "Unknown Group";
+  };
+
   render() {
+    const key = this.props.integrationStore.integrations.length;
+
     return (
-      <Panel className="admin-panel integrations-settings">
+      <Panel key={key} className="admin-panel integrations-settings">
         <Panel.Heading className="integrations-settings__overview">
           <Breadcrumb>
             <LinkContainer to="/admin/integrations">
@@ -56,30 +63,48 @@ class DrChronoPage extends Component {
         <Panel.Body>
           <Panel>
             <Panel.Heading className="configurations-panel__heading">
-              <h3>Configurations</h3>
+              <h3>Information</h3>
             </Panel.Heading>
 
             <Panel.Body className="configurations-panel__body">
-              {this.props.integrationStore
-                .forApp("drchrono")
-                .map(integration => (
-                  <IntegrationConfiguration
-                    key={`integration-${integration.id}`}
-                    id={integration.id}
-                    integrationName="drchrono"
-                    roomName={
-                      this.props.groupsStore.getGroupById(integration.group_id)
-                        .name
-                    }
-                    insertedAt={moment
-                      .utc(integration.inserted_at)
-                      .local()
-                      .format("LL")}
-                  />
-                ))}
+              <p>
+                drchrono EHR is an all-in-one EHR that seamlessly integrates
+                patient scheduling, clinical workflow and medical billing. With
+                our state-of-the art EHR system, you enter patient information
+                only once and data gets automatically passed to clinical
+                charting, e-prescription, lab orders, and medical billing
+                minimizing multiple data entries and data entry errors.
+              </p>
             </Panel.Body>
           </Panel>
         </Panel.Body>
+
+        {this.props.integrationStore.forApp("drchrono").length > 0 && (
+          <Panel.Body>
+            <Panel>
+              <Panel.Heading className="configurations-panel__heading">
+                <h3>Configurations</h3>
+              </Panel.Heading>
+
+              <Panel.Body className="configurations-panel__body">
+                {this.props.integrationStore
+                  .forApp("drchrono")
+                  .map(integration => (
+                    <IntegrationConfiguration
+                      key={`integration-${integration.id}`}
+                      id={integration.id}
+                      integrationName="drchrono"
+                      roomName={this.getGroupName(integration)}
+                      insertedAt={moment
+                        .utc(integration.inserted_at)
+                        .local()
+                        .format("LL")}
+                    />
+                  ))}
+              </Panel.Body>
+            </Panel>
+          </Panel.Body>
+        )}
       </Panel>
     );
   }

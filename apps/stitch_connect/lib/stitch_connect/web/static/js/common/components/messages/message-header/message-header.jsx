@@ -17,7 +17,7 @@ class MessageHeader extends Component {
     return (
       <div className="message-header">
         <UserProfileMenu user={user} className="name">
-          {this._renderName(user)}
+          {user && this._renderName(user)}
         </UserProfileMenu>
         <TimestampTooltip timestamp={timestamp} className="time" />
         {children}

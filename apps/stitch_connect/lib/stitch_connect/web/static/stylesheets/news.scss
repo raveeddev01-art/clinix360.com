@@ -1,0 +1,30 @@
+.news-story {
+  border-bottom: 1px solid #d8d8d8;
+  margin-bottom: 20px;
+
+  &__date {
+    font-size: 14px;
+    color: #707070;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  &__title {
+    font-size: 18px;
+    color: #036;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  &__body {
+    margin-bottom: 20px;
+  }
+
+  &__permalink {
+    font-weight: bold;
+    margin-bottom: 20px;
+    display: block;
+  }
+}

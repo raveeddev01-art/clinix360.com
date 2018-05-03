@@ -13,6 +13,7 @@ import InviteModal from "common/modals/invite-modal";
 import FavoritesList from "./favorites/favorites_list";
 import RoomsList from "./rooms/rooms_list";
 import PeopleList from "./people/people_list";
+import { isMemberOrAdmin } from "../lib/utils";
 
 @inject("presenceStore", "sidemenuStore", "userStore", "groupsStore")
 @observer
@@ -68,6 +69,21 @@ class Sidemenu extends Component {
     this.toggleInviteModal();
   };
 
+  renderIntegrationLink() {
+    return window.electronApp ? (
+      <MenuItem eventKey="9" href="/admin/integrations" target="_blank">
+        Integrations
+        <small className="text-muted m-l-5">
+          <i className="fa fa-external-link sm" />
+        </small>
+      </MenuItem>
+    ) : (
+      <LinkContainer to="/admin/integrations">
+        <MenuItem eventKey="9">Integrations</MenuItem>
+      </LinkContainer>
+    );
+  }
+
   renderAdminOptions() {
     return (
       <div>
@@ -89,19 +105,6 @@ class Sidemenu extends Component {
         <LinkContainer to="/admin/billing">
           <MenuItem eventKey="8">Billing</MenuItem>
         </LinkContainer>
-
-        {window.electronApp ? (
-          <MenuItem eventKey="9" href="/admin/integrations" target="_blank">
-            Integrations
-            <small className="text-muted m-l-5">
-              <i className="fa fa-external-link sm" />
-            </small>
-          </MenuItem>
-        ) : (
-          <LinkContainer to="/admin/integrations">
-            <MenuItem eventKey="9">Integrations</MenuItem>
-          </LinkContainer>
-        )}
       </div>
     );
   }
@@ -218,6 +221,7 @@ class Sidemenu extends Component {
                 <MenuItem eventKey="3">Notifications</MenuItem>
               </LinkContainer>
 
+              {isMemberOrAdmin() && this.renderIntegrationLink()}
               {userStore.isAdmin && this.renderAdminOptions()}
 
               <div className="separator text-center">

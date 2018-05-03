@@ -26,17 +26,28 @@ defmodule StitchConnect.MessageMailer do
   end
 
   def deliver_for_users(users, team) do
-    recipients = prepare_recipients(users, team)
+    user_ids = Enum.map(users, & &1.id)
+
+    with_new_emails =
+      Stitch.EmailNotification.count(user_ids)
+      |> Enum.reduce(%{}, &Map.put(&2, &1.user_id, &1.message_count))
+
+    recipients = prepare_recipients(users, team, with_new_emails)
     Stitch.Accounts.Email.unread_messages_email(recipients, team)
-    Stitch.EmailNotification.clean_delivered(Enum.map(users, & &1.id))
+    Stitch.EmailNotification.clean_delivered(user_ids)
   end
 
-  def prepare_recipients(users, team) do
+  def prepare_recipients(users, team, with_new_emails) do
     users
     |> Enum.reduce([], fn user, acc ->
       case Stitch.Mobile.badge_value(user, true) do
-        0 -> acc
-        message_count -> [recipient(user, message_count, team) | acc]
+        0 ->
+          acc
+
+        message_count ->
+          if with_new_emails[user.id],
+            do: [recipient(user, message_count, team) | acc],
+            else: acc
       end
     end)
   end
@@ -45,6 +56,7 @@ defmodule StitchConnect.MessageMailer do
     %{
       first_name: user.first_name || "There",
       email: user.email,
+      timezone: user.timezone[:tz],
       id: user.id,
       message_count: message_count,
       login_url: login_url(team)

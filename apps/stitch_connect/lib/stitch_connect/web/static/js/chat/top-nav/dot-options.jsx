@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 
 import Dropdown from "react-bootstrap/lib/Dropdown";
@@ -6,6 +7,8 @@ import MenuItem from "react-bootstrap/lib/MenuItem";
 import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Tooltip from "react-bootstrap/lib/Tooltip";
 
+@inject("newsStore")
+@observer
 class DotOptions extends React.Component {
   onToggle = isOpen => {
     if (isOpen) {
@@ -26,7 +29,23 @@ class DotOptions extends React.Component {
               this.overlayTrigger = ref;
             }}
           >
-            <i className="fa fa-ellipsis-v" />
+            <span>
+              <i className="fa fa-ellipsis-v" />
+              {this.props.newsStore.unreadNewsCount > 0 && (
+                <span
+                  className="badge"
+                  style={{
+                    position: "absolute",
+                    top: "-14px",
+                    left: "4px",
+                    backgroundColor: "#e43a2f",
+                    borderRadius: "4px"
+                  }}
+                >
+                  {this.props.newsStore.unreadNewsLabel}
+                </span>
+              )}
+            </span>
           </OverlayTrigger>
         </Dropdown.Toggle>
 
@@ -42,6 +61,22 @@ class DotOptions extends React.Component {
           </MenuItem>
           <MenuItem onSelect={toggleAddonMenu("starred")}>
             <i className="fa fa-star m-r-5" /> Starred
+          </MenuItem>
+          <MenuItem onSelect={toggleAddonMenu("Updates")}>
+            <i className="fa fa-lightbulb-o m-r-5" /> Updates{" "}
+            {this.props.newsStore.unreadNewsCount > 0 && (
+              <span
+                className="badge"
+                style={{
+                  backgroundColor: "#e43a2f",
+                  borderRadius: "4px",
+                  marginLeft: "50px",
+                  marginTop: "-3px"
+                }}
+              >
+                {this.props.newsStore.unreadNewsLabel}
+              </span>
+            )}
           </MenuItem>
           <MenuItem
             id="intercom-link"

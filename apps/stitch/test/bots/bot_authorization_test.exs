@@ -14,9 +14,16 @@ defmodule Stitch.BotAuthorizationTest do
       assert result == true
     end
 
-    test "returns false for members" do
+    test "returns true for members" do
       team = insert(:team)
       user = insert(:user, team_id: team.id, roles: ["member"])
+      result = Stitch.BotAuthorization.can_list_bots?(user.team_id, user.id)
+      assert result == true
+    end
+
+    test "returns false for guests" do
+      team = insert(:team)
+      user = insert(:user, team_id: team.id, roles: ["single-room-guest"])
       result = Stitch.BotAuthorization.can_list_bots?(user.team_id, user.id)
       assert result == false
     end
@@ -35,9 +42,16 @@ defmodule Stitch.BotAuthorizationTest do
       assert result == true
     end
 
-    test "returns false for members" do
+    test "returns true for members" do
       team = insert(:team)
       user = insert(:user, team_id: team.id, roles: ["member"])
+      result = Stitch.BotAuthorization.can_create_bot?(user.team_id, user.id)
+      assert result == true
+    end
+
+    test "returns false for guests" do
+      team = insert(:team)
+      user = insert(:user, team_id: team.id, roles: ["single-room-guest"])
       result = Stitch.BotAuthorization.can_create_bot?(user.team_id, user.id)
       assert result == false
     end
@@ -56,9 +70,16 @@ defmodule Stitch.BotAuthorizationTest do
       assert result == true
     end
 
-    test "returns false for members" do
+    test "returns true false for members" do
       team = insert(:team)
       user = insert(:user, team_id: team.id, roles: ["member"])
+      result = Stitch.BotAuthorization.can_edit_bot?(user.team_id, user.id)
+      assert result == true
+    end
+
+    test "returns false for guests" do
+      team = insert(:team)
+      user = insert(:user, team_id: team.id, roles: ["single-room-guest"])
       result = Stitch.BotAuthorization.can_edit_bot?(user.team_id, user.id)
       assert result == false
     end
