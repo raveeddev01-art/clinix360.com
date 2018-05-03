@@ -7,12 +7,16 @@ export default class UserMention extends Component {
   render() {
     const { user: mentionedUser } = this.props;
 
-    const mentionClassName = cx('user-mention', {
+    const mentionClassName = cx("user-mention", {
       me: mentionedUser.username === currentUser.username
     });
 
     return (
-      <UserProfileMenu user={mentionedUser} className={mentionClassName}>
+      <UserProfileMenu
+        user={mentionedUser}
+        className={mentionClassName}
+        {...this.props}
+      >
         {`@${mentionedUser.username}`}
       </UserProfileMenu>
     );

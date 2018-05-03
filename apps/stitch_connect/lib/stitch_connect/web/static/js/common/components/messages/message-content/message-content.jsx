@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { Emoji } from "emoji-mart";
 import Remarkable from "remarkable";
-// import ReactDOMServer from "react-dom/server";
+import ReactDOMServer from "react-dom/server";
 // import ReactMarkdown from "react-markdown";
 // import Markdown from "react-remarkable";
 // import Linkify from "linkifyjs/react";
@@ -15,81 +15,79 @@ import FileAttachment from "./file-attachment";
 import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
 
-@inject("usersStore", "messageStore")
+// this is gross :)
+@inject("usersStore", "messageStore", "addonStore", "groupsStore")
+@observer
 class MessageContent extends Component {
   onToggle = emoji => {
     this.props.messageStore.toggleReaction(this.props.message.id, emoji);
   };
 
-  // this isn't actually used D:
-  // toMarkup(stringOrComponent) {
-  //   if (typeof stringOrComponent === "string") {
-  //     return stringOrComponent;
-  //   }
+  toRenderableString(stringOrComponent) {
+    if (typeof stringOrComponent === "string") {
+      return stringOrComponent;
+    }
 
-  //   return ReactDOMServer.renderToString(stringOrComponent);
-  // }
-
-  nodeList() {
-    const { message } = this.props;
-
-    // HRM...
-    // const newline = /?:^|<\/pre>)[^]*?(?:<pre>|$)/g;
-
-    const newline = "\n";
-    const lines = (message.text_content || "").split(newline);
-
-    return lines.map(line => {
-      return this.renderMessageLine(line);
-    });
+    return ReactDOMServer.renderToString(stringOrComponent);
   }
 
-  renderMessageLine(line) {
-    const { usersStore, messageStore } = this.props;
+  messageAsHTML = () => {
+    const { message, usersStore, messageStore } = this.props;
     const { usersById } = usersStore;
-    const parts = messageStore.decodeMessage(line);
+
+    const parts = messageStore.decodeMessage(message.text_content || "");
     const isAllEmojis =
       parts.filter(p => p.type === "emoji").length === parts.length;
 
-    return parts.map((part, i) => {
-      if (part.type === "group_mention") {
-        return (
-          <span key={`group_mention_${i}`} className="group-mention">
-            @{part.content}
-          </span>
-        );
-      } else if (part.type === "mention") {
-        return (
-          <UserMention
-            key={`usermention_${i}`}
-            user={usersById[part.content]}
-          />
-        );
-      } else if (part.type === "emoji") {
-        return (
-          <Emoji
-            key={`emoji_${i}`}
-            emoji={part.content}
-            size={isAllEmojis ? 32 : 18}
-          />
-        );
-      }
+    return parts
+      .map((part, i) => {
+        let p;
+        if (part.type === "group_mention") {
+          p = (
+            <span key={`group_mention_${i}`} className="group-mention">
+              @{part.content}
+            </span>
+          );
+        } else if (part.type === "mention") {
+          p = (
+            <UserMention
+              key={`usermention_${i}`}
+              user={usersById[part.content]}
+              addonStore={this.props.addonStore}
+              groupsStore={this.props.groupsStore}
+            />
+          );
+        } else if (part.type === "emoji") {
+          p = (
+            <Emoji
+              key={`emoji_${i}`}
+              emoji={part.content}
+              size={isAllEmojis ? 32 : 18}
+            />
+          );
+        } else {
+          // console.log("CONTENT GOING IN", part.content);
+          p = this.renderMarkdownNode(part.content);
+          // console.log("CONTENT COMING OUT", p);
+        }
 
-      return this.renderMarkdownNode(part.content);
-    });
-  }
+        return this.toRenderableString(p);
+      })
+      .join("");
+  };
 
   renderMarkdownNode(content) {
-    const md = new Remarkable({ linkify: true });
-    return <div dangerouslySetInnerHTML={{ __html: md.render(content) }} />;
+    const md = new Remarkable({ linkify: true, breaks: true });
+    return md
+      .render(content)
+      .replace("<p>", "")
+      .replace("</p>", "");
   }
 
   renderLinkPreviews() {
     const {
       message: { link_previews: linkPreviews, id, user_id: userId }
     } = this.props;
-
-    // wat
 
     if (linkPreviews && linkPreviews.length) {
       return linkPreviews.map((link, index) => (
@@ -139,7 +137,7 @@ class MessageContent extends Component {
           {message.type === "upload" && message.text_content ? (
             <div className="attachment-comment">{message.text_content}</div>
           ) : (
-            this.nodeList()
+            <span dangerouslySetInnerHTML={{ __html: this.messageAsHTML() }} />
           )}
 
           {this.renderLinkPreviews()}
