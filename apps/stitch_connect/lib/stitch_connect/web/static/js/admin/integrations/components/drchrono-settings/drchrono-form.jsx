@@ -260,7 +260,7 @@ class DrChronoForm extends Component {
 
         <FormGroup>
           <Col sm={5}>
-            <h4 className="integrations-panel__heading">Post to Room</h4>
+            <h4 className="integrations-panel__heading">Select Room</h4>
             <p>Notification that come in from drchrono will be posted here.</p>
           </Col>
           <Col sm={7}>
