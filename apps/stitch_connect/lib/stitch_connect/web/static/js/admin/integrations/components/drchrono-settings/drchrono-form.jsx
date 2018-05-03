@@ -124,10 +124,6 @@ class DrChronoForm extends Component {
             <p>Set your drchrono credentials here.</p>
           </Col>
           <Col sm={7}>
-            <DrChronoRedirectUri />
-
-            <hr />
-
             <ControlLabel htmlFor="clientId">Client ID</ControlLabel>
             <FormControl
               name="clientId"
