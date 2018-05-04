@@ -9,16 +9,9 @@ import LinkPreview from "./link-preview";
 import Reactions from "./reactions";
 import messageTextToComponents from "../../../../chat/message-list/message-text-to-components";
 
-@inject("usersStore", "messageStore", "addonStore", "groupsStore")
+@inject("usersStore", "messageStore")
 @observer
 class MessageContent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      renders: []
-    };
-  }
-
   onToggle = emoji => {
     this.props.messageStore.toggleReaction(this.props.message.id, emoji);
   };

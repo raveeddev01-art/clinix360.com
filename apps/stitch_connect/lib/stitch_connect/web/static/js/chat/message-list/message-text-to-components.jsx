@@ -5,10 +5,7 @@ import {
 
 const allFormatters = nonNestableFormatters.concat(nestableFormatters);
 
-// TODO: does this need to exist?
-const unmatchedNode = text => {
-  return text;
-};
+const unmatchedNode = text => text;
 
 const getMatchingFormatter = (content, opts) => {
   const validFormatters = opts.nested ? nestableFormatters : allFormatters;
